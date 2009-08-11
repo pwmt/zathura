@@ -1,0 +1,34 @@
+zathura - pdf viewer
+--------------------
+zathura is an pdf viewer based on the poppler pdf rendering library
+
+Requirements
+------------
+poppler (0.10.7-2)
+poppler-glib (0.10.7-1)
+gtk2 (2.16.5-1)
+
+Configuration
+-------------
+You can modify some parts of zathura by editing the config.h file
+
+Installation
+------------
+Customise config.h according to your wishes and run the following
+command to build and install zathura:
+
+  make install
+
+Uninstall:
+----------
+To delete zathura from your system, just type:
+
+  make uninstall
+
+Use zathura
+-----------
+Just run:
+
+  zathura <file>
+
+
