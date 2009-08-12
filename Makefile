@@ -1,5 +1,5 @@
 LIBS   = gtk+-2.0 poppler poppler-glib
-FLAGS  = `pkg-config --cflags --libs $(LIBS)` 
+FLAGS  = `pkg-config --cflags --libs $(LIBS)`
 SOURCE = zathura.c
 TARGET = zathura
 
@@ -16,6 +16,9 @@ debug: $(TARGET)
 
 valgrind: debug $(TARGET)
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes ./${TARGET}
+
+scrollbars: $(TARGET)
+	gcc $(FLAGS) -Wall -o $(TARGET) $(SOURCE) -DSHOW_SCROLLBARS
 
 install: all
 	@echo installing executeable to /usr/bin
