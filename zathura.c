@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -12,8 +13,8 @@
 
 /* enums */
 enum { UP, DOWN, LEFT, RIGHT, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, 
-      NEXT, PREVIOUS, HIDE, ERROR, WARNING, DEFAULT, 
-      ADJUST_BESTFIT, ADJUST_WIDTH };
+      NEXT, PREVIOUS, HIDE, ERROR, WARNING, DEFAULT, TOP, BOTTOM, 
+      ADJUST_BESTFIT, ADJUST_WIDTH, FORWARD, BACKWARD };
 
 struct
 {
@@ -21,6 +22,7 @@ struct
   GtkBox            *box;
   GtkScrolledWindow *view;
   GtkWidget         *drawing_area;
+  GtkBox            *notification;
   GtkEntry          *inputbar;
 
   struct
@@ -29,8 +31,12 @@ struct
     GdkColor              default_bg;
     GdkColor              inputbar_fg;
     GdkColor              inputbar_bg;
-    GdkColor              inputbar_wn_fg;
-    GdkColor              inputbar_wn_bg;
+    GdkColor              notification_fg;
+    GdkColor              notification_bg;
+    GdkColor              notification_wn_fg;
+    GdkColor              notification_wn_bg;
+    GdkColor              notification_er_fg;
+    GdkColor              notification_er_bg;
     GdkColor              completion_fg;
     GdkColor              completion_bg;
     GdkColor              completion_hl_fg;
@@ -42,11 +48,12 @@ struct
   {
     PopplerDocument *document;
     PopplerPage     *page;
+    char            *file;
+    cairo_surface_t *surface;
     int              page_number;
+    int              number_of_pages;
     double           scale;
     int              rotate;
-    cairo_surface_t *surface;
-    char            *file;
   } PDF;
 
 } Zathura;
@@ -74,11 +81,14 @@ typedef struct
 /* function declarations */
 void init();
 void update_title();
-void update_status(int, char*);
+void update_status();
 void set_page(int);
 void draw();
+void hilight_result(PopplerRectangle*);
 
 gboolean complete(Argument*);
+gboolean delete_widget(gpointer);
+GtkLabel* notify(int, char*);
 
 /* shortcut declarations */
 void sc_focus_inputbar(Argument*);
@@ -87,13 +97,14 @@ void sc_navigate(Argument*);
 void sc_zoom(Argument*);
 void sc_adjust_window(Argument*);
 void sc_rotate(Argument*);
+void sc_search(Argument*);
+void sc_print(Argument*);
 void sc_quit(Argument*);
 
 /* command declarations */
 void cmd_goto(int, char**);
 void cmd_open(int, char**);
 void cmd_rotate(int, char**);
-void cmd_search(int, char**);
 void cmd_quit(int, char**);
 void cmd_zoom(int, char**);
 
@@ -115,16 +126,20 @@ void
 init()
 {
   /* settings */
-  gdk_color_parse(default_fgcolor,       &(Zathura.Settings.default_fg));
-  gdk_color_parse(default_bgcolor,       &(Zathura.Settings.default_bg));
-  gdk_color_parse(inputbar_fgcolor,      &(Zathura.Settings.inputbar_fg));
-  gdk_color_parse(inputbar_bgcolor,      &(Zathura.Settings.inputbar_bg));
-  gdk_color_parse(inputbar_wn_fgcolor,   &(Zathura.Settings.inputbar_wn_fg));
-  gdk_color_parse(inputbar_wn_bgcolor,   &(Zathura.Settings.inputbar_wn_bg));
-  gdk_color_parse(completion_fgcolor,    &(Zathura.Settings.completion_fg));
-  gdk_color_parse(completion_bgcolor,    &(Zathura.Settings.completion_bg));
-  gdk_color_parse(completion_hl_fgcolor, &(Zathura.Settings.completion_hl_fg));
-  gdk_color_parse(completion_hl_bgcolor, &(Zathura.Settings.completion_hl_bg));
+  gdk_color_parse(default_fgcolor,              &(Zathura.Settings.default_fg));
+  gdk_color_parse(default_bgcolor,              &(Zathura.Settings.default_bg));
+  gdk_color_parse(inputbar_fgcolor,             &(Zathura.Settings.inputbar_fg));
+  gdk_color_parse(inputbar_bgcolor,             &(Zathura.Settings.inputbar_bg));
+  gdk_color_parse(notification_fgcolor,         &(Zathura.Settings.notification_fg));
+  gdk_color_parse(notification_bgcolor,         &(Zathura.Settings.notification_bg));
+  gdk_color_parse(notification_warning_fgcolor, &(Zathura.Settings.notification_wn_fg));
+  gdk_color_parse(notification_warning_bgcolor, &(Zathura.Settings.notification_wn_bg));
+  gdk_color_parse(notification_error_fgcolor,   &(Zathura.Settings.notification_er_fg));
+  gdk_color_parse(notification_error_bgcolor,   &(Zathura.Settings.notification_er_bg));
+  gdk_color_parse(completion_fgcolor,           &(Zathura.Settings.completion_fg));
+  gdk_color_parse(completion_bgcolor,           &(Zathura.Settings.completion_bg));
+  gdk_color_parse(completion_hl_fgcolor,        &(Zathura.Settings.completion_hl_fg));
+  gdk_color_parse(completion_hl_bgcolor,        &(Zathura.Settings.completion_hl_bg));
   Zathura.Settings.font = pango_font_description_from_string(font);
 
   /* variables */
@@ -132,6 +147,7 @@ init()
   Zathura.box          = GTK_BOX(gtk_vbox_new(FALSE, 0));
   Zathura.view         = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
   Zathura.drawing_area = gtk_drawing_area_new();
+  Zathura.notification = GTK_BOX(gtk_vbox_new(FALSE, 0));
   Zathura.inputbar     = GTK_ENTRY(gtk_entry_new());
   Zathura.PDF.scale    = 1.0;
   Zathura.PDF.rotate   = 0;
@@ -148,15 +164,15 @@ init()
   /* view */
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(Zathura.view), Zathura.drawing_area);
   g_signal_connect(G_OBJECT(Zathura.view), "key-press-event", G_CALLBACK(cb_view_key_pressed), NULL);
-
-  /* drawing area */
-  g_signal_connect(G_OBJECT(Zathura.drawing_area), "expose-event", G_CALLBACK(cb_draw), NULL);
-
+  
   #ifdef SHOW_SCROLLBARS
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   #else
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.view), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
   #endif
+
+  /* drawing area */
+  g_signal_connect(G_OBJECT(Zathura.drawing_area), "expose-event", G_CALLBACK(cb_draw), NULL);
 
   /* inputbar */
   gtk_entry_set_inner_border(Zathura.inputbar, NULL);
@@ -168,8 +184,9 @@ init()
   g_signal_connect(G_OBJECT(Zathura.inputbar), "key-release-event",  G_CALLBACK(cb_inputbar_key_released),   NULL);
 
   /* packing */
-  gtk_box_pack_start(Zathura.box, GTK_WIDGET(Zathura.view),     TRUE,  TRUE,  0);
-  gtk_box_pack_end(Zathura.box,   GTK_WIDGET(Zathura.inputbar), FALSE, FALSE, 0);
+  gtk_box_pack_start(Zathura.box, GTK_WIDGET(Zathura.view),         TRUE,  TRUE,  0);
+  gtk_box_pack_start(Zathura.box, GTK_WIDGET(Zathura.notification), FALSE, FALSE, 0);
+  gtk_box_pack_end(Zathura.box,   GTK_WIDGET(Zathura.inputbar),     FALSE, FALSE, 0);
 
   /* visuals */
   gtk_widget_modify_base(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_bg));
@@ -181,34 +198,56 @@ void
 update_title()
 {
   if(Zathura.PDF.file != NULL)
-    gtk_window_set_title(GTK_WINDOW(Zathura.window), Zathura.PDF.file + strlen("file://"));
+    gtk_window_set_title(GTK_WINDOW(Zathura.window), Zathura.PDF.file);
   else
     gtk_window_set_title(GTK_WINDOW(Zathura.window), "zathura");
 }
 
-void
-update_status(int level, char* text)
+GtkLabel*
+notify(int level, char* text)
 {
+  GtkLabel *message = GTK_LABEL(gtk_label_new(text));
+  GtkEventBox *view = GTK_EVENT_BOX(gtk_event_box_new());
+  
+  gtk_misc_set_alignment(GTK_MISC(message), 0, 0);
+  gtk_widget_modify_font(GTK_WIDGET(message), Zathura.Settings.font);
+
   if(level == WARNING)
   {
-    gtk_widget_modify_text(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_wn_fg));
-    gtk_widget_modify_base(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_wn_bg));
+    gtk_widget_modify_fg(GTK_WIDGET(message), GTK_STATE_NORMAL, &(Zathura.Settings.notification_wn_fg));
+    gtk_widget_modify_bg(GTK_WIDGET(view),    GTK_STATE_NORMAL, &(Zathura.Settings.notification_wn_bg));
   }
-  else if(level == DEFAULT)
+  else if(level == ERROR)
   {
-    gtk_widget_modify_text(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_fg));
-    gtk_widget_modify_base(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_bg));
+    gtk_widget_modify_fg(GTK_WIDGET(message), GTK_STATE_NORMAL, &(Zathura.Settings.notification_er_fg));
+    gtk_widget_modify_bg(GTK_WIDGET(view),    GTK_STATE_NORMAL, &(Zathura.Settings.notification_er_bg));
+  }
+  else
+  {
+    gtk_widget_modify_fg(GTK_WIDGET(message), GTK_STATE_NORMAL, &(Zathura.Settings.notification_fg));
+    gtk_widget_modify_bg(GTK_WIDGET(view),    GTK_STATE_NORMAL, &(Zathura.Settings.notification_bg));
+
   }
 
-  if(text == (char*) "")
+  gtk_container_add(GTK_CONTAINER(view), GTK_WIDGET(message));
+  gtk_container_add(GTK_CONTAINER(Zathura.notification), GTK_WIDGET(view));
+
+  gtk_widget_show_all(GTK_WIDGET(Zathura.window));
+  g_timeout_add_seconds(SHOW_NOTIFICATION, delete_widget, GTK_WIDGET(GTK_WIDGET(view)));
+
+  return message;
+}
+
+void
+update_status()
+{
+  char* text = "";
+
+  if(Zathura.PDF.document && Zathura.PDF.page)
   {
-    if(Zathura.PDF.document && Zathura.PDF.page)
-    {
-      char* show_page = g_strdup_printf("[%i/%i]", Zathura.PDF.page_number + 1, 
-        poppler_document_get_n_pages(Zathura.PDF.document));
-      char* filename = Zathura.PDF.file + strlen("file://");
-      text = g_strdup_printf("%s %s", show_page, filename);
-    }
+    char* show_page = g_strdup_printf("[%i/%i]", Zathura.PDF.page_number + 1, 
+      Zathura.PDF.number_of_pages);
+    text = g_strdup_printf("%s %s", show_page, Zathura.PDF.file);
   }
 
   gtk_entry_set_text(Zathura.inputbar, text);
@@ -216,9 +255,9 @@ update_status(int level, char* text)
 
 void set_page(int page_number)
 {
-  if(page_number > poppler_document_get_n_pages(Zathura.PDF.document))
+  if(page_number > Zathura.PDF.number_of_pages) 
   {
-    update_status(WARNING, "Error: Could not open page");
+    notify(WARNING, "Could not open page");
     return;
   }
   
@@ -292,10 +331,23 @@ draw()
   gtk_widget_queue_draw(Zathura.drawing_area);
 }
 
+void 
+hilight_result(PopplerRectangle* rectangle)
+{
+
+}
+
+gboolean
+delete_widget(gpointer data)
+{
+  gtk_widget_destroy(GTK_WIDGET(data));
+
+  return FALSE;
+}
+
 gboolean
 complete(Argument* argument)
 {
-
   static GtkBox     *results;
   static GtkWidget **result_rows;
   static char      **command_names;
@@ -432,8 +484,12 @@ sc_scroll(Argument *argument)
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
 
-  if((argument->n == LEFT) || (argument->n == DOWN))
+  if( (argument->n == LEFT) || (argument->n == DOWN))
     gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
+  else if (argument->n == TOP)
+    gtk_adjustment_set_value(adjustment, 0);
+  else if(argument->n == BOTTOM)
+    gtk_adjustment_set_value(adjustment, max);
   else
     gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
 }
@@ -449,11 +505,15 @@ sc_navigate(Argument *argument)
   else if(argument->n == PREVIOUS)
     new_page = abs( (new_page + number_of_pages - 1) % number_of_pages);
 
-  Zathura.PDF.page = poppler_document_get_page(Zathura.PDF.document, new_page);
-  Zathura.PDF.page_number = new_page;
- 
-  update_status(DEFAULT, "");
+  set_page(new_page);
+
+  Argument reset;
+  reset.n = TOP;
+  sc_scroll(&reset);
+  
   draw();
+
+  update_status();
 }
 
 void
@@ -505,6 +565,60 @@ sc_rotate(Argument *argument)
 }
 
 void
+sc_search(Argument *argument)
+{
+  static char* search_item;
+  static int direction;
+  int page_counter;
+  GList* results;
+  GList* list;
+
+  if(argument->data)
+    search_item = (char*) argument->data;
+
+  if(!Zathura.PDF.document || !Zathura.PDF.page || !search_item)
+    return;
+
+  /* search document */
+  GtkLabel* search_status = notify(DEFAULT, "Searching...");
+  if(argument->n)
+    direction = (argument->n == BACKWARD) ? -1 : 1;
+
+  for(page_counter = 0; page_counter < Zathura.PDF.number_of_pages; page_counter++)
+  {
+    int next_page = (Zathura.PDF.page_number + page_counter * direction) % Zathura.PDF.number_of_pages;
+    set_page(next_page);
+    
+    results = poppler_page_find_text(Zathura.PDF.page, search_item);
+    if(results)
+      break;
+  }
+
+  /* draw results */
+  if(results)
+  {
+    draw();
+    
+    gtk_label_set_text(search_status, g_strdup_printf("%s found on page %i for %i time(s)", 
+          search_item, Zathura.PDF.page_number, g_list_length(results)));
+    
+    for(list = results; list && list->data; list = g_list_next(list))
+    {
+      hilight_result((PopplerRectangle*) list->data);
+    }
+  }
+  else
+    gtk_label_set_text(search_status, g_strdup_printf("No match for %s", search_item));
+
+}
+
+void
+sc_print(Argument *argument)
+{
+
+}
+
+void
 sc_quit(Argument *argument)
 {
   cb_destroy(NULL, NULL);
@@ -519,24 +633,31 @@ cmd_open(int argc, char** argv)
 
   gchar* file;
 
+  if(!g_file_test(argv[0], G_FILE_TEST_EXISTS))
+  {
+    notify(ERROR, "File does not exist");
+    return;
+  }
+
   if(g_ascii_strncasecmp(argv[0], "file://", strlen("file://")) == 0)
 	  file = g_strdup(argv[0]);
   else
     file = g_filename_to_uri(argv[0], NULL, NULL);
-
+  
   Zathura.PDF.document = poppler_document_new_from_file(file, (argc == 2) ? argv[1] : NULL, NULL);
   if(!Zathura.PDF.document)
   {
-    printf("Error: Could not open file %s\n", file);
+    notify(WARNING, "Can not open file");
     return;
   }
 
-  Zathura.PDF.file = file;
+  Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
+  Zathura.PDF.file = file + strlen("file://");
   set_page(0);
   
   draw();  
   
-  update_status(DEFAULT, "");
+  update_status();
   update_title();
 }
 
@@ -547,7 +668,15 @@ cmd_goto(int argc, char** argv)
     return;
 
   int page = atoi(argv[0]);;
-  set_page(page);
+  set_page(page - 1);
+  
+  Argument argument;
+  argument.n = TOP;
+  sc_scroll(&argument);
+  
+  draw();
+
+  update_status();
 }
 
 void
@@ -566,24 +695,6 @@ cmd_rotate(int argc, char** argv)
   }
 
   sc_rotate(&argument);
-}
-
-void
-cmd_search(int argc, char** argv)
-{
-  if(!Zathura.PDF.document || !Zathura.PDF.page || !argv[0])
-    return;
-
-  GList* results = poppler_page_find_text(Zathura.PDF.page, argv[0]);
-  GList* list;
-
-  if(results)
-  {
-    for(list = results; list && list->data; list = g_list_next(list))
-    {
-      //PopplerRectangle *rectangle = (PopplerRectangle*) list->data;
-    }
-  }  
 }
 
 void
@@ -611,8 +722,6 @@ void
 cb_draw(GtkWidget *widget, gpointer data)
 {
   gdk_window_clear(widget->window);
-
-  draw();
 
   cairo_t *cairo = gdk_cairo_create(widget->window);
   cairo_set_source_surface(cairo, Zathura.PDF.surface, 0, 0);
@@ -661,11 +770,13 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   // special command
   if(*tokens[0] == '/')
   {
-    char *term = (char*) gtk_entry_get_text(entry) + 1;
-    cmd_search(1, &term);
+    Argument argument;
+    argument.data = (char*) gtk_entry_get_text(entry) + 1;
+    argument.n = -1;
+    sc_search(&argument);
     g_strfreev(tokens);
+    update_status();
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.view));
-    update_status(DEFAULT, ""); 
     return;
   }
 
@@ -681,10 +792,9 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   }
 
   if(!success)
-    update_status(WARNING, "Not a valid command");
-  else
-    update_status(DEFAULT, "");
+    notify(ERROR, g_strdup_printf("\"%s\" is not a valid command", command));
 
+  update_status();
   g_strfreev(tokens);
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.view));
 }
@@ -696,8 +806,9 @@ cb_inputbar_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointer da
   {
     gtk_widget_modify_text(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_fg));
     gtk_widget_modify_base(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_bg));
-    gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
+    gtk_entry_set_text(Zathura.inputbar, "");
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
   }
 }
 
@@ -710,7 +821,6 @@ cb_inputbar_key_pressed(GtkEntry* entry, GdkEventKey *event, gpointer data)
   {
     case GDK_Escape:
       gtk_widget_grab_focus(GTK_WIDGET(Zathura.view));
-      update_status(DEFAULT, "");
       argument.n = HIDE;
       return complete(&argument);
     case GDK_Tab:
@@ -738,8 +848,10 @@ cb_inputbar_key_released(GtkEntry *entry, GdkEventKey *event, gpointer data)
   }
   else if(length > 1 && text[0] == '/')
   {
-    char *term = text + 1;
-    cmd_search(1, &term);
+    Argument argument;
+    argument.data = (char*) text + 1;
+    argument.n = -1;
+    sc_search(&argument);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
   }
