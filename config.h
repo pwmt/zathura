@@ -1,27 +1,33 @@
 /* settings */
-static const int   SHOW_NOTIFICATION = 5;
 static const float ZOOM_STEP         = 0.1;
 static const float SCROLL_STEP       = 40;
+static const float HL_TRANSPARENCY   = 0.4;
+static const int   SHOW_NOTIFICATION = 5;
+static const int   DEFAULT_WIDTH     = 800;
+static const int   DEFAULT_HEIGHT    = 600;
+static const char  BROWSER[]         = "firefox %s";
 
 /* look */
 static const char font[]                  = "monospace normal 9";
-static const char default_bgcolor[]       = "#141414";
-static const char default_fgcolor[]       = "#CCCCCC";
+static const char default_bgcolor[]       = "#000000";
+static const char default_fgcolor[]       = "#DDDDDD";
 
 static const char notification_fgcolor[]         = "#0F0F0F";
 static const char notification_bgcolor[]         = "#F9F9F9";
-static const char notification_warning_fgcolor[] = "2222222";
-static const char notification_warning_bgcolor[] = "#E8E62E";
-static const char notification_error_fgcolor[]   = "#CCCCCC";
-static const char notification_error_bgcolor[]   = "#B82121";
+static const char notification_warning_fgcolor[] = "DDDDDDC";
+static const char notification_warning_bgcolor[] = "#D0C54D";
+static const char notification_error_fgcolor[]   = "#FFFFFF";
+static const char notification_error_bgcolor[]   = "#BC2800";
 
 static const char inputbar_bgcolor[]      = "#141414";
 static const char inputbar_fgcolor[]      = "#9FBC00";
 
-static const char completion_fgcolor[]    = "#CCCCCC";
+static const char completion_fgcolor[]    = "#DDDDDD";
 static const char completion_bgcolor[]    = "#232323";
 static const char completion_hl_fgcolor[] = "#232323";
 static const char completion_hl_bgcolor[] = "#9FBC00";
+
+static const char search_highlight[] = "#9FBC00";
 
 /* shortcuts */
 Shortcut shortcuts[] = {
@@ -56,14 +62,12 @@ Shortcut shortcuts[] = {
 /* commands */
 Command commands[] = {
   // command,         function
-  {"g",               cmd_goto},
+  {"export",          cmd_export},
   {"goto",            cmd_goto},
-  {"o",               cmd_open},
+  {"info",            cmd_info},
+  {"links",           cmd_links},
   {"open",            cmd_open},
-  {"r",               cmd_rotate},
   {"rotate",          cmd_rotate},
-  {"q",               cmd_quit},
   {"quit",            cmd_quit},
-  {"z",               cmd_zoom},
   {"zoom",            cmd_zoom},
 };
