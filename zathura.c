@@ -13,8 +13,8 @@
 
 /* enums */
 enum { UP, DOWN, LEFT, RIGHT, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, 
-      NEXT, PREVIOUS, HIDE, ERROR, WARNING, DEFAULT, TOP, BOTTOM, 
-      ADJUST_BESTFIT, ADJUST_WIDTH, FORWARD, BACKWARD };
+       NEXT, PREVIOUS, HIDE, ERROR, WARNING, DEFAULT, TOP, BOTTOM, 
+       ADJUST_BESTFIT, ADJUST_WIDTH, FORWARD, BACKWARD };
 
 struct
 {
@@ -87,12 +87,16 @@ void set_page(int);
 void draw();
 void highlight_result(PopplerRectangle*);
 void open_link(char*);
+void save_images(int, char*);
+void save_attachments(char*);
 
 gboolean complete(Argument*);
 gboolean delete_widget(gpointer);
 
 GtkWidget* notify(int, char*);
 GtkWidget* update_notification(GtkWidget*, int, char*);
+
+PopplerRectangle* recalcRectangle(PopplerRectangle*);
 
 /* shortcut declarations */
 void sc_focus_inputbar(Argument*);
@@ -102,7 +106,6 @@ void sc_zoom(Argument*);
 void sc_adjust_window(Argument*);
 void sc_rotate(Argument*);
 void sc_search(Argument*);
-void sc_print(Argument*);
 void sc_quit(Argument*);
 
 /* command declarations */
@@ -111,6 +114,7 @@ void cmd_goto(int, char**);
 void cmd_info(int, char**);
 void cmd_links(int, char**);
 void cmd_open(int, char**);
+void cmd_print(int, char**);
 void cmd_rotate(int, char**);
 void cmd_quit(int, char**);
 void cmd_zoom(int, char**);
@@ -258,7 +262,6 @@ update_notification(GtkWidget* view, int level, char* text)
   {
     gtk_widget_modify_fg(GTK_WIDGET(message), GTK_STATE_NORMAL, &(Zathura.Settings.notification_fg));
     gtk_widget_modify_bg(GTK_WIDGET(view),    GTK_STATE_NORMAL, &(Zathura.Settings.notification_bg));
-
   }
 
   if(gtk_bin_get_child(GTK_BIN(view)))
@@ -267,6 +270,47 @@ update_notification(GtkWidget* view, int level, char* text)
   gtk_container_add(GTK_CONTAINER(view), GTK_WIDGET(message));
 
   return GTK_WIDGET(view);
+}
+
+PopplerRectangle*
+recalcRectangle(PopplerRectangle* rectangle)
+{
+  double page_width, page_height;
+  double x1 = rectangle->x1;
+  double x2 = rectangle->x2;
+  double y1 = rectangle->y1;
+  double y2 = rectangle->y2;
+
+  poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
+  
+  switch(Zathura.PDF.rotate)
+  {
+    case 90:
+      rectangle->x1 = (page_height - y2) * Zathura.PDF.scale;
+      rectangle->y1 = x1 * Zathura.PDF.scale;
+      rectangle->x2 = (page_height - y1) * Zathura.PDF.scale;
+      rectangle->y2 = x2 * Zathura.PDF.scale;
+      break;
+    case 180:
+      rectangle->x1 = (page_width  - x2) * Zathura.PDF.scale;
+      rectangle->y1 = (page_height - y2) * Zathura.PDF.scale;
+      rectangle->x2 = (page_width  - x1) * Zathura.PDF.scale;
+      rectangle->y2 = (page_height - y1) * Zathura.PDF.scale;
+      break;
+    case 270:
+      rectangle->x1 = y1 * Zathura.PDF.scale;
+      rectangle->y1 = (page_width  - x2) * Zathura.PDF.scale;
+      rectangle->x2 = y2 * Zathura.PDF.scale;
+      rectangle->y2 = (page_width  - x1) * Zathura.PDF.scale;
+      break;
+    default:
+      rectangle->x1 = x1 * Zathura.PDF.scale;
+      rectangle->y1 = y1 * Zathura.PDF.scale;
+      rectangle->x2 = x2 * Zathura.PDF.scale;
+      rectangle->y2 = y2 * Zathura.PDF.scale;
+  }
+
+  return rectangle;
 }
 
 void
@@ -361,34 +405,13 @@ draw()
 void 
 highlight_result(PopplerRectangle* rectangle)
 {
-  double page_height, page_width;
-  double width, height;
-  double scale;
-
-  poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
-  scale  = Zathura.PDF.scale;
-  width  = (rectangle->x2 - rectangle->x1) * scale;
-  height = (rectangle->y2 - rectangle->y1) * scale; 
-  
   cairo_t *cairo = cairo_create(Zathura.PDF.surface);
   cairo_set_source_rgba(cairo, Zathura.Settings.search_highlight.red, Zathura.Settings.search_highlight.green, 
       Zathura.Settings.search_highlight.blue, HL_TRANSPARENCY);
 
-  switch(Zathura.PDF.rotate)
-  {
-    case 90:
-      cairo_rectangle(cairo, scale * rectangle->y1, scale * rectangle->x1, height, width);
-      break;
-    case 180:
-      cairo_rectangle(cairo, scale * (page_width - rectangle->x1) - width, scale * rectangle->y1, width, height);
-      break;
-    case 270:
-      cairo_rectangle(cairo, scale * (page_height - rectangle->y1) - height, scale * (page_width - rectangle->x1) - width, height, width);
-      break;
-    default:
-      cairo_rectangle(cairo, scale * rectangle->x1, scale * (page_height - rectangle->y1) - height, width, height);
-  }
-
+  rectangle = recalcRectangle(rectangle);
+ 
+  cairo_rectangle(cairo, rectangle->x1, rectangle->y1, (rectangle->x2 - rectangle->x1), (rectangle->y2 - rectangle->y1));
   cairo_fill(cairo);
 }
 
@@ -397,6 +420,57 @@ open_link(char* link)
 {
   char* start_browser = g_strdup_printf(BROWSER, link);
   system(start_browser);
+}
+
+void
+save_images(int page, char* directory)
+{
+  GList           *image_list;
+  GList           *images;
+  cairo_surface_t *image;
+  PopplerPage     *document_page;
+
+  document_page = poppler_document_get_page(Zathura.PDF.document, page);
+  image_list = poppler_page_get_image_mapping(document_page);
+
+  for(images = image_list; images; images = g_list_next(images))
+  {
+    PopplerImageMapping *image_mapping;
+    PopplerRectangle     image_field;
+    gint                 image_id;
+    char*                file;
+
+    image_mapping = (PopplerImageMapping*) images->data;
+    image_field   = image_mapping->area;
+    image_id      = image_mapping->image_id;
+ 
+    image = poppler_page_get_image(document_page, image_id);
+    file  = g_strdup_printf("%sp%i_i%i.png", directory, page + 1, image_id);
+
+    cairo_surface_write_to_png(image, file);
+
+    g_free(file);
+  }
+}
+
+void
+save_attachments(char* directory)
+{
+  GList *attachment_list;
+  GList *attachments;
+  char  *file;
+
+  attachment_list = poppler_document_get_attachments(Zathura.PDF.document);
+
+  for(attachments = attachment_list; attachments; attachments = g_list_next(attachments))
+  {
+    PopplerAttachment *attachment = (PopplerAttachment*) attachments->data;
+    file = g_strdup_printf("%s%s", directory, attachment->name);
+    
+    poppler_attachment_save(attachment, file, NULL);
+
+    g_free(file);
+  }
 }
 
 gboolean
@@ -661,6 +735,8 @@ sc_search(Argument *argument)
   /* draw results */
   if(results)
   {
+    double page_width, page_height;
+    poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
     draw();
     
     update_notification(GTK_WIDGET(search_status), DEFAULT, g_strdup_printf("%s found on page %i for %i time(s)", 
@@ -668,17 +744,14 @@ sc_search(Argument *argument)
     
     for(list = results; list && list->data; list = g_list_next(list))
     {
-      highlight_result((PopplerRectangle*) list->data);
+      PopplerRectangle* result = (PopplerRectangle*) list->data;
+      result->y1 = page_height - result->y1;
+      result->y2 = page_height - result->y2;
+      highlight_result(result);
     }
   }
   else
     update_notification(search_status, DEFAULT, g_strdup_printf("No match for %s", search_item));
-}
-
-void
-sc_print(Argument *argument)
-{
-
 }
 
 void
@@ -719,30 +792,78 @@ cmd_open(int argc, char** argv)
   
   set_page(0);
   draw();  
-  
+ 
   update_status();
   update_title();
 }
 
 void
+cmd_print(int argc, char** argv)
+{
+  if(argc == 0 || !Zathura.PDF.document)
+    return;
+
+  char* print_command;
+  char* sites;
+
+  if(strcmp(argv[0], "all") == 0)
+    sites = g_strdup_printf("%i", Zathura.PDF.number_of_pages);
+  else
+    sites = argv[0];
+
+  print_command = g_strdup_printf("lp -d '%s' -P %s %s", PRINTER, sites, Zathura.PDF.file);
+
+  system(print_command);
+}
+
+void
 cmd_export(int argc, char** argv)
 {
-  if(argc == 0)
+  if(argc == 0 || !Zathura.PDF.document)
     return;
  
-  if(strcmp(argv[0], "image") == 0)
+  if(argc < 2)
   {
-
+    notify(WARNING, "No export path specified");
+    return;
   }
-  else if(strcmp(argv[0], "links") == 0)
+  
+  /* export images */
+  if(strcmp(argv[0], "images") == 0)
   {
+    int page_counter;
+   
+    if(argc == 3)
+    {
+      int page_number = atoi(argv[2]) - 1;
 
+      if(page_number < 0 || page_number > Zathura.PDF.number_of_pages)
+        notify(WARNING, "Page does not exist");
+      else
+        save_images(page_number, argv[1]);
+
+      return;
+    }
+    
+    for(page_counter = 0; page_counter < Zathura.PDF.number_of_pages; page_counter++)
+    {
+      save_images(page_counter, argv[1]);
+    }
   }
+
+  /* export attachments */
   else if(strcmp(argv[0], "attachments") == 0)
   {
-
+    if(!poppler_document_has_attachments(Zathura.PDF.document))
+      notify(WARNING, "PDF file has no attachments");
+    else
+      save_attachments(argv[1]);
   }
-
+  else
+  {
+    notify(DEFAULT, "export [images|attachments]");
+    return;
+  }
 }
 
 void
@@ -889,6 +1010,7 @@ cb_draw(GtkWidget *widget, gpointer data)
 void
 cb_destroy(GtkWidget *widget, gpointer data)
 {
+  pango_font_description_free(Zathura.Settings.font);
   gtk_main_quit();
 }
 
@@ -994,16 +1116,22 @@ cb_drawing_area_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointe
       {
         double page_width, page_height;
         poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
+        PopplerRectangle* link_rectangle = &link_mapping->area;
 
+        if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+          event->y = page_height - event->y;
+        else if(Zathura.PDF.rotate == 90 || Zathura.PDF.rotate == 270)
+          event->x = page_height - event->x;
+          
+        link_rectangle = recalcRectangle(link_rectangle);
+        
         // check if click is in url area
-        if( (link_mapping->area.x1 <= event->x)
-         && (link_mapping->area.x2 >= event->x)
-         && (link_mapping->area.y1 <= (page_height - event->y))
-         && (link_mapping->area.y2 >= (page_height - event->y))
-         )
-        {
+        if( (link_rectangle->x1 <= event->x)
+         && (link_rectangle->x2 >= event->x)
+         && (link_rectangle->y1 <= event->y)
+         && (link_rectangle->y2 >= event->y)
+        )
           open_link(action->uri.uri);
-        }
       }
     }
     
