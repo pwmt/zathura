@@ -6,7 +6,7 @@ static const int   SHOW_NOTIFICATION = 5;
 static const int   DEFAULT_WIDTH     = 800;
 static const int   DEFAULT_HEIGHT    = 600;
 static const char  BROWSER[]         = "firefox %s";
-
+static const char  PRINTER[]         = "EPSON_AL-CX11_192.168.88.80";
 /* look */
 static const char font[]                  = "monospace normal 9";
 static const char default_bgcolor[]       = "#000000";
@@ -39,7 +39,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,     GDK_0,         sc_zoom,             { ZOOM_ORIGINAL } },
   {GDK_CONTROL_MASK,     GDK_r,         sc_rotate,           { RIGHT } },
   {GDK_CONTROL_MASK,     GDK_e,         sc_rotate,           { LEFT } },
-  {GDK_CONTROL_MASK,     GDK_p,         sc_print,            {0} },
+  {GDK_CONTROL_MASK,     GDK_p,         sc_focus_inputbar,   { .data = ":print all" } },
   {GDK_CONTROL_MASK,     GDK_q,         sc_quit,             {0} },
   {0,                    GDK_n,         sc_search,           { FORWARD } },
   {0,                    GDK_N,         sc_search,           { BACKWARD } },
@@ -67,6 +67,7 @@ Command commands[] = {
   {"info",            cmd_info},
   {"links",           cmd_links},
   {"open",            cmd_open},
+  {"print",           cmd_print},
   {"rotate",          cmd_rotate},
   {"quit",            cmd_quit},
   {"zoom",            cmd_zoom},

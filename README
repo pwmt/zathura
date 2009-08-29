@@ -1,12 +1,11 @@
 zathura - pdf viewer
 --------------------
-zathura is an pdf viewer based on the poppler pdf rendering library
+zathura is a pdf viewer based on the poppler pdf rendering library
 
 Requirements
 ------------
-poppler (0.10.7-2)
-poppler-glib (0.10.7-1)
-gtk2 (2.16.5-1)
+poppler-glib (0.10.7)
+gtk2 (2.17.2)
 
 Configuration
 -------------
@@ -30,5 +29,3 @@ Use zathura
 Just run:
 
   zathura <file>
-
-
