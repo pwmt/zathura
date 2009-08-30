@@ -767,20 +767,17 @@ cmd_open(int argc, char** argv)
   if(argc == 0 || (int) strlen(argv[0]) == 0)
     return;
 
-  gchar* file;
+  char* file = realpath(argv[0], NULL);
 
-  if(!g_file_test(argv[0], G_FILE_TEST_EXISTS))
+  if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
   {
     notify(ERROR, "File does not exist");
     return;
   }
 
-  if(g_ascii_strncasecmp(argv[0], "file://", strlen("file://")) == 0)
-	  file = g_strdup(argv[0]);
-  else
-    file = g_filename_to_uri(argv[0], NULL, NULL);
+  Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file), 
+      (argc == 2) ? argv[1] : NULL, NULL);
   
-  Zathura.PDF.document = poppler_document_new_from_file(file, (argc == 2) ? argv[1] : NULL, NULL);
   if(!Zathura.PDF.document)
   {
     notify(WARNING, "Can not open file");
