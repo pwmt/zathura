@@ -110,12 +110,14 @@ void sc_quit(Argument*);
 
 /* command declarations */
 void cmd_export(int, char**);
+void cmd_form(int, char**);
 void cmd_goto(int, char**);
 void cmd_info(int, char**);
 void cmd_links(int, char**);
 void cmd_open(int, char**);
 void cmd_print(int, char**);
 void cmd_rotate(int, char**);
+void cmd_save(int, char**);
 void cmd_quit(int, char**);
 void cmd_zoom(int, char**);
 
@@ -192,7 +194,6 @@ init()
   g_signal_connect(G_OBJECT(Zathura.drawing_area), "button-press-event", G_CALLBACK(cb_drawing_area_button_pressed), NULL);
   gtk_widget_set_events(Zathura.drawing_area, GDK_BUTTON_PRESS_MASK);
   gtk_widget_modify_bg(GTK_WIDGET(Zathura.drawing_area), GTK_STATE_NORMAL, &(Zathura.Settings.default_bg));
-
 
   /* inputbar */
   gtk_entry_set_inner_border(Zathura.inputbar, NULL);
@@ -709,7 +710,6 @@ sc_search(Argument *argument)
   GList* results;
   GList* list;
 
-
   if(argument->data)
     search_item = (char*) argument->data;
 
@@ -785,7 +785,7 @@ cmd_open(int argc, char** argv)
   }
 
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
-  Zathura.PDF.file = file + strlen("file://");
+  Zathura.PDF.file = file;
   
   set_page(0);
   draw();  
@@ -860,6 +860,80 @@ cmd_export(int argc, char** argv)
   {
     notify(DEFAULT, "export [images|attachments]");
     return;
+  }
+}
+
+void
+cmd_form(int argc, char** argv)
+{
+  if(argc == 0 || !Zathura.PDF.document || !Zathura.PDF.page)
+    return;
+
+  if(strcmp(argv[0], "show") == 0)
+  {
+    double page_width, page_height;
+    int form_id = 0;
+    GList* form_mapping = g_list_reverse(poppler_page_get_form_field_mapping(Zathura.PDF.page));
+    GList* forms;
+
+    poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
+
+    for(forms = form_mapping; forms; forms = g_list_next(forms))
+    {
+      /* draw rectangle */
+      PopplerFormFieldMapping *form = (PopplerFormFieldMapping*) forms->data;
+      PopplerRectangle *form_rectangle = &form->area;
+
+      if(!poppler_form_field_is_read_only(form->field))
+      {
+        form_rectangle->y1 = page_height - form_rectangle->y1;
+        form_rectangle->y2 = page_height - form_rectangle->y2;
+
+        highlight_result(form_rectangle);
+
+        /* draw text */
+        cairo_t *cairo = cairo_create(Zathura.PDF.surface);
+        cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+        cairo_set_font_size(cairo, 10);
+        cairo_move_to(cairo, form_rectangle->x1 + 1, form_rectangle->y1 - 1);
+        cairo_show_text(cairo, g_strdup_printf("%i", form_id));
+      }
+  
+      form_id++;
+    }
+
+    poppler_page_free_form_field_mapping(form_mapping);
+  }
+  else if(strcmp(argv[0], "set") == 0)
+  {
+    if(argc <= 2)
+      return;
+
+    GList* form_mapping    = g_list_reverse(poppler_page_get_form_field_mapping(Zathura.PDF.page));
+    int    form_id         = atoi(argv[1]);
+    
+    PopplerFormFieldMapping *form = (PopplerFormFieldMapping*) g_list_nth_data(form_mapping, form_id);
+    PopplerFormFieldType type     = poppler_form_field_get_field_type(form->field);
+
+    if(type == POPPLER_FORM_FIELD_TEXT)
+    {
+      char *text = "";
+      int i;
+
+      for(i = 2; i < argc; i++)
+        text = g_strdup_printf("%s %s", text, argv[i]);
+      
+      poppler_form_field_text_set_text(form->field, text);
+    }
+    else if(type == POPPLER_FORM_FIELD_BUTTON)
+    {
+      if(argv[2][0] == '0')
+        poppler_form_field_button_set_state(form->field, FALSE);
+      else
+        poppler_form_field_button_set_state(form->field, TRUE);
+    }
+  
+   draw();
   }
 }
 
@@ -970,6 +1044,15 @@ cmd_rotate(int argc, char** argv)
   }
 
   sc_rotate(&argument);
+}
+
+void
+cmd_save(int argc, char** argv)
+{
+  if(argc == 0 || !Zathura.PDF.document)
+    return;
+
+  poppler_document_save(Zathura.PDF.document, g_strdup_printf("file://%s", argv[0]), NULL);
 }
 
 void

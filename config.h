@@ -63,12 +63,14 @@ Shortcut shortcuts[] = {
 Command commands[] = {
   // command,         function
   {"export",          cmd_export},
+  {"form",            cmd_form},
   {"goto",            cmd_goto},
   {"info",            cmd_info},
   {"links",           cmd_links},
   {"open",            cmd_open},
   {"print",           cmd_print},
   {"rotate",          cmd_rotate},
+  {"save",            cmd_save},
   {"quit",            cmd_quit},
   {"zoom",            cmd_zoom},
 };
