@@ -901,7 +901,8 @@ cmd_form(int argc, char** argv)
   
       form_id++;
     }
-
+    
+    gtk_widget_queue_draw(Zathura.drawing_area);
     poppler_page_free_form_field_mapping(form_mapping);
   }
   else if(strcmp(argv[0], "set") == 0)
