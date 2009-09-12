@@ -11,14 +11,11 @@ $(TARGET): zathura.c config.h
 clean:
 	rm -f $(TARGET)
 
-debug: $(TARGET)
+debug: 
 	gcc $(FLAGS) -Wall -o $(TARGET) $(SOURCE) -g
 
-valgrind: debug $(TARGET)
+valgrind: debug
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes ./${TARGET}
-
-scrollbars: $(TARGET)
-	gcc $(FLAGS) -Wall -o $(TARGET) $(SOURCE) -DSHOW_SCROLLBARS
 
 install: all
 	@echo installing executeable to /usr/bin
