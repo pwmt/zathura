@@ -183,7 +183,7 @@ init()
   gtk_viewport_set_shadow_type((GtkViewport*) gtk_bin_get_child(GTK_BIN(Zathura.view)), GTK_SHADOW_NONE);
   g_signal_connect(G_OBJECT(Zathura.view), "key-press-event", G_CALLBACK(cb_view_key_pressed), NULL);
   
-  #ifdef SHOW_SCROLLBARS
+  #if SHOW_SCROLLBARS
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   #else
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.view), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
@@ -396,6 +396,7 @@ draw()
     cairo_rotate(cairo, Zathura.PDF.rotate * G_PI / 180.0);
 
   poppler_page_render(Zathura.PDF.page, cairo);
+
   cairo_restore(cairo);
   cairo_destroy(cairo);
 
@@ -711,7 +712,7 @@ sc_search(Argument *argument)
   GList* list;
 
   if(argument->data)
-    search_item = (char*) argument->data;
+    search_item = g_strdup((char*) argument->data);
 
   if(!Zathura.PDF.document || !Zathura.PDF.page || !search_item)
     return;
@@ -722,9 +723,10 @@ sc_search(Argument *argument)
   if(argument->n)
     direction = (argument->n == BACKWARD) ? -1 : 1;
 
-  for(page_counter = 0; page_counter < Zathura.PDF.number_of_pages; page_counter++)
+  for(page_counter = 1; page_counter <= Zathura.PDF.number_of_pages; page_counter++)
   {
-    int next_page = (Zathura.PDF.page_number + page_counter * direction) % Zathura.PDF.number_of_pages;
+    int next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number + 
+        page_counter * direction) % Zathura.PDF.number_of_pages;
     set_page(next_page);
     
     results = poppler_page_find_text(Zathura.PDF.page, search_item);
@@ -749,6 +751,9 @@ sc_search(Argument *argument)
       result->y2 = page_height - result->y2;
       highlight_result(result);
     }
+
+    if(argument->n == FORWARD || argument->n == BACKWARD)
+      update_status();
   }
   else
     update_notification(search_status, DEFAULT, g_strdup_printf("No match for %s", search_item));
@@ -1254,7 +1259,11 @@ gboolean
 cb_inputbar_key_released(GtkEntry *entry, GdkEventKey *event, gpointer data)
 {
   int  length = gtk_entry_get_text_length(entry);
+  
+  #if INCREMENTAL_SEARCH
   char*  text = (char*) gtk_entry_get_text(entry);
+  #endif
+  
   Argument argument;
 
   if(!length)
@@ -1262,14 +1271,17 @@ cb_inputbar_key_released(GtkEntry *entry, GdkEventKey *event, gpointer data)
     argument.n = HIDE;
     complete(&argument);
   }
+
+  #if INCREMENTAL_SEARCH
   else if(length > 1 && text[0] == '/')
   {
     Argument argument;
     argument.data = (char*) text + 1;
-    sc_search(&argument);
+    //sc_search(&argument);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
   }
+  #endif
 
   return FALSE;
 }
