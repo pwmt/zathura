@@ -7,6 +7,7 @@ static const int   DEFAULT_WIDTH     = 800;
 static const int   DEFAULT_HEIGHT    = 600;
 static const char  BROWSER[]         = "firefox %s";
 static const char  PRINTER[]         = "EPSON_AL-CX11_192.168.88.80";
+
 /* look */
 static const char font[]                  = "monospace normal 9";
 static const char default_bgcolor[]       = "#000000";
@@ -28,6 +29,10 @@ static const char completion_hl_fgcolor[] = "#232323";
 static const char completion_hl_bgcolor[] = "#9FBC00";
 
 static const char search_highlight[] = "#9FBC00";
+
+/* additional settings */
+#define SHOW_SCROLLBARS    0
+#define INCREMENTAL_SEARCH 0
 
 /* shortcuts */
 Shortcut shortcuts[] = {
