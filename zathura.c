@@ -24,6 +24,7 @@ struct
   GtkWidget         *drawing_area;
   GtkBox            *notification;
   GtkEntry          *inputbar;
+  GList             *history;
 
   struct
   {
@@ -81,6 +82,7 @@ typedef struct
 
 /* function declarations */
 void init();
+void history(int);
 void update_title();
 void update_status();
 void set_page(int);
@@ -214,6 +216,26 @@ init()
   gtk_widget_modify_base(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_bg));
   gtk_widget_modify_text(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_fg));
   gtk_widget_modify_font(GTK_WIDGET(Zathura.inputbar), Zathura.Settings.font);
+}
+
+void
+history(int direction)
+{
+  static int current = 0;
+  int length = g_list_length(Zathura.history);
+
+  if(length > 0)
+  {
+    if(direction == NEXT)
+      current = (length + current + 1) % length;
+    else
+      current = (length + current - 1) % length;
+
+    char* command = (char*) g_list_nth_data(Zathura.history, current);
+    gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
+    gtk_entry_set_text(Zathura.inputbar, command);
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
+  }
 }
 
 void
@@ -619,12 +641,19 @@ complete(Argument* argument)
 void
 sc_focus_inputbar(Argument *argument)
 {
-  gtk_entry_set_text(Zathura.inputbar, argument->data);
+  if(argument->data)
+    gtk_entry_set_text(Zathura.inputbar, argument->data);
+  else
+    history(PREVIOUS);
+
   gtk_widget_modify_text(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_fg));
   gtk_widget_modify_base(GTK_WIDGET(Zathura.inputbar), GTK_STATE_NORMAL, &(Zathura.Settings.inputbar_bg));
-  
-  gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
-  gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
+ 
+  if(argument->data)
+  {
+    gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
+  }
 }
 
 void
@@ -781,18 +810,10 @@ sc_search(Argument *argument)
 void
 sc_toggle_inputbar(Argument *argument)
 {
-  static gboolean visible = TRUE;
-
-  if(visible)
-  {
+  if(GTK_WIDGET_VISIBLE(GTK_WIDGET(Zathura.inputbar)))
     gtk_widget_hide(GTK_WIDGET(Zathura.inputbar));
-    visible = FALSE;
-  }
   else
-  {
     gtk_widget_show(GTK_WIDGET(Zathura.inputbar));
-    visible = TRUE;
-  }
 
   cb_draw(Zathura.drawing_area, NULL);
 }
@@ -1210,6 +1231,8 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   if(!success)
     notify(ERROR, g_strdup_printf("\"%s\" is not a valid command", command));
 
+  Zathura.history = g_list_append(Zathura.history, (char*) g_strdup(gtk_entry_get_text(entry)));
+
   update_status();
   g_strfreev(tokens);
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.view));
@@ -1317,6 +1340,12 @@ cb_inputbar_key_pressed(GtkEntry* entry, GdkEventKey *event, gpointer data)
     case GDK_ISO_Left_Tab:
       argument.n = PREVIOUS;
       return complete(&argument);
+    case GDK_Up:
+      history(PREVIOUS);
+      return TRUE;
+    case GDK_Down:
+      history(NEXT);
+      return TRUE;
   }
   
   return FALSE;
