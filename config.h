@@ -66,6 +66,8 @@ Shortcut shortcuts[] = {
   {0,                    GDK_z,         sc_focus_inputbar,   { .data = ":zoom " } },
   {0,                    GDK_g,         sc_focus_inputbar,   { .data = ":goto " } },
   {0,                    GDK_slash,     sc_focus_inputbar,   { .data = "/" } },
+  {0,                    GDK_Up,        sc_focus_inputbar,   {0} },
+  {0,                    GDK_Down,      sc_focus_inputbar,   {0} },
 };
 
 /* commands */
