@@ -7,13 +7,30 @@ zathura \- a pdf viewer
 .SH DESCRIPTION
 zathura is a pdf viewer based on the poppler pdf rendering library
 .SH USAGE
+.SS show and edit form fields
+the form command separates between two actions: show, for showing and numerating all available forms on the current page; and set for modifying the value of the given form field:
+.TP 
+.I form show
+shows all values
+.TP 
+.I form set [value number] [value]
+modifying the value in the form field with the given value number
+.SS export image and attachments
+the export command expects the type of objects you want to export (images or attachments) and a existing path where it will save the files
+.TP
+.I export [image|attachments] [path]
+.SS printing documents
+the printing command is kept very simple and works with lp. it expects the range of sites you want to print and the id of a printer specified in the config.h file or the name of it
+.TP
+.I print [all|x|x-y] [printer id|printer name]
+.SH DEFAULT SETTINGS
 .SS Commands
 .TP
 .B export
 export images, the pdf or attachments to a specified directory
 .TP
 .B form
-show and edit form fields
+show and edit form fields 
 .TP
 .B goto
 go to a given page
@@ -77,10 +94,10 @@ search backwards
 scroll left
 .TP
 .B j
-scroll down
+scroll up
 .TP
 .B k
-scroll up
+scroll down
 .TP
 .B l
 scroll right

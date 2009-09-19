@@ -1,12 +1,15 @@
 /* settings */
-static const float ZOOM_STEP         = 0.1;
-static const float SCROLL_STEP       = 40;
-static const float HL_TRANSPARENCY   = 0.4;
-static const int   SHOW_NOTIFICATION = 5;
-static const int   DEFAULT_WIDTH     = 800;
-static const int   DEFAULT_HEIGHT    = 600;
-static const char  BROWSER[]         = "firefox %s";
-static const char  PRINTER[]         = "EPSON_AL-CX11_192.168.88.80";
+static const float  ZOOM_STEP         = 0.1;
+static const float  SCROLL_STEP       = 40;
+static const float  HL_TRANSPARENCY   = 0.4;
+static const int    SHOW_NOTIFICATION = 5;
+static const int    DEFAULT_WIDTH     = 800;
+static const int    DEFAULT_HEIGHT    = 600;
+static const char   BROWSER[]         = "firefox %s";
+static const char  *PRINTER[]         = { "PRINTER_1",
+                                          "PRINTER_2",
+                                          "PRINTER_3"
+                                        };
 
 /* look */
 static const char font[]                  = "monospace normal 9";
@@ -46,11 +49,12 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,     GDK_e,         sc_rotate,           { LEFT } },
   {GDK_CONTROL_MASK,     GDK_p,         sc_focus_inputbar,   { .data = ":print all" } },
   {GDK_CONTROL_MASK,     GDK_q,         sc_quit,             {0} },
+  {GDK_CONTROL_MASK,     GDK_m,         sc_toggle_inputbar,  {0} },
   {0,                    GDK_n,         sc_search,           { FORWARD } },
   {0,                    GDK_N,         sc_search,           { BACKWARD } },
   {0,                    GDK_h,         sc_scroll,           { LEFT } },
-  {0,                    GDK_j,         sc_scroll,           { DOWN } },
-  {0,                    GDK_k,         sc_scroll,           { UP } },
+  {0,                    GDK_j,         sc_scroll,           { UP } },
+  {0,                    GDK_k,         sc_scroll,           { DOWN } },
   {0,                    GDK_l,         sc_scroll,           { RIGHT } },
   {0,                    GDK_Page_Up,   sc_scroll,           { TOP } },
   {0,                    GDK_Page_Down, sc_scroll,           { BOTTOM } },
@@ -68,14 +72,25 @@ Shortcut shortcuts[] = {
 Command commands[] = {
   // command,         function
   {"export",          cmd_export},
+  {"e",               cmd_export},
   {"form",            cmd_form},
+  {"f",               cmd_form},
   {"goto",            cmd_goto},
+  {"g",               cmd_goto},
   {"info",            cmd_info},
+  {"i",               cmd_info},
   {"links",           cmd_links},
+  {"l",               cmd_links},
   {"open",            cmd_open},
+  {"o",               cmd_open},
   {"print",           cmd_print},
+  {"p",               cmd_print},
   {"rotate",          cmd_rotate},
+  {"r",               cmd_rotate},
   {"save",            cmd_save},
+  {"s",               cmd_save},
   {"quit",            cmd_quit},
+  {"q",               cmd_quit},
   {"zoom",            cmd_zoom},
+  {"z",               cmd_zoom},
 };
