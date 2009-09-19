@@ -106,6 +106,7 @@ void sc_zoom(Argument*);
 void sc_adjust_window(Argument*);
 void sc_rotate(Argument*);
 void sc_search(Argument*);
+void sc_toggle_inputbar(Argument*);
 void sc_quit(Argument*);
 
 /* command declarations */
@@ -441,13 +442,23 @@ save_images(int page, char* directory)
     PopplerRectangle     image_field;
     gint                 image_id;
     char*                file;
+    char*                filename;
 
     image_mapping = (PopplerImageMapping*) images->data;
     image_field   = image_mapping->area;
     image_id      = image_mapping->image_id;
  
-    image = poppler_page_get_image(document_page, image_id);
-    file  = g_strdup_printf("%sp%i_i%i.png", directory, page + 1, image_id);
+    image     = poppler_page_get_image(document_page, image_id);
+    filename  = g_strdup_printf("p%i_i%i.png", page + 1, image_id);
+
+    if(directory[0] == '~')
+    {
+      file = malloc(((int) strlen(filename) + (int) strlen(directory) 
+        + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+      file = g_strdup_printf("%s%s%s", getenv("HOME"), directory + 1, filename);
+    }
+    else
+      file = g_strdup_printf("%s%s", directory, filename);
 
     cairo_surface_write_to_png(image, file);
 
@@ -467,7 +478,15 @@ save_attachments(char* directory)
   for(attachments = attachment_list; attachments; attachments = g_list_next(attachments))
   {
     PopplerAttachment *attachment = (PopplerAttachment*) attachments->data;
-    file = g_strdup_printf("%s%s", directory, attachment->name);
+    
+    if(directory[0] == '~')
+    {
+      file = malloc(((int) strlen(attachment->name) + (int) strlen(directory) 
+        + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+      file = g_strdup_printf("%s%s%s", getenv("HOME"), directory + 1, attachment->name);
+    }
+    else
+      file = g_strdup_printf("%s%s", directory, attachment->name);
     
     poppler_attachment_save(attachment, file, NULL);
 
@@ -687,7 +706,7 @@ sc_adjust_window(Argument *argument)
     Zathura.PDF.scale = view_size / page_height;
   else
     Zathura.PDF.scale = view_size / page_width;
-  
+
   draw();
 }
 
@@ -695,9 +714,9 @@ void
 sc_rotate(Argument *argument)
 {
   if(argument->n == LEFT)
-    Zathura.PDF.rotate = abs((Zathura.PDF.rotate - 90) % 360);
+    Zathura.PDF.rotate = (270 + Zathura.PDF.rotate) % 360;
   else if(argument->n == RIGHT)
-    Zathura.PDF.rotate = abs((Zathura.PDF.rotate + 90) % 360);
+    Zathura.PDF.rotate = (450 + Zathura.PDF.rotate) % 360;
 
   draw();
 }
@@ -760,6 +779,25 @@ sc_search(Argument *argument)
 }
 
 void
+sc_toggle_inputbar(Argument *argument)
+{
+  static gboolean visible = TRUE;
+
+  if(visible)
+  {
+    gtk_widget_hide(GTK_WIDGET(Zathura.inputbar));
+    visible = FALSE;
+  }
+  else
+  {
+    gtk_widget_show(GTK_WIDGET(Zathura.inputbar));
+    visible = TRUE;
+  }
+
+  cb_draw(Zathura.drawing_area, NULL);
+}
+
+void
 sc_quit(Argument *argument)
 {
   cb_destroy(NULL, NULL);
@@ -773,6 +811,12 @@ cmd_open(int argc, char** argv)
     return;
 
   char* file = realpath(argv[0], NULL);
+  
+  if(argv[0][0] == '~')
+  {
+    file = realloc(file, ((int) strlen(argv[0]) + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+    file = g_strdup_printf("%s%s", getenv("HOME"), argv[0] + 1);
+  }
 
   if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
   {
@@ -807,14 +851,24 @@ cmd_print(int argc, char** argv)
 
   char* print_command;
   char* sites;
+  char* printer;
 
   if(strcmp(argv[0], "all") == 0)
     sites = g_strdup_printf("%i", Zathura.PDF.number_of_pages);
   else
     sites = argv[0];
 
-  print_command = g_strdup_printf("lp -d '%s' -P %s %s", PRINTER, sites, Zathura.PDF.file);
+  if(argc == 2)
+  {
+    if(atoi(argv[1]) != 0 && atoi(argv[1]) <= (sizeof(PRINTER) / sizeof(char*)))
+      printer = (char*) PRINTER[atoi(argv[1]) - 1];
+    else
+      printer = argv[1];
+  }
+  else
+    printer = (char*) PRINTER[0];
 
+  print_command = g_strdup_printf("lp -d '%s' -P %s %s", printer, sites, Zathura.PDF.file);
   system(print_command);
 }
 
@@ -1004,15 +1058,9 @@ cmd_links(int argc, char** argv)
 
   GList *link_list;
   GList *links;
-  int    number_of_links;
+  int    number_of_links = 0;
 
   link_list       = poppler_page_get_link_mapping(Zathura.PDF.page);
-  number_of_links = g_list_length(link_list);
-
-  if(number_of_links > 0)
-    notify(DEFAULT, g_strdup_printf("%d links found", number_of_links));
-  else
-    notify(WARNING, "No links found");
 
   for(links = link_list; links; links = g_list_next(links))
   {
@@ -1021,15 +1069,20 @@ cmd_links(int argc, char** argv)
     
     link_mapping = (PopplerLinkMapping*) links->data;
     action       = poppler_action_copy(link_mapping->action);
-  
+    
     if(action->type == POPPLER_ACTION_URI)
     {
       char* link_name = poppler_page_get_text(Zathura.PDF.page, POPPLER_SELECTION_WORD, &link_mapping->area);
-      link_name       = g_strdup_printf("<a href=\"%s\">%s</a>", action->uri.uri, link_name);
-     
-      notify(DEFAULT, g_strdup_printf("<b>%s:</b> %s", link_name, action->uri.uri));
+      notify(DEFAULT, g_strdup_printf("<b><a href=\"%s\">%s</a>:</b> %s", action->uri.uri, link_name, action->uri.uri));
+      number_of_links++;
     }
   }
+  
+  if(number_of_links > 0)
+    notify(DEFAULT, g_strdup_printf("%d links found", number_of_links));
+  else
+    notify(WARNING, "No links found");
+
 
   poppler_page_free_link_mapping(link_list);
 }
@@ -1086,7 +1139,6 @@ void
 cb_draw(GtkWidget *widget, gpointer data)
 {
   gdk_window_clear(widget->window);
-
   cairo_t *cairo = gdk_cairo_create(widget->window);
   cairo_set_source_surface(cairo, Zathura.PDF.surface, 0, 0);
   cairo_paint(cairo);
@@ -1198,26 +1250,41 @@ cb_drawing_area_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointe
       PopplerLinkMapping *link_mapping = (PopplerLinkMapping*) links->data;
       PopplerAction      *action       = poppler_action_copy(link_mapping->action);
 
-      if(action->type == POPPLER_ACTION_URI)
-      {
-        double page_width, page_height;
-        poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
-        PopplerRectangle* link_rectangle = &link_mapping->area;
+      double page_width, page_height;
+      poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
+      PopplerRectangle* link_rectangle = &link_mapping->area;
 
-        if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
-          event->y = page_height - event->y;
-        else if(Zathura.PDF.rotate == 90 || Zathura.PDF.rotate == 270)
-          event->x = page_height - event->x;
-          
-        link_rectangle = recalcRectangle(link_rectangle);
+      if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+        event->y = page_height - event->y;
+      else if(Zathura.PDF.rotate == 90 || Zathura.PDF.rotate == 270)
+        event->x = page_height - event->x;
         
-        // check if click is in url area
-        if( (link_rectangle->x1 <= event->x)
-         && (link_rectangle->x2 >= event->x)
-         && (link_rectangle->y1 <= event->y)
-         && (link_rectangle->y2 >= event->y)
-        )
+      link_rectangle = recalcRectangle(link_rectangle);
+      
+      // check if click is in url area
+      if( (link_rectangle->x1 <= event->x)
+       && (link_rectangle->x2 >= event->x)
+       && (link_rectangle->y1 <= event->y)
+       && (link_rectangle->y2 >= event->y))
+      {
+        if(action->type == POPPLER_ACTION_URI)
           open_link(action->uri.uri);
+        else if(action->type == POPPLER_ACTION_GOTO_DEST)
+        {
+          PopplerDest* destination = action->goto_dest.dest;
+
+          if(destination->type == POPPLER_DEST_NAMED)
+          {            
+            destination = poppler_document_find_dest(Zathura.PDF.document, destination->named_dest);
+            
+            if(destination)
+            {  
+              set_page(destination->page_num - 1);
+              draw();
+              update_status();
+            }
+          }
+        }
       }
     }
     
@@ -1277,7 +1344,7 @@ cb_inputbar_key_released(GtkEntry *entry, GdkEventKey *event, gpointer data)
   {
     Argument argument;
     argument.data = (char*) text + 1;
-    //sc_search(&argument);
+    sc_search(&argument);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.inputbar), -1);
   }
@@ -1298,8 +1365,13 @@ main(int argc, char* argv[])
     cmd_open(2, &argv[1]);
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.window));
+ 
+  Argument arg;
+  arg.n = ADJUST_BESTFIT;
+  sc_adjust_window(&arg);
+
   gtk_main();
-  
+
   return 0;
 }
 
