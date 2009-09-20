@@ -5,6 +5,7 @@ static const float  HL_TRANSPARENCY   = 0.4;
 static const int    SHOW_NOTIFICATION = 5;
 static const int    DEFAULT_WIDTH     = 800;
 static const int    DEFAULT_HEIGHT    = 600;
+static const int    MIN_INDEX_WIDTH   = 200;
 static const char   BROWSER[]         = "firefox %s";
 static const char  *PRINTER[]         = { "PRINTER_1",
                                           "PRINTER_2",
@@ -49,6 +50,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,     GDK_e,         sc_rotate,           { LEFT } },
   {GDK_CONTROL_MASK,     GDK_p,         sc_focus_inputbar,   { .data = ":print all" } },
   {GDK_CONTROL_MASK,     GDK_q,         sc_quit,             {0} },
+  {GDK_CONTROL_MASK,     GDK_i,         sc_toggle_index,     {0} },
   {GDK_CONTROL_MASK,     GDK_m,         sc_toggle_inputbar,  {0} },
   {0,                    GDK_n,         sc_search,           { FORWARD } },
   {0,                    GDK_N,         sc_search,           { BACKWARD } },
