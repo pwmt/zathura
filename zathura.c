@@ -712,14 +712,74 @@ sc_scroll(Argument *argument)
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
 
-  if( (argument->n == LEFT) || (argument->n == DOWN))
-    gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
-  else if (argument->n == TOP)
-    gtk_adjustment_set_value(adjustment, 0);
-  else if(argument->n == BOTTOM)
-    gtk_adjustment_set_value(adjustment, max);
-  else
-    gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
+  int number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
+  int new_page = Zathura.PDF.page_number;
+
+  int next_page = abs( (new_page + number_of_pages + 1) % number_of_pages);
+  int previous_page = abs( (new_page + number_of_pages - 1) % number_of_pages);
+
+  switch(argument->n) 
+  {
+    case TOP:
+      if ((value == 0 && previous_page >= 0)) 
+      {
+        set_page(previous_page);
+        gtk_adjustment_set_value(adjustment, max);
+        draw();
+        update_status();
+      } 
+      else 
+      {
+        gtk_adjustment_set_value(adjustment, 0);
+      }
+      break;
+    case BOTTOM:
+      if ((value >= max && next_page <= Zathura.PDF.number_of_pages)) 
+      {
+        set_page(next_page);
+        gtk_adjustment_set_value(adjustment, 0);
+        draw();
+        update_status();
+      } 
+      else 
+      {
+        gtk_adjustment_set_value(adjustment, max);
+      }
+      break;
+    case LEFT:
+      gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
+      break;
+    case DOWN:
+      if ((value - SCROLL_STEP) < 0 && previous_page >= 0) 
+      {
+        set_page(previous_page);
+        gtk_adjustment_set_value(adjustment, max);
+        draw();
+        update_status();
+      } 
+      else 
+      {
+        gtk_adjustment_set_value(adjustment, value - SCROLL_STEP);
+      }
+      break;
+    case RIGHT:
+      gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
+      break;
+    case UP:
+      if ((value + SCROLL_STEP) > max && next_page <= Zathura.PDF.number_of_pages) 
+      {
+        set_page(next_page);
+        gtk_adjustment_set_value(adjustment, 0);
+        draw();
+        update_status();
+      } 
+      else 
+      {
+        gtk_adjustment_set_value(adjustment, value + SCROLL_STEP);
+      }
+      break;
+  }
+
 }
 
 void
@@ -734,11 +794,10 @@ sc_navigate(Argument *argument)
     new_page = abs( (new_page + number_of_pages - 1) % number_of_pages);
 
   set_page(new_page);
+  GtkAdjustment* adjustment;
+  adjustment = gtk_scrolled_window_get_vadjustment(Zathura.view);
+  gtk_adjustment_set_value(adjustment, 0);
 
-  Argument reset;
-  reset.n = TOP;
-  sc_scroll(&reset);
-  
   draw();
 
   update_status();
@@ -772,6 +831,14 @@ sc_adjust_window(Argument *argument)
 
   view_size  = gtk_adjustment_get_page_size(adjustment);
   poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
+
+  // If document is on its side, then width is height and vice versa.
+  if ((Zathura.PDF.rotate == 90) || (Zathura.PDF.rotate == 270)) 
+  {
+    double swap = page_width;
+    page_width  = page_height;
+    page_height = swap;
+  }
 
   if(argument->n == ADJUST_WIDTH)
     Zathura.PDF.scale = view_size / page_height;
@@ -1260,7 +1327,38 @@ cb_draw(GtkWidget *widget, gpointer data)
 {
   gdk_window_clear(widget->window);
   cairo_t *cairo = gdk_cairo_create(widget->window);
-  cairo_set_source_surface(cairo, Zathura.PDF.surface, 0, 0);
+
+  /* Center the PDF if it is smaller than the window. */
+  double page_width, page_height, width, height;
+  poppler_page_get_size(Zathura.PDF.page, &page_width, &page_height);
+
+  if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+  {
+    width  = page_width  * Zathura.PDF.scale;
+    height = page_height * Zathura.PDF.scale;
+  }
+  else
+  {
+    width  = page_height * Zathura.PDF.scale;
+    height = page_width  * Zathura.PDF.scale;
+  }
+
+  int window_x, window_y;
+  gdk_drawable_get_size(widget->window, &window_x, &window_y);
+
+  int offset_x, offset_y;
+
+  if (window_x > width)
+    offset_x = (window_x - width) / 2;
+  else
+    offset_x = 0;
+
+  if (window_y > height)
+    offset_y = (window_y - height) / 2;
+  else
+    offset_y = 0;
+
+  cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
   cairo_paint(cairo);
   cairo_destroy(cairo);
 }
@@ -1527,7 +1625,7 @@ main(int argc, char* argv[])
   gtk_widget_show_all(GTK_WIDGET(Zathura.window));
  
   Argument arg;
-  arg.n = ADJUST_BESTFIT;
+  arg.n = ADJUST_WIDTH;
   sc_adjust_window(&arg);
 
   gtk_main();
