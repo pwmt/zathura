@@ -68,7 +68,7 @@ InputbarShortcut inputbar_shortcuts[] = {
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,   completion,   description  */
-  {"open",      "o",            cmd_quit,   cc_open,      "Open a file" },
+  {"open",      "o",            cmd_open,   cc_open,      "Open a file" },
   {"print",     "p",            cmd_print,  0,            "Print the document" },
   {"rotate",    "r",            cmd_rotate, 0,            "Rotate the page" },
   {"quit",      "q",            cmd_quit,   0,            "Quit zjui" },
