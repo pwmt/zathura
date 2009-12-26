@@ -42,7 +42,7 @@ Shortcut shortcuts[] = {
   {0,                  GDK_i,             sc_change_mode,       NORMAL,   { INSERT } },
   {0,                  GDK_v,             sc_change_mode,       NORMAL,   { VISUAL } },
   {0,                  GDK_colon,         sc_focus_inputbar,    -1,       { .data = ":" } },
-  {0,                  GDK_o,             sc_focus_inputbar,    -1,       { .data = ":open" } },
+  {0,                  GDK_o,             sc_focus_inputbar,    -1,       { .data = ":open " } },
   {0,                  GDK_r,             sc_rotate,            -1,       {0} },
   {0,                  GDK_h,             sc_scroll,            -1,       { LEFT } },
   {0,                  GDK_j,             sc_scroll,            -1,       { UP } },

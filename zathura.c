@@ -157,6 +157,12 @@ struct
 
   struct
   {
+    char* filename;
+    char* pages;
+  } State;
+
+  struct
+  {
     PopplerDocument *document;
     char            *file;
     Page            *pages;
@@ -170,8 +176,9 @@ struct
 void init_zathura();
 void change_mode(int);
 void notify(int, char*);
-void update_status(char*, char*);
+void update_status();
 void setCompletionRowColor(GtkBox*, int, int);
+void set_page(int);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 
 /* shortcut declarations */
@@ -245,6 +252,9 @@ init_zathura()
 
   /* other */
   Zathura.Global.mode = NORMAL;
+
+  Zathura.State.filename = "[No Name]";
+  Zathura.State.pages = "";
 
   /* UI */
   Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
@@ -370,15 +380,13 @@ void notify(int level, char* message)
 }
 
 void
-update_status(char* text, char* state)
+update_status()
 {
   /* update text */
-  if(text)
-    gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, text);
+  gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, Zathura.State.filename);
 
   /* update state */
-  if(state)
-    gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, state);
+  gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, Zathura.State.pages);
 }
 
 GtkEventBox*
@@ -460,6 +468,19 @@ setCompletionRowColor(GtkBox* results, int mode, int id)
       gtk_widget_modify_bg(GTK_WIDGET(row),   GTK_STATE_NORMAL, &(Zathura.Style.completion_hl_bg));
     }
   }
+}
+
+void
+set_page(int page)
+{
+  if(page > Zathura.PDF.number_of_pages || page < 1)
+  {
+    notify(WARNING, "Could not open page");
+    return;
+  }
+
+  Zathura.PDF.page_number = page;
+  Zathura.State.pages = g_strdup_printf("[%i/%i]", page, Zathura.PDF.number_of_pages);
 }
 
 /* shortcut implementation */
@@ -901,9 +922,10 @@ cmd_open(int argc, char** argv)
     return FALSE;
   }
 
-  Zathura.PDF.page_number     = 0;
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   Zathura.PDF.file            = file;
+
+  set_page(1);
 
   return TRUE;
 }
@@ -1156,7 +1178,7 @@ int main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   init_zathura();
-  update_status("Text", "State");
+  update_status();
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
   gtk_main();
