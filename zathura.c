@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <poppler/glib/poppler.h>
+#include <cairo.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -17,52 +20,6 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, FORWARD,
        BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH };
-
-/* zathura */
-struct
-{
-  struct
-  {
-    GtkWindow         *window;
-    GtkBox            *box;
-    GtkScrolledWindow *view;
-    GtkWidget         *statusbar;
-    GtkBox            *statusbar_entries;
-    GtkEntry          *inputbar;
-  } UI;
-
-  struct
-  {
-    GdkColor default_fg;
-    GdkColor default_bg;
-    GdkColor inputbar_fg;
-    GdkColor inputbar_bg;
-    GdkColor statusbar_fg;
-    GdkColor statusbar_bg;
-    GdkColor completion_fg;
-    GdkColor completion_bg;
-    GdkColor completion_g_bg;
-    GdkColor completion_g_fg;
-    GdkColor completion_hl_fg;
-    GdkColor completion_hl_bg;
-    GdkColor notification_e_fg;
-    GdkColor notification_e_bg;
-    GdkColor notification_w_fg;
-    GdkColor notification_w_bg;
-    PangoFontDescription *font;
-  } Style;
-
-  struct
-  {
-    GString *buffer;
-    GList   *history;
-    int      mode;
-    GtkLabel *status_text;
-    GtkLabel *status_buffer;
-    GtkLabel *status_state;
-  } Global;
-
-} Zathura;
 
 /* typedefs */
 struct CElement
@@ -143,6 +100,69 @@ typedef struct
   int always;
   Argument argument;
 } SpecialCommand;
+
+typedef struct
+{
+  PopplerPage     *page;
+  cairo_surface_t *surface;
+  double           scale;
+  int              rotate;
+} Page;
+
+/* zathura */
+struct
+{
+  struct
+  {
+    GtkWindow         *window;
+    GtkBox            *box;
+    GtkScrolledWindow *view;
+    GtkWidget         *statusbar;
+    GtkBox            *statusbar_entries;
+    GtkEntry          *inputbar;
+  } UI;
+
+  struct
+  {
+    GdkColor default_fg;
+    GdkColor default_bg;
+    GdkColor inputbar_fg;
+    GdkColor inputbar_bg;
+    GdkColor statusbar_fg;
+    GdkColor statusbar_bg;
+    GdkColor completion_fg;
+    GdkColor completion_bg;
+    GdkColor completion_g_bg;
+    GdkColor completion_g_fg;
+    GdkColor completion_hl_fg;
+    GdkColor completion_hl_bg;
+    GdkColor notification_e_fg;
+    GdkColor notification_e_bg;
+    GdkColor notification_w_fg;
+    GdkColor notification_w_bg;
+    PangoFontDescription *font;
+  } Style;
+
+  struct
+  {
+    GString *buffer;
+    GList   *history;
+    int      mode;
+    GtkLabel *status_text;
+    GtkLabel *status_buffer;
+    GtkLabel *status_state;
+  } Global;
+
+  struct
+  {
+    PopplerDocument *document;
+    char            *file;
+    Page            *pages;
+    int              page_number;
+    int              number_of_pages;
+  } PDF;
+
+} Zathura;
 
 /* function declarations */
 void init_zathura();
