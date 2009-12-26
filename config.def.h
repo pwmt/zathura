@@ -28,13 +28,28 @@ static const char notification_w_fgcolor[] = "#000000";
 /* shortcuts */
 Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,     argument */
+  {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_i,             sc_adjust_window,     -1,       { ADJUST_BESTFIT } },
+  {GDK_CONTROL_MASK,   GDK_u,             sc_adjust_window,     -1,       { ADJUST_WIDTH } },
   {0,                  GDK_i,             sc_change_mode,       NORMAL,   { INSERT } },
   {0,                  GDK_v,             sc_change_mode,       NORMAL,   { VISUAL } },
-  {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
   {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    -1,       { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    -1,       { .data = "?" } },
   {0,                  GDK_colon,         sc_focus_inputbar,    -1,       { .data = ":" } },
-  {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
+  {0,                  GDK_o,             sc_focus_inputbar,    -1,       { .data = ":open" } },
+  {GDK_SHIFT_MASK,     GDK_j,             sc_navigate,          -1,       { NEXT } },
+  {GDK_SHIFT_MASK,     GDK_k,             sc_navigate,          -1,       { PREVIOUS } },
+  {0,                  GDK_r,             sc_rotate,            -1,       {0} },
+  {0,                  GDK_h,             sc_scroll,            -1,       { LEFT } },
+  {0,                  GDK_j,             sc_scroll,            -1,       { UP } },
+  {0,                  GDK_k,             sc_scroll,            -1,       { DOWN } },
+  {0,                  GDK_l,             sc_scroll,            -1,       { RIGHT } },
+  {0,                  GDK_n,             sc_search,            -1,       { FORWARD } },
+  {0,                  GDK_N,             sc_search,            -1,       { BACKWARD } },
+  {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
 };
 
 /* inputbar shortcuts */
@@ -54,7 +69,11 @@ InputbarShortcut inputbar_shortcuts[] = {
 Command commands[] = {
   /* command,   abbreviation,   function,   completion,   description  */
   {"open",      "o",            cmd_quit,   cc_open,      "Open a file" },
+  {"print",     "p",            cmd_print,  0,            "Print the document" },
+  {"rotate",    "r",            cmd_rotate, 0,            "Rotate the page" },
   {"quit",      "q",            cmd_quit,   0,            "Quit zjui" },
+  {"write",     "w",            cmd_save,   0,            "Save the document" },
+  {"zoom",      "z",            cmd_zoom,   0,            "Set zoom level" },
 };
 
 /* buffer commands */
@@ -62,6 +81,9 @@ BufferCommand buffer_commands[] = {
   /* regex,        function,      argument */
   {"^gg$",         bcmd_goto,     { TOP } },
   {"^[0-9]+G$",    bcmd_goto,     {0} },
+  {"^zI$",         bcmd_zoom,     { ZOOM_IN } },
+  {"^zO$",         bcmd_zoom,     { ZOOM_OUT } },
+  {"^z0$",         bcmd_zoom,     { ZOOM_ORIGINAL } },
 };
 
 /* special commands */

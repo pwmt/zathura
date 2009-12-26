@@ -14,7 +14,9 @@
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        BOTTOM, TOP, HIDE, NORMAL, HIGHLIGHT,
        INSERT, VISUAL, DELETE_LAST_WORD, DEFAULT,
-       ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP };
+       ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
+       ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, FORWARD,
+       BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH };
 
 /* zathura */
 struct
@@ -152,8 +154,15 @@ GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 
 /* shortcut declarations */
 void sc_abort(Argument*);
+void sc_adjust_window(Argument*);
 void sc_change_mode(Argument*);
 void sc_focus_inputbar(Argument*);
+void sc_navigate(Argument*);
+void sc_rotate(Argument*);
+void sc_scroll(Argument*);
+void sc_search(Argument*);
+void sc_toggle_inputbar(Argument*);
+void sc_toggle_statusbar(Argument*);
 void sc_quit(Argument*);
 
 /* inputbar shortcut declarations */
@@ -163,13 +172,19 @@ void isc_completion(Argument*);
 void isc_string_manipulation(Argument*);
 
 /* command declarations */
+void cmd_open(int, char**);
+void cmd_print(int, char**);
+void cmd_rotate(int, char**);
 void cmd_quit(int, char**);
+void cmd_save(int, char**);
+void cmd_zoom(int, char**);
 
 /* completion commands */
 Completion* cc_open(char*);
 
 /* buffer command declarations */
 void bcmd_goto(char*, Argument*);
+void bcmd_zoom(char*, Argument*);
 
 /* special command delcarations */
 void scmd_search(char*, Argument*);
@@ -440,6 +455,12 @@ sc_abort(Argument* argument)
 }
 
 void
+sc_adjust_window(Argument* argument)
+{
+
+}
+
+void
 sc_change_mode(Argument* argument)
 {
   if(argument)
@@ -455,6 +476,42 @@ sc_focus_inputbar(Argument* argument)
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
   }
+}
+
+void
+sc_navigate(Argument* argument)
+{
+
+}
+
+void
+sc_rotate(Argument* argument)
+{
+
+}
+
+void
+sc_scroll(Argument* argument)
+{
+
+}
+
+void
+sc_search(Argument* argument)
+{
+
+}
+
+void
+sc_toggle_inputbar(Argument* argument)
+{
+
+}
+
+void
+sc_toggle_statusbar(Argument* argument)
+{
+
 }
 
 void
@@ -782,9 +839,39 @@ isc_string_manipulation(Argument* argument)
 
 /* command implementation */
 void
+cmd_open(int argc, char** argv)
+{
+
+}
+
+void
+cmd_print(int argc, char** argv)
+{
+
+}
+
+void
+cmd_rotate(int argc, char** argv)
+{
+
+}
+
+void
 cmd_quit(int argc, char** argv)
 {
   cb_destroy(NULL, NULL);
+}
+
+void
+cmd_save(int argc, char** argv)
+{
+
+}
+
+void
+cmd_zoom(int argc, char** argv)
+{
+
 }
 
 /* completion command implementation */
@@ -836,6 +923,12 @@ Completion* cc_open(char* input)
 /* buffer command implementation */
 void 
 bcmd_goto(char* buffer, Argument* argument)
+{
+
+}
+
+void
+bcmd_zoom(char* buffer, Argument* argument)
 {
 
 }
