@@ -1,5 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
+#define _BSD_SOURCE || _XOPEN_SOURCE >= 500
+
 #include <regex.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -924,8 +926,11 @@ cmd_open(int argc, char** argv)
 
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   Zathura.PDF.file            = file;
+  Zathura.State.filename      = file;
 
   set_page(1);
+
+  update_status();
 
   return TRUE;
 }
