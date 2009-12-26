@@ -475,14 +475,14 @@ setCompletionRowColor(GtkBox* results, int mode, int id)
 void
 set_page(int page)
 {
-  if(page > Zathura.PDF.number_of_pages || page < 1)
+  if(page > Zathura.PDF.number_of_pages || page < 0)
   {
     notify(WARNING, "Could not open page");
     return;
   }
 
   Zathura.PDF.page_number = page;
-  Zathura.State.pages = g_strdup_printf("[%i/%i]", page, Zathura.PDF.number_of_pages);
+  Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
 }
 
 /* shortcut implementation */
@@ -529,7 +529,20 @@ sc_focus_inputbar(Argument* argument)
 void
 sc_navigate(Argument* argument)
 {
+  if(!Zathura.PDF.document)
+    return;
 
+  int number_of_pages = Zathura.PDF.number_of_pages;
+  int new_page = Zathura.PDF.page_number;
+
+  if(argument->n == NEXT)
+    new_page = (new_page + number_of_pages + 1) % number_of_pages;
+  else if(argument->n == PREVIOUS)  
+    new_page = (new_page + number_of_pages - 1) % number_of_pages;
+
+  set_page(new_page);
+
+  update_status();
 }
 
 void
@@ -928,7 +941,7 @@ cmd_open(int argc, char** argv)
   Zathura.PDF.file            = file;
   Zathura.State.filename      = file;
 
-  set_page(1);
+  set_page(0);
 
   update_status();
 
