@@ -1,8 +1,10 @@
 /* See LICENSE file for license and copyright information */
 
 #include <regex.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -81,7 +83,7 @@ typedef struct
 {
   char* command;
   char* abbr;
-  void (*function)(int, char**);
+  gboolean (*function)(int, char**);
   Completion* (*completion)(char*);
   char* description;
 } Command;
@@ -96,7 +98,7 @@ typedef struct
 typedef struct
 {
   char identifier;
-  void (*function)(char*, Argument*);
+  gboolean (*function)(char*, Argument*);
   int always;
   Argument argument;
 } SpecialCommand;
@@ -192,12 +194,12 @@ void isc_completion(Argument*);
 void isc_string_manipulation(Argument*);
 
 /* command declarations */
-void cmd_open(int, char**);
-void cmd_print(int, char**);
-void cmd_rotate(int, char**);
-void cmd_quit(int, char**);
-void cmd_save(int, char**);
-void cmd_zoom(int, char**);
+gboolean cmd_open(int, char**);
+gboolean cmd_print(int, char**);
+gboolean cmd_rotate(int, char**);
+gboolean cmd_quit(int, char**);
+gboolean cmd_save(int, char**);
+gboolean cmd_zoom(int, char**);
 
 /* completion commands */
 Completion* cc_open(char*);
@@ -207,7 +209,7 @@ void bcmd_goto(char*, Argument*);
 void bcmd_zoom(char*, Argument*);
 
 /* special command delcarations */
-void scmd_search(char*, Argument*);
+gboolean scmd_search(char*, Argument*);
 
 /* callback declarations */
 gboolean cb_destroy(GtkWidget*, gpointer);
@@ -363,6 +365,8 @@ void notify(int level, char* message)
  
   if(message)
     gtk_entry_set_text(Zathura.UI.inputbar, message);
+
+  gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), FALSE);
 }
 
 void
@@ -495,6 +499,7 @@ sc_focus_inputbar(Argument* argument)
     notify(DEFAULT, argument->data);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
+    gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), TRUE);
   }
 }
 
@@ -864,40 +869,74 @@ isc_string_manipulation(Argument* argument)
 }
 
 /* command implementation */
-void
+gboolean
 cmd_open(int argc, char** argv)
 {
+  if(argc == 0 || strlen(argv[0]) == 0)
+    return FALSE;
+  
+  /* get filename */
+  char* file = realpath(argv[0], NULL);
 
+  if(argv[0][0] == '~')
+  {
+   // file = realloc(file, ((int) strlen(argv[0]) + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+    file = g_strdup_printf("%s%s", getenv("HOME"), argv[0] + 1);
+  }
+
+  /* check if file exists */
+  if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
+  {
+    notify(ERROR, "File does not exist");
+    return FALSE;
+  }
+
+  /* open file */
+  Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file),
+      (argc == 2) ? argv[1] : NULL, NULL);
+
+  if(!Zathura.PDF.document)
+  {
+    notify(ERROR, "Can not open file");
+    return FALSE;
+  }
+
+  Zathura.PDF.page_number     = 0;
+  Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
+  Zathura.PDF.file            = file;
+
+  return TRUE;
 }
 
-void
+gboolean
 cmd_print(int argc, char** argv)
 {
-
+  return TRUE;
 }
 
-void
+gboolean
 cmd_rotate(int argc, char** argv)
 {
-
+  return TRUE;
 }
 
-void
+gboolean
 cmd_quit(int argc, char** argv)
 {
   cb_destroy(NULL, NULL);
+  return TRUE;
 }
 
-void
+gboolean
 cmd_save(int argc, char** argv)
 {
-
+  return TRUE;
 }
 
-void
+gboolean
 cmd_zoom(int argc, char** argv)
 {
-
+  return TRUE;
 }
 
 /* completion command implementation */
@@ -960,10 +999,10 @@ bcmd_zoom(char* buffer, Argument* argument)
 }
 
 /* special command implementation */
-void
+gboolean
 scmd_search(char* input, Argument* argument)
 {
-
+  return TRUE;
 }
 
 /* callback implementation */
@@ -1069,6 +1108,7 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   gchar  *command = tokens[0];
   int     length  = g_strv_length(tokens);
   int          i  = 0;
+  gboolean  retv  = FALSE;
 
   /* no input */
   if(length < 1)
@@ -1083,8 +1123,9 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   {
     if(identifier == special_commands[i].identifier)
     {
-      special_commands[i].function(input, &(special_commands[i].argument));
-      isc_abort(NULL);
+      retv = special_commands[i].function(input, &(special_commands[i].argument));
+      if(retv) isc_abort(NULL);
+      gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
       return TRUE;
     }
   }
@@ -1095,7 +1136,7 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
     if((g_strcmp0(command, commands[i].command) == 0) ||
        (g_strcmp0(command, commands[i].abbr)    == 0))
     {
-      commands[i].function(length - 1, tokens + 1);
+      retv = commands[i].function(length - 1, tokens + 1);
       break;
     }
   }
@@ -1103,7 +1144,8 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   /* append input to the command history */
   Zathura.Global.history = g_list_append(Zathura.Global.history, g_strdup(gtk_entry_get_text(entry)));
 
-  isc_abort(NULL);
+  if(retv) isc_abort(NULL);
+  gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
 
   return TRUE;
 }
