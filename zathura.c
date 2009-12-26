@@ -505,13 +505,19 @@ sc_search(Argument* argument)
 void
 sc_toggle_inputbar(Argument* argument)
 {
-
+  if(GTK_WIDGET_VISIBLE(GTK_WIDGET(Zathura.UI.inputbar)))
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
+  else
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.inputbar));
 }
 
 void
 sc_toggle_statusbar(Argument* argument)
 {
-
+  if(GTK_WIDGET_VISIBLE(GTK_WIDGET(Zathura.UI.statusbar)))
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
+  else
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.statusbar));
 }
 
 void

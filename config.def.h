@@ -28,18 +28,21 @@ static const char notification_w_fgcolor[] = "#000000";
 /* shortcuts */
 Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,     argument */
-  {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_i,             sc_adjust_window,     -1,       { ADJUST_BESTFIT } },
   {GDK_CONTROL_MASK,   GDK_u,             sc_adjust_window,     -1,       { ADJUST_WIDTH } },
-  {0,                  GDK_i,             sc_change_mode,       NORMAL,   { INSERT } },
-  {0,                  GDK_v,             sc_change_mode,       NORMAL,   { VISUAL } },
   {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    -1,       { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    -1,       { .data = "?" } },
-  {0,                  GDK_colon,         sc_focus_inputbar,    -1,       { .data = ":" } },
-  {0,                  GDK_o,             sc_focus_inputbar,    -1,       { .data = ":open" } },
   {GDK_SHIFT_MASK,     GDK_j,             sc_navigate,          -1,       { NEXT } },
   {GDK_SHIFT_MASK,     GDK_k,             sc_navigate,          -1,       { PREVIOUS } },
+  {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
+  {0,                  GDK_i,             sc_change_mode,       NORMAL,   { INSERT } },
+  {0,                  GDK_v,             sc_change_mode,       NORMAL,   { VISUAL } },
+  {0,                  GDK_colon,         sc_focus_inputbar,    -1,       { .data = ":" } },
+  {0,                  GDK_o,             sc_focus_inputbar,    -1,       { .data = ":open" } },
   {0,                  GDK_r,             sc_rotate,            -1,       {0} },
   {0,                  GDK_h,             sc_scroll,            -1,       { LEFT } },
   {0,                  GDK_j,             sc_scroll,            -1,       { UP } },
@@ -47,9 +50,6 @@ Shortcut shortcuts[] = {
   {0,                  GDK_l,             sc_scroll,            -1,       { RIGHT } },
   {0,                  GDK_n,             sc_search,            -1,       { FORWARD } },
   {0,                  GDK_N,             sc_search,            -1,       { BACKWARD } },
-  {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  -1,       {0} },
-  {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   -1,       {0} },
-  {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
 };
 
 /* inputbar shortcuts */
