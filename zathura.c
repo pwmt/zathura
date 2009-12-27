@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <libgen.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -414,8 +415,8 @@ createCompletionRow(GtkBox* results, char* command, char* description, gboolean 
     gtk_misc_set_padding(GTK_MISC(show_description), 1.0, 1.0);
   }
 
-  gtk_label_set_use_markup(show_command,     TRUE),
-  gtk_label_set_use_markup(show_description, TRUE),
+  gtk_label_set_use_markup(show_command,     TRUE);
+  gtk_label_set_use_markup(show_description, TRUE);
 
   gtk_label_set_markup(show_command,     g_markup_printf_escaped(FORMAT_COMMAND,     command ? command : ""));
   gtk_label_set_markup(show_description, g_markup_printf_escaped(FORMAT_DESCRIPTION, description ? description : ""));
@@ -720,12 +721,12 @@ isc_completion(Argument* argument)
 
       Completion *result = commands[previous_id].completion(current_parameter);
 
-      if(!result && result->groups)
+      if(!result || !result->groups)
         return;
 
-      command_mode = FALSE;
-      CompletionGroup* group;
-      CompletionElement* element;
+      command_mode               = FALSE;
+      CompletionGroup* group     = NULL;
+      CompletionElement* element = NULL;
 
       rows = malloc(sizeof(CompletionRow));
 
@@ -982,45 +983,75 @@ cmd_zoom(int argc, char** argv)
 /* completion command implementation */
 Completion* cc_open(char* input)
 {
-  Completion *completion = malloc(sizeof(Completion));
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
-  CompletionElement *el1 = malloc(sizeof(CompletionElement));
-  CompletionElement *el2 = malloc(sizeof(CompletionElement));
-  CompletionElement *el3 = malloc(sizeof(CompletionElement));
-  CompletionElement *el4 = malloc(sizeof(CompletionElement));
-  CompletionElement *el5 = malloc(sizeof(CompletionElement));
-  CompletionElement *el6 = malloc(sizeof(CompletionElement));
-  CompletionGroup* g2 = malloc(sizeof(CompletionGroup));
+  /* init completion group */
+  Completion *completion     = malloc(sizeof(Completion));
+  CompletionGroup* group     = malloc(sizeof(CompletionGroup));
 
-  el1->value = "Word 1";
-  el1->description = NULL;
-  el1->next = (CompletionElement*) el2;
-  el2->value = "Word 2";
-  el2->description = NULL;
-  el2->next = (CompletionElement*) el3;
-  el3->value = "Word 3";
-  el3->description = NULL;
-  el3->next = NULL;
-
-  el4->value = "Word 4";
-  el4->description = NULL;
-  el4->next = (CompletionElement*) el5;
-  el5->value = "Word 5";
-  el5->description = NULL;
-  el5->next = (CompletionElement*) el6;
-  el6->value = "Word 6";
-  el6->description = NULL;
-  el6->next = NULL;
-
-  group->value = "Group 1";
-  group->elements = el1;
-  group->next = g2;
-
-  g2->value = "Group 2";
-  g2->elements = el4;
-  g2->next = NULL;
+  group->value    = NULL;
+  group->next     = NULL;
+  group->elements = NULL;
 
   completion->groups = group;
+
+  /* read dir */
+  char* path;
+  char* file;
+  int   file_length;
+
+  if(!input || strlen(input) == 0)
+  {
+    path = "/";
+    file = "";
+  }
+  else
+  {
+    path = dirname(strdup(input));
+    file = basename(strdup(input));
+
+    if(!strcmp(path, "/") && strlen(file) > 1)
+    {
+      path = g_strdup_printf("/%s/", file);
+      file = "";
+    }
+    else if(!strcmp(path, "/") && !strcmp(file, "/"))
+    {
+      path = "/";
+      file = "";
+    }
+  }
+
+  file_length = strlen(file);
+
+  GDir* dir = g_dir_open(path, 0, NULL);
+  if(!dir)
+    return NULL;
+
+  char* name;
+  int   element_counter = 0;
+  CompletionElement *last_element = NULL;
+
+  /* create element list */
+  while((name = (char*) g_dir_read_name(dir)) != NULL)
+  {
+    char* d_name   = g_filename_display_name(name);
+    int   d_length = strlen(name);
+    if( (file_length <= d_length) && !strncmp(file, d_name, file_length) )
+    {
+      CompletionElement* el = malloc(sizeof(CompletionElement));
+      el->value = g_strdup_printf("%s%s", path, d_name);
+      el->description = NULL;
+      el->next = NULL;
+
+      if(element_counter++ != 0)
+        last_element->next = el;
+      else
+        group->elements = el;
+
+      last_element = el;
+    }
+  }
+
+  g_dir_close(dir);
 
   return completion;
 }
