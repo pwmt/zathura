@@ -341,16 +341,13 @@ change_mode(int mode)
   {
     case INSERT:
       mode_text = "-- INSERT --";
-      gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), FALSE);
       break;
     case VISUAL:
       mode_text = "-- VISUAL --";
-      gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), FALSE);
       break;
     default:
       mode_text = "";
       mode      = NORMAL;
-      gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), TRUE);
       break;
   }
 
@@ -378,8 +375,6 @@ void notify(int level, char* message)
  
   if(message)
     gtk_entry_set_text(Zathura.UI.inputbar, message);
-
-  gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), FALSE);
 }
 
 void
@@ -523,7 +518,6 @@ sc_focus_inputbar(Argument* argument)
     notify(DEFAULT, argument->data);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
-    gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), TRUE);
   }
 }
 
@@ -984,8 +978,8 @@ cmd_zoom(int argc, char** argv)
 Completion* cc_open(char* input)
 {
   /* init completion group */
-  Completion *completion     = malloc(sizeof(Completion));
-  CompletionGroup* group     = malloc(sizeof(CompletionGroup));
+  Completion *completion = malloc(sizeof(Completion));
+  CompletionGroup* group = malloc(sizeof(CompletionGroup));
 
   group->value    = NULL;
   group->next     = NULL;
@@ -994,48 +988,51 @@ Completion* cc_open(char* input)
   completion->groups = group;
 
   /* read dir */
-  char* path;
-  char* file;
-  int   file_length;
+  char* path        = "/";
+  char* file        = "";
+  int   file_length = 0;
 
-  if(!input || strlen(input) == 0)
+  /* parse input string */
+  if(input && strlen(input) > 0)
   {
-    path = "/";
-    file = "";
-  }
-  else
-  {
-    path = dirname(strdup(input));
-    file = basename(strdup(input));
+    char* path_temp = dirname(strdup(input));
+    char* file_temp = basename(strdup(input));
+    char  last_char = input[strlen(input) - 1];
 
-    if(!strcmp(path, "/") && strlen(file) > 1)
-    {
-      path = g_strdup_printf("/%s/", file);
+    if( !strcmp(path_temp, "/") && !strcmp(file_temp, "/") )
       file = "";
-    }
-    else if(!strcmp(path, "/") && !strcmp(file, "/"))
+    else if( !strcmp(path_temp, "/") && strcmp(file_temp, "/") && last_char != '/')
+      file = file_temp;
+    else if( !strcmp(path_temp, "/") && strcmp(file_temp, "/") && last_char == '/')
+      path = g_strdup_printf("/%s/", file_temp);
+    else if(last_char == '/')
+      path = input;
+    else
     {
-      path = "/";
-      file = "";
+      path = g_strdup_printf("%s/", path_temp);
+      file = file_temp;
     }
   }
 
   file_length = strlen(file);
 
+  /* open directory */
   GDir* dir = g_dir_open(path, 0, NULL);
   if(!dir)
     return NULL;
 
-  char* name;
-  int   element_counter = 0;
-  CompletionElement *last_element = NULL;
-
   /* create element list */
+  CompletionElement *last_element = NULL;
+  char* name            = NULL;
+  int   element_counter = 0;
+
   while((name = (char*) g_dir_read_name(dir)) != NULL)
   {
     char* d_name   = g_filename_display_name(name);
     int   d_length = strlen(name);
-    if( (file_length <= d_length) && !strncmp(file, d_name, file_length) )
+
+    if( ((file_length <= d_length) && !strncmp(file, d_name, file_length)) ||
+        (file_length == 0) )
     {
       CompletionElement* el = malloc(sizeof(CompletionElement));
       el->value = g_strdup_printf("%s%s", path, d_name);
@@ -1055,6 +1052,7 @@ Completion* cc_open(char* input)
 
   return completion;
 }
+
 
 /* buffer command implementation */
 void 
