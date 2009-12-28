@@ -384,7 +384,10 @@ update_status()
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, Zathura.State.filename);
 
   /* update state */
-  gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, Zathura.State.pages);
+  char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%f%%", Zathura.PDF.scale) : "";
+  char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
+  gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
+
 }
 
 GtkEventBox*
@@ -934,6 +937,8 @@ cmd_open(int argc, char** argv)
 
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   Zathura.PDF.file            = file;
+  Zathura.PDF.scale           = 1.0;
+  Zathura.PDF.rotate          = 0;
   Zathura.State.filename      = file;
 
   set_page(0);
@@ -1076,11 +1081,19 @@ void
 bcmd_zoom(char* buffer, Argument* argument)
 {
   if(argument->n == ZOOM_IN)
-    Zathura.PDF.scale += ZOOM_STEP;
+  {
+    if((Zathura.PDF.scale + ZOOM_STEP) <= ZOOM_MAX)
+      Zathura.PDF.scale += ZOOM_STEP;
+  }
   else if(argument->n == ZOOM_OUT)
-    Zathura.PDF.scale -= ZOOM_STEP;
+  {
+    if((Zathura.PDF.scale - ZOOM_STEP) >= ZOOM_MIN)
+      Zathura.PDF.scale -= ZOOM_STEP;
+  }
   else
     Zathura.PDF.scale = 1.0;
+
+  update_status();
 }
 
 /* special command implementation */
@@ -1188,12 +1201,13 @@ cb_inputbar_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 gboolean
 cb_inputbar_activate(GtkEntry* entry, gpointer data)
 {
-  gchar  *input   = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
-  gchar **tokens  = g_strsplit(input, " ", -1);
-  gchar  *command = tokens[0];
-  int     length  = g_strv_length(tokens);
-  int          i  = 0;
-  gboolean  retv  = FALSE;
+  gchar  *input  = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
+  gchar **tokens = g_strsplit(input, " ", -1);
+  gchar *command = tokens[0];
+  int     length = g_strv_length(tokens);
+  int          i = 0;
+  gboolean  retv = FALSE;
+  gboolean  succ = FALSE;
 
   /* no input */
   if(length < 1)
@@ -1201,6 +1215,9 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
     isc_abort(NULL);
     return FALSE;
   }
+
+  /* append input to the command history */
+  Zathura.Global.history = g_list_append(Zathura.Global.history, g_strdup(gtk_entry_get_text(entry)));
 
   /* special commands */
   char identifier = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, 1)[0];
@@ -1222,14 +1239,17 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
        (g_strcmp0(command, commands[i].abbr)    == 0))
     {
       retv = commands[i].function(length - 1, tokens + 1);
+      succ = TRUE;
       break;
     }
   }
 
-  /* append input to the command history */
-  Zathura.Global.history = g_list_append(Zathura.Global.history, g_strdup(gtk_entry_get_text(entry)));
+  if(retv)
+    isc_abort(NULL);
 
-  if(retv) isc_abort(NULL);
+  if(!succ)
+    notify(ERROR, "Unknown command.");
+
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
 
   return TRUE;

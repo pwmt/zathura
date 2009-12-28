@@ -2,6 +2,8 @@
 static const int   DEFAULT_WIDTH  = 800;
 static const int   DEFAULT_HEIGHT = 600;
 static const float ZOOM_STEP      = 0.1;
+static const float ZOOM_MIN       = 0.1;
+static const float ZOOM_MAX       = 4.1;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
