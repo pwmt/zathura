@@ -343,6 +343,7 @@ void draw(int page_id)
 
   double page_width, page_height;
   double width, height;
+  double scale = ((double) Zathura.PDF.scale / 100.0);
 
   Page *current_page = Zathura.PDF.pages[page_id];
 
@@ -354,13 +355,13 @@ void draw(int page_id)
 
   if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
   {
-    width  = page_width  * Zathura.PDF.scale;
-    height = page_height * Zathura.PDF.scale;
+    width  = page_width  * scale;
+    height = page_height * scale;
   }
   else
   {
-    width  = page_height * Zathura.PDF.scale;
-    height = page_width  * Zathura.PDF.scale;
+    width  = page_height * scale;
+    height = page_width  * scale;
   }
 
   cairo_t *cairo;
@@ -389,8 +390,8 @@ void draw(int page_id)
       cairo_translate(cairo, 0, 0);
   }
 
-  if(Zathura.PDF.scale != 1.0)
-    cairo_scale(cairo, Zathura.PDF.scale, Zathura.PDF.scale);
+  if(scale != 1.0)
+    cairo_scale(cairo, scale, scale);
 
   if(Zathura.PDF.rotate != 0)
     cairo_rotate(cairo, Zathura.PDF.rotate * G_PI / 180.0);
