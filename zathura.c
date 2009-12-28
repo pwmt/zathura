@@ -186,6 +186,7 @@ void notify(int, char*);
 void update_status();
 void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
+void switch_view(GtkWidget*);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 
 /* thread declaration */
@@ -561,6 +562,16 @@ set_page(int page)
   Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
 }
 
+void
+switch_view(GtkWidget* widget)
+{
+  GtkWidget* current = gtk_bin_get_child(GTK_BIN(Zathura.UI.view));
+  if(current)
+    gtk_container_remove(GTK_CONTAINER(Zathura.UI.view), current);
+
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(Zathura.UI.view), widget); 
+}
+
 /* thread implementation */
 void*
 render(void* parameter)
@@ -570,10 +581,7 @@ render(void* parameter)
 
   int page;
   for(page = 0; page < Zathura.PDF.number_of_pages; page++)
-  {
-    printf("%d\n", page);
     draw(page);
-  }
 
   pthread_exit(NULL);
 }
@@ -633,7 +641,7 @@ sc_navigate(Argument* argument)
     new_page = (new_page + number_of_pages - 1) % number_of_pages;
 
   set_page(new_page);
-
+  switch_view(Zathura.PDF.pages[new_page]->drawing_area);
   update_status();
 }
 
