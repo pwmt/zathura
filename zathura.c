@@ -111,6 +111,7 @@ typedef struct
 {
   PopplerPage     *page;
   cairo_surface_t *surface;
+  GtkWidget       *drawing_area;
 } Page;
 
 /* zathura */
@@ -172,6 +173,7 @@ struct
     int              number_of_pages;
     int              scale;
     int              rotate;
+    pthread_t        render_thread;
   } PDF;
 
 } Zathura;
@@ -228,6 +230,7 @@ gboolean scmd_search(char*, Argument*);
 
 /* callback declarations */
 gboolean cb_destroy(GtkWidget*, gpointer);
+gboolean cb_draw(GtkWidget*, int*);
 gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_activate(GtkEntry*, gpointer);
@@ -401,6 +404,9 @@ void draw(int page_id)
 
   cairo_restore(cairo);
   cairo_destroy(cairo);
+
+  gtk_widget_set_size_request(current_page->drawing_area, width, height);
+  gtk_widget_queue_draw(current_page->drawing_area);
 }
 
 void
@@ -564,7 +570,10 @@ render(void* parameter)
 
   int page;
   for(page = 0; page < Zathura.PDF.number_of_pages; page++)
+  {
+    printf("%d\n", page);
     draw(page);
+  }
 
   pthread_exit(NULL);
 }
@@ -1032,13 +1041,16 @@ cmd_open(int argc, char** argv)
   for(i = 0; i < Zathura.PDF.number_of_pages; i++)
   {
     Zathura.PDF.pages[i] = malloc(sizeof(Page));
-    Zathura.PDF.pages[i]->page    = poppler_document_get_page(Zathura.PDF.document, i);
-    Zathura.PDF.pages[i]->surface = NULL;
+    Zathura.PDF.pages[i]->page         = poppler_document_get_page(Zathura.PDF.document, i);
+    Zathura.PDF.pages[i]->surface      = NULL;
+    Zathura.PDF.pages[i]->drawing_area = gtk_drawing_area_new();
+
+    gtk_widget_modify_bg(GTK_WIDGET(Zathura.PDF.pages[i]->drawing_area), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
+    g_signal_connect(G_OBJECT(Zathura.PDF.pages[i]->drawing_area), "expose-event", G_CALLBACK(cb_draw), (gpointer) &i);
   }
 
   /* render pages */
-  pthread_t render_thread;
-  pthread_create(&render_thread, NULL, render, NULL);
+  pthread_create(&(Zathura.PDF.render_thread), NULL, render, NULL);
 
   set_page(0);
   update_status();
@@ -1191,6 +1203,10 @@ bcmd_zoom(char* buffer, Argument* argument)
   else
     Zathura.PDF.scale = 100;
 
+  if(Zathura.PDF.render_thread)
+    pthread_cancel(Zathura.PDF.render_thread);
+
+  pthread_create(&(Zathura.PDF.render_thread), NULL, render, NULL);
   update_status();
 }
 
@@ -1211,6 +1227,50 @@ cb_destroy(GtkWidget* widget, gpointer data)
     free(Zathura.PDF.pages);
 
   gtk_main_quit();
+
+  return TRUE;
+}
+
+gboolean cb_draw(GtkWidget* widget, int* data)
+{
+  int page_id = *data;
+  gdk_window_clear(widget->window);
+  cairo_t *cairo = gdk_cairo_create(widget->window);
+
+  double page_width, page_height, width, height;
+  double scale = ((double) Zathura.PDF.scale / 100.0);
+
+  poppler_page_get_size(Zathura.PDF.pages[page_id]->page, &page_width, &page_height);
+
+  if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+  {
+    width  = page_width  * scale;
+    height = page_height * scale;
+  }
+  else
+  {
+    width  = page_height * scale;
+    height = page_width  * scale;
+  }
+
+  int window_x, window_y;
+  gdk_drawable_get_size(widget->window, &window_x, &window_y);
+
+  int offset_x, offset_y;
+
+  if (window_x > width)
+    offset_x = (window_x - width) / 2;
+  else
+    offset_x = 0;
+
+  if (window_y > height)
+    offset_y = (window_y - height) / 2;
+  else
+    offset_y = 0;
+
+  cairo_set_source_surface(cairo, Zathura.PDF.pages[page_id]->surface, offset_x, offset_y);
+  cairo_paint(cairo);
+  cairo_destroy(cairo);
 
   return TRUE;
 }
