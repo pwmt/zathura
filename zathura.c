@@ -8,6 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <pthread.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -186,7 +187,7 @@ void set_page(int);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 
 /* thread declaration */
-void render(void*);
+void* render(void*);
 
 /* shortcut declarations */
 void sc_abort(Argument*);
@@ -555,18 +556,17 @@ set_page(int page)
 }
 
 /* thread implementation */
-void
+void*
 render(void* parameter)
 {
   if(!Zathura.PDF.document)
-    return;
+    pthread_exit(NULL);
 
   int page;
   for(page = 0; page < Zathura.PDF.number_of_pages; page++)
-  {
-    printf("Render page %d\n", page);
     draw(page);
-  }
+
+  pthread_exit(NULL);
 }
 
 /* shortcut implementation */
@@ -1036,7 +1036,10 @@ cmd_open(int argc, char** argv)
     Zathura.PDF.pages[i]->surface = NULL;
   }
 
-  render(NULL);
+  /* render pages */
+  pthread_t render_thread;
+  pthread_create(&render_thread, NULL, render, NULL);
+
   set_page(0);
   update_status();
 
