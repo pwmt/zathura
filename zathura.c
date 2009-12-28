@@ -110,8 +110,6 @@ typedef struct
 {
   PopplerPage     *page;
   cairo_surface_t *surface;
-  double           scale;
-  int              rotate;
 } Page;
 
 /* zathura */
@@ -171,6 +169,8 @@ struct
     Page            *pages;
     int              page_number;
     int              number_of_pages;
+    double           scale;
+    int              rotate;
   } PDF;
 
 } Zathura;
@@ -543,7 +543,7 @@ sc_navigate(Argument* argument)
 void
 sc_rotate(Argument* argument)
 {
-
+  Zathura.PDF.rotate = (Zathura.PDF.rotate + 90) % 360;
 }
 
 void
@@ -1058,13 +1058,29 @@ Completion* cc_open(char* input)
 void 
 bcmd_goto(char* buffer, Argument* argument)
 {
+  int b_length = strlen(buffer);
 
+  if(b_length < 1)
+    return;
+
+  char* b_value = g_strndup(buffer, b_length - 1);
+  int     value = atoi(b_value);
+
+  set_page(value - 1);
+  update_status();
+
+  g_free(b_value);
 }
 
 void
 bcmd_zoom(char* buffer, Argument* argument)
 {
-
+  if(argument->n == ZOOM_IN)
+    Zathura.PDF.scale += ZOOM_STEP;
+  else if(argument->n == ZOOM_OUT)
+    Zathura.PDF.scale -= ZOOM_STEP;
+  else
+    Zathura.PDF.scale = 1.0;
 }
 
 /* special command implementation */
