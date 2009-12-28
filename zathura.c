@@ -169,7 +169,7 @@ struct
     Page            *pages;
     int              page_number;
     int              number_of_pages;
-    double           scale;
+    int              scale;
     int              rotate;
   } PDF;
 
@@ -384,7 +384,7 @@ update_status()
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, Zathura.State.filename);
 
   /* update state */
-  char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%f%%", Zathura.PDF.scale) : "";
+  char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
   char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
 
@@ -937,8 +937,9 @@ cmd_open(int argc, char** argv)
 
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   Zathura.PDF.file            = file;
-  Zathura.PDF.scale           = 1.0;
+  Zathura.PDF.scale           = 100;
   Zathura.PDF.rotate          = 0;
+  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page));
   Zathura.State.filename      = file;
 
   set_page(0);
@@ -1091,7 +1092,7 @@ bcmd_zoom(char* buffer, Argument* argument)
       Zathura.PDF.scale -= ZOOM_STEP;
   }
   else
-    Zathura.PDF.scale = 1.0;
+    Zathura.PDF.scale = 100;
 
   update_status();
 }
@@ -1108,6 +1109,10 @@ gboolean
 cb_destroy(GtkWidget* widget, gpointer data)
 {
   pango_font_description_free(Zathura.Style.font);
+
+  if(Zathura.PDF.document)
+    free(Zathura.PDF.pages);
+
   gtk_main_quit();
 
   return TRUE;
