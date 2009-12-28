@@ -166,7 +166,7 @@ struct
   {
     PopplerDocument *document;
     char            *file;
-    Page            *pages;
+    Page           **pages;
     int              page_number;
     int              number_of_pages;
     int              scale;
@@ -178,11 +178,15 @@ struct
 /* function declarations */
 void init_zathura();
 void change_mode(int);
+void draw(int);
 void notify(int, char*);
 void update_status();
 void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
+
+/* thread declaration */
+void render(void*);
 
 /* shortcut declarations */
 void sc_abort(Argument*);
@@ -330,6 +334,71 @@ init_zathura()
   gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(Zathura.UI.view),      TRUE,  TRUE,  0);
   gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(Zathura.UI.statusbar), FALSE, FALSE, 0);
   gtk_box_pack_end(  Zathura.UI.box, GTK_WIDGET(Zathura.UI.inputbar),  FALSE, FALSE, 0);
+}
+
+void draw(int page_id)
+{
+  if(!Zathura.PDF.document || page_id < 0 || page_id > Zathura.PDF.number_of_pages)
+    return;
+
+  double page_width, page_height;
+  double width, height;
+
+  Page *current_page = Zathura.PDF.pages[page_id];
+
+  if(current_page->surface)
+    cairo_surface_destroy(current_page->surface);
+  current_page->surface = NULL;
+
+  poppler_page_get_size(current_page->page, &page_width, &page_height);
+
+  if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+  {
+    width  = page_width  * Zathura.PDF.scale;
+    height = page_height * Zathura.PDF.scale;
+  }
+  else
+  {
+    width  = page_height * Zathura.PDF.scale;
+    height = page_width  * Zathura.PDF.scale;
+  }
+
+  cairo_t *cairo;
+  current_page->surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
+  cairo = cairo_create(current_page->surface);
+
+  cairo_save(cairo);
+  cairo_set_source_rgb(cairo, 1, 1, 1);
+  cairo_rectangle(cairo, 0, 0, width, height);
+  cairo_fill(cairo);
+  cairo_restore(cairo);
+  cairo_save(cairo);
+
+  switch(Zathura.PDF.rotate)
+  {
+    case 90:
+      cairo_translate(cairo, width, 0);
+      break;
+    case 180:
+      cairo_translate(cairo, width, height);
+      break;
+    case 270:
+      cairo_translate(cairo, 0, height);
+      break;
+    default:
+      cairo_translate(cairo, 0, 0);
+  }
+
+  if(Zathura.PDF.scale != 1.0)
+    cairo_scale(cairo, Zathura.PDF.scale, Zathura.PDF.scale);
+
+  if(Zathura.PDF.rotate != 0)
+    cairo_rotate(cairo, Zathura.PDF.rotate * G_PI / 180.0);
+
+  poppler_page_render(current_page->page, cairo);
+
+  cairo_restore(cairo);
+  cairo_destroy(cairo);
 }
 
 void
@@ -482,6 +551,21 @@ set_page(int page)
 
   Zathura.PDF.page_number = page;
   Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
+}
+
+/* thread implementation */
+void
+render(void* parameter)
+{
+  if(!Zathura.PDF.document)
+    return;
+
+  int page;
+  for(page = 0; page < Zathura.PDF.number_of_pages; page++)
+  {
+    printf("Render page %d\n", page);
+    draw(page);
+  }
 }
 
 /* shortcut implementation */
@@ -939,11 +1023,20 @@ cmd_open(int argc, char** argv)
   Zathura.PDF.file            = file;
   Zathura.PDF.scale           = 100;
   Zathura.PDF.rotate          = 0;
-  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page));
+  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
   Zathura.State.filename      = file;
 
-  set_page(0);
+  /* get pages */
+  int i;
+  for(i = 0; i < Zathura.PDF.number_of_pages; i++)
+  {
+    Zathura.PDF.pages[i] = malloc(sizeof(Page));
+    Zathura.PDF.pages[i]->page    = poppler_document_get_page(Zathura.PDF.document, i);
+    Zathura.PDF.pages[i]->surface = NULL;
+  }
 
+  render(NULL);
+  set_page(0);
   update_status();
 
   return TRUE;
