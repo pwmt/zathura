@@ -1217,17 +1217,17 @@ void
 bcmd_goto(char* buffer, Argument* argument)
 {
   int b_length = strlen(buffer);
-
   if(b_length < 1)
     return;
 
-  char* b_value = g_strndup(buffer, b_length - 1);
-  int     value = atoi(b_value);
+  if(!strcmp(buffer, "gg"))
+    set_page(0);
+  else if(!strcmp(buffer, "G"))
+    set_page(Zathura.PDF.number_of_pages - 1);
+  else
+    set_page(atoi(g_strndup(buffer, b_length - 1)) - 1);
 
-  set_page(value - 1);
   update_status();
-
-  g_free(b_value);
 }
 
 void
