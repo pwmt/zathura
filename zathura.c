@@ -661,7 +661,25 @@ sc_rotate(Argument* argument)
 void
 sc_scroll(Argument* argument)
 {
+  GtkAdjustment* adjustment;
 
+  if( (argument->n == LEFT) || (argument->n == RIGHT) )
+    adjustment = gtk_scrolled_window_get_hadjustment(Zathura.UI.view);
+  else
+    adjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
+
+  gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
+  gdouble value      = gtk_adjustment_get_value(adjustment);
+  gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
+
+  if( (argument->n == LEFT) || (argument->n == DOWN))
+    gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
+  else if (argument->n == TOP)
+    gtk_adjustment_set_value(adjustment, 0);
+  else if(argument->n == BOTTOM)
+    gtk_adjustment_set_value(adjustment, max);
+  else
+    gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
 }
 
 void
@@ -1251,9 +1269,11 @@ cb_destroy(GtkWidget* widget, gpointer data)
 
 gboolean cb_draw(GtkWidget* widget, gpointer data)
 {
-  intptr_t t = (intptr_t) t;
-  int page_id = (int) t;
-printf("%d\n", page_id);
+  intptr_t t = (intptr_t) data;
+  int page_id = (int) (t << 32);
+
+  printf("%d\n", page_id);
+
   if(page_id < 0 || page_id > Zathura.PDF.number_of_pages)
     return FALSE;
 
