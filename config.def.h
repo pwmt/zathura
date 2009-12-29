@@ -29,6 +29,9 @@ static const char notification_e_fgcolor[] = "#FFFFFF";
 static const char notification_w_bgcolor[] = "#FFF712";
 static const char notification_w_fgcolor[] = "#000000";
 
+/* additional settings */
+#define SHOW_SCROLLBARS 0
+
 /* shortcuts */
 Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,     argument */
