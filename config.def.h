@@ -87,6 +87,7 @@ Command commands[] = {
 BufferCommand buffer_commands[] = {
   /* regex,        function,      argument */
   {"^gg$",         bcmd_goto,     { TOP } },
+  {"^G$",          bcmd_goto,     { BOTTOM } },
   {"^[0-9]+G$",    bcmd_goto,     {0} },
   {"^zI$",         bcmd_zoom,     { ZOOM_IN } },
   {"^zO$",         bcmd_zoom,     { ZOOM_OUT } },
