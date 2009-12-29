@@ -4,6 +4,7 @@ static const int   DEFAULT_HEIGHT = 600;
 static const float ZOOM_STEP      = 10;
 static const float ZOOM_MIN       = 10;
 static const float ZOOM_MAX       = 400;
+static const float SCROLL_STEP    = 40;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
