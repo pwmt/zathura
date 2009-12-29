@@ -122,6 +122,7 @@ struct
     GtkWindow         *window;
     GtkBox            *box;
     GtkScrolledWindow *view;
+    GtkViewport       *viewport;
     GtkWidget         *statusbar;
     GtkBox            *statusbar_entries;
     GtkEntry          *inputbar;
@@ -272,6 +273,7 @@ init_zathura()
   Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
   Zathura.UI.box               = GTK_BOX(gtk_vbox_new(FALSE, 0));
   Zathura.UI.view              = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
+  Zathura.UI.viewport          = GTK_VIEWPORT(gtk_viewport_new(NULL, NULL));
   Zathura.UI.statusbar         = gtk_event_box_new();
   Zathura.UI.statusbar_entries = GTK_BOX(gtk_hbox_new(FALSE, 0));
   Zathura.UI.inputbar          = GTK_ENTRY(gtk_entry_new());
@@ -289,6 +291,7 @@ init_zathura()
 
   /* view */
   g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event", G_CALLBACK(cb_view_kb_pressed), NULL);
+  gtk_container_add(GTK_CONTAINER(Zathura.UI.view), GTK_WIDGET(Zathura.UI.viewport));
 
   /* statusbar */
   gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.statusbar), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_bg));
@@ -560,16 +563,19 @@ set_page(int page)
 
   Zathura.PDF.page_number = page;
   Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
+  switch_view(Zathura.PDF.pages[page]->drawing_area);
 }
 
 void
 switch_view(GtkWidget* widget)
 {
-  GtkWidget* current = gtk_bin_get_child(GTK_BIN(Zathura.UI.view));
-  if(current)
-    gtk_container_remove(GTK_CONTAINER(Zathura.UI.view), current);
+  if(gtk_bin_get_child(GTK_BIN(Zathura.UI.viewport)))
+  {
+    g_object_ref(gtk_bin_get_child(GTK_BIN(Zathura.UI.viewport)));
+    gtk_container_remove(GTK_CONTAINER(Zathura.UI.viewport), gtk_bin_get_child(GTK_BIN(Zathura.UI.viewport)));
+  }
 
-  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(Zathura.UI.view), widget); 
+  gtk_container_add(GTK_CONTAINER(Zathura.UI.viewport), GTK_WIDGET(widget));
 }
 
 /* thread implementation */
@@ -641,7 +647,6 @@ sc_navigate(Argument* argument)
     new_page = (new_page + number_of_pages - 1) % number_of_pages;
 
   set_page(new_page);
-  switch_view(Zathura.PDF.pages[new_page]->drawing_area);
   update_status();
 }
 
