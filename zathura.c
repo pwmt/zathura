@@ -232,7 +232,7 @@ gboolean scmd_search(char*, Argument*);
 
 /* callback declarations */
 gboolean cb_destroy(GtkWidget*, gpointer);
-gboolean cb_draw(GtkWidget*, int*);
+gboolean cb_draw(GtkWidget*, gpointer);
 gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_activate(GtkEntry*, gpointer);
@@ -587,7 +587,9 @@ render(void* parameter)
 
   int page;
   for(page = 0; page < Zathura.PDF.number_of_pages; page++)
+  {
     draw(page);
+  }
 
   pthread_exit(NULL);
 }
@@ -1059,7 +1061,10 @@ cmd_open(int argc, char** argv)
     Zathura.PDF.pages[i]->drawing_area = gtk_drawing_area_new();
 
     gtk_widget_modify_bg(GTK_WIDGET(Zathura.PDF.pages[i]->drawing_area), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
-    g_signal_connect(G_OBJECT(Zathura.PDF.pages[i]->drawing_area), "expose-event", G_CALLBACK(cb_draw), (gpointer) &i);
+    gtk_widget_show(Zathura.PDF.pages[i]->drawing_area);
+
+    intptr_t t = i;
+    g_signal_connect(G_OBJECT(Zathura.PDF.pages[i]->drawing_area), "expose-event", G_CALLBACK(cb_draw), (gpointer) t);
   }
 
   /* render pages */
@@ -1244,9 +1249,14 @@ cb_destroy(GtkWidget* widget, gpointer data)
   return TRUE;
 }
 
-gboolean cb_draw(GtkWidget* widget, int* data)
+gboolean cb_draw(GtkWidget* widget, gpointer data)
 {
-  int page_id = *data;
+  intptr_t t = (intptr_t) t;
+  int page_id = (int) t;
+printf("%d\n", page_id);
+  if(page_id < 0 || page_id > Zathura.PDF.number_of_pages)
+    return FALSE;
+
   gdk_window_clear(widget->window);
   cairo_t *cairo = gdk_cairo_create(widget->window);
 
