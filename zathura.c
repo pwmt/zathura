@@ -232,7 +232,7 @@ gboolean scmd_search(char*, Argument*);
 
 /* callback declarations */
 gboolean cb_destroy(GtkWidget*, gpointer);
-gboolean cb_draw(GtkWidget*, gpointer);
+gboolean cb_draw(GtkWidget*, GdkEventExpose*, gpointer);
 gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_activate(GtkEntry*, gpointer);
@@ -1267,12 +1267,10 @@ cb_destroy(GtkWidget* widget, gpointer data)
   return TRUE;
 }
 
-gboolean cb_draw(GtkWidget* widget, gpointer data)
+gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 {
   intptr_t t = (intptr_t) data;
-  int page_id = (int) (t << 32);
-
-  printf("%d\n", page_id);
+  int page_id = (int) t;
 
   if(page_id < 0 || page_id > Zathura.PDF.number_of_pages)
     return FALSE;
