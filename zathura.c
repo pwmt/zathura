@@ -1116,7 +1116,8 @@ cmd_close(int argc, char** argv)
 {
   if(!Zathura.PDF.document)
   {
-    notify(ERROR, "No file has been opened");
+    if(argc != -1)
+      notify(ERROR, "No file has been opened");
     return FALSE;
   }
 
@@ -1166,10 +1167,7 @@ cmd_open(int argc, char** argv)
   char* file = realpath(argv[0], NULL);
 
   if(argv[0][0] == '~')
-  {
-   // file = realloc(file, ((int) strlen(argv[0]) + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
     file = g_strdup_printf("%s%s", getenv("HOME"), argv[0] + 1);
-  }
 
   /* check if file exists */
   if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
@@ -1177,6 +1175,9 @@ cmd_open(int argc, char** argv)
     notify(ERROR, "File does not exist");
     return FALSE;
   }
+
+  /* close old file */
+  cmd_close(-1, NULL);
 
   /* open file */
   Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file),
@@ -1346,6 +1347,15 @@ cc_open(char* input)
   char* path        = "/";
   char* file        = "";
   int   file_length = 0;
+
+  /* ~ */
+  if(input[0] == '~')
+  {
+    char *file = g_strdup_printf(":open %s/%s", getenv("HOME"), input + 1);
+    gtk_entry_set_text(Zathura.UI.inputbar, file);
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
+    return NULL;
+  }
 
   /* parse input string */
   if(input && strlen(input) > 0)
