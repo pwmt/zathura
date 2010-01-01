@@ -443,6 +443,7 @@ draw(int page_id)
   int rotate = Zathura.PDF.rotate;
   pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
 
+  pthread_mutex_lock(&(Zathura.PDF.pages[page_id]->lock));
   Page *current_page = Zathura.PDF.pages[page_id];
 
   if(current_page->surface)
@@ -505,6 +506,7 @@ draw(int page_id)
 
   gtk_widget_set_size_request(current_page->drawing_area, width, height);
   gtk_widget_queue_draw(current_page->drawing_area);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[page_id]->lock));
 }
 
 void
@@ -658,7 +660,9 @@ set_page(int page)
 
   Zathura.PDF.page_number = page;
   Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
+  pthread_mutex_lock(&(Zathura.PDF.pages[page]->lock));
   switch_view(Zathura.PDF.pages[page]->drawing_area);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[page]->lock));
 }
 
 void
@@ -865,7 +869,9 @@ sc_toggle_index(Argument* argument)
   }
   else
   {
+    pthread_mutex_lock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
     switch_view( Zathura.PDF.pages[Zathura.PDF.page_number]->drawing_area );
+    pthread_mutex_unlock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
   }
 
   hide = !hide;
@@ -1737,7 +1743,9 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   double scale = ((double) Zathura.PDF.scale / 100.0);
   pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
 
+  pthread_mutex_lock(&(Zathura.PDF.pages[page_id]->lock));
   poppler_page_get_size(Zathura.PDF.pages[page_id]->page, &page_width, &page_height);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[page_id]->lock));
 
   pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
   if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
@@ -1767,7 +1775,10 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   else
     offset_y = 0;
 
+
+  pthread_mutex_lock(&(Zathura.PDF.pages[page_id]->lock));
   cairo_set_source_surface(cairo, Zathura.PDF.pages[page_id]->surface, offset_x, offset_y);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[page_id]->lock));
   cairo_paint(cairo);
   cairo_destroy(cairo);
 
