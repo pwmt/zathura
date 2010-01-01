@@ -162,6 +162,12 @@ struct
 
   struct
   {
+    pthread_mutex_t scale_lock;
+    pthread_mutex_t rotate_lock;
+  } Lock;
+
+  struct
+  {
     char* filename;
     char* pages;
   } State;
@@ -245,6 +251,10 @@ gboolean cb_inputbar_activate(GtkEntry*, gpointer);
 void
 init_zathura()
 {
+  /* mutexes */
+  pthread_mutex_init(&(Zathura.Lock.scale_lock),  NULL);
+  pthread_mutex_init(&(Zathura.Lock.rotate_lock), NULL);
+
   /* look */
   gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
   gdk_color_parse(default_bgcolor,        &(Zathura.Style.default_bg));
@@ -363,7 +373,10 @@ void draw(int page_id)
 
   double page_width, page_height;
   double width, height;
+
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   double scale = ((double) Zathura.PDF.scale / 100.0);
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
 
   Page *current_page = Zathura.PDF.pages[page_id];
 
@@ -477,10 +490,11 @@ update_status()
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, Zathura.State.filename);
 
   /* update state */
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
   char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
-
 }
 
 GtkEventBox*
@@ -1076,7 +1090,9 @@ cmd_open(int argc, char** argv)
 
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   Zathura.PDF.file            = file;
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   Zathura.PDF.scale           = 100;
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
   Zathura.PDF.rotate          = 0;
   Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
   Zathura.State.filename      = file;
@@ -1238,6 +1254,7 @@ bcmd_goto(char* buffer, Argument* argument)
 void
 bcmd_zoom(char* buffer, Argument* argument)
 {
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   if(argument->n == ZOOM_IN)
   {
     if((Zathura.PDF.scale + ZOOM_STEP) <= ZOOM_MAX)
@@ -1250,6 +1267,7 @@ bcmd_zoom(char* buffer, Argument* argument)
   }
   else
     Zathura.PDF.scale = 100;
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
 
   if(Zathura.PDF.render_thread)
     pthread_cancel(Zathura.PDF.render_thread);
@@ -1274,6 +1292,10 @@ cb_destroy(GtkWidget* widget, gpointer data)
   if(Zathura.PDF.document)
     free(Zathura.PDF.pages);
 
+  /* mutexes */
+  pthread_mutex_destroy(&(Zathura.Lock.scale_lock));
+  pthread_mutex_destroy(&(Zathura.Lock.rotate_lock));
+
   gtk_main_quit();
 
   return TRUE;
@@ -1291,7 +1313,9 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   cairo_t *cairo = gdk_cairo_create(widget->window);
 
   double page_width, page_height, width, height;
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   double scale = ((double) Zathura.PDF.scale / 100.0);
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
 
   poppler_page_get_size(Zathura.PDF.pages[page_id]->page, &page_width, &page_height);
 
