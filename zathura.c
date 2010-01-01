@@ -611,11 +611,12 @@ render(void* parameter)
   if(!Zathura.PDF.document)
     pthread_exit(NULL);
 
+  intptr_t t = (intptr_t) parameter;
+  int begin_page = (int) t;
+
   int page;
   for(page = 0; page < Zathura.PDF.number_of_pages; page++)
-  {
-    draw(page);
-  }
+    draw((begin_page + page) % Zathura.PDF.number_of_pages);
 
   pthread_exit(NULL);
 }
@@ -1272,7 +1273,8 @@ bcmd_zoom(char* buffer, Argument* argument)
   if(Zathura.PDF.render_thread)
     pthread_cancel(Zathura.PDF.render_thread);
 
-  pthread_create(&(Zathura.PDF.render_thread), NULL, render, NULL);
+  intptr_t t = Zathura.PDF.page_number;
+  pthread_create(&(Zathura.PDF.render_thread), NULL, render, (gpointer) t);
   update_status();
 }
 
