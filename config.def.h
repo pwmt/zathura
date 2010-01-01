@@ -107,5 +107,4 @@ SpecialCommand special_commands[] = {
 Setting settings[] = {
   /* name,         variable,                        type,  render,  description */
   {"revertvideo",  &(Zathura.Global.reverse_video), 'b',   TRUE,    "Invert the image"},
-  {"title",        &(Zathura.State.filename),       's',   TRUE,    "Invert the image"},
 };
