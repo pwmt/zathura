@@ -113,6 +113,7 @@ typedef struct
   PopplerPage     *page;
   cairo_surface_t *surface;
   GtkWidget       *drawing_area;
+  pthread_mutex_t  lock;
 } Page;
 
 typedef struct
@@ -235,6 +236,7 @@ void isc_completion(Argument*);
 void isc_string_manipulation(Argument*);
 
 /* command declarations */
+gboolean cmd_close(int, char**);
 gboolean cmd_open(int, char**);
 gboolean cmd_print(int, char**);
 gboolean cmd_rotate(int, char**);
@@ -297,7 +299,7 @@ init_zathura()
   Zathura.Global.viewing_mode  = NORMAL;
   Zathura.Global.reverse_video = FALSE;
 
-  Zathura.State.filename = "[No Name]";
+  Zathura.State.filename = (char*) DEFAULT_TEXT;
   Zathura.State.pages = "";
 
   /* UI */
@@ -1110,6 +1112,51 @@ isc_string_manipulation(Argument* argument)
 
 /* command implementation */
 gboolean
+cmd_close(int argc, char** argv)
+{
+  if(!Zathura.PDF.document)
+  {
+    notify(ERROR, "No file has been opened");
+    return FALSE;
+  }
+
+  /* check for current render thread */
+  pthread_mutex_lock(&(Zathura.Lock.render_lock));
+  if(Zathura.PDF.render_thread)
+    pthread_cancel(Zathura.PDF.render_thread);
+  pthread_mutex_unlock(&(Zathura.Lock.render_lock));
+
+  /* clean up pages */
+  int i;
+  for(i = 0; i < Zathura.PDF.number_of_pages; i++)
+  {
+    Page* current_page = Zathura.PDF.pages[i];
+    g_object_unref(current_page->page);
+    if(current_page->surface)
+      cairo_surface_destroy(current_page->surface);
+    gtk_widget_destroy(current_page->drawing_area);
+    pthread_mutex_destroy(&current_page->lock);
+  }
+
+  /* reset values */
+  free(Zathura.PDF.pages);
+  g_object_unref(Zathura.PDF.document);
+
+  Zathura.State.pages         = "";
+  Zathura.State.filename      = (char*) DEFAULT_TEXT;
+  Zathura.PDF.document        = NULL;
+  Zathura.PDF.file            = "";
+  Zathura.PDF.page_number     = 0;
+  Zathura.PDF.number_of_pages = 0;
+  Zathura.PDF.scale           = 0;
+  Zathura.PDF.rotate          = 0;
+
+  update_status();
+
+  return TRUE;
+}
+
+gboolean
 cmd_open(int argc, char** argv)
 {
   if(argc == 0 || strlen(argv[0]) == 0)
@@ -1160,6 +1207,7 @@ cmd_open(int argc, char** argv)
     Zathura.PDF.pages[i]->page         = poppler_document_get_page(Zathura.PDF.document, i);
     Zathura.PDF.pages[i]->surface      = NULL;
     Zathura.PDF.pages[i]->drawing_area = gtk_drawing_area_new();
+    pthread_mutex_init(&(Zathura.PDF.pages[i]->lock), NULL);
 
     gtk_widget_modify_bg(GTK_WIDGET(Zathura.PDF.pages[i]->drawing_area), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
     gtk_widget_show(Zathura.PDF.pages[i]->drawing_area);
@@ -1459,7 +1507,7 @@ cb_destroy(GtkWidget* widget, gpointer data)
   pango_font_description_free(Zathura.Style.font);
 
   if(Zathura.PDF.document)
-    free(Zathura.PDF.pages);
+    cmd_close(0, NULL);
 
   /* mutexes */
   pthread_mutex_destroy(&(Zathura.Lock.scale_lock));
@@ -1661,6 +1709,8 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   if(!succ)
     notify(ERROR, "Unknown command.");
 
+  Argument arg = { HIDE };
+  isc_completion(&arg);
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
 
   return TRUE;
