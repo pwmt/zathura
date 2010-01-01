@@ -26,7 +26,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, FORWARD,
        BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
-       CONTINUOUS };
+       CONTINUOUS, REVERSE_VIDEO };
 
 /* typedefs */
 struct CElement
@@ -157,6 +157,7 @@ struct
     GList   *history;
     int      mode;
     int      viewing_mode;
+    int      video_mode;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
@@ -191,6 +192,7 @@ struct
 /* function declarations */
 void init_zathura();
 void change_mode(int);
+void change_videomode(int);
 void draw(int);
 void notify(int, char*);
 void update_status();
@@ -208,6 +210,7 @@ void sc_adjust_window(Argument*);
 void sc_change_mode(Argument*);
 void sc_focus_inputbar(Argument*);
 void sc_navigate(Argument*);
+void sc_revert_video(Argument*);
 void sc_rotate(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
@@ -277,7 +280,9 @@ init_zathura()
   Zathura.Style.font = pango_font_description_from_string(font);
 
   /* other */
-  Zathura.Global.mode = NORMAL;
+  Zathura.Global.mode         = NORMAL;
+  Zathura.Global.viewing_mode = NORMAL;
+  Zathura.Global.video_mode   = NORMAL;
 
   Zathura.State.filename = "[No Name]";
   Zathura.State.pages = "";
@@ -403,12 +408,9 @@ void draw(int page_id)
   current_page->surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
   cairo = cairo_create(current_page->surface);
 
-  cairo_save(cairo);
   cairo_set_source_rgb(cairo, 1, 1, 1);
   cairo_rectangle(cairo, 0, 0, width, height);
   cairo_fill(cairo);
-  cairo_restore(cairo);
-  cairo_save(cairo);
 
   switch(Zathura.PDF.rotate)
   {
@@ -433,8 +435,15 @@ void draw(int page_id)
 
   poppler_page_render(current_page->page, cairo);
 
-  cairo_restore(cairo);
-  cairo_destroy(cairo);
+  unsigned char* image = cairo_image_surface_get_data(current_page->surface);
+  int x, y, z = 0;
+
+  if(Zathura.Global.video_mode == REVERSE_VIDEO)
+  {
+    for(x = 0; x < cairo_image_surface_get_width(current_page->surface); x++)
+      for(y = 0; y < cairo_image_surface_get_height(current_page->surface) * 4; y++)
+        image[z++] ^= 0x00FFFFFF;
+  }
 
   gtk_widget_set_size_request(current_page->drawing_area, width, height);
   gtk_widget_queue_draw(current_page->drawing_area);
@@ -679,6 +688,21 @@ sc_navigate(Argument* argument)
 
   set_page(new_page);
   update_status();
+}
+
+void
+sc_revert_video(Argument* argument)
+{
+  if(Zathura.PDF.render_thread)
+    pthread_cancel(Zathura.PDF.render_thread);
+
+  if(Zathura.Global.video_mode == NORMAL)
+    Zathura.Global.video_mode = REVERSE_VIDEO;
+  else
+    Zathura.Global.video_mode = NORMAL;
+
+  intptr_t t = Zathura.PDF.page_number;
+  pthread_create(&(Zathura.PDF.render_thread), NULL, render, (gpointer) t);
 }
 
 void
