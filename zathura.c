@@ -25,7 +25,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        INSERT, VISUAL, DELETE_LAST_WORD, DEFAULT,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, FORWARD,
-       BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH };
+       BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
+       CONTINUOUS };
 
 /* typedefs */
 struct CElement
@@ -155,6 +156,7 @@ struct
     GString *buffer;
     GList   *history;
     int      mode;
+    int      viewing_mode;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
