@@ -385,6 +385,10 @@ void draw(int page_id)
   double scale = ((double) Zathura.PDF.scale / 100.0);
   pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
 
+  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
+  int rotate = Zathura.PDF.rotate;
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
+
   Page *current_page = Zathura.PDF.pages[page_id];
 
   if(current_page->surface)
@@ -393,7 +397,7 @@ void draw(int page_id)
 
   poppler_page_get_size(current_page->page, &page_width, &page_height);
 
-  if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+  if(rotate == 0 || rotate == 180)
   {
     width  = page_width  * scale;
     height = page_height * scale;
@@ -412,7 +416,7 @@ void draw(int page_id)
   cairo_rectangle(cairo, 0, 0, width, height);
   cairo_fill(cairo);
 
-  switch(Zathura.PDF.rotate)
+  switch(rotate)
   {
     case 90:
       cairo_translate(cairo, width, 0);
@@ -430,8 +434,8 @@ void draw(int page_id)
   if(scale != 1.0)
     cairo_scale(cairo, scale, scale);
 
-  if(Zathura.PDF.rotate != 0)
-    cairo_rotate(cairo, Zathura.PDF.rotate * G_PI / 180.0);
+  if(rotate != 0)
+    cairo_rotate(cairo, rotate * G_PI / 180.0);
 
   poppler_page_render(current_page->page, cairo);
 
@@ -708,7 +712,15 @@ sc_revert_video(Argument* argument)
 void
 sc_rotate(Argument* argument)
 {
+  if(Zathura.PDF.render_thread)
+    pthread_cancel(Zathura.PDF.render_thread);
+
+  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
   Zathura.PDF.rotate = (Zathura.PDF.rotate + 90) % 360;
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
+
+  intptr_t t = Zathura.PDF.page_number;
+  pthread_create(&(Zathura.PDF.render_thread), NULL, render, (gpointer) t);
 }
 
 void
@@ -1120,7 +1132,9 @@ cmd_open(int argc, char** argv)
   pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   Zathura.PDF.scale           = 100;
   pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
+  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
   Zathura.PDF.rotate          = 0;
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
   Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
   Zathura.State.filename      = file;
 
@@ -1347,6 +1361,7 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 
   poppler_page_get_size(Zathura.PDF.pages[page_id]->page, &page_width, &page_height);
 
+  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
   if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
   {
     width  = page_width  * scale;
@@ -1357,6 +1372,7 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
     width  = page_height * scale;
     height = page_width  * scale;
   }
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
 
   int window_x, window_y;
   gdk_drawable_get_size(widget->window, &window_x, &window_y);
