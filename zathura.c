@@ -1361,19 +1361,20 @@ cc_set(char* input)
   completion->groups = group;
   CompletionElement *last_element = NULL;
   int element_counter = 0;
+  int i = 0;
   int input_length = input ? strlen(input) : 0;
 
-  for(element_counter = 0; element_counter < LENGTH(settings); element_counter++)
+  for(i = 0; i < LENGTH(settings); i++)
   {
-    if( (input_length <= strlen(settings[element_counter].name)) &&
-          !strncmp(input, settings[element_counter].name, input_length) )
+    if( (input_length <= strlen(settings[i].name)) &&
+          !strncmp(input, settings[i].name, input_length) )
     {
       CompletionElement* el = malloc(sizeof(CompletionElement));
-      el->value = settings[element_counter].name;
-      el->description = settings[element_counter].description;
+      el->value = settings[i].name;
+      el->description = settings[i].description;
       el->next = NULL;
 
-      if(element_counter != 0)
+      if(element_counter++ != 0)
         last_element->next = el;
       else
         group->elements = el;
