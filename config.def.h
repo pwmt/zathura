@@ -29,6 +29,9 @@ static const char notification_e_fgcolor[] = "#FFFFFF";
 static const char notification_w_bgcolor[] = "#FFF712";
 static const char notification_w_fgcolor[] = "#000000";
 
+/* statusbar */
+static const char DEFAULT_TEXT[] = "[No Name]";
+
 /* additional settings */
 #define SHOW_SCROLLBARS 0
 
@@ -76,6 +79,7 @@ InputbarShortcut inputbar_shortcuts[] = {
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,   completion,   description  */
+  {"close",     "c",            cmd_close,  0,            "Close current file" },
   {"open",      "o",            cmd_open,   cc_open,      "Open a file" },
   {"print",     "p",            cmd_print,  0,            "Print the document" },
   {"rotate",    "r",            cmd_rotate, 0,            "Rotate the page" },
