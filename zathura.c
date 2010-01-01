@@ -1345,6 +1345,20 @@ cmd_open(int argc, char** argv)
 gboolean
 cmd_print(int argc, char** argv)
 {
+  if(!Zathura.PDF.document)
+    return TRUE;
+
+  if(argc == 0)
+  {
+    notify(WARNING, "No printer specified");
+    return FALSE;
+  }
+
+  char* printer = argv[0];
+  char* sites   = (argc == 2) ? argv[1] : g_strdup_printf("%i", Zathura.PDF.number_of_pages);
+  char* print_command = g_strdup_printf(PRINT_COMMAND, printer, sites, Zathura.PDF.file);
+  system(print_command);
+
   return TRUE;
 }
 
@@ -1558,7 +1572,7 @@ cc_print(char* input)
   while((current_char = fgetc(fp)) != EOF)
   {
     if(!current_line)
-      current_line = malloc(sizeof(char) * 512);
+      current_line = malloc(sizeof(char));
 
     current_line = realloc(current_line, (count + 1) * sizeof(char));
 
