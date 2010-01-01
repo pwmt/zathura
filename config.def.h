@@ -45,6 +45,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_i,             sc_revert_video,      -1,       {0} },
   {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    -1,       { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    -1,       { .data = "?" } },
+  {0,                  GDK_Tab,           sc_toggle_index,      -1,       {0} },
   {0,                  GDK_J,             sc_navigate,          -1,       { NEXT } },
   {0,                  GDK_K,             sc_navigate,          -1,       { PREVIOUS } },
   {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
