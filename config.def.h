@@ -39,8 +39,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             -1,       {0} },
-  {GDK_CONTROL_MASK,   GDK_i,             sc_adjust_window,     -1,       { ADJUST_BESTFIT } },
-  {GDK_CONTROL_MASK,   GDK_u,             sc_adjust_window,     -1,       { ADJUST_WIDTH } },
+  {GDK_CONTROL_MASK,   GDK_i,             sc_revert_video,      -1,       {0} },
   {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    -1,       { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    -1,       { .data = "?" } },
   {0,                  GDK_J,             sc_navigate,          -1,       { NEXT } },
@@ -57,6 +56,8 @@ Shortcut shortcuts[] = {
   {0,                  GDK_l,             sc_scroll,            -1,       { RIGHT } },
   {0,                  GDK_n,             sc_search,            -1,       { FORWARD } },
   {0,                  GDK_N,             sc_search,            -1,       { BACKWARD } },
+  {0,                  GDK_a,             sc_adjust_window,     -1,       { ADJUST_BESTFIT } },
+  {0,                  GDK_s,             sc_adjust_window,     -1,       { ADJUST_WIDTH } },
 };
 
 /* inputbar shortcuts */
