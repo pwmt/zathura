@@ -26,7 +26,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, FORWARD,
        BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
-       CONTINUOUS, REVERSE_VIDEO };
+       CONTINUOUS };
 
 /* typedefs */
 struct CElement
@@ -115,6 +115,15 @@ typedef struct
   GtkWidget       *drawing_area;
 } Page;
 
+typedef struct
+{
+  char* name;
+  void* variable;
+  char  type;
+  gboolean render;
+  char* description;
+} Setting;
+
 /* zathura */
 struct
 {
@@ -157,7 +166,7 @@ struct
     GList   *history;
     int      mode;
     int      viewing_mode;
-    int      video_mode;
+    gboolean reverse_video;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
@@ -228,12 +237,14 @@ void isc_string_manipulation(Argument*);
 gboolean cmd_open(int, char**);
 gboolean cmd_print(int, char**);
 gboolean cmd_rotate(int, char**);
+gboolean cmd_set(int, char**);
 gboolean cmd_quit(int, char**);
 gboolean cmd_save(int, char**);
 gboolean cmd_zoom(int, char**);
 
 /* completion commands */
 Completion* cc_open(char*);
+Completion* cc_set(char*);
 
 /* buffer command declarations */
 void bcmd_goto(char*, Argument*);
@@ -280,9 +291,9 @@ init_zathura()
   Zathura.Style.font = pango_font_description_from_string(font);
 
   /* other */
-  Zathura.Global.mode         = NORMAL;
-  Zathura.Global.viewing_mode = NORMAL;
-  Zathura.Global.video_mode   = NORMAL;
+  Zathura.Global.mode          = NORMAL;
+  Zathura.Global.viewing_mode  = NORMAL;
+  Zathura.Global.reverse_video = FALSE;
 
   Zathura.State.filename = "[No Name]";
   Zathura.State.pages = "";
@@ -442,7 +453,7 @@ void draw(int page_id)
   unsigned char* image = cairo_image_surface_get_data(current_page->surface);
   int x, y, z = 0;
 
-  if(Zathura.Global.video_mode == REVERSE_VIDEO)
+  if(Zathura.Global.reverse_video)
   {
     for(x = 0; x < cairo_image_surface_get_width(current_page->surface); x++)
       for(y = 0; y < cairo_image_surface_get_height(current_page->surface) * 4; y++)
@@ -700,10 +711,7 @@ sc_revert_video(Argument* argument)
   if(Zathura.PDF.render_thread)
     pthread_cancel(Zathura.PDF.render_thread);
 
-  if(Zathura.Global.video_mode == NORMAL)
-    Zathura.Global.video_mode = REVERSE_VIDEO;
-  else
-    Zathura.Global.video_mode = NORMAL;
+  Zathura.Global.reverse_video = !Zathura.Global.reverse_video;
 
   intptr_t t = Zathura.PDF.page_number;
   pthread_create(&(Zathura.PDF.render_thread), NULL, render, (gpointer) t);
@@ -1176,6 +1184,71 @@ cmd_rotate(int argc, char** argv)
 }
 
 gboolean
+cmd_set(int argc, char** argv)
+{
+  if(argc <= 0 || argc >= 3)
+    return FALSE;
+
+  int i;
+  for(i = 0; i < LENGTH(settings); i++)
+  {
+    if(!strcmp(argv[0], settings[i].name))
+    {
+      /* check var type */
+      if(settings[i].type == 'b')
+      {
+        gboolean *x = (gboolean*) (settings[i].variable);
+        gboolean new_value = TRUE;
+
+        if(!strcmp(argv[1], "false") || !strcmp(argv[1], "0"))
+          new_value = FALSE;
+
+        *x = new_value;
+      }
+      else if(settings[i].type == 'i')
+      {
+        if(argc != 2)
+          return FALSE;
+
+        int *x = (int*) (settings[i].variable);
+        *x = atoi(argv[1]);
+      }
+      else if(settings[i].type == 's')
+      {
+        if(argc != 2)
+          return FALSE;
+
+        char **x = (char**) settings[i].variable;
+        *x = argv[1];
+      }
+      else if(settings[i].type == 'c')
+      {
+        if(argc != 2)
+          return FALSE;
+
+        char *x = (char*) (settings[i].variable);
+        *x = argv[1][0];
+      }
+
+      /* render */
+      if(settings[i].render)
+      {
+        if(!Zathura.PDF.document)
+          return FALSE;
+
+        if(Zathura.PDF.render_thread)
+          pthread_cancel(Zathura.PDF.render_thread);
+
+        intptr_t t = Zathura.PDF.page_number;
+        pthread_create(&(Zathura.PDF.render_thread), NULL, render, (gpointer) t);
+      }
+    }
+  }
+
+  return TRUE;
+}
+
+gboolean
 cmd_quit(int argc, char** argv)
 {
   cb_destroy(NULL, NULL);
@@ -1195,7 +1268,8 @@ cmd_zoom(int argc, char** argv)
 }
 
 /* completion command implementation */
-Completion* cc_open(char* input)
+Completion*
+cc_open(char* input)
 {
   /* init completion group */
   Completion *completion = malloc(sizeof(Completion));
@@ -1249,7 +1323,7 @@ Completion* cc_open(char* input)
   while((name = (char*) g_dir_read_name(dir)) != NULL)
   {
     char* d_name   = g_filename_display_name(name);
-    int   d_length = strlen(name);
+    int   d_length = strlen(d_name);
 
     if( ((file_length <= d_length) && !strncmp(file, d_name, file_length)) ||
         (file_length == 0) )
@@ -1273,6 +1347,43 @@ Completion* cc_open(char* input)
   return completion;
 }
 
+Completion*
+cc_set(char* input)
+{
+  /* init completion group */
+  Completion *completion = malloc(sizeof(Completion));
+  CompletionGroup* group = malloc(sizeof(CompletionGroup));
+
+  group->value    = NULL;
+  group->next     = NULL;
+  group->elements = NULL;
+
+  completion->groups = group;
+  CompletionElement *last_element = NULL;
+  int element_counter = 0;
+  int input_length = input ? strlen(input) : 0;
+
+  for(element_counter = 0; element_counter < LENGTH(settings); element_counter++)
+  {
+    if( (input_length <= strlen(settings[element_counter].name)) &&
+          !strncmp(input, settings[element_counter].name, input_length) )
+    {
+      CompletionElement* el = malloc(sizeof(CompletionElement));
+      el->value = settings[element_counter].name;
+      el->description = settings[element_counter].description;
+      el->next = NULL;
+
+      if(element_counter != 0)
+        last_element->next = el;
+      else
+        group->elements = el;
+
+      last_element = el;
+    }
+  }
+
+  return completion;
+}
 
 /* buffer command implementation */
 void 

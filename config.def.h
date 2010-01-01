@@ -79,6 +79,7 @@ Command commands[] = {
   {"open",      "o",            cmd_open,   cc_open,      "Open a file" },
   {"print",     "p",            cmd_print,  0,            "Print the document" },
   {"rotate",    "r",            cmd_rotate, 0,            "Rotate the page" },
+  {"set",       "s",            cmd_set,    cc_set,       "Set an option" },
   {"quit",      "q",            cmd_quit,   0,            "Quit zjui" },
   {"write",     "w",            cmd_save,   0,            "Save the document" },
   {"zoom",      "z",            cmd_zoom,   0,            "Set zoom level" },
@@ -100,4 +101,11 @@ SpecialCommand special_commands[] = {
   /* identifier,   function,      a,   argument */
   {'/',            scmd_search,   1,   { DOWN } },
   {'?',            scmd_search,   1,   { UP } },
+};
+
+/* settings */
+Setting settings[] = {
+  /* name,         variable,                        type,  render,  description */
+  {"revertvideo",  &(Zathura.Global.reverse_video), 'b',   TRUE,    "Invert the image"},
+  {"title",        &(Zathura.State.filename),       's',   TRUE,    "Invert the image"},
 };
