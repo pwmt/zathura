@@ -250,6 +250,7 @@ gboolean cmd_zoom(int, char**);
 
 /* completion commands */
 Completion* cc_open(char*);
+Completion* cc_print(char*);
 Completion* cc_set(char*);
 
 /* buffer command declarations */
@@ -1524,6 +1525,73 @@ cc_open(char* input)
   }
 
   g_dir_close(dir);
+
+  return completion;
+}
+
+Completion*
+cc_print(char* input)
+{
+  /* init completion group */
+  Completion *completion = malloc(sizeof(Completion));
+  CompletionGroup* group = malloc(sizeof(CompletionGroup));
+
+  group->value    = NULL;
+  group->next     = NULL;
+  group->elements = NULL;
+
+  completion->groups = group;
+  CompletionElement *last_element = NULL;
+  int element_counter = 0;
+  int input_length = input ? strlen(input) : 0;
+
+  /* read printers */
+  char *current_line = NULL, current_char;
+  int count = 0;
+  FILE *fp;
+
+  fp = popen(LIST_PRINTER_COMMAND, "r");
+
+  if(!fp)
+    return NULL;
+
+  while((current_char = fgetc(fp)) != EOF)
+  {
+    if(!current_line)
+      current_line = malloc(sizeof(char) * 512);
+
+    current_line = realloc(current_line, (count + 1) * sizeof(char));
+
+    if(current_char != '\n')
+      current_line[count++] = current_char;
+    else
+    {
+      current_line[count] = '\0';
+      int line_length = strlen(current_line);
+
+      if( (input_length <= line_length) ||
+          (!strncmp(input, current_line, input_length)) )
+      {
+        CompletionElement* el = malloc(sizeof(CompletionElement));
+        el->value       = g_strdup(current_line);
+        el->description = NULL;
+        el->next        = NULL;
+
+        if(element_counter++ != 0)
+          last_element->next = el;
+        else
+          group->elements = el;
+
+        last_element = el;
+      }
+
+      free(current_line);
+      current_line = NULL;
+      count = 0;
+    }
+  }
+
+  pclose(fp);
 
   return completion;
 }
