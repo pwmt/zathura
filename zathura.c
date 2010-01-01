@@ -121,6 +121,7 @@ struct
   {
     GtkWindow         *window;
     GtkBox            *box;
+    GtkBox            *continuous;
     GtkScrolledWindow *view;
     GtkViewport       *viewport;
     GtkWidget         *statusbar;
@@ -272,6 +273,7 @@ init_zathura()
   /* UI */
   Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
   Zathura.UI.box               = GTK_BOX(gtk_vbox_new(FALSE, 0));
+  Zathura.UI.continuous        = GTK_BOX(gtk_vbox_new(FALSE, 0));
   Zathura.UI.view              = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
   Zathura.UI.viewport          = GTK_VIEWPORT(gtk_viewport_new(NULL, NULL));
   Zathura.UI.statusbar         = gtk_event_box_new();
@@ -288,6 +290,9 @@ init_zathura()
   /* box */
   gtk_box_set_spacing(Zathura.UI.box, 0);
   gtk_container_add(GTK_CONTAINER(Zathura.UI.window), GTK_WIDGET(Zathura.UI.box));
+
+  /* continuous */
+  gtk_box_set_spacing(Zathura.UI.continuous, 5);
 
   /* view */
   g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event", G_CALLBACK(cb_view_kb_pressed), NULL);
@@ -1472,6 +1477,9 @@ int main(int argc, char* argv[])
 
   init_zathura();
   update_status();
+
+  if(argc >= 2)
+    cmd_open(2, &argv[1]);
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
   gtk_main();
