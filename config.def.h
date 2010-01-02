@@ -5,6 +5,7 @@ static const float ZOOM_STEP      = 10;
 static const float ZOOM_MIN       = 10;
 static const float ZOOM_MAX       = 400;
 static const float SCROLL_STEP    = 40;
+static const float TRANSPARENCY   = 0.4;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
@@ -28,6 +29,8 @@ static const char notification_e_bgcolor[] = "#FF1212";
 static const char notification_e_fgcolor[] = "#FFFFFF";
 static const char notification_w_bgcolor[] = "#FFF712";
 static const char notification_w_fgcolor[] = "#000000";
+
+static const char search_highlight[]       = "#9FBC00";
 
 /* statusbar */
 static const char DEFAULT_TEXT[] = "[No Name]";
@@ -92,7 +95,6 @@ Command commands[] = {
   {"set",       "s",            cmd_set,    cc_set,       "Set an option" },
   {"quit",      "q",            cmd_quit,   0,            "Quit zjui" },
   {"write",     "w",            cmd_save,   0,            "Save the document" },
-  {"zoom",      "z",            cmd_zoom,   0,            "Set zoom level" },
 };
 
 /* buffer commands */

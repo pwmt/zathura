@@ -160,6 +160,7 @@ struct
     GdkColor notification_e_bg;
     GdkColor notification_w_fg;
     GdkColor notification_w_bg;
+    GdkColor search_highlight;
     PangoFontDescription *font;
   } Style;
 
@@ -206,10 +207,11 @@ struct
 void init_zathura();
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
 void change_mode(int);
-void change_videomode(int);
+void highlight_result(int, PopplerRectangle*);
 void draw(int);
 void notify(int, char*);
 void update_status();
+void recalcRectangle(int, PopplerRectangle*);
 void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
 void switch_view(GtkWidget*);
@@ -248,7 +250,6 @@ gboolean cmd_rotate(int, char**);
 gboolean cmd_set(int, char**);
 gboolean cmd_quit(int, char**);
 gboolean cmd_save(int, char**);
-gboolean cmd_zoom(int, char**);
 
 /* completion commands */
 Completion* cc_open(char*);
@@ -299,6 +300,7 @@ init_zathura()
   gdk_color_parse(notification_e_bgcolor, &(Zathura.Style.notification_e_bg));
   gdk_color_parse(notification_w_fgcolor, &(Zathura.Style.notification_w_fg));
   gdk_color_parse(notification_w_bgcolor, &(Zathura.Style.notification_w_bg));
+  gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
   Zathura.Style.font = pango_font_description_from_string(font);
 
   /* other */
@@ -386,8 +388,8 @@ init_zathura()
   gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
   gtk_widget_modify_font(GTK_WIDGET(Zathura.UI.inputbar),                     Zathura.Style.font);
 
-  g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "key-press-event", G_CALLBACK(cb_inputbar_kb_pressed), NULL);
-  g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate",        G_CALLBACK(cb_inputbar_activate),   NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "key-press-event",   G_CALLBACK(cb_inputbar_kb_pressed), NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate",          G_CALLBACK(cb_inputbar_activate),   NULL);
 
   /* packing */
   gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(Zathura.UI.view),      TRUE,  TRUE,  0);
@@ -534,6 +536,20 @@ change_mode(int mode)
   notify(DEFAULT, mode_text);
 }
 
+void
+highlight_result(int page_id, PopplerRectangle* rectangle)
+{
+  pthread_mutex_lock(&(Zathura.PDF.pages[page_id]->lock));
+  cairo_t *cairo = cairo_create(Zathura.PDF.pages[page_id]->surface);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[page_id]->lock));
+  cairo_set_source_rgba(cairo, Zathura.Style.search_highlight.red, Zathura.Style.search_highlight.green,
+      Zathura.Style.search_highlight.blue, TRANSPARENCY);
+
+  recalcRectangle(page_id, rectangle);
+  cairo_rectangle(cairo, rectangle->x1, rectangle->y1, (rectangle->x2 - rectangle->x1), (rectangle->y2 - rectangle->y1));
+  cairo_fill(cairo);
+
+
 void notify(int level, char* message)
 {
   switch(level)
@@ -568,6 +584,55 @@ update_status()
   pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
   char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
+}
+
+void
+recalcRectangle(int page_id, PopplerRectangle* rectangle)
+{
+  double page_width, page_height;
+  double x1 = rectangle->x1;
+  double x2 = rectangle->x2;
+  double y1 = rectangle->y1;
+  double y2 = rectangle->y2;
+
+  pthread_mutex_lock(&(Zathura.PDF.pages[page_id]->lock));
+  poppler_page_get_size(Zathura.PDF.pages[page_id]->page, &page_width, &page_height);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[page_id]->lock));
+
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
+  double scale = ((double) Zathura.PDF.scale / 100.0);
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
+
+  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
+  int rotate = Zathura.PDF.rotate;
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
+
+  switch(rotate)
+  {
+    case 90:
+      rectangle->x1 = (page_height - y2) * scale;
+      rectangle->y1 = x1 * scale;
+      rectangle->x2 = (page_height - y1) * scale;
+      rectangle->y2 = x2 * scale;
+      break;
+    case 180:
+      rectangle->x1 = (page_width  - x2) * scale;
+      rectangle->y1 = (page_height - y2) * scale;
+      rectangle->x2 = (page_width  - x1) * scale;
+      rectangle->y2 = (page_height - y1) * scale;
+      break;
+    case 270:
+      rectangle->x1 = y1 * Zathura.PDF.scale;
+      rectangle->y1 = (page_width  - x2) * scale;
+      rectangle->x2 = y2 * Zathura.PDF.scale;
+      rectangle->y2 = (page_width  - x1) * scale;
+      break;
+    default:
+      rectangle->x1 = x1 * scale;
+      rectangle->y1 = y1 * scale;
+      rectangle->x2 = x2 * scale;
+      rectangle->y2 = y2 * scale;
+  }
 }
 
 GtkEventBox*
@@ -811,7 +876,48 @@ sc_scroll(Argument* argument)
 void
 sc_search(Argument* argument)
 {
+  static char* search_item;
+  static int direction;
+  int page_counter;
+  int next_page;
+  GList* results;
+  GList* list;
 
+  if(argument->data)
+    search_item = g_strdup((char*) argument->data);
+
+  if(!Zathura.PDF.document || !search_item || !strlen(search_item))
+    return;
+
+  /* search document */
+  if(argument->n)
+    direction = (argument->n == BACKWARD) ? -1 : 1;
+
+  for(page_counter = 0; page_counter < Zathura.PDF.number_of_pages; page_counter++)
+  {
+    next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number +
+        page_counter * direction) % Zathura.PDF.number_of_pages;
+
+    pthread_mutex_lock(&(Zathura.PDF.pages[next_page]->lock));
+    results = poppler_page_find_text(Zathura.PDF.pages[next_page]->page, search_item);
+    pthread_mutex_unlock(&(Zathura.PDF.pages[next_page]->lock));
+
+    if(results)
+      break;
+  }
+
+  /* draw results */
+  if(results)
+  {
+    for(list = results; list && list->data; list = g_list_next(list))
+      highlight_result(next_page, (PopplerRectangle*) list->data);
+
+    set_page(next_page);
+  }
+  else
+  {
+    printf("Nothing found for %s\n", search_item);
+  }
 }
 
 void
@@ -1537,12 +1643,6 @@ cmd_save(int argc, char** argv)
   return TRUE;
 }
 
-gboolean
-cmd_zoom(int argc, char** argv)
-{
-  return TRUE;
-}
-
 /* completion command implementation */
 Completion*
 cc_open(char* input)
@@ -1788,6 +1888,10 @@ bcmd_zoom(char* buffer, Argument* argument)
 gboolean
 scmd_search(char* input, Argument* argument)
 {
+  printf("%s\n", input);
+  argument->data = input;
+  sc_search(argument);
+
   return TRUE;
 }
 
