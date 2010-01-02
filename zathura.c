@@ -548,7 +548,7 @@ highlight_result(int page_id, PopplerRectangle* rectangle)
   recalcRectangle(page_id, rectangle);
   cairo_rectangle(cairo, rectangle->x1, rectangle->y1, (rectangle->x2 - rectangle->x1), (rectangle->y2 - rectangle->y1));
   cairo_fill(cairo);
-
+}
 
 void notify(int level, char* message)
 {
