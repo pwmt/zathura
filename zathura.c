@@ -139,6 +139,7 @@ struct
     GtkBox            *statusbar_entries;
     GtkEntry          *inputbar;
     GtkWidget         *index;
+    GtkWidget         *information;
   } UI;
 
   struct
@@ -240,6 +241,7 @@ void isc_string_manipulation(Argument*);
 
 /* command declarations */
 gboolean cmd_close(int, char**);
+gboolean cmd_info(int, char**);
 gboolean cmd_open(int, char**);
 gboolean cmd_print(int, char**);
 gboolean cmd_rotate(int, char**);
@@ -818,14 +820,14 @@ sc_toggle_index(Argument* argument)
   if(!Zathura.PDF.document)
     return;
 
-  GtkWidget        *treeview;
-  GtkTreeModel     *model;
-  PopplerIndexIter *index_iter;
-  GtkCellRenderer  *renderer;
-  GtkTreeSelection *selection;
-
   if(!Zathura.UI.index)
   {
+    GtkWidget        *treeview;
+    GtkTreeModel     *model;
+    PopplerIndexIter *index_iter;
+    GtkCellRenderer  *renderer;
+    GtkTreeSelection *selection;
+
     Zathura.UI.index = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.index),
       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -860,9 +862,9 @@ sc_toggle_index(Argument* argument)
     }
   }
 
-  static gboolean hide = TRUE;
+  static gboolean show = TRUE;
 
-  if(hide)
+  if(show)
   {
     gtk_widget_show(Zathura.UI.index);
     switch_view(Zathura.UI.index);
@@ -874,12 +876,7 @@ sc_toggle_index(Argument* argument)
     pthread_mutex_unlock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
   }
 
-  hide = !hide;
-
-  /*if(GTK_WIDGET_VISIBLE(GTK_WIDGET(Zathura.UI.index)))*/
-    /*gtk_widget_hide(GTK_WIDGET(Zathura.UI.index));*/
-  /*else*/
-    /*gtk_widget_show(GTK_WIDGET(Zathura.UI.index));*/
+  show = !show;
 }
 
 void
@@ -1265,9 +1262,99 @@ cmd_close(int argc, char** argv)
   Zathura.PDF.scale           = 0;
   Zathura.PDF.rotate          = 0;
 
+  /* destroy index */
+  if(Zathura.UI.index)
+  {
+    gtk_widget_destroy(Zathura.UI.index);
+    Zathura.UI.index = NULL;
+  }
+
+  /* destroy information */
+  if(Zathura.UI.information)
+  {
+    gtk_widget_destroy(Zathura.UI.information);
+    Zathura.UI.information = NULL;
+  }
+
   update_status();
 
   return TRUE;
+}
+
+gboolean
+cmd_info(int argc, char** argv)
+{
+  if(!Zathura.PDF.document)
+    return TRUE;
+
+  if(!Zathura.UI.information)
+  {
+    GtkListStore      *list;
+    GtkTreeIter        iter;
+    GtkCellRenderer   *renderer;
+    GtkTreeSelection  *selection;
+
+    list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+
+    /* read document information */
+    gchar *title,   *author;
+    gchar *subject, *keywords;
+    gchar *creator, *producer;
+    GTime  creation_date, modification_date;
+
+    g_object_get(Zathura.PDF.document,
+        "title",         &title,
+        "author",        &author,
+        "subject",       &subject,
+        "keywords",      &keywords,
+        "creator",       &creator,
+        "producer",      &producer,
+        "creation-date", &creation_date,
+        "mod-date",      &modification_date,
+        NULL);
+
+    /* append information to list */
+    gtk_list_store_append(list, &iter);
+    gtk_list_store_set(list, &iter, 0,  "Author",   1, author   ? author   : "", -1);
+    gtk_list_store_append(list, &iter);
+    gtk_list_store_set(list, &iter, 0,  "Title",    1, title    ? title    : "", -1);
+    gtk_list_store_append(list, &iter);
+    gtk_list_store_set(list, &iter, 0,  "Subject",  1, subject  ? subject  : "", -1);
+    gtk_list_store_append(list, &iter);
+    gtk_list_store_set(list, &iter, 0,  "Keywords", 1, keywords ? keywords : "", -1);
+    gtk_list_store_append(list, &iter);
+    gtk_list_store_set(list, &iter, 0,  "Creator",  1, creator  ? creator  : "", -1);
+    gtk_list_store_append(list, &iter);
+    gtk_list_store_set(list, &iter, 0,  "Producer", 1, producer ? producer : "", -1);
+
+    Zathura.UI.information = gtk_tree_view_new_with_model(GTK_TREE_MODEL(list));
+    renderer = gtk_cell_renderer_text_new();
+
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(Zathura.UI.information), -1,
+      "Name", renderer, "text", 0, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(Zathura.UI.information), -1,
+      "Value", renderer, "text", 1, NULL);
+
+    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(Zathura.UI.information));
+    gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+
+    gtk_widget_show_all(Zathura.UI.information);
+  }
+
+  static gboolean show = TRUE;
+
+  if(show)
+    switch_view(Zathura.UI.information);
+  else
+  {
+    pthread_mutex_lock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
+    switch_view( Zathura.PDF.pages[Zathura.PDF.page_number]->drawing_area );
+    pthread_mutex_unlock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
+  }
+
+  show = !show;
+
+  return FALSE;
 }
 
 gboolean
@@ -1301,10 +1388,6 @@ cmd_open(int argc, char** argv)
     notify(ERROR, "Can not open file");
     return FALSE;
   }
-
-  if(Zathura.UI.index != NULL)
-    gtk_widget_destroy(Zathura.UI.index);
-  Zathura.UI.index = NULL;
 
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   Zathura.PDF.file            = file;
