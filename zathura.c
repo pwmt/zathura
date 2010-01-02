@@ -622,28 +622,28 @@ recalcRectangle(int page_id, PopplerRectangle* rectangle)
   switch(rotate)
   {
     case 90:
-      rectangle->x1 = (page_height - y2) * scale;
+      rectangle->x1 = y2 * scale;
       rectangle->y1 = x1 * scale;
-      rectangle->x2 = (page_height - y1) * scale;
+      rectangle->x2 = y1 * scale;
       rectangle->y2 = x2 * scale;
       break;
     case 180:
       rectangle->x1 = (page_width  - x2) * scale;
-      rectangle->y1 = (page_height - y2) * scale;
+      rectangle->y1 = y2 * scale;
       rectangle->x2 = (page_width  - x1) * scale;
-      rectangle->y2 = (page_height - y1) * scale;
+      rectangle->y2 = y1 * scale;
       break;
     case 270:
-      rectangle->x1 = y1 * Zathura.PDF.scale;
+      rectangle->x1 = (page_height - y1) * scale;
       rectangle->y1 = (page_width  - x2) * scale;
-      rectangle->x2 = y2 * Zathura.PDF.scale;
+      rectangle->x2 = (page_height - y2) * scale;
       rectangle->y2 = (page_width  - x1) * scale;
       break;
     default:
-      rectangle->x1 = x1 * scale;
-      rectangle->y1 = y1 * scale;
-      rectangle->x2 = x2 * scale;
-      rectangle->y2 = y2 * scale;
+      rectangle->x1 = x1  * scale;
+      rectangle->y1 = (page_height - y1) * scale;
+      rectangle->x2 = x2  * scale;
+      rectangle->y2 = (page_height - y2) * scale;
   }
 }
 
@@ -1917,7 +1917,6 @@ bcmd_zoom(char* buffer, Argument* argument)
 gboolean
 scmd_search(char* input, Argument* argument)
 {
-  printf("%s\n", input);
   argument->data = input;
   sc_search(argument);
 
