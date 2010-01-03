@@ -1421,6 +1421,102 @@ cmd_close(int argc, char** argv)
 gboolean
 cmd_export(int argc, char** argv)
 {
+  if(argc == 0 || !Zathura.PDF.document)
+    return TRUE;
+
+  if(argc < 2)
+  {
+    notify(WARNING, "No export path specified");
+    return FALSE;
+  }
+
+  /* export images */
+  if(!strcmp(argv[0], "images"))
+  {
+    int page_number;
+    for(page_number = 0; page_number < Zathura.PDF.number_of_pages; page_number++)
+    {
+      GList           *image_list;
+      GList           *images;
+      cairo_surface_t *image;
+
+      pthread_mutex_lock(&(Zathura.PDF.pages[page_number]->lock));
+      image_list = poppler_page_get_image_mapping(Zathura.PDF.pages[page_number]->page);
+      pthread_mutex_unlock(&(Zathura.PDF.pages[page_number]->lock));
+
+      if(!g_list_length(image_list))
+      {
+        notify(WARNING, "This document does not contain any images");
+        return FALSE;
+      }
+
+      for(images = image_list; images; images = g_list_next(images))
+      {
+        PopplerImageMapping *image_mapping;
+        PopplerRectangle     image_field;
+        gint                 image_id;
+        char*                file;
+        char*                filename;
+
+        image_mapping = (PopplerImageMapping*) images->data;
+        image_field   = image_mapping->area;
+        image_id      = image_mapping->image_id;
+
+        pthread_mutex_lock(&(Zathura.PDF.pages[page_number]->lock));
+        image     = poppler_page_get_image(Zathura.PDF.pages[page_number]->page, image_id);
+
+        if(!image)
+          continue;
+
+        filename  = g_strdup_printf("%s_p%i_i%i.png", Zathura.PDF.file, page_number + 1, image_id);
+
+        if(argv[1][0] == '~')
+        {
+          file = malloc(((int) strlen(filename) + (int) strlen(argv[1]) 
+            + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+          file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, filename);
+        }
+        else
+          file = g_strdup_printf("%s%s", argv[1], filename);
+
+        cairo_surface_write_to_png(image, file);
+        pthread_mutex_unlock(&(Zathura.PDF.pages[page_number]->lock));
+
+        g_free(file);
+      }
+    }
+  }
+  else if(!strcmp(argv[0], "attachments"))
+  {
+    if(!poppler_document_has_attachments(Zathura.PDF.document))
+    {
+      notify(WARNING, "PDF file has no attachments");
+      return FALSE;
+    }
+
+    GList *attachment_list = poppler_document_get_attachments(Zathura.PDF.document);
+    GList *attachments;
+    char  *file;
+
+    for(attachments = attachment_list; attachments; attachments = g_list_next(attachments))
+    {
+      PopplerAttachment *attachment = (PopplerAttachment*) attachments->data;
+
+      if(argv[1][0] == '~')
+      {
+        file = malloc(((int) strlen(attachment->name) + (int) strlen(argv[1])
+          + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+        file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, attachment->name);
+      }
+      else
+        file = g_strdup_printf("%s%s", argv[1], attachment->name);
+
+      poppler_attachment_save(attachment, file, NULL);
+
+      g_free(file);
+    }
+  }
+
   return TRUE;
 }
 
