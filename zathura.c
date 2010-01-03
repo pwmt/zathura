@@ -1917,6 +1917,9 @@ bcmd_zoom(char* buffer, Argument* argument)
 gboolean
 scmd_search(char* input, Argument* argument)
 {
+  if(!strlen(input))
+    return TRUE;
+
   argument->data = input;
   sc_search(argument);
 
