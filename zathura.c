@@ -247,6 +247,7 @@ void isc_string_manipulation(Argument*);
 
 /* command declarations */
 gboolean cmd_close(int, char**);
+gboolean cmd_export(int, char**);
 gboolean cmd_info(int, char**);
 gboolean cmd_open(int, char**);
 gboolean cmd_print(int, char**);
@@ -256,6 +257,7 @@ gboolean cmd_quit(int, char**);
 gboolean cmd_save(int, char**);
 
 /* completion commands */
+Completion* cc_export(char*);
 Completion* cc_open(char*);
 Completion* cc_print(char*);
 Completion* cc_set(char*);
@@ -1417,6 +1419,12 @@ cmd_close(int argc, char** argv)
 }
 
 gboolean
+cmd_export(int argc, char** argv)
+{
+  return TRUE;
+}
+
+gboolean
 cmd_info(int argc, char** argv)
 {
   if(!Zathura.PDF.document)
@@ -1673,6 +1681,38 @@ cmd_save(int argc, char** argv)
 }
 
 /* completion command implementation */
+Completion*
+cc_export(char* input)
+{
+  /* init completion group */
+  Completion *completion = malloc(sizeof(Completion));
+  CompletionGroup* group = malloc(sizeof(CompletionGroup));
+
+  group->value    = NULL;
+  group->next     = NULL;
+  group->elements = NULL;
+
+  completion->groups = group;
+
+  /* export images */
+  CompletionElement *export_images = malloc(sizeof(CompletionElement));
+  export_images->value = "images";
+  export_images->description = "Export images";
+  export_images->next = NULL;
+
+  /* export attachmants */
+  CompletionElement *export_attachments = malloc(sizeof(CompletionElement));
+  export_attachments->value = "attachments";
+  export_attachments->description = "Export attachments";
+  export_attachments->next = NULL;
+
+  /* connect */
+  group->elements = export_attachments;
+  export_attachments->next = export_images;
+
+  return completion;
+}
+
 Completion*
 cc_open(char* input)
 {
