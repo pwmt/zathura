@@ -88,6 +88,7 @@ InputbarShortcut inputbar_shortcuts[] = {
 Command commands[] = {
   /* command,   abbreviation,   function,   completion,   description  */
   {"close",     "c",            cmd_close,  0,            "Close current file" },
+  {"export",    "e",            cmd_export, cc_export,    "Export images or attached files" },
   {"info",      "i",            cmd_info,   0,            "Show information about the document" },
   {"open",      "o",            cmd_open,   cc_open,      "Open a file" },
   {"print",     "p",            cmd_print,  cc_print,     "Print the document" },
