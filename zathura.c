@@ -780,8 +780,6 @@ search(void* parameter)
   GList* list;
   int ov;
 
-  pthread_mutex_unlock(&(Zathura.PDF.pages[next_page]->lock));
-
   if(argument->data)
     search_item = g_strdup((char*) argument->data);
 
