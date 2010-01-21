@@ -778,7 +778,6 @@ search(void* parameter)
   int page_counter;
   GList* results;
   GList* list;
-  int ov;
 
   if(argument->data)
     search_item = g_strdup((char*) argument->data);
@@ -798,11 +797,10 @@ search(void* parameter)
     next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number +
         page_counter * direction) % Zathura.PDF.number_of_pages;
 
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &ov);
-    pthread_mutex_lock(&(Zathura.PDF.pages[next_page]->lock));
-    results = poppler_page_find_text(Zathura.PDF.pages[next_page]->page, search_item);
-    pthread_mutex_unlock(&(Zathura.PDF.pages[next_page]->lock));
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &ov);
+    PopplerPage* page = poppler_document_get_page(Zathura.PDF.document, next_page);
+    if(!page)
+      pthread_exit(NULL);
+    results = poppler_page_find_text(page, search_item);
 
     if(results)
       break;
@@ -812,15 +810,9 @@ search(void* parameter)
   if(results)
   {
     for(list = results; list && list->data; list = g_list_next(list))
-    {
-      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &ov);
       highlight_result(next_page, (PopplerRectangle*) list->data);
-      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &ov);
-    }
 
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &ov);
     set_page(next_page);
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &ov);
   }
   else
   {
