@@ -185,6 +185,12 @@ struct
 
   struct
   {
+    pthread_t      search_thread;
+    gboolean       search_thread_running;
+  } Thread;
+
+  struct
+  {
     char* filename;
     char* pages;
   } State;
@@ -198,7 +204,6 @@ struct
     int              number_of_pages;
     int              scale;
     int              rotate;
-    pthread_t        search_thread;
     cairo_surface_t *surface;
   } PDF;
 
@@ -761,22 +766,30 @@ switch_view(GtkWidget* widget)
 }
 
 /* thread implementation */
-void* search(void* parameter)
+void*
+search(void* parameter)
 {
+  Zathura.Thread.search_thread_running = TRUE;
   Argument* argument = (Argument*) parameter;
 
   static char* search_item;
   static int direction;
+  static int next_page = 0;
   int page_counter;
-  int next_page;
   GList* results;
   GList* list;
+  int ov;
+
+  pthread_mutex_unlock(&(Zathura.PDF.pages[next_page]->lock));
 
   if(argument->data)
     search_item = g_strdup((char*) argument->data);
 
   if(!Zathura.PDF.document || !search_item || !strlen(search_item))
+  {
+    Zathura.Thread.search_thread_running = FALSE;
     pthread_exit(NULL);
+  }
 
   /* search document */
   if(argument->n)
@@ -787,9 +800,11 @@ void* search(void* parameter)
     next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number +
         page_counter * direction) % Zathura.PDF.number_of_pages;
 
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &ov);
     pthread_mutex_lock(&(Zathura.PDF.pages[next_page]->lock));
     results = poppler_page_find_text(Zathura.PDF.pages[next_page]->page, search_item);
     pthread_mutex_unlock(&(Zathura.PDF.pages[next_page]->lock));
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &ov);
 
     if(results)
       break;
@@ -799,15 +814,22 @@ void* search(void* parameter)
   if(results)
   {
     for(list = results; list && list->data; list = g_list_next(list))
+    {
+      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &ov);
       highlight_result(next_page, (PopplerRectangle*) list->data);
+      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &ov);
+    }
 
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &ov);
     set_page(next_page);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &ov);
   }
   else
   {
     printf("Nothing found for %s\n", search_item);
   }
 
+  Zathura.Thread.search_thread_running = FALSE;
   pthread_exit(NULL);
 }
 
@@ -914,10 +936,13 @@ void
 sc_search(Argument* argument)
 {
   pthread_mutex_lock(&(Zathura.Lock.search_lock));
-  if(Zathura.PDF.search_thread)
-    pthread_cancel(Zathura.PDF.search_thread);
+  if(Zathura.Thread.search_thread_running)
+  {
+    pthread_cancel(Zathura.Thread.search_thread);
+    Zathura.Thread.search_thread_running = FALSE;
+  }
 
-  pthread_create(&(Zathura.PDF.search_thread), NULL, search, (gpointer) argument);
+  pthread_create(&(Zathura.Thread.search_thread), NULL, search, (gpointer) argument);
   pthread_mutex_unlock(&(Zathura.Lock.search_lock));
 }
 
