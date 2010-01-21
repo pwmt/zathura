@@ -4,9 +4,10 @@ zathura is a pdf viewer based on the poppler pdf rendering library
 
 Requirements
 ------------
-poppler-glib (0.10)
+poppler-glib (0.12.3)
 cairo (1.8.8)
-gtk2 (2.16)
+gtk2 (2.18.6)
+glib2 (2.22.4)
 
 Configuration
 -------------
