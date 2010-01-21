@@ -938,7 +938,9 @@ sc_search(Argument* argument)
   pthread_mutex_lock(&(Zathura.Lock.search_lock));
   if(Zathura.Thread.search_thread_running)
   {
-    pthread_cancel(Zathura.Thread.search_thread);
+    if(pthread_cancel(Zathura.Thread.search_thread) == 0)
+      pthread_join(Zathura.Thread.search_thread, NULL);
+
     Zathura.Thread.search_thread_running = FALSE;
   }
 
