@@ -792,7 +792,7 @@ search(void* parameter)
   if(argument->n)
     direction = (argument->n == BACKWARD) ? -1 : 1;
 
-  for(page_counter = 0; page_counter < Zathura.PDF.number_of_pages; page_counter++)
+  for(page_counter = 1; page_counter <= Zathura.PDF.number_of_pages; page_counter++)
   {
     next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number +
         page_counter * direction) % Zathura.PDF.number_of_pages;
