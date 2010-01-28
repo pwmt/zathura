@@ -842,7 +842,35 @@ sc_abort(Argument* argument)
 void
 sc_adjust_window(Argument* argument)
 {
+  GtkAdjustment* adjustment;
+  double view_size;
+  double page_width;
+  double page_height;
 
+  if(argument->n == ADJUST_WIDTH)
+    adjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
+  else
+    adjustment = gtk_scrolled_window_get_hadjustment(Zathura.UI.view);
+
+  view_size  = gtk_adjustment_get_page_size(adjustment);
+
+  pthread_mutex_lock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
+  poppler_page_get_size(Zathura.PDF.pages[Zathura.PDF.page_number]->page, &page_width, &page_height);
+  pthread_mutex_unlock(&(Zathura.PDF.pages[Zathura.PDF.page_number]->lock));
+
+  if ((Zathura.PDF.rotate == 90) || (Zathura.PDF.rotate == 270))
+  {
+    double swap = page_width;
+    page_width  = page_height;
+    page_height = swap;
+  }
+
+  if(argument->n == ADJUST_WIDTH)
+    Zathura.PDF.scale = (view_size / page_height) * 100;
+  else
+    Zathura.PDF.scale = (view_size / page_width) * 100;
+
+  draw(Zathura.PDF.page_number);
 }
 
 void
