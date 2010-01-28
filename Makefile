@@ -11,7 +11,7 @@ DOBJECTS = ${SOURCE:.c=.do}
 all: options ${PROJECT}
 
 options:
-	@echo ${PROJECT} buld options:
+	@echo ${PROJECT} build options:
 	@echo "CFLAGS  = ${CFLAGS}"
 	@echo "LDFLAGS = ${LDFLAGS}"
 	@echo "DFLAGS  = ${DFLAGS}"

@@ -24,8 +24,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        BOTTOM, TOP, HIDE, NORMAL, HIGHLIGHT,
        INSERT, VISUAL, DELETE_LAST_WORD, DEFAULT,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
-       ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, FORWARD,
-       BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
+       ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC,
+       FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
        CONTINUOUS };
 
 /* typedefs */
@@ -1984,11 +1984,29 @@ bcmd_zoom(char* buffer, Argument* argument)
   {
     if((Zathura.PDF.scale + ZOOM_STEP) <= ZOOM_MAX)
       Zathura.PDF.scale += ZOOM_STEP;
+    else
+      Zathura.PDF.scale = ZOOM_MAX;
   }
   else if(argument->n == ZOOM_OUT)
   {
     if((Zathura.PDF.scale - ZOOM_STEP) >= ZOOM_MIN)
       Zathura.PDF.scale -= ZOOM_STEP;
+    else
+      Zathura.PDF.scale = ZOOM_MIN;
+  }
+  else if(argument->n == ZOOM_SPECIFIC)
+  {
+    int b_length = strlen(buffer);
+    if(b_length < 1)
+      return;
+
+    int value = atoi(g_strndup(buffer, b_length - 1));
+    if(value <= ZOOM_MIN)
+      Zathura.PDF.scale = ZOOM_MIN;
+    else if(value >= ZOOM_MAX)
+      Zathura.PDF.scale = ZOOM_MAX;
+    else
+      Zathura.PDF.scale = value;
   }
   else
     Zathura.PDF.scale = 100;
