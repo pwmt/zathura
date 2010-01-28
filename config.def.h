@@ -107,6 +107,7 @@ BufferCommand buffer_commands[] = {
   {"^zI$",         bcmd_zoom,     { ZOOM_IN } },
   {"^zO$",         bcmd_zoom,     { ZOOM_OUT } },
   {"^z0$",         bcmd_zoom,     { ZOOM_ORIGINAL } },
+  {"^[0-9]+Z$",    bcmd_zoom,     { ZOOM_SPECIFIC } },
 };
 
 /* special commands */
