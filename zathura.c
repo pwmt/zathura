@@ -2322,6 +2322,11 @@ int main(int argc, char* argv[])
     cmd_open(2, &argv[1]);
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
+
+  Argument arg;
+  arg.n = ADJUST_OPEN;
+  sc_adjust_window(&arg);
+
   gtk_main();
 
   return 0;

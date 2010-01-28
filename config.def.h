@@ -41,6 +41,7 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 
 /* additional settings */
 #define SHOW_SCROLLBARS 0
+#define ADJUST_OPEN ADJUST_BESTFIT
 
 /* shortcuts */
 Shortcut shortcuts[] = {
