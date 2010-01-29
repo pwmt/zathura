@@ -70,6 +70,7 @@ Shortcut shortcuts[] = {
   {0,                  GDK_N,             sc_search,            -1,       { BACKWARD } },
   {0,                  GDK_a,             sc_adjust_window,     -1,       { ADJUST_BESTFIT } },
   {0,                  GDK_s,             sc_adjust_window,     -1,       { ADJUST_WIDTH } },
+  {0,                  GDK_BackSpace,     sc_change_buffer,     -1,       { DELETE_LAST } },
 };
 
 /* inputbar shortcuts */
