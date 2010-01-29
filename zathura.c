@@ -26,7 +26,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC,
        FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
-       CONTINUOUS };
+       CONTINUOUS, DELETE_LAST };
 
 /* typedefs */
 struct CElement
@@ -230,6 +230,7 @@ void* search(void*);
 /* shortcut declarations */
 void sc_abort(Argument*);
 void sc_adjust_window(Argument*);
+void sc_change_buffer(Argument*);
 void sc_change_mode(Argument*);
 void sc_focus_inputbar(Argument*);
 void sc_navigate(Argument*);
@@ -882,6 +883,33 @@ sc_adjust_window(Argument* argument)
     Zathura.PDF.scale = (view_size / page_width) * 100;
 
   draw(Zathura.PDF.page_number);
+}
+
+void
+sc_change_buffer(Argument* argument)
+{
+  if(!Zathura.Global.buffer)
+    return;
+
+  int buffer_length = Zathura.Global.buffer->len;
+
+  if(argument->n == DELETE_LAST)
+  {
+    if((buffer_length - 1) == 0)
+    {
+      g_string_free(Zathura.Global.buffer, TRUE);
+      Zathura.Global.buffer = NULL;
+      gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, "");
+    }
+    else
+    {
+      GString* temp = g_string_new_len(Zathura.Global.buffer->str, buffer_length - 1);
+      g_string_free(Zathura.Global.buffer, TRUE);
+      Zathura.Global.buffer = temp;
+      gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, Zathura.Global.buffer->str);
+    }
+  }
+
 }
 
 void
