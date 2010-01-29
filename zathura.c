@@ -193,6 +193,7 @@ struct
   {
     char* filename;
     char* pages;
+    int scroll_percentage;
   } State;
 
   struct
@@ -266,6 +267,7 @@ Completion* cc_set(char*);
 
 /* buffer command declarations */
 void bcmd_goto(char*, Argument*);
+void bcmd_scroll(char*, Argument*);
 void bcmd_zoom(char*, Argument*);
 
 /* special command delcarations */
@@ -317,8 +319,9 @@ init_zathura()
   Zathura.Global.viewing_mode  = NORMAL;
   Zathura.Global.reverse_video = FALSE;
 
-  Zathura.State.filename = (char*) DEFAULT_TEXT;
-  Zathura.State.pages = "";
+  Zathura.State.filename          = (char*) DEFAULT_TEXT;
+  Zathura.State.pages             = "";
+  Zathura.State.scroll_percentage = 0;
 
   /* UI */
   Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
@@ -601,7 +604,7 @@ update_status()
   pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
   pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
-  char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
+  char* status_text  = g_strdup_printf("%s %d%% %s", zoom_level, Zathura.State.scroll_percentage, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
 }
 
@@ -746,6 +749,11 @@ set_page(int page)
 
   Zathura.PDF.page_number = page;
   Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
+
+  Argument argument;
+  argument.n = TOP;
+  sc_scroll(&argument);
+
   switch_view(Zathura.UI.drawing_area);
   draw(page);
 }
@@ -842,6 +850,9 @@ sc_abort(Argument* argument)
 void
 sc_adjust_window(Argument* argument)
 {
+  if(!Zathura.PDF.document)
+    return;
+
   GtkAdjustment* adjustment;
   double view_size;
   double page_width;
@@ -948,6 +959,14 @@ sc_scroll(Argument* argument)
     gtk_adjustment_set_value(adjustment, max);
   else
     gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
+
+  int percentage = 100 * (value / max);
+  percentage = (percentage < 0) ? 0 : ((percentage > 100) ? 100 : percentage);
+
+  if( (argument->n != LEFT) && (argument->n != RIGHT) )
+    Zathura.State.scroll_percentage = percentage;
+
+  update_status();
 }
 
 void
@@ -2011,6 +2030,27 @@ bcmd_goto(char* buffer, Argument* argument)
 }
 
 void
+bcmd_scroll(char* buffer, Argument* argument)
+{
+  int b_length = strlen(buffer);
+  if(b_length < 1)
+    return;
+
+  int percentage = atoi(g_strndup(buffer, b_length - 1));
+  percentage = (percentage < 0) ? 0 : ((percentage > 100) ? 100 : percentage);
+
+  GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
+
+  gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
+  gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
+  gdouble nvalue     = (percentage * max) / 100;
+
+  Zathura.State.scroll_percentage = percentage;
+  gtk_adjustment_set_value(adjustment, nvalue);
+  update_status();
+}
+
+void
 bcmd_zoom(char* buffer, Argument* argument)
 {
   pthread_mutex_lock(&(Zathura.Lock.scale_lock));
@@ -2155,7 +2195,7 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   }
 
   /* append only numbers and characters to buffer */
-  if( (event->keyval >= 0x30) && (event->keyval <= 0x7A))
+  if( (event->keyval >= 0x21) && (event->keyval <= 0x7A))
   {
     if(!Zathura.Global.buffer)
       Zathura.Global.buffer = g_string_new("");
