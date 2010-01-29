@@ -1700,12 +1700,15 @@ cmd_set(int argc, char** argv)
       if(settings[i].type == 'b')
       {
         gboolean *x = (gboolean*) (settings[i].variable);
-        gboolean new_value = TRUE;
+        *x = !(*x);
 
-        if(!strcmp(argv[1], "false") || !strcmp(argv[1], "0"))
-          new_value = FALSE;
-
-        *x = new_value;
+        if(argv[1])
+        {
+          if(!strcmp(argv[1], "false") || !strcmp(argv[1], "0"))
+            *x = TRUE;
+          else
+            *x = FALSE;
+        }
       }
       else if(settings[i].type == 'i')
       {
@@ -1713,7 +1716,8 @@ cmd_set(int argc, char** argv)
           return FALSE;
 
         int *x = (int*) (settings[i].variable);
-        *x = atoi(argv[1]);
+        if(argv[1])
+          *x = atoi(argv[1]);
       }
       else if(settings[i].type == 's')
       {
@@ -1721,7 +1725,8 @@ cmd_set(int argc, char** argv)
           return FALSE;
 
         char **x = (char**) settings[i].variable;
-        *x = argv[1];
+        if(argv[1])
+          *x = argv[1];
       }
       else if(settings[i].type == 'c')
       {
@@ -1729,7 +1734,8 @@ cmd_set(int argc, char** argv)
           return FALSE;
 
         char *x = (char*) (settings[i].variable);
-        *x = argv[1][0];
+        if(argv[1])
+          *x = argv[1][0];
       }
 
       /* render */
