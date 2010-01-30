@@ -46,30 +46,32 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 /* shortcuts */
 Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,     argument */
-  {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  -1,       {0} },
-  {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   -1,       {0} },
+  {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  NORMAL,   {0} },
+  {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   NORMAL,   {0} },
   {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             -1,       {0} },
-  {GDK_CONTROL_MASK,   GDK_i,             sc_revert_video,      -1,       {0} },
-  {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    -1,       { .data = "/" } },
-  {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    -1,       { .data = "?" } },
-  {0,                  GDK_Tab,           sc_toggle_index,      -1,       {0} },
-  {0,                  GDK_J,             sc_navigate,          -1,       { NEXT } },
-  {0,                  GDK_K,             sc_navigate,          -1,       { PREVIOUS } },
+  {GDK_CONTROL_MASK,   GDK_i,             sc_revert_video,      NORMAL,   {0} },
+  {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    NORMAL,   { .data = "/" } },
+  {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    NORMAL,   { .data = "?" } },
+  {0,                  GDK_Tab,           sc_toggle_index,      NORMAL,   {0} },
+  {0,                  GDK_J,             sc_navigate,          NORMAL,   { NEXT } },
+  {0,                  GDK_K,             sc_navigate,          NORMAL,   { PREVIOUS } },
   {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
   {0,                  GDK_i,             sc_change_mode,       NORMAL,   { INSERT } },
   {0,                  GDK_v,             sc_change_mode,       NORMAL,   { VISUAL } },
-  {0,                  GDK_colon,         sc_focus_inputbar,    -1,       { .data = ":" } },
-  {0,                  GDK_o,             sc_focus_inputbar,    -1,       { .data = ":open " } },
-  {0,                  GDK_r,             sc_rotate,            -1,       {0} },
-  {0,                  GDK_h,             sc_scroll,            -1,       { LEFT } },
-  {0,                  GDK_j,             sc_scroll,            -1,       { UP } },
-  {0,                  GDK_k,             sc_scroll,            -1,       { DOWN } },
-  {0,                  GDK_l,             sc_scroll,            -1,       { RIGHT } },
-  {0,                  GDK_n,             sc_search,            -1,       { FORWARD } },
-  {0,                  GDK_N,             sc_search,            -1,       { BACKWARD } },
-  {0,                  GDK_a,             sc_adjust_window,     -1,       { ADJUST_BESTFIT } },
-  {0,                  GDK_s,             sc_adjust_window,     -1,       { ADJUST_WIDTH } },
+  {0,                  GDK_m,             sc_change_mode,       NORMAL,   { ADD_MARKER } },
+  {0,                  GDK_apostrophe,    sc_change_mode,       NORMAL,   { EVAL_MARKER } },
+  {0,                  GDK_colon,         sc_focus_inputbar,    NORMAL,   { .data = ":" } },
+  {0,                  GDK_o,             sc_focus_inputbar,    NORMAL,   { .data = ":open " } },
+  {0,                  GDK_r,             sc_rotate,            NORMAL,   {0} },
+  {0,                  GDK_h,             sc_scroll,            NORMAL,   { LEFT } },
+  {0,                  GDK_j,             sc_scroll,            NORMAL,   { UP } },
+  {0,                  GDK_k,             sc_scroll,            NORMAL,   { DOWN } },
+  {0,                  GDK_l,             sc_scroll,            NORMAL,   { RIGHT } },
+  {0,                  GDK_n,             sc_search,            NORMAL,   { FORWARD } },
+  {0,                  GDK_N,             sc_search,            NORMAL,   { BACKWARD } },
+  {0,                  GDK_a,             sc_adjust_window,     NORMAL,   { ADJUST_BESTFIT } },
+  {0,                  GDK_s,             sc_adjust_window,     NORMAL,   { ADJUST_WIDTH } },
   {0,                  GDK_BackSpace,     sc_change_buffer,     -1,       { DELETE_LAST } },
 };
 
@@ -102,15 +104,15 @@ Command commands[] = {
 
 /* buffer commands */
 BufferCommand buffer_commands[] = {
-  /* regex,        function,      argument */
-  {"^gg$",         bcmd_goto,     { TOP } },
-  {"^G$",          bcmd_goto,     { BOTTOM } },
-  {"^[0-9]+G$",    bcmd_goto,     {0} },
-  {"^zI$",         bcmd_zoom,     { ZOOM_IN } },
-  {"^zO$",         bcmd_zoom,     { ZOOM_OUT } },
-  {"^z0$",         bcmd_zoom,     { ZOOM_ORIGINAL } },
-  {"^[0-9]+Z$",    bcmd_zoom,     { ZOOM_SPECIFIC } },
-  {"^[0-9]+%$",    bcmd_scroll,   {0} },
+  /* regex,        function,       argument */
+  {"^gg$",         bcmd_goto,       { TOP } },
+  {"^G$",          bcmd_goto,       { BOTTOM } },
+  {"^[0-9]+G$",    bcmd_goto,       {0} },
+  {"^zI$",         bcmd_zoom,       { ZOOM_IN } },
+  {"^zO$",         bcmd_zoom,       { ZOOM_OUT } },
+  {"^z0$",         bcmd_zoom,       { ZOOM_ORIGINAL } },
+  {"^[0-9]+Z$",    bcmd_zoom,       { ZOOM_SPECIFIC } },
+  {"^[0-9]+%$",    bcmd_scroll,     {0} },
 };
 
 /* special commands */

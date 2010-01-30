@@ -26,7 +26,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC,
        FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
-       CONTINUOUS, DELETE_LAST };
+       CONTINUOUS, DELETE_LAST, ADD_MARKER, EVAL_MARKER };
 
 /* typedefs */
 struct CElement
@@ -123,6 +123,12 @@ typedef struct
   char* description;
 } Setting;
 
+typedef struct
+{
+  int id;
+  int page;
+} Marker;
+
 /* zathura */
 struct
 {
@@ -198,6 +204,13 @@ struct
 
   struct
   {
+    Marker* markers;
+    int number_of_markers;
+    int last;
+  } Marker;
+
+  struct
+  {
     PopplerDocument *document;
     char            *file;
     Page           **pages;
@@ -212,10 +225,12 @@ struct
 
 /* function declarations */
 void init_zathura();
+void add_marker(int);
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
 void change_mode(int);
 void highlight_result(int, PopplerRectangle*);
 void draw(int);
+void eval_marker(int);
 void notify(int, char*);
 void update_status();
 void recalcRectangle(int, PopplerRectangle*);
@@ -267,8 +282,10 @@ Completion* cc_print(char*);
 Completion* cc_set(char*);
 
 /* buffer command declarations */
+void bcmd_evalmarker(char*, Argument*);
 void bcmd_goto(char*, Argument*);
 void bcmd_scroll(char*, Argument*);
+void bcmd_setmarker(char*, Argument*);
 void bcmd_zoom(char*, Argument*);
 
 /* special command delcarations */
@@ -323,6 +340,10 @@ init_zathura()
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = "";
   Zathura.State.scroll_percentage = 0;
+
+  Zathura.Marker.markers           = NULL;
+  Zathura.Marker.number_of_markers =  0;
+  Zathura.Marker.last              = -1;
 
   /* UI */
   Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
@@ -414,6 +435,37 @@ init_zathura()
   gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(Zathura.UI.view),      TRUE,  TRUE,  0);
   gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(Zathura.UI.statusbar), FALSE, FALSE, 0);
   gtk_box_pack_end(  Zathura.UI.box, GTK_WIDGET(Zathura.UI.inputbar),  FALSE, FALSE, 0);
+}
+
+void
+add_marker(int id)
+{
+  if( (id < 0x30) || (id > 0x7A))
+    return;
+
+  /* current information */
+  int page_number = Zathura.PDF.page_number;
+
+  /* search if entry already exists */
+  int i;
+  for(i = 0; i < Zathura.Marker.number_of_markers; i++)
+  {
+    if(Zathura.Marker.markers[i].id == id)
+    {
+      Zathura.Marker.markers[i].page = page_number;
+      Zathura.Marker.last            = page_number;
+      return;
+    }
+  }
+
+  /* add new marker */
+  int marker_index = Zathura.Marker.number_of_markers++;
+  Zathura.Marker.markers = realloc(Zathura.Marker.markers, sizeof(Marker) *
+      (Zathura.Marker.number_of_markers));
+
+  Zathura.Marker.markers[marker_index].id   = id;
+  Zathura.Marker.markers[marker_index].page = page_number;
+  Zathura.Marker.last                       = page_number;
 }
 
 void
@@ -551,6 +603,12 @@ change_mode(int mode)
     case VISUAL:
       mode_text = "-- VISUAL --";
       break;
+    case ADD_MARKER:
+      mode_text = "";
+      break;
+    case EVAL_MARKER:
+      mode_text = "";
+      break;
     default:
       mode_text = "";
       mode      = NORMAL;
@@ -559,6 +617,30 @@ change_mode(int mode)
 
   Zathura.Global.mode = mode;
   notify(DEFAULT, mode_text);
+}
+
+void
+eval_marker(int id)
+{
+  /* go to last marker */
+  if(id == 0x27)
+  {
+    int current_page = Zathura.PDF.page_number;
+    set_page(Zathura.Marker.last);
+    Zathura.Marker.last = current_page;
+    return;
+  }
+
+  /* search markers */
+  int i;
+  for(i = 0; i < Zathura.Marker.number_of_markers; i++)
+  {
+    if(Zathura.Marker.markers[i].id == id)
+    {
+      set_page(Zathura.Marker.markers[i].page);
+      return;
+    }
+  }
 }
 
 void
@@ -1464,6 +1546,12 @@ cmd_close(int argc, char** argv)
     Zathura.UI.information = NULL;
   }
 
+  /* free markers */
+  if(Zathura.Marker.markers)
+    free(Zathura.Marker.markers);
+  Zathura.Marker.number_of_markers =  0;
+  Zathura.Marker.last              = -1;
+
   update_status();
 
   return TRUE;
@@ -2220,6 +2308,19 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
       shortcuts[i].function(&(shortcuts[i].argument));
       return TRUE;
     }
+  }
+
+  if(Zathura.Global.mode == ADD_MARKER)
+  {
+    add_marker(event->keyval);
+    change_mode(NORMAL);
+    return TRUE;
+  }
+  else if(Zathura.Global.mode == EVAL_MARKER)
+  {
+    eval_marker(event->keyval);
+    change_mode(NORMAL);
+    return TRUE;
   }
 
   /* append only numbers and characters to buffer */
