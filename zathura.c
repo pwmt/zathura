@@ -211,6 +211,11 @@ struct
 
   struct
   {
+    GKeyFile *file;
+  } Bookmarks;
+
+  struct
+  {
     PopplerDocument *document;
     char            *file;
     Page           **pages;
@@ -307,9 +312,28 @@ gboolean cb_inputbar_activate(GtkEntry*, gpointer);
 void
 init_directories()
 {
+  /* create zathura directory */
   gchar *base_directory = g_build_filename(g_get_home_dir(), ZATHURA_DIR, NULL);
   g_mkdir_with_parents(base_directory,  0771);
   g_free(base_directory);
+
+  /* create or open existing bookmark file */
+  Zathura.Bookmarks.file = g_key_file_new();
+  char* bookmarks = g_strdup_printf("%s/%s/%s", g_get_home_dir(), ZATHURA_DIR, BOOKMARK_FILE);
+
+  if(!g_file_test(bookmarks, G_FILE_TEST_IS_REGULAR))
+  {
+    /* file does not exist */
+    g_file_set_contents(bookmarks, "# Zathura bookmarks", -1, NULL);
+  }
+
+  GError* error = NULL;
+  if(!g_key_file_load_from_file(Zathura.Bookmarks.file, bookmarks, G_KEY_FILE_KEEP_TRANSLATIONS, &error))
+  {
+    notify(ERROR, g_strdup_printf("Could not load bookmark file: %s", error->message));
+  }
+
+  g_free(bookmarks);
 }
 
 void
