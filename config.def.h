@@ -97,16 +97,18 @@ InputbarShortcut inputbar_shortcuts[] = {
 
 /* commands */
 Command commands[] = {
-  /* command,   abbreviation,   function,   completion,   description  */
-  {"close",     "c",            cmd_close,  0,            "Close current file" },
-  {"export",    "e",            cmd_export, cc_export,    "Export images or attached files" },
-  {"info",      "i",            cmd_info,   0,            "Show information about the document" },
-  {"open",      "o",            cmd_open,   cc_open,      "Open a file" },
-  {"print",     "p",            cmd_print,  cc_print,     "Print the document" },
-  {"rotate",    "r",            cmd_rotate, 0,            "Rotate the page" },
-  {"set",       "s",            cmd_set,    cc_set,       "Set an option" },
-  {"quit",      "q",            cmd_quit,   0,            "Quit zjui" },
-  {"write",     "w",            cmd_save,   0,            "Save the document" },
+  /* command,   abbreviation,   function,           completion,   description  */
+  {"bmark",     "b",            cmd_bookmark,       0,            "Bookmark current page" },
+  {"blist",     0,              cmd_open_bookmark,  cc_bookmark,  "List and open bookmark" },
+  {"close",     "c",            cmd_close,          0,            "Close current file" },
+  {"export",    "e",            cmd_export,         cc_export,    "Export images or attached files" },
+  {"info",      "i",            cmd_info,           0,            "Show information about the document" },
+  {"open",      "o",            cmd_open,           cc_open,      "Open a file" },
+  {"print",     "p",            cmd_print,          cc_print,     "Print the document" },
+  {"rotate",    "r",            cmd_rotate,         0,            "Rotate the page" },
+  {"set",       "s",            cmd_set,            cc_set,       "Set an option" },
+  {"quit",      "q",            cmd_quit,           0,            "Quit zjui" },
+  {"write",     "w",            cmd_save,           0,            "Save the document" },
 };
 
 /* buffer commands */
