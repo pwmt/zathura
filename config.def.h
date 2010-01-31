@@ -11,6 +11,10 @@ static const float TRANSPARENCY   = 0.4;
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
 static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 
+/* directories and files */
+static const char ZATHURA_DIR[]   = ".zathura";
+static const char BOOKMARK_FILE[] = "bookmarks";
+
 /* look */
 static const char font[]                   = "monospace normal 9";
 static const char default_bgcolor[]        = "#000000";
