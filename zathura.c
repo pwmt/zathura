@@ -224,6 +224,7 @@ struct
 } Zathura;
 
 /* function declarations */
+void init_directories();
 void init_zathura();
 void add_marker(int);
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
@@ -303,6 +304,14 @@ gboolean cb_inputbar_activate(GtkEntry*, gpointer);
 #include "config.h"
 
 /* function implementation */
+void
+init_directories()
+{
+  gchar *base_directory = g_build_filename(g_get_home_dir(), ZATHURA_DIR, NULL);
+  g_mkdir_with_parents(base_directory,  0771);
+  g_free(base_directory);
+}
+
 void
 init_zathura()
 {
@@ -2491,6 +2500,8 @@ int main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   init_zathura();
+  init_directories();
+
   update_status();
 
   if(argc >= 2)
