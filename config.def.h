@@ -15,6 +15,9 @@ static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 static const char ZATHURA_DIR[]   = ".zathura";
 static const char BOOKMARK_FILE[] = "bookmarks";
 
+/* bookmarks */
+static const char BM_PAGE_ENTRY[] = "page";
+
 /* look */
 static const char font[]                   = "monospace normal 9";
 static const char default_bgcolor[]        = "#000000";
