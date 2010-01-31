@@ -129,6 +129,12 @@ typedef struct
   int page;
 } Marker;
 
+typedef struct
+{
+  char* id;
+  int page;
+} Bookmark;
+
 /* zathura */
 struct
 {
@@ -213,6 +219,8 @@ struct
   {
     GKeyFile *data;
     char     *file;
+    Bookmark *bookmarks;
+    int       number_of_bookmarks;
   } Bookmarks;
 
   struct
@@ -272,6 +280,8 @@ void isc_completion(Argument*);
 void isc_string_manipulation(Argument*);
 
 /* command declarations */
+gboolean cmd_bookmark(int, char**);
+gboolean cmd_open_bookmark(int, char**);
 gboolean cmd_close(int, char**);
 gboolean cmd_export(int, char**);
 gboolean cmd_info(int, char**);
@@ -283,6 +293,7 @@ gboolean cmd_quit(int, char**);
 gboolean cmd_save(int, char**);
 
 /* completion commands */
+Completion* cc_bookmark(char*);
 Completion* cc_export(char*);
 Completion* cc_open(char*);
 Completion* cc_print(char*);
@@ -1427,8 +1438,8 @@ isc_completion(Argument* argument)
 
       for(i = 0; i < LENGTH(commands); i++)
       {
-        int abbr_length = strlen(commands[i].abbr);
-        int cmd_length  = strlen(commands[i].command);
+        int abbr_length = commands[i].abbr ? strlen(commands[i].abbr) : 0;
+        int cmd_length  = commands[i].command ? strlen(commands[i].command) : 0;
 
         /* add command to list iff
          *  the current command would match the command
@@ -1537,6 +1548,77 @@ isc_string_manipulation(Argument* argument)
 
 /* command implementation */
 gboolean
+cmd_bookmark(int argc, char** argv)
+{
+  if(!Zathura.PDF.document || argc < 1)
+    return TRUE;
+
+  /* get id */
+  int i;
+  GString *id = g_string_new("");
+
+  for(i = 0; i < argc; i++)
+  {
+    if(i != 0)
+      id = g_string_append_c(id, ' ');
+
+    id = g_string_append(id, argv[i]);
+  }
+
+  /* check for existing bookmark to overwrite */
+  for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+  {
+    if(!strcmp(id->str, Zathura.Bookmarks.bookmarks[i].id))
+    {
+      Zathura.Bookmarks.bookmarks[i].page = Zathura.PDF.page_number;
+      return TRUE;
+    }
+  }
+
+  /* add new bookmark */
+  Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
+      (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
+
+  Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = id->str;
+  Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
+  Zathura.Bookmarks.number_of_bookmarks++;
+
+  return TRUE;
+}
+
+gboolean
+cmd_open_bookmark(int argc, char** argv)
+{
+  if(!Zathura.PDF.document || argc < 1)
+    return TRUE;
+  
+  /* get id */
+  int i;
+  GString *id = g_string_new("");
+
+  for(i = 0; i < argc; i++)
+  {
+    if(i != 0)
+      id = g_string_append_c(id, ' ');
+
+    id = g_string_append(id, argv[i]);
+  }
+
+  /* find bookmark */
+  for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+  {
+    if(!strcmp(id->str, Zathura.Bookmarks.bookmarks[i].id))
+    {
+      set_page(Zathura.Bookmarks.bookmarks[i].page);
+      return TRUE;
+    }
+  }
+
+  notify(WARNING, "No matching bookmark found");
+  return FALSE;
+}
+
+gboolean
 cmd_close(int argc, char** argv)
 {
   if(!Zathura.PDF.document)
@@ -1562,9 +1644,14 @@ cmd_close(int argc, char** argv)
     g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
         BM_PAGE_ENTRY, Zathura.PDF.page_number);
 
+    /* save bookmarks */
+    int i;
+    for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+          Zathura.Bookmarks.bookmarks[i].id, Zathura.Bookmarks.bookmarks[i].page);
+
     /* convert file and save it */
     gchar* bookmarks = g_key_file_to_data(Zathura.Bookmarks.data, NULL, NULL);
-    printf("Saving to %s\n", Zathura.Bookmarks.file);
     g_file_set_contents(Zathura.Bookmarks.file, bookmarks, -1, NULL);
     g_free(bookmarks);
   }
@@ -1835,16 +1922,39 @@ cmd_open(int argc, char** argv)
     pthread_mutex_init(&(Zathura.PDF.pages[i]->lock), NULL);
   }
 
-  /* render pages */
+  /* start page */
   int start_page = 0;
 
+  /* bookmarks */
   if(Zathura.Bookmarks.data)
   {
+    /* get last opened page */
     if(g_key_file_has_group(Zathura.Bookmarks.data, file))
       if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
         start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
+
+    /* open and read bookmark file */
+    gsize i              = 0;
+    gsize number_of_keys = 0;
+    char** keys          = g_key_file_get_keys(Zathura.Bookmarks.data, file, &number_of_keys, NULL);
+
+    for(i = 0; i < number_of_keys; i++)
+    {
+      if(strcmp(keys[i], BM_PAGE_ENTRY))
+      {
+        Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
+            (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
+
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = keys[i];
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = 
+          g_key_file_get_integer(Zathura.Bookmarks.data, file, keys[i], NULL);
+
+        Zathura.Bookmarks.number_of_bookmarks++;
+      }
+    }
   }
 
+  /* show document */
   set_page(start_page);
   update_status();
 
@@ -1958,6 +2068,45 @@ cmd_save(int argc, char** argv)
 }
 
 /* completion command implementation */
+Completion*
+cc_bookmark(char* input)
+{
+  /* init completion group */
+  Completion *completion = malloc(sizeof(Completion));
+  CompletionGroup* group = malloc(sizeof(CompletionGroup));
+
+  group->value    = NULL;
+  group->next     = NULL;
+  group->elements = NULL;
+
+  completion->groups = group;
+  CompletionElement *last_element = NULL;
+  int element_counter = 0;
+  int i = 0;
+  int input_length = input ? strlen(input) : 0;
+
+  for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+  {
+    if( (input_length <= strlen(Zathura.Bookmarks.bookmarks[i].id)) &&
+          !strncmp(input, Zathura.Bookmarks.bookmarks[i].id, input_length) )
+    {
+      CompletionElement* el = malloc(sizeof(CompletionElement));
+      el->value = Zathura.Bookmarks.bookmarks[i].id;
+      el->description = g_strdup_printf("Page: %d", Zathura.Bookmarks.bookmarks[i].page);
+      el->next = NULL;
+
+      if(element_counter++ != 0)
+        last_element->next = el;
+      else
+        group->elements = el;
+
+      last_element = el;
+    }
+  }
+
+  return completion;
+}
+
 Completion*
 cc_export(char* input)
 {
