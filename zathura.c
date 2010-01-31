@@ -283,6 +283,7 @@ void isc_string_manipulation(Argument*);
 gboolean cmd_bookmark(int, char**);
 gboolean cmd_open_bookmark(int, char**);
 gboolean cmd_close(int, char**);
+gboolean cmd_delete_bookmark(int, char**);
 gboolean cmd_export(int, char**);
 gboolean cmd_info(int, char**);
 gboolean cmd_open(int, char**);
@@ -1690,6 +1691,47 @@ cmd_close(int argc, char** argv)
   Zathura.Marker.last              = -1;
 
   update_status();
+
+  return TRUE;
+}
+
+gboolean
+cmd_delete_bookmark(int argc, char** argv)
+{
+  if(!Zathura.PDF.document || argc < 1)
+    return TRUE;
+
+  /* get id */
+  int i;
+  GString *id = g_string_new("");
+
+  for(i = 0; i < argc; i++)
+  {
+    if(i != 0)
+      id = g_string_append_c(id, ' ');
+
+    id = g_string_append(id, argv[i]);
+  }
+
+  /* check for bookmark to delete */
+  for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+  {
+    if(!strcmp(id->str, Zathura.Bookmarks.bookmarks[i].id))
+    {
+      /* update key file */
+      g_key_file_remove_key(Zathura.Bookmarks.data, Zathura.PDF.file, Zathura.Bookmarks.bookmarks[i].id, NULL);
+
+      /* update bookmarks */
+      Zathura.Bookmarks.bookmarks[i].id   = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].id;
+      Zathura.Bookmarks.bookmarks[i].page = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].page;
+      Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
+          Zathura.Bookmarks.number_of_bookmarks * sizeof(Bookmark));
+
+      Zathura.Bookmarks.number_of_bookmarks--;
+
+      return TRUE;
+    }
+  }
 
   return TRUE;
 }
