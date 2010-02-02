@@ -227,6 +227,7 @@ struct
   {
     PopplerDocument *document;
     char            *file;
+    char            *password;
     Page           **pages;
     int              page_number;
     int              number_of_pages;
@@ -247,6 +248,7 @@ void highlight_result(int, PopplerRectangle*);
 void draw(int);
 void eval_marker(int);
 void notify(int, char*);
+gboolean open_file(char*, char*);
 void update_status();
 void recalcRectangle(int, PopplerRectangle*);
 void setCompletionRowColor(GtkBox*, int, int);
@@ -723,6 +725,103 @@ void notify(int level, char* message)
  
   if(message)
     gtk_entry_set_text(Zathura.UI.inputbar, message);
+}
+
+gboolean
+open_file(char* path, char* password)
+{
+  /* get filename */
+  char* file = realpath(path, NULL);
+
+  if(path[0] == '~')
+    file = g_strdup_printf("%s%s", getenv("HOME"), path + 1);
+
+  /* check if file exists */
+  if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
+  {
+    notify(ERROR, "File does not exist");
+    return FALSE;
+  }
+
+  /* close old file */
+  cmd_close(-1, NULL);
+
+  /* check saved password */
+  if(!password)
+    password = (Zathura.PDF.password && strlen(Zathura.PDF.password) != 0) ? Zathura.PDF.password : NULL;
+
+  /* open file */
+  GError* error = NULL;
+  Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file),
+      password ? password : NULL, &error);
+
+  if(!Zathura.PDF.document)
+  {
+    char* message = (error->code == 1) ? "(Use \":set password\" to set the password)" : "";
+    message = g_strdup_printf("Can not open file: %s %s", error->message, message);
+    notify(ERROR, message);
+    g_free(message);
+    g_error_free(error);
+    return FALSE;
+  }
+
+  Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
+  Zathura.PDF.file            = file;
+  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
+  Zathura.PDF.scale           = 100;
+  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
+  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
+  Zathura.PDF.rotate          = 0;
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
+  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
+  Zathura.State.filename      = file;
+
+  /* get pages */
+  int i;
+  for(i = 0; i < Zathura.PDF.number_of_pages; i++)
+  {
+    Zathura.PDF.pages[i] = malloc(sizeof(Page));
+    Zathura.PDF.pages[i]->page = poppler_document_get_page(Zathura.PDF.document, i);
+    pthread_mutex_init(&(Zathura.PDF.pages[i]->lock), NULL);
+  }
+
+  /* start page */
+  int start_page = 0;
+
+  /* bookmarks */
+  if(Zathura.Bookmarks.data)
+  {
+    /* get last opened page */
+    if(g_key_file_has_group(Zathura.Bookmarks.data, file))
+      if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
+        start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
+
+    /* open and read bookmark file */
+    gsize i              = 0;
+    gsize number_of_keys = 0;
+    char** keys          = g_key_file_get_keys(Zathura.Bookmarks.data, file, &number_of_keys, NULL);
+
+    for(i = 0; i < number_of_keys; i++)
+    {
+      if(strcmp(keys[i], BM_PAGE_ENTRY))
+      {
+        Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
+            (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
+
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = keys[i];
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = 
+          g_key_file_get_integer(Zathura.Bookmarks.data, file, keys[i], NULL);
+
+        Zathura.Bookmarks.number_of_bookmarks++;
+      }
+    }
+  }
+
+  /* show document */
+  set_page(start_page);
+  update_status();
+
+  return TRUE;
 }
 
 void
@@ -1665,6 +1764,7 @@ cmd_close(int argc, char** argv)
   Zathura.State.filename      = (char*) DEFAULT_TEXT;
   Zathura.PDF.document        = NULL;
   Zathura.PDF.file            = "";
+  Zathura.PDF.password        = "";
   Zathura.PDF.page_number     = 0;
   Zathura.PDF.number_of_pages = 0;
   Zathura.PDF.scale           = 0;
@@ -1917,90 +2017,19 @@ cmd_open(int argc, char** argv)
 {
   if(argc == 0 || strlen(argv[0]) == 0)
     return FALSE;
-  
-  /* get filename */
-  char* file = realpath(argv[0], NULL);
 
-  if(argv[0][0] == '~')
-    file = g_strdup_printf("%s%s", getenv("HOME"), argv[0] + 1);
-
-  /* check if file exists */
-  if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
+  /* assembly the arguments back to one string */
+  int i = 0;
+  GString *filepath = g_string_new("");
+  for(i = 0; i < argc; i++)
   {
-    notify(ERROR, "File does not exist");
-    return FALSE;
+    if(i != 0)
+      filepath = g_string_append_c(filepath, ' ');
+
+    filepath = g_string_append(filepath, argv[i]);
   }
 
-  /* close old file */
-  cmd_close(-1, NULL);
-
-  /* open file */
-  Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file),
-      (argc == 2) ? argv[1] : NULL, NULL);
-
-  if(!Zathura.PDF.document)
-  {
-    notify(ERROR, "Can not open file");
-    return FALSE;
-  }
-
-  Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
-  Zathura.PDF.file            = file;
-  pthread_mutex_lock(&(Zathura.Lock.scale_lock));
-  Zathura.PDF.scale           = 100;
-  pthread_mutex_unlock(&(Zathura.Lock.scale_lock));
-  pthread_mutex_lock(&(Zathura.Lock.rotate_lock));
-  Zathura.PDF.rotate          = 0;
-  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
-  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
-  Zathura.State.filename      = file;
-
-  /* get pages */
-  int i;
-  for(i = 0; i < Zathura.PDF.number_of_pages; i++)
-  {
-    Zathura.PDF.pages[i] = malloc(sizeof(Page));
-    Zathura.PDF.pages[i]->page = poppler_document_get_page(Zathura.PDF.document, i);
-    pthread_mutex_init(&(Zathura.PDF.pages[i]->lock), NULL);
-  }
-
-  /* start page */
-  int start_page = 0;
-
-  /* bookmarks */
-  if(Zathura.Bookmarks.data)
-  {
-    /* get last opened page */
-    if(g_key_file_has_group(Zathura.Bookmarks.data, file))
-      if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
-        start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
-
-    /* open and read bookmark file */
-    gsize i              = 0;
-    gsize number_of_keys = 0;
-    char** keys          = g_key_file_get_keys(Zathura.Bookmarks.data, file, &number_of_keys, NULL);
-
-    for(i = 0; i < number_of_keys; i++)
-    {
-      if(strcmp(keys[i], BM_PAGE_ENTRY))
-      {
-        Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
-            (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
-
-        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = keys[i];
-        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = 
-          g_key_file_get_integer(Zathura.Bookmarks.data, file, keys[i], NULL);
-
-        Zathura.Bookmarks.number_of_bookmarks++;
-      }
-    }
-  }
-
-  /* show document */
-  set_page(start_page);
-  update_status();
-
-  return TRUE;
+  return open_file(filepath->str, Zathura.PDF.password);
 }
 
 gboolean
@@ -2747,7 +2776,7 @@ int main(int argc, char* argv[])
   update_status();
 
   if(argc >= 2)
-    cmd_open(2, &argv[1]);
+    open_file(argv[1], (argc == 3) ? argv[2] : NULL);
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
 

@@ -136,4 +136,5 @@ SpecialCommand special_commands[] = {
 Setting settings[] = {
   /* name,         variable,                        type,  render,  description */
   {"revertvideo",  &(Zathura.Global.reverse_video), 'b',   TRUE,    "Invert the image"},
+  {"password",     &(Zathura.PDF.password),         's',   FALSE,   "The password of the document"},
 };
