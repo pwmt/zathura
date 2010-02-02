@@ -2652,20 +2652,15 @@ cb_index_selection_changed(GtkTreeSelection* treeselection, GtkWidget* action_vi
     PopplerDest*   destination;
 
     gtk_tree_model_get(model, &iter, 1, &action, -1);
-
     if(action->type == POPPLER_ACTION_GOTO_DEST)
     {
       destination = action->goto_dest.dest;
+      int page_number = destination->page_num;
 
-      if(destination->type == POPPLER_DEST_NAMED)
+      if(page_number >= 0 && page_number <= Zathura.PDF.number_of_pages)
       {
-        destination = poppler_document_find_dest(Zathura.PDF.document, destination->named_dest);
-
-        if(destination)
-        {
-          set_page(destination->page_num - 1);
-          update_status();
-        }
+        set_page(page_number - 1);
+        update_status();
       }
     }
   }
