@@ -44,7 +44,7 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 
 /* printing */
 #define LIST_PRINTER_COMMAND "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'"
-#define PRINT_COMMAND "lp -d '%s' -p %s %s" /* printer / pages / file */
+#define PRINT_COMMAND "lp -d '%s' -p %s '%s'" /* printer / pages / file */
 
 /* additional settings */
 #define SHOW_SCROLLBARS 0
