@@ -1998,16 +1998,12 @@ cmd_info(int argc, char** argv)
     gtk_widget_show_all(Zathura.UI.information);
   }
 
-  static gboolean show = TRUE;
-
-  if(show)
+  if(!gtk_widget_get_visible(GTK_WIDGET(Zathura.UI.information)))
     switch_view(Zathura.UI.information);
   else
   {
     switch_view(Zathura.UI.drawing_area);
   }
-
-  show = !show;
 
   return FALSE;
 }
