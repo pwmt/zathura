@@ -2546,7 +2546,6 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
     width  = page_height * scale;
     height = page_width  * scale;
   }
-  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
 
   int window_x, window_y;
   gdk_drawable_get_size(widget->window, &window_x, &window_y);
@@ -2567,6 +2566,7 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
   cairo_paint(cairo);
   cairo_destroy(cairo);
+  pthread_mutex_unlock(&(Zathura.Lock.rotate_lock));
 
   return TRUE;
 }

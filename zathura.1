@@ -1,135 +1,164 @@
 .TH ZATHURA 1 zathura\-0.0
 .SH NAME
-zathura \- a pdf viewer
+zathura \- a PDF viewer
 .SH SYNOPSIS
 .B zathura
 .RB [\fIFILE\fR] [\fIPASSWORD\fR]
 .SH DESCRIPTION
-zathura is a pdf viewer based on the poppler pdf rendering library
-.SH USAGE
-.SS show and edit form fields
-the form command separates between two actions: show, for showing and numerating all available forms on the current page; and set for modifying the value of the given form field:
-.TP 
-.I form show
-shows all values
-.TP 
-.I form set [value number] [value]
-modifying the value in the form field with the given value number
-.SS export image and attachments
-the export command expects the type of objects you want to export (images or attachments) and a existing path where it will save the files
-.TP
-.I export [image|attachments] [path]
-.SS printing documents
-the printing command is kept very simple and works with lp. it expects the range of sites you want to print and the id of a printer specified in the config.h file or the name of it
-.TP
-.I print [all|x|x-y] [printer id|printer name]
+zathura is a highly customizable and functional PDF viewer based on the poppler
+rendering library and the gtk+ toolkit. The idea behind zathura is an
+application that provides a minimalistic and space saving interface as well as
+an easy usage that mainly focuses on keyboard interaction.
 .SH DEFAULT SETTINGS
 .SS Commands
 .TP
+.B bmark
+Bookmark current page
+.TP
+.B blist
+List and open bookmark
+.TP
+.B close
+Close current file
+.TP
+.B delbmark
+Delete given bookmark
+.TP
 .B export
-export images, the pdf or attachments to a specified directory
-.TP
-.B form
-show and edit form fields 
-.TP
-.B goto
-go to a given page
+Export images or attached files
 .TP
 .B info
-show the document properties
-.TP
-.B links
-show existing links on the page
+Show information about the document
 .TP
 .B open
-open a pdf document
+Open a file
 .TP
 .B print
-print the document or specific sites of it
-.TP
-.B quit
-close the program
+Print the document
 .TP
 .B rotate
-rotate the page
+Rotate the page
 .TP
-.B zoom
-set the zoom level
+.B set
+Set an option
+.TP
+.B quit
+Quit the program
+.TP
+.B write
+Save the document
+.SS Buffered commands
+.TP
+.B gg
+Go to the first page
+.TP
+.B GG
+Go to the last page
+.TP
+.B [0-9]+G
+Go to the specified page
+.TP
+.B zI
+Zoom in
+.TP
+.B zO
+Zoom out
+.TP
+.B z0
+Zoom to the original size
+.TP
+.B [0-9]+Z
+Zoom to the given level
+.TP
+.B [0-9]+%
+Move to the given position
 .SS Shortcuts
 .TP
-.B ^f
-next page
+.B ^n
+Toggle statusbar
 .TP
-.B ^b
-previous page
-.TP
-.B ^-
-zoom in
-.TP
-.B ^+
-zoom out
-.TP
-.B ^0
-original size
-.TP
-.B ^r
-rotate right
-.TP
-.B ^e
-rotate left
+.B ^m
+Toggle inputbar
 .TP
 .B ^q
-quit program
+Quit the program
 .TP
-.B ^p
-print
+.B Esc | ^c
+Abort 
 .TP
-.B n
-search forwards
-.TP
-.B N
-search backwards
-.TP
-.B h
-scroll left
-.TP
-.B j
-scroll up
-.TP
-.B k
-scroll down
-.TP
-.B l
-scroll right
-.TP
-.B PgUp
-scroll to the top of the page
-.TP
-.B PgDown
-scroll to the bottom of the page
-.TP
-.B i
-best fit
-.TP
-.B u
-adjust width
-.TP
-.B :
-focus inputbar
-.TP
-.B o
-open command
-.TP
-.B r
-rotate command
-.TP
-.B z
-zoom command
-.TP
-.B g
-go to command
+.B ^i
+Revert the colors of the page
 .TP
 .B /
-search
+Search forwards
+.TP
+.B ?
+Search backwards
+.TP
+.B Tab
+Toggle index
+.TP
+.B J
+Go to next page
+.TP
+.B K
+Go to previous page
+.TP
+.B h
+Scroll to the left
+.TP
+.B h
+Scroll to the left
+.TP
+.B i
+Scroll upwards
+.TP
+.B j
+Scroll downards
+.TP
+.B j
+Scroll to the right
+.TP
+.B i
+Change to insert mode
+.TP
+.B v
+Change to visual mode
+.TP
+.B :
+Focus inputbar
+.TP
+.B o
+Open a file
+.TP
+.B n
+Search last search key forwards
+.TP
+.B N
+Search last search key backwards
+.TP
+.B a
+Adjust best fit
+.TP
+.B s
+Adjust width
+.TP
+.B Backspace
+Delete last character in the buffer
+.SS Inputbar shortcuts
+.TP
+.B Up
+Move up in the command history
+.TP
+.B Down
+Move down in the command history
+.TP
+.B Tab | Shift + Tab
+Tab completion
+.TP
+.B ^w
+Delete last word
 .SH CONFIGURATION
-the complete configuration (appearance, shortcuts, commands and other settings) are stored in a seperate file (config.h) where you are able to change and edit everything according to your wishes
+The complete configuration including the appearance and shortcuts of the program
+are defined in a seperate file named config.h. In this file you are able to
+change and adjust all the settings of zathura according to your wishes.
