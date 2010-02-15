@@ -108,7 +108,7 @@ Command commands[] = {
   {"print",     "p",            cmd_print,           cc_print,     "Print the document" },
   {"rotate",    "r",            cmd_rotate,          0,            "Rotate the page" },
   {"set",       "s",            cmd_set,             cc_set,       "Set an option" },
-  {"quit",      "q",            cmd_quit,            0,            "Quit zjui" },
+  {"quit",      "q",            cmd_quit,            0,            "Quit zathura" },
   {"write",     "w",            cmd_save,            0,            "Save the document" },
 };
 
