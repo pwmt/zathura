@@ -1117,7 +1117,6 @@ watch_file(void* parameter)
       
       Zathura.PDF.scale = scale;
       draw(page);
-      gtk_widget_queue_draw(Zathura.UI.drawing_area);
 
       break;
     }
@@ -2854,6 +2853,9 @@ int main(int argc, char* argv[])
   arg.n = ADJUST_OPEN;
   sc_adjust_window(&arg);
 
+  if(!g_thread_supported())
+    g_thread_init(NULL);
+  gdk_threads_init();
   gtk_main();
 
   return 0;
