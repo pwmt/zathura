@@ -1033,7 +1033,9 @@ switch_view(GtkWidget* widget)
 void*
 search(void* parameter)
 {
+  pthread_mutex_lock(&(Zathura.Lock.search_lock));
   Zathura.Thread.search_thread_running = TRUE;
+  pthread_mutex_unlock(&(Zathura.Lock.search_lock));
   Argument* argument = (Argument*) parameter;
 
   static char* search_item;
@@ -1048,7 +1050,9 @@ search(void* parameter)
 
   if(!Zathura.PDF.document || !search_item || !strlen(search_item))
   {
+    pthread_mutex_lock(&(Zathura.Lock.search_lock));
     Zathura.Thread.search_thread_running = FALSE;
+    pthread_mutex_unlock(&(Zathura.Lock.search_lock));
     pthread_exit(NULL);
   }
 
@@ -1058,6 +1062,14 @@ search(void* parameter)
 
   for(page_counter = 1; page_counter <= Zathura.PDF.number_of_pages; page_counter++)
   {
+    pthread_mutex_lock(&(Zathura.Lock.search_lock));
+    if(Zathura.Thread.search_thread_running == FALSE)
+    {
+      pthread_mutex_unlock(&(Zathura.Lock.search_lock));
+      pthread_exit(NULL);
+    }
+    pthread_mutex_unlock(&(Zathura.Lock.search_lock));
+
     next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number +
         page_counter * direction) % Zathura.PDF.number_of_pages;
 
@@ -1296,12 +1308,14 @@ sc_search(Argument* argument)
   pthread_mutex_lock(&(Zathura.Lock.search_lock));
   if(Zathura.Thread.search_thread_running)
   {
-    if(pthread_cancel(Zathura.Thread.search_thread) == 0)
-      pthread_join(Zathura.Thread.search_thread, NULL);
-
+    pthread_mutex_unlock(&(Zathura.Lock.search_lock));
     Zathura.Thread.search_thread_running = FALSE;
+    pthread_join(Zathura.Thread.search_thread, NULL);
   }
+  else
+    pthread_mutex_unlock(&(Zathura.Lock.search_lock));
 
+  pthread_mutex_lock(&(Zathura.Lock.search_lock));
   pthread_create(&(Zathura.Thread.search_thread), NULL, search, (gpointer) argument);
   pthread_mutex_unlock(&(Zathura.Lock.search_lock));
 }
