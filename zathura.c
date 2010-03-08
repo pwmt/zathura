@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <pthread.h>
+#include <sys/inotify.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -193,12 +194,14 @@ struct
     pthread_mutex_t rotate_lock;
     pthread_mutex_t search_lock;
     pthread_mutex_t viewport_lock;
+    pthread_mutex_t document_lock;
   } Lock;
 
   struct
   {
-    pthread_t      search_thread;
-    gboolean       search_thread_running;
+    pthread_t search_thread;
+    gboolean  search_thread_running;
+    pthread_t inotify_thread;
   } Thread;
 
   struct
@@ -214,6 +217,12 @@ struct
     int number_of_markers;
     int last;
   } Marker;
+
+  struct
+  {
+    int wd;
+    int fd;
+  } Inotify;
 
   struct
   {
@@ -258,6 +267,7 @@ GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 
 /* thread declaration */
 void* search(void*);
+void* watch_file(void*);
 
 /* shortcut declarations */
 void sc_abort(Argument*);
@@ -361,6 +371,7 @@ init_zathura()
   pthread_mutex_init(&(Zathura.Lock.rotate_lock),   NULL);
   pthread_mutex_init(&(Zathura.Lock.search_lock),   NULL);
   pthread_mutex_init(&(Zathura.Lock.viewport_lock), NULL);
+  pthread_mutex_init(&(Zathura.Lock.document_lock), NULL);
 
   /* look */
   gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
@@ -394,6 +405,8 @@ init_zathura()
   Zathura.Marker.markers           = NULL;
   Zathura.Marker.number_of_markers =  0;
   Zathura.Marker.last              = -1;
+
+  Zathura.Inotify.fd = inotify_init();
 
   /* UI */
   Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
@@ -752,8 +765,10 @@ open_file(char* path, char* password)
 
   /* open file */
   GError* error = NULL;
+  pthread_mutex_lock(&(Zathura.Lock.document_lock));
   Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file),
       password ? password : NULL, &error);
+  pthread_mutex_unlock(&(Zathura.Lock.document_lock));
 
   if(!Zathura.PDF.document)
   {
@@ -765,7 +780,16 @@ open_file(char* path, char* password)
     return FALSE;
   }
 
+  /* inotify */
+  if(Zathura.Inotify.fd != -1)
+  {
+    if((Zathura.Inotify.wd = inotify_add_watch(Zathura.Inotify.fd, file, IN_CLOSE_WRITE)) != -1)
+      pthread_create(&(Zathura.Thread.inotify_thread), NULL, watch_file, NULL);
+  }
+
+  pthread_mutex_lock(&(Zathura.Lock.document_lock));
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
+  pthread_mutex_unlock(&(Zathura.Lock.document_lock));
   Zathura.PDF.file            = file;
   pthread_mutex_lock(&(Zathura.Lock.scale_lock));
   Zathura.PDF.scale           = 100;
@@ -781,7 +805,9 @@ open_file(char* path, char* password)
   for(i = 0; i < Zathura.PDF.number_of_pages; i++)
   {
     Zathura.PDF.pages[i] = malloc(sizeof(Page));
+    pthread_mutex_lock(&(Zathura.Lock.document_lock));
     Zathura.PDF.pages[i]->page = poppler_document_get_page(Zathura.PDF.document, i);
+    pthread_mutex_unlock(&(Zathura.Lock.document_lock));
     pthread_mutex_init(&(Zathura.PDF.pages[i]->lock), NULL);
   }
 
@@ -1035,7 +1061,9 @@ search(void* parameter)
     next_page = (Zathura.PDF.number_of_pages + Zathura.PDF.page_number +
         page_counter * direction) % Zathura.PDF.number_of_pages;
 
+    pthread_mutex_lock(&(Zathura.Lock.document_lock));
     PopplerPage* page = poppler_document_get_page(Zathura.PDF.document, next_page);
+    pthread_mutex_unlock(&(Zathura.Lock.document_lock));
     if(!page)
       pthread_exit(NULL);
     results = poppler_page_find_text(page, search_item);
@@ -1058,6 +1086,43 @@ search(void* parameter)
   }
 
   Zathura.Thread.search_thread_running = FALSE;
+  pthread_exit(NULL);
+}
+
+void*
+watch_file(void* parameter)
+{
+  int blen = sizeof(struct inotify_event);
+
+  while(1)
+  {
+    /* wait for event */
+    char buf[blen];
+    if(read(Zathura.Inotify.fd, buf, blen) < 0)
+      continue;
+
+    /* process event */
+    struct inotify_event *event = (struct inotify_event*) buf;
+    if(event->mask & IN_CLOSE_WRITE)
+    {
+      /* save old information */
+      char* path     = Zathura.PDF.file ? strdup(Zathura.PDF.file) : NULL;
+      char* password = Zathura.PDF.password ? strdup(Zathura.PDF.password) : NULL;
+      int scale      = Zathura.PDF.scale;
+      int page       = Zathura.PDF.page_number;
+
+      /* reopen and restore settings */
+      cmd_close(0, NULL);
+      open_file(path, password);
+      
+      Zathura.PDF.scale = scale;
+      draw(page);
+      gtk_widget_queue_draw(Zathura.UI.drawing_area);
+
+      break;
+    }
+  }
+
   pthread_exit(NULL);
 }
 
@@ -1260,7 +1325,9 @@ sc_toggle_index(Argument* argument)
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.index),
       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
+    pthread_mutex_lock(&(Zathura.Lock.document_lock));
     index_iter = poppler_index_iter_new(Zathura.PDF.document);
+    pthread_mutex_unlock(&(Zathura.Lock.document_lock));
 
     if(index_iter)
     {
@@ -1756,12 +1823,20 @@ cmd_close(int argc, char** argv)
     g_free(bookmarks);
   }
 
+  /* inotify */
+  if(Zathura.Inotify.fd != -1 && Zathura.Inotify.wd != -1)
+    inotify_rm_watch(Zathura.Inotify.fd, Zathura.Inotify.wd);
+
+  Zathura.Inotify.wd = -1;
+  /*pthread_cancel(Zathura.Thread.inotify_thread);*/
+
   /* reset values */
   free(Zathura.PDF.pages);
   g_object_unref(Zathura.PDF.document);
 
   Zathura.State.pages         = "";
   Zathura.State.filename      = (char*) DEFAULT_TEXT;
+
   Zathura.PDF.document        = NULL;
   Zathura.PDF.file            = "";
   Zathura.PDF.password        = "";
@@ -2506,9 +2581,14 @@ cb_destroy(GtkWidget* widget, gpointer data)
   pthread_mutex_destroy(&(Zathura.Lock.rotate_lock));
   pthread_mutex_destroy(&(Zathura.Lock.search_lock));
   pthread_mutex_destroy(&(Zathura.Lock.viewport_lock));
+  pthread_mutex_destroy(&(Zathura.Lock.document_lock));
 
   /* clean up other variables */
   g_free(Zathura.Bookmarks.file);
+
+  /* inotify */
+  if(Zathura.Inotify.fd != -1)
+    close(Zathura.Inotify.fd);
 
   gtk_main_quit();
 
@@ -2517,8 +2597,7 @@ cb_destroy(GtkWidget* widget, gpointer data)
 
 gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 {
-  /*intptr_t t = (intptr_t) data;*/
-  int page_id = Zathura.PDF.page_number; /* (int) t; */
+  int page_id = Zathura.PDF.page_number;
 
   if(page_id < 0 || page_id > Zathura.PDF.number_of_pages)
     return FALSE;
