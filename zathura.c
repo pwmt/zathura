@@ -1076,9 +1076,13 @@ search(void* parameter)
     pthread_mutex_lock(&(Zathura.Lock.document_lock));
     PopplerPage* page = poppler_document_get_page(Zathura.PDF.document, next_page);
     pthread_mutex_unlock(&(Zathura.Lock.document_lock));
+
     if(!page)
       pthread_exit(NULL);
+
+    pthread_mutex_lock(&(Zathura.PDF.pages[next_page]->lock));
     results = poppler_page_find_text(page, search_item);
+    pthread_mutex_unlock(&(Zathura.PDF.pages[next_page]->lock));
 
     if(results)
       break;
@@ -2867,9 +2871,7 @@ int main(int argc, char* argv[])
   arg.n = ADJUST_OPEN;
   sc_adjust_window(&arg);
 
-  if(!g_thread_supported())
-    g_thread_init(NULL);
-  gdk_threads_init();
+  g_thread_init(NULL);
   gtk_main();
 
   return 0;

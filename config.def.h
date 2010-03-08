@@ -129,8 +129,8 @@ BufferCommand buffer_commands[] = {
 /* special commands */
 SpecialCommand special_commands[] = {
   /* identifier,   function,      a,   argument */
-  {'/',            scmd_search,   1,   { DOWN } },
-  {'?',            scmd_search,   1,   { UP } },
+  {'/',            scmd_search,   0,   { DOWN } },
+  {'?',            scmd_search,   0,   { UP } },
 };
 
 /* settings */
