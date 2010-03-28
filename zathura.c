@@ -1091,10 +1091,10 @@ search(void* parameter)
   /* draw results */
   if(results)
   {
+    set_page(next_page);
+
     for(list = results; list && list->data; list = g_list_next(list))
       highlight_result(next_page, (PopplerRectangle*) list->data);
-
-    set_page(next_page);
   }
   else
   {
