@@ -36,6 +36,8 @@ static const char notification_e_bgcolor[] = "#FF1212";
 static const char notification_e_fgcolor[] = "#FFFFFF";
 static const char notification_w_bgcolor[] = "#FFF712";
 static const char notification_w_fgcolor[] = "#000000";
+static const char recolor_darkcolor[]      = "#353535";
+static const char recolor_lightcolor[]     = "#DBDBDB";
 
 static const char search_highlight[]       = "#9FBC00";
 
@@ -57,7 +59,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   NORMAL,   {0} },
   {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             -1,       {0} },
-  {GDK_CONTROL_MASK,   GDK_i,             sc_revert_video,      NORMAL,   {0} },
+  {GDK_CONTROL_MASK,   GDK_i,             sc_recolor,           NORMAL,   {0} },
   {0,                  GDK_slash,         sc_focus_inputbar,    NORMAL,   { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    NORMAL,   { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    NORMAL,   { .data = "?" } },
@@ -136,6 +138,6 @@ SpecialCommand special_commands[] = {
 /* settings */
 Setting settings[] = {
   /* name,         variable,                        type,  render,  description */
-  {"revertvideo",  &(Zathura.Global.reverse_video), 'b',   TRUE,    "Invert the image"},
+  {"recolor",      &(Zathura.Global.recolor),       'b',   TRUE,    "Invert the image"},
   {"password",     &(Zathura.PDF.password),         's',   FALSE,   "The password of the document"},
 };

@@ -170,6 +170,8 @@ struct
     GdkColor notification_e_bg;
     GdkColor notification_w_fg;
     GdkColor notification_w_bg;
+    GdkColor recolor_darkcolor;
+    GdkColor recolor_lightcolor;
     GdkColor search_highlight;
     PangoFontDescription *font;
   } Style;
@@ -180,7 +182,7 @@ struct
     GList   *history;
     int      mode;
     int      viewing_mode;
-    gboolean reverse_video;
+    gboolean recolor;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
@@ -272,7 +274,7 @@ void sc_change_buffer(Argument*);
 void sc_change_mode(Argument*);
 void sc_focus_inputbar(Argument*);
 void sc_navigate(Argument*);
-void sc_revert_video(Argument*);
+void sc_recolor(Argument*);
 void sc_rotate(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
@@ -384,13 +386,15 @@ init_zathura()
   gdk_color_parse(notification_e_bgcolor, &(Zathura.Style.notification_e_bg));
   gdk_color_parse(notification_w_fgcolor, &(Zathura.Style.notification_w_fg));
   gdk_color_parse(notification_w_bgcolor, &(Zathura.Style.notification_w_bg));
+  gdk_color_parse(recolor_darkcolor,      &(Zathura.Style.recolor_darkcolor));
+  gdk_color_parse(recolor_lightcolor,     &(Zathura.Style.recolor_lightcolor));
   gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
   Zathura.Style.font = pango_font_description_from_string(font);
 
   /* other */
   Zathura.Global.mode          = NORMAL;
   Zathura.Global.viewing_mode  = NORMAL;
-  Zathura.Global.reverse_video = FALSE;
+  Zathura.Global.recolor       = FALSE;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = "";
@@ -637,14 +641,46 @@ draw(int page_id)
   cairo_restore(cairo);
   cairo_destroy(cairo);
 
-  if(Zathura.Global.reverse_video)
+  if(Zathura.Global.recolor)
   {
     unsigned char* image = cairo_image_surface_get_data(Zathura.PDF.surface);
-    int x, y, z = 0;
+    int x, y;
 
-    for(x = 0; x < cairo_image_surface_get_width(Zathura.PDF.surface); x++)
-      for(y = 0; y < cairo_image_surface_get_height(Zathura.PDF.surface) * 4; y++)
-        image[z++] ^= 0x00FFFFFF;
+    int width     = cairo_image_surface_get_width(Zathura.PDF.surface);
+    int height    = cairo_image_surface_get_height(Zathura.PDF.surface);
+    int rowstride = cairo_image_surface_get_stride(Zathura.PDF.surface);
+
+    /* recolor code based on qimageblitz library flatten() function
+    (http://sourceforge.net/projects/qimageblitz/) */
+
+    int r1 = Zathura.Style.recolor_darkcolor.red    / 257;
+    int g1 = Zathura.Style.recolor_darkcolor.green  / 257;
+    int b1 = Zathura.Style.recolor_darkcolor.blue   / 257;
+    int r2 = Zathura.Style.recolor_lightcolor.red   / 257;
+    int g2 = Zathura.Style.recolor_lightcolor.green / 257;
+    int b2 = Zathura.Style.recolor_lightcolor.blue  / 257;
+
+    int min = 0x00;
+    int max = 0xFF;
+    int mean;
+
+    float sr = ((float) r2 - r1) / (max - min);
+    float sg = ((float) g2 - g1) / (max - min);
+    float sb = ((float) b2 - b1) / (max - min);
+
+    for (y = 0; y < height; y++) 
+    {
+      unsigned char* data = image + y * rowstride;
+
+      for (x = 0; x < width; x++) 
+      {
+        mean = (data[0] + data[1] + data[2]) / 3;
+        data[2] = sr * (mean - min) + r1 + 0.5;
+        data[1] = sg * (mean - min) + g1 + 0.5;
+        data[0] = sb * (mean - min) + b1 + 0.5;
+        data += 4;
+      }
+    }
   }
 
   gtk_widget_set_size_request(Zathura.UI.drawing_area, width, height);
@@ -1264,9 +1300,9 @@ sc_navigate(Argument* argument)
 }
 
 void
-sc_revert_video(Argument* argument)
+sc_recolor(Argument* argument)
 {
-  Zathura.Global.reverse_video = !Zathura.Global.reverse_video;
+  Zathura.Global.recolor = !Zathura.Global.recolor;
   draw(Zathura.PDF.page_number);
 }
 
