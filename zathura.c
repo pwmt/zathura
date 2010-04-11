@@ -243,6 +243,12 @@ struct
     GThread* inotify_thread;
   } Thread;
 
+  struct
+  {
+    guint inputbar_activate;
+    guint inputbar_key_press_event;
+  } Handler;
+
 } Zathura;
 
 /* function declarations */
@@ -328,6 +334,7 @@ gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_index_selection_changed(GtkTreeSelection*, GtkWidget*);
 gboolean cb_inputbar_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_activate(GtkEntry*, gpointer);
+gboolean cb_inputbar_form_activate(GtkEntry*, gpointer);
 
 /* configuration */
 #include "config.h"
@@ -490,8 +497,10 @@ init_zathura()
   gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
   gtk_widget_modify_font(GTK_WIDGET(Zathura.UI.inputbar),                     Zathura.Style.font);
 
-  g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "key-press-event",   G_CALLBACK(cb_inputbar_kb_pressed), NULL);
-  g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate",          G_CALLBACK(cb_inputbar_activate),   NULL);
+  Zathura.Handler.inputbar_key_press_event =
+    g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "key-press-event",   G_CALLBACK(cb_inputbar_kb_pressed), NULL);
+  Zathura.Handler.inputbar_activate =
+    g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate",          G_CALLBACK(cb_inputbar_activate),   NULL);
 
   /* packing */
   gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(Zathura.UI.view),      TRUE,  TRUE,  0);
@@ -1304,9 +1313,8 @@ sc_follow(Argument* argument)
   for(links = link_list; links; links = g_list_next(links))
   {
     PopplerLinkMapping *link_mapping = (PopplerLinkMapping*) links->data;
-    PopplerAction      *action       = poppler_action_copy(link_mapping->action);
-
     PopplerRectangle* link_rectangle = &link_mapping->area;
+
     highlight_result(Zathura.PDF.page_number, link_rectangle);
 
     /* draw text */
@@ -1320,6 +1328,13 @@ sc_follow(Argument* argument)
 
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
   poppler_page_free_link_mapping(link_list);
+
+  /* replace default inputbar handler */
+  g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
+  Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_form_activate), NULL);
+
+  argument->data = "Follow hint: ";
+  sc_focus_inputbar(argument);
 }
 
 void
@@ -2932,6 +2947,43 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   Argument arg = { HIDE };
   isc_completion(&arg);
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
+
+  return TRUE;
+}
+
+gboolean
+cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
+{
+  if(!Zathura.PDF.document)
+    return TRUE;
+  printf("nice\n");
+
+  Page* current_page = Zathura.PDF.pages[Zathura.PDF.page_number];
+  int number_of_links = 0, link_id = 0;
+
+  g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+  GList *link_list = poppler_page_get_link_mapping(current_page->page);
+  g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+  link_list = g_list_reverse(link_list);
+
+  if((number_of_links = g_list_length(link_list)) <= 0)
+    return FALSE;
+
+  GList *links;
+  for(links = link_list; links; links = g_list_next(links))
+  {
+    PopplerLinkMapping *link_mapping = (PopplerLinkMapping*) links->data;
+  }
+
+  poppler_page_free_link_mapping(link_list);
+
+  /* replace default inputbar handler */
+  g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
+  Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_activate), NULL);
+
+  /* reset all */
+  set_page(Zathura.PDF.page_number);
+  isc_abort(NULL);
 
   return TRUE;
 }
