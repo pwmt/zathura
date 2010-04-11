@@ -2857,7 +2857,8 @@ cb_index_selection_changed(GtkTreeSelection* treeselection, GtkWidget* action_vi
       if(page_number >= 0 && page_number <= Zathura.PDF.number_of_pages)
       {
         set_page(page_number - 1);
-        /*update_status();*/
+        update_status();
+        gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
       }
     }
   }
