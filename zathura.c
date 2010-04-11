@@ -2325,6 +2325,15 @@ cmd_quit(int argc, char** argv)
 gboolean
 cmd_save(int argc, char** argv)
 {
+  if(argc == 0 || !Zathura.PDF.document)
+    return TRUE;
+
+  char* path = g_strdup_printf("file://%s", argv[0]);
+  g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+  poppler_document_save(Zathura.PDF.document, path, NULL);
+  g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+  g_free(path);
+
   return TRUE;
 }
 
