@@ -262,6 +262,7 @@ void draw(int);
 void eval_marker(int);
 void notify(int, char*);
 gboolean open_file(char*, char*);
+void open_uri(char*);
 void update_status();
 void recalcRectangle(int, PopplerRectangle*);
 void setCompletionRowColor(GtkBox*, int, int);
@@ -895,6 +896,13 @@ open_file(char* path, char* password)
   update_status();
 
   return TRUE;
+}
+
+void open_uri(char* uri)
+{
+  char* uri_cmd = g_strdup_printf(URI_COMMAND, uri);
+  system(uri_cmd);
+  g_free(uri_cmd);
 }
 
 void
@@ -2962,7 +2970,7 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
     return TRUE;
 
   Page* current_page = Zathura.PDF.pages[Zathura.PDF.page_number];
-  int number_of_links = 0, link_id = 1;
+  int number_of_links = 0, link_id = 1, new_page_id = Zathura.PDF.page_number;
 
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   GList *link_list = poppler_page_get_link_mapping(current_page->page);
@@ -2997,14 +3005,30 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
     /* only handle URI and internal links */
     if(action->type == POPPLER_ACTION_URI)
     {
-      if(li == link_id++)
-        ;
+      if(li == link_id)
+        open_uri(action->uri.uri);
     }
     else if(action->type == POPPLER_ACTION_GOTO_DEST)
     {
-      if(li == link_id++)
-        ;
+      if(li == link_id)
+      {
+        if(action->goto_dest.dest->type == POPPLER_DEST_NAMED)
+        {
+          PopplerDest* destination = poppler_document_find_dest(Zathura.PDF.document, action->goto_dest.dest->named_dest);
+          if(destination)
+          {
+            new_page_id = destination->page_num - 1;
+            poppler_dest_free(destination);
+          }
+        }
+        else
+          new_page_id = action->goto_dest.dest->page_num - 1;
+      }
     }
+    else
+      continue;
+
+    link_id++;
   }
 
   poppler_page_free_link_mapping(link_list);
@@ -3014,7 +3038,7 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
   Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_activate), NULL);
 
   /* reset all */
-  set_page(Zathura.PDF.page_number);
+  set_page(new_page_id);
   isc_abort(NULL);
 
   return TRUE;

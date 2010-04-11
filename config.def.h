@@ -48,6 +48,9 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 #define LIST_PRINTER_COMMAND "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'"
 #define PRINT_COMMAND "lp -d '%s' -p %s '%s'" /* printer / pages / file */
 
+/* open uri */
+#define URI_COMMAND "firefox %s" /* uri */
+
 /* additional settings */
 #define SHOW_SCROLLBARS 0
 #define ADJUST_OPEN ADJUST_BESTFIT
