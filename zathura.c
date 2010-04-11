@@ -1299,7 +1299,7 @@ sc_follow(Argument* argument)
     return;
 
   Page* current_page = Zathura.PDF.pages[Zathura.PDF.page_number];
-  int number_of_links = 0, link_id = 0;
+  int number_of_links = 0, link_id = 1;
 
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   GList *link_list = poppler_page_get_link_mapping(current_page->page);
@@ -1314,16 +1314,20 @@ sc_follow(Argument* argument)
   {
     PopplerLinkMapping *link_mapping = (PopplerLinkMapping*) links->data;
     PopplerRectangle* link_rectangle = &link_mapping->area;
+    PopplerAction            *action = link_mapping->action;
 
-    highlight_result(Zathura.PDF.page_number, link_rectangle);
+    /* only handle URI and internal links */
+    if(action->type == POPPLER_ACTION_URI || action->type == POPPLER_ACTION_GOTO_DEST)
+    {
+      highlight_result(Zathura.PDF.page_number, link_rectangle);
 
-    /* draw text */
-    cairo_t *cairo = cairo_create(Zathura.PDF.surface);
-    cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_font_size(cairo, 10);
-    cairo_move_to(cairo, link_rectangle->x1 + 1, link_rectangle->y1 - 1);
-    cairo_show_text(cairo, g_strdup_printf("%i", link_id));
-    link_id++;
+      /* draw text */
+      cairo_t *cairo = cairo_create(Zathura.PDF.surface);
+      cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+      cairo_set_font_size(cairo, 10);
+      cairo_move_to(cairo, link_rectangle->x1 + 1, link_rectangle->y1 - 1);
+      cairo_show_text(cairo, g_strdup_printf("%i", link_id++));
+    }
   }
 
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
@@ -2956,10 +2960,9 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
 {
   if(!Zathura.PDF.document)
     return TRUE;
-  printf("nice\n");
 
   Page* current_page = Zathura.PDF.pages[Zathura.PDF.page_number];
-  int number_of_links = 0, link_id = 0;
+  int number_of_links = 0, link_id = 1;
 
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   GList *link_list = poppler_page_get_link_mapping(current_page->page);
@@ -2969,10 +2972,39 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
   if((number_of_links = g_list_length(link_list)) <= 0)
     return FALSE;
 
+  /* parse entry */
+  gchar *input = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
+  gchar *token = input + strlen("Follow hint: ") - 1;
+  if(!token)
+    return FALSE;
+
+  int li = atoi(token);
+  if(li <= 0 || li > number_of_links)
+  {
+    set_page(Zathura.PDF.page_number);
+    isc_abort(NULL);
+    notify(WARNING, "Invalid hint");
+    return TRUE;
+  }
+
+  /* compare entry */
   GList *links;
   for(links = link_list; links; links = g_list_next(links))
   {
     PopplerLinkMapping *link_mapping = (PopplerLinkMapping*) links->data;
+    PopplerAction            *action = link_mapping->action;
+
+    /* only handle URI and internal links */
+    if(action->type == POPPLER_ACTION_URI)
+    {
+      if(li == link_id++)
+        ;
+    }
+    else if(action->type == POPPLER_ACTION_GOTO_DEST)
+    {
+      if(li == link_id++)
+        ;
+    }
   }
 
   poppler_page_free_link_mapping(link_list);
