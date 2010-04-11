@@ -1197,6 +1197,7 @@ sc_abort(Argument* argument)
 
   /* Set back to normal mode */
   change_mode(NORMAL);
+  switch_view(Zathura.UI.drawing_area);
 }
 
 void
@@ -2086,6 +2087,8 @@ cmd_info(int argc, char** argv)
   if(!Zathura.PDF.document)
     return TRUE;
 
+  static gboolean visible = FALSE;
+
   if(!Zathura.UI.information)
   {
     GtkListStore      *list;
@@ -2140,12 +2143,12 @@ cmd_info(int argc, char** argv)
     gtk_widget_show_all(Zathura.UI.information);
   }
 
-  if(!gtk_widget_get_visible(GTK_WIDGET(Zathura.UI.information)))
+  if(!visible)
     switch_view(Zathura.UI.information);
   else
-  {
     switch_view(Zathura.UI.drawing_area);
-  }
+
+  visible = !visible;
 
   return FALSE;
 }
