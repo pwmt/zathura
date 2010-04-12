@@ -161,6 +161,7 @@ struct
     GtkWidget         *index;
     GtkWidget         *information;
     GtkWidget         *drawing_area;
+    GtkWidget         *document;
   } UI;
 
   struct
@@ -363,6 +364,8 @@ gboolean cb_inputbar_form_activate(GtkEntry*, gpointer);
 gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_view_resized(GtkWidget*, GtkAllocation*, gpointer);
 gboolean cb_view_button_pressed(GtkWidget*, GdkEventButton*, gpointer);
+gboolean cb_view_button_release(GtkWidget*, GdkEventButton*, gpointer);
+gboolean cb_view_motion_notify(GtkWidget*, GdkEventMotion*, gpointer);
 gboolean cb_view_scrolled(GtkWidget*, GdkEventScroll*, gpointer);
 
 /* configuration */
@@ -459,6 +462,7 @@ init_zathura()
   Zathura.UI.statusbar         = gtk_event_box_new();
   Zathura.UI.statusbar_entries = GTK_BOX(gtk_hbox_new(FALSE, 0));
   Zathura.UI.inputbar          = GTK_ENTRY(gtk_entry_new());
+  Zathura.UI.document            = gtk_event_box_new();
 
   /* window */
   gtk_window_set_title(Zathura.UI.window, "zathura");
@@ -474,11 +478,19 @@ init_zathura()
   /* continuous */
   gtk_box_set_spacing(Zathura.UI.continuous, 5);
 
+  /* events */
+  gtk_container_add(GTK_CONTAINER(Zathura.UI.document), GTK_WIDGET(Zathura.UI.drawing_area));
+  gtk_widget_add_events(GTK_WIDGET(Zathura.UI.document), GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
+      GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+
+  g_signal_connect(G_OBJECT(Zathura.UI.document), "button-press-event",   G_CALLBACK(cb_view_button_pressed), NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.document), "button-release-event", G_CALLBACK(cb_view_button_release), NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.document), "motion-notify-event",  G_CALLBACK(cb_view_motion_notify),  NULL);
+
   /* view */
-  g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event",    G_CALLBACK(cb_view_kb_pressed),     NULL);
-  g_signal_connect(G_OBJECT(Zathura.UI.view), "size-allocate",      G_CALLBACK(cb_view_resized),        NULL);
-  g_signal_connect(G_OBJECT(Zathura.UI.view), "button-press-event", G_CALLBACK(cb_view_button_pressed), NULL);
-  g_signal_connect(G_OBJECT(Zathura.UI.view), "scroll-event",       G_CALLBACK(cb_view_scrolled),       NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event",      G_CALLBACK(cb_view_kb_pressed),     NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "size-allocate",        G_CALLBACK(cb_view_resized),        NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "scroll-event",         G_CALLBACK(cb_view_scrolled),       NULL);
   gtk_container_add(GTK_CONTAINER(Zathura.UI.view), GTK_WIDGET(Zathura.UI.viewport));
   gtk_viewport_set_shadow_type(Zathura.UI.viewport, GTK_SHADOW_NONE);
   
@@ -1136,7 +1148,7 @@ set_page(int page)
   argument.n = TOP;
   sc_scroll(&argument);
 
-  switch_view(Zathura.UI.drawing_area);
+  switch_view(Zathura.UI.document);
   draw(page);
 }
 
@@ -1299,7 +1311,7 @@ sc_abort(Argument* argument)
 
   /* Set back to normal mode */
   change_mode(NORMAL);
-  switch_view(Zathura.UI.drawing_area);
+  switch_view(Zathura.UI.document);
 }
 
 void
@@ -2457,7 +2469,7 @@ cmd_info(int argc, char** argv)
   if(!visible)
     switch_view(Zathura.UI.information);
   else
-    switch_view(Zathura.UI.drawing_area);
+    switch_view(Zathura.UI.document);
 
   visible = !visible;
 
@@ -3318,6 +3330,21 @@ cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, gpointer data)
 
 gboolean
 cb_view_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointer data)
+{
+  if(!Zathura.PDF.document)
+    return FALSE;
+
+  return TRUE;
+}
+
+gboolean
+cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
+{
+  return TRUE;
+}
+
+gboolean
+cb_view_motion_notify(GtkWidget* widget, GdkEventMotion* event, gpointer data)
 {
   return TRUE;
 }
