@@ -2658,6 +2658,8 @@ bcmd_scroll(char* buffer, Argument* argument)
 void
 bcmd_zoom(char* buffer, Argument* argument)
 {
+  Zathura.Global.adjust_mode = ADJUST_NONE;
+
   if(argument->n == ZOOM_IN)
   {
     if((Zathura.PDF.scale + ZOOM_STEP) <= ZOOM_MAX)
