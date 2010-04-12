@@ -2729,6 +2729,9 @@ cb_destroy(GtkWidget* widget, gpointer data)
 
 gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 {
+  if(!Zathura.PDF.document)
+    return FALSE;
+
   int page_id = Zathura.PDF.page_number;
 
   if(page_id < 0 || page_id > Zathura.PDF.number_of_pages)
