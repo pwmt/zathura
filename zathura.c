@@ -339,6 +339,8 @@ gboolean cb_inputbar_activate(GtkEntry*, gpointer);
 gboolean cb_inputbar_form_activate(GtkEntry*, gpointer);
 gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_view_resized(GtkWidget*, GtkAllocation*, gpointer);
+gboolean cb_view_button_pressed(GtkWidget*, GdkEventButton*, gpointer);
+gboolean cb_view_scrolled(GtkWidget*, GdkEventScroll*, gpointer);
 
 /* configuration */
 #include "config.h"
@@ -445,8 +447,10 @@ init_zathura()
   gtk_box_set_spacing(Zathura.UI.continuous, 5);
 
   /* view */
-  g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event", G_CALLBACK(cb_view_kb_pressed), NULL);
-  g_signal_connect(G_OBJECT(Zathura.UI.view), "size-allocate",   G_CALLBACK(cb_view_resized),    NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event",    G_CALLBACK(cb_view_kb_pressed),     NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "size-allocate",      G_CALLBACK(cb_view_resized),        NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "button-press-event", G_CALLBACK(cb_view_button_pressed), NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "scroll-event",       G_CALLBACK(cb_view_scrolled),       NULL);
   gtk_container_add(GTK_CONTAINER(Zathura.UI.view), GTK_WIDGET(Zathura.UI.viewport));
   gtk_viewport_set_shadow_type(Zathura.UI.viewport, GTK_SHADOW_NONE);
   
@@ -3061,6 +3065,17 @@ cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, gpointer data)
   return TRUE;
 }
 
+gboolean
+cb_view_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointer data)
+{
+  return TRUE;
+}
+
+gboolean
+cb_view_scrolled(GtkWidget* widget, GdkEventScroll* event, gpointer data)
+{
+  return TRUE;
+}
 
 /* main function */
 int main(int argc, char* argv[])
