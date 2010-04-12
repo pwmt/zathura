@@ -182,6 +182,7 @@ struct
     GdkColor recolor_darkcolor;
     GdkColor recolor_lightcolor;
     GdkColor search_highlight;
+    GdkColor select_text;
     PangoFontDescription *font;
   } Style;
 
@@ -197,6 +198,12 @@ struct
     GtkLabel *status_state;
     int       adjust_mode;
   } Global;
+
+  struct
+  {
+    gdouble x;
+    gdouble y;
+  } SelectPoint;
 
   struct
   {
@@ -244,6 +251,7 @@ struct
     GStaticMutex pdflib_lock;
     GStaticMutex document_lock;
     GStaticMutex search_lock;
+    GStaticMutex select_lock;
   } Lock;
 
   struct
@@ -391,6 +399,7 @@ init_zathura()
   /* init mutexes */
   g_static_mutex_init(&(Zathura.Lock.pdflib_lock));
   g_static_mutex_init(&(Zathura.Lock.search_lock));
+  g_static_mutex_init(&(Zathura.Lock.select_lock));
   g_static_mutex_init(&(Zathura.Lock.document_lock));
 
   /* look */
@@ -413,6 +422,7 @@ init_zathura()
   gdk_color_parse(recolor_darkcolor,      &(Zathura.Style.recolor_darkcolor));
   gdk_color_parse(recolor_lightcolor,     &(Zathura.Style.recolor_lightcolor));
   gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
+  gdk_color_parse(select_text,            &(Zathura.Style.select_text));
   Zathura.Style.font = pango_font_description_from_string(font);
 
   /* other */
@@ -3091,12 +3101,34 @@ cb_view_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointer data)
   if(!Zathura.PDF.document)
     return FALSE;
 
+  /* clean page */
+  draw(Zathura.PDF.page_number);
+  g_static_mutex_lock(&(Zathura.Lock.select_lock));
+  Zathura.SelectPoint.x = event->x;
+  Zathura.SelectPoint.y = event->y;
+  g_static_mutex_unlock(&(Zathura.Lock.select_lock));
+
   return TRUE;
 }
 
 gboolean
 cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
 {
+  if(!Zathura.PDF.document)
+    return FALSE;
+
+  g_static_mutex_lock(&(Zathura.Lock.select_lock));
+  cairo_t *cairo = cairo_create(Zathura.PDF.surface);
+  cairo_set_source_rgba(cairo, Zathura.Style.select_text.red, Zathura.Style.select_text.green,
+      Zathura.Style.select_text.blue, TRANSPARENCY);
+
+  cairo_rectangle(cairo, event->x, event->y, (Zathura.SelectPoint.x - event->x), 
+      (Zathura.SelectPoint.y - event->y));
+  cairo_fill(cairo);
+  g_static_mutex_unlock(&(Zathura.Lock.select_lock));
+  gtk_widget_queue_draw(Zathura.UI.drawing_area);
+
+
   return TRUE;
 }
 
