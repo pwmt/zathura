@@ -26,7 +26,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC,
        FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
-       CONTINUOUS, DELETE_LAST, ADD_MARKER, EVAL_MARKER };
+       ADJUST_NONE, CONTINUOUS, DELETE_LAST, ADD_MARKER,
+       EVAL_MARKER };
 
 /* typedefs */
 struct CElement
@@ -186,6 +187,7 @@ struct
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
+    int       adjust_mode;
   } Global;
 
   struct
@@ -331,11 +333,12 @@ gboolean scmd_search(char*, Argument*);
 /* callback declarations */
 gboolean cb_destroy(GtkWidget*, gpointer);
 gboolean cb_draw(GtkWidget*, GdkEventExpose*, gpointer);
-gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_index_selection_changed(GtkTreeSelection*, GtkWidget*);
 gboolean cb_inputbar_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_activate(GtkEntry*, gpointer);
 gboolean cb_inputbar_form_activate(GtkEntry*, gpointer);
+gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
+gboolean cb_view_resized(GtkWidget*, GtkAllocation*, gpointer);
 
 /* configuration */
 #include "config.h"
@@ -404,6 +407,7 @@ init_zathura()
   Zathura.Global.mode          = NORMAL;
   Zathura.Global.viewing_mode  = NORMAL;
   Zathura.Global.recolor       = FALSE;
+  Zathura.Global.adjust_mode   = ADJUST_OPEN;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = "";
@@ -442,6 +446,7 @@ init_zathura()
 
   /* view */
   g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event", G_CALLBACK(cb_view_kb_pressed), NULL);
+  g_signal_connect(G_OBJECT(Zathura.UI.view), "size-allocate",   G_CALLBACK(cb_view_resized),    NULL);
   gtk_container_add(GTK_CONTAINER(Zathura.UI.view), GTK_WIDGET(Zathura.UI.viewport));
   gtk_viewport_set_shadow_type(Zathura.UI.viewport, GTK_SHADOW_NONE);
   
@@ -1213,6 +1218,8 @@ sc_adjust_window(Argument* argument)
   if(!Zathura.PDF.document)
     return;
 
+  Zathura.Global.adjust_mode = argument->n;
+
   GtkAdjustment* adjustment;
   double view_size;
   double page_width;
@@ -1220,8 +1227,10 @@ sc_adjust_window(Argument* argument)
 
   if(argument->n == ADJUST_WIDTH)
     adjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
-  else
+  else if(argument->n == ADJUST_BESTFIT)
     adjustment = gtk_scrolled_window_get_hadjustment(Zathura.UI.view);
+  else
+    return;
 
   view_size  = gtk_adjustment_get_page_size(adjustment);
 
@@ -2770,71 +2779,6 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 }
 
 gboolean
-cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
-{
-  int i;
-  for(i = 0; i < LENGTH(shortcuts); i++)
-  {
-    if (event->keyval == shortcuts[i].key && 
-      (((event->state & shortcuts[i].mask) == shortcuts[i].mask) || shortcuts[i].mask == 0)
-      && (Zathura.Global.mode == shortcuts[i].mode || shortcuts[i].mode == -1))
-    {
-      shortcuts[i].function(&(shortcuts[i].argument));
-      return TRUE;
-    }
-  }
-
-  if(Zathura.Global.mode == ADD_MARKER)
-  {
-    add_marker(event->keyval);
-    change_mode(NORMAL);
-    return TRUE;
-  }
-  else if(Zathura.Global.mode == EVAL_MARKER)
-  {
-    eval_marker(event->keyval);
-    change_mode(NORMAL);
-    return TRUE;
-  }
-
-  /* append only numbers and characters to buffer */
-  if( (event->keyval >= 0x21) && (event->keyval <= 0x7A))
-  {
-    if(!Zathura.Global.buffer)
-      Zathura.Global.buffer = g_string_new("");
-
-    Zathura.Global.buffer = g_string_append_c(Zathura.Global.buffer, event->keyval);
-    gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, Zathura.Global.buffer->str);
-  }
-
-  /* search buffer commands */
-  if(Zathura.Global.buffer)
-  {
-    for(i = 0; i < LENGTH(buffer_commands); i++)
-    {
-      regex_t regex;
-      int     status;
-
-      regcomp(&regex, buffer_commands[i].regex, REG_EXTENDED);
-      status = regexec(&regex, Zathura.Global.buffer->str, (size_t) 0, NULL, 0);
-      regfree(&regex);
-
-      if(status == 0)
-      {
-        buffer_commands[i].function(Zathura.Global.buffer->str, &(buffer_commands[i].argument));
-        g_string_free(Zathura.Global.buffer, TRUE);
-        Zathura.Global.buffer = NULL;
-        gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, "");
-
-        return TRUE;
-      }
-    }
-  }
-
-  return FALSE;
-}
-
-gboolean
 cb_index_selection_changed(GtkTreeSelection* treeselection, GtkWidget* action_view)
 {
   GtkTreeModel *model;
@@ -3039,6 +2983,82 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
   return TRUE;
 }
 
+gboolean
+cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+  int i;
+  for(i = 0; i < LENGTH(shortcuts); i++)
+  {
+    if (event->keyval == shortcuts[i].key && 
+      (((event->state & shortcuts[i].mask) == shortcuts[i].mask) || shortcuts[i].mask == 0)
+      && (Zathura.Global.mode == shortcuts[i].mode || shortcuts[i].mode == -1))
+    {
+      shortcuts[i].function(&(shortcuts[i].argument));
+      return TRUE;
+    }
+  }
+
+  if(Zathura.Global.mode == ADD_MARKER)
+  {
+    add_marker(event->keyval);
+    change_mode(NORMAL);
+    return TRUE;
+  }
+  else if(Zathura.Global.mode == EVAL_MARKER)
+  {
+    eval_marker(event->keyval);
+    change_mode(NORMAL);
+    return TRUE;
+  }
+
+  /* append only numbers and characters to buffer */
+  if( (event->keyval >= 0x21) && (event->keyval <= 0x7A))
+  {
+    if(!Zathura.Global.buffer)
+      Zathura.Global.buffer = g_string_new("");
+
+    Zathura.Global.buffer = g_string_append_c(Zathura.Global.buffer, event->keyval);
+    gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, Zathura.Global.buffer->str);
+  }
+
+  /* search buffer commands */
+  if(Zathura.Global.buffer)
+  {
+    for(i = 0; i < LENGTH(buffer_commands); i++)
+    {
+      regex_t regex;
+      int     status;
+
+      regcomp(&regex, buffer_commands[i].regex, REG_EXTENDED);
+      status = regexec(&regex, Zathura.Global.buffer->str, (size_t) 0, NULL, 0);
+      regfree(&regex);
+
+      if(status == 0)
+      {
+        buffer_commands[i].function(Zathura.Global.buffer->str, &(buffer_commands[i].argument));
+        g_string_free(Zathura.Global.buffer, TRUE);
+        Zathura.Global.buffer = NULL;
+        gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, "");
+
+        return TRUE;
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+gboolean
+cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, gpointer data)
+{
+  Argument arg;
+  arg.n = Zathura.Global.adjust_mode;
+  sc_adjust_window(&arg);
+
+  return TRUE;
+}
+
+
 /* main function */
 int main(int argc, char* argv[])
 {
@@ -3056,10 +3076,6 @@ int main(int argc, char* argv[])
     open_file(argv[1], (argc == 3) ? argv[2] : NULL);
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
-
-  Argument arg;
-  arg.n = ADJUST_OPEN;
-  sc_adjust_window(&arg);
 
   gdk_threads_enter();
   gtk_main();
