@@ -406,7 +406,7 @@ init_zathura()
   /* other */
   Zathura.Global.mode          = NORMAL;
   Zathura.Global.viewing_mode  = NORMAL;
-  Zathura.Global.recolor       = FALSE;
+  Zathura.Global.recolor       = RECOLOR_OPEN;
   Zathura.Global.adjust_mode   = ADJUST_OPEN;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
@@ -1225,9 +1225,9 @@ sc_adjust_window(Argument* argument)
   double page_width;
   double page_height;
 
-  if(argument->n == ADJUST_WIDTH)
+  if(argument->n == ADJUST_BESTFIT)
     adjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
-  else if(argument->n == ADJUST_BESTFIT)
+  else if(argument->n == ADJUST_WIDTH)
     adjustment = gtk_scrolled_window_get_hadjustment(Zathura.UI.view);
   else
     return;
@@ -1245,7 +1245,7 @@ sc_adjust_window(Argument* argument)
     page_height = swap;
   }
 
-  if(argument->n == ADJUST_WIDTH)
+  if(argument->n == ADJUST_BESTFIT)
     Zathura.PDF.scale = (view_size / page_height) * 100;
   else
     Zathura.PDF.scale = (view_size / page_width) * 100;
