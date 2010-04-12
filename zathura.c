@@ -88,6 +88,13 @@ typedef struct
 
 typedef struct
 {
+  int direction;
+  void (*function)(Argument*);
+  Argument argument;
+} MouseScrollEvent;
+
+typedef struct
+{
   char* command;
   char* abbr;
   gboolean (*function)(int, char**);
@@ -1334,6 +1341,7 @@ sc_adjust_window(Argument* argument)
     Zathura.PDF.scale = (view_size / page_width) * 100;
 
   draw(Zathura.PDF.page_number);
+  update_status();
 }
 
 void
@@ -3317,7 +3325,17 @@ cb_view_button_pressed(GtkWidget* widget, GdkEventButton* event, gpointer data)
 gboolean
 cb_view_scrolled(GtkWidget* widget, GdkEventScroll* event, gpointer data)
 {
-  return TRUE;
+  int i;
+  for(i = 0; i < LENGTH(mouse_scroll_events); i++)
+  {
+    if(event->direction == mouse_scroll_events[i].direction)
+    {
+      mouse_scroll_events[i].function(&(mouse_scroll_events[i].argument));
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }
 
 /* main function */
