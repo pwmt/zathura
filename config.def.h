@@ -41,6 +41,7 @@ static const char recolor_darkcolor[]      = "#353535";
 static const char recolor_lightcolor[]     = "#DBDBDB";
 
 static const char search_highlight[]       = "#9FBC00";
+static const char select_text[]            = "#000000";
 
 /* statusbar */
 static const char DEFAULT_TEXT[] = "[No Name]";
