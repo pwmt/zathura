@@ -103,6 +103,15 @@ InputbarShortcut inputbar_shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_w,             isc_string_manipulation,   { DELETE_LAST_WORD } },
 };
 
+/* mouse settings */
+MouseScrollEvent mouse_scroll_events[] = {
+  /* direction,      function,  argument */
+  {GDK_SCROLL_LEFT,  sc_scroll, { LEFT } },
+  {GDK_SCROLL_UP,    sc_scroll, { UP } },
+  {GDK_SCROLL_DOWN,  sc_scroll, { DOWN } },
+  {GDK_SCROLL_RIGHT, sc_scroll, { RIGHT } },
+};
+
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,            completion,   description  */
