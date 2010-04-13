@@ -288,6 +288,7 @@ void init_zathura();
 void add_marker(int);
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
 void change_mode(int);
+void calculate_offset(GtkWidget*, double*, double*);
 void highlight_result(int, PopplerRectangle*);
 void draw(int);
 void eval_marker(int);
@@ -775,6 +776,42 @@ change_mode(int mode)
 
   Zathura.Global.mode = mode;
   notify(DEFAULT, mode_text);
+}
+
+void
+calculate_offset(GtkWidget* widget, double* offset_x, double* offset_y)
+{
+  double page_width, page_height, width, height;
+  double scale = ((double) Zathura.PDF.scale / 100.0);
+
+  g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+  poppler_page_get_size(Zathura.PDF.pages[Zathura.PDF.page_number]->page, &page_width, &page_height);
+  g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+
+  if(Zathura.PDF.rotate == 0 || Zathura.PDF.rotate == 180)
+  {
+    width  = page_width  * scale;
+    height = page_height * scale;
+  }
+  else
+  {
+    width  = page_height * scale;
+    height = page_width  * scale;
+  }
+
+  int window_x, window_y;
+  gdk_drawable_get_size(widget->window, &window_x, &window_y);
+
+  if (window_x > width)
+    *offset_x = (window_x - width) / 2;
+  else
+    *offset_x = 0;
+
+  if (window_y > height)
+    *offset_y = (window_y - height) / 2;
+  else
+    *offset_y = 0;
+
 }
 
 void
@@ -3027,13 +3064,13 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
     return FALSE;
 
   int page_id = Zathura.PDF.page_number;
-
   if(page_id < 0 || page_id > Zathura.PDF.number_of_pages)
     return FALSE;
 
   gdk_window_clear(widget->window);
   cairo_t *cairo = gdk_cairo_create(widget->window);
 
+<<<<<<< HEAD
   double page_width, page_height, width, height;
   double scale = ((double) Zathura.PDF.scale / 100.0);
 
@@ -3074,6 +3111,8 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
       highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
     Zathura.Search.draw = FALSE;
   }
+
+  calculate_offset(widget, &offset_x, &offset_y);
 
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
   cairo_paint(cairo);
@@ -3360,17 +3399,60 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
   if(!Zathura.PDF.document)
     return FALSE;
 
+  double scale, offset_x, offset_y;
+  PopplerRectangle rectangle;
+  cairo_t* cairo;
+
+  /* build selection rectangle */
+  rectangle.x1 = event->x;
+  rectangle.y1 = event->y;
+
   g_static_mutex_lock(&(Zathura.Lock.select_lock));
-  cairo_t *cairo = cairo_create(Zathura.PDF.surface);
+  rectangle.x2 = Zathura.SelectPoint.x;
+  rectangle.y2 = Zathura.SelectPoint.y;
+  g_static_mutex_unlock(&(Zathura.Lock.select_lock));
+
+  /* calculate offset */
+  calculate_offset(widget, &offset_x, &offset_y);
+
+  /* draw selection rectangle */
+  cairo = cairo_create(Zathura.PDF.surface);
   cairo_set_source_rgba(cairo, Zathura.Style.select_text.red, Zathura.Style.select_text.green,
       Zathura.Style.select_text.blue, TRANSPARENCY);
-
-  cairo_rectangle(cairo, event->x, event->y, (Zathura.SelectPoint.x - event->x), 
-      (Zathura.SelectPoint.y - event->y));
+  cairo_rectangle(cairo, rectangle.x1 - offset_x, rectangle.y1 - offset_y,
+      (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
   cairo_fill(cairo);
-  g_static_mutex_unlock(&(Zathura.Lock.select_lock));
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
 
+  /* reset points of the rectangle so that p1 is in the top-left corner
+   * and p2 is in the bottom right corner */
+  if(rectangle.x1 > rectangle.x2)
+  {
+    double d = rectangle.x1 - rectangle.x2;
+    rectangle.x1 = rectangle.x1 - d;
+    rectangle.x2 = rectangle.x2 - d;
+  }
+  if(rectangle.y2 > rectangle.y1)
+  {
+    double d = rectangle.y2 - rectangle.y1;
+    rectangle.y1 = rectangle.y1 + d;
+    rectangle.y2 = rectangle.y2 - d;
+  }
+
+  /* resize selection rectangle to document page */
+  scale        = ((double) Zathura.PDF.scale / 100.0);
+  rectangle.x1 = (rectangle.x1 - offset_x) / scale;
+  rectangle.y1 = (rectangle.y1 - offset_y) / scale;
+  rectangle.x2 = (rectangle.x2 - offset_x) / scale;
+  rectangle.y2 = (rectangle.y2 - offset_y) / scale;
+
+  g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+  char* selected_text = poppler_page_get_text(Zathura.PDF.pages[Zathura.PDF.page_number]->page,
+      POPPLER_SELECTION_GLYPH, &rectangle);
+
+  if(selected_text)
+    gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), selected_text, -1);
+  g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
 
   return TRUE;
 }
