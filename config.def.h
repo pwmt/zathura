@@ -68,6 +68,7 @@ Shortcut shortcuts[] = {
   {GDK_SHIFT_MASK,     GDK_slash,         sc_focus_inputbar,    NORMAL,   { .data = "/" } },
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    NORMAL,   { .data = "?" } },
   {0,                  GDK_Tab,           sc_toggle_index,      NORMAL,   {0} },
+  {0,                  GDK_Tab,           sc_toggle_index,      INDEX,    {0} },
   {0,                  GDK_J,             sc_navigate,          NORMAL,   { NEXT } },
   {0,                  GDK_K,             sc_navigate,          NORMAL,   { PREVIOUS } },
   {GDK_MOD1_MASK,      GDK_Right,         sc_navigate,          NORMAL,   { NEXT } },
@@ -95,6 +96,12 @@ Shortcut shortcuts[] = {
   {0,                  GDK_a,             sc_adjust_window,     NORMAL,   { ADJUST_BESTFIT } },
   {0,                  GDK_s,             sc_adjust_window,     NORMAL,   { ADJUST_WIDTH } },
   {0,                  GDK_BackSpace,     sc_change_buffer,     -1,       { DELETE_LAST } },
+  {0,                  GDK_k,             sc_navigate_index,    INDEX,    { UP } },
+  {0,                  GDK_j,             sc_navigate_index,    INDEX,    { DOWN } },
+  {0,                  GDK_h,             sc_navigate_index,    INDEX,    { COLLAPSE } },
+  {0,                  GDK_l,             sc_navigate_index,    INDEX,    { EXPAND } },
+  {0,                  GDK_space,         sc_navigate_index,    INDEX,    { SELECT } },
+  {0,                  GDK_Return,        sc_navigate_index,    INDEX,    { SELECT } },
 };
 
 /* inputbar shortcuts */
