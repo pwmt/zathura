@@ -1394,7 +1394,7 @@ sc_scroll(Argument* argument)
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
 
-  if( (argument->n == LEFT) || (argument->n == DOWN))
+  if( (argument->n == LEFT) || (argument->n == UP))
     gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
   else if (argument->n == TOP)
     gtk_adjustment_set_value(adjustment, 0);
