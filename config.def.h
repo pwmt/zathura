@@ -55,6 +55,7 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 #define SHOW_SCROLLBARS 0
 #define ADJUST_OPEN ADJUST_BESTFIT
 #define RECOLOR_OPEN 0
+#define ENABLE_LABELS 1
 
 /* shortcuts */
 Shortcut shortcuts[] = {
@@ -159,4 +160,5 @@ Setting settings[] = {
   /* name,         variable,                        type,  render,  description */
   {"recolor",      &(Zathura.Global.recolor),       'b',   TRUE,    "Invert the image"},
   {"password",     &(Zathura.PDF.password),         's',   FALSE,   "The password of the document"},
+  {"labels",       &(Zathura.Global.enable_labels), 'b',   FALSE,   "Use labels for pages"},
 };

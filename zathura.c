@@ -111,7 +111,9 @@ typedef struct
 
 typedef struct
 {
-  PopplerPage     *page;
+  PopplerPage *page;
+  int          id;
+  char        *label;
 } Page;
 
 typedef struct
@@ -184,6 +186,7 @@ struct
     int      mode;
     int      viewing_mode;
     gboolean recolor;
+    gboolean enable_labels;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
@@ -409,6 +412,7 @@ init_zathura()
   Zathura.Global.viewing_mode  = NORMAL;
   Zathura.Global.recolor       = RECOLOR_OPEN;
   Zathura.Global.adjust_mode   = ADJUST_OPEN;
+  Zathura.Global.enable_labels = ENABLE_LABELS;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = "";
@@ -850,7 +854,9 @@ open_file(char* path, char* password)
   for(i = 0; i < Zathura.PDF.number_of_pages; i++)
   {
     Zathura.PDF.pages[i] = malloc(sizeof(Page));
+    Zathura.PDF.pages[i]->id = i + 1;
     Zathura.PDF.pages[i]->page = poppler_document_get_page(Zathura.PDF.document, i);
+    g_object_get(G_OBJECT(Zathura.PDF.pages[i]->page), "label", &(Zathura.PDF.pages[i]->label), NULL);
   }
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
 
@@ -906,9 +912,20 @@ update_status()
   /* update text */
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, Zathura.State.filename);
 
+  /* update pages */
+  if( Zathura.PDF.document && Zathura.PDF.pages )
+  {
+    int page = Zathura.PDF.page_number;
+    if(Zathura.Global.enable_labels && Zathura.PDF.pages[page]->label)
+      Zathura.State.pages = g_strdup_printf("[%s/%i]", 
+          Zathura.PDF.pages[page]->label, Zathura.PDF.number_of_pages);
+    else
+      Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
+  }
+
   /* update state */
   char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
-  char* status_text  = g_strdup_printf("%s %d%% %s", zoom_level, Zathura.State.scroll_percentage, Zathura.State.pages);
+  char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
 }
 
@@ -1048,7 +1065,6 @@ set_page(int page)
   }
 
   Zathura.PDF.page_number = page;
-  Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
 
   Argument argument;
   argument.n = TOP;
@@ -1144,10 +1160,6 @@ search(void* parameter)
       highlight_result(next_page, (PopplerRectangle*) list->data);
 
     gdk_threads_leave();
-  }
-  else
-  {
-    printf("Nothing found for %s\n", search_item);
   }
 
   g_static_mutex_lock(&(Zathura.Lock.search_lock));
@@ -1405,12 +1417,6 @@ sc_scroll(Argument* argument)
     gtk_adjustment_set_value(adjustment, max);
   else
     gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
-
-  int percentage = 100 * (value / max);
-  percentage = (percentage < 0) ? 0 : ((percentage > 100) ? 100 : percentage);
-
-  if( (argument->n != LEFT) && (argument->n != RIGHT) )
-    Zathura.State.scroll_percentage = percentage;
 
   update_status();
 }
@@ -2402,9 +2408,9 @@ cmd_set(int argc, char** argv)
         if(argv[1])
         {
           if(!strcmp(argv[1], "false") || !strcmp(argv[1], "0"))
-            *x = TRUE;
-          else
             *x = FALSE;
+          else
+            *x = TRUE;
         }
       }
       else if(settings[i].type == 'i')
@@ -2446,6 +2452,7 @@ cmd_set(int argc, char** argv)
     }
   }
 
+  update_status();
   return TRUE;
 }
 
@@ -3181,10 +3188,10 @@ int main(int argc, char* argv[])
   init_zathura();
   init_directories();
 
-  update_status();
-
   if(argc >= 2)
     open_file(argv[1], (argc == 3) ? argv[2] : NULL);
+
+  update_status();
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
 
