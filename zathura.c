@@ -2761,7 +2761,21 @@ bcmd_goto(char* buffer, Argument* argument)
   else if(!strcmp(buffer, "G"))
     set_page(Zathura.PDF.number_of_pages - 1);
   else
-    set_page(atoi(g_strndup(buffer, b_length - 1)) - 1);
+  {
+    char* id = g_strndup(buffer, b_length - 1);
+    int  pid = atoi(id);
+
+    if(Zathura.Global.enable_labels)
+    {
+      int i;
+      for(i = 0; i < Zathura.PDF.number_of_pages; i++)
+        if(!strcmp(id, Zathura.PDF.pages[i]->label))
+          pid = Zathura.PDF.pages[i]->id;
+    }
+
+    set_page(pid - 1);
+    g_free(id);
+   }
 
   update_status();
 }
