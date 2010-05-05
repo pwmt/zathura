@@ -27,7 +27,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC,
        FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
        ADJUST_NONE, CONTINUOUS, DELETE_LAST, ADD_MARKER,
-       EVAL_MARKER, INDEX, EXPAND, COLLAPSE, SELECT };
+       EVAL_MARKER, INDEX, EXPAND, COLLAPSE, SELECT,
+       GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET};
 
 /* typedefs */
 struct CElement
@@ -186,7 +187,7 @@ struct
     int      mode;
     int      viewing_mode;
     gboolean recolor;
-    gboolean enable_labels;
+    int       goto_mode;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
@@ -228,6 +229,7 @@ struct
     char            *password;
     Page           **pages;
     int              page_number;
+    int              page_offset;
     int              number_of_pages;
     int              scale;
     int              rotate;
@@ -291,6 +293,7 @@ void sc_recolor(Argument*);
 void sc_rotate(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
+void sc_switch_goto_mode(Argument*);
 void sc_navigate_index(Argument*);
 void sc_toggle_index(Argument*);
 void sc_toggle_inputbar(Argument*);
@@ -307,6 +310,7 @@ void isc_string_manipulation(Argument*);
 gboolean cmd_bookmark(int, char**);
 gboolean cmd_open_bookmark(int, char**);
 gboolean cmd_close(int, char**);
+gboolean cmd_correct_offset(int, char**);
 gboolean cmd_delete_bookmark(int, char**);
 gboolean cmd_export(int, char**);
 gboolean cmd_info(int, char**);
@@ -412,7 +416,7 @@ init_zathura()
   Zathura.Global.viewing_mode  = NORMAL;
   Zathura.Global.recolor       = RECOLOR_OPEN;
   Zathura.Global.adjust_mode   = ADJUST_OPEN;
-  Zathura.Global.enable_labels = ENABLE_LABELS;
+  Zathura.Global.goto_mode     = GOTO_MODE;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = "";
@@ -861,15 +865,21 @@ open_file(char* path, char* password)
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
 
   /* start page */
-  int start_page = 0;
+  int start_page          = 0;
+  Zathura.PDF.page_offset = 0;
 
   /* bookmarks */
-  if(Zathura.Bookmarks.data)
+  if(Zathura.Bookmarks.data && g_key_file_has_group(Zathura.Bookmarks.data, file))
   {
     /* get last opened page */
-    if(g_key_file_has_group(Zathura.Bookmarks.data, file))
-      if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
-        start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
+    if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
+      start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
+
+    /* get page offset */
+    if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL))
+      Zathura.PDF.page_offset = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL);
+    if((Zathura.PDF.page_offset != 0) && (Zathura.PDF.page_offset != GOTO_OFFSET))
+      Zathura.PDF.page_offset = GOTO_OFFSET;
 
     /* open and read bookmark file */
     gsize i              = 0;
@@ -878,7 +888,7 @@ open_file(char* path, char* password)
 
     for(i = 0; i < number_of_keys; i++)
     {
-      if(strcmp(keys[i], BM_PAGE_ENTRY))
+      if(strcmp(keys[i], BM_PAGE_ENTRY) && strcmp(keys[i], BM_PAGE_OFFSET))
       {
         Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
             (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
@@ -916,16 +926,20 @@ update_status()
   if( Zathura.PDF.document && Zathura.PDF.pages )
   {
     int page = Zathura.PDF.page_number;
-    if(Zathura.Global.enable_labels && Zathura.PDF.pages[page]->label)
+    /*
+    if((Zathura.Global.goto_mode == GOTO_LABELS) && Zathura.PDF.pages[page]->label)
       Zathura.State.pages = g_strdup_printf("[%s/%i]", 
           Zathura.PDF.pages[page]->label, Zathura.PDF.number_of_pages);
     else
+    */
       Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
   }
 
   /* update state */
-  char* zoom_level   = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
-  char* status_text  = g_strdup_printf("%s %s", zoom_level, Zathura.State.pages);
+  char* zoom_level  = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
+  char* goto_mode   = (Zathura.Global.goto_mode == GOTO_LABELS) ? "L" : 
+    (Zathura.Global.goto_mode == GOTO_OFFSET) ? "O" : "D";
+  char* status_text = g_strdup_printf("%s [%s] %s", zoom_level, goto_mode, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
 }
 
@@ -1438,6 +1452,25 @@ sc_search(Argument* argument)
   Zathura.Thread.search_thread_running = TRUE;
   Zathura.Thread.search_thread = g_thread_create(search, (gpointer) argument, TRUE, NULL);
   g_static_mutex_unlock(&(Zathura.Lock.search_lock));
+}
+
+void
+sc_switch_goto_mode(Argument* argument)
+{
+  switch(Zathura.Global.goto_mode)
+  {
+    case GOTO_LABELS:
+      Zathura.Global.goto_mode = GOTO_OFFSET;
+      break;
+    case GOTO_OFFSET:
+      Zathura.Global.goto_mode = GOTO_DEFAULT;
+      break;
+    default:
+      Zathura.Global.goto_mode = GOTO_LABELS;
+      break;
+  }
+
+  update_status();
 }
 
 gboolean cb_index_row_activated(GtkTreeView* treeview, GtkTreePath* path,
@@ -2060,6 +2093,10 @@ cmd_close(int argc, char** argv)
     g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
         BM_PAGE_ENTRY, Zathura.PDF.page_number);
 
+    /* set page offset */
+    g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+        BM_PAGE_OFFSET, Zathura.PDF.page_offset);
+
     /* save bookmarks */
     int i;
     for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
@@ -2077,7 +2114,6 @@ cmd_close(int argc, char** argv)
     inotify_rm_watch(Zathura.Inotify.fd, Zathura.Inotify.wd);
 
   Zathura.Inotify.wd = -1;
-  /*pthread_cancel(Zathura.Thread.inotify_thread);*/
 
   /* reset values */
   free(Zathura.PDF.pages);
@@ -2095,6 +2131,7 @@ cmd_close(int argc, char** argv)
   Zathura.PDF.number_of_pages = 0;
   Zathura.PDF.scale           = 0;
   Zathura.PDF.rotate          = 0;
+  Zathura.PDF.page_offset     = 0;
 
   /* destroy index */
   if(Zathura.UI.index)
@@ -2115,6 +2152,24 @@ cmd_close(int argc, char** argv)
     free(Zathura.Marker.markers);
   Zathura.Marker.number_of_markers =  0;
   Zathura.Marker.last              = -1;
+
+  update_status();
+
+  return TRUE;
+}
+
+gboolean
+cmd_correct_offset(int argc, char** argv)
+{
+  if(!Zathura.PDF.document || argc == 0)
+    return TRUE;
+
+  Zathura.PDF.page_offset = (Zathura.PDF.page_number + 1) - atoi(argv[0]);
+
+  if(Zathura.PDF.page_offset != 0)
+    Zathura.Global.goto_mode = GOTO_OFFSET;
+  else
+    Zathura.Global.goto_mode = GOTO_MODE;
 
   update_status();
 
@@ -2765,13 +2820,15 @@ bcmd_goto(char* buffer, Argument* argument)
     char* id = g_strndup(buffer, b_length - 1);
     int  pid = atoi(id);
 
-    if(Zathura.Global.enable_labels)
+    if(Zathura.Global.goto_mode == GOTO_LABELS)
     {
       int i;
       for(i = 0; i < Zathura.PDF.number_of_pages; i++)
         if(!strcmp(id, Zathura.PDF.pages[i]->label))
           pid = Zathura.PDF.pages[i]->id;
     }
+    else if(Zathura.Global.goto_mode == GOTO_OFFSET)
+      pid += Zathura.PDF.page_offset;
 
     set_page(pid - 1);
     g_free(id);

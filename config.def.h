@@ -16,7 +16,8 @@ static const char ZATHURA_DIR[]   = ".zathura";
 static const char BOOKMARK_FILE[] = "bookmarks";
 
 /* bookmarks */
-static const char BM_PAGE_ENTRY[] = "page";
+static const char BM_PAGE_ENTRY[]  = "page";
+static const char BM_PAGE_OFFSET[] = "offset";
 
 /* look */
 static const char font[]                   = "monospace normal 9";
@@ -55,7 +56,7 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 #define SHOW_SCROLLBARS 0
 #define ADJUST_OPEN ADJUST_BESTFIT
 #define RECOLOR_OPEN 0
-#define ENABLE_LABELS 1
+#define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
 
 /* shortcuts */
 Shortcut shortcuts[] = {
@@ -74,6 +75,7 @@ Shortcut shortcuts[] = {
   {0,                  GDK_K,             sc_navigate,          NORMAL,   { PREVIOUS } },
   {GDK_MOD1_MASK,      GDK_Right,         sc_navigate,          NORMAL,   { NEXT } },
   {GDK_MOD1_MASK,      GDK_Left,          sc_navigate,          NORMAL,   { PREVIOUS } },
+  {0,                  GDK_O,             sc_switch_goto_mode,  NORMAL,   {0} },
   {0,                  GDK_space,         sc_navigate,          NORMAL,   { NEXT } },
   {0,                  GDK_Escape,        sc_abort,             -1,       {0} },
   {0,                  GDK_i,             sc_change_mode,       NORMAL,   { INSERT } },
@@ -124,6 +126,7 @@ Command commands[] = {
   {"bmark",     "b",            cmd_bookmark,        0,            "Bookmark current page" },
   {"blist",     0,              cmd_open_bookmark,   cc_bookmark,  "List and open bookmark" },
   {"close",     "c",            cmd_close,           0,            "Close current file" },
+  {"coffset",   0,              cmd_correct_offset,  0,            "Correct page offset" },
   {"delbmark",  0,              cmd_delete_bookmark, cc_bookmark,  "Bookmark current page" },
   {"export",    "e",            cmd_export,          cc_export,    "Export images or attached files" },
   {"info",      "i",            cmd_info,            0,            "Show information about the document" },
@@ -160,5 +163,5 @@ Setting settings[] = {
   /* name,         variable,                        type,  render,  description */
   {"recolor",      &(Zathura.Global.recolor),       'b',   TRUE,    "Invert the image"},
   {"password",     &(Zathura.PDF.password),         's',   FALSE,   "The password of the document"},
-  {"labels",       &(Zathura.Global.enable_labels), 'b',   FALSE,   "Use labels for pages"},
+  {"offset",       &(Zathura.PDF.page_offset),      'i',   FALSE,   "Optional page offset"},
 };
