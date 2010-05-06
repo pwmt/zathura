@@ -187,6 +187,7 @@ struct
     int      mode;
     int      viewing_mode;
     gboolean recolor;
+    gboolean enable_labelmode;
     int       goto_mode;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
@@ -852,8 +853,10 @@ open_file(char* path, char* password)
   Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
   Zathura.State.filename      = g_markup_escape_text(file, -1);
 
-  /* get pages */
+  /* get pages and check label mode */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+  Zathura.Global.enable_labelmode = FALSE;
+
   int i;
   for(i = 0; i < Zathura.PDF.number_of_pages; i++)
   {
@@ -861,8 +864,17 @@ open_file(char* path, char* password)
     Zathura.PDF.pages[i]->id = i + 1;
     Zathura.PDF.pages[i]->page = poppler_document_get_page(Zathura.PDF.document, i);
     g_object_get(G_OBJECT(Zathura.PDF.pages[i]->page), "label", &(Zathura.PDF.pages[i]->label), NULL);
+
+    /* check if it is necessary to use the label mode */
+    int label_int = atoi(Zathura.PDF.pages[i]->label);
+    if(label_int == 0 || label_int != (i+1))
+      Zathura.Global.enable_labelmode = TRUE;
   }
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+
+  /* set correct goto mode */
+  if(!Zathura.Global.enable_labelmode && GOTO_MODE == GOTO_LABELS)
+    Zathura.Global.goto_mode = GOTO_DEFAULT;
 
   /* start page */
   int start_page          = 0;
@@ -1466,7 +1478,10 @@ sc_switch_goto_mode(Argument* argument)
       Zathura.Global.goto_mode = GOTO_DEFAULT;
       break;
     default:
-      Zathura.Global.goto_mode = GOTO_LABELS;
+      if(Zathura.Global.enable_labelmode)
+        Zathura.Global.goto_mode = GOTO_LABELS;
+      else
+        Zathura.Global.goto_mode = GOTO_OFFSET;
       break;
   }
 
