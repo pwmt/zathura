@@ -1219,12 +1219,12 @@ watch_file(void* parameter)
       int page       = Zathura.PDF.page_number;
 
       /* reopen and restore settings */
+      gdk_threads_enter();
       cmd_close(0, NULL);
       open_file(path, password);
       
       Zathura.PDF.scale = scale;
 
-      gdk_threads_enter();
       draw(page);
       gdk_threads_leave();
 
