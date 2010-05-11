@@ -818,14 +818,25 @@ open_file(char* path, char* password)
   if(!password)
     password = (Zathura.PDF.password && strlen(Zathura.PDF.password) != 0) ? Zathura.PDF.password : NULL;
 
-  /* open file */
+  /* format path */
   GError* error = NULL;
+  char* file_uri = g_filename_to_uri(file, NULL, &error);
+  if (!file_uri)
+  {
+    char* message = g_strdup_printf("Can not open file: %s", error->message);
+    notify(ERROR, message);
+    g_free(message);
+    g_error_free(error);
+    return FALSE;
+  }
+
+  /* open file */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   g_static_mutex_lock(&(Zathura.Lock.document_lock));
-  Zathura.PDF.document = poppler_document_new_from_file(g_strdup_printf("file://%s", file),
-      password ? password : NULL, &error);
+  Zathura.PDF.document = poppler_document_new_from_file(file_uri, password ? password : NULL, &error);
   g_static_mutex_unlock(&(Zathura.Lock.document_lock));
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+  g_free(file_uri);
 
   if(!Zathura.PDF.document)
   {
