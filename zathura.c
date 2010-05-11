@@ -1151,7 +1151,7 @@ search(void* parameter)
   g_static_mutex_lock(&(Zathura.Lock.document_lock));
   if(!Zathura.PDF.document || !search_item || !strlen(search_item))
   {
-    g_static_mutex_lock(&(Zathura.Lock.document_lock));
+    g_static_mutex_unlock(&(Zathura.Lock.document_lock));
     g_static_mutex_lock(&(Zathura.Lock.search_lock));
     Zathura.Thread.search_thread_running = FALSE;
     g_static_mutex_unlock(&(Zathura.Lock.search_lock));
