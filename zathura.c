@@ -3035,11 +3035,6 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 gboolean
 cb_inputbar_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-  /* when the return button is pressed the inputbar is activated,
-   * so we do not handle it here */
-  if(event->keyval == GDK_Return)
-    return FALSE;
-
   int i;
 
   /* inputbar shortcuts */
