@@ -246,6 +246,12 @@ struct
 
   struct
   {
+    GList* results;
+    int page;
+  } Search;
+
+  struct
+  {
     GThread* search_thread;
     gboolean search_thread_running;
     GThread* inotify_thread;
@@ -426,6 +432,9 @@ init_zathura()
   Zathura.Marker.markers           = NULL;
   Zathura.Marker.number_of_markers =  0;
   Zathura.Marker.last              = -1;
+
+  Zathura.Search.results = NULL;
+  Zathura.Search.page    = 0;
 
   Zathura.Inotify.fd = inotify_init();
 
@@ -1135,7 +1144,6 @@ search(void* parameter)
   static int next_page = 0;
   int page_counter;
   GList* results = NULL;
-  GList* list    = NULL;
 
   if(argument->data)
     search_item = g_strdup((char*) argument->data);
@@ -1151,9 +1159,18 @@ search(void* parameter)
   }
   g_static_mutex_unlock(&(Zathura.Lock.document_lock));
 
+  /* delete old results */
+  if(Zathura.Search.results)
+  {
+    g_list_free(Zathura.Search.results);
+    Zathura.Search.results = NULL;
+  }
+
   /* search document */
   if(argument->n)
     direction = (argument->n == BACKWARD) ? -1 : 1;
+
+  printf("%s\n", search_item);
 
   int number_of_pages = Zathura.PDF.number_of_pages;
   int page_number     = Zathura.PDF.page_number;
@@ -1193,8 +1210,8 @@ search(void* parameter)
 
     set_page(next_page);
 
-    for(list = results; list && list->data; list = g_list_next(list))
-      highlight_result(next_page, (PopplerRectangle*) list->data);
+    Zathura.Search.results = results;
+    Zathura.Search.page    = next_page;
 
     gdk_threads_leave();
   }
@@ -3004,6 +3021,9 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   else
     offset_y = 0;
 
+  GList* list;
+  for(list = Zathura.Search.results; list && list->data; list = g_list_next(list))
+    highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
 
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
   cairo_paint(cairo);
