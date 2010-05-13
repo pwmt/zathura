@@ -248,6 +248,7 @@ struct
   {
     GList* results;
     int page;
+    gboolean draw;
   } Search;
 
   struct
@@ -435,6 +436,7 @@ init_zathura()
 
   Zathura.Search.results = NULL;
   Zathura.Search.page    = 0;
+  Zathura.Search.draw    = TRUE;
 
   Zathura.Inotify.fd = inotify_init();
 
@@ -706,6 +708,8 @@ draw(int page_id)
       }
     }
   }
+
+  Zathura.Search.draw = TRUE;
 
   gtk_widget_set_size_request(Zathura.UI.drawing_area, width, height);
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
@@ -3027,9 +3031,13 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   else
     offset_y = 0;
 
-  GList* list;
-  for(list = Zathura.Search.results; list && list->data; list = g_list_next(list))
-    highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
+  if(Zathura.Search.draw)
+  {
+    GList* list;
+    for(list = Zathura.Search.results; list && list->data; list = g_list_next(list))
+      highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
+    Zathura.Search.draw = FALSE;
+  }
 
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
   cairo_paint(cairo);
