@@ -240,7 +240,7 @@ struct
   struct
   {
     GStaticMutex pdflib_lock;
-    GStaticMutex document_lock;
+    GStaticMutex pdf_obj_lock;
     GStaticMutex search_lock;
   } Lock;
 
@@ -394,7 +394,7 @@ init_zathura()
   /* init mutexes */
   g_static_mutex_init(&(Zathura.Lock.pdflib_lock));
   g_static_mutex_init(&(Zathura.Lock.search_lock));
-  g_static_mutex_init(&(Zathura.Lock.document_lock));
+  g_static_mutex_init(&(Zathura.Lock.pdf_obj_lock));
 
   /* look */
   gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
@@ -803,6 +803,7 @@ void notify(int level, char* message)
 gboolean
 open_file(char* path, char* password)
 {
+  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   /* get filename */
   char* file = realpath(path, NULL);
 
@@ -838,14 +839,13 @@ open_file(char* path, char* password)
     notify(ERROR, message);
     g_free(message);
     g_error_free(error);
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
     return FALSE;
   }
 
   /* open file */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-  g_static_mutex_lock(&(Zathura.Lock.document_lock));
   Zathura.PDF.document = poppler_document_new_from_file(file_uri, password ? password : NULL, &error);
-  g_static_mutex_unlock(&(Zathura.Lock.document_lock));
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
   g_free(file_uri);
 
@@ -856,6 +856,7 @@ open_file(char* path, char* password)
     notify(ERROR, message);
     g_free(message);
     g_error_free(error);
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
     return FALSE;
   }
 
@@ -940,6 +941,7 @@ open_file(char* path, char* password)
   set_page(start_page);
   update_status();
 
+  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
   return TRUE;
 }
 
@@ -1150,16 +1152,15 @@ search(void* parameter)
   if(argument->data)
     search_item = g_strdup((char*) argument->data);
 
-  g_static_mutex_lock(&(Zathura.Lock.document_lock));
+  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   if(!Zathura.PDF.document || !search_item || !strlen(search_item))
   {
-    g_static_mutex_unlock(&(Zathura.Lock.document_lock));
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
     g_static_mutex_lock(&(Zathura.Lock.search_lock));
     Zathura.Thread.search_thread_running = FALSE;
     g_static_mutex_unlock(&(Zathura.Lock.search_lock));
     g_thread_exit(NULL);
   }
-  g_static_mutex_unlock(&(Zathura.Lock.document_lock));
 
   /* delete old results */
   if(Zathura.Search.results)
@@ -1175,7 +1176,9 @@ search(void* parameter)
   int number_of_pages = Zathura.PDF.number_of_pages;
   int page_number     = Zathura.PDF.page_number;
 
-  for(page_counter = 1; page_counter <= Zathura.PDF.number_of_pages; page_counter++)
+  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+
+  for(page_counter = 1; page_counter <= number_of_pages; page_counter++)
   {
     g_static_mutex_lock(&(Zathura.Lock.search_lock));
     if(Zathura.Thread.search_thread_running == FALSE)
@@ -1241,10 +1244,12 @@ watch_file(void* parameter)
     if(event->mask & IN_CLOSE_WRITE)
     {
       /* save old information */
+      g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
       char* path     = Zathura.PDF.file ? strdup(Zathura.PDF.file) : NULL;
       char* password = Zathura.PDF.password ? strdup(Zathura.PDF.password) : NULL;
       int scale      = Zathura.PDF.scale;
       int page       = Zathura.PDF.page_number;
+      g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
 
       /* reopen and restore settings */
       gdk_threads_enter();
@@ -2165,9 +2170,8 @@ cmd_close(int argc, char** argv)
   Zathura.State.pages         = "";
   Zathura.State.filename      = (char*) DEFAULT_TEXT;
 
-  g_static_mutex_lock(&(Zathura.Lock.document_lock));
+  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.document        = NULL;
-  g_static_mutex_unlock(&(Zathura.Lock.document_lock));
   Zathura.PDF.file            = "";
   Zathura.PDF.password        = "";
   Zathura.PDF.page_number     = 0;
@@ -2175,6 +2179,7 @@ cmd_close(int argc, char** argv)
   Zathura.PDF.scale           = 0;
   Zathura.PDF.rotate          = 0;
   Zathura.PDF.page_offset     = 0;
+  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
 
   /* destroy index */
   if(Zathura.UI.index)
