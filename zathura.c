@@ -1402,6 +1402,7 @@ sc_follow(Argument* argument)
       highlight_result(Zathura.PDF.page_number, link_rectangle);
 
       /* draw text */
+      recalcRectangle(Zathura.PDF.page_number, link_rectangle);
       cairo_t *cairo = cairo_create(Zathura.PDF.surface);
       cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
       cairo_set_font_size(cairo, 10);
