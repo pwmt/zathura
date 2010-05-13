@@ -767,12 +767,14 @@ eval_marker(int id)
 void
 highlight_result(int page_id, PopplerRectangle* rectangle)
 {
+  PopplerRectangle* trect = poppler_rectangle_copy(rectangle);
   cairo_t *cairo = cairo_create(Zathura.PDF.surface);
   cairo_set_source_rgba(cairo, Zathura.Style.search_highlight.red, Zathura.Style.search_highlight.green,
       Zathura.Style.search_highlight.blue, TRANSPARENCY);
 
-  recalcRectangle(page_id, rectangle);
-  cairo_rectangle(cairo, rectangle->x1, rectangle->y1, (rectangle->x2 - rectangle->x1), (rectangle->y2 - rectangle->y1));
+  recalcRectangle(page_id, trect);
+  cairo_rectangle(cairo, trect->x1, trect->y1, (trect->x2 - trect->x1), (trect->y2 - trect->y1));
+  poppler_rectangle_free(trect);
   cairo_fill(cairo);
 }
 
@@ -1169,8 +1171,6 @@ search(void* parameter)
   /* search document */
   if(argument->n)
     direction = (argument->n == BACKWARD) ? -1 : 1;
-
-  printf("%s\n", search_item);
 
   int number_of_pages = Zathura.PDF.number_of_pages;
   int page_number     = Zathura.PDF.page_number;
