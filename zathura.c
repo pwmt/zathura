@@ -427,7 +427,7 @@ init_zathura()
   Zathura.Global.goto_mode     = GOTO_MODE;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
-  Zathura.State.pages             = "";
+  Zathura.State.pages             = g_strdup_printf("");
   Zathura.State.scroll_percentage = 0;
 
   Zathura.Marker.markers           = NULL;
@@ -966,6 +966,7 @@ update_status()
   if( Zathura.PDF.document && Zathura.PDF.pages )
   {
     int page = Zathura.PDF.page_number;
+    g_free(Zathura.State.pages);
     /*
     if((Zathura.Global.goto_mode == GOTO_LABELS) && Zathura.PDF.pages[page]->label)
       Zathura.State.pages = g_strdup_printf("[%s/%i]", 
@@ -2171,8 +2172,9 @@ cmd_close(int argc, char** argv)
   /* reset values */
   free(Zathura.PDF.pages);
   g_object_unref(Zathura.PDF.document);
+  g_free(Zathura.State.pages);
 
-  Zathura.State.pages         = "";
+  Zathura.State.pages         = g_strdup_printf("");
   Zathura.State.filename      = (char*) DEFAULT_TEXT;
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
