@@ -418,6 +418,7 @@ init_zathura()
   g_static_mutex_init(&(Zathura.Lock.search_lock));
   g_static_mutex_init(&(Zathura.Lock.pdf_obj_lock));
   g_static_mutex_init(&(Zathura.Lock.select_lock));
+  g_static_mutex_init(&(Zathura.Lock.select_lock));
 
   /* look */
   gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
