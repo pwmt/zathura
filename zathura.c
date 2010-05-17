@@ -3070,7 +3070,6 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
   gdk_window_clear(widget->window);
   cairo_t *cairo = gdk_cairo_create(widget->window);
 
-<<<<<<< HEAD
   double page_width, page_height, width, height;
   double scale = ((double) Zathura.PDF.scale / 100.0);
 
@@ -3111,8 +3110,6 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
       highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
     Zathura.Search.draw = FALSE;
   }
-
-  calculate_offset(widget, &offset_x, &offset_y);
 
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
   cairo_paint(cairo);
