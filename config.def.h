@@ -56,6 +56,7 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 #define SHOW_SCROLLBARS 0
 #define ADJUST_OPEN ADJUST_BESTFIT
 #define RECOLOR_OPEN 0
+#define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 
 /* shortcuts */
 Shortcut shortcuts[] = {
