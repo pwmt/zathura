@@ -400,7 +400,7 @@ init_directories()
   }
 
   GError* error = NULL;
-  if(!g_key_file_load_from_file(Zathura.Bookmarks.data, bookmarks, 
+  if(!g_key_file_load_from_file(Zathura.Bookmarks.data, bookmarks,
         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
   {
     notify(ERROR, g_strdup_printf("Could not load bookmark file: %s", error->message));
@@ -504,7 +504,7 @@ init_zathura()
   g_signal_connect(G_OBJECT(Zathura.UI.view), "scroll-event",         G_CALLBACK(cb_view_scrolled),       NULL);
   gtk_container_add(GTK_CONTAINER(Zathura.UI.view), GTK_WIDGET(Zathura.UI.viewport));
   gtk_viewport_set_shadow_type(Zathura.UI.viewport, GTK_SHADOW_NONE);
-  
+
   #if SHOW_SCROLLBARS
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   #else
@@ -728,11 +728,11 @@ draw(int page_id)
     float sg = ((float) g2 - g1) / (max - min);
     float sb = ((float) b2 - b1) / (max - min);
 
-    for (y = 0; y < height; y++) 
+    for (y = 0; y < height; y++)
     {
       unsigned char* data = image + y * rowstride;
 
-      for (x = 0; x < width; x++) 
+      for (x = 0; x < width; x++)
       {
         mean = (data[0] + data[1] + data[2]) / 3;
         data[2] = sr * (mean - min) + r1 + 0.5;
@@ -869,7 +869,7 @@ void notify(int level, char* message)
       gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
       break;
   }
- 
+
   if(message)
     gtk_entry_set_text(Zathura.UI.inputbar, message);
 }
@@ -999,11 +999,11 @@ open_file(char* path, char* password)
     {
       if(strcmp(keys[i], BM_PAGE_ENTRY) && strcmp(keys[i], BM_PAGE_OFFSET))
       {
-        Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
-            (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
+        Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
+            (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
 
         Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = keys[i];
-        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = 
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page =
           g_key_file_get_integer(Zathura.Bookmarks.data, file, keys[i], NULL);
 
         Zathura.Bookmarks.number_of_bookmarks++;
@@ -1158,7 +1158,7 @@ void
 setCompletionRowColor(GtkBox* results, int mode, int id)
 {
   GtkEventBox *row   = (GtkEventBox*) g_list_nth_data(gtk_container_get_children(GTK_CONTAINER(results)), id);
- 
+
   if(row)
   {
     GtkBox      *col   = (GtkBox*)      g_list_nth_data(gtk_container_get_children(GTK_CONTAINER(row)), 0);
@@ -1330,7 +1330,7 @@ watch_file(void* parameter)
       gdk_threads_enter();
       cmd_close(0, NULL);
       open_file(path, password);
-      
+
       Zathura.PDF.scale = scale;
 
       draw(page);
@@ -1437,7 +1437,7 @@ sc_change_mode(Argument* argument)
     change_mode(argument->n);
 }
 
-void 
+void
 sc_focus_inputbar(Argument* argument)
 {
   if(argument->data)
@@ -1509,7 +1509,7 @@ sc_navigate(Argument* argument)
 
   if(argument->n == NEXT)
     new_page = (new_page + number_of_pages + 1) % number_of_pages;
-  else if(argument->n == PREVIOUS)  
+  else if(argument->n == PREVIOUS)
     new_page = (new_page + number_of_pages - 1) % number_of_pages;
 
   set_page(new_page);
@@ -1835,13 +1835,13 @@ isc_command_history(Argument* argument)
   }
 }
 
-void 
+void
 isc_completion(Argument* argument)
 {
   gchar *input      = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 1, -1);
   gchar  identifier = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0,  1)[0];
   int    length     = strlen(input);
- 
+
   if(!length && !identifier)
     return;
 
@@ -2151,8 +2151,8 @@ cmd_bookmark(int argc, char** argv)
   }
 
   /* add new bookmark */
-  Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks, 
-      (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark)); 
+  Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
+      (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
 
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = id->str;
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
@@ -2166,7 +2166,7 @@ cmd_open_bookmark(int argc, char** argv)
 {
   if(!Zathura.PDF.document || argc < 1)
     return TRUE;
-  
+
   /* get id */
   int i;
   GString *id = g_string_new("");
@@ -2398,7 +2398,7 @@ cmd_export(int argc, char** argv)
 
         if(argv[1][0] == '~')
         {
-          file = malloc(((int) strlen(filename) + (int) strlen(argv[1]) 
+          file = malloc(((int) strlen(filename) + (int) strlen(argv[1])
             + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
           file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, filename);
         }
@@ -2930,7 +2930,7 @@ cc_set(char* input)
 }
 
 /* buffer command implementation */
-void 
+void
 bcmd_goto(char* buffer, Argument* argument)
 {
   int b_length = strlen(buffer);
@@ -3308,7 +3308,7 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   int i;
   for(i = 0; i < LENGTH(shortcuts); i++)
   {
-    if (event->keyval == shortcuts[i].key && 
+    if (event->keyval == shortcuts[i].key &&
       (((event->state & shortcuts[i].mask) == shortcuts[i].mask) || shortcuts[i].mask == 0)
       && (Zathura.Global.mode == shortcuts[i].mode || shortcuts[i].mode == -1))
     {
@@ -3399,7 +3399,7 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
   if(!Zathura.PDF.document)
     return FALSE;
 
-  double scale, offset_x, offset_y;
+  double scale, offset_x, offset_y, page_width, page_height;
   PopplerRectangle rectangle;
   cairo_t* cairo;
 
@@ -3424,35 +3424,78 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
   cairo_fill(cairo);
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
 
-  /* reset points of the rectangle so that p1 is in the top-left corner
-   * and p2 is in the bottom right corner */
-  if(rectangle.x1 > rectangle.x2)
-  {
-    double d = rectangle.x1 - rectangle.x2;
-    rectangle.x1 = rectangle.x1 - d;
-    rectangle.x2 = rectangle.x2 - d;
-  }
-  if(rectangle.y2 > rectangle.y1)
-  {
-    double d = rectangle.y2 - rectangle.y1;
-    rectangle.y1 = rectangle.y1 + d;
-    rectangle.y2 = rectangle.y2 - d;
-  }
-
   /* resize selection rectangle to document page */
+  g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+  poppler_page_get_size(Zathura.PDF.pages[Zathura.PDF.page_number]->page, &page_width, &page_height);
+  g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+
   scale        = ((double) Zathura.PDF.scale / 100.0);
   rectangle.x1 = (rectangle.x1 - offset_x) / scale;
   rectangle.y1 = (rectangle.y1 - offset_y) / scale;
   rectangle.x2 = (rectangle.x2 - offset_x) / scale;
   rectangle.y2 = (rectangle.y2 - offset_y) / scale;
 
+  /* rotation */
+  int rotate = Zathura.PDF.rotate;
+  double x1 = rectangle.x1;
+  double x2 = rectangle.x2;
+  double y1 = rectangle.y1;
+  double y2 = rectangle.y2;
+
+  switch(rotate)
+  {
+    case 90:
+      rectangle.x1 = y1;
+      rectangle.y1 = page_height - x2;
+      rectangle.x2 = y2;
+      rectangle.y2 = page_height - x1;
+      break;
+    case 180:
+      rectangle.x1 = (page_height - y1);
+      rectangle.y1 = (page_width  - x2);
+      rectangle.x2 = (page_height - y2);
+      rectangle.y2 = (page_width  - x1);
+      break;
+    case 270:
+      rectangle.x1 = page_width - y2;
+      rectangle.y1 = x1;
+      rectangle.x2 = page_width - y1;
+      rectangle.y2 = x2;
+      break;
+  }
+
+  /* reset points of the rectangle so that p1 is in the top-left corner
+   * and p2 is in the bottom right corner */
+  if(rectangle.x1 > rectangle.x2)
+  {
+    double d = rectangle.x1;
+    rectangle.x1 = rectangle.x2;
+    rectangle.x2 = d;
+  }
+  if(rectangle.y2 > rectangle.y1)
+  {
+    double d = rectangle.y1;
+    rectangle.y1 = rectangle.y2;
+    rectangle.y2 = d;
+  }
+
+  /* adapt y coordinates */
+  rectangle.y1 = page_height - rectangle.y1;
+  rectangle.y2 = page_height - rectangle.y2;
+
+  /* get selected text */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-  char* selected_text = poppler_page_get_text(Zathura.PDF.pages[Zathura.PDF.page_number]->page,
-      POPPLER_SELECTION_GLYPH, &rectangle);
+  char* selected_text = poppler_page_get_text(
+      Zathura.PDF.pages[Zathura.PDF.page_number]->page,POPPLER_SELECTION_GLYPH,
+      &rectangle);
 
   if(selected_text)
+  {
     gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), selected_text, -1);
+    g_free(selected_text);
+  }
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+
 
   return TRUE;
 }
