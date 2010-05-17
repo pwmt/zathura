@@ -3209,7 +3209,7 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
   /* get selected text */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   char* selected_text = poppler_page_get_text(
-      Zathura.PDF.pages[Zathura.PDF.page_number]->page,POPPLER_SELECTION_GLYPH,
+      Zathura.PDF.pages[Zathura.PDF.page_number]->page,SELECTION_STYLE,
       &rectangle);
 
   if(selected_text)
