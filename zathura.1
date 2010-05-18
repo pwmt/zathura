@@ -10,6 +10,129 @@ rendering library and the gtk+ toolkit. The idea behind zathura is an
 application that provides a minimalistic and space saving interface as well as
 an easy usage that mainly focuses on keyboard interaction.
 .SH DEFAULT SETTINGS
+.SS Shortcuts
+.TP
+.B J
+Go to next page
+.TP
+.B K
+Go to previous page
+.TP
+.B h
+Scroll to the left
+.TP
+.B k
+Scroll upwards
+.TP
+.B j
+Scroll downwards
+.TP
+.B l
+Scroll to the right
+.TP
+.B /
+Search forwards
+.TP
+.B ?
+Search backwards
+.TP
+.B n
+Search last keyword forwards
+.TP
+.B N
+Search last keyword backwards
+.TP
+.B Tab
+Toggle index
+.TP
+.B o
+Open a file
+.TP
+.B a
+Zoom to fit
+.TP
+.B s
+Zoom to width
+.TP
+.B f
+Follow a link on the page
+.TP
+.B m
+Mark current position and save it in register specified by a character
+.TP
+.B '
+Go to saved position specified by the ensuing character
+.TP
+.B O
+Change goto mode (L: search labels, D: default, O: manual offset)
+.TP
+.B ^i
+Invert the colors of the page
+.TP
+.B i
+Change to insert mode
+.TP
+.B v
+Change to visual mode
+.TP
+.B :
+Focus inputbar
+.TP
+.B Backspace
+Delete last character in the buffer
+.TP
+.B ^n
+Toggle statusbar visibility
+.TP
+.B ^m
+Toggle inputbar visibility
+.TP
+.B Esc | ^c
+Abort
+.TP
+.B ^q
+Quit the program
+.SS Index commands
+.TP
+.B k
+Navigate to one element above the current position
+.TP
+.B j
+Navigate to one element below the current position
+.TP
+.B h
+Collapse current element
+.TP
+.B l
+Expand current element
+.TP
+.B Space | Return
+Select current element
+.SS Buffered commands
+.TP
+.B gg
+Go to the first page
+.TP
+.B GG
+Go to the last page
+.TP
+.B [0-9]+G
+Go to the specified page
+.TP
+.B zI
+Zoom in
+.TP
+.B zO
+Zoom out
+.TP
+.B z0
+Zoom to the original size
+.TP
+.B [0-9]+Z
+Zoom to the given level
+.TP
+.B [0-9]+%
+Move to the given position
 .SS Commands
 .TP
 .B bmark
@@ -20,6 +143,9 @@ List and open bookmark
 .TP
 .B close
 Close current file
+.TP
+.B coffset
+Set page offset
 .TP
 .B delbmark
 Delete given bookmark
@@ -47,101 +173,6 @@ Quit the program
 .TP
 .B write
 Save the document
-.SS Buffered commands
-.TP
-.B gg
-Go to the first page
-.TP
-.B GG
-Go to the last page
-.TP
-.B [0-9]+G
-Go to the specified page
-.TP
-.B zI
-Zoom in
-.TP
-.B zO
-Zoom out
-.TP
-.B z0
-Zoom to the original size
-.TP
-.B [0-9]+Z
-Zoom to the given level
-.TP
-.B [0-9]+%
-Move to the given position
-.SS Shortcuts
-.TP
-.B ^n
-Toggle statusbar
-.TP
-.B ^m
-Toggle inputbar
-.TP
-.B ^q
-Quit the program
-.TP
-.B Esc | ^c
-Abort 
-.TP
-.B ^i
-Invert the colors of the page
-.TP
-.B /
-Search forwards
-.TP
-.B ?
-Search backwards
-.TP
-.B Tab
-Toggle index
-.TP
-.B J
-Go to next page
-.TP
-.B K
-Go to previous page
-.TP
-.B h
-Scroll to the left
-.TP
-.B k
-Scroll upwards
-.TP
-.B j
-Scroll downwards
-.TP
-.B l
-Scroll to the right
-.TP
-.B i
-Change to insert mode
-.TP
-.B v
-Change to visual mode
-.TP
-.B :
-Focus inputbar
-.TP
-.B o
-Open a file
-.TP
-.B n
-Search last search key forwards
-.TP
-.B N
-Search last search key backwards
-.TP
-.B a
-Adjust best fit
-.TP
-.B s
-Adjust width
-.TP
-.B Backspace
-Delete last character in the buffer
 .SS Inputbar shortcuts
 .TP
 .B Up
