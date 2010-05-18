@@ -460,7 +460,7 @@ init_zathura()
 
   Zathura.Search.results = NULL;
   Zathura.Search.page    = 0;
-  Zathura.Search.draw    = TRUE;
+  Zathura.Search.draw    = FALSE;
 
   Zathura.Inotify.fd = inotify_init();
 
@@ -743,8 +743,6 @@ draw(int page_id)
       }
     }
   }
-
-  Zathura.Search.draw = TRUE;
 
   gtk_widget_set_size_request(Zathura.UI.drawing_area, width, height);
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
@@ -1191,6 +1189,7 @@ set_page(int page)
   }
 
   Zathura.PDF.page_number = page;
+  Zathura.Search.draw     = FALSE;
 
   Argument argument;
   argument.n = TOP;
@@ -1291,6 +1290,7 @@ search(void* parameter)
 
     Zathura.Search.results = results;
     Zathura.Search.page    = next_page;
+    Zathura.Search.draw    = TRUE;
 
     gdk_threads_leave();
   }
@@ -3109,7 +3109,6 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
     GList* list;
     for(list = Zathura.Search.results; list && list->data; list = g_list_next(list))
       highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
-    Zathura.Search.draw = FALSE;
   }
 
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
