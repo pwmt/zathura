@@ -1193,10 +1193,10 @@ set_page(int page)
 
   Argument argument;
   argument.n = TOP;
-  sc_scroll(&argument);
 
   switch_view(Zathura.UI.document);
   draw(page);
+  sc_scroll(&argument);
 }
 
 void
