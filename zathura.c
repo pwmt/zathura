@@ -1527,7 +1527,8 @@ sc_recolor(Argument* argument)
 void
 sc_rotate(Argument* argument)
 {
-  Zathura.PDF.rotate = (Zathura.PDF.rotate + 90) % 360;
+  Zathura.PDF.rotate  = (Zathura.PDF.rotate + 90) % 360;
+  Zathura.Search.draw = TRUE;
 
   draw(Zathura.PDF.page_number);
 }
@@ -3021,6 +3022,7 @@ bcmd_zoom(char* buffer, Argument* argument)
   else
     Zathura.PDF.scale = 100;
 
+  Zathura.Search.draw = TRUE;
   draw(Zathura.PDF.page_number);
   update_status();
 }
@@ -3109,6 +3111,7 @@ gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
     GList* list;
     for(list = Zathura.Search.results; list && list->data; list = g_list_next(list))
       highlight_result(Zathura.Search.page, (PopplerRectangle*) list->data);
+    Zathura.Search.draw = FALSE;
   }
 
   cairo_set_source_surface(cairo, Zathura.PDF.surface, offset_x, offset_y);
