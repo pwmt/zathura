@@ -28,7 +28,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
        ADJUST_NONE, CONTINUOUS, DELETE_LAST, ADD_MARKER,
        EVAL_MARKER, INDEX, EXPAND, COLLAPSE, SELECT,
-       GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET};
+       GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, FULLSCREEN };
 
 /* typedefs */
 struct CElement
@@ -1803,6 +1803,11 @@ sc_toggle_fullscreen(Argument* argument)
     gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
     gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
 
+    Argument arg;
+    arg.n = ADJUST_BESTFIT;
+    sc_adjust_window(&arg);
+
+    Zathura.Global.mode = FULLSCREEN;
     fs = FALSE;
   }
   else
@@ -1811,6 +1816,7 @@ sc_toggle_fullscreen(Argument* argument)
     gtk_widget_show(GTK_WIDGET(Zathura.UI.inputbar));
     gtk_widget_show(GTK_WIDGET(Zathura.UI.statusbar));
 
+    Zathura.Global.mode = NORMAL;
     fs = TRUE;
   }
 }
