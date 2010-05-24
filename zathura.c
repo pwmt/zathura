@@ -289,6 +289,7 @@ void add_marker(int);
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
 void change_mode(int);
 void calculate_offset(GtkWidget*, double*, double*);
+void enter_password();
 void highlight_result(int, PopplerRectangle*);
 void draw(int);
 void eval_marker(int);
@@ -371,6 +372,7 @@ gboolean cb_index_row_activated(GtkTreeView*, GtkTreePath*, GtkTreeViewColumn*, 
 gboolean cb_inputbar_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_inputbar_activate(GtkEntry*, gpointer);
 gboolean cb_inputbar_form_activate(GtkEntry*, gpointer);
+gboolean cb_inputbar_password_activate(GtkEntry*, gpointer);
 gboolean cb_view_kb_pressed(GtkWidget*, GdkEventKey*, gpointer);
 gboolean cb_view_resized(GtkWidget*, GtkAllocation*, gpointer);
 gboolean cb_view_button_pressed(GtkWidget*, GdkEventButton*, gpointer);
@@ -812,7 +814,18 @@ calculate_offset(GtkWidget* widget, double* offset_x, double* offset_y)
     *offset_y = (window_y - height) / 2;
   else
     *offset_y = 0;
+}
 
+void
+enter_password()
+{
+  /* replace default inputbar handler */
+  g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
+  Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_password_activate), NULL);
+
+  Argument argument;
+  argument.data = "Enter password: ";
+  sc_focus_inputbar(&argument);
 }
 
 void
@@ -879,6 +892,7 @@ gboolean
 open_file(char* path, char* password)
 {
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
+
   /* get filename */
   char* file = realpath(path, NULL);
 
@@ -895,15 +909,14 @@ open_file(char* path, char* password)
   {
     notify(ERROR, "File does not exist");
     free(file);
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
     return FALSE;
   }
 
   /* close old file */
+  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
   cmd_close(-1, NULL);
-
-  /* check saved password */
-  if(!password)
-    password = (Zathura.PDF.password && strlen(Zathura.PDF.password) != 0) ? Zathura.PDF.password : NULL;
+  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
 
   /* format path */
   GError* error = NULL;
@@ -920,20 +933,33 @@ open_file(char* path, char* password)
 
   /* open file */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-  Zathura.PDF.document = poppler_document_new_from_file(file_uri, password ? password : NULL, &error);
+  Zathura.PDF.document = poppler_document_new_from_file(file_uri, password, &error);
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
   g_free(file_uri);
 
   if(!Zathura.PDF.document)
   {
-    char* message = (error->code == 1) ? "(Use \":set password\" to set the password)" : "";
-    message = g_strdup_printf("Can not open file: %s %s", error->message, message);
-    notify(ERROR, message);
-    g_free(message);
-    g_error_free(error);
-    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
-    return FALSE;
+    if(error->code == 1)
+    {
+      g_error_free(error);
+      Zathura.PDF.file = file;
+      g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+      enter_password();
+      return FALSE;
+    }
+    else
+    {
+      char* message = g_strdup_printf("Can not open file: %s", error->message);
+      notify(ERROR, message);
+      g_free(message);
+      g_error_free(error);
+      g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+      return FALSE;
+    }
   }
+
+  /* save password */
+  Zathura.PDF.password = password;
 
   /* inotify */
   if(Zathura.Inotify.fd != -1)
@@ -2283,8 +2309,8 @@ cmd_close(int argc, char** argv)
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.document        = NULL;
-  Zathura.PDF.file            = "";
-  Zathura.PDF.password        = "";
+  Zathura.PDF.file            = NULL;
+  Zathura.PDF.password        = NULL;
   Zathura.PDF.page_number     = 0;
   Zathura.PDF.number_of_pages = 0;
   Zathura.PDF.scale           = 0;
@@ -2573,7 +2599,7 @@ cmd_open(int argc, char** argv)
     filepath = g_string_append(filepath, argv[i]);
   }
 
-  return open_file(filepath->str, Zathura.PDF.password);
+  return open_file(filepath->str, NULL);
 }
 
 gboolean
@@ -3334,6 +3360,29 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
 }
 
 gboolean
+cb_inputbar_password_activate(GtkEntry* entry, gpointer data)
+{
+  gchar *input = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
+  gchar *token = input + strlen("Enter password: ") - 1;
+  if(!token)
+    return FALSE;
+
+ if(!open_file(Zathura.PDF.file, token))
+ {
+   enter_password();
+   return TRUE;
+ }
+
+  /* replace default inputbar handler */
+  g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
+  Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_activate), NULL);
+
+  isc_abort(NULL);
+
+  return TRUE;
+}
+
+gboolean
 cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
   int i;
@@ -3567,6 +3616,7 @@ int main(int argc, char* argv[])
   if(argc >= 2)
     open_file(argv[1], (argc == 3) ? argv[2] : NULL);
 
+  switch_view(Zathura.UI.document);
   update_status();
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
