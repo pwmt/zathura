@@ -499,6 +499,7 @@ init_zathura()
   g_signal_connect(G_OBJECT(Zathura.UI.document), "button-press-event",   G_CALLBACK(cb_view_button_pressed), NULL);
   g_signal_connect(G_OBJECT(Zathura.UI.document), "button-release-event", G_CALLBACK(cb_view_button_release), NULL);
   g_signal_connect(G_OBJECT(Zathura.UI.document), "motion-notify-event",  G_CALLBACK(cb_view_motion_notify),  NULL);
+  gtk_widget_show(Zathura.UI.document);
 
   /* view */
   g_signal_connect(G_OBJECT(Zathura.UI.view), "key-press-event",      G_CALLBACK(cb_view_kb_pressed),     NULL);
