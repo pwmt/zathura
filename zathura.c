@@ -322,6 +322,7 @@ void sc_switch_goto_mode(Argument*);
 void sc_navigate_index(Argument*);
 void sc_toggle_index(Argument*);
 void sc_toggle_inputbar(Argument*);
+void sc_toggle_fullscreen(Argument*);
 void sc_toggle_statusbar(Argument*);
 void sc_quit(Argument*);
 
@@ -1789,6 +1790,29 @@ sc_toggle_inputbar(Argument* argument)
     gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
   else
     gtk_widget_show(GTK_WIDGET(Zathura.UI.inputbar));
+}
+
+void
+sc_toggle_fullscreen(Argument* argument)
+{
+  static gboolean fs = TRUE;
+
+  if(fs)
+  {
+    gtk_window_fullscreen(GTK_WINDOW(Zathura.UI.window));
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
+
+    fs = FALSE;
+  }
+  else
+  {
+    gtk_window_unfullscreen(GTK_WINDOW(Zathura.UI.window));
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.inputbar));
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.statusbar));
+
+    fs = TRUE;
+  }
 }
 
 void

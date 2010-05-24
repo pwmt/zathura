@@ -65,6 +65,7 @@ Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,     argument */
   {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  NORMAL,   {0} },
   {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   NORMAL,   {0} },
+  {0,                  GDK_F5,            sc_toggle_fullscreen, NORMAL,   {0} },
   {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             -1,       {0} },
   {GDK_CONTROL_MASK,   GDK_i,             sc_recolor,           NORMAL,   {0} },
