@@ -406,7 +406,9 @@ init_directories()
   if(!g_key_file_load_from_file(Zathura.Bookmarks.data, bookmarks,
         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
   {
-    notify(ERROR, g_strdup_printf("Could not load bookmark file: %s", error->message));
+    gchar* message = g_strdup_printf("Could not load bookmark file: %s", error->message);
+    notify(ERROR, message);
+    g_free(message);
   }
 
   Zathura.Bookmarks.file = g_strdup(bookmarks);
@@ -1064,21 +1066,18 @@ update_status()
   {
     int page = Zathura.PDF.page_number;
     g_free(Zathura.State.pages);
-    /*
-    if((Zathura.Global.goto_mode == GOTO_LABELS) && Zathura.PDF.pages[page]->label)
-      Zathura.State.pages = g_strdup_printf("[%s/%i]", 
-          Zathura.PDF.pages[page]->label, Zathura.PDF.number_of_pages);
-    else
-    */
-      Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
+
+    Zathura.State.pages = g_strdup_printf("[%i/%i]", page + 1, Zathura.PDF.number_of_pages);
   }
 
   /* update state */
-  char* zoom_level  = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : "";
+  char* zoom_level  = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : g_strdup("");
   char* goto_mode   = (Zathura.Global.goto_mode == GOTO_LABELS) ? "L" : 
     (Zathura.Global.goto_mode == GOTO_OFFSET) ? "O" : "D";
   char* status_text = g_strdup_printf("%s [%s] %s", zoom_level, goto_mode, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
+  g_free(status_text);
+  g_free(zoom_level);
 }
 
 void
@@ -1253,7 +1252,12 @@ search(void* parameter)
   GList* results = NULL;
 
   if(argument->data)
+  {
+    if(search_item)
+      g_free(search_item);
+
     search_item = g_strdup((char*) argument->data);
+  }
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   if(!Zathura.PDF.document || !search_item || !strlen(search_item))
@@ -1364,6 +1368,11 @@ watch_file(void* parameter)
 
       draw(page);
       gdk_threads_leave();
+
+      if(path)
+        free(path);
+      if(password)
+        free(password);
 
       break;
     }
@@ -1512,7 +1521,9 @@ sc_follow(Argument* argument)
       cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
       cairo_set_font_size(cairo, 10);
       cairo_move_to(cairo, link_rectangle->x1 + 1, link_rectangle->y1 - 1);
-      cairo_show_text(cairo, g_strdup_printf("%i", link_id++));
+      char* link_number = g_strdup_printf("%i", link_id++);
+      cairo_show_text(cairo, link_number);
+      g_free(link_number);
     }
   }
 
@@ -2615,9 +2626,12 @@ cmd_print(int argc, char** argv)
   }
 
   char* printer = argv[0];
-  char* sites   = (argc == 2) ? argv[1] : g_strdup_printf("%i", Zathura.PDF.number_of_pages);
+  char* sites   = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("%i", Zathura.PDF.number_of_pages);
   char* print_command = g_strdup_printf(PRINT_COMMAND, printer, sites, Zathura.PDF.file);
   system(print_command);
+
+  g_free(sites);
+  g_free(print_command);
 
   return TRUE;
 }
@@ -3112,6 +3126,8 @@ cb_destroy(GtkWidget* widget, gpointer data)
   /* inotify */
   if(Zathura.Inotify.fd != -1)
     close(Zathura.Inotify.fd);
+
+  g_list_free(Zathura.Global.history);
 
   gtk_main_quit();
 
