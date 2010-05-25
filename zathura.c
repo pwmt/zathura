@@ -636,7 +636,7 @@ build_index(GtkTreeModel* model, GtkTreeIter* parent, PopplerIndexIter* index_it
 void
 draw(int page_id)
 {
-  if(!Zathura.PDF.document || page_id < 0 || page_id > Zathura.PDF.number_of_pages)
+  if(!Zathura.PDF.document || page_id < 0 || page_id >= Zathura.PDF.number_of_pages)
     return;
 
   double page_width, page_height;
@@ -1210,7 +1210,7 @@ setCompletionRowColor(GtkBox* results, int mode, int id)
 void
 set_page(int page)
 {
-  if(page > Zathura.PDF.number_of_pages || page < 0)
+  if(page >= Zathura.PDF.number_of_pages || page < 0)
   {
     notify(WARNING, "Could not open page");
     return;
