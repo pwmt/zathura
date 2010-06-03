@@ -2620,7 +2620,7 @@ cmd_print(int argc, char** argv)
   }
 
   char* printer = argv[0];
-  char* sites   = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("%i", Zathura.PDF.number_of_pages);
+  char* sites   = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("1-%i", Zathura.PDF.number_of_pages);
   char* print_command = g_strdup_printf(PRINT_COMMAND, printer, sites, Zathura.PDF.file);
   system(print_command);
 
