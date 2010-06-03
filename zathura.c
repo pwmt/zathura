@@ -191,17 +191,18 @@ struct
 
   struct
   {
-    GString *buffer;
-    GList   *history;
-    int      mode;
-    int      viewing_mode;
-    gboolean recolor;
-    gboolean enable_labelmode;
-    int       goto_mode;
     GtkLabel *status_text;
     GtkLabel *status_buffer;
     GtkLabel *status_state;
+    GString  *buffer;
+    GList    *history;
+    int       mode;
+    int       viewing_mode;
+    gboolean  recolor;
+    gboolean  enable_labelmode;
+    int       goto_mode;
     int       adjust_mode;
+    gboolean  show_index;
   } Global;
 
   struct
@@ -454,6 +455,7 @@ init_zathura()
   Zathura.Global.recolor       = RECOLOR_OPEN;
   Zathura.Global.adjust_mode   = ADJUST_OPEN;
   Zathura.Global.goto_mode     = GOTO_MODE;
+  Zathura.Global.show_index    = FALSE;
 
   Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = g_strdup_printf("");
@@ -1673,7 +1675,8 @@ gboolean cb_index_row_activated(GtkTreeView* treeview, GtkTreePath* path,
 
       set_page(page_number - 1);
       update_status();
-      gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
+      Zathura.Global.show_index = FALSE;
+      gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.document));
     }
   }
 
@@ -1806,19 +1809,18 @@ sc_toggle_index(Argument* argument)
     gtk_widget_show(Zathura.UI.index);
   }
 
-  static gboolean show = FALSE;
-  if(!show)
+  if(!Zathura.Global.show_index)
   {
     switch_view(Zathura.UI.index);
     Zathura.Global.mode = INDEX;
   }
   else
   {
-    switch_view(Zathura.UI.drawing_area);
+    switch_view(Zathura.UI.document);
     Zathura.Global.mode = NORMAL;
   }
 
-  show = !show;
+  Zathura.Global.show_index = !Zathura.Global.show_index;
 }
 
 void
