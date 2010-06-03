@@ -315,6 +315,7 @@ void sc_focus_inputbar(Argument*);
 void sc_follow(Argument*);
 void sc_navigate(Argument*);
 void sc_recolor(Argument*);
+void sc_reload(Argument*);
 void sc_rotate(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
@@ -1526,6 +1527,37 @@ sc_recolor(Argument* argument)
   Zathura.Global.recolor = !Zathura.Global.recolor;
   draw(Zathura.PDF.page_number);
 }
+
+void
+sc_reload(Argument* argument)
+{
+  if(!Zathura.PDF.document)
+    return;
+
+  /* save old information */
+  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
+  char* path     = Zathura.PDF.file ? strdup(Zathura.PDF.file) : NULL;
+  char* password = Zathura.PDF.password ? strdup(Zathura.PDF.password) : NULL;
+  int scale      = Zathura.PDF.scale;
+  int page       = Zathura.PDF.page_number;
+  int rotate     = Zathura.PDF.rotate;
+  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+
+  /* reopen and restore settings */
+  cmd_close(0, NULL);
+  open_file(path, password);
+
+  Zathura.PDF.scale  = scale;
+  Zathura.PDF.rotate = rotate;
+
+  draw(page);
+
+  if(path)
+    free(path);
+  if(password)
+    free(password);
+}
+
 
 void
 sc_rotate(Argument* argument)
@@ -3586,28 +3618,7 @@ cb_watch_file(GFileMonitor* monitor, GFile* file, GFile* other_file, GFileMonito
   if(event != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
     return FALSE;
 
-  /* save old information */
-  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
-  char* path     = Zathura.PDF.file ? strdup(Zathura.PDF.file) : NULL;
-  char* password = Zathura.PDF.password ? strdup(Zathura.PDF.password) : NULL;
-  int scale      = Zathura.PDF.scale;
-  int page       = Zathura.PDF.page_number;
-  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
-
-  /* reopen and restore settings */
-  gdk_threads_enter();
-  cmd_close(0, NULL);
-  open_file(path, password);
-
-  Zathura.PDF.scale = scale;
-
-  draw(page);
-  gdk_threads_leave();
-
-  if(path)
-    free(path);
-  if(password)
-    free(password);
+  sc_reload(NULL);
 
   return TRUE;
 }
