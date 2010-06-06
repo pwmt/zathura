@@ -1,11 +1,11 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
-VERSION = 0.0.5
+VERSION = 0.0.6
 
 # paths
-PREFIX = /usr
-MANPREFIX = ${PREFIX}/share/man
+PREFIX ?= /usr
+MANPREFIX ?= ${PREFIX}/share/man
 
 # libs
 GTK_INC = $(shell pkg-config --cflags gtk+-2.0 poppler-glib)
