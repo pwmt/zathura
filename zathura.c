@@ -898,8 +898,24 @@ open_file(char* path, char* password)
 {
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
 
+  /* specify path max */
+  size_t pm;
+#ifdef PATH_MAX
+  pm = PATH_MAX;
+#else
+  pm = pathconf(path,_PC_PATH_MAX);
+  if(pm <= 0)
+    pm = 4096;
+#endif
+
   /* get filename */
-  char* file = realpath(path, NULL);
+  char* file = (char*) calloc(sizeof(char), pm);
+  if(!file || !realpath(path, file))
+  {
+    if(file)
+      free(file);
+    return FALSE;
+  }
 
   if(path[0] == '~')
   {
