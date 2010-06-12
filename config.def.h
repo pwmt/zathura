@@ -51,7 +51,7 @@ static const char DEFAULT_TEXT[] = "[No Name]";
 #define PRINT_COMMAND "lp -d '%s' -P %s '%s'" /* printer / pages / file */
 
 /* open uri */
-#define URI_COMMAND "firefox %s" /* uri */
+#define URI_COMMAND "firefox '%s'" /* uri */
 
 /* additional settings */
 #define SHOW_SCROLLBARS 0
