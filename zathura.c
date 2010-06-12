@@ -1068,6 +1068,9 @@ open_file(char* path, char* password)
     }
   }
 
+  /* set window title */
+  gtk_window_set_title(Zathura.UI.window, basename(file));
+
   /* show document */
   set_page(start_page);
   update_status();
@@ -2324,6 +2327,7 @@ cmd_close(int argc, char** argv)
   free(Zathura.PDF.pages);
   g_object_unref(Zathura.PDF.document);
   g_free(Zathura.State.pages);
+  gtk_window_set_title(Zathura.UI.window, "zathura");
 
   Zathura.State.pages         = g_strdup_printf("");
   Zathura.State.filename      = (char*) DEFAULT_TEXT;
