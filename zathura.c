@@ -1601,9 +1601,23 @@ sc_scroll(Argument* argument)
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
 
-  if( (argument->n == LEFT) || (argument->n == UP))
+  if(argument->n == UP && value == 0)
+  {
+    Argument arg;
+    arg.n = PREVIOUS;
+    sc_navigate(&arg);
+    arg.n = BOTTOM;
+    sc_scroll(&arg);
+  }
+  else if(argument->n == DOWN && value == max)
+  {
+    Argument arg;
+    arg.n = NEXT;
+    sc_navigate(&arg);
+  }
+  else if((argument->n == LEFT) || (argument->n == UP))
     gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
-  else if (argument->n == TOP)
+  else if(argument->n == TOP)
     gtk_adjustment_set_value(adjustment, 0);
   else if(argument->n == BOTTOM)
     gtk_adjustment_set_value(adjustment, max);
