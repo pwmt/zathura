@@ -27,7 +27,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN,
        FORWARD, BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH,
        ADJUST_NONE, CONTINUOUS, DELETE_LAST, ADD_MARKER,
        EVAL_MARKER, INDEX, EXPAND, COLLAPSE, SELECT,
-       GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, FULLSCREEN };
+       GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, FULLSCREEN,
+       HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN };
 
 /* typedefs */
 struct CElement
@@ -1615,6 +1616,14 @@ sc_scroll(Argument* argument)
     arg.n = NEXT;
     sc_navigate(&arg);
   }
+  else if(argument->n == FULL_UP)
+    gtk_adjustment_set_value(adjustment, (value - view_size) < 0 ? 0 : (value - view_size));
+  else if(argument->n == FULL_DOWN)
+    gtk_adjustment_set_value(adjustment, (value + view_size) > max ? max : (value + view_size));
+  else if(argument->n == HALF_UP)
+    gtk_adjustment_set_value(adjustment, (value - (view_size / 2)) < 0 ? 0 : (value - (view_size / 2)));
+  else if(argument->n == HALF_DOWN)
+    gtk_adjustment_set_value(adjustment, (value + (view_size / 2)) > max ? max : (value + (view_size / 2)));
   else if((argument->n == LEFT) || (argument->n == UP))
     gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
   else if(argument->n == TOP)
