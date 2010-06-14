@@ -1602,7 +1602,7 @@ sc_scroll(Argument* argument)
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
 
-  if(argument->n == UP && value == 0)
+  if((argument->n == UP || argument->n == HALF_UP || argument->n == FULL_UP) && value == 0)
   {
     Argument arg;
     arg.n = PREVIOUS;
@@ -1610,7 +1610,7 @@ sc_scroll(Argument* argument)
     arg.n = BOTTOM;
     sc_scroll(&arg);
   }
-  else if(argument->n == DOWN && value == max)
+  else if((argument->n == DOWN || argument->n == HALF_DOWN || argument->n == FULL_DOWN) && value == max)
   {
     Argument arg;
     arg.n = NEXT;
