@@ -130,6 +130,7 @@ typedef struct
   void* variable;
   char  type;
   gboolean render;
+  gboolean reinit;
   char* description;
 } Setting;
 
@@ -284,6 +285,7 @@ struct
 } Zathura;
 
 /* function declarations */
+void init_colors();
 void init_directories();
 void init_zathura();
 void add_marker(int);
@@ -387,6 +389,54 @@ gboolean cb_watch_file(GFileMonitor*, GFile*, GFile*, GFileMonitorEvent, gpointe
 
 /* function implementation */
 void
+init_colors()
+{
+  /* parse  */
+  gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
+  gdk_color_parse(default_bgcolor,        &(Zathura.Style.default_bg));
+  gdk_color_parse(inputbar_fgcolor,       &(Zathura.Style.inputbar_fg));
+  gdk_color_parse(inputbar_bgcolor,       &(Zathura.Style.inputbar_bg));
+  gdk_color_parse(statusbar_fgcolor,      &(Zathura.Style.statusbar_fg));
+  gdk_color_parse(statusbar_bgcolor,      &(Zathura.Style.statusbar_bg));
+  gdk_color_parse(completion_fgcolor,     &(Zathura.Style.completion_fg));
+  gdk_color_parse(completion_bgcolor,     &(Zathura.Style.completion_bg));
+  gdk_color_parse(completion_g_fgcolor,   &(Zathura.Style.completion_g_fg));
+  gdk_color_parse(completion_g_fgcolor,   &(Zathura.Style.completion_g_fg));
+  gdk_color_parse(completion_hl_fgcolor,  &(Zathura.Style.completion_hl_fg));
+  gdk_color_parse(completion_hl_bgcolor,  &(Zathura.Style.completion_hl_bg));
+  gdk_color_parse(notification_e_fgcolor, &(Zathura.Style.notification_e_fg));
+  gdk_color_parse(notification_e_bgcolor, &(Zathura.Style.notification_e_bg));
+  gdk_color_parse(notification_w_fgcolor, &(Zathura.Style.notification_w_fg));
+  gdk_color_parse(notification_w_bgcolor, &(Zathura.Style.notification_w_bg));
+  gdk_color_parse(recolor_darkcolor,      &(Zathura.Style.recolor_darkcolor));
+  gdk_color_parse(recolor_lightcolor,     &(Zathura.Style.recolor_lightcolor));
+  gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
+  gdk_color_parse(select_text,            &(Zathura.Style.select_text));
+  Zathura.Style.font = pango_font_description_from_string(font);
+
+  /* drawing area */
+  gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.drawing_area), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
+
+  /* statusbar */
+  gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.statusbar), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_bg));
+
+  gtk_widget_modify_fg(GTK_WIDGET(Zathura.Global.status_text),  GTK_STATE_NORMAL, &(Zathura.Style.statusbar_fg));
+  gtk_widget_modify_fg(GTK_WIDGET(Zathura.Global.status_state), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_fg));
+  gtk_widget_modify_fg(GTK_WIDGET(Zathura.Global.status_buffer), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_fg));
+
+  gtk_widget_modify_font(GTK_WIDGET(Zathura.Global.status_text),  Zathura.Style.font);
+  gtk_widget_modify_font(GTK_WIDGET(Zathura.Global.status_state), Zathura.Style.font);
+  gtk_widget_modify_font(GTK_WIDGET(Zathura.Global.status_buffer), Zathura.Style.font);
+
+  /* inputbar */
+  gtk_widget_modify_base(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_bg));
+  gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
+  gtk_widget_modify_font(GTK_WIDGET(Zathura.UI.inputbar),                     Zathura.Style.font);
+
+
+}
+
+void
 init_directories()
 {
   /* create zathura directory */
@@ -426,29 +476,6 @@ init_zathura()
   g_static_mutex_init(&(Zathura.Lock.pdf_obj_lock));
   g_static_mutex_init(&(Zathura.Lock.select_lock));
   g_static_mutex_init(&(Zathura.Lock.select_lock));
-
-  /* look */
-  gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
-  gdk_color_parse(default_bgcolor,        &(Zathura.Style.default_bg));
-  gdk_color_parse(inputbar_fgcolor,       &(Zathura.Style.inputbar_fg));
-  gdk_color_parse(inputbar_bgcolor,       &(Zathura.Style.inputbar_bg));
-  gdk_color_parse(statusbar_fgcolor,      &(Zathura.Style.statusbar_fg));
-  gdk_color_parse(statusbar_bgcolor,      &(Zathura.Style.statusbar_bg));
-  gdk_color_parse(completion_fgcolor,     &(Zathura.Style.completion_fg));
-  gdk_color_parse(completion_bgcolor,     &(Zathura.Style.completion_bg));
-  gdk_color_parse(completion_g_fgcolor,   &(Zathura.Style.completion_g_fg));
-  gdk_color_parse(completion_g_fgcolor,   &(Zathura.Style.completion_g_fg));
-  gdk_color_parse(completion_hl_fgcolor,  &(Zathura.Style.completion_hl_fg));
-  gdk_color_parse(completion_hl_bgcolor,  &(Zathura.Style.completion_hl_bg));
-  gdk_color_parse(notification_e_fgcolor, &(Zathura.Style.notification_e_fg));
-  gdk_color_parse(notification_e_bgcolor, &(Zathura.Style.notification_e_bg));
-  gdk_color_parse(notification_w_fgcolor, &(Zathura.Style.notification_w_fg));
-  gdk_color_parse(notification_w_bgcolor, &(Zathura.Style.notification_w_bg));
-  gdk_color_parse(recolor_darkcolor,      &(Zathura.Style.recolor_darkcolor));
-  gdk_color_parse(recolor_lightcolor,     &(Zathura.Style.recolor_lightcolor));
-  gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
-  gdk_color_parse(select_text,            &(Zathura.Style.select_text));
-  Zathura.Style.font = pango_font_description_from_string(font);
 
   /* other */
   Zathura.Global.mode          = NORMAL;
@@ -523,24 +550,13 @@ init_zathura()
   #endif
 
   /* drawing area */
-  gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.drawing_area), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
   gtk_widget_show(Zathura.UI.drawing_area);
   g_signal_connect(G_OBJECT(Zathura.UI.drawing_area), "expose-event", G_CALLBACK(cb_draw), NULL);
 
   /* statusbar */
-  gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.statusbar), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_bg));
-
   Zathura.Global.status_text   = GTK_LABEL(gtk_label_new(NULL));
   Zathura.Global.status_state  = GTK_LABEL(gtk_label_new(NULL));
   Zathura.Global.status_buffer = GTK_LABEL(gtk_label_new(NULL));
-
-  gtk_widget_modify_fg(GTK_WIDGET(Zathura.Global.status_text),  GTK_STATE_NORMAL, &(Zathura.Style.statusbar_fg));
-  gtk_widget_modify_fg(GTK_WIDGET(Zathura.Global.status_state), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_fg));
-  gtk_widget_modify_fg(GTK_WIDGET(Zathura.Global.status_buffer), GTK_STATE_NORMAL, &(Zathura.Style.statusbar_fg));
-
-  gtk_widget_modify_font(GTK_WIDGET(Zathura.Global.status_text),  Zathura.Style.font);
-  gtk_widget_modify_font(GTK_WIDGET(Zathura.Global.status_state), Zathura.Style.font);
-  gtk_widget_modify_font(GTK_WIDGET(Zathura.Global.status_buffer), Zathura.Style.font);
 
   gtk_misc_set_alignment(GTK_MISC(Zathura.Global.status_text),  0.0, 0.0);
   gtk_misc_set_alignment(GTK_MISC(Zathura.Global.status_state), 1.0, 0.0);
@@ -564,10 +580,6 @@ init_zathura()
   gtk_entry_set_inner_border(Zathura.UI.inputbar, NULL);
   gtk_entry_set_has_frame(   Zathura.UI.inputbar, FALSE);
   gtk_editable_set_editable( GTK_EDITABLE(Zathura.UI.inputbar), TRUE);
-
-  gtk_widget_modify_base(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_bg));
-  gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
-  gtk_widget_modify_font(GTK_WIDGET(Zathura.UI.inputbar),                     Zathura.Style.font);
 
   Zathura.Handler.inputbar_key_press_event =
     g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "key-press-event",   G_CALLBACK(cb_inputbar_kb_pressed), NULL);
@@ -2682,7 +2694,7 @@ cmd_rotate(int argc, char** argv)
 gboolean
 cmd_set(int argc, char** argv)
 {
-  if(argc <= 0 || argc >= 3)
+  if(argc <= 0)
     return FALSE;
 
   int i;
@@ -2715,12 +2727,22 @@ cmd_set(int argc, char** argv)
       }
       else if(settings[i].type == 's')
       {
-        if(argc != 2)
+        if(argc < 2)
           return FALSE;
 
+        /* assembly the arguments back to one string */
+        int i;
+        GString *s = g_string_new("");
+        for(i = 1; i < argc; i++)
+        {
+          if(i != 0)
+            s = g_string_append_c(s, ' ');
+
+          s = g_string_append(s, argv[i]);
+        }
+
         char **x = (char**) settings[i].variable;
-        if(argv[1])
-          *x = argv[1];
+        *x = s->str;
       }
       else if(settings[i].type == 'c')
       {
@@ -2731,6 +2753,10 @@ cmd_set(int argc, char** argv)
         if(argv[1])
           *x = argv[1][0];
       }
+
+      /* re-init */
+      if(settings[i].reinit)
+        init_colors();
 
       /* render */
       if(settings[i].render)
@@ -3675,6 +3701,7 @@ int main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   init_zathura();
+  init_colors();
   init_directories();
 
   if(argc >= 2)
