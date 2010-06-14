@@ -14,6 +14,7 @@ static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 /* directories and files */
 static const char ZATHURA_DIR[]   = ".zathura";
 static const char BOOKMARK_FILE[] = "bookmarks";
+static const char ZATHURA_RC[]    = "zathurarc";
 
 /* bookmarks */
 static const char BM_PAGE_ENTRY[]  = "page";
