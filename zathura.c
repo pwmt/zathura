@@ -300,6 +300,7 @@ void notify(int, char*);
 gboolean open_file(char*, char*);
 void open_uri(char*);
 void update_status();
+void read_configuration();
 void recalcRectangle(int, PopplerRectangle*);
 void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
@@ -1122,6 +1123,38 @@ update_status()
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
   g_free(status_text);
   g_free(zoom_level);
+}
+
+void
+read_configuration()
+{
+  char* zathurarc = g_strdup_printf("%s/%s/%s", g_get_home_dir(), ZATHURA_DIR, ZATHURA_RC);
+
+  if(!zathurarc)
+    return;
+
+  if(g_file_test(zathurarc, G_FILE_TEST_IS_REGULAR))
+  {
+    char* content = NULL;
+
+    if(g_file_get_contents(zathurarc, &content, NULL, NULL))
+    {
+      gchar **lines = g_strsplit(content, "\n", -1);
+      int     n     = g_strv_length(lines) - 1;
+
+      int i;
+      for(i = 0; i < n; i++)
+      {
+        gchar **tokens = g_strsplit(lines[i], " ", -1);
+        int     length = g_strv_length(tokens);
+
+        if(!strcmp(tokens[0], "set"))
+          cmd_set(length - 1, tokens + 1);
+      }
+    }
+  }
+
+  g_free(zathurarc);
 }
 
 void
@@ -2731,14 +2764,14 @@ cmd_set(int argc, char** argv)
           return FALSE;
 
         /* assembly the arguments back to one string */
-        int i;
+        int j;
         GString *s = g_string_new("");
-        for(i = 1; i < argc; i++)
+        for(j = 1; j < argc; j++)
         {
-          if(i != 0)
+          if(j != 1)
             s = g_string_append_c(s, ' ');
 
-          s = g_string_append(s, argv[i]);
+          s = g_string_append(s, argv[j]);
         }
 
         char **x = (char**) settings[i].variable;
@@ -3701,6 +3734,7 @@ int main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   init_zathura();
+  read_configuration();
   init_colors();
   init_directories();
 
