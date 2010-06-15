@@ -1,11 +1,11 @@
 /* settings */
-static const int   DEFAULT_WIDTH  = 800;
-static const int   DEFAULT_HEIGHT = 600;
-static const float ZOOM_STEP      = 10;
-static const float ZOOM_MIN       = 10;
-static const float ZOOM_MAX       = 400;
-static const float SCROLL_STEP    = 40;
-static const float TRANSPARENCY   = 0.4;
+int   default_width  = 800;
+int   default_height = 600;
+float zoom_step      = 10;
+float zoom_min       = 10;
+float zoom_max       = 400;
+float scroll_step    = 40;
+float transparency   = 0.4;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
@@ -45,19 +45,18 @@ char* search_highlight       = "#9FBC00";
 char* select_text            = "#000000";
 
 /* statusbar */
-static const char DEFAULT_TEXT[] = "[No Name]";
+char* default_text = "[No Name]";
 
 /* printing */
-#define LIST_PRINTER_COMMAND "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'"
-#define PRINT_COMMAND "lp -d '%s' -P %s '%s'" /* printer / pages / file */
+char* list_printer_command = "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'";
+char* print_command = "lp -d '%s' -P %s '%s'"; /* printer / pages / file */
 
 /* open uri */
-#define URI_COMMAND "firefox '%s'" /* uri */
+char* uri_command = "firefox '%s'"; /* uri */
 
 /* additional settings */
-#define SHOW_SCROLLBARS 0
+gboolean show_scrollbars = FALSE;
 #define ADJUST_OPEN ADJUST_BESTFIT
-#define RECOLOR_OPEN 0
 #define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 #define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
 
@@ -184,28 +183,41 @@ SpecialCommand special_commands[] = {
 
 /* settings */
 Setting settings[] = {
-  /* name,                   variable,                        type,  render,  re-init, description */
-  {"recolor",                &(Zathura.Global.recolor),       'b',   TRUE,    FALSE,   "Invert the image" },
-  {"offset",                 &(Zathura.PDF.page_offset),      'i',   FALSE,   FALSE,   "Optional page offset" },
-  {"font",                   &(font),                         's',   FALSE,   TRUE,    "The used font" },
-  {"default_bgcolor",        &(default_bgcolor),              's',   FALSE,   TRUE,    "Default background color"},
-  {"default_fgcolor",        &(default_fgcolor),              's',   FALSE,   TRUE,    "Default foreground color"},
-  {"inputbar_bgcolor",       &(inputbar_bgcolor),             's',   FALSE,   TRUE,    "Inputbar background color"},
-  {"inputbar_fgcolor",       &(inputbar_fgcolor),             's',   FALSE,   TRUE,    "Inputbar foreground color"},
-  {"statusbar_bgcolor",      &(statusbar_bgcolor),            's',   FALSE,   TRUE,    "Statusbar background color"},
-  {"statusbar_fgcolor",      &(statusbar_fgcolor),            's',   FALSE,   TRUE,    "Statusbar foreground color"},
-  {"completion_bgcolor",     &(completion_bgcolor),           's',   FALSE,   TRUE,    "Completion background color"},
-  {"completion_fgcolor",     &(completion_fgcolor),           's',   FALSE,   TRUE,    "Completion foreground color"},
-  {"completion_g_bgcolor",   &(completion_g_bgcolor),         's',   FALSE,   TRUE,    "Completion (group) background color"},
-  {"completion_g_fgcolor",   &(completion_g_fgcolor),         's',   FALSE,   TRUE,    "Completion (group) foreground color"},
-  {"completion_hl_bgcolor",  &(completion_hl_bgcolor),        's',   FALSE,   TRUE,    "Completion (highlight) background color"},
-  {"completion_hl_fgcolor",  &(completion_hl_fgcolor),        's',   FALSE,   TRUE,    "Completion (highlight) foreground color"},
-  {"notification_e_bgcolor", &(notification_e_bgcolor),       's',   FALSE,   TRUE,    "Notification (error) background color"},
-  {"notification_e_fgcolor", &(notification_e_fgcolor),       's',   FALSE,   TRUE,    "Notification (error) foreground color"},
-  {"notification_w_bgcolor", &(notification_w_bgcolor),       's',   FALSE,   TRUE,    "Notification (warning) background color"},
-  {"notification_w_fgcolor", &(notification_w_fgcolor),       's',   FALSE,   TRUE,    "Notification (warning) foreground color"},
-  {"recolor_darkcolor",      &(recolor_darkcolor),            's',   FALSE,   TRUE,    "Recoloring (dark color)"},
-  {"recolor_lightcolor",     &(recolor_lightcolor),           's',   FALSE,   TRUE,    "Recoloring (light color)"},
-  {"search_highlight",       &(search_highlight),             's',   FALSE,   TRUE,    "Highlighted results"},
-  {"select_text",            &(select_text),                  's',   FALSE,   TRUE,    "Rectangle of the selected text"},
+  /* name,                   variable,                           type,  render,  re-init, description */
+  {"browser",                &(uri_command),                     's',   FALSE,   FALSE,   "Command to open URIs"},
+  {"completion_bgcolor",     &(completion_bgcolor),              's',   FALSE,   TRUE,    "Completion background color"},
+  {"completion_fgcolor",     &(completion_fgcolor),              's',   FALSE,   TRUE,    "Completion foreground color"},
+  {"completion_g_bgcolor",   &(completion_g_bgcolor),            's',   FALSE,   TRUE,    "Completion (group) background color"},
+  {"completion_g_fgcolor",   &(completion_g_fgcolor),            's',   FALSE,   TRUE,    "Completion (group) foreground color"},
+  {"completion_hl_bgcolor",  &(completion_hl_bgcolor),           's',   FALSE,   TRUE,    "Completion (highlight) background color"},
+  {"completion_hl_fgcolor",  &(completion_hl_fgcolor),           's',   FALSE,   TRUE,    "Completion (highlight) foreground color"},
+  {"default_bgcolor",        &(default_bgcolor),                 's',   FALSE,   TRUE,    "Default background color"},
+  {"default_fgcolor",        &(default_fgcolor),                 's',   FALSE,   TRUE,    "Default foreground color"},
+  {"default_text",           &(default_text),                    's',   FALSE,   FALSE,   "Default text"},
+  {"font",                   &(font),                            's',   FALSE,   TRUE,    "The used font" },
+  {"height",                 &(default_height),                  'i',   FALSE,   FALSE,   "Default window height"},
+  {"inputbar_bgcolor",       &(inputbar_bgcolor),                's',   FALSE,   TRUE,    "Inputbar background color"},
+  {"inputbar_fgcolor",       &(inputbar_fgcolor),                's',   FALSE,   TRUE,    "Inputbar foreground color"},
+  {"labels",                 &(Zathura.Global.enable_labelmode), 'b',   FALSE,   TRUE,    "Allow label mode"},
+  {"list_printer_command",   &(list_printer_command),            's',   FALSE,   FALSE,   "Command to list printers"},
+  {"notification_e_bgcolor", &(notification_e_bgcolor),          's',   FALSE,   TRUE,    "Notification (error) background color"},
+  {"notification_e_fgcolor", &(notification_e_fgcolor),          's',   FALSE,   TRUE,    "Notification (error) foreground color"},
+  {"notification_w_bgcolor", &(notification_w_bgcolor),          's',   FALSE,   TRUE,    "Notification (warning) background color"},
+  {"notification_w_fgcolor", &(notification_w_fgcolor),          's',   FALSE,   TRUE,    "Notification (warning) foreground color"},
+  {"offset",                 &(Zathura.PDF.page_offset),         'i',   FALSE,   FALSE,   "Optional page offset" },
+  {"print_command",          &(print_command),                   's',   FALSE,   FALSE,   "Command to print"},
+  {"recolor",                &(Zathura.Global.recolor),          'b',   TRUE,    FALSE,   "Invert the image" },
+  {"recolor_darkcolor",      &(recolor_darkcolor),               's',   FALSE,   TRUE,    "Recoloring (dark color)"},
+  {"recolor_lightcolor",     &(recolor_lightcolor),              's',   FALSE,   TRUE,    "Recoloring (light color)"},
+  {"scroll_step",            &(scroll_step),                     'f',   FALSE,   FALSE,   "Scroll step"},
+  {"scrollbars",             &(show_scrollbars),                 'b',   FALSE,   TRUE,    "Show scrollbars"},
+  {"search_highlight",       &(search_highlight),                's',   FALSE,   TRUE,    "Highlighted results"},
+  {"select_text",            &(select_text),                     's',   FALSE,   TRUE,    "Rectangle of the selected text"},
+  {"statusbar_bgcolor",      &(statusbar_bgcolor),               's',   FALSE,   TRUE,    "Statusbar background color"},
+  {"statusbar_fgcolor",      &(statusbar_fgcolor),               's',   FALSE,   TRUE,    "Statusbar foreground color"},
+  {"transparency",           &(transparency),                    'f',   FALSE,   FALSE,   "Transparency of rectangles"},
+  {"width",                  &(default_width),                   'i',   FALSE,   FALSE,   "Default window width"},
+  {"zoom_max",               &(zoom_max),                        'f',   FALSE,   FALSE,   "Zoom maximum"},
+  {"zoom_min",               &(zoom_min),                        'f',   FALSE,   FALSE,   "Zoom minimum"},
+  {"zoom_step",              &(zoom_step),                       'f',   FALSE,   FALSE,   "Zoom step"},
 };
