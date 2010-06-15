@@ -285,8 +285,9 @@ struct
 } Zathura;
 
 /* function declarations */
-void init_colors();
+void init_look();
 void init_directories();
+void init_settings();
 void init_zathura();
 void add_marker(int);
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
@@ -390,7 +391,7 @@ gboolean cb_watch_file(GFileMonitor*, GFile*, GFile*, GFileMonitorEvent, gpointe
 
 /* function implementation */
 void
-init_colors()
+init_look()
 {
   /* parse  */
   gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
@@ -434,7 +435,11 @@ init_colors()
   gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
   gtk_widget_modify_font(GTK_WIDGET(Zathura.UI.inputbar),                     Zathura.Style.font);
 
-
+  /* scrollbars */
+  if(show_scrollbars)
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  else
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 }
 
 void
@@ -469,6 +474,14 @@ init_directories()
 }
 
 void
+init_settings()
+{
+  Zathura.State.filename = (char*) default_text;
+
+  gtk_window_set_default_size(Zathura.UI.window, default_width, default_height);
+}
+
+void
 init_zathura()
 {
   /* init mutexes */
@@ -481,12 +494,11 @@ init_zathura()
   /* other */
   Zathura.Global.mode          = NORMAL;
   Zathura.Global.viewing_mode  = NORMAL;
-  Zathura.Global.recolor       = RECOLOR_OPEN;
+  Zathura.Global.recolor       = 0;
   Zathura.Global.adjust_mode   = ADJUST_OPEN;
   Zathura.Global.goto_mode     = GOTO_MODE;
   Zathura.Global.show_index    = FALSE;
 
-  Zathura.State.filename          = (char*) DEFAULT_TEXT;
   Zathura.State.pages             = g_strdup_printf("");
   Zathura.State.scroll_percentage = 0;
 
@@ -517,7 +529,6 @@ init_zathura()
   gtk_window_set_title(Zathura.UI.window, "zathura");
   GdkGeometry hints = { 1, 1 };
   gtk_window_set_geometry_hints(Zathura.UI.window, NULL, &hints, GDK_HINT_MIN_SIZE);
-  gtk_window_set_default_size(Zathura.UI.window, DEFAULT_WIDTH, DEFAULT_HEIGHT);
   g_signal_connect(G_OBJECT(Zathura.UI.window), "destroy", G_CALLBACK(cb_destroy), NULL);
 
   /* box */
@@ -543,12 +554,6 @@ init_zathura()
   g_signal_connect(G_OBJECT(Zathura.UI.view), "scroll-event",         G_CALLBACK(cb_view_scrolled),       NULL);
   gtk_container_add(GTK_CONTAINER(Zathura.UI.view), GTK_WIDGET(Zathura.UI.viewport));
   gtk_viewport_set_shadow_type(Zathura.UI.viewport, GTK_SHADOW_NONE);
-
-  #if SHOW_SCROLLBARS
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  #else
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-  #endif
 
   /* drawing area */
   gtk_widget_show(Zathura.UI.drawing_area);
@@ -877,7 +882,7 @@ highlight_result(int page_id, PopplerRectangle* rectangle)
   PopplerRectangle* trect = poppler_rectangle_copy(rectangle);
   cairo_t *cairo = cairo_create(Zathura.PDF.surface);
   cairo_set_source_rgba(cairo, Zathura.Style.search_highlight.red, Zathura.Style.search_highlight.green,
-      Zathura.Style.search_highlight.blue, TRANSPARENCY);
+      Zathura.Style.search_highlight.blue, transparency);
 
   recalcRectangle(page_id, trect);
   cairo_rectangle(cairo, trect->x1, trect->y1, (trect->x2 - trect->x1), (trect->y2 - trect->y1));
@@ -1095,7 +1100,7 @@ open_file(char* path, char* password)
 
 void open_uri(char* uri)
 {
-  char* uri_cmd = g_strdup_printf(URI_COMMAND, uri);
+  char* uri_cmd = g_strdup_printf(uri_command, uri);
   system(uri_cmd);
   g_free(uri_cmd);
 }
@@ -1670,13 +1675,13 @@ sc_scroll(Argument* argument)
   else if(argument->n == HALF_DOWN)
     gtk_adjustment_set_value(adjustment, (value + (view_size / 2)) > max ? max : (value + (view_size / 2)));
   else if((argument->n == LEFT) || (argument->n == UP))
-    gtk_adjustment_set_value(adjustment, (value - SCROLL_STEP) < 0 ? 0 : (value - SCROLL_STEP));
+    gtk_adjustment_set_value(adjustment, (value - scroll_step) < 0 ? 0 : (value - scroll_step));
   else if(argument->n == TOP)
     gtk_adjustment_set_value(adjustment, 0);
   else if(argument->n == BOTTOM)
     gtk_adjustment_set_value(adjustment, max);
   else
-    gtk_adjustment_set_value(adjustment, (value + SCROLL_STEP) > max ? max : (value + SCROLL_STEP));
+    gtk_adjustment_set_value(adjustment, (value + scroll_step) > max ? max : (value + scroll_step));
 
   update_status();
 }
@@ -2398,7 +2403,7 @@ cmd_close(int argc, char** argv)
   gtk_window_set_title(Zathura.UI.window, "zathura");
 
   Zathura.State.pages         = g_strdup_printf("");
-  Zathura.State.filename      = (char*) DEFAULT_TEXT;
+  Zathura.State.filename      = (char*) default_text;
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.document        = NULL;
@@ -2709,11 +2714,11 @@ cmd_print(int argc, char** argv)
 
   char* printer = argv[0];
   char* sites   = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("1-%i", Zathura.PDF.number_of_pages);
-  char* print_command = g_strdup_printf(PRINT_COMMAND, printer, sites, Zathura.PDF.file);
-  system(print_command);
+  char* command = g_strdup_printf(print_command, printer, sites, Zathura.PDF.file);
+  system(command);
 
   g_free(sites);
-  g_free(print_command);
+  g_free(command);
 
   return TRUE;
 }
@@ -2758,6 +2763,15 @@ cmd_set(int argc, char** argv)
         if(argv[1])
           *x = atoi(argv[1]);
       }
+      else if(settings[i].type == 'f')
+      {
+        if(argc != 2)
+          return FALSE;
+
+        float *x = (float*) (settings[i].variable);
+        if(argv[1])
+          *x = atof(argv[1]);
+      }
       else if(settings[i].type == 's')
       {
         if(argc < 2)
@@ -2789,7 +2803,7 @@ cmd_set(int argc, char** argv)
 
       /* re-init */
       if(settings[i].reinit)
-        init_colors();
+        init_look();
 
       /* render */
       if(settings[i].render)
@@ -3009,7 +3023,7 @@ cc_print(char* input)
   int count = 0;
   FILE *fp;
 
-  fp = popen(LIST_PRINTER_COMMAND, "r");
+  fp = popen(list_printer_command, "r");
 
   if(!fp)
   {
@@ -3160,17 +3174,17 @@ bcmd_zoom(char* buffer, Argument* argument)
 
   if(argument->n == ZOOM_IN)
   {
-    if((Zathura.PDF.scale + ZOOM_STEP) <= ZOOM_MAX)
-      Zathura.PDF.scale += ZOOM_STEP;
+    if((Zathura.PDF.scale + zoom_step) <= zoom_max)
+      Zathura.PDF.scale += zoom_step;
     else
-      Zathura.PDF.scale = ZOOM_MAX;
+      Zathura.PDF.scale = zoom_max;
   }
   else if(argument->n == ZOOM_OUT)
   {
-    if((Zathura.PDF.scale - ZOOM_STEP) >= ZOOM_MIN)
-      Zathura.PDF.scale -= ZOOM_STEP;
+    if((Zathura.PDF.scale - zoom_step) >= zoom_min)
+      Zathura.PDF.scale -= zoom_step;
     else
-      Zathura.PDF.scale = ZOOM_MIN;
+      Zathura.PDF.scale = zoom_min;
   }
   else if(argument->n == ZOOM_SPECIFIC)
   {
@@ -3179,10 +3193,10 @@ bcmd_zoom(char* buffer, Argument* argument)
       return;
 
     int value = atoi(g_strndup(buffer, b_length - 1));
-    if(value <= ZOOM_MIN)
-      Zathura.PDF.scale = ZOOM_MIN;
-    else if(value >= ZOOM_MAX)
-      Zathura.PDF.scale = ZOOM_MAX;
+    if(value <= zoom_min)
+      Zathura.PDF.scale = zoom_min;
+    else if(value >= zoom_max)
+      Zathura.PDF.scale = zoom_max;
     else
       Zathura.PDF.scale = value;
   }
@@ -3610,7 +3624,7 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
   /* draw selection rectangle */
   cairo = cairo_create(Zathura.PDF.surface);
   cairo_set_source_rgba(cairo, Zathura.Style.select_text.red, Zathura.Style.select_text.green,
-      Zathura.Style.select_text.blue, TRANSPARENCY);
+      Zathura.Style.select_text.blue, transparency);
   cairo_rectangle(cairo, rectangle.x1 - offset_x, rectangle.y1 - offset_y,
       (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
   cairo_fill(cairo);
@@ -3735,7 +3749,8 @@ int main(int argc, char* argv[])
 
   init_zathura();
   read_configuration();
-  init_colors();
+  init_settings();
+  init_look();
   init_directories();
 
   if(argc >= 2)
