@@ -1554,6 +1554,25 @@ sc_reload(Argument* argument)
   if(!Zathura.PDF.document)
     return;
 
+  /* check if file is damaged */
+  char* file_uri = g_filename_to_uri(Zathura.PDF.file, NULL, NULL);
+  if(file_uri)
+  {
+    g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
+    PopplerDocument* temporary_document = NULL;
+    if(!(temporary_document = poppler_document_new_from_file(file_uri, Zathura.PDF.password, NULL)))
+    {
+      g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+      g_free(file_uri);
+      return;
+    }
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+  }
+  else
+    return;
+
+  g_free(file_uri);
+
   /* save old information */
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   char* path     = Zathura.PDF.file ? strdup(Zathura.PDF.file) : NULL;
