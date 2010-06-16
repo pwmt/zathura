@@ -1,11 +1,11 @@
 /* settings */
-static const int   DEFAULT_WIDTH  = 800;
-static const int   DEFAULT_HEIGHT = 600;
-static const float ZOOM_STEP      = 10;
-static const float ZOOM_MIN       = 10;
-static const float ZOOM_MAX       = 400;
-static const float SCROLL_STEP    = 40;
-static const float TRANSPARENCY   = 0.4;
+int   default_width  = 800;
+int   default_height = 600;
+float zoom_step      = 10;
+float zoom_min       = 10;
+float zoom_max       = 400;
+float scroll_step    = 40;
+float transparency   = 0.4;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
@@ -14,49 +14,49 @@ static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 /* directories and files */
 static const char ZATHURA_DIR[]   = ".zathura";
 static const char BOOKMARK_FILE[] = "bookmarks";
+static const char ZATHURA_RC[]    = "zathurarc";
 
 /* bookmarks */
 static const char BM_PAGE_ENTRY[]  = "page";
 static const char BM_PAGE_OFFSET[] = "offset";
 
 /* look */
-static const char font[]                   = "monospace normal 9";
-static const char default_bgcolor[]        = "#000000";
-static const char default_fgcolor[]        = "#DDDDDD";
-static const char inputbar_bgcolor[]       = "#141414";
-static const char inputbar_fgcolor[]       = "#9FBC00";
-static const char statusbar_bgcolor[]      = "#000000";
-static const char statusbar_fgcolor[]      = "#FFFFFF";
-static const char completion_fgcolor[]     = "#DDDDDD";
-static const char completion_bgcolor[]     = "#232323";
-static const char completion_g_fgcolor[]   = "#DEDEDE";
-static const char completion_g_bgcolor[]   = "#FF00FF";
-static const char completion_hl_fgcolor[]  = "#232323";
-static const char completion_hl_bgcolor[]  = "#9FBC00";
-static const char notification_e_bgcolor[] = "#FF1212";
-static const char notification_e_fgcolor[] = "#FFFFFF";
-static const char notification_w_bgcolor[] = "#FFF712";
-static const char notification_w_fgcolor[] = "#000000";
-static const char recolor_darkcolor[]      = "#353535";
-static const char recolor_lightcolor[]     = "#DBDBDB";
+char* font                   = "monospace normal 9";
+char* default_bgcolor        = "#000000";
+char* default_fgcolor        = "#DDDDDD";
+char* inputbar_bgcolor       = "#141414";
+char* inputbar_fgcolor       = "#9FBC00";
+char* statusbar_bgcolor      = "#000000";
+char* statusbar_fgcolor      = "#FFFFFF";
+char* completion_fgcolor     = "#DDDDDD";
+char* completion_bgcolor     = "#232323";
+char* completion_g_fgcolor   = "#DEDEDE";
+char* completion_g_bgcolor   = "#FF00FF";
+char* completion_hl_fgcolor  = "#232323";
+char* completion_hl_bgcolor  = "#9FBC00";
+char* notification_e_bgcolor = "#FF1212";
+char* notification_e_fgcolor = "#FFFFFF";
+char* notification_w_bgcolor = "#FFF712";
+char* notification_w_fgcolor = "#000000";
+char* recolor_darkcolor      = "#353535";
+char* recolor_lightcolor     = "#DBDBDB";
 
-static const char search_highlight[]       = "#9FBC00";
-static const char select_text[]            = "#000000";
+char* search_highlight       = "#9FBC00";
+char* select_text            = "#000000";
 
 /* statusbar */
-static const char DEFAULT_TEXT[] = "[No Name]";
+char* default_text = "[No Name]";
 
 /* printing */
-#define LIST_PRINTER_COMMAND "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'"
-#define PRINT_COMMAND "lp -d '%s' -P %s '%s'" /* printer / pages / file */
+char* list_printer_command = "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'";
+char* print_command = "lp -d '%s' -P %s '%s'"; /* printer / pages / file */
 
 /* open uri */
-#define URI_COMMAND "firefox '%s'" /* uri */
+char* uri_command = "firefox '%s'"; /* uri */
 
 /* additional settings */
-#define SHOW_SCROLLBARS 0
+gboolean show_scrollbars = FALSE;
 #define ADJUST_OPEN ADJUST_BESTFIT
-#define RECOLOR_OPEN 0
 #define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 #define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
 
@@ -146,18 +146,19 @@ MouseScrollEvent mouse_scroll_events[] = {
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,            completion,   description  */
-  {"bmark",     "b",            cmd_bookmark,        0,            "Bookmark current page" },
   {"blist",     0,              cmd_open_bookmark,   cc_bookmark,  "List and open bookmark" },
+  {"bmark",     "b",            cmd_bookmark,        0,            "Bookmark current page" },
   {"close",     "c",            cmd_close,           0,            "Close current file" },
   {"coffset",   0,              cmd_correct_offset,  0,            "Correct page offset" },
   {"delbmark",  0,              cmd_delete_bookmark, cc_bookmark,  "Bookmark current page" },
   {"export",    "e",            cmd_export,          cc_export,    "Export images or attached files" },
   {"info",      "i",            cmd_info,            0,            "Show information about the document" },
+  {"map",       "m",            cmd_map,             0,            "Map keybinding to a function" },
   {"open",      "o",            cmd_open,            cc_open,      "Open a file" },
   {"print",     "p",            cmd_print,           cc_print,     "Print the document" },
+  {"quit",      "q",            cmd_quit,            0,            "Quit zathura" },
   {"rotate",    "r",            cmd_rotate,          0,            "Rotate the page" },
   {"set",       "s",            cmd_set,             cc_set,       "Set an option" },
-  {"quit",      "q",            cmd_quit,            0,            "Quit zathura" },
   {"write",     "w",            cmd_save,            0,            "Save the document" },
 };
 
@@ -183,7 +184,100 @@ SpecialCommand special_commands[] = {
 
 /* settings */
 Setting settings[] = {
-  /* name,         variable,                        type,  render,  description */
-  {"recolor",      &(Zathura.Global.recolor),       'b',   TRUE,    "Invert the image"},
-  {"offset",       &(Zathura.PDF.page_offset),      'i',   FALSE,   "Optional page offset"},
+  /* name,                   variable,                           type,  render,  re-init, description */
+  {"browser",                &(uri_command),                     's',   FALSE,   FALSE,   "Command to open URIs"},
+  {"completion_bgcolor",     &(completion_bgcolor),              's',   FALSE,   TRUE,    "Completion background color"},
+  {"completion_fgcolor",     &(completion_fgcolor),              's',   FALSE,   TRUE,    "Completion foreground color"},
+  {"completion_g_bgcolor",   &(completion_g_bgcolor),            's',   FALSE,   TRUE,    "Completion (group) background color"},
+  {"completion_g_fgcolor",   &(completion_g_fgcolor),            's',   FALSE,   TRUE,    "Completion (group) foreground color"},
+  {"completion_hl_bgcolor",  &(completion_hl_bgcolor),           's',   FALSE,   TRUE,    "Completion (highlight) background color"},
+  {"completion_hl_fgcolor",  &(completion_hl_fgcolor),           's',   FALSE,   TRUE,    "Completion (highlight) foreground color"},
+  {"default_bgcolor",        &(default_bgcolor),                 's',   FALSE,   TRUE,    "Default background color"},
+  {"default_fgcolor",        &(default_fgcolor),                 's',   FALSE,   TRUE,    "Default foreground color"},
+  {"default_text",           &(default_text),                    's',   FALSE,   FALSE,   "Default text"},
+  {"font",                   &(font),                            's',   FALSE,   TRUE,    "The used font" },
+  {"height",                 &(default_height),                  'i',   FALSE,   FALSE,   "Default window height"},
+  {"inputbar_bgcolor",       &(inputbar_bgcolor),                's',   FALSE,   TRUE,    "Inputbar background color"},
+  {"inputbar_fgcolor",       &(inputbar_fgcolor),                's',   FALSE,   TRUE,    "Inputbar foreground color"},
+  {"labels",                 &(Zathura.Global.enable_labelmode), 'b',   FALSE,   TRUE,    "Allow label mode"},
+  {"list_printer_command",   &(list_printer_command),            's',   FALSE,   FALSE,   "Command to list printers"},
+  {"notification_e_bgcolor", &(notification_e_bgcolor),          's',   FALSE,   TRUE,    "Notification (error) background color"},
+  {"notification_e_fgcolor", &(notification_e_fgcolor),          's',   FALSE,   TRUE,    "Notification (error) foreground color"},
+  {"notification_w_bgcolor", &(notification_w_bgcolor),          's',   FALSE,   TRUE,    "Notification (warning) background color"},
+  {"notification_w_fgcolor", &(notification_w_fgcolor),          's',   FALSE,   TRUE,    "Notification (warning) foreground color"},
+  {"offset",                 &(Zathura.PDF.page_offset),         'i',   FALSE,   FALSE,   "Optional page offset" },
+  {"print_command",          &(print_command),                   's',   FALSE,   FALSE,   "Command to print"},
+  {"recolor",                &(Zathura.Global.recolor),          'b',   TRUE,    FALSE,   "Invert the image" },
+  {"recolor_darkcolor",      &(recolor_darkcolor),               's',   FALSE,   TRUE,    "Recoloring (dark color)"},
+  {"recolor_lightcolor",     &(recolor_lightcolor),              's',   FALSE,   TRUE,    "Recoloring (light color)"},
+  {"scroll_step",            &(scroll_step),                     'f',   FALSE,   FALSE,   "Scroll step"},
+  {"scrollbars",             &(show_scrollbars),                 'b',   FALSE,   TRUE,    "Show scrollbars"},
+  {"search_highlight",       &(search_highlight),                's',   FALSE,   TRUE,    "Highlighted results"},
+  {"select_text",            &(select_text),                     's',   FALSE,   TRUE,    "Rectangle of the selected text"},
+  {"statusbar_bgcolor",      &(statusbar_bgcolor),               's',   FALSE,   TRUE,    "Statusbar background color"},
+  {"statusbar_fgcolor",      &(statusbar_fgcolor),               's',   FALSE,   TRUE,    "Statusbar foreground color"},
+  {"transparency",           &(transparency),                    'f',   FALSE,   FALSE,   "Transparency of rectangles"},
+  {"width",                  &(default_width),                   'i',   FALSE,   FALSE,   "Default window width"},
+  {"zoom_max",               &(zoom_max),                        'f',   FALSE,   FALSE,   "Zoom maximum"},
+  {"zoom_min",               &(zoom_min),                        'f',   FALSE,   FALSE,   "Zoom minimum"},
+  {"zoom_step",              &(zoom_step),                       'f',   FALSE,   FALSE,   "Zoom step"},
+};
+
+/* shortcut names */
+ShortcutName shortcut_names[] = {
+  {"abort",             sc_abort},
+  {"adjust_window",     sc_adjust_window},
+  {"change_buffer",     sc_change_buffer},
+  {"change_mode",       sc_change_mode},
+  {"focus_inputbar",    sc_focus_inputbar},
+  {"follow",            sc_follow},
+  {"navigate",          sc_navigate},
+  {"navigate_index",    sc_navigate_index},
+  {"quit",              sc_quit},
+  {"recolor",           sc_recolor},
+  {"reload",            sc_reload},
+  {"rotate",            sc_rotate},
+  {"scroll",            sc_scroll},
+  {"search",            sc_search},
+  {"switch_goto_mode",  sc_switch_goto_mode},
+  {"toggle_fullscreen", sc_toggle_fullscreen},
+  {"toggle_index",      sc_toggle_index},
+  {"toggle_inputbar",   sc_toggle_inputbar},
+  {"toggle_statusbar",  sc_toggle_statusbar},
+};
+
+/* argument names */
+ArgumentName argument_names[] = {
+  {"add_marker",  ADD_MARKER},
+  {"backward",    BACKWARD},
+  {"bestfit",     ADJUST_BESTFIT},
+  {"collapse",    COLLAPSE},
+  {"delete_last", DELETE_LAST},
+  {"down",        DOWN},
+  {"eval_marker", EVAL_MARKER},
+  {"expand",      EXPAND},
+  {"forward",     FORWARD},
+  {"full_down",   FULL_DOWN},
+  {"full_up",     FULL_UP},
+  {"half_down",   HALF_DOWN},
+  {"half_up",     HALF_UP},
+  {"insert",      INSERT},
+  {"left",        LEFT},
+  {"next",        NEXT},
+  {"previous",    PREVIOUS},
+  {"right",       RIGHT},
+  {"select",      SELECT},
+  {"up",          UP},
+  {"visual",      VISUAL},
+  {"width",       ADJUST_WIDTH},
+};
+
+/* mode names */
+ModeName mode_names[] = {
+  {"all",        -1},
+  {"fullscreen", FULLSCREEN},
+  {"index",      INDEX},
+  {"insert",     INSERT},
+  {"normal",     NORMAL},
+  {"visual",     VISUAL},
 };
