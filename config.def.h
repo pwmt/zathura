@@ -146,18 +146,19 @@ MouseScrollEvent mouse_scroll_events[] = {
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,            completion,   description  */
-  {"bmark",     "b",            cmd_bookmark,        0,            "Bookmark current page" },
   {"blist",     0,              cmd_open_bookmark,   cc_bookmark,  "List and open bookmark" },
+  {"bmark",     "b",            cmd_bookmark,        0,            "Bookmark current page" },
   {"close",     "c",            cmd_close,           0,            "Close current file" },
   {"coffset",   0,              cmd_correct_offset,  0,            "Correct page offset" },
   {"delbmark",  0,              cmd_delete_bookmark, cc_bookmark,  "Bookmark current page" },
   {"export",    "e",            cmd_export,          cc_export,    "Export images or attached files" },
   {"info",      "i",            cmd_info,            0,            "Show information about the document" },
+  {"map",       "m",            cmd_map,             0,            "Map keybinding to a function" },
   {"open",      "o",            cmd_open,            cc_open,      "Open a file" },
   {"print",     "p",            cmd_print,           cc_print,     "Print the document" },
+  {"quit",      "q",            cmd_quit,            0,            "Quit zathura" },
   {"rotate",    "r",            cmd_rotate,          0,            "Rotate the page" },
   {"set",       "s",            cmd_set,             cc_set,       "Set an option" },
-  {"quit",      "q",            cmd_quit,            0,            "Quit zathura" },
   {"write",     "w",            cmd_save,            0,            "Save the document" },
 };
 
