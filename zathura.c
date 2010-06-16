@@ -150,7 +150,7 @@ struct
 {
   struct
   {
-    GtkWindow         *window;
+    GtkWidget         *window;
     GtkBox            *box;
     GtkBox            *continuous;
     GtkScrolledWindow *view;
@@ -162,6 +162,7 @@ struct
     GtkWidget         *information;
     GtkWidget         *drawing_area;
     GtkWidget         *document;
+    GdkNativeWindow    embed;
   } UI;
 
   struct
@@ -472,8 +473,13 @@ init_zathura()
 
   Zathura.FileMonitor.monitor = NULL;
 
+  /* window */
+  if(Zathura.UI.embed)
+    Zathura.UI.window = gtk_plug_new(Zathura.UI.embed);
+  else
+    Zathura.UI.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
   /* UI */
-  Zathura.UI.window            = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
   Zathura.UI.box               = GTK_BOX(gtk_vbox_new(FALSE, 0));
   Zathura.UI.continuous        = GTK_BOX(gtk_vbox_new(FALSE, 0));
   Zathura.UI.view              = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
@@ -485,10 +491,10 @@ init_zathura()
   Zathura.UI.document            = gtk_event_box_new();
 
   /* window */
-  gtk_window_set_title(Zathura.UI.window, "zathura");
+  gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
   GdkGeometry hints = { 1, 1 };
-  gtk_window_set_geometry_hints(Zathura.UI.window, NULL, &hints, GDK_HINT_MIN_SIZE);
-  gtk_window_set_default_size(Zathura.UI.window, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+  gtk_window_set_geometry_hints(GTK_WINDOW(Zathura.UI.window), NULL, &hints, GDK_HINT_MIN_SIZE);
+  gtk_window_set_default_size(GTK_WINDOW(Zathura.UI.window), DEFAULT_WIDTH, DEFAULT_HEIGHT);
   g_signal_connect(G_OBJECT(Zathura.UI.window), "destroy", G_CALLBACK(cb_destroy), NULL);
 
   /* box */
@@ -869,7 +875,7 @@ close_file(gboolean keep_monitor)
   free(Zathura.PDF.pages);
   g_object_unref(Zathura.PDF.document);
   g_free(Zathura.State.pages);
-  gtk_window_set_title(Zathura.UI.window, "zathura");
+  gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
 
   Zathura.State.pages         = g_strdup_printf("");
   Zathura.State.filename      = (char*) DEFAULT_TEXT;
@@ -1159,7 +1165,7 @@ open_file(char* path, char* password)
   }
 
   /* set window title */
-  gtk_window_set_title(Zathura.UI.window, basename(file));
+  gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), basename(file));
 
   /* show document */
   set_page(start_page);
@@ -3675,21 +3681,39 @@ cb_watch_file(GFileMonitor* monitor, GFile* file, GFile* other_file, GFileMonito
 /* main function */
 int main(int argc, char* argv[])
 {
+  /* embed */
+  Zathura.UI.embed = 0;
+
+  /* parse arguments */
+  int i;
+  for(i = 1; i < argc && argv[i][0] == '-' && argv[i][1] != '\0'; i++)
+  {
+    switch(argv[i][1])
+    {
+      case 'e':
+        if(++i < argc)
+          Zathura.UI.embed = atoi(argv[i]);
+        break;
+    }
+  }
+
   g_thread_init(NULL);
   gdk_threads_init();
 
   gtk_init(&argc, &argv);
 
+
   init_zathura();
   init_directories();
 
-  if(argc >= 2)
-    open_file(argv[1], (argc == 3) ? argv[2] : NULL);
+  if(argc >= i+1)
+    open_file(argv[i], (argc == i+2) ? argv[i+1] : NULL);
 
   switch_view(Zathura.UI.document);
   update_status();
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
+  gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
 
   gdk_threads_enter();
   gtk_main();
