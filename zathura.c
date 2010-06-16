@@ -346,6 +346,7 @@ gboolean cmd_correct_offset(int, char**);
 gboolean cmd_delete_bookmark(int, char**);
 gboolean cmd_export(int, char**);
 gboolean cmd_info(int, char**);
+gboolean cmd_map(int, char**);
 gboolean cmd_open(int, char**);
 gboolean cmd_print(int, char**);
 gboolean cmd_rotate(int, char**);
@@ -2678,6 +2679,15 @@ cmd_info(int argc, char** argv)
   visible = !visible;
 
   return FALSE;
+}
+
+gboolean
+cmd_map(int argc, char** argv)
+{
+  if(argc < 2)
+    return FALSE;
+
+  return TRUE;
 }
 
 gboolean
