@@ -80,6 +80,12 @@ typedef struct
 
 typedef struct
 {
+  char* name;
+  void (*function)(Argument*);
+} ShortcutName;
+
+typedef struct
+{
   int mask;
   int key;
   void (*function)(Argument*);
@@ -116,6 +122,14 @@ typedef struct
   int always;
   Argument argument;
 } SpecialCommand;
+
+struct SCList
+{
+  Shortcut       element;
+  struct SCList *next;
+};
+
+typedef struct SCList ShortcutList;
 
 typedef struct
 {
@@ -208,6 +222,11 @@ struct
 
   struct
   {
+    ShortcutList  *sclist;
+  } Bindings;
+
+  struct
+  {
     gdouble x;
     gdouble y;
   } SelectPoint;
@@ -287,6 +306,7 @@ struct
 /* function declarations */
 void init_look();
 void init_directories();
+void init_keylist();
 void init_settings();
 void init_zathura();
 void add_marker(int);
@@ -300,6 +320,7 @@ void eval_marker(int);
 void notify(int, char*);
 gboolean open_file(char*, char*);
 void open_uri(char*);
+void out_of_memory();
 void update_status();
 void read_configuration();
 void recalcRectangle(int, PopplerRectangle*);
@@ -472,6 +493,31 @@ init_directories()
 
   Zathura.Bookmarks.file = g_strdup(bookmarks);
   g_free(bookmarks);
+}
+
+void
+init_keylist()
+{
+  ShortcutList* e = NULL;
+  ShortcutList* p = NULL;
+
+  int i;
+  for(i = 0; i < LENGTH(shortcuts); i++)
+  {
+    e = malloc(sizeof(ShortcutList));
+    if(!e)
+      out_of_memory();
+
+    e->element = shortcuts[i];
+    e->next    = NULL;
+
+    if(!Zathura.Bindings.sclist)
+      Zathura.Bindings.sclist = e;
+    if(p)
+      p->next = e;
+
+    p = e;
+  }
 }
 
 void
@@ -942,6 +988,9 @@ open_file(char* path, char* password)
     char* home_path = getenv("HOME");
     int file_len = strlen(home_path) + strlen(path) - 1;
     file = malloc(file_len);
+    if(!file)
+      out_of_memory();
+
     snprintf(file, file_len, "%s%s", getenv("HOME"), path + 1);
   }
 
@@ -1024,8 +1073,11 @@ open_file(char* path, char* password)
   Zathura.PDF.file            = file;
   Zathura.PDF.scale           = 100;
   Zathura.PDF.rotate          = 0;
-  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
   Zathura.State.filename      = g_markup_escape_text(file, -1);
+  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
+
+  if(!Zathura.PDF.pages)
+    out_of_memory();
 
   /* get pages and check label mode */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
@@ -1035,6 +1087,9 @@ open_file(char* path, char* password)
   for(i = 0; i < Zathura.PDF.number_of_pages; i++)
   {
     Zathura.PDF.pages[i] = malloc(sizeof(Page));
+    if(!Zathura.PDF.pages[i])
+      out_of_memory();
+
     Zathura.PDF.pages[i]->id = i + 1;
     Zathura.PDF.pages[i]->page = poppler_document_get_page(Zathura.PDF.document, i);
     g_object_get(G_OBJECT(Zathura.PDF.pages[i]->page), "label", &(Zathura.PDF.pages[i]->label), NULL);
@@ -1104,6 +1159,12 @@ void open_uri(char* uri)
   char* uri_cmd = g_strdup_printf(uri_command, uri);
   system(uri_cmd);
   g_free(uri_cmd);
+}
+
+void out_of_memory()
+{
+  printf("error: out of memory\n");
+  exit(-1);
 }
 
 void
@@ -2104,6 +2165,8 @@ isc_completion(Argument* argument)
       CompletionElement* element = NULL;
 
       rows = malloc(sizeof(CompletionRow));
+      if(!rows)
+        out_of_memory();
 
       for(group = result->groups; group != NULL; group = group->next)
       {
@@ -2169,6 +2232,8 @@ isc_completion(Argument* argument)
       command_mode = TRUE;
 
       rows = malloc(LENGTH(commands) * sizeof(CompletionRow));
+      if(!rows)
+        out_of_memory();
 
       for(i = 0; i < LENGTH(commands); i++)
       {
@@ -2558,6 +2623,9 @@ cmd_export(int argc, char** argv)
         {
           file = malloc(((int) strlen(filename) + (int) strlen(argv[1])
             + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+          if(!file)
+            out_of_memory();
+
           file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, filename);
         }
         else
@@ -2593,6 +2661,9 @@ cmd_export(int argc, char** argv)
       {
         file = malloc(((int) strlen(attachment->name) + (int) strlen(argv[1])
           + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+        if(!file)
+          out_of_memory();
+
         file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, attachment->name);
       }
       else
@@ -2858,7 +2929,12 @@ cc_bookmark(char* input)
 {
   /* init completion group */
   Completion *completion = malloc(sizeof(Completion));
+  if(!completion)
+    out_of_memory();
+
   CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  if(!group)
+    out_of_memory();
 
   group->value    = NULL;
   group->next     = NULL;
@@ -2876,6 +2952,9 @@ cc_bookmark(char* input)
           !strncmp(input, Zathura.Bookmarks.bookmarks[i].id, input_length) )
     {
       CompletionElement* el = malloc(sizeof(CompletionElement));
+      if(!el)
+        out_of_memory();
+
       el->value = Zathura.Bookmarks.bookmarks[i].id;
       el->description = g_strdup_printf("Page: %d", Zathura.Bookmarks.bookmarks[i].page);
       el->next = NULL;
@@ -2897,7 +2976,12 @@ cc_export(char* input)
 {
   /* init completion group */
   Completion *completion = malloc(sizeof(Completion));
+  if(!completion)
+    out_of_memory();
+
   CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  if(!group)
+    out_of_memory();
 
   group->value    = NULL;
   group->next     = NULL;
@@ -2907,12 +2991,18 @@ cc_export(char* input)
 
   /* export images */
   CompletionElement *export_images = malloc(sizeof(CompletionElement));
+  if(!export_images)
+    out_of_memory();
+
   export_images->value = "images";
   export_images->description = "Export images";
   export_images->next = NULL;
 
   /* export attachmants */
   CompletionElement *export_attachments = malloc(sizeof(CompletionElement));
+  if(!export_attachments)
+    out_of_memory();
+
   export_attachments->value = "attachments";
   export_attachments->description = "Export attachments";
   export_attachments->next = NULL;
@@ -2929,7 +3019,12 @@ cc_open(char* input)
 {
   /* init completion group */
   Completion *completion = malloc(sizeof(Completion));
+  if(!completion)
+    out_of_memory();
+
   CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  if(!group)
+    out_of_memory();
 
   group->value    = NULL;
   group->next     = NULL;
@@ -2994,6 +3089,9 @@ cc_open(char* input)
         (file_length == 0) )
     {
       CompletionElement* el = malloc(sizeof(CompletionElement));
+      if(!el)
+        out_of_memory();
+
       el->value = g_strdup_printf("%s%s", path, d_name);
       el->description = NULL;
       el->next = NULL;
@@ -3017,7 +3115,12 @@ cc_print(char* input)
 {
   /* init completion group */
   Completion *completion = malloc(sizeof(Completion));
+  if(!completion)
+    out_of_memory();
+
   CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  if(!group)
+    out_of_memory();
 
   group->value    = NULL;
   group->next     = NULL;
@@ -3046,6 +3149,8 @@ cc_print(char* input)
   {
     if(!current_line)
       current_line = malloc(sizeof(char));
+    if(!current_line)
+      out_of_memory();
 
     current_line = realloc(current_line, (count + 1) * sizeof(char));
 
@@ -3060,6 +3165,9 @@ cc_print(char* input)
           (!strncmp(input, current_line, input_length)) )
       {
         CompletionElement* el = malloc(sizeof(CompletionElement));
+        if(!el)
+          out_of_memory();
+
         el->value       = g_strdup(current_line);
         el->description = NULL;
         el->next        = NULL;
@@ -3088,7 +3196,12 @@ cc_set(char* input)
 {
   /* init completion group */
   Completion *completion = malloc(sizeof(Completion));
+  if(!completion)
+    out_of_memory();
+
   CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  if(!group)
+    out_of_memory();
 
   group->value    = NULL;
   group->next     = NULL;
@@ -3106,6 +3219,9 @@ cc_set(char* input)
           !strncmp(input, settings[i].name, input_length) )
     {
       CompletionElement* el = malloc(sizeof(CompletionElement));
+      if(!el)
+        out_of_memory();
+
       el->value = settings[i].name;
       el->description = settings[i].description;
       el->next = NULL;
@@ -3248,6 +3364,16 @@ cb_destroy(GtkWidget* widget, gpointer data)
     g_object_unref(Zathura.FileMonitor.monitor);
 
   g_list_free(Zathura.Global.history);
+
+  /* clean shortcut list */
+  ShortcutList* sc = Zathura.Bindings.sclist;
+
+  while(sc)
+  {
+    ShortcutList* ne = sc->next;
+    free(sc);
+    sc = ne;
+  }
 
   gtk_main_quit();
 
@@ -3521,16 +3647,18 @@ cb_inputbar_password_activate(GtkEntry* entry, gpointer data)
 gboolean
 cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-  int i;
-  for(i = 0; i < LENGTH(shortcuts); i++)
+  ShortcutList* sc = Zathura.Bindings.sclist;
+  while(sc)
   {
-    if (event->keyval == shortcuts[i].key &&
-      (((event->state & shortcuts[i].mask) == shortcuts[i].mask) || shortcuts[i].mask == 0)
-      && (Zathura.Global.mode == shortcuts[i].mode || shortcuts[i].mode == -1))
+    if (event->keyval == sc->element.key &&
+      (((event->state & sc->element.mask) == sc->element.mask) || sc->element.mask == 0)
+      && (Zathura.Global.mode == sc->element.mode || sc->element.mode == -1))
     {
-      shortcuts[i].function(&(shortcuts[i].argument));
+      sc->element.function(&(sc->element.argument));
       return TRUE;
     }
+
+    sc = sc->next;
   }
 
   if(Zathura.Global.mode == ADD_MARKER)
@@ -3559,6 +3687,7 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   /* search buffer commands */
   if(Zathura.Global.buffer)
   {
+    int i;
     for(i = 0; i < LENGTH(buffer_commands); i++)
     {
       regex_t regex;
@@ -3760,6 +3889,7 @@ int main(int argc, char* argv[])
   init_zathura();
   read_configuration();
   init_settings();
+  init_keylist();
   init_look();
   init_directories();
 

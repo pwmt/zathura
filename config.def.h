@@ -222,3 +222,26 @@ Setting settings[] = {
   {"zoom_min",               &(zoom_min),                        'f',   FALSE,   FALSE,   "Zoom minimum"},
   {"zoom_step",              &(zoom_step),                       'f',   FALSE,   FALSE,   "Zoom step"},
 };
+
+/* shortcut names */
+ShortcutName shorcut_names[] = {
+  {"abort",             sc_abort},
+  {"adjust_window",     sc_adjust_window},
+  {"change_buffer",     sc_change_buffer},
+  {"change_mode",       sc_change_mode},
+  {"focus_inputbar",    sc_focus_inputbar},
+  {"follow",            sc_follow},
+  {"navigate",          sc_navigate},
+  {"navigate_index",    sc_navigate_index},
+  {"quit",              sc_quit},
+  {"recolor",           sc_recolor},
+  {"reload",            sc_reload},
+  {"rotate",            sc_rotate},
+  {"scroll",            sc_scroll},
+  {"search",            sc_search},
+  {"switch_goto_mode",  sc_switch_goto_mode},
+  {"toggle_fullscreen", sc_toggle_fullscreen},
+  {"toggle_index",      sc_toggle_index},
+  {"toggle_inputbar",   sc_toggle_inputbar},
+  {"toggle_statusbar",  sc_toggle_statusbar},
+};
