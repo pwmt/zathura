@@ -2756,7 +2756,53 @@ gboolean
 cmd_map(int argc, char** argv)
 {
   if(argc < 2)
+    return TRUE;
+
+  /* search for the right shortcut function */
+  int sc_id = -1;
+
+  int sc_c;
+  for(sc_c = 0; sc_c < LENGTH(shortcut_names); sc_c++)
+  {
+    if(!strcmp(argv[1], shortcut_names[sc_c].name))
+    {
+      sc_id = sc_c;
+      break;
+    }
+  }
+
+  if(sc_id == -1)
+  {
+    notify(WARNING, "No such shortcut function exists");
     return FALSE;
+  }
+
+  /* search for existing binding */
+  ShortcutList* sc = Zathura.Bindings.sclist;
+  while(sc && sc->next != NULL)
+  {
+    sc = sc->next;
+  }
+
+  /* create new entry */
+  ShortcutList* entry = malloc(sizeof(ShortcutList));
+  if(!entry)
+    out_of_memory();
+
+  Argument arg;
+  entry->element.mask = 0;
+  entry->element.key =  GDK_y;
+  entry->element.function = shortcut_names[sc_id].function;
+  entry->element.mode = -1;
+  entry->element.argument = arg;
+  entry->next = NULL;
+
+  /* append to list */
+  if(!Zathura.Bindings.sclist)
+    Zathura.Bindings.sclist = entry;
+
+  if(sc)
+    sc->next = entry;
 
   return TRUE;
 }
