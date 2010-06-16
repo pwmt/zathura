@@ -245,3 +245,39 @@ ShortcutName shortcut_names[] = {
   {"toggle_inputbar",   sc_toggle_inputbar},
   {"toggle_statusbar",  sc_toggle_statusbar},
 };
+
+/* argument names */
+ArgumentName argument_names[] = {
+  {"add_marker",  ADD_MARKER},
+  {"backward",    BACKWARD},
+  {"bestfit",     ADJUST_BESTFIT},
+  {"collapse",    COLLAPSE},
+  {"delete_last", DELETE_LAST},
+  {"down",        DOWN},
+  {"eval_marker", EVAL_MARKER},
+  {"expand",      EXPAND},
+  {"forward",     FORWARD},
+  {"full_down",   FULL_DOWN},
+  {"full_up",     FULL_UP},
+  {"half_down",   HALF_DOWN},
+  {"half_up",     HALF_UP},
+  {"insert",      INSERT},
+  {"left",        LEFT},
+  {"next",        NEXT},
+  {"previous",    PREVIOUS},
+  {"right",       RIGHT},
+  {"select",      SELECT},
+  {"up",          UP},
+  {"visual",      VISUAL},
+  {"width",       ADJUST_WIDTH},
+};
+
+/* mode names */
+ModeName mode_names[] = {
+  {"all",        -1},
+  {"fullscreen", FULLSCREEN},
+  {"index",      INDEX},
+  {"insert",     INSERT},
+  {"normal",     NORMAL},
+  {"visual",     VISUAL},
+};
