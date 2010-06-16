@@ -71,12 +71,24 @@ typedef struct
 
 typedef struct
 {
+  char* name;
+  int argument;
+} ArgumentName;
+
+typedef struct
+{
   int mask;
   int key;
   void (*function)(Argument*);
   int mode;
   Argument argument;
 } Shortcut;
+
+typedef struct
+{
+  char* name;
+  int mode;
+} ModeName;
 
 typedef struct
 {
@@ -1184,7 +1196,7 @@ update_status()
 
   /* update state */
   char* zoom_level  = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : g_strdup("");
-  char* goto_mode   = (Zathura.Global.goto_mode == GOTO_LABELS) ? "L" : 
+  char* goto_mode   = (Zathura.Global.goto_mode == GOTO_LABELS) ? "L" :
     (Zathura.Global.goto_mode == GOTO_OFFSET) ? "O" : "D";
   char* status_text = g_strdup_printf("%s [%s] %s", zoom_level, goto_mode, Zathura.State.pages);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
@@ -1217,6 +1229,8 @@ read_configuration()
 
         if(!strcmp(tokens[0], "set"))
           cmd_set(length - 1, tokens + 1);
+        else if(!strcmp(tokens[0], "map"))
+          cmd_map(length - 1, tokens + 1);
       }
     }
   }
@@ -2758,6 +2772,8 @@ cmd_map(int argc, char** argv)
   if(argc < 2)
     return TRUE;
 
+  char* ks = argv[0];
+
   /* search for the right shortcut function */
   int sc_id = -1;
 
@@ -2777,10 +2793,97 @@ cmd_map(int argc, char** argv)
     return FALSE;
   }
 
-  /* search for existing binding */
+  /* parse modifier and key */
+  int mask = 0;
+  int key  = 0;
+  int mode = NORMAL;
+
+  // single key (e.g.: g)
+  if(strlen(ks) == 1)
+    key = ks[0];
+
+  // modifier and key (e.g.: <S-g>
+  if(strlen(ks) == 5 && ks[0] == '<' && ks[2] == '-' && ks[4] == '>')
+  {
+    /* evaluate modifier */
+    switch(ks[1])
+    {
+      case 'S':
+        mask = GDK_SHIFT_MASK;
+        break;
+      case 'C':
+        mask = GDK_CONTROL_MASK;
+        break;
+    }
+
+    /* get key */
+    key = ks[3];
+
+    /* no valid modifier */
+    if(!mask)
+    {
+      notify(WARNING, "No valid modifier given.");
+      return FALSE;
+    }
+  }
+
+  /* parse argument */
+  Argument arg = {0, 0};
+
+  if(argc >= 3)
+  {
+    int arg_id = -1;
+
+    /* compare argument with given argument names... */
+    int arg_c;
+    for(arg_c = 0; arg_c < LENGTH(argument_names); arg_c++)
+    {
+      if(!strcmp(argv[2], argument_names[arg_c].name))
+      {
+        arg_id = argument_names[arg_c].argument;
+        break;
+      }
+    }
+
+    /* if not, save it do .data */
+    if(arg_id == -1)
+      arg.data = argv[2];
+    else
+      arg.n = arg_id;
+  }
+
+  /* parse mode */
+  if(argc >= 4)
+  {
+    int mode_c;
+    for(mode_c = 0; mode_c < LENGTH(mode_names); mode_c++)
+    {
+      if(!strcmp(argv[3], mode_names[mode_c].name))
+      {
+        mode = mode_names[mode_c].mode;
+        break;
+      }
+    }
+  }
+
+  if(!key)
+  {
+    notify(WARNING, "No valid key binding given.");
+    return FALSE;
+  }
+
+  /* search for existing binding to overwrite it */
   ShortcutList* sc = Zathura.Bindings.sclist;
   while(sc && sc->next != NULL)
   {
+    if(sc->element.key == key && sc->element.mask == mask
+        && sc->element.mode == mode)
+    {
+      sc->element.function = shortcut_names[sc_id].function;
+      sc->element.argument = arg;
+      return TRUE;
+    }
+
     sc = sc->next;
   }
 
@@ -2789,13 +2892,12 @@ cmd_map(int argc, char** argv)
   if(!entry)
     out_of_memory();
 
-  Argument arg;
-  entry->element.mask = 0;
-  entry->element.key =  GDK_y;
+  entry->element.mask     = mask;
+  entry->element.key      = key;
   entry->element.function = shortcut_names[sc_id].function;
-  entry->element.mode = -1;
+  entry->element.mode     = mode;
   entry->element.argument = arg;
-  entry->next = NULL;
+  entry->next             = NULL;
 
   /* append to list */
   if(!Zathura.Bindings.sclist)
@@ -3933,9 +4035,9 @@ int main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   init_zathura();
+  init_keylist();
   read_configuration();
   init_settings();
-  init_keylist();
   init_look();
   init_directories();
 
