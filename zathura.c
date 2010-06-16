@@ -1008,6 +1008,7 @@ open_file(char* path, char* password)
   char* file = (char*) calloc(sizeof(char), pm);
   if(!file || !realpath(path, file))
   {
+    notify(ERROR, "File does not exist");
     if(file)
       free(file);
     return FALSE;
