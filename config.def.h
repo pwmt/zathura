@@ -224,7 +224,7 @@ Setting settings[] = {
 };
 
 /* shortcut names */
-ShortcutName shorcut_names[] = {
+ShortcutName shortcut_names[] = {
   {"abort",             sc_abort},
   {"adjust_window",     sc_adjust_window},
   {"change_buffer",     sc_change_buffer},
