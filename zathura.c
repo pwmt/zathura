@@ -365,6 +365,7 @@ void sc_toggle_inputbar(Argument*);
 void sc_toggle_fullscreen(Argument*);
 void sc_toggle_statusbar(Argument*);
 void sc_quit(Argument*);
+void sc_zoom(Argument*);
 
 /* inputbar shortcut declarations */
 void isc_abort(Argument*);
@@ -536,7 +537,8 @@ init_keylist()
 void
 init_settings()
 {
-  Zathura.State.filename = (char*) default_text;
+  Zathura.State.filename     = (char*) default_text;
+  Zathura.Global.adjust_mode = adjust_open;
 
   gtk_window_set_default_size(GTK_WINDOW(Zathura.UI.window), default_width, default_height);
 }
@@ -555,7 +557,6 @@ init_zathura()
   Zathura.Global.mode          = NORMAL;
   Zathura.Global.viewing_mode  = NORMAL;
   Zathura.Global.recolor       = 0;
-  Zathura.Global.adjust_mode   = ADJUST_OPEN;
   Zathura.Global.goto_mode     = GOTO_MODE;
   Zathura.Global.show_index    = FALSE;
 
@@ -2137,6 +2138,12 @@ sc_quit(Argument* argument)
   cb_destroy(NULL, NULL);
 }
 
+void
+sc_zoom(Argument* argument)
+{
+  bcmd_zoom(NULL, argument);
+}
+
 /* inputbar shortcut declarations */
 void
 isc_abort(Argument* argument)
@@ -3006,8 +3013,22 @@ cmd_set(int argc, char** argv)
           return FALSE;
 
         int *x = (int*) (settings[i].variable);
-        if(argv[1])
-          *x = atoi(argv[1]);
+
+        int id = -1;
+        int arg_c;
+        for(arg_c = 0; arg_c < LENGTH(argument_names); arg_c++)
+        {
+          if(!strcmp(argv[1], argument_names[arg_c].name))
+          {
+            id = argument_names[arg_c].argument;
+            break;
+          }
+        }
+
+        if(id == -1)
+          id = atoi(argv[1]);
+
+        *x = id;
       }
       else if(settings[i].type == 'f')
       {
