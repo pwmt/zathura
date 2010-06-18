@@ -56,7 +56,7 @@ char* uri_command = "firefox '%s'"; /* uri */
 
 /* additional settings */
 gboolean show_scrollbars = FALSE;
-#define ADJUST_OPEN ADJUST_BESTFIT
+int adjust_open          = ADJUST_BESTFIT;
 #define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 #define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
 
@@ -185,6 +185,7 @@ SpecialCommand special_commands[] = {
 /* settings */
 Setting settings[] = {
   /* name,                   variable,                           type,  render,  re-init, description */
+  {"adjust_open",            &(adjust_open),                     'i',   FALSE,   FALSE,   "Command to open URIs"},
   {"browser",                &(uri_command),                     's',   FALSE,   FALSE,   "Command to open URIs"},
   {"completion_bgcolor",     &(completion_bgcolor),              's',   FALSE,   TRUE,    "Completion background color"},
   {"completion_fgcolor",     &(completion_fgcolor),              's',   FALSE,   TRUE,    "Completion foreground color"},
@@ -244,6 +245,7 @@ ShortcutName shortcut_names[] = {
   {"toggle_index",      sc_toggle_index},
   {"toggle_inputbar",   sc_toggle_inputbar},
   {"toggle_statusbar",  sc_toggle_statusbar},
+  {"zoom",              sc_zoom},
 };
 
 /* argument names */
@@ -261,9 +263,12 @@ ArgumentName argument_names[] = {
   {"full_up",     FULL_UP},
   {"half_down",   HALF_DOWN},
   {"half_up",     HALF_UP},
+  {"in",          ZOOM_IN},
   {"insert",      INSERT},
   {"left",        LEFT},
   {"next",        NEXT},
+  {"original",    ZOOM_ORIGINAL},
+  {"out",         ZOOM_OUT},
   {"previous",    PREVIOUS},
   {"right",       RIGHT},
   {"select",      SELECT},
