@@ -1321,6 +1321,9 @@ read_configuration()
       int i;
       for(i = 0; i < n; i++)
       {
+        if(!strlen(lines[i]))
+          continue;
+
         gchar **tokens = g_strsplit(lines[i], " ", -1);
         int     length = g_strv_length(tokens);
 
