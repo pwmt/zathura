@@ -145,6 +145,12 @@ typedef struct SCList ShortcutList;
 
 typedef struct
 {
+  char* identifier;
+  int   key;
+} GDKKey;
+
+typedef struct
+{
   PopplerPage *page;
   int          id;
   char        *label;
@@ -2820,35 +2826,69 @@ cmd_map(int argc, char** argv)
   /* parse modifier and key */
   int mask = 0;
   int key  = 0;
+  int keyl = strlen(ks);
   int mode = NORMAL;
 
   // single key (e.g.: g)
-  if(strlen(ks) == 1)
+  if(keyl == 1)
     key = ks[0];
 
   // modifier and key (e.g.: <S-g>
-  if(strlen(ks) == 5 && ks[0] == '<' && ks[2] == '-' && ks[4] == '>')
+  // special key or modifier and key/special key (e.g.: <S-g>, <Space>)
+
+  else if(keyl >= 3 && ks[0] == '<' && ks[keyl-1] == '>')
   {
-    /* evaluate modifier */
-    switch(ks[1])
+    char* specialkey = NULL;
+
+    /* check for modifier */
+    if(keyl >= 5 && ks[2] == '-')
     {
-      case 'S':
-        mask = GDK_SHIFT_MASK;
+      /* evaluate modifier */
+      switch(ks[1])
+      {
+        case 'S':
+          mask = GDK_SHIFT_MASK;
+          break;
+        case 'C':
+          mask = GDK_CONTROL_MASK;
+          break;
+      }
+
+      /* no valid modifier */
+      if(!mask)
+      {
+        notify(WARNING, "No valid modifier given.");
+        return FALSE;
+      }
+
+      /* modifier and special key */
+      if(keyl > 5)
+        specialkey = g_strndup(ks + 3, keyl - 4);
+      else
+        key = ks[3];
+    }
+    else
+      specialkey = ks;
+
+    /* search special key */
+    int g_c;
+    for(g_c = 0; specialkey && g_c < LENGTH(gdk_keys); g_c++)
+    {
+      if(!strcmp(specialkey, gdk_keys[g_c].identifier))
+      {
+        key = gdk_keys[g_c].key;
         break;
-      case 'C':
-        mask = GDK_CONTROL_MASK;
-        break;
+      }
     }
 
-    /* get key */
-    key = ks[3];
+    if(specialkey)
+      g_free(specialkey);
+  }
 
-    /* no valid modifier */
-    if(!mask)
-    {
-      notify(WARNING, "No valid modifier given.");
-      return FALSE;
-    }
+  if(!key)
+  {
+    notify(WARNING, "No valid key binding given.");
+    return FALSE;
   }
 
   /* parse argument */
@@ -2888,12 +2928,6 @@ cmd_map(int argc, char** argv)
         break;
       }
     }
-  }
-
-  if(!key)
-  {
-    notify(WARNING, "No valid key binding given.");
-    return FALSE;
   }
 
   /* search for existing binding to overwrite it */
@@ -3836,9 +3870,11 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   ShortcutList* sc = Zathura.Bindings.sclist;
   while(sc)
   {
-    if (event->keyval == sc->element.key &&
-      (((event->state & sc->element.mask) == sc->element.mask) || sc->element.mask == 0)
-      && (Zathura.Global.mode == sc->element.mode || sc->element.mode == -1))
+    if(   event->state  == sc->element.mask
+       && event->keyval == sc->element.key
+       && (Zathura.Global.mode == sc->element.mode || sc->element.mode == -1)
+       && sc->element.function
+      )
     {
       sc->element.function(&(sc->element.argument));
       return TRUE;
