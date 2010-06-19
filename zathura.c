@@ -17,6 +17,7 @@
 
 /* macros */
 #define LENGTH(x) sizeof(x)/sizeof((x)[0])
+#define CLEAN(m) (m & ~(GDK_MOD2_MASK) & ~(GDK_BUTTON1_MASK) & ~(GDK_BUTTON2_MASK) & ~(GDK_BUTTON3_MASK) & ~(GDK_BUTTON4_MASK) & ~(GDK_BUTTON5_MASK))
 
 /* enums */
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
@@ -3878,7 +3879,7 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   while(sc)
   {
     if( event->keyval == sc->element.key &&
-      ((event->state  == sc->element.mask) ||
+      ((CLEAN(event->state)  == sc->element.mask) ||
       ((sc->element.mask == 0) && (sc->element.key >= 20 && sc->element.key <= 126))) &&
        (Zathura.Global.mode & sc->element.mode || sc->element.mode == ALL) &&
        sc->element.function
