@@ -3462,6 +3462,9 @@ cc_set(char* input)
 void
 bcmd_goto(char* buffer, Argument* argument)
 {
+  if(!Zathura.PDF.document)
+    return;
+
   int b_length = strlen(buffer);
   if(b_length < 1)
     return;
@@ -3870,10 +3873,11 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   ShortcutList* sc = Zathura.Bindings.sclist;
   while(sc)
   {
-    if(   event->state  == sc->element.mask
-       && event->keyval == sc->element.key
-       && (Zathura.Global.mode == sc->element.mode || sc->element.mode == -1)
-       && sc->element.function
+    if( event->keyval == sc->element.key &&
+      ((event->state  == sc->element.mask) ||
+      ((sc->element.mask == 0) && (sc->element.key >= 20 && sc->element.key <= 126))) &&
+       (Zathura.Global.mode == sc->element.mode || sc->element.mode == -1) &&
+       sc->element.function
       )
     {
       sc->element.function(&(sc->element.argument));
