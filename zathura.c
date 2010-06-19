@@ -3880,13 +3880,17 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   {
     if( event->keyval == sc->element.key &&
       ((CLEAN(event->state)  == sc->element.mask) ||
-      ((sc->element.mask == 0) && (sc->element.key >= 20 && sc->element.key <= 126))) &&
+      ((sc->element.mask == 0) && (sc->element.key >= 0x21 && sc->element.key <= 0x7E))) &&
        (Zathura.Global.mode & sc->element.mode || sc->element.mode == ALL) &&
        sc->element.function
       )
     {
-      sc->element.function(&(sc->element.argument));
-      return TRUE;
+      if(!(Zathura.Global.buffer && strlen(Zathura.Global.buffer->str)) ^
+          ((sc->element.mask == GDK_CONTROL_MASK) || (sc->element.mask == GDK_MOD1_MASK)))
+      {
+        sc->element.function(&(sc->element.argument));
+        return TRUE;
+      }
     }
 
     sc = sc->next;
@@ -3906,7 +3910,7 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   }
 
   /* append only numbers and characters to buffer */
-  if( (event->keyval >= 0x21) && (event->keyval <= 0x7A))
+  if( (event->keyval >= 0x21) && (event->keyval <= 0x7E))
   {
     if(!Zathura.Global.buffer)
       Zathura.Global.buffer = g_string_new("");
