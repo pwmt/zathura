@@ -123,13 +123,18 @@ Shortcut shortcuts[] = {
 InputbarShortcut inputbar_shortcuts[] = {
   /* mask,             key,               function,                  argument */
   {0,                  GDK_Escape,        isc_abort,                 {0} },
+  {GDK_CONTROL_MASK,   GDK_c,             isc_abort,                 {0} },
   {0,                  GDK_Up,            isc_command_history,       {0} },
   {0,                  GDK_Down,          isc_command_history,       {0} },
   {0,                  GDK_Tab,           isc_completion,            { NEXT } },
   {GDK_CONTROL_MASK,   GDK_Tab,           isc_completion,            { NEXT_GROUP } },
   {0,                  GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS } },
   {GDK_CONTROL_MASK,   GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS_GROUP } },
+  {0,                  GDK_BackSpace,     isc_string_manipulation,   { DELETE_LAST_CHAR } },
+  {GDK_CONTROL_MASK,   GDK_h,             isc_string_manipulation,   { DELETE_LAST_CHAR } },
   {GDK_CONTROL_MASK,   GDK_w,             isc_string_manipulation,   { DELETE_LAST_WORD } },
+  {GDK_CONTROL_MASK,   GDK_f,             isc_string_manipulation,   { NEXT_CHAR } },
+  {GDK_CONTROL_MASK,   GDK_b,             isc_string_manipulation,   { PREVIOUS_CHAR } },
 };
 
 /* mouse settings */

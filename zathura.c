@@ -21,11 +21,11 @@
 
 /* enums */
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
-  DELETE_LAST_WORD, DEFAULT, ERROR, WARNING, NEXT_GROUP, PREVIOUS_GROUP,
-  ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD, BACKWARD,
-  ADJUST_BESTFIT, ADJUST_WIDTH, ADJUST_NONE, CONTINUOUS, DELETE_LAST,
+  DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
+  PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
+  BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH, ADJUST_NONE, CONTINUOUS, DELETE_LAST,
   ADD_MARKER, EVAL_MARKER, EXPAND, COLLAPSE, SELECT, GOTO_DEFAULT, GOTO_LABELS,
-  GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN };
+  GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR };
 
 /* define modes */
 #define ALL        (1 << 0)
@@ -2483,28 +2483,38 @@ isc_completion(Argument* argument)
 void
 isc_string_manipulation(Argument* argument)
 {
+ gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0, -1);
+ int    length = strlen(input);
+ int pos       = gtk_editable_get_position(GTK_EDITABLE(Zathura.UI.inputbar));
+
   if(argument->n == DELETE_LAST_WORD)
   {
-    gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0, -1);
-    int    length = strlen(input);
-    int    i      = 0;
+    int i = pos - 1;
 
-    for(i = length; i > 0; i--)
-    {
-      if( (input[i] == ' ') ||
-          (input[i] == '/') )
-      {
-        if(i == (length - 1))
-          continue;
+    if(!pos)
+      return;
 
-        i = (input[i] == ' ') ? (i - 1) : i;
-        break;
-      }
-    }
+    /* remove trailing spaces */
+    for(; i >= 0 && input[i] == ' '; i--);
 
-    notify(DEFAULT, g_strndup(input, i + 1));
-    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
+    /* find the beginning of the word */
+    while((i > 0) && (input[i] != ' ') && (input[i] != '/'))
+      i--;
+
+    gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar),  i, pos);
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), i);
   }
+  else if(argument->n == DELETE_LAST_CHAR)
+  {
+    if((length - 1) <= 0)
+      isc_abort(NULL);
+
+    gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar), pos - 1, pos);
+  }
+  else if(argument->n == NEXT_CHAR)
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), pos+1);
+  else if(argument->n == PREVIOUS_CHAR)
+    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), (pos == 0) ? 0 : pos - 1);
 }
 
 /* command implementation */
