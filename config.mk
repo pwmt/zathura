@@ -22,3 +22,6 @@ DFLAGS = -g
 
 # compiler
 CC ?= gcc
+
+# strip
+SFLAGS = -s
