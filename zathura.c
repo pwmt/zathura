@@ -3878,15 +3878,17 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   ShortcutList* sc = Zathura.Bindings.sclist;
   while(sc)
   {
-    if( event->keyval == sc->element.key &&
-      ((CLEAN(event->state)  == sc->element.mask) ||
-      ((sc->element.mask == 0) && (sc->element.key >= 0x21 && sc->element.key <= 0x7E))) &&
-       (Zathura.Global.mode & sc->element.mode || sc->element.mode == ALL) &&
-       sc->element.function
+    if(
+       event->keyval == sc->element.key
+       && (CLEAN(event->state) == sc->element.mask || (sc->element.key >= 0x21
+       && sc->element.key <= 0x7E && event->state == GDK_SHIFT_MASK))
+       && (Zathura.Global.mode & sc->element.mode || sc->element.mode == ALL)
+       && sc->element.function
       )
     {
-      if(!(Zathura.Global.buffer && strlen(Zathura.Global.buffer->str)) ^
-          ((sc->element.mask == GDK_CONTROL_MASK) || (sc->element.mask == GDK_MOD1_MASK)))
+      if(!(Zathura.Global.buffer && strlen(Zathura.Global.buffer->str)) || (sc->element.mask == GDK_CONTROL_MASK) ||
+         (sc->element.key <= 0x21 || sc->element.key >= 0x7E)
+        )
       {
         sc->element.function(&(sc->element.argument));
         return TRUE;
