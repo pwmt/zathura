@@ -211,6 +211,8 @@ Setting settings[] = {
   {"recolor_lightcolor",     &(recolor_lightcolor),              's',   FALSE,   TRUE,    "Recoloring (light color)"},
   {"scroll_step",            &(scroll_step),                     'f',   FALSE,   FALSE,   "Scroll step"},
   {"scrollbars",             &(show_scrollbars),                 'b',   FALSE,   TRUE,    "Show scrollbars"},
+  {"show_statusbar",         &(Zathura.Global.show_statusbar),   'b',   FALSE,   TRUE,    "Show statusbar"},
+  {"show_inputbar",          &(Zathura.Global.show_inputbar),    'b',   FALSE,   TRUE,    "Show inputbar"},
   {"search_highlight",       &(search_highlight),                's',   FALSE,   TRUE,    "Highlighted results"},
   {"select_text",            &(select_text),                     's',   FALSE,   TRUE,    "Rectangle of the selected text"},
   {"statusbar_bgcolor",      &(statusbar_bgcolor),               's',   FALSE,   TRUE,    "Statusbar background color"},
