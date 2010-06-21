@@ -242,6 +242,8 @@ struct
     int       goto_mode;
     int       adjust_mode;
     gboolean  show_index;
+    gboolean  show_statusbar;
+    gboolean  show_inputbar;
   } Global;
 
   struct
@@ -487,6 +489,18 @@ init_look()
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   else
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+
+  /* inputbar */
+  if(Zathura.Global.show_inputbar)
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.inputbar));
+  else
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
+
+  /* statusbar */
+  if(Zathura.Global.show_statusbar)
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.statusbar));
+  else
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
 }
 
 void
@@ -565,11 +579,13 @@ init_zathura()
   g_static_mutex_init(&(Zathura.Lock.select_lock));
 
   /* other */
-  Zathura.Global.mode          = NORMAL;
-  Zathura.Global.viewing_mode  = NORMAL;
-  Zathura.Global.recolor       = 0;
-  Zathura.Global.goto_mode     = GOTO_MODE;
-  Zathura.Global.show_index    = FALSE;
+  Zathura.Global.mode           = NORMAL;
+  Zathura.Global.viewing_mode   = NORMAL;
+  Zathura.Global.recolor        = 0;
+  Zathura.Global.goto_mode      = GOTO_MODE;
+  Zathura.Global.show_index     = FALSE;
+  Zathura.Global.show_inputbar  = TRUE;
+  Zathura.Global.show_statusbar = TRUE;
 
   Zathura.State.pages             = g_strdup_printf("");
   Zathura.State.scroll_percentage = 0;
@@ -1701,6 +1717,9 @@ sc_change_mode(Argument* argument)
 void
 sc_focus_inputbar(Argument* argument)
 {
+  if(!(GTK_WIDGET_VISIBLE(GTK_WIDGET(Zathura.UI.inputbar))))
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.inputbar));
+
   if(argument->data)
   {
     notify(DEFAULT, argument->data);
@@ -2173,6 +2192,9 @@ isc_abort(Argument* argument)
 
   notify(DEFAULT, "");
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
+
+  if(!Zathura.Global.show_inputbar)
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
 }
 
 void
@@ -2985,7 +3007,7 @@ gboolean
 cmd_open(int argc, char** argv)
 {
   if(argc == 0 || strlen(argv[0]) == 0)
-    return FALSE;
+    return TRUE;
 
   /* assembly the arguments back to one string */
   int i = 0;
@@ -4148,7 +4170,6 @@ int main(int argc, char* argv[])
 
   gtk_init(&argc, &argv);
 
-
   init_zathura();
   init_keylist();
   read_configuration();
@@ -4164,6 +4185,12 @@ int main(int argc, char* argv[])
 
   gtk_widget_show_all(GTK_WIDGET(Zathura.UI.window));
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
+
+  if(!Zathura.Global.show_inputbar)
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
+
+  if(!Zathura.Global.show_statusbar)
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
 
   gdk_threads_enter();
   gtk_main();
