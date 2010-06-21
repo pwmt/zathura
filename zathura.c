@@ -3890,7 +3890,7 @@ cb_view_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
     if(
        event->keyval == sc->element.key
        && (CLEAN(event->state) == sc->element.mask || (sc->element.key >= 0x21
-       && sc->element.key <= 0x7E && event->state == GDK_SHIFT_MASK))
+       && sc->element.key <= 0x7E && CLEAN(event->state) == GDK_SHIFT_MASK))
        && (Zathura.Global.mode & sc->element.mode || sc->element.mode == ALL)
        && sc->element.function
       )
