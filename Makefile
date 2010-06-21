@@ -33,7 +33,7 @@ config.h:
 
 ${PROJECT}: ${OBJECTS}
 	@echo CC -o $@
-	@${CC} -s ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
+	@${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
 
 clean:
 	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
