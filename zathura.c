@@ -1791,6 +1791,9 @@ sc_reload(Argument* argument)
 {
   draw(Zathura.PDF.page_number);
 
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(Zathura.UI.view);
+
   /* save old information */
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   char* path     = Zathura.PDF.file ? strdup(Zathura.PDF.file) : NULL;
@@ -1798,14 +1801,20 @@ sc_reload(Argument* argument)
   int scale      = Zathura.PDF.scale;
   int page       = Zathura.PDF.page_number;
   int rotate     = Zathura.PDF.rotate;
+  gdouble va     = gtk_adjustment_get_value(vadjustment);
+  gdouble ha     = gtk_adjustment_get_value(hadjustment);
   g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
 
   /* reopen and restore settings */
   close_file(TRUE);
   open_file(path, password);
 
+  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.scale  = scale;
   Zathura.PDF.rotate = rotate;
+  gtk_adjustment_set_value(vadjustment, va);
+  gtk_adjustment_set_value(hadjustment, ha);
+  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
 
   draw(page);
 
