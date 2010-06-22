@@ -223,6 +223,7 @@ Setting settings[] = {
   {"statusbar_bgcolor",      &(statusbar_bgcolor),               's',   FALSE,   TRUE,    "Statusbar background color"},
   {"statusbar_fgcolor",      &(statusbar_fgcolor),               's',   FALSE,   TRUE,    "Statusbar foreground color"},
   {"transparency",           &(transparency),                    'f',   FALSE,   FALSE,   "Transparency of rectangles"},
+  {"uri_command",            &(uri_command),                     's',   FALSE,   FALSE,   "Command for opening URIs"},
   {"width",                  &(default_width),                   'i',   FALSE,   FALSE,   "Default window width"},
   {"zoom_max",               &(zoom_max),                        'f',   FALSE,   FALSE,   "Zoom maximum"},
   {"zoom_min",               &(zoom_min),                        'f',   FALSE,   FALSE,   "Zoom minimum"},

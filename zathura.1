@@ -162,11 +162,11 @@ Zoom to the given level
 Move to the given position
 .SS Commands
 .TP
-.B bmark
-Bookmark current page
-.TP
 .B blist
 List and open bookmark
+.TP
+.B bmark
+Bookmark current page
 .TP
 .B close
 Close current file
@@ -192,14 +192,14 @@ Open a file
 .B print
 Print the document
 .TP
+.B quit
+Quit the program
+.TP
 .B rotate
 Rotate the page
 .TP
 .B set
 Set an option (set <id> <value>)
-.TP
-.B quit
-Quit the program
 .TP
 .B write
 Save the document
@@ -221,6 +221,6 @@ The complete configuration including the appearance and shortcuts of the program
 are defined in a separate file named config.h. In this file you are able to
 change and adjust all the settings of zathura according to your wishes.
 
-In addition you can create a zathurarc file (default path: ~/.zathura/zathurarc)
+In addition you can create a zathurarc file (default path: ~/.config/zathura/zathurarc)
 to overwrite settings and keybindings by using the set and map function. For
 more information please check the faq on the website: http://pwmt.org/zathura
