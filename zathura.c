@@ -1347,7 +1347,7 @@ read_configuration()
       int     n     = g_strv_length(lines) - 1;
 
       int i;
-      for(i = 0; i < n; i++)
+      for(i = 0; i <= n; i++)
       {
         if(!strlen(lines[i]))
           continue;
@@ -3359,6 +3359,12 @@ cc_open(char* input)
         out_of_memory();
 
       el->value = g_strdup_printf("%s%s", path, d_name);
+      if(g_file_test(el->value, G_FILE_TEST_IS_DIR))
+      {
+        gchar *subdir = el->value;
+        el->value = g_strdup_printf("%s/", subdir);
+        g_free(subdir);
+      }
       el->description = NULL;
       el->next = NULL;
 
