@@ -1,11 +1,12 @@
 /* settings */
-int   default_width  = 800;
-int   default_height = 600;
-float zoom_step      = 10;
-float zoom_min       = 10;
-float zoom_max       = 400;
-float scroll_step    = 40;
-float transparency   = 0.4;
+int   default_width    = 800;
+int   default_height   = 600;
+float zoom_step        = 10;
+float zoom_min         = 10;
+float zoom_max         = 400;
+float scroll_step      = 40;
+float transparency     = 0.4;
+float smooth_scrolling = 0.0;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
@@ -82,7 +83,6 @@ Shortcut shortcuts[] = {
   {0,                  GDK_K,             sc_navigate,          NORMAL,              { PREVIOUS } },
   {GDK_MOD1_MASK,      GDK_Right,         sc_navigate,          NORMAL,              { NEXT } },
   {GDK_MOD1_MASK,      GDK_Left,          sc_navigate,          NORMAL,              { PREVIOUS } },
-  {0,                  GDK_space,         sc_navigate,          NORMAL,              { NEXT } },
   {0,                  GDK_Left,          sc_navigate,          FULLSCREEN,          { PREVIOUS } },
   {0,                  GDK_Up,            sc_navigate,          FULLSCREEN,          { PREVIOUS } },
   {0,                  GDK_Down,          sc_navigate,          FULLSCREEN,          { NEXT } },
@@ -111,6 +111,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_u,             sc_scroll,            NORMAL,              { HALF_UP } },
   {GDK_CONTROL_MASK,   GDK_f,             sc_scroll,            NORMAL,              { FULL_DOWN } },
   {GDK_CONTROL_MASK,   GDK_b,             sc_scroll,            NORMAL,              { FULL_UP } },
+  {0,                  GDK_space,         sc_scroll,            NORMAL,              { FULL_DOWN } },
   {0,                  GDK_O,             sc_switch_goto_mode,  NORMAL,              {0} },
   {0,                  GDK_F5,            sc_toggle_fullscreen, NORMAL | FULLSCREEN, {0} },
   {0,                  GDK_Tab,           sc_toggle_index,      NORMAL | INDEX,      {0} },
@@ -220,6 +221,7 @@ Setting settings[] = {
   {"show_inputbar",          &(Zathura.Global.show_inputbar),    'b',   FALSE,   TRUE,    "Show inputbar"},
   {"search_highlight",       &(search_highlight),                's',   FALSE,   TRUE,    "Highlighted results"},
   {"select_text",            &(select_text),                     's',   FALSE,   TRUE,    "Rectangle of the selected text"},
+  {"smooth_scrolling",       &(smooth_scrolling),                'f',   FALSE,   TRUE,    "Show scrollbars"},
   {"statusbar_bgcolor",      &(statusbar_bgcolor),               's',   FALSE,   TRUE,    "Statusbar background color"},
   {"statusbar_fgcolor",      &(statusbar_fgcolor),               's',   FALSE,   TRUE,    "Statusbar foreground color"},
   {"transparency",           &(transparency),                    'f',   FALSE,   FALSE,   "Transparency of rectangles"},
