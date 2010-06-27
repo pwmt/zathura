@@ -1866,6 +1866,8 @@ sc_scroll(Argument* argument)
   gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
+  gdouble new_value  = value;
+  gboolean static ss = FALSE;
 
   if((argument->n == UP || argument->n == HALF_UP || argument->n == FULL_UP) && value == 0)
   {
@@ -1873,30 +1875,48 @@ sc_scroll(Argument* argument)
     arg.n = PREVIOUS;
     sc_navigate(&arg);
     arg.n = BOTTOM;
+    ss = TRUE;
     sc_scroll(&arg);
+    return;
   }
   else if((argument->n == DOWN || argument->n == HALF_DOWN || argument->n == FULL_DOWN) && value == max)
   {
     Argument arg;
     arg.n = NEXT;
+    ss = TRUE;
     sc_navigate(&arg);
+    return;
   }
   else if(argument->n == FULL_UP)
-    gtk_adjustment_set_value(adjustment, (value - view_size) < 0 ? 0 : (value - view_size));
+    new_value = (value - view_size) < 0 ? 0 : (value - view_size);
   else if(argument->n == FULL_DOWN)
-    gtk_adjustment_set_value(adjustment, (value + view_size) > max ? max : (value + view_size));
+    new_value = (value + view_size) > max ? max : (value + view_size);
   else if(argument->n == HALF_UP)
-    gtk_adjustment_set_value(adjustment, (value - (view_size / 2)) < 0 ? 0 : (value - (view_size / 2)));
+    new_value = (value - (view_size / 2)) < 0 ? 0 : (value - (view_size / 2));
   else if(argument->n == HALF_DOWN)
-    gtk_adjustment_set_value(adjustment, (value + (view_size / 2)) > max ? max : (value + (view_size / 2)));
+    new_value = (value + (view_size / 2)) > max ? max : (value + (view_size / 2));
   else if((argument->n == LEFT) || (argument->n == UP))
-    gtk_adjustment_set_value(adjustment, (value - scroll_step) < 0 ? 0 : (value - scroll_step));
+    new_value = (value - scroll_step) < 0 ? 0 : (value - scroll_step);
   else if(argument->n == TOP)
-    gtk_adjustment_set_value(adjustment, 0);
+    new_value = 0;
   else if(argument->n == BOTTOM)
-    gtk_adjustment_set_value(adjustment, max);
+    new_value = max;
   else
-    gtk_adjustment_set_value(adjustment, (value + scroll_step) > max ? max : (value + scroll_step));
+    new_value = (value + scroll_step) > max ? max : (value + scroll_step);
+
+  if(smooth_scrolling && !ss)
+  {
+    gdouble i;
+    if(new_value > value)
+      for(i = value; (i + smooth_scrolling) < new_value; i += smooth_scrolling)
+        gtk_adjustment_set_value(adjustment, i);
+    else
+      for(i = value; (i + smooth_scrolling) > new_value; i -= smooth_scrolling)
+        gtk_adjustment_set_value(adjustment, i);
+  }
+
+  gtk_adjustment_set_value(adjustment, new_value);
+  ss = FALSE;
 
   update_status();
 }
