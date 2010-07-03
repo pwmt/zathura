@@ -1704,7 +1704,6 @@ sc_change_buffer(Argument* argument)
       gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, Zathura.Global.buffer->str);
     }
   }
-
 }
 
 void
@@ -2480,14 +2479,9 @@ isc_completion(Argument* argument)
     setCompletionRowColor(results, HIGHLIGHT, current_item);
 
     if(command_mode)
-    {
-      char* cp = (current_parameter) ? g_strconcat(" ", current_parameter, NULL) : 0;
-      temp = g_strconcat(":", rows[current_item].command, cp, NULL);
-    }
+      temp = g_strconcat(":", rows[current_item].command, NULL);
     else
-    {
       temp = g_strconcat(":", previous_command, " ", rows[current_item].command, NULL);
-    }
 
     gtk_entry_set_text(Zathura.UI.inputbar, temp);
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
