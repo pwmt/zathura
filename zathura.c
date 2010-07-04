@@ -356,6 +356,12 @@ void set_page(int);
 void switch_view(GtkWidget*);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 
+Completion* completion_init();
+CompletionGroup* completion_group_create(char*);
+void completion_add_group(Completion*, CompletionGroup*);
+void completion_free(Completion*);
+void completion_group_add_element(CompletionGroup*, char*, char*);
+
 /* thread declaration */
 void* search(void*);
 
@@ -1526,6 +1532,89 @@ switch_view(GtkWidget* widget)
   gtk_container_add(GTK_CONTAINER(Zathura.UI.viewport), GTK_WIDGET(widget));
 }
 
+Completion*
+completion_init()
+{
+  Completion *completion = malloc(sizeof(Completion));
+  if(!completion)
+    out_of_memory();
+
+  completion->groups = NULL;
+
+  return completion;
+}
+
+CompletionGroup*
+completion_group_create(char* name)
+{
+  CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  if(!group)
+    out_of_memory();
+
+  group->value    = name;
+  group->elements = NULL;
+  group->next     = NULL;
+
+  return group;
+}
+
+void
+completion_add_group(Completion* completion, CompletionGroup* group)
+{
+  CompletionGroup* cg = completion->groups;
+
+  while(cg && cg->next)
+    cg = cg->next;
+
+  if(cg)
+    cg->next = group;
+  else
+    completion->groups = group;
+}
+
+void completion_free(Completion* completion)
+{
+  CompletionGroup* group = completion->groups;
+  CompletionElement *element;
+
+  while(group)
+  {
+    element = group->elements;
+    while(element)
+    {
+      CompletionElement* ne = element->next;
+      free(element);
+      element = ne;
+    }
+
+    CompletionGroup *ng = group->next;
+    free(group);
+    group = ng;
+  }
+}
+
+void completion_group_add_element(CompletionGroup* group, char* name, char* description)
+{
+  CompletionElement* el = group->elements;
+
+  while(el && el->next)
+    el = el->next;
+
+  CompletionElement* new_element = malloc(sizeof(CompletionElement));
+  if(!new_element)
+    out_of_memory();
+
+  new_element->value       = name;
+  new_element->description = description;
+  new_element->next        = NULL;
+
+  if(el)
+    el->next = new_element;
+  else
+    group->elements = new_element;
+}
+
+
 /* thread implementation */
 void*
 search(void* parameter)
@@ -2390,22 +2479,7 @@ isc_completion(Argument* argument)
       }
 
       /* clean up */
-      group = result->groups;
-
-      while(group)
-      {
-        element = group->elements;
-        while(element)
-        {
-          CompletionElement* ne = element->next;
-          free(element);
-          element = ne;
-        }
-
-        CompletionGroup *ng = group->next;
-        free(group);
-        group = ng;
-      }
+      completion_free(result);
     }
     /* create list based on commands */
     else
@@ -3223,22 +3297,11 @@ cmd_save(int argc, char** argv)
 Completion*
 cc_bookmark(char* input)
 {
-  /* init completion group */
-  Completion *completion = malloc(sizeof(Completion));
-  if(!completion)
-    out_of_memory();
+  Completion* completion = completion_init();
+  CompletionGroup* group = completion_group_create(NULL);
 
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
-  if(!group)
-    out_of_memory();
+  completion_add_group(completion, group);
 
-  group->value    = NULL;
-  group->next     = NULL;
-  group->elements = NULL;
-
-  completion->groups = group;
-  CompletionElement *last_element = NULL;
-  int element_counter = 0;
   int i = 0;
   int input_length = input ? strlen(input) : 0;
 
@@ -3247,20 +3310,7 @@ cc_bookmark(char* input)
     if( (input_length <= strlen(Zathura.Bookmarks.bookmarks[i].id)) &&
           !strncmp(input, Zathura.Bookmarks.bookmarks[i].id, input_length) )
     {
-      CompletionElement* el = malloc(sizeof(CompletionElement));
-      if(!el)
-        out_of_memory();
-
-      el->value = Zathura.Bookmarks.bookmarks[i].id;
-      el->description = g_strdup_printf("Page: %d", Zathura.Bookmarks.bookmarks[i].page);
-      el->next = NULL;
-
-      if(element_counter++ != 0)
-        last_element->next = el;
-      else
-        group->elements = el;
-
-      last_element = el;
+      completion_group_add_element(group, Zathura.Bookmarks.bookmarks[i].id, g_strdup_printf("Page %d", Zathura.Bookmarks.bookmarks[i].page));
     }
   }
 
@@ -3270,42 +3320,13 @@ cc_bookmark(char* input)
 Completion*
 cc_export(char* input)
 {
-  /* init completion group */
-  Completion *completion = malloc(sizeof(Completion));
-  if(!completion)
-    out_of_memory();
+  Completion* completion = completion_init();
+  CompletionGroup* group = completion_group_create(NULL);
 
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
-  if(!group)
-    out_of_memory();
+  completion_add_group(completion, group);
 
-  group->value    = NULL;
-  group->next     = NULL;
-  group->elements = NULL;
-
-  completion->groups = group;
-
-  /* export images */
-  CompletionElement *export_images = malloc(sizeof(CompletionElement));
-  if(!export_images)
-    out_of_memory();
-
-  export_images->value = "images";
-  export_images->description = "Export images";
-  export_images->next = NULL;
-
-  /* export attachmants */
-  CompletionElement *export_attachments = malloc(sizeof(CompletionElement));
-  if(!export_attachments)
-    out_of_memory();
-
-  export_attachments->value = "attachments";
-  export_attachments->description = "Export attachments";
-  export_attachments->next = NULL;
-
-  /* connect */
-  group->elements = export_attachments;
-  export_attachments->next = export_images;
+  completion_group_add_element(group, "images",      "Export images");
+  completion_group_add_element(group, "attachments", "Export attachments");
 
   return completion;
 }
@@ -3313,20 +3334,10 @@ cc_export(char* input)
 Completion*
 cc_open(char* input)
 {
-  /* init completion group */
-  Completion *completion = malloc(sizeof(Completion));
-  if(!completion)
-    out_of_memory();
+  Completion* completion = completion_init();
+  CompletionGroup* group = completion_group_create(NULL);
 
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
-  if(!group)
-    out_of_memory();
-
-  group->value    = NULL;
-  group->next     = NULL;
-  group->elements = NULL;
-
-  completion->groups = group;
+  completion_add_group(completion, group);
 
   /* read dir */
   char* path        = "/";
@@ -3372,9 +3383,7 @@ cc_open(char* input)
     return NULL;
 
   /* create element list */
-  CompletionElement *last_element = NULL;
-  char* name            = NULL;
-  int   element_counter = 0;
+  char* name = NULL;
 
   while((name = (char*) g_dir_read_name(dir)) != NULL)
   {
@@ -3384,26 +3393,14 @@ cc_open(char* input)
     if( ((file_length <= d_length) && !strncmp(file, d_name, file_length)) ||
         (file_length == 0) )
     {
-      CompletionElement* el = malloc(sizeof(CompletionElement));
-      if(!el)
-        out_of_memory();
-
-      el->value = g_strdup_printf("%s%s", path, d_name);
-      if(g_file_test(el->value, G_FILE_TEST_IS_DIR))
+      char* d = g_strdup_printf("%s%s", path, d_name);
+      if(g_file_test(d, G_FILE_TEST_IS_DIR))
       {
-        gchar *subdir = el->value;
-        el->value = g_strdup_printf("%s/", subdir);
+        gchar *subdir = d;
+        d = g_strdup_printf("%s/", subdir);
         g_free(subdir);
       }
-      el->description = NULL;
-      el->next = NULL;
-
-      if(element_counter++ != 0)
-        last_element->next = el;
-      else
-        group->elements = el;
-
-      last_element = el;
+      completion_group_add_element(group, d, NULL);
     }
   }
 
@@ -3415,22 +3412,11 @@ cc_open(char* input)
 Completion*
 cc_print(char* input)
 {
-  /* init completion group */
-  Completion *completion = malloc(sizeof(Completion));
-  if(!completion)
-    out_of_memory();
+  Completion* completion = completion_init();
+  CompletionGroup* group = completion_group_create(NULL);
 
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
-  if(!group)
-    out_of_memory();
+  completion_add_group(completion, group);
 
-  group->value    = NULL;
-  group->next     = NULL;
-  group->elements = NULL;
-
-  completion->groups = group;
-  CompletionElement *last_element = NULL;
-  int element_counter = 0;
   int input_length = input ? strlen(input) : 0;
 
   /* read printers */
@@ -3442,8 +3428,7 @@ cc_print(char* input)
 
   if(!fp)
   {
-    free(completion);
-    free(group);
+    completion_free(completion);
     return NULL;
   }
 
@@ -3466,20 +3451,7 @@ cc_print(char* input)
       if( (input_length <= line_length) ||
           (!strncmp(input, current_line, input_length)) )
       {
-        CompletionElement* el = malloc(sizeof(CompletionElement));
-        if(!el)
-          out_of_memory();
-
-        el->value       = g_strdup(current_line);
-        el->description = NULL;
-        el->next        = NULL;
-
-        if(element_counter++ != 0)
-          last_element->next = el;
-        else
-          group->elements = el;
-
-        last_element = el;
+        completion_group_add_element(group, g_strdup(current_line), NULL);
       }
 
       free(current_line);
@@ -3496,22 +3468,11 @@ cc_print(char* input)
 Completion*
 cc_set(char* input)
 {
-  /* init completion group */
-  Completion *completion = malloc(sizeof(Completion));
-  if(!completion)
-    out_of_memory();
+  Completion* completion = completion_init();
+  CompletionGroup* group = completion_group_create(NULL);
 
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
-  if(!group)
-    out_of_memory();
+  completion_add_group(completion, group);
 
-  group->value    = NULL;
-  group->next     = NULL;
-  group->elements = NULL;
-
-  completion->groups = group;
-  CompletionElement *last_element = NULL;
-  int element_counter = 0;
   int i = 0;
   int input_length = input ? strlen(input) : 0;
 
@@ -3520,20 +3481,7 @@ cc_set(char* input)
     if( (input_length <= strlen(settings[i].name)) &&
           !strncmp(input, settings[i].name, input_length) )
     {
-      CompletionElement* el = malloc(sizeof(CompletionElement));
-      if(!el)
-        out_of_memory();
-
-      el->value = settings[i].name;
-      el->description = settings[i].description;
-      el->next = NULL;
-
-      if(element_counter++ != 0)
-        last_element->next = el;
-      else
-        group->elements = el;
-
-      last_element = el;
+      completion_group_add_element(group, settings[i].name, settings[i].description);
     }
   }
 
