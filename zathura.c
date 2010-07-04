@@ -2421,9 +2421,32 @@ isc_completion(Argument* argument)
      *  the current command does not differ from the previous one
      *  the current command has an completion function
      */
-    if( (previous_command) && (current_parameter) && !strcmp(current_command, previous_command) )
+    if(strchr(input, ' '))
     {
-      if(previous_id < 0 || !commands[previous_id].completion)
+      gboolean search_matching_command = FALSE;
+
+      int i;
+      for(i = 0; i < LENGTH(commands); i++)
+      {
+        int abbr_length = commands[i].abbr ? strlen(commands[i].abbr) : 0;
+        int cmd_length  = commands[i].command ? strlen(commands[i].command) : 0;
+
+        if( ((current_command_length <= cmd_length)  && !strncmp(current_command, commands[i].command, current_command_length)) ||
+            ((current_command_length <= abbr_length) && !strncmp(current_command, commands[i].abbr,    current_command_length))
+          )
+        {
+          if(commands[i].completion)
+          {
+            previous_command = current_command;
+            previous_id = i;
+            search_matching_command = TRUE;
+          }
+          else
+            return;
+        }
+      }
+
+      if(!search_matching_command)
         return;
 
       Completion *result = commands[previous_id].completion(current_parameter);
