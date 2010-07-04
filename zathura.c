@@ -2445,10 +2445,18 @@ isc_completion(Argument* argument)
 
         for(element = group->elements; element != NULL; element = element->next)
         {
-          if( (element->value) &&
-              (current_parameter_length <= strlen(element->value)) && !strncmp(current_parameter, element->value, current_parameter_length)
-            )
+          if(element->value)
           {
+            if(group->value && !group_elements)
+            {
+              rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
+              rows[n_items].command     = group->value;
+              rows[n_items].description = NULL;
+              rows[n_items].command_id  = -1;
+              rows[n_items].is_group    = TRUE;
+              rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, group->value, NULL, TRUE));
+            }
+
             rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
             rows[n_items].command     = element->value;
             rows[n_items].description = element->description;
@@ -2457,24 +2465,6 @@ isc_completion(Argument* argument)
             rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, element->value, element->description, FALSE));
             group_elements++;
           }
-        }
-
-        if(group->value && group_elements > 0)
-        {
-          rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
-          rows[n_items].command     = group->value;
-          rows[n_items].description = NULL;
-          rows[n_items].command_id  = -1;
-          rows[n_items].is_group    = TRUE;
-          rows[n_items].row       = GTK_WIDGET(createCompletionRow(results, group->value, NULL, TRUE));
-
-          /* Swap group element with first element of the list */
-          CompletionRow temp = rows[n_items - group_elements];
-          gtk_box_reorder_child(results, rows[n_items].row, n_items - group_elements);
-          rows[n_items - group_elements] = rows[n_items];
-          rows[n_items] = temp;
-
-          n_items++;
         }
       }
 
