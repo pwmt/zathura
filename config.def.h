@@ -1,12 +1,13 @@
 /* settings */
-int   default_width    = 800;
-int   default_height   = 600;
-float zoom_step        = 10;
-float zoom_min         = 10;
-float zoom_max         = 400;
-float scroll_step      = 40;
-float transparency     = 0.4;
-float smooth_scrolling = 0.0;
+int   default_width      = 800;
+int   default_height     = 600;
+float zoom_step          = 10;
+float zoom_min           = 10;
+float zoom_max           = 400;
+float scroll_step        = 40;
+float transparency       = 0.4;
+float smooth_scrolling   = 0.0;
+int   n_completion_items = 15;
 
 /* completion */
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
@@ -206,6 +207,7 @@ Setting settings[] = {
   {"inputbar_fgcolor",       &(inputbar_fgcolor),                's',   FALSE,   TRUE,    "Inputbar foreground color"},
   {"labels",                 &(Zathura.Global.enable_labelmode), 'b',   FALSE,   TRUE,    "Allow label mode"},
   {"list_printer_command",   &(list_printer_command),            's',   FALSE,   FALSE,   "Command to list printers"},
+  {"n_completion_items",     &(n_completion_items),              'i',   FALSE,   FALSE,   "Number of completion items"},
   {"notification_e_bgcolor", &(notification_e_bgcolor),          's',   FALSE,   TRUE,    "Notification (error) background color"},
   {"notification_e_fgcolor", &(notification_e_fgcolor),          's',   FALSE,   TRUE,    "Notification (error) foreground color"},
   {"notification_w_bgcolor", &(notification_w_bgcolor),          's',   FALSE,   TRUE,    "Notification (warning) background color"},

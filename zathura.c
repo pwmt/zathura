@@ -8,6 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <math.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -2477,6 +2478,21 @@ isc_completion(Argument* argument)
     }
 
     setCompletionRowColor(results, HIGHLIGHT, current_item);
+
+    /* hide other items */
+    int uh = ceil(n_completion_items / 2);
+    int lh = floor(n_completion_items / 2);
+
+    for(i = 0; i < n_items; i++)
+    {
+     if((i >= (current_item - lh) && (i <= current_item + uh)) ||
+        (i < n_completion_items && current_item < lh) ||
+        (i >= (n_items - n_completion_items) && (current_item >= (n_items - uh)))
+       )
+        gtk_widget_show(rows[i].row);
+      else
+        gtk_widget_hide(rows[i].row);
+    }
 
     if(command_mode)
       temp = g_strconcat(":", rows[current_item].command, NULL);
