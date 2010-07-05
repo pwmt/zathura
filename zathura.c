@@ -3162,9 +3162,20 @@ cmd_print(int argc, char** argv)
     return FALSE;
   }
 
-  char* printer = argv[0];
-  char* sites   = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("1-%i", Zathura.PDF.number_of_pages);
-  char* command = g_strdup_printf(print_command, printer, sites, Zathura.PDF.file);
+  char* printer    = argv[0];
+  char* sites      = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("1-%i", Zathura.PDF.number_of_pages);
+  GString *addit   = g_string_new("");
+
+  int i;
+  for(i = 2; i < argc; i++)
+  {
+    if(i != 0)
+      addit = g_string_append_c(addit, ' ');
+
+    addit = g_string_append(addit, argv[i]);
+  }
+
+  char* command = g_strdup_printf(print_command, printer, sites, addit->str, Zathura.PDF.file);
   system(command);
 
   g_free(sites);
