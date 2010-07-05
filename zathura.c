@@ -2572,9 +2572,10 @@ isc_completion(Argument* argument)
 
     for(i = 0; i < n_items; i++)
     {
-     if((i >= (current_item - lh) && (i <= current_item + uh)) ||
+     if((n_items > 1) && (
+        (i >= (current_item - lh) && (i <= current_item + uh)) ||
         (i < n_completion_items && current_item < lh) ||
-        (i >= (n_items - n_completion_items) && (current_item >= (n_items - uh)))
+        (i >= (n_items - n_completion_items) && (current_item >= (n_items - uh))))
        )
         gtk_widget_show(rows[i].row);
       else
@@ -2582,7 +2583,7 @@ isc_completion(Argument* argument)
     }
 
     if(command_mode)
-      temp = g_strconcat(":", rows[current_item].command, NULL);
+      temp = g_strconcat(":", rows[current_item].command, (n_items == 1) ? " " : NULL, NULL);
     else
       temp = g_strconcat(":", previous_command, " ", rows[current_item].command, NULL);
 
