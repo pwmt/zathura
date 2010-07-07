@@ -51,7 +51,7 @@ char* default_text = "[No Name]";
 
 /* printing */
 char* list_printer_command = "lpstat -v | sed -n '/^.*device for \\(.*\\): .*$/s//\\1/p'";
-char* print_command = "lp -d '%s' -P %s '%s' %s"; /* printer / pages / file */
+char* print_command = "lp -d '%s' -P %s %s '%s'"; /* printer / pages / file */
 
 /* open uri */
 char* uri_command = "firefox '%s'"; /* uri */
