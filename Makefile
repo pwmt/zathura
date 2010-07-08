@@ -33,8 +33,7 @@ config.h: config.def.h
 		echo "config.h exists, but config.def.h is newer. Please check your" \
 		"config.h or ${PROJECT} might fail to build." ; \
 	else \
-		cp -p $< $@ ; \
-		touch $@ ; \
+		cp $< $@ ; \
 	fi
 
 ${PROJECT}: ${OBJECTS}
