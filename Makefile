@@ -28,8 +28,14 @@ options:
 ${OBJECTS}:  config.h config.mk
 ${DOBJECTS}: config.h config.mk
 
-config.h:
-	@cp config.def.h $@
+config.h: config.def.h
+	@if [ -f $@ ] ; then \
+		echo "config.h exists, but config.def.h is newer. Please check your" \
+		"config.h or ${PROJECT} might fail to build." ; \
+	else \
+		cp -p $< $@ ; \
+		touch $@ ; \
+	fi
 
 ${PROJECT}: ${OBJECTS}
 	@echo CC -o $@
