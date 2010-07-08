@@ -134,6 +134,7 @@ InputbarShortcut inputbar_shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS_GROUP } },
   {0,                  GDK_BackSpace,     isc_string_manipulation,   { DELETE_LAST_CHAR } },
   {GDK_CONTROL_MASK,   GDK_h,             isc_string_manipulation,   { DELETE_LAST_CHAR } },
+  {GDK_CONTROL_MASK,   GDK_u,             isc_string_manipulation,   { DELETE_TO_LINE_START } },
   {GDK_CONTROL_MASK,   GDK_w,             isc_string_manipulation,   { DELETE_LAST_WORD } },
   {GDK_CONTROL_MASK,   GDK_f,             isc_string_manipulation,   { NEXT_CHAR } },
   {GDK_CONTROL_MASK,   GDK_b,             isc_string_manipulation,   { PREVIOUS_CHAR } },

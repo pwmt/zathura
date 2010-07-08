@@ -26,7 +26,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
   BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH, ADJUST_NONE, CONTINUOUS, DELETE_LAST,
   ADD_MARKER, EVAL_MARKER, EXPAND, COLLAPSE, SELECT, GOTO_DEFAULT, GOTO_LABELS,
-  GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR };
+  GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR,
+  DELETE_TO_LINE_START };
 
 /* define modes */
 #define ALL        (1 << 0)
@@ -2601,38 +2602,46 @@ isc_completion(Argument* argument)
 void
 isc_string_manipulation(Argument* argument)
 {
- gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0, -1);
- int    length = strlen(input);
- int pos       = gtk_editable_get_position(GTK_EDITABLE(Zathura.UI.inputbar));
+  gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0, -1);
+  int    length = strlen(input);
+  int pos       = gtk_editable_get_position(GTK_EDITABLE(Zathura.UI.inputbar));
+  int i;
 
-  if(argument->n == DELETE_LAST_WORD)
-  {
-    int i = pos - 1;
+  switch (argument->n) {
+    case DELETE_LAST_WORD:
+      i = pos - 1;
 
-    if(!pos)
-      return;
+      if(!pos)
+        return;
 
-    /* remove trailing spaces */
-    for(; i >= 0 && input[i] == ' '; i--);
+      /* remove trailing spaces */
+      for(; i >= 0 && input[i] == ' '; i--);
 
-    /* find the beginning of the word */
-    while((i > 0) && (input[i] != ' ') && (input[i] != '/'))
-      i--;
+      /* find the beginning of the word */
+      while((i > 0) && (input[i] != ' ') && (input[i] != '/'))
+        i--;
 
-    gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar),  i, pos);
-    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), i);
+      gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar),  i, pos);
+      gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), i);
+      break;
+    case DELETE_LAST_CHAR:
+      if((length - 1) <= 0)
+        isc_abort(NULL);
+
+      gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar), pos - 1, pos);
+      break;
+    case DELETE_TO_LINE_START:
+      gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar), 1, pos);
+      break;
+    case NEXT_CHAR:
+      gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), pos + 1);
+      break;
+    case PREVIOUS_CHAR:
+      gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), (pos == 0) ? 0 : pos - 1);
+      break;
+    default: /* unreachable */
+      break;
   }
-  else if(argument->n == DELETE_LAST_CHAR)
-  {
-    if((length - 1) <= 0)
-      isc_abort(NULL);
-
-    gtk_editable_delete_text(GTK_EDITABLE(Zathura.UI.inputbar), pos - 1, pos);
-  }
-  else if(argument->n == NEXT_CHAR)
-    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), pos+1);
-  else if(argument->n == PREVIOUS_CHAR)
-    gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), (pos == 0) ? 0 : pos - 1);
 }
 
 /* command implementation */
