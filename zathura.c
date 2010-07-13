@@ -2100,6 +2100,9 @@ gboolean cb_index_row_activated(GtkTreeView* treeview, GtkTreePath* path,
 void
 sc_navigate_index(Argument* argument)
 {
+  if(!Zathura.UI.index)
+    return;
+
   GtkTreeView *treeview = gtk_container_get_children(GTK_CONTAINER(Zathura.UI.index))->data;
   GtkTreePath *path;
 
