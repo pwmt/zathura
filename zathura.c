@@ -1301,9 +1301,11 @@ open_file(char* path, char* password)
 
 void open_uri(char* uri)
 {
-  char* uri_cmd = g_strdup_printf(uri_command, uri);
+  char* escaped_uri = g_strescape(uri, NULL);
+  char* uri_cmd = g_strdup_printf(uri_command, escaped_uri);
   system(uri_cmd);
   g_free(uri_cmd);
+  g_free(escaped_uri);
 }
 
 void out_of_memory()
@@ -3188,10 +3190,12 @@ cmd_print(int argc, char** argv)
     addit = g_string_append(addit, argv[i]);
   }
 
-  char* command = g_strdup_printf(print_command, printer, sites, addit->str, Zathura.PDF.file);
+  char* escaped_filename = g_strescape(Zathura.PDF.file, NULL);
+  char* command = g_strdup_printf(print_command, printer, sites, addit->str, escaped_filename);
   system(command);
 
   g_free(sites);
+  g_free(escaped_filename);
   g_free(command);
 
   return TRUE;
