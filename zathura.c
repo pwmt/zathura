@@ -1094,6 +1094,7 @@ highlight_result(int page_id, PopplerRectangle* rectangle)
   cairo_rectangle(cairo, trect->x1, trect->y1, (trect->x2 - trect->x1), (trect->y2 - trect->y1));
   poppler_rectangle_free(trect);
   cairo_fill(cairo);
+  cairo_destroy(cairo);
 }
 
 void notify(int level, char* message)
@@ -1718,6 +1719,8 @@ search(void* parameter)
     results = poppler_page_find_text(page, search_item);
     g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
 
+    g_object_unref(page);
+
     if(results)
       break;
   }
@@ -1728,6 +1731,9 @@ search(void* parameter)
     gdk_threads_enter();
 
     set_page(next_page);
+
+    if(Zathura.Search.results)
+      g_list_free(Zathura.Search.results);
 
     Zathura.Search.results = results;
     Zathura.Search.page    = next_page;
@@ -1887,6 +1893,7 @@ sc_follow(Argument* argument)
       cairo_move_to(cairo, link_rectangle->x1 + 1, link_rectangle->y1 - 1);
       char* link_number = g_strdup_printf("%i", link_id++);
       cairo_show_text(cairo, link_number);
+      cairo_destroy(cairo);
       g_free(link_number);
     }
   }
@@ -2366,11 +2373,18 @@ void
 isc_completion(Argument* argument)
 {
   gchar *input      = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 1, -1);
-  gchar  identifier = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0,  1)[0];
+  gchar *tmp_string = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0,  1);
+  gchar  identifier = tmp_string[0];
   int    length     = strlen(input);
 
-  if(!length && !identifier)
+  if(!input || !tmp_string)
+  {
+    if(input)
+      g_free(input);
+    if(tmp_string)
+      g_free(tmp_string);
     return;
+  }
 
   /* get current information*/
   char* first_space = strstr(input, " ");
@@ -2381,7 +2395,7 @@ isc_completion(Argument* argument)
 
   if(!first_space)
   {
-    current_command          = input;
+    current_command          = g_strdup(input);
     current_command_length   = length;
     current_parameter        = NULL;
     current_parameter_length = 0;
@@ -2398,7 +2412,15 @@ isc_completion(Argument* argument)
   /* if the identifier does not match the command sign and
    * the completion should not be hidden, leave this function */
   if((identifier != ':') && (argument->n != HIDE))
+  {
+    if(current_command)
+      g_free(current_command);
+    if(input)
+      g_free(input);
+    if(tmp_string)
+      g_free(tmp_string);
     return;
+  }
 
   /* static elements */
   static GtkBox        *results = NULL;
@@ -2439,7 +2461,15 @@ isc_completion(Argument* argument)
     command_mode = TRUE;
 
     if(argument->n == HIDE)
+    {
+      if(current_command)
+        g_free(current_command);
+      if(input)
+        g_free(input);
+      if(tmp_string)
+        g_free(tmp_string);
       return;
+     }
   }
 
   /* create new list iff
@@ -2478,17 +2508,41 @@ isc_completion(Argument* argument)
             search_matching_command = TRUE;
           }
           else
+          {
+            if(current_command)
+              g_free(current_command);
+            if(input)
+              g_free(input);
+            if(tmp_string)
+              g_free(tmp_string);
             return;
+          }
         }
       }
 
       if(!search_matching_command)
+      {
+        if(current_command)
+          g_free(current_command);
+        if(input)
+          g_free(input);
+        if(tmp_string)
+          g_free(tmp_string);
         return;
+      }
 
       Completion *result = commands[previous_id].completion(current_parameter);
 
       if(!result || !result->groups)
+      {
+        if(current_command)
+          g_free(current_command);
+        if(input)
+          g_free(input);
+        if(tmp_string)
+          g_free(tmp_string);
         return;
+      }
 
       command_mode               = FALSE;
       CompletionGroup* group     = NULL;
@@ -2627,11 +2681,18 @@ isc_completion(Argument* argument)
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
     g_free(temp);
 
-    previous_command   = (command_mode) ? rows[current_item].command : current_command;
-    previous_parameter = (command_mode) ? current_parameter : rows[current_item].command;
+    previous_command   = g_strdup((command_mode) ? rows[current_item].command : current_command);
+    previous_parameter = g_strdup((command_mode) ? current_parameter : rows[current_item].command);
     previous_length    = strlen(previous_command) + ((command_mode) ? (length - current_command_length) : (strlen(previous_parameter) + 1));
     previous_id        = rows[current_item].command_id;
   }
+
+  if(current_command)
+    g_free(current_command);
+  if(input)
+    g_free(input);
+  if(tmp_string)
+    g_free(tmp_string);
 }
 
 void
