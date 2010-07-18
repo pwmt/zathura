@@ -276,6 +276,7 @@ struct
   struct
   {
     GFileMonitor* monitor;
+    GFile*        file;
   } FileMonitor;
 
   struct
@@ -570,7 +571,7 @@ init_keylist()
 void
 init_settings()
 {
-  Zathura.State.filename     = (char*) default_text;
+  Zathura.State.filename     = g_strdup((char*) default_text);
   Zathura.Global.adjust_mode = adjust_open;
 
   gtk_window_set_default_size(GTK_WINDOW(Zathura.UI.window), default_width, default_height);
@@ -607,6 +608,7 @@ init_zathura()
   Zathura.Search.draw    = FALSE;
 
   Zathura.FileMonitor.monitor = NULL;
+  Zathura.FileMonitor.file    = NULL;
 
   /* window */
   if(Zathura.UI.embed)
@@ -952,6 +954,9 @@ close_file(gboolean keep_monitor)
   {
     Page* current_page = Zathura.PDF.pages[i];
     g_object_unref(current_page->page);
+    if(current_page->label)
+      g_free(current_page->label);
+    free(current_page);
   }
 
   /* save bookmarks */
@@ -982,6 +987,12 @@ close_file(gboolean keep_monitor)
   {
     g_object_unref(Zathura.FileMonitor.monitor);
     Zathura.FileMonitor.monitor = NULL;
+
+    if(Zathura.FileMonitor.file)
+    {
+      g_object_unref(Zathura.FileMonitor.file);
+      Zathura.FileMonitor.file = NULL;
+    }
   }
 
   /* reset values */
@@ -991,10 +1002,15 @@ close_file(gboolean keep_monitor)
   gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
 
   Zathura.State.pages         = g_strdup_printf("");
-  Zathura.State.filename      = (char*) default_text;;
+  if(Zathura.State.filename)
+    g_free(Zathura.State.filename);
+  Zathura.State.filename      = g_strdup((char*) default_text);
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.document        = NULL;
+  if(Zathura.PDF.file)
+    free(Zathura.PDF.file);
+
   if(!keep_monitor)
   {
     Zathura.PDF.file            = NULL;
@@ -1131,6 +1147,8 @@ open_file(char* path, char* password)
   {
     char* home_path = getenv("HOME");
     int file_len = strlen(home_path) + strlen(path) - 1;
+    if(file)
+      free(file);
     file = malloc(file_len);
     if(!file)
       out_of_memory();
@@ -1157,6 +1175,8 @@ open_file(char* path, char* password)
   char* file_uri = g_filename_to_uri(file, NULL, &error);
   if (!file_uri)
   {
+    if(file)
+      free(file);
     char* message = g_strdup_printf("Can not open file: %s", error->message);
     notify(ERROR, message);
     g_free(message);
@@ -1206,6 +1226,7 @@ open_file(char* path, char* password)
       Zathura.FileMonitor.monitor = g_file_monitor_file(file, G_FILE_MONITOR_NONE, NULL, NULL);
       if(Zathura.FileMonitor.monitor)
         g_signal_connect(G_OBJECT(Zathura.FileMonitor.monitor), "changed", G_CALLBACK(cb_watch_file), NULL);
+      Zathura.FileMonitor.file = file;
     }
   }
 
@@ -1217,6 +1238,8 @@ open_file(char* path, char* password)
   Zathura.PDF.file            = file;
   Zathura.PDF.scale           = 100;
   Zathura.PDF.rotate          = 0;
+  if(Zathura.State.filename)
+    g_free(Zathura.State.filename);
   Zathura.State.filename      = g_markup_escape_text(file, -1);
   Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
 
@@ -1285,6 +1308,8 @@ open_file(char* path, char* password)
         Zathura.Bookmarks.number_of_bookmarks++;
       }
     }
+
+    g_strfreev(keys);
   }
 
   /* set window title */
@@ -1369,7 +1394,12 @@ read_configuration()
           cmd_set(length - 1, tokens + 1);
         else if(!strcmp(tokens[0], "map"))
           cmd_map(length - 1, tokens + 1);
+
+        g_strfreev(tokens);
       }
+
+      g_strfreev(lines);
+      g_free(content);
     }
   }
 
@@ -3656,6 +3686,8 @@ cb_destroy(GtkWidget* widget, gpointer data)
   /* inotify */
   if(Zathura.FileMonitor.monitor)
     g_object_unref(Zathura.FileMonitor.monitor);
+  if(Zathura.FileMonitor.file)
+    g_object_unref(Zathura.FileMonitor.file);
 
   g_list_free(Zathura.Global.history);
 
@@ -3668,6 +3700,9 @@ cb_destroy(GtkWidget* widget, gpointer data)
     free(sc);
     sc = ne;
   }
+
+  if(Zathura.State.filename)
+    g_free(Zathura.State.filename);
 
   gtk_main_quit();
 
@@ -4070,6 +4105,7 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
   cairo_rectangle(cairo, rectangle.x1 - offset_x, rectangle.y1 - offset_y,
       (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
   cairo_fill(cairo);
+  cairo_destroy(cairo);
   gtk_widget_queue_draw(Zathura.UI.drawing_area);
 
   /* resize selection rectangle to document page */
