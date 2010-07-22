@@ -44,6 +44,9 @@ clean:
 	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug
 
+distclean: clean
+	@rm -rf config.h
+
 ${PROJECT}-debug: ${DOBJECTS}
 	@echo CC -o ${PROJECT}-debug
 	@${CC} ${LDFLAGS} -o ${PROJECT}-debug ${DOBJECTS} ${LIBS}
