@@ -14,10 +14,10 @@ static const char FORMAT_COMMAND[]     = "<b>%s</b>";
 static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 
 /* directories and files */
-static const char ZATHURA_DIR[]   = ".config/zathura";
 static const char BOOKMARK_FILE[] = "bookmarks";
 static const char ZATHURA_RC[]    = "zathurarc";
 static const char GLOBAL_RC[]     = "/etc/zathurarc";
+char*             zathura_dir     = "~/.config/zathura";
 
 /* bookmarks */
 static const char BM_PAGE_ENTRY[]  = "page";

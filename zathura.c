@@ -351,12 +351,14 @@ gboolean open_file(char*, char*);
 void open_uri(char*);
 void out_of_memory();
 void update_status();
+void read_configuration_file(const char*);
 void read_configuration();
 void recalcRectangle(int, PopplerRectangle*);
 void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
 void switch_view(GtkWidget*);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
+char* fix_path(const char*);
 
 Completion* completion_init();
 CompletionGroup* completion_group_create(char*);
@@ -512,17 +514,28 @@ init_look()
     gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
 }
 
+char*
+fix_path(const char* path)
+{
+  if (!path)
+    return NULL;
+
+  if (path[0] == '~')
+    return g_build_filename(g_get_home_dir(), path + 1, NULL);
+  else
+    return g_strdup(path);
+}
+
 void
 init_directories()
 {
   /* create zathura directory */
-  gchar *base_directory = g_build_filename(g_get_home_dir(), ZATHURA_DIR, NULL);
+  gchar *base_directory = fix_path(zathura_dir);
   g_mkdir_with_parents(base_directory,  0771);
-  g_free(base_directory);
 
   /* create or open existing bookmark file */
   Zathura.Bookmarks.data = g_key_file_new();
-  char* bookmarks = g_strdup_printf("%s/%s/%s", g_get_home_dir(), ZATHURA_DIR, BOOKMARK_FILE);
+  char* bookmarks = g_build_filename(base_directory, BOOKMARK_FILE, NULL);
 
   if(!g_file_test(bookmarks, G_FILE_TEST_IS_REGULAR))
   {
@@ -541,6 +554,7 @@ init_directories()
 
   Zathura.Bookmarks.file = g_strdup(bookmarks);
   g_free(bookmarks);
+  g_free(base_directory);
 }
 
 void
@@ -1405,10 +1419,12 @@ read_configuration_file(const char* rcfile)
 void
 read_configuration()
 {
-  char* zathurarc = g_strdup_printf("%s/%s/%s", g_get_home_dir(), ZATHURA_DIR, ZATHURA_RC);
+  char* configpath = fix_path(zathura_dir);
+  char* zathurarc = g_build_filename(configpath, ZATHURA_RC, NULL);
   read_configuration_file(GLOBAL_RC);
   read_configuration_file(zathurarc);
   g_free(zathurarc);
+  g_free(configpath);
 }
 
 void
@@ -4288,18 +4304,25 @@ int main(int argc, char* argv[])
   /* embed */
   Zathura.UI.embed = 0;
 
-  /* parse arguments */
-  int i;
-  for(i = 1; i < argc && argv[i][0] == '-' && argv[i][1] != '\0'; i++)
+  static GOptionEntry entries[] =
   {
-    switch(argv[i][1])
-    {
-      case 'e':
-        if(++i < argc)
-          Zathura.UI.embed = atoi(argv[i]);
-        break;
-    }
+    { "reparent",   'e', 0                     , G_OPTION_ARG_INT,    &Zathura.UI.embed, "Reparents to window specified by xid", "xid" },
+    { "config-dir", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &zathura_dir,      "Path to the config directory",         "path " },
+    { NULL }
+  };
+
+  GOptionContext* context = g_option_context_new(" [file] [password]");
+  g_option_context_add_main_entries(context, entries, NULL);
+
+  GError* error = NULL;
+  if(!g_option_context_parse(context, &argc, &argv, &error))
+  {
+    printf("Error parsing command line arguments: %s\n", error->message);
+    g_option_context_free(context);
+    g_error_free(error);
+    return 1;
   }
+  g_option_context_free(context);
 
   g_thread_init(NULL);
   gdk_threads_init();
@@ -4313,8 +4336,8 @@ int main(int argc, char* argv[])
   init_look();
   init_directories();
 
-  if(argc >= i+1)
-    open_file(argv[i], (argc == i+2) ? argv[i+1] : NULL);
+  if(argc > 1)
+    open_file(argv[1], (argc == 3) ? argv[2] : NULL);
 
   switch_view(Zathura.UI.document);
   update_status();
