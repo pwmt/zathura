@@ -1366,44 +1366,48 @@ update_status()
 }
 
 void
+read_configuration_file(const char* rcfile)
+{
+  if(!rcfile)
+    return;
+
+  if(!g_file_test(rcfile, G_FILE_TEST_IS_REGULAR))
+    return;
+
+  char* content = NULL;
+  if(g_file_get_contents(rcfile, &content, NULL, NULL))
+  {
+    gchar **lines = g_strsplit(content, "\n", -1);
+    int     n     = g_strv_length(lines) - 1;
+
+    int i;
+    for(i = 0; i <= n; i++)
+    {
+      if(!strlen(lines[i]))
+        continue;
+
+      gchar **tokens = g_strsplit(lines[i], " ", -1);
+      int     length = g_strv_length(tokens);
+
+      if(!strcmp(tokens[0], "set"))
+        cmd_set(length - 1, tokens + 1);
+      else if(!strcmp(tokens[0], "map"))
+        cmd_map(length - 1, tokens + 1);
+
+      g_strfreev(tokens);
+    }
+
+    g_strfreev(lines);
+    g_free(content);
+  }
+}
+
+void
 read_configuration()
 {
   char* zathurarc = g_strdup_printf("%s/%s/%s", g_get_home_dir(), ZATHURA_DIR, ZATHURA_RC);
-
-  if(!zathurarc)
-    return;
-
-  if(g_file_test(zathurarc, G_FILE_TEST_IS_REGULAR))
-  {
-    char* content = NULL;
-
-    if(g_file_get_contents(zathurarc, &content, NULL, NULL))
-    {
-      gchar **lines = g_strsplit(content, "\n", -1);
-      int     n     = g_strv_length(lines) - 1;
-
-      int i;
-      for(i = 0; i <= n; i++)
-      {
-        if(!strlen(lines[i]))
-          continue;
-
-        gchar **tokens = g_strsplit(lines[i], " ", -1);
-        int     length = g_strv_length(tokens);
-
-        if(!strcmp(tokens[0], "set"))
-          cmd_set(length - 1, tokens + 1);
-        else if(!strcmp(tokens[0], "map"))
-          cmd_map(length - 1, tokens + 1);
-
-        g_strfreev(tokens);
-      }
-
-      g_strfreev(lines);
-      g_free(content);
-    }
-  }
-
+  read_configuration_file(GLOBAL_RC);
+  read_configuration_file(zathurarc);
   g_free(zathurarc);
 }
 
