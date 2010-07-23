@@ -63,6 +63,23 @@ int adjust_open          = ADJUST_BESTFIT;
 #define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 #define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
 
+/* define additional modes */
+#define INSERT     (1 << 4)
+#define VISUAL     (1 << 5)
+#define EMACS_CX   (1 << 6)
+
+/* mode names */
+ModeName mode_names[] = {
+  /* default mode names */
+  {"all",        ALL,         ""},
+  {"fullscreen", FULLSCREEN,  ""},
+  {"index",      INDEX,       ""},
+  {"normal",     NORMAL,      ""},
+  /* additional mode names */
+  {"insert",     INSERT,      "-- INSERT --"},
+  {"visual",     VISUAL,      "-- VISUAL --"}
+};
+
 /* shortcuts */
 Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,                argument */
@@ -287,16 +304,6 @@ ArgumentName argument_names[] = {
   {"up",          UP},
   {"visual",      VISUAL},
   {"width",       ADJUST_WIDTH},
-};
-
-/* mode names */
-ModeName mode_names[] = {
-  {"all",        ALL},
-  {"fullscreen", FULLSCREEN},
-  {"index",      INDEX},
-  {"insert",     INSERT},
-  {"normal",     NORMAL},
-  {"visual",     VISUAL},
 };
 
 /* special keys */

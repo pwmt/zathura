@@ -33,9 +33,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
 #define ALL        (1 << 0)
 #define FULLSCREEN (1 << 1)
 #define INDEX      (1 << 2)
-#define INSERT     (1 << 3)
-#define NORMAL     (1 << 4)
-#define VISUAL     (1 << 5)
+#define NORMAL     (1 << 3)
 
 /* typedefs */
 struct CElement
@@ -94,7 +92,8 @@ typedef struct
 typedef struct
 {
   char* name;
-  int mode;
+  int   mode;
+  char* display;
 } ModeName;
 
 typedef struct
@@ -895,26 +894,29 @@ draw(int page_id)
 void
 change_mode(int mode)
 {
-  char* mode_text;
+  char* mode_text = 0;
+  for(unsigned int i = 0; i != LENGTH(mode_names); ++i)
+    if(mode_names[i].mode == mode)
+    {
+      mode_text = mode_names[i].display;
+      break;
+    }
 
-  switch(mode)
+  if(!mode_text)
   {
-    case INSERT:
-      mode_text = "-- INSERT --";
-      break;
-    case VISUAL:
-      mode_text = "-- VISUAL --";
-      break;
-    case ADD_MARKER:
-      mode_text = "";
-      break;
-    case EVAL_MARKER:
-      mode_text = "";
-      break;
-    default:
-      mode_text = "";
-      mode      = NORMAL;
-      break;
+    switch(mode)
+    {
+      case ADD_MARKER:
+        mode_text = "";
+        break;
+      case EVAL_MARKER:
+        mode_text = "";
+        break;
+      default:
+        mode_text = "";
+        mode      = NORMAL;
+        break;
+    }
   }
 
   Zathura.Global.mode = mode;
