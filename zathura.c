@@ -1341,7 +1341,7 @@ open_file(char* path, char* password)
 
 void open_uri(char* uri)
 {
-  char* escaped_uri = g_strescape(uri, NULL);
+  char* escaped_uri = g_shell_quote(uri);
   char* uri_cmd = g_strdup_printf(uri_command, escaped_uri);
   system(uri_cmd);
   g_free(uri_cmd);
@@ -3301,13 +3301,16 @@ cmd_print(int argc, char** argv)
     addit = g_string_append(addit, argv[i]);
   }
 
-  char* escaped_filename = g_strescape(Zathura.PDF.file, NULL);
-  char* command = g_strdup_printf(print_command, printer, sites, addit->str, escaped_filename);
+  char* escaped_filename = g_shell_quote(Zathura.PDF.file);
+  char* escaped_addit    = g_shell_quote(addit->str);
+  char* command          = g_strdup_printf(print_command, printer, sites, escaped_addit, escaped_filename);
   system(command);
 
   g_free(sites);
   g_free(escaped_filename);
+  g_free(escaped_addit);
   g_free(command);
+  g_string_free(addit, TRUE);
 
   return TRUE;
 }
