@@ -2370,6 +2370,11 @@ isc_abort(Argument* argument)
 
   if(!Zathura.Global.show_inputbar)
     gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
+
+  /* replace default inputbar handler */
+  g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
+  Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_activate), NULL);
+  sc_abort(NULL);
 }
 
 void
@@ -4025,10 +4030,6 @@ cb_inputbar_form_activate(GtkEntry* entry, gpointer data)
   }
 
   poppler_page_free_link_mapping(link_list);
-
-  /* replace default inputbar handler */
-  g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
-  Zathura.Handler.inputbar_activate = g_signal_connect(G_OBJECT(Zathura.UI.inputbar), "activate", G_CALLBACK(cb_inputbar_activate), NULL);
 
   /* reset all */
   set_page(new_page_id);
