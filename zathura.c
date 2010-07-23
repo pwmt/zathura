@@ -2365,6 +2365,7 @@ isc_abort(Argument* argument)
   isc_completion(&arg);
 
   notify(DEFAULT, "");
+  change_mode(NORMAL);
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
 
   if(!Zathura.Global.show_inputbar)
