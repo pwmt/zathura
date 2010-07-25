@@ -1500,8 +1500,12 @@ createCompletionRow(GtkBox* results, char* command, char* description, gboolean 
   gtk_label_set_use_markup(show_command,     TRUE);
   gtk_label_set_use_markup(show_description, TRUE);
 
-  gtk_label_set_markup(show_command,     g_markup_printf_escaped(FORMAT_COMMAND,     command ? command : ""));
-  gtk_label_set_markup(show_description, g_markup_printf_escaped(FORMAT_DESCRIPTION, description ? description : ""));
+  gchar* c = g_markup_printf_escaped(FORMAT_COMMAND,     command ? command : "");
+  gchar* d = g_markup_printf_escaped(FORMAT_DESCRIPTION, description ? description : "");
+  gtk_label_set_markup(show_command,     c);
+  gtk_label_set_markup(show_description, d);
+  g_free(c);
+  g_free(d);
 
   if(group)
   {
@@ -1607,7 +1611,7 @@ completion_group_create(char* name)
   if(!group)
     out_of_memory();
 
-  group->value    = name;
+  group->value    = name ? g_strdup(name) : NULL;
   group->elements = NULL;
   group->next     = NULL;
 
@@ -1639,14 +1643,18 @@ void completion_free(Completion* completion)
     while(element)
     {
       CompletionElement* ne = element->next;
+      g_free(element->value);
+      g_free(element->description);
       free(element);
       element = ne;
     }
 
     CompletionGroup *ng = group->next;
+    g_free(group->value);
     free(group);
     group = ng;
   }
+  free(completion);
 }
 
 void completion_group_add_element(CompletionGroup* group, char* name, char* description)
@@ -1660,8 +1668,8 @@ void completion_group_add_element(CompletionGroup* group, char* name, char* desc
   if(!new_element)
     out_of_memory();
 
-  new_element->value       = name;
-  new_element->description = description;
+  new_element->value       = name ? g_strdup(name) : NULL;
+  new_element->description = description ?  g_strdup(description) : NULL;
   new_element->next        = NULL;
 
   if(el)
@@ -2481,7 +2489,14 @@ isc_completion(Argument* argument)
     results = NULL;
 
     if(rows)
+    {
+      for(int i = 0; i != n_items; ++i)
+      {
+        g_free(rows[i].command);
+        g_free(rows[i].description);
+      }
       free(rows);
+    }
 
     rows         = NULL;
     current_item = 0;
@@ -2591,7 +2606,7 @@ isc_completion(Argument* argument)
             if(group->value && !group_elements)
             {
               rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
-              rows[n_items].command     = group->value;
+              rows[n_items].command     = g_strdup(group->value);
               rows[n_items].description = NULL;
               rows[n_items].command_id  = -1;
               rows[n_items].is_group    = TRUE;
@@ -2599,8 +2614,8 @@ isc_completion(Argument* argument)
             }
 
             rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
-            rows[n_items].command     = element->value;
-            rows[n_items].description = element->description;
+            rows[n_items].command     = g_strdup(element->value);
+            rows[n_items].description = element->description ? g_strdup(element->description) : NULL;
             rows[n_items].command_id  = previous_id;
             rows[n_items].is_group    = FALSE;
             rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, element->value, element->description, FALSE));
@@ -2635,8 +2650,8 @@ isc_completion(Argument* argument)
             ((current_command_length <= abbr_length) && !strncmp(current_command, commands[i].abbr,    current_command_length))
           )
         {
-          rows[n_items].command     = commands[i].command;
-          rows[n_items].description = commands[i].description;
+          rows[n_items].command     = g_strdup(commands[i].command);
+          rows[n_items].description = g_strdup(commands[i].description);
           rows[n_items].command_id  = i;
           rows[n_items].is_group    = FALSE;
           rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, commands[i].command, commands[i].description, FALSE));
@@ -2974,6 +2989,7 @@ cmd_export(int argc, char** argv)
 
         cairo_surface_write_to_png(image, file);
 
+        g_free(filename);
         g_free(file);
       }
     }
@@ -3502,40 +3518,60 @@ cc_open(char* input)
 
   completion_add_group(completion, group);
 
-  /* read dir */
-  char* path        = "/";
-  char* file        = "";
-  int   file_length = 0;
-
   /* ~ */
-  if(input[0] == '~')
+  if(input && input[0] == '~')
   {
     char *file = g_strdup_printf(":open %s/%s", getenv("HOME"), input + 1);
     gtk_entry_set_text(Zathura.UI.inputbar, file);
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
+    g_free(file);
     return NULL;
   }
+
+  /* read dir */
+  char* path        = g_strdup("/");
+  char* file        = g_strdup("");
+  int   file_length = 0;
 
   /* parse input string */
   if(input && strlen(input) > 0)
   {
-    char* path_temp = dirname(strdup(input));
-    char* file_temp = basename(strdup(input));
+    char* dinput = g_strdup(input);
+    char* binput = g_strdup(input);
+    char* path_temp = dirname(dinput);
+    char* file_temp = basename(binput);
     char  last_char = input[strlen(input) - 1];
 
     if( !strcmp(path_temp, "/") && !strcmp(file_temp, "/") )
-      file = "";
+    {
+      g_free(file);
+      file = g_strdup("");
+    }
     else if( !strcmp(path_temp, "/") && strcmp(file_temp, "/") && last_char != '/')
-      file = file_temp;
+    {
+      g_free(file);
+      file = g_strdup(file_temp);
+    }
     else if( !strcmp(path_temp, "/") && strcmp(file_temp, "/") && last_char == '/')
+    {
+      g_free(path);
       path = g_strdup_printf("/%s/", file_temp);
+    }
     else if(last_char == '/')
-      path = input;
+    {
+      g_free(path);
+      path = g_strdup(input);
+    }
     else
     {
+      g_free(path);
+      g_free(file);
       path = g_strdup_printf("%s/", path_temp);
-      file = file_temp;
+      file = g_strdup(file_temp);
     }
+
+    g_free(dinput);
+    g_free(binput);
   }
 
   file_length = strlen(file);
@@ -3543,7 +3579,11 @@ cc_open(char* input)
   /* open directory */
   GDir* dir = g_dir_open(path, 0, NULL);
   if(!dir)
+  {
+    g_free(path);
+    g_free(file);
     return NULL;
+  }
 
   /* create element list */
   char* name = NULL;
@@ -3564,10 +3604,14 @@ cc_open(char* input)
         g_free(subdir);
       }
       completion_group_add_element(group, d, NULL);
+      g_free(d);
     }
+    g_free(d_name);
   }
 
   g_dir_close(dir);
+  g_free(file);
+  g_free(path);
 
   return completion;
 }
@@ -3614,7 +3658,7 @@ cc_print(char* input)
       if( (input_length <= line_length) ||
           (!strncmp(input, current_line, input_length)) )
       {
-        completion_group_add_element(group, g_strdup(current_line), NULL);
+        completion_group_add_element(group, current_line, NULL);
       }
 
       free(current_line);
@@ -3795,6 +3839,7 @@ cb_destroy(GtkWidget* widget, gpointer data)
 
   if(Zathura.State.filename)
     g_free(Zathura.State.filename);
+  g_free(Zathura.State.pages);
 
   gtk_main_quit();
 
