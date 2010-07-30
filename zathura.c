@@ -1409,8 +1409,6 @@ read_configuration_file(const char* rcfile)
         cmd_set(length - 1, tokens + 1);
       else if(!strcmp(tokens[0], "map"))
         cmd_map(length - 1, tokens + 1);
-
-      g_strfreev(tokens);
     }
 
     g_strfreev(lines);
