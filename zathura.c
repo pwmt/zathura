@@ -3324,7 +3324,7 @@ cmd_print(int argc, char** argv)
   }
 
   char* escaped_filename = g_shell_quote(Zathura.PDF.file);
-  char* escaped_addit    = g_shell_quote(addit->str);
+  char* escaped_addit    = addit->len ? g_shell_quote(addit->str) : g_strdup("");
   char* command          = g_strdup_printf(print_command, printer, sites, escaped_addit, escaped_filename);
   system(command);
 
