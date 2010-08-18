@@ -69,7 +69,7 @@ dist: clean
 	@rm -rf ${PROJECT}-${VERSION}
 
 install: all
-	@echo installing executeable file
+	@echo installing executable file
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
 	@cp -f ${PROJECT} ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin/${PROJECT}
@@ -79,7 +79,7 @@ install: all
 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 
 uninstall:
-	@echo removing executeable file
+	@echo removing executable file
 	@rm -f ${DESTDIR}${MANPREFIX}/bin/${PROJECT}
 	@echo removing manual page
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
