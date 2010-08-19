@@ -209,7 +209,7 @@ SpecialCommand special_commands[] = {
 /* settings */
 Setting settings[] = {
   /* name,                   variable,                           type,  render,  re-init, description */
-  {"adjust_open",            &(adjust_open),                     'i',   FALSE,   FALSE,   "Command to open URIs"},
+  {"adjust_open",            &(adjust_open),                     'i',   FALSE,   FALSE,   "Adjust mode"},
   {"browser",                &(uri_command),                     's',   FALSE,   FALSE,   "Command to open URIs"},
   {"completion_bgcolor",     &(completion_bgcolor),              's',   FALSE,   TRUE,    "Completion background color"},
   {"completion_fgcolor",     &(completion_fgcolor),              's',   FALSE,   TRUE,    "Completion foreground color"},
@@ -242,7 +242,7 @@ Setting settings[] = {
   {"show_inputbar",          &(Zathura.Global.show_inputbar),    'b',   FALSE,   TRUE,    "Show inputbar"},
   {"search_highlight",       &(search_highlight),                's',   FALSE,   TRUE,    "Highlighted results"},
   {"select_text",            &(select_text),                     's',   FALSE,   TRUE,    "Rectangle of the selected text"},
-  {"smooth_scrolling",       &(smooth_scrolling),                'f',   FALSE,   TRUE,    "Show scrollbars"},
+  {"smooth_scrolling",       &(smooth_scrolling),                'f',   FALSE,   TRUE,    "Smooth scrolling"},
   {"statusbar_bgcolor",      &(statusbar_bgcolor),               's',   FALSE,   TRUE,    "Statusbar background color"},
   {"statusbar_fgcolor",      &(statusbar_fgcolor),               's',   FALSE,   TRUE,    "Statusbar foreground color"},
   {"transparency",           &(transparency),                    'f',   FALSE,   FALSE,   "Transparency of rectangles"},
