@@ -1076,23 +1076,22 @@ close_file(gboolean keep_monitor)
   }
 
   /* reset values */
-  free(Zathura.PDF.pages);
+  g_free(Zathura.PDF.pages);
   g_object_unref(Zathura.PDF.document);
   g_free(Zathura.State.pages);
   gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
 
   Zathura.State.pages         = g_strdup_printf("");
-  if(Zathura.State.filename)
-    g_free(Zathura.State.filename);
+  g_free(Zathura.State.filename);
   Zathura.State.filename      = g_strdup((char*) default_text);
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.document        = NULL;
-  if(Zathura.PDF.file)
-    free(Zathura.PDF.file);
 
   if(!keep_monitor)
   {
+    g_free(Zathura.PDF.file);
+    g_free(Zathura.PDF.password);
     Zathura.PDF.file            = NULL;
     Zathura.PDF.password        = NULL;
     Zathura.PDF.page_number     = 0;
@@ -1216,7 +1215,7 @@ open_file(char* path, char* password)
 #endif
 
   /* get filename */
-  char* file = (char*) calloc(sizeof(char), pm);
+  char* file = (char*) g_malloc0(sizeof(char) * pm);
   if(!file || !realpath(path, file))
   {
     notify(ERROR, "File does not exist");
@@ -1228,14 +1227,8 @@ open_file(char* path, char* password)
   if(path[0] == '~')
   {
     gchar* home_path = get_home_dir();
-    int file_len = strlen(home_path) + strlen(path) - 1;
-    if(file)
-      free(file);
-    file = malloc(file_len);
-    if(!file)
-      out_of_memory();
-
-    snprintf(file, file_len, "%s%s", home_path, path + 1);
+    g_free(file);
+    file = g_build_filename(home_path, path + 1, NULL);
     g_free(home_path);
   }
 
@@ -1243,7 +1236,7 @@ open_file(char* path, char* password)
   if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
   {
     notify(ERROR, "File does not exist");
-    free(file);
+    g_free(file);
     g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
     return FALSE;
   }
@@ -1259,7 +1252,7 @@ open_file(char* path, char* password)
   if (!file_uri)
   {
     if(file)
-      free(file);
+      g_free(file);
     char* message = g_strdup_printf("Can not open file: %s", error->message);
     notify(ERROR, message);
     g_free(message);
@@ -1297,7 +1290,8 @@ open_file(char* path, char* password)
   }
 
   /* save password */
-  Zathura.PDF.password = password;
+  g_free(Zathura.PDF.password);
+  Zathura.PDF.password = password ? g_strdup(password) : NULL;
 
   /* inotify */
   if(!Zathura.FileMonitor.monitor)
@@ -1318,13 +1312,14 @@ open_file(char* path, char* password)
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   Zathura.PDF.number_of_pages = poppler_document_get_n_pages(Zathura.PDF.document);
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+  g_free(Zathura.PDF.file);
   Zathura.PDF.file            = file;
   Zathura.PDF.scale           = 100;
   Zathura.PDF.rotate          = 0;
   if(Zathura.State.filename)
     g_free(Zathura.State.filename);
   Zathura.State.filename      = g_markup_escape_text(file, -1);
-  Zathura.PDF.pages           = malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
+  Zathura.PDF.pages           = g_malloc(Zathura.PDF.number_of_pages * sizeof(Page*));
 
   if(!Zathura.PDF.pages)
     out_of_memory();
@@ -3959,9 +3954,14 @@ cb_destroy(GtkWidget* widget, gpointer data)
     sc = ne;
   }
 
-  if(Zathura.State.filename)
-    g_free(Zathura.State.filename);
+  g_free(Zathura.State.filename);
   g_free(Zathura.State.pages);
+
+  g_free(Zathura.Config.config_dir);
+  g_free(Zathura.Config.data_dir);
+  if (Zathura.StdinSupport.file)
+    g_unlink(Zathura.StdinSupport.file);
+  g_free(Zathura.StdinSupport.file);
 
   gtk_main_quit();
 
@@ -4546,12 +4546,6 @@ int main(int argc, char* argv[])
   gdk_threads_enter();
   gtk_main();
   gdk_threads_leave();
-
-  g_free(Zathura.Config.config_dir);
-  g_free(Zathura.Config.data_dir);
-  if (Zathura.StdinSupport.file)
-    g_unlink(Zathura.StdinSupport.file);
-  g_free(Zathura.StdinSupport.file);
 
   return 0;
 }
