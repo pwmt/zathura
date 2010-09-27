@@ -367,6 +367,7 @@ void switch_view(GtkWidget*);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 gchar* fix_path(const gchar*);
 gchar* path_from_env(const gchar*);
+gchar* get_home_dir();
 
 Completion* completion_init();
 CompletionGroup* completion_group_create(char*);
@@ -529,7 +530,12 @@ fix_path(const gchar* path)
     return NULL;
 
   if (path[0] == '~')
-    return g_build_filename(g_get_home_dir(), path + 1, NULL);
+  {
+    gchar* home_path = get_home_dir();
+    gchar* res = g_build_filename(home_path, path + 1, NULL);
+    g_free(home_path);
+    return res;
+  }
   else
     return g_strdup(path);
 }
@@ -543,6 +549,12 @@ gchar* path_from_env(const gchar* var)
   gchar* res = g_build_filename(env, "zathura", NULL);
   g_free(env);
   return res;
+}
+
+gchar* get_home_dir()
+{
+  const gchar* homedir = g_getenv("HOME");
+  return g_strdup(homedir ? homedir : g_get_home_dir());
 }
 
 void
@@ -1206,7 +1218,7 @@ open_file(char* path, char* password)
 
   if(path[0] == '~')
   {
-    char* home_path = getenv("HOME");
+    gchar* home_path = get_home_dir();
     int file_len = strlen(home_path) + strlen(path) - 1;
     if(file)
       free(file);
@@ -1214,7 +1226,8 @@ open_file(char* path, char* password)
     if(!file)
       out_of_memory();
 
-    snprintf(file, file_len, "%s%s", getenv("HOME"), path + 1);
+    snprintf(file, file_len, "%s%s", home_path, path + 1);
+    g_free(home_path);
   }
 
   /* check if file exists */
@@ -3017,12 +3030,14 @@ cmd_export(int argc, char** argv)
 
         if(argv[1][0] == '~')
         {
+          gchar* home_path = get_home_dir();
           file = malloc(((int) strlen(filename) + (int) strlen(argv[1])
-            + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+            + (int) strlen(home_path) - 1) * sizeof(char));
           if(!file)
             out_of_memory();
 
-          file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, filename);
+          file = g_strdup_printf("%s%s%s", home_path, argv[1] + 1, filename);
+          g_free(home_path);
         }
         else
           file = g_strdup_printf("%s%s", argv[1], filename);
@@ -3056,12 +3071,14 @@ cmd_export(int argc, char** argv)
 
       if(argv[1][0] == '~')
       {
+        gchar* home_path = get_home_dir();
         file = malloc(((int) strlen(attachment->name) + (int) strlen(argv[1])
-          + (int) strlen(getenv("HOME")) - 1) * sizeof(char));
+          + (int) strlen(home_path) - 1) * sizeof(char));
         if(!file)
           out_of_memory();
 
-        file = g_strdup_printf("%s%s%s", getenv("HOME"), argv[1] + 1, attachment->name);
+        file = g_strdup_printf("%s%s%s", home_path, argv[1] + 1, attachment->name);
+        g_free(home_path);
       }
       else
         file = g_strdup_printf("%s%s", argv[1], attachment->name);
@@ -3561,7 +3578,9 @@ cc_open(char* input)
   /* ~ */
   if(input && input[0] == '~')
   {
-    char *file = g_strdup_printf(":open %s/%s", getenv("HOME"), input + 1);
+    gchar* home_path = get_home_dir();
+    char *file = g_strdup_printf(":open %s/%s", home_path, input + 1);
+    g_free(home_path);
     gtk_entry_set_text(Zathura.UI.inputbar, file);
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
     g_free(file);
