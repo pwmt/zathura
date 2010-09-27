@@ -328,11 +328,19 @@ struct
     guint inputbar_key_press_event;
   } Handler;
 
+  struct
+  {
+    gchar* config_dir;
+    gchar* data_dir;
+  } Config;
+
 } Zathura;
+
 
 /* function declarations */
 void init_look();
 void init_directories();
+void init_bookmarks();
 void init_keylist();
 void init_settings();
 void init_zathura();
@@ -357,7 +365,8 @@ void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
 void switch_view(GtkWidget*);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
-char* fix_path(const char*);
+gchar* fix_path(const gchar*);
+gchar* path_from_env(const gchar*);
 
 Completion* completion_init();
 CompletionGroup* completion_group_create(char*);
@@ -513,8 +522,8 @@ init_look()
     gtk_widget_hide(GTK_WIDGET(Zathura.UI.statusbar));
 }
 
-char*
-fix_path(const char* path)
+gchar*
+fix_path(const gchar* path)
 {
   if (!path)
     return NULL;
@@ -525,16 +534,53 @@ fix_path(const char* path)
     return g_strdup(path);
 }
 
+gchar* path_from_env(const gchar* var)
+{
+  gchar* env = fix_path(g_getenv(var));
+  if (!env)
+    return NULL;
+
+  gchar* res = g_build_filename(env, "zathura", NULL);
+  g_free(env);
+  return res;
+}
+
 void
 init_directories()
 {
-  /* create zathura directory */
-  gchar *base_directory = fix_path(zathura_dir);
-  g_mkdir_with_parents(base_directory,  0771);
+  /* setup directories */
+  if (!Zathura.Config.config_dir)
+  {
+#ifndef ZATHURA_NO_XDG
+    gchar* env = path_from_env("XDG_CONFIG_HOME");
+    if (env)
+      Zathura.Config.config_dir = env;
+    else
+#endif
+      Zathura.Config.config_dir = fix_path(CONFIG_DIR);
+  }
+  if (!Zathura.Config.data_dir)
+  {
+#ifndef ZATHURA_NO_XDG
+    gchar* env = path_from_env("XDG_DATA_HOME");
+    if (env)
+      Zathura.Config.data_dir = env;
+    else
+#endif
+      Zathura.Config.data_dir = fix_path(DATA_DIR);
+  }
 
+  /* create zathura (config/data) directory */
+  g_mkdir_with_parents(Zathura.Config.config_dir, 0771);
+  g_mkdir_with_parents(Zathura.Config.data_dir,   0771);
+}
+
+void
+init_bookmarks()
+{
   /* create or open existing bookmark file */
   Zathura.Bookmarks.data = g_key_file_new();
-  char* bookmarks = g_build_filename(base_directory, BOOKMARK_FILE, NULL);
+  gchar* bookmarks = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
 
   if(!g_file_test(bookmarks, G_FILE_TEST_IS_REGULAR))
   {
@@ -551,9 +597,7 @@ init_directories()
     g_free(message);
   }
 
-  Zathura.Bookmarks.file = g_strdup(bookmarks);
-  g_free(bookmarks);
-  g_free(base_directory);
+  Zathura.Bookmarks.file = bookmarks;
 }
 
 void
@@ -1419,12 +1463,10 @@ read_configuration_file(const char* rcfile)
 void
 read_configuration()
 {
-  char* configpath = fix_path(zathura_dir);
-  char* zathurarc = g_build_filename(configpath, ZATHURA_RC, NULL);
+  char* zathurarc = g_build_filename(Zathura.Config.config_dir, ZATHURA_RC, NULL);
   read_configuration_file(GLOBAL_RC);
   read_configuration_file(zathurarc);
   g_free(zathurarc);
-  g_free(configpath);
 }
 
 void
@@ -4354,10 +4396,16 @@ int main(int argc, char* argv[])
   /* embed */
   Zathura.UI.embed = 0;
 
-  static GOptionEntry entries[] =
+  Zathura.Config.config_dir = 0;
+  Zathura.Config.data_dir = 0;
+
+  char* config_dir = 0;
+  char* data_dir = 0;
+  GOptionEntry entries[] =
   {
     { "reparent",   'e', 0                     , G_OPTION_ARG_INT,    &Zathura.UI.embed, "Reparents to window specified by xid", "xid" },
-    { "config-dir", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &zathura_dir,      "Path to the config directory",         "path " },
+    { "config-dir", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &config_dir,       "Path to the config directory",         "path" },
+    { "data-dir",   'd', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &data_dir,         "Path to the data directory",           "path" },
     { NULL }
   };
 
@@ -4374,17 +4422,23 @@ int main(int argc, char* argv[])
   }
   g_option_context_free(context);
 
+  if (config_dir)
+    Zathura.Config.config_dir = g_strdup(config_dir);
+  if (data_dir)
+    Zathura.Config.data_dir = g_strdup(data_dir);
+
   g_thread_init(NULL);
   gdk_threads_init();
 
   gtk_init(&argc, &argv);
 
   init_zathura();
+  init_directories();
   init_keylist();
   read_configuration();
   init_settings();
+  init_bookmarks();
   init_look();
-  init_directories();
 
   if(argc > 1)
     open_file(argv[1], (argc == 3) ? argv[2] : NULL);
@@ -4404,6 +4458,9 @@ int main(int argc, char* argv[])
   gdk_threads_enter();
   gtk_main();
   gdk_threads_leave();
+
+  g_free(Zathura.Config.config_dir);
+  g_free(Zathura.Config.data_dir);
 
   return 0;
 }
