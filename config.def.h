@@ -13,11 +13,18 @@ int   n_completion_items = 15;
 static const char FORMAT_COMMAND[]     = "<b>%s</b>";
 static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 
+/* Use XDG directory specification if no config and data directory are given on
+ * the command line. Uncomment the next line if you just want to use CONFIG_DIR
+ * and DATA_DIR instead (these will be the default locations if the XDG_*
+ * environment variebles are not set anyway) */
+/* #define ZATHURA_NO_XDG */
+
 /* directories and files */
 static const char BOOKMARK_FILE[] = "bookmarks";
 static const char ZATHURA_RC[]    = "zathurarc";
 static const char GLOBAL_RC[]     = "/etc/zathurarc";
-char*             zathura_dir     = "~/.config/zathura";
+static const char CONFIG_DIR[]    = "~/.config/zathura";
+static const char DATA_DIR[]      = "~/.local/share/zathura";
 
 /* bookmarks */
 static const char BM_PAGE_ENTRY[]  = "page";
