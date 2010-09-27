@@ -13,6 +13,7 @@
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
 
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -337,7 +338,6 @@ struct
   struct
   {
     gchar* file;
-    gint   handle;
   } StdinSupport;
 } Zathura;
 
@@ -686,7 +686,6 @@ init_zathura()
   Zathura.FileMonitor.file    = NULL;
 
   Zathura.StdinSupport.file   = NULL;
-  Zathura.StdinSupport.handle = -1;
 
   /* window */
   if(Zathura.UI.embed)
@@ -1433,6 +1432,7 @@ open_stdin(gchar* password)
       gchar* message = g_strdup_printf("Can not write to temporary file: %s", file);
       notify(ERROR, message);
       g_free(message);
+      g_unlink(file);
       g_free(file);
       close(handle);
       return FALSE;
@@ -1444,17 +1444,17 @@ open_stdin(gchar* password)
     gchar* message = g_strdup_printf("Can not read from stdin");
     notify(ERROR, message);
     g_free(message);
+    g_unlink(file);
     g_free(file);
     close(handle);
     return FALSE;
   }
 
   /* update data */
+  if (Zathura.StdinSupport.file)
+    g_unlink(Zathura.StdinSupport.file);
   g_free(Zathura.StdinSupport.file);
   Zathura.StdinSupport.file = file;
-  if (Zathura.StdinSupport.handle != -1)
-    close(Zathura.StdinSupport.handle);
-  Zathura.StdinSupport.handle = handle;
 
   return open_file(Zathura.StdinSupport.file, password);
 }
@@ -4547,9 +4547,9 @@ int main(int argc, char* argv[])
 
   g_free(Zathura.Config.config_dir);
   g_free(Zathura.Config.data_dir);
+  if (Zathura.StdinSupport.file)
+    g_unlink(Zathura.StdinSupport.file);
   g_free(Zathura.StdinSupport.file);
-  if (Zathura.StdinSupport.handle != -1)
-    close(Zathura.StdinSupport.handle);
 
   return 0;
 }
