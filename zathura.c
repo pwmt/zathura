@@ -3415,7 +3415,9 @@ cmd_open(int argc, char** argv)
     filepath = g_string_append(filepath, argv[i]);
   }
 
-  return open_file(filepath->str, NULL);
+  gboolean res = open_file(filepath->str, NULL);
+  g_string_free(filepath, TRUE);
+  return res;
 }
 
 gboolean
