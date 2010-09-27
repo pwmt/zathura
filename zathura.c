@@ -334,6 +334,11 @@ struct
     gchar* data_dir;
   } Config;
 
+  struct
+  {
+    gchar* file;
+    gint   handle;
+  } StdinSupport;
 } Zathura;
 
 
@@ -353,8 +358,9 @@ void enter_password();
 void highlight_result(int, PopplerRectangle*);
 void draw(int);
 void eval_marker(int);
-void notify(int, char*);
+void notify(int, const char*);
 gboolean open_file(char*, char*);
+gboolean open_stdin(gchar*);
 void open_uri(char*);
 void out_of_memory();
 void update_status();
@@ -678,6 +684,9 @@ init_zathura()
 
   Zathura.FileMonitor.monitor = NULL;
   Zathura.FileMonitor.file    = NULL;
+
+  Zathura.StdinSupport.file   = NULL;
+  Zathura.StdinSupport.handle = -1;
 
   /* window */
   if(Zathura.UI.embed)
@@ -1169,7 +1178,8 @@ highlight_result(int page_id, PopplerRectangle* rectangle)
   cairo_destroy(cairo);
 }
 
-void notify(int level, char* message)
+void
+notify(int level, const char* message)
 {
   switch(level)
   {
@@ -1396,6 +1406,57 @@ open_file(char* path, char* password)
   g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
   isc_abort(NULL);
   return TRUE;
+}
+
+gboolean
+open_stdin(gchar* password)
+{
+  GError* error = NULL;
+  gchar* file = NULL;
+  gint handle = g_file_open_tmp("zathura.stdin.XXXXXX.pdf", &file, &error);
+  if (handle == -1)
+  {
+    gchar* message = g_strdup_printf("Can not create temporary file: %s", error->message);
+    notify(ERROR, message);
+    g_free(message);
+    g_error_free(error);
+    return FALSE;
+  }
+
+  // read from stdin and dump to temporary file
+  char buffer[BUFSIZ];
+  ssize_t count = 0;
+  while ((count = read(0, buffer, BUFSIZ)) > 0)
+  {
+    if (write(handle, buffer, count) != count)
+    {
+      gchar* message = g_strdup_printf("Can not write to temporary file: %s", file);
+      notify(ERROR, message);
+      g_free(message);
+      g_free(file);
+      close(handle);
+      return FALSE;
+    }
+  }
+
+  if (count != 0)
+  {
+    gchar* message = g_strdup_printf("Can not read from stdin");
+    notify(ERROR, message);
+    g_free(message);
+    g_free(file);
+    close(handle);
+    return FALSE;
+  }
+
+  /* update data */
+  g_free(Zathura.StdinSupport.file);
+  Zathura.StdinSupport.file = file;
+  if (Zathura.StdinSupport.handle != -1)
+    close(Zathura.StdinSupport.handle);
+  Zathura.StdinSupport.handle = handle;
+
+  return open_file(Zathura.StdinSupport.file, password);
 }
 
 void open_uri(char* uri)
@@ -4460,7 +4521,13 @@ int main(int argc, char* argv[])
   init_look();
 
   if(argc > 1)
-    open_file(argv[1], (argc == 3) ? argv[2] : NULL);
+  {
+    char* password = (argc == 3) ? argv[2] : NULL;
+    if (strcmp(argv[1], "-") == 0)
+      open_stdin(password);
+    else
+      open_file(argv[1], password);
+  }
 
   switch_view(Zathura.UI.document);
   update_status();
@@ -4480,6 +4547,9 @@ int main(int argc, char* argv[])
 
   g_free(Zathura.Config.config_dir);
   g_free(Zathura.Config.data_dir);
+  g_free(Zathura.StdinSupport.file);
+  if (Zathura.StdinSupport.handle != -1)
+    close(Zathura.StdinSupport.handle);
 
   return 0;
 }
