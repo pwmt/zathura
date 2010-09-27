@@ -2099,7 +2099,12 @@ sc_reload(Argument* argument)
 
   /* reopen and restore settings */
   close_file(TRUE);
-  open_file(path, password);
+  if (open_file(path, password) == FALSE)
+  {
+    free(path);
+    free(password);
+    return;
+  }
 
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
   Zathura.PDF.scale  = scale;
