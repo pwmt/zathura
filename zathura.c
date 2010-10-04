@@ -1421,7 +1421,8 @@ open_stdin(gchar* password)
   // read from stdin and dump to temporary file
   char buffer[BUFSIZ];
   ssize_t count = 0;
-  while ((count = read(0, buffer, BUFSIZ)) > 0)
+  int stdinfno = fileno(stdin);
+  while ((count = read(stdinfno, buffer, BUFSIZ)) > 0)
   {
     if (write(handle, buffer, count) != count)
     {
