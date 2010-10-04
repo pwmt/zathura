@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
-#define _BSD_SOURCE || _XOPEN_SOURCE >= 500
+#define _BSD_SOURCE
+#define _XOPEN_SOURCE 500
 
 #include <regex.h>
 #include <limits.h>
