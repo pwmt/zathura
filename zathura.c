@@ -1419,9 +1419,21 @@ open_stdin(gchar* password)
   }
 
   // read from stdin and dump to temporary file
+  int stdinfno = fileno(stdin);
+  if (stdinfno == -1)
+  {
+    gchar* message = g_strdup_printf("Can not read from stdin.");
+    notify(ERROR, message);
+    g_free(message);
+    close(handle);
+    g_unlink(file);
+    g_free(file);
+    return FALSE;
+
+  }
+
   char buffer[BUFSIZ];
   ssize_t count = 0;
-  int stdinfno = fileno(stdin);
   while ((count = read(stdinfno, buffer, BUFSIZ)) > 0)
   {
     if (write(handle, buffer, count) != count)
@@ -1429,21 +1441,21 @@ open_stdin(gchar* password)
       gchar* message = g_strdup_printf("Can not write to temporary file: %s", file);
       notify(ERROR, message);
       g_free(message);
+      close(handle);
       g_unlink(file);
       g_free(file);
-      close(handle);
       return FALSE;
     }
   }
 
   if (count != 0)
   {
-    gchar* message = g_strdup_printf("Can not read from stdin");
+    gchar* message = g_strdup_printf("Can not read from stdin.");
     notify(ERROR, message);
     g_free(message);
+    close(handle);
     g_unlink(file);
     g_free(file);
-    close(handle);
     return FALSE;
   }
 
