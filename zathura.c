@@ -19,7 +19,7 @@
 #include <gdk/gdkkeysyms.h>
 
 /* macros */
-#define LENGTH(x) sizeof(x)/sizeof((x)[0])
+#define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
 #define CLEAN(m) (m & ~(GDK_MOD2_MASK) & ~(GDK_BUTTON1_MASK) & ~(GDK_BUTTON2_MASK) & ~(GDK_BUTTON3_MASK) & ~(GDK_BUTTON4_MASK) & ~(GDK_BUTTON5_MASK) & ~(GDK_LEAVE_NOTIFY_MASK))
 
 /* enums */
@@ -344,18 +344,18 @@ struct
 
 
 /* function declarations */
-void init_look();
-void init_directories();
-void init_bookmarks();
-void init_keylist();
-void init_settings();
-void init_zathura();
+void init_look(void);
+void init_directories(void);
+void init_bookmarks(void);
+void init_keylist(void);
+void init_settings(void);
+void init_zathura(void);
 void add_marker(int);
 void build_index(GtkTreeModel*, GtkTreeIter*, PopplerIndexIter*);
 void change_mode(int);
 void calculate_offset(GtkWidget*, double*, double*);
 void close_file(gboolean);
-void enter_password();
+void enter_password(void);
 void highlight_result(int, PopplerRectangle*);
 void draw(int);
 void eval_marker(int);
@@ -363,10 +363,10 @@ void notify(int, const char*);
 gboolean open_file(char*, char*);
 gboolean open_stdin(gchar*);
 void open_uri(char*);
-void out_of_memory();
-void update_status();
+void out_of_memory(void);
+void update_status(void);
 void read_configuration_file(const char*);
-void read_configuration();
+void read_configuration(void);
 void recalcRectangle(int, PopplerRectangle*);
 void setCompletionRowColor(GtkBox*, int, int);
 void set_page(int);
@@ -374,9 +374,9 @@ void switch_view(GtkWidget*);
 GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
 gchar* fix_path(const gchar*);
 gchar* path_from_env(const gchar*);
-gchar* get_home_dir();
+gchar* get_home_dir(void);
 
-Completion* completion_init();
+Completion* completion_init(void);
 CompletionGroup* completion_group_create(char*);
 void completion_add_group(Completion*, CompletionGroup*);
 void completion_free(Completion*);
@@ -467,7 +467,7 @@ gboolean cb_watch_file(GFileMonitor*, GFile*, GFile*, GFileMonitorEvent, gpointe
 
 /* function implementation */
 void
-init_look()
+init_look(void)
 {
   /* parse  */
   gdk_color_parse(default_fgcolor,        &(Zathura.Style.default_fg));
@@ -558,14 +558,14 @@ gchar* path_from_env(const gchar* var)
   return res;
 }
 
-gchar* get_home_dir()
+gchar* get_home_dir(void)
 {
   const gchar* homedir = g_getenv("HOME");
   return g_strdup(homedir ? homedir : g_get_home_dir());
 }
 
 void
-init_directories()
+init_directories(void)
 {
   /* setup directories */
   if (!Zathura.Config.config_dir)
@@ -595,7 +595,7 @@ init_directories()
 }
 
 void
-init_bookmarks()
+init_bookmarks(void)
 {
   /* create or open existing bookmark file */
   Zathura.Bookmarks.data = g_key_file_new();
@@ -620,7 +620,7 @@ init_bookmarks()
 }
 
 void
-init_keylist()
+init_keylist(void)
 {
   ShortcutList* e = NULL;
   ShortcutList* p = NULL;
@@ -645,7 +645,7 @@ init_keylist()
 }
 
 void
-init_settings()
+init_settings(void)
 {
   Zathura.State.filename     = g_strdup((char*) default_text);
   Zathura.Global.adjust_mode = adjust_open;
@@ -654,7 +654,7 @@ init_settings()
 }
 
 void
-init_zathura()
+init_zathura(void)
 {
   /* init mutexes */
   g_static_mutex_init(&(Zathura.Lock.pdflib_lock));
@@ -1127,7 +1127,7 @@ close_file(gboolean keep_monitor)
 }
 
 void
-enter_password()
+enter_password(void)
 {
   /* replace default inputbar handler */
   g_signal_handler_disconnect((gpointer) Zathura.UI.inputbar, Zathura.Handler.inputbar_activate);
@@ -1477,14 +1477,14 @@ void open_uri(char* uri)
   g_free(escaped_uri);
 }
 
-void out_of_memory()
+void out_of_memory(void)
 {
   printf("error: out of memory\n");
   exit(-1);
 }
 
 void
-update_status()
+update_status(void)
 {
   /* update text */
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_text, Zathura.State.filename);
@@ -1544,7 +1544,7 @@ read_configuration_file(const char* rcfile)
 }
 
 void
-read_configuration()
+read_configuration(void)
 {
   char* zathurarc = g_build_filename(Zathura.Config.config_dir, ZATHURA_RC, NULL);
   read_configuration_file(GLOBAL_RC);
@@ -1716,7 +1716,7 @@ switch_view(GtkWidget* widget)
 }
 
 Completion*
-completion_init()
+completion_init(void)
 {
   Completion *completion = malloc(sizeof(Completion));
   if(!completion)
@@ -2016,14 +2016,14 @@ sc_follow(Argument* argument)
     return;
 
   Page* current_page = Zathura.PDF.pages[Zathura.PDF.page_number];
-  int number_of_links = 0, link_id = 1;
+  int link_id = 1;
 
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   GList *link_list = poppler_page_get_link_mapping(current_page->page);
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
   link_list = g_list_reverse(link_list);
 
-  if((number_of_links = g_list_length(link_list)) <= 0)
+  if(g_list_length(link_list) <= 0)
     return;
 
   GList *links;
@@ -2148,7 +2148,6 @@ sc_scroll(Argument* argument)
   gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
-  gdouble new_value  = value;
   gboolean static ss = FALSE;
 
   if((argument->n == UP || argument->n == HALF_UP || argument->n == FULL_UP) && value == 0)
@@ -2160,6 +2159,7 @@ sc_scroll(Argument* argument)
     ss = TRUE;
     sc_scroll(&arg);
     return;
+    /* NOTREACHED */
   }
   else if((argument->n == DOWN || argument->n == HALF_DOWN || argument->n == FULL_DOWN) && value == max)
   {
@@ -2168,8 +2168,11 @@ sc_scroll(Argument* argument)
     ss = TRUE;
     sc_navigate(&arg);
     return;
+    /* NOTREACHED */
   }
-  else if(argument->n == FULL_UP)
+
+  gdouble new_value;
+  if(argument->n == FULL_UP)
     new_value = (value - view_size) < 0 ? 0 : (value - view_size);
   else if(argument->n == FULL_DOWN)
     new_value = (value + view_size) > max ? max : (value + view_size);
@@ -2550,14 +2553,12 @@ isc_completion(Argument* argument)
   char* current_command;
   char* current_parameter;
   int   current_command_length;
-  int   current_parameter_length;
 
   if(!first_space)
   {
     current_command          = g_strdup(input);
     current_command_length   = length;
     current_parameter        = NULL;
-    current_parameter_length = 0;
   }
   else
   {
@@ -2565,7 +2566,6 @@ isc_completion(Argument* argument)
     current_command          = g_strndup(input, offset);
     current_command_length   = strlen(current_command);
     current_parameter        = input + offset + 1;
-    current_parameter_length = strlen(current_parameter);
   }
 
   /* if the identifier does not match the command sign and
@@ -3080,13 +3080,11 @@ cmd_export(int argc, char** argv)
       for(images = image_list; images; images = g_list_next(images))
       {
         PopplerImageMapping *image_mapping;
-        PopplerRectangle     image_field;
         gint                 image_id;
         char*                file;
         char*                filename;
 
         image_mapping = (PopplerImageMapping*) images->data;
-        image_field   = image_mapping->area;
         image_id      = image_mapping->image_id;
 
         g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
