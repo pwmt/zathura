@@ -2165,7 +2165,6 @@ sc_scroll(Argument* argument)
     ss = TRUE;
     sc_scroll(&arg);
     return;
-    /* NOTREACHED */
   }
   else if((argument->n == DOWN || argument->n == HALF_DOWN || argument->n == FULL_DOWN) && value == max)
   {
@@ -2174,7 +2173,6 @@ sc_scroll(Argument* argument)
     ss = TRUE;
     sc_navigate(&arg);
     return;
-    /* NOTREACHED */
   }
 
   gdouble new_value;
