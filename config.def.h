@@ -104,6 +104,7 @@ Shortcut shortcuts[] = {
   {GDK_SHIFT_MASK,     GDK_question,      sc_focus_inputbar,    NORMAL,              { .data = "?" } },
   {0,                  GDK_colon,         sc_focus_inputbar,    NORMAL,              { .data = ":" } },
   {0,                  GDK_o,             sc_focus_inputbar,    NORMAL,              { .data = ":open " } },
+  {0,                  GDK_O,             sc_focus_inputbar,    NORMAL,              { APPEND_FILEPATH, .data = ":open " } },
   {0,                  GDK_f,             sc_follow,            NORMAL,              {0} },
   {0,                  GDK_J,             sc_navigate,          NORMAL,              { NEXT } },
   {0,                  GDK_K,             sc_navigate,          NORMAL,              { PREVIOUS } },
