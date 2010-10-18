@@ -28,7 +28,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH, ADJUST_NONE, CONTINUOUS, DELETE_LAST,
   ADD_MARKER, EVAL_MARKER, EXPAND, COLLAPSE, SELECT, GOTO_DEFAULT, GOTO_LABELS,
   GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR,
-  DELETE_TO_LINE_START };
+  DELETE_TO_LINE_START, APPEND_FILEPATH };
 
 /* define modes */
 #define ALL        (1 << 0)
@@ -1989,7 +1989,15 @@ sc_focus_inputbar(Argument* argument)
 
   if(argument->data)
   {
-    notify(DEFAULT, argument->data);
+    char* data = argument->data;
+
+    if(argument->n == APPEND_FILEPATH)
+        data = g_strdup_printf("%s%s", data, Zathura.PDF.file);
+    else
+        data = g_strdup(data);
+
+    notify(DEFAULT, data);
+    g_free(data);
     gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
   }
