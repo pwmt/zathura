@@ -139,7 +139,7 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_f,             sc_scroll,            NORMAL,              { FULL_DOWN } },
   {GDK_CONTROL_MASK,   GDK_b,             sc_scroll,            NORMAL,              { FULL_UP } },
   {0,                  GDK_space,         sc_scroll,            NORMAL,              { FULL_DOWN } },
-  {0,                  GDK_O,             sc_switch_goto_mode,  NORMAL,              {0} },
+  {0,                  GDK_0,             sc_switch_goto_mode,  NORMAL,              {0} },
   {0,                  GDK_F5,            sc_toggle_fullscreen, NORMAL | FULLSCREEN, {0} },
   {0,                  GDK_Tab,           sc_toggle_index,      NORMAL | INDEX,      {0} },
   {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   NORMAL,              {0} },

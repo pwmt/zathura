@@ -496,7 +496,12 @@ init_look(void)
   gdk_color_parse(recolor_lightcolor,     &(Zathura.Style.recolor_lightcolor));
   gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
   gdk_color_parse(select_text,            &(Zathura.Style.select_text));
+
   Zathura.Style.font = pango_font_description_from_string(font);
+
+  /* window and viewport */
+  gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.window),   GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
+  gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.viewport), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
 
   /* drawing area */
   gtk_widget_modify_bg(GTK_WIDGET(Zathura.UI.drawing_area), GTK_STATE_NORMAL, &(Zathura.Style.default_bg));
