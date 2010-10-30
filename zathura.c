@@ -3608,7 +3608,20 @@ cmd_save(int argc, char** argv)
   if(argc == 0 || !Zathura.PDF.document)
     return TRUE;
 
-  char* path = g_strdup_printf("file://%s", argv[0]);
+  gchar* file_path = NULL;
+
+  if(argv[0][0] == '~')
+  {
+    gchar* home_path = get_home_dir();
+    file_path = g_build_filename(home_path, argv[0] + 1, NULL);
+    g_free(home_path);
+  }
+  else
+    file_path = g_strdup(argv[0]);
+
+  char* path = g_strdup_printf("file://%s", file_path);
+  g_free(file_path);
+
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
   poppler_document_save(Zathura.PDF.document, path, NULL);
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
