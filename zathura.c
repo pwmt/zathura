@@ -1233,6 +1233,7 @@ open_file(char* path, char* password)
     notify(ERROR, "File does not exist");
     if(file)
       free(file);
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
     return FALSE;
   }
 
