@@ -146,6 +146,9 @@ Shortcut shortcuts[] = {
   {GDK_CONTROL_MASK,   GDK_m,             sc_toggle_inputbar,   NORMAL,              {0} },
   {GDK_CONTROL_MASK,   GDK_n,             sc_toggle_statusbar,  NORMAL,              {0} },
   {GDK_CONTROL_MASK,   GDK_q,             sc_quit,              ALL,                 {0} },
+  {0,                  GDK_plus,          sc_zoom,              NORMAL | FULLSCREEN, { ZOOM_IN } },
+  {0,                  GDK_minus,         sc_zoom,              NORMAL | FULLSCREEN, { ZOOM_OUT } },
+  {0,                  GDK_equal,         sc_zoom,              NORMAL | FULLSCREEN, { ZOOM_ORIGINAL } },
 };
 
 /* inputbar shortcuts */
