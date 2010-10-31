@@ -66,6 +66,7 @@ char* uri_command = "firefox %s"; /* uri */
 
 /* additional settings */
 gboolean show_scrollbars = FALSE;
+gboolean scroll_wrap = FALSE;
 int adjust_open          = ADJUST_BESTFIT;
 #define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 #define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
@@ -245,6 +246,7 @@ Setting settings[] = {
   {"recolor_darkcolor",      &(recolor_darkcolor),               's',   FALSE,   TRUE,    "Recoloring (dark color)"},
   {"recolor_lightcolor",     &(recolor_lightcolor),              's',   FALSE,   TRUE,    "Recoloring (light color)"},
   {"scroll_step",            &(scroll_step),                     'f',   FALSE,   FALSE,   "Scroll step"},
+  {"scroll_wrap",            &(scroll_wrap),                     'b',   FALSE,   FALSE,   "Wrap scolling at last page"},
   {"scrollbars",             &(show_scrollbars),                 'b',   FALSE,   TRUE,    "Show scrollbars"},
   {"show_statusbar",         &(Zathura.Global.show_statusbar),   'b',   FALSE,   TRUE,    "Show statusbar"},
   {"show_inputbar",          &(Zathura.Global.show_inputbar),    'b',   FALSE,   TRUE,    "Show inputbar"},

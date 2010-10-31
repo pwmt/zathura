@@ -2092,9 +2092,12 @@ sc_navigate(Argument* argument)
   int new_page = Zathura.PDF.page_number;
 
   if(argument->n == NEXT)
-    new_page = (new_page + number_of_pages + 1) % number_of_pages;
+    new_page = scroll_wrap ? (new_page + 1) : ((new_page + 1) % number_of_pages);
   else if(argument->n == PREVIOUS)
-    new_page = (new_page + number_of_pages - 1) % number_of_pages;
+    new_page = scroll_wrap ? (new_page - 1) : ((new_page + number_of_pages - 1) % number_of_pages);
+
+  if (scroll_wrap && (new_page < 0 || new_page >= number_of_pages))
+    return;
 
   set_page(new_page);
   update_status();
@@ -2172,12 +2175,16 @@ sc_scroll(Argument* argument)
 
   if((argument->n == UP || argument->n == HALF_UP || argument->n == FULL_UP) && value == 0)
   {
+    int old_page = Zathura.PDF.page_number;
     Argument arg;
     arg.n = PREVIOUS;
     sc_navigate(&arg);
-    arg.n = BOTTOM;
-    ss = TRUE;
-    sc_scroll(&arg);
+    if (!scroll_wrap || (Zathura.PDF.page_number < old_page))
+    {
+      arg.n = BOTTOM;
+      ss = TRUE;
+      sc_scroll(&arg);
+    }
     return;
   }
   else if((argument->n == DOWN || argument->n == HALF_DOWN || argument->n == FULL_DOWN) && value == max)
