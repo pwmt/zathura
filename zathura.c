@@ -1514,7 +1514,7 @@ update_status(void)
   char* zoom_level  = (Zathura.PDF.scale != 0) ? g_strdup_printf("%d%%", Zathura.PDF.scale) : g_strdup("");
   char* goto_mode   = (Zathura.Global.goto_mode == GOTO_LABELS) ? "L" :
     (Zathura.Global.goto_mode == GOTO_OFFSET) ? "O" : "D";
-  char* status_text = g_strdup_printf("%s [%s] %s", zoom_level, goto_mode, Zathura.State.pages);
+  char* status_text = g_strdup_printf("%s [%s] %s (%d%%)", zoom_level, goto_mode, Zathura.State.pages, Zathura.State.scroll_percentage);
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
   g_free(status_text);
   g_free(zoom_level);
@@ -2213,6 +2213,8 @@ sc_scroll(Argument* argument)
     new_value = max;
   else
     new_value = (value + scroll_step) > max ? max : (value + scroll_step);
+
+  Zathura.State.scroll_percentage = max == 0 ? 0 : (new_value*100/max);
 
   if(smooth_scrolling && !ss)
   {
