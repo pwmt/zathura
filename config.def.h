@@ -66,7 +66,7 @@ char* uri_command = "firefox %s"; /* uri */
 
 /* additional settings */
 gboolean show_scrollbars = FALSE;
-gboolean scroll_wrap = FALSE;
+gboolean scroll_wrap     = TRUE;
 int adjust_open          = ADJUST_BESTFIT;
 #define SELECTION_STYLE POPPLER_SELECTION_GLYPH
 #define GOTO_MODE GOTO_LABELS /* GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET */
