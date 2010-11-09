@@ -2092,11 +2092,11 @@ sc_navigate(Argument* argument)
   int new_page = Zathura.PDF.page_number;
 
   if(argument->n == NEXT)
-    new_page = scroll_wrap ? (new_page + 1) : ((new_page + 1) % number_of_pages);
+    new_page = scroll_wrap ? ((new_page + 1) % number_of_pages) : (new_page + 1);
   else if(argument->n == PREVIOUS)
-    new_page = scroll_wrap ? (new_page - 1) : ((new_page + number_of_pages - 1) % number_of_pages);
+    new_page = scroll_wrap ? ((new_page + number_of_pages - 1) % number_of_pages) : (new_page - 1);
 
-  if (scroll_wrap && (new_page < 0 || new_page >= number_of_pages))
+  if (!scroll_wrap && (new_page < 0 || new_page >= number_of_pages))
     return;
 
   set_page(new_page);
