@@ -4,7 +4,7 @@
 include config.mk
 
 PROJECT  = zathura
-SOURCE   = zathura.c
+SOURCE   = callbacks.c commands.c config.c shortcuts.c utils.c zathura.c
 OBJECTS  = ${SOURCE:.c=.o}
 DOBJECTS = ${SOURCE:.c=.do}
 
