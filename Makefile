@@ -25,16 +25,8 @@ options:
 	@echo CC $<
 	@${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $<
 
-${OBJECTS}:  config.h config.mk
-${DOBJECTS}: config.h config.mk
-
-config.h: config.def.h
-	@if [ -f $@ ] ; then \
-		echo "config.h exists, but config.def.h is newer. Please check your" \
-		"config.h or ${PROJECT} might fail to build." ; \
-	else \
-		cp $< $@ ; \
-	fi
+${OBJECTS}:  config.mk
+${DOBJECTS}: config.mk
 
 ${PROJECT}: ${OBJECTS}
 	@echo CC -o $@
@@ -43,9 +35,6 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug
-
-distclean: clean
-	@rm -rf config.h
 
 ${PROJECT}-debug: ${DOBJECTS}
 	@echo CC -o ${PROJECT}-debug
@@ -62,7 +51,7 @@ gdb: debug
 
 dist: clean
 	@mkdir -p ${PROJECT}-${VERSION}
-	@cp -R LICENSE Makefile config.mk config.def.h README \
+	@cp -R LICENSE Makefile config.mk README \
 			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION}
 	@tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
