@@ -13,6 +13,7 @@ all: options ${PROJECT}
 options:
 	@echo ${PROJECT} build options:
 	@echo "CFLAGS  = ${CFLAGS}"
+	@echo "LDFLAGS = ${LDFLAGS}"
 	@echo "LIBS    = ${LIBS}"
 	@echo "DFLAGS  = ${DFLAGS}"
 	@echo "CC      = ${CC}"
