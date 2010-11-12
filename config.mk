@@ -14,14 +14,17 @@ GTK_LIB = $(shell pkg-config --libs gtk+-2.0 gthread-2.0 poppler-glib)
 INCS = -I. -I/usr/include ${GTK_INC}
 LIBS = -lc ${GTK_LIB} -lpthread -lm
 
-# flags
+# compiler flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length $(INCS)
 
-# debug
+# debug flags
 DFLAGS = -g
+
+# linker flags
+LDFLAGS ?=
 
 # compiler
 CC ?= gcc
 
 # strip
-SFLAGS = -s
+SFLAGS ?= -s
