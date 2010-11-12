@@ -1,5 +1,8 @@
 /* See LICENSE file for license and copyright information */
 
+#include "callbacks.h"
+#include "config.h"
+#include "shortcuts.h"
 #include "zathura.h"
 
 /* function implementation */
@@ -11,6 +14,12 @@ init_zathura()
 
   if(!girara_session_init(Zathura.UI.session))
     return false;
+
+  /* signals */
+  g_signal_connect(G_OBJECT(Zathura.UI.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
+
+  /* configuration */
+  config_load_default();
 
   return true;
 }

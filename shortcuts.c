@@ -1,5 +1,9 @@
 /* See LICENSE file for license and copyright information */
 
+#include <girara.h>
+#include <gtk/gtk.h>
+
+#include "callbacks.h"
 #include "shortcuts.h"
 
 void
@@ -113,7 +117,12 @@ sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument)
 void
 sc_quit(girara_session_t* session, girara_argument_t* argument)
 {
+  girara_argument_t arg = { GIRARA_HIDE, NULL };
+  girara_isc_completion(session, &arg);
 
+  cb_destroy(NULL, NULL);
+
+  gtk_main_quit();
 }
 
 void
