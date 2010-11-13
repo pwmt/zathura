@@ -5,10 +5,15 @@
 
 #include "callbacks.h"
 #include "shortcuts.h"
+#include "zathura.h"
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* argument)
 {
+  g_return_val_if_fail(session != NULL, false);
+
+  girara_mode_set(session, NORMAL);
+
   return false;
 }
 
@@ -27,12 +32,28 @@ sc_change_buffer(girara_session_t* session, girara_argument_t* argument)
 bool
 sc_change_mode(girara_session_t* session, girara_argument_t* argument)
 {
+  g_return_val_if_fail(session != NULL, false);
+
+  girara_mode_set(session, argument->n);
+
   return false;
 }
 
 bool
 sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument)
 {
+  g_return_val_if_fail(session != NULL, false);
+
+  if(!(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar))))
+    gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
+
+  if(argument->data)
+  {
+    gtk_entry_set_text(session->gtk.inputbar, (char*) argument->data);
+    gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar));
+    gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar), -1);
+  }
+
   return false;
 }
 

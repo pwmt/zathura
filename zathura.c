@@ -15,8 +15,18 @@ init_zathura()
   if(!girara_session_init(Zathura.UI.session))
     return false;
 
+  /* UI */
+  Zathura.UI.buffer = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
+  if(!Zathura.UI.buffer) {
+    girara_session_destroy(Zathura.UI.session);
+    return false;
+  }
+
   /* signals */
   g_signal_connect(G_OBJECT(Zathura.UI.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
+
+  /* girara events */
+  Zathura.UI.session->events.buffer_changed = buffer_changed;
 
   /* configuration */
   config_load_default();

@@ -9,12 +9,15 @@ config_load_default()
   if(!Zathura.UI.session)
     return;
 
+  /* general settings */
+  girara_mode_set(Zathura.UI.session, NORMAL);
+
   /* define default shortcuts */
-  girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,             ALL,                 0,               NULL);
-  girara_shortcut_add(Zathura.UI.session, 0,                GDK_Escape,     NULL, sc_abort,             ALL,                 0,               NULL);
+  girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,             0,                   0,               NULL);
+  girara_shortcut_add(Zathura.UI.session, 0,                GDK_Escape,     NULL, sc_abort,             0,                   0,               NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_a,          NULL, sc_adjust_window,     NORMAL,              ADJUST_BESTFIT,  NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_s,          NULL, sc_adjust_window,     NORMAL,              ADJUST_WIDTH,    NULL);
-  girara_shortcut_add(Zathura.UI.session, 0,                GDK_BackSpace,  NULL, sc_change_buffer,     ALL,                 DELETE_LAST,     NULL);
+  girara_shortcut_add(Zathura.UI.session, 0,                GDK_BackSpace,  NULL, sc_change_buffer,     0,                   DELETE_LAST,     NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_i,          NULL, sc_change_mode,       NORMAL,              INSERT,          NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_m,          NULL, sc_change_mode,       NORMAL,              ADD_MARKER,      NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_apostrophe, NULL, sc_change_mode,       NORMAL,              EVAL_MARKER,     NULL);

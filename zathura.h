@@ -26,6 +26,7 @@ struct
   struct 
   {
     girara_session_t* session; /**> girara interface session */
+    girara_statusbar_item_t* buffer; /**> buffer statusbar entry */
   } UI;
 } Zathura;
 
