@@ -497,6 +497,7 @@ init_look(void)
   gdk_color_parse(search_highlight,       &(Zathura.Style.search_highlight));
   gdk_color_parse(select_text,            &(Zathura.Style.select_text));
 
+  pango_font_description_free(Zathura.Style.font);
   Zathura.Style.font = pango_font_description_from_string(font);
 
   /* window and viewport */
