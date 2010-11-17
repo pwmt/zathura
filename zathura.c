@@ -673,7 +673,6 @@ init_zathura(void)
   g_static_mutex_init(&(Zathura.Lock.search_lock));
   g_static_mutex_init(&(Zathura.Lock.pdf_obj_lock));
   g_static_mutex_init(&(Zathura.Lock.select_lock));
-  g_static_mutex_init(&(Zathura.Lock.select_lock));
 
   /* other */
   Zathura.Global.mode           = NORMAL;
