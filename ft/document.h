@@ -80,8 +80,17 @@ struct zathura_document_s
     zathura_list_t* (*document_index_generate)(zathura_document_t* document);
     bool (*document_save_as)(zathura_document_t* document, const char* path);
     zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
+    bool (*document_free)(zathura_document_t* document);
   } functions;
 };
+
+zathura_document_t* zathura_document_create(const char* path);
+bool zathura_document_free(zathura_document_t* document);
+bool zathura_document_save_as(zathura_document_t* document, const char* path);
+zathura_list_t* zathura_document_index_generate(zathura_document_t* document);
+bool zathura_document_index_free(zathura_list_t* list);
+zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
+bool zathura_document_attachments_free(zathura_list_t* list);
 
 zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page);
 zathura_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
@@ -90,11 +99,5 @@ bool zathura_page_links_free(zathura_list_t* list);
 zathura_list_t* zathura_page_form_fields_get(zathura_page_t* page);
 bool zathura_page_form_fields_free(zathura_list_t* list);
 cairo_surface_t* zathura_page_render(zathura_page_t* page);
-
-zathura_list_t* zathura_document_index_generate(zathura_document_t* document);
-bool zathura_document_index_free(zathura_list_t* list);
-bool zathura_document_save_as(zathura_document_t* document, const char* path);
-zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
-bool zathura_document_attachments_free(zathura_list_t* list);
 
 #endif // DOCUMENT_H
