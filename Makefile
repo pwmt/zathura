@@ -4,9 +4,9 @@
 include config.mk
 
 PROJECT  = zathura
-SOURCE   = callbacks.c commands.c config.c shortcuts.c utils.c zathura.c
-OBJECTS  = ${SOURCE:.c=.o}
-DOBJECTS = ${SOURCE:.c=.do}
+SOURCE   = $(shell find . -iname "*.c" -a ! -iwholename "*./doc*")
+OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
+DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
 

@@ -9,11 +9,13 @@
 bool
 init_zathura()
 {
-  if(!(Zathura.UI.session = girara_session_create()))
+  if(!(Zathura.UI.session = girara_session_create())) {
     return false;
+  }
 
-  if(!girara_session_init(Zathura.UI.session))
+  if(!girara_session_init(Zathura.UI.session)) {
     return false;
+  }
 
   /* UI */
   Zathura.UI.buffer = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
