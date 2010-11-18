@@ -19,11 +19,25 @@ init_zathura()
   }
 
   /* UI */
-  Zathura.UI.buffer = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
-  if(!Zathura.UI.buffer) {
+  Zathura.UI.statusbar.file = girara_statusbar_item_add(Zathura.UI.session, TRUE, TRUE, TRUE, NULL);
+  if(!Zathura.UI.statusbar.file) {
     girara_session_destroy(Zathura.UI.session);
     return false;
   }
+
+  Zathura.UI.statusbar.buffer = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
+  if(!Zathura.UI.statusbar.buffer) {
+    girara_session_destroy(Zathura.UI.session);
+    return false;
+  }
+
+  Zathura.UI.statusbar.page_number = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
+  if(!Zathura.UI.statusbar.page_number) {
+    girara_session_destroy(Zathura.UI.session);
+    return false;
+  }
+
+  girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, "[No Name]");
 
   /* signals */
   g_signal_connect(G_OBJECT(Zathura.UI.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);

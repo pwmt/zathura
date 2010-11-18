@@ -11,6 +11,7 @@
 
 #include "document.h"
 #include "../utils.h"
+#include "../zathura.h"
 #include "pdf/pdf.h"
 
 #define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
@@ -88,6 +89,7 @@ zathura_document_open(const char* path, const char* password)
     if(!strcmp(file_extension, zathura_document_plugins[i].file_extension)) {
       if(zathura_document_plugins[i].open_function) {
         if(zathura_document_plugins[i].open_function(document)) {
+          girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, real_path);
           return document;
         } else {
           fprintf(stderr, "error: could not open file\n");
