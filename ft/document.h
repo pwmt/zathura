@@ -70,7 +70,7 @@ typedef struct zathura_page_s
 
 struct zathura_document_s
 {
-  const char* file_path;
+  char* file_path;
   const char* password;
   unsigned int current_page_number;
   unsigned int number_of_pages;

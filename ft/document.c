@@ -1,8 +1,13 @@
 /* See LICENSE file for license and copyright information */
 
+#define _BSD_SOURCE
+#define _XOPEN_SOURCE 500
+// TODO: Implement realpath
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #include "document.h"
 #include "../utils.h"
@@ -32,13 +37,33 @@ zathura_document_open(const char* path, const char* password)
     return NULL;
   }
 
-  zathura_document_t* document = malloc(sizeof(zathura_document_t));
-  if(!document) {
+  /* determine real path */
+  size_t path_max;
+#ifdef PATH_MAX
+  path_max = PATH_MAX;
+#else
+  path_max = pathconf(path,_PC_PATH_MAX);
+  if(path_max <= 0)
+    path_max = 4096;
+#endif
+
+  char* real_path = malloc(sizeof(char) * path_max);
+  if(!real_path) {
     return NULL;
   }
 
+  if(!realpath(path, real_path)) {
+    free(real_path);
+    return NULL;
+  }
 
-  document->file_path           = path;
+  zathura_document_t* document = malloc(sizeof(zathura_document_t));
+  if(!document) {
+    free(real_path);
+    return NULL;
+  }
+
+  document->file_path           = real_path;
   document->password            = password;
   document->current_page_number = 0;
   document->number_of_pages     = 0;
@@ -64,12 +89,20 @@ zathura_document_open(const char* path, const char* password)
       if(zathura_document_plugins[i].open_function) {
         if(zathura_document_plugins[i].open_function(document)) {
           return document;
+        } else {
+          fprintf(stderr, "error: could not open file\n");
+          free(real_path);
+          free(document);
+          return NULL;
         }
       }
     }
   }
 
   fprintf(stderr, "error: unknown file type\n");
+
+  free(real_path);
+  free(document);
 
   return NULL;
 }
@@ -83,11 +116,20 @@ zathura_document_free(zathura_document_t* document)
 
   if(!document->functions.document_free) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+
+    if(document->file_path) {
+      free(document->file_path);
+    }
+
     free(document);
     return true;
   }
 
   bool r = document->functions.document_free(document);
+
+  if(document->file_path) {
+    free(document->file_path);
+  }
 
   free(document);
 

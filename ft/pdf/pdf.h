@@ -4,8 +4,14 @@
 #define PDF_H
 
 #include <stdbool.h>
+#include <poppler.h>
 
 #include "../document.h"
+
+typedef struct pdf_document_s
+{
+  PopplerDocument *document;
+} pdf_document_t;
 
 bool pdf_document_open(zathura_document_t* document);
 bool pdf_document_free(zathura_document_t* document);
