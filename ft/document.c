@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "document.h"
 #include "../utils.h"
@@ -43,6 +44,7 @@ zathura_document_open(const char* path, const char* password)
   document->number_of_pages     = 0;
   document->scale               = 100;
   document->rotate              = 0;
+  document->data                = NULL;
 
   document->functions.document_free            = NULL;
   document->functions.document_index_generate  = NULL;
@@ -58,8 +60,16 @@ zathura_document_open(const char* path, const char* password)
   /* init plugin with associated file type */
   for(unsigned int i = 0; i < LENGTH(zathura_document_plugins); i++)
   {
-
+    if(!strcmp(file_extension, zathura_document_plugins[i].file_extension)) {
+      if(zathura_document_plugins[i].open_function) {
+        if(zathura_document_plugins[i].open_function(document)) {
+          return document;
+        }
+      }
+    }
   }
+
+  fprintf(stderr, "error: unknown file type\n");
 
   return NULL;
 }
@@ -68,12 +78,13 @@ bool
 zathura_document_free(zathura_document_t* document)
 {
   if(!document) {
-    return NULL;
+    return false;
   }
 
-  if(!document->functions.document_free(document)) {
+  if(!document->functions.document_free) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
-    return NULL;
+    free(document);
+    return true;
   }
 
   bool r = document->functions.document_free(document);

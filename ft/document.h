@@ -13,7 +13,7 @@ typedef bool (*zathura_document_open_t)(zathura_document_t* document);
 
 typedef struct zathura_document_plugin_s
 {
-  const char* file_type;
+  const char* file_extension;
   zathura_document_open_t open_function;
 } zathura_document_plugin_t;
 
@@ -76,6 +76,7 @@ struct zathura_document_s
   unsigned int number_of_pages;
   int scale;
   int rotate;
+  void* data;
 
   struct
   {
