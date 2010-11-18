@@ -2,6 +2,7 @@
 
 #include "callbacks.h"
 #include "config.h"
+#include "ft/document.h"
 #include "shortcuts.h"
 #include "zathura.h"
 
@@ -43,14 +44,22 @@ int main(int argc, char* argv[])
   gdk_threads_init();
   gtk_init(&argc, &argv);
 
-  if(!init_zathura()) {
-    printf("error: coult not initialize zathura\n");
-    return -1;
+  /*if(!init_zathura()) {*/
+    /*printf("error: coult not initialize zathura\n");*/
+    /*return -1;*/
+  /*}*/
+
+  if(argc > 1) {
+    zathura_document_t* document = zathura_document_open(argv[1], NULL);
+    if(!document) {
+      return -1;
+    }
+    zathura_document_free(document);
   }
 
-  gdk_threads_enter();
-  gtk_main();
-  gdk_threads_leave();
+  /*gdk_threads_enter();*/
+  /*gtk_main();*/
+  /*gdk_threads_leave();*/
 
   return 0;
 }

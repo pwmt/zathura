@@ -9,6 +9,14 @@
 typedef struct zathura_list_s zathura_list_t;
 typedef struct zathura_document_s zathura_document_t;
 
+typedef bool (*zathura_document_open_t)(zathura_document_t* document);
+
+typedef struct zathura_document_plugin_s
+{
+  const char* file_type;
+  zathura_document_open_t open_function;
+} zathura_document_plugin_t;
+
 struct zathura_list_s
 {
   void* data;
@@ -62,8 +70,8 @@ typedef struct zathura_page_s
 
 struct zathura_document_s
 {
-  char* file_path;
-  char* password;
+  const char* file_path;
+  const char* password;
   unsigned int current_page_number;
   unsigned int number_of_pages;
   int scale;
@@ -71,20 +79,21 @@ struct zathura_document_s
 
   struct
   {
+    bool (*document_free)(zathura_document_t* document);
+    zathura_list_t* (*document_index_generate)(zathura_document_t* document);
+    bool (*document_save_as)(zathura_document_t* document, const char* path);
+    zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
+
     zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page);
     zathura_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
     zathura_list_t* (*page_links_get)(zathura_page_t* page);
     zathura_list_t* (*page_form_fields_get)(zathura_page_t* page);
     cairo_surface_t* (*page_render)(zathura_page_t* page);
-
-    zathura_list_t* (*document_index_generate)(zathura_document_t* document);
-    bool (*document_save_as)(zathura_document_t* document, const char* path);
-    zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
-    bool (*document_free)(zathura_document_t* document);
+    bool (*page_free)(zathura_page_t* page);
   } functions;
 };
 
-zathura_document_t* zathura_document_create(const char* path);
+zathura_document_t* zathura_document_open(const char* path, const char* password);
 bool zathura_document_free(zathura_document_t* document);
 bool zathura_document_save_as(zathura_document_t* document, const char* path);
 zathura_list_t* zathura_document_index_generate(zathura_document_t* document);
@@ -93,6 +102,7 @@ zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
 bool zathura_document_attachments_free(zathura_list_t* list);
 
 zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page);
+bool zathura_page_free(zathura_page_t* page);
 zathura_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
 zathura_list_t* zathura_page_links_get(zathura_page_t* page);
 bool zathura_page_links_free(zathura_list_t* list);
