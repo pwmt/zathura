@@ -44,22 +44,32 @@ int main(int argc, char* argv[])
   gdk_threads_init();
   gtk_init(&argc, &argv);
 
-  /*if(!init_zathura()) {*/
-    /*printf("error: coult not initialize zathura\n");*/
-    /*return -1;*/
-  /*}*/
+  if(!init_zathura()) {
+    printf("error: coult not initialize zathura\n");
+    return -1;
+  }
 
   if(argc > 1) {
     zathura_document_t* document = zathura_document_open(argv[1], NULL);
+
     if(!document) {
       return -1;
     }
+
+    zathura_page_t* page = zathura_page_get(document, 0);
+
+    if(!page) {
+      zathura_document_free(document);
+      return -2;
+    }
+
+    zathura_page_free(page);
     zathura_document_free(document);
   }
 
-  /*gdk_threads_enter();*/
-  /*gtk_main();*/
-  /*gdk_threads_leave();*/
+  gdk_threads_enter();
+  gtk_main();
+  gdk_threads_leave();
 
   return 0;
 }

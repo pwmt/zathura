@@ -196,7 +196,7 @@ zathura_document_attachments_free(zathura_list_t* list)
 zathura_page_t*
 zathura_page_get(zathura_document_t* document, unsigned int page)
 {
-  if(!document || !page) {
+  if(!document) {
     return NULL;
   }
 

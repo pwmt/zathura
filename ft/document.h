@@ -62,8 +62,8 @@ typedef struct zathura_form_s
 
 typedef struct zathura_page_s
 {
-  unsigned int height;
-  unsigned int width;
+  double height;
+  double width;
   zathura_document_t* document;
   void* data;
 } zathura_page_t;
