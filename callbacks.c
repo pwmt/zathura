@@ -20,12 +20,14 @@ void
 buffer_changed(girara_session_t* session)
 {
   g_return_if_fail(session != NULL);
-  g_return_if_fail(Zathura.UI.statusbar.buffer != NULL);
 
   char* buffer = girara_buffer_get(session);
 
   if(buffer) {
     girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, buffer);
     free(buffer);
+  }
+  else {
+    girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, "");
   }
 }

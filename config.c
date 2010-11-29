@@ -1,5 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
+#include "commands.h"
+#include "completion.h"
 #include "shortcuts.h"
 #include "zathura.h"
 
@@ -75,4 +77,13 @@ config_load_default()
   girara_shortcut_add(Zathura.UI.session, 0,                0,              "zI", sc_zoom,              NORMAL | FULLSCREEN, ZOOM_IN,         NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                0,              "zO", sc_zoom,              NORMAL | FULLSCREEN, ZOOM_OUT,        NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                0,              "z0", sc_zoom,              NORMAL | FULLSCREEN, ZOOM_ORIGINAL,   NULL);
+
+  /* define default inputbar commands */
+  girara_inputbar_command_add(Zathura.UI.session, "bmark",   NULL, cmd_bookmark_create, NULL,     "Add a bookmark");
+  girara_inputbar_command_add(Zathura.UI.session, "bdelete", NULL, cmd_bookmark_delete, NULL,     "Delete a bookmark");
+  girara_inputbar_command_add(Zathura.UI.session, "blist",   NULL, cmd_bookmark_open,   NULL,     "List all bookmarks");
+  girara_inputbar_command_add(Zathura.UI.session, "close",   NULL, cmd_close,           NULL,     "Close current file");
+  girara_inputbar_command_add(Zathura.UI.session, "info",    NULL, cmd_info,            NULL,     "Show file information");
+  girara_inputbar_command_add(Zathura.UI.session, "print",   NULL, cmd_print,           cc_print, "Print document");
+  girara_inputbar_command_add(Zathura.UI.session, "save",    NULL, cmd_save,            NULL,     "Save document");
 }
