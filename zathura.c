@@ -687,7 +687,7 @@ init_zathura(void)
   Zathura.Global.show_inputbar  = TRUE;
   Zathura.Global.show_statusbar = TRUE;
 
-  Zathura.State.pages             = g_strdup_printf("");
+  Zathura.State.pages             = g_strdup("");
   Zathura.State.scroll_percentage = 0;
 
   Zathura.Marker.markers           = NULL;
@@ -1102,7 +1102,7 @@ close_file(gboolean keep_monitor)
   g_free(Zathura.State.pages);
   gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
 
-  Zathura.State.pages         = g_strdup_printf("");
+  Zathura.State.pages         = g_strdup("");
   g_free(Zathura.State.filename);
   Zathura.State.filename      = g_strdup((char*) default_text);
 
