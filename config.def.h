@@ -16,7 +16,7 @@ static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 /* Use XDG directory specification if no config and data directory are given on
  * the command line. Uncomment the next line if you just want to use CONFIG_DIR
  * and DATA_DIR instead (these will be the default locations if the XDG_*
- * environment variebles are not set anyway) */
+ * environment variables are not set anyway) */
 /* #define ZATHURA_NO_XDG */
 
 /* directories and files */
