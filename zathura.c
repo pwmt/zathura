@@ -609,6 +609,10 @@ init_directories(void)
 void
 init_bookmarks(void)
 {
+  /* init variables */
+  Zathura.Bookmarks.number_of_bookmarks = 0;
+  Zathura.Bookmarks.bookmarks = NULL;
+
   /* create or open existing bookmark file */
   Zathura.Bookmarks.data = g_key_file_new();
   gchar* bookmarks = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
@@ -1065,8 +1069,13 @@ close_file(gboolean keep_monitor)
     /* save bookmarks */
     int i;
     for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+    {
       g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
           Zathura.Bookmarks.bookmarks[i].id, Zathura.Bookmarks.bookmarks[i].page);
+      g_free(Zathura.Bookmarks.bookmarks[i].id);
+    }
+    free(Zathura.Bookmarks.bookmarks);
+    Zathura.Bookmarks.number_of_bookmarks = 0;
 
     /* convert file and save it */
     gchar* bookmarks = g_key_file_to_data(Zathura.Bookmarks.data, NULL, NULL);
@@ -1392,7 +1401,7 @@ open_file(char* path, char* password)
         Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
             (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
 
-        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = keys[i];
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(keys[i]);
         Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page =
           g_key_file_get_integer(Zathura.Bookmarks.data, file, keys[i], NULL);
 
@@ -2966,7 +2975,7 @@ cmd_bookmark(int argc, char** argv)
   Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
       (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
 
-  Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = id->str;
+  Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(id->str);
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
   Zathura.Bookmarks.number_of_bookmarks++;
 
@@ -3057,6 +3066,7 @@ cmd_delete_bookmark(int argc, char** argv)
       /* update key file */
       g_key_file_remove_key(Zathura.Bookmarks.data, Zathura.PDF.file, Zathura.Bookmarks.bookmarks[i].id, NULL);
 
+      g_free(Zathura.Bookmarks.bookmarks[i].id);
       /* update bookmarks */
       Zathura.Bookmarks.bookmarks[i].id   = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].id;
       Zathura.Bookmarks.bookmarks[i].page = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].page;
