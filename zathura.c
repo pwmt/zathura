@@ -3156,11 +3156,6 @@ cmd_export(int argc, char** argv)
         if(argv[1][0] == '~')
         {
           gchar* home_path = get_home_dir();
-          file = malloc(((int) strlen(filename) + (int) strlen(argv[1])
-            + (int) strlen(home_path) - 1) * sizeof(char));
-          if(!file)
-            out_of_memory();
-
           file = g_strdup_printf("%s%s%s", home_path, argv[1] + 1, filename);
           g_free(home_path);
         }
@@ -3197,11 +3192,6 @@ cmd_export(int argc, char** argv)
       if(argv[1][0] == '~')
       {
         gchar* home_path = get_home_dir();
-        file = malloc(((int) strlen(attachment->name) + (int) strlen(argv[1])
-          + (int) strlen(home_path) - 1) * sizeof(char));
-        if(!file)
-          out_of_memory();
-
         file = g_strdup_printf("%s%s%s", home_path, argv[1] + 1, attachment->name);
         g_free(home_path);
       }
