@@ -1043,13 +1043,16 @@ close_file(gboolean keep_monitor)
   {
     read_bookmarks_file();
 
-    /* set current page */
-    g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-        BM_PAGE_ENTRY, Zathura.PDF.page_number);
+    if(save_position)
+    {
+      /* set current page */
+      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+          BM_PAGE_ENTRY, Zathura.PDF.page_number);
 
-    /* set page offset */
-    g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-        BM_PAGE_OFFSET, Zathura.PDF.page_offset);
+      /* set page offset */
+      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+          BM_PAGE_OFFSET, Zathura.PDF.page_offset);
+    }
 
     /* save bookmarks */
     int i;
@@ -1365,11 +1368,11 @@ open_file(char* path, char* password)
   if(Zathura.Bookmarks.data && g_key_file_has_group(Zathura.Bookmarks.data, file))
   {
     /* get last opened page */
-    if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
+    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
       start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
 
     /* get page offset */
-    if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL))
+    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL))
       Zathura.PDF.page_offset = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL);
     if((Zathura.PDF.page_offset != 0) && (Zathura.PDF.page_offset != GOTO_OFFSET))
       Zathura.PDF.page_offset = GOTO_OFFSET;
