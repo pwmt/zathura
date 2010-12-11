@@ -371,6 +371,7 @@ gboolean open_stdin(gchar*);
 void open_uri(char*);
 void out_of_memory(void) NORETURN;
 void update_status(void);
+void read_bookmarks_file(void);
 void read_configuration_file(const char*);
 void read_configuration(void);
 void recalcRectangle(int, PopplerRectangle*);
@@ -609,26 +610,12 @@ init_directories(void)
 void
 init_bookmarks(void)
 {
-  /* create or open existing bookmark file */
-  Zathura.Bookmarks.data = g_key_file_new();
-  gchar* bookmarks = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
+  /* init variables */
+  Zathura.Bookmarks.number_of_bookmarks = 0;
+  Zathura.Bookmarks.bookmarks = NULL;
 
-  if(!g_file_test(bookmarks, G_FILE_TEST_IS_REGULAR))
-  {
-    /* file does not exist */
-    g_file_set_contents(bookmarks, "# Zathura bookmarks\n", -1, NULL);
-  }
-
-  GError* error = NULL;
-  if(!g_key_file_load_from_file(Zathura.Bookmarks.data, bookmarks,
-        G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
-  {
-    gchar* message = g_strdup_printf("Could not load bookmark file: %s", error->message);
-    notify(ERROR, message);
-    g_free(message);
-  }
-
-  Zathura.Bookmarks.file = bookmarks;
+  Zathura.Bookmarks.file = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
+  read_bookmarks_file();
 }
 
 void
@@ -683,7 +670,7 @@ init_zathura(void)
   Zathura.Global.show_inputbar  = TRUE;
   Zathura.Global.show_statusbar = TRUE;
 
-  Zathura.State.pages             = g_strdup_printf("");
+  Zathura.State.pages             = g_strdup("");
   Zathura.State.scroll_percentage = 0;
 
   Zathura.Marker.markers           = NULL;
@@ -1054,19 +1041,29 @@ close_file(gboolean keep_monitor)
   /* save bookmarks */
   if(Zathura.Bookmarks.data)
   {
-    /* set current page */
-    g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-        BM_PAGE_ENTRY, Zathura.PDF.page_number);
+    read_bookmarks_file();
 
-    /* set page offset */
-    g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-        BM_PAGE_OFFSET, Zathura.PDF.page_offset);
+    if(save_position)
+    {
+      /* set current page */
+      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+          BM_PAGE_ENTRY, Zathura.PDF.page_number);
+
+      /* set page offset */
+      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+          BM_PAGE_OFFSET, Zathura.PDF.page_offset);
+    }
 
     /* save bookmarks */
     int i;
     for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+    {
       g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
           Zathura.Bookmarks.bookmarks[i].id, Zathura.Bookmarks.bookmarks[i].page);
+      g_free(Zathura.Bookmarks.bookmarks[i].id);
+    }
+    free(Zathura.Bookmarks.bookmarks);
+    Zathura.Bookmarks.number_of_bookmarks = 0;
 
     /* convert file and save it */
     gchar* bookmarks = g_key_file_to_data(Zathura.Bookmarks.data, NULL, NULL);
@@ -1093,7 +1090,7 @@ close_file(gboolean keep_monitor)
   g_free(Zathura.State.pages);
   gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
 
-  Zathura.State.pages         = g_strdup_printf("");
+  Zathura.State.pages         = g_strdup("");
   g_free(Zathura.State.filename);
   Zathura.State.filename      = g_strdup((char*) default_text);
 
@@ -1371,11 +1368,11 @@ open_file(char* path, char* password)
   if(Zathura.Bookmarks.data && g_key_file_has_group(Zathura.Bookmarks.data, file))
   {
     /* get last opened page */
-    if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
+    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
       start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
 
     /* get page offset */
-    if(g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL))
+    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL))
       Zathura.PDF.page_offset = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL);
     if((Zathura.PDF.page_offset != 0) && (Zathura.PDF.page_offset != GOTO_OFFSET))
       Zathura.PDF.page_offset = GOTO_OFFSET;
@@ -1392,7 +1389,7 @@ open_file(char* path, char* password)
         Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
             (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
 
-        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = keys[i];
+        Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(keys[i]);
         Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page =
           g_key_file_get_integer(Zathura.Bookmarks.data, file, keys[i], NULL);
 
@@ -1518,6 +1515,31 @@ update_status(void)
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
   g_free(status_text);
   g_free(zoom_level);
+}
+
+void
+read_bookmarks_file(void)
+{
+  /* free it at first */
+  if (Zathura.Bookmarks.data)
+    g_key_file_free(Zathura.Bookmarks.data);
+
+  /* create or open existing bookmark file */
+  Zathura.Bookmarks.data = g_key_file_new();
+  if(!g_file_test(Zathura.Bookmarks.file, G_FILE_TEST_IS_REGULAR))
+  {
+    /* file does not exist */
+    g_file_set_contents(Zathura.Bookmarks.file, "# Zathura bookmarks\n", -1, NULL);
+  }
+
+  GError* error = NULL;
+  if(!g_key_file_load_from_file(Zathura.Bookmarks.data, Zathura.Bookmarks.file,
+        G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
+  {
+    gchar* message = g_strdup_printf("Could not load bookmark file: %s", error->message);
+    notify(ERROR, message);
+    g_free(message);
+  }
 }
 
 void
@@ -2966,7 +2988,7 @@ cmd_bookmark(int argc, char** argv)
   Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
       (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
 
-  Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = id->str;
+  Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(id->str);
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
   Zathura.Bookmarks.number_of_bookmarks++;
 
@@ -3057,6 +3079,7 @@ cmd_delete_bookmark(int argc, char** argv)
       /* update key file */
       g_key_file_remove_key(Zathura.Bookmarks.data, Zathura.PDF.file, Zathura.Bookmarks.bookmarks[i].id, NULL);
 
+      g_free(Zathura.Bookmarks.bookmarks[i].id);
       /* update bookmarks */
       Zathura.Bookmarks.bookmarks[i].id   = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].id;
       Zathura.Bookmarks.bookmarks[i].page = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].page;
@@ -3985,8 +4008,16 @@ cb_destroy(GtkWidget* widget, gpointer data)
   if(Zathura.PDF.document)
     close_file(FALSE);
 
-  /* clean up other variables */
+  /* clean up bookmarks */
   g_free(Zathura.Bookmarks.file);
+    if (Zathura.Bookmarks.data)
+    g_key_file_free(Zathura.Bookmarks.data);
+
+  /* destroy mutexes */
+  g_static_mutex_free(&(Zathura.Lock.pdflib_lock));
+  g_static_mutex_free(&(Zathura.Lock.search_lock));
+  g_static_mutex_free(&(Zathura.Lock.pdf_obj_lock));
+  g_static_mutex_free(&(Zathura.Lock.select_lock));
 
   /* inotify */
   if(Zathura.FileMonitor.monitor)
