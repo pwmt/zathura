@@ -1224,24 +1224,30 @@ open_file(char* path, char* password)
     pm = 4096;
 #endif
 
-  /* get filename */
-  char* file = (char*) g_malloc0(sizeof(char) * pm);
-  if(!file || !realpath(path, file))
-  {
-    notify(ERROR, "File does not exist");
-    if(file)
-      free(file);
-    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
-    return FALSE;
-  }
-
+  char* rpath = NULL;
   if(path[0] == '~')
   {
     gchar* home_path = get_home_dir();
-    g_free(file);
-    file = g_build_filename(home_path, path + 1, NULL);
+    rpath = g_build_filename(home_path, path + 1, NULL);
     g_free(home_path);
   }
+  else
+    rpath = g_strdup(path);
+
+  /* get filename */
+  char* file = (char*) g_malloc0(sizeof(char) * pm);
+  if (!file)
+    out_of_memory();
+
+  if(!realpath(rpath, file))
+  {
+    notify(ERROR, "File does not exist");
+    g_free(file);
+    g_free(rpath);
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+    return FALSE;
+  }
+  g_free(rpath);
 
   /* check if file exists */
   if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
