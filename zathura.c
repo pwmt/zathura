@@ -4005,8 +4005,16 @@ cb_destroy(GtkWidget* widget, gpointer data)
   if(Zathura.PDF.document)
     close_file(FALSE);
 
-  /* clean up other variables */
+  /* clean up bookmarks */
   g_free(Zathura.Bookmarks.file);
+    if (Zathura.Bookmarks.data)
+    g_key_file_free(Zathura.Bookmarks.data);
+
+  /* destroy mutexes */
+  g_static_mutex_free(&(Zathura.Lock.pdflib_lock));
+  g_static_mutex_free(&(Zathura.Lock.search_lock));
+  g_static_mutex_free(&(Zathura.Lock.pdf_obj_lock));
+  g_static_mutex_free(&(Zathura.Lock.select_lock));
 
   /* inotify */
   if(Zathura.FileMonitor.monitor)
