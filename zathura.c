@@ -1063,6 +1063,7 @@ close_file(gboolean keep_monitor)
       g_free(Zathura.Bookmarks.bookmarks[i].id);
     }
     free(Zathura.Bookmarks.bookmarks);
+    Zathura.Bookmarks.bookmarks = NULL;
     Zathura.Bookmarks.number_of_bookmarks = 0;
 
     /* convert file and save it */
