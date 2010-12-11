@@ -371,6 +371,7 @@ gboolean open_stdin(gchar*);
 void open_uri(char*);
 void out_of_memory(void) NORETURN;
 void update_status(void);
+void read_bookmarks_file(void);
 void read_configuration_file(const char*);
 void read_configuration(void);
 void recalcRectangle(int, PopplerRectangle*);
@@ -613,26 +614,8 @@ init_bookmarks(void)
   Zathura.Bookmarks.number_of_bookmarks = 0;
   Zathura.Bookmarks.bookmarks = NULL;
 
-  /* create or open existing bookmark file */
-  Zathura.Bookmarks.data = g_key_file_new();
-  gchar* bookmarks = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
-
-  if(!g_file_test(bookmarks, G_FILE_TEST_IS_REGULAR))
-  {
-    /* file does not exist */
-    g_file_set_contents(bookmarks, "# Zathura bookmarks\n", -1, NULL);
-  }
-
-  GError* error = NULL;
-  if(!g_key_file_load_from_file(Zathura.Bookmarks.data, bookmarks,
-        G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
-  {
-    gchar* message = g_strdup_printf("Could not load bookmark file: %s", error->message);
-    notify(ERROR, message);
-    g_free(message);
-  }
-
-  Zathura.Bookmarks.file = bookmarks;
+  Zathura.Bookmarks.file = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
+  read_bookmarks_file();
 }
 
 void
@@ -1058,6 +1041,8 @@ close_file(gboolean keep_monitor)
   /* save bookmarks */
   if(Zathura.Bookmarks.data)
   {
+    read_bookmarks_file();
+
     /* set current page */
     g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
         BM_PAGE_ENTRY, Zathura.PDF.page_number);
@@ -1527,6 +1512,31 @@ update_status(void)
   gtk_label_set_markup((GtkLabel*) Zathura.Global.status_state, status_text);
   g_free(status_text);
   g_free(zoom_level);
+}
+
+void
+read_bookmarks_file(void)
+{
+  /* free it at first */
+  if (Zathura.Bookmarks.data)
+    g_key_file_free(Zathura.Bookmarks.data);
+
+  /* create or open existing bookmark file */
+  Zathura.Bookmarks.data = g_key_file_new();
+  if(!g_file_test(Zathura.Bookmarks.file, G_FILE_TEST_IS_REGULAR))
+  {
+    /* file does not exist */
+    g_file_set_contents(Zathura.Bookmarks.file, "# Zathura bookmarks\n", -1, NULL);
+  }
+
+  GError* error = NULL;
+  if(!g_key_file_load_from_file(Zathura.Bookmarks.data, Zathura.Bookmarks.file,
+        G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
+  {
+    gchar* message = g_strdup_printf("Could not load bookmark file: %s", error->message);
+    notify(ERROR, message);
+    g_free(message);
+  }
 }
 
 void
