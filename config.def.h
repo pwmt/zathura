@@ -16,7 +16,7 @@ static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 /* Use XDG directory specification if no config and data directory are given on
  * the command line. Uncomment the next line if you just want to use CONFIG_DIR
  * and DATA_DIR instead (these will be the default locations if the XDG_*
- * environment variebles are not set anyway) */
+ * environment variables are not set anyway) */
 /* #define ZATHURA_NO_XDG */
 
 /* directories and files */
@@ -29,6 +29,7 @@ static const char DATA_DIR[]      = "~/.local/share/zathura";
 /* bookmarks */
 static const char BM_PAGE_ENTRY[]  = "page";
 static const char BM_PAGE_OFFSET[] = "offset";
+int save_position = 1;
 
 /* look */
 char* font                   = "monospace normal 9";
@@ -248,6 +249,7 @@ Setting settings[] = {
   {"recolor",                &(Zathura.Global.recolor),          'b',   TRUE,    FALSE,   "Invert the image" },
   {"recolor_darkcolor",      &(recolor_darkcolor),               's',   FALSE,   TRUE,    "Recoloring (dark color)"},
   {"recolor_lightcolor",     &(recolor_lightcolor),              's',   FALSE,   TRUE,    "Recoloring (light color)"},
+  {"save_position",          &(save_position),                   'b',   FALSE,   FALSE,   "Save position in file on quit and restore it on open"},
   {"scroll_step",            &(scroll_step),                     'f',   FALSE,   FALSE,   "Scroll step"},
   {"scroll_wrap",            &(scroll_wrap),                     'b',   FALSE,   FALSE,   "Wrap scolling at last page"},
   {"scrollbars",             &(show_scrollbars),                 'b',   FALSE,   TRUE,    "Show scrollbars"},
