@@ -51,6 +51,60 @@ init_zathura()
   return true;
 }
 
+bool
+document_open(const char* path, const char* password)
+{
+  if(!path) {
+    return false;
+  }
+
+  zathura_document_t* document = zathura_document_open(path, password);
+
+  if(!document) {
+    return false;
+  }
+
+  Zathura.document = document;
+
+  if(!page_set(0)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool
+document_close()
+{
+  if(!Zathura.document) {
+    return false;
+  }
+
+  zathura_document_free(Zathura.document);
+
+  return true;
+}
+
+bool
+page_set(unsigned int page_id)
+{
+  if(!Zathura.document) {
+    return false;
+  }
+
+  if(page_id >= Zathura.document->number_of_pages) {
+    return false;
+  }
+
+  Zathura.document->current_page_number = page_id;
+
+  char* page_number = g_strdup_printf("[%d/%d]", page_id + 1, Zathura.document->number_of_pages);
+  girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.page_number, page_number);
+  g_free(page_number);
+
+  return true;
+}
+
 /* main function */
 int main(int argc, char* argv[])
 {
@@ -64,21 +118,10 @@ int main(int argc, char* argv[])
   }
 
   if(argc > 1) {
-    zathura_document_t* document = zathura_document_open(argv[1], NULL);
-
-    if(!document) {
+    if(!document_open(argv[1], NULL)) {
+      printf("error: could not open document\n");
       return -1;
     }
-
-    zathura_page_t* page = zathura_page_get(document, 0);
-
-    if(!page) {
-      zathura_document_free(document);
-      return -2;
-    }
-
-    zathura_page_free(page);
-    zathura_document_free(document);
   }
 
   gdk_threads_enter();

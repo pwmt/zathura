@@ -72,6 +72,22 @@ sc_goto(girara_session_t* session, girara_argument_t* argument)
 bool
 sc_navigate(girara_session_t* session, girara_argument_t* argument)
 {
+  if(!session || !argument || !Zathura.document) {
+    return false;
+  }
+
+  unsigned int number_of_pages = Zathura.document->number_of_pages;
+  unsigned int new_page        = Zathura.document->current_page_number;
+
+  if(argument->n == NEXT) {
+    new_page = (new_page + 1) % number_of_pages;
+  }
+  else if(argument->n == PREVIOUS) {
+    new_page = (new_page + number_of_pages - 1) % number_of_pages;
+  }
+
+  page_set(new_page);
+
   return false;
 }
 

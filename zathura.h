@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <girara.h>
 
+#include "ft/document.h"
+
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -23,7 +25,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
 
 struct
 {
-  struct 
+  struct
   {
     girara_session_t* session; /**> girara interface session */
 
@@ -34,6 +36,8 @@ struct
       girara_statusbar_item_t* page_number; /**> page number statusbar entry */
     } statusbar;
   } UI;
+
+  zathura_document_t* document; /**> The current document */
 } Zathura;
 
 /**
@@ -43,5 +47,29 @@ struct
  */
 
 bool init_zathura();
+
+/**
+ * Opens a file
+ *
+ * @param path The path to the file
+ * @param password The password of the file
+ *
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool document_open(const char* path, const char* password);
+
+/**
+ * Closes the current opened document
+ *
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool document_close();
+
+/**
+ * Opens the page with the given number
+ *
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool page_set(unsigned int page_id);
 
 #endif // ZATHURA_H
