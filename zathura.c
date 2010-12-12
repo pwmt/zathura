@@ -1063,6 +1063,7 @@ close_file(gboolean keep_monitor)
       g_free(Zathura.Bookmarks.bookmarks[i].id);
     }
     free(Zathura.Bookmarks.bookmarks);
+    Zathura.Bookmarks.bookmarks = NULL;
     Zathura.Bookmarks.number_of_bookmarks = 0;
 
     /* convert file and save it */
@@ -1223,24 +1224,30 @@ open_file(char* path, char* password)
     pm = 4096;
 #endif
 
-  /* get filename */
-  char* file = (char*) g_malloc0(sizeof(char) * pm);
-  if(!file || !realpath(path, file))
-  {
-    notify(ERROR, "File does not exist");
-    if(file)
-      free(file);
-    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
-    return FALSE;
-  }
-
+  char* rpath = NULL;
   if(path[0] == '~')
   {
     gchar* home_path = get_home_dir();
-    g_free(file);
-    file = g_build_filename(home_path, path + 1, NULL);
+    rpath = g_build_filename(home_path, path + 1, NULL);
     g_free(home_path);
   }
+  else
+    rpath = g_strdup(path);
+
+  /* get filename */
+  char* file = (char*) g_malloc0(sizeof(char) * pm);
+  if (!file)
+    out_of_memory();
+
+  if(!realpath(rpath, file))
+  {
+    notify(ERROR, "File does not exist");
+    g_free(file);
+    g_free(rpath);
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+    return FALSE;
+  }
+  g_free(rpath);
 
   /* check if file exists */
   if(!g_file_test(file, G_FILE_TEST_IS_REGULAR))
@@ -3149,11 +3156,6 @@ cmd_export(int argc, char** argv)
         if(argv[1][0] == '~')
         {
           gchar* home_path = get_home_dir();
-          file = malloc(((int) strlen(filename) + (int) strlen(argv[1])
-            + (int) strlen(home_path) - 1) * sizeof(char));
-          if(!file)
-            out_of_memory();
-
           file = g_strdup_printf("%s%s%s", home_path, argv[1] + 1, filename);
           g_free(home_path);
         }
@@ -3190,11 +3192,6 @@ cmd_export(int argc, char** argv)
       if(argv[1][0] == '~')
       {
         gchar* home_path = get_home_dir();
-        file = malloc(((int) strlen(attachment->name) + (int) strlen(argv[1])
-          + (int) strlen(home_path) - 1) * sizeof(char));
-        if(!file)
-          out_of_memory();
-
         file = g_strdup_printf("%s%s%s", home_path, argv[1] + 1, attachment->name);
         g_free(home_path);
       }
