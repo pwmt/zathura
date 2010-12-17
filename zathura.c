@@ -1956,6 +1956,9 @@ sc_abort(Argument* argument)
     gtk_label_set_markup((GtkLabel*) Zathura.Global.status_buffer, "");
   }
 
+  if(!Zathura.Global.show_inputbar)
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.inputbar));
+
   /* Set back to normal mode */
   change_mode(NORMAL);
   switch_view(Zathura.UI.document);
