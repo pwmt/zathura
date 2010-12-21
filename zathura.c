@@ -1854,7 +1854,7 @@ search(void* parameter)
   static char* search_item;
   static int direction;
   static int next_page = 0;
-  gchar* old_query;
+  gchar* old_query = NULL;
   int page_counter;
   GList* results = NULL;
 
@@ -1932,6 +1932,9 @@ search(void* parameter)
         break;
     }
   }
+
+  g_free(argument->data);
+  g_free(argument);
 
   /* draw results */
   if(results)
@@ -2295,8 +2298,11 @@ sc_search(Argument* argument)
     g_static_mutex_lock(&(Zathura.Lock.search_lock));
   }
 
+  Argument* newarg = g_malloc0(sizeof(Argument));
+  newarg->n = argument->n;
+  newarg->data = argument->data ? g_strdup(argument->data) : NULL;
   Zathura.Thread.search_thread_running = TRUE;
-  Zathura.Thread.search_thread = g_thread_create(search, (gpointer) argument, TRUE, NULL);
+  Zathura.Thread.search_thread = g_thread_create(search, (gpointer) newarg, TRUE, NULL);
   g_static_mutex_unlock(&(Zathura.Lock.search_lock));
 }
 
@@ -4009,8 +4015,10 @@ scmd_search(gchar* input, Argument* argument)
   if(!input || !strlen(input))
     return TRUE;
 
-  argument->data = g_strdup(input);
-  sc_search(argument);
+  Argument* newarg = g_malloc0(sizeof(argument));
+  newarg->n = argument->n;
+  newarg->data = g_strdup(input);
+  sc_search(newarg);
 
   return TRUE;
 }
