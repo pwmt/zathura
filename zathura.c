@@ -4015,10 +4015,8 @@ scmd_search(gchar* input, Argument* argument)
   if(!input || !strlen(input))
     return TRUE;
 
-  Argument* newarg = g_malloc0(sizeof(argument));
-  newarg->n = argument->n;
-  newarg->data = g_strdup(input);
-  sc_search(newarg);
+  argument->data = input;
+  sc_search(argument);
 
   return TRUE;
 }
@@ -4166,7 +4164,7 @@ cb_inputbar_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 
       if(new_utf_char != 0)
       {
-        gchar* newchar = malloc(6 * sizeof(gchar));
+        gchar* newchar = g_malloc0(6 * sizeof(gchar));
         if(newchar == NULL)
         {
           g_free(input);
