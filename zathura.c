@@ -35,7 +35,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH, ADJUST_NONE, CONTINUOUS, DELETE_LAST,
   ADD_MARKER, EVAL_MARKER, EXPAND, COLLAPSE, SELECT, GOTO_DEFAULT, GOTO_LABELS,
   GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR,
-  DELETE_TO_LINE_START, APPEND_FILEPATH };
+  DELETE_TO_LINE_START, APPEND_FILEPATH, NO_SEARCH };
 
 /* define modes */
 #define ALL        (1 << 0)
@@ -321,6 +321,7 @@ struct
     GList* results;
     int page;
     gboolean draw;
+    gchar* query;
   } Search;
 
   struct
@@ -451,7 +452,7 @@ void bcmd_setmarker(char*, Argument*);
 void bcmd_zoom(char*, Argument*);
 
 /* special command delcarations */
-gboolean scmd_search(char*, Argument*);
+gboolean scmd_search(gchar*, Argument*);
 
 /* callback declarations */
 gboolean cb_destroy(GtkWidget*, gpointer);
@@ -680,6 +681,7 @@ init_zathura(void)
   Zathura.Search.results = NULL;
   Zathura.Search.page    = 0;
   Zathura.Search.draw    = FALSE;
+  Zathura.Search.query   = NULL;
 
   Zathura.FileMonitor.monitor = NULL;
   Zathura.FileMonitor.file    = NULL;
@@ -1852,71 +1854,83 @@ search(void* parameter)
   static char* search_item;
   static int direction;
   static int next_page = 0;
+  gchar* old_query;
   int page_counter;
   GList* results = NULL;
 
-  if(argument->data)
+  if(argument->n != NO_SEARCH)
   {
-    if(search_item)
-      g_free(search_item);
-
-    search_item = g_strdup((char*) argument->data);
-  }
-
-  g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
-  if(!Zathura.PDF.document || !search_item || !strlen(search_item))
-  {
-    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
-    g_static_mutex_lock(&(Zathura.Lock.search_lock));
-    Zathura.Thread.search_thread_running = FALSE;
-    g_static_mutex_unlock(&(Zathura.Lock.search_lock));
-    g_thread_exit(NULL);
-  }
-
-  /* delete old results */
-  if(Zathura.Search.results)
-  {
-    g_list_free(Zathura.Search.results);
-    Zathura.Search.results = NULL;
-  }
-
-  /* search document */
-  if(argument->n)
-    direction = (argument->n == BACKWARD) ? -1 : 1;
-
-  int number_of_pages = Zathura.PDF.number_of_pages;
-  int page_number     = Zathura.PDF.page_number;
-
-  g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
-
-  for(page_counter = 1; page_counter <= number_of_pages; page_counter++)
-  {
-    g_static_mutex_lock(&(Zathura.Lock.search_lock));
-    if(Zathura.Thread.search_thread_running == FALSE)
+    if(argument->data)
     {
+      if(search_item)
+        g_free(search_item);
+
+      search_item = g_strdup((char*) argument->data);
+    }
+
+    g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
+    if(!Zathura.PDF.document || !search_item || !strlen(search_item))
+    {
+      g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+      g_static_mutex_lock(&(Zathura.Lock.search_lock));
+      Zathura.Thread.search_thread_running = FALSE;
       g_static_mutex_unlock(&(Zathura.Lock.search_lock));
       g_thread_exit(NULL);
     }
-    g_static_mutex_unlock(&(Zathura.Lock.search_lock));
 
-    next_page = (number_of_pages + page_number +
-        page_counter * direction) % number_of_pages;
+    old_query = Zathura.Search.query;
 
-    g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-    PopplerPage* page = poppler_document_get_page(Zathura.PDF.document, next_page);
-    g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+    /* delete old results */
+    if(Zathura.Search.results)
+    {
+      g_list_free(Zathura.Search.results);
+      Zathura.Search.results = NULL;
+    }
 
-    if(!page)
-      g_thread_exit(NULL);
+    /* search document */
+    if(argument->n)
+      direction = (argument->n == BACKWARD) ? -1 : 1;
 
-    g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-    results = poppler_page_find_text(page, search_item);
-    g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+    Zathura.Search.query = g_strdup(search_item);
 
-    g_object_unref(page);
+    int number_of_pages = Zathura.PDF.number_of_pages;
+    int page_number     = Zathura.PDF.page_number;
 
-    if(results)
-      break;
+    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
+
+    page_counter = (g_strcmp0(old_query,search_item) == 0) ? 1 : 0;
+    for( ; page_counter <= number_of_pages; page_counter++)
+    {
+      g_static_mutex_lock(&(Zathura.Lock.search_lock));
+      if(Zathura.Thread.search_thread_running == FALSE)
+      {
+        g_static_mutex_unlock(&(Zathura.Lock.search_lock));
+        g_thread_exit(NULL);
+      }
+      g_static_mutex_unlock(&(Zathura.Lock.search_lock));
+
+      next_page = (number_of_pages + page_number +
+          page_counter * direction) % number_of_pages;
+
+      g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+      PopplerPage* page = poppler_document_get_page(Zathura.PDF.document, next_page);
+      g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+
+      if(!page)
+      {
+        g_free(old_query);
+        g_thread_exit(NULL);
+      }
+
+      g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
+      results = poppler_page_find_text(page, search_item);
+      g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+
+      g_object_unref(page);
+
+      if(results)
+        break;
+    }
   }
 
   /* draw results */
@@ -1932,6 +1946,7 @@ search(void* parameter)
     Zathura.Search.results = results;
     Zathura.Search.page    = next_page;
     Zathura.Search.draw    = TRUE;
+    Zathura.Search.query   = g_strdup(search_item);
 
     gdk_threads_leave();
   }
@@ -1940,6 +1955,7 @@ search(void* parameter)
   Zathura.Thread.search_thread_running = FALSE;
   g_static_mutex_unlock(&(Zathura.Lock.search_lock));
 
+  g_free(old_query);
   g_thread_exit(NULL);
   return NULL;
 }
@@ -3988,12 +4004,12 @@ bcmd_zoom(char* buffer, Argument* argument)
 
 /* special command implementation */
 gboolean
-scmd_search(char* input, Argument* argument)
+scmd_search(gchar* input, Argument* argument)
 {
-  if(!strlen(input))
+  if(!input || !strlen(input))
     return TRUE;
 
-  argument->data = input;
+  argument->data = g_strdup(input);
   sc_search(argument);
 
   return TRUE;
@@ -4129,17 +4145,54 @@ cb_inputbar_kb_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
   }
 
   /* special commands */
-  char identifier = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0, 1)[0];
+  char* identifier_string = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 0, 1);
+  char identifier = identifier_string[0];
+
   for(i = 0; i < LENGTH(special_commands); i++)
   {
     if((identifier == special_commands[i].identifier) &&
        (special_commands[i].always == 1))
     {
-      gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 1, -1);
-      special_commands[i].function(input, &(special_commands[i].argument));
+      gchar *input       = gtk_editable_get_chars(GTK_EDITABLE(Zathura.UI.inputbar), 1, -1);
+      guint new_utf_char = gdk_keyval_to_unicode(event->keyval);
+
+      if(new_utf_char != 0)
+      {
+        gchar* newchar = malloc(6 * sizeof(gchar));
+        if(newchar == NULL)
+        {
+          g_free(input);
+          continue;
+        }
+
+        gint len = g_unichar_to_utf8(new_utf_char, newchar);
+        newchar[len] = 0;
+        gchar* tmp = g_strconcat(input, newchar, NULL);
+
+        g_free(input);
+        g_free(newchar);
+
+        input = tmp;
+      }
+
+      // FIXME
+      if((special_commands[i].function == scmd_search) && (event->keyval == GDK_Return))
+      {
+        Argument argument = { NO_SEARCH, NULL };
+        scmd_search(input, &argument);
+      }
+      else
+      {
+        special_commands[i].function(input, &(special_commands[i].argument));
+      }
+
+      g_free(identifier_string);
+      g_free(input);
       return FALSE;
     }
   }
+
+  g_free(identifier_string);
 
   return FALSE;
 }
