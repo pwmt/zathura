@@ -1867,6 +1867,8 @@ search(void* parameter)
 
       search_item = g_strdup((char*) argument->data);
     }
+    g_free(argument->data);
+    g_free(argument);
 
     g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
     if(!Zathura.PDF.document || !search_item || !strlen(search_item))
@@ -1905,6 +1907,7 @@ search(void* parameter)
       if(Zathura.Thread.search_thread_running == FALSE)
       {
         g_static_mutex_unlock(&(Zathura.Lock.search_lock));
+        g_free(old_query);
         g_thread_exit(NULL);
       }
       g_static_mutex_unlock(&(Zathura.Lock.search_lock));
@@ -1932,9 +1935,12 @@ search(void* parameter)
         break;
     }
   }
-
-  g_free(argument->data);
-  g_free(argument);
+  else
+  {
+    Zathura.Search.draw = TRUE;
+    g_free(argument->data);
+    g_free(argument);
+  }
 
   /* draw results */
   if(results)
