@@ -375,11 +375,11 @@ void update_status(void);
 void read_bookmarks_file(void);
 void read_configuration_file(const char*);
 void read_configuration(void);
-void recalcRectangle(int, PopplerRectangle*);
-void setCompletionRowColor(GtkBox*, int, int);
+void recalc_rectangle(int, PopplerRectangle*);
+void set_completion_row_color(GtkBox*, int, int);
 void set_page(int);
 void switch_view(GtkWidget*);
-GtkEventBox* createCompletionRow(GtkBox*, char*, char*, gboolean);
+GtkEventBox* create_completion_row(GtkBox*, char*, char*, gboolean);
 gchar* fix_path(const gchar*);
 gchar* path_from_env(const gchar*);
 gchar* get_home_dir(void);
@@ -1181,7 +1181,7 @@ highlight_result(int page_id, PopplerRectangle* rectangle)
   cairo_set_source_rgba(cairo, Zathura.Style.search_highlight.red, Zathura.Style.search_highlight.green,
       Zathura.Style.search_highlight.blue, transparency);
 
-  recalcRectangle(page_id, trect);
+  recalc_rectangle(page_id, trect);
   cairo_rectangle(cairo, trect->x1, trect->y1, (trect->x2 - trect->x1), (trect->y2 - trect->y1));
   poppler_rectangle_free(trect);
   cairo_fill(cairo);
@@ -1596,7 +1596,7 @@ read_configuration(void)
 }
 
 void
-recalcRectangle(int page_id, PopplerRectangle* rectangle)
+recalc_rectangle(int page_id, PopplerRectangle* rectangle)
 {
   double page_width, page_height;
   double x1 = rectangle->x1;
@@ -1641,7 +1641,7 @@ recalcRectangle(int page_id, PopplerRectangle* rectangle)
 }
 
 GtkEventBox*
-createCompletionRow(GtkBox* results, char* command, char* description, gboolean group)
+create_completion_row(GtkBox* results, char* command, char* description, gboolean group)
 {
   GtkBox      *col = GTK_BOX(gtk_hbox_new(FALSE, 0));
   GtkEventBox *row = GTK_EVENT_BOX(gtk_event_box_new());
@@ -1700,7 +1700,7 @@ createCompletionRow(GtkBox* results, char* command, char* description, gboolean 
 }
 
 void
-setCompletionRowColor(GtkBox* results, int mode, int id)
+set_completion_row_color(GtkBox* results, int mode, int id)
 {
   GtkEventBox *row   = (GtkEventBox*) g_list_nth_data(gtk_container_get_children(GTK_CONTAINER(results)), id);
 
@@ -2107,7 +2107,7 @@ sc_follow(Argument* argument)
       highlight_result(Zathura.PDF.page_number, link_rectangle);
 
       /* draw text */
-      recalcRectangle(Zathura.PDF.page_number, link_rectangle);
+      recalc_rectangle(Zathura.PDF.page_number, link_rectangle);
       cairo_t *cairo = cairo_create(Zathura.PDF.surface);
       cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
       cairo_set_font_size(cairo, 10);
@@ -2808,7 +2808,7 @@ isc_completion(Argument* argument)
               rows[n_items].description = NULL;
               rows[n_items].command_id  = -1;
               rows[n_items].is_group    = TRUE;
-              rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, group->value, NULL, TRUE));
+              rows[n_items++].row       = GTK_WIDGET(create_completion_row(results, group->value, NULL, TRUE));
             }
 
             rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
@@ -2816,7 +2816,7 @@ isc_completion(Argument* argument)
             rows[n_items].description = element->description ? g_strdup(element->description) : NULL;
             rows[n_items].command_id  = previous_id;
             rows[n_items].is_group    = FALSE;
-            rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, element->value, element->description, FALSE));
+            rows[n_items++].row       = GTK_WIDGET(create_completion_row(results, element->value, element->description, FALSE));
             group_elements++;
           }
         }
@@ -2852,7 +2852,7 @@ isc_completion(Argument* argument)
           rows[n_items].description = g_strdup(commands[i].description);
           rows[n_items].command_id  = i;
           rows[n_items].is_group    = FALSE;
-          rows[n_items++].row       = GTK_WIDGET(createCompletionRow(results, commands[i].command, commands[i].description, FALSE));
+          rows[n_items++].row       = GTK_WIDGET(create_completion_row(results, commands[i].command, commands[i].description, FALSE));
         }
       }
 
@@ -2870,7 +2870,7 @@ isc_completion(Argument* argument)
    */
   if( (results) && (n_items > 0) )
   {
-    setCompletionRowColor(results, NORMAL, current_item);
+    set_completion_row_color(results, NORMAL, current_item);
     char* temp;
     int i = 0, next_group = 0;
 
@@ -2895,7 +2895,7 @@ isc_completion(Argument* argument)
       }
     }
 
-    setCompletionRowColor(results, HIGHLIGHT, current_item);
+    set_completion_row_color(results, HIGHLIGHT, current_item);
 
     /* hide other items */
     int uh = ceil(n_completion_items / 2);
