@@ -57,6 +57,13 @@ djvu_document_free(zathura_document_t* document)
     return false;
   }
 
+  if(document->data) {
+    djvu_document_t* djvu_document = (djvu_document_t*) document->data;
+    ddjvu_context_release(djvu_document->context);
+    ddjvu_document_release(djvu_document->document);
+    free(document->data);
+  }
+
   return true;
 }
 
