@@ -10,14 +10,16 @@
 #include <limits.h>
 
 #include "document.h"
+#include "pdf/pdf.h"
+#include "djvu/djvu.h"
 #include "../utils.h"
 #include "../zathura.h"
-#include "pdf/pdf.h"
 
 #define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
 
 zathura_document_plugin_t zathura_document_plugins[] = {
-  { "pdf", pdf_document_open },
+  { "pdf",  pdf_document_open },
+  { "djvu", djvu_document_open },
 };
 
 zathura_document_t*

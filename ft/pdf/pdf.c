@@ -34,6 +34,7 @@ pdf_document_open(zathura_document_t* document)
     fprintf(stderr, "error: could not open file: %s\n", error->message);
     g_error_free(error);
     free(document->data);
+    document->data = NULL;
     return false;
   }
 
@@ -44,6 +45,7 @@ pdf_document_open(zathura_document_t* document)
     fprintf(stderr, "error: could not open file: %s\n", error->message);
     g_error_free(error);
     free(document->data);
+    document->data = NULL;
     return false;
   }
 
@@ -63,6 +65,7 @@ pdf_document_free(zathura_document_t* document)
     pdf_document_t* pdf_document = (pdf_document_t*) document->data;
     g_object_unref(pdf_document->document);
     free(document->data);
+    document->data = NULL;
   }
 
   return true;

@@ -67,6 +67,7 @@ document_open(const char* path, const char* password)
   Zathura.document = document;
 
   if(!page_set(0)) {
+    zathura_document_free(document);
     return false;
   }
 
