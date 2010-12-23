@@ -8,7 +8,7 @@ bool
 djvu_document_open(zathura_document_t* document)
 {
   if(!document) {
-    return false;
+    goto error_out;
   }
 
   document->functions.document_free             = djvu_document_free;
@@ -24,30 +24,57 @@ djvu_document_open(zathura_document_t* document)
 
   document->data = malloc(sizeof(djvu_document_t));
   if(!document->data) {
-    return false;
+    goto error_out;
   }
 
   djvu_document_t* djvu_document = (djvu_document_t*) document->data;
-  djvu_document->context         = ddjvu_context_create("zathura");
+  djvu_document->context  = NULL;
+  djvu_document->document = NULL;
+  djvu_document->format   = NULL;
 
-  if(!djvu_document->context) {
-    free(document->data);
-    document->data = NULL;
-    return false;
+  /* setup format */
+  djvu_document->format = ddjvu_format_create (DDJVU_FORMAT_RGBMASK32, 0, NULL);
+
+  if(!djvu_document->format) {
+    goto error_free;
   }
 
+  ddjvu_format_set_row_order(djvu_document->format, TRUE);
+
+  /* setup context */
+  djvu_document->context = ddjvu_context_create("zathura");
+
+  if(!djvu_document->context) {
+    goto error_free;
+  }
+
+  /* setup document */
   djvu_document->document = ddjvu_document_create_by_filename(djvu_document->context, document->file_path, FALSE);
 
   if(!djvu_document->document) {
-    ddjvu_context_release(djvu_document->context);
-    free(document->data);
-    document->data = NULL;
-    return false;
+    goto error_free;
   }
 
   document->number_of_pages = ddjvu_document_get_pagenum(djvu_document->document);
 
   return true;
+
+error_free:
+
+  if(djvu_document->format) {
+    ddjvu_format_release(djvu_document->format);
+  }
+
+  if(djvu_document->context) {
+    ddjvu_context_release(djvu_document->context);
+  }
+
+  free(document->data);
+  document->data = NULL;
+
+error_out:
+
+  return false;
 }
 
 bool
@@ -61,6 +88,7 @@ djvu_document_free(zathura_document_t* document)
     djvu_document_t* djvu_document = (djvu_document_t*) document->data;
     ddjvu_context_release(djvu_document->context);
     ddjvu_document_release(djvu_document->document);
+    ddjvu_format_release(djvu_document->format);
     free(document->data);
   }
 
@@ -80,7 +108,17 @@ djvu_document_save_as(zathura_document_t* document, const char* path)
     return false;
   }
 
-  return false;
+  djvu_document_t* djvu_document = (djvu_document_t*) document->data;
+
+  FILE* fp = fopen(path, "w");
+  if(!fp) {
+    return false;
+  }
+
+  ddjvu_document_save(djvu_document->document, fp, 0, NULL);
+  fclose(fp);
+
+  return true;
 }
 
 zathura_list_t*

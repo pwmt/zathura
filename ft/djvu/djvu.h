@@ -12,6 +12,7 @@ typedef struct djvu_document_s
 {
   ddjvu_context_t*  context;
   ddjvu_document_t* document;
+  ddjvu_format_t*   format;
 } djvu_document_t;
 
 bool djvu_document_open(zathura_document_t* document);

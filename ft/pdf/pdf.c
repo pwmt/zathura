@@ -7,8 +7,9 @@
 bool
 pdf_document_open(zathura_document_t* document)
 {
-  if(!document)
-    return false;
+  if(!document) {
+    goto error_out;
+  }
 
   document->functions.document_free             = pdf_document_free;
   document->functions.document_index_generate   = pdf_document_index_generate;;
@@ -23,7 +24,7 @@ pdf_document_open(zathura_document_t* document)
 
   document->data = malloc(sizeof(pdf_document_t));
   if(!document->data) {
-    return false;
+    goto error_out;
   }
 
   /* format path */
@@ -32,10 +33,7 @@ pdf_document_open(zathura_document_t* document)
 
   if(!file_uri) {
     fprintf(stderr, "error: could not open file: %s\n", error->message);
-    g_error_free(error);
-    free(document->data);
-    document->data = NULL;
-    return false;
+    goto error_free;
   }
 
   pdf_document_t* pdf_document = (pdf_document_t*) document->data;
@@ -43,15 +41,29 @@ pdf_document_open(zathura_document_t* document)
 
   if(!pdf_document->document) {
     fprintf(stderr, "error: could not open file: %s\n", error->message);
-    g_error_free(error);
-    free(document->data);
-    document->data = NULL;
-    return false;
+    goto error_free;
   }
 
   document->number_of_pages = poppler_document_get_n_pages(pdf_document->document);
 
   return true;
+
+error_free:
+
+    if(error) {
+      g_error_free(error);
+    }
+
+    if(file_uri) {
+      g_free(file_uri);
+    }
+
+    free(document->data);
+    document->data = NULL;
+
+error_out:
+
+  return false;
 }
 
 bool
