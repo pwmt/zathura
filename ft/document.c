@@ -155,7 +155,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
   return document->functions.document_save_as(document, path);
 }
 
-zathura_list_t*
+girara_tree_node_t*
 zathura_document_index_generate(zathura_document_t* document)
 {
   if(!document) {

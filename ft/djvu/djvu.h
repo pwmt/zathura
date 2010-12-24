@@ -17,7 +17,7 @@ typedef struct djvu_document_s
 
 bool djvu_document_open(zathura_document_t* document);
 bool djvu_document_free(zathura_document_t* document);
-zathura_list_t* djvu_document_index_generate(zathura_document_t* document);
+girara_tree_node_t* djvu_document_index_generate(zathura_document_t* document);
 bool djvu_document_save_as(zathura_document_t* document, const char* path);
 zathura_list_t* djvu_document_attachments_get(zathura_document_t* document);
 zathura_page_t* djvu_page_get(zathura_document_t* document, unsigned int page);

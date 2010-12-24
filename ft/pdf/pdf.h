@@ -15,7 +15,7 @@ typedef struct pdf_document_s
 
 bool pdf_document_open(zathura_document_t* document);
 bool pdf_document_free(zathura_document_t* document);
-zathura_list_t* pdf_document_index_generate(zathura_document_t* document);
+girara_tree_node_t* pdf_document_index_generate(zathura_document_t* document);
 bool pdf_document_save_as(zathura_document_t* document, const char* path);
 zathura_list_t* pdf_document_attachments_get(zathura_document_t* document);
 zathura_page_t* pdf_page_get(zathura_document_t* document, unsigned int page);

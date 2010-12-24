@@ -95,7 +95,7 @@ djvu_document_free(zathura_document_t* document)
   return true;
 }
 
-zathura_list_t*
+girara_tree_node_t*
 djvu_document_index_generate(zathura_document_t* document)
 {
   return NULL;

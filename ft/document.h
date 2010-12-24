@@ -6,6 +6,8 @@
 #include <cairo.h>
 #include <stdbool.h>
 
+#include <girara-datastructures.h>
+
 typedef struct zathura_list_s zathura_list_t;
 typedef struct zathura_document_s zathura_document_t;
 
@@ -81,7 +83,7 @@ struct zathura_document_s
   struct
   {
     bool (*document_free)(zathura_document_t* document);
-    zathura_list_t* (*document_index_generate)(zathura_document_t* document);
+    girara_tree_node_t* (*document_index_generate)(zathura_document_t* document);
     bool (*document_save_as)(zathura_document_t* document, const char* path);
     zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
 
@@ -97,7 +99,7 @@ struct zathura_document_s
 zathura_document_t* zathura_document_open(const char* path, const char* password);
 bool zathura_document_free(zathura_document_t* document);
 bool zathura_document_save_as(zathura_document_t* document, const char* path);
-zathura_list_t* zathura_document_index_generate(zathura_document_t* document);
+girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document);
 bool zathura_document_index_free(zathura_list_t* list);
 zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
 bool zathura_document_attachments_free(zathura_list_t* list);
