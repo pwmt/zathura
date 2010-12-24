@@ -50,6 +50,17 @@ typedef struct zathura_link_s
   } target;
 } zathura_link_t;
 
+typedef struct zathura_index_element_s
+{
+  char* title;
+  zathura_link_type_t type;
+  union
+  {
+    unsigned int page_number;
+    char* uri;
+  } target;
+} zathura_index_element_t;
+
 typedef enum zathura_form_type_e
 {
   ZATHURA_FORM_CHECKBOX,
@@ -112,5 +123,8 @@ bool zathura_page_links_free(zathura_list_t* list);
 zathura_list_t* zathura_page_form_fields_get(zathura_page_t* page);
 bool zathura_page_form_fields_free(zathura_list_t* list);
 cairo_surface_t* zathura_page_render(zathura_page_t* page);
+
+zathura_index_element_t* zathura_index_element_new(const char* title);
+void zathura_index_element_free(zathura_index_element_t* index);
 
 #endif // DOCUMENT_H

@@ -298,3 +298,28 @@ zathura_page_render(zathura_page_t* page)
 
   return page->document->functions.page_render(page);
 }
+
+zathura_index_element_t*
+zathura_index_element_new(const char* title)
+{
+  if (!title)
+    return NULL;
+
+  zathura_index_element_t* res = g_malloc0(sizeof(zathura_index_element_t));
+  if (!res)
+    return NULL;
+  res->title = g_strdup(title);
+  return res;
+}
+
+void
+zathura_index_element_free(zathura_index_element_t* index)
+{
+  if (!index)
+    return;
+
+  g_free(index->title);
+  if (index->type == ZATHURA_LINK_EXTERNAL)
+    g_free(index->target.uri);
+  g_free(index);
+}
