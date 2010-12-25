@@ -205,14 +205,24 @@ djvu_page_render(zathura_page_t* page)
 
   ddjvu_page_rotation_t rotation = DDJVU_ROTATE_0;
 
+  unsigned int dim_temp = 0;
+
   switch(Zathura.document->rotate) {
     case 90:
+      tmp         = page_width;
+      page_width  = page_height;
+      page_height = page_tmp;
+
       rotation = DDJVU_ROTATE_90;
       break;
     case 180:
       rotation = DDJVU_ROTATE_180;
       break;
     case 270:
+      tmp         = page_width;
+      page_width  = page_height;
+      page_height = page_tmp;
+
       rotation = DDJVU_ROTATE_270;
       break;
   }
