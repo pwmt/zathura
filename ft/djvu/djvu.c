@@ -1,8 +1,10 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
+#include <cairo.h>
 
 #include "djvu.h"
+#include "../../zathura.h"
 
 bool
 djvu_document_open(zathura_document_t* document)
@@ -189,5 +191,52 @@ djvu_page_form_fields_get(zathura_page_t* page)
 cairo_surface_t*
 djvu_page_render(zathura_page_t* page)
 {
-  return NULL;
+  if(Zathura.document || !page || !page->data || !page->document) {
+    return NULL;
+  }
+
+  /* calculate sizes */
+  unsigned int page_width  = page->width;
+  unsigned int page_height = page->height;
+
+  /* init ddjvu render data */
+  ddjvu_rect_t rrect = { 0, 0, page_width, page_height };
+  ddjvu_rect_t prect = { 0, 0, page_width, page_height };
+
+  ddjvu_page_rotation_t rotation = DDJVU_ROTATE_0;
+
+  switch(Zathura.document->rotate) {
+    case 90:
+      rotation = DDJVU_ROTATE_90;
+      break;
+    case 180:
+      rotation = DDJVU_ROTATE_180;
+      break;
+    case 270:
+      rotation = DDJVU_ROTATE_270;
+      break;
+  }
+
+  djvu_document_t* djvu_document = (djvu_document_t*) page->document->data;
+
+  /* create cairo data */
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+      page->width, page->height);
+
+  if(!surface) {
+    return NULL;
+  }
+
+  int rowsize = cairo_image_surface_get_stride(surface);
+  char* data  = (char*) cairo_image_surface_get_data(surface);
+
+  /* render */
+  ddjvu_page_set_rotation(page->data, rotation);
+
+  ddjvu_page_render(page->data, DDJVU_RENDER_COLOR, &prect, &rrect,
+      djvu_document->format, rowsize, data);
+
+  cairo_surface_mark_dirty(surface);
+
+  return surface;
 }
