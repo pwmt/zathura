@@ -245,7 +245,8 @@ pdf_page_form_fields_get(zathura_page_t* page)
 cairo_surface_t*
 pdf_page_render(zathura_page_t* page)
 {
-  if(Zathura.document || !page || !page->data || !page->document) {
+  if(!Zathura.document || !page || !page->data || !page->document) {
+    printf("die\n");
     return NULL;
   }
 

@@ -35,6 +35,8 @@ struct
       girara_statusbar_item_t* file; /**> file statusbar entry */
       girara_statusbar_item_t* page_number; /**> page number statusbar entry */
     } statusbar;
+
+    GtkWidget *drawing_area;
   } UI;
 
   zathura_document_t* document; /**> The current document */

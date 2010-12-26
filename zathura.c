@@ -11,33 +11,48 @@ bool
 init_zathura()
 {
   if(!(Zathura.UI.session = girara_session_create())) {
-    return false;
+    goto error_out;
   }
 
   if(!girara_session_init(Zathura.UI.session)) {
-    return false;
+    goto error_out;
   }
+
+  Zathura.UI.statusbar.file        = NULL;
+  Zathura.UI.statusbar.buffer      = NULL;
+  Zathura.UI.statusbar.page_number = NULL;
+  Zathura.UI.drawing_area          = NULL;
 
   /* UI */
   Zathura.UI.statusbar.file = girara_statusbar_item_add(Zathura.UI.session, TRUE, TRUE, TRUE, NULL);
   if(!Zathura.UI.statusbar.file) {
-    girara_session_destroy(Zathura.UI.session);
-    return false;
+    goto error_free;
   }
 
   Zathura.UI.statusbar.buffer = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
   if(!Zathura.UI.statusbar.buffer) {
-    girara_session_destroy(Zathura.UI.session);
-    return false;
+    goto error_free;
   }
 
   Zathura.UI.statusbar.page_number = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
   if(!Zathura.UI.statusbar.page_number) {
-    girara_session_destroy(Zathura.UI.session);
-    return false;
+    goto error_free;
   }
 
   girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, "[No Name]");
+
+  Zathura.UI.drawing_area = gtk_drawing_area_new();
+  if(!Zathura.UI.drawing_area) {
+    goto error_free;
+  }
+
+  gtk_widget_show(Zathura.UI.drawing_area);
+  g_signal_connect(G_OBJECT(Zathura.UI.drawing_area), "expose-event", G_CALLBACK(cb_draw), NULL);
+
+  /* set view */
+  if(!girara_set_view(Zathura.UI.session, Zathura.UI.drawing_area)) {
+    goto error_free;
+  }
 
   /* signals */
   g_signal_connect(G_OBJECT(Zathura.UI.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
@@ -49,6 +64,18 @@ init_zathura()
   config_load_default();
 
   return true;
+
+error_free:
+
+  if(Zathura.UI.drawing_area) {
+    g_object_unref(Zathura.UI.drawing_area);
+  }
+
+  girara_session_destroy(Zathura.UI.session);
+
+error_out:
+
+  return false;
 }
 
 bool
@@ -90,11 +117,11 @@ bool
 page_set(unsigned int page_id)
 {
   if(!Zathura.document) {
-    return false;
+    goto error_out;
   }
 
   if(page_id >= Zathura.document->number_of_pages) {
-    return false;
+    goto error_out;
   }
 
   Zathura.document->current_page_number = page_id;
@@ -104,6 +131,10 @@ page_set(unsigned int page_id)
   g_free(page_number);
 
   return true;
+
+error_out:
+
+  return false;
 }
 
 /* main function */
