@@ -196,8 +196,8 @@ djvu_page_render(zathura_page_t* page)
   }
 
   /* calculate sizes */
-  unsigned int page_width  = page->width;
-  unsigned int page_height = page->height;
+  unsigned int page_width  = Zathura.document->scale * page->width;
+  unsigned int page_height = Zathura.document->scale * page->height;
 
   /* init ddjvu render data */
   ddjvu_rect_t rrect = { 0, 0, page_width, page_height };
@@ -209,9 +209,9 @@ djvu_page_render(zathura_page_t* page)
 
   switch(Zathura.document->rotate) {
     case 90:
-      tmp         = page_width;
+      dim_temp    = page_width;
       page_width  = page_height;
-      page_height = page_tmp;
+      page_height = dim_temp;
 
       rotation = DDJVU_ROTATE_90;
       break;
@@ -219,9 +219,9 @@ djvu_page_render(zathura_page_t* page)
       rotation = DDJVU_ROTATE_180;
       break;
     case 270:
-      tmp         = page_width;
+      dim_temp    = page_width;
       page_width  = page_height;
-      page_height = page_tmp;
+      page_height = dim_temp;
 
       rotation = DDJVU_ROTATE_270;
       break;

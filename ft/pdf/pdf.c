@@ -1,8 +1,11 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
+#include <cairo.h>
+#include <poppler/glib/poppler.h>
 
 #include "pdf.h"
+#include "../../zathura.h"
 
 bool
 pdf_document_open(zathura_document_t* document)
@@ -238,5 +241,48 @@ pdf_page_form_fields_get(zathura_page_t* page)
 cairo_surface_t*
 pdf_page_render(zathura_page_t* page)
 {
-  return NULL;
+  if(Zathura.document || !page || !page->data || !page->document) {
+    return NULL;
+  }
+
+  /* create cairo data */
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+      page->width, page->height);
+
+  if(!surface) {
+    return NULL;
+  }
+
+  cairo_t* cairo = cairo_create(surface);
+
+  if(!cairo) {
+    cairo_surface_destroy(surface);
+    return NULL;
+  }
+
+  switch(Zathura.document->rotate) {
+    case 90:
+      cairo_translate(cairo, page->width, 0);
+      break;
+    case 180:
+      cairo_translate(cairo, page->width, page->height);
+      break;
+    case 270:
+      cairo_translate(cairo, 0, page->height);
+      break;
+    default:
+      cairo_translate(cairo, 0, 0);
+      break;
+  }
+
+  cairo_scale(cairo,  Zathura.document->scale, Zathura.document->scale);
+  cairo_rotate(cairo, Zathura.document->rotate * G_PI / 180.0);
+
+  /* render */
+  poppler_page_render(page->data, cairo);
+
+  cairo_paint(cairo);
+  cairo_destroy(cairo);
+
+  return surface;
 }
