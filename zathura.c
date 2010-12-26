@@ -10,6 +10,7 @@
 bool
 init_zathura()
 {
+  /* UI */
   if(!(Zathura.UI.session = girara_session_create())) {
     goto error_out;
   }
@@ -23,7 +24,7 @@ init_zathura()
   Zathura.UI.statusbar.page_number = NULL;
   Zathura.UI.drawing_area          = NULL;
 
-  /* UI */
+  /* statusbar */
   Zathura.UI.statusbar.file = girara_statusbar_item_add(Zathura.UI.session, TRUE, TRUE, TRUE, NULL);
   if(!Zathura.UI.statusbar.file) {
     goto error_free;
@@ -41,13 +42,17 @@ init_zathura()
 
   girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, "[No Name]");
 
+  /* drawing area */
   Zathura.UI.drawing_area = gtk_drawing_area_new();
   if(!Zathura.UI.drawing_area) {
     goto error_free;
   }
 
-  gtk_widget_show(Zathura.UI.drawing_area);
+  gtk_widget_modify_bg(Zathura.UI.drawing_area, GTK_STATE_NORMAL,
+      &(Zathura.UI.session->style.default_background));
+
   g_signal_connect(G_OBJECT(Zathura.UI.drawing_area), "expose-event", G_CALLBACK(cb_draw), NULL);
+  gtk_widget_show(Zathura.UI.drawing_area);
 
   /* set view */
   if(!girara_set_view(Zathura.UI.session, Zathura.UI.drawing_area)) {

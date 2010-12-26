@@ -19,7 +19,7 @@ cb_destroy(GtkWidget* widget, gpointer data)
 gboolean
 cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data)
 {
-  if(!widget) {
+  if(!widget || !Zathura.document) {
     return false;
   }
 
