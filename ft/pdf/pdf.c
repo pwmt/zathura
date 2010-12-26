@@ -89,63 +89,67 @@ pdf_document_free(zathura_document_t* document)
 static void
 build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* iter)
 {
-  if (!root || !iter)
+  if(!root || !iter) {
     return;
+  }
 
   do
   {
     PopplerAction* action = poppler_index_iter_get_action(iter);
-    if (!action)
+
+    if(!action) {
       continue;
+    }
 
     gchar* markup = g_markup_escape_text(action->any.title, -1);
     zathura_index_element_t* indexelement = zathura_index_element_new(markup);
-    if (action->type == POPPLER_ACTION_URI)
-    {
+
+    if(action->type == POPPLER_ACTION_URI) {
       indexelement->type = ZATHURA_LINK_EXTERNAL;
       indexelement->target.uri = g_strdup(action->uri.uri);
-    }
-    else if (action->type == POPPLER_ACTION_GOTO_DEST)
-    {
+    } else if (action->type == POPPLER_ACTION_GOTO_DEST) {
       indexelement->type = ZATHURA_LINK_TO_PAGE;
-      if (action->goto_dest.dest->type == POPPLER_DEST_NAMED)
-      {
+
+      if(action->goto_dest.dest->type == POPPLER_DEST_NAMED) {
         PopplerDest* dest = poppler_document_find_dest(pdf->document, action->goto_dest.dest->named_dest);
-        if (dest)
-        {
+        if(dest) {
           indexelement->target.page_number = dest->page_num - 1;
           poppler_dest_free(dest);
         }
-      }
-      else
+      } else {
         indexelement->target.page_number = action->goto_dest.dest->page_num - 1;
-    }
-    else
-    {
+      }
+    } else {
       poppler_action_free(action);
       zathura_index_element_free(indexelement);
       continue;
     }
+
     poppler_action_free(action);
 
     girara_tree_node_t* node = girara_node_append_data(root, indexelement);
-    PopplerIndexIter* child = poppler_index_iter_get_child(iter);
-    if (child)
+    PopplerIndexIter* child  = poppler_index_iter_get_child(iter);
+
+    if(child) {
       build_index(pdf, node, child);
+    }
+
     poppler_index_iter_free(child);
+
   } while (poppler_index_iter_next(iter));
 }
 
 girara_tree_node_t*
 pdf_document_index_generate(zathura_document_t* document)
 {
-  if (!document || !document->data) {
+  if(!document || !document->data) {
     return NULL;
   }
 
   pdf_document_t* pdf_document = (pdf_document_t*) document->data;
-  PopplerIndexIter* iter = poppler_index_iter_new(pdf_document->document);
-  if (!iter) {
+  PopplerIndexIter* iter       = poppler_index_iter_new(pdf_document->document);
+
+  if(!iter) {
     // XXX: error message?
     return NULL;
   }

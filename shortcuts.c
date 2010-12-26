@@ -81,8 +81,7 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument)
 
   if(argument->n == NEXT) {
     new_page = (new_page + 1) % number_of_pages;
-  }
-  else if(argument->n == PREVIOUS) {
+  } else if(argument->n == PREVIOUS) {
     new_page = (new_page + number_of_pages - 1) % number_of_pages;
   }
 

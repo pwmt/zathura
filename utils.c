@@ -31,10 +31,11 @@ file_get_extension(const char* path)
   unsigned int i = strlen(path);
   for(; i > 0; i--)
   {
-    if(*(path + i) != '.')
+    if(*(path + i) != '.') {
       continue;
-    else
+    } else {
       break;
+    }
   }
 
   if(!i) {
@@ -52,23 +53,22 @@ execute_command(char* const argv[], char** output)
   }
 
   int p[2];
-  if(pipe(p))
+  if(pipe(p)) {
     return -1;
+  }
 
   pid_t pid = fork();
 
   if(pid == -1) { // failure
     return false;
-  }
-  else if(pid == 0) { // child
+  } else if(pid == 0) { // child
     dup2(p[1], 1);
     close(p[0]);
 
     if(execvp(argv[0], argv) == -1) {
       return false;
     }
-  }
-  else { // parent
+  } else { // parent
     dup2(p[0], 0);
     close(p[1]);
 

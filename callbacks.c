@@ -26,8 +26,7 @@ buffer_changed(girara_session_t* session)
   if(buffer) {
     girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, buffer);
     free(buffer);
-  }
-  else {
+  } else {
     girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, "");
   }
 }
