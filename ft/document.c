@@ -70,7 +70,7 @@ zathura_document_open(const char* path, const char* password)
   document->password            = password;
   document->current_page_number = 0;
   document->number_of_pages     = 0;
-  document->scale               = 100;
+  document->scale               = 1.0;
   document->rotate              = 0;
   document->data                = NULL;
 

@@ -87,7 +87,7 @@ struct zathura_document_s
   const char* password;
   unsigned int current_page_number;
   unsigned int number_of_pages;
-  int scale;
+  double scale;
   int rotate;
   void* data;
 
