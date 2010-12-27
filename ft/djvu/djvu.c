@@ -56,6 +56,23 @@ djvu_document_open(zathura_document_t* document)
     goto error_free;
   }
 
+  /* load document info */
+  ddjvu_message_t* msg;
+  ddjvu_message_wait(djvu_document->context);
+
+  while((msg = ddjvu_message_peek(djvu_document->context)) && (msg->m_any.tag != DDJVU_DOCINFO)) {
+    if(msg->m_any.tag == DDJVU_ERROR) {
+      goto error_free;
+    }
+
+    ddjvu_message_pop(djvu_document->context);
+  }
+
+  /* decoding error */
+  if(ddjvu_document_decoding_error(djvu_document->document)) {
+    goto error_free;
+  }
+
   document->number_of_pages = ddjvu_document_get_pagenum(djvu_document->document);
 
   return true;
@@ -149,6 +166,8 @@ djvu_page_get(zathura_document_t* document, unsigned int page)
     free(document_page);
     return NULL;
   }
+
+  while(!ddjvu_page_decoding_done(document_page->data));
 
   document_page->width  = ddjvu_page_get_width(document_page->data);
   document_page->height = ddjvu_page_get_width(document_page->data);
