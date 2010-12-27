@@ -232,7 +232,31 @@ djvu_page_render(zathura_page_t* page)
     goto error_out;
   }
 
-  ddjvu_page_set_rotation(page->data, Zathura.document->rotate);
+  /* set rotation */
+  GdkPixbufRotation gdk_angle       = GDK_PIXBUF_ROTATE_NONE;
+  ddjvu_page_rotation_t ddjvu_angle = DDJVU_ROTATE_0;
+
+  switch(Zathura.document->rotate) {
+    case 90:
+      gdk_angle   = GDK_PIXBUF_ROTATE_CLOCKWISE;
+      ddjvu_angle = DDJVU_ROTATE_90;
+      break;
+    case 180:
+      gdk_angle   = GDK_PIXBUF_ROTATE_UPSIDEDOWN;
+      ddjvu_angle = DDJVU_ROTATE_180;
+      break;
+    case 270:
+      gdk_angle   = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
+      ddjvu_angle = DDJVU_ROTATE_270;
+      break;
+    default:
+      gdk_angle       = GDK_PIXBUF_ROTATE_NONE;
+      ddjvu_angle = DDJVU_ROTATE_0;
+      break;
+  }
+
+
+  ddjvu_page_set_rotation(page->data, ddjvu_angle);
 
   /* render page */
   ddjvu_page_render(page->data, DDJVU_RENDER_COLOR, &prect, &rrect, djvu_document->format,
@@ -248,23 +272,7 @@ djvu_page_render(zathura_page_t* page)
 
   /* rotate page */
   if(Zathura.document->rotate != 0) {
-    GdkPixbufRotation angle = GDK_PIXBUF_ROTATE_NONE;
-
-    switch(Zathura.document->rotate) {
-      case 90:
-        angle = GDK_PIXBUF_ROTATE_CLOCKWISE;
-        break;
-      case 180:
-        angle = GDK_PIXBUF_ROTATE_UPSIDEDOWN;
-        break;
-      case 270:
-        angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
-        break;
-      default:
-        goto error_free;
-    }
-
-    GdkPixbuf* pixbuf_temp = gdk_pixbuf_rotate_simple(pixbuf, Zathura.document->rotate);
+    GdkPixbuf* pixbuf_temp = gdk_pixbuf_rotate_simple(pixbuf, gdk_angle)
     if(!pixbuf_temp) {
       goto error_free;
     }
