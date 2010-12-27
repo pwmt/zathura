@@ -272,7 +272,7 @@ djvu_page_render(zathura_page_t* page)
 
   /* rotate page */
   if(Zathura.document->rotate != 0) {
-    GdkPixbuf* pixbuf_temp = gdk_pixbuf_rotate_simple(pixbuf, gdk_angle)
+    GdkPixbuf* pixbuf_temp = gdk_pixbuf_rotate_simple(pixbuf, gdk_angle);
     if(!pixbuf_temp) {
       goto error_free;
     }
