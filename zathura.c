@@ -102,6 +102,26 @@ document_close()
 }
 
 bool
+page_render(zathura_page_t* page)
+{
+  GtkWidget* image = zathura_page_render(page);
+  if(!image) {
+    goto error_out;
+  }
+
+  /* draw new rendered page */
+  if(!girara_set_view(Zathura.UI.session, image)) {
+    goto error_out;
+  }
+
+  return true;
+
+error_out:
+
+  return false;
+}
+
+bool
 page_set(unsigned int page_id)
 {
   if(!Zathura.document) {
@@ -114,23 +134,18 @@ page_set(unsigned int page_id)
 
   /* render page */
   zathura_page_t* page = zathura_page_get(Zathura.document, page_id);
+
   if(!page) {
     goto error_out;
   }
 
-  GtkWidget* image = zathura_page_render(page);
-  if(!image) {
+  if(!page_render(page)) {
     zathura_page_free(page);
     fprintf(stderr, "error: rendering failed\n");
     goto error_out;
   }
 
   zathura_page_free(page);
-
-  /* draw new rendered page */
-  if(!girara_set_view(Zathura.UI.session, image)) {
-    goto error_out;
-  }
 
   /* update page number */
   Zathura.document->current_page_number = page_id;

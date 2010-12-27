@@ -243,23 +243,50 @@ djvu_page_render(zathura_page_t* page)
       page_width, page_height, 3 * page_width, NULL, NULL);
 
   if(!pixbuf) {
-    free(buffer);
-    g_object_unref(pixbuf);
-    goto error_out;
+    goto error_free;
+  }
+
+  /* rotate page */
+  if(Zathura.document->rotate != 0) {
+    GdkPixbufRotation angle = GDK_PIXBUF_ROTATE_NONE;
+
+    switch(Zathura.document->rotate) {
+      case 90:
+        angle = GDK_PIXBUF_ROTATE_CLOCKWISE;
+        break;
+      case 180:
+        angle = GDK_PIXBUF_ROTATE_UPSIDEDOWN;
+        break;
+      case 270:
+        angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
+        break;
+      default:
+        goto error_free;
+    }
+
+    GdkPixbuf* pixbuf_temp = gdk_pixbuf_rotate_simple(pixbuf, Zathura.document->rotate);
+    if(!pixbuf_temp) {
+      goto error_free;
+    }
+
+    pixbuf = pixbuf_temp;
   }
 
   GtkWidget* image = gtk_image_new();
 
   if(!image) {
-    free(buffer);
-    g_object_unref(pixbuf);
-    goto error_out;
+    goto error_free;
   }
 
   gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
   gtk_widget_show(image);
 
   return image;
+
+error_free:
+
+    free(buffer);
+    g_object_unref(pixbuf);
 
 error_out:
 
