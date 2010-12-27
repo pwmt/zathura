@@ -170,7 +170,7 @@ djvu_page_get(zathura_document_t* document, unsigned int page)
   while(!ddjvu_page_decoding_done(document_page->data));
 
   document_page->width  = ddjvu_page_get_width(document_page->data);
-  document_page->height = ddjvu_page_get_width(document_page->data);
+  document_page->height = ddjvu_page_get_height(document_page->data);
 
   return document_page;
 }
