@@ -245,7 +245,6 @@ GtkWidget*
 pdf_page_render(zathura_page_t* page)
 {
   if(!Zathura.document || !page || !page->data || !page->document) {
-    printf("die\n");
     return NULL;
   }
 

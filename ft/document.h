@@ -105,6 +105,8 @@ struct zathura_document_s
     GtkWidget* (*page_render)(zathura_page_t* page);
     bool (*page_free)(zathura_page_t* page);
   } functions;
+
+  zathura_page_t** pages;
 };
 
 zathura_document_t* zathura_document_open(const char* path, const char* password);

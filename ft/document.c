@@ -26,18 +26,18 @@ zathura_document_t*
 zathura_document_open(const char* path, const char* password)
 {
   if(!path) {
-    return NULL;
+    goto error_out;
   }
 
   if(!file_exists(path)) {
     fprintf(stderr, "error: file does not exist\n");
-    return NULL;
+    goto error_out;
   }
 
   const char* file_extension = file_get_extension(path);
   if(!file_extension) {
     fprintf(stderr, "error: could not determine file type\n");
-    return NULL;
+    goto error_out;
   }
 
   /* determine real path */
@@ -50,20 +50,21 @@ zathura_document_open(const char* path, const char* password)
     path_max = 4096;
 #endif
 
-  char* real_path = malloc(sizeof(char) * path_max);
+  char* real_path              = NULL;
+  zathura_document_t* document = NULL;
+
+  real_path = malloc(sizeof(char) * path_max);
   if(!real_path) {
-    return NULL;
+    goto error_out;
   }
 
   if(!realpath(path, real_path)) {
-    free(real_path);
-    return NULL;
+    goto error_free;
   }
 
-  zathura_document_t* document = malloc(sizeof(zathura_document_t));
+  document = malloc(sizeof(zathura_document_t));
   if(!document) {
-    free(real_path);
-    return NULL;
+    goto error_free;
   }
 
   document->file_path           = real_path;
@@ -73,6 +74,7 @@ zathura_document_open(const char* path, const char* password)
   document->scale               = 1.0;
   document->rotate              = 0;
   document->data                = NULL;
+  document->pages               = NULL;
 
   document->functions.document_free            = NULL;
   document->functions.document_index_generate  = NULL;
@@ -91,13 +93,29 @@ zathura_document_open(const char* path, const char* password)
     if(!strcmp(file_extension, zathura_document_plugins[i].file_extension)) {
       if(zathura_document_plugins[i].open_function) {
         if(zathura_document_plugins[i].open_function(document)) {
+          /* update statusbar */
           girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, real_path);
+
+          /* read all pages */
+          document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
+          if(!document->pages) {
+            goto error_free;
+          }
+
+          for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
+          {
+            zathura_page_t* page = zathura_page_get(document, page_id);
+            if(!page) {
+              goto error_free;
+            }
+
+            document->pages[page_id] = page;
+          }
+
           return document;
         } else {
           fprintf(stderr, "error: could not open file\n");
-          free(real_path);
-          free(document);
-          return NULL;
+          goto error_free;
         }
       }
     }
@@ -105,8 +123,22 @@ zathura_document_open(const char* path, const char* password)
 
   fprintf(stderr, "error: unknown file type\n");
 
+error_free:
+
   free(real_path);
+
+  if(document && document->pages) {
+    for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
+    {
+      zathura_page_free(document->pages[page_id]);
+    }
+
+    free(document->pages);
+  }
+
   free(document);
+
+error_out:
 
   return NULL;
 }
@@ -118,6 +150,15 @@ zathura_document_free(zathura_document_t* document)
     return false;
   }
 
+  /* free pages */
+  for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
+  {
+    zathura_page_free(document->pages[page_id]);
+  }
+
+  free(document->pages);
+
+  /* free document */
   if(!document->functions.document_free) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
 
