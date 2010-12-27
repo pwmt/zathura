@@ -24,7 +24,7 @@ zathura_page_t* djvu_page_get(zathura_document_t* document, unsigned int page);
 zathura_list_t* djvu_page_search_text(zathura_page_t* page, const char* text);
 zathura_list_t* djvu_page_links_get(zathura_page_t* page);
 zathura_list_t* djvu_page_form_fields_get(zathura_page_t* page);
-cairo_surface_t* djvu_page_render(zathura_page_t* page);
+GtkWidget* djvu_page_render(zathura_page_t* page);
 bool djvu_page_free(zathura_page_t* page);
 
 #endif // DJVU_H

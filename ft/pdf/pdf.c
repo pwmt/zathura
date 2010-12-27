@@ -1,7 +1,6 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
-#include <cairo.h>
 #include <poppler/glib/poppler.h>
 
 #include "pdf.h"
@@ -242,7 +241,7 @@ pdf_page_form_fields_get(zathura_page_t* page)
   return NULL;
 }
 
-cairo_surface_t*
+GtkWidget*
 pdf_page_render(zathura_page_t* page)
 {
   if(!Zathura.document || !page || !page->data || !page->document) {
@@ -261,47 +260,27 @@ pdf_page_render(zathura_page_t* page)
       page_height = dim_temp;
   }
 
-  /* create cairo data */
-  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+  /* create pixbuf */
+  GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
       page_width, page_height);
 
-  if(!surface) {
+  if(!pixbuf) {
     return NULL;
   }
 
-  cairo_t* cairo = cairo_create(surface);
+  poppler_page_render_to_pixbuf(page->data, 0, 0, page_width, page_height, Zathura.document->scale,
+      Zathura.document->rotate, pixbuf);
 
-  if(!cairo) {
-    cairo_surface_destroy(surface);
+  /* write pixbuf */
+  GtkWidget* image = gtk_image_new();
+
+  if(!image) {
+    g_object_unref(pixbuf);
     return NULL;
   }
 
-  cairo_set_source_rgb(cairo, 1, 1, 1);
-  cairo_rectangle(cairo, 0, 0, page_width, page_height);
-  cairo_fill(cairo);
+  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
+  gtk_widget_show(image);
 
-  switch(Zathura.document->rotate) {
-    case 90:
-      cairo_translate(cairo, page->width, 0);
-      break;
-    case 180:
-      cairo_translate(cairo, page->width, page->height);
-      break;
-    case 270:
-      cairo_translate(cairo, 0, page->height);
-      break;
-    default:
-      cairo_translate(cairo, 0, 0);
-      break;
-  }
-
-  cairo_scale(cairo,  Zathura.document->scale, Zathura.document->scale);
-  cairo_rotate(cairo, Zathura.document->rotate * G_PI / 180.0);
-
-  /* render */
-  poppler_page_render(page->data, cairo);
-
-  cairo_destroy(cairo);
-
-  return surface;
+  return image;
 }

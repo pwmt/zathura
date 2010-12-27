@@ -1,7 +1,6 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
-#include <cairo.h>
 
 #include "djvu.h"
 #include "../../zathura.h"
@@ -188,7 +187,7 @@ djvu_page_form_fields_get(zathura_page_t* page)
   return NULL;
 }
 
-cairo_surface_t*
+GtkWidget*
 djvu_page_render(zathura_page_t* page)
 {
   if(!Zathura.document || !page || !page->data || !page->document) {
@@ -199,54 +198,51 @@ djvu_page_render(zathura_page_t* page)
   unsigned int page_width  = Zathura.document->scale * page->width;
   unsigned int page_height = Zathura.document->scale * page->height;
 
-  /* init ddjvu render data */
-  ddjvu_rect_t rrect = { 0, 0, page_width, page_height };
-  ddjvu_rect_t prect = { 0, 0, page_width, page_height };
-
-  ddjvu_page_rotation_t rotation = DDJVU_ROTATE_0;
-
-  unsigned int dim_temp = 0;
-
-  switch(Zathura.document->rotate) {
-    case 90:
-      dim_temp    = page_width;
-      page_width  = page_height;
-      page_height = dim_temp;
-
-      rotation = DDJVU_ROTATE_90;
-      break;
-    case 180:
-      rotation = DDJVU_ROTATE_180;
-      break;
-    case 270:
-      dim_temp    = page_width;
-      page_width  = page_height;
-      page_height = dim_temp;
-
-      rotation = DDJVU_ROTATE_270;
-      break;
-  }
-
-  djvu_document_t* djvu_document = (djvu_document_t*) page->document->data;
-
-  /* create cairo data */
-  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
-      page->width, page->height);
-
-  if(!surface) {
+  if(!page_width || !page_height) {
     return NULL;
   }
 
-  int rowsize = cairo_image_surface_get_stride(surface);
-  char* data  = (char*) cairo_image_surface_get_data(surface);
+  /* init ddjvu render data */
+  djvu_document_t* djvu_document = (djvu_document_t*) page->document->data;
 
-  /* render */
-  ddjvu_page_set_rotation(page->data, rotation);
+  ddjvu_rect_t rrect = { 0, 0, page_width, page_height };
+  ddjvu_rect_t prect = { 0, 0, page_width, page_height };
 
-  ddjvu_page_render(page->data, DDJVU_RENDER_COLOR, &prect, &rrect,
-      djvu_document->format, rowsize, data);
+  guchar* buffer = malloc(sizeof(char) * (page_width * page_height * 3));
+  if(!buffer) {
+    goto error_out;
+  }
 
-  cairo_surface_mark_dirty(surface);
+  ddjvu_page_set_rotation(page->data, Zathura.document->rotate);
 
-  return surface;
+  /* render page */
+  ddjvu_page_render(page->data, DDJVU_RENDER_COLOR, &prect, &rrect, djvu_document->format,
+      3 * page_width, (char*) buffer);
+
+  /* create pixbuf */
+  GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data(buffer, GDK_COLORSPACE_RGB, FALSE, 8,
+      page_width, page_height, 3 * page_width, NULL, NULL);
+
+  if(!pixbuf) {
+    free(buffer);
+    g_object_unref(pixbuf);
+    goto error_out;
+  }
+
+  GtkWidget* image = gtk_image_new();
+
+  if(!image) {
+    free(buffer);
+    g_object_unref(pixbuf);
+    goto error_out;
+  }
+
+  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
+  gtk_widget_show(image);
+
+  return image;
+
+error_out:
+
+  return NULL;
 }

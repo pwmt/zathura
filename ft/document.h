@@ -3,7 +3,7 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
-#include <cairo.h>
+#include <gtk/gtk.h>
 #include <stdbool.h>
 
 #include <girara-datastructures.h>
@@ -102,7 +102,7 @@ struct zathura_document_s
     zathura_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
     zathura_list_t* (*page_links_get)(zathura_page_t* page);
     zathura_list_t* (*page_form_fields_get)(zathura_page_t* page);
-    cairo_surface_t* (*page_render)(zathura_page_t* page);
+    GtkWidget* (*page_render)(zathura_page_t* page);
     bool (*page_free)(zathura_page_t* page);
   } functions;
 };
@@ -122,7 +122,7 @@ zathura_list_t* zathura_page_links_get(zathura_page_t* page);
 bool zathura_page_links_free(zathura_list_t* list);
 zathura_list_t* zathura_page_form_fields_get(zathura_page_t* page);
 bool zathura_page_form_fields_free(zathura_list_t* list);
-cairo_surface_t* zathura_page_render(zathura_page_t* page);
+GtkWidget* zathura_page_render(zathura_page_t* page);
 
 zathura_index_element_t* zathura_index_element_new(const char* title);
 void zathura_index_element_free(zathura_index_element_t* index);

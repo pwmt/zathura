@@ -42,23 +42,6 @@ init_zathura()
 
   girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, "[No Name]");
 
-  /* drawing area */
-  Zathura.UI.drawing_area = gtk_drawing_area_new();
-  if(!Zathura.UI.drawing_area) {
-    goto error_free;
-  }
-
-  gtk_widget_modify_bg(Zathura.UI.drawing_area, GTK_STATE_NORMAL,
-      &(Zathura.UI.session->style.default_background));
-
-  g_signal_connect(G_OBJECT(Zathura.UI.drawing_area), "expose-event", G_CALLBACK(cb_draw), NULL);
-  gtk_widget_show(Zathura.UI.drawing_area);
-
-  /* set view */
-  if(!girara_set_view(Zathura.UI.session, Zathura.UI.drawing_area)) {
-    goto error_free;
-  }
-
   /* signals */
   g_signal_connect(G_OBJECT(Zathura.UI.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
 
@@ -129,6 +112,27 @@ page_set(unsigned int page_id)
     goto error_out;
   }
 
+  /* render page */
+  zathura_page_t* page = zathura_page_get(Zathura.document, page_id);
+  if(!page) {
+    goto error_out;
+  }
+
+  GtkWidget* image = zathura_page_render(page);
+  if(!image) {
+    zathura_page_free(page);
+    fprintf(stderr, "error: rendering failed\n");
+    goto error_out;
+  }
+
+  zathura_page_free(page);
+
+  /* draw new rendered page */
+  if(!girara_set_view(Zathura.UI.session, image)) {
+    goto error_out;
+  }
+
+  /* update page number */
   Zathura.document->current_page_number = page_id;
 
   char* page_number = g_strdup_printf("[%d/%d]", page_id + 1, Zathura.document->number_of_pages);

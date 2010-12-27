@@ -22,7 +22,7 @@ zathura_page_t* pdf_page_get(zathura_document_t* document, unsigned int page);
 zathura_list_t* pdf_page_search_text(zathura_page_t* page, const char* text);
 zathura_list_t* pdf_page_links_get(zathura_page_t* page);
 zathura_list_t* pdf_page_form_fields_get(zathura_page_t* page);
-cairo_surface_t* pdf_page_render(zathura_page_t* page);
+GtkWidget* pdf_page_render(zathura_page_t* page);
 bool pdf_page_free(zathura_page_t* page);
 
 #endif // PDF_H

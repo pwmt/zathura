@@ -284,7 +284,7 @@ zathura_page_form_fields_free(zathura_list_t* list)
   return false;
 }
 
-cairo_surface_t*
+GtkWidget*
 zathura_page_render(zathura_page_t* page)
 {
   if(!page || !page->document) {

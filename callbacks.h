@@ -7,7 +7,6 @@
 #include <girara.h>
 
 gboolean cb_destroy(GtkWidget* widget, gpointer data);
-gboolean cb_draw(GtkWidget* widget, GdkEventExpose* expose, gpointer data);
 void buffer_changed(girara_session_t* session);
 
 #endif // CALLBACKS_H
