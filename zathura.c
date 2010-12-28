@@ -1,10 +1,13 @@
 /* See LICENSE file for license and copyright information */
 
+#include <stdlib.h>
+
 #include "callbacks.h"
 #include "config.h"
 #include "ft/document.h"
 #include "shortcuts.h"
 #include "zathura.h"
+#include "utils.h"
 
 /* function implementation */
 bool
@@ -81,10 +84,30 @@ document_open(const char* path, const char* password)
 
   Zathura.document = document;
 
-  /*if(!page_set(0)) {*/
-    /*zathura_document_free(document);*/
-    /*return false;*/
-  /*}*/
+  GtkWidget* page_view = gtk_vbox_new(FALSE, 0);
+  gtk_box_set_spacing(GTK_BOX(page_view), 0);
+
+  for(unsigned int i = 0; i < document->number_of_pages; i++)
+  {
+    GdkPixbuf* pixbuf = page_blank(document->pages[i]->width, document->pages[i]->height);
+    if(!pixbuf) {
+      return false;
+    }
+
+    GtkWidget* image = gtk_image_new();
+    if(!image) {
+      g_object_unref(pixbuf);
+      return false;
+    }
+
+    gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
+    gtk_widget_show(image);
+    gtk_box_pack_start(GTK_BOX(page_view), image, TRUE,  TRUE, 0);
+  }
+
+  gtk_widget_show(page_view);
+
+  girara_set_view(Zathura.UI.session, page_view);
 
   return true;
 }

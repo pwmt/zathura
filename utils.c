@@ -120,3 +120,31 @@ execute_command(char* const argv[], char** output)
 
   return true;
 }
+
+GdkPixbuf*
+page_blank(unsigned int width, unsigned int height)
+{
+  if((width == 0) || (height == 0)) {
+    return NULL;
+  }
+
+  guchar* buffer = malloc(sizeof(guchar) * (width * height * 1));
+  if(!buffer) {
+    return NULL;
+  }
+
+  /* draw white */
+  for(unsigned int i = 0; i < width * height; i++) {
+    buffer[i] = 255;
+  }
+
+  GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data(buffer, GDK_COLORSPACE_RGB, FALSE, 8,
+    width, height, 1, NULL, NULL);
+
+  if(!pixbuf) {
+    free(buffer);
+    return NULL;
+  }
+
+  return pixbuf;
+}
