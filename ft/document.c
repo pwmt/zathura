@@ -102,12 +102,18 @@ zathura_document_open(const char* path, const char* password)
             goto error_free;
           }
 
+          double offset = 0;
           for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
           {
             zathura_page_t* page = zathura_page_get(document, page_id);
             if(!page) {
               goto error_free;
             }
+
+            page->offset = offset;
+            page->number = page_id;
+
+            offset += page->height;
 
             document->pages[page_id] = page;
           }

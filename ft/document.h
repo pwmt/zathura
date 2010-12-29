@@ -77,6 +77,8 @@ typedef struct zathura_page_s
 {
   double height;
   double width;
+  double offset;
+  unsigned int number;
   zathura_document_t* document;
   void* data;
 } zathura_page_t;

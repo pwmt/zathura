@@ -121,7 +121,7 @@ execute_command(char* const argv[], char** output)
   return true;
 }
 
-GdkPixbuf*
+GtkWidget*
 page_blank(unsigned int width, unsigned int height)
 {
   if((width == 0) || (height == 0)) {
@@ -146,5 +146,16 @@ page_blank(unsigned int width, unsigned int height)
     return NULL;
   }
 
-  return pixbuf;
+  /* convert to image */
+  GtkWidget* image = gtk_image_new();
+  if(!image) {
+    free(buffer);
+    g_object_unref(pixbuf);
+    return false;
+  }
+
+  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
+  gtk_widget_show(image);
+
+  return image;
 }

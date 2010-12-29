@@ -37,6 +37,7 @@ struct
     } statusbar;
 
     GtkWidget *drawing_area;
+    GtkWidget *page_view;
   } UI;
 
   zathura_document_t* document; /**> The current document */

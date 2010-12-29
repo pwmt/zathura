@@ -8,5 +8,6 @@
 
 gboolean cb_destroy(GtkWidget* widget, gpointer data);
 void buffer_changed(girara_session_t* session);
+void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
 
 #endif // CALLBACKS_H
