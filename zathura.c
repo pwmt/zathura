@@ -184,7 +184,7 @@ page_set(unsigned int page_id)
   }
 
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));
-  gtk_adjustment_set_value(view_vadjustment, page->offset);
+  cb_view_vadjustment_value_changed(view_vadjustment, NULL);
 
   /* update page number */
   Zathura.document->current_page_number = page_id;
