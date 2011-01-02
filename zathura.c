@@ -28,6 +28,12 @@
 #define NORETURN
 #endif
 
+// just remove the #if-#define-#endif block if support for poppler versions
+// before 0.15 is dropped
+#if !POPPLER_CHECK_VERSION(0,15,0)
+#define poppler_page_get_selected_text poppler_page_get_text
+#endif
+
 /* enums */
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
@@ -4572,7 +4578,7 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
 
   /* get selected text */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-  char* selected_text = poppler_page_get_text(
+  char* selected_text = poppler_page_get_selected_text(
       Zathura.PDF.pages[Zathura.PDF.page_number]->page,SELECTION_STYLE,
       &rectangle);
 
