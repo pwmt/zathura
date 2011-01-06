@@ -48,6 +48,8 @@ pdf_document_open(zathura_document_t* document)
 
   document->number_of_pages = poppler_document_get_n_pages(pdf_document->document);
 
+  g_free(file_uri);
+
   return true;
 
 error_free:

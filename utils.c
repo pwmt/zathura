@@ -157,5 +157,8 @@ page_blank(unsigned int width, unsigned int height)
   gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
   gtk_widget_show(image);
 
+  free(buffer);
+  g_object_unref(pixbuf);
+
   return image;
 }

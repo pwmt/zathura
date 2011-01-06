@@ -72,6 +72,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
       /* add new page */
       GList* list       = gtk_container_get_children(GTK_CONTAINER(Zathura.UI.page_view));
       GtkWidget* widget = (GtkWidget*) g_list_nth_data(list, page_id);
+      g_list_free(list);
 
       if(widget) {
         /* child packaging information */
