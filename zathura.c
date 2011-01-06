@@ -112,7 +112,7 @@ document_open(const char* path, const char* password)
     }
 
     /* pack to page view */
-    gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 1);
   }
 
   girara_set_view(Zathura.UI.session, Zathura.UI.page_view);
