@@ -110,8 +110,9 @@ zathura_document_open(const char* path, const char* password)
               goto error_free;
             }
 
-            page->offset = offset;
-            page->number = page_id;
+            page->offset   = offset;
+            page->number   = page_id;
+            page->rendered = false;
 
             offset += page->height;
 
@@ -343,7 +344,13 @@ zathura_page_render(zathura_page_t* page)
     return NULL;
   }
 
-  return page->document->functions.page_render(page);
+  GtkWidget* widget = page->document->functions.page_render(page);
+
+  if(widget) {
+    page->rendered = true;
+  }
+
+  return widget;
 }
 
 zathura_index_element_t*

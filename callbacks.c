@@ -41,17 +41,27 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
   }
 
   /* get current adjustment values */
-  gdouble lower = gtk_adjustment_get_lower(adjustment);
-  gdouble upper = gtk_adjustment_get_lower(adjustment);
+  gdouble lower = gtk_adjustment_get_value(adjustment);
+  gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);
 
   /* find page that fits */
   for(unsigned int page_id = 0; page_id < Zathura.document->number_of_pages; page_id++)
   {
     zathura_page_t* page = Zathura.document->pages[page_id];
-    double begin = page->offset;
-    double end = page->offset + page->height;
 
-    if( begin <= 10 ) { // FIXME
+    /* check for rendered attribute */
+    if(page->rendered) {
+      continue;
+    }
+
+    double begin = page->offset;
+    double end   = page->offset + page->height;
+
+    if(    ( (begin >= lower) && (end <= upper) ) /* page is in viewport */
+        || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* end of the page is in viewport */
+        || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* begin of the page is in viewport */
+      ) {
+
       /* render page */
       GtkWidget* image = zathura_page_render(page);
       if(!image) {
@@ -60,8 +70,34 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
       }
 
       /* add new page */
-      gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 0);
-      gtk_box_reorder_child(GTK_BOX(Zathura.UI.page_view), image, page->number);
+      GList* list       = gtk_container_get_children(GTK_CONTAINER(Zathura.UI.page_view));
+      GtkWidget* widget = (GtkWidget*) g_list_nth_data(list, page_id);
+
+      if(widget) {
+        /* child packaging information */
+        gboolean expand;
+        gboolean fill;
+        guint padding;
+        GtkPackType pack_type;
+
+        gtk_box_query_child_packing(GTK_BOX(Zathura.UI.page_view), widget, &expand, &fill, &padding, &pack_type);
+
+        /* delete old widget */
+        gtk_container_remove(GTK_CONTAINER(Zathura.UI.page_view), widget);
+
+        /* add new widget */
+        gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 0);
+
+        /* set old packaging values */
+        gtk_box_set_child_packing(GTK_BOX(Zathura.UI.page_view), image, expand, fill, padding, pack_type);
+
+        /* reorder child */
+        gtk_box_reorder_child(GTK_BOX(Zathura.UI.page_view), image, page_id);
+      } else {
+        printf("error: page container does not exist\n");
+        g_object_unref(image);
+        return;
+      }
     }
   }
 }

@@ -81,6 +81,7 @@ typedef struct zathura_page_s
   unsigned int number;
   zathura_document_t* document;
   void* data;
+  bool rendered;
 } zathura_page_t;
 
 struct zathura_document_s
