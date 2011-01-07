@@ -146,26 +146,6 @@ document_close()
 }
 
 bool
-page_render(zathura_page_t* page)
-{
-  GtkWidget* image = zathura_page_render(page);
-  if(!image) {
-    goto error_out;
-  }
-
-  /* draw new rendered page */
-  if(!girara_set_view(Zathura.UI.session, image)) {
-    goto error_out;
-  }
-
-  return true;
-
-error_out:
-
-  return false;
-}
-
-bool
 page_set(unsigned int page_id)
 {
   if(!Zathura.document || !Zathura.document->pages) {
