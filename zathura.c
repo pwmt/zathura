@@ -531,6 +531,8 @@ init_look(void)
   gtk_widget_modify_text(GTK_WIDGET(Zathura.UI.inputbar), GTK_STATE_NORMAL, &(Zathura.Style.inputbar_fg));
   gtk_widget_modify_font(GTK_WIDGET(Zathura.UI.inputbar),                     Zathura.Style.font);
 
+  g_object_set(G_OBJECT(Zathura.UI.inputbar), "has-frame", FALSE, NULL);
+
   /* scrollbars */
   if(show_scrollbars)
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
