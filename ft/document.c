@@ -110,10 +110,7 @@ zathura_document_open(const char* path, const char* password)
               goto error_free;
             }
 
-            page->offset   = offset;
-            page->number   = page_id;
-            page->rendered = false;
-
+            page->offset = offset;
             offset += page->height;
 
             document->pages[page_id] = page;
@@ -246,7 +243,7 @@ zathura_document_attachments_free(zathura_list_t* list)
 }
 
 zathura_page_t*
-zathura_page_get(zathura_document_t* document, unsigned int page)
+zathura_page_get(zathura_document_t* document, unsigned int page_id)
 {
   if(!document) {
     return NULL;
@@ -257,7 +254,15 @@ zathura_page_get(zathura_document_t* document, unsigned int page)
     return NULL;
   }
 
-  return document->functions.page_get(document, page);
+  zathura_page_t* page = document->functions.page_get(document, page_id);
+
+  if(page) {
+    page->number   = page_id;
+    page->rendered = false;
+    g_static_mutex_init(&(page->lock));
+  }
+
+  return page;
 }
 
 bool

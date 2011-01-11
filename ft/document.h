@@ -82,6 +82,7 @@ typedef struct zathura_page_s
   zathura_document_t* document;
   void* data;
   bool rendered;
+  GStaticMutex lock;
 } zathura_page_t;
 
 struct zathura_document_s
@@ -101,7 +102,7 @@ struct zathura_document_s
     bool (*document_save_as)(zathura_document_t* document, const char* path);
     zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
 
-    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page);
+    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id);
     zathura_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
     zathura_list_t* (*page_links_get)(zathura_page_t* page);
     zathura_list_t* (*page_form_fields_get)(zathura_page_t* page);
@@ -120,7 +121,7 @@ bool zathura_document_index_free(zathura_list_t* list);
 zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
 bool zathura_document_attachments_free(zathura_list_t* list);
 
-zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page);
+zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id);
 bool zathura_page_free(zathura_page_t* page);
 zathura_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
 zathura_list_t* zathura_page_links_get(zathura_page_t* page);
