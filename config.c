@@ -6,7 +6,7 @@
 #include "zathura.h"
 
 void
-config_load_default()
+config_load_default(void)
 {
   if(!Zathura.UI.session)
     return;
