@@ -16,6 +16,8 @@ cb_destroy(GtkWidget* widget, gpointer data)
     girara_session_destroy(Zathura.UI.session);
   }
 
+  document_close();
+
   return TRUE;
 }
 
@@ -62,7 +64,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
         || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* end of the page is in viewport */
         || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* begin of the page is in viewport */
       ) {
-      page_render(Zathura.document->pages[page_id]);
+      render_page(Zathura.Sync.render_thread, Zathura.document->pages[page_id]);
     }
   }
 }

@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <girara.h>
+#include <render.h>
 
 #include "ft/document.h"
 
@@ -39,6 +40,11 @@ struct
     GtkWidget *drawing_area;
     GtkWidget *page_view;
   } UI;
+
+  struct
+  {
+    render_thread_t* render_thread;
+  } Sync;
 
   zathura_document_t* document; /**> The current document */
 } Zathura;

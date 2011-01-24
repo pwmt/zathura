@@ -117,6 +117,13 @@ document_open(const char* path, const char* password)
 
   girara_set_view(Zathura.UI.session, Zathura.UI.page_view);
 
+  /* threads */
+  Zathura.Sync.render_thread = render_init();
+
+  if(!Zathura.Sync.render_thread) {
+    goto error_free;
+  }
+
   /* first page */
   if(!page_set(0)) {
     goto error_free;
@@ -138,6 +145,10 @@ document_close()
 {
   if(!Zathura.document) {
     return false;
+  }
+
+  if(Zathura.Sync.render_thread) {
+    render_free(Zathura.Sync.render_thread);
   }
 
   zathura_document_free(Zathura.document);
