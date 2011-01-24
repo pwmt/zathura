@@ -1,11 +1,11 @@
 #include "render.h"
 #include "zathura.h"
 
-void* search(void* data);
+void* render_job(void* data);
 bool render(zathura_page_t* page);
 
 void*
-search(void* data)
+render_job(void* data)
 {
   render_thread_t* render_thread = (render_thread_t*) data;
 
@@ -45,7 +45,7 @@ render_init(void)
     goto error_free;
   }
 
-  render_thread->thread = g_thread_create(search, render_thread, TRUE, NULL);
+  render_thread->thread = g_thread_create(render_job, render_thread, TRUE, NULL);
 
   if(!render_thread->thread) {
     goto error_free;
@@ -78,7 +78,7 @@ render_free(render_thread_t* render_thread)
 bool
 render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
-  if(!render_thread || !page || !render_thread->list) {
+  if(!render_thread || !page || !render_thread->list || page->rendered) {
     return false;
   }
 
