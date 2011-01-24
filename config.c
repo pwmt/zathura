@@ -62,7 +62,6 @@ config_load_default(void)
   girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_f,          NULL, sc_scroll,            NORMAL,              FULL_DOWN,       NULL);
   girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_b,          NULL, sc_scroll,            NORMAL,              FULL_UP,         NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_space,      NULL, sc_scroll,            NORMAL,              FULL_DOWN,       NULL);
-  girara_shortcut_add(Zathura.UI.session, 0,                0,              "%",  sc_scroll,            NORMAL,              0,               NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_n,          NULL, sc_search,            NORMAL,              FORWARD,         NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_N,          NULL, sc_search,            NORMAL,              BACKWARD,        NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_0,          NULL, sc_switch_goto_mode,  NORMAL,              0,               NULL);
