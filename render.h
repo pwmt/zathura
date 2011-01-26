@@ -13,7 +13,8 @@ typedef struct render_thread_s
 {
   girara_list_t* list;
   GThread* thread;
-  GStaticMutex lock;
+  GMutex* lock;
+  GCond* cond;
 } render_thread_t;
 
 render_thread_t* render_init(void);
