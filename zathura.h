@@ -54,7 +54,6 @@ struct
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-
 bool init_zathura();
 
 /**
