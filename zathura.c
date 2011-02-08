@@ -25,7 +25,6 @@ init_zathura()
   Zathura.UI.statusbar.file        = NULL;
   Zathura.UI.statusbar.buffer      = NULL;
   Zathura.UI.statusbar.page_number = NULL;
-  Zathura.UI.drawing_area          = NULL;
   Zathura.UI.page_view             = NULL;
 
   /* page view */
@@ -70,10 +69,6 @@ init_zathura()
   return true;
 
 error_free:
-
-  if(Zathura.UI.drawing_area) {
-    g_object_unref(Zathura.UI.drawing_area);
-  }
 
   if(Zathura.UI.page_view) {
     g_object_unref(Zathura.UI.page_view);

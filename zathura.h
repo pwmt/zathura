@@ -37,13 +37,12 @@ struct
       girara_statusbar_item_t* page_number; /**> page number statusbar entry */
     } statusbar;
 
-    GtkWidget *drawing_area;
-    GtkWidget *page_view;
+    GtkWidget *page_view; /**> Widget that contains all rendered pages */
   } UI;
 
   struct
   {
-    render_thread_t* render_thread;
+    render_thread_t* render_thread; /**> The thread responsible for rendering the pages */
   } Sync;
 
   zathura_document_t* document; /**> The current document */
