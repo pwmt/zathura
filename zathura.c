@@ -14,11 +14,11 @@ bool
 init_zathura()
 {
   /* UI */
-  if(!(Zathura.UI.session = girara_session_create())) {
+  if (!(Zathura.UI.session = girara_session_create())) {
     goto error_out;
   }
 
-  if(!girara_session_init(Zathura.UI.session)) {
+  if (!girara_session_init(Zathura.UI.session)) {
     goto error_out;
   }
 
@@ -29,7 +29,7 @@ init_zathura()
 
   /* page view */
   Zathura.UI.page_view = gtk_vbox_new(FALSE, 0);
-  if(!Zathura.UI.page_view) {
+  if (!Zathura.UI.page_view) {
     goto error_free;
   }
 
@@ -38,17 +38,17 @@ init_zathura()
 
   /* statusbar */
   Zathura.UI.statusbar.file = girara_statusbar_item_add(Zathura.UI.session, TRUE, TRUE, TRUE, NULL);
-  if(!Zathura.UI.statusbar.file) {
+  if (!Zathura.UI.statusbar.file) {
     goto error_free;
   }
 
   Zathura.UI.statusbar.buffer = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
-  if(!Zathura.UI.statusbar.buffer) {
+  if (!Zathura.UI.statusbar.buffer) {
     goto error_free;
   }
 
   Zathura.UI.statusbar.page_number = girara_statusbar_item_add(Zathura.UI.session, FALSE, FALSE, FALSE, NULL);
-  if(!Zathura.UI.statusbar.page_number) {
+  if (!Zathura.UI.statusbar.page_number) {
     goto error_free;
   }
 
@@ -70,7 +70,7 @@ init_zathura()
 
 error_free:
 
-  if(Zathura.UI.page_view) {
+  if (Zathura.UI.page_view) {
     g_object_unref(Zathura.UI.page_view);
   }
 
@@ -84,25 +84,25 @@ error_out:
 bool
 document_open(const char* path, const char* password)
 {
-  if(!path) {
+  if (!path) {
     goto error_out;
   }
 
   zathura_document_t* document = zathura_document_open(path, password);
 
-  if(!document) {
+  if (!document) {
     goto error_out;
   }
 
   Zathura.document = document;
 
   /* create blank pages */
-  for(unsigned int i = 0; i < document->number_of_pages; i++)
+  for (unsigned int i = 0; i < document->number_of_pages; i++)
   {
     /* create blank page */
     GtkWidget* image = page_blank(document->pages[i]->width, document->pages[i]->height);
 
-    if(!image) {
+    if (!image) {
       goto error_free;
     }
 
@@ -115,12 +115,12 @@ document_open(const char* path, const char* password)
   /* threads */
   Zathura.Sync.render_thread = render_init();
 
-  if(!Zathura.Sync.render_thread) {
+  if (!Zathura.Sync.render_thread) {
     goto error_free;
   }
 
   /* first page */
-  if(!page_set(0)) {
+  if (!page_set(0)) {
     goto error_free;
   }
 
@@ -138,11 +138,11 @@ error_out:
 bool
 document_close()
 {
-  if(!Zathura.document) {
+  if (!Zathura.document) {
     return false;
   }
 
-  if(Zathura.Sync.render_thread) {
+  if (Zathura.Sync.render_thread) {
     render_free(Zathura.Sync.render_thread);
   }
 
@@ -154,18 +154,18 @@ document_close()
 bool
 page_set(unsigned int page_id)
 {
-  if(!Zathura.document || !Zathura.document->pages) {
+  if (!Zathura.document || !Zathura.document->pages) {
     goto error_out;
   }
 
-  if(page_id >= Zathura.document->number_of_pages) {
+  if (page_id >= Zathura.document->number_of_pages) {
     goto error_out;
   }
 
   /* render page */
   zathura_page_t* page = Zathura.document->pages[page_id];
 
-  if(!page) {
+  if (!page) {
     goto error_out;
   }
 
@@ -193,13 +193,13 @@ int main(int argc, char* argv[])
   gdk_threads_init();
   gtk_init(&argc, &argv);
 
-  if(!init_zathura()) {
+  if (!init_zathura()) {
     printf("error: coult not initialize zathura\n");
     return -1;
   }
 
-  if(argc > 1) {
-    if(!document_open(argv[1], NULL)) {
+  if (argc > 1) {
+    if (!document_open(argv[1], NULL)) {
       printf("error: could not open document\n");
       return -1;
     }

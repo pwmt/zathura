@@ -44,11 +44,11 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument)
 {
   g_return_val_if_fail(session != NULL, false);
 
-  if(!(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar)))) {
+  if (!(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar)))) {
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
   }
 
-  if(argument->data) {
+  if (argument->data) {
     gtk_entry_set_text(session->gtk.inputbar, (char*) argument->data);
     gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar), -1);
@@ -72,16 +72,16 @@ sc_goto(girara_session_t* session, girara_argument_t* argument)
 bool
 sc_navigate(girara_session_t* session, girara_argument_t* argument)
 {
-  if(!session || !argument || !Zathura.document) {
+  if (!session || !argument || !Zathura.document) {
     return false;
   }
 
   unsigned int number_of_pages = Zathura.document->number_of_pages;
   unsigned int new_page        = Zathura.document->current_page_number;
 
-  if(argument->n == NEXT) {
+  if (argument->n == NEXT) {
     new_page = (new_page + 1) % number_of_pages;
-  } else if(argument->n == PREVIOUS) {
+  } else if (argument->n == PREVIOUS) {
     new_page = (new_page + number_of_pages - 1) % number_of_pages;
   }
 
@@ -112,7 +112,7 @@ bool
 sc_scroll(girara_session_t* session, girara_argument_t* argument)
 {
   GtkAdjustment* adjustment = NULL;
-  if( (argument->n == LEFT) || (argument->n == RIGHT) )
+  if ( (argument->n == LEFT) || (argument->n == RIGHT) )
     adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));
   else
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));

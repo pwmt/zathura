@@ -14,7 +14,7 @@
 bool
 file_exists(const char* path)
 {
-  if(!access(path, F_OK)) {
+  if (!access(path, F_OK)) {
     return true;
   } else {
     return false;
@@ -24,21 +24,21 @@ file_exists(const char* path)
 const char*
 file_get_extension(const char* path)
 {
-  if(!path) {
+  if (!path) {
     return NULL;
   }
 
   unsigned int i = strlen(path);
-  for(; i > 0; i--)
+  for (; i > 0; i--)
   {
-    if(*(path + i) != '.') {
+    if (*(path + i) != '.') {
       continue;
     } else {
       break;
     }
   }
 
-  if(!i) {
+  if (!i) {
     return NULL;
   }
 
@@ -48,24 +48,24 @@ file_get_extension(const char* path)
 bool
 execute_command(char* const argv[], char** output)
 {
-  if(!output) {
+  if (!output) {
     return false;
   }
 
   int p[2];
-  if(pipe(p)) {
+  if (pipe(p)) {
     return -1;
   }
 
   pid_t pid = fork();
 
-  if(pid == -1) { // failure
+  if (pid == -1) { // failure
     return false;
-  } else if(pid == 0) { // child
+  } else if (pid == 0) { // child
     dup2(p[1], 1);
     close(p[0]);
 
-    if(execvp(argv[0], argv) == -1) {
+    if (execvp(argv[0], argv) == -1) {
       return false;
     }
   } else { // parent
@@ -78,20 +78,20 @@ execute_command(char* const argv[], char** output)
     char* buffer    = malloc(sizeof(char) * bc);
     *output = NULL;
 
-    if(!buffer) {
+    if (!buffer) {
       close(p[0]);
       return false;
     }
 
     char c;
-    while(1 == read(p[0], &c, 1)) {
+    while (1 == read(p[0], &c, 1)) {
       buffer[i++] = c;
 
-      if(i == bc) {
+      if (i == bc) {
         bc += BLOCK_SIZE;
         char* tmp = realloc(buffer, sizeof(char) * bc);
 
-        if(!tmp) {
+        if (!tmp) {
           free(buffer);
           close(p[0]);
           return false;
@@ -102,7 +102,7 @@ execute_command(char* const argv[], char** output)
     }
 
     char* tmp = realloc(buffer, sizeof(char) * (bc + 1));
-    if(!tmp) {
+    if (!tmp) {
       free(buffer);
       close(p[0]);
       return false;
@@ -124,31 +124,31 @@ execute_command(char* const argv[], char** output)
 GtkWidget*
 page_blank(unsigned int width, unsigned int height)
 {
-  if((width == 0) || (height == 0)) {
+  if ((width == 0) || (height == 0)) {
     return NULL;
   }
 
   guchar* buffer = malloc(sizeof(guchar) * (width * height * 1));
-  if(!buffer) {
+  if (!buffer) {
     return NULL;
   }
 
   /* draw white */
-  for(unsigned int i = 0; i < width * height; i++) {
+  for (unsigned int i = 0; i < width * height; i++) {
     buffer[i] = 255;
   }
 
   GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data(buffer, GDK_COLORSPACE_RGB, FALSE, 8,
     width, height, 1, NULL, NULL);
 
-  if(!pixbuf) {
+  if (!pixbuf) {
     free(buffer);
     return NULL;
   }
 
   /* convert to image */
   GtkWidget* image = gtk_image_new();
-  if(!image) {
+  if (!image) {
     free(buffer);
     g_object_unref(pixbuf);
     return false;

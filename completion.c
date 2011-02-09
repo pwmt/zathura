@@ -13,7 +13,7 @@ cc_print(girara_session_t* session, char* input)
   girara_completion_t* completion  = girara_completion_init();
   girara_completion_group_t* group = girara_completion_group_create(session, NULL);
 
-  if(!session || !input || !completion || !group)
+  if (!session || !input || !completion || !group)
     return NULL;
 
   girara_completion_add_group(completion, group);
@@ -23,7 +23,7 @@ cc_print(girara_session_t* session, char* input)
   };
 
   char* output;
-  if(!execute_command(list_printers, &output)) {
+  if (!execute_command(list_printers, &output)) {
     girara_completion_free(completion);
     return false;
   }
@@ -33,9 +33,8 @@ cc_print(girara_session_t* session, char* input)
   char* p = strtok(output, "\n");
   char* q;
 
-  while(p)
-  {
-    if(!(p = strstr(p, "device for ")) || !(q = strchr(p, ':'))) {
+  while (p) {
+    if (!(p = strstr(p, "device for ")) || !(q = strchr(p, ':'))) {
       p = strtok(NULL, "\n");
       continue;
     }
@@ -43,7 +42,7 @@ cc_print(girara_session_t* session, char* input)
     unsigned int printer_length = q - p - prefix_length;
     char* printer_name = malloc(sizeof(char) * printer_length);
 
-    if(!printer_name) {
+    if (!printer_name) {
       p = strtok(NULL, "\n");
       continue;
     }

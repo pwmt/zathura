@@ -12,7 +12,7 @@
 gboolean
 cb_destroy(GtkWidget* widget, gpointer data)
 {
-  if(Zathura.UI.session) {
+  if (Zathura.UI.session) {
     girara_session_destroy(Zathura.UI.session);
   }
 
@@ -28,7 +28,7 @@ buffer_changed(girara_session_t* session)
 
   char* buffer = girara_buffer_get(session);
 
-  if(buffer) {
+  if (buffer) {
     girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, buffer);
     free(buffer);
   } else {
@@ -39,7 +39,7 @@ buffer_changed(girara_session_t* session)
 void
 cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
 {
-  if(!Zathura.document || !Zathura.document->pages || !Zathura.UI.page_view) {
+  if (!Zathura.document || !Zathura.document->pages || !Zathura.UI.page_view) {
     return;
   }
 
@@ -48,19 +48,19 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
   gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);
 
   /* find page that fits */
-  for(unsigned int page_id = 0; page_id < Zathura.document->number_of_pages; page_id++)
+  for (unsigned int page_id = 0; page_id < Zathura.document->number_of_pages; page_id++)
   {
     zathura_page_t* page = Zathura.document->pages[page_id];
 
     /* check for rendered attribute */
-    if(page->rendered) {
+    if (page->rendered) {
       continue;
     }
 
     double begin = page->offset;
     double end   = page->offset + page->height;
 
-    if(    ( (begin >= lower) && (end <= upper) ) /* page is in viewport */
+    if (    ( (begin >= lower) && (end <= upper) ) /* page is in viewport */
         || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* end of the page is in viewport */
         || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* begin of the page is in viewport */
       ) {

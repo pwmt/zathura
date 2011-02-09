@@ -8,7 +8,7 @@
 void
 config_load_default(void)
 {
-  if(!Zathura.UI.session)
+  if (!Zathura.UI.session)
     return;
 
   /* general settings */

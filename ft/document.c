@@ -25,17 +25,17 @@ zathura_document_plugin_t zathura_document_plugins[] = {
 zathura_document_t*
 zathura_document_open(const char* path, const char* password)
 {
-  if(!path) {
+  if (!path) {
     goto error_out;
   }
 
-  if(!file_exists(path)) {
+  if (!file_exists(path)) {
     fprintf(stderr, "error: file does not exist\n");
     goto error_out;
   }
 
   const char* file_extension = file_get_extension(path);
-  if(!file_extension) {
+  if (!file_extension) {
     fprintf(stderr, "error: could not determine file type\n");
     goto error_out;
   }
@@ -46,7 +46,7 @@ zathura_document_open(const char* path, const char* password)
   path_max = PATH_MAX;
 #else
   path_max = pathconf(path,_PC_PATH_MAX);
-  if(path_max <= 0)
+  if (path_max <= 0)
     path_max = 4096;
 #endif
 
@@ -54,16 +54,16 @@ zathura_document_open(const char* path, const char* password)
   zathura_document_t* document = NULL;
 
   real_path = malloc(sizeof(char) * path_max);
-  if(!real_path) {
+  if (!real_path) {
     goto error_out;
   }
 
-  if(!realpath(path, real_path)) {
+  if (!realpath(path, real_path)) {
     goto error_free;
   }
 
   document = malloc(sizeof(zathura_document_t));
-  if(!document) {
+  if (!document) {
     goto error_free;
   }
 
@@ -88,25 +88,25 @@ zathura_document_open(const char* path, const char* password)
   document->functions.page_render              = NULL;
 
   /* init plugin with associated file type */
-  for(unsigned int i = 0; i < LENGTH(zathura_document_plugins); i++)
+  for (unsigned int i = 0; i < LENGTH(zathura_document_plugins); i++)
   {
-    if(!strcmp(file_extension, zathura_document_plugins[i].file_extension)) {
-      if(zathura_document_plugins[i].open_function) {
-        if(zathura_document_plugins[i].open_function(document)) {
+    if (!strcmp(file_extension, zathura_document_plugins[i].file_extension)) {
+      if (zathura_document_plugins[i].open_function) {
+        if (zathura_document_plugins[i].open_function(document)) {
           /* update statusbar */
           girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, real_path);
 
           /* read all pages */
           document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
-          if(!document->pages) {
+          if (!document->pages) {
             goto error_free;
           }
 
           double offset = 0;
-          for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
+          for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
           {
             zathura_page_t* page = zathura_page_get(document, page_id);
-            if(!page) {
+            if (!page) {
               goto error_free;
             }
 
@@ -131,8 +131,8 @@ error_free:
 
   free(real_path);
 
-  if(document && document->pages) {
-    for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
+  if (document && document->pages) {
+    for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
     {
       zathura_page_free(document->pages[page_id]);
     }
@@ -150,12 +150,12 @@ error_out:
 bool
 zathura_document_free(zathura_document_t* document)
 {
-  if(!document) {
+  if (!document) {
     return false;
   }
 
   /* free pages */
-  for(unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
+  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
   {
     zathura_page_free(document->pages[page_id]);
   }
@@ -163,10 +163,10 @@ zathura_document_free(zathura_document_t* document)
   free(document->pages);
 
   /* free document */
-  if(!document->functions.document_free) {
+  if (!document->functions.document_free) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
 
-    if(document->file_path) {
+    if (document->file_path) {
       free(document->file_path);
     }
 
@@ -176,7 +176,7 @@ zathura_document_free(zathura_document_t* document)
 
   bool r = document->functions.document_free(document);
 
-  if(document->file_path) {
+  if (document->file_path) {
     free(document->file_path);
   }
 
@@ -188,11 +188,11 @@ zathura_document_free(zathura_document_t* document)
 bool
 zathura_document_save_as(zathura_document_t* document, const char* path)
 {
-  if(!document || !path) {
+  if (!document || !path) {
     return false;
   }
 
-  if(!document->functions.document_save_as) {
+  if (!document->functions.document_save_as) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return false;
   }
@@ -203,11 +203,11 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
 girara_tree_node_t*
 zathura_document_index_generate(zathura_document_t* document)
 {
-  if(!document) {
+  if (!document) {
     return NULL;
   }
 
-  if(!document->functions.document_index_generate) {
+  if (!document->functions.document_index_generate) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
@@ -224,11 +224,11 @@ zathura_document_index_free(zathura_list_t* list)
 zathura_list_t*
 zathura_document_attachments_get(zathura_document_t* document)
 {
-  if(!document) {
+  if (!document) {
     return NULL;
   }
 
-  if(!document->functions.document_attachments_get) {
+  if (!document->functions.document_attachments_get) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
@@ -245,18 +245,18 @@ zathura_document_attachments_free(zathura_list_t* list)
 zathura_page_t*
 zathura_page_get(zathura_document_t* document, unsigned int page_id)
 {
-  if(!document) {
+  if (!document) {
     return NULL;
   }
 
-  if(!document->functions.page_get) {
+  if (!document->functions.page_get) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
 
   zathura_page_t* page = document->functions.page_get(document, page_id);
 
-  if(page) {
+  if (page) {
     page->number   = page_id;
     page->rendered = false;
     g_static_mutex_init(&(page->lock));
@@ -268,11 +268,11 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
 bool
 zathura_page_free(zathura_page_t* page)
 {
-  if(!page || !page->document) {
+  if (!page || !page->document) {
     return false;
   }
 
-  if(!page->document->functions.page_free) {
+  if (!page->document->functions.page_free) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return false;
   }
@@ -283,11 +283,11 @@ zathura_page_free(zathura_page_t* page)
 zathura_list_t*
 zathura_page_search_text(zathura_page_t* page, const char* text)
 {
-  if(!page || !page->document || !text) {
+  if (!page || !page->document || !text) {
     return NULL;
   }
 
-  if(!page->document->functions.page_search_text) {
+  if (!page->document->functions.page_search_text) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
@@ -298,11 +298,11 @@ zathura_page_search_text(zathura_page_t* page, const char* text)
 zathura_list_t*
 zathura_page_links_get(zathura_page_t* page)
 {
-  if(!page || !page->document) {
+  if (!page || !page->document) {
     return NULL;
   }
 
-  if(!page->document->functions.page_links_get) {
+  if (!page->document->functions.page_links_get) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
@@ -319,11 +319,11 @@ zathura_page_links_free(zathura_list_t* list)
 zathura_list_t*
 zathura_page_form_fields_get(zathura_page_t* page)
 {
-  if(!page || !page->document) {
+  if (!page || !page->document) {
     return NULL;
   }
 
-  if(!page->document->functions.page_form_fields_get) {
+  if (!page->document->functions.page_form_fields_get) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
@@ -340,18 +340,18 @@ zathura_page_form_fields_free(zathura_list_t* list)
 GtkWidget*
 zathura_page_render(zathura_page_t* page)
 {
-  if(!page || !page->document) {
+  if (!page || !page->document) {
     return NULL;
   }
 
-  if(!page->document->functions.page_render) {
+  if (!page->document->functions.page_render) {
     fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
     return NULL;
   }
 
   GtkWidget* widget = page->document->functions.page_render(page);
 
-  if(widget) {
+  if (widget) {
     page->rendered = true;
   }
 
@@ -361,13 +361,13 @@ zathura_page_render(zathura_page_t* page)
 zathura_index_element_t*
 zathura_index_element_new(const char* title)
 {
-  if(!title) {
+  if (!title) {
     return NULL;
   }
 
   zathura_index_element_t* res = g_malloc0(sizeof(zathura_index_element_t));
 
-  if(!res) {
+  if (!res) {
     return NULL;
   }
 
@@ -379,13 +379,13 @@ zathura_index_element_new(const char* title)
 void
 zathura_index_element_free(zathura_index_element_t* index)
 {
-  if(!index) {
+  if (!index) {
     return;
   }
 
   g_free(index->title);
 
-  if(index->type == ZATHURA_LINK_EXTERNAL) {
+  if (index->type == ZATHURA_LINK_EXTERNAL) {
     g_free(index->target.uri);
   }
 

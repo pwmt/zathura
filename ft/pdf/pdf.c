@@ -9,7 +9,7 @@
 bool
 pdf_document_open(zathura_document_t* document)
 {
-  if(!document) {
+  if (!document) {
     goto error_out;
   }
 
@@ -25,7 +25,7 @@ pdf_document_open(zathura_document_t* document)
   document->functions.page_free                 = pdf_page_free;
 
   document->data = malloc(sizeof(pdf_document_t));
-  if(!document->data) {
+  if (!document->data) {
     goto error_out;
   }
 
@@ -33,7 +33,7 @@ pdf_document_open(zathura_document_t* document)
   GError* error  = NULL;
   char* file_uri = g_filename_to_uri(document->file_path, NULL, &error);
 
-  if(!file_uri) {
+  if (!file_uri) {
     fprintf(stderr, "error: could not open file: %s\n", error->message);
     goto error_free;
   }
@@ -41,7 +41,7 @@ pdf_document_open(zathura_document_t* document)
   pdf_document_t* pdf_document = (pdf_document_t*) document->data;
   pdf_document->document       = poppler_document_new_from_file(file_uri, document->password, &error);
 
-  if(!pdf_document->document) {
+  if (!pdf_document->document) {
     fprintf(stderr, "error: could not open file: %s\n", error->message);
     goto error_free;
   }
@@ -54,11 +54,11 @@ pdf_document_open(zathura_document_t* document)
 
 error_free:
 
-    if(error) {
+    if (error) {
       g_error_free(error);
     }
 
-    if(file_uri) {
+    if (file_uri) {
       g_free(file_uri);
     }
 
@@ -73,11 +73,11 @@ error_out:
 bool
 pdf_document_free(zathura_document_t* document)
 {
-  if(!document) {
+  if (!document) {
     return false;
   }
 
-  if(document->data) {
+  if (document->data) {
     pdf_document_t* pdf_document = (pdf_document_t*) document->data;
     g_object_unref(pdf_document->document);
     free(document->data);
@@ -90,7 +90,7 @@ pdf_document_free(zathura_document_t* document)
 static void
 build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* iter)
 {
-  if(!root || !iter) {
+  if (!root || !iter) {
     return;
   }
 
@@ -98,22 +98,22 @@ build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* ite
   {
     PopplerAction* action = poppler_index_iter_get_action(iter);
 
-    if(!action) {
+    if (!action) {
       continue;
     }
 
     gchar* markup = g_markup_escape_text(action->any.title, -1);
     zathura_index_element_t* indexelement = zathura_index_element_new(markup);
 
-    if(action->type == POPPLER_ACTION_URI) {
+    if (action->type == POPPLER_ACTION_URI) {
       indexelement->type = ZATHURA_LINK_EXTERNAL;
       indexelement->target.uri = g_strdup(action->uri.uri);
     } else if (action->type == POPPLER_ACTION_GOTO_DEST) {
       indexelement->type = ZATHURA_LINK_TO_PAGE;
 
-      if(action->goto_dest.dest->type == POPPLER_DEST_NAMED) {
+      if (action->goto_dest.dest->type == POPPLER_DEST_NAMED) {
         PopplerDest* dest = poppler_document_find_dest(pdf->document, action->goto_dest.dest->named_dest);
-        if(dest) {
+        if (dest) {
           indexelement->target.page_number = dest->page_num - 1;
           poppler_dest_free(dest);
         }
@@ -131,7 +131,7 @@ build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* ite
     girara_tree_node_t* node = girara_node_append_data(root, indexelement);
     PopplerIndexIter* child  = poppler_index_iter_get_child(iter);
 
-    if(child) {
+    if (child) {
       build_index(pdf, node, child);
     }
 
@@ -143,14 +143,14 @@ build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* ite
 girara_tree_node_t*
 pdf_document_index_generate(zathura_document_t* document)
 {
-  if(!document || !document->data) {
+  if (!document || !document->data) {
     return NULL;
   }
 
   pdf_document_t* pdf_document = (pdf_document_t*) document->data;
   PopplerIndexIter* iter       = poppler_index_iter_new(pdf_document->document);
 
-  if(!iter) {
+  if (!iter) {
     // XXX: error message?
     return NULL;
   }
@@ -166,7 +166,7 @@ pdf_document_index_generate(zathura_document_t* document)
 bool
 pdf_document_save_as(zathura_document_t* document, const char* path)
 {
-  if(!document || !document->data || !path) {
+  if (!document || !document->data || !path) {
     return false;
   }
 
@@ -188,21 +188,21 @@ pdf_document_attachments_get(zathura_document_t* document)
 zathura_page_t*
 pdf_page_get(zathura_document_t* document, unsigned int page)
 {
-  if(!document || !document->data) {
+  if (!document || !document->data) {
     return NULL;
   }
 
   pdf_document_t* pdf_document  = (pdf_document_t*) document->data;
   zathura_page_t* document_page = malloc(sizeof(zathura_page_t));
 
-  if(!document_page) {
+  if (!document_page) {
     return NULL;
   }
 
   document_page->document = document;
   document_page->data     = poppler_document_get_page(pdf_document->document, page);
 
-  if(!document_page->data) {
+  if (!document_page->data) {
     free(document_page);
     return NULL;
   }
@@ -215,7 +215,7 @@ pdf_page_get(zathura_document_t* document, unsigned int page)
 bool
 pdf_page_free(zathura_page_t* page)
 {
-  if(!page) {
+  if (!page) {
     return false;
   }
 
@@ -246,7 +246,7 @@ pdf_page_form_fields_get(zathura_page_t* page)
 GtkWidget*
 pdf_page_render(zathura_page_t* page)
 {
-  if(!Zathura.document || !page || !page->data || !page->document) {
+  if (!Zathura.document || !page || !page->data || !page->document) {
     return NULL;
   }
 
@@ -254,7 +254,7 @@ pdf_page_render(zathura_page_t* page)
   unsigned int page_width  = Zathura.document->scale * page->width;
   unsigned int page_height = Zathura.document->scale * page->height;
 
-  if(Zathura.document->rotate == 90 || Zathura.document->rotate == 270) {
+  if (Zathura.document->rotate == 90 || Zathura.document->rotate == 270) {
       unsigned int dim_temp = 0;
       dim_temp    = page_width;
       page_width  = page_height;
@@ -265,7 +265,7 @@ pdf_page_render(zathura_page_t* page)
   GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
       page_width, page_height);
 
-  if(!pixbuf) {
+  if (!pixbuf) {
     return NULL;
   }
 
@@ -275,7 +275,7 @@ pdf_page_render(zathura_page_t* page)
   /* write pixbuf */
   GtkWidget* image = gtk_image_new();
 
-  if(!image) {
+  if (!image) {
     g_object_unref(pixbuf);
     return NULL;
   }
