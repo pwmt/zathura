@@ -6,6 +6,7 @@
 #include "callbacks.h"
 #include "shortcuts.h"
 #include "zathura.h"
+#include "render.h"
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* argument, unsigned int t)
@@ -244,5 +245,27 @@ sc_quit(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 bool
 sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
+  if (session == NULL || argument == NULL) {
+    return false;
+  }
+
+  /* retreive zoom step value */
+  int* value = girara_setting_get(Zathura.UI.session, "zoom-step");
+  if (value == NULL) {
+    return false;
+  }
+
+  float zoom_step = *value / 100.0f;
+
+  if (argument->n == ZOOM_IN) {
+    Zathura.document->scale += zoom_step;
+  } else if (argument->n == ZOOM_OUT) {
+    Zathura.document->scale -= zoom_step;
+  } else {
+    Zathura.document->scale = 1.0;
+  }
+
+  render_all();
+
   return false;
 }

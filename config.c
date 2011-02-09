@@ -14,6 +14,10 @@ config_load_default(void)
   /* general settings */
   girara_mode_set(Zathura.UI.session, NORMAL);
 
+  /* zathura settings */
+  int int_value = 10;
+  girara_setting_add(Zathura.UI.session, "zoom-step", &int_value, INT, false, "Zoom step", NULL);
+
   /* define default shortcuts */
   girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,             0,                   0,               NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_Escape,     NULL, sc_abort,             0,                   0,               NULL);

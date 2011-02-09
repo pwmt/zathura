@@ -8,6 +8,7 @@
 #include <girara-datastructures.h>
 
 #include "ft/document.h"
+#include "callbacks.h"
 
 typedef struct render_thread_s
 {
@@ -40,5 +41,12 @@ void render_free(render_thread_t* render_thread);
  * @return true if no error occured
  */
 bool render_page(render_thread_t* render_thread, zathura_page_t* page);
+
+/**
+ * This function is used to unmark all pages as not rendered. This should
+ * be used if all pages should be rendered again (e.g.: the zoom level or the
+ * colors have changed)
+ */
+void render_all(void);
 
 #endif // RENDER_H

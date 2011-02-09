@@ -174,3 +174,20 @@ render(zathura_page_t* page)
 
   return true;
 }
+
+void
+render_all(void)
+{
+  if (Zathura.document == NULL) {
+    return;
+  }
+
+  /* unmark all pages */
+  for (unsigned int page_id = 0; page_id < Zathura.document->number_of_pages; page_id++) {
+    Zathura.document->pages[page_id]->rendered = false;
+  }
+
+  /* redraw current page */
+  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));
+  cb_view_vadjustment_value_changed(view_vadjustment, NULL);
+}
