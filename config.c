@@ -30,8 +30,8 @@ config_load_default(void)
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_o,          NULL, sc_focus_inputbar,    NORMAL,              0,               &(":open "));
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_O,          NULL, sc_focus_inputbar,    NORMAL,              APPEND_FILEPATH, &(":open "));
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_f,          NULL, sc_follow,            NORMAL,              0,               NULL);
-  girara_shortcut_add(Zathura.UI.session, 0,                0,              "gg", sc_goto,              NORMAL | FULLSCREEN, 0,               NULL);
-  girara_shortcut_add(Zathura.UI.session, 0,                0,              "G",  sc_goto,              NORMAL | FULLSCREEN, 0,               NULL);
+  girara_shortcut_add(Zathura.UI.session, 0,                0,              "gg", sc_goto,              NORMAL | FULLSCREEN, TOP,             NULL);
+  girara_shortcut_add(Zathura.UI.session, 0,                0,              "G",  sc_goto,              NORMAL | FULLSCREEN, BOTTOM,          NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_J,          NULL, sc_navigate,          NORMAL,              NEXT,            NULL);
   girara_shortcut_add(Zathura.UI.session, 0,                GDK_K,          NULL, sc_navigate,          NORMAL,              PREVIOUS,        NULL);
   girara_shortcut_add(Zathura.UI.session, GDK_MOD1_MASK,    GDK_Right,      NULL, sc_navigate,          NORMAL,              NEXT,            NULL);

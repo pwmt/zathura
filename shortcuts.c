@@ -66,6 +66,32 @@ sc_follow(girara_session_t* session, girara_argument_t* argument, unsigned int t
 bool
 sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
+  if (!session || !argument) {
+    return false;
+  }
+
+  if (argument->n == TOP) {
+    girara_argument_t arg = { TOP, NULL };
+    sc_scroll(session, &arg, 0);
+
+    return false;
+  } else {
+    if (t == 0) {
+      girara_argument_t arg = { BOTTOM, NULL };
+      sc_scroll(session, &arg, 0);
+
+      return true;
+    }
+
+    unsigned int number_of_pages = Zathura.document->number_of_pages;
+
+    if (t > 0 && t <= number_of_pages)  {
+      GtkAdjustment* adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));
+      unsigned int offset = Zathura.document->pages[t - 1]->offset * Zathura.document->scale;
+      gtk_adjustment_set_value(adjustment, offset);
+    }
+  }
+
   return false;
 }
 
