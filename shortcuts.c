@@ -8,7 +8,7 @@
 #include "zathura.h"
 
 bool
-sc_abort(girara_session_t* session, girara_argument_t* argument)
+sc_abort(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -18,19 +18,19 @@ sc_abort(girara_session_t* session, girara_argument_t* argument)
 }
 
 bool
-sc_adjust_window(girara_session_t* session, girara_argument_t* argument)
+sc_adjust_window(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_change_buffer(girara_session_t* session, girara_argument_t* argument)
+sc_change_buffer(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_change_mode(girara_session_t* session, girara_argument_t* argument)
+sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -40,7 +40,7 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument)
 }
 
 bool
-sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument)
+sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -58,19 +58,19 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument)
 }
 
 bool
-sc_follow(girara_session_t* session, girara_argument_t* argument)
+sc_follow(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_goto(girara_session_t* session, girara_argument_t* argument)
+sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_navigate(girara_session_t* session, girara_argument_t* argument)
+sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   if (!session || !argument || !Zathura.document) {
     return false;
@@ -91,25 +91,25 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument)
 }
 
 bool
-sc_recolor(girara_session_t* session, girara_argument_t* argument)
+sc_recolor(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_reload(girara_session_t* session, girara_argument_t* argument)
+sc_reload(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_rotate(girara_session_t* session, girara_argument_t* argument)
+sc_rotate(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_scroll(girara_session_t* session, girara_argument_t* argument)
+sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   GtkAdjustment* adjustment = NULL;
   if ( (argument->n == LEFT) || (argument->n == RIGHT) )
@@ -161,52 +161,52 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument)
 }
 
 bool
-sc_search(girara_session_t* session, girara_argument_t* argument)
+sc_search(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_switch_goto_mode(girara_session_t* session, girara_argument_t* argument)
+sc_switch_goto_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_navigate_index(girara_session_t* session, girara_argument_t* argument)
+sc_navigate_index(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_toggle_index(girara_session_t* session, girara_argument_t* argument)
+sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument)
+sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument)
+sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument)
+sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
 
 bool
-sc_quit(girara_session_t* session, girara_argument_t* argument)
+sc_quit(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   girara_argument_t arg = { GIRARA_HIDE, NULL };
-  girara_isc_completion(session, &arg);
+  girara_isc_completion(session, &arg, 0);
 
   cb_destroy(NULL, NULL);
 
@@ -216,7 +216,7 @@ sc_quit(girara_session_t* session, girara_argument_t* argument)
 }
 
 bool
-sc_zoom(girara_session_t* session, girara_argument_t* argument)
+sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   return false;
 }
