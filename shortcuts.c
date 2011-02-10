@@ -7,6 +7,7 @@
 #include "shortcuts.h"
 #include "zathura.h"
 #include "render.h"
+#include "utils.h"
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* argument, unsigned int t)
@@ -67,7 +68,7 @@ sc_follow(girara_session_t* session, girara_argument_t* argument, unsigned int t
 bool
 sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
-  if (!session || !argument) {
+  if (session == NULL || argument == NULL || Zathura.document == NULL) {
     return false;
   }
 
@@ -99,7 +100,7 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 bool
 sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
-  if (!session || !argument || !Zathura.document) {
+  if (session == NULL || argument == NULL || Zathura.document == NULL) {
     return false;
   }
 
@@ -202,6 +203,88 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument, unsign
 bool
 sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
+  if (session == NULL || Zathura.document == NULL) {
+    return false;
+  }
+
+  girara_tree_node_t* document_index = NULL;
+  GtkWidget* treeview                = NULL;
+  GtkTreeModel* model                = NULL;
+  GtkCellRenderer* renderer          = NULL;
+
+  if (Zathura.UI.index == NULL) {
+    /* create new index widget */
+    Zathura.UI.index = gtk_scrolled_window_new(NULL, NULL);
+
+    if (Zathura.UI.index == NULL) {
+      goto error_ret;
+    }
+
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(Zathura.UI.index),
+      GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+    /* create index */
+    document_index = zathura_document_index_generate(Zathura.document);
+    if (document_index == NULL) {
+      // TODO: Error message
+      goto error_free;
+    }
+
+    model = GTK_TREE_MODEL(gtk_tree_store_new(2, G_TYPE_STRING, G_TYPE_POINTER));
+    if (model == NULL) {
+      goto error_free;
+    }
+
+    treeview = gtk_tree_view_new_with_model(model);
+    if (treeview == NULL) {
+      goto error_free;
+    }
+
+    g_object_unref(model);
+
+    renderer = gtk_cell_renderer_text_new();
+    if (renderer == NULL) {
+      goto error_free;
+    }
+
+    document_index_build(model, NULL, document_index);
+    girara_node_free(document_index);
+
+    /* setup widget */
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 0, "Title", renderer, "markup", 0, NULL);
+    gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
+    g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+    g_object_set(G_OBJECT(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)), "expand", TRUE, NULL);
+    gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), gtk_tree_path_new_first(), NULL, FALSE);
+    /*g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), NULL); TODO*/
+
+    gtk_container_add(GTK_CONTAINER(Zathura.UI.index), treeview);
+    gtk_widget_show(treeview);
+  }
+
+  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(Zathura.UI.index))) {
+    girara_set_view(session, Zathura.UI.page_view);
+    gtk_widget_hide(GTK_WIDGET(Zathura.UI.index));
+  } else {
+    girara_set_view(session, Zathura.UI.index);
+    gtk_widget_show(GTK_WIDGET(Zathura.UI.index));
+  }
+
+  return false;
+
+error_free:
+
+  if (Zathura.UI.index != NULL) {
+    g_object_unref(Zathura.UI.index);
+    Zathura.UI.index = NULL;
+  }
+
+  if (document_index != NULL) {
+    girara_node_free(document_index);
+  }
+  
+error_ret:
+
   return false;
 }
 
@@ -212,10 +295,11 @@ sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, unsig
     return false;
   }
 
-  if(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar)))
+  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar))) {
     gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
-  else
+  } else {
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
+  }
 
   return false;
 }
@@ -247,10 +331,11 @@ sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument, unsi
     return false;
   }
 
-  if(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.statusbar)))
+  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.statusbar))) {
     gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
-  else
+  } else {
     gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
+  }
 
   return false;
 }
@@ -271,7 +356,7 @@ sc_quit(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 bool
 sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
-  if (session == NULL || argument == NULL) {
+  if (session == NULL || argument == NULL || Zathura.document == NULL) {
     return false;
   }
 

@@ -214,12 +214,6 @@ zathura_document_index_generate(zathura_document_t* document)
   return document->functions.document_index_generate(document);
 }
 
-bool
-zathura_document_index_free(zathura_list_t* list)
-{
-  return false;
-}
-
 zathura_list_t*
 zathura_document_attachments_get(zathura_document_t* document)
 {

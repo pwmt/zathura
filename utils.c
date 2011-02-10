@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 
 #include "utils.h"
+#include "zathura.h"
 
 #define BLOCK_SIZE 64
 
@@ -157,8 +158,20 @@ page_blank(unsigned int width, unsigned int height)
   gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
   gtk_widget_show(image);
 
-  /*free(buffer);*/
+  /*free(buffer);*/ // XXX: Read documentation
   g_object_unref(pixbuf);
 
   return image;
+}
+
+void
+document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree)
+{
+  girara_list_t* list = girara_node_get_children(tree);
+  girara_list_iterator_t* it = girara_list_iterator(list);
+
+  do {
+    zathura_index_element_t* index_element = (zathura_index_element_t*) girara_list_iterator_data(it);
+    printf("%s\n", index_element->title);
+  } while ((it = girara_list_iterator_next(it)));
 }

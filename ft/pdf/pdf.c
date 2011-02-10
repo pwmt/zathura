@@ -103,32 +103,32 @@ build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* ite
     }
 
     gchar* markup = g_markup_escape_text(action->any.title, -1);
-    zathura_index_element_t* indexelement = zathura_index_element_new(markup);
+    zathura_index_element_t* index_element = zathura_index_element_new(markup);
 
     if (action->type == POPPLER_ACTION_URI) {
-      indexelement->type = ZATHURA_LINK_EXTERNAL;
-      indexelement->target.uri = g_strdup(action->uri.uri);
+      index_element->type = ZATHURA_LINK_EXTERNAL;
+      index_element->target.uri = g_strdup(action->uri.uri);
     } else if (action->type == POPPLER_ACTION_GOTO_DEST) {
-      indexelement->type = ZATHURA_LINK_TO_PAGE;
+      index_element->type = ZATHURA_LINK_TO_PAGE;
 
       if (action->goto_dest.dest->type == POPPLER_DEST_NAMED) {
         PopplerDest* dest = poppler_document_find_dest(pdf->document, action->goto_dest.dest->named_dest);
         if (dest) {
-          indexelement->target.page_number = dest->page_num - 1;
+          index_element->target.page_number = dest->page_num - 1;
           poppler_dest_free(dest);
         }
       } else {
-        indexelement->target.page_number = action->goto_dest.dest->page_num - 1;
+        index_element->target.page_number = action->goto_dest.dest->page_num - 1;
       }
     } else {
       poppler_action_free(action);
-      zathura_index_element_free(indexelement);
+      zathura_index_element_free(index_element);
       continue;
     }
 
     poppler_action_free(action);
 
-    girara_tree_node_t* node = girara_node_append_data(root, indexelement);
+    girara_tree_node_t* node = girara_node_append_data(root, index_element);
     PopplerIndexIter* child  = poppler_index_iter_get_child(iter);
 
     if (child) {

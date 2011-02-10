@@ -38,6 +38,7 @@ struct
     } statusbar;
 
     GtkWidget *page_view; /**> Widget that contains all rendered pages */
+    GtkWidget *index; /**> Widget to show the index of the document */
   } UI;
 
   struct

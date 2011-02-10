@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
+#include <girara.h>
 
 /**
  * Checks if the given file exists
@@ -39,5 +40,15 @@ bool execute_command(char* const argv[], char** output);
  * @return The widget of the page or NULL if an error occured
  */
 GtkWidget* page_blank(unsigned int width, unsigned int height);
+
+/**
+ * Generates the document index based upon the list retreived from the document
+ * object.
+ *
+ * @param model The tree model
+ * @param tree_it The Tree iterator
+ * @param list_it The index list iterator
+ */
+void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
 #endif // UTILS_H

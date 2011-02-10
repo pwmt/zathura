@@ -26,6 +26,7 @@ init_zathura()
   Zathura.UI.statusbar.buffer      = NULL;
   Zathura.UI.statusbar.page_number = NULL;
   Zathura.UI.page_view             = NULL;
+  Zathura.UI.index                 = NULL;
 
   /* page view */
   Zathura.UI.page_view = gtk_vbox_new(FALSE, 0);

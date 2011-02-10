@@ -117,7 +117,6 @@ zathura_document_t* zathura_document_open(const char* path, const char* password
 bool zathura_document_free(zathura_document_t* document);
 bool zathura_document_save_as(zathura_document_t* document, const char* path);
 girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document);
-bool zathura_document_index_free(zathura_list_t* list);
 zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
 bool zathura_document_attachments_free(zathura_list_t* list);
 
