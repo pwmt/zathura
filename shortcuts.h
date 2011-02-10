@@ -136,16 +136,6 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned 
 bool sc_search(girara_session_t* session, girara_argument_t* argument, unsigned int t);
 
 /**
- * Switch go to mode (numeric, labels)
- *
- * @param session The used girara session
- * @param argument The used argument
- * @param t Number of executions
- * @return true if no error occured otherwise false
- */
-bool sc_switch_goto_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t);
-
-/**
  * Navigate through the index of the document
  *
  * @param session The used girara session
