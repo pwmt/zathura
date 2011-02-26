@@ -1,7 +1,6 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
-#include <poppler/glib/poppler.h>
 
 #include "pdf.h"
 #include "../../zathura.h"
@@ -10,13 +9,10 @@ bool
 pdf_document_open(zathura_document_t* document)
 {
   if (!document) {
-    goto error_out;
+    goto error_ret;
   }
 
   document->functions.document_free             = pdf_document_free;
-  document->functions.document_index_generate   = pdf_document_index_generate;;
-  document->functions.document_save_as          = pdf_document_save_as;
-  document->functions.document_attachments_get  = pdf_document_attachments_get;
   document->functions.page_get                  = pdf_page_get;
   document->functions.page_search_text          = pdf_page_search_text;
   document->functions.page_links_get            = pdf_page_links_get;
@@ -26,46 +22,42 @@ pdf_document_open(zathura_document_t* document)
 
   document->data = malloc(sizeof(pdf_document_t));
   if (!document->data) {
-    goto error_out;
-  }
-
-  /* format path */
-  GError* error  = NULL;
-  char* file_uri = g_filename_to_uri(document->file_path, NULL, &error);
-
-  if (!file_uri) {
-    fprintf(stderr, "error: could not open file: %s\n", error->message);
-    goto error_free;
+    goto error_ret;
   }
 
   pdf_document_t* pdf_document = (pdf_document_t*) document->data;
-  pdf_document->document       = poppler_document_new_from_file(file_uri, document->password, &error);
 
-  if (!pdf_document->document) {
-    fprintf(stderr, "error: could not open file: %s\n", error->message);
+  fz_accelerate();
+  pdf_document->glyphcache = fz_newglyphcache();
+
+  if (pdf_openxref(&(pdf_document->document), document->file_path, NULL)) {
+    fprintf(stderr, "error: could not open file\n");
     goto error_free;
   }
 
-  document->number_of_pages = poppler_document_get_n_pages(pdf_document->document);
+  if (pdf_loadpagetree(pdf_document->document)) {
+    fprintf(stderr, "error: could not open file\n");
+    goto error_free;
+  }
 
-  g_free(file_uri);
+  document->number_of_pages = pdf_getpagecount(pdf_document->document);
 
   return true;
 
 error_free:
 
-    if (error) {
-      g_error_free(error);
-    }
+  if (pdf_document->document) {
+    pdf_freexref(pdf_document->document);
+  }
 
-    if (file_uri) {
-      g_free(file_uri);
-    }
+  if (pdf_document->glyphcache) {
+    fz_freeglyphcache(pdf_document->glyphcache);
+  }
 
-    free(document->data);
-    document->data = NULL;
+  free(document->data);
+  document->data = NULL;
 
-error_out:
+error_ret:
 
   return false;
 }
@@ -79,110 +71,13 @@ pdf_document_free(zathura_document_t* document)
 
   if (document->data) {
     pdf_document_t* pdf_document = (pdf_document_t*) document->data;
-    g_object_unref(pdf_document->document);
+    pdf_freexref(pdf_document->document);
+    fz_freeglyphcache(pdf_document->glyphcache);
     free(document->data);
     document->data = NULL;
   }
 
   return true;
-}
-
-static void
-build_index(pdf_document_t* pdf, girara_tree_node_t* root, PopplerIndexIter* iter)
-{
-  if (!root || !iter) {
-    return;
-  }
-
-  do
-  {
-    PopplerAction* action = poppler_index_iter_get_action(iter);
-
-    if (!action) {
-      continue;
-    }
-
-    gchar* markup = g_markup_escape_text(action->any.title, -1);
-    zathura_index_element_t* index_element = zathura_index_element_new(markup);
-
-    if (action->type == POPPLER_ACTION_URI) {
-      index_element->type = ZATHURA_LINK_EXTERNAL;
-      index_element->target.uri = g_strdup(action->uri.uri);
-    } else if (action->type == POPPLER_ACTION_GOTO_DEST) {
-      index_element->type = ZATHURA_LINK_TO_PAGE;
-
-      if (action->goto_dest.dest->type == POPPLER_DEST_NAMED) {
-        PopplerDest* dest = poppler_document_find_dest(pdf->document, action->goto_dest.dest->named_dest);
-        if (dest) {
-          index_element->target.page_number = dest->page_num - 1;
-          poppler_dest_free(dest);
-        }
-      } else {
-        index_element->target.page_number = action->goto_dest.dest->page_num - 1;
-      }
-    } else {
-      poppler_action_free(action);
-      zathura_index_element_free(index_element);
-      continue;
-    }
-
-    poppler_action_free(action);
-
-    girara_tree_node_t* node = girara_node_append_data(root, index_element);
-    PopplerIndexIter* child  = poppler_index_iter_get_child(iter);
-
-    if (child) {
-      build_index(pdf, node, child);
-    }
-
-    poppler_index_iter_free(child);
-
-  } while (poppler_index_iter_next(iter));
-}
-
-girara_tree_node_t*
-pdf_document_index_generate(zathura_document_t* document)
-{
-  if (!document || !document->data) {
-    return NULL;
-  }
-
-  pdf_document_t* pdf_document = (pdf_document_t*) document->data;
-  PopplerIndexIter* iter       = poppler_index_iter_new(pdf_document->document);
-
-  if (!iter) {
-    // XXX: error message?
-    return NULL;
-  }
-
-  girara_tree_node_t* root = girara_node_new(zathura_index_element_new("ROOT"));
-  girara_node_set_free_function(root, (girara_free_function_t)zathura_index_element_free);
-  build_index(pdf_document, root, iter);
-
-  poppler_index_iter_free(iter);
-  return root;
-}
-
-bool
-pdf_document_save_as(zathura_document_t* document, const char* path)
-{
-  if (!document || !document->data || !path) {
-    return false;
-  }
-
-  pdf_document_t* pdf_document = (pdf_document_t*) document->data;
-
-  char* file_path = g_strdup_printf("file://%s", path);
-  poppler_document_save(pdf_document->document, file_path, NULL);
-  g_free(file_path);
-
-  return false;
-}
-
-zathura_list_t*
-pdf_document_attachments_get(zathura_document_t* document)
-{
-  return NULL;
 }
 
 zathura_page_t*
@@ -195,21 +90,38 @@ pdf_page_get(zathura_document_t* document, unsigned int page)
   pdf_document_t* pdf_document  = (pdf_document_t*) document->data;
   zathura_page_t* document_page = malloc(sizeof(zathura_page_t));
 
-  if (!document_page) {
-    return NULL;
+  if (document_page == NULL) {
+    goto error_ret;
+  }
+
+  mupdf_page_t* mupdf_page = malloc(sizeof(mupdf_page_t));
+
+  if (mupdf_page == NULL) {
+    goto error_free;
   }
 
   document_page->document = document;
-  document_page->data     = poppler_document_get_page(pdf_document->document, page);
+  document_page->data     = mupdf_page;
 
-  if (!document_page->data) {
-    free(document_page);
-    return NULL;
+  mupdf_page->page_object = pdf_getpageobject(pdf_document->document, page + 1);
+
+  if (pdf_loadpage(&(mupdf_page->page), pdf_document->document, mupdf_page->page_object)) {
+    goto error_free;
   }
 
-  poppler_page_get_size(document_page->data, &(document_page->width), &(document_page->height));
+  document_page->width  = mupdf_page->page->mediabox.x1 - mupdf_page->page->mediabox.x0;
+  document_page->height = mupdf_page->page->mediabox.y1 - mupdf_page->page->mediabox.y0;
 
   return document_page;
+
+error_free:
+
+  free(document_page);
+  free(mupdf_page);
+
+error_ret:
+
+  return NULL;
 }
 
 bool
@@ -269,8 +181,49 @@ pdf_page_render(zathura_page_t* page)
     return NULL;
   }
 
-  poppler_page_render_to_pixbuf(page->data, 0, 0, page_width, page_height, Zathura.document->scale,
-      Zathura.document->rotate, pixbuf);
+  pdf_document_t* pdf_document = (pdf_document_t*) page->document->data;
+  mupdf_page_t* mupdf_page = (mupdf_page_t*) page->data;
+
+  /* render */
+  fz_displaylist* list = fz_newdisplaylist();
+  fz_device* dev       = fz_newlistdevice(list);
+
+  if (pdf_runpage(pdf_document->document, mupdf_page->page, dev, fz_identity)) {
+    return NULL;
+  }
+
+  fz_freedevice(dev);
+
+  fz_matrix ctm = fz_translate(0, -mupdf_page->page->mediabox.y1);
+  ctm = fz_concat(ctm, fz_scale(Zathura.document->scale, -Zathura.document->scale));
+
+  fz_bbox bbox = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
+
+  guchar* pixels = gdk_pixbuf_get_pixels(pixbuf);
+  int rowstride  = gdk_pixbuf_get_rowstride(pixbuf);
+  int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
+
+  fz_pixmap* pix = fz_newpixmapwithrect(fz_devicergb, bbox);
+  fz_clearpixmap(pix, 0xff);
+
+  dev = fz_newdrawdevice(pdf_document->glyphcache, pix);
+  fz_executedisplaylist(list, dev, ctm);
+  fz_freedevice(dev);
+
+  for (unsigned int y = 0; y < pix->h; y++) {
+    for (unsigned int x = 0; x < pix->w; x++) {
+      unsigned char *s = pix->samples + y * pix->w * 4 + x * 4;
+      guchar* p = pixels + y * rowstride + x * n_channels;
+      p[0] = s[0];
+      p[1] = s[1];
+      p[2] = s[2];
+    }
+  }
+
+  fz_droppixmap(pix);
+  fz_freedisplaylist(list);
+  pdf_freepage(mupdf_page->page);
+  pdf_agestore(pdf_document->document->store, 3);
 
   /* write pixbuf */
   GtkWidget* image = gtk_image_new();
