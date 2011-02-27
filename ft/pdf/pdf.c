@@ -116,6 +116,14 @@ pdf_page_get(zathura_document_t* document, unsigned int page)
 
 error_free:
 
+  if (mupdf_page && mupdf_page->page_object) {
+    fz_dropobj(mupdf_page->page_object);
+  }
+
+  if (mupdf_page && mupdf_page->page) {
+    pdf_freepage(mupdf_page->page);
+  }
+
   free(document_page);
   free(mupdf_page);
 
@@ -131,7 +139,10 @@ pdf_page_free(zathura_page_t* page)
     return false;
   }
 
-  g_object_unref(page->data);
+  mupdf_page_t* mupdf_page = (mupdf_page_t*) page->data;
+  pdf_freepage(mupdf_page->page);
+  fz_dropobj(mupdf_page->page_object);
+  free(mupdf_page);
   free(page);
 
   return true;
@@ -182,37 +193,36 @@ pdf_page_render(zathura_page_t* page)
   }
 
   pdf_document_t* pdf_document = (pdf_document_t*) page->document->data;
-  mupdf_page_t* mupdf_page = (mupdf_page_t*) page->data;
+  mupdf_page_t* mupdf_page     = (mupdf_page_t*) page->data;
 
   /* render */
-  fz_displaylist* list = fz_newdisplaylist();
-  fz_device* dev       = fz_newlistdevice(list);
+  fz_displaylist* display_list = fz_newdisplaylist();
+  fz_device* device            = fz_newlistdevice(display_list);
 
-  if (pdf_runpage(pdf_document->document, mupdf_page->page, dev, fz_identity)) {
+  if (pdf_runpage(pdf_document->document, mupdf_page->page, device, fz_identity)) {
     return NULL;
   }
 
-  fz_freedevice(dev);
+  fz_freedevice(device);
 
   fz_matrix ctm = fz_translate(0, -mupdf_page->page->mediabox.y1);
-  ctm = fz_concat(ctm, fz_scale(Zathura.document->scale, -Zathura.document->scale));
-
-  fz_bbox bbox = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
+  ctm           = fz_concat(ctm, fz_scale(Zathura.document->scale, -Zathura.document->scale));
+  fz_bbox bbox  = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
 
   guchar* pixels = gdk_pixbuf_get_pixels(pixbuf);
   int rowstride  = gdk_pixbuf_get_rowstride(pixbuf);
   int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
 
-  fz_pixmap* pix = fz_newpixmapwithrect(fz_devicergb, bbox);
-  fz_clearpixmap(pix, 0xff);
+  fz_pixmap* pixmap = fz_newpixmapwithrect(fz_devicergb, bbox);
+  fz_clearpixmap(pixmap, 0xFF);
 
-  dev = fz_newdrawdevice(pdf_document->glyphcache, pix);
-  fz_executedisplaylist(list, dev, ctm);
-  fz_freedevice(dev);
+  device = fz_newdrawdevice(pdf_document->glyphcache, pixmap);
+  fz_executedisplaylist(display_list, device, ctm);
+  fz_freedevice(device);
 
-  for (unsigned int y = 0; y < pix->h; y++) {
-    for (unsigned int x = 0; x < pix->w; x++) {
-      unsigned char *s = pix->samples + y * pix->w * 4 + x * 4;
+  for (unsigned int y = 0; y < pixmap->h; y++) {
+    for (unsigned int x = 0; x < pixmap->w; x++) {
+      unsigned char *s = pixmap->samples + y * pixmap->w * 4 + x * 4;
       guchar* p = pixels + y * rowstride + x * n_channels;
       p[0] = s[0];
       p[1] = s[1];
@@ -220,8 +230,8 @@ pdf_page_render(zathura_page_t* page)
     }
   }
 
-  fz_droppixmap(pix);
-  fz_freedisplaylist(list);
+  fz_droppixmap(pixmap);
+  fz_freedisplaylist(display_list);
   pdf_freepage(mupdf_page->page);
   pdf_agestore(pdf_document->document->store, 3);
 
