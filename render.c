@@ -20,9 +20,10 @@ render_job(void* data)
     girara_list_remove(render_thread->list, page);
     g_mutex_unlock(render_thread->lock);
 
-    printf("Rendered %d\n", page->number);
-
+    gdk_threads_enter();
     render(page);
+    printf("Rendered %d\n", page->number);
+    gdk_threads_leave();
   }
 
   return NULL;
