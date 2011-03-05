@@ -1,14 +1,14 @@
 # See LICENSE file for license and copyright information
-# zathura - user interface
 
 include config.mk
 
 PROJECT  = zathura
-SOURCE   = $(shell find . -iname "*.c" -a ! -iwholename "*./doc*|*./ft*")
+SOURCE   = $(shell find . -iname "*.c" -a ! -iwholename "*./ft*")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
+	make -C ft
 
 options:
 	@echo ${PROJECT} build options:
@@ -35,12 +35,14 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug
+	make -C ft clean
 
 ${PROJECT}-debug: ${DOBJECTS}
 	@echo CC -o ${PROJECT}-debug
 	@${CC} ${LDFLAGS} -o ${PROJECT}-debug ${DOBJECTS} ${LIBS}
 
 debug: ${PROJECT}-debug
+	make -C ft debug
 
 valgrind: debug
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes \

@@ -5,8 +5,8 @@
 
 #include <stdbool.h>
 #include <girara.h>
-#include <render.h>
 
+#include "render.h"
 #include "document.h"
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
