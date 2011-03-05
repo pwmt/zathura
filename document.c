@@ -10,17 +10,70 @@
 #include <limits.h>
 
 #include "document.h"
-#include "pdf/pdf.h"
-#include "djvu/djvu.h"
-#include "../utils.h"
-#include "../zathura.h"
+#include "utils.h"
+#include "zathura.h"
 
 #define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
 
-zathura_document_plugin_t zathura_document_plugins[] = {
-  { "pdf",  pdf_document_open },
-  { "djvu", djvu_document_open },
-};
+zathura_document_plugin_t* zathura_document_plugins = NULL;
+
+bool
+zathura_document_register_plugin(char* file_extension, zathura_document_open_t open_function)
+{
+  if( (file_extension == NULL) || (open_function == NULL) ) {
+    fprintf(stderr, "plugin: could not register\n");
+    return false;
+  }
+
+  /* search existing plugins */
+  zathura_document_plugin_t* plugin = zathura_document_plugins;
+  while (plugin) {
+    if (!strcmp(plugin->file_extension, file_extension)) {
+      fprintf(stderr, "plugin: already registered for filetype %s\n", file_extension);
+      return false;
+    }
+
+    if (plugin->next == NULL) {
+      break;
+    }
+
+    plugin = plugin->next;
+  }
+
+  /* create new plugin */
+  zathura_document_plugin_t* new_plugin = malloc(sizeof(zathura_document_plugin_t));
+
+  if (new_plugin == NULL) {
+    return false;
+  }
+
+  new_plugin->file_extension = file_extension;
+  new_plugin->open_function  = open_function;
+  new_plugin->next           = NULL;
+
+  /* append to list */
+  if (plugin == NULL) {
+    zathura_document_plugins = new_plugin;
+  } else {
+    plugin->next = new_plugin;
+  }
+
+  return true;
+}
+
+void
+zathura_document_plugin_free(void)
+{
+  /* free registered plugins */
+  zathura_document_plugin_t* plugin = zathura_document_plugins;
+  while (plugin) {
+    zathura_document_plugin_t* tmp = plugin->next;
+    free(plugin);
+    plugin = tmp;
+  }
+
+  zathura_document_plugins = NULL;
+}
 
 zathura_document_t*
 zathura_document_open(const char* path, const char* password)
@@ -88,11 +141,11 @@ zathura_document_open(const char* path, const char* password)
   document->functions.page_render              = NULL;
 
   /* init plugin with associated file type */
-  for (unsigned int i = 0; i < LENGTH(zathura_document_plugins); i++)
-  {
-    if (!strcmp(file_extension, zathura_document_plugins[i].file_extension)) {
-      if (zathura_document_plugins[i].open_function) {
-        if (zathura_document_plugins[i].open_function(document)) {
+  zathura_document_plugin_t* plugin = zathura_document_plugins;
+  while (plugin) {
+    if (!strcmp(file_extension, plugin->file_extension)) {
+      if (plugin->open_function) {
+        if (plugin->open_function(document)) {
           /* update statusbar */
           girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, real_path);
 
@@ -122,6 +175,8 @@ zathura_document_open(const char* path, const char* password)
         }
       }
     }
+
+    plugin = plugin->next;
   }
 
   fprintf(stderr, "error: unknown file type\n");

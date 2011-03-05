@@ -7,7 +7,7 @@
 #include <girara.h>
 #include <render.h>
 
-#include "ft/document.h"
+#include "document.h"
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,

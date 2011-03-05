@@ -4,7 +4,7 @@
 include config.mk
 
 PROJECT  = zathura
-SOURCE   = $(shell find . -iname "*.c" -a ! -iwholename "*./doc*")
+SOURCE   = $(shell find . -iname "*.c" -a ! -iwholename "*./doc*|*./ft*")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 

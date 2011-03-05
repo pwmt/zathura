@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <girara-datastructures.h>
 
-#include "ft/document.h"
+#include "document.h"
 #include "callbacks.h"
 
 typedef struct render_thread_s

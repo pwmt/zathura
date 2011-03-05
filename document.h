@@ -15,8 +15,9 @@ typedef bool (*zathura_document_open_t)(zathura_document_t* document);
 
 typedef struct zathura_document_plugin_s
 {
-  const char* file_extension;
+  char* file_extension;
   zathura_document_open_t open_function;
+  struct zathura_document_plugin_s *next;
 } zathura_document_plugin_t;
 
 struct zathura_list_s
@@ -112,6 +113,9 @@ struct zathura_document_s
 
   zathura_page_t** pages;
 };
+
+bool zathura_document_plugin_register(char* file_extension, zathura_document_open_t open_function);
+void zathura_document_plugin_free(void);
 
 zathura_document_t* zathura_document_open(const char* path, const char* password);
 bool zathura_document_free(zathura_document_t* document);

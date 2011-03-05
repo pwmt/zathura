@@ -4,7 +4,7 @@
 
 #include "callbacks.h"
 #include "config.h"
-#include "ft/document.h"
+#include "document.h"
 #include "shortcuts.h"
 #include "zathura.h"
 #include "utils.h"

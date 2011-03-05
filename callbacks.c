@@ -7,7 +7,7 @@
 
 #include "zathura.h"
 #include "render.h"
-#include "ft/document.h"
+#include "document.h"
 
 gboolean
 cb_destroy(GtkWidget* widget, gpointer data)
@@ -17,6 +17,9 @@ cb_destroy(GtkWidget* widget, gpointer data)
   }
 
   document_close();
+
+  /* free registered plugins */
+  zathura_document_plugin_free();
 
   return TRUE;
 }
