@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <dlfcn.h>
 
 #include "document.h"
 #include "utils.h"
@@ -16,6 +19,76 @@
 #define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
 
 zathura_document_plugin_t* zathura_document_plugins = NULL;
+
+void
+zathura_document_plugins_load(void)
+{
+  /* read all files in the plugin directory */
+  DIR* dir = opendir(PLUGIN_DIR);
+  if (dir == NULL) {
+    fprintf(stderr, "error: could not open plugin directory: %s\n", PLUGIN_DIR);
+    return;
+  }
+
+  struct dirent* entry;
+  while ((entry = readdir(dir)) != NULL) {
+    /* check if entry is a file */
+    if (entry->d_type == 0x8) {
+      /* get full path */
+      char* path = string_concat(PLUGIN_DIR, "/", entry->d_name, NULL);
+
+      if (path == NULL) {
+        continue;
+      }
+
+      /* load plugin */
+      void* handle = dlopen(path, RTLD_NOW);
+      free(path);
+
+      if (handle == NULL) {
+        fprintf(stderr, "error: could not load plugin (%s)\n", dlerror());
+        continue;
+      }
+
+      /* resolve symbol */
+      zathura_plugin_register_service_t register_plugin;
+      *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
+
+      if (register_plugin == NULL) {
+        fprintf(stderr, "error: could not find '%s' function in the plugin\n", PLUGIN_REGISTER_FUNCTION);
+        dlclose(handle);
+        continue;
+      }
+
+      bool r = register_plugin();
+
+      if (r == false) {
+        fprintf(stderr, "error: could not register plugin\n");
+      }
+
+      dlclose(handle);
+    }
+  }
+
+  if (closedir(dir) == -1) {
+    fprintf(stderr, "error: could not close plugin directory: %s\n", PLUGIN_DIR);
+  }
+
+}
+
+void
+zathura_document_plugins_free(void)
+{
+  /* free registered plugins */
+  zathura_document_plugin_t* plugin = zathura_document_plugins;
+  while (plugin) {
+    zathura_document_plugin_t* tmp = plugin->next;
+    free(plugin);
+    plugin = tmp;
+  }
+
+  zathura_document_plugins = NULL;
+}
 
 bool
 zathura_document_register_plugin(char* file_extension, zathura_document_open_t open_function)
@@ -59,20 +132,6 @@ zathura_document_register_plugin(char* file_extension, zathura_document_open_t o
   }
 
   return true;
-}
-
-void
-zathura_document_plugin_free(void)
-{
-  /* free registered plugins */
-  zathura_document_plugin_t* plugin = zathura_document_plugins;
-  while (plugin) {
-    zathura_document_plugin_t* tmp = plugin->next;
-    free(plugin);
-    plugin = tmp;
-  }
-
-  zathura_document_plugins = NULL;
 }
 
 zathura_document_t*

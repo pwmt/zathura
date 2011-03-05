@@ -51,4 +51,14 @@ GtkWidget* page_blank(unsigned int width, unsigned int height);
  */
 void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
+/**
+ * This function is used to concatenate multiple strings. Argument list has to
+ * be ended with NULL. Returned string has to be freed with free().
+ *
+ * @param string1 First string
+ * @param ... Additional strings
+ * @return Concatenated string or NULL if an error occured
+ */
+char* string_concat(const char* string1, ...);
+
 #endif // UTILS_H

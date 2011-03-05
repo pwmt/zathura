@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -174,4 +175,61 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_
     zathura_index_element_t* index_element = (zathura_index_element_t*) girara_list_iterator_data(it);
     printf("%s\n", index_element->title);
   } while ((it = girara_list_iterator_next(it)));
+}
+
+char* string_concat(const char* string1, ...)
+{
+  if(!string1) {
+    return NULL;
+  }
+
+  va_list args;
+  char* s;
+  int l = strlen(string1) + 1;
+
+  /* calculate length */
+  va_start(args, string1);
+
+  s = va_arg(args, char*);
+
+  while(s) {
+    l += strlen(s);
+    s = va_arg(args, char*);
+  }
+
+  va_end(args);
+
+  /* prepare */
+  char* c = malloc(sizeof(char) * l);
+  char* p = c;
+
+  /* copy */
+  char* d = p;
+  char* x = (char*) string1;
+
+  do {
+    *d++ = *x;
+  } while (*x++ != '\0');
+
+  p = d - 1;
+
+  va_start(args, string1);
+
+  s = va_arg(args, char*);
+
+  while(s) {
+    d = p;
+    x = s;
+
+    do {
+      *d++ = *x;
+    } while (*x++ != '\0');
+
+    p = d - 1;
+    s = va_arg(args, char*);
+  }
+
+  va_end(args);
+
+  return c;
 }

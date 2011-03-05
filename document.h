@@ -8,6 +8,9 @@
 
 #include <girara-datastructures.h>
 
+#define PLUGIN_DIR "/usr/lib/zathura"
+#define PLUGIN_REGISTER_FUNCTION "plugin_register"
+
 typedef struct zathura_list_s zathura_list_t;
 typedef struct zathura_document_s zathura_document_t;
 
@@ -19,6 +22,8 @@ typedef struct zathura_document_plugin_s
   zathura_document_open_t open_function;
   struct zathura_document_plugin_s *next;
 } zathura_document_plugin_t;
+
+typedef bool (*zathura_plugin_register_service_t)(void);
 
 struct zathura_list_s
 {
@@ -114,8 +119,9 @@ struct zathura_document_s
   zathura_page_t** pages;
 };
 
+void zathura_document_plugins_load(void);
+void zathura_document_plugins_free(void);
 bool zathura_document_plugin_register(char* file_extension, zathura_document_open_t open_function);
-void zathura_document_plugin_free(void);
 
 zathura_document_t* zathura_document_open(const char* path, const char* password);
 bool zathura_document_free(zathura_document_t* document);

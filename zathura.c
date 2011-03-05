@@ -64,6 +64,9 @@ init_zathura()
   /* girara events */
   Zathura.UI.session->events.buffer_changed = buffer_changed;
 
+  /* load plugins */
+  zathura_document_plugins_load();
+
   /* configuration */
   config_load_default();
 

@@ -19,7 +19,7 @@ cb_destroy(GtkWidget* widget, gpointer data)
   document_close();
 
   /* free registered plugins */
-  zathura_document_plugin_free();
+  zathura_document_plugins_free();
 
   return TRUE;
 }
