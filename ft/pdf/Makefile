@@ -39,3 +39,13 @@ clean:
 	@rm -rf ${OBJECTS} ${DOBJECTS} $(PLUGIN).so
 
 debug: options ${PLUGIN}-debug
+
+install: all
+	@echo installing ${PLUGIN} plugin
+	@mkdir -p ${DESTDIR}${PREFIX}/lib/zathura
+	@cp -f ${PLUGIN}.so ${DESTDIR}${PREFIX}/lib/zathura
+
+uninstall:
+	@echo uninstalling ${PLUGIN} plugin
+	@rm -f ${DESTDIR}${PREFIX}/lib/zathura/${PLUGIN}.so
+	@rm -rf ${DESTDIR}${PREFIX}/lib/zathura

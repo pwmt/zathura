@@ -68,9 +68,11 @@ install: all
 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	@sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	@make -C ft install
 
 uninstall:
 	@echo removing executable file
 	@rm -f ${DESTDIR}${MANPREFIX}/bin/${PROJECT}
 	@echo removing manual page
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	@make -C ft uninstall
