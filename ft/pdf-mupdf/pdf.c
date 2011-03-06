@@ -212,8 +212,13 @@ pdf_page_render(zathura_page_t* page)
 
   fz_freedevice(device);
 
-  fz_matrix ctm = fz_translate(0, -mupdf_page->page->mediabox.y1);
+  pdf_agestore(pdf_document->document->store, 3);
+
+  fz_matrix ctm = fz_identity;
+  ctm           = fz_concat(ctm, fz_translate(0, -mupdf_page->page->mediabox.y1));
   ctm           = fz_concat(ctm, fz_scale(Zathura.document->scale, -Zathura.document->scale));
+  ctm           = fz_concat(ctm, fz_rotate(mupdf_page->page->rotate));
+  ctm           = fz_concat(ctm, fz_rotate(Zathura.document->rotate));
   fz_bbox bbox  = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
 
   guchar* pixels = gdk_pixbuf_get_pixels(pixbuf);
@@ -239,8 +244,6 @@ pdf_page_render(zathura_page_t* page)
 
   fz_droppixmap(pixmap);
   fz_freedisplaylist(display_list);
-  pdf_freepage(mupdf_page->page);
-  pdf_agestore(pdf_document->document->store, 3);
 
   /* write pixbuf */
   GtkWidget* image = gtk_image_new();
