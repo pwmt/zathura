@@ -133,6 +133,16 @@ sc_reload(girara_session_t* session, girara_argument_t* argument, unsigned int t
 bool
 sc_rotate(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
+  if (session == NULL || Zathura.document == NULL) {
+    return false;
+  }
+
+  /* update rotate value */
+  Zathura.document->rotate  = (Zathura.document->rotate + 90) % 360;
+
+  /* render all pages again */
+  render_all();
+
   return false;
 }
 
