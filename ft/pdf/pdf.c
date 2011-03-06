@@ -6,13 +6,11 @@
 #include "pdf.h"
 #include "../../zathura.h"
 
-bool
-plugin_register(void)
+void
+plugin_register(zathura_document_plugin_t* plugin)
 {
-  zathura_document_plugin_register("pdf", pdf_document_open);
-  zathura_document_plugin_register("PDF", pdf_document_open);
-
-  return true;
+  plugin->file_extension = "pdf";
+  plugin->open_function  = pdf_document_open;
 }
 
 bool

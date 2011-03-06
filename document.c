@@ -33,41 +33,72 @@ zathura_document_plugins_load(void)
   struct dirent* entry;
   while ((entry = readdir(dir)) != NULL) {
     /* check if entry is a file */
-    if (entry->d_type == 0x8) {
-      /* get full path */
-      char* path = string_concat(PLUGIN_DIR, "/", entry->d_name, NULL);
-
-      if (path == NULL) {
-        continue;
-      }
-
-      /* load plugin */
-      void* handle = dlopen(path, RTLD_NOW);
-      free(path);
-
-      if (handle == NULL) {
-        fprintf(stderr, "error: could not load plugin (%s)\n", dlerror());
-        continue;
-      }
-
-      /* resolve symbol */
-      zathura_plugin_register_service_t register_plugin;
-      *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
-
-      if (register_plugin == NULL) {
-        fprintf(stderr, "error: could not find '%s' function in the plugin\n", PLUGIN_REGISTER_FUNCTION);
-        dlclose(handle);
-        continue;
-      }
-
-      bool r = register_plugin();
-
-      if (r == false) {
-        fprintf(stderr, "error: could not register plugin\n");
-      }
-
-      /*dlclose(handle);*/ // FIXME
+    if (entry->d_type != 0x8) {
+      continue;
     }
+
+    void* handle                      = NULL;
+    zathura_document_plugin_t* plugin = NULL;
+    char* path                        = NULL;
+
+    /* get full path */
+    path = string_concat(PLUGIN_DIR, "/", entry->d_name, NULL);
+
+    if (path == NULL) {
+      goto error_continue;
+    }
+
+    /* load plugin */
+    handle = dlopen(path, RTLD_NOW);
+
+    if (handle == NULL) {
+      fprintf(stderr, "error: could not load plugin (%s)\n", dlerror());
+      goto error_free;
+    }
+
+    /* resolve symbol */
+    zathura_plugin_register_service_t register_plugin;
+    *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
+
+    if (register_plugin == NULL) {
+      fprintf(stderr, "error: could not find '%s' function in the plugin\n", PLUGIN_REGISTER_FUNCTION);
+      goto error_free;
+    }
+
+    plugin = malloc(sizeof(zathura_document_plugin_t));
+
+    if (plugin == NULL) {
+      goto error_free;
+    }
+
+    plugin->file_extension = NULL;
+    plugin->open_function  = NULL;
+
+    register_plugin(plugin);
+
+    bool r = zathura_document_plugin_register(plugin, handle);
+
+    if (r == false) {
+      fprintf(stderr, "error: could not register plugin (%s)\n", path);
+      goto error_free;
+    }
+
+    free(path);
+
+    continue;
+
+error_free:
+
+    free(path);
+    free(plugin);
+
+    if (handle) {
+      dlclose(handle);
+    }
+
+error_continue:
+
+    continue;
   }
 
   if (closedir(dir) == -1) {
@@ -91,9 +122,10 @@ zathura_document_plugins_free(void)
 }
 
 bool
-zathura_document_plugin_register(char* file_extension, zathura_document_open_t open_function)
+zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, void* handle)
 {
-  if( (file_extension == NULL) || (open_function == NULL) ) {
+  if( (new_plugin == NULL) || (new_plugin->file_extension == NULL) || (new_plugin->open_function == NULL) 
+      || (handle == NULL) ) {
     fprintf(stderr, "plugin: could not register\n");
     return false;
   }
@@ -101,8 +133,8 @@ zathura_document_plugin_register(char* file_extension, zathura_document_open_t o
   /* search existing plugins */
   zathura_document_plugin_t* plugin = zathura_document_plugins;
   while (plugin) {
-    if (!strcmp(plugin->file_extension, file_extension)) {
-      fprintf(stderr, "plugin: already registered for filetype %s\n", file_extension);
+    if (!strcmp(plugin->file_extension, new_plugin->file_extension)) {
+      fprintf(stderr, "plugin: already registered for filetype %s\n", plugin->file_extension);
       return false;
     }
 
@@ -114,15 +146,8 @@ zathura_document_plugin_register(char* file_extension, zathura_document_open_t o
   }
 
   /* create new plugin */
-  zathura_document_plugin_t* new_plugin = malloc(sizeof(zathura_document_plugin_t));
-
-  if (new_plugin == NULL) {
-    return false;
-  }
-
-  new_plugin->file_extension = strdup(file_extension);
-  new_plugin->open_function  = open_function;
-  new_plugin->next           = NULL;
+  new_plugin->handle = handle;
+  new_plugin->next   = NULL;
 
   /* append to list */
   if (plugin == NULL) {

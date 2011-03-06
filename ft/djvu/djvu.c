@@ -5,13 +5,11 @@
 #include "djvu.h"
 #include "../../zathura.h"
 
-bool
-plugin_register(void)
+void
+plugin_register(zathura_document_plugin_t* plugin)
 {
-  zathura_document_plugin_register("djvu", djvu_document_open);
-  zathura_document_plugin_register("DJVU", djvu_document_open);
-
-  return true;
+  plugin->file_extension = "djvu";
+  plugin->open_function  = djvu_document_open;
 }
 
 bool
