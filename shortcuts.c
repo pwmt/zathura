@@ -285,7 +285,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
 error_free:
 
   if (Zathura.UI.index != NULL) {
-    g_object_unref(Zathura.UI.index);
+    g_object_ref_sink(Zathura.UI.index);
     Zathura.UI.index = NULL;
   }
 
