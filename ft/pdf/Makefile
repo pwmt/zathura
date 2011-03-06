@@ -29,11 +29,11 @@ ${DOBJECTS}: config.mk
 
 ${PLUGIN}: ${OBJECTS}
 	@echo LD $@
-	@${LD} -shared ${LDFLAGS} -o ${PLUGIN}.so $(OBJECTS)
+	@${CC} -shared ${LDFLAGS} -o ${PLUGIN}.so $(OBJECTS) ${LIBS}
 
 ${PLUGIN}-debug: ${DOBJECTS}
 	@echo LD $@
-	@${LD} -shared ${LDFLAGS} -o ${PLUGIN}-debug.so $(DOBJECTS)
+	@${CC} -shared ${LDFLAGS} -o ${PLUGIN}-debug.so $(DOBJECTS) ${LIBS}
 
 clean:
 	@rm -rf ${OBJECTS} ${DOBJECTS} $(PLUGIN).so ${PLUGIN}-debug.so

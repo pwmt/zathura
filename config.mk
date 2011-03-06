@@ -20,6 +20,9 @@ CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length $(INCS)
 # debug
 DFLAGS = -g
 
+# ld
+LDFLAGS = -rdynamic
+
 # compiler
 CC ?= gcc
 

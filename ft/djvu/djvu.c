@@ -6,6 +6,15 @@
 #include "../../zathura.h"
 
 bool
+plugin_register(void)
+{
+  zathura_document_plugin_register("djvu", djvu_document_open);
+  zathura_document_plugin_register("DJVU", djvu_document_open);
+
+  return true;
+}
+
+bool
 djvu_document_open(zathura_document_t* document)
 {
   if (!document) {

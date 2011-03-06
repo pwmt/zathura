@@ -7,6 +7,15 @@
 #include "../../zathura.h"
 
 bool
+plugin_register(void)
+{
+  zathura_document_plugin_register("pdf", pdf_document_open);
+  zathura_document_plugin_register("PDF", pdf_document_open);
+
+  return true;
+}
+
+bool
 pdf_document_open(zathura_document_t* document)
 {
   if (!document) {
