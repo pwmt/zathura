@@ -33,10 +33,9 @@ ${PLUGIN}: ${OBJECTS}
 
 ${PLUGIN}-debug: ${DOBJECTS}
 	@echo LD $@
-	@${CC} -shared ${LDFLAGS} -o ${PLUGIN}-debug.so $(DOBJECTS) ${LIBS}
+	@${CC} -shared ${LDFLAGS} -o ${PLUGIN}.so $(DOBJECTS) ${LIBS}
 
 clean:
-	@rm -rf ${OBJECTS} ${DOBJECTS} $(PLUGIN).so ${PLUGIN}-debug.so
+	@rm -rf ${OBJECTS} ${DOBJECTS} $(PLUGIN).so
 
 debug: options ${PLUGIN}-debug
-	@make -C debug

@@ -73,7 +73,6 @@ zathura_document_plugins_load(void)
   if (closedir(dir) == -1) {
     fprintf(stderr, "error: could not close plugin directory: %s\n", PLUGIN_DIR);
   }
-
 }
 
 void
@@ -83,6 +82,7 @@ zathura_document_plugins_free(void)
   zathura_document_plugin_t* plugin = zathura_document_plugins;
   while (plugin) {
     zathura_document_plugin_t* tmp = plugin->next;
+    free(plugin->file_extension);
     free(plugin);
     plugin = tmp;
   }
@@ -91,7 +91,7 @@ zathura_document_plugins_free(void)
 }
 
 bool
-zathura_document_register_plugin(char* file_extension, zathura_document_open_t open_function)
+zathura_document_plugin_register(char* file_extension, zathura_document_open_t open_function)
 {
   if( (file_extension == NULL) || (open_function == NULL) ) {
     fprintf(stderr, "plugin: could not register\n");
@@ -120,7 +120,7 @@ zathura_document_register_plugin(char* file_extension, zathura_document_open_t o
     return false;
   }
 
-  new_plugin->file_extension = file_extension;
+  new_plugin->file_extension = strdup(file_extension);
   new_plugin->open_function  = open_function;
   new_plugin->next           = NULL;
 
