@@ -66,7 +66,7 @@ zathura_document_plugins_load(void)
         fprintf(stderr, "error: could not register plugin\n");
       }
 
-      dlclose(handle);
+      /*dlclose(handle);*/ // FIXME
     }
   }
 
