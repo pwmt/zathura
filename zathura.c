@@ -3529,7 +3529,7 @@ cmd_print(int argc, char** argv)
   }
 
   char* printer    = argv[0];
-  char* sites      = (argc == 2) ? g_strdup(argv[1]) : g_strdup_printf("1-%i", Zathura.PDF.number_of_pages);
+  char* sites      = (argc >= 2) ? g_strdup(argv[1]) : g_strdup_printf("1-%i", Zathura.PDF.number_of_pages);
   GString *addit   = g_string_new("");
 
   int i;
@@ -3542,13 +3542,11 @@ cmd_print(int argc, char** argv)
   }
 
   char* escaped_filename = g_shell_quote(Zathura.PDF.file);
-  char* escaped_addit    = addit->len ? g_shell_quote(addit->str) : g_strdup("");
-  char* command          = g_strdup_printf(print_command, printer, sites, escaped_addit, escaped_filename);
+  char* command          = g_strdup_printf(print_command, printer, sites, addit->str, escaped_filename);
   system(command);
 
   g_free(sites);
   g_free(escaped_filename);
-  g_free(escaped_addit);
   g_free(command);
   g_string_free(addit, TRUE);
 
