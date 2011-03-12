@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include "commands.h"
+#include "zathura.h"
 
 bool
 cmd_bookmark_create(girara_session_t* session, int argc, char** argv)
@@ -23,6 +24,8 @@ cmd_bookmark_open(girara_session_t* session, int argc, char** argv)
 bool
 cmd_close(girara_session_t* session, int argc, char** argv)
 {
+  document_close();
+
   return true;
 }
 
