@@ -21,7 +21,7 @@ CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length $(INCS)
 DFLAGS = -g
 
 # ld
-LDFLAGS = -rdynamic
+LDFLAGS += -rdynamic
 
 # compiler
 CC ?= gcc
