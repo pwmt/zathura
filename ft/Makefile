@@ -6,7 +6,7 @@ all:
 	@for dir in ${SUBDIRS}; do ${MAKE} -C $${dir}; done
 
 debug:
-	@for dir in ${SUBDIRS}; do ${MAKE} -C $${dir} clean; done
+	@for dir in ${SUBDIRS}; do ${MAKE} -C $${dir} debug; done
 
 clean:
 	@for dir in ${SUBDIRS}; do ${MAKE} -C $${dir} clean; done
