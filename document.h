@@ -44,6 +44,32 @@ struct zathura_list_s
 };
 
 /**
+ * Image buffer
+ */
+typedef struct zathura_image_buffer_s
+{
+  unsigned char* data; /**> Image buffer data */
+  unsigned int height; /**> Height of the image */
+  unsigned int width; /**> Width of the image */
+} zathura_image_buffer_t;
+
+/**
+ * Creates an image buffer
+ *
+ * @param width Width of the image stored in the buffer
+ * @param height Height of the image stored in the buffer
+ * @return Image buffer or NULL if an error occured
+ */
+zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned int height);
+
+/**
+ * Frees the image buffer
+ *
+ * @param zathura_image_buffer_t
+ */
+void zathura_image_buffer_free(zathura_image_buffer_t*);
+
+/**
  * Rectangle structure
  */
 typedef struct zathura_rectangle_s
@@ -141,83 +167,51 @@ struct zathura_document_s
   {
     /**
      * Frees the document
-     *
-     * @param document The document
      */
     bool (*document_free)(zathura_document_t* document);
 
     /**
      * Generates the document index
-     *
-     * @param document The document
-     * @return NULL if an error occured or no index exists
      */
     girara_tree_node_t* (*document_index_generate)(zathura_document_t* document);
 
     /**
      * Save the document
-     *
-     * @param document The document
-     * @param path The new path
-     * @return true if no error occured
      */
     bool (*document_save_as)(zathura_document_t* document, const char* path);
 
     /**
      * Get list of attachments
-     *
-     * @param document The document
-     * @return NULL if an error occured, otherwise the attachment list
      */
     zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
 
     /**
      * Gets the page object
-     *
-     * @param document The document
-     * @param page_id Number of the page
-     * @return The page object or NULL, if an error occured
      */
     zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id);
 
     /**
      * Search text
-     *
-     * @param page The page
-     * @param text Search item
-     * @return List of results
      */
     zathura_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
 
     /**
      * Get links on a page
-     *
-     * @param page
-     * @return List of links
      */
     zathura_list_t* (*page_links_get)(zathura_page_t* page);
 
     /**
      * Get form fields
-     *
-     * @param page
-     * @return List of form fields
      */
     zathura_list_t* (*page_form_fields_get)(zathura_page_t* page);
 
     /**
      * Renders the page
-     *
-     * @param page
-     * @return Rendered page
      */
-    GtkWidget* (*page_render)(zathura_page_t* page);
+    zathura_image_buffer_t* (*page_render)(zathura_page_t* page);
 
     /**
      * Free page
-     *
-     * @param page
-     * @return true if no error occured, otherwise false
      */
     bool (*page_free)(zathura_page_t* page);
   } functions;
@@ -356,9 +350,9 @@ bool zathura_page_form_fields_free(zathura_list_t* list);
  * Render page
  *
  * @param page The page object
- * @return Rendered page
+ * @return Image buffer or NULL if an error occured
  */
-GtkWidget* zathura_page_render(zathura_page_t* page);
+zathura_image_buffer_t* zathura_page_render(zathura_page_t* page);
 
 /**
  * Create new index element

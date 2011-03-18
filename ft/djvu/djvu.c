@@ -215,7 +215,7 @@ djvu_page_form_fields_get(zathura_page_t* page)
   return NULL;
 }
 
-GtkWidget*
+zathura_image_buffer_t*
 djvu_page_render(zathura_page_t* page)
 {
   if (!Zathura.document || !page || !page->document) {

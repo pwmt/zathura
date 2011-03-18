@@ -124,7 +124,7 @@ zathura_document_plugins_free(void)
 bool
 zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, void* handle)
 {
-  if( (new_plugin == NULL) || (new_plugin->file_extension == NULL) || (new_plugin->open_function == NULL) 
+  if( (new_plugin == NULL) || (new_plugin->file_extension == NULL) || (new_plugin->open_function == NULL)
       || (handle == NULL) ) {
     fprintf(stderr, "plugin: could not register\n");
     return false;
@@ -469,7 +469,7 @@ zathura_page_form_fields_free(zathura_list_t* list)
   return false;
 }
 
-GtkWidget*
+zathura_image_buffer_t*
 zathura_page_render(zathura_page_t* page)
 {
   if (!page || !page->document) {
@@ -481,13 +481,13 @@ zathura_page_render(zathura_page_t* page)
     return NULL;
   }
 
-  GtkWidget* widget = page->document->functions.page_render(page);
+  zathura_image_buffer_t* buffer = page->document->functions.page_render(page);
 
-  if (widget) {
+  if (buffer) {
     page->rendered = true;
   }
 
-  return widget;
+  return buffer;
 }
 
 zathura_index_element_t*
@@ -522,4 +522,36 @@ zathura_index_element_free(zathura_index_element_t* index)
   }
 
   g_free(index);
+}
+
+zathura_image_buffer_t*
+zathura_image_buffer_create(unsigned int width, unsigned int height)
+{
+  zathura_image_buffer_t* image_buffer = malloc(sizeof(zathura_image_buffer_t));
+
+  if (image_buffer == NULL) {
+    return NULL;
+  }
+
+  image_buffer->data = calloc(width * height * 3, sizeof(unsigned char));
+
+  if (image_buffer->data == NULL) {
+    free(image_buffer);
+    return NULL;
+  }
+
+  image_buffer->width  = width;
+  image_buffer->height = height;
+
+  return image_buffer;
+}
+
+void
+zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
+{
+  if (image_buffer == NULL) {
+    return;
+  }
+
+  free(image_buffer->data);
 }

@@ -132,9 +132,9 @@ bool
 render(zathura_page_t* page)
 {
   g_static_mutex_lock(&(page->lock));
-  GtkWidget* image = zathura_page_render(page);
+  zathura_image_buffer_t* buffer = zathura_page_render(page);
 
-  if (!image) {
+  if (!buffer) {
     g_static_mutex_unlock(&(page->lock));
     printf("error: rendering failed\n");
     return false;
@@ -148,7 +148,7 @@ render(zathura_page_t* page)
   if (!widget) {
     g_static_mutex_unlock(&(page->lock));
     printf("error: page container does not exist\n");
-    g_object_unref(image);
+    // TODO: zathura_image_buffer_free(image);
     return false;
   }
 
@@ -164,13 +164,13 @@ render(zathura_page_t* page)
   gtk_container_remove(GTK_CONTAINER(Zathura.UI.page_view), widget);
 
   /* add new widget */
-  gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 0);
+  // TODO: gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 0);
 
   /* set old packaging values */
-  gtk_box_set_child_packing(GTK_BOX(Zathura.UI.page_view), image, expand, fill, padding, pack_type);
+  // TODO: gtk_box_set_child_packing(GTK_BOX(Zathura.UI.page_view), image, expand, fill, padding, pack_type);
 
   /* reorder child */
-  gtk_box_reorder_child(GTK_BOX(Zathura.UI.page_view), image, page->number);
+  // TODO: gtk_box_reorder_child(GTK_BOX(Zathura.UI.page_view), image, page->number);
   g_static_mutex_unlock(&(page->lock));
 
   return true;
