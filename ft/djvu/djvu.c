@@ -243,76 +243,25 @@ djvu_page_render(zathura_page_t* page)
   ddjvu_rect_t rrect = { 0, 0, page_width, page_height };
   ddjvu_rect_t prect = { 0, 0, page_width, page_height };
 
-  guchar* buffer = malloc(sizeof(char) * (page_width * page_height * 3));
-  if (!buffer) {
+  zathura_image_buffer_t* image_buffer = zathura_image_buffer_create(page_width, page_height);
+
+  if (image_buffer == NULL) {
     goto error_free;
   }
 
   /* set rotation */
-  GdkPixbufRotation gdk_angle       = GDK_PIXBUF_ROTATE_NONE;
-  ddjvu_page_rotation_t ddjvu_angle = DDJVU_ROTATE_0;
-
-  switch(Zathura.document->rotate) {
-    case 90:
-      gdk_angle   = GDK_PIXBUF_ROTATE_CLOCKWISE;
-      ddjvu_angle = DDJVU_ROTATE_90;
-      break;
-    case 180:
-      gdk_angle   = GDK_PIXBUF_ROTATE_UPSIDEDOWN;
-      ddjvu_angle = DDJVU_ROTATE_180;
-      break;
-    case 270:
-      gdk_angle   = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
-      ddjvu_angle = DDJVU_ROTATE_270;
-      break;
-    default:
-      gdk_angle       = GDK_PIXBUF_ROTATE_NONE;
-      ddjvu_angle = DDJVU_ROTATE_0;
-      break;
-  }
-
-  ddjvu_page_set_rotation(djvu_page, ddjvu_angle);
+  ddjvu_page_set_rotation(djvu_page, DDJVU_ROTATE_0);
 
   /* render page */
   ddjvu_page_render(djvu_page, DDJVU_RENDER_COLOR, &prect, &rrect, djvu_document->format,
-      3 * page_width, (char*) buffer);
+      3 * page_width, (char*) image_buffer);
 
-  /* create pixbuf */
-  GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data(buffer, GDK_COLORSPACE_RGB, FALSE, 8,
-      page_width, page_height, 3 * page_width, NULL, NULL);
-
-  if (!pixbuf) {
-    goto error_free;
-  }
-
-  /* rotate page */
-  if (Zathura.document->rotate != 0) {
-    GdkPixbuf* pixbuf_temp = gdk_pixbuf_rotate_simple(pixbuf, gdk_angle);
-    if (!pixbuf_temp) {
-      goto error_free;
-    }
-
-    pixbuf = pixbuf_temp;
-  }
-
-  GtkWidget* image = gtk_image_new();
-
-  if (!image) {
-    goto error_free;
-  }
-
-  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
-  gtk_widget_show(image);
-
-  ddjvu_page_release(djvu_page);
-
-  return image;
+  return image_buffer;
 
 error_free:
 
     ddjvu_page_release(djvu_page);
-    free(buffer);
-    g_object_unref(pixbuf);
+    zathura_image_buffer_free(image_buffer);
 
 error_out:
 

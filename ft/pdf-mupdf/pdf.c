@@ -191,11 +191,10 @@ pdf_page_render(zathura_page_t* page)
       page_height = dim_temp;
   }
 
-  /* create pixbuf */
-  GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
-      page_width, page_height);
+  /* create image buffer */
+  zathura_image_buffer_t* image_buffer = zathura_image_buffer_create(page_width, page_height);
 
-  if (!pixbuf) {
+  if (image_buffer == NULL) {
     return NULL;
   }
 
@@ -221,10 +220,6 @@ pdf_page_render(zathura_page_t* page)
   ctm           = fz_concat(ctm, fz_rotate(Zathura.document->rotate));
   fz_bbox bbox  = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
 
-  guchar* pixels = gdk_pixbuf_get_pixels(pixbuf);
-  int rowstride  = gdk_pixbuf_get_rowstride(pixbuf);
-  int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
-
   fz_pixmap* pixmap = fz_newpixmapwithrect(fz_devicergb, bbox);
   fz_clearpixmapwithcolor(pixmap, 0xFF);
 
@@ -235,7 +230,7 @@ pdf_page_render(zathura_page_t* page)
   for (unsigned int y = 0; y < pixmap->h; y++) {
     for (unsigned int x = 0; x < pixmap->w; x++) {
       unsigned char *s = pixmap->samples + y * pixmap->w * 4 + x * 4;
-      guchar* p = pixels + y * rowstride + x * n_channels;
+      guchar* p = image_buffer->data + y * image_buffer->width + x;
       p[0] = s[0];
       p[1] = s[1];
       p[2] = s[2];
@@ -245,16 +240,5 @@ pdf_page_render(zathura_page_t* page)
   fz_droppixmap(pixmap);
   fz_freedisplaylist(display_list);
 
-  /* write pixbuf */
-  GtkWidget* image = gtk_image_new();
-
-  if (!image) {
-    g_object_unref(pixbuf);
-    return NULL;
-  }
-
-  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
-  gtk_widget_show(image);
-
-  return image;
+  return image_buffer;
 }
