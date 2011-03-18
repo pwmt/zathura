@@ -88,9 +88,10 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
     unsigned int number_of_pages = Zathura.document->number_of_pages;
 
     if (t > 0 && t <= number_of_pages)  {
-      GtkAdjustment* adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));
-      unsigned int offset = Zathura.document->pages[t - 1]->offset * Zathura.document->scale;
-      gtk_adjustment_set_value(adjustment, offset);
+      // TODO: Calculate offset
+      /*GtkAdjustment* adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));*/
+      /*unsigned int offset = Zathura.document->pages[t - 1]->offset * Zathura.document->scale;*/
+      /*gtk_adjustment_set_value(adjustment, offset);*/
     }
   }
 

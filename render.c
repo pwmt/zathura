@@ -20,10 +20,8 @@ render_job(void* data)
     girara_list_remove(render_thread->list, page);
     g_mutex_unlock(render_thread->lock);
 
-    gdk_threads_enter();
     render(page);
     printf("Rendered %d\n", page->number);
-    gdk_threads_leave();
   }
 
   return NULL;
@@ -131,48 +129,33 @@ render_page(render_thread_t* render_thread, zathura_page_t* page)
 bool
 render(zathura_page_t* page)
 {
+  gdk_threads_enter();
   g_static_mutex_lock(&(page->lock));
   zathura_image_buffer_t* buffer = zathura_page_render(page);
 
   if (!buffer) {
     g_static_mutex_unlock(&(page->lock));
     printf("error: rendering failed\n");
+    gdk_threads_leave();
     return false;
   }
 
-  /* add new page */
-  GList* list       = gtk_container_get_children(GTK_CONTAINER(Zathura.UI.page_view));
-  GtkWidget* widget = (GtkWidget*) g_list_nth_data(list, page->number);
-  g_list_free(list);
+  /* create drawing area */
+  /*GtkWidget* drawing_area = gtk_drawing_area_new();*/
 
-  if (!widget) {
-    g_static_mutex_unlock(&(page->lock));
-    printf("error: page container does not exist\n");
-    // TODO: zathura_image_buffer_free(image);
-    return false;
-  }
+  /*[> remove old image <]*/
+  /*GtkWidget* widget = gtk_bin_get_child(GTK_BIN(page->event_box));*/
+  /*if (widget != NULL) {*/
+    /*g_object_unref(widget);*/
+  /*}*/
 
-  /* child packaging information */
-  gboolean expand;
-  gboolean fill;
-  guint padding;
-  GtkPackType pack_type;
+  /*[> set new image <]*/
+  /*gtk_box_pack_start(GTK_BOX(page->event_box), drawing_area, TRUE,  TRUE, 0);*/
 
-  gtk_box_query_child_packing(GTK_BOX(Zathura.UI.page_view), widget, &expand, &fill, &padding, &pack_type);
-
-  /* delete old widget */
-  gtk_container_remove(GTK_CONTAINER(Zathura.UI.page_view), widget);
-
-  /* add new widget */
-  // TODO: gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 0);
-
-  /* set old packaging values */
-  // TODO: gtk_box_set_child_packing(GTK_BOX(Zathura.UI.page_view), image, expand, fill, padding, pack_type);
-
-  /* reorder child */
-  // TODO: gtk_box_reorder_child(GTK_BOX(Zathura.UI.page_view), image, page->number);
+  zathura_image_buffer_free(buffer);
   g_static_mutex_unlock(&(page->lock));
 
+  gdk_threads_leave();
   return true;
 }
 

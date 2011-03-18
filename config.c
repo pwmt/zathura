@@ -18,7 +18,9 @@ config_load_default(void)
 
   /* zathura settings */
   int_value = 10;
-  girara_setting_add(Zathura.UI.session, "zoom-step", &int_value, INT, false, "Zoom step", NULL);
+  girara_setting_add(Zathura.UI.session, "zoom-step",     &int_value, INT, false, "Zoom step",              NULL);
+  int_value = 2;
+  girara_setting_add(Zathura.UI.session, "pages-per-row", &int_value, INT, false, "Number of pages per row", NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,             0,                   0,               NULL);

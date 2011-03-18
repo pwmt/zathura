@@ -80,4 +80,16 @@ bool document_close();
  */
 bool page_set(unsigned int page_id);
 
+/**
+ * Builds the box structure to show the rendered pages
+ *
+ * @param pages_per_row Number of shown pages per row
+ */
+void page_view_set_mode(unsigned int pages_per_row);
+
+/**
+ * Create blank pages
+ */
+void create_blank_pages();
+
 #endif // ZATHURA_H

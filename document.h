@@ -142,11 +142,11 @@ typedef struct zathura_page_s
 {
   double height; /**> Page height */
   double width; /**> Page width */
-  double offset; /**> Page offset */
   unsigned int number; /**> Page number */
   zathura_document_t* document; /**> Document */
   void* data; /**> Custom data */
   bool rendered; /**> Page has been rendered */
+  GtkWidget* event_box; /**> Widget wrapper */
   GStaticMutex lock; /**> Lock */
 } zathura_page_t;
 

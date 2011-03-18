@@ -100,19 +100,14 @@ document_open(const char* path, const char* password)
 
   Zathura.document = document;
 
-  /* create blank pages */
-  for (unsigned int i = 0; i < document->number_of_pages; i++)
-  {
-    /* create blank page */
-    GtkWidget* image = page_blank(document->pages[i]->width, document->pages[i]->height);
+  /* init view */
+  create_blank_pages();
 
-    if (!image) {
-      goto error_free;
-    }
-
-    /* pack to page view */
-    gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), image, TRUE,  TRUE, 1);
-  }
+  /* view mode */
+  int* value = girara_setting_get(Zathura.UI.session, "pages-per-row");
+  int pages_per_row = (value) ? *value : 1;
+  free(value);
+  page_view_set_mode(pages_per_row);
 
   girara_set_view(Zathura.UI.session, Zathura.UI.page_view);
 
@@ -188,6 +183,62 @@ page_set(unsigned int page_id)
 error_out:
 
   return false;
+}
+
+void
+page_view_set_mode(unsigned int pages_per_row)
+{
+  gdk_threads_enter();
+
+  /* empty page view */
+  GList* container = gtk_container_get_children(GTK_CONTAINER(Zathura.UI.page_view));
+  for (GList* child = container; child; child = g_list_next(child)) {
+    gtk_container_remove(GTK_CONTAINER(Zathura.UI.page_view), child->data);
+  }
+
+  GtkWidget* row = NULL;
+
+  /* create blank pages */
+  for (unsigned int i = 0; i < Zathura.document->number_of_pages; i++)
+  {
+    if (i % pages_per_row == 0) {
+      row = gtk_hbox_new(FALSE, 0);
+    }
+
+    /* pack row */
+    gtk_box_pack_start(GTK_BOX(row), Zathura.document->pages[i]->event_box, FALSE, FALSE, 1);
+
+    /* pack row to page view */
+    if ((i + 1) % pages_per_row == 0) {
+      gtk_box_pack_start(GTK_BOX(Zathura.UI.page_view), row, FALSE,  FALSE, 1);
+    }
+  }
+
+  gtk_widget_show_all(Zathura.UI.page_view);
+  gdk_threads_leave();
+}
+
+void
+create_blank_pages()
+{
+  /* create blank pages */
+  for (unsigned int i = 0; i < Zathura.document->number_of_pages; i++)
+  {
+    zathura_page_t* page = Zathura.document->pages[i];
+    g_static_mutex_lock(&(page->lock));
+
+    /* create blank page */
+    GtkWidget* image = page_blank(page->width, page->height);
+
+    if (!image) {
+      g_static_mutex_unlock(&(page->lock));
+      continue;
+    }
+
+    /* pack to page view */
+    gtk_container_add(GTK_CONTAINER(page->event_box), image);
+    g_static_mutex_unlock(&(page->lock));
+  }
 }
 
 /* main function */
