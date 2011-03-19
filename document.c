@@ -9,6 +9,7 @@
 #include <string.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <dlfcn.h>
 
@@ -32,20 +33,21 @@ zathura_document_plugins_load(void)
 
   struct dirent* entry;
   while ((entry = readdir(dir)) != NULL) {
-    /* check if entry is a file */
-    if (entry->d_type != 0x8) {
-      continue;
-    }
-
     void* handle                      = NULL;
     zathura_document_plugin_t* plugin = NULL;
     char* path                        = NULL;
+    struct stat fstat;
 
     /* get full path */
     path = string_concat(PLUGIN_DIR, "/", entry->d_name, NULL);
 
-    if (path == NULL) {
+    if (path == NULL || stat(path, &fstat) != 0) {
       goto error_continue;
+    }
+
+    /* check if entry is a file. */
+    if (!(fstat.st_mode & S_IFREG)) {
+      continue;
     }
 
     /* load plugin */
