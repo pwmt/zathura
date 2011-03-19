@@ -72,7 +72,7 @@ install: all
 
 uninstall:
 	@echo removing executable file
-	@rm -f ${DESTDIR}${MANPREFIX}/bin/${PROJECT}
+	@rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
 	@echo removing manual page
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	@make -C ft uninstall
