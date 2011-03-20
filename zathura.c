@@ -188,8 +188,6 @@ error_out:
 void
 page_view_set_mode(unsigned int pages_per_row)
 {
-  gdk_threads_enter();
-
   /* empty page view */
   GList* container = gtk_container_get_children(GTK_CONTAINER(Zathura.UI.page_view));
   for (GList* child = container; child; child = g_list_next(child)) {
@@ -215,7 +213,6 @@ page_view_set_mode(unsigned int pages_per_row)
   }
 
   gtk_widget_show_all(Zathura.UI.page_view);
-  gdk_threads_leave();
 }
 
 void
