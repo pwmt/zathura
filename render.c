@@ -170,10 +170,7 @@ render(zathura_page_t* page)
   }
 
   /* draw to gtk widget */
-  GtkWidget* drawing_area = gtk_drawing_area_new();
-  gtk_container_add(GTK_CONTAINER(page->event_box), drawing_area);
-
-  cairo_t* cairo = gdk_cairo_create(drawing_area->window);
+  cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
   cairo_set_source_surface(cairo, surface, 0, 0);
   cairo_paint(cairo);
   cairo_destroy(cairo);

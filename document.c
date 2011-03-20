@@ -385,9 +385,13 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
   zathura_page_t* page = document->functions.page_get(document, page_id);
 
   if (page) {
-    page->number    = page_id;
-    page->rendered  = false;
-    page->event_box = gtk_event_box_new();
+    page->number       = page_id;
+    page->rendered     = false;
+    page->event_box    = gtk_event_box_new();
+    page->drawing_area = gtk_drawing_area_new();
+
+    gtk_container_add(GTK_CONTAINER(page->event_box), page->drawing_area);
+
     g_static_mutex_init(&(page->lock));
   }
 

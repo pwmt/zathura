@@ -224,16 +224,12 @@ create_blank_pages()
     zathura_page_t* page = Zathura.document->pages[i];
     g_static_mutex_lock(&(page->lock));
 
-    /* create blank page */
-    GtkWidget* image = page_blank(page->width, page->height);
+    cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
+    cairo_set_source_rgb(cairo, 1, 1, 1);
+    cairo_rectangle(cairo, 0, 0, page->width, page->height);
+    cairo_fill(cairo);
+    cairo_destroy(cairo);
 
-    if (!image) {
-      g_static_mutex_unlock(&(page->lock));
-      continue;
-    }
-
-    /* pack to page view */
-    gtk_container_add(GTK_CONTAINER(page->event_box), image);
     g_static_mutex_unlock(&(page->lock));
   }
 }

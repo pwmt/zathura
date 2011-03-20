@@ -147,7 +147,8 @@ typedef struct zathura_page_s
   zathura_document_t* document; /**> Document */
   void* data; /**> Custom data */
   bool rendered; /**> Page has been rendered */
-  GtkWidget* event_box; /**> Widget wrapper */
+  GtkWidget* event_box; /**> Widget wrapper for mouse events */
+  GtkWidget* drawing_area; /**> Drawing area */
   GStaticMutex lock; /**> Lock */
 } zathura_page_t;
 
