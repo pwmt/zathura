@@ -51,6 +51,7 @@ typedef struct zathura_image_buffer_s
   unsigned char* data; /**> Image buffer data */
   unsigned int height; /**> Height of the image */
   unsigned int width; /**> Width of the image */
+  unsigned int rowstride; /**> Rowstride of the image */
 } zathura_image_buffer_t;
 
 /**

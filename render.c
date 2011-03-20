@@ -20,7 +20,10 @@ render_job(void* data)
     girara_list_remove(render_thread->list, page);
     g_mutex_unlock(render_thread->lock);
 
-    render(page);
+    if (render(page) != true) {
+      fprintf(stderr, "rendering failed\n");
+    }
+
     printf("Rendered %d\n", page->number);
   }
 
@@ -131,28 +134,51 @@ render(zathura_page_t* page)
 {
   gdk_threads_enter();
   g_static_mutex_lock(&(page->lock));
-  zathura_image_buffer_t* buffer = zathura_page_render(page);
+  zathura_image_buffer_t* image_buffer = zathura_page_render(page);
 
-  if (!buffer) {
+  if (image_buffer == NULL) {
     g_static_mutex_unlock(&(page->lock));
-    printf("error: rendering failed\n");
     gdk_threads_leave();
     return false;
   }
 
-  /* create drawing area */
-  /*GtkWidget* drawing_area = gtk_drawing_area_new();*/
+  /* remove old image */
+  GtkWidget* widget = gtk_bin_get_child(GTK_BIN(page->event_box));
+  if (widget != NULL) {
+    gtk_container_remove(GTK_CONTAINER(page->event_box), widget);
+  }
 
-  /*[> remove old image <]*/
-  /*GtkWidget* widget = gtk_bin_get_child(GTK_BIN(page->event_box));*/
-  /*if (widget != NULL) {*/
-    /*g_object_unref(widget);*/
-  /*}*/
+  /* create cairo surface */
+  unsigned int page_width  = page->width  * Zathura.document->scale;
+  unsigned int page_height = page->height * Zathura.document->scale;
 
-  /*[> set new image <]*/
-  /*gtk_box_pack_start(GTK_BOX(page->event_box), drawing_area, TRUE,  TRUE, 0);*/
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
-  zathura_image_buffer_free(buffer);
+  int rowstride        = cairo_image_surface_get_stride(surface);
+  unsigned char* image = cairo_image_surface_get_data(surface);
+
+  for (unsigned int y = 0; y < page_height; y++) {
+    unsigned char* dst = image + y * rowstride;
+    unsigned char* src = image_buffer->data + y * image_buffer->rowstride;
+
+    for (unsigned int x = 0; x < page_width; x++) {
+      dst[0] = src[0];
+      dst[1] = src[1];
+      dst[2] = src[2];
+      dst += 3;
+    }
+  }
+
+  /* draw to gtk widget */
+  GtkWidget* drawing_area = gtk_drawing_area_new();
+  gtk_container_add(GTK_CONTAINER(page->event_box), drawing_area);
+
+  cairo_t* cairo = gdk_cairo_create(drawing_area->window);
+  cairo_set_source_surface(cairo, surface, 0, 0);
+  cairo_paint(cairo);
+  cairo_destroy(cairo);
+
+  zathura_image_buffer_free(image_buffer);
   g_static_mutex_unlock(&(page->lock));
 
   gdk_threads_leave();

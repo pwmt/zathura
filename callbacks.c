@@ -68,7 +68,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
         /*|| ( (begin <= lower) && (end >= lower) && (end <= upper) ) [> end of the page is in viewport <]*/
         /*|| ( (begin >= lower) && (end >= upper) && (begin <= upper) ) [> begin of the page is in viewport <]*/
       /*) {*/
-    if (page_id < 5) {
+    if (page_id < 1) {
         render_page(Zathura.Sync.render_thread, Zathura.document->pages[page_id]);
     }
     /*}*/

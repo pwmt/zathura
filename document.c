@@ -537,8 +537,9 @@ zathura_image_buffer_create(unsigned int width, unsigned int height)
     return NULL;
   }
 
-  image_buffer->width  = width;
-  image_buffer->height = height;
+  image_buffer->width     = width;
+  image_buffer->height    = height;
+  image_buffer->rowstride = width * 3;
 
   return image_buffer;
 }
