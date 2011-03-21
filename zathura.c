@@ -4642,9 +4642,9 @@ int main(int argc, char* argv[])
   char* data_dir = 0;
   GOptionEntry entries[] =
   {
-    { "reparent",   'e', 0                     , G_OPTION_ARG_INT,    &Zathura.UI.embed, "Reparents to window specified by xid", "xid" },
-    { "config-dir", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &config_dir,       "Path to the config directory",         "path" },
-    { "data-dir",   'd', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &data_dir,         "Path to the data directory",           "path" },
+    { "reparent",   'e', 0, G_OPTION_ARG_INT,      &Zathura.UI.embed, "Reparents to window specified by xid", "xid" },
+    { "config-dir", 'c', 0, G_OPTION_ARG_FILENAME, &config_dir,       "Path to the config directory",         "path" },
+    { "data-dir",   'd', 0, G_OPTION_ARG_FILENAME, &data_dir,         "Path to the data directory",           "path" },
     { NULL }
   };
 
