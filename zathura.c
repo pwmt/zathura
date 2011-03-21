@@ -2205,10 +2205,12 @@ sc_reload(Argument* argument)
   gtk_adjustment_set_value(hadjustment, ha);
   g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
 
-  if (page >= Zathura.PDF.number_of_pages - 1)
-    page = Zathura.PDF.number_of_pages - 1;
-  Zathura.PDF.page_number = page;
-  draw(Zathura.PDF.page_number);
+  if (Zathura.PDF.number_of_pages != 0) {
+    if (page >= Zathura.PDF.number_of_pages - 1)
+      page = Zathura.PDF.number_of_pages - 1;
+    Zathura.PDF.page_number = page;
+    draw(Zathura.PDF.page_number);
+  }
 
   if(path)
     free(path);
