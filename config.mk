@@ -6,6 +6,7 @@ VERSION = 0.0.8.3
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
+DESKTOPPREFIX ?= ${PREFIX}/share/desktop
 
 # libs
 GTK_INC = $(shell pkg-config --cflags gtk+-2.0 poppler-glib)
