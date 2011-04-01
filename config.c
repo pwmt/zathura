@@ -4,6 +4,7 @@
 #include "completion.h"
 #include "shortcuts.h"
 #include "zathura.h"
+#include "config.h"
 
 void
 config_load_default(void)
@@ -11,14 +12,18 @@ config_load_default(void)
   if (!Zathura.UI.session)
     return;
 
-  int int_value = 0;
+  int int_value      = 0;
+  char* string_value = NULL;
 
   /* general settings */
   girara_mode_set(Zathura.UI.session, NORMAL);
 
   /* zathura settings */
+  string_value = CONFIG_DIR;
+  girara_setting_add(Zathura.UI.session, "config-dir", string_value, STRING, true, "Configuration directory", NULL);
   int_value = 10;
   girara_setting_add(Zathura.UI.session, "zoom-step", &int_value, INT, false, "Zoom step", NULL);
+
 
   /* define default shortcuts */
   girara_shortcut_add(Zathura.UI.session, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,             0,                   0,               NULL);
@@ -90,4 +95,14 @@ config_load_default(void)
   girara_inputbar_command_add(Zathura.UI.session, "info",    NULL, cmd_info,            NULL,     "Show file information");
   girara_inputbar_command_add(Zathura.UI.session, "print",   NULL, cmd_print,           cc_print, "Print document");
   girara_inputbar_command_add(Zathura.UI.session, "save",    NULL, cmd_save,            NULL,     "Save document");
+}
+
+void
+config_load_file(char* path)
+{
+  if (Zathura.UI.session == NULL) {
+    return;
+  }
+
+  girara_config_parse(Zathura.UI.session, path);
 }

@@ -70,6 +70,16 @@ init_zathura()
   /* configuration */
   config_load_default();
 
+  /* load global configuration files */
+  config_load_file(GLOBAL_RC);
+
+  /* load local configuration files */
+  char* config_dir = girara_setting_get(Zathura.UI.session, "config-dir");
+  char* configuration_file = g_build_filename(config_dir ? config_dir : CONFIG_DIR, ZATHURA_RC, NULL);
+  config_load_file(configuration_file);
+  free(config_dir);
+  free(configuration_file);
+
   return true;
 
 error_free:
