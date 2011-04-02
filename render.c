@@ -22,7 +22,7 @@ render_job(void* data)
 
     gdk_threads_enter();
     render(page);
-    printf("Rendered %d\n", page->number);
+    girara_debug("Rendered %d", page->number);
     gdk_threads_leave();
   }
 
@@ -135,8 +135,8 @@ render(zathura_page_t* page)
   GtkWidget* image = zathura_page_render(page);
 
   if (!image) {
+    girara_error("Failed to render page %d", page->number);
     g_static_mutex_unlock(&(page->lock));
-    printf("error: rendering failed\n");
     return false;
   }
 
@@ -147,7 +147,7 @@ render(zathura_page_t* page)
 
   if (!widget) {
     g_static_mutex_unlock(&(page->lock));
-    printf("error: page container does not exist\n");
+    girara_error("Page container does not exist");
     g_object_unref(image);
     return false;
   }

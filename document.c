@@ -27,7 +27,7 @@ zathura_document_plugins_load(void)
   /* read all files in the plugin directory */
   DIR* dir = opendir(PLUGIN_DIR);
   if (dir == NULL) {
-    fprintf(stderr, "error: could not open plugin directory: %s\n", PLUGIN_DIR);
+    girara_error("Could not open plugin directory: %s", PLUGIN_DIR);
     return;
   }
 
@@ -54,7 +54,7 @@ zathura_document_plugins_load(void)
     handle = dlopen(path, RTLD_NOW);
 
     if (handle == NULL) {
-      fprintf(stderr, "error: could not load plugin (%s)\n", dlerror());
+      girara_error("Could not load plugin (%s)", dlerror());
       goto error_free;
     }
 
@@ -63,7 +63,7 @@ zathura_document_plugins_load(void)
     *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
 
     if (register_plugin == NULL) {
-      fprintf(stderr, "error: could not find '%s' function in the plugin\n", PLUGIN_REGISTER_FUNCTION);
+      girara_error("Could not find '%s' in plugin", PLUGIN_REGISTER_FUNCTION);
       goto error_free;
     }
 
@@ -81,7 +81,7 @@ zathura_document_plugins_load(void)
     bool r = zathura_document_plugin_register(plugin, handle);
 
     if (r == false) {
-      fprintf(stderr, "error: could not register plugin (%s)\n", path);
+      girara_error("Could not register plugin (%s)", path);
       goto error_free;
     }
 
@@ -104,7 +104,7 @@ error_continue:
   }
 
   if (closedir(dir) == -1) {
-    fprintf(stderr, "error: could not close plugin directory: %s\n", PLUGIN_DIR);
+    girara_error("Could not close plugin directory: %s", PLUGIN_DIR);
   }
 }
 
@@ -128,7 +128,6 @@ zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, void* ha
 {
   if( (new_plugin == NULL) || (new_plugin->file_extension == NULL) || (new_plugin->open_function == NULL) 
       || (handle == NULL) ) {
-    fprintf(stderr, "plugin: could not register\n");
     return false;
   }
 
@@ -136,7 +135,7 @@ zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, void* ha
   zathura_document_plugin_t* plugin = zathura_document_plugins;
   while (plugin) {
     if (!strcmp(plugin->file_extension, new_plugin->file_extension)) {
-      fprintf(stderr, "plugin: already registered for filetype %s\n", plugin->file_extension);
+      girara_warning("%s-plugin already registered", plugin->file_extension);
       return false;
     }
 
@@ -169,13 +168,13 @@ zathura_document_open(const char* path, const char* password)
   }
 
   if (!file_exists(path)) {
-    fprintf(stderr, "error: file does not exist\n");
+    girara_error("File does not exist");
     goto error_out;
   }
 
   const char* file_extension = file_get_extension(path);
   if (!file_extension) {
-    fprintf(stderr, "error: could not determine file type\n");
+    girara_error("Could not determine file type");
     goto error_out;
   }
 
@@ -256,7 +255,6 @@ zathura_document_open(const char* path, const char* password)
 
           return document;
         } else {
-          fprintf(stderr, "error: could not open file\n");
           goto error_free;
         }
       }
@@ -265,7 +263,7 @@ zathura_document_open(const char* path, const char* password)
     plugin = plugin->next;
   }
 
-  fprintf(stderr, "error: unknown file type\n");
+  girara_error("Unknown file type");
 
 error_free:
 
@@ -304,7 +302,7 @@ zathura_document_free(zathura_document_t* document)
 
   /* free document */
   if (!document->functions.document_free) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
 
     if (document->file_path) {
       free(document->file_path);
@@ -333,7 +331,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
   }
 
   if (!document->functions.document_save_as) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
 
@@ -348,7 +346,7 @@ zathura_document_index_generate(zathura_document_t* document)
   }
 
   if (!document->functions.document_index_generate) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -363,7 +361,7 @@ zathura_document_attachments_get(zathura_document_t* document)
   }
 
   if (!document->functions.document_attachments_get) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -384,7 +382,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
   }
 
   if (!document->functions.page_get) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -407,7 +405,7 @@ zathura_page_free(zathura_page_t* page)
   }
 
   if (!page->document->functions.page_free) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
 
@@ -422,7 +420,7 @@ zathura_page_search_text(zathura_page_t* page, const char* text)
   }
 
   if (!page->document->functions.page_search_text) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -437,7 +435,7 @@ zathura_page_links_get(zathura_page_t* page)
   }
 
   if (!page->document->functions.page_links_get) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -458,7 +456,7 @@ zathura_page_form_fields_get(zathura_page_t* page)
   }
 
   if (!page->document->functions.page_form_fields_get) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -479,7 +477,7 @@ zathura_page_render(zathura_page_t* page)
   }
 
   if (!page->document->functions.page_render) {
-    fprintf(stderr, "error: %s not implemented\n", __FUNCTION__);
+    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 

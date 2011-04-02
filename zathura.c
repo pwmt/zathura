@@ -208,13 +208,13 @@ int main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   if (!init_zathura()) {
-    printf("error: coult not initialize zathura\n");
+    girara_error("Coult not initialize zathura\n");
     return -1;
   }
 
   if (argc > 1) {
     if (!document_open(argv[1], NULL)) {
-      printf("error: could not open document\n");
+      girara_error("Failed to open document\n");
       return -1;
     }
   }
