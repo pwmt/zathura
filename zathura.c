@@ -442,6 +442,7 @@ gboolean cmd_rotate(int, char**);
 gboolean cmd_set(int, char**);
 gboolean cmd_quit(int, char**);
 gboolean cmd_save(int, char**);
+gboolean cmd_savef(int, char**);
 
 /* completion commands */
 Completion* cc_bookmark(char*);
@@ -3674,7 +3675,7 @@ cmd_quit(int argc, char** argv)
 }
 
 gboolean
-cmd_save(int argc, char** argv)
+save_file(int argc, char** argv, gboolean overwrite)
 {
   if(argc == 0 || !Zathura.PDF.document)
     return TRUE;
@@ -3690,15 +3691,56 @@ cmd_save(int argc, char** argv)
   else
     file_path = g_strdup(argv[0]);
 
-  char* path = g_strdup_printf("file://%s", file_path);
+  if (!overwrite && g_file_test(file_path, G_FILE_TEST_EXISTS))
+  {
+    char* message = g_strdup_printf("File already exists: %s. Use :write! to overwrite it.", file_path);
+    notify(ERROR, message);
+    g_free(message);
+    g_free(file_path);
+    return FALSE;
+  }
+
+  char* path = NULL;
+  if (file_path[0] == '/')
+    path = g_strdup_printf("file://%s", file_path);
+  else
+  {
+    char* cur = g_get_current_dir();
+    path = g_strdup_printf("file://%s/%s", cur, file_path);
+    g_free(cur);
+  }
   g_free(file_path);
 
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
-  poppler_document_save(Zathura.PDF.document, path, NULL);
+  /* format path */
+  GError* error = NULL;
+  if (!poppler_document_save(Zathura.PDF.document, path, &error))
+  {
+    g_free(path);
+    char* message = g_strdup_printf("Can not write file: %s", error->message);
+    notify(ERROR, message);
+    g_free(message);
+    g_error_free(error);
+    g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
+    return FALSE;
+  }
+
   g_static_mutex_unlock(&(Zathura.Lock.pdflib_lock));
   g_free(path);
 
   return TRUE;
+}
+
+gboolean
+cmd_save(int argc, char** argv)
+{
+  return save_file(argc, argv, FALSE);
+}
+
+gboolean
+cmd_savef(int argc, char** argv)
+{
+  return save_file(argc, argv, TRUE);
 }
 
 /* completion command implementation */
