@@ -197,6 +197,7 @@ Command commands[] = {
   {"rotate",    "r",            cmd_rotate,          0,            "Rotate the page" },
   {"set",       "s",            cmd_set,             cc_set,       "Set an option" },
   {"write",     "w",            cmd_save,            0,            "Save the document" },
+  {"write!",    "w!",           cmd_savef,           0,            "Save the document (and force overwriting)" },
 };
 
 /* buffer commands */
