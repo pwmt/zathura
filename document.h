@@ -150,6 +150,7 @@ struct zathura_page_s
   GtkWidget* event_box; /**> Widget wrapper for mouse events */
   GtkWidget* drawing_area; /**> Drawing area */
   GStaticMutex lock; /**> Lock */
+	cairo_surface_t* surface; /** Cairo surface */
 };
 
 /**

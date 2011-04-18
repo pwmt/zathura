@@ -386,6 +386,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
     page->rendered     = false;
     page->event_box    = gtk_event_box_new();
     page->drawing_area = gtk_drawing_area_new();
+    page->surface      = NULL;
     g_signal_connect(page->drawing_area, "expose-event", G_CALLBACK(page_expose_event), page);
 
     gtk_container_add(GTK_CONTAINER(page->event_box), page->drawing_area);

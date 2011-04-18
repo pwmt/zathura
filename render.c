@@ -176,10 +176,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   }
 
   /* draw to gtk widget */
-  cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
-  cairo_set_source_surface(cairo, surface, 0, 0);
-  cairo_paint(cairo);
-  cairo_destroy(cairo);
+  page->surface = surface;
 
   zathura_image_buffer_free(image_buffer);
   g_static_mutex_unlock(&(page->lock));
@@ -209,22 +206,30 @@ gboolean
 page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
 {
   zathura_page_t* page = data;
+  if (page == NULL) {
+    return FALSE;
+  }
+
   g_static_mutex_lock(&(page->lock));
 
   cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
 
   if (cairo == NULL) {
-    girara_error("Could not create blank page");
+    girara_error("Could not retreive cairo object");
     g_static_mutex_unlock(&(page->lock));
-    return false;
+    return FALSE;
   }
 
-  cairo_set_source_rgb(cairo, 0, 0, 0);
-  cairo_rectangle(cairo, 0, 0, page->width, page->height);
-  cairo_fill(cairo);
-  cairo_destroy(cairo);
+  if (page->surface == NULL) {
+    cairo_set_source_surface(cairo, page->surface, 0, 0);
+    cairo_paint(cairo);
+    cairo_destroy(cairo);
+
+    cairo_surface_destroy(page->surface);
+    page->surface = NULL;
+  }
 
   g_static_mutex_unlock(&(page->lock));
 
-  return true;
+  return TRUE;
 }
