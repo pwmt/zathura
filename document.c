@@ -18,10 +18,8 @@
 
 #define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
 
-zathura_document_plugin_t* zathura_document_plugins = NULL;
-
 void
-zathura_document_plugins_load(void)
+zathura_document_plugins_load(zathura_t* zathura)
 {
   /* read all files in the plugin directory */
   DIR* dir = opendir(PLUGIN_DIR);
@@ -76,7 +74,7 @@ zathura_document_plugins_load(void)
 
     register_plugin(plugin);
 
-    bool r = zathura_document_plugin_register(plugin, handle);
+    bool r = zathura_document_plugin_register(zathura, plugin, handle);
 
     if (r == false) {
       fprintf(stderr, "error: could not register plugin (%s)\n", path);
@@ -107,60 +105,54 @@ error_continue:
 }
 
 void
-zathura_document_plugins_free(void)
+zathura_document_plugins_free(zathura_t* zathura)
 {
-  /* free registered plugins */
-  zathura_document_plugin_t* plugin = zathura_document_plugins;
-  while (plugin) {
-    zathura_document_plugin_t* tmp = plugin->next;
-    free(plugin->file_extension);
-    free(plugin);
-    plugin = tmp;
+  if (zathura == NULL) {
+    return;
   }
 
-  zathura_document_plugins = NULL;
+  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
+  if (iter == NULL) {
+    return;
+  }
+  
+  do {
+    zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
+    free(plugin->file_extension);
+    free(plugin);
+  } while (girara_list_iterator_next(iter));
+  girara_list_iterator_free(iter);
 }
 
 bool
-zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, void* handle)
+zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin, void* handle)
 {
   if( (new_plugin == NULL) || (new_plugin->file_extension == NULL) || (new_plugin->open_function == NULL)
       || (handle == NULL) ) {
-    fprintf(stderr, "plugin: could not register\n");
+    girara_error("plugin: could not register\n");
     return false;
   }
 
   /* search existing plugins */
-  zathura_document_plugin_t* plugin = zathura_document_plugins;
-  while (plugin) {
-    if (!strcmp(plugin->file_extension, new_plugin->file_extension)) {
-      fprintf(stderr, "plugin: already registered for filetype %s\n", plugin->file_extension);
-      return false;
-    }
-
-    if (plugin->next == NULL) {
-      break;
-    }
-
-    plugin = plugin->next;
+  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
+  if (iter) {
+    do {
+      zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
+      if (!strcmp(plugin->file_extension, new_plugin->file_extension)) {
+        girara_error("plugin: already registered for filetype %s\n", plugin->file_extension);
+        girara_list_iterator_free(iter);
+        return false;
+      }    
+    } while (girara_list_iterator_next(iter));
+    girara_list_iterator_free(iter);
   }
 
-  /* create new plugin */
-  new_plugin->handle = handle;
-  new_plugin->next   = NULL;
-
-  /* append to list */
-  if (plugin == NULL) {
-    zathura_document_plugins = new_plugin;
-  } else {
-    plugin->next = new_plugin;
-  }
-
+  girara_list_append(zathura->plugins.plugins, new_plugin);
   return true;
 }
 
 zathura_document_t*
-zathura_document_open(const char* path, const char* password)
+zathura_document_open(zathura_t* zathura, const char* path, const char* password)
 {
   if (!path) {
     goto error_out;
@@ -224,14 +216,19 @@ zathura_document_open(const char* path, const char* password)
   document->functions.page_form_fields_get     = NULL;
   document->functions.page_render              = NULL;
 
-  /* init plugin with associated file type */
-  zathura_document_plugin_t* plugin = zathura_document_plugins;
-  while (plugin) {
+  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
+  if (iter == NULL) {
+    return;
+  }
+  
+  do {
+    zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
     if (!strcmp(file_extension, plugin->file_extension)) {
+      girara_list_iterator_free(iter);
       if (plugin->open_function) {
         if (plugin->open_function(document)) {
           /* update statusbar */
-          girara_statusbar_item_set_text(Zathura.UI.session, Zathura.UI.statusbar.file, real_path);
+          girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, real_path);
 
           /* read all pages */
           document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
@@ -250,16 +247,15 @@ zathura_document_open(const char* path, const char* password)
 
           return document;
         } else {
-          fprintf(stderr, "error: could not open file\n");
+          girara_error("could not open file\n");
           goto error_free;
         }
       }
     }
+  } while (girara_list_iterator_next(iter));
+  girara_list_iterator_free(iter);
 
-    plugin = plugin->next;
-  }
-
-  fprintf(stderr, "error: unknown file type\n");
+  girara_error("unknown file type\n");
 
 error_free:
 

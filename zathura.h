@@ -6,9 +6,6 @@
 #include <stdbool.h>
 #include <girara.h>
 
-#include "render.h"
-#include "document.h"
-
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -23,6 +20,16 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
 #define INDEX      (1 << 2)
 #define NORMAL     (1 << 3)
 #define INSERT     (1 << 4)
+
+/* forward declaration for types from document.h */
+struct zathura_document_s;
+struct zathura_page_s;
+typedef struct zathura_document_s zathura_document_t;
+typedef struct zathura_page_s zathura_page_t;
+
+/* forward declaration for types from render.h */
+struct render_thread_s;
+typedef struct render_thread_s render_thread_t;
 
 typedef struct zathura_s
 {
@@ -45,6 +52,12 @@ typedef struct zathura_s
   {
     render_thread_t* render_thread; /**> The thread responsible for rendering the pages */
   } sync;
+
+  struct
+  {
+    girara_list_t* plugins;
+    girara_list_t* path;
+  } plugins;
 
   zathura_document_t* document; /**> The current document */
 } zathura_t;

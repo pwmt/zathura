@@ -10,6 +10,7 @@
 #include "shortcuts.h"
 #include "zathura.h"
 #include "utils.h"
+#include "render.h"
 
 /* function implementation */
 zathura_t*
@@ -20,6 +21,10 @@ zathura_init(int argc, char* argv[])
   if (zathura == NULL) {
     return NULL;
   }
+
+  /* plugins */
+  zathura->plugins.plugins = girara_list_new();
+  zathura->plugins.path = NULL;
 
   /* UI */
   if ((zathura->ui.session = girara_session_create()) == NULL) {
@@ -74,7 +79,7 @@ zathura_init(int argc, char* argv[])
   zathura->ui.session->events.buffer_changed = buffer_changed;
 
   /* load plugins */
-  zathura_document_plugins_load();
+  zathura_document_plugins_load(zathura);
 
   /* configuration */
   config_load_default(zathura);
@@ -108,7 +113,7 @@ zathura_free(zathura_t* zathura)
   document_close(zathura);
 
   /* free registered plugins */
-  zathura_document_plugins_free();
+  zathura_document_plugins_free(zathura);
 }
 
 bool
@@ -118,7 +123,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     goto error_out;
   }
 
-  zathura_document_t* document = zathura_document_open(path, password);
+  zathura_document_t* document = zathura_document_open(zathura, path, password);
 
   if (!document) {
     goto error_out;

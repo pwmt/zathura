@@ -7,12 +7,13 @@
 #include <stdbool.h>
 
 #include <girara-datastructures.h>
+#include "zathura.h"
 
 #define PLUGIN_DIR "/usr/lib/zathura"
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 
 typedef struct zathura_list_s zathura_list_t;
-typedef struct zathura_document_s zathura_document_t;
+// typedef struct zathura_document_s zathura_document_t;
 
 typedef bool (*zathura_document_open_t)(zathura_document_t* document);
 
@@ -24,7 +25,6 @@ typedef struct zathura_document_plugin_s
   char* file_extension; /**> File extension */
   zathura_document_open_t open_function; /**> Document open function */
   void* handle; /**> DLL handle */
-  struct zathura_document_plugin_s *next; /**> Next plugin */ // TODO: Use list_t
 } zathura_document_plugin_t;
 
 /**
@@ -139,7 +139,7 @@ typedef struct zathura_form_s
 /**
  * Page
  */
-typedef struct zathura_page_s
+struct zathura_page_s
 {
   double height; /**> Page height */
   double width; /**> Page width */
@@ -150,7 +150,7 @@ typedef struct zathura_page_s
   GtkWidget* event_box; /**> Widget wrapper for mouse events */
   GtkWidget* drawing_area; /**> Drawing area */
   GStaticMutex lock; /**> Lock */
-} zathura_page_t;
+};
 
 /**
  * Document
@@ -226,18 +226,22 @@ struct zathura_document_s
 
 /**
  * Load all document plugins
+ *
+ * @param zathura the zathura session
  */
-void zathura_document_plugins_load(void);
+void zathura_document_plugins_load(zathura_t* zathura);
 
 /**
  * Free all document plugins
+ *
+ * @param zathura the zathura session
  */
-void zathura_document_plugins_free(void);
+void zathura_document_plugins_free(zathura_t* zathura);
 
 /**
  * Register document plugin
  */
-bool zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, void* handle);
+bool zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin, void* handle);
 
 /**
  * Open the document
@@ -246,7 +250,7 @@ bool zathura_document_plugin_register(zathura_document_plugin_t* new_plugin, voi
  * @param password Password of the document or NULL
  * @return The document object
  */
-zathura_document_t* zathura_document_open(const char* path, const char* password);
+zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, const char* password);
 
 /**
  * Free the document

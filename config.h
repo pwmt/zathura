@@ -7,6 +7,8 @@
 
 /**
  * This function loads the default values of the configuration
+ *
+ * @param zathura the zathura session
  */
 void config_load_default(zathura_t* zathura);
 

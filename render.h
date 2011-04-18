@@ -7,16 +7,16 @@
 #include <stdlib.h>
 #include <girara-datastructures.h>
 
-#include "document.h"
+#include "zathura.h"
 #include "callbacks.h"
 
-typedef struct render_thread_s
+struct render_thread_s
 {
   girara_list_t* list; /**> The list of pages */
   GThread* thread; /**> The thread object */
   GMutex* lock; /**> Lock */
   GCond* cond; /**> Condition */
-} render_thread_t;
+};
 
 /**
  * This function initializes a render thread
