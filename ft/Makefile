@@ -16,3 +16,5 @@ install:
 
 uninstall:
 	@for dir in ${SUBDIRS}; do ${MAKE} -C $${dir} uninstall; done
+
+.PHONY: all debug clean install uninstall

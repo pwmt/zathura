@@ -49,3 +49,5 @@ uninstall:
 	@echo uninstalling ${PLUGIN} plugin
 	@rm -f ${DESTDIR}${PREFIX}/lib/zathura/${PLUGIN}.so
 	@rm -rf ${DESTDIR}${PREFIX}/lib/zathura
+
+.PHONY: all options clean debug install uninstall
