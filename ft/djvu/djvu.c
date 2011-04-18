@@ -218,13 +218,13 @@ djvu_page_form_fields_get(zathura_page_t* page)
 zathura_image_buffer_t*
 djvu_page_render(zathura_page_t* page)
 {
-  if (!Zathura.document || !page || !page->document) {
+  if (!page || !page->document) {
     return NULL;
   }
 
   /* calculate sizes */
-  unsigned int page_width  = Zathura.document->scale * page->width;
-  unsigned int page_height = Zathura.document->scale * page->height;
+  unsigned int page_width  = page->document->scale * page->width;
+  unsigned int page_height = page->document->scale * page->height;
 
   if (!page_width || !page_height) {
     goto error_out;

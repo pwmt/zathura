@@ -176,15 +176,15 @@ pdf_page_form_fields_get(zathura_page_t* page)
 zathura_image_buffer_t*
 pdf_page_render(zathura_page_t* page)
 {
-  if (!Zathura.document || !page || !page->data || !page->document) {
+  if (!page || !page->data || !page->document) {
     return NULL;
   }
 
   /* calculate sizes */
-  unsigned int page_width  = Zathura.document->scale * page->width;
-  unsigned int page_height = Zathura.document->scale * page->height;
+  unsigned int page_width  = page->document->scale * page->width;
+  unsigned int page_height = page->document->scale * page->height;
 
-  if (Zathura.document->rotate == 90 || Zathura.document->rotate == 270) {
+  if (page->document->rotate == 90 || page->document->rotate == 270) {
       unsigned int dim_temp = 0;
       dim_temp    = page_width;
       page_width  = page_height;
@@ -215,9 +215,9 @@ pdf_page_render(zathura_page_t* page)
 
   fz_matrix ctm = fz_identity;
   ctm           = fz_concat(ctm, fz_translate(0, -mupdf_page->page->mediabox.y1));
-  ctm           = fz_concat(ctm, fz_scale(Zathura.document->scale, -Zathura.document->scale));
+  ctm           = fz_concat(ctm, fz_scale(page->document->scale, -page->document->scale));
   ctm           = fz_concat(ctm, fz_rotate(mupdf_page->page->rotate));
-  ctm           = fz_concat(ctm, fz_rotate(Zathura.document->rotate));
+  ctm           = fz_concat(ctm, fz_rotate(page->document->rotate));
   fz_bbox bbox  = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
 
   fz_pixmap* pixmap = fz_newpixmapwithrect(fz_devicergb, bbox);
