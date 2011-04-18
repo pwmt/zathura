@@ -114,6 +114,7 @@ zathura_free(zathura_t* zathura)
 
   /* free registered plugins */
   zathura_document_plugins_free(zathura);
+  girara_list_free(zathura->plugins.plugins);
 }
 
 bool
