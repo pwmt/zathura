@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+#include <girara.h>
+
 #include "callbacks.h"
 #include "config.h"
 #include "document.h"
@@ -101,7 +103,9 @@ document_open(const char* path, const char* password)
   Zathura.document = document;
 
   /* init view */
-  create_blank_pages();
+  if (create_blank_pages() == false) {
+    return false;
+  }
 
   /* view mode */
   int* value = girara_setting_get(Zathura.UI.session, "pages-per-row");
@@ -215,7 +219,7 @@ page_view_set_mode(unsigned int pages_per_row)
   gtk_widget_show_all(Zathura.UI.page_view);
 }
 
-void
+bool
 create_blank_pages()
 {
   /* create blank pages */
@@ -225,6 +229,13 @@ create_blank_pages()
     g_static_mutex_lock(&(page->lock));
 
     cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
+
+    if (cairo == NULL) {
+      girara_error("Could not create blank page");
+      g_static_mutex_unlock(&(page->lock));
+      return false;
+    }
+
     cairo_set_source_rgb(cairo, 1, 1, 1);
     cairo_rectangle(cairo, 0, 0, page->width, page->height);
     cairo_fill(cairo);
@@ -232,6 +243,8 @@ create_blank_pages()
 
     g_static_mutex_unlock(&(page->lock));
   }
+
+  return true;
 }
 
 /* main function */

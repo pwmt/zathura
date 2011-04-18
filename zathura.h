@@ -89,7 +89,9 @@ void page_view_set_mode(unsigned int pages_per_row);
 
 /**
  * Create blank pages
+ *
+ * @return false if an error occured, otherwise true
  */
-void create_blank_pages();
+bool create_blank_pages();
 
 #endif // ZATHURA_H
