@@ -20,7 +20,7 @@ render_job(void* data)
     girara_list_remove(render_thread->list, page);
     g_mutex_unlock(render_thread->lock);
 
-    if (render(page) != true) {
+    if (render(render_thread->zathura, page) != true) {
       fprintf(stderr, "rendering failed\n");
     }
 
@@ -31,7 +31,7 @@ render_job(void* data)
 }
 
 render_thread_t*
-render_init(void)
+render_init(zathura_t* zathura)
 {
   render_thread_t* render_thread = malloc(sizeof(render_thread_t));
 
@@ -40,9 +40,10 @@ render_init(void)
   }
 
   /* init */
-  render_thread->list   = NULL;
-  render_thread->thread = NULL;
-  render_thread->cond   = NULL;
+  render_thread->list    = NULL;
+  render_thread->thread  = NULL;
+  render_thread->cond    = NULL;
+  render_thread->zathura = zathura;
 
   /* setup */
   render_thread->list = girara_list_new();
@@ -130,7 +131,7 @@ render_page(render_thread_t* render_thread, zathura_page_t* page)
 }
 
 bool
-render(zathura_page_t* page)
+render(zathura_t* zathura, zathura_page_t* page)
 {
   gdk_threads_enter();
   g_static_mutex_lock(&(page->lock));
@@ -149,8 +150,8 @@ render(zathura_page_t* page)
   }
 
   /* create cairo surface */
-  unsigned int page_width  = page->width  * Zathura.document->scale;
-  unsigned int page_height = page->height * Zathura.document->scale;
+  unsigned int page_width  = page->width  * zathura->document->scale;
+  unsigned int page_height = page->height * zathura->document->scale;
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
@@ -183,18 +184,18 @@ render(zathura_page_t* page)
 }
 
 void
-render_all(void)
+render_all(zathura_t* zathura)
 {
-  if (Zathura.document == NULL) {
+  if (zathura->document == NULL) {
     return;
   }
 
   /* unmark all pages */
-  for (unsigned int page_id = 0; page_id < Zathura.document->number_of_pages; page_id++) {
-    Zathura.document->pages[page_id]->rendered = false;
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
+    zathura->document->pages[page_id]->rendered = false;
   }
 
   /* redraw current page */
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Zathura.UI.session->gtk.view));
+  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->UI.session->gtk.view));
   cb_view_vadjustment_value_changed(view_vadjustment, NULL);
 }
