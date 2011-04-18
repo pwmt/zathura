@@ -53,4 +53,14 @@ bool render_page(render_thread_t* render_thread, zathura_page_t* page);
  */
 void render_all(zathura_t* zathura);
 
+/**
+ * Renders page
+ *
+ * @param widget Drawing area
+ * @param event Event
+ * @param data Optional data
+ * @return true if no error occured
+ */
+gboolean page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data);
+
 #endif // RENDER_H

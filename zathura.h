@@ -113,12 +113,4 @@ bool page_set(zathura_t* zathura, unsigned int page_id);
  */
 void page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row);
 
-/**
- * Create blank pages
- *
- * @param zathura The zathura zathura
- * @return false if an error occured, otherwise true
- */
-bool create_blank_pages(zathura_t* zathura);
-
 #endif // ZATHURA_H

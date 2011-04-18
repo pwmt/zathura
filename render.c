@@ -22,7 +22,7 @@ render_job(void* data)
     g_mutex_unlock(render_thread->lock);
 
     if (render(render_thread->zathura, page) != true) {
-      fprintf(stderr, "rendering failed\n");
+      girara_error("Rendering failed\n");
     }
 
     printf("Rendered %d\n", page->number);
@@ -134,6 +134,10 @@ render_page(render_thread_t* render_thread, zathura_page_t* page)
 bool
 render(zathura_t* zathura, zathura_page_t* page)
 {
+  if (zathura == NULL || page == NULL) {
+    return false;
+  }
+
   gdk_threads_enter();
   g_static_mutex_lock(&(page->lock));
   zathura_image_buffer_t* image_buffer = zathura_page_render(page);
@@ -198,5 +202,29 @@ render_all(zathura_t* zathura)
 
   /* redraw current page */
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  cb_view_vadjustment_value_changed(view_vadjustment, NULL);
+  cb_view_vadjustment_value_changed(view_vadjustment, zathura);
+}
+
+gboolean
+page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
+{
+  zathura_page_t* page = data;
+  g_static_mutex_lock(&(page->lock));
+
+  cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
+
+  if (cairo == NULL) {
+    girara_error("Could not create blank page");
+    g_static_mutex_unlock(&(page->lock));
+    return false;
+  }
+
+  cairo_set_source_rgb(cairo, 0, 0, 0);
+  cairo_rectangle(cairo, 0, 0, page->width, page->height);
+  cairo_fill(cairo);
+  cairo_destroy(cairo);
+
+  g_static_mutex_unlock(&(page->lock));
+
+  return true;
 }

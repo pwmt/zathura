@@ -12,6 +12,15 @@
 #include "utils.h"
 #include "render.h"
 
+typedef struct zathura_document_info_s
+{
+  zathura_t* zathura;
+  const char* path;
+  const char* password;
+} zathura_document_info_t;
+
+gboolean document_info_open(gpointer data);
+
 /* function implementation */
 zathura_t*
 zathura_init(int argc, char* argv[])
@@ -84,6 +93,17 @@ zathura_init(int argc, char* argv[])
   /* configuration */
   config_load_default(zathura);
 
+  if (argc > 1) {
+    zathura_document_info_t* document_info = malloc(sizeof(zathura_document_info_t));
+
+    if (document_info != NULL) {
+      document_info->zathura  = zathura;
+      document_info->path     = argv[1];
+      document_info->password = (argc >= 2) ? argv[2] : NULL;
+      g_idle_add(document_info_open, document_info);
+    }
+  }
+
   return zathura;
 
 error_free:
@@ -117,6 +137,22 @@ zathura_free(zathura_t* zathura)
   girara_list_free(zathura->plugins.plugins);
 }
 
+gboolean
+document_info_open(gpointer data)
+{
+  zathura_document_info_t* document_info = data;
+  g_return_val_if_fail(document_info != NULL, FALSE);
+
+  if (document_info->zathura == NULL || document_info->path == NULL) {
+    free(document_info);
+    return FALSE;
+  }
+
+  document_open(document_info->zathura, document_info->path, document_info->password);
+
+  return FALSE;
+}
+
 bool
 document_open(zathura_t* zathura, const char* path, const char* password)
 {
@@ -131,11 +167,6 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   zathura->document = document;
-
-  /* init view */
-  if (create_blank_pages(zathura) == false) {
-    return false;
-  }
 
   /* view mode */
   int* value = girara_setting_get(zathura->ui.session, "pages-per-row");
@@ -203,7 +234,7 @@ page_set(zathura_t* zathura, unsigned int page_id)
   }
 
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  cb_view_vadjustment_value_changed(view_vadjustment, NULL);
+  cb_view_vadjustment_value_changed(view_vadjustment, zathura);
 
   /* update page number */
   zathura->document->current_page_number = page_id;
@@ -249,34 +280,6 @@ page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
   gtk_widget_show_all(zathura->ui.page_view);
 }
 
-bool
-create_blank_pages(zathura_t* zathura)
-{
-  /* create blank pages */
-  for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
-  {
-    zathura_page_t* page = zathura->document->pages[i];
-    g_static_mutex_lock(&(page->lock));
-
-    cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
-
-    if (cairo == NULL) {
-      girara_error("Could not create blank page");
-      g_static_mutex_unlock(&(page->lock));
-      return false;
-    }
-
-    cairo_set_source_rgb(cairo, 1, 1, 1);
-    cairo_rectangle(cairo, 0, 0, page->width, page->height);
-    cairo_fill(cairo);
-    cairo_destroy(cairo);
-
-    g_static_mutex_unlock(&(page->lock));
-  }
-
-  return true;
-}
-
 /* main function */
 int main(int argc, char* argv[])
 {
@@ -288,13 +291,6 @@ int main(int argc, char* argv[])
   if (zathura == NULL) {
     printf("error: coult not initialize zathura\n");
     return -1;
-  }
-
-  if (argc > 1) {
-    if (!document_open(zathura, argv[1], NULL)) {
-      printf("error: could not open document\n");
-      return -1;
-    }
   }
 
   gdk_threads_enter();

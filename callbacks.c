@@ -38,13 +38,10 @@ buffer_changed(girara_session_t* session)
 void
 cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
 {
-  g_return_if_fail(data != NULL);
-
   zathura_t* zathura = data;
-  if (!zathura->document || !zathura->document->pages || !zathura->ui.page_view) {
+  if (!zathura || !zathura->document || !zathura->document->pages || !zathura->ui.page_view) {
     return;
   }
-
 
   // FIXME
   /* get current adjustment values */
