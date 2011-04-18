@@ -10,6 +10,7 @@
 
 #include "utils.h"
 #include "zathura.h"
+#include "document.h"
 
 #define BLOCK_SIZE 64
 

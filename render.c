@@ -1,8 +1,9 @@
 #include "render.h"
 #include "zathura.h"
+#include "document.h"
 
 void* render_job(void* data);
-bool render(zathura_page_t* page);
+bool render(zathura_t* zathura, zathura_page_t* page);
 
 void*
 render_job(void* data)
@@ -196,6 +197,6 @@ render_all(zathura_t* zathura)
   }
 
   /* redraw current page */
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->UI.session->gtk.view));
+  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   cb_view_vadjustment_value_changed(view_vadjustment, NULL);
 }

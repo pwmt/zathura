@@ -5,6 +5,7 @@
 
 #include "callbacks.h"
 #include "shortcuts.h"
+#include "document.h"
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
@@ -13,8 +14,6 @@ bool
 sc_abort(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
   girara_mode_set(session, NORMAL);
 
@@ -25,8 +24,6 @@ bool
 sc_adjust_window(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
   return false;
 }
@@ -35,8 +32,6 @@ bool
 sc_change_buffer(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
   return false;
 }
@@ -45,8 +40,6 @@ bool
 sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
   girara_mode_set(session, argument->n);
 
@@ -57,8 +50,6 @@ bool
 sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
   if (!(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar)))) {
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
@@ -77,8 +68,6 @@ bool
 sc_follow(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
   return false;
 }
@@ -136,7 +125,7 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int
     new_page = (new_page + number_of_pages - 1) % number_of_pages;
   }
 
-  page_set(new_page);
+  page_set(zathura, new_page);
 
   return false;
 }
@@ -145,9 +134,6 @@ bool
 sc_recolor(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-
-  zathura_t* zathura = session->global.data;
 
   return false;
 }
@@ -156,9 +142,6 @@ bool
 sc_reload(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-
-  zathura_t* zathura = session->global.data;
 
   return false;
 }
@@ -175,7 +158,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument, unsigned int t
   zathura->document->rotate  = (zathura->document->rotate + 90) % 360;
 
   /* render all pages again */
-  render_all();
+  render_all(zathura);
 
   return false;
 }
@@ -191,9 +174,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int t
 
   GtkAdjustment* adjustment = NULL;
   if ( (argument->n == LEFT) || (argument->n == RIGHT) )
-    adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->UI.session->gtk.view));
+    adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   else
-    adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->UI.session->gtk.view));
+    adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
   gdouble value      = gtk_adjustment_get_value(adjustment);
@@ -276,15 +259,15 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
   GtkTreeModel* model                = NULL;
   GtkCellRenderer* renderer          = NULL;
 
-  if (zathura->UI.index == NULL) {
+  if (zathura->ui.index == NULL) {
     /* create new index widget */
-    zathura->UI.index = gtk_scrolled_window_new(NULL, NULL);
+    zathura->ui.index = gtk_scrolled_window_new(NULL, NULL);
 
-    if (zathura->UI.index == NULL) {
+    if (zathura->ui.index == NULL) {
       goto error_ret;
     }
 
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->UI.index),
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.index),
       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
     /* create index */
@@ -322,25 +305,25 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
     gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), gtk_tree_path_new_first(), NULL, FALSE);
     /*g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), NULL); TODO*/
 
-    gtk_container_add(GTK_CONTAINER(zathura->UI.index), treeview);
+    gtk_container_add(GTK_CONTAINER(zathura->ui.index), treeview);
     gtk_widget_show(treeview);
   }
 
-  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(zathura->UI.index))) {
-    girara_set_view(session, zathura->UI.page_view);
-    gtk_widget_hide(GTK_WIDGET(zathura->UI.index));
+  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(zathura->ui.index))) {
+    girara_set_view(session, zathura->ui.page_view);
+    gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
   } else {
-    girara_set_view(session, zathura->UI.index);
-    gtk_widget_show(GTK_WIDGET(zathura->UI.index));
+    girara_set_view(session, zathura->ui.index);
+    gtk_widget_show(GTK_WIDGET(zathura->ui.index));
   }
 
   return false;
 
 error_free:
 
-  if (zathura->UI.index != NULL) {
-    g_object_ref_sink(zathura->UI.index);
-    zathura->UI.index = NULL;
+  if (zathura->ui.index != NULL) {
+    g_object_ref_sink(zathura->ui.index);
+    zathura->ui.index = NULL;
   }
 
   if (document_index != NULL) {
@@ -423,7 +406,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int t)
   g_return_val_if_fail(zathura->document != NULL, false);
 
   /* retreive zoom step value */
-  int* value = girara_setting_get(zathura->UI.session, "zoom-step");
+  int* value = girara_setting_get(zathura->ui.session, "zoom-step");
   if (value == NULL) {
     return false;
   }
@@ -438,7 +421,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int t)
     zathura->document->scale = 1.0;
   }
 
-  render_all();
+  render_all(zathura);
 
   return false;
 }
