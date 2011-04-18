@@ -30,6 +30,7 @@ zathura_init(int argc, char* argv[])
     goto error_out;
   }
 
+  zathura->ui.session->global.data  = zathura;
   zathura->ui.statusbar.file        = NULL;
   zathura->ui.statusbar.buffer      = NULL;
   zathura->ui.statusbar.page_number = NULL;
@@ -67,7 +68,7 @@ zathura_init(int argc, char* argv[])
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
 
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  g_signal_connect(G_OBJECT(view_vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), NULL);
+  g_signal_connect(G_OBJECT(view_vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
 
   /* girara events */
   zathura->ui.session->events.buffer_changed = buffer_changed;
@@ -76,7 +77,7 @@ zathura_init(int argc, char* argv[])
   zathura_document_plugins_load();
 
   /* configuration */
-  config_load_default();
+  config_load_default(zathura);
 
   return zathura;
 

@@ -21,23 +21,30 @@ void
 buffer_changed(girara_session_t* session)
 {
   g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+
+  zathura_t* zathura = session->global.data;
 
   char* buffer = girara_buffer_get(session);
 
   if (buffer) {
-    girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, buffer);
+    girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, buffer);
     free(buffer);
   } else {
-    girara_statusbar_item_set_text(session, Zathura.UI.statusbar.buffer, "");
+    girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, "");
   }
 }
 
 void
 cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
 {
-  if (!Zathura.document || !Zathura.document->pages || !Zathura.UI.page_view) {
+  g_return_if_fail(data != NULL);
+
+  zathura_t* zathura = data;
+  if (!zathura->document || !zathura->document->pages || !zathura->ui.page_view) {
     return;
   }
+
 
   // FIXME
   /* get current adjustment values */
@@ -45,9 +52,9 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
   /*gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);*/
 
   /* find page that fits */
-  for (unsigned int page_id = 0; page_id < Zathura.document->number_of_pages; page_id++)
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++)
   {
-    zathura_page_t* page = Zathura.document->pages[page_id];
+    zathura_page_t* page = zathura->document->pages[page_id];
 
     /* check for rendered attribute */
     if (page->rendered) {
@@ -62,7 +69,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
         /*|| ( (begin >= lower) && (end >= upper) && (begin <= upper) ) [> begin of the page is in viewport <]*/
       /*) {*/
     if (page_id < 1) {
-        render_page(Zathura.Sync.render_thread, Zathura.document->pages[page_id]);
+        render_page(zathura->sync.render_thread, zathura->document->pages[page_id]);
     }
     /*}*/
   }
