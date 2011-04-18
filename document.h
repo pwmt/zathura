@@ -9,7 +9,6 @@
 #include <girara-datastructures.h>
 #include "zathura.h"
 
-#define PLUGIN_DIR "/usr/lib/zathura"
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 
 typedef struct zathura_list_s zathura_list_t;

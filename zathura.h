@@ -59,6 +59,12 @@ typedef struct zathura_s
     girara_list_t* path;
   } plugins;
 
+  struct
+  {
+    gchar* config_dir;
+    gchar* data_dir;
+  } config;
+
   zathura_document_t* document; /**> The current document */
 } zathura_t;
 

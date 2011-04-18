@@ -1,7 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 // TODO: Implement realpath
 
 #include <stdlib.h>
@@ -11,6 +11,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <dlfcn.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include "document.h"
 #include "utils.h"
@@ -22,87 +25,98 @@
 void
 zathura_document_plugins_load(zathura_t* zathura)
 {
-  /* read all files in the plugin directory */
-  DIR* dir = opendir(PLUGIN_DIR);
-  if (dir == NULL) {
-    fprintf(stderr, "error: could not open plugin directory: %s\n", PLUGIN_DIR);
+  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.path);
+  if (iter == NULL) {
     return;
   }
 
-  struct dirent* entry;
-  while ((entry = readdir(dir)) != NULL) {
-    /* check if entry is a file */
-    if (entry->d_type != 0x8) {
+  do
+  {
+    char* plugindir = girara_list_iterator_data(iter);
+
+    /* read all files in the plugin directory */
+    DIR* dir = opendir(plugindir);
+    if (dir == NULL) {
+      girara_error("could not open plugin directory: %s", plugindir);
       continue;
     }
 
-    void* handle                      = NULL;
-    zathura_document_plugin_t* plugin = NULL;
-    char* path                        = NULL;
+    int fddir = dirfd(dir);
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL) {
+      struct stat statbuf;
+      if (fstatat(fddir, entry->d_name, &statbuf, 0) != 0) {
+        girara_error("failed to fstatat %s/%s; errno is %d.", plugindir, entry->d_name, errno);
+        continue;
+      }
 
-    /* get full path */
-    path = string_concat(PLUGIN_DIR, "/", entry->d_name, NULL);
+      /* check if entry is a file */
+      if (S_ISREG(statbuf.st_mode) == 0) {
+        girara_info("%s/%s is not a regular file. Skipping.", plugindir, entry->d_name);
+        continue;
+      }
 
-    if (path == NULL) {
-      goto error_continue;
+      void* handle                      = NULL;
+      zathura_document_plugin_t* plugin = NULL;
+      char* path                        = NULL;
+
+      /* get full path */
+      path = g_build_filename(plugindir, entry->d_name, NULL);
+      if (path == NULL) {
+        g_error("failed to allocate memory!");
+        break;
+      }
+
+      /* load plugin */
+      handle = dlopen(path, RTLD_NOW);
+      if (handle == NULL) {
+        girara_error("could not load plugin %s (%s)", path, dlerror());
+        g_free(path);
+        continue;
+      }
+
+      /* resolve symbol */
+      zathura_plugin_register_service_t register_plugin;
+      *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
+
+      if (register_plugin == NULL) {
+        girara_error("could not find '%s' function in plugin %s", PLUGIN_REGISTER_FUNCTION, path);
+        g_free(path);
+        dlclose(handle);
+        continue;
+      }
+
+      plugin = malloc(sizeof(zathura_document_plugin_t));
+
+      if (plugin == NULL) {
+        g_error("failed to allocate memory!");
+        break;
+      }
+
+      plugin->file_extension = NULL;
+      plugin->open_function  = NULL;
+
+      register_plugin(plugin);
+
+      bool r = zathura_document_plugin_register(zathura, plugin, handle);
+
+      if (r == false) {
+        girara_error("could not register plugin %s", path);
+        free(plugin);
+        dlclose(handle);
+      }
+      else  {
+        girara_info("successfully loaded plugin %s", path);
+      }
+
+      g_free(path);
     }
 
-    /* load plugin */
-    handle = dlopen(path, RTLD_NOW);
-
-    if (handle == NULL) {
-      fprintf(stderr, "error: could not load plugin (%s)\n", dlerror());
-      goto error_free;
+    if (closedir(dir) == -1) {
+      girara_error("could not close plugin directory %s", plugindir);
     }
-
-    /* resolve symbol */
-    zathura_plugin_register_service_t register_plugin;
-    *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
-
-    if (register_plugin == NULL) {
-      fprintf(stderr, "error: could not find '%s' function in the plugin\n", PLUGIN_REGISTER_FUNCTION);
-      goto error_free;
-    }
-
-    plugin = malloc(sizeof(zathura_document_plugin_t));
-
-    if (plugin == NULL) {
-      goto error_free;
-    }
-
-    plugin->file_extension = NULL;
-    plugin->open_function  = NULL;
-
-    register_plugin(plugin);
-
-    bool r = zathura_document_plugin_register(zathura, plugin, handle);
-
-    if (r == false) {
-      fprintf(stderr, "error: could not register plugin (%s)\n", path);
-      goto error_free;
-    }
-
-    free(path);
-
-    continue;
-
-error_free:
-
-    free(path);
-    free(plugin);
-
-    if (handle) {
-      dlclose(handle);
-    }
-
-error_continue:
-
-    continue;
-  }
-
-  if (closedir(dir) == -1) {
-    fprintf(stderr, "error: could not close plugin directory: %s\n", PLUGIN_DIR);
-  }
+  } while (girara_list_iterator_next(iter));
+  girara_list_iterator_free(iter);
 }
 
 void
