@@ -12,14 +12,7 @@
 gboolean
 cb_destroy(GtkWidget* widget, gpointer data)
 {
-  if (Zathura.UI.session) {
-    girara_session_destroy(Zathura.UI.session);
-  }
-
-  document_close();
-
-  /* free registered plugins */
-  zathura_document_plugins_free();
+  zathura_free(data);
 
   return TRUE;
 }

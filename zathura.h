@@ -24,7 +24,7 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
 #define NORMAL     (1 << 3)
 #define INSERT     (1 << 4)
 
-struct
+typedef struct zathura_s
 {
   struct
   {
@@ -39,59 +39,73 @@ struct
 
     GtkWidget *page_view; /**> Widget that contains all rendered pages */
     GtkWidget *index; /**> Widget to show the index of the document */
-  } UI;
+  } ui;
 
   struct
   {
     render_thread_t* render_thread; /**> The thread responsible for rendering the pages */
-  } Sync;
+  } sync;
 
   zathura_document_t* document; /**> The current document */
-} Zathura;
+} zathura_t;
 
 /**
  * Initializes zathura
  *
- * @return If no error occured true, otherwise false, is returned.
+ * @param argc Number of arguments
+ * @param argv Values of arguments
+ * @return Zathura zathura object or NULL if zathura could not been initialized
  */
-bool init_zathura();
+zathura_t* zathura_init(int argc, char* argv[]);
+
+/**
+ * Free zathura zathura
+ *
+ * @param zathura The zathura zathura
+ */
+void zathura_free(zathura_t* zathura);
 
 /**
  * Opens a file
  *
+ * @param zathura The zathura zathura
  * @param path The path to the file
  * @param password The password of the file
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open(const char* path, const char* password);
+bool document_open(zathura_t* zathura, const char* path, const char* password);
 
 /**
  * Closes the current opened document
  *
+ * @param zathura The zathura zathura
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_close();
+bool document_close(zathura_t* zathura);
 
 /**
  * Opens the page with the given number
  *
+ * @param zathura The zathura zathura
  * @return If no error occured true, otherwise false, is returned.
  */
-bool page_set(unsigned int page_id);
+bool page_set(zathura_t* zathura, unsigned int page_id);
 
 /**
  * Builds the box structure to show the rendered pages
  *
+ * @param zathura The zathura zathura
  * @param pages_per_row Number of shown pages per row
  */
-void page_view_set_mode(unsigned int pages_per_row);
+void page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row);
 
 /**
  * Create blank pages
  *
+ * @param zathura The zathura zathura
  * @return false if an error occured, otherwise true
  */
-bool create_blank_pages();
+bool create_blank_pages(zathura_t* zathura);
 
 #endif // ZATHURA_H
