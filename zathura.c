@@ -146,7 +146,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   girara_set_view(zathura->ui.session, zathura->ui.page_view);
 
   /* threads */
-  zathura->sync.render_thread = render_init();
+  zathura->sync.render_thread = render_init(zathura);
 
   if (!zathura->sync.render_thread) {
     goto error_free;

@@ -218,7 +218,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
   if (iter == NULL) {
-    return;
+    goto error_free;
   }
   
   do {
