@@ -112,8 +112,13 @@ zathura_init(int argc, char* argv[])
     goto error_free;
   }
 
+  /* callbacks */
+  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  g_signal_connect(G_OBJECT(view_vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  g_signal_connect(G_OBJECT(view_hadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+
   gtk_widget_show(zathura->ui.page_view);
-  gtk_box_set_spacing(GTK_BOX(zathura->ui.page_view), 0);
 
   /* Put the table in the main window */
   // gtk_container_add(GTK_CONTAINER (zathura->ui.page_view), table);
@@ -139,9 +144,6 @@ zathura_init(int argc, char* argv[])
   /* signals */
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
 
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  g_signal_connect(G_OBJECT(view_vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
-
   /* girara events */
   zathura->ui.session->events.buffer_changed = buffer_changed;
 
@@ -154,6 +156,9 @@ zathura_init(int argc, char* argv[])
   /* save page padding */
   int* page_padding = girara_setting_get(zathura->ui.session, "page-padding");
   zathura->global.page_padding = (page_padding) ? *page_padding : 1;
+
+  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_view), zathura->global.page_padding);
+  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_view), zathura->global.page_padding);
 
   /* open document if passed */
   if (argc > 1) {
@@ -251,9 +256,10 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     goto error_free;
   }
 
-  /* first page */
-  if (!page_set(zathura, 0)) {
-    goto error_free;
+  /* create blank pages */
+  for (int page_id = 0; page_id < document->number_of_pages; page_id++) {
+    zathura_page_t* page = document->pages[page_id];
+    gtk_widget_realize(page->event_box);
   }
 
   return true;
@@ -321,24 +327,12 @@ error_out:
 void
 page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 {
-  /* empty page view */
-  /* GList* container = gtk_container_get_children(GTK_CONTAINER(zathura->ui.page_view));
-  for (GList* child = container; child; child = g_list_next(child)) {
-    gtk_container_remove(GTK_CONTAINER(zathura->ui.page_view), child->data);
-  }
-
-  GtkWidget* row = NULL; */
-
-  /* create blank pages */
-  
-
   gtk_table_resize(GTK_TABLE(zathura->ui.page_view), zathura->document->number_of_pages / pages_per_row + 1, pages_per_row);
   for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
   {
     int x = i % pages_per_row;
     int y = i / pages_per_row;
-    girara_info("x, y, page: %d, %d, %d (%d)", x, y, i, pages_per_row);
-    gtk_table_attach(GTK_TABLE(zathura->ui.page_view), zathura->document->pages[i]->event_box, x, x + 1, y, y + 1, GTK_EXPAND, GTK_EXPAND, zathura->global.page_padding, zathura->global.page_padding);
+    gtk_table_attach(GTK_TABLE(zathura->ui.page_view), zathura->document->pages[i]->event_box, x, x + 1, y, y + 1, GTK_EXPAND, GTK_EXPAND, 0, 0);
   }
 
   gtk_widget_show_all(zathura->ui.page_view);

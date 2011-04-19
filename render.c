@@ -24,8 +24,6 @@ render_job(void* data)
     if (render(render_thread->zathura, page) != true) {
       girara_error("Rendering failed\n");
     }
-
-    girara_info("rendered page %d\n", page->number);
   }
 
   return NULL;
@@ -171,7 +169,6 @@ render(zathura_t* zathura, zathura_page_t* page)
   }
 
   /* draw to gtk widget */
-  girara_info("surface: %d %p", page->number, surface);
   page->surface = surface;
   gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
   gtk_widget_queue_draw(page->drawing_area);
@@ -204,7 +201,6 @@ render_all(zathura_t* zathura)
 gboolean
 page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
 {
-  girara_info("in expose");
   zathura_page_t* page = data;
   if (page == NULL) {
     return FALSE;
@@ -220,14 +216,28 @@ page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
     return FALSE;
   }
 
-  girara_info("page->num %d page->surface: %p", page->number, page->surface);
   if (page->surface != NULL) {
     cairo_set_source_surface(cairo, page->surface, 0, 0);
     cairo_paint(cairo);
+  } else {
+    /* set background color */
+    cairo_set_source_rgb(cairo, 255, 255, 255);
+    cairo_rectangle(cairo, 0, 0, page->width * page->document->scale, page->height * page->document->scale);
+    cairo_fill(cairo);
 
-    // cairo_surface_destroy(page->surface);
-    // page->surface = NULL;
-  } else if (page->visible) {
+    /* write text */
+    cairo_set_source_rgb(cairo, 0, 0, 0);
+    const char* text = "Loading...";
+    cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size(cairo, 16.0);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cairo, text, &extents);
+    double x = (page->width  * page->document->scale) / 2 - (extents.width  / 2 + extents.x_bearing);
+    double y = (page->height * page->document->scale) / 2 - (extents.height / 2 + extents.y_bearing);
+    cairo_move_to(cairo, x, y);
+    cairo_show_text(cairo, text);
+
+    /* render real page */
     render_page(page->document->zathura->sync.render_thread, page);
   }
   cairo_destroy(cairo);

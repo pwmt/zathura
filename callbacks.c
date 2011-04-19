@@ -44,7 +44,6 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
     return;
   }
 
-  // FIXME
   /* get current adjustment values */
   gdouble lower = gtk_adjustment_get_value(adjustment);
   gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);
@@ -54,11 +53,6 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
   {
     zathura_page_t* page = zathura->document->pages[page_id];
 
-    /* check for rendered attribute */
-    if (page->surface != NULL) {
-      continue;
-    }
-
     page_offset_t* offset = page_calculate_offset(page);
     if (offset == NULL) {
       continue;
@@ -67,14 +61,14 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
     double begin = offset->y;
     double end   = offset->y + page->height;
 
-    girara_info("%f %f; %f %f", begin, end, lower, upper);
-
-    if (    ( (begin >= lower) && (end <= upper) ) /* [> page is in viewport <]*/
+    if (   ( (begin >= lower) && (end <= upper) ) /* [> page is in viewport <]*/
         || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* [> end of the page is in viewport <] */
         || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* [> begin of the page is in viewport <] */
       ) {
       page->visible = true;
-      render_page(zathura->sync.render_thread, page);
+      if (page->surface == NULL) {
+        render_page(zathura->sync.render_thread, page);
+      }
     } else {
       page->visible = false;
       cairo_surface_destroy(page->surface);

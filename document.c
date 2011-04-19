@@ -404,6 +404,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
     page->surface      = NULL;
     g_signal_connect(page->drawing_area, "expose-event", G_CALLBACK(page_expose_event), page);
 
+    gtk_widget_set_size_request(page->drawing_area, page->width * document->scale, page->height * document->scale);
     gtk_container_add(GTK_CONTAINER(page->event_box), page->drawing_area);
 
     g_static_mutex_init(&(page->lock));
