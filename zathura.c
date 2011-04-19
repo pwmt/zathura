@@ -36,11 +36,65 @@ zathura_init(int argc, char* argv[])
   zathura->plugins.path = girara_list_new();
   girara_list_set_free_function(zathura->plugins.path, g_free);
 
+  /* parse command line options */
+  GdkNativeWindow embed = 0;
+  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
+  GOptionEntry entries[] = 
+  {
+    { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       "Reparents to window specified by xid",       "xid"  },
+    { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  "Path to the config directory",               "path" },
+    { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    "Path to the data directory",                 "path" },
+    { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, "Path to the directories containing plugins", "path" },
+    { NULL }
+  };
+
+  GOptionContext* context = g_option_context_new(" [file] [password]");
+  g_option_context_add_main_entries(context, entries, NULL);
+
+  GError* error = NULL;
+  if (!g_option_context_parse(context, &argc, &argv, &error))
+  {
+    printf("Error parsing command line arguments: %s\n", error->message);
+    g_option_context_free(context);
+    g_error_free(error);
+    goto error_free;
+  }
+  g_option_context_free(context);
+
+  if (config_dir) {
+    zathura->config.config_dir = g_strdup(config_dir);
+  } else {
+    gchar* path = girara_get_xdg_path(XDG_CONFIG);
+    zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
+    g_free(path);
+  }
+
+  if (data_dir) {
+    zathura->config.data_dir = g_strdup(config_dir);
+  } else {
+    gchar* path = girara_get_xdg_path(XDG_DATA);
+    zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
+    g_free(path);
+  }
+
+  if (plugin_path) {
+    gchar** paths = g_strsplit(plugin_path, ":", 0);
+    for (unsigned int i = 0; paths[i] != '\0'; ++i) {
+      girara_list_append(zathura->plugins.path, g_strdup(paths[i]));
+    }
+    g_strfreev(paths);
+  } else {
+    /* XXX: this shouldn't be hard coded! */
+    girara_list_append(zathura->plugins.path, g_strdup("/usr/local/lib/zathura"));
+    girara_list_append(zathura->plugins.path, g_strdup("/usr/lib/zathura"));
+  }
+
   /* UI */
   if ((zathura->ui.session = girara_session_create()) == NULL) {
     goto error_out;
   }
 
+  zathura->ui.session->gtk.embed = embed;
   if (girara_session_init(zathura->ui.session) == false) {
     goto error_out;
   }
@@ -87,58 +141,6 @@ zathura_init(int argc, char* argv[])
 
   /* girara events */
   zathura->ui.session->events.buffer_changed = buffer_changed;
-
-  /* parse command line options */
-  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
-  GOptionEntry entries[] = 
-  {
-    /* { "reparent",    'e', 0, G_OPTION_ARG_INT,      &Zathura.UI.embed, "Reparents to window specified by xid",       "xid" }, */
-    { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,       "Path to the config directory",               "path" },
-    { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,         "Path to the data directory",                 "path" },
-    { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path,      "Path to the directories containing plugins", "path" },
-    { NULL }
-  };
-
-  GOptionContext* context = g_option_context_new(" [file] [password]");
-  g_option_context_add_main_entries(context, entries, NULL);
-
-  GError* error = NULL;
-  if (!g_option_context_parse(context, &argc, &argv, &error))
-  {
-    printf("Error parsing command line arguments: %s\n", error->message);
-    g_option_context_free(context);
-    g_error_free(error);
-    goto error_free;
-  }
-  g_option_context_free(context);
-
-  if (config_dir) {
-    zathura->config.config_dir = g_strdup(config_dir);
-  } else {
-    gchar* path = girara_get_xdg_path(XDG_CONFIG);
-    zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
-    g_free(path);
-  }
-
-  if (data_dir) {
-    zathura->config.data_dir = g_strdup(config_dir);
-  } else {
-    gchar* path = girara_get_xdg_path(XDG_DATA);
-    zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
-    g_free(path);
-  }
-
-  if (plugin_path) {
-    gchar** paths = g_strsplit(plugin_path, ":", 0);
-    for (unsigned int i = 0; paths[i] != '\0'; ++i) {
-      girara_list_append(zathura->plugins.path, g_strdup(paths[i]));
-    }
-    g_strfreev(paths);
-  } else {
-    /* XXX: this shouldn't be hard coded! */
-    girara_list_append(zathura->plugins.path, g_strdup("/usr/local/lib/zathura"));
-    girara_list_append(zathura->plugins.path, g_strdup("/usr/lib/zathura"));
-  }
 
   /* load plugins */
   zathura_document_plugins_load(zathura);
