@@ -172,7 +172,8 @@ render(zathura_t* zathura, zathura_page_t* page)
   /* draw to gtk widget */
   girara_info("surface: %d %p", page->number, surface);
   page->surface = surface;
-  gdk_window_invalidate_rect(page->drawing_area->window, NULL, TRUE);
+  gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
+  gtk_widget_queue_draw(page->drawing_area);
 
   zathura_image_buffer_free(image_buffer);
   g_static_mutex_unlock(&(page->lock));
