@@ -321,7 +321,6 @@ page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 
   GtkWidget* row = NULL;
 
-  /* create blank pages */
   for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
   {
     if (i % pages_per_row == 0) {

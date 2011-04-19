@@ -165,7 +165,8 @@ render(zathura_t* zathura, zathura_page_t* page)
       dst[0] = src[0];
       dst[1] = src[1];
       dst[2] = src[2];
-      dst += 3;
+      src += 3;
+      dst += 4;
     }
   }
 

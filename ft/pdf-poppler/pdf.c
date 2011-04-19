@@ -270,7 +270,7 @@ pdf_page_render(zathura_page_t* page)
   }
 
   poppler_page_render_to_pixbuf(page->data, 0, 0, page_width, page_height,
-      page->document->scale, 90, pixbuf);
+      page->document->scale, 0, pixbuf);
 
   /* create image buffer */
   zathura_image_buffer_t* image_buffer = zathura_image_buffer_create(page_width, page_height);
