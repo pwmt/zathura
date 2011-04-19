@@ -569,4 +569,5 @@ zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
   }
 
   free(image_buffer->data);
+  free(image_buffer);
 }
