@@ -8,6 +8,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "document.h"
+#include "utils.h"
 
 gboolean
 cb_destroy(GtkWidget* widget, gpointer data)
@@ -53,6 +54,12 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
   {
     zathura_page_t* page = zathura->document->pages[page_id];
 
+    page_offset_t* offset = page_calculate_offset(page);
+    if (offset) {
+      fprintf(stderr, "offset: %d %d\n", offset->x, offset->y);
+      free(offset);
+    }
+
     /* check for rendered attribute */
     if (page->surface != NULL) {
       continue;
@@ -65,7 +72,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
         /*|| ( (begin <= lower) && (end >= lower) && (end <= upper) ) [> end of the page is in viewport <]*/
         /*|| ( (begin >= lower) && (end >= upper) && (begin <= upper) ) [> begin of the page is in viewport <]*/
       /*) {*/
-    if (page_id < 1) {
+    if (page_id < 10) {
       page->visible = true;
       render_page(zathura->sync.render_thread, page);
     }
