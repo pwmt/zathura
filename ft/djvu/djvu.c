@@ -254,7 +254,7 @@ djvu_page_render(zathura_page_t* page)
 
   /* render page */
   ddjvu_page_render(djvu_page, DDJVU_RENDER_COLOR, &prect, &rrect, djvu_document->format,
-      3 * page_width, (char*) image_buffer);
+      3 * page_width, (char*) image_buffer->data);
 
   return image_buffer;
 
