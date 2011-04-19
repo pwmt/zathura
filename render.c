@@ -218,7 +218,7 @@ page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
   }
 
   girara_info("page->num %d page->surface: %p", page->number, page->surface);
-  if (page->surface == NULL) {
+  if (page->surface != NULL) {
     cairo_set_source_surface(cairo, page->surface, 0, 0);
     cairo_paint(cairo);
 
