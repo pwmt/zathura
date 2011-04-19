@@ -148,6 +148,11 @@ zathura_init(int argc, char* argv[])
   /* configuration */
   config_load_default(zathura);
 
+  /* save page padding */
+  int* page_padding = girara_setting_get(zathura->ui.session, "page-padding");
+  zathura->global.page_padding = (page_padding) ? *page_padding : 1;
+
+  /* open document if passed */
   if (argc > 1) {
     zathura_document_info_t* document_info = malloc(sizeof(zathura_document_info_t));
 

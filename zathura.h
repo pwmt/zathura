@@ -65,6 +65,11 @@ typedef struct zathura_s
     gchar* data_dir;
   } config;
 
+  struct
+  {
+    unsigned int page_padding;
+  } global;
+
   zathura_document_t* document; /**> The current document */
 } zathura_t;
 

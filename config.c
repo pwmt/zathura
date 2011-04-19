@@ -21,6 +21,8 @@ config_load_default(zathura_t* zathura)
   /* zathura settings */
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",     &int_value, INT, false, "Zoom step",              NULL);
+  int_value = 1;
+  girara_setting_add(gsession, "page-padding",  &int_value, INT, true,  "Padding between pages",  NULL);
   int_value = 2;
   girara_setting_add(gsession, "pages-per-row", &int_value, INT, false, "Number of pages per row", NULL);
 

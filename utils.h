@@ -7,6 +7,14 @@
 #include <gtk/gtk.h>
 #include <girara.h>
 
+#include "document.h"
+
+typedef struct page_offset_s
+{
+  int x;
+  int y;
+} page_offset_t;
+
 /**
  * Checks if the given file exists
  *
@@ -60,5 +68,14 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
  * @return Concatenated string or NULL if an error occured
  */
 char* string_concat(const char* string1, ...);
+
+/**
+ * Calculates the offset of the page to the top of the viewing area as
+ * well as to the left side of it. The result has to be freed.
+ *
+ * @param page The Page
+ * @return The calculated offset or NULL if an error occured
+ */
+page_offset_t* page_calculate_offset(zathura_page_t* page);
 
 #endif // UTILS_H

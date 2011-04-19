@@ -178,7 +178,8 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_
   } while ((it = girara_list_iterator_next(it)));
 }
 
-char* string_concat(const char* string1, ...)
+char*
+string_concat(const char* string1, ...)
 {
   if(!string1) {
     return NULL;
@@ -233,4 +234,66 @@ char* string_concat(const char* string1, ...)
   va_end(args);
 
   return c;
+}
+
+
+page_offset_t*
+page_offset_top(zathura_page_t* page)
+{
+  if (page == NULL || page->document == NULL || page->document->zathura == NULL) {
+    return NULL;
+  }
+
+  page_offset_t* offset = malloc(sizeof(page_offset_t));
+
+  if (offset == NULL) {
+    return NULL;
+  }
+
+  zathura_document_t* document = page->document;
+  zathura_t* zathura           = document->zathura;
+
+  int* tmp = girara_setting_get(zathura->ui.session, "pages-per-row");
+
+  unsigned int page_padding   = zathura->global.page_padding;
+  unsigned int pages_per_row  = (tmp && *tmp != 0) ? *tmp : 1;
+  unsigned int number_of_rows = (document->number_of_pages / pages_per_row) + 1;
+
+  free(tmp);
+
+  for (unsigned int row = 0; row < number_of_rows; row++) {
+    unsigned int tmp = -1;
+    for (unsigned int column = 0; column < pages_per_row; column++)
+    {
+      unsigned int page_id = row * pages_per_row + column;
+      double page_height   = document->pages[page_id]->height * document->scale;
+
+      if (tmp == -1) {
+        tmp = page_height;
+      } else if (page_height > tmp) {
+        tmp = page_height;
+      }
+    }
+
+    offset->y += tmp + (row == (number_of_rows - 1)) ? 0 : page_padding;
+  }
+
+  for (unsigned int column = 0; column < pages_per_row; column++) {
+    unsigned int tmp = -1;
+    for (unsigned int row = 0; row < number_of_rows; row++)
+    {
+      unsigned int page_id = row * pages_per_row + column;
+      double page_width    = document->pages[page_id]->width * document->scale;
+
+      if (tmp == -1) {
+        tmp = page_width;
+      } else if (page_width > tmp) {
+        tmp = page_width;
+      }
+    }
+
+    offset->x += tmp + (column == (pages_per_row - 1)) ? 0 : page_padding;
+  }
+
+  return offset;
 }
