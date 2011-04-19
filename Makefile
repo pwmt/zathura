@@ -19,11 +19,13 @@ options:
 
 %.o: %.c
 	@echo CC $<
-	@${CC} -c ${CFLAGS} -o $@ $<
+	@mkdir -p .depend
+	@${CC} -c ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 %.do: %.c
 	@echo CC $<
-	@${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $<
+	@mkdir -p .depend
+	@${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 ${OBJECTS}:  config.mk
 ${DOBJECTS}: config.mk
@@ -34,7 +36,7 @@ ${PROJECT}: ${OBJECTS}
 
 clean:
 	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
-		${DOBJECTS} ${PROJECT}-debug
+		${DOBJECTS} ${PROJECT}-debug .depend
 	make -C ft clean
 
 ${PROJECT}-debug: ${DOBJECTS}
@@ -76,3 +78,5 @@ uninstall:
 	@echo removing manual page
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	@make -C ft uninstall
+
+-include $(wildcard .depend/*.dep)
