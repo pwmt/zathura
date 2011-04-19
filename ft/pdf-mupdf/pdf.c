@@ -173,29 +173,28 @@ pdf_page_form_fields_get(zathura_page_t* page)
   return NULL;
 }
 
-GtkWidget*
+zathura_image_buffer_t*
 pdf_page_render(zathura_page_t* page)
 {
-  if (!Zathura.document || !page || !page->data || !page->document) {
+  if (!page || !page->data || !page->document) {
     return NULL;
   }
 
   /* calculate sizes */
-  unsigned int page_width  = Zathura.document->scale * page->width;
-  unsigned int page_height = Zathura.document->scale * page->height;
+  unsigned int page_width  = page->document->scale * page->width;
+  unsigned int page_height = page->document->scale * page->height;
 
-  if (Zathura.document->rotate == 90 || Zathura.document->rotate == 270) {
+  if (page->document->rotate == 90 || page->document->rotate == 270) {
       unsigned int dim_temp = 0;
       dim_temp    = page_width;
       page_width  = page_height;
       page_height = dim_temp;
   }
 
-  /* create pixbuf */
-  GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
-      page_width, page_height);
+  /* create image buffer */
+  zathura_image_buffer_t* image_buffer = zathura_image_buffer_create(page_width, page_height);
 
-  if (!pixbuf) {
+  if (image_buffer == NULL) {
     return NULL;
   }
 
@@ -216,14 +215,10 @@ pdf_page_render(zathura_page_t* page)
 
   fz_matrix ctm = fz_identity;
   ctm           = fz_concat(ctm, fz_translate(0, -mupdf_page->page->mediabox.y1));
-  ctm           = fz_concat(ctm, fz_scale(Zathura.document->scale, -Zathura.document->scale));
+  ctm           = fz_concat(ctm, fz_scale(page->document->scale, -page->document->scale));
   ctm           = fz_concat(ctm, fz_rotate(mupdf_page->page->rotate));
-  ctm           = fz_concat(ctm, fz_rotate(Zathura.document->rotate));
+  ctm           = fz_concat(ctm, fz_rotate(page->document->rotate));
   fz_bbox bbox  = fz_roundrect(fz_transformrect(ctm, mupdf_page->page->mediabox));
-
-  guchar* pixels = gdk_pixbuf_get_pixels(pixbuf);
-  int rowstride  = gdk_pixbuf_get_rowstride(pixbuf);
-  int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
 
   fz_pixmap* pixmap = fz_newpixmapwithrect(fz_devicergb, bbox);
   fz_clearpixmapwithcolor(pixmap, 0xFF);
@@ -235,7 +230,7 @@ pdf_page_render(zathura_page_t* page)
   for (unsigned int y = 0; y < pixmap->h; y++) {
     for (unsigned int x = 0; x < pixmap->w; x++) {
       unsigned char *s = pixmap->samples + y * pixmap->w * 4 + x * 4;
-      guchar* p = pixels + y * rowstride + x * n_channels;
+      guchar* p = image_buffer->data + y * image_buffer->rowstride + x * 3;
       p[0] = s[0];
       p[1] = s[1];
       p[2] = s[2];
@@ -245,16 +240,5 @@ pdf_page_render(zathura_page_t* page)
   fz_droppixmap(pixmap);
   fz_freedisplaylist(display_list);
 
-  /* write pixbuf */
-  GtkWidget* image = gtk_image_new();
-
-  if (!image) {
-    g_object_unref(pixbuf);
-    return NULL;
-  }
-
-  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
-  gtk_widget_show(image);
-
-  return image;
+  return image_buffer;
 }

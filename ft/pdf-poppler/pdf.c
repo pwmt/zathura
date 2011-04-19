@@ -250,45 +250,52 @@ pdf_page_form_fields_get(zathura_page_t* page)
   return NULL;
 }
 
-GtkWidget*
+zathura_image_buffer_t*
 pdf_page_render(zathura_page_t* page)
 {
-  if (!Zathura.document || !page || !page->data || !page->document) {
+  if (!page || !page->data || !page->document) {
     return NULL;
   }
 
   /* calculate sizes */
-  unsigned int page_width  = Zathura.document->scale * page->width;
-  unsigned int page_height = Zathura.document->scale * page->height;
-
-  if (Zathura.document->rotate == 90 || Zathura.document->rotate == 270) {
-      unsigned int dim_temp = 0;
-      dim_temp    = page_width;
-      page_width  = page_height;
-      page_height = dim_temp;
-  }
+  unsigned int page_width  = page->document->scale * page->width;
+  unsigned int page_height = page->document->scale * page->height;
 
   /* create pixbuf */
   GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
       page_width, page_height);
 
-  if (!pixbuf) {
+  if (pixbuf == NULL) {
     return NULL;
   }
 
-  poppler_page_render_to_pixbuf(page->data, 0, 0, page_width, page_height, Zathura.document->scale,
-      Zathura.document->rotate, pixbuf);
+  poppler_page_render_to_pixbuf(page->data, 0, 0, page->width, page->height,
+      page->document->scale, 0, pixbuf);
 
-  /* write pixbuf */
-  GtkWidget* image = gtk_image_new();
+  /* create image buffer */
+  zathura_image_buffer_t* image_buffer = zathura_image_buffer_create(page_width, page_height);
 
-  if (!image) {
+  if (image_buffer == NULL) {
     g_object_unref(pixbuf);
     return NULL;
   }
 
-  gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
-  gtk_widget_show(image);
+  /* copy buffer */
+  guchar* pixels = gdk_pixbuf_get_pixels(pixbuf);
+  int rowstride  = gdk_pixbuf_get_rowstride(pixbuf);
+  int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
 
-  return image;
+  for (unsigned int y = 0; y < page_height; y++) {
+    for (unsigned int x = 0; x < page_width; x++) {
+      unsigned char *s = pixels + y * rowstride + x * n_channels;
+      guchar* p = image_buffer->data + y * image_buffer->rowstride + x * 3;
+      p[0] = s[0];
+      p[1] = s[1];
+      p[2] = s[2];
+    }
+  }
+
+  g_object_unref(pixbuf);
+
+  return image_buffer;
 }

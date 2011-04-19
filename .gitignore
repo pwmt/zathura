@@ -3,3 +3,4 @@
 *~
 *.rej
 *.swp
+.depend

@@ -5,18 +5,21 @@
 
 #define GLOBAL_RC  "/etc/zathurarc"
 #define ZATHURA_RC "zathurarc"
-#define CONFIG_DIR "~/.config/zathura"
+
+#include "zathura.h"
 
 /**
  * This function loads the default values of the configuration
+ *
+ * @param zathura the zathura session
  */
-void config_load_default(void);
+void config_load_default(zathura_t* zathura);
 
 /**
  * Loads and evaluates a configuration file
  *
  * @param path Path to the configuration file
  */
-void config_load_file(char* path);
+void config_load_file(zathura_t* zathura, char* path);
 
 #endif // CONFIG_H

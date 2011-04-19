@@ -18,11 +18,13 @@ options:
 
 %.o: %.c
 	@echo CC $<
-	@${CC} -c ${CFLAGS} -o $@ $<
+	@mkdir -p .depend
+	@${CC} -c ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 %.do: %.c
 	@echo CC $<
-	@${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $<
+	@mkdir -p .depend
+	@${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 ${OBJECTS}:  config.mk
 ${DOBJECTS}: config.mk
@@ -36,7 +38,7 @@ ${PLUGIN}-debug: ${DOBJECTS}
 	@${CC} -shared ${LDFLAGS} -o ${PLUGIN}.so $(DOBJECTS) ${LIBS}
 
 clean:
-	@rm -rf ${OBJECTS} ${DOBJECTS} $(PLUGIN).so
+	@rm -rf ${OBJECTS} ${DOBJECTS} $(PLUGIN).so .depend
 
 debug: options ${PLUGIN}-debug
 
@@ -49,5 +51,7 @@ uninstall:
 	@echo uninstalling ${PLUGIN} plugin
 	@rm -f ${DESTDIR}${PREFIX}/lib/zathura/${PLUGIN}.so
 	@rm -rf ${DESTDIR}${PREFIX}/lib/zathura
+
+-include $(wildcard .depend/*.dep)
 
 .PHONY: all options clean debug install uninstall

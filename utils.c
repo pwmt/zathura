@@ -10,6 +10,7 @@
 
 #include "utils.h"
 #include "zathura.h"
+#include "document.h"
 
 #define BLOCK_SIZE 64
 
@@ -176,7 +177,8 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_
   /*} while ((it = girara_list_iterator_next(it)));*/
 }
 
-char* string_concat(const char* string1, ...)
+char*
+string_concat(const char* string1, ...)
 {
   if(!string1) {
     return NULL;
@@ -231,4 +233,29 @@ char* string_concat(const char* string1, ...)
   va_end(args);
 
   return c;
+}
+
+
+page_offset_t*
+page_calculate_offset(zathura_page_t* page)
+{
+  if (page == NULL || page->document == NULL || page->document->zathura == NULL) {
+    return NULL;
+  }
+
+  page_offset_t* offset = malloc(sizeof(page_offset_t));
+
+  if (offset == NULL) {
+    return NULL;
+  }
+
+  zathura_document_t* document = page->document;
+  zathura_t* zathura           = document->zathura;
+
+  if (gtk_widget_translate_coordinates(page->event_box, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == false) {
+    free(offset);
+    return NULL;
+  }
+
+  return offset;
 }

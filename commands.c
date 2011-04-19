@@ -24,7 +24,12 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
 bool
 cmd_close(girara_session_t* session, girara_list_t* argument_list)
 {
-  document_close();
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  document_close(zathura);
 
   return true;
 }

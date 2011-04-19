@@ -7,23 +7,25 @@
 #include <stdlib.h>
 #include <girara-datastructures.h>
 
-#include "document.h"
+#include "zathura.h"
 #include "callbacks.h"
 
-typedef struct render_thread_s
+struct render_thread_s
 {
   girara_list_t* list; /**> The list of pages */
   GThread* thread; /**> The thread object */
   GMutex* lock; /**> Lock */
   GCond* cond; /**> Condition */
-} render_thread_t;
+	zathura_t* zathura; /**> Zathura object */
+};
 
 /**
  * This function initializes a render thread
  *
+ * @param Zathura object
  * @return The render thread object or NULL if an error occured
  */
-render_thread_t* render_init(void);
+render_thread_t* render_init(zathura_t* zathura);
 
 /**
  * This function destroys the render thread object
@@ -46,7 +48,19 @@ bool render_page(render_thread_t* render_thread, zathura_page_t* page);
  * This function is used to unmark all pages as not rendered. This should
  * be used if all pages should be rendered again (e.g.: the zoom level or the
  * colors have changed)
+ *
+ * @param zathura Zathura object
  */
-void render_all(void);
+void render_all(zathura_t* zathura);
+
+/**
+ * Renders page
+ *
+ * @param widget Drawing area
+ * @param event Event
+ * @param data Optional data
+ * @return true if no error occured
+ */
+gboolean page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data);
 
 #endif // RENDER_H
