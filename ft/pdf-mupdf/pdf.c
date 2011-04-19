@@ -230,7 +230,7 @@ pdf_page_render(zathura_page_t* page)
   for (unsigned int y = 0; y < pixmap->h; y++) {
     for (unsigned int x = 0; x < pixmap->w; x++) {
       unsigned char *s = pixmap->samples + y * pixmap->w * 4 + x * 4;
-      guchar* p = image_buffer->data + y * image_buffer->width + x;
+      guchar* p = image_buffer->data + y * image_buffer->rowstride + x * 3;
       p[0] = s[0];
       p[1] = s[1];
       p[2] = s[2];

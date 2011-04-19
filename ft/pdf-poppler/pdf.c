@@ -269,7 +269,7 @@ pdf_page_render(zathura_page_t* page)
     return NULL;
   }
 
-  poppler_page_render_to_pixbuf(page->data, 0, 0, page_width, page_height,
+  poppler_page_render_to_pixbuf(page->data, 0, 0, page->width, page->height,
       page->document->scale, 0, pixbuf);
 
   /* create image buffer */
@@ -288,7 +288,7 @@ pdf_page_render(zathura_page_t* page)
   for (unsigned int y = 0; y < page_height; y++) {
     for (unsigned int x = 0; x < page_width; x++) {
       unsigned char *s = pixels + y * rowstride + x * n_channels;
-      guchar* p = image_buffer->data + y * image_buffer->width + x;
+      guchar* p = image_buffer->data + y * image_buffer->rowstride + x * 3;
       p[0] = s[0];
       p[1] = s[1];
       p[2] = s[2];

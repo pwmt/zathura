@@ -162,9 +162,9 @@ render(zathura_t* zathura, zathura_page_t* page)
     unsigned char* src = image_buffer->data + y * image_buffer->rowstride;
 
     for (unsigned int x = 0; x < page_width; x++) {
-      dst[0] = src[0];
+      dst[0] = src[2];
       dst[1] = src[1];
-      dst[2] = src[2];
+      dst[2] = src[0];
       src += 3;
       dst += 4;
     }
