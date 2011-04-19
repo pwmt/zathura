@@ -75,6 +75,10 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
       ) {
       page->visible = true;
       render_page(zathura->sync.render_thread, page);
+    } else {
+      page->visible = false;
+      cairo_surface_destroy(page->surface);
+      page->surface = NULL;
     }
     
     free(offset);
