@@ -46,36 +46,37 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
 
   // FIXME
   /* get current adjustment values */
-  /*gdouble lower = gtk_adjustment_get_value(adjustment);*/
-  /*gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);*/
+  gdouble lower = gtk_adjustment_get_value(adjustment);
+  gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);
 
   /* find page that fits */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++)
   {
     zathura_page_t* page = zathura->document->pages[page_id];
 
-    page_offset_t* offset = page_calculate_offset(page);
-    if (offset) {
-      fprintf(stderr, "offset: %d %d\n", offset->x, offset->y);
-      free(offset);
-    }
-
     /* check for rendered attribute */
     if (page->surface != NULL) {
       continue;
     }
 
-    /*double begin = page->offset;*/
-    /*double end   = page->offset + page->height;*/
+    page_offset_t* offset = page_calculate_offset(page);
+    if (offset == NULL) {
+      continue;
+    }
 
-    /*if (    ( (begin >= lower) && (end <= upper) ) [> page is in viewport <]*/
-        /*|| ( (begin <= lower) && (end >= lower) && (end <= upper) ) [> end of the page is in viewport <]*/
-        /*|| ( (begin >= lower) && (end >= upper) && (begin <= upper) ) [> begin of the page is in viewport <]*/
-      /*) {*/
-    if (page_id < 10) {
+    double begin = offset->y;
+    double end   = offset->y + page->height;
+
+    girara_info("%f %f; %f %f", begin, end, lower, upper);
+
+    if (    ( (begin >= lower) && (end <= upper) ) /* [> page is in viewport <]*/
+        || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* [> end of the page is in viewport <] */
+        || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* [> begin of the page is in viewport <] */
+      ) {
       page->visible = true;
       render_page(zathura->sync.render_thread, page);
     }
-    /*}*/
+    
+    free(offset);
   }
 }

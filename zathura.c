@@ -107,13 +107,16 @@ zathura_init(int argc, char* argv[])
   zathura->ui.index                 = NULL;
 
   /* page view */
-  zathura->ui.page_view = gtk_vbox_new(FALSE, 0);
+  zathura->ui.page_view = gtk_table_new(0, 0, TRUE);
   if (!zathura->ui.page_view) {
     goto error_free;
   }
 
   gtk_widget_show(zathura->ui.page_view);
   gtk_box_set_spacing(GTK_BOX(zathura->ui.page_view), 0);
+
+  /* Put the table in the main window */
+  // gtk_container_add(GTK_CONTAINER (zathura->ui.page_view), table);
 
   /* statusbar */
   zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
@@ -319,26 +322,23 @@ void
 page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 {
   /* empty page view */
-  GList* container = gtk_container_get_children(GTK_CONTAINER(zathura->ui.page_view));
+  /* GList* container = gtk_container_get_children(GTK_CONTAINER(zathura->ui.page_view));
   for (GList* child = container; child; child = g_list_next(child)) {
     gtk_container_remove(GTK_CONTAINER(zathura->ui.page_view), child->data);
   }
 
-  GtkWidget* row = NULL;
+  GtkWidget* row = NULL; */
 
+  /* create blank pages */
+  
+
+  gtk_table_resize(GTK_TABLE(zathura->ui.page_view), zathura->document->number_of_pages / pages_per_row + 1, pages_per_row);
   for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
   {
-    if (i % pages_per_row == 0) {
-      row = gtk_hbox_new(FALSE, 0);
-    }
-
-    /* pack row */
-    gtk_box_pack_start(GTK_BOX(row), zathura->document->pages[i]->event_box, FALSE, FALSE, 1);
-
-    /* pack row to page view */
-    if ((i + 1) % pages_per_row == 0) {
-      gtk_box_pack_start(GTK_BOX(zathura->ui.page_view), row, FALSE,  FALSE, 1);
-    }
+    int x = i % pages_per_row;
+    int y = i / pages_per_row;
+    girara_info("x, y, page: %d, %d, %d (%d)", x, y, i, pages_per_row);
+    gtk_table_attach(GTK_TABLE(zathura->ui.page_view), zathura->document->pages[i]->event_box, x, x + 1, y, y + 1, GTK_EXPAND, GTK_EXPAND, zathura->global.page_padding, zathura->global.page_padding);
   }
 
   gtk_widget_show_all(zathura->ui.page_view);
