@@ -148,12 +148,6 @@ render(zathura_t* zathura, zathura_page_t* page)
     return false;
   }
 
-  /* remove old image */
-  GtkWidget* widget = gtk_bin_get_child(GTK_BIN(page->event_box));
-  if (widget != NULL) {
-    gtk_container_remove(GTK_CONTAINER(page->event_box), widget);
-  }
-
   /* create cairo surface */
   unsigned int page_width  = page->width  * zathura->document->scale;
   unsigned int page_height = page->height * zathura->document->scale;
@@ -176,7 +170,9 @@ render(zathura_t* zathura, zathura_page_t* page)
   }
 
   /* draw to gtk widget */
+  girara_info("surface: %d %p", page->number, surface);
   page->surface = surface;
+  gdk_window_invalidate_rect(page->drawing_area->window, NULL, TRUE);
 
   zathura_image_buffer_free(image_buffer);
   g_static_mutex_unlock(&(page->lock));
@@ -205,6 +201,7 @@ render_all(zathura_t* zathura)
 gboolean
 page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
 {
+  girara_info("in expose");
   zathura_page_t* page = data;
   if (page == NULL) {
     return FALSE;
@@ -220,14 +217,16 @@ page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
     return FALSE;
   }
 
+  girara_info("page->num %d page->surface: %p", page->number, page->surface);
   if (page->surface == NULL) {
     cairo_set_source_surface(cairo, page->surface, 0, 0);
     cairo_paint(cairo);
-    cairo_destroy(cairo);
 
     cairo_surface_destroy(page->surface);
     page->surface = NULL;
   }
+  girara_info("visible: %d", GTK_WIDGET_VISIBLE(GTK_WIDGET(page->drawing_area)));
+  cairo_destroy(cairo);
 
   g_static_mutex_unlock(&(page->lock));
 
