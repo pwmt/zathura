@@ -398,7 +398,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
 
   if (page) {
     page->number       = page_id;
-    page->rendered     = false;
+    page->visible      = false;
     page->event_box    = gtk_event_box_new();
     page->drawing_area = gtk_drawing_area_new();
     page->surface      = NULL;
@@ -497,11 +497,6 @@ zathura_page_render(zathura_page_t* page)
   }
 
   zathura_image_buffer_t* buffer = page->document->functions.page_render(page);
-
-  if (buffer) {
-    page->rendered = true;
-  }
-
   return buffer;
 }
 

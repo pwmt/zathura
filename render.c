@@ -25,7 +25,7 @@ render_job(void* data)
       girara_error("Rendering failed\n");
     }
 
-    printf("Rendered %d\n", page->number);
+    girara_info("rendered page %d\n", page->number);
   }
 
   return NULL;
@@ -117,7 +117,7 @@ render_free(render_thread_t* render_thread)
 bool
 render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
-  if (!render_thread || !page || !render_thread->list || page->rendered) {
+  if (!render_thread || !page || !render_thread->list || page->surface) {
     return false;
   }
 
@@ -192,7 +192,8 @@ render_all(zathura_t* zathura)
 
   /* unmark all pages */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    zathura->document->pages[page_id]->rendered = false;
+    cairo_surface_destroy(zathura->document->pages[page_id]->surface);
+    zathura->document->pages[page_id]->surface = NULL;
   }
 
   /* redraw current page */
@@ -224,10 +225,11 @@ page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
     cairo_set_source_surface(cairo, page->surface, 0, 0);
     cairo_paint(cairo);
 
-    cairo_surface_destroy(page->surface);
-    page->surface = NULL;
+    // cairo_surface_destroy(page->surface);
+    // page->surface = NULL;
+  } else if (page->visible) {
+    render_page(page->document->zathura->sync.render_thread, page);
   }
-  girara_info("visible: %d", GTK_WIDGET_VISIBLE(GTK_WIDGET(page->drawing_area)));
   cairo_destroy(cairo);
 
   g_static_mutex_unlock(&(page->lock));

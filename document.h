@@ -145,7 +145,7 @@ struct zathura_page_s
   unsigned int number; /**> Page number */
   zathura_document_t* document; /**> Document */
   void* data; /**> Custom data */
-  bool rendered; /**> Page has been rendered */
+  bool visible; /**> Page is visible */
   GtkWidget* event_box; /**> Widget wrapper for mouse events */
   GtkWidget* drawing_area; /**> Drawing area */
   GStaticMutex lock; /**> Lock */
