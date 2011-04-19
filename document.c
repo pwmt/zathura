@@ -219,6 +219,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   document->rotate              = 0;
   document->data                = NULL;
   document->pages               = NULL;
+  document->zathura             = zathura;
 
   document->functions.document_free            = NULL;
   document->functions.document_index_generate  = NULL;

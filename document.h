@@ -164,6 +164,7 @@ struct zathura_document_s
   double scale; /**> Scale value */
   int rotate; /**> Rotation */
   void* data; /**> Custom data */
+  zathura_t* zathura; /** Zathura object */
 
   struct
   {
