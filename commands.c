@@ -4,25 +4,25 @@
 #include "zathura.h"
 
 bool
-cmd_bookmark_create(girara_session_t* session, int argc, char** argv)
+cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
 {
   return true;
 }
 
 bool
-cmd_bookmark_delete(girara_session_t* session, int argc, char** argv)
+cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list)
 {
   return true;
 }
 
 bool
-cmd_bookmark_open(girara_session_t* session, int argc, char** argv)
+cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
 {
   return true;
 }
 
 bool
-cmd_close(girara_session_t* session, int argc, char** argv)
+cmd_close(girara_session_t* session, girara_list_t* argument_list)
 {
   document_close();
 
@@ -30,19 +30,19 @@ cmd_close(girara_session_t* session, int argc, char** argv)
 }
 
 bool
-cmd_info(girara_session_t* session, int argc, char** argv)
+cmd_info(girara_session_t* session, girara_list_t* argument_list)
 {
   return true;
 }
 
 bool
-cmd_print(girara_session_t* session, int argc, char** argv)
+cmd_print(girara_session_t* session, girara_list_t* argument_list)
 {
   return true;
 }
 
 bool
-cmd_save(girara_session_t* session, int argc, char** argv)
+cmd_save(girara_session_t* session, girara_list_t* argument_list)
 {
   return true;
 }
