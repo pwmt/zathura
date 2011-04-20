@@ -9,7 +9,7 @@
 void
 config_load_default(zathura_t* zathura)
 {
-  if (zathura || !zathura->ui.session) {
+  if (!zathura || !zathura->ui.session) {
     return;
   }
 
