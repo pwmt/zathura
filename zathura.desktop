@@ -1,12 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Encoding=UTF-8
 Name=Zathura
 Comment=A minimalistic PDF viewer
 Comment[de]=Ein minimalistischer PDF-Betrachter
 Exec=zathura %f
 Terminal=false
-Categories=Office;Viewer
-MimeType=application/pdf
-
+Categories=Office;Viewer;
+MimeType=application/pdf;
