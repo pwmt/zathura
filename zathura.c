@@ -73,7 +73,7 @@ zathura_init(int argc, char* argv[])
     zathura->config.data_dir = g_strdup(config_dir);
   } else {
     gchar* path = girara_get_xdg_path(XDG_DATA);
-    zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
+    zathura->config.data_dir = g_build_filename(path, "zathura", NULL);
     g_free(path);
   }
 
