@@ -94,17 +94,35 @@ zathura_init(int argc, char* argv[])
     goto error_out;
   }
 
-  zathura->ui.session->gtk.embed = embed;
-  if (girara_session_init(zathura->ui.session) == false) {
-    goto error_out;
-  }
-
   zathura->ui.session->global.data  = zathura;
   zathura->ui.statusbar.file        = NULL;
   zathura->ui.statusbar.buffer      = NULL;
   zathura->ui.statusbar.page_number = NULL;
   zathura->ui.page_view             = NULL;
   zathura->ui.index                 = NULL;
+
+  /* load plugins */
+  zathura_document_plugins_load(zathura);
+
+  /* configuration */
+  config_load_default(zathura);
+
+  /* load global configuration files */
+  config_load_file(zathura, GLOBAL_RC);
+
+  /* load local configuration files */
+  char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
+  config_load_file(zathura, configuration_file);
+  free(configuration_file);
+
+  /* initialize girara */
+  zathura->ui.session->gtk.embed = embed;
+  if (girara_session_init(zathura->ui.session) == false) {
+    goto error_out;
+  }
+
+  /* girara events */
+  zathura->ui.session->events.buffer_changed = buffer_changed;
 
   /* page view */
   zathura->ui.page_view = gtk_table_new(0, 0, TRUE);
@@ -119,9 +137,6 @@ zathura_init(int argc, char* argv[])
   g_signal_connect(G_OBJECT(view_hadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
 
   gtk_widget_show(zathura->ui.page_view);
-
-  /* Put the table in the main window */
-  // gtk_container_add(GTK_CONTAINER (zathura->ui.page_view), table);
 
   /* statusbar */
   zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
@@ -143,23 +158,6 @@ zathura_init(int argc, char* argv[])
 
   /* signals */
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
-
-  /* girara events */
-  zathura->ui.session->events.buffer_changed = buffer_changed;
-
-  /* load plugins */
-  zathura_document_plugins_load(zathura);
-
-  /* configuration */
-  config_load_default(zathura);
-
-  /* load global configuration files */
-  config_load_file(zathura, GLOBAL_RC);
-
-  /* load local configuration files */
-  char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
-  config_load_file(zathura, configuration_file);
-  free(configuration_file);
 
   /* save page padding */
   int* page_padding = girara_setting_get(zathura->ui.session, "page-padding");
