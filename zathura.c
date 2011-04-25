@@ -335,6 +335,11 @@ error_out:
 void
 page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 {
+  /* show at least one page */
+  if (pages_per_row == 0) {
+    pages_per_row = 1;
+  }
+
   gtk_table_resize(GTK_TABLE(zathura->ui.page_view), zathura->document->number_of_pages / pages_per_row + 1, pages_per_row);
   for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
   {
