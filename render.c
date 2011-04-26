@@ -51,12 +51,6 @@ render_init(zathura_t* zathura)
     goto error_free;
   }
 
-  render_thread->thread = g_thread_create(render_job, render_thread, TRUE, NULL);
-
-  if (!render_thread->thread) {
-    goto error_free;
-  }
-
   render_thread->cond = g_cond_new();
 
   if (!render_thread->cond) {
@@ -66,6 +60,12 @@ render_init(zathura_t* zathura)
   render_thread->lock = g_mutex_new();
 
   if (!render_thread->lock) {
+    goto error_free;
+  }
+
+  render_thread->thread = g_thread_create(render_job, render_thread, TRUE, NULL);
+
+  if (!render_thread->thread) {
     goto error_free;
   }
 
