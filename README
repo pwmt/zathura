@@ -1,21 +1,16 @@
-zathura - pdf viewer
+zathura - a document viewer
 --------------------
-zathura is a pdf viewer based on the poppler pdf rendering library
+zathura is a highly customizable and functional document viewer based on the
+girara user interface library and several document libraries.
 
 Requirements
 ------------
-poppler-glib (0.12.3)
-gtk2 (2.18.6)
-glib2 (2.22.4)
-
-Configuration
--------------
-You can modify some parts of zathura by editing the config.h file
+gtk2 (>= 2.18.6)
+girara
 
 Installation
 ------------
-Customise config.h according to your wishes and run the following
-command to build and install zathura:
+To build and install zathura:
 
   make install
 
@@ -24,9 +19,3 @@ Uninstall:
 To delete zathura from your system, just type:
 
   make uninstall
-
-Use zathura
------------
-Just run:
-
-  zathura <file>

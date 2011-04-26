@@ -131,7 +131,7 @@ zathura_document_plugins_free(zathura_t* zathura)
   if (iter == NULL) {
     return;
   }
-  
+
   do {
     zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
     free(plugin->file_extension);
@@ -158,7 +158,7 @@ zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* 
         girara_error("plugin: already registered for filetype %s\n", plugin->file_extension);
         girara_list_iterator_free(iter);
         return false;
-      }    
+      }
     } while (girara_list_iterator_next(iter));
     girara_list_iterator_free(iter);
   }
@@ -237,7 +237,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   if (iter == NULL) {
     goto error_free;
   }
-  
+
   do {
     zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
     if (!strcmp(file_extension, plugin->file_extension)) {
@@ -403,6 +403,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
     page->event_box    = gtk_event_box_new();
     page->drawing_area = gtk_drawing_area_new();
     page->surface      = NULL;
+    page->document     = document;
     g_signal_connect(page->drawing_area, "expose-event", G_CALLBACK(page_expose_event), page);
 
     gtk_widget_set_size_request(page->drawing_area, page->width * document->scale, page->height * document->scale);
