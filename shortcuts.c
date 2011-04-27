@@ -29,14 +29,6 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument, unsigne
 }
 
 bool
-sc_change_buffer(girara_session_t* session, girara_argument_t* argument, unsigned int t)
-{
-  g_return_val_if_fail(session != NULL, false);
-
-  return false;
-}
-
-bool
 sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
