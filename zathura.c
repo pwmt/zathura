@@ -318,16 +318,25 @@ page_set(zathura_t* zathura, unsigned int page_id)
 
   /* update page number */
   zathura->document->current_page_number = page_id;
-
-  char* page_number = g_strdup_printf("[%d/%d]", page_id + 1, zathura->document->number_of_pages);
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number);
-  g_free(page_number);
+  statusbar_page_number_update(zathura);
 
   return true;
 
 error_out:
 
   return false;
+}
+
+void
+statusbar_page_number_update(zathura_t* zathura)
+{
+  if (zathura == NULL || zathura->ui.statusbar.page_number == NULL) {
+    return;
+  }
+
+  char* page_number_text = g_strdup_printf("[%d/%d]", zathura->document->current_page_number + 1, zathura->document->number_of_pages);
+  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
+  g_free(page_number_text);
 }
 
 void

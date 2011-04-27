@@ -239,8 +239,13 @@ page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
 
     /* render real page */
     render_page(page->document->zathura->sync.render_thread, page);
+
+    /* update statusbar */
   }
   cairo_destroy(cairo);
+
+  page->document->current_page_number = page->number;
+  statusbar_page_number_update(page->document->zathura);
 
   g_static_mutex_unlock(&(page->lock));
 

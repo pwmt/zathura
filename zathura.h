@@ -78,21 +78,21 @@ typedef struct zathura_s
  *
  * @param argc Number of arguments
  * @param argv Values of arguments
- * @return Zathura zathura object or NULL if zathura could not been initialized
+ * @return zathura session object or NULL if zathura could not been initialized
  */
 zathura_t* zathura_init(int argc, char* argv[]);
 
 /**
- * Free zathura zathura
+ * Free zathura session
  *
- * @param zathura The zathura zathura
+ * @param zathura The zathura session
  */
 void zathura_free(zathura_t* zathura);
 
 /**
  * Opens a file
  *
- * @param zathura The zathura zathura
+ * @param zathura The zathura session
  * @param path The path to the file
  * @param password The password of the file
  *
@@ -103,7 +103,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* password);
 /**
  * Closes the current opened document
  *
- * @param zathura The zathura zathura
+ * @param zathura The zathura session
  * @return If no error occured true, otherwise false, is returned.
  */
 bool document_close(zathura_t* zathura);
@@ -111,7 +111,7 @@ bool document_close(zathura_t* zathura);
 /**
  * Opens the page with the given number
  *
- * @param zathura The zathura zathura
+ * @param zathura The zathura session
  * @return If no error occured true, otherwise false, is returned.
  */
 bool page_set(zathura_t* zathura, unsigned int page_id);
@@ -119,9 +119,17 @@ bool page_set(zathura_t* zathura, unsigned int page_id);
 /**
  * Builds the box structure to show the rendered pages
  *
- * @param zathura The zathura zathura
+ * @param zathura The zathura session
  * @param pages_per_row Number of shown pages per row
  */
 void page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row);
+
+/**
+ * Updates the page number in the statusbar. Note that 1 will be added to the
+ * displayed number
+ *
+ * @param zathura The zathura session
+ */
+void statusbar_page_number_update(zathura_t* zathura);
 
 #endif // ZATHURA_H
