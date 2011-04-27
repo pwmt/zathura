@@ -3,12 +3,11 @@
 include config.mk
 
 PROJECT  = zathura
-SOURCE   = $(shell find . -iname "*.c" -a ! -iwholename "*./ft*")
+SOURCE   = $(shell find . -iname "*.c")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
-	${MAKE} -C ft
 
 options:
 	@echo ${PROJECT} build options:
@@ -37,14 +36,12 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug .depend
-	@${MAKE} -C ft clean
 
 ${PROJECT}-debug: ${DOBJECTS}
 	@echo CC -o ${PROJECT}-debug
 	@${CC} ${LDFLAGS} -o ${PROJECT}-debug ${DOBJECTS} ${LIBS}
 
 debug: ${PROJECT}-debug
-	@${MAKE} -C ft debug
 
 valgrind: debug
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes \
@@ -66,18 +63,23 @@ install: all
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
 	@cp -f ${PROJECT} ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin/${PROJECT}
+	@echo installing header file
+	@mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
+	@cp -f document.h ${DESTDIR}${PREFIX}/include/${PROJECT}
+	@cp -f zathura.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	@echo installing manual page
 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	@sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	@${MAKE} -C ft install
 
 uninstall:
 	@echo removing executable file
 	@rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
+	@echo removing header file
+	@rm -f ${DESTDIR}${PREFIX}/include/${PROJECT}/document.h
+	@rm -f ${DESTDIR}${PREFIX}/include/${PROJECT}/zathura.h
 	@echo removing manual page
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	@${MAKE} -C ft uninstall
 
 -include $(wildcard .depend/*.dep)
 
