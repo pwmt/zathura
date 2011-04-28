@@ -33,7 +33,6 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_Escape,     NULL, sc_abort,             0,                   0,               NULL);
   girara_shortcut_add(gsession, 0,                GDK_a,          NULL, sc_adjust_window,     NORMAL,              ADJUST_BESTFIT,  NULL);
   girara_shortcut_add(gsession, 0,                GDK_s,          NULL, sc_adjust_window,     NORMAL,              ADJUST_WIDTH,    NULL);
-  girara_shortcut_add(gsession, 0,                GDK_BackSpace,  NULL, sc_change_buffer,     0,                   DELETE_LAST,     NULL);
   girara_shortcut_add(gsession, 0,                GDK_i,          NULL, sc_change_mode,       NORMAL,              INSERT,          NULL);
   girara_shortcut_add(gsession, 0,                GDK_m,          NULL, sc_change_mode,       NORMAL,              ADD_MARKER,      NULL);
   girara_shortcut_add(gsession, 0,                GDK_apostrophe, NULL, sc_change_mode,       NORMAL,              EVAL_MARKER,     NULL);
