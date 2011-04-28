@@ -31,6 +31,9 @@ zathura_init(int argc, char* argv[])
     return NULL;
   }
 
+  /* general */
+  zathura->document = NULL;
+
   /* plugins */
   zathura->plugins.plugins = girara_list_new();
   zathura->plugins.path = girara_list_new();
@@ -100,6 +103,10 @@ zathura_init(int argc, char* argv[])
   zathura->ui.statusbar.page_number = NULL;
   zathura->ui.page_view             = NULL;
   zathura->ui.index                 = NULL;
+
+  /* Print settings */
+  zathura->print.settings   = NULL;
+  zathura->print.page_setup = NULL;
 
   /* load plugins */
   zathura_document_plugins_load(zathura);
@@ -205,6 +212,10 @@ zathura_free(zathura_t* zathura)
   }
 
   document_close(zathura);
+
+  /* free print settings */
+  g_object_unref(zathura->print.settings);
+  g_object_unref(zathura->print.page_setup);
 
   /* free registered plugins */
   zathura_document_plugins_free(zathura);

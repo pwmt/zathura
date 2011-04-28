@@ -67,6 +67,12 @@ typedef struct zathura_s
 
   struct
   {
+    GtkPrintSettings* settings;
+    GtkPageSetup* page_setup;
+  } print;
+
+  struct
+  {
     unsigned int page_padding;
   } global;
 
