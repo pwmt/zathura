@@ -43,7 +43,7 @@ print(zathura_t* zathura)
 void
 cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext* context, gint page_number, zathura_t* zathura)
 {
-  cairo_t* cairo = gtk_print_context_get_cairo_context(context);
+  /*cairo_t* cairo = gtk_print_context_get_cairo_context(context);*/
 
   /*zathura_page_t* page = zathura->document->pages[page_number];*/
   /*g_static_mutex_lock(&(page->lock));*/
