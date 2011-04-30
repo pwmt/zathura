@@ -119,6 +119,11 @@ bool
 sc_recolor(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura->global.recolor = !zathura->global.recolor;
+  render_all(zathura);
 
   return false;
 }

@@ -104,9 +104,12 @@ zathura_init(int argc, char* argv[])
   zathura->ui.page_view             = NULL;
   zathura->ui.index                 = NULL;
 
-  /* Print settings */
+  /* print settings */
   zathura->print.settings   = NULL;
   zathura->print.page_setup = NULL;
+
+  /* global settings */
+  zathura->global.recolor = false;
 
   /* load plugins */
   zathura_document_plugins_load(zathura);
@@ -172,6 +175,19 @@ zathura_init(int argc, char* argv[])
 
   gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_view), zathura->global.page_padding);
   gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_view), zathura->global.page_padding);
+
+  /* parse colors */
+  char* string_value = girara_setting_get(zathura->ui.session, "recolor-dark-color");
+  if (string_value != NULL) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
+    free(string_value);
+  }
+
+  string_value = girara_setting_get(zathura->ui.session, "recolor-light-color");
+  if (string_value != NULL) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
+    free(string_value);
+  }
 
   /* open document if passed */
   if (argc > 1) {

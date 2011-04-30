@@ -168,6 +168,39 @@ render(zathura_t* zathura, zathura_page_t* page)
     }
   }
 
+  /* recolor */
+  if (zathura->global.recolor) {
+    /* recolor code based on qimageblitz library flatten() function
+    (http://sourceforge.net/projects/qimageblitz/) */
+
+    int r1 = zathura->ui.colors.recolor_dark_color.red    / 257;
+    int g1 = zathura->ui.colors.recolor_dark_color.green  / 257;
+    int b1 = zathura->ui.colors.recolor_dark_color.blue   / 257;
+    int r2 = zathura->ui.colors.recolor_light_color.red   / 257;
+    int g2 = zathura->ui.colors.recolor_light_color.green / 257;
+    int b2 = zathura->ui.colors.recolor_light_color.blue  / 257;
+
+    int min  = 0x00;
+    int max  = 0xFF;
+    int mean = 0x00;
+
+    float sr = ((float) r2 - r1) / (max - min);
+    float sg = ((float) g2 - g1) / (max - min);
+    float sb = ((float) b2 - b1) / (max - min);
+
+    for (unsigned int y = 0; y < page_height; y++) {
+      unsigned char* data = image + y * rowstride;
+
+      for (unsigned int x = 0; x < page_width; x++) {
+        mean = (data[0] + data[1] + data[2]) / 3;
+        data[2] = sr * (mean - min) + r1 + 0.5;
+        data[1] = sg * (mean - min) + g1 + 0.5;
+        data[0] = sb * (mean - min) + b1 + 0.5;
+        data += 4;
+      }
+    }
+  }
+
   /* draw to gtk widget */
   page->surface = surface;
   gtk_widget_set_size_request(page->drawing_area, page_width, page_height);

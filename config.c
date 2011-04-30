@@ -14,6 +14,7 @@ config_load_default(zathura_t* zathura)
   }
 
   int int_value              = 0;
+  char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
   /* general settings */
@@ -27,6 +28,10 @@ config_load_default(zathura_t* zathura)
   int_value = 2;
   girara_setting_add(gsession, "pages-per-row", &int_value, INT, false, "Number of pages per row", NULL);
 
+  string_value = "#FFFFFF";
+  girara_setting_add(gsession, "recolor-dark-color",  string_value, STRING, false, "Recoloring (dark color)",  NULL);
+  string_value = "#000000";
+  girara_setting_add(gsession, "recolor-light-color", string_value, STRING, false, "Recoloring (light color)", NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,             0,                   0,               NULL);

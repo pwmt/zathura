@@ -44,6 +44,12 @@ typedef struct zathura_s
       girara_statusbar_item_t* page_number; /**> page number statusbar entry */
     } statusbar;
 
+    struct
+    {
+      GdkColor recolor_dark_color; /**> Dark color for recoloring */
+      GdkColor recolor_light_color; /**> Light color for recoloring */
+    } colors;
+
     GtkWidget *page_view; /**> Widget that contains all rendered pages */
     GtkWidget *index; /**> Widget to show the index of the document */
   } ui;
@@ -55,25 +61,26 @@ typedef struct zathura_s
 
   struct
   {
-    girara_list_t* plugins;
-    girara_list_t* path;
+    girara_list_t* plugins; /**> List of plugins */
+    girara_list_t* path; /**> List of plugin paths */
   } plugins;
 
   struct
   {
-    gchar* config_dir;
-    gchar* data_dir;
+    gchar* config_dir; /**> Path to the configuration directory */
+    gchar* data_dir; /**> Path to the data directory */
   } config;
 
   struct
   {
-    GtkPrintSettings* settings;
-    GtkPageSetup* page_setup;
+    GtkPrintSettings* settings; /**> Print settings */
+    GtkPageSetup* page_setup; /**> Saved page setup */
   } print;
 
   struct
   {
-    unsigned int page_padding;
+    unsigned int page_padding; /**> Padding between the pages */
+    bool recolor; /**> Recoloring mode switch */
   } global;
 
   zathura_document_t* document; /**> The current document */
