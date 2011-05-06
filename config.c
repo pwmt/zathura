@@ -103,6 +103,27 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,     "Show file information");
   girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           cc_print, "Print document");
   girara_inputbar_command_add(gsession, "save",    NULL, cmd_save,            NULL,     "Save document");
+
+  /* add shortcut mappings */
+  girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
+  girara_shortcut_mapping_add(gsession, "adjust_window",     sc_adjust_window);
+  girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
+  girara_shortcut_mapping_add(gsession, "focus_inputbar",    sc_focus_inputbar);
+  girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
+  girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
+  girara_shortcut_mapping_add(gsession, "index_navigate",    sc_navigate_index);
+  girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
+  girara_shortcut_mapping_add(gsession, "quit",              sc_quit);
+  girara_shortcut_mapping_add(gsession, "recolor",           sc_recolor);
+  girara_shortcut_mapping_add(gsession, "reload",            sc_reload);
+  girara_shortcut_mapping_add(gsession, "rotate",            sc_rotate);
+  girara_shortcut_mapping_add(gsession, "scroll",            sc_scroll);
+  girara_shortcut_mapping_add(gsession, "search",            sc_search);
+  girara_shortcut_mapping_add(gsession, "toggle_fullscreen", sc_toggle_fullscreen);
+  girara_shortcut_mapping_add(gsession, "toggle_index",      sc_toggle_index);
+  girara_shortcut_mapping_add(gsession, "toggle_inputbar",   sc_toggle_inputbar);
+  girara_shortcut_mapping_add(gsession, "toggle_statusbar",  sc_toggle_statusbar);
+  girara_shortcut_mapping_add(gsession, "zoom",              sc_zoom);
 }
 
 void
