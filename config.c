@@ -17,8 +17,18 @@ config_load_default(zathura_t* zathura)
   char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
-  /* general settings */
-  girara_mode_set(gsession, NORMAL);
+  /* mode settings */
+  zathura->modes.normal     = gsession->modes.normal;
+  zathura->modes.fullscreen = girara_mode_add(gsession, "fullscreen");
+  zathura->modes.index      = girara_mode_add(gsession, "index");
+  zathura->modes.insert     = girara_mode_add(gsession, "insert");
+
+#define NORMAL zathura->modes.normal
+#define INSERT zathura->modes.insert
+#define INDEX zathura->modes.index
+#define FULLSCREEN zathura->modes.fullscreen
+
+  girara_mode_set(gsession, zathura->modes.normal);
 
   /* zathura settings */
   int_value = 10;

@@ -14,13 +14,6 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR,
   DELETE_TO_LINE_START, APPEND_FILEPATH };
 
-/* define modes */
-#define ALL        (1 << 0)
-#define FULLSCREEN (1 << 1)
-#define INDEX      (1 << 2)
-#define NORMAL     (1 << 3)
-#define INSERT     (1 << 4)
-
 /* forward declaration for types from document.h */
 struct zathura_document_s;
 struct zathura_page_s;
@@ -82,6 +75,14 @@ typedef struct zathura_s
     unsigned int page_padding; /**> Padding between the pages */
     bool recolor; /**> Recoloring mode switch */
   } global;
+
+	struct
+	{
+		girara_mode_t normal; /**> Normal mode */
+		girara_mode_t fullscreen; /**> Fullscreen mode */
+		girara_mode_t index; /**> Index mode */
+		girara_mode_t insert; /**> Insert mode */
+	} modes;
 
   zathura_document_t* document; /**> The current document */
 } zathura_t;
