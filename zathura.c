@@ -213,6 +213,8 @@ error_free:
 
 error_out:
 
+  free(zathura);
+
   return NULL;
 }
 
