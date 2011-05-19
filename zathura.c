@@ -1869,6 +1869,10 @@ search(void* parameter)
 
   if(argument->n != NO_SEARCH)
   {
+    /* search document */
+    if(argument->n)
+      direction = (argument->n == BACKWARD) ? -1 : 1;
+
     if(argument->data)
     {
       if(search_item)
@@ -1897,10 +1901,6 @@ search(void* parameter)
       g_list_free(Zathura.Search.results);
       Zathura.Search.results = NULL;
     }
-
-    /* search document */
-    if(argument->n)
-      direction = (argument->n == BACKWARD) ? -1 : 1;
 
     Zathura.Search.query = g_strdup(search_item);
 
