@@ -111,6 +111,7 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "blist",   NULL, cmd_bookmark_open,   NULL,     "List all bookmarks");
   girara_inputbar_command_add(gsession, "close",   NULL, cmd_close,           NULL,     "Close current file");
   girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,     "Show file information");
+  girara_inputbar_command_add(gsession, "open",    "o",  cmd_open,            cc_open,  "Open document");
   girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           cc_print, "Print document");
   girara_inputbar_command_add(gsession, "save",    NULL, cmd_save,            NULL,     "Save document");
 

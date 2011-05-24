@@ -63,3 +63,79 @@ cc_print(girara_session_t* session, char* input)
 
   return completion;
 }
+
+girara_completion_t*
+cc_open(girara_session_t* session, char* input)
+{
+  girara_completion_t* completion  = girara_completion_init();
+  girara_completion_group_t* group = girara_completion_group_create(session, NULL);
+
+  if (!session || !input || !completion || !group) {
+    goto error_free;
+  }
+
+  gchar* path = girara_fix_path(input);
+  if (path == NULL || strlen(path) == 0) {
+    goto error_free;
+  }
+
+  /* If the path does not begin with a slash we update the path with the current
+   * working directory */
+  if (path[0] != '/') {
+    size_t path_max;
+#ifdef PATH_MAX
+    path_max = PATH_MAX;
+#else
+    path_max = pathconf(path,_PC_PATH_MAX);
+    if (path_max <= 0)
+      path_max = 4096;
+#endif
+
+    char cwd[path_max];
+    getcwd(cwd, path_max);
+
+    char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
+    if (tmp_path == NULL) {
+      goto error_free;
+    }
+
+    g_free(path);
+    path = tmp_path;
+  }
+
+  /* read directory */
+  if (g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) {
+    GDir* dir = g_dir_open(path, 0, NULL);
+    if (dir == NULL) {
+      goto error_free;
+    }
+
+    /* read files */
+    char* name = NULL;
+    while ((name = (char*) g_dir_read_name(dir)) != NULL) {
+      char* e_name = g_filename_display_name(name);
+      g_free(e_name);
+    }
+
+    g_dir_close(dir);
+  }
+
+  g_free(path);
+
+  girara_completion_add_group(completion, group);
+
+  return completion;
+
+error_free:
+
+  if (completion) {
+    girara_completion_free(completion);
+  }
+  if (group) {
+    girara_completion_group_free(group);
+  }
+
+  g_free(path);
+
+  return NULL;
+}
