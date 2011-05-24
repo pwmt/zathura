@@ -67,10 +67,14 @@ cc_print(girara_session_t* session, char* input)
 girara_completion_t*
 cc_open(girara_session_t* session, char* input)
 {
+  g_return_val_if_fail(session != NULL, NULL);
+  g_return_val_if_fail(session->global.data != NULL, NULL);
+  zathura_t* zathura = session->global.data;
+
   girara_completion_t* completion  = girara_completion_init();
   girara_completion_group_t* group = girara_completion_group_create(session, NULL);
 
-  if (!session || !input || !completion || !group) {
+  if (!input || !completion || !group) {
     goto error_free;
   }
 
@@ -113,11 +117,30 @@ cc_open(girara_session_t* session, char* input)
     /* read files */
     char* name = NULL;
     while ((name = (char*) g_dir_read_name(dir)) != NULL) {
-      char* e_name = g_filename_display_name(name);
+      char* e_name    = g_filename_display_name(name);
+      if (e_name == NULL) {
+        goto error_free;
+      }
+
+      char* full_path = g_strdup_printf("%s/%s", path, e_name);
+      if (full_path == NULL) {
+        goto error_free;
+      }
+
+      if (file_valid_extension(zathura, full_path) == true) {
+        girara_completion_group_add_element(group, full_path, NULL);
+      }
+
+      g_free(full_path);
       g_free(e_name);
     }
 
     g_dir_close(dir);
+  /* given path is a file */
+  } else if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == TRUE) {
+    if (file_valid_extension(zathura, path) == true) {
+      girara_completion_group_add_element(group, path, NULL);
+    }
   }
 
   g_free(path);

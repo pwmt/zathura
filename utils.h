@@ -32,6 +32,16 @@ bool file_exists(const char* path);
 const char* file_get_extension(const char* path);
 
 /**
+ * This function checks if the file has a valid extension. A extension is
+ * evaluated as valid if it matches a supported filetype.
+ *
+ * @param zathura Zathura object
+ * @param path The path to the file
+ * @return true if the extension is valid, otherwise false
+ */
+bool file_valid_extension(zathura_t* zathura, const char* path);
+
+/**
  * Executes a system command and saves its output into output
  *
  * @param argv The command

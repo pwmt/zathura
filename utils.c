@@ -49,6 +49,31 @@ file_get_extension(const char* path)
 }
 
 bool
+file_valid_extension(zathura_t* zathura, const char* path)
+{
+  if (path == NULL) {
+    return false;
+  }
+
+  const char* file_extension = file_get_extension(path);
+
+  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
+  if (iter == NULL) {
+    return false;
+  }
+
+  do {
+    zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
+    if (!strcmp(file_extension, plugin->file_extension)) {
+      return true;
+    }
+  } while (girara_list_iterator_next(iter));
+  girara_list_iterator_free(iter);
+
+  return false;
+}
+
+bool
 execute_command(char* const argv[], char** output)
 {
   if (!output) {
