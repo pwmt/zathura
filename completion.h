@@ -6,15 +6,6 @@
 #include <girara.h>
 
 /**
- * Completion for the print command. Creates a list of available printers
- *
- * @param session The used girara session
- * @param input The current input
- * @return The completion object or NULL if an error occured
- */
-girara_completion_t* cc_print(girara_session_t* session, char* input);
-
-/**
  * Completion for the open command - Creates a list of accesible directories or
  * files
  *
