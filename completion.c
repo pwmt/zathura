@@ -18,11 +18,14 @@ cc_open(girara_session_t* session, char* input)
   girara_completion_t* completion  = girara_completion_init();
   girara_completion_group_t* group = girara_completion_group_create(session, NULL);
 
+  gchar* path         = NULL;
+  gchar* current_path = NULL;
+
   if (completion == NULL || group == NULL) {
     goto error_free;
   }
 
-  gchar* path = girara_fix_path(input);
+  path = girara_fix_path(input);
   if (path == NULL) {
     goto error_free;
   }
@@ -52,8 +55,8 @@ cc_open(girara_session_t* session, char* input)
   }
 
   /* Append a slash if the given argument is a directory */
-  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) &&
-      (path[strlen(path) - 1] != '/')) {
+  bool is_dir = (path[strlen(path) - 1] == '/') ? true : false;
+  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && !is_dir) {
     char* tmp_path = g_strdup_printf("%s/", path);
     if (tmp_path == NULL) {
       goto error_free;
@@ -61,10 +64,16 @@ cc_open(girara_session_t* session, char* input)
 
     g_free(path);
     path = tmp_path;
+    is_dir = true;
   }
 
-  gchar* current_path     = (path[strlen(path)-1] == '/') ? path : dirname(path);
-  gchar* current_file     = (path[strlen(path)-1] == '/') ? ""   : basename(path);
+  /* get current path */
+  char* tmp    = g_strdup(path);
+  current_path = is_dir ? g_strdup(tmp) : g_strdup(dirname(tmp));
+  g_free(tmp);
+
+  /* get current file */
+  gchar* current_file     = is_dir ? "" : basename(path);
   int current_file_length = strlen(current_file);
 
   /* read directory */
@@ -84,7 +93,13 @@ cc_open(girara_session_t* session, char* input)
         goto error_free;
       }
 
-      char* full_path = g_strdup_printf("%s%s", current_path, e_name);
+      if ((current_file_length > e_length) || strncmp(current_file, e_name,
+            current_file_length)) {
+        g_free(e_name);
+        continue;
+      }
+
+      char* full_path = g_strdup_printf("%s%s%s", current_path, is_dir ? "" : "/", e_name);
       if (full_path == NULL) {
         g_free(e_name);
         goto error_free;
@@ -121,6 +136,7 @@ error_free:
     girara_completion_group_free(group);
   }
 
+  g_free(current_path);
   g_free(path);
 
   return NULL;
