@@ -57,6 +57,10 @@ file_valid_extension(zathura_t* zathura, const char* path)
 
   const char* file_extension = file_get_extension(path);
 
+  if (file_extension == NULL) {
+    return false;
+  }
+
   girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
   if (iter == NULL) {
     return false;
