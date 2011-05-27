@@ -51,15 +51,6 @@ bool file_valid_extension(zathura_t* zathura, const char* path);
 bool execute_command(char* const argv[], char** output);
 
 /**
- * Creates a blank page
- *
- * @param width The width of the page
- * @param height The height of the page
- * @return The widget of the page or NULL if an error occured
- */
-GtkWidget* page_blank(unsigned int width, unsigned int height);
-
-/**
  * Generates the document index based upon the list retreived from the document
  * object.
  *
