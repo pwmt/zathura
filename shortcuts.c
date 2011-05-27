@@ -43,7 +43,7 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, unsign
 {
   g_return_val_if_fail(session != NULL, false);
 
-  if (!(GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar)))) {
+  if (!(gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)))) {
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
   }
 
@@ -299,7 +299,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
     gtk_widget_show(treeview);
   }
 
-  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(zathura->ui.index))) {
+  if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
     girara_set_view(session, zathura->ui.page_view);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
   } else {
@@ -330,7 +330,7 @@ sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, unsig
 {
   g_return_val_if_fail(session != NULL, false);
 
-  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.inputbar))) {
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar))) {
     gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
   } else {
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
@@ -362,7 +362,7 @@ sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument, unsi
 {
   g_return_val_if_fail(session != NULL, false);
 
-  if (GTK_WIDGET_VISIBLE(GTK_WIDGET(session->gtk.statusbar))) {
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.statusbar))) {
     gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
   } else {
     gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
