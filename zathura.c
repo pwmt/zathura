@@ -25,20 +25,6 @@ gboolean document_info_open(gpointer data);
 zathura_t*
 zathura_init(int argc, char* argv[])
 {
-  zathura_t* zathura = malloc(sizeof(zathura_t));
-
-  if (zathura == NULL) {
-    return NULL;
-  }
-
-  /* general */
-  zathura->document = NULL;
-
-  /* plugins */
-  zathura->plugins.plugins = girara_list_new();
-  zathura->plugins.path = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.path, g_free);
-
   /* parse command line options */
   GdkNativeWindow embed = 0;
   gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
@@ -60,10 +46,23 @@ zathura_init(int argc, char* argv[])
     printf("Error parsing command line arguments: %s\n", error->message);
     g_option_context_free(context);
     g_error_free(error);
-    free(zathura);
-    return NULL;
+    goto error_free;
   }
   g_option_context_free(context);
+
+  zathura_t* zathura = malloc(sizeof(zathura_t));
+
+  if (zathura == NULL) {
+    return NULL;
+  }
+
+  /* general */
+  zathura->document = NULL;
+
+  /* plugins */
+  zathura->plugins.plugins = girara_list_new();
+  zathura->plugins.path    = girara_list_new();
+  girara_list_set_free_function(zathura->plugins.path, g_free);
 
   if (config_dir) {
     zathura->config.config_dir = g_strdup(config_dir);
