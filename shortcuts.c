@@ -326,20 +326,6 @@ error_ret:
 }
 
 bool
-sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, unsigned int t)
-{
-  g_return_val_if_fail(session != NULL, false);
-
-  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar))) {
-    gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
-  } else {
-    gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
-  }
-
-  return false;
-}
-
-bool
 sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
@@ -353,20 +339,6 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, uns
   }
 
   fullscreen = fullscreen ? false : true;
-
-  return false;
-}
-
-bool
-sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument, unsigned int t)
-{
-  g_return_val_if_fail(session != NULL, false);
-
-  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.statusbar))) {
-    gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
-  } else {
-    gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
-  }
 
   return false;
 }

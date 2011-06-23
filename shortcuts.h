@@ -146,16 +146,6 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, u
 bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned int t);
 
 /**
- * Show/Hide the inputbar
- *
- * @param session The used girara session
- * @param argument The used argument
- * @param t Number of executions
- * @return true if no error occured otherwise false
- */
-bool sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, unsigned int t);
-
-/**
  * Toggle fullscreen mode
  *
  * @param session The used girara session
@@ -164,16 +154,6 @@ bool sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, 
  * @return true if no error occured otherwise false
  */
 bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, unsigned int t);
-
-/**
- * Show/Hide the statusbar
- *
- * @param session The used girara session
- * @param argument The used argument
- * @param t Number of executions
- * @return true if no error occured otherwise false
- */
-bool sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument, unsigned int t);
 
 /**
  * Quit zathura
