@@ -1581,13 +1581,25 @@ read_configuration_file(const char* rcfile)
       if(!strlen(lines[i]))
         continue;
 
-      gchar **tokens = g_strsplit_set(lines[i], "\t ", -1);
-      int     length = g_strv_length(tokens);
+      gchar **pre_tokens = g_strsplit_set(lines[i], "\t ", -1);
+      int     pre_length = g_strv_length(pre_tokens);
+
+      gchar** tokens = g_malloc0(sizeof(gchar*) * (pre_length + 1));
+      gchar** tokp =   tokens;
+      int     length = 0;
+      for (int i = 0; i != pre_length; ++i) {
+        if (strlen(pre_tokens[i])) {
+          *tokp++ = pre_tokens[i];
+          ++length;
+        }
+      }
 
       if(!strcmp(tokens[0], "set"))
         cmd_set(length - 1, tokens + 1);
       else if(!strcmp(tokens[0], "map"))
         cmd_map(length - 1, tokens + 1);
+
+      g_free(tokens);
     }
 
     g_strfreev(lines);
