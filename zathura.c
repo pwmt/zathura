@@ -2428,7 +2428,7 @@ sc_navigate_index(Argument* argument)
   {
     case UP:
       if(!gtk_tree_path_prev(path))
-        is_valid_path = gtk_tree_path_up(path);
+        is_valid_path = (gtk_tree_path_get_depth(path) > 1) && gtk_tree_path_up(path) ;
       else /* row above */
       {
         while(gtk_tree_view_row_expanded(treeview, path)) {
@@ -2476,7 +2476,7 @@ sc_navigate_index(Argument* argument)
       return;
   }
 
-  if (is_valid_path)
+  if (is_valid_path )
     gtk_tree_view_set_cursor(treeview, path, NULL, FALSE);
 
   gtk_tree_path_free(path);
