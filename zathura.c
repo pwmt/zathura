@@ -1770,6 +1770,8 @@ void
 switch_view(GtkWidget* widget)
 {
   GtkWidget* child = gtk_bin_get_child(GTK_BIN(Zathura.UI.viewport));
+  if(child == widget)
+    return;
   if(child)
   {
     g_object_ref(child);
