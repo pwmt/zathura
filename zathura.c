@@ -4017,6 +4017,24 @@ bcmd_goto(char* buffer, Argument* argument)
   update_status();
 }
 
+gboolean
+try_goto(const char* buffer)
+{
+    char* endptr = NULL;
+    long page_number = strtol(buffer, &endptr, 10) - 1;
+    if(*endptr)
+      /* conversion error */
+      return FALSE;
+    else
+    {
+      /* behave like vim: <= 1 => first line, >= #lines => last line */
+      page_number = MAX(0, MIN(Zathura.PDF.number_of_pages - 1, page_number));
+      set_page(page_number);
+      update_status();
+      return TRUE;
+    }
+}
+
 void
 bcmd_scroll(char* buffer, Argument* argument)
 {
@@ -4331,8 +4349,11 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   if(retv)
     isc_abort(NULL);
 
-  if(!succ)
-    notify(ERROR, "Unknown command.");
+  if(!succ) {
+      /* it maybe a goto command */
+    if(!try_goto(command))
+        notify(ERROR, "Unknown command.");
+  }
 
   Argument arg = { HIDE };
   isc_completion(&arg);
