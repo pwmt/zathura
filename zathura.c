@@ -1420,7 +1420,8 @@ open_file(char* path, char* password)
 
     for(i = 0; i < number_of_keys; i++)
     {
-      if(strcmp(keys[i], BM_PAGE_ENTRY) && strcmp(keys[i], BM_PAGE_OFFSET))
+      if(strcmp(keys[i], BM_PAGE_ENTRY) && strcmp(keys[i], BM_PAGE_OFFSET)
+          && strcmp(keys[i], BM_PAGE_SCALE))
       {
         Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
             (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
