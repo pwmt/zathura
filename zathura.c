@@ -2299,7 +2299,8 @@ sc_scroll(Argument* argument)
   else
     new_value = (value + scroll_step) > max ? max : (value + scroll_step);
 
-  Zathura.State.scroll_percentage = max == 0 ? 0 : (new_value*100/max);
+  if( !((argument->n == LEFT) || (argument->n == RIGHT)) )
+    Zathura.State.scroll_percentage = max == 0 ? 0 : (new_value*100/max);
 
   if(smooth_scrolling && !ss)
   {
