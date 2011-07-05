@@ -1065,6 +1065,13 @@ close_file(gboolean keep_monitor)
           BM_PAGE_OFFSET, Zathura.PDF.page_offset);
     }
 
+    if (save_zoom_level)
+    {
+      /* set zoom level */
+      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+          BM_PAGE_SCALE, Zathura.PDF.scale);
+    }
+
     /* save bookmarks */
     int i;
     for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
@@ -1394,6 +1401,17 @@ open_file(char* path, char* password)
       Zathura.PDF.page_offset = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL);
     if((Zathura.PDF.page_offset != 0) && (Zathura.PDF.page_offset != GOTO_OFFSET))
       Zathura.PDF.page_offset = GOTO_OFFSET;
+
+    /* get zoom level */
+    if (save_zoom_level && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_SCALE, NULL))
+    {
+      Zathura.PDF.scale = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_SCALE, NULL);
+      Zathura.Global.adjust_mode = ADJUST_NONE;
+    }
+    if (Zathura.PDF.scale > zoom_max)
+      Zathura.PDF.scale = zoom_max;
+    if (Zathura.PDF.scale < zoom_min)
+      Zathura.PDF.scale = zoom_min;
 
     /* open and read bookmark file */
     gsize i              = 0;

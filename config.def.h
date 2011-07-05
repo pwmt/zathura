@@ -29,7 +29,9 @@ static const char DATA_DIR[]      = "~/.local/share/zathura";
 /* bookmarks */
 static const char BM_PAGE_ENTRY[]  = "page";
 static const char BM_PAGE_OFFSET[] = "offset";
+static const char BM_PAGE_SCALE[] = "scale";
 int save_position = 1;
+int save_zoom_level = 1;
 
 /* look */
 char* font                   = "monospace normal 9";
@@ -251,6 +253,7 @@ Setting settings[] = {
   {"recolor_darkcolor",      &(recolor_darkcolor),               's',   FALSE,   TRUE,    "Recoloring (dark color)"},
   {"recolor_lightcolor",     &(recolor_lightcolor),              's',   FALSE,   TRUE,    "Recoloring (light color)"},
   {"save_position",          &(save_position),                   'b',   FALSE,   FALSE,   "Save position in file on quit and restore it on open"},
+  {"save_zoom_level",        &(save_zoom_level),                 'b',   FALSE,   FALSE,   "Save zoom level on quit and restore it on open"},
   {"scroll_step",            &(scroll_step),                     'f',   FALSE,   FALSE,   "Scroll step"},
   {"scroll_wrap",            &(scroll_wrap),                     'b',   FALSE,   FALSE,   "Wrap scolling at last page"},
   {"scrollbars",             &(show_scrollbars),                 'b',   FALSE,   TRUE,    "Show scrollbars"},
