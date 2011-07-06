@@ -389,6 +389,7 @@ GtkEventBox* create_completion_row(GtkBox*, char*, char*, gboolean);
 gchar* fix_path(const gchar*);
 gchar* path_from_env(const gchar*);
 gchar* get_home_dir(void);
+gboolean is_reserved_bm_name(const char *);
 
 Completion* completion_init(void);
 CompletionGroup* completion_group_create(char*);
@@ -626,6 +627,18 @@ init_bookmarks(void)
 
   Zathura.Bookmarks.file = g_build_filename(Zathura.Config.data_dir, BOOKMARK_FILE, NULL);
   read_bookmarks_file();
+}
+
+gboolean
+is_reserved_bm_name(const char *bm_name)
+{
+  int i;
+
+  for(i = 0; i < BM_MAX; i++)
+    if(strcmp(bm_reserved_names[i], bm_name) == 0)
+      return TRUE;
+
+  return FALSE;
 }
 
 void
@@ -1058,18 +1071,18 @@ close_file(gboolean keep_monitor)
     {
       /* set current page */
       g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-          BM_PAGE_ENTRY, Zathura.PDF.page_number);
+          bm_reserved_names[BM_PAGE_ENTRY], Zathura.PDF.page_number);
 
       /* set page offset */
       g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-          BM_PAGE_OFFSET, Zathura.PDF.page_offset);
+          bm_reserved_names[BM_PAGE_OFFSET], Zathura.PDF.page_offset);
     }
 
     if (save_zoom_level)
     {
       /* set zoom level */
       g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-          BM_PAGE_SCALE, Zathura.PDF.scale);
+          bm_reserved_names[BM_PAGE_SCALE], Zathura.PDF.scale);
     }
 
     /* save bookmarks */
@@ -1393,19 +1406,25 @@ open_file(char* path, char* password)
   if(Zathura.Bookmarks.data && g_key_file_has_group(Zathura.Bookmarks.data, file))
   {
     /* get last opened page */
-    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL))
-      start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_ENTRY, NULL);
+    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file,
+        bm_reserved_names[BM_PAGE_ENTRY], NULL))
+      start_page = g_key_file_get_integer(Zathura.Bookmarks.data, file,
+          bm_reserved_names[BM_PAGE_ENTRY], NULL);
 
     /* get page offset */
-    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL))
-      Zathura.PDF.page_offset = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_OFFSET, NULL);
+    if(save_position && g_key_file_has_key(Zathura.Bookmarks.data, file,
+        bm_reserved_names[BM_PAGE_OFFSET], NULL))
+      Zathura.PDF.page_offset = g_key_file_get_integer(Zathura.Bookmarks.data, file,
+          bm_reserved_names[BM_PAGE_OFFSET], NULL);
     if((Zathura.PDF.page_offset != 0) && (Zathura.PDF.page_offset != GOTO_OFFSET))
       Zathura.PDF.page_offset = GOTO_OFFSET;
 
     /* get zoom level */
-    if (save_zoom_level && g_key_file_has_key(Zathura.Bookmarks.data, file, BM_PAGE_SCALE, NULL))
+    if (save_zoom_level && g_key_file_has_key(Zathura.Bookmarks.data, file,
+        bm_reserved_names[BM_PAGE_SCALE], NULL))
     {
-      Zathura.PDF.scale = g_key_file_get_integer(Zathura.Bookmarks.data, file, BM_PAGE_SCALE, NULL);
+      Zathura.PDF.scale = g_key_file_get_integer(Zathura.Bookmarks.data, file,
+          bm_reserved_names[BM_PAGE_SCALE], NULL);
       Zathura.Global.adjust_mode = ADJUST_NONE;
     }
     if (Zathura.PDF.scale > zoom_max)
@@ -1420,8 +1439,7 @@ open_file(char* path, char* password)
 
     for(i = 0; i < number_of_keys; i++)
     {
-      if(strcmp(keys[i], BM_PAGE_ENTRY) && strcmp(keys[i], BM_PAGE_OFFSET)
-          && strcmp(keys[i], BM_PAGE_SCALE))
+      if(!is_reserved_bm_name(keys[i]))
       {
         Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
             (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
@@ -3061,12 +3079,20 @@ cmd_bookmark(int argc, char** argv)
     id = g_string_append(id, argv[i]);
   }
 
+  if(is_reserved_bm_name(id->str))
+  {
+    notify(WARNING, "Can't set bookmark: reserved bookmark name");
+    g_string_free(id, TRUE);
+    return FALSE;
+  }
+
   /* check for existing bookmark to overwrite */
   for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
   {
     if(!strcmp(id->str, Zathura.Bookmarks.bookmarks[i].id))
     {
       Zathura.Bookmarks.bookmarks[i].page = Zathura.PDF.page_number;
+      g_string_free(id, TRUE);
       return TRUE;
     }
   }
@@ -3079,6 +3105,7 @@ cmd_bookmark(int argc, char** argv)
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
   Zathura.Bookmarks.number_of_bookmarks++;
 
+  g_string_free(id, TRUE);
   return TRUE;
 }
 

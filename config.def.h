@@ -27,9 +27,21 @@ static const char CONFIG_DIR[]    = "~/.config/zathura";
 static const char DATA_DIR[]      = "~/.local/share/zathura";
 
 /* bookmarks */
-static const char BM_PAGE_ENTRY[]  = "page";
-static const char BM_PAGE_OFFSET[] = "offset";
-static const char BM_PAGE_SCALE[] = "scale";
+enum
+{
+  BM_PAGE_ENTRY = 0,
+  BM_PAGE_OFFSET,
+  BM_PAGE_SCALE,
+  BM_MAX,
+};
+
+static const char *bm_reserved_names[] =
+{
+  [BM_PAGE_ENTRY]  = "page",
+  [BM_PAGE_OFFSET] = "offset",
+  [BM_PAGE_SCALE]  = "scale",
+};
+
 int save_position = 1;
 int save_zoom_level = 1;
 
