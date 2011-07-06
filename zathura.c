@@ -3133,11 +3133,13 @@ cmd_open_bookmark(int argc, char** argv)
     if(!strcmp(id->str, Zathura.Bookmarks.bookmarks[i].id))
     {
       set_page(Zathura.Bookmarks.bookmarks[i].page);
+      g_string_free(id, TRUE);
       return TRUE;
     }
   }
 
   notify(WARNING, "No matching bookmark found");
+  g_string_free(id, TRUE);
   return FALSE;
 }
 
@@ -3202,10 +3204,12 @@ cmd_delete_bookmark(int argc, char** argv)
 
       Zathura.Bookmarks.number_of_bookmarks--;
 
+      g_string_free(id, TRUE);
       return TRUE;
     }
   }
 
+  g_string_free(id, TRUE);
   return TRUE;
 }
 
