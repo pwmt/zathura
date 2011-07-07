@@ -3079,6 +3079,13 @@ cmd_bookmark(int argc, char** argv)
     id = g_string_append(id, argv[i]);
   }
 
+  if(strlen(id->str) == 0)
+  {
+    notify(WARNING, "Can't set bookmark: bookmark name is empty");
+    g_string_free(id, TRUE);
+    return FALSE;
+  }
+
   if(is_reserved_bm_name(id->str))
   {
     notify(WARNING, "Can't set bookmark: reserved bookmark name");
@@ -4351,6 +4358,8 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
 {
   gchar  *input  = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
   gchar **tokens = g_strsplit(input, " ", -1);
+  g_free(input);
+
   gchar *command = tokens[0];
   int     length = g_strv_length(tokens);
   int          i = 0;
@@ -4361,6 +4370,7 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   if(length < 1)
   {
     isc_abort(NULL);
+    g_strfreev(tokens);
     return FALSE;
   }
 
@@ -4378,12 +4388,14 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
       if(special_commands[i].always == 1)
       {
         isc_abort(NULL);
+        g_strfreev(tokens);
         return TRUE;
       }
 
       retv = special_commands[i].function(input, &(special_commands[i].argument));
       if(retv) isc_abort(NULL);
       gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
+      g_strfreev(tokens);
       return TRUE;
     }
   }
@@ -4413,6 +4425,7 @@ cb_inputbar_activate(GtkEntry* entry, gpointer data)
   isc_completion(&arg);
   gtk_widget_grab_focus(GTK_WIDGET(Zathura.UI.view));
 
+  g_strfreev(tokens);
   return TRUE;
 }
 
