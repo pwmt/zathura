@@ -379,6 +379,8 @@ void open_uri(char*);
 void out_of_memory(void) NORETURN;
 void update_status(void);
 void read_bookmarks_file(void);
+void write_bookmarks_file(void);
+void free_bookmarks(void);
 void read_configuration_file(const char*);
 void read_configuration(void);
 void recalc_rectangle(int, PopplerRectangle*);
@@ -1085,22 +1087,8 @@ close_file(gboolean keep_monitor)
           bm_reserved_names[BM_PAGE_SCALE], Zathura.PDF.scale);
     }
 
-    /* save bookmarks */
-    int i;
-    for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
-    {
-      g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
-          Zathura.Bookmarks.bookmarks[i].id, Zathura.Bookmarks.bookmarks[i].page);
-      g_free(Zathura.Bookmarks.bookmarks[i].id);
-    }
-    free(Zathura.Bookmarks.bookmarks);
-    Zathura.Bookmarks.bookmarks = NULL;
-    Zathura.Bookmarks.number_of_bookmarks = 0;
-
-    /* convert file and save it */
-    gchar* bookmarks = g_key_file_to_data(Zathura.Bookmarks.data, NULL, NULL);
-    g_file_set_contents(Zathura.Bookmarks.file, bookmarks, -1, NULL);
-    g_free(bookmarks);
+    write_bookmarks_file();
+    free_bookmarks();
   }
 
   /* inotify */
@@ -1595,6 +1583,38 @@ read_bookmarks_file(void)
     notify(ERROR, message);
     g_free(message);
   }
+}
+
+void
+write_bookmarks_file(void)
+{
+  if (!Zathura.Bookmarks.data)
+    /* nothing to do */
+    return;
+
+  /* save bookmarks */
+  for(int i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+  {
+    g_key_file_set_integer(Zathura.Bookmarks.data, Zathura.PDF.file,
+        Zathura.Bookmarks.bookmarks[i].id, Zathura.Bookmarks.bookmarks[i].page);
+  }
+
+  /* convert file and save it */
+  gchar* bookmarks = g_key_file_to_data(Zathura.Bookmarks.data, NULL, NULL);
+  g_file_set_contents(Zathura.Bookmarks.file, bookmarks, -1, NULL);
+  g_free(bookmarks);
+}
+
+void
+free_bookmarks(void)
+{
+  for(int i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
+  {
+    g_free(Zathura.Bookmarks.bookmarks[i].id);
+  }
+  free(Zathura.Bookmarks.bookmarks);
+  Zathura.Bookmarks.bookmarks = NULL;
+  Zathura.Bookmarks.number_of_bookmarks = 0;
 }
 
 void
@@ -3093,6 +3113,9 @@ cmd_bookmark(int argc, char** argv)
     return FALSE;
   }
 
+  /* reload the bookmark file */
+  read_bookmarks_file();
+
   /* check for existing bookmark to overwrite */
   for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
   {
@@ -3111,6 +3134,9 @@ cmd_bookmark(int argc, char** argv)
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(id->str);
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
   Zathura.Bookmarks.number_of_bookmarks++;
+
+  /* write the bookmark file */
+  write_bookmarks_file();
 
   g_string_free(id, TRUE);
   return TRUE;
@@ -3194,6 +3220,9 @@ cmd_delete_bookmark(int argc, char** argv)
     id = g_string_append(id, argv[i]);
   }
 
+  /* reload bookmark file */
+  read_bookmarks_file();
+
   /* check for bookmark to delete */
   for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
   {
@@ -3210,8 +3239,11 @@ cmd_delete_bookmark(int argc, char** argv)
           Zathura.Bookmarks.number_of_bookmarks * sizeof(Bookmark));
 
       Zathura.Bookmarks.number_of_bookmarks--;
-
       g_string_free(id, TRUE);
+
+      /* write bookmark file */
+      write_bookmarks_file();
+
       return TRUE;
     }
   }
@@ -4182,7 +4214,7 @@ cb_destroy(GtkWidget* widget, gpointer data)
 
   /* clean up bookmarks */
   g_free(Zathura.Bookmarks.file);
-    if (Zathura.Bookmarks.data)
+  if (Zathura.Bookmarks.data)
     g_key_file_free(Zathura.Bookmarks.data);
 
   /* destroy mutexes */
