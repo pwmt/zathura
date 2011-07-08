@@ -201,7 +201,7 @@ Command commands[] = {
   {"bmark",     "b",            cmd_bookmark,        0,            "Bookmark current page" },
   {"close",     "c",            cmd_close,           0,            "Close current file" },
   {"coffset",   0,              cmd_correct_offset,  0,            "Correct page offset" },
-  {"delbmark",  0,              cmd_delete_bookmark, cc_bookmark,  "Bookmark current page" },
+  {"delbmark",  0,              cmd_delete_bookmark, cc_bookmark,  "Delete bookmark" },
   {"export",    "e",            cmd_export,          cc_export,    "Export images or attached files" },
   {"info",      "i",            cmd_info,            0,            "Show information about the document" },
   {"map",       "m",            cmd_map,             0,            "Map keybinding to a function" },
