@@ -327,6 +327,7 @@ ArgumentName argument_names[] = {
   {"insert",      INSERT},
   {"left",        LEFT},
   {"next",        NEXT},
+  {"noadjust",    ADJUST_NONE},
   {"original",    ZOOM_ORIGINAL},
   {"out",         ZOOM_OUT},
   {"previous",    PREVIOUS},
