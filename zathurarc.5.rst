@@ -32,11 +32,11 @@ set
 
 [id] and the corresponding [value] can be one of
 
-* adjust_open [23-25] - adjust mode. 
+* adjust_open [bestfit|width|noadjust] - adjust mode.
 
-  - 23: adjust to best fit
-  - 24: adjust to width
-  - 25: don't adjust
+  - bestfit: adjust to best fit
+  - width: adjust to width
+  - noadjust: don't adjust
 
 * browser,
   uri_command [string] - command to open external URIs.
@@ -92,6 +92,9 @@ set
 
 * recolor [bool] - invert the image.
 
+* save_position, save_zoom_level [bool] - save current page and zoom level in
+  bookmarks file.
+
 * scroll_step [float] - scroll step.
 
 * scroll_wrap [bool] - wrap scrolling at the end and beginning of the document.
@@ -123,10 +126,9 @@ uppercase shortcuts or one of
 
 * abort - clear command line and buffer.
 * adjust_window
-* change_buffer [11-12]: change buffer.
+* change_buffer [delete_last]: change buffer.
 
-  - 11: delete last word
-  - 12: delete last character
+  - delete_last: delete last character
 
 * change_mode [mode] - change mode.
 
@@ -134,32 +136,13 @@ uppercase shortcuts or one of
 
 * focus_inputbar - focus the inputbar.
 * follow - follow a URI.
-* navigate [0-3] - navigate the document.
-
-  - 0: next
-  - 1: previous
-  - 2: left
-  - 3: right
-
-* navigate_index [4-5|30-33] - nagivate the index.
-
-  - 4: up
-  - 5: down
-  - 30: expand
-  - 31: collapse
-  - 32: select
-
+* navigate [next|previous|left|right] - navigate the document.
+* navigate_index [up|down|expand|collapse|select] - nagivate the index.
 * quit - quit zathura.
 * recolor - toogle recolor setting.
 * reload - reload the file.
 * rotate - rotate by 90 degrees clockwise.
-* scroll [2-5|36-39] scroll.
-
-  - 36: half up
-  - 37: half down
-  - 38: full up
-  - 39: full down
-  
+* scroll [up|down|half_up|half_down|full_up|full_down|left|right] - scroll.
 * search [string] - search for the specified string.
 * switch_goto_mode - toogle goto mode.
 * toggle_fullscreen - toogle fullscreen mode.
