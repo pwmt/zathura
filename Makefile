@@ -65,7 +65,7 @@ dist: clean
 	@mkdir -p ${PROJECT}-${VERSION}
 	@cp -R LICENSE Makefile config.mk config.def.h README \
 			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION} \
-			${PROJECT}.desktop
+			${PROJECT}.desktop ${PROJECT}rst.5.rst
 	@tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
 	@rm -rf ${PROJECT}-${VERSION}
@@ -78,6 +78,10 @@ install: all
 	@echo installing manual page
 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	@sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	@if which rst2man > /dev/null ; then \
+		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
+		rst2man ${PROJECT}rc.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+	fi
 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	@mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	@echo installing desktop file
@@ -88,5 +92,6 @@ uninstall:
 	@rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
 	@echo removing manual page
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	@rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
 	@echo removing desktop file
 	@rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
