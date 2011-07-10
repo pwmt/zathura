@@ -46,7 +46,7 @@ debug: ${PROJECT}-debug
 ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	@echo project=${PROJECT} > ${PROJECT}.pc
 	@echo version=${VERSION} >> ${PROJECT}.pc
-	@echo includedir=${PREFIX}/include/${PROJECT} >> ${PROJECT}.pc
+	@echo includedir=${PREFIX}/include >> ${PROJECT}.pc
 	@cat ${PROJECTNV}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
