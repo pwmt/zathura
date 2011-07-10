@@ -1499,13 +1499,13 @@ open_stdin(gchar* password)
       return FALSE;
     }
   }
+  close(handle);
 
   if (count != 0)
   {
     gchar* message = g_strdup_printf("Can not read from stdin.");
     notify(ERROR, message);
     g_free(message);
-    close(handle);
     g_unlink(file);
     g_free(file);
     return FALSE;
