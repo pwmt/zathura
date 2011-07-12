@@ -3903,6 +3903,7 @@ cc_open(char* input)
     gtk_entry_set_text(Zathura.UI.inputbar, file);
     gtk_editable_set_position(GTK_EDITABLE(Zathura.UI.inputbar), -1);
     g_free(file);
+    completion_free(completion);
     return NULL;
   }
 
@@ -3960,6 +3961,7 @@ cc_open(char* input)
   {
     g_free(path);
     g_free(file);
+    completion_free(completion);
     return NULL;
   }
 
