@@ -1935,7 +1935,6 @@ search(void* parameter)
   static int direction;
   static int next_page = 0;
   gchar* old_query = NULL;
-  int page_counter;
   GList* results = NULL;
 
   if(argument->n != NO_SEARCH)
@@ -1980,7 +1979,7 @@ search(void* parameter)
 
     g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
 
-    page_counter = (g_strcmp0(old_query,search_item) == 0) ? 1 : 0;
+    int page_counter = (g_strcmp0(old_query,search_item) == 0) ? 1 : 0;
     for( ; page_counter <= number_of_pages; page_counter++)
     {
       g_static_mutex_lock(&(Zathura.Lock.search_lock));
