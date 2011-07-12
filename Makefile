@@ -64,8 +64,8 @@ gdb: debug
 dist: clean
 	@mkdir -p ${PROJECT}-${VERSION}
 	@cp -R LICENSE Makefile config.mk config.def.h README \
-			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION} \
-			${PROJECT}.desktop ${PROJECT}rst.5.rst
+			${PROJECT}.desktop ${PROJECT}rc.5.rst \
+			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION}
 	@tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
 	@rm -rf ${PROJECT}-${VERSION}
