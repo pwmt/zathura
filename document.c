@@ -305,6 +305,7 @@ zathura_document_free(zathura_document_t* document)
   for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
   {
     zathura_page_free(document->pages[page_id]);
+    document->pages[page_id] = NULL;
   }
 
   free(document->pages);
@@ -426,6 +427,8 @@ zathura_page_free(zathura_page_t* page)
     girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
+
+  g_static_mutex_free(&(page->lock));
 
   return page->document->functions.page_free(page);
 }

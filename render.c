@@ -17,6 +17,17 @@ render_job(void* data)
       g_cond_wait(render_thread->cond, render_thread->lock);
     }
 
+    if (girara_list_size(render_thread->list) <= 0) {
+      /*
+       * We've been signaled with g_cond_signal(), but the list
+       * is still empty. This means that the signal came from
+       * render_free() and current document is being closed.
+       * We should unlock the mutex and kill the thread.
+       */
+      g_mutex_unlock(render_thread->lock);
+      g_thread_exit(0);
+    }
+
     zathura_page_t* page = (zathura_page_t*) girara_list_nth(render_thread->list, 0);
     girara_list_remove(render_thread->list, page);
     g_mutex_unlock(render_thread->lock);
@@ -104,6 +115,8 @@ render_free(render_thread_t* render_thread)
   }
 
   if (render_thread->cond) {
+    g_cond_signal(render_thread->cond);
+    g_thread_join(render_thread->thread);
     g_cond_free(render_thread->cond);
   }
 

@@ -308,6 +308,16 @@ error_out:
   return false;
 }
 
+static void
+remove_page_from_table(GtkWidget* page, gpointer permanent)
+{
+  if (!permanent) {
+    g_object_ref(G_OBJECT(page));
+  }
+
+  gtk_container_remove(GTK_CONTAINER(page->parent), page);
+}
+
 bool
 document_close(zathura_t* zathura)
 {
@@ -315,11 +325,15 @@ document_close(zathura_t* zathura)
     return false;
   }
 
-  if (zathura->sync.render_thread) {
-    render_free(zathura->sync.render_thread);
-  }
+  render_free(zathura->sync.render_thread);
+  zathura->sync.render_thread = NULL;
+
+  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_view), remove_page_from_table, (gpointer)1);
 
   zathura_document_free(zathura->document);
+  zathura->document = NULL;
+
+  gtk_widget_hide_all(zathura->ui.page_view);
 
   return true;
 }
@@ -378,8 +392,6 @@ statusbar_page_number_update(zathura_t* zathura)
 void
 page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 {
-  GList* child;
-
   /* show at least one page */
   if (pages_per_row == 0) {
     pages_per_row = 1;
@@ -389,12 +401,7 @@ page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
     return;
   }
 
-  child = gtk_container_get_children(GTK_CONTAINER(zathura->ui.page_view));
-  while (child) {
-    g_object_ref(G_OBJECT(child->data));
-    gtk_container_remove(GTK_CONTAINER(zathura->ui.page_view), GTK_WIDGET(child->data));
-    child = g_list_next(child);
-  }
+  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_view), remove_page_from_table, (gpointer)0);
 
   gtk_table_resize(GTK_TABLE(zathura->ui.page_view), zathura->document->number_of_pages / pages_per_row + 1, pages_per_row);
   for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
