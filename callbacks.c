@@ -85,8 +85,9 @@ cb_pages_per_row_value_changed(girara_session_t* session, girara_setting_t* sett
   int pages_per_row = setting->value.i;
   zathura_t* zathura = setting->data;
 
-  if (pages_per_row < 1)
+  if (pages_per_row < 1) {
     pages_per_row = 1;
+  }
 
   page_view_set_mode(zathura, pages_per_row);
 }
