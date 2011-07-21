@@ -23,12 +23,20 @@ gboolean cb_destroy(GtkWidget* widget, gpointer data);
 void buffer_changed(girara_session_t* session);
 
 /**
- * This function gets called when the the value of the vertical scrollbars
+ * This function gets called when the value of the vertical scrollbars
  * changes (e.g.: by scrolling, moving to another page)
  *
  * @param adjustment The vadjustment of the page view
  * @param data NULL
  */
 void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
+/**
+ * This function gets called when the value of the "pages-per-row"
+ * variable changes
+ *
+ * @param session The current girara session
+ * @param setting The "pages-per-row" setting
+ */
+void cb_pages_per_row_value_changed(girara_session_t* session, girara_setting_t* setting);
 
 #endif // CALLBACKS_H

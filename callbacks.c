@@ -78,3 +78,15 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
     free(offset);
   }
 }
+
+void
+cb_pages_per_row_value_changed(girara_session_t* session, girara_setting_t* setting)
+{
+  int pages_per_row = setting->value.i;
+  zathura_t* zathura = setting->data;
+
+  if (pages_per_row < 1)
+    pages_per_row = 1;
+
+  page_view_set_mode(zathura, pages_per_row);
+}

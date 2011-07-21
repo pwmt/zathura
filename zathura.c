@@ -378,9 +378,22 @@ statusbar_page_number_update(zathura_t* zathura)
 void
 page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 {
+  GList* child;
+
   /* show at least one page */
   if (pages_per_row == 0) {
     pages_per_row = 1;
+  }
+
+  if (zathura->document == NULL) {
+    return;
+  }
+
+  child = gtk_container_get_children(GTK_CONTAINER(zathura->ui.page_view));
+  while (child) {
+    g_object_ref(G_OBJECT(child->data));
+    gtk_container_remove(GTK_CONTAINER(zathura->ui.page_view), GTK_WIDGET(child->data));
+    child = g_list_next(child);
   }
 
   gtk_table_resize(GTK_TABLE(zathura->ui.page_view), zathura->document->number_of_pages / pages_per_row + 1, pages_per_row);
