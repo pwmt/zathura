@@ -4752,9 +4752,11 @@ cb_view_button_release(GtkWidget* widget, GdkEventButton* event, gpointer data)
     rectangle.y2 = d;
   }
 
+#if !POPPLER_CHECK_VERSION(0,15,0)
   /* adapt y coordinates */
   rectangle.y1 = page_height - rectangle.y1;
   rectangle.y2 = page_height - rectangle.y2;
+#endif
 
   /* get selected text */
   g_static_mutex_lock(&(Zathura.Lock.pdflib_lock));
