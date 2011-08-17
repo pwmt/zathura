@@ -20,7 +20,7 @@
 
 /* macros */
 #define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
-#define CLEAN(m) (m & ~(GDK_MOD2_MASK) & ~(GDK_BUTTON1_MASK) & ~(GDK_BUTTON2_MASK) & ~(GDK_BUTTON3_MASK) & ~(GDK_BUTTON4_MASK) & ~(GDK_BUTTON5_MASK) & ~(GDK_LEAVE_NOTIFY_MASK))
+#define CLEAN(m) (m & ~(GDK_MOD5_MASK) & ~(GDK_MOD2_MASK) & ~(GDK_BUTTON1_MASK) & ~(GDK_BUTTON2_MASK) & ~(GDK_BUTTON3_MASK) & ~(GDK_BUTTON4_MASK) & ~(GDK_BUTTON5_MASK) & ~(GDK_LEAVE_NOTIFY_MASK))
 #if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC) || defined(__clang__)
 /* only gcc, clang and Intel's cc seem support this */
 #define NORETURN __attribute__((noreturn))
