@@ -8,11 +8,11 @@ PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
 
 # libs
-GTK_INC = $(shell pkg-config --cflags gtk+-2.0)
-GTK_LIB = $(shell pkg-config --libs gtk+-2.0 gthread-2.0)
+GTK_INC ?= $(shell pkg-config --cflags gtk+-2.0)
+GTK_LIB ?= $(shell pkg-config --libs gtk+-2.0 gthread-2.0)
 
-GIRARA_INC = $(shell pkg-config --cflags girara-gtk2)
-GIRARA_LIB = $(shell pkg-config --libs girara-gtk2)
+GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk2)
+GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
 
 INCS = -I. -I/usr/include ${GIRARA_INC} ${GTK_INC}
 LIBS = -lc ${GIRARA_LIB} ${GTK_LIB} -lpthread -lm -ldl
