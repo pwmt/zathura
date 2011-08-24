@@ -2320,7 +2320,7 @@ sc_scroll(Argument* argument)
     Argument arg;
     arg.n = PREVIOUS;
     sc_navigate(&arg);
-    if (!scroll_wrap || (Zathura.PDF.page_number < old_page))
+    if (scroll_wrap || (Zathura.PDF.page_number < old_page))
     {
       arg.n = BOTTOM;
       ss = TRUE;
