@@ -104,7 +104,7 @@ set
   show_inputbar [bool] -
   show statusbar, inputbar and scrollbars.
 
-* smooth_scolling [float] - smooth scrolling.
+* smooth_scrolling [float] - smooth scrolling.
 
 * transparency [float] - transparency of rectangles.
 
