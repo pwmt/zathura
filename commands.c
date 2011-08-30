@@ -28,7 +28,10 @@ cmd_close(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
-  g_return_val_if_fail(zathura->document != NULL, false);
+  if (zathura->document == NULL) {
+    // nothing needs to be done
+    return true;
+  }
 
   document_close(zathura);
 
