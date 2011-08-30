@@ -257,6 +257,7 @@ document_info_open(gpointer data)
   }
 
   document_open(document_info->zathura, document_info->path, document_info->password);
+  free(document_info);
 
   return FALSE;
 }

@@ -47,6 +47,27 @@ cmd_info(girara_session_t* session, girara_list_t* argument_list)
 bool
 cmd_open(girara_session_t* session, girara_list_t* argument_list)
 {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document) {
+    document_close(zathura);
+  }
+
+  const int argc = girara_list_size(argument_list);
+  if (argc > 2) {
+    girara_error("too many arguments");
+    return false;
+  }
+  else if (argc >= 1) {
+    document_open(zathura, girara_list_nth(argument_list, 0), (argc == 2) ? girara_list_nth(argument_list, 1) :  NULL);
+  }
+  else {
+    girara_error("no arguments");
+    return false;
+  }
+
   return true;
 }
 
