@@ -29,3 +29,6 @@ CC ?= gcc
 
 # strip
 SFLAGS ?= -s
+
+# set to something != 0 to enable verbose build output
+VERBOSE ?= 0
