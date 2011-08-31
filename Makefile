@@ -2,6 +2,7 @@
 # zathura - user interface
 
 include config.mk
+include common.mk
 
 PROJECT  = zathura
 SOURCE   = zathura.c
@@ -19,12 +20,12 @@ options:
 	@echo "CC      = ${CC}"
 
 %.o: %.c
-	@echo CC $<
-	@${CC} -c ${CFLAGS} -o $@ $<
+	$(ECHO) CC $<
+	$(QUIET)${CC} -c ${CFLAGS} -o $@ $<
 
 %.do: %.c
-	@echo CC $<
-	@${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $<
+	$(ECHO) CC $<
+	$(QUIET)${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $<
 
 ${OBJECTS}:  config.h config.mk
 ${DOBJECTS}: config.h config.mk
@@ -38,19 +39,19 @@ config.h: config.def.h
 	fi
 
 ${PROJECT}: ${OBJECTS}
-	@echo CC -o $@
-	@${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
+	$(ECHO) CC -o $@
+	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
 
 clean:
-	@rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
+	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug
 
 distclean: clean
-	@rm -rf config.h
+	$(QUIET)rm -rf config.h
 
 ${PROJECT}-debug: ${DOBJECTS}
-	@echo CC -o ${PROJECT}-debug
-	@${CC} ${LDFLAGS} -o ${PROJECT}-debug ${DOBJECTS} ${LIBS}
+	$(ECHO) CC -o ${PROJECT}-debug
+	$(QUIET)${CC} ${LDFLAGS} -o ${PROJECT}-debug ${DOBJECTS} ${LIBS}
 
 debug: ${PROJECT}-debug
 
@@ -62,36 +63,35 @@ gdb: debug
 	cgdb ${PROJECT}-debug
 
 dist: clean
-	@mkdir -p ${PROJECT}-${VERSION}
-	@cp -R LICENSE Makefile config.mk config.def.h README \
+	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
+	$(QUIET)cp -R LICENSE Makefile config.mk config.def.h README \
 			${PROJECT}.desktop ${PROJECT}rc.5.rst \
 			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION}
-	@tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
-	@gzip ${PROJECT}-${VERSION}.tar
-	@rm -rf ${PROJECT}-${VERSION}
+	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
+	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
+	$(QUIET)rm -rf ${PROJECT}-${VERSION}
 
 install: all
-	@echo installing executable file
-	@mkdir -p ${DESTDIR}${PREFIX}/bin
-	@cp -f ${PROJECT} ${DESTDIR}${PREFIX}/bin
-	@chmod 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin/${PROJECT}
-	@echo installing manual page
-	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	@sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	@if which rst2man > /dev/null ; then \
+	$(ECHO) installing executable file
+	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
+	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
+	$(ECHO) installing manual page
+	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
+	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)if which rst2man > /dev/null ; then \
 		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
 		rst2man ${PROJECT}rc.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
 	fi
-	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	@mkdir -p ${DESTDIR}${DESKTOPPREFIX}
-	@echo installing desktop file
-	@install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
+	$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
+	$(ECHO) installing desktop file
+	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
 
 uninstall:
-	@echo removing executable file
-	@rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
-	@echo removing manual page
-	@rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	@rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
-	@echo removing desktop file
-	@rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
+	$(ECHO) removing executable file
+	$(QUIET)rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
+	$(ECHO) removing manual page
+	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
+	$(ECHO) removing desktop file
+	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
