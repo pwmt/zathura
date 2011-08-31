@@ -58,10 +58,10 @@ gdb: debug
 	cgdb ${PROJECT}-debug
 
 dist: clean
-	$(QUIET)${MAKE} -p ${PROJECT}-${VERSION}
+	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)cp -R LICENSE Makefile config.mk README \
-			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION} \
-			${PROJECT}.pc.in
+			${PROJECT}.1 ${SOURCE} ${PROJECT}.pc.in \
+			${PROJECT}-${VERSION}
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
 	$(QUIET)rm -rf ${PROJECT}-${VERSION}
