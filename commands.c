@@ -83,7 +83,7 @@ cmd_print(girara_session_t* session, girara_list_t* argument_list)
 		return false;
 	}
 
-	print((zathura_t*) session->global.data);;
+	print((zathura_t*) session->global.data);
 
   return true;
 }
