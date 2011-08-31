@@ -1,10 +1,10 @@
 /* See LICENSE file for license and copyright information */
 
-#include <callbacks.h>
 #include <girara.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include "callbacks.h"
 #include "zathura.h"
 #include "render.h"
 #include "document.h"
