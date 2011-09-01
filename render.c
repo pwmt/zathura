@@ -214,9 +214,43 @@ render(zathura_t* zathura, zathura_page_t* page)
     }
   }
 
+  /* rotate */
+  unsigned int width = page_width;
+  unsigned int height = page_height;
+  if (page->document->rotate == 90 || page->document->rotate == 270) {
+    width = page_height;
+    height = page_width;
+  }
+
+  cairo_surface_t* final_surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
+  cairo_t* cairo = cairo_create(final_surface);
+
+  switch(page->document->rotate)
+  {
+    case 90:
+      cairo_translate(cairo, width, 0);
+      break;
+    case 180:
+      cairo_translate(cairo, width, height);
+      break;
+    case 270:
+      cairo_translate(cairo, 0, height);
+      break;
+  }
+
+  if (page->document->rotate != 0) {
+    cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
+  }
+
+  cairo_set_source_surface(cairo, surface, 0, 0);
+  cairo_set_operator(cairo, CAIRO_OPERATOR_SOURCE);
+  cairo_paint(cairo);
+  cairo_destroy(cairo);
+  cairo_surface_destroy(surface);
+
   /* draw to gtk widget */
-  page->surface = surface;
-  gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
+  page->surface = final_surface;
+  gtk_widget_set_size_request(page->drawing_area, width, height);
   gtk_widget_queue_draw(page->drawing_area);
 
   zathura_image_buffer_free(image_buffer);
