@@ -114,7 +114,8 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,     "Show file information");
   girara_inputbar_command_add(gsession, "open",    "o",  cmd_open,            cc_open,  "Open document");
   girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           NULL,     "Print document");
-  girara_inputbar_command_add(gsession, "save",    NULL, cmd_save,            NULL,     "Save document");
+  girara_inputbar_command_add(gsession, "write",   NULL, cmd_save,            NULL,     "Save document");
+  girara_inputbar_command_add(gsession, "write!",  NULL, cmd_savef,           NULL,     "Save document (and force overwriting)");
 
   /* add shortcut mappings */
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);

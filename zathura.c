@@ -309,6 +309,27 @@ error_out:
   return false;
 }
 
+bool
+document_save(zathura_t* zathura, const char* path, bool overwrite)
+{
+  g_return_val_if_fail(zathura, false);
+  g_return_val_if_fail(zathura->document, false);
+  g_return_val_if_fail(path, false);
+
+  gchar* file_path = girara_fix_path(path);
+  if (!overwrite && g_file_test(file_path, G_FILE_TEST_EXISTS))
+  {
+    gchar* message = g_strdup_printf("File already exists: %s. Use :write! to overwrite it.", file_path);
+    girara_error(message);
+    g_free(message);
+    return false;
+  }
+
+  bool res = zathura_document_save_as(zathura->document, file_path);
+  g_free(file_path);
+  return res;
+}
+
 static void
 remove_page_from_table(GtkWidget* page, gpointer permanent)
 {

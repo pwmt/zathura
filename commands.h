@@ -78,4 +78,14 @@ bool cmd_print(girara_session_t* session, girara_list_t* argument_list);
  */
 bool cmd_save(girara_session_t* session, girara_list_t* argument_list);
 
+/**
+ * Save the current file and overwrite existing files
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occured
+ */
+bool cmd_savef(girara_session_t* session, girara_list_t* argument_list);
+
+
 #endif // COMMANDS_H

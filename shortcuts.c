@@ -160,7 +160,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int t
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
-  g_return_val_if_fail(zathura->document != NULL, false);
+  if (zathura->document == NULL) {
+    return false;
+  }
 
   GtkAdjustment* adjustment = NULL;
   if ( (argument->n == LEFT) || (argument->n == RIGHT) )

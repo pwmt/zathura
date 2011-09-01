@@ -115,6 +115,18 @@ void zathura_free(zathura_t* zathura);
 bool document_open(zathura_t* zathura, const char* path, const char* password);
 
 /**
+ * Save a open file
+ *
+ * @param zathura The zathura session
+ * @param path The path
+ * @param overwrite Overwrite existing file
+ *
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool document_save(zathura_t* zathura, const char* path, bool overwrite);
+
+
+/**
  * Closes the current opened document
  *
  * @param zathura The zathura session

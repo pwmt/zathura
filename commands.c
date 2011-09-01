@@ -91,5 +91,45 @@ cmd_print(girara_session_t* session, girara_list_t* argument_list)
 bool
 cmd_save(girara_session_t* session, girara_list_t* argument_list)
 {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+	if (zathura->document == NULL) {
+		girara_error("no document as been opened");
+		return false;
+	}
+
+  if (girara_list_size(argument_list) == 1) {
+    document_save(zathura, girara_list_nth(argument_list, 0), false);
+  }
+  else {
+    girara_error("invalid arguments");
+    return false;
+  }
+
+  return true;
+}
+
+bool
+cmd_savef(girara_session_t* session, girara_list_t* argument_list)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+	if (zathura->document == NULL) {
+		girara_error("no document as been opened");
+		return false;
+	}
+
+  if (girara_list_size(argument_list) == 1) {
+    document_save(zathura, girara_list_nth(argument_list, 0), true);
+  }
+  else {
+    girara_error("invalid arguments");
+    return false;
+  }
+
   return true;
 }
