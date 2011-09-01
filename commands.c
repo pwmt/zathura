@@ -45,6 +45,12 @@ cmd_info(girara_session_t* session, girara_list_t* argument_list)
 }
 
 bool
+cmd_help(girara_session_t* session, girara_list_t* argument_list)
+{
+  return true;
+}
+
+bool
 cmd_open(girara_session_t* session, girara_list_t* argument_list)
 {
   g_return_val_if_fail(session != NULL, false);

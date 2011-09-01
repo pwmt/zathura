@@ -125,7 +125,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* password);
  */
 bool document_save(zathura_t* zathura, const char* path, bool overwrite);
 
-
 /**
  * Closes the current opened document
  *
