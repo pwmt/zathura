@@ -84,6 +84,12 @@ typedef struct zathura_s
 		girara_mode_t insert; /**> Insert mode */
 	} modes;
 
+  struct
+  {
+    gchar* file; /**> bookmarks file */
+    girara_list_t* bookmarks; /**> bookmarks */
+  } bookmarks;
+
   zathura_document_t* document; /**> The current document */
 } zathura_t;
 

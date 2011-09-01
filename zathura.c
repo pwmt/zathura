@@ -4,6 +4,7 @@
 
 #include <girara.h>
 
+#include "bookmarks.h"
 #include "callbacks.h"
 #include "config.h"
 #include "document.h"
@@ -189,6 +190,10 @@ zathura_init(int argc, char* argv[])
     free(string_value);
   }
 
+  /* bookmarks */
+  zathura->bookmarks.bookmarks = girara_list_new();
+  girara_list_set_free_function(zathura->bookmarks.bookmarks, (girara_free_function_t) zathura_bookmark_free);
+
   /* open document if passed */
   if (argc > 1) {
     zathura_document_info_t* document_info = malloc(sizeof(zathura_document_info_t));
@@ -230,6 +235,9 @@ zathura_free(zathura_t* zathura)
   }
 
   document_close(zathura);
+
+  /* bookmarks */
+  girara_list_free(zathura->bookmarks.bookmarks);
 
   /* free print settings */
   g_object_unref(zathura->print.settings);
