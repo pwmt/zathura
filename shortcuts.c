@@ -47,6 +47,10 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, unsign
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
   }
 
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.notification_area))) {
+    gtk_widget_hide(GTK_WIDGET(session->gtk.notification_area));
+  }
+
   if (argument->data) {
     gtk_entry_set_text(session->gtk.inputbar, (char*) argument->data);
     gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar));
