@@ -7,6 +7,7 @@
 #include "bookmarks.h"
 #include "callbacks.h"
 #include "config.h"
+#include "database.h"
 #include "document.h"
 #include "shortcuts.h"
 #include "zathura.h"
@@ -190,6 +191,14 @@ zathura_init(int argc, char* argv[])
     free(string_value);
   }
 
+  /* database */
+  char* database_path = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+  zathura->database = zathura_db_init(database_path);
+  if (zathura->database == NULL) {
+    girara_error("Unable to inizialize database. Bookmarks won't be available.");
+  }
+  g_free(database_path);
+
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_list_new();
   girara_list_set_free_function(zathura->bookmarks.bookmarks, (girara_free_function_t) zathura_bookmark_free);
@@ -215,6 +224,8 @@ error_free:
   }
 
   girara_session_destroy(zathura->ui.session);
+  girara_list_free(zathura->bookmarks.bookmarks);
+  zathura_db_free(zathura->database);
 
 error_out:
 
@@ -238,6 +249,9 @@ zathura_free(zathura_t* zathura)
 
   /* bookmarks */
   girara_list_free(zathura->bookmarks.bookmarks);
+
+  /* database */
+  zathura_db_free(zathura->database);
 
   /* free print settings */
   g_object_unref(zathura->print.settings);

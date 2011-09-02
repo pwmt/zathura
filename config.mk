@@ -14,8 +14,11 @@ GTK_LIB ?= $(shell pkg-config --libs gtk+-2.0 gthread-2.0)
 GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk2)
 GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
 
-INCS = ${GIRARA_INC} ${GTK_INC}
-LIBS = -lc ${GIRARA_LIB} ${GTK_LIB} -lpthread -lm -ldl
+SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
+SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
+
+INCS = ${GIRARA_INC} ${GTK_INC} $(SQLITE_INC)
+LIBS = -lc ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) -lpthread -lm -ldl
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length $(INCS)

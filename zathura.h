@@ -20,6 +20,10 @@ struct zathura_page_s;
 typedef struct zathura_document_s zathura_document_t;
 typedef struct zathura_page_s zathura_page_t;
 
+/* forward declaration for types form database.h */
+struct zathura_database_s;
+typedef struct zathura_database_s zathura_database_t;
+
 /* forward declaration for types from render.h */
 struct render_thread_s;
 typedef struct render_thread_s render_thread_t;
@@ -91,6 +95,7 @@ typedef struct zathura_s
   } bookmarks;
 
   zathura_document_t* document; /**> The current document */
+  zathura_database_t* database; /**> The database */
 } zathura_t;
 
 /**
