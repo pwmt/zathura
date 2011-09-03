@@ -320,6 +320,11 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     gtk_widget_realize(page->event_box);
   }
 
+  /* bookmarks */
+  if (!zathura_bookmarks_load(zathura, zathura->document->file_path)) {
+    girara_warning("Failed to load bookmarks for %s.\n", zathura->document->file_path);
+  }
+
   return true;
 
 error_free:

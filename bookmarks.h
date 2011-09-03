@@ -53,12 +53,4 @@ void zathura_bookmark_free(zathura_bookmark_t* bookmark);
  */
 bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file);
 
-/**
- * Save bookmarks for a specific file.
- * @param zathura The zathura instance.
- * @param file The file.
- * @param true on success, false otherwise
- */
-bool zathura_bookmarks_save(zathura_t* zathura, const gchar* file);
-
 #endif // BOOKMARKS_H
