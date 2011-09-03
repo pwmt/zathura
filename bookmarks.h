@@ -27,8 +27,9 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
  * Remove a bookmark from the list of bookmarks.
  * @param zathura The zathura instance.
  * @param id The bookmark's id.
+ * @return true on success, false otherwise
  */
-void zathura_bookmark_remove(zathura_t* zathura, const gchar* id);
+bool zathura_bookmark_remove(zathura_t* zathura, const gchar* id);
 
 /**
  * Get bookmark from the list of bookmarks.
