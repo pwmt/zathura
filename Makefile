@@ -8,6 +8,10 @@ SOURCE   = $(shell find . -iname "*.c")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
+ifneq "$(NEEDS_DL)" "0"
+LIBS += -ldl
+endif
+
 all: options ${PROJECT}
 
 options:
