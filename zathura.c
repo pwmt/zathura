@@ -36,7 +36,7 @@ zathura_init(int argc, char* argv[])
     { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  "Path to the config directory",               "path" },
     { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    "Path to the data directory",                 "path" },
     { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, "Path to the directories containing plugins", "path" },
-    { NULL }
+    { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
   GOptionContext* context = g_option_context_new(" [file] [password]");
@@ -315,7 +315,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   /* create blank pages */
-  for (int page_id = 0; page_id < document->number_of_pages; page_id++) {
+  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
     zathura_page_t* page = document->pages[page_id];
     gtk_widget_realize(page->event_box);
   }

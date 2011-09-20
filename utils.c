@@ -154,7 +154,8 @@ execute_command(char* const argv[], char** output)
 }
 
 void
-document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree)
+document_index_build(GtkTreeModel* UNUSED(model), GtkTreeIter* UNUSED(parent),
+    girara_tree_node_t* UNUSED(tree))
 {
   /*girara_list_t* list        = girara_node_get_children(tree);*/
   /*girara_list_iterator_t* it = girara_list_iterator(list);*/

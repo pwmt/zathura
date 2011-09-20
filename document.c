@@ -376,7 +376,7 @@ zathura_document_attachments_get(zathura_document_t* document)
 }
 
 bool
-zathura_document_attachments_free(zathura_list_t* list)
+zathura_document_attachments_free(zathura_list_t* UNUSED(list))
 {
   return false;
 }
@@ -461,7 +461,7 @@ zathura_page_links_get(zathura_page_t* page)
 }
 
 bool
-zathura_page_links_free(zathura_list_t* list)
+zathura_page_links_free(zathura_list_t* UNUSED(list))
 {
   return false;
 }
@@ -482,7 +482,7 @@ zathura_page_form_fields_get(zathura_page_t* page)
 }
 
 bool
-zathura_page_form_fields_free(zathura_list_t* list)
+zathura_page_form_fields_free(zathura_list_t* UNUSED(list))
 {
   return false;
 }

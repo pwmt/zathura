@@ -11,7 +11,7 @@
 #include "utils.h"
 
 gboolean
-cb_destroy(GtkWidget* widget, gpointer data)
+cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
 {
   return TRUE;
 }
@@ -78,7 +78,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
 }
 
 void
-cb_pages_per_row_value_changed(girara_session_t* session, girara_setting_t* setting)
+cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), girara_setting_t* setting)
 {
   int pages_per_row = setting->value.i;
   zathura_t* zathura = setting->data;

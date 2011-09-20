@@ -279,7 +279,8 @@ render_all(zathura_t* zathura)
 }
 
 gboolean
-page_expose_event(GtkWidget* widget, GdkEventExpose* event, gpointer data)
+page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
+    gpointer data)
 {
   zathura_page_t* page = data;
   if (page == NULL) {

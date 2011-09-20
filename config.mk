@@ -25,7 +25,7 @@ INCS = ${GIRARA_INC} ${GTK_INC} $(SQLITE_INC)
 LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) -lpthread -lm
 
 # flags
-CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length $(INCS)
+CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
 
 # debug
 DFLAGS = -g

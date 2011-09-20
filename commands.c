@@ -8,7 +8,8 @@
 #include "document.h"
 
 bool
-cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
+cmd_bookmark_create(girara_session_t* UNUSED(session), girara_list_t*
+    UNUSED(argument_list))
 {
   return true;
 }
@@ -41,13 +42,14 @@ cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list)
 }
 
 bool
-cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
+cmd_bookmark_open(girara_session_t* UNUSED(session), girara_list_t*
+    UNUSED(argument_list))
 {
   return true;
 }
 
 bool
-cmd_close(girara_session_t* session, girara_list_t* argument_list)
+cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -63,13 +65,15 @@ cmd_close(girara_session_t* session, girara_list_t* argument_list)
 }
 
 bool
-cmd_info(girara_session_t* session, girara_list_t* argument_list)
+cmd_info(girara_session_t* UNUSED(session), girara_list_t*
+    UNUSED(argument_list))
 {
   return true;
 }
 
 bool
-cmd_help(girara_session_t* session, girara_list_t* argument_list)
+cmd_help(girara_session_t* UNUSED(session), girara_list_t*
+    UNUSED(argument_list))
 {
   return true;
 }
@@ -102,7 +106,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
 }
 
 bool
-cmd_print(girara_session_t* session, girara_list_t* argument_list)
+cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);

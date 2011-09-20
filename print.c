@@ -41,13 +41,15 @@ print(zathura_t* zathura)
 }
 
 void
-cb_print_begin(GtkPrintOperation* print_operation, GtkPrintContext* context, zathura_t* zathura)
+cb_print_begin(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
+    UNUSED(context), zathura_t* UNUSED(zathura))
 {
 
 }
 
 void
-cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext* context, gint page_number, zathura_t* zathura)
+cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
+    context, gint page_number, zathura_t* zathura)
 {
   cairo_t* cairo = gtk_print_context_get_cairo_context(context);
 
