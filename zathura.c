@@ -480,5 +480,7 @@ int main(int argc, char* argv[])
   gtk_main();
   gdk_threads_leave();
 
+  zathura_free(zathura);
+
   return 0;
 }

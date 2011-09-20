@@ -13,8 +13,6 @@
 gboolean
 cb_destroy(GtkWidget* widget, gpointer data)
 {
-  zathura_free(data);
-
   return TRUE;
 }
 

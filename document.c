@@ -153,7 +153,7 @@ zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* 
   if (iter) {
     do {
       zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
-      if (!strcmp(plugin->file_extension, new_plugin->file_extension)) {
+      if (strcmp(plugin->file_extension, new_plugin->file_extension) == 0) {
         girara_error("plugin: already registered for filetype %s\n", plugin->file_extension);
         girara_list_iterator_free(iter);
         return false;
@@ -169,17 +169,17 @@ zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* 
 zathura_document_t*
 zathura_document_open(zathura_t* zathura, const char* path, const char* password)
 {
-  if (!path) {
+  if (path == NULL) {
     goto error_out;
   }
 
-  if (!file_exists(path)) {
+  if (file_exists(path) == false) {
     girara_error("File does not exist");
     goto error_out;
   }
 
   const char* file_extension = file_get_extension(path);
-  if (!file_extension) {
+  if (file_extension == NULL) {
     girara_error("Could not determine file type");
     goto error_out;
   }
@@ -198,16 +198,16 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   zathura_document_t* document = NULL;
 
   real_path = malloc(sizeof(char) * path_max);
-  if (!real_path) {
+  if (real_path == NULL) {
     goto error_out;
   }
 
-  if (!realpath(path, real_path)) {
+  if (realpath(path, real_path) == NULL) {
     goto error_free;
   }
 
   document = malloc(sizeof(zathura_document_t));
-  if (!document) {
+  if (document == NULL) {
     goto error_free;
   }
 
@@ -239,22 +239,22 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   do {
     zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
-    if (!strcmp(file_extension, plugin->file_extension)) {
+    if (strcmp(file_extension, plugin->file_extension) == 0) {
       girara_list_iterator_free(iter);
-      if (plugin->open_function) {
-        if (plugin->open_function(document)) {
+      if (plugin->open_function != NULL) {
+        if (plugin->open_function(document) == true) {
           /* update statusbar */
           girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, real_path);
 
           /* read all pages */
           document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
-          if (!document->pages) {
+          if (document->pages == NULL) {
             goto error_free;
           }
 
           for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
             zathura_page_t* page = zathura_page_get(document, page_id);
-            if (!page) {
+            if (page == NULL) {
               goto error_free;
             }
 
@@ -277,9 +277,8 @@ error_free:
 
   free(real_path);
 
-  if (document && document->pages) {
-    for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
-    {
+  if (document != NULL && document->pages != NULL) {
+    for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
       zathura_page_free(document->pages[page_id]);
     }
 
@@ -296,13 +295,12 @@ error_out:
 bool
 zathura_document_free(zathura_document_t* document)
 {
-  if (!document) {
+  if (document == NULL) {
     return false;
   }
 
   /* free pages */
-  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++)
-  {
+  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
     zathura_page_free(document->pages[page_id]);
     document->pages[page_id] = NULL;
   }
@@ -310,10 +308,10 @@ zathura_document_free(zathura_document_t* document)
   free(document->pages);
 
   /* free document */
-  if (!document->functions.document_free) {
+  if (document->functions.document_free == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
 
-    if (document->file_path) {
+    if (document->file_path != NULL) {
       free(document->file_path);
     }
 
@@ -323,7 +321,7 @@ zathura_document_free(zathura_document_t* document)
 
   bool r = document->functions.document_free(document);
 
-  if (document->file_path) {
+  if (document->file_path != NULL) {
     free(document->file_path);
   }
 
@@ -335,11 +333,11 @@ zathura_document_free(zathura_document_t* document)
 bool
 zathura_document_save_as(zathura_document_t* document, const char* path)
 {
-  if (!document || !path) {
+  if (document == NULL || path == NULL) {
     return false;
   }
 
-  if (!document->functions.document_save_as) {
+  if (document->functions.document_save_as == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
@@ -350,11 +348,11 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
 girara_tree_node_t*
 zathura_document_index_generate(zathura_document_t* document)
 {
-  if (!document) {
+  if (document == NULL) {
     return NULL;
   }
 
-  if (!document->functions.document_index_generate) {
+  if (document->functions.document_index_generate == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
@@ -365,11 +363,11 @@ zathura_document_index_generate(zathura_document_t* document)
 zathura_list_t*
 zathura_document_attachments_get(zathura_document_t* document)
 {
-  if (!document) {
+  if (document == NULL) {
     return NULL;
   }
 
-  if (!document->functions.document_attachments_get) {
+  if (document->functions.document_attachments_get == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
@@ -386,18 +384,18 @@ zathura_document_attachments_free(zathura_list_t* list)
 zathura_page_t*
 zathura_page_get(zathura_document_t* document, unsigned int page_id)
 {
-  if (!document) {
+  if (document == NULL) {
     return NULL;
   }
 
-  if (!document->functions.page_get) {
+  if (document->functions.page_get == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
   zathura_page_t* page = document->functions.page_get(document, page_id);
 
-  if (page) {
+  if (page != NULL) {
     page->number       = page_id;
     page->visible      = false;
     page->event_box    = gtk_event_box_new();
@@ -418,11 +416,11 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
 bool
 zathura_page_free(zathura_page_t* page)
 {
-  if (!page || !page->document) {
+  if (page == NULL || page->document == NULL) {
     return false;
   }
 
-  if (!page->document->functions.page_free) {
+  if (page->document->functions.page_free == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
@@ -435,11 +433,11 @@ zathura_page_free(zathura_page_t* page)
 zathura_list_t*
 zathura_page_search_text(zathura_page_t* page, const char* text)
 {
-  if (!page || !page->document || !text) {
+  if (page == NULL || page->document == NULL || text == NULL) {
     return NULL;
   }
 
-  if (!page->document->functions.page_search_text) {
+  if (page->document->functions.page_search_text == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
@@ -450,11 +448,11 @@ zathura_page_search_text(zathura_page_t* page, const char* text)
 zathura_list_t*
 zathura_page_links_get(zathura_page_t* page)
 {
-  if (!page || !page->document) {
+  if (page == NULL || page->document == NULL) {
     return NULL;
   }
 
-  if (!page->document->functions.page_links_get) {
+  if (page->document->functions.page_links_get == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
@@ -471,11 +469,11 @@ zathura_page_links_free(zathura_list_t* list)
 zathura_list_t*
 zathura_page_form_fields_get(zathura_page_t* page)
 {
-  if (!page || !page->document) {
+  if (page == NULL || page->document == NULL) {
     return NULL;
   }
 
-  if (!page->document->functions.page_form_fields_get) {
+  if (page->document->functions.page_form_fields_get == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
@@ -492,29 +490,28 @@ zathura_page_form_fields_free(zathura_list_t* list)
 zathura_image_buffer_t*
 zathura_page_render(zathura_page_t* page)
 {
-  if (!page || !page->document) {
+  if (page == NULL || page->document == NULL) {
     return NULL;
   }
 
-  if (!page->document->functions.page_render) {
+  if (page->document->functions.page_render == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
-  zathura_image_buffer_t* buffer = page->document->functions.page_render(page);
-  return buffer;
+  return page->document->functions.page_render(page);
 }
 
 zathura_index_element_t*
 zathura_index_element_new(const char* title)
 {
-  if (!title) {
+  if (title == NULL) {
     return NULL;
   }
 
   zathura_index_element_t* res = g_malloc0(sizeof(zathura_index_element_t));
 
-  if (!res) {
+  if (res == NULL) {
     return NULL;
   }
 
@@ -526,7 +523,7 @@ zathura_index_element_new(const char* title)
 void
 zathura_index_element_free(zathura_index_element_t* index)
 {
-  if (!index) {
+  if (index == NULL) {
     return;
   }
 
