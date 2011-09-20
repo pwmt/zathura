@@ -134,7 +134,6 @@ zathura_document_plugins_free(zathura_t* zathura)
 
   do {
     zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
-    free(plugin->file_extension);
     free(plugin);
   } while (girara_list_iterator_next(iter));
   girara_list_iterator_free(iter);
