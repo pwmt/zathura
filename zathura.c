@@ -2312,7 +2312,7 @@ sc_scroll(Argument* argument)
   gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
   gdouble value      = gtk_adjustment_get_value(adjustment);
   gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
-  gboolean static ss = FALSE;
+  static gboolean ss = FALSE;
 
   if((argument->n == UP || argument->n == HALF_UP || argument->n == FULL_UP) && value == 0)
   {
