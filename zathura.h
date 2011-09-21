@@ -89,13 +89,13 @@ typedef struct zathura_s
     bool recolor; /**> Recoloring mode switch */
   } global;
 
-	struct
-	{
-		girara_mode_t normal; /**> Normal mode */
-		girara_mode_t fullscreen; /**> Fullscreen mode */
-		girara_mode_t index; /**> Index mode */
-		girara_mode_t insert; /**> Insert mode */
-	} modes;
+  struct
+  {
+    girara_mode_t normal; /**> Normal mode */
+    girara_mode_t fullscreen; /**> Fullscreen mode */
+    girara_mode_t index; /**> Index mode */
+    girara_mode_t insert; /**> Insert mode */
+  } modes;
 
   struct
   {

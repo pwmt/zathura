@@ -112,12 +112,12 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-	if (zathura->document == NULL) {
+  if (zathura->document == NULL) {
     girara_notify(session, GIRARA_ERROR, "No open document.");
-		return false;
-	}
+    return false;
+  }
 
-	print((zathura_t*) session->global.data);
+  print((zathura_t*) session->global.data);
 
   return true;
 }
@@ -129,10 +129,10 @@ cmd_save(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-	if (zathura->document == NULL) {
-		girara_notify(session, GIRARA_ERROR, "No open document.");
-		return false;
-	}
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No open document.");
+    return false;
+  }
 
   if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), false);
@@ -152,10 +152,10 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-	if (zathura->document == NULL) {
-		girara_notify(session, GIRARA_ERROR, "No open document.");
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No open document.");
     return false;
-	}
+  }
 
   if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), true);

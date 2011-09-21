@@ -6,12 +6,14 @@
 
 #include "database.h"
 
-struct zathura_database_s {
+struct zathura_database_s
+{
   sqlite3* session;
 };
 
 zathura_database_t*
-zathura_db_init(const char* path) {
+zathura_db_init(const char* path)
+{
   zathura_database_t* db = g_malloc0(sizeof(zathura_database_t));
   
   /* create bookmarks database */
@@ -51,7 +53,8 @@ zathura_db_init(const char* path) {
 }
 
 void
-zathura_db_free(zathura_database_t* db) {
+zathura_db_free(zathura_database_t* db)
+{
   if (db == NULL) {
     return;
   }
