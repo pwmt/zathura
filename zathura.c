@@ -254,8 +254,13 @@ zathura_free(zathura_t* zathura)
   zathura_db_free(zathura->database);
 
   /* free print settings */
-  g_object_unref(zathura->print.settings);
-  g_object_unref(zathura->print.page_setup);
+  if(zathura->print.settings != NULL) {
+    g_object_unref(zathura->print.settings);
+  }
+
+  if (zathura->print.page_setup != NULL) {
+    g_object_unref(zathura->print.page_setup);
+  }
 
   /* free registered plugins */
   zathura_document_plugins_free(zathura);
