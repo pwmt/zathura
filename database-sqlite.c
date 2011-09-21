@@ -19,17 +19,17 @@ zathura_db_init(const char* path)
   /* create bookmarks database */
   static const char SQL_BOOKMARK_INIT[] =
     "CREATE TABLE IF NOT EXISTS bookmarks ("
-      "file TEXT PRIMARY KEY,"
+      "file TEXT,"
       "id TEXT,"
       "page INTEGER,"
-      "UNIQUE(file, id));";
+      "PRIMARY KEY(file, id));";
 
   static const char SQL_FILEINFO_INIT[] =
     "CREATE TABLE IF NOT EXISTS fileinfo ("
       "file TEXT PRIMARY KEY,"
       "page INTEGER,"
       "offset INTEGER,"
-      "scale INTEGER);";
+      "scale FLOAT);";
 
   if (sqlite3_open(path, &(db->session)) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
@@ -174,3 +174,29 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
   return result;
 }
 
+bool
+zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int page, int offset, float scale)
+{
+  g_return_val_if_fail(db && file, false);
+
+  static const char SQL_FILEINFO_SET[] =
+    "REPLACE INTO fileinfo (file, page, offset, scale) VALUES (?, ?, ?);";
+
+  sqlite3_stmt* stmt = prepare_statement(db->session, SQL_FILEINFO_SET);
+  if (stmt == NULL) {
+    return false;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 2, page) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 3, offset) != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 4, scale) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    girara_error("Failed to bind arguments.");
+    return false;
+  }
+
+  int res = sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
+  return res == SQLITE_OK;
+}
