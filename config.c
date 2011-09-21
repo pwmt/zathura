@@ -52,12 +52,12 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_i,          NULL, sc_change_mode,              NORMAL,              INSERT,          NULL);
   girara_shortcut_add(gsession, 0,                GDK_m,          NULL, sc_change_mode,              NORMAL,              ADD_MARKER,      NULL);
   girara_shortcut_add(gsession, 0,                GDK_apostrophe, NULL, sc_change_mode,              NORMAL,              EVAL_MARKER,     NULL);
-  girara_shortcut_add(gsession, 0,                GDK_slash,      NULL, sc_focus_inputbar,           NORMAL,              0,               &("/"));
-  girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_slash,      NULL, sc_focus_inputbar,           NORMAL,              0,               &("/"));
-  girara_shortcut_add(gsession, 0,                GDK_question,   NULL, sc_focus_inputbar,           NORMAL,              0,               &("?"));
-  girara_shortcut_add(gsession, 0,                GDK_colon,      NULL, sc_focus_inputbar,           NORMAL,              0,               &(":"));
-  girara_shortcut_add(gsession, 0,                GDK_o,          NULL, sc_focus_inputbar,           NORMAL,              0,               &(":open "));
-  girara_shortcut_add(gsession, 0,                GDK_O,          NULL, sc_focus_inputbar,           NORMAL,              APPEND_FILEPATH, &(":open "));
+  girara_shortcut_add(gsession, 0,                GDK_slash,      NULL, girara_sc_focus_inputbar,    NORMAL,              0,               &("/"));
+  girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_slash,      NULL, girara_sc_focus_inputbar,    NORMAL,              0,               &("/"));
+  girara_shortcut_add(gsession, 0,                GDK_question,   NULL, girara_sc_focus_inputbar,    NORMAL,              0,               &("?"));
+  girara_shortcut_add(gsession, 0,                GDK_colon,      NULL, girara_sc_focus_inputbar,    NORMAL,              0,               &(":"));
+  girara_shortcut_add(gsession, 0,                GDK_o,          NULL, girara_sc_focus_inputbar,    NORMAL,              0,               &(":open "));
+  girara_shortcut_add(gsession, 0,                GDK_O,          NULL, girara_sc_focus_inputbar,    NORMAL,              APPEND_FILEPATH, &(":open "));
   girara_shortcut_add(gsession, 0,                GDK_f,          NULL, sc_follow,                   NORMAL,              0,               NULL);
   girara_shortcut_add(gsession, 0,                0,              "gg", sc_goto,                     NORMAL | FULLSCREEN, TOP,             NULL);
   girara_shortcut_add(gsession, 0,                0,              "G",  sc_goto,                     NORMAL | FULLSCREEN, BOTTOM,          NULL);
@@ -122,7 +122,6 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
   girara_shortcut_mapping_add(gsession, "adjust_window",     sc_adjust_window);
   girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
-  girara_shortcut_mapping_add(gsession, "focus_inputbar",    sc_focus_inputbar);
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
   girara_shortcut_mapping_add(gsession, "index_navigate",    sc_navigate_index);

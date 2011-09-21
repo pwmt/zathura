@@ -36,16 +36,6 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, un
 bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t);
 
 /**
- * Focus the inputbar
- *
- * @param session The used girara session
- * @param argument The used argument
- * @param t Number of executions
- * @return true if no error occured otherwise false
- */
-bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, unsigned int t);
-
-/**
  * Follow a link
  *
  * @param session The used girara session
