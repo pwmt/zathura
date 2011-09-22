@@ -200,3 +200,35 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int p
   sqlite3_finalize(stmt);
   return res == SQLITE_OK;
 }
+
+bool
+zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* page, int* offset, float* scale)
+{
+  g_return_val_if_fail(db && file && page && ofset && scale, false);
+
+  static const char SQL_FILEINFO_GET[] =
+    "SELECT page, offset, scale FROM fileinfo WHERE file = ?;";
+
+  sqlite3_stmt* stmt = prepare_statement(db->session, SQL_FILEINFO_GET);
+  if (stmt == NULL) {
+    return false;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK)
+    sqlite3_finalize(stmt);
+    girara_error("Failed to bind arguments.");
+    return false;
+  }
+
+  if (sqlite3_step(stmt) != SQLITE_ROW) {
+    sqlite3_finalize(stmt);
+    girara_info("No info for file %s available.", file);
+    return false;
+  }
+
+  *page = sqlite3_column_int(stmt, 0);
+  *offset = sqlite3_column_int(stmt, 1);
+  *scale = sqlite3_column_double(stmt, 2);
+  sqlite3_finalize(stmt);
+  return true;
+}
