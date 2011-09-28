@@ -377,6 +377,7 @@ gboolean open_file(char*, char*);
 gboolean open_stdin(gchar*);
 void open_uri(char*);
 void out_of_memory(void) NORETURN;
+void* safe_realloc(void** ptr, size_t nmemb, size_t size);
 void update_status(void);
 void read_bookmarks_file(void);
 void write_bookmarks_file(void);
@@ -825,8 +826,10 @@ add_marker(int id)
 
   /* add new marker */
   int marker_index = Zathura.Marker.number_of_markers++;
-  Zathura.Marker.markers = realloc(Zathura.Marker.markers, sizeof(Marker) *
-      (Zathura.Marker.number_of_markers));
+  Zathura.Marker.markers = safe_realloc((void**)&Zathura.Marker.markers,
+      Zathura.Marker.number_of_markers, sizeof(Marker));
+  if(!Zathura.Marker.markers)
+    out_of_memory();
 
   Zathura.Marker.markers[marker_index].id   = id;
   Zathura.Marker.markers[marker_index].page = page_number;
@@ -1429,8 +1432,10 @@ open_file(char* path, char* password)
     {
       if(!is_reserved_bm_name(keys[i]))
       {
-        Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
-            (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
+        Zathura.Bookmarks.bookmarks = safe_realloc((void**)&Zathura.Bookmarks.bookmarks,
+            Zathura.Bookmarks.number_of_bookmarks + 1, sizeof(Bookmark));
+        if(!Zathura.Bookmarks.bookmarks)
+          out_of_memory();
 
         Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(keys[i]);
         Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page =
@@ -1533,6 +1538,31 @@ void out_of_memory(void)
 {
   printf("error: out of memory\n");
   exit(-1);
+}
+
+void*
+safe_realloc(void** ptr, size_t nmemb, size_t size)
+{
+  static const size_t limit = ~((size_t)0u);
+  void* tmp = NULL;
+
+  /* Check for overflow. */
+  if(nmemb > limit / size)
+    goto failure;
+
+  tmp = realloc(*ptr, nmemb * size);
+  /* Check for out of memory. */
+  if(!tmp)
+    goto failure;
+
+  *ptr = tmp;
+  return *ptr;
+
+/* Error handling. */
+failure:
+  free(*ptr);
+  *ptr = NULL;
+  return NULL;
 }
 
 void
@@ -2901,7 +2931,9 @@ isc_completion(Argument* argument)
           {
             if(group->value && !group_elements)
             {
-              rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
+              rows = safe_realloc((void**)&rows, n_items + 1, sizeof(CompletionRow));
+              if(!rows)
+                out_of_memory();
               rows[n_items].command     = g_strdup(group->value);
               rows[n_items].description = NULL;
               rows[n_items].command_id  = -1;
@@ -2909,7 +2941,9 @@ isc_completion(Argument* argument)
               rows[n_items++].row       = GTK_WIDGET(create_completion_row(results, group->value, NULL, TRUE));
             }
 
-            rows = realloc(rows, (n_items + 1) * sizeof(CompletionRow));
+            rows = safe_realloc((void**)&rows, n_items + 1, sizeof(CompletionRow));
+            if(!rows)
+              out_of_memory();
             rows[n_items].command     = g_strdup(element->value);
             rows[n_items].description = element->description ? g_strdup(element->description) : NULL;
             rows[n_items].command_id  = previous_id;
@@ -2954,7 +2988,9 @@ isc_completion(Argument* argument)
         }
       }
 
-      rows = realloc(rows, n_items * sizeof(CompletionRow));
+      rows = safe_realloc((void**)&rows, n_items, sizeof(CompletionRow));
+      if(!rows)
+        out_of_memory();
     }
 
     gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(results), FALSE, FALSE, 0);
@@ -3127,8 +3163,10 @@ cmd_bookmark(int argc, char** argv)
   }
 
   /* add new bookmark */
-  Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
-      (Zathura.Bookmarks.number_of_bookmarks + 1) * sizeof(Bookmark));
+  Zathura.Bookmarks.bookmarks = safe_realloc((void**)&Zathura.Bookmarks.bookmarks,
+      Zathura.Bookmarks.number_of_bookmarks + 1, sizeof(Bookmark));
+  if(!Zathura.Bookmarks.bookmarks)
+    out_of_memory();
 
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].id   = g_strdup(id->str);
   Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks].page = Zathura.PDF.page_number;
@@ -3234,8 +3272,10 @@ cmd_delete_bookmark(int argc, char** argv)
       /* update bookmarks */
       Zathura.Bookmarks.bookmarks[i].id   = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].id;
       Zathura.Bookmarks.bookmarks[i].page = Zathura.Bookmarks.bookmarks[Zathura.Bookmarks.number_of_bookmarks - 1].page;
-      Zathura.Bookmarks.bookmarks = realloc(Zathura.Bookmarks.bookmarks,
-          Zathura.Bookmarks.number_of_bookmarks * sizeof(Bookmark));
+      Zathura.Bookmarks.bookmarks = safe_realloc((void**)&Zathura.Bookmarks.bookmarks,
+          Zathura.Bookmarks.number_of_bookmarks, sizeof(Bookmark));
+      if(!Zathura.Bookmarks.bookmarks)
+        out_of_memory();
 
       Zathura.Bookmarks.number_of_bookmarks--;
       g_string_free(id, TRUE);
@@ -4025,7 +4065,9 @@ cc_print(char* input)
     if(!current_line)
       out_of_memory();
 
-    current_line = realloc(current_line, (count + 1) * sizeof(char));
+    current_line = safe_realloc((void**)&current_line, count + 1, sizeof(char));
+    if(!current_line)
+      out_of_memory();
 
     if(current_char != '\n')
       current_line[count++] = current_char;
