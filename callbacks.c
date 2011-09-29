@@ -89,3 +89,36 @@ cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), girara_setting
 
   page_view_set_mode(zathura, pages_per_row);
 }
+
+void
+cb_index_row_activated(GtkTreeModel* tree_view, GtkTreePath* path,
+    GtkTreeViewColumn* column, zathura_t* zathura)
+{
+  if (tree_view == NULL || zathura == NULL || zathura->ui.session == NULL) {
+    return;
+  }
+
+  GtkTreeModel  *model;
+  GtkTreeIter   iter;
+
+  g_object_get(tree_view, "model", &model, NULL);
+
+  if(gtk_tree_model_get_iter(model, &iter, path))
+  {
+    zathura_index_element_t* index_element;
+    gtk_tree_model_get(model, &iter, 1, &index_element, -1);
+
+    if (index_element == NULL) {
+      return;
+    }
+
+    if (index_element->type == ZATHURA_LINK_TO_PAGE) {
+      page_set(zathura, index_element->target.page_number);
+      sc_toggle_index(zathura->ui.session, NULL, 0);
+    } else if (index_element->type == ZATHURA_LINK_EXTERNAL) {
+      // TODO
+    }
+  }
+
+  g_object_unref(model);
+}

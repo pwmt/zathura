@@ -231,13 +231,12 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 }
 
 bool
-sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
-    int UNUSED(t))
+sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
+    unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
-  g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
   girara_tree_node_t* document_index = NULL;
@@ -289,7 +288,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
     g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
     g_object_set(G_OBJECT(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)), "expand", TRUE, NULL);
     gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), gtk_tree_path_new_first(), NULL, FALSE);
-    /*g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), NULL); TODO*/
+    g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), zathura);
 
     gtk_container_add(GTK_CONTAINER(zathura->ui.index), treeview);
     gtk_widget_show(treeview);
@@ -298,9 +297,11 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
     girara_set_view(session, zathura->ui.page_view);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
+    girara_mode_set(zathura->ui.session, zathura->modes.normal);
   } else {
     girara_set_view(session, zathura->ui.index);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));
+    girara_mode_set(zathura->ui.session, zathura->modes.index);
   }
 
   return false;
