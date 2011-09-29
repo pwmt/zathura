@@ -389,7 +389,13 @@ document_close(zathura_t* zathura)
   zathura_document_free(zathura->document);
   zathura->document = NULL;
 
-  gtk_widget_hide_all(zathura->ui.page_view);
+  gtk_widget_hide(zathura->ui.page_view);
+
+  statusbar_page_number_update(zathura);
+
+  if (zathura->ui.session != NULL && zathura->ui.statusbar.file != NULL) {
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, "[No name]");
+  }
 
   return true;
 }
@@ -440,9 +446,13 @@ statusbar_page_number_update(zathura_t* zathura)
     return;
   }
 
-  char* page_number_text = g_strdup_printf("[%d/%d]", zathura->document->current_page_number + 1, zathura->document->number_of_pages);
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
-  g_free(page_number_text);
+  if (zathura->document != NULL) {
+    char* page_number_text = g_strdup_printf("[%d/%d]", zathura->document->current_page_number + 1, zathura->document->number_of_pages);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
+    g_free(page_number_text);
+  } else {
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, "");
+  }
 }
 
 void
