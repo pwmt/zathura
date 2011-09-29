@@ -58,7 +58,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
     }
 
     double begin = offset->y;
-    double end   = offset->y + page->height;
+    double end   = offset->y + page->height * zathura->document->scale;
 
     if (   ( (begin >= lower) && (end <= upper) ) /* [> page is in viewport <]*/
         || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* [> end of the page is in viewport <] */

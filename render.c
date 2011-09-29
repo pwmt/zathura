@@ -1,3 +1,7 @@
+/* See LICENSE file for license and copyright information */
+
+#include <math.h>
+
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
