@@ -156,10 +156,18 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node)
     zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
+    gchar* description = NULL;
+    if (index_element->type == ZATHURA_LINK_TO_PAGE) {
+      description = g_strdup_printf("Page %d", index_element->target.page_number);
+    } else {
+      description = g_strdup(index_element->target.uri);
+    }
+
     GtkTreeIter tree_iter;
     gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
-    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, index_element, -1);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, description, 2, index_element, -1);
     g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
+    g_free(description);
 
     if (girara_node_get_num_children(node) > 0) {
       document_index_build(model, &tree_iter, node);
