@@ -204,7 +204,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int p
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* page, int* offset, float* scale)
 {
-  g_return_val_if_fail(db && file && page && ofset && scale, false);
+  g_return_val_if_fail(db && file && page && offset && scale, false);
 
   static const char SQL_FILEINFO_GET[] =
     "SELECT page, offset, scale FROM fileinfo WHERE file = ?;";
@@ -214,7 +214,7 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* 
     return false;
   }
 
-  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK)
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
