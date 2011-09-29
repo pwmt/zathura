@@ -206,31 +206,15 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     goto error_free;
   }
 
-  document = malloc(sizeof(zathura_document_t));
+  document = g_malloc0(sizeof(zathura_document_t));
   if (document == NULL) {
     goto error_free;
   }
 
   document->file_path           = real_path;
   document->password            = password;
-  document->current_page_number = 0;
-  document->number_of_pages     = 0;
   document->scale               = 1.0;
-  document->rotate              = 0;
-  document->data                = NULL;
-  document->pages               = NULL;
   document->zathura             = zathura;
-
-  document->functions.document_free            = NULL;
-  document->functions.document_index_generate  = NULL;
-  document->functions.document_save_as         = NULL;
-  document->functions.document_attachments_get = NULL;
-  document->functions.page_get                 = NULL;
-  document->functions.page_free                = NULL;
-  document->functions.page_search_text         = NULL;
-  document->functions.page_links_get           = NULL;
-  document->functions.page_form_fields_get     = NULL;
-  document->functions.page_render              = NULL;
 
   girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
   if (iter == NULL) {
@@ -285,7 +269,7 @@ error_free:
     free(document->pages);
   }
 
-  free(document);
+  g_free(document);
 
 error_out:
 
@@ -315,7 +299,7 @@ zathura_document_free(zathura_document_t* document)
       free(document->file_path);
     }
 
-    free(document);
+    g_free(document);
     return true;
   }
 
@@ -325,7 +309,7 @@ zathura_document_free(zathura_document_t* document)
     free(document->file_path);
   }
 
-  free(document);
+  g_free(document);
 
   return r;
 }

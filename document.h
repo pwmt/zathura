@@ -3,6 +3,7 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include <cairo.h>
 #include <gtk/gtk.h>
 #include <stdbool.h>
 
@@ -212,6 +213,11 @@ struct zathura_document_s
      * Renders the page
      */
     zathura_image_buffer_t* (*page_render)(zathura_page_t* page);
+
+    /**
+     * Renders the page
+     */
+    bool (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo);
 
     /**
      * Free page
