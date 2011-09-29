@@ -9,6 +9,7 @@
 #include "render.h"
 #include "document.h"
 #include "utils.h"
+#include "shortcuts.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
@@ -92,7 +93,7 @@ cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), girara_setting
 
 void
 cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
-    GtkTreeViewColumn* column, zathura_t* zathura)
+    GtkTreeViewColumn* UNUSED(column), zathura_t* zathura)
 {
   if (tree_view == NULL || zathura == NULL || zathura->ui.session == NULL) {
     return;
