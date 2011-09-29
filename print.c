@@ -51,32 +51,33 @@ void
 cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     context, gint page_number, zathura_t* zathura)
 {
-  cairo_t* cairo = gtk_print_context_get_cairo_context(context);
+  /* TODO: Implement with cairo */
+  /*cairo_t* cairo = gtk_print_context_get_cairo_context(context);*/
 
-  girara_info("Printing page %d", page_number);
+  /*girara_info("Printing page %d", page_number);*/
 
-  zathura_page_t* page = zathura->document->pages[page_number];
+  /*zathura_page_t* page = zathura->document->pages[page_number];*/
 
-  double requested_with    = gtk_print_context_get_width(context);
-  double tmp_scale         = zathura->document->scale;
-  zathura->document->scale = requested_with / page->width;
+  /*double requested_with    = gtk_print_context_get_width(context);*/
+  /*double tmp_scale         = zathura->document->scale;*/
+  /*zathura->document->scale = requested_with / page->width;*/
 
-  g_static_mutex_lock(&(page->lock));
-  zathura_image_buffer_t* image_buffer = zathura_page_render(page);
-  g_static_mutex_unlock(&(page->lock));
+  /*g_static_mutex_lock(&(page->lock));*/
+  /*zathura_image_buffer_t* image_buffer = zathura_page_render(page);*/
+  /*g_static_mutex_unlock(&(page->lock));*/
 
-  for (unsigned int y = 0; y < image_buffer->height; y++) {
-    unsigned char* src = image_buffer->data + y * image_buffer->rowstride;
-    for (unsigned int x = 0; x < image_buffer->width; x++) {
-      if (src[0] != 255 && src[1] != 255 && src[2] != 255) {
-        cairo_set_source_rgb(cairo, src[0], src[1], src[2]);
-        cairo_rectangle(cairo, x, y, 1, 1);
-        cairo_fill(cairo);
-      }
+  /*for (unsigned int y = 0; y < image_buffer->height; y++) {*/
+    /*unsigned char* src = image_buffer->data + y * image_buffer->rowstride;*/
+    /*for (unsigned int x = 0; x < image_buffer->width; x++) {*/
+      /*if (src[0] != 255 && src[1] != 255 && src[2] != 255) {*/
+        /*cairo_set_source_rgb(cairo, src[0], src[1], src[2]);*/
+        /*cairo_rectangle(cairo, x, y, 1, 1);*/
+        /*cairo_fill(cairo);*/
+      /*}*/
 
-      src += 3;
-    }
-  }
+      /*src += 3;*/
+    /*}*/
+  /*}*/
 
-  zathura->document->scale = tmp_scale;
+  /*zathura->document->scale = tmp_scale;*/
 }

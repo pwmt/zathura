@@ -471,19 +471,19 @@ zathura_page_form_fields_free(zathura_list_t* UNUSED(list))
   return false;
 }
 
-zathura_image_buffer_t*
-zathura_page_render(zathura_page_t* page)
+bool
+zathura_page_render(zathura_page_t* page, cairo_t* cairo)
 {
-  if (page == NULL || page->document == NULL) {
+  if (page == NULL || page->document == NULL || cairo == NULL) {
     return NULL;
   }
 
-  if (page->document->functions.page_render == NULL) {
+  if (page->document->functions.page_render_cairo == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
-  return page->document->functions.page_render(page);
+  return page->document->functions.page_render_cairo(page, cairo);
 }
 
 zathura_index_element_t*

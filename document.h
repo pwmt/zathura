@@ -150,7 +150,7 @@ struct zathura_page_s
   GtkWidget* event_box; /**> Widget wrapper for mouse events */
   GtkWidget* drawing_area; /**> Drawing area */
   GStaticMutex lock; /**> Lock */
-	cairo_surface_t* surface; /** Cairo surface */
+  cairo_surface_t* surface; /** Cairo surface */
 };
 
 /**
@@ -363,9 +363,10 @@ bool zathura_page_form_fields_free(zathura_list_t* list);
  * Render page
  *
  * @param page The page object
- * @return Image buffer or NULL if an error occured
+ * @param cairo Cairo object
+ * @return True if no error occured, otherwise false
  */
-zathura_image_buffer_t* zathura_page_render(zathura_page_t* page);
+bool zathura_page_render(zathura_page_t* page, cairo_t* cairo);
 
 /**
  * Create new index element
