@@ -262,7 +262,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
       goto error_free;
     }
 
-    model = GTK_TREE_MODEL(gtk_tree_store_new(2, G_TYPE_STRING, G_TYPE_POINTER));
+    model = GTK_TREE_MODEL(gtk_tree_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER));
     if (model == NULL) {
       goto error_free;
     }
@@ -284,6 +284,8 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
     /* setup widget */
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 0, "Title", renderer, "markup", 0, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 1, "Target", renderer, "text", 1, NULL);
+
     gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
     g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
     g_object_set(G_OBJECT(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)), "expand", TRUE, NULL);
