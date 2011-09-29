@@ -107,16 +107,16 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                0,              "z0", sc_zoom,                     NORMAL | FULLSCREEN, ZOOM_ORIGINAL,   NULL);
 
   /* define default inputbar commands */
-  girara_inputbar_command_add(gsession, "bmark",   NULL, cmd_bookmark_create, NULL,     "Add a bookmark");
-  girara_inputbar_command_add(gsession, "bdelete", NULL, cmd_bookmark_delete, NULL,     "Delete a bookmark");
-  girara_inputbar_command_add(gsession, "blist",   NULL, cmd_bookmark_open,   NULL,     "List all bookmarks");
-  girara_inputbar_command_add(gsession, "close",   NULL, cmd_close,           NULL,     "Close current file");
-  girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,     "Show file information");
-  girara_inputbar_command_add(gsession, "help",    NULL, cmd_help,            NULL,     "Show help");
-  girara_inputbar_command_add(gsession, "open",    "o",  cmd_open,            cc_open,  "Open document");
-  girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           NULL,     "Print document");
-  girara_inputbar_command_add(gsession, "write",   NULL, cmd_save,            NULL,     "Save document");
-  girara_inputbar_command_add(gsession, "write!",  NULL, cmd_savef,           NULL,     "Save document (and force overwriting)");
+  girara_inputbar_command_add(gsession, "bmark",   NULL, cmd_bookmark_create, NULL,         "Add a bookmark");
+  girara_inputbar_command_add(gsession, "bdelete", NULL, cmd_bookmark_delete, cc_bookmarks, "Delete a bookmark");
+  girara_inputbar_command_add(gsession, "blist",   NULL, cmd_bookmark_open,   cc_bookmarks, "List all bookmarks");
+  girara_inputbar_command_add(gsession, "close",   NULL, cmd_close,           NULL,         "Close current file");
+  girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,         "Show file information");
+  girara_inputbar_command_add(gsession, "help",    NULL, cmd_help,            NULL,         "Show help");
+  girara_inputbar_command_add(gsession, "open",    "o",  cmd_open,            cc_open,      "Open document");
+  girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           NULL,         "Print document");
+  girara_inputbar_command_add(gsession, "write",   NULL, cmd_save,            NULL,         "Save document");
+  girara_inputbar_command_add(gsession, "write!",  NULL, cmd_savef,           NULL,         "Save document (and force overwriting)");
 
   /* add shortcut mappings */
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
