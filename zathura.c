@@ -30,7 +30,7 @@ zathura_init(int argc, char* argv[])
   /* parse command line options */
   GdkNativeWindow embed = 0;
   gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
-  GOptionEntry entries[] = 
+  GOptionEntry entries[] =
   {
     { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       "Reparents to window specified by xid",       "xid"  },
     { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  "Path to the config directory",               "path" },
@@ -63,8 +63,11 @@ zathura_init(int argc, char* argv[])
 
   /* plugins */
   zathura->plugins.plugins = girara_list_new();
+  girara_list_set_free_function(zathura->plugins.plugins, zathura_document_plugin_free);
   zathura->plugins.path    = girara_list_new();
   girara_list_set_free_function(zathura->plugins.path, g_free);
+  zathura->plugins.type_plugin_mapping = girara_list_new();
+  girara_list_set_free_function(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_free);
 
   if (config_dir) {
     zathura->config.config_dir = g_strdup(config_dir);
@@ -263,7 +266,6 @@ zathura_free(zathura_t* zathura)
   }
 
   /* free registered plugins */
-  zathura_document_plugins_free(zathura);
   girara_list_free(zathura->plugins.plugins);
   girara_list_free(zathura->plugins.path);
 

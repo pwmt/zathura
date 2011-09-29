@@ -55,26 +55,21 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-  const char* file_extension = file_get_extension(path);
-
-  if (file_extension == NULL) {
+  const gchar* content_type = g_content_type_guess(path, NULL, 0, NULL);
+  if (content_type == NULL) {
     return false;
   }
 
-  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.plugins);
-  if (iter == NULL) {
-    return false;
-  }
-
-  do {
-    zathura_document_plugin_t* plugin = (zathura_document_plugin_t*) girara_list_iterator_data(iter);
-    if (!strcmp(file_extension, plugin->file_extension)) {
-      return true;
+  bool result = false;
+  GIRARA_LIST_FOREACH(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
+    if (g_content_type_equals(content_type, mapping->type)) {
+      result = true;
+      break;
     }
-  } while (girara_list_iterator_next(iter));
-  girara_list_iterator_free(iter);
+  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
 
-  return false;
+  g_free(content_type);
+  return result;
 }
 
 bool

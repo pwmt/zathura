@@ -17,7 +17,7 @@ print(zathura_t* zathura)
   if (zathura->print.page_setup != NULL) {
     gtk_print_operation_set_default_page_setup(print_operation, zathura->print.page_setup);
   }
-  
+
   gtk_print_operation_set_allow_async(print_operation, TRUE);
   gtk_print_operation_set_n_pages(print_operation, zathura->document->number_of_pages);
   gtk_print_operation_set_current_page(print_operation, zathura->document->current_page_number);

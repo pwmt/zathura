@@ -72,7 +72,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
       cairo_surface_destroy(page->surface);
       page->surface = NULL;
     }
-    
+
     free(offset);
   }
 }

@@ -28,7 +28,7 @@ LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) $(DL_LIB) -lpthread -lm
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
 
 # debug
-DFLAGS = -g
+DFLAGS ?= -g
 
 # ld
 LDFLAGS += -rdynamic

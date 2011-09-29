@@ -22,10 +22,16 @@ typedef bool (*zathura_document_open_t)(zathura_document_t* document);
  */
 typedef struct zathura_document_plugin_s
 {
-  char* file_extension; /**> File extension */
+  girara_list_t* content_types; /**> List of supported content types */
   zathura_document_open_t open_function; /**> Document open function */
   void* handle; /**> DLL handle */
 } zathura_document_plugin_t;
+
+typedef struct zathura_type_plugin_mapping_s
+{
+  const gchar* type;
+  zathura_document_plugin_t* plugin;
+} zathura_type_plugin_mapping_t;
 
 /**
  * Function prototype that is called to register a document plugin
@@ -239,11 +245,11 @@ struct zathura_document_s
 void zathura_document_plugins_load(zathura_t* zathura);
 
 /**
- * Free all document plugins
+ * Free a document plugin
  *
- * @param zathura the zathura session
+ * @param plugin The plugin
  */
-void zathura_document_plugins_free(zathura_t* zathura);
+void zathura_document_plugin_free(zathura_document_plugin_t* plugin);
 
 /**
  * Register document plugin
@@ -382,5 +388,21 @@ zathura_index_element_t* zathura_index_element_new(const char* title);
  * @param index The index element
  */
 void zathura_index_element_free(zathura_index_element_t* index);
+
+/**
+ * Add type -> plugin mapping
+ * @param zathura zathura instance
+ * @param type content type
+ * @param plugin plugin instance
+ * @return true on success, false if another plugin is already registered for
+ * that type
+ */
+bool zathura_type_plugin_mapping_new(zathura_t* zathura, const gchar* type, zathura_document_plugin_t* plugin);
+
+/**
+ * Free type -> plugin mapping
+ * @param mapping To be freed
+ */
+void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping);
 
 #endif // DOCUMENT_H
