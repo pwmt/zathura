@@ -405,7 +405,7 @@ document_close(zathura_t* zathura)
 bool
 page_set(zathura_t* zathura, unsigned int page_id)
 {
-  if (!zathura->document || !zathura->document->pages) {
+  if (zathura == NULL || zathura->document == NULL || zathura->document->pages == NULL) {
     goto error_out;
   }
 

@@ -91,6 +91,20 @@ cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), girara_setting
   page_view_set_mode(zathura, pages_per_row);
 }
 
+typedef struct page_set_delayed_s {
+  zathura_t* zathura;
+  unsigned int page;
+} page_set_delayed_t;
+
+static gboolean
+page_set_delayed(gpointer data) {
+  page_set_delayed_t* p = data;
+  page_set(p->zathura, p->page);
+
+  g_free(p);
+  return FALSE;
+}
+
 void
 cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     GtkTreeViewColumn* UNUSED(column), zathura_t* zathura)
@@ -114,8 +128,11 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     }
 
     if (index_element->type == ZATHURA_LINK_TO_PAGE) {
-      page_set(zathura, index_element->target.page_number);
       sc_toggle_index(zathura->ui.session, NULL, 0);
+      page_set_delayed_t* p = g_malloc(sizeof(page_set_delayed_t));
+      p->zathura = zathura;
+      p->page = index_element->target.page_number;
+      g_idle_add(page_set_delayed, p);
     } else if (index_element->type == ZATHURA_LINK_EXTERNAL) {
       // TODO
     }
