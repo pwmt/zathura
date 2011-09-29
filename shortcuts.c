@@ -243,6 +243,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
   GtkWidget* treeview                = NULL;
   GtkTreeModel* model                = NULL;
   GtkCellRenderer* renderer          = NULL;
+  GtkCellRenderer* renderer2         = NULL;
 
   if (zathura->ui.index == NULL) {
     /* create new index widget */
@@ -279,16 +280,22 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
       goto error_free;
     }
 
+    renderer2 = gtk_cell_renderer_text_new();
+    if (renderer2 == NULL) {
+      goto error_free;
+    }
+
     document_index_build(model, NULL, document_index);
     girara_node_free(document_index);
 
     /* setup widget */
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 0, "Title", renderer, "markup", 0, NULL);
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 1, "Target", renderer, "text", 1, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 1, "Target", renderer2, "text", 1, NULL);
 
     gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
     g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
     g_object_set(G_OBJECT(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)), "expand", TRUE, NULL);
+    gtk_tree_view_column_set_alignment(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 1), 1.0f);
     gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), gtk_tree_path_new_first(), NULL, FALSE);
     g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), zathura);
 
