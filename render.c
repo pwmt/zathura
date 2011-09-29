@@ -200,6 +200,10 @@ render(zathura_t* zathura, zathura_page_t* page)
       break;
   }
 
+  if (fabs(zathura->document->scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, zathura->document->scale, zathura->document->scale);
+  }
+
   if (page->document->rotate != 0) {
     cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
   }
