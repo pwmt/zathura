@@ -1,248 +1,27 @@
 .TH ZATHURA 1 zathura\-VERSION
+
 .SH NAME
-zathura \- a PDF viewer
+zathura \- a document viewer
+
 .SH SYNOPSIS
 .B zathura
-.RB [-e\ xid]
-.RB [-c\ path]
-.RB [-d\ path]
+.RB [options]
 .RB [file]
 .RB [password]
-.SH DESCRIPTION
-zathura is a highly customizable and functional PDF viewer based on the poppler
-rendering library and the GTK+ toolkit. zathura provides a minimalistic and
-space saving interface, with a focus on keyboard interaction.
 
-If instead of a filename - is specified on the command line, zathura tries to
-render a PDF file piped to zathura via stdin.
+.SH DESCRIPTION
+zathura is a highly customizable and functional document viewer.
+
 .SH OPTIONS
 .TP
-.B -e xid
+.B "-e xid"
 Reparents to window specified by xid.
 .TP
-.B -c path
-Path to the config directory (defaults to .config/zathura)
+.B "-c path"
+Path to the config directory.
 .TP
-.B -d path
-Path to the data directory (defaults to .local/share/zathura)
-.SH DEFAULT SETTINGS
-.SS Shortcuts
+.B "-d path"
+Path to the data directory.
 .TP
-.B J
-Go to next page
-.TP
-.B K
-Go to previous page
-.TP
-.B h
-Scroll to the left
-.TP
-.B k
-Scroll upwards
-.TP
-.B j
-Scroll downwards
-.TP
-.B ^f
-Scroll page down
-.TP
-.B ^b
-Scroll page up
-.TP
-.B ^d
-Scroll half a page down
-.TP
-.B ^u
-Scroll half a page up
-.TP
-.B l
-Scroll to the right
-.TP
-.B /
-Search forwards
-.TP
-.B ?
-Search backwards
-.TP
-.B n
-Search last keyword forwards
-.TP
-.B N
-Search last keyword backwards
-.TP
-.B Tab
-Toggle index
-.TP
-.B o
-Open a file
-.TP
-.B a
-Zoom to fit
-.TP
-.B s
-Zoom to width
-.TP
-.B f
-Follow a link on the page
-.TP
-.B m
-Mark current position and save it in register specified by a character
-.TP
-.B '
-Go to saved position specified by the ensuing character
-.TP
-.B r
-Rotate the page
-.TP
-.B R
-Reload the document
-.TP
-.B O
-Change goto mode (L: search labels, D: default, O: manual offset)
-.TP
-.B ^i
-Recolors the page
-.TP
-.B i
-Change to insert mode
-.TP
-.B v
-Change to visual mode
-.TP
-.B :
-Focus inputbar
-.TP
-.B Backspace
-Delete last character in the buffer
-.TP
-.B F5
-Toggle fullscreen mode
-.TP
-.B ^n
-Toggle statusbar visibility
-.TP
-.B ^m
-Toggle inputbar visibility
-.TP
-.B +
-Zoom in
-.TP
-.B -
-Zoom out
-.TP
-.B =
-Zoom to the original size
-.TP
-.B Esc | ^c
-Abort
-.TP
-.B ^q
-Quit the program
-.SS Index commands
-.TP
-.B k
-Navigate to one element above the current position
-.TP
-.B j
-Navigate to one element below the current position
-.TP
-.B h
-Collapse current element
-.TP
-.B l
-Expand current element
-.TP
-.B Space | Return
-Select current element
-.SS Buffered commands
-.TP
-.B gg
-Go to the first page
-.TP
-.B GG
-Go to the last page
-.TP
-.B [0-9]+G
-Go to the specified page
-.TP
-.B zI
-Zoom in
-.TP
-.B zO
-Zoom out
-.TP
-.B z0
-Zoom to the original size
-.TP
-.B [0-9]+Z
-Zoom to the given level
-.TP
-.B [0-9]+%
-Move to the given position
-.SS Commands
-.TP
-.B blist
-List and open bookmark
-.TP
-.B bmark
-Bookmark current page
-.TP
-.B close
-Close current file
-.TP
-.B coffset
-Set page offset
-.TP
-.B delbmark
-Delete given bookmark
-.TP
-.B export
-Export images or attached files
-.TP
-.B info
-Show information about the document
-.TP
-.B map
-Map shortcut functions (map <key> <function> <argument> <mode>)
-.TP
-.B open
-Open a file
-.TP
-.B print
-Print the document
-.TP
-.B quit
-Quit the program
-.TP
-.B rotate
-Rotate the page
-.TP
-.B set
-Set an option (set <id> <value>)
-.TP
-.B write
-Save the document
-.SS Inputbar shortcuts
-.TP
-.B Up
-Move up in the command history
-.TP
-.B Down
-Move down in the command history
-.TP
-.B Tab | Shift + Tab
-Tab completion
-.TP
-.B ^w
-Delete last word
-.SH CONFIGURATION
-The complete configuration including the appearance and shortcuts of the program
-are defined in a separate file named config.h. In this file you are able to
-change and adjust all the settings of zathura according to your wishes.
-
-In addition you can create a zathurarc file (default path: ~/.config/zathura/zathurarc)
-to overwrite settings and keybindings by using the set and map function. For
-more information please have a look at \&\fIzathurarc\fR\|(5).
-
-.SH SEE ALSO
-\&\fIzathurarc\fR\|(5)
+.B "-p path"
+Path to the plugin directory.

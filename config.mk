@@ -1,28 +1,37 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
-VERSION = 0.0.8.4
+VERSION = 0.0.8.1
 
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
-DESKTOPPREFIX ?= ${PREFIX}/share/applications
 
 # libs
-GTK_INC = $(shell pkg-config --cflags gtk+-2.0 poppler-glib)
-GTK_LIB = $(shell pkg-config --libs gtk+-2.0 gthread-2.0 poppler-glib)
 
-INCS = -I. -I/usr/include ${GTK_INC}
-LIBS = -lc ${GTK_LIB} -lpthread -lm
+# set this to 0 if you don't need to link against dl
+NEEDS_DL ?= 1
 
-# compiler flags
-CFLAGS += -std=c99 -pedantic -Wall $(INCS)
+GTK_INC ?= $(shell pkg-config --cflags gtk+-2.0)
+GTK_LIB ?= $(shell pkg-config --libs gtk+-2.0 gthread-2.0)
 
-# debug flags
+GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk2)
+GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
+
+SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
+SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
+
+INCS = ${GIRARA_INC} ${GTK_INC} $(SQLITE_INC)
+LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) -lpthread -lm
+
+# flags
+CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
+
+# debug
 DFLAGS = -g
 
-# linker flags
-LDFLAGS ?=
+# ld
+LDFLAGS += -rdynamic
 
 # compiler
 CC ?= gcc
@@ -30,5 +39,5 @@ CC ?= gcc
 # strip
 SFLAGS ?= -s
 
-# set to something != 0 to enable verbose build output
+# set to something != 0 if you want verbose build output
 VERBOSE ?= 0

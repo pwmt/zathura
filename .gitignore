@@ -1,6 +1,9 @@
-.depend/
 *.o
 *.do
-config.h
+*~
+*.rej
+*.swp
+.depend
 zathura
 zathura-debug
+zathura.pc
