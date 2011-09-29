@@ -227,6 +227,76 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
+  if(zathura->ui.index == NULL) {
+    return false;
+  }
+
+  GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  GtkTreePath *path;
+
+  gtk_tree_view_get_cursor(tree_view, &path, NULL);
+  if(path == NULL) {
+    return false;
+  }
+
+  GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+  GtkTreeIter   iter;
+  GtkTreeIter   child_iter;
+
+  gboolean is_valid_path = TRUE;
+
+  switch(argument->n) {
+    case UP:
+      if(gtk_tree_path_prev(path) == FALSE) {
+        is_valid_path = gtk_tree_path_up(path);
+      } else { /* row above */
+        while(gtk_tree_view_row_expanded(tree_view, path)) {
+          gtk_tree_model_get_iter(model, &iter, path);
+          /* select last child */
+          gtk_tree_model_iter_nth_child(model, &child_iter, &iter,
+            gtk_tree_model_iter_n_children(model, &iter)-1);
+          gtk_tree_path_free(path);
+          path = gtk_tree_model_get_path(model, &child_iter);
+        }
+      }
+      break;
+    case COLLAPSE:
+      if(!gtk_tree_view_collapse_row(tree_view, path)
+        && gtk_tree_path_get_depth(path) > 1) {
+        gtk_tree_path_up(path);
+        gtk_tree_view_collapse_row(tree_view, path);
+      }
+      break;
+    case DOWN:
+      if(gtk_tree_view_row_expanded(tree_view, path)) {
+        gtk_tree_path_down(path);
+      } else {
+        do {
+          gtk_tree_model_get_iter(model, &iter, path);
+          if (gtk_tree_model_iter_next(model, &iter)) {
+            path = gtk_tree_model_get_path(model, &iter);
+            break;
+          }
+        } while((is_valid_path = (gtk_tree_path_get_depth(path) > 1))
+          && gtk_tree_path_up(path));
+      }
+      break;
+    case EXPAND:
+      if(gtk_tree_view_expand_row(tree_view, path, FALSE)) {
+        gtk_tree_path_down(path);
+      }
+      break;
+    case SELECT:
+      cb_index_row_activated(tree_view, path, NULL, zathura);
+      return false;
+  }
+
+  if (is_valid_path) {
+    gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+  }
+
+  gtk_tree_path_free(path);
+
   return false;
 }
 

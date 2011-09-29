@@ -49,7 +49,7 @@ void cb_pages_per_row_value_changed(girara_session_t* session, girara_setting_t*
  * @param column Column
  * @param zathura Zathura session
  */
-void cb_index_row_activated(GtkTreeModel* tree_view, GtkTreePath* path,
+void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     GtkTreeViewColumn* column, zathura_t* zathura);
 
 #endif // CALLBACKS_H
