@@ -10,8 +10,6 @@ MANPREFIX ?= ${PREFIX}/share/man
 # libs
 
 # set this to 0 if you don't need to link against dl
-NEEDS_DL ?= 1
-
 GTK_INC ?= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIB ?= $(shell pkg-config --libs gtk+-2.0 gthread-2.0)
 
@@ -21,14 +19,16 @@ GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
 
+DL_LIB ?= -ldl
+
 INCS = ${GIRARA_INC} ${GTK_INC} $(SQLITE_INC)
-LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) -lpthread -lm
+LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) $(DL_LIB) -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
 
 # debug
-DFLAGS = -g
+DFLAGS ?= -g
 
 # ld
 LDFLAGS += -rdynamic

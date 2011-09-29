@@ -21,6 +21,6 @@ void print(zathura_t* zathura);
  * @param zathura Zathura object
  */
 void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
-		context, gint page_number, zathura_t* zathura);
+    context, gint page_number, zathura_t* zathura);
 
 #endif // PRINT_H

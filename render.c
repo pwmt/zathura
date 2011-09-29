@@ -151,35 +151,72 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   gdk_threads_enter();
   g_static_mutex_lock(&(page->lock));
-  zathura_image_buffer_t* image_buffer = zathura_page_render(page);
 
-  if (image_buffer == NULL) {
+  /* create cairo surface */
+  unsigned int page_width  = 0;
+  unsigned int page_height = 0;
+
+  if (page->document->rotate == 0 || page->document->rotate == 180) {
+    page_width  = page->width  * zathura->document->scale;
+    page_height = page->height * zathura->document->scale;
+  } else {
+    page_width  = page->height * zathura->document->scale;
+    page_height = page->width  * zathura->document->scale;
+  }
+
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
+
+  if (surface == NULL) {
     g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
 
-  /* create cairo surface */
-  unsigned int page_width  = page->width  * zathura->document->scale;
-  unsigned int page_height = page->height * zathura->document->scale;
+  cairo_t* cairo = cairo_create(surface);
 
-  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
+  if (cairo == NULL) {
+    cairo_surface_destroy(surface);
+    g_static_mutex_unlock(&(page->lock));
+    gdk_threads_leave();
+    return false;
+  }
+
+  cairo_save(cairo);
+  cairo_set_source_rgb(cairo, 1, 1, 1);
+  cairo_rectangle(cairo, 0, 0, page_width, page_height);
+  cairo_fill(cairo);
+  cairo_restore(cairo);
+  cairo_save(cairo);
+
+  switch(page->document->rotate) {
+    case 90:
+      cairo_translate(cairo, page_width, 0);
+      break;
+    case 180:
+      cairo_translate(cairo, page_width, page_height);
+      break;
+    case 270:
+      cairo_translate(cairo, 0, page_height);
+      break;
+  }
+
+  if (page->document->rotate != 0) {
+    cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
+  }
+
+  if (zathura_page_render(page, cairo) == false) {
+    cairo_destroy(cairo);
+    cairo_surface_destroy(surface);
+    g_static_mutex_unlock(&(page->lock));
+    gdk_threads_leave();
+    return false;
+  }
+
+  cairo_restore(cairo);
+  cairo_destroy(cairo);
 
   int rowstride        = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
-
-  for (unsigned int y = 0; y < page_height; y++) {
-    unsigned char* dst = image + y * rowstride;
-    unsigned char* src = image_buffer->data + y * image_buffer->rowstride;
-
-    for (unsigned int x = 0; x < page_width; x++) {
-      dst[0] = src[2];
-      dst[1] = src[1];
-      dst[2] = src[0];
-      src += 3;
-      dst += 4;
-    }
-  }
 
   /* recolor */
   if (zathura->global.recolor) {
@@ -214,49 +251,14 @@ render(zathura_t* zathura, zathura_page_t* page)
     }
   }
 
-  /* rotate */
-  unsigned int width = page_width;
-  unsigned int height = page_height;
-  if (page->document->rotate == 90 || page->document->rotate == 270) {
-    width = page_height;
-    height = page_width;
-  }
-
-  cairo_surface_t* final_surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
-  cairo_t* cairo = cairo_create(final_surface);
-
-  switch(page->document->rotate)
-  {
-    case 90:
-      cairo_translate(cairo, width, 0);
-      break;
-    case 180:
-      cairo_translate(cairo, width, height);
-      break;
-    case 270:
-      cairo_translate(cairo, 0, height);
-      break;
-  }
-
-  if (page->document->rotate != 0) {
-    cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
-  }
-
-  cairo_set_source_surface(cairo, surface, 0, 0);
-  cairo_set_operator(cairo, CAIRO_OPERATOR_SOURCE);
-  cairo_paint(cairo);
-  cairo_destroy(cairo);
-  cairo_surface_destroy(surface);
-
   /* draw to gtk widget */
-  page->surface = final_surface;
-  gtk_widget_set_size_request(page->drawing_area, width, height);
+  page->surface = surface;
+  gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
   gtk_widget_queue_draw(page->drawing_area);
 
-  zathura_image_buffer_free(image_buffer);
   g_static_mutex_unlock(&(page->lock));
-
   gdk_threads_leave();
+
   return true;
 }
 

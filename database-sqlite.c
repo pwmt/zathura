@@ -15,7 +15,7 @@ zathura_database_t*
 zathura_db_init(const char* path)
 {
   zathura_database_t* db = g_malloc0(sizeof(zathura_database_t));
-  
+
   /* create bookmarks database */
   static const char SQL_BOOKMARK_INIT[] =
     "CREATE TABLE IF NOT EXISTS bookmarks ("
@@ -167,7 +167,7 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
     bookmark->id = g_strdup((const char*) sqlite3_column_text(stmt, 0));
     bookmark->page = sqlite3_column_int(stmt, 1);
-    
+
     girara_list_append(result, bookmark);
   }
   sqlite3_finalize(stmt);

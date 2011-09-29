@@ -16,7 +16,7 @@ struct render_thread_s
   GThread* thread; /**> The thread object */
   GMutex* lock; /**> Lock */
   GCond* cond; /**> Condition */
-	zathura_t* zathura; /**> Zathura object */
+  zathura_t* zathura; /**> Zathura object */
 };
 
 /**

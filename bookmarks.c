@@ -27,7 +27,7 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
       girara_warning("Failed to add bookmark to database.");
     }
   }
-  
+
   return bookmark;
 }
 
@@ -93,5 +93,4 @@ zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
   zathura->bookmarks.bookmarks = bookmarks;
   return true;
 }
-
 
