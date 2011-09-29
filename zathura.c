@@ -63,11 +63,13 @@ zathura_init(int argc, char* argv[])
 
   /* plugins */
   zathura->plugins.plugins = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.plugins, zathura_document_plugin_free);
+  girara_list_set_free_function(zathura->plugins.plugins, 
+      (girara_free_function_t)zathura_document_plugin_free);
   zathura->plugins.path    = girara_list_new();
   girara_list_set_free_function(zathura->plugins.path, g_free);
   zathura->plugins.type_plugin_mapping = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_free);
+  girara_list_set_free_function(zathura->plugins.type_plugin_mapping,
+      (girara_free_function_t)zathura_type_plugin_mapping_free);
 
   if (config_dir) {
     zathura->config.config_dir = g_strdup(config_dir);

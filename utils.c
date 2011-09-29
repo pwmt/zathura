@@ -68,7 +68,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
     }
   GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
 
-  g_free(content_type);
+  g_free((void*)content_type);
   return result;
 }
 
