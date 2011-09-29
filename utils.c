@@ -149,15 +149,23 @@ execute_command(char* const argv[], char** output)
 }
 
 void
-document_index_build(GtkTreeModel* UNUSED(model), GtkTreeIter* UNUSED(parent),
-    girara_tree_node_t* UNUSED(tree))
+document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
+    girara_tree_node_t* tree)
 {
-  /*girara_list_t* list        = girara_node_get_children(tree);*/
-  /*girara_list_iterator_t* it = girara_list_iterator(list);*/
+  girara_list_t* list        = girara_node_get_children(tree);
+  GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node)
+    zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
-  /*do {*/
-    /*zathura_index_element_t* index_element = (zathura_index_element_t*) girara_list_iterator_data(it);*/
-  /*} while ((it = girara_list_iterator_next(it)));*/
+    GtkTreeIter tree_iter;
+    gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, index_element, -1);
+    g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
+
+    if (girara_node_get_num_children(node) > 0) {
+      document_index_build(model, &tree_iter, node);
+    }
+
+  GIRARA_LIST_FOREACH_END(list, gchar*, iter, name)
 }
 
 char*
