@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <libgen.h>
 
+#include "bookmarks.h"
 #include "completion.h"
 #include "utils.h"
 
@@ -141,4 +142,27 @@ error_free:
   g_free(path);
 
   return NULL;
+}
+
+girara_completion_t*
+cc_bookmarks(girara_session_t* session, char* input)
+{
+  g_return_val_if_fail(session != NULL, NULL);
+  g_return_val_if_fail(session->global.data != NULL, NULL);
+  zathura_t* zathura = session->global.data;
+
+  girara_completion_t* completion  = girara_completion_init();
+  girara_completion_group_t* group = girara_completion_group_create(session, NULL);
+
+  const size_t input_length = input ? strlen(input) : 0;
+
+  GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+    if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
+      gchar* paged = g_strdup_printf("Page %d", bookmark->page);
+      girara_completion_group_add_element(group, bookmark->id, paged);
+      g_free(paged);
+    }
+  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+
+  return completion;
 }
