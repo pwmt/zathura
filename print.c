@@ -1,5 +1,8 @@
+/* See LICENSE file for license and copyright information */
+
 #include "print.h"
 #include "document.h"
+#include "render.h"
 
 void
 print(zathura_t* zathura)
@@ -24,6 +27,7 @@ print(zathura_t* zathura)
 
   /* print operation signals */
   g_signal_connect(print_operation, "draw-page", G_CALLBACK(cb_print_draw_page), zathura);
+  g_signal_connect(print_operation, "end-print", G_CALLBACK(cb_print_end),       zathura);
 
   /* print */
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation,
@@ -41,43 +45,45 @@ print(zathura_t* zathura)
 }
 
 void
-cb_print_begin(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
-    UNUSED(context), zathura_t* UNUSED(zathura))
+cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
+    UNUSED(context), zathura_t* zathura)
 {
+  if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL
+      || zathura->document->file_path == NULL) {
+    return;
+  }
 
+  girara_statusbar_item_set_text(zathura->ui.session,
+      zathura->ui.statusbar.file, zathura->document->file_path);
 }
 
 void
 cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     context, gint page_number, zathura_t* zathura)
 {
-  /* TODO: Implement with cairo */
-  /*cairo_t* cairo = gtk_print_context_get_cairo_context(context);*/
+  if (context == NULL || zathura == NULL || zathura->document->pages == NULL ||
+      zathura->ui.session == NULL || zathura->ui.statusbar.file == NULL) {
+    return;
+  }
 
-  /*girara_info("Printing page %d", page_number);*/
+  /* update statusbar */
+  char* tmp = g_strdup_printf("Printing %d...", page_number);
+  girara_statusbar_item_set_text(zathura->ui.session,
+      zathura->ui.statusbar.file, tmp);
+  g_free(tmp);
 
-  /*zathura_page_t* page = zathura->document->pages[page_number];*/
+  /* render page */
+  cairo_t* cairo           = gtk_print_context_get_cairo_context(context);
+  zathura_page_t* page     = zathura->document->pages[page_number];
+  double requested_with    = gtk_print_context_get_width(context);
+  double tmp_scale         = zathura->document->scale;
+  zathura->document->scale = requested_with / page->width;
 
-  /*double requested_with    = gtk_print_context_get_width(context);*/
-  /*double tmp_scale         = zathura->document->scale;*/
-  /*zathura->document->scale = requested_with / page->width;*/
+  if (cairo == NULL || page == NULL) {
+    return;
+  }
 
-  /*g_static_mutex_lock(&(page->lock));*/
-  /*zathura_image_buffer_t* image_buffer = zathura_page_render(page);*/
-  /*g_static_mutex_unlock(&(page->lock));*/
+  zathura_page_render(page, cairo);
 
-  /*for (unsigned int y = 0; y < image_buffer->height; y++) {*/
-    /*unsigned char* src = image_buffer->data + y * image_buffer->rowstride;*/
-    /*for (unsigned int x = 0; x < image_buffer->width; x++) {*/
-      /*if (src[0] != 255 && src[1] != 255 && src[2] != 255) {*/
-        /*cairo_set_source_rgb(cairo, src[0], src[1], src[2]);*/
-        /*cairo_rectangle(cairo, x, y, 1, 1);*/
-        /*cairo_fill(cairo);*/
-      /*}*/
-
-      /*src += 3;*/
-    /*}*/
-  /*}*/
-
-  /*zathura->document->scale = tmp_scale;*/
+  zathura->document->scale = tmp_scale;
 }
