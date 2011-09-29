@@ -77,6 +77,13 @@ install: all ${PROJECT}.pc
 	$(ECHO) installing manual page
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)if which rst2man > /dev/null ; then \
+		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
+		rst2man ${PROJECT}rc.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+	fi
+	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
+	$(ECHO) installing desktop file
+	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
 	$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(ECHO) installing pkgconfig file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/lib/pkgconfig
@@ -90,6 +97,9 @@ uninstall:
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/include/${PROJECT}/zathura.h
 	$(ECHO) removing manual page
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
+	$(ECHO) removing desktop file
+	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
 	$(ECHO) removing pkgconfig file
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/lib/pkgconfig
 
