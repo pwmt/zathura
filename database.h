@@ -48,4 +48,25 @@ bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const 
  */
 girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char* file);
 
+/**
+ * Set file info (last site, ...) in the database.
+ * @param db The database instance
+ * @param file The file to which the file info belongs to.
+ * @param page The last page.
+ * @param offset The last offset.
+ * @param scale The last scale.
+ * @return true on success, false otherwise.
+ */
+bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int page, int offset, float scale);
+
+/* Get file info (last site, ...) from the database.
+ * @param db The database instance
+ * @param file The file to which the file info belongs to.
+ * @param page The last page.
+ * @param offset The last offset.
+ * @param scale The last scale.
+ * @return true on success, false otherwise.
+ */
+bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* page, int* offset, float* scale);
+
 #endif // DATABASE_H
