@@ -274,6 +274,8 @@ zathura_free(zathura_t* zathura)
   /* free config variables */
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
+
+  free(zathura);
 }
 
 gboolean
