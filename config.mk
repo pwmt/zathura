@@ -6,6 +6,7 @@ VERSION = 0.0.8.1
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
+DESKTOPPREFIX ?= ${PREFIX}/share/applications
 
 # libs
 
