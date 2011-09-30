@@ -209,7 +209,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   if (plugin == NULL) {
     girara_error("unknown file type\n");
-    free(real_path);
+    goto error_free;
   }
 
   document = g_malloc0(sizeof(zathura_document_t));
