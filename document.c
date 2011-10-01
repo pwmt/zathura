@@ -20,8 +20,7 @@
 #include "utils.h"
 #include "zathura.h"
 #include "render.h"
-
-#define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
+#include "utils.h"
 
 void
 zathura_document_plugins_load(zathura_t* zathura)
@@ -351,6 +350,21 @@ bool
 zathura_document_attachments_free(zathura_list_t* UNUSED(list))
 {
   return false;
+}
+
+char*
+zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+
+  if (document->functions.document_meta_get == NULL) {
+    girara_error("%s not implemented", __FUNCTION__);
+    return NULL;
+  }
+
+  return document->functions.document_meta_get(document, meta);
 }
 
 zathura_page_t*
