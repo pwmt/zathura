@@ -175,6 +175,26 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
     unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL || zathura->document->file_path == NULL) {
+    return false;
+  }
+
+  /* save current document path and password */
+  char* path     = g_strdup(zathura->document->file_path);
+  char* password = zathura->document->password ? g_strdup(zathura->document->password) : NULL;
+
+  /* close current document */
+  document_close(zathura);
+
+  /* reopen document */
+  document_open(zathura, path, password);
+
+  /* clean up */
+  g_free(path);
+  g_free(password);
 
   return false;
 }
@@ -211,9 +231,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
 
   GtkAdjustment* adjustment = NULL;
   if ( (argument->n == LEFT) || (argument->n == RIGHT) )
-    adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   else
-    adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
 
   gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
   gdouble value      = gtk_adjustment_get_value(adjustment);
