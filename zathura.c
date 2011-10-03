@@ -204,7 +204,7 @@ zathura_init(int argc, char* argv[])
   char* database_path = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
   zathura->database = zathura_db_init(database_path);
   if (zathura->database == NULL) {
-    girara_error("Unable to inizialize database. Bookmarks won't be available.");
+    girara_error("Unable to initialize database. Bookmarks won't be available.");
   }
   g_free(database_path);
 

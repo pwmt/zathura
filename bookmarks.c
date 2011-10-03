@@ -81,8 +81,11 @@ zathura_bookmark_free(zathura_bookmark_t* bookmark)
 
 bool
 zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
-  g_return_val_if_fail(zathura && zathura->database, false);
+  g_return_val_if_fail(zathura, false);
   g_return_val_if_fail(file, false);
+  if (zathura->database == NULL) {
+    return false;
+  }
 
   girara_list_t* bookmarks = zathura_db_load_bookmarks(zathura->database, file);
   if (!bookmarks) {
