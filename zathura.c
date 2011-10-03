@@ -87,6 +87,10 @@ zathura_init(int argc, char* argv[])
     g_free(path);
   }
 
+  /* create zathura (config/data) directory */
+  g_mkdir_with_parents(zathura->config.config_dir, 0771);
+  g_mkdir_with_parents(zathura->config.data_dir,   0771);
+
   if (plugin_path) {
     gchar** paths = g_strsplit(plugin_path, ":", 0);
     for (unsigned int i = 0; paths[i] != '\0'; ++i) {
