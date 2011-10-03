@@ -63,7 +63,7 @@ zathura_init(int argc, char* argv[])
 
   /* plugins */
   zathura->plugins.plugins = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.plugins, 
+  girara_list_set_free_function(zathura->plugins.plugins,
       (girara_free_function_t)zathura_document_plugin_free);
   zathura->plugins.path    = girara_list_new();
   girara_list_set_free_function(zathura->plugins.path, g_free);
@@ -274,6 +274,8 @@ zathura_free(zathura_t* zathura)
   /* free config variables */
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
+
+  free(zathura);
 }
 
 gboolean

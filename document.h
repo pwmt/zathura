@@ -33,6 +33,18 @@ typedef struct zathura_type_plugin_mapping_s
   zathura_document_plugin_t* plugin;
 } zathura_type_plugin_mapping_t;
 
+typedef enum zathura_document_meta_e
+{
+  ZATHURA_DOCUMENT_TITLE,
+  ZATHURA_DOCUMENT_AUTHOR,
+  ZATHURA_DOCUMENT_SUBJECT,
+  ZATHURA_DOCUMENT_KEYWORDS,
+  ZATHURA_DOCUMENT_CREATOR,
+  ZATHURA_DOCUMENT_PRODUCER,
+  ZATHURA_DOCUMENT_CREATION_DATE,
+  ZATHURA_DOCUMENT_MODIFICATION_DATE
+} zathura_document_meta_t;
+
 /**
  * Function prototype that is called to register a document plugin
  *
@@ -196,6 +208,11 @@ struct zathura_document_s
     zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
 
     /**
+     * Get document information
+     */
+    char* (*document_meta_get)(zathura_document_t* document, zathura_document_meta_t info);
+
+    /**
      * Gets the page object
      */
     zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id);
@@ -306,6 +323,15 @@ zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
  * @return
  */
 bool zathura_document_attachments_free(zathura_list_t* list);
+
+/**
+ * Returns a string of the requested information
+ *
+ * @param document The zathura document
+ * @param meta The information field
+ * @return String or NULL if information could not be retreived
+ */
+char* zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta);
 
 /**
  * Get the page object

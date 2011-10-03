@@ -1,11 +1,15 @@
 /* See LICENSE file for license and copyright information */
 
+#include <string.h>
+
 #include "commands.h"
 #include "bookmarks.h"
 #include "database.h"
+#include "document.h"
 #include "zathura.h"
 #include "print.h"
 #include "document.h"
+#include "utils.h"
 
 bool
 cmd_bookmark_create(girara_session_t* UNUSED(session), girara_list_t*
@@ -65,10 +69,61 @@ cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 }
 
 bool
-cmd_info(girara_session_t* UNUSED(session), girara_list_t*
-    UNUSED(argument_list))
+cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 {
-  return true;
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    return false;
+  }
+
+  struct meta_field {
+    char* name;
+    zathura_document_meta_t field;
+  };
+
+  struct meta_field meta_fields[] = {
+    { "Title",            ZATHURA_DOCUMENT_TITLE },
+    { "Author",           ZATHURA_DOCUMENT_AUTHOR },
+    { "Subject",          ZATHURA_DOCUMENT_SUBJECT },
+    { "Keywords",         ZATHURA_DOCUMENT_KEYWORDS },
+    { "Creator",          ZATHURA_DOCUMENT_CREATOR },
+    { "Producer",         ZATHURA_DOCUMENT_PRODUCER },
+    { "Creation date",    ZATHURA_DOCUMENT_CREATION_DATE },
+    { "Modiciation date", ZATHURA_DOCUMENT_MODIFICATION_DATE }
+  };
+
+  GString* string = g_string_new(NULL);
+  if (string == NULL) {
+    return true;
+  }
+
+  for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+    char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field);
+    if (tmp != NULL) {
+      char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, tmp);
+      if (text == NULL) {
+        g_free(tmp);
+        return true;
+      }
+
+      g_string_append(string, text);
+
+      g_free(text);
+      g_free(tmp);
+    }
+  }
+
+  if (strlen(string->str) > 0) {
+    g_string_erase(string, strlen(string->str) - 1, 1);
+    girara_notify(session, GIRARA_INFO, string->str);
+  }
+
+  g_string_free(string, TRUE);
+
+  return false;
 }
 
 bool
