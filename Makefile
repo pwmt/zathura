@@ -101,7 +101,7 @@ uninstall:
 	$(ECHO) removing desktop file
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
 	$(ECHO) removing pkgconfig file
-	$(QUIET)rm -f ${DESTDIR}${PREFIX}/lib/pkgconfig
+	$(QUIET)rm -f ${DESTDIR}${PREFIX}/lib/pkgconfig/${PROJECT}.pc
 
 -include $(wildcard .depend/*.dep)
 
