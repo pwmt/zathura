@@ -173,12 +173,12 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   /* determine real path */
-  size_t path_max;
+  long path_max;
 #ifdef PATH_MAX
   path_max = PATH_MAX;
 #else
   path_max = pathconf(path,_PC_PATH_MAX);
-  if (path_max == 0)
+  if (path_max <= 0)
     path_max = 4096;
 #endif
 

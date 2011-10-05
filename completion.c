@@ -35,12 +35,12 @@ cc_open(girara_session_t* session, char* input)
   /* If the path does not begin with a slash we update the path with the current
    * working directory */
   if (strlen(path) == 0 || path[0] != '/') {
-    size_t path_max;
+    long path_max;
 #ifdef PATH_MAX
     path_max = PATH_MAX;
 #else
     path_max = pathconf(path,_PC_PATH_MAX);
-    if (path_max == 0)
+    if (path_max <= 0)
       path_max = 4096;
 #endif
 
