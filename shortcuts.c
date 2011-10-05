@@ -381,7 +381,9 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
-  g_return_val_if_fail(zathura->document != NULL, false);
+  if (zathura->document == NULL) {
+    return false;
+  }
 
   girara_tree_node_t* document_index = NULL;
   GtkWidget* treeview                = NULL;

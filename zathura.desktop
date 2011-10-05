@@ -2,9 +2,9 @@
 Version=1.0
 Type=Application
 Name=Zathura
-Comment=A minimalistic PDF viewer
-Comment[de]=Ein minimalistischer PDF-Betrachter
+Comment=A minimalistic document viewer
+Comment[de]=Ein minimalistischer Dokumenten-Betrachter
 Exec=zathura %f
 Terminal=false
 Categories=Office;Viewer;
-MimeType=application/pdf;
+MimeType=application/pdf;application/postscript;image/vnd.djvu;
