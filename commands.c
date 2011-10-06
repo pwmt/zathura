@@ -31,12 +31,12 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
   const char* bookmark_name = girara_list_nth(argument_list, 0);
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
   if (bookmark != NULL) {
-    bookmark->page = zathura->document->current_page_number;
+    bookmark->page = zathura->document->current_page_number + 1;
     girara_notify(session, GIRARA_INFO, "Bookmark successfuly updated: %s", bookmark_name);
     return true;
   }
 
-  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura->document->current_page_number);
+  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura->document->current_page_number + 1);
   if (bookmark == NULL) {
     girara_notify(session, GIRARA_ERROR, "Could not create bookmark: %s", bookmark_name);
     return false;
@@ -97,7 +97,7 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  return page_set(zathura, bookmark->page);
+  return page_set(zathura, bookmark->page - 1);
 }
 
 bool
