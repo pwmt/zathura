@@ -340,6 +340,13 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     girara_warning("Failed to load bookmarks for %s.\n", zathura->document->file_path);
   }
 
+  unsigned int page = 0u;
+  int offset = 0;
+  float scale = 1.0f;
+  if (zathura_db_get_fileinfo(zathura->database, zathura->document->file_path, &page, &offset, &scale)) {
+    page_set_delayed(zathura, page);
+  }
+
   return true;
 
 error_free:
@@ -405,6 +412,35 @@ document_close(zathura_t* zathura)
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, "[No name]");
   }
 
+  return true;
+}
+
+typedef struct page_set_delayed_s {
+  zathura_t* zathura;
+  unsigned int page;
+} page_set_delayed_t;
+
+static gboolean
+page_set_delayed_impl(gpointer data) {
+  page_set_delayed_t* p = data;
+  page_set(p->zathura, p->page);
+
+  g_free(p);
+  return FALSE;
+}
+
+bool
+page_set_delayed(zathura_t* zathura, unsigned int page_id)
+{
+  if (zathura == NULL || zathura->document == NULL || zathura->document->pages == NULL ||
+      page_id >= zathura->document->number_of_pages) {
+    return false;
+  }
+
+  page_set_delayed_t* p = g_malloc(sizeof(page_set_delayed_t));
+  p->zathura = zathura;
+  p->page = page_id;
+  g_idle_add(page_set_delayed_impl, p);
   return true;
 }
 

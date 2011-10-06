@@ -163,6 +163,14 @@ bool document_close(zathura_t* zathura);
 bool page_set(zathura_t* zathura, unsigned int page_id);
 
 /**
+ * Opens the page with the given number (delayed)
+ *
+ * @param zathura The zathura session
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
+
+/**
  * Builds the box structure to show the rendered pages
  *
  * @param zathura The zathura session
