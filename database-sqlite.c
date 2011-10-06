@@ -180,7 +180,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int p
   g_return_val_if_fail(db && file, false);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, scale) VALUES (?, ?, ?);";
+    "REPLACE INTO fileinfo (file, page, offset, scale) VALUES (?, ?, ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(db->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
