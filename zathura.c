@@ -345,6 +345,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   float scale = 1.0f;
   if (zathura_db_get_fileinfo(zathura->database, zathura->document->file_path, &page, &offset, &scale)) {
     page_set_delayed(zathura, page);
+    zathura->document->scale = scale;
   }
 
   return true;
@@ -395,6 +396,10 @@ document_close(zathura_t* zathura)
   if (!zathura->document) {
     return false;
   }
+
+  /* store last seen page */
+  zathura_db_set_fileinfo(zathura->database, zathura->document->file_path, zathura->document->current_page_number,
+      /* zathura->document->offset TODO */ 0, zathura->document->scale);
 
   render_free(zathura->sync.render_thread);
   zathura->sync.render_thread = NULL;
