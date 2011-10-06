@@ -12,9 +12,37 @@
 #include "utils.h"
 
 bool
-cmd_bookmark_create(girara_session_t* UNUSED(session), girara_list_t*
-    UNUSED(argument_list))
+cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
 {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    return false;
+  }
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc != 1) {
+    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    return false;
+  }
+
+  const char* bookmark_name = girara_list_nth(argument_list, 0);
+  zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
+  if (bookmark != NULL) {
+    bookmark->page = zathura->document->current_page_number;
+    girara_notify(session, GIRARA_INFO, "Bookmark successfuly updated: %s", bookmark_name);
+    return true;
+  }
+
+  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura->document->current_page_number);
+  if (bookmark == NULL) {
+    girara_notify(session, GIRARA_ERROR, "Could not create bookmark: %s", bookmark_name);
+    return false;
+  }
+
+  girara_notify(session, GIRARA_INFO, "Bookmark successfuly created: %s", bookmark_name);
   return true;
 }
 
