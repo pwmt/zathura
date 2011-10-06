@@ -46,10 +46,30 @@ cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list)
 }
 
 bool
-cmd_bookmark_open(girara_session_t* UNUSED(session), girara_list_t*
-    UNUSED(argument_list))
+cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
 {
-  return true;
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    return false;
+  }
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc != 1) {
+    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    return false;
+  }
+
+  const char* bookmark_name = girara_list_nth(argument_list, 0);
+  zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
+  if (bookmark == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No such bookmark: %s", bookmark_name);
+    return false;
+  }
+
+  return page_set(zathura, bookmark->page);
 }
 
 bool
