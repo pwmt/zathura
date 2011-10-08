@@ -52,7 +52,7 @@ zathura_init(int argc, char* argv[])
   }
   g_option_context_free(context);
 
-  zathura_t* zathura = malloc(sizeof(zathura_t));
+  zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   if (zathura == NULL) {
     return NULL;
@@ -98,9 +98,13 @@ zathura_init(int argc, char* argv[])
     }
     g_strfreev(paths);
   } else {
-    /* XXX: this shouldn't be hard coded! */
-    girara_list_append(zathura->plugins.path, g_strdup("/usr/local/lib/zathura"));
-    girara_list_append(zathura->plugins.path, g_strdup("/usr/lib/zathura"));
+#ifdef ZATHURA_PLUGINDIR
+    gchar** paths = g_strsplit(ZATHURA_PLUGINDIR, ":", 0);
+    for (unsigned int i = 0; paths[i] != '\0'; ++i) {
+      girara_list_append(zathura->plugins.path, g_strdup(paths[i]));
+    }
+    g_strfreev(paths);
+#endif
   }
 
   /* UI */
@@ -134,7 +138,7 @@ zathura_init(int argc, char* argv[])
   /* load local configuration files */
   char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
   config_load_file(zathura, configuration_file);
-  free(configuration_file);
+  g_free(configuration_file);
 
   /* initialize girara */
   zathura->ui.session->gtk.embed = embed;
@@ -232,13 +236,10 @@ error_free:
     g_object_unref(zathura->ui.page_view);
   }
 
-  girara_session_destroy(zathura->ui.session);
-  girara_list_free(zathura->bookmarks.bookmarks);
-  zathura_db_free(zathura->database);
 
 error_out:
 
-  free(zathura);
+  zathura_free(zathura);
 
   return NULL;
 }
@@ -279,7 +280,7 @@ zathura_free(zathura_t* zathura)
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
 
-  free(zathura);
+  g_free(zathura);
 }
 
 gboolean
@@ -550,3 +551,4 @@ int main(int argc, char* argv[])
 
   return 0;
 }
+
