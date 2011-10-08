@@ -17,11 +17,11 @@ render_job(void* data)
   while (true) {
     g_mutex_lock(render_thread->lock);
 
-    if (girara_list_size(render_thread->list) <= 0) {
+    if (girara_list_size(render_thread->list) == 0) {
       g_cond_wait(render_thread->cond, render_thread->lock);
     }
 
-    if (girara_list_size(render_thread->list) <= 0) {
+    if (girara_list_size(render_thread->list) == 0) {
       /*
        * We've been signaled with g_cond_signal(), but the list
        * is still empty. This means that the signal came from
@@ -223,7 +223,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_destroy(cairo);
 
-  int rowstride        = cairo_image_surface_get_stride(surface);
+  const int rowstride  = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
 
   /* recolor */
