@@ -11,7 +11,7 @@
 #include "utils.h"
 
 girara_completion_t*
-cc_open(girara_session_t* session, char* input)
+cc_open(girara_session_t* session, const char* input)
 {
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
@@ -145,7 +145,7 @@ error_free:
 }
 
 girara_completion_t*
-cc_bookmarks(girara_session_t* session, char* input)
+cc_bookmarks(girara_session_t* session, const char* input)
 {
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
