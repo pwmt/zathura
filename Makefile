@@ -4,9 +4,19 @@ include config.mk
 include common.mk
 
 PROJECT  = zathura
-SOURCE   = $(shell find . -iname "*.c")
+SOURCE   = $(shell find . -iname "*.c" -a ! -iname "database-*")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
+
+ifeq (${DATABASE}, sqlite)
+INCS   += $(SQLITE_INC)
+LIBS   += $(SQLITE_LIB)
+SOURCE += database-sqlite.c
+else
+ifeq (${DATABASE}, plain)
+SOURCE += database-plain.c
+endif
+endif
 
 all: options ${PROJECT}
 
@@ -26,6 +36,9 @@ options:
 	$(ECHO) CC $<
 	@mkdir -p .depend
 	$(QUIET)${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
+
+# force recompilation of database.o if DATABASE has changed
+database.o: database-${DATABASE}.o
 
 ${OBJECTS}:  config.mk
 ${DOBJECTS}: config.mk

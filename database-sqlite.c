@@ -6,15 +6,25 @@
 
 #include "database.h"
 
+#define DATABASE "bookmarks.sqlite"
+
 struct zathura_database_s
 {
   sqlite3* session;
 };
 
 zathura_database_t*
-zathura_db_init(const char* path)
+zathura_db_init(const char* dir)
 {
+  char* path = g_build_filename(dir, DATABASE, NULL);
+  if (path == NULL) {
+    goto error_ret;
+  }
+
   zathura_database_t* db = g_malloc0(sizeof(zathura_database_t));
+  if (db == NULL) {
+    goto error_free;
+  }
 
   /* create bookmarks database */
   static const char SQL_BOOKMARK_INIT[] =
@@ -33,23 +43,30 @@ zathura_db_init(const char* path)
 
   if (sqlite3_open(path, &(db->session)) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
-    zathura_db_free(db);
-    return NULL;
+    goto error_free;
   }
 
   if (sqlite3_exec(db->session, SQL_BOOKMARK_INIT, NULL, 0, NULL) != SQLITE_OK) {
     girara_error("Failed to initialize database: %s\n", path);
-    zathura_db_free(db);
-    return NULL;
+    goto error_free;
   }
 
   if (sqlite3_exec(db->session, SQL_FILEINFO_INIT, NULL, 0, NULL) != SQLITE_OK) {
     girara_error("Failed to initialize database: %s\n", path);
-    zathura_db_free(db);
-    return NULL;
+    goto error_free;
   }
 
   return db;
+
+error_free:
+
+  zathura_db_free(db);
+
+error_ret:
+
+  g_free(path);
+
+  return NULL;
 }
 
 void
@@ -59,7 +76,10 @@ zathura_db_free(zathura_database_t* db)
     return;
   }
 
-  sqlite3_close(db->session);
+  if (db->session != NULL) {
+    sqlite3_close(db->session);
+  }
+
   g_free(db);
 }
 
@@ -87,7 +107,8 @@ prepare_statement(sqlite3* session, const char* statement)
 }
 
 bool
-zathura_db_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark)
+zathura_db_add_bookmark(zathura_database_t* db, const char* file,
+    zathura_bookmark_t* bookmark)
 {
   g_return_val_if_fail(db && file && bookmark, false);
 
@@ -113,7 +134,8 @@ zathura_db_add_bookmark(zathura_database_t* db, const char* file, zathura_bookma
 }
 
 bool
-zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char* id)
+zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char*
+    id)
 {
   g_return_val_if_fail(db && file && id, false);
 
@@ -175,7 +197,8 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 }
 
 bool
-zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int page, int offset, float scale)
+zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
+    page, int offset, float scale)
 {
   g_return_val_if_fail(db && file, false);
 
@@ -202,7 +225,8 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int p
 }
 
 bool
-zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* page, int* offset, float* scale)
+zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
+    page, int* offset, float* scale)
 {
   g_return_val_if_fail(db && file && page && offset && scale, false);
 

@@ -11,10 +11,10 @@
 
 /**
  * Initialize database system.
- * @param path Path to the database file.
+ * @param path Path to the directory where the database file should be located.
  * @return A valid zathura_database_t instance or NULL on failure
  */
-zathura_database_t* zathura_db_init(const char* path);
+zathura_database_t* zathura_db_init(const char* dir);
 
 /**
  * Free database instance.
@@ -29,7 +29,8 @@ void zathura_db_free(zathura_database_t* db);
  * @param bookmark The bookmark instance.
  * @return true on success, false otherwise
  */
-bool zathura_db_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
+bool zathura_db_add_bookmark(zathura_database_t* db, const char* file,
+    zathura_bookmark_t* bookmark);
 
 /**
  * Add or update bookmark in the database.
@@ -38,7 +39,8 @@ bool zathura_db_add_bookmark(zathura_database_t* db, const char* file, zathura_b
  * @param bookmark The bookmark instance.
  * @return true on success, false otherwise
  */
-bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
+bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const
+    char* id);
 
 /**
  * Loads all bookmarks from the database belonging to a specific file.
@@ -46,7 +48,8 @@ bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const 
  * @param file The file for which the bookmarks should be loaded.
  * @return List of zathura_bookmark_t* or NULL on failure.
  */
-girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char* file);
+girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char*
+    file);
 
 /**
  * Set file info (last site, ...) in the database.
@@ -57,7 +60,8 @@ girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char* fil
  * @param scale The last scale.
  * @return true on success, false otherwise.
  */
-bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int page, int offset, float scale);
+bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned
+    int page, int offset, float scale);
 
 /* Get file info (last site, ...) from the database.
  * @param db The database instance
@@ -67,6 +71,7 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned 
  * @param scale The last scale.
  * @return true on success, false otherwise.
  */
-bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* page, int* offset, float* scale);
+bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned
+    int* page, int* offset, float* scale);
 
 #endif // DATABASE_H
