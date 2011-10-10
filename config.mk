@@ -24,8 +24,8 @@ SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
 
 DL_LIB ?= -ldl
 
-INCS = ${GIRARA_INC} ${GTK_INC} $(SQLITE_INC)
-LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) $(DL_LIB) -lpthread -lm
+INCS = ${GIRARA_INC} ${GTK_INC}
+LIBS = ${GIRARA_LIB} ${GTK_LIB} $(DL_LIB) -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS) -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
@@ -44,3 +44,7 @@ SFLAGS ?= -s
 
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
+
+# database
+# possible values are sqlite and plain
+DATABASE ?= sqlite
