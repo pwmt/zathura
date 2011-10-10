@@ -270,3 +270,4 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
 
   return true;
 }
+

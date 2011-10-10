@@ -542,3 +542,4 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int
 
   return false;
 }
+

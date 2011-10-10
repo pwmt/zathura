@@ -232,3 +232,4 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int* 
   sqlite3_finalize(stmt);
   return true;
 }
+

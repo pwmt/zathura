@@ -34,9 +34,16 @@ print(zathura_t* zathura)
       GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
 
   if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
+    if (zathura->print.settings != NULL) {
+      g_object_unref(zathura->print.settings);
+    }
+    if (zathura->print.page_setup != NULL) {
+      g_object_unref(zathura->print.page_setup);
+    }
+
     /* save previous settings */
-    zathura->print.settings   = gtk_print_operation_get_print_settings(print_operation);
-    zathura->print.page_setup = gtk_print_operation_get_default_page_setup(print_operation);
+    zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(print_operation));
+    zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(print_operation));
   } else if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
     girara_error("Error occured while printing progress");
   }
@@ -75,13 +82,13 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
   /* render page */
   cairo_t* cairo           = gtk_print_context_get_cairo_context(context);
   zathura_page_t* page     = zathura->document->pages[page_number];
-  double requested_with    = gtk_print_context_get_width(context);
-  double tmp_scale         = zathura->document->scale;
-  zathura->document->scale = requested_with / page->width;
-
   if (cairo == NULL || page == NULL) {
     return;
   }
+
+  double requested_with    = gtk_print_context_get_width(context);
+  double tmp_scale         = zathura->document->scale;
+  zathura->document->scale = requested_with / page->width;
 
   zathura_page_render(page, cairo);
 
