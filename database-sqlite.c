@@ -16,6 +16,10 @@ struct zathura_database_s
 zathura_database_t*
 zathura_db_init(const char* dir)
 {
+  if (dir == NULL) {
+    goto error_ret;
+  }
+
   char* path = g_build_filename(dir, DATABASE, NULL);
   if (path == NULL) {
     goto error_ret;
