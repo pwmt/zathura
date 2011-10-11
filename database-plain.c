@@ -38,6 +38,9 @@ static bool zathura_db_check_file(const char* path);
 static girara_list_t* zathura_db_read_bookmarks_from_file(char* path);
 static girara_list_t* zathura_db_read_history_from_file(char* path);
 static void zathura_db_write_history_to_file(const char* file, girara_list_t* urls);
+static void cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile*
+    other_file, GFileMonitorEvent event, zathura_database_t* database);
+static void zathura_db_file_info_free(zathura_db_file_info_t* file_info);
 
 struct zathura_database_s
 {
@@ -89,6 +92,15 @@ zathura_db_init(const char* dir)
     goto error_free;
   }
 
+  girara_list_set_free_function(db->bookmarks, (girara_free_function_t) zathura_bookmark_free);
+
+  g_signal_connect(
+      G_OBJECT(db->bookmark_monitor),
+      "changed",
+      G_CALLBACK(cb_zathura_db_watch_file),
+      db
+  );
+
   /* history */
   db->history_path = g_build_filename(dir, HISTORY, NULL);
   if (db->history_path == NULL ||
@@ -109,10 +121,19 @@ zathura_db_init(const char* dir)
   }
   g_object_unref(history_file);
 
+  g_signal_connect(
+      G_OBJECT(db->history_monitor),
+      "changed",
+      G_CALLBACK(cb_zathura_db_watch_file),
+      db
+  );
+
   db->history = zathura_db_read_history_from_file(db->history_path);
   if (db->history == NULL) {
     goto error_free;
   }
+
+  girara_list_set_free_function(db->history, (girara_free_function_t) zathura_db_file_info_free);
 
   return db;
 
@@ -457,4 +478,44 @@ zathura_db_write_history_to_file(const char* file, girara_list_t* history)
   }
 
   fclose(f);
+}
+
+static void
+cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUSED(other_file),
+    GFileMonitorEvent event, zathura_database_t* database)
+{
+  fprintf(stderr, "read history\n");
+  if (event != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT || database == NULL) {
+    return;
+  }
+
+  char* path = g_file_get_path(file);
+  if (path == NULL) {
+    return;
+  }
+
+  if (database->bookmark_path && strcmp(database->bookmark_path, path) == 0) {
+    girara_list_free(database->bookmarks);
+    zathura_lock_lock(database->bookmark_lock);
+    database->bookmarks = zathura_db_read_bookmarks_from_file(database->bookmark_path);
+    zathura_lock_unlock(database->bookmark_lock);
+    girara_list_set_free_function(database->bookmarks, (girara_free_function_t) zathura_bookmark_free);
+  } else if (database->history_path && strcmp(database->history_path, path) == 0) {
+    girara_list_free(database->history);
+    zathura_lock_lock(database->history_lock);
+    database->history = zathura_db_read_history_from_file(database->history_path);
+    zathura_lock_unlock(database->history_lock);
+    girara_list_set_free_function(database->history, (girara_free_function_t) zathura_db_file_info_free);
+  }
+}
+
+static void
+zathura_db_file_info_free(zathura_db_file_info_t* file_info)
+{
+  if (file_info == NULL) {
+    return;
+  }
+
+  g_free(file_info->file);
+  free(file_info);
 }
