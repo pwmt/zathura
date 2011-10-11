@@ -12,14 +12,22 @@
 
 #include "database.h"
 
+#define BOOKMARKS "bookmarks"
+#define HISTORY "history"
+
 typedef struct zathura_lock_s
 {
   int sock;
   struct sockaddr_un sun;
 } zathura_lock_t;
 
-#define BOOKMARKS "bookmarks"
-#define HISTORY "history"
+typedef struct zathura_db_file_info_s
+{
+  char* file;
+  int page;
+  int offset;
+  float scale;
+} zathura_db_file_info_t;
 
 /* forward declaration */
 static zathura_lock_t* zathura_lock_new(const char* name);
@@ -29,6 +37,7 @@ static void zathura_lock_unlock(zathura_lock_t* lock);
 static bool zathura_db_check_file(const char* path);
 static girara_list_t* zathura_db_read_bookmarks_from_file(char* path);
 static girara_list_t* zathura_db_read_history_from_file(char* path);
+static void zathura_db_write_history_to_file(const char* file, girara_list_t* urls);
 
 struct zathura_database_s
 {
@@ -183,9 +192,45 @@ bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
     page, int offset, float scale)
 {
-  if (db == NULL || file == NULL) {
-    return NULL;
+  if (db == NULL || db->history == NULL || file == NULL) {
+    return false;
   }
+
+  /* search for existing entry */
+  if (girara_list_size(db->history) > 0) {
+    girara_list_iterator_t* iter = girara_list_iterator(db->history);
+
+    do {
+     zathura_db_file_info_t* file_info = (zathura_db_file_info_t*) girara_list_iterator_data(iter);
+
+      if (file_info != NULL && strcmp(file_info->file, file) == 0) {
+        file_info->page   = page;
+        file_info->offset = offset;
+        file_info->scale  = scale;
+        return true;
+      }
+    } while (girara_list_iterator_next(iter) != NULL);
+
+    girara_list_iterator_free(iter);
+  }
+
+  /* add new entry */
+  zathura_db_file_info_t* file_info = calloc(1, sizeof(zathura_db_file_info_t));
+  if (file_info == NULL) {
+    return false;
+  }
+
+  file_info->file   = g_strdup(file);
+  file_info->page   = page;
+  file_info->offset = offset;
+  file_info->scale  = scale;
+
+  girara_list_append(db->history, file_info);
+
+  /* write new history list */
+  zathura_lock_lock(db->history_lock);
+  zathura_db_write_history_to_file(db->history_path, db->history);
+  zathura_lock_unlock(db->history_lock);
 
   return false;
 }
@@ -194,8 +239,26 @@ bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
     page, int* offset, float* scale)
 {
-  if (db == NULL || file == NULL || page == NULL || offset == NULL || scale == NULL) {
+  if (db == NULL || db->history == NULL || file == NULL || page == NULL ||
+      offset == NULL || scale == NULL) {
     return false;
+  }
+
+  if (girara_list_size(db->history) > 0) {
+    girara_list_iterator_t* iter = girara_list_iterator(db->history);
+
+    do {
+     zathura_db_file_info_t* file_info = (zathura_db_file_info_t*) girara_list_iterator_data(iter);
+
+      if (file_info != NULL && strcmp(file_info->file, file) == 0) {
+        *page   = file_info->page;
+        *offset = file_info->offset;
+        *scale  = file_info->scale;
+        return true;
+      }
+    } while (girara_list_iterator_next(iter) != NULL);
+
+    girara_list_iterator_free(iter);
   }
 
   return false;
@@ -286,7 +349,12 @@ zathura_db_read_bookmarks_from_file(char* path)
     return NULL;
   }
 
-  return NULL;
+  girara_list_t* list = girara_list_new();
+  if (list == NULL) {
+    return NULL;
+  }
+
+  return list;
 }
 
 static girara_list_t*
@@ -296,5 +364,97 @@ zathura_db_read_history_from_file(char* path)
     return NULL;
   }
 
-  return NULL;
+  /* open file */
+  FILE* file = girara_file_open(path, "r");
+  if (file == NULL) {
+    return NULL;
+  }
+
+  girara_list_t* list = girara_list_new();
+  if (list == NULL) {
+    fclose(file);
+    return NULL;
+  }
+
+  /* read lines */
+  char* line = NULL;
+  while ((line = girara_file_read_line(file)) != NULL) {
+    /* skip empty lines */
+    if (strlen(line) == 0) {
+      free(line);
+      continue;
+    }
+
+    /* parse line */
+    gchar** argv = NULL;
+    gint    argc = 0;
+
+    if (g_shell_parse_argv(line, &argc, &argv, NULL) != FALSE) {
+      if (argc < 4) {
+        g_strfreev(argv);
+        free(line);
+        continue;
+      }
+
+      zathura_db_file_info_t* file_info = calloc(1, sizeof(zathura_db_file_info_t));
+      if (file_info == NULL) {
+        g_strfreev(argv);
+        free(line);
+        continue;
+      }
+
+      file_info->file   = g_strdup(argv[0]);
+      file_info->page   = atoi(argv[1]);
+      file_info->offset = atoi(argv[2]);
+      file_info->scale  = strtof(argv[3], NULL);
+
+      girara_list_append(list, file_info);
+    }
+
+    g_strfreev(argv);
+    free(line);
+  }
+
+  fclose(file);
+
+  return list;
+}
+
+static void
+zathura_db_write_history_to_file(const char* file, girara_list_t* history)
+{
+  if (file == NULL || history == NULL) {
+    return;
+  }
+
+  /* open file */
+  FILE* f = girara_file_open(file, "w");
+  if (f == NULL) {
+    return;
+  }
+
+  if (girara_list_size(history) > 0) {
+    girara_list_iterator_t* iter = girara_list_iterator(history);
+    do {
+      zathura_db_file_info_t* file_info = (zathura_db_file_info_t*) girara_list_iterator_data(iter);
+      if (file_info == NULL || file_info->file == NULL) {
+        continue;
+      }
+
+      /* write path */
+      char* tmp = g_shell_quote(file_info->file);
+      fwrite(tmp, sizeof(char), strlen(tmp), f);
+      g_free(tmp);
+
+      /* write page number */
+      tmp = g_strdup_printf(" %d %d %f", file_info->page, file_info->offset, file_info->scale);
+      fwrite(tmp, sizeof(char), strlen(tmp), f);
+      g_free(tmp);
+
+      fwrite("\n", sizeof(char), 1, f);
+    } while (girara_list_iterator_next(iter) != NULL);
+    girara_list_iterator_free(iter);
+  }
+
+  fclose(f);
 }

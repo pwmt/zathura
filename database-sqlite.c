@@ -191,7 +191,11 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
-    bookmark->id = g_strdup((const char*) sqlite3_column_text(stmt, 0));
+    if (bookmark == NULL) {
+      continue;
+    }
+
+    bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
     bookmark->page = sqlite3_column_int(stmt, 1);
 
     girara_list_append(result, bookmark);
