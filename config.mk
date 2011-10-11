@@ -47,4 +47,4 @@ VERBOSE ?= 0
 
 # database
 # possible values are sqlite and plain
-DATABASE ?= sqlite
+DATABASE ?= plain
