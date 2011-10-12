@@ -159,6 +159,7 @@ cc_bookmarks(girara_session_t* session, const char* input)
   }
 
   const size_t input_length = input ? strlen(input) : 0;
+  girara_list_sort(zathura->bookmarks.bookmarks, (girara_compare_function_t) g_strcmp0);
 
   GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
     if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
