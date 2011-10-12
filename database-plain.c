@@ -228,6 +228,12 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
         file_info->page   = page;
         file_info->offset = offset;
         file_info->scale  = scale;
+
+        /* write new history list */
+        zathura_lock_lock(db->history_lock);
+        zathura_db_write_history_to_file(db->history_path, db->history);
+        zathura_lock_unlock(db->history_lock);
+
         return true;
       }
     } while (girara_list_iterator_next(iter) != NULL);
@@ -253,7 +259,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
   zathura_db_write_history_to_file(db->history_path, db->history);
   zathura_lock_unlock(db->history_lock);
 
-  return false;
+  return true;
 }
 
 bool
