@@ -107,7 +107,6 @@ cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
-    // nothing needs to be done
     return true;
   }
 
@@ -192,15 +191,13 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
   if (argc > 2) {
     girara_notify(session, GIRARA_ERROR, "Too many arguments.");
     return false;
-  }
-  else if (argc >= 1) {
+  } else if (argc >= 1) {
     if (zathura->document) {
       document_close(zathura);
     }
 
     document_open(zathura, girara_list_nth(argument_list, 0), (argc == 2) ? girara_list_nth(argument_list, 1) :  NULL);
-  }
-  else {
+  } else {
     girara_notify(session, GIRARA_ERROR, "No arguments given.");
     return false;
   }
@@ -239,8 +236,7 @@ cmd_save(girara_session_t* session, girara_list_t* argument_list)
 
   if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), false);
-  }
-  else {
+  } else {
     girara_notify(session, GIRARA_ERROR, "Invalid number of arguments.");
     return false;
   }
@@ -262,8 +258,7 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
 
   if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), true);
-  }
-  else {
+  } else {
     girara_notify(session, GIRARA_ERROR, "Invalid number of arguments.");
     return false;
   }

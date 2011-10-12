@@ -230,19 +230,19 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
   }
 
   GtkAdjustment* adjustment = NULL;
-  if ( (argument->n == LEFT) || (argument->n == RIGHT) )
+  if ( (argument->n == LEFT) || (argument->n == RIGHT) ) {
     adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-  else
+  } else {
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+  }
 
-  gdouble view_size  = gtk_adjustment_get_page_size(adjustment);
-  gdouble value      = gtk_adjustment_get_value(adjustment);
-  gdouble max        = gtk_adjustment_get_upper(adjustment) - view_size;
+  gdouble view_size   = gtk_adjustment_get_page_size(adjustment);
+  gdouble value       = gtk_adjustment_get_value(adjustment);
+  gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
   gdouble scroll_step = 40;
+  gdouble new_value   = value;
 
-  gdouble new_value;
-  switch(argument->n)
-  {
+  switch(argument->n) {
     case FULL_UP:
       new_value = (value - view_size) < 0 ? 0 : (value - view_size);
       break;
@@ -270,7 +270,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
       new_value = max;
       break;
     default:
-      new_value = 0;
+      new_value = value;
   }
 
   gtk_adjustment_set_value(adjustment, new_value);
@@ -309,7 +309,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   GtkTreePath *path;
 
   gtk_tree_view_get_cursor(tree_view, &path, NULL);
-  if(path == NULL) {
+  if (path == NULL) {
     return false;
   }
 
