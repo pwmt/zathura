@@ -154,6 +154,10 @@ cc_bookmarks(girara_session_t* session, const char* input)
   girara_completion_t* completion  = girara_completion_init();
   girara_completion_group_t* group = girara_completion_group_create(session, NULL);
 
+  if (completion == NULL || group == NULL) {
+    goto error_free;
+  }
+
   const size_t input_length = input ? strlen(input) : 0;
 
   GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
@@ -164,5 +168,19 @@ cc_bookmarks(girara_session_t* session, const char* input)
     }
   GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
 
+  girara_completion_add_group(completion, group);
+
   return completion;
+
+error_free:
+
+  if (completion) {
+    girara_completion_free(completion);
+  }
+
+  if (group) {
+    girara_completion_group_free(group);
+  }
+
+  return NULL;
 }
