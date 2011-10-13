@@ -295,24 +295,46 @@ zathura_db_read_key_file_from_file(char* path)
     return NULL;
   }
 
-  GKeyFile* key_file = g_key_file_new();
-  if (key_file == NULL) {
+  /* open file */
+  int fd = open(path, O_RDWR);
+  if (fd == -1) {
     return NULL;
   }
 
+  GKeyFile* key_file = g_key_file_new();
+  if (key_file == NULL) {
+    close(fd);
+    return NULL;
+  }
+
+  /* read config file */
+  file_lock_set(fd, F_WRLCK);
+  char* content = girara_file_read_from_fd(fd);
+  if (content == NULL) {
+    file_lock_set(fd, F_UNLCK);
+    close(fd);
+    return NULL;
+  }
+  file_lock_set(fd, F_UNLCK);
+
+  close(fd);
+
+  /* parse config file */
   GError* error = NULL;
-  if (g_key_file_load_from_file(key_file, path,
+  if (g_key_file_load_from_data(key_file, content, strlen(content),
         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error) ==
       FALSE) {
-
     if (error->code != 1) /* ignore empty file */ {
+      free(content);
       g_key_file_free(key_file);
-      return NULL;
       g_error_free(error);
+      return NULL;
     }
 
     g_error_free(error);
   }
+
+  free(content);
 
   return key_file;
 }
