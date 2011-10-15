@@ -182,12 +182,12 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  girara_list_t* result = girara_list_new();
+  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
+      (girara_free_function_t) zathura_bookmark_free);
   if (result == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
   }
-  girara_list_set_free_function(result, (girara_free_function_t) zathura_bookmark_free);
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));

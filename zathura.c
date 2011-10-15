@@ -211,7 +211,7 @@ zathura_init(int argc, char* argv[])
   }
 
   /* bookmarks */
-  zathura->bookmarks.bookmarks = girara_sorted_list_new2((girara_compare_function_t) g_strcmp0,
+  zathura->bookmarks.bookmarks = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
     (girara_free_function_t) zathura_bookmark_free);
 
   /* open document if passed */

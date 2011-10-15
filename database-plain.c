@@ -194,7 +194,8 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  girara_list_t* result = girara_list_new();
+  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
+      (girara_free_function_t) zathura_bookmark_free);
   if (result == NULL) {
     return NULL;
   }

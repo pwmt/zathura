@@ -97,3 +97,18 @@ zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
   return true;
 }
 
+int
+zathura_bookmarks_compare(zathura_bookmark_t* lhs, zathura_bookmark_t* rhs)
+{
+  if (lhs == NULL && rhs == NULL) {
+    return 0;
+  }
+  if (lhs == NULL) {
+    return -1;
+  }
+  if (rhs == NULL) {
+    return 1;
+  }
+
+  return g_strcmp0(lhs->id, rhs->id);
+}
