@@ -97,7 +97,7 @@ prepare_statement(sqlite3* session, const char* statement)
   const char* pz_tail   = NULL;
   sqlite3_stmt* pp_stmt = NULL;
 
-  if (sqlite3_prepare(session, statement, -1, &pp_stmt, &pz_tail) != SQLITE_OK) {
+  if (sqlite3_prepare_v2(session, statement, -1, &pp_stmt, &pz_tail) != SQLITE_OK) {
     girara_error("Failed to prepare query: %s", statement);
     sqlite3_finalize(pp_stmt);
     return NULL;
@@ -134,7 +134,7 @@ zathura_db_add_bookmark(zathura_database_t* db, const char* file,
 
   int res = sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  return res == SQLITE_OK;
+  return res == SQLITE_DONE;
 }
 
 bool
@@ -144,7 +144,7 @@ zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char*
   g_return_val_if_fail(db && file && id, false);
 
   static const char SQL_BOOKMARK_ADD[] =
-    "DELETE FROM bookmarks WHERE file = ? && id = ?;";
+    "DELETE FROM bookmarks WHERE file = ? AND id = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(db->session, SQL_BOOKMARK_ADD);
   if (stmt == NULL) {
@@ -160,7 +160,7 @@ zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char*
 
   int res = sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  return res == SQLITE_OK;
+  return res == SQLITE_DONE;
 }
 
 girara_list_t*
@@ -229,7 +229,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
   int res = sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  return res == SQLITE_OK;
+  return res == SQLITE_DONE;
 }
 
 bool
