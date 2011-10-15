@@ -4,32 +4,26 @@
 #include <glib.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
-#include <sched.h>
 
 #include "database.h"
 
 #define BOOKMARKS "bookmarks"
 #define HISTORY "history"
 
-typedef struct zathura_lock_s
-{
-  int sock;
-  struct sockaddr_un sun;
-} zathura_lock_t;
-
 #define KEY_PAGE "page"
 #define KEY_OFFSET "offset"
 #define KEY_SCALE "scale"
 
+#define file_lock_set(fd, cmd) \
+  { \
+  struct flock lock = { .l_type = cmd, .l_start = 0, .l_whence = SEEK_SET, .l_len = 0}; \
+  fcntl(fd, F_SETLK, lock); \
+  }
+
 /* forward declaration */
-static zathura_lock_t* zathura_lock_new(const char* name);
-static void zathura_lock_free(zathura_lock_t* lock);
-static void zathura_lock_lock(zathura_lock_t* lock);
-static void zathura_lock_unlock(zathura_lock_t* lock);
 static bool zathura_db_check_file(const char* path);
 static GKeyFile* zathura_db_read_key_file_from_file(char* path);
 static void zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file);
@@ -39,12 +33,10 @@ static void cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile*
 struct zathura_database_s
 {
   char* bookmark_path;
-  zathura_lock_t* bookmark_lock;
   GKeyFile* bookmarks;
   GFileMonitor* bookmark_monitor;
 
   char* history_path;
-  zathura_lock_t* history_lock;
   GKeyFile* history;
   GFileMonitor* history_monitor;
 };
@@ -65,11 +57,6 @@ zathura_db_init(const char* dir)
   db->bookmark_path = g_build_filename(dir, BOOKMARKS, NULL);
   if (db->bookmark_path == NULL ||
       zathura_db_check_file(db->bookmark_path) == false) {
-    goto error_free;
-  }
-
-  db->bookmark_lock = zathura_lock_new("zathura-bookmarks");
-  if (db->bookmark_lock == NULL) {
     goto error_free;
   }
 
@@ -97,11 +84,6 @@ zathura_db_init(const char* dir)
   db->history_path = g_build_filename(dir, HISTORY, NULL);
   if (db->history_path == NULL ||
       zathura_db_check_file(db->history_path) == false) {
-    goto error_free;
-  }
-
-  db->history_lock = zathura_lock_new("zathura-history");
-  if (db->history_lock == NULL) {
     goto error_free;
   }
 
@@ -145,7 +127,6 @@ zathura_db_free(zathura_database_t* db)
 
   /* bookmarks */
   g_free(db->bookmark_path);
-  zathura_lock_free(db->bookmark_lock);
 
   if (db->bookmark_monitor != NULL) {
     g_object_unref(db->bookmark_monitor);
@@ -157,7 +138,6 @@ zathura_db_free(zathura_database_t* db)
 
   /* history */
   g_free(db->history_path);
-  zathura_lock_free(db->history_lock);
 
   if (db->history_monitor != NULL) {
     g_object_unref(db->history_monitor);
@@ -178,9 +158,7 @@ zathura_db_add_bookmark(zathura_database_t* db, const char* file,
 
   g_key_file_set_integer(db->bookmarks, file, bookmark->id, bookmark->page);
 
-  zathura_lock_lock(db->bookmark_lock);
   zathura_db_write_key_file_to_file(db->bookmark_path, db->bookmarks);
-  zathura_lock_unlock(db->bookmark_lock);
 
   return true;
 }
@@ -197,9 +175,7 @@ zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char*
   if (g_key_file_has_group(db->bookmarks, file) == TRUE) {
     g_key_file_remove_group(db->bookmarks, file, NULL);
 
-    zathura_lock_lock(db->bookmark_lock);
     zathura_db_write_key_file_to_file(db->bookmark_path, db->bookmarks);
-    zathura_lock_unlock(db->bookmark_lock);
 
     return true;
   }
@@ -266,9 +242,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
   g_free(tmp);
 
-  zathura_lock_lock(db->history_lock);
   zathura_db_write_key_file_to_file(db->history_path, db->history);
-  zathura_lock_unlock(db->history_lock);
 
   return true;
 }
@@ -291,63 +265,6 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
   *scale  = strtof(g_key_file_get_string(db->history, file, KEY_SCALE, NULL), NULL);
 
   return true;
-}
-
-static zathura_lock_t*
-zathura_lock_new(const char* name)
-{
-  if (name == NULL) {
-    return NULL;
-  }
-
-  zathura_lock_t* lock = calloc(1, sizeof(zathura_lock_t));
-  if (lock == NULL) {
-    return NULL;
-  }
-
-  strncpy(&(lock->sun).sun_path[1], name, sizeof(lock->sun.sun_path) - 2);
-  lock->sun.sun_family = AF_UNIX;
-
-  if ((lock->sock = socket(PF_UNIX, SOCK_DGRAM, 0)) < 0) {
-    free(lock);
-    return NULL;
-  }
-
-  return lock;
-}
-
-static void
-zathura_lock_free(zathura_lock_t* lock)
-{
-  if (lock == NULL) {
-    return;
-  }
-
-  close(lock->sock);
-  free(lock);
-}
-
-static void
-zathura_lock_lock(zathura_lock_t* lock)
-{
-  if (lock == NULL) {
-    return;
-  }
-
-  while (bind(lock->sock, (struct sockaddr*) &(lock->sun), sizeof(lock->sun)) < 0) {
-    sched_yield();
-  }
-}
-
-static void
-zathura_lock_unlock(zathura_lock_t* lock)
-{
-  if (lock == NULL) {
-    return;
-  }
-
-  close(lock->sock);
-  lock->sock = socket(PF_UNIX, SOCK_DGRAM, 0);
 }
 
 static bool
@@ -378,24 +295,46 @@ zathura_db_read_key_file_from_file(char* path)
     return NULL;
   }
 
-  GKeyFile* key_file = g_key_file_new();
-  if (key_file == NULL) {
+  /* open file */
+  int fd = open(path, O_RDWR);
+  if (fd == -1) {
     return NULL;
   }
 
+  GKeyFile* key_file = g_key_file_new();
+  if (key_file == NULL) {
+    close(fd);
+    return NULL;
+  }
+
+  /* read config file */
+  file_lock_set(fd, F_WRLCK);
+  char* content = girara_file_read_from_fd(fd);
+  if (content == NULL) {
+    file_lock_set(fd, F_UNLCK);
+    close(fd);
+    return NULL;
+  }
+  file_lock_set(fd, F_UNLCK);
+
+  close(fd);
+
+  /* parse config file */
   GError* error = NULL;
-  if (g_key_file_load_from_file(key_file, path,
+  if (g_key_file_load_from_data(key_file, content, strlen(content),
         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error) ==
       FALSE) {
-
     if (error->code != 1) /* ignore empty file */ {
+      free(content);
       g_key_file_free(key_file);
-      return NULL;
       g_error_free(error);
+      return NULL;
     }
 
     g_error_free(error);
   }
+
+  free(content);
 
   return key_file;
 }
@@ -412,10 +351,18 @@ zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file)
     return;
   }
 
-  if (g_file_set_contents(file, content, -1, NULL) == FALSE) {
+  /* open file */
+  int fd = open(file, O_RDWR);
+  if (fd == -1) {
     g_free(content);
     return;
   }
+
+  file_lock_set(fd, F_WRLCK);
+  write(fd, content, strlen(content));
+  file_lock_set(fd, F_UNLCK);
+
+  close(fd);
 
   g_free(content);
 }
@@ -434,12 +381,8 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
   }
 
   if (database->bookmark_path && strcmp(database->bookmark_path, path) == 0) {
-    zathura_lock_lock(database->bookmark_lock);
     database->bookmarks = zathura_db_read_key_file_from_file(database->history_path);
-    zathura_lock_unlock(database->bookmark_lock);
   } else if (database->history_path && strcmp(database->history_path, path) == 0) {
-    zathura_lock_lock(database->history_lock);
     database->history = zathura_db_read_key_file_from_file(database->history_path);
-    zathura_lock_unlock(database->history_lock);
   }
 }

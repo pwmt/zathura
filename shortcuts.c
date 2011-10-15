@@ -114,19 +114,14 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
   g_return_val_if_fail(zathura->document != NULL, false);
 
   if (argument->n == TOP) {
-    girara_argument_t arg = { TOP, NULL };
-    sc_scroll(session, &arg, 0);
-
-    return false;
+    page_set(zathura, 0);
   } else {
     if (t == 0) {
-      girara_argument_t arg = { BOTTOM, NULL };
-      sc_scroll(session, &arg, 0);
-
+      page_set(zathura, zathura->document->number_of_pages - 1);
       return true;
+    } else {
+      page_set(zathura, t - 1);
     }
-
-    page_set(zathura, t - 1);
   }
 
   return false;
