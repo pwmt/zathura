@@ -249,11 +249,11 @@ zathura_free(zathura_t* zathura)
     return;
   }
 
+  document_close(zathura);
+
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
   }
-
-  document_close(zathura);
 
   /* bookmarks */
   girara_list_free(zathura->bookmarks.bookmarks);
