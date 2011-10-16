@@ -17,12 +17,12 @@ zathura_database_t*
 zathura_db_init(const char* dir)
 {
   if (dir == NULL) {
-    goto error_ret;
+    return NULL;
   }
 
   char* path = g_build_filename(dir, DATABASE, NULL);
   if (path == NULL) {
-    goto error_ret;
+    return NULL;
   }
 
   zathura_database_t* db = g_malloc0(sizeof(zathura_database_t));
@@ -65,9 +65,6 @@ zathura_db_init(const char* dir)
 error_free:
 
   zathura_db_free(db);
-
-error_ret:
-
   g_free(path);
 
   return NULL;
