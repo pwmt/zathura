@@ -14,6 +14,7 @@
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
 {
+  gtk_main_quit();
   return TRUE;
 }
 

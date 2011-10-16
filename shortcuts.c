@@ -502,8 +502,6 @@ sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), unsigned
 
   cb_destroy(NULL, NULL);
 
-  gtk_main_quit();
-
   return false;
 }
 
