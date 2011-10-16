@@ -25,7 +25,7 @@
 
 /* forward declaration */
 static bool zathura_db_check_file(const char* path);
-static GKeyFile* zathura_db_read_key_file_from_file(char* path);
+static GKeyFile* zathura_db_read_key_file_from_file(const char* path);
 static void zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file);
 static void cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile*
     other_file, GFileMonitorEvent event, zathura_database_t* database);
@@ -290,7 +290,7 @@ zathura_db_check_file(const char* path)
 }
 
 static GKeyFile*
-zathura_db_read_key_file_from_file(char* path)
+zathura_db_read_key_file_from_file(const char* path)
 {
   if (path == NULL) {
     return NULL;
@@ -321,8 +321,19 @@ zathura_db_read_key_file_from_file(char* path)
   close(fd);
 
   /* parse config file */
+  size_t contentlen = strlen(content);
+  if (contentlen == 0) {
+    static const char dummy_content[] = "# nothing";
+    static const size_t dummy_len = sizeof(dummy_content) - 1;
+
+    free(content);
+    content = malloc(sizeof(char) * (dummy_len + 1));
+    content = strncat(content, dummy_content, dummy_len + 1);
+    contentlen = dummy_len;
+  }
+
   GError* error = NULL;
-  if (g_key_file_load_from_data(key_file, content, strlen(content),
+  if (g_key_file_load_from_data(key_file, content, contentlen,
         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error) ==
       FALSE) {
     if (error->code != 1) /* ignore empty file */ {
@@ -382,7 +393,7 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
   }
 
   if (database->bookmark_path && strcmp(database->bookmark_path, path) == 0) {
-    database->bookmarks = zathura_db_read_key_file_from_file(database->history_path);
+    database->bookmarks = zathura_db_read_key_file_from_file(database->bookmark_path);
   } else if (database->history_path && strcmp(database->history_path, path) == 0) {
     database->history = zathura_db_read_key_file_from_file(database->history_path);
   }
