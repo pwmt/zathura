@@ -48,7 +48,7 @@ zathura_init(int argc, char* argv[])
     printf("Error parsing command line arguments: %s\n", error->message);
     g_option_context_free(context);
     g_error_free(error);
-    goto error_free;
+    return NULL;
   }
   g_option_context_free(context);
 
