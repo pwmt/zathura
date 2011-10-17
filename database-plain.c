@@ -328,7 +328,7 @@ zathura_db_read_key_file_from_file(const char* path)
 
     free(content);
     content = malloc(sizeof(char) * (dummy_len + 1));
-    content = strncat(content, dummy_content, dummy_len + 1);
+    content = memcpy(content, dummy_content, dummy_len + 1);
     contentlen = dummy_len;
   }
 
