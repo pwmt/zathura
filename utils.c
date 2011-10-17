@@ -66,7 +66,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
       result = true;
       break;
     }
-  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
+  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
   g_free((void*)content_type);
   return result;
@@ -173,7 +173,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
       document_index_build(model, &tree_iter, node);
     }
 
-  GIRARA_LIST_FOREACH_END(list, gchar*, iter, name)
+  GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
 }
 
 char*

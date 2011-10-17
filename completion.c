@@ -165,7 +165,7 @@ cc_bookmarks(girara_session_t* session, const char* input)
       girara_completion_group_add_element(group, bookmark->id, paged);
       g_free(paged);
     }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
 
   girara_completion_add_group(completion, group);
 

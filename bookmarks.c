@@ -16,7 +16,7 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
       girara_list_iterator_free(iter);
       return NULL;
     }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
 
   zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
   bookmark->id = g_strdup(id);
@@ -63,7 +63,7 @@ zathura_bookmark_get(zathura_t* zathura, const gchar* id)
       girara_list_iterator_free(iter);
       return bookmark;
     }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
 
   return NULL;
 }
