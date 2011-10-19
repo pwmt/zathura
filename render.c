@@ -47,16 +47,9 @@ render_job(void* data)
 render_thread_t*
 render_init(zathura_t* zathura)
 {
-  render_thread_t* render_thread = malloc(sizeof(render_thread_t));
-
-  if (!render_thread) {
-    goto error_ret;
-  }
+  render_thread_t* render_thread = g_malloc0(sizeof(render_thread_t));
 
   /* init */
-  render_thread->list    = NULL;
-  render_thread->thread  = NULL;
-  render_thread->cond    = NULL;
   render_thread->zathura = zathura;
 
   /* setup */
@@ -100,9 +93,7 @@ error_free:
     g_mutex_free(render_thread->lock);
   }
 
-  free(render_thread);
-
-error_ret:
+  g_free(render_thread);
 
   return NULL;
 }
