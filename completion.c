@@ -147,6 +147,10 @@ error_free:
 girara_completion_t*
 cc_bookmarks(girara_session_t* session, const char* input)
 {
+  if (input == NULL) {
+    return NULL;
+  }
+
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
@@ -155,10 +159,6 @@ cc_bookmarks(girara_session_t* session, const char* input)
   girara_completion_group_t* group = girara_completion_group_create(session, NULL);
 
   if (completion == NULL || group == NULL) {
-    goto error_free;
-  }
-
-  if (!input) {
     goto error_free;
   }
 
