@@ -54,10 +54,6 @@ zathura_init(int argc, char* argv[])
 
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
-  if (zathura == NULL) {
-    return NULL;
-  }
-
   /* general */
   zathura->document = NULL;
 

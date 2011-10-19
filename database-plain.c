@@ -211,9 +211,6 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
   for (gsize i = 0; i < length; i++) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
-    if (bookmark == NULL) {
-      continue;
-    }
 
     bookmark->id   = g_strdup(keys[i]);
     bookmark->page = g_key_file_get_integer(db->bookmarks, file, keys[i], NULL);

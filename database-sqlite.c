@@ -26,9 +26,6 @@ zathura_db_init(const char* dir)
   }
 
   zathura_database_t* db = g_malloc0(sizeof(zathura_database_t));
-  if (db == NULL) {
-    goto error_free;
-  }
 
   /* create bookmarks database */
   static const char SQL_BOOKMARK_INIT[] =
@@ -188,9 +185,6 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
-    if (bookmark == NULL) {
-      continue;
-    }
 
     bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
     bookmark->page = sqlite3_column_int(stmt, 1);

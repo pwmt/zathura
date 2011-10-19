@@ -212,9 +212,6 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   document = g_malloc0(sizeof(zathura_document_t));
-  if (document == NULL) {
-    goto error_free;
-  }
 
   document->file_path           = real_path;
   document->password            = password;
@@ -496,10 +493,6 @@ zathura_index_element_new(const char* title)
   }
 
   zathura_index_element_t* res = g_malloc0(sizeof(zathura_index_element_t));
-
-  if (res == NULL) {
-    return NULL;
-  }
 
   res->title = g_strdup(title);
 
