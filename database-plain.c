@@ -223,7 +223,7 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
 bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, int offset, float scale)
+    page, int offset, double scale)
 {
   if (db == NULL || db->history == NULL || file == NULL) {
     return false;
@@ -247,7 +247,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, int* offset, float* scale)
+    page, int* offset, double* scale)
 {
   if (db == NULL || db->history == NULL || file == NULL || page == NULL ||
       offset == NULL || scale == NULL) {
@@ -260,7 +260,7 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
 
   *page   = g_key_file_get_integer(db->history, file, KEY_PAGE, NULL);
   *offset = g_key_file_get_integer(db->history, file, KEY_OFFSET, NULL);
-  *scale  = strtof(g_key_file_get_string(db->history, file, KEY_SCALE, NULL), NULL);
+  *scale  = strtod(g_key_file_get_string(db->history, file, KEY_SCALE, NULL), NULL);
 
   return true;
 }

@@ -197,7 +197,7 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
 bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, int offset, float scale)
+    page, int offset, double scale)
 {
   g_return_val_if_fail(db && file, false);
 
@@ -225,7 +225,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, int* offset, float* scale)
+    page, int* offset, double* scale)
 {
   g_return_val_if_fail(db && file && page && offset && scale, false);
 

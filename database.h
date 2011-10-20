@@ -61,7 +61,7 @@ girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char*
  * @return true on success, false otherwise.
  */
 bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int page, int offset, float scale);
+    int page, int offset, double scale);
 
 /* Get file info (last site, ...) from the database.
  * @param db The database instance
@@ -72,6 +72,6 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned
  * @return true on success, false otherwise.
  */
 bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int* page, int* offset, float* scale);
+    int* page, int* offset, double* scale);
 
 #endif // DATABASE_H

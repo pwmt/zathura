@@ -335,13 +335,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     girara_warning("Failed to load bookmarks for %s.\n", zathura->document->file_path);
   }
 
-  unsigned int page = 0u;
-  int offset = 0;
-  float scale = 1.0f;
-  if (zathura_db_get_fileinfo(zathura->database, zathura->document->file_path, &page, &offset, &scale)) {
-    page_set_delayed(zathura, page - 1);
-    zathura->document->scale = scale;
-  }
+  page_set_delayed(zathura, document->current_page_number - 1);
 
   return true;
 
@@ -533,7 +527,7 @@ int main(int argc, char* argv[])
 
   zathura_t* zathura = zathura_init(argc, argv);
   if (zathura == NULL) {
-    printf("error: coult not initialize zathura\n");
+    printf("error: could not initialize zathura\n");
     return -1;
   }
 

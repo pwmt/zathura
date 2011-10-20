@@ -20,7 +20,7 @@
 #include "utils.h"
 #include "zathura.h"
 #include "render.h"
-#include "utils.h"
+#include "database.h"
 
 void
 zathura_document_plugins_load(zathura_t* zathura)
@@ -217,6 +217,10 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   document->password            = password;
   document->scale               = 1.0;
   document->zathura             = zathura;
+
+  int offset = 0;
+  zathura_db_get_fileinfo(zathura->database, document->file_path,
+      &document->current_page_number, &offset, &document->scale);
 
   if (plugin->open_function != NULL) {
     if (plugin->open_function(document) == true) {
