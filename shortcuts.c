@@ -30,7 +30,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
-  unsigned int* pages_per_row = girara_setting_get(session, "pages-per-row");
+  unsigned int* pages_per_row = girara_setting_get(session, "pages_per_row");
 
   if (zathura->ui.page_view == NULL || zathura->document == NULL || pages_per_row == NULL) {
     goto error_ret;
@@ -235,7 +235,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
   gdouble value       = gtk_adjustment_get_value(adjustment);
   gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
   gdouble scroll_step = 40;
-  float* tmp = girara_setting_get(session, "scroll-step");
+  float* tmp = girara_setting_get(session, "scroll_step");
   if (tmp != NULL) {
     scroll_step = *tmp;
     g_free(tmp);
@@ -521,7 +521,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int
   g_return_val_if_fail(zathura->document != NULL, false);
 
   /* retreive zoom step value */
-  int* value = girara_setting_get(zathura->ui.session, "zoom-step");
+  int* value = girara_setting_get(zathura->ui.session, "zoom_step");
   if (value == NULL) {
     return false;
   }
