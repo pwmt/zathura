@@ -15,6 +15,7 @@ config_load_default(zathura_t* zathura)
   }
 
   int int_value              = 0;
+  float float_value          = 0;
   char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
@@ -33,11 +34,14 @@ config_load_default(zathura_t* zathura)
 
   /* zathura settings */
   int_value = 10;
-  girara_setting_add(gsession, "zoom-step",     &int_value, INT, false, "Zoom step",               NULL, NULL);
+  girara_setting_add(gsession, "zoom-step",     &int_value,   INT,   false, "Zoom step",               NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",  &int_value, INT, true,  "Padding between pages",   NULL, NULL);
+  girara_setting_add(gsession, "page-padding",  &int_value,   INT,   true,  "Padding between pages",   NULL, NULL);
   int_value = 2;
-  girara_setting_add(gsession, "pages-per-row", &int_value, INT, false, "Number of pages per row", cb_pages_per_row_value_changed, zathura);
+  girara_setting_add(gsession, "pages-per-row", &int_value,   INT,   false, "Number of pages per row", cb_pages_per_row_value_changed, zathura);
+  float_value = 40;
+  girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT, false, "Scroll step",             NULL, NULL);
+
 
   string_value = "#FFFFFF";
   girara_setting_add(gsession, "recolor-dark-color",  string_value, STRING, false, "Recoloring (dark color)",  NULL, NULL);

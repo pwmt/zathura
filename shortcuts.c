@@ -77,7 +77,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
 error_free:
 
   /* cleanup */
-  free(pages_per_row);
+  g_free(pages_per_row);
 
 error_ret:
 
@@ -522,6 +522,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int
   }
 
   float zoom_step = *value / 100.0f;
+  g_free(value);
 
   if (argument->n == ZOOM_IN) {
     zathura->document->scale += zoom_step;

@@ -184,6 +184,7 @@ zathura_init(int argc, char* argv[])
   /* save page padding */
   int* page_padding = girara_setting_get(zathura->ui.session, "page-padding");
   zathura->global.page_padding = (page_padding) ? *page_padding : 1;
+  g_free(page_padding);
 
   gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_view), zathura->global.page_padding);
   gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_view), zathura->global.page_padding);
@@ -192,13 +193,13 @@ zathura_init(int argc, char* argv[])
   char* string_value = girara_setting_get(zathura->ui.session, "recolor-dark-color");
   if (string_value != NULL) {
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
-    free(string_value);
+    g_free(string_value);
   }
 
   string_value = girara_setting_get(zathura->ui.session, "recolor-light-color");
   if (string_value != NULL) {
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
-    free(string_value);
+    g_free(string_value);
   }
 
   /* database */
@@ -381,7 +382,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   /* view mode */
   int* value = girara_setting_get(zathura->ui.session, "pages-per-row");
   int pages_per_row = (value) ? *value : 1;
-  free(value);
+  g_free(value);
   page_view_set_mode(zathura, pages_per_row);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_view);
