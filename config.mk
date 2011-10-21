@@ -22,6 +22,7 @@ GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
 
+#set it to an empty value if you don't need to link against ld for dlopen and friends
 DL_LIB ?= -ldl
 
 INCS = ${GIRARA_INC} ${GTK_INC}

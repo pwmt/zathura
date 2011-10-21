@@ -22,17 +22,15 @@
 #include "render.h"
 #include "database.h"
 
+/**
+ * Register document plugin
+ */
+static bool zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin);
+
 void
 zathura_document_plugins_load(zathura_t* zathura)
 {
-  girara_list_iterator_t* iter = girara_list_iterator(zathura->plugins.path);
-  if (iter == NULL) {
-    return;
-  }
-
-  do
-  {
-    char* plugindir = girara_list_iterator_data(iter);
+  GIRARA_LIST_FOREACH(zathura->plugins.path, char*, iter, plugindir)
 
     /* read all files in the plugin directory */
     DIR* dir = opendir(plugindir);
@@ -86,25 +84,17 @@ zathura_document_plugins_load(zathura_t* zathura)
         continue;
       }
 
-      plugin = malloc(sizeof(zathura_document_plugin_t));
-
-      if (plugin == NULL) {
-        g_error("failed to allocate memory!");
-        break;
-      }
-
-      plugin->open_function  = NULL;
-      plugin->content_types = girara_list_new();
-      girara_list_set_free_function(plugin->content_types, g_free);
+      plugin = g_malloc0(sizeof(zathura_document_plugin_t));
+      plugin->content_types = girara_list_new2(g_free);
+      plugin->handle = handle;
 
       register_plugin(plugin);
 
-      bool r = zathura_document_plugin_register(zathura, plugin, handle);
+      bool r = zathura_document_plugin_register(zathura, plugin);
 
       if (r == false) {
         girara_error("could not register plugin %s", path);
-        free(plugin);
-        dlclose(handle);
+        zathura_document_plugin_free(plugin);
       }
       else  {
         girara_info("successfully loaded plugin %s", path);
@@ -116,8 +106,7 @@ zathura_document_plugins_load(zathura_t* zathura)
     if (closedir(dir) == -1) {
       girara_error("could not close plugin directory %s", plugindir);
     }
-  } while (girara_list_iterator_next(iter));
-  girara_list_iterator_free(iter);
+  GIRARA_LIST_FOREACH_END(zathura->plugins.path, char*, iter, plugindir);
 }
 
 void
@@ -127,15 +116,15 @@ zathura_document_plugin_free(zathura_document_plugin_t* plugin)
     return;
   }
 
+  dlclose(plugin->handle);
   girara_list_free(plugin->content_types);
-  free(plugin);
+  g_free(plugin);
 }
 
-bool
-zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin, void* handle)
+static bool
+zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin)
 {
-  if( (new_plugin == NULL) || (new_plugin->content_types == NULL) || (new_plugin->open_function == NULL)
-      || (handle == NULL) ) {
+  if( (new_plugin == NULL) || (new_plugin->content_types == NULL) || (new_plugin->open_function == NULL) ) {
     girara_error("plugin: could not register\n");
     return false;
   }

@@ -269,11 +269,6 @@ void zathura_document_plugins_load(zathura_t* zathura);
 void zathura_document_plugin_free(zathura_document_plugin_t* plugin);
 
 /**
- * Register document plugin
- */
-bool zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin, void* handle);
-
-/**
  * Open the document
  *
  * @param path Path to the document
