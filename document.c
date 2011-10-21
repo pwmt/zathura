@@ -162,14 +162,35 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   if (file_exists(path) == false) {
-    girara_error("File does not exist");
+    girara_error("File '%s' does not exist", path);
     return NULL;
   }
 
-  const gchar* content_type = g_content_type_guess(path, NULL, 0, NULL);
+  gboolean uncertain;
+  const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
     girara_error("Could not determine file type");
     return NULL;
+  }
+
+  if (uncertain == TRUE) {
+    g_free((void*)content_type);
+    content_type = NULL;
+
+    gchar* contents = NULL;
+    gsize length = 0;
+    if (g_file_get_contents(path, &contents, &length, NULL) == FALSE) {
+      girara_error("Could not determine file type");
+      return NULL;
+    }
+
+    content_type = g_content_type_guess(NULL, (guchar*) contents, length, &uncertain);
+    g_free(contents);
+    if (content_type == NULL || uncertain == TRUE) {
+      g_free((void*)content_type);
+      girara_error("Could not determine file type");
+      return NULL;
+    }
   }
 
   /* determine real path */

@@ -104,6 +104,11 @@ typedef struct zathura_s
     girara_list_t* bookmarks; /**> bookmarks */
   } bookmarks;
 
+  struct
+  {
+    gchar* file;
+  } stdin_support;
+
   zathura_document_t* document; /**> The current document */
   zathura_database_t* database; /**> The database */
 } zathura_t;
