@@ -291,18 +291,12 @@ zathura_document_free(zathura_document_t* document)
   free(document->pages);
 
   /* free document */
+  bool r = true;
   if (document->functions.document_free == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
-
-    if (document->file_path != NULL) {
-      free(document->file_path);
-    }
-
-    g_free(document);
-    return true;
+  } else {
+    r = document->functions.document_free(document);
   }
-
-  bool r = document->functions.document_free(document);
 
   if (document->file_path != NULL) {
     free(document->file_path);
