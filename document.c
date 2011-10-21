@@ -124,7 +124,7 @@ zathura_document_plugin_free(zathura_document_plugin_t* plugin)
 static bool
 zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin)
 {
-  if( (new_plugin == NULL) || (new_plugin->content_types == NULL) || (new_plugin->open_function == NULL) ) {
+  if (new_plugin == NULL || new_plugin->content_types == NULL || new_plugin->open_function == NULL) {
     girara_error("plugin: could not register\n");
     return false;
   }
@@ -133,8 +133,9 @@ zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* 
   GIRARA_LIST_FOREACH(new_plugin->content_types, gchar*, iter, type)
     if (!zathura_type_plugin_mapping_new(zathura, type, new_plugin)) {
       girara_error("plugin: already registered for filetype %s\n", type);
+    } else {
+      atleastone = true;
     }
-    atleastone = true;
   GIRARA_LIST_FOREACH_END(new_plugin->content_types, gchar*, iter, type);
 
   if (atleastone) {
