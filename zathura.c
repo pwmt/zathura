@@ -1,8 +1,12 @@
 /* See LICENSE file for license and copyright information */
 
+#define _BSD_SOURCE
+#define _XOPEN_SOURCE 500
+
 #include <stdlib.h>
 
 #include <girara.h>
+#include <glib/gstdio.h>
 
 #include "bookmarks.h"
 #include "callbacks.h"
@@ -246,6 +250,12 @@ zathura_free(zathura_t* zathura)
     girara_session_destroy(zathura->ui.session);
   }
 
+  /* stdin support */
+  if (zathura->stdin_support.file != NULL) {
+    g_unlink(zathura->stdin_support.file);
+    g_free(zathura->stdin_support.file);
+  }
+
   /* bookmarks */
   girara_list_free(zathura->bookmarks.bookmarks);
 
@@ -272,6 +282,58 @@ zathura_free(zathura_t* zathura)
   g_free(zathura);
 }
 
+static gchar*
+prepare_document_open_from_stdin(zathura_t* zathura)
+{
+  g_return_val_if_fail(zathura, NULL);
+
+  GError* error = NULL;
+  gchar* file = NULL;
+  gint handle = g_file_open_tmp("zathura.stdin.XXXXXX", &file, &error);
+  if (handle == -1)
+  {
+    girara_error("Can not create temporary file: %s", error->message);
+    g_error_free(error);
+    return NULL;
+  }
+
+  // read from stdin and dump to temporary file
+  int stdinfno = fileno(stdin);
+  if (stdinfno == -1)
+  {
+    girara_error("Can not read from stdin.");
+    close(handle);
+    g_unlink(file);
+    g_free(file);
+    return NULL;
+  }
+
+  char buffer[BUFSIZ];
+  ssize_t count = 0;
+  while ((count = read(stdinfno, buffer, BUFSIZ)) > 0)
+  {
+    if (write(handle, buffer, count) != count)
+    {
+      girara_error("Can not write to temporary file: %s", file);
+      close(handle);
+      g_unlink(file);
+      g_free(file);
+      return NULL;
+    }
+  }
+  close(handle);
+
+  if (count != 0)
+  {
+    girara_error("Can not read from stdin.");
+    g_unlink(file);
+    g_free(file);
+    return NULL;
+  }
+
+  return file;
+}
+
 static gboolean
 document_info_open(gpointer data)
 {
@@ -279,7 +341,22 @@ document_info_open(gpointer data)
   g_return_val_if_fail(document_info != NULL, FALSE);
 
   if (document_info->zathura != NULL && document_info->path != NULL) {
-    document_open(document_info->zathura, document_info->path, document_info->password);
+    char* file = NULL;
+    if (g_strcmp0(document_info->path, "-") == 0) {
+      file = prepare_document_open_from_stdin(document_info->zathura);
+      if (file == NULL) {
+        girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
+            "Could not read file from stdin and write it to a temporary file.");
+      }
+      document_info->zathura->stdin_support.file = file;
+    } else {
+      file = g_strdup(document_info->path);
+    }
+
+    if (file != NULL) {
+      document_open(document_info->zathura, file, document_info->password);
+      g_free(file);
+    }
   }
 
   g_free(document_info);
@@ -353,6 +430,7 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
     gchar* message = g_strdup_printf("File already exists: %s. Use :write! to overwrite it.", file_path);
     girara_error(message);
     g_free(message);
+    g_free(file_path);
     return false;
   }
 
