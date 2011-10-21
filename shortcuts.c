@@ -235,6 +235,11 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
   gdouble value       = gtk_adjustment_get_value(adjustment);
   gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
   gdouble scroll_step = 40;
+  float* tmp = girara_setting_get(session, "scroll-step");
+  if (tmp != NULL) {
+    scroll_step = *tmp;
+    g_free(tmp);
+  }
   gdouble new_value;
 
   switch(argument->n) {
