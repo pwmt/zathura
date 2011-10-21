@@ -21,7 +21,7 @@ typedef struct zathura_document_info_s
   const char* password;
 } zathura_document_info_t;
 
-gboolean document_info_open(gpointer data);
+static gboolean document_info_open(gpointer data);
 
 /* function implementation */
 zathura_t*
@@ -53,9 +53,6 @@ zathura_init(int argc, char* argv[])
   g_option_context_free(context);
 
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
-
-  /* general */
-  zathura->document = NULL;
 
   /* plugins */
   zathura->plugins.plugins = girara_list_new();
@@ -212,14 +209,12 @@ zathura_init(int argc, char* argv[])
 
   /* open document if passed */
   if (argc > 1) {
-    zathura_document_info_t* document_info = malloc(sizeof(zathura_document_info_t));
+    zathura_document_info_t* document_info = g_malloc0(sizeof(zathura_document_info_t));
 
-    if (document_info != NULL) {
-      document_info->zathura  = zathura;
-      document_info->path     = argv[1];
-      document_info->password = (argc >= 2) ? argv[2] : NULL;
-      g_idle_add(document_info_open, document_info);
-    }
+    document_info->zathura  = zathura;
+    document_info->path     = argv[1];
+    document_info->password = (argc >= 2) ? argv[2] : NULL;
+    g_idle_add(document_info_open, document_info);
   }
 
   return zathura;
@@ -277,20 +272,17 @@ zathura_free(zathura_t* zathura)
   g_free(zathura);
 }
 
-gboolean
+static gboolean
 document_info_open(gpointer data)
 {
   zathura_document_info_t* document_info = data;
   g_return_val_if_fail(document_info != NULL, FALSE);
 
-  if (document_info->zathura == NULL || document_info->path == NULL) {
-    free(document_info);
-    return FALSE;
+  if (document_info->zathura != NULL && document_info->path != NULL) {
+    document_open(document_info->zathura, document_info->path, document_info->password);
   }
 
-  document_open(document_info->zathura, document_info->path, document_info->password);
-  free(document_info);
-
+  g_free(document_info);
   return FALSE;
 }
 
