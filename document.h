@@ -12,7 +12,6 @@
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 
-typedef struct zathura_list_s zathura_list_t;
 // typedef struct zathura_document_s zathura_document_t;
 
 typedef bool (*zathura_document_open_t)(zathura_document_t* document);
@@ -51,15 +50,6 @@ typedef enum zathura_document_meta_e
  * @param The document plugin
  */
 typedef void (*zathura_plugin_register_service_t)(zathura_document_plugin_t*);
-
-/**
- * Structure for a list
- */
-struct zathura_list_s
-{
-  void* data; /**> Data value */
-  struct zathura_list_s* next; /**> Next element in the list */
-};
 
 /**
  * Image buffer
@@ -205,7 +195,7 @@ struct zathura_document_s
     /**
      * Get list of attachments
      */
-    zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
+    girara_list_t* (*document_attachments_get)(zathura_document_t* document);
 
     /**
      * Get document information
@@ -220,17 +210,17 @@ struct zathura_document_s
     /**
      * Search text
      */
-    zathura_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
+    girara_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
 
     /**
      * Get links on a page
      */
-    zathura_list_t* (*page_links_get)(zathura_page_t* page);
+    girara_list_t* (*page_links_get)(zathura_page_t* page);
 
     /**
      * Get form fields
      */
-    zathura_list_t* (*page_form_fields_get)(zathura_page_t* page);
+    girara_list_t* (*page_form_fields_get)(zathura_page_t* page);
 
     /**
      * Renders the page
@@ -309,7 +299,7 @@ girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document
  * @param document The document object
  * @return List of attachments
  */
-zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
+girara_list_t* zathura_document_attachments_get(zathura_document_t* document);
 
 /**
  * Free document attachments
@@ -317,7 +307,7 @@ zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
  * @param list list of document attachments
  * @return
  */
-bool zathura_document_attachments_free(zathura_list_t* list);
+bool zathura_document_attachments_free(girara_list_t* list);
 
 /**
  * Returns a string of the requested information
@@ -352,7 +342,7 @@ bool zathura_page_free(zathura_page_t* page);
  * @param text Search item
  * @return List of results
  */
-zathura_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
+girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
 
 /**
  * Get page links
@@ -360,7 +350,7 @@ zathura_list_t* zathura_page_search_text(zathura_page_t* page, const char* text)
  * @param page The page object
  * @return List of links
  */
-zathura_list_t* zathura_page_links_get(zathura_page_t* page);
+girara_list_t* zathura_page_links_get(zathura_page_t* page);
 
 /**
  * Free page links
@@ -368,7 +358,7 @@ zathura_list_t* zathura_page_links_get(zathura_page_t* page);
  * @param list List of links
  * @return true if no error occured, otherwise false
  */
-bool zathura_page_links_free(zathura_list_t* list);
+bool zathura_page_links_free(girara_list_t* list);
 
 /**
  * Get list of form fields
@@ -376,7 +366,7 @@ bool zathura_page_links_free(zathura_list_t* list);
  * @param page The page object
  * @return List of form fields
  */
-zathura_list_t* zathura_page_form_fields_get(zathura_page_t* page);
+girara_list_t* zathura_page_form_fields_get(zathura_page_t* page);
 
 /**
  * Free list of form fields
@@ -384,7 +374,7 @@ zathura_list_t* zathura_page_form_fields_get(zathura_page_t* page);
  * @param list List of form fields
  * @return true if no error occured, otherwise false
  */
-bool zathura_page_form_fields_free(zathura_list_t* list);
+bool zathura_page_form_fields_free(girara_list_t* list);
 
 /**
  * Render page
