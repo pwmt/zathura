@@ -265,3 +265,19 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
 
   return true;
 }
+
+bool
+cmd_search(girara_session_t* session, char* input, girara_argument_t* argument)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(input != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    return false;
+  }
+
+  return true;
+}

@@ -96,5 +96,14 @@ bool cmd_save(girara_session_t* session, girara_list_t* argument_list);
  */
 bool cmd_savef(girara_session_t* session, girara_list_t* argument_list);
 
+/**
+ * Search the current file
+ *
+ * @param session The used girara session
+ * @param input The current input
+ * @param argument Passed argument
+ * @return true if no error occured
+ */
+bool cmd_search(girara_session_t* session, char* input, girara_argument_t* argument);
 
 #endif // COMMANDS_H
