@@ -22,6 +22,10 @@
 #include "render.h"
 #include "database.h"
 
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+#include <girara/statusbar.h>
+
 /**
  * Register document plugin
  */

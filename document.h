@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 
-#include <girara-datastructures.h>
+#include <girara/types.h>
 #include "zathura.h"
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"

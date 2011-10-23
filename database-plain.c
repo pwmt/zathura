@@ -1,12 +1,13 @@
 /* See LICENSE file for license and copyright information */
 
-#include <girara.h>
 #include <glib.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <girara/utils.h>
+#include <girara/datastructures.h>
 
 #include "database.h"
 

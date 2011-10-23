@@ -4,7 +4,7 @@
 #define CALLBACKS_H
 
 #include <gtk/gtk.h>
-#include <girara.h>
+#include <girara/types.h>
 
 #include "zathura.h"
 

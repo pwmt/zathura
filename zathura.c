@@ -5,7 +5,11 @@
 
 #include <stdlib.h>
 
-#include <girara.h>
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+#include <girara/session.h>
+#include <girara/statusbar.h>
+#include <girara/settings.h>
 #include <glib/gstdio.h>
 
 #include "bookmarks.h"

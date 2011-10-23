@@ -2,7 +2,8 @@
 
 #include <glib.h>
 #include <sqlite3.h>
-#include <girara.h>
+#include <girara/utils.h>
+#include <girara/datastructures.h>
 
 #include "database.h"
 

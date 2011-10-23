@@ -5,7 +5,7 @@
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
-#include <girara.h>
+#include <girara/types.h>
 
 #include "document.h"
 

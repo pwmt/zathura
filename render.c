@@ -1,6 +1,9 @@
 /* See LICENSE file for license and copyright information */
 
 #include <math.h>
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+#include <girara/session.h>
 
 #include "render.h"
 #include "zathura.h"

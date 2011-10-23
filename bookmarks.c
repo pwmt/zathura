@@ -5,6 +5,9 @@
 #include "database.h"
 #include "document.h"
 
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+
 zathura_bookmark_t*
 zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
 {

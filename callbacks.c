@@ -1,6 +1,8 @@
 /* See LICENSE file for license and copyright information */
 
-#include <girara.h>
+#include <girara/statusbar.h>
+#include <girara/session.h>
+#include <girara/settings.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 

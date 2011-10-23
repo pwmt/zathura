@@ -7,6 +7,12 @@
 #include "shortcuts.h"
 #include "zathura.h"
 
+#include <girara/settings.h>
+#include <girara/session.h>
+#include <girara/shortcuts.h>
+#include <girara/config.h>
+#include <girara/commands.h>
+
 void
 config_load_default(zathura_t* zathura)
 {
