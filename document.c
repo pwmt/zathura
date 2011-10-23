@@ -164,15 +164,14 @@ guess_type(const char* path)
   }
 
   const int fd = fileno(f);
-  static const size_t BLKSIZE = 4096;
   guchar* content = NULL;
   size_t length = 0u;
   while (uncertain == TRUE) {
     g_free((void*)content_type);
     content_type = NULL;
 
-    content = g_realloc(content, length + BLKSIZE);
-    const ssize_t r = read(fd, content + length, BLKSIZE);
+    content = g_realloc(content, length + BUFSIZ);
+    const ssize_t r = read(fd, content + length, BUFSIZ);
     if (r == -1) {
       break;
     }
