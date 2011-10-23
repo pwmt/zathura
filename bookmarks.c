@@ -8,18 +8,25 @@
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
+static int
+bookmark_compare_find(const void* item, const void* data)
+{
+  const zathura_bookmark_t* bookmark = item;
+  const char* id = data;
+
+  return g_strcmp0(bookmark->id, id);
+}
+
 zathura_bookmark_t*
 zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
 {
   g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
-  GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
-    if (strcmp(bookmark->id, id) == 0) {
-      girara_list_iterator_free(iter);
-      return NULL;
-    }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+  zathura_bookmark_t* old = girara_list_find(zathura->bookmarks.bookmarks, bookmark_compare_find, id);
+  if (old != NULL) {
+    return NULL;
+  }
 
   zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
   bookmark->id = g_strdup(id);
@@ -61,14 +68,7 @@ zathura_bookmark_get(zathura_t* zathura, const gchar* id)
   g_return_val_if_fail(zathura && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
-  GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
-    if (strcmp(bookmark->id, id) == 0) {
-      girara_list_iterator_free(iter);
-      return bookmark;
-    }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
-
-  return NULL;
+  return girara_list_find(zathura->bookmarks.bookmarks, bookmark_compare_find, id);
 }
 
 void

@@ -1,7 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 
 #include <stdlib.h>
 
