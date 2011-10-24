@@ -12,6 +12,8 @@
 #include "zathura.h"
 #include "document.h"
 
+#include <girara/datastructures.h>
+
 #define BLOCK_SIZE 64
 
 bool

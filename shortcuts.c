@@ -1,6 +1,9 @@
 /* See LICENSE file for license and copyright information */
 
-#include <girara.h>
+#include <girara/session.h>
+#include <girara/settings.h>
+#include <girara/datastructures.h>
+#include <girara/shortcuts.h>
 #include <gtk/gtk.h>
 
 #include "callbacks.h"

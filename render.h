@@ -5,7 +5,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <girara-datastructures.h>
+#include <girara/types.h>
 
 #include "zathura.h"
 #include "callbacks.h"

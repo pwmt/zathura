@@ -4,7 +4,8 @@
 #define ZATHURA_H
 
 #include <stdbool.h>
-#include <girara.h>
+#include <girara/types.h>
+#include <gtk/gtk.h>
 
 #ifdef UNUSED
 #elif defined(__GNUC__)

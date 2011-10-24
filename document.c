@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <limits.h>
 #include <sys/types.h>
@@ -15,12 +16,17 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <glib.h>
 
 #include "document.h"
 #include "utils.h"
 #include "zathura.h"
 #include "render.h"
 #include "database.h"
+
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+#include <girara/statusbar.h>
 
 /**
  * Register document plugin
@@ -144,6 +150,47 @@ zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* 
   return atleastone;
 }
 
+static const gchar*
+guess_type(const char* path)
+{
+  gboolean uncertain;
+  const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  if (content_type == NULL) {
+    return NULL;
+  }
+
+  FILE* f = fopen(path, "r");
+  if (f == NULL) {
+    return NULL;
+  }
+
+  const int fd = fileno(f);
+  guchar* content = NULL;
+  size_t length = 0u;
+  while (uncertain == TRUE) {
+    g_free((void*)content_type);
+    content_type = NULL;
+
+    content = g_realloc(content, length + BUFSIZ);
+    const ssize_t r = read(fd, content + length, BUFSIZ);
+    if (r == -1) {
+      break;
+    }
+
+    length += r;
+    content_type = g_content_type_guess(NULL, content, length, &uncertain);
+  }
+
+  fclose(f);
+  if (uncertain == TRUE) {
+    g_free((void*)content_type);
+    content_type = NULL;
+  }
+
+  g_free(content);
+  return content_type;
+}
+
 zathura_document_t*
 zathura_document_open(zathura_t* zathura, const char* path, const char* password)
 {
@@ -156,31 +203,10 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     return NULL;
   }
 
-  gboolean uncertain;
-  const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  const gchar* content_type = guess_type(path);
   if (content_type == NULL) {
-    girara_error("Could not determine file type");
+    girara_error("Could not determine file type.");
     return NULL;
-  }
-
-  if (uncertain == TRUE) {
-    g_free((void*)content_type);
-    content_type = NULL;
-
-    gchar* contents = NULL;
-    gsize length = 0;
-    if (g_file_get_contents(path, &contents, &length, NULL) == FALSE) {
-      girara_error("Could not determine file type");
-      return NULL;
-    }
-
-    content_type = g_content_type_guess(NULL, (guchar*) contents, length, &uncertain);
-    g_free(contents);
-    if (content_type == NULL || uncertain == TRUE) {
-      g_free((void*)content_type);
-      girara_error("Could not determine file type");
-      return NULL;
-    }
   }
 
   /* determine real path */

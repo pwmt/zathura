@@ -3,7 +3,7 @@
 #ifndef SHORTCUTS_H
 #define SHORTCUTS_H
 
-#include <girara.h>
+#include <girara/types.h>
 
 /**
  * Abort the current action and return to normal mode

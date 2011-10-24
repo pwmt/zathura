@@ -4,6 +4,9 @@
 #include "document.h"
 #include "render.h"
 
+#include <girara/utils.h>
+#include <girara/statusbar.h>
+
 void
 print(zathura_t* zathura)
 {

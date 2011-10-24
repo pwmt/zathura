@@ -11,6 +11,9 @@
 #include "document.h"
 #include "utils.h"
 
+#include <girara/session.h>
+#include <girara/datastructures.h>
+
 bool
 cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
 {

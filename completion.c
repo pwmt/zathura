@@ -10,6 +10,11 @@
 #include "completion.h"
 #include "utils.h"
 
+#include <girara/session.h>
+#include <girara/completion.h>
+#include <girara/utils.h>
+#include <girara/datastructures.h>
+
 girara_completion_t*
 cc_open(girara_session_t* session, const char* input)
 {

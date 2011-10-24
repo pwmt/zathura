@@ -1,11 +1,16 @@
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 
 #include <stdlib.h>
+#include <unistd.h>
 
-#include <girara.h>
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+#include <girara/session.h>
+#include <girara/statusbar.h>
+#include <girara/settings.h>
 #include <glib/gstdio.h>
 
 #include "bookmarks.h"
@@ -348,8 +353,9 @@ document_info_open(gpointer data)
       if (file == NULL) {
         girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
             "Could not read file from stdin and write it to a temporary file.");
+      } else {
+        document_info->zathura->stdin_support.file = g_strdup(file);
       }
-      document_info->zathura->stdin_support.file = file;
     } else {
       file = g_strdup(document_info->path);
     }

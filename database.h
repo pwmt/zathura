@@ -4,7 +4,7 @@
 #define DATABASE_H
 
 #include <stdbool.h>
-#include <girara.h>
+#include <girara/types.h>
 
 #include "zathura.h"
 #include "bookmarks.h"
