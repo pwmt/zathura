@@ -33,7 +33,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
-  unsigned int* pages_per_row = girara_setting_get(session, "pages_per_row");
+  unsigned int* pages_per_row = girara_setting_get(session, "pages-per-row");
 
   if (zathura->ui.page_view == NULL || zathura->document == NULL || pages_per_row == NULL) {
     goto error_ret;
@@ -238,7 +238,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
   gdouble value       = gtk_adjustment_get_value(adjustment);
   gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
   gdouble scroll_step = 40;
-  float* tmp = girara_setting_get(session, "scroll_step");
+  float* tmp = girara_setting_get(session, "scroll-step");
   if (tmp != NULL) {
     scroll_step = *tmp;
     g_free(tmp);
@@ -486,11 +486,40 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
 {
   g_return_val_if_fail(session != NULL, false);
 
-  static bool fullscreen = false;
+  static bool fullscreen   = false;
+  static int pages_per_row = 1;
 
-  if (fullscreen) {
+
+  if (fullscreen == true) {
+    /* reset pages per row */
+    girara_setting_set(session, "pages-per-row", &pages_per_row);
+
+    /* show status bar */
+    gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
+
+    /* set full screen */
     gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
   } else {
+    /* backup pages per row */
+    int* tmp = girara_setting_get(session, "pages-per-row");
+    if (tmp != NULL) {
+      pages_per_row = *tmp;
+      free(tmp);
+    }
+
+    /* set single view */
+    int int_value = 1;
+    girara_setting_set(session, "pages-per-row", &int_value);
+
+    /* adjust window */
+    girara_argument_t argument = { ADJUST_BESTFIT, NULL };
+    sc_adjust_window(session, &argument, 0);
+
+    /* hide status and inputbar */
+    gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+    gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
+
+    /* set full screen */
     gtk_window_fullscreen(GTK_WINDOW(session->gtk.window));
   }
 
@@ -524,7 +553,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int
   g_return_val_if_fail(zathura->document != NULL, false);
 
   /* retreive zoom step value */
-  int* value = girara_setting_get(zathura->ui.session, "zoom_step");
+  int* value = girara_setting_get(zathura->ui.session, "zoom-step");
   if (value == NULL) {
     return false;
   }
