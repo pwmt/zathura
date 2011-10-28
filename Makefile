@@ -83,11 +83,11 @@ install: all ${PROJECT}.pc
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
-	$(ECHO) installing header file
+	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(QUIET)cp -f document.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(QUIET)cp -f zathura.h ${DESTDIR}${PREFIX}/include/${PROJECT}
-	$(ECHO) installing manual page
+	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(QUIET)if which rst2man > /dev/null ; then \
@@ -105,10 +105,9 @@ install: all ${PROJECT}.pc
 uninstall:
 	$(ECHO) removing executable file
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
-	$(ECHO) removing header file
-	$(QUIET)rm -f ${DESTDIR}${PREFIX}/include/${PROJECT}/document.h
-	$(QUIET)rm -f ${DESTDIR}${PREFIX}/include/${PROJECT}/zathura.h
-	$(ECHO) removing manual page
+	$(ECHO) removing header files
+	$(QUIET)rm -rf ${DESTDIR}${PREFIX}/include/${PROJECT}
+	$(ECHO) removing manual pages
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
 	$(ECHO) removing desktop file
