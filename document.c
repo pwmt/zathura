@@ -48,6 +48,10 @@ zathura_document_plugins_load(zathura_t* zathura)
     int fddir = dirfd(dir);
     struct dirent* entry;
     while ((entry = readdir(dir)) != NULL) {
+      if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+        continue;
+      }
+
       struct stat statbuf;
       if (fstatat(fddir, entry->d_name, &statbuf, 0) != 0) {
         girara_error("failed to fstatat %s/%s; errno is %d.", plugindir, entry->d_name, errno);
