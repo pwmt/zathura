@@ -94,18 +94,14 @@ zathura_init(int argc, char* argv[])
   g_mkdir_with_parents(zathura->config.data_dir,   0771);
 
   if (plugin_path) {
-    gchar** paths = g_strsplit(plugin_path, ":", 0);
-    for (unsigned int i = 0; paths[i] != '\0'; ++i) {
-      girara_list_append(zathura->plugins.path, g_strdup(paths[i]));
-    }
-    g_strfreev(paths);
+    girara_list_t* paths = girara_split_path_array(plugin_path);
+    girara_list_merge(zathura->plugins.path, paths);
+    girara_list_free(paths);
   } else {
 #ifdef ZATHURA_PLUGINDIR
-    gchar** paths = g_strsplit(ZATHURA_PLUGINDIR, ":", 0);
-    for (unsigned int i = 0; paths[i] != '\0'; ++i) {
-      girara_list_append(zathura->plugins.path, g_strdup(paths[i]));
-    }
-    g_strfreev(paths);
+    girara_list_t* paths = girara_split_path_array(ZATHURA_PLUGINDIR);
+    girara_list_merge(zathura->plugins.path, paths);
+    girara_list_free(paths);
 #endif
   }
 
