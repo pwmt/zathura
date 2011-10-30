@@ -64,13 +64,10 @@ zathura_init(int argc, char* argv[])
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   /* plugins */
-  zathura->plugins.plugins = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.plugins,
+  zathura->plugins.plugins = girara_list_new2(
       (girara_free_function_t)zathura_document_plugin_free);
-  zathura->plugins.path    = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.path, g_free);
-  zathura->plugins.type_plugin_mapping = girara_list_new();
-  girara_list_set_free_function(zathura->plugins.type_plugin_mapping,
+  zathura->plugins.path    = girara_list_new2(g_free);
+  zathura->plugins.type_plugin_mapping = girara_list_new2(
       (girara_free_function_t)zathura_type_plugin_mapping_free);
 
   if (config_dir) {
@@ -127,11 +124,22 @@ zathura_init(int argc, char* argv[])
   /* load plugins */
   zathura_document_plugins_load(zathura);
 
+  /* load global configuration files */
+  girara_list_t* config_dirs = girara_split_path_array(girara_get_xdg_path(XDG_CONFIG_DIRS));
+  ssize_t size = girara_list_size(config_dirs) - 1;
+  for (; size >= 0; --size) {
+    const char* dir = girara_list_nth(config_dirs, size);
+    char* file = g_build_filename(dir, ZATHURA_RC, NULL);
+    config_load_file(zathura, file);
+    g_free(file);
+  }
+  girara_list_free(config_dirs);
+
+  config_load_file(zathura, GLOBAL_RC);
+
   /* configuration */
   config_load_default(zathura);
 
-  /* load global configuration files */
-  config_load_file(zathura, GLOBAL_RC);
 
   /* load local configuration files */
   char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
