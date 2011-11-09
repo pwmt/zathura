@@ -4088,6 +4088,8 @@ cc_print(char* input)
     }
   }
 
+  free(current_line);
+
   pclose(fp);
 
   return completion;

@@ -1,7 +1,7 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
-VERSION = 0.0.8.4
+VERSION = 0.0.8.5
 
 # paths
 PREFIX ?= /usr

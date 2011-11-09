@@ -64,7 +64,7 @@ gdb: debug
 
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
-	$(QUIET)cp -R LICENSE Makefile config.mk config.def.h README \
+	$(QUIET)cp -R LICENSE Makefile config.mk common.mk config.def.h README \
 			${PROJECT}.desktop ${PROJECT}rc.5.rst \
 			${PROJECT}.1 ${SOURCE} ${PROJECT}-${VERSION}
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
