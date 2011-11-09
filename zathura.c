@@ -1237,7 +1237,7 @@ open_file(char* path, char* password)
   g_static_mutex_lock(&(Zathura.Lock.pdf_obj_lock));
 
   /* specify path max */
-  size_t pm;
+  long pm;
 #ifdef PATH_MAX
   pm = PATH_MAX;
 #else
@@ -2976,8 +2976,8 @@ isc_completion(Argument* argument)
          *  the current command would match the command
          *  the current command would match the abbreviation
          */
-        if( ((current_command_length <= cmd_length)  && !strncmp(current_command, commands[i].command, current_command_length)) ||
-            ((current_command_length <= abbr_length) && !strncmp(current_command, commands[i].abbr,    current_command_length))
+        if( ((current_command_length <= cmd_length)  && commands[i].command && !strncmp(current_command, commands[i].command, current_command_length)) ||
+            ((current_command_length <= abbr_length) && commands[i].abbr && !strncmp(current_command, commands[i].abbr,    current_command_length))
           )
         {
           rows[n_items].command     = g_strdup(commands[i].command);
@@ -3742,7 +3742,7 @@ cmd_set(int argc, char** argv)
         int arg_c;
         for(arg_c = 0; arg_c < LENGTH(argument_names); arg_c++)
         {
-          if(!strcmp(argv[1], argument_names[arg_c].name))
+          if(argv[1] && !strcmp(argv[1], argument_names[arg_c].name))
           {
             id = argument_names[arg_c].argument;
             break;
@@ -3902,7 +3902,7 @@ cc_bookmark(char* input)
   for(i = 0; i < Zathura.Bookmarks.number_of_bookmarks; i++)
   {
     if( (input_length <= strlen(Zathura.Bookmarks.bookmarks[i].id)) &&
-          !strncmp(input, Zathura.Bookmarks.bookmarks[i].id, input_length) )
+          input && !strncmp(input, Zathura.Bookmarks.bookmarks[i].id, input_length) )
     {
       completion_group_add_element(group, Zathura.Bookmarks.bookmarks[i].id, g_strdup_printf("Page %d", Zathura.Bookmarks.bookmarks[i].page));
     }
@@ -4106,8 +4106,8 @@ cc_set(char* input)
 
   for(i = 0; i < LENGTH(settings); i++)
   {
-    if( (input_length <= strlen(settings[i].name)) &&
-          !strncmp(input, settings[i].name, input_length) )
+    if(settings[i].name && (input_length <= strlen(settings[i].name)) &&
+          input && !strncmp(input, settings[i].name, input_length) )
     {
       completion_group_add_element(group, settings[i].name, settings[i].description);
     }
@@ -4175,10 +4175,17 @@ void
 bcmd_scroll(char* buffer, Argument* argument)
 {
   int b_length = strlen(buffer);
-  if(b_length < 1)
+  if(b_length < 1) {
     return;
+  }
 
-  int percentage = atoi(g_strndup(buffer, b_length - 1));
+  char* tmp = g_strndup(buffer, b_length - 1);
+  if (tmp == NULL) {
+    return;
+  }
+
+  int percentage = atoi(tmp);
+  g_free(tmp);
   percentage = (percentage < 0) ? 0 : ((percentage > 100) ? 100 : percentage);
 
   GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment(Zathura.UI.view);
@@ -4217,7 +4224,12 @@ bcmd_zoom(char* buffer, Argument* argument)
     if(b_length < 1)
       return;
 
-    int value = atoi(g_strndup(buffer, b_length - 1));
+    char* tmp = g_strndup(buffer, b_length - 1);
+    if (tmp == NULL) {
+      return;
+    }
+    int value = atoi(tmp);
+    g_free(tmp);
     if(value <= zoom_min)
       Zathura.PDF.scale = zoom_min;
     else if(value >= zoom_max)
