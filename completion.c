@@ -50,7 +50,9 @@ cc_open(girara_session_t* session, const char* input)
 #endif
 
     char cwd[path_max];
-    getcwd(cwd, path_max);
+    if (getcwd(cwd, path_max) == NULL) {
+      goto error_free;
+    }
 
     char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
     if (tmp_path == NULL) {

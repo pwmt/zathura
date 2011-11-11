@@ -29,7 +29,8 @@ INCS = ${GIRARA_INC} ${GTK_INC}
 LIBS = ${GIRARA_LIB} ${GTK_LIB} $(DL_LIB) -lpthread -lm
 
 # flags
-CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS) -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
+CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
+CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
 
 # debug
 DFLAGS ?= -g

@@ -30,12 +30,12 @@ options:
 %.o: %.c
 	$(ECHO) CC $<
 	@mkdir -p .depend
-	$(QUIET)${CC} -c ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
+	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 %.do: %.c
 	$(ECHO) CC $<
 	@mkdir -p .depend
-	$(QUIET)${CC} -c ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
+	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 # force recompilation of database.o if DATABASE has changed
 database.o: database-${DATABASE}.o
