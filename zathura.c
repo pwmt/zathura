@@ -438,9 +438,7 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
   gchar* file_path = girara_fix_path(path);
   if (!overwrite && g_file_test(file_path, G_FILE_TEST_EXISTS))
   {
-    gchar* message = g_strdup_printf("File already exists: %s. Use :write! to overwrite it.", file_path);
-    girara_error(message);
-    g_free(message);
+    girara_error("File already exists: %s. Use :write! to overwrite it.", file_path);
     g_free(file_path);
     return false;
   }
