@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <math.h>
+#include <assert.h>
 
 #include <poppler/glib/poppler.h>
 #include <cairo.h>
@@ -1546,6 +1547,9 @@ safe_realloc(void** ptr, size_t nmemb, size_t size)
   static const size_t limit = ~((size_t)0u);
   void* tmp = NULL;
 
+  assert(nmemb != 0);
+  assert(size != 0);
+
   /* Check for overflow. */
   if(nmemb > limit / size)
     goto failure;
@@ -2988,9 +2992,14 @@ isc_completion(Argument* argument)
         }
       }
 
-      rows = safe_realloc((void**)&rows, n_items, sizeof(CompletionRow));
-      if(!rows)
-        out_of_memory();
+      if (n_items == 0) {
+        free(rows);
+        rows = NULL;
+      } else {
+        rows = safe_realloc((void**)&rows, n_items, sizeof(CompletionRow));
+        if(!rows)
+          out_of_memory();
+      }
     }
 
     gtk_box_pack_start(Zathura.UI.box, GTK_WIDGET(results), FALSE, FALSE, 0);
