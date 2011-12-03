@@ -42,6 +42,7 @@ zathura_document_plugins_load(zathura_t* zathura)
     DIR* dir = opendir(plugindir);
     if (dir == NULL) {
       girara_error("could not open plugin directory: %s", plugindir);
+      girara_list_iterator_next(iter);
       continue;
     }
 

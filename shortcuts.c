@@ -504,7 +504,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     int* tmp = girara_setting_get(session, "pages-per-row");
     if (tmp != NULL) {
       pages_per_row = *tmp;
-      free(tmp);
+      g_free(tmp);
     }
 
     /* set single view */

@@ -1,5 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
+#define _POSIX_SOURCE
+
 #include <glib.h>
 #include <stdlib.h>
 #include <string.h>
@@ -295,28 +297,26 @@ zathura_db_read_key_file_from_file(const char* path)
   }
 
   /* open file */
-  int fd = open(path, O_RDWR);
-  if (fd == -1) {
+  FILE* file = fopen(path, "r");
+  if (file == NULL) {
     return NULL;
   }
 
   GKeyFile* key_file = g_key_file_new();
   if (key_file == NULL) {
-    close(fd);
+    fclose(file);
     return NULL;
   }
 
   /* read config file */
-  file_lock_set(fd, F_WRLCK);
-  char* content = girara_file_read_from_fd(fd);
+  file_lock_set(fileno(file), F_WRLCK);
+  char* content = girara_file_read2(file);
+  file_lock_set(fileno(file), F_UNLCK);
+  fclose(file);
   if (content == NULL) {
-    file_lock_set(fd, F_UNLCK);
-    close(fd);
+    g_key_file_free(key_file);
     return NULL;
   }
-  file_lock_set(fd, F_UNLCK);
-
-  close(fd);
 
   /* parse config file */
   size_t contentlen = strlen(content);
@@ -369,7 +369,9 @@ zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file)
   }
 
   file_lock_set(fd, F_WRLCK);
-  write(fd, content, strlen(content));
+  if (write(fd, content, strlen(content)) == 0) {
+    girara_error("Failed to write to %s", file);
+  }
   file_lock_set(fd, F_UNLCK);
 
   close(fd);

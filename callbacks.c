@@ -82,10 +82,12 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
 }
 
 void
-cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), girara_setting_t* setting)
+cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* data)
 {
-  int pages_per_row = setting->value.i;
-  zathura_t* zathura = setting->data;
+  g_return_if_fail(value != NULL);
+
+  int pages_per_row = *(int*) value;
+  zathura_t* zathura = data;
 
   if (pages_per_row < 1) {
     pages_per_row = 1;
