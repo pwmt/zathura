@@ -150,6 +150,24 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "toggle_inputbar",   girara_sc_toggle_inputbar);
   girara_shortcut_mapping_add(gsession, "toggle_statusbar",  girara_sc_toggle_statusbar);
   girara_shortcut_mapping_add(gsession, "zoom",              sc_zoom);
+
+  /* add argument mappings */
+  girara_argument_mapping_add(gsession, "bottom",     BOTTOM);
+  girara_argument_mapping_add(gsession, "default",    DEFAULT);
+  girara_argument_mapping_add(gsession, "down",       DOWN);
+  girara_argument_mapping_add(gsession, "full_down",  FULL_DOWN);
+  girara_argument_mapping_add(gsession, "full_up",    FULL_UP);
+  girara_argument_mapping_add(gsession, "half_down",  HALF_DOWN);
+  girara_argument_mapping_add(gsession, "half_up",    HALF_UP);
+  girara_argument_mapping_add(gsession, "in",         ZOOM_IN);
+  girara_argument_mapping_add(gsession, "left",       LEFT);
+  girara_argument_mapping_add(gsession, "next",       NEXT);
+  girara_argument_mapping_add(gsession, "out",        ZOOM_OUT);
+  girara_argument_mapping_add(gsession, "previous",   PREVIOUS);
+  girara_argument_mapping_add(gsession, "right",      RIGHT);
+  girara_argument_mapping_add(gsession, "specific",   ZOOM_SPECIFIC);
+  girara_argument_mapping_add(gsession, "top",        TOP);
+  girara_argument_mapping_add(gsession, "up",         UP);
 }
 
 void
