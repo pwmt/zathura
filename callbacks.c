@@ -98,8 +98,9 @@ cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const char* UN
 
 void
 cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
-    GtkTreeViewColumn* UNUSED(column), zathura_t* zathura)
+    GtkTreeViewColumn* UNUSED(column), void* data)
 {
+  zathura_t* zathura = data;
   if (tree_view == NULL || zathura == NULL || zathura->ui.session == NULL) {
     return;
   }

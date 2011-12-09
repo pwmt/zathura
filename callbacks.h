@@ -5,8 +5,7 @@
 
 #include <gtk/gtk.h>
 #include <girara/types.h>
-
-#include "zathura.h"
+#include <girara/macros.h>
 
 /**
  * Quits the current zathura session
@@ -39,7 +38,7 @@ void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  * @param session The current girara session
  * @param setting The "pages-per-row" setting
  */
-void cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* data);
+void cb_pages_per_row_value_changed(girara_session_t* GIRARA_UNUSED(session), const char* GIRARA_UNUSED(name), girara_setting_type_t GIRARA_UNUSED(type), void* value, void* data);
 
 /**
  * Called when an index element is activated (e.g.: double click)
@@ -50,6 +49,6 @@ void cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const cha
  * @param zathura Zathura session
  */
 void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
-    GtkTreeViewColumn* column, zathura_t* zathura);
+    GtkTreeViewColumn* column, void* zathura);
 
 #endif // CALLBACKS_H
