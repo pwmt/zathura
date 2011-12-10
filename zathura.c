@@ -124,6 +124,9 @@ zathura_init(int argc, char* argv[])
   /* load plugins */
   zathura_document_plugins_load(zathura);
 
+  /* configuration */
+  config_load_default(zathura);
+
   /* load global configuration files */
   girara_list_t* config_dirs = girara_split_path_array(girara_get_xdg_path(XDG_CONFIG_DIRS));
   ssize_t size = girara_list_size(config_dirs) - 1;
@@ -136,10 +139,6 @@ zathura_init(int argc, char* argv[])
   girara_list_free(config_dirs);
 
   config_load_file(zathura, GLOBAL_RC);
-
-  /* configuration */
-  config_load_default(zathura);
-
 
   /* load local configuration files */
   char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);

@@ -210,6 +210,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* UNUSED(argument),
   zathura->document->rotate  = (zathura->document->rotate + 90) % 360;
 
   /* render all pages again */
+  /* XXX: we don't need to rerender, only to resize the widgets and redraw */
   render_all(zathura);
 
   return false;
