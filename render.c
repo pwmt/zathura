@@ -13,14 +13,14 @@ void* render_job(void* data);
 bool render(zathura_t* zathura, zathura_page_t* page);
 
 static void
-page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width)
+page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
-  if (page->document->rotate == 0 || page->document->rotate == 180) {
-    *page_width  = page->width  * page->document->scale;
-    *page_height = page->height * page->document->scale;
-  } else {
+  if (rotate && page->document->rotate % 180) {
     *page_width  = page->height * page->document->scale;
     *page_height = page->width  * page->document->scale;
+  } else {
+    *page_width  = page->width  * page->document->scale;
+    *page_height = page->height * page->document->scale;
   }
 }
 
@@ -165,7 +165,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
-  page_calc_height_width(page, &page_height, &page_width);
+  page_calc_height_width(page, &page_height, &page_width, false);
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
@@ -191,24 +191,8 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  switch(page->document->rotate) {
-    case 90:
-      cairo_translate(cairo, page_width, 0);
-      break;
-    case 180:
-      cairo_translate(cairo, page_width, page_height);
-      break;
-    case 270:
-      cairo_translate(cairo, 0, page_height);
-      break;
-  }
-
   if (fabs(zathura->document->scale - 1.0f) > FLT_EPSILON) {
     cairo_scale(cairo, zathura->document->scale, zathura->document->scale);
-  }
-
-  if (page->document->rotate != 0) {
-    cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
   }
 
   if (zathura_page_render(page, cairo) == false) {
@@ -282,7 +266,7 @@ render_all(zathura_t* zathura)
     page->surface = NULL;
 
     unsigned int page_height = 0, page_width = 0;
-    page_calc_height_width(page, &page_height, &page_width);
+    page_calc_height_width(page, &page_height, &page_width, true);
 
     gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
     gtk_widget_queue_resize(page->drawing_area);
@@ -308,13 +292,36 @@ page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
     return FALSE;
   }
 
+  unsigned int page_height = 0, page_width = 0;
+  page_calc_height_width(page, &page_height, &page_width, true);
+
   if (page->surface != NULL) {
+    cairo_save(cairo);
+
+    switch(page->document->rotate) {
+      case 90:
+        cairo_translate(cairo, page_width, 0);
+        break;
+      case 180:
+        cairo_translate(cairo, page_width, page_height);
+        break;
+      case 270:
+        cairo_translate(cairo, 0, page_height);
+        break;
+    }
+
+    if (page->document->rotate != 0) {
+      cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
+    }
+
     cairo_set_source_surface(cairo, page->surface, 0, 0);
     cairo_paint(cairo);
+
+    cairo_restore(cairo);
   } else {
     /* set background color */
     cairo_set_source_rgb(cairo, 255, 255, 255);
-    cairo_rectangle(cairo, 0, 0, page->width * page->document->scale, page->height * page->document->scale);
+    cairo_rectangle(cairo, 0, 0, page_width, page->height * page->height);
     cairo_fill(cairo);
 
     /* write text */
@@ -324,8 +331,8 @@ page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
     cairo_set_font_size(cairo, 16.0);
     cairo_text_extents_t extents;
     cairo_text_extents(cairo, text, &extents);
-    double x = (page->width  * page->document->scale) / 2 - (extents.width  / 2 + extents.x_bearing);
-    double y = (page->height * page->document->scale) / 2 - (extents.height / 2 + extents.y_bearing);
+    double x = page_width * 0.5 - (extents.width * 0.5 + extents.x_bearing);
+    double y = page_height * 0.5 - (extents.height * 0.5 + extents.y_bearing);
     cairo_move_to(cairo, x, y);
     cairo_show_text(cairo, text);
 
