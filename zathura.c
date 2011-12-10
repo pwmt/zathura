@@ -591,7 +591,7 @@ page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
   {
     int x = i % pages_per_row;
     int y = i / pages_per_row;
-    gtk_table_attach(GTK_TABLE(zathura->ui.page_view), zathura->document->pages[i]->event_box, x, x + 1, y, y + 1, GTK_EXPAND, GTK_EXPAND, 0, 0);
+    gtk_table_attach(GTK_TABLE(zathura->ui.page_view), zathura->document->pages[i]->event_box, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
   }
 
   gtk_widget_show_all(zathura->ui.page_view);

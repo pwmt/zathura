@@ -63,16 +63,6 @@ bool execute_command(char* const argv[], char** output);
 void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
 /**
- * This function is used to concatenate multiple strings. Argument list has to
- * be ended with NULL. Returned string has to be freed with free().
- *
- * @param string1 First string
- * @param ... Additional strings
- * @return Concatenated string or NULL if an error occured
- */
-char* string_concat(const char* string1, ...);
-
-/**
  * Calculates the offset of the page to the top of the viewing area as
  * well as to the left side of it. The result has to be freed.
  *

@@ -12,6 +12,18 @@
 void* render_job(void* data);
 bool render(zathura_t* zathura, zathura_page_t* page);
 
+static void
+page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width)
+{
+  if (page->document->rotate == 0 || page->document->rotate == 180) {
+    *page_width  = page->width  * page->document->scale;
+    *page_height = page->height * page->document->scale;
+  } else {
+    *page_width  = page->height * page->document->scale;
+    *page_height = page->width  * page->document->scale;
+  }
+}
+
 void*
 render_job(void* data)
 {
@@ -153,14 +165,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
-
-  if (page->document->rotate == 0 || page->document->rotate == 180) {
-    page_width  = page->width  * zathura->document->scale;
-    page_height = page->height * zathura->document->scale;
-  } else {
-    page_width  = page->height * zathura->document->scale;
-    page_height = page->width  * zathura->document->scale;
-  }
+  page_calc_height_width(page, &page_height, &page_width);
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
@@ -255,7 +260,6 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   /* draw to gtk widget */
   page->surface = surface;
-  gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
   gtk_widget_queue_draw(page->drawing_area);
 
   g_static_mutex_unlock(&(page->lock));
@@ -273,13 +277,16 @@ render_all(zathura_t* zathura)
 
   /* unmark all pages */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    cairo_surface_destroy(zathura->document->pages[page_id]->surface);
-    zathura->document->pages[page_id]->surface = NULL;
-  }
+    zathura_page_t* page = zathura->document->pages[page_id];
+    cairo_surface_destroy(page->surface);
+    page->surface = NULL;
 
-  /* redraw current page */
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  cb_view_vadjustment_value_changed(view_vadjustment, zathura);
+    unsigned int page_height = 0, page_width = 0;
+    page_calc_height_width(page, &page_height, &page_width);
+
+    gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
+    gtk_widget_queue_resize(page->drawing_area);
+  }
 }
 
 gboolean
