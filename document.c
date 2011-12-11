@@ -106,8 +106,7 @@ zathura_document_plugins_load(zathura_t* zathura)
       if (r == false) {
         girara_error("could not register plugin %s", path);
         zathura_document_plugin_free(plugin);
-      }
-      else  {
+      } else {
         girara_info("successfully loaded plugin %s", path);
       }
 
