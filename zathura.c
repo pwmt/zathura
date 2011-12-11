@@ -487,13 +487,15 @@ document_close(zathura_t* zathura)
   return true;
 }
 
-typedef struct page_set_delayed_s {
+typedef struct page_set_delayed_s
+{
   zathura_t* zathura;
   unsigned int page;
 } page_set_delayed_t;
 
 static gboolean
-page_set_delayed_impl(gpointer data) {
+page_set_delayed_impl(gpointer data)
+{
   page_set_delayed_t* p = data;
   page_set(p->zathura, p->page);
 
