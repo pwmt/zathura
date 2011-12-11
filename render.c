@@ -16,11 +16,11 @@ static void
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
   if (rotate && page->document->rotate % 180) {
-    *page_width  = page->height * page->document->scale;
-    *page_height = page->width  * page->document->scale;
+    *page_width  = ceil(page->height * page->document->scale);
+    *page_height = ceil(page->width  * page->document->scale);
   } else {
-    *page_width  = page->width  * page->document->scale;
-    *page_height = page->height * page->document->scale;
+    *page_width  = ceil(page->width  * page->document->scale);
+    *page_height = ceil(page->height * page->document->scale);
   }
 }
 
