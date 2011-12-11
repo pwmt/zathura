@@ -89,11 +89,5 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     return;
   }
 
-  double requested_with    = gtk_print_context_get_width(context);
-  double tmp_scale         = zathura->document->scale;
-  zathura->document->scale = requested_with / page->width;
-
   zathura_page_render(page, cairo);
-
-  zathura->document->scale = tmp_scale;
 }
