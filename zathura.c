@@ -147,7 +147,7 @@ zathura_init(int argc, char* argv[])
 
   /* initialize girara */
   zathura->ui.session->gtk.embed = embed;
-  if (girara_session_init(zathura->ui.session) == false) {
+  if (girara_session_init(zathura->ui.session, "zathura") == false) {
     goto error_out;
   }
 
