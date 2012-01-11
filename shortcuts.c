@@ -132,7 +132,7 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 
 bool
 sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int
-    UNUSED(t))
+    t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -143,10 +143,11 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int
   unsigned int number_of_pages = zathura->document->number_of_pages;
   unsigned int new_page        = zathura->document->current_page_number;
 
+  t = (t == 0) ? 1 : t;
   if (argument->n == NEXT) {
-    new_page = (new_page + 1) % number_of_pages;
+    new_page = (new_page + t) % number_of_pages;
   } else if (argument->n == PREVIOUS) {
-    new_page = (new_page + number_of_pages - 1) % number_of_pages;
+    new_page = (new_page + number_of_pages - t) % number_of_pages;
   }
 
   page_set(zathura, new_page);
