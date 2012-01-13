@@ -12,8 +12,6 @@
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 
-// typedef struct zathura_document_s zathura_document_t;
-
 typedef bool (*zathura_document_open_t)(zathura_document_t* document);
 
 /**
