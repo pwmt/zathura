@@ -127,6 +127,8 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           NULL,         "Print document");
   girara_inputbar_command_add(gsession, "write",   NULL, cmd_save,            NULL,         "Save document");
   girara_inputbar_command_add(gsession, "write!",  NULL, cmd_savef,           NULL,         "Save document (and force overwriting)");
+  girara_inputbar_command_add(gsession, "export",  NULL, cmd_export,          cc_export,    "Save attachments");
+
 
   girara_special_command_add(gsession, '/', cmd_search, true, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, true, BACKWARD, NULL);

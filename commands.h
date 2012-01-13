@@ -106,4 +106,13 @@ bool cmd_savef(girara_session_t* session, girara_list_t* argument_list);
  */
 bool cmd_search(girara_session_t* session, const char* input, girara_argument_t* argument);
 
+/**
+ * Save attachment to a file
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occured
+ */
+bool cmd_export(girara_session_t* session, girara_list_t* argument_list);
+
 #endif // COMMANDS_H

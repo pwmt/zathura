@@ -217,3 +217,50 @@ error_free:
 
   return NULL;
 }
+
+girara_completion_t*
+cc_export(girara_session_t* session, const char* input)
+{
+  if (input == NULL) {
+    return NULL;
+  }
+
+  g_return_val_if_fail(session != NULL, NULL);
+  g_return_val_if_fail(session->global.data != NULL, NULL);
+  zathura_t* zathura = session->global.data;
+
+  girara_completion_t* completion  = girara_completion_init();
+  girara_completion_group_t* group = girara_completion_group_create(session, NULL);
+
+  if (completion == NULL || group == NULL) {
+    goto error_free;
+  }
+
+  const size_t input_length = strlen(input);
+  girara_list_t* attachments = zathura_document_attachments_get(zathura->document);
+  if (!attachments) {
+    goto error_free;
+  }
+
+  GIRARA_LIST_FOREACH(attachments, const char*, iter, attachment)
+    if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
+      girara_completion_group_add_element(group, attachment, NULL);
+    }
+  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+
+  girara_completion_add_group(completion, group);
+  girara_list_free(attachments);
+  return completion;
+
+error_free:
+
+  if (completion) {
+    girara_completion_free(completion);
+  }
+
+  if (group) {
+    girara_completion_group_free(group);
+  }
+
+  return NULL;
+}

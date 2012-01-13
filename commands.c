@@ -13,6 +13,7 @@
 
 #include <girara/session.h>
 #include <girara/datastructures.h>
+#include <girara/utils.h>
 
 bool
 cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
@@ -282,5 +283,35 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     return false;
   }
 
+  return true;
+}
+
+bool
+cmd_export(girara_session_t* session, girara_list_t* argument_list)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    return false;
+  }
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc != 2) {
+    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    return false;
+  }
+
+  const char* attachment_name = girara_list_nth(argument_list, 0);
+  const char* file_name = girara_list_nth(argument_list, 1);
+  char* file_name2 = girara_fix_path(file_name);
+  if (!zathura_document_attachment_save(zathura->document, attachment_name, file_name)) {
+    girara_notify(session, GIRARA_ERROR, "Couldn't write attachment '%s' to '%s'.", attachment_name, file_name);
+  } else {
+    girara_notify(session, GIRARA_INFO, "Wrote attachment '%s' to '%s'.", attachment_name, file_name2);
+  }
+
+  g_free(file_name2);
   return true;
 }
