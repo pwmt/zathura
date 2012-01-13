@@ -51,6 +51,7 @@ typedef struct zathura_s
       GdkColor recolor_light_color; /**> Light color for recoloring */
     } colors;
 
+    GtkWidget *page_view_alignment;
     GtkWidget *page_view; /**> Widget that contains all rendered pages */
     GtkWidget *index; /**> Widget to show the index of the document */
   } ui;

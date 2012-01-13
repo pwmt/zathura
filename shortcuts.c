@@ -455,7 +455,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
-    girara_set_view(session, zathura->ui.page_view);
+    girara_set_view(session, zathura->ui.page_view_alignment);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
   } else {

@@ -166,6 +166,13 @@ zathura_init(int argc, char* argv[])
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   g_signal_connect(G_OBJECT(view_hadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
 
+  /* page view alignment */
+  zathura->ui.page_view_alignment = gtk_alignment_new(0.5, 0.5, 0, 0);
+  if (!zathura->ui.page_view_alignment) {
+    goto error_free;
+  }
+  gtk_container_add(GTK_CONTAINER(zathura->ui.page_view_alignment), zathura->ui.page_view);
+
   gtk_widget_show(zathura->ui.page_view);
 
   /* statusbar */
@@ -238,6 +245,9 @@ error_free:
     g_object_unref(zathura->ui.page_view);
   }
 
+  if (zathura->ui.page_view_alignment) {
+    g_object_unref(zathura->ui.page_view_alignment);
+  }
 
 error_out:
 
@@ -394,7 +404,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   g_free(value);
   page_view_set_mode(zathura, pages_per_row);
 
-  girara_set_view(zathura->ui.session, zathura->ui.page_view);
+  girara_set_view(zathura->ui.session, zathura->ui.page_view_alignment);
 
   /* threads */
   zathura->sync.render_thread = render_init(zathura);
