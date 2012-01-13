@@ -262,6 +262,11 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   int offset = 0;
   zathura_db_get_fileinfo(zathura->database, document->file_path,
       &document->current_page_number, &offset, &document->scale);
+  if (document->scale <= 0)
+  {
+    girara_warning("document info: '%s' has non positive scale", document->file_path);
+    document->scale = 1;
+  }
 
   if (plugin->open_function != NULL) {
     if (plugin->open_function(document) == true) {
