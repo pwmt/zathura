@@ -123,7 +123,12 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
       sc_toggle_index(zathura->ui.session, NULL, 0);
       page_set_delayed(zathura, index_element->target.page_number);
     } else if (index_element->type == ZATHURA_LINK_EXTERNAL) {
-      // TODO
+      char* argv[3] = { "xdg-open", index_element->target.uri, NULL };
+      GError* error = NULL;
+      if (!g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, &error)) {
+        girara_notify(zathura->ui.session, GIRARA_ERROR, "Failed to run xdg-open: %s", error->message);
+        g_error_free(error);
+      }
     }
   }
 
