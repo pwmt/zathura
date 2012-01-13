@@ -31,22 +31,21 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   char* name = NULL;
   while ((name = (char*) g_dir_read_name(dir)) != NULL) {
     char* e_name   = g_filename_display_name(name);
-    int   e_length = strlen(e_name);
-
     if (e_name == NULL) {
-      continue;
+      goto error_free;
     }
+    int   e_length = strlen(e_name);
 
     if ((current_file_length > e_length) || strncmp(current_file, e_name,
           current_file_length)) {
       g_free(e_name);
-      continue;
+      goto error_free;
     }
 
     char* full_path = g_strdup_printf("%s%s%s", current_path, is_dir ? "" : "/", e_name);
     if (full_path == NULL) {
       g_free(e_name);
-      continue;
+      goto error_free;
     }
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
@@ -64,6 +63,10 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
 
   g_dir_close(dir);
   return res;
+
+error_free:
+  girara_list_free(res);
+  return NULL;
 }
 
 girara_completion_t*

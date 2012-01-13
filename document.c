@@ -37,7 +37,7 @@ void
 zathura_document_plugins_load(zathura_t* zathura)
 {
   GIRARA_LIST_FOREACH(zathura->plugins.path, char*, iter, plugindir)
-
+    /* TODO: rewrite with GDir */
     /* read all files in the plugin directory */
     DIR* dir = opendir(plugindir);
     if (dir == NULL) {
