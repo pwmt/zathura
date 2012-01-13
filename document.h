@@ -196,6 +196,11 @@ struct zathura_document_s
     girara_list_t* (*document_attachments_get)(zathura_document_t* document);
 
     /**
+     * Save attachment to a file
+     */
+    bool (*document_attachment_save)(zathura_document_t* document, const char* attachment, const char* file);
+
+    /**
      * Get document information
      */
     char* (*document_meta_get)(zathura_document_t* document, zathura_document_meta_t info);
@@ -302,10 +307,12 @@ girara_list_t* zathura_document_attachments_get(zathura_document_t* document);
 /**
  * Free document attachments
  *
- * @param list list of document attachments
- * @return
+ * @param document The document objects
+ * @param attachment name of the attachment
+ * @param file the target filename
+ * @return true on success, false otherwise
  */
-bool zathura_document_attachments_free(girara_list_t* list);
+bool zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
 
 /**
  * Returns a string of the requested information

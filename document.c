@@ -386,10 +386,18 @@ zathura_document_attachments_get(zathura_document_t* document)
   return document->functions.document_attachments_get(document);
 }
 
-bool
-zathura_document_attachments_free(girara_list_t* UNUSED(list))
+bool zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file)
 {
-  return false;
+  if (document == NULL) {
+    return NULL;
+  }
+
+  if (document->functions.document_attachment_save == NULL) {
+    girara_error("%s not implemented", __FUNCTION__);
+    return NULL;
+  }
+
+  return document->functions.document_attachment_save(document, attachment, file);
 }
 
 char*
