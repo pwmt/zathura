@@ -125,7 +125,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     } else if (index_element->type == ZATHURA_LINK_EXTERNAL) {
       char* argv[3] = { "xdg-open", index_element->target.uri, NULL };
       GError* error = NULL;
-      if (!g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, &error)) {
+      if (!g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error)) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, "Failed to run xdg-open: %s", error->message);
         g_error_free(error);
       }
