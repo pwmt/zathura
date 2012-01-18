@@ -71,4 +71,14 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
  */
 page_offset_t* page_calculate_offset(zathura_page_t* page);
 
+/**
+ * Calculates the new coordinates based on the rotation and scale level of the
+ * document for the given rectangle
+ *
+ * @param page Page where the rectangle should be
+ * @param rectangle The rectangle
+ * @return New rectangle
+ */
+zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle);
+
 #endif // UTILS_H
