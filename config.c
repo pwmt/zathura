@@ -43,16 +43,20 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "zoom-step",     &int_value,   INT,   false, "Zoom step",               NULL, NULL);
   int_value = 1;
   girara_setting_add(gsession, "page-padding",  &int_value,   INT,   true,  "Padding between pages",   NULL, NULL);
-  int_value = 2;
+  int_value = 1;
   girara_setting_add(gsession, "pages-per-row", &int_value,   INT,   false, "Number of pages per row", cb_pages_per_row_value_changed, zathura);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT, false, "Scroll step",             NULL, NULL);
-
 
   string_value = "#FFFFFF";
   girara_setting_add(gsession, "recolor-darkcolor",  string_value, STRING, false, "Recoloring (dark color)",  NULL, NULL);
   string_value = "#000000";
   girara_setting_add(gsession, "recolor-lightcolor", string_value, STRING, false, "Recoloring (light color)", NULL, NULL);
+
+  string_value = "#9FBC00";
+  girara_setting_add(gsession, "highlight-color",        string_value, STRING, false, "Color for highlighting",        NULL, NULL);
+  float_value = 0.5;
+  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,  false, "Transparency for highlighting", NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,                    0,                   0,               NULL);

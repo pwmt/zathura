@@ -103,6 +103,63 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    return false;
+  }
+
+  char* font = girara_setting_get(session, "font");
+
+  float transparency = 0.5;
+  float* tmp = girara_setting_get(session, "highlight-transparency");
+  if (tmp != NULL) {
+    transparency = *tmp;
+    free(tmp);
+  }
+
+  unsigned int link_id = 0;
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
+    zathura_page_t* page = zathura->document->pages[page_id];
+    if (page == NULL) {
+      continue;
+    }
+
+    // TODO: is page visible?
+    girara_list_t* links = zathura_page_links_get(page);
+    if (links == NULL || girara_list_size(links) == 0) {
+      continue;
+    }
+
+    GIRARA_LIST_FOREACH(links, zathura_link_t*, iter, link)
+      cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
+      if (font != NULL) {
+        cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+      }
+
+      zathura_rectangle_t position = recalc_rectangle(page, link->position);
+
+      /* draw text */
+      cairo_set_font_size(cairo, 10);
+      cairo_move_to(cairo, position.x1 + 1, position.y1 - 1);
+      char* link_number = g_strdup_printf("%i", ++link_id);
+      cairo_show_text(cairo, link_number);
+
+      /* draw rectangle */
+      GdkColor color = zathura->ui.colors.highlight_color;
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      cairo_rectangle(cairo, position.x1, position.y1, (position.x2 - position.x1), (position.y2 - position.y1));
+      cairo_fill(cairo);
+
+      cairo_destroy(cairo);
+
+    GIRARA_LIST_FOREACH_END(links, zathura_link_t*, iter, link);
+  }
+
+  if (font != NULL) {
+    free(font);
+  }
 
   return false;
 }

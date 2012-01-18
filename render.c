@@ -298,7 +298,7 @@ page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
   if (page->surface != NULL) {
     cairo_save(cairo);
 
-    switch(page->document->rotate) {
+    switch (page->document->rotate) {
       case 90:
         cairo_translate(cairo, page_width, 0);
         break;

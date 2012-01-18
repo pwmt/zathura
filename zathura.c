@@ -217,6 +217,12 @@ zathura_init(int argc, char* argv[])
     g_free(string_value);
   }
 
+  string_value = girara_setting_get(zathura->ui.session, "highlight-color");
+  if (string_value != NULL) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color));
+    g_free(string_value);
+  }
+
   /* database */
   zathura->database = zathura_db_init(zathura->config.data_dir);
   if (zathura->database == NULL) {
