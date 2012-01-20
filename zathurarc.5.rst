@@ -58,7 +58,7 @@ set
   notification_w_bgcolor,
   notification_w_fgcolor,
   recolor_darkcolor,
-  recoler_lightcolor,
+  recolor_lightcolor,
   statusbar_bgcolor,
   statusbar_fgcolor,
   search_highlight,
