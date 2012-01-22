@@ -19,9 +19,9 @@ typedef bool (*zathura_document_open_t)(zathura_document_t* document);
  */
 typedef struct zathura_document_plugin_s
 {
-  girara_list_t* content_types; /**> List of supported content types */
-  zathura_document_open_t open_function; /**> Document open function */
-  void* handle; /**> DLL handle */
+  girara_list_t* content_types; /**< List of supported content types */
+  zathura_document_open_t open_function; /**< Document open function */
+  void* handle; /**< DLL handle */
 } zathura_document_plugin_t;
 
 typedef struct zathura_type_plugin_mapping_s
@@ -54,10 +54,10 @@ typedef void (*zathura_plugin_register_service_t)(zathura_document_plugin_t*);
  */
 typedef struct zathura_image_buffer_s
 {
-  unsigned char* data; /**> Image buffer data */
-  unsigned int height; /**> Height of the image */
-  unsigned int width; /**> Width of the image */
-  unsigned int rowstride; /**> Rowstride of the image */
+  unsigned char* data; /**< Image buffer data */
+  unsigned int height; /**< Height of the image */
+  unsigned int width; /**< Width of the image */
+  unsigned int rowstride; /**< Rowstride of the image */
 } zathura_image_buffer_t;
 
 /**
@@ -81,10 +81,10 @@ void zathura_image_buffer_free(zathura_image_buffer_t*);
  */
 typedef struct zathura_rectangle_s
 {
-  double x1; /**> X coordinate of point 1 */
-  double y1; /**> Y coordinate of point 1 */
-  double x2; /**> X coordinate of point 2 */
-  double y2; /**> Y coordinate of point 2 */
+  double x1; /**< X coordinate of point 1 */
+  double y1; /**< Y coordinate of point 1 */
+  double x2; /**< X coordinate of point 2 */
+  double y2; /**< Y coordinate of point 2 */
 } zathura_rectangle_t;
 
 /**
@@ -92,8 +92,8 @@ typedef struct zathura_rectangle_s
  */
 typedef enum zathura_link_type_e
 {
-  ZATHURA_LINK_TO_PAGE, /**> Links to a page */
-  ZATHURA_LINK_EXTERNAL, /**> Links to an external source */
+  ZATHURA_LINK_TO_PAGE, /**< Links to a page */
+  ZATHURA_LINK_EXTERNAL, /**< Links to an external source */
 } zathura_link_type_t;
 
 /**
@@ -101,12 +101,12 @@ typedef enum zathura_link_type_e
  */
 typedef struct zathura_link_s
 {
-  zathura_rectangle_t position; /**> Position of the link */
-  zathura_link_type_t type; /**> Link type */
+  zathura_rectangle_t position; /**< Position of the link */
+  zathura_link_type_t type; /**< Link type */
   union
   {
-    unsigned int page_number; /**> Page number */
-    char* value; /**> Value */
+    unsigned int page_number; /**< Page number */
+    char* value; /**< Value */
   } target;
 } zathura_link_t;
 
@@ -115,12 +115,12 @@ typedef struct zathura_link_s
  */
 typedef struct zathura_index_element_s
 {
-  char* title; /**> Title of the element */
-  zathura_link_type_t type; /**> Type */
+  char* title; /**< Title of the element */
+  zathura_link_type_t type; /**< Type */
   union
   {
-    unsigned int page_number; /**> Page number */
-    char* uri; /**> Uri */
+    unsigned int page_number; /**< Page number */
+    char* uri; /**< Uri */
   } target;
 } zathura_index_element_t;
 
@@ -129,8 +129,8 @@ typedef struct zathura_index_element_s
  */
 typedef enum zathura_form_type_e
 {
-  ZATHURA_FORM_CHECKBOX, /**> Checkbox */
-  ZATHURA_FORM_TEXTFIELD /**> Textfield */
+  ZATHURA_FORM_CHECKBOX, /**< Checkbox */
+  ZATHURA_FORM_TEXTFIELD /**< Textfield */
 } zathura_form_type_t;
 
 /**
@@ -138,8 +138,8 @@ typedef enum zathura_form_type_e
  */
 typedef struct zathura_form_s
 {
-  zathura_rectangle_t position; /**> Position */
-  zathura_form_type_t type; /**> Type */
+  zathura_rectangle_t position; /**< Position */
+  zathura_form_type_t type; /**< Type */
 } zathura_form_t;
 
 /**
@@ -147,15 +147,15 @@ typedef struct zathura_form_s
  */
 struct zathura_page_s
 {
-  double height; /**> Page height */
-  double width; /**> Page width */
-  unsigned int number; /**> Page number */
-  zathura_document_t* document; /**> Document */
-  void* data; /**> Custom data */
-  bool visible; /**> Page is visible */
-  GtkWidget* event_box; /**> Widget wrapper for mouse events */
-  GtkWidget* drawing_area; /**> Drawing area */
-  GStaticMutex lock; /**> Lock */
+  double height; /**< Page height */
+  double width; /**< Page width */
+  unsigned int number; /**< Page number */
+  zathura_document_t* document; /**< Document */
+  void* data; /**< Custom data */
+  bool visible; /**< Page is visible */
+  GtkWidget* event_box; /**< Widget wrapper for mouse events */
+  GtkWidget* drawing_area; /**< Drawing area */
+  GStaticMutex lock; /**< Lock */
   cairo_surface_t* surface; /** Cairo surface */
 };
 
@@ -164,13 +164,13 @@ struct zathura_page_s
  */
 struct zathura_document_s
 {
-  char* file_path; /**> File path of the document */
-  const char* password; /**> Password of the document */
-  unsigned int current_page_number; /**> Current page number */
-  unsigned int number_of_pages; /**> Number of pages */
-  double scale; /**> Scale value */
-  int rotate; /**> Rotation */
-  void* data; /**> Custom data */
+  char* file_path; /**< File path of the document */
+  const char* password; /**< Password of the document */
+  unsigned int current_page_number; /**< Current page number */
+  unsigned int number_of_pages; /**< Number of pages */
+  double scale; /**< Scale value */
+  int rotate; /**< Rotation */
+  void* data; /**< Custom data */
   zathura_t* zathura; /** Zathura object */
 
   struct

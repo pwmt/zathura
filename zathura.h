@@ -36,69 +36,69 @@ typedef struct zathura_s
 {
   struct
   {
-    girara_session_t* session; /**> girara interface session */
+    girara_session_t* session; /**< girara interface session */
 
     struct
     {
-      girara_statusbar_item_t* buffer; /**> buffer statusbar entry */
-      girara_statusbar_item_t* file; /**> file statusbar entry */
-      girara_statusbar_item_t* page_number; /**> page number statusbar entry */
+      girara_statusbar_item_t* buffer; /**< buffer statusbar entry */
+      girara_statusbar_item_t* file; /**< file statusbar entry */
+      girara_statusbar_item_t* page_number; /**< page number statusbar entry */
     } statusbar;
 
     struct
     {
-      GdkColor recolor_dark_color; /**> Dark color for recoloring */
-      GdkColor recolor_light_color; /**> Light color for recoloring */
-      GdkColor highlight_color; /**> Color for highlighting */
+      GdkColor recolor_dark_color; /**< Dark color for recoloring */
+      GdkColor recolor_light_color; /**< Light color for recoloring */
+      GdkColor highlight_color; /**< Color for highlighting */
     } colors;
 
     GtkWidget *page_view_alignment;
-    GtkWidget *page_view; /**> Widget that contains all rendered pages */
-    GtkWidget *index; /**> Widget to show the index of the document */
+    GtkWidget *page_view; /**< Widget that contains all rendered pages */
+    GtkWidget *index; /**< Widget to show the index of the document */
   } ui;
 
   struct
   {
-    render_thread_t* render_thread; /**> The thread responsible for rendering the pages */
+    render_thread_t* render_thread; /**< The thread responsible for rendering the pages */
   } sync;
 
   struct
   {
-    girara_list_t* plugins; /**> List of plugins */
-    girara_list_t* path; /**> List of plugin paths */
-    girara_list_t* type_plugin_mapping; /**> List of type -> plugin mappings */
+    girara_list_t* plugins; /**< List of plugins */
+    girara_list_t* path; /**< List of plugin paths */
+    girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
   } plugins;
 
   struct
   {
-    gchar* config_dir; /**> Path to the configuration directory */
-    gchar* data_dir; /**> Path to the data directory */
+    gchar* config_dir; /**< Path to the configuration directory */
+    gchar* data_dir; /**< Path to the data directory */
   } config;
 
   struct
   {
-    GtkPrintSettings* settings; /**> Print settings */
-    GtkPageSetup* page_setup; /**> Saved page setup */
+    GtkPrintSettings* settings; /**< Print settings */
+    GtkPageSetup* page_setup; /**< Saved page setup */
   } print;
 
   struct
   {
-    unsigned int page_padding; /**> Padding between the pages */
-    bool recolor; /**> Recoloring mode switch */
+    unsigned int page_padding; /**< Padding between the pages */
+    bool recolor; /**< Recoloring mode switch */
   } global;
 
   struct
   {
-    girara_mode_t normal; /**> Normal mode */
-    girara_mode_t fullscreen; /**> Fullscreen mode */
-    girara_mode_t index; /**> Index mode */
-    girara_mode_t insert; /**> Insert mode */
+    girara_mode_t normal; /**< Normal mode */
+    girara_mode_t fullscreen; /**< Fullscreen mode */
+    girara_mode_t index; /**< Index mode */
+    girara_mode_t insert; /**< Insert mode */
   } modes;
 
   struct
   {
-    gchar* file; /**> bookmarks file */
-    girara_list_t* bookmarks; /**> bookmarks */
+    gchar* file; /**< bookmarks file */
+    girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 
   struct
@@ -106,8 +106,8 @@ typedef struct zathura_s
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document; /**> The current document */
-  zathura_database_t* database; /**> The database */
+  zathura_document_t* document; /**< The current document */
+  zathura_database_t* database; /**< The database */
 } zathura_t;
 
 /**

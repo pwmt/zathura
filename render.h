@@ -12,11 +12,11 @@
 
 struct render_thread_s
 {
-  girara_list_t* list; /**> The list of pages */
-  GThread* thread; /**> The thread object */
-  GMutex* lock; /**> Lock */
-  GCond* cond; /**> Condition */
-  zathura_t* zathura; /**> Zathura object */
+  girara_list_t* list; /**< The list of pages */
+  GThread* thread; /**< The thread object */
+  GMutex* lock; /**< Lock */
+  GCond* cond; /**< Condition */
+  zathura_t* zathura; /**< Zathura object */
 };
 
 /**
