@@ -521,6 +521,37 @@ zathura_page_form_fields_free(girara_list_t* UNUSED(list))
   return false;
 }
 
+girara_list_t*
+zathura_page_images_get(zathura_page_t* page)
+{
+  if (page == NULL || page->document == NULL) {
+    return NULL;
+  }
+
+  if (page->document->functions.page_images_get == NULL) {
+    girara_error("%s not implemented", __FUNCTION__);
+    return false;
+  }
+
+  return page->document->functions.page_images_get(page);
+
+}
+
+bool
+zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file)
+{
+  if (page == NULL || page->document == NULL || image == NULL || file == NULL) {
+    return false;
+  }
+
+  if (page->document->functions.page_image_save == NULL) {
+    girara_error("%s not implemented", __FUNCTION__);
+    return false;
+  }
+
+  return page->document->functions.page_image_save(page, image, file);
+}
+
 bool
 zathura_page_render(zathura_page_t* page, cairo_t* cairo)
 {

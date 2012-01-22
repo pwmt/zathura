@@ -88,6 +88,15 @@ typedef struct zathura_rectangle_s
 } zathura_rectangle_t;
 
 /**
+ * Image structure
+ */
+typedef struct zathura_image_s
+{
+  zathura_rectangle_t position; /**< Coordinates of the image */
+  void* data; /**< Custom data of the plugin */
+} zathura_image_t;
+
+/**
  * Possible link types
  */
 typedef enum zathura_link_type_e
@@ -226,6 +235,16 @@ struct zathura_document_s
     girara_list_t* (*page_form_fields_get)(zathura_page_t* page);
 
     /**
+     * Get list of images
+     */
+    girara_list_t* (*page_images_get)(zathura_page_t* page);
+
+    /**
+     * Save image to a file
+     */
+    bool (*page_image_save)(zathura_page_t* page, zathura_image_t* image, const char* file);
+
+    /**
      * Renders the page
      */
     zathura_image_buffer_t* (*page_render)(zathura_page_t* page);
@@ -305,7 +324,7 @@ girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document
 girara_list_t* zathura_document_attachments_get(zathura_document_t* document);
 
 /**
- * Free document attachments
+ * Save document attachment
  *
  * @param document The document objects
  * @param attachment name of the attachment
@@ -380,6 +399,24 @@ girara_list_t* zathura_page_form_fields_get(zathura_page_t* page);
  * @return true if no error occured, otherwise false
  */
 bool zathura_page_form_fields_free(girara_list_t* list);
+
+/**
+ * Get list of images
+ *
+ * @param page Page
+ * @return List of images
+ */
+girara_list_t* zathura_page_images_get(zathura_page_t* page);
+
+/**
+ * Save image
+ *
+ * @param page Page
+ * @param image The image
+ * @param file Path to the file
+ * @return true if no error occured
+ */
+bool zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
 
 /**
  * Render page
