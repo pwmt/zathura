@@ -10,159 +10,175 @@
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_abort(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Adjust the rendered pages to the window
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Change the current mode
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Follow a link
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_follow(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_follow(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Go to a specific page or position
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Navigate through the document
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Recolor the pages
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_recolor(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_recolor(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Reload the current document
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_reload(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_reload(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Rotate the pages
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_rotate(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Scroll through the pages
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Search through the document for the latest search item
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_search(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Navigate through the index of the document
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Show/Hide the index of the document
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Toggle fullscreen mode
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Quit zathura
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_quit(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_quit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Change the zoom level
  *
  * @param session The used girara session
  * @param argument The used argument
+ * @param event Girara event
  * @param t Number of executions
  * @return true if no error occured otherwise false
  */
-bool sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int t);
+bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 #endif // SHORTCUTS_H

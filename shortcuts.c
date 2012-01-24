@@ -15,7 +15,7 @@
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -26,7 +26,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -88,8 +88,8 @@ error_ret:
 }
 
 bool
-sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned
-    int UNUSED(t))
+sc_change_mode(girara_session_t* session, girara_argument_t* argument,
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -100,7 +100,7 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument, unsigned
 
 bool
 sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -165,7 +165,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 }
 
 bool
-sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
+sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -188,8 +188,8 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, unsigned int t)
 }
 
 bool
-sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int
-    t)
+sc_navigate(girara_session_t* session, girara_argument_t* argument,
+    girara_event_t* UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -214,7 +214,7 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument, unsigned int
 
 bool
 sc_recolor(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -228,7 +228,7 @@ sc_recolor(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -257,7 +257,7 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_rotate(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -275,8 +275,8 @@ sc_rotate(girara_session_t* session, girara_argument_t* UNUSED(argument),
 }
 
 bool
-sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
-    UNUSED(t))
+sc_scroll(girara_session_t* session, girara_argument_t* argument,
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -341,8 +341,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument, unsigned int
 }
 
 bool
-sc_search(girara_session_t* session, girara_argument_t* argument, unsigned int
-    UNUSED(t))
+sc_search(girara_session_t* session, girara_argument_t* argument,
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -355,7 +355,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument, unsigned int
 
 bool
 sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -438,7 +438,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    unsigned int UNUSED(t))
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -541,7 +541,7 @@ error_ret:
 
 bool
 sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
-    UNUSED(argument), unsigned int UNUSED(t))
+    UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -572,7 +572,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
 
     /* adjust window */
     girara_argument_t argument = { ADJUST_BESTFIT, NULL };
-    sc_adjust_window(session, &argument, 0);
+    sc_adjust_window(session, &argument, NULL, 0);
 
     /* hide status and inputbar */
     gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
@@ -588,13 +588,13 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
 }
 
 bool
-sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), unsigned
-    int UNUSED(t))
+sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument),
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
   girara_argument_t arg = { GIRARA_HIDE, NULL };
-  girara_isc_completion(session, &arg, 0);
+  girara_isc_completion(session, &arg, NULL, 0);
 
   cb_destroy(NULL, NULL);
 
@@ -602,8 +602,8 @@ sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), unsigned
 }
 
 bool
-sc_zoom(girara_session_t* session, girara_argument_t* argument, unsigned int
-    UNUSED(t))
+sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
+    UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
