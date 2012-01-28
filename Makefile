@@ -4,7 +4,7 @@ include config.mk
 include common.mk
 
 PROJECT  = zathura
-SOURCE   = $(shell find . -iname "*.c" -a ! -iname "database-*")
+SOURCE   = $(shell find . -iname "*.c" -a ! -iname "database-*" ! -path "*tests*")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
@@ -69,6 +69,9 @@ valgrind: debug
 
 gdb: debug
 	cgdb ${PROJECT}-debug
+
+tests: ${OBJECTS}
+	$(QUIET)make -C tests
 
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}

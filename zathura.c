@@ -613,26 +613,3 @@ page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 
   gtk_widget_show_all(zathura->ui.page_view);
 }
-
-/* main function */
-int main(int argc, char* argv[])
-{
-  g_thread_init(NULL);
-  gdk_threads_init();
-  gtk_init(&argc, &argv);
-
-  zathura_t* zathura = zathura_init(argc, argv);
-  if (zathura == NULL) {
-    printf("error: could not initialize zathura\n");
-    return -1;
-  }
-
-  gdk_threads_enter();
-  gtk_main();
-  gdk_threads_leave();
-
-  zathura_free(zathura);
-
-  return 0;
-}
-
