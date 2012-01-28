@@ -21,7 +21,7 @@ endif
 
 all: options ${PROJECT} run
 
-run:
+run: ${PROJECT}
 	$(QUIET)./${PROJECT}
 
 options:

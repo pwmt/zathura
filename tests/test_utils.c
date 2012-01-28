@@ -9,7 +9,18 @@ START_TEST(test_file_exists_null) {
 } END_TEST
 
 START_TEST(test_file_get_extension_null) {
-  fail_unless(file_get_extension(NULL) == false);
+  fail_unless(file_get_extension(NULL) == NULL);
+} END_TEST
+
+START_TEST(test_file_get_extension_none) {
+  const char* path = "test";
+  fail_unless(file_get_extension(path) == NULL);
+} END_TEST
+
+START_TEST(test_file_get_extension_single) {
+  const char* path = "test.pdf";
+  const char* extension = file_get_extension(path);
+  fail_unless(strcmp(extension, "pdf") == 0);
 } END_TEST
 
 Suite* suite_utils()
@@ -25,6 +36,8 @@ Suite* suite_utils()
   /* file exists */
   tcase = tcase_create("file_get_extension");
   tcase_add_test(tcase, test_file_get_extension_null);
+  tcase_add_test(tcase, test_file_get_extension_none);
+  tcase_add_test(tcase, test_file_get_extension_single);
   suite_add_tcase(suite, tcase);
 
   return suite;
