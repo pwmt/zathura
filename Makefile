@@ -120,4 +120,4 @@ uninstall:
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean debug valgrind gdb dist install uninstall
+.PHONY: all options clean debug valgrind gdb dist install uninstall tests
