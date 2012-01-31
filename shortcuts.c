@@ -116,7 +116,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   float* tmp = girara_setting_get(session, "highlight-transparency");
   if (tmp != NULL) {
     transparency = *tmp;
-    free(tmp);
+    g_free(tmp);
   }
 
   unsigned int link_id = 0;
@@ -158,7 +158,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   if (font != NULL) {
-    free(font);
+    g_free(font);
   }
 
   return false;
