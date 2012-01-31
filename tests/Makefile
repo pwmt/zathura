@@ -12,6 +12,8 @@ ZSOURCE   = $(shell find ../ -iname "*.c" -a ! -iname "database-*" ! -iname "mai
 ZOBJECTS = ${ZSOURCE:.c=.o}
 
 ifeq (${DATABASE}, sqlite)
+INCS   += $(SQLITE_INC)
+LIBS   += $(SQLITE_LIB)
 ZSOURCE += ../database-sqlite.c
 else
 ifeq (${DATABASE}, plain)
