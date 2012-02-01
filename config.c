@@ -23,6 +23,7 @@ config_load_default(zathura_t* zathura)
   int int_value              = 0;
   float float_value          = 0;
   char* string_value         = NULL;
+  bool bool_value            = false;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */
@@ -57,6 +58,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "highlight-color",        string_value, STRING, false, "Color for highlighting",        NULL, NULL);
   float_value = 0.5;
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,  false, "Transparency for highlighting", NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, "Render 'Loading ...'", NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,                    0,          0,               NULL);

@@ -4,6 +4,7 @@
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include <girara/session.h>
+#include <girara/settings.h>
 
 #include "render.h"
 #include "zathura.h"
@@ -324,17 +325,28 @@ page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
     cairo_rectangle(cairo, 0, 0, page_width, page->height * page->height);
     cairo_fill(cairo);
 
+    bool render_loading = false;
+    bool* tmp = (page->document != NULL && page->document->zathura != NULL &&
+        page->document->zathura->ui.session != NULL) ?
+        girara_setting_get(page->document->zathura->ui.session, "render-loading") : NULL;
+    if (tmp != NULL) {
+      render_loading = *tmp;
+      g_free(tmp);
+    }
+
     /* write text */
-    cairo_set_source_rgb(cairo, 0, 0, 0);
-    const char* text = "Loading...";
-    cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cairo, 16.0);
-    cairo_text_extents_t extents;
-    cairo_text_extents(cairo, text, &extents);
-    double x = page_width * 0.5 - (extents.width * 0.5 + extents.x_bearing);
-    double y = page_height * 0.5 - (extents.height * 0.5 + extents.y_bearing);
-    cairo_move_to(cairo, x, y);
-    cairo_show_text(cairo, text);
+    if (render_loading == true) {
+      cairo_set_source_rgb(cairo, 0, 0, 0);
+      const char* text = "Loading...";
+      cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+      cairo_set_font_size(cairo, 16.0);
+      cairo_text_extents_t extents;
+      cairo_text_extents(cairo, text, &extents);
+      double x = page_width * 0.5 - (extents.width * 0.5 + extents.x_bearing);
+      double y = page_height * 0.5 - (extents.height * 0.5 + extents.y_bearing);
+      cairo_move_to(cairo, x, y);
+      cairo_show_text(cairo, text);
+    }
 
     /* render real page */
     render_page(page->document->zathura->sync.render_thread, page);
