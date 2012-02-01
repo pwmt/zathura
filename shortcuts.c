@@ -544,10 +544,12 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
 
   static bool fullscreen   = false;
   static int pages_per_row = 1;
-
+  static double zoom = 1.0;
 
   if (fullscreen == true) {
     /* reset pages per row */
@@ -558,6 +560,10 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
 
     /* set full screen */
     gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
+
+    /* reset scale */
+    zathura->document->scale = zoom;
+    render_all(zathura);
   } else {
     /* backup pages per row */
     int* tmp = girara_setting_get(session, "pages-per-row");
@@ -569,6 +575,9 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     /* set single view */
     int int_value = 1;
     girara_setting_set(session, "pages-per-row", &int_value);
+
+    /* back up zoom */
+    zoom = zathura->document->scale;
 
     /* adjust window */
     girara_argument_t argument = { ADJUST_BESTFIT, NULL };
