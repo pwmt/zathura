@@ -39,12 +39,14 @@ zathura_init(int argc, char* argv[])
   /* parse command line options */
   GdkNativeWindow embed = 0;
   gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
+  bool forkback = false;
   GOptionEntry entries[] =
   {
     { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       "Reparents to window specified by xid",       "xid"  },
     { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  "Path to the config directory",               "path" },
     { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    "Path to the data directory",                 "path" },
     { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, "Path to the directories containing plugins", "path" },
+    { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    "Fork into the background"                  , NULL },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -60,6 +62,19 @@ zathura_init(int argc, char* argv[])
     return NULL;
   }
   g_option_context_free(context);
+
+  /* Fork into the background if the user really wants to ... */
+  if (forkback == true)
+  {
+    int pid = fork();
+    if (pid > 0) { /* parent */
+      exit(0);
+    } else if (pid < 0) { /* error */
+      printf("Error: couldn't fork.");
+    }
+
+    setsid();
+  }
 
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
