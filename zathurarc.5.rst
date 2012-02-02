@@ -6,187 +6,267 @@
 zathura configuration file
 --------------------------
 
-:Author: Sebastian Ramacher <s.ramacher@gmx.at>
-:Date: 19.8.2010
+:Author: pwmt.org
+:Date: 02.02.2012
 :Manual section: 5
 
 SYNOPOSIS
 =========
 
-/etc/zathurarc, ~/.config/zathura/zathurarc
+/etc/zathurarc, $XDG_CONFIG_HOME/zathura/zathurarc
 
 DESCRIPTION
 ===========
 
-The zathurarc contains various options controlling the behavior of zathura. One
-can use the ``set`` and ``map`` commands:
+The zathurarc file is a simple plain text file that can be populated with
+various commands to change the behaviour and the look of zathura which we are
+going to describe in the following subsections. Each line (besides empty lines
+and comments (which start with a prepended #)) is evaluated on its own, so it is
+not possible to write multiple commands in one single line.
 
-* ``set`` [id] [value]
-* ``map`` [key] [function] [argument] [mode]
+The following commands can be used:
 
-They behave the same as the ``set`` and ``map`` commands in zathura. Any line
-not starting with ``set`` or ``map`` will be ignored.
+set - Changing the options
+--------------------------
 
-set
----
+In addition to the build-in :set command zathura offers more options to be
+changed and makes those changes permanent. To overwrite an option you just have
+to add a line structured like the following:
 
-[id] and the corresponding [value] can be one of
+::
+  set <option> <new value>
 
-* adjust_open [bestfit|width|noadjust] - adjust mode.
+The option field has to be replaced with the name of the option that should be
+changed and the new value field has to be replaced with the new value the option
+should get. The type of the value can be one of the following:
 
-  - bestfit: adjust to best fit
-  - width: adjust to width
-  - noadjust: don't adjust
+* INT - An integer number
+* FLOAT - A floating point number
+* STRING - A character string
+* BOOL - A boolean value (“true” for true, “false” for false)
 
-* browser,
-  uri_command [string] - command to open external URIs.
-  
-  The string has to include a ``%s`` which will be replaced with the URI.
+In addition we advice you to check the List of options to get a more detailed
+view of the options that can be changed and which values they should be set to.
 
-* completion_bgcolor,
-  completion_fgcolor,
-  completion_g_bgcolor,
-  completion_g_fgcolor,
-  completion_hl_bgcolor,
-  completion_hl_fgcolor,
-  default_bgcolor,
-  default_fgcolor,
-  inputbar_bgcolor,
-  inputbar_fgcolor,
-  notification_e_bgcolor,
-  notification_e_fgcolor,
-  notification_w_bgcolor,
-  notification_w_fgcolor,
-  recolor_darkcolor,
-  recolor_lightcolor,
-  statusbar_bgcolor,
-  statusbar_fgcolor,
-  search_highlight,
-  select_text [color] -
-  colors settings.
-  
-  The color can be given as hex triplet (#rrggbb) or any color
-  string understood by GTK+ (e.g. red, green, blue, black, ...).
+The following example should give some deeper insight of how the set command can
+be used:
 
-* default_text [string] - text displayed in the statusbar if no file is opened.
+::
+  set option1 5
+  set option2 2.0
+  set option3 hello
+  set option4 hello\ world
+  set option5 "hello world"
 
-* font [string] - the used font.
+Possible options are:
 
-* height,
-  width [int] - default height and width of the zathura window.
+page-padding
+^^^^^^^^^^^^
+The page padding defines the gap in pixels between each rendered page and can
+not be changed during runtime.
 
-* labels [bool] - allow label mode.
+* Value-type: Integer
+* Default value: 1
 
-* list_printer_command [string] - command to list all available printers.
+pages-per-row
+^^^^^^^^^^^^^
+Defines the number of pages that are rendered next to each other in a row.
 
-* n_completion_items [int] - number of completion items to display.
+* Value-type: Integer
+* Default value: 1
 
-* offset - page offset.
+recolor-dark-color
+^^^^^^^^^^^^^^^^^^
+Defines the color value that is used to represent dark colors in recoloring mode
 
-* print_command [string] - command to print the file.
-  
-  The string has to include
-  ``%s`` four times. The first occurence of ``%s`` will be replaced with the
-  printer, the second with additional options given on the command line, the
-  third with the pages to print and the fourth with the filename.
+* Value-type: String
+* Default value: #FFFFFF
 
-* recolor [bool] - invert the image.
+recolor-light-color
+^^^^^^^^^^^^^^^^^^^
+Defines the color value that is used to represent light colors in recoloring mode
 
-* save_position, save_zoom_level [bool] - save current page and zoom level in
-  bookmarks file.
+* Value-type: String
+* Default value: #000000
 
-* scroll_step [float] - scroll step.
+zoom-step
+^^^^^^^^^
+Defines the amount of percent that is zoomed in or out on each comand.
 
-* scroll_wrap [bool] - wrap scrolling at the end and beginning of the document.
+* Value-type: Integer
+* Default value: 10
 
-* scrollbars,
-  show_statusbar,
-  show_inputbar [bool] -
-  show statusbar, inputbar and scrollbars.
+map - Mapping a shortcut
+------------------------
+It is possible to map or remap new key bindings to shortcut functions which
+allows a high level of customization. The *:map* command can also be used in
+the *zathurarc* file to make those changes permanent::
 
-* smooth_scrolling [float] - smooth scrolling.
+  map [mode] <binding> <shortcut function> <argument>
 
-* transparency [float] - transparency of rectangles.
+Mode
+^^^^
+The *map* command expects several arguments where only the *binding* as well as
+the *shortcut-function* argument is required. Since zathura uses several odes it
+is possible to map bindings only for a specific mode by passing the *mode*
+argument which can take one of the following values:
 
-* zoom_max,
-  zoom_min,
-  zoom_step [float] - maximal and minimal zoom level and zoom step.
-
-map
----
-
-[key] can be a single character, ``<C-?>`` for ``Ctrl + ?`` like shortcuts,
-where ``?`` stands for some key (e.g. ``<C-q>``). Also it can be ``<S-?>`` for
-uppercase shortcuts or one of
-
-``<BackSpace>, <CapsLock>, <Down>, <Esc>, <F[1-12]>, <Left>, <PageDown>,
-<PageUp>, <Return>, <Right>, <Space>, <Super>, <Tab>, <Up>``.
-
-[function] and the corresponding [argument] can be one of
-
-* abort - clear command line and buffer.
-* adjust_window
-* change_buffer [delete_last]: change buffer.
-
-  - delete_last: delete last character
-
-* change_mode [mode] - change mode.
-
-  For the possible modes see the list of modes below.
-
-* focus_inputbar - focus the inputbar.
-* follow - follow a URI.
-* navigate [next|previous|left|right] - navigate the document.
-* navigate_index [up|down|expand|collapse|select] - nagivate the index.
-* quit - quit zathura.
-* recolor - toogle recolor setting.
-* reload - reload the file.
-* rotate - rotate by 90 degrees clockwise.
-* scroll [up|down|half_up|half_down|full_up|full_down|left|right] - scroll.
-* search [string] - search for the specified string.
-* switch_goto_mode - toogle goto mode.
-* toggle_fullscreen - toogle fullscreen mode.
-* toggle_index - toogle index mode.
-* toggle_inputbar - toogle inputbar display setting.
-* toogle_statusbar - toogle statusbar display setting.
-* zoom [in|out|float] - zoom in, out or to a specific zooming level.
-
-[mode] can be one of
-
-* all
-* fullscreen
-* index
-* normal
-* insert
+* normal (default)
 * visual
+* insert
+* index
 
-If [mode] is omitted, all will be used.
+The brackets around the value are mandatory.
+
+Single key binding
+^^^^^^^^^^^^^^^^^^
+The (possible) second argument defines the used key binding that should be
+mapped to the shortcut function and is structured like the following. On the one
+hand it is possible to just assign single letters, numbers or signs to it::
+
+  map a shortcut_function
+  map b shortcut_function
+  map c shortcut_function
+  map 1 shortcut_function
+  map 2 shortcut_function
+  map 3 shortcut_function
+  map ! shortcut_function
+  map ? shortcut_function
+
+Using modifiers
+^^^^^^^^^^^^^^^
+It is also possible to use modifiers like the *Control* or *Alt* button on the
+keyboard. It is possible to use the following modifiers:
+
+* A - *Alt*
+* C - *Control*
+* S - *Shift*
+
+Now it is required to define the *binding* with the following structure::
+
+  map <A-a> shortcut_function
+  map <C-a> shortcut_function
+
+Special keys
+^^^^^^^^^^^^
+zathura allows it also to assign keys like the space bar or the tab button which
+also have to be written in between angle brackets. The following special keys
+are currently available:
+
+==========  =================
+Identifier  Description
+==========  =================
+BackSpace   *Back space*
+CapsLock    *Caps lock*
+Esc         *Escape*
+Down        *Arrow down*
+Up          *Arrow up*
+Left        *Arrow left*
+Right       *A7row right*
+F1          *F1*
+F2          *F2*
+F3          *F3*
+F4          *F4*
+F5          *F5*
+F6          *F6*
+F7          *F7*
+F8          *F8*
+F9          *F9*
+F10         *F10*
+F11         *F11*
+F12         *F12*
+PageDown    *Page Down*
+PageUp      *Page Up*
+Return      *Return*
+Space       *Space*
+Super       *Windows button*
+Tab         *Tab*
+==========  =================
+
+Of course it is possible to combine those special keys with a modifier. The
+usage of those keys should be explained by the following examples::
+
+  map <Space> shortcut_function
+  map <C-Space> shortcut_function
+
+Mouse buttons
+^^^^^^^^^^^^^
+It is also possible to map mouse buttons to shortcuts by using the following
+special keys:
+
+==========  ================
+Identifier  Description
+==========  ================
+Button1     *Mouse button 1*
+Button2     *Mouse button 2*
+Button3     *Mouse button 3*
+Button4     *Mouse button 4*
+Button5     *Mouse button 5*
+==========  ================
+
+They can also be combined with modifiers::
+
+  map <Button1> shortcut_function
+  map <C-Button1> shortcut_function
+
+Buffer commands
+^^^^^^^^^^^^^^^
+If a mapping does not match one of the previous definition but is still a valid
+mapping it will be mapped as a buffer command::
+
+  map abc quit
+  map test quit
+
+Shortcut functions
+^^^^^^^^^^^^^^^^^^
+The following shortcut functions can be mapped:
+
+=================  ====================================
+Function           Description
+=================  ====================================
+abort              *Switch back to normal mode*
+adjust             *Adjust page width*
+change_mode        *Change current mode*
+focus_inputbar     *Focus inputbar*
+follow             *Follow a link*
+goto               *Go to a certain page*
+index_navigate     *Navigate through the index*
+naviate            *Navigate to the next/previous page*
+quit               *Quit zathura*
+recolor            *Recolor the pages*
+reload             *Reload the document*
+rotate             *Rotate the page*
+scroll             *Scroll*
+search             *Search next/previous item*
+toggle_fullscreen  *Toggle fullscreen*
+toggle_index       *Show or hide index*
+toggle_inputbar    *Show or hide inputbar*
+toggle_statusbar   *Show or hide statusbar*
+zoom               *Zoom in or out*
+=================  ====================================
+
+Pass arguments
+^^^^^^^^^^^^^^
+Some shortcut function require or have optional arguments which influence the
+behaviour of them. Those can be passed as the last argument::
+
+  map <C-i> zoom in
+  map <C-o> zoom out
+
+unmap - Removing a shortcut
+---------------------------
+In addition to mapping or remaping custom key bindings it is possible to remove
+existing ones by using the *:unmap* command. The command is used in the
+following way (the explanation of the parameters is described in the *map*
+section of this document::
+
+  unmap [mode] <binding>
 
 EXAMPLE
 =======
 
 ::
-
   # zathurarc
-
-  # colors
-  set statusbar_bgcolor #00FF00
-  set statusbar_fgcolor red
-
-  # settings
-  set height 1024
-  set width 768
-  set adjust_open width
-
-  # key bindings
-  map <PageUp> navigate previous
-  map <PageDown> navigate next
-
-  map + zoom in
-  map - zoom out
-
-  map <C-q> quit
-  
 
 SEE ALSO
 ========
