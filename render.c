@@ -325,14 +325,10 @@ page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
     cairo_rectangle(cairo, 0, 0, page_width, page->height * page->height);
     cairo_fill(cairo);
 
-    bool render_loading = false;
-    bool* tmp = (page->document != NULL && page->document->zathura != NULL &&
-        page->document->zathura->ui.session != NULL) ?
-        girara_setting_get(page->document->zathura->ui.session, "render-loading") : NULL;
-    if (tmp != NULL) {
-      render_loading = *tmp;
-      g_free(tmp);
-    }
+    bool render_loading = true;
+    if (page->document != NULL && page->document->zathura != NULL &&
+        page->document->zathura->ui.session != NULL)
+      girara_setting_get(page->document->zathura->ui.session, "render-loading", &render_loading);
 
     /* write text */
     if (render_loading == true) {

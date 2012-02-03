@@ -33,9 +33,10 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
-  unsigned int* pages_per_row = girara_setting_get(session, "pages-per-row");
+  unsigned int pages_per_row = 1;
+  girara_setting_get(session, "pages-per-row", &pages_per_row);
 
-  if (zathura->ui.page_view == NULL || zathura->document == NULL || pages_per_row == NULL) {
+  if (zathura->ui.page_view == NULL || zathura->document == NULL) {
     goto error_ret;
   }
 
@@ -49,14 +50,14 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   double total_width = 0;
   double max_height = 0;
 
-  for (unsigned int page_id = 0; page_id < *pages_per_row; page_id++) {
+  for (unsigned int page_id = 0; page_id < pages_per_row; page_id++) {
     if (page_id == zathura->document->number_of_pages) {
       break;
     }
 
     zathura_page_t* page = zathura->document->pages[page_id];
     if (page == NULL) {
-      goto error_free;
+      goto error_ret;
     }
 
     if (page->height > max_height) {
@@ -71,16 +72,11 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   } else if (argument->n == ADJUST_BESTFIT) {
     zathura->document->scale = height / max_height;
   } else {
-    goto error_free;
+    goto error_ret;
   }
 
   /* re-render all pages */
   render_all(zathura);
-
-error_free:
-
-  /* cleanup */
-  g_free(pages_per_row);
 
 error_ret:
 
@@ -110,14 +106,11 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     return false;
   }
 
-  char* font = girara_setting_get(session, "font");
+  char* font = NULL;
+  girara_setting_get(session, "font", &font);
 
   float transparency = 0.5;
-  float* tmp = girara_setting_get(session, "highlight-transparency");
-  if (tmp != NULL) {
-    transparency = *tmp;
-    g_free(tmp);
-  }
+  girara_setting_get(session, "highlight-transparency", &transparency);
 
   unsigned int link_id = 0;
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
@@ -296,12 +289,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   gdouble view_size   = gtk_adjustment_get_page_size(adjustment);
   gdouble value       = gtk_adjustment_get_value(adjustment);
   gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
-  gdouble scroll_step = 40;
-  float* tmp = girara_setting_get(session, "scroll-step");
-  if (tmp != NULL) {
-    scroll_step = *tmp;
-    g_free(tmp);
-  }
+  float scroll_step = 40;
+  girara_setting_get(session, "scroll-step", &scroll_step);
   gdouble new_value;
 
   switch(argument->n) {
@@ -566,11 +555,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     render_all(zathura);
   } else {
     /* backup pages per row */
-    int* tmp = girara_setting_get(session, "pages-per-row");
-    if (tmp != NULL) {
-      pages_per_row = *tmp;
-      g_free(tmp);
-    }
+    girara_setting_get(session, "pages-per-row", &pages_per_row);
 
     /* set single view */
     int int_value = 1;
@@ -621,13 +606,10 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   g_return_val_if_fail(zathura->document != NULL, false);
 
   /* retreive zoom step value */
-  int* value = girara_setting_get(zathura->ui.session, "zoom-step");
-  if (value == NULL) {
-    return false;
-  }
+  int value = 1;
+  girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
-  float zoom_step = *value / 100.0f;
-  g_free(value);
+  float zoom_step = value / 100.0f;
 
   if (argument->n == ZOOM_IN) {
     zathura->document->scale += zoom_step;
