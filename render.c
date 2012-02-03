@@ -327,8 +327,9 @@ page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
 
     bool render_loading = true;
     if (page->document != NULL && page->document->zathura != NULL &&
-        page->document->zathura->ui.session != NULL)
+        page->document->zathura->ui.session != NULL) {
       girara_setting_get(page->document->zathura->ui.session, "render-loading", &render_loading);
+    }
 
     /* write text */
     if (render_loading == true) {
