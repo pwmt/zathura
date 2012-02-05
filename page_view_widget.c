@@ -123,8 +123,6 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
       page_width = widget->allocation.height;
     }
 
-    girara_info("h %d, w %d", page_height, page_width);
-
     switch (priv->page->document->rotate) {
       case 90:
         cairo_translate(cairo, page_width, 0);
