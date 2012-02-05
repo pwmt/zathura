@@ -6,8 +6,11 @@
 #include <gtk/gtk.h>
 #include "document.h"
 
-/** The page view widget. The widget handles all the rendering on its own. It
- * only has to be resized. */
+/**
+ * The page view widget. The widget handles all the rendering on its own. It
+ * only has to be resized. The widget also manages and handles all the
+ * rectangles for highlighting.
+ * */
 typedef struct zathura_page_view_s ZathuraPageView;
 typedef struct zathura_page_view_class_s ZathuraPageViewClass;
 
@@ -32,20 +35,35 @@ struct zathura_page_view_class_s {
 #define ZATHURA_PAGE_VIEW_GET_CLASS \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), ZATHURA_TYPE_PAGE_VIEW, ZathuraPageViewclass))
 
-/** Returns the type of the page view widget.
+/**
+ * Returns the type of the page view widget.
  * @return the type
  */
 GType zathura_page_view_get_type(void);
-/** Create a page view widget.
+/**
+ * Create a page view widget.
  * @param page the page to be displayed
  * @return a page view widget
  */
 GtkWidget* zathura_page_view_new(zathura_page_t* page);
-/** Update the widget's surface. This should only be called from the render
+/**
+ * Update the widget's surface. This should only be called from the render
  * thread.
  * @param widget the widget
  * @param surface the new surface
  */
 void zathura_page_view_update_surface(ZathuraPageView* widget, cairo_surface_t* surface);
+/**
+ * Draw a rectangle to mark links or search results
+ * @param widget the widget
+ * @param rectangle the rectangle
+ * @param linkid the link id if it's a link, -1 otherwise
+ */
+void zathura_page_view_draw_rectangle(ZathuraPageView* widget, zathura_rectangle_t* rectangle, int linkid);
+/**
+ * Clear all rectangles.
+ * @param widget the widget
+ */
+void zathura_page_view_clear_rectangles(ZathuraPageView* widget);
 
 #endif

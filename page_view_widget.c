@@ -4,14 +4,22 @@
 #include "render.h"
 #include <girara/utils.h>
 #include <girara/settings.h>
+#include <girara/datastructures.h>
 
 G_DEFINE_TYPE(ZathuraPageView, zathura_page_view, GTK_TYPE_DRAWING_AREA)
+
+typedef struct pv_rect_s
+{
+  zathura_rectangle_t rect;
+  int linkid;
+} pv_rect_t;
 
 typedef struct zathura_page_view_private_s {
   zathura_page_t* page;
   zathura_t* zathura;
   cairo_surface_t* surface; /** Cairo surface */
   GStaticMutex lock; /**< Lock */
+  girara_list_t* rectangles;
 } zathura_page_view_private_t;
 
 #define ZATHURA_PAGE_VIEW_GET_PRIVATE(obj) \
@@ -54,6 +62,7 @@ zathura_page_view_init(ZathuraPageView* widget)
   zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
   priv->page = NULL;
   priv->surface = NULL;
+  priv->rectangles = girara_list_new2(g_free);
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -141,8 +150,35 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
 
     cairo_set_source_surface(cairo, priv->surface, 0, 0);
     cairo_paint(cairo);
-
     cairo_restore(cairo);
+
+    /* draw rectangles */
+    char* font = NULL;
+    girara_setting_get(priv->zathura->ui.session, "font", &font);
+
+    float transparency = 0.5;
+    girara_setting_get(priv->zathura->ui.session, "highlight-transparency", &transparency);
+
+    if (font != NULL) {
+      cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    }
+
+    GIRARA_LIST_FOREACH(priv->rectangles, pv_rect_t*, iter, rect)
+      if (rect->linkid >= 0) {
+        /* draw text */
+        cairo_set_font_size(cairo, 10);
+        cairo_move_to(cairo, rect->rect.x1 + 1, rect->rect.y1 - 1);
+        char* link_number = g_strdup_printf("%i", rect->linkid);
+        cairo_show_text(cairo, link_number);
+        g_free(link_number);
+      }
+
+      /* draw rectangle */
+      GdkColor color = priv->zathura->ui.colors.highlight_color;
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      cairo_rectangle(cairo, rect->rect.x1, rect->rect.y1, (rect->rect.x2 - rect->rect.x1), (rect->rect.y2 - rect->rect.y1));
+      cairo_fill(cairo);
+    GIRARA_LIST_FOREACH_END(priv->rectangles, pv_rect_t*, iter, rect);
   } else {
     /* set background color */
     cairo_set_source_rgb(cairo, 255, 255, 255);
@@ -205,5 +241,48 @@ static void
 zathura_page_view_size_allocate(GtkWidget* widget, GdkRectangle* allocation)
 {
   GTK_WIDGET_CLASS(zathura_page_view_parent_class)->size_allocate(widget, allocation);
+  zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(widget));
   zathura_page_view_update_surface(ZATHURA_PAGE_VIEW(widget), NULL);
+}
+
+static void
+redraw_rect(ZathuraPageView* widget, pv_rect_t* rectangle)
+{
+   /* cause the rect to be drawn */
+  GdkRectangle grect;
+  grect.x = rectangle->rect.x1;
+  grect.y = rectangle->rect.y2;
+  grect.width = rectangle->rect.x2 - rectangle->rect.x1;
+  grect.height = rectangle->rect.y1 - rectangle->rect.y2;
+  gdk_window_invalidate_rect(GTK_WIDGET(widget)->window, &grect, TRUE);
+}
+
+void
+zathura_page_view_draw_rectangle(ZathuraPageView* widget, zathura_rectangle_t* rectangle, int linkid)
+{
+  g_return_if_fail(widget != NULL);
+  if (rectangle == NULL) {
+    return;
+  }
+
+  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+
+  pv_rect_t* rect = g_malloc0(sizeof(pv_rect_t));
+  rect->rect = *rectangle;
+  rect->linkid = linkid;
+
+  girara_list_append(priv->rectangles, rect);
+  redraw_rect(widget, rect);
+}
+
+void
+zathura_page_view_clear_rectangles(ZathuraPageView* widget)
+{
+  g_return_if_fail(widget != NULL);
+
+  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  GIRARA_LIST_FOREACH(priv->rectangles, pv_rect_t*, iter, rect)
+    redraw_rect(widget, rect);
+  GIRARA_LIST_FOREACH_END(priv->rectangles, pv_rect_t*, iter, rect);
+  girara_list_clear(priv->rectangles);
 }

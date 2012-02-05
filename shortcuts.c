@@ -12,6 +12,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
+#include "page_view_widget.h"
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
@@ -106,18 +107,14 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     return false;
   }
 
-  char* font = NULL;
-  girara_setting_get(session, "font", &font);
-
-  float transparency = 0.5;
-  girara_setting_get(session, "highlight-transparency", &transparency);
-
   unsigned int link_id = 0;
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
     if (page == NULL) {
       continue;
     }
+
+    zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(page->drawing_area));
 
     // TODO: is page visible?
     girara_list_t* links = zathura_page_links_get(page);
@@ -127,33 +124,10 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     }
 
     GIRARA_LIST_FOREACH(links, zathura_link_t*, iter, link)
-      cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
-      if (font != NULL) {
-        cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-      }
-
       zathura_rectangle_t position = recalc_rectangle(page, link->position);
-
-      /* draw text */
-      cairo_set_font_size(cairo, 10);
-      cairo_move_to(cairo, position.x1 + 1, position.y1 - 1);
-      char* link_number = g_strdup_printf("%i", ++link_id);
-      cairo_show_text(cairo, link_number);
-      g_free(link_number);
-
-      /* draw rectangle */
-      GdkColor color = zathura->ui.colors.highlight_color;
-      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-      cairo_rectangle(cairo, position.x1, position.y1, (position.x2 - position.x1), (position.y2 - position.y1));
-      cairo_fill(cairo);
-
-      cairo_destroy(cairo);
+      zathura_page_view_draw_rectangle(ZATHURA_PAGE_VIEW(page->drawing_area), &position, ++link_id);
     GIRARA_LIST_FOREACH_END(links, zathura_link_t*, iter, link);
     girara_list_free(links);
-  }
-
-  if (font != NULL) {
-    g_free(font);
   }
 
   return false;
