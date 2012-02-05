@@ -122,6 +122,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     // TODO: is page visible?
     girara_list_t* links = zathura_page_links_get(page);
     if (links == NULL || girara_list_size(links) == 0) {
+      girara_list_free(links);
       continue;
     }
 
@@ -138,6 +139,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
       cairo_move_to(cairo, position.x1 + 1, position.y1 - 1);
       char* link_number = g_strdup_printf("%i", ++link_id);
       cairo_show_text(cairo, link_number);
+      g_free(link_number);
 
       /* draw rectangle */
       GdkColor color = zathura->ui.colors.highlight_color;
@@ -146,8 +148,8 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
       cairo_fill(cairo);
 
       cairo_destroy(cairo);
-
     GIRARA_LIST_FOREACH_END(links, zathura_link_t*, iter, link);
+    girara_list_free(links);
   }
 
   if (font != NULL) {
