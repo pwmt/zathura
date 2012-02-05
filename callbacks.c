@@ -69,13 +69,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
         || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* [> begin of the page is in viewport <] */
       ) {
       page->visible = true;
-      if (page->surface == NULL) {
-        render_page(zathura->sync.render_thread, page);
-      }
     } else {
       page->visible = false;
-      cairo_surface_destroy(page->surface);
-      page->surface = NULL;
     }
 
     free(offset);

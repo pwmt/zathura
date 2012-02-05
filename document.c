@@ -23,6 +23,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "database.h"
+#include "page_view_widget.h"
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -432,16 +433,10 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
   if (page != NULL) {
     page->number       = page_id;
     page->visible      = false;
-    page->event_box    = gtk_event_box_new();
-    page->drawing_area = gtk_drawing_area_new();
-    page->surface      = NULL;
+    page->drawing_area = zathura_page_view_new(page);
     page->document     = document;
-    g_signal_connect(page->drawing_area, "expose-event", G_CALLBACK(page_expose_event), page);
 
     gtk_widget_set_size_request(page->drawing_area, page->width * document->scale, page->height * document->scale);
-    gtk_container_add(GTK_CONTAINER(page->event_box), page->drawing_area);
-
-    g_static_mutex_init(&(page->lock));
   }
 
   return page;
@@ -458,8 +453,6 @@ zathura_page_free(zathura_page_t* page)
     girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
-
-  g_static_mutex_free(&(page->lock));
 
   return page->document->functions.page_free(page);
 }

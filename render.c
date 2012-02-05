@@ -9,6 +9,7 @@
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
+#include "page_view_widget.h"
 
 void* render_job(void* data);
 bool render(zathura_t* zathura, zathura_page_t* page);
@@ -139,7 +140,7 @@ render_free(render_thread_t* render_thread)
 bool
 render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
-  if (!render_thread || !page || !render_thread->list || page->surface) {
+  if (!render_thread || !page || !render_thread->list) {
     return false;
   }
 
@@ -160,8 +161,8 @@ render(zathura_t* zathura, zathura_page_t* page)
     return false;
   }
 
+  girara_info("rendering: %d", page->number);
   gdk_threads_enter();
-  g_static_mutex_lock(&(page->lock));
 
   /* create cairo surface */
   unsigned int page_width  = 0;
@@ -171,7 +172,6 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
   if (surface == NULL) {
-    g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
@@ -180,7 +180,6 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   if (cairo == NULL) {
     cairo_surface_destroy(surface);
-    g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
@@ -199,7 +198,6 @@ render(zathura_t* zathura, zathura_page_t* page)
   if (zathura_page_render(page, cairo) == false) {
     cairo_destroy(cairo);
     cairo_surface_destroy(surface);
-    g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
@@ -243,11 +241,9 @@ render(zathura_t* zathura, zathura_page_t* page)
     }
   }
 
-  /* draw to gtk widget */
-  page->surface = surface;
-  gtk_widget_queue_draw(page->drawing_area);
+  /* update the widget */
+  zathura_page_view_update_surface(ZATHURA_PAGE_VIEW(page->drawing_area), surface);
 
-  g_static_mutex_unlock(&(page->lock));
   gdk_threads_leave();
 
   return true;
@@ -263,99 +259,10 @@ render_all(zathura_t* zathura)
   /* unmark all pages */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
-    cairo_surface_destroy(page->surface);
-    page->surface = NULL;
-
     unsigned int page_height = 0, page_width = 0;
     page_calc_height_width(page, &page_height, &page_width, true);
 
     gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
     gtk_widget_queue_resize(page->drawing_area);
   }
-}
-
-gboolean
-page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
-    gpointer data)
-{
-  zathura_page_t* page = data;
-  if (page == NULL) {
-    return FALSE;
-  }
-
-  g_static_mutex_lock(&(page->lock));
-
-  cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
-
-  if (cairo == NULL) {
-    girara_error("Could not retreive cairo object");
-    g_static_mutex_unlock(&(page->lock));
-    return FALSE;
-  }
-
-  unsigned int page_height = 0, page_width = 0;
-  page_calc_height_width(page, &page_height, &page_width, true);
-
-  if (page->surface != NULL) {
-    cairo_save(cairo);
-
-    switch (page->document->rotate) {
-      case 90:
-        cairo_translate(cairo, page_width, 0);
-        break;
-      case 180:
-        cairo_translate(cairo, page_width, page_height);
-        break;
-      case 270:
-        cairo_translate(cairo, 0, page_height);
-        break;
-    }
-
-    if (page->document->rotate != 0) {
-      cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
-    }
-
-    cairo_set_source_surface(cairo, page->surface, 0, 0);
-    cairo_paint(cairo);
-
-    cairo_restore(cairo);
-  } else {
-    /* set background color */
-    cairo_set_source_rgb(cairo, 255, 255, 255);
-    cairo_rectangle(cairo, 0, 0, page_width, page->height * page->height);
-    cairo_fill(cairo);
-
-    bool render_loading = true;
-    if (page->document != NULL && page->document->zathura != NULL &&
-        page->document->zathura->ui.session != NULL) {
-      girara_setting_get(page->document->zathura->ui.session, "render-loading", &render_loading);
-    }
-
-    /* write text */
-    if (render_loading == true) {
-      cairo_set_source_rgb(cairo, 0, 0, 0);
-      const char* text = "Loading...";
-      cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-      cairo_set_font_size(cairo, 16.0);
-      cairo_text_extents_t extents;
-      cairo_text_extents(cairo, text, &extents);
-      double x = page_width * 0.5 - (extents.width * 0.5 + extents.x_bearing);
-      double y = page_height * 0.5 - (extents.height * 0.5 + extents.y_bearing);
-      cairo_move_to(cairo, x, y);
-      cairo_show_text(cairo, text);
-    }
-
-    /* render real page */
-    render_page(page->document->zathura->sync.render_thread, page);
-
-    /* update statusbar */
-  }
-  cairo_destroy(cairo);
-
-  page->document->current_page_number = page->number;
-  statusbar_page_number_update(page->document->zathura);
-
-  g_static_mutex_unlock(&(page->lock));
-
-  return TRUE;
 }

@@ -194,7 +194,7 @@ page_calculate_offset(zathura_page_t* page)
   zathura_document_t* document = page->document;
   zathura_t* zathura           = document->zathura;
 
-  if (gtk_widget_translate_coordinates(page->event_box, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == false) {
+  if (gtk_widget_translate_coordinates(page->drawing_area, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == false) {
     free(offset);
     return NULL;
   }
