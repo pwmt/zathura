@@ -2,7 +2,6 @@
 
 #include "page_view_widget.h"
 #include "render.h"
-#include <girara/macros.h>
 #include <girara/utils.h>
 #include <girara/settings.h>
 

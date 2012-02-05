@@ -161,7 +161,6 @@ render(zathura_t* zathura, zathura_page_t* page)
     return false;
   }
 
-  girara_info("rendering: %d", page->number);
   gdk_threads_enter();
 
   /* create cairo surface */
