@@ -306,6 +306,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       if (page_id != 0) {
         page_set_delayed(zathura, page->number);
       }
+      g_object_set(page->drawing_area, "search-current", 0, NULL);
       firsthit = false;
     }
   }
