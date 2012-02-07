@@ -177,6 +177,8 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
       continue;
     }
 
+    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+
     zathura_link_t* link = zathura_page_view_link_get(ZATHURA_PAGE_VIEW(page->drawing_area), index);
     if (link != NULL) {
       switch (link->type) {

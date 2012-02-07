@@ -129,6 +129,7 @@ zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* val
       if (priv->draw_links == true && priv->links_got == false) {
         priv->links = zathura_page_links_get(priv->page);
         priv->links_got = true;
+        priv->number_of_links = (priv->links == NULL) ? 0 : girara_list_size(priv->links);
       }
 
       if (priv->links_got == true && priv->links != NULL) {
@@ -235,19 +236,20 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
       GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
 
-        /* draw text */
-        cairo_set_font_size(cairo, 10);
-        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 - 1);
-        char* link_number = g_strdup_printf("%i", priv->link_offset + ++link_counter);
-        cairo_show_text(cairo, link_number);
-        g_free(link_number);
-
         /* draw position */
         GdkColor color = priv->zathura->ui.colors.highlight_color;
         cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
             (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
         cairo_fill(cairo);
+
+        /* draw text */
+        cairo_set_source_rgba(cairo, 0, 0, 0, 1);
+        cairo_set_font_size(cairo, 10);
+        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 - 1);
+        char* link_number = g_strdup_printf("%i", priv->link_offset + ++link_counter);
+        cairo_show_text(cairo, link_number);
+        g_free(link_number);
       GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
     }
 

@@ -131,9 +131,10 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
     g_object_set(page->drawing_area, "search-results", NULL, NULL);
     if (page->visible == true) {
+      g_object_set(page->drawing_area, "draw-links", TRUE, NULL);
+
       int number_of_links = 0;
       g_object_get(page->drawing_area, "number-of-links", &number_of_links, NULL);
-      g_object_set(page->drawing_area, "draw-links", TRUE, NULL);
       g_object_set(page->drawing_area, "offset-links", page_offset, NULL);
       page_offset += number_of_links;
     } else {

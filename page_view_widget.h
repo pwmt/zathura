@@ -10,6 +10,9 @@
  * The page view widget. The widget handles all the rendering on its own. It
  * only has to be resized. The widget also manages and handles all the
  * rectangles for highlighting.
+ *
+ * Before the properties contain the correct values, 'draw-links' has to be set
+ * to TRUE at least one time.
  * */
 typedef struct zathura_page_view_s ZathuraPageView;
 typedef struct zathura_page_view_class_s ZathuraPageViewClass;

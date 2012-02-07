@@ -185,7 +185,8 @@ page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
   zathura_document_t* document = page->document;
   zathura_t* zathura           = document->zathura;
 
-  g_return_if_fail(gtk_widget_translate_coordinates(page->drawing_area, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == true);
+  g_return_if_fail(gtk_widget_translate_coordinates(page->drawing_area,
+    zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
 zathura_rectangle_t
