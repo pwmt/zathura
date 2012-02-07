@@ -214,6 +214,8 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     return NULL;
   }
 
+  char* file_uri = NULL;
+
   /* determine real path */
   long path_max;
 #ifdef PATH_MAX
@@ -268,33 +270,56 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     document->scale = 1;
   }
 
-  if (plugin->open_function != NULL) {
-    if (plugin->open_function(document) == true) {
-      /* update statusbar */
-      girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, real_path);
-
-      /* read all pages */
-      document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
-      if (document->pages == NULL) {
-        goto error_free;
-      }
-
-      for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
-        zathura_page_t* page = zathura_page_get(document, page_id);
-        if (page == NULL) {
-          goto error_free;
-        }
-
-        document->pages[page_id] = page;
-      }
-
-      return document;
-    }
+  if (plugin->open_function == NULL || plugin->open_function(document) == false) {
+    girara_error("could not open file\n");
+    goto error_free;
   }
 
-  girara_error("could not open file\n");
+  /* update statusbar */
+  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, real_path);
+
+  /* read all pages */
+  document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
+  if (document->pages == NULL) {
+    goto error_free;
+  }
+
+  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_page_get(document, page_id);
+    if (page == NULL) {
+      goto error_free;
+    }
+
+    document->pages[page_id] = page;
+  }
+
+  /* install file monitor */
+  file_uri = g_filename_to_uri(real_path, NULL, NULL);
+  if (file_uri == NULL) {
+    goto error_free;
+  }
+
+  document->file_monitor.file = g_file_new_for_uri(file_uri);
+  if (document->file_monitor.file == NULL) {
+    goto error_free;
+  }
+
+  document->file_monitor.monitor = g_file_monitor_file(document->file_monitor.file, G_FILE_MONITOR_NONE, NULL, NULL);
+  if (document->file_monitor.monitor == NULL) {
+    goto error_free;
+  }
+
+  g_signal_connect(G_OBJECT(document->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), document);
+
+  g_free(file_uri);
+
+  return document;
 
 error_free:
+
+  if (file_uri != NULL) {
+    g_free(file_uri);
+  }
 
   free(real_path);
 

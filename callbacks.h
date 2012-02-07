@@ -7,6 +7,8 @@
 #include <girara/types.h>
 #include <girara/macros.h>
 
+#include "document.h"
+
 /**
  * Quits the current zathura session
  *
@@ -59,5 +61,16 @@ void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
  * @return TRUE
  */
 bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
+
+/**
+ * Emitted when file has been changed
+ *
+ * @param monitor The file monitor
+ * @param file The file
+ * @param other_file A file or NULL
+ * @param event The monitor event
+ * @param session The girara session
+ */
+void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file, GFileMonitorEvent event, girara_session_t* session);
 
 #endif // CALLBACKS_H

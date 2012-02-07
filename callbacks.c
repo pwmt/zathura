@@ -211,3 +211,17 @@ error_ret:
 
   return FALSE;
 }
+
+void
+cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), GFileMonitorEvent event, girara_session_t* session)
+{
+  g_return_if_fail(monitor  != NULL);
+  g_return_if_fail(file     != NULL);
+  g_return_if_fail(session  != NULL);
+
+  if (event != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
+    return;
+  }
+
+  sc_reload(session, NULL, NULL, 0);
+}
