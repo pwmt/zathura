@@ -20,7 +20,7 @@ typedef struct zathura_page_widget_private_s {
   unsigned int link_offset; /**< Offset to the links */
   unsigned int number_of_links; /**< Offset to the links */
   girara_list_t* search_results; /** A list if there are search results that should be drawn */
-  unsigned int search_current; /** The index of the current search result */
+  int search_current; /** The index of the current search result */
 } zathura_page_widget_private_t;
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
@@ -175,7 +175,7 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       break;
     case PROP_SEARCH_RESULTS_CURRENT: {
       g_return_if_fail(priv->search_results != NULL);
-      if (priv->search_current < girara_list_size(priv->search_results)) {
+      if (priv->search_current < (signed) girara_list_size(priv->search_results)) {
         zathura_rectangle_t* rect = girara_list_nth(priv->search_results, priv->search_current);
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
         redraw_rect(pageview, &rectangle);
@@ -299,7 +299,7 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 
     /* draw search results */
     if (priv->search_results != NULL) {
-      unsigned int idx = 0;
+      int idx = 0;
       GIRARA_LIST_FOREACH(priv->search_results, zathura_rectangle_t*, iter, rect)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
 
