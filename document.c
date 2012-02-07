@@ -285,7 +285,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_page_get(document, page_id);
+    zathura_page_t* page = zathura_page_get(document, page_id, NULL);
     if (page == NULL) {
       goto error_free;
     }
@@ -335,7 +335,7 @@ error_free:
   return NULL;
 }
 
-bool
+zathura_plugin_error_t
 zathura_document_free(zathura_document_t* document)
 {
   if (document == NULL) {
@@ -367,7 +367,7 @@ zathura_document_free(zathura_document_t* document)
   return r;
 }
 
-bool
+zathura_plugin_error_t
 zathura_document_save_as(zathura_document_t* document, const char* path)
 {
   if (document == NULL || path == NULL) {
@@ -383,7 +383,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
 }
 
 girara_tree_node_t*
-zathura_document_index_generate(zathura_document_t* document)
+zathura_document_index_generate(zathura_document_t* document, zathura_plugin_error_t* error)
 {
   if (document == NULL) {
     return NULL;
@@ -394,11 +394,11 @@ zathura_document_index_generate(zathura_document_t* document)
     return NULL;
   }
 
-  return document->functions.document_index_generate(document);
+  return document->functions.document_index_generate(document, error);
 }
 
 girara_list_t*
-zathura_document_attachments_get(zathura_document_t* document)
+zathura_document_attachments_get(zathura_document_t* document, zathura_plugin_error_t* error)
 {
   if (document == NULL) {
     return NULL;
@@ -409,40 +409,45 @@ zathura_document_attachments_get(zathura_document_t* document)
     return NULL;
   }
 
-  return document->functions.document_attachments_get(document);
+  return document->functions.document_attachments_get(document, error);
 }
 
-bool zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file)
+zathura_plugin_error_t
+zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file)
 {
   if (document == NULL) {
-    return NULL;
+    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
   }
 
   if (document->functions.document_attachment_save == NULL) {
-    girara_error("%s not implemented", __FUNCTION__);
-    return NULL;
+    return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
   }
 
   return document->functions.document_attachment_save(document, attachment, file);
 }
 
 char*
-zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta)
+zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta, zathura_plugin_error_t* error)
 {
   if (document == NULL) {
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    }
     return NULL;
   }
 
   if (document->functions.document_meta_get == NULL) {
-    girara_error("%s not implemented", __FUNCTION__);
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    }
     return NULL;
   }
 
-  return document->functions.document_meta_get(document, meta);
+  return document->functions.document_meta_get(document, meta, error);
 }
 
 zathura_page_t*
-zathura_page_get(zathura_document_t* document, unsigned int page_id)
+zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error)
 {
   if (document == NULL) {
     return NULL;
@@ -453,7 +458,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
     return NULL;
   }
 
-  zathura_page_t* page = document->functions.page_get(document, page_id);
+  zathura_page_t* page = document->functions.page_get(document, page_id, error);
 
   if (page != NULL) {
     page->number       = page_id;
@@ -467,7 +472,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
   return page;
 }
 
-bool
+zathura_plugin_error_t
 zathura_page_free(zathura_page_t* page)
 {
   if (page == NULL || page->document == NULL) {
@@ -483,7 +488,7 @@ zathura_page_free(zathura_page_t* page)
 }
 
 girara_list_t*
-zathura_page_search_text(zathura_page_t* page, const char* text)
+zathura_page_search_text(zathura_page_t* page, const char* text, zathura_plugin_error_t* error)
 {
   if (page == NULL || page->document == NULL || text == NULL) {
     return NULL;
@@ -494,11 +499,11 @@ zathura_page_search_text(zathura_page_t* page, const char* text)
     return NULL;
   }
 
-  return page->document->functions.page_search_text(page, text);
+  return page->document->functions.page_search_text(page, text, error);
 }
 
 girara_list_t*
-zathura_page_links_get(zathura_page_t* page)
+zathura_page_links_get(zathura_page_t* page, zathura_plugin_error_t* error)
 {
   if (page == NULL || page->document == NULL) {
     return NULL;
@@ -509,17 +514,17 @@ zathura_page_links_get(zathura_page_t* page)
     return NULL;
   }
 
-  return page->document->functions.page_links_get(page);
+  return page->document->functions.page_links_get(page, error);
 }
 
-bool
+zathura_plugin_error_t
 zathura_page_links_free(girara_list_t* UNUSED(list))
 {
   return false;
 }
 
 girara_list_t*
-zathura_page_form_fields_get(zathura_page_t* page)
+zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin_error_t* error)
 {
   if (page == NULL || page->document == NULL) {
     return NULL;
@@ -530,17 +535,17 @@ zathura_page_form_fields_get(zathura_page_t* page)
     return NULL;
   }
 
-  return page->document->functions.page_form_fields_get(page);
+  return page->document->functions.page_form_fields_get(page, error);
 }
 
-bool
+zathura_plugin_error_t
 zathura_page_form_fields_free(girara_list_t* UNUSED(list))
 {
   return false;
 }
 
 girara_list_t*
-zathura_page_images_get(zathura_page_t* page)
+zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error)
 {
   if (page == NULL || page->document == NULL) {
     return NULL;
@@ -551,11 +556,10 @@ zathura_page_images_get(zathura_page_t* page)
     return false;
   }
 
-  return page->document->functions.page_images_get(page);
-
+  return page->document->functions.page_images_get(page, error);
 }
 
-bool
+zathura_plugin_error_t
 zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file)
 {
   if (page == NULL || page->document == NULL || image == NULL || file == NULL) {
@@ -570,16 +574,16 @@ zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char
   return page->document->functions.page_image_save(page, image, file);
 }
 
-bool
+zathura_plugin_error_t
 zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
 {
   if (page == NULL || page->document == NULL || cairo == NULL) {
-    return NULL;
+    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
   }
 
   if (page->document->functions.page_render_cairo == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
-    return NULL;
+    return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
   }
 
   return page->document->functions.page_render_cairo(page, cairo, printing);

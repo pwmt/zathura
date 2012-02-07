@@ -555,7 +555,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
     /* create index */
-    document_index = zathura_document_index_generate(zathura->document);
+    document_index = zathura_document_index_generate(zathura->document, NULL);
     if (document_index == NULL) {
       // TODO: Error message
       goto error_free;

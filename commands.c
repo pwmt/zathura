@@ -154,7 +154,7 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   }
 
   for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
-    char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field);
+    char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field, NULL);
     if (tmp != NULL) {
       char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, tmp);
       if (text == NULL) {
@@ -294,7 +294,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
 
     g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
 
-    girara_list_t* result = zathura_page_search_text(page, input);
+    girara_list_t* result = zathura_page_search_text(page, input, NULL);
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
       g_object_set(page->drawing_area, "search-results", NULL, NULL);
