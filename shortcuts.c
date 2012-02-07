@@ -19,8 +19,6 @@ bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
-  girara_info("in sc_abort");
-
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -365,8 +363,6 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
   
-  girara_info("in sc_search");
-
   return false;
 }
 

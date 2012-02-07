@@ -546,7 +546,7 @@ zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char
 }
 
 bool
-zathura_page_render(zathura_page_t* page, cairo_t* cairo)
+zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
 {
   if (page == NULL || page->document == NULL || cairo == NULL) {
     return NULL;
@@ -557,7 +557,7 @@ zathura_page_render(zathura_page_t* page, cairo_t* cairo)
     return NULL;
   }
 
-  return page->document->functions.page_render_cairo(page, cairo);
+  return page->document->functions.page_render_cairo(page, cairo, printing);
 }
 
 zathura_index_element_t*

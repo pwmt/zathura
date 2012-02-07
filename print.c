@@ -89,5 +89,5 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     return;
   }
 
-  zathura_page_render(page, cairo);
+  zathura_page_render(page, cairo, true);
 }
