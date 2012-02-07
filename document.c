@@ -309,7 +309,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     goto error_free;
   }
 
-  g_signal_connect(G_OBJECT(document->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), document);
+  g_signal_connect(G_OBJECT(document->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
 
   g_free(file_uri);
 
