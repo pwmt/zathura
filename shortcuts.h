@@ -61,6 +61,17 @@ bool sc_follow(girara_session_t* session, girara_argument_t* argument, girara_ev
 bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Handle mouse events
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occured otherwise false
+ */
+bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Navigate through the document
  *
  * @param session The used girara session

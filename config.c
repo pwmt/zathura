@@ -133,6 +133,10 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                0,              "z0", sc_zoom,                     NORMAL,     ZOOM_ORIGINAL,   NULL);
   girara_shortcut_add(gsession, 0,                0,              "z0", sc_zoom,                     FULLSCREEN, ZOOM_ORIGINAL,   NULL);
 
+  /* mouse events */
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, NORMAL,     0, NULL);
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, FULLSCREEN, 0, NULL);
+
   /* define default inputbar commands */
   girara_inputbar_command_add(gsession, "bmark",   NULL, cmd_bookmark_create, NULL,         "Add a bookmark");
   girara_inputbar_command_add(gsession, "bdelete", NULL, cmd_bookmark_delete, cc_bookmarks, "Delete a bookmark");
