@@ -243,10 +243,6 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 
     unsigned int page_height = widget->allocation.height;
     unsigned int page_width = widget->allocation.width;
-    if (priv->page->document->rotate % 180) {
-      page_height = widget->allocation.width;
-      page_width = widget->allocation.height;
-    }
 
     switch (priv->page->document->rotate) {
       case 90:
