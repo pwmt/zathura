@@ -51,4 +51,13 @@ void cb_pages_per_row_value_changed(girara_session_t* GIRARA_UNUSED(session), co
 void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     GtkTreeViewColumn* column, void* zathura);
 
+/**
+ * Called when input has been passed to the sc_follow dialog
+ *
+ * @param entry The dialog inputbar
+ * @param session The girara session
+ * @return TRUE
+ */
+bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
+
 #endif // CALLBACKS_H

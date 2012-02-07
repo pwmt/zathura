@@ -6,6 +6,7 @@
 #include <girara/utils.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "callbacks.h"
 #include "zathura.h"
@@ -13,6 +14,7 @@
 #include "document.h"
 #include "utils.h"
 #include "shortcuts.h"
+#include "page_view_widget.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
@@ -145,4 +147,64 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
   g_object_unref(model);
 }
 
-bool 
+bool
+cb_sc_follow(GtkEntry* entry, girara_session_t* session)
+{
+  g_return_val_if_fail(session != NULL, FALSE);
+  g_return_val_if_fail(session->global.data != NULL, FALSE);
+
+  zathura_t* zathura = session->global.data;
+
+  char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+  if (input == NULL) {
+    goto error_ret;
+  } else if (strlen(input) == 0) {
+    goto error_free;
+  }
+
+  int index = atoi(input);
+  if (index == 0 && g_strcmp0(input, "0") != 0) {
+    girara_notify(session, GIRARA_WARNING, "Invalid input '%s' given.", input);
+    goto error_free;
+  }
+
+  /* set pages to draw links */
+  bool invalid_index = true;
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
+    zathura_page_t* page = zathura->document->pages[page_id];
+    if (page == NULL || page->visible == false) {
+      continue;
+    }
+
+    zathura_link_t* link = zathura_page_view_link_get(ZATHURA_PAGE_VIEW(page->drawing_area), index);
+    if (link != NULL) {
+      switch (link->type) {
+        case ZATHURA_LINK_TO_PAGE:
+          page_set_delayed(zathura, link->target.page_number);
+          break;
+        case ZATHURA_LINK_EXTERNAL:
+          girara_xdg_open(link->target.value);
+          break;
+      }
+
+      invalid_index = false;
+      break;
+    }
+  }
+
+  if (invalid_index == true) {
+    girara_notify(session, GIRARA_WARNING, "Invalid index '%s' given.", input);
+  }
+
+  g_free(input);
+
+  return TRUE;
+
+error_free:
+
+  g_free(input);
+
+error_ret:
+
+  return FALSE;
+}

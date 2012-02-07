@@ -18,6 +18,8 @@ typedef struct zathura_page_view_private_s {
   bool links_got; /**< True if we already tried to retrieve the list of links */
   bool draw_links; /**< True if links should be drawn */
   girara_list_t* search_results; /** True if search results should be drawn */
+  unsigned int link_offset; /**< Offset to the links */
+  unsigned int number_of_links; /**< Offset to the links */
 } zathura_page_view_private_t;
 
 #define ZATHURA_PAGE_VIEW_GET_PRIVATE(obj) \
@@ -26,6 +28,7 @@ typedef struct zathura_page_view_private_s {
 static gboolean zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event);
 static void zathura_page_view_finalize(GObject* object);
 static void zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void zathura_page_view_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
 static void zathura_page_view_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void redraw_rect(ZathuraPageView* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPageView* widget, girara_list_t* rectangles);
@@ -35,6 +38,8 @@ enum properties_e
   PROP_0,
   PROP_PAGE,
   PROP_DRAW_LINKS,
+  PROP_LINKS_OFFSET,
+  PROP_LINKS_NUMBER,
   PROP_SEARCH_RESULTS
 };
 
@@ -52,12 +57,17 @@ zathura_page_view_class_init(ZathuraPageViewClass* class)
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize = zathura_page_view_finalize;
   object_class->set_property = zathura_page_view_set_property;
+  object_class->get_property = zathura_page_view_get_property;
 
   /* add properties */
   g_object_class_install_property(object_class, PROP_PAGE,
       g_param_spec_pointer("page", "page", "the page to draw", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property(object_class, PROP_DRAW_LINKS,
       g_param_spec_boolean("draw-links", "draw-links", "Set to true if links should be drawn", FALSE, G_PARAM_WRITABLE));
+  g_object_class_install_property(object_class, PROP_LINKS_OFFSET,
+      g_param_spec_int("offset-links", "offset-links", "Offset for the link numbers", 0, INT_MAX, 0, G_PARAM_WRITABLE));
+  g_object_class_install_property(object_class, PROP_LINKS_NUMBER,
+      g_param_spec_int("number-of-links", "number-of-links", "Number of links", 0, INT_MAX, 0, G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS,
       g_param_spec_pointer("search-results", "search-results", "Set to the list of search results", G_PARAM_WRITABLE));
 }
@@ -66,10 +76,11 @@ static void
 zathura_page_view_init(ZathuraPageView* widget)
 {
   zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
-  priv->page       = NULL;
-  priv->surface    = NULL;
-  priv->links      = NULL;
-  priv->links_got  = false;
+  priv->page        = NULL;
+  priv->surface     = NULL;
+  priv->links       = NULL;
+  priv->links_got   = false;
+  priv->link_offset = 0;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -127,6 +138,9 @@ zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* val
         GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
       }
       break;
+    case PROP_LINKS_OFFSET:
+      priv->link_offset = g_value_get_int(value);
+      break;
     case PROP_SEARCH_RESULTS:
       if (priv->search_results != NULL) {
         redraw_all_rects(pageview, priv->search_results);
@@ -137,6 +151,20 @@ zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* val
         priv->draw_links = false;
         redraw_all_rects(pageview, priv->search_results);
       }
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+  }
+}
+
+static void
+zathura_page_view_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
+{
+  ZathuraPageView* pageview = ZATHURA_PAGE_VIEW(object);
+  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(pageview);
+
+  switch (prop_id) {
+    case PROP_LINKS_NUMBER:
+      g_value_set_int(value, priv->number_of_links);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -202,13 +230,14 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
 
     /* draw links */
     if (priv->draw_links == true) {
+      unsigned int link_counter = 0;
       GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
 
         /* draw text */
         cairo_set_font_size(cairo, 10);
         cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 - 1);
-        char* link_number = g_strdup_printf("%i", 0);
+        char* link_number = g_strdup_printf("%i", priv->link_offset + ++link_counter);
         cairo_show_text(cairo, link_number);
         g_free(link_number);
 
@@ -324,5 +353,10 @@ zathura_page_view_link_get(ZathuraPageView* widget, unsigned int index)
   zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
   g_return_val_if_fail(priv != NULL, NULL);
 
-  return girara_list_nth(priv->links, index);
+  if (priv->links != NULL && index >= priv->link_offset &&
+      girara_list_size(priv->links) >= index - priv->link_offset) {
+    return girara_list_nth(priv->links, index - priv->link_offset);
+  } else {
+    return NULL;
+  }
 }
