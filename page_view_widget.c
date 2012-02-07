@@ -75,7 +75,7 @@ zathura_page_view_new(zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  return g_object_new(ZATHURA_TYPE_PAGE_VIEW, "page", page);
+  return g_object_new(ZATHURA_TYPE_PAGE_VIEW, "page", page, NULL);
 }
 
 static void
