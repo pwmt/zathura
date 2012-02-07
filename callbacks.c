@@ -181,9 +181,11 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
     if (link != NULL) {
       switch (link->type) {
         case ZATHURA_LINK_TO_PAGE:
+          girara_info("page number: %d", link->target.page_number);
           page_set_delayed(zathura, link->target.page_number);
           break;
         case ZATHURA_LINK_EXTERNAL:
+          girara_info("target: %s", link->target.value);
           girara_xdg_open(link->target.value);
           break;
       }

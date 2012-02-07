@@ -653,3 +653,16 @@ zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping)
   g_free((void*)mapping->type);
   g_free(mapping);
 }
+
+void
+zathura_link_free(zathura_link_t* link)
+{
+  if (link == NULL) {
+    return;
+  }
+
+  if (link->type == ZATHURA_LINK_EXTERNAL) {
+    g_free(link->target.value);
+  }
+  g_free(link);
+}
