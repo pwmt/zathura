@@ -12,7 +12,26 @@
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 
-typedef bool (*zathura_document_open_t)(zathura_document_t* document);
+/**
+ * Error types for plugins
+ */
+typedef enum zathura_plugin_error_e
+{
+  ZATHURA_PLUGIN_ERROR_OK, /**< No error occured */
+  ZATHURA_PLUGIN_ERROR_UNKNOWN, /**< An unknown error occured */
+  ZATHURA_PLUGIN_ERROR_OUT_OF_MEMORY, /**< Out of memory */
+  ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED, /**< The called function has not been implemented */
+  ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS, /**< Invalid arguments have been passed */
+  ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD /**< The provided password is invalid */
+} zathura_plugin_error_t;
+
+/**
+ * Document open function
+ *
+ * @param document The document
+ * @return true if no error occured otherwise false
+ */
+typedef zathura_plugin_error_t (*zathura_document_open_t)(zathura_document_t* document);
 
 /**
  * Document plugin structure
@@ -24,22 +43,28 @@ typedef struct zathura_document_plugin_s
   void* handle; /**< DLL handle */
 } zathura_document_plugin_t;
 
+/**
+ * Plugin mapping
+ */
 typedef struct zathura_type_plugin_mapping_s
 {
-  const gchar* type;
-  zathura_document_plugin_t* plugin;
+  const gchar* type; /**< Plugin type */
+  zathura_document_plugin_t* plugin; /**< Mapped plugin */
 } zathura_type_plugin_mapping_t;
 
+/**
+ * Meta data entries
+ */
 typedef enum zathura_document_meta_e
 {
-  ZATHURA_DOCUMENT_TITLE,
-  ZATHURA_DOCUMENT_AUTHOR,
-  ZATHURA_DOCUMENT_SUBJECT,
-  ZATHURA_DOCUMENT_KEYWORDS,
-  ZATHURA_DOCUMENT_CREATOR,
-  ZATHURA_DOCUMENT_PRODUCER,
-  ZATHURA_DOCUMENT_CREATION_DATE,
-  ZATHURA_DOCUMENT_MODIFICATION_DATE
+  ZATHURA_DOCUMENT_TITLE, /**< Title of the document */
+  ZATHURA_DOCUMENT_AUTHOR, /**< Author of the document */
+  ZATHURA_DOCUMENT_SUBJECT, /**< Subject of the document */
+  ZATHURA_DOCUMENT_KEYWORDS, /**< Keywords of the document */
+  ZATHURA_DOCUMENT_CREATOR, /**< Creator of the document */
+  ZATHURA_DOCUMENT_PRODUCER, /**< Producer of the document */
+  ZATHURA_DOCUMENT_CREATION_DATE, /**< Creation data */
+  ZATHURA_DOCUMENT_MODIFICATION_DATE /**< Modification data */
 } zathura_document_meta_t;
 
 /**
@@ -186,77 +211,77 @@ struct zathura_document_s
     /**
      * Frees the document
      */
-    bool (*document_free)(zathura_document_t* document);
+    zathura_plugin_error_t (*document_free)(zathura_document_t* document);
 
     /**
      * Generates the document index
      */
-    girara_tree_node_t* (*document_index_generate)(zathura_document_t* document);
+    girara_tree_node_t* (*document_index_generate)(zathura_document_t* document, zathura_plugin_error_t* error);
 
     /**
      * Save the document
      */
-    bool (*document_save_as)(zathura_document_t* document, const char* path);
+    zathura_plugin_error_t (*document_save_as)(zathura_document_t* document, const char* path);
 
     /**
      * Get list of attachments
      */
-    girara_list_t* (*document_attachments_get)(zathura_document_t* document);
+    girara_list_t* (*document_attachments_get)(zathura_document_t* document, zathura_plugin_error_t* error);
 
     /**
      * Save attachment to a file
      */
-    bool (*document_attachment_save)(zathura_document_t* document, const char* attachment, const char* file);
+    zathura_plugin_error_t (*document_attachment_save)(zathura_document_t* document, const char* attachment, const char* file);
 
     /**
      * Get document information
      */
-    char* (*document_meta_get)(zathura_document_t* document, zathura_document_meta_t info);
+    char* (*document_meta_get)(zathura_document_t* document, zathura_document_meta_t info, zathura_plugin_error_t* error);
 
     /**
      * Gets the page object
      */
-    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id);
+    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
 
     /**
      * Search text
      */
-    girara_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
+    girara_list_t* (*page_search_text)(zathura_page_t* page, const char* text, zathura_plugin_error_t* error);
 
     /**
      * Get links on a page
      */
-    girara_list_t* (*page_links_get)(zathura_page_t* page);
+    girara_list_t* (*page_links_get)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
      * Get form fields
      */
-    girara_list_t* (*page_form_fields_get)(zathura_page_t* page);
+    girara_list_t* (*page_form_fields_get)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
      * Get list of images
      */
-    girara_list_t* (*page_images_get)(zathura_page_t* page);
+    girara_list_t* (*page_images_get)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
      * Save image to a file
      */
-    bool (*page_image_save)(zathura_page_t* page, zathura_image_t* image, const char* file);
+    zathura_plugin_error_t (*page_image_save)(zathura_page_t* page, zathura_image_t* image, const char* file);
 
     /**
      * Renders the page
      */
-    zathura_image_buffer_t* (*page_render)(zathura_page_t* page);
+    zathura_image_buffer_t* (*page_render)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
      * Renders the page
      */
-    bool (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo, bool printing);
+    zathura_plugin_error_t (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo, bool printing);
 
     /**
      * Free page
      */
-    bool (*page_free)(zathura_page_t* page);
+    zathura_plugin_error_t (*page_free)(zathura_page_t* page);
   } functions;
 
   /**
@@ -294,24 +319,25 @@ void zathura_document_plugin_free(zathura_document_plugin_t* plugin);
  * @param password Password of the document or NULL
  * @return The document object
  */
-zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, const char* password);
+zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
+    const char* password);
 
 /**
  * Free the document
  *
  * @param document
- * @return true if no error occured, otherwise false
+ * @return See \ref zathura_plugin_error_t
  */
-bool zathura_document_free(zathura_document_t* document);
+zathura_plugin_error_t zathura_document_free(zathura_document_t* document);
 
 /**
  * Save the document
  *
  * @param document The document object
  * @param path Path for the saved file
- * @return true if no error occured, otherwise false
+ * @return See \ref zathura_plugin_error_t
  */
-bool zathura_document_save_as(zathura_document_t* document, const char* path);
+zathura_plugin_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
 
 /**
  * Generate the document index
@@ -320,7 +346,7 @@ bool zathura_document_save_as(zathura_document_t* document, const char* path);
  * @return Generated index
  */
 
-girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document);
+girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document, zathura_plugin_error_t* error);
 
 /**
  * Get list of attachments
@@ -328,7 +354,7 @@ girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document
  * @param document The document object
  * @return List of attachments
  */
-girara_list_t* zathura_document_attachments_get(zathura_document_t* document);
+girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_plugin_error_t* error);
 
 /**
  * Save document attachment
@@ -338,7 +364,7 @@ girara_list_t* zathura_document_attachments_get(zathura_document_t* document);
  * @param file the target filename
  * @return true on success, false otherwise
  */
-bool zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
+zathura_plugin_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
 
 /**
  * Returns a string of the requested information
@@ -347,7 +373,7 @@ bool zathura_document_attachment_save(zathura_document_t* document, const char* 
  * @param meta The information field
  * @return String or NULL if information could not be retreived
  */
-char* zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta);
+char* zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta, zathura_plugin_error_t* error);
 
 /**
  * Get the page object
@@ -356,7 +382,7 @@ char* zathura_document_meta_get(zathura_document_t* document, zathura_document_m
  * @param page_id Page number
  * @return Page object or NULL if an error occured
  */
-zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id);
+zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
 
 /**
  * Frees the page object
@@ -364,7 +390,7 @@ zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page
  * @param page The page object
  * @return true if no error occured, otherwise false
  */
-bool zathura_page_free(zathura_page_t* page);
+zathura_plugin_error_t zathura_page_free(zathura_page_t* page);
 
 /**
  * Search page
@@ -373,7 +399,7 @@ bool zathura_page_free(zathura_page_t* page);
  * @param text Search item
  * @return List of results
  */
-girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
+girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_plugin_error_t* error);
 
 /**
  * Get page links
@@ -381,7 +407,7 @@ girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
  * @param page The page object
  * @return List of links
  */
-girara_list_t* zathura_page_links_get(zathura_page_t* page);
+girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_plugin_error_t* error);
 
 /**
  * Free page links
@@ -389,7 +415,7 @@ girara_list_t* zathura_page_links_get(zathura_page_t* page);
  * @param list List of links
  * @return true if no error occured, otherwise false
  */
-bool zathura_page_links_free(girara_list_t* list);
+zathura_plugin_error_t zathura_page_links_free(girara_list_t* list);
 
 /**
  * Get list of form fields
@@ -397,23 +423,25 @@ bool zathura_page_links_free(girara_list_t* list);
  * @param page The page object
  * @return List of form fields
  */
-girara_list_t* zathura_page_form_fields_get(zathura_page_t* page);
+girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin_error_t* error);
 
 /**
  * Free list of form fields
  *
  * @param list List of form fields
+ * @param error See \ref zathura_plugin_error_t
  * @return true if no error occured, otherwise false
  */
-bool zathura_page_form_fields_free(girara_list_t* list);
+zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
 
 /**
  * Get list of images
  *
  * @param page Page
- * @return List of images
+ * @param error See \ref zathura_plugin_error_t
+ * @return List of images or NULL if an error occured 
  */
-girara_list_t* zathura_page_images_get(zathura_page_t* page);
+girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error);
 
 /**
  * Save image
@@ -421,9 +449,9 @@ girara_list_t* zathura_page_images_get(zathura_page_t* page);
  * @param page Page
  * @param image The image
  * @param file Path to the file
- * @return true if no error occured
+ * @return See \ref zathura_plugin_error_t
  */
-bool zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
+zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
 
 /**
  * Render page
@@ -431,9 +459,9 @@ bool zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const
  * @param page The page object
  * @param cairo Cairo object
  * @param printing render for printing
- * @return True if no error occured, otherwise false
+ * @return See \ref zathura_plugin_error_t
  */
-bool zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
+zathura_plugin_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
 
 /**
  * Create new index element

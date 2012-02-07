@@ -149,7 +149,7 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       priv->draw_links = g_value_get_boolean(value);
       /* get links */
       if (priv->draw_links == true && priv->links_got == false) {
-        priv->links = zathura_page_links_get(priv->page);
+        priv->links = zathura_page_links_get(priv->page, NULL);
         priv->links_got = true;
         priv->number_of_links = (priv->links == NULL) ? 0 : girara_list_size(priv->links);
       }
@@ -432,7 +432,7 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
     /* get links */
     if (priv->links_got == false) {
-      priv->links = zathura_page_links_get(priv->page);
+      priv->links = zathura_page_links_get(priv->page, NULL);
       priv->links_got = true;
       priv->number_of_links = (priv->links == NULL) ? 0 : girara_list_size(priv->links);
     }

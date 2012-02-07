@@ -237,8 +237,8 @@ cc_export(girara_session_t* session, const char* input)
   }
 
   const size_t input_length = strlen(input);
-  girara_list_t* attachments = zathura_document_attachments_get(zathura->document);
-  if (!attachments) {
+  girara_list_t* attachments = zathura_document_attachments_get(zathura->document, NULL);
+  if (attachments == NULL) {
     goto error_free;
   }
 
