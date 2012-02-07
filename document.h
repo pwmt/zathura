@@ -24,22 +24,28 @@ typedef struct zathura_document_plugin_s
   void* handle; /**< DLL handle */
 } zathura_document_plugin_t;
 
+/**
+ * Plugin mapping
+ */
 typedef struct zathura_type_plugin_mapping_s
 {
-  const gchar* type;
-  zathura_document_plugin_t* plugin;
+  const gchar* type; /**< Plugin type */
+  zathura_document_plugin_t* plugin; /**< Mapped plugin */
 } zathura_type_plugin_mapping_t;
 
+/**
+ * Meta data entries
+ */
 typedef enum zathura_document_meta_e
 {
-  ZATHURA_DOCUMENT_TITLE,
-  ZATHURA_DOCUMENT_AUTHOR,
-  ZATHURA_DOCUMENT_SUBJECT,
-  ZATHURA_DOCUMENT_KEYWORDS,
-  ZATHURA_DOCUMENT_CREATOR,
-  ZATHURA_DOCUMENT_PRODUCER,
-  ZATHURA_DOCUMENT_CREATION_DATE,
-  ZATHURA_DOCUMENT_MODIFICATION_DATE
+  ZATHURA_DOCUMENT_TITLE, /**< Title of the document */
+  ZATHURA_DOCUMENT_AUTHOR, /**< Author of the document */
+  ZATHURA_DOCUMENT_SUBJECT, /**< Subject of the document */
+  ZATHURA_DOCUMENT_KEYWORDS, /**< Keywords of the document */
+  ZATHURA_DOCUMENT_CREATOR, /**< Creator of the document */
+  ZATHURA_DOCUMENT_PRODUCER, /**< Producer of the document */
+  ZATHURA_DOCUMENT_CREATION_DATE, /**< Creation data */
+  ZATHURA_DOCUMENT_MODIFICATION_DATE /**< Modification data */
 } zathura_document_meta_t;
 
 /**
