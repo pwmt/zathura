@@ -231,7 +231,7 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
     g_free(font);
 
     /* draw links */
-    if (priv->draw_links == true) {
+    if (priv->draw_links == true && priv->number_of_links != 0) {
       unsigned int link_counter = 0;
       GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
