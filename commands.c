@@ -296,14 +296,11 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     girara_list_t* result = zathura_page_search_text(page, input);
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
+      g_object_set(page->drawing_area, "search-results", NULL, NULL);
       continue;
     }
 
-    GIRARA_LIST_FOREACH(result, zathura_rectangle_t*, iter, rect)
-      zathura_rectangle_t position = recalc_rectangle(page, *rect);
-      /*zathura_page_view_draw_rectangle(ZATHURA_PAGE_VIEW(page->drawing_area), &position, -1);*/
-    GIRARA_LIST_FOREACH_END(result, zathura_link_t*, iter, link);
-    girara_list_free(result);
+    g_object_set(page->drawing_area, "search-results", result, NULL);
   }
 
   return true;
