@@ -17,9 +17,10 @@ typedef struct zathura_page_widget_private_s {
   girara_list_t* links; /**< List of links on the page */
   bool links_got; /**< True if we already tried to retrieve the list of links */
   bool draw_links; /**< True if links should be drawn */
-  girara_list_t* search_results; /** True if search results should be drawn */
   unsigned int link_offset; /**< Offset to the links */
   unsigned int number_of_links; /**< Offset to the links */
+  girara_list_t* search_results; /** A list if there are search results that should be drawn */
+  unsigned int search_current; /** The index of the current search result */
 } zathura_page_widget_private_t;
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
@@ -40,7 +41,9 @@ enum properties_e
   PROP_DRAW_LINKS,
   PROP_LINKS_OFFSET,
   PROP_LINKS_NUMBER,
-  PROP_SEARCH_RESULTS
+  PROP_SEARCH_RESULTS,
+  PROP_SEARCH_RESULTS_LENGTH,
+  PROP_SEARCH_RESULTS_CURRENT
 };
 
 static void
@@ -70,6 +73,10 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
       g_param_spec_int("number-of-links", "number-of-links", "Number of links", 0, INT_MAX, 0, G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS,
       g_param_spec_pointer("search-results", "search-results", "Set to the list of search results", G_PARAM_WRITABLE));
+  g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_CURRENT,
+      g_param_spec_int("search-current", "search-current", "The current search result", -1, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_READABLE));
+  g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_LENGTH,
+      g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE));
 }
 
 static void
@@ -152,7 +159,26 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
         priv->draw_links = false;
         redraw_all_rects(pageview, priv->search_results);
       }
+      priv->search_current = -1;
       break;
+    case PROP_SEARCH_RESULTS_CURRENT: {
+      g_return_if_fail(priv->search_results != NULL);
+      if (priv->search_current < girara_list_size(priv->search_results)) {
+        zathura_rectangle_t* rect = girara_list_nth(priv->search_results, priv->search_current);
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+        redraw_rect(pageview, &rectangle);
+      }
+      int val = g_value_get_int(value);
+      if (val == -1) {
+        priv->search_current = girara_list_size(priv->search_results);
+      } else {
+        priv->search_current = val;
+        zathura_rectangle_t* rect = girara_list_nth(priv->search_results, priv->search_current);
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+        redraw_rect(pageview, &rectangle);
+      }
+      break;
+    }
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
@@ -167,6 +193,12 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   switch (prop_id) {
     case PROP_LINKS_NUMBER:
       g_value_set_int(value, priv->number_of_links);
+      break;
+    case PROP_SEARCH_RESULTS_LENGTH:
+      g_value_set_int(value, priv->search_results == NULL ? 0 : girara_list_size(priv->search_results));
+      break;
+    case PROP_SEARCH_RESULTS_CURRENT:
+      g_value_set_int(value, priv->search_results == NULL ? -1 : priv->search_current);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -255,15 +287,21 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 
     /* draw search results */
     if (priv->search_results != NULL) {
+      unsigned int idx = 0;
       GIRARA_LIST_FOREACH(priv->search_results, zathura_rectangle_t*, iter, rect)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
 
         /* draw position */
         GdkColor color = priv->zathura->ui.colors.highlight_color;
-        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+        if (idx == priv->search_current) {
+          cairo_set_source_rgba(cairo, 0, color.green, color.blue, transparency);
+        } else {
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+        }
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
             (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
         cairo_fill(cairo);
+        ++idx;
       GIRARA_LIST_FOREACH_END(priv->search_results, zathura_rectangle_t*, iter, rect);
     }
   } else {
