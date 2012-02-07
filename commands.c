@@ -10,6 +10,8 @@
 #include "print.h"
 #include "document.h"
 #include "utils.h"
+#include "page_view_widget.h"
+
 
 #include <girara/session.h>
 #include <girara/datastructures.h>
@@ -279,8 +281,29 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL) {
+  if (zathura->document == NULL || strlen(input) == 0) {
     return false;
+  }
+
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura->document->pages[page_id];
+    if (page == NULL) {
+      continue;
+    }
+
+    zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(page->drawing_area));
+
+    girara_list_t* result = zathura_page_search_text(page, input);
+    if (result == NULL || girara_list_size(result) == 0) {
+      girara_list_free(result);
+      continue;
+    }
+
+    GIRARA_LIST_FOREACH(result, zathura_rectangle_t*, iter, rect)
+      zathura_rectangle_t position = recalc_rectangle(page, *rect);
+      zathura_page_view_draw_rectangle(ZATHURA_PAGE_VIEW(page->drawing_area), &position, -1);
+    GIRARA_LIST_FOREACH_END(result, zathura_link_t*, iter, link);
+    girara_list_free(result);
   }
 
   return true;
