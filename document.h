@@ -249,7 +249,7 @@ struct zathura_document_s
     /**
      * Renders the page
      */
-    bool (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo);
+    bool (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo, bool printing);
 
     /**
      * Free page
@@ -420,9 +420,10 @@ bool zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const
  *
  * @param page The page object
  * @param cairo Cairo object
+ * @param printing render for printing
  * @return True if no error occured, otherwise false
  */
-bool zathura_page_render(zathura_page_t* page, cairo_t* cairo);
+bool zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
 
 /**
  * Create new index element
