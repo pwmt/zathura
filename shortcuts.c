@@ -19,6 +19,8 @@ bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
+  girara_info("in sc_abort");
+
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -29,7 +31,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
       continue;
     }
 
-    zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(page->drawing_area));
+    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
   }
 
   girara_mode_set(session, session->modes.normal);
@@ -119,28 +121,22 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     return false;
   }
 
-  unsigned int link_id = 0;
+  /* set pages to draw links */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
     if (page == NULL) {
       continue;
     }
 
-    zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(page->drawing_area));
-
-    // TODO: is page visible?
-    girara_list_t* links = zathura_page_links_get(page);
-    if (links == NULL || girara_list_size(links) == 0) {
-      girara_list_free(links);
-      continue;
+    if (page->visible == true) {
+      g_object_set(page->drawing_area, "draw-links", TRUE, NULL);
+    } else {
+      g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
     }
-
-    GIRARA_LIST_FOREACH(links, zathura_link_t*, iter, link)
-      zathura_rectangle_t position = recalc_rectangle(page, link->position);
-      zathura_page_view_draw_rectangle(ZATHURA_PAGE_VIEW(page->drawing_area), &position, ++link_id);
-    GIRARA_LIST_FOREACH_END(links, zathura_link_t*, iter, link);
-    girara_list_free(links);
   }
+
+  /* ask for input */
+  girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, NULL);
 
   return false;
 }
@@ -362,7 +358,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
-  
+
+  girara_info("in sc_search");
+
   return false;
 }
 

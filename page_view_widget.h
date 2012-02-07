@@ -66,4 +66,13 @@ void zathura_page_view_draw_rectangle(ZathuraPageView* widget, zathura_rectangle
  */
 void zathura_page_view_clear_rectangles(ZathuraPageView* widget);
 
+/**
+ * Returns the zathura link object at the given index
+ *
+ * @param widget the widget
+ * @param index Index of the link
+ * @return Link object or NULL if an error occured
+ */
+zathura_link_t* zathura_page_view_link_get(ZathuraPageView* widget, unsigned int index);
+
 #endif

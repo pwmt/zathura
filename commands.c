@@ -291,7 +291,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       continue;
     }
 
-    zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(page->drawing_area));
+    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
 
     girara_list_t* result = zathura_page_search_text(page, input);
     if (result == NULL || girara_list_size(result) == 0) {
@@ -301,7 +301,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
 
     GIRARA_LIST_FOREACH(result, zathura_rectangle_t*, iter, rect)
       zathura_rectangle_t position = recalc_rectangle(page, *rect);
-      zathura_page_view_draw_rectangle(ZATHURA_PAGE_VIEW(page->drawing_area), &position, -1);
+      /*zathura_page_view_draw_rectangle(ZATHURA_PAGE_VIEW(page->drawing_area), &position, -1);*/
     GIRARA_LIST_FOREACH_END(result, zathura_link_t*, iter, link);
     girara_list_free(result);
   }

@@ -144,3 +144,5 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
 
   g_object_unref(model);
 }
+
+bool 
