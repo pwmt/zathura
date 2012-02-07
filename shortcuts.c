@@ -35,6 +35,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   girara_mode_set(session, session->modes.normal);
+  girara_sc_abort(session, NULL, NULL, 0);
 
   return false;
 }
