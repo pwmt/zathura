@@ -16,7 +16,7 @@
 void
 config_load_default(zathura_t* zathura)
 {
-  if (!zathura || !zathura->ui.session) {
+  if (zathura == NULL || zathura->ui.session == NULL) {
     return;
   }
 
