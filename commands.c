@@ -10,7 +10,7 @@
 #include "print.h"
 #include "document.h"
 #include "utils.h"
-#include "page_view_widget.h"
+#include "page_widget.h"
 
 
 #include <girara/session.h>

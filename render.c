@@ -9,7 +9,7 @@
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
-#include "page_view_widget.h"
+#include "page_widget.h"
 
 void* render_job(void* data);
 bool render(zathura_t* zathura, zathura_page_t* page);
@@ -241,7 +241,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   }
 
   /* update the widget */
-  zathura_page_view_update_surface(ZATHURA_PAGE_VIEW(page->drawing_area), surface);
+  zathura_page_widget_update_surface(ZATHURA_PAGE(page->drawing_area), surface);
 
   gdk_threads_leave();
 

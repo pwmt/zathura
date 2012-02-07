@@ -1,15 +1,15 @@
 /* See LICENSE file for license and copyright information */
 
-#include "page_view_widget.h"
+#include "page_widget.h"
 #include "render.h"
 #include "utils.h"
 #include <girara/utils.h>
 #include <girara/settings.h>
 #include <girara/datastructures.h>
 
-G_DEFINE_TYPE(ZathuraPageView, zathura_page_view, GTK_TYPE_DRAWING_AREA)
+G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 
-typedef struct zathura_page_view_private_s {
+typedef struct zathura_page_widget_private_s {
   zathura_page_t* page;
   zathura_t* zathura;
   cairo_surface_t* surface; /** Cairo surface */
@@ -20,18 +20,18 @@ typedef struct zathura_page_view_private_s {
   girara_list_t* search_results; /** True if search results should be drawn */
   unsigned int link_offset; /**< Offset to the links */
   unsigned int number_of_links; /**< Offset to the links */
-} zathura_page_view_private_t;
+} zathura_page_widget_private_t;
 
-#define ZATHURA_PAGE_VIEW_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_PAGE_VIEW, zathura_page_view_private_t))
+#define ZATHURA_PAGE_GET_PRIVATE(obj) \
+  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_PAGE, zathura_page_widget_private_t))
 
-static gboolean zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event);
-static void zathura_page_view_finalize(GObject* object);
-static void zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
-static void zathura_page_view_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
-static void zathura_page_view_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
-static void redraw_rect(ZathuraPageView* widget, zathura_rectangle_t* rectangle);
-static void redraw_all_rects(ZathuraPageView* widget, girara_list_t* rectangles);
+static gboolean zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event);
+static void zathura_page_widget_finalize(GObject* object);
+static void zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
+static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
+static void redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle);
+static void redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles);
 
 enum properties_e
 {
@@ -44,20 +44,20 @@ enum properties_e
 };
 
 static void
-zathura_page_view_class_init(ZathuraPageViewClass* class)
+zathura_page_widget_class_init(ZathuraPageClass* class)
 {
   /* add private members */
-  g_type_class_add_private(class, sizeof(zathura_page_view_private_t));
+  g_type_class_add_private(class, sizeof(zathura_page_widget_private_t));
 
   /* overwrite methods */
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
-  widget_class->expose_event = zathura_page_view_expose;
-  widget_class->size_allocate = zathura_page_view_size_allocate;
+  widget_class->expose_event = zathura_page_widget_expose;
+  widget_class->size_allocate = zathura_page_widget_size_allocate;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
-  object_class->finalize = zathura_page_view_finalize;
-  object_class->set_property = zathura_page_view_set_property;
-  object_class->get_property = zathura_page_view_get_property;
+  object_class->finalize = zathura_page_widget_finalize;
+  object_class->set_property = zathura_page_widget_set_property;
+  object_class->get_property = zathura_page_widget_get_property;
 
   /* add properties */
   g_object_class_install_property(object_class, PROP_PAGE,
@@ -73,9 +73,9 @@ zathura_page_view_class_init(ZathuraPageViewClass* class)
 }
 
 static void
-zathura_page_view_init(ZathuraPageView* widget)
+zathura_page_widget_init(ZathuraPage* widget)
 {
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   priv->page        = NULL;
   priv->surface     = NULL;
   priv->links       = NULL;
@@ -91,32 +91,32 @@ zathura_page_view_init(ZathuraPageView* widget)
 }
 
 GtkWidget*
-zathura_page_view_new(zathura_page_t* page)
+zathura_page_widget_new(zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  return g_object_new(ZATHURA_TYPE_PAGE_VIEW, "page", page, NULL);
+  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, NULL);
 }
 
 static void
-zathura_page_view_finalize(GObject* object)
+zathura_page_widget_finalize(GObject* object)
 {
-  ZathuraPageView* widget = ZATHURA_PAGE_VIEW(object);
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  ZathuraPage* widget = ZATHURA_PAGE(object);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   if (priv->surface) {
     cairo_surface_destroy(priv->surface);
   }
   g_static_mutex_free(&(priv->lock));
   girara_list_free(priv->links);
 
-  G_OBJECT_CLASS(zathura_page_view_parent_class)->finalize(object);
+  G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
 
 static void
-zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
+zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
-  ZathuraPageView* pageview = ZATHURA_PAGE_VIEW(object);
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(pageview);
+  ZathuraPage* pageview = ZATHURA_PAGE(object);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(pageview);
 
   switch (prop_id) {
     case PROP_PAGE:
@@ -159,10 +159,10 @@ zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* val
 }
 
 static void
-zathura_page_view_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
+zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
 {
-  ZathuraPageView* pageview = ZATHURA_PAGE_VIEW(object);
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(pageview);
+  ZathuraPage* pageview = ZATHURA_PAGE(object);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(pageview);
 
   switch (prop_id) {
     case PROP_LINKS_NUMBER:
@@ -174,7 +174,7 @@ zathura_page_view_get_property(GObject* object, guint prop_id, GValue* value, GP
 }
 
 static gboolean
-zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
+zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 {
   cairo_t* cairo = gdk_cairo_create(widget->window);
   if (cairo == NULL) {
@@ -186,7 +186,7 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
   cairo_rectangle(cairo, event->area.x, event->area.y, event->area.width, event->area.height);
   cairo_clip(cairo);
 
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   g_static_mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
     cairo_save(cairo);
@@ -299,16 +299,16 @@ zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* event)
 }
 
 static void
-zathura_page_view_redraw_canvas(ZathuraPageView* pageview)
+zathura_page_widget_redraw_canvas(ZathuraPage* pageview)
 {
   GtkWidget* widget = GTK_WIDGET(pageview);
   gtk_widget_queue_draw(widget);
 }
 
 void
-zathura_page_view_update_surface(ZathuraPageView* widget, cairo_surface_t* surface)
+zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface)
 {
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   g_static_mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
@@ -316,18 +316,18 @@ zathura_page_view_update_surface(ZathuraPageView* widget, cairo_surface_t* surfa
   priv->surface = surface;
   g_static_mutex_unlock(&(priv->lock));
   /* force a redraw here */
-  zathura_page_view_redraw_canvas(widget);
+  zathura_page_widget_redraw_canvas(widget);
 }
 
 static void
-zathura_page_view_size_allocate(GtkWidget* widget, GdkRectangle* allocation)
+zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation)
 {
-  GTK_WIDGET_CLASS(zathura_page_view_parent_class)->size_allocate(widget, allocation);
-  zathura_page_view_update_surface(ZATHURA_PAGE_VIEW(widget), NULL);
+  GTK_WIDGET_CLASS(zathura_page_widget_parent_class)->size_allocate(widget, allocation);
+  zathura_page_widget_update_surface(ZATHURA_PAGE(widget), NULL);
 }
 
 static void
-redraw_rect(ZathuraPageView* widget, zathura_rectangle_t* rectangle)
+redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
 {
    /* cause the rect to be drawn */
   GdkRectangle grect;
@@ -339,9 +339,9 @@ redraw_rect(ZathuraPageView* widget, zathura_rectangle_t* rectangle)
 }
 
 static void
-redraw_all_rects(ZathuraPageView* widget, girara_list_t* rectangles)
+redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles)
 {
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
   GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect)
     zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
@@ -350,10 +350,10 @@ redraw_all_rects(ZathuraPageView* widget, girara_list_t* rectangles)
 }
 
 zathura_link_t*
-zathura_page_view_link_get(ZathuraPageView* widget, unsigned int index)
+zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
 {
   g_return_val_if_fail(widget != NULL, NULL);
-  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(widget);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   g_return_val_if_fail(priv != NULL, NULL);
 
   if (priv->links != NULL && index >= priv->link_offset &&

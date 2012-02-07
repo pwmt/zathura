@@ -14,7 +14,7 @@
 #include "document.h"
 #include "utils.h"
 #include "shortcuts.h"
-#include "page_view_widget.h"
+#include "page_widget.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
@@ -45,7 +45,7 @@ void
 cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpointer data)
 {
   zathura_t* zathura = data;
-  if (!zathura || !zathura->document || !zathura->document->pages || !zathura->ui.page_view) {
+  if (!zathura || !zathura->document || !zathura->document->pages || !zathura->ui.page_widget) {
     return;
   }
 
@@ -108,7 +108,7 @@ cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const char* UN
     pages_per_row = 1;
   }
 
-  page_view_set_mode(zathura, pages_per_row);
+  page_widget_set_mode(zathura, pages_per_row);
 }
 
 void
@@ -179,7 +179,7 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
 
     g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
 
-    zathura_link_t* link = zathura_page_view_link_get(ZATHURA_PAGE_VIEW(page->drawing_area), index);
+    zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page->drawing_area), index);
     if (link != NULL) {
       switch (link->type) {
         case ZATHURA_LINK_TO_PAGE:

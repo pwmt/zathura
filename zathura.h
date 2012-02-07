@@ -52,8 +52,8 @@ typedef struct zathura_s
       GdkColor highlight_color; /**< Color for highlighting */
     } colors;
 
-    GtkWidget *page_view_alignment;
-    GtkWidget *page_view; /**< Widget that contains all rendered pages */
+    GtkWidget *page_widget_alignment;
+    GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
   } ui;
 
@@ -178,7 +178,7 @@ bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
  * @param zathura The zathura session
  * @param pages_per_row Number of shown pages per row
  */
-void page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row);
+void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

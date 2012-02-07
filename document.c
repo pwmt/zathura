@@ -23,7 +23,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "database.h"
-#include "page_view_widget.h"
+#include "page_widget.h"
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -433,7 +433,7 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id)
   if (page != NULL) {
     page->number       = page_id;
     page->visible      = false;
-    page->drawing_area = zathura_page_view_new(page);
+    page->drawing_area = zathura_page_widget_new(page);
     page->document     = document;
 
     gtk_widget_set_size_request(page->drawing_area, page->width * document->scale, page->height * document->scale);

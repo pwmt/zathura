@@ -13,7 +13,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
-#include "page_view_widget.h"
+#include "page_widget.h"
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
@@ -51,7 +51,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
 
-  if (zathura->ui.page_view == NULL || zathura->document == NULL) {
+  if (zathura->ui.page_widget == NULL || zathura->document == NULL) {
     goto error_ret;
   }
 
@@ -530,7 +530,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
-    girara_set_view(session, zathura->ui.page_view_alignment);
+    girara_set_view(session, zathura->ui.page_widget_alignment);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
   } else {
