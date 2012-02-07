@@ -154,20 +154,22 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
   g_return_val_if_fail(session->global.data != NULL, FALSE);
 
   zathura_t* zathura = session->global.data;
+  bool eval = true;
 
   char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-  if (input == NULL) {
-    goto error_ret;
-  } else if (strlen(input) == 0) {
-    goto error_free;
+  if (input == NULL || strlen(input) == 0) {
+    eval = false;
   }
 
-  int index = atoi(input);
-  if (index == 0 && g_strcmp0(input, "0") != 0) {
-    girara_notify(session, GIRARA_WARNING, "Invalid input '%s' given.", input);
-    goto error_free;
+  int index = 0;
+  if (eval == true) {
+    index = atoi(input);
+    if (index == 0 && g_strcmp0(input, "0") != 0) {
+      girara_notify(session, GIRARA_WARNING, "Invalid input '%s' given.", input);
+      eval = false;
+    }
+    index = index - 1;
   }
-  index = index-1;
 
   /* set pages to draw links */
   bool invalid_index = true;
@@ -179,37 +181,30 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
 
     g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
 
-    zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page->drawing_area), index);
-    if (link != NULL) {
-      switch (link->type) {
-        case ZATHURA_LINK_TO_PAGE:
-          page_set_delayed(zathura, link->target.page_number);
-          break;
-        case ZATHURA_LINK_EXTERNAL:
-          girara_xdg_open(link->target.value);
-          break;
-      }
+    if (eval == true) {
+      zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page->drawing_area), index);
+      if (link != NULL) {
+        switch (link->type) {
+          case ZATHURA_LINK_TO_PAGE:
+            page_set_delayed(zathura, link->target.page_number);
+            break;
+          case ZATHURA_LINK_EXTERNAL:
+            girara_xdg_open(link->target.value);
+            break;
+        }
 
-      invalid_index = false;
-      break;
+        invalid_index = false;
+      }
     }
   }
 
-  if (invalid_index == true) {
+  if (eval == true && invalid_index == true) {
     girara_notify(session, GIRARA_WARNING, "Invalid index '%s' given.", input);
   }
 
   g_free(input);
 
-  return TRUE;
-
-error_free:
-
-  g_free(input);
-
-error_ret:
-
-  return FALSE;
+  return (eval == TRUE) ? TRUE : FALSE;
 }
 
 void

@@ -121,6 +121,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   /* set pages to draw links */
+  bool show_links = false;
   unsigned int page_offset = 0;
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
@@ -134,6 +135,9 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
       int number_of_links = 0;
       g_object_get(page->drawing_area, "number-of-links", &number_of_links, NULL);
+      if (number_of_links != 0) {
+        show_links = true;
+      }
       g_object_set(page->drawing_area, "offset-links", page_offset, NULL);
       page_offset += number_of_links;
     } else {
@@ -142,7 +146,9 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   /* ask for input */
-  girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow);
+  if (show_links == true) {
+    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow);
+  }
 
   return false;
 }
