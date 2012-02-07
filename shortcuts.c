@@ -401,6 +401,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   const int cur_page = zathura->document->current_page_number;
   int diff = argument->n == FORWARD ? 1 : -1;
 
+  zathura_page_t* target_page = NULL;
+  int target_idx = 0;
+
   for (int page_id = 0; page_id < num_pages; ++page_id) {
     int tmp = cur_page + diff * page_id;
     zathura_page_t* page = zathura->document->pages[(tmp + num_pages) % num_pages];
@@ -417,10 +420,13 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
     if (diff == 1 && current < num_search_results - 1) {
       /* the next result is on the same page */
-      g_object_set(page->drawing_area, "search-current", current + 1, NULL);
+      target_page = page;
+      target_idx = current + 1;
+      // g_object_set(page->drawing_area, "search-current", current + 1, NULL);
     } else if (diff == -1 && current >= 1) {
-      g_object_set(page->drawing_area, "search-current", current - 1, NULL);
-
+      // g_object_set(page->drawing_area, "search-current", current - 1, NULL);
+      target_page = page;
+      target_idx = current - 1;
     } else {
       /* the next result is on a different page */
       g_object_set(page->drawing_area, "search-current", -1, NULL);
@@ -430,14 +436,32 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
         zathura_page_t* npage = zathura->document->pages[(ntmp + 2*num_pages) % num_pages];
         g_object_get(npage->drawing_area, "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {
-          int next = diff == 1 ? 0 : num_search_results - 1;
-          g_object_set(npage->drawing_area, "search-current", next, NULL);
-          page_set_delayed(zathura, npage->number);
+          target_page = npage;
+          target_idx = diff == 1 ? 0 : num_search_results - 1;
           break;
         }
       }
     }
     break;
+  }
+
+  if (target_page != NULL) {
+    girara_list_t* results = NULL;
+    g_object_set(target_page->drawing_area, "search-current", target_idx, NULL);
+    g_object_get(target_page->drawing_area, "search-results", &results, NULL);
+
+    zathura_rectangle_t* rect = girara_list_nth(results, target_idx);
+    zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
+    page_offset_t offset;
+    page_calculate_offset(target_page, &offset);
+
+    GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+
+    int x = offset.x - gtk_adjustment_get_page_size(view_hadjustment) / 2 + rectangle.x1;
+    int y = offset.y - gtk_adjustment_get_page_size(view_vadjustment) / 2 + rectangle.y1;
+    gtk_adjustment_set_value(view_hadjustment, MAX(view_hadjustment->lower, MIN(view_hadjustment->upper - view_hadjustment->page_size, x)));
+    gtk_adjustment_set_value(view_vadjustment, MAX(view_vadjustment->lower, MIN(view_vadjustment->upper - view_vadjustment->page_size, y)));
   }
 
   return false;

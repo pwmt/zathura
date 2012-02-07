@@ -42,6 +42,7 @@ enum properties_e
   PROP_DRAW_LINKS,
   PROP_LINKS_OFFSET,
   PROP_LINKS_NUMBER,
+  PROP_SEARCH_RESULT,
   PROP_SEARCH_RESULTS,
   PROP_SEARCH_RESULTS_LENGTH,
   PROP_SEARCH_RESULTS_CURRENT
@@ -73,7 +74,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   g_object_class_install_property(object_class, PROP_LINKS_NUMBER,
       g_param_spec_int("number-of-links", "number-of-links", "Number of links", 0, INT_MAX, 0, G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS,
-      g_param_spec_pointer("search-results", "search-results", "Set to the list of search results", G_PARAM_WRITABLE));
+      g_param_spec_pointer("search-results", "search-results", "Set to the list of search results", G_PARAM_WRITABLE | G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_CURRENT,
       g_param_spec_int("search-current", "search-current", "The current search result", -1, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_LENGTH,
@@ -89,6 +90,8 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->links       = NULL;
   priv->links_got   = false;
   priv->link_offset = 0;
+  priv->search_results = NULL;
+  priv->search_current = INT_MAX;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -175,13 +178,13 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       break;
     case PROP_SEARCH_RESULTS_CURRENT: {
       g_return_if_fail(priv->search_results != NULL);
-      if (priv->search_current < (signed) girara_list_size(priv->search_results)) {
+      if (priv->search_current >= 0 && priv->search_current < (signed) girara_list_size(priv->search_results)) {
         zathura_rectangle_t* rect = girara_list_nth(priv->search_results, priv->search_current);
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
         redraw_rect(pageview, &rectangle);
       }
       int val = g_value_get_int(value);
-      if (val == -1) {
+      if (val < 0) {
         priv->search_current = girara_list_size(priv->search_results);
       } else {
         priv->search_current = val;
@@ -212,6 +215,9 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
     case PROP_SEARCH_RESULTS_CURRENT:
       g_value_set_int(value, priv->search_results == NULL ? -1 : priv->search_current);
       break;
+    case PROP_SEARCH_RESULTS:
+      g_value_set_pointer(value, priv->search_results);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
@@ -237,10 +243,6 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 
     unsigned int page_height = widget->allocation.height;
     unsigned int page_width = widget->allocation.width;
-    if (priv->page->document->rotate % 180) {
-      page_height = widget->allocation.width;
-      page_width = widget->allocation.height;
-    }
 
     switch (priv->page->document->rotate) {
       case 90:
