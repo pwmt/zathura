@@ -441,6 +441,13 @@ zathura_index_element_t* zathura_index_element_new(const char* title);
 void zathura_index_element_free(zathura_index_element_t* index);
 
 /**
+ * Free link
+ *
+ * @param link The link
+ */
+void zathura_link_free(zathura_link_t* link);
+
+/**
  * Add type -> plugin mapping
  * @param zathura zathura instance
  * @param type content type
