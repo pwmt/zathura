@@ -33,6 +33,7 @@ static void zathura_page_widget_get_property(GObject* object, guint prop_id, GVa
 static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles);
+static bool cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button, zathura_page_t* page);
 
 enum properties_e
 {
@@ -102,7 +103,18 @@ zathura_page_widget_new(zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, NULL);
+  GtkWidget* widget = g_object_new(ZATHURA_TYPE_PAGE, "page", page, NULL);
+
+  if (widget != NULL) {
+    g_signal_connect(
+        G_OBJECT(widget),
+        "button-press-event",
+        G_CALLBACK(cb_zathura_page_widget_button_press_event),
+        page
+      );
+  }
+
+  return widget;
 }
 
 static void
@@ -400,4 +412,45 @@ zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
   } else {
     return NULL;
   }
+}
+
+static bool
+cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button, zathura_page_t* page)
+{
+  g_return_val_if_fail(widget != NULL, false);
+  g_return_val_if_fail(button != NULL, false);
+  g_return_val_if_fail(page   != NULL, false);
+
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+
+  /* simple single click */
+  if (button->type == GDK_BUTTON_PRESS) {
+    double x = button->x / page->document->scale;
+    double y = button->y / page->document->scale;
+
+    /* get links */
+    if (priv->links_got == false) {
+      priv->links = zathura_page_links_get(priv->page);
+      priv->links_got = true;
+      priv->number_of_links = (priv->links == NULL) ? 0 : girara_list_size(priv->links);
+    }
+
+    if (priv->links != NULL && priv->number_of_links > 0) {
+      GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
+        if (link->position.x1 <= x && link->position.x2 >= x
+            && link->position.y1 <= y && link->position.y2 >= y) {
+          switch (link->type) {
+            case ZATHURA_LINK_TO_PAGE:
+              page_set_delayed(page->document->zathura, link->target.page_number);
+              return true;
+            case ZATHURA_LINK_EXTERNAL:
+              girara_xdg_open(link->target.value);
+              return true;
+          }
+        }
+      GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
+    }
+  }
+
+  return false;
 }

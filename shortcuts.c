@@ -208,6 +208,38 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
 }
 
 bool
+sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(event != NULL, false);
+
+  if (zathura->document == NULL) {
+    return false;
+  }
+
+  /* scroll event */
+  if (event->type == GIRARA_EVENT_SCROLL) {
+    switch (event->direction) {
+      case GIRARA_SCROLL_UP:
+        argument->n = ZOOM_IN;
+        break;
+      case GIRARA_SCROLL_DOWN:
+        argument->n = ZOOM_OUT;
+        break;
+      default:
+        return false;
+    }
+
+    return sc_zoom(session, argument, NULL, t);
+  }
+
+  return false;
+}
+
+bool
 sc_navigate(girara_session_t* session, girara_argument_t* argument,
     girara_event_t* UNUSED(event), unsigned int t)
 {
