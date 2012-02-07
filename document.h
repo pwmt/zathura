@@ -77,7 +77,9 @@ zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned
 void zathura_image_buffer_free(zathura_image_buffer_t*);
 
 /**
- * Rectangle structure
+ * Rectangle structure.
+ * The coordinate system has its origin in the left upper corner. The x axes
+ * goes to the right, the y access goes down.
  */
 typedef struct zathura_rectangle_s
 {

@@ -292,7 +292,7 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
         /* draw text */
         cairo_set_source_rgba(cairo, 0, 0, 0, 1);
         cairo_set_font_size(cairo, 10);
-        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 - 1);
+        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
         char* link_number = g_strdup_printf("%i", priv->link_offset + ++link_counter);
         cairo_show_text(cairo, link_number);
         g_free(link_number);
@@ -384,9 +384,9 @@ redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
    /* cause the rect to be drawn */
   GdkRectangle grect;
   grect.x = rectangle->x1;
-  grect.y = rectangle->y2;
+  grect.y = rectangle->y1;
   grect.width = rectangle->x2 - rectangle->x1;
-  grect.height = rectangle->y1 - rectangle->y2;
+  grect.height = rectangle->y2 - rectangle->y1;
   gdk_window_invalidate_rect(GTK_WIDGET(widget)->window, &grect, TRUE);
 }
 
