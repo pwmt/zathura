@@ -178,28 +178,14 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
 }
 
-page_offset_t*
-page_calculate_offset(zathura_page_t* page)
+void
+page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
 {
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL) {
-    return NULL;
-  }
-
-  page_offset_t* offset = malloc(sizeof(page_offset_t));
-
-  if (offset == NULL) {
-    return NULL;
-  }
-
+  g_return_if_fail(page != NULL && page->document != NULL && page->document->zathura != NULL && offset != NULL);
   zathura_document_t* document = page->document;
   zathura_t* zathura           = document->zathura;
 
-  if (gtk_widget_translate_coordinates(page->drawing_area, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == false) {
-    free(offset);
-    return NULL;
-  }
-
-  return offset;
+  g_return_if_fail(gtk_widget_translate_coordinates(page->drawing_area, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
 zathura_rectangle_t

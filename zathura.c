@@ -568,15 +568,13 @@ page_set(zathura_t* zathura, unsigned int page_id)
     goto error_out;
   }
 
-  page_offset_t* offset = page_calculate_offset(page);
-  if (offset == NULL) {
-    goto error_out;
-  }
+  page_offset_t offset;
+  page_calculate_offset(page, &offset);
 
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  gtk_adjustment_set_value(view_hadjustment, offset->x);
-  gtk_adjustment_set_value(view_vadjustment, offset->y);
+  gtk_adjustment_set_value(view_hadjustment, offset.x);
+  gtk_adjustment_set_value(view_vadjustment, offset.y);
 
   /* update page number */
   zathura->document->current_page_number = page_id;

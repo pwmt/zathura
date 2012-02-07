@@ -40,41 +40,61 @@ buffer_changed(girara_session_t* session)
 }
 
 void
-cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
+cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpointer data)
 {
   zathura_t* zathura = data;
   if (!zathura || !zathura->document || !zathura->document->pages || !zathura->ui.page_view) {
     return;
   }
 
-  /* get current adjustment values */
-  gdouble lower = gtk_adjustment_get_value(adjustment);
-  gdouble upper = lower + gtk_adjustment_get_page_size(adjustment);
+  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
+  GdkRectangle view_rect;
+  /* get current adjustment values */
+  view_rect.y = gtk_adjustment_get_value(view_vadjustment);
+  view_rect.height = gtk_adjustment_get_page_size(view_vadjustment);
+  view_rect.x = gtk_adjustment_get_value(view_hadjustment);
+  view_rect.width = gtk_adjustment_get_page_size(view_hadjustment);
+
+  int page_padding = 1;
+  girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
+
+  GdkRectangle center;
+  center.x = view_rect.x + (view_rect.width + 1) / 2;
+  center.y = view_rect.y + (view_rect.height + 1) / 2;
+  center.height = center.width = 2*page_padding + 1;
+
+  bool updated = false;
   /* find page that fits */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++)
   {
     zathura_page_t* page = zathura->document->pages[page_id];
 
-    page_offset_t* offset = page_calculate_offset(page);
-    if (offset == NULL) {
-      continue;
-    }
+    page_offset_t offset;
+    page_calculate_offset(page, &offset);
 
-    double begin = offset->y;
-    double end   = offset->y + page->height * zathura->document->scale;
+    GdkRectangle page_rect;
+    page_rect.x = offset.x;
+    page_rect.y = offset.y;
+    page_rect.width = page->width * zathura->document->scale;
+    page_rect.height = page->height * zathura->document->scale;
 
-    if (   ( (begin >= lower) && (end <= upper) ) /* [> page is in viewport <]*/
-        || ( (begin <= lower) && (end >= lower) && (end <= upper) ) /* [> end of the page is in viewport <] */
-        || ( (begin >= lower) && (end >= upper) && (begin <= upper) ) /* [> begin of the page is in viewport <] */
-      ) {
+    if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       page->visible = true;
+      girara_info("page %d visible", page_id);
+
+      if (updated == false && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
+        zathura->document->current_page_number = page_id;
+        updated = true;
+      }
     } else {
       page->visible = false;
+      girara_info("page %d not visible", page_id);
     }
-
-    free(offset);
   }
+
+  statusbar_page_number_update(zathura);
 }
 
 void

@@ -69,7 +69,7 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
  * @param page The Page
  * @return The calculated offset or NULL if an error occured
  */
-page_offset_t* page_calculate_offset(zathura_page_t* page);
+void page_calculate_offset(zathura_page_t* page, page_offset_t* offset);
 
 /**
  * Calculates the new coordinates based on the rotation and scale level of the

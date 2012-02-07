@@ -29,6 +29,16 @@ static gboolean zathura_page_view_expose(GtkWidget* widget, GdkEventExpose* even
 static void zathura_page_view_finalize(GObject* object);
 static void zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void zathura_page_view_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
+static void zathura_page_view_grab_focus(GtkWidget* widget);
+
+static gboolean zathura_page_view_focus_in(GtkWidget *widget, GtkDirectionType GIRARA_UNUSED(event))
+{
+  ZathuraPageView* view = ZATHURA_PAGE_VIEW(widget);
+  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(view);
+
+  girara_info("lala: %d", priv->page->number);
+  return false;
+}
 
 enum properties_e
 {
@@ -46,6 +56,8 @@ zathura_page_view_class_init(ZathuraPageViewClass* class)
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
   widget_class->expose_event = zathura_page_view_expose;
   widget_class->size_allocate = zathura_page_view_size_allocate;
+  widget_class->grab_focus = zathura_page_view_grab_focus;
+  widget_class->focus = zathura_page_view_focus_in;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize = zathura_page_view_finalize;
@@ -67,7 +79,9 @@ zathura_page_view_init(ZathuraPageView* widget)
 
   /* we want mouse events */
   gtk_widget_add_events(GTK_WIDGET(widget),
-    GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
+    GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE_MASK);
+  /* widgets can focus */
+  gtk_widget_set_can_focus(GTK_WIDGET(widget), TRUE);
 }
 
 GtkWidget*
@@ -285,4 +299,13 @@ zathura_page_view_clear_rectangles(ZathuraPageView* widget)
     redraw_rect(widget, rect);
   GIRARA_LIST_FOREACH_END(priv->rectangles, pv_rect_t*, iter, rect);
   girara_list_clear(priv->rectangles);
+}
+
+static void
+zathura_page_view_grab_focus(GtkWidget* widget)
+{
+  ZathuraPageView* view = ZATHURA_PAGE_VIEW(widget);
+  zathura_page_view_private_t* priv = ZATHURA_PAGE_VIEW_GET_PRIVATE(view);
+
+  girara_info("lala: %d", priv->page->number);
 }

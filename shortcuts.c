@@ -4,6 +4,7 @@
 #include <girara/settings.h>
 #include <girara/datastructures.h>
 #include <girara/shortcuts.h>
+#include <girara/utils.h>
 #include <gtk/gtk.h>
 
 #include "callbacks.h"
@@ -18,7 +19,20 @@ bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
+  girara_info("in sc_abort");
+
   g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura->document->pages[page_id];
+    if (page == NULL) {
+      continue;
+    }
+
+    zathura_page_view_clear_rectangles(ZATHURA_PAGE_VIEW(page->drawing_area));
+  }
 
   girara_mode_set(session, session->modes.normal);
 
@@ -314,6 +328,8 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
+  
+  girara_info("in sc_search");
 
   return false;
 }
