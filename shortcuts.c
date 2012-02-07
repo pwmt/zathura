@@ -128,6 +128,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
       continue;
     }
 
+    g_object_set(page->drawing_area, "search-results", NULL, NULL);
     if (page->visible == true) {
       g_object_set(page->drawing_area, "draw-links", TRUE, NULL);
     } else {

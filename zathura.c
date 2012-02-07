@@ -577,10 +577,6 @@ page_set(zathura_t* zathura, unsigned int page_id)
   gtk_adjustment_set_value(view_hadjustment, offset.x);
   gtk_adjustment_set_value(view_vadjustment, offset.y);
 
-  /* update page number */
-  zathura->document->current_page_number = page_id;
-  statusbar_page_number_update(zathura);
-
   return true;
 
 error_out:
