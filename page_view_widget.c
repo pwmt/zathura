@@ -151,6 +151,7 @@ zathura_page_view_set_property(GObject* object, guint prop_id, const GValue* val
         priv->draw_links = false;
         redraw_all_rects(pageview, priv->search_results);
       }
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
