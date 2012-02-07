@@ -33,7 +33,7 @@ static void zathura_page_widget_get_property(GObject* object, guint prop_id, GVa
 static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles);
-static bool cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button, zathura_page_t* page);
+static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button);
 
 enum properties_e
 {
@@ -58,6 +58,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
   widget_class->expose_event = zathura_page_widget_expose;
   widget_class->size_allocate = zathura_page_widget_size_allocate;
+  widget_class->button_press_event = cb_zathura_page_widget_button_press_event;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize = zathura_page_widget_finalize;
@@ -106,18 +107,7 @@ zathura_page_widget_new(zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  GtkWidget* widget = g_object_new(ZATHURA_TYPE_PAGE, "page", page, NULL);
-
-  if (widget != NULL) {
-    g_signal_connect(
-        G_OBJECT(widget),
-        "button-press-event",
-        G_CALLBACK(cb_zathura_page_widget_button_press_event),
-        page
-      );
-  }
-
-  return widget;
+  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, NULL);
 }
 
 static void
@@ -416,20 +406,16 @@ zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
   }
 }
 
-static bool
-cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button, zathura_page_t* page)
+static gboolean
+cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button)
 {
   g_return_val_if_fail(widget != NULL, false);
   g_return_val_if_fail(button != NULL, false);
-  g_return_val_if_fail(page   != NULL, false);
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
   /* simple single click */
   if (button->type == GDK_BUTTON_PRESS) {
-    double x = button->x / page->document->scale;
-    double y = button->y / page->document->scale;
-
     /* get links */
     if (priv->links_got == false) {
       priv->links = zathura_page_links_get(priv->page, NULL);
@@ -439,11 +425,12 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
     if (priv->links != NULL && priv->number_of_links > 0) {
       GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
-        if (link->position.x1 <= x && link->position.x2 >= x
-            && link->position.y1 <= y && link->position.y2 >= y) {
+        zathura_rectangle_t rect = recalc_rectangle(priv->page, link->position);
+        if (rect.x1 <= button->x && rect.x2 >= button->x
+            && rect.y1 <= button->y && rect.y2 >= button->y) {
           switch (link->type) {
             case ZATHURA_LINK_TO_PAGE:
-              page_set_delayed(page->document->zathura, link->target.page_number);
+              page_set_delayed(priv->page->document->zathura, link->target.page_number);
               return true;
             case ZATHURA_LINK_EXTERNAL:
               girara_xdg_open(link->target.value);
