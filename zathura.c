@@ -447,6 +447,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   page_set_delayed(zathura, document->current_page_number - 1);
+  cb_view_vadjustment_value_changed(NULL, zathura);
 
   return true;
 
