@@ -167,6 +167,7 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
     girara_notify(session, GIRARA_WARNING, "Invalid input '%s' given.", input);
     goto error_free;
   }
+  index = index-1;
 
   /* set pages to draw links */
   bool invalid_index = true;
