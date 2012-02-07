@@ -270,7 +270,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     document->scale = 1;
   }
 
-  if (plugin->open_function == NULL || plugin->open_function(document) == false) {
+  if (plugin->open_function == NULL || plugin->open_function(document) != ZATHURA_PLUGIN_ERROR_OK) {
     girara_error("could not open file\n");
     goto error_free;
   }
