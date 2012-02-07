@@ -285,9 +285,10 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     return false;
   }
 
+  bool firsthit = true;
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
-    zathura_page_t* page = zathura->document->pages[page_id];
-    if (page == NULL || page->visible == false) {
+    zathura_page_t* page = zathura->document->pages[(page_id + zathura->document->current_page_number) % zathura->document->number_of_pages];
+    if (page == NULL) {
       continue;
     }
 
@@ -301,6 +302,12 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     }
 
     g_object_set(page->drawing_area, "search-results", result, NULL);
+    if (firsthit == true) {
+      if (page_id != 0) {
+        page_set_delayed(zathura, page->number);
+      }
+      firsthit = false;
+    }
   }
 
   return true;
