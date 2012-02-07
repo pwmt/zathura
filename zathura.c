@@ -334,8 +334,10 @@ prepare_document_open_from_stdin(zathura_t* zathura)
   gint handle = g_file_open_tmp("zathura.stdin.XXXXXX", &file, &error);
   if (handle == -1)
   {
-    girara_error("Can not create temporary file: %s", error->message);
-    g_error_free(error);
+    if (error != NULL) {
+      girara_error("Can not create temporary file: %s", error->message);
+      g_error_free(error);
+    }
     return NULL;
   }
 
