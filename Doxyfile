@@ -1,0 +1,29 @@
+# See LICENSE file for license and copyright information
+
+# General information
+PROJECT_NAME          = zathura
+OUTPUT_DIRECTORY      = ./doc/
+OUTPUT_LANGUAGE       = English
+TAB_SIZE              = 2
+EXTRACT_ALL           = YES
+OPTIMIZE_OUTPUT_FOR_C = YES
+DOXYFILE_ENCODING     = UTF-8
+TYPEDEF_HIDES_STRUCT  = YES
+
+# Warning and progress messages
+QUIET                = YES
+WARNINGS             = YES
+WARN_IF_UNDOCUMENTED = YES
+
+# Input files
+INPUT         =
+FILE_PATTERNS = *.h *.c
+RECURSIVE     = YES
+
+# Output files
+GENERATE_HTML  = YES
+GENERATE_LATEX = NO
+GENERATE_RTF   = NO
+GENERATE_XML   = NO
+
+SOURCE_BROWSER = YES

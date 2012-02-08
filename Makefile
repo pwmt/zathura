@@ -5,6 +5,7 @@ include common.mk
 
 PROJECT  = zathura
 SOURCE   = $(shell find . -iname "*.c" -a ! -iname "database-*" ! -path "*tests*")
+HEADER   = $(shell find . -iname "*.h")
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
@@ -75,12 +76,15 @@ tests: ${OBJECTS}
 
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
-	$(QUIET)cp -R LICENSE Makefile config.mk README \
-			${PROJECT}.1 ${SOURCE} ${PROJECT}.pc.in \
+	$(QUIET)cp -R LICENSE Makefile config.mk README Doxyfile \
+			${PROJECT}.1 ${SOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}-${VERSION}
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
 	$(QUIET)rm -rf ${PROJECT}-${VERSION}
+
+doc: clean
+	$(QUIET)doxygen Doxyfile
 
 install: all ${PROJECT}.pc
 	$(ECHO) installing executable file
@@ -120,4 +124,4 @@ uninstall:
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean debug valgrind gdb dist install uninstall tests
+.PHONY: all options clean debug valgrind gdb dist doc install uninstall tests
