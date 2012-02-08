@@ -132,6 +132,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                0,              "zO", sc_zoom,                     FULLSCREEN, ZOOM_OUT,        NULL);
   girara_shortcut_add(gsession, 0,                0,              "z0", sc_zoom,                     NORMAL,     ZOOM_ORIGINAL,   NULL);
   girara_shortcut_add(gsession, 0,                0,              "z0", sc_zoom,                     FULLSCREEN, ZOOM_ORIGINAL,   NULL);
+  girara_shortcut_add(gsession, 0,                GDK_equal,      NULL, sc_zoom,                     NORMAL,     ZOOM_SPECIFIC,   NULL);
+  girara_shortcut_add(gsession, 0,                GDK_equal,      NULL, sc_zoom,                     FULLSCREEN, ZOOM_SPECIFIC,   NULL);
 
   /* mouse events */
   girara_mouse_event_add(gsession, 0, 0,                sc_mouse_scroll, NORMAL,     0, NULL);

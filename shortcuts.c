@@ -727,7 +727,7 @@ sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
-    UNUSED(event), unsigned int UNUSED(t))
+    UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -741,12 +741,23 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   float zoom_step = value / 100.0f;
 
+  /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
     zathura->document->scale += zoom_step;
   } else if (argument->n == ZOOM_OUT) {
     zathura->document->scale -= zoom_step;
+  } else if (argument->n == ZOOM_SPECIFIC) {
+    fprintf(stderr, "t: %d\n", t);
+    zathura->document->scale = t / 100.0f;
   } else {
     zathura->document->scale = 1.0;
+  }
+
+  /* zoom limitations */
+  if (zathura->document->scale < 0.1f) {
+    zathura->document->scale = 0.1f;
+  } else if (zathura->document->scale > 10.0f) {
+    zathura->document->scale = 10.0f;
   }
 
   render_all(zathura);
