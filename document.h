@@ -97,9 +97,9 @@ zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned
 /**
  * Frees the image buffer
  *
- * @param zathura_image_buffer_t
+ * @param buffer The image buffer
  */
-void zathura_image_buffer_free(zathura_image_buffer_t*);
+void zathura_image_buffer_free(zathura_image_buffer_t* buffer);
 
 /**
  * Rectangle structure.
@@ -315,6 +315,7 @@ void zathura_document_plugin_free(zathura_document_plugin_t* plugin);
 /**
  * Open the document
  *
+ * @param zathura Zathura object
  * @param path Path to the document
  * @param password Password of the document or NULL
  * @return The document object
@@ -326,7 +327,8 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
  * Free the document
  *
  * @param document
- * @return See \ref zathura_plugin_error_t
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_document_free(zathura_document_t* document);
 
@@ -335,7 +337,8 @@ zathura_plugin_error_t zathura_document_free(zathura_document_t* document);
  *
  * @param document The document object
  * @param path Path for the saved file
- * @return See \ref zathura_plugin_error_t
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
 
@@ -343,6 +346,8 @@ zathura_plugin_error_t zathura_document_save_as(zathura_document_t* document, co
  * Generate the document index
  *
  * @param document The document object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return Generated index
  */
 
@@ -352,6 +357,8 @@ girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document
  * Get list of attachments
  *
  * @param document The document object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of attachments
  */
 girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_plugin_error_t* error);
@@ -362,7 +369,8 @@ girara_list_t* zathura_document_attachments_get(zathura_document_t* document, za
  * @param document The document objects
  * @param attachment name of the attachment
  * @param file the target filename
- * @return true on success, false otherwise
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
 
@@ -371,6 +379,8 @@ zathura_plugin_error_t zathura_document_attachment_save(zathura_document_t* docu
  *
  * @param document The zathura document
  * @param meta The information field
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return String or NULL if information could not be retreived
  */
 char* zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta, zathura_plugin_error_t* error);
@@ -380,6 +390,8 @@ char* zathura_document_meta_get(zathura_document_t* document, zathura_document_m
  *
  * @param document The document
  * @param page_id Page number
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return Page object or NULL if an error occured
  */
 zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
@@ -388,7 +400,8 @@ zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page
  * Frees the page object
  *
  * @param page The page object
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_page_free(zathura_page_t* page);
 
@@ -397,6 +410,8 @@ zathura_plugin_error_t zathura_page_free(zathura_page_t* page);
  *
  * @param page The page object
  * @param text Search item
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of results
  */
 girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_plugin_error_t* error);
@@ -405,6 +420,8 @@ girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, 
  * Get page links
  *
  * @param page The page object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of links
  */
 girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_plugin_error_t* error);
@@ -413,7 +430,8 @@ girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_plugin_error
  * Free page links
  *
  * @param list List of links
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_page_links_free(girara_list_t* list);
 
@@ -421,6 +439,8 @@ zathura_plugin_error_t zathura_page_links_free(girara_list_t* list);
  * Get list of form fields
  *
  * @param page The page object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of form fields
  */
 girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin_error_t* error);
@@ -429,8 +449,8 @@ girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin
  * Free list of form fields
  *
  * @param list List of form fields
- * @param error See \ref zathura_plugin_error_t
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
 
@@ -438,7 +458,8 @@ zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
  * Get list of images
  *
  * @param page Page
- * @param error See \ref zathura_plugin_error_t
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of images or NULL if an error occured 
  */
 girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error);
@@ -449,7 +470,8 @@ girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_erro
  * @param page Page
  * @param image The image
  * @param file Path to the file
- * @return See \ref zathura_plugin_error_t
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
 
@@ -459,7 +481,8 @@ zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_ima
  * @param page The page object
  * @param cairo Cairo object
  * @param printing render for printing
- * @return See \ref zathura_plugin_error_t
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
 

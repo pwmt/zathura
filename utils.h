@@ -57,8 +57,8 @@ bool execute_command(char* const argv[], char** output);
  * object.
  *
  * @param model The tree model
- * @param tree_it The Tree iterator
- * @param list_it The index list iterator
+ * @param parent The tree iterator parent
+ * @param tree The Tree iterator
  */
 void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
@@ -67,6 +67,7 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
  * well as to the left side of it. The result has to be freed.
  *
  * @param page The Page
+ * @param offset Applied offset
  * @return The calculated offset or NULL if an error occured
  */
 void page_calculate_offset(zathura_page_t* page, page_offset_t* offset);

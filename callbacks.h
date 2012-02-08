@@ -14,7 +14,7 @@
  *
  * @param widget The gtk window of zathura
  * @param data NULL
- * @return TRUE
+ * @return true if no error occured and the event has been handled
  */
 gboolean cb_destroy(GtkWidget* widget, gpointer data);
 
@@ -38,9 +38,13 @@ void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  * variable changes
  *
  * @param session The current girara session
- * @param setting The "pages-per-row" setting
+ * @param name The name of the row
+ * @param type The settings type
+ * @param value The value
+ * @param data Custom data
  */
-void cb_pages_per_row_value_changed(girara_session_t* GIRARA_UNUSED(session), const char* GIRARA_UNUSED(name), girara_setting_type_t GIRARA_UNUSED(type), void* value, void* data);
+void cb_pages_per_row_value_changed(girara_session_t* session, const char* name,
+    girara_setting_type_t type, void* value, void* data);
 
 /**
  * Called when an index element is activated (e.g.: double click)
@@ -58,7 +62,7 @@ void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
  *
  * @param entry The dialog inputbar
  * @param session The girara session
- * @return TRUE
+ * @return true if no error occured and the event has been handled
  */
 bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
 
@@ -71,6 +75,7 @@ bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
  * @param event The monitor event
  * @param session The girara session
  */
-void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file, GFileMonitorEvent event, girara_session_t* session);
+void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file,
+    GFileMonitorEvent event, girara_session_t* session);
 
 #endif // CALLBACKS_H

@@ -11,13 +11,14 @@
 /**
  * This function loads the default values of the configuration
  *
- * @param zathura the zathura session
+ * @param zathura The zathura session
  */
 void config_load_default(zathura_t* zathura);
 
 /**
  * Loads and evaluates a configuration file
  *
+ * @param zathura The zathura session
  * @param path Path to the configuration file
  */
 void config_load_file(zathura_t* zathura, char* path);
