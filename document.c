@@ -265,9 +265,15 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   int offset = 0;
   zathura_db_get_fileinfo(zathura->database, document->file_path,
       &document->current_page_number, &offset, &document->scale);
+
   if (document->scale <= FLT_EPSILON) {
     girara_warning("document info: '%s' has non positive scale", document->file_path);
     document->scale = 1;
+  }
+
+  if (document->current_page_number == 0 || document->current_page_number > document->number_of_pages) {
+    girara_warning("document info: '%s' has an invalid page number", document->file_path);
+    document->current_page_number = 1;
   }
 
   if (plugin->open_function == NULL || plugin->open_function(document) != ZATHURA_PLUGIN_ERROR_OK) {
