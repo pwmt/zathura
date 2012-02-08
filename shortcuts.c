@@ -740,6 +740,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   float zoom_step = value / 100.0f;
+  float oldzoom = zathura->document->scale;
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
@@ -747,7 +748,6 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   } else if (argument->n == ZOOM_OUT) {
     zathura->document->scale -= zoom_step;
   } else if (argument->n == ZOOM_SPECIFIC) {
-    fprintf(stderr, "t: %d\n", t);
     zathura->document->scale = t / 100.0f;
   } else {
     zathura->document->scale = 1.0;
@@ -759,6 +759,14 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   } else if (zathura->document->scale > 10.0f) {
     zathura->document->scale = 10.0f;
   }
+
+  /* keep position */
+  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  gdouble valx = gtk_adjustment_get_value(view_hadjustment) / oldzoom * zathura->document->scale;
+  gdouble valy = gtk_adjustment_get_value(view_vadjustment) / oldzoom * zathura->document->scale;
+  set_adjustment(view_hadjustment, valx);
+  set_adjustment(view_vadjustment, valy);
 
   render_all(zathura);
 
