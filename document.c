@@ -271,7 +271,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   zathura_plugin_error_t error = plugin->open_function(document);
   if (error != ZATHURA_PLUGIN_ERROR_OK) {
-    while (error == ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD) {
+    if (error == ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD) {
       zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info != NULL) {
         password_dialog_info->path    = g_strdup(path);
@@ -304,9 +304,9 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   /* check current page number */
-  if (document->current_page_number < 1 || document->current_page_number > document->number_of_pages) {
+  if (document->current_page_number > document->number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", document->file_path);
-    document->current_page_number = 1;
+    document->current_page_number = 0;
   }
 
   /* update statusbar */
