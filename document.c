@@ -271,7 +271,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   zathura_plugin_error_t error = plugin->open_function(document);
   if (error != ZATHURA_PLUGIN_ERROR_OK) {
-    while (error == ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD) {
+    if (error == ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD) {
       zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info != NULL) {
         password_dialog_info->path    = g_strdup(path);
