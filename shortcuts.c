@@ -23,13 +23,15 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
-    zathura_page_t* page = zathura->document->pages[page_id];
-    if (page == NULL) {
-      continue;
-    }
+  if (zathura->document != NULL) {
+    for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
+      zathura_page_t* page = zathura->document->pages[page_id];
+      if (page == NULL) {
+        continue;
+      }
 
-    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+      g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+    }
   }
 
   girara_mode_set(session, session->modes.normal);
