@@ -97,9 +97,7 @@ zathura_page_widget_init(ZathuraPage* widget)
 
   /* we want mouse events */
   gtk_widget_add_events(GTK_WIDGET(widget),
-    GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE_MASK);
-  /* widgets can focus */
-  gtk_widget_set_can_focus(GTK_WIDGET(widget), TRUE);
+    GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
 }
 
 GtkWidget*

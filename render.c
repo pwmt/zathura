@@ -10,21 +10,10 @@
 #include "zathura.h"
 #include "document.h"
 #include "page_widget.h"
+#include "utils.h"
 
 void* render_job(void* data);
 bool render(zathura_t* zathura, zathura_page_t* page);
-
-static void
-page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
-{
-  if (rotate && page->document->rotate % 180) {
-    *page_width  = ceil(page->height * page->document->scale);
-    *page_height = ceil(page->width  * page->document->scale);
-  } else {
-    *page_width  = ceil(page->width  * page->document->scale);
-    *page_height = ceil(page->height * page->document->scale);
-  }
-}
 
 void*
 render_job(void* data)

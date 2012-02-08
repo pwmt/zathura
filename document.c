@@ -295,14 +295,16 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   /* read history file */
   int offset = 0;
   zathura_db_get_fileinfo(zathura->database, document->file_path,
-      &document->current_page_number, &offset, &document->scale);
+      &document->current_page_number, &offset, &document->scale, &document->rotate);
 
+  /* check for valid scale value */
   if (document->scale <= FLT_EPSILON) {
     girara_warning("document info: '%s' has non positive scale", document->file_path);
     document->scale = 1;
   }
 
-  if (document->current_page_number == 0 || document->current_page_number > document->number_of_pages) {
+  /* check current page number */
+  if (document->current_page_number < 1 || document->current_page_number > document->number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", document->file_path);
     document->current_page_number = 1;
   }
@@ -498,7 +500,11 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plu
     page->drawing_area = zathura_page_widget_new(page);
     page->document     = document;
 
-    gtk_widget_set_size_request(page->drawing_area, page->width * document->scale, page->height * document->scale);
+    unsigned int page_height = 0;
+    unsigned int page_width = 0;
+    page_calc_height_width(page, &page_height, &page_width, true);
+
+    gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
   }
 
   return page;
@@ -604,6 +610,26 @@ zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char
   }
 
   return page->document->functions.page_image_save(page, image, file);
+}
+
+char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error)
+{
+  if (page == NULL || page->document == NULL) {
+    if (error) {
+      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    }
+    return NULL;
+  }
+
+  if (page->document->functions.page_get_text == NULL) {
+    girara_error("%s not implemented", __FUNCTION__);
+    if (error) {
+      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    }
+    return NULL;
+  }
+
+  return page->document->functions.page_get_text(page, rectangle, error);
 }
 
 zathura_plugin_error_t
