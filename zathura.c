@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -576,8 +577,8 @@ page_set(zathura_t* zathura, unsigned int page_id)
 
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  gtk_adjustment_set_value(view_hadjustment, offset.x);
-  gtk_adjustment_set_value(view_vadjustment, offset.y);
+  set_adjustment(view_hadjustment, offset.x);
+  set_adjustment(view_vadjustment, offset.y);
 
   return true;
 
@@ -616,7 +617,7 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row)
 
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)0);
 
-  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), zathura->document->number_of_pages / pages_per_row + 1, pages_per_row);
+  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), ceil(zathura->document->number_of_pages / pages_per_row), pages_per_row);
   for (unsigned int i = 0; i < zathura->document->number_of_pages; i++)
   {
     int x = i % pages_per_row;
