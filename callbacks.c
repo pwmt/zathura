@@ -221,6 +221,17 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
   sc_reload(session, NULL, NULL, 0);
 }
 
+static gboolean
+password_dialog(gpointer data)
+{
+  zathura_password_dialog_info_t* dialog = data;
+  if (dialog != NULL) {
+    girara_dialog(dialog->zathura->ui.session, "Enter password:", true, NULL,
+        (girara_callback_inputbar_activate_t) cb_password_dialog, dialog);
+  }
+  return FALSE;
+}
+
 bool
 cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
 {
@@ -245,18 +256,19 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
       g_free(input);
     }
 
-    girara_dialog(dialog->zathura->ui.session, "Enter password:", true, NULL,
-        (girara_callback_inputbar_activate_t) cb_password_dialog, dialog);
-
+    g_idle_add(password_dialog, dialog);
     return false;
   }
 
   /* try to open document again */
-  document_open(dialog->zathura, dialog->path, input);
+  if (document_open(dialog->zathura, dialog->path, input) == false) {
+    g_idle_add(password_dialog, dialog);
+  } else {
+    g_free(dialog->path);
+    free(dialog);
+  }
 
   g_free(input);
-  g_free(dialog->path);
-  free(dialog);
 
   return true;
 
