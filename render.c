@@ -194,7 +194,7 @@ render(zathura_t* zathura, zathura_page_t* page)
     cairo_scale(cairo, zathura->document->scale, zathura->document->scale);
   }
 
-  if (zathura_page_render(page, cairo, false) == false) {
+  if (zathura_page_render(page, cairo, false) != ZATHURA_PLUGIN_ERROR_OK) {
     cairo_destroy(cairo);
     cairo_surface_destroy(surface);
     gdk_threads_leave();
