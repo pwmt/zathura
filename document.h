@@ -67,6 +67,12 @@ typedef enum zathura_document_meta_e
   ZATHURA_DOCUMENT_MODIFICATION_DATE /**< Modification data */
 } zathura_document_meta_t;
 
+typedef struct zathura_password_dialog_info_s
+{
+  char* path; /**< Path to the file */
+  zathura_t* zathura;  /**< Zathura session */
+} zathura_password_dialog_info_t;
+
 /**
  * Function prototype that is called to register a document plugin
  *
@@ -460,7 +466,7 @@ zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
  * @param page Page
  * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
  *   error occured
- * @return List of images or NULL if an error occured 
+ * @return List of images or NULL if an error occured
  */
 girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error);
 

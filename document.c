@@ -28,6 +28,7 @@
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include <girara/statusbar.h>
+#include <girara/session.h>
 
 /**
  * Register document plugin
@@ -262,6 +263,36 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   document->scale               = 1.0;
   document->zathura             = zathura;
 
+  /* open document */
+  if (plugin->open_function == NULL) {
+    girara_error("plugin has no open function\n");
+    goto error_free;
+  }
+
+  zathura_plugin_error_t error = plugin->open_function(document);
+  if (error != ZATHURA_PLUGIN_ERROR_OK) {
+    while (error == ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD) {
+      zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
+      if (password_dialog_info != NULL) {
+        password_dialog_info->path    = g_strdup(path);
+        password_dialog_info->zathura = zathura;
+
+        if (path != NULL) {
+          girara_dialog(zathura->ui.session, "Enter password:", true, NULL,
+              (girara_callback_inputbar_activate_t) cb_password_dialog, password_dialog_info);
+          goto error_free;
+        } else {
+          free(password_dialog_info);
+        }
+      }
+      goto error_free;
+    }
+
+    girara_error("could not open document\n");
+    goto error_free;
+  }
+
+  /* read history file */
   int offset = 0;
   zathura_db_get_fileinfo(zathura->database, document->file_path,
       &document->current_page_number, &offset, &document->scale);
@@ -274,11 +305,6 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   if (document->current_page_number == 0 || document->current_page_number > document->number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", document->file_path);
     document->current_page_number = 1;
-  }
-
-  if (plugin->open_function == NULL || plugin->open_function(document) != ZATHURA_PLUGIN_ERROR_OK) {
-    girara_error("could not open file\n");
-    goto error_free;
   }
 
   /* update statusbar */

@@ -220,3 +220,52 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
 
   sc_reload(session, NULL, NULL, 0);
 }
+
+bool
+cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
+{
+  if (entry == NULL || dialog == NULL) {
+    goto error_ret;
+  }
+
+  if (dialog->path == NULL) {
+    free(dialog);
+    goto error_ret;
+  }
+
+  if (dialog->zathura == NULL) {
+    goto error_free;
+  }
+
+  char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+
+  /* no or empty password: ask again */
+  if (input == NULL || strlen(input) == 0) {
+    if (input != NULL) {
+      g_free(input);
+    }
+
+    girara_dialog(dialog->zathura->ui.session, "Enter password:", true, NULL,
+        (girara_callback_inputbar_activate_t) cb_password_dialog, dialog);
+
+    return false;
+  }
+
+  /* try to open document again */
+  document_open(dialog->zathura, dialog->path, input);
+
+  g_free(input);
+  g_free(dialog->path);
+  free(dialog);
+
+  return true;
+
+error_free:
+
+    g_free(dialog->path);
+    free(dialog);
+
+error_ret:
+
+  return false;
+}

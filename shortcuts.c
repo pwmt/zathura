@@ -147,7 +147,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   /* ask for input */
   if (show_links == true) {
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow);
+    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, NULL);
   }
 
   return false;

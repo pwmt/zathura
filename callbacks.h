@@ -78,4 +78,13 @@ bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
 void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file,
     GFileMonitorEvent event, girara_session_t* session);
 
+/**
+ * Callback to read new password for file that should be opened
+ *
+ * @param entry The password entry
+ * @param dialog The dialog information
+ * @return true if input has been handled
+ */
+bool cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog);
+
 #endif // CALLBACKS_H
