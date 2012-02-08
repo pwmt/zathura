@@ -226,7 +226,7 @@ password_dialog(gpointer data)
 {
   zathura_password_dialog_info_t* dialog = data;
   if (dialog != NULL) {
-    girara_dialog(dialog->zathura->ui.session, "Enter password:", true, NULL,
+    girara_dialog(dialog->zathura->ui.session, "Incorrect password. Enter password:", true, NULL,
         (girara_callback_inputbar_activate_t) cb_password_dialog, dialog);
   }
   return FALSE;
