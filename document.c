@@ -275,6 +275,12 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     goto error_free;
   }
 
+  /* check current page number */
+  if (document->current_page_number < 1 || document->current_page_number >= document->number_of_pages) {
+    girara_warning("document info: '%s' has an invalid page number", document->file_path);
+    document->current_page_number = 1;
+  }
+
   /* update statusbar */
   girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, real_path);
 

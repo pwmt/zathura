@@ -50,7 +50,7 @@ ${PROJECT}: ${OBJECTS}
 
 clean:
 	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
-		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc
+		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc *gcda *gcno $(PROJECT).info gcov
 	$(QUIET)make -C tests clean
 
 ${PROJECT}-debug: ${DOBJECTS}
@@ -86,6 +86,12 @@ dist: clean
 
 doc: clean
 	$(QUIET)doxygen Doxyfile
+
+gcov: clean
+	$(QUIET)CFLAGS+="-fprofile-arcs -ftest-coverage" LDFLAGS+="-fprofile-arcs" $(MAKE) $(PROJECT)
+	$(QUIET)make -C tests
+	$(QUIET)lcov --directory . --capture --output-file $(PROJECT).info
+	$(QUIET)genhtml --output-directory gcov $(PROJECT).info
 
 install: all ${PROJECT}.pc
 	$(ECHO) installing executable file
