@@ -21,6 +21,7 @@ typedef struct zathura_page_widget_private_s {
   unsigned int number_of_links; /**< Offset to the links */
   girara_list_t* search_results; /** A list if there are search results that should be drawn */
   int search_current; /** The index of the current search result */
+  zathura_rectangle_t selection; /** Region selected with the mouse */
 } zathura_page_widget_private_t;
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
@@ -34,6 +35,8 @@ static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* a
 static void redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles);
 static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button);
+static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* button);
+static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event);
 
 enum properties_e
 {
@@ -59,6 +62,8 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   widget_class->expose_event = zathura_page_widget_expose;
   widget_class->size_allocate = zathura_page_widget_size_allocate;
   widget_class->button_press_event = cb_zathura_page_widget_button_press_event;
+  widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
+  widget_class->motion_notify_event = cb_zathura_page_widget_motion_notify;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize = zathura_page_widget_finalize;
@@ -93,6 +98,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->link_offset = 0;
   priv->search_results = NULL;
   priv->search_current = INT_MAX;
+  priv->selection.x1 = -1;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -306,6 +312,14 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
         ++idx;
       GIRARA_LIST_FOREACH_END(priv->search_results, zathura_rectangle_t*, iter, rect);
     }
+    /* draw selection */
+    if (priv->selection.y2 != -1 && priv->selection.x2 != -1) {
+        GdkColor color = priv->zathura->ui.colors.highlight_color;
+        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+        cairo_rectangle(cairo, priv->selection.x1, priv->selection.y1,
+            (priv->selection.x2 - priv->selection.x1), (priv->selection.y2 - priv->selection.y1));
+        cairo_fill(cairo);
+    }
   } else {
     /* set background color */
     cairo_set_source_rgb(cairo, 255, 255, 255);
@@ -412,8 +426,35 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
-  /* simple single click */
   if (button->type == GDK_BUTTON_PRESS) {
+    /* start the selection */
+    priv->selection.x1 = button->x;
+    priv->selection.y1 = button->y;
+    priv->selection.x2 = -1;
+    priv->selection.y2 = -1;
+  } else if (button->type == GDK_2BUTTON_PRESS || button->type == GDK_3BUTTON_PRESS) {
+    /* abort the selection */
+    priv->selection.x1 = -1;
+    priv->selection.y1 = -1;
+    priv->selection.x2 = -1;
+    priv->selection.y2 = -1;
+  }
+  return false;
+}
+
+static gboolean
+cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* button)
+{
+  g_return_val_if_fail(widget != NULL, false);
+  g_return_val_if_fail(button != NULL, false);
+
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  if (button->type != GDK_BUTTON_RELEASE) {
+    return false;
+  }
+
+  if (priv->selection.y2 == -1 && priv->selection.x2 == -1 ) {
+    /* simple single click */
     /* get links */
     if (priv->links_got == false) {
       priv->links = zathura_page_links_get(priv->page, NULL);
@@ -437,7 +478,53 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
         }
       GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
     }
+  } else {
+    redraw_rect(ZATHURA_PAGE(widget), &priv->selection);
+    zathura_rectangle_t tmp = priv->selection;
+    tmp.x1 /= priv->page->document->scale;
+    tmp.x2 /= priv->page->document->scale;
+    tmp.y1 /= priv->page->document->scale;
+    tmp.y2 /= priv->page->document->scale;
+
+    char* text = zathura_page_get_text(priv->page, tmp, NULL);
+    if (text != NULL) {
+      gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
+      g_free(text);
+    }
   }
+  priv->selection.x1 = -1;
+  priv->selection.y1 = -1;
+  priv->selection.x2 = -1;
+  priv->selection.y2 = -1;
+  
+  return false;
+}
+
+static gboolean
+cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
+{
+  g_return_val_if_fail(widget != NULL, false);
+  g_return_val_if_fail(event != NULL, false);
+  if ((event->state & GDK_BUTTON1_MASK) == 0) {
+    return false;
+  }
+
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  zathura_rectangle_t tmp = priv->selection;
+  if (event->x < priv->selection.x1) {
+    tmp.x1 = event->x;
+  } else {
+    tmp.x2 = event->x;
+  }
+  if (event->y < priv->selection.y1) {
+    tmp.y1 = event->y;
+  } else {
+    tmp.y2 = event->y;
+  }
+
+  redraw_rect(ZATHURA_PAGE(widget), &priv->selection);
+  redraw_rect(ZATHURA_PAGE(widget), &tmp);
+  priv->selection = tmp;
 
   return false;
 }
