@@ -50,7 +50,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     if ((current_file_length > e_length) || strncmp(current_file, e_name,
           current_file_length)) {
       g_free(e_name);
-      goto error_free;
+      continue;
     }
 
     char* full_path = g_strdup_printf("%s%s%s", current_path, is_dir ? "" : "/", e_name);
