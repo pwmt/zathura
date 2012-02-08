@@ -304,9 +304,9 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   /* check current page number */
-  if (document->current_page_number < 1 || document->current_page_number > document->number_of_pages) {
+  if (document->current_page_number > document->number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", document->file_path);
-    document->current_page_number = 1;
+    document->current_page_number = 0;
   }
 
   /* update statusbar */
