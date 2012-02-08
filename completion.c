@@ -15,6 +15,17 @@
 #include <girara/utils.h>
 #include <girara/datastructures.h>
 
+static int
+compare_case_insensitive(const char* str1, const char* str2)
+{
+  char* ustr1 = g_utf8_casefold(str1, -1);
+  char* ustr2 = g_utf8_casefold(str2, -1);
+  int res = g_utf8_collate(ustr1, ustr2);
+  g_free(ustr1);
+  g_free(ustr2);
+  return res;
+}
+
 static girara_list_t*
 list_files(zathura_t* zathura, const char* current_path, const char* current_file, int current_file_length, bool is_dir)
 {
@@ -24,7 +35,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     return NULL;
   }
 
-  girara_list_t* res = girara_sorted_list_new2((girara_compare_function_t)g_strcmp0,
+  girara_list_t* res = girara_sorted_list_new2((girara_compare_function_t)compare_case_insensitive,
       (girara_free_function_t)g_free);
 
   /* read files */
