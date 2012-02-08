@@ -167,7 +167,7 @@ zathura_init(int argc, char* argv[])
   }
 
   /* girara events */
-  zathura->ui.session->events.buffer_changed = buffer_changed;
+  zathura->ui.session->events.buffer_changed = cb_buffer_changed;
 
   /* page view */
   zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);

@@ -24,7 +24,7 @@ cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
 }
 
 void
-buffer_changed(girara_session_t* session)
+cb_buffer_changed(girara_session_t* session)
 {
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);

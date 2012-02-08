@@ -23,7 +23,7 @@ gboolean cb_destroy(GtkWidget* widget, gpointer data);
  *
  * @param session The girara session
  */
-void buffer_changed(girara_session_t* session);
+void cb_buffer_changed(girara_session_t* session);
 
 /**
  * This function gets called when the value of the vertical scrollbars
