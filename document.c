@@ -584,6 +584,26 @@ zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char
   return page->document->functions.page_image_save(page, image, file);
 }
 
+char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error)
+{
+  if (page == NULL || page->document == NULL) {
+    if (error) {
+      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    }
+    return NULL;
+  }
+
+  if (page->document->functions.page_get_text == NULL) {
+    girara_error("%s not implemented", __FUNCTION__);
+    if (error) {
+      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    }
+    return NULL;
+  }
+
+  return page->document->functions.page_get_text(page, rectangle, error);
+}
+
 zathura_plugin_error_t
 zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
 {

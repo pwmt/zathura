@@ -269,6 +269,11 @@ struct zathura_document_s
     zathura_plugin_error_t (*page_image_save)(zathura_page_t* page, zathura_image_t* image, const char* file);
 
     /**
+     * Get text for selection
+     */
+    char* (*page_get_text)(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error);
+
+    /**
      * Renders the page
      */
     zathura_image_buffer_t* (*page_render)(zathura_page_t* page, zathura_plugin_error_t* error);
@@ -474,6 +479,16 @@ girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_erro
  *    zathura_plugin_error_t
  */
 zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
+
+/**
+ * Get text for selection
+ * @param page Page
+ * @param rectangle Selection
+ * @error Set to an error value (see \ref zathura_plugin_error_t) if an error
+ * occured
+ * @return The selected text (needs to be deallocated with g_free)
+ */
+char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error);
 
 /**
  * Render page
