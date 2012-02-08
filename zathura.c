@@ -502,7 +502,8 @@ document_close(zathura_t* zathura)
 
   /* store last seen page */
   zathura_db_set_fileinfo(zathura->database, zathura->document->file_path, zathura->document->current_page_number + 1,
-      /* zathura->document->offset TODO */ 0, zathura->document->scale);
+      /* zathura->document->offset TODO */ 0, zathura->document->scale,
+      zathura->document->rotate);
 
   render_free(zathura->sync.render_thread);
   zathura->sync.render_thread = NULL;

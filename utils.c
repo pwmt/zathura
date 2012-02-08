@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "math.h"
 
 #include "utils.h"
 #include "zathura.h"
@@ -189,6 +190,38 @@ page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
     zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
+zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width)
+{
+  zathura_rectangle_t tmp;
+  switch (degree) {
+    case 90:
+      tmp.x1 = height - rectangle.y2;
+      tmp.x2 = height - rectangle.y1;
+      tmp.y1 = rectangle.x1;
+      tmp.y2 = rectangle.x2;
+      break;
+    case 180:
+      tmp.x1 = width - rectangle.x2;
+      tmp.x2 = width - rectangle.x1;
+      tmp.y1 = height - rectangle.y2;
+      tmp.y2 = height - rectangle.y1;
+      break;
+    case 270:
+      tmp.x1 = rectangle.y1;
+      tmp.x2 = rectangle.y2;
+      tmp.y1 = width - rectangle.x2;
+      tmp.y2 = width - rectangle.x1;
+      break;
+    default:
+      tmp.x1 = rectangle.x1;
+      tmp.x2 = rectangle.x2;
+      tmp.y1 = rectangle.y1;
+      tmp.y2 = rectangle.y2;
+  }
+
+  return tmp;
+}
+
 zathura_rectangle_t
 recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
 {
@@ -231,4 +264,18 @@ void
 set_adjustment(GtkAdjustment* adjustment, gdouble value)
 {
   gtk_adjustment_set_value(adjustment, MAX(adjustment->lower, MIN(adjustment->upper - adjustment->page_size, value)));
+}
+
+void
+page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
+{
+  g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
+
+  if (rotate && page->document->rotate % 180) {
+    *page_width  = ceil(page->height * page->document->scale);
+    *page_height = ceil(page->width  * page->document->scale);
+  } else {
+    *page_width  = ceil(page->width  * page->document->scale);
+    *page_height = ceil(page->height * page->document->scale);
+  }
 }

@@ -41,7 +41,8 @@ zathura_db_init(const char* dir)
       "file TEXT PRIMARY KEY,"
       "page INTEGER,"
       "offset INTEGER,"
-      "scale FLOAT);";
+      "scale FLOAT,"
+      "rotation INTEGER);";
 
   if (sqlite3_open(path, &(db->session)) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
@@ -198,12 +199,12 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
 bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, int offset, double scale)
+    page, int offset, double scale, int rotation)
 {
   g_return_val_if_fail(db && file, false);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, scale) VALUES (?, ?, ?, ?);";
+    "REPLACE INTO fileinfo (file, page, offset, scale, rotation) VALUES (?, ?, ?, ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(db->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
@@ -213,7 +214,8 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
       sqlite3_bind_int(stmt, 2, page) != SQLITE_OK ||
       sqlite3_bind_int(stmt, 3, offset) != SQLITE_OK ||
-      sqlite3_bind_double(stmt, 4, scale) != SQLITE_OK) {
+      sqlite3_bind_double(stmt, 4, scale) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 5, rotation) != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
@@ -226,12 +228,12 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, int* offset, double* scale)
+    page, int* offset, double* scale, int* rotation)
 {
-  g_return_val_if_fail(db && file && page && offset && scale, false);
+  g_return_val_if_fail(db && file && page && offset && scale && rotation, false);
 
   static const char SQL_FILEINFO_GET[] =
-    "SELECT page, offset, scale FROM fileinfo WHERE file = ?;";
+    "SELECT page, offset, scale, rotation FROM fileinfo WHERE file = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(db->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
@@ -253,6 +255,7 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
   *page = sqlite3_column_int(stmt, 0);
   *offset = sqlite3_column_int(stmt, 1);
   *scale = sqlite3_column_double(stmt, 2);
+  *rotation = sqlite3_column_int(stmt, 3);
   sqlite3_finalize(stmt);
   return true;
 }

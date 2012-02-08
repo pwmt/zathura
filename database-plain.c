@@ -19,6 +19,7 @@
 #define KEY_PAGE "page"
 #define KEY_OFFSET "offset"
 #define KEY_SCALE "scale"
+#define KEY_ROTATE "rotate"
 
 #define file_lock_set(fd, cmd) \
   { \
@@ -226,7 +227,7 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
 
 bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, int offset, double scale)
+    page, int offset, double scale, int rotation)
 {
   if (db == NULL || db->history == NULL || file == NULL) {
     return false;
@@ -240,6 +241,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
   g_key_file_set_integer(db->history, file, KEY_PAGE,   page);
   g_key_file_set_integer(db->history, file, KEY_OFFSET, offset);
   g_key_file_set_string (db->history, file, KEY_SCALE,  tmp);
+  g_key_file_set_integer(db->history, file, KEY_ROTATE, rotation);
 
   g_free(tmp);
 
@@ -250,10 +252,10 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, int* offset, double* scale)
+    page, int* offset, double* scale, int* rotation)
 {
   if (db == NULL || db->history == NULL || file == NULL || page == NULL ||
-      offset == NULL || scale == NULL) {
+      offset == NULL || scale == NULL || rotation == NULL) {
     return false;
   }
 
@@ -264,6 +266,7 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
   *page   = g_key_file_get_integer(db->history, file, KEY_PAGE, NULL);
   *offset = g_key_file_get_integer(db->history, file, KEY_OFFSET, NULL);
   *scale  = strtod(g_key_file_get_string(db->history, file, KEY_SCALE, NULL), NULL);
+  *rotation = g_key_file_get_integer(db->history, file, KEY_ROTATE, NULL);
 
   return true;
 }

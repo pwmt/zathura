@@ -264,7 +264,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   int offset = 0;
   zathura_db_get_fileinfo(zathura->database, document->file_path,
-      &document->current_page_number, &offset, &document->scale);
+      &document->current_page_number, &offset, &document->scale, &document->rotate);
   if (document->scale <= FLT_EPSILON) {
     girara_warning("document info: '%s' has non positive scale", document->file_path);
     document->scale = 1;
@@ -466,7 +466,11 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plu
     page->drawing_area = zathura_page_widget_new(page);
     page->document     = document;
 
-    gtk_widget_set_size_request(page->drawing_area, page->width * document->scale, page->height * document->scale);
+    unsigned int page_height = 0;
+    unsigned int page_width = 0;
+    page_calc_height_width(page, &page_height, &page_width, true);
+
+    gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
   }
 
   return page;

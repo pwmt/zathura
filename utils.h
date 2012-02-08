@@ -73,6 +73,16 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
 void page_calculate_offset(zathura_page_t* page, page_offset_t* offset);
 
 /**
+ * Rotate a rectangle by 0, 90, 180 or 270 degree
+ * @param rect the rectangle to rotate
+ * @param degree rotation degree
+ * @param height the height of the enclosing rectangle
+ * @param width the width of the enclosing rectangle
+ * @return the rotated rectangle
+ */
+zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width);
+
+/**
  * Calculates the new coordinates based on the rotation and scale level of the
  * document for the given rectangle
  *
@@ -88,5 +98,17 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
  * @param value the new adjustment
  */
 void set_adjustment(GtkAdjustment* adjust, gdouble value);
+
+/**
+ * Calculate the page size according to the corrent scaling and rotation if
+ * desired.
+ * @param page the page
+ * @param page_height the resulting page height
+ * @param page_width the resultung page width
+ * @param rotate honor page's rotation
+ */
+void
+page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate);
+
 
 #endif // UTILS_H
