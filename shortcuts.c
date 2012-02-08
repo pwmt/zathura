@@ -208,6 +208,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
     }
 
     return sc_scroll(session, argument, NULL, t);
+  } else if (event->type == GIRARA_EVENT_MOTION_NOTIFY) {
   }
 
   return false;
