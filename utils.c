@@ -226,3 +226,9 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
 
   return tmp;
 }
+
+void
+set_adjustment(GtkAdjustment* adjustment, gdouble value)
+{
+  gtk_adjustment_set_value(adjustment, MAX(adjustment->lower, MIN(adjustment->upper - adjustment->page_size, value)));
+}

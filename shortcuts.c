@@ -167,7 +167,6 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   } else {
     if (t == 0) {
       page_set(zathura, zathura->document->number_of_pages - 1);
-      return true;
     } else {
       page_set(zathura, t - 1);
     }
@@ -359,24 +358,24 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   switch(argument->n) {
     case FULL_UP:
-      new_value = (value - view_size) < 0 ? 0 : (value - view_size);
+      new_value = value - view_size;
       break;
     case FULL_DOWN:
-      new_value = (value + view_size) > max ? max : (value + view_size);
+      new_value = value + view_size;
       break;
     case HALF_UP:
-      new_value = (value - (view_size / 2)) < 0 ? 0 : (value - (view_size / 2));
+      new_value = value - (view_size / 2);
       break;
     case HALF_DOWN:
-      new_value = (value + (view_size / 2)) > max ? max : (value + (view_size / 2));
+      new_value = value + (view_size / 2);
       break;
     case LEFT:
     case UP:
-      new_value = (value - scroll_step) < 0 ? 0 : (value - scroll_step);
+      new_value = value - scroll_step;
       break;
     case RIGHT:
     case DOWN:
-      new_value = (value + scroll_step) > max ? max : (value + scroll_step);
+      new_value = value + scroll_step;
       break;
     case TOP:
       new_value = 0;
@@ -388,7 +387,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       new_value = value;
   }
 
-  gtk_adjustment_set_value(adjustment, new_value);
+  set_adjustment(adjustment, new_value);
 
   return false;
 }
@@ -466,8 +465,8 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
     int x = offset.x - gtk_adjustment_get_page_size(view_hadjustment) / 2 + rectangle.x1;
     int y = offset.y - gtk_adjustment_get_page_size(view_vadjustment) / 2 + rectangle.y1;
-    gtk_adjustment_set_value(view_hadjustment, MAX(view_hadjustment->lower, MIN(view_hadjustment->upper - view_hadjustment->page_size, x)));
-    gtk_adjustment_set_value(view_vadjustment, MAX(view_vadjustment->lower, MIN(view_vadjustment->upper - view_vadjustment->page_size, y)));
+    set_adjustment(view_hadjustment, x);
+    set_adjustment(view_vadjustment, y);
   }
 
   return false;

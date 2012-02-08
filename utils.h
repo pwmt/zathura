@@ -82,4 +82,11 @@ void page_calculate_offset(zathura_page_t* page, page_offset_t* offset);
  */
 zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle);
 
+/**
+ * Set adjustment of a GtkAdjustment respecting its limits.
+ * @param adjust the GtkAdkustment instance
+ * @param value the new adjustment
+ */
+void set_adjustment(GtkAdjustment* adjust, gdouble value);
+
 #endif // UTILS_H
