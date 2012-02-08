@@ -21,7 +21,7 @@ ZSOURCE += ../database-plain.c
 endif
 endif
 
-all: options ${PROJECT} run
+all: ${PROJECT} run
 
 run: ${PROJECT}
 	$(QUIET)./${PROJECT}
@@ -38,7 +38,8 @@ options:
 	@mkdir -p .depend
 	$(QUIET)${CC} -c -I.. ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
-${PROJECT}: ${OBJECTS}
+${PROJECT}: options ${OBJECTS}
+	$(QUIET)make -C ..
 	$(ECHO) CC -o $@
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${ZOBJECTS} ${LIBS}
 
