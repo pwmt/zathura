@@ -60,8 +60,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, "Transparency for highlighting", NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, "Render 'Loading ...'", NULL, NULL);
-  int_value = ADJUST_BESTFIT;
-  girara_setting_add(gsession, "adjust-open",            &int_value,   INT,     false, "Adjust to when opening file", NULL, NULL);
+  string_value = "best-fit";
+  girara_setting_add(gsession, "adjust-open",            string_value, STRING,  false, "Adjust to when opening file", NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,                    0,          0,               NULL);

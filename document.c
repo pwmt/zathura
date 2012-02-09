@@ -346,10 +346,17 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   g_signal_connect(G_OBJECT(document->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
 
-
   /* apply open adjustment */
-  int adjust_open = ADJUST_BESTFIT;
-  girara_setting_get(zathura->ui.session, "adjust-open", &adjust_open);
+  char* adjust_open = "best-fit";
+  document->adjust_mode = ADJUST_BESTFIT;
+  if (girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
+    if (g_strcmp0(adjust_open, "best-fit") == 0) {
+      document->adjust_mode = ADJUST_BESTFIT;
+    } else if (g_strcmp0(adjust_open, "width") == 0) {
+      document->adjust_mode = ADJUST_WIDTH;
+    }
+    g_free(adjust_open);
+  }
 
   g_free(file_uri);
 
