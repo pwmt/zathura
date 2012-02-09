@@ -7,3 +7,7 @@
 zathura
 zathura-debug
 zathura.pc
+*.info
+*.gcno
+*.gcda
+gcov/
