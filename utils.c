@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "math.h"
+#include <math.h>
 
 #include "utils.h"
 #include "zathura.h"
