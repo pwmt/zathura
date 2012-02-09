@@ -57,10 +57,10 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* get window size */
-  /* TODO: Get correct size of the view widget */
-  gint width;
-  gint height;
-  gtk_window_get_size(GTK_WINDOW(session->gtk.window), &width, &height);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(session->gtk.view, &allocation);
+  gint width = allocation.width;
+  gint height = allocation.height;
 
   /* calculate total width and max-height */
   double total_width = 0;
