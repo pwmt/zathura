@@ -11,3 +11,4 @@ zathura.pc
 *.gcno
 *.gcda
 gcov/
+*.swp
