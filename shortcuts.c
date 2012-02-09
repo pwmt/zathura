@@ -56,6 +56,8 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
     goto error_ret;
   }
 
+  zathura->document->adjust_mode = argument->n;
+
   /* get window size */
   GtkAllocation allocation;
   gtk_widget_get_allocation(session->gtk.view, &allocation);
@@ -763,6 +765,8 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
+
+  zathura->document->adjust_mode = ADJUST_NONE;
 
   /* retreive zoom step value */
   int value = 1;

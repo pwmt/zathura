@@ -1,11 +1,13 @@
 /* See LICENSE file for license and copyright information */
 
-#include "page_widget.h"
-#include "render.h"
-#include "utils.h"
 #include <girara/utils.h>
 #include <girara/settings.h>
 #include <girara/datastructures.h>
+
+#include "page_widget.h"
+#include "render.h"
+#include "utils.h"
+#include "shortcuts.h"
 
 G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 

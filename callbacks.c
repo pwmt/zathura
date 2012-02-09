@@ -281,3 +281,16 @@ error_ret:
 
   return false;
 }
+
+bool
+cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
+{
+  if (zathura == NULL || zathura->document == NULL) {
+    return false;
+  }
+
+  girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+
+  return true;
+}

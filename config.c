@@ -55,11 +55,13 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "recolor-lightcolor", string_value, STRING, false, "Recoloring (light color)", NULL, NULL);
 
   string_value = "#9FBC00";
-  girara_setting_add(gsession, "highlight-color",        string_value, STRING, false, "Color for highlighting",        NULL, NULL);
+  girara_setting_add(gsession, "highlight-color",        string_value, STRING,  false, "Color for highlighting",        NULL, NULL);
   float_value = 0.5;
-  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,  false, "Transparency for highlighting", NULL, NULL);
+  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, "Transparency for highlighting", NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, "Render 'Loading ...'", NULL, NULL);
+  int_value = ADJUST_BESTFIT;
+  girara_setting_add(gsession, "adjust-open",            &int_value,   INT,     false, "Adjust to when opening file", NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_c,          NULL, sc_abort,                    0,          0,               NULL);
@@ -184,10 +186,10 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "bottom",     BOTTOM);
   girara_argument_mapping_add(gsession, "default",    DEFAULT);
   girara_argument_mapping_add(gsession, "down",       DOWN);
-  girara_argument_mapping_add(gsession, "full_down",  FULL_DOWN);
-  girara_argument_mapping_add(gsession, "full_up",    FULL_UP);
-  girara_argument_mapping_add(gsession, "half_down",  HALF_DOWN);
-  girara_argument_mapping_add(gsession, "half_up",    HALF_UP);
+  girara_argument_mapping_add(gsession, "full-down",  FULL_DOWN);
+  girara_argument_mapping_add(gsession, "full-up",    FULL_UP);
+  girara_argument_mapping_add(gsession, "half-down",  HALF_DOWN);
+  girara_argument_mapping_add(gsession, "half-up",    HALF_UP);
   girara_argument_mapping_add(gsession, "in",         ZOOM_IN);
   girara_argument_mapping_add(gsession, "left",       LEFT);
   girara_argument_mapping_add(gsession, "next",       NEXT);
@@ -197,6 +199,8 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "specific",   ZOOM_SPECIFIC);
   girara_argument_mapping_add(gsession, "top",        TOP);
   girara_argument_mapping_add(gsession, "up",         UP);
+  girara_argument_mapping_add(gsession, "best-fit",   ADJUST_BESTFIT);
+  girara_argument_mapping_add(gsession, "width",      ADJUST_WIDTH);
 }
 
 void

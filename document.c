@@ -29,6 +29,7 @@
 #include <girara/utils.h>
 #include <girara/statusbar.h>
 #include <girara/session.h>
+#include <girara/settings.h>
 
 /**
  * Register document plugin
@@ -344,6 +345,11 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   g_signal_connect(G_OBJECT(document->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
+
+
+  /* apply open adjustment */
+  int adjust_open = ADJUST_BESTFIT;
+  girara_setting_get(zathura->ui.session, "adjust-open", &adjust_open);
 
   g_free(file_uri);
 

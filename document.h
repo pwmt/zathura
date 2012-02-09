@@ -211,6 +211,7 @@ struct zathura_document_s
   int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_t* zathura; /** Zathura object */
+  int adjust_mode; /**< Adjust mode (best-fit, width) */
 
   struct
   {

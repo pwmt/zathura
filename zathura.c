@@ -176,6 +176,8 @@ zathura_init(int argc, char* argv[])
     goto error_free;
   }
 
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
+
   /* callbacks */
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   g_signal_connect(G_OBJECT(view_vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
