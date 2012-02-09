@@ -491,7 +491,7 @@ zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_ima
  * Get text for selection
  * @param page Page
  * @param rectangle Selection
- * @error Set to an error value (see \ref zathura_plugin_error_t) if an error
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an error
  * occured
  * @return The selected text (needs to be deallocated with g_free)
  */
