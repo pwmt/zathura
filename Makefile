@@ -88,8 +88,8 @@ doc: clean
 	$(QUIET)doxygen Doxyfile
 
 gcov: clean
-	$(QUIET)CFLAGS+="-fprofile-arcs -ftest-coverage" LDFLAGS+="-fprofile-arcs" $(MAKE) $(PROJECT)
-	$(QUIET)make -C tests
+	$(QUIET)CFLAGS="${CFLAGS}-fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
+	$(QUIET)${MAKE} -C tests
 	$(QUIET)lcov --directory . --capture --output-file $(PROJECT).info
 	$(QUIET)genhtml --output-directory gcov $(PROJECT).info
 
