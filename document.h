@@ -7,31 +7,71 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 
-#include <girara-datastructures.h>
+#include <girara/types.h>
 #include "zathura.h"
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 
-typedef struct zathura_list_s zathura_list_t;
-// typedef struct zathura_document_s zathura_document_t;
+/**
+ * Error types for plugins
+ */
+typedef enum zathura_plugin_error_e
+{
+  ZATHURA_PLUGIN_ERROR_OK, /**< No error occured */
+  ZATHURA_PLUGIN_ERROR_UNKNOWN, /**< An unknown error occured */
+  ZATHURA_PLUGIN_ERROR_OUT_OF_MEMORY, /**< Out of memory */
+  ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED, /**< The called function has not been implemented */
+  ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS, /**< Invalid arguments have been passed */
+  ZATHURA_PLUGIN_ERROR_INVALID_PASSWORD /**< The provided password is invalid */
+} zathura_plugin_error_t;
 
-typedef bool (*zathura_document_open_t)(zathura_document_t* document);
+/**
+ * Document open function
+ *
+ * @param document The document
+ * @return true if no error occured otherwise false
+ */
+typedef zathura_plugin_error_t (*zathura_document_open_t)(zathura_document_t* document);
 
 /**
  * Document plugin structure
  */
 typedef struct zathura_document_plugin_s
 {
-  girara_list_t* content_types; /**> List of supported content types */
-  zathura_document_open_t open_function; /**> Document open function */
-  void* handle; /**> DLL handle */
+  girara_list_t* content_types; /**< List of supported content types */
+  zathura_document_open_t open_function; /**< Document open function */
+  void* handle; /**< DLL handle */
 } zathura_document_plugin_t;
 
+/**
+ * Plugin mapping
+ */
 typedef struct zathura_type_plugin_mapping_s
 {
-  const gchar* type;
-  zathura_document_plugin_t* plugin;
+  const gchar* type; /**< Plugin type */
+  zathura_document_plugin_t* plugin; /**< Mapped plugin */
 } zathura_type_plugin_mapping_t;
+
+/**
+ * Meta data entries
+ */
+typedef enum zathura_document_meta_e
+{
+  ZATHURA_DOCUMENT_TITLE, /**< Title of the document */
+  ZATHURA_DOCUMENT_AUTHOR, /**< Author of the document */
+  ZATHURA_DOCUMENT_SUBJECT, /**< Subject of the document */
+  ZATHURA_DOCUMENT_KEYWORDS, /**< Keywords of the document */
+  ZATHURA_DOCUMENT_CREATOR, /**< Creator of the document */
+  ZATHURA_DOCUMENT_PRODUCER, /**< Producer of the document */
+  ZATHURA_DOCUMENT_CREATION_DATE, /**< Creation data */
+  ZATHURA_DOCUMENT_MODIFICATION_DATE /**< Modification data */
+} zathura_document_meta_t;
+
+typedef struct zathura_password_dialog_info_s
+{
+  char* path; /**< Path to the file */
+  zathura_t* zathura;  /**< Zathura session */
+} zathura_password_dialog_info_t;
 
 /**
  * Function prototype that is called to register a document plugin
@@ -41,23 +81,14 @@ typedef struct zathura_type_plugin_mapping_s
 typedef void (*zathura_plugin_register_service_t)(zathura_document_plugin_t*);
 
 /**
- * Structure for a list
- */
-struct zathura_list_s
-{
-  void* data; /**> Data value */
-  struct zathura_list_s* next; /**> Next element in the list */
-};
-
-/**
  * Image buffer
  */
 typedef struct zathura_image_buffer_s
 {
-  unsigned char* data; /**> Image buffer data */
-  unsigned int height; /**> Height of the image */
-  unsigned int width; /**> Width of the image */
-  unsigned int rowstride; /**> Rowstride of the image */
+  unsigned char* data; /**< Image buffer data */
+  unsigned int height; /**< Height of the image */
+  unsigned int width; /**< Width of the image */
+  unsigned int rowstride; /**< Rowstride of the image */
 } zathura_image_buffer_t;
 
 /**
@@ -72,28 +103,39 @@ zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned
 /**
  * Frees the image buffer
  *
- * @param zathura_image_buffer_t
+ * @param buffer The image buffer
  */
-void zathura_image_buffer_free(zathura_image_buffer_t*);
+void zathura_image_buffer_free(zathura_image_buffer_t* buffer);
 
 /**
- * Rectangle structure
+ * Rectangle structure.
+ * The coordinate system has its origin in the left upper corner. The x axes
+ * goes to the right, the y access goes down.
  */
 typedef struct zathura_rectangle_s
 {
-  double x1; /**> X coordinate of point 1 */
-  double y1; /**> Y coordinate of point 1 */
-  double x2; /**> X coordinate of point 2 */
-  double y2; /**> Y coordinate of point 2 */
+  double x1; /**< X coordinate of point 1 */
+  double y1; /**< Y coordinate of point 1 */
+  double x2; /**< X coordinate of point 2 */
+  double y2; /**< Y coordinate of point 2 */
 } zathura_rectangle_t;
+
+/**
+ * Image structure
+ */
+typedef struct zathura_image_s
+{
+  zathura_rectangle_t position; /**< Coordinates of the image */
+  void* data; /**< Custom data of the plugin */
+} zathura_image_t;
 
 /**
  * Possible link types
  */
 typedef enum zathura_link_type_e
 {
-  ZATHURA_LINK_TO_PAGE, /**> Links to a page */
-  ZATHURA_LINK_EXTERNAL, /**> Links to an external source */
+  ZATHURA_LINK_TO_PAGE, /**< Links to a page */
+  ZATHURA_LINK_EXTERNAL, /**< Links to an external source */
 } zathura_link_type_t;
 
 /**
@@ -101,12 +143,12 @@ typedef enum zathura_link_type_e
  */
 typedef struct zathura_link_s
 {
-  zathura_rectangle_t position; /**> Position of the link */
-  zathura_link_type_t type; /**> Link type */
+  zathura_rectangle_t position; /**< Position of the link */
+  zathura_link_type_t type; /**< Link type */
   union
   {
-    unsigned int page_number; /**> Page number */
-    char* value; /**> Value */
+    unsigned int page_number; /**< Page number */
+    char* value; /**< Value */
   } target;
 } zathura_link_t;
 
@@ -115,12 +157,12 @@ typedef struct zathura_link_s
  */
 typedef struct zathura_index_element_s
 {
-  char* title; /**> Title of the element */
-  zathura_link_type_t type; /**> Type */
+  char* title; /**< Title of the element */
+  zathura_link_type_t type; /**< Type */
   union
   {
-    unsigned int page_number; /**> Page number */
-    char* uri; /**> Uri */
+    unsigned int page_number; /**< Page number */
+    char* uri; /**< Uri */
   } target;
 } zathura_index_element_t;
 
@@ -129,8 +171,8 @@ typedef struct zathura_index_element_s
  */
 typedef enum zathura_form_type_e
 {
-  ZATHURA_FORM_CHECKBOX, /**> Checkbox */
-  ZATHURA_FORM_TEXTFIELD /**> Textfield */
+  ZATHURA_FORM_CHECKBOX, /**< Checkbox */
+  ZATHURA_FORM_TEXTFIELD /**< Textfield */
 } zathura_form_type_t;
 
 /**
@@ -138,8 +180,8 @@ typedef enum zathura_form_type_e
  */
 typedef struct zathura_form_s
 {
-  zathura_rectangle_t position; /**> Position */
-  zathura_form_type_t type; /**> Type */
+  zathura_rectangle_t position; /**< Position */
+  zathura_form_type_t type; /**< Type */
 } zathura_form_t;
 
 /**
@@ -147,16 +189,13 @@ typedef struct zathura_form_s
  */
 struct zathura_page_s
 {
-  double height; /**> Page height */
-  double width; /**> Page width */
-  unsigned int number; /**> Page number */
-  zathura_document_t* document; /**> Document */
-  void* data; /**> Custom data */
-  bool visible; /**> Page is visible */
-  GtkWidget* event_box; /**> Widget wrapper for mouse events */
-  GtkWidget* drawing_area; /**> Drawing area */
-  GStaticMutex lock; /**> Lock */
-  cairo_surface_t* surface; /** Cairo surface */
+  double height; /**< Page height */
+  double width; /**< Page width */
+  unsigned int number; /**< Page number */
+  zathura_document_t* document; /**< Document */
+  void* data; /**< Custom data */
+  bool visible; /**< Page is visible */
+  GtkWidget* drawing_area; /**< Drawing area */
 };
 
 /**
@@ -164,77 +203,111 @@ struct zathura_page_s
  */
 struct zathura_document_s
 {
-  char* file_path; /**> File path of the document */
-  const char* password; /**> Password of the document */
-  unsigned int current_page_number; /**> Current page number */
-  unsigned int number_of_pages; /**> Number of pages */
-  double scale; /**> Scale value */
-  int rotate; /**> Rotation */
-  void* data; /**> Custom data */
+  char* file_path; /**< File path of the document */
+  const char* password; /**< Password of the document */
+  unsigned int current_page_number; /**< Current page number */
+  unsigned int number_of_pages; /**< Number of pages */
+  double scale; /**< Scale value */
+  int rotate; /**< Rotation */
+  void* data; /**< Custom data */
   zathura_t* zathura; /** Zathura object */
+  int adjust_mode; /**< Adjust mode (best-fit, width) */
 
   struct
   {
     /**
      * Frees the document
      */
-    bool (*document_free)(zathura_document_t* document);
+    zathura_plugin_error_t (*document_free)(zathura_document_t* document);
 
     /**
      * Generates the document index
      */
-    girara_tree_node_t* (*document_index_generate)(zathura_document_t* document);
+    girara_tree_node_t* (*document_index_generate)(zathura_document_t* document, zathura_plugin_error_t* error);
 
     /**
      * Save the document
      */
-    bool (*document_save_as)(zathura_document_t* document, const char* path);
+    zathura_plugin_error_t (*document_save_as)(zathura_document_t* document, const char* path);
 
     /**
      * Get list of attachments
      */
-    zathura_list_t* (*document_attachments_get)(zathura_document_t* document);
+    girara_list_t* (*document_attachments_get)(zathura_document_t* document, zathura_plugin_error_t* error);
+
+    /**
+     * Save attachment to a file
+     */
+    zathura_plugin_error_t (*document_attachment_save)(zathura_document_t* document, const char* attachment, const char* file);
+
+    /**
+     * Get document information
+     */
+    char* (*document_meta_get)(zathura_document_t* document, zathura_document_meta_t info, zathura_plugin_error_t* error);
 
     /**
      * Gets the page object
      */
-    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id);
+    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
 
     /**
      * Search text
      */
-    zathura_list_t* (*page_search_text)(zathura_page_t* page, const char* text);
+    girara_list_t* (*page_search_text)(zathura_page_t* page, const char* text, zathura_plugin_error_t* error);
 
     /**
      * Get links on a page
      */
-    zathura_list_t* (*page_links_get)(zathura_page_t* page);
+    girara_list_t* (*page_links_get)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
      * Get form fields
      */
-    zathura_list_t* (*page_form_fields_get)(zathura_page_t* page);
+    girara_list_t* (*page_form_fields_get)(zathura_page_t* page, zathura_plugin_error_t* error);
+
+    /**
+     * Get list of images
+     */
+    girara_list_t* (*page_images_get)(zathura_page_t* page, zathura_plugin_error_t* error);
+
+    /**
+     * Save image to a file
+     */
+    zathura_plugin_error_t (*page_image_save)(zathura_page_t* page, zathura_image_t* image, const char* file);
+
+    /**
+     * Get text for selection
+     */
+    char* (*page_get_text)(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error);
 
     /**
      * Renders the page
      */
-    zathura_image_buffer_t* (*page_render)(zathura_page_t* page);
+    zathura_image_buffer_t* (*page_render)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
      * Renders the page
      */
-    bool (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo);
+    zathura_plugin_error_t (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo, bool printing);
 
     /**
      * Free page
      */
-    bool (*page_free)(zathura_page_t* page);
+    zathura_plugin_error_t (*page_free)(zathura_page_t* page);
   } functions;
 
   /**
    * Document pages
    */
   zathura_page_t** pages;
+
+  /**
+   * File monitor
+   */
+  struct {
+    GFileMonitor* monitor; /**< File monitor */
+    GFile* file; /**< File for file monitor */
+  } file_monitor;
 };
 
 /**
@@ -252,127 +325,188 @@ void zathura_document_plugins_load(zathura_t* zathura);
 void zathura_document_plugin_free(zathura_document_plugin_t* plugin);
 
 /**
- * Register document plugin
- */
-bool zathura_document_plugin_register(zathura_t* zathura, zathura_document_plugin_t* new_plugin, void* handle);
-
-/**
  * Open the document
  *
+ * @param zathura Zathura object
  * @param path Path to the document
  * @param password Password of the document or NULL
  * @return The document object
  */
-zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, const char* password);
+zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
+    const char* password);
 
 /**
  * Free the document
  *
  * @param document
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_document_free(zathura_document_t* document);
+zathura_plugin_error_t zathura_document_free(zathura_document_t* document);
 
 /**
  * Save the document
  *
  * @param document The document object
  * @param path Path for the saved file
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_document_save_as(zathura_document_t* document, const char* path);
+zathura_plugin_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
 
 /**
  * Generate the document index
  *
  * @param document The document object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return Generated index
  */
 
-girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document);
+girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document, zathura_plugin_error_t* error);
 
 /**
  * Get list of attachments
  *
  * @param document The document object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of attachments
  */
-zathura_list_t* zathura_document_attachments_get(zathura_document_t* document);
+girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_plugin_error_t* error);
 
 /**
- * Free document attachments
+ * Save document attachment
  *
- * @param list list of document attachments
- * @return
+ * @param document The document objects
+ * @param attachment name of the attachment
+ * @param file the target filename
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_document_attachments_free(zathura_list_t* list);
+zathura_plugin_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
+
+/**
+ * Returns a string of the requested information
+ *
+ * @param document The zathura document
+ * @param meta The information field
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
+ * @return String or NULL if information could not be retreived
+ */
+char* zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta, zathura_plugin_error_t* error);
 
 /**
  * Get the page object
  *
  * @param document The document
  * @param page_id Page number
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return Page object or NULL if an error occured
  */
-zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id);
+zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
 
 /**
  * Frees the page object
  *
  * @param page The page object
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_page_free(zathura_page_t* page);
+zathura_plugin_error_t zathura_page_free(zathura_page_t* page);
 
 /**
  * Search page
  *
  * @param page The page object
  * @param text Search item
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of results
  */
-zathura_list_t* zathura_page_search_text(zathura_page_t* page, const char* text);
+girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_plugin_error_t* error);
 
 /**
  * Get page links
  *
  * @param page The page object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of links
  */
-zathura_list_t* zathura_page_links_get(zathura_page_t* page);
+girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_plugin_error_t* error);
 
 /**
  * Free page links
  *
  * @param list List of links
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_page_links_free(zathura_list_t* list);
+zathura_plugin_error_t zathura_page_links_free(girara_list_t* list);
 
 /**
  * Get list of form fields
  *
  * @param page The page object
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
  * @return List of form fields
  */
-zathura_list_t* zathura_page_form_fields_get(zathura_page_t* page);
+girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin_error_t* error);
 
 /**
  * Free list of form fields
  *
  * @param list List of form fields
- * @return true if no error occured, otherwise false
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_page_form_fields_free(zathura_list_t* list);
+zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
+
+/**
+ * Get list of images
+ *
+ * @param page Page
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
+ * @return List of images or NULL if an error occured
+ */
+girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error);
+
+/**
+ * Save image
+ *
+ * @param page Page
+ * @param image The image
+ * @param file Path to the file
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
+ */
+zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
+
+/**
+ * Get text for selection
+ * @param page Page
+ * @param rectangle Selection
+ * @error Set to an error value (see \ref zathura_plugin_error_t) if an error
+ * occured
+ * @return The selected text (needs to be deallocated with g_free)
+ */
+char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error);
 
 /**
  * Render page
  *
  * @param page The page object
  * @param cairo Cairo object
- * @return True if no error occured, otherwise false
+ * @param printing render for printing
+ * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
+ *    zathura_plugin_error_t
  */
-bool zathura_page_render(zathura_page_t* page, cairo_t* cairo);
+zathura_plugin_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
 
 /**
  * Create new index element
@@ -388,6 +522,13 @@ zathura_index_element_t* zathura_index_element_new(const char* title);
  * @param index The index element
  */
 void zathura_index_element_free(zathura_index_element_t* index);
+
+/**
+ * Free link
+ *
+ * @param link The link
+ */
+void zathura_link_free(zathura_link_t* link);
 
 /**
  * Add type -> plugin mapping

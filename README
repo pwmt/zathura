@@ -7,9 +7,16 @@ Requirements
 ------------
 gtk2 (>= 2.18.6)
 girara
+sqlite3
+check (for tests)
 
-Please note that you need to have a working pkg-config installation
-and that the Makefile is only compatible with GNU make.
+Please note that you need to have a working pkg-config installation and that the
+Makefile is only compatible with GNU make. If you don't have a working
+pkg-config installation please set the GTK_INC, GTK_LIB, GIRARA_INC, GIRARA_LIB,
+SQLITE_INC and SQLITE_LIB variables accordingly.
+
+And also note that rst2man from python-docutils is needed to build zathurarc.5.
+If it is not installed, zathurarc.5 won't be built.
 
 Installation
 ------------

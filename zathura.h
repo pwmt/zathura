@@ -4,16 +4,11 @@
 #define ZATHURA_H
 
 #include <stdbool.h>
-#include <girara.h>
+#include <girara/types.h>
+#include <girara/macros.h>
+#include <gtk/gtk.h>
 
-#ifdef UNUSED
-#elif defined(__GNUC__)
-# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
-#elif defined(__LCINT__)
-# define UNUSED(x) /*@unused@*/ x
-#else
-# define UNUSED(x) x
-#endif
+#define UNUSED(x) GIRARA_UNUSED(x)
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
@@ -41,71 +36,78 @@ typedef struct zathura_s
 {
   struct
   {
-    girara_session_t* session; /**> girara interface session */
+    girara_session_t* session; /**< girara interface session */
 
     struct
     {
-      girara_statusbar_item_t* buffer; /**> buffer statusbar entry */
-      girara_statusbar_item_t* file; /**> file statusbar entry */
-      girara_statusbar_item_t* page_number; /**> page number statusbar entry */
+      girara_statusbar_item_t* buffer; /**< buffer statusbar entry */
+      girara_statusbar_item_t* file; /**< file statusbar entry */
+      girara_statusbar_item_t* page_number; /**< page number statusbar entry */
     } statusbar;
 
     struct
     {
-      GdkColor recolor_dark_color; /**> Dark color for recoloring */
-      GdkColor recolor_light_color; /**> Light color for recoloring */
+      GdkColor recolor_dark_color; /**< Dark color for recoloring */
+      GdkColor recolor_light_color; /**< Light color for recoloring */
+      GdkColor highlight_color; /**< Color for highlighting */
     } colors;
 
-    GtkWidget *page_view; /**> Widget that contains all rendered pages */
-    GtkWidget *index; /**> Widget to show the index of the document */
+    GtkWidget *page_widget_alignment;
+    GtkWidget *page_widget; /**< Widget that contains all rendered pages */
+    GtkWidget *index; /**< Widget to show the index of the document */
   } ui;
 
   struct
   {
-    render_thread_t* render_thread; /**> The thread responsible for rendering the pages */
+    render_thread_t* render_thread; /**< The thread responsible for rendering the pages */
   } sync;
 
   struct
   {
-    girara_list_t* plugins; /**> List of plugins */
-    girara_list_t* path; /**> List of plugin paths */
-    girara_list_t* type_plugin_mapping; /**> List of type -> plugin mappings */
+    girara_list_t* plugins; /**< List of plugins */
+    girara_list_t* path; /**< List of plugin paths */
+    girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
   } plugins;
 
   struct
   {
-    gchar* config_dir; /**> Path to the configuration directory */
-    gchar* data_dir; /**> Path to the data directory */
+    gchar* config_dir; /**< Path to the configuration directory */
+    gchar* data_dir; /**< Path to the data directory */
   } config;
 
   struct
   {
-    GtkPrintSettings* settings; /**> Print settings */
-    GtkPageSetup* page_setup; /**> Saved page setup */
+    GtkPrintSettings* settings; /**< Print settings */
+    GtkPageSetup* page_setup; /**< Saved page setup */
   } print;
 
   struct
   {
-    unsigned int page_padding; /**> Padding between the pages */
-    bool recolor; /**> Recoloring mode switch */
+    unsigned int page_padding; /**< Padding between the pages */
+    bool recolor; /**< Recoloring mode switch */
   } global;
 
   struct
   {
-    girara_mode_t normal; /**> Normal mode */
-    girara_mode_t fullscreen; /**> Fullscreen mode */
-    girara_mode_t index; /**> Index mode */
-    girara_mode_t insert; /**> Insert mode */
+    girara_mode_t normal; /**< Normal mode */
+    girara_mode_t fullscreen; /**< Fullscreen mode */
+    girara_mode_t index; /**< Index mode */
+    girara_mode_t insert; /**< Insert mode */
   } modes;
 
   struct
   {
-    gchar* file; /**> bookmarks file */
-    girara_list_t* bookmarks; /**> bookmarks */
+    gchar* file; /**< bookmarks file */
+    girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 
-  zathura_document_t* document; /**> The current document */
-  zathura_database_t* database; /**> The database */
+  struct
+  {
+    gchar* file;
+  } stdin_support;
+
+  zathura_document_t* document; /**< The current document */
+  zathura_database_t* database; /**< The database */
 } zathura_t;
 
 /**
@@ -158,9 +160,19 @@ bool document_close(zathura_t* zathura);
  * Opens the page with the given number
  *
  * @param zathura The zathura session
+ * @param page_id The id of the page that should be set
  * @return If no error occured true, otherwise false, is returned.
  */
 bool page_set(zathura_t* zathura, unsigned int page_id);
+
+/**
+ * Opens the page with the given number (delayed)
+ *
+ * @param zathura The zathura session
+ * @param page_id The id of the page that should be set
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
 
 /**
  * Builds the box structure to show the rendered pages
@@ -168,7 +180,7 @@ bool page_set(zathura_t* zathura, unsigned int page_id);
  * @param zathura The zathura session
  * @param pages_per_row Number of shown pages per row
  */
-void page_view_set_mode(zathura_t* zathura, unsigned int pages_per_row);
+void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

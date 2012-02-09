@@ -1,6 +1,16 @@
+/* See LICENSE file for license and copyright information */
+
+#include <math.h>
+#include <girara/datastructures.h>
+#include <girara/utils.h>
+#include <girara/session.h>
+#include <girara/settings.h>
+
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
+#include "page_widget.h"
+#include "utils.h"
 
 void* render_job(void* data);
 bool render(zathura_t* zathura, zathura_page_t* page);
@@ -13,11 +23,11 @@ render_job(void* data)
   while (true) {
     g_mutex_lock(render_thread->lock);
 
-    if (girara_list_size(render_thread->list) <= 0) {
+    if (girara_list_size(render_thread->list) == 0) {
       g_cond_wait(render_thread->cond, render_thread->lock);
     }
 
-    if (girara_list_size(render_thread->list) <= 0) {
+    if (girara_list_size(render_thread->list) == 0) {
       /*
        * We've been signaled with g_cond_signal(), but the list
        * is still empty. This means that the signal came from
@@ -43,16 +53,9 @@ render_job(void* data)
 render_thread_t*
 render_init(zathura_t* zathura)
 {
-  render_thread_t* render_thread = malloc(sizeof(render_thread_t));
-
-  if (!render_thread) {
-    goto error_ret;
-  }
+  render_thread_t* render_thread = g_malloc0(sizeof(render_thread_t));
 
   /* init */
-  render_thread->list    = NULL;
-  render_thread->thread  = NULL;
-  render_thread->cond    = NULL;
   render_thread->zathura = zathura;
 
   /* setup */
@@ -96,9 +99,7 @@ error_free:
     g_mutex_free(render_thread->lock);
   }
 
-  free(render_thread);
-
-error_ret:
+  g_free(render_thread);
 
   return NULL;
 }
@@ -128,7 +129,7 @@ render_free(render_thread_t* render_thread)
 bool
 render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
-  if (!render_thread || !page || !render_thread->list || page->surface) {
+  if (!render_thread || !page || !render_thread->list) {
     return false;
   }
 
@@ -150,24 +151,15 @@ render(zathura_t* zathura, zathura_page_t* page)
   }
 
   gdk_threads_enter();
-  g_static_mutex_lock(&(page->lock));
 
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
-
-  if (page->document->rotate == 0 || page->document->rotate == 180) {
-    page_width  = page->width  * zathura->document->scale;
-    page_height = page->height * zathura->document->scale;
-  } else {
-    page_width  = page->height * zathura->document->scale;
-    page_height = page->width  * zathura->document->scale;
-  }
+  page_calc_height_width(page, &page_height, &page_width, false);
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
   if (surface == NULL) {
-    g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
@@ -176,7 +168,6 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   if (cairo == NULL) {
     cairo_surface_destroy(surface);
-    g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
@@ -188,26 +179,13 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  switch(page->document->rotate) {
-    case 90:
-      cairo_translate(cairo, page_width, 0);
-      break;
-    case 180:
-      cairo_translate(cairo, page_width, page_height);
-      break;
-    case 270:
-      cairo_translate(cairo, 0, page_height);
-      break;
+  if (fabs(zathura->document->scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, zathura->document->scale, zathura->document->scale);
   }
 
-  if (page->document->rotate != 0) {
-    cairo_rotate(cairo, page->document->rotate * G_PI / 180.0);
-  }
-
-  if (zathura_page_render(page, cairo) == false) {
+  if (zathura_page_render(page, cairo, false) != ZATHURA_PLUGIN_ERROR_OK) {
     cairo_destroy(cairo);
     cairo_surface_destroy(surface);
-    g_static_mutex_unlock(&(page->lock));
     gdk_threads_leave();
     return false;
   }
@@ -215,7 +193,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_destroy(cairo);
 
-  int rowstride        = cairo_image_surface_get_stride(surface);
+  const int rowstride  = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
 
   /* recolor */
@@ -251,12 +229,9 @@ render(zathura_t* zathura, zathura_page_t* page)
     }
   }
 
-  /* draw to gtk widget */
-  page->surface = surface;
-  gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
-  gtk_widget_queue_draw(page->drawing_area);
+  /* update the widget */
+  zathura_page_widget_update_surface(ZATHURA_PAGE(page->drawing_area), surface);
 
-  g_static_mutex_unlock(&(page->lock));
   gdk_threads_leave();
 
   return true;
@@ -271,66 +246,11 @@ render_all(zathura_t* zathura)
 
   /* unmark all pages */
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    cairo_surface_destroy(zathura->document->pages[page_id]->surface);
-    zathura->document->pages[page_id]->surface = NULL;
+    zathura_page_t* page = zathura->document->pages[page_id];
+    unsigned int page_height = 0, page_width = 0;
+    page_calc_height_width(page, &page_height, &page_width, true);
+
+    gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
+    gtk_widget_queue_resize(page->drawing_area);
   }
-
-  /* redraw current page */
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  cb_view_vadjustment_value_changed(view_vadjustment, zathura);
-}
-
-gboolean
-page_expose_event(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(event),
-    gpointer data)
-{
-  zathura_page_t* page = data;
-  if (page == NULL) {
-    return FALSE;
-  }
-
-  g_static_mutex_lock(&(page->lock));
-
-  cairo_t* cairo = gdk_cairo_create(page->drawing_area->window);
-
-  if (cairo == NULL) {
-    girara_error("Could not retreive cairo object");
-    g_static_mutex_unlock(&(page->lock));
-    return FALSE;
-  }
-
-  if (page->surface != NULL) {
-    cairo_set_source_surface(cairo, page->surface, 0, 0);
-    cairo_paint(cairo);
-  } else {
-    /* set background color */
-    cairo_set_source_rgb(cairo, 255, 255, 255);
-    cairo_rectangle(cairo, 0, 0, page->width * page->document->scale, page->height * page->document->scale);
-    cairo_fill(cairo);
-
-    /* write text */
-    cairo_set_source_rgb(cairo, 0, 0, 0);
-    const char* text = "Loading...";
-    cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cairo, 16.0);
-    cairo_text_extents_t extents;
-    cairo_text_extents(cairo, text, &extents);
-    double x = (page->width  * page->document->scale) / 2 - (extents.width  / 2 + extents.x_bearing);
-    double y = (page->height * page->document->scale) / 2 - (extents.height / 2 + extents.y_bearing);
-    cairo_move_to(cairo, x, y);
-    cairo_show_text(cairo, text);
-
-    /* render real page */
-    render_page(page->document->zathura->sync.render_thread, page);
-
-    /* update statusbar */
-  }
-  cairo_destroy(cairo);
-
-  page->document->current_page_number = page->number;
-  statusbar_page_number_update(page->document->zathura);
-
-  g_static_mutex_unlock(&(page->lock));
-
-  return TRUE;
 }

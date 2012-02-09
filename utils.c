@@ -7,10 +7,13 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "math.h"
 
 #include "utils.h"
 #include "zathura.h"
 #include "document.h"
+
+#include <girara/datastructures.h>
 
 #define BLOCK_SIZE 64
 
@@ -66,9 +69,9 @@ file_valid_extension(zathura_t* zathura, const char* path)
       result = true;
       break;
     }
-  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
+  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
-  g_free(content_type);
+  g_free((void*)content_type);
   return result;
 }
 
@@ -149,96 +152,130 @@ execute_command(char* const argv[], char** output)
 }
 
 void
-document_index_build(GtkTreeModel* UNUSED(model), GtkTreeIter* UNUSED(parent),
-    girara_tree_node_t* UNUSED(tree))
+document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
+    girara_tree_node_t* tree)
 {
-  /*girara_list_t* list        = girara_node_get_children(tree);*/
-  /*girara_list_iterator_t* it = girara_list_iterator(list);*/
+  girara_list_t* list        = girara_node_get_children(tree);
+  GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node)
+    zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
-  /*do {*/
-    /*zathura_index_element_t* index_element = (zathura_index_element_t*) girara_list_iterator_data(it);*/
-  /*} while ((it = girara_list_iterator_next(it)));*/
+    gchar* description = NULL;
+    if (index_element->type == ZATHURA_LINK_TO_PAGE) {
+      description = g_strdup_printf("Page %d", index_element->target.page_number);
+    } else {
+      description = g_strdup(index_element->target.uri);
+    }
+
+    GtkTreeIter tree_iter;
+    gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, description, 2, index_element, -1);
+    g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
+    g_free(description);
+
+    if (girara_node_get_num_children(node) > 0) {
+      document_index_build(model, &tree_iter, node);
+    }
+
+  GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
 }
 
-char*
-string_concat(const char* string1, ...)
+void
+page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
 {
-  if(!string1) {
-    return NULL;
-  }
-
-  va_list args;
-  char* s;
-  int l = strlen(string1) + 1;
-
-  /* calculate length */
-  va_start(args, string1);
-
-  s = va_arg(args, char*);
-
-  while(s) {
-    l += strlen(s);
-    s = va_arg(args, char*);
-  }
-
-  va_end(args);
-
-  /* prepare */
-  char* c = malloc(sizeof(char) * l);
-  char* p = c;
-
-  /* copy */
-  char* d = p;
-  char* x = (char*) string1;
-
-  do {
-    *d++ = *x;
-  } while (*x++ != '\0');
-
-  p = d - 1;
-
-  va_start(args, string1);
-
-  s = va_arg(args, char*);
-
-  while(s) {
-    d = p;
-    x = s;
-
-    do {
-      *d++ = *x;
-    } while (*x++ != '\0');
-
-    p = d - 1;
-    s = va_arg(args, char*);
-  }
-
-  va_end(args);
-
-  return c;
-}
-
-
-page_offset_t*
-page_calculate_offset(zathura_page_t* page)
-{
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL) {
-    return NULL;
-  }
-
-  page_offset_t* offset = malloc(sizeof(page_offset_t));
-
-  if (offset == NULL) {
-    return NULL;
-  }
-
+  g_return_if_fail(page != NULL && page->document != NULL && page->document->zathura != NULL && offset != NULL);
   zathura_document_t* document = page->document;
   zathura_t* zathura           = document->zathura;
 
-  if (gtk_widget_translate_coordinates(page->event_box, zathura->ui.page_view, 0, 0, &(offset->x), &(offset->y)) == false) {
-    free(offset);
-    return NULL;
+  g_return_if_fail(gtk_widget_translate_coordinates(page->drawing_area,
+    zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
+}
+
+zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width)
+{
+  zathura_rectangle_t tmp;
+  switch (degree) {
+    case 90:
+      tmp.x1 = height - rectangle.y2;
+      tmp.x2 = height - rectangle.y1;
+      tmp.y1 = rectangle.x1;
+      tmp.y2 = rectangle.x2;
+      break;
+    case 180:
+      tmp.x1 = width - rectangle.x2;
+      tmp.x2 = width - rectangle.x1;
+      tmp.y1 = height - rectangle.y2;
+      tmp.y2 = height - rectangle.y1;
+      break;
+    case 270:
+      tmp.x1 = rectangle.y1;
+      tmp.x2 = rectangle.y2;
+      tmp.y1 = width - rectangle.x2;
+      tmp.y2 = width - rectangle.x1;
+      break;
+    default:
+      tmp.x1 = rectangle.x1;
+      tmp.x2 = rectangle.x2;
+      tmp.y1 = rectangle.y1;
+      tmp.y2 = rectangle.y2;
   }
 
-  return offset;
+  return tmp;
+}
+
+zathura_rectangle_t
+recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
+{
+  if (page == NULL || page->document == NULL) {
+    return rectangle;
+  }
+
+  zathura_rectangle_t tmp;
+
+  switch (page->document->rotate) {
+    case 90:
+      tmp.x1 = (page->height - rectangle.y2) * page->document->scale;
+      tmp.x2 = (page->height - rectangle.y1) * page->document->scale;
+      tmp.y1 = rectangle.x1 * page->document->scale;
+      tmp.y2 = rectangle.x2 * page->document->scale;
+      break;
+    case 180:
+      tmp.x1 = (page->width - rectangle.x2) * page->document->scale;
+      tmp.x2 = (page->width - rectangle.x1) * page->document->scale;
+      tmp.y1 = (page->height - rectangle.y2) * page->document->scale;
+      tmp.y2 = (page->height - rectangle.y1) * page->document->scale;
+      break;
+    case 270:
+      tmp.x1 = rectangle.y1 * page->document->scale;
+      tmp.x2 = rectangle.y2 * page->document->scale;
+      tmp.y1 = (page->width - rectangle.x2) * page->document->scale;
+      tmp.y2 = (page->width - rectangle.x1) * page->document->scale;
+      break;
+    default:
+      tmp.x1 = rectangle.x1 * page->document->scale;
+      tmp.x2 = rectangle.x2 * page->document->scale;
+      tmp.y1 = rectangle.y1 * page->document->scale;
+      tmp.y2 = rectangle.y2 * page->document->scale;
+  }
+
+  return tmp;
+}
+
+void
+set_adjustment(GtkAdjustment* adjustment, gdouble value)
+{
+  gtk_adjustment_set_value(adjustment, MAX(adjustment->lower, MIN(adjustment->upper - adjustment->page_size, value)));
+}
+
+void
+page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
+{
+  g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
+
+  if (rotate && page->document->rotate % 180) {
+    *page_width  = ceil(page->height * page->document->scale);
+    *page_height = ceil(page->width  * page->document->scale);
+  } else {
+    *page_width  = ceil(page->width  * page->document->scale);
+    *page_height = ceil(page->height * page->document->scale);
+  }
 }

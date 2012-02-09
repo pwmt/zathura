@@ -49,8 +49,16 @@ void zathura_bookmark_free(zathura_bookmark_t* bookmark);
  * Load bookmarks for a specific file.
  * @param zathura The zathura instance.
  * @param file The file.
- * @param true on success, false otherwise
+ * @return true on success, false otherwise
  */
 bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file);
+
+/**
+ * Compare two bookmarks.
+ * @param lhs a bookmark
+ * @param rhs a bookmark
+ * @returns g_strcmp0(lhs->id, rhs->id)
+ */
+int zathura_bookmarks_compare(zathura_bookmark_t* lhs, zathura_bookmark_t* rhs);
 
 #endif // BOOKMARKS_H

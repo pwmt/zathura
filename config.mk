@@ -6,6 +6,9 @@ VERSION = 0.0.8.1
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
+DESKTOPPREFIX ?= ${PREFIX}/share/applications
+# list of : seperated values
+PLUGINDIR ?= ${PREFIX}/lib/zathura
 
 # libs
 
@@ -19,13 +22,15 @@ GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
 
+#set it to an empty value if you don't need to link against ld for dlopen and friends
 DL_LIB ?= -ldl
 
-INCS = ${GIRARA_INC} ${GTK_INC} $(SQLITE_INC)
-LIBS = ${GIRARA_LIB} ${GTK_LIB} $(SQLITE_LIB) $(DL_LIB) -lpthread -lm
+INCS = ${GIRARA_INC} ${GTK_INC}
+LIBS = ${GIRARA_LIB} ${GTK_LIB} $(DL_LIB) -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
+CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
 
 # debug
 DFLAGS ?= -g
@@ -41,3 +46,7 @@ SFLAGS ?= -s
 
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
+
+# database
+# possible values are sqlite and plain
+DATABASE ?= plain

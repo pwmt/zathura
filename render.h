@@ -5,24 +5,24 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <girara-datastructures.h>
+#include <girara/types.h>
 
 #include "zathura.h"
 #include "callbacks.h"
 
 struct render_thread_s
 {
-  girara_list_t* list; /**> The list of pages */
-  GThread* thread; /**> The thread object */
-  GMutex* lock; /**> Lock */
-  GCond* cond; /**> Condition */
-  zathura_t* zathura; /**> Zathura object */
+  girara_list_t* list; /**< The list of pages */
+  GThread* thread; /**< The thread object */
+  GMutex* lock; /**< Lock */
+  GCond* cond; /**< Condition */
+  zathura_t* zathura; /**< Zathura object */
 };
 
 /**
  * This function initializes a render thread
  *
- * @param Zathura object
+ * @param zathura object
  * @return The render thread object or NULL if an error occured
  */
 render_thread_t* render_init(zathura_t* zathura);
