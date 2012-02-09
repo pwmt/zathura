@@ -48,6 +48,10 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "pages-per-row", &int_value,   INT,   false, "Number of pages per row", cb_pages_per_row_value_changed, zathura);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT, false, "Scroll step",             NULL, NULL);
+  int_value = 10;
+  girara_setting_add(gsession, "zoom-min",      &int_value,   INT,   false, "Zoom minimum", NULL, NULL);
+  int_value = 1000;
+  girara_setting_add(gsession, "zoom-max",      &int_value,   INT,   false, "Zoom maximum", NULL, NULL);
 
   string_value = "#FFFFFF";
   girara_setting_add(gsession, "recolor-darkcolor",  string_value, STRING, false, "Recoloring (dark color)",  NULL, NULL);

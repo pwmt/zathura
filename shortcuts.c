@@ -787,10 +787,18 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   /* zoom limitations */
-  if (zathura->document->scale < 0.1f) {
-    zathura->document->scale = 0.1f;
-  } else if (zathura->document->scale > 10.0f) {
-    zathura->document->scale = 10.0f;
+  int zoom_min_int = 10;
+  int zoom_max_int = 1000;
+  girara_setting_get(session, "zoom-min", &zoom_min_int);
+  girara_setting_get(session, "zoom-max", &zoom_max_int);
+
+  float zoom_min = zoom_min_int * 0.01f;
+  float zoom_max = zoom_max_int * 0.01f;
+
+  if (zathura->document->scale < zoom_min) {
+    zathura->document->scale = zoom_min;
+  } else if (zathura->document->scale > zoom_max) {
+    zathura->document->scale = zoom_max;
   }
 
   /* keep position */
