@@ -332,14 +332,20 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
   }
 
   const char* attachment_name = girara_list_nth(argument_list, 0);
-  const char* file_name = girara_list_nth(argument_list, 1);
+  const char* file_name       = girara_list_nth(argument_list, 1);
+
+  if (file_name == NULL || attachment_name == NULL) {
+    return false;
+  }
   char* file_name2 = girara_fix_path(file_name);
-  if (!zathura_document_attachment_save(zathura->document, attachment_name, file_name)) {
+
+  if (zathura_document_attachment_save(zathura->document, attachment_name, file_name) == false) {
     girara_notify(session, GIRARA_ERROR, "Couldn't write attachment '%s' to '%s'.", attachment_name, file_name);
   } else {
     girara_notify(session, GIRARA_INFO, "Wrote attachment '%s' to '%s'.", attachment_name, file_name2);
   }
 
   g_free(file_name2);
+
   return true;
 }

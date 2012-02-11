@@ -271,9 +271,9 @@ struct zathura_document_s
     girara_list_t* (*page_images_get)(zathura_page_t* page, zathura_plugin_error_t* error);
 
     /**
-     * Save image to a file
+     * Get the image
      */
-    zathura_plugin_error_t (*page_image_save)(zathura_page_t* page, zathura_image_t* image, const char* file);
+    cairo_surface_t* (*page_image_get_cairo)(zathura_page_t* page, zathura_image_t* image, zathura_plugin_error_t* error);
 
     /**
      * Get text for selection
@@ -477,15 +477,15 @@ zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
 girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error);
 
 /**
- * Save image
+ * Get image
  *
  * @param page Page
- * @param image The image
- * @param file Path to the file
- * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
- *    zathura_plugin_error_t
+ * @param image Image identifier
+ * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ *   error occured
+ * @return The cairo image surface or NULL if an error occured
  */
-zathura_plugin_error_t zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file);
+cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_plugin_error_t* error);
 
 /**
  * Get text for selection
