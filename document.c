@@ -610,19 +610,19 @@ zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error)
   return page->document->functions.page_images_get(page, error);
 }
 
-zathura_plugin_error_t
-zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file)
+cairo_surface_t*
+zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_plugin_error_t* error)
 {
-  if (page == NULL || page->document == NULL || image == NULL || file == NULL) {
+  if (page == NULL || page->document == NULL || image == NULL) {
     return false;
   }
 
-  if (page->document->functions.page_image_save == NULL) {
+  if (page->document->functions.page_image_get_cairo == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
 
-  return page->document->functions.page_image_save(page, image, file);
+  return page->document->functions.page_image_get_cairo(page, image, error);
 }
 
 char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error)
