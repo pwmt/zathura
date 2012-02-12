@@ -120,7 +120,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL) {
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
     return false;
   }
 
@@ -151,7 +151,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   /* ask for input */
   if (show_links == true) {
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, NULL);
+    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, zathura->ui.session);
   }
 
   return false;
