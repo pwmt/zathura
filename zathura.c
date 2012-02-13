@@ -492,7 +492,7 @@ remove_page_from_table(GtkWidget* page, gpointer permanent)
     g_object_ref(G_OBJECT(page));
   }
 
-  gtk_container_remove(GTK_CONTAINER(page->parent), page);
+  gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(page)), page);
 }
 
 bool
