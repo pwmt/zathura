@@ -391,7 +391,12 @@ redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
   grect.y = rectangle->y1;
   grect.width = rectangle->x2 - rectangle->x1;
   grect.height = rectangle->y2 - rectangle->y1;
+#if (GTK_MAJOR_VERSION == 3)
+  /* gtk_widget_get_parent_window is wrong here */
   gdk_window_invalidate_rect(gtk_widget_get_parent_window(GTK_WIDGET(widget)), &grect, TRUE);
+#else
+  gdk_window_invalidate_rect(GTK_WIDGET(widget)->window, &grect, TRUE);
+#endif
 }
 
 static void
