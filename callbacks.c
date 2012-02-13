@@ -110,9 +110,12 @@ cb_pages_per_row_value_changed(girara_session_t* session, const char* UNUSED(nam
     pages_per_row = 1;
   }
 
-  unsigned int current_page = zathura->document->current_page_number;
   page_widget_set_mode(zathura, pages_per_row);
-  page_set_delayed(zathura, current_page);
+
+  if (zathura->document != NULL) {
+    unsigned int current_page = zathura->document->current_page_number;
+    page_set_delayed(zathura, current_page);
+  }
 }
 
 void

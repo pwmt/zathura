@@ -211,7 +211,7 @@ config_load_default(zathura_t* zathura)
 void
 config_load_file(zathura_t* zathura, char* path)
 {
-  if (zathura == NULL) {
+  if (zathura == NULL || path == NULL) {
     return;
   }
 
