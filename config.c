@@ -28,6 +28,10 @@ cb_color_change(girara_session_t* session, const char* name, girara_setting_type
     gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color));
   } else if (g_strcmp0(name, "highlight-active-active") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
+  } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
+  } else if (g_strcmp0(name, "recolor-lightcolor") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
   }
 
   /* TODO: cause a redraw here? */
@@ -74,11 +78,10 @@ config_load_default(zathura_t* zathura)
   int_value = 1000;
   girara_setting_add(gsession, "zoom-max",      &int_value,   INT,   false, "Zoom maximum", NULL, NULL);
 
-  string_value = "#FFFFFF";
-  girara_setting_add(gsession, "recolor-darkcolor",  string_value, STRING, false, "Recoloring (dark color)",  NULL, NULL);
-  string_value = "#000000";
-  girara_setting_add(gsession, "recolor-lightcolor", string_value, STRING, false, "Recoloring (light color)", NULL, NULL);
-
+  girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, "Recoloring (dark color)",         cb_color_change, NULL);
+  girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
+  girara_setting_add(gsession, "recolor-lightcolor",     NULL, STRING, false, "Recoloring (light color)",        cb_color_change, NULL);
+  girara_setting_set(gsession, "recolor-lightcolor",     "#000000");
   girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, "Color for highlighting",          cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
   girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, "Color for highlighting (active)", cb_color_change, NULL);
