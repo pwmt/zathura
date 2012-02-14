@@ -65,35 +65,48 @@ page-padding
 The page padding defines the gap in pixels between each rendered page and can
 not be changed during runtime.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 1
 
 pages-per-row
 ^^^^^^^^^^^^^
 Defines the number of pages that are rendered next to each other in a row.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 1
+
+highligt-color
+^^^^^^^^^^^^^^
+Defines the color value that is used to higlight things in the document, e.g all
+search results.
+
+* Value type: String
+* Default value: #9FBC00
+
+highlight-active-color
+^^^^^^^^^^^^^^^^^^^^^^
+Defines the color value that is used to mark the active highlight in the
+document, e.g the current search results.
 
 recolor-darkcolor
 ^^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent dark colors in recoloring mode
 
-* Value-type: String
+* Value type: String
 * Default value: #FFFFFF
 
 recolor-lightcolor
 ^^^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent light colors in recoloring mode
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
 
 zoom-step
 ^^^^^^^^^
 Defines the amount of percent that is zoomed in or out on each comand.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 10
 
 map - Mapping a shortcut
