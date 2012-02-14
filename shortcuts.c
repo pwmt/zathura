@@ -200,22 +200,17 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
   }
 
   /* scroll event */
-  if (event->type == GIRARA_EVENT_SCROLL) {
-    switch (event->direction) {
-      case GIRARA_SCROLL_UP:
-        argument->n = UP;
-        break;
-      case GIRARA_SCROLL_DOWN:
-        argument->n = DOWN;
-        break;
-      case GIRARA_SCROLL_LEFT:
-        argument->n = LEFT;
-        break;
-      case GIRARA_SCROLL_RIGHT:
-        argument->n = RIGHT;
-        break;
-    }
-
+  if (event->type == GIRARA_EVENT_SCROLL_UP) {
+    argument->n = UP;
+    return sc_scroll(session, argument, NULL, t);
+  } else if (event->type == GIRARA_EVENT_SCROLL_DOWN) {
+    argument->n = DOWN;
+    return sc_scroll(session, argument, NULL, t);
+  } else if (event->type == GIRARA_EVENT_SCROLL_LEFT) {
+    argument->n = LEFT;
+    return sc_scroll(session, argument, NULL, t);
+  } else if (event->type == GIRARA_EVENT_SCROLL_RIGHT) {
+    argument->n = RIGHT;
     return sc_scroll(session, argument, NULL, t);
   } else if (event->type == GIRARA_EVENT_BUTTON_PRESS) {
     x = event->x;
@@ -257,22 +252,18 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
   }
 
   /* scroll event */
-  if (event->type == GIRARA_EVENT_SCROLL) {
-    switch (event->direction) {
-      case GIRARA_SCROLL_UP:
-        argument->n = ZOOM_IN;
-        break;
-      case GIRARA_SCROLL_DOWN:
-        argument->n = ZOOM_OUT;
-        break;
-      default:
-        return false;
-    }
-
-    return sc_zoom(session, argument, NULL, t);
+  switch (event->type) {
+    case GIRARA_EVENT_SCROLL_UP:
+      argument->n = ZOOM_IN;
+      break;
+    case GIRARA_EVENT_SCROLL_DOWN:
+      argument->n = ZOOM_OUT;
+      break;
+    default:
+      return false;
   }
 
-  return false;
+  return sc_zoom(session, argument, NULL, t);
 }
 
 bool
