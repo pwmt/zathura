@@ -290,14 +290,22 @@ error_ret:
 }
 
 bool
-cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
+cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return false;
   }
 
-  girara_argument_t argument = { zathura->document->adjust_mode, NULL };
-  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+  static int height = -1;
+  static int width = -1;
 
-  return true;
+  /* adjust only if the allocation changed */
+  if (width != allocation->width || height != allocation->height) {
+    girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+    sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+    width = allocation->width;
+    height = allocation->height;
+  }
+
+  return false;
 }

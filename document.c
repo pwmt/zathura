@@ -354,6 +354,8 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
       document->adjust_mode = ADJUST_BESTFIT;
     } else if (g_strcmp0(adjust_open, "width") == 0) {
       document->adjust_mode = ADJUST_WIDTH;
+    } else {
+      document->adjust_mode = ADJUST_NONE;
     }
     g_free(adjust_open);
   }

@@ -40,15 +40,15 @@ zathura_init(int argc, char* argv[])
   /* parse command line options */
 #if (GTK_MAJOR_VERSION == 2)
   GdkNativeWindow embed = 0;
+#else
+  Window embed = 0;
 #endif
 
   gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
   bool forkback = false;
   GOptionEntry entries[] =
   {
-#if (GTK_MAJOR_VERSION == 2)
     { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       "Reparents to window specified by xid",       "xid"  },
-#endif
     { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  "Path to the config directory",               "path" },
     { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    "Path to the data directory",                 "path" },
     { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, "Path to the directories containing plugins", "path" },
@@ -167,9 +167,7 @@ zathura_init(int argc, char* argv[])
   g_free(configuration_file);
 
   /* initialize girara */
-#if (GTK_MAJOR_VERSION == 2)
   zathura->ui.session->gtk.embed = embed;
-#endif
 
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
     goto error_out;
@@ -184,7 +182,7 @@ zathura_init(int argc, char* argv[])
     goto error_free;
   }
 
-  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
   /* callbacks */
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));

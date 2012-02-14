@@ -57,6 +57,10 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   zathura->document->adjust_mode = argument->n;
+  if (argument->n == ADJUST_NONE) {
+    /* there is nothing todo */
+    goto error_ret;
+  }
 
   /* get window size */
   GtkAllocation allocation;
