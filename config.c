@@ -14,6 +14,26 @@
 #include <girara/commands.h>
 #include <girara/gtk2-compat.h>
 
+static void
+cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+
+  char* string_value = (char*) value;
+  if (g_strcmp0(name, "highlight-color") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color));
+  } else if (g_strcmp0(name, "highlight-active-active") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
+  }
+
+  /* TODO: cause a redraw here? */
+}
+
+
 void
 config_load_default(zathura_t* zathura)
 {
@@ -59,8 +79,11 @@ config_load_default(zathura_t* zathura)
   string_value = "#000000";
   girara_setting_add(gsession, "recolor-lightcolor", string_value, STRING, false, "Recoloring (light color)", NULL, NULL);
 
-  string_value = "#9FBC00";
-  girara_setting_add(gsession, "highlight-color",        string_value, STRING,  false, "Color for highlighting",        NULL, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, "Color for highlighting",          cb_color_change, NULL);
+  girara_setting_set(gsession, "highlight-color",        "#9FBC00");
+  girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, "Color for highlighting (active)", cb_color_change, NULL);
+  girara_setting_set(gsession, "highlight-active-color", "#00BC00");
+
   float_value = 0.5;
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, "Transparency for highlighting", NULL, NULL);
   bool_value = true;

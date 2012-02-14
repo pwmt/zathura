@@ -50,6 +50,7 @@ typedef struct zathura_s
       GdkColor recolor_dark_color; /**< Dark color for recoloring */
       GdkColor recolor_light_color; /**< Light color for recoloring */
       GdkColor highlight_color; /**< Color for highlighting */
+      GdkColor highlight_color_active; /** Color for highlighting */
     } colors;
 
     GtkWidget *page_widget_alignment;

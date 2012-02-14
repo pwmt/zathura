@@ -325,10 +325,11 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
 
         /* draw position */
-        GdkColor color = priv->zathura->ui.colors.highlight_color;
         if (idx == priv->search_current) {
-          cairo_set_source_rgba(cairo, 0, color.green, color.blue, transparency);
+          GdkColor color = priv->zathura->ui.colors.highlight_color_active;
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
         } else {
+          GdkColor color = priv->zathura->ui.colors.highlight_color;
           cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
         }
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
