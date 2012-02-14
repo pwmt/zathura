@@ -3,6 +3,9 @@
 
 VERSION = 0.0.8.1
 
+# the GTK version to use
+ZATHURA_GTK_VERSION ?= 2
+
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
@@ -13,11 +16,11 @@ PLUGINDIR ?= ${PREFIX}/lib/zathura
 # libs
 
 # set this to 0 if you don't need to link against dl
-GTK_INC ?= $(shell pkg-config --cflags gtk+-2.0)
-GTK_LIB ?= $(shell pkg-config --libs gtk+-2.0 gthread-2.0)
+GTK_INC ?= $(shell pkg-config --cflags gtk+-${ZATHURA_GTK_VERSION}.0)
+GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0 gthread-2.0)
 
-GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk2)
-GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk2)
+GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk${ZATHURA_GTK_VERSION})
+GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
 
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
