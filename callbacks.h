@@ -87,4 +87,14 @@ void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file,
  */
 bool cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog);
 
+/**
+ * Emitted when the view has been resized
+ *
+ * @param widget View
+ * @param allocation Allocation
+ * @param zathura Zathura session
+ * @return true if signal has been handled successfully
+ */
+bool cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
+
 #endif // CALLBACKS_H

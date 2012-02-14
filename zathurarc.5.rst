@@ -75,14 +75,14 @@ Defines the number of pages that are rendered next to each other in a row.
 * Value-type: Integer
 * Default value: 1
 
-recolor-dark-color
+recolor-darkcolor
 ^^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent dark colors in recoloring mode
 
 * Value-type: String
 * Default value: #FFFFFF
 
-recolor-light-color
+recolor-lightcolor
 ^^^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent light colors in recoloring mode
 

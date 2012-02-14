@@ -56,11 +56,13 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
     goto error_ret;
   }
 
+  zathura->document->adjust_mode = argument->n;
+
   /* get window size */
-  /* TODO: Get correct size of the view widget */
-  gint width;
-  gint height;
-  gtk_window_get_size(GTK_WINDOW(session->gtk.window), &width, &height);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(session->gtk.view, &allocation);
+  gint width = allocation.width;
+  gint height = allocation.height;
 
   /* calculate total width and max-height */
   double total_width = 0;
@@ -118,7 +120,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL) {
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
     return false;
   }
 
@@ -149,7 +151,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   /* ask for input */
   if (show_links == true) {
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, NULL);
+    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, zathura->ui.session);
   }
 
   return false;
@@ -764,6 +766,8 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
+  zathura->document->adjust_mode = ADJUST_NONE;
+
   /* retreive zoom step value */
   int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
@@ -783,10 +787,18 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   /* zoom limitations */
-  if (zathura->document->scale < 0.1f) {
-    zathura->document->scale = 0.1f;
-  } else if (zathura->document->scale > 10.0f) {
-    zathura->document->scale = 10.0f;
+  int zoom_min_int = 10;
+  int zoom_max_int = 1000;
+  girara_setting_get(session, "zoom-min", &zoom_min_int);
+  girara_setting_get(session, "zoom-max", &zoom_max_int);
+
+  float zoom_min = zoom_min_int * 0.01f;
+  float zoom_max = zoom_max_int * 0.01f;
+
+  if (zathura->document->scale < zoom_min) {
+    zathura->document->scale = zoom_min;
+  } else if (zathura->document->scale > zoom_max) {
+    zathura->document->scale = zoom_max;
   }
 
   /* keep position */

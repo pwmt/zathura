@@ -74,7 +74,8 @@ void page_calculate_offset(zathura_page_t* page, page_offset_t* offset);
 
 /**
  * Rotate a rectangle by 0, 90, 180 or 270 degree
- * @param rect the rectangle to rotate
+ *
+ * @param rectangle the rectangle to rotate
  * @param degree rotation degree
  * @param height the height of the enclosing rectangle
  * @param width the width of the enclosing rectangle

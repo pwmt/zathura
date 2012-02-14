@@ -29,6 +29,7 @@
 #include <girara/utils.h>
 #include <girara/statusbar.h>
 #include <girara/session.h>
+#include <girara/settings.h>
 
 /**
  * Register document plugin
@@ -345,6 +346,18 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   g_signal_connect(G_OBJECT(document->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
 
+  /* apply open adjustment */
+  char* adjust_open = "best-fit";
+  document->adjust_mode = ADJUST_BESTFIT;
+  if (girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
+    if (g_strcmp0(adjust_open, "best-fit") == 0) {
+      document->adjust_mode = ADJUST_BESTFIT;
+    } else if (g_strcmp0(adjust_open, "width") == 0) {
+      document->adjust_mode = ADJUST_WIDTH;
+    }
+    g_free(adjust_open);
+  }
+
   g_free(file_uri);
 
   return document;
@@ -597,19 +610,19 @@ zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error)
   return page->document->functions.page_images_get(page, error);
 }
 
-zathura_plugin_error_t
-zathura_page_image_save(zathura_page_t* page, zathura_image_t* image, const char* file)
+cairo_surface_t*
+zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_plugin_error_t* error)
 {
-  if (page == NULL || page->document == NULL || image == NULL || file == NULL) {
+  if (page == NULL || page->document == NULL || image == NULL) {
     return false;
   }
 
-  if (page->document->functions.page_image_save == NULL) {
+  if (page->document->functions.page_image_get_cairo == NULL) {
     girara_error("%s not implemented", __FUNCTION__);
     return false;
   }
 
-  return page->document->functions.page_image_save(page, image, file);
+  return page->document->functions.page_image_get_cairo(page, image, error);
 }
 
 char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error)

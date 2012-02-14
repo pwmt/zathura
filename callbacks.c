@@ -97,18 +97,25 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 }
 
 void
-cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* data)
+cb_pages_per_row_value_changed(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
 
   int pages_per_row = *(int*) value;
-  zathura_t* zathura = data;
 
   if (pages_per_row < 1) {
     pages_per_row = 1;
   }
 
   page_widget_set_mode(zathura, pages_per_row);
+
+  if (zathura->document != NULL) {
+    unsigned int current_page = zathura->document->current_page_number;
+    page_set_delayed(zathura, current_page);
+  }
 }
 
 void
@@ -280,4 +287,17 @@ error_free:
 error_ret:
 
   return false;
+}
+
+bool
+cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
+{
+  if (zathura == NULL || zathura->document == NULL) {
+    return false;
+  }
+
+  girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+
+  return true;
 }
