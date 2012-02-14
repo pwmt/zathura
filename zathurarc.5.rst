@@ -75,10 +75,10 @@ Defines the number of pages that are rendered next to each other in a row.
 * Value type: Integer
 * Default value: 1
 
-highligt-color
-^^^^^^^^^^^^^^
-Defines the color value that is used to higlight things in the document, e.g all
-search results.
+highlight-color
+^^^^^^^^^^^^^^^
+Defines the color value that is used to highlight things in the document, e.g
+all search results.
 
 * Value type: String
 * Default value: #9FBC00
