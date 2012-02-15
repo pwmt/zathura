@@ -192,47 +192,51 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(event != NULL, false);
 
-  static int x = 0;
-  static int y = 0;
-
   if (zathura->document == NULL) {
     return false;
   }
 
-  /* scroll event */
-  if (event->type == GIRARA_EVENT_SCROLL_UP) {
-    argument->n = UP;
-    return sc_scroll(session, argument, NULL, t);
-  } else if (event->type == GIRARA_EVENT_SCROLL_DOWN) {
-    argument->n = DOWN;
-    return sc_scroll(session, argument, NULL, t);
-  } else if (event->type == GIRARA_EVENT_SCROLL_LEFT) {
-    argument->n = LEFT;
-    return sc_scroll(session, argument, NULL, t);
-  } else if (event->type == GIRARA_EVENT_SCROLL_RIGHT) {
-    argument->n = RIGHT;
-    return sc_scroll(session, argument, NULL, t);
-  } else if (event->type == GIRARA_EVENT_BUTTON_PRESS) {
-    x = event->x;
-    y = event->y;
-  } else if (event->type == GIRARA_EVENT_BUTTON_RELEASE) {
-    x = 0;
-    y = 0;
-  } else if (event->type == GIRARA_EVENT_MOTION_NOTIFY) {
-    GtkAdjustment* x_adj =
-      gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-    GtkAdjustment* y_adj =
-      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+  static int x = 0;
+  static int y = 0;
 
-    if (x_adj == NULL || y_adj == NULL) {
-      return false;
-    }
+  GtkAdjustment* x_adj = NULL;
+  GtkAdjustment* y_adj = NULL;
 
-    set_adjustment(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - x));
-    set_adjustment(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - y));
+  switch (event->type) {
+    /* scroll */
+    case GIRARA_EVENT_SCROLL_UP:
+    case GIRARA_EVENT_SCROLL_DOWN:
+    case GIRARA_EVENT_SCROLL_LEFT:
+    case GIRARA_EVENT_SCROLL_RIGHT:
+      return sc_scroll(session, argument, NULL, t);
 
-    x = event->x;
-    y = event->y;
+    /* drag */
+    case GIRARA_EVENT_BUTTON_PRESS:
+      x = event->x;
+      y = event->y;
+      break;
+    case GIRARA_EVENT_BUTTON_RELEASE:
+      x = 0;
+      y = 0;
+      break;
+    case GIRARA_EVENT_MOTION_NOTIFY:
+      x_adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+      y_adj =gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+
+      if (x_adj == NULL || y_adj == NULL) {
+        return false;
+      }
+
+      set_adjustment(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - x));
+      set_adjustment(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - y));
+
+      x = event->x;
+      y = event->y;
+      break;
+
+    /* unhandled events */
+    default:
+      break;
   }
 
   return false;
