@@ -431,9 +431,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   /* bookmarks */
-  if (zathura_bookmarks_load(zathura, zathura->document->file_path) == false) {
-    girara_warning("Failed to load bookmarks for %s.\n", zathura->document->file_path);
-  }
+  zathura_bookmarks_load(zathura, zathura->document->file_path);
 
   page_set_delayed(zathura, document->current_page_number - 1);
   cb_view_vadjustment_value_changed(NULL, zathura);
