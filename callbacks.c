@@ -263,13 +263,13 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
       g_free(input);
     }
 
-    g_idle_add(password_dialog, dialog);
+    gdk_threads_add_idle(password_dialog, dialog);
     return false;
   }
 
   /* try to open document again */
   if (document_open(dialog->zathura, dialog->path, input) == false) {
-    g_idle_add(password_dialog, dialog);
+    gdk_threads_add_idle(password_dialog, dialog);
   } else {
     g_free(dialog->path);
     free(dialog);

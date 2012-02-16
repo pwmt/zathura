@@ -244,7 +244,7 @@ zathura_init(int argc, char* argv[])
     document_info->zathura  = zathura;
     document_info->path     = argv[1];
     document_info->password = (argc >= 2) ? argv[2] : NULL;
-    g_idle_add(document_info_open, document_info);
+    gdk_threads_add_idle(document_info_open, document_info);
   }
 
   return zathura;
@@ -537,7 +537,7 @@ page_set_delayed(zathura_t* zathura, unsigned int page_id)
   page_set_delayed_t* p = g_malloc(sizeof(page_set_delayed_t));
   p->zathura = zathura;
   p->page = page_id;
-  g_idle_add(page_set_delayed_impl, p);
+  gdk_threads_add_idle(page_set_delayed_impl, p);
   return true;
 }
 
