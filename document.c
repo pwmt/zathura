@@ -513,6 +513,12 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plu
     page->number       = page_id;
     page->visible      = false;
     page->drawing_area = zathura_page_widget_new(page);
+    if (page->drawing_area == NULL) {
+      girara_error("couldn't create page widget");
+      zathura_page_free(page);
+      return NULL;
+    }
+
     page->document     = document;
 
     unsigned int page_height = 0;
