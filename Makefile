@@ -79,7 +79,7 @@ tests: ${OBJECTS}
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)cp -R LICENSE Makefile config.mk common.mk README Doxyfile \
-			${PROJECT}.1 ${SOURCE} ${HEADER} ${PROJECT}.pc.in tests \
+			${PROJECT}.1.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in tests \
 			${PROJECT}-${VERSION}
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
