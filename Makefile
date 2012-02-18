@@ -104,10 +104,11 @@ install: all ${PROJECT}.pc
 	$(QUIET)cp -f zathura.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(QUIET)if which rst2man > /dev/null ; then \
-		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
-		rst2man ${PROJECT}rc.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+		mkdir -p ${DESTDIR}${MANPREFIX}/man1 ; \
+		sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1.rst > ${PROJECT}-v.1.rst ; \
+		rst2man ${PROJECT}-v.1.rst > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
+		rm -f ${PROJECT}-v.1.rst ; \
 	fi
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
