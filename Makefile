@@ -79,7 +79,7 @@ tests: ${OBJECTS}
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)cp -R LICENSE Makefile config.mk common.mk README Doxyfile \
-			${PROJECT}.1.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in tests \
+			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in tests \
 			${PROJECT}-${VERSION}
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
@@ -109,6 +109,10 @@ install: all ${PROJECT}.pc
 		sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1.rst > ${PROJECT}-v.1.rst ; \
 		rst2man ${PROJECT}-v.1.rst > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
 		rm -f ${PROJECT}-v.1.rst ; \
+		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
+		sed "s/VERSION/${VERSION}/g" < ${PROJECT}rc.5.rst > ${PROJECT}rc-v.5.rst ; \
+		rst2man ${PROJECT}rc-v.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+		rm -f ${PROJECT}rc-v.5.rst ; \
 	fi
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
