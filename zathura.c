@@ -273,7 +273,7 @@ zathura_free(zathura_t* zathura)
     return;
   }
 
-  document_close(zathura);
+  document_close(zathura, false);
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
@@ -408,6 +408,36 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     goto error_out;
   }
 
+  /* install file monitor */
+  gchar* file_uri = g_filename_to_uri(document->file_path, NULL, NULL);
+  if (file_uri == NULL) {
+    goto error_free;
+  }
+
+  zathura->file_monitor.file = g_file_new_for_uri(file_uri);
+  if (zathura->file_monitor.file == NULL) {
+    goto error_free;
+  }
+
+  zathura->file_monitor.monitor = g_file_monitor_file(zathura->file_monitor.file, G_FILE_MONITOR_NONE, NULL, NULL);
+  if (zathura->file_monitor.monitor == NULL) {
+    goto error_free;
+  }
+
+  g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
+
+  zathura->file_monitor.file_path = g_strdup(document->file_path);
+  if (zathura->file_monitor.file_path == NULL) {
+    goto error_free;
+  }
+
+  if (document->password != NULL) {
+    zathura->file_monitor.password = g_strdup(document->password);
+    if (zathura->file_monitor.password == NULL) {
+      goto error_free;
+    }
+  }
+
   zathura->document = document;
 
   /* view mode */
@@ -433,12 +463,18 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   /* bookmarks */
   zathura_bookmarks_load(zathura, zathura->document->file_path);
 
-  page_set_delayed(zathura, document->current_page_number - 1);
+  page_set_delayed(zathura, document->current_page_number);
   cb_view_vadjustment_value_changed(NULL, zathura);
+
+  free(file_uri);
 
   return true;
 
 error_free:
+
+  if (file_uri != NULL) {
+    g_free(file_uri);
+  }
 
   zathura_document_free(document);
 
@@ -478,10 +514,34 @@ remove_page_from_table(GtkWidget* page, gpointer permanent)
 }
 
 bool
-document_close(zathura_t* zathura)
+document_close(zathura_t* zathura, bool keep_monitor)
 {
-  if (zathura->document == NULL) {
+  if (zathura == NULL || zathura->document == NULL) {
     return false;
+  }
+
+  /* remove monitor */
+  if (keep_monitor == false) {
+    if (zathura->file_monitor.monitor != NULL) {
+      g_file_monitor_cancel(zathura->file_monitor.monitor);
+      g_object_unref(zathura->file_monitor.monitor);
+      zathura->file_monitor.monitor = NULL;
+    }
+
+    if (zathura->file_monitor.file != NULL) {
+      g_object_unref(zathura->file_monitor.file);
+      zathura->file_monitor.file = NULL;
+    }
+
+    if (zathura->file_monitor.file_path != NULL) {
+      g_free(zathura->file_monitor.file_path);
+      zathura->file_monitor.file_path = NULL;
+    }
+
+    if (zathura->file_monitor.password != NULL) {
+      g_free(zathura->file_monitor.password);
+      zathura->file_monitor.password = NULL;
+    }
   }
 
   /* store last seen page */

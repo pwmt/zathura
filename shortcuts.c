@@ -375,23 +375,15 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->document->file_path == NULL) {
+  if (zathura->file_monitor.file_path == NULL) {
     return false;
   }
 
-  /* save current document path and password */
-  char* path     = g_strdup(zathura->document->file_path);
-  char* password = zathura->document->password ? g_strdup(zathura->document->password) : NULL;
-
   /* close current document */
-  document_close(zathura);
+  document_close(zathura, true);
 
   /* reopen document */
-  document_open(zathura, path, password);
-
-  /* clean up */
-  g_free(path);
-  g_free(password);
+  document_open(zathura, zathura->file_monitor.file_path, zathura->file_monitor.password);
 
   return false;
 }

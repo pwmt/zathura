@@ -116,7 +116,7 @@ cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     return true;
   }
 
-  document_close(zathura);
+  document_close(zathura, false);
 
   return true;
 }
@@ -198,8 +198,8 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
     girara_notify(session, GIRARA_ERROR, "Too many arguments.");
     return false;
   } else if (argc >= 1) {
-    if (zathura->document) {
-      document_close(zathura);
+    if (zathura->document != NULL) {
+      document_close(zathura, false);
     }
 
     document_open(zathura, girara_list_nth(argument_list, 0), (argc == 2) ? girara_list_nth(argument_list, 1) :  NULL);

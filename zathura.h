@@ -109,6 +109,16 @@ typedef struct zathura_s
 
   zathura_document_t* document; /**< The current document */
   zathura_database_t* database; /**< The database */
+
+  /**
+   * File monitor
+   */
+  struct {
+    GFileMonitor* monitor; /**< File monitor */
+    GFile* file; /**< File for file monitor */
+    gchar* file_path; /**< Save file path */
+    gchar* password; /**< Save password */
+  } file_monitor;
 } zathura_t;
 
 /**
@@ -153,9 +163,10 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite);
  * Closes the current opened document
  *
  * @param zathura The zathura session
+ * @param keep_monitor Set to true if monitor should be kept (sc_reload)
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_close(zathura_t* zathura);
+bool document_close(zathura_t* zathura, bool keep_monitor);
 
 /**
  * Opens the page with the given number
