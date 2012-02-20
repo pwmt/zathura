@@ -53,7 +53,13 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
       continue;
     }
 
-    char* full_path = g_strdup_printf("%s%s%s", current_path, is_dir ? "" : "/", e_name);
+
+    char* tmp = "/";
+    if (is_dir == true || g_strcmp0(current_path, "/") == 0) {
+      tmp = "";
+    };
+
+    char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
     if (full_path == NULL) {
       g_free(e_name);
       goto error_free;
