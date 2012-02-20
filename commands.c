@@ -157,11 +157,6 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field, NULL);
     if (tmp != NULL) {
       char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, tmp);
-      if (text == NULL) {
-        g_free(tmp);
-        return true;
-      }
-
       g_string_append(string, text);
 
       g_free(text);
