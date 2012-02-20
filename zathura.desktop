@@ -7,4 +7,4 @@ Comment[de]=Ein minimalistischer Dokumenten-Betrachter
 Exec=zathura %f
 Terminal=false
 Categories=Office;Viewer;
-MimeType=application/pdf;application/postscript;image/vnd.djvu;
+MimeType=application/pdf;application/postscript;application/eps;application/x-eps;image/eps;image/x-eps;image/vnd.djvu;
