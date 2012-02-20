@@ -557,6 +557,8 @@ page_set(zathura_t* zathura, unsigned int page_id)
     goto error_out;
   }
 
+  zathura->document->current_page_number = page_id;
+
   page_offset_t offset;
   page_calculate_offset(page, &offset);
 
