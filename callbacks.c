@@ -224,7 +224,9 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
   switch (event) {
     case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
     case G_FILE_MONITOR_EVENT_CREATED:
+      gdk_threads_enter();
       sc_reload(session, NULL, NULL, 0);
+      gdk_threads_leave();
       break;
     default:
       return;
