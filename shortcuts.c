@@ -6,6 +6,7 @@
 #include <girara/shortcuts.h>
 #include <girara/utils.h>
 #include <gtk/gtk.h>
+#include <libgen.h>
 
 #include "callbacks.h"
 #include "shortcuts.h"
@@ -114,6 +115,63 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument,
   girara_mode_set(session, argument->n);
 
   return false;
+}
+
+bool
+sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->gtk.inputbar_entry != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == false) {
+    gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
+  }
+
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.notification_area)) == true) {
+    gtk_widget_hide(GTK_WIDGET(session->gtk.notification_area));
+  }
+
+  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar_entry));
+
+  if (argument->data != NULL) {
+    gtk_entry_set_text(session->gtk.inputbar_entry, (char*) argument->data);
+
+    /* append filepath */
+    if (argument->n == APPEND_FILEPATH && zathura->document != NULL) {
+      char* file_path = g_strdup(zathura->document->file_path);
+      if (file_path == NULL) {
+        return false;
+      }
+
+      char* path = dirname(file_path);
+      char* tmp  = g_strdup_printf("%s%s/", (char*) argument->data, (g_strcmp0(path, "/") == 0) ? "" : path);
+
+      if (tmp == NULL) {
+        g_free(file_path);
+        return false;
+      }
+
+      gtk_entry_set_text(session->gtk.inputbar_entry, tmp);
+      g_free(tmp);
+      g_free(file_path);
+    }
+
+    /* we save the X clipboard that will be clear by "grab_focus" */
+    gchar* x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+
+    gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
+
+    if (x_clipboard_text != NULL) {
+      /* we reset the X clipboard with saved text */
+      gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), x_clipboard_text, -1);
+      g_free(x_clipboard_text);
+    }
+  }
+
+  return true;
 }
 
 bool

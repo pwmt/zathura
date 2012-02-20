@@ -106,12 +106,12 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_m,          NULL, sc_change_mode,              NORMAL,     ADD_MARKER,      NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_apostrophe, NULL, sc_change_mode,              NORMAL,     EVAL_MARKER,     NULL);
 
-  girara_shortcut_add(gsession, 0,                GDK_KEY_slash,      NULL, girara_sc_focus_inputbar,    NORMAL,     0,               &("/"));
-  girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_slash,      NULL, girara_sc_focus_inputbar,    NORMAL,     0,               &("/"));
-  girara_shortcut_add(gsession, 0,                GDK_KEY_question,   NULL, girara_sc_focus_inputbar,    NORMAL,     0,               &("?"));
-  girara_shortcut_add(gsession, 0,                GDK_KEY_colon,      NULL, girara_sc_focus_inputbar,    NORMAL,     0,               &(":"));
-  girara_shortcut_add(gsession, 0,                GDK_KEY_o,          NULL, girara_sc_focus_inputbar,    NORMAL,     0,               &(":open "));
-  girara_shortcut_add(gsession, 0,                GDK_KEY_O,          NULL, girara_sc_focus_inputbar,    NORMAL,     APPEND_FILEPATH, &(":open "));
+  girara_shortcut_add(gsession, 0,                GDK_KEY_slash,      NULL, sc_focus_inputbar,           NORMAL,     0,               &("/"));
+  girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_slash,      NULL, sc_focus_inputbar,           NORMAL,     0,               &("/"));
+  girara_shortcut_add(gsession, 0,                GDK_KEY_question,   NULL, sc_focus_inputbar,           NORMAL,     0,               &("?"));
+  girara_shortcut_add(gsession, 0,                GDK_KEY_colon,      NULL, sc_focus_inputbar,           NORMAL,     0,               &(":"));
+  girara_shortcut_add(gsession, 0,                GDK_KEY_o,          NULL, sc_focus_inputbar,           NORMAL,     0,               &(":open "));
+  girara_shortcut_add(gsession, 0,                GDK_KEY_O,          NULL, sc_focus_inputbar,           NORMAL,     APPEND_FILEPATH, &(":open "));
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_f,          NULL, sc_follow,                   NORMAL,     0,               NULL);
 
