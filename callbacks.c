@@ -225,7 +225,9 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
     return;
   }
 
+  gdk_threads_enter();
   sc_reload(session, NULL, NULL, 0);
+  gdk_threads_leave();
 }
 
 static gboolean
