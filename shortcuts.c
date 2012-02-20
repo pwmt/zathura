@@ -379,25 +379,27 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   }
 
-  gdouble view_size   = gtk_adjustment_get_page_size(adjustment);
-  gdouble value       = gtk_adjustment_get_value(adjustment);
-  gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
+  gdouble view_size    = gtk_adjustment_get_page_size(adjustment);
+  gdouble value        = gtk_adjustment_get_value(adjustment);
+  gdouble max          = gtk_adjustment_get_upper(adjustment) - view_size;
+  unsigned int padding = zathura->global.page_padding;
+
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);
   gdouble new_value;
 
   switch(argument->n) {
     case FULL_UP:
-      new_value = value - view_size;
+      new_value = value - view_size - padding;
       break;
     case FULL_DOWN:
-      new_value = value + view_size;
+      new_value = value + view_size + padding;
       break;
     case HALF_UP:
-      new_value = value - (view_size / 2);
+      new_value = value - ((view_size + padding) / 2);
       break;
     case HALF_DOWN:
-      new_value = value + (view_size / 2);
+      new_value = value + ((view_size + padding) / 2);
       break;
     case LEFT:
     case UP:
