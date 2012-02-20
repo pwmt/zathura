@@ -221,11 +221,14 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
   g_return_if_fail(file     != NULL);
   g_return_if_fail(session  != NULL);
 
-  if (event != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
-    return;
+  switch (event) {
+    case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
+    case G_FILE_MONITOR_EVENT_CREATED:
+      sc_reload(session, NULL, NULL, 0);
+      break;
+    default:
+      return;
   }
-
-  sc_reload(session, NULL, NULL, 0);
 }
 
 static gboolean

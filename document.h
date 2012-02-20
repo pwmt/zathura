@@ -300,14 +300,6 @@ struct zathura_document_s
    * Document pages
    */
   zathura_page_t** pages;
-
-  /**
-   * File monitor
-   */
-  struct {
-    GFileMonitor* monitor; /**< File monitor */
-    GFile* file; /**< File for file monitor */
-  } file_monitor;
 };
 
 /**
