@@ -463,7 +463,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   /* bookmarks */
   zathura_bookmarks_load(zathura, zathura->document->file_path);
 
-  page_set_delayed(zathura, document->current_page_number - 1);
+  page_set_delayed(zathura, document->current_page_number);
   cb_view_vadjustment_value_changed(NULL, zathura);
 
   free(file_uri);
