@@ -234,9 +234,6 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
   }
 
   char* tmp = g_strdup_printf("%f", scale);
-  if (tmp == NULL) {
-    return false;
-  }
 
   g_key_file_set_integer(db->history, file, KEY_PAGE,   page);
   g_key_file_set_integer(db->history, file, KEY_OFFSET, offset);

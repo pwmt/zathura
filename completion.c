@@ -72,10 +72,6 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     };
 
     char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
-    if (full_path == NULL) {
-      g_free(e_name);
-      goto error_free;
-    }
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
       char* tmp_path = full_path;
@@ -138,9 +134,6 @@ cc_open(girara_session_t* session, const char* input)
     }
 
     char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
-    if (tmp_path == NULL) {
-      goto error_free;
-    }
 
     g_free(path);
     path = tmp_path;
@@ -150,10 +143,6 @@ cc_open(girara_session_t* session, const char* input)
   bool is_dir = (path[strlen(path) - 1] == '/') ? true : false;
   if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && !is_dir) {
     char* tmp_path = g_strdup_printf("%s/", path);
-    if (tmp_path == NULL) {
-      goto error_free;
-    }
-
     g_free(path);
     path = tmp_path;
     is_dir = true;
