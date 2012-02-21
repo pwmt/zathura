@@ -231,7 +231,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
-  girara_shortcut_mapping_add(gsession, "index_navigate",    sc_navigate_index);
+  girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
   girara_shortcut_mapping_add(gsession, "quit",              sc_quit);
   girara_shortcut_mapping_add(gsession, "recolor",           sc_recolor);
@@ -246,24 +246,28 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "zoom",              sc_zoom);
 
   /* add argument mappings */
-  girara_argument_mapping_add(gsession, "bottom",     BOTTOM);
-  girara_argument_mapping_add(gsession, "default",    DEFAULT);
-  girara_argument_mapping_add(gsession, "down",       DOWN);
-  girara_argument_mapping_add(gsession, "full-down",  FULL_DOWN);
-  girara_argument_mapping_add(gsession, "full-up",    FULL_UP);
-  girara_argument_mapping_add(gsession, "half-down",  HALF_DOWN);
-  girara_argument_mapping_add(gsession, "half-up",    HALF_UP);
-  girara_argument_mapping_add(gsession, "in",         ZOOM_IN);
-  girara_argument_mapping_add(gsession, "left",       LEFT);
-  girara_argument_mapping_add(gsession, "next",       NEXT);
-  girara_argument_mapping_add(gsession, "out",        ZOOM_OUT);
-  girara_argument_mapping_add(gsession, "previous",   PREVIOUS);
-  girara_argument_mapping_add(gsession, "right",      RIGHT);
-  girara_argument_mapping_add(gsession, "specific",   ZOOM_SPECIFIC);
-  girara_argument_mapping_add(gsession, "top",        TOP);
-  girara_argument_mapping_add(gsession, "up",         UP);
-  girara_argument_mapping_add(gsession, "best-fit",   ADJUST_BESTFIT);
-  girara_argument_mapping_add(gsession, "width",      ADJUST_WIDTH);
+  girara_argument_mapping_add(gsession, "bottom",       BOTTOM);
+  girara_argument_mapping_add(gsession, "default",      DEFAULT);
+  girara_argument_mapping_add(gsession, "collapse",     COLLAPSE);
+  girara_argument_mapping_add(gsession, "collapse-all", COLLAPSE_ALL);
+  girara_argument_mapping_add(gsession, "down",         DOWN);
+  girara_argument_mapping_add(gsession, "expand",       EXPAND);
+  girara_argument_mapping_add(gsession, "expand-all",   EXPAND_ALL);
+  girara_argument_mapping_add(gsession, "full-down",    FULL_DOWN);
+  girara_argument_mapping_add(gsession, "full-up",      FULL_UP);
+  girara_argument_mapping_add(gsession, "half-down",    HALF_DOWN);
+  girara_argument_mapping_add(gsession, "half-up",      HALF_UP);
+  girara_argument_mapping_add(gsession, "in",           ZOOM_IN);
+  girara_argument_mapping_add(gsession, "left",         LEFT);
+  girara_argument_mapping_add(gsession, "next",         NEXT);
+  girara_argument_mapping_add(gsession, "out",          ZOOM_OUT);
+  girara_argument_mapping_add(gsession, "previous",     PREVIOUS);
+  girara_argument_mapping_add(gsession, "right",        RIGHT);
+  girara_argument_mapping_add(gsession, "specific",     ZOOM_SPECIFIC);
+  girara_argument_mapping_add(gsession, "top",          TOP);
+  girara_argument_mapping_add(gsession, "up",           UP);
+  girara_argument_mapping_add(gsession, "best-fit",     ADJUST_BESTFIT);
+  girara_argument_mapping_add(gsession, "width",        ADJUST_WIDTH);
 }
 
 void
