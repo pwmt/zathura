@@ -75,7 +75,7 @@ gdb: debug
 	cgdb ${PROJECT}-debug
 
 tests: ${OBJECTS}
-	$(QUIET)make -C tests
+	$(QUIET)make -C tests run
 
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}

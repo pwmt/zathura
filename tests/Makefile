@@ -21,7 +21,7 @@ ZSOURCE += ../database-plain.c
 endif
 endif
 
-all: ${PROJECT} run
+all: ${PROJECT}
 
 run: ${PROJECT}
 	$(QUIET)./${PROJECT}
@@ -48,6 +48,6 @@ ${OBJECTS}: ../config.mk
 clean:
 	$(QUIET)rm -rf ${OBJECTS} ${PROJECT} *.gcno *.gcda
 
-.PHONY: all options clean debug
+.PHONY: all options clean debug run
 
 -include $(wildcard .depend/*.dep)
