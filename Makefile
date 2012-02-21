@@ -74,7 +74,7 @@ valgrind: debug
 gdb: debug
 	cgdb ${PROJECT}-debug
 
-tests: ${OBJECTS}
+test: ${OBJECTS}
 	$(QUIET)make -C tests run
 
 dist: clean
@@ -141,4 +141,4 @@ uninstall:
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall tests
+.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test
