@@ -433,6 +433,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   gdouble value        = gtk_adjustment_get_value(adjustment);
   gdouble max          = gtk_adjustment_get_upper(adjustment) - view_size;
   unsigned int padding = zathura->global.page_padding;
+  zathura->global.update_page_number = true;
 
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);

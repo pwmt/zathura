@@ -84,7 +84,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       page->visible = true;
-      if (updated == false && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
+      if (zathura->global.update_page_number == true && updated == false
+          && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
         zathura->document->current_page_number = page_id;
         updated = true;
       }

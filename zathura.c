@@ -140,7 +140,8 @@ zathura_init(int argc, char* argv[])
   zathura->print.page_setup = NULL;
 
   /* global settings */
-  zathura->global.recolor = false;
+  zathura->global.recolor            = false;
+  zathura->global.update_page_number = true;
 
   /* load plugins */
   zathura_document_plugins_load(zathura);
@@ -618,6 +619,7 @@ page_set(zathura_t* zathura, unsigned int page_id)
   }
 
   zathura->document->current_page_number = page_id;
+  zathura->global.update_page_number = false;
 
   page_offset_t offset;
   page_calculate_offset(page, &offset);
@@ -626,6 +628,8 @@ page_set(zathura_t* zathura, unsigned int page_id)
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   set_adjustment(view_hadjustment, offset.x);
   set_adjustment(view_vadjustment, offset.y);
+
+  statusbar_page_number_update(zathura);
 
   return true;
 
