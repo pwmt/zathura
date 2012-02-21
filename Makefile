@@ -83,7 +83,7 @@ dist: clean
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}-${VERSION}
-	$(QUIET)cp Makefile config.mk tests/*.c \
+	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar

@@ -1,7 +1,7 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
-VERSION = 0.0.8.1
+VERSION = 0.1.0
 
 # the GTK version to use
 ZATHURA_GTK_VERSION ?= 2
