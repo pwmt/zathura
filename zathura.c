@@ -629,6 +629,8 @@ page_set(zathura_t* zathura, unsigned int page_id)
   set_adjustment(view_hadjustment, offset.x);
   set_adjustment(view_vadjustment, offset.y);
 
+  statusbar_page_number_update(zathura);
+
   return true;
 
 error_out:
