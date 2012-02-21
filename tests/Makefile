@@ -46,7 +46,7 @@ ${PROJECT}: options ${OBJECTS}
 ${OBJECTS}: ../config.mk
 
 clean:
-	$(QUIET)rm -rf ${OBJECTS} ${PROJECT}
+	$(QUIET)rm -rf ${OBJECTS} ${PROJECT} *.gcno *.gcda
 
 .PHONY: all options clean debug
 
