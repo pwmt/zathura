@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "math.h"
+#include <math.h>
 
 #include "utils.h"
 #include "zathura.h"
@@ -263,7 +263,8 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
 void
 set_adjustment(GtkAdjustment* adjustment, gdouble value)
 {
-  gtk_adjustment_set_value(adjustment, MAX(adjustment->lower, MIN(adjustment->upper - adjustment->page_size, value)));
+  gtk_adjustment_set_value(adjustment, MAX(gtk_adjustment_get_lower(adjustment),
+        MIN(gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment), value)));
 }
 
 void

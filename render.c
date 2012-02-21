@@ -112,13 +112,17 @@ render_free(render_thread_t* render_thread)
   }
 
   if (render_thread->list) {
-    girara_list_free(render_thread->list);
+    girara_list_clear(render_thread->list);
   }
 
   if (render_thread->cond) {
     g_cond_signal(render_thread->cond);
     g_thread_join(render_thread->thread);
     g_cond_free(render_thread->cond);
+  }
+
+  if (render_thread->list) {
+    girara_list_free(render_thread->list);
   }
 
   if (render_thread->lock) {

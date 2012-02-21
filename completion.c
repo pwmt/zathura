@@ -11,6 +11,7 @@
 #include "utils.h"
 
 #include <girara/session.h>
+#include <girara/settings.h>
 #include <girara/completion.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
@@ -29,6 +30,10 @@ compare_case_insensitive(const char* str1, const char* str2)
 static girara_list_t*
 list_files(zathura_t* zathura, const char* current_path, const char* current_file, int current_file_length, bool is_dir)
 {
+  if (zathura == NULL || zathura->ui.session == NULL || current_path == NULL) {
+    return NULL;
+  }
+
   /* read directory */
   GDir* dir = g_dir_open(current_path, 0, NULL);
   if (dir == NULL) {
@@ -38,6 +43,9 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   girara_list_t* res = girara_sorted_list_new2((girara_compare_function_t)compare_case_insensitive,
       (girara_free_function_t)g_free);
 
+  bool show_hidden = false;
+  girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
+
   /* read files */
   char* name = NULL;
   while ((name = (char*) g_dir_read_name(dir)) != NULL) {
@@ -45,19 +53,25 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     if (e_name == NULL) {
       goto error_free;
     }
-    int   e_length = strlen(e_name);
 
-    if ((current_file_length > e_length) || strncmp(current_file, e_name,
-          current_file_length)) {
+    int e_length = strlen(e_name);
+
+    if (show_hidden == false && e_name[0] == '.') {
       g_free(e_name);
       continue;
     }
 
-    char* full_path = g_strdup_printf("%s%s%s", current_path, is_dir ? "" : "/", e_name);
-    if (full_path == NULL) {
+    if ((current_file_length > e_length) || strncmp(current_file, e_name, current_file_length)) {
       g_free(e_name);
-      goto error_free;
+      continue;
     }
+
+    char* tmp = "/";
+    if (is_dir == true || g_strcmp0(current_path, "/") == 0) {
+      tmp = "";
+    };
+
+    char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
       char* tmp_path = full_path;
@@ -120,9 +134,6 @@ cc_open(girara_session_t* session, const char* input)
     }
 
     char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
-    if (tmp_path == NULL) {
-      goto error_free;
-    }
 
     g_free(path);
     path = tmp_path;
@@ -132,10 +143,6 @@ cc_open(girara_session_t* session, const char* input)
   bool is_dir = (path[strlen(path) - 1] == '/') ? true : false;
   if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && !is_dir) {
     char* tmp_path = g_strdup_printf("%s/", path);
-    if (tmp_path == NULL) {
-      goto error_free;
-    }
-
     g_free(path);
     path = tmp_path;
     is_dir = true;

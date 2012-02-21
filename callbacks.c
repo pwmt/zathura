@@ -97,18 +97,25 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 }
 
 void
-cb_pages_per_row_value_changed(girara_session_t* UNUSED(session), const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* data)
+cb_pages_per_row_value_changed(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
 
   int pages_per_row = *(int*) value;
-  zathura_t* zathura = data;
 
   if (pages_per_row < 1) {
     pages_per_row = 1;
   }
 
   page_widget_set_mode(zathura, pages_per_row);
+
+  if (zathura->document != NULL) {
+    unsigned int current_page = zathura->document->current_page_number;
+    page_set_delayed(zathura, current_page);
+  }
 }
 
 void
@@ -214,11 +221,16 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
   g_return_if_fail(file     != NULL);
   g_return_if_fail(session  != NULL);
 
-  if (event != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
-    return;
+  switch (event) {
+    case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
+    case G_FILE_MONITOR_EVENT_CREATED:
+      gdk_threads_enter();
+      sc_reload(session, NULL, NULL, 0);
+      gdk_threads_leave();
+      break;
+    default:
+      return;
   }
-
-  sc_reload(session, NULL, NULL, 0);
 }
 
 static gboolean
@@ -256,13 +268,13 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
       g_free(input);
     }
 
-    g_idle_add(password_dialog, dialog);
+    gdk_threads_add_idle(password_dialog, dialog);
     return false;
   }
 
   /* try to open document again */
   if (document_open(dialog->zathura, dialog->path, input) == false) {
-    g_idle_add(password_dialog, dialog);
+    gdk_threads_add_idle(password_dialog, dialog);
   } else {
     g_free(dialog->path);
     free(dialog);
@@ -283,14 +295,22 @@ error_ret:
 }
 
 bool
-cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
+cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return false;
   }
 
-  girara_argument_t argument = { zathura->document->adjust_mode, NULL };
-  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+  static int height = -1;
+  static int width = -1;
 
-  return true;
+  /* adjust only if the allocation changed */
+  if (width != allocation->width || height != allocation->height) {
+    girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+    sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+    width = allocation->width;
+    height = allocation->height;
+  }
+
+  return false;
 }

@@ -116,7 +116,7 @@ cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     return true;
   }
 
-  document_close(zathura);
+  document_close(zathura, false);
 
   return true;
 }
@@ -157,11 +157,6 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field, NULL);
     if (tmp != NULL) {
       char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, tmp);
-      if (text == NULL) {
-        g_free(tmp);
-        return true;
-      }
-
       g_string_append(string, text);
 
       g_free(text);
@@ -198,8 +193,8 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
     girara_notify(session, GIRARA_ERROR, "Too many arguments.");
     return false;
   } else if (argc >= 1) {
-    if (zathura->document) {
-      document_close(zathura);
+    if (zathura->document != NULL) {
+      document_close(zathura, false);
     }
 
     document_open(zathura, girara_list_nth(argument_list, 0), (argc == 2) ? girara_list_nth(argument_list, 1) :  NULL);
@@ -286,6 +281,8 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   }
 
   bool firsthit = true;
+  zathura_plugin_error_t error = ZATHURA_PLUGIN_ERROR_OK;
+
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
     zathura_page_t* page = zathura->document->pages[(page_id + zathura->document->current_page_number) % zathura->document->number_of_pages];
     if (page == NULL) {
@@ -294,11 +291,16 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
 
     g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
 
-    girara_list_t* result = zathura_page_search_text(page, input, NULL);
+    girara_list_t* result = zathura_page_search_text(page, input, &error);
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
       g_object_set(page->drawing_area, "search-results", NULL, NULL);
-      continue;
+
+      if (error == ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED) {
+        break;
+      } else {
+        continue;
+      }
     }
 
     g_object_set(page->drawing_area, "search-results", result, NULL);
@@ -332,14 +334,20 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
   }
 
   const char* attachment_name = girara_list_nth(argument_list, 0);
-  const char* file_name = girara_list_nth(argument_list, 1);
+  const char* file_name       = girara_list_nth(argument_list, 1);
+
+  if (file_name == NULL || attachment_name == NULL) {
+    return false;
+  }
   char* file_name2 = girara_fix_path(file_name);
-  if (!zathura_document_attachment_save(zathura->document, attachment_name, file_name)) {
+
+  if (zathura_document_attachment_save(zathura->document, attachment_name, file_name) == false) {
     girara_notify(session, GIRARA_ERROR, "Couldn't write attachment '%s' to '%s'.", attachment_name, file_name);
   } else {
     girara_notify(session, GIRARA_INFO, "Wrote attachment '%s' to '%s'.", attachment_name, file_name2);
   }
 
   g_free(file_name2);
+
   return true;
 }

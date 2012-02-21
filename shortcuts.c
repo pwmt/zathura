@@ -6,6 +6,7 @@
 #include <girara/shortcuts.h>
 #include <girara/utils.h>
 #include <gtk/gtk.h>
+#include <libgen.h>
 
 #include "callbacks.h"
 #include "shortcuts.h"
@@ -57,6 +58,10 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   zathura->document->adjust_mode = argument->n;
+  if (argument->n == ADJUST_NONE) {
+    /* there is nothing todo */
+    goto error_ret;
+  }
 
   /* get window size */
   GtkAllocation allocation;
@@ -113,6 +118,63 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument,
 }
 
 bool
+sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->gtk.inputbar_entry != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == false) {
+    gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
+  }
+
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.notification_area)) == true) {
+    gtk_widget_hide(GTK_WIDGET(session->gtk.notification_area));
+  }
+
+  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar_entry));
+
+  if (argument->data != NULL) {
+    gtk_entry_set_text(session->gtk.inputbar_entry, (char*) argument->data);
+
+    /* append filepath */
+    if (argument->n == APPEND_FILEPATH && zathura->document != NULL) {
+      char* file_path = g_strdup(zathura->document->file_path);
+      if (file_path == NULL) {
+        return false;
+      }
+
+      char* path = dirname(file_path);
+      char* tmp  = g_strdup_printf("%s%s/", (char*) argument->data, (g_strcmp0(path, "/") == 0) ? "" : path);
+
+      if (tmp == NULL) {
+        g_free(file_path);
+        return false;
+      }
+
+      gtk_entry_set_text(session->gtk.inputbar_entry, tmp);
+      g_free(tmp);
+      g_free(file_path);
+    }
+
+    /* we save the X clipboard that will be clear by "grab_focus" */
+    gchar* x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+
+    gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
+
+    if (x_clipboard_text != NULL) {
+      /* we reset the X clipboard with saved text */
+      gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), x_clipboard_text, -1);
+      g_free(x_clipboard_text);
+    }
+  }
+
+  return true;
+}
+
+bool
 sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
@@ -120,7 +182,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL) {
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
     return false;
   }
 
@@ -151,7 +213,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   /* ask for input */
   if (show_links == true) {
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, NULL);
+    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, zathura->ui.session);
   }
 
   return false;
@@ -188,52 +250,51 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(event != NULL, false);
 
-  static int x = 0;
-  static int y = 0;
-
   if (zathura->document == NULL) {
     return false;
   }
 
-  /* scroll event */
-  if (event->type == GIRARA_EVENT_SCROLL) {
-    switch (event->direction) {
-      case GIRARA_SCROLL_UP:
-        argument->n = UP;
-        break;
-      case GIRARA_SCROLL_DOWN:
-        argument->n = DOWN;
-        break;
-      case GIRARA_SCROLL_LEFT:
-        argument->n = LEFT;
-        break;
-      case GIRARA_SCROLL_RIGHT:
-        argument->n = RIGHT;
-        break;
-    }
+  static int x = 0;
+  static int y = 0;
 
-    return sc_scroll(session, argument, NULL, t);
-  } else if (event->type == GIRARA_EVENT_BUTTON_PRESS) {
-    x = event->x;
-    y = event->y;
-  } else if (event->type == GIRARA_EVENT_BUTTON_RELEASE) {
-    x = 0;
-    y = 0;
-  } else if (event->type == GIRARA_EVENT_MOTION_NOTIFY) {
-    GtkAdjustment* x_adj =
-      gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-    GtkAdjustment* y_adj =
-      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+  GtkAdjustment* x_adj = NULL;
+  GtkAdjustment* y_adj = NULL;
 
-    if (x_adj == NULL || y_adj == NULL) {
-      return false;
-    }
+  switch (event->type) {
+    /* scroll */
+    case GIRARA_EVENT_SCROLL_UP:
+    case GIRARA_EVENT_SCROLL_DOWN:
+    case GIRARA_EVENT_SCROLL_LEFT:
+    case GIRARA_EVENT_SCROLL_RIGHT:
+      return sc_scroll(session, argument, NULL, t);
 
-    set_adjustment(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - x));
-    set_adjustment(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - y));
+    /* drag */
+    case GIRARA_EVENT_BUTTON_PRESS:
+      x = event->x;
+      y = event->y;
+      break;
+    case GIRARA_EVENT_BUTTON_RELEASE:
+      x = 0;
+      y = 0;
+      break;
+    case GIRARA_EVENT_MOTION_NOTIFY:
+      x_adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+      y_adj =gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
 
-    x = event->x;
-    y = event->y;
+      if (x_adj == NULL || y_adj == NULL) {
+        return false;
+      }
+
+      set_adjustment(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - x));
+      set_adjustment(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - y));
+
+      x = event->x;
+      y = event->y;
+      break;
+
+    /* unhandled events */
+    default:
+      break;
   }
 
   return false;
@@ -253,22 +314,18 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
   }
 
   /* scroll event */
-  if (event->type == GIRARA_EVENT_SCROLL) {
-    switch (event->direction) {
-      case GIRARA_SCROLL_UP:
-        argument->n = ZOOM_IN;
-        break;
-      case GIRARA_SCROLL_DOWN:
-        argument->n = ZOOM_OUT;
-        break;
-      default:
-        return false;
-    }
-
-    return sc_zoom(session, argument, NULL, t);
+  switch (event->type) {
+    case GIRARA_EVENT_SCROLL_UP:
+      argument->n = ZOOM_IN;
+      break;
+    case GIRARA_EVENT_SCROLL_DOWN:
+      argument->n = ZOOM_OUT;
+      break;
+    default:
+      return false;
   }
 
-  return false;
+  return sc_zoom(session, argument, NULL, t);
 }
 
 bool
@@ -318,23 +375,15 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->document->file_path == NULL) {
+  if (zathura->file_monitor.file_path == NULL) {
     return false;
   }
 
-  /* save current document path and password */
-  char* path     = g_strdup(zathura->document->file_path);
-  char* password = zathura->document->password ? g_strdup(zathura->document->password) : NULL;
-
   /* close current document */
-  document_close(zathura);
+  document_close(zathura, true);
 
   /* reopen document */
-  document_open(zathura, path, password);
-
-  /* clean up */
-  g_free(path);
-  g_free(password);
+  document_open(zathura, zathura->file_monitor.file_path, zathura->file_monitor.password);
 
   return false;
 }
@@ -380,25 +429,27 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   }
 
-  gdouble view_size   = gtk_adjustment_get_page_size(adjustment);
-  gdouble value       = gtk_adjustment_get_value(adjustment);
-  gdouble max         = gtk_adjustment_get_upper(adjustment) - view_size;
+  gdouble view_size    = gtk_adjustment_get_page_size(adjustment);
+  gdouble value        = gtk_adjustment_get_value(adjustment);
+  gdouble max          = gtk_adjustment_get_upper(adjustment) - view_size;
+  unsigned int padding = zathura->global.page_padding;
+
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);
   gdouble new_value;
 
   switch(argument->n) {
     case FULL_UP:
-      new_value = value - view_size;
+      new_value = value - view_size - padding;
       break;
     case FULL_DOWN:
-      new_value = value + view_size;
+      new_value = value + view_size + padding;
       break;
     case HALF_UP:
-      new_value = value - (view_size / 2);
+      new_value = value - ((view_size + padding) / 2);
       break;
     case HALF_DOWN:
-      new_value = value + (view_size / 2);
+      new_value = value + ((view_size + padding) / 2);
       break;
     case LEFT:
     case UP:
@@ -533,7 +584,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   switch(argument->n) {
     case UP:
-      if(gtk_tree_path_prev(path) == FALSE) {
+      if (gtk_tree_path_prev(path) == FALSE) {
         is_valid_path = gtk_tree_path_up(path);
       } else { /* row above */
         while(gtk_tree_view_row_expanded(tree_view, path)) {
@@ -547,14 +598,14 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       }
       break;
     case COLLAPSE:
-      if(!gtk_tree_view_collapse_row(tree_view, path)
+      if (gtk_tree_view_collapse_row(tree_view, path) == FALSE
         && gtk_tree_path_get_depth(path) > 1) {
         gtk_tree_path_up(path);
         gtk_tree_view_collapse_row(tree_view, path);
       }
       break;
     case DOWN:
-      if(gtk_tree_view_row_expanded(tree_view, path)) {
+      if (gtk_tree_view_row_expanded(tree_view, path) == TRUE) {
         gtk_tree_path_down(path);
       } else {
         do {
@@ -568,9 +619,18 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       }
       break;
     case EXPAND:
-      if(gtk_tree_view_expand_row(tree_view, path, FALSE)) {
+      if (gtk_tree_view_expand_row(tree_view, path, FALSE)) {
         gtk_tree_path_down(path);
       }
+      break;
+    case EXPAND_ALL:
+      gtk_tree_view_expand_all(tree_view);
+      break;
+    case COLLAPSE_ALL:
+      gtk_tree_view_collapse_all(tree_view);
+      gtk_tree_path_free(path);
+      path = gtk_tree_path_new_first();
+      gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
       break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
@@ -787,10 +847,18 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   /* zoom limitations */
-  if (zathura->document->scale < 0.1f) {
-    zathura->document->scale = 0.1f;
-  } else if (zathura->document->scale > 10.0f) {
-    zathura->document->scale = 10.0f;
+  int zoom_min_int = 10;
+  int zoom_max_int = 1000;
+  girara_setting_get(session, "zoom-min", &zoom_min_int);
+  girara_setting_get(session, "zoom-max", &zoom_max_int);
+
+  float zoom_min = zoom_min_int * 0.01f;
+  float zoom_max = zoom_max_int * 0.01f;
+
+  if (zathura->document->scale < zoom_min) {
+    zathura->document->scale = zoom_min;
+  } else if (zathura->document->scale > zoom_max) {
+    zathura->document->scale = zoom_max;
   }
 
   /* keep position */
@@ -805,4 +873,3 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   return false;
 }
-

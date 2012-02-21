@@ -14,9 +14,9 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
   BACKWARD, ADJUST_BESTFIT, ADJUST_WIDTH, ADJUST_NONE, CONTINUOUS, DELETE_LAST,
-  ADD_MARKER, EVAL_MARKER, EXPAND, COLLAPSE, SELECT, GOTO_DEFAULT, GOTO_LABELS,
-  GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR,
-  DELETE_TO_LINE_START, APPEND_FILEPATH };
+  ADD_MARKER, EVAL_MARKER, EXPAND, EXPAND_ALL, COLLAPSE_ALL, COLLAPSE, SELECT,
+  GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP,
+  FULL_DOWN, NEXT_CHAR, PREVIOUS_CHAR, DELETE_TO_LINE_START, APPEND_FILEPATH };
 
 /* forward declaration for types from document.h */
 struct zathura_document_s;
@@ -50,6 +50,7 @@ typedef struct zathura_s
       GdkColor recolor_dark_color; /**< Dark color for recoloring */
       GdkColor recolor_light_color; /**< Light color for recoloring */
       GdkColor highlight_color; /**< Color for highlighting */
+      GdkColor highlight_color_active; /** Color for highlighting */
     } colors;
 
     GtkWidget *page_widget_alignment;
@@ -108,6 +109,16 @@ typedef struct zathura_s
 
   zathura_document_t* document; /**< The current document */
   zathura_database_t* database; /**< The database */
+
+  /**
+   * File monitor
+   */
+  struct {
+    GFileMonitor* monitor; /**< File monitor */
+    GFile* file; /**< File for file monitor */
+    gchar* file_path; /**< Save file path */
+    gchar* password; /**< Save password */
+  } file_monitor;
 } zathura_t;
 
 /**
@@ -152,9 +163,10 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite);
  * Closes the current opened document
  *
  * @param zathura The zathura session
+ * @param keep_monitor Set to true if monitor should be kept (sc_reload)
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_close(zathura_t* zathura);
+bool document_close(zathura_t* zathura, bool keep_monitor);
 
 /**
  * Opens the page with the given number

@@ -63,6 +63,8 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo project=${PROJECT} > ${PROJECT}.pc
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${PREFIX}/include >> ${PROJECT}.pc
+	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
+	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
@@ -72,19 +74,22 @@ valgrind: debug
 gdb: debug
 	cgdb ${PROJECT}-debug
 
-tests: ${OBJECTS}
-	$(QUIET)make -C tests
+test: ${OBJECTS}
+	$(QUIET)make -C tests run
 
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
-	$(QUIET)cp -R LICENSE Makefile config.mk common.mk README Doxyfile \
-			${PROJECT}.1 ${SOURCE} ${HEADER} ${PROJECT}.pc.in tests \
+	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
+	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
+			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}-${VERSION}
+	$(QUIET)cp Makefile config.mk tests/*.c \
+			${PROJECT}-${VERSION}/tests
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
 	$(QUIET)rm -rf ${PROJECT}-${VERSION}
 
-doc: clean
+doc:
 	$(QUIET)doxygen Doxyfile
 
 gcov: clean
@@ -103,10 +108,15 @@ install: all ${PROJECT}.pc
 	$(QUIET)cp -f zathura.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1 > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(QUIET)if which rst2man > /dev/null ; then \
+		mkdir -p ${DESTDIR}${MANPREFIX}/man1 ; \
+		sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1.rst > ${PROJECT}-v.1.rst ; \
+		rst2man ${PROJECT}-v.1.rst > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
+		rm -f ${PROJECT}-v.1.rst ; \
 		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
-		rst2man ${PROJECT}rc.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+		sed "s/VERSION/${VERSION}/g" < ${PROJECT}rc.5.rst > ${PROJECT}rc-v.5.rst ; \
+		rst2man ${PROJECT}rc-v.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+		rm -f ${PROJECT}rc-v.5.rst ; \
 	fi
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
@@ -131,4 +141,4 @@ uninstall:
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall tests
+.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test
