@@ -86,6 +86,7 @@ typedef struct zathura_s
   {
     unsigned int page_padding; /**< Padding between the pages */
     bool recolor; /**< Recoloring mode switch */
+    bool update_page_number; /**< Update current page number */
   } global;
 
   struct
