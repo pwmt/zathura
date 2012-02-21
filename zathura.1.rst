@@ -103,8 +103,12 @@ k, j
   Move to upper or lower entry
 l
   Expand entry
+L
+  Expand all entries
 h
   Collapse entry
+H
+  Collapse all entries
 space, Return
   Select and open entry
 
