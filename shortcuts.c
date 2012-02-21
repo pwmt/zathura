@@ -623,6 +623,15 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
         gtk_tree_path_down(path);
       }
       break;
+    case EXPAND_ALL:
+      gtk_tree_view_expand_all(tree_view);
+      break;
+    case COLLAPSE_ALL:
+      gtk_tree_view_collapse_all(tree_view);
+      gtk_tree_path_free(path);
+      path = gtk_tree_path_new_first();
+      gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+      break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
       return false;
@@ -864,4 +873,3 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   return false;
 }
-
