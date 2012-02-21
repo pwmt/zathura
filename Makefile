@@ -64,6 +64,7 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${PREFIX}/include >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
+	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
