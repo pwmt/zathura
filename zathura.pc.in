@@ -6,4 +6,4 @@ Description: document viewer
 Version: ${version}
 URL: http://pwmt.org/projects/zathura
 Cflags: ${INC_PATH}
-Requires.private: girara-gtk${GTK_VERSION} gtk+-${GTK_VERSION}-0
+Requires.private: girara-gtk${GTK_VERSION} gtk+-${GTK_VERSION}.0
