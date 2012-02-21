@@ -584,7 +584,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   switch(argument->n) {
     case UP:
-      if(gtk_tree_path_prev(path) == FALSE) {
+      if (gtk_tree_path_prev(path) == FALSE) {
         is_valid_path = gtk_tree_path_up(path);
       } else { /* row above */
         while(gtk_tree_view_row_expanded(tree_view, path)) {
@@ -598,14 +598,14 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       }
       break;
     case COLLAPSE:
-      if(!gtk_tree_view_collapse_row(tree_view, path)
+      if (gtk_tree_view_collapse_row(tree_view, path) == FALSE
         && gtk_tree_path_get_depth(path) > 1) {
         gtk_tree_path_up(path);
         gtk_tree_view_collapse_row(tree_view, path);
       }
       break;
     case DOWN:
-      if(gtk_tree_view_row_expanded(tree_view, path)) {
+      if (gtk_tree_view_row_expanded(tree_view, path) == TRUE) {
         gtk_tree_path_down(path);
       } else {
         do {
@@ -619,9 +619,18 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       }
       break;
     case EXPAND:
-      if(gtk_tree_view_expand_row(tree_view, path, FALSE)) {
+      if (gtk_tree_view_expand_row(tree_view, path, FALSE)) {
         gtk_tree_path_down(path);
       }
+      break;
+    case EXPAND_ALL:
+      gtk_tree_view_expand_all(tree_view);
+      break;
+    case COLLAPSE_ALL:
+      gtk_tree_view_collapse_all(tree_view);
+      gtk_tree_path_free(path);
+      path = gtk_tree_path_new_first();
+      gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
       break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
@@ -864,4 +873,3 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   return false;
 }
-
