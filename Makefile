@@ -82,6 +82,7 @@ dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in \
+			${PROJECT}.desktop \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
