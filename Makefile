@@ -113,6 +113,7 @@ install: all ${PROJECT}.pc
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
 	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
+	$(QUIET)cp -f version.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(QUIET)cp -f document.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(QUIET)cp -f zathura.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(ECHO) installing manual pages
