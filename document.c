@@ -87,7 +87,21 @@ zathura_document_plugins_load(zathura_t* zathura)
         continue;
       }
 
-      /* resolve symbol */
+      /* resolve symbol and check API version*/
+      zathura_plugin_api_version_t api_version;
+      *(void**)(&api_version) = dlsym(handle, PLUGIN_API_VERSION_FUNCTION);
+      if (api_version != NULL) {
+        if (api_version() != ZATHURA_API_VERSION) {
+          girara_error("plugin %s has been built againt zathura with a different API version (plugin: %d, zathura: %d)",
+              path, api_version(), ZATHURA_API_VERSION);
+          g_free(path);
+          dlclose(handle);
+          continue;
+        }
+      } else {
+        girara_warning("could not find '%s' function in plugin %s ... loading anyway", PLUGIN_API_VERSION_FUNCTION, path);
+      }
+
       zathura_plugin_register_service_t register_plugin;
       *(void**)(&register_plugin) = dlsym(handle, PLUGIN_REGISTER_FUNCTION);
 

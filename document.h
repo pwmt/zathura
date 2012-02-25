@@ -9,8 +9,38 @@
 
 #include <girara/types.h>
 #include "zathura.h"
+#include "version.h"
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
+#define PLUGIN_API_VERSION_FUNCTION "plugin_api_version"
+
+/**
+ * Register a plugin.
+ *
+ * @param plugin_name the name of the plugin
+ * @param major the plugin's major version
+ * @param minor the plugin's minor version
+ * @param rev the plugin's revision
+ * @param plugin_open_function the plugin's open function
+ * @param mimetypes a char array of mime types supported by the plugin
+ */
+#define PLUGIN_REGISTER(plugin_name, major, minor, rev, plugin_open_function, mimetypes) \
+  unsigned int plugin_version_major() { return major; } \
+  unsigned int plugin_version_minor() { return minor; } \
+  unsigned int plugin_version_revision() { return rev; } \
+  unsigned int plugin_api_version() { return ZATHURA_API_VERSION; } \
+  \
+  void plugin_register(zathura_document_plugin_t* plugin) \
+  { \
+    if (plugin == NULL) { \
+      return; \
+    } \
+    plugin->open_function  = (plugin_open_function); \
+    static const char* mime_types[] = mimetypes; \
+    for (size_t s = 0; s != sizeof(mime_types) / sizeof(const char*); ++s) { \
+      girara_list_append(plugin->content_types, g_content_type_from_mime_type(mime_types[s])); \
+    } \
+  } \
 
 /**
  * Error types for plugins
@@ -79,6 +109,13 @@ typedef struct zathura_password_dialog_info_s
  * @param The document plugin
  */
 typedef void (*zathura_plugin_register_service_t)(zathura_document_plugin_t*);
+
+/**
+ * Function prototype that is called to get the plugin's API version.
+ *
+ * @return plugin's API version
+ */
+typedef unsigned int (*zathura_plugin_api_version_t)();
 
 /**
  * Image buffer

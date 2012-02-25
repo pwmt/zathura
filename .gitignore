@@ -12,3 +12,4 @@ zathura.pc
 *.gcda
 gcov/
 *.swp
+version.h
