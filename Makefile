@@ -28,6 +28,12 @@ options:
 	@echo "DFLAGS  = ${DFLAGS}"
 	@echo "CC      = ${CC}"
 
+version.h: version.h.in config.mk
+	$(QUIET)sed 's/ZVMAJOR/${ZATHURA_VERSION_MAJOR}/' < version.h.in | \
+		sed 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' | \
+		sed 's/ZVREV/${ZATHURA_VERSION_REV}/' | \
+		sed 's/ZVAPI/${ZATHURA_API_VERSION}/' > version.h
+
 %.o: %.c
 	$(ECHO) CC $<
 	@mkdir -p .depend
@@ -41,8 +47,8 @@ options:
 # force recompilation of database.o if DATABASE has changed
 database.o: database-${DATABASE}.o
 
-${OBJECTS}:  config.mk
-${DOBJECTS}: config.mk
+${OBJECTS}:  config.mk version.h
+${DOBJECTS}: config.mk version.h
 
 ${PROJECT}: ${OBJECTS}
 	$(ECHO) CC -o $@
@@ -50,7 +56,8 @@ ${PROJECT}: ${OBJECTS}
 
 clean:
 	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
-		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc *gcda *gcno $(PROJECT).info gcov
+		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
+		*gcda *gcno $(PROJECT).info gcov
 	$(QUIET)make -C tests clean
 
 ${PROJECT}-debug: ${DOBJECTS}
@@ -62,6 +69,7 @@ debug: ${PROJECT}-debug
 ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo project=${PROJECT} > ${PROJECT}.pc
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
+	$(QUIET)echo apiversion=${ZATHHRA_API_VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${PREFIX}/include >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
 	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
@@ -82,7 +90,7 @@ dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in \
-			${PROJECT}.desktop \
+			${PROJECT}.desktop version.h.in \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests

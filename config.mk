@@ -1,7 +1,11 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
-VERSION = 0.1.0
+ZATHURA_VERSION_MAJOR = 0
+ZATHURA_VERSION_MINOR = 1
+ZATHURA_VERSION_REV = 0
+ZATHURA_API_VERSION = 1
+VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_REV}
 
 # the GTK version to use
 ZATHURA_GTK_VERSION ?= 2
@@ -29,7 +33,7 @@ SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
 DL_LIB ?= -ldl
 
 INCS = ${GIRARA_INC} ${GTK_INC}
-LIBS = ${GIRARA_LIB} ${GTK_LIB} $(DL_LIB) -lpthread -lm
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${DL_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
