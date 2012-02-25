@@ -49,10 +49,10 @@ h, k, j, l
   Scroll to the left, down, up or right direction
 Left, Down, Up, Right
   Scroll to the left, down, up or right direction
-^d, ^u
-  Scroll a half page down or up
-^f, ^b, space, <S-space>
-  Scroll a full page down or up
+^t, ^d, ^u, ^y
+  Scroll a half page left, down, up or right
+t, ^f, ^b, space, <S-space>, y
+  Scroll a full page left, down, up or right
 gg, G, nG
   Goto to the first, the last or to the nth page
 ^c, Escape

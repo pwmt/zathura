@@ -423,7 +423,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   }
 
   GtkAdjustment* adjustment = NULL;
-  if ( (argument->n == LEFT) || (argument->n == RIGHT) ) {
+  if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
+	(argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
     adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   } else {
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
@@ -441,15 +442,19 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   switch(argument->n) {
     case FULL_UP:
+    case FULL_LEFT:
       new_value = value - view_size - padding;
       break;
     case FULL_DOWN:
+    case FULL_RIGHT:
       new_value = value + view_size + padding;
       break;
     case HALF_UP:
+    case HALF_LEFT:
       new_value = value - ((view_size + padding) / 2);
       break;
     case HALF_DOWN:
+    case HALF_RIGHT:
       new_value = value + ((view_size + padding) / 2);
       break;
     case LEFT:
