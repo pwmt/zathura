@@ -510,9 +510,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       /* the next result is on the same page */
       target_page = page;
       target_idx = current + 1;
-      // g_object_set(page->drawing_area, "search-current", current + 1, NULL);
     } else if (diff == -1 && current > 0) {
-      // g_object_set(page->drawing_area, "search-current", current - 1, NULL);
       target_page = page;
       target_idx = current - 1;
     } else {
@@ -522,7 +520,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       for (int npage_id = 1; page_id < num_pages; ++npage_id) {
         int ntmp = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura->document->pages[(ntmp + 2*num_pages) % num_pages];
-        zathura->document->current_page_number = npage->number;
+        zathura->global.update_page_number = true;
         g_object_get(npage->drawing_area, "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {
           target_page = npage;
