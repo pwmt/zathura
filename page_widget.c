@@ -100,14 +100,14 @@ static void
 zathura_page_widget_init(ZathuraPage* widget)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  priv->page        = NULL;
-  priv->surface     = NULL;
-  priv->links       = NULL;
-  priv->links_got   = false;
-  priv->link_offset = 0;
+  priv->page           = NULL;
+  priv->surface        = NULL;
+  priv->links          = NULL;
+  priv->links_got      = false;
+  priv->link_offset    = 0;
   priv->search_results = NULL;
   priv->search_current = INT_MAX;
-  priv->selection.x1 = -1;
+  priv->selection.x1   = -1;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -145,15 +145,15 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
 
   switch (prop_id) {
     case PROP_PAGE:
-      priv->page = g_value_get_pointer(value);
+      priv->page    = g_value_get_pointer(value);
       priv->zathura = priv->page->document->zathura;
       break;
     case PROP_DRAW_LINKS:
       priv->draw_links = g_value_get_boolean(value);
       /* get links */
       if (priv->draw_links == true && priv->links_got == false) {
-        priv->links = zathura_page_links_get(priv->page, NULL);
-        priv->links_got = true;
+        priv->links           = zathura_page_links_get(priv->page, NULL);
+        priv->links_got       = true;
         priv->number_of_links = (priv->links == NULL) ? 0 : girara_list_size(priv->links);
       }
 
@@ -254,7 +254,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
 #if GTK_MAJOR_VERSION == 2
   const unsigned int page_height = widget->allocation.height;
-  const unsigned int page_width = widget->allocation.width;
+  const unsigned int page_width  = widget->allocation.width;
 #else
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
@@ -411,7 +411,7 @@ redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
   GdkRectangle grect;
   grect.x = rectangle->x1;
   grect.y = rectangle->y1;
-  grect.width = rectangle->x2 - rectangle->x1;
+  grect.width  = rectangle->x2 - rectangle->x1;
   grect.height = rectangle->y2 - rectangle->y1;
 #if (GTK_MAJOR_VERSION == 3)
   gtk_widget_queue_draw_area(GTK_WIDGET(widget), grect.x, grect.y, grect.width, grect.height);
@@ -512,6 +512,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   } else {
     redraw_rect(ZATHURA_PAGE(widget), &priv->selection);
     zathura_rectangle_t tmp = priv->selection;
+
     tmp.x1 /= priv->page->document->scale;
     tmp.x2 /= priv->page->document->scale;
     tmp.y1 /= priv->page->document->scale;
@@ -523,6 +524,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
       g_free(text);
     }
   }
+
   priv->selection.x1 = -1;
   priv->selection.y1 = -1;
   priv->selection.x2 = -1;
