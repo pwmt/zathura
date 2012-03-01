@@ -4,20 +4,21 @@ include config.mk
 include common.mk
 
 PROJECT  = zathura
-SOURCE   = $(shell find . -iname "*.c" -a ! -iname "database-*" ! -path "*tests*")
-HEADER   = $(shell find . -iname "*.h")
-OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
-DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
+OSOURCE  = $(shell find . -maxdepth 1 -iname "*.c" -a ! -iname "database-*")
+HEADER   = $(shell find . -maxdepth 1 -iname "*.h")
 
 ifeq (${DATABASE}, sqlite)
 INCS   += $(SQLITE_INC)
 LIBS   += $(SQLITE_LIB)
-SOURCE += database-sqlite.c
+SOURCE = $(OSOURCE) database-sqlite.c
 else
 ifeq (${DATABASE}, plain)
-SOURCE += database-plain.c
+SOURCE = $(OSOURCE) database-plain.c
 endif
 endif
+
+OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
+DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
 
@@ -89,8 +90,8 @@ dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
-			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${SOURCE} ${HEADER} ${PROJECT}.pc.in \
-			${PROJECT}.desktop version.h.in \
+			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
+			${PROJECT}.desktop version.h.in database-*.c \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
@@ -113,9 +114,7 @@ install: all ${PROJECT}.pc
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
 	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
-	$(QUIET)cp -f version.h ${DESTDIR}${PREFIX}/include/${PROJECT}
-	$(QUIET)cp -f document.h ${DESTDIR}${PREFIX}/include/${PROJECT}
-	$(QUIET)cp -f zathura.h ${DESTDIR}${PREFIX}/include/${PROJECT}
+	$(QUIET)install -m 644 zathura.h document.h version.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	$(QUIET)if which rst2man > /dev/null ; then \

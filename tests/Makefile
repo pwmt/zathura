@@ -8,7 +8,7 @@ PROJECT = tests
 SOURCE  = tests.c $(wildcard test_*.c)
 OBJECTS = ${SOURCE:.c=.o}
 
-ZSOURCE   = $(shell find ../ -iname "*.c" -a ! -iname "database-*" ! -iname "main.c" ! -path "*tests*")
+ZSOURCE   = $(shell find ../ -maxdepth 1 -iname "*.c" -a ! -iname "database-*" ! -iname "main.c")
 ZOBJECTS = ${ZSOURCE:.c=.o}
 
 ifeq (${DATABASE}, sqlite)
@@ -46,7 +46,7 @@ ${PROJECT}: options ${OBJECTS}
 ${OBJECTS}: ../config.mk
 
 clean:
-	$(QUIET)rm -rf ${OBJECTS} ${PROJECT} *.gcno *.gcda
+	$(QUIET)rm -rf ${OBJECTS} ${PROJECT} *.gcno *.gcda .depend
 
 .PHONY: all options clean debug run
 
