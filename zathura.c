@@ -418,24 +418,30 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     goto error_free;
   }
 
-  zathura->file_monitor.file = g_file_new_for_uri(file_uri);
   if (zathura->file_monitor.file == NULL) {
-    goto error_free;
+    zathura->file_monitor.file = g_file_new_for_uri(file_uri);
+    if (zathura->file_monitor.file == NULL) {
+      goto error_free;
+    }
   }
 
-  zathura->file_monitor.monitor = g_file_monitor_file(zathura->file_monitor.file, G_FILE_MONITOR_NONE, NULL, NULL);
   if (zathura->file_monitor.monitor == NULL) {
-    goto error_free;
+    zathura->file_monitor.monitor = g_file_monitor_file(zathura->file_monitor.file, G_FILE_MONITOR_NONE, NULL, NULL);
+    if (zathura->file_monitor.monitor == NULL) {
+      goto error_free;
+    }
+    g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
   }
 
-  g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
-
-  zathura->file_monitor.file_path = g_strdup(document->file_path);
   if (zathura->file_monitor.file_path == NULL) {
-    goto error_free;
+    zathura->file_monitor.file_path = g_strdup(document->file_path);
+    if (zathura->file_monitor.file_path == NULL) {
+      goto error_free;
+    }
   }
 
   if (document->password != NULL) {
+    g_free(zathura->file_monitor.password);
     zathura->file_monitor.password = g_strdup(document->password);
     if (zathura->file_monitor.password == NULL) {
       goto error_free;
