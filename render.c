@@ -128,6 +128,8 @@ render_free(render_thread_t* render_thread)
   if (render_thread->lock) {
     g_mutex_free(render_thread->lock);
   }
+
+  g_free(render_thread);
 }
 
 bool
