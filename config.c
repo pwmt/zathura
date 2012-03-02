@@ -26,7 +26,7 @@ cb_color_change(girara_session_t* session, const char* name, girara_setting_type
   char* string_value = (char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color));
-  } else if (g_strcmp0(name, "highlight-active-active") == 0) {
+  } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
