@@ -12,42 +12,26 @@
 #include "page_widget.h"
 #include "utils.h"
 
-void* render_job(void* data);
-bool render(zathura_t* zathura, zathura_page_t* page);
+static void render_job(void* data, void* user_data);
+static bool render(zathura_t* zathura, zathura_page_t* page);
 
-void*
-render_job(void* data)
+struct render_thread_s
 {
-  render_thread_t* render_thread = (render_thread_t*) data;
+  GThreadPool* pool; /**< Pool of threads */
+};
 
-  while (true) {
-    g_mutex_lock(render_thread->lock);
-
-    if (girara_list_size(render_thread->list) == 0) {
-      g_cond_wait(render_thread->cond, render_thread->lock);
-    }
-
-    if (girara_list_size(render_thread->list) == 0) {
-      /*
-       * We've been signaled with g_cond_signal(), but the list
-       * is still empty. This means that the signal came from
-       * render_free() and current document is being closed.
-       * We should unlock the mutex and kill the thread.
-       */
-      g_mutex_unlock(render_thread->lock);
-      g_thread_exit(0);
-    }
-
-    zathura_page_t* page = (zathura_page_t*) girara_list_nth(render_thread->list, 0);
-    girara_list_remove(render_thread->list, page);
-    g_mutex_unlock(render_thread->lock);
-
-    if (render(render_thread->zathura, page) != true) {
-      girara_error("Rendering failed\n");
-    }
+static void
+render_job(void* data, void* user_data)
+{
+  zathura_page_t* page = data;
+  zathura_t* zathura = user_data;
+  if (page == NULL || zathura == NULL) {
+    return;
   }
 
-  return NULL;
+  if (render(zathura, page) != true) {
+    girara_error("Rendering failed (page %d)\n", page->number);
+  }
 }
 
 render_thread_t*
@@ -55,31 +39,9 @@ render_init(zathura_t* zathura)
 {
   render_thread_t* render_thread = g_malloc0(sizeof(render_thread_t));
 
-  /* init */
-  render_thread->zathura = zathura;
-
   /* setup */
-  render_thread->list = girara_list_new();
-
-  if (!render_thread->list) {
-    goto error_free;
-  }
-
-  render_thread->cond = g_cond_new();
-
-  if (!render_thread->cond) {
-    goto error_free;
-  }
-
-  render_thread->lock = g_mutex_new();
-
-  if (!render_thread->lock) {
-    goto error_free;
-  }
-
-  render_thread->thread = g_thread_create(render_job, render_thread, TRUE, NULL);
-
-  if (!render_thread->thread) {
+  render_thread->pool = g_thread_pool_new(render_job, zathura, 1, TRUE, NULL);
+  if (render_thread->pool == NULL) {
     goto error_free;
   }
 
@@ -87,46 +49,19 @@ render_init(zathura_t* zathura)
 
 error_free:
 
-  if (render_thread->list) {
-    girara_list_free(render_thread->list);
-  }
-
-  if (render_thread->cond) {
-    g_cond_free(render_thread->cond);
-  }
-
-  if (render_thread->lock) {
-    g_mutex_free(render_thread->lock);
-  }
-
-  g_free(render_thread);
-
+  render_free(render_thread);
   return NULL;
 }
 
 void
 render_free(render_thread_t* render_thread)
 {
-  if (!render_thread) {
+  if (render_thread == NULL) {
     return;
   }
 
-  if (render_thread->list) {
-    girara_list_clear(render_thread->list);
-  }
-
-  if (render_thread->cond) {
-    g_cond_signal(render_thread->cond);
-    g_thread_join(render_thread->thread);
-    g_cond_free(render_thread->cond);
-  }
-
-  if (render_thread->list) {
-    girara_list_free(render_thread->list);
-  }
-
-  if (render_thread->lock) {
-    g_mutex_free(render_thread->lock);
+  if (render_thread->pool) {
+    g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
 
   g_free(render_thread);
@@ -135,21 +70,15 @@ render_free(render_thread_t* render_thread)
 bool
 render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
-  if (!render_thread || !page || !render_thread->list) {
+  if (render_thread == NULL || page == NULL || render_thread->pool == NULL) {
     return false;
   }
 
-  g_mutex_lock(render_thread->lock);
-  if (!girara_list_contains(render_thread->list, page)) {
-    girara_list_append(render_thread->list, page);
-  }
-  g_cond_signal(render_thread->cond);
-  g_mutex_unlock(render_thread->lock);
-
+  g_thread_pool_push(render_thread->pool, page, NULL);
   return true;
 }
 
-bool
+static bool
 render(zathura_t* zathura, zathura_page_t* page)
 {
   if (zathura == NULL || page == NULL) {
