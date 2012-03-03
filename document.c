@@ -6,17 +6,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
 #include <limits.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <dlfcn.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <glib.h>
+#include <gio/gio.h>
 
 #include "document.h"
 #include "utils.h"
@@ -40,44 +36,40 @@ void
 zathura_document_plugins_load(zathura_t* zathura)
 {
   GIRARA_LIST_FOREACH(zathura->plugins.path, char*, iter, plugindir)
-    /* TODO: rewrite with GDir */
     /* read all files in the plugin directory */
-    DIR* dir = opendir(plugindir);
+    GDir* dir = g_dir_open(plugindir, 0, NULL);
     if (dir == NULL) {
       girara_error("could not open plugin directory: %s", plugindir);
       girara_list_iterator_next(iter);
       continue;
     }
 
-    int fddir = dirfd(dir);
-    struct dirent* entry;
-    while ((entry = readdir(dir)) != NULL) {
-      if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+    char* name = NULL;
+    while ((name = (char*) g_dir_read_name(dir)) != NULL) {
+      char* path           = g_build_filename(plugindir, name, NULL);
+      GFile* file          = g_file_new_for_path(path);
+      GError* error        = NULL;
+      GFileInfo* file_info = g_file_query_info(file, G_FILE_ATTRIBUTE_UNIX_MODE, 0, NULL, &error);
+      if (file_info == NULL) {
+        girara_error("failed to query file info for %s: %s", path, error->message);
+        g_error_free(error);
+        g_object_unref(file);
+        g_free(path);
         continue;
       }
 
-      struct stat statbuf;
-      if (fstatat(fddir, entry->d_name, &statbuf, 0) != 0) {
-        girara_error("failed to fstatat %s/%s; errno is %d.", plugindir, entry->d_name, errno);
-        continue;
-      }
+      const guint mode = g_file_info_get_attribute_uint32(file_info, G_FILE_ATTRIBUTE_UNIX_MODE);
+      g_object_unref(file_info);
+      g_object_unref(file);
 
-      /* check if entry is a file */
-      if (S_ISREG(statbuf.st_mode) == 0) {
-        girara_info("%s/%s is not a regular file. Skipping.", plugindir, entry->d_name);
+      if (S_ISREG(mode) == 0) {
+        girara_info("%s is not a regular file. Skipping.", path);
+        g_free(path);
         continue;
       }
 
       void* handle                      = NULL;
       zathura_document_plugin_t* plugin = NULL;
-      char* path                        = NULL;
-
-      /* get full path */
-      path = g_build_filename(plugindir, entry->d_name, NULL);
-      if (path == NULL) {
-        g_error("failed to allocate memory!");
-        break;
-      }
 
       /* load plugin */
       handle = dlopen(path, RTLD_NOW);
@@ -129,10 +121,7 @@ zathura_document_plugins_load(zathura_t* zathura)
 
       g_free(path);
     }
-
-    if (closedir(dir) == -1) {
-      girara_error("could not close plugin directory %s", plugindir);
-    }
+    g_dir_close(dir);
   GIRARA_LIST_FOREACH_END(zathura->plugins.path, char*, iter, plugindir);
 }
 
