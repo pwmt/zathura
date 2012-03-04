@@ -260,10 +260,13 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
     return false;
   }
 
-  *page   = g_key_file_get_integer(db->history, file, KEY_PAGE, NULL);
-  *offset = g_key_file_get_integer(db->history, file, KEY_OFFSET, NULL);
-  *scale  = strtod(g_key_file_get_string(db->history, file, KEY_SCALE, NULL), NULL);
+  *page     = g_key_file_get_integer(db->history, file, KEY_PAGE, NULL);
+  *offset   = g_key_file_get_integer(db->history, file, KEY_OFFSET, NULL);
   *rotation = g_key_file_get_integer(db->history, file, KEY_ROTATE, NULL);
+
+  char* scale_string = g_key_file_get_string(db->history, file, KEY_SCALE, NULL);
+  *scale  = strtod(scale_string, NULL);
+  g_free(scale_string);
 
   return true;
 }
