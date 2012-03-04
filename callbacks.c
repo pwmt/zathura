@@ -32,8 +32,7 @@ cb_buffer_changed(girara_session_t* session)
   zathura_t* zathura = session->global.data;
 
   char* buffer = girara_buffer_get(session);
-
-  if (buffer) {
+  if (buffer != NULL) {
     girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, buffer);
     free(buffer);
   } else {
@@ -45,7 +44,8 @@ void
 cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpointer data)
 {
   zathura_t* zathura = data;
-  if (!zathura || !zathura->document || !zathura->document->pages || !zathura->ui.page_widget) {
+  if (zathura == NULL || zathura->document == NULL || zathura->document->pages == NULL
+      || zathura->ui.page_widget == NULL) {
     return;
   }
 
@@ -54,10 +54,10 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 
   GdkRectangle view_rect;
   /* get current adjustment values */
-  view_rect.y = gtk_adjustment_get_value(view_vadjustment);
+  view_rect.y      = gtk_adjustment_get_value(view_vadjustment);
   view_rect.height = gtk_adjustment_get_page_size(view_vadjustment);
-  view_rect.x = gtk_adjustment_get_value(view_hadjustment);
-  view_rect.width = gtk_adjustment_get_page_size(view_hadjustment);
+  view_rect.x      = gtk_adjustment_get_value(view_hadjustment);
+  view_rect.width  = gtk_adjustment_get_page_size(view_hadjustment);
 
   int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
@@ -65,12 +65,11 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   GdkRectangle center;
   center.x = view_rect.x + (view_rect.width + 1) / 2;
   center.y = view_rect.y + (view_rect.height + 1) / 2;
-  center.height = center.width = 2*page_padding + 1;
+  center.height = center.width = (2 * page_padding) + 1;
 
   bool updated = false;
   /* find page that fits */
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++)
-  {
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
 
     page_offset_t offset;
@@ -79,7 +78,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     GdkRectangle page_rect;
     page_rect.x = offset.x;
     page_rect.y = offset.y;
-    page_rect.width = page->width * zathura->document->scale;
+    page_rect.width  = page->width  * zathura->document->scale;
     page_rect.height = page->height * zathura->document->scale;
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
@@ -133,8 +132,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
 
   g_object_get(tree_view, "model", &model, NULL);
 
-  if(gtk_tree_model_get_iter(model, &iter, path))
-  {
+  if(gtk_tree_model_get_iter(model, &iter, path)) {
     zathura_index_element_t* index_element;
     gtk_tree_model_get(model, &iter, 2, &index_element, -1);
 
@@ -238,10 +236,18 @@ static gboolean
 password_dialog(gpointer data)
 {
   zathura_password_dialog_info_t* dialog = data;
+
   if (dialog != NULL) {
-    girara_dialog(dialog->zathura->ui.session, "Incorrect password. Enter password:", true, NULL,
-        (girara_callback_inputbar_activate_t) cb_password_dialog, dialog);
+    girara_dialog(
+        dialog->zathura->ui.session,
+        "Incorrect password. Enter password:",
+        true,
+        NULL,
+        (girara_callback_inputbar_activate_t) cb_password_dialog,
+        dialog
+      );
   }
+
   return FALSE;
 }
 
@@ -309,7 +315,8 @@ cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t*
   if (width != allocation->width || height != allocation->height) {
     girara_argument_t argument = { zathura->document->adjust_mode, NULL };
     sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
-    width = allocation->width;
+
+    width  = allocation->width;
     height = allocation->height;
   }
 
