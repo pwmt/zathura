@@ -17,7 +17,10 @@
 #include "bookmarks.h"
 #include "callbacks.h"
 #include "config.h"
-#include "database.h"
+#ifdef WITH_SQLITE
+#include "database-sqlite.h"
+#endif
+#include "database-plain.h"
 #include "document.h"
 #include "shortcuts.h"
 #include "zathura.h"
@@ -231,7 +234,24 @@ zathura_init(int argc, char* argv[])
   gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), zathura->global.page_padding);
 
   /* database */
-  zathura->database = zathura_db_init(zathura->config.data_dir);
+  char* database = NULL;
+  girara_setting_get(zathura->ui.session, "database", &database);
+
+  if (g_strcmp0(database, "plain") == 0) {
+    girara_info("Using plain database backend.");
+    zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
+#ifdef WITH_SQLITE
+  } else if (g_strcmp0(database, "sqlite") == 0) {
+    girara_info("Using sqlite database backend.");
+    char* tmp = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+    zathura->database = zathura_sqldatabase_new(tmp);
+    g_free(tmp);
+#endif
+  } else {
+    girara_error("Database backend '%s' is not supported.", database);
+  }
+  g_free(database);
+
   if (zathura->database == NULL) {
     girara_error("Unable to initialize database. Bookmarks won't be available.");
   }

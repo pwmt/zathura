@@ -4,17 +4,14 @@ include config.mk
 include common.mk
 
 PROJECT  = zathura
-OSOURCE  = $(shell find . -maxdepth 1 -iname "*.c" -a ! -iname "database-*")
+OSOURCE  = $(shell find . -maxdepth 1 -iname "*.c" -a ! -iname "database-sqlite.c")
 HEADER   = $(shell find . -maxdepth 1 -iname "*.h")
 
-ifeq (${DATABASE}, sqlite)
+ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
 LIBS   += $(SQLITE_LIB)
 SOURCE = $(OSOURCE) database-sqlite.c
-else
-ifeq (${DATABASE}, plain)
-SOURCE = $(OSOURCE) database-plain.c
-endif
+CPPFLAGS += -DWITH_SQLITE
 endif
 
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
@@ -44,9 +41,6 @@ version.h: version.h.in config.mk
 	$(ECHO) CC $<
 	@mkdir -p .depend
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
-
-# force recompilation of database.o if DATABASE has changed
-database.o: database-${DATABASE}.o
 
 ${OBJECTS}:  config.mk version.h
 ${DOBJECTS}: config.mk version.h
@@ -91,7 +85,7 @@ dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
-			${PROJECT}.desktop version.h.in database-*.c \
+			${PROJECT}.desktop version.h.in database-sqlite.c \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
