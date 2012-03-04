@@ -222,6 +222,8 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
     girara_list_append(result, bookmark);
   }
 
+  g_strfreev(keys);
+
   return result;
 }
 
