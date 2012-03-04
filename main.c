@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
+#include <locale.h>
 
 #include "zathura.h"
 
