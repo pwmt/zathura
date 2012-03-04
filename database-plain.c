@@ -180,6 +180,7 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
   if (priv->history == NULL) {
     goto error_free;
   }
+  return;
 
 error_free:
 

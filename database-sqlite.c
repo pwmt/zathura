@@ -7,8 +7,6 @@
 
 #include "database-sqlite.h"
 
-#define DATABASE "bookmarks.sqlite"
-
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
