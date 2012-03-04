@@ -47,7 +47,6 @@ config_load_default(zathura_t* zathura)
 
   int int_value              = 0;
   float float_value          = 0;
-  char* string_value         = NULL;
   bool bool_value            = false;
   girara_session_t* gsession = zathura->ui.session;
 
@@ -65,18 +64,19 @@ config_load_default(zathura_t* zathura)
   girara_mode_set(gsession, zathura->modes.normal);
 
   /* zathura settings */
+  girara_setting_add(gsession, "database",      "plain",      STRING, true,  "Database backend",        NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-step",     &int_value,   INT,   false, "Zoom step",               NULL, NULL);
+  girara_setting_add(gsession, "zoom-step",     &int_value,   INT,    false, "Zoom step",               NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",  &int_value,   INT,   true,  "Padding between pages",   NULL, NULL);
+  girara_setting_add(gsession, "page-padding",  &int_value,   INT,    true,  "Padding between pages",   NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "pages-per-row", &int_value,   INT,   false, "Number of pages per row", cb_pages_per_row_value_changed, NULL);
+  girara_setting_add(gsession, "pages-per-row", &int_value,   INT,    false, "Number of pages per row", cb_pages_per_row_value_changed, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT, false, "Scroll step",             NULL, NULL);
+  girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT,  false, "Scroll step",             NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-min",      &int_value,   INT,   false, "Zoom minimum", NULL, NULL);
+  girara_setting_add(gsession, "zoom-min",      &int_value,   INT,    false, "Zoom minimum", NULL, NULL);
   int_value = 1000;
-  girara_setting_add(gsession, "zoom-max",      &int_value,   INT,   false, "Zoom maximum", NULL, NULL);
+  girara_setting_add(gsession, "zoom-max",      &int_value,   INT,    false, "Zoom maximum", NULL, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, "Recoloring (dark color)",         cb_color_change, NULL);
   girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
@@ -91,8 +91,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, "Transparency for highlighting", NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, "Render 'Loading ...'", NULL, NULL);
-  string_value = "best-fit";
-  girara_setting_add(gsession, "adjust-open",            string_value, STRING,  false, "Adjust to when opening file", NULL, NULL);
+  girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, "Adjust to when opening file", NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, "Show hidden files and directories", NULL, NULL);
 

@@ -10,6 +10,10 @@ VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_RE
 # the GTK version to use
 ZATHURA_GTK_VERSION ?= 2
 
+# database
+# build with sqlite support
+WITH_SQLITE ?= 1
+
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
@@ -26,8 +30,10 @@ GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0 gthread-2.0)
 GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk${ZATHURA_GTK_VERSION})
 GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
 
+ifneq (${WITH_SQLITE},0)
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
+endif
 
 #set it to an empty value if you don't need to link against ld for dlopen and friends
 DL_LIB ?= -ldl
@@ -54,6 +60,3 @@ SFLAGS ?= -s
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
 
-# database
-# possible values are sqlite and plain
-DATABASE ?= plain

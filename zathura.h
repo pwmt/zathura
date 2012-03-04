@@ -26,8 +26,7 @@ typedef struct zathura_document_s zathura_document_t;
 typedef struct zathura_page_s zathura_page_t;
 
 /* forward declaration for types form database.h */
-struct zathura_database_s;
-typedef struct zathura_database_s zathura_database_t;
+typedef struct _ZathuraDatabase zathura_database_t;
 
 /* forward declaration for types from render.h */
 struct render_thread_s;

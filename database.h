@@ -5,17 +5,39 @@
 
 #include <stdbool.h>
 #include <girara/types.h>
+#include <glib-object.h>
 
-#include "zathura.h"
 #include "bookmarks.h"
 
-/**
- * Initialize database system.
- *
- * @param dir Path to the directory where the database file should be located.
- * @return A valid zathura_database_t instance or NULL on failure
- */
-zathura_database_t* zathura_db_init(const char* dir);
+#define ZATHURA_TYPE_DATABASE \
+  (zathura_database_get_type ())
+#define ZATHURA_DATABASE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabase))
+#define ZATHURA_IS_DATABASE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ZATHURA_TYPE_DATABASE))
+#define ZATHURA_DATABASE_GET_INTERFACE(obj) \
+  (G_TYPE_INSTANCE_GET_INTERFACE ((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabaseInterface))
+
+typedef struct _ZathuraDatabase          ZathuraDatabase;
+typedef struct _ZathuraDatabaseInterface ZathuraDatabaseInterface;
+
+struct _ZathuraDatabaseInterface
+{
+  GTypeInterface parent_iface;
+
+  /* interface methords */
+  bool (*add_bookmark)(ZathuraDatabase* db, const char* file, zathura_bookmark_t* bookmark);
+  bool (*remove_bookmark)(ZathuraDatabase* db, const char* file, const char* id);
+  girara_list_t* (*load_bookmarks)(ZathuraDatabase* db, const char* file);
+
+  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, unsigned
+    int page, int offset, double scale, int rotation);
+
+  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, unsigned
+    int* page, int* offset, double* scale, int* rotation);
+};
+
+GType zathura_database_get_type(void);
 
 /**
  * Free database instance.
