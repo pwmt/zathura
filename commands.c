@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <string.h>
+#include <glib/gi18n.h>
 
 #include "commands.h"
 #include "bookmarks.h"
@@ -24,13 +25,13 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;
   }
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
-    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
     return false;
   }
 
@@ -38,17 +39,17 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
   if (bookmark != NULL) {
     bookmark->page = zathura->document->current_page_number + 1;
-    girara_notify(session, GIRARA_INFO, "Bookmark successfuly updated: %s", bookmark_name);
+    girara_notify(session, GIRARA_INFO, _("Bookmark successfuly updated: %s"), bookmark_name);
     return true;
   }
 
   bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura->document->current_page_number + 1);
   if (bookmark == NULL) {
-    girara_notify(session, GIRARA_ERROR, "Could not create bookmark: %s", bookmark_name);
+    girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
     return false;
   }
 
-  girara_notify(session, GIRARA_INFO, "Bookmark successfuly created: %s", bookmark_name);
+  girara_notify(session, GIRARA_INFO, _("Bookmark successfuly created: %s"), bookmark_name);
   return true;
 }
 
@@ -59,21 +60,21 @@ cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;
   }
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
-    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
     return false;
   }
 
   const char* bookmark = girara_list_nth(argument_list, 0);
   if (zathura_bookmark_remove(zathura, bookmark)) {
-    girara_notify(session, GIRARA_INFO, "Removed bookmark: %s", bookmark);
+    girara_notify(session, GIRARA_INFO, _("Removed bookmark: %s"), bookmark);
   } else {
-    girara_notify(session, GIRARA_ERROR, "Failed to remove bookmark: %s", bookmark);
+    girara_notify(session, GIRARA_ERROR, _("Failed to remove bookmark: %s"), bookmark);
   }
 
   return true;
@@ -86,20 +87,20 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;
   }
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
-    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
     return false;
   }
 
   const char* bookmark_name = girara_list_nth(argument_list, 0);
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
   if (bookmark == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No such bookmark: %s", bookmark_name);
+    girara_notify(session, GIRARA_ERROR, _("No such bookmark: %s"), bookmark_name);
     return false;
   }
 
@@ -128,7 +129,7 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;
   }
 
@@ -190,7 +191,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
 
   const int argc = girara_list_size(argument_list);
   if (argc > 2) {
-    girara_notify(session, GIRARA_ERROR, "Too many arguments.");
+    girara_notify(session, GIRARA_ERROR, _("Too many arguments."));
     return false;
   } else if (argc >= 1) {
     if (zathura->document != NULL) {
@@ -199,7 +200,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
 
     document_open(zathura, girara_list_nth(argument_list, 0), (argc == 2) ? girara_list_nth(argument_list, 1) :  NULL);
   } else {
-    girara_notify(session, GIRARA_ERROR, "No arguments given.");
+    girara_notify(session, GIRARA_ERROR, _("No arguments given."));
     return false;
   }
 
@@ -214,7 +215,7 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   zathura_t* zathura = session->global.data;
 
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No open document.");
+    girara_notify(session, GIRARA_ERROR, _("No open document."));
     return false;
   }
 
@@ -231,14 +232,14 @@ cmd_save(girara_session_t* session, girara_list_t* argument_list)
   zathura_t* zathura = session->global.data;
 
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No open document.");
+    girara_notify(session, GIRARA_ERROR, _("No open document."));
     return false;
   }
 
   if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), false);
   } else {
-    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments.");
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));
     return false;
   }
 
@@ -253,14 +254,14 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
   zathura_t* zathura = session->global.data;
 
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No open document.");
+    girara_notify(session, GIRARA_ERROR, _("No open document."));
     return false;
   }
 
   if (girara_list_size(argument_list) == 1) {
     document_save(zathura, girara_list_nth(argument_list, 0), true);
   } else {
-    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments.");
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));
     return false;
   }
 
@@ -323,13 +324,13 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
-    girara_notify(session, GIRARA_ERROR, "No document opened.");
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;
   }
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 2) {
-    girara_notify(session, GIRARA_ERROR, "Invalid number of arguments given.");
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
     return false;
   }
 
@@ -342,9 +343,9 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
   char* file_name2 = girara_fix_path(file_name);
 
   if (zathura_document_attachment_save(zathura->document, attachment_name, file_name) == false) {
-    girara_notify(session, GIRARA_ERROR, "Couldn't write attachment '%s' to '%s'.", attachment_name, file_name);
+    girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), attachment_name, file_name);
   } else {
-    girara_notify(session, GIRARA_INFO, "Wrote attachment '%s' to '%s'.", attachment_name, file_name2);
+    girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), attachment_name, file_name2);
   }
 
   g_free(file_name2);

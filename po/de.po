@@ -9,12 +9,12 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-04 18:45+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-03-04 17:77+0100\n"
+"Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../callbacks.c:149
@@ -110,7 +110,7 @@ msgstr ""
 
 #: ../zathura.c:53
 msgid "Path to the config directory"
-msgstr ""
+msgstr "Pfad des Konfigurationsverzeichnisses"
 
 #: ../zathura.c:54
 msgid "Path to the data directory"

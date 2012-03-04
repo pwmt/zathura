@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <string.h>
+#include <glib/gi18n.h>
 
 #include "callbacks.h"
 #include "zathura.h"
@@ -145,7 +146,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
       page_set_delayed(zathura, index_element->target.page_number);
     } else if (index_element->type == ZATHURA_LINK_EXTERNAL) {
       if (girara_xdg_open(index_element->target.uri) == false) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, "Failed to run xdg-open.");
+        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
       }
     }
   }
@@ -171,7 +172,7 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
   if (eval == true) {
     index = atoi(input);
     if (index == 0 && g_strcmp0(input, "0") != 0) {
-      girara_notify(session, GIRARA_WARNING, "Invalid input '%s' given.", input);
+      girara_notify(session, GIRARA_WARNING, _("Invalid input '%s' given."), input);
       eval = false;
     }
     index = index - 1;
@@ -205,7 +206,7 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
   }
 
   if (eval == true && invalid_index == true) {
-    girara_notify(session, GIRARA_WARNING, "Invalid index '%s' given.", input);
+    girara_notify(session, GIRARA_WARNING, _("Invalid index '%s' given."), input);
   }
 
   g_free(input);
