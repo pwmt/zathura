@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-04 18:45+0100\n"
+"POT-Creation-Date: 2012-03-04 18:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,22 +104,22 @@ msgstr ""
 msgid "%s not implemented"
 msgstr ""
 
-#: ../zathura.c:52
+#: ../zathura.c:55
 msgid "Reparents to window specified by xid"
 msgstr ""
 
-#: ../zathura.c:53
+#: ../zathura.c:56
 msgid "Path to the config directory"
 msgstr ""
 
-#: ../zathura.c:54
+#: ../zathura.c:57
 msgid "Path to the data directory"
 msgstr ""
 
-#: ../zathura.c:55
+#: ../zathura.c:58
 msgid "Path to the directories containing plugins"
 msgstr ""
 
-#: ../zathura.c:56
+#: ../zathura.c:59
 msgid "Fork into the background"
 msgstr ""
