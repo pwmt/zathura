@@ -13,6 +13,7 @@
 #include <girara/statusbar.h>
 #include <girara/settings.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n.h>
 
 #include "bookmarks.h"
 #include "callbacks.h"
@@ -48,11 +49,11 @@ zathura_init(int argc, char* argv[])
   bool forkback = false;
   GOptionEntry entries[] =
   {
-    { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       "Reparents to window specified by xid",       "xid"  },
-    { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  "Path to the config directory",               "path" },
-    { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    "Path to the data directory",                 "path" },
-    { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, "Path to the directories containing plugins", "path" },
-    { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    "Fork into the background"                  , NULL },
+    { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       _("Reparents to window specified by xid"),       "xid"  },
+    { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  _("Path to the config directory"),               "path" },
+    { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    _("Path to the data directory"),                 "path" },
+    { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, _("Path to the directories containing plugins"), "path" },
+    { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    _("Fork into the background")                  , NULL },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 

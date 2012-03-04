@@ -21,6 +21,7 @@ OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
+	$(MAKE) -C po
 
 options:
 	@echo ${PROJECT} build options:
@@ -60,6 +61,7 @@ clean:
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
 		*gcda *gcno $(PROJECT).info gcov
 	$(QUIET)make -C tests clean
+	$(QUIET)make -C po clean
 
 ${PROJECT}-debug: ${DOBJECTS}
 	$(ECHO) CC -o $@
@@ -89,12 +91,14 @@ test: ${OBJECTS}
 dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
+	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/po
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}.desktop version.h.in database-*.c \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
+	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
 	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
 	$(QUIET)rm -rf ${PROJECT}-${VERSION}
@@ -134,6 +138,7 @@ install: all ${PROJECT}.pc
 	$(ECHO) installing pkgconfig file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/lib/pkgconfig
 	$(QUIET)cp -f ${PROJECT}.pc ${DESTDIR}${PREFIX}/lib/pkgconfig
+	$(MAKE) -C po install
 
 uninstall:
 	$(ECHO) removing executable file

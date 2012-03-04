@@ -14,12 +14,12 @@ ZATHURA_GTK_VERSION ?= 2
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
-# list of : seperated values
+# plugin directory
 PLUGINDIR ?= ${PREFIX}/lib/zathura
+# locale directory
+LOCALEDIR ?= ${PREFIX}/share/locale
 
 # libs
-
-# set this to 0 if you don't need to link against dl
 GTK_INC ?= $(shell pkg-config --cflags gtk+-${ZATHURA_GTK_VERSION}.0)
 GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0 gthread-2.0)
 
@@ -37,7 +37,7 @@ LIBS = ${GIRARA_LIB} ${GTK_LIB} ${DL_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
-CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
+CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\" -DGETTEXT_PACKAGE=\"${PROJECT}\" -DLOCALEDIR=\"${LOCALEDIR}\"
 
 # debug
 DFLAGS ?= -g

@@ -2,12 +2,18 @@
 
 #include <stdio.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n.h>
 
 #include "zathura.h"
 
 /* main function */
 int main(int argc, char* argv[])
 {
+  setlocale(LC_ALL, "");
+  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+  textdomain(GETTEXT_PACKAGE);
+
   g_thread_init(NULL);
   gdk_threads_init();
   gtk_init(&argc, &argv);
