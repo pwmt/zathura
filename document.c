@@ -399,13 +399,13 @@ zathura_plugin_error_t
 zathura_document_save_as(zathura_document_t* document, const char* path)
 {
   if (document == NULL || path == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
-    return false;
+    return ZATHURA_PLUGIN_ERROR_UNKNOWN;
   }
 
   if (document->functions.document_save_as == NULL) {
     girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
-    return false;
+    return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
   }
 
   return document->functions.document_save_as(document, path);

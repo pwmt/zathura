@@ -529,9 +529,10 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
     return false;
   }
 
-  bool res = zathura_document_save_as(zathura->document, file_path);
+  zathura_plugin_error_t error = zathura_document_save_as(zathura->document, file_path);
   g_free(file_path);
-  return res;
+
+  return (error == ZATHURA_PLUGIN_ERROR_OK) ? true : false;
 }
 
 static void

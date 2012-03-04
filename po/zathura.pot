@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-04 18:53+0100\n"
+"POT-Creation-Date: 2012-03-04 23:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,11 +32,11 @@ msgid "Invalid index '%s' given."
 msgstr ""
 
 #: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
-#: ../commands.c:327
+#: ../commands.c:335
 msgid "No document opened."
 msgstr ""
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:333
+#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:341
 msgid "Invalid number of arguments given."
 msgstr ""
 
@@ -78,20 +78,20 @@ msgstr ""
 msgid "No arguments given."
 msgstr ""
 
-#: ../commands.c:218 ../commands.c:235 ../commands.c:257
+#: ../commands.c:218 ../commands.c:235 ../commands.c:261
 msgid "No open document."
 msgstr ""
 
-#: ../commands.c:242 ../commands.c:264
+#: ../commands.c:246 ../commands.c:272
 msgid "Invalid number of arguments."
 msgstr ""
 
-#: ../commands.c:346
+#: ../commands.c:354
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:348
+#: ../commands.c:356
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr ""
