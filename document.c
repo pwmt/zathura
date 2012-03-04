@@ -366,7 +366,7 @@ zathura_plugin_error_t
 zathura_document_free(zathura_document_t* document)
 {
   if (document == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
-    return false;
+    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
   }
 
   /* free pages */
@@ -378,10 +378,11 @@ zathura_document_free(zathura_document_t* document)
   free(document->pages);
 
   /* free document */
-  bool r = true;
+  zathura_plugin_error_t error = ZATHURA_PLUGIN_ERROR_OK;
   if (document->functions.document_free == NULL) {
     girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
+    error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
   } else {
     r = document->functions.document_free(document);
   }
@@ -415,12 +416,18 @@ girara_tree_node_t*
 zathura_document_index_generate(zathura_document_t* document, zathura_plugin_error_t* error)
 {
   if (document == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    }
     return NULL;
   }
 
   if (document->functions.document_index_generate == NULL) {
     girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    }
     return NULL;
   }
 
@@ -431,12 +438,18 @@ girara_list_t*
 zathura_document_attachments_get(zathura_document_t* document, zathura_plugin_error_t* error)
 {
   if (document == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    }
     return NULL;
   }
 
   if (document->functions.document_attachments_get == NULL) {
     girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    }
     return NULL;
   }
 
@@ -507,15 +520,18 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plu
     page->visible      = false;
     page->drawing_area = zathura_page_widget_new(page);
     if (page->drawing_area == NULL) {
-      girara_error("couldn't create page widget");
+      if (error != NULL) {
+        *error = ZATHURA_PLUGIN_ERROR_UNKNOWN;
+      }
+      girara_error("Couldn't create page widget");
       zathura_page_free(page);
       return NULL;
     }
 
-    page->document     = document;
+    page->document = document;
 
     unsigned int page_height = 0;
-    unsigned int page_width = 0;
+    unsigned int page_width  = 0;
     page_calc_height_width(page, &page_height, &page_width, true);
 
     gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
