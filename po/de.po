@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-05 12:39+0100\n"
-"PO-Revision-Date: 2012-03-04 17:77+0100\n"
+"POT-Creation-Date: 2012-03-05 17:21+0100\n"
+"PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,95 +18,103 @@ msgstr ""
 
 #: ../callbacks.c:149
 msgid "Failed to run xdg-open."
-msgstr ""
+msgstr "Konnte xdg-open nicht ausführen."
 
 #: ../callbacks.c:175
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr ""
+msgstr "Ungültige Eingabe '%s' angegeben."
 
 #: ../callbacks.c:209
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr ""
+msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
+#: ../commands.c:28
+#: ../commands.c:63
+#: ../commands.c:90
+#: ../commands.c:132
+#: ../commands.c:218
+#: ../commands.c:235
+#: ../commands.c:261
 #: ../commands.c:335
 msgid "No document opened."
-msgstr ""
+msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:341
+#: ../commands.c:34
+#: ../commands.c:69
+#: ../commands.c:96
+#: ../commands.c:341
 msgid "Invalid number of arguments given."
-msgstr ""
+msgstr "Ungültige Anzahl an Argumenten angegeben."
 
 #: ../commands.c:42
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr ""
+msgstr "Lesezeichen erfolgreich aktualisiert: %s."
 
 #: ../commands.c:48
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr ""
+msgstr "Konnte Lesezeichen nicht erstellen: 5s"
 
 #: ../commands.c:52
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr ""
+msgstr "Lesezeichen erfolgreich erstellt: %s"
 
 #: ../commands.c:75
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr ""
+msgstr "Lesezeichen entfernt: %s"
 
 #: ../commands.c:77
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr ""
+msgstr "Konnte Lesezeichen nicht entfernen: %s"
 
 #: ../commands.c:103
 #, c-format
 msgid "No such bookmark: %s"
-msgstr ""
+msgstr "Lesezeichen existiert nicht: %s"
 
 #: ../commands.c:194
 msgid "Too many arguments."
-msgstr ""
+msgstr "Zu viele Argumente angegeben."
 
 #: ../commands.c:203
 msgid "No arguments given."
-msgstr ""
+msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:218 ../commands.c:235 ../commands.c:261
-msgid "No open document."
-msgstr ""
-
-#: ../commands.c:241 ../commands.c:267
+#: ../commands.c:241
+#: ../commands.c:267
 msgid "Document saved."
-msgstr ""
+msgstr "Dokument gespeichert."
 
-#: ../commands.c:243 ../commands.c:269
+#: ../commands.c:243
+#: ../commands.c:269
 msgid "Failed to save document."
-msgstr ""
+msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:246 ../commands.c:272
+#: ../commands.c:246
+#: ../commands.c:272
 msgid "Invalid number of arguments."
-msgstr ""
+msgstr "Ungültige Anzahl an Argumenten."
 
 #: ../commands.c:354
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr ""
+msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
 #: ../commands.c:356
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr ""
+msgstr "Anhang '%s' nach '%s' geschrieben."
 
 #. zathura settings
 #: ../config.c:68
 msgid "Database backend"
-msgstr ""
+msgstr "Datenbank Backend"
 
 #: ../config.c:70
 msgid "Zoom step"
@@ -127,11 +134,11 @@ msgstr ""
 
 #: ../config.c:78
 msgid "Zoom minimum"
-msgstr ""
+msgstr "Minimale Vergrößerungsstufe"
 
 #: ../config.c:80
 msgid "Zoom maximum"
-msgstr ""
+msgstr "Maximale Vergrößerungsstufe"
 
 #: ../config.c:82
 msgid "Recoloring (dark color)"
@@ -163,64 +170,75 @@ msgstr ""
 
 #: ../config.c:97
 msgid "Show hidden files and directories"
-msgstr ""
+msgstr "Zeige versteckte Dateien und Ordner an"
 
 #: ../config.c:99
 msgid "Show directories"
-msgstr ""
+msgstr "Zeige Ordner an"
 
 #. define default inputbar commands
 #: ../config.c:221
 msgid "Add a bookmark"
-msgstr ""
+msgstr "Füge Lesezeichen hinzu"
 
 #: ../config.c:222
 msgid "Delete a bookmark"
-msgstr ""
+msgstr "Lösche ein Lesezeichen"
 
 #: ../config.c:223
 msgid "List all bookmarks"
-msgstr ""
+msgstr "Liste all Lesezeichen auf"
 
 #: ../config.c:224
 msgid "Close current file"
-msgstr ""
+msgstr "Schließe das aktuelle Dokument"
 
 #: ../config.c:225
 msgid "Show file information"
-msgstr ""
+msgstr "Zeige Dokumentinformationen an"
 
 #: ../config.c:226
 msgid "Show help"
-msgstr ""
+msgstr "Zeige Hilfe an"
 
 #: ../config.c:227
 msgid "Open document"
-msgstr ""
+msgstr "Öffne Dokument"
 
 #: ../config.c:228
 msgid "Print document"
-msgstr ""
+msgstr "Drucke Dokument"
 
 #: ../config.c:229
 msgid "Save document"
-msgstr ""
+msgstr "Speichere Dokument"
 
 #: ../config.c:230
 msgid "Save document (and force overwriting)"
-msgstr ""
+msgstr "Speichere Dokument (und überschreibe bestehende)"
 
 #: ../config.c:231
 msgid "Save attachments"
-msgstr ""
+msgstr "Speichere Anhänge"
 
-#: ../document.c:383 ../document.c:407 ../document.c:426 ../document.c:448
-#: ../document.c:467 ../document.c:489 ../document.c:508 ../document.c:551
-#: ../document.c:571 ../document.c:594 ../document.c:623 ../document.c:652
-#: ../document.c:676 ../document.c:697 ../document.c:718
+#: ../document.c:383
+#: ../document.c:407
+#: ../document.c:426
+#: ../document.c:448
+#: ../document.c:467
+#: ../document.c:489
+#: ../document.c:508
+#: ../document.c:551
+#: ../document.c:571
+#: ../document.c:594
+#: ../document.c:623
+#: ../document.c:652
+#: ../document.c:676
+#: ../document.c:697
+#: ../document.c:718
 #, c-format
 msgid "%s not implemented"
-msgstr ""
+msgstr "%s ist nicht implementiert."
 
 #: ../zathura.c:55
 msgid "Reparents to window specified by xid"
@@ -228,16 +246,17 @@ msgstr ""
 
 #: ../zathura.c:56
 msgid "Path to the config directory"
-msgstr "Pfad des Konfigurationsverzeichnisses"
+msgstr "Pfad zum Konfigurationsverzeichnis"
 
 #: ../zathura.c:57
 msgid "Path to the data directory"
-msgstr ""
+msgstr "Pfad zum Datenverzeichnis"
 
 #: ../zathura.c:58
 msgid "Path to the directories containing plugins"
-msgstr ""
+msgstr "Pfad zum Pluginverzeichnis"
 
 #: ../zathura.c:59
 msgid "Fork into the background"
 msgstr ""
+
