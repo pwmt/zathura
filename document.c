@@ -384,7 +384,7 @@ zathura_document_free(zathura_document_t* document)
     girara_error("%s not implemented", __FUNCTION__);
     error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
   } else {
-    r = document->functions.document_free(document);
+    error = document->functions.document_free(document);
   }
 
   if (document->file_path != NULL) {
@@ -393,7 +393,7 @@ zathura_document_free(zathura_document_t* document)
 
   g_free(document);
 
-  return r;
+  return error;
 }
 
 zathura_plugin_error_t

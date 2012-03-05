@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-04 23:52+0100\n"
+"POT-Creation-Date: 2012-03-05 08:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,10 +96,10 @@ msgstr ""
 msgid "Wrote attachment '%s' to '%s'."
 msgstr ""
 
-#: ../document.c:383 ../document.c:406 ../document.c:422 ../document.c:438
-#: ../document.c:454 ../document.c:476 ../document.c:495 ../document.c:535
-#: ../document.c:555 ../document.c:578 ../document.c:607 ../document.c:636
-#: ../document.c:660 ../document.c:681 ../document.c:702
+#: ../document.c:383 ../document.c:407 ../document.c:426 ../document.c:448
+#: ../document.c:467 ../document.c:489 ../document.c:508 ../document.c:551
+#: ../document.c:571 ../document.c:594 ../document.c:623 ../document.c:652
+#: ../document.c:676 ../document.c:697 ../document.c:718
 #, c-format
 msgid "%s not implemented"
 msgstr ""
