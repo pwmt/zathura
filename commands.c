@@ -238,9 +238,9 @@ cmd_save(girara_session_t* session, girara_list_t* argument_list)
 
   if (girara_list_size(argument_list) == 1) {
     if (document_save(zathura, girara_list_nth(argument_list, 0), true) == true) {
-      girara_notify(session, GIRARA_INFO, "Document saved.");
+      girara_notify(session, GIRARA_INFO, _("Document saved."));
     } else {
-      girara_notify(session, GIRARA_INFO, "Failed to save document.");
+      girara_notify(session, GIRARA_INFO, _("Failed to save document."));
     }
   } else {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));
@@ -264,9 +264,9 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
 
   if (girara_list_size(argument_list) == 1) {
     if (document_save(zathura, girara_list_nth(argument_list, 0), true) == true) {
-      girara_notify(session, GIRARA_INFO, "Document saved.");
+      girara_notify(session, GIRARA_INFO, _("Document saved."));
     } else {
-      girara_notify(session, GIRARA_INFO, "Failed to save document.");
+      girara_notify(session, GIRARA_INFO, _("Failed to save document."));
     }
   } else {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));

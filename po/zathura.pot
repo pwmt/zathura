@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-05 09:33+0100\n"
+"POT-Creation-Date: 2012-03-05 12:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,6 +80,14 @@ msgstr ""
 
 #: ../commands.c:218 ../commands.c:235 ../commands.c:261
 msgid "No open document."
+msgstr ""
+
+#: ../commands.c:241 ../commands.c:267
+msgid "Document saved."
+msgstr ""
+
+#: ../commands.c:243 ../commands.c:269
+msgid "Failed to save document."
 msgstr ""
 
 #: ../commands.c:246 ../commands.c:272
