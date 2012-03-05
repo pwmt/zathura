@@ -45,6 +45,8 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
 
   bool show_hidden = false;
   girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
+  bool show_directories = true;
+  girara_setting_get(zathura->ui.session, "show-directories", &show_directories);
 
   /* read files */
   char* name = NULL;
@@ -74,6 +76,11 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
+      if (show_directories == false) {
+        g_free(e_name);
+        g_free(full_path);
+        continue;
+      }
       char* tmp_path = full_path;
       full_path = g_strdup_printf("%s/", full_path);
       g_free(tmp_path);

@@ -94,6 +94,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, "Adjust to when opening file", NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, "Show hidden files and directories", NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, "Show directories", NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);
