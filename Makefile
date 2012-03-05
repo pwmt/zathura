@@ -18,7 +18,7 @@ OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
-	$(MAKE) -C po
+	$(QUIET)${MAKE} -C po
 
 options:
 	@echo ${PROJECT} build options:

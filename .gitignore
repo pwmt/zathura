@@ -13,3 +13,4 @@ zathura.pc
 gcov/
 *.swp
 version.h
+doc/
