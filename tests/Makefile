@@ -8,16 +8,15 @@ PROJECT = tests
 SOURCE  = tests.c $(wildcard test_*.c)
 OBJECTS = ${SOURCE:.c=.o}
 
-ZSOURCE   = $(shell find ../ -maxdepth 1 -iname "*.c" -a ! -iname "database-*" ! -iname "main.c")
+ZSOURCE   = $(shell find ../ -maxdepth 1 -iname "*.c" -a ! -iname "database-sqlite.c" ! -iname "main.c")
 ZOBJECTS = ${ZSOURCE:.c=.o}
 
-ifeq (${DATABASE}, sqlite)
+ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
 LIBS   += $(SQLITE_LIB)
 ZSOURCE += ../database-sqlite.c
-else
-ifeq (${DATABASE}, plain)
-ZSOURCE += ../database-plain.c
+ifeq (,$(findstring -DWITH_SQLITE,${CPPFLAGS}))
+CPPFLAGS += -DWITH_SQLITE
 endif
 endif
 

@@ -4,6 +4,3 @@ CHECK_INC ?= $(shell pkg-config --cflags check)
 CHECK_LIB ?= $(shell pkg-config --libs check)
 
 LIBS += ${CHECK_LIB}
-
-CFLAGS += -fprofile-arcs -ftest-coverage
-LDFLAGS += -fprofile-arcs

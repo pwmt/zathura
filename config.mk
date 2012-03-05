@@ -43,7 +43,16 @@ LIBS = ${GIRARA_LIB} ${GTK_LIB} ${DL_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
-CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\" -DGETTEXT_PACKAGE=\"${PROJECT}\" -DLOCALEDIR=\"${LOCALEDIR}\"
+
+ifeq (,$(findstring -DZATHURA_PLUGINDIR,${CPPFLAGS}))
+CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
+endif
+ifeq (,$(findstring -DGETTEXT_PACKAGE,${CPPFLAGS}))
+CPPFLAGS += -DGETTEXT_PACKAGE=\"${PROJECT}\"
+endif
+ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
+CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
+endif
 
 # debug
 DFLAGS ?= -g
