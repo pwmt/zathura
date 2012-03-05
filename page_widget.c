@@ -128,7 +128,7 @@ zathura_page_widget_finalize(GObject* object)
 {
   ZathuraPage* widget = ZATHURA_PAGE(object);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  if (priv->surface) {
+  if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
   }
   g_static_mutex_free(&(priv->lock));
