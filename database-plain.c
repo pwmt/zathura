@@ -503,8 +503,14 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
 
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(database);
   if (priv->bookmark_path && strcmp(priv->bookmark_path, path) == 0) {
+    if (priv->bookmarks != NULL) {
+      g_key_file_free(priv->bookmarks);
+    }
     priv->bookmarks = zathura_db_read_key_file_from_file(priv->bookmark_path);
   } else if (priv->history_path && strcmp(priv->history_path, path) == 0) {
+    if (priv->history != NULL) {
+      g_key_file_free(priv->history);
+    }
     priv->history = zathura_db_read_key_file_from_file(priv->history_path);
   }
 }
