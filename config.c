@@ -13,6 +13,7 @@
 #include <girara/config.h>
 #include <girara/commands.h>
 #include <girara/gtk2-compat.h>
+#include <glib/gi18n.h>
 
 static void
 cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
@@ -64,38 +65,38 @@ config_load_default(zathura_t* zathura)
   girara_mode_set(gsession, zathura->modes.normal);
 
   /* zathura settings */
-  girara_setting_add(gsession, "database",      "plain",      STRING, true,  "Database backend",        NULL, NULL);
+  girara_setting_add(gsession, "database",      "plain",      STRING, true,  _("Database backend"),        NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-step",     &int_value,   INT,    false, "Zoom step",               NULL, NULL);
+  girara_setting_add(gsession, "zoom-step",     &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",  &int_value,   INT,    true,  "Padding between pages",   NULL, NULL);
+  girara_setting_add(gsession, "page-padding",  &int_value,   INT,    true,  _("Padding between pages"),   NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "pages-per-row", &int_value,   INT,    false, "Number of pages per row", cb_pages_per_row_value_changed, NULL);
+  girara_setting_add(gsession, "pages-per-row", &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT,  false, "Scroll step",             NULL, NULL);
+  girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-min",      &int_value,   INT,    false, "Zoom minimum", NULL, NULL);
+  girara_setting_add(gsession, "zoom-min",      &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
-  girara_setting_add(gsession, "zoom-max",      &int_value,   INT,    false, "Zoom maximum", NULL, NULL);
+  girara_setting_add(gsession, "zoom-max",      &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, "Recoloring (dark color)",         cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
   girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
-  girara_setting_add(gsession, "recolor-lightcolor",     NULL, STRING, false, "Recoloring (light color)",        cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",     NULL, STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
   girara_setting_set(gsession, "recolor-lightcolor",     "#000000");
-  girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, "Color for highlighting",          cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
-  girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, "Color for highlighting (active)", cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
 
   float_value = 0.5;
-  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, "Transparency for highlighting", NULL, NULL);
+  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;
-  girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, "Render 'Loading ...'", NULL, NULL);
-  girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, "Adjust to when opening file", NULL, NULL);
+  girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
+  girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, _("Adjust to when opening file"), NULL, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, "Show hidden files and directories", NULL, NULL);
+  girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
   bool_value = true;
-  girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, "Show directories", NULL, NULL);
+  girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, _("Show directories"), NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);
@@ -217,17 +218,17 @@ config_load_default(zathura_t* zathura)
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0,                    sc_mouse_scroll, NORMAL,     GIRARA_EVENT_MOTION_NOTIFY,  0,    NULL);
 
   /* define default inputbar commands */
-  girara_inputbar_command_add(gsession, "bmark",   NULL, cmd_bookmark_create, NULL,         "Add a bookmark");
-  girara_inputbar_command_add(gsession, "bdelete", NULL, cmd_bookmark_delete, cc_bookmarks, "Delete a bookmark");
-  girara_inputbar_command_add(gsession, "blist",   NULL, cmd_bookmark_open,   cc_bookmarks, "List all bookmarks");
-  girara_inputbar_command_add(gsession, "close",   NULL, cmd_close,           NULL,         "Close current file");
-  girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,         "Show file information");
-  girara_inputbar_command_add(gsession, "help",    NULL, cmd_help,            NULL,         "Show help");
-  girara_inputbar_command_add(gsession, "open",    "o",  cmd_open,            cc_open,      "Open document");
-  girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           NULL,         "Print document");
-  girara_inputbar_command_add(gsession, "write",   NULL, cmd_save,            NULL,         "Save document");
-  girara_inputbar_command_add(gsession, "write!",  NULL, cmd_savef,           NULL,         "Save document (and force overwriting)");
-  girara_inputbar_command_add(gsession, "export",  NULL, cmd_export,          cc_export,    "Save attachments");
+  girara_inputbar_command_add(gsession, "bmark",   NULL, cmd_bookmark_create, NULL,         _("Add a bookmark"));
+  girara_inputbar_command_add(gsession, "bdelete", NULL, cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
+  girara_inputbar_command_add(gsession, "blist",   NULL, cmd_bookmark_open,   cc_bookmarks, _("List all bookmarks"));
+  girara_inputbar_command_add(gsession, "close",   NULL, cmd_close,           NULL,         _("Close current file"));
+  girara_inputbar_command_add(gsession, "info",    NULL, cmd_info,            NULL,         _("Show file information"));
+  girara_inputbar_command_add(gsession, "help",    NULL, cmd_help,            NULL,         _("Show help"));
+  girara_inputbar_command_add(gsession, "open",    "o",  cmd_open,            cc_open,      _("Open document"));
+  girara_inputbar_command_add(gsession, "print",   NULL, cmd_print,           NULL,         _("Print document"));
+  girara_inputbar_command_add(gsession, "write",   NULL, cmd_save,            NULL,         _("Save document"));
+  girara_inputbar_command_add(gsession, "write!",  NULL, cmd_savef,           NULL,         _("Save document (and force overwriting)"));
+  girara_inputbar_command_add(gsession, "export",  NULL, cmd_export,          cc_export,    _("Save attachments"));
 
   girara_special_command_add(gsession, '/', cmd_search, true, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, true, BACKWARD, NULL);
