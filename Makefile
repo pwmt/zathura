@@ -73,11 +73,11 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
-	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes \
-		./${PROJECT}-debug
+	$(QUIET)G_SLICE=always-malloc G_DEBUG=gc-friendly valgrind --tool=memcheck --leak-check=yes \
+		--leak-resolution=high --show-reachable=yes ./${PROJECT}-debug
 
 gdb: debug
-	cgdb ${PROJECT}-debug
+	$(QUIET)cgdb ${PROJECT}-debug
 
 test: ${OBJECTS}
 	$(QUIET)make -C tests run
