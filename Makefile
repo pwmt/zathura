@@ -103,7 +103,6 @@ doc:
 gcov: clean
 	$(QUIET)CFLAGS="${CFLAGS}-fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
 	$(QUIET)CFLAGS="${CFLAGS}-fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} -C tests run
-	$(QUIET)${MAKE} -C tests
 	$(QUIET)lcov --directory . --capture --output-file $(PROJECT).info
 	$(QUIET)genhtml --output-directory gcov $(PROJECT).info
 
