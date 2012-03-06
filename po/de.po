@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-06 14:06+0100\n"
+"POT-Creation-Date: 2012-03-06 21:54+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -79,47 +79,47 @@ msgid "Show directories"
 msgstr "Zeige Ordner an"
 
 #. define default inputbar commands
-#: ../config.c:221
+#: ../config.c:219
 msgid "Add a bookmark"
 msgstr "Füge Lesezeichen hinzu"
 
-#: ../config.c:222
+#: ../config.c:220
 msgid "Delete a bookmark"
 msgstr "Lösche ein Lesezeichen"
 
-#: ../config.c:223
+#: ../config.c:221
 msgid "List all bookmarks"
 msgstr "Liste all Lesezeichen auf"
 
-#: ../config.c:224
+#: ../config.c:222
 msgid "Close current file"
 msgstr "Schließe das aktuelle Dokument"
 
-#: ../config.c:225
+#: ../config.c:223
 msgid "Show file information"
 msgstr "Zeige Dokumentinformationen an"
 
-#: ../config.c:226
+#: ../config.c:224
 msgid "Show help"
 msgstr "Zeige Hilfe an"
 
-#: ../config.c:227
+#: ../config.c:225
 msgid "Open document"
 msgstr "Öffne Dokument"
 
-#: ../config.c:228
+#: ../config.c:226
 msgid "Print document"
 msgstr "Drucke Dokument"
 
-#: ../config.c:229
+#: ../config.c:227
 msgid "Save document"
 msgstr "Speichere Dokument"
 
-#: ../config.c:230
+#: ../config.c:228
 msgid "Save document (and force overwriting)"
 msgstr "Speichere Dokument (und überschreibe bestehende)"
 
-#: ../config.c:231
+#: ../config.c:229
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
@@ -138,11 +138,11 @@ msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
 #: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
-#: ../commands.c:218 ../commands.c:235 ../commands.c:261 ../commands.c:335
+#: ../commands.c:220 ../commands.c:237 ../commands.c:263 ../commands.c:337
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:341
+#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:343
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
@@ -176,32 +176,36 @@ msgstr "Konnte Lesezeichen nicht entfernen: %s"
 msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
-#: ../commands.c:194
+#: ../commands.c:172
+msgid "No information available."
+msgstr "Keine Information verfügbar."
+
+#: ../commands.c:196
 msgid "Too many arguments."
 msgstr "Zu viele Argumente angegeben."
 
-#: ../commands.c:203
+#: ../commands.c:205
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:241 ../commands.c:267
+#: ../commands.c:243 ../commands.c:269
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:243 ../commands.c:269
+#: ../commands.c:245 ../commands.c:271
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:246 ../commands.c:272
+#: ../commands.c:248 ../commands.c:274
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
-#: ../commands.c:354
+#: ../commands.c:356
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
-#: ../commands.c:356
+#: ../commands.c:358
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
