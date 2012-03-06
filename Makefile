@@ -124,8 +124,8 @@ install: all ${PROJECT}.pc
 		sed "s/VERSION/${VERSION}/g" < ${PROJECT}rc.5.rst > ${PROJECT}rc-v.5.rst ; \
 		rst2man ${PROJECT}rc-v.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
 		rm -f ${PROJECT}rc-v.5.rst ; \
-		$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
-		$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
+		chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
+		chmod 644 ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
 	fi
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
