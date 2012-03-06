@@ -230,7 +230,7 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
 static gboolean
 zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 {
-  cairo_t* cairo = gdk_cairo_create(widget->window);
+  cairo_t* cairo = gdk_cairo_create(gtk_widget_get_window(widget));
   if (cairo == NULL) {
     girara_error("Could not retreive cairo object");
     return FALSE;
@@ -253,8 +253,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   g_static_mutex_lock(&(priv->lock));
 
 #if GTK_MAJOR_VERSION == 2
-  const unsigned int page_height = widget->allocation.height;
-  const unsigned int page_width  = widget->allocation.width;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+  const unsigned int page_height = allocation.height;
+  const unsigned int page_width  = allocation.width;
 #else
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
@@ -416,7 +418,7 @@ redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
 #if (GTK_MAJOR_VERSION == 3)
   gtk_widget_queue_draw_area(GTK_WIDGET(widget), grect.x, grect.y, grect.width, grect.height);
 #else
-  gdk_window_invalidate_rect(GTK_WIDGET(widget)->window, &grect, TRUE);
+  gdk_window_invalidate_rect(gtk_widget_get_window(GTK_WIDGET(widget)), &grect, TRUE);
 #endif
 }
 

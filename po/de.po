@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-05 17:21+0100\n"
+"POT-Creation-Date: 2012-03-06 12:16+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,21 +30,12 @@ msgstr "Ungültige Eingabe '%s' angegeben."
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:28
-#: ../commands.c:63
-#: ../commands.c:90
-#: ../commands.c:132
-#: ../commands.c:218
-#: ../commands.c:235
-#: ../commands.c:261
-#: ../commands.c:335
+#: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
+#: ../commands.c:218 ../commands.c:235 ../commands.c:261 ../commands.c:335
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:34
-#: ../commands.c:69
-#: ../commands.c:96
-#: ../commands.c:341
+#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:341
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
@@ -86,18 +77,15 @@ msgstr "Zu viele Argumente angegeben."
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:241
-#: ../commands.c:267
+#: ../commands.c:241 ../commands.c:267
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:243
-#: ../commands.c:269
+#: ../commands.c:243 ../commands.c:269
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:246
-#: ../commands.c:272
+#: ../commands.c:246 ../commands.c:272
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
@@ -221,21 +209,10 @@ msgstr "Speichere Dokument (und überschreibe bestehende)"
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../document.c:383
-#: ../document.c:407
-#: ../document.c:426
-#: ../document.c:448
-#: ../document.c:467
-#: ../document.c:489
-#: ../document.c:508
-#: ../document.c:551
-#: ../document.c:571
-#: ../document.c:594
-#: ../document.c:623
-#: ../document.c:652
-#: ../document.c:676
-#: ../document.c:697
-#: ../document.c:718
+#: ../document.c:383 ../document.c:407 ../document.c:426 ../document.c:448
+#: ../document.c:467 ../document.c:489 ../document.c:508 ../document.c:551
+#: ../document.c:571 ../document.c:594 ../document.c:623 ../document.c:652
+#: ../document.c:676 ../document.c:697 ../document.c:718
 #, c-format
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
@@ -259,4 +236,3 @@ msgstr "Pfad zum Pluginverzeichnis"
 #: ../zathura.c:59
 msgid "Fork into the background"
 msgstr ""
-
