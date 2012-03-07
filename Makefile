@@ -18,7 +18,6 @@ OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT}
-	$(QUIET)${MAKE} -C po
 
 options:
 	@echo ${PROJECT} build options:
@@ -101,12 +100,15 @@ doc:
 	$(QUIET)doxygen Doxyfile
 
 gcov: clean
-	$(QUIET)CFLAGS="${CFLAGS}-fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
-	$(QUIET)CFLAGS="${CFLAGS}-fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} -C tests run
+	$(QUIET)CFLAGS="${CFLAGS} -fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
+	$(QUIET)CFLAGS="${CFLAGS} -fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} -C tests run
 	$(QUIET)lcov --directory . --capture --output-file $(PROJECT).info
 	$(QUIET)genhtml --output-directory gcov $(PROJECT).info
 
-install: all ${PROJECT}.pc
+po:
+	$(QUIET)${MAKE} -C po
+
+install: all ${PROJECT}.pc po
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
@@ -150,4 +152,5 @@ uninstall:
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test
+.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test \
+	po
