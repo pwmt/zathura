@@ -14,6 +14,10 @@ SOURCE = $(OSOURCE) database-sqlite.c
 CPPFLAGS += -DWITH_SQLITE
 endif
 
+ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
+VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
+endif
+
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
@@ -72,8 +76,8 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
-	$(QUIET)G_SLICE=always-malloc G_DEBUG=gc-friendly valgrind --tool=memcheck --leak-check=yes \
-		--leak-resolution=high --show-reachable=yes ./${PROJECT}-debug
+	 $(QUIET)G_SLICE=always-malloc G_DEBUG=gc-friendly ${VALGRIND} ${VALGRIND_ARGUMENTS} \
+		 ./${PROJECT}-debug
 
 gdb: debug
 	$(QUIET)cgdb ${PROJECT}-debug

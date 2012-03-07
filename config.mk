@@ -18,8 +18,10 @@ WITH_SQLITE ?= 1
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
+
 # plugin directory
 PLUGINDIR ?= ${PREFIX}/lib/zathura
+
 # locale directory
 LOCALEDIR ?= ${PREFIX}/share/locale
 
@@ -65,6 +67,12 @@ CC ?= gcc
 
 # strip
 SFLAGS ?= -s
+
+# valgrind
+VALGRIND = valgrind
+VALGRIND_ARGUMENTS = --tool=memcheck --leak-check=yes --leak-resolution=high \
+	--show-reachable=yes --log-file=zathura-valgrind.log
+VALGRIND_SUPPRESSION_FILE = zathura.suppression
 
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
