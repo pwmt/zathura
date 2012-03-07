@@ -153,6 +153,7 @@ uninstall:
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
 	$(ECHO) removing pkgconfig file
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/lib/pkgconfig/${PROJECT}.pc
+	$(MAKE) -C po install
 
 -include $(wildcard .depend/*.dep)
 
