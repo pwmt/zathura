@@ -3,6 +3,9 @@
 #include <girara/utils.h>
 #include <girara/settings.h>
 #include <girara/datastructures.h>
+#include <girara/session.h>
+#include <string.h>
+#include <glib/gi18n.h>
 
 #include "page_widget.h"
 #include "render.h"
@@ -65,17 +68,17 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   /* overwrite methods */
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
 #if GTK_MAJOR_VERSION == 3
-  widget_class->draw = zathura_page_widget_draw;
+  widget_class->draw                 = zathura_page_widget_draw;
 #else
-  widget_class->expose_event = zathura_page_widget_expose;
+  widget_class->expose_event         = zathura_page_widget_expose;
 #endif
-  widget_class->size_allocate = zathura_page_widget_size_allocate;
-  widget_class->button_press_event = cb_zathura_page_widget_button_press_event;
+  widget_class->size_allocate        = zathura_page_widget_size_allocate;
+  widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
-  widget_class->motion_notify_event = cb_zathura_page_widget_motion_notify;
+  widget_class->motion_notify_event  = cb_zathura_page_widget_motion_notify;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
-  object_class->finalize = zathura_page_widget_finalize;
+  object_class->finalize     = zathura_page_widget_finalize;
   object_class->set_property = zathura_page_widget_set_property;
   object_class->get_property = zathura_page_widget_get_property;
 
@@ -522,7 +525,19 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 
     char* text = zathura_page_get_text(priv->page, tmp, NULL);
     if (text != NULL) {
-      gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
+      if (strlen(text) > 0) {
+        /* copy to clipboard */
+        gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
+
+
+        if (priv->page != NULL && priv->page->document != NULL && priv->page->document->zathura != NULL) {
+          zathura_t* zathura = priv->page->document->zathura;
+          char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+          girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipbard: %s"), stripped_text);
+          g_free(stripped_text);
+        }
+      }
+
       g_free(text);
     }
   }
@@ -531,7 +546,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   priv->selection.y1 = -1;
   priv->selection.x2 = -1;
   priv->selection.y2 = -1;
-  
+
   return false;
 }
 

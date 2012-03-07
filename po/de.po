@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-07 01:01+0100\n"
+"POT-Creation-Date: 2012-03-07 09:16+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -123,16 +123,16 @@ msgstr "Speichere Dokument (und überschreibe bestehende)"
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../callbacks.c:150
+#: ../callbacks.c:154
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
-#: ../callbacks.c:176
+#: ../callbacks.c:180
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Ungültige Eingabe '%s' angegeben."
 
-#: ../callbacks.c:210
+#: ../callbacks.c:214
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
@@ -238,3 +238,8 @@ msgstr "Pfad zum Pluginverzeichnis"
 #: ../zathura.c:59
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
+
+#: ../page_widget.c:536
+#, c-format
+msgid "Copied selected text to clipbard: %s"
+msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
