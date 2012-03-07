@@ -219,6 +219,11 @@ msgstr "Anhang '%s' nach '%s' geschrieben."
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
 
+#: ../page_widget.c:546
+#, c-format
+msgid "Copied selected text to clipbard: %s"
+msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+
 #: ../zathura.c:55
 msgid "Reparents to window specified by xid"
 msgstr "Reparentiert zathura an das Fenster mit der xid"
@@ -238,8 +243,3 @@ msgstr "Pfad zum Pluginverzeichnis"
 #: ../zathura.c:59
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
-
-#: ../page_widget.c:536
-#, c-format
-msgid "Copied selected text to clipbard: %s"
-msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"

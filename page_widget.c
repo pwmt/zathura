@@ -17,16 +17,20 @@ G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 typedef struct zathura_page_widget_private_s {
   zathura_page_t* page;
   zathura_t* zathura;
-  cairo_surface_t* surface; /** Cairo surface */
+  cairo_surface_t* surface; /**< Cairo surface */
   GStaticMutex lock; /**< Lock */
   girara_list_t* links; /**< List of links on the page */
   bool links_got; /**< True if we already tried to retrieve the list of links */
   bool draw_links; /**< True if links should be drawn */
   unsigned int link_offset; /**< Offset to the links */
   unsigned int number_of_links; /**< Offset to the links */
-  girara_list_t* search_results; /** A list if there are search results that should be drawn */
-  int search_current; /** The index of the current search result */
-  zathura_rectangle_t selection; /** Region selected with the mouse */
+  girara_list_t* search_results; /**< A list if there are search results that should be drawn */
+  int search_current; /**< The index of the current search result */
+  zathura_rectangle_t selection; /**< Region selected with the mouse */
+  struct {
+    int x;
+    int y;
+  } selection_basepoint;
 } zathura_page_widget_private_t;
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
@@ -111,6 +115,8 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->search_results = NULL;
   priv->search_current = INT_MAX;
   priv->selection.x1   = -1;
+  priv->selection_basepoint.x = -1;
+  priv->selection_basepoint.y = -1;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -464,12 +470,16 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
   if (button->type == GDK_BUTTON_PRESS) {
     /* start the selection */
+    priv->selection_basepoint.x = button->x;
+    priv->selection_basepoint.y = button->y;
     priv->selection.x1 = button->x;
     priv->selection.y1 = button->y;
-    priv->selection.x2 = -1;
-    priv->selection.y2 = -1;
+    priv->selection.x2 = button->x;
+    priv->selection.y2 = button->y;
   } else if (button->type == GDK_2BUTTON_PRESS || button->type == GDK_3BUTTON_PRESS) {
     /* abort the selection */
+    priv->selection_basepoint.x = -1;
+    priv->selection_basepoint.y = -1;
     priv->selection.x1 = -1;
     priv->selection.y1 = -1;
     priv->selection.x2 = -1;
@@ -542,6 +552,8 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     }
   }
 
+  priv->selection_basepoint.x = -1;
+  priv->selection_basepoint.y = -1;
   priv->selection.x1 = -1;
   priv->selection.y1 = -1;
   priv->selection.x2 = -1;
@@ -561,14 +573,18 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   zathura_rectangle_t tmp = priv->selection;
-  if (event->x < priv->selection.x1) {
+  if (event->x < priv->selection_basepoint.x) {
     tmp.x1 = event->x;
+    tmp.x2 = priv->selection_basepoint.x;
   } else {
     tmp.x2 = event->x;
+    tmp.x1 = priv->selection_basepoint.x;
   }
-  if (event->y < priv->selection.y1) {
+  if (event->y < priv->selection_basepoint.y) {
     tmp.y1 = event->y;
+    tmp.y2 = priv->selection_basepoint.y;
   } else {
+    tmp.y1 = priv->selection_basepoint.y;
     tmp.y2 = event->y;
   }
 
