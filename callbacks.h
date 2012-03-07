@@ -8,15 +8,16 @@
 #include <girara/macros.h>
 
 #include "document.h"
+#include "zathura.h"
 
 /**
  * Quits the current zathura session
  *
  * @param widget The gtk window of zathura
- * @param data NULL
+ * @param zathura Correspondending zathura session
  * @return true if no error occured and the event has been handled
  */
-gboolean cb_destroy(GtkWidget* widget, gpointer data);
+gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura);
 
 /**
  * This function gets called when the buffer of girara changes

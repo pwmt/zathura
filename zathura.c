@@ -225,7 +225,7 @@ zathura_init(int argc, char* argv[])
   girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, "[No Name]");
 
   /* signals */
-  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), NULL);
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
 
   /* save page padding */
   zathura->global.page_padding = 1;

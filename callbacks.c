@@ -18,8 +18,13 @@
 #include "page_widget.h"
 
 gboolean
-cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
+cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
 {
+  if (zathura != NULL && zathura->document != NULL) {
+    zathura_document_free(zathura->document);
+    zathura->document = NULL;
+  }
+
   gtk_main_quit();
   return TRUE;
 }
