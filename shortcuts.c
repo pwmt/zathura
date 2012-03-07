@@ -7,6 +7,7 @@
 #include <girara/utils.h>
 #include <gtk/gtk.h>
 #include <libgen.h>
+#include <glib/gi18n.h>
 
 #include "callbacks.h"
 #include "shortcuts.h"
@@ -762,6 +763,11 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
 
   static bool fullscreen   = false;
   static int pages_per_row = 1;

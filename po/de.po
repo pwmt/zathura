@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-06 21:54+0100\n"
+"POT-Creation-Date: 2012-03-07 01:01+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -123,22 +123,23 @@ msgstr "Speichere Dokument (und überschreibe bestehende)"
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../callbacks.c:149
+#: ../callbacks.c:150
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
-#: ../callbacks.c:175
+#: ../callbacks.c:176
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Ungültige Eingabe '%s' angegeben."
 
-#: ../callbacks.c:209
+#: ../callbacks.c:210
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
 #: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
 #: ../commands.c:220 ../commands.c:237 ../commands.c:263 ../commands.c:337
+#: ../shortcuts.c:768
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
