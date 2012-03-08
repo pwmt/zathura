@@ -4,14 +4,16 @@ include config.mk
 include common.mk
 
 PROJECT  = zathura
-OSOURCE  = $(shell find . -maxdepth 1 -iname "*.c" -a ! -iname "database-sqlite.c")
-HEADER   = $(shell find . -maxdepth 1 -iname "*.h")
+OSOURCE  = $(wildcard *.c)
+HEADER   = $(wildcard *.h)
 
 ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
 LIBS   += $(SQLITE_LIB)
-SOURCE = $(OSOURCE) database-sqlite.c
+SOURCE = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
+else
+SOURCE = $(filter-out database-sqlite.c,$(OSOURCE))
 endif
 
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
@@ -91,7 +93,7 @@ dist: clean
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/po
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
-			${PROJECT}.desktop version.h.in database-sqlite.c \
+			${PROJECT}.desktop version.h.in \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
