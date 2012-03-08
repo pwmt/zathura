@@ -10,7 +10,7 @@ include ../common.mk
 all: ${MOS}
 
 clean:
-	rm -rf POTFILES.in POTFILES.in.tmp $(patsubst %.po, %, $(CATALOGS)) ${PROJECT}.pot
+	$(QUIET)rm -rf POTFILES.in POTFILES.in.tmp $(patsubst %.po, %, $(CATALOGS)) ${PROJECT}.pot
 
 POTFILES.in: $(wildcard ../*.c)
 	$(QUIET) set -e && rm -f $@.tmp && touch $@.tmp && \
