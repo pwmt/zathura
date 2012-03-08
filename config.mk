@@ -18,9 +18,11 @@ WITH_SQLITE ?= 1
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
+LIBDIR ?= ${PREFIX}/lib
+INCLUDEDIR ?= ${PREFIX}/include
 
 # plugin directory
-PLUGINDIR ?= ${PREFIX}/lib/zathura
+PLUGINDIR ?= ${LIBDIR}/zathura
 
 # locale directory
 LOCALEDIR ?= ${PREFIX}/share/locale

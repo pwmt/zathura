@@ -70,7 +70,7 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo project=${PROJECT} > ${PROJECT}.pc
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo apiversion=${ZATHHRA_API_VERSION} >> ${PROJECT}.pc
-	$(QUIET)echo includedir=${PREFIX}/include >> ${PROJECT}.pc
+	$(QUIET)echo includedir=${INCLUDEDIR} >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
 	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
@@ -112,13 +112,18 @@ gcov: clean
 po:
 	$(QUIET)${MAKE} -C po
 
-install: all ${PROJECT}.pc po
+install-headers: ${PROJECT}.pc
+	$(ECHO) installing header files
+	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
+	$(QUIET)install -m 644 zathura.h document.h version.h ${DESTDIR}${INCLUDEDIR}/${PROJECT}
+	$(ECHO) installing pkgconfig file
+	$(QUIET)mkdir -p ${DESTDIR}${LIBDR}/pkgconfig
+	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
+
+install: all install-headers po
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
-	$(ECHO) installing header files
-	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
-	$(QUIET)install -m 644 zathura.h document.h version.h ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	$(QUIET)set -e && if which rst2man > /dev/null ; then \
@@ -136,26 +141,25 @@ install: all ${PROJECT}.pc po
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
-	$(ECHO) installing pkgconfig file
-	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/lib/pkgconfig
-	$(QUIET)cp -f ${PROJECT}.pc ${DESTDIR}${PREFIX}/lib/pkgconfig
 	$(MAKE) -C po install
+
+uninstall-headers:
+	$(ECHO) removing header files
+	$(QUIET)rm -rf ${DESTDIR}${INCLUDEDIR}/${PROJECT}
+	$(ECHO) removing pkgconfig file
+	$(QUIET)rm -f ${DESTDIR}${LIBDIR}/pkgconfig/${PROJECT}.pc
 
 uninstall:
 	$(ECHO) removing executable file
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
-	$(ECHO) removing header files
-	$(QUIET)rm -rf ${DESTDIR}${PREFIX}/include/${PROJECT}
 	$(ECHO) removing manual pages
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
 	$(ECHO) removing desktop file
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
-	$(ECHO) removing pkgconfig file
-	$(QUIET)rm -f ${DESTDIR}${PREFIX}/lib/pkgconfig/${PROJECT}.pc
-	$(MAKE) -C po install
+	$(MAKE) -C po uninstall
 
 -include $(wildcard .depend/*.dep)
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test \
-	po
+	po install-headers uninstall-headers
