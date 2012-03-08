@@ -60,9 +60,9 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 
   GdkRectangle view_rect;
   /* get current adjustment values */
-  view_rect.y      = gtk_adjustment_get_value(view_vadjustment);
+  view_rect.y      = 0;
   view_rect.height = gtk_adjustment_get_page_size(view_vadjustment);
-  view_rect.x      = gtk_adjustment_get_value(view_hadjustment);
+  view_rect.x      = 0;
   view_rect.width  = gtk_adjustment_get_page_size(view_hadjustment);
 
   int page_padding = 1;
@@ -79,7 +79,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     zathura_page_t* page = zathura->document->pages[page_id];
 
     page_offset_t offset;
-    page_calculate_offset(page, &offset);
+    gtk_widget_translate_coordinates(page->drawing_area,
+        zathura->ui.session->gtk.view, 0, 0, &offset.x, &offset.y);
 
     GdkRectangle page_rect;
     page_rect.x = offset.x;
