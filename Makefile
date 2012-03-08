@@ -119,7 +119,7 @@ update-po:
 
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
-	$(QUIET)mkdir -p ${DESTDIR}${INCUDEDIR}/${PROJECT}
+	$(QUIET)mkdir -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(QUIET)install -m 644 zathura.h document.h version.h ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(ECHO) installing pkgconfig file
 	$(QUIET)mkdir -p ${DESTDIR}${LIBDIR}/pkgconfig
