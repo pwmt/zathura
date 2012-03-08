@@ -23,9 +23,11 @@ ${PROJECT}.pot: POTFILES.in
 	$(ECHO) regenerate ${PROJECT}.pot
 	$(QUIET)intltool-update --pot --gettext-package=${PROJECT}
 
-%.po: ${PROJECT}.pot
-	$(ECHO) updating language $(shell echo $@ | sed 's/\.po//')
-	$(QUIET)intltool-update --dist --gettext-package=${PROJECT} $(shell echo $@ | sed 's/\.po//')
+update-po: ${PROJECT}.pot
+	$(ECHO) updating po: files ${CATALOGS}
+	$(QUIET)set -e && for f in ${CATALOGS} ; do \
+		intltool-update --dist --gettext-package=${PROJECT} `echo $$f | sed 's/\.po//'` ; \
+	done
 
 %/LC_MESSAGES/${PROJECT}.mo: %.po
 	@mkdir -p $(@D)
@@ -44,3 +46,5 @@ uninstall: ${MOS}
 	$(QUIET)set -e && for f in $^ ; do \
 		rm -f $(LOCALEDIR)/$$f; \
 	done
+
+.PHONY: all clean update-po install uninstall

@@ -114,6 +114,9 @@ gcov: clean
 po:
 	$(QUIET)${MAKE} -C po
 
+update-po:
+	$(QUIET)${MAKE} -C po update-po
+
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/include/${PROJECT}
@@ -164,4 +167,4 @@ uninstall:
 -include $(wildcard .depend/*.dep)
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test \
-	po install-headers uninstall-headers
+	po install-headers uninstall-headers update-po
