@@ -23,9 +23,11 @@ INCLUDEDIR ?= ${PREFIX}/include
 
 # plugin directory
 PLUGINDIR ?= ${LIBDIR}/zathura
-
 # locale directory
 LOCALEDIR ?= ${PREFIX}/share/locale
+
+# rst2man
+RSTTOMAN ?= /usr/bin/rst2man
 
 # libs
 GTK_INC ?= $(shell pkg-config --cflags gtk+-${ZATHURA_GTK_VERSION}.0)

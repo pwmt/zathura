@@ -129,20 +129,18 @@ install: all install-headers po
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
+ifneq "$(wildcard ${RSTTOMAN})" ""
 	$(ECHO) installing manual pages
-	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	$(QUIET)set -e && if which rst2man > /dev/null ; then \
-		mkdir -p ${DESTDIR}${MANPREFIX}/man1 ; \
-		sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1.rst > ${PROJECT}-v.1.rst ; \
-		rst2man ${PROJECT}-v.1.rst > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
-		rm -f ${PROJECT}-v.1.rst ; \
-		mkdir -p ${DESTDIR}${MANPREFIX}/man5 ; \
-		sed "s/VERSION/${VERSION}/g" < ${PROJECT}rc.5.rst > ${PROJECT}rc-v.5.rst ; \
-		rst2man ${PROJECT}rc-v.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
-		rm -f ${PROJECT}rc-v.5.rst ; \
-		chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1 ; \
-		chmod 644 ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5 ; \
-	fi
+	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
+	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1.rst > ${PROJECT}-v.1.rst
+	$(QUIET)${RSTTOMAN} ${PROJECT}-v.1.rst > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)rm ${PROJECT}-v.1.rst
+	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}rc.5.rst > ${PROJECT}rc-v.5.rst
+	$(QUIET)${RSTTOMAN} ${PROJECT}rc-v.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
+	$(QUIET)rm ${PROJECT}rc-v.5.rst
+	$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
+	$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
+endif
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
