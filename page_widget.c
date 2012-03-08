@@ -137,11 +137,20 @@ zathura_page_widget_finalize(GObject* object)
 {
   ZathuraPage* widget = ZATHURA_PAGE(object);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
   }
+
+  if (priv->search_results != NULL) {
+    girara_list_free(priv->search_results);
+  }
+
+  if (priv->links != NULL) {
+    girara_list_free(priv->links);
+  }
+
   g_static_mutex_free(&(priv->lock));
-  girara_list_free(priv->links);
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
