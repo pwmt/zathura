@@ -78,13 +78,9 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
 
-    page_offset_t offset;
-    gtk_widget_translate_coordinates(page->drawing_area,
-        zathura->ui.session->gtk.view, 0, 0, &offset.x, &offset.y);
-
     GdkRectangle page_rect;
-    page_rect.x = offset.x;
-    page_rect.y = offset.y;
+    gtk_widget_translate_coordinates(page->drawing_area,
+        zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
     page_rect.width  = page->width  * zathura->document->scale;
     page_rect.height = page->height * zathura->document->scale;
 
