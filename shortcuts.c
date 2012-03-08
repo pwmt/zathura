@@ -684,7 +684,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     /* create index */
     document_index = zathura_document_index_generate(zathura->document, NULL);
     if (document_index == NULL) {
-      // TODO: Error message
+      girara_notify(session, GIRARA_WARNING, _("This document does not contain any index"));
       goto error_free;
     }
 
