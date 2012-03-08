@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-07 09:16+0100\n"
+"POT-Creation-Date: 2012-03-08 18:37+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -219,10 +219,9 @@ msgstr "Anhang '%s' nach '%s' geschrieben."
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
 
-#: ../page_widget.c:546
-#, c-format
-msgid "Copied selected text to clipbard: %s"
-msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+#: ../shortcuts.c:687
+msgid "This document does not contain any index"
+msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
 #: ../zathura.c:55
 msgid "Reparents to window specified by xid"
@@ -243,3 +242,8 @@ msgstr "Pfad zum Pluginverzeichnis"
 #: ../zathura.c:59
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
+
+#: ../page_widget.c:555
+#, c-format
+msgid "Copied selected text to clipbard: %s"
+msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
