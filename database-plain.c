@@ -35,15 +35,16 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJE
 static void plain_finalize(GObject* object);
 static bool plain_add_bookmark(zathura_database_t* db, const char* file,
     zathura_bookmark_t* bookmark);
-static bool plain_remove_bookmark(zathura_database_t* db, const char* file, const
-    char* id);
-static girara_list_t* plain_load_bookmarks(zathura_database_t* db, const char*
-    file);
-static bool plain_set_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int page, int offset, double scale, int rotation);
-static bool plain_get_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int* page, int* offset, double* scale, int* rotation);
-static void plain_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static bool plain_remove_bookmark(zathura_database_t* db, const char* file,
+    const char* id);
+static girara_list_t* plain_load_bookmarks(zathura_database_t* db,
+    const char* file);
+static bool plain_set_fileinfo(zathura_database_t* db, const char* file,
+    unsigned int page, int offset, double scale, int rotation);
+static bool plain_get_fileinfo(zathura_database_t* db, const char* file,
+    unsigned int* page, int* offset, double* scale, int* rotation);
+static void plain_set_property(GObject* object, guint prop_id,
+    const GValue* value, GParamSpec* pspec);
 
 /* forward declaration */
 static bool zathura_db_check_file(const char* path);
@@ -65,7 +66,7 @@ typedef struct zathura_plaindatabase_private_s {
 #define ZATHURA_PLAINDATABASE_GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_PLAINDATABASE, zathura_plaindatabase_private_t))
 
-enum 
+enum
 {
   PROP_0,
   PROP_PATH
@@ -75,11 +76,11 @@ static void
 zathura_database_interface_init(ZathuraDatabaseInterface* iface)
 {
   /* initialize interface */
-  iface->add_bookmark = plain_add_bookmark;
+  iface->add_bookmark    = plain_add_bookmark;
   iface->remove_bookmark = plain_remove_bookmark;
-  iface->load_bookmarks = plain_load_bookmarks;
-  iface->set_fileinfo = plain_set_fileinfo;
-  iface->get_fileinfo = plain_get_fileinfo;
+  iface->load_bookmarks  = plain_load_bookmarks;
+  iface->set_fileinfo    = plain_set_fileinfo;
+  iface->get_fileinfo    = plain_get_fileinfo;
 }
 
 static void
@@ -90,7 +91,7 @@ zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
 
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
-  object_class->finalize = plain_finalize;
+  object_class->finalize     = plain_finalize;
   object_class->set_property = plain_set_property;
 
   g_object_class_install_property(object_class, PROP_PATH,
@@ -102,12 +103,13 @@ static void
 zathura_plaindatabase_init(ZathuraPlainDatabase* db)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
-  priv->bookmark_path = NULL;
+
+  priv->bookmark_path    = NULL;
   priv->bookmark_monitor = NULL;
-  priv->bookmarks = NULL;
-  priv->history_path = NULL;
-  priv->history_monitor = NULL;
-  priv->history = NULL;
+  priv->bookmarks        = NULL;
+  priv->history_path     = NULL;
+  priv->history_monitor  = NULL;
+  priv->history          = NULL;
 }
 
 zathura_database_t*
@@ -121,6 +123,7 @@ zathura_plaindatabase_new(const char* path)
     g_object_unref(db);
     return NULL;
   }
+
   return db;
 }
 
@@ -141,6 +144,7 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
   } else {
     goto error_free;
   }
+
   g_object_unref(bookmark_file);
 
   g_signal_connect(
@@ -167,6 +171,7 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
   } else {
     goto error_free;
   }
+
   g_object_unref(history_file);
 
   g_signal_connect(
@@ -180,6 +185,7 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
   if (priv->history == NULL) {
     goto error_free;
   }
+
   return;
 
 error_free:
@@ -232,6 +238,7 @@ plain_finalize(GObject* object)
 {
   ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
   /* bookmarks */
   g_free(priv->bookmark_path);
 
@@ -262,7 +269,7 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
     zathura_bookmark_t* bookmark)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
-  if (priv->bookmarks == NULL || priv->bookmark_path == NULL || 
+  if (priv->bookmarks == NULL || priv->bookmark_path == NULL ||
       bookmark->id == NULL) {
     return false;
   }
@@ -306,8 +313,9 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
-      (girara_free_function_t) zathura_bookmark_free);
+  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t)
+      zathura_bookmarks_compare, (girara_free_function_t)
+      zathura_bookmark_free);
 
   gsize length;
   char** keys = g_key_file_get_keys(priv->bookmarks, file, &length, NULL);
@@ -506,11 +514,13 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
     if (priv->bookmarks != NULL) {
       g_key_file_free(priv->bookmarks);
     }
+
     priv->bookmarks = zathura_db_read_key_file_from_file(priv->bookmark_path);
   } else if (priv->history_path && strcmp(priv->history_path, path) == 0) {
     if (priv->history != NULL) {
       g_key_file_free(priv->history);
     }
+
     priv->history = zathura_db_read_key_file_from_file(priv->history_path);
   }
 }

@@ -15,15 +15,16 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
 static void sqlite_finalize(GObject* object);
 static bool sqlite_add_bookmark(zathura_database_t* db, const char* file,
     zathura_bookmark_t* bookmark);
-static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file, const
-    char* id);
-static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char*
-    file);
-static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int page, int offset, double scale, int rotation);
-static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int* page, int* offset, double* scale, int* rotation);
-static void sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file,
+    const char* id);
+static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db,
+    const char* file);
+static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file,
+    unsigned int page, int offset, double scale, int rotation);
+static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file,
+    unsigned int* page, int* offset, double* scale, int* rotation);
+static void sqlite_set_property(GObject* object, guint prop_id,
+    const GValue* value, GParamSpec* pspec);
 
 typedef struct zathura_sqldatabase_private_s {
   sqlite3* session;
@@ -32,7 +33,7 @@ typedef struct zathura_sqldatabase_private_s {
 #define ZATHURA_SQLDATABASE_GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_SQLDATABASE, zathura_sqldatabase_private_t))
 
-enum 
+enum
 {
   PROP_0,
   PROP_PATH
@@ -42,11 +43,11 @@ static void
 zathura_database_interface_init(ZathuraDatabaseInterface* iface)
 {
   /* initialize interface */
-  iface->add_bookmark = sqlite_add_bookmark;
+  iface->add_bookmark    = sqlite_add_bookmark;
   iface->remove_bookmark = sqlite_remove_bookmark;
-  iface->load_bookmarks = sqlite_load_bookmarks;
-  iface->set_fileinfo = sqlite_set_fileinfo;
-  iface->get_fileinfo = sqlite_get_fileinfo;
+  iface->load_bookmarks  = sqlite_load_bookmarks;
+  iface->set_fileinfo    = sqlite_set_fileinfo;
+  iface->get_fileinfo    = sqlite_get_fileinfo;
 }
 
 static void
@@ -57,7 +58,7 @@ zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
 
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
-  object_class->finalize = sqlite_finalize;
+  object_class->finalize     = sqlite_finalize;
   object_class->set_property = sqlite_set_property;
 
   g_object_class_install_property(object_class, PROP_PATH,
@@ -82,6 +83,7 @@ zathura_sqldatabase_new(const char* path)
     g_object_unref(db);
     return NULL;
   }
+
   return db;
 }
 
@@ -202,7 +204,8 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
 
   int res = sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  return res == SQLITE_DONE;
+
+  return (res == SQLITE_DONE) ? true : false;
 }
 
 static bool
@@ -228,7 +231,8 @@ sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char*
 
   int res = sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  return res == SQLITE_DONE;
+
+  return (res == SQLITE_DONE) ? true : false;
 }
 
 static girara_list_t*
@@ -252,6 +256,7 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 
   girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
       (girara_free_function_t) zathura_bookmark_free);
+
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
 
@@ -260,7 +265,9 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 
     girara_list_append(result, bookmark);
   }
+
   sqlite3_finalize(stmt);
+
   return result;
 }
 
@@ -290,7 +297,8 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
   int res = sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  return res == SQLITE_DONE;
+
+  return (res == SQLITE_DONE) ? true : false;
 }
 
 static bool
@@ -324,5 +332,6 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
   *scale = sqlite3_column_double(stmt, 2);
   *rotation = sqlite3_column_int(stmt, 3);
   sqlite3_finalize(stmt);
+
   return true;
 }
