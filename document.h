@@ -42,6 +42,8 @@
     } \
   } \
 
+#define PLUGIN_MIMETYPES(...) __VA_ARGS__
+
 /**
  * Error types for plugins
  */
