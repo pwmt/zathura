@@ -23,7 +23,7 @@ endif
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
-all: options ${PROJECT}
+all: options ${PROJECT} po
 
 options:
 	@echo ${PROJECT} build options:
