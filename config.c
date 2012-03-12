@@ -97,6 +97,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, _("Show directories"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);
