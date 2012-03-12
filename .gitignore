@@ -14,3 +14,6 @@ gcov/
 *.swp
 version.h
 doc/
+*.tmp
+zathura.1
+zathurarc.5

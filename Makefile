@@ -23,7 +23,7 @@ endif
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
-all: options ${PROJECT} po
+all: options ${PROJECT} po build-manpages
 
 options:
 	@echo ${PROJECT} build options:
@@ -58,7 +58,7 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
-		*gcda *gcno $(PROJECT).info gcov
+		*gcda *gcno $(PROJECT).info gcov *.tmp ${PROJECT}.1 ${PROJECT}rc.5
 	$(QUIET)make -C tests clean
 	$(QUIET)make -C po clean
 
@@ -117,6 +117,26 @@ po:
 update-po:
 	$(QUIET)${MAKE} -C po update-po
 
+ifneq "$(wildcard ${RSTTOMAN})" ""
+%.1 %.5: config.mk
+	$(QUIET)sed "s/VERSION/${VERSION}/g" < $@.rst > $@.tmp
+	$(QUIET)${RSTTOMAN} $@.tmp > $@
+	$(QUIET)rm $@.tmp
+
+${PROJECT}.1: ${PROJECT}.1.rst
+${PROJECT}rc.5: ${PROJECT}rc.5.rst
+
+build-manpages: ${PROJECT}.1 ${PROJECT}rc.5
+
+install-manpages: build-manpages
+	$(ECHO) installing manual pages
+	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
+	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
+	$(QUIET)install -m 644 ${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
+else
+build-manpages install-manpages:
+endif
+
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
@@ -125,22 +145,10 @@ install-headers: ${PROJECT}.pc
 	$(QUIET)mkdir -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
-install: all install-headers po
+install: all install-headers install-manpages
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
-ifneq "$(wildcard ${RSTTOMAN})" ""
-	$(ECHO) installing manual pages
-	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
-	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}.1.rst > ${PROJECT}-v.1.rst
-	$(QUIET)${RSTTOMAN} ${PROJECT}-v.1.rst > ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	$(QUIET)rm ${PROJECT}-v.1.rst
-	$(QUIET)sed "s/VERSION/${VERSION}/g" < ${PROJECT}rc.5.rst > ${PROJECT}rc-v.5.rst
-	$(QUIET)${RSTTOMAN} ${PROJECT}rc-v.5.rst > ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
-	$(QUIET)rm ${PROJECT}rc-v.5.rst
-	$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
-	$(QUIET)chmod 644 ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
-endif
 	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
@@ -165,4 +173,4 @@ uninstall:
 -include $(wildcard .depend/*.dep)
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test \
-	po install-headers uninstall-headers update-po
+	po install-headers uninstall-headers update-po install-manpages build-manpages
