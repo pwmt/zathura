@@ -333,7 +333,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   /* jump to first page if setting enabled */
   bool always_first_page = false;
   girara_setting_get(zathura->ui.session, "open-first-page", &always_first_page);
-  if (always_first_page) {
+  if (always_first_page == true) {
     document->current_page_number = 0;
   }
 
