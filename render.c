@@ -132,7 +132,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   unsigned char* image = cairo_image_surface_get_data(surface);
 
   /* recolor */
-  if (zathura->global.recolor) {
+  if (zathura->global.recolor == true) {
     /* recolor code based on qimageblitz library flatten() function
     (http://sourceforge.net/projects/qimageblitz/) */
 

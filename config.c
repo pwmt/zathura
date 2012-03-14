@@ -38,7 +38,6 @@ cb_color_change(girara_session_t* session, const char* name, girara_setting_type
   /* TODO: cause a redraw here? */
 }
 
-
 void
 config_load_default(zathura_t* zathura)
 {
@@ -88,6 +87,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
 
+  bool_value = false;
+  girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
   float_value = 0.5;
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;
