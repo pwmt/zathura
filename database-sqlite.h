@@ -32,10 +32,11 @@ struct _ZathuraSQLDatabaseClass
 };
 
 GType zathura_sqldatabase_get_type(void);
+
 /**
  * Initialize database system.
  *
- * @param dir Path to the sqlite database.
+ * @param path Path to the sqlite database.
  * @return A valid zathura_database_t instance or NULL on failure
  */
 zathura_database_t* zathura_sqldatabase_new(const char* path);
