@@ -72,6 +72,9 @@ CC ?= gcc
 # strip
 SFLAGS ?= -s
 
+# msgfmt
+MSGFMT ?= msgfmt
+
 # valgrind
 VALGRIND = valgrind
 VALGRIND_ARGUMENTS = --tool=memcheck --leak-check=yes --leak-resolution=high \
