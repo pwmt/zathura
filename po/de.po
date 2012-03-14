@@ -2,7 +2,7 @@
 # See LICENSE file for license and copyright information
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: zathura 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-08 18:37+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
@@ -155,7 +155,7 @@ msgstr "Lesezeichen erfolgreich aktualisiert: %s."
 #: ../commands.c:48
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Konnte Lesezeichen nicht erstellen: 5s"
+msgstr "Konnte Lesezeichen nicht erstellen: %s"
 
 #: ../commands.c:52
 #, c-format
