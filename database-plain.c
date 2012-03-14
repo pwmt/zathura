@@ -72,6 +72,20 @@ enum
   PROP_PATH
 };
 
+static char*
+prepare_filename(const char* file)
+{
+  if (file == NULL) {
+    return NULL;
+  }
+
+  if (strchr(file, '[') == NULL && strchr(file, ']') == NULL) {
+    return g_strdup(file);
+  }
+
+  return g_base64_encode((const guchar*) file, strlen(file));
+}
+
 static void
 zathura_database_interface_init(ZathuraDatabaseInterface* iface)
 {
@@ -274,7 +288,9 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
     return false;
   }
 
-  g_key_file_set_integer(priv->bookmarks, file, bookmark->id, bookmark->page);
+  char* name = prepare_filename(file);
+  g_key_file_set_integer(priv->bookmarks, name, bookmark->id, bookmark->page);
+  g_free(name);
 
   zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
 
@@ -290,13 +306,16 @@ plain_remove_bookmark(zathura_database_t* db, const char* file, const char*
     return false;
   }
 
-  if (g_key_file_has_group(priv->bookmarks, file) == TRUE) {
-    g_key_file_remove_group(priv->bookmarks, file, NULL);
+  char* name = prepare_filename(file);
+  if (g_key_file_has_group(priv->bookmarks, name) == TRUE) {
+    g_key_file_remove_group(priv->bookmarks, name, NULL);
 
     zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
+    g_free(name);
 
     return true;
   }
+  g_free(name);
 
   return false;
 }
@@ -309,7 +328,9 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  if (g_key_file_has_group(priv->bookmarks, file) == FALSE) {
+  char* name = prepare_filename(file);
+  if (g_key_file_has_group(priv->bookmarks, name) == FALSE) {
+    g_free(name);
     return NULL;
   }
 
@@ -318,9 +339,10 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
       zathura_bookmark_free);
 
   gsize length;
-  char** keys = g_key_file_get_keys(priv->bookmarks, file, &length, NULL);
+  char** keys = g_key_file_get_keys(priv->bookmarks, name, &length, NULL);
   if (keys == NULL) {
     girara_list_free(result);
+    g_free(name);
     return NULL;
   }
 
@@ -328,11 +350,12 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
 
     bookmark->id   = g_strdup(keys[i]);
-    bookmark->page = g_key_file_get_integer(priv->bookmarks, file, keys[i], NULL);
+    bookmark->page = g_key_file_get_integer(priv->bookmarks, name, keys[i], NULL);
 
     girara_list_append(result, bookmark);
   }
 
+  g_free(name);
   g_strfreev(keys);
 
   return result;
@@ -348,12 +371,14 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
   }
 
   char* tmp = g_strdup_printf("%f", scale);
+  char* name = prepare_filename(file);
 
-  g_key_file_set_integer(priv->history, file, KEY_PAGE,   page);
-  g_key_file_set_integer(priv->history, file, KEY_OFFSET, offset);
-  g_key_file_set_string (priv->history, file, KEY_SCALE,  tmp);
-  g_key_file_set_integer(priv->history, file, KEY_ROTATE, rotation);
+  g_key_file_set_integer(priv->history, name, KEY_PAGE,   page);
+  g_key_file_set_integer(priv->history, name, KEY_OFFSET, offset);
+  g_key_file_set_string (priv->history, name, KEY_SCALE,  tmp);
+  g_key_file_set_integer(priv->history, name, KEY_ROTATE, rotation);
 
+  g_free(name);
   g_free(tmp);
 
   zathura_db_write_key_file_to_file(priv->history_path, priv->history);
@@ -370,17 +395,19 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
     return false;
   }
 
-  if (g_key_file_has_group(priv->history, file) == FALSE) {
+  char* name = prepare_filename(file);
+  if (g_key_file_has_group(priv->history, name) == FALSE) {
     return false;
   }
 
-  *page     = g_key_file_get_integer(priv->history, file, KEY_PAGE, NULL);
-  *offset   = g_key_file_get_integer(priv->history, file, KEY_OFFSET, NULL);
-  *rotation = g_key_file_get_integer(priv->history, file, KEY_ROTATE, NULL);
+  *page     = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
+  *offset   = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
+  *rotation = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
 
-  char* scale_string = g_key_file_get_string(priv->history, file, KEY_SCALE, NULL);
+  char* scale_string = g_key_file_get_string(priv->history, name, KEY_SCALE, NULL);
   *scale  = strtod(scale_string, NULL);
   g_free(scale_string);
+  g_free(name);
 
   return true;
 }
