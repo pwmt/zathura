@@ -6,6 +6,7 @@
 #include "callbacks.h"
 #include "shortcuts.h"
 #include "zathura.h"
+#include "render.h"
 
 #include <girara/settings.h>
 #include <girara/session.h>
@@ -16,7 +17,8 @@
 #include <glib/gi18n.h>
 
 static void
-cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+cb_color_change(girara_session_t* session, const char* name,
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -35,7 +37,7 @@ cb_color_change(girara_session_t* session, const char* name, girara_setting_type
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
   }
 
-  /* TODO: cause a redraw here? */
+  render_all(zathura);
 }
 
 void

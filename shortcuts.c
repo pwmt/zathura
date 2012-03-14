@@ -339,8 +339,8 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  unsigned int number_of_pages = zathura->document->number_of_pages;
-  unsigned int new_page        = zathura->document->current_page_number;
+  int number_of_pages = zathura->document->number_of_pages;
+  int new_page        = zathura->document->current_page_number;
 
   bool scroll_wrap = false;
   girara_setting_get(session, "scroll-wrap", &scroll_wrap);
