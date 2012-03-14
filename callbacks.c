@@ -325,3 +325,21 @@ cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t*
 
   return false;
 }
+
+void
+cb_setting_recolor_change(girara_session_t* session, const char* name,
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+
+  bool bool_value = *((bool*) value);
+
+  if (zathura->global.recolor != bool_value) {
+    zathura->global.recolor = bool_value;
+    render_all(zathura);
+  }
+}

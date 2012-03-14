@@ -6,6 +6,7 @@
 #include "callbacks.h"
 #include "shortcuts.h"
 #include "zathura.h"
+#include "render.h"
 
 #include <girara/settings.h>
 #include <girara/session.h>
@@ -16,7 +17,8 @@
 #include <glib/gi18n.h>
 
 static void
-cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+cb_color_change(girara_session_t* session, const char* name,
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -35,9 +37,8 @@ cb_color_change(girara_session_t* session, const char* name, girara_setting_type
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
   }
 
-  /* TODO: cause a redraw here? */
+  render_all(zathura);
 }
-
 
 void
 config_load_default(zathura_t* zathura)
@@ -88,6 +89,10 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
 
+  bool_value = false;
+  girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   float_value = 0.5;
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;

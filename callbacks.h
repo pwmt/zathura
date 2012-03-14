@@ -98,4 +98,16 @@ bool cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
  */
 bool cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
 
+/**
+ * Emitted when the 'recolor' setting is changed
+ *
+ * @param session Girara session
+ * @param name Name of the setting ("recolor")
+ * @param type Type of the setting (BOOLEAN)
+ * @param value New value
+ * @param data Custom data
+ */
+void cb_setting_recolor_change(girara_session_t* session, const char* name,
+    girara_setting_type_t type, void* value, void* data);
+
 #endif // CALLBACKS_H

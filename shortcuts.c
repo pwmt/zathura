@@ -339,14 +339,29 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  unsigned int number_of_pages = zathura->document->number_of_pages;
-  unsigned int new_page        = zathura->document->current_page_number;
+  int number_of_pages = zathura->document->number_of_pages;
+  int new_page        = zathura->document->current_page_number;
+
+  bool scroll_wrap = false;
+  girara_setting_get(session, "scroll-wrap", &scroll_wrap);
 
   t = (t == 0) ? 1 : t;
   if (argument->n == NEXT) {
-    new_page = (new_page + t) % number_of_pages;
+    if (scroll_wrap == true) {
+      new_page = new_page + t;
+    } else {
+      new_page = (new_page + t) % number_of_pages;
+    }
   } else if (argument->n == PREVIOUS) {
-    new_page = (new_page + number_of_pages - t) % number_of_pages;
+    if (scroll_wrap == true) {
+      new_page = new_page - t;
+    } else {
+      new_page = (new_page + number_of_pages - t) % number_of_pages;
+    }
+  }
+
+  if (scroll_wrap == true && (new_page < 0 || new_page >= number_of_pages)) {
+    return false;
   }
 
   page_set(zathura, new_page);
@@ -359,11 +374,11 @@ sc_recolor(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
 
-  zathura->global.recolor = !zathura->global.recolor;
-  render_all(zathura);
+  bool value = false;
+  girara_setting_get(session, "recolor", &value);
+  value = !value;
+  girara_setting_set(session, "recolor", &value);
 
   return false;
 }
@@ -431,10 +446,11 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   }
 
-  gdouble view_size    = gtk_adjustment_get_page_size(adjustment);
-  gdouble value        = gtk_adjustment_get_value(adjustment);
-  gdouble max          = gtk_adjustment_get_upper(adjustment) - view_size;
-  unsigned int padding = zathura->global.page_padding;
+
+  gdouble view_size                  = gtk_adjustment_get_page_size(adjustment);
+  gdouble value                      = gtk_adjustment_get_value(adjustment);
+  gdouble max                        = gtk_adjustment_get_upper(adjustment) - view_size;
+  unsigned int padding               = zathura->global.page_padding;
   zathura->global.update_page_number = true;
 
   float scroll_step = 40;
