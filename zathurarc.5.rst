@@ -562,7 +562,7 @@ Defines the minimum percentage that the zoom level can be
 
 zoom-step
 ^^^^^^^^^
-Defines the amount of percent that is zoomed in or out on each comand.
+Defines the amount of percent that is zoomed in or out on each command.
 
 * Value-type: Integer
 * Default value: 10
