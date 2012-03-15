@@ -5,22 +5,22 @@
 #include "../utils.h"
 
 START_TEST(test_file_exists_null) {
-  fail_unless(file_exists(NULL) == false);
+  fail_unless(file_exists(NULL) == false, NULL);
 } END_TEST
 
 START_TEST(test_file_get_extension_null) {
-  fail_unless(file_get_extension(NULL) == NULL);
+  fail_unless(file_get_extension(NULL) == NULL, NULL);
 } END_TEST
 
 START_TEST(test_file_get_extension_none) {
   const char* path = "test";
-  fail_unless(file_get_extension(path) == NULL);
+  fail_unless(file_get_extension(path) == NULL, NULL);
 } END_TEST
 
 START_TEST(test_file_get_extension_single) {
   const char* path = "test.pdf";
   const char* extension = file_get_extension(path);
-  fail_unless(strcmp(extension, "pdf") == 0);
+  fail_unless(strcmp(extension, "pdf") == 0, NULL);
 } END_TEST
 
 Suite* suite_utils()
