@@ -54,7 +54,7 @@ file_get_extension(const char* path)
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
 {
-  if (path == NULL) {
+  if (zathura == NULL || path == NULL) {
     return false;
   }
 
