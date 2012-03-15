@@ -124,35 +124,35 @@ zathura allows it also to assign keys like the space bar or the tab button which
 also have to be written in between angle brackets. The following special keys
 are currently available:
 
-========== ===========
-Identifier Description
-========== ===========
-BackSpace  Back space
-CapsLock   Caps lock
-Esc        Escape
-Down       Arrow down
-Up         Arrow up
-Left       Arrow left
-Right      Arrow right
-F1         F1
-F2         F2
-F3         F3
-F4         F4
-F5         F5
-F6         F6
-F7         F7
-F8         F8
-F9         F9
-F10        F10
-F11        F11
-F12        F12
-PageDown   Page Down
-PageUp     Page Up
-Return     Return
-Space      Space
-Super      Windows button
-Tab        Tab
-========== ===========
+::
+
+    Identifier Description
+
+    BackSpace  Back space
+    CapsLock   Caps lock
+    Esc        Escape
+    Down       Arrow down
+    Up         Arrow up
+    Left       Arrow left
+    Right      Arrow right
+    F1         F1
+    F2         F2
+    F3         F3
+    F4         F4
+    F5         F5
+    F6         F6
+    F7         F7
+    F8         F8
+    F9         F9
+    F10        F10
+    F11        F11
+    F12        F12
+    PageDown   Page Down
+    PageUp     Page Up
+    Return     Return
+    Space      Space
+    Super      Windows button
+    Tab        Tab
 
 Of course it is possible to combine those special keys with a modifier. The
 usage of those keys should be explained by the following examples:
@@ -167,15 +167,15 @@ Mouse buttons
 It is also possible to map mouse buttons to shortcuts by using the following
 special keys:
 
-========== ===========
-Identifier Description
-========== ===========
-Button1    Mouse button 1
-Button2    Mouse button 2
-Button3    Mouse button 3
-Button4    Mouse button 4
-Button5    Mouse button 5
-========== ===========
+::
+
+    Identifier Description
+
+    Button1    Mouse button 1
+    Button2    Mouse button 2
+    Button3    Mouse button 3
+    Button4    Mouse button 4
+    Button5    Mouse button 5
 
 They can also be combined with modifiers:
 
@@ -198,30 +198,31 @@ Shortcut functions
 ^^^^^^^^^^^^^^^^^^
 The following shortcut functions can be mapped:
 
-================= ===========
-Function          Description
-================= ===========
-abort             Switch back to normal mode
-adjust_window     Adjust page width
-change_mode       Change current mode
-follow            Follow a link
-focus_inputbar    Focus inputbar
-goto              Go to a certain page
-index_navigate    Navigate through the index
-navigate          Navigate to the next/previous page
-quit              Quit zathura
-recolor           Recolor the pages
-reload            Reload the document
-rotate            Rotate the page
-scroll            Scroll
-search            Search next/previous item
-set               Set an option
-toggle_fullscreen Toggle fullscreen
-toggle_index      Show or hide index
-toggle_inputbar   Show or hide inputbar
-toggle_statusbar  Show or hide statusbar
-zoom              Zoom in or out
-================= ===========
+
+::
+
+    Function          Description
+
+    abort             Switch back to normal mode
+    adjust_window     Adjust page width
+    change_mode       Change current mode
+    follow            Follow a link
+    focus_inputbar    Focus inputbar
+    goto              Go to a certain page
+    index_navigate    Navigate through the index
+    navigate          Navigate to the next/previous page
+    quit              Quit zathura
+    recolor           Recolor the pages
+    reload            Reload the document
+    rotate            Rotate the page
+    scroll            Scroll
+    search            Search next/previous item
+    set               Set an option
+    toggle_fullscreen Toggle fullscreen
+    toggle_index      Show or hide index
+    toggle_inputbar   Show or hide inputbar
+    toggle_statusbar  Show or hide statusbar
+    zoom              Zoom in or out
 
 Pass arguments
 ^^^^^^^^^^^^^^
