@@ -264,8 +264,8 @@ section of this document
     unmap [mode] <binding>
 
 
-SETTINGS
-========
+OPTIONS
+=======
 
 girara
 ------
