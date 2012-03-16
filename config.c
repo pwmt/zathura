@@ -40,6 +40,20 @@ cb_color_change(girara_session_t* session, const char* name,
   render_all(zathura);
 }
 
+static void
+cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  int val = *(int*) value;
+  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
+  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
+}
+
 void
 config_load_default(zathura_t* zathura)
 {
@@ -70,7 +84,7 @@ config_load_default(zathura_t* zathura)
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",     &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",  &int_value,   INT,    true,  _("Padding between pages"),   NULL, NULL);
+  girara_setting_add(gsession, "page-padding",  &int_value,   INT,    false, _("Padding between pages"),   cb_page_padding_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "pages-per-row", &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
   float_value = 40;

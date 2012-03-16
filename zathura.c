@@ -227,12 +227,12 @@ zathura_init(int argc, char* argv[])
   /* signals */
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
 
-  /* save page padding */
-  zathura->global.page_padding = 1;
-  girara_setting_get(zathura->ui.session, "page-padding", &zathura->global.page_padding);
+  /* set page padding */
+  int page_padding = 1;
+  girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
-  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), zathura->global.page_padding);
-  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), zathura->global.page_padding);
+  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
+  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
 
   /* database */
   char* database = NULL;
