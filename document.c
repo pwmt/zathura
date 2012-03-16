@@ -20,7 +20,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "database.h"
-#include "page_widget.h"
+#include "page-widget.h"
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>

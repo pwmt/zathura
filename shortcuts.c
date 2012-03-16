@@ -15,7 +15,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
-#include "page_widget.h"
+#include "page-widget.h"
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),

@@ -7,7 +7,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
-#include "page_widget.h"
+#include "page-widget.h"
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"

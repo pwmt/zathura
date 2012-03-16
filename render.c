@@ -9,7 +9,7 @@
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
-#include "page_widget.h"
+#include "page-widget.h"
 #include "utils.h"
 
 static void render_job(void* data, void* user_data);

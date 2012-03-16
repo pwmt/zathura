@@ -15,7 +15,7 @@
 #include "document.h"
 #include "utils.h"
 #include "shortcuts.h"
-#include "page_widget.h"
+#include "page-widget.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)

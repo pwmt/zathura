@@ -11,7 +11,7 @@
 #include "print.h"
 #include "document.h"
 #include "utils.h"
-#include "page_widget.h"
+#include "page-widget.h"
 
 
 #include <girara/session.h>
