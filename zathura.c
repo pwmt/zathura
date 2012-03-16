@@ -597,7 +597,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   statusbar_page_number_update(zathura);
 
   if (zathura->ui.session != NULL && zathura->ui.statusbar.file != NULL) {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, "[No name]");
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, _("[No name]"));
   }
 
   /* update title */
