@@ -497,6 +497,9 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   page_set_delayed(zathura, document->current_page_number);
   cb_view_vadjustment_value_changed(NULL, zathura);
 
+  /* update title */
+  girara_set_window_title(zathura->ui.session, document->file_path);
+
   free(file_uri);
 
   return true;
@@ -596,6 +599,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
   if (zathura->ui.session != NULL && zathura->ui.statusbar.file != NULL) {
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, "[No name]");
   }
+
+  /* update title */
+  girara_set_window_title(zathura->ui.session, "zathura");
 
   return true;
 }
