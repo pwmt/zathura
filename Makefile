@@ -25,6 +25,12 @@ DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT} po build-manpages
 
+girara-version-check:
+ifneq ($(GIRARA_VERSION_CHECK), 0)
+	$(error "The minimum required version of girara is ${GIRARA_MIN_VERSION}")
+endif
+	$(QUIET)touch girara-version-check
+
 options:
 	@echo ${PROJECT} build options:
 	@echo "CFLAGS  = ${CFLAGS}"
@@ -48,8 +54,8 @@ version.h: version.h.in config.mk
 	@mkdir -p .depend
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
-${OBJECTS}:  config.mk version.h
-${DOBJECTS}: config.mk version.h
+${OBJECTS}:  config.mk version.h girara-version-check
+${DOBJECTS}: config.mk version.h girara-version-check
 
 ${PROJECT}: ${OBJECTS}
 	$(ECHO) CC -o $@
@@ -58,7 +64,8 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
-		*gcda *gcno $(PROJECT).info gcov *.tmp ${PROJECT}.1 ${PROJECT}rc.5
+		*gcda *gcno $(PROJECT).info gcov *.tmp ${PROJECT}.1 ${PROJECT}rc.5 \
+		girara-version-check
 	$(QUIET)make -C tests clean
 	$(QUIET)make -C po clean
 
