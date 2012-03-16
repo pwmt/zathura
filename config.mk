@@ -7,12 +7,13 @@ ZATHURA_VERSION_REV = 1
 ZATHURA_API_VERSION = 1
 VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_REV}
 
-# the GTK version to use
+# the GTK+ version to use
+# note: zathura with GTK+ 3 is broken!
 ZATHURA_GTK_VERSION ?= 2
 
 # database
-# build with sqlite support
-WITH_SQLITE ?= 1
+# To disable support for the sqlite backend set WITH_SQLITE to 0.
+WITH_SQLITE ?= $(shell (pkg-config --exists sqlite3 && echo 1) || echo 0)
 
 # paths
 PREFIX ?= /usr
