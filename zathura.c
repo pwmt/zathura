@@ -222,7 +222,7 @@ zathura_init(int argc, char* argv[])
     goto error_free;
   }
 
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, "[No Name]");
+  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, _("[No name]"));
 
   /* signals */
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);

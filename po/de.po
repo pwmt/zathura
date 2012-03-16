@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-16 13:40+0100\n"
+"POT-Creation-Date: 2012-03-16 15:59+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -29,7 +29,7 @@ msgstr "Ungültiger Index '%s' angegeben."
 
 #: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
 #: ../commands.c:220 ../commands.c:237 ../commands.c:263 ../commands.c:337
-#: ../shortcuts.c:784
+#: ../shortcuts.c:786
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
@@ -102,124 +102,124 @@ msgid "Wrote attachment '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
 
 #. zathura settings
-#: ../config.c:69
+#: ../config.c:83
 msgid "Database backend"
 msgstr "Datenbank Backend"
 
-#: ../config.c:71
+#: ../config.c:85
 msgid "Zoom step"
 msgstr "Vergrößerungsstufe"
 
-#: ../config.c:73
+#: ../config.c:87
 msgid "Padding between pages"
 msgstr "Abstand zwischen den Seiten"
 
-#: ../config.c:75
+#: ../config.c:89
 msgid "Number of pages per row"
 msgstr "Anzahl der Seiten in einer Reihe"
 
-#: ../config.c:77
+#: ../config.c:91
 msgid "Scroll step"
 msgstr "Schrittgröße beim Scrollen"
 
-#: ../config.c:79
+#: ../config.c:93
 msgid "Zoom minimum"
 msgstr "Minimale Vergrößerungsstufe"
 
-#: ../config.c:81
+#: ../config.c:95
 msgid "Zoom maximum"
 msgstr "Maximale Vergrößerungsstufe"
 
-#: ../config.c:83
+#: ../config.c:97
 msgid "Recoloring (dark color)"
 msgstr "Neufärben (Dunkle Farbe)"
 
-#: ../config.c:85
+#: ../config.c:99
 msgid "Recoloring (light color)"
 msgstr "Neufärben (Helle Farbe)"
 
-#: ../config.c:87
+#: ../config.c:101
 msgid "Color for highlighting"
 msgstr "Farbe für eine Markierung"
 
-#: ../config.c:89
+#: ../config.c:103
 msgid "Color for highlighting (active)"
 msgstr "Farbe für die aktuelle Markierung"
 
-#: ../config.c:93
+#: ../config.c:107
 msgid "Recolor pages"
 msgstr ""
 
-#: ../config.c:95
+#: ../config.c:109
 msgid "Wrap scrolling"
 msgstr ""
 
-#: ../config.c:97
+#: ../config.c:111
 msgid "Transparency for highlighting"
 msgstr "Transparenz einer Markierung"
 
-#: ../config.c:99
+#: ../config.c:113
 msgid "Render 'Loading ...'"
 msgstr "Zeige 'Lädt...'-Text beim Zeichnen einer Seite"
 
-#: ../config.c:100
+#: ../config.c:114
 msgid "Adjust to when opening file"
 msgstr "Seite einpassen"
 
-#: ../config.c:102
+#: ../config.c:116
 msgid "Show hidden files and directories"
 msgstr "Zeige versteckte Dateien und Ordner an"
 
-#: ../config.c:104
+#: ../config.c:118
 msgid "Show directories"
 msgstr "Zeige Ordner an"
 
-#: ../config.c:106
+#: ../config.c:120
 msgid "Always open on first page"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:226
+#: ../config.c:240
 msgid "Add a bookmark"
 msgstr "Füge Lesezeichen hinzu"
 
-#: ../config.c:227
+#: ../config.c:241
 msgid "Delete a bookmark"
 msgstr "Lösche ein Lesezeichen"
 
-#: ../config.c:228
+#: ../config.c:242
 msgid "List all bookmarks"
 msgstr "Liste all Lesezeichen auf"
 
-#: ../config.c:229
+#: ../config.c:243
 msgid "Close current file"
 msgstr "Schließe das aktuelle Dokument"
 
-#: ../config.c:230
+#: ../config.c:244
 msgid "Show file information"
 msgstr "Zeige Dokumentinformationen an"
 
-#: ../config.c:231
+#: ../config.c:245
 msgid "Show help"
 msgstr "Zeige Hilfe an"
 
-#: ../config.c:232
+#: ../config.c:246
 msgid "Open document"
 msgstr "Öffne Dokument"
 
-#: ../config.c:233
+#: ../config.c:247
 msgid "Print document"
 msgstr "Drucke Dokument"
 
-#: ../config.c:234
+#: ../config.c:248
 msgid "Save document"
 msgstr "Speichere Dokument"
 
-#: ../config.c:235
+#: ../config.c:249
 msgid "Save document (and force overwriting)"
 msgstr "Speichere Dokument (und überschreibe bestehende)"
 
-#: ../config.c:236
+#: ../config.c:250
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
@@ -231,12 +231,12 @@ msgstr "Speichere Anhänge"
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
 
-#: ../page_widget.c:555
+#: ../page-widget.c:555
 #, c-format
 msgid "Copied selected text to clipbard: %s"
 msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
 
-#: ../shortcuts.c:703
+#: ../shortcuts.c:705
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
@@ -260,6 +260,6 @@ msgstr "Pfad zum Pluginverzeichnis"
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
 
-#: ../zathura.c:600
+#: ../zathura.c:225 ../zathura.c:600
 msgid "[No name]"
 msgstr ""
