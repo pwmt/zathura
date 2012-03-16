@@ -5,10 +5,8 @@
 
 #include <stdbool.h>
 #include <girara/types.h>
-#include <girara/macros.h>
 #include <gtk/gtk.h>
-
-#define UNUSED(x) GIRARA_UNUSED(x)
+#include "macros.h"
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
@@ -84,7 +82,7 @@ typedef struct zathura_s
 
   struct
   {
-    unsigned int page_padding; /**< Padding between the pages */
+    unsigned int DEPRECATED(page_padding); /**< Padding between the pages */
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
   } global;

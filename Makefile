@@ -147,7 +147,7 @@ endif
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
-	$(QUIET)install -m 644 zathura.h document.h version.h ${DESTDIR}${INCLUDEDIR}/${PROJECT}
+	$(QUIET)install -m 644 zathura.h document.h version.h macros.h ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(ECHO) installing pkgconfig file
 	$(QUIET)mkdir -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
