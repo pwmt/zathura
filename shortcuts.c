@@ -17,6 +17,18 @@
 #include "utils.h"
 #include "page-widget.h"
 
+static void
+readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
+  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
+
+  gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * zathura->document->scale;
+  gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * zathura->document->scale;
+  set_adjustment(hadjustment, valx);
+  set_adjustment(vadjustment, valy);
+}
+
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
@@ -58,6 +70,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
     goto error_ret;
   }
 
+  float old_zoom = zathura->document->scale;
   zathura->document->adjust_mode = argument->n;
   if (argument->n == ADJUST_NONE) {
     /* there is nothing todo */
@@ -98,6 +111,9 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   } else {
     goto error_ret;
   }
+
+  /* keep position */
+  readjust_view_after_zooming(zathura, old_zoom);
 
   /* re-render all pages */
   render_all(zathura);
@@ -865,7 +881,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   float zoom_step = value / 100.0f;
-  float oldzoom = zathura->document->scale;
+  float old_zoom = zathura->document->scale;
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
@@ -894,12 +910,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   /* keep position */
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  gdouble valx = gtk_adjustment_get_value(view_hadjustment) / oldzoom * zathura->document->scale;
-  gdouble valy = gtk_adjustment_get_value(view_vadjustment) / oldzoom * zathura->document->scale;
-  set_adjustment(view_hadjustment, valx);
-  set_adjustment(view_vadjustment, valy);
+  readjust_view_after_zooming(zathura, old_zoom);
 
   render_all(zathura);
 
