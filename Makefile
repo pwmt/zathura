@@ -3,9 +3,10 @@
 include config.mk
 include common.mk
 
-PROJECT  = zathura
-OSOURCE  = $(wildcard *.c)
-HEADER   = $(wildcard *.h)
+PROJECT    = zathura
+OSOURCE    = $(wildcard *.c)
+HEADER     = $(wildcard *.h)
+HEADERINST = version.h zathura.h document.h macros.h
 
 ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
@@ -147,7 +148,7 @@ endif
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
 	$(QUIET)mkdir -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
-	$(QUIET)install -m 644 zathura.h document.h version.h macros.h ${DESTDIR}${INCLUDEDIR}/${PROJECT}
+	$(QUIET)install -m 644 ${HEADERINST} ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(ECHO) installing pkgconfig file
 	$(QUIET)mkdir -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
