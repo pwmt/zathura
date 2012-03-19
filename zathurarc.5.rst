@@ -252,6 +252,8 @@ Possible arguments are:
 * up
 * best-fit
 * width
+* rotate-cw
+* rotate-ccw
 
 unmap - Removing a shortcut
 ---------------------------
