@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-16 15:59+0100\n"
+"POT-Creation-Date: 2012-03-20 00:55+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -29,7 +29,7 @@ msgstr "Ungültiger Index '%s' angegeben."
 
 #: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
 #: ../commands.c:220 ../commands.c:237 ../commands.c:263 ../commands.c:337
-#: ../shortcuts.c:786
+#: ../shortcuts.c:807
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
@@ -223,10 +223,10 @@ msgstr "Speichere Dokument (und überschreibe bestehende)"
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../document.c:390 ../document.c:414 ../document.c:433 ../document.c:455
-#: ../document.c:474 ../document.c:496 ../document.c:515 ../document.c:558
-#: ../document.c:578 ../document.c:601 ../document.c:630 ../document.c:659
-#: ../document.c:683 ../document.c:704 ../document.c:725
+#: ../document.c:373 ../document.c:397 ../document.c:416 ../document.c:438
+#: ../document.c:457 ../document.c:479 ../document.c:498 ../document.c:541
+#: ../document.c:561 ../document.c:584 ../document.c:613 ../document.c:642
+#: ../document.c:666 ../document.c:687 ../document.c:708
 #, c-format
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
@@ -236,7 +236,7 @@ msgstr "%s ist nicht implementiert."
 msgid "Copied selected text to clipbard: %s"
 msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
 
-#: ../shortcuts.c:705
+#: ../shortcuts.c:726
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 

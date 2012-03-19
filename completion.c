@@ -86,7 +86,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
       full_path = g_strdup_printf("%s/", full_path);
       g_free(tmp_path);
       girara_list_append(res, full_path);
-    } else if (file_valid_extension(zathura, full_path) == true || check_file_ext == false) {
+    } else if (check_file_ext == false || file_valid_extension(zathura, full_path) == true) {
       girara_list_append(res, full_path);
     } else {
       g_free(full_path);
