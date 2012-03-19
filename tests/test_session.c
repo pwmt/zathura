@@ -6,7 +6,7 @@
 
 START_TEST(test_create) {
   zathura_t* zathura = zathura_init(0, NULL);
-  fail_unless(zathura != NULL, "Could not create session");
+  fail_unless(zathura != NULL, "Could not create session", NULL);
   zathura_free(zathura);
 } END_TEST
 
