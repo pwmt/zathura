@@ -2,6 +2,7 @@
 
 #include <check.h>
 #include <stdlib.h>
+#include <gtk/gtk.h>
 
 Suite* suite_session();
 Suite* suite_utils();
