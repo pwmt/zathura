@@ -18,14 +18,6 @@ typedef struct page_offset_s
 } page_offset_t;
 
 /**
- * Checks if the given file exists
- *
- * @param path Path to the file
- * @return true if the file exists, otherwise false
- */
-bool file_exists(const char* path);
-
-/**
  * Returns the file extension of a path
  *
  * @param path Path to the file

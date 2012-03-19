@@ -17,16 +17,6 @@
 
 #define BLOCK_SIZE 64
 
-bool
-file_exists(const char* path)
-{
-  if (!access(path, F_OK)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 const char*
 file_get_extension(const char* path)
 {

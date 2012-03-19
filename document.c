@@ -209,7 +209,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     return NULL;
   }
 
-  if (file_exists(path) == false) {
+  if (g_file_test(path, G_FILE_TEST_EXISTS) == FALSE) {
     girara_error("File '%s' does not exist", path);
     return NULL;
   }
