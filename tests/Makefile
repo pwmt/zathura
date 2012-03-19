@@ -18,7 +18,7 @@ ifeq (,$(findstring -DWITH_SQLITE,${CPPFLAGS}))
 CPPFLAGS += -DWITH_SQLITE
 endif
 else
-ZSOURCE = $(filter-out database-sqlite.c,$(ZOSOURCE))
+ZSOURCE = $(filter-out ../database-sqlite.c,$(ZOSOURCE))
 endif
 
 ZOBJECTS = ${ZSOURCE:.c=.o}
