@@ -175,7 +175,7 @@ config_load_default(zathura_t* zathura)
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_R,          NULL, sc_reload,                   NORMAL,     0,               NULL);
 
-  girara_shortcut_add(gsession, 0,                GDK_KEY_r,          NULL, sc_rotate,                   NORMAL,     0,               NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_r,          NULL, sc_rotate,                   NORMAL,     ROTATE_CW,       NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_h,          NULL, sc_scroll,                   NORMAL,     LEFT,            NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_j,          NULL, sc_scroll,                   NORMAL,     DOWN,            NULL);
@@ -299,6 +299,8 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "up",           UP);
   girara_argument_mapping_add(gsession, "best-fit",     ADJUST_BESTFIT);
   girara_argument_mapping_add(gsession, "width",        ADJUST_WIDTH);
+  girara_argument_mapping_add(gsession, "rotate-cw",    ROTATE_CW);
+  girara_argument_mapping_add(gsession, "rotate-ccw",   ROTATE_CCW);
 }
 
 void

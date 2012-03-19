@@ -421,7 +421,7 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
 }
 
 bool
-sc_rotate(girara_session_t* session, girara_argument_t* UNUSED(argument),
+sc_rotate(girara_session_t* session, girara_argument_t* argument,
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
@@ -431,8 +431,13 @@ sc_rotate(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   unsigned int page_number = zathura->document->current_page_number;
 
+  int angle = 90;
+  if (argument != NULL && argument->n == ROTATE_CCW) {
+    angle = 270;
+  }
+
   /* update rotate value */
-  zathura->document->rotate  = (zathura->document->rotate + 90) % 360;
+  zathura->document->rotate  = (zathura->document->rotate + angle) % 360;
 
   /* render all pages again */
   render_all(zathura);
