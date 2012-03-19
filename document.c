@@ -8,11 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
-#include <sys/stat.h>
 #include <dlfcn.h>
 #include <errno.h>
 #include <glib.h>
-#include <gio/gio.h>
 #include <glib/gi18n.h>
 
 #include "document.h"
@@ -48,22 +46,7 @@ zathura_document_plugins_load(zathura_t* zathura)
     char* name = NULL;
     while ((name = (char*) g_dir_read_name(dir)) != NULL) {
       char* path           = g_build_filename(plugindir, name, NULL);
-      GFile* file          = g_file_new_for_path(path);
-      GError* error        = NULL;
-      GFileInfo* file_info = g_file_query_info(file, G_FILE_ATTRIBUTE_UNIX_MODE, 0, NULL, &error);
-      if (file_info == NULL) {
-        girara_error("failed to query file info for %s: %s", path, error->message);
-        g_error_free(error);
-        g_object_unref(file);
-        g_free(path);
-        continue;
-      }
-
-      const guint mode = g_file_info_get_attribute_uint32(file_info, G_FILE_ATTRIBUTE_UNIX_MODE);
-      g_object_unref(file_info);
-      g_object_unref(file);
-
-      if (S_ISREG(mode) == 0) {
+      if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
         girara_info("%s is not a regular file. Skipping.", path);
         g_free(path);
         continue;
