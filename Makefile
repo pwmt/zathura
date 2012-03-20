@@ -65,7 +65,7 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
-		*gcda *gcno $(PROJECT).info gcov *.tmp ${PROJECT}.1 ${PROJECT}rc.5 \
+		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		girara-version-check
 	$(QUIET)make -C tests clean
 	$(QUIET)make -C po clean
@@ -95,13 +95,14 @@ gdb: debug
 test: ${OBJECTS}
 	$(QUIET)make -C tests run
 
-dist: clean
+dist: clean build-manpages
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/po
 	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}.desktop version.h.in \
+			${PROJECT}.1 ${PROJECT}rc.5 \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
@@ -135,15 +136,15 @@ ${PROJECT}.1: ${PROJECT}.1.rst
 ${PROJECT}rc.5: ${PROJECT}rc.5.rst
 
 build-manpages: ${PROJECT}.1 ${PROJECT}rc.5
+else
+build-manpages:
+endif
 
 install-manpages: build-manpages
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
 	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
 	$(QUIET)install -m 644 ${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
-else
-build-manpages install-manpages:
-endif
 
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
