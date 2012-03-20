@@ -85,8 +85,6 @@ render(zathura_t* zathura, zathura_page_t* page)
     return false;
   }
 
-  gdk_threads_enter();
-
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
@@ -95,7 +93,6 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
   if (surface == NULL) {
-    gdk_threads_leave();
     return false;
   }
 
@@ -103,7 +100,6 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   if (cairo == NULL) {
     cairo_surface_destroy(surface);
-    gdk_threads_leave();
     return false;
   }
 
@@ -121,7 +117,6 @@ render(zathura_t* zathura, zathura_page_t* page)
   if (zathura_page_render(page, cairo, false) != ZATHURA_PLUGIN_ERROR_OK) {
     cairo_destroy(cairo);
     cairo_surface_destroy(surface);
-    gdk_threads_leave();
     return false;
   }
 
@@ -165,8 +160,8 @@ render(zathura_t* zathura, zathura_page_t* page)
   }
 
   /* update the widget */
+  gdk_threads_enter();
   zathura_page_widget_update_surface(ZATHURA_PAGE(page->drawing_area), surface);
-
   gdk_threads_leave();
 
   return true;
