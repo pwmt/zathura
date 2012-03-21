@@ -79,7 +79,7 @@ debug: ${PROJECT}-debug
 ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo project=${PROJECT} > ${PROJECT}.pc
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
-	$(QUIET)echo apiversion=${ZATHHRA_API_VERSION} >> ${PROJECT}.pc
+	$(QUIET)echo apiversion=${ZATHURA_API_VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${INCLUDEDIR} >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
 	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
