@@ -13,6 +13,7 @@
 
 #define PLUGIN_REGISTER_FUNCTION "plugin_register"
 #define PLUGIN_API_VERSION_FUNCTION "plugin_api_version"
+#define PLUGIN_ABI_VERSION_FUNCTION "plugin_abi_version"
 
 /**
  * Register a plugin.
@@ -29,6 +30,7 @@
   unsigned int plugin_version_minor() { return minor; } \
   unsigned int plugin_version_revision() { return rev; } \
   unsigned int plugin_api_version() { return ZATHURA_API_VERSION; } \
+  unsigned int plugin_abi_version() { return ZATHURA_ABI_VERSION; } \
   \
   void plugin_register(zathura_document_plugin_t* plugin) \
   { \
@@ -118,6 +120,14 @@ typedef void (*zathura_plugin_register_service_t)(zathura_document_plugin_t*);
  * @return plugin's API version
  */
 typedef unsigned int (*zathura_plugin_api_version_t)();
+
+/**
+ * Function prototype that is called to get the ABI version the plugin is built
+ * against.
+ *
+ * @return plugin's ABI version
+ */
+typedef unsigned int (*zathura_plugin_abi_version_t)();
 
 /**
  * Image buffer

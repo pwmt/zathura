@@ -63,7 +63,7 @@ zathura_document_plugins_load(zathura_t* zathura)
         continue;
       }
 
-      /* resolve symbol and check API version*/
+      /* resolve symbols and check API and ABI version*/
       zathura_plugin_api_version_t api_version;
       *(void**)(&api_version) = dlsym(handle, PLUGIN_API_VERSION_FUNCTION);
       if (api_version != NULL) {
@@ -75,7 +75,35 @@ zathura_document_plugins_load(zathura_t* zathura)
           continue;
         }
       } else {
+#if ZATHURA_API_VERSION == 1
         girara_warning("could not find '%s' function in plugin %s ... loading anyway", PLUGIN_API_VERSION_FUNCTION, path);
+#else
+        girara_error("could not find '%s' function in plugin %s", PLUGIN_API_VERSION_FUNCTION, path);
+        g_free(path);
+        dlclose(handle);
+        continue;
+#endif
+      }
+
+      zathura_plugin_abi_version_t abi_version;
+      *(void**)(&abi_version) = dlsym(handle, PLUGIN_ABI_VERSION_FUNCTION);
+      if (abi_version != NULL) {
+        if (abi_version() != ZATHURA_ABI_VERSION) {
+          girara_error("plugin %s has been built againt zathura with a different ABI version (plugin: %d, zathura: %d)",
+              path, abi_version(), ZATHURA_ABI_VERSION);
+          g_free(path);
+          dlclose(handle);
+          continue;
+        }
+      } else {
+#if ZATHURA_API_VERSION == 1
+        girara_warning("could not find '%s' function in plugin %s ... loading anyway", PLUGIN_ABI_VERSION_FUNCTION, path);
+#else
+        girara_error("could not find '%s' function in plugin %s", PLUGIN_ABI_VERSION_FUNCTION, path);
+        g_free(path);
+        dlclose(handle);
+        continue;
+#endif
       }
 
       zathura_plugin_register_service_t register_plugin;

@@ -43,7 +43,8 @@ version.h: version.h.in config.mk
 	$(QUIET)sed 's/ZVMAJOR/${ZATHURA_VERSION_MAJOR}/' < version.h.in | \
 		sed 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' | \
 		sed 's/ZVREV/${ZATHURA_VERSION_REV}/' | \
-		sed 's/ZVAPI/${ZATHURA_API_VERSION}/' > version.h
+		sed 's/ZVAPI/${ZATHURA_API_VERSION}/' | \
+		sed 's/ZVABI/${ZATHURA_ABI_VERSION}/' > version.h
 
 %.o: %.c
 	$(ECHO) CC $<
@@ -80,6 +81,7 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo project=${PROJECT} > ${PROJECT}.pc
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo apiversion=${ZATHURA_API_VERSION} >> ${PROJECT}.pc
+	$(QUIET)echo abiversion=${ZATHURA_ABI_VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${INCLUDEDIR} >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
 	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
