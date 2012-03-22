@@ -31,6 +31,9 @@ typedef struct zathura_page_widget_private_s {
     int x;
     int y;
   } selection_basepoint;
+  girara_list_t* images; /**< List of images on the page */
+  bool images_got; /**< True if we already tried to retrieve the list of images */
+  zathura_image_t* current_image; /**< Image data of selected image */
 } zathura_page_widget_private_t;
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
@@ -46,9 +49,12 @@ static void zathura_page_widget_get_property(GObject* object, guint prop_id, GVa
 static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles);
+static void zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event);
 static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button);
 static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* button);
 static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event);
+static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
+static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
 
 enum properties_e
 {
@@ -73,13 +79,14 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
 #if GTK_MAJOR_VERSION == 3
   widget_class->draw                 = zathura_page_widget_draw;
-#else
+  #else
   widget_class->expose_event         = zathura_page_widget_expose;
-#endif
+  #endif
   widget_class->size_allocate        = zathura_page_widget_size_allocate;
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
   widget_class->motion_notify_event  = cb_zathura_page_widget_motion_notify;
+  widget_class->popup_menu           = cb_zathura_page_widget_popup_menu;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize     = zathura_page_widget_finalize;
@@ -107,16 +114,19 @@ static void
 zathura_page_widget_init(ZathuraPage* widget)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  priv->page           = NULL;
-  priv->surface        = NULL;
-  priv->links          = NULL;
-  priv->links_got      = false;
-  priv->link_offset    = 0;
-  priv->search_results = NULL;
-  priv->search_current = INT_MAX;
-  priv->selection.x1   = -1;
+  priv->page                  = NULL;
+  priv->surface               = NULL;
+  priv->links                 = NULL;
+  priv->links_got             = false;
+  priv->link_offset           = 0;
+  priv->search_results        = NULL;
+  priv->search_current        = INT_MAX;
+  priv->selection.x1          = -1;
   priv->selection_basepoint.x = -1;
   priv->selection_basepoint.y = -1;
+  priv->images                = NULL;
+  priv->images_got            = false;
+  priv->current_image         = NULL;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -471,29 +481,34 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 {
   g_return_val_if_fail(widget != NULL, false);
   g_return_val_if_fail(button != NULL, false);
-  if (button->button != 1) {
-    return false;
-  }
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
-  if (button->type == GDK_BUTTON_PRESS) {
-    /* start the selection */
-    priv->selection_basepoint.x = button->x;
-    priv->selection_basepoint.y = button->y;
-    priv->selection.x1 = button->x;
-    priv->selection.y1 = button->y;
-    priv->selection.x2 = button->x;
-    priv->selection.y2 = button->y;
-  } else if (button->type == GDK_2BUTTON_PRESS || button->type == GDK_3BUTTON_PRESS) {
-    /* abort the selection */
-    priv->selection_basepoint.x = -1;
-    priv->selection_basepoint.y = -1;
-    priv->selection.x1 = -1;
-    priv->selection.y1 = -1;
-    priv->selection.x2 = -1;
-    priv->selection.y2 = -1;
+  if (button->button == 1) { /* left click */
+    if (button->type == GDK_BUTTON_PRESS) {
+      /* start the selection */
+      priv->selection_basepoint.x = button->x;
+      priv->selection_basepoint.y = button->y;
+      priv->selection.x1 = button->x;
+      priv->selection.y1 = button->y;
+      priv->selection.x2 = button->x;
+      priv->selection.y2 = button->y;
+    } else if (button->type == GDK_2BUTTON_PRESS || button->type == GDK_3BUTTON_PRESS) {
+      /* abort the selection */
+      priv->selection_basepoint.x = -1;
+      priv->selection_basepoint.y = -1;
+      priv->selection.x1 = -1;
+      priv->selection.y1 = -1;
+      priv->selection.x2 = -1;
+      priv->selection.y2 = -1;
+    }
+
+    return true;
+  } else if (button->button == 3) { /* right click */
+    zathura_page_widget_popup_menu(widget, button);
+    return true;
   }
+
   return false;
 }
 
@@ -602,4 +617,107 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
   priv->selection = tmp;
 
   return false;
+}
+
+static void
+zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
+{
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(event != NULL);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+
+  if (priv->images_got == false) {
+    priv->images     = zathura_page_images_get(priv->page, NULL);
+    priv->images_got = true;
+  }
+
+  if (priv->images == NULL) {
+    return;
+  }
+
+  /* search for underlaying image */
+  zathura_image_t* image = NULL;
+  GIRARA_LIST_FOREACH(priv->images, zathura_image_t*, iter, image_it)
+    zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
+      if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+        image = image_it;
+      }
+  GIRARA_LIST_FOREACH_END(priv->images, zathura_image_t*, iter, image_it);
+
+  if (image == NULL) {
+    return;
+  }
+
+  priv->current_image = image;
+
+  /* setup menu */
+  GtkWidget* menu = gtk_menu_new();
+
+  typedef struct menu_item_s {
+    char* text;
+    void (*callback)(GtkMenuItem*, ZathuraPage*);
+  } menu_item_t;
+
+  menu_item_t menu_items[] = {
+    { _("Copy image"),   cb_menu_image_copy },
+  };
+
+  for (unsigned int i = 0; i < LENGTH(menu_items); i++) {
+    GtkWidget* item = gtk_menu_item_new_with_label(menu_items[i].text);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+    gtk_widget_show(item);
+    g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu_items[i].callback), ZATHURA_PAGE(widget));
+  }
+
+  /* attach and popup */
+  int event_button = 0;
+  int event_time   = gtk_get_current_event_time();
+
+  if (event != NULL) {
+    event_button = event->button;
+    event_time   = event->time;
+  }
+
+  gtk_menu_attach_to_widget(GTK_MENU(menu), widget, NULL);
+  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event_button, event_time);
+}
+
+static gboolean
+cb_zathura_page_widget_popup_menu(GtkWidget* widget)
+{
+  zathura_page_widget_popup_menu(widget, NULL);
+
+  return TRUE;
+}
+
+static void
+cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
+{
+  g_return_if_fail(item != NULL);
+  g_return_if_fail(page != NULL);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(page);
+  g_return_if_fail(priv->current_image != NULL);
+
+  cairo_surface_t* surface = zathura_page_image_get_cairo(priv->page, priv->current_image, NULL);
+  if (surface == NULL) {
+    return;
+  }
+
+  int width  = cairo_image_surface_get_width(surface);
+  int height = cairo_image_surface_get_height(surface);
+
+  GdkPixmap* pixmap = gdk_pixmap_new(GTK_WIDGET(item)->window, width, height, -1);
+  cairo_t* cairo    = gdk_cairo_create(pixmap);
+
+  cairo_set_source_surface(cairo, surface, 0, 0);
+  cairo_paint(cairo);
+  cairo_destroy(cairo);
+
+  GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL, 0, 0, 0,
+      0, width, height);
+
+  gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), pixbuf);
+  gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_PRIMARY), pixbuf);
+
+  priv->current_image = NULL;
 }
