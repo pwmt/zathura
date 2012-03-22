@@ -250,7 +250,7 @@ zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
 {
   cairo_t* cairo = gdk_cairo_create(gtk_widget_get_window(widget));
   if (cairo == NULL) {
-    girara_error("Could not retreive cairo object");
+    girara_error("Could not retrieve cairo object");
     return FALSE;
   }
 
