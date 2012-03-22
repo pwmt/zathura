@@ -133,15 +133,6 @@ zathura_init(int argc, char* argv[])
   }
 
   zathura->ui.session->global.data  = zathura;
-  zathura->ui.statusbar.file        = NULL;
-  zathura->ui.statusbar.buffer      = NULL;
-  zathura->ui.statusbar.page_number = NULL;
-  zathura->ui.page_widget             = NULL;
-  zathura->ui.index                 = NULL;
-
-  /* print settings */
-  zathura->print.settings   = NULL;
-  zathura->print.page_setup = NULL;
 
   /* global settings */
   zathura->global.recolor            = false;
