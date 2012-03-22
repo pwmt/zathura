@@ -181,6 +181,10 @@ guess_type(const char* path)
     return NULL;
   }
 
+  if (uncertain == FALSE) {
+    return content_type;
+  }
+
   FILE* f = fopen(path, "r");
   if (f == NULL) {
     return NULL;
