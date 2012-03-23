@@ -48,7 +48,7 @@ zathura_init(int argc, char* argv[])
   Window embed = 0;
 #endif
 
-  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL;
+  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL;
   bool forkback = false;
   GOptionEntry entries[] =
   {
@@ -56,7 +56,8 @@ zathura_init(int argc, char* argv[])
     { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  _("Path to the config directory"),               "path" },
     { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    _("Path to the data directory"),                 "path" },
     { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, _("Path to the directories containing plugins"), "path" },
-    { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    _("Fork into the background")                  , NULL },
+    { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    _("Fork into the background"),                   NULL },
+    { "debug",       'l', 0, G_OPTION_ARG_STRING,   &loglevel,    _("Log level (debug, info, warning, error)")     "level" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -84,6 +85,15 @@ zathura_init(int argc, char* argv[])
     }
 
     setsid();
+  }
+
+  /* Set log level. */
+  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
+    girara_set_debug_level(GIRARA_INFO);
+  } else if (g_strcmp0(loglevel, "warning") == 0) {
+    girara_set_debug_level(GIRARA_WARNING);
+  } else if (g_strcmp0(loglevel, "error") == 0) {
+    girara_set_debug_level(GIRARA_ERROR);
   }
 
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
