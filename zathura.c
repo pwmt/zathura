@@ -57,7 +57,7 @@ zathura_init(int argc, char* argv[])
     { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    _("Path to the data directory"),                 "path" },
     { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, _("Path to the directories containing plugins"), "path" },
     { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    _("Fork into the background"),                   NULL },
-    { "debug",       'l', 0, G_OPTION_ARG_STRING,   &loglevel,    _("Log level (debug, info, warning, error)")     "level" },
+    { "debug",       'l', 0, G_OPTION_ARG_STRING,   &loglevel,    _("Log level (debug, info, warning, error)"),    "level" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
