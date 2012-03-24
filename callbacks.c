@@ -69,8 +69,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
   GdkRectangle center;
-  center.x = view_rect.x + (view_rect.width + 1) / 2;
-  center.y = view_rect.y + (view_rect.height + 1) / 2;
+  center.x = (view_rect.width + 1) / 2;
+  center.y = (view_rect.height + 1) / 2;
   center.height = center.width = (2 * page_padding) + 1;
 
   bool updated = false;
