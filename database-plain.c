@@ -40,9 +40,9 @@ static bool plain_remove_bookmark(zathura_database_t* db, const char* file,
 static girara_list_t* plain_load_bookmarks(zathura_database_t* db,
     const char* file);
 static bool plain_set_fileinfo(zathura_database_t* db, const char* file,
-    unsigned int page, int offset, double scale, int rotation);
+    unsigned int page, unsigned int offset, double scale, unsigned int rotation);
 static bool plain_get_fileinfo(zathura_database_t* db, const char* file,
-    unsigned int* page, int* offset, double* scale, int* rotation);
+    unsigned int* page, unsigned int* offset, double* scale, unsigned int* rotation);
 static void plain_set_property(GObject* object, guint prop_id,
     const GValue* value, GParamSpec* pspec);
 
@@ -363,7 +363,7 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
 
 static bool
 plain_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, int offset, double scale, int rotation)
+    page, unsigned int offset, double scale, unsigned int rotation)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->history == NULL) {
@@ -388,7 +388,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 
 static bool
 plain_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, int* offset, double* scale, int* rotation)
+    page, unsigned int* offset, double* scale, unsigned int* rotation)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->history == NULL) {

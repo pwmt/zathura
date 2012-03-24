@@ -139,6 +139,8 @@ help
   Show help page
 open, o
   Open a document
+offset
+  Set page offset
 print
   Print document
 write, write!

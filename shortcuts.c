@@ -246,6 +246,11 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   g_return_val_if_fail(zathura->document != NULL, false);
 
   if (t != 0) {
+    /* add offset */
+    if (zathura->document->page_offset > 0) {
+      t += zathura->document->page_offset;
+    }
+
     page_set(zathura, t - 1);
   } else if (argument->n == TOP) {
     page_set(zathura, 0);

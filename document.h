@@ -257,10 +257,11 @@ struct zathura_document_s
   unsigned int current_page_number; /**< Current page number */
   unsigned int number_of_pages; /**< Number of pages */
   double scale; /**< Scale value */
-  int rotate; /**< Rotation */
+  unsigned int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_t* zathura; /** Zathura object */
   int adjust_mode; /**< Adjust mode (best-fit, width) */
+  unsigned int page_offset; /**< Page offset */
 
   struct
   {

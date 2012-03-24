@@ -345,9 +345,9 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   /* read history file */
-  int offset = 0;
   zathura_db_get_fileinfo(zathura->database, document->file_path,
-      &document->current_page_number, &offset, &document->scale, &document->rotate);
+      &document->current_page_number, &document->page_offset, &document->scale,
+      &document->rotate);
 
   /* check for valid scale value */
   if (document->scale <= FLT_EPSILON) {

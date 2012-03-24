@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <string.h>
+#include <stdlib.h>
 #include <glib/gi18n.h>
 
 #include "commands.h"
@@ -347,8 +348,7 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  const unsigned int argc = girara_list_size(argument_list);
-  if (argc != 2) {
+  if (girara_list_size(argument_list) != 2) {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
     return false;
   }
@@ -368,6 +368,39 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
   }
 
   g_free(file_name2);
+
+  return true;
+}
+
+bool
+cmd_offset(girara_session_t* session, girara_list_t* argument_list)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  /* no argument: take current page as offset */
+  unsigned int page_offset = zathura->document->current_page_number;
+
+  /* retrieve offset from argument */
+  if (girara_list_size(argument_list) == 1) {
+    const char* value = girara_list_nth(argument_list, 0);
+    if (value != NULL) {
+      page_offset = atoi(value);
+      if (page_offset == 0 && strcmp(value, "0") != 0) {
+        girara_notify(session, GIRARA_WARNING, _("Argument must be a number."));
+        return false;
+      }
+    }
+  }
+
+  if (page_offset < zathura->document->number_of_pages) {
+    zathura->document->page_offset = page_offset;
+  }
 
   return true;
 }

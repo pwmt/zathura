@@ -27,14 +27,15 @@ struct _ZathuraDatabaseInterface
 
   /* interface methords */
   bool (*add_bookmark)(ZathuraDatabase* db, const char* file, zathura_bookmark_t* bookmark);
+
   bool (*remove_bookmark)(ZathuraDatabase* db, const char* file, const char* id);
   girara_list_t* (*load_bookmarks)(ZathuraDatabase* db, const char* file);
 
   bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, unsigned
-    int page, int offset, double scale, int rotation);
+    int page, unsigned int offset, double scale, unsigned int rotation);
 
   bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, unsigned
-    int* page, int* offset, double* scale, int* rotation);
+    int* page, unsigned int* offset, double* scale, unsigned int* rotation);
 };
 
 GType zathura_database_get_type(void);
@@ -90,7 +91,7 @@ girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char*
  * @return true on success, false otherwise.
  */
 bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int page, int offset, double scale, int rotation);
+    int page, unsigned int offset, double scale, unsigned int rotation);
 
 /* Get file info (last site, ...) from the database.
  *
@@ -103,6 +104,6 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned
  * @return true on success, false otherwise.
  */
 bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int* page, int* offset, double* scale, int* rotation);
+    int* page, unsigned int* offset, double* scale, unsigned int* rotation);
 
 #endif // DATABASE_H
