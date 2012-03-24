@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 16:14+0100\n"
+"POT-Creation-Date: 2012-03-24 18:49+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -27,67 +27,67 @@ msgstr "Ungültige Eingabe '%s' angegeben."
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:29 ../commands.c:64 ../commands.c:91 ../commands.c:133
-#: ../commands.c:229 ../commands.c:246 ../commands.c:272 ../commands.c:346
-#: ../shortcuts.c:807
+#: ../commands.c:30 ../commands.c:65 ../commands.c:92 ../commands.c:134
+#: ../commands.c:230 ../commands.c:247 ../commands.c:273 ../commands.c:347
+#: ../commands.c:382 ../shortcuts.c:810
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:352
+#: ../commands.c:36 ../commands.c:71 ../commands.c:98 ../commands.c:352
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
-#: ../commands.c:43
+#: ../commands.c:44
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Lesezeichen erfolgreich aktualisiert: %s."
 
-#: ../commands.c:49
+#: ../commands.c:50
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Konnte Lesezeichen nicht erstellen: %s"
 
-#: ../commands.c:53
+#: ../commands.c:54
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Lesezeichen erfolgreich erstellt: %s"
 
-#: ../commands.c:76
+#: ../commands.c:77
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Lesezeichen entfernt: %s"
 
-#: ../commands.c:78
+#: ../commands.c:79
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Konnte Lesezeichen nicht entfernen: %s"
 
-#: ../commands.c:104
+#: ../commands.c:105
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
-#: ../commands.c:173
+#: ../commands.c:174
 msgid "No information available."
 msgstr "Keine Information verfügbar."
 
-#: ../commands.c:197
+#: ../commands.c:198
 msgid "Too many arguments."
 msgstr "Zu viele Argumente angegeben."
 
-#: ../commands.c:206
+#: ../commands.c:207
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:252 ../commands.c:278
+#: ../commands.c:253 ../commands.c:279
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:254 ../commands.c:280
+#: ../commands.c:255 ../commands.c:281
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:257 ../commands.c:283
+#: ../commands.c:258 ../commands.c:284
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
@@ -100,6 +100,59 @@ msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
+
+#: ../commands.c:395
+msgid "Argument must be a number."
+msgstr "Das Argument ist keine Zahl."
+
+#: ../page-widget.c:572
+#, c-format
+msgid "Copied selected text to clipbard: %s"
+msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+
+#: ../page-widget.c:664
+msgid "Copy image"
+msgstr "Bild kopieren"
+
+#: ../document.c:439 ../document.c:463 ../document.c:482 ../document.c:504
+#: ../document.c:523 ../document.c:545 ../document.c:564 ../document.c:607
+#: ../document.c:627 ../document.c:650 ../document.c:679 ../document.c:708
+#: ../document.c:732 ../document.c:753 ../document.c:774
+#, c-format
+msgid "%s not implemented"
+msgstr "%s ist nicht implementiert."
+
+#: ../shortcuts.c:729
+msgid "This document does not contain any index"
+msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
+
+#: ../zathura.c:57
+msgid "Reparents to window specified by xid"
+msgstr "Reparentiert zathura an das Fenster mit der xid"
+
+#: ../zathura.c:58
+msgid "Path to the config directory"
+msgstr "Pfad zum Konfigurationsverzeichnis"
+
+#: ../zathura.c:59
+msgid "Path to the data directory"
+msgstr "Pfad zum Datenverzeichnis"
+
+#: ../zathura.c:60
+msgid "Path to the directories containing plugins"
+msgstr "Pfad zum Pluginverzeichnis"
+
+#: ../zathura.c:61
+msgid "Fork into the background"
+msgstr "Forkt den Prozess in den Hintergrund"
+
+#: ../zathura.c:62
+msgid "Log level (debug, info, warning, error)"
+msgstr "Log-Stufe (debug, info, warning, error)"
+
+#: ../zathura.c:228 ../zathura.c:608
+msgid "[No name]"
+msgstr "[Kein Name]"
 
 #. zathura settings
 #: ../config.c:83
@@ -132,11 +185,11 @@ msgstr "Maximale Vergrößerungsstufe"
 
 #: ../config.c:97
 msgid "Store unvisible pages only for some time (in seconds)"
-msgstr ""
+msgstr "Lebensdauer für nicht angezeigte Seiten (in Sekunden)"
 
 #: ../config.c:98
 msgid "Amount of seconds between the checks for invisible pages"
-msgstr ""
+msgstr "Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
 
 #: ../config.c:100
 msgid "Recoloring (dark color)"
@@ -156,11 +209,11 @@ msgstr "Farbe für die aktuelle Markierung"
 
 #: ../config.c:110
 msgid "Recolor pages"
-msgstr ""
+msgstr "Färbe die Seiten ein"
 
 #: ../config.c:112
 msgid "Wrap scrolling"
-msgstr ""
+msgstr "Scroll-Umbruch"
 
 #: ../config.c:114
 msgid "Transparency for highlighting"
@@ -217,7 +270,7 @@ msgstr "Öffne Dokument"
 
 #: ../config.c:250
 msgid "Close zathura"
-msgstr ""
+msgstr "Beende zathura"
 
 #: ../config.c:251
 msgid "Print document"
@@ -235,51 +288,6 @@ msgstr "Speichere Dokument (und überschreibe bestehende)"
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../document.c:439 ../document.c:463 ../document.c:482 ../document.c:504
-#: ../document.c:523 ../document.c:545 ../document.c:564 ../document.c:607
-#: ../document.c:627 ../document.c:650 ../document.c:679 ../document.c:708
-#: ../document.c:732 ../document.c:753 ../document.c:774
-#, c-format
-msgid "%s not implemented"
-msgstr "%s ist nicht implementiert."
-
-#: ../page-widget.c:571
-#, c-format
-msgid "Copied selected text to clipbard: %s"
-msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
-
-#: ../page-widget.c:663
-msgid "Copy image"
-msgstr "Bild kopieren"
-
-#: ../shortcuts.c:726
-msgid "This document does not contain any index"
-msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
-
-#: ../zathura.c:57
-msgid "Reparents to window specified by xid"
-msgstr "Reparentiert zathura an das Fenster mit der xid"
-
-#: ../zathura.c:58
-msgid "Path to the config directory"
-msgstr "Pfad zum Konfigurationsverzeichnis"
-
-#: ../zathura.c:59
-msgid "Path to the data directory"
-msgstr "Pfad zum Datenverzeichnis"
-
-#: ../zathura.c:60
-msgid "Path to the directories containing plugins"
-msgstr "Pfad zum Pluginverzeichnis"
-
-#: ../zathura.c:61
-msgid "Fork into the background"
-msgstr "Forkt den Prozess in den Hintergrund"
-
-#: ../zathura.c:62
-msgid "Log level (debug, info, warning, error)"
-msgstr ""
-
-#: ../zathura.c:228 ../zathura.c:608
-msgid "[No name]"
-msgstr ""
+#: ../config.c:255
+msgid "Set page offset"
+msgstr "Setze den Seitenabstand"
