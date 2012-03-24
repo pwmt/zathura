@@ -245,14 +245,12 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  if (argument->n == TOP) {
+  if (t != 0) {
+    page_set(zathura, t - 1);
+  } else if (argument->n == TOP) {
     page_set(zathura, 0);
-  } else {
-    if (t == 0) {
-      page_set(zathura, zathura->document->number_of_pages - 1);
-    } else {
-      page_set(zathura, t - 1);
-    }
+  } else if (argument->n == BOTTOM) {
+    page_set(zathura, zathura->document->number_of_pages - 1);
   }
 
   return false;
