@@ -4,6 +4,7 @@
 #include <glib/gi18n.h>
 
 #include "commands.h"
+#include "shortcuts.h"
 #include "bookmarks.h"
 #include "database.h"
 #include "document.h"
@@ -205,6 +206,14 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
     girara_notify(session, GIRARA_ERROR, _("No arguments given."));
     return false;
   }
+
+  return true;
+}
+
+bool
+cmd_quit(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  sc_quit(session, NULL, NULL, 0);
 
   return true;
 }
