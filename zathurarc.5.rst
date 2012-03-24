@@ -494,11 +494,25 @@ Defines the opacity of a highlighted element
 
 page-padding
 ^^^^^^^^^^^^
-The page padding defines the gap in pixels between each rendered page and can
-not be changed during runtime.
+The page padding defines the gap in pixels between each rendered page.
 
 * Value-type: Integer
 * Default value: 1
+
+page-store-threshold
+^^^^^^^^^^^^^^^^^^^^
+Pages that are not visible get unloaded after some time. Every page that has not
+been visible for page-store-treshold seconds will be unloaded.
+
+* Value-type: Integer
+* Default value: 30
+
+page-store-interval
+^^^^^^^^^^^^^^^^^^^
+Defines the amount of seconds between the check to unload invisible pages.
+
+* Value-type: Integer
+* Default value: 30
 
 pages-per-row
 ^^^^^^^^^^^^^
