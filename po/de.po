@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-20 00:55+0100\n"
+"POT-Creation-Date: 2012-03-23 19:24+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -176,7 +176,7 @@ msgstr "Zeige Ordner an"
 
 #: ../config.c:120
 msgid "Always open on first page"
-msgstr ""
+msgstr "Öffne Dokument immer auf der ersten Seite"
 
 #. define default inputbar commands
 #: ../config.c:240
@@ -223,18 +223,22 @@ msgstr "Speichere Dokument (und überschreibe bestehende)"
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../document.c:373 ../document.c:397 ../document.c:416 ../document.c:438
-#: ../document.c:457 ../document.c:479 ../document.c:498 ../document.c:541
-#: ../document.c:561 ../document.c:584 ../document.c:613 ../document.c:642
-#: ../document.c:666 ../document.c:687 ../document.c:708
+#: ../document.c:439 ../document.c:463 ../document.c:482 ../document.c:504
+#: ../document.c:523 ../document.c:545 ../document.c:564 ../document.c:607
+#: ../document.c:627 ../document.c:650 ../document.c:679 ../document.c:708
+#: ../document.c:732 ../document.c:753 ../document.c:774
 #, c-format
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
 
-#: ../page-widget.c:555
+#: ../page-widget.c:570
 #, c-format
 msgid "Copied selected text to clipbard: %s"
 msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+
+#: ../page-widget.c:662
+msgid "Copy image"
+msgstr "Bild kopieren"
 
 #: ../shortcuts.c:726
 msgid "This document does not contain any index"
@@ -260,6 +264,10 @@ msgstr "Pfad zum Pluginverzeichnis"
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
 
-#: ../zathura.c:225 ../zathura.c:600
+#: ../zathura.c:60
+msgid "Log level (debug, info, warning, error)"
+msgstr ""
+
+#: ../zathura.c:226 ../zathura.c:601
 msgid "[No name]"
 msgstr ""

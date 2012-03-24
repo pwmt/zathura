@@ -26,6 +26,9 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+/** Read a most GT_MAX_READ bytes before falling back to file. */
+static const size_t GT_MAX_READ = 1 << 16;
+
 /**
  * Register document plugin
  */
@@ -185,7 +188,9 @@ guess_type(const char* path)
     return content_type;
   }
 
-  FILE* f = fopen(path, "r");
+  girara_debug("g_content_type is uncertain, guess: %s\n", content_type);
+
+  FILE* f = fopen(path, "rb");
   if (f == NULL) {
     return NULL;
   }
@@ -193,7 +198,7 @@ guess_type(const char* path)
   const int fd = fileno(f);
   guchar* content = NULL;
   size_t length = 0u;
-  while (uncertain == TRUE) {
+  while (uncertain == TRUE && length < GT_MAX_READ) {
     g_free((void*)content_type);
     content_type = NULL;
 
@@ -205,16 +210,45 @@ guess_type(const char* path)
 
     length += r;
     content_type = g_content_type_guess(NULL, content, length, &uncertain);
+    girara_debug("new guess: %s uncertain: %d, read: %zu\n", content_type, uncertain, length);
   }
 
   fclose(f);
-  if (uncertain == TRUE) {
-    g_free((void*)content_type);
-    content_type = NULL;
+  g_free(content);
+  if (uncertain == FALSE) {
+    return content_type;
   }
 
-  g_free(content);
-  return content_type;
+  g_free((void*)content_type);
+  content_type = NULL;
+
+  girara_debug("falling back to file");
+
+  GString* command = g_string_new("file -b --mime-type ");
+  char* tmp        = g_shell_quote(path);
+
+  g_string_append(command, tmp);
+  g_free(tmp);
+
+  GError* error = NULL;
+  char* out = NULL;
+  int ret = 0;
+  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
+  g_string_free(command, TRUE);
+  if (error != NULL) {
+    girara_warning("failed to execute command: %s", error->message);
+    g_error_free(error);
+    g_free(out);
+    return NULL;
+  }
+  if (WEXITSTATUS(ret) != 0) {
+    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
+    g_free(out);
+    return NULL;
+  }
+
+  g_strdelimit(out, "\n\r", '\0');
+  return out;
 }
 
 zathura_document_t*

@@ -706,7 +706,7 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   int width  = cairo_image_surface_get_width(surface);
   int height = cairo_image_surface_get_height(surface);
 
-  GdkPixmap* pixmap = gdk_pixmap_new(GTK_WIDGET(item)->window, width, height, -1);
+  GdkPixmap* pixmap = gdk_pixmap_new(gtk_widget_get_window(GTK_WIDGET(item)), width, height, -1);
   cairo_t* cairo    = gdk_cairo_create(pixmap);
 
   cairo_set_source_surface(cairo, surface, 0, 0);

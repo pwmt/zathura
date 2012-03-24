@@ -145,8 +145,12 @@ endif
 install-manpages: build-manpages
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
+ifneq "$(wildcard ${PROJECT}.1)" ""
 	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
+endif
+ifneq "$(wildcard ${PROJECT}rc.5)" ""
 	$(QUIET)install -m 644 ${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
+endif
 
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
