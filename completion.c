@@ -82,9 +82,6 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
         g_free(full_path);
         continue;
       }
-      char* tmp_path = full_path;
-      full_path = g_strdup_printf("%s/", full_path);
-      g_free(tmp_path);
       girara_list_append(res, full_path);
     } else if (check_file_ext == false || file_valid_extension(zathura, full_path) == true) {
       girara_list_append(res, full_path);
@@ -95,6 +92,16 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   }
 
   g_dir_close(dir);
+
+  if (girara_list_size(res) == 1) {
+    char* path = girara_list_nth(res, 0);
+    if (g_file_test(path, G_FILE_TEST_IS_DIR) == true) {
+      char* newpath = g_strdup_printf("%s/", path);
+      girara_list_clear(res);
+      girara_list_append(res, newpath);
+    }
+  }
+
   return res;
 
 error_free:
