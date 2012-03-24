@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-23 19:24+0100\n"
+"POT-Creation-Date: 2012-03-24 16:14+0100\n"
 "PO-Revision-Date: 2012-03-05 17:26+0100\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -13,90 +13,90 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../callbacks.c:151
+#: ../callbacks.c:152
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
-#: ../callbacks.c:177
+#: ../callbacks.c:178
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Ungültige Eingabe '%s' angegeben."
 
-#: ../callbacks.c:211
+#: ../callbacks.c:212
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:28 ../commands.c:63 ../commands.c:90 ../commands.c:132
-#: ../commands.c:220 ../commands.c:237 ../commands.c:263 ../commands.c:337
+#: ../commands.c:29 ../commands.c:64 ../commands.c:91 ../commands.c:133
+#: ../commands.c:229 ../commands.c:246 ../commands.c:272 ../commands.c:346
 #: ../shortcuts.c:807
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:343
+#: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:352
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
-#: ../commands.c:42
+#: ../commands.c:43
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Lesezeichen erfolgreich aktualisiert: %s."
 
-#: ../commands.c:48
+#: ../commands.c:49
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Konnte Lesezeichen nicht erstellen: %s"
 
-#: ../commands.c:52
+#: ../commands.c:53
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Lesezeichen erfolgreich erstellt: %s"
 
-#: ../commands.c:75
+#: ../commands.c:76
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Lesezeichen entfernt: %s"
 
-#: ../commands.c:77
+#: ../commands.c:78
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Konnte Lesezeichen nicht entfernen: %s"
 
-#: ../commands.c:103
+#: ../commands.c:104
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
-#: ../commands.c:172
+#: ../commands.c:173
 msgid "No information available."
 msgstr "Keine Information verfügbar."
 
-#: ../commands.c:196
+#: ../commands.c:197
 msgid "Too many arguments."
 msgstr "Zu viele Argumente angegeben."
 
-#: ../commands.c:205
+#: ../commands.c:206
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:243 ../commands.c:269
+#: ../commands.c:252 ../commands.c:278
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:245 ../commands.c:271
+#: ../commands.c:254 ../commands.c:280
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:248 ../commands.c:274
+#: ../commands.c:257 ../commands.c:283
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
-#: ../commands.c:356
+#: ../commands.c:365
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
-#: ../commands.c:358
+#: ../commands.c:367
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
@@ -131,95 +131,107 @@ msgid "Zoom maximum"
 msgstr "Maximale Vergrößerungsstufe"
 
 #: ../config.c:97
+msgid "Store unvisible pages only for some time (in seconds)"
+msgstr ""
+
+#: ../config.c:98
+msgid "Amount of seconds between the checks for invisible pages"
+msgstr ""
+
+#: ../config.c:100
 msgid "Recoloring (dark color)"
 msgstr "Neufärben (Dunkle Farbe)"
 
-#: ../config.c:99
+#: ../config.c:102
 msgid "Recoloring (light color)"
 msgstr "Neufärben (Helle Farbe)"
 
-#: ../config.c:101
+#: ../config.c:104
 msgid "Color for highlighting"
 msgstr "Farbe für eine Markierung"
 
-#: ../config.c:103
+#: ../config.c:106
 msgid "Color for highlighting (active)"
 msgstr "Farbe für die aktuelle Markierung"
 
-#: ../config.c:107
+#: ../config.c:110
 msgid "Recolor pages"
 msgstr ""
 
-#: ../config.c:109
+#: ../config.c:112
 msgid "Wrap scrolling"
 msgstr ""
 
-#: ../config.c:111
+#: ../config.c:114
 msgid "Transparency for highlighting"
 msgstr "Transparenz einer Markierung"
 
-#: ../config.c:113
+#: ../config.c:116
 msgid "Render 'Loading ...'"
 msgstr "Zeige 'Lädt...'-Text beim Zeichnen einer Seite"
 
-#: ../config.c:114
+#: ../config.c:117
 msgid "Adjust to when opening file"
 msgstr "Seite einpassen"
 
-#: ../config.c:116
+#: ../config.c:119
 msgid "Show hidden files and directories"
 msgstr "Zeige versteckte Dateien und Ordner an"
 
-#: ../config.c:118
+#: ../config.c:121
 msgid "Show directories"
 msgstr "Zeige Ordner an"
 
-#: ../config.c:120
+#: ../config.c:123
 msgid "Always open on first page"
 msgstr "Öffne Dokument immer auf der ersten Seite"
 
 #. define default inputbar commands
-#: ../config.c:240
+#: ../config.c:243
 msgid "Add a bookmark"
 msgstr "Füge Lesezeichen hinzu"
 
-#: ../config.c:241
+#: ../config.c:244
 msgid "Delete a bookmark"
 msgstr "Lösche ein Lesezeichen"
 
-#: ../config.c:242
+#: ../config.c:245
 msgid "List all bookmarks"
 msgstr "Liste all Lesezeichen auf"
 
-#: ../config.c:243
+#: ../config.c:246
 msgid "Close current file"
 msgstr "Schließe das aktuelle Dokument"
 
-#: ../config.c:244
+#: ../config.c:247
 msgid "Show file information"
 msgstr "Zeige Dokumentinformationen an"
 
-#: ../config.c:245
+#: ../config.c:248
 msgid "Show help"
 msgstr "Zeige Hilfe an"
 
-#: ../config.c:246
+#: ../config.c:249
 msgid "Open document"
 msgstr "Öffne Dokument"
 
-#: ../config.c:247
+#: ../config.c:250
+msgid "Close zathura"
+msgstr ""
+
+#: ../config.c:251
 msgid "Print document"
 msgstr "Drucke Dokument"
 
-#: ../config.c:248
+#: ../config.c:252
 msgid "Save document"
 msgstr "Speichere Dokument"
 
-#: ../config.c:249
+#: ../config.c:253
 msgid "Save document (and force overwriting)"
 msgstr "Speichere Dokument (und überschreibe bestehende)"
 
-#: ../config.c:250
+#: ../config.c:254
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
@@ -231,12 +243,12 @@ msgstr "Speichere Anhänge"
 msgid "%s not implemented"
 msgstr "%s ist nicht implementiert."
 
-#: ../page-widget.c:570
+#: ../page-widget.c:571
 #, c-format
 msgid "Copied selected text to clipbard: %s"
 msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
 
-#: ../page-widget.c:662
+#: ../page-widget.c:663
 msgid "Copy image"
 msgstr "Bild kopieren"
 
@@ -244,30 +256,30 @@ msgstr "Bild kopieren"
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
-#: ../zathura.c:55
+#: ../zathura.c:57
 msgid "Reparents to window specified by xid"
 msgstr "Reparentiert zathura an das Fenster mit der xid"
 
-#: ../zathura.c:56
+#: ../zathura.c:58
 msgid "Path to the config directory"
 msgstr "Pfad zum Konfigurationsverzeichnis"
 
-#: ../zathura.c:57
+#: ../zathura.c:59
 msgid "Path to the data directory"
 msgstr "Pfad zum Datenverzeichnis"
 
-#: ../zathura.c:58
+#: ../zathura.c:60
 msgid "Path to the directories containing plugins"
 msgstr "Pfad zum Pluginverzeichnis"
 
-#: ../zathura.c:59
+#: ../zathura.c:61
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
 
-#: ../zathura.c:60
+#: ../zathura.c:62
 msgid "Log level (debug, info, warning, error)"
 msgstr ""
 
-#: ../zathura.c:226 ../zathura.c:601
+#: ../zathura.c:228 ../zathura.c:608
 msgid "[No name]"
 msgstr ""

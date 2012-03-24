@@ -27,6 +27,7 @@
 #include "zathura.h"
 #include "utils.h"
 #include "render.h"
+#include "page-widget.h"
 
 typedef struct zathura_document_info_s
 {
@@ -36,6 +37,7 @@ typedef struct zathura_document_info_s
 } zathura_document_info_t;
 
 static gboolean document_info_open(gpointer data);
+static gboolean purge_pages(gpointer data);
 
 /* function implementation */
 zathura_t*
@@ -271,6 +273,11 @@ zathura_init(int argc, char* argv[])
     document_info->password = (argc >= 2) ? argv[2] : NULL;
     gdk_threads_add_idle(document_info_open, document_info);
   }
+
+  /* add even to purge old pages */
+  int interval = 30;
+  girara_setting_get(zathura->ui.session, "page-store-interval", &interval);
+  g_timeout_add_seconds(interval, purge_pages, zathura);
 
   return zathura;
 
@@ -715,4 +722,25 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row)
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);
+}
+
+static
+gboolean purge_pages(gpointer data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return TRUE;
+  }
+
+  int threshold = 0;
+  girara_setting_get(zathura->ui.session, "page-store-threshold", &threshold);
+  if (threshold <= 0) {
+    return TRUE;
+  }
+
+  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
+    zathura_page_t* page = zathura->document->pages[page_id];
+    zathura_page_widget_purge_unused(ZATHURA_PAGE(page->drawing_area), threshold);
+  }
+  return TRUE;
 }

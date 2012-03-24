@@ -94,6 +94,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     } else {
       page->visible = false;
     }
+    zathura_page_widget_update_view_time(ZATHURA_PAGE(page->drawing_area));
   }
 
   statusbar_page_number_update(zathura);

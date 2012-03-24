@@ -80,19 +80,22 @@ config_load_default(zathura_t* zathura)
   girara_mode_set(gsession, zathura->modes.normal);
 
   /* zathura settings */
-  girara_setting_add(gsession, "database",      "plain",      STRING, true,  _("Database backend"),        NULL, NULL);
+  girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),        NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-step",     &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
+  girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",  &int_value,   INT,    false, _("Padding between pages"),   cb_page_padding_changed, NULL);
+  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),   cb_page_padding_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "pages-per-row", &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
+  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-step",   &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
+  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-min",      &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
+  girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
-  girara_setting_add(gsession, "zoom-max",      &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
+  girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
+  int_value = 30;
+  girara_setting_add(gsession, "page-store-threshold",  &int_value,   INT,    false, _("Store unvisible pages only for some time (in seconds)"), NULL, NULL);
+  girara_setting_add(gsession, "page-store-interval",   &int_value,   INT,    true,  _("Amount of seconds between the checks for invisible pages"), NULL, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
   girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");

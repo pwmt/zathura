@@ -30,9 +30,9 @@ struct zathura_page_widget_class_s {
 #define ZATHURA_PAGE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), ZATHURA_TYPE_PAGE, ZathuraPage))
 #define ZATHURA_PAGE_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_CAST ((obj), ZATHURA_PAGE, ZathuraPageClass))
+  (G_TYPE_CHECK_CLASS_CAST ((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
 #define ZATHURA_IS_PAGE(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ZATHURA_PAGE))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ZATHURA_TYPE_PAGE))
 #define ZATHURA_IS_PAGE_WDIGET_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE ((obj), ZATHURA_TYPE_PAGE))
 #define ZATHURA_PAGE_GET_CLASS \
@@ -77,5 +77,20 @@ void zathura_page_widget_clear_rectangles(ZathuraPage* widget);
  * @return Link object or NULL if an error occured
  */
 zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index);
+
+/**
+ * Update the last view time of the page.
+ *
+ * @param widget the widget
+ */
+void zathura_page_widget_update_view_time(ZathuraPage* widget);
+
+/**
+ * If the page has not been viewed for some time, purge the surface.
+ *
+ * @param widget the widget
+ * @param threshold the threshold (in seconds)
+ */
+void zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold);
 
 #endif

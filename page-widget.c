@@ -34,6 +34,7 @@ typedef struct zathura_page_widget_private_s {
   girara_list_t* images; /**< List of images on the page */
   bool images_got; /**< True if we already tried to retrieve the list of images */
   zathura_image_t* current_image; /**< Image data of selected image */
+  gint64 last_view;
 } zathura_page_widget_private_t;
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
@@ -720,4 +721,30 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_PRIMARY), pixbuf);
 
   priv->current_image = NULL;
+}
+
+void
+zathura_page_widget_update_view_time(ZathuraPage* widget)
+{
+  g_return_if_fail(ZATHURA_IS_PAGE(widget) == TRUE);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+
+  if (priv->page->visible == true) {
+    priv->last_view = g_get_real_time();
+  }
+}
+
+void
+zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
+{
+  g_return_if_fail(ZATHURA_IS_PAGE(widget) == TRUE);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  if (priv->page->visible == true || priv->surface == NULL || threshold <= 0) {
+    return;
+  }
+
+  const gint64 now =  g_get_real_time();
+  if (now - priv->last_view >= threshold * G_USEC_PER_SEC) {
+    zathura_page_widget_update_surface(widget, NULL);
+  }
 }
