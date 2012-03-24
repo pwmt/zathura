@@ -80,9 +80,9 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
 #if GTK_MAJOR_VERSION == 3
   widget_class->draw                 = zathura_page_widget_draw;
-  #else
+#else
   widget_class->expose_event         = zathura_page_widget_expose;
-  #endif
+#endif
   widget_class->size_allocate        = zathura_page_widget_size_allocate;
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
@@ -128,6 +128,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->images                = NULL;
   priv->images_got            = false;
   priv->current_image         = NULL;
+  priv->last_view             = g_get_real_time();
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
