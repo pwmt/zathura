@@ -80,12 +80,12 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   /* get window size */
   GtkAllocation allocation;
   gtk_widget_get_allocation(session->gtk.view, &allocation);
-  gint width = allocation.width;
+  gint width  = allocation.width;
   gint height = allocation.height;
 
   /* calculate total width and max-height */
   double total_width = 0;
-  double max_height = 0;
+  double max_height  = 0;
 
   for (unsigned int page_id = 0; page_id < pages_per_row; page_id++) {
     if (page_id == zathura->document->number_of_pages) {
