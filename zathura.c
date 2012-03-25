@@ -510,6 +510,10 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   free(file_uri);
 
+  /* adjust window */
+  girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+
   return true;
 
 error_free:
