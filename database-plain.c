@@ -21,11 +21,16 @@
 #define KEY_SCALE "scale"
 #define KEY_ROTATE "rotate"
 
+#ifdef __GNU__
+#include <sys/file.h>
+#define file_lock_set(fd, cmd) flock(fd, cmd)
+#else
 #define file_lock_set(fd, cmd) \
   { \
   struct flock lock = { .l_type = cmd, .l_start = 0, .l_whence = SEEK_SET, .l_len = 0}; \
-  fcntl(fd, F_SETLK, lock); \
+  fcntl(fd, F_SETLK, lock, NULL); \
   }
+#endif
 
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 
@@ -441,7 +446,7 @@ zathura_db_read_key_file_from_file(const char* path)
   }
 
   /* open file */
-  FILE* file = fopen(path, "r");
+  FILE* file = fopen(path, "rw");
   if (file == NULL) {
     return NULL;
   }
