@@ -93,7 +93,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
   girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
-  int_value = 30;
+  int_value = 5;
   girara_setting_add(gsession, "page-store-threshold",  &int_value,   INT,    false, _("Store unvisible pages only for some time (in seconds)"), NULL, NULL);
   girara_setting_add(gsession, "page-store-interval",   &int_value,   INT,    true,  _("Amount of seconds between the checks for invisible pages"), NULL, NULL);
 

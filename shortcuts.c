@@ -15,6 +15,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
+#include "page.h"
 #include "page-widget.h"
 
 static void
@@ -44,7 +45,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
         continue;
       }
 
-      g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+      g_object_set(zathura_page_get_widget(page), "draw-links", FALSE, NULL);
     }
   }
 
@@ -97,11 +98,11 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
       goto error_ret;
     }
 
-    if (page->height > max_height) {
-      max_height = page->height;
+    if (zathura_page_get_height(page) > max_height) {
+      max_height = zathura_page_get_height(page);
     }
 
-    total_width += page->width;
+    total_width += zathura_page_get_width(page);
   }
 
   if (argument->n == ADJUST_WIDTH) {
@@ -212,19 +213,20 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
       continue;
     }
 
-    g_object_set(page->drawing_area, "search-results", NULL, NULL);
-    if (page->visible == true) {
-      g_object_set(page->drawing_area, "draw-links", TRUE, NULL);
+    GtkWidget* page_widget = zathura_page_get_widget(page);
+    g_object_set(page_widget, "search-results", NULL, NULL);
+    if (zathura_page_get_visibility(page) == true) {
+      g_object_set(page_widget, "draw-links", TRUE, NULL);
 
       int number_of_links = 0;
-      g_object_get(page->drawing_area, "number-of-links", &number_of_links, NULL);
+      g_object_get(page_widget, "number-of-links", &number_of_links, NULL);
       if (number_of_links != 0) {
         show_links = true;
       }
-      g_object_set(page->drawing_area, "offset-links", page_offset, NULL);
+      g_object_set(page_widget, "offset-links", page_offset, NULL);
       page_offset += number_of_links;
     } else {
-      g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+      g_object_set(page_widget, "draw-links", FALSE, NULL);
     }
   }
 
@@ -547,8 +549,10 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       continue;
     }
 
+    GtkWidget* page_widget = zathura_page_get_widget(page);
+
     int num_search_results = 0, current = -1;
-    g_object_get(page->drawing_area, "search-current", &current,
+    g_object_get(page_widget, "search-current", &current,
         "search-length", &num_search_results, NULL);
     if (num_search_results == 0 || current == -1) {
       continue;
@@ -563,13 +567,14 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       target_idx = current - 1;
     } else {
       /* the next result is on a different page */
-      g_object_set(page->drawing_area, "search-current", -1, NULL);
+      g_object_set(page_widget, "search-current", -1, NULL);
 
       for (int npage_id = 1; page_id < num_pages; ++npage_id) {
         int ntmp = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura->document->pages[(ntmp + 2*num_pages) % num_pages];
-        zathura->document->current_page_number = npage->number;
-        g_object_get(npage->drawing_area, "search-length", &num_search_results, NULL);
+        zathura->document->current_page_number = zathura_page_get_id(npage);
+        GtkWidget* npage_page_widget = zathura_page_get_widget(npage);
+        g_object_get(npage_page_widget, "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {
           target_page = npage;
           target_idx = diff == 1 ? 0 : num_search_results - 1;
@@ -583,8 +588,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
   if (target_page != NULL) {
     girara_list_t* results = NULL;
-    g_object_set(target_page->drawing_area, "search-current", target_idx, NULL);
-    g_object_get(target_page->drawing_area, "search-results", &results, NULL);
+    GtkWidget* page_widget = zathura_page_get_widget(target_page);
+    g_object_set(page_widget, "search-current", target_idx, NULL);
+    g_object_get(page_widget, "search-results", &results, NULL);
 
     zathura_rectangle_t* rect = girara_list_nth(results, target_idx);
     zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);

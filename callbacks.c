@@ -16,6 +16,7 @@
 #include "utils.h"
 #include "shortcuts.h"
 #include "page-widget.h"
+#include "page.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
@@ -79,22 +80,23 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     zathura_page_t* page = zathura->document->pages[page_id];
 
     GdkRectangle page_rect;
-    gtk_widget_translate_coordinates(page->drawing_area,
+    GtkWidget* page_widget = zathura_page_get_widget(page);
+    gtk_widget_translate_coordinates(page_widget,
         zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
-    page_rect.width  = page->width  * zathura->document->scale;
-    page_rect.height = page->height * zathura->document->scale;
+    page_rect.width  = zathura_page_get_width(page) * zathura->document->scale;
+    page_rect.height = zathura_page_get_height(page) * zathura->document->scale;
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
-      page->visible = true;
+      zathura_page_set_visibility(page, true);
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
         zathura->document->current_page_number = page_id;
         updated = true;
       }
     } else {
-      page->visible = false;
+      zathura_page_set_visibility(page, false);
     }
-    zathura_page_widget_update_view_time(ZATHURA_PAGE(page->drawing_area));
+    zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
   }
 
   statusbar_page_number_update(zathura);
@@ -185,14 +187,15 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
   bool invalid_index = true;
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
-    if (page == NULL || page->visible == false) {
+    if (page == NULL || zathura_page_get_visibility(page) == false) {
       continue;
     }
 
-    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+    GtkWidget* page_widget = zathura_page_get_widget(page);
+    g_object_set(page_widget, "draw-links", FALSE, NULL);
 
     if (eval == true) {
-      zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page->drawing_area), index);
+      zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
       if (link != NULL) {
         switch (link->type) {
           case ZATHURA_LINK_TO_PAGE:

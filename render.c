@@ -9,6 +9,7 @@
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
+#include "page.h"
 #include "page-widget.h"
 #include "utils.h"
 
@@ -30,7 +31,7 @@ render_job(void* data, void* user_data)
   }
 
   if (render(zathura, page) != true) {
-    girara_error("Rendering failed (page %d)\n", page->number);
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_id(page));
   }
 }
 
@@ -161,7 +162,8 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   /* update the widget */
   gdk_threads_enter();
-  zathura_page_widget_update_surface(ZATHURA_PAGE(page->drawing_area), surface);
+  GtkWidget* widget = zathura_page_get_widget(page);
+  zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
   gdk_threads_leave();
 
   return true;
@@ -180,7 +182,8 @@ render_all(zathura_t* zathura)
     unsigned int page_height = 0, page_width = 0;
     page_calc_height_width(page, &page_height, &page_width, true);
 
-    gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
-    gtk_widget_queue_resize(page->drawing_area);
+    GtkWidget* widget = zathura_page_get_widget(page);
+    gtk_widget_set_size_request(widget, page_width, page_height);
+    gtk_widget_queue_resize(widget);
   }
 }
