@@ -572,7 +572,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       for (int npage_id = 1; page_id < num_pages; ++npage_id) {
         int ntmp = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura->document->pages[(ntmp + 2*num_pages) % num_pages];
-        zathura->document->current_page_number = zathura_page_get_id(npage);
+        zathura->document->current_page_number = zathura_page_get_index(npage);
         GtkWidget* npage_page_widget = zathura_page_get_widget(npage);
         g_object_get(npage_page_widget, "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {

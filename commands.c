@@ -328,7 +328,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     g_object_set(page_widget, "search-results", result, NULL);
     if (firsthit == true) {
       if (page_id != 0) {
-        page_set_delayed(zathura, zathura_page_get_id(page));
+        page_set_delayed(zathura, zathura_page_get_index(page));
       }
       g_object_set(page_widget, "search-current", 0, NULL);
       firsthit = false;

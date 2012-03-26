@@ -31,7 +31,7 @@ render_job(void* data, void* user_data)
   }
 
   if (render(zathura, page) != true) {
-    girara_error("Rendering failed (page %d)\n", zathura_page_get_id(page));
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page));
   }
 }
 

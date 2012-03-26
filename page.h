@@ -11,11 +11,12 @@
  * Get the page object
  *
  * @param document The document
- * @param id Page number
+ * @param index Page number
  * @param error Optional error
  * @return Page object or NULL if an error occured
  */
-zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int id, zathura_plugin_error_t* error);
+zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
+		index, zathura_plugin_error_t* error);
 
 /**
  * Frees the page object
@@ -41,7 +42,7 @@ zathura_document_t* zathura_page_get_document(zathura_page_t* page);
  * @param page The page object
  * @return The id of the page
  */
-unsigned int zathura_page_get_id(zathura_page_t* page);
+unsigned int zathura_page_get_index(zathura_page_t* page);
 
 /**
  * Returns the page widget of the page

@@ -12,7 +12,7 @@
 struct zathura_page_s {
   double height; /**< Page height */
   double width; /**< Page width */
-  unsigned int id; /**< Page number */
+  unsigned int index; /**< Page number */
   void* data; /**< Custom data */
   bool visible; /**< Page is visible */
   GtkWidget* widget; /**< Drawing area */
@@ -20,7 +20,7 @@ struct zathura_page_s {
 };
 
 zathura_page_t*
-zathura_page_new(zathura_document_t* document, unsigned int id, zathura_plugin_error_t* error)
+zathura_page_new(zathura_document_t* document, unsigned int index, zathura_plugin_error_t* error)
 {
   if (document == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
     if (error != NULL) {
@@ -32,7 +32,7 @@ zathura_page_new(zathura_document_t* document, unsigned int id, zathura_plugin_e
   /* init page */
   zathura_page_t* page = g_malloc0(sizeof(zathura_page_t));
 
-  page->id       = id;
+  page->index    = index;
   page->visible  = false;
   page->document = document;
   page->widget   = zathura_page_widget_new(page);
@@ -118,13 +118,13 @@ zathura_page_get_document(zathura_page_t* page)
 }
 
 unsigned int
-zathura_page_get_id(zathura_page_t* page)
+zathura_page_get_index(zathura_page_t* page)
 {
   if (page == NULL) {
     return 0;
   }
 
-  return page->id;
+  return page->index;
 }
 
 GtkWidget*
