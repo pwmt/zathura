@@ -12,11 +12,10 @@
  *
  * @param document The document
  * @param id Page number
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
- *   error occured
+ * @param error Optional error
  * @return Page object or NULL if an error occured
  */
-zathura_page_t* zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
+zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int id, zathura_plugin_error_t* error);
 
 /**
  * Frees the page object

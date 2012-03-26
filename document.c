@@ -372,7 +372,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   }
 
   for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_page_get(document, page_id, NULL);
+    zathura_page_t* page = zathura_page_new(document, page_id, NULL);
     if (page == NULL) {
       goto error_free;
     }

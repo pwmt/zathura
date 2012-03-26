@@ -20,7 +20,7 @@ struct zathura_page_s {
 };
 
 zathura_page_t*
-zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error)
+zathura_page_new(zathura_document_t* document, unsigned int id, zathura_plugin_error_t* error)
 {
   if (document == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
     if (error != NULL) {
@@ -29,9 +29,23 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plu
     goto error_ret;
   }
 
-  zathura_page_t* page = NULL;
+  /* init page */
+  zathura_page_t* page = g_malloc0(sizeof(zathura_page_t));
 
-  if (document->functions.page_get == NULL) {
+  page->id       = id;
+  page->visible  = false;
+  page->document = document;
+  page->widget   = zathura_page_widget_new(page);
+
+  if (page->widget == NULL) {
+    if (error != NULL) {
+      *error = ZATHURA_PLUGIN_ERROR_UNKNOWN;
+    }
+    goto error_free;
+  }
+
+  /* init plugin */
+  if (document->functions.page_init == NULL) {
     if (error != NULL) {
       girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
       girara_error("%s not implemented", __FUNCTION__);
@@ -40,27 +54,20 @@ zathura_page_get(zathura_document_t* document, unsigned int page_id, zathura_plu
     goto error_ret;
   }
 
-  page = document->functions.page_get(document, page_id, error);
-
-  if (page != NULL) {
-    page->id       = page_id;
-    page->visible  = false;
-    page->document = document;
-
-    page->widget = zathura_page_widget_new(page);
-    if (page->widget == NULL) {
-      if (error != NULL) {
-        *error = ZATHURA_PLUGIN_ERROR_UNKNOWN;
-      }
-      goto error_free;
+  zathura_plugin_error_t ret = document->functions.page_init(page);
+  if (ret != ZATHURA_PLUGIN_ERROR_OK) {
+    if (error != NULL) {
+      *error = ret;
     }
-
-    unsigned int page_height = 0;
-    unsigned int page_width  = 0;
-    page_calc_height_width(page, &page_height, &page_width, true);
-
-    gtk_widget_set_size_request(page->widget, page_width, page_height);
+    goto error_free;
   }
+
+  /* set widget size */
+  unsigned int page_height = 0;
+  unsigned int page_width  = 0;
+  page_calc_height_width(page, &page_height, &page_width, true);
+
+  gtk_widget_set_size_request(page->widget, page_width, page_height);
 
   return page;
 
@@ -78,17 +85,26 @@ error_ret:
 zathura_plugin_error_t
 zathura_page_free(zathura_page_t* page)
 {
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL || page->document->zathura->ui.session == NULL) {
+  if (page == NULL) {
     return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
   }
 
-  if (page->document->functions.page_free == NULL) {
+  if (page->document == NULL || page->document->zathura == NULL || page->document->zathura->ui.session == NULL) {
+    g_free(page);
+    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+  }
+
+  if (page->document->functions.page_clear == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
   }
 
-  return page->document->functions.page_free(page);
+  zathura_plugin_error_t error = page->document->functions.page_clear(page);
+
+  g_free(page);
+
+  return error;
 }
 
 zathura_document_t*

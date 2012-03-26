@@ -284,7 +284,12 @@ struct zathura_document_s
     /**
      * Gets the page object
      */
-    zathura_page_t* (*page_get)(zathura_document_t* document, unsigned int page_id, zathura_plugin_error_t* error);
+    zathura_plugin_error_t (*page_init)(zathura_page_t* page);
+
+    /**
+     * Free page
+     */
+    zathura_plugin_error_t (*page_clear)(zathura_page_t* page);
 
     /**
      * Search text
@@ -325,11 +330,6 @@ struct zathura_document_s
      * Renders the page
      */
     zathura_plugin_error_t (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo, bool printing);
-
-    /**
-     * Free page
-     */
-    zathura_plugin_error_t (*page_free)(zathura_page_t* page);
   } functions;
 
   /**
