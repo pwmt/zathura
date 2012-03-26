@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "zathura.h"
 #include "document.h"
+#include "page.h"
 
 #include <girara/datastructures.h>
 
@@ -172,11 +173,13 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 void
 page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
 {
-  g_return_if_fail(page != NULL && page->document != NULL && page->document->zathura != NULL && offset != NULL);
-  zathura_document_t* document = page->document;
+  g_return_if_fail(page != NULL);
+  g_return_if_fail(offset != NULL);
+  zathura_document_t* document = zathura_page_get_document(page);
   zathura_t* zathura           = document->zathura;
+  GtkWidget* widget = zathura_page_get_widget(page);
 
-  g_return_if_fail(gtk_widget_translate_coordinates(page->drawing_area,
+  g_return_if_fail(gtk_widget_translate_coordinates(widget,
     zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
@@ -215,39 +218,52 @@ zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int
 zathura_rectangle_t
 recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
 {
-  if (page == NULL || page->document == NULL) {
-    return rectangle;
+  if (page == NULL) {
+    goto error_ret;
   }
+
+  zathura_document_t* document = zathura_page_get_document(page);
+
+  if (document == NULL) {
+    goto error_ret;
+  }
+
+  double page_height = zathura_page_get_height(page);
+  double page_width  = zathura_page_get_width(page);
 
   zathura_rectangle_t tmp;
 
-  switch (page->document->rotate) {
+  switch (document->rotate) {
     case 90:
-      tmp.x1 = (page->height - rectangle.y2) * page->document->scale;
-      tmp.x2 = (page->height - rectangle.y1) * page->document->scale;
-      tmp.y1 = rectangle.x1 * page->document->scale;
-      tmp.y2 = rectangle.x2 * page->document->scale;
+      tmp.x1 = (page_height - rectangle.y2) * document->scale;
+      tmp.x2 = (page_height - rectangle.y1) * document->scale;
+      tmp.y1 = rectangle.x1 * document->scale;
+      tmp.y2 = rectangle.x2 * document->scale;
       break;
     case 180:
-      tmp.x1 = (page->width - rectangle.x2) * page->document->scale;
-      tmp.x2 = (page->width - rectangle.x1) * page->document->scale;
-      tmp.y1 = (page->height - rectangle.y2) * page->document->scale;
-      tmp.y2 = (page->height - rectangle.y1) * page->document->scale;
+      tmp.x1 = (page_width  - rectangle.x2) * document->scale;
+      tmp.x2 = (page_width  - rectangle.x1) * document->scale;
+      tmp.y1 = (page_height - rectangle.y2) * document->scale;
+      tmp.y2 = (page_height - rectangle.y1) * document->scale;
       break;
     case 270:
-      tmp.x1 = rectangle.y1 * page->document->scale;
-      tmp.x2 = rectangle.y2 * page->document->scale;
-      tmp.y1 = (page->width - rectangle.x2) * page->document->scale;
-      tmp.y2 = (page->width - rectangle.x1) * page->document->scale;
+      tmp.x1 = rectangle.y1 * document->scale;
+      tmp.x2 = rectangle.y2 * document->scale;
+      tmp.y1 = (page_width - rectangle.x2) * document->scale;
+      tmp.y2 = (page_width - rectangle.x1) * document->scale;
       break;
     default:
-      tmp.x1 = rectangle.x1 * page->document->scale;
-      tmp.x2 = rectangle.x2 * page->document->scale;
-      tmp.y1 = rectangle.y1 * page->document->scale;
-      tmp.y2 = rectangle.y2 * page->document->scale;
+      tmp.x1 = rectangle.x1 * document->scale;
+      tmp.x2 = rectangle.x2 * document->scale;
+      tmp.y1 = rectangle.y1 * document->scale;
+      tmp.y2 = rectangle.y2 * document->scale;
   }
 
   return tmp;
+
+error_ret:
+
+  return rectangle;
 }
 
 void
@@ -262,11 +278,19 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
 {
   g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
 
-  if (rotate && page->document->rotate % 180) {
-    *page_width  = ceil(page->height * page->document->scale);
-    *page_height = ceil(page->width  * page->document->scale);
+  zathura_document_t* document = zathura_page_get_document(page);
+  if (document == NULL) {
+    return;
+  }
+
+  double height = zathura_page_get_height(page);
+  double width  = zathura_page_get_width(page);
+
+  if (rotate && document->rotate % 180) {
+    *page_width  = ceil(height * document->scale);
+    *page_height = ceil(width  * document->scale);
   } else {
-    *page_width  = ceil(page->width  * page->document->scale);
-    *page_height = ceil(page->height * page->document->scale);
+    *page_width  = ceil(width  * document->scale);
+    *page_height = ceil(height * document->scale);
   }
 }

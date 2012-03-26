@@ -8,6 +8,7 @@
 #include <glib/gi18n.h>
 
 #include "page-widget.h"
+#include "page.h"
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"
@@ -172,11 +173,13 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
 {
   ZathuraPage* pageview = ZATHURA_PAGE(object);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(pageview);
+  zathura_document_t* document = NULL;
 
   switch (prop_id) {
     case PROP_PAGE:
       priv->page    = g_value_get_pointer(value);
-      priv->zathura = priv->page->document->zathura;
+      document      = zathura_page_get_document(priv->page);
+      priv->zathura = document->zathura;
       break;
     case PROP_DRAW_LINKS:
       priv->draw_links = g_value_get_boolean(value);
@@ -282,6 +285,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   g_static_mutex_lock(&(priv->lock));
 
+  zathura_document_t* document = zathura_page_get_document(priv->page);
+
 #if GTK_MAJOR_VERSION == 2
   GtkAllocation allocation;
   gtk_widget_get_allocation(widget, &allocation);
@@ -295,7 +300,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   if (priv->surface != NULL) {
     cairo_save(cairo);
 
-    switch (priv->page->document->rotate) {
+    switch (document->rotate) {
       case 90:
         cairo_translate(cairo, page_width, 0);
         break;
@@ -307,8 +312,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         break;
     }
 
-    if (priv->page->document->rotate != 0) {
-      cairo_rotate(cairo, priv->page->document->rotate * G_PI / 180.0);
+    if (document->rotate != 0) {
+      cairo_rotate(cairo, document->rotate * G_PI / 180.0);
     }
 
     cairo_set_source_surface(cairo, priv->surface, 0, 0);
@@ -524,6 +529,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   }
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  zathura_document_t* document        = zathura_page_get_document(priv->page);
 
   if (priv->selection.y2 == -1 && priv->selection.x2 == -1 ) {
     /* simple single click */
@@ -541,7 +547,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
             && rect.y1 <= button->y && rect.y2 >= button->y) {
           switch (link->type) {
             case ZATHURA_LINK_TO_PAGE:
-              page_set_delayed(priv->page->document->zathura, link->target.page_number);
+              page_set_delayed(document->zathura, link->target.page_number);
               return false;
             case ZATHURA_LINK_EXTERNAL:
               girara_xdg_open(link->target.value);
@@ -554,10 +560,10 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     redraw_rect(ZATHURA_PAGE(widget), &priv->selection);
     zathura_rectangle_t tmp = priv->selection;
 
-    tmp.x1 /= priv->page->document->scale;
-    tmp.x2 /= priv->page->document->scale;
-    tmp.y1 /= priv->page->document->scale;
-    tmp.y2 /= priv->page->document->scale;
+    tmp.x1 /= document->scale;
+    tmp.x2 /= document->scale;
+    tmp.y1 /= document->scale;
+    tmp.y2 /= document->scale;
 
     char* text = zathura_page_get_text(priv->page, tmp, NULL);
     if (text != NULL) {
@@ -566,8 +572,8 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
         gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
 
 
-        if (priv->page != NULL && priv->page->document != NULL && priv->page->document->zathura != NULL) {
-          zathura_t* zathura = priv->page->document->zathura;
+        if (priv->page != NULL && document != NULL && document->zathura != NULL) {
+          zathura_t* zathura = document->zathura;
           char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
           girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipbard: %s"), stripped_text);
           g_free(stripped_text);
@@ -730,7 +736,7 @@ zathura_page_widget_update_view_time(ZathuraPage* widget)
   g_return_if_fail(ZATHURA_IS_PAGE(widget) == TRUE);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
-  if (priv->page->visible == true) {
+  if (zathura_page_get_visibility(priv->page) == true) {
     priv->last_view = g_get_real_time();
   }
 }
@@ -740,7 +746,7 @@ zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
 {
   g_return_if_fail(ZATHURA_IS_PAGE(widget) == TRUE);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  if (priv->page->visible == true || priv->surface == NULL || threshold <= 0) {
+  if (zathura_page_get_visibility(priv->page) == true || priv->surface == NULL || threshold <= 0) {
     return;
   }
 

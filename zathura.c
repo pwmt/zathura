@@ -27,6 +27,7 @@
 #include "zathura.h"
 #include "utils.h"
 #include "render.h"
+#include "page.h"
 #include "page-widget.h"
 
 typedef struct zathura_document_info_s
@@ -496,7 +497,12 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   /* create blank pages */
   for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
     zathura_page_t* page = document->pages[page_id];
-    gtk_widget_realize(page->drawing_area);
+    if (page != NULL) {
+      GtkWidget* page_widget = zathura_page_get_widget(page);
+      if (page_widget != NULL) {
+        gtk_widget_realize(page_widget);
+      }
+    }
   }
 
   /* bookmarks */
@@ -509,6 +515,10 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   girara_set_window_title(zathura->ui.session, document->file_path);
 
   free(file_uri);
+
+  /* adjust window */
+  girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
 
   return true;
 
@@ -718,7 +728,9 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row)
   {
     int x = i % pages_per_row;
     int y = i / pages_per_row;
-    gtk_table_attach(GTK_TABLE(zathura->ui.page_widget), zathura->document->pages[i]->drawing_area, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+    GtkWidget* page_widget = zathura_page_get_widget(zathura->document->pages[i]);
+    gtk_table_attach(GTK_TABLE(zathura->ui.page_widget), page_widget, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);
@@ -740,7 +752,8 @@ gboolean purge_pages(gpointer data)
 
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura->document->pages[page_id];
-    zathura_page_widget_purge_unused(ZATHURA_PAGE(page->drawing_area), threshold);
+    GtkWidget* page_widget = zathura_page_get_widget(page);
+    zathura_page_widget_purge_unused(ZATHURA_PAGE(page_widget), threshold);
   }
   return TRUE;
 }

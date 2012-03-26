@@ -14,7 +14,7 @@
 #include "document.h"
 #include "utils.h"
 #include "page-widget.h"
-
+#include "page.h"
 
 #include <girara/session.h>
 #include <girara/datastructures.h>
@@ -310,12 +310,13 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       continue;
     }
 
-    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+    GtkWidget* page_widget = zathura_page_get_widget(page);
+    g_object_set(page_widget, "draw-links", FALSE, NULL);
 
     girara_list_t* result = zathura_page_search_text(page, input, &error);
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
-      g_object_set(page->drawing_area, "search-results", NULL, NULL);
+      g_object_set(page_widget, "search-results", NULL, NULL);
 
       if (error == ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED) {
         break;
@@ -324,12 +325,12 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       }
     }
 
-    g_object_set(page->drawing_area, "search-results", result, NULL);
+    g_object_set(page_widget, "search-results", result, NULL);
     if (firsthit == true) {
       if (page_id != 0) {
-        page_set_delayed(zathura, page->number);
+        page_set_delayed(zathura, zathura_page_get_index(page));
       }
-      g_object_set(page->drawing_area, "search-current", 0, NULL);
+      g_object_set(page_widget, "search-current", 0, NULL);
       firsthit = false;
     }
   }

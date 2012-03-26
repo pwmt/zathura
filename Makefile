@@ -6,7 +6,7 @@ include common.mk
 PROJECT    = zathura
 OSOURCE    = $(wildcard *.c)
 HEADER     = $(wildcard *.h)
-HEADERINST = version.h zathura.h document.h macros.h
+HEADERINST = version.h zathura.h document.h macros.h page.h
 
 ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)

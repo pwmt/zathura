@@ -3,6 +3,7 @@
 #include "print.h"
 #include "document.h"
 #include "render.h"
+#include "page.h"
 
 #include <girara/utils.h>
 #include <girara/statusbar.h>
