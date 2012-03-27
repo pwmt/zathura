@@ -20,13 +20,17 @@ typedef void (*zathura_plugin_register_function_t)(zathura_plugin_functions_t* f
  * Sets the functions register function of the plugin
  *
  * @param plugin The plugin
+ * @param register_function The register function that registers the document
+ * functions
  */
-void zathura_plugin_set_register_functions_function(zathura_plugin_t* plugin, zathura_plugin_register_function_t register_function);
+void zathura_plugin_set_register_functions_function(zathura_plugin_t* plugin,
+    zathura_plugin_register_function_t register_function);
 
 /**
  * Sets the functions register function of the plugin
  *
  * @param plugin The plugin
+ * @param mime_type The mime type that should be added
  */
 void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
 
