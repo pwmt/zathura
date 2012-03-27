@@ -6,6 +6,24 @@
 #include "zathura.h"
 
 /**
+ * Plugin
+ */
+typedef struct zathura_plugin_s zathura_plugin_t;
+
+/**
+ * Error types
+ */
+typedef enum zathura_plugin_error_e
+{
+  ZATHURA_ERROR_OK, /**< No error occured */
+  ZATHURA_ERROR_UNKNOWN, /**< An unknown error occured */
+  ZATHURA_ERROR_OUT_OF_MEMORY, /**< Out of memory */
+  ZATHURA_ERROR_NOT_IMPLEMENTED, /**< The called function has not been implemented */
+  ZATHURA_ERROR_INVALID_ARGUMENTS, /**< Invalid arguments have been passed */
+  ZATHURA_ERROR_INVALID_PASSWORD /**< The provided password is invalid */
+} zathura_error_t;
+
+/**
  * Image buffer
  */
 typedef struct zathura_image_buffer_s
@@ -133,7 +151,7 @@ void zathura_index_element_free(zathura_index_element_t* index);
  * @param type Type of the link
  * @param position Position of the link
  * @param target Target
- * @return New zathura link 
+ * @return New zathura link
  */
 zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
     zathura_link_target_t target);
@@ -149,14 +167,14 @@ void zathura_link_free(zathura_link_t* link);
  * Returns the type of the link
  *
  * @param link The link
- * @return The target type of the link 
+ * @return The target type of the link
  */
 zathura_link_type_t zathura_link_get_type(zathura_link_t* link);
 
 /**
  * Returns the position of the link
  *
- * @param link The link 
+ * @param link The link
  * @return The position of the link
  */
 zathura_rectangle_t zathura_link_get_position(zathura_link_t* link);

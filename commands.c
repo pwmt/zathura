@@ -302,7 +302,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   }
 
   bool firsthit = true;
-  zathura_plugin_error_t error = ZATHURA_PLUGIN_ERROR_OK;
+  zathura_error_t error = ZATHURA_ERROR_OK;
 
   for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
     zathura_page_t* page = zathura->document->pages[(page_id + zathura->document->current_page_number) % zathura->document->number_of_pages];
@@ -318,7 +318,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       girara_list_free(result);
       g_object_set(page_widget, "search-results", NULL, NULL);
 
-      if (error == ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED) {
+      if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
         break;
       } else {
         continue;

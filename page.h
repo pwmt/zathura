@@ -16,16 +16,16 @@
  * @return Page object or NULL if an error occured
  */
 zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
-    index, zathura_plugin_error_t* error);
+    index, zathura_error_t* error);
 
 /**
  * Frees the page object
  *
  * @param page The page object
- * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
- *    zathura_plugin_error_t
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
  */
-zathura_plugin_error_t zathura_page_free(zathura_page_t* page);
+zathura_error_t zathura_page_free(zathura_page_t* page);
 
 /**
  * Returns the associated document
@@ -125,80 +125,80 @@ void zathura_page_set_data(zathura_page_t* page, void* data);
  *
  * @param page The page object
  * @param text Search item
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ * @param error Set to an error value (see \ref zathura_error_t) if an
  *   error occured
  * @return List of results
  */
-girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_plugin_error_t* error);
+girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t* error);
 
 /**
  * Get page links
  *
  * @param page The page object
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ * @param error Set to an error value (see \ref zathura_error_t) if an
  *   error occured
  * @return List of links
  */
-girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_plugin_error_t* error);
+girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Free page links
  *
  * @param list List of links
- * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
- *    zathura_plugin_error_t
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
  */
-zathura_plugin_error_t zathura_page_links_free(girara_list_t* list);
+zathura_error_t zathura_page_links_free(girara_list_t* list);
 
 /**
  * Get list of form fields
  *
  * @param page The page object
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ * @param error Set to an error value (see \ref zathura_error_t) if an
  *   error occured
  * @return List of form fields
  */
-girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin_error_t* error);
+girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Free list of form fields
  *
  * @param list List of form fields
- * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
- *    zathura_plugin_error_t
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
  */
-zathura_plugin_error_t zathura_page_form_fields_free(girara_list_t* list);
+zathura_error_t zathura_page_form_fields_free(girara_list_t* list);
 
 /**
  * Get list of images
  *
  * @param page Page
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ * @param error Set to an error value (see \ref zathura_error_t) if an
  *   error occured
  * @return List of images or NULL if an error occured
  */
-girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error);
+girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Get image
  *
  * @param page Page
  * @param image Image identifier
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an
+ * @param error Set to an error value (see \ref zathura_error_t) if an
  *   error occured
  * @return The cairo image surface or NULL if an error occured
  */
-cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_plugin_error_t* error);
+cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_error_t* error);
 
 /**
  * Get text for selection
  * @param page Page
  * @param rectangle Selection
- * @param error Set to an error value (see \ref zathura_plugin_error_t) if an error
+ * @param error Set to an error value (see \ref zathura_error_t) if an error
  * occured
  * @return The selected text (needs to be deallocated with g_free)
  */
-char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error);
+char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
  * Render page
@@ -206,9 +206,9 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
  * @param page The page object
  * @param cairo Cairo object
  * @param printing render for printing
- * @return ZATHURA_PLUGIN_ERROR_OK when no error occured, otherwise see
- *    zathura_plugin_error_t
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
  */
-zathura_plugin_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
+zathura_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
 
 #endif // PAGE_H

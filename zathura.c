@@ -29,6 +29,7 @@
 #include "render.h"
 #include "page.h"
 #include "page-widget.h"
+#include "plugin.h"
 
 typedef struct zathura_document_info_s
 {
@@ -550,10 +551,10 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
     return false;
   }
 
-  zathura_plugin_error_t error = zathura_document_save_as(zathura->document, file_path);
+  zathura_error_t error = zathura_document_save_as(zathura->document, file_path);
   g_free(file_path);
 
-  return (error == ZATHURA_PLUGIN_ERROR_OK) ? true : false;
+  return (error == ZATHURA_ERROR_OK) ? true : false;
 }
 
 static void

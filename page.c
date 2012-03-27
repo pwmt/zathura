@@ -7,6 +7,7 @@
 #include "document.h"
 #include "page.h"
 #include "page-widget.h"
+#include "plugin.h"
 #include "utils.h"
 
 struct zathura_page_s {
@@ -20,11 +21,12 @@ struct zathura_page_s {
 };
 
 zathura_page_t*
-zathura_page_new(zathura_document_t* document, unsigned int index, zathura_plugin_error_t* error)
+zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error_t* error)
 {
-  if (document == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL || document->zathura == NULL
+      || document->zathura->ui.session == NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     goto error_ret;
   }
@@ -39,23 +41,23 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_plugi
 
   if (page->widget == NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_UNKNOWN;
+      *error = ZATHURA_ERROR_UNKNOWN;
     }
     goto error_free;
   }
 
   /* init plugin */
-  if (document->functions.page_init == NULL) {
+  if (document->plugin->functions.page_init == NULL) {
     if (error != NULL) {
       girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
       girara_error("%s not implemented", __FUNCTION__);
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     goto error_ret;
   }
 
-  zathura_plugin_error_t ret = document->functions.page_init(page);
-  if (ret != ZATHURA_PLUGIN_ERROR_OK) {
+  zathura_error_t ret = document->plugin->functions.page_init(page);
+  if (ret != ZATHURA_ERROR_OK) {
     if (error != NULL) {
       *error = ret;
     }
@@ -82,25 +84,26 @@ error_ret:
   return NULL;
 }
 
-zathura_plugin_error_t
+zathura_error_t
 zathura_page_free(zathura_page_t* page)
 {
   if (page == NULL) {
-    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  if (page->document == NULL || page->document->zathura == NULL || page->document->zathura->ui.session == NULL) {
+  if (page->document == NULL || page->document->plugin == NULL ||
+      page->document->zathura == NULL || page->document->zathura->ui.session == NULL) {
     g_free(page);
-    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  if (page->document->functions.page_clear == NULL) {
+  if (page->document->plugin->functions.page_clear == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
-    return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  zathura_plugin_error_t error = page->document->functions.page_clear(page);
+  zathura_error_t error = page->document->plugin->functions.page_clear(page);
 
   g_free(page);
 
@@ -218,168 +221,170 @@ zathura_page_set_data(zathura_page_t* page, void* data)
 }
 
 girara_list_t*
-zathura_page_search_text(zathura_page_t* page, const char* text, zathura_plugin_error_t* error)
+zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t* error)
 {
-  if (page == NULL || page->document == NULL || text == NULL ||
+  if (page == NULL || page->document == NULL || page->document->plugin == NULL || text == NULL ||
       page->document->zathura == NULL || page->document->zathura->ui.session == NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     return NULL;
   }
 
-  if (page->document->functions.page_search_text == NULL) {
+  if (page->document->plugin->functions.page_search_text == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return page->document->functions.page_search_text(page, text, error);
+  return page->document->plugin->functions.page_search_text(page, text, error);
 }
 
 girara_list_t*
-zathura_page_links_get(zathura_page_t* page, zathura_plugin_error_t* error)
+zathura_page_links_get(zathura_page_t* page, zathura_error_t* error)
 {
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL
+  if (page == NULL || page->document == NULL || page->document->plugin == NULL || page->document->zathura == NULL
       || page->document->zathura->ui.session == NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     return NULL;
   }
 
-  if (page->document->functions.page_links_get == NULL) {
+  if (page->document->plugin->functions.page_links_get == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return page->document->functions.page_links_get(page, error);
+  return page->document->plugin->functions.page_links_get(page, error);
 }
 
-zathura_plugin_error_t
+zathura_error_t
 zathura_page_links_free(girara_list_t* UNUSED(list))
 {
   return false;
 }
 
 girara_list_t*
-zathura_page_form_fields_get(zathura_page_t* page, zathura_plugin_error_t* error)
+zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error)
 {
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL
+  if (page == NULL || page->document == NULL || page->document->plugin == NULL || page->document->zathura == NULL
       || page->document->zathura->ui.session == NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     return NULL;
   }
 
-  if (page->document->functions.page_form_fields_get == NULL) {
+  if (page->document->plugin->functions.page_form_fields_get == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return page->document->functions.page_form_fields_get(page, error);
+  return page->document->plugin->functions.page_form_fields_get(page, error);
 }
 
-zathura_plugin_error_t
+zathura_error_t
 zathura_page_form_fields_free(girara_list_t* UNUSED(list))
 {
-  return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+  return ZATHURA_ERROR_NOT_IMPLEMENTED;
 }
 
 girara_list_t*
-zathura_page_images_get(zathura_page_t* page, zathura_plugin_error_t* error)
+zathura_page_images_get(zathura_page_t* page, zathura_error_t* error)
 {
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL
+  if (page == NULL || page->document == NULL || page->document->plugin == NULL || page->document->zathura == NULL
       || page->document->zathura->ui.session == NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     return NULL;
   }
 
-  if (page->document->functions.page_images_get == NULL) {
+  if (page->document->plugin->functions.page_images_get == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return page->document->functions.page_images_get(page, error);
+  return page->document->plugin->functions.page_images_get(page, error);
 }
 
 cairo_surface_t*
-zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_plugin_error_t* error)
+zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_error_t* error)
 {
-  if (page == NULL || page->document == NULL || image == NULL ||
+  if (page == NULL || page->document == NULL || page->document->plugin == NULL || image == NULL ||
       page->document->zathura == NULL || page->document->zathura->ui.session ==
       NULL) {
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     return NULL;
   }
 
-  if (page->document->functions.page_image_get_cairo == NULL) {
+  if (page->document->plugin->functions.page_image_get_cairo == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return page->document->functions.page_image_get_cairo(page, image, error);
+  return page->document->plugin->functions.page_image_get_cairo(page, image, error);
 }
 
-char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_plugin_error_t* error)
+char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error)
 {
-  if (page == NULL || page->document == NULL || page->document->zathura == NULL || page->document->zathura->ui.session == NULL) {
+  if (page == NULL || page->document == NULL || page->document->plugin == NULL
+      || page->document->zathura == NULL || page->document->zathura->ui.session
+      == NULL) {
     if (error) {
-      *error = ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
     return NULL;
   }
 
-  if (page->document->functions.page_get_text == NULL) {
+  if (page->document->plugin->functions.page_get_text == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
     if (error) {
-      *error = ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return page->document->functions.page_get_text(page, rectangle, error);
+  return page->document->plugin->functions.page_get_text(page, rectangle, error);
 }
 
-zathura_plugin_error_t
+zathura_error_t
 zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
 {
-  if (page == NULL || page->document == NULL || cairo == NULL ||
+  if (page == NULL || page->document->plugin == NULL || page->document == NULL || cairo == NULL ||
       page->document->zathura == NULL || page->document->zathura->ui.session ==
       NULL) {
-    return ZATHURA_PLUGIN_ERROR_INVALID_ARGUMENTS;
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  if (page->document->functions.page_render_cairo == NULL) {
+  if (page->document->plugin->functions.page_render_cairo == NULL) {
     girara_notify(page->document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
     girara_error("%s not implemented", __FUNCTION__);
-    return ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED;
+    return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return page->document->functions.page_render_cairo(page, cairo, printing);
+  return page->document->plugin->functions.page_render_cairo(page, cairo, printing);
 }

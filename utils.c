@@ -13,6 +13,7 @@
 #include "zathura.h"
 #include "document.h"
 #include "page.h"
+#include "plugin.h"
 
 #include <girara/datastructures.h>
 
