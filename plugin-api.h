@@ -7,14 +7,14 @@
 #include "document.h"
 #include "version.h"
 
-typedef struct zathura_document_functions_s zathura_document_functions_t;
+typedef struct zathura_plugin_functions_s zathura_plugin_functions_t;
 
 /**
  * Functions register function
  *
  * @param functions The functions struct
  */
-typedef void (*zathura_plugin_register_function_t)(zathura_document_functions_t* functions);
+typedef void (*zathura_plugin_register_function_t)(zathura_plugin_functions_t* functions);
 
 /**
  * Sets the functions register function of the plugin
@@ -40,14 +40,14 @@ void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type
  * @param register_functions function to register the plugin's document functions
  * @param mimetypes a char array of mime types supported by the plugin
  */
-#define PLUGIN_REGISTER(plugin_name, major, minor, rev, register_functions, mimetypes) \
+#define ZATHURA_PLUGIN_REGISTER(plugin_name, major, minor, rev, register_functions, mimetypes) \
   unsigned int plugin_version_major() { return major; } \
   unsigned int plugin_version_minor() { return minor; } \
   unsigned int plugin_version_revision() { return rev; } \
   unsigned int plugin_api_version() { return ZATHURA_API_VERSION; } \
   unsigned int plugin_abi_version() { return ZATHURA_ABI_VERSION; } \
   \
-  void plugin_register(zathura_plugin_t* plugin) \
+  void zathura_plugin_register(zathura_plugin_t* plugin) \
   { \
     if (plugin == NULL) { \
       return; \
@@ -59,9 +59,9 @@ void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type
     } \
   } \
 
-#define PLUGIN_MIMETYPES(...) __VA_ARGS__
+#define ZATHURA_PLUGIN_MIMETYPES(...) __VA_ARGS__
 
-struct zathura_document_functions_s
+struct zathura_plugin_functions_s
 {
   /**
    * Opens a document
