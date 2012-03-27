@@ -550,7 +550,9 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
               page_set_delayed(document->zathura, link->target.page_number);
               return false;
             case ZATHURA_LINK_EXTERNAL:
-              girara_xdg_open(link->target.value);
+              girara_xdg_open(link->target.uri);
+              return false;
+            default:
               return false;
           }
         }
