@@ -65,6 +65,22 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
     const char* password);
 
 /**
+ * Returns the path of the document
+ *
+ * @param document The document
+ * @return The file path of the document
+ */
+const char* zathura_document_get_path(zathura_document_t* document);
+
+/**
+ * Returns the password of the document
+ *
+ * @param document The document
+ * @return Returns the password of the document
+ */
+const char* zathura_document_get_password(zathura_document_t* document);
+
+/**
  * Free the document
  *
  * @param document
@@ -72,6 +88,56 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
  *    zathura_error_t
  */
 zathura_error_t zathura_document_free(zathura_document_t* document);
+
+/**
+ * Returns the private data of the document
+ *
+ * @param document The document
+ * @return The private data or NULL
+ */
+void* zathura_document_get_data(zathura_document_t* document);
+
+/**
+ * Returns the number of pages
+ *
+ * @param document The document
+ * @return Number of pages
+ */
+unsigned int zathura_document_get_number_of_pages(zathura_document_t* document);
+
+/**
+ * Sets the number of pages
+ *
+ * @param document The document
+ * @param number_of_pages Number of pages
+ */
+void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned
+    int number_of_pages);
+
+/**
+ * Returns the current page number
+ *
+ * @param document The document
+ * @return Current page
+ */
+unsigned int zathura_document_get_current_page(zathura_document_t* document);
+
+/**
+ * Sets the number of pages
+ *
+ * @param document The document
+ * @param current_page The current page number
+ */
+void zathura_document_set_current_page(zathura_document_t* document, unsigned
+    int current_page);
+
+/**
+ * Sets the private data of the document
+ *
+ * @param document The document
+ * @param data The new private data
+ */
+void zathura_document_set_data(zathura_document_t* document, void* data);
 
 /**
  * Save the document
