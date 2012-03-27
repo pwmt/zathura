@@ -26,12 +26,6 @@ typedef enum zathura_document_meta_e
   ZATHURA_DOCUMENT_MODIFICATION_DATE /**< Modification data */
 } zathura_document_meta_t;
 
-typedef struct zathura_password_dialog_info_s
-{
-  char* path; /**< Path to the file */
-  zathura_t* zathura;  /**< Zathura session */
-} zathura_password_dialog_info_t;
-
 /**
  * Document
  */

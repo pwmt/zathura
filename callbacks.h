@@ -7,6 +7,7 @@
 #include <girara/types.h>
 #include <girara/macros.h>
 
+#include "internal.h"
 #include "document.h"
 #include "zathura.h"
 
