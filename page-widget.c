@@ -377,11 +377,11 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
     /* draw selection */
     if (priv->selection.y2 != -1 && priv->selection.x2 != -1) {
-        GdkColor color = priv->zathura->ui.colors.highlight_color;
-        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-        cairo_rectangle(cairo, priv->selection.x1, priv->selection.y1,
-            (priv->selection.x2 - priv->selection.x1), (priv->selection.y2 - priv->selection.y1));
-        cairo_fill(cairo);
+      GdkColor color = priv->zathura->ui.colors.highlight_color;
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      cairo_rectangle(cairo, priv->selection.x1, priv->selection.y1,
+        (priv->selection.x2 - priv->selection.x1), (priv->selection.y2 - priv->selection.y1));
+      cairo_fill(cairo);
     }
   } else {
     /* set background color */
@@ -649,9 +649,9 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   zathura_image_t* image = NULL;
   GIRARA_LIST_FOREACH(priv->images, zathura_image_t*, iter, image_it)
     zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
-      if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
-        image = image_it;
-      }
+    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+      image = image_it;
+    }
   GIRARA_LIST_FOREACH_END(priv->images, zathura_image_t*, iter, image_it);
 
   if (image == NULL) {
