@@ -27,33 +27,6 @@ typedef enum zathura_document_meta_e
 } zathura_document_meta_t;
 
 /**
- * Document
- */
-struct zathura_document_s
-{
-  char* file_path; /**< File path of the document */
-  const char* password; /**< Password of the document */
-  unsigned int current_page_number; /**< Current page number */
-  unsigned int number_of_pages; /**< Number of pages */
-  double scale; /**< Scale value */
-  unsigned int rotate; /**< Rotation */
-  void* data; /**< Custom data */
-  zathura_t* zathura; /** Zathura object */
-  int adjust_mode; /**< Adjust mode (best-fit, width) */
-  unsigned int page_offset; /**< Page offset */
-
-  /**
-   * Document pages
-   */
-  zathura_page_t** pages;
-
-	/**
-	 * Used plugin
-	 */
-	zathura_plugin_t* plugin;
-};
-
-/**
  * Open the document
  *
  * @param zathura Zathura object
@@ -63,6 +36,15 @@ struct zathura_document_s
  */
 zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
     const char* password);
+
+/**
+ * Free the document
+ *
+ * @param document
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
+ */
+zathura_error_t zathura_document_free(zathura_document_t* document);
 
 /**
  * Returns the path of the document
@@ -81,21 +63,13 @@ const char* zathura_document_get_path(zathura_document_t* document);
 const char* zathura_document_get_password(zathura_document_t* document);
 
 /**
- * Free the document
- *
- * @param document
- * @return ZATHURA_ERROR_OK when no error occured, otherwise see
- *    zathura_error_t
- */
-zathura_error_t zathura_document_free(zathura_document_t* document);
-
-/**
- * Returns the private data of the document
+ * Returns the page at the given index
  *
  * @param document The document
- * @return The private data or NULL
+ * @param index The index of the page
+ * @return The page or NULL if an error occured
  */
-void* zathura_document_get_data(zathura_document_t* document);
+zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned int index);
 
 /**
  * Returns the number of pages
@@ -120,7 +94,7 @@ void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned
  * @param document The document
  * @return Current page
  */
-unsigned int zathura_document_get_current_page(zathura_document_t* document);
+unsigned int zathura_document_get_current_page_number(zathura_document_t* document);
 
 /**
  * Sets the number of pages
@@ -128,8 +102,80 @@ unsigned int zathura_document_get_current_page(zathura_document_t* document);
  * @param document The document
  * @param current_page The current page number
  */
-void zathura_document_set_current_page(zathura_document_t* document, unsigned
+void zathura_document_set_current_page_number(zathura_document_t* document, unsigned
     int current_page);
+
+/**
+ * Returns the current scale value of the document
+ *
+ * @param document The document
+ * @return The current scale value 
+ */
+double zathura_document_get_scale(zathura_document_t* document);
+
+/**
+ * Sets the new scale value of the document
+ *
+ * @param document The document
+ * @param scale The new scale value
+ */
+void zathura_document_set_scale(zathura_document_t* document, double scale);
+
+/**
+ * Returns the rotation value of zathura (0..360)
+ *
+ * @param document The document
+ * @return The current rotation value
+ */
+unsigned int zathura_document_get_rotation(zathura_document_t* document);
+
+/**
+ * Sets the new rotation value
+ *
+ * @param document The document
+ * @param rotation The new rotation value
+ */
+void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation);
+
+/**
+ * Returns the adjust mode of the document
+ *
+ * @param document The document
+ * @return The adjust mode 
+ */
+zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
+
+/**
+ * Sets the new adjust mode of the document
+ *
+ * @param document The document
+ * @param mode The new adjust mode
+ */
+void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode);
+
+/**
+ * Returns the page offset of the document
+ *
+ * @param document The document
+ * @return The page offset
+ */
+unsigned int zathura_document_get_page_offset(zathura_document_t* document);
+
+/**
+ * Sets the new page offset of the document
+ *
+ * @param document The document
+ * @param page_offset The new page offset
+ */
+void zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset);
+
+/**
+ * Returns the private data of the document
+ *
+ * @param document The document
+ * @return The private data or NULL
+ */
+void* zathura_document_get_data(zathura_document_t* document);
 
 /**
  * Sets the private data of the document

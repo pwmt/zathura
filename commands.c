@@ -40,12 +40,12 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
   const char* bookmark_name = girara_list_nth(argument_list, 0);
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
   if (bookmark != NULL) {
-    bookmark->page = zathura->document->current_page_number + 1;
+    bookmark->page = zathura_document_get_current_page_number(zathura->document) + 1;
     girara_notify(session, GIRARA_INFO, _("Bookmark successfuly updated: %s"), bookmark_name);
     return true;
   }
 
-  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura->document->current_page_number + 1);
+  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura_document_get_current_page_number(zathura->document) + 1);
   if (bookmark == NULL) {
     girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
     return false;
@@ -304,8 +304,13 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   bool firsthit = true;
   zathura_error_t error = ZATHURA_ERROR_OK;
 
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
-    zathura_page_t* page = zathura->document->pages[(page_id + zathura->document->current_page_number) % zathura->document->number_of_pages];
+
+  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+		unsigned int index = (page_id + current_page_number) % number_of_pages;
+    zathura_page_t* page = zathura_document_get_page(zathura->document, index);
     if (page == NULL) {
       continue;
     }
@@ -385,7 +390,7 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
   }
 
   /* no argument: take current page as offset */
-  unsigned int page_offset = zathura->document->current_page_number;
+  unsigned int page_offset = zathura_document_get_current_page_number(zathura->document);
 
   /* retrieve offset from argument */
   if (girara_list_size(argument_list) == 1) {
@@ -399,8 +404,8 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
     }
   }
 
-  if (page_offset < zathura->document->number_of_pages) {
-    zathura->document->page_offset = page_offset;
+  if (page_offset < zathura_document_get_number_of_pages(zathura->document)) {
+    zathura_document_set_page_offset(zathura->document, page_offset);
   }
 
   return true;

@@ -51,8 +51,7 @@ void
 cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpointer data)
 {
   zathura_t* zathura = data;
-  if (zathura == NULL || zathura->document == NULL || zathura->document->pages == NULL
-      || zathura->ui.page_widget == NULL) {
+  if (zathura == NULL || zathura->document == NULL || zathura->ui.page_widget == NULL) {
     return;
   }
 
@@ -74,23 +73,26 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   center.y = (view_rect.height + 1) / 2;
   center.height = center.width = (2 * page_padding) + 1;
 
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  double scale = zathura_document_get_scale(zathura->document);
+
   bool updated = false;
   /* find page that fits */
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    zathura_page_t* page = zathura->document->pages[page_id];
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
 
     GdkRectangle page_rect;
     GtkWidget* page_widget = zathura_page_get_widget(page);
     gtk_widget_translate_coordinates(page_widget,
         zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
-    page_rect.width  = zathura_page_get_width(page) * zathura->document->scale;
-    page_rect.height = zathura_page_get_height(page) * zathura->document->scale;
+    page_rect.width  = zathura_page_get_width(page)  * scale;
+    page_rect.height = zathura_page_get_height(page) * scale;
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       zathura_page_set_visibility(page, true);
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
-        zathura->document->current_page_number = page_id;
+        zathura_document_set_current_page_number(zathura->document, page_id);
         updated = true;
       }
     } else {
@@ -119,7 +121,7 @@ cb_pages_per_row_value_changed(girara_session_t* session, const char* UNUSED(nam
   page_widget_set_mode(zathura, pages_per_row);
 
   if (zathura->document != NULL) {
-    unsigned int current_page = zathura->document->current_page_number;
+    unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
     page_set_delayed(zathura, current_page);
   }
 }
@@ -185,8 +187,9 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
 
   /* set pages to draw links */
   bool invalid_index = true;
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    zathura_page_t* page = zathura->document->pages[page_id];
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
     if (page == NULL || zathura_page_get_visibility(page) == false) {
       continue;
     }
@@ -322,7 +325,7 @@ cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t*
 
   /* adjust only if the allocation changed */
   if (width != allocation->width || height != allocation->height) {
-    girara_argument_t argument = { zathura->document->adjust_mode, NULL };
+    girara_argument_t argument = { zathura_document_get_adjust_mode(zathura->document), NULL };
     sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
 
     width  = allocation->width;

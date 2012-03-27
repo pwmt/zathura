@@ -10,9 +10,9 @@
 #include "version.h"
 #include "zathura.h"
 
-#define PLUGIN_REGISTER_FUNCTION    "plugin_register"
-#define PLUGIN_API_VERSION_FUNCTION "plugin_api_version"
-#define PLUGIN_ABI_VERSION_FUNCTION "plugin_abi_version"
+#define PLUGIN_REGISTER_FUNCTION    "zathura_plugin_register"
+#define PLUGIN_API_VERSION_FUNCTION "zathura_plugin_api_version"
+#define PLUGIN_ABI_VERSION_FUNCTION "zathura_plugin_abi_version"
 
 /**
  * Plugin mapping

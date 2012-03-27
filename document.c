@@ -32,6 +32,34 @@ static const size_t GT_MAX_READ = 1 << 16;
 
 static const gchar* guess_type(const char* path);
 
+/**
+ * Document
+ */
+struct zathura_document_s
+{
+  char* file_path; /**< File path of the document */
+  const char* password; /**< Password of the document */
+  unsigned int current_page_number; /**< Current page number */
+  unsigned int number_of_pages; /**< Number of pages */
+  double scale; /**< Scale value */
+  unsigned int rotate; /**< Rotation */
+  void* data; /**< Custom data */
+  zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
+  zathura_t* zathura; /**< Zathura instance */
+  unsigned int page_offset; /**< Page offset */
+
+  /**
+   * Document pages
+   */
+  zathura_page_t** pages;
+
+	/**
+	 * Used plugin
+	 */
+	zathura_plugin_t* plugin;
+};
+
+
 zathura_document_t*
 zathura_document_open(zathura_t* zathura, const char* path, const char* password)
 {
@@ -94,8 +122,8 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   document->file_path = real_path;
   document->password  = password;
   document->scale     = 1.0;
-  document->zathura   = zathura;
   document->plugin    = plugin;
+  document->zathura   = zathura;
 
   /* open document */
   if (plugin->functions.document_open == NULL) {
@@ -170,14 +198,14 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
 
   /* apply open adjustment */
   char* adjust_open = "best-fit";
-  document->adjust_mode = ADJUST_BESTFIT;
+  document->adjust_mode = ZATHURA_ADJUST_BESTFIT;
   if (girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
     if (g_strcmp0(adjust_open, "best-fit") == 0) {
-      document->adjust_mode = ADJUST_BESTFIT;
+      document->adjust_mode = ZATHURA_ADJUST_BESTFIT;
     } else if (g_strcmp0(adjust_open, "width") == 0) {
-      document->adjust_mode = ADJUST_WIDTH;
+      document->adjust_mode = ZATHURA_ADJUST_WIDTH;
     } else {
-      document->adjust_mode = ADJUST_NONE;
+      document->adjust_mode = ZATHURA_ADJUST_NONE;
     }
     g_free(adjust_open);
   }
@@ -203,8 +231,7 @@ error_free:
 zathura_error_t
 zathura_document_free(zathura_document_t* document)
 {
-  if (document == NULL || document->plugin == NULL || document->zathura == NULL
-      || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL) {
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
@@ -219,8 +246,6 @@ zathura_document_free(zathura_document_t* document)
   /* free document */
   zathura_error_t error = ZATHURA_ERROR_OK;
   if (document->plugin->functions.document_free == NULL) {
-    girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
-    girara_error("%s not implemented", __FUNCTION__);
     error = ZATHURA_ERROR_NOT_IMPLEMENTED;
   } else {
     error = document->plugin->functions.document_free(document, document->data);
@@ -253,6 +278,16 @@ zathura_document_get_password(zathura_document_t* document)
   }
 
   return document->password;
+}
+
+zathura_page_t*
+zathura_document_get_page(zathura_document_t* document, unsigned int index)
+{
+  if (document == NULL || document->pages == NULL || (document->number_of_pages <= index)) {
+    return NULL;
+  }
+
+  return document->pages[index];
 }
 
 void*
@@ -296,7 +331,7 @@ zathura_document_set_number_of_pages(zathura_document_t* document, unsigned int 
 }
 
 unsigned int
-zathura_document_get_current_page(zathura_document_t* document)
+zathura_document_get_current_page_number(zathura_document_t* document)
 {
   if (document == NULL) {
     return 0;
@@ -306,7 +341,7 @@ zathura_document_get_current_page(zathura_document_t* document)
 }
 
 void
-zathura_document_set_current_page(zathura_document_t* document, unsigned int
+zathura_document_set_current_page_number(zathura_document_t* document, unsigned int
     current_page)
 {
   if (document == NULL) {
@@ -316,17 +351,110 @@ zathura_document_set_current_page(zathura_document_t* document, unsigned int
   document->current_page_number = current_page;
 }
 
+double
+zathura_document_get_scale(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->scale;
+}
+
+void
+zathura_document_set_scale(zathura_document_t* document, double scale)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->scale = scale;
+}
+
+unsigned int
+zathura_document_get_rotation(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->rotate;
+}
+
+void
+zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->rotate = rotation % 360;
+
+  if (document->rotate > 0 && document->rotate < 90) {
+    document->rotate = 90;
+  } else if (document->rotate > 0 && document->rotate < 180) {
+    document->rotate = 180;
+  } else if (document->rotate > 0 && document->rotate < 270) {
+    document->rotate = 270;
+  } else {
+    document->rotate = 0;
+  }
+}
+
+zathura_adjust_mode_t
+zathura_document_get_adjust_mode(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return ZATHURA_ADJUST_NONE;
+  }
+
+  return document->adjust_mode;
+}
+
+void
+zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  if (mode == ZATHURA_ADJUST_BESTFIT || mode == ZATHURA_ADJUST_WIDTH) {
+    document->adjust_mode = mode;
+  } else {
+    document->adjust_mode = ZATHURA_ADJUST_NONE;
+  }
+}
+
+unsigned int
+zathura_document_get_page_offset(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->page_offset;
+}
+
+void
+zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  if (page_offset < document->number_of_pages) {
+    document->page_offset = page_offset;
+  }
+}
+
 zathura_error_t
 zathura_document_save_as(zathura_document_t* document, const char* path)
 {
-  if (document == NULL || document->plugin == NULL || path == NULL ||
-      document->zathura == NULL || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL || path == NULL) {
     return ZATHURA_ERROR_UNKNOWN;
   }
 
   if (document->plugin->functions.document_save_as == NULL) {
-    girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
-    girara_error("%s not implemented", __FUNCTION__);
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
@@ -336,8 +464,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
 girara_tree_node_t*
 zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error)
 {
-  if (document == NULL || document->plugin == NULL || document->zathura == NULL
-      || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
@@ -345,8 +472,6 @@ zathura_document_index_generate(zathura_document_t* document, zathura_error_t* e
   }
 
   if (document->plugin->functions.document_index_generate == NULL) {
-    girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
-    girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
@@ -359,8 +484,7 @@ zathura_document_index_generate(zathura_document_t* document, zathura_error_t* e
 girara_list_t*
 zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error)
 {
-  if (document == NULL || document->plugin == NULL || document->zathura == NULL
-      || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
@@ -368,8 +492,6 @@ zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* 
   }
 
   if (document->plugin->functions.document_attachments_get == NULL) {
-    girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
-    girara_error("%s not implemented", __FUNCTION__);
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
@@ -382,14 +504,11 @@ zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* 
 zathura_error_t
 zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file)
 {
-  if (document == NULL || document->plugin == NULL || document->zathura == NULL
-      || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL) {
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
   if (document->plugin->functions.document_attachment_save == NULL) {
-    girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
-    girara_error("%s not implemented", __FUNCTION__);
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
@@ -399,7 +518,7 @@ zathura_document_attachment_save(zathura_document_t* document, const char* attac
 char*
 zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta, zathura_error_t* error)
 {
-  if (document == NULL || document->plugin == NULL || document->zathura == NULL || document->zathura->ui.session == NULL) {
+  if (document == NULL || document->plugin == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
@@ -410,8 +529,6 @@ zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t 
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
-    girara_notify(document->zathura->ui.session, GIRARA_WARNING, _("%s not implemented"), __FUNCTION__);
-    girara_error("%s not implemented", __FUNCTION__);
     return NULL;
   }
 
@@ -492,4 +609,24 @@ guess_type(const char* path)
 
   g_strdelimit(out, "\n\r", '\0');
   return out;
+}
+
+zathura_t*
+zathura_document_get_zathura(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+
+  return document->zathura;
+}
+
+zathura_plugin_t*
+zathura_document_get_plugin(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+
+  return document->plugin;
 }

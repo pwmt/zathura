@@ -41,11 +41,11 @@ void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type
  * @param mimetypes a char array of mime types supported by the plugin
  */
 #define ZATHURA_PLUGIN_REGISTER(plugin_name, major, minor, rev, register_functions, mimetypes) \
-  unsigned int plugin_version_major() { return major; } \
-  unsigned int plugin_version_minor() { return minor; } \
-  unsigned int plugin_version_revision() { return rev; } \
-  unsigned int plugin_api_version() { return ZATHURA_API_VERSION; } \
-  unsigned int plugin_abi_version() { return ZATHURA_ABI_VERSION; } \
+  unsigned int zathura_plugin_version_major() { return major; } \
+  unsigned int zathura_plugin_version_minor() { return minor; } \
+  unsigned int zathura_plugin_version_revision() { return rev; } \
+  unsigned int zathura_plugin_api_version() { return ZATHURA_API_VERSION; } \
+  unsigned int zathura_plugin_abi_version() { return ZATHURA_ABI_VERSION; } \
   \
   void zathura_plugin_register(zathura_plugin_t* plugin) \
   { \

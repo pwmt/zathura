@@ -111,8 +111,9 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  if (fabs(zathura->document->scale - 1.0f) > FLT_EPSILON) {
-    cairo_scale(cairo, zathura->document->scale, zathura->document->scale);
+	double scale = zathura_document_get_scale(zathura->document);
+  if (fabs(scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, scale, scale);
   }
 
   if (zathura_page_render(page, cairo, false) != ZATHURA_ERROR_OK) {
@@ -177,8 +178,9 @@ render_all(zathura_t* zathura)
   }
 
   /* unmark all pages */
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    zathura_page_t* page = zathura->document->pages[page_id];
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
     unsigned int page_height = 0, page_width = 0;
     page_calc_height_width(page, &page_height, &page_width, true);
 

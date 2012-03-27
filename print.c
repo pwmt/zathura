@@ -26,8 +26,8 @@ print(zathura_t* zathura)
   }
 
   gtk_print_operation_set_allow_async(print_operation, TRUE);
-  gtk_print_operation_set_n_pages(print_operation, zathura->document->number_of_pages);
-  gtk_print_operation_set_current_page(print_operation, zathura->document->current_page_number);
+  gtk_print_operation_set_n_pages(print_operation, zathura_document_get_number_of_pages(zathura->document));
+  gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(zathura->document));
 
   /* print operation signals */
   g_signal_connect(print_operation, "draw-page", G_CALLBACK(cb_print_draw_page), zathura);
@@ -59,20 +59,23 @@ void
 cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     UNUSED(context), zathura_t* zathura)
 {
-  if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL
-      || zathura->document->file_path == NULL) {
+  if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL) {
     return;
   }
 
-  girara_statusbar_item_set_text(zathura->ui.session,
-      zathura->ui.statusbar.file, zathura->document->file_path);
+  const char* file_path = zathura_document_get_path(zathura->document);
+
+  if (file_path != NULL) {
+    girara_statusbar_item_set_text(zathura->ui.session,
+        zathura->ui.statusbar.file, file_path);
+  }
 }
 
 void
 cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     context, gint page_number, zathura_t* zathura)
 {
-  if (context == NULL || zathura == NULL || zathura->document->pages == NULL ||
+  if (context == NULL || zathura == NULL || zathura->document == NULL ||
       zathura->ui.session == NULL || zathura->ui.statusbar.file == NULL) {
     return;
   }
@@ -85,7 +88,7 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
 
   /* render page */
   cairo_t* cairo           = gtk_print_context_get_cairo_context(context);
-  zathura_page_t* page     = zathura->document->pages[page_number];
+  zathura_page_t* page     = zathura_document_get_page(zathura->document, page_number);
   if (cairo == NULL || page == NULL) {
     return;
   }

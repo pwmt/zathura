@@ -126,8 +126,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,     NULL, sc_abort,                    0,          0,               NULL);
 
-  girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,            NORMAL,     ADJUST_BESTFIT,  NULL);
-  girara_shortcut_add(gsession, 0,                GDK_KEY_s,          NULL, sc_adjust_window,            NORMAL,     ADJUST_WIDTH,    NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,            NORMAL,     ZATHURA_ADJUST_BESTFIT,  NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_s,          NULL, sc_adjust_window,            NORMAL,     ZATHURA_ADJUST_WIDTH,    NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_m,          NULL, sc_change_mode,              NORMAL,     ADD_MARKER,      NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_apostrophe, NULL, sc_change_mode,              NORMAL,     EVAL_MARKER,     NULL);
@@ -302,8 +302,8 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "specific",     ZOOM_SPECIFIC);
   girara_argument_mapping_add(gsession, "top",          TOP);
   girara_argument_mapping_add(gsession, "up",           UP);
-  girara_argument_mapping_add(gsession, "best-fit",     ADJUST_BESTFIT);
-  girara_argument_mapping_add(gsession, "width",        ADJUST_WIDTH);
+  girara_argument_mapping_add(gsession, "best-fit",     ZATHURA_ADJUST_BESTFIT);
+  girara_argument_mapping_add(gsession, "width",        ZATHURA_ADJUST_WIDTH);
   girara_argument_mapping_add(gsession, "rotate-cw",    ROTATE_CW);
   girara_argument_mapping_add(gsession, "rotate-ccw",   ROTATE_CCW);
 }

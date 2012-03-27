@@ -34,7 +34,8 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
   girara_list_append(zathura->bookmarks.bookmarks, bookmark);
 
   if (zathura->database != NULL) {
-    if (zathura_db_add_bookmark(zathura->database, zathura->document->file_path, bookmark) == false) {
+		const char* path = zathura_document_get_path(zathura->document);
+    if (zathura_db_add_bookmark(zathura->database, path, bookmark) == false) {
       girara_warning("Failed to add bookmark to database.");
     }
   }
@@ -54,7 +55,8 @@ zathura_bookmark_remove(zathura_t* zathura, const gchar* id)
   }
 
   if (zathura->database != NULL) {
-    if (zathura_db_remove_bookmark(zathura->database, zathura->document->file_path, bookmark->id) == false) {
+		const char* path = zathura_document_get_path(zathura->document);
+    if (zathura_db_remove_bookmark(zathura->database, path, bookmark->id) == false) {
       girara_warning("Failed to remove bookmark from database.");
     }
   }

@@ -179,7 +179,7 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
     case PROP_PAGE:
       priv->page    = g_value_get_pointer(value);
       document      = zathura_page_get_document(priv->page);
-      priv->zathura = document->zathura;
+      priv->zathura = zathura_document_get_zathura(document);
       break;
     case PROP_DRAW_LINKS:
       priv->draw_links = g_value_get_boolean(value);
@@ -300,7 +300,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   if (priv->surface != NULL) {
     cairo_save(cairo);
 
-    switch (document->rotate) {
+		unsigned int rotation = zathura_document_get_rotation(document);
+    switch (rotation) {
       case 90:
         cairo_translate(cairo, page_width, 0);
         break;
@@ -312,8 +313,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         break;
     }
 
-    if (document->rotate != 0) {
-      cairo_rotate(cairo, document->rotate * G_PI / 180.0);
+    if (rotation != 0) {
+      cairo_rotate(cairo, rotation * G_PI / 180.0);
     }
 
     cairo_set_source_surface(cairo, priv->surface, 0, 0);
@@ -547,7 +548,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
             && rect.y1 <= button->y && rect.y2 >= button->y) {
           switch (link->type) {
             case ZATHURA_LINK_TO_PAGE:
-              page_set_delayed(document->zathura, link->target.page_number);
+              page_set_delayed(priv->zathura, link->target.page_number);
               return false;
             case ZATHURA_LINK_EXTERNAL:
               girara_xdg_open(link->target.uri);
@@ -562,10 +563,11 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     redraw_rect(ZATHURA_PAGE(widget), &priv->selection);
     zathura_rectangle_t tmp = priv->selection;
 
-    tmp.x1 /= document->scale;
-    tmp.x2 /= document->scale;
-    tmp.y1 /= document->scale;
-    tmp.y2 /= document->scale;
+		double scale = zathura_document_get_scale(document);
+    tmp.x1 /= scale;
+    tmp.x2 /= scale;
+    tmp.y1 /= scale;
+    tmp.y2 /= scale;
 
     char* text = zathura_page_get_text(priv->page, tmp, NULL);
     if (text != NULL) {
@@ -574,10 +576,9 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
         gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
 
 
-        if (priv->page != NULL && document != NULL && document->zathura != NULL) {
-          zathura_t* zathura = document->zathura;
+        if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
           char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-          girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipbard: %s"), stripped_text);
+          girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipbard: %s"), stripped_text);
           g_free(stripped_text);
         }
       }

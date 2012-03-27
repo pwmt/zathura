@@ -35,6 +35,16 @@ typedef struct zathura_image_buffer_s
 } zathura_image_buffer_t;
 
 /**
+ * Adjust mode
+ */
+typedef enum zathura_adjust_mode_e
+{
+  ZATHURA_ADJUST_NONE, /**< No adjustment */
+  ZATHURA_ADJUST_BESTFIT, /**< Adjust to best-fit */
+  ZATHURA_ADJUST_WIDTH /**< Adjust to width */
+} zathura_adjust_mode_t;
+
+/**
  * Creates an image buffer
  *
  * @param width Width of the image stored in the buffer
