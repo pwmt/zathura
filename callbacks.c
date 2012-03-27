@@ -202,7 +202,9 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
             page_set_delayed(zathura, link->target.page_number);
             break;
           case ZATHURA_LINK_EXTERNAL:
-            girara_xdg_open(link->target.value);
+            girara_xdg_open(link->target.uri);
+            break;
+          default:
             break;
         }
 

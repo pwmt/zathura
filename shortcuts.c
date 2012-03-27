@@ -776,11 +776,27 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     gtk_widget_show(treeview);
   }
 
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+  static double vvalue = 0;
+  static double hvalue = 0;
+
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
     girara_set_view(session, zathura->ui.page_widget_alignment);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
+
+    /* reset adjustment */
+    gtk_adjustment_set_value(vadjustment, vvalue);
+    gtk_adjustment_set_value(hadjustment, hvalue);
+
+    gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view), vadjustment);
+    gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view), hadjustment);
   } else {
+    /* save adjustment */
+    vvalue = gtk_adjustment_get_value(vadjustment);
+    hvalue = gtk_adjustment_get_value(hadjustment);
+
     girara_set_view(session, zathura->ui.index);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.index);

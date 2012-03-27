@@ -16,7 +16,7 @@
  * @return Page object or NULL if an error occured
  */
 zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
-		index, zathura_plugin_error_t* error);
+    index, zathura_plugin_error_t* error);
 
 /**
  * Frees the page object
