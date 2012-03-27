@@ -103,7 +103,7 @@ zathura_page_free(zathura_page_t* page)
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  zathura_error_t error = page->document->plugin->functions.page_clear(page);
+  zathura_error_t error = page->document->plugin->functions.page_clear(page, page->data);
 
   g_free(page);
 
@@ -240,7 +240,7 @@ zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t
     return NULL;
   }
 
-  return page->document->plugin->functions.page_search_text(page, text, error);
+  return page->document->plugin->functions.page_search_text(page, page->data, text, error);
 }
 
 girara_list_t*
@@ -263,7 +263,7 @@ zathura_page_links_get(zathura_page_t* page, zathura_error_t* error)
     return NULL;
   }
 
-  return page->document->plugin->functions.page_links_get(page, error);
+  return page->document->plugin->functions.page_links_get(page, page->data, error);
 }
 
 zathura_error_t
@@ -292,7 +292,7 @@ zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error)
     return NULL;
   }
 
-  return page->document->plugin->functions.page_form_fields_get(page, error);
+  return page->document->plugin->functions.page_form_fields_get(page, page->data, error);
 }
 
 zathura_error_t
@@ -321,7 +321,7 @@ zathura_page_images_get(zathura_page_t* page, zathura_error_t* error)
     return NULL;
   }
 
-  return page->document->plugin->functions.page_images_get(page, error);
+  return page->document->plugin->functions.page_images_get(page, page->data, error);
 }
 
 cairo_surface_t*
@@ -345,7 +345,7 @@ zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathu
     return NULL;
   }
 
-  return page->document->plugin->functions.page_image_get_cairo(page, image, error);
+  return page->document->plugin->functions.page_image_get_cairo(page, page->data, image, error);
 }
 
 char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error)
@@ -368,7 +368,7 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
     return NULL;
   }
 
-  return page->document->plugin->functions.page_get_text(page, rectangle, error);
+  return page->document->plugin->functions.page_get_text(page, page->data, rectangle, error);
 }
 
 zathura_error_t
@@ -386,5 +386,5 @@ zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return page->document->plugin->functions.page_render_cairo(page, cairo, printing);
+  return page->document->plugin->functions.page_render_cairo(page, page->data, cairo, printing);
 }

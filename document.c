@@ -223,7 +223,7 @@ zathura_document_free(zathura_document_t* document)
     girara_error("%s not implemented", __FUNCTION__);
     error = ZATHURA_ERROR_NOT_IMPLEMENTED;
   } else {
-    error = document->plugin->functions.document_free(document);
+    error = document->plugin->functions.document_free(document, document->data);
   }
 
   if (document->file_path != NULL) {
@@ -249,7 +249,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return document->plugin->functions.document_save_as(document, path);
+  return document->plugin->functions.document_save_as(document, document->data, path);
 }
 
 girara_tree_node_t*
@@ -272,7 +272,7 @@ zathura_document_index_generate(zathura_document_t* document, zathura_error_t* e
     return NULL;
   }
 
-  return document->plugin->functions.document_index_generate(document, error);
+  return document->plugin->functions.document_index_generate(document, document->data, error);
 }
 
 girara_list_t*
@@ -295,7 +295,7 @@ zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* 
     return NULL;
   }
 
-  return document->plugin->functions.document_attachments_get(document, error);
+  return document->plugin->functions.document_attachments_get(document, document->data, error);
 }
 
 zathura_error_t
@@ -312,7 +312,7 @@ zathura_document_attachment_save(zathura_document_t* document, const char* attac
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return document->plugin->functions.document_attachment_save(document, attachment, file);
+  return document->plugin->functions.document_attachment_save(document, document->data, attachment, file);
 }
 
 char*
@@ -334,7 +334,7 @@ zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t 
     return NULL;
   }
 
-  return document->plugin->functions.document_meta_get(document, meta, error);
+  return document->plugin->functions.document_meta_get(document, document->data, meta, error);
 }
 
 static const gchar*

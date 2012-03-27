@@ -8,6 +8,8 @@
 #include "version.h"
 
 typedef struct zathura_document_functions_s zathura_document_functions_t;
+typedef struct zathura_document_data_s zathura_document_data_t;
+typedef struct zathura_page_data_s zathura_page_data_t;
 
 /**
  * Functions register function
@@ -71,32 +73,32 @@ struct zathura_document_functions_s
   /**
    * Frees the document
    */
-  zathura_error_t (*document_free)(zathura_document_t* document);
+  zathura_error_t (*document_free)(zathura_document_t* document, zathura_document_data_t* data);
 
   /**
    * Generates the document index
    */
-  girara_tree_node_t* (*document_index_generate)(zathura_document_t* document, zathura_error_t* error);
+  girara_tree_node_t* (*document_index_generate)(zathura_document_t* document, zathura_document_data_t* data, zathura_error_t* error);
 
   /**
    * Save the document
    */
-  zathura_error_t (*document_save_as)(zathura_document_t* document, const char* path);
+  zathura_error_t (*document_save_as)(zathura_document_t* document, zathura_document_data_t* data, const char* path);
 
   /**
    * Get list of attachments
    */
-  girara_list_t* (*document_attachments_get)(zathura_document_t* document, zathura_error_t* error);
+  girara_list_t* (*document_attachments_get)(zathura_document_t* document, zathura_document_data_t* data, zathura_error_t* error);
 
   /**
    * Save attachment to a file
    */
-  zathura_error_t (*document_attachment_save)(zathura_document_t* document, const char* attachment, const char* file);
+  zathura_error_t (*document_attachment_save)(zathura_document_t* document, zathura_document_data_t* data, const char* attachment, const char* file);
 
   /**
    * Get document information
    */
-  char* (*document_meta_get)(zathura_document_t* document, zathura_document_meta_t info, zathura_error_t* error);
+  char* (*document_meta_get)(zathura_document_t* document, zathura_document_data_t* data, zathura_document_meta_t info, zathura_error_t* error);
 
   /**
    * Gets the page object
@@ -106,47 +108,47 @@ struct zathura_document_functions_s
   /**
    * Free page
    */
-  zathura_error_t (*page_clear)(zathura_page_t* page);
+  zathura_error_t (*page_clear)(zathura_page_t* page, zathura_page_data_t* data);
 
   /**
    * Search text
    */
-  girara_list_t* (*page_search_text)(zathura_page_t* page, const char* text, zathura_error_t* error);
+  girara_list_t* (*page_search_text)(zathura_page_t* page, zathura_page_data_t* data, const char* text, zathura_error_t* error);
 
   /**
    * Get links on a page
    */
-  girara_list_t* (*page_links_get)(zathura_page_t* page, zathura_error_t* error);
+  girara_list_t* (*page_links_get)(zathura_page_t* page, zathura_page_data_t* data, zathura_error_t* error);
 
   /**
    * Get form fields
    */
-  girara_list_t* (*page_form_fields_get)(zathura_page_t* page, zathura_error_t* error);
+  girara_list_t* (*page_form_fields_get)(zathura_page_t* page, zathura_page_data_t* data, zathura_error_t* error);
 
   /**
    * Get list of images
    */
-  girara_list_t* (*page_images_get)(zathura_page_t* page, zathura_error_t* error);
+  girara_list_t* (*page_images_get)(zathura_page_t* page, zathura_page_data_t* data, zathura_error_t* error);
 
   /**
    * Get the image
    */
-  cairo_surface_t* (*page_image_get_cairo)(zathura_page_t* page, zathura_image_t* image, zathura_error_t* error);
+  cairo_surface_t* (*page_image_get_cairo)(zathura_page_t* page, zathura_page_data_t* data, zathura_image_t* image, zathura_error_t* error);
 
   /**
    * Get text for selection
    */
-  char* (*page_get_text)(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
+  char* (*page_get_text)(zathura_page_t* page, zathura_page_data_t* data, zathura_rectangle_t rectangle, zathura_error_t* error);
 
   /**
    * Renders the page
    */
-  zathura_image_buffer_t* (*page_render)(zathura_page_t* page, zathura_error_t* error);
+  zathura_image_buffer_t* (*page_render)(zathura_page_t* page, zathura_page_data_t* data, zathura_error_t* error);
 
   /**
    * Renders the page
    */
-  zathura_error_t (*page_render_cairo)(zathura_page_t* page, cairo_t* cairo, bool printing);
+  zathura_error_t (*page_render_cairo)(zathura_page_t* page, zathura_page_data_t* data, cairo_t* cairo, bool printing);
 };
 
 
