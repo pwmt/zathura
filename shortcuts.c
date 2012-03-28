@@ -91,8 +91,10 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   gint height = allocation.height;
 
   /* calculate total width and max-height */
-  double total_width = 0;
-  double max_height  = 0;
+  double total_width  = 0;
+  double total_height = 0;
+  double max_height   = 0;
+  double max_width    = 0;
 
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < pages_per_row; page_id++) {
@@ -105,17 +107,34 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
       goto error_ret;
     }
 
-    if (zathura_page_get_height(page) > max_height) {
-      max_height = zathura_page_get_height(page);
+    unsigned int page_height = zathura_page_get_height(page);
+    unsigned int page_width  = zathura_page_get_width(page);
+
+    if (page_height > max_height) {
+      max_height = page_height;
     }
 
-    total_width += zathura_page_get_width(page);
+    if (page_width > max_width) {
+      max_width = page_width;
+    }
+
+    total_width  += page_width;
+    total_height += page_height;
   }
 
+  unsigned int rotation = zathura_document_get_rotation(zathura->document);
   if (argument->n == ZATHURA_ADJUST_WIDTH) {
-    zathura_document_set_scale(zathura->document, width / total_width);
+    if (rotation == 0 || rotation == 180) {
+      zathura_document_set_scale(zathura->document, width / total_width);
+    } else {
+      zathura_document_set_scale(zathura->document, width / total_height);
+    }
   } else if (argument->n == ZATHURA_ADJUST_BESTFIT) {
-    zathura_document_set_scale(zathura->document, height / max_height);
+    if (rotation == 0 || rotation == 180) {
+      zathura_document_set_scale(zathura->document, height / max_height);
+    } else {
+      zathura_document_set_scale(zathura->document, width / total_height);
+    }
   } else {
     goto error_ret;
   }
@@ -451,6 +470,10 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
   /* update rotate value */
 	unsigned int rotation = zathura_document_get_rotation(zathura->document);
   zathura_document_set_rotation(zathura->document, (rotation + angle) % 360);
+
+  /* update scale */
+  girara_argument_t new_argument = { zathura_document_get_adjust_mode(zathura->document), NULL };
+  sc_adjust_window(zathura->ui.session, &new_argument, NULL, 0);
 
   /* render all pages again */
   render_all(zathura);
