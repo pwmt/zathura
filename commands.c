@@ -137,35 +137,37 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
   struct meta_field {
     char* name;
-    zathura_document_meta_t field;
+    zathura_document_information_type_t field;
   };
 
   struct meta_field meta_fields[] = {
-    { "Title",            ZATHURA_DOCUMENT_TITLE },
-    { "Author",           ZATHURA_DOCUMENT_AUTHOR },
-    { "Subject",          ZATHURA_DOCUMENT_SUBJECT },
-    { "Keywords",         ZATHURA_DOCUMENT_KEYWORDS },
-    { "Creator",          ZATHURA_DOCUMENT_CREATOR },
-    { "Producer",         ZATHURA_DOCUMENT_PRODUCER },
-    { "Creation date",    ZATHURA_DOCUMENT_CREATION_DATE },
-    { "Modiciation date", ZATHURA_DOCUMENT_MODIFICATION_DATE }
+    { "Title",            ZATHURA_DOCUMENT_INFORMATION_TITLE },
+    { "Author",           ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
+    { "Subject",          ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
+    { "Keywords",         ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { "Creator",          ZATHURA_DOCUMENT_INFORMATION_CREATOR },
+    { "Producer",         ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
+    { "Creation date",    ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
+    { "Modiciation date", ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
   };
 
+  girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
+  if (information == NULL) {
+    girara_notify(session, GIRARA_INFO, _("No information available."));
+    return false;
+  }
+
   GString* string = g_string_new(NULL);
-  if (string == NULL) {
-    return true;
-  }
 
-  for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
-    char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field, NULL);
-    if (tmp != NULL) {
-      char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, tmp);
-      g_string_append(string, text);
-
-      g_free(text);
-      g_free(tmp);
+  GIRARA_LIST_FOREACH(information, zathura_document_information_entry_t*, iter, entry)
+    for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+      if (meta_fields[i].field == entry->type) {
+        char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+        g_string_append(string, text);
+        g_free(text);
+      }
     }
-  }
+  GIRARA_LIST_FOREACH_END(information, zathura_document_information_entry_t*, iter, entry);
 
   if (strlen(string->str) > 0) {
     g_string_erase(string, strlen(string->str) - 1, 1);
@@ -309,7 +311,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-		unsigned int index = (page_id + current_page_number) % number_of_pages;
+    unsigned int index = (page_id + current_page_number) % number_of_pages;
     zathura_page_t* page = zathura_document_get_page(zathura->document, index);
     if (page == NULL) {
       continue;

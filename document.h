@@ -12,21 +12,6 @@
 #include "types.h"
 
 /**
- * Meta data entries
- */
-typedef enum zathura_document_meta_e
-{
-  ZATHURA_DOCUMENT_TITLE, /**< Title of the document */
-  ZATHURA_DOCUMENT_AUTHOR, /**< Author of the document */
-  ZATHURA_DOCUMENT_SUBJECT, /**< Subject of the document */
-  ZATHURA_DOCUMENT_KEYWORDS, /**< Keywords of the document */
-  ZATHURA_DOCUMENT_CREATOR, /**< Creator of the document */
-  ZATHURA_DOCUMENT_PRODUCER, /**< Producer of the document */
-  ZATHURA_DOCUMENT_CREATION_DATE, /**< Creation data */
-  ZATHURA_DOCUMENT_MODIFICATION_DATE /**< Modification data */
-} zathura_document_meta_t;
-
-/**
  * Open the document
  *
  * @param zathura Zathura object
@@ -231,11 +216,10 @@ zathura_error_t zathura_document_attachment_save(zathura_document_t* document, c
  * Returns a string of the requested information
  *
  * @param document The zathura document
- * @param meta The information field
  * @param error Set to an error value (see \ref zathura_error_t) if an
  *   error occured
- * @return String or NULL if information could not be retreived
+ * @return List of document information entries or NULL if information could not be retreived
  */
-char* zathura_document_meta_get(zathura_document_t* document, zathura_document_meta_t meta, zathura_error_t* error);
+girara_list_t* zathura_document_get_information(zathura_document_t* document, zathura_error_t* error);
 
 #endif // DOCUMENT_H

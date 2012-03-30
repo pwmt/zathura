@@ -24,6 +24,34 @@ typedef enum zathura_plugin_error_e
 } zathura_error_t;
 
 /**
+ * Possible information entry types
+ */
+typedef enum zathura_document_information_type_e
+{
+  ZATHURA_DOCUMENT_INFORMATION_TITLE, /**< Title of the document */
+  ZATHURA_DOCUMENT_INFORMATION_AUTHOR, /**< Author of the document */
+  ZATHURA_DOCUMENT_INFORMATION_SUBJECT, /**< Subject of the document */
+  ZATHURA_DOCUMENT_INFORMATION_KEYWORDS, /**< Keywords of the document */
+  ZATHURA_DOCUMENT_INFORMATION_CREATOR, /**< Creator of the document */
+  ZATHURA_DOCUMENT_INFORMATION_PRODUCER, /**< Producer of the document */
+  ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE, /**< Creation data */
+  ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE, /**< Modification data */
+  ZATHURA_DOCUMENT_INFORMATION_OTHER /**< Any other information */
+} zathura_document_information_type_t;
+
+/**
+ * Document information entry
+ *
+ * Represents a single entry in the returned list from the \ref
+ * zathura_document_get_information function
+ */
+typedef struct zathura_document_information_entry_s
+{
+  zathura_document_information_type_t type; /**< Type of the information */
+  char* value; /**< Value */
+} zathura_document_information_entry_t;
+
+/**
  * Image buffer
  */
 typedef struct zathura_image_buffer_s
@@ -196,5 +224,32 @@ zathura_rectangle_t zathura_link_get_position(zathura_link_t* link);
  * @return Returns the target of the link (depends on the link type)
  */
 zathura_link_target_t zathura_link_get_target(zathura_link_t* link);
+
+/**
+ * Creates a list that should be used to store \ref
+ * zathura_document_information_entry_t entries
+ *
+ * @return A list or NULL if an error occured
+ */
+girara_list_t* zathura_document_information_entry_list_new();
+
+/**
+ * Creates a new document information entry
+ *
+ * @param type The type
+ * @param value The value
+ *
+ * @return A new entry or NULL if an error occured
+ */
+zathura_document_information_entry_t*
+zathura_document_information_entry_new(zathura_document_information_type_t
+    type, const char* value);
+
+/**
+ * Frees a document information entry
+ *
+ * @param entry The entry that should be freed
+ */
+void zathura_document_information_entry_free(zathura_document_information_entry_t* entry);
 
 #endif // TYPES_H

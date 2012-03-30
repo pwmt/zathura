@@ -300,7 +300,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   if (priv->surface != NULL) {
     cairo_save(cairo);
 
-		unsigned int rotation = zathura_document_get_rotation(document);
+    unsigned int rotation = zathura_document_get_rotation(document);
     switch (rotation) {
       case 90:
         cairo_translate(cairo, page_width, 0);
@@ -563,7 +563,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     redraw_rect(ZATHURA_PAGE(widget), &priv->selection);
     zathura_rectangle_t tmp = priv->selection;
 
-		double scale = zathura_document_get_scale(document);
+    double scale = zathura_document_get_scale(document);
     tmp.x1 /= scale;
     tmp.x2 /= scale;
     tmp.y1 /= scale;

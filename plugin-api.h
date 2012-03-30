@@ -100,7 +100,7 @@ struct zathura_plugin_functions_s
   /**
    * Get document information
    */
-  char* (*document_meta_get)(zathura_document_t* document, void* data, zathura_document_meta_t info, zathura_error_t* error);
+  girara_list_t* (*document_get_information)(zathura_document_t* document, void* data, zathura_error_t* error);
 
   /**
    * Gets the page object

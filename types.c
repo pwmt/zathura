@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <stdlib.h>
+#include <girara/datastructures.h>
 
 #include "types.h"
 
@@ -145,3 +146,42 @@ zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
   free(image_buffer);
 }
 
+girara_list_t*
+zathura_document_information_entry_list_new()
+{
+  girara_list_t* list = girara_list_new2((girara_free_function_t)
+      zathura_document_information_entry_free);
+
+  return list;
+}
+
+zathura_document_information_entry_t*
+zathura_document_information_entry_new(zathura_document_information_type_t type,
+    const char* value)
+{
+  if (value == NULL) {
+    return NULL;
+  }
+
+  zathura_document_information_entry_t* entry =
+    g_malloc0(sizeof(zathura_document_information_entry_t));
+
+  entry->type  = type;
+  entry->value = g_strdup(value);
+
+  return entry;
+}
+
+void
+zathura_document_information_entry_free(zathura_document_information_entry_t* entry)
+{
+  if (entry == NULL) {
+    return;
+  }
+
+  if (entry->value != NULL) {
+    g_free(entry->value);
+  }
+
+  g_free(entry);
+}
