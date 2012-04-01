@@ -6,11 +6,6 @@
 #include "zathura.h"
 
 /**
- * Plugin
- */
-typedef struct zathura_plugin_s zathura_plugin_t;
-
-/**
  * Error types
  */
 typedef enum zathura_plugin_error_e
@@ -38,6 +33,11 @@ typedef enum zathura_document_information_type_e
   ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE, /**< Modification data */
   ZATHURA_DOCUMENT_INFORMATION_OTHER /**< Any other information */
 } zathura_document_information_type_t;
+
+/**
+  * Plugin
+  */
+typedef struct zathura_plugin_s zathura_plugin_t;
 
 /**
  * Document information entry

@@ -103,13 +103,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     return NULL;
   }
 
-  zathura_plugin_t* plugin = NULL;
-  GIRARA_LIST_FOREACH(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-    if (g_content_type_equals(content_type, mapping->type)) {
-      plugin = mapping->plugin;
-      break;
-    }
-  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
+  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free((void*)content_type);
 
   if (plugin == NULL) {

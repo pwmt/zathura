@@ -10,6 +10,7 @@
 #include "plugin.h"
 #include "utils.h"
 #include "internal.h"
+#include "types.h"
 
 struct zathura_page_s {
   double height; /**< Page height */

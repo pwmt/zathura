@@ -103,12 +103,12 @@ zathura_init(int argc, char* argv[])
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   /* plugins */
-  zathura->plugins.plugins = girara_list_new2(
-      (girara_free_function_t)zathura_document_plugin_free);
-  zathura->plugins.path    = girara_list_new2(g_free);
-  zathura->plugins.type_plugin_mapping = girara_list_new2(
-      (girara_free_function_t)zathura_type_plugin_mapping_free);
+  zathura->plugins.manager = zathura_plugin_manager_new();
+  if (zathura->plugins.manager == NULL) {
+    goto error_free;
+  }
 
+  /* configuration and data */
   if (config_dir != NULL) {
     zathura->config.config_dir = g_strdup(config_dir);
   } else {
@@ -131,12 +131,16 @@ zathura_init(int argc, char* argv[])
 
   if (plugin_path != NULL) {
     girara_list_t* paths = girara_split_path_array(plugin_path);
-    girara_list_merge(zathura->plugins.path, paths);
+    GIRARA_LIST_FOREACH(paths, char*, iter, path)
+      zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
+    GIRARA_LIST_FOREACH_END(paths, char*, iter, path);
     girara_list_free(paths);
   } else {
 #ifdef ZATHURA_PLUGINDIR
     girara_list_t* paths = girara_split_path_array(ZATHURA_PLUGINDIR);
-    girara_list_merge(zathura->plugins.path, paths);
+    GIRARA_LIST_FOREACH(paths, char*, iter, path)
+      zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
+    GIRARA_LIST_FOREACH_END(paths, char*, iter, path);
     girara_list_free(paths);
 #endif
   }
@@ -153,7 +157,7 @@ zathura_init(int argc, char* argv[])
   zathura->global.update_page_number = true;
 
   /* load plugins */
-  zathura_document_plugins_load(zathura);
+  zathura_plugin_manager_load(zathura->plugins.manager);
 
   /* configuration */
   config_load_default(zathura);
@@ -335,9 +339,7 @@ zathura_free(zathura_t* zathura)
   }
 
   /* free registered plugins */
-  girara_list_free(zathura->plugins.type_plugin_mapping);
-  girara_list_free(zathura->plugins.plugins);
-  girara_list_free(zathura->plugins.path);
+  zathura_plugin_manager_free(zathura->plugins.manager);
 
   /* free config variables */
   g_free(zathura->config.config_dir);

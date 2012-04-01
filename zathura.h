@@ -63,9 +63,7 @@ typedef struct zathura_s
 
   struct
   {
-    girara_list_t* plugins; /**< List of plugins */
-    girara_list_t* path; /**< List of plugin paths */
-    girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
+    void* manager; /**< Plugin manager */
   } plugins;
 
   struct

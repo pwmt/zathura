@@ -15,15 +15,6 @@
 #define PLUGIN_ABI_VERSION_FUNCTION "zathura_plugin_abi_version"
 
 /**
- * Plugin mapping
- */
-typedef struct zathura_type_plugin_mapping_s
-{
-  const gchar* type; /**< Plugin type */
-  zathura_plugin_t* plugin; /**< Mapped plugin */
-} zathura_type_plugin_mapping_t;
-
-/**
  * Document plugin structure
  */
 struct zathura_plugin_s
@@ -33,6 +24,55 @@ struct zathura_plugin_s
   zathura_plugin_functions_t functions; /**< Document functions */
   void* handle; /**< DLL handle */
 };
+
+typedef struct zathura_plugin_manager_s zathura_plugin_manager_t;
+
+/**
+ * Creates a new instance of the plugin manager
+ *
+ * @return A plugin manager object or NULL if an error occured
+ */
+zathura_plugin_manager_t* zathura_plugin_manager_new();
+
+/**
+ * Adds a plugin directory to the plugin manager
+ *
+ * @param plugin_manager The plugin manager
+ * @param dir Path to a directory with plugins
+ */
+void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir);
+
+/**
+ * Loads all plugins available in the previously given directories
+ *
+ * @param plugin_manager The plugin manager
+ */
+void zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager);
+
+/**
+ * Returns the (if available) associated plugin
+ *
+ * @param plugin_manager The plugin manager
+ * @param type The document type
+ * @return The plugin or NULL if no matching plugin is available
+ */
+zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, const char* type);
+
+/**
+ * Frees the plugin manager
+ *
+ * @param plugin_manager
+ */
+void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager);
+
+/**
+ * Plugin mapping
+ */
+typedef struct zathura_type_plugin_mapping_s
+{
+  const gchar* type; /**< Plugin type */
+  zathura_plugin_t* plugin; /**< Mapped plugin */
+} zathura_type_plugin_mapping_t;
 
 /**
  * Function prototype that is called to register a document plugin
@@ -55,35 +95,5 @@ typedef unsigned int (*zathura_plugin_api_version_t)();
  * @return plugin's ABI version
  */
 typedef unsigned int (*zathura_plugin_abi_version_t)();
-
-/**
- * Load all document plugins
- *
- * @param zathura the zathura session
- */
-void zathura_document_plugins_load(zathura_t* zathura);
-
-/**
- * Free a document plugin
- *
- * @param plugin The plugin
- */
-void zathura_document_plugin_free(zathura_plugin_t* plugin);
-
-/**
- * Add type -> plugin mapping
- * @param zathura zathura instance
- * @param type content type
- * @param plugin plugin instance
- * @return true on success, false if another plugin is already registered for
- * that type
- */
-bool zathura_type_plugin_mapping_new(zathura_t* zathura, const gchar* type, zathura_plugin_t* plugin);
-
-/**
- * Free type -> plugin mapping
- * @param mapping To be freed
- */
-void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping);
 
 #endif // PLUGIN_H

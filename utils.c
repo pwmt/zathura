@@ -47,7 +47,7 @@ file_get_extension(const char* path)
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
 {
-  if (zathura == NULL || path == NULL) {
+  if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
     return false;
   }
 
@@ -56,16 +56,10 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-  bool result = false;
-  GIRARA_LIST_FOREACH(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-    if (g_content_type_equals(content_type, mapping->type)) {
-      result = true;
-      break;
-    }
-  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
-
+	zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free((void*)content_type);
-  return result;
+
+  return (plugin == NULL) ? false : true;
 }
 
 bool
