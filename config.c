@@ -94,8 +94,8 @@ config_load_default(zathura_t* zathura)
   int_value = 1000;
   girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
   int_value = 5;
-  girara_setting_add(gsession, "page-store-threshold",  &int_value,   INT,    false, _("Store unvisible pages only for some time (in seconds)"), NULL, NULL);
-  girara_setting_add(gsession, "page-store-interval",   &int_value,   INT,    true,  _("Amount of seconds between the checks for invisible pages"), NULL, NULL);
+  girara_setting_add(gsession, "page-store-threshold",  &int_value,   INT,    false, _("Life time (in seconds) of a hidden page"), NULL, NULL);
+  girara_setting_add(gsession, "page-store-interval",   &int_value,   INT,    true,  _("Amount of seconds between each cache purge"), NULL, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
   girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
