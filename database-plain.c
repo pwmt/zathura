@@ -555,4 +555,6 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
 
     priv->history = zathura_db_read_key_file_from_file(priv->history_path);
   }
+
+  g_free(path);
 }
