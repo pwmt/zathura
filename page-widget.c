@@ -477,7 +477,7 @@ zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
   g_return_val_if_fail(priv != NULL, NULL);
 
   if (priv->links != NULL && index >= priv->link_offset &&
-      girara_list_size(priv->links) >= index - priv->link_offset) {
+      girara_list_size(priv->links) > index - priv->link_offset) {
     return girara_list_nth(priv->links, index - priv->link_offset);
   } else {
     return NULL;
