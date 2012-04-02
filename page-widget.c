@@ -637,6 +637,10 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   g_return_if_fail(event != NULL);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
+#if GTK_MAJOR_VERSION == 3 // FIXME
+  return;
+#endif
+
   if (priv->images_got == false) {
     priv->images     = zathura_page_images_get(priv->page, NULL);
     priv->images_got = true;
@@ -704,6 +708,7 @@ cb_zathura_page_widget_popup_menu(GtkWidget* widget)
 static void
 cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
 {
+#if GTK_MAJOR_VERSION == 2 // FIXME
   g_return_if_fail(item != NULL);
   g_return_if_fail(page != NULL);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(page);
@@ -731,6 +736,7 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_PRIMARY), pixbuf);
 
   priv->current_image = NULL;
+#endif
 }
 
 void
