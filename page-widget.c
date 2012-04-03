@@ -62,6 +62,7 @@ enum properties_e
 {
   PROP_0,
   PROP_PAGE,
+  PROP_ZATHURA,
   PROP_DRAW_LINKS,
   PROP_LINKS_OFFSET,
   PROP_LINKS_NUMBER,
@@ -98,6 +99,8 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   /* add properties */
   g_object_class_install_property(object_class, PROP_PAGE,
       g_param_spec_pointer("page", "page", "the page to draw", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+  g_object_class_install_property(object_class, PROP_ZATHURA,
+      g_param_spec_pointer("zathura", "zathura", "the zathura instance", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property(object_class, PROP_DRAW_LINKS,
       g_param_spec_boolean("draw-links", "draw-links", "Set to true if links should be drawn", FALSE, G_PARAM_WRITABLE));
   g_object_class_install_property(object_class, PROP_LINKS_OFFSET,
@@ -138,11 +141,11 @@ zathura_page_widget_init(ZathuraPage* widget)
 }
 
 GtkWidget*
-zathura_page_widget_new(zathura_page_t* page)
+zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, NULL);
+  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, "zathura", zathura, NULL);
 }
 
 static void
@@ -173,13 +176,13 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
 {
   ZathuraPage* pageview = ZATHURA_PAGE(object);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(pageview);
-  zathura_document_t* document = NULL;
 
   switch (prop_id) {
     case PROP_PAGE:
-      priv->page    = g_value_get_pointer(value);
-      document      = zathura_page_get_document(priv->page);
-      priv->zathura = zathura_document_get_zathura(document);
+      priv->page = g_value_get_pointer(value);
+      break;
+    case PROP_ZATHURA:
+      priv->zathura = g_value_get_pointer(value);
       break;
     case PROP_DRAW_LINKS:
       priv->draw_links = g_value_get_boolean(value);

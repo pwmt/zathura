@@ -51,7 +51,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
         continue;
       }
 
-      g_object_set(zathura_page_get_widget(page), "draw-links", FALSE, NULL);
+      g_object_set(zathura_page_get_widget(zathura, page), "draw-links", FALSE, NULL);
     }
   }
 
@@ -238,7 +238,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
       continue;
     }
 
-    GtkWidget* page_widget = zathura_page_get_widget(page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(page_widget, "search-results", NULL, NULL);
     if (zathura_page_get_visibility(page) == true) {
       g_object_set(page_widget, "draw-links", TRUE, NULL);
@@ -580,7 +580,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       continue;
     }
 
-    GtkWidget* page_widget = zathura_page_get_widget(page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
 
     int num_search_results = 0, current = -1;
     g_object_get(page_widget, "search-current", &current,
@@ -604,7 +604,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
         int ntmp = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura_document_get_page(zathura->document, (ntmp + 2*num_pages) % num_pages);
         zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(npage));
-        GtkWidget* npage_page_widget = zathura_page_get_widget(npage);
+        GtkWidget* npage_page_widget = zathura_page_get_widget(zathura, npage);
         g_object_get(npage_page_widget, "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {
           target_page = npage;
@@ -619,14 +619,14 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
   if (target_page != NULL) {
     girara_list_t* results = NULL;
-    GtkWidget* page_widget = zathura_page_get_widget(target_page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, target_page);
     g_object_set(page_widget, "search-current", target_idx, NULL);
     g_object_get(page_widget, "search-results", &results, NULL);
 
     zathura_rectangle_t* rect = girara_list_nth(results, target_idx);
     zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
     page_offset_t offset;
-    page_calculate_offset(target_page, &offset);
+    page_calculate_offset(zathura, target_page, &offset);
 
     GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
     GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));

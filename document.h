@@ -3,24 +3,24 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
-#include <cairo.h>
-#include <gtk/gtk.h>
 #include <stdbool.h>
 #include <girara/types.h>
 
-#include "zathura.h"
 #include "types.h"
+#include "page.h"
 
 /**
  * Open the document
  *
- * @param zathura Zathura object
+ * @param plugin_manager The plugin manager
  * @param path Path to the document
  * @param password Password of the document or NULL
+ * @param error Optional error parameter
  * @return The document object
  */
-zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path,
-    const char* password);
+zathura_document_t* zathura_document_open(zathura_plugin_manager_t*
+    plugin_manager, const char* path, const char* password, zathura_error_t*
+    error);
 
 /**
  * Free the document

@@ -6,7 +6,6 @@
 
 #include "document.h"
 #include "page.h"
-#include "page-widget.h"
 #include "plugin.h"
 #include "utils.h"
 #include "internal.h"
@@ -18,7 +17,6 @@ struct zathura_page_s {
   unsigned int index; /**< Page number */
   void* data; /**< Custom data */
   bool visible; /**< Page is visible */
-  GtkWidget* widget; /**< Drawing area */
   zathura_document_t* document; /**< Document */
 };
 
@@ -38,14 +36,6 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error
   page->index    = index;
   page->visible  = false;
   page->document = document;
-  page->widget   = zathura_page_widget_new(page);
-
-  if (page->widget == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_UNKNOWN;
-    }
-    goto error_free;
-  }
 
   /* init plugin */
   zathura_plugin_t* plugin = zathura_document_get_plugin(document);
@@ -63,13 +53,6 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error
     }
     goto error_free;
   }
-
-  /* set widget size */
-  unsigned int page_height = 0;
-  unsigned int page_width  = 0;
-  page_calc_height_width(page, &page_height, &page_width, true);
-
-  gtk_widget_set_size_request(page->widget, page_width, page_height);
 
   return page;
 
@@ -126,16 +109,6 @@ zathura_page_get_index(zathura_page_t* page)
   }
 
   return page->index;
-}
-
-GtkWidget*
-zathura_page_get_widget(zathura_page_t* page)
-{
-  if (page == NULL) {
-    return NULL;
-  }
-
-  return page->widget;
 }
 
 double

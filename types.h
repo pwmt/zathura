@@ -6,6 +6,11 @@
 #include "zathura.h"
 
 /**
+ * Plugin manager
+ */
+typedef struct zathura_plugin_manager_s zathura_plugin_manager_t;
+
+/**
  * Error types
  */
 typedef enum zathura_plugin_error_e

@@ -25,8 +25,6 @@ struct zathura_plugin_s
   void* handle; /**< DLL handle */
 };
 
-typedef struct zathura_plugin_manager_s zathura_plugin_manager_t;
-
 /**
  * Creates a new instance of the plugin manager
  *

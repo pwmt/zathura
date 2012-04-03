@@ -82,7 +82,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
 
     GdkRectangle page_rect;
-    GtkWidget* page_widget = zathura_page_get_widget(page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     gtk_widget_translate_coordinates(page_widget,
         zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
     page_rect.width  = zathura_page_get_width(page)  * scale;
@@ -194,7 +194,7 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
       continue;
     }
 
-    GtkWidget* page_widget = zathura_page_get_widget(page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(page_widget, "draw-links", FALSE, NULL);
 
     if (eval == true) {

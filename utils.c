@@ -56,7 +56,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-	zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
+  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free((void*)content_type);
 
   return (plugin == NULL) ? false : true;
@@ -167,13 +167,11 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 }
 
 void
-page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
+page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* offset)
 {
   g_return_if_fail(page != NULL);
   g_return_if_fail(offset != NULL);
-  zathura_document_t* document = zathura_page_get_document(page);
-  zathura_t* zathura           = zathura_document_get_zathura(document);
-  GtkWidget* widget = zathura_page_get_widget(page);
+  GtkWidget* widget = zathura_page_get_widget(zathura, page);
 
   g_return_if_fail(gtk_widget_translate_coordinates(widget,
     zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
@@ -291,4 +289,16 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
     *page_width  = ceil(width  * scale);
     *page_height = ceil(height * scale);
   }
+}
+
+GtkWidget*
+zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
+{
+  if (zathura == NULL || page == NULL || zathura->pages == NULL) {
+    return NULL;
+  }
+
+  unsigned int page_number = zathura_page_get_index(page);
+
+  return zathura->pages[page_number];
 }

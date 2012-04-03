@@ -163,7 +163,7 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   /* update the widget */
   gdk_threads_enter();
-  GtkWidget* widget = zathura_page_get_widget(page);
+  GtkWidget* widget = zathura_page_get_widget(zathura, page);
   zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
   gdk_threads_leave();
 
@@ -173,7 +173,7 @@ render(zathura_t* zathura, zathura_page_t* page)
 void
 render_all(zathura_t* zathura)
 {
-  if (zathura->document == NULL) {
+  if (zathura == NULL || zathura->document == NULL) {
     return;
   }
 
@@ -184,7 +184,7 @@ render_all(zathura_t* zathura)
     unsigned int page_height = 0, page_width = 0;
     page_calc_height_width(page, &page_height, &page_width, true);
 
-    GtkWidget* widget = zathura_page_get_widget(page);
+    GtkWidget* widget = zathura_page_get_widget(zathura, page);
     gtk_widget_set_size_request(widget, page_width, page_height);
     gtk_widget_queue_resize(widget);
   }

@@ -4,8 +4,10 @@
 #define PAGE_H
 
 #include <girara/datastructures.h>
+#include <cairo.h>
 
 #include "document.h"
+#include "types.h"
 
 /**
  * Get the page object
@@ -43,15 +45,6 @@ zathura_document_t* zathura_page_get_document(zathura_page_t* page);
  * @return The id of the page
  */
 unsigned int zathura_page_get_index(zathura_page_t* page);
-
-/**
- * Returns the page widget of the page
- *
- * @param page The page object
- * @return The page widget of the page
- * @return NULL if an error occured
- */
-GtkWidget* zathura_page_get_widget(zathura_page_t* page);
 
 /**
  * Returns the width of the page

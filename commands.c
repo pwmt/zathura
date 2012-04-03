@@ -319,7 +319,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       continue;
     }
 
-    GtkWidget* page_widget = zathura_page_get_widget(page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(page_widget, "draw-links", FALSE, NULL);
 
     girara_list_t* result = zathura_page_search_text(page, input, &error);

@@ -46,7 +46,6 @@ struct zathura_document_s
   unsigned int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
-  zathura_t* zathura; /**< Zathura instance */
   unsigned int page_offset; /**< Page offset */
 
   /**
@@ -62,7 +61,8 @@ struct zathura_document_s
 
 
 zathura_document_t*
-zathura_document_open(zathura_t* zathura, const char* path, const char* password)
+zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
+    path, const char* password, zathura_error_t* error)
 {
   if (path == NULL) {
     return NULL;
@@ -104,7 +104,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     return NULL;
   }
 
-  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
+  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(plugin_manager, content_type);
   g_free((void*)content_type);
 
   if (plugin == NULL) {
@@ -118,7 +118,6 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
   document->password  = password;
   document->scale     = 1.0;
   document->plugin    = plugin;
-  document->zathura   = zathura;
 
   /* open document */
   if (plugin->functions.document_open == NULL) {
@@ -126,48 +125,15 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     goto error_free;
   }
 
-  zathura_error_t error = plugin->functions.document_open(document);
-  if (error != ZATHURA_ERROR_OK) {
-    if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
-      zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
-      if (password_dialog_info != NULL) {
-        password_dialog_info->path    = g_strdup(path);
-        password_dialog_info->zathura = zathura;
-
-        if (path != NULL) {
-          girara_dialog(zathura->ui.session, "Enter password:", true, NULL,
-              (girara_callback_inputbar_activate_t) cb_password_dialog, password_dialog_info);
-          goto error_free;
-        } else {
-          free(password_dialog_info);
-        }
-      }
-      goto error_free;
+  zathura_error_t int_error = plugin->functions.document_open(document);
+  if (int_error != ZATHURA_ERROR_OK) {
+    if (error != NULL) {
+      *error = int_error;
     }
 
     girara_error("could not open document\n");
     goto error_free;
   }
-
-  /* read history file */
-  zathura_db_get_fileinfo(zathura->database, document->file_path,
-      &document->current_page_number, &document->page_offset, &document->scale,
-      &document->rotate);
-
-  /* check for valid scale value */
-  if (document->scale <= FLT_EPSILON) {
-    girara_warning("document info: '%s' has non positive scale", document->file_path);
-    document->scale = 1;
-  }
-
-  /* check current page number */
-  if (document->current_page_number > document->number_of_pages) {
-    girara_warning("document info: '%s' has an invalid page number", document->file_path);
-    document->current_page_number = 0;
-  }
-
-  /* update statusbar */
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, real_path);
 
   /* read all pages */
   document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
@@ -182,27 +148,6 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* password
     }
 
     document->pages[page_id] = page;
-  }
-
-  /* jump to first page if setting enabled */
-  bool always_first_page = false;
-  girara_setting_get(zathura->ui.session, "open-first-page", &always_first_page);
-  if (always_first_page == true) {
-    document->current_page_number = 0;
-  }
-
-  /* apply open adjustment */
-  char* adjust_open = "best-fit";
-  document->adjust_mode = ZATHURA_ADJUST_BESTFIT;
-  if (girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
-    if (g_strcmp0(adjust_open, "best-fit") == 0) {
-      document->adjust_mode = ZATHURA_ADJUST_BESTFIT;
-    } else if (g_strcmp0(adjust_open, "width") == 0) {
-      document->adjust_mode = ZATHURA_ADJUST_WIDTH;
-    } else {
-      document->adjust_mode = ZATHURA_ADJUST_NONE;
-    }
-    g_free(adjust_open);
   }
 
   return document;
@@ -609,16 +554,6 @@ guess_type(const char* path)
 
   g_strdelimit(out, "\n\r", '\0');
   return out;
-}
-
-zathura_t*
-zathura_document_get_zathura(zathura_document_t* document)
-{
-  if (document == NULL) {
-    return NULL;
-  }
-
-  return document->zathura;
 }
 
 zathura_plugin_t*

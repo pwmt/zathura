@@ -104,6 +104,7 @@ typedef struct zathura_s
   } stdin_support;
 
   zathura_document_t* document; /**< The current document */
+  GtkWidget** pages; /**< The page widgets */
   zathura_database_t* database; /**< The database */
 
   /**

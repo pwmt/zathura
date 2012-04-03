@@ -16,15 +16,6 @@ typedef struct zathura_password_dialog_info_s
 } zathura_password_dialog_info_t;
 
 /**
- * Returns the associated zathura instance
- * TODO: Separate zathura_t completely from the document
- *
- * @param document The docment
- * @return The associated zathura instance 
- */
-zathura_t* zathura_document_get_zathura(zathura_document_t* document);
-
-/**
  * Returns the associated plugin
  *
  * @param document The document
