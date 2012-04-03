@@ -1,16 +1,18 @@
-# zathura - language file (German)
+# zathura - language file (Spanish (Chile))
 # See LICENSE file for license and copyright information
 #
 # Translators:
+#   <wat.sh1ken@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-04-03 17:14+0200\n"
-"PO-Revision-Date: 2012-03-26 16:48+0000\n"
-"Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
-"Language-Team: pwmt.org <mail@pwmt.org>\n"
-"Language: de\n"
+"PO-Revision-Date: 2012-03-31 22:21+0000\n"
+"Last-Translator: watsh1ken <wat.sh1ken@gmail.com>\n"
+"Language-Team: Spanish (Chile) (http://www.transifex.net/projects/p/zathura/"
+"language/es_CL/)\n"
+"Language: es_CL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,124 +20,124 @@ msgstr ""
 
 #: ../callbacks.c:156
 msgid "Failed to run xdg-open."
-msgstr "Konnte xdg-open nicht ausführen."
+msgstr "Error al ejecutar xdg-open."
 
 #: ../callbacks.c:182
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Ungültige Eingabe '%s' angegeben."
+msgstr "Entrada inválida: '%s'."
 
 #: ../callbacks.c:220
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Ungültiger Index '%s' angegeben."
+msgstr "Índice invalido: '%s'."
 
 #: ../commands.c:30 ../commands.c:65 ../commands.c:92 ../commands.c:134
 #: ../commands.c:234 ../commands.c:251 ../commands.c:277 ../commands.c:357
 #: ../commands.c:392 ../shortcuts.c:863
 msgid "No document opened."
-msgstr "Kein Dokument geöffnet."
+msgstr "Ningún documento abierto."
 
 #: ../commands.c:36 ../commands.c:71 ../commands.c:98 ../commands.c:362
 msgid "Invalid number of arguments given."
-msgstr "Ungültige Anzahl an Argumenten angegeben."
+msgstr "Número de argumentos inválido."
 
 #: ../commands.c:44
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr "Lesezeichen erfolgreich aktualisiert: %s."
+msgstr "Marcador actualizado exitosamente: %s"
 
 #: ../commands.c:50
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Konnte Lesezeichen nicht erstellen: %s"
+msgstr "No se pudo crear marcador: %s"
 
 #: ../commands.c:54
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr "Lesezeichen erfolgreich erstellt: %s"
+msgstr "Marcador creado exitosamente: %s"
 
 #: ../commands.c:77
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Lesezeichen entfernt: %s"
+msgstr "Marcador eliminado: %s"
 
 #: ../commands.c:79
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Konnte Lesezeichen nicht entfernen: %s"
+msgstr "Error al eliminar marcador: %s"
 
 #: ../commands.c:105
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Lesezeichen existiert nicht: %s"
+msgstr "No existe marcador: %s"
 
 #: ../commands.c:156 ../commands.c:178
 msgid "No information available."
-msgstr "Keine Information verfügbar."
+msgstr "No hay información disponible."
 
 #: ../commands.c:202
 msgid "Too many arguments."
-msgstr "Zu viele Argumente angegeben."
+msgstr "Demasiados argumentos."
 
 #: ../commands.c:211
 msgid "No arguments given."
-msgstr "Keine Argumente angegeben."
+msgstr "Ningún argumento recibido."
 
 #: ../commands.c:257 ../commands.c:283
 msgid "Document saved."
-msgstr "Dokument gespeichert."
+msgstr "Documento guardado."
 
 #: ../commands.c:259 ../commands.c:285
 msgid "Failed to save document."
-msgstr "Konnte Dokument nicht speichern."
+msgstr "Error al guardar el documento."
 
 #: ../commands.c:262 ../commands.c:288
 msgid "Invalid number of arguments."
-msgstr "Ungültige Anzahl an Argumenten."
+msgstr "Número de argumentos inválido."
 
 #: ../commands.c:375
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
+msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
 
 #: ../commands.c:377
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Anhang '%s' nach '%s' geschrieben."
+msgstr "Fichero adjunto escrito '%s' a '%s'."
 
 #: ../commands.c:405
 msgid "Argument must be a number."
-msgstr "Das Argument ist keine Zahl."
+msgstr "El argumento debe ser un número."
 
 #. zathura settings
 #: ../config.c:83
 msgid "Database backend"
-msgstr "Datenbank Backend"
+msgstr "Fin de la base de datos."
 
 #: ../config.c:85
 msgid "Zoom step"
-msgstr "Vergrößerungsstufe"
+msgstr "Unidad de zoom"
 
 #: ../config.c:87
 msgid "Padding between pages"
-msgstr "Abstand zwischen den Seiten"
+msgstr "Separación entre páginas"
 
 #: ../config.c:89
 msgid "Number of pages per row"
-msgstr "Anzahl der Seiten in einer Reihe"
+msgstr "Numero de páginas por fila"
 
 #: ../config.c:91
 msgid "Scroll step"
-msgstr "Schrittgröße beim Scrollen"
+msgstr "Unidad de desplazamiento"
 
 #: ../config.c:93
 msgid "Zoom minimum"
-msgstr "Minimale Vergrößerungsstufe"
+msgstr "Zoom mínimo"
 
 #: ../config.c:95
 msgid "Zoom maximum"
-msgstr "Maximale Vergrößerungsstufe"
+msgstr "Zoom máximo"
 
 #: ../config.c:97
 msgid "Life time (in seconds) of a hidden page"
@@ -144,146 +146,153 @@ msgstr ""
 #: ../config.c:98
 msgid "Amount of seconds between each cache purge"
 msgstr ""
-"Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
+"Cantidad de segundos entre las comprobaciones de las páginas invisibles"
 
 #: ../config.c:100
 msgid "Recoloring (dark color)"
-msgstr "Neufärben (Dunkle Farbe)"
+msgstr "Recolorando (color oscuro)"
 
 #: ../config.c:102
 msgid "Recoloring (light color)"
-msgstr "Neufärben (Helle Farbe)"
+msgstr "Recolorando (color claro)"
 
 #: ../config.c:104
 msgid "Color for highlighting"
-msgstr "Farbe für eine Markierung"
+msgstr "Color para destacar"
 
 #: ../config.c:106
 msgid "Color for highlighting (active)"
-msgstr "Farbe für die aktuelle Markierung"
+msgstr "Color para destacar (activo)"
 
 #: ../config.c:110
 msgid "Recolor pages"
-msgstr "Färbe die Seiten ein"
+msgstr "Recolorar páginas"
 
 #: ../config.c:112
 msgid "Wrap scrolling"
-msgstr "Scroll-Umbruch"
+msgstr "Scroll cíclico"
 
 #: ../config.c:114
 msgid "Transparency for highlighting"
-msgstr "Transparenz einer Markierung"
+msgstr "Transparencia para lo destacado"
 
 #: ../config.c:116
 msgid "Render 'Loading ...'"
-msgstr "Zeige 'Lädt...'-Text beim Zeichnen einer Seite"
+msgstr "Renderizando 'Cargando...'"
 
 #: ../config.c:117
 msgid "Adjust to when opening file"
-msgstr "Seite einpassen"
+msgstr "Ajustar al abrirse un archivo"
 
 #: ../config.c:119
 msgid "Show hidden files and directories"
-msgstr "Zeige versteckte Dateien und Ordner an"
+msgstr "Mostrar archivos ocultos y directorios"
 
 #: ../config.c:121
 msgid "Show directories"
-msgstr "Zeige Ordner an"
+msgstr "Mostrar directorios"
 
 #: ../config.c:123
 msgid "Always open on first page"
-msgstr "Öffne Dokument immer auf der ersten Seite"
+msgstr "Siempre abrir en primera página"
 
 #. define default inputbar commands
 #: ../config.c:243
 msgid "Add a bookmark"
-msgstr "Füge Lesezeichen hinzu"
+msgstr "Agregar un marcador"
 
 #: ../config.c:244
 msgid "Delete a bookmark"
-msgstr "Lösche ein Lesezeichen"
+msgstr "Eliminar un marcador"
 
 #: ../config.c:245
 msgid "List all bookmarks"
-msgstr "Liste all Lesezeichen auf"
+msgstr "Listar todos los marcadores"
 
 #: ../config.c:246
 msgid "Close current file"
-msgstr "Schließe das aktuelle Dokument"
+msgstr "Cerrar archivo actual"
 
 #: ../config.c:247
 msgid "Show file information"
-msgstr "Zeige Dokumentinformationen an"
+msgstr "Mostrar información del archivo"
 
 #: ../config.c:248
 msgid "Show help"
-msgstr "Zeige Hilfe an"
+msgstr "Mostrar ayuda"
 
 #: ../config.c:249
 msgid "Open document"
-msgstr "Öffne Dokument"
+msgstr "Abrir documento"
 
 #: ../config.c:250
 msgid "Close zathura"
-msgstr "Beende zathura"
+msgstr "Cerrar zathura"
 
 #: ../config.c:251
 msgid "Print document"
-msgstr "Drucke Dokument"
+msgstr "Imprimir documento"
 
 #: ../config.c:252
 msgid "Save document"
-msgstr "Speichere Dokument"
+msgstr "Guardar documento"
 
 #: ../config.c:253
 msgid "Save document (and force overwriting)"
-msgstr "Speichere Dokument (und überschreibe bestehende)"
+msgstr "Guardar documento (y forzar sobreescritura)"
 
 #: ../config.c:254
 msgid "Save attachments"
-msgstr "Speichere Anhänge"
+msgstr "Guardar archivos adjuntos"
 
 #: ../config.c:255
 msgid "Set page offset"
-msgstr "Setze den Seitenabstand"
+msgstr "Asignar desplazamiento de la página"
 
 #: ../page-widget.c:584
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+msgstr "Texto seleccionado copiado al portapapeles: %s"
 
 #: ../page-widget.c:680
 msgid "Copy image"
-msgstr "Bild kopieren"
+msgstr "Copiar imagen"
 
 #: ../shortcuts.c:766
 msgid "This document does not contain any index"
-msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
+msgstr "Este document no contiene índice"
 
 #: ../zathura.c:59
 msgid "Reparents to window specified by xid"
-msgstr "Reparentiert zathura an das Fenster mit der xid"
+msgstr "Reasignar a la ventana especificada por xid"
 
 #: ../zathura.c:60
 msgid "Path to the config directory"
-msgstr "Pfad zum Konfigurationsverzeichnis"
+msgstr "Ruta al directorio de configuración"
 
 #: ../zathura.c:61
 msgid "Path to the data directory"
-msgstr "Pfad zum Datenverzeichnis"
+msgstr "Ruta al directorio de datos"
 
 #: ../zathura.c:62
 msgid "Path to the directories containing plugins"
-msgstr "Pfad zum Pluginverzeichnis"
+msgstr "Ruta al directorio que contiene plugins"
 
 #: ../zathura.c:63
 msgid "Fork into the background"
-msgstr "Forkt den Prozess in den Hintergrund"
+msgstr "Ejecución en background"
 
 #: ../zathura.c:64
 msgid "Log level (debug, info, warning, error)"
-msgstr "Log-Stufe (debug, info, warning, error)"
+msgstr "Nivel de log (debug, info, warning, error)"
 
 #: ../zathura.c:234 ../zathura.c:715
 msgid "[No name]"
-msgstr "[Kein Name]"
+msgstr "[Sin nombre]"
+
+#~ msgid "Store unvisible pages only for some time (in seconds)"
+#~ msgstr ""
+#~ "Almacenar las páginas no visibles solo durante un tiempo (en segundos)"
+
+#~ msgid "%s not implemented"
+#~ msgstr "%s no implementado"
