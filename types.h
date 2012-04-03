@@ -3,7 +3,20 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "zathura.h"
+#include "macros.h"
+
+/**
+ * Document
+ */
+typedef struct zathura_document_s zathura_document_t;
+/**
+ * Page
+ */
+typedef struct zathura_page_s zathura_page_t;
+/**
+ * Zathura
+ */
+typedef struct zathura_s zathura_t;
 
 /**
  * Plugin manager

@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <girara/datastructures.h>
+#include <glib.h>
 
 #include "types.h"
 

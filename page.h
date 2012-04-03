@@ -6,7 +6,6 @@
 #include <girara/datastructures.h>
 #include <cairo.h>
 
-#include "document.h"
 #include "types.h"
 
 /**

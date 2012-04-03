@@ -7,6 +7,7 @@
 #include <girara/types.h>
 #include <gtk/gtk.h>
 #include "macros.h"
+#include "types.h"
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
@@ -17,12 +18,6 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   FULL_LEFT, FULL_RIGHT, NEXT_CHAR, PREVIOUS_CHAR, DELETE_TO_LINE_START,
   APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW };
 
-/* forward declaration for types from document.h */
-struct zathura_document_s;
-struct zathura_page_s;
-typedef struct zathura_document_s zathura_document_t;
-typedef struct zathura_page_s zathura_page_t;
-
 /* forward declaration for types form database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
@@ -30,7 +25,7 @@ typedef struct _ZathuraDatabase zathura_database_t;
 struct render_thread_s;
 typedef struct render_thread_s render_thread_t;
 
-typedef struct zathura_s
+struct zathura_s
 {
   struct
   {
@@ -116,7 +111,7 @@ typedef struct zathura_s
     gchar* file_path; /**< Save file path */
     gchar* password; /**< Save password */
   } file_monitor;
-} zathura_t;
+};
 
 /**
  * Initializes zathura

@@ -7,7 +7,6 @@
 #include <girara/types.h>
 
 #include "types.h"
-#include "page.h"
 
 /**
  * Open the document
