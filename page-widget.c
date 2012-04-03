@@ -581,7 +581,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 
         if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
           char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-          girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipbard: %s"), stripped_text);
+          girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
           g_free(stripped_text);
         }
       }
