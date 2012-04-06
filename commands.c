@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "page-widget.h"
 #include "page.h"
+#include "internal.h"
 
 #include <girara/session.h>
 #include <girara/datastructures.h>

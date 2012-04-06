@@ -15,6 +15,19 @@ typedef struct zathura_password_dialog_info_s
   zathura_t* zathura;  /**< Zathura session */
 } zathura_password_dialog_info_t;
 
+struct zathura_document_information_entry_s
+{
+  zathura_document_information_type_t type; /**< Type of the information */
+  char* value; /**< Value */
+};
+
+struct zathura_link_s
+{
+  zathura_rectangle_t position; /**< Position of the link */
+  zathura_link_type_t type; /**< Link type */
+  zathura_link_target_t target; /**< Link target */
+};
+
 /**
  * Returns the associated plugin
  *

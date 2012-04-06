@@ -63,11 +63,7 @@ typedef struct zathura_plugin_s zathura_plugin_t;
  * Represents a single entry in the returned list from the \ref
  * zathura_document_get_information function
  */
-typedef struct zathura_document_information_entry_s
-{
-  zathura_document_information_type_t type; /**< Type of the information */
-  char* value; /**< Value */
-} zathura_document_information_entry_t;
+typedef struct zathura_document_information_entry_s zathura_document_information_entry_t;
 
 /**
  * Image buffer
@@ -147,12 +143,7 @@ typedef union zathura_link_target_u
 /**
  * Link
  */
-typedef struct zathura_link_s
-{
-  zathura_rectangle_t position; /**< Position of the link */
-  zathura_link_type_t type; /**< Link type */
-  zathura_link_target_t target; /**< Link target */
-} zathura_link_t;
+typedef struct zathura_link_s zathura_link_t;
 
 /**
  * Index element

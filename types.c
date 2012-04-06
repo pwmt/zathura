@@ -5,6 +5,7 @@
 #include <glib.h>
 
 #include "types.h"
+#include "internal.h"
 
 zathura_link_t*
 zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position, 
