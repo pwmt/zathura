@@ -465,7 +465,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   const char* file_path            = zathura_document_get_path(document);
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
   unsigned int current_page_number = 0;
-  double scale                     = 0;
+  double scale                     = 1;
   unsigned int page_offset         = 0;
   unsigned int rotate              = 0;
 
@@ -473,16 +473,30 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   zathura_db_get_fileinfo(zathura->database, file_path, &current_page_number,
       &page_offset, &scale, &rotate);
 
+  zathura_document_set_page_offset(document, page_offset);
+
   /* check for valid scale value */
   if (scale <= FLT_EPSILON) {
     girara_warning("document info: '%s' has non positive scale", file_path);
     zathura_document_set_scale(document, 1);
+  } else {
+    zathura_document_set_scale(document, scale);
   }
 
   /* check current page number */
   if (current_page_number > number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", file_path);
     zathura_document_set_current_page_number(document, 0);
+  } else {
+    zathura_document_set_current_page_number(document, current_page_number);
+  }
+
+  /* check for valid rotation */
+  if (rotate % 90 != 0) {
+    girara_warning("document info: '%s' has an invalid rotation", file_path);
+    zathura_document_set_rotation(document, 0);
+  } else {
+    zathura_document_set_rotation(document, rotate % 360);
   }
 
   /* jump to first page if setting enabled */
