@@ -5,9 +5,9 @@
 #include "../document.h"
 
 START_TEST(test_open) {
-  fail_unless(zathura_document_open(NULL, NULL, NULL) == NULL, "Could create document", NULL);
-  fail_unless(zathura_document_open(NULL, "fl", NULL) == NULL, "Could create document", NULL);
-  fail_unless(zathura_document_open(NULL, "fl", "pw") == NULL, "Could create document", NULL);
+  fail_unless(zathura_document_open(NULL, NULL, NULL, NULL) == NULL, "Could create document", NULL);
+  fail_unless(zathura_document_open(NULL, "fl", NULL, NULL) == NULL, "Could create document", NULL);
+  fail_unless(zathura_document_open(NULL, "fl", "pw", NULL) == NULL, "Could create document", NULL);
 } END_TEST
 
 Suite* suite_document()
