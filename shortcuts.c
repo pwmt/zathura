@@ -392,7 +392,15 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
   bool scroll_wrap = false;
   girara_setting_get(session, "scroll-wrap", &scroll_wrap);
 
-  t = (t == 0) ? 1 : t;
+  bool columns_per_row_offset = false;
+  girara_setting_get(session, "advance-pages-per-row", &columns_per_row_offset);
+
+  int offset = 1;
+  if (columns_per_row_offset == true) {
+    girara_setting_get(session, "pages-per-row", &offset);
+  }
+
+  t = (t == 0) ? offset : t;
   if (argument->n == NEXT) {
     if (scroll_wrap == true) {
       new_page = new_page + t;
