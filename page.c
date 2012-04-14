@@ -17,6 +17,7 @@ struct zathura_page_s {
   unsigned int index; /**< Page number */
   void* data; /**< Custom data */
   bool visible; /**< Page is visible */
+  double scale; /**< Scale */
   zathura_document_t* document; /**< Document */
 };
 
@@ -36,6 +37,7 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error
   page->index    = index;
   page->visible  = false;
   page->document = document;
+  page->scale    = 1.0;
 
   /* init plugin */
   zathura_plugin_t* plugin = zathura_document_get_plugin(document);
@@ -169,6 +171,26 @@ zathura_page_set_visibility(zathura_page_t* page, bool visibility)
   }
 
   page->visible = visibility;
+}
+
+double
+zathura_page_get_scale(zathura_page_t* page)
+{
+  if (page == NULL) {
+    return 1.0;
+  }
+
+  return page->scale;
+}
+
+void
+zathura_page_set_scale(zathura_page_t* page, double scale)
+{
+  if (page == NULL) {
+    return;
+  }
+
+  page->scale = scale;
 }
 
 void*

@@ -114,7 +114,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  double scale = zathura_document_get_scale(zathura->document);
+  double scale = zathura_page_get_scale(page);
   if (fabs(scale - 1.0f) > FLT_EPSILON) {
     cairo_scale(cairo, scale, scale);
   }

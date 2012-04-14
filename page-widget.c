@@ -599,7 +599,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     redraw_rect(ZATHURA_PAGE(widget), &priv->mouse.selection);
     zathura_rectangle_t tmp = priv->mouse.selection;
 
-    double scale = zathura_document_get_scale(document);
+    double scale = zathura_page_get_scale(priv->page);
     tmp.x1 /= scale;
     tmp.x2 /= scale;
     tmp.y1 /= scale;

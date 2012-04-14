@@ -73,12 +73,12 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   center.height = center.width = (2 * page_padding) + 1;
 
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  double scale = zathura_document_get_scale(zathura->document);
 
   bool updated = false;
   /* find page that fits */
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    double scale = zathura_page_get_scale(page);
 
     GdkRectangle page_rect;
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);

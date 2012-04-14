@@ -97,6 +97,22 @@ bool zathura_page_get_visibility(zathura_page_t* page);
 void zathura_page_set_visibility(zathura_page_t* page, bool visibility);
 
 /**
+ * Returns the scale value of the page
+ *
+ * @param page The page
+ * @return The scale value
+ */
+double zathura_page_get_scale(zathura_page_t* page);
+
+/**
+ * Sets the new scale level of the page
+ *
+ * @param page The page
+ * @param scale The new scale value
+ */
+void zathura_page_set_scale(zathura_page_t* page, double scale);
+
+/**
  * Returns the custom data
  *
  * @param page The page object

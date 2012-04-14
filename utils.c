@@ -231,7 +231,7 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
 
   double page_height = zathura_page_get_height(page);
   double page_width  = zathura_page_get_width(page);
-  double scale       = zathura_document_get_scale(document);
+  double scale       = zathura_page_get_scale(page);
 
   zathura_rectangle_t tmp;
 
@@ -287,7 +287,7 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
 
   double height = zathura_page_get_height(page);
   double width  = zathura_page_get_width(page);
-  double scale  = zathura_document_get_scale(document);
+  double scale  = zathura_page_get_scale(page);
 
   if (rotate && zathura_document_get_rotation(document) % 180) {
     *page_width  = ceil(height * scale);

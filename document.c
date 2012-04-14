@@ -309,6 +309,15 @@ zathura_document_set_scale(zathura_document_t* document, double scale)
     return;
   }
 
+  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+
+    zathura_page_set_scale(page, scale);
+  }
+
   document->scale = scale;
 }
 

@@ -6,6 +6,8 @@
 #include <girara/shortcuts.h>
 #include <girara/utils.h>
 #include <gtk/gtk.h>
+#include <libgen.h>
+#include <math.h>
 #include <glib/gi18n.h>
 
 #include "callbacks.h"
@@ -87,64 +89,87 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* calculate total width and max-height */
-  double total_width  = 0;
-  double total_height = 0;
-  double max_height   = 0;
-  double max_width    = 0;
-
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  for (unsigned int page_id = 0; page_id < pages_per_row; page_id++) {
-    if (page_id == number_of_pages) {
-      break;
-    }
+  unsigned int number_of_rows  = ceil(number_of_pages / pages_per_row);
+  unsigned int rotation        = zathura_document_get_rotation(zathura->document);
 
-    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-    if (page == NULL) {
-      goto error_ret;
-    }
+  for (unsigned int row = 0; row < number_of_rows; row++) {
+    double total_width  = 0;
+    double total_height = 0;
+    double max_height   = 0;
+    double max_width    = 0;
 
-    unsigned int page_height = zathura_page_get_height(page);
-    unsigned int page_width  = zathura_page_get_width(page);
-
-    if (page_height > max_height) {
-      max_height = page_height;
-    }
-
-    if (page_width > max_width) {
-      max_width = page_width;
-    }
-
-    total_width  += page_width;
-    total_height += page_height;
-  }
-
-  unsigned int rotation = zathura_document_get_rotation(zathura->document);
-  switch (argument->n) {
-    case ZATHURA_ADJUST_WIDTH:
-      if (rotation == 0 || rotation == 180) {
-        zathura_document_set_scale(zathura->document, width / total_width);
-      } else {
-        zathura_document_set_scale(zathura->document, width / total_height);
-      }
-      break;
-    case ZATHURA_ADJUST_BESTFIT:
-      if (total_width < total_height) {
-        if (rotation == 0 || rotation == 180) {
-          zathura_document_set_scale(zathura->document, height / max_height);
-        } else {
-          zathura_document_set_scale(zathura->document, width / total_height);
-        }
-      } else {
-        if (rotation == 0 || rotation == 180) {
-          zathura_document_set_scale(zathura->document, width / total_width);
-        } else {
-          zathura_document_set_scale(zathura->document, height / total_width);
-        }
+    /* calculate total width and max-height */
+    for (unsigned int column = 0; column < pages_per_row; column++) {
+      unsigned int page_id = row * pages_per_row + column;
+      if (page_id == number_of_pages) {
+        break;
       }
 
-      break;
-    default:
-      goto error_ret;
+      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+      if (page == NULL) {
+        goto error_ret;
+      }
+
+      unsigned int page_height = zathura_page_get_height(page);
+      unsigned int page_width  = zathura_page_get_width(page);
+
+      if (page_height > max_height) {
+        max_height = page_height;
+      }
+
+      if (page_width > max_width) {
+        max_width = page_width;
+      }
+
+      total_width  += page_width;
+      total_height += page_height;
+    }
+
+    double new_scale = 1.0;
+
+    switch (argument->n) {
+      case ZATHURA_ADJUST_WIDTH:
+        if (rotation == 0 || rotation == 180) {
+          new_scale = width / total_width;
+        } else {
+          new_scale = width / total_height;
+        }
+        break;
+      case ZATHURA_ADJUST_BESTFIT:
+        if (total_width < total_height) {
+          if (rotation == 0 || rotation == 180) {
+            new_scale = height / max_height;
+          } else {
+            new_scale = width / total_height;
+          }
+        } else {
+          if (rotation == 0 || rotation == 180) {
+            new_scale = width / total_width;
+          } else {
+            new_scale = height / total_width;
+          }
+        }
+
+        break;
+      default:
+        goto error_ret;
+    }
+
+    /* apply new scale */
+    for (unsigned int column = 0; column < pages_per_row; column++) {
+      unsigned int page_id = row * pages_per_row + column;
+      if (page_id == number_of_pages) {
+        break;
+      }
+
+      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+      if (page == NULL) {
+        goto error_ret;
+      }
+
+      zathura_page_set_scale(page, new_scale);
+    }
   }
 
   /* keep position */
