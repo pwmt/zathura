@@ -721,6 +721,12 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura_document_free(zathura->document);
   zathura->document = NULL;
 
+  /* remove index */
+  if (zathura->ui.index != NULL) {
+    g_object_ref_sink(zathura->ui.index);
+    zathura->ui.index = NULL;
+  }
+
   gtk_widget_hide(zathura->ui.page_widget);
 
   statusbar_page_number_update(zathura);
