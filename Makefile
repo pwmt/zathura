@@ -144,7 +144,7 @@ endif
 
 install-manpages: build-manpages
 	$(ECHO) installing manual pages
-	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
 ifneq "$(wildcard ${PROJECT}.1)" ""
 	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
 endif
@@ -154,17 +154,17 @@ endif
 
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
-	$(QUIET)mkdir -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(QUIET)install -m 644 ${HEADERINST} ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(ECHO) installing pkgconfig file
-	$(QUIET)mkdir -p ${DESTDIR}${LIBDIR}/pkgconfig
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
 install: all install-headers install-manpages
 	$(ECHO) installing executable file
-	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
-	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
 	$(MAKE) -C po install
