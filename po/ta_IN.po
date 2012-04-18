@@ -6,16 +6,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
 "POT-Creation-Date: 2012-04-03 17:14+0200\n"
-"PO-Revision-Date: 2012-04-01 04:26+0000\n"
 "Last-Translator: mankand007 <mankand007@gmail.com>\n"
-"Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
-"language/ta_IN/)\n"
-"Language: ta_IN\n"
+"PO-Revision-Date: 2012-04-03 15:25+0000\n"
+"Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/language/ta_IN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: ../callbacks.c:156
@@ -288,6 +287,3 @@ msgstr ""
 #: ../zathura.c:234 ../zathura.c:715
 msgid "[No name]"
 msgstr "பெயரற்ற ஆவணம்"
-
-#~ msgid "Store unvisible pages only for some time (in seconds)"
-#~ msgstr "கண்ணுக்குப் புலப்படாத பக்கங்களை எத்தனை நொடிகள் சேமிக்க வேண்டும்?"

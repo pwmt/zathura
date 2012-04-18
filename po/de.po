@@ -5,15 +5,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
 "POT-Creation-Date: 2012-04-03 17:14+0200\n"
-"PO-Revision-Date: 2012-03-26 16:48+0000\n"
 "Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
-"Language: de\n"
+"PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: ../callbacks.c:156
@@ -143,8 +143,7 @@ msgstr ""
 
 #: ../config.c:98
 msgid "Amount of seconds between each cache purge"
-msgstr ""
-"Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
+msgstr "Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
 
 #: ../config.c:100
 msgid "Recoloring (dark color)"

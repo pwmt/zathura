@@ -6,16 +6,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
 "POT-Creation-Date: 2012-04-03 17:14+0200\n"
-"PO-Revision-Date: 2012-03-31 07:27+0000\n"
+"PO-Revision-Date: 2012-04-13 07:26+0000\n"
 "Last-Translator: Quentin Stiévenart <quentin.stievenart@gmail.com>\n"
-"Language-Team: French (http://www.transifex.net/projects/p/zathura/language/"
-"fr/)\n"
-"Language: fr\n"
+"Language-Team: French (http://www.transifex.net/projects/p/zathura/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
 #: ../callbacks.c:156
@@ -121,7 +120,7 @@ msgstr ""
 
 #: ../config.c:87
 msgid "Padding between pages"
-msgstr ""
+msgstr "Espacement entre les pages"
 
 #: ../config.c:89
 msgid "Number of pages per row"
@@ -141,11 +140,11 @@ msgstr "Zoom maximum"
 
 #: ../config.c:97
 msgid "Life time (in seconds) of a hidden page"
-msgstr ""
+msgstr "Temps de vie (en seconde) d'une page cachée"
 
 #: ../config.c:98
 msgid "Amount of seconds between each cache purge"
-msgstr ""
+msgstr "Temps (en seconde) avant de vider le cache."
 
 #: ../config.c:100
 msgid "Recoloring (dark color)"
@@ -185,60 +184,60 @@ msgstr ""
 
 #: ../config.c:119
 msgid "Show hidden files and directories"
-msgstr ""
+msgstr "Montre les fichiers et dossiers cachés"
 
 #: ../config.c:121
 msgid "Show directories"
-msgstr ""
+msgstr "Montre les dossiers"
 
 #: ../config.c:123
 msgid "Always open on first page"
-msgstr ""
+msgstr "Toujours ouvrir à la première page"
 
 #. define default inputbar commands
 #: ../config.c:243
 msgid "Add a bookmark"
-msgstr ""
+msgstr "Ajoute un marque-page"
 
 #: ../config.c:244
 msgid "Delete a bookmark"
-msgstr ""
+msgstr "Supprime un marque-page"
 
 #: ../config.c:245
 msgid "List all bookmarks"
-msgstr ""
+msgstr "Liste tous les marque-pages"
 
 #: ../config.c:246
 msgid "Close current file"
-msgstr ""
+msgstr "Ferme le fichier actuel"
 
 #: ../config.c:247
 msgid "Show file information"
-msgstr ""
+msgstr "Montre les informations sur le fichier"
 
 #: ../config.c:248
 msgid "Show help"
-msgstr ""
+msgstr "Montre l'aide"
 
 #: ../config.c:249
 msgid "Open document"
-msgstr ""
+msgstr "Ouvre un document"
 
 #: ../config.c:250
 msgid "Close zathura"
-msgstr ""
+msgstr "Quitte zathura"
 
 #: ../config.c:251
 msgid "Print document"
-msgstr ""
+msgstr "Imprime un document"
 
 #: ../config.c:252
 msgid "Save document"
-msgstr ""
+msgstr "Sauve un document"
 
 #: ../config.c:253
 msgid "Save document (and force overwriting)"
-msgstr ""
+msgstr "Sauve un document (et force l'écrasement)"
 
 #: ../config.c:254
 msgid "Save attachments"
@@ -251,15 +250,15 @@ msgstr ""
 #: ../page-widget.c:584
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr ""
+msgstr "Sélection copiée dans le presse-papiers: %s"
 
 #: ../page-widget.c:680
 msgid "Copy image"
-msgstr ""
+msgstr "Copie une image"
 
 #: ../shortcuts.c:766
 msgid "This document does not contain any index"
-msgstr ""
+msgstr "Ce document ne contient pas d'index"
 
 #: ../zathura.c:59
 msgid "Reparents to window specified by xid"
@@ -267,15 +266,15 @@ msgstr ""
 
 #: ../zathura.c:60
 msgid "Path to the config directory"
-msgstr ""
+msgstr "Chemin vers le dossier de configuration"
 
 #: ../zathura.c:61
 msgid "Path to the data directory"
-msgstr ""
+msgstr "Chemin vers le dossier de données"
 
 #: ../zathura.c:62
 msgid "Path to the directories containing plugins"
-msgstr ""
+msgstr "Chemin vers le dossier de plugins"
 
 #: ../zathura.c:63
 msgid "Fork into the background"
@@ -283,8 +282,8 @@ msgstr ""
 
 #: ../zathura.c:64
 msgid "Log level (debug, info, warning, error)"
-msgstr ""
+msgstr "Niveau d'affichage (debug, info, warning, error)"
 
 #: ../zathura.c:234 ../zathura.c:715
 msgid "[No name]"
-msgstr ""
+msgstr "[Pas de nom]"
