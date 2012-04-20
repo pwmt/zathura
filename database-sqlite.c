@@ -20,9 +20,9 @@ static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file,
 static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db,
     const char* file);
 static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file,
-    unsigned int page, unsigned int offset, double scale, unsigned int rotation);
+    zathura_fileinfo_t* file_info);
 static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file,
-    unsigned int* page, unsigned int* offset, double* scale, unsigned int* rotation);
+		zathura_fileinfo_t* file_info);
 static void sqlite_set_property(GObject* object, guint prop_id,
     const GValue* value, GParamSpec* pspec);
 
@@ -272,9 +272,13 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 }
 
 static bool
-sqlite_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, unsigned int offset, double scale, unsigned int rotation)
+sqlite_set_fileinfo(zathura_database_t* db, const char* file,
+    zathura_fileinfo_t* file_info)
 {
+  if (db == NULL || file == NULL || file_info == NULL) {
+		return false;
+	}
+
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_SET[] =
@@ -285,11 +289,11 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
     return false;
   }
 
-  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
-      sqlite3_bind_int(stmt, 2, page) != SQLITE_OK ||
-      sqlite3_bind_int(stmt, 3, offset) != SQLITE_OK ||
-      sqlite3_bind_double(stmt, 4, scale) != SQLITE_OK ||
-      sqlite3_bind_int(stmt, 5, rotation) != SQLITE_OK) {
+  if (sqlite3_bind_text(stmt,   1, file, -1, NULL)          != SQLITE_OK ||
+      sqlite3_bind_int(stmt,    2, file_info->current_page) != SQLITE_OK ||
+      sqlite3_bind_int(stmt,    3, file_info->page_offset)  != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 4, file_info->scale)        != SQLITE_OK ||
+      sqlite3_bind_int(stmt,    5, file_info->rotation)     != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
@@ -302,9 +306,13 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 }
 
 static bool
-sqlite_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, unsigned int* offset, double* scale, unsigned int* rotation)
+sqlite_get_fileinfo(zathura_database_t* db, const char* file,
+		zathura_fileinfo_t* file_info)
 {
+	if (db == NULL || file == NULL || file_info == NULL) {
+		return false;
+	}
+
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_GET[] =
@@ -312,7 +320,7 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
-    return false;
+		return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
@@ -327,10 +335,11 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
     return false;
   }
 
-  *page = sqlite3_column_int(stmt, 0);
-  *offset = sqlite3_column_int(stmt, 1);
-  *scale = sqlite3_column_double(stmt, 2);
-  *rotation = sqlite3_column_int(stmt, 3);
+  file_info->current_page = sqlite3_column_int(stmt, 0);
+  file_info->page_offset  = sqlite3_column_int(stmt, 1);
+  file_info->scale        = sqlite3_column_double(stmt, 2);
+  file_info->rotation     = sqlite3_column_int(stmt, 3);
+
   sqlite3_finalize(stmt);
 
   return true;

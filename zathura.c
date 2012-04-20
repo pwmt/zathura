@@ -462,41 +462,38 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     goto error_out;
   }
 
-  const char* file_path            = zathura_document_get_path(document);
-  unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
-  unsigned int current_page_number = 0;
-  double scale                     = 1;
-  unsigned int page_offset         = 0;
-  unsigned int rotate              = 0;
+  const char* file_path        = zathura_document_get_path(document);
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   /* read history file */
-  zathura_db_get_fileinfo(zathura->database, file_path, &current_page_number,
-      &page_offset, &scale, &rotate);
+	zathura_fileinfo_t file_info = { 0, 0, 1, 0 };
+  zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
-  zathura_document_set_page_offset(document, page_offset);
+	/* set page offset */
+  zathura_document_set_page_offset(document, file_info.page_offset);
 
   /* check for valid scale value */
-  if (scale <= FLT_EPSILON) {
+  if (file_info.scale <= FLT_EPSILON) {
     girara_warning("document info: '%s' has non positive scale", file_path);
     zathura_document_set_scale(document, 1);
   } else {
-    zathura_document_set_scale(document, scale);
+    zathura_document_set_scale(document, file_info.scale);
   }
 
   /* check current page number */
-  if (current_page_number > number_of_pages) {
+  if (file_info.current_page > number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", file_path);
     zathura_document_set_current_page_number(document, 0);
   } else {
-    zathura_document_set_current_page_number(document, current_page_number);
+    zathura_document_set_current_page_number(document, file_info.current_page);
   }
 
   /* check for valid rotation */
-  if (rotate % 90 != 0) {
+  if (file_info.rotation % 90 != 0) {
     girara_warning("document info: '%s' has an invalid rotation", file_path);
     zathura_document_set_rotation(document, 0);
   } else {
-    zathura_document_set_rotation(document, rotate % 360);
+    zathura_document_set_rotation(document, file_info.rotation % 360);
   }
 
   /* jump to first page if setting enabled */
@@ -698,15 +695,16 @@ document_close(zathura_t* zathura, bool keep_monitor)
     }
   }
 
-  const char* path                 = zathura_document_get_path(zathura->document);
-  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
-  unsigned int page_offset         = zathura_document_get_page_offset(zathura->document);
-  double scale                     = zathura_document_get_scale(zathura->document);
-  unsigned int rotation            = zathura_document_get_rotation(zathura->document);
+  /* store file information */
+  const char* path = zathura_document_get_path(zathura->document);
 
-  /* store last seen page */
-  zathura_db_set_fileinfo(zathura->database, path, current_page_number,
-      page_offset, scale, rotation);
+	zathura_fileinfo_t file_info = { 0 };
+  file_info.current_page = zathura_document_get_current_page_number(zathura->document);
+  file_info.page_offset  = zathura_document_get_page_offset(zathura->document);
+  file_info.scale        = zathura_document_get_scale(zathura->document);
+  file_info.rotation     = zathura_document_get_rotation(zathura->document);
+
+  zathura_db_set_fileinfo(zathura->database, path, &file_info);
 
   /* release render thread */
   render_free(zathura->sync.render_thread);

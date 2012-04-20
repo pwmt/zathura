@@ -45,9 +45,9 @@ static bool plain_remove_bookmark(zathura_database_t* db, const char* file,
 static girara_list_t* plain_load_bookmarks(zathura_database_t* db,
     const char* file);
 static bool plain_set_fileinfo(zathura_database_t* db, const char* file,
-    unsigned int page, unsigned int offset, double scale, unsigned int rotation);
+    zathura_fileinfo_t* file_info);
 static bool plain_get_fileinfo(zathura_database_t* db, const char* file,
-    unsigned int* page, unsigned int* offset, double* scale, unsigned int* rotation);
+    zathura_fileinfo_t* file_info);
 static void plain_set_property(GObject* object, guint prop_id,
     const GValue* value, GParamSpec* pspec);
 
@@ -367,21 +367,21 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
 }
 
 static bool
-plain_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
-    page, unsigned int offset, double scale, unsigned int rotation)
+plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
+    file_info)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
-  if (priv->history == NULL) {
+  if (priv->history == NULL || file_info == NULL || file == NULL) {
     return false;
   }
 
-  char* tmp = g_strdup_printf("%f", scale);
+  char* tmp = g_strdup_printf("%f", file_info->scale);
   char* name = prepare_filename(file);
 
-  g_key_file_set_integer(priv->history, name, KEY_PAGE,   page);
-  g_key_file_set_integer(priv->history, name, KEY_OFFSET, offset);
+  g_key_file_set_integer(priv->history, name, KEY_PAGE,   file_info->current_page);
+  g_key_file_set_integer(priv->history, name, KEY_OFFSET, file_info->page_offset);
   g_key_file_set_string (priv->history, name, KEY_SCALE,  tmp);
-  g_key_file_set_integer(priv->history, name, KEY_ROTATE, rotation);
+  g_key_file_set_integer(priv->history, name, KEY_ROTATE, file_info->rotation);
 
   g_free(name);
   g_free(tmp);
@@ -392,9 +392,13 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, unsigned int
 }
 
 static bool
-plain_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
-    page, unsigned int* offset, double* scale, unsigned int* rotation)
+plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
+    file_info)
 {
+  if (db == NULL || file == NULL || file_info == NULL) {
+    return false;
+  }
+
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->history == NULL) {
     return false;
@@ -405,12 +409,12 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, unsigned int*
     return false;
   }
 
-  *page     = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
-  *offset   = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
-  *rotation = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
+  file_info->current_page = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
+  file_info->page_offset  = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
+  file_info->rotation     = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
 
   char* scale_string = g_key_file_get_string(priv->history, name, KEY_SCALE, NULL);
-  *scale  = strtod(scale_string, NULL);
+  file_info->scale  = strtod(scale_string, NULL);
   g_free(scale_string);
   g_free(name);
 
