@@ -14,6 +14,9 @@ typedef struct zathura_fileinfo_s {
   unsigned int page_offset;
   double scale;
   unsigned int rotation;
+  unsigned int pages_per_row;
+  double position_x;
+  double position_y;
 } zathura_fileinfo_t;
 
 #define ZATHURA_TYPE_DATABASE \

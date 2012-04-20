@@ -38,8 +38,21 @@ typedef struct zathura_document_info_s
   const char* password;
 } zathura_document_info_t;
 
+typedef struct page_set_delayed_s
+{
+  zathura_t* zathura;
+  unsigned int page;
+} page_set_delayed_t;
+
+typedef struct position_set_delayed_s
+{
+  zathura_t* zathura;
+  zathura_fileinfo_t file_info;
+} position_set_delayed_t;
+
 static gboolean document_info_open(gpointer data);
 static gboolean purge_pages(gpointer data);
+static gboolean position_set_delayed(gpointer data);
 
 /* function implementation */
 zathura_t*
@@ -466,7 +479,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   /* read history file */
-	zathura_fileinfo_t file_info = { 0, 0, 1, 0 };
+	zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
   zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
 	/* set page offset */
@@ -587,7 +600,11 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   /* view mode */
   int pages_per_row = 1;
-  girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
+  if (file_info.pages_per_row > 0) {
+    pages_per_row = file_info.pages_per_row;
+  } else {
+    girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
+  }
   page_widget_set_mode(zathura, pages_per_row);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
@@ -606,9 +623,6 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   /* bookmarks */
   zathura_bookmarks_load(zathura, file_path);
 
-  page_set_delayed(zathura, zathura_document_get_current_page_number(document));
-  cb_view_vadjustment_value_changed(NULL, zathura);
-
   /* update title */
   girara_set_window_title(zathura->ui.session, file_path);
 
@@ -617,6 +631,18 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   /* adjust window */
   girara_argument_t argument = { zathura_document_get_adjust_mode(document), NULL };
   sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+
+  /* set position */
+  if (file_info.position_x != 0 || file_info.position_y != 0) {
+    position_set_delayed_t* p = g_malloc0(sizeof(position_set_delayed_t));
+    p->zathura   = zathura;
+    p->file_info = file_info;
+
+    gdk_threads_add_idle(position_set_delayed, p);
+  } else {
+    page_set_delayed(zathura, zathura_document_get_current_page_number(document));
+    cb_view_vadjustment_value_changed(NULL, zathura);
+  }
 
   return true;
 
@@ -704,6 +730,17 @@ document_close(zathura_t* zathura, bool keep_monitor)
   file_info.scale        = zathura_document_get_scale(zathura->document);
   file_info.rotation     = zathura_document_get_rotation(zathura->document);
 
+  girara_setting_get(zathura->ui.session, "pages-per-row", &(file_info.pages_per_row));
+
+  /* get position */
+  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
+
+  file_info.position_x = gtk_adjustment_get_value(hadjustment);
+  file_info.position_y = gtk_adjustment_get_value(vadjustment);
+
+  /* save file info */
   zathura_db_set_fileinfo(zathura->database, path, &file_info);
 
   /* release render thread */
@@ -711,7 +748,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->sync.render_thread = NULL;
 
   /* remove widgets */
-  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)1);
+  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer) 1);
   free(zathura->pages);
   zathura->pages = NULL;
 
@@ -738,12 +775,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   return true;
 }
-
-typedef struct page_set_delayed_s
-{
-  zathura_t* zathura;
-  unsigned int page;
-} page_set_delayed_t;
 
 static gboolean
 page_set_delayed_impl(gpointer data)
@@ -873,4 +904,19 @@ gboolean purge_pages(gpointer data)
     zathura_page_widget_purge_unused(ZATHURA_PAGE(page_widget), threshold);
   }
   return TRUE;
+}
+
+static gboolean
+position_set_delayed(gpointer data)
+{
+  position_set_delayed_t* p = (position_set_delayed_t*) data;
+
+  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(p->zathura->ui.session->gtk.view);
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
+
+  gtk_adjustment_set_value(hadjustment, p->file_info.position_x);
+  gtk_adjustment_set_value(vadjustment, p->file_info.position_y);
+
+  return FALSE;
 }
