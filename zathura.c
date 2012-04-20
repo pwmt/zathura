@@ -518,7 +518,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   /* apply open adjustment */
   char* adjust_open = "best-fit";
-  zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_BESTFIT);
+  zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
   if (girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
     if (g_strcmp0(adjust_open, "best-fit") == 0) {
       zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_BESTFIT);
