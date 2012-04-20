@@ -949,6 +949,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
+  t = (t == 0) ? 1 : t;
   float zoom_step = value / 100.0f * t;
   float old_zoom = zathura_document_get_scale(zathura->document);
 
