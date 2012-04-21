@@ -18,23 +18,6 @@
 #include "page.h"
 #include "page-widget.h"
 
-static void
-readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
-  if (zathura == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  double scale = zathura_document_get_scale(zathura->document);
-  gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
-  gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
-  set_adjustment(hadjustment, valx);
-  set_adjustment(vadjustment, valy);
-}
-
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))

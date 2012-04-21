@@ -12,11 +12,10 @@
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
-  BACKWARD, CONTINUOUS, DELETE_LAST, ADD_MARKER, EVAL_MARKER, EXPAND,
-  EXPAND_ALL, COLLAPSE_ALL, COLLAPSE, SELECT, GOTO_DEFAULT, GOTO_LABELS,
-  GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP, FULL_DOWN, HALF_LEFT, HALF_RIGHT,
-  FULL_LEFT, FULL_RIGHT, NEXT_CHAR, PREVIOUS_CHAR, DELETE_TO_LINE_START,
-  APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW };
+  BACKWARD, CONTINUOUS, DELETE_LAST, EXPAND, EXPAND_ALL, COLLAPSE_ALL, COLLAPSE,
+  SELECT, GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP,
+  FULL_DOWN, HALF_LEFT, HALF_RIGHT, FULL_LEFT, FULL_RIGHT, NEXT_CHAR,
+  PREVIOUS_CHAR, DELETE_TO_LINE_START, APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW };
 
 /* forward declaration for types form database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
@@ -77,6 +76,7 @@ struct zathura_s
   {
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
+    girara_list_t* marks; /**< Marker */
   } global;
 
   struct
@@ -177,6 +177,16 @@ bool page_set(zathura_t* zathura, unsigned int page_id);
  * @return If no error occured true, otherwise false, is returned.
  */
 bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
+
+/**
+ * Moves to the given position
+ *
+ * @param zathura Zathura session
+ * @param position_x X coordinate
+ * @param position_y Y coordinate
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool position_set_delayed(zathura_t* zathura, double position_x, double position_y);
 
 /**
  * Builds the box structure to show the rendered pages

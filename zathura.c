@@ -26,6 +26,7 @@
 #include "shortcuts.h"
 #include "zathura.h"
 #include "utils.h"
+#include "marks.h"
 #include "render.h"
 #include "page.h"
 #include "page-widget.h"
@@ -47,12 +48,12 @@ typedef struct page_set_delayed_s
 typedef struct position_set_delayed_s
 {
   zathura_t* zathura;
-  zathura_fileinfo_t file_info;
+  double position_x;
+  double position_y;
 } position_set_delayed_t;
 
 static gboolean document_info_open(gpointer data);
 static gboolean purge_pages(gpointer data);
-static gboolean position_set_delayed(gpointer data);
 
 /* function implementation */
 zathura_t*
@@ -199,7 +200,7 @@ zathura_init(int argc, char* argv[])
   zathura->ui.session->gtk.embed = embed;
 
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
-    goto error_out;
+    goto error_free;
   }
 
   /* girara events */
@@ -569,6 +570,12 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     }
   }
 
+  /* create marks list */
+  zathura->global.marks = girara_list_new2((girara_free_function_t) mark_free);
+  if (zathura->global.marks == NULL) {
+    goto error_free;
+  }
+
   zathura->document = document;
 
   /* create blank pages */
@@ -634,11 +641,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   /* set position */
   if (file_info.position_x != 0 || file_info.position_y != 0) {
-    position_set_delayed_t* p = g_malloc0(sizeof(position_set_delayed_t));
-    p->zathura   = zathura;
-    p->file_info = file_info;
-
-    gdk_threads_add_idle(position_set_delayed, p);
+    position_set_delayed(zathura, file_info.position_x, file_info.position_y);
   } else {
     page_set_delayed(zathura, zathura_document_get_current_page_number(document));
     cb_view_vadjustment_value_changed(NULL, zathura);
@@ -719,6 +722,12 @@ document_close(zathura_t* zathura, bool keep_monitor)
       g_free(zathura->file_monitor.password);
       zathura->file_monitor.password = NULL;
     }
+  }
+
+  /* remove marks */
+  if (zathura->global.marks != NULL) {
+    girara_list_free(zathura->global.marks);
+    zathura->global.marks = NULL;
   }
 
   /* store file information */
@@ -907,7 +916,7 @@ gboolean purge_pages(gpointer data)
 }
 
 static gboolean
-position_set_delayed(gpointer data)
+position_set_delayed_impl(gpointer data)
 {
   position_set_delayed_t* p = (position_set_delayed_t*) data;
 
@@ -915,8 +924,21 @@ position_set_delayed(gpointer data)
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
 
-  gtk_adjustment_set_value(hadjustment, p->file_info.position_x);
-  gtk_adjustment_set_value(vadjustment, p->file_info.position_y);
+  gtk_adjustment_set_value(hadjustment, p->position_x);
+  gtk_adjustment_set_value(vadjustment, p->position_y);
 
   return FALSE;
+}
+
+bool
+position_set_delayed(zathura_t* zathura, double position_x, double position_y)
+{
+  position_set_delayed_t* p = g_malloc0(sizeof(position_set_delayed_t));
+
+  p->zathura    = zathura;
+  p->position_x = position_x;
+  p->position_y = position_y;
+
+  gdk_threads_add_idle(position_set_delayed_impl, p);
+
 }
