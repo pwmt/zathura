@@ -941,4 +941,5 @@ position_set_delayed(zathura_t* zathura, double position_x, double position_y)
 
   gdk_threads_add_idle(position_set_delayed_impl, p);
 
+  return FALSE;
 }
