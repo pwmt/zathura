@@ -429,16 +429,22 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   file_info->pages_per_row = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
 
   char* scale_string = g_key_file_get_string(priv->history, name, KEY_SCALE, NULL);
-  file_info->scale  = strtod(scale_string, NULL);
-  g_free(scale_string);
+  if (scale_string != NULL) {
+    file_info->scale  = strtod(scale_string, NULL);
+    g_free(scale_string);
+  }
 
   char* position_x_string = g_key_file_get_string(priv->history, name, KEY_POSITION_X, NULL);
-  file_info->position_x = strtod(position_x_string, NULL);
-	g_free(position_x_string);
+  if (position_x_string != NULL) {
+    file_info->position_x = strtod(position_x_string, NULL);
+    g_free(position_x_string);
+  }
 
   char* position_y_string = g_key_file_get_string(priv->history, name, KEY_POSITION_Y, NULL);
-  file_info->position_y = strtod(position_y_string, NULL);
-	g_free(position_y_string);
+  if (position_y_string != NULL) {
+    file_info->position_y = strtod(position_y_string, NULL);
+    g_free(position_y_string);
+  }
 
   g_free(name);
 
