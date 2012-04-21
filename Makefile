@@ -175,7 +175,7 @@ uninstall-headers:
 	$(ECHO) removing pkgconfig file
 	$(QUIET)rm -f ${DESTDIR}${LIBDIR}/pkgconfig/${PROJECT}.pc
 
-uninstall:
+uninstall: uninstall-headers
 	$(ECHO) removing executable file
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
 	$(ECHO) removing manual pages
