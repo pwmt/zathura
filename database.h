@@ -9,6 +9,16 @@
 
 #include "bookmarks.h"
 
+typedef struct zathura_fileinfo_s {
+  unsigned int current_page;
+  unsigned int page_offset;
+  double scale;
+  unsigned int rotation;
+  unsigned int pages_per_row;
+  double position_x;
+  double position_y;
+} zathura_fileinfo_t;
+
 #define ZATHURA_TYPE_DATABASE \
   (zathura_database_get_type ())
 #define ZATHURA_DATABASE(obj) \
@@ -29,13 +39,12 @@ struct _ZathuraDatabaseInterface
   bool (*add_bookmark)(ZathuraDatabase* db, const char* file, zathura_bookmark_t* bookmark);
 
   bool (*remove_bookmark)(ZathuraDatabase* db, const char* file, const char* id);
+
   girara_list_t* (*load_bookmarks)(ZathuraDatabase* db, const char* file);
 
-  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, unsigned
-    int page, unsigned int offset, double scale, unsigned int rotation);
+  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
 
-  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, unsigned
-    int* page, unsigned int* offset, double* scale, unsigned int* rotation);
+  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
 };
 
 GType zathura_database_get_type(void);
@@ -84,26 +93,20 @@ girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char*
  *
  * @param db The database instance
  * @param file The file to which the file info belongs to.
- * @param page The last page.
- * @param offset The last offset.
- * @param scale The last scale.
- * @param rotation The last rotation.
+ * @param file_info The file info
  * @return true on success, false otherwise.
  */
-bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int page, unsigned int offset, double scale, unsigned int rotation);
+bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
+    zathura_fileinfo_t* file_info);
 
 /* Get file info (last site, ...) from the database.
  *
  * @param db The database instance
  * @param file The file to which the file info belongs to.
- * @param page The last page.
- * @param offset The last offset.
- * @param scale The last scale.
- * @param rotation The rotation.
+ * @param file_info The file info
  * @return true on success, false otherwise.
  */
-bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, unsigned
-    int* page, unsigned int* offset, double* scale, unsigned int* rotation);
+bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
+    zathura_fileinfo_t* file_info);
 
 #endif // DATABASE_H

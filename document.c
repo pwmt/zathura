@@ -114,10 +114,11 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
 
   document = g_malloc0(sizeof(zathura_document_t));
 
-  document->file_path = real_path;
-  document->password  = password;
-  document->scale     = 1.0;
-  document->plugin    = plugin;
+  document->file_path   = real_path;
+  document->password    = password;
+  document->scale       = 1.0;
+  document->plugin      = plugin;
+  document->adjust_mode = ZATHURA_ADJUST_NONE;
 
   /* open document */
   if (plugin->functions.document_open == NULL) {
