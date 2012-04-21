@@ -383,7 +383,7 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
     girara_setting_get(session, "pages-per-row", &offset);
   }
 
-  t = (t == 0) ? offset : t;
+  t = (t == 0) ? (unsigned int) offset : t;
   if (argument->n == NEXT) {
     if (scroll_wrap == true) {
       new_page = new_page + t;
