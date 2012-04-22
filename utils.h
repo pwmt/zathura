@@ -114,6 +114,12 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
  */
 GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
 
-void readjust_view_after_zooming(zathura_t *zathura, float old_zoom);
+/**
+ * Re-adjust view
+ *
+ * @param zathura Zathura instance
+ * @param old_zoom Old zoom value
+ */
+void readjust_view_after_zooming(zathura_t* zathura, float old_zoom);
 
 #endif // UTILS_H
