@@ -27,6 +27,7 @@ typedef struct zathura_page_widget_private_s {
   unsigned int number_of_links; /**< Offset to the links */
   girara_list_t* search_results; /**< A list if there are search results that should be drawn */
   int search_current; /**< The index of the current search result */
+  bool draw_search_results; /**< Draw search results */
   zathura_rectangle_t selection; /**< Region selected with the mouse */
   struct {
     int x;
@@ -69,7 +70,8 @@ enum properties_e
   PROP_SEARCH_RESULT,
   PROP_SEARCH_RESULTS,
   PROP_SEARCH_RESULTS_LENGTH,
-  PROP_SEARCH_RESULTS_CURRENT
+  PROP_SEARCH_RESULTS_CURRENT,
+  PROP_DRAW_SEARCH_RESULTS
 };
 
 static void
@@ -113,6 +115,8 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
       g_param_spec_int("search-current", "search-current", "The current search result", -1, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_LENGTH,
       g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE));
+  g_object_class_install_property(object_class, PROP_DRAW_SEARCH_RESULTS,
+      g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_WRITABLE));
 }
 
 static void
@@ -133,6 +137,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->images_got            = false;
   priv->current_image         = NULL;
   priv->last_view             = g_get_real_time();
+  priv->draw_search_results   = true;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -206,12 +211,12 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       priv->link_offset = g_value_get_int(value);
       break;
     case PROP_SEARCH_RESULTS:
-      if (priv->search_results != NULL) {
+      if (priv->search_results != NULL && priv->draw_search_results) {
         redraw_all_rects(pageview, priv->search_results);
         girara_list_free(priv->search_results);
       }
       priv->search_results = g_value_get_pointer(value);
-      if (priv->search_results != NULL) {
+      if (priv->search_results != NULL && priv->draw_search_results) {
         priv->draw_links = false;
         redraw_all_rects(pageview, priv->search_results);
       }
@@ -231,10 +236,15 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
         priv->search_current = val;
         zathura_rectangle_t* rect = girara_list_nth(priv->search_results, priv->search_current);
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-        redraw_rect(pageview, &rectangle);
+        if (priv->draw_search_results) {
+          redraw_rect(pageview, &rectangle);
+        }
       }
       break;
     }
+    case PROP_DRAW_SEARCH_RESULTS:
+      priv->draw_search_results = g_value_get_boolean(value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
@@ -364,7 +374,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* draw search results */
-    if (priv->search_results != NULL) {
+    if (priv->search_results != NULL && priv->draw_search_results == true) {
       int idx = 0;
       GIRARA_LIST_FOREACH(priv->search_results, zathura_rectangle_t*, iter, rect)
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);

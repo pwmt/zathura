@@ -8,6 +8,7 @@
 #include "zathura.h"
 #include "render.h"
 #include "marks.h"
+#include "utils.h"
 
 #include <girara/settings.h>
 #include <girara/session.h>
@@ -53,6 +54,19 @@ cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
   int val = *(int*) value;
   gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
   gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
+}
+
+static void
+cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  document_draw_search_results(zathura, !(*(bool*) value));
+  render_all(zathura);
 }
 
 void
@@ -124,6 +138,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, _("Show directories"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Highlight search results"), cb_nohlsearch_changed, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);
@@ -243,21 +259,23 @@ config_load_default(zathura_t* zathura)
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0,                    sc_mouse_scroll, NORMAL,     GIRARA_EVENT_MOTION_NOTIFY,  0,    NULL);
 
   /* define default inputbar commands */
-  girara_inputbar_command_add(gsession, "bmark",    NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
-  girara_inputbar_command_add(gsession, "bdelete",  NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
-  girara_inputbar_command_add(gsession, "blist",    NULL,   cmd_bookmark_open,   cc_bookmarks, _("List all bookmarks"));
-  girara_inputbar_command_add(gsession, "close",    NULL,   cmd_close,           NULL,         _("Close current file"));
-  girara_inputbar_command_add(gsession, "info",     NULL,   cmd_info,            NULL,         _("Show file information"));
-  girara_inputbar_command_add(gsession, "help",     NULL,   cmd_help,            NULL,         _("Show help"));
-  girara_inputbar_command_add(gsession, "open",     "o",    cmd_open,            cc_open,      _("Open document"));
-  girara_inputbar_command_add(gsession, "quit",     "q",    cmd_quit,            NULL,         _("Close zathura"));
-  girara_inputbar_command_add(gsession, "print",    NULL,   cmd_print,           NULL,         _("Print document"));
-  girara_inputbar_command_add(gsession, "write",    NULL,   cmd_save,            cc_write,     _("Save document"));
-  girara_inputbar_command_add(gsession, "write!",   NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
-  girara_inputbar_command_add(gsession, "export",   NULL,   cmd_export,          cc_export,    _("Save attachments"));
-  girara_inputbar_command_add(gsession, "offset",   NULL,   cmd_offset,          NULL,         _("Set page offset"));
-  girara_inputbar_command_add(gsession, "delmarks", "delm", cmd_marks_delete,    NULL,         _("Delete the specified marks"));
-  girara_inputbar_command_add(gsession, "mark",     NULL,   cmd_marks_add,       NULL,         _("Mark current location within the document"));
+  girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
+  girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
+  girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_open,   cc_bookmarks, _("List all bookmarks"));
+  girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,           NULL,         _("Close current file"));
+  girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,            NULL,         _("Show file information"));
+  girara_inputbar_command_add(gsession, "help",       NULL,   cmd_help,            NULL,         _("Show help"));
+  girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,            cc_open,      _("Open document"));
+  girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,            NULL,         _("Close zathura"));
+  girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,           NULL,         _("Print document"));
+  girara_inputbar_command_add(gsession, "write",      NULL,   cmd_save,            cc_write,     _("Save document"));
+  girara_inputbar_command_add(gsession, "write!",     NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
+  girara_inputbar_command_add(gsession, "export",     NULL,   cmd_export,          cc_export,    _("Save attachments"));
+  girara_inputbar_command_add(gsession, "offset",     NULL,   cmd_offset,          NULL,         _("Set page offset"));
+  girara_inputbar_command_add(gsession, "mark",       NULL,   cmd_marks_add,       NULL,         _("Mark current location within the document"));
+  girara_inputbar_command_add(gsession, "delmarks",   "delm", cmd_marks_delete,    NULL,         _("Delete the specified marks"));
+  girara_inputbar_command_add(gsession, "nohlsearch", "nohl", cmd_nohlsearch,      NULL,         _("Don't highlight current search results"));
+  girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
 
   girara_special_command_add(gsession, '/', cmd_search, true, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, true, BACKWARD, NULL);

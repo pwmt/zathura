@@ -141,4 +141,12 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link);
  */
 void open_remote(zathura_t* zathura, const char* file);
 
+/**
+ * Set if the search results should be drawn or not
+ *
+ * @param zathura Zathura instance
+ * @param value true if they should be drawn, otherwise false
+ */
+void document_draw_search_results(zathura_t* zathura, bool value);
+
 #endif // UTILS_H

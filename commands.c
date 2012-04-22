@@ -16,8 +16,10 @@
 #include "page-widget.h"
 #include "page.h"
 #include "internal.h"
+#include "render.h"
 
 #include <girara/session.h>
+#include <girara/settings.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
@@ -192,6 +194,20 @@ cmd_help(girara_session_t* UNUSED(session), girara_list_t*
 }
 
 bool
+cmd_hlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  document_draw_search_results(zathura, true);
+  render_all(zathura);
+
+  return true;
+}
+
+
+bool
 cmd_open(girara_session_t* session, girara_list_t* argument_list)
 {
   g_return_val_if_fail(session != NULL, false);
@@ -237,6 +253,19 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   }
 
   print((zathura_t*) session->global.data);
+
+  return true;
+}
+
+bool
+cmd_nohlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  document_draw_search_results(zathura, false);
+  render_all(zathura);
 
   return true;
 }
@@ -313,6 +342,15 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
   unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
 
+  /* reset search highlighting */
+  bool nohlsearch = false;
+  girara_setting_get(session, "nohlsearch", &nohlsearch);
+
+  if (nohlsearch == false) {
+    document_draw_search_results(zathura, true);
+  }
+
+  /* search pages */
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
     unsigned int index = (page_id + current_page_number) % number_of_pages;
     zathura_page_t* page = zathura_document_get_page(zathura->document, index);

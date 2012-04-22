@@ -373,3 +373,16 @@ open_remote(zathura_t* zathura, const char* file)
   g_free(uri);
   g_free(dir);
 }
+
+void
+document_draw_search_results(zathura_t* zathura, bool value)
+{
+  if (zathura == NULL || zathura->document == NULL || zathura->pages == NULL) {
+    return;
+  }
+
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
+  }
+}
