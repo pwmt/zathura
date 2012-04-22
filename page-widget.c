@@ -195,8 +195,10 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
 
       if (priv->links_got == true && priv->links != NULL) {
         GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
-          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
-          redraw_rect(pageview, &rectangle);
+          if (link != NULL) {
+            zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
+            redraw_rect(pageview, &rectangle);
+          }
         GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
       }
       break;
@@ -340,22 +342,24 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     if (priv->draw_links == true && priv->number_of_links != 0) {
       unsigned int link_counter = 0;
       GIRARA_LIST_FOREACH(priv->links, zathura_link_t*, iter, link)
-        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
+        if (link != NULL) {
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
 
-        /* draw position */
-        GdkColor color = priv->zathura->ui.colors.highlight_color;
-        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-        cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-            (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
-        cairo_fill(cairo);
+          /* draw position */
+          GdkColor color = priv->zathura->ui.colors.highlight_color;
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
+              (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
+          cairo_fill(cairo);
 
-        /* draw text */
-        cairo_set_source_rgba(cairo, 0, 0, 0, 1);
-        cairo_set_font_size(cairo, 10);
-        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
-        char* link_number = g_strdup_printf("%i", priv->link_offset + ++link_counter);
-        cairo_show_text(cairo, link_number);
-        g_free(link_number);
+          /* draw text */
+          cairo_set_source_rgba(cairo, 0, 0, 0, 1);
+          cairo_set_font_size(cairo, 10);
+          cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
+          char* link_number = g_strdup_printf("%i", priv->link_offset + ++link_counter);
+          cairo_show_text(cairo, link_number);
+          g_free(link_number);
+        }
       GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
     }
 
