@@ -56,7 +56,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
 
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
-		zathura_fileinfo_t* file_info)
+    zathura_fileinfo_t* file_info)
 {
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && file_info != NULL, false);
 

@@ -22,7 +22,7 @@ static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db,
 static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file,
     zathura_fileinfo_t* file_info);
 static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file,
-		zathura_fileinfo_t* file_info);
+    zathura_fileinfo_t* file_info);
 static void sqlite_set_property(GObject* object, guint prop_id,
     const GValue* value, GParamSpec* pspec);
 
@@ -280,8 +280,8 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
     zathura_fileinfo_t* file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
-		return false;
-	}
+    return false;
+  }
 
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
@@ -314,11 +314,11 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
 
 static bool
 sqlite_get_fileinfo(zathura_database_t* db, const char* file,
-		zathura_fileinfo_t* file_info)
+    zathura_fileinfo_t* file_info)
 {
-	if (db == NULL || file == NULL || file_info == NULL) {
-		return false;
-	}
+  if (db == NULL || file == NULL || file_info == NULL) {
+    return false;
+  }
 
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
@@ -327,7 +327,7 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
-		return false;
+    return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {

@@ -549,16 +549,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
         zathura_rectangle_t rect = recalc_rectangle(priv->page, link->position);
         if (rect.x1 <= button->x && rect.x2 >= button->x
             && rect.y1 <= button->y && rect.y2 >= button->y) {
-          switch (link->type) {
-            case ZATHURA_LINK_TO_PAGE:
-              page_set_delayed(priv->zathura, link->target.page_number);
-              return false;
-            case ZATHURA_LINK_EXTERNAL:
-              girara_xdg_open(link->target.uri);
-              return false;
-            default:
-              return false;
-          }
+          zathura_link_evaluate(priv->zathura, link);
         }
       GIRARA_LIST_FOREACH_END(priv->links, zathura_link_t*, iter, link);
     }

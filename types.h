@@ -130,14 +130,17 @@ typedef struct zathura_image_s
 typedef enum zathura_link_type_e
 {
   ZATHURA_LINK_INVALID, /**< Invalid type */
-  ZATHURA_LINK_TO_PAGE, /**< Links to a page */
-  ZATHURA_LINK_EXTERNAL, /**< Links to an external source */
+  ZATHURA_LINK_GOTO_DEST, /**< Links to a page */
+  ZATHURA_LINK_GOTO_REMOTE, /**< Links to a page */
+  ZATHURA_LINK_URI, /**< Links to an external source */
+  ZATHURA_LINK_LAUNCH, /**< Links to an external source */
+  ZATHURA_LINK_NAMED, /**< Links to an external source */
 } zathura_link_type_t;
 
 typedef union zathura_link_target_u
 {
   unsigned int page_number; /**< Page number */
-  char* uri; /**< Value */
+  char* value; /**< Value */
 } zathura_link_target_t;
 
 /**
@@ -151,12 +154,7 @@ typedef struct zathura_link_s zathura_link_t;
 typedef struct zathura_index_element_s
 {
   char* title; /**< Title of the element */
-  zathura_link_type_t type; /**< Type */
-  union
-  {
-    unsigned int page_number; /**< Page number */
-    char* uri; /**< Uri */
-  } target;
+  zathura_link_t* link;
 } zathura_index_element_t;
 
 /**

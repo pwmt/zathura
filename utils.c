@@ -10,6 +10,8 @@
 #include <math.h>
 #include <gtk/gtk.h>
 #include <girara/session.h>
+#include <girara/utils.h>
+#include <glib/gi18n.h>
 
 #include "utils.h"
 #include "zathura.h"
@@ -148,11 +150,14 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node)
     zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
+    zathura_link_type_t type     = zathura_link_get_type(index_element->link);
+    zathura_link_target_t target = zathura_link_get_target(index_element->link);
+
     gchar* description = NULL;
-    if (index_element->type == ZATHURA_LINK_TO_PAGE) {
-      description = g_strdup_printf("Page %d", index_element->target.page_number);
+    if (type == ZATHURA_LINK_GOTO_DEST) {
+      description = g_strdup_printf("Page %d", target.page_number);
     } else {
-      description = g_strdup(index_element->target.uri);
+      description = g_strdup(target.value);
     }
 
     GtkTreeIter tree_iter;
@@ -322,3 +327,23 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
   set_adjustment(vadjustment, valy);
 }
 
+void
+zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
+{
+  if (zathura == NULL || link == NULL) {
+    return;
+  }
+
+  switch (link->type) {
+    case ZATHURA_LINK_GOTO_DEST:
+      page_set_delayed(zathura, link->target.page_number);
+      break;
+    case ZATHURA_LINK_URI:
+      if (girara_xdg_open(link->target.value) == false) {
+        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
+      }
+      break;
+    default:
+      break;
+  }
+}

@@ -385,14 +385,14 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   char* tmp = g_strdup_printf("%f", file_info->scale);
   g_key_file_set_string (priv->history, name, KEY_SCALE, tmp);
-	g_free(tmp);
+  g_free(tmp);
 
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,        file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW, file_info->pages_per_row);
 
   tmp = g_strdup_printf("%f", file_info->position_x);
   g_key_file_set_string(priv->history,  name, KEY_POSITION_X, tmp);
-	g_free(tmp);
+  g_free(tmp);
 
   tmp = g_strdup_printf("%f", file_info->position_y);
   g_key_file_set_string(priv->history,  name, KEY_POSITION_Y, tmp);

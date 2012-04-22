@@ -480,10 +480,10 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   /* read history file */
-	zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
+  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
   zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
-	/* set page offset */
+  /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
 
   /* check for valid scale value */
@@ -733,7 +733,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* store file information */
   const char* path = zathura_document_get_path(zathura->document);
 
-	zathura_fileinfo_t file_info = { 0 };
+  zathura_fileinfo_t file_info = { 0 };
   file_info.current_page = zathura_document_get_current_page_number(zathura->document);
   file_info.page_offset  = zathura_document_get_page_offset(zathura->document);
   file_info.scale        = zathura_document_get_scale(zathura->document);

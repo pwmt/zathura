@@ -148,14 +148,8 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
       return;
     }
 
-    if (index_element->type == ZATHURA_LINK_TO_PAGE) {
-      sc_toggle_index(zathura->ui.session, NULL, NULL, 0);
-      page_set_delayed(zathura, index_element->target.page_number);
-    } else if (index_element->type == ZATHURA_LINK_EXTERNAL) {
-      if (girara_xdg_open(index_element->target.uri) == false) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-      }
-    }
+    zathura_link_evaluate(zathura, index_element->link);
+    sc_toggle_index(zathura->ui.session, NULL, NULL, 0);
   }
 
   g_object_unref(model);
@@ -200,17 +194,7 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
     if (eval == true) {
       zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
       if (link != NULL) {
-        switch (link->type) {
-          case ZATHURA_LINK_TO_PAGE:
-            page_set_delayed(zathura, link->target.page_number);
-            break;
-          case ZATHURA_LINK_EXTERNAL:
-            girara_xdg_open(link->target.uri);
-            break;
-          default:
-            break;
-        }
-
+        zathura_link_evaluate(zathura, link);
         invalid_index = false;
       }
     }

@@ -17,16 +17,16 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
   link->position = position;
 
   switch (type) {
-    case ZATHURA_LINK_TO_PAGE:
+    case ZATHURA_LINK_GOTO_DEST:
       link->target.page_number = target.page_number;
       break;
-    case ZATHURA_LINK_EXTERNAL:
-      if (target.uri == NULL) {
+    case ZATHURA_LINK_URI:
+      if (target.value == NULL) {
         g_free(link);
         return NULL;
       }
 
-      link->target.uri = g_strdup(target.uri);
+      link->target.value = g_strdup(target.value);
       break;
     default:
       g_free(link);
@@ -43,9 +43,9 @@ zathura_link_free(zathura_link_t* link)
     return;
   }
 
-  if (link->type == ZATHURA_LINK_EXTERNAL) {
-    if (link->target.uri != NULL) {
-      g_free(link->target.uri);
+  if (link->type == ZATHURA_LINK_URI) {
+    if (link->target.value != NULL) {
+      g_free(link->target.value);
     }
   }
 
@@ -106,11 +106,7 @@ zathura_index_element_free(zathura_index_element_t* index)
   }
 
   g_free(index->title);
-
-  if (index->type == ZATHURA_LINK_EXTERNAL) {
-    g_free(index->target.uri);
-  }
-
+  zathura_link_free(index->link);
   g_free(index);
 }
 
