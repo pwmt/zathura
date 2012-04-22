@@ -130,4 +130,15 @@ void readjust_view_after_zooming(zathura_t* zathura, float old_zoom);
  */
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link);
 
+/**
+ * Opens a remote file
+ *
+ * Determines the path of the current document and tries to open a given file
+ * in that path
+ *
+ * @param zathura Zathura instance
+ * @param file File name
+ */
+void open_remote(zathura_t* zathura, const char* file);
+
 #endif // UTILS_H

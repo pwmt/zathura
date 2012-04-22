@@ -20,6 +20,7 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
     case ZATHURA_LINK_GOTO_DEST:
       link->target.page_number = target.page_number;
       break;
+    case ZATHURA_LINK_GOTO_REMOTE:
     case ZATHURA_LINK_URI:
       if (target.value == NULL) {
         g_free(link);

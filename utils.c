@@ -338,6 +338,9 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     case ZATHURA_LINK_GOTO_DEST:
       page_set_delayed(zathura, link->target.page_number);
       break;
+    case ZATHURA_LINK_GOTO_REMOTE:
+      open_remote(zathura, link->target.value);
+      break;
     case ZATHURA_LINK_URI:
       if (girara_xdg_open(link->target.value) == false) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
@@ -346,4 +349,27 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     default:
       break;
   }
+}
+
+void
+open_remote(zathura_t* zathura, const char* file)
+{
+  if (zathura == NULL || file == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  const char* path = zathura_document_get_path(zathura->document);
+  char* dir        = g_path_get_dirname(path);
+  char* uri        = g_build_filename(dir, file, NULL);
+
+  char* argv[] = {
+    *(zathura->global.arguments),
+    uri,
+    NULL
+  };
+
+  g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+
+  g_free(uri);
+  g_free(dir);
 }

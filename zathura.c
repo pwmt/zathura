@@ -169,6 +169,7 @@ zathura_init(int argc, char* argv[])
   /* global settings */
   zathura->global.recolor            = false;
   zathura->global.update_page_number = true;
+  zathura->global.arguments          = argv;
 
   /* load plugins */
   zathura_plugin_manager_load(zathura->plugins.manager);

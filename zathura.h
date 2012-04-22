@@ -77,6 +77,7 @@ struct zathura_s
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
     girara_list_t* marks; /**< Marker */
+    char** arguments; /**> Arguments that were passed at startup */
   } global;
 
   struct
