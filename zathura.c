@@ -734,7 +734,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* store file information */
   const char* path = zathura_document_get_path(zathura->document);
 
-  zathura_fileinfo_t file_info = { 0 };
+  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
   file_info.current_page = zathura_document_get_current_page_number(zathura->document);
   file_info.page_offset  = zathura_document_get_page_offset(zathura->document);
   file_info.scale        = zathura_document_get_scale(zathura->document);
