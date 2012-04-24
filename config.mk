@@ -40,7 +40,7 @@ RSTTOMAN ?= /usr/bin/rst2man
 
 # libs
 GTK_INC ?= $(shell pkg-config --cflags gtk+-${ZATHURA_GTK_VERSION}.0)
-GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0 gthread-2.0)
+GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0)
 
 GTHREAD_INC ?= $(shell pkg-config --cflags gthread-2.0)
 GTHREAD_LIB ?= $(shell pkg-config --libs   gthread-2.0)
