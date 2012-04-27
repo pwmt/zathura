@@ -5,9 +5,9 @@ ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 1
 ZATHURA_VERSION_REV = 2
 # If the API changes, the API version and the ABI version have to be bumped.
-ZATHURA_API_VERSION = 1
+ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
-ZATHURA_ABI_VERSION = 1
+ZATHURA_ABI_VERSION = 2
 VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_REV}
 
 # the GTK+ version to use
