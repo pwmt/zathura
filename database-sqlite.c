@@ -124,6 +124,11 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
       "position_y FLOAT"
       ");";
 
+  static const char SQL_FILEINFO_ALTER[] =
+    "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
+    "ALTER TABLE fileinfo ADD COLUMN position_x FLOAT;"
+    "ALTER TABLE fileinfo ADD COLUMN position_y FLOAT;";
+
   sqlite3* session = NULL;
   if (sqlite3_open(path, &session) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
@@ -140,6 +145,14 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     girara_error("Failed to initialize database: %s\n", path);
     sqlite3_close(session);
     return;
+  }
+
+  const char* data_type = NULL;
+  if (sqlite3_table_column_metadata(session, NULL, "fileinfo", "pages_per_row", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK) {
+    girara_debug("old database table layout detected; updating ...");
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout");
+    }
   }
 
   priv->session = session;
@@ -286,7 +299,7 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, scale, rotation) VALUES (?, ?, ?, ?, ?);";
+    "REPLACE INTO fileinfo (file, page, offset, scale, rotation, pages_per_row, position_x, position_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
@@ -323,7 +336,7 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_GET[] =
-    "SELECT page, offset, scale, rotation FROM fileinfo WHERE file = ?;";
+    "SELECT page, offset, scale, rotation, pages_per_row, position_x, position_y FROM fileinfo WHERE file = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
