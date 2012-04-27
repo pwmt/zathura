@@ -66,20 +66,21 @@ zathura_init(int argc, char* argv[])
   Window embed = 0;
 #endif
 
-  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL;
+  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL, *password = NULL;
   bool forkback = false;
   GOptionEntry entries[] =
   {
-    { "reparent",    'e', 0, G_OPTION_ARG_INT,      &embed,       _("Reparents to window specified by xid"),       "xid"  },
-    { "config-dir",  'c', 0, G_OPTION_ARG_FILENAME, &config_dir,  _("Path to the config directory"),               "path" },
-    { "data-dir",    'd', 0, G_OPTION_ARG_FILENAME, &data_dir,    _("Path to the data directory"),                 "path" },
-    { "plugins-dir", 'p', 0, G_OPTION_ARG_STRING,   &plugin_path, _("Path to the directories containing plugins"), "path" },
-    { "fork",        '\0', 0, G_OPTION_ARG_NONE,    &forkback,    _("Fork into the background"),                   NULL },
-    { "debug",       'l', 0, G_OPTION_ARG_STRING,   &loglevel,    _("Log level (debug, info, warning, error)"),    "level" },
+    { "reparent",    'e',  0, G_OPTION_ARG_INT,      &embed,       _("Reparents to window specified by xid"),       "xid"  },
+    { "config-dir",  'c',  0, G_OPTION_ARG_FILENAME, &config_dir,  _("Path to the config directory"),               "path" },
+    { "data-dir",    'd',  0, G_OPTION_ARG_FILENAME, &data_dir,    _("Path to the data directory"),                 "path" },
+    { "plugins-dir", 'p',  0, G_OPTION_ARG_STRING,   &plugin_path, _("Path to the directories containing plugins"), "path" },
+    { "fork",        '\0', 0, G_OPTION_ARG_NONE,     &forkback,    _("Fork into the background"),                   NULL },
+    { "password",    'w',  0, G_OPTION_ARG_STRING,   &password,    _("Document password"),                          "password" },
+    { "debug",       'l',  0, G_OPTION_ARG_STRING,   &loglevel,    _("Log level (debug, info, warning, error)"),    "level" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
-  GOptionContext* context = g_option_context_new(" [file] [password]");
+  GOptionContext* context = g_option_context_new(" [file1] [file2] [...]");
   g_option_context_add_main_entries(context, entries, NULL);
 
   GError* error = NULL;
@@ -291,8 +292,19 @@ zathura_init(int argc, char* argv[])
 
     document_info->zathura  = zathura;
     document_info->path     = argv[1];
-    document_info->password = (argc >= 2) ? argv[2] : NULL;
+    document_info->password = password;
     gdk_threads_add_idle(document_info_open, document_info);
+
+    /* open additional files */
+    for (int i = 2; i < argc; i++) {
+      char* new_argv[] = {
+        *(zathura->global.arguments),
+        argv[i],
+        NULL
+      };
+
+      g_spawn_async(NULL, new_argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+    }
   }
 
   /* add even to purge old pages */
