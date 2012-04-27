@@ -21,6 +21,16 @@ ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
 endif
 
+ifeq (,$(findstring -DZATHURA_PLUGINDIR,${CPPFLAGS}))
+CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
+endif
+ifeq (,$(findstring -DGETTEXT_PACKAGE,${CPPFLAGS}))
+CPPFLAGS += -DGETTEXT_PACKAGE=\"${PROJECT}\"
+endif
+ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
+CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
+endif
+
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
 DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 

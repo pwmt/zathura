@@ -4,6 +4,7 @@
 #define PLUGIN_H
 
 #include <girara/types.h>
+#include <gmodule.h>
 
 #include "types.h"
 #include "plugin-api.h"
@@ -22,7 +23,7 @@ struct zathura_plugin_s
   girara_list_t* content_types; /**< List of supported content types */
   zathura_plugin_register_function_t register_function; /**< Document open function */
   zathura_plugin_functions_t functions; /**< Document functions */
-  void* handle; /**< DLL handle */
+  GModule* handle; /**< DLL handle */
 };
 
 /**

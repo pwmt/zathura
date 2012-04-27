@@ -45,6 +45,9 @@ GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0)
 GTHREAD_INC ?= $(shell pkg-config --cflags gthread-2.0)
 GTHREAD_LIB ?= $(shell pkg-config --libs   gthread-2.0)
 
+GMODULE_INC ?= $(shell pkg-config --cflags gmodule-no-export-2.0)
+GMODULE_LIB ?= $(shell pkg-config --libs   gmodule-no-export-2.0)
+
 GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk${ZATHURA_GTK_VERSION})
 GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
 
@@ -53,24 +56,11 @@ SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
 endif
 
-#set it to an empty value if you don't need to link against ld for dlopen and friends
-DL_LIB ?= -ldl
-
-INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC}
-LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${DL_LIB} -lpthread -lm
+INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC}
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
-
-ifeq (,$(findstring -DZATHURA_PLUGINDIR,${CPPFLAGS}))
-CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
-endif
-ifeq (,$(findstring -DGETTEXT_PACKAGE,${CPPFLAGS}))
-CPPFLAGS += -DGETTEXT_PACKAGE=\"${PROJECT}\"
-endif
-ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
-CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
-endif
 
 # debug
 DFLAGS ?= -g
