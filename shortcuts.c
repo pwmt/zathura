@@ -26,6 +26,9 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  bool clear_search = true;
+  girara_setting_get(session, "abort-clear-search", &clear_search);
+
   if (zathura->document != NULL) {
     unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
     for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
@@ -35,6 +38,9 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
       }
 
       g_object_set(zathura_page_get_widget(zathura, page), "draw-links", FALSE, NULL);
+      if (clear_search) {
+        g_object_set(zathura_page_get_widget(zathura, page), "search-results", NULL, NULL);
+      }
     }
   }
 
