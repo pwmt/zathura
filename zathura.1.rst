@@ -135,6 +135,8 @@ blist
   List bookmarks
 close
   Close document
+exec
+  Execute an external command
 info
   Show document information
 help
