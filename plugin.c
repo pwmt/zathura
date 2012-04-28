@@ -11,6 +11,8 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+typedef unsigned int (*zathura_plugin_version_t)(void);
+
 /**
  * Plugin manager
  */
@@ -92,7 +94,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
 
       /* resolve symbols and check API and ABI version*/
       zathura_plugin_api_version_t api_version = NULL;
-      if (g_module_symbol(handle, PLUGIN_API_VERSION_FUNCTION, (gpointer*) &api_version) == FALSE || !api_version)
+      if (g_module_symbol(handle, PLUGIN_API_VERSION_FUNCTION, (gpointer*) &api_version) == FALSE ||
+          api_version == NULL)
       {
         girara_error("could not find '%s' function in plugin %s", PLUGIN_API_VERSION_FUNCTION, path);
         g_free(path);
@@ -109,7 +112,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       }
 
       zathura_plugin_abi_version_t abi_version = NULL;
-      if (g_module_symbol(handle, PLUGIN_ABI_VERSION_FUNCTION, (gpointer*) &abi_version) == FALSE || !abi_version)
+      if (g_module_symbol(handle, PLUGIN_ABI_VERSION_FUNCTION, (gpointer*) &abi_version) == FALSE ||
+          abi_version == NULL)
       {
         girara_error("could not find '%s' function in plugin %s", PLUGIN_ABI_VERSION_FUNCTION, path);
         g_free(path);
@@ -126,7 +130,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       }
 
       zathura_plugin_register_service_t register_service = NULL;
-      if (g_module_symbol(handle, PLUGIN_REGISTER_FUNCTION, (gpointer*) &register_service) == FALSE || !register_service)
+      if (g_module_symbol(handle, PLUGIN_REGISTER_FUNCTION, (gpointer*) &register_service) == FALSE ||
+          register_service == NULL)
       {
         girara_error("could not find '%s' function in plugin %s", PLUGIN_REGISTER_FUNCTION, path);
         g_free(path);
@@ -156,6 +161,14 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
         zathura_plugin_free(plugin);
       } else {
         girara_info("successfully loaded plugin %s", path);
+
+        zathura_plugin_version_t major = NULL, minor = NULL, rev = NULL;
+        g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION, (gpointer*) &major);
+        g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION, (gpointer*) &minor);
+        g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &rev);
+        if (major != NULL && minor != NULL && rev != NULL) {
+          girara_debug("plugin '%s': version %u.%u.%u", path, major(), minor(), rev());
+        }
       }
 
       g_free(path);

@@ -11,9 +11,12 @@
 #include "version.h"
 #include "zathura.h"
 
-#define PLUGIN_REGISTER_FUNCTION    "zathura_plugin_register"
-#define PLUGIN_API_VERSION_FUNCTION "zathura_plugin_api_version"
-#define PLUGIN_ABI_VERSION_FUNCTION "zathura_plugin_abi_version"
+#define PLUGIN_REGISTER_FUNCTION         "zathura_plugin_register"
+#define PLUGIN_API_VERSION_FUNCTION      "zathura_plugin_api_version"
+#define PLUGIN_ABI_VERSION_FUNCTION      "zathura_plugin_abi_version"
+#define PLUGIN_VERSION_MAJOR_FUNCTION    "zathura_plugin_version_major"
+#define PLUGIN_VERSION_MINOR_FUNCTION    "zathura_plugin_version_minor"
+#define PLUGIN_VERSION_REVISION_FUNCTION "zathura_plugin_version_revision"
 
 /**
  * Document plugin structure
