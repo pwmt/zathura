@@ -625,6 +625,8 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   } else {
     girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
   }
+
+  girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
   page_widget_set_mode(zathura, pages_per_row);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
