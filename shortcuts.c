@@ -324,9 +324,6 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
 
       set_adjustment(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - x));
       set_adjustment(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - y));
-
-      x = event->x;
-      y = event->y;
       break;
 
     /* unhandled events */
