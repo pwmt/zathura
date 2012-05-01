@@ -323,8 +323,8 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
   double scale = zathura_document_get_scale(zathura->document);
   gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
   gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
-  set_adjustment(hadjustment, valx);
-  set_adjustment(vadjustment, valy);
+
+  position_set_delayed(zathura, valx, valy);
 }
 
 void
