@@ -165,7 +165,7 @@ zathura_init(int argc, char* argv[])
     goto error_out;
   }
 
-  zathura->ui.session->global.data  = zathura;
+  zathura->ui.session->global.data = zathura;
 
   /* global settings */
   zathura->global.recolor            = false;
@@ -206,7 +206,8 @@ zathura_init(int argc, char* argv[])
   }
 
   /* girara events */
-  zathura->ui.session->events.buffer_changed = cb_buffer_changed;
+  zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
+  zathura->ui.session->events.unknown_command = cb_unknown_command;
 
   /* page view */
   zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);

@@ -338,7 +338,7 @@ cc_export(girara_session_t* session, const char* input)
     girara_list_t* images = zathura_page_images_get(page, NULL);
     if (images != NULL) {
       unsigned int image_number = 1;
-      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, image)
+      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, UNUSED(image))
         char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
         girara_completion_group_add_element(image_group, image_string, NULL);
         g_free(image_string);

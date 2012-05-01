@@ -111,4 +111,14 @@ bool cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* za
 void cb_setting_recolor_change(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
 
+/**
+ * Unknown command handler which is used to handle the strict numeric goto
+ * command
+ *
+ * @param session The girara session
+ * @param input The command input
+ * @return true if the input has been handled
+ */
+bool cb_unknown_command(girara_session_t* session, const char* input);
+
 #endif // CALLBACKS_H

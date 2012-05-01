@@ -335,3 +335,28 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
     render_all(zathura);
   }
 }
+
+bool
+cb_unknown_command(girara_session_t* session, const char* input)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(input != NULL, false);
+
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    return false;
+  }
+
+  /* check for number */
+  for (unsigned int i = 0; i < strlen(input); i++) {
+    if (g_ascii_isdigit(input[i]) == FALSE) {
+      return false;
+    }
+  }
+
+  page_set(zathura, atoi(input) - 1);
+
+  return true;
+}
