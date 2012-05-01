@@ -22,8 +22,7 @@ gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
 {
   if (zathura != NULL && zathura->document != NULL) {
-    zathura_document_free(zathura->document);
-    zathura->document = NULL;
+    document_close(zathura, false);
   }
 
   gtk_main_quit();
