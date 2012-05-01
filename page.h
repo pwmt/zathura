@@ -193,6 +193,16 @@ cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_imag
 char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
+ * Returns a list of annotations (see \ref zathura_annotation_t)
+ *
+ * @param page Page
+ * @param error Set to an error value (see \ref zathura_error_t) if an
+ *   error occured
+ * @return List of annotations or NULL if an error occured
+ */
+girara_list_t* zathura_page_get_annotations(zathura_page_t* page, zathura_error_t* error);
+
+/**
  * Render page
  *
  * @param page The page object

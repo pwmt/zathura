@@ -142,6 +142,11 @@ typedef cairo_surface_t* (*zathura_plugin_page_image_get_cairo_t)(zathura_page_t
 typedef char* (*zathura_plugin_page_get_text_t)(zathura_page_t* page, void* data, zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
+ * Get list of annotations
+ */
+typedef girara_list_t* (*zathura_plugin_page_get_annotations_t)(zathura_page_t* page, void* data, zathura_error_t* error);
+
+/**
  * Renders the page
  */
 typedef zathura_image_buffer_t* (*zathura_plugin_page_render_t)(zathura_page_t* page, void* data, zathura_error_t* error);
@@ -228,6 +233,11 @@ struct zathura_plugin_functions_s
    * Get text for selection
    */
   zathura_plugin_page_get_text_t page_get_text;
+
+  /**
+   * Get list of annotations
+   */
+  zathura_plugin_page_get_annotations_t page_get_annotations;
 
   /**
    * Renders the page
