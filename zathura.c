@@ -939,8 +939,8 @@ position_set_delayed_impl(gpointer data)
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
 
-  gtk_adjustment_set_value(hadjustment, p->position_x);
-  gtk_adjustment_set_value(vadjustment, p->position_y);
+  set_adjustment(hadjustment, p->position_x);
+  set_adjustment(vadjustment, p->position_y);
 
   return FALSE;
 }
