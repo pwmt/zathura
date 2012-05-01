@@ -58,6 +58,7 @@ static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, G
 static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event);
 static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
 static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
+static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
 
 enum properties_e
 {
@@ -682,7 +683,8 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   } menu_item_t;
 
   menu_item_t menu_items[] = {
-    { _("Copy image"),   cb_menu_image_copy },
+    { _("Copy image"),    cb_menu_image_copy },
+    { _("Save image as"), cb_menu_image_save },
   };
 
   for (unsigned int i = 0; i < LENGTH(menu_items); i++) {
@@ -743,8 +745,40 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), pixbuf);
   gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_PRIMARY), pixbuf);
 
+  /* reset */
   priv->current_image = NULL;
 #endif
+}
+
+static void
+cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page)
+{
+  g_return_if_fail(item != NULL);
+  g_return_if_fail(page != NULL);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(page);
+  g_return_if_fail(priv->current_image != NULL);
+  g_return_if_fail(priv->images != NULL);
+
+  /* generate image identifier */
+  unsigned int page_id  = zathura_page_get_index(priv->page) + 1;
+  unsigned int image_id = 1;
+
+  GIRARA_LIST_FOREACH(priv->images, zathura_image_t*, iter, image_it)
+    if (image_it == priv->current_image) {
+      break;
+    }
+
+    image_id++;
+  GIRARA_LIST_FOREACH_END(priv->images, zathura_image_t*, iter, image_it);
+
+  /* set command */
+  char* export_command = g_strdup_printf(":export image-p%d-%d ", page_id, image_id);
+  girara_argument_t argument = { 0, export_command };
+  sc_focus_inputbar(priv->zathura->ui.session, &argument, NULL, 0);
+  g_free(export_command);
+
+  /* reset */
+  priv->current_image = NULL;
 }
 
 void

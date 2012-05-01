@@ -5,10 +5,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <glib/gi18n.h>
 
 #include "bookmarks.h"
+#include "document.h"
 #include "completion.h"
 #include "utils.h"
+#include "page.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -244,7 +247,7 @@ cc_bookmarks(girara_session_t* session, const char* input)
   const size_t input_length = strlen(input);
   GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
     if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
-      gchar* paged = g_strdup_printf("Page %d", bookmark->page);
+      gchar* paged = g_strdup_printf(_("Page %d"), bookmark->page);
       girara_completion_group_add_element(group, bookmark->id, paged);
       g_free(paged);
     }
@@ -270,46 +273,107 @@ error_free:
 girara_completion_t*
 cc_export(girara_session_t* session, const char* input)
 {
-  if (input == NULL) {
-    return NULL;
-  }
-
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
 
-  girara_completion_t* completion  = girara_completion_init();
-  girara_completion_group_t* group = girara_completion_group_create(session, NULL);
+  if (input == NULL || zathura->document == NULL) {
+    goto error_ret;
+  }
 
-  if (completion == NULL || group == NULL) {
+  girara_completion_t* completion             = NULL;
+  girara_completion_group_t* attachment_group = NULL;
+  girara_completion_group_t* image_group      = NULL;
+
+  completion = girara_completion_init();
+  if (completion == NULL) {
     goto error_free;
   }
 
+  attachment_group = girara_completion_group_create(session, _("Attachments"));
+  if (attachment_group == NULL) {
+    goto error_free;
+  }
+
+  /* add attachments */
   const size_t input_length = strlen(input);
   girara_list_t* attachments = zathura_document_attachments_get(zathura->document, NULL);
-  if (attachments == NULL) {
+  if (attachments != NULL) {
+    bool added = false;
+
+    GIRARA_LIST_FOREACH(attachments, const char*, iter, attachment)
+      if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
+        char* attachment_string = g_strdup_printf("attachment-%s", attachment);
+        girara_completion_group_add_element(attachment_group, attachment_string, NULL);
+        g_free(attachment_string);
+        added = true;
+      }
+    GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+
+    if (added == true) {
+      girara_completion_add_group(completion, attachment_group);
+    } else {
+      girara_completion_group_free(attachment_group);
+      attachment_group = NULL;
+    }
+
+    girara_list_free(attachments);
+  }
+
+  /* add images */
+  image_group = girara_completion_group_create(session, _("Images"));
+  if (image_group == NULL) {
     goto error_free;
   }
 
-  GIRARA_LIST_FOREACH(attachments, const char*, iter, attachment)
-    if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
-      girara_completion_group_add_element(group, attachment, NULL);
-    }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+  bool added = false;
 
-  girara_completion_add_group(completion, group);
-  girara_list_free(attachments);
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+
+    girara_list_t* images = zathura_page_images_get(page, NULL);
+    if (images != NULL) {
+      unsigned int image_number = 1;
+      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, image)
+        char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
+        girara_completion_group_add_element(image_group, image_string, NULL);
+        g_free(image_string);
+
+        added = true;
+        image_number++;
+      GIRARA_LIST_FOREACH_END(images, zathura_image_t*, iter, image);
+      girara_list_free(images);
+    }
+  }
+
+  if (added == true) {
+    girara_completion_add_group(completion, image_group);
+  } else {
+    girara_completion_group_free(image_group);
+    image_group = NULL;
+  }
+
   return completion;
 
 error_free:
 
-  if (completion) {
+  if (completion != NULL) {
     girara_completion_free(completion);
   }
 
-  if (group) {
-    girara_completion_group_free(group);
+  if (attachment_group != NULL) {
+    girara_completion_group_free(attachment_group);
   }
+
+  if (image_group != NULL) {
+    girara_completion_group_free(image_group);
+  }
+
+error_ret:
 
   return NULL;
 }

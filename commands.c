@@ -402,21 +402,86 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  const char* attachment_name = girara_list_nth(argument_list, 0);
+  const char* file_identifier = girara_list_nth(argument_list, 0);
   const char* file_name       = girara_list_nth(argument_list, 1);
 
-  if (file_name == NULL || attachment_name == NULL) {
+  if (file_name == NULL || file_identifier == NULL) {
     return false;
   }
-  char* file_name2 = girara_fix_path(file_name);
 
-  if (zathura_document_attachment_save(zathura->document, attachment_name, file_name) == false) {
-    girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), attachment_name, file_name);
-  } else {
-    girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), attachment_name, file_name2);
+  char* export_path = girara_fix_path(file_name);
+  if (export_path == NULL) {
+    return false;
   }
 
-  g_free(file_name2);
+  /* attachment */
+  if (strncmp(file_identifier, "attachment-", strlen("attachment-")) == 0) {
+    if (zathura_document_attachment_save(zathura->document, file_identifier + strlen("attachment-"), export_path) == false) {
+      girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), file_identifier, file_name);
+    } else {
+      girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), file_identifier, export_path);
+    }
+  /* image */
+  } else if (strncmp(file_identifier, "image-p", strlen("image-p")) == 0 && strlen(file_identifier) >= 10) {
+    /* parse page id */
+    const char* input = file_identifier + strlen("image-p");
+    int page_id = atoi(input);
+    if (page_id == 0) {
+      goto image_error;
+    }
+
+    /* parse image id */
+    input = strstr(input, "-");
+    if (input == NULL) {
+      goto image_error;
+    }
+
+    int image_id = atoi(input + 1);
+    if (image_id == 0) {
+      goto image_error;
+    }
+
+    /* get image */
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id - 1);
+    if (page == NULL) {
+      goto image_error;
+    }
+
+    girara_list_t* images = zathura_page_images_get(page, NULL);
+    if (images == NULL) {
+      goto image_error;
+    }
+
+    zathura_image_t* image = girara_list_nth(images, image_id - 1);
+    if (image == NULL) {
+      goto image_error;
+    }
+
+    cairo_surface_t* surface = zathura_page_image_get_cairo(page, image, NULL);
+    if (surface == NULL) {
+      goto image_error;
+    }
+
+    if (cairo_surface_write_to_png(surface, export_path) == CAIRO_STATUS_SUCCESS) {
+      girara_notify(session, GIRARA_INFO, _("Wrote image '%s' to '%s'."), file_identifier, export_path);
+    } else {
+      girara_notify(session, GIRARA_ERROR, _("Couldn't write image '%s' to '%s'."), file_identifier, file_name);
+    }
+
+    goto error_ret;
+
+image_error:
+
+    girara_notify(session, GIRARA_ERROR, _("Unknown image '%s'."), file_identifier);
+    goto error_ret;
+  /* unknown */
+  } else {
+    girara_notify(session, GIRARA_ERROR, _("Unknown attachment or image '%s'."), file_identifier);
+  }
+
+error_ret:
+
+  g_free(export_path);
 
   return true;
 }
