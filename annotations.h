@@ -5,6 +5,8 @@
 
 #include <time.h>
 
+#include "page.h"
+
 typedef struct zathura_annotation_s zathura_annotation_t;
 
 typedef enum zathura_annotation_type_s {
@@ -154,19 +156,19 @@ time_t zathura_annotation_get_modified(zathura_annotation_t* annotation);
 void zathura_annotation_set_modified(zathura_annotation_t* annotation, time_t modification_date);
 
 /**
- * Returns the page index of the annotation
+ * Returns the page of the annotation
  *
  * @param annotation The annotation
- * @return The page index of the annotation
+ * @return The page of the annotation
  */
-unsigned int zathura_annotation_get_page_index(zathura_annotation_t* annotation);
+zathura_page_t* zathura_annotation_get_page(zathura_annotation_t* annotation);
 
 /**
- * Sets the page index of the annotation
+ * Sets the page of the annotation
  *
  * @param annotation The annotation
- * @param page_index The page index of the annotation
+ * @param page The page of the annotation
  */
-void zathura_annotation_set_page_index(zathura_annotation_t* annotation, unsigned int page_index);
+void zathura_annotation_set_page_index(zathura_annotation_t* annotation, zathura_page_t* page);
 
 #endif // ANNOTATION_H

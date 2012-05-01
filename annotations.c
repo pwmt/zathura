@@ -11,7 +11,7 @@ struct zathura_annotation_s {
   char* name; /**< Name of the annotation */
   char* content; /**< Content of the annotation */
   time_t modification_date; /**< Modification date */
-  unsigned int page_index; /**< Page index */
+  zathura_page_t* page; /**< Zathura page */
   void* data; /**< Custom data */
 };
 
@@ -163,24 +163,24 @@ zathura_annotation_set_modified(zathura_annotation_t* annotation, time_t modific
   annotation->modification_date = modification_date;
 }
 
-unsigned int
+zathura_page_t*
 zathura_annotation_get_page_index(zathura_annotation_t* annotation)
 {
   if (annotation == NULL) {
-    return 0;
+    return NULL;
   }
 
-  return annotation->page_index;
+  return annotation->page;
 }
 
 void
-zathura_annotation_set_page_index(zathura_annotation_t* annotation, unsigned int page_index)
+zathura_annotation_set_page(zathura_annotation_t* annotation, zathura_page_t* page)
 {
   if (annotation == NULL) {
     return;
   }
 
-  annotation->page_index = page_index;
+  annotation->page = page;
 }
 
 static char*
