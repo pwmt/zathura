@@ -4,6 +4,7 @@
 #define PLUGIN_API_H
 
 #include "page.h"
+#include "annotations.h"
 #include "document.h"
 #include "version.h"
 
