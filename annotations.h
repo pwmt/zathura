@@ -35,7 +35,8 @@ typedef enum zathura_annotation_type_s {
   ZATHURA_ANNOTATION_PRINTER_MARK,
   ZATHURA_ANNOTATION_TRAP_NET,
   ZATHURA_ANNOTATION_WATERMARK,
-  ZATHURA_ANNOTATION_3D
+  ZATHURA_ANNOTATION_3D,
+  ZATHURA_ANNOTATION_MARKUP
 } zathura_annotation_type_t;
 
 typedef enum zathura_annotation_flag_s {

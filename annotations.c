@@ -26,11 +26,7 @@ zathura_annotation_new(zathura_annotation_type_t type)
   }
 
   switch (type) {
-    case ZATHURA_ANNOTATION_TEXT:
-    case ZATHURA_ANNOTATION_FREE_TEXT:
-    case ZATHURA_ANNOTATION_FILE_ATTACHMENT:
-    case ZATHURA_ANNOTATION_MOVIE:
-    case ZATHURA_ANNOTATION_SCREEN:
+    case ZATHURA_ANNOTATION_MARKUP:
       break;
     default:
       free(annotation);
