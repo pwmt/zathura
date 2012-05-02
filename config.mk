@@ -21,7 +21,7 @@ GIRARA_VERSION_CHECK ?= $(shell pkg-config --atleast-version=$(GIRARA_MIN_VERSIO
 
 # database
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
-WITH_SQLITE ?= $(shell (pkg-config --exists sqlite3 && echo 1) || echo 0)
+WITH_SQLITE ?= $(shell (pkg-config --atleast-version=3.5.9 sqlite3 && echo 1) || echo 0)
 
 # paths
 PREFIX ?= /usr
