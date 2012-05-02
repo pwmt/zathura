@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "page.h"
+#include "types.h"
 
 typedef struct zathura_annotation_s zathura_annotation_t;
 
@@ -171,5 +172,23 @@ zathura_page_t* zathura_annotation_get_page(zathura_annotation_t* annotation);
  * @param page The page of the annotation
  */
 void zathura_annotation_set_page_index(zathura_annotation_t* annotation, zathura_page_t* page);
+
+/**
+ * Retrieves the position of the annotation and saves it into the given
+ * rectangle
+ *
+ * @param annotation The annotation
+ * @param rectangle The coordinates of the annotation
+ * @return true if the position could be retrieved otherwise false
+ */
+bool zathura_annotation_get_position(zathura_annotation_t* annotation, zathura_rectangle_t* rectangle);
+
+/**
+ * Sets the new position of the annotation
+ *
+ * @param annotation The annotation
+ * @param rectangle The rectangle containing the new position information
+ */
+void zathura_annotation_set_position(zathura_annotation_t* annotation, zathura_rectangle_t rectangle);
 
 #endif // ANNOTATION_H

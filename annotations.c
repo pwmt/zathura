@@ -12,6 +12,7 @@ struct zathura_annotation_s {
   char* content; /**< Content of the annotation */
   time_t modification_date; /**< Modification date */
   zathura_page_t* page; /**< Zathura page */
+  zathura_rectangle_t position; /**< Position of the annotation */
   void* data; /**< Custom data */
 };
 
@@ -192,6 +193,39 @@ zathura_annotation_set_page(zathura_annotation_t* annotation, zathura_page_t* pa
   }
 
   annotation->page = page;
+}
+
+bool
+zathura_annotation_get_position(zathura_annotation_t* annotation,
+    zathura_rectangle_t* rectangle)
+{
+  if (annotation == NULL || rectangle == NULL) {
+    return false;
+  }
+
+  if (annotation->type == ZATHURA_ANNOTATION_MARKUP) { // TODO: Position of other annotation types
+    rectangle->x1 = annotation->position.x1;
+    rectangle->x2 = annotation->position.x2;
+    rectangle->y1 = annotation->position.y1;
+    rectangle->y2 = annotation->position.y2;
+    return true;
+  }
+
+  return false;
+}
+
+void
+zathura_annotation_set_position(zathura_annotation_t* annotation,
+    zathura_rectangle_t rectangle)
+{
+  if (annotation == NULL) {
+    return;
+  }
+
+  annotation->position.x1 = rectangle.x1;
+  annotation->position.x2 = rectangle.x2;
+  annotation->position.y1 = rectangle.y1;
+  annotation->position.y2 = rectangle.y2;
 }
 
 static char*
