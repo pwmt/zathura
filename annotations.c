@@ -21,6 +21,21 @@ zathura_annotation_t*
 zathura_annotation_new(zathura_annotation_type_t type)
 {
   zathura_annotation_t* annotation = calloc(1, sizeof(zathura_annotation_t));
+  if (annotation == NULL) {
+    return NULL;
+  }
+
+  switch (type) {
+    case ZATHURA_ANNOTATION_TEXT:
+    case ZATHURA_ANNOTATION_FREE_TEXT:
+    case ZATHURA_ANNOTATION_FILE_ATTACHMENT:
+    case ZATHURA_ANNOTATION_MOVIE:
+    case ZATHURA_ANNOTATION_SCREEN:
+      break;
+    default:
+      free(annotation);
+      return NULL;
+  }
 
   annotation->type = type;
 
