@@ -4,11 +4,13 @@
 #define ANNOTATION_H
 
 #include <time.h>
+#include <stdbool.h>
 
 #include "page.h"
 #include "types.h"
 
 typedef struct zathura_annotation_s zathura_annotation_t;
+typedef struct zathura_annotation_popup_s zathura_annotation_popup_t;
 
 typedef enum zathura_annotation_type_s {
   ZATHURA_ANNOTATION_UNKNOWN,
@@ -178,10 +180,9 @@ void zathura_annotation_set_page_index(zathura_annotation_t* annotation, zathura
  * rectangle
  *
  * @param annotation The annotation
- * @param rectangle The coordinates of the annotation
- * @return true if the position could be retrieved otherwise false
+ * @return The position of the annotation
  */
-bool zathura_annotation_get_position(zathura_annotation_t* annotation, zathura_rectangle_t* rectangle);
+zathura_rectangle_t zathura_annotation_get_position(zathura_annotation_t* annotation);
 
 /**
  * Sets the new position of the annotation
@@ -189,9 +190,116 @@ bool zathura_annotation_get_position(zathura_annotation_t* annotation, zathura_r
  * @param annotation The annotation
  * @param rectangle The rectangle containing the new position information
  */
-void zathura_annotation_set_position(zathura_annotation_t* annotation, zathura_rectangle_t rectangle);
+void zathura_annotation_set_position(zathura_annotation_t* annotation, zathura_rectangle_t position);
 
+/**
+ * Gets the current label of the markup annotation
+ *
+ * @param annotation The annotation
+ * @return The label or NULL
+ */
 char* zathura_annotation_markup_get_label(zathura_annotation_t* annotation);
+
+/**
+ * Sets the label of the markup annotation
+ *
+ * @param annotation The annotation
+ * @param label The new label of the markup annotation
+ */
 void zathura_annotation_markup_set_label(zathura_annotation_t* annotation, const char* label);
+
+/**
+ * Returns the subject of the markup annotation
+ *
+ * @param annotation The annotation
+ * @return The subject or NULL
+ */
+char* zathura_annotation_markup_get_subject(zathura_annotation_t* annotation);
+
+/**
+ * Sets the new subject of the markup annotation
+ *
+ * @param annotation The annotation
+ * @param subject The new subject of the markup annotation
+ */
+void zathura_annotation_markup_set_subject(zathura_annotation_t* annotation, const char* subject);
+
+/**
+ * Sets the annotation popup of the markup annotation
+ *
+ * @param annotation The annotation
+ * @return The popup (if available) from the markup annotation
+ */
+zathura_annotation_popup_t* zathura_annotation_markup_get_popup(zathura_annotation_t* annotation);
+
+/**
+ * Sets the new popup for the markup annotation
+ *
+ * @param annotation The annotation
+ * @param popup The new popup for the markup annotation
+ */
+void zathura_annotation_markup_set_popup(zathura_annotation_t* annotation, zathura_annotation_popup_t* popup);
+
+/**
+ * Creates a new annotation popup
+ *
+ * @return The popup or NULL if an error occured
+ */
+zathura_annotation_popup_t* zathura_annotation_popup_new();
+
+/**
+ * Frees the annotation popup
+ *
+ * @param popup The annotation popup
+ */
+void zathura_annotation_popup_free(zathura_annotation_popup_t* popup);
+
+/**
+ * Returns the position of the annotation popup
+ *
+ * @param popup The annotation popup
+ * @return The position of the annotation popup
+ */
+zathura_rectangle_t zathura_annotation_popup_get_position(zathura_annotation_popup_t* popup);
+
+/**
+ * Sets the position of the annotation popup
+ *
+ * @param popup The annotation popup
+ * @param position The new position of the annotation popup
+ */
+void zathura_annotation_popup_set_position(zathura_annotation_popup_t* popup, zathura_rectangle_t position);
+
+/**
+ * Returns the opacity of the annotation popup
+ *
+ * @param popup The annotation popup
+ * @return The opacity of the annotation popup
+ */
+double zathura_annotation_popup_get_opacity(zathura_annotation_popup_t* popup);
+
+/**
+ * Sets the opacity of the annotation popup
+ *
+ * @param popup The annotation popup
+ * @param opacity The new value for the opacity
+ */
+void zathura_annotation_popup_set_opacity(zathura_annotation_popup_t* popup, double opacity);
+
+/**
+ * Returns whether the popup is opened or not
+ *
+ * @param popup The annotation popup
+ * @return true if the popup is opened otherwise false
+ */
+bool zathura_annotation_popup_get_open_status(zathura_annotation_popup_t* popup);
+
+/**
+ * Sets the open status of the popup
+ *
+ * @param popup The annotation popup
+ * @param opened The new status
+ */
+void zathura_annotation_popup_set_open_status(zathura_annotation_popup_t* popup, bool opened);
 
 #endif // ANNOTATION_H

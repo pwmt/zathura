@@ -682,12 +682,9 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
 
   zathura_annotation_t* annotation = NULL;
   GIRARA_LIST_FOREACH(priv->annotations.list, zathura_annotation_t*, iter, annot)
-    zathura_rectangle_t rect;
-    if (zathura_annotation_get_position(annot, &rect) == true) {
-      rect = recalc_rectangle(priv->page, rect);
-      if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
-        annotation = annot;
-      }
+    zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_annotation_get_position(annot));
+    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+      annotation = annot;
     }
   GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annotation);
 

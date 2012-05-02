@@ -13,7 +13,21 @@ struct zathura_annotation_s {
   time_t modification_date; /**< Modification date */
   zathura_page_t* page; /**< Zathura page */
   zathura_rectangle_t position; /**< Position of the annotation */
-  void* data; /**< Custom data */
+  void* user_data; /**< Custom data */
+
+  union {
+    struct {
+      char* label; /**< Label */
+      char* subject; /**< Subject of the annotation */
+      zathura_annotation_popup_t* popup; /**< Optional popup */
+    } markup;
+  } data;
+};
+
+struct zathura_annotation_popup_s {
+  double opacity; /**< The opacity of the popup */
+  zathura_rectangle_t position; /**< Position of the annotation */
+  bool opened; /**< true if popup is opened */
 };
 
 static char* __strdup(const char* string);
@@ -54,6 +68,24 @@ zathura_annotation_free(zathura_annotation_t* annotation)
     free(annotation->content);
   }
 
+  switch (annotation->type) {
+    case ZATHURA_ANNOTATION_MARKUP:
+      if (annotation->data.markup.label != NULL) {
+        free(annotation->data.markup.label);
+      }
+
+      if (annotation->data.markup.subject != NULL) {
+        free(annotation->data.markup.subject);
+      }
+
+      if (annotation->data.markup.popup != NULL) {
+        zathura_annotation_popup_free(annotation->data.markup.popup);
+      }
+      break;
+    default:
+      break;
+  }
+
   free(annotation);
 }
 
@@ -64,7 +96,7 @@ zathura_annotation_get_data(zathura_annotation_t* annotation)
     return NULL;
   }
 
-  return annotation->data;
+  return annotation->user_data;
 }
 
 void
@@ -74,7 +106,7 @@ zathura_annotation_set_data(zathura_annotation_t* annotation, void* data)
     return;
   }
 
-  annotation->data = data;
+  annotation->user_data = data;
 }
 
 zathura_annotation_type_t
@@ -195,34 +227,205 @@ zathura_annotation_set_page(zathura_annotation_t* annotation, zathura_page_t* pa
   annotation->page = page;
 }
 
-bool
-zathura_annotation_get_position(zathura_annotation_t* annotation,
-    zathura_rectangle_t* rectangle)
+zathura_rectangle_t
+zathura_annotation_get_position(zathura_annotation_t* annotation)
 {
-  if (annotation == NULL || rectangle == NULL) {
-    return false;
+  zathura_rectangle_t rectangle = { 0, 0, 0, 0 };
+
+  if (annotation != NULL) {
+    rectangle.x1 = annotation->position.x1;
+    rectangle.x2 = annotation->position.x2;
+    rectangle.y1 = annotation->position.y1;
+    rectangle.y2 = annotation->position.y2;
   }
 
-  rectangle->x1 = annotation->position.x1;
-  rectangle->x2 = annotation->position.x2;
-  rectangle->y1 = annotation->position.y1;
-  rectangle->y2 = annotation->position.y2;
-
-  return true;
+  return rectangle;
 }
 
 void
 zathura_annotation_set_position(zathura_annotation_t* annotation,
-    zathura_rectangle_t rectangle)
+    zathura_rectangle_t position)
 {
   if (annotation == NULL) {
     return;
   }
 
-  annotation->position.x1 = rectangle.x1;
-  annotation->position.x2 = rectangle.x2;
-  annotation->position.y1 = rectangle.y1;
-  annotation->position.y2 = rectangle.y2;
+  annotation->position.x1 = position.x1;
+  annotation->position.x2 = position.x2;
+  annotation->position.y1 = position.y1;
+  annotation->position.y2 = position.y2;
+}
+
+char*
+zathura_annotation_markup_get_label(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return NULL;
+  }
+
+  return annotation->data.markup.label;
+}
+
+void
+zathura_annotation_markup_set_label(zathura_annotation_t* annotation, const char* label)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return;
+  }
+
+  if (annotation->data.markup.label != NULL) {
+    free(annotation->data.markup.label);
+  }
+
+  if (label != NULL) {
+    annotation->data.markup.label = __strdup(label);
+  } else {
+    annotation->data.markup.label = NULL;
+  }
+}
+
+char*
+zathura_annotation_markup_get_subject(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return NULL;
+  }
+
+  return annotation->data.markup.subject;
+}
+
+void
+zathura_annotation_markup_set_subject(zathura_annotation_t* annotation, const char* subject)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return;
+  }
+  if (annotation->data.markup.subject != NULL) {
+    free(annotation->data.markup.subject);
+  }
+
+  if (subject != NULL) {
+    annotation->data.markup.subject = __strdup(subject);
+  } else {
+    annotation->data.markup.subject = NULL;
+  }
+}
+
+zathura_annotation_popup_t*
+zathura_annotation_markup_get_popup(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return NULL;
+  }
+
+  return annotation->data.markup.popup;
+}
+
+void
+zathura_annotation_markup_set_popup(zathura_annotation_t* annotation, zathura_annotation_popup_t* popup)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP || popup == NULL) {
+    return;
+  }
+
+  annotation->data.markup.popup = popup;
+}
+
+zathura_annotation_popup_t*
+zathura_annotation_popup_new()
+{
+  zathura_annotation_popup_t* popup = calloc(1, sizeof(zathura_annotation_popup_t));
+  if (popup == NULL) {
+    return NULL;
+  }
+
+  popup->opacity = 1.0;
+
+  return popup;
+}
+
+void
+zathura_annotation_popup_free(zathura_annotation_popup_t* popup)
+{
+  if (popup == NULL) {
+    return;
+  }
+
+  free(popup);
+}
+
+zathura_rectangle_t
+zathura_annotation_popup_get_position(zathura_annotation_popup_t* popup)
+{
+  zathura_rectangle_t rectangle = { 0, 0, 0, 0 };
+
+  if (popup != NULL) {
+    rectangle.x1 = popup->position.x1;
+    rectangle.x2 = popup->position.x2;
+    rectangle.y1 = popup->position.y1;
+    rectangle.y2 = popup->position.y2;
+  }
+
+  return rectangle;
+}
+
+void
+zathura_annotation_popup_set_position(zathura_annotation_popup_t* popup, zathura_rectangle_t position)
+{
+  if (popup == NULL) {
+    return;
+  }
+
+  popup->position.x1 = position.x1;
+  popup->position.x2 = position.x2;
+  popup->position.y1 = position.y1;
+  popup->position.y2 = position.y2;
+}
+
+double
+zathura_annotation_popup_get_opacity(zathura_annotation_popup_t* popup)
+{
+  if (popup == NULL) {
+    return 0.0;
+  }
+
+  return popup->opacity;
+}
+
+void
+zathura_annotation_popup_set_opacity(zathura_annotation_popup_t* popup, double opacity)
+{
+  if (popup == NULL) {
+    return;
+  }
+
+  if (opacity < 0) {
+    popup->opacity = 0;
+  } else if (opacity > 1) {
+    popup->opacity = 1;
+  } else {
+    popup->opacity = opacity;
+  }
+}
+
+bool
+zathura_annotation_popup_get_open_status(zathura_annotation_popup_t* popup)
+{
+  if (popup == NULL) {
+    return false;
+  }
+
+  return popup->opened;
+}
+
+void
+zathura_annotation_popup_set_open_status(zathura_annotation_popup_t* popup, bool opened)
+{
+  if (popup == NULL) {
+    return;
+  }
+
+  popup->opened = opened;
 }
 
 static char*
