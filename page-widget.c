@@ -37,7 +37,15 @@ typedef struct zathura_page_widget_private_s {
   bool images_got; /**< True if we already tried to retrieve the list of images */
   zathura_image_t* current_image; /**< Image data of selected image */
   gint64 last_view;
+
+  struct {
+    bool retrieved;
+    girara_list_t* list;
+    zathura_annotation_t* current;
+  } annotations;
 } zathura_page_widget_private_t;
+
+typedef void (*menu_callback_t)(GtkMenuItem*, ZathuraPage*);
 
 #define ZATHURA_PAGE_GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_PAGE, zathura_page_widget_private_t))
@@ -57,6 +65,8 @@ static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, Gdk
 static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* button);
 static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event);
 static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
+static void menu_add_item(GtkWidget* menu, GtkWidget* page, char* text, menu_callback_t callback);
+static void cb_menu_annotation_properties(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
 
@@ -139,6 +149,9 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->current_image         = NULL;
   priv->last_view             = g_get_real_time();
   priv->draw_search_results   = true;
+  priv->annotations.retrieved = false;
+  priv->annotations.list      = NULL;
+  priv->annotations.current   = NULL;
   g_static_mutex_init(&(priv->lock));
 
   /* we want mouse events */
@@ -170,6 +183,10 @@ zathura_page_widget_finalize(GObject* object)
 
   if (priv->links != NULL) {
     girara_list_free(priv->links);
+  }
+
+  if (priv->annotations.list != NULL) {
+    girara_list_free(priv->annotations.list);
   }
 
   g_static_mutex_free(&(priv->lock));
@@ -510,6 +527,10 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
+  /* reset selected items */
+  priv->current_image       = NULL;
+  priv->annotations.current = NULL;
+
   if (button->button == 1) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
       /* start the selection */
@@ -650,6 +671,33 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   return;
 #endif
 
+  /* setup menu */
+  GtkWidget* menu = gtk_menu_new();
+
+  /* annotations */
+  if (priv->annotations.retrieved == false) {
+    priv->annotations.list = zathura_page_get_annotations(priv->page, NULL);
+    priv->annotations.retrieved = true;
+  }
+
+  zathura_annotation_t* annotation = NULL;
+  GIRARA_LIST_FOREACH(priv->annotations.list, zathura_annotation_t*, iter, annot)
+    zathura_rectangle_t rect;
+    if (zathura_annotation_get_position(annot, &rect) == true) {
+      rect = recalc_rectangle(priv->page, rect);
+      if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+        annotation = annot;
+      }
+    }
+  GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annotation);
+
+  if (annotation != NULL) {
+    menu_add_item(menu, widget, _("Annotation properties"), cb_menu_annotation_properties);
+
+    priv->annotations.current = annotation;
+  }
+
+  /* images */
   if (priv->images_got == false) {
     priv->images     = zathura_page_images_get(priv->page, NULL);
     priv->images_got = true;
@@ -668,43 +716,28 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     }
   GIRARA_LIST_FOREACH_END(priv->images, zathura_image_t*, iter, image_it);
 
-  if (image == NULL) {
-    return;
-  }
+  if (image != NULL) {
+    menu_add_item(menu, widget, _("Copy image"),    cb_menu_image_copy);
+    menu_add_item(menu, widget, _("Save image as"), cb_menu_image_save);
 
-  priv->current_image = image;
-
-  /* setup menu */
-  GtkWidget* menu = gtk_menu_new();
-
-  typedef struct menu_item_s {
-    char* text;
-    void (*callback)(GtkMenuItem*, ZathuraPage*);
-  } menu_item_t;
-
-  menu_item_t menu_items[] = {
-    { _("Copy image"),    cb_menu_image_copy },
-    { _("Save image as"), cb_menu_image_save },
-  };
-
-  for (unsigned int i = 0; i < LENGTH(menu_items); i++) {
-    GtkWidget* item = gtk_menu_item_new_with_label(menu_items[i].text);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-    gtk_widget_show(item);
-    g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu_items[i].callback), ZATHURA_PAGE(widget));
+    priv->current_image = image;
   }
 
   /* attach and popup */
-  int event_button = 0;
-  int event_time   = gtk_get_current_event_time();
+  if (priv->current_image != NULL || priv->annotations.current != NULL) {
+    int event_button = 0;
+    int event_time   = gtk_get_current_event_time();
 
-  if (event != NULL) {
-    event_button = event->button;
-    event_time   = event->time;
+    if (event != NULL) {
+      event_button = event->button;
+      event_time   = event->time;
+    }
+
+    gtk_menu_attach_to_widget(GTK_MENU(menu), widget, NULL);
+    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event_button, event_time);
+  } else {
+    gtk_widget_destroy(menu);
   }
-
-  gtk_menu_attach_to_widget(GTK_MENU(menu), widget, NULL);
-  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event_button, event_time);
 }
 
 static gboolean
@@ -713,6 +746,22 @@ cb_zathura_page_widget_popup_menu(GtkWidget* widget)
   zathura_page_widget_popup_menu(widget, NULL);
 
   return TRUE;
+}
+
+static void
+cb_menu_annotation_properties(GtkMenuItem* item, ZathuraPage* page)
+{
+  g_return_if_fail(item != NULL);
+  g_return_if_fail(page != NULL);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(page);
+  zathura_annotation_t* annotation = priv->annotations.current;
+  girara_session_t* gsession = priv->zathura->ui.session;
+  g_return_if_fail(annotation != NULL);
+  g_return_if_fail(gsession != NULL);
+
+  girara_notify(gsession, GIRARA_INFO, _("Annotation name: %s"), zathura_annotation_get_name(annotation));
+
+  priv->annotations.current = NULL;
 }
 
 static void
@@ -805,4 +854,17 @@ zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
   if (now - priv->last_view >= threshold * G_USEC_PER_SEC) {
     zathura_page_widget_update_surface(widget, NULL);
   }
+}
+
+static void
+menu_add_item(GtkWidget* menu, GtkWidget* page, char* text, menu_callback_t callback)
+{
+  if (menu == NULL || page == NULL || text == NULL || callback == NULL) {
+    return;
+  }
+
+  GtkWidget* item = gtk_menu_item_new_with_label(text);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+  gtk_widget_show(item);
+  g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(callback), page);
 }

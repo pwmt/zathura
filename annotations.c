@@ -203,15 +203,12 @@ zathura_annotation_get_position(zathura_annotation_t* annotation,
     return false;
   }
 
-  if (annotation->type == ZATHURA_ANNOTATION_MARKUP) { // TODO: Position of other annotation types
-    rectangle->x1 = annotation->position.x1;
-    rectangle->x2 = annotation->position.x2;
-    rectangle->y1 = annotation->position.y1;
-    rectangle->y2 = annotation->position.y2;
-    return true;
-  }
+  rectangle->x1 = annotation->position.x1;
+  rectangle->x2 = annotation->position.x2;
+  rectangle->y1 = annotation->position.y1;
+  rectangle->y2 = annotation->position.y2;
 
-  return false;
+  return true;
 }
 
 void

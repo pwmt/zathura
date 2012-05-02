@@ -191,4 +191,7 @@ bool zathura_annotation_get_position(zathura_annotation_t* annotation, zathura_r
  */
 void zathura_annotation_set_position(zathura_annotation_t* annotation, zathura_rectangle_t rectangle);
 
+char* zathura_annotation_markup_get_label(zathura_annotation_t* annotation);
+void zathura_annotation_markup_set_label(zathura_annotation_t* annotation, const char* label);
+
 #endif // ANNOTATION_H
