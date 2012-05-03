@@ -681,10 +681,6 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     priv->images_got = true;
   }
 
-  if (priv->images == NULL) {
-    return;
-  }
-
   /* search for underlaying image */
   zathura_image_t* image = NULL;
   GIRARA_LIST_FOREACH(priv->images, zathura_image_t*, iter, image_it)
@@ -717,14 +713,14 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
 
   if (annotation != NULL) {
     menu_add_item(menu, widget, _("Annotation properties"), cb_menu_annotation_properties);
-
     priv->annotations.current = annotation;
   } else {
     menu_add_item(menu, widget, _("Add annotation"), cb_menu_annotation_add);
   }
 
   /* attach and popup */
-  if (priv->current_image != NULL || priv->annotations.current != NULL) {
+  GList* children = gtk_container_get_children(GTK_CONTAINER(menu));
+  if (g_list_length(children) > 0) {
     int event_button = 0;
     int event_time   = gtk_get_current_event_time();
 
@@ -738,6 +734,7 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   } else {
     gtk_widget_destroy(menu);
   }
+  g_list_free(children);
 }
 
 static gboolean
@@ -765,11 +762,8 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
     return;
   }
 
-  /* save annotation to list */
-  if (priv->annotations.list != NULL) {
-    girara_list_append(priv->annotations.list, annotation);
-  /* create new list, save it and free it */
-  } else {
+  /* create new list if necessary */
+  if (priv->annotations.list == NULL) {
     priv->annotations.list = girara_list_new2((girara_free_function_t)
         zathura_annotation_free);
 
@@ -777,10 +771,11 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
       zathura_annotation_free(annotation);
       return;
     }
-
-    girara_list_append(priv->annotations.list, annotation);
-    zathura_page_set_annotations(priv->page, priv->annotations.list);
   }
+
+  /* save to current list */
+  girara_list_append(priv->annotations.list, annotation);
+  zathura_page_set_annotations(priv->page, priv->annotations.list);
 
   /* retrieve new list */
   girara_list_free(priv->annotations.list);
