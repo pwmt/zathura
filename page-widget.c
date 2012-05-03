@@ -67,6 +67,7 @@ static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEvent
 static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
 static void menu_add_item(GtkWidget* menu, GtkWidget* page, char* text, menu_callback_t callback);
 static void cb_menu_annotation_properties(GtkMenuItem* item, ZathuraPage* page);
+static void cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
 
@@ -674,26 +675,6 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   /* setup menu */
   GtkWidget* menu = gtk_menu_new();
 
-  /* annotations */
-  if (priv->annotations.retrieved == false) {
-    priv->annotations.list = zathura_page_get_annotations(priv->page, NULL);
-    priv->annotations.retrieved = true;
-  }
-
-  zathura_annotation_t* annotation = NULL;
-  GIRARA_LIST_FOREACH(priv->annotations.list, zathura_annotation_t*, iter, annot)
-    zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_annotation_get_position(annot));
-    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
-      annotation = annot;
-    }
-  GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annotation);
-
-  if (annotation != NULL) {
-    menu_add_item(menu, widget, _("Annotation properties"), cb_menu_annotation_properties);
-
-    priv->annotations.current = annotation;
-  }
-
   /* images */
   if (priv->images_got == false) {
     priv->images     = zathura_page_images_get(priv->page, NULL);
@@ -720,6 +701,28 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     priv->current_image = image;
   }
 
+  /* annotations */
+  if (priv->annotations.retrieved == false) {
+    priv->annotations.list = zathura_page_get_annotations(priv->page, NULL);
+    priv->annotations.retrieved = true;
+  }
+
+  zathura_annotation_t* annotation = NULL;
+  GIRARA_LIST_FOREACH(priv->annotations.list, zathura_annotation_t*, iter, annot)
+    zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_annotation_get_position(annot));
+    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+      annotation = annot;
+    }
+  GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annotation);
+
+  if (annotation != NULL) {
+    menu_add_item(menu, widget, _("Annotation properties"), cb_menu_annotation_properties);
+
+    priv->annotations.current = annotation;
+  } else {
+    menu_add_item(menu, widget, _("Add annotation"), cb_menu_annotation_add);
+  }
+
   /* attach and popup */
   if (priv->current_image != NULL || priv->annotations.current != NULL) {
     int event_button = 0;
@@ -743,6 +746,46 @@ cb_zathura_page_widget_popup_menu(GtkWidget* widget)
   zathura_page_widget_popup_menu(widget, NULL);
 
   return TRUE;
+}
+
+static void
+cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
+{
+  g_return_if_fail(item != NULL);
+  g_return_if_fail(page != NULL);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(page);
+  girara_session_t* gsession = priv->zathura->ui.session;
+  g_return_if_fail(gsession != NULL);
+
+
+  /* create new annotation */
+  zathura_annotation_t* annotation =
+    zathura_annotation_new(ZATHURA_ANNOTATION_MARKUP);
+  if (annotation == NULL) {
+    return;
+  }
+
+  /* save annotation to list */
+  if (priv->annotations.list != NULL) {
+    girara_list_append(priv->annotations.list, annotation);
+  /* create new list, save it and free it */
+  } else {
+    priv->annotations.list = girara_list_new2((girara_free_function_t)
+        zathura_annotation_free);
+
+    if (priv->annotations.list == NULL) {
+      zathura_annotation_free(annotation);
+      return;
+    }
+
+    girara_list_append(priv->annotations.list, annotation);
+    zathura_page_set_annotations(priv->page, priv->annotations.list);
+  }
+
+  /* retrieve new list */
+  girara_list_free(priv->annotations.list);
+  priv->annotations.list = zathura_page_get_annotations(priv->page, NULL);
+  priv->annotations.retrieved = true;
 }
 
 static void

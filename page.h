@@ -203,6 +203,16 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
 girara_list_t* zathura_page_get_annotations(zathura_page_t* page, zathura_error_t* error);
 
 /**
+ * Sets the list of annotations (see \ref zathura_annotation_t)
+ *
+ * @param page Page
+ * @param annotations List of annotations
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
+ */
+zathura_error_t zathura_page_set_annotations(zathura_page_t* page, girara_list_t* annotations);
+
+/**
  * Render page
  *
  * @param page The page object
