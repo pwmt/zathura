@@ -43,6 +43,13 @@ typedef struct zathura_page_widget_private_s {
     girara_list_t* list;
     zathura_annotation_t* current;
   } annotations;
+
+  struct {
+    struct {
+      int x;
+      int y;
+    } mouse_click;
+  } events;
 } zathura_page_widget_private_t;
 
 typedef void (*menu_callback_t)(GtkMenuItem*, ZathuraPage*);
@@ -532,6 +539,14 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
   priv->current_image       = NULL;
   priv->annotations.current = NULL;
 
+  if (button->type == GDK_BUTTON_PRESS) {
+    priv->events.mouse_click.x = button->x;
+    priv->events.mouse_click.y = button->y;
+  } else {
+    priv->events.mouse_click.x = -1;
+    priv->events.mouse_click.y = -1;
+  }
+
   if (button->button == 1) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
       /* start the selection */
@@ -761,6 +776,15 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
   if (annotation == NULL) {
     return;
   }
+
+  zathura_rectangle_t position = {
+    priv->events.mouse_click.x,
+    priv->events.mouse_click.y,
+    priv->events.mouse_click.x,
+    priv->events.mouse_click.y
+  };
+
+  zathura_annotation_set_position(annotation, position);
 
   /* create new list if necessary */
   if (priv->annotations.list == NULL) {
