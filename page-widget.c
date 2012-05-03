@@ -777,11 +777,15 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
     return;
   }
 
+  /* calculate position */
+  zathura_document_t* document = zathura_page_get_document(priv->page);
+  double scale = zathura_document_get_scale(document);
+
   zathura_rectangle_t position = {
-    priv->events.mouse_click.x,
-    priv->events.mouse_click.y,
-    priv->events.mouse_click.x,
-    priv->events.mouse_click.y
+    priv->events.mouse_click.x / scale,
+    priv->events.mouse_click.y / scale,
+    priv->events.mouse_click.x / scale,
+    priv->events.mouse_click.y / scale
   };
 
   zathura_annotation_set_position(annotation, position);
