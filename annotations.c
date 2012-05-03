@@ -199,7 +199,7 @@ zathura_annotation_set_name(zathura_annotation_t* annotation, const char* name)
 }
 
 time_t
-zathura_annotation_get_modified(zathura_annotation_t* annotation)
+zathura_annotation_get_modification_date(zathura_annotation_t* annotation)
 {
   if (annotation == NULL) {
     return (time_t) -1;
@@ -209,7 +209,7 @@ zathura_annotation_get_modified(zathura_annotation_t* annotation)
 }
 
 void
-zathura_annotation_set_modified(zathura_annotation_t* annotation, time_t modification_date)
+zathura_annotation_set_modification_date(zathura_annotation_t* annotation, time_t modification_date)
 {
   if (annotation == NULL) {
     return;

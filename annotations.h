@@ -173,7 +173,7 @@ void zathura_annotation_set_name(zathura_annotation_t* annotation, const char* n
  * @param annotation The annotation
  * @return The date on which the annotation has been modified the last time
  */
-time_t zathura_annotation_get_modified(zathura_annotation_t* annotation);
+time_t zathura_annotation_get_modification_date(zathura_annotation_t* annotation);
 
 /**
  * Sets the date on which the annotation has been modified the last time
@@ -181,7 +181,7 @@ time_t zathura_annotation_get_modified(zathura_annotation_t* annotation);
  * @param annotation The annotation
  * @param modification_date The modification date
  */
-void zathura_annotation_set_modified(zathura_annotation_t* annotation, time_t modification_date);
+void zathura_annotation_set_modification_date(zathura_annotation_t* annotation, time_t modification_date);
 
 /**
  * Returns the page of the annotation
@@ -197,7 +197,7 @@ zathura_page_t* zathura_annotation_get_page(zathura_annotation_t* annotation);
  * @param annotation The annotation
  * @param page The page of the annotation
  */
-void zathura_annotation_set_page_index(zathura_annotation_t* annotation, zathura_page_t* page);
+void zathura_annotation_set_page(zathura_annotation_t* annotation, zathura_page_t* page);
 
 /**
  * Retrieves the position of the annotation and saves it into the given
