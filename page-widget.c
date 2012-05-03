@@ -809,6 +809,9 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
   girara_list_free(priv->annotations.list);
   priv->annotations.list = zathura_page_get_annotations(priv->page, NULL);
   priv->annotations.retrieved = true;
+
+  /* redraw */
+  render_page(priv->zathura->sync.render_thread, priv->page);
 }
 
 static void
