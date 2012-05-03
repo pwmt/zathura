@@ -709,7 +709,7 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
       annotation = annot;
     }
-  GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annotation);
+  GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annot);
 
   if (annotation != NULL) {
     menu_add_item(menu, widget, _("Annotation properties"), cb_menu_annotation_properties);
