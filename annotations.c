@@ -20,7 +20,13 @@ struct zathura_annotation_s {
       char* label; /**< Label */
       char* subject; /**< Subject of the annotation */
       zathura_annotation_popup_t* popup; /**< Optional popup */
+      time_t creation_date; /**< Creation date */
     } markup;
+    struct {
+      zathura_annotation_text_icon_t icon; /**< The icon of the text annotation */
+      zathura_annotation_text_state_t state; /**< The state of the text annotation */
+      bool opened; /**< Open status of the text annotation */
+    } text;
   } data;
 };
 
@@ -42,13 +48,18 @@ zathura_annotation_new(zathura_annotation_type_t type)
 
   switch (type) {
     case ZATHURA_ANNOTATION_MARKUP:
+      annotation->data.markup.creation_date = (time_t) -1;
       break;
+    case ZATHURA_ANNOTATION_TEXT:
+      annotation->data.text.icon  = ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN;
+      annotation->data.text.state = ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN;
     default:
       free(annotation);
       return NULL;
   }
 
-  annotation->type = type;
+  annotation->type              = type;
+  annotation->modification_date = (time_t) -1;
 
   return annotation;
 }
@@ -329,6 +340,86 @@ zathura_annotation_markup_set_popup(zathura_annotation_t* annotation, zathura_an
   }
 
   annotation->data.markup.popup = popup;
+}
+
+time_t
+zathura_annotation_markup_get_creation_date(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return (time_t) -1;
+  }
+
+  return annotation->data.markup.creation_date;
+}
+
+void
+zathura_annotation_markup_set_creation_date(zathura_annotation_t* annotation, time_t creation_date)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+    return;
+  }
+
+  annotation->data.markup.creation_date = creation_date;
+}
+
+zathura_annotation_text_icon_t
+zathura_annotation_text_get_icon(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_TEXT) {
+    return ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN;
+  }
+
+  return annotation->data.text.icon;
+}
+
+void
+zathura_annotation_text_set_icon(zathura_annotation_t* annotation, zathura_annotation_text_icon_t icon)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_TEXT) {
+    return;
+  }
+
+  annotation->data.text.icon = icon;
+}
+
+zathura_annotation_text_state_t
+zathura_annotation_text_get_state(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_TEXT) {
+    return ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN;
+  }
+
+  return annotation->data.text.state;
+}
+
+void
+zathura_annotation_text_set_state(zathura_annotation_t* annotation, zathura_annotation_text_state_t state)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_TEXT) {
+    return;
+  }
+
+  annotation->data.text.state = state;
+}
+
+bool
+zathura_annotation_text_get_open_status(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_TEXT) {
+    return false;
+  }
+
+  return annotation->data.text.opened;
+}
+
+void
+zathura_annotation_text_set_open_status(zathura_annotation_t* annotation, bool opened)
+{
+  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_TEXT) {
+    return;
+  }
+
+  annotation->data.text.opened = opened;
 }
 
 zathura_annotation_popup_t*

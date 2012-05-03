@@ -56,6 +56,30 @@ typedef enum zathura_annotation_flag_s {
   ZATHURA_ANNOTATION_FLAG_LOCKED_CONTENTS = 1 << 9,
 } zathura_annotation_flag_t;
 
+typedef enum zathura_annotation_text_icon_s {
+  ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN,
+  ZATHURA_ANNOTATION_TEXT_ICON_NOTE,
+  ZATHURA_ANNOTATION_TEXT_ICON_COMMENT,
+  ZATHURA_ANNOTATION_TEXT_ICON_KEY,
+  ZATHURA_ANNOTATION_TEXT_ICON_HELP,
+  ZATHURA_ANNOTATION_TEXT_ICON_NEW_PARAGRAPH,
+  ZATHURA_ANNOTATION_TEXT_ICON_PARAGRAPH,
+  ZATHURA_ANNOTATION_TEXT_ICON_INSERT,
+  ZATHURA_ANNOTATION_TEXT_ICON_CROSS,
+  ZATHURA_ANNOTATION_TEXT_ICON_CIRCLE
+} zathura_annotation_text_icon_t;
+
+typedef enum zathura_annotation_text_state_s {
+  ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN,
+  ZATHURA_ANNOTATION_TEXT_STATE_NONE,
+  ZATHURA_ANNOTATION_TEXT_STATE_MARKED,
+  ZATHURA_ANNOTATION_TEXT_STATE_UNMARKED,
+  ZATHURA_ANNOTATION_TEXT_STATE_ACCEPTED,
+  ZATHURA_ANNOTATION_TEXT_STATE_REJECTED,
+  ZATHURA_ANNOTATION_TEXT_STATE_CANCELLED,
+  ZATHURA_ANNOTATION_TEXT_STATE_COMPLETED
+} zathura_annotation_text_state_t;
+
 /**
  * Creates a new annotation
  *
@@ -239,6 +263,70 @@ zathura_annotation_popup_t* zathura_annotation_markup_get_popup(zathura_annotati
  * @param popup The new popup for the markup annotation
  */
 void zathura_annotation_markup_set_popup(zathura_annotation_t* annotation, zathura_annotation_popup_t* popup);
+
+/**
+ * Returns the creation date of the annotation
+ *
+ * @param annotation The annotation
+ * @retun The creation date
+ */
+time_t zathura_annotation_markup_get_creation_date(zathura_annotation_t* annotation);
+
+/**
+ * Sets the creation date of the annotation
+ *
+ * @param annotation The annotation
+ * @param creation_date The creation date
+ */
+void zathura_annotation_markup_set_creation_date(zathura_annotation_t* annotation, time_t creation_date);
+
+/**
+ * Returns the defined icon of the text annotation
+ *
+ * @param annotation The annotation
+ * @return The set icon of the text annotation
+ */
+zathura_annotation_text_icon_t zathura_annotation_text_get_icon(zathura_annotation_t* annotation);
+
+/**
+ * Sets the icon of the text annotation
+ *
+ * @param annotation The annotation
+ * @param icon The icon of the text annotation
+ */
+void zathura_annotation_text_set_icon(zathura_annotation_t* annotation, zathura_annotation_text_icon_t icon);
+
+/**
+ * Returns the state of the text annotation
+ *
+ * @param annotation The annotation
+ * @return The state of the text annotation
+ */
+zathura_annotation_text_state_t zathura_annotation_text_get_state(zathura_annotation_t* annotation);
+
+/**
+ * Sets the state of the text annotation
+ *
+ * @param annotation The annotation
+ * @param state The new state of the text annotation
+ */
+void zathura_annotation_text_set_state(zathura_annotation_t* annotation, zathura_annotation_text_state_t state);
+
+/**
+ * Returns whether the text annotation is open or not
+ *
+ * @param annotation The annotation
+ * @return true if the annotation is open otherwise false
+ */
+bool zathura_annotation_text_get_open_status(zathura_annotation_t* annotation);
+
+/**
+ * Sets the text annotation open status
+ *
+ * @param annotation The annotation
+ * @param opened The new open status
+ */
+void zathura_annotation_text_set_open_status(zathura_annotation_t* annotation, bool opened);
 
 /**
  * Creates a new annotation popup
