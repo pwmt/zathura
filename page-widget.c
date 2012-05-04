@@ -772,7 +772,7 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
 
   /* create new annotation */
   zathura_annotation_t* annotation =
-    zathura_annotation_new(ZATHURA_ANNOTATION_MARKUP);
+    zathura_annotation_new(ZATHURA_ANNOTATION_TEXT);
   if (annotation == NULL) {
     return;
   }

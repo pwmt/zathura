@@ -39,7 +39,6 @@ typedef enum zathura_annotation_type_s {
   ZATHURA_ANNOTATION_TRAP_NET,
   ZATHURA_ANNOTATION_WATERMARK,
   ZATHURA_ANNOTATION_3D,
-  ZATHURA_ANNOTATION_MARKUP
 } zathura_annotation_type_t;
 
 typedef enum zathura_annotation_flag_s {
@@ -118,6 +117,14 @@ void zathura_annotation_set_data(zathura_annotation_t* annotation, void* data);
  * @return The type of the annotation (\ref zathura_annotation_type_t)
  */
 zathura_annotation_type_t zathura_annotation_get_type(zathura_annotation_t* annotation);
+
+/**
+ * True if the given annotation is a markup annotation
+ *
+ * @param annotation The annotation
+ * @return true whether the annotation is a markup annotation otherwise false
+ */
+bool zathura_annotation_is_markup_annotation(zathura_annotation_t* annotation);
 
 /**
  * Returns the flags of the annotation

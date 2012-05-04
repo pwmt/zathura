@@ -17,17 +17,18 @@ struct zathura_annotation_s {
 
   union {
     struct {
-      char* label; /**< Label */
-      char* subject; /**< Subject of the annotation */
-      zathura_annotation_popup_t* popup; /**< Optional popup */
-      time_t creation_date; /**< Creation date */
-    } markup;
-    struct {
       zathura_annotation_text_icon_t icon; /**< The icon of the text annotation */
       zathura_annotation_text_state_t state; /**< The state of the text annotation */
       bool opened; /**< Open status of the text annotation */
     } text;
   } data;
+
+  struct {
+    char* label; /**< Label */
+    char* subject; /**< Subject of the annotation */
+    zathura_annotation_popup_t* popup; /**< Optional popup */
+    time_t creation_date; /**< Creation date */
+  } markup;
 };
 
 struct zathura_annotation_popup_s {
@@ -47,19 +48,18 @@ zathura_annotation_new(zathura_annotation_type_t type)
   }
 
   switch (type) {
-    case ZATHURA_ANNOTATION_MARKUP:
-      annotation->data.markup.creation_date = (time_t) -1;
-      break;
     case ZATHURA_ANNOTATION_TEXT:
-      annotation->data.text.icon  = ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN;
-      annotation->data.text.state = ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN;
+      break;
     default:
       free(annotation);
       return NULL;
   }
 
-  annotation->type              = type;
-  annotation->modification_date = (time_t) -1;
+  annotation->type                      = type;
+  annotation->modification_date         = (time_t) -1;
+  annotation->markup.creation_date = (time_t) -1;
+  annotation->data.text.icon            = ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN;
+  annotation->data.text.state           = ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN;
 
   return annotation;
 }
@@ -79,22 +79,16 @@ zathura_annotation_free(zathura_annotation_t* annotation)
     free(annotation->content);
   }
 
-  switch (annotation->type) {
-    case ZATHURA_ANNOTATION_MARKUP:
-      if (annotation->data.markup.label != NULL) {
-        free(annotation->data.markup.label);
-      }
+  if (annotation->markup.label != NULL) {
+    free(annotation->markup.label);
+  }
 
-      if (annotation->data.markup.subject != NULL) {
-        free(annotation->data.markup.subject);
-      }
+  if (annotation->markup.subject != NULL) {
+    free(annotation->markup.subject);
+  }
 
-      if (annotation->data.markup.popup != NULL) {
-        zathura_annotation_popup_free(annotation->data.markup.popup);
-      }
-      break;
-    default:
-      break;
+  if (annotation->markup.popup != NULL) {
+    zathura_annotation_popup_free(annotation->markup.popup);
   }
 
   free(annotation);
@@ -128,6 +122,29 @@ zathura_annotation_get_type(zathura_annotation_t* annotation)
   }
 
   return annotation->type;
+}
+
+bool
+zathura_annotation_is_markup_annotation(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL) {
+    return false;
+  }
+
+  switch (annotation->type) {
+    case ZATHURA_ANNOTATION_TEXT:
+    case ZATHURA_ANNOTATION_FREE_TEXT:
+    case ZATHURA_ANNOTATION_LINE:
+    case ZATHURA_ANNOTATION_STAMP:
+    case ZATHURA_ANNOTATION_POLYGON:
+    case ZATHURA_ANNOTATION_CARET:
+    case ZATHURA_ANNOTATION_INK:
+    case ZATHURA_ANNOTATION_FILE_ATTACHMENT:
+    case ZATHURA_ANNOTATION_SOUND:
+      return true;
+    default:
+      return false;
+  }
 }
 
 zathura_annotation_flag_t
@@ -270,96 +287,96 @@ zathura_annotation_set_position(zathura_annotation_t* annotation,
 char*
 zathura_annotation_markup_get_label(zathura_annotation_t* annotation)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return NULL;
   }
 
-  return annotation->data.markup.label;
+  return annotation->markup.label;
 }
 
 void
 zathura_annotation_markup_set_label(zathura_annotation_t* annotation, const char* label)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return;
   }
 
-  if (annotation->data.markup.label != NULL) {
-    free(annotation->data.markup.label);
+  if (annotation->markup.label != NULL) {
+    free(annotation->markup.label);
   }
 
   if (label != NULL) {
-    annotation->data.markup.label = __strdup(label);
+    annotation->markup.label = __strdup(label);
   } else {
-    annotation->data.markup.label = NULL;
+    annotation->markup.label = NULL;
   }
 }
 
 char*
 zathura_annotation_markup_get_subject(zathura_annotation_t* annotation)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return NULL;
   }
 
-  return annotation->data.markup.subject;
+  return annotation->markup.subject;
 }
 
 void
 zathura_annotation_markup_set_subject(zathura_annotation_t* annotation, const char* subject)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return;
   }
-  if (annotation->data.markup.subject != NULL) {
-    free(annotation->data.markup.subject);
+  if (annotation->markup.subject != NULL) {
+    free(annotation->markup.subject);
   }
 
   if (subject != NULL) {
-    annotation->data.markup.subject = __strdup(subject);
+    annotation->markup.subject = __strdup(subject);
   } else {
-    annotation->data.markup.subject = NULL;
+    annotation->markup.subject = NULL;
   }
 }
 
 zathura_annotation_popup_t*
 zathura_annotation_markup_get_popup(zathura_annotation_t* annotation)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return NULL;
   }
 
-  return annotation->data.markup.popup;
+  return annotation->markup.popup;
 }
 
 void
 zathura_annotation_markup_set_popup(zathura_annotation_t* annotation, zathura_annotation_popup_t* popup)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP || popup == NULL) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false || popup == NULL) {
     return;
   }
 
-  annotation->data.markup.popup = popup;
+  annotation->markup.popup = popup;
 }
 
 time_t
 zathura_annotation_markup_get_creation_date(zathura_annotation_t* annotation)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return (time_t) -1;
   }
 
-  return annotation->data.markup.creation_date;
+  return annotation->markup.creation_date;
 }
 
 void
 zathura_annotation_markup_set_creation_date(zathura_annotation_t* annotation, time_t creation_date)
 {
-  if (annotation == NULL || annotation->type != ZATHURA_ANNOTATION_MARKUP) {
+  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
     return;
   }
 
-  annotation->data.markup.creation_date = creation_date;
+  annotation->markup.creation_date = creation_date;
 }
 
 zathura_annotation_text_icon_t
