@@ -236,7 +236,7 @@ zathura_annotation_set_modification_date(zathura_annotation_t* annotation, time_
 }
 
 zathura_page_t*
-zathura_annotation_get_page_index(zathura_annotation_t* annotation)
+zathura_annotation_get_page(zathura_annotation_t* annotation)
 {
   if (annotation == NULL) {
     return NULL;

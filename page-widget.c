@@ -698,12 +698,14 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
 
   /* search for underlaying image */
   zathura_image_t* image = NULL;
-  GIRARA_LIST_FOREACH(priv->images, zathura_image_t*, iter, image_it)
-    zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
-    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
-      image = image_it;
-    }
-  GIRARA_LIST_FOREACH_END(priv->images, zathura_image_t*, iter, image_it);
+  if (priv->images && girara_list_size(priv->images) > 0) {
+    GIRARA_LIST_FOREACH(priv->images, zathura_image_t*, iter, image_it)
+      zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
+      if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+        image = image_it;
+      }
+    GIRARA_LIST_FOREACH_END(priv->images, zathura_image_t*, iter, image_it);
+  }
 
   if (image != NULL) {
     menu_add_item(menu, widget, _("Copy image"),    cb_menu_image_copy);
@@ -719,12 +721,14 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   }
 
   zathura_annotation_t* annotation = NULL;
-  GIRARA_LIST_FOREACH(priv->annotations.list, zathura_annotation_t*, iter, annot)
-    zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_annotation_get_position(annot));
-    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
-      annotation = annot;
-    }
-  GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annot);
+  if (priv->annotations.list != NULL && girara_list_size(priv->annotations.list) > 0) {
+    GIRARA_LIST_FOREACH(priv->annotations.list, zathura_annotation_t*, iter, annot)
+      zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_annotation_get_position(annot));
+      if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+        annotation = annot;
+      }
+    GIRARA_LIST_FOREACH_END(priv->annotations.list, zathura_annotation_t*, iter, annot);
+  }
 
   if (annotation != NULL) {
     menu_add_item(menu, widget, _("Annotation properties"), cb_menu_annotation_properties);
@@ -789,6 +793,8 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
   };
 
   zathura_annotation_set_position(annotation, position);
+  zathura_annotation_text_set_icon(annotation, ZATHURA_ANNOTATION_TEXT_ICON_COMMENT);
+  zathura_annotation_set_content(annotation, "Hello world!");
 
   /* create new list if necessary */
   if (priv->annotations.list == NULL) {
@@ -825,7 +831,7 @@ cb_menu_annotation_properties(GtkMenuItem* item, ZathuraPage* page)
   g_return_if_fail(annotation != NULL);
   g_return_if_fail(gsession != NULL);
 
-  girara_notify(gsession, GIRARA_INFO, _("Annotation name: %s"), zathura_annotation_get_name(annotation));
+  girara_notify(gsession, GIRARA_INFO, _("Annotation content: %s"), zathura_annotation_get_content(annotation));
 
   priv->annotations.current = NULL;
 }
