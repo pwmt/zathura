@@ -50,22 +50,14 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
   return false;
 }
 
-typedef struct zathura_adjust_window_s {
-  girara_session_t* session;
-  zathura_t* zathura;
-  int adjust;
-} zathura_adjust_window_t;
-
-static gboolean
-adjust_window_impl(gpointer data)
+bool
+sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
+    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
-  if (data == NULL) {
-    return FALSE;
-  }
-
-  zathura_adjust_window_t* aw = (zathura_adjust_window_t*) data;
-  zathura_t* zathura          = aw->zathura;
-  girara_session_t* session   = aw->session;
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
 
   unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
@@ -75,8 +67,8 @@ adjust_window_impl(gpointer data)
   }
 
   float old_zoom = zathura_document_get_scale(zathura->document);
-  zathura_document_set_adjust_mode(zathura->document, aw->adjust);
-  if (aw->adjust == ZATHURA_ADJUST_NONE) {
+  zathura_document_set_adjust_mode(zathura->document, argument->n);
+  if (argument->n == ZATHURA_ADJUST_NONE) {
     /* there is nothing todo */
     goto error_ret;
   }
@@ -86,6 +78,13 @@ adjust_window_impl(gpointer data)
   gtk_widget_get_allocation(session->gtk.view, &allocation);
   gint width  = allocation.width;
   gint height = allocation.height;
+
+  /* correct view size */
+  if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == true) {
+    gtk_widget_get_allocation(session->gtk.inputbar, &allocation);
+    width  += allocation.width;
+    height += allocation.height;
+  }
 
   /* calculate total width and max-height */
   double total_width  = 0;
@@ -120,13 +119,13 @@ adjust_window_impl(gpointer data)
   }
 
   unsigned int rotation = zathura_document_get_rotation(zathura->document);
-  if (aw->adjust == ZATHURA_ADJUST_WIDTH) {
+  if (argument->n == ZATHURA_ADJUST_WIDTH) {
     if (rotation == 0 || rotation == 180) {
       zathura_document_set_scale(zathura->document, width / total_width);
     } else {
       zathura_document_set_scale(zathura->document, width / total_height);
     }
-  } else if (aw->adjust == ZATHURA_ADJUST_BESTFIT) {
+  } else if (argument->n == ZATHURA_ADJUST_BESTFIT) {
     if (rotation == 0 || rotation == 180) {
       zathura_document_set_scale(zathura->document, height / max_height);
     } else {
@@ -144,28 +143,7 @@ adjust_window_impl(gpointer data)
 
 error_ret:
 
-  g_free(aw);
-
-  return FALSE;
-}
-
-bool
-sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
-{
-  g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
-  g_return_val_if_fail(argument != NULL, false);
-
-  zathura_adjust_window_t* aw = g_malloc0(sizeof(zathura_adjust_window_t));
-  aw->zathura = zathura;
-  aw->session = session;
-  aw->adjust  = argument->n;
-
-  gdk_threads_add_idle(adjust_window_impl, aw);
-
-  return true;
+  return false;
 }
 
 bool
