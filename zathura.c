@@ -495,7 +495,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   /* read history file */
   zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
-  zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
+  bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
   /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
@@ -533,8 +533,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   /* apply open adjustment */
   char* adjust_open = "best-fit";
-  zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
-  if (girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
+  if (known_file == false && girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
     if (g_strcmp0(adjust_open, "best-fit") == 0) {
       zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_BESTFIT);
     } else if (g_strcmp0(adjust_open, "width") == 0) {
@@ -543,6 +542,8 @@ document_open(zathura_t* zathura, const char* path, const char* password)
       zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
     }
     g_free(adjust_open);
+  } else {
+    zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
   }
 
   /* update statusbar */
