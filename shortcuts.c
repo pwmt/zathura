@@ -6,7 +6,6 @@
 #include <girara/shortcuts.h>
 #include <girara/utils.h>
 #include <gtk/gtk.h>
-#include <libgen.h>
 #include <glib/gi18n.h>
 
 #include "callbacks.h"
@@ -186,12 +185,11 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara
         return false;
       }
 
-      char* path = dirname(g_strdup(file_path));
-      char* tmp  = g_strdup_printf("%s%s/", (char*) argument->data, (g_strcmp0(path, "/") == 0) ? "" : path);
-
-      if (tmp == NULL) {
-        return false;
-      }
+      char* path = g_path_get_dirname(file_path);
+      char* escaped = girara_escape_string(path);
+      char* tmp  = g_strdup_printf("%s%s/", (char*) argument->data, (g_strcmp0(path, "/") == 0) ? "" : escaped);
+      g_free(path);
+      g_free(escaped);
 
       gtk_entry_set_text(session->gtk.inputbar_entry, tmp);
       g_free(tmp);
