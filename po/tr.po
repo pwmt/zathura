@@ -1,15 +1,16 @@
 # zathura - language file (Turkish)
 # See LICENSE file for license and copyright information
-#
+# 
 # Translators:
+#   <dead-bodies-everywhere@hotmail.com>, 2012.
 #   <femnad@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
-"POT-Creation-Date: 2012-04-03 17:14+0200\n"
-"Last-Translator: femnad <femnad@gmail.com>\n"
-"PO-Revision-Date: 2012-04-03 15:25+0000\n"
+"POT-Creation-Date: 2012-04-21 15:53+0200\n"
+"PO-Revision-Date: 2012-05-01 20:38+0000\n"
+"Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.net/projects/p/zathura/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,221 +32,233 @@ msgstr "Hatalı girdi '%s'"
 msgid "Invalid index '%s' given."
 msgstr "Hatalı dizin '%s'"
 
-#: ../commands.c:30 ../commands.c:65 ../commands.c:92 ../commands.c:134
-#: ../commands.c:234 ../commands.c:251 ../commands.c:277 ../commands.c:357
-#: ../commands.c:392 ../shortcuts.c:863
+#: ../commands.c:31 ../commands.c:66 ../commands.c:93 ../commands.c:135
+#: ../commands.c:235 ../commands.c:252 ../commands.c:278 ../commands.c:358
+#: ../commands.c:393 ../shortcuts.c:854
 msgid "No document opened."
 msgstr "Açık belge yok."
 
-#: ../commands.c:36 ../commands.c:71 ../commands.c:98 ../commands.c:362
+#: ../commands.c:37 ../commands.c:72 ../commands.c:99 ../commands.c:363
 msgid "Invalid number of arguments given."
 msgstr "Yanlış sayıda argüman"
 
-#: ../commands.c:44
+#: ../commands.c:45
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Yer imi başarıyla güncellendi: %s"
 
-#: ../commands.c:50
+#: ../commands.c:51
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Yer imi yaratılamadı: %s"
 
-#: ../commands.c:54
+#: ../commands.c:55
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Yer imi yaratıldı: %s"
 
-#: ../commands.c:77
+#: ../commands.c:78
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Yer imi silindi: %s"
 
-#: ../commands.c:79
+#: ../commands.c:80
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Yer imi silinemedi: %s"
 
-#: ../commands.c:105
+#: ../commands.c:106
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Böyle bir yer imi yok: %s"
 
-#: ../commands.c:156 ../commands.c:178
+#: ../commands.c:157 ../commands.c:179
 msgid "No information available."
 msgstr "Bilgi mevcut değil."
 
-#: ../commands.c:202
+#: ../commands.c:203
 msgid "Too many arguments."
 msgstr "Çok fazla sayıda argüman."
 
-#: ../commands.c:211
+#: ../commands.c:212
 msgid "No arguments given."
 msgstr "Argüman verilmedi."
 
-#: ../commands.c:257 ../commands.c:283
+#: ../commands.c:258 ../commands.c:284
 msgid "Document saved."
 msgstr "Belge kaydedildi."
 
-#: ../commands.c:259 ../commands.c:285
+#: ../commands.c:260 ../commands.c:286
 msgid "Failed to save document."
 msgstr "Belge kaydedilemedi."
 
-#: ../commands.c:262 ../commands.c:288
+#: ../commands.c:263 ../commands.c:289
 msgid "Invalid number of arguments."
 msgstr "Yanlış sayıda argüman."
 
-#: ../commands.c:375
+#: ../commands.c:376
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "'%s' eki '%s' konumuna yazılamadı."
 
-#: ../commands.c:377
+#: ../commands.c:378
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "'%s' eki '%s' konumuna yazıldı."
 
-#: ../commands.c:405
+#: ../commands.c:406
 msgid "Argument must be a number."
 msgstr "Argüman bir sayı olmalı."
 
 #. zathura settings
-#: ../config.c:83
+#: ../config.c:84
 msgid "Database backend"
 msgstr "Veritabanı arkayüzü"
 
-#: ../config.c:85
+#: ../config.c:86
 msgid "Zoom step"
 msgstr "Yakınlaşma/uzaklaşma aralığı"
 
-#: ../config.c:87
+#: ../config.c:88
 msgid "Padding between pages"
 msgstr "Sayfalar arasındaki boşluk"
 
-#: ../config.c:89
+#: ../config.c:90
 msgid "Number of pages per row"
 msgstr "Satır başına sayfa sayısı"
 
-#: ../config.c:91
+#: ../config.c:92
 msgid "Scroll step"
 msgstr "Kaydırma aralığı"
 
-#: ../config.c:93
+#: ../config.c:94
 msgid "Zoom minimum"
 msgstr "En fazla uzaklaşma"
 
-#: ../config.c:95
+#: ../config.c:96
 msgid "Zoom maximum"
 msgstr "En fazla yakınlaşma"
 
-#: ../config.c:97
-msgid "Life time (in seconds) of a hidden page"
-msgstr ""
-
 #: ../config.c:98
-msgid "Amount of seconds between each cache purge"
-msgstr "Görünmeyen dosya kontrolleri arasında gecen saniye cinsinden süre"
+msgid "Life time (in seconds) of a hidden page"
+msgstr "Gizli pencerenin açık kalma süresi (saniye)"
 
-#: ../config.c:100
+#: ../config.c:99
+msgid "Amount of seconds between each cache purge"
+msgstr "Önbellek temizliği yapılma sıklığı, saniye cinsinden"
+
+#: ../config.c:101
 msgid "Recoloring (dark color)"
 msgstr "Renk değişimi (koyu renk)"
 
-#: ../config.c:102
+#: ../config.c:103
 msgid "Recoloring (light color)"
 msgstr "Renk değişimi (açık renk)"
 
-#: ../config.c:104
+#: ../config.c:105
 msgid "Color for highlighting"
 msgstr "İşaretleme rengi"
 
-#: ../config.c:106
+#: ../config.c:107
 msgid "Color for highlighting (active)"
 msgstr "İşaretleme rengi (etkin)"
 
-#: ../config.c:110
+#: ../config.c:111
 msgid "Recolor pages"
 msgstr "Sayga rengini değiştir"
 
-#: ../config.c:112
+#: ../config.c:113
 msgid "Wrap scrolling"
 msgstr "Kaydırmayı sarmala"
 
-#: ../config.c:114
-msgid "Transparency for highlighting"
-msgstr "İşaretleme saydamlığı"
+#: ../config.c:115
+msgid "Advance number of pages per row"
+msgstr "Satır başına sayfa sayısı"
 
-#: ../config.c:116
+#: ../config.c:117
+msgid "Transparency for highlighting"
+msgstr "Ön plana çıkarmak için saydamlaştır"
+
+#: ../config.c:119
 msgid "Render 'Loading ...'"
 msgstr "'Yüklüyor ...' yazısını göster"
 
-#: ../config.c:117
+#: ../config.c:120
 msgid "Adjust to when opening file"
 msgstr "Dosya açarken ayarla"
 
-#: ../config.c:119
+#: ../config.c:122
 msgid "Show hidden files and directories"
 msgstr "Gizli dosyaları ve dizinleri göster"
 
-#: ../config.c:121
+#: ../config.c:124
 msgid "Show directories"
 msgstr "Dizinleri göster"
 
-#: ../config.c:123
+#: ../config.c:126
 msgid "Always open on first page"
 msgstr "Her zaman ilk sayfayı aç"
 
 #. define default inputbar commands
-#: ../config.c:243
+#: ../config.c:246
 msgid "Add a bookmark"
 msgstr "Yer imi ekle"
 
-#: ../config.c:244
+#: ../config.c:247
 msgid "Delete a bookmark"
 msgstr "Yer imi sil"
 
-#: ../config.c:245
+#: ../config.c:248
 msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
-#: ../config.c:246
+#: ../config.c:249
 msgid "Close current file"
 msgstr "Geçerli dosyayı kapat"
 
-#: ../config.c:247
+#: ../config.c:250
 msgid "Show file information"
 msgstr "Dosya bilgisi göster"
 
-#: ../config.c:248
+#: ../config.c:251
 msgid "Show help"
 msgstr "Yardım bilgisi göster"
 
-#: ../config.c:249
+#: ../config.c:252
 msgid "Open document"
 msgstr "Belge aç"
 
-#: ../config.c:250
+#: ../config.c:253
 msgid "Close zathura"
 msgstr "Zathura'yı kapat"
 
-#: ../config.c:251
+#: ../config.c:254
 msgid "Print document"
 msgstr "Belge yazdır"
 
-#: ../config.c:252
+#: ../config.c:255
 msgid "Save document"
 msgstr "Belgeyi kaydet"
 
-#: ../config.c:253
+#: ../config.c:256
 msgid "Save document (and force overwriting)"
 msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
 
-#: ../config.c:254
+#: ../config.c:257
 msgid "Save attachments"
 msgstr "Ekleri kaydet"
 
-#: ../config.c:255
+#: ../config.c:258
 msgid "Set page offset"
 msgstr "Sayfa derinliğini ayarla"
+
+#: ../config.c:259
+msgid "Delete the specified marks"
+msgstr "Seçilen işaretlemeleri sil"
+
+#: ../config.c:260
+msgid "Mark current location within the document"
+msgstr "Bu belgede bu konumu işaretle"
 
 #: ../page-widget.c:584
 #, c-format
@@ -256,34 +269,34 @@ msgstr "Seçili metin panoya kopyalandı: %s"
 msgid "Copy image"
 msgstr "Resim kopyala"
 
-#: ../shortcuts.c:766
+#: ../shortcuts.c:757
 msgid "This document does not contain any index"
-msgstr "Bu belge endeks içermiyor"
+msgstr "Bu belge fihrist içermiyor"
 
-#: ../zathura.c:59
+#: ../zathura.c:73
 msgid "Reparents to window specified by xid"
 msgstr "Xid tarafından belirlendiği gibi bir üst seviye pencereye bağlı"
 
-#: ../zathura.c:60
+#: ../zathura.c:74
 msgid "Path to the config directory"
 msgstr "Ayar dizini adresi"
 
-#: ../zathura.c:61
+#: ../zathura.c:75
 msgid "Path to the data directory"
 msgstr "Veri dizini adresi"
 
-#: ../zathura.c:62
+#: ../zathura.c:76
 msgid "Path to the directories containing plugins"
 msgstr "Eklentileri içeren dizinin adresi"
 
-#: ../zathura.c:63
+#: ../zathura.c:77
 msgid "Fork into the background"
 msgstr "Arka planda işlemden çocuk oluştur"
 
-#: ../zathura.c:64
+#: ../zathura.c:78
 msgid "Log level (debug, info, warning, error)"
-msgstr "Kayıt seviyesi(debug, bilgi, uyarı, hata)"
+msgstr "Kayıt seviyesi (hata ayıklama, bilgi, uyarı, hata)"
 
-#: ../zathura.c:234 ../zathura.c:715
+#: ../zathura.c:248 ../zathura.c:779
 msgid "[No name]"
 msgstr "[İsimsiz]"
