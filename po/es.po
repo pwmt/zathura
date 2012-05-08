@@ -6,283 +6,355 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
-"POT-Creation-Date: 2012-04-03 17:14+0200\n"
+"POT-Creation-Date: 2012-05-08 19:21+0200\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: Moritz Lipp <mlq@pwmt.org>\n"
-"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/zathura/language/es/)\n"
+"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
+"zathura/language/es/)\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../callbacks.c:156
-msgid "Failed to run xdg-open."
-msgstr "Error al tratar de ejecutar xdg-open"
-
-#: ../callbacks.c:182
+#: ../callbacks.c:175
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrada inválida: '%s'."
 
-#: ../callbacks.c:220
+#: ../callbacks.c:203
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Índice invalido: '%s'."
 
-#: ../commands.c:30 ../commands.c:65 ../commands.c:92 ../commands.c:134
-#: ../commands.c:234 ../commands.c:251 ../commands.c:277 ../commands.c:357
-#: ../commands.c:392 ../shortcuts.c:863
+#: ../commands.c:33 ../commands.c:68 ../commands.c:95 ../commands.c:137
+#: ../commands.c:251 ../commands.c:281 ../commands.c:307 ../commands.c:396
+#: ../commands.c:496 ../shortcuts.c:440 ../shortcuts.c:891
 msgid "No document opened."
 msgstr "Ningún documento abierto."
 
-#: ../commands.c:36 ../commands.c:71 ../commands.c:98 ../commands.c:362
+#: ../commands.c:39 ../commands.c:74 ../commands.c:101 ../commands.c:401
 msgid "Invalid number of arguments given."
 msgstr "Número de argumentos inválido."
 
-#: ../commands.c:44
+#: ../commands.c:47
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Favorito actualizado con éxitosamente: %s"
 
-#: ../commands.c:50
+#: ../commands.c:53
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Error al crear favorito: %s"
 
-#: ../commands.c:54
+#: ../commands.c:57
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Favorito creado con éxitosamente: %s"
 
-#: ../commands.c:77
+#: ../commands.c:80
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Favorito eliminado: %s"
 
-#: ../commands.c:79
+#: ../commands.c:82
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Error al eliminar el favorito: %s"
 
-#: ../commands.c:105
+#: ../commands.c:108
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "No existe el favorito: %s"
 
-#: ../commands.c:156 ../commands.c:178
+#: ../commands.c:159 ../commands.c:181
 msgid "No information available."
 msgstr "No hay información disponible."
 
-#: ../commands.c:202
+#: ../commands.c:219
 msgid "Too many arguments."
 msgstr "Demasiados argumentos."
 
-#: ../commands.c:211
+#: ../commands.c:228
 msgid "No arguments given."
 msgstr "Ningún argumento recibido."
 
-#: ../commands.c:257 ../commands.c:283
+#: ../commands.c:287 ../commands.c:313
 msgid "Document saved."
 msgstr "Documento guardado."
 
-#: ../commands.c:259 ../commands.c:285
+#: ../commands.c:289 ../commands.c:315
 msgid "Failed to save document."
 msgstr "Error al guardar el documento."
 
-#: ../commands.c:262 ../commands.c:288
+#: ../commands.c:292 ../commands.c:318
 msgid "Invalid number of arguments."
 msgstr "Número de argumentos inválido."
 
-#: ../commands.c:375
+#: ../commands.c:420
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
 
-#: ../commands.c:377
+#: ../commands.c:422
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Escrito fichero adjunto '%s' a '%s'."
 
-#: ../commands.c:405
+#: ../commands.c:466
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Escrito fichero adjunto '%s' a '%s'."
+
+#: ../commands.c:468
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
+
+#: ../commands.c:475
+#, c-format
+msgid "Unknown image '%s'."
+msgstr ""
+
+#: ../commands.c:479
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr ""
+
+#: ../commands.c:509
 msgid "Argument must be a number."
 msgstr "El argumento ha de ser un número."
 
+#: ../completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr ""
+
+#: ../completion.c:293
+msgid "Attachments"
+msgstr "Guardar ficheros adjuntos"
+
+#. add images
+#: ../completion.c:324
+msgid "Images"
+msgstr ""
+
 #. zathura settings
-#: ../config.c:83
+#: ../config.c:98
 msgid "Database backend"
 msgstr "Base de datos"
 
-#: ../config.c:85
+#: ../config.c:100
 msgid "Zoom step"
 msgstr "Unidad de zoom"
 
-#: ../config.c:87
+#: ../config.c:102
 msgid "Padding between pages"
 msgstr "Separación entre páginas"
 
-#: ../config.c:89
+#: ../config.c:104
 msgid "Number of pages per row"
 msgstr "Número de páginas por fila"
 
-#: ../config.c:91
+#: ../config.c:106
 msgid "Scroll step"
 msgstr "Unidad de desplazamiento"
 
-#: ../config.c:93
+#: ../config.c:108
 msgid "Zoom minimum"
 msgstr "Zoom mínimo"
 
-#: ../config.c:95
+#: ../config.c:110
 msgid "Zoom maximum"
 msgstr "Zoom máximo"
 
-#: ../config.c:97
+#: ../config.c:112
 msgid "Life time (in seconds) of a hidden page"
 msgstr ""
 
-#: ../config.c:98
+#: ../config.c:113
 msgid "Amount of seconds between each cache purge"
-msgstr "Cantidad de segundos entre las comprobaciones de las páginas invisibles"
+msgstr ""
+"Cantidad de segundos entre las comprobaciones de las páginas invisibles"
 
-#: ../config.c:100
+#: ../config.c:115
 msgid "Recoloring (dark color)"
 msgstr "Recoloreado (color oscuro)"
 
-#: ../config.c:102
+#: ../config.c:117
 msgid "Recoloring (light color)"
 msgstr "Recoloreado (color claro)"
 
-#: ../config.c:104
+#: ../config.c:119
 msgid "Color for highlighting"
 msgstr "Color para destacar"
 
-#: ../config.c:106
+#: ../config.c:121
 msgid "Color for highlighting (active)"
 msgstr "Color para destacar (activo)"
 
-#: ../config.c:110
+#: ../config.c:125
 msgid "Recolor pages"
 msgstr "Recolorear páginas"
 
-#: ../config.c:112
+#: ../config.c:127
 msgid "Wrap scrolling"
 msgstr "Navegación/Scroll cíclica/o"
 
-#: ../config.c:114
+#: ../config.c:129
+msgid "Advance number of pages per row"
+msgstr ""
+
+#: ../config.c:131
 msgid "Transparency for highlighting"
 msgstr "Transparencia para el destacado"
 
-#: ../config.c:116
+#: ../config.c:133
 msgid "Render 'Loading ...'"
 msgstr "Renderizado 'Cargando ...'"
 
-#: ../config.c:117
+#: ../config.c:134
 msgid "Adjust to when opening file"
 msgstr "Ajustarse al abrir un fichero"
 
-#: ../config.c:119
+#: ../config.c:136
 msgid "Show hidden files and directories"
 msgstr "Mostrar directorios y ficheros ocultos"
 
-#: ../config.c:121
+#: ../config.c:138
 msgid "Show directories"
 msgstr "Mostrar directorios"
 
-#: ../config.c:123
+#: ../config.c:140
 msgid "Always open on first page"
 msgstr "Abrir siempre la primera página"
 
+#: ../config.c:142
+msgid "Highlight search results"
+msgstr ""
+
+#: ../config.c:144
+msgid "Clear search results on abort"
+msgstr ""
+
 #. define default inputbar commands
-#: ../config.c:243
+#: ../config.c:266
 msgid "Add a bookmark"
 msgstr "Añadir Favorito"
 
-#: ../config.c:244
+#: ../config.c:267
 msgid "Delete a bookmark"
 msgstr "Eliminar Favorito"
 
-#: ../config.c:245
+#: ../config.c:268
 msgid "List all bookmarks"
 msgstr "Listar favoritos"
 
-#: ../config.c:246
+#: ../config.c:269
 msgid "Close current file"
 msgstr "Cerrar fichero actual"
 
-#: ../config.c:247
+#: ../config.c:270
 msgid "Show file information"
 msgstr "Mostrar información del fichero"
 
-#: ../config.c:248
+#: ../config.c:271
 msgid "Show help"
 msgstr "Mostrar ayuda"
 
-#: ../config.c:249
+#: ../config.c:272
 msgid "Open document"
 msgstr "Abrir documento"
 
-#: ../config.c:250
+#: ../config.c:273
 msgid "Close zathura"
 msgstr "Salir de zathura"
 
-#: ../config.c:251
+#: ../config.c:274
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: ../config.c:252
+#: ../config.c:275
 msgid "Save document"
 msgstr "Guardar documento"
 
-#: ../config.c:253
+#: ../config.c:276
 msgid "Save document (and force overwriting)"
 msgstr "Guardar documento (y sobreescribir)"
 
-#: ../config.c:254
+#: ../config.c:277
 msgid "Save attachments"
 msgstr "Guardar ficheros adjuntos"
 
-#: ../config.c:255
+#: ../config.c:278
 msgid "Set page offset"
 msgstr "Asignar el desplazamiento de página"
 
-#: ../page-widget.c:584
+#: ../config.c:279
+msgid "Mark current location within the document"
+msgstr ""
+
+#: ../config.c:280
+msgid "Delete the specified marks"
+msgstr ""
+
+#: ../config.c:281
+msgid "Don't highlight current search results"
+msgstr ""
+
+#: ../config.c:282
+msgid "Highlight current search results"
+msgstr ""
+
+#: ../page-widget.c:611
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Se ha copiado el texto seleccionado al portapapeles: %s"
 
-#: ../page-widget.c:680
+#: ../page-widget.c:708
 msgid "Copy image"
 msgstr "Copiar imagen"
 
-#: ../shortcuts.c:766
+#: ../page-widget.c:709
+msgid "Save image as"
+msgstr ""
+
+#: ../shortcuts.c:797
 msgid "This document does not contain any index"
 msgstr "Este documento no contiene ningún índice"
 
-#: ../zathura.c:59
+#: ../utils.c:346
+msgid "Failed to run xdg-open."
+msgstr "Error al tratar de ejecutar xdg-open"
+
+#: ../zathura.c:73
 msgid "Reparents to window specified by xid"
 msgstr "Reasignar a la ventana especificada por xid"
 
-#: ../zathura.c:60
+#: ../zathura.c:74
 msgid "Path to the config directory"
 msgstr "Ruta al directorio de configuración"
 
-#: ../zathura.c:61
+#: ../zathura.c:75
 msgid "Path to the data directory"
 msgstr "Ruta para el directorio de datos"
 
-#: ../zathura.c:62
+#: ../zathura.c:76
 msgid "Path to the directories containing plugins"
 msgstr "Ruta a los directorios que contienen los plugins"
 
-#: ../zathura.c:63
+#: ../zathura.c:77
 msgid "Fork into the background"
 msgstr "Fork, ejecutándose en background"
 
-#: ../zathura.c:64
+#: ../zathura.c:78
+msgid "Document password"
+msgstr ""
+
+#: ../zathura.c:79
 msgid "Log level (debug, info, warning, error)"
 msgstr "Nivel de log (debug, info, warning, error)"
 
-#: ../zathura.c:234 ../zathura.c:715
+#: ../zathura.c:251 ../zathura.c:799
 msgid "[No name]"
 msgstr "[Sin nombre]"
