@@ -195,6 +195,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_space,      NULL, sc_navigate_index,           INDEX,      SELECT,          NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Return,     NULL, sc_navigate_index,           INDEX,      SELECT,          NULL);
 
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_p,          NULL, sc_print,                    NORMAL,     0,               NULL);
+
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i,          NULL, sc_recolor,                  NORMAL,     0,               NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_R,          NULL, sc_reload,                   NORMAL,     0,               NULL);
@@ -290,6 +292,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
   girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
+  girara_shortcut_mapping_add(gsession, "print",             sc_print);
   girara_shortcut_mapping_add(gsession, "quit",              sc_quit);
   girara_shortcut_mapping_add(gsession, "recolor",           sc_recolor);
   girara_shortcut_mapping_add(gsession, "reload",            sc_reload);
