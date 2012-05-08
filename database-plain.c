@@ -420,6 +420,7 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   char* name = prepare_filename(file);
   if (g_key_file_has_group(priv->history, name) == FALSE) {
+    g_free(name);
     return false;
   }
 

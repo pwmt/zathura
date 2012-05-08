@@ -944,6 +944,8 @@ position_set_delayed_impl(gpointer data)
   set_adjustment(hadjustment, p->position_x);
   set_adjustment(vadjustment, p->position_y);
 
+  g_free(p);
+
   return FALSE;
 }
 
