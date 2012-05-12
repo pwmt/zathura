@@ -147,8 +147,8 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
       return;
     }
 
-    zathura_link_evaluate(zathura, index_element->link);
     sc_toggle_index(zathura->ui.session, NULL, NULL, 0);
+    zathura_link_evaluate(zathura, index_element->link);
   }
 
   g_object_unref(model);
