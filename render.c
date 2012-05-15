@@ -15,6 +15,7 @@
 
 static void render_job(void* data, void* user_data);
 static bool render(zathura_t* zathura, zathura_page_t* page);
+static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 
 struct render_thread_s
 {
@@ -45,6 +46,8 @@ render_init(zathura_t* zathura)
   if (render_thread->pool == NULL) {
     goto error_free;
   }
+
+  g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
 
   return render_thread;
 
@@ -188,4 +191,33 @@ render_all(zathura_t* zathura)
     gtk_widget_set_size_request(widget, page_width, page_height);
     gtk_widget_queue_resize(widget);
   }
+}
+
+static gint
+render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
+{
+  if (a == NULL || b == NULL || data == NULL) {
+    return 0;
+  }
+
+  zathura_page_t* page_a = (zathura_page_t*) a;
+  zathura_page_t* page_b = (zathura_page_t*) b;
+  zathura_t* zathura     = (zathura_t*) data;
+
+  unsigned int page_a_index = zathura_page_get_index(page_a);
+  unsigned int page_b_index = zathura_page_get_index(page_b);
+
+  unsigned int last_view_a = 0;
+  unsigned int last_view_b = 0;
+
+  g_object_get(zathura->pages[page_a_index], "last-view", &last_view_a, NULL);
+  g_object_get(zathura->pages[page_b_index], "last-view", &last_view_b, NULL);
+
+  if (last_view_a > last_view_b) {
+    return -1;
+  } else if (last_view_b > last_view_a) {
+    return 1;
+  }
+
+  return 0;
 }

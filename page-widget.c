@@ -83,7 +83,8 @@ enum properties_e
   PROP_SEARCH_RESULTS,
   PROP_SEARCH_RESULTS_LENGTH,
   PROP_SEARCH_RESULTS_CURRENT,
-  PROP_DRAW_SEACH_RESULTS
+  PROP_DRAW_SEACH_RESULTS,
+  PROP_LAST_VIEW,
 };
 
 static void
@@ -129,6 +130,8 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
       g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE));
   g_object_class_install_property(object_class, PROP_DRAW_SEACH_RESULTS,
       g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_WRITABLE));
+  g_object_class_install_property(object_class, PROP_LAST_VIEW,
+      g_param_spec_int("last-view", "last-view", "Last time the page has been viewed", -1, INT_MAX, 0, G_PARAM_READABLE));
 }
 
 static void
@@ -288,6 +291,9 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
       break;
     case PROP_SEARCH_RESULTS:
       g_value_set_pointer(value, priv->search.list);
+      break;
+    case PROP_LAST_VIEW:
+      g_value_set_int(value, priv->last_view);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
