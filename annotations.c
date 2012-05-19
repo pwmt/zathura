@@ -11,9 +11,11 @@ struct zathura_annotation_s {
   char* name; /**< Name of the annotation */
   char* content; /**< Content of the annotation */
   time_t modification_date; /**< Modification date */
+  time_t creation_date; /**< Creation date */
   zathura_page_t* page; /**< Zathura page */
   zathura_rectangle_t position; /**< Position of the annotation */
   void* user_data; /**< Custom data */
+  zathura_annotation_popup_t* popup; /**< Optional popup */
 
   union {
     struct {
@@ -22,19 +24,11 @@ struct zathura_annotation_s {
       bool opened; /**< Open status of the text annotation */
     } text;
   } data;
-
-  struct {
-    char* label; /**< Label */
-    char* subject; /**< Subject of the annotation */
-    zathura_annotation_popup_t* popup; /**< Optional popup */
-    time_t creation_date; /**< Creation date */
-  } markup;
 };
 
 struct zathura_annotation_popup_s {
-  double opacity; /**< The opacity of the popup */
+  char* label; /**< Label */
   zathura_rectangle_t position; /**< Position of the annotation */
-  bool opened; /**< true if popup is opened */
 };
 
 static char* __strdup(const char* string);
@@ -55,11 +49,11 @@ zathura_annotation_new(zathura_annotation_type_t type)
       return NULL;
   }
 
-  annotation->type                      = type;
-  annotation->modification_date         = (time_t) -1;
-  annotation->markup.creation_date = (time_t) -1;
-  annotation->data.text.icon            = ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN;
-  annotation->data.text.state           = ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN;
+  annotation->type              = type;
+  annotation->modification_date = (time_t) -1;
+  annotation->creation_date     = (time_t) -1;
+  annotation->data.text.icon    = ZATHURA_ANNOTATION_TEXT_ICON_UNKNOWN;
+  annotation->data.text.state   = ZATHURA_ANNOTATION_TEXT_STATE_UNKNOWN;
 
   return annotation;
 }
@@ -79,16 +73,8 @@ zathura_annotation_free(zathura_annotation_t* annotation)
     free(annotation->content);
   }
 
-  if (annotation->markup.label != NULL) {
-    free(annotation->markup.label);
-  }
-
-  if (annotation->markup.subject != NULL) {
-    free(annotation->markup.subject);
-  }
-
-  if (annotation->markup.popup != NULL) {
-    zathura_annotation_popup_free(annotation->markup.popup);
+  if (annotation->popup != NULL) {
+    zathura_annotation_popup_free(annotation->popup);
   }
 
   free(annotation);
@@ -122,29 +108,6 @@ zathura_annotation_get_type(zathura_annotation_t* annotation)
   }
 
   return annotation->type;
-}
-
-bool
-zathura_annotation_is_markup_annotation(zathura_annotation_t* annotation)
-{
-  if (annotation == NULL) {
-    return false;
-  }
-
-  switch (annotation->type) {
-    case ZATHURA_ANNOTATION_TEXT:
-    case ZATHURA_ANNOTATION_FREE_TEXT:
-    case ZATHURA_ANNOTATION_LINE:
-    case ZATHURA_ANNOTATION_STAMP:
-    case ZATHURA_ANNOTATION_POLYGON:
-    case ZATHURA_ANNOTATION_CARET:
-    case ZATHURA_ANNOTATION_INK:
-    case ZATHURA_ANNOTATION_FILE_ATTACHMENT:
-    case ZATHURA_ANNOTATION_SOUND:
-      return true;
-    default:
-      return false;
-  }
 }
 
 zathura_annotation_flag_t
@@ -235,6 +198,27 @@ zathura_annotation_set_modification_date(zathura_annotation_t* annotation, time_
   annotation->modification_date = modification_date;
 }
 
+time_t
+zathura_annotation_get_creation_date(zathura_annotation_t* annotation)
+{
+  if (annotation == NULL) {
+    return (time_t) -1;
+  }
+
+  return annotation->creation_date;
+}
+
+void
+zathura_annotation_set_creation_date(zathura_annotation_t* annotation, time_t creation_date)
+{
+  if (annotation == NULL) {
+    return;
+  }
+
+  annotation->creation_date = creation_date;
+}
+
+
 zathura_page_t*
 zathura_annotation_get_page(zathura_annotation_t* annotation)
 {
@@ -285,98 +269,55 @@ zathura_annotation_set_position(zathura_annotation_t* annotation,
 }
 
 char*
-zathura_annotation_markup_get_label(zathura_annotation_t* annotation)
+zathura_annotation_popup_get_label(zathura_annotation_popup_t* popup)
 {
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
+  if (popup == NULL) {
     return NULL;
   }
 
-  return annotation->markup.label;
+  return popup->label;
 }
 
 void
-zathura_annotation_markup_set_label(zathura_annotation_t* annotation, const char* label)
+zathura_annotation_popup_set_label(zathura_annotation_popup_t* popup, const char* label)
 {
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
+  if (popup == NULL) {
     return;
   }
 
-  if (annotation->markup.label != NULL) {
-    free(annotation->markup.label);
+  if (popup->label != NULL) {
+    free(popup->label);
   }
 
   if (label != NULL) {
-    annotation->markup.label = __strdup(label);
+    popup->label = __strdup(label);
   } else {
-    annotation->markup.label = NULL;
-  }
-}
-
-char*
-zathura_annotation_markup_get_subject(zathura_annotation_t* annotation)
-{
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
-    return NULL;
-  }
-
-  return annotation->markup.subject;
-}
-
-void
-zathura_annotation_markup_set_subject(zathura_annotation_t* annotation, const char* subject)
-{
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
-    return;
-  }
-  if (annotation->markup.subject != NULL) {
-    free(annotation->markup.subject);
-  }
-
-  if (subject != NULL) {
-    annotation->markup.subject = __strdup(subject);
-  } else {
-    annotation->markup.subject = NULL;
+    popup->label = NULL;
   }
 }
 
 zathura_annotation_popup_t*
-zathura_annotation_markup_get_popup(zathura_annotation_t* annotation)
+zathura_annotation_get_popup(zathura_annotation_t* annotation)
 {
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
+  if (annotation == NULL) {
     return NULL;
   }
 
-  return annotation->markup.popup;
+  return annotation->popup;
 }
 
 void
-zathura_annotation_markup_set_popup(zathura_annotation_t* annotation, zathura_annotation_popup_t* popup)
+zathura_annotation_set_popup(zathura_annotation_t* annotation, zathura_annotation_popup_t* popup)
 {
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false || popup == NULL) {
+  if (annotation == NULL) {
     return;
   }
 
-  annotation->markup.popup = popup;
-}
-
-time_t
-zathura_annotation_markup_get_creation_date(zathura_annotation_t* annotation)
-{
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
-    return (time_t) -1;
+  if (annotation->popup != NULL) {
+    zathura_annotation_popup_free(annotation->popup);
   }
 
-  return annotation->markup.creation_date;
-}
-
-void
-zathura_annotation_markup_set_creation_date(zathura_annotation_t* annotation, time_t creation_date)
-{
-  if (annotation == NULL || zathura_annotation_is_markup_annotation(annotation) == false) {
-    return;
-  }
-
-  annotation->markup.creation_date = creation_date;
+  annotation->popup = popup;
 }
 
 zathura_annotation_text_icon_t
@@ -447,8 +388,6 @@ zathura_annotation_popup_new()
     return NULL;
   }
 
-  popup->opacity = 1.0;
-
   return popup;
 }
 
@@ -488,52 +427,6 @@ zathura_annotation_popup_set_position(zathura_annotation_popup_t* popup, zathura
   popup->position.x2 = position.x2;
   popup->position.y1 = position.y1;
   popup->position.y2 = position.y2;
-}
-
-double
-zathura_annotation_popup_get_opacity(zathura_annotation_popup_t* popup)
-{
-  if (popup == NULL) {
-    return 0.0;
-  }
-
-  return popup->opacity;
-}
-
-void
-zathura_annotation_popup_set_opacity(zathura_annotation_popup_t* popup, double opacity)
-{
-  if (popup == NULL) {
-    return;
-  }
-
-  if (opacity < 0) {
-    popup->opacity = 0;
-  } else if (opacity > 1) {
-    popup->opacity = 1;
-  } else {
-    popup->opacity = opacity;
-  }
-}
-
-bool
-zathura_annotation_popup_get_open_status(zathura_annotation_popup_t* popup)
-{
-  if (popup == NULL) {
-    return false;
-  }
-
-  return popup->opened;
-}
-
-void
-zathura_annotation_popup_set_open_status(zathura_annotation_popup_t* popup, bool opened)
-{
-  if (popup == NULL) {
-    return;
-  }
-
-  popup->opened = opened;
 }
 
 static char*
