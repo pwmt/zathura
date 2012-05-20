@@ -807,9 +807,8 @@ cb_menu_annotation_add(GtkMenuItem* item, ZathuraPage* page)
     }
   }
 
-  /* save to current list */
-  girara_list_append(priv->annotations.list, annotation);
-  zathura_page_set_annotations(priv->page, priv->annotations.list);
+  /* add annotation */
+  zathura_page_add_annotation(priv->page, annotation);
 
   /* retrieve new list */
   girara_list_free(priv->annotations.list);

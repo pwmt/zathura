@@ -6,6 +6,7 @@
 #include <girara/datastructures.h>
 #include <cairo.h>
 
+#include "annotations.h"
 #include "types.h"
 
 /**
@@ -203,14 +204,24 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
 girara_list_t* zathura_page_get_annotations(zathura_page_t* page, zathura_error_t* error);
 
 /**
- * Sets the list of annotations (see \ref zathura_annotation_t)
+ * Adds an annotation (see \ref zathura_annotation_t) to the page
  *
  * @param page Page
- * @param annotations List of annotations
+ * @param annotation The annotation that should be added
  * @return ZATHURA_ERROR_OK when no error occured, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_page_set_annotations(zathura_page_t* page, girara_list_t* annotations);
+zathura_error_t zathura_page_add_annotation(zathura_page_t* page, zathura_annotation_t* annotation);
+
+/**
+ * Removes an annotation (see \ref zathura_annotation_t) to the page
+ *
+ * @param page Page
+ * @param annotation The annotation that should be removed
+ * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ *    zathura_error_t
+ */
+zathura_error_t zathura_page_remove_annotation(zathura_page_t* page, zathura_annotation_t* annotation);
 
 /**
  * Render page

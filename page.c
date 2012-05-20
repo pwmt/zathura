@@ -356,18 +356,33 @@ zathura_page_get_annotations(zathura_page_t* page, zathura_error_t* error)
 }
 
 zathura_error_t
-zathura_page_set_annotations(zathura_page_t* page, girara_list_t* annotations)
+zathura_page_add_annotation(zathura_page_t* page, zathura_annotation_t* annotation)
 {
-  if (page == NULL || page->document == NULL ) {
+  if (page == NULL || page->document == NULL || annotation == NULL) {
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_set_annotations == NULL) {
+  if (plugin->functions.page_add_annotation == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return plugin->functions.page_set_annotations(page, page->data, annotations);
+  return plugin->functions.page_add_annotation(page, page->data, annotation);
+}
+
+zathura_error_t
+zathura_page_remove_annotation(zathura_page_t* page, zathura_annotation_t* annotation)
+{
+  if (page == NULL || page->document == NULL || annotation == NULL) {
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
+  }
+
+  zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
+  if (plugin->functions.page_remove_annotation == NULL) {
+    return ZATHURA_ERROR_NOT_IMPLEMENTED;
+  }
+
+  return plugin->functions.page_remove_annotation(page, page->data, annotation);
 }
 
 zathura_error_t

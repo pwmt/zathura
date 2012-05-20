@@ -147,9 +147,14 @@ typedef char* (*zathura_plugin_page_get_text_t)(zathura_page_t* page, void* data
 typedef girara_list_t* (*zathura_plugin_page_get_annotations_t)(zathura_page_t* page, void* data, zathura_error_t* error);
 
 /**
- * Set list of annotations
+ * Add annotation
  */
-typedef zathura_error_t (*zathura_plugin_page_set_annotations_t)(zathura_page_t* page, void* data, girara_list_t* annotations);
+typedef zathura_error_t (*zathura_plugin_page_add_annotation_t)(zathura_page_t* page, void* data, zathura_annotation_t* annotation);
+
+/**
+ * Remove annotation
+ */
+typedef zathura_error_t (*zathura_plugin_page_remove_annotation_t)(zathura_page_t* page, void* data, zathura_annotation_t* annotation);
 
 /**
  * Renders the page
@@ -245,9 +250,14 @@ struct zathura_plugin_functions_s
   zathura_plugin_page_get_annotations_t page_get_annotations;
 
   /**
-   * Set list of annotations
+   * Add annotation
    */
-  zathura_plugin_page_set_annotations_t page_set_annotations;
+  zathura_plugin_page_add_annotation_t page_add_annotation;
+
+  /**
+   * Remove annotation
+   */
+  zathura_plugin_page_remove_annotation_t page_remove_annotation;
 
   /**
    * Renders the page

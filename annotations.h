@@ -6,11 +6,11 @@
 #include <time.h>
 #include <stdbool.h>
 
-#include "page.h"
-#include "types.h"
-
 typedef struct zathura_annotation_s zathura_annotation_t;
 typedef struct zathura_annotation_popup_s zathura_annotation_popup_t;
+
+#include "page.h"
+#include "types.h"
 
 typedef enum zathura_annotation_type_s {
   ZATHURA_ANNOTATION_UNKNOWN,
