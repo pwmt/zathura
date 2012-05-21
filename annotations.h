@@ -299,7 +299,7 @@ void zathura_annotation_text_set_icon(zathura_annotation_t* annotation, zathura_
  * @param annotation The annotation
  * @return The state of the text annotation
  */
-int zathura_annotation_text_get_flags(zathura_annotation_t* annotation);
+zathura_annotation_text_state_t zathura_annotation_text_get_flags(zathura_annotation_t* annotation);
 
 /**
  * Sets the state of the text annotation
@@ -307,7 +307,7 @@ int zathura_annotation_text_get_flags(zathura_annotation_t* annotation);
  * @param annotation The annotation
  * @param state The new state of the text annotation
  */
-void zathura_annotation_text_set_flags(zathura_annotation_t* annotation, int flags);
+void zathura_annotation_text_set_state(zathura_annotation_t* annotation, zathura_annotation_text_state_t state);
 
 /**
  * Returns the position of the annotation popup
