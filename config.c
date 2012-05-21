@@ -52,8 +52,10 @@ cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
   zathura_t* zathura = session->global.data;
 
   int val = *(int*) value;
-  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
+  if (GTK_IS_TABLE(zathura->ui.page_widget) == TRUE) {
+    gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
+    gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
+  }
 }
 
 static void
