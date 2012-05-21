@@ -51,7 +51,7 @@ file_get_extension(const char* path)
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
 {
-  if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
+  if (zathura == NULL || path == NULL || zathura->plugins.manager == NULL) {
     return false;
   }
 
