@@ -140,7 +140,7 @@ typedef enum zathura_link_type_e
   ZATHURA_LINK_NAMED /**< Links to an external source */
 } zathura_link_type_t;
 
-typedef enum zathura_link_destionation_type_e
+typedef enum zathura_link_destination_type_e
 {
 	ZATHURA_LINK_DESTINATION_UNKNOWN,
 	ZATHURA_LINK_DESTINATION_XYZ,
@@ -152,11 +152,11 @@ typedef enum zathura_link_destionation_type_e
 	ZATHURA_LINK_DESTINATION_FITBH,
 	ZATHURA_LINK_DESTINATION_FITBV,
 	ZATHURA_LINK_DESTINATION_NAMED
-} zathura_link_destionation_type_t;
+} zathura_link_destination_type_t;
 
 typedef struct zathura_link_target_s
 {
-  zathura_link_destionation_type_t destination_type;
+  zathura_link_destination_type_t destination_type;
   char* value; /**< Value */
   unsigned int page_number; /**< Page number */
   double left; /**< Left coordinate */
