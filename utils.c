@@ -13,6 +13,7 @@
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
+#include "links.h"
 #include "utils.h"
 #include "zathura.h"
 #include "internal.h"
@@ -325,85 +326,6 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
   gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
 
   position_set_delayed(zathura, valx, valy);
-}
-
-static void
-link_launch(zathura_t* zathura, zathura_link_t* link)
-{
-  if (zathura == NULL || link == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  /* get file path */
-  if (link->target.value == NULL) {
-    return;
-  };
-
-  char* path = NULL;
-  if (g_path_is_absolute(link->target.value) == TRUE) {
-    path = g_strdup(link->target.value);
-  } else {
-    const char* document = zathura_document_get_path(zathura->document);
-    char* dir  = g_path_get_dirname(document);
-    path = g_build_filename(dir, link->target.value, NULL);
-    g_free(dir);
-  }
-
-  if (girara_xdg_open(path) == false) {
-    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-  }
-
-  g_free(path);
-}
-
-void
-zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
-{
-  if (zathura == NULL || link == NULL) {
-    return;
-  }
-
-  switch (link->type) {
-    case ZATHURA_LINK_GOTO_DEST:
-      page_set_delayed(zathura, link->target.page_number);
-      break;
-    case ZATHURA_LINK_GOTO_REMOTE:
-      open_remote(zathura, link->target.value);
-      break;
-    case ZATHURA_LINK_URI:
-      if (girara_xdg_open(link->target.value) == false) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-      }
-      break;
-    case ZATHURA_LINK_LAUNCH:
-      link_launch(zathura, link);
-      break;
-    default:
-      break;
-  }
-}
-
-void
-open_remote(zathura_t* zathura, const char* file)
-{
-  if (zathura == NULL || file == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  const char* path = zathura_document_get_path(zathura->document);
-  char* dir        = g_path_get_dirname(path);
-  char* uri        = g_build_filename(dir, file, NULL);
-
-  char* argv[] = {
-    *(zathura->global.arguments),
-    uri,
-    NULL
-  };
-
-  g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-
-  g_free(uri);
-  g_free(dir);
 }
 
 void

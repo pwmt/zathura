@@ -7,6 +7,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
+#include "links.h"
 #include "page-widget.h"
 #include "page.h"
 #include "render.h"
@@ -224,7 +225,7 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       if (priv->links.retrieved == true && priv->links.list != NULL) {
         GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
           if (link != NULL) {
-            zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
+            zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
             redraw_rect(pageview, &rectangle);
           }
         GIRARA_LIST_FOREACH_END(priv->links.list, zathura_link_t*, iter, link);
@@ -379,7 +380,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       unsigned int link_counter = 0;
       GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
         if (link != NULL) {
-          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, link->position);
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
 
           /* draw position */
           GdkColor color = priv->zathura->ui.colors.highlight_color;
@@ -588,7 +589,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 
     if (priv->links.list != NULL && priv->links.n > 0) {
       GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
-        zathura_rectangle_t rect = recalc_rectangle(priv->page, link->position);
+        zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
         if (rect.x1 <= button->x && rect.x2 >= button->x
             && rect.y1 <= button->y && rect.y2 >= button->y) {
           zathura_link_evaluate(priv->zathura, link);

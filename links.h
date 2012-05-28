@@ -1,0 +1,59 @@
+/* See LICENSE file for license and copyright information */
+
+#ifndef LINK_H
+#define LINK_H
+
+#include "types.h"
+
+/**
+ * Creates a new zathura link
+ *
+ * @param type Type of the link
+ * @param position Position of the link
+ * @param target Target
+ * @return New zathura link
+ */
+zathura_link_t*
+zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
+    zathura_link_target_t target);
+
+/**
+ * Free link
+ *
+ * @param link The link
+ */
+void zathura_link_free(zathura_link_t* link);
+
+/**
+ * Returns the type of the link
+ *
+ * @param link The link
+ * @return The target type of the link
+ */
+zathura_link_type_t zathura_link_get_type(zathura_link_t* link);
+
+/**
+ * Returns the position of the link
+ *
+ * @param link The link
+ * @return The position of the link
+ */
+zathura_rectangle_t zathura_link_get_position(zathura_link_t* link);
+
+/**
+ * The target value of the link
+ *
+ * @param link The link
+ * @return Returns the target of the link (depends on the link type)
+ */
+zathura_link_target_t zathura_link_get_target(zathura_link_t* link);
+
+/**
+ * Evaluate link
+ *
+ * @param zathura Zathura instance
+ * @param link The link
+ */
+void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link);
+
+#endif // LINK_H

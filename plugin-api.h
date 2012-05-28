@@ -5,6 +5,7 @@
 
 #include "page.h"
 #include "document.h"
+#include "links.h"
 #include "version.h"
 
 typedef struct zathura_plugin_functions_s zathura_plugin_functions_t;

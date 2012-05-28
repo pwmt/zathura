@@ -10,6 +10,7 @@
 #include <glib/gi18n.h>
 
 #include "callbacks.h"
+#include "links.h"
 #include "zathura.h"
 #include "render.h"
 #include "document.h"

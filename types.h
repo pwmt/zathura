@@ -3,6 +3,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <girara/datastructures.h>
+
 #include "macros.h"
 
 /**
@@ -130,17 +132,38 @@ typedef struct zathura_image_s
 typedef enum zathura_link_type_e
 {
   ZATHURA_LINK_INVALID, /**< Invalid type */
+	ZATHURA_LINK_NONE, /**< No action */
   ZATHURA_LINK_GOTO_DEST, /**< Links to a page */
   ZATHURA_LINK_GOTO_REMOTE, /**< Links to a page */
   ZATHURA_LINK_URI, /**< Links to an external source */
   ZATHURA_LINK_LAUNCH, /**< Links to an external source */
-  ZATHURA_LINK_NAMED, /**< Links to an external source */
+  ZATHURA_LINK_NAMED /**< Links to an external source */
 } zathura_link_type_t;
 
-typedef union zathura_link_target_u
+typedef enum zathura_link_destionation_type_e
 {
-  unsigned int page_number; /**< Page number */
+	ZATHURA_LINK_DESTINATION_UNKNOWN,
+	ZATHURA_LINK_DESTINATION_XYZ,
+	ZATHURA_LINK_DESTINATION_FIT,
+	ZATHURA_LINK_DESTINATION_FITH,
+	ZATHURA_LINK_DESTINATION_FITV,
+	ZATHURA_LINK_DESTINATION_FITR,
+	ZATHURA_LINK_DESTINATION_FITB,
+	ZATHURA_LINK_DESTINATION_FITBH,
+	ZATHURA_LINK_DESTINATION_FITBV,
+	ZATHURA_LINK_DESTINATION_NAMED
+} zathura_link_destionation_type_t;
+
+typedef struct zathura_link_target_s
+{
+  zathura_link_destionation_type_t destination_type;
   char* value; /**< Value */
+  unsigned int page_number; /**< Page number */
+  double left; /**< Left coordinate */
+  double right; /**< Right coordinate */
+  double top; /**< Top coordinate */
+  double bottom; /**< Bottom coordinate */
+  double scale; /**< Scale */
 } zathura_link_target_t;
 
 /**
@@ -189,48 +212,6 @@ zathura_index_element_t* zathura_index_element_new(const char* title);
  * @param index The index element
  */
 void zathura_index_element_free(zathura_index_element_t* index);
-
-/**
- * Creates a new zathura link
- *
- * @param type Type of the link
- * @param position Position of the link
- * @param target Target
- * @return New zathura link
- */
-zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
-    zathura_link_target_t target);
-
-/**
- * Free link
- *
- * @param link The link
- */
-void zathura_link_free(zathura_link_t* link);
-
-/**
- * Returns the type of the link
- *
- * @param link The link
- * @return The target type of the link
- */
-zathura_link_type_t zathura_link_get_type(zathura_link_t* link);
-
-/**
- * Returns the position of the link
- *
- * @param link The link
- * @return The position of the link
- */
-zathura_rectangle_t zathura_link_get_position(zathura_link_t* link);
-
-/**
- * The target value of the link
- *
- * @param link The link
- * @return Returns the target of the link (depends on the link type)
- */
-zathura_link_target_t zathura_link_get_target(zathura_link_t* link);
 
 /**
  * Creates a list that should be used to store \ref
