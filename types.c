@@ -29,6 +29,14 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
 
       link->target.value = g_strdup(target.value);
       break;
+    case ZATHURA_LINK_LAUNCH:
+      if (target.value == NULL) {
+        g_free(link);
+        return NULL;
+      }
+
+      link->target.value = g_strdup(target.value);
+      break;
     default:
       g_free(link);
       return NULL;

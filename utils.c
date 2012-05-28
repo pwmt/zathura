@@ -327,6 +327,35 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
   position_set_delayed(zathura, valx, valy);
 }
 
+static void
+link_launch(zathura_t* zathura, zathura_link_t* link)
+{
+  if (zathura == NULL || link == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  /* get file path */
+  if (link->target.value == NULL) {
+    return;
+  };
+
+  char* path = NULL;
+  if (g_path_is_absolute(link->target.value) == TRUE) {
+    path = g_strdup(link->target.value);
+  } else {
+    const char* document = zathura_document_get_path(zathura->document);
+    char* dir  = g_path_get_dirname(document);
+    path = g_build_filename(dir, link->target.value, NULL);
+    g_free(dir);
+  }
+
+  if (girara_xdg_open(path) == false) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
+  }
+
+  g_free(path);
+}
+
 void
 zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 {
@@ -345,6 +374,9 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       if (girara_xdg_open(link->target.value) == false) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
       }
+      break;
+    case ZATHURA_LINK_LAUNCH:
+      link_launch(zathura, link);
       break;
     default:
       break;
