@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include <girara/session.h>
 #include <girara/utils.h>
+#include <girara/settings.h>
 #include <glib/gi18n.h>
 
 #include "links.h"
@@ -312,7 +313,8 @@ zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
 }
 
 void
-readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay) {
+readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay)
+{
   if (zathura == NULL || zathura->document == NULL) {
     return;
   }
@@ -324,6 +326,12 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay) {
   double scale = zathura_document_get_scale(zathura->document);
   gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
   gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
+
+  bool zoom_center = false;
+  girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
+  if (zoom_center) {
+    valx += gtk_adjustment_get_page_size(hadjustment) * (scale / old_zoom - 1) / 2;
+  }
 
   if (delay == true) {
     position_set_delayed(zathura, valx, valy);

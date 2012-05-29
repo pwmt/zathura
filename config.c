@@ -106,6 +106,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
+  float_value = -1;
+  girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),             NULL, NULL);
   int_value = 10;
   girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
@@ -129,6 +131,10 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "search-hadjust",         &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
   float_value = 0.5;
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;

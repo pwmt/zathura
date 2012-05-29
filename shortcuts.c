@@ -548,6 +548,11 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);
+  float scroll_hstep = -1;
+  girara_setting_get(session, "scroll-hstep", &scroll_hstep);
+  if (scroll_hstep < 0) {
+    scroll_hstep = scroll_step;
+  }
   int padding = 1;
   girara_setting_get(session, "page-padding", &padding);
 
@@ -571,10 +576,14 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       new_value = value + ((view_size + padding) / 2);
       break;
     case LEFT:
+      new_value = value - scroll_hstep;
+      break;
     case UP:
       new_value = value - scroll_step;
       break;
     case RIGHT:
+      new_value = value + scroll_hstep;
+      break;
     case DOWN:
       new_value = value + scroll_step;
       break;
@@ -666,12 +675,16 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     page_calculate_offset(zathura, target_page, &offset);
 
     GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-
-    int x = offset.x - gtk_adjustment_get_page_size(view_hadjustment) / 2 + rectangle.x1;
     int y = offset.y - gtk_adjustment_get_page_size(view_vadjustment) / 2 + rectangle.y1;
-    set_adjustment(view_hadjustment, x);
     set_adjustment(view_vadjustment, y);
+
+    bool search_hadjust = true;
+    girara_setting_get(session, "search-hadjust", &search_hadjust);
+    if (search_hadjust == true) {
+      GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+      int x = offset.x - gtk_adjustment_get_page_size(view_hadjustment) / 2 + rectangle.x1;
+      set_adjustment(view_hadjustment, x);
+    }
   }
 
   return false;
