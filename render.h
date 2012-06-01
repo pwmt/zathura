@@ -31,9 +31,11 @@ void render_free(render_thread_t* render_thread);
  *
  * @param render_thread The render thread object
  * @param page The page that should be rendered
+ * @param printing Render the page for printing.
+ * @param target Rendering target in case we're rendering for printing.
  * @return true if no error occured
  */
-bool render_page(render_thread_t* render_thread, zathura_page_t* page);
+bool render_page(render_thread_t* render_thread, zathura_page_t* page, bool printing, cairo_t* target);
 
 /**
  * This function is used to unmark all pages as not rendered. This should

@@ -452,7 +452,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* render real page */
-    render_page(priv->zathura->sync.render_thread, priv->page);
+    render_page(priv->zathura->sync.render_thread, priv->page, false, NULL);
   }
   g_static_mutex_unlock(&(priv->lock));
   return FALSE;
