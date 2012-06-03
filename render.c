@@ -22,38 +22,17 @@ struct render_thread_s
   GThreadPool* pool; /**< Pool of threads */
 };
 
-typedef struct job_s
-{
-  zathura_page_t* page;
-  bool printing;
-  cairo_t* target;
-  GMutex* mutex;
-  GCond* cond;
-} job_t;
-
 static void
 render_job(void* data, void* user_data)
 {
-  job_t* job = data;
+  zathura_page_t* page = data;
   zathura_t* zathura = user_data;
-  if (job == NULL || zathura == NULL || job->page == NULL) {
+  if (page == NULL || zathura == NULL) {
     return;
   }
 
-  if (job->printing == false) {
-    girara_debug("Rendering page %d", zathura_page_get_index(job->page));
-    if (render(zathura, job->page) != true) {
-      girara_error("Rendering failed (page %d)\n", zathura_page_get_index(job->page));
-    }
-    g_free(data);
-  } else if (job->target != NULL) {
-    girara_debug("Rendering page %d for printing", zathura_page_get_index(job->page));
-    g_mutex_lock(job->mutex);
-    if (zathura_page_render(job->page, job->target, true) != ZATHURA_ERROR_OK) {
-      girara_error("Rendering failed (page %d)\n", zathura_page_get_index(job->page));
-    }
-    g_cond_signal(job->cond);
-    g_mutex_unlock(job->mutex);
+  if (render(zathura, page) != true) {
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page));
   }
 }
 
@@ -93,30 +72,13 @@ render_free(render_thread_t* render_thread)
 }
 
 bool
-render_page(render_thread_t* render_thread, zathura_page_t* page, bool printing, cairo_t* target)
+render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
   if (render_thread == NULL || page == NULL || render_thread->pool == NULL) {
     return false;
   }
 
-  job_t* job = g_malloc0(sizeof(job_t));
-  job->page = page;
-  job->printing = printing;
-  job->target = target;
-  if (printing == true) {
-    job->mutex = g_mutex_new();
-    job->cond = g_cond_new();
-    g_mutex_lock(job->mutex);
-  }
-  g_thread_pool_push(render_thread->pool, job, NULL);
-  if (printing == true) {
-    g_cond_wait(job->cond, job->mutex);
-    g_mutex_unlock(job->mutex);
-    g_cond_free(job->cond);
-    g_mutex_free(job->mutex);
-    g_free(job);
-  }
-
+  g_thread_pool_push(render_thread->pool, page, NULL);
   return true;
 }
 
