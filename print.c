@@ -93,5 +93,7 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     return;
   }
 
+  render_lock(zathura->sync.render_thread);
   zathura_page_render(page, cairo, true);
+  render_unlock(zathura->sync.render_thread);
 }
