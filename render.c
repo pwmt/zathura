@@ -20,6 +20,7 @@ static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 struct render_thread_s
 {
   GThreadPool* pool; /**< Pool of threads */
+  GStaticMutex mutex; /**< Render lock */
 };
 
 static void
@@ -31,6 +32,7 @@ render_job(void* data, void* user_data)
     return;
   }
 
+  girara_debug("rendring page %d ...", zathura_page_get_index(page));
   if (render(zathura, page) != true) {
     girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page));
   }
@@ -48,6 +50,7 @@ render_init(zathura_t* zathura)
   }
 
   g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
+  g_static_mutex_init(&render_thread->mutex);
 
   return render_thread;
 
@@ -68,6 +71,7 @@ render_free(render_thread_t* render_thread)
     g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
 
+  g_static_mutex_free(&render_thread->mutex);
   g_free(render_thread);
 }
 
@@ -119,12 +123,15 @@ render(zathura_t* zathura, zathura_page_t* page)
     cairo_scale(cairo, scale, scale);
   }
 
+  render_lock(zathura->sync.render_thread);
   if (zathura_page_render(page, cairo, false) != ZATHURA_ERROR_OK) {
+    render_unlock(zathura->sync.render_thread);
     cairo_destroy(cairo);
     cairo_surface_destroy(surface);
     return false;
   }
 
+  render_unlock(zathura->sync.render_thread);
   cairo_restore(cairo);
   cairo_destroy(cairo);
 
@@ -220,4 +227,24 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
   }
 
   return 0;
+}
+
+void
+render_lock(render_thread_t* render_thread)
+{
+  if (render_thread == NULL) {
+    return;
+  }
+
+  g_static_mutex_lock(&render_thread->mutex);
+}
+
+void
+render_unlock(render_thread_t* render_thread)
+{
+  if (render_thread == NULL) {
+    return;
+  }
+
+  g_static_mutex_unlock(&render_thread->mutex);
 }
