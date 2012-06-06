@@ -373,6 +373,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     if (font != NULL) {
       cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
     }
+
     g_free(font);
 
     /* draw links */
@@ -430,7 +431,12 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
   } else {
     /* set background color */
-    cairo_set_source_rgb(cairo, 255, 255, 255);
+    if (priv->zathura->global.recolor == true) {
+      GdkColor color = priv->zathura->ui.colors.recolor_light_color;
+      cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+    } else {
+      cairo_set_source_rgb(cairo, 255, 255, 255);
+    }
     cairo_rectangle(cairo, 0, 0, page_width, page_height);
     cairo_fill(cairo);
 
@@ -439,7 +445,13 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
     /* write text */
     if (render_loading == true) {
-      cairo_set_source_rgb(cairo, 0, 0, 0);
+      if (priv->zathura->global.recolor == true) {
+        GdkColor color = priv->zathura->ui.colors.recolor_dark_color;
+        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+      } else {
+        cairo_set_source_rgb(cairo, 0, 0, 0);
+      }
+
       const char* text = "Loading...";
       cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
       cairo_set_font_size(cairo, 16.0);
