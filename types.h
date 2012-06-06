@@ -150,8 +150,7 @@ typedef enum zathura_link_destination_type_e
 	ZATHURA_LINK_DESTINATION_FITR,
 	ZATHURA_LINK_DESTINATION_FITB,
 	ZATHURA_LINK_DESTINATION_FITBH,
-	ZATHURA_LINK_DESTINATION_FITBV,
-	ZATHURA_LINK_DESTINATION_NAMED
+	ZATHURA_LINK_DESTINATION_FITBV
 } zathura_link_destination_type_t;
 
 typedef struct zathura_link_target_s
