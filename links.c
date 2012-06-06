@@ -8,6 +8,7 @@
 #include "links.h"
 #include "zathura.h"
 #include "document.h"
+#include "utils.h"
 
 struct zathura_link_s
 {
@@ -122,12 +123,32 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
       switch (link->target.destination_type) {
-        case ZATHURA_LINK_DESTINATION_XYZ:
-          if (link->target.scale == 0) {
+        case ZATHURA_LINK_DESTINATION_XYZ: {
+          if (link->target.scale != 0) {
             zathura_document_set_scale(zathura->document, link->target.scale);
           }
 
-          page_set_delayed(zathura, link->target.page_number);
+          /* get page */
+          zathura_page_t* page = zathura_document_get_page(zathura->document,
+              link->target.page_number);
+          if (page == NULL) {
+            return;
+          }
+
+          /* get page offset */
+          page_offset_t offset;
+          page_calculate_offset(zathura, page, &offset);
+
+          if (link->target.left != -1) {
+            offset.x += link->target.left * zathura_document_get_scale(zathura->document);
+          }
+
+          if (link->target.top != -1) {
+            offset.y += link->target.top * zathura_document_get_scale(zathura->document);
+          }
+
+          position_set_delayed(zathura, offset.x, offset.y);
+          }
           break;
         default:
           break;
