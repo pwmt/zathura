@@ -8,6 +8,7 @@
 #include "links.h"
 #include "zathura.h"
 #include "document.h"
+#include "utils.h"
 
 struct zathura_link_s
 {
@@ -31,18 +32,16 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
 
   switch (type) {
     case ZATHURA_LINK_GOTO_DEST:
-      link->target.page_number = target.page_number;
+      link->target = target;
+
+      if (target.value != NULL) {
+        link->target.value = g_strdup(target.value);
+      }
       break;
     case ZATHURA_LINK_GOTO_REMOTE:
     case ZATHURA_LINK_URI:
-      if (target.value == NULL) {
-        g_free(link);
-        return NULL;
-      }
-
-      link->target.value = g_strdup(target.value);
-      break;
     case ZATHURA_LINK_LAUNCH:
+    case ZATHURA_LINK_NAMED:
       if (target.value == NULL) {
         g_free(link);
         return NULL;
@@ -66,8 +65,11 @@ zathura_link_free(zathura_link_t* link)
   }
 
   switch (link->type) {
+    case ZATHURA_LINK_GOTO_DEST:
+    case ZATHURA_LINK_GOTO_REMOTE:
     case ZATHURA_LINK_URI:
     case ZATHURA_LINK_LAUNCH:
+    case ZATHURA_LINK_NAMED:
       if (link->target.value != NULL) {
         g_free(link->target.value);
       }
@@ -114,13 +116,43 @@ zathura_link_get_target(zathura_link_t* link)
 void
 zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 {
-  if (zathura == NULL || link == NULL) {
+  if (zathura == NULL || zathura->document == NULL || link == NULL) {
     return;
   }
 
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
-      page_set_delayed(zathura, link->target.page_number);
+      switch (link->target.destination_type) {
+        case ZATHURA_LINK_DESTINATION_XYZ: {
+          if (link->target.scale != 0) {
+            zathura_document_set_scale(zathura->document, link->target.scale);
+          }
+
+          /* get page */
+          zathura_page_t* page = zathura_document_get_page(zathura->document,
+              link->target.page_number);
+          if (page == NULL) {
+            return;
+          }
+
+          /* get page offset */
+          page_offset_t offset;
+          page_calculate_offset(zathura, page, &offset);
+
+          if (link->target.left != -1) {
+            offset.x += link->target.left * zathura_document_get_scale(zathura->document);
+          }
+
+          if (link->target.top != -1) {
+            offset.y += link->target.top * zathura_document_get_scale(zathura->document);
+          }
+
+          position_set_delayed(zathura, offset.x, offset.y);
+          }
+          break;
+        default:
+          break;
+      }
       break;
     case ZATHURA_LINK_GOTO_REMOTE:
       link_remote(zathura, link->target.value);
