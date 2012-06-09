@@ -16,7 +16,7 @@ ZATHURA_GTK_VERSION ?= 2
 
 # minimum required zathura version
 # If you want to disable the check, set GIRARA_VERSION_CHECK to 0.
-GIRARA_MIN_VERSION = 0.1.2
+GIRARA_MIN_VERSION = 0.1.3
 GIRARA_VERSION_CHECK ?= $(shell pkg-config --atleast-version=$(GIRARA_MIN_VERSION) girara-gtk${ZATHURA_GTK_VERSION}; echo $$?)
 
 # database
