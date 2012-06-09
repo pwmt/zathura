@@ -14,9 +14,12 @@
 #include "document.h"
 #include "utils.h"
 #include "page-widget.h"
-
+#include "page.h"
+#include "internal.h"
+#include "render.h"
 
 #include <girara/session.h>
+#include <girara/settings.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
@@ -40,12 +43,12 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
   const char* bookmark_name = girara_list_nth(argument_list, 0);
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
   if (bookmark != NULL) {
-    bookmark->page = zathura->document->current_page_number + 1;
+    bookmark->page = zathura_document_get_current_page_number(zathura->document) + 1;
     girara_notify(session, GIRARA_INFO, _("Bookmark successfuly updated: %s"), bookmark_name);
     return true;
   }
 
-  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura->document->current_page_number + 1);
+  bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura_document_get_current_page_number(zathura->document) + 1);
   if (bookmark == NULL) {
     girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
     return false;
@@ -137,35 +140,39 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
   struct meta_field {
     char* name;
-    zathura_document_meta_t field;
+    zathura_document_information_type_t field;
   };
 
   struct meta_field meta_fields[] = {
-    { "Title",            ZATHURA_DOCUMENT_TITLE },
-    { "Author",           ZATHURA_DOCUMENT_AUTHOR },
-    { "Subject",          ZATHURA_DOCUMENT_SUBJECT },
-    { "Keywords",         ZATHURA_DOCUMENT_KEYWORDS },
-    { "Creator",          ZATHURA_DOCUMENT_CREATOR },
-    { "Producer",         ZATHURA_DOCUMENT_PRODUCER },
-    { "Creation date",    ZATHURA_DOCUMENT_CREATION_DATE },
-    { "Modiciation date", ZATHURA_DOCUMENT_MODIFICATION_DATE }
+    { "Title",            ZATHURA_DOCUMENT_INFORMATION_TITLE },
+    { "Author",           ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
+    { "Subject",          ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
+    { "Keywords",         ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { "Creator",          ZATHURA_DOCUMENT_INFORMATION_CREATOR },
+    { "Producer",         ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
+    { "Creation date",    ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
+    { "Modiciation date", ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
   };
 
+  girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
+  if (information == NULL) {
+    girara_notify(session, GIRARA_INFO, _("No information available."));
+    return false;
+  }
+
   GString* string = g_string_new(NULL);
-  if (string == NULL) {
-    return true;
-  }
 
-  for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
-    char* tmp = zathura_document_meta_get(zathura->document, meta_fields[i].field, NULL);
-    if (tmp != NULL) {
-      char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, tmp);
-      g_string_append(string, text);
-
-      g_free(text);
-      g_free(tmp);
+  GIRARA_LIST_FOREACH(information, zathura_document_information_entry_t*, iter, entry)
+    if (entry != NULL) {
+      for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+        if (meta_fields[i].field == entry->type) {
+          char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+          g_string_append(string, text);
+          g_free(text);
+        }
+      }
     }
-  }
+  GIRARA_LIST_FOREACH_END(information, zathura_document_information_entry_t*, iter, entry);
 
   if (strlen(string->str) > 0) {
     g_string_erase(string, strlen(string->str) - 1, 1);
@@ -185,6 +192,20 @@ cmd_help(girara_session_t* UNUSED(session), girara_list_t*
 {
   return true;
 }
+
+bool
+cmd_hlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  document_draw_search_results(zathura, true);
+  render_all(zathura);
+
+  return true;
+}
+
 
 bool
 cmd_open(girara_session_t* session, girara_list_t* argument_list)
@@ -231,7 +252,20 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     return false;
   }
 
-  print((zathura_t*) session->global.data);
+  print(zathura);
+
+  return true;
+}
+
+bool
+cmd_nohlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  document_draw_search_results(zathura, false);
+  render_all(zathura);
 
   return true;
 }
@@ -302,34 +336,49 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   }
 
   bool firsthit = true;
-  zathura_plugin_error_t error = ZATHURA_PLUGIN_ERROR_OK;
+  zathura_error_t error = ZATHURA_ERROR_OK;
 
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; ++page_id) {
-    zathura_page_t* page = zathura->document->pages[(page_id + zathura->document->current_page_number) % zathura->document->number_of_pages];
+
+  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+
+  /* reset search highlighting */
+  bool nohlsearch = false;
+  girara_setting_get(session, "nohlsearch", &nohlsearch);
+
+  if (nohlsearch == false) {
+    document_draw_search_results(zathura, true);
+  }
+
+  /* search pages */
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    unsigned int index = (page_id + current_page_number) % number_of_pages;
+    zathura_page_t* page = zathura_document_get_page(zathura->document, index);
     if (page == NULL) {
       continue;
     }
 
-    g_object_set(page->drawing_area, "draw-links", FALSE, NULL);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    g_object_set(page_widget, "draw-links", FALSE, NULL);
 
     girara_list_t* result = zathura_page_search_text(page, input, &error);
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
-      g_object_set(page->drawing_area, "search-results", NULL, NULL);
+      g_object_set(page_widget, "search-results", NULL, NULL);
 
-      if (error == ZATHURA_PLUGIN_ERROR_NOT_IMPLEMENTED) {
+      if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
         break;
       } else {
         continue;
       }
     }
 
-    g_object_set(page->drawing_area, "search-results", result, NULL);
+    g_object_set(page_widget, "search-results", result, NULL);
     if (firsthit == true) {
       if (page_id != 0) {
-        page_set_delayed(zathura, page->number);
+        page_set_delayed(zathura, zathura_page_get_index(page));
       }
-      g_object_set(page->drawing_area, "search-current", 0, NULL);
+      g_object_set(page_widget, "search-current", 0, NULL);
       firsthit = false;
     }
   }
@@ -353,21 +402,86 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  const char* attachment_name = girara_list_nth(argument_list, 0);
+  const char* file_identifier = girara_list_nth(argument_list, 0);
   const char* file_name       = girara_list_nth(argument_list, 1);
 
-  if (file_name == NULL || attachment_name == NULL) {
+  if (file_name == NULL || file_identifier == NULL) {
     return false;
   }
-  char* file_name2 = girara_fix_path(file_name);
 
-  if (zathura_document_attachment_save(zathura->document, attachment_name, file_name) == false) {
-    girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), attachment_name, file_name);
-  } else {
-    girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), attachment_name, file_name2);
+  char* export_path = girara_fix_path(file_name);
+  if (export_path == NULL) {
+    return false;
   }
 
-  g_free(file_name2);
+  /* attachment */
+  if (strncmp(file_identifier, "attachment-", strlen("attachment-")) == 0) {
+    if (zathura_document_attachment_save(zathura->document, file_identifier + strlen("attachment-"), export_path) == false) {
+      girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), file_identifier, file_name);
+    } else {
+      girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), file_identifier, export_path);
+    }
+  /* image */
+  } else if (strncmp(file_identifier, "image-p", strlen("image-p")) == 0 && strlen(file_identifier) >= 10) {
+    /* parse page id */
+    const char* input = file_identifier + strlen("image-p");
+    int page_id = atoi(input);
+    if (page_id == 0) {
+      goto image_error;
+    }
+
+    /* parse image id */
+    input = strstr(input, "-");
+    if (input == NULL) {
+      goto image_error;
+    }
+
+    int image_id = atoi(input + 1);
+    if (image_id == 0) {
+      goto image_error;
+    }
+
+    /* get image */
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id - 1);
+    if (page == NULL) {
+      goto image_error;
+    }
+
+    girara_list_t* images = zathura_page_images_get(page, NULL);
+    if (images == NULL) {
+      goto image_error;
+    }
+
+    zathura_image_t* image = girara_list_nth(images, image_id - 1);
+    if (image == NULL) {
+      goto image_error;
+    }
+
+    cairo_surface_t* surface = zathura_page_image_get_cairo(page, image, NULL);
+    if (surface == NULL) {
+      goto image_error;
+    }
+
+    if (cairo_surface_write_to_png(surface, export_path) == CAIRO_STATUS_SUCCESS) {
+      girara_notify(session, GIRARA_INFO, _("Wrote image '%s' to '%s'."), file_identifier, export_path);
+    } else {
+      girara_notify(session, GIRARA_ERROR, _("Couldn't write image '%s' to '%s'."), file_identifier, file_name);
+    }
+
+    goto error_ret;
+
+image_error:
+
+    girara_notify(session, GIRARA_ERROR, _("Unknown image '%s'."), file_identifier);
+    goto error_ret;
+  /* unknown */
+  } else {
+    girara_notify(session, GIRARA_ERROR, _("Unknown attachment or image '%s'."), file_identifier);
+  }
+
+error_ret:
+
+  g_free(export_path);
 
   return true;
 }
@@ -384,7 +498,7 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
   }
 
   /* no argument: take current page as offset */
-  unsigned int page_offset = zathura->document->current_page_number;
+  unsigned int page_offset = zathura_document_get_current_page_number(zathura->document);
 
   /* retrieve offset from argument */
   if (girara_list_size(argument_list) == 1) {
@@ -398,8 +512,8 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
     }
   }
 
-  if (page_offset < zathura->document->number_of_pages) {
-    zathura->document->page_offset = page_offset;
+  if (page_offset < zathura_document_get_number_of_pages(zathura->document)) {
+    zathura_document_set_page_offset(zathura->document, page_offset);
   }
 
   return true;

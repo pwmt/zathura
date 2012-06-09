@@ -9,15 +9,18 @@
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
+#include "page.h"
 #include "page-widget.h"
 #include "utils.h"
 
 static void render_job(void* data, void* user_data);
 static bool render(zathura_t* zathura, zathura_page_t* page);
+static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 
 struct render_thread_s
 {
   GThreadPool* pool; /**< Pool of threads */
+  GStaticMutex mutex; /**< Render lock */
 };
 
 static void
@@ -29,8 +32,9 @@ render_job(void* data, void* user_data)
     return;
   }
 
+  girara_debug("rendring page %d ...", zathura_page_get_index(page));
   if (render(zathura, page) != true) {
-    girara_error("Rendering failed (page %d)\n", page->number);
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page));
   }
 }
 
@@ -44,6 +48,9 @@ render_init(zathura_t* zathura)
   if (render_thread->pool == NULL) {
     goto error_free;
   }
+
+  g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
+  g_static_mutex_init(&render_thread->mutex);
 
   return render_thread;
 
@@ -64,6 +71,7 @@ render_free(render_thread_t* render_thread)
     g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
 
+  g_static_mutex_free(&render_thread->mutex);
   g_free(render_thread);
 }
 
@@ -110,16 +118,20 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  if (fabs(zathura->document->scale - 1.0f) > FLT_EPSILON) {
-    cairo_scale(cairo, zathura->document->scale, zathura->document->scale);
+  double scale = zathura_document_get_scale(zathura->document);
+  if (fabs(scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, scale, scale);
   }
 
-  if (zathura_page_render(page, cairo, false) != ZATHURA_PLUGIN_ERROR_OK) {
+  render_lock(zathura->sync.render_thread);
+  if (zathura_page_render(page, cairo, false) != ZATHURA_ERROR_OK) {
+    render_unlock(zathura->sync.render_thread);
     cairo_destroy(cairo);
     cairo_surface_destroy(surface);
     return false;
   }
 
+  render_unlock(zathura->sync.render_thread);
   cairo_restore(cairo);
   cairo_destroy(cairo);
 
@@ -161,7 +173,8 @@ render(zathura_t* zathura, zathura_page_t* page)
 
   /* update the widget */
   gdk_threads_enter();
-  zathura_page_widget_update_surface(ZATHURA_PAGE(page->drawing_area), surface);
+  GtkWidget* widget = zathura_page_get_widget(zathura, page);
+  zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
   gdk_threads_leave();
 
   return true;
@@ -170,17 +183,68 @@ render(zathura_t* zathura, zathura_page_t* page)
 void
 render_all(zathura_t* zathura)
 {
-  if (zathura->document == NULL) {
+  if (zathura == NULL || zathura->document == NULL) {
     return;
   }
 
   /* unmark all pages */
-  for (unsigned int page_id = 0; page_id < zathura->document->number_of_pages; page_id++) {
-    zathura_page_t* page = zathura->document->pages[page_id];
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
     unsigned int page_height = 0, page_width = 0;
     page_calc_height_width(page, &page_height, &page_width, true);
 
-    gtk_widget_set_size_request(page->drawing_area, page_width, page_height);
-    gtk_widget_queue_resize(page->drawing_area);
+    GtkWidget* widget = zathura_page_get_widget(zathura, page);
+    gtk_widget_set_size_request(widget, page_width, page_height);
+    gtk_widget_queue_resize(widget);
   }
+}
+
+static gint
+render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
+{
+  if (a == NULL || b == NULL || data == NULL) {
+    return 0;
+  }
+
+  zathura_page_t* page_a = (zathura_page_t*) a;
+  zathura_page_t* page_b = (zathura_page_t*) b;
+  zathura_t* zathura     = (zathura_t*) data;
+
+  unsigned int page_a_index = zathura_page_get_index(page_a);
+  unsigned int page_b_index = zathura_page_get_index(page_b);
+
+  unsigned int last_view_a = 0;
+  unsigned int last_view_b = 0;
+
+  g_object_get(zathura->pages[page_a_index], "last-view", &last_view_a, NULL);
+  g_object_get(zathura->pages[page_b_index], "last-view", &last_view_b, NULL);
+
+  if (last_view_a > last_view_b) {
+    return -1;
+  } else if (last_view_b > last_view_a) {
+    return 1;
+  }
+
+  return 0;
+}
+
+void
+render_lock(render_thread_t* render_thread)
+{
+  if (render_thread == NULL) {
+    return;
+  }
+
+  g_static_mutex_lock(&render_thread->mutex);
+}
+
+void
+render_unlock(render_thread_t* render_thread)
+{
+  if (render_thread == NULL) {
+    return;
+  }
+
+  g_static_mutex_unlock(&render_thread->mutex);
 }

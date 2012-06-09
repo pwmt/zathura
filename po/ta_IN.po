@@ -1,16 +1,18 @@
-# zathura - language file (German)
+# zathura - language file (Tamil (India))
 # See LICENSE file for license and copyright information
 #
 # Translators:
+#   <mankand007@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
 "POT-Creation-Date: 2012-05-08 19:21+0200\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
-"Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
-"Language-Team: pwmt.org <mail@pwmt.org>\n"
-"Language: de\n"
+"Last-Translator: mankand007 <mankand007@gmail.com>\n"
+"Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
+"language/ta_IN/)\n"
+"Language: ta_IN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,96 +21,96 @@ msgstr ""
 #: ../callbacks.c:175
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Ungültige Eingabe '%s' angegeben."
+msgstr "கொடுக்கப்பட்ட உள்ளீடு(input) '%s' தவறு"
 
 #: ../callbacks.c:203
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Ungültiger Index '%s' angegeben."
+msgstr "கொடுக்கப்பட்ட index '%s' தவறு"
 
 #: ../commands.c:33 ../commands.c:68 ../commands.c:95 ../commands.c:137
 #: ../commands.c:251 ../commands.c:281 ../commands.c:307 ../commands.c:396
 #: ../commands.c:496 ../shortcuts.c:440 ../shortcuts.c:891
 msgid "No document opened."
-msgstr "Kein Dokument geöffnet."
+msgstr "எந்தக் ஆவணமும் திறக்கப்படவில்லை"
 
 #: ../commands.c:39 ../commands.c:74 ../commands.c:101 ../commands.c:401
 msgid "Invalid number of arguments given."
-msgstr "Ungültige Anzahl an Argumenten angegeben."
+msgstr "கொடுக்கப்பட்ட arguments-களின் எண்ணிக்கை தவறு"
 
 #: ../commands.c:47
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr "Lesezeichen erfolgreich aktualisiert: %s."
+msgstr "Bookmark வெற்றிகரமாக நிகழ்நிலை(update) படுத்தப்பட்டது: %s"
 
 #: ../commands.c:53
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Konnte Lesezeichen nicht erstellen: %s"
+msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
 
 #: ../commands.c:57
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr "Lesezeichen erfolgreich erstellt: %s"
+msgstr "Bookmark வெற்றிகரமாக உருவாக்கப்பட்டது: %s"
 
 #: ../commands.c:80
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Lesezeichen entfernt: %s"
+msgstr "Bookmark அழிக்கப்பட்டது: %s"
 
 #: ../commands.c:82
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Konnte Lesezeichen nicht entfernen: %s"
+msgstr "Bookmark-ஐ அழிக்க இயலவில்லை: %s"
 
 #: ../commands.c:108
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Lesezeichen existiert nicht: %s"
+msgstr "அந்தப் பெயரில் எந்த bookmark-ம் இல்லை: %s"
 
 #: ../commands.c:159 ../commands.c:181
 msgid "No information available."
-msgstr "Keine Information verfügbar."
+msgstr "எந்தத் தகவலும் இல்லை"
 
 #: ../commands.c:219
 msgid "Too many arguments."
-msgstr "Zu viele Argumente angegeben."
+msgstr "Argumentகளின் எண்ணிக்கை மிகவும் அதிகம்"
 
 #: ../commands.c:228
 msgid "No arguments given."
-msgstr "Keine Argumente angegeben."
+msgstr "எந்த argument-ம் தரப்படவில்லை"
 
 #: ../commands.c:287 ../commands.c:313
 msgid "Document saved."
-msgstr "Dokument gespeichert."
+msgstr "கோப்பு சேமிக்கப்பட்டது"
 
 #: ../commands.c:289 ../commands.c:315
 msgid "Failed to save document."
-msgstr "Konnte Dokument nicht speichern."
+msgstr "ஆவணத்தை சேமிக்க இயலவில்லை"
 
 #: ../commands.c:292 ../commands.c:318
 msgid "Invalid number of arguments."
-msgstr "Ungültige Anzahl an Argumenten."
+msgstr "கொடுக்கப்பட்ட argument-களின் எண்ணிக்கை தவறு"
 
 #: ../commands.c:420
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
+msgstr ""
 
 #: ../commands.c:422
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Anhang '%s' nach '%s' geschrieben."
+msgstr ""
 
 #: ../commands.c:466
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Anhang '%s' nach '%s' geschrieben."
+msgstr ""
 
 #: ../commands.c:468
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
+msgstr ""
 
 #: ../commands.c:475
 #, c-format
@@ -118,54 +120,54 @@ msgstr ""
 #: ../commands.c:479
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Unbekannter Anhanng oder Bild '%s'."
+msgstr ""
 
 #: ../commands.c:509
 msgid "Argument must be a number."
-msgstr "Das Argument ist keine Zahl."
+msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
 
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr "Seite %d"
+msgstr ""
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "Speichere Anhänge"
+msgstr "இணைப்புகளைச் சேமிக்கவும்"
 
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr "Bilder"
+msgstr ""
 
 #. zathura settings
 #: ../config.c:98
 msgid "Database backend"
-msgstr "Datenbank Backend"
+msgstr ""
 
 #: ../config.c:100
 msgid "Zoom step"
-msgstr "Vergrößerungsstufe"
+msgstr "Zoom அமைப்பு"
 
 #: ../config.c:102
 msgid "Padding between pages"
-msgstr "Abstand zwischen den Seiten"
+msgstr "இரு பக்கங்களுக்கிடையில் உள்ள நிரப்பல்(padding)"
 
 #: ../config.c:104
 msgid "Number of pages per row"
-msgstr "Anzahl der Seiten in einer Reihe"
+msgstr "ஒரு வரிசையில் எத்தனை பக்கங்களைக் காட்ட வேண்டும்"
 
 #: ../config.c:106
 msgid "Scroll step"
-msgstr "Schrittgröße beim Scrollen"
+msgstr "திரை உருளல்(scroll) அளவு"
 
 #: ../config.c:108
 msgid "Zoom minimum"
-msgstr "Minimale Vergrößerungsstufe"
+msgstr "முடிந்தவரை சிறியதாகக் காட்டு"
 
 #: ../config.c:110
 msgid "Zoom maximum"
-msgstr "Maximale Vergrößerungsstufe"
+msgstr "முடிந்தவரை பெரிதாகக் காட்டு"
 
 #: ../config.c:112
 msgid "Life time (in seconds) of a hidden page"
@@ -174,59 +176,58 @@ msgstr ""
 #: ../config.c:113
 msgid "Amount of seconds between each cache purge"
 msgstr ""
-"Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
 
 #: ../config.c:115
 msgid "Recoloring (dark color)"
-msgstr "Neufärben (Dunkle Farbe)"
+msgstr ""
 
 #: ../config.c:117
 msgid "Recoloring (light color)"
-msgstr "Neufärben (Helle Farbe)"
+msgstr ""
 
 #: ../config.c:119
 msgid "Color for highlighting"
-msgstr "Farbe für eine Markierung"
+msgstr ""
 
 #: ../config.c:121
 msgid "Color for highlighting (active)"
-msgstr "Farbe für die aktuelle Markierung"
+msgstr ""
 
 #: ../config.c:125
 msgid "Recolor pages"
-msgstr "Färbe die Seiten ein"
+msgstr ""
 
 #: ../config.c:127
 msgid "Wrap scrolling"
-msgstr "Scroll-Umbruch"
+msgstr ""
 
 #: ../config.c:129
 msgid "Advance number of pages per row"
-msgstr "Gehe Anzahl der Seiten in einer Reihe weiter"
+msgstr ""
 
 #: ../config.c:131
 msgid "Transparency for highlighting"
-msgstr "Transparenz einer Markierung"
+msgstr ""
 
 #: ../config.c:133
 msgid "Render 'Loading ...'"
-msgstr "Zeige 'Lädt...'-Text beim Zeichnen einer Seite"
+msgstr ""
 
 #: ../config.c:134
 msgid "Adjust to when opening file"
-msgstr "Seite einpassen"
+msgstr ""
 
 #: ../config.c:136
 msgid "Show hidden files and directories"
-msgstr "Zeige versteckte Dateien und Ordner an"
+msgstr ""
 
 #: ../config.c:138
 msgid "Show directories"
-msgstr "Zeige Ordner an"
+msgstr ""
 
 #: ../config.c:140
 msgid "Always open on first page"
-msgstr "Öffne Dokument immer auf der ersten Seite"
+msgstr ""
 
 #: ../config.c:142
 msgid "Highlight search results"
@@ -239,55 +240,55 @@ msgstr ""
 #. define default inputbar commands
 #: ../config.c:266
 msgid "Add a bookmark"
-msgstr "Füge Lesezeichen hinzu"
+msgstr "புதிய bookmark உருவாக்கு"
 
 #: ../config.c:267
 msgid "Delete a bookmark"
-msgstr "Lösche ein Lesezeichen"
+msgstr "Bookmark-ஐ அழித்துவிடு"
 
 #: ../config.c:268
 msgid "List all bookmarks"
-msgstr "Liste all Lesezeichen auf"
+msgstr "அனைத்து bookmark-களையும் பட்டியலிடு"
 
 #: ../config.c:269
 msgid "Close current file"
-msgstr "Schließe das aktuelle Dokument"
+msgstr ""
 
 #: ../config.c:270
 msgid "Show file information"
-msgstr "Zeige Dokumentinformationen an"
+msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
 
 #: ../config.c:271
 msgid "Show help"
-msgstr "Zeige Hilfe an"
+msgstr "உதவியைக் காட்டு"
 
 #: ../config.c:272
 msgid "Open document"
-msgstr "Öffne Dokument"
+msgstr "ஒரு ஆவணத்தைத் திற"
 
 #: ../config.c:273
 msgid "Close zathura"
-msgstr "Beende zathura"
+msgstr "zathura-வை விட்டு வெளியேறு"
 
 #: ../config.c:274
 msgid "Print document"
-msgstr "Drucke Dokument"
+msgstr "ஆவணத்தை அச்சிடு"
 
 #: ../config.c:275
 msgid "Save document"
-msgstr "Speichere Dokument"
+msgstr "ஆவணத்தை சேமிக்கவும்"
 
 #: ../config.c:276
 msgid "Save document (and force overwriting)"
-msgstr "Speichere Dokument (und überschreibe bestehende)"
+msgstr ""
 
 #: ../config.c:277
 msgid "Save attachments"
-msgstr "Speichere Anhänge"
+msgstr "இணைப்புகளைச் சேமிக்கவும்"
 
 #: ../config.c:278
 msgid "Set page offset"
-msgstr "Setze den Seitenabstand"
+msgstr ""
 
 #: ../config.c:279
 msgid "Mark current location within the document"
@@ -308,52 +309,52 @@ msgstr ""
 #: ../page-widget.c:611
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+msgstr ""
 
 #: ../page-widget.c:708
 msgid "Copy image"
-msgstr "Bild kopieren"
+msgstr "படத்தை ஒரு பிரதியெடு"
 
 #: ../page-widget.c:709
 msgid "Save image as"
-msgstr "Bild speichern als"
+msgstr ""
 
 #: ../shortcuts.c:797
 msgid "This document does not contain any index"
-msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
+msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
 
 #: ../utils.c:346
 msgid "Failed to run xdg-open."
-msgstr "Konnte xdg-open nicht ausführen."
+msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
 
 #: ../zathura.c:73
 msgid "Reparents to window specified by xid"
-msgstr "Reparentiert zathura an das Fenster mit der xid"
+msgstr ""
 
 #: ../zathura.c:74
 msgid "Path to the config directory"
-msgstr "Pfad zum Konfigurationsverzeichnis"
+msgstr ""
 
 #: ../zathura.c:75
 msgid "Path to the data directory"
-msgstr "Pfad zum Datenverzeichnis"
+msgstr ""
 
 #: ../zathura.c:76
 msgid "Path to the directories containing plugins"
-msgstr "Pfad zum Pluginverzeichnis"
+msgstr ""
 
 #: ../zathura.c:77
 msgid "Fork into the background"
-msgstr "Forkt den Prozess in den Hintergrund"
+msgstr ""
 
 #: ../zathura.c:78
 msgid "Document password"
-msgstr "Dokument Passwort"
+msgstr ""
 
 #: ../zathura.c:79
 msgid "Log level (debug, info, warning, error)"
-msgstr "Log-Stufe (debug, info, warning, error)"
+msgstr ""
 
 #: ../zathura.c:251 ../zathura.c:799
 msgid "[No name]"
-msgstr "[Kein Name]"
+msgstr "பெயரற்ற ஆவணம்"

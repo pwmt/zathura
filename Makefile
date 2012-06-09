@@ -6,7 +6,7 @@ include common.mk
 PROJECT    = zathura
 OSOURCE    = $(wildcard *.c)
 HEADER     = $(wildcard *.h)
-HEADERINST = version.h zathura.h document.h macros.h
+HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
 ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
@@ -19,6 +19,16 @@ endif
 
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
+endif
+
+ifeq (,$(findstring -DZATHURA_PLUGINDIR,${CPPFLAGS}))
+CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
+endif
+ifeq (,$(findstring -DGETTEXT_PACKAGE,${CPPFLAGS}))
+CPPFLAGS += -DGETTEXT_PACKAGE=\"${PROJECT}\"
+endif
+ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
+CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
@@ -144,7 +154,7 @@ endif
 
 install-manpages: build-manpages
 	$(ECHO) installing manual pages
-	$(QUIET)mkdir -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
 ifneq "$(wildcard ${PROJECT}.1)" ""
 	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
 endif
@@ -154,17 +164,17 @@ endif
 
 install-headers: ${PROJECT}.pc
 	$(ECHO) installing header files
-	$(QUIET)mkdir -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(QUIET)install -m 644 ${HEADERINST} ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(ECHO) installing pkgconfig file
-	$(QUIET)mkdir -p ${DESTDIR}${LIBDIR}/pkgconfig
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
 install: all install-headers install-manpages
 	$(ECHO) installing executable file
-	$(QUIET)mkdir -p ${DESTDIR}${PREFIX}/bin
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
-	$(QUIET)mkdir -p ${DESTDIR}${DESKTOPPREFIX}
+	$(QUIET)mkdir -m 755 -p ${DESTDIR}${DESKTOPPREFIX}
 	$(ECHO) installing desktop file
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
 	$(MAKE) -C po install
@@ -175,7 +185,7 @@ uninstall-headers:
 	$(ECHO) removing pkgconfig file
 	$(QUIET)rm -f ${DESTDIR}${LIBDIR}/pkgconfig/${PROJECT}.pc
 
-uninstall:
+uninstall: uninstall-headers
 	$(ECHO) removing executable file
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
 	$(ECHO) removing manual pages

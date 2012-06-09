@@ -8,10 +8,18 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <math.h>
+#include <gtk/gtk.h>
+#include <girara/session.h>
+#include <girara/utils.h>
+#include <glib/gi18n.h>
 
+#include "links.h"
 #include "utils.h"
 #include "zathura.h"
+#include "internal.h"
 #include "document.h"
+#include "page.h"
+#include "plugin.h"
 
 #include <girara/datastructures.h>
 
@@ -44,7 +52,7 @@ file_get_extension(const char* path)
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
 {
-  if (zathura == NULL || path == NULL) {
+  if (zathura == NULL || path == NULL || zathura->plugins.manager == NULL) {
     return false;
   }
 
@@ -53,16 +61,10 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-  bool result = false;
-  GIRARA_LIST_FOREACH(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-    if (g_content_type_equals(content_type, mapping->type)) {
-      result = true;
-      break;
-    }
-  GIRARA_LIST_FOREACH_END(zathura->plugins.type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
-
+  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free((void*)content_type);
-  return result;
+
+  return (plugin == NULL) ? false : true;
 }
 
 bool
@@ -149,11 +151,14 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node)
     zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
+    zathura_link_type_t type     = zathura_link_get_type(index_element->link);
+    zathura_link_target_t target = zathura_link_get_target(index_element->link);
+
     gchar* description = NULL;
-    if (index_element->type == ZATHURA_LINK_TO_PAGE) {
-      description = g_strdup_printf("Page %d", index_element->target.page_number);
+    if (type == ZATHURA_LINK_GOTO_DEST) {
+      description = g_strdup_printf("Page %d", target.page_number);
     } else {
-      description = g_strdup(index_element->target.uri);
+      description = g_strdup(target.value);
     }
 
     GtkTreeIter tree_iter;
@@ -170,13 +175,13 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 }
 
 void
-page_calculate_offset(zathura_page_t* page, page_offset_t* offset)
+page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* offset)
 {
-  g_return_if_fail(page != NULL && page->document != NULL && page->document->zathura != NULL && offset != NULL);
-  zathura_document_t* document = page->document;
-  zathura_t* zathura           = document->zathura;
+  g_return_if_fail(page != NULL);
+  g_return_if_fail(offset != NULL);
+  GtkWidget* widget = zathura_page_get_widget(zathura, page);
 
-  g_return_if_fail(gtk_widget_translate_coordinates(page->drawing_area,
+  g_return_if_fail(gtk_widget_translate_coordinates(widget,
     zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
@@ -215,39 +220,53 @@ zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int
 zathura_rectangle_t
 recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
 {
-  if (page == NULL || page->document == NULL) {
-    return rectangle;
+  if (page == NULL) {
+    goto error_ret;
   }
+
+  zathura_document_t* document = zathura_page_get_document(page);
+
+  if (document == NULL) {
+    goto error_ret;
+  }
+
+  double page_height = zathura_page_get_height(page);
+  double page_width  = zathura_page_get_width(page);
+  double scale       = zathura_document_get_scale(document);
 
   zathura_rectangle_t tmp;
 
-  switch (page->document->rotate) {
+  switch (zathura_document_get_rotation(document)) {
     case 90:
-      tmp.x1 = (page->height - rectangle.y2) * page->document->scale;
-      tmp.x2 = (page->height - rectangle.y1) * page->document->scale;
-      tmp.y1 = rectangle.x1 * page->document->scale;
-      tmp.y2 = rectangle.x2 * page->document->scale;
+      tmp.x1 = (page_height - rectangle.y2) * scale;
+      tmp.x2 = (page_height - rectangle.y1) * scale;
+      tmp.y1 = rectangle.x1 * scale;
+      tmp.y2 = rectangle.x2 * scale;
       break;
     case 180:
-      tmp.x1 = (page->width - rectangle.x2) * page->document->scale;
-      tmp.x2 = (page->width - rectangle.x1) * page->document->scale;
-      tmp.y1 = (page->height - rectangle.y2) * page->document->scale;
-      tmp.y2 = (page->height - rectangle.y1) * page->document->scale;
+      tmp.x1 = (page_width  - rectangle.x2) * scale;
+      tmp.x2 = (page_width  - rectangle.x1) * scale;
+      tmp.y1 = (page_height - rectangle.y2) * scale;
+      tmp.y2 = (page_height - rectangle.y1) * scale;
       break;
     case 270:
-      tmp.x1 = rectangle.y1 * page->document->scale;
-      tmp.x2 = rectangle.y2 * page->document->scale;
-      tmp.y1 = (page->width - rectangle.x2) * page->document->scale;
-      tmp.y2 = (page->width - rectangle.x1) * page->document->scale;
+      tmp.x1 = rectangle.y1 * scale;
+      tmp.x2 = rectangle.y2 * scale;
+      tmp.y1 = (page_width - rectangle.x2) * scale;
+      tmp.y2 = (page_width - rectangle.x1) * scale;
       break;
     default:
-      tmp.x1 = rectangle.x1 * page->document->scale;
-      tmp.x2 = rectangle.x2 * page->document->scale;
-      tmp.y1 = rectangle.y1 * page->document->scale;
-      tmp.y2 = rectangle.y2 * page->document->scale;
+      tmp.x1 = rectangle.x1 * scale;
+      tmp.x2 = rectangle.x2 * scale;
+      tmp.y1 = rectangle.y1 * scale;
+      tmp.y2 = rectangle.y2 * scale;
   }
 
   return tmp;
+
+error_ret:
+
+  return rectangle;
 }
 
 void
@@ -262,11 +281,62 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
 {
   g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
 
-  if (rotate && page->document->rotate % 180) {
-    *page_width  = ceil(page->height * page->document->scale);
-    *page_height = ceil(page->width  * page->document->scale);
+  zathura_document_t* document = zathura_page_get_document(page);
+  if (document == NULL) {
+    return;
+  }
+
+  double height = zathura_page_get_height(page);
+  double width  = zathura_page_get_width(page);
+  double scale  = zathura_document_get_scale(document);
+
+  if (rotate && zathura_document_get_rotation(document) % 180) {
+    *page_width  = ceil(height * scale);
+    *page_height = ceil(width  * scale);
   } else {
-    *page_width  = ceil(page->width  * page->document->scale);
-    *page_height = ceil(page->height * page->document->scale);
+    *page_width  = ceil(width  * scale);
+    *page_height = ceil(height * scale);
+  }
+}
+
+GtkWidget*
+zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
+{
+  if (zathura == NULL || page == NULL || zathura->pages == NULL) {
+    return NULL;
+  }
+
+  unsigned int page_number = zathura_page_get_index(page);
+
+  return zathura->pages[page_number];
+}
+
+void
+readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
+
+  double scale = zathura_document_get_scale(zathura->document);
+  gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
+  gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
+
+  position_set_delayed(zathura, valx, valy);
+}
+
+void
+document_draw_search_results(zathura_t* zathura, bool value)
+{
+  if (zathura == NULL || zathura->document == NULL || zathura->pages == NULL) {
+    return;
+  }
+
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
   }
 }

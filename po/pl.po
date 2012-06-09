@@ -1,114 +1,117 @@
-# zathura - language file (German)
+# zathura - language file (Polish)
 # See LICENSE file for license and copyright information
 #
 # Translators:
+# p  <poczciwiec@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
 "POT-Creation-Date: 2012-05-08 19:21+0200\n"
-"PO-Revision-Date: 2012-04-03 15:25+0000\n"
-"Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
-"Language-Team: pwmt.org <mail@pwmt.org>\n"
-"Language: de\n"
+"PO-Revision-Date: 2012-04-03 16:07+0000\n"
+"Last-Translator: p <poczciwiec@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.net/projects/p/zathura/language/"
+"pl/)\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2)\n"
 
 #: ../callbacks.c:175
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Ungültige Eingabe '%s' angegeben."
+msgstr "Nieprawidłowy argument: %s"
 
 #: ../callbacks.c:203
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Ungültiger Index '%s' angegeben."
+msgstr "Nieprawidłowy indeks: %s"
 
 #: ../commands.c:33 ../commands.c:68 ../commands.c:95 ../commands.c:137
 #: ../commands.c:251 ../commands.c:281 ../commands.c:307 ../commands.c:396
 #: ../commands.c:496 ../shortcuts.c:440 ../shortcuts.c:891
 msgid "No document opened."
-msgstr "Kein Dokument geöffnet."
+msgstr "Nie otwarto żadnego pliku"
 
 #: ../commands.c:39 ../commands.c:74 ../commands.c:101 ../commands.c:401
 msgid "Invalid number of arguments given."
-msgstr "Ungültige Anzahl an Argumenten angegeben."
+msgstr "Nieprawidłowa liczba parametrów polecenia"
 
 #: ../commands.c:47
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr "Lesezeichen erfolgreich aktualisiert: %s."
+msgstr "Zaktualizowano zakładkę: %s"
 
 #: ../commands.c:53
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Konnte Lesezeichen nicht erstellen: %s"
+msgstr "Nie można stworzyć zakładki: %s"
 
 #: ../commands.c:57
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr "Lesezeichen erfolgreich erstellt: %s"
+msgstr "Utworzono zakładkę: %s"
 
 #: ../commands.c:80
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Lesezeichen entfernt: %s"
+msgstr "Usunięto zakładkę: %s"
 
 #: ../commands.c:82
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Konnte Lesezeichen nicht entfernen: %s"
+msgstr "Nie można usunąć zakładki: %s"
 
 #: ../commands.c:108
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Lesezeichen existiert nicht: %s"
+msgstr "Nie znaleziono zakładki: %s"
 
 #: ../commands.c:159 ../commands.c:181
 msgid "No information available."
-msgstr "Keine Information verfügbar."
+msgstr "Brak informacji o pliku"
 
 #: ../commands.c:219
 msgid "Too many arguments."
-msgstr "Zu viele Argumente angegeben."
+msgstr "Za dużo parametrów polecenia"
 
 #: ../commands.c:228
 msgid "No arguments given."
-msgstr "Keine Argumente angegeben."
+msgstr "Nie podano parametrów polecenia"
 
 #: ../commands.c:287 ../commands.c:313
 msgid "Document saved."
-msgstr "Dokument gespeichert."
+msgstr "Zapisano dokument"
 
 #: ../commands.c:289 ../commands.c:315
 msgid "Failed to save document."
-msgstr "Konnte Dokument nicht speichern."
+msgstr "Błąd zapisu"
 
 #: ../commands.c:292 ../commands.c:318
 msgid "Invalid number of arguments."
-msgstr "Ungültige Anzahl an Argumenten."
+msgstr "Niewłaściwa liczba parametrów polecenia"
 
 #: ../commands.c:420
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
+msgstr "Nie można dodać załącznika %s do pliku %s"
 
 #: ../commands.c:422
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Anhang '%s' nach '%s' geschrieben."
+msgstr "Zapisano załącznik %s do pliku %s"
 
 #: ../commands.c:466
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Anhang '%s' nach '%s' geschrieben."
+msgstr "Zapisano załącznik %s do pliku %s"
 
 #: ../commands.c:468
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
+msgstr "Nie można dodać załącznika %s do pliku %s"
 
 #: ../commands.c:475
 #, c-format
@@ -118,115 +121,114 @@ msgstr ""
 #: ../commands.c:479
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Unbekannter Anhanng oder Bild '%s'."
+msgstr ""
 
 #: ../commands.c:509
 msgid "Argument must be a number."
-msgstr "Das Argument ist keine Zahl."
+msgstr "Parametr polecenia musi być liczbą"
 
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr "Seite %d"
+msgstr ""
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "Speichere Anhänge"
+msgstr "Zapisz załączniki"
 
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr "Bilder"
+msgstr ""
 
 #. zathura settings
 #: ../config.c:98
 msgid "Database backend"
-msgstr "Datenbank Backend"
+msgstr "Baza danych"
 
 #: ../config.c:100
 msgid "Zoom step"
-msgstr "Vergrößerungsstufe"
+msgstr "Skok powiększenia"
 
 #: ../config.c:102
 msgid "Padding between pages"
-msgstr "Abstand zwischen den Seiten"
+msgstr "Odstęp pomiędzy stronami"
 
 #: ../config.c:104
 msgid "Number of pages per row"
-msgstr "Anzahl der Seiten in einer Reihe"
+msgstr "Liczba stron w wierszu"
 
 #: ../config.c:106
 msgid "Scroll step"
-msgstr "Schrittgröße beim Scrollen"
+msgstr "Skok przewijania"
 
 #: ../config.c:108
 msgid "Zoom minimum"
-msgstr "Minimale Vergrößerungsstufe"
+msgstr "Minimalne powiększenie"
 
 #: ../config.c:110
 msgid "Zoom maximum"
-msgstr "Maximale Vergrößerungsstufe"
+msgstr "Maksymalne powiększenie"
 
 #: ../config.c:112
 msgid "Life time (in seconds) of a hidden page"
-msgstr ""
+msgstr "Czas życia niewidocznej strony (w sekundach)"
 
 #: ../config.c:113
 msgid "Amount of seconds between each cache purge"
-msgstr ""
-"Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
+msgstr "Okres sprawdzania widoczności stron (w sekundach)"
 
 #: ../config.c:115
 msgid "Recoloring (dark color)"
-msgstr "Neufärben (Dunkle Farbe)"
+msgstr "Ciemny kolor negatywu"
 
 #: ../config.c:117
 msgid "Recoloring (light color)"
-msgstr "Neufärben (Helle Farbe)"
+msgstr "Jasny kolor negatywu"
 
 #: ../config.c:119
 msgid "Color for highlighting"
-msgstr "Farbe für eine Markierung"
+msgstr "Kolor wyróżnienia"
 
 #: ../config.c:121
 msgid "Color for highlighting (active)"
-msgstr "Farbe für die aktuelle Markierung"
+msgstr "Kolor wyróżnienia bieżącego elementu"
 
 #: ../config.c:125
 msgid "Recolor pages"
-msgstr "Färbe die Seiten ein"
+msgstr "Negatyw"
 
 #: ../config.c:127
 msgid "Wrap scrolling"
-msgstr "Scroll-Umbruch"
+msgstr "Zawijanie dokumentu"
 
 #: ../config.c:129
 msgid "Advance number of pages per row"
-msgstr "Gehe Anzahl der Seiten in einer Reihe weiter"
+msgstr ""
 
 #: ../config.c:131
 msgid "Transparency for highlighting"
-msgstr "Transparenz einer Markierung"
+msgstr "Przezroczystość wyróżnienia"
 
 #: ../config.c:133
 msgid "Render 'Loading ...'"
-msgstr "Zeige 'Lädt...'-Text beim Zeichnen einer Seite"
+msgstr "Wyświetlaj: „Wczytywanie pliku...”"
 
 #: ../config.c:134
 msgid "Adjust to when opening file"
-msgstr "Seite einpassen"
+msgstr "Dopasowanie widoku pliku"
 
 #: ../config.c:136
 msgid "Show hidden files and directories"
-msgstr "Zeige versteckte Dateien und Ordner an"
+msgstr "Wyświetl ukryte pliki i katalogi"
 
 #: ../config.c:138
 msgid "Show directories"
-msgstr "Zeige Ordner an"
+msgstr "Wyświetl katalogi"
 
 #: ../config.c:140
 msgid "Always open on first page"
-msgstr "Öffne Dokument immer auf der ersten Seite"
+msgstr "Zawsze otwieraj na pierwszej stronie"
 
 #: ../config.c:142
 msgid "Highlight search results"
@@ -239,55 +241,55 @@ msgstr ""
 #. define default inputbar commands
 #: ../config.c:266
 msgid "Add a bookmark"
-msgstr "Füge Lesezeichen hinzu"
+msgstr "Dodaj zakładkę"
 
 #: ../config.c:267
 msgid "Delete a bookmark"
-msgstr "Lösche ein Lesezeichen"
+msgstr "Usuń zakładkę"
 
 #: ../config.c:268
 msgid "List all bookmarks"
-msgstr "Liste all Lesezeichen auf"
+msgstr "Wyświetl zakładki"
 
 #: ../config.c:269
 msgid "Close current file"
-msgstr "Schließe das aktuelle Dokument"
+msgstr "Zamknij plik"
 
 #: ../config.c:270
 msgid "Show file information"
-msgstr "Zeige Dokumentinformationen an"
+msgstr "Wyświetl informacje o pliku"
 
 #: ../config.c:271
 msgid "Show help"
-msgstr "Zeige Hilfe an"
+msgstr "Wyświetl pomoc"
 
 #: ../config.c:272
 msgid "Open document"
-msgstr "Öffne Dokument"
+msgstr "Otwórz plik"
 
 #: ../config.c:273
 msgid "Close zathura"
-msgstr "Beende zathura"
+msgstr "Zakończ"
 
 #: ../config.c:274
 msgid "Print document"
-msgstr "Drucke Dokument"
+msgstr "Wydrukuj"
 
 #: ../config.c:275
 msgid "Save document"
-msgstr "Speichere Dokument"
+msgstr "Zapisz"
 
 #: ../config.c:276
 msgid "Save document (and force overwriting)"
-msgstr "Speichere Dokument (und überschreibe bestehende)"
+msgstr "Zapisz (nadpisując istniejący plik)"
 
 #: ../config.c:277
 msgid "Save attachments"
-msgstr "Speichere Anhänge"
+msgstr "Zapisz załączniki"
 
 #: ../config.c:278
 msgid "Set page offset"
-msgstr "Setze den Seitenabstand"
+msgstr "Ustaw przesunięcie numerów stron"
 
 #: ../config.c:279
 msgid "Mark current location within the document"
@@ -308,52 +310,52 @@ msgstr ""
 #: ../page-widget.c:611
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
+msgstr "Zaznaczony tekst skopiowano do schowka: %s"
 
 #: ../page-widget.c:708
 msgid "Copy image"
-msgstr "Bild kopieren"
+msgstr "Skopiuj obrazek"
 
 #: ../page-widget.c:709
 msgid "Save image as"
-msgstr "Bild speichern als"
+msgstr ""
 
 #: ../shortcuts.c:797
 msgid "This document does not contain any index"
-msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
+msgstr "Dokument nie zawiera indeksu"
 
 #: ../utils.c:346
 msgid "Failed to run xdg-open."
-msgstr "Konnte xdg-open nicht ausführen."
+msgstr "Wystąpił problem z uruchomieniem xdg-open"
 
 #: ../zathura.c:73
 msgid "Reparents to window specified by xid"
-msgstr "Reparentiert zathura an das Fenster mit der xid"
+msgstr "Przypisz proces do rodzica o danym xid"
 
 #: ../zathura.c:74
 msgid "Path to the config directory"
-msgstr "Pfad zum Konfigurationsverzeichnis"
+msgstr "Ścieżka do katalogu konfiguracyjnego"
 
 #: ../zathura.c:75
 msgid "Path to the data directory"
-msgstr "Pfad zum Datenverzeichnis"
+msgstr "Ścieżka do katalogu danych"
 
 #: ../zathura.c:76
 msgid "Path to the directories containing plugins"
-msgstr "Pfad zum Pluginverzeichnis"
+msgstr "Ścieżka do katalogu wtyczek"
 
 #: ../zathura.c:77
 msgid "Fork into the background"
-msgstr "Forkt den Prozess in den Hintergrund"
+msgstr "Forkuj w tle"
 
 #: ../zathura.c:78
 msgid "Document password"
-msgstr "Dokument Passwort"
+msgstr ""
 
 #: ../zathura.c:79
 msgid "Log level (debug, info, warning, error)"
-msgstr "Log-Stufe (debug, info, warning, error)"
+msgstr "Szczegółowość komunikatów (debug, info, warning, error)"
 
 #: ../zathura.c:251 ../zathura.c:799
 msgid "[No name]"
-msgstr "[Kein Name]"
+msgstr "[bez nazwy]"

@@ -37,7 +37,7 @@ update-po: ${PROJECT}.pot
 install: ${MOS}
 	$(ECHO) installing translations
 	$(QUIET)set -e && for f in $^ ; do \
-		mkdir -p $(DESTDIR)$(LOCALEDIR)/`dirname $$f`; \
+		mkdir -p -m 755 $(DESTDIR)$(LOCALEDIR)/`dirname $$f`; \
 		install -m 644 $$f $(DESTDIR)$(LOCALEDIR)/`dirname $$f` ; \
 	done
 

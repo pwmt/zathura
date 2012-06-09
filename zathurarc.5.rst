@@ -279,7 +279,7 @@ n-completion-items
 ^^^^^^^^^^^^^^^^^^
 Defines the maximum number of displayed completion entries.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 15
 
 completion-bg
@@ -287,7 +287,7 @@ completion-bg
 Defines the background color that is used for command line completion
 entries
 
-* Value-type: String
+* Value type: String
 * Default value: #232323
 
 completion-fg
@@ -295,7 +295,7 @@ completion-fg
 Defines the foreground color that is used for command line completion
 entries
 
-* Value-type: String
+* Value type: String
 * Default value: #DDDDDD
 
 completion-group-bg
@@ -303,7 +303,7 @@ completion-group-bg
 Defines the background color that is used for command line completion
 group elements
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
 
 completion-group-fg
@@ -311,7 +311,7 @@ completion-group-fg
 Defines the foreground color that is used for command line completion
 group elements
 
-* Value-type: String
+* Value type: String
 * Default value: #DEDEDE
 
 completion-highlight-bg
@@ -319,7 +319,7 @@ completion-highlight-bg
 Defines the background color that is used for the current command line
 completion element
 
-* Value-type: String
+* Value type: String
 * Default value: #9FBC00
 
 completion-highlight-fg
@@ -327,133 +327,140 @@ completion-highlight-fg
 Defines the foreground color that is used for the current command line
 completion element
 
-* Value-type: String
+* Value type: String
 * Default value: #232323
 
 default-fg
 ^^^^^^^^^^
 Defines the default foreground color
 
-* Value-type: String
+* Value type: String
 * Default value: #DDDDDD
 
 default-bg
 ^^^^^^^^^^
 Defines the default background color
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
+
+exec-command
+^^^^^^^^^^^^
+Defines a command the should be prepanded to any command run with exec.
+
+* Value type: String
+* Default value:
 
 font
 ^^^^
 Defines the font that will be used
 
-* Value-type: String
+* Value type: String
 * Default value: monospace normal 9
 
 inputbar-bg
 ^^^^^^^^^^^
 Defines the background color for the inputbar
 
-* Value-type: String
+* Value type: String
 * Default value: #131313
 
 inputbar-fg
 ^^^^^^^^^^^
 Defines the foreground color for the inputbar
 
-* Value-type: String
+* Value type: String
 * Default value: #9FBC00
 
 notification-error-bg
 ^^^^^^^^^^^^^^^^^^^^^
 Defines the background color for an error notification
 
-* Value-type: String
+* Value type: String
 * Default value: #FFFFFF
 
 notification-error-fg
 ^^^^^^^^^^^^^^^^^^^^^
 Defines the foreground color for an error notification
 
-* Value-type: String
+* Value type: String
 * Default value: #FF1212
 
 notification-warning-bg
 ^^^^^^^^^^^^^^^^^^^^^^^
 Defines the background color for a warning notification
 
-* Value-type: String
+* Value type: String
 * Default value: #FFFFFF
 
 notification-warning-fg
 ^^^^^^^^^^^^^^^^^^^^^^^
 Defines the foreground color for a warning notification
 
-* Value-type: String
+* Value type: String
 * Default value: #FFF712
 
 tabbar-fg
 ^^^^^^^^^
 Defines the foreground color for a tab
 
-* Value-type: String
+* Value type: String
 * Default value: #FFFFFF
 
 tabbar-bg
 ^^^^^^^^^
 Defines the background color for a tab
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
 
 tabbar-focus-fg
 ^^^^^^^^^^^^^^^
 Defines the foreground color for the focused tab
 
-* Value-type: String
+* Value type: String
 * Default value: #9FBC00
 
 tabbar-focus-bg
 ^^^^^^^^^^^^^^^
 Defines the background color for the focused tab
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
 
 show-scrollbars
 ^^^^^^^^^^^^^^^
 Defines if scrollbars should be shown or not
 
-* Value-type: Boolean
+* Value type: Boolean
 * Default value: false
 
 statusbar-bg
 ^^^^^^^^^^^^
 Defines the background color of the statusbar
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
 
 statusbar-fg
 ^^^^^^^^^^^^
 Defines the foreground color of the statusbar
 
-* Value-type: String
+* Value type: String
 * Default value: #FFFFFF
 
 window-height
 ^^^^^^^^^^^^^
 Defines the window height on startup
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 600
 
 window-width
 ^^^^^^^^^^^^
 Defines the window width on startup
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 800
 
 zathura
@@ -461,20 +468,34 @@ zathura
 
 This section describes settings concerning the behaviour of zathura.
 
+abort-clear-search
+^^^^^^^^^^^^^^^^^^
+Defines if the search results should be cleared on abort.
+
+* Value type: Boolean
+* Default value: true
+
 adjust-open
 ^^^^^^^^^^^
 Defines which auto adjustment mode should be used if a document is loaded.
 Possible options are "best-fit" and "width".
 
-* Value-type: String
+* Value type: String
 * Default value: best-fit
+
+advance-pages-per-row
+^^^^^^^^^^^^^^^^^^^^^
+Defines if the number of pages per row should be honored when advancing a page.
+
+* Value type: Boolean
+* Default value: false
 
 highlight-color
 ^^^^^^^^^^^^^^^
 Defines the color that is used for highlighting parts of the document (e.g.:
 show search results)
 
-* Value-type: String
+* Value type: String
 * Default value: #9FBC00
 
 highlight-active-color
@@ -482,21 +503,21 @@ highlight-active-color
 Defines the color that is used to show the current selected highlighted element
 (e.g: current search result)
 
-* Value-type: String
+* Value type: String
 * Default value: #00BC00
 
 highlight-transparency
 ^^^^^^^^^^^^^^^^^^^^^^
 Defines the opacity of a highlighted element
 
-* Value-type: Float
+* Value type: Float
 * Default value: 0.5
 
 page-padding
 ^^^^^^^^^^^^
 The page padding defines the gap in pixels between each rendered page.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 1
 
 page-store-threshold
@@ -504,84 +525,84 @@ page-store-threshold
 Pages that are not visible get unloaded after some time. Every page that has not
 been visible for page-store-treshold seconds will be unloaded.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 30
 
 page-store-interval
 ^^^^^^^^^^^^^^^^^^^
 Defines the amount of seconds between the check to unload invisible pages.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 30
 
 pages-per-row
 ^^^^^^^^^^^^^
 Defines the number of pages that are rendered next to each other in a row.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 1
 
 recolor
 ^^^^^^^
 En/Disables recoloring
 
-* Value-type: Boolean
+* Value type: Boolean
 * Default value: false
 
 recolor-darkcolor
 ^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent dark colors in recoloring mode
 
-* Value-type: String
+* Value type: String
 * Default value: #FFFFFF
 
 recolor-lightcolor
 ^^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent light colors in recoloring mode
 
-* Value-type: String
+* Value type: String
 * Default value: #000000
 
 render-loading
 ^^^^^^^^^^^^^^
 Defines if the "Loading..." text should be displayed if a page is rendered.
 
-* Value-type: Boolean
+* Value type: Boolean
 * Default value: true
 
 scroll-step
 ^^^^^^^^^^^
 Defines the step size of scrolling by calling the scroll command once
 
-* Value-type: Float
+* Value type: Float
 * Default value: 40
 
 scroll-wrap
 ^^^^^^^^^^^
 Defines if the last/first page should be wrapped
 
-* Value-type: Boolean
+* Value type: Boolean
 * Default value: false
 
 zoom-max
 ^^^^^^^^
 Defines the maximum percentage that the zoom level can be
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 1000
 
 zoom-min
 ^^^^^^^^
 Defines the minimum percentage that the zoom level can be
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 10
 
 zoom-step
 ^^^^^^^^^
 Defines the amount of percent that is zoomed in or out on each command.
 
-* Value-type: Integer
+* Value type: Integer
 * Default value: 10
 
 SEE ALSO

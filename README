@@ -7,7 +7,7 @@ Requirements
 ------------
 gtk2 (>= 2.18.6)
 girara
-sqlite3
+sqlite3 (>= 3.5.9)
 check (for tests)
 intltool
 
@@ -20,7 +20,9 @@ And also note that rst2man from python-docutils is needed to build the man pages
 If it is not installed, the man pages won't be built.
 
 If you don't want to build with support for sqlite databases, you can set
-WITH_SQLITE=0 and sqlite support won't be available.
+WITH_SQLITE=0 and sqlite support won't be available. Please note that sqlite3
+with metadata support is required, i.e. sqlite3 has to be built with
+SQLITE_ENABLE_COLUMN_METADATA defined.
 
 Installation
 ------------

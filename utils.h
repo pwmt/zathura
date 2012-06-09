@@ -58,11 +58,12 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
  * Calculates the offset of the page to the top of the viewing area as
  * well as to the left side of it. The result has to be freed.
  *
+ * @param zathura Zathura session
  * @param page The Page
  * @param offset Applied offset
  * @return The calculated offset or NULL if an error occured
  */
-void page_calculate_offset(zathura_page_t* page, page_offset_t* offset);
+void page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* offset);
 
 /**
  * Rotate a rectangle by 0, 90, 180 or 270 degree
@@ -103,5 +104,30 @@ void set_adjustment(GtkAdjustment* adjust, gdouble value);
 void
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate);
 
+/**
+ * Returns the page widget of the page
+ *
+ * @param zathura The zathura instance
+ * @param page The page object
+ * @return The page widget of the page
+ * @return NULL if an error occured
+ */
+GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
+
+/**
+ * Re-adjust view
+ *
+ * @param zathura Zathura instance
+ * @param old_zoom Old zoom value
+ */
+void readjust_view_after_zooming(zathura_t* zathura, float old_zoom);
+
+/**
+ * Set if the search results should be drawn or not
+ *
+ * @param zathura Zathura instance
+ * @param value true if they should be drawn, otherwise false
+ */
+void document_draw_search_results(zathura_t* zathura, bool value);
 
 #endif // UTILS_H

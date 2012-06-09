@@ -45,10 +45,11 @@ struct zathura_page_widget_class_s {
 GType zathura_page_widget_get_type(void);
 /**
  * Create a page view widget.
+ * @param zathura the zathura instance
  * @param page the page to be displayed
  * @return a page view widget
  */
-GtkWidget* zathura_page_widget_new(zathura_page_t* page);
+GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page);
 /**
  * Update the widget's surface. This should only be called from the render
  * thread.

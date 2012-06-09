@@ -14,7 +14,6 @@ SYNOPOSIS
 =========
 | zathura [OPTION]...
 | zathura [OPTION]... FILE
-| zathura [OPTION]... FILE PASSWORD
 
 DESCRIPTION
 ===========
@@ -36,6 +35,9 @@ OPTIONS
 
 -p [path], --plugins-dir [path]
   Path to the directory containing plugins
+
+-w [password], --password [password]
+  The documents password
 
 --fork
   Fork into the background
@@ -133,6 +135,8 @@ blist
   List bookmarks
 close
   Close document
+exec
+  Execute an external command
 info
   Show document information
 help
