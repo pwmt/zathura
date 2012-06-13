@@ -151,4 +151,13 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list);
  */
 bool cmd_offset(girara_session_t* session, girara_list_t* argument_list);
 
+/**
+ * Shows version information
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occured
+ */
+bool cmd_version(girara_session_t* session, girara_list_t* argument_list);
+
 #endif // COMMANDS_H

@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "page-widget.h"
 #include "page.h"
+#include "plugin.h"
 #include "internal.h"
 #include "render.h"
 
@@ -515,6 +516,46 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
   if (page_offset < zathura_document_get_number_of_pages(zathura->document)) {
     zathura_document_set_page_offset(zathura->document, page_offset);
   }
+
+  return true;
+}
+
+bool
+cmd_version(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  GString* string = g_string_new(NULL);
+
+  /* zathura version */
+  char* zathura_version = g_strdup_printf("zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
+  g_string_append(string, zathura_version);
+  g_free(zathura_version);
+
+  /* plugin information */
+  girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
+  if (plugins != NULL) {
+    GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin)
+      char* name = zathura_plugin_get_name(plugin);
+      zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
+      char* text = g_strdup_printf("\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>",
+          (name == NULL) ? "-" : name,
+          version.major,
+          version.minor,
+          version.rev,
+          zathura_plugin_get_path(plugin)
+          );
+      g_string_append(string, text);
+      g_free(text);
+    GIRARA_LIST_FOREACH_END(plugins, zathura_plugin_t*, iter, plugin);
+  }
+
+  /* display information */
+  girara_notify(session, GIRARA_INFO, "%s", string->str);
+
+  g_string_free(string, TRUE);
 
   return true;
 }

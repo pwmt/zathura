@@ -282,6 +282,7 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "delmarks",   "delm", cmd_marks_delete,    NULL,         _("Delete the specified marks"));
   girara_inputbar_command_add(gsession, "nohlsearch", "nohl", cmd_nohlsearch,      NULL,         _("Don't highlight current search results"));
   girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
+  girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,         NULL,         _("Show version information"));
 
   girara_special_command_add(gsession, '/', cmd_search, true, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, true, BACKWARD, NULL);
