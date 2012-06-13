@@ -121,12 +121,13 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   document->adjust_mode = ZATHURA_ADJUST_NONE;
 
   /* open document */
-  if (plugin->functions.document_open == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->document_open == NULL) {
     girara_error("plugin has no open function\n");
     goto error_free;
   }
 
-  zathura_error_t int_error = plugin->functions.document_open(document);
+  zathura_error_t int_error = functions->document_open(document);
   if (int_error != ZATHURA_ERROR_OK) {
     if (error != NULL) {
       *error = int_error;
@@ -186,10 +187,11 @@ zathura_document_free(zathura_document_t* document)
 
   /* free document */
   zathura_error_t error = ZATHURA_ERROR_OK;
-  if (document->plugin->functions.document_free == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  if (functions->document_free == NULL) {
     error = ZATHURA_ERROR_NOT_IMPLEMENTED;
   } else {
-    error = document->plugin->functions.document_free(document, document->data);
+    error = functions->document_free(document, document->data);
   }
 
   if (document->file_path != NULL) {
@@ -395,11 +397,12 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
     return ZATHURA_ERROR_UNKNOWN;
   }
 
-  if (document->plugin->functions.document_save_as == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  if (functions->document_save_as == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return document->plugin->functions.document_save_as(document, document->data, path);
+  return functions->document_save_as(document, document->data, path);
 }
 
 girara_tree_node_t*
@@ -412,14 +415,15 @@ zathura_document_index_generate(zathura_document_t* document, zathura_error_t* e
     return NULL;
   }
 
-  if (document->plugin->functions.document_index_generate == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  if (functions->document_index_generate == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return document->plugin->functions.document_index_generate(document, document->data, error);
+  return functions->document_index_generate(document, document->data, error);
 }
 
 girara_list_t*
@@ -432,14 +436,15 @@ zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* 
     return NULL;
   }
 
-  if (document->plugin->functions.document_attachments_get == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  if (functions->document_attachments_get == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return document->plugin->functions.document_attachments_get(document, document->data, error);
+  return functions->document_attachments_get(document, document->data, error);
 }
 
 zathura_error_t
@@ -449,11 +454,12 @@ zathura_document_attachment_save(zathura_document_t* document, const char* attac
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  if (document->plugin->functions.document_attachment_save == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  if (functions->document_attachment_save == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return document->plugin->functions.document_attachment_save(document, document->data, attachment, file);
+  return functions->document_attachment_save(document, document->data, attachment, file);
 }
 
 girara_list_t*
@@ -466,14 +472,15 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
     return NULL;
   }
 
-  if (document->plugin->functions.document_get_information == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  if (functions->document_get_information == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  girara_list_t* result = document->plugin->functions.document_get_information(document, document->data, error);
+  girara_list_t* result = functions->document_get_information(document, document->data, error);
   if (result != NULL) {
     girara_list_set_free_function(result, (girara_free_function_t) zathura_document_information_entry_free);
   }

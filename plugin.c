@@ -11,7 +11,28 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
-typedef unsigned int (*zathura_plugin_version_t)(void);
+/**
+ * Document plugin structure
+ */
+struct zathura_plugin_s
+{
+  girara_list_t* content_types; /**< List of supported content types */
+  zathura_plugin_register_function_t register_function; /**< Document open function */
+  zathura_plugin_functions_t functions; /**< Document functions */
+  GModule* handle; /**< DLL handle */
+  char* name; /**< Name of the plugin */
+  char* path; /**< Path to the plugin */
+  zathura_plugin_version_t version; /**< Version information */
+};
+
+/**
+ * Plugin mapping
+ */
+typedef struct zathura_type_plugin_mapping_s
+{
+  const gchar* type; /**< Plugin type */
+  zathura_plugin_t* plugin; /**< Mapped plugin */
+} zathura_type_plugin_mapping_t;
 
 /**
  * Plugin manager
@@ -22,6 +43,11 @@ struct zathura_plugin_manager_s
   girara_list_t* path; /**< List of plugin paths */
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
 };
+
+typedef void (*zathura_plugin_register_service_t)(zathura_plugin_t*);
+typedef unsigned int (*zathura_plugin_api_version_t)(void);
+typedef unsigned int (*zathura_plugin_abi_version_t)(void);
+typedef unsigned int (*zathura_plugin_version_function_t)(void);
 
 static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin);
 static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin);
@@ -149,11 +175,13 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       if (plugin->register_function == NULL) {
         girara_error("plugin has no document functions register function");
         g_free(path);
+        g_free(plugin);
         g_module_close(handle);
         continue;
       }
 
       plugin->register_function(&(plugin->functions));
+      plugin->path = path;
 
       bool ret = register_plugin(plugin_manager, plugin);
       if (ret == false) {
@@ -162,16 +190,19 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       } else {
         girara_info("successfully loaded plugin %s", path);
 
-        zathura_plugin_version_t major = NULL, minor = NULL, rev = NULL;
+        zathura_plugin_version_function_t major = NULL, minor = NULL, rev = NULL;
         g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION, (gpointer*) &major);
         g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION, (gpointer*) &minor);
         g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &rev);
         if (major != NULL && minor != NULL && rev != NULL) {
-          girara_debug("plugin '%s': version %u.%u.%u", path, major(), minor(), rev());
+          plugin->version.major = major();
+          plugin->version.minor = minor();
+          plugin->version.rev   = rev();
+          girara_debug("plugin '%s': version %u.%u.%u", path,
+              plugin->version.major, plugin->version.minor,
+              plugin->version.rev);
         }
       }
-
-      g_free(path);
     }
     g_dir_close(dir);
   GIRARA_LIST_FOREACH_END(zathura->plugins.path, char*, iter, plugindir);
@@ -193,6 +224,16 @@ zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, cons
   GIRARA_LIST_FOREACH_END(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
   return plugin;
+}
+
+girara_list_t*
+zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager)
+{
+  if (plugin_manager == NULL || plugin_manager->plugins == NULL) {
+    return NULL;
+  }
+
+  return plugin_manager->plugins;
 }
 
 void
@@ -285,8 +326,17 @@ zathura_plugin_free(zathura_plugin_t* plugin)
     return;
   }
 
+  if (plugin->name != NULL) {
+    g_free(plugin->name);
+  }
+
+  if (plugin->path != NULL) {
+    g_free(plugin->path);
+  }
+
   g_module_close(plugin->handle);
   girara_list_free(plugin->content_types);
+
   g_free(plugin);
 }
 
@@ -309,4 +359,53 @@ zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
   }
 
   girara_list_append(plugin->content_types, g_content_type_from_mime_type(mime_type));
+}
+
+zathura_plugin_functions_t*
+zathura_plugin_get_functions(zathura_plugin_t* plugin)
+{
+  if (plugin != NULL) {
+    return &(plugin->functions);
+  } else {
+    return NULL;
+  }
+}
+
+void
+zathura_plugin_set_name(zathura_plugin_t* plugin, const char* name)
+{
+  if (plugin != NULL && name != NULL) {
+    plugin->name = g_strdup(name);
+  }
+}
+
+char*
+zathura_plugin_get_name(zathura_plugin_t* plugin)
+{
+  if (plugin != NULL) {
+    return plugin->name;
+  } else {
+    return NULL;
+  }
+}
+
+char*
+zathura_plugin_get_path(zathura_plugin_t* plugin)
+{
+  if (plugin != NULL) {
+    return plugin->path;
+  } else {
+    return NULL;
+  }
+}
+
+zathura_plugin_version_t
+zathura_plugin_get_version(zathura_plugin_t* plugin)
+{
+  if (plugin != NULL) {
+    return plugin->version;
+  }
+
+  zathura_plugin_version_t version = { 0 };
+  return version;
 }
