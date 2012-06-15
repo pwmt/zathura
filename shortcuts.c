@@ -76,8 +76,8 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   /* get window size */
   GtkAllocation allocation;
   gtk_widget_get_allocation(session->gtk.view, &allocation);
-  gint width  = allocation.width;
-  gint height = allocation.height;
+  double width  = allocation.width;
+  double height = allocation.height;
 
   /* correct view size */
   if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == true) {
@@ -119,6 +119,13 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   unsigned int rotation = zathura_document_get_rotation(zathura->document);
+  double page_ratio     = total_height / total_width;
+  double window_ratio   = height / width;
+
+  if (rotation == 90 || rotation == 270) {
+    page_ratio = total_width / total_height;
+  }
+
   switch (argument->n) {
     case ZATHURA_ADJUST_WIDTH:
       if (rotation == 0 || rotation == 180) {
@@ -129,13 +136,13 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
       break;
     case ZATHURA_ADJUST_BESTFIT:
       if (rotation == 0 || rotation == 180) {
-        if (width < height) {
+        if (page_ratio < window_ratio) {
           zathura_document_set_scale(zathura->document, width / total_width);
         } else {
           zathura_document_set_scale(zathura->document, height / total_height);
         }
       } else {
-        if (width < height) {
+        if (page_ratio < window_ratio) {
           zathura_document_set_scale(zathura->document, width / total_height);
         } else {
           zathura_document_set_scale(zathura->document, height / total_width);
