@@ -128,20 +128,19 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
       }
       break;
     case ZATHURA_ADJUST_BESTFIT:
-      if (total_width < total_height) {
-        if (rotation == 0 || rotation == 180) {
-          zathura_document_set_scale(zathura->document, height / max_height);
+      if (rotation == 0 || rotation == 180) {
+        if (width < height) {
+          zathura_document_set_scale(zathura->document, width / total_width);
         } else {
-          zathura_document_set_scale(zathura->document, width / total_height);
+          zathura_document_set_scale(zathura->document, height / total_height);
         }
       } else {
-        if (rotation == 0 || rotation == 180) {
-          zathura_document_set_scale(zathura->document, width / total_width);
+        if (width < height) {
+          zathura_document_set_scale(zathura->document, width / total_height);
         } else {
           zathura_document_set_scale(zathura->document, height / total_width);
         }
       }
-
       break;
     default:
       goto error_ret;
