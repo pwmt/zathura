@@ -154,7 +154,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* keep position */
-  readjust_view_after_zooming(zathura, old_zoom);
+  readjust_view_after_zooming(zathura, old_zoom, false);
 
   /* re-render all pages */
   render_all(zathura);
@@ -1007,7 +1007,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   /* keep position */
-  readjust_view_after_zooming(zathura, old_zoom);
+  readjust_view_after_zooming(zathura, old_zoom, true);
 
   render_all(zathura);
 

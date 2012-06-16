@@ -119,8 +119,9 @@ GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
  *
  * @param zathura Zathura instance
  * @param old_zoom Old zoom value
+ * @param delay true if action should be delayed
  */
-void readjust_view_after_zooming(zathura_t* zathura, float old_zoom);
+void readjust_view_after_zooming(zathura_t* zathura, float old_zoom, bool delay);
 
 /**
  * Set if the search results should be drawn or not

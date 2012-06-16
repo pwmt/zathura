@@ -312,7 +312,7 @@ zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
 }
 
 void
-readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
+readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay) {
   if (zathura == NULL || zathura->document == NULL) {
     return;
   }
@@ -325,7 +325,12 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
   gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
   gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
 
-  position_set_delayed(zathura, valx, valy);
+  if (delay == true) {
+    position_set_delayed(zathura, valx, valy);
+  } else {
+    set_adjustment(vadjustment, valx);
+    set_adjustment(vadjustment, valy);
+  }
 }
 
 void
