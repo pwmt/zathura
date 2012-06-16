@@ -3,7 +3,7 @@
 PROJECT = zathura
 CATALOGS  = $(wildcard *.po)
 LINGUAS  ?= $(patsubst %.po, %, $(CATALOGS))
-MOS = $(patsubst %, %/LC_MESSAGES/${GETTEXT_PACKAGE}.mo, $(LINGUAS))
+MOS = $(patsubst %, %/LC_MESSAGES/${PROJECT}.mo, $(LINGUAS))
 
 include ../config.mk
 include ../common.mk
