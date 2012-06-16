@@ -483,6 +483,7 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   g_static_mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
+    cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
   }
   priv->surface = surface;
