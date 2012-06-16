@@ -220,9 +220,9 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
   g_object_get(zathura->pages[page_a_index], "last-view", &last_view_a, NULL);
   g_object_get(zathura->pages[page_b_index], "last-view", &last_view_b, NULL);
 
-  if (last_view_a > last_view_b) {
+  if (last_view_a < last_view_b) {
     return -1;
-  } else if (last_view_b > last_view_a) {
+  } else if (last_view_a > last_view_b) {
     return 1;
   }
 
