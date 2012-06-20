@@ -92,7 +92,7 @@ render_page(render_thread_t* render_thread, zathura_page_t* page)
 static bool
 render(zathura_t* zathura, zathura_page_t* page)
 {
-  if (zathura == NULL || page == NULL || zathura->sync.render_thread->about_to_close == false) {
+  if (zathura == NULL || page == NULL || zathura->sync.render_thread->about_to_close == true) {
     return false;
   }
 
