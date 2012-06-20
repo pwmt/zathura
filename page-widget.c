@@ -452,7 +452,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         cairo_set_source_rgb(cairo, 0, 0, 0);
       }
 
-      const char* text = "Loading...";
+      const char* text = _("Loading...");
       cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
       cairo_set_font_size(cairo, 16.0);
       cairo_text_extents_t extents;

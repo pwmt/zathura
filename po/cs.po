@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-19 14:39+0200\n"
+"POT-Creation-Date: 2012-06-20 16:49+0200\n"
 "PO-Revision-Date: 2012-06-19 23:59+0200\n"
 "Last-Translator: Martin Pelikan <pelikan@storkhole.cz>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -24,103 +24,117 @@ msgstr "Neplatný vstup: %s"
 msgid "Invalid index '%s' given."
 msgstr "Neplatný index: %s"
 
-#: ../commands.c:33 ../commands.c:68 ../commands.c:95 ../commands.c:137
-#: ../commands.c:251 ../commands.c:281 ../commands.c:307 ../commands.c:396
-#: ../commands.c:496 ../shortcuts.c:440 ../shortcuts.c:891
+#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
+#: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
+#: ../commands.c:497 ../shortcuts.c:446 ../shortcuts.c:897
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
-#: ../commands.c:39 ../commands.c:74 ../commands.c:101 ../commands.c:401
+#: ../commands.c:40 ../commands.c:75 ../commands.c:102 ../commands.c:402
 msgid "Invalid number of arguments given."
 msgstr "Špatný počet argumentů."
 
-#: ../commands.c:47
+#: ../commands.c:48
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Záložka úspěšně aktualizována: %s"
 
-#: ../commands.c:53
+#: ../commands.c:54
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Nemůžu vytvořit záložku: %s"
 
-#: ../commands.c:57
+#: ../commands.c:58
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Záložka úspěšně vytvořena: %s"
 
-#: ../commands.c:80
+#: ../commands.c:81
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Záložka smazána: %s"
 
-#: ../commands.c:82
+#: ../commands.c:83
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Nem¿¿u smazat zálo¿ku: %s"
 
-#: ../commands.c:108
+#: ../commands.c:109
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Záložka neexistuje: %s"
 
-#: ../commands.c:159 ../commands.c:181
+#: ../commands.c:160 ../commands.c:182
 msgid "No information available."
 msgstr "Nejsou dostupné žádné informace."
 
-#: ../commands.c:219
+#: ../commands.c:220
 msgid "Too many arguments."
 msgstr "Příliš mnoho argumentů."
 
-#: ../commands.c:228
+#: ../commands.c:229
 msgid "No arguments given."
 msgstr "Nezadali jste argumenty."
 
-#: ../commands.c:287 ../commands.c:313
+#: ../commands.c:288 ../commands.c:314
 msgid "Document saved."
 msgstr "Dokument uložen."
 
-#: ../commands.c:289 ../commands.c:315
+#: ../commands.c:290 ../commands.c:316
 msgid "Failed to save document."
 msgstr "Nepovedlo se uložit dokument."
 
-#: ../commands.c:292 ../commands.c:318
+#: ../commands.c:293 ../commands.c:319
 msgid "Invalid number of arguments."
 msgstr "Špatný počet argumentů."
 
-#: ../commands.c:420
+#: ../commands.c:421
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Nepovedlo se zapsat p¿ílohu '%s' do '%s'."
 
-#: ../commands.c:422
+#: ../commands.c:423
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Příloha '%s' zapsána do '%s'."
 
-#: ../commands.c:466
+#: ../commands.c:467
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Obrázek '%s' zapsán do '%s'."
 
-#: ../commands.c:468
+#: ../commands.c:469
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Nepovedlo se zapsat obrázek '%s' do '%s'."
 
-#: ../commands.c:475
+#: ../commands.c:476
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Neznámý obrázek '%s'."
 
-#: ../commands.c:479
+#: ../commands.c:480
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Neznámá příloha nebo obrázek '%s'."
 
-#: ../commands.c:509
+#: ../commands.c:510
 msgid "Argument must be a number."
 msgstr "Argumentem musí být číslo."
+
+#: ../completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr "Strana %d"
+
+#: ../completion.c:293
+msgid "Attachments"
+msgstr "Přílohy"
+
+#. add images
+#: ../completion.c:324
+msgid "Images"
+msgstr "Obrázky"
 
 #. zathura settings
 #: ../config.c:100
@@ -288,40 +302,34 @@ msgstr "Nezvýrazňovat výsledky tohoto hledání"
 msgid "Highlight current search results"
 msgstr "Zvýrazňovat výsledky tohoto hledání"
 
-#: ../shortcuts.c:797
-msgid "This document does not contain any index"
-msgstr "Tenhle dokument neobsahuje žádné indexy"
-
-#: ../page-widget.c:630
-#, c-format
-msgid "Copied selected text to clipboard: %s"
-msgstr "Vybraný text zkopírován do schránky: %s"
-
-#: ../page-widget.c:727
-msgid "Copy image"
-msgstr "Zkopíruj obrázek"
-
-#: ../page-widget.c:728
-msgid "Save image as"
-msgstr "Ulož obrázek jako"
+#: ../config.c:285
+msgid "Show version information"
+msgstr ""
 
 #: ../links.c:162 ../links.c:219
 msgid "Failed to run xdg-open."
 msgstr "Nepovedlo se spustit xdg-open."
 
-#: ../completion.c:250
+#: ../page-widget.c:455
+msgid "Loading..."
+msgstr "Načítám ..."
+
+#: ../page-widget.c:631
 #, c-format
-msgid "Page %d"
-msgstr "Strana %d"
+msgid "Copied selected text to clipboard: %s"
+msgstr "Vybraný text zkopírován do schránky: %s"
 
-#: ../completion.c:293
-msgid "Attachments"
-msgstr "Přílohy"
+#: ../page-widget.c:728
+msgid "Copy image"
+msgstr "Zkopíruj obrázek"
 
-#. add images
-#: ../completion.c:324
-msgid "Images"
-msgstr "Obrázky"
+#: ../page-widget.c:729
+msgid "Save image as"
+msgstr "Ulož obrázek jako"
+
+#: ../shortcuts.c:803
+msgid "This document does not contain any index"
+msgstr "Tenhle dokument neobsahuje žádné indexy"
 
 #: ../zathura.c:73
 msgid "Reparents to window specified by xid"
