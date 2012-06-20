@@ -845,6 +845,7 @@ zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
 
   const gint64 now =  g_get_real_time();
   if (now - priv->last_view >= threshold * G_USEC_PER_SEC) {
+    girara_debug("purge page %d from cache (unseen for %f seconds)", zathura_page_get_index(priv->page), ((double)now - priv->last_view) / G_USEC_PER_SEC);
     zathura_page_widget_update_surface(widget, NULL);
   }
 }

@@ -926,6 +926,7 @@ gboolean purge_pages(gpointer data)
     return TRUE;
   }
 
+  girara_debug("purging pages ...");
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page   = zathura_document_get_page(zathura->document, page_id);
