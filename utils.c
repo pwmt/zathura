@@ -156,7 +156,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 
     gchar* description = NULL;
     if (type == ZATHURA_LINK_GOTO_DEST) {
-      description = g_strdup_printf("Page %d", target.page_number);
+      description = g_strdup_printf("Page %d", target.page_number + 1);
     } else {
       description = g_strdup(target.value);
     }
