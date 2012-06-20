@@ -21,6 +21,7 @@ struct render_thread_s
 {
   GThreadPool* pool; /**< Pool of threads */
   GStaticMutex mutex; /**< Render lock */
+  bool about_to_close; /**< Render thread is to be freed */
 };
 
 static void
@@ -49,6 +50,7 @@ render_init(zathura_t* zathura)
     goto error_free;
   }
 
+  render_thread->about_to_close = false;
   g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
   g_static_mutex_init(&render_thread->mutex);
 
@@ -67,6 +69,7 @@ render_free(render_thread_t* render_thread)
     return;
   }
 
+  render_thread->about_to_close = true;
   if (render_thread->pool) {
     g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
@@ -78,7 +81,7 @@ render_free(render_thread_t* render_thread)
 bool
 render_page(render_thread_t* render_thread, zathura_page_t* page)
 {
-  if (render_thread == NULL || page == NULL || render_thread->pool == NULL) {
+  if (render_thread == NULL || page == NULL || render_thread->pool == NULL || render_thread->about_to_close == true) {
     return false;
   }
 
@@ -89,7 +92,7 @@ render_page(render_thread_t* render_thread, zathura_page_t* page)
 static bool
 render(zathura_t* zathura, zathura_page_t* page)
 {
-  if (zathura == NULL || page == NULL) {
+  if (zathura == NULL || page == NULL || zathura->sync.render_thread->about_to_close == false) {
     return false;
   }
 
@@ -171,11 +174,15 @@ render(zathura_t* zathura, zathura_page_t* page)
     }
   }
 
-  /* update the widget */
-  gdk_threads_enter();
-  GtkWidget* widget = zathura_page_get_widget(zathura, page);
-  zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
-  gdk_threads_leave();
+  if (zathura->sync.render_thread->about_to_close == false) {
+    /* update the widget */
+    gdk_threads_enter();
+    GtkWidget* widget = zathura_page_get_widget(zathura, page);
+    zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
+    gdk_threads_leave();
+  } else {
+    cairo_surface_destroy(surface);
+  }
 
   return true;
 }
