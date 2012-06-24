@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-20 16:49+0200\n"
+"POT-Creation-Date: 2012-06-24 18:04+0200\n"
 "PO-Revision-Date: 2012-04-03 16:07+0000\n"
 "Last-Translator: p <poczciwiec@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.net/projects/p/zathura/language/"
@@ -106,40 +106,83 @@ msgstr "Zapisano załącznik %s do pliku %s"
 #: ../commands.c:467
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Zapisano załącznik %s do pliku %s"
+msgstr "Zapisano obrazek %s do pliku %s"
 
 #: ../commands.c:469
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Nie można dodać załącznika %s do pliku %s"
+msgstr "Nie można dodać obrazka %s do pliku %s"
 
 #: ../commands.c:476
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Nieznany obrazek '%s'."
 
 #: ../commands.c:480
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Nieznany załącznik lub obrazek '%s'."
 
 #: ../commands.c:510
 msgid "Argument must be a number."
 msgstr "Parametr polecenia musi być liczbą"
 
-#: ../completion.c:250
+#: ../links.c:162 ../links.c:219
+msgid "Failed to run xdg-open."
+msgstr "Wystąpił problem z uruchomieniem xdg-open"
+
+#: ../shortcuts.c:803
+msgid "This document does not contain any index"
+msgstr "Dokument nie zawiera indeksu"
+
+#: ../zathura.c:73
+msgid "Reparents to window specified by xid"
+msgstr "Przypisz proces do rodzica o danym xid"
+
+#: ../zathura.c:74
+msgid "Path to the config directory"
+msgstr "Ścieżka do katalogu konfiguracyjnego"
+
+#: ../zathura.c:75
+msgid "Path to the data directory"
+msgstr "Ścieżka do katalogu danych"
+
+#: ../zathura.c:76
+msgid "Path to the directories containing plugins"
+msgstr "Ścieżka do katalogu wtyczek"
+
+#: ../zathura.c:77
+msgid "Fork into the background"
+msgstr "Forkuj w tle"
+
+#: ../zathura.c:78
+msgid "Document password"
+msgstr "Hasło dokumentu"
+
+#: ../zathura.c:79
+msgid "Log level (debug, info, warning, error)"
+msgstr "Szczegółowość komunikatów (debug, info, warning, error)"
+
+#: ../zathura.c:251 ../zathura.c:799
+msgid "[No name]"
+msgstr "[bez nazwy]"
+
+#: ../page-widget.c:455
+msgid "Loading..."
+msgstr "Wczytywanie pliku..."
+
+#: ../page-widget.c:631
 #, c-format
-msgid "Page %d"
-msgstr ""
+msgid "Copied selected text to clipboard: %s"
+msgstr "Zaznaczony tekst skopiowano do schowka: %s"
 
-#: ../completion.c:293
-msgid "Attachments"
-msgstr "Zapisz załączniki"
+#: ../page-widget.c:728
+msgid "Copy image"
+msgstr "Skopiuj obrazek"
 
-#. add images
-#: ../completion.c:324
-msgid "Images"
-msgstr ""
+#: ../page-widget.c:729
+msgid "Save image as"
+msgstr "Zapisz obrazek jako"
 
 #. zathura settings
 #: ../config.c:100
@@ -204,7 +247,7 @@ msgstr "Zawijanie dokumentu"
 
 #: ../config.c:131
 msgid "Advance number of pages per row"
-msgstr ""
+msgstr "Liczba stron w wierszu"
 
 #: ../config.c:133
 msgid "Transparency for highlighting"
@@ -232,11 +275,11 @@ msgstr "Zawsze otwieraj na pierwszej stronie"
 
 #: ../config.c:144
 msgid "Highlight search results"
-msgstr ""
+msgstr "Podświetl wyniki wyszukiwania"
 
 #: ../config.c:146
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Wyczyść wyniki wyszukiwania po przerwaniu"
 
 #. define default inputbar commands
 #: ../config.c:268
@@ -293,77 +336,34 @@ msgstr "Ustaw przesunięcie numerów stron"
 
 #: ../config.c:281
 msgid "Mark current location within the document"
-msgstr ""
+msgstr "Zaznacz aktualną pozycję w dokumencie"
 
 #: ../config.c:282
 msgid "Delete the specified marks"
-msgstr ""
+msgstr "Skasuj określone zakładki"
 
 #: ../config.c:283
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "Nie podświetlaj aktualnych wyników wyszukiwania "
 
 #: ../config.c:284
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Podświetl aktualne wyniki wyszukiwania"
 
 #: ../config.c:285
 msgid "Show version information"
-msgstr ""
+msgstr "Wyświetl informacje o wersji"
 
-#: ../links.c:162 ../links.c:219
-msgid "Failed to run xdg-open."
-msgstr "Wystąpił problem z uruchomieniem xdg-open"
-
-#: ../page-widget.c:455
-msgid "Loading..."
-msgstr "Wczytywanie pliku..."
-
-#: ../page-widget.c:631
+#: ../completion.c:250
 #, c-format
-msgid "Copied selected text to clipboard: %s"
-msgstr "Zaznaczony tekst skopiowano do schowka: %s"
+msgid "Page %d"
+msgstr "Strona %d"
 
-#: ../page-widget.c:728
-msgid "Copy image"
-msgstr "Skopiuj obrazek"
+#: ../completion.c:293
+msgid "Attachments"
+msgstr "Zapisz załączniki"
 
-#: ../page-widget.c:729
-msgid "Save image as"
-msgstr ""
-
-#: ../shortcuts.c:803
-msgid "This document does not contain any index"
-msgstr "Dokument nie zawiera indeksu"
-
-#: ../zathura.c:73
-msgid "Reparents to window specified by xid"
-msgstr "Przypisz proces do rodzica o danym xid"
-
-#: ../zathura.c:74
-msgid "Path to the config directory"
-msgstr "Ścieżka do katalogu konfiguracyjnego"
-
-#: ../zathura.c:75
-msgid "Path to the data directory"
-msgstr "Ścieżka do katalogu danych"
-
-#: ../zathura.c:76
-msgid "Path to the directories containing plugins"
-msgstr "Ścieżka do katalogu wtyczek"
-
-#: ../zathura.c:77
-msgid "Fork into the background"
-msgstr "Forkuj w tle"
-
-#: ../zathura.c:78
-msgid "Document password"
-msgstr ""
-
-#: ../zathura.c:79
-msgid "Log level (debug, info, warning, error)"
-msgstr "Szczegółowość komunikatów (debug, info, warning, error)"
-
-#: ../zathura.c:251 ../zathura.c:799
-msgid "[No name]"
-msgstr "[bez nazwy]"
+#. add images
+#: ../completion.c:324
+msgid "Images"
+msgstr "Obrazki"
