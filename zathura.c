@@ -494,7 +494,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   /* read history file */
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
+  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 1, 0, 0 };
   bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
   /* set page offset */
@@ -622,14 +622,22 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   /* view mode */
   int pages_per_row = 1;
+  int first_page_column = 1;
   if (file_info.pages_per_row > 0) {
     pages_per_row = file_info.pages_per_row;
   } else {
     girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
   }
 
+  if (file_info.first_page_column > 0) {
+    first_page_column = file_info.first_page_column;
+  } else {
+    girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column);
+  }
+
   girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
-  page_widget_set_mode(zathura, pages_per_row);
+  girara_setting_set(zathura->ui.session, "first-page-column", &first_page_column);
+  page_widget_set_mode(zathura, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
 
@@ -750,13 +758,14 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* store file information */
   const char* path = zathura_document_get_path(zathura->document);
 
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 0, 0 };
+  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 1, 0, 0 };
   file_info.current_page = zathura_document_get_current_page_number(zathura->document);
   file_info.page_offset  = zathura_document_get_page_offset(zathura->document);
   file_info.scale        = zathura_document_get_scale(zathura->document);
   file_info.rotation     = zathura_document_get_rotation(zathura->document);
 
   girara_setting_get(zathura->ui.session, "pages-per-row", &(file_info.pages_per_row));
+  girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column));
 
   /* get position */
   GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
@@ -884,12 +893,21 @@ statusbar_page_number_update(zathura_t* zathura)
 }
 
 void
-page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row)
+page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column)
 {
   /* show at least one page */
   if (pages_per_row == 0) {
     pages_per_row = 1;
   }
+
+	/* ensure: 0 < first_page_column <= pages_per_row */
+	if (first_page_column < 1) {
+		first_page_column = 1;
+	}
+
+	if (first_page_column > pages_per_row) {
+		first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
+	}
 
   if (zathura->document == NULL) {
     return;
@@ -898,11 +916,11 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row)
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)0);
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), ceil(number_of_pages / pages_per_row), pages_per_row);
+  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), ceil((number_of_pages + first_page_column - 1) / pages_per_row), pages_per_row);
   for (unsigned int i = 0; i < number_of_pages; i++)
   {
-    int x = i % pages_per_row;
-    int y = i / pages_per_row;
+    int x = (i + first_page_column - 1) % pages_per_row;
+    int y = (i + first_page_column - 1) / pages_per_row;
 
     zathura_page_t* page   = zathura_document_get_page(zathura->document, i);
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);

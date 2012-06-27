@@ -104,6 +104,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),   cb_page_padding_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
+  int_value = 1;
+  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"),cb_first_page_column_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
   float_value = -1;

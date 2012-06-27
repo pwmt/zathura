@@ -194,8 +194,9 @@ bool position_set_delayed(zathura_t* zathura, double position_x, double position
  *
  * @param zathura The zathura session
  * @param pages_per_row Number of shown pages per row
+ * @param first_page_column Column on which first page start
  */
-void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row);
+void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

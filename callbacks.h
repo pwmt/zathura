@@ -47,6 +47,18 @@ void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  */
 void cb_pages_per_row_value_changed(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
+/**
+ * This function gets called when the value of the "first-page-column"
+ * variable changes
+ *
+ * @param session The current girara session
+ * @param name The name of the row
+ * @param type The settings type
+ * @param value The value
+ * @param data Custom data
+ */
+void cb_first_page_column_value_changed(girara_session_t* session, const char* name,
+    girara_setting_type_t type, void* value, void* data);
 
 /**
  * Called when an index element is activated (e.g.: double click)

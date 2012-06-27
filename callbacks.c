@@ -118,7 +118,35 @@ cb_pages_per_row_value_changed(girara_session_t* session, const char* UNUSED(nam
     pages_per_row = 1;
   }
 
-  page_widget_set_mode(zathura, pages_per_row);
+  unsigned int first_page_column = 1;
+  girara_setting_get(session, "first-page-column", &first_page_column);
+
+  page_widget_set_mode(zathura, pages_per_row, first_page_column);
+
+  if (zathura->document != NULL) {
+    unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
+    page_set_delayed(zathura, current_page);
+  }
+}
+
+void
+cb_first_page_column_value_changed(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  int first_page_column = *(int*) value;
+
+  if (first_page_column < 1) {
+    first_page_column = 1;
+  }
+
+  unsigned int pages_per_row = 1;
+  girara_setting_get(session, "pages-per-row", &pages_per_row);
+
+  page_widget_set_mode(zathura, pages_per_row, first_page_column);
 
   if (zathura->document != NULL) {
     unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
