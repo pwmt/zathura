@@ -988,8 +988,8 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
-  t = (t == 0) ? 1 : t;
-  float zoom_step = value / 100.0f * t;
+  int nt = (t == 0) ? 1 : t;
+  float zoom_step = value / 100.0f * nt;
   float old_zoom = zathura_document_get_scale(zathura->document);
 
   /* specify new zoom value */
@@ -998,9 +998,13 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   } else if (argument->n == ZOOM_OUT) {
     zathura_document_set_scale(zathura->document, old_zoom - zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
-    zathura_document_set_scale(zathura->document, t / 100.0f);
+    if (t == 0) {
+      zathura_document_set_scale(zathura->document, 1.0f);
+    } else {
+      zathura_document_set_scale(zathura->document, t / 100.0f);
+    }
   } else {
-    zathura_document_set_scale(zathura->document, 1.0);
+    zathura_document_set_scale(zathura->document, 1.0f);
   }
 
   /* zoom limitations */
