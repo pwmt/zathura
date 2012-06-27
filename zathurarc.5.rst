@@ -542,6 +542,13 @@ Defines the number of pages that are rendered next to each other in a row.
 * Value type: Integer
 * Default value: 1
 
+first-page-column
+^^^^^^^^^^^^^^^^^
+Defines the column in which the first page will be displayed.
+
+* Value type: Integer
+* Default value: 1
+
 recolor
 ^^^^^^^
 En/Disables recoloring
