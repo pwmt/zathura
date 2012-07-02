@@ -581,7 +581,7 @@ scroll-hstep
 ^^^^^^^^^^^^
 Defines the horizontal step size of scrolling by calling the scroll command once
 
-* Value-type: Float
+* Value type: Float
 * Default value: -1
 
 scroll-step
@@ -602,14 +602,21 @@ search-hadjust
 ^^^^^^^^^^^^^^
 En/Disables horizontally centered search results
 
-* Value-type: Boolean
+* Value type: Boolean
 * Default value: true
+
+window-title-basename
+^^^^^^^^^^^^^^^^^^^^^
+Use basename of the file in the window title.
+
+* Value type: Boolean
+* Default value: false
 
 zoom-center
 ^^^^^^^^^^^
 En/Disables horizontally centered zooming
 
-* Value-type: Bool
+* Value type: Bool
 * Default value: False
 
 zoom-max

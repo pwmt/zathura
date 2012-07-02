@@ -656,7 +656,15 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   zathura_bookmarks_load(zathura, file_path);
 
   /* update title */
-  girara_set_window_title(zathura->ui.session, file_path);
+  bool basename_only = false;
+  girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+  if (basename_only == false) {
+    girara_set_window_title(zathura->ui.session, file_path);
+  } else {
+    char* tmp = g_path_get_basename(file_path);
+    girara_set_window_title(zathura->ui.session, tmp);
+    g_free(tmp);
+  }
 
   g_free(file_uri);
 
