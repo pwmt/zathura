@@ -1,0 +1,388 @@
+# zathura - language file (Italian)
+# See LICENSE file for license and copyright information
+#
+# Translators:
+#   <segnalazionidalweb@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: zathura\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-03 11:02+0200\n"
+"PO-Revision-Date: 2012-06-20 14:58+0000\n"
+"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/zathura/language/"
+"it/)\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: ../callbacks.c:204
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "Input inserito '%s' non valido."
+
+#: ../callbacks.c:232
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "Indice inserito '%s' non valido."
+
+#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
+#: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
+msgid "No document opened."
+msgstr "Nessun documento aperto."
+
+#: ../commands.c:40 ../commands.c:75 ../commands.c:102 ../commands.c:402
+msgid "Invalid number of arguments given."
+msgstr "Numero di argomenti errato."
+
+#: ../commands.c:48
+#, c-format
+msgid "Bookmark successfuly updated: %s"
+msgstr "Segnalibro aggiornato con successo:%s"
+
+#: ../commands.c:54
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Impossibile creare il segnalibro:%s"
+
+#: ../commands.c:58
+#, c-format
+msgid "Bookmark successfuly created: %s"
+msgstr "Segnalibro creato con successo:%s"
+
+#: ../commands.c:81
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Segnalibro rimosso:%s"
+
+#: ../commands.c:83
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Impossibile rimuovere il segnalibro:%s"
+
+#: ../commands.c:109
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Nessun segnalibro corrispondente:%s"
+
+#: ../commands.c:160 ../commands.c:182
+msgid "No information available."
+msgstr "Nessun' informazione disponibile."
+
+#: ../commands.c:220
+msgid "Too many arguments."
+msgstr "Numero di argomenti eccessivo."
+
+#: ../commands.c:229
+msgid "No arguments given."
+msgstr "Nessun argomento specificato."
+
+#: ../commands.c:288 ../commands.c:314
+msgid "Document saved."
+msgstr "Documento salvato."
+
+#: ../commands.c:290 ../commands.c:316
+msgid "Failed to save document."
+msgstr "Impossibile salvare il documento."
+
+#: ../commands.c:293 ../commands.c:319
+msgid "Invalid number of arguments."
+msgstr "Numero di argomenti non valido."
+
+#: ../commands.c:421
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Impossibile salvare l' allegato '%s' in '%s'"
+
+#: ../commands.c:423
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Allegato '%s' salvato in '%s'"
+
+#: ../commands.c:467
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr ""
+
+#: ../commands.c:469
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr ""
+
+#: ../commands.c:476
+#, c-format
+msgid "Unknown image '%s'."
+msgstr ""
+
+#: ../commands.c:480
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr ""
+
+#: ../commands.c:510
+msgid "Argument must be a number."
+msgstr "L' argomento dev' essere un numero."
+
+#: ../completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr ""
+
+#: ../completion.c:293
+msgid "Attachments"
+msgstr ""
+
+#. add images
+#: ../completion.c:324
+msgid "Images"
+msgstr ""
+
+#. zathura settings
+#: ../config.c:100
+msgid "Database backend"
+msgstr "Backend del database"
+
+#: ../config.c:102
+msgid "Zoom step"
+msgstr ""
+
+#: ../config.c:104
+msgid "Padding between pages"
+msgstr "Spaziatura tra le pagine"
+
+#: ../config.c:106
+msgid "Number of pages per row"
+msgstr "Numero di pagine per riga"
+
+#: ../config.c:108
+msgid "Column of the first page"
+msgstr ""
+
+#: ../config.c:110
+msgid "Scroll step"
+msgstr ""
+
+#: ../config.c:112
+msgid "Horizontal scroll step"
+msgstr ""
+
+#: ../config.c:114
+msgid "Zoom minimum"
+msgstr "Zoom minimo"
+
+#: ../config.c:116
+msgid "Zoom maximum"
+msgstr "Zoom massimo"
+
+#: ../config.c:118
+msgid "Life time (in seconds) of a hidden page"
+msgstr "Durata (in secondi) di una pagina nascosta"
+
+#: ../config.c:119
+msgid "Amount of seconds between each cache purge"
+msgstr "Tempo in secondi tra le invalidazioni della cache"
+
+#: ../config.c:121
+msgid "Recoloring (dark color)"
+msgstr ""
+
+#: ../config.c:123
+msgid "Recoloring (light color)"
+msgstr ""
+
+#: ../config.c:125
+msgid "Color for highlighting"
+msgstr ""
+
+#: ../config.c:127
+msgid "Color for highlighting (active)"
+msgstr ""
+
+#: ../config.c:131
+msgid "Recolor pages"
+msgstr "Ricolora le pagine"
+
+#: ../config.c:133
+msgid "Wrap scrolling"
+msgstr "Scrolling continuo"
+
+#: ../config.c:135
+msgid "Advance number of pages per row"
+msgstr ""
+
+#: ../config.c:137
+msgid "Horizontally centered zoom"
+msgstr ""
+
+#: ../config.c:139
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:141
+msgid "Transparency for highlighting"
+msgstr ""
+
+#: ../config.c:143
+msgid "Render 'Loading ...'"
+msgstr ""
+
+#: ../config.c:144
+msgid "Adjust to when opening file"
+msgstr ""
+
+#: ../config.c:146
+msgid "Show hidden files and directories"
+msgstr "Mostra file e cartelle nascosti"
+
+#: ../config.c:148
+msgid "Show directories"
+msgstr "Mostra cartelle"
+
+#: ../config.c:150
+msgid "Always open on first page"
+msgstr "Apri sempre alla prima pagina"
+
+#: ../config.c:152
+msgid "Highlight search results"
+msgstr ""
+
+#: ../config.c:154
+msgid "Clear search results on abort"
+msgstr ""
+
+#: ../config.c:156
+msgid "Use basename of the file in the window title"
+msgstr ""
+
+#. define default inputbar commands
+#: ../config.c:284
+msgid "Add a bookmark"
+msgstr "Aggiungi un segnalibro"
+
+#: ../config.c:285
+msgid "Delete a bookmark"
+msgstr "Elimina un segnalibro"
+
+#: ../config.c:286
+msgid "List all bookmarks"
+msgstr "Mostra i segnalibri"
+
+#: ../config.c:287
+msgid "Close current file"
+msgstr "Chiudi il file corrente"
+
+#: ../config.c:288
+msgid "Show file information"
+msgstr "Mostra le informazioni sul file"
+
+#: ../config.c:289
+msgid "Show help"
+msgstr "Mostra l' aiuto"
+
+#: ../config.c:290
+msgid "Open document"
+msgstr "Apri un documento"
+
+#: ../config.c:291
+msgid "Close zathura"
+msgstr "Chiudi zathura"
+
+#: ../config.c:292
+msgid "Print document"
+msgstr "Stampa il documento"
+
+#: ../config.c:293
+msgid "Save document"
+msgstr "Salva il documento"
+
+#: ../config.c:294
+msgid "Save document (and force overwriting)"
+msgstr "Salva il documento (e sovrascrivi)"
+
+#: ../config.c:295
+msgid "Save attachments"
+msgstr "Salva allegati"
+
+#: ../config.c:296
+msgid "Set page offset"
+msgstr "Imposta l' offset della pagina"
+
+#: ../config.c:297
+msgid "Mark current location within the document"
+msgstr ""
+
+#: ../config.c:298
+msgid "Delete the specified marks"
+msgstr ""
+
+#: ../config.c:299
+msgid "Don't highlight current search results"
+msgstr ""
+
+#: ../config.c:300
+msgid "Highlight current search results"
+msgstr ""
+
+#: ../config.c:301
+msgid "Show version information"
+msgstr ""
+
+#: ../links.c:162 ../links.c:219
+msgid "Failed to run xdg-open."
+msgstr "Impossibile eseguire xdg-open."
+
+#: ../page-widget.c:455
+msgid "Loading..."
+msgstr ""
+
+#: ../page-widget.c:631
+#, c-format
+msgid "Copied selected text to clipboard: %s"
+msgstr "La selezione è stato copiata negli appunti:%s"
+
+#: ../page-widget.c:728
+msgid "Copy image"
+msgstr "Copia immagine"
+
+#: ../page-widget.c:729
+msgid "Save image as"
+msgstr ""
+
+#: ../shortcuts.c:819
+msgid "This document does not contain any index"
+msgstr "Questo documento non contiene l' indice"
+
+#: ../zathura.c:73
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../zathura.c:74
+msgid "Path to the config directory"
+msgstr "Percorso della directory della configurazione"
+
+#: ../zathura.c:75
+msgid "Path to the data directory"
+msgstr "Percorso della directory dei dati"
+
+#: ../zathura.c:76
+msgid "Path to the directories containing plugins"
+msgstr "Percorso della directory contenente i plugin"
+
+#: ../zathura.c:77
+msgid "Fork into the background"
+msgstr "Crea un processo separato"
+
+#: ../zathura.c:78
+msgid "Document password"
+msgstr ""
+
+#: ../zathura.c:79
+msgid "Log level (debug, info, warning, error)"
+msgstr "Livello di log (debug, info, warning, error)"
+
+#: ../zathura.c:251 ../zathura.c:816
+msgid "[No name]"
+msgstr "[Nessun nome]"
