@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
 "POT-Creation-Date: 2012-06-20 16:49+0200\n"
-"PO-Revision-Date: 2012-06-06 00:02+0000\n"
+"PO-Revision-Date: 2012-07-02 12:58+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/zathura/language/"
 "fr/)\n"
@@ -309,7 +309,7 @@ msgstr "Surligner les résultats de la recherche actuelle"
 
 #: ../config.c:285
 msgid "Show version information"
-msgstr ""
+msgstr "Afficher les informations de version "
 
 #: ../links.c:162 ../links.c:219
 msgid "Failed to run xdg-open."
