@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-24 18:04+0200\n"
+"POT-Creation-Date: 2012-07-03 11:02+0200\n"
 "PO-Revision-Date: 2012-04-03 16:07+0000\n"
 "Last-Translator: p <poczciwiec@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.net/projects/p/zathura/language/"
@@ -19,19 +19,19 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2)\n"
 
-#: ../callbacks.c:176
+#: ../callbacks.c:204
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Nieprawidłowy argument: %s"
 
-#: ../callbacks.c:204
+#: ../callbacks.c:232
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Nieprawidłowy indeks: %s"
 
 #: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
 #: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:446 ../shortcuts.c:897
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
 msgid "No document opened."
 msgstr "Nie otwarto żadnego pliku"
 
@@ -127,11 +127,232 @@ msgstr "Nieznany załącznik lub obrazek '%s'."
 msgid "Argument must be a number."
 msgstr "Parametr polecenia musi być liczbą"
 
+#: ../completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr "Strona %d"
+
+#: ../completion.c:293
+msgid "Attachments"
+msgstr "Zapisz załączniki"
+
+#. add images
+#: ../completion.c:324
+msgid "Images"
+msgstr "Obrazki"
+
+#. zathura settings
+#: ../config.c:100
+msgid "Database backend"
+msgstr "Baza danych"
+
+#: ../config.c:102
+msgid "Zoom step"
+msgstr "Skok powiększenia"
+
+#: ../config.c:104
+msgid "Padding between pages"
+msgstr "Odstęp pomiędzy stronami"
+
+#: ../config.c:106
+msgid "Number of pages per row"
+msgstr "Liczba stron w wierszu"
+
+#: ../config.c:108
+msgid "Column of the first page"
+msgstr ""
+
+#: ../config.c:110
+msgid "Scroll step"
+msgstr "Skok przewijania"
+
+#: ../config.c:112
+msgid "Horizontal scroll step"
+msgstr ""
+
+#: ../config.c:114
+msgid "Zoom minimum"
+msgstr "Minimalne powiększenie"
+
+#: ../config.c:116
+msgid "Zoom maximum"
+msgstr "Maksymalne powiększenie"
+
+#: ../config.c:118
+msgid "Life time (in seconds) of a hidden page"
+msgstr "Czas życia niewidocznej strony (w sekundach)"
+
+#: ../config.c:119
+msgid "Amount of seconds between each cache purge"
+msgstr "Okres sprawdzania widoczności stron (w sekundach)"
+
+#: ../config.c:121
+msgid "Recoloring (dark color)"
+msgstr "Ciemny kolor negatywu"
+
+#: ../config.c:123
+msgid "Recoloring (light color)"
+msgstr "Jasny kolor negatywu"
+
+#: ../config.c:125
+msgid "Color for highlighting"
+msgstr "Kolor wyróżnienia"
+
+#: ../config.c:127
+msgid "Color for highlighting (active)"
+msgstr "Kolor wyróżnienia bieżącego elementu"
+
+#: ../config.c:131
+msgid "Recolor pages"
+msgstr "Negatyw"
+
+#: ../config.c:133
+msgid "Wrap scrolling"
+msgstr "Zawijanie dokumentu"
+
+#: ../config.c:135
+msgid "Advance number of pages per row"
+msgstr "Liczba stron w wierszu"
+
+#: ../config.c:137
+msgid "Horizontally centered zoom"
+msgstr ""
+
+#: ../config.c:139
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:141
+msgid "Transparency for highlighting"
+msgstr "Przezroczystość wyróżnienia"
+
+#: ../config.c:143
+msgid "Render 'Loading ...'"
+msgstr "Wyświetlaj: „Wczytywanie pliku...”"
+
+#: ../config.c:144
+msgid "Adjust to when opening file"
+msgstr "Dopasowanie widoku pliku"
+
+#: ../config.c:146
+msgid "Show hidden files and directories"
+msgstr "Wyświetl ukryte pliki i katalogi"
+
+#: ../config.c:148
+msgid "Show directories"
+msgstr "Wyświetl katalogi"
+
+#: ../config.c:150
+msgid "Always open on first page"
+msgstr "Zawsze otwieraj na pierwszej stronie"
+
+#: ../config.c:152
+msgid "Highlight search results"
+msgstr "Podświetl wyniki wyszukiwania"
+
+#: ../config.c:154
+msgid "Clear search results on abort"
+msgstr "Wyczyść wyniki wyszukiwania po przerwaniu"
+
+#: ../config.c:156
+msgid "Use basename of the file in the window title"
+msgstr ""
+
+#. define default inputbar commands
+#: ../config.c:284
+msgid "Add a bookmark"
+msgstr "Dodaj zakładkę"
+
+#: ../config.c:285
+msgid "Delete a bookmark"
+msgstr "Usuń zakładkę"
+
+#: ../config.c:286
+msgid "List all bookmarks"
+msgstr "Wyświetl zakładki"
+
+#: ../config.c:287
+msgid "Close current file"
+msgstr "Zamknij plik"
+
+#: ../config.c:288
+msgid "Show file information"
+msgstr "Wyświetl informacje o pliku"
+
+#: ../config.c:289
+msgid "Show help"
+msgstr "Wyświetl pomoc"
+
+#: ../config.c:290
+msgid "Open document"
+msgstr "Otwórz plik"
+
+#: ../config.c:291
+msgid "Close zathura"
+msgstr "Zakończ"
+
+#: ../config.c:292
+msgid "Print document"
+msgstr "Wydrukuj"
+
+#: ../config.c:293
+msgid "Save document"
+msgstr "Zapisz"
+
+#: ../config.c:294
+msgid "Save document (and force overwriting)"
+msgstr "Zapisz (nadpisując istniejący plik)"
+
+#: ../config.c:295
+msgid "Save attachments"
+msgstr "Zapisz załączniki"
+
+#: ../config.c:296
+msgid "Set page offset"
+msgstr "Ustaw przesunięcie numerów stron"
+
+#: ../config.c:297
+msgid "Mark current location within the document"
+msgstr "Zaznacz aktualną pozycję w dokumencie"
+
+#: ../config.c:298
+msgid "Delete the specified marks"
+msgstr "Skasuj określone zakładki"
+
+#: ../config.c:299
+msgid "Don't highlight current search results"
+msgstr "Nie podświetlaj aktualnych wyników wyszukiwania "
+
+#: ../config.c:300
+msgid "Highlight current search results"
+msgstr "Podświetl aktualne wyniki wyszukiwania"
+
+#: ../config.c:301
+msgid "Show version information"
+msgstr "Wyświetl informacje o wersji"
+
 #: ../links.c:162 ../links.c:219
 msgid "Failed to run xdg-open."
 msgstr "Wystąpił problem z uruchomieniem xdg-open"
 
-#: ../shortcuts.c:803
+#: ../page-widget.c:455
+msgid "Loading..."
+msgstr "Wczytywanie pliku..."
+
+#: ../page-widget.c:631
+#, c-format
+msgid "Copied selected text to clipboard: %s"
+msgstr "Zaznaczony tekst skopiowano do schowka: %s"
+
+#: ../page-widget.c:728
+msgid "Copy image"
+msgstr "Skopiuj obrazek"
+
+#: ../page-widget.c:729
+msgid "Save image as"
+msgstr "Zapisz obrazek jako"
+
+#: ../shortcuts.c:819
 msgid "This document does not contain any index"
 msgstr "Dokument nie zawiera indeksu"
 
@@ -163,207 +384,6 @@ msgstr "Hasło dokumentu"
 msgid "Log level (debug, info, warning, error)"
 msgstr "Szczegółowość komunikatów (debug, info, warning, error)"
 
-#: ../zathura.c:251 ../zathura.c:799
+#: ../zathura.c:251 ../zathura.c:816
 msgid "[No name]"
 msgstr "[bez nazwy]"
-
-#: ../page-widget.c:455
-msgid "Loading..."
-msgstr "Wczytywanie pliku..."
-
-#: ../page-widget.c:631
-#, c-format
-msgid "Copied selected text to clipboard: %s"
-msgstr "Zaznaczony tekst skopiowano do schowka: %s"
-
-#: ../page-widget.c:728
-msgid "Copy image"
-msgstr "Skopiuj obrazek"
-
-#: ../page-widget.c:729
-msgid "Save image as"
-msgstr "Zapisz obrazek jako"
-
-#. zathura settings
-#: ../config.c:100
-msgid "Database backend"
-msgstr "Baza danych"
-
-#: ../config.c:102
-msgid "Zoom step"
-msgstr "Skok powiększenia"
-
-#: ../config.c:104
-msgid "Padding between pages"
-msgstr "Odstęp pomiędzy stronami"
-
-#: ../config.c:106
-msgid "Number of pages per row"
-msgstr "Liczba stron w wierszu"
-
-#: ../config.c:108
-msgid "Scroll step"
-msgstr "Skok przewijania"
-
-#: ../config.c:110
-msgid "Zoom minimum"
-msgstr "Minimalne powiększenie"
-
-#: ../config.c:112
-msgid "Zoom maximum"
-msgstr "Maksymalne powiększenie"
-
-#: ../config.c:114
-msgid "Life time (in seconds) of a hidden page"
-msgstr "Czas życia niewidocznej strony (w sekundach)"
-
-#: ../config.c:115
-msgid "Amount of seconds between each cache purge"
-msgstr "Okres sprawdzania widoczności stron (w sekundach)"
-
-#: ../config.c:117
-msgid "Recoloring (dark color)"
-msgstr "Ciemny kolor negatywu"
-
-#: ../config.c:119
-msgid "Recoloring (light color)"
-msgstr "Jasny kolor negatywu"
-
-#: ../config.c:121
-msgid "Color for highlighting"
-msgstr "Kolor wyróżnienia"
-
-#: ../config.c:123
-msgid "Color for highlighting (active)"
-msgstr "Kolor wyróżnienia bieżącego elementu"
-
-#: ../config.c:127
-msgid "Recolor pages"
-msgstr "Negatyw"
-
-#: ../config.c:129
-msgid "Wrap scrolling"
-msgstr "Zawijanie dokumentu"
-
-#: ../config.c:131
-msgid "Advance number of pages per row"
-msgstr "Liczba stron w wierszu"
-
-#: ../config.c:133
-msgid "Transparency for highlighting"
-msgstr "Przezroczystość wyróżnienia"
-
-#: ../config.c:135
-msgid "Render 'Loading ...'"
-msgstr "Wyświetlaj: „Wczytywanie pliku...”"
-
-#: ../config.c:136
-msgid "Adjust to when opening file"
-msgstr "Dopasowanie widoku pliku"
-
-#: ../config.c:138
-msgid "Show hidden files and directories"
-msgstr "Wyświetl ukryte pliki i katalogi"
-
-#: ../config.c:140
-msgid "Show directories"
-msgstr "Wyświetl katalogi"
-
-#: ../config.c:142
-msgid "Always open on first page"
-msgstr "Zawsze otwieraj na pierwszej stronie"
-
-#: ../config.c:144
-msgid "Highlight search results"
-msgstr "Podświetl wyniki wyszukiwania"
-
-#: ../config.c:146
-msgid "Clear search results on abort"
-msgstr "Wyczyść wyniki wyszukiwania po przerwaniu"
-
-#. define default inputbar commands
-#: ../config.c:268
-msgid "Add a bookmark"
-msgstr "Dodaj zakładkę"
-
-#: ../config.c:269
-msgid "Delete a bookmark"
-msgstr "Usuń zakładkę"
-
-#: ../config.c:270
-msgid "List all bookmarks"
-msgstr "Wyświetl zakładki"
-
-#: ../config.c:271
-msgid "Close current file"
-msgstr "Zamknij plik"
-
-#: ../config.c:272
-msgid "Show file information"
-msgstr "Wyświetl informacje o pliku"
-
-#: ../config.c:273
-msgid "Show help"
-msgstr "Wyświetl pomoc"
-
-#: ../config.c:274
-msgid "Open document"
-msgstr "Otwórz plik"
-
-#: ../config.c:275
-msgid "Close zathura"
-msgstr "Zakończ"
-
-#: ../config.c:276
-msgid "Print document"
-msgstr "Wydrukuj"
-
-#: ../config.c:277
-msgid "Save document"
-msgstr "Zapisz"
-
-#: ../config.c:278
-msgid "Save document (and force overwriting)"
-msgstr "Zapisz (nadpisując istniejący plik)"
-
-#: ../config.c:279
-msgid "Save attachments"
-msgstr "Zapisz załączniki"
-
-#: ../config.c:280
-msgid "Set page offset"
-msgstr "Ustaw przesunięcie numerów stron"
-
-#: ../config.c:281
-msgid "Mark current location within the document"
-msgstr "Zaznacz aktualną pozycję w dokumencie"
-
-#: ../config.c:282
-msgid "Delete the specified marks"
-msgstr "Skasuj określone zakładki"
-
-#: ../config.c:283
-msgid "Don't highlight current search results"
-msgstr "Nie podświetlaj aktualnych wyników wyszukiwania "
-
-#: ../config.c:284
-msgid "Highlight current search results"
-msgstr "Podświetl aktualne wyniki wyszukiwania"
-
-#: ../config.c:285
-msgid "Show version information"
-msgstr "Wyświetl informacje o wersji"
-
-#: ../completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "Strona %d"
-
-#: ../completion.c:293
-msgid "Attachments"
-msgstr "Zapisz załączniki"
-
-#. add images
-#: ../completion.c:324
-msgid "Images"
-msgstr "Obrazki"

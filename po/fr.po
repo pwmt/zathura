@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
-"POT-Creation-Date: 2012-06-20 16:49+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-03 11:02+0200\n"
 "PO-Revision-Date: 2012-07-02 12:58+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/zathura/language/"
@@ -19,19 +19,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
-#: ../callbacks.c:176
+#: ../callbacks.c:204
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrée invalide : '%s'"
 
-#: ../callbacks.c:204
+#: ../callbacks.c:232
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Index invalide : '%s'"
 
 #: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
 #: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:446 ../shortcuts.c:897
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
@@ -159,155 +159,175 @@ msgid "Number of pages per row"
 msgstr "Nombre de page par rangée"
 
 #: ../config.c:108
+msgid "Column of the first page"
+msgstr ""
+
+#: ../config.c:110
 msgid "Scroll step"
 msgstr "Facteur de défilement"
 
-#: ../config.c:110
+#: ../config.c:112
+msgid "Horizontal scroll step"
+msgstr ""
+
+#: ../config.c:114
 msgid "Zoom minimum"
 msgstr "Zoom minimum"
 
-#: ../config.c:112
+#: ../config.c:116
 msgid "Zoom maximum"
 msgstr "Zoom maximum"
 
-#: ../config.c:114
+#: ../config.c:118
 msgid "Life time (in seconds) of a hidden page"
 msgstr "Durée de vie (en secondes) d'une page cachée"
 
-#: ../config.c:115
+#: ../config.c:119
 msgid "Amount of seconds between each cache purge"
 msgstr "Délai en secondes entre chaque purge du cache."
 
-#: ../config.c:117
+#: ../config.c:121
 msgid "Recoloring (dark color)"
 msgstr "Recolorisation (couleurs sombres)"
 
-#: ../config.c:119
+#: ../config.c:123
 msgid "Recoloring (light color)"
 msgstr "Recolorisation (couleurs claires)"
 
-#: ../config.c:121
+#: ../config.c:125
 msgid "Color for highlighting"
 msgstr "Couleur de surbrillance"
 
-#: ../config.c:123
+#: ../config.c:127
 msgid "Color for highlighting (active)"
 msgstr "Couleur de surbrillance (active)"
 
-#: ../config.c:127
+#: ../config.c:131
 msgid "Recolor pages"
 msgstr "Recoloriser les pages"
 
-#: ../config.c:129
+#: ../config.c:133
 msgid "Wrap scrolling"
 msgstr "Défiler lors du renvoi à la ligne"
 
-#: ../config.c:131
+#: ../config.c:135
 msgid "Advance number of pages per row"
 msgstr "Augmenter le nombre de pages par rangée"
 
-#: ../config.c:133
+#: ../config.c:137
+msgid "Horizontally centered zoom"
+msgstr ""
+
+#: ../config.c:139
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:141
 msgid "Transparency for highlighting"
 msgstr "Transparence de la surbrillance"
 
-#: ../config.c:135
+#: ../config.c:143
 msgid "Render 'Loading ...'"
 msgstr "Rendu 'Chargement...'"
 
-#: ../config.c:136
+#: ../config.c:144
 msgid "Adjust to when opening file"
 msgstr "Ajuster à l'ouverture du fichier"
 
-#: ../config.c:138
+#: ../config.c:146
 msgid "Show hidden files and directories"
 msgstr "Montrer les fichiers et dossiers cachés"
 
-#: ../config.c:140
+#: ../config.c:148
 msgid "Show directories"
 msgstr "Montrer les dossiers"
 
-#: ../config.c:142
+#: ../config.c:150
 msgid "Always open on first page"
 msgstr "Toujours ouvrir à la première page"
 
-#: ../config.c:144
+#: ../config.c:152
 msgid "Highlight search results"
 msgstr "Surligner les résultats de la recherche"
 
-#: ../config.c:146
+#: ../config.c:154
 msgid "Clear search results on abort"
 msgstr "Effacer les résultats de recherche en cas d'abandon"
 
+#: ../config.c:156
+msgid "Use basename of the file in the window title"
+msgstr ""
+
 #. define default inputbar commands
-#: ../config.c:268
+#: ../config.c:284
 msgid "Add a bookmark"
 msgstr "Ajouter un marque-page"
 
-#: ../config.c:269
+#: ../config.c:285
 msgid "Delete a bookmark"
 msgstr "Supprimer un marque-page"
 
-#: ../config.c:270
+#: ../config.c:286
 msgid "List all bookmarks"
 msgstr "Lister tous les marque-pages"
 
-#: ../config.c:271
+#: ../config.c:287
 msgid "Close current file"
 msgstr "Fermer le fichier actuel"
 
-#: ../config.c:272
+#: ../config.c:288
 msgid "Show file information"
 msgstr "Montrer les informations sur le fichier"
 
-#: ../config.c:273
+#: ../config.c:289
 msgid "Show help"
 msgstr "Afficher l'aide"
 
-#: ../config.c:274
+#: ../config.c:290
 msgid "Open document"
 msgstr "Ouvrir un document"
 
-#: ../config.c:275
+#: ../config.c:291
 msgid "Close zathura"
 msgstr "Quitter Zathura"
 
-#: ../config.c:276
+#: ../config.c:292
 msgid "Print document"
 msgstr "Imprimer un document"
 
-#: ../config.c:277
+#: ../config.c:293
 msgid "Save document"
 msgstr "Sauver un document"
 
-#: ../config.c:278
+#: ../config.c:294
 msgid "Save document (and force overwriting)"
 msgstr "Sauver un document (et forcer l'écrasement)"
 
-#: ../config.c:279
+#: ../config.c:295
 msgid "Save attachments"
 msgstr "Enregistrer les pièces jointes"
 
-#: ../config.c:280
+#: ../config.c:296
 msgid "Set page offset"
 msgstr "Régler le décalage de page"
 
-#: ../config.c:281
+#: ../config.c:297
 msgid "Mark current location within the document"
 msgstr "Marquer l'emplacement actuel dans le document"
 
-#: ../config.c:282
+#: ../config.c:298
 msgid "Delete the specified marks"
 msgstr "Supprimer les marques indiquées"
 
-#: ../config.c:283
+#: ../config.c:299
 msgid "Don't highlight current search results"
 msgstr "Ne pas surligner les résultats de la recherche actuelle"
 
-#: ../config.c:284
+#: ../config.c:300
 msgid "Highlight current search results"
 msgstr "Surligner les résultats de la recherche actuelle"
 
-#: ../config.c:285
+#: ../config.c:301
 msgid "Show version information"
 msgstr "Afficher les informations de version "
 
@@ -332,7 +352,7 @@ msgstr "Copier l'image"
 msgid "Save image as"
 msgstr "Enregistrer l'image sous"
 
-#: ../shortcuts.c:803
+#: ../shortcuts.c:819
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
@@ -364,6 +384,6 @@ msgstr "Mot de passe du document"
 msgid "Log level (debug, info, warning, error)"
 msgstr "Niveau d'affichage (debug, info, warning, error)"
 
-#: ../zathura.c:251 ../zathura.c:799
+#: ../zathura.c:251 ../zathura.c:816
 msgid "[No name]"
 msgstr "[Sans nom]"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-20 16:49+0200\n"
+"POT-Creation-Date: 2012-07-03 11:02+0200\n"
 "PO-Revision-Date: 2012-06-19 23:59+0200\n"
 "Last-Translator: Martin Pelikan <pelikan@storkhole.cz>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -14,19 +14,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../callbacks.c:176
+#: ../callbacks.c:204
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Neplatný vstup: %s"
 
-#: ../callbacks.c:204
+#: ../callbacks.c:232
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Neplatný index: %s"
 
 #: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
 #: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:446 ../shortcuts.c:897
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
@@ -154,155 +154,175 @@ msgid "Number of pages per row"
 msgstr "Počet stránek na řádek"
 
 #: ../config.c:108
+msgid "Column of the first page"
+msgstr ""
+
+#: ../config.c:110
 msgid "Scroll step"
 msgstr "Scroll step"
 
-#: ../config.c:110
+#: ../config.c:112
+msgid "Horizontal scroll step"
+msgstr ""
+
+#: ../config.c:114
 msgid "Zoom minimum"
 msgstr "Oddálit"
 
-#: ../config.c:112
+#: ../config.c:116
 msgid "Zoom maximum"
 msgstr "Přiblížit"
 
-#: ../config.c:114
+#: ../config.c:118
 msgid "Life time (in seconds) of a hidden page"
 msgstr "Délka života skryté stránky v sekundách"
 
-#: ../config.c:115
+#: ../config.c:119
 msgid "Amount of seconds between each cache purge"
 msgstr "Počet sekund mezi čištěními cache"
 
-#: ../config.c:117
+#: ../config.c:121
 msgid "Recoloring (dark color)"
 msgstr "Přebarvuji do tmava"
 
-#: ../config.c:119
+#: ../config.c:123
 msgid "Recoloring (light color)"
 msgstr "Přebarvuji do sv¿tla"
 
-#: ../config.c:121
+#: ../config.c:125
 msgid "Color for highlighting"
 msgstr "Barva zvýrazňovače"
 
-#: ../config.c:123
+#: ../config.c:127
 msgid "Color for highlighting (active)"
 msgstr "Barva zvýrazňovače (aktivní)"
 
-#: ../config.c:127
+#: ../config.c:131
 msgid "Recolor pages"
 msgstr "Přebarvit stránky"
 
-#: ../config.c:129
+#: ../config.c:133
 msgid "Wrap scrolling"
 msgstr "Scrollovat přes konce"
 
-#: ../config.c:131
+#: ../config.c:135
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:133
+#: ../config.c:137
+msgid "Horizontally centered zoom"
+msgstr ""
+
+#: ../config.c:139
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:141
 msgid "Transparency for highlighting"
 msgstr "Průhlednost při zvýrazňování"
 
-#: ../config.c:135
+#: ../config.c:143
 msgid "Render 'Loading ...'"
 msgstr "Vypisovat 'Načítám ...'"
 
-#: ../config.c:136
+#: ../config.c:144
 msgid "Adjust to when opening file"
 msgstr "Přiblížení po otevření souboru"
 
-#: ../config.c:138
+#: ../config.c:146
 msgid "Show hidden files and directories"
 msgstr "Zobrazovat skryté soubory"
 
-#: ../config.c:140
+#: ../config.c:148
 msgid "Show directories"
 msgstr "Zobrazovat adresáře"
 
-#: ../config.c:142
+#: ../config.c:150
 msgid "Always open on first page"
 msgstr "Vždy otevírat na první straně"
 
-#: ../config.c:144
+#: ../config.c:152
 msgid "Highlight search results"
 msgstr "Zvýrazňovat výsledky hledání"
 
-#: ../config.c:146
+#: ../config.c:154
 msgid "Clear search results on abort"
 msgstr "Při abortu smazat výsledky hledání"
 
+#: ../config.c:156
+msgid "Use basename of the file in the window title"
+msgstr ""
+
 #. define default inputbar commands
-#: ../config.c:268
+#: ../config.c:284
 msgid "Add a bookmark"
 msgstr "Přidat záložku"
 
-#: ../config.c:269
+#: ../config.c:285
 msgid "Delete a bookmark"
 msgstr "Smazat záložku"
 
-#: ../config.c:270
+#: ../config.c:286
 msgid "List all bookmarks"
 msgstr "Vypsat záložky"
 
-#: ../config.c:271
+#: ../config.c:287
 msgid "Close current file"
 msgstr "Zavřít tenhle soubor"
 
-#: ../config.c:272
+#: ../config.c:288
 msgid "Show file information"
 msgstr "Zobrazit informace o souboru"
 
-#: ../config.c:273
+#: ../config.c:289
 msgid "Show help"
 msgstr "Zobrazit nápovědu"
 
-#: ../config.c:274
+#: ../config.c:290
 msgid "Open document"
 msgstr "Otevřít dokument"
 
-#: ../config.c:275
+#: ../config.c:291
 msgid "Close zathura"
 msgstr "Zavřít zathuru"
 
-#: ../config.c:276
+#: ../config.c:292
 msgid "Print document"
 msgstr "Tisknout dokument"
 
-#: ../config.c:277
+#: ../config.c:293
 msgid "Save document"
 msgstr "Uložit dokument"
 
-#: ../config.c:278
+#: ../config.c:294
 msgid "Save document (and force overwriting)"
 msgstr "Uložit a přepsat dokument"
 
-#: ../config.c:279
+#: ../config.c:295
 msgid "Save attachments"
 msgstr "Uložit přílohy"
 
-#: ../config.c:280
+#: ../config.c:296
 msgid "Set page offset"
 msgstr ""
 
-#: ../config.c:281
+#: ../config.c:297
 msgid "Mark current location within the document"
 msgstr "Označit současnou pozici v dokumentu"
 
-#: ../config.c:282
+#: ../config.c:298
 msgid "Delete the specified marks"
 msgstr "Smazat vybrané značky"
 
-#: ../config.c:283
+#: ../config.c:299
 msgid "Don't highlight current search results"
 msgstr "Nezvýrazňovat výsledky tohoto hledání"
 
-#: ../config.c:284
+#: ../config.c:300
 msgid "Highlight current search results"
 msgstr "Zvýrazňovat výsledky tohoto hledání"
 
-#: ../config.c:285
+#: ../config.c:301
 msgid "Show version information"
 msgstr ""
 
@@ -327,7 +347,7 @@ msgstr "Zkopíruj obrázek"
 msgid "Save image as"
 msgstr "Ulož obrázek jako"
 
-#: ../shortcuts.c:803
+#: ../shortcuts.c:819
 msgid "This document does not contain any index"
 msgstr "Tenhle dokument neobsahuje žádné indexy"
 
@@ -359,6 +379,6 @@ msgstr "Heslo"
 msgid "Log level (debug, info, warning, error)"
 msgstr "Úroveň logování (debug, info, warning, error)"
 
-#: ../zathura.c:251 ../zathura.c:799
+#: ../zathura.c:251 ../zathura.c:816
 msgid "[No name]"
 msgstr "[Nepojmenovaný]"
