@@ -190,14 +190,14 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       } else {
         girara_info("successfully loaded plugin %s", path);
 
-        zathura_plugin_version_function_t major = NULL, minor = NULL, rev = NULL;
-        g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION, (gpointer*) &major);
-        g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION, (gpointer*) &minor);
-        g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &rev);
-        if (major != NULL && minor != NULL && rev != NULL) {
-          plugin->version.major = major();
-          plugin->version.minor = minor();
-          plugin->version.rev   = rev();
+        zathura_plugin_version_function_t plugin_major = NULL, plugin_minor = NULL, plugin_rev = NULL;
+        g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION,    (gpointer*) &plugin_major);
+        g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION,    (gpointer*) &plugin_minor);
+        g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &plugin_rev);
+        if (plugin_major != NULL && plugin_minor != NULL && plugin_rev != NULL) {
+          plugin->version.major = plugin_major();
+          plugin->version.minor = plugin_minor();
+          plugin->version.rev   = plugin_rev();
           girara_debug("plugin '%s': version %u.%u.%u", path,
               plugin->version.major, plugin->version.minor,
               plugin->version.rev);
