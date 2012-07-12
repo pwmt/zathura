@@ -68,8 +68,8 @@ zathura_init(int argc, char* argv[])
 
   gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL, *password = NULL;
   bool forkback = false, print_version = false;
-  GOptionEntry entries[] =
-  {
+
+  GOptionEntry entries[] = {
     { "reparent",    'e',  0, G_OPTION_ARG_INT,      &embed,         _("Reparents to window specified by xid"),       "xid"  },
     { "config-dir",  'c',  0, G_OPTION_ARG_FILENAME, &config_dir,    _("Path to the config directory"),               "path" },
     { "data-dir",    'd',  0, G_OPTION_ARG_FILENAME, &data_dir,      _("Path to the data directory"),                 "path" },
@@ -85,8 +85,7 @@ zathura_init(int argc, char* argv[])
   g_option_context_add_main_entries(context, entries, NULL);
 
   GError* error = NULL;
-  if (g_option_context_parse(context, &argc, &argv, &error) == false)
-  {
+  if (g_option_context_parse(context, &argc, &argv, &error) == false) {
     printf("Error parsing command line arguments: %s\n", error->message);
     g_option_context_free(context);
     g_error_free(error);
@@ -95,8 +94,7 @@ zathura_init(int argc, char* argv[])
   g_option_context_free(context);
 
   /* Fork into the background if the user really wants to ... */
-  if (forkback == true)
-  {
+  if (forkback == true) {
     int pid = fork();
     if (pid > 0) { /* parent */
       exit(0);
@@ -395,8 +393,7 @@ prepare_document_open_from_stdin(zathura_t* zathura)
   GError* error = NULL;
   gchar* file = NULL;
   gint handle = g_file_open_tmp("zathura.stdin.XXXXXX", &file, &error);
-  if (handle == -1)
-  {
+  if (handle == -1) {
     if (error != NULL) {
       girara_error("Can not create temporary file: %s", error->message);
       g_error_free(error);
@@ -406,8 +403,7 @@ prepare_document_open_from_stdin(zathura_t* zathura)
 
   // read from stdin and dump to temporary file
   int stdinfno = fileno(stdin);
-  if (stdinfno == -1)
-  {
+  if (stdinfno == -1) {
     girara_error("Can not read from stdin.");
     close(handle);
     g_unlink(file);
@@ -417,10 +413,8 @@ prepare_document_open_from_stdin(zathura_t* zathura)
 
   char buffer[BUFSIZ];
   ssize_t count = 0;
-  while ((count = read(stdinfno, buffer, BUFSIZ)) > 0)
-  {
-    if (write(handle, buffer, count) != count)
-    {
+  while ((count = read(stdinfno, buffer, BUFSIZ)) > 0) {
+    if (write(handle, buffer, count) != count) {
       girara_error("Can not write to temporary file: %s", file);
       close(handle);
       g_unlink(file);
@@ -428,10 +422,10 @@ prepare_document_open_from_stdin(zathura_t* zathura)
       return NULL;
     }
   }
+
   close(handle);
 
-  if (count != 0)
-  {
+  if (count != 0) {
     girara_error("Can not read from stdin.");
     g_unlink(file);
     g_free(file);
