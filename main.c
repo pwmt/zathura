@@ -21,7 +21,6 @@ int main(int argc, char* argv[])
 
   zathura_t* zathura = zathura_init(argc, argv);
   if (zathura == NULL) {
-    fprintf(stderr, "error: could not initialize zathura\n");
     return -1;
   }
 

@@ -353,3 +353,43 @@ document_draw_search_results(zathura_t* zathura, bool value)
     g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
   }
 }
+
+char*
+zathura_get_version_string(zathura_t* zathura, bool markup)
+{
+	if (zathura == NULL) {
+		return NULL;
+	}
+
+  GString* string = g_string_new(NULL);
+
+  /* zathura version */
+  char* zathura_version = g_strdup_printf("zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
+  g_string_append(string, zathura_version);
+  g_free(zathura_version);
+
+	char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
+
+  /* plugin information */
+  girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
+  if (plugins != NULL) {
+    GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin)
+      char* name = zathura_plugin_get_name(plugin);
+      zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
+      char* text = g_strdup_printf(format,
+          (name == NULL) ? "-" : name,
+          version.major,
+          version.minor,
+          version.rev,
+          zathura_plugin_get_path(plugin)
+          );
+      g_string_append(string, text);
+      g_free(text);
+    GIRARA_LIST_FOREACH_END(plugins, zathura_plugin_t*, iter, plugin);
+  }
+
+	char* version = string->str;
+	g_string_free(string, FALSE);
+
+	return version;
+}

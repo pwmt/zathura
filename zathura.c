@@ -67,16 +67,17 @@ zathura_init(int argc, char* argv[])
 #endif
 
   gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL, *password = NULL;
-  bool forkback = false;
+  bool forkback = false, print_version = false;
   GOptionEntry entries[] =
   {
-    { "reparent",    'e',  0, G_OPTION_ARG_INT,      &embed,       _("Reparents to window specified by xid"),       "xid"  },
-    { "config-dir",  'c',  0, G_OPTION_ARG_FILENAME, &config_dir,  _("Path to the config directory"),               "path" },
-    { "data-dir",    'd',  0, G_OPTION_ARG_FILENAME, &data_dir,    _("Path to the data directory"),                 "path" },
-    { "plugins-dir", 'p',  0, G_OPTION_ARG_STRING,   &plugin_path, _("Path to the directories containing plugins"), "path" },
-    { "fork",        '\0', 0, G_OPTION_ARG_NONE,     &forkback,    _("Fork into the background"),                   NULL },
-    { "password",    'w',  0, G_OPTION_ARG_STRING,   &password,    _("Document password"),                          "password" },
-    { "debug",       'l',  0, G_OPTION_ARG_STRING,   &loglevel,    _("Log level (debug, info, warning, error)"),    "level" },
+    { "reparent",    'e',  0, G_OPTION_ARG_INT,      &embed,         _("Reparents to window specified by xid"),       "xid"  },
+    { "config-dir",  'c',  0, G_OPTION_ARG_FILENAME, &config_dir,    _("Path to the config directory"),               "path" },
+    { "data-dir",    'd',  0, G_OPTION_ARG_FILENAME, &data_dir,      _("Path to the data directory"),                 "path" },
+    { "plugins-dir", 'p',  0, G_OPTION_ARG_STRING,   &plugin_path,   _("Path to the directories containing plugins"), "path" },
+    { "fork",        '\0', 0, G_OPTION_ARG_NONE,     &forkback,      _("Fork into the background"),                   NULL },
+    { "password",    'w',  0, G_OPTION_ARG_STRING,   &password,      _("Document password"),                          "password" },
+    { "debug",       'l',  0, G_OPTION_ARG_STRING,   &loglevel,      _("Log level (debug, info, warning, error)"),    "level" },
+    { "version",     'v',  0, G_OPTION_ARG_NONE,     &print_version, _("Print version information"),                  NULL },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -116,6 +117,11 @@ zathura_init(int argc, char* argv[])
   }
 
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
+
+  /* global settings */
+  zathura->global.recolor            = false;
+  zathura->global.update_page_number = true;
+  zathura->global.arguments          = argv;
 
   /* plugins */
   zathura->plugins.manager = zathura_plugin_manager_new();
@@ -160,20 +166,25 @@ zathura_init(int argc, char* argv[])
 #endif
   }
 
+  /* load plugins */
+  zathura_plugin_manager_load(zathura->plugins.manager);
+
+  /* Print version */
+  if (print_version == true) {
+    char* string = zathura_get_version_string(zathura, false);
+    if (string != NULL) {
+      fprintf(stdout, "%s\n", string);
+    }
+
+    goto error_free; // FIXME
+  }
+
   /* UI */
   if ((zathura->ui.session = girara_session_create()) == NULL) {
     goto error_out;
   }
 
   zathura->ui.session->global.data = zathura;
-
-  /* global settings */
-  zathura->global.recolor            = false;
-  zathura->global.update_page_number = true;
-  zathura->global.arguments          = argv;
-
-  /* load plugins */
-  zathura_plugin_manager_load(zathura->plugins.manager);
 
   /* configuration */
   config_load_default(zathura);

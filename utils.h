@@ -131,4 +131,13 @@ void readjust_view_after_zooming(zathura_t* zathura, float old_zoom, bool delay)
  */
 void document_draw_search_results(zathura_t* zathura, bool value);
 
+/**
+ * Create zathura version string
+ *
+ * @param zathura The zathura instance
+ * @param markup Enable markup
+ * @return Version string 
+ */
+char* zathura_get_version_string(zathura_t* zathura, bool markup);
+
 #endif // UTILS_H
