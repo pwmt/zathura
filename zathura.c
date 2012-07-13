@@ -499,7 +499,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   /* read history file */
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 1, 0, 0 };
+  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 0, 0, 0, 0 };
   bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
   /* set page offset */
