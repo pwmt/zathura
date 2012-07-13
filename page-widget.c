@@ -13,6 +13,7 @@
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"
+#include "synctex.h"
 
 G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 
@@ -611,29 +612,38 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     }
   } else {
     redraw_rect(ZATHURA_PAGE(widget), &priv->mouse.selection);
-    zathura_rectangle_t tmp = priv->mouse.selection;
 
-    double scale = zathura_document_get_scale(document);
-    tmp.x1 /= scale;
-    tmp.x2 /= scale;
-    tmp.y1 /= scale;
-    tmp.y2 /= scale;
+    if (priv->zathura->synctex.enabled && button->state & GDK_CONTROL_MASK) {
+      /* synctex backwards sync */
+      double scale = zathura_document_get_scale(document);
+      int x = button->x / scale, y = button->y / scale;
 
-    char* text = zathura_page_get_text(priv->page, tmp, NULL);
-    if (text != NULL) {
-      if (strlen(text) > 0) {
-        /* copy to clipboard */
-        gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
+      synctex_edit(priv->zathura, priv->page, x, y);
+    } else {
+      zathura_rectangle_t tmp = priv->mouse.selection;
+
+      double scale = zathura_document_get_scale(document);
+      tmp.x1 /= scale;
+      tmp.x2 /= scale;
+      tmp.y1 /= scale;
+      tmp.y2 /= scale;
+
+      char* text = zathura_page_get_text(priv->page, tmp, NULL);
+      if (text != NULL) {
+        if (strlen(text) > 0) {
+          /* copy to clipboard */
+          gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
 
 
-        if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
-          char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-          girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
-          g_free(stripped_text);
+          if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
+            char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+            girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
+            g_free(stripped_text);
+          }
         }
-      }
 
-      g_free(text);
+        g_free(text);
+      }
     }
   }
 

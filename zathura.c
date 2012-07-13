@@ -66,8 +66,8 @@ zathura_init(int argc, char* argv[])
   Window embed = 0;
 #endif
 
-  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL, *password = NULL;
-  bool forkback = false, print_version = false;
+  gchar* config_dir = NULL, *data_dir = NULL, *plugin_path = NULL, *loglevel = NULL, *password = NULL, *synctex_editor = NULL;
+  bool forkback = false, print_version = false, synctex = false;
 
   GOptionEntry entries[] = {
     { "reparent",    'e',  0, G_OPTION_ARG_INT,      &embed,         _("Reparents to window specified by xid"),       "xid"  },
@@ -78,6 +78,8 @@ zathura_init(int argc, char* argv[])
     { "password",    'w',  0, G_OPTION_ARG_STRING,   &password,      _("Document password"),                          "password" },
     { "debug",       'l',  0, G_OPTION_ARG_STRING,   &loglevel,      _("Log level (debug, info, warning, error)"),    "level" },
     { "version",     'v',  0, G_OPTION_ARG_NONE,     &print_version, _("Print version information"),                  NULL },
+    { "synctex",     's',  0, G_OPTION_ARG_NONE,     &synctex,     _("Enable synctex support"),                     NULL },
+    { "editor-command", 'x', 0, G_OPTION_ARG_STRING, &synctex_editor, _("Synctex editor (this flag is forwarded to the synctex command)"), "cmd" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -142,6 +144,12 @@ zathura_init(int argc, char* argv[])
     gchar* path = girara_get_xdg_path(XDG_DATA);
     zathura->config.data_dir = g_build_filename(path, "zathura", NULL);
     g_free(path);
+  }
+
+  /* synctex */
+  zathura->synctex.enabled = synctex;
+  if (synctex_editor) {
+    zathura->synctex.editor = g_strdup(synctex_editor);
   }
 
   /* create zathura (config/data) directory */

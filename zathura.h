@@ -68,6 +68,12 @@ struct zathura_s
 
   struct
   {
+    bool enabled;
+    gchar* editor;
+  } synctex;
+
+  struct
+  {
     GtkPrintSettings* settings; /**< Print settings */
     GtkPageSetup* page_setup; /**< Saved page setup */
   } print;
