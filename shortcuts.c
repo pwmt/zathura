@@ -122,11 +122,11 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   }
 
   unsigned int rotation = zathura_document_get_rotation(zathura->document);
-  double page_ratio     = total_height / total_width;
+  double page_ratio     = max_height / total_width;
   double window_ratio   = height / width;
 
   if (rotation == 90 || rotation == 270) {
-    page_ratio = total_width / total_height;
+    page_ratio = max_width / total_height;
   }
 
   switch (argument->n) {
@@ -142,13 +142,13 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
         if (page_ratio < window_ratio) {
           zathura_document_set_scale(zathura->document, width / total_width);
         } else {
-          zathura_document_set_scale(zathura->document, height / total_height);
+          zathura_document_set_scale(zathura->document, height / max_height);
         }
       } else {
         if (page_ratio < window_ratio) {
           zathura_document_set_scale(zathura->document, width / total_height);
         } else {
-          zathura_document_set_scale(zathura->document, height / total_width);
+          zathura_document_set_scale(zathura->document, height / max_width);
         }
       }
       break;
