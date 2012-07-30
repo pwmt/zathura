@@ -434,9 +434,9 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* set background color */
     if (priv->zathura->global.recolor == true) {
       GdkColor color = priv->zathura->ui.colors.recolor_light_color;
-      cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+      cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     } else {
-      cairo_set_source_rgb(cairo, 255, 255, 255);
+      cairo_set_source_rgb(cairo, 1, 1, 1);
     }
     cairo_rectangle(cairo, 0, 0, page_width, page_height);
     cairo_fill(cairo);
