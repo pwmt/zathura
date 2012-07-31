@@ -724,7 +724,9 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   switch(argument->n) {
     case UP:
       if (gtk_tree_path_prev(path) == FALSE) {
-        is_valid_path = gtk_tree_path_up(path);
+        /* For some reason gtk_tree_path_up returns TRUE although we're not
+         * moving anywhere. */
+        is_valid_path = gtk_tree_path_up(path) && (gtk_tree_path_get_depth(path) > 0);
       } else { /* row above */
         while(gtk_tree_view_row_expanded(tree_view, path)) {
           gtk_tree_model_get_iter(model, &iter, path);
