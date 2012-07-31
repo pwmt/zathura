@@ -365,6 +365,25 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
   }
 }
 
+void
+cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+
+  bool bool_value = *((bool*) value);
+
+  if (zathura->global.recolor_keep_hue != bool_value) {
+    zathura->global.recolor_keep_hue = bool_value;
+    render_all(zathura);
+  }
+}
+
+
 bool
 cb_unknown_command(girara_session_t* session, const char* input)
 {

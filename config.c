@@ -130,6 +130,8 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
   bool_value = false;
+  girara_setting_add(gsession, "recolor-keephue",        &bool_value,  BOOLEAN, false, _("When recoloring keep original hue and adjust lightness only"), cb_setting_recolor_keep_hue_change, NULL);
+  bool_value = false;
   girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);

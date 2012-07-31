@@ -556,6 +556,13 @@ En/Disables recoloring
 * Value type: Boolean
 * Default value: false
 
+recolor-keephue
+^^^^^^^^^^^^^^^
+En/Disables keeping original hue when recoloring
+
+* Value type: Boolean
+* Default value: false
+
 recolor-darkcolor
 ^^^^^^^^^^^^^^^^^
 Defines the color value that is used to represent dark colors in recoloring mode

@@ -89,6 +89,53 @@ render_page(render_thread_t* render_thread, zathura_page_t* page)
   return true;
 }
 
+void
+color2double(GdkColor* col, double* v)
+{
+  v[0] = (double) col->red / 65535.;
+  v[1] = (double) col->green / 65535.;
+  v[2] = (double) col->blue / 65535.;
+}
+
+/* Returns the maximum possible saturation for given h and l.
+   Assumes that l is in the interval l1, l2 and corrects the value to
+   force u=0 on l1 and l2 */
+double
+colorumax(double* h, double l, double l1, double l2)
+{
+  double u, uu, v, vv, lv;
+  if (h[0] == 0 && h[1] == 0 && h[2] == 0) {
+    return 0;
+  }
+
+  lv = (l - l1)/(l2 - l1);    /* Remap l to the whole interval 0,1 */
+  
+  u = v = 1000000;
+  for (int k = 0; k < 3; k++) {
+    if (h[k] > 0) {
+      uu = fabs((1-l)/h[k]);
+      vv = fabs((1-lv)/h[k]);
+      
+      if (uu < u)    u = uu;
+      if (vv < v) v = vv;
+
+    } else if (h[k] < 0) {
+      uu = fabs(l/h[k]);
+      vv = fabs(lv/h[k]);
+
+      if (uu < u)    u = uu;
+      if (vv < v) v = vv;      
+    }
+  }
+
+  /* rescale v according to the length of the interval [l1, l2] */
+  v = fabs(l2 - l1) * v; 
+
+  /* forces the returned value to be 0 on l1 and l2, trying not to distort colors too much */
+  return fmin(u, v);
+}
+
+
 static bool
 render(zathura_t* zathura, zathura_page_t* page)
 {
@@ -142,34 +189,67 @@ render(zathura_t* zathura, zathura_page_t* page)
   unsigned char* image = cairo_image_surface_get_data(surface);
 
   /* recolor */
+  /* uses a representation of a rgb color as follows:
+     - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
+     - a hue vector, which indicates a radian direction from the grey axis, inside the equal lightness plane.
+     - a saturation scalar between 0,1. It is 0 when grey, 1 when the color is in the boundary of the rgb cube.
+  */
+   
   if (zathura->global.recolor == true) {
-    /* recolor code based on qimageblitz library flatten() function
-    (http://sourceforge.net/projects/qimageblitz/) */
 
-    int r1 = zathura->ui.colors.recolor_dark_color.red    / 257;
-    int g1 = zathura->ui.colors.recolor_dark_color.green  / 257;
-    int b1 = zathura->ui.colors.recolor_dark_color.blue   / 257;
-    int r2 = zathura->ui.colors.recolor_light_color.red   / 257;
-    int g2 = zathura->ui.colors.recolor_light_color.green / 257;
-    int b2 = zathura->ui.colors.recolor_light_color.blue  / 257;
+    /* RGB weights for computing lightness. Must sum to one */
+    double a[] = {0.30, 0.59, 0.11};
 
-    int min  = 0x00;
-    int max  = 0xFF;
-    int mean = 0x00;
+    double l1, l2, l, s, u, t;
+    double h[3];   
+    double rgb1[3], rgb2[3], rgb[3];
+    
+    color2double(&zathura->ui.colors.recolor_dark_color, rgb1);
+    color2double(&zathura->ui.colors.recolor_light_color, rgb2);
 
-    float sr = ((float) r2 - r1) / (max - min);
-    float sg = ((float) g2 - g1) / (max - min);
-    float sb = ((float) b2 - b1) / (max - min);
-
+    l1 = (a[0]*rgb1[0] + a[1]*rgb1[1] + a[2]*rgb1[2]);
+    l2 = (a[0]*rgb2[0] + a[1]*rgb2[1] + a[2]*rgb2[2]);
+       
     for (unsigned int y = 0; y < page_height; y++) {
       unsigned char* data = image + y * rowstride;
 
-      for (unsigned int x = 0; x < page_width; x++) {
-        mean = (data[0] + data[1] + data[2]) / 3;
-        data[2] = sr * (mean - min) + r1 + 0.5;
-        data[1] = sg * (mean - min) + g1 + 0.5;
-        data[0] = sb * (mean - min) + b1 + 0.5;
-        data += 4;
+      for (unsigned int x = 0; x < page_width; x++) {	
+	/* Careful. data color components blue, green, red. */
+	rgb[0] = (double) data[2] / 256.;
+	rgb[1] = (double) data[1] / 256.;
+	rgb[2] = (double) data[0] / 256.;
+	
+	/* compute h, s, l data   */
+	l = a[0]*rgb[0] + a[1]*rgb[1] + a[2]*rgb[2];
+
+	h[0] = rgb[0] - l;
+	h[1] = rgb[1] - l;
+	h[2] = rgb[2] - l;
+
+	/* u is the maximum possible saturation for given h and l. s is a rescaled saturation between 0 and 1 */
+	u = colorumax(h, l, 0, 1);
+	if (u == 0)   s = 0;
+	else          s = 1/u;
+
+	/* Interpolates lightness between light and dark colors. white goes to light, and black goes to dark. */
+        t = l;
+	l = t * (l2 - l1) + l1;	
+
+	if (zathura->global.recolor_keep_hue == true) {
+	  /* adjusting lightness keeping hue of current color. white and black go to grays of same ligtness
+	     as light and dark colors. */  
+	  u = colorumax(h, l, l1, l2);	  
+	  data[2] = (unsigned char)round(255.*(l + s*u * h[0]));
+	  data[1] = (unsigned char)round(255.*(l + s*u * h[1]));
+	  data[0] = (unsigned char)round(255.*(l + s*u * h[2]));
+	} else {
+	  /* Linear interpolation between dark and light with color ligtness as a parameter */
+	  data[2] = (unsigned char)round(255.*(t * (rgb2[0] - rgb1[0]) + rgb1[0]));
+	  data[1] = (unsigned char)round(255.*(t * (rgb2[1] - rgb1[1]) + rgb1[1]));
+	  data[0] = (unsigned char)round(255.*(t * (rgb2[2] - rgb1[2]) + rgb1[2]));
+	}
+	
+	data += 4;
       }
     }
   }

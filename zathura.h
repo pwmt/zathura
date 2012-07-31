@@ -80,6 +80,7 @@ struct zathura_s
 
   struct
   {
+    bool recolor_keep_hue; /**< Keep hue when recoloring */
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
     girara_list_t* marks; /**< Marker */

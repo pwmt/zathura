@@ -124,6 +124,19 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
 
 /**
+ * Emitted when the 'recolor-keephue' setting is changed
+ *
+ * @param session Girara session
+ * @param name Name of the setting ("recolor")
+ * @param type Type of the setting (BOOLEAN)
+ * @param value New value
+ * @param data Custom data
+ */
+void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
+    girara_setting_type_t type, void* value, void* data);
+
+
+/**
  * Unknown command handler which is used to handle the strict numeric goto
  * command
  *
