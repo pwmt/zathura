@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-03 11:02+0200\n"
+"POT-Creation-Date: 2012-08-05 15:45+0200\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: Moritz Lipp <mlq@pwmt.org>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -29,7 +29,7 @@ msgstr "Índice invalido: '%s'."
 
 #: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
 #: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
 msgid "No document opened."
 msgstr "Ningún documento abierto."
 
@@ -140,193 +140,197 @@ msgid "Images"
 msgstr ""
 
 #. zathura settings
-#: ../config.c:100
+#: ../config.c:105
 msgid "Database backend"
 msgstr "Base de datos"
 
-#: ../config.c:102
+#: ../config.c:107
 msgid "Zoom step"
 msgstr "Unidad de zoom"
 
-#: ../config.c:104
+#: ../config.c:109
 msgid "Padding between pages"
 msgstr "Separación entre páginas"
 
-#: ../config.c:106
+#: ../config.c:111
 msgid "Number of pages per row"
 msgstr "Número de páginas por fila"
 
-#: ../config.c:108
+#: ../config.c:113
 msgid "Column of the first page"
 msgstr ""
 
-#: ../config.c:110
+#: ../config.c:115
 msgid "Scroll step"
 msgstr "Unidad de desplazamiento"
 
-#: ../config.c:112
+#: ../config.c:117
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../config.c:114
+#: ../config.c:119
 msgid "Zoom minimum"
 msgstr "Zoom mínimo"
 
-#: ../config.c:116
+#: ../config.c:121
 msgid "Zoom maximum"
 msgstr "Zoom máximo"
 
-#: ../config.c:118
+#: ../config.c:123
 msgid "Life time (in seconds) of a hidden page"
 msgstr ""
 
-#: ../config.c:119
+#: ../config.c:124
 msgid "Amount of seconds between each cache purge"
 msgstr ""
 "Cantidad de segundos entre las comprobaciones de las páginas invisibles"
 
-#: ../config.c:121
+#: ../config.c:126
 msgid "Recoloring (dark color)"
 msgstr "Recoloreado (color oscuro)"
 
-#: ../config.c:123
+#: ../config.c:128
 msgid "Recoloring (light color)"
 msgstr "Recoloreado (color claro)"
 
-#: ../config.c:125
+#: ../config.c:130
 msgid "Color for highlighting"
 msgstr "Color para destacar"
 
-#: ../config.c:127
+#: ../config.c:132
 msgid "Color for highlighting (active)"
 msgstr "Color para destacar (activo)"
 
-#: ../config.c:131
+#: ../config.c:136
 msgid "Recolor pages"
 msgstr "Recolorear páginas"
 
-#: ../config.c:133
+#: ../config.c:138
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr ""
+
+#: ../config.c:140
 msgid "Wrap scrolling"
 msgstr "Navegación/Scroll cíclica/o"
 
-#: ../config.c:135
+#: ../config.c:142
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:137
+#: ../config.c:144
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../config.c:139
+#: ../config.c:146
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:141
+#: ../config.c:148
 msgid "Transparency for highlighting"
 msgstr "Transparencia para el destacado"
 
-#: ../config.c:143
+#: ../config.c:150
 msgid "Render 'Loading ...'"
 msgstr "Renderizado 'Cargando ...'"
 
-#: ../config.c:144
+#: ../config.c:151
 msgid "Adjust to when opening file"
 msgstr "Ajustarse al abrir un fichero"
 
-#: ../config.c:146
+#: ../config.c:153
 msgid "Show hidden files and directories"
 msgstr "Mostrar directorios y ficheros ocultos"
 
-#: ../config.c:148
+#: ../config.c:155
 msgid "Show directories"
 msgstr "Mostrar directorios"
 
-#: ../config.c:150
+#: ../config.c:157
 msgid "Always open on first page"
 msgstr "Abrir siempre la primera página"
 
-#: ../config.c:152
+#: ../config.c:159
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:154
+#: ../config.c:161
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:156
+#: ../config.c:163
 msgid "Use basename of the file in the window title"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:284
+#: ../config.c:291
 msgid "Add a bookmark"
 msgstr "Añadir Favorito"
 
-#: ../config.c:285
+#: ../config.c:292
 msgid "Delete a bookmark"
 msgstr "Eliminar Favorito"
 
-#: ../config.c:286
+#: ../config.c:293
 msgid "List all bookmarks"
 msgstr "Listar favoritos"
 
-#: ../config.c:287
+#: ../config.c:294
 msgid "Close current file"
 msgstr "Cerrar fichero actual"
 
-#: ../config.c:288
+#: ../config.c:295
 msgid "Show file information"
 msgstr "Mostrar información del fichero"
 
-#: ../config.c:289
+#: ../config.c:296
 msgid "Show help"
 msgstr "Mostrar ayuda"
 
-#: ../config.c:290
+#: ../config.c:297
 msgid "Open document"
 msgstr "Abrir documento"
 
-#: ../config.c:291
+#: ../config.c:298
 msgid "Close zathura"
 msgstr "Salir de zathura"
 
-#: ../config.c:292
+#: ../config.c:299
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: ../config.c:293
+#: ../config.c:300
 msgid "Save document"
 msgstr "Guardar documento"
 
-#: ../config.c:294
+#: ../config.c:301
 msgid "Save document (and force overwriting)"
 msgstr "Guardar documento (y sobreescribir)"
 
-#: ../config.c:295
+#: ../config.c:302
 msgid "Save attachments"
 msgstr "Guardar ficheros adjuntos"
 
-#: ../config.c:296
+#: ../config.c:303
 msgid "Set page offset"
 msgstr "Asignar el desplazamiento de página"
 
-#: ../config.c:297
+#: ../config.c:304
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:298
+#: ../config.c:305
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:299
+#: ../config.c:306
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:300
+#: ../config.c:307
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:301
+#: ../config.c:308
 msgid "Show version information"
 msgstr ""
 
@@ -334,55 +338,63 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Error al tratar de ejecutar xdg-open"
 
-#: ../page-widget.c:455
+#: ../main.c:51
+msgid "Reparents to window specified by xid"
+msgstr "Reasignar a la ventana especificada por xid"
+
+#: ../main.c:52
+msgid "Path to the config directory"
+msgstr "Ruta al directorio de configuración"
+
+#: ../main.c:53
+msgid "Path to the data directory"
+msgstr "Ruta para el directorio de datos"
+
+#: ../main.c:54
+msgid "Path to the directories containing plugins"
+msgstr "Ruta a los directorios que contienen los plugins"
+
+#: ../main.c:55
+msgid "Fork into the background"
+msgstr "Fork, ejecutándose en background"
+
+#: ../main.c:56
+msgid "Document password"
+msgstr ""
+
+#: ../main.c:57
+msgid "Log level (debug, info, warning, error)"
+msgstr "Nivel de log (debug, info, warning, error)"
+
+#: ../main.c:58
+msgid "Print version information"
+msgstr "Mostrar información del fichero"
+
+#: ../main.c:59
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../page-widget.c:456
 msgid "Loading..."
 msgstr "Cargando ..."
 
-#: ../page-widget.c:631
+#: ../page-widget.c:640
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Se ha copiado el texto seleccionado al portapapeles: %s"
 
-#: ../page-widget.c:728
+#: ../page-widget.c:738
 msgid "Copy image"
 msgstr "Copiar imagen"
 
-#: ../page-widget.c:729
+#: ../page-widget.c:739
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:819
+#: ../shortcuts.c:820
 msgid "This document does not contain any index"
 msgstr "Este documento no contiene ningún índice"
 
-#: ../zathura.c:73
-msgid "Reparents to window specified by xid"
-msgstr "Reasignar a la ventana especificada por xid"
-
-#: ../zathura.c:74
-msgid "Path to the config directory"
-msgstr "Ruta al directorio de configuración"
-
-#: ../zathura.c:75
-msgid "Path to the data directory"
-msgstr "Ruta para el directorio de datos"
-
-#: ../zathura.c:76
-msgid "Path to the directories containing plugins"
-msgstr "Ruta a los directorios que contienen los plugins"
-
-#: ../zathura.c:77
-msgid "Fork into the background"
-msgstr "Fork, ejecutándose en background"
-
-#: ../zathura.c:78
-msgid "Document password"
-msgstr ""
-
-#: ../zathura.c:79
-msgid "Log level (debug, info, warning, error)"
-msgstr "Nivel de log (debug, info, warning, error)"
-
-#: ../zathura.c:251 ../zathura.c:816
+#: ../zathura.c:179 ../zathura.c:824
 msgid "[No name]"
 msgstr "[Sin nombre]"

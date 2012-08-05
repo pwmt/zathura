@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-03 11:02+0200\n"
+"POT-Creation-Date: 2012-08-05 15:45+0200\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: Rivo Zängov <eraser@eraser.ee>\n"
 "Language-Team: Estonian (http://www.transifex.net/projects/p/zathura/"
@@ -30,7 +30,7 @@ msgstr ""
 
 #: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
 #: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
 msgid "No document opened."
 msgstr ""
 
@@ -141,192 +141,196 @@ msgid "Images"
 msgstr ""
 
 #. zathura settings
-#: ../config.c:100
+#: ../config.c:105
 msgid "Database backend"
 msgstr ""
 
-#: ../config.c:102
+#: ../config.c:107
 msgid "Zoom step"
 msgstr ""
 
-#: ../config.c:104
+#: ../config.c:109
 msgid "Padding between pages"
 msgstr ""
 
-#: ../config.c:106
+#: ../config.c:111
 msgid "Number of pages per row"
 msgstr ""
 
-#: ../config.c:108
+#: ../config.c:113
 msgid "Column of the first page"
 msgstr ""
 
-#: ../config.c:110
+#: ../config.c:115
 msgid "Scroll step"
 msgstr ""
 
-#: ../config.c:112
+#: ../config.c:117
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../config.c:114
+#: ../config.c:119
 msgid "Zoom minimum"
 msgstr ""
 
-#: ../config.c:116
+#: ../config.c:121
 msgid "Zoom maximum"
 msgstr ""
 
-#: ../config.c:118
+#: ../config.c:123
 msgid "Life time (in seconds) of a hidden page"
 msgstr ""
 
-#: ../config.c:119
+#: ../config.c:124
 msgid "Amount of seconds between each cache purge"
 msgstr ""
 
-#: ../config.c:121
+#: ../config.c:126
 msgid "Recoloring (dark color)"
 msgstr ""
 
-#: ../config.c:123
+#: ../config.c:128
 msgid "Recoloring (light color)"
 msgstr ""
 
-#: ../config.c:125
+#: ../config.c:130
 msgid "Color for highlighting"
 msgstr "Esiletõstmise värv"
 
-#: ../config.c:127
+#: ../config.c:132
 msgid "Color for highlighting (active)"
 msgstr "Esiletõstmise värv (aktiivne)"
 
-#: ../config.c:131
+#: ../config.c:136
 msgid "Recolor pages"
 msgstr ""
 
-#: ../config.c:133
+#: ../config.c:138
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr ""
+
+#: ../config.c:140
 msgid "Wrap scrolling"
 msgstr ""
 
-#: ../config.c:135
+#: ../config.c:142
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:137
+#: ../config.c:144
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../config.c:139
+#: ../config.c:146
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:141
+#: ../config.c:148
 msgid "Transparency for highlighting"
 msgstr ""
 
-#: ../config.c:143
+#: ../config.c:150
 msgid "Render 'Loading ...'"
 msgstr ""
 
-#: ../config.c:144
+#: ../config.c:151
 msgid "Adjust to when opening file"
 msgstr ""
 
-#: ../config.c:146
+#: ../config.c:153
 msgid "Show hidden files and directories"
 msgstr ""
 
-#: ../config.c:148
+#: ../config.c:155
 msgid "Show directories"
 msgstr "Näita kaustasid"
 
-#: ../config.c:150
+#: ../config.c:157
 msgid "Always open on first page"
 msgstr "Ava alati esimene leht"
 
-#: ../config.c:152
+#: ../config.c:159
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:154
+#: ../config.c:161
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:156
+#: ../config.c:163
 msgid "Use basename of the file in the window title"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:284
+#: ../config.c:291
 msgid "Add a bookmark"
 msgstr "Lisa järjehoidja"
 
-#: ../config.c:285
+#: ../config.c:292
 msgid "Delete a bookmark"
 msgstr "Kustuta järjehoidja"
 
-#: ../config.c:286
+#: ../config.c:293
 msgid "List all bookmarks"
 msgstr "Näita kõiki järjehoidjaid"
 
-#: ../config.c:287
+#: ../config.c:294
 msgid "Close current file"
 msgstr "Sulge praegune fail"
 
-#: ../config.c:288
+#: ../config.c:295
 msgid "Show file information"
 msgstr "Näita faili infot"
 
-#: ../config.c:289
+#: ../config.c:296
 msgid "Show help"
 msgstr "Näita abiinfot"
 
-#: ../config.c:290
+#: ../config.c:297
 msgid "Open document"
 msgstr "Ava dokument"
 
-#: ../config.c:291
+#: ../config.c:298
 msgid "Close zathura"
 msgstr "Sule zathura"
 
-#: ../config.c:292
+#: ../config.c:299
 msgid "Print document"
 msgstr "Prindi dokument"
 
-#: ../config.c:293
+#: ../config.c:300
 msgid "Save document"
 msgstr "Salvesta dokument"
 
-#: ../config.c:294
+#: ../config.c:301
 msgid "Save document (and force overwriting)"
 msgstr ""
 
-#: ../config.c:295
+#: ../config.c:302
 msgid "Save attachments"
 msgstr "Salvesta manused"
 
-#: ../config.c:296
+#: ../config.c:303
 msgid "Set page offset"
 msgstr ""
 
-#: ../config.c:297
+#: ../config.c:304
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:298
+#: ../config.c:305
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:299
+#: ../config.c:306
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:300
+#: ../config.c:307
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:301
+#: ../config.c:308
 msgid "Show version information"
 msgstr ""
 
@@ -334,55 +338,63 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr ""
 
-#: ../page-widget.c:455
+#: ../main.c:51
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../main.c:52
+msgid "Path to the config directory"
+msgstr ""
+
+#: ../main.c:53
+msgid "Path to the data directory"
+msgstr ""
+
+#: ../main.c:54
+msgid "Path to the directories containing plugins"
+msgstr ""
+
+#: ../main.c:55
+msgid "Fork into the background"
+msgstr ""
+
+#: ../main.c:56
+msgid "Document password"
+msgstr ""
+
+#: ../main.c:57
+msgid "Log level (debug, info, warning, error)"
+msgstr ""
+
+#: ../main.c:58
+msgid "Print version information"
+msgstr "Näita faili infot"
+
+#: ../main.c:59
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../page-widget.c:456
 msgid "Loading..."
 msgstr ""
 
-#: ../page-widget.c:631
+#: ../page-widget.c:640
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr ""
 
-#: ../page-widget.c:728
+#: ../page-widget.c:738
 msgid "Copy image"
 msgstr "Kopeeri pilt"
 
-#: ../page-widget.c:729
+#: ../page-widget.c:739
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:819
+#: ../shortcuts.c:820
 msgid "This document does not contain any index"
 msgstr ""
 
-#: ../zathura.c:73
-msgid "Reparents to window specified by xid"
-msgstr ""
-
-#: ../zathura.c:74
-msgid "Path to the config directory"
-msgstr ""
-
-#: ../zathura.c:75
-msgid "Path to the data directory"
-msgstr ""
-
-#: ../zathura.c:76
-msgid "Path to the directories containing plugins"
-msgstr ""
-
-#: ../zathura.c:77
-msgid "Fork into the background"
-msgstr ""
-
-#: ../zathura.c:78
-msgid "Document password"
-msgstr ""
-
-#: ../zathura.c:79
-msgid "Log level (debug, info, warning, error)"
-msgstr ""
-
-#: ../zathura.c:251 ../zathura.c:816
+#: ../zathura.c:179 ../zathura.c:824
 msgid "[No name]"
 msgstr "[Nime pole]"

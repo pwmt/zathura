@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-03 11:02+0200\n"
+"POT-Creation-Date: 2012-08-05 15:45+0200\n"
 "PO-Revision-Date: 2012-06-20 14:58+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
@@ -31,7 +31,7 @@ msgstr "Получен неверный индекс %s"
 
 #: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
 #: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:913
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
 msgid "No document opened."
 msgstr "Документ не открыт"
 
@@ -142,192 +142,196 @@ msgid "Images"
 msgstr ""
 
 #. zathura settings
-#: ../config.c:100
+#: ../config.c:105
 msgid "Database backend"
 msgstr "Бэкэнд базы данных"
 
-#: ../config.c:102
+#: ../config.c:107
 msgid "Zoom step"
 msgstr "Шаг увеличения"
 
-#: ../config.c:104
+#: ../config.c:109
 msgid "Padding between pages"
 msgstr "Разрыв между страницами"
 
-#: ../config.c:106
+#: ../config.c:111
 msgid "Number of pages per row"
 msgstr "Количество страниц в ряд"
 
-#: ../config.c:108
+#: ../config.c:113
 msgid "Column of the first page"
 msgstr ""
 
-#: ../config.c:110
+#: ../config.c:115
 msgid "Scroll step"
 msgstr "Шаг прокрутки"
 
-#: ../config.c:112
+#: ../config.c:117
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../config.c:114
+#: ../config.c:119
 msgid "Zoom minimum"
 msgstr "Минимальное увеличение"
 
-#: ../config.c:116
+#: ../config.c:121
 msgid "Zoom maximum"
 msgstr "Максимальное увеличение"
 
-#: ../config.c:118
+#: ../config.c:123
 msgid "Life time (in seconds) of a hidden page"
 msgstr "Время жизни (секунды) скрытой страницы"
 
-#: ../config.c:119
+#: ../config.c:124
 msgid "Amount of seconds between each cache purge"
 msgstr "Время (в секундах) между очисткой кэшей"
 
-#: ../config.c:121
+#: ../config.c:126
 msgid "Recoloring (dark color)"
 msgstr "Перекрашивание (тёмные тона)"
 
-#: ../config.c:123
+#: ../config.c:128
 msgid "Recoloring (light color)"
 msgstr "Перекрашивание (светлые тона)"
 
-#: ../config.c:125
+#: ../config.c:130
 msgid "Color for highlighting"
 msgstr "Цвет для подсветки"
 
-#: ../config.c:127
+#: ../config.c:132
 msgid "Color for highlighting (active)"
 msgstr "Цвет для подсветки (активной)"
 
-#: ../config.c:131
+#: ../config.c:136
 msgid "Recolor pages"
 msgstr "Перекрасить страницы"
 
-#: ../config.c:133
+#: ../config.c:138
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr ""
+
+#: ../config.c:140
 msgid "Wrap scrolling"
 msgstr "Плавная прокрутка"
 
-#: ../config.c:135
+#: ../config.c:142
 msgid "Advance number of pages per row"
 msgstr "Увеличить количество страниц в ряду"
 
-#: ../config.c:137
+#: ../config.c:144
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../config.c:139
+#: ../config.c:146
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:141
+#: ../config.c:148
 msgid "Transparency for highlighting"
 msgstr "Прозрачность подсветки"
 
-#: ../config.c:143
+#: ../config.c:150
 msgid "Render 'Loading ...'"
 msgstr "Рендер 'Загружается ...'"
 
-#: ../config.c:144
+#: ../config.c:151
 msgid "Adjust to when opening file"
 msgstr ""
 
-#: ../config.c:146
+#: ../config.c:153
 msgid "Show hidden files and directories"
 msgstr "Показывать скрытые файлы и директории"
 
-#: ../config.c:148
+#: ../config.c:155
 msgid "Show directories"
 msgstr "Показывать директории"
 
-#: ../config.c:150
+#: ../config.c:157
 msgid "Always open on first page"
 msgstr "Всегда открывать на первой странице"
 
-#: ../config.c:152
+#: ../config.c:159
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:154
+#: ../config.c:161
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:156
+#: ../config.c:163
 msgid "Use basename of the file in the window title"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:284
+#: ../config.c:291
 msgid "Add a bookmark"
 msgstr "Добавить закладку"
 
-#: ../config.c:285
+#: ../config.c:292
 msgid "Delete a bookmark"
 msgstr "Удалить закладку"
 
-#: ../config.c:286
+#: ../config.c:293
 msgid "List all bookmarks"
 msgstr "Показать все закладки"
 
-#: ../config.c:287
+#: ../config.c:294
 msgid "Close current file"
 msgstr "Закрыть текущий файл"
 
-#: ../config.c:288
+#: ../config.c:295
 msgid "Show file information"
 msgstr "Показать информацию о файле"
 
-#: ../config.c:289
+#: ../config.c:296
 msgid "Show help"
 msgstr "Помощь"
 
-#: ../config.c:290
+#: ../config.c:297
 msgid "Open document"
 msgstr "Открыть документ"
 
-#: ../config.c:291
+#: ../config.c:298
 msgid "Close zathura"
 msgstr "Выход"
 
-#: ../config.c:292
+#: ../config.c:299
 msgid "Print document"
 msgstr "Печать"
 
-#: ../config.c:293
+#: ../config.c:300
 msgid "Save document"
 msgstr "Сохранить документ"
 
-#: ../config.c:294
+#: ../config.c:301
 msgid "Save document (and force overwriting)"
 msgstr "Сохранить документ (с перезапиьсю)"
 
-#: ../config.c:295
+#: ../config.c:302
 msgid "Save attachments"
 msgstr "Сохранить прикреплённые файлы"
 
-#: ../config.c:296
+#: ../config.c:303
 msgid "Set page offset"
 msgstr "Сохранить смещение страницы"
 
-#: ../config.c:297
+#: ../config.c:304
 msgid "Mark current location within the document"
 msgstr "Пометить текущую позицию в документе"
 
-#: ../config.c:298
+#: ../config.c:305
 msgid "Delete the specified marks"
 msgstr "Удалить указанные пометки"
 
-#: ../config.c:299
+#: ../config.c:306
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:300
+#: ../config.c:307
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:301
+#: ../config.c:308
 msgid "Show version information"
 msgstr ""
 
@@ -335,55 +339,63 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Не удалось запустить xdg-open"
 
-#: ../page-widget.c:455
+#: ../main.c:51
+msgid "Reparents to window specified by xid"
+msgstr "Сменить материнское окно на окно, указанное в xid"
+
+#: ../main.c:52
+msgid "Path to the config directory"
+msgstr "Путь к директории конфига"
+
+#: ../main.c:53
+msgid "Path to the data directory"
+msgstr "Путь к директории с данными"
+
+#: ../main.c:54
+msgid "Path to the directories containing plugins"
+msgstr "Путь к директории с плагинами"
+
+#: ../main.c:55
+msgid "Fork into the background"
+msgstr "Уйти в бэкграунд"
+
+#: ../main.c:56
+msgid "Document password"
+msgstr ""
+
+#: ../main.c:57
+msgid "Log level (debug, info, warning, error)"
+msgstr "Уровень логирования (debug,info,warning,error)"
+
+#: ../main.c:58
+msgid "Print version information"
+msgstr "Показать информацию о файле"
+
+#: ../main.c:59
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../page-widget.c:456
 msgid "Loading..."
 msgstr ""
 
-#: ../page-widget.c:631
+#: ../page-widget.c:640
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Выделенный текст скопирован в буфер: %s"
 
-#: ../page-widget.c:728
+#: ../page-widget.c:738
 msgid "Copy image"
 msgstr "Скопировать изображение"
 
-#: ../page-widget.c:729
+#: ../page-widget.c:739
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:819
+#: ../shortcuts.c:820
 msgid "This document does not contain any index"
 msgstr "В документе нету индекса"
 
-#: ../zathura.c:73
-msgid "Reparents to window specified by xid"
-msgstr "Сменить материнское окно на окно, указанное в xid"
-
-#: ../zathura.c:74
-msgid "Path to the config directory"
-msgstr "Путь к директории конфига"
-
-#: ../zathura.c:75
-msgid "Path to the data directory"
-msgstr "Путь к директории с данными"
-
-#: ../zathura.c:76
-msgid "Path to the directories containing plugins"
-msgstr "Путь к директории с плагинами"
-
-#: ../zathura.c:77
-msgid "Fork into the background"
-msgstr "Уйти в бэкграунд"
-
-#: ../zathura.c:78
-msgid "Document password"
-msgstr ""
-
-#: ../zathura.c:79
-msgid "Log level (debug, info, warning, error)"
-msgstr "Уровень логирования (debug,info,warning,error)"
-
-#: ../zathura.c:251 ../zathura.c:816
+#: ../zathura.c:179 ../zathura.c:824
 msgid "[No name]"
 msgstr "[No name]"
