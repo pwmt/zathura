@@ -227,7 +227,11 @@ zathura_init(int argc, char* argv[])
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
   /* page view */
+#if (GTK_MAJOR_VERSION == 3)
+  zathura->ui.page_widget = gtk_grid_new();
+#else
   zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);
+#endif
   if (zathura->ui.page_widget == NULL) {
     goto error_free;
   }
@@ -274,8 +278,13 @@ zathura_init(int argc, char* argv[])
   int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
+#if (GTK_MAJOR_VERSION == 3)
+  gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
+  gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
+#else
   gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
   gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
+#endif
 
   /* database */
   char* database = NULL;
@@ -937,15 +946,22 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned in
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)0);
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
+#if (GTK_MAJOR_VERSION == 3)
+#else
   gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), ceil((number_of_pages + first_page_column - 1) / pages_per_row), pages_per_row);
-  for (unsigned int i = 0; i < number_of_pages; i++)
-  {
+#endif
+
+  for (unsigned int i = 0; i < number_of_pages; i++) {
     int x = (i + first_page_column - 1) % pages_per_row;
     int y = (i + first_page_column - 1) / pages_per_row;
 
     zathura_page_t* page   = zathura_document_get_page(zathura->document, i);
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
+#else
     gtk_table_attach(GTK_TABLE(zathura->ui.page_widget), page_widget, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+#endif
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);

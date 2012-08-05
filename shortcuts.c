@@ -343,7 +343,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
       break;
     case GIRARA_EVENT_MOTION_NOTIFY:
       x_adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-      y_adj =gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+      y_adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
 
       if (x_adj == NULL || y_adj == NULL) {
         return false;
@@ -542,7 +542,6 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   } else {
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   }
-
 
   gdouble view_size                  = gtk_adjustment_get_page_size(adjustment);
   gdouble value                      = gtk_adjustment_get_value(adjustment);
