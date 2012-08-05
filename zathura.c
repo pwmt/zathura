@@ -136,6 +136,8 @@ zathura_init(zathura_t* zathura)
   /* page view */
 #if (GTK_MAJOR_VERSION == 3)
   zathura->ui.page_widget = gtk_grid_new();
+  gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
+  gtk_grid_set_column_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
 #else
   zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);
 #endif
@@ -157,6 +159,14 @@ zathura_init(zathura_t* zathura)
     goto error_free;
   }
   gtk_container_add(GTK_CONTAINER(zathura->ui.page_widget_alignment), zathura->ui.page_widget);
+
+#if (GTK_MAJOR_VERSION == 3)
+  gtk_widget_set_hexpand_set(zathura->ui.page_widget_alignment, TRUE);
+  gtk_widget_set_hexpand(zathura->ui.page_widget_alignment, FALSE);
+  gtk_widget_set_vexpand_set(zathura->ui.page_widget_alignment, TRUE);
+  gtk_widget_set_vexpand(zathura->ui.page_widget_alignment, FALSE);
+#endif
+
 
   gtk_widget_show(zathura->ui.page_widget);
 

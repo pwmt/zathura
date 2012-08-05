@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-05 15:45+0200\n"
-"PO-Revision-Date: 2012-04-03 15:25+0000\n"
-"Last-Translator: Sebastian Ramacher <s.ramacher@gmx.at>\n"
+"PO-Revision-Date: 2012-08-05 15:56+0100\n"
+"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -26,13 +26,24 @@ msgstr "Ungültige Eingabe '%s' angegeben."
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
-#: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
+#: ../commands.c:34
+#: ../commands.c:69
+#: ../commands.c:96
+#: ../commands.c:138
+#: ../commands.c:252
+#: ../commands.c:282
+#: ../commands.c:308
+#: ../commands.c:397
+#: ../commands.c:497
+#: ../shortcuts.c:449
+#: ../shortcuts.c:914
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:40 ../commands.c:75 ../commands.c:102 ../commands.c:402
+#: ../commands.c:40
+#: ../commands.c:75
+#: ../commands.c:102
+#: ../commands.c:402
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
@@ -66,7 +77,8 @@ msgstr "Konnte Lesezeichen nicht entfernen: %s"
 msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
-#: ../commands.c:160 ../commands.c:182
+#: ../commands.c:160
+#: ../commands.c:182
 msgid "No information available."
 msgstr "Keine Information verfügbar."
 
@@ -78,15 +90,18 @@ msgstr "Zu viele Argumente angegeben."
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:288 ../commands.c:314
+#: ../commands.c:288
+#: ../commands.c:314
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:290 ../commands.c:316
+#: ../commands.c:290
+#: ../commands.c:316
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:293 ../commands.c:319
+#: ../commands.c:293
+#: ../commands.c:319
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
@@ -113,7 +128,7 @@ msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 #: ../commands.c:476
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Unbekanntes Bild '%s'."
 
 #: ../commands.c:480
 #, c-format
@@ -157,7 +172,7 @@ msgstr "Anzahl der Seiten in einer Reihe"
 
 #: ../config.c:113
 msgid "Column of the first page"
-msgstr ""
+msgstr "Spalte der ersten Seite"
 
 #: ../config.c:115
 msgid "Scroll step"
@@ -177,12 +192,11 @@ msgstr "Maximale Vergrößerungsstufe"
 
 #: ../config.c:123
 msgid "Life time (in seconds) of a hidden page"
-msgstr ""
+msgstr "Zeit (in Sekunden) bevor nicht sichtbare Seiten gelöscht werden"
 
 #: ../config.c:124
 msgid "Amount of seconds between each cache purge"
-msgstr ""
-"Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
+msgstr "Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
 
 #: ../config.c:126
 msgid "Recoloring (dark color)"
@@ -250,15 +264,15 @@ msgstr "Öffne Dokument immer auf der ersten Seite"
 
 #: ../config.c:159
 msgid "Highlight search results"
-msgstr ""
+msgstr "Hebe Suchergebnisse hervor"
 
 #: ../config.c:161
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Lösche Suchergebnisse bei Abbruch"
 
 #: ../config.c:163
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Verwende den Dateinamen der Datei im Fenstertitel"
 
 #. define default inputbar commands
 #: ../config.c:291
@@ -315,25 +329,26 @@ msgstr "Setze den Seitenabstand"
 
 #: ../config.c:304
 msgid "Mark current location within the document"
-msgstr ""
+msgstr "Markiere aktuelle Position im Doukument"
 
 #: ../config.c:305
 msgid "Delete the specified marks"
-msgstr ""
+msgstr "Lösche angegebene Markierung"
 
 #: ../config.c:306
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "Hebe aktuelle Suchergebnisse nicht hervor"
 
 #: ../config.c:307
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Hebe aktuelle Suchergebnisse hervor"
 
 #: ../config.c:308
 msgid "Show version information"
 msgstr "Zeige Versionsinformationen an"
 
-#: ../links.c:162 ../links.c:219
+#: ../links.c:162
+#: ../links.c:219
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
@@ -371,7 +386,7 @@ msgstr "Zeige Versionsinformationen an"
 
 #: ../main.c:59
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "Synctex Editor (wird an synctex weitergeleitet)"
 
 #: ../page-widget.c:456
 msgid "Loading..."
@@ -394,6 +409,8 @@ msgstr "Bild speichern als"
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
-#: ../zathura.c:179 ../zathura.c:824
+#: ../zathura.c:179
+#: ../zathura.c:824
 msgid "[No name]"
 msgstr "[Kein Name]"
+
