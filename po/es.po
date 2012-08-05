@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-05 15:45+0200\n"
+"POT-Creation-Date: 2012-08-05 16:09+0200\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: Moritz Lipp <mlq@pwmt.org>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -395,6 +395,6 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Este documento no contiene ningún índice"
 
-#: ../zathura.c:179 ../zathura.c:824
+#: ../zathura.c:189 ../zathura.c:834
 msgid "[No name]"
 msgstr "[Sin nombre]"

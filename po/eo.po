@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-05 15:45+0200\n"
+"POT-Creation-Date: 2012-08-05 16:09+0200\n"
 "PO-Revision-Date: 2012-04-21 14:04+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -393,6 +393,6 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
 
-#: ../zathura.c:179 ../zathura.c:824
+#: ../zathura.c:189 ../zathura.c:834
 msgid "[No name]"
 msgstr "[Neniu nomo]"

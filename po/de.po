@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-05 15:45+0200\n"
-"PO-Revision-Date: 2012-08-05 15:56+0100\n"
+"POT-Creation-Date: 2012-08-05 16:09+0200\n"
+"PO-Revision-Date: 2012-08-05 16:08+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
 "Language: de\n"
@@ -26,24 +26,13 @@ msgstr "Ungültige Eingabe '%s' angegeben."
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:34
-#: ../commands.c:69
-#: ../commands.c:96
-#: ../commands.c:138
-#: ../commands.c:252
-#: ../commands.c:282
-#: ../commands.c:308
-#: ../commands.c:397
-#: ../commands.c:497
-#: ../shortcuts.c:449
-#: ../shortcuts.c:914
+#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
+#: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
+#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:40
-#: ../commands.c:75
-#: ../commands.c:102
-#: ../commands.c:402
+#: ../commands.c:40 ../commands.c:75 ../commands.c:102 ../commands.c:402
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
@@ -77,8 +66,7 @@ msgstr "Konnte Lesezeichen nicht entfernen: %s"
 msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
-#: ../commands.c:160
-#: ../commands.c:182
+#: ../commands.c:160 ../commands.c:182
 msgid "No information available."
 msgstr "Keine Information verfügbar."
 
@@ -90,18 +78,15 @@ msgstr "Zu viele Argumente angegeben."
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:288
-#: ../commands.c:314
+#: ../commands.c:288 ../commands.c:314
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:290
-#: ../commands.c:316
+#: ../commands.c:290 ../commands.c:316
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:293
-#: ../commands.c:319
+#: ../commands.c:293 ../commands.c:319
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
@@ -196,7 +181,8 @@ msgstr "Zeit (in Sekunden) bevor nicht sichtbare Seiten gelöscht werden"
 
 #: ../config.c:124
 msgid "Amount of seconds between each cache purge"
-msgstr "Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
+msgstr ""
+"Anzahl der Sekunden zwischen jeder Prüfung von nicht angezeigten Seiten"
 
 #: ../config.c:126
 msgid "Recoloring (dark color)"
@@ -221,6 +207,8 @@ msgstr "Färbe die Seiten ein"
 #: ../config.c:138
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
+"Behalte beim Neuzeichnen den ursprünglichen Hue-Wert bei und stimme nur die "
+"Helligkeit ab"
 
 #: ../config.c:140
 msgid "Wrap scrolling"
@@ -232,11 +220,11 @@ msgstr "Gehe Anzahl der Seiten in einer Reihe weiter"
 
 #: ../config.c:144
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Horizontal zentrierter Zoom"
 
 #: ../config.c:146
 msgid "Center result horizontally"
-msgstr ""
+msgstr "Zentriere Ergebnis horizontal"
 
 #: ../config.c:148
 msgid "Transparency for highlighting"
@@ -347,8 +335,7 @@ msgstr "Hebe aktuelle Suchergebnisse hervor"
 msgid "Show version information"
 msgstr "Zeige Versionsinformationen an"
 
-#: ../links.c:162
-#: ../links.c:219
+#: ../links.c:162 ../links.c:219
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
@@ -409,8 +396,6 @@ msgstr "Bild speichern als"
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
-#: ../zathura.c:179
-#: ../zathura.c:824
+#: ../zathura.c:189 ../zathura.c:834
 msgid "[No name]"
 msgstr "[Kein Name]"
-

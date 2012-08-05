@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-05 15:45+0200\n"
+"POT-Creation-Date: 2012-08-05 16:09+0200\n"
 "PO-Revision-Date: 2012-07-02 12:58+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/zathura/language/"
@@ -396,6 +396,6 @@ msgstr "Enregistrer l'image sous"
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
-#: ../zathura.c:179 ../zathura.c:824
+#: ../zathura.c:189 ../zathura.c:834
 msgid "[No name]"
 msgstr "[Sans nom]"
