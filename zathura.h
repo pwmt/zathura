@@ -122,13 +122,19 @@ struct zathura_s
 };
 
 /**
+ * Creates a zathura session
+ *
+ * @return zathura session object or NULL if zathura could not be creeated
+ */
+zathura_t* zathura_create(void);
+
+/**
  * Initializes zathura
  *
- * @param argc Number of arguments
- * @param argv Values of arguments
- * @return zathura session object or NULL if zathura could not been initialized
+ * @param zathura The zathura session
+ * @return true if initialization has been successful
  */
-zathura_t* zathura_init(int argc, char* argv[]);
+bool zathura_init(zathura_t* zathura);
 
 /**
  * Free zathura session
@@ -136,6 +142,58 @@ zathura_t* zathura_init(int argc, char* argv[]);
  * @param zathura The zathura session
  */
 void zathura_free(zathura_t* zathura);
+
+/**
+ * Set parent window id
+ *
+ * @param zathura The zathura session
+ * @param xid The window id
+ */
+#if (GTK_MAJOR_VERSION == 2)
+void zathura_set_xid(zathura_t* zathura, GdkNativeWindow xid);
+#else
+void zathura_set_xid(zathura_t* zathura, Window xid);
+#endif
+
+/**
+ * Set the path to the configuration directory
+ *
+ * @param zathura The zathura session
+ * @param dir Directory path
+ */
+void zathura_set_config_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Set the path to the data directory
+ *
+ * @param zathura The zathura session
+ * @param dir Directory path
+ */
+void zathura_set_data_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Set the path to the plugin directory
+ *
+ * @param zathura The zathura session
+ * @param dir Directory path
+ */
+void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Enables synctex support and sets the synctex editor command
+ *
+ * @param zathura The zathura session
+ * @param command Synctex editor command
+ */
+void zathura_set_synctex_editor_command(zathura_t* zathura, const char* command);
+
+/**
+ * Sets the program parameters
+ *
+ * @param zathura The zathura session
+ * @param argv List of arguments
+ */
+void zathura_set_argv(zathura_t* zathura, char** argv);
 
 /**
  * Opens a file
@@ -147,6 +205,15 @@ void zathura_free(zathura_t* zathura);
  * @return If no error occured true, otherwise false, is returned.
  */
 bool document_open(zathura_t* zathura, const char* path, const char* password);
+
+/**
+ * Opens a file (idle)
+ *
+ * @param zathura The zathura session
+ * @param path The path to the file
+ * @param password The password of the file
+ */
+void document_open_idle(zathura_t* zathura, const char* path, const char* password);
 
 /**
  * Save a open file
