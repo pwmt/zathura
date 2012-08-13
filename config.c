@@ -161,6 +161,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable syntex support"), NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);

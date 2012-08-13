@@ -192,6 +192,14 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
 void zathura_set_synctex_editor_command(zathura_t* zathura, const char* command);
 
 /**
+ * En/Disable zathuras syntex support
+ *
+ * @param zathura The zathura session
+ * @param value The value
+ */
+void zathura_set_syntex(zathura_t* zathura, bool value);
+
+/**
  * Sets the program parameters
  *
  * @param zathura The zathura session

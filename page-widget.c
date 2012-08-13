@@ -613,7 +613,10 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   } else {
     redraw_rect(ZATHURA_PAGE(widget), &priv->mouse.selection);
 
-    if (priv->zathura->synctex.enabled && button->state & GDK_CONTROL_MASK) {
+    bool synctex = false;
+    girara_setting_get(priv->zathura->ui.session, "synctex", &synctex);
+
+    if (synctex == true && button->state & GDK_CONTROL_MASK) {
       /* synctex backwards sync */
       double scale = zathura_document_get_scale(document);
       int x = button->x / scale, y = button->y / scale;
