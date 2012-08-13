@@ -44,6 +44,15 @@ OPTIONS
 --fork
   Fork into the background
 
+-l [level], --debug [level]
+  Set log debug level (debug, info, warning, error)
+
+-s, --synctex
+  Enable syntex support
+
+-x [cmd], --syntec-editor-command [cmd]
+  Set the syntex editor command
+
 MOUSE AND KEY BINDINGS
 ======================
 
