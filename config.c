@@ -51,16 +51,7 @@ cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  int val = *(int*) value;
-  if (GTK_IS_TABLE(zathura->ui.page_widget) == TRUE) {
-#if (GTK_MAJOR_VERSION == 3)
-    gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), val);
-    gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), val);
-#else
-    gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-    gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-#endif
-  }
+  g_object_set(G_OBJECT(zathura->ui.page_widget), "page-padding", *(int*) value, NULL);
 }
 
 static void

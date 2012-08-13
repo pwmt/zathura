@@ -29,6 +29,7 @@
 #include "marks.h"
 #include "render.h"
 #include "page.h"
+#include "document-widget.h"
 #include "page-widget.h"
 #include "plugin.h"
 
@@ -134,13 +135,7 @@ zathura_init(zathura_t* zathura)
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
   /* page view */
-#if (GTK_MAJOR_VERSION == 3)
-  zathura->ui.page_widget = gtk_grid_new();
-  gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
-  gtk_grid_set_column_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
-#else
-  zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);
-#endif
+  zathura->ui.page_widget = zathura_document_widget_new(zathura);
   if (zathura->ui.page_widget == NULL) {
     goto error_free;
   }
@@ -194,14 +189,7 @@ zathura_init(zathura_t* zathura)
   /* set page padding */
   int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
-
-#if (GTK_MAJOR_VERSION == 3)
-  gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
-  gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
-#else
-  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-#endif
+  g_object_set(G_OBJECT(zathura->ui.page_widget), "page-padding", page_padding, NULL);
 
   /* database */
   char* database = NULL;
@@ -641,6 +629,8 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   girara_setting_set(zathura->ui.session, "first-page-column", &first_page_column);
   page_widget_set_mode(zathura, pages_per_row, first_page_column);
 
+  g_object_set(G_OBJECT(zathura->ui.page_widget), "document", document, NULL);
+
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
 
   /* threads */
@@ -734,16 +724,6 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
   return (error == ZATHURA_ERROR_OK) ? true : false;
 }
 
-static void
-remove_page_from_table(GtkWidget* page, gpointer permanent)
-{
-  if (permanent == false) {
-    g_object_ref(G_OBJECT(page));
-  }
-
-  gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(page)), page);
-}
-
 bool
 document_close(zathura_t* zathura, bool keep_monitor)
 {
@@ -809,7 +789,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->sync.render_thread = NULL;
 
   /* remove widgets */
-  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer) 1);
   for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
     g_object_unref(zathura->pages[i]);
   }
@@ -921,45 +900,8 @@ statusbar_page_number_update(zathura_t* zathura)
 void
 page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column)
 {
-  /* show at least one page */
-  if (pages_per_row == 0) {
-    pages_per_row = 1;
-  }
-
-	/* ensure: 0 < first_page_column <= pages_per_row */
-	if (first_page_column < 1) {
-		first_page_column = 1;
-	}
-
-	if (first_page_column > pages_per_row) {
-		first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
-	}
-
-  if (zathura->document == NULL) {
-    return;
-  }
-
-  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)0);
-
-  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-#if (GTK_MAJOR_VERSION == 3)
-#else
-  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), ceil((number_of_pages + first_page_column - 1) / pages_per_row), pages_per_row);
-#endif
-
-  for (unsigned int i = 0; i < number_of_pages; i++) {
-    int x = (i + first_page_column - 1) % pages_per_row;
-    int y = (i + first_page_column - 1) / pages_per_row;
-
-    zathura_page_t* page   = zathura_document_get_page(zathura->document, i);
-    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-#if (GTK_MAJOR_VERSION == 3)
-    gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
-#else
-    gtk_table_attach(GTK_TABLE(zathura->ui.page_widget), page_widget, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-#endif
-  }
-
+  g_object_set(G_OBJECT(zathura->ui.page_widget), "pages-per-row",
+      pages_per_row, "first-page-column", first_page_column, NULL);
   gtk_widget_show_all(zathura->ui.page_widget);
 }
 
