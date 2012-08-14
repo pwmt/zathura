@@ -393,3 +393,45 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
 
 	return version;
 }
+
+char*
+replace_substring(const char* string, const char* old, const char* new)
+{
+  if (string == NULL || old == NULL || new == NULL) {
+    return NULL;
+  }
+
+  size_t old_len = strlen(old);
+  size_t new_len = strlen(new);
+
+  /* count occurences */
+  unsigned int count = 0;
+  unsigned int i = 0;
+
+  for (i = 0; string[i] != '\0'; i++) {
+    if (strstr(&string[i], old) == &string[i]) {
+      i += (old_len - 1);
+      count++;
+    }
+  }
+
+  if (count == 0) {
+    return NULL;
+  }
+
+  char* ret = g_malloc0(sizeof(char) * (i - count * old_len + count * new_len + 1));
+  i = 0;
+
+  /* replace */
+  while (*string != '\0') {
+    if (strstr(string, old) == string) {
+      strcpy(&ret[i], new);
+      i += new_len;
+      string += old_len;
+    } else {
+      ret[i++] = *string++;
+    }
+  }
+
+  return ret;
+}

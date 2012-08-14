@@ -140,4 +140,16 @@ void document_draw_search_results(zathura_t* zathura, bool value);
  */
 char* zathura_get_version_string(zathura_t* zathura, bool markup);
 
+/**
+ * Replaces all occurences of \ref old in \ref string with \ref new and returns
+ * a new allocated string
+ *
+ * @param string The original string
+ * @param old String to replace
+ * @param new Replacement string
+ *
+ * @return new allocated string
+ */
+char* replace_substring(const char* string, const char* old, const char* new);
+
 #endif // UTILS_H
