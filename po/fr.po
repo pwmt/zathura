@@ -7,16 +7,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-05 16:09+0200\n"
-"PO-Revision-Date: 2012-07-02 12:58+0000\n"
+"Report-Msgid-Bugs-To: http://bt.pwmt.org/\n"
+"POT-Creation-Date: 2012-08-05 15:45+0200\n"
+"PO-Revision-Date: 2012-08-07 22:54+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
-"Language-Team: French (http://www.transifex.net/projects/p/zathura/language/"
-"fr/)\n"
-"Language: fr\n"
+"Language-Team: French (http://www.transifex.com/projects/p/zathura/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
 #: ../callbacks.c:204
@@ -160,7 +159,7 @@ msgstr "Nombre de page par rangée"
 
 #: ../config.c:113
 msgid "Column of the first page"
-msgstr ""
+msgstr "Colonne de la première page"
 
 #: ../config.c:115
 msgid "Scroll step"
@@ -168,7 +167,7 @@ msgstr "Facteur de défilement"
 
 #: ../config.c:117
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Pas de défilement horizontal"
 
 #: ../config.c:119
 msgid "Zoom minimum"
@@ -208,7 +207,7 @@ msgstr "Recoloriser les pages"
 
 #: ../config.c:138
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
+msgstr "Lors du recalibrage des couleurs garder la teinte d'origine et ajuster seulement la luminosité"
 
 #: ../config.c:140
 msgid "Wrap scrolling"
@@ -220,11 +219,11 @@ msgstr "Augmenter le nombre de pages par rangée"
 
 #: ../config.c:144
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Zoom centré horizontalement"
 
 #: ../config.c:146
 msgid "Center result horizontally"
-msgstr ""
+msgstr "Centrer le résultat horizontalement"
 
 #: ../config.c:148
 msgid "Transparency for highlighting"
@@ -260,7 +259,7 @@ msgstr "Effacer les résultats de recherche en cas d'abandon"
 
 #: ../config.c:163
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Utiliser le nom de base dans le titre de la fenêtre"
 
 #. define default inputbar commands
 #: ../config.c:291
@@ -373,7 +372,7 @@ msgstr "Afficher les informations de version "
 
 #: ../main.c:59
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "Éditeur Synctex (transférer à la commande synctex)"
 
 #: ../page-widget.c:456
 msgid "Loading..."

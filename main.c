@@ -40,6 +40,7 @@ main(int argc, char* argv[])
   gchar* synctex_editor = NULL;
   bool forkback         = false;
   bool print_version    = false;
+  bool synctex          = false;
 
 #if (GTK_MAJOR_VERSION == 3)
   Window embed = 0;
@@ -56,6 +57,7 @@ main(int argc, char* argv[])
     { "password",               'w', 0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
     { "debug",                  'l', 0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
     { "version",                'v', 0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
+    { "synctex",                's', 0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
     { "synctex-editor-command", 'x', 0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
@@ -107,6 +109,9 @@ main(int argc, char* argv[])
     zathura_free(zathura);
     return -1;
   }
+
+  /* Enable/Disable synctex support */
+  zathura_set_syntex(zathura, synctex);
 
   /* Print version */
   if (print_version == true) {

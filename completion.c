@@ -32,7 +32,7 @@ compare_case_insensitive(const char* str1, const char* str2)
 
 static girara_list_t*
 list_files(zathura_t* zathura, const char* current_path, const char* current_file,
-    int current_file_length, bool is_dir, bool check_file_ext)
+    unsigned int current_file_length, bool is_dir, bool check_file_ext)
 {
   if (zathura == NULL || zathura->ui.session == NULL || current_path == NULL) {
     return NULL;
