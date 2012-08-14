@@ -82,6 +82,11 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   double width  = allocation.width;
   double height = allocation.height;
 
+  /* scrollbar spacing */
+  gint spacing;
+  gtk_widget_style_get(session->gtk.view, "scrollbar_spacing", &spacing, NULL);
+  width -= spacing;
+
   /* correct view size */
   if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == true) {
     gtk_widget_get_allocation(session->gtk.inputbar, &allocation);
