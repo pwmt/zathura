@@ -218,7 +218,7 @@ config_load_default(zathura_t* zathura)
 
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_p,          NULL, sc_print,                    NORMAL,     0,               NULL);
 
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i,          NULL, sc_recolor,                  NORMAL,     0,               NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_r,          NULL, sc_recolor,                  NORMAL,     0,               NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_R,          NULL, sc_reload,                   NORMAL,     0,               NULL);
 
