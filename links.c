@@ -135,6 +135,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
             return;
           }
 
+	  zathura_document_set_current_page_number(zathura->document, link->target.page_number);
+
           /* get page offset */
           page_offset_t offset;
           page_calculate_offset(zathura, page, &offset);
@@ -148,6 +150,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           }
 
           position_set_delayed(zathura, offset.x, offset.y);
+          statusbar_page_number_update(zathura);
+
           }
           break;
         default:
