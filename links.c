@@ -4,6 +4,7 @@
 #include <glib/gi18n.h>
 #include <girara/utils.h>
 #include <girara/session.h>
+#include <girara/settings.h>
 
 #include "links.h"
 #include "zathura.h"
@@ -135,11 +136,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           return;
         }
 
-        zathura_document_set_current_page_number(zathura->document, link->target.page_number);
-
-        /* get page offset */
-        page_offset_t offset;
-        page_calculate_offset(zathura, page, &offset);
+          page_offset_t offset;
+          page_calculate_offset(zathura, page, &offset);
 
         if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ) {
           if (link->target.left != -1) {
@@ -151,8 +149,18 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           }
         }
 
-        position_set_delayed(zathura, offset.x, offset.y);
-        statusbar_page_number_update(zathura);
+        /* jump to the page */
+        page_set(zathura, link->target.page_number);
+
+        /* move to the target position */
+        bool link_hadjust = true;
+        girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
+
+        if (link_hadjust == true) {
+          position_set_delayed(zathura, offset.x, offset.y);
+        } else {
+          position_set_delayed(zathura, -1, offset.y);
+        }
       }
       break;
     case ZATHURA_LINK_GOTO_REMOTE:

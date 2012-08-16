@@ -640,6 +640,13 @@ Defines if scrolling by half or full pages stops at page boundaries.
 * Value type: Boolean
 * Default value: false
 
+link-hadjust
+^^^^^^^^^^^^
+En/Disables aligning to the left internal link targets, for example from the index
+
+* Value type: Boolean
+* Default value: true
+
 search-hadjust
 ^^^^^^^^^^^^^^
 En/Disables horizontally centered search results

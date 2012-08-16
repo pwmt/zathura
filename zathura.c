@@ -1093,8 +1093,14 @@ position_set_delayed_impl(gpointer data)
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
 
-  zathura_adjustment_set_value(hadjustment, p->position_x);
-  zathura_adjustment_set_value(vadjustment, p->position_y);
+  /* negative values mean: don't set the position */
+  if (p->position_x >= 0) {
+    zathura_adjustment_set_value(hadjustment, p->position_x);
+  }
+
+  if (p->position_y >= 0) {
+    zathura_adjustment_set_value(vadjustment, p->position_y);
+  }
 
   g_free(p);
 
