@@ -177,7 +177,10 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     }
 
     sc_toggle_index(zathura->ui.session, NULL, NULL, 0);
+
+    /* zathura_jumplist_save is called when entering index mode */
     zathura_link_evaluate(zathura, index_element->link);
+    zathura_jumplist_add(zathura);
   }
 
   g_object_unref(model);
@@ -221,9 +224,12 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
 
     if (eval == true) {
       zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
+
       if (link != NULL) {
+        zathura_jumplist_save(zathura);
         zathura_link_evaluate(zathura, link);
         invalid_index = false;
+        zathura_jumplist_add(zathura);
       }
     }
   }
@@ -404,7 +410,9 @@ cb_unknown_command(girara_session_t* session, const char* input)
     }
   }
 
+  zathura_jumplist_save(zathura);
   page_set(zathura, atoi(input) - 1);
+  zathura_jumplist_add(zathura);
 
   return true;
 }

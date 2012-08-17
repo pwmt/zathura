@@ -19,6 +19,15 @@ typedef struct zathura_page_s zathura_page_t;
  * Zathura
  */
 typedef struct zathura_s zathura_t;
+/**
+ * Jump
+ */
+typedef struct zathura_jump_s
+{
+  unsigned int page;
+  double x;
+  double y;
+} zathura_jump_t;
 
 /**
  * Plugin manager

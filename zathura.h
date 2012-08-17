@@ -107,6 +107,14 @@ struct zathura_s
 
   struct
   {
+    girara_list_t* list;
+    girara_list_iterator_t *cur;
+    unsigned int size;
+    unsigned int max_size;
+  } jumplist;
+
+  struct
+  {
     gchar* file;
   } stdin_support;
 
@@ -291,5 +299,49 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsign
  * @param zathura The zathura session
  */
 void statusbar_page_number_update(zathura_t* zathura);
+
+/**
+ * Return current jump in the jumplist
+ *
+ * @param zathura The zathura session
+ * @return current jump
+ */
+zathura_jump_t* zathura_jumplist_current(zathura_t* zathura);
+
+/**
+ * Move forward in the jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_forward(zathura_t* zathura);
+
+/**
+ * Move backward in the jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_backward(zathura_t* zathura);
+
+/**
+ * Save current page to the jumplist at current position
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_save(zathura_t* zathura);
+
+/**
+ * Add current page as a new item to the jumplist after current position
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_add(zathura_t* zathura);
+
+/**
+ * Add a page to the jumplist after current position
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_append_jump(zathura_t* zathura);
+
 
 #endif // ZATHURA_H

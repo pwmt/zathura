@@ -19,6 +19,21 @@
 #include <glib/gi18n.h>
 
 static void
+cb_jumplist_change(girara_session_t* session, const char* name,
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+  if (g_strcmp0(name, "jumplist-size") == 0) {
+    size_t *max_size = (size_t*) value;
+    zathura->jumplist.max_size = *max_size;
+  }
+}
+
+static void
 cb_color_change(girara_session_t* session, const char* name,
     girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
@@ -122,6 +137,8 @@ config_load_default(zathura_t* zathura)
   int_value = 20;
   girara_setting_add(gsession, "page-store-threshold",  &int_value,   INT,    false, _("Life time (in seconds) of a hidden page"), NULL, NULL);
   girara_setting_add(gsession, "page-store-interval",   &int_value,   INT,    true,  _("Amount of seconds between each cache purge"), NULL, NULL);
+  int_value = 20;
+  girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
   girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
@@ -242,6 +259,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_y,          NULL, sc_scroll,                   NORMAL,     FULL_RIGHT,      NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_space,      NULL, sc_scroll,                   NORMAL,     FULL_DOWN,       NULL);
   girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_space,      NULL, sc_scroll,                   NORMAL,     FULL_UP,         NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_o,          NULL, sc_jumplist,                 NORMAL,     BACKWARD,        NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i,          NULL, sc_jumplist,                 NORMAL,     FORWARD,         NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_n,          NULL, sc_search,                   NORMAL,     FORWARD,         NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_N,          NULL, sc_search,                   NORMAL,     BACKWARD,        NULL);

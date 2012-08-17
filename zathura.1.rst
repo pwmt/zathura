@@ -68,6 +68,8 @@ t, ^f, ^b, space, <S-space>, y
   Scroll a full page left, down, up or right
 gg, G, nG
   Goto to the first, the last or to the nth page
+^o, ^i
+  Move backward and forward through the jump list
 ^c, Escape
   Abort
 a, s
@@ -84,7 +86,7 @@ f
   Enter command
 r
   Rotate by 90 degrees
-^i
+^r
   Recolor
 R
   Reload document

@@ -235,6 +235,16 @@ zathura_init(zathura_t* zathura)
   girara_setting_get(zathura->ui.session, "page-store-interval", &interval);
   g_timeout_add_seconds(interval, purge_pages, zathura);
 
+  /* jumplist */
+
+  zathura->jumplist.max_size = 20;
+  girara_setting_get(zathura->ui.session, "jumplist-size", &(zathura->jumplist.max_size));
+
+  zathura->jumplist.list = girara_list_new2(g_free);
+  zathura->jumplist.size = 0;
+  zathura->jumplist.cur = NULL;
+  zathura_jumplist_append_jump(zathura);
+  zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
   return true;
 
 error_free:
@@ -290,6 +300,15 @@ zathura_free(zathura_t* zathura)
   /* free config variables */
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
+
+  /* free jumplist */
+  if (zathura->jumplist.list != NULL) {
+    girara_list_free(zathura->jumplist.list);
+  }
+
+  if (zathura->jumplist.cur != NULL) {
+    girara_list_iterator_free(zathura->jumplist.cur);
+  }
 
   g_free(zathura);
 }
@@ -1025,4 +1044,93 @@ position_set_delayed(zathura_t* zathura, double position_x, double position_y)
   gdk_threads_add_idle(position_set_delayed_impl, p);
 
   return FALSE;
+}
+
+
+zathura_jump_t*
+zathura_jumplist_current(zathura_t* zathura) {
+  if (zathura->jumplist.cur != NULL) {
+    return girara_list_iterator_data(zathura->jumplist.cur);
+  } else {
+    return NULL;
+  }
+}
+
+void
+zathura_jumplist_forward(zathura_t* zathura) {
+  if (girara_list_iterator_has_next(zathura->jumplist.cur)) {
+    girara_list_iterator_next(zathura->jumplist.cur);
+  }
+}
+
+void
+zathura_jumplist_backward(zathura_t* zathura) {
+  if (girara_list_iterator_has_previous(zathura->jumplist.cur)) {
+    girara_list_iterator_previous(zathura->jumplist.cur);
+  }
+}
+
+void
+zathura_jumplist_append_jump(zathura_t* zathura) {
+  zathura_jump_t *jump = g_malloc(sizeof(zathura_jump_t));
+  if (jump != NULL) {
+    jump->page = 0;
+    jump->x = 0;
+    jump->y = 0;
+
+    /* remove right tail after current */
+    if (zathura->jumplist.cur != NULL) {
+      girara_list_iterator_t *it = girara_list_iterator_copy(zathura->jumplist.cur);
+      girara_list_iterator_next(it);
+      while (girara_list_iterator_is_valid(it)) {
+        girara_list_iterator_remove(it);
+        zathura->jumplist.size = zathura->jumplist.size - 1;
+      }
+      g_free(it);
+    }
+
+    /* trim from beginning until max_size */
+    girara_list_iterator_t *it = girara_list_iterator(zathura->jumplist.list);
+    while (zathura->jumplist.size >= zathura->jumplist.max_size && girara_list_iterator_is_valid(it)) {
+      girara_list_iterator_remove(it);
+      zathura->jumplist.size = zathura->jumplist.size - 1;
+    }
+    g_free(it);
+
+    girara_list_append(zathura->jumplist.list, jump);
+    zathura->jumplist.size = zathura->jumplist.size + 1;
+  }
+}
+
+void
+zathura_jumplist_add(zathura_t* zathura) {
+  if (zathura->jumplist.list != NULL) {
+    unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
+    zathura_jump_t* cur = zathura_jumplist_current(zathura);
+    if (cur && cur->page == pagenum) {
+      return;
+    }
+
+    zathura_jumplist_append_jump(zathura);
+    girara_list_iterator_next(zathura->jumplist.cur);
+    zathura_jumplist_save(zathura);
+  }
+}
+
+
+void
+zathura_jumplist_save(zathura_t* zathura) {
+  zathura_jump_t* cur = zathura_jumplist_current(zathura);
+
+  unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
+
+  if (cur) {
+    /* get position */
+    GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+
+    cur->page = pagenum;
+    cur->x = gtk_adjustment_get_value(view_hadjustment);
+    cur->y = gtk_adjustment_get_value(view_vadjustment);
+  }
 }

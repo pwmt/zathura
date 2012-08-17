@@ -93,7 +93,7 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
  * Returns the current scale value of the document
  *
  * @param document The document
- * @return The current scale value 
+ * @return The current scale value
  */
 double zathura_document_get_scale(zathura_document_t* document);
 
@@ -125,7 +125,7 @@ void zathura_document_set_rotation(zathura_document_t* document, unsigned int ro
  * Returns the adjust mode of the document
  *
  * @param document The document
- * @return The adjust mode 
+ * @return The adjust mode
  */
 zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
 

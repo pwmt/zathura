@@ -293,6 +293,7 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
+  zathura_jumplist_save(zathura);
   if (t != 0) {
     /* add offset */
     unsigned int page_offset = zathura_document_get_page_offset(zathura->document);
@@ -300,12 +301,14 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
       t += page_offset;
     }
 
-    page_set(zathura, t - 1);
+    page_set(zathura, t-1);
   } else if (argument->n == TOP) {
     page_set(zathura, 0);
   } else if (argument->n == BOTTOM) {
     page_set(zathura, zathura_document_get_number_of_pages(zathura->document) - 1);
   }
+
+  zathura_jumplist_add(zathura);
 
   return false;
 }
@@ -609,6 +612,38 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   return false;
 }
 
+
+bool
+sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  zathura_jump_t* jump = NULL;
+  switch(argument->n) {
+    case FORWARD:
+      zathura_jumplist_save(zathura);
+      zathura_jumplist_forward(zathura);
+      jump = zathura_jumplist_current(zathura);
+      break;
+
+    case BACKWARD:
+      zathura_jumplist_save(zathura);
+      zathura_jumplist_backward(zathura);
+      jump = zathura_jumplist_current(zathura);
+      break;
+  }
+
+  page_set(zathura, jump->page);
+  position_set_delayed(zathura, jump->x, jump->y);
+
+  return false;
+}
+
+
 bool
 sc_search(girara_session_t* session, girara_argument_t* argument,
     girara_event_t* UNUSED(event), unsigned int UNUSED(t))
@@ -651,6 +686,8 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       target_idx = current - 1;
     } else {
       /* the next result is on a different page */
+      zathura_jumplist_save(zathura);
+
       g_object_set(page_widget, "search-current", -1, NULL);
 
       for (int npage_id = 1; page_id < num_pages; ++npage_id) {
@@ -665,6 +702,8 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
           break;
         }
       }
+
+      zathura_jumplist_add(zathura);
     }
 
     break;
@@ -779,6 +818,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
+
       return false;
   }
 
@@ -883,6 +923,9 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
     vvalue = gtk_adjustment_get_value(vadjustment);
     hvalue = gtk_adjustment_get_value(hadjustment);
+
+    /* save current position to the jumplist */
+    zathura_jumplist_save(zathura);
 
     girara_set_view(session, zathura->ui.index);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));
