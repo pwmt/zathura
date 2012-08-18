@@ -386,7 +386,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
           /* draw position */
           GdkColor color = priv->zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
           cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
               (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
           cairo_fill(cairo);
@@ -411,10 +411,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         /* draw position */
         if (idx == priv->search.current) {
           GdkColor color = priv->zathura->ui.colors.highlight_color_active;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
         } else {
           GdkColor color = priv->zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
         }
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
             (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
@@ -425,7 +425,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* draw selection */
     if (priv->mouse.selection.y2 != -1 && priv->mouse.selection.x2 != -1) {
       GdkColor color = priv->zathura->ui.colors.highlight_color;
-      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
       cairo_rectangle(cairo, priv->mouse.selection.x1, priv->mouse.selection.y1,
         (priv->mouse.selection.x2 - priv->mouse.selection.x1), (priv->mouse.selection.y2 - priv->mouse.selection.y1));
       cairo_fill(cairo);
@@ -448,7 +448,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     if (render_loading == true) {
       if (priv->zathura->global.recolor == true) {
         GdkColor color = priv->zathura->ui.colors.recolor_dark_color;
-        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+        cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       } else {
         cairo_set_source_rgb(cairo, 0, 0, 0);
       }
