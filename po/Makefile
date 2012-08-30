@@ -1,8 +1,12 @@
 # See LICENSE file for license and copyright information
 
 PROJECT = zathura
-CATALOGS = $(wildcard *.po)
-MOS = $(patsubst %.po, %/LC_MESSAGES/${PROJECT}.mo, $(CATALOGS))
+GETTEXT_PACKAGE = $(PROJECT)
+CATALOGS  = $(wildcard *.po)
+LINGUAS  ?= $(patsubst %.po, %, $(CATALOGS))
+ALINGUAS   = $(shell find $(patsubst %, %.po, $(LINGUAS)) 2>/dev/null)
+MOS = $(patsubst %, %/LC_MESSAGES/${GETTEXT_PACKAGE}.mo, $(patsubst %.po, %, $(ALINGUAS)))
+
 
 include ../config.mk
 include ../common.mk

@@ -15,11 +15,13 @@
 #include "utils.h"
 #include "page-widget.h"
 #include "page.h"
+#include "plugin.h"
 #include "internal.h"
 #include "render.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
+#include <girara/commands.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
@@ -487,6 +489,27 @@ error_ret:
 }
 
 bool
+cmd_exec(girara_session_t* session, girara_list_t* argument_list)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document != NULL) {
+    const char* path = zathura_document_get_path(zathura->document);
+
+    GIRARA_LIST_FOREACH(argument_list, char*, iter, value)
+      char* r = NULL;
+      if ((r = replace_substring(value, "$FILE", path)) != NULL) {
+        girara_list_iterator_set(iter, r);
+      }
+    GIRARA_LIST_FOREACH_END(argument_list, char*, iter, value);
+  }
+
+  return girara_exec_with_argument_list(session, argument_list);
+}
+
+bool
 cmd_offset(girara_session_t* session, girara_list_t* argument_list)
 {
   g_return_val_if_fail(session != NULL, false);
@@ -515,6 +538,26 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
   if (page_offset < zathura_document_get_number_of_pages(zathura->document)) {
     zathura_document_set_page_offset(zathura->document, page_offset);
   }
+
+  return true;
+}
+
+bool
+cmd_version(girara_session_t* session, girara_list_t* UNUSED(argument_list))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  char* string = zathura_get_version_string(zathura, true);
+	if (string == NULL) {
+		return false;
+	}
+
+  /* display information */
+  girara_notify(session, GIRARA_INFO, "%s", string);
+
+  g_free(string);
 
   return true;
 }

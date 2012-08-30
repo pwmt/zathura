@@ -28,6 +28,14 @@ void zathura_plugin_set_register_functions_function(zathura_plugin_t* plugin,
     zathura_plugin_register_function_t register_function);
 
 /**
+ * Sets the name of the plugin
+ *
+ * @param plugin The plugin
+ * @param name The name of the plugin
+ */
+void zathura_plugin_set_name(zathura_plugin_t* plugin, const char* name);
+
+/**
  * Sets the functions register function of the plugin
  *
  * @param plugin The plugin
@@ -58,6 +66,7 @@ void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type
       return; \
     } \
     zathura_plugin_set_register_functions_function(plugin, register_functions); \
+    zathura_plugin_set_name(plugin, plugin_name); \
     static const char* mime_types[] = mimetypes; \
     for (size_t s = 0; s != sizeof(mime_types) / sizeof(const char*); ++s) { \
       zathura_plugin_add_mimetype(plugin, mime_types[s]); \

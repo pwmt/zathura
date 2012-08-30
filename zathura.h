@@ -9,6 +9,10 @@
 #include "macros.h"
 #include "types.h"
 
+#if (GTK_MAJOR_VERSION == 3)
+#include <gtk/gtkx.h>
+#endif
+
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -68,12 +72,19 @@ struct zathura_s
 
   struct
   {
+    bool enabled;
+    gchar* editor;
+  } synctex;
+
+  struct
+  {
     GtkPrintSettings* settings; /**< Print settings */
     GtkPageSetup* page_setup; /**< Saved page setup */
   } print;
 
   struct
   {
+    bool recolor_keep_hue; /**< Keep hue when recoloring */
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
     girara_list_t* marks; /**< Marker */
@@ -115,13 +126,19 @@ struct zathura_s
 };
 
 /**
+ * Creates a zathura session
+ *
+ * @return zathura session object or NULL if zathura could not be creeated
+ */
+zathura_t* zathura_create(void);
+
+/**
  * Initializes zathura
  *
- * @param argc Number of arguments
- * @param argv Values of arguments
- * @return zathura session object or NULL if zathura could not been initialized
+ * @param zathura The zathura session
+ * @return true if initialization has been successful
  */
-zathura_t* zathura_init(int argc, char* argv[]);
+bool zathura_init(zathura_t* zathura);
 
 /**
  * Free zathura session
@@ -129,6 +146,66 @@ zathura_t* zathura_init(int argc, char* argv[]);
  * @param zathura The zathura session
  */
 void zathura_free(zathura_t* zathura);
+
+/**
+ * Set parent window id
+ *
+ * @param zathura The zathura session
+ * @param xid The window id
+ */
+#if (GTK_MAJOR_VERSION == 2)
+void zathura_set_xid(zathura_t* zathura, GdkNativeWindow xid);
+#else
+void zathura_set_xid(zathura_t* zathura, Window xid);
+#endif
+
+/**
+ * Set the path to the configuration directory
+ *
+ * @param zathura The zathura session
+ * @param dir Directory path
+ */
+void zathura_set_config_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Set the path to the data directory
+ *
+ * @param zathura The zathura session
+ * @param dir Directory path
+ */
+void zathura_set_data_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Set the path to the plugin directory
+ *
+ * @param zathura The zathura session
+ * @param dir Directory path
+ */
+void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Enables synctex support and sets the synctex editor command
+ *
+ * @param zathura The zathura session
+ * @param command Synctex editor command
+ */
+void zathura_set_synctex_editor_command(zathura_t* zathura, const char* command);
+
+/**
+ * En/Disable zathuras syntex support
+ *
+ * @param zathura The zathura session
+ * @param value The value
+ */
+void zathura_set_syntex(zathura_t* zathura, bool value);
+
+/**
+ * Sets the program parameters
+ *
+ * @param zathura The zathura session
+ * @param argv List of arguments
+ */
+void zathura_set_argv(zathura_t* zathura, char** argv);
 
 /**
  * Opens a file
@@ -140,6 +217,15 @@ void zathura_free(zathura_t* zathura);
  * @return If no error occured true, otherwise false, is returned.
  */
 bool document_open(zathura_t* zathura, const char* path, const char* password);
+
+/**
+ * Opens a file (idle)
+ *
+ * @param zathura The zathura session
+ * @param path The path to the file
+ * @param password The password of the file
+ */
+void document_open_idle(zathura_t* zathura, const char* path, const char* password);
 
 /**
  * Save a open file
@@ -194,8 +280,9 @@ bool position_set_delayed(zathura_t* zathura, double position_x, double position
  *
  * @param zathura The zathura session
  * @param pages_per_row Number of shown pages per row
+ * @param first_page_column Column on which first page start
  */
-void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row);
+void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

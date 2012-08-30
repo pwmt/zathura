@@ -542,9 +542,23 @@ Defines the number of pages that are rendered next to each other in a row.
 * Value type: Integer
 * Default value: 1
 
+first-page-column
+^^^^^^^^^^^^^^^^^
+Defines the column in which the first page will be displayed.
+
+* Value type: Integer
+* Default value: 1
+
 recolor
 ^^^^^^^
 En/Disables recoloring
+
+* Value type: Boolean
+* Default value: false
+
+recolor-keephue
+^^^^^^^^^^^^^^^
+En/Disables keeping original hue when recoloring
 
 * Value type: Boolean
 * Default value: false
@@ -570,6 +584,13 @@ Defines if the "Loading..." text should be displayed if a page is rendered.
 * Value type: Boolean
 * Default value: true
 
+scroll-hstep
+^^^^^^^^^^^^
+Defines the horizontal step size of scrolling by calling the scroll command once
+
+* Value type: Float
+* Default value: -1
+
 scroll-step
 ^^^^^^^^^^^
 Defines the step size of scrolling by calling the scroll command once
@@ -583,6 +604,27 @@ Defines if the last/first page should be wrapped
 
 * Value type: Boolean
 * Default value: false
+
+search-hadjust
+^^^^^^^^^^^^^^
+En/Disables horizontally centered search results
+
+* Value type: Boolean
+* Default value: true
+
+window-title-basename
+^^^^^^^^^^^^^^^^^^^^^
+Use basename of the file in the window title.
+
+* Value type: Boolean
+* Default value: false
+
+zoom-center
+^^^^^^^^^^^
+En/Disables horizontally centered zooming
+
+* Value type: Bool
+* Default value: False
 
 zoom-max
 ^^^^^^^^

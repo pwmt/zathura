@@ -21,6 +21,7 @@
 #define KEY_SCALE "scale"
 #define KEY_ROTATE "rotate"
 #define KEY_PAGES_PER_ROW "pages-per-row"
+#define KEY_FIRST_PAGE_COLUMN "first-page-column"
 #define KEY_POSITION_X "position-x"
 #define KEY_POSITION_Y "position-y"
 
@@ -387,8 +388,9 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   g_key_file_set_string (priv->history, name, KEY_SCALE, tmp);
   g_free(tmp);
 
-  g_key_file_set_integer(priv->history, name, KEY_ROTATE,        file_info->rotation);
-  g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW, file_info->pages_per_row);
+  g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
+  g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
+  g_key_file_set_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, file_info->first_page_column);
 
   tmp = g_strdup_printf("%f", file_info->position_x);
   g_key_file_set_string(priv->history,  name, KEY_POSITION_X, tmp);
@@ -424,10 +426,11 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
     return false;
   }
 
-  file_info->current_page  = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
-  file_info->page_offset   = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
-  file_info->rotation      = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
-  file_info->pages_per_row = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
+  file_info->current_page      = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
+  file_info->page_offset       = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
+  file_info->rotation          = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
+  file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
+  file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
 
   char* scale_string = g_key_file_get_string(priv->history, name, KEY_SCALE, NULL);
   if (scale_string != NULL) {

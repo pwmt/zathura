@@ -13,7 +13,7 @@ a document viewer
 SYNOPOSIS
 =========
 | zathura [OPTION]...
-| zathura [OPTION]... FILE
+| zathura [OPTION]... FILE [FILE ...]
 
 DESCRIPTION
 ===========
@@ -37,10 +37,21 @@ OPTIONS
   Path to the directory containing plugins
 
 -w [password], --password [password]
-  The documents password
+  The documents password. If multiple documents are opened at once, the password
+  will be used for the first one and zathura will ask for the passwords of the
+  remaining files if needed.
 
 --fork
   Fork into the background
+
+-l [level], --debug [level]
+  Set log debug level (debug, info, warning, error)
+
+-s, --synctex
+  Enable syntex support
+
+-x [cmd], --syntec-editor-command [cmd]
+  Set the syntex editor command
 
 MOUSE AND KEY BINDINGS
 ======================

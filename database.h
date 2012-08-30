@@ -15,6 +15,7 @@ typedef struct zathura_fileinfo_s {
   double scale;
   unsigned int rotation;
   unsigned int pages_per_row;
+  unsigned int first_page_column;
   double position_x;
   double position_y;
 } zathura_fileinfo_t;

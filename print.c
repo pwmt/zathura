@@ -41,7 +41,7 @@ print(zathura_t* zathura)
   /* print operation signals */
   g_signal_connect(print_operation, "draw-page",          G_CALLBACK(cb_print_draw_page),          zathura);
   g_signal_connect(print_operation, "end-print",          G_CALLBACK(cb_print_end),                zathura);
-  g_signal_connect(print_operation, "request_page_setup", G_CALLBACK(cb_print_request_page_setup), zathura);
+  g_signal_connect(print_operation, "request-page-setup", G_CALLBACK(cb_print_request_page_setup), zathura);
 
   /* print */
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation,

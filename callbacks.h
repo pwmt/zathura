@@ -47,6 +47,18 @@ void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  */
 void cb_pages_per_row_value_changed(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
+/**
+ * This function gets called when the value of the "first-page-column"
+ * variable changes
+ *
+ * @param session The current girara session
+ * @param name The name of the row
+ * @param type The settings type
+ * @param value The value
+ * @param data Custom data
+ */
+void cb_first_page_column_value_changed(girara_session_t* session, const char* name,
+    girara_setting_type_t type, void* value, void* data);
 
 /**
  * Called when an index element is activated (e.g.: double click)
@@ -110,6 +122,19 @@ bool cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* za
  */
 void cb_setting_recolor_change(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
+
+/**
+ * Emitted when the 'recolor-keephue' setting is changed
+ *
+ * @param session Girara session
+ * @param name Name of the setting ("recolor")
+ * @param type Type of the setting (BOOLEAN)
+ * @param value New value
+ * @param data Custom data
+ */
+void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
+    girara_setting_type_t type, void* value, void* data);
+
 
 /**
  * Unknown command handler which is used to handle the strict numeric goto

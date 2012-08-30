@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include <girara/session.h>
 #include <girara/utils.h>
+#include <girara/settings.h>
 #include <glib/gi18n.h>
 
 #include "links.h"
@@ -156,7 +157,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 
     gchar* description = NULL;
     if (type == ZATHURA_LINK_GOTO_DEST) {
-      description = g_strdup_printf("Page %d", target.page_number);
+      description = g_strdup_printf("Page %d", target.page_number + 1);
     } else {
       description = g_strdup(target.value);
     }
@@ -312,7 +313,8 @@ zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
 }
 
 void
-readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
+readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay)
+{
   if (zathura == NULL || zathura->document == NULL) {
     return;
   }
@@ -325,7 +327,18 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom) {
   gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
   gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
 
-  position_set_delayed(zathura, valx, valy);
+  bool zoom_center = false;
+  girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
+  if (zoom_center) {
+    valx += gtk_adjustment_get_page_size(hadjustment) * (scale / old_zoom - 1) / 2;
+  }
+
+  if (delay == true) {
+    position_set_delayed(zathura, valx, valy);
+  } else {
+    set_adjustment(vadjustment, valx);
+    set_adjustment(vadjustment, valy);
+  }
 }
 
 void
@@ -339,4 +352,86 @@ document_draw_search_results(zathura_t* zathura, bool value)
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
   }
+}
+
+char*
+zathura_get_version_string(zathura_t* zathura, bool markup)
+{
+	if (zathura == NULL) {
+		return NULL;
+	}
+
+  GString* string = g_string_new(NULL);
+
+  /* zathura version */
+  char* zathura_version = g_strdup_printf("zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
+  g_string_append(string, zathura_version);
+  g_free(zathura_version);
+
+	char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
+
+  /* plugin information */
+  girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
+  if (plugins != NULL) {
+    GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin)
+      char* name = zathura_plugin_get_name(plugin);
+      zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
+      char* text = g_strdup_printf(format,
+          (name == NULL) ? "-" : name,
+          version.major,
+          version.minor,
+          version.rev,
+          zathura_plugin_get_path(plugin)
+          );
+      g_string_append(string, text);
+      g_free(text);
+    GIRARA_LIST_FOREACH_END(plugins, zathura_plugin_t*, iter, plugin);
+  }
+
+	char* version = string->str;
+	g_string_free(string, FALSE);
+
+	return version;
+}
+
+char*
+replace_substring(const char* string, const char* old, const char* new)
+{
+  if (string == NULL || old == NULL || new == NULL) {
+    return NULL;
+  }
+
+  size_t old_len = strlen(old);
+  size_t new_len = strlen(new);
+
+  /* count occurences */
+  unsigned int count = 0;
+  unsigned int i = 0;
+
+  for (i = 0; string[i] != '\0'; i++) {
+    if (strstr(&string[i], old) == &string[i]) {
+      i += (old_len - 1);
+      count++;
+    }
+  }
+
+  if (count == 0) {
+    return NULL;
+  }
+
+  char* ret = g_malloc0(sizeof(char) * (i - count * old_len + count * new_len + 1));
+  i = 0;
+
+  /* replace */
+  while (*string != '\0') {
+    if (strstr(string, old) == string) {
+      strcpy(&ret[i], new);
+      i += new_len;
+      string += old_len;
+    } else {
+      ret[i++] = *string++;
+    }
+  }
+
+  return ret;
 }

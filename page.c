@@ -39,14 +39,16 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error
 
   /* init plugin */
   zathura_plugin_t* plugin = zathura_document_get_plugin(document);
-  if (plugin->functions.page_init == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+
+  if (functions->page_init == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     goto error_ret;
   }
 
-  zathura_error_t ret = plugin->functions.page_init(page);
+  zathura_error_t ret = functions->page_init(page);
   if (ret != ZATHURA_ERROR_OK) {
     if (error != NULL) {
       *error = ret;
@@ -80,11 +82,12 @@ zathura_page_free(zathura_page_t* page)
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_clear == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_clear == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  zathura_error_t error = plugin->functions.page_clear(page, page->data);
+  zathura_error_t error = functions->page_clear(page, page->data);
 
   g_free(page);
 
@@ -202,14 +205,15 @@ zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_search_text == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_search_text == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return plugin->functions.page_search_text(page, page->data, text, error);
+  return functions->page_search_text(page, page->data, text, error);
 }
 
 girara_list_t*
@@ -223,14 +227,15 @@ zathura_page_links_get(zathura_page_t* page, zathura_error_t* error)
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_links_get == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_links_get == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return plugin->functions.page_links_get(page, page->data, error);
+  return functions->page_links_get(page, page->data, error);
 }
 
 zathura_error_t
@@ -250,14 +255,15 @@ zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error)
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_form_fields_get == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_form_fields_get == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return plugin->functions.page_form_fields_get(page, page->data, error);
+  return functions->page_form_fields_get(page, page->data, error);
 }
 
 zathura_error_t
@@ -277,14 +283,15 @@ zathura_page_images_get(zathura_page_t* page, zathura_error_t* error)
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_images_get == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_images_get == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return plugin->functions.page_images_get(page, page->data, error);
+  return functions->page_images_get(page, page->data, error);
 }
 
 cairo_surface_t*
@@ -298,14 +305,15 @@ zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathu
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_image_get_cairo == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_image_get_cairo == NULL) {
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return plugin->functions.page_image_get_cairo(page, page->data, image, error);
+  return functions->page_image_get_cairo(page, page->data, image, error);
 }
 
 char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error)
@@ -318,14 +326,15 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_get_text == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_get_text == NULL) {
     if (error) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
     return NULL;
   }
 
-  return plugin->functions.page_get_text(page, page->data, rectangle, error);
+  return functions->page_get_text(page, page->data, rectangle, error);
 }
 
 zathura_error_t
@@ -336,9 +345,10 @@ zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
   }
 
   zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
-  if (plugin->functions.page_render_cairo == NULL) {
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_render_cairo == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
 
-  return plugin->functions.page_render_cairo(page, page->data, cairo, printing);
+  return functions->page_render_cairo(page, page->data, cairo, printing);
 }

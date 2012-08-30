@@ -1,117 +1,116 @@
-# zathura - language file (Turkish)
+# zathura - language file (Italian)
 # See LICENSE file for license and copyright information
 #
 # Translators:
-#   <dead-bodies-everywhere@hotmail.com>, 2012.
-#   <femnad@gmail.com>, 2012.
+#   <segnalazionidalweb@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-30 19:46+0200\n"
-"PO-Revision-Date: 2012-05-01 20:38+0000\n"
-"Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
-"Language-Team: Turkish (http://www.transifex.net/projects/p/zathura/language/"
-"tr/)\n"
-"Language: tr\n"
+"PO-Revision-Date: 2012-06-20 14:58+0000\n"
+"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/zathura/language/"
+"it/)\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: ../callbacks.c:204
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Hatalı girdi '%s'"
+msgstr "Input inserito '%s' non valido."
 
 #: ../callbacks.c:232
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Hatalı dizin '%s'"
+msgstr "Indice inserito '%s' non valido."
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:400
 #: ../commands.c:521 ../shortcuts.c:454 ../shortcuts.c:919
 msgid "No document opened."
-msgstr "Açık belge yok."
+msgstr "Nessun documento aperto."
 
 #: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:405
 msgid "Invalid number of arguments given."
-msgstr "Yanlış sayıda argüman"
+msgstr "Numero di argomenti errato."
 
 #: ../commands.c:49
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr "Yer imi başarıyla güncellendi: %s"
+msgstr "Segnalibro aggiornato con successo:%s"
 
 #: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Yer imi yaratılamadı: %s"
+msgstr "Impossibile creare il segnalibro:%s"
 
 #: ../commands.c:59
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr "Yer imi yaratıldı: %s"
+msgstr "Segnalibro creato con successo:%s"
 
 #: ../commands.c:82
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Yer imi silindi: %s"
+msgstr "Segnalibro rimosso:%s"
 
 #: ../commands.c:84
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Yer imi silinemedi: %s"
+msgstr "Impossibile rimuovere il segnalibro:%s"
 
 #: ../commands.c:110
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Böyle bir yer imi yok: %s"
+msgstr "Nessun segnalibro corrispondente:%s"
 
 #: ../commands.c:161 ../commands.c:183
 msgid "No information available."
-msgstr "Bilgi mevcut değil."
+msgstr "Nessun' informazione disponibile."
 
 #: ../commands.c:221
 msgid "Too many arguments."
-msgstr "Çok fazla sayıda argüman."
+msgstr "Numero di argomenti eccessivo."
 
 #: ../commands.c:230
 msgid "No arguments given."
-msgstr "Argüman verilmedi."
+msgstr "Nessun argomento specificato."
 
 #: ../commands.c:289 ../commands.c:315
 msgid "Document saved."
-msgstr "Belge kaydedildi."
+msgstr "Documento salvato."
 
 #: ../commands.c:291 ../commands.c:317
 msgid "Failed to save document."
-msgstr "Belge kaydedilemedi."
+msgstr "Impossibile salvare il documento."
 
 #: ../commands.c:294 ../commands.c:320
 msgid "Invalid number of arguments."
-msgstr "Yanlış sayıda argüman."
+msgstr "Numero di argomenti non valido."
 
 #: ../commands.c:424
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "'%s' eki '%s' konumuna yazılamadı."
+msgstr "Impossibile salvare l' allegato '%s' in '%s'"
 
 #: ../commands.c:426
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "'%s' eki '%s' konumuna yazıldı."
+msgstr "Allegato '%s' salvato in '%s'"
 
 #: ../commands.c:470
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "'%s' eki '%s' konumuna yazıldı."
+msgstr ""
 
 #: ../commands.c:472
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "'%s' eki '%s' konumuna yazılamadı."
+msgstr ""
 
 #: ../commands.c:479
 #, c-format
@@ -125,7 +124,7 @@ msgstr ""
 
 #: ../commands.c:534
 msgid "Argument must be a number."
-msgstr "Argüman bir sayı olmalı."
+msgstr "L' argomento dev' essere un numero."
 
 #: ../completion.c:250
 #, c-format
@@ -134,7 +133,7 @@ msgstr ""
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "Ekleri kaydet"
+msgstr ""
 
 #. add images
 #: ../completion.c:324
@@ -144,19 +143,19 @@ msgstr ""
 #. zathura settings
 #: ../config.c:105
 msgid "Database backend"
-msgstr "Veritabanı arkayüzü"
+msgstr "Backend del database"
 
 #: ../config.c:107
 msgid "Zoom step"
-msgstr "Yakınlaşma/uzaklaşma aralığı"
+msgstr ""
 
 #: ../config.c:109
 msgid "Padding between pages"
-msgstr "Sayfalar arasındaki boşluk"
+msgstr "Spaziatura tra le pagine"
 
 #: ../config.c:111
 msgid "Number of pages per row"
-msgstr "Satır başına sayfa sayısı"
+msgstr "Numero di pagine per riga"
 
 #: ../config.c:113
 msgid "Column of the first page"
@@ -164,7 +163,7 @@ msgstr ""
 
 #: ../config.c:115
 msgid "Scroll step"
-msgstr "Kaydırma aralığı"
+msgstr ""
 
 #: ../config.c:117
 msgid "Horizontal scroll step"
@@ -172,39 +171,39 @@ msgstr ""
 
 #: ../config.c:119
 msgid "Zoom minimum"
-msgstr "En fazla uzaklaşma"
+msgstr "Zoom minimo"
 
 #: ../config.c:121
 msgid "Zoom maximum"
-msgstr "En fazla yakınlaşma"
+msgstr "Zoom massimo"
 
 #: ../config.c:123
 msgid "Life time (in seconds) of a hidden page"
-msgstr "Gizli pencerenin açık kalma süresi (saniye)"
+msgstr "Durata (in secondi) di una pagina nascosta"
 
 #: ../config.c:124
 msgid "Amount of seconds between each cache purge"
-msgstr "Önbellek temizliği yapılma sıklığı, saniye cinsinden"
+msgstr "Tempo in secondi tra le invalidazioni della cache"
 
 #: ../config.c:126
 msgid "Recoloring (dark color)"
-msgstr "Renk değişimi (koyu renk)"
+msgstr ""
 
 #: ../config.c:128
 msgid "Recoloring (light color)"
-msgstr "Renk değişimi (açık renk)"
+msgstr ""
 
 #: ../config.c:130
 msgid "Color for highlighting"
-msgstr "İşaretleme rengi"
+msgstr ""
 
 #: ../config.c:132
 msgid "Color for highlighting (active)"
-msgstr "İşaretleme rengi (etkin)"
+msgstr ""
 
 #: ../config.c:136
 msgid "Recolor pages"
-msgstr "Sayga rengini değiştir"
+msgstr "Ricolora le pagine"
 
 #: ../config.c:138
 msgid "When recoloring keep original hue and adjust lightness only"
@@ -212,11 +211,11 @@ msgstr ""
 
 #: ../config.c:140
 msgid "Wrap scrolling"
-msgstr "Kaydırmayı sarmala"
+msgstr "Scrolling continuo"
 
 #: ../config.c:142
 msgid "Advance number of pages per row"
-msgstr "Satır başına sayfa sayısı"
+msgstr ""
 
 #: ../config.c:144
 msgid "Horizontally centered zoom"
@@ -228,27 +227,27 @@ msgstr ""
 
 #: ../config.c:148
 msgid "Transparency for highlighting"
-msgstr "Ön plana çıkarmak için saydamlaştır"
+msgstr ""
 
 #: ../config.c:150
 msgid "Render 'Loading ...'"
-msgstr "'Yüklüyor ...' yazısını göster"
+msgstr ""
 
 #: ../config.c:151
 msgid "Adjust to when opening file"
-msgstr "Dosya açarken ayarla"
+msgstr ""
 
 #: ../config.c:153
 msgid "Show hidden files and directories"
-msgstr "Gizli dosyaları ve dizinleri göster"
+msgstr "Mostra file e cartelle nascosti"
 
 #: ../config.c:155
 msgid "Show directories"
-msgstr "Dizinleri göster"
+msgstr "Mostra cartelle"
 
 #: ../config.c:157
 msgid "Always open on first page"
-msgstr "Her zaman ilk sayfayı aç"
+msgstr "Apri sempre alla prima pagina"
 
 #: ../config.c:159
 msgid "Highlight search results"
@@ -269,23 +268,23 @@ msgstr ""
 #. define default inputbar commands
 #: ../config.c:293
 msgid "Add a bookmark"
-msgstr "Yer imi ekle"
+msgstr "Aggiungi un segnalibro"
 
 #: ../config.c:294
 msgid "Delete a bookmark"
-msgstr "Yer imi sil"
+msgstr "Elimina un segnalibro"
 
 #: ../config.c:295
 msgid "List all bookmarks"
-msgstr "Yer imlerini listele"
+msgstr "Mostra i segnalibri"
 
 #: ../config.c:296
 msgid "Close current file"
-msgstr "Geçerli dosyayı kapat"
+msgstr "Chiudi il file corrente"
 
 #: ../config.c:297
 msgid "Show file information"
-msgstr "Dosya bilgisi göster"
+msgstr "Mostra le informazioni sul file"
 
 #: ../config.c:298
 msgid "Execute a command"
@@ -293,43 +292,43 @@ msgstr ""
 
 #: ../config.c:299
 msgid "Show help"
-msgstr "Yardım bilgisi göster"
+msgstr "Mostra l' aiuto"
 
 #: ../config.c:300
 msgid "Open document"
-msgstr "Belge aç"
+msgstr "Apri un documento"
 
 #: ../config.c:301
 msgid "Close zathura"
-msgstr "Zathura'yı kapat"
+msgstr "Chiudi zathura"
 
 #: ../config.c:302
 msgid "Print document"
-msgstr "Belge yazdır"
+msgstr "Stampa il documento"
 
 #: ../config.c:303
 msgid "Save document"
-msgstr "Belgeyi kaydet"
+msgstr "Salva il documento"
 
 #: ../config.c:304
 msgid "Save document (and force overwriting)"
-msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
+msgstr "Salva il documento (e sovrascrivi)"
 
 #: ../config.c:305
 msgid "Save attachments"
-msgstr "Ekleri kaydet"
+msgstr "Salva allegati"
 
 #: ../config.c:306
 msgid "Set page offset"
-msgstr "Sayfa derinliğini ayarla"
+msgstr "Imposta l' offset della pagina"
 
 #: ../config.c:307
 msgid "Mark current location within the document"
-msgstr "Bu belgede bu konumu işaretle"
+msgstr ""
 
 #: ../config.c:308
 msgid "Delete the specified marks"
-msgstr "Seçilen işaretlemeleri sil"
+msgstr ""
 
 #: ../config.c:309
 msgid "Don't highlight current search results"
@@ -345,27 +344,27 @@ msgstr ""
 
 #: ../links.c:162 ../links.c:219
 msgid "Failed to run xdg-open."
-msgstr "xdg-open çalıştırılamadı"
+msgstr "Impossibile eseguire xdg-open."
 
 #: ../main.c:52
 msgid "Reparents to window specified by xid"
-msgstr "Xid tarafından belirlendiği gibi bir üst seviye pencereye bağlı"
+msgstr ""
 
 #: ../main.c:53
 msgid "Path to the config directory"
-msgstr "Ayar dizini adresi"
+msgstr "Percorso della directory della configurazione"
 
 #: ../main.c:54
 msgid "Path to the data directory"
-msgstr "Veri dizini adresi"
+msgstr "Percorso della directory dei dati"
 
 #: ../main.c:55
 msgid "Path to the directories containing plugins"
-msgstr "Eklentileri içeren dizinin adresi"
+msgstr "Percorso della directory contenente i plugin"
 
 #: ../main.c:56
 msgid "Fork into the background"
-msgstr "Arka planda işlemden çocuk oluştur"
+msgstr "Crea un processo separato"
 
 #: ../main.c:57
 msgid "Document password"
@@ -373,11 +372,11 @@ msgstr ""
 
 #: ../main.c:58
 msgid "Log level (debug, info, warning, error)"
-msgstr "Kayıt seviyesi (hata ayıklama, bilgi, uyarı, hata)"
+msgstr "Livello di log (debug, info, warning, error)"
 
 #: ../main.c:59
 msgid "Print version information"
-msgstr "Dosya bilgisi göster"
+msgstr "Mostra le informazioni sul file"
 
 #: ../main.c:61
 msgid "Synctex editor (forwarded to the synctex command)"
@@ -385,16 +384,16 @@ msgstr ""
 
 #: ../page-widget.c:456
 msgid "Loading..."
-msgstr "Yüklüyor ..."
+msgstr ""
 
 #: ../page-widget.c:643
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr "Seçili metin panoya kopyalandı: %s"
+msgstr "La selezione è stato copiata negli appunti:%s"
 
 #: ../page-widget.c:741
 msgid "Copy image"
-msgstr "Resim kopyala"
+msgstr "Copia immagine"
 
 #: ../page-widget.c:742
 msgid "Save image as"
@@ -402,8 +401,8 @@ msgstr ""
 
 #: ../shortcuts.c:825
 msgid "This document does not contain any index"
-msgstr "Bu belge fihrist içermiyor"
+msgstr "Questo documento non contiene l' indice"
 
 #: ../zathura.c:189 ../zathura.c:843
 msgid "[No name]"
-msgstr "[İsimsiz]"
+msgstr "[Nessun nome]"

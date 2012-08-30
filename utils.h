@@ -119,8 +119,9 @@ GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
  *
  * @param zathura Zathura instance
  * @param old_zoom Old zoom value
+ * @param delay true if action should be delayed
  */
-void readjust_view_after_zooming(zathura_t* zathura, float old_zoom);
+void readjust_view_after_zooming(zathura_t* zathura, float old_zoom, bool delay);
 
 /**
  * Set if the search results should be drawn or not
@@ -129,5 +130,26 @@ void readjust_view_after_zooming(zathura_t* zathura, float old_zoom);
  * @param value true if they should be drawn, otherwise false
  */
 void document_draw_search_results(zathura_t* zathura, bool value);
+
+/**
+ * Create zathura version string
+ *
+ * @param zathura The zathura instance
+ * @param markup Enable markup
+ * @return Version string 
+ */
+char* zathura_get_version_string(zathura_t* zathura, bool markup);
+
+/**
+ * Replaces all occurences of \ref old in \ref string with \ref new and returns
+ * a new allocated string
+ *
+ * @param string The original string
+ * @param old String to replace
+ * @param new Replacement string
+ *
+ * @return new allocated string
+ */
+char* replace_substring(const char* string, const char* old, const char* new);
 
 #endif // UTILS_H

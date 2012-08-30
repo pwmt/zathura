@@ -3,7 +3,7 @@
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 2
-ZATHURA_VERSION_REV = 0
+ZATHURA_VERSION_REV = 1
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -16,7 +16,7 @@ ZATHURA_GTK_VERSION ?= 2
 
 # minimum required zathura version
 # If you want to disable the check, set GIRARA_VERSION_CHECK to 0.
-GIRARA_MIN_VERSION = 0.1.3
+GIRARA_MIN_VERSION = 0.1.4
 GIRARA_VERSION_CHECK ?= $(shell pkg-config --atleast-version=$(GIRARA_MIN_VERSION) girara-gtk${ZATHURA_GTK_VERSION}; echo $$?)
 
 # database

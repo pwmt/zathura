@@ -143,6 +143,15 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
 bool cmd_export(girara_session_t* session, girara_list_t* argument_list);
 
 /**
+ * Execute command
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occured
+ */
+bool cmd_exec(girara_session_t* session, girara_list_t* argument_list);
+
+/**
  * Set page offset
  *
  * @param session The used girara session
@@ -150,5 +159,14 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list);
  * @return true if no error occured
  */
 bool cmd_offset(girara_session_t* session, girara_list_t* argument_list);
+
+/**
+ * Shows version information
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occured
+ */
+bool cmd_version(girara_session_t* session, girara_list_t* argument_list);
 
 #endif // COMMANDS_H

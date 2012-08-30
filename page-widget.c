@@ -13,6 +13,7 @@
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"
+#include "synctex.h"
 
 G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 
@@ -385,7 +386,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
           /* draw position */
           GdkColor color = priv->zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
           cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
               (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
           cairo_fill(cairo);
@@ -410,10 +411,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         /* draw position */
         if (idx == priv->search.current) {
           GdkColor color = priv->zathura->ui.colors.highlight_color_active;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
         } else {
           GdkColor color = priv->zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
         }
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
             (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
@@ -424,7 +425,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* draw selection */
     if (priv->mouse.selection.y2 != -1 && priv->mouse.selection.x2 != -1) {
       GdkColor color = priv->zathura->ui.colors.highlight_color;
-      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      cairo_set_source_rgba(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0, transparency);
       cairo_rectangle(cairo, priv->mouse.selection.x1, priv->mouse.selection.y1,
         (priv->mouse.selection.x2 - priv->mouse.selection.x1), (priv->mouse.selection.y2 - priv->mouse.selection.y1));
       cairo_fill(cairo);
@@ -433,9 +434,9 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* set background color */
     if (priv->zathura->global.recolor == true) {
       GdkColor color = priv->zathura->ui.colors.recolor_light_color;
-      cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+      cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     } else {
-      cairo_set_source_rgb(cairo, 255, 255, 255);
+      cairo_set_source_rgb(cairo, 1, 1, 1);
     }
     cairo_rectangle(cairo, 0, 0, page_width, page_height);
     cairo_fill(cairo);
@@ -447,12 +448,12 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     if (render_loading == true) {
       if (priv->zathura->global.recolor == true) {
         GdkColor color = priv->zathura->ui.colors.recolor_dark_color;
-        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+        cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       } else {
         cairo_set_source_rgb(cairo, 0, 0, 0);
       }
 
-      const char* text = "Loading...";
+      const char* text = _("Loading...");
       cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
       cairo_set_font_size(cairo, 16.0);
       cairo_text_extents_t extents;
@@ -483,6 +484,7 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   g_static_mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
+    cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
   }
   priv->surface = surface;
@@ -610,29 +612,41 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     }
   } else {
     redraw_rect(ZATHURA_PAGE(widget), &priv->mouse.selection);
-    zathura_rectangle_t tmp = priv->mouse.selection;
 
-    double scale = zathura_document_get_scale(document);
-    tmp.x1 /= scale;
-    tmp.x2 /= scale;
-    tmp.y1 /= scale;
-    tmp.y2 /= scale;
+    bool synctex = false;
+    girara_setting_get(priv->zathura->ui.session, "synctex", &synctex);
 
-    char* text = zathura_page_get_text(priv->page, tmp, NULL);
-    if (text != NULL) {
-      if (strlen(text) > 0) {
-        /* copy to clipboard */
-        gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
+    if (synctex == true && button->state & GDK_CONTROL_MASK) {
+      /* synctex backwards sync */
+      double scale = zathura_document_get_scale(document);
+      int x = button->x / scale, y = button->y / scale;
+
+      synctex_edit(priv->zathura, priv->page, x, y);
+    } else {
+      zathura_rectangle_t tmp = priv->mouse.selection;
+
+      double scale = zathura_document_get_scale(document);
+      tmp.x1 /= scale;
+      tmp.x2 /= scale;
+      tmp.y1 /= scale;
+      tmp.y2 /= scale;
+
+      char* text = zathura_page_get_text(priv->page, tmp, NULL);
+      if (text != NULL) {
+        if (strlen(text) > 0) {
+          /* copy to clipboard */
+          gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
 
 
-        if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
-          char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-          girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
-          g_free(stripped_text);
+          if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
+            char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+            girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
+            g_free(stripped_text);
+          }
         }
-      }
 
-      g_free(text);
+        g_free(text);
+      }
     }
   }
 
@@ -844,6 +858,7 @@ zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
 
   const gint64 now =  g_get_real_time();
   if (now - priv->last_view >= threshold * G_USEC_PER_SEC) {
+    girara_debug("purge page %d from cache (unseen for %f seconds)", zathura_page_get_index(priv->page), ((double)now - priv->last_view) / G_USEC_PER_SEC);
     zathura_page_widget_update_surface(widget, NULL);
   }
 }

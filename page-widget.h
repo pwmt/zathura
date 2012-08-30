@@ -17,11 +17,13 @@
 typedef struct zathura_page_widget_s ZathuraPage;
 typedef struct zathura_page_widget_class_s ZathuraPageClass;
 
-struct zathura_page_widget_s {
+struct zathura_page_widget_s
+{
   GtkDrawingArea parent;
 };
 
-struct zathura_page_widget_class_s {
+struct zathura_page_widget_class_s
+{
   GtkDrawingAreaClass parent_class;
 };
 
@@ -33,10 +35,10 @@ struct zathura_page_widget_class_s {
   (G_TYPE_CHECK_CLASS_CAST ((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
 #define ZATHURA_IS_PAGE(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ZATHURA_TYPE_PAGE))
-#define ZATHURA_IS_PAGE_WDIGET_CLASS(obj) \
+#define ZATHURA_IS_PAGE_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE ((obj), ZATHURA_TYPE_PAGE))
 #define ZATHURA_PAGE_GET_CLASS \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), ZATHURA_TYPE_PAGE, ZathuraPageclass))
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
 
 /**
  * Returns the type of the page view widget.
