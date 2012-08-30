@@ -28,101 +28,101 @@ msgstr "Entrée invalide : '%s'"
 msgid "Invalid index '%s' given."
 msgstr "Index invalide : '%s'"
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
-#: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
+#: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
+#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:400
+#: ../commands.c:521 ../shortcuts.c:454 ../shortcuts.c:919
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
-#: ../commands.c:40 ../commands.c:75 ../commands.c:102 ../commands.c:402
+#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:405
 msgid "Invalid number of arguments given."
 msgstr "Nombre d'arguments invalide."
 
-#: ../commands.c:48
+#: ../commands.c:49
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Marque page mis à jour avec succès : %s"
 
-#: ../commands.c:54
+#: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Impossible de créer le marque page: %s"
 
-#: ../commands.c:58
+#: ../commands.c:59
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Marque page créé avec succès : %s"
 
-#: ../commands.c:81
+#: ../commands.c:82
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Marque page supprimé : %s"
 
-#: ../commands.c:83
+#: ../commands.c:84
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Échec lors de la suppression du marque page : %s"
 
-#: ../commands.c:109
+#: ../commands.c:110
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Aucun marque page : %s"
 
-#: ../commands.c:160 ../commands.c:182
+#: ../commands.c:161 ../commands.c:183
 msgid "No information available."
 msgstr "Aucune information disponible."
 
-#: ../commands.c:220
+#: ../commands.c:221
 msgid "Too many arguments."
 msgstr "Trop d'arguments."
 
-#: ../commands.c:229
+#: ../commands.c:230
 msgid "No arguments given."
 msgstr "Aucun argument passé."
 
-#: ../commands.c:288 ../commands.c:314
+#: ../commands.c:289 ../commands.c:315
 msgid "Document saved."
 msgstr "Document enregistré."
 
-#: ../commands.c:290 ../commands.c:316
+#: ../commands.c:291 ../commands.c:317
 msgid "Failed to save document."
 msgstr "Échec lors de l'enregistrement du document."
 
-#: ../commands.c:293 ../commands.c:319
+#: ../commands.c:294 ../commands.c:320
 msgid "Invalid number of arguments."
 msgstr "Nombre d'arguments invalide."
 
-#: ../commands.c:421
+#: ../commands.c:424
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Impossible d'écrire la pièce jointe '%s' dans '%s'."
 
-#: ../commands.c:423
+#: ../commands.c:426
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Ecriture de la pièce jointe '%s' dans '%s'."
 
-#: ../commands.c:467
+#: ../commands.c:470
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Écriture de l'image '%s' dans '%s'."
 
-#: ../commands.c:469
+#: ../commands.c:472
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Impossible d'écrire l'image '%s' dans '%s'."
 
-#: ../commands.c:476
+#: ../commands.c:479
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Image '%s' inconnue"
 
-#: ../commands.c:480
+#: ../commands.c:483
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Pièce jointe ou image '%s' inconnue."
 
-#: ../commands.c:510
+#: ../commands.c:534
 msgid "Argument must be a number."
 msgstr "L'argument doit être un nombre."
 
@@ -207,7 +207,9 @@ msgstr "Recoloriser les pages"
 
 #: ../config.c:138
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr "Lors du recalibrage des couleurs garder la teinte d'origine et ajuster seulement la luminosité"
+msgstr ""
+"Lors du recalibrage des couleurs garder la teinte d'origine et ajuster "
+"seulement la luminosité"
 
 #: ../config.c:140
 msgid "Wrap scrolling"
@@ -261,76 +263,84 @@ msgstr "Effacer les résultats de recherche en cas d'abandon"
 msgid "Use basename of the file in the window title"
 msgstr "Utiliser le nom de base dans le titre de la fenêtre"
 
+#: ../config.c:165 ../main.c:60
+msgid "Enable synctex support"
+msgstr ""
+
 #. define default inputbar commands
-#: ../config.c:291
+#: ../config.c:293
 msgid "Add a bookmark"
 msgstr "Ajouter un marque-page"
 
-#: ../config.c:292
+#: ../config.c:294
 msgid "Delete a bookmark"
 msgstr "Supprimer un marque-page"
 
-#: ../config.c:293
+#: ../config.c:295
 msgid "List all bookmarks"
 msgstr "Lister tous les marque-pages"
 
-#: ../config.c:294
+#: ../config.c:296
 msgid "Close current file"
 msgstr "Fermer le fichier actuel"
 
-#: ../config.c:295
+#: ../config.c:297
 msgid "Show file information"
 msgstr "Montrer les informations sur le fichier"
 
-#: ../config.c:296
+#: ../config.c:298
+msgid "Execute a command"
+msgstr ""
+
+#: ../config.c:299
 msgid "Show help"
 msgstr "Afficher l'aide"
 
-#: ../config.c:297
+#: ../config.c:300
 msgid "Open document"
 msgstr "Ouvrir un document"
 
-#: ../config.c:298
+#: ../config.c:301
 msgid "Close zathura"
 msgstr "Quitter Zathura"
 
-#: ../config.c:299
+#: ../config.c:302
 msgid "Print document"
 msgstr "Imprimer un document"
 
-#: ../config.c:300
+#: ../config.c:303
 msgid "Save document"
 msgstr "Sauver un document"
 
-#: ../config.c:301
+#: ../config.c:304
 msgid "Save document (and force overwriting)"
 msgstr "Sauver un document (et forcer l'écrasement)"
 
-#: ../config.c:302
+#: ../config.c:305
 msgid "Save attachments"
 msgstr "Enregistrer les pièces jointes"
 
-#: ../config.c:303
+#: ../config.c:306
 msgid "Set page offset"
 msgstr "Régler le décalage de page"
 
-#: ../config.c:304
+#: ../config.c:307
 msgid "Mark current location within the document"
 msgstr "Marquer l'emplacement actuel dans le document"
 
-#: ../config.c:305
+#: ../config.c:308
 msgid "Delete the specified marks"
 msgstr "Supprimer les marques indiquées"
 
-#: ../config.c:306
+#: ../config.c:309
 msgid "Don't highlight current search results"
 msgstr "Ne pas surligner les résultats de la recherche actuelle"
 
-#: ../config.c:307
+#: ../config.c:310
 msgid "Highlight current search results"
 msgstr "Surligner les résultats de la recherche actuelle"
 
-#: ../config.c:308
+#: ../config.c:311
 msgid "Show version information"
 msgstr "Afficher les informations de version "
 
@@ -338,39 +348,39 @@ msgstr "Afficher les informations de version "
 msgid "Failed to run xdg-open."
 msgstr "Échec lors du lancement de xdg-open"
 
-#: ../main.c:51
+#: ../main.c:52
 msgid "Reparents to window specified by xid"
 msgstr "Rattacher à la fenêtre spécifiée par xid"
 
-#: ../main.c:52
+#: ../main.c:53
 msgid "Path to the config directory"
 msgstr "Chemin vers le dossier de configuration"
 
-#: ../main.c:53
+#: ../main.c:54
 msgid "Path to the data directory"
 msgstr "Chemin vers le dossier de données"
 
-#: ../main.c:54
+#: ../main.c:55
 msgid "Path to the directories containing plugins"
 msgstr "Chemin vers le dossier de plugins"
 
-#: ../main.c:55
+#: ../main.c:56
 msgid "Fork into the background"
 msgstr "Forker en arrière-plan"
 
-#: ../main.c:56
+#: ../main.c:57
 msgid "Document password"
 msgstr "Mot de passe du document"
 
-#: ../main.c:57
+#: ../main.c:58
 msgid "Log level (debug, info, warning, error)"
 msgstr "Niveau d'affichage (debug, info, warning, error)"
 
-#: ../main.c:58
+#: ../main.c:59
 msgid "Print version information"
 msgstr "Afficher les informations de version "
 
-#: ../main.c:59
+#: ../main.c:61
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Éditeur Synctex (transférer à la commande synctex)"
 
@@ -378,23 +388,23 @@ msgstr "Éditeur Synctex (transférer à la commande synctex)"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: ../page-widget.c:640
+#: ../page-widget.c:643
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Copie du texte sélectionné dans le presse-papiers : %s"
 
-#: ../page-widget.c:738
+#: ../page-widget.c:741
 msgid "Copy image"
 msgstr "Copier l'image"
 
-#: ../page-widget.c:739
+#: ../page-widget.c:742
 msgid "Save image as"
 msgstr "Enregistrer l'image sous"
 
-#: ../shortcuts.c:820
+#: ../shortcuts.c:825
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
-#: ../zathura.c:189 ../zathura.c:834
+#: ../zathura.c:189 ../zathura.c:843
 msgid "[No name]"
 msgstr "[Sans nom]"

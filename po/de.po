@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-05 16:09+0200\n"
+"POT-Creation-Date: 2012-08-30 19:46+0200\n"
 "PO-Revision-Date: 2012-08-05 16:08+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -26,101 +26,101 @@ msgstr "Ungültige Eingabe '%s' angegeben."
 msgid "Invalid index '%s' given."
 msgstr "Ungültiger Index '%s' angegeben."
 
-#: ../commands.c:34 ../commands.c:69 ../commands.c:96 ../commands.c:138
-#: ../commands.c:252 ../commands.c:282 ../commands.c:308 ../commands.c:397
-#: ../commands.c:497 ../shortcuts.c:449 ../shortcuts.c:914
+#: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
+#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:400
+#: ../commands.c:521 ../shortcuts.c:454 ../shortcuts.c:919
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
-#: ../commands.c:40 ../commands.c:75 ../commands.c:102 ../commands.c:402
+#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:405
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
-#: ../commands.c:48
+#: ../commands.c:49
 #, c-format
 msgid "Bookmark successfuly updated: %s"
 msgstr "Lesezeichen erfolgreich aktualisiert: %s."
 
-#: ../commands.c:54
+#: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Konnte Lesezeichen nicht erstellen: %s"
 
-#: ../commands.c:58
+#: ../commands.c:59
 #, c-format
 msgid "Bookmark successfuly created: %s"
 msgstr "Lesezeichen erfolgreich erstellt: %s"
 
-#: ../commands.c:81
+#: ../commands.c:82
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Lesezeichen entfernt: %s"
 
-#: ../commands.c:83
+#: ../commands.c:84
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Konnte Lesezeichen nicht entfernen: %s"
 
-#: ../commands.c:109
+#: ../commands.c:110
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
-#: ../commands.c:160 ../commands.c:182
+#: ../commands.c:161 ../commands.c:183
 msgid "No information available."
 msgstr "Keine Information verfügbar."
 
-#: ../commands.c:220
+#: ../commands.c:221
 msgid "Too many arguments."
 msgstr "Zu viele Argumente angegeben."
 
-#: ../commands.c:229
+#: ../commands.c:230
 msgid "No arguments given."
 msgstr "Keine Argumente angegeben."
 
-#: ../commands.c:288 ../commands.c:314
+#: ../commands.c:289 ../commands.c:315
 msgid "Document saved."
 msgstr "Dokument gespeichert."
 
-#: ../commands.c:290 ../commands.c:316
+#: ../commands.c:291 ../commands.c:317
 msgid "Failed to save document."
 msgstr "Konnte Dokument nicht speichern."
 
-#: ../commands.c:293 ../commands.c:319
+#: ../commands.c:294 ../commands.c:320
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
-#: ../commands.c:421
+#: ../commands.c:424
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
-#: ../commands.c:423
+#: ../commands.c:426
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
 
-#: ../commands.c:467
+#: ../commands.c:470
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
 
-#: ../commands.c:469
+#: ../commands.c:472
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
-#: ../commands.c:476
+#: ../commands.c:479
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Unbekanntes Bild '%s'."
 
-#: ../commands.c:480
+#: ../commands.c:483
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Unbekannter Anhanng oder Bild '%s'."
 
-#: ../commands.c:510
+#: ../commands.c:534
 msgid "Argument must be a number."
 msgstr "Das Argument ist keine Zahl."
 
@@ -262,76 +262,84 @@ msgstr "Lösche Suchergebnisse bei Abbruch"
 msgid "Use basename of the file in the window title"
 msgstr "Verwende den Dateinamen der Datei im Fenstertitel"
 
+#: ../config.c:165 ../main.c:60
+msgid "Enable synctex support"
+msgstr ""
+
 #. define default inputbar commands
-#: ../config.c:291
+#: ../config.c:293
 msgid "Add a bookmark"
 msgstr "Füge Lesezeichen hinzu"
 
-#: ../config.c:292
+#: ../config.c:294
 msgid "Delete a bookmark"
 msgstr "Lösche ein Lesezeichen"
 
-#: ../config.c:293
+#: ../config.c:295
 msgid "List all bookmarks"
 msgstr "Liste all Lesezeichen auf"
 
-#: ../config.c:294
+#: ../config.c:296
 msgid "Close current file"
 msgstr "Schließe das aktuelle Dokument"
 
-#: ../config.c:295
+#: ../config.c:297
 msgid "Show file information"
 msgstr "Zeige Dokumentinformationen an"
 
-#: ../config.c:296
+#: ../config.c:298
+msgid "Execute a command"
+msgstr ""
+
+#: ../config.c:299
 msgid "Show help"
 msgstr "Zeige Hilfe an"
 
-#: ../config.c:297
+#: ../config.c:300
 msgid "Open document"
 msgstr "Öffne Dokument"
 
-#: ../config.c:298
+#: ../config.c:301
 msgid "Close zathura"
 msgstr "Beende zathura"
 
-#: ../config.c:299
+#: ../config.c:302
 msgid "Print document"
 msgstr "Drucke Dokument"
 
-#: ../config.c:300
+#: ../config.c:303
 msgid "Save document"
 msgstr "Speichere Dokument"
 
-#: ../config.c:301
+#: ../config.c:304
 msgid "Save document (and force overwriting)"
 msgstr "Speichere Dokument (und überschreibe bestehende)"
 
-#: ../config.c:302
+#: ../config.c:305
 msgid "Save attachments"
 msgstr "Speichere Anhänge"
 
-#: ../config.c:303
+#: ../config.c:306
 msgid "Set page offset"
 msgstr "Setze den Seitenabstand"
 
-#: ../config.c:304
+#: ../config.c:307
 msgid "Mark current location within the document"
 msgstr "Markiere aktuelle Position im Doukument"
 
-#: ../config.c:305
+#: ../config.c:308
 msgid "Delete the specified marks"
 msgstr "Lösche angegebene Markierung"
 
-#: ../config.c:306
+#: ../config.c:309
 msgid "Don't highlight current search results"
 msgstr "Hebe aktuelle Suchergebnisse nicht hervor"
 
-#: ../config.c:307
+#: ../config.c:310
 msgid "Highlight current search results"
 msgstr "Hebe aktuelle Suchergebnisse hervor"
 
-#: ../config.c:308
+#: ../config.c:311
 msgid "Show version information"
 msgstr "Zeige Versionsinformationen an"
 
@@ -339,39 +347,39 @@ msgstr "Zeige Versionsinformationen an"
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
-#: ../main.c:51
+#: ../main.c:52
 msgid "Reparents to window specified by xid"
 msgstr "Reparentiert zathura an das Fenster mit der xid"
 
-#: ../main.c:52
+#: ../main.c:53
 msgid "Path to the config directory"
 msgstr "Pfad zum Konfigurationsverzeichnis"
 
-#: ../main.c:53
+#: ../main.c:54
 msgid "Path to the data directory"
 msgstr "Pfad zum Datenverzeichnis"
 
-#: ../main.c:54
+#: ../main.c:55
 msgid "Path to the directories containing plugins"
 msgstr "Pfad zum Pluginverzeichnis"
 
-#: ../main.c:55
+#: ../main.c:56
 msgid "Fork into the background"
 msgstr "Forkt den Prozess in den Hintergrund"
 
-#: ../main.c:56
+#: ../main.c:57
 msgid "Document password"
 msgstr "Dokument Passwort"
 
-#: ../main.c:57
+#: ../main.c:58
 msgid "Log level (debug, info, warning, error)"
 msgstr "Log-Stufe (debug, info, warning, error)"
 
-#: ../main.c:58
+#: ../main.c:59
 msgid "Print version information"
 msgstr "Zeige Versionsinformationen an"
 
-#: ../main.c:59
+#: ../main.c:61
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Synctex Editor (wird an synctex weitergeleitet)"
 
@@ -379,23 +387,23 @@ msgstr "Synctex Editor (wird an synctex weitergeleitet)"
 msgid "Loading..."
 msgstr "Lädt..."
 
-#: ../page-widget.c:640
+#: ../page-widget.c:643
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Der gewählte Text wurde in die Zwischenablage kopiert: %s"
 
-#: ../page-widget.c:738
+#: ../page-widget.c:741
 msgid "Copy image"
 msgstr "Bild kopieren"
 
-#: ../page-widget.c:739
+#: ../page-widget.c:742
 msgid "Save image as"
 msgstr "Bild speichern als"
 
-#: ../shortcuts.c:820
+#: ../shortcuts.c:825
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
-#: ../zathura.c:189 ../zathura.c:834
+#: ../zathura.c:189 ../zathura.c:843
 msgid "[No name]"
 msgstr "[Kein Name]"
