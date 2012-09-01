@@ -1130,7 +1130,7 @@ zathura_jumplist_save(zathura_t* zathura) {
     GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
     cur->page = pagenum;
-    cur->x = gtk_adjustment_get_value(view_hadjustment);
-    cur->y = gtk_adjustment_get_value(view_vadjustment);
+    cur->x = gtk_adjustment_get_value(view_hadjustment) / zathura_document_get_scale(zathura->document);
+    cur->y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);;
   }
 }

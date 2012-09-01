@@ -637,12 +637,14 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event
       break;
   }
 
-  page_set(zathura, jump->page);
-  position_set_delayed(zathura, jump->x, jump->y);
+  if (jump != NULL) {
+    page_set(zathura, jump->page);
+    const double s = zathura_document_get_scale(zathura->document);
+    position_set_delayed(zathura, jump->x * s, jump->y * s);
+  }
 
   return false;
 }
-
 
 bool
 sc_search(girara_session_t* session, girara_argument_t* argument,
