@@ -28,6 +28,16 @@ typedef struct _ZathuraDatabase zathura_database_t;
 struct render_thread_s;
 typedef struct render_thread_s render_thread_t;
 
+/**
+ * Jump
+ */
+typedef struct zathura_jump_s
+{
+  unsigned int page;
+  double x;
+  double y;
+} zathura_jump_t;
+
 struct zathura_s
 {
   struct
