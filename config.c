@@ -28,7 +28,7 @@ cb_jumplist_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
   if (g_strcmp0(name, "jumplist-size") == 0) {
-    size_t *max_size = (size_t*) value;
+    int* max_size = (int*) value;
     zathura->jumplist.max_size = *max_size;
   }
 }
