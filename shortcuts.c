@@ -38,7 +38,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
       }
 
       g_object_set(zathura_page_get_widget(zathura, page), "draw-links", FALSE, NULL);
-      if (clear_search) {
+      if (clear_search == true) {
         g_object_set(zathura_page_get_widget(zathura, page), "search-results", NULL, NULL);
       }
     }
