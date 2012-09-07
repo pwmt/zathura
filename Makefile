@@ -78,8 +78,8 @@ clean:
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		girara-version-check
-	$(QUIET)make -C tests clean
-	$(QUIET)make -C po clean
+	$(QUIET)$(MAKE) -C tests clean
+	$(QUIET)$(MAKE) -C po clean
 
 ${PROJECT}-debug: ${DOBJECTS}
 	$(ECHO) CC -o $@
@@ -141,7 +141,8 @@ update-po:
 ifneq "$(wildcard ${RSTTOMAN})" ""
 %.1 %.5: config.mk
 	$(QUIET)sed "s/VERSION/${VERSION}/g" < $@.rst > $@.tmp
-	$(QUIET)${RSTTOMAN} $@.tmp > $@
+	$(QUIET)${RSTTOMAN} $@.tmp > $@.out.tmp
+	$(QUIET)mv $@.out.tmp $@
 	$(QUIET)rm $@.tmp
 
 ${PROJECT}.1: ${PROJECT}.1.rst
