@@ -78,6 +78,9 @@ clean:
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		girara-version-check
+ifneq "$(wildcard ${RSTTOMAN})" ""
+	$(QUIET)rm -f zathura.1 zathurarc.5
+endif
 	$(QUIET)$(MAKE) -C tests clean
 	$(QUIET)$(MAKE) -C po clean
 
