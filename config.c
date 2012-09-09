@@ -115,7 +115,7 @@ config_load_default(zathura_t* zathura)
   int int_value              = 0;
   float float_value          = 0;
   bool bool_value            = false;
-  bool inc_search            = false;
+  bool inc_search            = true;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */

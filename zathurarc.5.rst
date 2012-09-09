@@ -495,7 +495,7 @@ incremental-search
 En/Disables incremental search (search while typing).
 
 * Value type: Boolean
-* Default value: false
+* Default value: true
 
 highlight-color
 ^^^^^^^^^^^^^^^
