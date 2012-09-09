@@ -490,6 +490,13 @@ Defines if the number of pages per row should be honored when advancing a page.
 * Value type: Boolean
 * Default value: false
 
+incremental-search
+^^^^^^^^^^^^^^^^^^
+En/Disables incremental search (search while typing).
+
+* Value type: Boolean
+* Default value: false
+
 highlight-color
 ^^^^^^^^^^^^^^^
 Defines the color that is used for highlighting parts of the document (e.g.:

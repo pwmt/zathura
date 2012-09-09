@@ -91,6 +91,20 @@ cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
   render_all(zathura);
 }
 
+static void
+cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
+    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+
+  bool inc_search = *(bool*) value;
+  girara_special_command_add(session, '/', cmd_search, inc_search, FORWARD,  NULL);
+  girara_special_command_add(session, '?', cmd_search, inc_search, BACKWARD, NULL);
+}
+
+
 void
 config_load_default(zathura_t* zathura)
 {
@@ -101,6 +115,7 @@ config_load_default(zathura_t* zathura)
   int int_value              = 0;
   float float_value          = 0;
   bool bool_value            = false;
+  bool inc_search            = false;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */
@@ -174,6 +189,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Highlight search results"), cb_nohlsearch_changed, NULL);
+  inc_search = false;
+  girara_setting_add(gsession, "incremental-search",     &inc_search,  BOOLEAN, false, _("Enable incremental search"), cb_incsearch_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
@@ -333,8 +350,8 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
   girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,         NULL,         _("Show version information"));
 
-  girara_special_command_add(gsession, '/', cmd_search, true, FORWARD,  NULL);
-  girara_special_command_add(gsession, '?', cmd_search, true, BACKWARD, NULL);
+  girara_special_command_add(gsession, '/', cmd_search, inc_search, FORWARD,  NULL);
+  girara_special_command_add(gsession, '?', cmd_search, inc_search, BACKWARD, NULL);
 
   /* add shortcut mappings */
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
