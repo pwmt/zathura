@@ -57,7 +57,7 @@ msgstr "Záložka smazána: %s"
 #: ../commands.c:84
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Nem¿¿u smazat zálo¿ku: %s"
+msgstr "Nemůžu smazat záložku: %s"
 
 #: ../commands.c:110
 #, c-format
@@ -91,7 +91,7 @@ msgstr "Špatný počet argumentů."
 #: ../commands.c:424
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Nepovedlo se zapsat p¿ílohu '%s' do '%s'."
+msgstr "Nepovedlo se zapsat přílohu '%s' do '%s'."
 
 #: ../commands.c:426
 #, c-format
@@ -187,7 +187,7 @@ msgstr "Přebarvuji do tmava"
 
 #: ../config.c:128
 msgid "Recoloring (light color)"
-msgstr "Přebarvuji do sv¿tla"
+msgstr "Přebarvuji do světla"
 
 #: ../config.c:130
 msgid "Color for highlighting"
