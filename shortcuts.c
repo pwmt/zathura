@@ -565,6 +565,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   }
   float scroll_full_overlap = 0.1;
   girara_setting_get(session, "scroll-full-overlap", &scroll_full_overlap);
+  bool scroll_page_aware = false;
+  girara_setting_get(session, "scroll-page-aware", &scroll_page_aware);
 
   int padding = 1;
   girara_setting_get(session, "page-padding", &padding);
@@ -608,6 +610,59 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       break;
     default:
       new_value = value;
+  }
+
+  if (scroll_page_aware) {
+    int page_offset;
+    double page_size;
+
+    {
+      unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+      page_offset_t offset;
+      page_calculate_offset(zathura, page, &offset);
+
+      double scale = zathura_document_get_scale(zathura->document);
+
+      if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
+           (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
+        page_offset = offset.x;
+        page_size = zathura_page_get_width(page) * scale;
+      } else {
+        page_offset = offset.y;
+        page_size = zathura_page_get_height(page) * scale;
+      }
+
+      page_offset -= padding / 2;
+      page_size   += padding;
+    }
+    
+    if ( (argument->n==FULL_DOWN) || (argument->n==HALF_DOWN) ||
+         (argument->n==FULL_RIGHT) || (argument->n==HALF_RIGHT) )
+      {
+      if ( (page_offset > value) &&
+           (page_offset < value + view_size) )
+        new_value = page_offset;
+      else if ( (page_offset <= value) &&
+                (page_offset + page_size < value + view_size) )
+        new_value = page_offset + page_size + 1;
+      else if ( (page_offset <= value) &&
+                (page_offset + page_size < new_value + view_size) )
+        new_value = page_offset + page_size - view_size + 1;
+      }
+    else if ( (argument->n==FULL_UP) || (argument->n==HALF_UP) ||
+              (argument->n==FULL_LEFT) || (argument->n==HALF_LEFT) )
+      {
+      if ( (page_offset + 1 >= value) &&
+           (page_offset < value + view_size) )
+        new_value = page_offset - view_size;
+      else if ( (page_offset <= value) &&
+                (page_offset + page_size + 1 < value + view_size) )
+        new_value = page_offset + page_size - view_size;
+      else if ( (page_offset <= value) &&
+                (page_offset > new_value) )
+        new_value = page_offset;
+      }
   }
 
   set_adjustment(adjustment, new_value);
