@@ -27,7 +27,7 @@ is not possible to write multiple commands in one single line.
 COMMANDS
 ========
 
-set - Chaning options
+set - Changing options
 ---------------------
 
 In addition to the build-in ``:set`` command zathura offers more options to be
@@ -151,7 +151,7 @@ are currently available:
     PageUp     Page Up
     Return     Return
     Space      Space
-    Super      Windows button
+    Super      Windows key
     Tab        Tab
 
 Of course it is possible to combine those special keys with a modifier. The
