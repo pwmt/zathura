@@ -363,6 +363,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
   girara_shortcut_mapping_add(gsession, "adjust_window",     sc_adjust_window);
   girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
+  girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
   girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
@@ -381,6 +382,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "zoom",              sc_zoom);
 
   /* add argument mappings */
+  girara_argument_mapping_add(gsession, "backward",     BACKWARD);
   girara_argument_mapping_add(gsession, "bottom",       BOTTOM);
   girara_argument_mapping_add(gsession, "default",      DEFAULT);
   girara_argument_mapping_add(gsession, "collapse",     COLLAPSE);
@@ -388,6 +390,7 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "down",         DOWN);
   girara_argument_mapping_add(gsession, "expand",       EXPAND);
   girara_argument_mapping_add(gsession, "expand-all",   EXPAND_ALL);
+  girara_argument_mapping_add(gsession, "forward",      FORWARD);
   girara_argument_mapping_add(gsession, "full-down",    FULL_DOWN);
   girara_argument_mapping_add(gsession, "full-up",      FULL_UP);
   girara_argument_mapping_add(gsession, "half-down",    HALF_DOWN);
