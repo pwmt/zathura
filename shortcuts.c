@@ -90,7 +90,6 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   /* correct view size */
   if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == true) {
     gtk_widget_get_allocation(session->gtk.inputbar, &allocation);
-    width  += allocation.width;
     height += allocation.height;
   }
 
