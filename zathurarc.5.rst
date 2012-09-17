@@ -605,9 +605,24 @@ Defines the step size of scrolling by calling the scroll command once
 * Value type: Float
 * Default value: 40
 
+scroll-full-overlap
+^^^^^^^^^^^^^^^^^^^
+Defines the proportion of the current viewing area that should be
+visible after scrolling a full page.
+
+* Value type: Float
+* Default value: 0.1
+
 scroll-wrap
 ^^^^^^^^^^^
 Defines if the last/first page should be wrapped
+
+* Value type: Boolean
+* Default value: false
+
+scroll-page-aware
+^^^^^^^^^^^^^^^^^
+Defines if scrolling by half or full pages stops at page boundaries.
 
 * Value type: Boolean
 * Default value: false
