@@ -612,7 +612,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       new_value = value;
   }
 
-  if (scroll_page_aware) {
+  if (scroll_page_aware == true) {
     int page_offset;
     double page_size;
 
@@ -624,8 +624,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
       double scale = zathura_document_get_scale(zathura->document);
 
-      if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
-           (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
+      if ((argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
+          (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
         page_offset = offset.x;
         page_size = zathura_page_get_width(page) * scale;
       } else {
@@ -636,33 +636,32 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       page_offset -= padding / 2;
       page_size   += padding;
     }
-    
-    if ( (argument->n==FULL_DOWN) || (argument->n==HALF_DOWN) ||
-         (argument->n==FULL_RIGHT) || (argument->n==HALF_RIGHT) )
-      {
-      if ( (page_offset > value) &&
-           (page_offset < value + view_size) )
+
+    if ((argument->n == FULL_DOWN) || (argument->n == HALF_DOWN) ||
+        (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
+      if ((page_offset > value) &&
+          (page_offset < value + view_size)) {
         new_value = page_offset;
-      else if ( (page_offset <= value) &&
-                (page_offset + page_size < value + view_size) )
+      } else if ((page_offset <= value) &&
+                 (page_offset + page_size < value + view_size)) {
         new_value = page_offset + page_size + 1;
-      else if ( (page_offset <= value) &&
-                (page_offset + page_size < new_value + view_size) )
+      } else if ((page_offset <= value) &&
+                 (page_offset + page_size < new_value + view_size)) {
         new_value = page_offset + page_size - view_size + 1;
       }
-    else if ( (argument->n==FULL_UP) || (argument->n==HALF_UP) ||
-              (argument->n==FULL_LEFT) || (argument->n==HALF_LEFT) )
-      {
-      if ( (page_offset + 1 >= value) &&
-           (page_offset < value + view_size) )
+    } else if ((argument->n == FULL_UP) || (argument->n == HALF_UP) ||
+               (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT)) {
+      if ((page_offset + 1 >= value) &&
+          (page_offset < value + view_size)) {
         new_value = page_offset - view_size;
-      else if ( (page_offset <= value) &&
-                (page_offset + page_size + 1 < value + view_size) )
+      } else if ((page_offset <= value) &&
+                 (page_offset + page_size + 1 < value + view_size)) {
         new_value = page_offset + page_size - view_size;
-      else if ( (page_offset <= value) &&
-                (page_offset > new_value) )
+      } else if ((page_offset <= value) &&
+                 (page_offset > new_value)) {
         new_value = page_offset;
       }
+    }
   }
 
   set_adjustment(adjustment, new_value);
