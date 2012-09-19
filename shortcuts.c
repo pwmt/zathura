@@ -562,7 +562,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   if (scroll_hstep < 0) {
     scroll_hstep = scroll_step;
   }
-  float scroll_full_overlap = 0.1;
+  float scroll_full_overlap = 0.0;
   girara_setting_get(session, "scroll-full-overlap", &scroll_full_overlap);
   bool scroll_page_aware = false;
   girara_setting_get(session, "scroll-page-aware", &scroll_page_aware);
