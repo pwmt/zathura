@@ -3,6 +3,7 @@
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE 700
 
+#include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
@@ -95,8 +96,13 @@ zathura_init(zathura_t* zathura)
   }
 
   /* create zathura (config/data) directory */
-  g_mkdir_with_parents(zathura->config.config_dir, 0771);
-  g_mkdir_with_parents(zathura->config.data_dir,   0771);
+  if (g_mkdir_with_parents(zathura->config.config_dir, 0771) == -1) {
+    girara_error("Could not create '%s': %s", zathura->config.config_dir, strerror(errno));
+  }
+
+  if (g_mkdir_with_parents(zathura->config.data_dir, 0771) == -1) {
+    girara_error("Could not create '%s': %s", zathura->config.data_dir, strerror(errno));
+  }
 
   /* load plugins */
   zathura_plugin_manager_load(zathura->plugins.manager);
