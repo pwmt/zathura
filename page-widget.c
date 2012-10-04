@@ -550,6 +550,10 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
+  if (girara_callback_view_button_press_event(widget, button, priv->zathura->ui.session) == true) {
+    return true;
+  }
+
   if (button->button == 1) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
       /* start the selection */
