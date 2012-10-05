@@ -114,12 +114,12 @@ msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
 #: ../commands.c:480
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Imagen desconocida '%s'."
 
 #: ../commands.c:484
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Adjunto o imagen desconocidos '%s'."
 
 #: ../commands.c:535
 msgid "Argument must be a number."
@@ -128,7 +128,7 @@ msgstr "El argumento ha de ser un número."
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "Página %d"
 
 #: ../completion.c:293
 msgid "Attachments"
@@ -137,7 +137,7 @@ msgstr "Guardar ficheros adjuntos"
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr ""
+msgstr "Imágenes"
 
 #. zathura settings
 #: ../config.c:135
@@ -158,19 +158,19 @@ msgstr "Número de páginas por fila"
 
 #: ../config.c:143
 msgid "Column of the first page"
-msgstr ""
+msgstr "Columna de la primera página"
 
 #: ../config.c:145
 msgid "Scroll step"
-msgstr "Unidad de desplazamiento"
+msgstr "Paso de desplazamiento"
 
 #: ../config.c:147
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Paso de desplazamiento horizontal"
 
 #: ../config.c:149
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Solapamiento del desplazamiento de página"
 
 #: ../config.c:151
 msgid "Zoom minimum"
@@ -182,16 +182,15 @@ msgstr "Zoom máximo"
 
 #: ../config.c:155
 msgid "Life time (in seconds) of a hidden page"
-msgstr ""
+msgstr "Tiempo de vida (en segundos) de una página oculta"
 
 #: ../config.c:156
 msgid "Amount of seconds between each cache purge"
-msgstr ""
-"Cantidad de segundos entre las comprobaciones de las páginas invisibles"
+msgstr "Cantidad de segundos entre limpieza de caché"
 
 #: ../config.c:158
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Número de posiciones a recordar en la lista de saltos"
 
 #: ../config.c:160
 msgid "Recoloring (dark color)"
@@ -216,14 +215,17 @@ msgstr "Recolorear páginas"
 #: ../config.c:172
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
+"Cuando se recoloree, mantener el tono original y ajustar únicamente la "
+"luminosidad"
 
 #: ../config.c:174
 msgid "Wrap scrolling"
 msgstr "Navegación/Scroll cíclica/o"
 
 #: ../config.c:176
+#, fuzzy
 msgid "Page aware scrolling"
-msgstr ""
+msgstr "Navegación/Scroll cíclica/o"
 
 #: ../config.c:178
 msgid "Advance number of pages per row"
@@ -231,11 +233,11 @@ msgstr ""
 
 #: ../config.c:180
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Zoom centrado horizontalmente"
 
 #: ../config.c:182
 msgid "Center result horizontally"
-msgstr ""
+msgstr "Centrar el resultado horizontalmente"
 
 #: ../config.c:184
 msgid "Transparency for highlighting"
@@ -263,23 +265,23 @@ msgstr "Abrir siempre la primera página"
 
 #: ../config.c:195
 msgid "Highlight search results"
-msgstr ""
+msgstr "Destacar los resultados de búsqueda"
 
 #: ../config.c:197
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Habilitar la búsqueda incremental"
 
 #: ../config.c:199
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Borrar resultados de búsqueda al abortar"
 
 #: ../config.c:201
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Usar el nombre del archivo en el título de la ventana"
 
 #: ../config.c:203 ../main.c:60
 msgid "Enable synctex support"
-msgstr ""
+msgstr "Habilitar soporte synctex"
 
 #. define default inputbar commands
 #: ../config.c:350
@@ -304,7 +306,7 @@ msgstr "Mostrar información del fichero"
 
 #: ../config.c:355
 msgid "Execute a command"
-msgstr ""
+msgstr "Ejecutar un comando"
 
 #: ../config.c:356
 msgid "Show help"
@@ -340,23 +342,23 @@ msgstr "Asignar el desplazamiento de página"
 
 #: ../config.c:364
 msgid "Mark current location within the document"
-msgstr ""
+msgstr "Marcar la posición actual en el documento"
 
 #: ../config.c:365
 msgid "Delete the specified marks"
-msgstr ""
+msgstr "Borrar las marcas especificadas"
 
 #: ../config.c:366
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "No destacar los resultados de la búsqueda actual"
 
 #: ../config.c:367
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Destacar los resultados de la búsqueda actual"
 
 #: ../config.c:368
 msgid "Show version information"
-msgstr ""
+msgstr "Mostrar versión"
 
 #: ../links.c:166 ../links.c:223
 msgid "Failed to run xdg-open."
@@ -384,7 +386,7 @@ msgstr "Fork, ejecutándose en background"
 
 #: ../main.c:57
 msgid "Document password"
-msgstr ""
+msgstr "Contraseña del documento"
 
 #: ../main.c:58
 msgid "Log level (debug, info, warning, error)"
@@ -396,7 +398,7 @@ msgstr "Mostrar información del fichero"
 
 #: ../main.c:61
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "Editor de Synctex (reenvíado al commando synctex)"
 
 #: ../page-widget.c:456
 msgid "Loading..."
@@ -413,7 +415,7 @@ msgstr "Copiar imagen"
 
 #: ../page-widget.c:746
 msgid "Save image as"
-msgstr ""
+msgstr "Salvar imagen como"
 
 #: ../shortcuts.c:923
 msgid "This document does not contain any index"
