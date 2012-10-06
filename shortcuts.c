@@ -1009,6 +1009,35 @@ error_ret:
 }
 
 bool
+sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
+    UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
+
+  int pages_per_row = 1;
+  girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
+
+  static int tmp = 2;
+  int value = 1;
+  if (pages_per_row == 1) {
+    value = tmp;
+  } else {
+    tmp = pages_per_row;
+  }
+
+  girara_setting_set(zathura->ui.session, "pages-per-row", &value);
+
+  return true;
+}
+
+bool
 sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
