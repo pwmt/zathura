@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-30 19:46+0200\n"
+"POT-Creation-Date: 2012-10-05 11:40+0200\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: mankand007 <mankand007@gmail.com>\n"
 "Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
@@ -18,23 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../callbacks.c:204
+#: ../callbacks.c:207
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "கொடுக்கப்பட்ட உள்ளீடு(input) '%s' தவறு"
 
-#: ../callbacks.c:232
+#: ../callbacks.c:238
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "கொடுக்கப்பட்ட index '%s' தவறு"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
-#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:400
-#: ../commands.c:521 ../shortcuts.c:454 ../shortcuts.c:919
+#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
+#: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1020
 msgid "No document opened."
 msgstr "எந்தக் ஆவணமும் திறக்கப்படவில்லை"
 
-#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:405
+#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:406
 msgid "Invalid number of arguments given."
 msgstr "கொடுக்கப்பட்ட arguments-களின் எண்ணிக்கை தவறு"
 
@@ -92,37 +92,37 @@ msgstr "ஆவணத்தை சேமிக்க இயலவில்லை"
 msgid "Invalid number of arguments."
 msgstr "கொடுக்கப்பட்ட argument-களின் எண்ணிக்கை தவறு"
 
-#: ../commands.c:424
+#: ../commands.c:425
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:426
+#: ../commands.c:427
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:470
+#: ../commands.c:471
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:472
+#: ../commands.c:473
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:479
+#: ../commands.c:480
 #, c-format
 msgid "Unknown image '%s'."
 msgstr ""
 
-#: ../commands.c:483
+#: ../commands.c:484
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr ""
 
-#: ../commands.c:534
+#: ../commands.c:535
 msgid "Argument must be a number."
 msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
 
@@ -141,208 +141,224 @@ msgid "Images"
 msgstr ""
 
 #. zathura settings
-#: ../config.c:105
+#: ../config.c:135
 msgid "Database backend"
 msgstr ""
 
-#: ../config.c:107
+#: ../config.c:137
 msgid "Zoom step"
 msgstr "Zoom அமைப்பு"
 
-#: ../config.c:109
+#: ../config.c:139
 msgid "Padding between pages"
 msgstr "இரு பக்கங்களுக்கிடையில் உள்ள நிரப்பல்(padding)"
 
-#: ../config.c:111
+#: ../config.c:141
 msgid "Number of pages per row"
 msgstr "ஒரு வரிசையில் எத்தனை பக்கங்களைக் காட்ட வேண்டும்"
 
-#: ../config.c:113
+#: ../config.c:143
 msgid "Column of the first page"
 msgstr ""
 
-#: ../config.c:115
+#: ../config.c:145
 msgid "Scroll step"
 msgstr "திரை உருளல்(scroll) அளவு"
 
-#: ../config.c:117
+#: ../config.c:147
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../config.c:119
-msgid "Zoom minimum"
-msgstr "முடிந்தவரை சிறியதாகக் காட்டு"
-
-#: ../config.c:121
-msgid "Zoom maximum"
-msgstr "முடிந்தவரை பெரிதாகக் காட்டு"
-
-#: ../config.c:123
-msgid "Life time (in seconds) of a hidden page"
-msgstr ""
-
-#: ../config.c:124
-msgid "Amount of seconds between each cache purge"
-msgstr ""
-
-#: ../config.c:126
-msgid "Recoloring (dark color)"
-msgstr ""
-
-#: ../config.c:128
-msgid "Recoloring (light color)"
-msgstr ""
-
-#: ../config.c:130
-msgid "Color for highlighting"
-msgstr ""
-
-#: ../config.c:132
-msgid "Color for highlighting (active)"
-msgstr ""
-
-#: ../config.c:136
-msgid "Recolor pages"
-msgstr ""
-
-#: ../config.c:138
-msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-
-#: ../config.c:140
-msgid "Wrap scrolling"
-msgstr ""
-
-#: ../config.c:142
-msgid "Advance number of pages per row"
-msgstr ""
-
-#: ../config.c:144
-msgid "Horizontally centered zoom"
-msgstr ""
-
-#: ../config.c:146
-msgid "Center result horizontally"
-msgstr ""
-
-#: ../config.c:148
-msgid "Transparency for highlighting"
-msgstr ""
-
-#: ../config.c:150
-msgid "Render 'Loading ...'"
+#: ../config.c:149
+msgid "Full page scroll overlap"
 msgstr ""
 
 #: ../config.c:151
+msgid "Zoom minimum"
+msgstr "முடிந்தவரை சிறியதாகக் காட்டு"
+
+#: ../config.c:153
+msgid "Zoom maximum"
+msgstr "முடிந்தவரை பெரிதாகக் காட்டு"
+
+#: ../config.c:155
+msgid "Life time (in seconds) of a hidden page"
+msgstr ""
+
+#: ../config.c:156
+msgid "Amount of seconds between each cache purge"
+msgstr ""
+
+#: ../config.c:158
+msgid "Number of positions to remember in the jumplist"
+msgstr ""
+
+#: ../config.c:160
+msgid "Recoloring (dark color)"
+msgstr ""
+
+#: ../config.c:162
+msgid "Recoloring (light color)"
+msgstr ""
+
+#: ../config.c:164
+msgid "Color for highlighting"
+msgstr ""
+
+#: ../config.c:166
+msgid "Color for highlighting (active)"
+msgstr ""
+
+#: ../config.c:170
+msgid "Recolor pages"
+msgstr ""
+
+#: ../config.c:172
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr ""
+
+#: ../config.c:174
+msgid "Wrap scrolling"
+msgstr ""
+
+#: ../config.c:176
+msgid "Page aware scrolling"
+msgstr ""
+
+#: ../config.c:178
+msgid "Advance number of pages per row"
+msgstr ""
+
+#: ../config.c:180
+msgid "Horizontally centered zoom"
+msgstr ""
+
+#: ../config.c:182
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:184
+msgid "Transparency for highlighting"
+msgstr ""
+
+#: ../config.c:186
+msgid "Render 'Loading ...'"
+msgstr ""
+
+#: ../config.c:187
 msgid "Adjust to when opening file"
 msgstr ""
 
-#: ../config.c:153
+#: ../config.c:189
 msgid "Show hidden files and directories"
 msgstr ""
 
-#: ../config.c:155
+#: ../config.c:191
 msgid "Show directories"
 msgstr ""
 
-#: ../config.c:157
+#: ../config.c:193
 msgid "Always open on first page"
 msgstr ""
 
-#: ../config.c:159
+#: ../config.c:195
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:161
+#: ../config.c:197
+msgid "Enable incremental search"
+msgstr ""
+
+#: ../config.c:199
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:163
+#: ../config.c:201
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../config.c:165 ../main.c:60
+#: ../config.c:203 ../main.c:60
 msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:293
+#: ../config.c:350
 msgid "Add a bookmark"
 msgstr "புதிய bookmark உருவாக்கு"
 
-#: ../config.c:294
+#: ../config.c:351
 msgid "Delete a bookmark"
 msgstr "Bookmark-ஐ அழித்துவிடு"
 
-#: ../config.c:295
+#: ../config.c:352
 msgid "List all bookmarks"
 msgstr "அனைத்து bookmark-களையும் பட்டியலிடு"
 
-#: ../config.c:296
+#: ../config.c:353
 msgid "Close current file"
 msgstr ""
 
-#: ../config.c:297
+#: ../config.c:354
 msgid "Show file information"
 msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
 
-#: ../config.c:298
+#: ../config.c:355
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:299
+#: ../config.c:356
 msgid "Show help"
 msgstr "உதவியைக் காட்டு"
 
-#: ../config.c:300
+#: ../config.c:357
 msgid "Open document"
 msgstr "ஒரு ஆவணத்தைத் திற"
 
-#: ../config.c:301
+#: ../config.c:358
 msgid "Close zathura"
 msgstr "zathura-வை விட்டு வெளியேறு"
 
-#: ../config.c:302
+#: ../config.c:359
 msgid "Print document"
 msgstr "ஆவணத்தை அச்சிடு"
 
-#: ../config.c:303
+#: ../config.c:360
 msgid "Save document"
 msgstr "ஆவணத்தை சேமிக்கவும்"
 
-#: ../config.c:304
+#: ../config.c:361
 msgid "Save document (and force overwriting)"
 msgstr ""
 
-#: ../config.c:305
+#: ../config.c:362
 msgid "Save attachments"
 msgstr "இணைப்புகளைச் சேமிக்கவும்"
 
-#: ../config.c:306
+#: ../config.c:363
 msgid "Set page offset"
 msgstr ""
 
-#: ../config.c:307
+#: ../config.c:364
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:308
+#: ../config.c:365
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:309
+#: ../config.c:366
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:310
+#: ../config.c:367
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:311
+#: ../config.c:368
 msgid "Show version information"
 msgstr ""
 
-#: ../links.c:162 ../links.c:219
+#: ../links.c:166 ../links.c:223
 msgid "Failed to run xdg-open."
 msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
 
@@ -386,23 +402,23 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: ../page-widget.c:643
+#: ../page-widget.c:647
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr ""
 
-#: ../page-widget.c:741
+#: ../page-widget.c:745
 msgid "Copy image"
 msgstr "படத்தை ஒரு பிரதியெடு"
 
-#: ../page-widget.c:742
+#: ../page-widget.c:746
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:825
+#: ../shortcuts.c:923
 msgid "This document does not contain any index"
 msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
 
-#: ../zathura.c:189 ../zathura.c:843
+#: ../zathura.c:195 ../zathura.c:868
 msgid "[No name]"
 msgstr "பெயரற்ற ஆவணம்"
