@@ -17,8 +17,7 @@ static void render_job(void* data, void* user_data);
 static bool render(zathura_t* zathura, zathura_page_t* page);
 static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 
-struct render_thread_s
-{
+struct render_thread_s {
   GThreadPool* pool; /**< Pool of threads */
   GStaticMutex mutex; /**< Render lock */
   bool about_to_close; /**< Render thread is to be freed */

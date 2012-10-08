@@ -9,12 +9,12 @@
 #include <girara/statusbar.h>
 
 static void cb_print_draw_page(GtkPrintOperation* print_operation,
-    GtkPrintContext* context, gint page_number, zathura_t* zathura);
+                               GtkPrintContext* context, gint page_number, zathura_t* zathura);
 static void cb_print_end(GtkPrintOperation* print_operation, GtkPrintContext*
-    context, zathura_t* zathura);
+                         context, zathura_t* zathura);
 static void cb_print_request_page_setup(GtkPrintOperation* print_operation,
-    GtkPrintContext* context, gint page_number, GtkPageSetup* setup, zathura_t*
-    zathura);
+                                        GtkPrintContext* context, gint page_number, GtkPageSetup* setup, zathura_t*
+                                        zathura);
 
 void
 print(zathura_t* zathura)
@@ -45,7 +45,7 @@ print(zathura_t* zathura)
 
   /* print */
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation,
-      GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
+                                   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
 
   if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
     if (zathura->print.settings != NULL) {
@@ -67,7 +67,7 @@ print(zathura_t* zathura)
 
 static void
 cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
-    UNUSED(context), zathura_t* zathura)
+             UNUSED(context), zathura_t* zathura)
 {
   if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL) {
     return;
@@ -77,13 +77,13 @@ cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
 
   if (file_path != NULL) {
     girara_statusbar_item_set_text(zathura->ui.session,
-        zathura->ui.statusbar.file, file_path);
+                                   zathura->ui.statusbar.file, file_path);
   }
 }
 
 static void
 cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
-    context, gint page_number, zathura_t* zathura)
+                   context, gint page_number, zathura_t* zathura)
 {
   if (context == NULL || zathura == NULL || zathura->document == NULL ||
       zathura->ui.session == NULL || zathura->ui.statusbar.file == NULL) {
@@ -93,7 +93,7 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
   /* update statusbar */
   char* tmp = g_strdup_printf("Printing %d...", page_number);
   girara_statusbar_item_set_text(zathura->ui.session,
-      zathura->ui.statusbar.file, tmp);
+                                 zathura->ui.statusbar.file, tmp);
   g_free(tmp);
 
   /* render page */
@@ -111,8 +111,8 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
 
 static void
 cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation),
-    GtkPrintContext* UNUSED(context), gint page_number, GtkPageSetup* setup,
-    zathura_t* zathura)
+                            GtkPrintContext* UNUSED(context), gint page_number, GtkPageSetup* setup,
+                            zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return;

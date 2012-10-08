@@ -36,8 +36,7 @@ static const gchar* guess_type(const char* path);
 /**
  * Document
  */
-struct zathura_document_s
-{
+struct zathura_document_s {
   char* file_path; /**< File path of the document */
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
@@ -62,7 +61,7 @@ struct zathura_document_s
 
 zathura_document_t*
 zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
-    path, const char* password, zathura_error_t* error)
+                      path, const char* password, zathura_error_t* error)
 {
   if (path == NULL) {
     return NULL;

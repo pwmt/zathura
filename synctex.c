@@ -103,7 +103,8 @@ synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool 
 }
 
 static double
-scan_float(GScanner* scanner) {
+scan_float(GScanner* scanner)
+{
   switch (g_scanner_get_next_token(scanner)) {
     case G_TOKEN_FLOAT:
       return g_scanner_cur_value(scanner).v_float;

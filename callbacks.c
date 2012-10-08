@@ -84,7 +84,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     GdkRectangle page_rect;
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     gtk_widget_translate_coordinates(page_widget,
-        zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
+                                     zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
     page_rect.width  = zathura_page_get_width(page)  * scale;
     page_rect.height = zathura_page_get_height(page) * scale;
 
@@ -156,7 +156,7 @@ cb_first_page_column_value_changed(girara_session_t* session, const char* UNUSED
 
 void
 cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
-    GtkTreeViewColumn* UNUSED(column), void* data)
+                       GtkTreeViewColumn* UNUSED(column), void* data)
 {
   zathura_t* zathura = data;
   if (tree_view == NULL || zathura == NULL || zathura->ui.session == NULL) {
@@ -269,13 +269,13 @@ password_dialog(gpointer data)
 
   if (dialog != NULL) {
     girara_dialog(
-        dialog->zathura->ui.session,
-        "Incorrect password. Enter password:",
-        true,
-        NULL,
-        (girara_callback_inputbar_activate_t) cb_password_dialog,
-        dialog
-      );
+      dialog->zathura->ui.session,
+      "Incorrect password. Enter password:",
+      true,
+      NULL,
+      (girara_callback_inputbar_activate_t) cb_password_dialog,
+      dialog
+    );
   }
 
   return FALSE;
@@ -323,8 +323,8 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
 
 error_free:
 
-    g_free(dialog->path);
-    free(dialog);
+  g_free(dialog->path);
+  free(dialog);
 
 error_ret:
 
@@ -355,7 +355,7 @@ cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t*
 
 void
 cb_setting_recolor_change(girara_session_t* session, const char* name,
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                          girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -373,7 +373,7 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
 
 void
 cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);

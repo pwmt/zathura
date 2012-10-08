@@ -14,8 +14,7 @@
 /**
  * Document plugin structure
  */
-struct zathura_plugin_s
-{
+struct zathura_plugin_s {
   girara_list_t* content_types; /**< List of supported content types */
   zathura_plugin_register_function_t register_function; /**< Document open function */
   zathura_plugin_functions_t functions; /**< Document functions */
@@ -28,8 +27,7 @@ struct zathura_plugin_s
 /**
  * Plugin mapping
  */
-typedef struct zathura_type_plugin_mapping_s
-{
+typedef struct zathura_type_plugin_mapping_s {
   const gchar* type; /**< Plugin type */
   zathura_plugin_t* plugin; /**< Mapped plugin */
 } zathura_type_plugin_mapping_t;
@@ -37,8 +35,7 @@ typedef struct zathura_type_plugin_mapping_s
 /**
  * Plugin manager
  */
-struct zathura_plugin_manager_s
-{
+struct zathura_plugin_manager_s {
   girara_list_t* plugins; /**< List of plugins */
   girara_list_t* path; /**< List of plugin paths */
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
@@ -91,120 +88,117 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
   }
 
   GIRARA_LIST_FOREACH(plugin_manager->path, char*, iter, plugindir)
-    /* read all files in the plugin directory */
-    GDir* dir = g_dir_open(plugindir, 0, NULL);
-    if (dir == NULL) {
-      girara_error("could not open plugin directory: %s", plugindir);
-      girara_list_iterator_next(iter);
+  /* read all files in the plugin directory */
+  GDir* dir = g_dir_open(plugindir, 0, NULL);
+  if (dir == NULL) {
+    girara_error("could not open plugin directory: %s", plugindir);
+    girara_list_iterator_next(iter);
+    continue;
+  }
+
+  char* name = NULL;
+  while ((name = (char*) g_dir_read_name(dir)) != NULL) {
+    char* path = g_build_filename(plugindir, name, NULL);
+    if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
+      girara_info("%s is not a regular file. Skipping.", path);
+      g_free(path);
       continue;
     }
 
-    char* name = NULL;
-    while ((name = (char*) g_dir_read_name(dir)) != NULL) {
-      char* path = g_build_filename(plugindir, name, NULL);
-      if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
-        girara_info("%s is not a regular file. Skipping.", path);
-        g_free(path);
-        continue;
-      }
+    zathura_plugin_t* plugin = NULL;
 
-      zathura_plugin_t* plugin = NULL;
+    /* load plugin */
+    GModule* handle = g_module_open(path, G_MODULE_BIND_LOCAL);
+    if (handle == NULL) {
+      girara_error("could not load plugin %s (%s)", path, g_module_error());
+      g_free(path);
+      continue;
+    }
 
-      /* load plugin */
-      GModule* handle = g_module_open(path, G_MODULE_BIND_LOCAL);
-      if (handle == NULL) {
-        girara_error("could not load plugin %s (%s)", path, g_module_error());
-        g_free(path);
-        continue;
-      }
+    /* resolve symbols and check API and ABI version*/
+    zathura_plugin_api_version_t api_version = NULL;
+    if (g_module_symbol(handle, PLUGIN_API_VERSION_FUNCTION, (gpointer*) &api_version) == FALSE ||
+        api_version == NULL) {
+      girara_error("could not find '%s' function in plugin %s", PLUGIN_API_VERSION_FUNCTION, path);
+      g_free(path);
+      g_module_close(handle);
+      continue;
+    }
 
-      /* resolve symbols and check API and ABI version*/
-      zathura_plugin_api_version_t api_version = NULL;
-      if (g_module_symbol(handle, PLUGIN_API_VERSION_FUNCTION, (gpointer*) &api_version) == FALSE ||
-          api_version == NULL)
-      {
-        girara_error("could not find '%s' function in plugin %s", PLUGIN_API_VERSION_FUNCTION, path);
-        g_free(path);
-        g_module_close(handle);
-        continue;
-      }
+    if (api_version() != ZATHURA_API_VERSION) {
+      girara_error("plugin %s has been built againt zathura with a different API version (plugin: %d, zathura: %d)",
+                   path, api_version(), ZATHURA_API_VERSION);
+      g_free(path);
+      g_module_close(handle);
+      continue;
+    }
 
-      if (api_version() != ZATHURA_API_VERSION) {
-        girara_error("plugin %s has been built againt zathura with a different API version (plugin: %d, zathura: %d)",
-          path, api_version(), ZATHURA_API_VERSION);
-        g_free(path);
-        g_module_close(handle);
-        continue;
-      }
+    zathura_plugin_abi_version_t abi_version = NULL;
+    if (g_module_symbol(handle, PLUGIN_ABI_VERSION_FUNCTION, (gpointer*) &abi_version) == FALSE ||
+        abi_version == NULL) {
+      girara_error("could not find '%s' function in plugin %s", PLUGIN_ABI_VERSION_FUNCTION, path);
+      g_free(path);
+      g_module_close(handle);
+      continue;
+    }
 
-      zathura_plugin_abi_version_t abi_version = NULL;
-      if (g_module_symbol(handle, PLUGIN_ABI_VERSION_FUNCTION, (gpointer*) &abi_version) == FALSE ||
-          abi_version == NULL)
-      {
-        girara_error("could not find '%s' function in plugin %s", PLUGIN_ABI_VERSION_FUNCTION, path);
-        g_free(path);
-        g_module_close(handle);
-        continue;
-      }
+    if (abi_version() != ZATHURA_ABI_VERSION) {
+      girara_error("plugin %s has been built againt zathura with a different ABI version (plugin: %d, zathura: %d)",
+                   path, abi_version(), ZATHURA_ABI_VERSION);
+      g_free(path);
+      g_module_close(handle);
+      continue;
+    }
 
-      if (abi_version() != ZATHURA_ABI_VERSION) {
-        girara_error("plugin %s has been built againt zathura with a different ABI version (plugin: %d, zathura: %d)",
-          path, abi_version(), ZATHURA_ABI_VERSION);
-        g_free(path);
-        g_module_close(handle);
-        continue;
-      }
+    zathura_plugin_register_service_t register_service = NULL;
+    if (g_module_symbol(handle, PLUGIN_REGISTER_FUNCTION, (gpointer*) &register_service) == FALSE ||
+        register_service == NULL) {
+      girara_error("could not find '%s' function in plugin %s", PLUGIN_REGISTER_FUNCTION, path);
+      g_free(path);
+      g_module_close(handle);
+      continue;
+    }
 
-      zathura_plugin_register_service_t register_service = NULL;
-      if (g_module_symbol(handle, PLUGIN_REGISTER_FUNCTION, (gpointer*) &register_service) == FALSE ||
-          register_service == NULL)
-      {
-        girara_error("could not find '%s' function in plugin %s", PLUGIN_REGISTER_FUNCTION, path);
-        g_free(path);
-        g_module_close(handle);
-        continue;
-      }
+    plugin = g_malloc0(sizeof(zathura_plugin_t));
+    plugin->content_types = girara_list_new2(g_free);
+    plugin->handle = handle;
 
-      plugin = g_malloc0(sizeof(zathura_plugin_t));
-      plugin->content_types = girara_list_new2(g_free);
-      plugin->handle = handle;
+    register_service(plugin);
 
-      register_service(plugin);
+    /* register functions */
+    if (plugin->register_function == NULL) {
+      girara_error("plugin has no document functions register function");
+      g_free(path);
+      g_free(plugin);
+      g_module_close(handle);
+      continue;
+    }
 
-      /* register functions */
-      if (plugin->register_function == NULL) {
-        girara_error("plugin has no document functions register function");
-        g_free(path);
-        g_free(plugin);
-        g_module_close(handle);
-        continue;
-      }
+    plugin->register_function(&(plugin->functions));
+    plugin->path = path;
 
-      plugin->register_function(&(plugin->functions));
-      plugin->path = path;
+    bool ret = register_plugin(plugin_manager, plugin);
+    if (ret == false) {
+      girara_error("could not register plugin %s", path);
+      zathura_plugin_free(plugin);
+    } else {
+      girara_info("successfully loaded plugin %s", path);
 
-      bool ret = register_plugin(plugin_manager, plugin);
-      if (ret == false) {
-        girara_error("could not register plugin %s", path);
-        zathura_plugin_free(plugin);
-      } else {
-        girara_info("successfully loaded plugin %s", path);
-
-        zathura_plugin_version_function_t plugin_major = NULL, plugin_minor = NULL, plugin_rev = NULL;
-        g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION,    (gpointer*) &plugin_major);
-        g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION,    (gpointer*) &plugin_minor);
-        g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &plugin_rev);
-        if (plugin_major != NULL && plugin_minor != NULL && plugin_rev != NULL) {
-          plugin->version.major = plugin_major();
-          plugin->version.minor = plugin_minor();
-          plugin->version.rev   = plugin_rev();
-          girara_debug("plugin '%s': version %u.%u.%u", path,
-              plugin->version.major, plugin->version.minor,
-              plugin->version.rev);
-        }
+      zathura_plugin_version_function_t plugin_major = NULL, plugin_minor = NULL, plugin_rev = NULL;
+      g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION,    (gpointer*) &plugin_major);
+      g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION,    (gpointer*) &plugin_minor);
+      g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &plugin_rev);
+      if (plugin_major != NULL && plugin_minor != NULL && plugin_rev != NULL) {
+        plugin->version.major = plugin_major();
+        plugin->version.minor = plugin_minor();
+        plugin->version.rev   = plugin_rev();
+        girara_debug("plugin '%s': version %u.%u.%u", path,
+                     plugin->version.major, plugin->version.minor,
+                     plugin->version.rev);
       }
     }
-    g_dir_close(dir);
+  }
+  g_dir_close(dir);
   GIRARA_LIST_FOREACH_END(zathura->plugins.path, char*, iter, plugindir);
 }
 
@@ -217,10 +211,10 @@ zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, cons
 
   zathura_plugin_t* plugin = NULL;
   GIRARA_LIST_FOREACH(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-    if (g_content_type_equals(type, mapping->type)) {
-      plugin = mapping->plugin;
-      break;
-    }
+  if (g_content_type_equals(type, mapping->type)) {
+    plugin = mapping->plugin;
+    break;
+  }
   GIRARA_LIST_FOREACH_END(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
   return plugin;
@@ -272,11 +266,11 @@ register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plug
 
   bool at_least_one = false;
   GIRARA_LIST_FOREACH(plugin->content_types, gchar*, iter, type)
-    if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
-      girara_error("plugin: already registered for filetype %s\n", type);
-    } else {
-      at_least_one = true;
-    }
+  if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
+    girara_error("plugin: already registered for filetype %s\n", type);
+  } else {
+    at_least_one = true;
+  }
   GIRARA_LIST_FOREACH_END(plugin->content_types, gchar*, iter, type);
 
   if (at_least_one == true) {
@@ -294,10 +288,10 @@ plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, 
   g_return_val_if_fail(plugin         != NULL, false);
 
   GIRARA_LIST_FOREACH(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-    if (g_content_type_equals(type, mapping->type)) {
-      girara_list_iterator_free(iter);
-      return false;
-    }
+  if (g_content_type_equals(type, mapping->type)) {
+    girara_list_iterator_free(iter);
+    return false;
+  }
   GIRARA_LIST_FOREACH_END(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
   zathura_type_plugin_mapping_t* mapping = g_malloc(sizeof(zathura_type_plugin_mapping_t));

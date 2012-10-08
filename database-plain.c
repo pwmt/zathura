@@ -39,28 +39,28 @@
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJECT,
-  G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init))
+                        G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init))
 
 static void plain_finalize(GObject* object);
 static bool plain_add_bookmark(zathura_database_t* db, const char* file,
-    zathura_bookmark_t* bookmark);
+                               zathura_bookmark_t* bookmark);
 static bool plain_remove_bookmark(zathura_database_t* db, const char* file,
-    const char* id);
+                                  const char* id);
 static girara_list_t* plain_load_bookmarks(zathura_database_t* db,
     const char* file);
 static bool plain_set_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info);
+                               zathura_fileinfo_t* file_info);
 static bool plain_get_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info);
+                               zathura_fileinfo_t* file_info);
 static void plain_set_property(GObject* object, guint prop_id,
-    const GValue* value, GParamSpec* pspec);
+                               const GValue* value, GParamSpec* pspec);
 
 /* forward declaration */
 static bool zathura_db_check_file(const char* path);
 static GKeyFile* zathura_db_read_key_file_from_file(const char* path);
 static void zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file);
 static void cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile*
-    other_file, GFileMonitorEvent event, zathura_database_t* database);
+                                     other_file, GFileMonitorEvent event, zathura_database_t* database);
 
 typedef struct zathura_plaindatabase_private_s {
   char* bookmark_path;
@@ -75,8 +75,7 @@ typedef struct zathura_plaindatabase_private_s {
 #define ZATHURA_PLAINDATABASE_GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_PLAINDATABASE, zathura_plaindatabase_private_t))
 
-enum
-{
+enum {
   PROP_0,
   PROP_PATH
 };
@@ -118,8 +117,8 @@ zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
   object_class->set_property = plain_set_property;
 
   g_object_class_install_property(object_class, PROP_PATH,
-    g_param_spec_string("path", "path", "path to directory where the bookmarks and history are locates",
-      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+                                  g_param_spec_string("path", "path", "path to directory where the bookmarks and history are locates",
+                                      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -171,10 +170,10 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
   g_object_unref(bookmark_file);
 
   g_signal_connect(
-      G_OBJECT(priv->bookmark_monitor),
-      "changed",
-      G_CALLBACK(cb_zathura_db_watch_file),
-      db
+    G_OBJECT(priv->bookmark_monitor),
+    "changed",
+    G_CALLBACK(cb_zathura_db_watch_file),
+    db
   );
 
   priv->bookmarks = zathura_db_read_key_file_from_file(priv->bookmark_path);
@@ -198,10 +197,10 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
   g_object_unref(history_file);
 
   g_signal_connect(
-      G_OBJECT(priv->history_monitor),
-      "changed",
-      G_CALLBACK(cb_zathura_db_watch_file),
-      db
+    G_OBJECT(priv->history_monitor),
+    "changed",
+    G_CALLBACK(cb_zathura_db_watch_file),
+    db
   );
 
   priv->history = zathura_db_read_key_file_from_file(priv->history_path);
@@ -289,7 +288,7 @@ plain_finalize(GObject* object)
 
 static bool
 plain_add_bookmark(zathura_database_t* db, const char* file,
-    zathura_bookmark_t* bookmark)
+                   zathura_bookmark_t* bookmark)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->bookmarks == NULL || priv->bookmark_path == NULL ||
@@ -308,7 +307,7 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
 
 static bool
 plain_remove_bookmark(zathura_database_t* db, const char* file, const char*
-    GIRARA_UNUSED(id))
+                      GIRARA_UNUSED(id))
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->bookmarks == NULL || priv->bookmark_path == NULL) {
@@ -344,8 +343,8 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
   }
 
   girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t)
-      zathura_bookmarks_compare, (girara_free_function_t)
-      zathura_bookmark_free);
+                          zathura_bookmarks_compare, (girara_free_function_t)
+                          zathura_bookmark_free);
 
   gsize length;
   char** keys = g_key_file_get_keys(priv->bookmarks, name, &length, NULL);
@@ -372,7 +371,7 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
 
 static bool
 plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
-    file_info)
+                   file_info)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->history == NULL || file_info == NULL || file == NULL) {
@@ -409,7 +408,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
 static bool
 plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
-    file_info)
+                   file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
     return false;
@@ -519,9 +518,9 @@ zathura_db_read_key_file_from_file(const char* path)
 
   GError* error = NULL;
   if (g_key_file_load_from_data(key_file, content, contentlen,
-        G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error) ==
+                                G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error) ==
       FALSE) {
-    if (error->code != 1) /* ignore empty file */ {
+    if (error->code != 1) { /* ignore empty file */
       free(content);
       g_key_file_free(key_file);
       g_error_free(error);
@@ -568,7 +567,7 @@ zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file)
 
 static void
 cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUSED(other_file),
-    GFileMonitorEvent event, zathura_database_t* database)
+                         GFileMonitorEvent event, zathura_database_t* database)
 {
   if (event != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT || database == NULL) {
     return;

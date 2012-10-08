@@ -10,8 +10,7 @@
 #include "document.h"
 #include "utils.h"
 
-struct zathura_link_s
-{
+struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
   zathura_link_type_t type; /**< Link type */
   zathura_link_target_t target; /**< Link target */
@@ -23,7 +22,7 @@ static void link_launch(zathura_t* zathura, zathura_link_t* link);
 
 zathura_link_t*
 zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
-    zathura_link_target_t target)
+                 zathura_link_target_t target)
 {
   zathura_link_t* link = g_malloc0(sizeof(zathura_link_t));
 
@@ -130,12 +129,12 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 
           /* get page */
           zathura_page_t* page = zathura_document_get_page(zathura->document,
-              link->target.page_number);
+                                 link->target.page_number);
           if (page == NULL) {
             return;
           }
 
-	  zathura_document_set_current_page_number(zathura->document, link->target.page_number);
+          zathura_document_set_current_page_number(zathura->document, link->target.page_number);
 
           /* get page offset */
           page_offset_t offset;
@@ -152,8 +151,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           position_set_delayed(zathura, offset.x, offset.y);
           statusbar_page_number_update(zathura);
 
-          }
-          break;
+        }
+        break;
         default:
           break;
       }

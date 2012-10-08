@@ -20,7 +20,7 @@
 
 static void
 cb_jumplist_change(girara_session_t* session, const char* name,
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -35,7 +35,7 @@ cb_jumplist_change(girara_session_t* session, const char* name,
 
 static void
 cb_color_change(girara_session_t* session, const char* name,
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -59,7 +59,7 @@ cb_color_change(girara_session_t* session, const char* name,
 
 static void
 cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                        girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -80,7 +80,7 @@ cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
 
 static void
 cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                      girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -93,7 +93,7 @@ cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
 
 static void
 cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
-    girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                     girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);

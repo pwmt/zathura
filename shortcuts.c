@@ -20,7 +20,7 @@
 
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+         girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -52,7 +52,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+                 girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -173,7 +173,7 @@ error_ret:
 
 bool
 sc_change_mode(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+               girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -238,7 +238,7 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara
 
 bool
 sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+          girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -332,14 +332,14 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
   GtkAdjustment* y_adj = NULL;
 
   switch (event->type) {
-    /* scroll */
+      /* scroll */
     case GIRARA_EVENT_SCROLL_UP:
     case GIRARA_EVENT_SCROLL_DOWN:
     case GIRARA_EVENT_SCROLL_LEFT:
     case GIRARA_EVENT_SCROLL_RIGHT:
       return sc_scroll(session, argument, NULL, t);
 
-    /* drag */
+      /* drag */
     case GIRARA_EVENT_BUTTON_PRESS:
       x = event->x;
       y = event->y;
@@ -360,7 +360,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
       set_adjustment(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - y));
       break;
 
-    /* unhandled events */
+      /* unhandled events */
     default:
       break;
   }
@@ -398,7 +398,7 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
 
 bool
 sc_navigate(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int t)
+            girara_event_t* UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -446,7 +446,7 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_print(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+         girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -464,7 +464,7 @@ sc_print(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_recolor(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+           girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -478,7 +478,7 @@ sc_recolor(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+          girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -499,7 +499,7 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_rotate(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int t)
+          girara_event_t* UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -532,7 +532,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_scroll(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+          girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -544,7 +544,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   GtkAdjustment* adjustment = NULL;
   if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
-  (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
+       (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
     adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   } else {
     adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
@@ -704,7 +704,7 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event
 
 bool
 sc_search(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+          girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -730,7 +730,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
     int num_search_results = 0, current = -1;
     g_object_get(page_widget, "search-current", &current,
-        "search-length", &num_search_results, NULL);
+                 "search-length", &num_search_results, NULL);
     if (num_search_results == 0 || current == -1) {
       continue;
     }
@@ -796,7 +796,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+                  girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -833,7 +833,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
           gtk_tree_model_get_iter(model, &iter, path);
           /* select last child */
           gtk_tree_model_iter_nth_child(model, &child_iter, &iter,
-            gtk_tree_model_iter_n_children(model, &iter)-1);
+                                        gtk_tree_model_iter_n_children(model, &iter)-1);
           gtk_tree_path_free(path);
           path = gtk_tree_model_get_path(model, &child_iter);
         }
@@ -841,7 +841,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       break;
     case COLLAPSE:
       if (gtk_tree_view_collapse_row(tree_view, path) == FALSE
-        && gtk_tree_path_get_depth(path) > 1) {
+          && gtk_tree_path_get_depth(path) > 1) {
         gtk_tree_path_up(path);
         gtk_tree_view_collapse_row(tree_view, path);
       }
@@ -857,7 +857,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
             break;
           }
         } while((is_valid_path = (gtk_tree_path_get_depth(path) > 1))
-          && gtk_tree_path_up(path));
+                && gtk_tree_path_up(path));
       }
       break;
     case EXPAND:
@@ -891,7 +891,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+                girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -915,7 +915,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     }
 
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.index),
-      GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
     /* create index */
     document_index = zathura_document_index_generate(zathura->document, NULL);
@@ -1010,7 +1010,7 @@ error_ret:
 
 bool
 sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
-    UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+                    UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -1039,7 +1039,7 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
 
 bool
 sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
-    UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+                     UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -1112,7 +1112,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
 
 bool
 sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+        girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
 
@@ -1126,7 +1126,7 @@ sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
-    UNUSED(event), unsigned int t)
+        UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);

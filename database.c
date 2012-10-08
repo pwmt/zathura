@@ -21,7 +21,7 @@ zathura_db_free(zathura_database_t* db)
 
 bool
 zathura_db_add_bookmark(zathura_database_t* db, const char* file,
-    zathura_bookmark_t* bookmark)
+                        zathura_bookmark_t* bookmark)
 {
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && bookmark != NULL, false);
 
@@ -30,7 +30,7 @@ zathura_db_add_bookmark(zathura_database_t* db, const char* file,
 
 bool
 zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char*
-    id)
+                           id)
 {
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && id != NULL, false);
 
@@ -45,9 +45,9 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
   return ZATHURA_DATABASE_GET_INTERFACE(db)->load_bookmarks(db, file);
 }
 
-bool 
+bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info)
+                        zathura_fileinfo_t* file_info)
 {
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && file_info != NULL, false);
 
@@ -56,7 +56,7 @@ zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
 
 bool
 zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info)
+                        zathura_fileinfo_t* file_info)
 {
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && file_info != NULL, false);
 
