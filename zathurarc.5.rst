@@ -79,8 +79,7 @@ it is possible to map bindings only for a specific mode by passing the ``mode``
 argument which can take one of the following values:
 
 * normal (default)
-* visual
-* insert
+* fullscreen
 * index
 
 The brackets around the value are mandatory.
