@@ -121,25 +121,25 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
-      switch (link->target.destination_type) {
-        case ZATHURA_LINK_DESTINATION_XYZ: {
-          if (link->target.scale != 0) {
-            zathura_document_set_scale(zathura->document, link->target.scale);
-          }
+      if (link->target.destination_type != ZATHURA_LINK_DESTINATION_UNKNOWN) {
+        if (link->target.scale != 0) {
+          zathura_document_set_scale(zathura->document, link->target.scale);
+        }
 
-          /* get page */
-          zathura_page_t* page = zathura_document_get_page(zathura->document,
-                                 link->target.page_number);
-          if (page == NULL) {
-            return;
-          }
+        /* get page */
+        zathura_page_t* page = zathura_document_get_page(zathura->document,
+            link->target.page_number);
+        if (page == NULL) {
+          return;
+        }
 
-          zathura_document_set_current_page_number(zathura->document, link->target.page_number);
+        zathura_document_set_current_page_number(zathura->document, link->target.page_number);
 
-          /* get page offset */
-          page_offset_t offset;
-          page_calculate_offset(zathura, page, &offset);
+        /* get page offset */
+        page_offset_t offset;
+        page_calculate_offset(zathura, page, &offset);
 
+        if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ) {
           if (link->target.left != -1) {
             offset.x += link->target.left * zathura_document_get_scale(zathura->document);
           }
@@ -147,14 +147,10 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           if (link->target.top != -1) {
             offset.y += link->target.top * zathura_document_get_scale(zathura->document);
           }
-
-          position_set_delayed(zathura, offset.x, offset.y);
-          statusbar_page_number_update(zathura);
-
         }
-        break;
-        default:
-          break;
+
+        position_set_delayed(zathura, offset.x, offset.y);
+        statusbar_page_number_update(zathura);
       }
       break;
     case ZATHURA_LINK_GOTO_REMOTE:
