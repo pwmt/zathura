@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2012-10-05 11:40+0200\n"
 "PO-Revision-Date: 2012-05-01 20:38+0000\n"
 "Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
