@@ -223,9 +223,8 @@ msgid "Wrap scrolling"
 msgstr "Navegación/Scroll cíclica/o"
 
 #: ../config.c:176
-#, fuzzy
 msgid "Page aware scrolling"
-msgstr "Navegación/Scroll cíclica/o"
+msgstr ""
 
 #: ../config.c:178
 msgid "Advance number of pages per row"
