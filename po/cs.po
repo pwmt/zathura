@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2012-10-05 11:40+0200\n"
+"POT-Creation-Date: 2012-11-21 23:42+0100\n"
 "PO-Revision-Date: 2012-06-19 23:59+0200\n"
 "Last-Translator: Martin Pelikan <pelikan@storkhole.cz>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -27,6 +27,7 @@ msgstr "Neplatný index: %s"
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
 #: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1020
+#: ../shortcuts.c:1049
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
@@ -278,83 +279,83 @@ msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:350
+#: ../config.c:355
 msgid "Add a bookmark"
 msgstr "Přidat záložku"
 
-#: ../config.c:351
+#: ../config.c:356
 msgid "Delete a bookmark"
 msgstr "Smazat záložku"
 
-#: ../config.c:352
+#: ../config.c:357
 msgid "List all bookmarks"
 msgstr "Vypsat záložky"
 
-#: ../config.c:353
+#: ../config.c:358
 msgid "Close current file"
 msgstr "Zavřít tenhle soubor"
 
-#: ../config.c:354
+#: ../config.c:359
 msgid "Show file information"
 msgstr "Zobrazit informace o souboru"
 
-#: ../config.c:355
+#: ../config.c:360
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:356
+#: ../config.c:361
 msgid "Show help"
 msgstr "Zobrazit nápovědu"
 
-#: ../config.c:357
+#: ../config.c:362
 msgid "Open document"
 msgstr "Otevřít dokument"
 
-#: ../config.c:358
+#: ../config.c:363
 msgid "Close zathura"
 msgstr "Zavřít zathuru"
 
-#: ../config.c:359
+#: ../config.c:364
 msgid "Print document"
 msgstr "Tisknout dokument"
 
-#: ../config.c:360
+#: ../config.c:365
 msgid "Save document"
 msgstr "Uložit dokument"
 
-#: ../config.c:361
+#: ../config.c:366
 msgid "Save document (and force overwriting)"
 msgstr "Uložit a přepsat dokument"
 
-#: ../config.c:362
+#: ../config.c:367
 msgid "Save attachments"
 msgstr "Uložit přílohy"
 
-#: ../config.c:363
+#: ../config.c:368
 msgid "Set page offset"
 msgstr ""
 
-#: ../config.c:364
+#: ../config.c:369
 msgid "Mark current location within the document"
 msgstr "Označit současnou pozici v dokumentu"
 
-#: ../config.c:365
+#: ../config.c:370
 msgid "Delete the specified marks"
 msgstr "Smazat vybrané značky"
 
-#: ../config.c:366
+#: ../config.c:371
 msgid "Don't highlight current search results"
 msgstr "Nezvýrazňovat výsledky tohoto hledání"
 
-#: ../config.c:367
+#: ../config.c:372
 msgid "Highlight current search results"
 msgstr "Zvýrazňovat výsledky tohoto hledání"
 
-#: ../config.c:368
+#: ../config.c:373
 msgid "Show version information"
 msgstr ""
 
-#: ../links.c:166 ../links.c:223
+#: ../links.c:161 ../links.c:218
 msgid "Failed to run xdg-open."
 msgstr "Nepovedlo se spustit xdg-open."
 
@@ -394,20 +395,20 @@ msgstr "Zobrazit informace o souboru"
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr ""
 
-#: ../page-widget.c:456
+#: ../page-widget.c:455
 msgid "Loading..."
 msgstr "Načítám ..."
 
-#: ../page-widget.c:647
+#: ../page-widget.c:646
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Vybraný text zkopírován do schránky: %s"
 
-#: ../page-widget.c:745
+#: ../page-widget.c:744
 msgid "Copy image"
 msgstr "Zkopíruj obrázek"
 
-#: ../page-widget.c:746
+#: ../page-widget.c:745
 msgid "Save image as"
 msgstr "Ulož obrázek jako"
 
@@ -415,6 +416,6 @@ msgstr "Ulož obrázek jako"
 msgid "This document does not contain any index"
 msgstr "Tenhle dokument neobsahuje žádné indexy"
 
-#: ../zathura.c:195 ../zathura.c:868
+#: ../zathura.c:192 ../zathura.c:864
 msgid "[No name]"
 msgstr "[Nepojmenovaný]"

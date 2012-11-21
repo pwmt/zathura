@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: http://bugs.pwmt.org/\n"
-"POT-Creation-Date: 2012-10-05 11:40+0200\n"
+"Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
+"POT-Creation-Date: 2012-11-21 23:42+0100\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: Moritz Lipp <mlq@pwmt.org>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -30,6 +30,7 @@ msgstr "Índice invalido: '%s'."
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
 #: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1020
+#: ../shortcuts.c:1049
 msgid "No document opened."
 msgstr "Ningún documento abierto."
 
@@ -283,83 +284,83 @@ msgid "Enable synctex support"
 msgstr "Habilitar soporte synctex"
 
 #. define default inputbar commands
-#: ../config.c:350
+#: ../config.c:355
 msgid "Add a bookmark"
 msgstr "Añadir Favorito"
 
-#: ../config.c:351
+#: ../config.c:356
 msgid "Delete a bookmark"
 msgstr "Eliminar Favorito"
 
-#: ../config.c:352
+#: ../config.c:357
 msgid "List all bookmarks"
 msgstr "Listar favoritos"
 
-#: ../config.c:353
+#: ../config.c:358
 msgid "Close current file"
 msgstr "Cerrar fichero actual"
 
-#: ../config.c:354
+#: ../config.c:359
 msgid "Show file information"
 msgstr "Mostrar información del fichero"
 
-#: ../config.c:355
+#: ../config.c:360
 msgid "Execute a command"
 msgstr "Ejecutar un comando"
 
-#: ../config.c:356
+#: ../config.c:361
 msgid "Show help"
 msgstr "Mostrar ayuda"
 
-#: ../config.c:357
+#: ../config.c:362
 msgid "Open document"
 msgstr "Abrir documento"
 
-#: ../config.c:358
+#: ../config.c:363
 msgid "Close zathura"
 msgstr "Salir de zathura"
 
-#: ../config.c:359
+#: ../config.c:364
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: ../config.c:360
+#: ../config.c:365
 msgid "Save document"
 msgstr "Guardar documento"
 
-#: ../config.c:361
+#: ../config.c:366
 msgid "Save document (and force overwriting)"
 msgstr "Guardar documento (y sobreescribir)"
 
-#: ../config.c:362
+#: ../config.c:367
 msgid "Save attachments"
 msgstr "Guardar ficheros adjuntos"
 
-#: ../config.c:363
+#: ../config.c:368
 msgid "Set page offset"
 msgstr "Asignar el desplazamiento de página"
 
-#: ../config.c:364
+#: ../config.c:369
 msgid "Mark current location within the document"
 msgstr "Marcar la posición actual en el documento"
 
-#: ../config.c:365
+#: ../config.c:370
 msgid "Delete the specified marks"
 msgstr "Borrar las marcas especificadas"
 
-#: ../config.c:366
+#: ../config.c:371
 msgid "Don't highlight current search results"
 msgstr "No destacar los resultados de la búsqueda actual"
 
-#: ../config.c:367
+#: ../config.c:372
 msgid "Highlight current search results"
 msgstr "Destacar los resultados de la búsqueda actual"
 
-#: ../config.c:368
+#: ../config.c:373
 msgid "Show version information"
 msgstr "Mostrar versión"
 
-#: ../links.c:166 ../links.c:223
+#: ../links.c:161 ../links.c:218
 msgid "Failed to run xdg-open."
 msgstr "Error al tratar de ejecutar xdg-open"
 
@@ -399,20 +400,20 @@ msgstr "Mostrar información del fichero"
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Editor de Synctex (reenvíado al commando synctex)"
 
-#: ../page-widget.c:456
+#: ../page-widget.c:455
 msgid "Loading..."
 msgstr "Cargando ..."
 
-#: ../page-widget.c:647
+#: ../page-widget.c:646
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Se ha copiado el texto seleccionado al portapapeles: %s"
 
-#: ../page-widget.c:745
+#: ../page-widget.c:744
 msgid "Copy image"
 msgstr "Copiar imagen"
 
-#: ../page-widget.c:746
+#: ../page-widget.c:745
 msgid "Save image as"
 msgstr "Salvar imagen como"
 
@@ -420,6 +421,6 @@ msgstr "Salvar imagen como"
 msgid "This document does not contain any index"
 msgstr "Este documento no contiene ningún índice"
 
-#: ../zathura.c:195 ../zathura.c:868
+#: ../zathura.c:192 ../zathura.c:864
 msgid "[No name]"
 msgstr "[Sin nombre]"
