@@ -111,7 +111,7 @@ main(int argc, char* argv[])
   }
 
   /* Enable/Disable synctex support */
-  zathura_set_syntex(zathura, synctex);
+  zathura_set_synctex(zathura, synctex);
 
   /* Print version */
   if (print_version == true) {
