@@ -567,6 +567,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   bool scroll_page_aware = false;
   girara_setting_get(session, "scroll-page-aware", &scroll_page_aware);
 
+  bool scroll_wrap = false;
+  girara_setting_get(session, "scroll-wrap", &scroll_wrap);
+
   int padding = 1;
   girara_setting_get(session, "page-padding", &padding);
 
@@ -609,6 +612,13 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       break;
     default:
       new_value = value;
+  }
+
+  if (scroll_wrap == true) {
+    if (new_value < 0)
+      new_value = max;
+    else if (new_value > max)
+      new_value = 0;
   }
 
   if (scroll_page_aware == true) {
