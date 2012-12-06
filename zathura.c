@@ -397,7 +397,7 @@ zathura_set_synctex_editor_command(zathura_t* zathura, const char* command)
 }
 
 void
-zathura_set_syntex(zathura_t* zathura, bool value)
+zathura_set_synctex(zathura_t* zathura, bool value)
 {
   g_return_if_fail(zathura != NULL);
   g_return_if_fail(zathura->ui.session != NULL);

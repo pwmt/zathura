@@ -48,10 +48,10 @@ OPTIONS
   Set log debug level (debug, info, warning, error)
 
 -s, --synctex
-  Enable syntex support
+  Enable synctex support
 
--x [cmd], --syntec-editor-command [cmd]
-  Set the syntex editor command
+-x [cmd], --synctex-editor-command [cmd]
+  Set the synctex editor command
 
 MOUSE AND KEY BINDINGS
 ======================
