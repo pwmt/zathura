@@ -422,20 +422,20 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
 
   t = (t == 0) ? (unsigned int) offset : t;
   if (argument->n == NEXT) {
-    if (scroll_wrap == true) {
+    if (scroll_wrap == false) {
       new_page = new_page + t;
     } else {
       new_page = (new_page + t) % number_of_pages;
     }
   } else if (argument->n == PREVIOUS) {
-    if (scroll_wrap == true) {
+    if (scroll_wrap == false) {
       new_page = new_page - t;
     } else {
       new_page = (new_page + number_of_pages - t) % number_of_pages;
     }
   }
 
-  if (scroll_wrap == true && (new_page < 0 || new_page >= number_of_pages)) {
+  if ((new_page < 0 || new_page >= number_of_pages) && !scroll_wrap) {
     return false;
   }
 
