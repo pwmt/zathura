@@ -81,6 +81,15 @@ void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
 bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
 
 /**
+ * Called when input has been passed to the sc_display_link dialog
+ *
+ * @param entry The dialog inputbar
+ * @param session The girara session
+ * @return true if no error occured and the event has been handled
+ */
+bool cb_sc_display_link(GtkEntry* entry, girara_session_t* session);
+
+/**
  * Emitted when file has been changed
  *
  * @param monitor The file monitor

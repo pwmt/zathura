@@ -56,4 +56,12 @@ zathura_link_target_t zathura_link_get_target(zathura_link_t* link);
  */
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link);
 
+/**
+ * Display a link using girara_notify
+ *
+ * @param zathura Zathura instance
+ * @param link The link
+ */
+void zathura_link_display(zathura_t* zathura, zathura_link_t* link);
+
 #endif // LINK_H

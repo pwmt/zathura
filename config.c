@@ -209,6 +209,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,            NORMAL,     ZATHURA_ADJUST_BESTFIT,  NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_s,          NULL, sc_adjust_window,            NORMAL,     ZATHURA_ADJUST_WIDTH,    NULL);
 
+  girara_shortcut_add(gsession, 0,                GDK_KEY_F,          NULL, sc_display_link,             NORMAL,     0,               NULL);
+
   girara_shortcut_add(gsession, 0,                GDK_KEY_slash,      NULL, sc_focus_inputbar,           NORMAL,     0,               &("/"));
   girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_slash,      NULL, sc_focus_inputbar,           NORMAL,     0,               &("/"));
   girara_shortcut_add(gsession, 0,                GDK_KEY_question,   NULL, sc_focus_inputbar,           NORMAL,     0,               &("?"));
@@ -381,6 +383,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
   girara_shortcut_mapping_add(gsession, "adjust_window",     sc_adjust_window);
   girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
+  girara_shortcut_mapping_add(gsession, "display_link",      sc_display_link);
   girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);

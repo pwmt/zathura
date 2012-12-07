@@ -18,6 +18,39 @@
 #include "print.h"
 #include "page-widget.h"
 
+/* Helper function; see sc_display_link and sc_follow. */
+static bool
+draw_links(zathura_t* zathura)
+{
+  /* set pages to draw links */
+  bool show_links = false;
+  unsigned int page_offset = 0;
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    g_object_set(page_widget, "search-results", NULL, NULL);
+    if (zathura_page_get_visibility(page) == true) {
+      g_object_set(page_widget, "draw-links", TRUE, NULL);
+
+      int number_of_links = 0;
+      g_object_get(page_widget, "number-of-links", &number_of_links, NULL);
+      if (number_of_links != 0) {
+        show_links = true;
+      }
+      g_object_set(page_widget, "offset-links", page_offset, NULL);
+      page_offset += number_of_links;
+    } else {
+      g_object_set(page_widget, "draw-links", FALSE, NULL);
+    }
+  }
+  return show_links;
+}
+
 bool
 sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
          girara_event_t* UNUSED(event), unsigned int UNUSED(t))
@@ -183,6 +216,30 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument,
 }
 
 bool
+sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
+    return false;
+  }
+
+  bool show_links = draw_links(zathura);
+
+  /* ask for input */
+  if (show_links) {
+    girara_dialog(zathura->ui.session, "Display link:", FALSE, NULL,
+        (girara_callback_inputbar_activate_t) cb_sc_display_link,
+        zathura->ui.session);
+  }
+
+  return false;
+}
+
+bool
 sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
@@ -248,32 +305,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
     return false;
   }
 
-  /* set pages to draw links */
-  bool show_links = false;
-  unsigned int page_offset = 0;
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-    if (page == NULL) {
-      continue;
-    }
-
-    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    g_object_set(page_widget, "search-results", NULL, NULL);
-    if (zathura_page_get_visibility(page) == true) {
-      g_object_set(page_widget, "draw-links", TRUE, NULL);
-
-      int number_of_links = 0;
-      g_object_get(page_widget, "number-of-links", &number_of_links, NULL);
-      if (number_of_links != 0) {
-        show_links = true;
-      }
-      g_object_set(page_widget, "offset-links", page_offset, NULL);
-      page_offset += number_of_links;
-    } else {
-      g_object_set(page_widget, "draw-links", FALSE, NULL);
-    }
-  }
+  bool show_links = draw_links(zathura);
 
   /* ask for input */
   if (show_links == true) {

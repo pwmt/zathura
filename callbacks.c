@@ -186,8 +186,15 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
   g_object_unref(model);
 }
 
-bool
-cb_sc_follow(GtkEntry* entry, girara_session_t* session)
+typedef enum zathura_link_action_e
+{
+  ZATHURA_LINK_ACTION_FOLLOW,
+  ZATHURA_LINK_ACTION_DISPLAY
+} zathura_link_action_t;
+
+static bool
+handle_link(GtkEntry* entry, girara_session_t* session,
+            zathura_link_action_t action)
 {
   g_return_val_if_fail(session != NULL, FALSE);
   g_return_val_if_fail(session->global.data != NULL, FALSE);
@@ -226,10 +233,17 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
       zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
 
       if (link != NULL) {
-        zathura_jumplist_save(zathura);
-        zathura_link_evaluate(zathura, link);
         invalid_index = false;
-        zathura_jumplist_add(zathura);
+        switch (action) {
+          case ZATHURA_LINK_ACTION_FOLLOW:
+            zathura_jumplist_save(zathura);
+            zathura_link_evaluate(zathura, link);
+            zathura_jumplist_add(zathura);
+            break;
+          case ZATHURA_LINK_ACTION_DISPLAY:
+            zathura_link_display(zathura, link);
+            break;
+        }
       }
     }
   }
@@ -241,6 +255,18 @@ cb_sc_follow(GtkEntry* entry, girara_session_t* session)
   g_free(input);
 
   return (eval == TRUE) ? TRUE : FALSE;
+}
+
+bool
+cb_sc_follow(GtkEntry* entry, girara_session_t* session)
+{
+  return handle_link(entry, session, ZATHURA_LINK_ACTION_FOLLOW);
+}
+
+bool
+cb_sc_display_link(GtkEntry* entry, girara_session_t* session)
+{
+  return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
 }
 
 void
