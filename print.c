@@ -121,11 +121,11 @@ cb_print_draw_page(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
   }
 
   /* white background */
-  cairo_save(cairo);
-  cairo_set_source_rgb(cairo, 1, 1, 1);
-  cairo_rectangle(cairo, 0, 0, width, height);
-  cairo_fill(cairo);
-  cairo_restore(cairo);
+  cairo_save(temp_cairo);
+  cairo_set_source_rgb(temp_cairo, 1, 1, 1);
+  cairo_rectangle(temp_cairo, 0, 0, width, height);
+  cairo_fill(temp_cairo);
+  cairo_restore(temp_cairo);
 
   /* render the page to the temporary surface */
   girara_debug("printing page %d ...", page_number);
