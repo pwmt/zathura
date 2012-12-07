@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2012-12-06 21:00+0100\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: mankand007 <mankand007@gmail.com>\n"

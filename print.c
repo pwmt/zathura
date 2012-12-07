@@ -92,13 +92,13 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
-  /* update statusbar */
+  /* Update statusbar. */
   char* tmp = g_strdup_printf("Printing %d...", page_number);
   girara_statusbar_item_set_text(zathura->ui.session,
                                  zathura->ui.statusbar.file, tmp);
   g_free(tmp);
 
-  /* render page */
+  /* Get the page and cairo handle.  */
   cairo_t* cairo       = gtk_print_context_get_cairo_context(context);
   zathura_page_t* page = zathura_document_get_page(zathura->document, page_number);
   if (cairo == NULL || page == NULL) {
@@ -106,7 +106,8 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
-  /* try to render the page with out a temporary surface */
+  /* Try to render the page without a temporary surface. This only works with
+   * plugins that support rendering to any surface.  */
   girara_debug("printing page %d ...", page_number);
   render_lock(zathura->sync.render_thread);
   int err = zathura_page_render(page, cairo, true);
@@ -115,8 +116,7 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
-  /* we need a temporary cairo object since the cairo object from the print
-   * context doesn't have a width or height */
+  /* Try to render the page on a temporary image surface. */
   const gdouble width = gtk_print_context_get_width(context);
   const gdouble height = gtk_print_context_get_height(context);
 
@@ -135,14 +135,14 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
-  /* white background */
+  /* Draw a white background. */
   cairo_save(temp_cairo);
   cairo_set_source_rgb(temp_cairo, 1, 1, 1);
   cairo_rectangle(temp_cairo, 0, 0, page_width, page_height);
   cairo_fill(temp_cairo);
   cairo_restore(temp_cairo);
 
-  /* render the page to the temporary surface */
+  /* Render the page to the temporary surface */
   girara_debug("printing page %d ...", page_number);
   render_lock(zathura->sync.render_thread);
   err = zathura_page_render(page, temp_cairo, true);
@@ -154,11 +154,11 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
-  /* rescale */
+  /* Rescale the page and keep the aspect ratio */
   const gdouble scale = MIN(width / page_width, height / page_height);
   cairo_scale(cairo, scale, scale);
 
-  /* copy temporary surface */
+  /* Blit temporary surface to original cairo object. */
   cairo_set_source_surface(cairo, surface, 0.0, 0.0);
   cairo_paint(cairo);
   cairo_destroy(temp_cairo);

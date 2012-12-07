@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2012-12-06 21:00+0100\n"
 "PO-Revision-Date: 2012-12-06 11:48+0100\n"
 "Last-Translator: Benoît Knecht <benoit.knecht@gmail.com>\n"

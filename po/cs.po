@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2012-12-06 21:00+0100\n"
 "PO-Revision-Date: 2012-06-19 23:59+0200\n"
 "Last-Translator: Martin Pelikan <pelikan@storkhole.cz>\n"
