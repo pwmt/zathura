@@ -106,6 +106,15 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
+  /* try to render the page with out a temporary surface */
+  girara_debug("printing page %d ...", page_number);
+  render_lock(zathura->sync.render_thread);
+  int err = zathura_page_render(page, cairo, true);
+  render_unlock(zathura->sync.render_thread);
+  if (err == ZATHURA_ERROR_OK) {
+    return;
+  }
+
   /* we need a temporary cairo object since the cairo object from the print
    * context doesn't have a width or height */
   const gdouble width = gtk_print_context_get_width(context);
@@ -136,8 +145,14 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   /* render the page to the temporary surface */
   girara_debug("printing page %d ...", page_number);
   render_lock(zathura->sync.render_thread);
-  zathura_page_render(page, temp_cairo, true);
+  err = zathura_page_render(page, temp_cairo, true);
   render_unlock(zathura->sync.render_thread);
+  if (err != ZATHURA_ERROR_OK) {
+    cairo_destroy(temp_cairo);
+    cairo_surface_destroy(surface);
+    gtk_print_operation_cancel(print_operation);
+    return;
+  }
 
   /* rescale */
   const gdouble scale = MIN(width / page_width, height / page_height);

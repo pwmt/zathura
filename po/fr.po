@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
-"Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2012-11-21 23:42+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-06 21:00+0100\n"
 "PO-Revision-Date: 2012-12-06 11:48+0100\n"
 "Last-Translator: Benoît Knecht <benoit.knecht@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
@@ -32,8 +32,8 @@ msgstr "Index invalide : '%s'"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
-#: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1020
-#: ../shortcuts.c:1049
+#: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1030
+#: ../shortcuts.c:1059
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
@@ -219,8 +219,8 @@ msgstr "Recoloriser les pages"
 #: ../config.c:172
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
-"Lors de la recoloration garder la teinte d'origine et ajuster "
-"seulement la luminosité"
+"Lors de la recoloration garder la teinte d'origine et ajuster seulement la "
+"luminosité"
 
 #: ../config.c:174
 msgid "Wrap scrolling"
@@ -420,7 +420,7 @@ msgstr "Copier l'image"
 msgid "Save image as"
 msgstr "Enregistrer l'image sous"
 
-#: ../shortcuts.c:923
+#: ../shortcuts.c:933
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
