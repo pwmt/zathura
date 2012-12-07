@@ -37,6 +37,7 @@ print(zathura_t* zathura)
   gtk_print_operation_set_n_pages(print_operation, zathura_document_get_number_of_pages(zathura->document));
   gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(zathura->document));
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
+  gtk_print_operation_set_embed_page_setup(print_operation, TRUE);
 
   /* print operation signals */
   g_signal_connect(print_operation, "draw-page",          G_CALLBACK(cb_print_draw_page),          zathura);
