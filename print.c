@@ -111,7 +111,9 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   const gdouble width = gtk_print_context_get_width(context);
   const gdouble height = gtk_print_context_get_height(context);
 
-  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
+  const double page_height = zathura_page_get_height(page);
+  const double page_width  = zathura_page_get_width(page);
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
   if (surface == NULL) {
     gtk_print_operation_cancel(print_operation);
     return;
@@ -127,7 +129,7 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   /* white background */
   cairo_save(temp_cairo);
   cairo_set_source_rgb(temp_cairo, 1, 1, 1);
-  cairo_rectangle(temp_cairo, 0, 0, width, height);
+  cairo_rectangle(temp_cairo, 0, 0, page_width, page_height);
   cairo_fill(temp_cairo);
   cairo_restore(temp_cairo);
 
@@ -136,6 +138,10 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   render_lock(zathura->sync.render_thread);
   zathura_page_render(page, temp_cairo, true);
   render_unlock(zathura->sync.render_thread);
+
+  /* rescale */
+  const gdouble scale = MIN(width / page_width, height / page_height);
+  cairo_scale(cairo, scale, scale);
 
   /* copy temporary surface */
   cairo_set_source_surface(cairo, surface, 0.0, 0.0);
