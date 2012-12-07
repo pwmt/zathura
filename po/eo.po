@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2012-12-06 21:00+0100\n"
+"POT-Creation-Date: 2012-12-07 15:28+0100\n"
 "PO-Revision-Date: 2012-08-09 13:21+0000\n"
 "Last-Translator: norbux <manelsales@ono.com>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/zathura/"
@@ -283,79 +283,79 @@ msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:355
+#: ../config.c:357
 msgid "Add a bookmark"
 msgstr "Aldonu paĝosignon"
 
-#: ../config.c:356
+#: ../config.c:358
 msgid "Delete a bookmark"
 msgstr "Forigu paĝosignon"
 
-#: ../config.c:357
+#: ../config.c:359
 msgid "List all bookmarks"
 msgstr "Listigu ĉiujn paĝosignojn"
 
-#: ../config.c:358
+#: ../config.c:360
 msgid "Close current file"
 msgstr "Fermu nunan dosieron"
 
-#: ../config.c:359
+#: ../config.c:361
 msgid "Show file information"
 msgstr "Montru dosiera informacio"
 
-#: ../config.c:360
+#: ../config.c:362
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:361
+#: ../config.c:363
 msgid "Show help"
 msgstr "Montru helpon"
 
-#: ../config.c:362
+#: ../config.c:364
 msgid "Open document"
 msgstr "Malfermu dokumenton"
 
-#: ../config.c:363
+#: ../config.c:365
 msgid "Close zathura"
 msgstr "Fermu zathura"
 
-#: ../config.c:364
+#: ../config.c:366
 msgid "Print document"
 msgstr "Presu dokumenton"
 
-#: ../config.c:365
+#: ../config.c:367
 msgid "Save document"
 msgstr "Konservu dokumenton"
 
-#: ../config.c:366
+#: ../config.c:368
 msgid "Save document (and force overwriting)"
 msgstr "Konservu dokumenton (deviga anstataŭo)"
 
-#: ../config.c:367
+#: ../config.c:369
 msgid "Save attachments"
 msgstr "Konservu kunsendaĵojn"
 
-#: ../config.c:368
+#: ../config.c:370
 msgid "Set page offset"
 msgstr "Agordu paĝdelokado"
 
-#: ../config.c:369
+#: ../config.c:371
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:370
+#: ../config.c:372
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:371
+#: ../config.c:373
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:372
+#: ../config.c:374
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:373
+#: ../config.c:375
 msgid "Show version information"
 msgstr ""
 
