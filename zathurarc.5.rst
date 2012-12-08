@@ -207,17 +207,17 @@ The following shortcut functions can be mapped:
     change_mode       Change current mode
     display_link      Display link target
     follow            Follow a link
-    focus_inputbar    Focus inputbar
     goto              Go to a certain page
-    index_navigate    Navigate through the index
+    jumplist          Move forwards/backwards in the jumplist
     navigate          Navigate to the next/previous page
+    navigate_index    Navigate through the index
+    print             Show the print dialog
     quit              Quit zathura
     recolor           Recolor the pages
     reload            Reload the document
     rotate            Rotate the page
     scroll            Scroll
     search            Search next/previous item
-    set               Set an option
     toggle_fullscreen Toggle fullscreen
     toggle_index      Show or hide index
     toggle_inputbar   Show or hide inputbar

@@ -384,11 +384,11 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "adjust_window",     sc_adjust_window);
   girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
   girara_shortcut_mapping_add(gsession, "display_link",      sc_display_link);
-  girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
-  girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
+  girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
   girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
+  girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "print",             sc_print);
   girara_shortcut_mapping_add(gsession, "quit",              sc_quit);
   girara_shortcut_mapping_add(gsession, "recolor",           sc_recolor);
