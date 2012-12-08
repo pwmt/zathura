@@ -82,6 +82,8 @@ o, O
   Open document
 f
   Follow links
+F
+  Display link target
 \:
   Enter command
 r

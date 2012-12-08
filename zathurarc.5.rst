@@ -205,6 +205,7 @@ The following shortcut functions can be mapped:
     abort             Switch back to normal mode
     adjust_window     Adjust page width
     change_mode       Change current mode
+    display_link      Display link target
     follow            Follow a link
     focus_inputbar    Focus inputbar
     goto              Go to a certain page
