@@ -219,6 +219,7 @@ The following shortcut functions can be mapped:
     rotate            Rotate the page
     scroll            Scroll
     search            Search next/previous item
+    set               Set an option
     toggle_fullscreen Toggle fullscreen
     toggle_index      Show or hide index
     toggle_inputbar   Show or hide inputbar
