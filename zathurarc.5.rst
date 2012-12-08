@@ -206,6 +206,7 @@ The following shortcut functions can be mapped:
     adjust_window     Adjust page width
     change_mode       Change current mode
     display_link      Display link target
+    focus_inputbar    Focus inputbar
     follow            Follow a link
     goto              Go to a certain page
     jumplist          Move forwards/backwards in the jumplist
@@ -221,6 +222,7 @@ The following shortcut functions can be mapped:
     toggle_fullscreen Toggle fullscreen
     toggle_index      Show or hide index
     toggle_inputbar   Show or hide inputbar
+    toggle_page_mode  Toggle between one and multiple pages per row
     toggle_statusbar  Show or hide statusbar
     zoom              Zoom in or out
 
