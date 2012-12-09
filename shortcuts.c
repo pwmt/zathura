@@ -895,6 +895,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
         do {
           gtk_tree_model_get_iter(model, &iter, path);
           if (gtk_tree_model_iter_next(model, &iter)) {
+            gtk_tree_path_free(path);
             path = gtk_tree_model_get_path(model, &iter);
             break;
           }
@@ -918,7 +919,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
-
+      gtk_tree_path_free(path);
       return false;
   }
 
