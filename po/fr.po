@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2012-12-14 00:04+0100\n"
-"PO-Revision-Date: 2012-12-06 11:48+0100\n"
+"PO-Revision-Date: 2012-12-14 00:08+0100\n"
 "Last-Translator: Benoît Knecht <benoit.knecht@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
 "fr/)\n"
@@ -368,18 +368,18 @@ msgid "Failed to run xdg-open."
 msgstr "Échec lors du lancement de xdg-open."
 
 #: ../links.c:179
-#, fuzzy, c-format
+#, c-format
 msgid "Link: page %d"
-msgstr "Page %d"
+msgstr "Lien : page %d"
 
 #: ../links.c:186
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Lien : %s"
 
 #: ../links.c:190
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Lien : Invalide"
 
 #: ../main.c:52
 msgid "Reparents to window specified by xid"
