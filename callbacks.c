@@ -58,20 +58,23 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
-  GdkRectangle view_rect;
-  /* get current adjustment values */
-  view_rect.y      = 0;
-  view_rect.height = gtk_adjustment_get_page_size(view_vadjustment);
-  view_rect.x      = 0;
-  view_rect.width  = gtk_adjustment_get_page_size(view_hadjustment);
+  /* current adjustment values */
+  GdkRectangle view_rect = {
+    .x      = 0,
+    .y      = 0,
+    .width  = gtk_adjustment_get_page_size(view_hadjustment),
+    .height = gtk_adjustment_get_page_size(view_vadjustment)
+  };
 
   int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
-  GdkRectangle center;
-  center.x = (view_rect.width + 1) / 2;
-  center.y = (view_rect.height + 1) / 2;
-  center.height = center.width = (2 * page_padding) + 1;
+  GdkRectangle center = {
+    .x      = (view_rect.width  + 1) / 2,
+    .y      = (view_rect.height + 1) / 2,
+    .width  = (2 * page_padding) + 1,
+    .height = (2 * page_padding) + 1
+  };
 
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   double scale = zathura_document_get_scale(zathura->document);
@@ -81,12 +84,13 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
 
-    GdkRectangle page_rect;
+    GdkRectangle page_rect = {
+      .width  = zathura_page_get_width(page)  * scale,
+      .height = zathura_page_get_height(page) * scale
+    };
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     gtk_widget_translate_coordinates(page_widget,
                                      zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
-    page_rect.width  = zathura_page_get_width(page)  * scale;
-    page_rect.height = zathura_page_get_height(page) * scale;
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       zathura_page_set_visibility(page, true);
