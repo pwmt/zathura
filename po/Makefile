@@ -4,9 +4,12 @@ PROJECT = zathura
 GETTEXT_PACKAGE = $(PROJECT)
 CATALOGS  = $(wildcard *.po)
 LINGUAS  ?= $(patsubst %.po, %, $(CATALOGS))
-ALINGUAS   = $(shell find $(patsubst %, %.po, $(LINGUAS)) 2>/dev/null)
+ifeq ($(LINGUAS),)
+ALINGUAS =
+else
+ALINGUAS = $(shell find $(patsubst %, %.po, $(LINGUAS)) 2>/dev/null)
+endif
 MOS = $(patsubst %, %/LC_MESSAGES/${GETTEXT_PACKAGE}.mo, $(patsubst %.po, %, $(ALINGUAS)))
-
 
 include ../config.mk
 include ../common.mk
