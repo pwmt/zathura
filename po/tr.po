@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2012-12-07 15:28+0100\n"
+"POT-Creation-Date: 2012-12-14 00:04+0100\n"
 "PO-Revision-Date: 2012-05-01 20:38+0000\n"
 "Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.net/projects/p/zathura/language/"
@@ -19,20 +19,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-#: ../callbacks.c:207
+#: ../callbacks.c:218
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Hatalı girdi '%s'"
 
-#: ../callbacks.c:238
+#: ../callbacks.c:256
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Hatalı dizin '%s'"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
-#: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1030
-#: ../shortcuts.c:1059
+#: ../commands.c:522 ../shortcuts.c:475 ../shortcuts.c:1050
+#: ../shortcuts.c:1079
 msgid "No document opened."
 msgstr "Açık belge yok."
 
@@ -284,85 +284,99 @@ msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:357
+#: ../config.c:359
 msgid "Add a bookmark"
 msgstr "Yer imi ekle"
 
-#: ../config.c:358
+#: ../config.c:360
 msgid "Delete a bookmark"
 msgstr "Yer imi sil"
 
-#: ../config.c:359
+#: ../config.c:361
 msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
-#: ../config.c:360
+#: ../config.c:362
 msgid "Close current file"
 msgstr "Geçerli dosyayı kapat"
 
-#: ../config.c:361
+#: ../config.c:363
 msgid "Show file information"
 msgstr "Dosya bilgisi göster"
 
-#: ../config.c:362
+#: ../config.c:364
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:363
+#: ../config.c:365
 msgid "Show help"
 msgstr "Yardım bilgisi göster"
 
-#: ../config.c:364
+#: ../config.c:366
 msgid "Open document"
 msgstr "Belge aç"
 
-#: ../config.c:365
+#: ../config.c:367
 msgid "Close zathura"
 msgstr "Zathura'yı kapat"
 
-#: ../config.c:366
+#: ../config.c:368
 msgid "Print document"
 msgstr "Belge yazdır"
 
-#: ../config.c:367
+#: ../config.c:369
 msgid "Save document"
 msgstr "Belgeyi kaydet"
 
-#: ../config.c:368
+#: ../config.c:370
 msgid "Save document (and force overwriting)"
 msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
 
-#: ../config.c:369
+#: ../config.c:371
 msgid "Save attachments"
 msgstr "Ekleri kaydet"
 
-#: ../config.c:370
+#: ../config.c:372
 msgid "Set page offset"
 msgstr "Sayfa derinliğini ayarla"
 
-#: ../config.c:371
+#: ../config.c:373
 msgid "Mark current location within the document"
 msgstr "Bu belgede bu konumu işaretle"
 
-#: ../config.c:372
+#: ../config.c:374
 msgid "Delete the specified marks"
 msgstr "Seçilen işaretlemeleri sil"
 
-#: ../config.c:373
+#: ../config.c:375
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:374
+#: ../config.c:376
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:375
+#: ../config.c:377
 msgid "Show version information"
 msgstr ""
 
-#: ../links.c:161 ../links.c:218
+#: ../links.c:161 ../links.c:240
 msgid "Failed to run xdg-open."
 msgstr "xdg-open çalıştırılamadı"
+
+#: ../links.c:179
+#, c-format
+msgid "Link: page %d"
+msgstr ""
+
+#: ../links.c:186
+#, c-format
+msgid "Link: %s"
+msgstr ""
+
+#: ../links.c:190
+msgid "Link: Invalid"
+msgstr ""
 
 #: ../main.c:52
 msgid "Reparents to window specified by xid"
@@ -417,7 +431,7 @@ msgstr "Resim kopyala"
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:933
+#: ../shortcuts.c:953
 msgid "This document does not contain any index"
 msgstr "Bu belge fihrist içermiyor"
 

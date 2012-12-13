@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2012-12-07 15:28+0100\n"
+"POT-Creation-Date: 2012-12-14 00:04+0100\n"
 "PO-Revision-Date: 2012-06-19 23:59+0200\n"
 "Last-Translator: Martin Pelikan <pelikan@storkhole.cz>\n"
 "Language-Team: pwmt.org <mail@pwmt.org>\n"
@@ -14,20 +14,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../callbacks.c:207
+#: ../callbacks.c:218
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Neplatný vstup: %s"
 
-#: ../callbacks.c:238
+#: ../callbacks.c:256
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Neplatný index: %s"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
-#: ../commands.c:522 ../shortcuts.c:456 ../shortcuts.c:1030
-#: ../shortcuts.c:1059
+#: ../commands.c:522 ../shortcuts.c:475 ../shortcuts.c:1050
+#: ../shortcuts.c:1079
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
@@ -279,85 +279,99 @@ msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:357
+#: ../config.c:359
 msgid "Add a bookmark"
 msgstr "Přidat záložku"
 
-#: ../config.c:358
+#: ../config.c:360
 msgid "Delete a bookmark"
 msgstr "Smazat záložku"
 
-#: ../config.c:359
+#: ../config.c:361
 msgid "List all bookmarks"
 msgstr "Vypsat záložky"
 
-#: ../config.c:360
+#: ../config.c:362
 msgid "Close current file"
 msgstr "Zavřít tenhle soubor"
 
-#: ../config.c:361
+#: ../config.c:363
 msgid "Show file information"
 msgstr "Zobrazit informace o souboru"
 
-#: ../config.c:362
+#: ../config.c:364
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:363
+#: ../config.c:365
 msgid "Show help"
 msgstr "Zobrazit nápovědu"
 
-#: ../config.c:364
+#: ../config.c:366
 msgid "Open document"
 msgstr "Otevřít dokument"
 
-#: ../config.c:365
+#: ../config.c:367
 msgid "Close zathura"
 msgstr "Zavřít zathuru"
 
-#: ../config.c:366
+#: ../config.c:368
 msgid "Print document"
 msgstr "Tisknout dokument"
 
-#: ../config.c:367
+#: ../config.c:369
 msgid "Save document"
 msgstr "Uložit dokument"
 
-#: ../config.c:368
+#: ../config.c:370
 msgid "Save document (and force overwriting)"
 msgstr "Uložit a přepsat dokument"
 
-#: ../config.c:369
+#: ../config.c:371
 msgid "Save attachments"
 msgstr "Uložit přílohy"
 
-#: ../config.c:370
+#: ../config.c:372
 msgid "Set page offset"
 msgstr ""
 
-#: ../config.c:371
+#: ../config.c:373
 msgid "Mark current location within the document"
 msgstr "Označit současnou pozici v dokumentu"
 
-#: ../config.c:372
+#: ../config.c:374
 msgid "Delete the specified marks"
 msgstr "Smazat vybrané značky"
 
-#: ../config.c:373
+#: ../config.c:375
 msgid "Don't highlight current search results"
 msgstr "Nezvýrazňovat výsledky tohoto hledání"
 
-#: ../config.c:374
+#: ../config.c:376
 msgid "Highlight current search results"
 msgstr "Zvýrazňovat výsledky tohoto hledání"
 
-#: ../config.c:375
+#: ../config.c:377
 msgid "Show version information"
 msgstr ""
 
-#: ../links.c:161 ../links.c:218
+#: ../links.c:161 ../links.c:240
 msgid "Failed to run xdg-open."
 msgstr "Nepovedlo se spustit xdg-open."
+
+#: ../links.c:179
+#, fuzzy, c-format
+msgid "Link: page %d"
+msgstr "Strana %d"
+
+#: ../links.c:186
+#, c-format
+msgid "Link: %s"
+msgstr ""
+
+#: ../links.c:190
+msgid "Link: Invalid"
+msgstr ""
 
 #: ../main.c:52
 msgid "Reparents to window specified by xid"
@@ -412,7 +426,7 @@ msgstr "Zkopíruj obrázek"
 msgid "Save image as"
 msgstr "Ulož obrázek jako"
 
-#: ../shortcuts.c:933
+#: ../shortcuts.c:953
 msgid "This document does not contain any index"
 msgstr "Tenhle dokument neobsahuje žádné indexy"
 
