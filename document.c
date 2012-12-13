@@ -389,6 +389,34 @@ zathura_document_set_page_offset(zathura_document_t* document, unsigned int page
   }
 }
 
+void
+zathura_document_get_cell_size(zathura_document_t* document,
+                               unsigned int* height, unsigned int* width)
+{
+  g_return_if_fail(document != NULL && height != NULL && width != NULL);
+
+  unsigned int number_of_pages =
+    zathura_document_get_number_of_pages(document);
+  *width = 0;
+  *height = 0;
+
+  /* Get the size of each cell of the table/grid, assuming it is homogeneous
+   * (i.e. each cell has the same dimensions. */
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    if (page == NULL)
+      continue;
+
+    unsigned int page_width = 0, page_height = 0;
+    page_calc_height_width(page, &page_height, &page_width, true);
+
+    if (*width < page_width)
+      *width = page_width;
+    if (*height < page_height)
+      *height = page_height;
+  }
+}
+
 zathura_error_t
 zathura_document_save_as(zathura_document_t* document, const char* path)
 {

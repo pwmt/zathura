@@ -170,6 +170,15 @@ void* zathura_document_get_data(zathura_document_t* document);
 void zathura_document_set_data(zathura_document_t* document, void* data);
 
 /**
+ * Computes the size of a cell in the document's layout table, assuming that the table is homogeneous (i.e. every cell has the same dimensions). It takes the current scale into account.
+ *
+ * @param[in]  document     The document instance
+ * @param[out] height,width The computed height and width of the cell
+ */
+void zathura_document_get_cell_size(zathura_document_t* document,
+                                    unsigned int* height, unsigned int* width);
+
+/**
  * Save the document
  *
  * @param document The document object
