@@ -98,6 +98,9 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   unsigned int first_page_column = 1;
   girara_setting_get(session, "first-page-column", &first_page_column);
 
+  int padding = 1;
+  girara_setting_get(zathura->ui.session, "page-padding", &padding);
+
   if (zathura->ui.page_widget == NULL || zathura->document == NULL) {
     goto error_ret;
   }
@@ -112,8 +115,8 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   /* get window size */
   GtkAllocation allocation;
   gtk_widget_get_allocation(session->gtk.view, &allocation);
-  double width  = allocation.width;
-  double height = allocation.height;
+  unsigned int width  = allocation.width;
+  unsigned int height = allocation.height;
 
   /* scrollbar spacing */
   gint spacing;
@@ -126,71 +129,55 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
     height += allocation.height;
   }
 
-  /* calculate total width and max-height */
-  double total_width  = 0;
-  double total_height = 0;
-  double max_height   = 0;
-  double max_width    = 0;
+  double scale = 1.0;
+  unsigned int cell_height = 0, cell_width = 0;
+  unsigned int document_height = 0, document_width = 0;
 
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  for (unsigned int page_id = 0; page_id < pages_per_row; page_id++) {
-    if (page_id == number_of_pages) {
-      break;
-    }
+  zathura_document_set_scale(zathura->document, scale);
+  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+  zathura_get_document_size(zathura, cell_height, cell_width,
+                            &document_height, &document_width);
 
-    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-    if (page == NULL) {
-      goto error_ret;
-    }
+  double page_ratio   = (double)cell_height / (double)document_width;
+  double window_ratio = (double)height / (double)width;
 
-    unsigned int page_height = zathura_page_get_height(page);
-    unsigned int page_width  = zathura_page_get_width(page);
+  if (argument->n == ZATHURA_ADJUST_WIDTH ||
+      (argument->n == ZATHURA_ADJUST_BESTFIT && page_ratio < window_ratio)) {
+    scale = (double)(width - (pages_per_row - 1) * padding) /
+            (double)(pages_per_row * cell_width);
+    zathura_document_set_scale(zathura->document, scale);
 
-    if (page_height > max_height) {
-      max_height = page_height;
-    }
+    bool show_scrollbars = false;
+    girara_setting_get(session, "show-scrollbars", &show_scrollbars);
 
-    if (page_width > max_width) {
-      max_width = page_width;
-    }
+    if (show_scrollbars) {
+      /* If the document is taller than the view, there's a vertical
+       * scrollbar; we need to substract its width from the view's width. */
+      zathura_get_document_size(zathura, cell_height, cell_width,
+                                &document_height, &document_width);
+      if (height < document_height) {
+        GtkWidget* vscrollbar = gtk_scrolled_window_get_vscrollbar(
+            GTK_SCROLLED_WINDOW(session->gtk.view));
 
-    total_width  += page_width;
-    total_height += page_height;
-  }
-
-  unsigned int rotation = zathura_document_get_rotation(zathura->document);
-  double page_ratio     = max_height / total_width;
-  double window_ratio   = height / width;
-
-  if (rotation == 90 || rotation == 270) {
-    page_ratio = max_width / total_height;
-  }
-
-  switch (argument->n) {
-    case ZATHURA_ADJUST_WIDTH:
-      if (rotation == 0 || rotation == 180) {
-        zathura_document_set_scale(zathura->document, width / total_width);
-      } else {
-        zathura_document_set_scale(zathura->document, width / total_height);
-      }
-      break;
-    case ZATHURA_ADJUST_BESTFIT:
-      if (rotation == 0 || rotation == 180) {
-        if (page_ratio < window_ratio) {
-          zathura_document_set_scale(zathura->document, width / total_width);
-        } else {
-          zathura_document_set_scale(zathura->document, height / max_height);
-        }
-      } else {
-        if (page_ratio < window_ratio) {
-          zathura_document_set_scale(zathura->document, width / total_height);
-        } else {
-          zathura_document_set_scale(zathura->document, height / max_width);
+        if (vscrollbar != NULL) {
+          GtkRequisition requisition;
+          gtk_widget_get_requisition(vscrollbar, &requisition);
+          if (0 < requisition.width && (unsigned)requisition.width < width) {
+            width -= requisition.width;
+            scale = (double)(width - (pages_per_row - 1) * padding) /
+                    (double)(pages_per_row * cell_width);
+            zathura_document_set_scale(zathura->document, scale);
+          }
         }
       }
-      break;
-    default:
-      goto error_ret;
+    }
+  }
+  else if (argument->n == ZATHURA_ADJUST_BESTFIT) {
+    scale = (double)height / (double)cell_height;
+    zathura_document_set_scale(zathura->document, scale);
+  }
+  else {
+    goto error_ret;
   }
 
   /* keep position */
