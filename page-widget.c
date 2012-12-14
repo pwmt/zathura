@@ -506,8 +506,8 @@ redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
   GdkRectangle grect;
   grect.x = rectangle->x1;
   grect.y = rectangle->y1;
-  grect.width  = rectangle->x2 - rectangle->x1;
-  grect.height = rectangle->y2 - rectangle->y1;
+  grect.width  = (rectangle->x2 + 1) - rectangle->x1;
+  grect.height = (rectangle->y2 + 1) - rectangle->y1;
 #if (GTK_MAJOR_VERSION == 3)
   gtk_widget_queue_draw_area(GTK_WIDGET(widget), grect.x, grect.y, grect.width, grect.height);
 #else
