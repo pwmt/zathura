@@ -97,6 +97,7 @@ struct zathura_s
     bool recolor_keep_hue; /**< Keep hue when recoloring */
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
+    int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
   } global;

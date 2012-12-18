@@ -62,6 +62,7 @@ zathura_create(void)
   /* global settings */
   zathura->global.recolor            = false;
   zathura->global.update_page_number = true;
+  zathura->global.search_direction = FORWARD;
 
   /* plugins */
   zathura->plugins.manager = zathura_plugin_manager_new();

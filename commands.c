@@ -340,6 +340,8 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   bool firsthit = true;
   zathura_error_t error = ZATHURA_ERROR_OK;
 
+  /* set search direction */
+  zathura->global.search_direction = argument->n;
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
   unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
@@ -383,7 +385,12 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       if (page_id != 0) {
         page_set_delayed(zathura, zathura_page_get_index(page));
       }
-      g_object_set(page_widget, "search-current", 0, NULL);
+      if (argument->n == BACKWARD) {
+        /* start at bottom hit in page */
+        g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
+      } else {
+        g_object_set(page_widget, "search-current", 0, NULL);
+      }
       firsthit = false;
     }
   }

@@ -743,7 +743,10 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
   const int num_pages = zathura_document_get_number_of_pages(zathura->document);
   const int cur_page  = zathura_document_get_current_page_number(zathura->document);
+
   int diff = argument->n == FORWARD ? 1 : -1;
+  if (zathura->global.search_direction == BACKWARD)
+    diff = -diff;
 
   zathura_page_t* target_page = NULL;
   int target_idx = 0;
