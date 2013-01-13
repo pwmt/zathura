@@ -365,18 +365,18 @@ msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
 #: ../links.c:179
-#, fuzzy, c-format
+#, c-format
 msgid "Link: page %d"
-msgstr "Seite %d"
+msgstr "Verknüpfung: Seite %d"
 
 #: ../links.c:186
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Verknüpfung: %s"
 
 #: ../links.c:190
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Verknüpfung: ungültig"
 
 #: ../main.c:52
 msgid "Reparents to window specified by xid"

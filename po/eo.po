@@ -364,9 +364,9 @@ msgid "Failed to run xdg-open."
 msgstr "Fiaskis iro de xdg-open"
 
 #: ../links.c:179
-#, fuzzy, c-format
+#, c-format
 msgid "Link: page %d"
-msgstr "Paĝo %d"
+msgstr ""
 
 #: ../links.c:186
 #, c-format

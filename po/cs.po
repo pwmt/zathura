@@ -360,9 +360,9 @@ msgid "Failed to run xdg-open."
 msgstr "Nepovedlo se spustit xdg-open."
 
 #: ../links.c:179
-#, fuzzy, c-format
+#, c-format
 msgid "Link: page %d"
-msgstr "Strana %d"
+msgstr ""
 
 #: ../links.c:186
 #, c-format
