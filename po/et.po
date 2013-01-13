@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2012-12-14 00:04+0100\n"
+"POT-Creation-Date: 2013-01-13 15:08+0100\n"
 "PO-Revision-Date: 2012-04-03 15:25+0000\n"
 "Last-Translator: Rivo Zängov <eraser@eraser.ee>\n"
 "Language-Team: Estonian (http://www.transifex.net/projects/p/zathura/"
@@ -29,13 +29,13 @@ msgid "Invalid index '%s' given."
 msgstr ""
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
-#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:401
-#: ../commands.c:522 ../shortcuts.c:475 ../shortcuts.c:1050
-#: ../shortcuts.c:1079
+#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:408
+#: ../commands.c:529 ../shortcuts.c:475 ../shortcuts.c:1053
+#: ../shortcuts.c:1082
 msgid "No document opened."
 msgstr ""
 
-#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:406
+#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:413
 msgid "Invalid number of arguments given."
 msgstr ""
 
@@ -93,37 +93,37 @@ msgstr ""
 msgid "Invalid number of arguments."
 msgstr ""
 
-#: ../commands.c:425
+#: ../commands.c:432
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:427
+#: ../commands.c:434
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:471
+#: ../commands.c:478
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:473
+#: ../commands.c:480
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr ""
 
-#: ../commands.c:480
+#: ../commands.c:487
 #, c-format
 msgid "Unknown image '%s'."
 msgstr ""
 
-#: ../commands.c:484
+#: ../commands.c:491
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr ""
 
-#: ../commands.c:535
+#: ../commands.c:542
 msgid "Argument must be a number."
 msgstr ""
 
@@ -430,10 +430,10 @@ msgstr "Kopeeri pilt"
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:953
+#: ../shortcuts.c:956
 msgid "This document does not contain any index"
 msgstr ""
 
-#: ../zathura.c:192 ../zathura.c:864
+#: ../zathura.c:193 ../zathura.c:865
 msgid "[No name]"
 msgstr "[Nime pole]"
