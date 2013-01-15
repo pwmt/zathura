@@ -212,11 +212,11 @@ zathura_init(zathura_t* zathura)
   girara_setting_get(zathura->ui.session, "database", &database);
 
   if (g_strcmp0(database, "plain") == 0) {
-    girara_info("Using plain database backend.");
+    girara_debug("Using plain database backend.");
     zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
 #ifdef WITH_SQLITE
   } else if (g_strcmp0(database, "sqlite") == 0) {
-    girara_info("Using sqlite database backend.");
+    girara_debug("Using sqlite database backend.");
     char* tmp = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database = zathura_sqldatabase_new(tmp);
     g_free(tmp);

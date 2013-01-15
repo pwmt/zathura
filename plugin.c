@@ -100,7 +100,7 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
   while ((name = (char*) g_dir_read_name(dir)) != NULL) {
     char* path = g_build_filename(plugindir, name, NULL);
     if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
-      girara_info("%s is not a regular file. Skipping.", path);
+      girara_debug("%s is not a regular file. Skipping.", path);
       g_free(path);
       continue;
     }
@@ -182,7 +182,7 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       girara_error("could not register plugin %s", path);
       zathura_plugin_free(plugin);
     } else {
-      girara_info("successfully loaded plugin %s", path);
+      girara_debug("successfully loaded plugin %s", path);
 
       zathura_plugin_version_function_t plugin_major = NULL, plugin_minor = NULL, plugin_rev = NULL;
       g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION,    (gpointer*) &plugin_major);
