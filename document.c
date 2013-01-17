@@ -538,17 +538,18 @@ guess_type(const char* path)
   const int fd = fileno(f);
   guchar* content = NULL;
   size_t length = 0u;
-  while (uncertain == TRUE && length < GT_MAX_READ) {
+  ssize_t bytes_read = -1;
+  while (uncertain == TRUE && length < GT_MAX_READ && bytes_read != 0) {
     g_free((void*)content_type);
     content_type = NULL;
 
     content = g_realloc(content, length + BUFSIZ);
-    const ssize_t r = read(fd, content + length, BUFSIZ);
-    if (r == -1) {
+    bytes_read = read(fd, content + length, BUFSIZ);
+    if (bytes_read == -1) {
       break;
     }
 
-    length += r;
+    length += bytes_read;
     content_type = g_content_type_guess(NULL, content, length, &uncertain);
     girara_debug("new guess: %s uncertain: %d, read: %zu\n", content_type, uncertain, length);
   }
