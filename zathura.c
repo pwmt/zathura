@@ -753,6 +753,15 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
   g_return_val_if_fail(path, false);
 
   gchar* file_path = girara_fix_path(path);
+  /* use current basename if path points to a directory  */
+  if (g_file_test(file_path, G_FILE_TEST_IS_DIR) == TRUE) {
+    char* basename = g_path_get_basename(zathura_document_get_path(zathura->document));
+    char* tmp = file_path;
+    file_path = g_strconcat(file_path, "/", basename, NULL);
+    g_free(tmp);
+    g_free(basename);
+  }
+
   if ((overwrite == false) && g_file_test(file_path, G_FILE_TEST_EXISTS)) {
     girara_error("File already exists: %s. Use :write! to overwrite it.", file_path);
     g_free(file_path);
