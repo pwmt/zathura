@@ -19,7 +19,7 @@ static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 
 struct render_thread_s {
   GThreadPool* pool; /**< Pool of threads */
-  GStaticMutex mutex; /**< Render lock */
+  GMutex mutex; /**< Render lock */
   bool about_to_close; /**< Render thread is to be freed */
 };
 
@@ -51,7 +51,7 @@ render_init(zathura_t* zathura)
 
   render_thread->about_to_close = false;
   g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
-  g_static_mutex_init(&render_thread->mutex);
+  g_mutex_init(&render_thread->mutex);
 
   return render_thread;
 
@@ -73,7 +73,6 @@ render_free(render_thread_t* render_thread)
     g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
 
-  g_static_mutex_free(&render_thread->mutex);
   g_free(render_thread);
 }
 
@@ -329,7 +328,7 @@ render_lock(render_thread_t* render_thread)
     return;
   }
 
-  g_static_mutex_lock(&render_thread->mutex);
+  g_mutex_lock(&render_thread->mutex);
 }
 
 void
@@ -339,5 +338,5 @@ render_unlock(render_thread_t* render_thread)
     return;
   }
 
-  g_static_mutex_unlock(&render_thread->mutex);
+  g_mutex_unlock(&render_thread->mutex);
 }
