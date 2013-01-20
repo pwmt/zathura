@@ -32,7 +32,7 @@ compare_case_insensitive(const char* str1, const char* str2)
 
 static girara_list_t*
 list_files(zathura_t* zathura, const char* current_path, const char* current_file,
-    unsigned int current_file_length, bool is_dir, bool check_file_ext)
+           unsigned int current_file_length, bool is_dir, bool check_file_ext)
 {
   if (zathura == NULL || zathura->ui.session == NULL || current_path == NULL) {
     return NULL;
@@ -45,7 +45,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   }
 
   girara_list_t* res = girara_sorted_list_new2((girara_compare_function_t)compare_case_insensitive,
-      (girara_free_function_t)g_free);
+                       (girara_free_function_t)g_free);
 
   bool show_hidden = false;
   girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
@@ -179,7 +179,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext)
     }
 
     GIRARA_LIST_FOREACH(names, const char*, iter, file)
-      girara_completion_group_add_element(group, file, NULL);
+    girara_completion_group_add_element(group, file, NULL);
     GIRARA_LIST_FOREACH_END(names, const char*, iter, file);
     girara_list_free(names);
   }
@@ -246,11 +246,11 @@ cc_bookmarks(girara_session_t* session, const char* input)
 
   const size_t input_length = strlen(input);
   GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
-    if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
-      gchar* paged = g_strdup_printf(_("Page %d"), bookmark->page);
-      girara_completion_group_add_element(group, bookmark->id, paged);
-      g_free(paged);
-    }
+  if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
+    gchar* paged = g_strdup_printf(_("Page %d"), bookmark->page);
+    girara_completion_group_add_element(group, bookmark->id, paged);
+    g_free(paged);
+  }
   GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
 
   girara_completion_add_group(completion, group);
@@ -302,12 +302,12 @@ cc_export(girara_session_t* session, const char* input)
     bool added = false;
 
     GIRARA_LIST_FOREACH(attachments, const char*, iter, attachment)
-      if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
-        char* attachment_string = g_strdup_printf("attachment-%s", attachment);
-        girara_completion_group_add_element(attachment_group, attachment_string, NULL);
-        g_free(attachment_string);
-        added = true;
-      }
+    if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
+      char* attachment_string = g_strdup_printf("attachment-%s", attachment);
+      girara_completion_group_add_element(attachment_group, attachment_string, NULL);
+      g_free(attachment_string);
+      added = true;
+    }
     GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
 
     if (added == true) {
@@ -339,12 +339,12 @@ cc_export(girara_session_t* session, const char* input)
     if (images != NULL) {
       unsigned int image_number = 1;
       GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, UNUSED(image))
-        char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
-        girara_completion_group_add_element(image_group, image_string, NULL);
-        g_free(image_string);
+      char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
+      girara_completion_group_add_element(image_group, image_string, NULL);
+      g_free(image_string);
 
-        added = true;
-        image_number++;
+      added = true;
+      image_number++;
       GIRARA_LIST_FOREACH_END(images, zathura_image_t*, iter, image);
       girara_list_free(images);
     }

@@ -27,8 +27,8 @@ is not possible to write multiple commands in one single line.
 COMMANDS
 ========
 
-set - Chaning options
----------------------
+set - Changing options
+----------------------
 
 In addition to the build-in ``:set`` command zathura offers more options to be
 changed and makes those changes permanent. To overwrite an option you just have
@@ -79,8 +79,7 @@ it is possible to map bindings only for a specific mode by passing the ``mode``
 argument which can take one of the following values:
 
 * normal (default)
-* visual
-* insert
+* fullscreen
 * index
 
 The brackets around the value are mandatory.
@@ -151,7 +150,7 @@ are currently available:
     PageUp     Page Up
     Return     Return
     Space      Space
-    Super      Windows button
+    Super      Windows key
     Tab        Tab
 
 Of course it is possible to combine those special keys with a modifier. The
@@ -206,11 +205,14 @@ The following shortcut functions can be mapped:
     abort             Switch back to normal mode
     adjust_window     Adjust page width
     change_mode       Change current mode
-    follow            Follow a link
+    display_link      Display link target
     focus_inputbar    Focus inputbar
+    follow            Follow a link
     goto              Go to a certain page
-    index_navigate    Navigate through the index
+    jumplist          Move forwards/backwards in the jumplist
     navigate          Navigate to the next/previous page
+    navigate_index    Navigate through the index
+    print             Show the print dialog
     quit              Quit zathura
     recolor           Recolor the pages
     reload            Reload the document
@@ -221,6 +223,7 @@ The following shortcut functions can be mapped:
     toggle_fullscreen Toggle fullscreen
     toggle_index      Show or hide index
     toggle_inputbar   Show or hide inputbar
+    toggle_page_mode  Toggle between one and multiple pages per row
     toggle_statusbar  Show or hide statusbar
     zoom              Zoom in or out
 
@@ -490,6 +493,13 @@ Defines if the number of pages per row should be honored when advancing a page.
 * Value type: Boolean
 * Default value: false
 
+incremental-search
+^^^^^^^^^^^^^^^^^^
+En/Disables incremental search (search while typing).
+
+* Value type: Boolean
+* Default value: true
+
 highlight-color
 ^^^^^^^^^^^^^^^
 Defines the color that is used for highlighting parts of the document (e.g.:
@@ -598,9 +608,24 @@ Defines the step size of scrolling by calling the scroll command once
 * Value type: Float
 * Default value: 40
 
+scroll-full-overlap
+^^^^^^^^^^^^^^^^^^^
+Defines the proportion of the current viewing area that should be
+visible after scrolling a full page.
+
+* Value type: Float
+* Default value: 0.1
+
 scroll-wrap
 ^^^^^^^^^^^
 Defines if the last/first page should be wrapped
+
+* Value type: Boolean
+* Default value: false
+
+scroll-page-aware
+^^^^^^^^^^^^^^^^^
+Defines if scrolling by half or full pages stops at page boundaries.
 
 * Value type: Boolean
 * Default value: false

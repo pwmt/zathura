@@ -10,21 +10,21 @@
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
-  G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init))
+                        G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init))
 
 static void sqlite_finalize(GObject* object);
 static bool sqlite_add_bookmark(zathura_database_t* db, const char* file,
-    zathura_bookmark_t* bookmark);
+                                zathura_bookmark_t* bookmark);
 static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file,
-    const char* id);
+                                   const char* id);
 static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db,
     const char* file);
 static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info);
+                                zathura_fileinfo_t* file_info);
 static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info);
+                                zathura_fileinfo_t* file_info);
 static void sqlite_set_property(GObject* object, guint prop_id,
-    const GValue* value, GParamSpec* pspec);
+                                const GValue* value, GParamSpec* pspec);
 
 typedef struct zathura_sqldatabase_private_s {
   sqlite3* session;
@@ -33,8 +33,7 @@ typedef struct zathura_sqldatabase_private_s {
 #define ZATHURA_SQLDATABASE_GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_SQLDATABASE, zathura_sqldatabase_private_t))
 
-enum
-{
+enum {
   PROP_0,
   PROP_PATH
 };
@@ -62,7 +61,7 @@ zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
   object_class->set_property = sqlite_set_property;
 
   g_object_class_install_property(object_class, PROP_PATH,
-    g_param_spec_string("path", "path", "path to the database", NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+                                  g_param_spec_string("path", "path", "path to the database", NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -107,23 +106,23 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   /* create bookmarks database */
   static const char SQL_BOOKMARK_INIT[] =
     "CREATE TABLE IF NOT EXISTS bookmarks ("
-      "file TEXT,"
-      "id TEXT,"
-      "page INTEGER,"
-      "PRIMARY KEY(file, id));";
+    "file TEXT,"
+    "id TEXT,"
+    "page INTEGER,"
+    "PRIMARY KEY(file, id));";
 
   static const char SQL_FILEINFO_INIT[] =
     "CREATE TABLE IF NOT EXISTS fileinfo ("
-      "file TEXT PRIMARY KEY,"
-      "page INTEGER,"
-      "offset INTEGER,"
-      "scale FLOAT,"
-      "rotation INTEGER,"
-      "pages_per_row INTEGER,"
-      "first_page_column INTEGER,"
-      "position_x FLOAT,"
-      "position_y FLOAT"
-      ");";
+    "file TEXT PRIMARY KEY,"
+    "page INTEGER,"
+    "offset INTEGER,"
+    "scale FLOAT,"
+    "rotation INTEGER,"
+    "pages_per_row INTEGER,"
+    "first_page_column INTEGER,"
+    "position_x FLOAT,"
+    "position_y FLOAT"
+    ");";
 
   static const char SQL_FILEINFO_ALTER[] =
     "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
@@ -211,7 +210,7 @@ prepare_statement(sqlite3* session, const char* statement)
 
 static bool
 sqlite_add_bookmark(zathura_database_t* db, const char* file,
-    zathura_bookmark_t* bookmark)
+                    zathura_bookmark_t* bookmark)
 {
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
@@ -239,7 +238,7 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
 
 static bool
 sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char*
-    id)
+                       id)
 {
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
@@ -284,7 +283,7 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
   }
 
   girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
-      (girara_free_function_t) zathura_bookmark_free);
+                          (girara_free_function_t) zathura_bookmark_free);
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
@@ -302,7 +301,7 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 
 static bool
 sqlite_set_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info)
+                    zathura_fileinfo_t* file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
     return false;
@@ -340,7 +339,7 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
 
 static bool
 sqlite_get_fileinfo(zathura_database_t* db, const char* file,
-    zathura_fileinfo_t* file_info)
+                    zathura_fileinfo_t* file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
     return false;

@@ -34,8 +34,7 @@ file_get_extension(const char* path)
   }
 
   unsigned int i = strlen(path);
-  for (; i > 0; i--)
-  {
+  for (; i > 0; i--) {
     if (*(path + i) != '.') {
       continue;
     } else {
@@ -146,31 +145,31 @@ execute_command(char* const argv[], char** output)
 
 void
 document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
-    girara_tree_node_t* tree)
+                     girara_tree_node_t* tree)
 {
   girara_list_t* list        = girara_node_get_children(tree);
   GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node)
-    zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
+  zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
-    zathura_link_type_t type     = zathura_link_get_type(index_element->link);
-    zathura_link_target_t target = zathura_link_get_target(index_element->link);
+  zathura_link_type_t type     = zathura_link_get_type(index_element->link);
+  zathura_link_target_t target = zathura_link_get_target(index_element->link);
 
-    gchar* description = NULL;
-    if (type == ZATHURA_LINK_GOTO_DEST) {
-      description = g_strdup_printf("Page %d", target.page_number + 1);
-    } else {
-      description = g_strdup(target.value);
-    }
+  gchar* description = NULL;
+  if (type == ZATHURA_LINK_GOTO_DEST) {
+    description = g_strdup_printf("Page %d", target.page_number + 1);
+  } else {
+    description = g_strdup(target.value);
+  }
 
-    GtkTreeIter tree_iter;
-    gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
-    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, description, 2, index_element, -1);
-    g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
-    g_free(description);
+  GtkTreeIter tree_iter;
+  gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
+  gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, description, 2, index_element, -1);
+  g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
+  g_free(description);
 
-    if (girara_node_get_num_children(node) > 0) {
-      document_index_build(model, &tree_iter, node);
-    }
+  if (girara_node_get_num_children(node) > 0) {
+    document_index_build(model, &tree_iter, node);
+  }
 
   GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
 }
@@ -183,7 +182,7 @@ page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* o
   GtkWidget* widget = zathura_page_get_widget(zathura, page);
 
   g_return_if_fail(gtk_widget_translate_coordinates(widget,
-    zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
+                   zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
 zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width)
@@ -274,7 +273,7 @@ void
 set_adjustment(GtkAdjustment* adjustment, gdouble value)
 {
   gtk_adjustment_set_value(adjustment, MAX(gtk_adjustment_get_lower(adjustment),
-        MIN(gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment), value)));
+                           MIN(gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment), value)));
 }
 
 void
@@ -298,6 +297,43 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
     *page_width  = ceil(width  * scale);
     *page_height = ceil(height * scale);
   }
+}
+
+void
+zathura_get_document_size(zathura_t* zathura,
+                          unsigned int cell_height, unsigned int cell_width,
+                          unsigned int* height, unsigned int* width)
+{
+  g_return_if_fail(zathura != NULL && zathura->document != NULL &&
+                   height != NULL && width != NULL);
+
+  unsigned int pages_per_row = 1;
+  girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
+  if (pages_per_row == 0)
+    pages_per_row = 1;
+
+  unsigned int first_page_column = 1;
+  girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column);
+  if (first_page_column < 1)
+    first_page_column = 1;
+  if (first_page_column > pages_per_row)
+    first_page_column = (first_page_column - 1) % pages_per_row + 1;
+
+  int padding = 1;
+  girara_setting_get(zathura->ui.session, "page-padding", &padding);
+
+  double scale = zathura_document_get_scale(zathura->document);
+
+  cell_height = ceil(cell_height * scale);
+  cell_width  = ceil(cell_width * scale);
+
+  *width = pages_per_row * cell_width + (pages_per_row - 1) * padding;
+  unsigned int effective_number_of_pages =
+    zathura_document_get_number_of_pages(zathura->document) +
+    first_page_column - 1;
+  unsigned int rows = effective_number_of_pages / pages_per_row +
+                     (effective_number_of_pages % pages_per_row ? 1 : 0);
+  *height = rows * cell_height + (rows - 1) * padding;
 }
 
 GtkWidget*
@@ -357,9 +393,9 @@ document_draw_search_results(zathura_t* zathura, bool value)
 char*
 zathura_get_version_string(zathura_t* zathura, bool markup)
 {
-	if (zathura == NULL) {
-		return NULL;
-	}
+  if (zathura == NULL) {
+    return NULL;
+  }
 
   GString* string = g_string_new(NULL);
 
@@ -368,30 +404,30 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   g_string_append(string, zathura_version);
   g_free(zathura_version);
 
-	char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
+  char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
 
   /* plugin information */
   girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
   if (plugins != NULL) {
     GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin)
-      char* name = zathura_plugin_get_name(plugin);
-      zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
-      char* text = g_strdup_printf(format,
-          (name == NULL) ? "-" : name,
-          version.major,
-          version.minor,
-          version.rev,
-          zathura_plugin_get_path(plugin)
-          );
-      g_string_append(string, text);
-      g_free(text);
+    char* name = zathura_plugin_get_name(plugin);
+    zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
+    char* text = g_strdup_printf(format,
+                                 (name == NULL) ? "-" : name,
+                                 version.major,
+                                 version.minor,
+                                 version.rev,
+                                 zathura_plugin_get_path(plugin)
+                                );
+    g_string_append(string, text);
+    g_free(text);
     GIRARA_LIST_FOREACH_END(plugins, zathura_plugin_t*, iter, plugin);
   }
 
-	char* version = string->str;
-	g_string_free(string, FALSE);
+  char* version = string->str;
+  g_string_free(string, FALSE);
 
-	return version;
+  return version;
 }
 
 char*

@@ -93,7 +93,7 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
  * Returns the current scale value of the document
  *
  * @param document The document
- * @return The current scale value 
+ * @return The current scale value
  */
 double zathura_document_get_scale(zathura_document_t* document);
 
@@ -125,7 +125,7 @@ void zathura_document_set_rotation(zathura_document_t* document, unsigned int ro
  * Returns the adjust mode of the document
  *
  * @param document The document
- * @return The adjust mode 
+ * @return The adjust mode
  */
 zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
 
@@ -168,6 +168,17 @@ void* zathura_document_get_data(zathura_document_t* document);
  * @param data The new private data
  */
 void zathura_document_set_data(zathura_document_t* document, void* data);
+
+/**
+ * Computes the size of a cell in the document's layout table, assuming that
+ * the table is homogeneous (i.e. every cell has the same dimensions). It takes
+ * the current scale into account.
+ *
+ * @param[in]  document     The document instance
+ * @param[out] height,width The computed height and width of the cell
+ */
+void zathura_document_get_cell_size(zathura_document_t* document,
+                                    unsigned int* height, unsigned int* width);
 
 /**
  * Save the document

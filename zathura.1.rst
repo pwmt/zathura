@@ -48,10 +48,10 @@ OPTIONS
   Set log debug level (debug, info, warning, error)
 
 -s, --synctex
-  Enable syntex support
+  Enable synctex support
 
--x [cmd], --syntec-editor-command [cmd]
-  Set the syntex editor command
+-x [cmd], --synctex-editor-command [cmd]
+  Set the synctex editor command
 
 MOUSE AND KEY BINDINGS
 ======================
@@ -68,6 +68,8 @@ t, ^f, ^b, space, <S-space>, y
   Scroll a full page left, down, up or right
 gg, G, nG
   Goto to the first, the last or to the nth page
+^o, ^i
+  Move backward and forward through the jump list
 ^c, Escape
   Abort
 a, s
@@ -80,11 +82,13 @@ o, O
   Open document
 f
   Follow links
+F
+  Display link target
 \:
   Enter command
 r
   Rotate by 90 degrees
-^i
+^r
   Recolor
 R
   Reload document
@@ -168,6 +172,12 @@ CONFIGURATION
 The default appearance and behaviour of zathura can be overwritten by modifying
 the *zathurarc* file (default path: ~/.config/zathura/zathurarc). For a detailed
 description please consult zathurarc(5).
+
+KNOWN BUGS
+==========
+If GDK_NATIVE_WINDOWS is enabled you will experience problems with large
+documents. In this case zathura might crash or pages cannot be rendered
+properly. Disabling GDK_NATIVE_WINDOWS fixes this issue.
 
 SEE ALSO
 ========

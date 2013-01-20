@@ -72,14 +72,14 @@ girara_list_t*
 zathura_document_information_entry_list_new()
 {
   girara_list_t* list = girara_list_new2((girara_free_function_t)
-      zathura_document_information_entry_free);
+                                         zathura_document_information_entry_free);
 
   return list;
 }
 
 zathura_document_information_entry_t*
 zathura_document_information_entry_new(zathura_document_information_type_t type,
-    const char* value)
+                                       const char* value)
 {
   if (value == NULL) {
     return NULL;

@@ -165,15 +165,15 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   GString* string = g_string_new(NULL);
 
   GIRARA_LIST_FOREACH(information, zathura_document_information_entry_t*, iter, entry)
-    if (entry != NULL) {
-      for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
-        if (meta_fields[i].field == entry->type) {
-          char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
-          g_string_append(string, text);
-          g_free(text);
-        }
+  if (entry != NULL) {
+    for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+      if (meta_fields[i].field == entry->type) {
+        char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+        g_string_append(string, text);
+        g_free(text);
       }
     }
+  }
   GIRARA_LIST_FOREACH_END(information, zathura_document_information_entry_t*, iter, entry);
 
   if (strlen(string->str) > 0) {
@@ -190,7 +190,7 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
 bool
 cmd_help(girara_session_t* UNUSED(session), girara_list_t*
-    UNUSED(argument_list))
+         UNUSED(argument_list))
 {
   return true;
 }
@@ -340,6 +340,8 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   bool firsthit = true;
   zathura_error_t error = ZATHURA_ERROR_OK;
 
+  /* set search direction */
+  zathura->global.search_direction = argument->n;
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
   unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
@@ -363,7 +365,10 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(page_widget, "draw-links", FALSE, NULL);
 
+    render_lock(zathura->sync.render_thread);
     girara_list_t* result = zathura_page_search_text(page, input, &error);
+    render_unlock(zathura->sync.render_thread);
+
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
       g_object_set(page_widget, "search-results", NULL, NULL);
@@ -380,7 +385,12 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       if (page_id != 0) {
         page_set_delayed(zathura, zathura_page_get_index(page));
       }
-      g_object_set(page_widget, "search-current", 0, NULL);
+      if (argument->n == BACKWARD) {
+        /* start at bottom hit in page */
+        g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
+      } else {
+        g_object_set(page_widget, "search-current", 0, NULL);
+      }
       firsthit = false;
     }
   }
@@ -423,7 +433,7 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
     } else {
       girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), file_identifier, export_path);
     }
-  /* image */
+    /* image */
   } else if (strncmp(file_identifier, "image-p", strlen("image-p")) == 0 && strlen(file_identifier) >= 10) {
     /* parse page id */
     const char* input = file_identifier + strlen("image-p");
@@ -476,7 +486,7 @@ image_error:
 
     girara_notify(session, GIRARA_ERROR, _("Unknown image '%s'."), file_identifier);
     goto error_ret;
-  /* unknown */
+    /* unknown */
   } else {
     girara_notify(session, GIRARA_ERROR, _("Unknown attachment or image '%s'."), file_identifier);
   }
@@ -499,10 +509,10 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
     const char* path = zathura_document_get_path(zathura->document);
 
     GIRARA_LIST_FOREACH(argument_list, char*, iter, value)
-      char* r = NULL;
-      if ((r = replace_substring(value, "$FILE", path)) != NULL) {
-        girara_list_iterator_set(iter, r);
-      }
+    char* r = NULL;
+    if ((r = replace_substring(value, "$FILE", path)) != NULL) {
+      girara_list_iterator_set(iter, r);
+    }
     GIRARA_LIST_FOREACH_END(argument_list, char*, iter, value);
   }
 
@@ -550,9 +560,9 @@ cmd_version(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   zathura_t* zathura = session->global.data;
 
   char* string = zathura_get_version_string(zathura, true);
-	if (string == NULL) {
-		return false;
-	}
+  if (string == NULL) {
+    return false;
+  }
 
   /* display information */
   girara_notify(session, GIRARA_INFO, "%s", string);

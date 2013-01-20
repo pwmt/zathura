@@ -4,9 +4,12 @@ PROJECT = zathura
 GETTEXT_PACKAGE = $(PROJECT)
 CATALOGS  = $(wildcard *.po)
 LINGUAS  ?= $(patsubst %.po, %, $(CATALOGS))
-ALINGUAS   = $(shell find $(patsubst %, %.po, $(LINGUAS)) 2>/dev/null)
+ifeq ($(LINGUAS),)
+ALINGUAS =
+else
+ALINGUAS = $(shell find $(patsubst %, %.po, $(LINGUAS)) 2>/dev/null)
+endif
 MOS = $(patsubst %, %/LC_MESSAGES/${GETTEXT_PACKAGE}.mo, $(patsubst %.po, %, $(ALINGUAS)))
-
 
 include ../config.mk
 include ../common.mk
@@ -31,6 +34,7 @@ update-po: ${PROJECT}.pot
 	$(ECHO) updating po: files ${CATALOGS}
 	$(QUIET)set -e && for f in ${CATALOGS} ; do \
 		intltool-update --dist --gettext-package=${PROJECT} `echo $$f | sed 's/\.po//'` ; \
+		sed -i 's/Report-Msgid-Bugs-To: \\n/Report-Msgid-Bugs-To: http:\/\/bugs.pwmt.org\\n/'  "$$f" ; \
 	done
 
 %/LC_MESSAGES/${PROJECT}.mo: %.po

@@ -39,6 +39,17 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, gi
 bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Display a link
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occured otherwise false
+ */
+bool sc_display_link(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Shortcut function to focus the inputbar
  *
  * @param session The used girara session
@@ -161,6 +172,17 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
 bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Scroll through the pages
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occured otherwise false
+ */
+bool sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Search through the document for the latest search item
  *
  * @param session The used girara session
@@ -192,6 +214,17 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
  * @return true if no error occured otherwise false
  */
 bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Toggle multi page mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occured otherwise false
+ */
+bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Toggle fullscreen mode

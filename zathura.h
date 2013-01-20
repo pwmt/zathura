@@ -28,6 +28,16 @@ typedef struct _ZathuraDatabase zathura_database_t;
 struct render_thread_s;
 typedef struct render_thread_s render_thread_t;
 
+/**
+ * Jump
+ */
+typedef struct zathura_jump_s
+{
+  unsigned int page;
+  double x;
+  double y;
+} zathura_jump_t;
+
 struct zathura_s
 {
   struct
@@ -87,6 +97,7 @@ struct zathura_s
     bool recolor_keep_hue; /**< Keep hue when recoloring */
     bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
+    int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
   } global;
@@ -104,6 +115,14 @@ struct zathura_s
     gchar* file; /**< bookmarks file */
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
+
+  struct
+  {
+    girara_list_t* list;
+    girara_list_iterator_t *cur;
+    unsigned int size;
+    unsigned int max_size;
+  } jumplist;
 
   struct
   {
@@ -192,12 +211,12 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
 void zathura_set_synctex_editor_command(zathura_t* zathura, const char* command);
 
 /**
- * En/Disable zathuras syntex support
+ * En/Disable zathuras synctex support
  *
  * @param zathura The zathura session
  * @param value The value
  */
-void zathura_set_syntex(zathura_t* zathura, bool value);
+void zathura_set_synctex(zathura_t* zathura, bool value);
 
 /**
  * Sets the program parameters
@@ -291,5 +310,49 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsign
  * @param zathura The zathura session
  */
 void statusbar_page_number_update(zathura_t* zathura);
+
+/**
+ * Return current jump in the jumplist
+ *
+ * @param zathura The zathura session
+ * @return current jump
+ */
+zathura_jump_t* zathura_jumplist_current(zathura_t* zathura);
+
+/**
+ * Move forward in the jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_forward(zathura_t* zathura);
+
+/**
+ * Move backward in the jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_backward(zathura_t* zathura);
+
+/**
+ * Save current page to the jumplist at current position
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_save(zathura_t* zathura);
+
+/**
+ * Add current page as a new item to the jumplist after current position
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_add(zathura_t* zathura);
+
+/**
+ * Add a page to the jumplist after current position
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_append_jump(zathura_t* zathura);
+
 
 #endif // ZATHURA_H

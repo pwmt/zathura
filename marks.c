@@ -28,7 +28,7 @@ struct zathura_mark_s {
 
 bool
 sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+            girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL,           FALSE);
   g_return_val_if_fail(session->gtk.view != NULL, FALSE);
@@ -36,14 +36,14 @@ sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument),
   /* redirect signal handler */
   g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
   session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-      G_CALLBACK(cb_marks_view_key_press_event_add), session);
+                                      G_CALLBACK(cb_marks_view_key_press_event_add), session);
 
   return true;
 }
 
 bool
 sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argument),
-    girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+                 girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL,           FALSE);
   g_return_val_if_fail(session->gtk.view != NULL, FALSE);
@@ -51,14 +51,14 @@ sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argument),
   /* redirect signal handler */
   g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
   session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-      G_CALLBACK(cb_marks_view_key_press_event_evaluate), session);
+                                      G_CALLBACK(cb_marks_view_key_press_event_evaluate), session);
 
   return true;
 }
 
 bool
 cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
-    girara_session_t* session)
+                                  girara_session_t* session)
 {
   g_return_val_if_fail(session != NULL,              FALSE);
   g_return_val_if_fail(session->gtk.view != NULL,    FALSE);
@@ -68,11 +68,11 @@ cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
   /* reset signal handler */
   g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
   session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-      G_CALLBACK(girara_callback_view_key_press_event), session);
+                                      G_CALLBACK(girara_callback_view_key_press_event), session);
 
   /* evaluate key */
   if (((event->keyval >= 0x41 && event->keyval <= 0x5A) || (event->keyval >=
-          0x61 && event->keyval <= 0x7A)) == false) {
+       0x61 && event->keyval <= 0x7A)) == false) {
     return false;
   }
 
@@ -92,11 +92,11 @@ bool cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventK
   /* reset signal handler */
   g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
   session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-      G_CALLBACK(girara_callback_view_key_press_event), session);
+                                      G_CALLBACK(girara_callback_view_key_press_event), session);
 
   /* evaluate key */
   if (((event->keyval >= 0x41 && event->keyval <= 0x5A) || (event->keyval >=
-          0x61 && event->keyval <= 0x7A)) == false) {
+       0x61 && event->keyval <= 0x7A)) == false) {
     return true;
   }
 
@@ -129,7 +129,7 @@ cmd_marks_add(girara_session_t* session, girara_list_t* argument_list)
   char key = key_string[0];
 
   if (((key >= 0x41 && key <= 0x5A) || (key >=
-          0x61 && key <= 0x7A)) == false) {
+                                        0x61 && key <= 0x7A)) == false) {
     return false;
   }
 
@@ -154,32 +154,32 @@ cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list)
   }
 
   GIRARA_LIST_FOREACH(argument_list, char*, iter, key_string)
-    if (key_string == NULL) {
+  if (key_string == NULL) {
+    continue;
+  }
+
+  for (unsigned int i = 0; i < strlen(key_string); i++) {
+    char key = key_string[i];
+    if (((key >= 0x41 && key <= 0x5A) || (key >=
+                                          0x61 && key <= 0x7A)) == false) {
       continue;
     }
 
-    for (unsigned int i = 0; i < strlen(key_string); i++) {
-      char key = key_string[i];
-      if (((key >= 0x41 && key <= 0x5A) || (key >=
-              0x61 && key <= 0x7A)) == false) {
+    /* search for existing mark */
+    girara_list_iterator_t* mark_iter = girara_list_iterator(zathura->global.marks);
+    do {
+      zathura_mark_t* mark = (zathura_mark_t*) girara_list_iterator_data(mark_iter);
+      if (mark == NULL) {
         continue;
       }
 
-      /* search for existing mark */
-      girara_list_iterator_t* mark_iter = girara_list_iterator(zathura->global.marks);
-      do {
-        zathura_mark_t* mark = (zathura_mark_t*) girara_list_iterator_data(mark_iter);
-        if (mark == NULL) {
-          continue;
-        }
-
-        if (mark->key == key) {
-          girara_list_remove(zathura->global.marks, mark);
-          continue;
-        }
-      } while (girara_list_iterator_next(mark_iter) != NULL);
-      girara_list_iterator_free(mark_iter);
-    }
+      if (mark->key == key) {
+        girara_list_remove(zathura->global.marks, mark);
+        continue;
+      }
+    } while (girara_list_iterator_next(mark_iter) != NULL);
+    girara_list_iterator_free(mark_iter);
+  }
   GIRARA_LIST_FOREACH_END(argument_list, char*, iter, key_string);
 
   return true;
@@ -206,12 +206,12 @@ mark_add(zathura_t* zathura, int key)
 
   /* search for existing mark */
   GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
-    if (mark->key == key) {
-      mark->position_x = position_x;
-      mark->position_y = position_y;
-      mark->scale      = scale;
-      return;
-    }
+  if (mark->key == key) {
+    mark->position_x = position_x;
+    mark->position_y = position_y;
+    mark->scale      = scale;
+    return;
+  }
   GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);
 
   /* add new mark */
@@ -234,19 +234,19 @@ mark_evaluate(zathura_t* zathura, int key)
 
   /* search for existing mark */
   GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
-    if (mark != NULL && mark->key == key) {
-      double old_scale = zathura_document_get_scale(zathura->document);
-      zathura_document_set_scale(zathura->document, mark->scale);
-      readjust_view_after_zooming(zathura, old_scale, true);
-      render_all(zathura);
+  if (mark != NULL && mark->key == key) {
+    double old_scale = zathura_document_get_scale(zathura->document);
+    zathura_document_set_scale(zathura->document, mark->scale);
+    readjust_view_after_zooming(zathura, old_scale, true);
+    render_all(zathura);
 
-      position_set_delayed(zathura, mark->position_x, mark->position_y);
+    position_set_delayed(zathura, mark->position_x, mark->position_y);
 
-      cb_view_vadjustment_value_changed(NULL, zathura);
+    cb_view_vadjustment_value_changed(NULL, zathura);
 
-      zathura->global.update_page_number = true;
-      return;
-    }
+    zathura->global.update_page_number = true;
+    return;
+  }
   GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);
 }
 
