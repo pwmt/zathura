@@ -2,19 +2,21 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
+#   <simon.legner@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-01-13 15:08+0100\n"
-"PO-Revision-Date: 2012-08-05 16:08+0100\n"
+"POT-Creation-Date: 2013-01-22 21:33+0100\n"
+"PO-Revision-Date: 2013-01-13 14:13+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
-"Language-Team: pwmt.org <mail@pwmt.org>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/zathura/language/"
+"de/)\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../callbacks.c:218
 #, c-format
@@ -281,7 +283,7 @@ msgstr "Verwende den Dateinamen der Datei im Fenstertitel"
 
 #: ../config.c:203 ../main.c:60
 msgid "Enable synctex support"
-msgstr ""
+msgstr "Aktiviere SyncTeX-Unterstützung"
 
 #. define default inputbar commands
 #: ../config.c:359
@@ -306,7 +308,7 @@ msgstr "Zeige Dokumentinformationen an"
 
 #: ../config.c:364
 msgid "Execute a command"
-msgstr ""
+msgstr "Führe einen Befehl aus"
 
 #: ../config.c:365
 msgid "Show help"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-01-13 15:08+0100\n"
-"PO-Revision-Date: 2012-05-01 20:38+0000\n"
+"POT-Creation-Date: 2013-01-22 21:33+0100\n"
+"PO-Revision-Date: 2013-01-13 14:12+0000\n"
 "Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.net/projects/p/zathura/language/"
 "tr/)\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../callbacks.c:218
 #, c-format
@@ -117,12 +117,12 @@ msgstr "'%s' eki '%s' konumuna yazılamadı."
 #: ../commands.c:487
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Tanınmayan resim dosyası '%s'"
 
 #: ../commands.c:491
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Tanınmayan eklenti veya resim dosyası '%s'"
 
 #: ../commands.c:542
 msgid "Argument must be a number."
@@ -131,7 +131,7 @@ msgstr "Argüman bir sayı olmalı."
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "Sayfa %d"
 
 #: ../completion.c:293
 msgid "Attachments"
@@ -140,7 +140,7 @@ msgstr "Ekleri kaydet"
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr ""
+msgstr "Resimler"
 
 #. zathura settings
 #: ../config.c:135
@@ -161,7 +161,7 @@ msgstr "Satır başına sayfa sayısı"
 
 #: ../config.c:143
 msgid "Column of the first page"
-msgstr ""
+msgstr "İlk sayfanın sütunu"
 
 #: ../config.c:145
 msgid "Scroll step"
@@ -169,11 +169,11 @@ msgstr "Kaydırma aralığı"
 
 #: ../config.c:147
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Yatay kaydırma adımı"
 
 #: ../config.c:149
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Tam ekran kaydırma kaplaması"
 
 #: ../config.c:151
 msgid "Zoom minimum"
@@ -193,7 +193,7 @@ msgstr "Önbellek temizliği yapılma sıklığı, saniye cinsinden"
 
 #: ../config.c:158
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Atlama listesinde hatırlanacak pozisyon sayısı"
 
 #: ../config.c:160
 msgid "Recoloring (dark color)"
@@ -217,7 +217,7 @@ msgstr "Sayga rengini değiştir"
 
 #: ../config.c:172
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
+msgstr "Yeniden renklendirirken renk değerini tut ve sadece parlaklığı ayarla"
 
 #: ../config.c:174
 msgid "Wrap scrolling"
@@ -233,7 +233,7 @@ msgstr "Satır başına sayfa sayısı"
 
 #: ../config.c:180
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Yatay olarak ortalanmış büyütme"
 
 #: ../config.c:182
 msgid "Center result horizontally"
@@ -265,19 +265,19 @@ msgstr "Her zaman ilk sayfayı aç"
 
 #: ../config.c:195
 msgid "Highlight search results"
-msgstr ""
+msgstr "Arama sonuçlarını vurgula"
 
 #: ../config.c:197
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Artımlı aramayı etkinleştir"
 
 #: ../config.c:199
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Kapatınca arama sonuçlarını temizle"
 
 #: ../config.c:201
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Pencere başlığı olarak dosyanın adını kullan"
 
 #: ../config.c:203 ../main.c:60
 msgid "Enable synctex support"
@@ -306,7 +306,7 @@ msgstr "Dosya bilgisi göster"
 
 #: ../config.c:364
 msgid "Execute a command"
-msgstr ""
+msgstr "Bir komut çalıştır"
 
 #: ../config.c:365
 msgid "Show help"
@@ -350,15 +350,15 @@ msgstr "Seçilen işaretlemeleri sil"
 
 #: ../config.c:375
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "Şuanki arama sonuçlarını vurgulama"
 
 #: ../config.c:376
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Şuanki arama sonuçlarını vurgula"
 
 #: ../config.c:377
 msgid "Show version information"
-msgstr ""
+msgstr "Versiyon bilgisi göster"
 
 #: ../links.c:161 ../links.c:240
 msgid "Failed to run xdg-open."
@@ -400,7 +400,7 @@ msgstr "Arka planda işlemden çocuk oluştur"
 
 #: ../main.c:57
 msgid "Document password"
-msgstr ""
+msgstr "Belge şifresi"
 
 #: ../main.c:58
 msgid "Log level (debug, info, warning, error)"
@@ -429,7 +429,7 @@ msgstr "Resim kopyala"
 
 #: ../page-widget.c:745
 msgid "Save image as"
-msgstr ""
+msgstr "Resmi farklı kaydet"
 
 #: ../shortcuts.c:956
 msgid "This document does not contain any index"
