@@ -461,7 +461,7 @@ replace_substring(const char* string, const char* old, const char* new)
   /* replace */
   while (*string != '\0') {
     if (strstr(string, old) == string) {
-      strcpy(&ret[i], new);
+      strncpy(&ret[i], new, new_len);
       i += new_len;
       string += old_len;
     } else {
