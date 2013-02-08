@@ -2,7 +2,6 @@
 
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE 700
-// TODO: Implement realpath
 
 #include <sys/wait.h>
 #include <stdlib.h>
@@ -12,6 +11,9 @@
 #include <errno.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#ifdef WITH_MAGIC
+#include <magic.h>
+#endif
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -518,7 +520,35 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
 static const gchar*
 guess_type(const char* path)
 {
-  gboolean uncertain;
+#ifdef WITH_MAGIC
+  const gchar *content_type = NULL;
+  const int flags =
+    MAGIC_MIME_TYPE |
+    MAGIC_SYMLINK |
+    MAGIC_NO_CHECK_APPTYPE |
+    MAGIC_NO_CHECK_CDF |
+    MAGIC_NO_CHECK_ELF |
+    MAGIC_NO_CHECK_ENCODING;
+  magic_t magic = magic_open(flags);
+  if (magic == NULL) {
+    girara_debug("failed creating the magic cookie\n");
+    return NULL;
+  }
+  if (magic_load(magic, NULL) < 0) {
+    girara_warning("failed loading the magic database: %s\n", magic_error(magic));
+    goto cleanup;
+  }
+  const char* mime_type = magic_file(magic, path);
+  if (mime_type == NULL) {
+    girara_warning("failed guessing filetype: %s\n", magic_error(magic));
+    goto cleanup;
+  }
+  content_type = g_strdup(mime_type);
+cleanup:
+  magic_close(magic);
+  return content_type;
+#else
+  gboolean uncertain = FALSE;
   const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
     return NULL;
@@ -590,6 +620,7 @@ guess_type(const char* path)
 
   g_strdelimit(out, "\n\r", '\0');
   return out;
+#endif
 }
 
 zathura_plugin_t*

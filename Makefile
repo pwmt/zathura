@@ -17,6 +17,12 @@ else
 SOURCE = $(filter-out database-sqlite.c,$(OSOURCE))
 endif
 
+ifneq ($(WITH_MAGIC),0)
+INCS += $(MAGIC_INC)
+LIBS += $(MAGIC_LIB)
+CPPFLAGS += -DWITH_MAGIC
+endif
+
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
 endif
