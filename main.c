@@ -21,7 +21,9 @@ main(int argc, char* argv[])
   textdomain(GETTEXT_PACKAGE);
 
   /* init gtk */
+#if !GLIB_CHECK_VERSION(2, 31, 0)
   g_thread_init(NULL);
+#endif
   gdk_threads_init();
   gtk_init(&argc, &argv);
 
