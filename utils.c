@@ -372,7 +372,7 @@ readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay)
   if (delay == true) {
     position_set_delayed(zathura, valx, valy);
   } else {
-    set_adjustment(vadjustment, valx);
+    set_adjustment(hadjustment, valx);
     set_adjustment(vadjustment, valy);
   }
 }
