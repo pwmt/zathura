@@ -12,6 +12,7 @@ sqlite3 (>= 3.5.9)
 check (for tests)
 intltool
 python-docutils (for man pages)
+magic (optional)
 
 Please note that you need to have a working pkg-config installation and that the
 Makefile is only compatible with GNU make. If you don't have a working
@@ -25,6 +26,9 @@ If you don't want to build with support for sqlite databases, you can set
 WITH_SQLITE=0 and sqlite support won't be available. Please note that sqlite3
 with metadata support is required, i.e. sqlite3 has to be built with
 SQLITE_ENABLE_COLUMN_METADATA defined.
+
+The use of magic to detect mimetypes is optional and can be disabled by setting
+WITH_MAGIC=0.
 
 Installation
 ------------
