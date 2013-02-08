@@ -22,7 +22,7 @@ typedef struct zathura_page_widget_private_s {
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
   gint64 last_view; /**< Last time the page has been viewed */
-  GStaticMutex lock; /**< Lock */
+  GMutex lock; /**< Lock */
 
   struct {
     girara_list_t* list; /**< List of links on the page */
@@ -162,7 +162,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->mouse.selection_basepoint.x = -1;
   priv->mouse.selection_basepoint.y = -1;
 
-  g_static_mutex_init(&(priv->lock));
+  g_mutex_init(&(priv->lock));
 
   /* we want mouse events */
   gtk_widget_add_events(GTK_WIDGET(widget),
@@ -194,8 +194,6 @@ zathura_page_widget_finalize(GObject* object)
   if (priv->links.list != NULL) {
     girara_list_free(priv->links.list);
   }
-
-  g_static_mutex_free(&(priv->lock));
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
@@ -325,7 +323,7 @@ static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  g_static_mutex_lock(&(priv->lock));
+  g_mutex_lock(&(priv->lock));
 
   zathura_document_t* document = zathura_page_get_document(priv->page);
 
@@ -466,7 +464,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* render real page */
     render_page(priv->zathura->sync.render_thread, priv->page);
   }
-  g_static_mutex_unlock(&(priv->lock));
+  g_mutex_unlock(&(priv->lock));
   return FALSE;
 }
 
@@ -481,13 +479,13 @@ void
 zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  g_static_mutex_lock(&(priv->lock));
+  g_mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
     cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
   }
   priv->surface = surface;
-  g_static_mutex_unlock(&(priv->lock));
+  g_mutex_unlock(&(priv->lock));
   /* force a redraw here */
   zathura_page_widget_redraw_canvas(widget);
 }
