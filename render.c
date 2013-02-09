@@ -6,6 +6,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+#include "glib-compat.h"
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
@@ -19,7 +20,7 @@ static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 
 struct render_thread_s {
   GThreadPool* pool; /**< Pool of threads */
-  GMutex mutex; /**< Render lock */
+  mutex mutex; /**< Render lock */
   bool about_to_close; /**< Render thread is to be freed */
 };
 
@@ -51,7 +52,7 @@ render_init(zathura_t* zathura)
 
   render_thread->about_to_close = false;
   g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
-  g_mutex_init(&render_thread->mutex);
+  mutex_init(&render_thread->mutex);
 
   return render_thread;
 
@@ -73,6 +74,7 @@ render_free(render_thread_t* render_thread)
     g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
 
+  mutex_free(&(render_thread->mutex));
   g_free(render_thread);
 }
 
@@ -328,7 +330,7 @@ render_lock(render_thread_t* render_thread)
     return;
   }
 
-  g_mutex_lock(&render_thread->mutex);
+  mutex_lock(&render_thread->mutex);
 }
 
 void
@@ -338,5 +340,5 @@ render_unlock(render_thread_t* render_thread)
     return;
   }
 
-  g_mutex_unlock(&render_thread->mutex);
+  mutex_unlock(&render_thread->mutex);
 }
