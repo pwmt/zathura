@@ -20,4 +20,14 @@
 #define mutex_free(m) g_mutex_clear((m))
 #endif
 
+/* g_get_real_time appeared in 2.28 */
+#if !GLIB_CHECK_VERSION(2, 27, 0)
+inline static gint64 g_get_real_time(void)
+{
+  GTimeVal tv;
+  g_get_current_time(&tv);
+  return (((gint64) tv.tv_sec) * 1000000) + tv.tv_usec;
+}
+#endif
+
 #endif
