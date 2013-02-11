@@ -12,6 +12,9 @@
 #include <errno.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#ifdef WITH_MAGIC
+# include <magic.h>
+#endif /*WITH_MAGIC*/
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -518,6 +521,40 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
 static const gchar*
 guess_type(const char* path)
 {
+#ifdef WITH_MAGIC
+  {
+    const char *mime_type = NULL;
+    const gchar *content_type = NULL;
+    int flags =
+      MAGIC_MIME_TYPE |
+      MAGIC_SYMLINK |
+      MAGIC_NO_CHECK_APPTYPE |
+      MAGIC_NO_CHECK_CDF |
+      MAGIC_NO_CHECK_ELF |
+      MAGIC_NO_CHECK_ENCODING;
+    magic_t magic = magic_open(flags);
+    if (magic == NULL) {
+      girara_warning("failed creating the magic cookie\n");
+      return NULL;
+    }
+    if (magic_load(magic, NULL) < 0) {
+      girara_warning("failed loading the magic database: %s\n", magic_error(magic));
+      goto cleanup;
+    }
+    mime_type = (const gchar *)magic_file(magic, path);
+    if (mime_type == NULL) {
+      girara_warning("failed guessing filetype: %s\n", magic_error(magic));
+      goto cleanup;
+    }
+    content_type = g_strdup((const gchar *)mime_type);
+cleanup:
+    magic_close(magic);
+    if (content_type != NULL) {
+      return content_type;
+    }
+    /* else fallback to g_content_type_guess method */
+  }
+#endif /*WITH_MAGIC*/
   gboolean uncertain;
   const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {

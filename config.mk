@@ -23,6 +23,9 @@ GIRARA_VERSION_CHECK ?= $(shell pkg-config --atleast-version=$(GIRARA_MIN_VERSIO
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
 WITH_SQLITE ?= $(shell (pkg-config --atleast-version=3.5.9 sqlite3 && echo 1) || echo 0)
 
+# to disable use of libmagic for filetype detection comment the following line
+WITH_MAGIC ?= 1
+
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
@@ -54,6 +57,11 @@ GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
 ifneq (${WITH_SQLITE},0)
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)
 SQLITE_LIB ?= $(shell pkg-config --libs sqlite3)
+endif
+
+ifneq (${WITH_MAGIC},)
+MAGIC_INC ?=
+MAGIC_LIB ?= -lmagic
 endif
 
 INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC}
