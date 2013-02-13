@@ -522,6 +522,8 @@ guess_type(const char* path)
 {
 #ifdef WITH_MAGIC
   const char* mime_type = NULL;
+
+  /* creat magic cookie */
   const int flags =
     MAGIC_MIME_TYPE |
     MAGIC_SYMLINK |
@@ -534,14 +536,19 @@ guess_type(const char* path)
     girara_debug("failed creating the magic cookie\n");
     goto cleanup;
   }
+
+  /* ... and load mime database */
   if (magic_load(magic, NULL) < 0) {
     girara_debug("failed loading the magic database: %s\n", magic_error(magic));
     goto cleanup;
   }
+
+  /* get the mime type */
   mime_type = magic_file(magic, path);
   if (mime_type == NULL) {
     girara_debug("failed guessing filetype: %s\n", magic_error(magic));
   }
+
 cleanup:
   if (magic != NULL) {
     magic_close(magic);
