@@ -521,7 +521,7 @@ static const gchar*
 guess_type(const char* path)
 {
 #ifdef WITH_MAGIC
-  const gchar *content_type = NULL;
+  const char* mime_type = NULL;
   const int flags =
     MAGIC_MIME_TYPE |
     MAGIC_SYMLINK |
@@ -532,22 +532,25 @@ guess_type(const char* path)
   magic_t magic = magic_open(flags);
   if (magic == NULL) {
     girara_debug("failed creating the magic cookie\n");
-    return NULL;
+    goto cleanup;
   }
   if (magic_load(magic, NULL) < 0) {
-    girara_warning("failed loading the magic database: %s\n", magic_error(magic));
+    girara_debug("failed loading the magic database: %s\n", magic_error(magic));
     goto cleanup;
   }
-  const char* mime_type = magic_file(magic, path);
+  mime_type = magic_file(magic, path);
   if (mime_type == NULL) {
-    girara_warning("failed guessing filetype: %s\n", magic_error(magic));
-    goto cleanup;
+    girara_debug("failed guessing filetype: %s\n", magic_error(magic));
   }
-  content_type = g_strdup(mime_type);
 cleanup:
-  magic_close(magic);
-  return content_type;
-#else
+  if (magic != NULL) {
+    magic_close(magic);
+  }
+  if (mime_type != NULL) {
+    return g_strdup(mime_type);
+  }
+  /* else fallback to g_content_type_guess method */
+#endif /*WITH_MAGIC*/
   gboolean uncertain = FALSE;
   const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
@@ -620,7 +623,6 @@ cleanup:
 
   g_strdelimit(out, "\n\r", '\0');
   return out;
-#endif
 }
 
 zathura_plugin_t*
