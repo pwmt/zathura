@@ -520,6 +520,7 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
 static const gchar*
 guess_type(const char* path)
 {
+  const gchar* content_type = NULL;
 #ifdef WITH_MAGIC
   const char* mime_type = NULL;
 
@@ -547,20 +548,24 @@ guess_type(const char* path)
   mime_type = magic_file(magic, path);
   if (mime_type == NULL) {
     girara_debug("failed guessing filetype: %s\n", magic_error(magic));
+    goto cleanup;
   }
+
+  girara_debug("magic detected filetype: %s\n", mime_type);
+  content_type = g_strdup(mime_type);
 
 cleanup:
   if (magic != NULL) {
     magic_close(magic);
   }
-  if (mime_type != NULL) {
-    girara_debug("magic detected filetype: %s\n", mime_type);
-    return g_strdup(mime_type);
+
+  if (content_type != NULL) {
+    return content_type;
   }
   /* else fallback to g_content_type_guess method */
 #endif /*WITH_MAGIC*/
   gboolean uncertain = FALSE;
-  const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
     girara_debug("g_content_type failed\n");
   } else {
