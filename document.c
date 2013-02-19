@@ -554,6 +554,7 @@ cleanup:
     magic_close(magic);
   }
   if (mime_type != NULL) {
+    girara_debug("magic detected filetype: %s\n", mime_type);
     return g_strdup(mime_type);
   }
   /* else fallback to g_content_type_guess method */
@@ -561,14 +562,14 @@ cleanup:
   gboolean uncertain = FALSE;
   const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
-    return NULL;
+    girara_debug("g_content_type failed\n");
+  } else {
+    if (uncertain == FALSE) {
+      girara_debug("g_content_type detected filetype: %s\n", content_type);
+      return content_type;
+    }
+    girara_debug("g_content_type is uncertain, guess: %s\n", content_type);
   }
-
-  if (uncertain == FALSE) {
-    return content_type;
-  }
-
-  girara_debug("g_content_type is uncertain, guess: %s\n", content_type);
 
   FILE* f = fopen(path, "rb");
   if (f == NULL) {
