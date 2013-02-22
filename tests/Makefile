@@ -21,6 +21,12 @@ else
 ZSOURCE = $(filter-out ../database-sqlite.c,$(ZOSOURCE))
 endif
 
+ifneq ($(WITH_MAGIC),0)
+INCS += $(MAGIC_INC)
+LIBS += $(MAGIC_LIB)
+CPPFLAGS += -DWITH_MAGIC
+endif
+
 ZOBJECTS = ${ZSOURCE:.c=.o}
 
 all: ${PROJECT}
