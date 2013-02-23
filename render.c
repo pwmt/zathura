@@ -152,7 +152,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
-  page_calc_height_width(page, &page_height, &page_width, false);
+  const double real_scale = page_calc_height_width(page, &page_height, &page_width, false);
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
@@ -174,9 +174,8 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  double scale = zathura_document_get_scale(zathura->document);
-  if (fabs(scale - 1.0f) > FLT_EPSILON) {
-    cairo_scale(cairo, scale, scale);
+  if (fabs(real_scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, real_scale, real_scale);
   }
 
   render_lock(zathura->sync.render_thread);

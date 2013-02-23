@@ -100,8 +100,9 @@ void set_adjustment(GtkAdjustment* adjust, gdouble value);
  * @param page_height the resulting page height
  * @param page_width the resultung page width
  * @param rotate honor page's rotation
+ * @return real scale after rounding
  */
-void
+double
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate);
 
 /**

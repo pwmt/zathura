@@ -255,7 +255,7 @@ set_adjustment(GtkAdjustment* adjustment, gdouble value)
                            MIN(gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment), value)));
 }
 
-void
+double
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
   g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
@@ -268,14 +268,19 @@ page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned
   double height = zathura_page_get_height(page);
   double width  = zathura_page_get_width(page);
   double scale  = zathura_document_get_scale(document);
+  double real_scale;
 
   if (rotate && zathura_document_get_rotation(document) % 180) {
     *page_width  = ceil(height * scale);
     *page_height = ceil(width  * scale);
+    real_scale = MAX(*page_width / height, *page_height / width);
   } else {
     *page_width  = ceil(width  * scale);
     *page_height = ceil(height * scale);
+    real_scale = MAX(*page_width / width, *page_height / height);
   }
+
+  return real_scale;
 }
 
 void
