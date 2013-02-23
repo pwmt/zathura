@@ -258,11 +258,11 @@ set_adjustment(GtkAdjustment* adjustment, gdouble value)
 double
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
-  g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
+  g_return_val_if_fail(page != NULL && page_height != NULL && page_width != NULL, 0.0);
 
   zathura_document_t* document = zathura_page_get_document(page);
   if (document == NULL) {
-    return;
+    return 0.0;
   }
 
   double height = zathura_page_get_height(page);
