@@ -29,6 +29,10 @@ SQLITE_ENABLE_COLUMN_METADATA defined.
 The use of magic to detect mimetypes is optional and can be disabled by setting
 WITH_MAGIC=0.
 
+If pass these flags add command line argument to make, you have to ensure that
+you pass the same flags when executing the install target. Setting flags in
+config.mk directly or via environment variables is not affected by this issue.
+
 Installation
 ------------
 To build and install zathura:
