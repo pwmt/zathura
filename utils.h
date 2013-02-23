@@ -74,7 +74,7 @@ void page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset
  * @param width the width of the enclosing rectangle
  * @return the rotated rectangle
  */
-zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width);
+zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width);
 
 /**
  * Calculates the new coordinates based on the rotation and scale level of the

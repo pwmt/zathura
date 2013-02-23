@@ -185,7 +185,8 @@ page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* o
                    zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
-zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width)
+zathura_rectangle_t
+rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width)
 {
   zathura_rectangle_t tmp;
   switch (degree) {
@@ -234,33 +235,11 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
   double page_width  = zathura_page_get_width(page);
   double scale       = zathura_document_get_scale(document);
 
-  zathura_rectangle_t tmp;
-
-  switch (zathura_document_get_rotation(document)) {
-    case 90:
-      tmp.x1 = (page_height - rectangle.y2) * scale;
-      tmp.x2 = (page_height - rectangle.y1) * scale;
-      tmp.y1 = rectangle.x1 * scale;
-      tmp.y2 = rectangle.x2 * scale;
-      break;
-    case 180:
-      tmp.x1 = (page_width  - rectangle.x2) * scale;
-      tmp.x2 = (page_width  - rectangle.x1) * scale;
-      tmp.y1 = (page_height - rectangle.y2) * scale;
-      tmp.y2 = (page_height - rectangle.y1) * scale;
-      break;
-    case 270:
-      tmp.x1 = rectangle.y1 * scale;
-      tmp.x2 = rectangle.y2 * scale;
-      tmp.y1 = (page_width - rectangle.x2) * scale;
-      tmp.y2 = (page_width - rectangle.x1) * scale;
-      break;
-    default:
-      tmp.x1 = rectangle.x1 * scale;
-      tmp.x2 = rectangle.x2 * scale;
-      tmp.y1 = rectangle.y1 * scale;
-      tmp.y2 = rectangle.y2 * scale;
-  }
+  zathura_rectangle_t tmp = rotate_rectangle(rectangle, zathura_document_get_rotation(document), page_height, page_width);
+  tmp.x1 *= scale;
+  tmp.x2 *= scale;
+  tmp.y1 *= scale;
+  tmp.y2 *= scale;
 
   return tmp;
 
