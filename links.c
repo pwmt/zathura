@@ -30,6 +30,7 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
   link->position = position;
 
   switch (type) {
+    case ZATHURA_LINK_NONE:
     case ZATHURA_LINK_GOTO_DEST:
       link->target = target;
 
@@ -64,6 +65,7 @@ zathura_link_free(zathura_link_t* link)
   }
 
   switch (link->type) {
+    case ZATHURA_LINK_NONE:
     case ZATHURA_LINK_GOTO_DEST:
     case ZATHURA_LINK_GOTO_REMOTE:
     case ZATHURA_LINK_URI:
