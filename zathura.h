@@ -57,6 +57,8 @@ struct zathura_s
       GdkColor recolor_light_color; /**< Light color for recoloring */
       GdkColor highlight_color; /**< Color for highlighting */
       GdkColor highlight_color_active; /** Color for highlighting */
+      GdkColor render_loading_bg; /**< Background color for render "Loading..." */
+      GdkColor render_loading_fg; /**< Foreground color for render "Loading..." */
     } colors;
 
     GtkWidget *page_widget_alignment;

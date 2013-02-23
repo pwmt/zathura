@@ -436,7 +436,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       GdkColor color = priv->zathura->ui.colors.recolor_light_color;
       cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     } else {
-      cairo_set_source_rgb(cairo, 1, 1, 1);
+      GdkColor color = priv->zathura->ui.colors.render_loading_bg;
+      cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     }
     cairo_rectangle(cairo, 0, 0, page_width, page_height);
     cairo_fill(cairo);
@@ -450,7 +451,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         GdkColor color = priv->zathura->ui.colors.recolor_dark_color;
         cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       } else {
-        cairo_set_source_rgb(cairo, 0, 0, 0);
+        GdkColor color = priv->zathura->ui.colors.render_loading_fg;
+        cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       }
 
       const char* text = _("Loading...");

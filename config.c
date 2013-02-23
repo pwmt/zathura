@@ -52,6 +52,10 @@ cb_color_change(girara_session_t* session, const char* name,
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
   } else if (g_strcmp0(name, "recolor-lightcolor") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
+  } else if (g_strcmp0(name, "render-loading-bg") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_bg));
+  } else if (g_strcmp0(name, "render-loading-fg") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_fg));
   }
 
   render_all(zathura);
@@ -165,6 +169,10 @@ config_load_default(zathura_t* zathura)
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
   girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
+  girara_setting_add(gsession, "render-loading-bg",      NULL, STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
+  girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
+  girara_setting_add(gsession, "render-loading-fg",      NULL, STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
+  girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);

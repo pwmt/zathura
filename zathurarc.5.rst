@@ -594,6 +594,20 @@ Defines if the "Loading..." text should be displayed if a page is rendered.
 * Value type: Boolean
 * Default value: true
 
+render-loading-bg
+^^^^^^^^^^^^^^^^^
+Defines the background color that is used for the "Loading..." text.
+
+* Value type: String
+* Default value: #FFFFFF
+
+render-loading-fg
+^^^^^^^^^^^^^^^^^
+Defines the foreground color that is used for the "Loading..." text.
+
+* Value type: String
+* Default value: #000000
+
 scroll-hstep
 ^^^^^^^^^^^^
 Defines the horizontal step size of scrolling by calling the scroll command once
