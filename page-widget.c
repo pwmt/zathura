@@ -22,6 +22,7 @@ typedef struct zathura_page_widget_private_s {
   zathura_page_t* page; /**< Page object */
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
+  bool render_requested; /**< No surface and rendering has been requested */
   gint64 last_view; /**< Last time the page has been viewed */
   mutex lock; /**< Lock */
 
@@ -140,9 +141,10 @@ static void
 zathura_page_widget_init(ZathuraPage* widget)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  priv->page      = NULL;
-  priv->surface   = NULL;
-  priv->last_view = g_get_real_time();
+  priv->page             = NULL;
+  priv->surface          = NULL;
+  priv->render_requested = false;
+  priv->last_view        = g_get_real_time();
 
   priv->links.list      = NULL;
   priv->links.retrieved = false;
@@ -467,7 +469,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* render real page */
-    render_page(priv->zathura->sync.render_thread, priv->page);
+    if (priv->render_requested == false) {
+      priv->render_requested = true;
+      render_page(priv->zathura->sync.render_thread, priv->page);
+    }
   }
   mutex_unlock(&(priv->lock));
   return FALSE;
@@ -489,6 +494,7 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
     cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
   }
+  priv->render_requested = false;
   priv->surface = surface;
   mutex_unlock(&(priv->lock));
   /* force a redraw here */
