@@ -23,15 +23,14 @@ If it is not installed, the man pages won't be built.
 
 If you don't want to build with support for sqlite databases, you can set
 WITH_SQLITE=0 and sqlite support won't be available. Please note that sqlite3
-with metadata support is required, i.e. sqlite3 has to be built with
+with meta data support is required, i.e. sqlite3 has to be built with
 SQLITE_ENABLE_COLUMN_METADATA defined.
 
-The use of magic to detect mimetypes is optional and can be disabled by setting
+The use of magic to detect mime types is optional and can be disabled by setting
 WITH_MAGIC=0.
 
-If pass these flags add command line argument to make, you have to ensure that
-you pass the same flags when executing the install target. Setting flags in
-config.mk directly or via environment variables is not affected by this issue.
+If you pass these flags as a command line argument to make, you have to ensure
+to pass the same flags when executing the install target.
 
 Installation
 ------------
