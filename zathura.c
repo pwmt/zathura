@@ -581,7 +581,15 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   /* update statusbar */
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
+  bool basename_only = false;
+  girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
+  if (basename_only == false) {
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
+  } else {
+    char* tmp = g_path_get_basename(file_path);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
+    g_free(tmp);
+  }
 
   /* install file monitor */
   gchar* file_uri = g_filename_to_uri(file_path, NULL, NULL);
@@ -690,7 +698,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   zathura_bookmarks_load(zathura, file_path);
 
   /* update title */
-  bool basename_only = false;
+  basename_only = false;
   girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
   if (basename_only == false) {
     girara_set_window_title(zathura->ui.session, file_path);

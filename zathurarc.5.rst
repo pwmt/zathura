@@ -658,6 +658,13 @@ Use basename of the file in the window title.
 * Value type: Boolean
 * Default value: false
 
+statusbar-basename
+^^^^^^^^^^^^^^^^^^
+Use basename of the file in the statusbar.
+
+* Value type: Boolean
+* Default value: false
+
 zoom-center
 ^^^^^^^^^^^
 En/Disables horizontally centered zooming
