@@ -94,6 +94,8 @@ R
   Reload document
 Tab
   Show index and switch to **Index mode**
+d
+  Toggle dual page view
 F5
   Switch to fullscreen mode
 ^m
