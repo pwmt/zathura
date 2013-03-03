@@ -551,7 +551,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_scroll(girara_session_t* session, girara_argument_t* argument,
-	  girara_event_t* UNUSED(event), unsigned int t)
+          girara_event_t* UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -561,7 +561,7 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     return false;
   }
 
-  if (!t){
+  if (t == 0) {
     t = 1;
   }
 
