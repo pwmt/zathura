@@ -551,7 +551,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_scroll(girara_session_t* session, girara_argument_t* argument,
-          girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+	  girara_event_t* UNUSED(event), unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -559,6 +559,10 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   g_return_val_if_fail(argument != NULL, false);
   if (zathura->document == NULL) {
     return false;
+  }
+
+  if (!t){
+    t = 1;
   }
 
   GtkAdjustment* adjustment = NULL;
@@ -612,16 +616,16 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
       new_value = value + ((view_size + padding) / 2);
       break;
     case LEFT:
-      new_value = value - scroll_hstep;
+      new_value = value - scroll_hstep * t;
       break;
     case UP:
-      new_value = value - scroll_step;
+      new_value = value - scroll_step * t;
       break;
     case RIGHT:
-      new_value = value + scroll_hstep;
+      new_value = value + scroll_hstep * t;
       break;
     case DOWN:
-      new_value = value + scroll_step;
+      new_value = value + scroll_step * t;
       break;
     case TOP:
       new_value = 0;
