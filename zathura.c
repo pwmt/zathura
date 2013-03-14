@@ -287,7 +287,9 @@ zathura_free(zathura_t* zathura)
   girara_list_free(zathura->bookmarks.bookmarks);
 
   /* database */
-  zathura_db_free(zathura->database);
+  if (zathura->database != NULL) {
+    g_object_unref(G_OBJECT(zathura->database));
+  }
 
   /* free print settings */
   if (zathura->print.settings != NULL) {

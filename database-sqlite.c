@@ -79,7 +79,7 @@ zathura_sqldatabase_new(const char* path)
   zathura_database_t* db = g_object_new(ZATHURA_TYPE_SQLDATABASE, "path", path, NULL);
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   if (priv->session == NULL) {
-    g_object_unref(db);
+    g_object_unref(G_OBJECT(db));
     return NULL;
   }
 
