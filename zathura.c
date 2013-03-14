@@ -503,6 +503,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
     goto error_out;
   }
 
+  gchar* file_uri = NULL;
   zathura_error_t error = ZATHURA_ERROR_OK;
   zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, password, &error);
 
@@ -528,6 +529,12 @@ document_open(zathura_t* zathura, const char* path, const char* password)
 
   const char* file_path        = zathura_document_get_path(document);
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+
+  if (number_of_pages == 0) {
+    girara_notify(zathura->ui.session, GIRARA_WARNING,
+        _("Document does not contain any pages"));
+    goto error_free;
+  }
 
   /* read history file */
   zathura_fileinfo_t file_info = { 0, 0, 1, 0, 0, 0, 0, 0 };
@@ -594,7 +601,7 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   /* install file monitor */
-  gchar* file_uri = g_filename_to_uri(file_path, NULL, NULL);
+  file_uri = g_filename_to_uri(file_path, NULL, NULL);
   if (file_uri == NULL) {
     goto error_free;
   }
