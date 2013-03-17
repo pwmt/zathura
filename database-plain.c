@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #define _POSIX_SOURCE
+#define _XOPEN_SOURCE 500
 
 #include <glib.h>
 #include <stdlib.h>
@@ -10,11 +11,13 @@
 #include <unistd.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
+#include <girara/input-history.h>
 
 #include "database-plain.h"
 
 #define BOOKMARKS "bookmarks"
 #define HISTORY "history"
+#define INPUT_HISTORY "input-history"
 
 #define KEY_PAGE "page"
 #define KEY_OFFSET "offset"
@@ -37,9 +40,11 @@
 #endif
 
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
+static void io_interface_init(GiraraInputHistoryIOInterface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJECT,
-                        G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init))
+                        G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
+                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
 static void plain_finalize(GObject* object);
 static bool plain_add_bookmark(zathura_database_t* db, const char* file,
@@ -54,6 +59,8 @@ static bool plain_get_fileinfo(zathura_database_t* db, const char* file,
                                zathura_fileinfo_t* file_info);
 static void plain_set_property(GObject* object, guint prop_id,
                                const GValue* value, GParamSpec* pspec);
+static void plain_io_append(GiraraInputHistoryIO* db, const char*);
+static girara_list_t* plain_io_read(GiraraInputHistoryIO* db);
 
 /* forward declaration */
 static bool zathura_db_check_file(const char* path);
@@ -70,6 +77,8 @@ typedef struct zathura_plaindatabase_private_s {
   char* history_path;
   GKeyFile* history;
   GFileMonitor* history_monitor;
+
+  char* input_history_path;
 } zathura_plaindatabase_private_t;
 
 #define ZATHURA_PLAINDATABASE_GET_PRIVATE(obj) \
@@ -106,6 +115,14 @@ zathura_database_interface_init(ZathuraDatabaseInterface* iface)
 }
 
 static void
+io_interface_init(GiraraInputHistoryIOInterface* iface)
+{
+  /* initialize interface */
+  iface->append = plain_io_append;
+  iface->read = plain_io_read;
+}
+
+static void
 zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
 {
   /* add private members */
@@ -126,12 +143,13 @@ zathura_plaindatabase_init(ZathuraPlainDatabase* db)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
 
-  priv->bookmark_path    = NULL;
-  priv->bookmark_monitor = NULL;
-  priv->bookmarks        = NULL;
-  priv->history_path     = NULL;
-  priv->history_monitor  = NULL;
-  priv->history          = NULL;
+  priv->bookmark_path         = NULL;
+  priv->bookmark_monitor      = NULL;
+  priv->bookmarks             = NULL;
+  priv->history_path          = NULL;
+  priv->history_monitor       = NULL;
+  priv->history               = NULL;
+  priv->input_history_path    = NULL;
 }
 
 zathura_database_t*
@@ -208,6 +226,12 @@ plain_db_init(ZathuraPlainDatabase* db, const char* dir)
     goto error_free;
   }
 
+  /* input history */
+  priv->input_history_path = g_build_filename(dir, INPUT_HISTORY, NULL);
+  if (zathura_db_check_file(priv->input_history_path) == false) {
+    goto error_free;
+  }
+
   return;
 
 error_free:
@@ -239,6 +263,10 @@ error_free:
     g_key_file_free(priv->history);
     priv->history = NULL;
   }
+
+  /* input history */
+  g_free(priv->input_history_path);
+  priv->input_history_path = NULL;
 }
 
 static void
@@ -282,6 +310,9 @@ plain_finalize(GObject* object)
   if (priv->history != NULL) {
     g_key_file_free(priv->history);
   }
+
+  /* input history */
+  g_free(priv->input_history_path);
 
   G_OBJECT_CLASS(zathura_plaindatabase_parent_class)->finalize(object);
 }
@@ -594,4 +625,77 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
   }
 
   g_free(path);
+}
+
+static girara_list_t*
+plain_io_read(GiraraInputHistoryIO* db)
+{
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
+  /* open file */
+  FILE* file = fopen(priv->input_history_path, "r");
+  if (file == NULL) {
+    return NULL;
+  }
+
+  /* read input history file */
+  file_lock_set(fileno(file), F_RDLCK);
+  char* content = girara_file_read2(file);
+  file_lock_set(fileno(file), F_UNLCK);
+  fclose(file);
+
+  girara_list_t* res = girara_list_new2(g_free);
+  char** tmp = g_strsplit(content, "\n", 0);
+  for (size_t i = 0; tmp[i] != NULL; ++i) {
+    if (strlen(tmp[i]) == 0 || strchr(":/", tmp[i][0]) == NULL) {
+      continue;
+    }
+    girara_list_append(res, g_strdup(tmp[i]));
+  }
+  g_strfreev(tmp);
+  free(content);
+
+  return res;
+}
+
+#include <errno.h>
+
+static void
+plain_io_append(GiraraInputHistoryIO* db, const char* input)
+{
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
+  /* open file */
+  FILE* file = fopen(priv->input_history_path, "r+");
+  if (file == NULL) {
+    return;
+  }
+
+  /* read input history file */
+  file_lock_set(fileno(file), F_WRLCK);
+  char* content = girara_file_read2(file);
+
+  rewind(file);
+  if (ftruncate(fileno(file), 0) != 0) {
+    free(content);
+    file_lock_set(fileno(file), F_UNLCK);
+    fclose(file);
+    return;
+  }
+
+  char** tmp = g_strsplit(content, "\n", 0);
+  free(content);
+
+  /* write input history file */
+  for (size_t i = 0; tmp[i] != NULL; ++i) {
+    if (strlen(tmp[i]) == 0 || strchr(":/", tmp[i][0]) == NULL || strcmp(tmp[i], input) == 0) {
+      continue;
+    }
+    fprintf(file, "%s\n", tmp[i]);
+  }
+  g_strfreev(tmp);
+  fprintf(file, "%s\n", input);
+
+  file_lock_set(fileno(file), F_UNLCK);
+  fclose(file);
 }

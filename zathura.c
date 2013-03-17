@@ -219,9 +219,6 @@ zathura_init(zathura_t* zathura)
     girara_debug("Using sqlite database backend.");
     char* tmp = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database = zathura_sqldatabase_new(tmp);
-    if (zathura->database != NULL) {
-      g_object_set(zathura->ui.session->global.command_history, "io", zathura->database, NULL);
-    }
     g_free(tmp);
 #endif
   } else {
@@ -231,6 +228,8 @@ zathura_init(zathura_t* zathura)
 
   if (zathura->database == NULL) {
     girara_error("Unable to initialize database. Bookmarks won't be available.");
+  } else {
+    g_object_set(zathura->ui.session->global.command_history, "io", zathura->database, NULL);
   }
 
   /* bookmarks */
