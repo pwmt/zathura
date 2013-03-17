@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-03-17 10:22+0000\n"
-"PO-Revision-Date: 2013-01-13 14:13+0000\n"
-"Last-Translator: Benoît Knecht <benoit.knecht@gmail.com>\n"
+"PO-Revision-Date: 2013-03-17 11:30+0100\n"
+"Last-Translator: Benoît Knecht <benoit.knecht@fsfe.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -215,11 +215,11 @@ msgstr "Couleur de surbrillance (active)"
 
 #: ../config.c:172
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "Couleur d'arrière-plan de 'Chargement...'"
 
 #: ../config.c:174
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "Couleur de 'Chargement...'"
 
 #: ../config.c:178
 msgid "Recolor pages"
@@ -292,9 +292,8 @@ msgid "Use basename of the file in the window title"
 msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
 
 #: ../config.c:211
-#, fuzzy
 msgid "Use basename of the file in the statusbar"
-msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
+msgstr "Utiliser le nom de base du fichier dans la barre d'état"
 
 #: ../config.c:213 ../main.c:64
 msgid "Enable synctex support"
@@ -421,7 +420,7 @@ msgstr "Mot de passe du document"
 
 #: ../main.c:61
 msgid "Page number to go to"
-msgstr ""
+msgstr "Numéro de page où aller"
 
 #: ../main.c:62
 msgid "Log level (debug, info, warning, error)"
@@ -461,6 +460,5 @@ msgid "[No name]"
 msgstr "[Sans nom]"
 
 #: ../zathura.c:538
-#, fuzzy
 msgid "Document does not contain any pages"
-msgstr "Ce document ne contient pas d'index"
+msgstr "Ce document ne contient aucune page"
