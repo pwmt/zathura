@@ -229,6 +229,8 @@ zathura_init(zathura_t* zathura)
 
   if (zathura->database == NULL) {
     girara_error("Unable to initialize database. Bookmarks won't be available.");
+  } else {
+    g_object_set(zathura->ui.session->command_history, "io", zathura->database, NULL);
   }
 
   /* bookmarks */

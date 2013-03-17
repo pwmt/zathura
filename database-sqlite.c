@@ -3,14 +3,17 @@
 #include <sqlite3.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
+#include <girara/input-history.h>
 #include <string.h>
 
 #include "database-sqlite.h"
 
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
+static void io_interface_init(GiraraInputHistoryIOInterface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
-                        G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init))
+                        G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
+                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
 static void sqlite_finalize(GObject* object);
 static bool sqlite_add_bookmark(zathura_database_t* db, const char* file,
@@ -25,6 +28,8 @@ static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file,
                                 zathura_fileinfo_t* file_info);
 static void sqlite_set_property(GObject* object, guint prop_id,
                                 const GValue* value, GParamSpec* pspec);
+static void sqlite_io_append(GiraraInputHistoryIO* db, const char*);
+static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db);
 
 typedef struct zathura_sqldatabase_private_s {
   sqlite3* session;
@@ -47,6 +52,14 @@ zathura_database_interface_init(ZathuraDatabaseInterface* iface)
   iface->load_bookmarks  = sqlite_load_bookmarks;
   iface->set_fileinfo    = sqlite_set_fileinfo;
   iface->get_fileinfo    = sqlite_get_fileinfo;
+}
+
+static void
+io_interface_init(GiraraInputHistoryIOInterface* iface)
+{
+  /* initialize interface */
+  iface->append = sqlite_io_append;
+  iface->read = sqlite_io_read;
 }
 
 static void
@@ -132,6 +145,12 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   static const char SQL_FILEINFO_ALTER2[] =
     "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
 
+  static const char SQL_HISTORY_INIT[] =
+    "CREATE TABLE IF NOT EXISTS history ("
+    "time TIMESTAMP,"
+    "line TEXT,"
+    "PRIMARY KEY(line));";
+
   sqlite3* session = NULL;
   if (sqlite3_open(path, &session) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
@@ -145,6 +164,12 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   }
 
   if (sqlite3_exec(session, SQL_FILEINFO_INIT, NULL, 0, NULL) != SQLITE_OK) {
+    girara_error("Failed to initialize database: %s\n", path);
+    sqlite3_close(session);
+    return;
+  }
+
+  if (sqlite3_exec(session, SQL_HISTORY_INIT, NULL, 0, NULL) != SQLITE_OK) {
     girara_error("Failed to initialize database: %s\n", path);
     sqlite3_close(session);
     return;
@@ -379,4 +404,52 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
   sqlite3_finalize(stmt);
 
   return true;
+}
+
+static void
+sqlite_io_append(GiraraInputHistoryIO* db, const char* input)
+{
+  static const char SQL_HISTORY_SET[] =
+    "REPLACE INTO history (line, time) VALUES (?, DATETIME('now'));";
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_SET);
+  if (stmt == NULL) {
+    return;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, input, -1, NULL) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    girara_error("Failed to bind arguments.");
+    return;
+  }
+
+  sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
+}
+
+static girara_list_t*
+sqlite_io_read(GiraraInputHistoryIO* db)
+{
+  static const char SQL_HISTORY_GET[] =
+    "SELECT line FROM history ORDER BY time";
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_GET);
+  if (stmt == NULL) {
+    return NULL;
+  }
+
+  girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);
+  if (list == NULL) {
+    sqlite3_finalize(stmt);
+    return NULL;
+  }
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    girara_list_append(list, g_strdup((const char*) sqlite3_column_text(stmt, 0)));
+  }
+
+  sqlite3_finalize(stmt);
+  return list;
 }
