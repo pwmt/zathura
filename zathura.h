@@ -21,6 +21,11 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   FULL_DOWN, HALF_LEFT, HALF_RIGHT, FULL_LEFT, FULL_RIGHT, NEXT_CHAR,
   PREVIOUS_CHAR, DELETE_TO_LINE_START, APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW };
 
+/* unspecified page number */
+enum {
+  ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
+};
+
 /* forward declaration for types form database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
@@ -237,7 +242,8 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open(zathura_t* zathura, const char* path, const char* password);
+bool document_open(zathura_t* zathura, const char* path, const char* password,
+                   int page_number);
 
 /**
  * Opens a file (idle)
@@ -246,7 +252,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* password);
  * @param path The path to the file
  * @param password The password of the file
  */
-void document_open_idle(zathura_t* zathura, const char* path, const char* password);
+void document_open_idle(zathura_t* zathura, const char* path,
+                        const char* password, int page_number);
 
 /**
  * Save a open file

@@ -41,6 +41,11 @@ OPTIONS
   will be used for the first one and zathura will ask for the passwords of the
   remaining files if needed.
 
+-P [number], --page [number]
+  Open the document at the given page number. Pages are numbered starting with
+  1, and negative numbers indicate page numbers starting from the end of the
+  document, -1 being the last page.
+
 --fork
   Fork into the background
 

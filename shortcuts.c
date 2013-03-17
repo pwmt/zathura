@@ -511,7 +511,9 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   document_close(zathura, true);
 
   /* reopen document */
-  document_open(zathura, zathura->file_monitor.file_path, zathura->file_monitor.password);
+  document_open(zathura, zathura->file_monitor.file_path,
+                zathura->file_monitor.password,
+                ZATHURA_PAGE_NUMBER_UNSPECIFIED);
 
   return false;
 }

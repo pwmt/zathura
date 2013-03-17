@@ -37,6 +37,7 @@ typedef struct zathura_document_info_s {
   zathura_t* zathura;
   const char* path;
   const char* password;
+  int page_number;
 } zathura_document_info_t;
 
 typedef struct page_set_delayed_s {
@@ -487,7 +488,8 @@ document_info_open(gpointer data)
     }
 
     if (file != NULL) {
-      document_open(document_info->zathura, file, document_info->password);
+      document_open(document_info->zathura, file, document_info->password,
+                    document_info->page_number);
       g_free(file);
     }
   }
@@ -497,7 +499,8 @@ document_info_open(gpointer data)
 }
 
 bool
-document_open(zathura_t* zathura, const char* path, const char* password)
+document_open(zathura_t* zathura, const char* path, const char* password,
+              int page_number)
 {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
     goto error_out;
@@ -552,11 +555,16 @@ document_open(zathura_t* zathura, const char* path, const char* password)
   }
 
   /* check current page number */
-  if (file_info.current_page > number_of_pages) {
+  /* if it wasn't specified on the command-line, get it from file_info */
+  if (page_number == ZATHURA_PAGE_NUMBER_UNSPECIFIED)
+    page_number = file_info.current_page;
+  if (page_number < 0)
+    page_number += number_of_pages;
+  if ((unsigned)page_number > number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", file_path);
     zathura_document_set_current_page_number(document, 0);
   } else {
-    zathura_document_set_current_page_number(document, file_info.current_page);
+    zathura_document_set_current_page_number(document, page_number);
   }
 
   /* check for valid rotation */
@@ -747,7 +755,8 @@ error_out:
 }
 
 void
-document_open_idle(zathura_t* zathura, const char* path, const char* password)
+document_open_idle(zathura_t* zathura, const char* path, const char* password,
+                   int page_number)
 {
   if (zathura == NULL || path == NULL) {
     return;
@@ -755,9 +764,10 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password)
 
   zathura_document_info_t* document_info = g_malloc0(sizeof(zathura_document_info_t));
 
-  document_info->zathura  = zathura;
-  document_info->path     = path;
-  document_info->password = password;
+  document_info->zathura     = zathura;
+  document_info->path        = path;
+  document_info->password    = password;
+  document_info->page_number = page_number;
 
   gdk_threads_add_idle(document_info_open, document_info);
 }
