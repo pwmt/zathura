@@ -144,7 +144,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   if (argument->n == ZATHURA_ADJUST_WIDTH ||
       (argument->n == ZATHURA_ADJUST_BESTFIT && page_ratio < window_ratio)) {
     scale = (double)(width - (pages_per_row - 1) * padding) /
-            (double)(pages_per_row * cell_width + (pages_per_row - 1) * padding);
+            (double)(pages_per_row * cell_width);
     zathura_document_set_scale(zathura->document, scale);
 
     bool show_scrollbars = false;
@@ -165,7 +165,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
           if (0 < requisition.width && (unsigned)requisition.width < width) {
             width -= requisition.width;
             scale = (double)(width - (pages_per_row - 1) * padding) /
-                    (double)(pages_per_row * cell_width + (pages_per_row - 1) * padding);
+                    (double)(pages_per_row * cell_width);
             zathura_document_set_scale(zathura->document, scale);
           }
         }
