@@ -232,6 +232,8 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
+  zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
+
   if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == false) {
     gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
   }

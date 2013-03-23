@@ -362,11 +362,7 @@ zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mo
     return;
   }
 
-  if (mode == ZATHURA_ADJUST_BESTFIT || mode == ZATHURA_ADJUST_WIDTH) {
-    document->adjust_mode = mode;
-  } else {
-    document->adjust_mode = ZATHURA_ADJUST_NONE;
-  }
+  document->adjust_mode = mode;
 }
 
 unsigned int

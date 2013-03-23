@@ -148,6 +148,13 @@ cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_t* zathura = data;
   g_return_if_fail(zathura != NULL);
 
+  zathura_adjust_mode_t adjust_mode =
+    zathura_document_get_adjust_mode(zathura->document);
+
+  /* Don't scroll we're focusing the inputbar. */
+  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR)
+    return;
+
   double ratio = zathura_adjustment_get_ratio(zathura->ui.vadjustment);
   zathura_adjustment_set_value_from_ratio(adjustment, ratio);
 }
