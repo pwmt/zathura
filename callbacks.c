@@ -18,6 +18,7 @@
 #include "shortcuts.h"
 #include "page-widget.h"
 #include "page.h"
+#include "adjustment.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
@@ -106,6 +107,78 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   }
 
   statusbar_page_number_update(zathura);
+}
+
+void
+cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data)
+{
+  zathura_t* zathura = data;
+  g_return_if_fail(zathura != NULL);
+
+  zathura_adjust_mode_t adjust_mode =
+    zathura_document_get_adjust_mode(zathura->document);
+
+  gdouble lower, upper, page_size, value, ratio;
+  bool zoom_center = false;
+
+  switch (adjust_mode) {
+    center:
+    case ZATHURA_ADJUST_BESTFIT:
+    case ZATHURA_ADJUST_WIDTH:
+      lower = gtk_adjustment_get_lower(adjustment);
+      upper = gtk_adjustment_get_upper(adjustment);
+      page_size = gtk_adjustment_get_page_size(adjustment);
+      value = ((upper - lower) - page_size) / 2.0;
+      zathura_adjustment_set_value(adjustment, value);
+      break;
+    default:
+      girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
+      if (zoom_center)
+        goto center;
+
+      ratio = zathura_adjustment_get_ratio(zathura->ui.hadjustment);
+      zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+      break;
+  }
+}
+
+void
+cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
+{
+  zathura_t* zathura = data;
+  g_return_if_fail(zathura != NULL);
+
+  double ratio = zathura_adjustment_get_ratio(zathura->ui.vadjustment);
+  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+}
+
+void
+cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data)
+{
+  GtkAdjustment* tracker = data;
+
+  gdouble lower = gtk_adjustment_get_lower(adjustment);
+  gdouble upper = gtk_adjustment_get_upper(adjustment);
+  if (lower != gtk_adjustment_get_lower(tracker) ||
+      upper != gtk_adjustment_get_upper(tracker))
+    return;
+
+  gdouble value = gtk_adjustment_get_value(adjustment);
+  gtk_adjustment_set_value(tracker, value);
+}
+
+void
+cb_adjustment_track_bounds(GtkAdjustment* adjustment, gpointer data)
+{
+  GtkAdjustment* tracker = data;
+  gdouble value = gtk_adjustment_get_value(adjustment);
+  gdouble lower = gtk_adjustment_get_lower(adjustment);
+  gdouble upper = gtk_adjustment_get_upper(adjustment);
+  gdouble page_size = gtk_adjustment_get_page_size(adjustment);
+  gtk_adjustment_set_value(tracker, value);
+  gtk_adjustment_set_lower(tracker, lower);
+  gtk_adjustment_set_upper(tracker, upper);
+  gtk_adjustment_set_page_size(tracker, page_size);
 }
 
 void

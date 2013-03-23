@@ -248,13 +248,6 @@ error_ret:
   return rectangle;
 }
 
-void
-set_adjustment(GtkAdjustment* adjustment, gdouble value)
-{
-  gtk_adjustment_set_value(adjustment, MAX(gtk_adjustment_get_lower(adjustment),
-                           MIN(gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment), value)));
-}
-
 double
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
@@ -330,35 +323,6 @@ zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
   unsigned int page_number = zathura_page_get_index(page);
 
   return zathura->pages[page_number];
-}
-
-void
-readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay)
-{
-  if (zathura == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  double scale = zathura_document_get_scale(zathura->document);
-  gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
-  gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
-
-  bool zoom_center = false;
-  girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
-  if (zoom_center) {
-    valx += gtk_adjustment_get_page_size(hadjustment) * (scale / old_zoom - 1) / 2;
-  }
-
-  if (delay == true) {
-    position_set_delayed(zathura, valx, valy);
-  } else {
-    set_adjustment(hadjustment, valx);
-    set_adjustment(vadjustment, valy);
-  }
 }
 
 void

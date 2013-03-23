@@ -87,13 +87,6 @@ zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int
 zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle);
 
 /**
- * Set adjustment of a GtkAdjustment respecting its limits.
- * @param adjust the GtkAdkustment instance
- * @param value the new adjustment
- */
-void set_adjustment(GtkAdjustment* adjust, gdouble value);
-
-/**
  * Calculate the page size according to the corrent scaling and rotation if
  * desired.
  * @param page the page
@@ -131,15 +124,6 @@ void zathura_get_document_size(zathura_t* zathura,
  * @return NULL if an error occured
  */
 GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
-
-/**
- * Re-adjust view
- *
- * @param zathura Zathura instance
- * @param old_zoom Old zoom value
- * @param delay true if action should be delayed
- */
-void readjust_view_after_zooming(zathura_t* zathura, float old_zoom, bool delay);
 
 /**
  * Set if the search results should be drawn or not

@@ -32,6 +32,7 @@
 #include "page.h"
 #include "page-widget.h"
 #include "plugin.h"
+#include "adjustment.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -152,11 +153,37 @@ zathura_init(zathura_t* zathura)
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
-  /* callbacks */
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  g_signal_connect(G_OBJECT(view_vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
-  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  g_signal_connect(G_OBJECT(view_hadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+  /* Setup hadjustment tracker */
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(
+      GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  zathura->ui.hadjustment = zathura_adjustment_clone(hadjustment);
+  g_object_ref_sink(zathura->ui.hadjustment);
+
+  /* Connect hadjustment signals */
+  g_signal_connect(G_OBJECT(hadjustment), "value-changed",
+      G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+  g_signal_connect(G_OBJECT(hadjustment), "value-changed",
+      G_CALLBACK(cb_adjustment_track_value), zathura->ui.hadjustment);
+  g_signal_connect(G_OBJECT(hadjustment), "changed",
+      G_CALLBACK(cb_view_hadjustment_changed), zathura);
+  g_signal_connect(G_OBJECT(hadjustment), "changed",
+      G_CALLBACK(cb_adjustment_track_bounds), zathura->ui.hadjustment);
+
+  /* Setup vadjustment tracker */
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
+      GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  zathura->ui.vadjustment = zathura_adjustment_clone(vadjustment);
+  g_object_ref_sink(zathura->ui.vadjustment);
+
+  /* Connect vadjustment signals */
+  g_signal_connect(G_OBJECT(vadjustment), "value-changed",
+      G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+  g_signal_connect(G_OBJECT(vadjustment), "value-changed",
+      G_CALLBACK(cb_adjustment_track_value), zathura->ui.vadjustment);
+  g_signal_connect(G_OBJECT(vadjustment), "changed",
+      G_CALLBACK(cb_view_vadjustment_changed), zathura);
+  g_signal_connect(G_OBJECT(vadjustment), "changed",
+      G_CALLBACK(cb_adjustment_track_bounds), zathura->ui.vadjustment);
 
   /* page view alignment */
   zathura->ui.page_widget_alignment = gtk_alignment_new(0.5, 0.5, 0, 0);
@@ -278,6 +305,13 @@ zathura_free(zathura_t* zathura)
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
+  }
+
+  if (zathura->ui.hadjustment != NULL) {
+    g_object_unref(G_OBJECT(zathura->ui.hadjustment));
+  }
+  if (zathura->ui.vadjustment != NULL) {
+    g_object_unref(G_OBJECT(zathura->ui.vadjustment));
   }
 
   /* stdin support */
@@ -956,8 +990,8 @@ page_set(zathura_t* zathura, unsigned int page_id)
 
   GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  set_adjustment(view_hadjustment, offset.x);
-  set_adjustment(view_vadjustment, offset.y);
+  zathura_adjustment_set_value(view_hadjustment, offset.x);
+  zathura_adjustment_set_value(view_vadjustment, offset.y);
 
   statusbar_page_number_update(zathura);
 
@@ -1065,8 +1099,8 @@ position_set_delayed_impl(gpointer data)
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
 
-  set_adjustment(hadjustment, p->position_x);
-  set_adjustment(vadjustment, p->position_y);
+  zathura_adjustment_set_value(hadjustment, p->position_x);
+  zathura_adjustment_set_value(vadjustment, p->position_y);
 
   g_free(p);
 
