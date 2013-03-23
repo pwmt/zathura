@@ -133,8 +133,9 @@ cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data)
       break;
     default:
       girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
-      if (zoom_center)
+      if (zoom_center) {
         goto center;
+      }
 
       ratio = zathura_adjustment_get_ratio(zathura->ui.hadjustment);
       zathura_adjustment_set_value_from_ratio(adjustment, ratio);
@@ -152,8 +153,9 @@ cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
     zathura_document_get_adjust_mode(zathura->document);
 
   /* Don't scroll we're focusing the inputbar. */
-  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR)
+  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
     return;
+  }
 
   double ratio = zathura_adjustment_get_ratio(zathura->ui.vadjustment);
   zathura_adjustment_set_value_from_ratio(adjustment, ratio);
@@ -167,8 +169,9 @@ cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data)
   gdouble lower = gtk_adjustment_get_lower(adjustment);
   gdouble upper = gtk_adjustment_get_upper(adjustment);
   if (lower != gtk_adjustment_get_lower(tracker) ||
-      upper != gtk_adjustment_get_upper(tracker))
+      upper != gtk_adjustment_get_upper(tracker)) {
     return;
+  }
 
   gdouble value = gtk_adjustment_get_value(adjustment);
   gtk_adjustment_set_value(tracker, value);

@@ -42,8 +42,9 @@ void
 zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment,
                                         gdouble ratio)
 {
-  if (ratio == 0.0)
+  if (ratio == 0.0) {
     return;
+  }
 
   gdouble lower = gtk_adjustment_get_lower(adjustment);
   gdouble upper = gtk_adjustment_get_upper(adjustment);
