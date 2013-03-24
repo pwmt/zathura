@@ -498,7 +498,9 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   priv->surface = surface;
   mutex_unlock(&(priv->lock));
   /* force a redraw here */
-  zathura_page_widget_redraw_canvas(widget);
+  if (priv->surface != NULL) {
+    zathura_page_widget_redraw_canvas(widget);
+  }
 }
 
 static void
