@@ -74,7 +74,8 @@ zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
   object_class->set_property = sqlite_set_property;
 
   g_object_class_install_property(object_class, PROP_PATH,
-                                  g_param_spec_string("path", "path", "path to the database", NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+    g_param_spec_string("path", "path", "path to the database", NULL,
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void
