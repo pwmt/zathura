@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-17 10:22+0000\n"
+"POT-Creation-Date: 2013-03-26 12:54+0100\n"
 "PO-Revision-Date: 2013-03-17 11:30+0100\n"
 "Last-Translator: Benoît Knecht <benoit.knecht@fsfe.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
@@ -21,20 +21,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../callbacks.c:218
+#: ../callbacks.c:302
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrée invalide : '%s'"
 
-#: ../callbacks.c:256
+#: ../callbacks.c:340
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Index invalide : '%s'"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:475 ../shortcuts.c:1059
-#: ../shortcuts.c:1088
+#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
+#: ../shortcuts.c:1089
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
@@ -186,193 +186,189 @@ msgid "Zoom maximum"
 msgstr "Zoom maximum"
 
 #: ../config.c:159
-msgid "Life time (in seconds) of a hidden page"
-msgstr "Durée de vie (en secondes) d'une page cachée"
+msgid "Maximum number of pages to keep in the cache"
+msgstr ""
 
-#: ../config.c:160
-msgid "Amount of seconds between each cache purge"
-msgstr "Délai en secondes entre chaque purge du cache"
-
-#: ../config.c:162
+#: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
 msgstr "Nombre de positions à mémoriser dans la liste de sauts"
 
-#: ../config.c:164
+#: ../config.c:163
 msgid "Recoloring (dark color)"
 msgstr "Recoloration (couleur sombre)"
 
-#: ../config.c:166
+#: ../config.c:165
 msgid "Recoloring (light color)"
 msgstr "Recoloration (couleur claire)"
 
-#: ../config.c:168
+#: ../config.c:167
 msgid "Color for highlighting"
 msgstr "Couleur de surbrillance"
 
-#: ../config.c:170
+#: ../config.c:169
 msgid "Color for highlighting (active)"
 msgstr "Couleur de surbrillance (active)"
 
-#: ../config.c:172
+#: ../config.c:171
 msgid "'Loading ...' background color"
 msgstr "Couleur d'arrière-plan de 'Chargement...'"
 
-#: ../config.c:174
+#: ../config.c:173
 msgid "'Loading ...' foreground color"
 msgstr "Couleur de 'Chargement...'"
 
-#: ../config.c:178
+#: ../config.c:177
 msgid "Recolor pages"
 msgstr "Recoloriser les pages"
 
-#: ../config.c:180
+#: ../config.c:179
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 "Lors de la recoloration garder la teinte d'origine et ajuster seulement la "
 "luminosité"
 
-#: ../config.c:182
+#: ../config.c:181
 msgid "Wrap scrolling"
 msgstr "Défiler en boucle"
 
-#: ../config.c:184
+#: ../config.c:183
 msgid "Page aware scrolling"
 msgstr "Défilement tenant compte des limites de page"
 
-#: ../config.c:186
+#: ../config.c:185
 msgid "Advance number of pages per row"
 msgstr "Augmenter le nombre de pages par rangée"
 
-#: ../config.c:188
+#: ../config.c:187
 msgid "Horizontally centered zoom"
 msgstr "Zoom centré horizontalement"
 
-#: ../config.c:190
+#: ../config.c:189
 msgid "Center result horizontally"
 msgstr "Centrer le résultat horizontalement"
 
-#: ../config.c:192
+#: ../config.c:191
 msgid "Transparency for highlighting"
 msgstr "Transparence de la surbrillance"
 
-#: ../config.c:194
+#: ../config.c:193
 msgid "Render 'Loading ...'"
 msgstr "Afficher 'Chargement...'"
 
-#: ../config.c:195
+#: ../config.c:194
 msgid "Adjust to when opening file"
 msgstr "Ajuster à l'ouverture du fichier"
 
-#: ../config.c:197
+#: ../config.c:196
 msgid "Show hidden files and directories"
 msgstr "Montrer les fichiers et dossiers cachés"
 
-#: ../config.c:199
+#: ../config.c:198
 msgid "Show directories"
 msgstr "Montrer les dossiers"
 
-#: ../config.c:201
+#: ../config.c:200
 msgid "Always open on first page"
 msgstr "Toujours ouvrir à la première page"
 
-#: ../config.c:203
+#: ../config.c:202
 msgid "Highlight search results"
 msgstr "Surligner les résultats de la recherche"
 
-#: ../config.c:205
+#: ../config.c:204
 msgid "Enable incremental search"
 msgstr "Activer la recherche incrémentale"
 
-#: ../config.c:207
+#: ../config.c:206
 msgid "Clear search results on abort"
 msgstr "Effacer les résultats de recherche en cas d'annulation"
 
-#: ../config.c:209
+#: ../config.c:208
 msgid "Use basename of the file in the window title"
 msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
 
-#: ../config.c:211
+#: ../config.c:210
 msgid "Use basename of the file in the statusbar"
 msgstr "Utiliser le nom de base du fichier dans la barre d'état"
 
-#: ../config.c:213 ../main.c:64
+#: ../config.c:212 ../main.c:64
 msgid "Enable synctex support"
 msgstr "Activer la prise en charge de synctex"
 
 #. define default inputbar commands
-#: ../config.c:369
+#: ../config.c:370
 msgid "Add a bookmark"
 msgstr "Ajouter un marque-page"
 
-#: ../config.c:370
+#: ../config.c:371
 msgid "Delete a bookmark"
 msgstr "Supprimer un marque-page"
 
-#: ../config.c:371
+#: ../config.c:372
 msgid "List all bookmarks"
 msgstr "Lister tous les marque-pages"
 
-#: ../config.c:372
+#: ../config.c:373
 msgid "Close current file"
 msgstr "Fermer le fichier actuel"
 
-#: ../config.c:373
+#: ../config.c:374
 msgid "Show file information"
 msgstr "Montrer les informations sur le fichier"
 
-#: ../config.c:374
+#: ../config.c:375
 msgid "Execute a command"
 msgstr "Exécuter une commande"
 
-#: ../config.c:375
+#: ../config.c:376
 msgid "Show help"
 msgstr "Afficher l'aide"
 
-#: ../config.c:376
+#: ../config.c:377
 msgid "Open document"
 msgstr "Ouvrir un document"
 
-#: ../config.c:377
+#: ../config.c:378
 msgid "Close zathura"
 msgstr "Quitter zathura"
 
-#: ../config.c:378
+#: ../config.c:379
 msgid "Print document"
 msgstr "Imprimer le document"
 
-#: ../config.c:379
+#: ../config.c:380
 msgid "Save document"
 msgstr "Sauver le document"
 
-#: ../config.c:380
+#: ../config.c:381
 msgid "Save document (and force overwriting)"
 msgstr "Sauver le document (et forcer l'écrasement)"
 
-#: ../config.c:381
+#: ../config.c:382
 msgid "Save attachments"
 msgstr "Enregistrer les pièces jointes"
 
-#: ../config.c:382
+#: ../config.c:383
 msgid "Set page offset"
 msgstr "Définir le décalage de page"
 
-#: ../config.c:383
+#: ../config.c:384
 msgid "Mark current location within the document"
 msgstr "Marquer l'emplacement actuel dans le document"
 
-#: ../config.c:384
+#: ../config.c:385
 msgid "Delete the specified marks"
 msgstr "Supprimer les marques indiquées"
 
-#: ../config.c:385
+#: ../config.c:386
 msgid "Don't highlight current search results"
 msgstr "Ne pas surligner les résultats de la recherche en cours"
 
-#: ../config.c:386
+#: ../config.c:387
 msgid "Highlight current search results"
 msgstr "Surligner les résultats de la recherche en cours"
 
-#: ../config.c:387
+#: ../config.c:388
 msgid "Show version information"
 msgstr "Afficher les informations de version"
 
@@ -438,27 +434,33 @@ msgstr "Éditeur synctex (transféré à la commande synctex)"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: ../page-widget.c:655
+#: ../page-widget.c:657
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Texte sélectionné copié dans le presse-papiers : %s"
 
-#: ../page-widget.c:753
+#: ../page-widget.c:755
 msgid "Copy image"
 msgstr "Copier l'image"
 
-#: ../page-widget.c:754
+#: ../page-widget.c:756
 msgid "Save image as"
 msgstr "Enregistrer l'image sous"
 
-#: ../shortcuts.c:962
+#: ../shortcuts.c:963
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
-#: ../zathura.c:194 ../zathura.c:901
+#: ../zathura.c:224 ../zathura.c:953
 msgid "[No name]"
 msgstr "[Sans nom]"
 
-#: ../zathura.c:538
+#: ../zathura.c:587
 msgid "Document does not contain any pages"
 msgstr "Ce document ne contient aucune page"
+
+#~ msgid "Life time (in seconds) of a hidden page"
+#~ msgstr "Durée de vie (en secondes) d'une page cachée"
+
+#~ msgid "Amount of seconds between each cache purge"
+#~ msgstr "Délai en secondes entre chaque purge du cache"

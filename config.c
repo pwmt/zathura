@@ -156,7 +156,7 @@ config_load_default(zathura_t* zathura)
   int_value = 1000;
   girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
   int_value = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
-  girara_setting_add(gsession, "page-cache-size",       &int_value,  INT,    true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
+  girara_setting_add(gsession, "page-cache-size",       &int_value,   INT,    true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
   int_value = 20;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 

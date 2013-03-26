@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-17 10:22+0000\n"
+"POT-Creation-Date: 2013-03-26 12:54+0100\n"
 "PO-Revision-Date: 2013-01-13 14:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/zathura/language/"
@@ -19,20 +19,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../callbacks.c:218
+#: ../callbacks.c:302
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrada invàlida '%s'."
 
-#: ../callbacks.c:256
+#: ../callbacks.c:340
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Índex invàlid '%s'."
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:475 ../shortcuts.c:1059
-#: ../shortcuts.c:1088
+#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
+#: ../shortcuts.c:1089
 msgid "No document opened."
 msgstr "No s'ha obert cap document."
 
@@ -184,192 +184,188 @@ msgid "Zoom maximum"
 msgstr "Zoom màxim"
 
 #: ../config.c:159
-msgid "Life time (in seconds) of a hidden page"
-msgstr "Temps de vida (en segons) de la pàgina oculta"
+msgid "Maximum number of pages to keep in the cache"
+msgstr ""
 
-#: ../config.c:160
-msgid "Amount of seconds between each cache purge"
-msgstr "Quantitat de segons entre cada purga de memòria cau"
-
-#: ../config.c:162
+#: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
 msgstr ""
 
-#: ../config.c:164
+#: ../config.c:163
 msgid "Recoloring (dark color)"
 msgstr "Recolorejant (color fosc)"
 
-#: ../config.c:166
+#: ../config.c:165
 msgid "Recoloring (light color)"
 msgstr "Recolorejant (color clar)"
 
-#: ../config.c:168
+#: ../config.c:167
 msgid "Color for highlighting"
 msgstr "Color de realçament"
 
-#: ../config.c:170
+#: ../config.c:169
 msgid "Color for highlighting (active)"
 msgstr "Color de realçament (activat)"
 
-#: ../config.c:172
+#: ../config.c:171
 msgid "'Loading ...' background color"
 msgstr ""
 
-#: ../config.c:174
+#: ../config.c:173
 msgid "'Loading ...' foreground color"
 msgstr ""
 
-#: ../config.c:178
+#: ../config.c:177
 msgid "Recolor pages"
 msgstr "Recolorejant les pàgines"
 
-#: ../config.c:180
+#: ../config.c:179
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "Quan recoloregis manté el to original i ajusta només la lluminositat"
 
-#: ../config.c:182
+#: ../config.c:181
 msgid "Wrap scrolling"
 msgstr "Desplaçament recollit"
 
-#: ../config.c:184
+#: ../config.c:183
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../config.c:186
+#: ../config.c:185
 msgid "Advance number of pages per row"
 msgstr "Avançar nombre de pàgines per fila"
 
-#: ../config.c:188
+#: ../config.c:187
 msgid "Horizontally centered zoom"
 msgstr "Zoom centrat horitzontalment"
 
-#: ../config.c:190
+#: ../config.c:189
 msgid "Center result horizontally"
 msgstr "Centra el resultat horitzontalment"
 
-#: ../config.c:192
+#: ../config.c:191
 msgid "Transparency for highlighting"
 msgstr "Transparència del realçat"
 
-#: ../config.c:194
+#: ../config.c:193
 msgid "Render 'Loading ...'"
 msgstr "Renderitza 'Carregant ...'"
 
-#: ../config.c:195
+#: ../config.c:194
 msgid "Adjust to when opening file"
 msgstr "Ajustar al fitxer quan s'obri"
 
-#: ../config.c:197
+#: ../config.c:196
 msgid "Show hidden files and directories"
 msgstr "Mostra els directoris i fitxers ocults"
 
-#: ../config.c:199
+#: ../config.c:198
 msgid "Show directories"
 msgstr "Mostra els directoris"
 
-#: ../config.c:201
+#: ../config.c:200
 msgid "Always open on first page"
 msgstr "Obrir sempre la primera pàgina"
 
-#: ../config.c:203
+#: ../config.c:202
 msgid "Highlight search results"
 msgstr "Realça els resultats de recerca"
 
-#: ../config.c:205
+#: ../config.c:204
 msgid "Enable incremental search"
 msgstr ""
 
-#: ../config.c:207
+#: ../config.c:206
 msgid "Clear search results on abort"
 msgstr "Esborra els resultats de recerca a l'interrompre"
 
-#: ../config.c:209
+#: ../config.c:208
 msgid "Use basename of the file in the window title"
 msgstr "Utilitza el nom base del fitxer en el títol de la finestra"
 
-#: ../config.c:211
+#: ../config.c:210
 #, fuzzy
 msgid "Use basename of the file in the statusbar"
 msgstr "Utilitza el nom base del fitxer en el títol de la finestra"
 
-#: ../config.c:213 ../main.c:64
+#: ../config.c:212 ../main.c:64
 msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:369
+#: ../config.c:370
 msgid "Add a bookmark"
 msgstr "Afegir un marcador"
 
-#: ../config.c:370
+#: ../config.c:371
 msgid "Delete a bookmark"
 msgstr "Esborrar un marcador"
 
-#: ../config.c:371
+#: ../config.c:372
 msgid "List all bookmarks"
 msgstr "Llista tots els marcadors"
 
-#: ../config.c:372
+#: ../config.c:373
 msgid "Close current file"
 msgstr "Tancar el fitxer actual"
 
-#: ../config.c:373
+#: ../config.c:374
 msgid "Show file information"
 msgstr "Mostra informació sobre el fitxer"
 
-#: ../config.c:374
+#: ../config.c:375
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:375
+#: ../config.c:376
 msgid "Show help"
 msgstr "Mostrar l'ajuda"
 
-#: ../config.c:376
+#: ../config.c:377
 msgid "Open document"
 msgstr "Obrir document"
 
-#: ../config.c:377
+#: ../config.c:378
 msgid "Close zathura"
 msgstr "Tancar Zathura"
 
-#: ../config.c:378
+#: ../config.c:379
 msgid "Print document"
 msgstr "Imprimir document"
 
-#: ../config.c:379
+#: ../config.c:380
 msgid "Save document"
 msgstr "Desar document"
 
-#: ../config.c:380
+#: ../config.c:381
 msgid "Save document (and force overwriting)"
 msgstr "Desar document (i forçar la sobreescritura)"
 
-#: ../config.c:381
+#: ../config.c:382
 msgid "Save attachments"
 msgstr "Desa els fitxers adjunts"
 
-#: ../config.c:382
+#: ../config.c:383
 msgid "Set page offset"
 msgstr "Assigna el desplaçament de pàgina"
 
-#: ../config.c:383
+#: ../config.c:384
 msgid "Mark current location within the document"
 msgstr "Marca la posició actual dins el document"
 
-#: ../config.c:384
+#: ../config.c:385
 msgid "Delete the specified marks"
 msgstr "Esborrar les marques especificades"
 
-#: ../config.c:385
+#: ../config.c:386
 msgid "Don't highlight current search results"
 msgstr "No realcis els resultats de la recerca actual"
 
-#: ../config.c:386
+#: ../config.c:387
 msgid "Highlight current search results"
 msgstr "Realça els resultats de recerca actual"
 
-#: ../config.c:387
+#: ../config.c:388
 msgid "Show version information"
 msgstr "Mostra informació sobre la versió"
 
@@ -435,28 +431,34 @@ msgstr "Editor synctex (reenviat a l'ordre synctex)"
 msgid "Loading..."
 msgstr "Carregant..."
 
-#: ../page-widget.c:655
+#: ../page-widget.c:657
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Copiat el text seleccionat al porta-retalls: %s"
 
-#: ../page-widget.c:753
+#: ../page-widget.c:755
 msgid "Copy image"
 msgstr "Copia la imatge"
 
-#: ../page-widget.c:754
+#: ../page-widget.c:756
 msgid "Save image as"
 msgstr "Desa imatge com a"
 
-#: ../shortcuts.c:962
+#: ../shortcuts.c:963
 msgid "This document does not contain any index"
 msgstr "Aquest document no conté cap índex"
 
-#: ../zathura.c:194 ../zathura.c:901
+#: ../zathura.c:224 ../zathura.c:953
 msgid "[No name]"
 msgstr "[Sense nom]"
 
-#: ../zathura.c:538
+#: ../zathura.c:587
 #, fuzzy
 msgid "Document does not contain any pages"
 msgstr "Aquest document no conté cap índex"
+
+#~ msgid "Life time (in seconds) of a hidden page"
+#~ msgstr "Temps de vida (en segons) de la pàgina oculta"
+
+#~ msgid "Amount of seconds between each cache purge"
+#~ msgstr "Quantitat de segons entre cada purga de memòria cau"

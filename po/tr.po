@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-17 10:22+0000\n"
+"POT-Creation-Date: 2013-03-26 12:54+0100\n"
 "PO-Revision-Date: 2013-01-13 14:12+0000\n"
 "Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.net/projects/p/zathura/language/"
@@ -19,20 +19,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../callbacks.c:218
+#: ../callbacks.c:302
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Hatalı girdi '%s'"
 
-#: ../callbacks.c:256
+#: ../callbacks.c:340
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Hatalı dizin '%s'"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:475 ../shortcuts.c:1059
-#: ../shortcuts.c:1088
+#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
+#: ../shortcuts.c:1089
 msgid "No document opened."
 msgstr "Açık belge yok."
 
@@ -184,192 +184,188 @@ msgid "Zoom maximum"
 msgstr "En fazla yakınlaşma"
 
 #: ../config.c:159
-msgid "Life time (in seconds) of a hidden page"
-msgstr "Gizli pencerenin açık kalma süresi (saniye)"
+msgid "Maximum number of pages to keep in the cache"
+msgstr ""
 
-#: ../config.c:160
-msgid "Amount of seconds between each cache purge"
-msgstr "Önbellek temizliği yapılma sıklığı, saniye cinsinden"
-
-#: ../config.c:162
+#: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
 msgstr "Atlama listesinde hatırlanacak pozisyon sayısı"
 
-#: ../config.c:164
+#: ../config.c:163
 msgid "Recoloring (dark color)"
 msgstr "Renk değişimi (koyu renk)"
 
-#: ../config.c:166
+#: ../config.c:165
 msgid "Recoloring (light color)"
 msgstr "Renk değişimi (açık renk)"
 
-#: ../config.c:168
+#: ../config.c:167
 msgid "Color for highlighting"
 msgstr "İşaretleme rengi"
 
-#: ../config.c:170
+#: ../config.c:169
 msgid "Color for highlighting (active)"
 msgstr "İşaretleme rengi (etkin)"
 
-#: ../config.c:172
+#: ../config.c:171
 msgid "'Loading ...' background color"
 msgstr ""
 
-#: ../config.c:174
+#: ../config.c:173
 msgid "'Loading ...' foreground color"
 msgstr ""
 
-#: ../config.c:178
+#: ../config.c:177
 msgid "Recolor pages"
 msgstr "Sayga rengini değiştir"
 
-#: ../config.c:180
+#: ../config.c:179
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "Yeniden renklendirirken renk değerini tut ve sadece parlaklığı ayarla"
 
-#: ../config.c:182
+#: ../config.c:181
 msgid "Wrap scrolling"
 msgstr "Kaydırmayı sarmala"
 
-#: ../config.c:184
+#: ../config.c:183
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../config.c:186
+#: ../config.c:185
 msgid "Advance number of pages per row"
 msgstr "Satır başına sayfa sayısı"
 
-#: ../config.c:188
+#: ../config.c:187
 msgid "Horizontally centered zoom"
 msgstr "Yatay olarak ortalanmış büyütme"
 
-#: ../config.c:190
+#: ../config.c:189
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:192
+#: ../config.c:191
 msgid "Transparency for highlighting"
 msgstr "Ön plana çıkarmak için saydamlaştır"
 
-#: ../config.c:194
+#: ../config.c:193
 msgid "Render 'Loading ...'"
 msgstr "'Yüklüyor ...' yazısını göster"
 
-#: ../config.c:195
+#: ../config.c:194
 msgid "Adjust to when opening file"
 msgstr "Dosya açarken ayarla"
 
-#: ../config.c:197
+#: ../config.c:196
 msgid "Show hidden files and directories"
 msgstr "Gizli dosyaları ve dizinleri göster"
 
-#: ../config.c:199
+#: ../config.c:198
 msgid "Show directories"
 msgstr "Dizinleri göster"
 
-#: ../config.c:201
+#: ../config.c:200
 msgid "Always open on first page"
 msgstr "Her zaman ilk sayfayı aç"
 
-#: ../config.c:203
+#: ../config.c:202
 msgid "Highlight search results"
 msgstr "Arama sonuçlarını vurgula"
 
-#: ../config.c:205
+#: ../config.c:204
 msgid "Enable incremental search"
 msgstr "Artımlı aramayı etkinleştir"
 
-#: ../config.c:207
+#: ../config.c:206
 msgid "Clear search results on abort"
 msgstr "Kapatınca arama sonuçlarını temizle"
 
-#: ../config.c:209
+#: ../config.c:208
 msgid "Use basename of the file in the window title"
 msgstr "Pencere başlığı olarak dosyanın adını kullan"
 
-#: ../config.c:211
+#: ../config.c:210
 #, fuzzy
 msgid "Use basename of the file in the statusbar"
 msgstr "Pencere başlığı olarak dosyanın adını kullan"
 
-#: ../config.c:213 ../main.c:64
+#: ../config.c:212 ../main.c:64
 msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:369
+#: ../config.c:370
 msgid "Add a bookmark"
 msgstr "Yer imi ekle"
 
-#: ../config.c:370
+#: ../config.c:371
 msgid "Delete a bookmark"
 msgstr "Yer imi sil"
 
-#: ../config.c:371
+#: ../config.c:372
 msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
-#: ../config.c:372
+#: ../config.c:373
 msgid "Close current file"
 msgstr "Geçerli dosyayı kapat"
 
-#: ../config.c:373
+#: ../config.c:374
 msgid "Show file information"
 msgstr "Dosya bilgisi göster"
 
-#: ../config.c:374
+#: ../config.c:375
 msgid "Execute a command"
 msgstr "Bir komut çalıştır"
 
-#: ../config.c:375
+#: ../config.c:376
 msgid "Show help"
 msgstr "Yardım bilgisi göster"
 
-#: ../config.c:376
+#: ../config.c:377
 msgid "Open document"
 msgstr "Belge aç"
 
-#: ../config.c:377
+#: ../config.c:378
 msgid "Close zathura"
 msgstr "Zathura'yı kapat"
 
-#: ../config.c:378
+#: ../config.c:379
 msgid "Print document"
 msgstr "Belge yazdır"
 
-#: ../config.c:379
+#: ../config.c:380
 msgid "Save document"
 msgstr "Belgeyi kaydet"
 
-#: ../config.c:380
+#: ../config.c:381
 msgid "Save document (and force overwriting)"
 msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
 
-#: ../config.c:381
+#: ../config.c:382
 msgid "Save attachments"
 msgstr "Ekleri kaydet"
 
-#: ../config.c:382
+#: ../config.c:383
 msgid "Set page offset"
 msgstr "Sayfa derinliğini ayarla"
 
-#: ../config.c:383
+#: ../config.c:384
 msgid "Mark current location within the document"
 msgstr "Bu belgede bu konumu işaretle"
 
-#: ../config.c:384
+#: ../config.c:385
 msgid "Delete the specified marks"
 msgstr "Seçilen işaretlemeleri sil"
 
-#: ../config.c:385
+#: ../config.c:386
 msgid "Don't highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgulama"
 
-#: ../config.c:386
+#: ../config.c:387
 msgid "Highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgula"
 
-#: ../config.c:387
+#: ../config.c:388
 msgid "Show version information"
 msgstr "Versiyon bilgisi göster"
 
@@ -435,28 +431,34 @@ msgstr ""
 msgid "Loading..."
 msgstr "Yüklüyor ..."
 
-#: ../page-widget.c:655
+#: ../page-widget.c:657
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Seçili metin panoya kopyalandı: %s"
 
-#: ../page-widget.c:753
+#: ../page-widget.c:755
 msgid "Copy image"
 msgstr "Resim kopyala"
 
-#: ../page-widget.c:754
+#: ../page-widget.c:756
 msgid "Save image as"
 msgstr "Resmi farklı kaydet"
 
-#: ../shortcuts.c:962
+#: ../shortcuts.c:963
 msgid "This document does not contain any index"
 msgstr "Bu belge fihrist içermiyor"
 
-#: ../zathura.c:194 ../zathura.c:901
+#: ../zathura.c:224 ../zathura.c:953
 msgid "[No name]"
 msgstr "[İsimsiz]"
 
-#: ../zathura.c:538
+#: ../zathura.c:587
 #, fuzzy
 msgid "Document does not contain any pages"
 msgstr "Bu belge fihrist içermiyor"
+
+#~ msgid "Life time (in seconds) of a hidden page"
+#~ msgstr "Gizli pencerenin açık kalma süresi (saniye)"
+
+#~ msgid "Amount of seconds between each cache purge"
+#~ msgstr "Önbellek temizliği yapılma sıklığı, saniye cinsinden"

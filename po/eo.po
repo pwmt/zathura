@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-17 10:22+0000\n"
+"POT-Creation-Date: 2013-03-26 12:54+0100\n"
 "PO-Revision-Date: 2012-08-09 13:21+0000\n"
 "Last-Translator: norbux <manelsales@ono.com>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/zathura/"
@@ -18,20 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../callbacks.c:218
+#: ../callbacks.c:302
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Nevalida enigo '%s' uzata."
 
-#: ../callbacks.c:256
+#: ../callbacks.c:340
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Nevalida indekso '%s' uzata."
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:475 ../shortcuts.c:1059
-#: ../shortcuts.c:1088
+#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
+#: ../shortcuts.c:1089
 msgid "No document opened."
 msgstr "Neniu dokumento malfermita."
 
@@ -183,191 +183,187 @@ msgid "Zoom maximum"
 msgstr "Maksimuma zomo"
 
 #: ../config.c:159
-msgid "Life time (in seconds) of a hidden page"
-msgstr "Vivdaŭro (sekunda) de kaŝita paĝo"
+msgid "Maximum number of pages to keep in the cache"
+msgstr ""
 
-#: ../config.c:160
-msgid "Amount of seconds between each cache purge"
-msgstr "Nombro da sekundoj inter repurigo de kaŝmemoro"
-
-#: ../config.c:162
+#: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
 msgstr ""
 
-#: ../config.c:164
+#: ../config.c:163
 msgid "Recoloring (dark color)"
 msgstr "Rekolorigo (malhela koloro)"
 
-#: ../config.c:166
+#: ../config.c:165
 msgid "Recoloring (light color)"
 msgstr "Rekolorigo (hela koloro)"
 
-#: ../config.c:168
+#: ../config.c:167
 msgid "Color for highlighting"
 msgstr "Koloro por fonlumo"
 
-#: ../config.c:170
+#: ../config.c:169
 msgid "Color for highlighting (active)"
 msgstr "Koloro por fonlumo (aktiva)"
 
-#: ../config.c:172
+#: ../config.c:171
 msgid "'Loading ...' background color"
 msgstr ""
 
-#: ../config.c:174
+#: ../config.c:173
 msgid "'Loading ...' foreground color"
 msgstr ""
 
-#: ../config.c:178
+#: ../config.c:177
 msgid "Recolor pages"
 msgstr "Rekoloru paĝojn"
 
-#: ../config.c:180
+#: ../config.c:179
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 
-#: ../config.c:182
+#: ../config.c:181
 msgid "Wrap scrolling"
 msgstr "Ĉirkaŭflua rulumado"
 
-#: ../config.c:184
+#: ../config.c:183
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../config.c:186
+#: ../config.c:185
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:188
+#: ../config.c:187
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../config.c:190
+#: ../config.c:189
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:192
+#: ../config.c:191
 msgid "Transparency for highlighting"
 msgstr "Travidebleco por fonlumo"
 
-#: ../config.c:194
+#: ../config.c:193
 msgid "Render 'Loading ...'"
 msgstr "Bildigu 'Ŝargado ...'"
 
-#: ../config.c:195
+#: ../config.c:194
 msgid "Adjust to when opening file"
 msgstr "Adaptaĵo ĉe malfermo de dosiero"
 
-#: ../config.c:197
+#: ../config.c:196
 msgid "Show hidden files and directories"
 msgstr "Montru kaŝitajn dosierojn kaj -ujojn"
 
-#: ../config.c:199
+#: ../config.c:198
 msgid "Show directories"
 msgstr "Montru dosierujojn"
 
-#: ../config.c:201
+#: ../config.c:200
 msgid "Always open on first page"
 msgstr "Ĉiam malfermu ĉe unua paĝo"
 
-#: ../config.c:203
+#: ../config.c:202
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:205
+#: ../config.c:204
 msgid "Enable incremental search"
 msgstr ""
 
-#: ../config.c:207
+#: ../config.c:206
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:209
+#: ../config.c:208
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../config.c:211
+#: ../config.c:210
 msgid "Use basename of the file in the statusbar"
 msgstr ""
 
-#: ../config.c:213 ../main.c:64
+#: ../config.c:212 ../main.c:64
 msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:369
+#: ../config.c:370
 msgid "Add a bookmark"
 msgstr "Aldonu paĝosignon"
 
-#: ../config.c:370
+#: ../config.c:371
 msgid "Delete a bookmark"
 msgstr "Forigu paĝosignon"
 
-#: ../config.c:371
+#: ../config.c:372
 msgid "List all bookmarks"
 msgstr "Listigu ĉiujn paĝosignojn"
 
-#: ../config.c:372
+#: ../config.c:373
 msgid "Close current file"
 msgstr "Fermu nunan dosieron"
 
-#: ../config.c:373
+#: ../config.c:374
 msgid "Show file information"
 msgstr "Montru dosiera informacio"
 
-#: ../config.c:374
+#: ../config.c:375
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:375
+#: ../config.c:376
 msgid "Show help"
 msgstr "Montru helpon"
 
-#: ../config.c:376
+#: ../config.c:377
 msgid "Open document"
 msgstr "Malfermu dokumenton"
 
-#: ../config.c:377
+#: ../config.c:378
 msgid "Close zathura"
 msgstr "Fermu zathura"
 
-#: ../config.c:378
+#: ../config.c:379
 msgid "Print document"
 msgstr "Presu dokumenton"
 
-#: ../config.c:379
+#: ../config.c:380
 msgid "Save document"
 msgstr "Konservu dokumenton"
 
-#: ../config.c:380
+#: ../config.c:381
 msgid "Save document (and force overwriting)"
 msgstr "Konservu dokumenton (deviga anstataŭo)"
 
-#: ../config.c:381
+#: ../config.c:382
 msgid "Save attachments"
 msgstr "Konservu kunsendaĵojn"
 
-#: ../config.c:382
+#: ../config.c:383
 msgid "Set page offset"
 msgstr "Agordu paĝdelokado"
 
-#: ../config.c:383
+#: ../config.c:384
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:384
+#: ../config.c:385
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:385
+#: ../config.c:386
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:386
+#: ../config.c:387
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:387
+#: ../config.c:388
 msgid "Show version information"
 msgstr ""
 
@@ -433,28 +429,34 @@ msgstr ""
 msgid "Loading..."
 msgstr "Ŝargado ..."
 
-#: ../page-widget.c:655
+#: ../page-widget.c:657
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Selektita teksto estas kopiita en la poŝo: %s"
 
-#: ../page-widget.c:753
+#: ../page-widget.c:755
 msgid "Copy image"
 msgstr "Kopiu bildon"
 
-#: ../page-widget.c:754
+#: ../page-widget.c:756
 msgid "Save image as"
 msgstr "Savi bildojn kiel"
 
-#: ../shortcuts.c:962
+#: ../shortcuts.c:963
 msgid "This document does not contain any index"
 msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
 
-#: ../zathura.c:194 ../zathura.c:901
+#: ../zathura.c:224 ../zathura.c:953
 msgid "[No name]"
 msgstr "[Neniu nomo]"
 
-#: ../zathura.c:538
+#: ../zathura.c:587
 #, fuzzy
 msgid "Document does not contain any pages"
 msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
+
+#~ msgid "Life time (in seconds) of a hidden page"
+#~ msgstr "Vivdaŭro (sekunda) de kaŝita paĝo"
+
+#~ msgid "Amount of seconds between each cache purge"
+#~ msgstr "Nombro da sekundoj inter repurigo de kaŝmemoro"
