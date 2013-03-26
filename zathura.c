@@ -282,6 +282,11 @@ zathura_init(zathura_t* zathura)
 
   zathura->page_cache.size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
   girara_setting_get(zathura->ui.session, "page-cache-size", &zathura->page_cache.size);
+  if (zathura->page_cache.size <= 0) {
+    girara_warning("page-cache-size is not positive, using %d instead", ZATHURA_PAGE_CACHE_DEFAULT_SIZE);
+    zathura->page_cache.size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
+  }
+
   zathura->page_cache.cache = g_malloc(zathura->page_cache.size * sizeof(int));
   zathura_page_cache_invalidate_all(zathura);
 
@@ -1261,7 +1266,7 @@ zathura_page_cache_lru_invalidate(zathura_t* zathura)
 static bool
 zathura_page_cache_is_full(zathura_t* zathura, bool* result)
 {
-  g_return_val_if_fail(zathura != NULL, false);
+  g_return_val_if_fail(zathura != NULL && result != NULL, false);
 
   *result = zathura->page_cache.num_cached_pages == zathura->page_cache.size;
 
@@ -1272,7 +1277,7 @@ void
 zathura_page_cache_invalidate_all(zathura_t* zathura)
 {
   g_return_if_fail(zathura != NULL);
-  
+
   unsigned int i;
 
   for (i = 0; i < zathura->page_cache.size; ++i) {
