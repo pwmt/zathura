@@ -530,20 +530,16 @@ The page padding defines the gap in pixels between each rendered page.
 * Value type: Integer
 * Default value: 1
 
-page-store-threshold
-^^^^^^^^^^^^^^^^^^^^
-Pages that are not visible get unloaded after some time. Every page that has not
-been visible for page-store-treshold seconds will be unloaded.
+page-cache-size
+^^^^^^^^^^^^^^^
+Defines the maximum number of pages that could be kept in the page cache. When
+the cache is full and a new page that isn't cached becomes visible, the least
+recently viewed page in the cache will be evicted to make room for the new one.
+Large values for this variable are NOT recommended, because this will lead to
+consuming a significant portion of the system memory.
 
 * Value type: Integer
-* Default value: 30
-
-page-store-interval
-^^^^^^^^^^^^^^^^^^^
-Defines the amount of seconds between the check to unload invisible pages.
-
-* Value type: Integer
-* Default value: 30
+* Default value: 15
 
 pages-per-row
 ^^^^^^^^^^^^^

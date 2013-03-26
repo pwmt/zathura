@@ -860,19 +860,3 @@ zathura_page_widget_update_view_time(ZathuraPage* widget)
     priv->last_view = g_get_real_time();
   }
 }
-
-void
-zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
-{
-  g_return_if_fail(ZATHURA_IS_PAGE(widget) == TRUE);
-  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  if (zathura_page_get_visibility(priv->page) == true || priv->surface == NULL || threshold <= 0) {
-    return;
-  }
-
-  const gint64 now =  g_get_real_time();
-  if (now - priv->last_view >= threshold * G_USEC_PER_SEC) {
-    girara_debug("purge page %d from cache (unseen for %f seconds)", zathura_page_get_index(priv->page), ((double)now - priv->last_view) / G_USEC_PER_SEC);
-    zathura_page_widget_update_surface(widget, NULL);
-  }
-}

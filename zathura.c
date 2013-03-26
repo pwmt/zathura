@@ -53,7 +53,10 @@ typedef struct position_set_delayed_s {
 } position_set_delayed_t;
 
 static gboolean document_info_open(gpointer data);
-static gboolean purge_pages(gpointer data);
+static bool zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index);
+static ssize_t zathura_page_cache_lru_invalidate(zathura_t* zathura);
+static void zathura_page_cache_invalidate_all(zathura_t* zathura);
+static bool zathura_page_cache_is_full(zathura_t* zathura, bool* result);
 
 /* function implementation */
 zathura_t*
@@ -264,11 +267,6 @@ zathura_init(zathura_t* zathura)
   zathura->bookmarks.bookmarks = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
                                  (girara_free_function_t) zathura_bookmark_free);
 
-  /* add even to purge old pages */
-  int interval = 30;
-  girara_setting_get(zathura->ui.session, "page-store-interval", &interval);
-  g_timeout_add_seconds(interval, purge_pages, zathura);
-
   /* jumplist */
 
   zathura->jumplist.max_size = 20;
@@ -279,6 +277,14 @@ zathura_init(zathura_t* zathura)
   zathura->jumplist.cur = NULL;
   zathura_jumplist_append_jump(zathura);
   zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
+
+  /* page cache */
+
+  zathura->page_cache.size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
+  girara_setting_get(zathura->ui.session, "page-cache-size", &zathura->page_cache.size);
+  zathura->page_cache.cache = g_malloc(zathura->page_cache.size * sizeof(int));
+  zathura_page_cache_invalidate_all(zathura);
+
   return true;
 
 error_free:
@@ -352,6 +358,8 @@ zathura_free(zathura_t* zathura)
   if (zathura->jumplist.cur != NULL) {
     girara_list_iterator_free(zathura->jumplist.cur);
   }
+
+  g_free(zathura->page_cache.cache);
 
   g_free(zathura);
 }
@@ -775,6 +783,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     cb_view_vadjustment_value_changed(NULL, zathura);
   }
 
+  /* Invalidate all current entries in the page cache */
+  zathura_page_cache_invalidate_all(zathura);
+
   return true;
 
 error_free:
@@ -1066,30 +1077,6 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned in
   gtk_widget_show_all(zathura->ui.page_widget);
 }
 
-static
-gboolean purge_pages(gpointer data)
-{
-  zathura_t* zathura = data;
-  if (zathura == NULL || zathura->document == NULL) {
-    return TRUE;
-  }
-
-  int threshold = 0;
-  girara_setting_get(zathura->ui.session, "page-store-threshold", &threshold);
-  if (threshold <= 0) {
-    return TRUE;
-  }
-
-  girara_debug("purging pages ...");
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page   = zathura_document_get_page(zathura->document, page_id);
-    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    zathura_page_widget_purge_unused(ZATHURA_PAGE(page_widget), threshold);
-  }
-  return TRUE;
-}
-
 static gboolean
 position_set_delayed_impl(gpointer data)
 {
@@ -1214,4 +1201,118 @@ zathura_jumplist_save(zathura_t* zathura)
     cur->x = gtk_adjustment_get_value(view_hadjustment) / zathura_document_get_scale(zathura->document);
     cur->y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);;
   }
+}
+
+static bool
+zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index)
+{
+  g_return_val_if_fail(zathura != NULL, false);
+
+  unsigned int i;
+
+  if (zathura->page_cache.num_cached_pages != 0) {
+    for (i = 0; i < zathura->page_cache.size; ++i) {
+      if (zathura->page_cache.cache[i] >= 0 && page_index == (unsigned int)zathura->page_cache.cache[i]) {
+        girara_debug("Page %d is a cache hit", page_index + 1);
+        return true;
+      }
+    }
+  }
+
+  girara_debug("Page %d is a cache miss", page_index + 1);
+  return false;
+}
+
+static ssize_t
+zathura_page_cache_lru_invalidate(zathura_t* zathura)
+{
+   g_return_val_if_fail(zathura != NULL, -1);
+
+   ssize_t lru_index = 0;
+   guint64 view_time = 0;
+   guint64 lru_view_time = G_MAXUINT64;
+   GtkWidget* page_widget;
+
+   for (unsigned int i = 0; i < zathura->page_cache.size; ++i) {
+     page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, zathura->page_cache.cache[i]));
+     g_return_val_if_fail(page_widget != NULL, -1);
+     g_object_get(G_OBJECT(page_widget), "last-view", &view_time, NULL);
+
+     if (view_time < lru_view_time) {
+       lru_view_time = view_time;
+       lru_index = i;
+     }
+   }
+
+   zathura_page_t* page = zathura_document_get_page(zathura->document, zathura->page_cache.cache[lru_index]);
+   g_return_val_if_fail(page != NULL, -1);
+
+   page_widget = zathura_page_get_widget(zathura, page);
+   g_return_val_if_fail(page_widget != NULL, -1);
+
+   zathura_page_widget_update_surface(ZATHURA_PAGE(page_widget), NULL);
+   girara_debug("Invalidated page %d at cache index %ld", zathura->page_cache.cache[lru_index] + 1, lru_index);
+   zathura->page_cache.cache[lru_index] = -1;
+   --zathura->page_cache.num_cached_pages;
+
+   return lru_index;
+}
+
+static bool
+zathura_page_cache_is_full(zathura_t* zathura, bool* result)
+{
+  g_return_val_if_fail(zathura != NULL, false);
+
+  *result = zathura->page_cache.num_cached_pages == zathura->page_cache.size;
+
+  return true;
+}
+
+void
+zathura_page_cache_invalidate_all(zathura_t* zathura)
+{
+  g_return_if_fail(zathura != NULL);
+  
+  unsigned int i;
+
+  for (i = 0; i < zathura->page_cache.size; ++i) {
+    zathura->page_cache.cache[i] = -1;
+  }
+
+  zathura->page_cache.num_cached_pages = 0;
+}
+
+void
+zathura_page_cache_add(zathura_t* zathura, unsigned int page_index)
+{
+  g_return_if_fail(zathura != NULL);
+
+  zathura_page_t* page = zathura_document_get_page(zathura->document, page_index);
+
+  g_return_if_fail(page != NULL);
+
+  if (zathura_page_cache_is_cached(zathura, page_index)) {
+    return;
+  }
+
+  bool full;
+
+  if (zathura_page_cache_is_full(zathura, &full) == false) {
+    return;
+  } else if (full == true) {
+    ssize_t idx = zathura_page_cache_lru_invalidate(zathura);
+
+    if (idx == -1) {
+      return;
+    }
+
+    zathura->page_cache.cache[idx] = page_index;
+    ++zathura->page_cache.num_cached_pages;
+    girara_debug("Page %d is cached at cache index %ld", page_index + 1, idx);
+    return;
+  }
+
+  zathura->page_cache.cache[zathura->page_cache.num_cached_pages++] = page_index;
+  girara_debug("Page %d is cached at cache index %d", page_index + 1, zathura->page_cache.num_cached_pages - 1);
+  return;
 }

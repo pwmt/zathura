@@ -33,9 +33,9 @@ render_job(void* data, void* user_data)
     return;
   }
 
-  girara_debug("rendering page %d ...", zathura_page_get_index(page));
+  girara_debug("rendering page %d ...", zathura_page_get_index(page) + 1);
   if (render(zathura, page) != true) {
-    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page));
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page) + 1);
   }
 }
 

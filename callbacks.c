@@ -95,6 +95,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       zathura_page_set_visibility(page, true);
+      zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
+      zathura_page_cache_add(zathura, zathura_page_get_index(page));
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
         zathura_document_set_current_page_number(zathura->document, page_id);
@@ -103,7 +105,6 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     } else {
       zathura_page_set_visibility(page, false);
     }
-    zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
   }
 
   statusbar_page_number_update(zathura);

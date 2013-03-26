@@ -13,6 +13,8 @@
 #include <gtk/gtkx.h>
 #endif
 
+#define ZATHURA_PAGE_CACHE_DEFAULT_SIZE		15
+
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -152,6 +154,15 @@ struct zathura_s
     gchar* file_path; /**< Save file path */
     gchar* password; /**< Save password */
   } file_monitor;
+
+  /**
+   * The page cache
+   */
+  struct {
+    int* cache;
+    unsigned int size;
+    unsigned int num_cached_pages;
+  } page_cache;
 };
 
 /**
@@ -366,5 +377,12 @@ void zathura_jumplist_add(zathura_t* zathura);
  */
 void zathura_jumplist_append_jump(zathura_t* zathura);
 
+/**
+ * Add a page to the page cache
+ *
+ * @param zathura The zathura session
+ * @param page_index The index of the page to be cached
+ */
+void zathura_page_cache_add(zathura_t* zathura, unsigned int page_index);
 
 #endif // ZATHURA_H
