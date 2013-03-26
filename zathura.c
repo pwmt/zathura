@@ -280,11 +280,13 @@ zathura_init(zathura_t* zathura)
 
   /* page cache */
 
-  zathura->page_cache.size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
-  girara_setting_get(zathura->ui.session, "page-cache-size", &zathura->page_cache.size);
-  if (zathura->page_cache.size <= 0) {
+  int cache_size = 0;
+  girara_setting_get(zathura->ui.session, "page-cache-size", &cache_size);
+  if (cache_size <= 0) {
     girara_warning("page-cache-size is not positive, using %d instead", ZATHURA_PAGE_CACHE_DEFAULT_SIZE);
     zathura->page_cache.size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
+  } else {
+    zathura->page_cache.size = cache_size;
   }
 
   zathura->page_cache.cache = g_malloc(zathura->page_cache.size * sizeof(int));
