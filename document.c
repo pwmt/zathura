@@ -530,24 +530,24 @@ guess_type(const char* path)
     MAGIC_NO_CHECK_ENCODING;
   magic_t magic = magic_open(flags);
   if (magic == NULL) {
-    girara_debug("failed creating the magic cookie\n");
+    girara_debug("failed creating the magic cookie");
     goto cleanup;
   }
 
   /* ... and load mime database */
   if (magic_load(magic, NULL) < 0) {
-    girara_debug("failed loading the magic database: %s\n", magic_error(magic));
+    girara_debug("failed loading the magic database: %s", magic_error(magic));
     goto cleanup;
   }
 
   /* get the mime type */
   mime_type = magic_file(magic, path);
   if (mime_type == NULL) {
-    girara_debug("failed guessing filetype: %s\n", magic_error(magic));
+    girara_debug("failed guessing filetype: %s", magic_error(magic));
     goto cleanup;
   }
 
-  girara_debug("magic detected filetype: %s\n", mime_type);
+  girara_debug("magic detected filetype: %s", mime_type);
   content_type = g_strdup(mime_type);
 
 cleanup:
@@ -566,10 +566,10 @@ cleanup:
     girara_debug("g_content_type failed\n");
   } else {
     if (uncertain == FALSE) {
-      girara_debug("g_content_type detected filetype: %s\n", content_type);
+      girara_debug("g_content_type detected filetype: %s", content_type);
       return content_type;
     }
-    girara_debug("g_content_type is uncertain, guess: %s\n", content_type);
+    girara_debug("g_content_type is uncertain, guess: %s", content_type);
   }
 
   FILE* f = fopen(path, "rb");
@@ -593,7 +593,7 @@ cleanup:
 
     length += bytes_read;
     content_type = g_content_type_guess(NULL, content, length, &uncertain);
-    girara_debug("new guess: %s uncertain: %d, read: %zu\n", content_type, uncertain, length);
+    girara_debug("new guess: %s uncertain: %d, read: %zu", content_type, uncertain, length);
   }
 
   fclose(f);
