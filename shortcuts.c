@@ -215,6 +215,7 @@ sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   /* ask for input */
   if (show_links) {
+    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
     girara_dialog(zathura->ui.session, "Display link:", FALSE, NULL,
         (girara_callback_inputbar_activate_t) cb_sc_display_link,
         zathura->ui.session);
@@ -295,6 +296,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
   /* ask for input */
   if (show_links == true) {
+    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
     girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, zathura->ui.session);
   }
 
