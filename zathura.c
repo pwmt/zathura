@@ -1236,8 +1236,8 @@ zathura_page_cache_lru_invalidate(zathura_t* zathura)
    g_return_val_if_fail(zathura != NULL, -1);
 
    ssize_t lru_index = 0;
-   guint64 view_time = 0;
-   guint64 lru_view_time = G_MAXUINT64;
+   gint64 view_time = 0;
+   gint64 lru_view_time = G_MAXINT64;
    GtkWidget* page_widget;
 
    for (unsigned int i = 0; i < zathura->page_cache.size; ++i) {
