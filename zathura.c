@@ -1122,6 +1122,18 @@ position_set_delayed(zathura_t* zathura, double position_x, double position_y)
 }
 
 
+bool
+zathura_jumplist_has_previous(zathura_t* zathura)
+{
+  return girara_list_iterator_has_previous(zathura->jumplist.cur);
+}
+
+bool
+zathura_jumplist_has_has_next(zathura_t* zathura)
+{
+  return girara_list_iterator_has_next(zathura->jumplist.cur);
+}
+
 zathura_jump_t*
 zathura_jumplist_current(zathura_t* zathura)
 {

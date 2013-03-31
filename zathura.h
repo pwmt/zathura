@@ -335,6 +335,22 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsign
 void statusbar_page_number_update(zathura_t* zathura);
 
 /**
+ * Checks whether current jump has a previous jump
+ *
+ * @param zathura The zathura session
+ * @return true if current jump has a previous jump
+ */
+bool zathura_jumplist_has_previous(zathura_t* zathura);
+
+/**
+ * Checks whether current jump has a next jump
+ *
+ * @param zathura The zathura session
+ * @return true if current jump has a next jump
+ */
+bool zathura_jumplist_has_next(zathura_t* zathura);
+
+/**
  * Return current jump in the jumplist
  *
  * @param zathura The zathura session
