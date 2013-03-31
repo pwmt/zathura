@@ -716,7 +716,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
 
 bool
-sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+sc_jumplist(girara_session_t* session, girara_argument_t* argument,
+            girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -747,6 +748,135 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event
 
   return false;
 }
+
+
+bool
+sc_bisect(girara_session_t* session, girara_argument_t* argument,
+          girara_event_t* UNUSED(event), unsigned int t)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  unsigned int number_of_pages, cur_page, prev_page, prev2_page;
+  bool have_prev, have_prev2;
+
+  zathura_jump_t* prev_jump = NULL;
+  zathura_jump_t* prev2_jump = NULL;
+
+  number_of_pages= zathura_document_get_number_of_pages(zathura->document);
+  cur_page = zathura_document_get_current_page_number(zathura->document);
+
+  prev_page = prev2_page = 0;
+  have_prev = have_prev2 = false;
+
+  /* save position at current jump point */
+  zathura_jumplist_save(zathura);
+
+  /* process arguments */
+  int direction;
+  if (t > 0 && t <= number_of_pages) {
+    /* jump to page t, and bisect between cur_page and t */
+    page_set(zathura, t-1);
+    zathura_jumplist_add(zathura);
+    if (t-1 > cur_page) {
+      direction = BACKWARD;
+    } else {
+      direction = FORWARD;
+    }
+
+  } else if (argument != NULL)  {
+    direction = argument->n;
+
+  } else {
+    return false;
+  }
+
+  cur_page = zathura_document_get_current_page_number(zathura->document);
+
+  if (zathura_jumplist_has_previous(zathura)) {
+    /* If there is a previous jump, get its page */
+    zathura_jumplist_backward(zathura);
+    prev_jump = zathura_jumplist_current(zathura);
+    if (prev_jump) {
+      prev_page = prev_jump->page;
+      have_prev = true;
+    }
+
+    if (zathura_jumplist_has_previous(zathura)) {
+      /* If there is a second previous jump, get its page. */
+      zathura_jumplist_backward(zathura);
+      prev2_jump = zathura_jumplist_current(zathura);
+      if (prev2_jump) {
+        prev2_page = prev2_jump->page;
+        have_prev2 = true;
+      }
+      zathura_jumplist_forward(zathura);
+    }
+    zathura_jumplist_forward(zathura);
+  }
+
+  /* now, we are back at the initial jump. prev_page and prev2_page contain
+   the pages for previous and second previous jump if they exist. */
+
+  /* bisect */
+  switch(direction) {
+    case FORWARD:
+      if (have_prev && cur_page <= prev_page) {
+        /* add a new jump point */
+        if (cur_page < prev_page) {
+          page_set(zathura, (cur_page + prev_page)/2);
+          zathura_jumplist_add(zathura);
+        }
+
+      } else if (have_prev2 && cur_page <= prev2_page) {
+        /* save current position at previous jump point */
+        if (cur_page < prev2_page) {
+          zathura_jumplist_backward(zathura);
+          zathura_jumplist_save(zathura);
+          zathura_jumplist_forward(zathura);
+
+          page_set(zathura, (cur_page + prev2_page)/2);
+          zathura_jumplist_save(zathura);
+        }
+      } else {
+        /* none of prev_page or prev2_page comes after cur_page */
+        page_set(zathura, (cur_page + number_of_pages - 1)/2);
+        zathura_jumplist_add(zathura);
+      }
+      break;
+
+    case BACKWARD:
+      if (have_prev && prev_page <= cur_page) {
+        /* add a new jump point */
+        if (prev_page < cur_page) {
+          page_set(zathura, (cur_page + prev_page)/2);
+          zathura_jumplist_add(zathura);
+        }
+
+      } else if (have_prev2 && prev2_page <= cur_page) {
+        /* save current position at previous jump point */
+        if (prev2_page < cur_page) {
+          zathura_jumplist_backward(zathura);
+          zathura_jumplist_save(zathura);
+          zathura_jumplist_forward(zathura);
+
+          page_set(zathura, (cur_page + prev2_page)/2);
+          zathura_jumplist_save(zathura);
+        }
+
+      } else {
+        /* none of prev_page or prev2_page comes before cur_page */
+        page_set(zathura, cur_page/2);
+        zathura_jumplist_add(zathura);
+      }
+      break;
+  }
+  return false;
+}
+
 
 bool
 sc_search(girara_session_t* session, girara_argument_t* argument,
