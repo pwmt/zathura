@@ -75,6 +75,8 @@ gg, G, nG
   Goto to the first, the last or to the nth page
 ^o, ^i
   Move backward and forward through the jump list
+^j, ^k
+  Bisect forward and backward between the last two jump points
 ^c, Escape
   Abort
 a, s
