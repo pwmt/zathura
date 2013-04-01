@@ -134,7 +134,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   g_object_class_install_property(object_class, PROP_DRAW_SEACH_RESULTS,
                                   g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_LAST_VIEW,
-                                  g_param_spec_int("last-view", "last-view", "Last time the page has been viewed", -1, INT_MAX, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+                                  g_param_spec_int64("last-view", "last-view", "Last time the page has been viewed", -1, G_MAXINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -297,7 +297,7 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
       g_value_set_pointer(value, priv->search.list);
       break;
     case PROP_LAST_VIEW:
-      g_value_set_int(value, priv->last_view);
+      g_value_set_int64(value, priv->last_view);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
