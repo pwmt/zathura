@@ -874,6 +874,11 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       }
       break;
   }
+
+  /* adjust horizontal position */
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+  cb_view_hadjustment_changed(hadjustment, zathura);
+
   return false;
 }
 
