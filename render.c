@@ -307,8 +307,8 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
   unsigned int page_a_index = zathura_page_get_index(page_a);
   unsigned int page_b_index = zathura_page_get_index(page_b);
 
-  unsigned int last_view_a = 0;
-  unsigned int last_view_b = 0;
+  gint64 last_view_a = 0;
+  gint64 last_view_b = 0;
 
   g_object_get(zathura->pages[page_a_index], "last-view", &last_view_a, NULL);
   g_object_get(zathura->pages[page_b_index], "last-view", &last_view_b, NULL);
