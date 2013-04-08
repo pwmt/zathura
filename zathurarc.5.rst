@@ -375,6 +375,20 @@ Defines the foreground color for the inputbar
 * Value type: String
 * Default value: #9FBC00
 
+notification-bg
+^^^^^^^^^^^^^^^^^^^^^
+Defines the background color for a notification
+
+* Value type: String
+* Default value: #FFFFFF
+
+notification-fg
+^^^^^^^^^^^^^^^^^^^^^
+Defines the foreground color for a notification
+
+* Value type: String
+* Default value: #000000
+
 notification-error-bg
 ^^^^^^^^^^^^^^^^^^^^^
 Defines the background color for an error notification
