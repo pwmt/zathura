@@ -933,6 +933,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer) 1);
   for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
     g_object_unref(zathura->pages[i]);
+    g_object_unref(zathura->pages[i]); // FIXME
   }
   free(zathura->pages);
   zathura->pages = NULL;
