@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-26 12:54+0100\n"
+"POT-Creation-Date: 2013-04-28 13:23+0200\n"
 "PO-Revision-Date: 2013-03-17 11:30+0100\n"
 "Last-Translator: Benoît Knecht <benoit.knecht@fsfe.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
@@ -21,20 +21,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../callbacks.c:302
+#: ../callbacks.c:304
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrée invalide : '%s'"
 
-#: ../callbacks.c:340
+#: ../callbacks.c:342
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Index invalide : '%s'"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
-#: ../shortcuts.c:1089
+#: ../commands.c:531 ../shortcuts.c:486 ../shortcuts.c:1205
+#: ../shortcuts.c:1234
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
@@ -244,149 +244,153 @@ msgid "Horizontally centered zoom"
 msgstr "Zoom centré horizontalement"
 
 #: ../config.c:189
+msgid "Align link target to the left"
+msgstr ""
+
+#: ../config.c:191
 msgid "Center result horizontally"
 msgstr "Centrer le résultat horizontalement"
 
-#: ../config.c:191
+#: ../config.c:193
 msgid "Transparency for highlighting"
 msgstr "Transparence de la surbrillance"
 
-#: ../config.c:193
+#: ../config.c:195
 msgid "Render 'Loading ...'"
 msgstr "Afficher 'Chargement...'"
 
-#: ../config.c:194
+#: ../config.c:196
 msgid "Adjust to when opening file"
 msgstr "Ajuster à l'ouverture du fichier"
 
-#: ../config.c:196
+#: ../config.c:198
 msgid "Show hidden files and directories"
 msgstr "Montrer les fichiers et dossiers cachés"
 
-#: ../config.c:198
+#: ../config.c:200
 msgid "Show directories"
 msgstr "Montrer les dossiers"
 
-#: ../config.c:200
+#: ../config.c:202
 msgid "Always open on first page"
 msgstr "Toujours ouvrir à la première page"
 
-#: ../config.c:202
+#: ../config.c:204
 msgid "Highlight search results"
 msgstr "Surligner les résultats de la recherche"
 
-#: ../config.c:204
+#: ../config.c:206
 msgid "Enable incremental search"
 msgstr "Activer la recherche incrémentale"
 
-#: ../config.c:206
+#: ../config.c:208
 msgid "Clear search results on abort"
 msgstr "Effacer les résultats de recherche en cas d'annulation"
 
-#: ../config.c:208
+#: ../config.c:210
 msgid "Use basename of the file in the window title"
 msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
 
-#: ../config.c:210
+#: ../config.c:212
 msgid "Use basename of the file in the statusbar"
 msgstr "Utiliser le nom de base du fichier dans la barre d'état"
 
-#: ../config.c:212 ../main.c:64
+#: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
 msgstr "Activer la prise en charge de synctex"
 
 #. define default inputbar commands
-#: ../config.c:370
+#: ../config.c:373
 msgid "Add a bookmark"
 msgstr "Ajouter un marque-page"
 
-#: ../config.c:371
+#: ../config.c:374
 msgid "Delete a bookmark"
 msgstr "Supprimer un marque-page"
 
-#: ../config.c:372
+#: ../config.c:375
 msgid "List all bookmarks"
 msgstr "Lister tous les marque-pages"
 
-#: ../config.c:373
+#: ../config.c:376
 msgid "Close current file"
 msgstr "Fermer le fichier actuel"
 
-#: ../config.c:374
+#: ../config.c:377
 msgid "Show file information"
 msgstr "Montrer les informations sur le fichier"
 
-#: ../config.c:375
+#: ../config.c:378
 msgid "Execute a command"
 msgstr "Exécuter une commande"
 
-#: ../config.c:376
+#: ../config.c:379
 msgid "Show help"
 msgstr "Afficher l'aide"
 
-#: ../config.c:377
+#: ../config.c:380
 msgid "Open document"
 msgstr "Ouvrir un document"
 
-#: ../config.c:378
+#: ../config.c:381
 msgid "Close zathura"
 msgstr "Quitter zathura"
 
-#: ../config.c:379
+#: ../config.c:382
 msgid "Print document"
 msgstr "Imprimer le document"
 
-#: ../config.c:380
+#: ../config.c:383
 msgid "Save document"
 msgstr "Sauver le document"
 
-#: ../config.c:381
+#: ../config.c:384
 msgid "Save document (and force overwriting)"
 msgstr "Sauver le document (et forcer l'écrasement)"
 
-#: ../config.c:382
+#: ../config.c:385
 msgid "Save attachments"
 msgstr "Enregistrer les pièces jointes"
 
-#: ../config.c:383
+#: ../config.c:386
 msgid "Set page offset"
 msgstr "Définir le décalage de page"
 
-#: ../config.c:384
+#: ../config.c:387
 msgid "Mark current location within the document"
 msgstr "Marquer l'emplacement actuel dans le document"
 
-#: ../config.c:385
+#: ../config.c:388
 msgid "Delete the specified marks"
 msgstr "Supprimer les marques indiquées"
 
-#: ../config.c:386
+#: ../config.c:389
 msgid "Don't highlight current search results"
 msgstr "Ne pas surligner les résultats de la recherche en cours"
 
-#: ../config.c:387
+#: ../config.c:390
 msgid "Highlight current search results"
 msgstr "Surligner les résultats de la recherche en cours"
 
-#: ../config.c:388
+#: ../config.c:391
 msgid "Show version information"
 msgstr "Afficher les informations de version"
 
-#: ../links.c:163 ../links.c:242
+#: ../links.c:171 ../links.c:250
 msgid "Failed to run xdg-open."
 msgstr "Échec lors du lancement de xdg-open."
 
-#: ../links.c:181
+#: ../links.c:189
 #, c-format
 msgid "Link: page %d"
 msgstr "Lien : page %d"
 
-#: ../links.c:188
+#: ../links.c:196
 #, c-format
 msgid "Link: %s"
 msgstr "Lien : %s"
 
-#: ../links.c:192
+#: ../links.c:200
 msgid "Link: Invalid"
 msgstr "Lien : Invalide"
 
@@ -447,15 +451,15 @@ msgstr "Copier l'image"
 msgid "Save image as"
 msgstr "Enregistrer l'image sous"
 
-#: ../shortcuts.c:963
+#: ../shortcuts.c:1108
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
-#: ../zathura.c:224 ../zathura.c:953
+#: ../zathura.c:224 ../zathura.c:956
 msgid "[No name]"
 msgstr "[Sans nom]"
 
-#: ../zathura.c:587
+#: ../zathura.c:589
 msgid "Document does not contain any pages"
 msgstr "Ce document ne contient aucune page"
 

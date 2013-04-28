@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-26 12:54+0100\n"
-"PO-Revision-Date: 2013-01-13 14:12+0000\n"
+"POT-Creation-Date: 2013-04-28 13:23+0200\n"
+"PO-Revision-Date: 2013-04-28 14:46+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Ukrainian (Ukraine) (http://www.transifex.com/projects/p/"
 "zathura/language/uk_UA/)\n"
@@ -19,20 +19,20 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: ../callbacks.c:302
+#: ../callbacks.c:304
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Вказано невірний аргумент: %s."
 
-#: ../callbacks.c:340
+#: ../callbacks.c:342
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Вказано невірний індекс: %s"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
-#: ../shortcuts.c:1089
+#: ../commands.c:531 ../shortcuts.c:486 ../shortcuts.c:1205
+#: ../shortcuts.c:1234
 msgid "No document opened."
 msgstr "Документ не відкрито."
 
@@ -240,149 +240,153 @@ msgid "Horizontally centered zoom"
 msgstr ""
 
 #: ../config.c:189
-msgid "Center result horizontally"
+msgid "Align link target to the left"
 msgstr ""
 
 #: ../config.c:191
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:193
 msgid "Transparency for highlighting"
 msgstr "Прозорість для виділення"
 
-#: ../config.c:193
+#: ../config.c:195
 msgid "Render 'Loading ...'"
 msgstr "Рендер 'Завантажується ...'"
 
-#: ../config.c:194
+#: ../config.c:196
 msgid "Adjust to when opening file"
 msgstr "Підлаштовутись при відкритті файлу"
 
-#: ../config.c:196
+#: ../config.c:198
 msgid "Show hidden files and directories"
 msgstr "Показати приховані файли та директорії"
 
-#: ../config.c:198
+#: ../config.c:200
 msgid "Show directories"
 msgstr "Показати диреторії"
 
-#: ../config.c:200
+#: ../config.c:202
 msgid "Always open on first page"
 msgstr "Завжди відкривати на першій сторінці"
 
-#: ../config.c:202
+#: ../config.c:204
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:204
+#: ../config.c:206
 msgid "Enable incremental search"
 msgstr ""
 
-#: ../config.c:206
+#: ../config.c:208
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:208
+#: ../config.c:210
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../config.c:210
+#: ../config.c:212
 msgid "Use basename of the file in the statusbar"
 msgstr ""
 
-#: ../config.c:212 ../main.c:64
+#: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:370
+#: ../config.c:373
 msgid "Add a bookmark"
 msgstr "Додати закладку"
 
-#: ../config.c:371
+#: ../config.c:374
 msgid "Delete a bookmark"
 msgstr "Вилучити закладку"
 
-#: ../config.c:372
+#: ../config.c:375
 msgid "List all bookmarks"
 msgstr "Дивитись усі закладки"
 
-#: ../config.c:373
+#: ../config.c:376
 msgid "Close current file"
 msgstr "Закрити документ"
 
-#: ../config.c:374
+#: ../config.c:377
 msgid "Show file information"
 msgstr "Показати інформацію файлу"
 
-#: ../config.c:375
+#: ../config.c:378
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:376
+#: ../config.c:379
 msgid "Show help"
 msgstr "Показати довідку"
 
-#: ../config.c:377
+#: ../config.c:380
 msgid "Open document"
 msgstr "Відкрити документ"
 
-#: ../config.c:378
+#: ../config.c:381
 msgid "Close zathura"
 msgstr "Вийти із zathura"
 
-#: ../config.c:379
+#: ../config.c:382
 msgid "Print document"
 msgstr "Друкувати документ"
 
-#: ../config.c:380
+#: ../config.c:383
 msgid "Save document"
 msgstr "Зберегти документ"
 
-#: ../config.c:381
+#: ../config.c:384
 msgid "Save document (and force overwriting)"
 msgstr "Зберегти документ (форсувати перезапис)"
 
-#: ../config.c:382
+#: ../config.c:385
 msgid "Save attachments"
 msgstr "Зберегти прикріплення"
 
-#: ../config.c:383
+#: ../config.c:386
 msgid "Set page offset"
 msgstr "Встановити зміщення сторінки"
 
-#: ../config.c:384
+#: ../config.c:387
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:385
+#: ../config.c:388
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:386
+#: ../config.c:389
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:387
+#: ../config.c:390
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:388
+#: ../config.c:391
 msgid "Show version information"
 msgstr ""
 
-#: ../links.c:163 ../links.c:242
+#: ../links.c:171 ../links.c:250
 msgid "Failed to run xdg-open."
 msgstr "Запуск xdg-open не вдався."
 
-#: ../links.c:181
+#: ../links.c:189
 #, c-format
 msgid "Link: page %d"
 msgstr ""
 
-#: ../links.c:188
+#: ../links.c:196
 #, c-format
 msgid "Link: %s"
 msgstr ""
 
-#: ../links.c:192
+#: ../links.c:200
 msgid "Link: Invalid"
 msgstr ""
 
@@ -443,21 +447,14 @@ msgstr "Копіювати картинку"
 msgid "Save image as"
 msgstr ""
 
-#: ../shortcuts.c:963
+#: ../shortcuts.c:1108
 msgid "This document does not contain any index"
 msgstr "Індекс відсутній в цьому документі"
 
-#: ../zathura.c:224 ../zathura.c:953
+#: ../zathura.c:224 ../zathura.c:956
 msgid "[No name]"
 msgstr "[Без назви]"
 
-#: ../zathura.c:587
-#, fuzzy
+#: ../zathura.c:589
 msgid "Document does not contain any pages"
-msgstr "Індекс відсутній в цьому документі"
-
-#~ msgid "Life time (in seconds) of a hidden page"
-#~ msgstr "Час (у сек) схованої сторінки"
-
-#~ msgid "Amount of seconds between each cache purge"
-#~ msgstr "Кількість секунд між кожним очищенням кешу"
+msgstr ""

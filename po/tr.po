@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-03-26 12:54+0100\n"
-"PO-Revision-Date: 2013-01-13 14:12+0000\n"
+"POT-Creation-Date: 2013-04-28 13:23+0200\n"
+"PO-Revision-Date: 2013-04-28 14:46+0200\n"
 "Last-Translator: hsngrms <dead-bodies-everywhere@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.net/projects/p/zathura/language/"
 "tr/)\n"
@@ -19,20 +19,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../callbacks.c:302
+#: ../callbacks.c:304
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Hatalı girdi '%s'"
 
-#: ../callbacks.c:340
+#: ../callbacks.c:342
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Hatalı dizin '%s'"
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
-#: ../commands.c:531 ../shortcuts.c:476 ../shortcuts.c:1060
-#: ../shortcuts.c:1089
+#: ../commands.c:531 ../shortcuts.c:486 ../shortcuts.c:1205
+#: ../shortcuts.c:1234
 msgid "No document opened."
 msgstr "Açık belge yok."
 
@@ -240,150 +240,153 @@ msgid "Horizontally centered zoom"
 msgstr "Yatay olarak ortalanmış büyütme"
 
 #: ../config.c:189
-msgid "Center result horizontally"
+msgid "Align link target to the left"
 msgstr ""
 
 #: ../config.c:191
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:193
 msgid "Transparency for highlighting"
 msgstr "Ön plana çıkarmak için saydamlaştır"
 
-#: ../config.c:193
+#: ../config.c:195
 msgid "Render 'Loading ...'"
 msgstr "'Yüklüyor ...' yazısını göster"
 
-#: ../config.c:194
+#: ../config.c:196
 msgid "Adjust to when opening file"
 msgstr "Dosya açarken ayarla"
 
-#: ../config.c:196
+#: ../config.c:198
 msgid "Show hidden files and directories"
 msgstr "Gizli dosyaları ve dizinleri göster"
 
-#: ../config.c:198
+#: ../config.c:200
 msgid "Show directories"
 msgstr "Dizinleri göster"
 
-#: ../config.c:200
+#: ../config.c:202
 msgid "Always open on first page"
 msgstr "Her zaman ilk sayfayı aç"
 
-#: ../config.c:202
+#: ../config.c:204
 msgid "Highlight search results"
 msgstr "Arama sonuçlarını vurgula"
 
-#: ../config.c:204
+#: ../config.c:206
 msgid "Enable incremental search"
 msgstr "Artımlı aramayı etkinleştir"
 
-#: ../config.c:206
+#: ../config.c:208
 msgid "Clear search results on abort"
 msgstr "Kapatınca arama sonuçlarını temizle"
 
-#: ../config.c:208
+#: ../config.c:210
 msgid "Use basename of the file in the window title"
 msgstr "Pencere başlığı olarak dosyanın adını kullan"
 
-#: ../config.c:210
-#, fuzzy
+#: ../config.c:212
 msgid "Use basename of the file in the statusbar"
-msgstr "Pencere başlığı olarak dosyanın adını kullan"
+msgstr ""
 
-#: ../config.c:212 ../main.c:64
+#: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:370
+#: ../config.c:373
 msgid "Add a bookmark"
 msgstr "Yer imi ekle"
 
-#: ../config.c:371
+#: ../config.c:374
 msgid "Delete a bookmark"
 msgstr "Yer imi sil"
 
-#: ../config.c:372
+#: ../config.c:375
 msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
-#: ../config.c:373
+#: ../config.c:376
 msgid "Close current file"
 msgstr "Geçerli dosyayı kapat"
 
-#: ../config.c:374
+#: ../config.c:377
 msgid "Show file information"
 msgstr "Dosya bilgisi göster"
 
-#: ../config.c:375
+#: ../config.c:378
 msgid "Execute a command"
 msgstr "Bir komut çalıştır"
 
-#: ../config.c:376
+#: ../config.c:379
 msgid "Show help"
 msgstr "Yardım bilgisi göster"
 
-#: ../config.c:377
+#: ../config.c:380
 msgid "Open document"
 msgstr "Belge aç"
 
-#: ../config.c:378
+#: ../config.c:381
 msgid "Close zathura"
 msgstr "Zathura'yı kapat"
 
-#: ../config.c:379
+#: ../config.c:382
 msgid "Print document"
 msgstr "Belge yazdır"
 
-#: ../config.c:380
+#: ../config.c:383
 msgid "Save document"
 msgstr "Belgeyi kaydet"
 
-#: ../config.c:381
+#: ../config.c:384
 msgid "Save document (and force overwriting)"
 msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
 
-#: ../config.c:382
+#: ../config.c:385
 msgid "Save attachments"
 msgstr "Ekleri kaydet"
 
-#: ../config.c:383
+#: ../config.c:386
 msgid "Set page offset"
 msgstr "Sayfa derinliğini ayarla"
 
-#: ../config.c:384
+#: ../config.c:387
 msgid "Mark current location within the document"
 msgstr "Bu belgede bu konumu işaretle"
 
-#: ../config.c:385
+#: ../config.c:388
 msgid "Delete the specified marks"
 msgstr "Seçilen işaretlemeleri sil"
 
-#: ../config.c:386
+#: ../config.c:389
 msgid "Don't highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgulama"
 
-#: ../config.c:387
+#: ../config.c:390
 msgid "Highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgula"
 
-#: ../config.c:388
+#: ../config.c:391
 msgid "Show version information"
 msgstr "Versiyon bilgisi göster"
 
-#: ../links.c:163 ../links.c:242
+#: ../links.c:171 ../links.c:250
 msgid "Failed to run xdg-open."
 msgstr "xdg-open çalıştırılamadı"
 
-#: ../links.c:181
+#: ../links.c:189
 #, c-format
 msgid "Link: page %d"
 msgstr ""
 
-#: ../links.c:188
+#: ../links.c:196
 #, c-format
 msgid "Link: %s"
 msgstr ""
 
-#: ../links.c:192
+#: ../links.c:200
 msgid "Link: Invalid"
 msgstr ""
 
@@ -444,21 +447,14 @@ msgstr "Resim kopyala"
 msgid "Save image as"
 msgstr "Resmi farklı kaydet"
 
-#: ../shortcuts.c:963
+#: ../shortcuts.c:1108
 msgid "This document does not contain any index"
 msgstr "Bu belge fihrist içermiyor"
 
-#: ../zathura.c:224 ../zathura.c:953
+#: ../zathura.c:224 ../zathura.c:956
 msgid "[No name]"
 msgstr "[İsimsiz]"
 
-#: ../zathura.c:587
-#, fuzzy
+#: ../zathura.c:589
 msgid "Document does not contain any pages"
-msgstr "Bu belge fihrist içermiyor"
-
-#~ msgid "Life time (in seconds) of a hidden page"
-#~ msgstr "Gizli pencerenin açık kalma süresi (saniye)"
-
-#~ msgid "Amount of seconds between each cache purge"
-#~ msgstr "Önbellek temizliği yapılma sıklığı, saniye cinsinden"
+msgstr ""
