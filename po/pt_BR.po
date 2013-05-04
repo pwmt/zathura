@@ -2,7 +2,8 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
-#   <shorterfire@gmail.com>, 2012-2013.
+# salmora8 <shorterfire@gmail.com>, 2013
+# salmora8 <shorterfire@gmail.com>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
@@ -184,7 +185,7 @@ msgstr "Zoom máximo"
 
 #: ../config.c:159
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Número máximo de páginas para manter no cache"
 
 #: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
@@ -208,11 +209,11 @@ msgstr "Cor para destacar (ativo)"
 
 #: ../config.c:171
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "'Carregando ...' cor de fundo"
 
 #: ../config.c:173
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "'Carregando ...' cor de primeiro plano"
 
 #: ../config.c:177
 msgid "Recolor pages"
@@ -241,7 +242,7 @@ msgstr "Zoom centrado horizontalmente"
 
 #: ../config.c:189
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Alinhe destino do link à esquerda"
 
 #: ../config.c:191
 msgid "Center result horizontally"
@@ -289,7 +290,7 @@ msgstr "Usar nome do arquivo na barra de titulo"
 
 #: ../config.c:212
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Use o nome do arquivo na barra de status"
 
 #: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
@@ -416,7 +417,7 @@ msgstr "Senha do documento"
 
 #: ../main.c:61
 msgid "Page number to go to"
-msgstr ""
+msgstr "Número da página para ir"
 
 #: ../main.c:62
 msgid "Log level (debug, info, warning, error)"
@@ -457,4 +458,4 @@ msgstr "[Sem nome]"
 
 #: ../zathura.c:589
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Documento não contém quaisquer páginas"

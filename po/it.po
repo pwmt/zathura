@@ -457,9 +457,3 @@ msgstr "[Nessun nome]"
 #: ../zathura.c:589
 msgid "Document does not contain any pages"
 msgstr ""
-
-#~ msgid "Life time (in seconds) of a hidden page"
-#~ msgstr "Durata (in secondi) di una pagina nascosta"
-
-#~ msgid "Amount of seconds between each cache purge"
-#~ msgstr "Tempo in secondi tra le invalidazioni della cache"
