@@ -315,12 +315,9 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   zathura_jumplist_save(zathura);
   if (t != 0) {
     /* add offset */
-    unsigned int page_offset = zathura_document_get_page_offset(zathura->document);
-    if (page_offset > 0) {
-      t += page_offset;
-    }
+    t += zathura_document_get_page_offset(zathura->document);
 
-    page_set(zathura, t-1);
+    page_set(zathura, t - 1);
   } else if (argument->n == TOP) {
     page_set(zathura, 0);
   } else if (argument->n == BOTTOM) {

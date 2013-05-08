@@ -533,7 +533,7 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
   }
 
   /* no argument: take current page as offset */
-  unsigned int page_offset = zathura_document_get_current_page_number(zathura->document);
+  int page_offset = zathura_document_get_current_page_number(zathura->document);
 
   /* retrieve offset from argument */
   if (girara_list_size(argument_list) == 1) {
@@ -547,9 +547,7 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
     }
   }
 
-  if (page_offset < zathura_document_get_number_of_pages(zathura->document)) {
-    zathura_document_set_page_offset(zathura->document, page_offset);
-  }
+  zathura_document_set_page_offset(zathura->document, page_offset);
 
   return true;
 }

@@ -47,7 +47,7 @@ struct zathura_document_s {
   unsigned int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
-  unsigned int page_offset; /**< Page offset */
+  int page_offset; /**< Page offset */
 
   /**
    * Document pages
@@ -365,7 +365,7 @@ zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mo
   document->adjust_mode = mode;
 }
 
-unsigned int
+int
 zathura_document_get_page_offset(zathura_document_t* document)
 {
   if (document == NULL) {
@@ -382,9 +382,7 @@ zathura_document_set_page_offset(zathura_document_t* document, unsigned int page
     return;
   }
 
-  if (page_offset < document->number_of_pages) {
-    document->page_offset = page_offset;
-  }
+  document->page_offset = page_offset;
 }
 
 void
