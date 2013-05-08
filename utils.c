@@ -29,24 +29,16 @@
 const char*
 file_get_extension(const char* path)
 {
-  if (!path) {
+  if (path == NULL) {
     return NULL;
   }
 
-  unsigned int i = strlen(path);
-  for (; i > 0; i--) {
-    if (*(path + i) != '.') {
-      continue;
-    } else {
-      break;
-    }
-  }
-
-  if (!i) {
+  const char* res = strrchr(path, '.');
+  if (res == NULL) {
     return NULL;
   }
 
-  return path + i + 1;
+  return res + 1;
 }
 
 bool

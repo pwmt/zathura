@@ -2,8 +2,9 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
-#   <manelsales@ono.com>, 2012.
-#   <mvdan@mvdan.cc>, 2012.
+# norbux <manelsales@ono.com>, 2013
+# norbux <manelsales@ono.com>, 2012
+# mvdan <mvdan@mvdan.cc>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
@@ -173,7 +174,7 @@ msgstr "Pas de desplaçament horitzontal"
 
 #: ../config.c:153
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Superposició de pàgines completes de desplaçament"
 
 #: ../config.c:155
 msgid "Zoom minimum"
@@ -189,7 +190,7 @@ msgstr ""
 
 #: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Nombre de posicions per recordar al jumplist"
 
 #: ../config.c:163
 msgid "Recoloring (dark color)"
@@ -229,7 +230,7 @@ msgstr "Desplaçament recollit"
 
 #: ../config.c:183
 msgid "Page aware scrolling"
-msgstr ""
+msgstr "Desplaçament recollit"
 
 #: ../config.c:185
 msgid "Advance number of pages per row"
@@ -277,7 +278,7 @@ msgstr "Realça els resultats de recerca"
 
 #: ../config.c:206
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Habilita la cerca incremental"
 
 #: ../config.c:208
 msgid "Clear search results on abort"
@@ -293,7 +294,7 @@ msgstr ""
 
 #: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
-msgstr ""
+msgstr "Habilitar la compatibilitat amb synctex"
 
 #. define default inputbar commands
 #: ../config.c:373
@@ -318,7 +319,7 @@ msgstr "Mostra informació sobre el fitxer"
 
 #: ../config.c:378
 msgid "Execute a command"
-msgstr ""
+msgstr "Executar una comanda"
 
 #: ../config.c:379
 msgid "Show help"
@@ -379,16 +380,16 @@ msgstr "No s'ha pogut executar xdg-open."
 #: ../links.c:189
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Enllaçar: pàgina %d"
 
 #: ../links.c:196
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Enllaç: %s"
 
 #: ../links.c:200
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Enllaç: Invàlid"
 
 #: ../main.c:55
 msgid "Reparents to window specified by xid"
