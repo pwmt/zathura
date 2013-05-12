@@ -18,6 +18,7 @@
 #include "shortcuts.h"
 #include "page-widget.h"
 #include "page.h"
+#include "adjustment.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
@@ -93,7 +94,11 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
                                      zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
-      zathura_page_set_visibility(page, true);
+      if (zathura_page_get_visibility(page) == false) {
+	zathura_page_set_visibility(page, true);
+	zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
+	zathura_page_cache_add(zathura, zathura_page_get_index(page));
+      }
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
         zathura_document_set_current_page_number(zathura->document, page_id);
@@ -102,10 +107,91 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     } else {
       zathura_page_set_visibility(page, false);
     }
-    zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
   }
 
   statusbar_page_number_update(zathura);
+}
+
+void
+cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data)
+{
+  zathura_t* zathura = data;
+  g_return_if_fail(zathura != NULL);
+
+  zathura_adjust_mode_t adjust_mode =
+    zathura_document_get_adjust_mode(zathura->document);
+
+  gdouble lower, upper, page_size, value, ratio;
+  bool zoom_center = false;
+
+  switch (adjust_mode) {
+    center:
+    case ZATHURA_ADJUST_BESTFIT:
+    case ZATHURA_ADJUST_WIDTH:
+      lower = gtk_adjustment_get_lower(adjustment);
+      upper = gtk_adjustment_get_upper(adjustment);
+      page_size = gtk_adjustment_get_page_size(adjustment);
+      value = ((upper - lower) - page_size) / 2.0;
+      zathura_adjustment_set_value(adjustment, value);
+      break;
+    default:
+      girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
+      if (zoom_center) {
+        goto center;
+      }
+
+      ratio = zathura_adjustment_get_ratio(zathura->ui.hadjustment);
+      zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+      break;
+  }
+}
+
+void
+cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
+{
+  zathura_t* zathura = data;
+  g_return_if_fail(zathura != NULL);
+
+  zathura_adjust_mode_t adjust_mode =
+    zathura_document_get_adjust_mode(zathura->document);
+
+  /* Don't scroll we're focusing the inputbar. */
+  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
+    return;
+  }
+
+  double ratio = zathura_adjustment_get_ratio(zathura->ui.vadjustment);
+  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+}
+
+void
+cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data)
+{
+  GtkAdjustment* tracker = data;
+
+  gdouble lower = gtk_adjustment_get_lower(adjustment);
+  gdouble upper = gtk_adjustment_get_upper(adjustment);
+  if (lower != gtk_adjustment_get_lower(tracker) ||
+      upper != gtk_adjustment_get_upper(tracker)) {
+    return;
+  }
+
+  gdouble value = gtk_adjustment_get_value(adjustment);
+  gtk_adjustment_set_value(tracker, value);
+}
+
+void
+cb_adjustment_track_bounds(GtkAdjustment* adjustment, gpointer data)
+{
+  GtkAdjustment* tracker = data;
+  gdouble value = gtk_adjustment_get_value(adjustment);
+  gdouble lower = gtk_adjustment_get_lower(adjustment);
+  gdouble upper = gtk_adjustment_get_upper(adjustment);
+  gdouble page_size = gtk_adjustment_get_page_size(adjustment);
+  gtk_adjustment_set_value(tracker, value);
+  gtk_adjustment_set_lower(tracker, lower);
+  gtk_adjustment_set_upper(tracker, upper);
+  gtk_adjustment_set_page_size(tracker, page_size);
 }
 
 void
@@ -340,7 +426,8 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
   }
 
   /* try to open document again */
-  if (document_open(dialog->zathura, dialog->path, input) == false) {
+  if (document_open(dialog->zathura, dialog->path, input,
+                    ZATHURA_PAGE_NUMBER_UNSPECIFIED) == false) {
     gdk_threads_add_idle(password_dialog, dialog);
   } else {
     g_free(dialog->path);

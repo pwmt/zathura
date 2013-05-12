@@ -1,97 +1,96 @@
-# zathura - language file (Tamil (India))
+# zathura - language file (Hebrew)
 # See LICENSE file for license and copyright information
 #
 # Translators:
-#   <mankand007@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-04-28 13:23+0200\n"
-"PO-Revision-Date: 2013-04-28 14:46+0200\n"
-"Last-Translator: mankand007 <mankand007@gmail.com>\n"
-"Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
-"language/ta_IN/)\n"
-"Language: ta_IN\n"
+"PO-Revision-Date: 2013-01-13 14:12+0000\n"
+"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/zathura/language/"
+"he/)\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../callbacks.c:304
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "கொடுக்கப்பட்ட உள்ளீடு(input) '%s' தவறு"
+msgstr ""
 
 #: ../callbacks.c:342
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "கொடுக்கப்பட்ட index '%s' தவறு"
+msgstr ""
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
 #: ../commands.c:531 ../shortcuts.c:486 ../shortcuts.c:1205
 #: ../shortcuts.c:1234
 msgid "No document opened."
-msgstr "எந்தக் ஆவணமும் திறக்கப்படவில்லை"
+msgstr ""
 
 #: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:415
 msgid "Invalid number of arguments given."
-msgstr "கொடுக்கப்பட்ட arguments-களின் எண்ணிக்கை தவறு"
+msgstr ""
 
 #: ../commands.c:49
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr "Bookmark வெற்றிகரமாக நிகழ்நிலை(update) படுத்தப்பட்டது: %s"
+msgstr ""
 
 #: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
+msgstr ""
 
 #: ../commands.c:59
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr "Bookmark வெற்றிகரமாக உருவாக்கப்பட்டது: %s"
+msgstr ""
 
 #: ../commands.c:82
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Bookmark அழிக்கப்பட்டது: %s"
+msgstr ""
 
 #: ../commands.c:84
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Bookmark-ஐ அழிக்க இயலவில்லை: %s"
+msgstr ""
 
 #: ../commands.c:110
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "அந்தப் பெயரில் எந்த bookmark-ம் இல்லை: %s"
+msgstr ""
 
 #: ../commands.c:161 ../commands.c:183
 msgid "No information available."
-msgstr "எந்தத் தகவலும் இல்லை"
+msgstr ""
 
 #: ../commands.c:221
 msgid "Too many arguments."
-msgstr "Argumentகளின் எண்ணிக்கை மிகவும் அதிகம்"
+msgstr ""
 
 #: ../commands.c:232
 msgid "No arguments given."
-msgstr "எந்த argument-ம் தரப்படவில்லை"
+msgstr ""
 
 #: ../commands.c:291 ../commands.c:317
 msgid "Document saved."
-msgstr "கோப்பு சேமிக்கப்பட்டது"
+msgstr ""
 
 #: ../commands.c:293 ../commands.c:319
 msgid "Failed to save document."
-msgstr "ஆவணத்தை சேமிக்க இயலவில்லை"
+msgstr ""
 
 #: ../commands.c:296 ../commands.c:322
 msgid "Invalid number of arguments."
-msgstr "கொடுக்கப்பட்ட argument-களின் எண்ணிக்கை தவறு"
+msgstr ""
 
 #: ../commands.c:434
 #, c-format
@@ -125,7 +124,7 @@ msgstr ""
 
 #: ../commands.c:544
 msgid "Argument must be a number."
-msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
+msgstr ""
 
 #: ../completion.c:250
 #, c-format
@@ -134,7 +133,7 @@ msgstr ""
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "இணைப்புகளைச் சேமிக்கவும்"
+msgstr ""
 
 #. add images
 #: ../completion.c:324
@@ -148,15 +147,15 @@ msgstr ""
 
 #: ../config.c:141
 msgid "Zoom step"
-msgstr "Zoom அமைப்பு"
+msgstr ""
 
 #: ../config.c:143
 msgid "Padding between pages"
-msgstr "இரு பக்கங்களுக்கிடையில் உள்ள நிரப்பல்(padding)"
+msgstr ""
 
 #: ../config.c:145
 msgid "Number of pages per row"
-msgstr "ஒரு வரிசையில் எத்தனை பக்கங்களைக் காட்ட வேண்டும்"
+msgstr ""
 
 #: ../config.c:147
 msgid "Column of the first page"
@@ -164,7 +163,7 @@ msgstr ""
 
 #: ../config.c:149
 msgid "Scroll step"
-msgstr "திரை உருளல்(scroll) அளவு"
+msgstr ""
 
 #: ../config.c:151
 msgid "Horizontal scroll step"
@@ -176,11 +175,11 @@ msgstr ""
 
 #: ../config.c:155
 msgid "Zoom minimum"
-msgstr "முடிந்தவரை சிறியதாகக் காட்டு"
+msgstr ""
 
 #: ../config.c:157
 msgid "Zoom maximum"
-msgstr "முடிந்தவரை பெரிதாகக் காட்டு"
+msgstr ""
 
 #: ../config.c:159
 msgid "Maximum number of pages to keep in the cache"
@@ -297,15 +296,15 @@ msgstr ""
 #. define default inputbar commands
 #: ../config.c:373
 msgid "Add a bookmark"
-msgstr "புதிய bookmark உருவாக்கு"
+msgstr ""
 
 #: ../config.c:374
 msgid "Delete a bookmark"
-msgstr "Bookmark-ஐ அழித்துவிடு"
+msgstr ""
 
 #: ../config.c:375
 msgid "List all bookmarks"
-msgstr "அனைத்து bookmark-களையும் பட்டியலிடு"
+msgstr ""
 
 #: ../config.c:376
 msgid "Close current file"
@@ -313,7 +312,7 @@ msgstr ""
 
 #: ../config.c:377
 msgid "Show file information"
-msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
+msgstr ""
 
 #: ../config.c:378
 msgid "Execute a command"
@@ -321,23 +320,23 @@ msgstr ""
 
 #: ../config.c:379
 msgid "Show help"
-msgstr "உதவியைக் காட்டு"
+msgstr ""
 
 #: ../config.c:380
 msgid "Open document"
-msgstr "ஒரு ஆவணத்தைத் திற"
+msgstr ""
 
 #: ../config.c:381
 msgid "Close zathura"
-msgstr "zathura-வை விட்டு வெளியேறு"
+msgstr ""
 
 #: ../config.c:382
 msgid "Print document"
-msgstr "ஆவணத்தை அச்சிடு"
+msgstr ""
 
 #: ../config.c:383
 msgid "Save document"
-msgstr "ஆவணத்தை சேமிக்கவும்"
+msgstr ""
 
 #: ../config.c:384
 msgid "Save document (and force overwriting)"
@@ -345,7 +344,7 @@ msgstr ""
 
 #: ../config.c:385
 msgid "Save attachments"
-msgstr "இணைப்புகளைச் சேமிக்கவும்"
+msgstr ""
 
 #: ../config.c:386
 msgid "Set page offset"
@@ -373,7 +372,7 @@ msgstr ""
 
 #: ../links.c:171 ../links.c:250
 msgid "Failed to run xdg-open."
-msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
+msgstr ""
 
 #: ../links.c:189
 #, c-format
@@ -423,7 +422,7 @@ msgstr ""
 
 #: ../main.c:63
 msgid "Print version information"
-msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
+msgstr ""
 
 #: ../main.c:65
 msgid "Synctex editor (forwarded to the synctex command)"
@@ -440,7 +439,7 @@ msgstr ""
 
 #: ../page-widget.c:755
 msgid "Copy image"
-msgstr "படத்தை ஒரு பிரதியெடு"
+msgstr ""
 
 #: ../page-widget.c:756
 msgid "Save image as"
@@ -448,11 +447,11 @@ msgstr ""
 
 #: ../shortcuts.c:1108
 msgid "This document does not contain any index"
-msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
+msgstr ""
 
 #: ../zathura.c:224 ../zathura.c:956
 msgid "[No name]"
-msgstr "பெயரற்ற ஆவணம்"
+msgstr ""
 
 #: ../zathura.c:589
 msgid "Document does not contain any pages"

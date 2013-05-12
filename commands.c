@@ -225,7 +225,9 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
       document_close(zathura, false);
     }
 
-    document_open(zathura, girara_list_nth(argument_list, 0), (argc == 2) ? girara_list_nth(argument_list, 1) :  NULL);
+    document_open(zathura, girara_list_nth(argument_list, 0),
+                  (argc == 2) ?  girara_list_nth(argument_list, 1) :  NULL,
+                  ZATHURA_PAGE_NUMBER_UNSPECIFIED);
   } else {
     girara_notify(session, GIRARA_ERROR, _("No arguments given."));
     return false;
@@ -531,7 +533,7 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
   }
 
   /* no argument: take current page as offset */
-  unsigned int page_offset = zathura_document_get_current_page_number(zathura->document);
+  int page_offset = zathura_document_get_current_page_number(zathura->document);
 
   /* retrieve offset from argument */
   if (girara_list_size(argument_list) == 1) {
@@ -545,9 +547,7 @@ cmd_offset(girara_session_t* session, girara_list_t* argument_list)
     }
   }
 
-  if (page_offset < zathura_document_get_number_of_pages(zathura->document)) {
-    zathura_document_set_page_offset(zathura->document, page_offset);
-  }
+  zathura_document_set_page_offset(zathura->document, page_offset);
 
   return true;
 }

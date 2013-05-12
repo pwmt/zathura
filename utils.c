@@ -29,24 +29,16 @@
 const char*
 file_get_extension(const char* path)
 {
-  if (!path) {
+  if (path == NULL) {
     return NULL;
   }
 
-  unsigned int i = strlen(path);
-  for (; i > 0; i--) {
-    if (*(path + i) != '.') {
-      continue;
-    } else {
-      break;
-    }
-  }
-
-  if (!i) {
+  const char* res = strrchr(path, '.');
+  if (res == NULL) {
     return NULL;
   }
 
-  return path + i + 1;
+  return res + 1;
 }
 
 bool
@@ -185,7 +177,8 @@ page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* o
                    zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
-zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, int height, int width)
+zathura_rectangle_t
+rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width)
 {
   zathura_rectangle_t tmp;
   switch (degree) {
@@ -234,33 +227,11 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
   double page_width  = zathura_page_get_width(page);
   double scale       = zathura_document_get_scale(document);
 
-  zathura_rectangle_t tmp;
-
-  switch (zathura_document_get_rotation(document)) {
-    case 90:
-      tmp.x1 = (page_height - rectangle.y2) * scale;
-      tmp.x2 = (page_height - rectangle.y1) * scale;
-      tmp.y1 = rectangle.x1 * scale;
-      tmp.y2 = rectangle.x2 * scale;
-      break;
-    case 180:
-      tmp.x1 = (page_width  - rectangle.x2) * scale;
-      tmp.x2 = (page_width  - rectangle.x1) * scale;
-      tmp.y1 = (page_height - rectangle.y2) * scale;
-      tmp.y2 = (page_height - rectangle.y1) * scale;
-      break;
-    case 270:
-      tmp.x1 = rectangle.y1 * scale;
-      tmp.x2 = rectangle.y2 * scale;
-      tmp.y1 = (page_width - rectangle.x2) * scale;
-      tmp.y2 = (page_width - rectangle.x1) * scale;
-      break;
-    default:
-      tmp.x1 = rectangle.x1 * scale;
-      tmp.x2 = rectangle.x2 * scale;
-      tmp.y1 = rectangle.y1 * scale;
-      tmp.y2 = rectangle.y2 * scale;
-  }
+  zathura_rectangle_t tmp = rotate_rectangle(rectangle, zathura_document_get_rotation(document), page_height, page_width);
+  tmp.x1 *= scale;
+  tmp.x2 *= scale;
+  tmp.y1 *= scale;
+  tmp.y2 *= scale;
 
   return tmp;
 
@@ -269,34 +240,32 @@ error_ret:
   return rectangle;
 }
 
-void
-set_adjustment(GtkAdjustment* adjustment, gdouble value)
-{
-  gtk_adjustment_set_value(adjustment, MAX(gtk_adjustment_get_lower(adjustment),
-                           MIN(gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment), value)));
-}
-
-void
+double
 page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
-  g_return_if_fail(page != NULL && page_height != NULL && page_width != NULL);
+  g_return_val_if_fail(page != NULL && page_height != NULL && page_width != NULL, 0.0);
 
   zathura_document_t* document = zathura_page_get_document(page);
   if (document == NULL) {
-    return;
+    return 0.0;
   }
 
   double height = zathura_page_get_height(page);
   double width  = zathura_page_get_width(page);
   double scale  = zathura_document_get_scale(document);
+  double real_scale;
 
   if (rotate && zathura_document_get_rotation(document) % 180) {
     *page_width  = ceil(height * scale);
     *page_height = ceil(width  * scale);
+    real_scale = MAX(*page_width / height, *page_height / width);
   } else {
     *page_width  = ceil(width  * scale);
     *page_height = ceil(height * scale);
+    real_scale = MAX(*page_width / width, *page_height / height);
   }
+
+  return real_scale;
 }
 
 void
@@ -346,35 +315,6 @@ zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
   unsigned int page_number = zathura_page_get_index(page);
 
   return zathura->pages[page_number];
-}
-
-void
-readjust_view_after_zooming(zathura_t *zathura, float old_zoom, bool delay)
-{
-  if (zathura == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  double scale = zathura_document_get_scale(zathura->document);
-  gdouble valx = gtk_adjustment_get_value(hadjustment) / old_zoom * scale;
-  gdouble valy = gtk_adjustment_get_value(vadjustment) / old_zoom * scale;
-
-  bool zoom_center = false;
-  girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
-  if (zoom_center) {
-    valx += gtk_adjustment_get_page_size(hadjustment) * (scale / old_zoom - 1) / 2;
-  }
-
-  if (delay == true) {
-    position_set_delayed(zathura, valx, valy);
-  } else {
-    set_adjustment(vadjustment, valx);
-    set_adjustment(vadjustment, valy);
-  }
 }
 
 void
@@ -461,7 +401,7 @@ replace_substring(const char* string, const char* old, const char* new)
   /* replace */
   while (*string != '\0') {
     if (strstr(string, old) == string) {
-      strcpy(&ret[i], new);
+      strncpy(&ret[i], new, new_len);
       i += new_len;
       string += old_len;
     } else {

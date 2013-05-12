@@ -143,7 +143,7 @@ void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adju
  * @param document The document
  * @return The page offset
  */
-unsigned int zathura_document_get_page_offset(zathura_document_t* document);
+int zathura_document_get_page_offset(zathura_document_t* document);
 
 /**
  * Sets the new page offset of the document

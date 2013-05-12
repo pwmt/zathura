@@ -6,6 +6,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+#include "glib-compat.h"
 #include "render.h"
 #include "zathura.h"
 #include "document.h"
@@ -19,7 +20,7 @@ static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 
 struct render_thread_s {
   GThreadPool* pool; /**< Pool of threads */
-  GMutex mutex; /**< Render lock */
+  mutex mutex; /**< Render lock */
   bool about_to_close; /**< Render thread is to be freed */
 };
 
@@ -32,9 +33,9 @@ render_job(void* data, void* user_data)
     return;
   }
 
-  girara_debug("rendering page %d ...", zathura_page_get_index(page));
+  girara_debug("rendering page %d ...", zathura_page_get_index(page) + 1);
   if (render(zathura, page) != true) {
-    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page));
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(page) + 1);
   }
 }
 
@@ -51,7 +52,7 @@ render_init(zathura_t* zathura)
 
   render_thread->about_to_close = false;
   g_thread_pool_set_sort_function(render_thread->pool, render_thread_sort, zathura);
-  g_mutex_init(&render_thread->mutex);
+  mutex_init(&render_thread->mutex);
 
   return render_thread;
 
@@ -73,6 +74,7 @@ render_free(render_thread_t* render_thread)
     g_thread_pool_free(render_thread->pool, TRUE, TRUE);
   }
 
+  mutex_free(&(render_thread->mutex));
   g_free(render_thread);
 }
 
@@ -150,7 +152,7 @@ render(zathura_t* zathura, zathura_page_t* page)
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
-  page_calc_height_width(page, &page_height, &page_width, false);
+  const double real_scale = page_calc_height_width(page, &page_height, &page_width, false);
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
 
@@ -172,9 +174,8 @@ render(zathura_t* zathura, zathura_page_t* page)
   cairo_restore(cairo);
   cairo_save(cairo);
 
-  double scale = zathura_document_get_scale(zathura->document);
-  if (fabs(scale - 1.0f) > FLT_EPSILON) {
-    cairo_scale(cairo, scale, scale);
+  if (fabs(real_scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, real_scale, real_scale);
   }
 
   render_lock(zathura->sync.render_thread);
@@ -306,8 +307,8 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
   unsigned int page_a_index = zathura_page_get_index(page_a);
   unsigned int page_b_index = zathura_page_get_index(page_b);
 
-  unsigned int last_view_a = 0;
-  unsigned int last_view_b = 0;
+  gint64 last_view_a = 0;
+  gint64 last_view_b = 0;
 
   g_object_get(zathura->pages[page_a_index], "last-view", &last_view_a, NULL);
   g_object_get(zathura->pages[page_b_index], "last-view", &last_view_b, NULL);
@@ -328,7 +329,7 @@ render_lock(render_thread_t* render_thread)
     return;
   }
 
-  g_mutex_lock(&render_thread->mutex);
+  mutex_lock(&render_thread->mutex);
 }
 
 void
@@ -338,5 +339,5 @@ render_unlock(render_thread_t* render_thread)
     return;
   }
 
-  g_mutex_unlock(&render_thread->mutex);
+  mutex_unlock(&render_thread->mutex);
 }

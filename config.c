@@ -52,6 +52,10 @@ cb_color_change(girara_session_t* session, const char* name,
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
   } else if (g_strcmp0(name, "recolor-lightcolor") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
+  } else if (g_strcmp0(name, "render-loading-bg") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_bg));
+  } else if (g_strcmp0(name, "render-loading-fg") == 0) {
+    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_fg));
   }
 
   render_all(zathura);
@@ -143,7 +147,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"),cb_first_page_column_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
-  float_value = -1;
+  float_value = 40;
   girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),             NULL, NULL);
   float_value = 0.0;
   girara_setting_add(gsession, "scroll-full-overlap",   &float_value, FLOAT,  false, _("Full page scroll overlap"),           NULL, NULL);
@@ -151,9 +155,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
   girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
-  int_value = 20;
-  girara_setting_add(gsession, "page-store-threshold",  &int_value,   INT,    false, _("Life time (in seconds) of a hidden page"), NULL, NULL);
-  girara_setting_add(gsession, "page-store-interval",   &int_value,   INT,    true,  _("Amount of seconds between each cache purge"), NULL, NULL);
+  int_value = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
+  girara_setting_add(gsession, "page-cache-size",       &int_value,   INT,    true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
   int_value = 20;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
@@ -165,6 +168,10 @@ config_load_default(zathura_t* zathura)
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
   girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
+  girara_setting_add(gsession, "render-loading-bg",      NULL, STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
+  girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
+  girara_setting_add(gsession, "render-loading-fg",      NULL, STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
+  girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
@@ -178,6 +185,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "link-hadjust",           &bool_value,  BOOLEAN, false, _("Align link target to the left"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "search-hadjust",         &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
   float_value = 0.5;
@@ -199,6 +208,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
 
@@ -244,6 +255,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_Up,         NULL, sc_navigate,                 FULLSCREEN, PREVIOUS,        NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Page_Up,    NULL, sc_navigate,                 FULLSCREEN, PREVIOUS,        NULL);
   girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_space,      NULL, sc_navigate,                 FULLSCREEN, PREVIOUS,        NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_BackSpace,  NULL, sc_navigate,                 FULLSCREEN, PREVIOUS,        NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_k,          NULL, sc_navigate_index,           INDEX,      UP,              NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_j,          NULL, sc_navigate_index,           INDEX,      DOWN,            NULL);
@@ -286,7 +298,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_space,      NULL, sc_scroll,                   NORMAL,     FULL_UP,         NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_o,          NULL, sc_jumplist,                 NORMAL,     BACKWARD,        NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i,          NULL, sc_jumplist,                 NORMAL,     FORWARD,         NULL);
-
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_j,          NULL, sc_bisect,                   NORMAL,     FORWARD,         NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_k,          NULL, sc_bisect,                   NORMAL,     BACKWARD,        NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_n,          NULL, sc_search,                   NORMAL,     FORWARD,         NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_N,          NULL, sc_search,                   NORMAL,     BACKWARD,        NULL);
 
@@ -299,6 +312,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_d,          NULL, sc_toggle_page_mode,         NORMAL,     0,               NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_q,          NULL, sc_quit,                     NORMAL,     0,               NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_q,          NULL, sc_quit,                     FULLSCREEN, 0,               NULL);
 
   girara_shortcut_add(gsession, 0,                GDK_KEY_plus,       NULL, sc_zoom,                     NORMAL,     ZOOM_IN,         NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_KP_Add,     NULL, sc_zoom,                     NORMAL,     ZOOM_IN,         NULL);
@@ -388,6 +402,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
   girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
+  girara_shortcut_mapping_add(gsession, "bisect",            sc_bisect);
   girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
   girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "print",             sc_print);

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-01-13 15:08+0100\n"
-"PO-Revision-Date: 2012-04-03 15:25+0000\n"
+"POT-Creation-Date: 2013-04-28 13:23+0200\n"
+"PO-Revision-Date: 2013-04-28 14:45+0200\n"
 "Last-Translator: Moritz Lipp <mlq@pwmt.org>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
 "zathura/language/es/)\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../callbacks.c:218
+#: ../callbacks.c:304
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrada inválida: '%s'."
 
-#: ../callbacks.c:256
+#: ../callbacks.c:342
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Índice invalido: '%s'."
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
-#: ../commands.c:253 ../commands.c:283 ../commands.c:309 ../commands.c:408
-#: ../commands.c:529 ../shortcuts.c:475 ../shortcuts.c:1053
-#: ../shortcuts.c:1082
+#: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
+#: ../commands.c:531 ../shortcuts.c:486 ../shortcuts.c:1205
+#: ../shortcuts.c:1234
 msgid "No document opened."
 msgstr "Ningún documento abierto."
 
-#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:413
+#: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:415
 msgid "Invalid number of arguments given."
 msgstr "Número de argumentos inválido."
 
@@ -76,53 +76,53 @@ msgstr "No hay información disponible."
 msgid "Too many arguments."
 msgstr "Demasiados argumentos."
 
-#: ../commands.c:230
+#: ../commands.c:232
 msgid "No arguments given."
 msgstr "Ningún argumento recibido."
 
-#: ../commands.c:289 ../commands.c:315
+#: ../commands.c:291 ../commands.c:317
 msgid "Document saved."
 msgstr "Documento guardado."
 
-#: ../commands.c:291 ../commands.c:317
+#: ../commands.c:293 ../commands.c:319
 msgid "Failed to save document."
 msgstr "Error al guardar el documento."
 
-#: ../commands.c:294 ../commands.c:320
+#: ../commands.c:296 ../commands.c:322
 msgid "Invalid number of arguments."
 msgstr "Número de argumentos inválido."
 
-#: ../commands.c:432
+#: ../commands.c:434
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
 
-#: ../commands.c:434
+#: ../commands.c:436
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Escrito fichero adjunto '%s' a '%s'."
 
-#: ../commands.c:478
+#: ../commands.c:480
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Escrito fichero adjunto '%s' a '%s'."
 
-#: ../commands.c:480
+#: ../commands.c:482
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
 
-#: ../commands.c:487
+#: ../commands.c:489
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Imagen desconocida '%s'."
 
-#: ../commands.c:491
+#: ../commands.c:493
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Adjunto o imagen desconocidos '%s'."
 
-#: ../commands.c:542
+#: ../commands.c:544
 msgid "Argument must be a number."
 msgstr "El argumento ha de ser un número."
 
@@ -141,300 +141,320 @@ msgid "Images"
 msgstr "Imágenes"
 
 #. zathura settings
-#: ../config.c:135
+#: ../config.c:139
 msgid "Database backend"
 msgstr "Base de datos"
 
-#: ../config.c:137
+#: ../config.c:141
 msgid "Zoom step"
 msgstr "Unidad de zoom"
 
-#: ../config.c:139
+#: ../config.c:143
 msgid "Padding between pages"
 msgstr "Separación entre páginas"
 
-#: ../config.c:141
+#: ../config.c:145
 msgid "Number of pages per row"
 msgstr "Número de páginas por fila"
 
-#: ../config.c:143
+#: ../config.c:147
 msgid "Column of the first page"
 msgstr "Columna de la primera página"
 
-#: ../config.c:145
+#: ../config.c:149
 msgid "Scroll step"
 msgstr "Paso de desplazamiento"
 
-#: ../config.c:147
+#: ../config.c:151
 msgid "Horizontal scroll step"
 msgstr "Paso de desplazamiento horizontal"
 
-#: ../config.c:149
+#: ../config.c:153
 msgid "Full page scroll overlap"
 msgstr "Solapamiento del desplazamiento de página"
 
-#: ../config.c:151
+#: ../config.c:155
 msgid "Zoom minimum"
 msgstr "Zoom mínimo"
 
-#: ../config.c:153
+#: ../config.c:157
 msgid "Zoom maximum"
 msgstr "Zoom máximo"
 
-#: ../config.c:155
-msgid "Life time (in seconds) of a hidden page"
-msgstr "Tiempo de vida (en segundos) de una página oculta"
+#: ../config.c:159
+msgid "Maximum number of pages to keep in the cache"
+msgstr ""
 
-#: ../config.c:156
-msgid "Amount of seconds between each cache purge"
-msgstr "Cantidad de segundos entre limpieza de caché"
-
-#: ../config.c:158
+#: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
 msgstr "Número de posiciones a recordar en la lista de saltos"
 
-#: ../config.c:160
+#: ../config.c:163
 msgid "Recoloring (dark color)"
 msgstr "Recoloreado (color oscuro)"
 
-#: ../config.c:162
+#: ../config.c:165
 msgid "Recoloring (light color)"
 msgstr "Recoloreado (color claro)"
 
-#: ../config.c:164
+#: ../config.c:167
 msgid "Color for highlighting"
 msgstr "Color para destacar"
 
-#: ../config.c:166
+#: ../config.c:169
 msgid "Color for highlighting (active)"
 msgstr "Color para destacar (activo)"
 
-#: ../config.c:170
+#: ../config.c:171
+msgid "'Loading ...' background color"
+msgstr ""
+
+#: ../config.c:173
+msgid "'Loading ...' foreground color"
+msgstr ""
+
+#: ../config.c:177
 msgid "Recolor pages"
 msgstr "Recolorear páginas"
 
-#: ../config.c:172
+#: ../config.c:179
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 "Cuando se recoloree, mantener el tono original y ajustar únicamente la "
 "luminosidad"
 
-#: ../config.c:174
+#: ../config.c:181
 msgid "Wrap scrolling"
 msgstr "Navegación/Scroll cíclica/o"
 
-#: ../config.c:176
+#: ../config.c:183
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../config.c:178
+#: ../config.c:185
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:180
+#: ../config.c:187
 msgid "Horizontally centered zoom"
 msgstr "Zoom centrado horizontalmente"
 
-#: ../config.c:182
+#: ../config.c:189
+msgid "Align link target to the left"
+msgstr ""
+
+#: ../config.c:191
 msgid "Center result horizontally"
 msgstr "Centrar el resultado horizontalmente"
 
-#: ../config.c:184
+#: ../config.c:193
 msgid "Transparency for highlighting"
 msgstr "Transparencia para el destacado"
 
-#: ../config.c:186
+#: ../config.c:195
 msgid "Render 'Loading ...'"
 msgstr "Renderizado 'Cargando ...'"
 
-#: ../config.c:187
+#: ../config.c:196
 msgid "Adjust to when opening file"
 msgstr "Ajustarse al abrir un fichero"
 
-#: ../config.c:189
+#: ../config.c:198
 msgid "Show hidden files and directories"
 msgstr "Mostrar directorios y ficheros ocultos"
 
-#: ../config.c:191
+#: ../config.c:200
 msgid "Show directories"
 msgstr "Mostrar directorios"
 
-#: ../config.c:193
+#: ../config.c:202
 msgid "Always open on first page"
 msgstr "Abrir siempre la primera página"
 
-#: ../config.c:195
+#: ../config.c:204
 msgid "Highlight search results"
 msgstr "Destacar los resultados de búsqueda"
 
-#: ../config.c:197
+#: ../config.c:206
 msgid "Enable incremental search"
 msgstr "Habilitar la búsqueda incremental"
 
-#: ../config.c:199
+#: ../config.c:208
 msgid "Clear search results on abort"
 msgstr "Borrar resultados de búsqueda al abortar"
 
-#: ../config.c:201
+#: ../config.c:210
 msgid "Use basename of the file in the window title"
 msgstr "Usar el nombre del archivo en el título de la ventana"
 
-#: ../config.c:203 ../main.c:60
+#: ../config.c:212
+msgid "Use basename of the file in the statusbar"
+msgstr ""
+
+#: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
 msgstr "Habilitar soporte synctex"
 
 #. define default inputbar commands
-#: ../config.c:359
+#: ../config.c:373
 msgid "Add a bookmark"
 msgstr "Añadir Favorito"
 
-#: ../config.c:360
+#: ../config.c:374
 msgid "Delete a bookmark"
 msgstr "Eliminar Favorito"
 
-#: ../config.c:361
+#: ../config.c:375
 msgid "List all bookmarks"
 msgstr "Listar favoritos"
 
-#: ../config.c:362
+#: ../config.c:376
 msgid "Close current file"
 msgstr "Cerrar fichero actual"
 
-#: ../config.c:363
+#: ../config.c:377
 msgid "Show file information"
 msgstr "Mostrar información del fichero"
 
-#: ../config.c:364
+#: ../config.c:378
 msgid "Execute a command"
 msgstr "Ejecutar un comando"
 
-#: ../config.c:365
+#: ../config.c:379
 msgid "Show help"
 msgstr "Mostrar ayuda"
 
-#: ../config.c:366
+#: ../config.c:380
 msgid "Open document"
 msgstr "Abrir documento"
 
-#: ../config.c:367
+#: ../config.c:381
 msgid "Close zathura"
 msgstr "Salir de zathura"
 
-#: ../config.c:368
+#: ../config.c:382
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: ../config.c:369
+#: ../config.c:383
 msgid "Save document"
 msgstr "Guardar documento"
 
-#: ../config.c:370
+#: ../config.c:384
 msgid "Save document (and force overwriting)"
 msgstr "Guardar documento (y sobreescribir)"
 
-#: ../config.c:371
+#: ../config.c:385
 msgid "Save attachments"
 msgstr "Guardar ficheros adjuntos"
 
-#: ../config.c:372
+#: ../config.c:386
 msgid "Set page offset"
 msgstr "Asignar el desplazamiento de página"
 
-#: ../config.c:373
+#: ../config.c:387
 msgid "Mark current location within the document"
 msgstr "Marcar la posición actual en el documento"
 
-#: ../config.c:374
+#: ../config.c:388
 msgid "Delete the specified marks"
 msgstr "Borrar las marcas especificadas"
 
-#: ../config.c:375
+#: ../config.c:389
 msgid "Don't highlight current search results"
 msgstr "No destacar los resultados de la búsqueda actual"
 
-#: ../config.c:376
+#: ../config.c:390
 msgid "Highlight current search results"
 msgstr "Destacar los resultados de la búsqueda actual"
 
-#: ../config.c:377
+#: ../config.c:391
 msgid "Show version information"
 msgstr "Mostrar versión"
 
-#: ../links.c:161 ../links.c:240
+#: ../links.c:171 ../links.c:250
 msgid "Failed to run xdg-open."
 msgstr "Error al tratar de ejecutar xdg-open"
 
-#: ../links.c:179
+#: ../links.c:189
 #, c-format
 msgid "Link: page %d"
 msgstr ""
 
-#: ../links.c:186
+#: ../links.c:196
 #, c-format
 msgid "Link: %s"
 msgstr ""
 
-#: ../links.c:190
+#: ../links.c:200
 msgid "Link: Invalid"
 msgstr ""
 
-#: ../main.c:52
+#: ../main.c:55
 msgid "Reparents to window specified by xid"
 msgstr "Reasignar a la ventana especificada por xid"
 
-#: ../main.c:53
+#: ../main.c:56
 msgid "Path to the config directory"
 msgstr "Ruta al directorio de configuración"
 
-#: ../main.c:54
+#: ../main.c:57
 msgid "Path to the data directory"
 msgstr "Ruta para el directorio de datos"
 
-#: ../main.c:55
+#: ../main.c:58
 msgid "Path to the directories containing plugins"
 msgstr "Ruta a los directorios que contienen los plugins"
 
-#: ../main.c:56
+#: ../main.c:59
 msgid "Fork into the background"
 msgstr "Fork, ejecutándose en background"
 
-#: ../main.c:57
+#: ../main.c:60
 msgid "Document password"
 msgstr "Contraseña del documento"
 
-#: ../main.c:58
+#: ../main.c:61
+msgid "Page number to go to"
+msgstr ""
+
+#: ../main.c:62
 msgid "Log level (debug, info, warning, error)"
 msgstr "Nivel de log (debug, info, warning, error)"
 
-#: ../main.c:59
+#: ../main.c:63
 msgid "Print version information"
 msgstr "Mostrar información del fichero"
 
-#: ../main.c:61
+#: ../main.c:65
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Editor de Synctex (reenvíado al commando synctex)"
 
-#: ../page-widget.c:455
+#: ../page-widget.c:460
 msgid "Loading..."
 msgstr "Cargando ..."
 
-#: ../page-widget.c:646
+#: ../page-widget.c:657
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Se ha copiado el texto seleccionado al portapapeles: %s"
 
-#: ../page-widget.c:744
+#: ../page-widget.c:755
 msgid "Copy image"
 msgstr "Copiar imagen"
 
-#: ../page-widget.c:745
+#: ../page-widget.c:756
 msgid "Save image as"
 msgstr "Salvar imagen como"
 
-#: ../shortcuts.c:956
+#: ../shortcuts.c:1108
 msgid "This document does not contain any index"
 msgstr "Este documento no contiene ningún índice"
 
-#: ../zathura.c:193 ../zathura.c:865
+#: ../zathura.c:224 ../zathura.c:956
 msgid "[No name]"
 msgstr "[Sin nombre]"
+
+#: ../zathura.c:589
+msgid "Document does not contain any pages"
+msgstr ""

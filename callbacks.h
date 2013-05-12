@@ -35,6 +35,53 @@ void cb_buffer_changed(girara_session_t* session);
  * @param data NULL
  */
 void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
+
+/**
+ * This function gets called when the bounds or the page_size of the horizontal
+ * scrollbar change (e.g. when the zoom level is changed).
+ *
+ * It adjusts the value of the horizontal scrollbar, possibly based on its
+ * previous adjustment, stored in the tracking adjustment
+ * zathura->ui.hadjustment.
+ *
+ * @param adjustment The horizontal adjustment of a gtkScrolledWindow
+ * @param data The zathura instance
+ */
+void cb_view_hadjustment_changed(GtkAdjustment *adjustment, gpointer data);
+
+/**
+ * This function gets called when the bounds or the page_size of the vertical
+ * scrollbar change (e.g. when the zoom level is changed).
+ *
+ * It adjusts the value of the vertical scrollbar based on its previous
+ * adjustment, stored in the tracking adjustment zathura->ui.hadjustment.
+ *
+ * @param adjustment The vertical adjustment of a gtkScrolledWindow
+ * @param data The zathura instance
+ */
+void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
+
+/* This function gets called when the value of the adjustment changes.
+ *
+ * It updates the value of the tracking adjustment, only if the bounds of the
+ * adjustment have not changed (if they did change,
+ * cb_adjustment_track_bounds() will take care of updating everything).
+ *
+ * @param adjustment The adjustment instance
+ * @param data The tracking adjustment instance
+ */
+void cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data);
+
+/* This function gets called when the bounds or the page_size of the adjustment
+ * change.
+ *
+ * It updates the value, bounds and page_size of the tracking adjustment.
+ *
+ * @param adjustment The adjustment instance
+ * @param data The tracking adjustment instance
+ */
+void cb_adjustment_track_bounds(GtkAdjustment* adjustment, gpointer data);
+
 /**
  * This function gets called when the value of the "pages-per-row"
  * variable changes

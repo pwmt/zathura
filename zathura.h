@@ -13,6 +13,8 @@
 #include <gtk/gtkx.h>
 #endif
 
+#define ZATHURA_PAGE_CACHE_DEFAULT_SIZE		15
+
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -20,6 +22,11 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   SELECT, GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP,
   FULL_DOWN, HALF_LEFT, HALF_RIGHT, FULL_LEFT, FULL_RIGHT, NEXT_CHAR,
   PREVIOUS_CHAR, DELETE_TO_LINE_START, APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW };
+
+/* unspecified page number */
+enum {
+  ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
+};
 
 /* forward declaration for types form database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
@@ -57,11 +64,16 @@ struct zathura_s
       GdkColor recolor_light_color; /**< Light color for recoloring */
       GdkColor highlight_color; /**< Color for highlighting */
       GdkColor highlight_color_active; /** Color for highlighting */
+      GdkColor render_loading_bg; /**< Background color for render "Loading..." */
+      GdkColor render_loading_fg; /**< Foreground color for render "Loading..." */
     } colors;
 
     GtkWidget *page_widget_alignment;
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
+
+    GtkAdjustment *hadjustment; /**< Tracking hadjustment */
+    GtkAdjustment *vadjustment; /**< Tracking vadjustment */
   } ui;
 
   struct
@@ -142,6 +154,15 @@ struct zathura_s
     gchar* file_path; /**< Save file path */
     gchar* password; /**< Save password */
   } file_monitor;
+
+  /**
+   * The page cache
+   */
+  struct {
+    int* cache;
+    unsigned int size;
+    unsigned int num_cached_pages;
+  } page_cache;
 };
 
 /**
@@ -235,7 +256,8 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open(zathura_t* zathura, const char* path, const char* password);
+bool document_open(zathura_t* zathura, const char* path, const char* password,
+                   int page_number);
 
 /**
  * Opens a file (idle)
@@ -244,7 +266,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* password);
  * @param path The path to the file
  * @param password The password of the file
  */
-void document_open_idle(zathura_t* zathura, const char* path, const char* password);
+void document_open_idle(zathura_t* zathura, const char* path,
+                        const char* password, int page_number);
 
 /**
  * Save a open file
@@ -312,6 +335,22 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsign
 void statusbar_page_number_update(zathura_t* zathura);
 
 /**
+ * Checks whether current jump has a previous jump
+ *
+ * @param zathura The zathura session
+ * @return true if current jump has a previous jump
+ */
+bool zathura_jumplist_has_previous(zathura_t* zathura);
+
+/**
+ * Checks whether current jump has a next jump
+ *
+ * @param zathura The zathura session
+ * @return true if current jump has a next jump
+ */
+bool zathura_jumplist_has_next(zathura_t* zathura);
+
+/**
  * Return current jump in the jumplist
  *
  * @param zathura The zathura session
@@ -354,5 +393,12 @@ void zathura_jumplist_add(zathura_t* zathura);
  */
 void zathura_jumplist_append_jump(zathura_t* zathura);
 
+/**
+ * Add a page to the page cache
+ *
+ * @param zathura The zathura session
+ * @param page_index The index of the page to be cached
+ */
+void zathura_page_cache_add(zathura_t* zathura, unsigned int page_index);
 
 #endif // ZATHURA_H

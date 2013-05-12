@@ -1,186 +1,188 @@
-# zathura - language file (Tamil (India))
+# zathura - language file (Catalan)
 # See LICENSE file for license and copyright information
 #
 # Translators:
-#   <mankand007@gmail.com>, 2012.
+# norbux <manelsales@ono.com>, 2013
+# norbux <manelsales@ono.com>, 2012
+# mvdan <mvdan@mvdan.cc>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-04-28 13:23+0200\n"
-"PO-Revision-Date: 2013-04-28 14:46+0200\n"
-"Last-Translator: mankand007 <mankand007@gmail.com>\n"
-"Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
-"language/ta_IN/)\n"
-"Language: ta_IN\n"
+"PO-Revision-Date: 2013-04-28 14:47+0200\n"
+"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/zathura/language/"
+"ca/)\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../callbacks.c:304
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "கொடுக்கப்பட்ட உள்ளீடு(input) '%s' தவறு"
+msgstr "Entrada invàlida '%s'."
 
 #: ../callbacks.c:342
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "கொடுக்கப்பட்ட index '%s' தவறு"
+msgstr "Índex invàlid '%s'."
 
 #: ../commands.c:35 ../commands.c:70 ../commands.c:97 ../commands.c:139
 #: ../commands.c:255 ../commands.c:285 ../commands.c:311 ../commands.c:410
 #: ../commands.c:531 ../shortcuts.c:486 ../shortcuts.c:1205
 #: ../shortcuts.c:1234
 msgid "No document opened."
-msgstr "எந்தக் ஆவணமும் திறக்கப்படவில்லை"
+msgstr "No s'ha obert cap document."
 
 #: ../commands.c:41 ../commands.c:76 ../commands.c:103 ../commands.c:415
 msgid "Invalid number of arguments given."
-msgstr "கொடுக்கப்பட்ட arguments-களின் எண்ணிக்கை தவறு"
+msgstr "Nombre d'arguments invàlids."
 
 #: ../commands.c:49
 #, c-format
 msgid "Bookmark successfuly updated: %s"
-msgstr "Bookmark வெற்றிகரமாக நிகழ்நிலை(update) படுத்தப்பட்டது: %s"
+msgstr "Marcador actualitzat correctament: %s"
 
 #: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
+msgstr "No s'ha pogut crear el marcador: %s"
 
 #: ../commands.c:59
 #, c-format
 msgid "Bookmark successfuly created: %s"
-msgstr "Bookmark வெற்றிகரமாக உருவாக்கப்பட்டது: %s"
+msgstr "Marcador creat correctament: %s"
 
 #: ../commands.c:82
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Bookmark அழிக்கப்பட்டது: %s"
+msgstr "Esborrat el marcador: %s"
 
 #: ../commands.c:84
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Bookmark-ஐ அழிக்க இயலவில்லை: %s"
+msgstr "No s'ha pogut esborrar el marcador: %s"
 
 #: ../commands.c:110
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "அந்தப் பெயரில் எந்த bookmark-ம் இல்லை: %s"
+msgstr "Marcador no existent: %s"
 
 #: ../commands.c:161 ../commands.c:183
 msgid "No information available."
-msgstr "எந்தத் தகவலும் இல்லை"
+msgstr "Cap informació disponible."
 
 #: ../commands.c:221
 msgid "Too many arguments."
-msgstr "Argumentகளின் எண்ணிக்கை மிகவும் அதிகம்"
+msgstr "Massa arguments."
 
 #: ../commands.c:232
 msgid "No arguments given."
-msgstr "எந்த argument-ம் தரப்படவில்லை"
+msgstr "Cap argument subministrat."
 
 #: ../commands.c:291 ../commands.c:317
 msgid "Document saved."
-msgstr "கோப்பு சேமிக்கப்பட்டது"
+msgstr "Document desat."
 
 #: ../commands.c:293 ../commands.c:319
 msgid "Failed to save document."
-msgstr "ஆவணத்தை சேமிக்க இயலவில்லை"
+msgstr "No s'ha pogut desar el document."
 
 #: ../commands.c:296 ../commands.c:322
 msgid "Invalid number of arguments."
-msgstr "கொடுக்கப்பட்ட argument-களின் எண்ணிக்கை தவறு"
+msgstr "Nombre d'arguments invàlids."
 
 #: ../commands.c:434
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr ""
+msgstr "No s'ha pogut escriure el fitxer adjunt '%s' a '%s'."
 
 #: ../commands.c:436
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr ""
+msgstr "S'ha escrit el fitxer adjunt '%s' a '%s'."
 
 #: ../commands.c:480
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr ""
+msgstr "S'ha escrit la imatge '%s' a '%s'."
 
 #: ../commands.c:482
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr ""
+msgstr "No s'ha pogut escriure la imatge '%s' a '%s'."
 
 #: ../commands.c:489
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Imatge desconeguda '%s'."
 
 #: ../commands.c:493
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Imatge o fitxer adjunt desconegut '%s'."
 
 #: ../commands.c:544
 msgid "Argument must be a number."
-msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
+msgstr "L'argument ha de ser un nombre."
 
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "Pàgina %d"
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "இணைப்புகளைச் சேமிக்கவும்"
+msgstr "Fitxers adjunts"
 
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr ""
+msgstr "Imatges"
 
 #. zathura settings
 #: ../config.c:139
 msgid "Database backend"
-msgstr ""
+msgstr "Base de dades de rerefons"
 
 #: ../config.c:141
 msgid "Zoom step"
-msgstr "Zoom அமைப்பு"
+msgstr "Pas d'ampliació"
 
 #: ../config.c:143
 msgid "Padding between pages"
-msgstr "இரு பக்கங்களுக்கிடையில் உள்ள நிரப்பல்(padding)"
+msgstr "Separació entre pàgines"
 
 #: ../config.c:145
 msgid "Number of pages per row"
-msgstr "ஒரு வரிசையில் எத்தனை பக்கங்களைக் காட்ட வேண்டும்"
+msgstr "Nombre de pàgines per fila"
 
 #: ../config.c:147
 msgid "Column of the first page"
-msgstr ""
+msgstr "Columna de la primera pàgina"
 
 #: ../config.c:149
 msgid "Scroll step"
-msgstr "திரை உருளல்(scroll) அளவு"
+msgstr "Pas de desplaçament"
 
 #: ../config.c:151
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Pas de desplaçament horitzontal"
 
 #: ../config.c:153
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Superposició de pàgines completes de desplaçament"
 
 #: ../config.c:155
 msgid "Zoom minimum"
-msgstr "முடிந்தவரை சிறியதாகக் காட்டு"
+msgstr "Zoom mínim"
 
 #: ../config.c:157
 msgid "Zoom maximum"
-msgstr "முடிந்தவரை பெரிதாகக் காட்டு"
+msgstr "Zoom màxim"
 
 #: ../config.c:159
 msgid "Maximum number of pages to keep in the cache"
@@ -188,23 +190,23 @@ msgstr ""
 
 #: ../config.c:161
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Nombre de posicions per recordar al jumplist"
 
 #: ../config.c:163
 msgid "Recoloring (dark color)"
-msgstr ""
+msgstr "Recolorejant (color fosc)"
 
 #: ../config.c:165
 msgid "Recoloring (light color)"
-msgstr ""
+msgstr "Recolorejant (color clar)"
 
 #: ../config.c:167
 msgid "Color for highlighting"
-msgstr ""
+msgstr "Color de realçament"
 
 #: ../config.c:169
 msgid "Color for highlighting (active)"
-msgstr ""
+msgstr "Color de realçament (activat)"
 
 #: ../config.c:171
 msgid "'Loading ...' background color"
@@ -216,27 +218,27 @@ msgstr ""
 
 #: ../config.c:177
 msgid "Recolor pages"
-msgstr ""
+msgstr "Recolorejant les pàgines"
 
 #: ../config.c:179
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
+msgstr "Quan recoloregis manté el to original i ajusta només la lluminositat"
 
 #: ../config.c:181
 msgid "Wrap scrolling"
-msgstr ""
+msgstr "Desplaçament recollit"
 
 #: ../config.c:183
 msgid "Page aware scrolling"
-msgstr ""
+msgstr "Desplaçament recollit"
 
 #: ../config.c:185
 msgid "Advance number of pages per row"
-msgstr ""
+msgstr "Avançar nombre de pàgines per fila"
 
 #: ../config.c:187
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Zoom centrat horitzontalment"
 
 #: ../config.c:189
 msgid "Align link target to the left"
@@ -244,47 +246,47 @@ msgstr ""
 
 #: ../config.c:191
 msgid "Center result horizontally"
-msgstr ""
+msgstr "Centra el resultat horitzontalment"
 
 #: ../config.c:193
 msgid "Transparency for highlighting"
-msgstr ""
+msgstr "Transparència del realçat"
 
 #: ../config.c:195
 msgid "Render 'Loading ...'"
-msgstr ""
+msgstr "Renderitza 'Carregant ...'"
 
 #: ../config.c:196
 msgid "Adjust to when opening file"
-msgstr ""
+msgstr "Ajustar al fitxer quan s'obri"
 
 #: ../config.c:198
 msgid "Show hidden files and directories"
-msgstr ""
+msgstr "Mostra els directoris i fitxers ocults"
 
 #: ../config.c:200
 msgid "Show directories"
-msgstr ""
+msgstr "Mostra els directoris"
 
 #: ../config.c:202
 msgid "Always open on first page"
-msgstr ""
+msgstr "Obrir sempre la primera pàgina"
 
 #: ../config.c:204
 msgid "Highlight search results"
-msgstr ""
+msgstr "Realça els resultats de recerca"
 
 #: ../config.c:206
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Habilita la cerca incremental"
 
 #: ../config.c:208
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Esborra els resultats de recerca a l'interrompre"
 
 #: ../config.c:210
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Utilitza el nom base del fitxer en el títol de la finestra"
 
 #: ../config.c:212
 msgid "Use basename of the file in the statusbar"
@@ -292,126 +294,126 @@ msgstr ""
 
 #: ../config.c:214 ../main.c:64
 msgid "Enable synctex support"
-msgstr ""
+msgstr "Habilitar la compatibilitat amb synctex"
 
 #. define default inputbar commands
 #: ../config.c:373
 msgid "Add a bookmark"
-msgstr "புதிய bookmark உருவாக்கு"
+msgstr "Afegir un marcador"
 
 #: ../config.c:374
 msgid "Delete a bookmark"
-msgstr "Bookmark-ஐ அழித்துவிடு"
+msgstr "Esborrar un marcador"
 
 #: ../config.c:375
 msgid "List all bookmarks"
-msgstr "அனைத்து bookmark-களையும் பட்டியலிடு"
+msgstr "Llista tots els marcadors"
 
 #: ../config.c:376
 msgid "Close current file"
-msgstr ""
+msgstr "Tancar el fitxer actual"
 
 #: ../config.c:377
 msgid "Show file information"
-msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
+msgstr "Mostra informació sobre el fitxer"
 
 #: ../config.c:378
 msgid "Execute a command"
-msgstr ""
+msgstr "Executar una comanda"
 
 #: ../config.c:379
 msgid "Show help"
-msgstr "உதவியைக் காட்டு"
+msgstr "Mostrar l'ajuda"
 
 #: ../config.c:380
 msgid "Open document"
-msgstr "ஒரு ஆவணத்தைத் திற"
+msgstr "Obrir document"
 
 #: ../config.c:381
 msgid "Close zathura"
-msgstr "zathura-வை விட்டு வெளியேறு"
+msgstr "Tancar Zathura"
 
 #: ../config.c:382
 msgid "Print document"
-msgstr "ஆவணத்தை அச்சிடு"
+msgstr "Imprimir document"
 
 #: ../config.c:383
 msgid "Save document"
-msgstr "ஆவணத்தை சேமிக்கவும்"
+msgstr "Desar document"
 
 #: ../config.c:384
 msgid "Save document (and force overwriting)"
-msgstr ""
+msgstr "Desar document (i forçar la sobreescritura)"
 
 #: ../config.c:385
 msgid "Save attachments"
-msgstr "இணைப்புகளைச் சேமிக்கவும்"
+msgstr "Desa els fitxers adjunts"
 
 #: ../config.c:386
 msgid "Set page offset"
-msgstr ""
+msgstr "Assigna el desplaçament de pàgina"
 
 #: ../config.c:387
 msgid "Mark current location within the document"
-msgstr ""
+msgstr "Marca la posició actual dins el document"
 
 #: ../config.c:388
 msgid "Delete the specified marks"
-msgstr ""
+msgstr "Esborrar les marques especificades"
 
 #: ../config.c:389
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "No realcis els resultats de la recerca actual"
 
 #: ../config.c:390
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Realça els resultats de recerca actual"
 
 #: ../config.c:391
 msgid "Show version information"
-msgstr ""
+msgstr "Mostra informació sobre la versió"
 
 #: ../links.c:171 ../links.c:250
 msgid "Failed to run xdg-open."
-msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
+msgstr "No s'ha pogut executar xdg-open."
 
 #: ../links.c:189
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Enllaçar: pàgina %d"
 
 #: ../links.c:196
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Enllaç: %s"
 
 #: ../links.c:200
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Enllaç: Invàlid"
 
 #: ../main.c:55
 msgid "Reparents to window specified by xid"
-msgstr ""
+msgstr "Reassigna a la finestra especificada per xid"
 
 #: ../main.c:56
 msgid "Path to the config directory"
-msgstr ""
+msgstr "Ruta al directori de configuració"
 
 #: ../main.c:57
 msgid "Path to the data directory"
-msgstr ""
+msgstr "Camí al directori de dades"
 
 #: ../main.c:58
 msgid "Path to the directories containing plugins"
-msgstr ""
+msgstr "Camí al directori que conté els plugins"
 
 #: ../main.c:59
 msgid "Fork into the background"
-msgstr ""
+msgstr "Bifurca en segon pla"
 
 #: ../main.c:60
 msgid "Document password"
-msgstr ""
+msgstr "Contrasenya del document"
 
 #: ../main.c:61
 msgid "Page number to go to"
@@ -419,40 +421,40 @@ msgstr ""
 
 #: ../main.c:62
 msgid "Log level (debug, info, warning, error)"
-msgstr ""
+msgstr "Nivell de registre (depuració, informació, advertiments, errors)"
 
 #: ../main.c:63
 msgid "Print version information"
-msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
+msgstr "Imprimeix informació sobre la versió"
 
 #: ../main.c:65
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "Editor synctex (reenviat a l'ordre synctex)"
 
 #: ../page-widget.c:460
 msgid "Loading..."
-msgstr ""
+msgstr "Carregant..."
 
 #: ../page-widget.c:657
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr ""
+msgstr "Copiat el text seleccionat al porta-retalls: %s"
 
 #: ../page-widget.c:755
 msgid "Copy image"
-msgstr "படத்தை ஒரு பிரதியெடு"
+msgstr "Copia la imatge"
 
 #: ../page-widget.c:756
 msgid "Save image as"
-msgstr ""
+msgstr "Desa imatge com a"
 
 #: ../shortcuts.c:1108
 msgid "This document does not contain any index"
-msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
+msgstr "Aquest document no conté cap índex"
 
 #: ../zathura.c:224 ../zathura.c:956
 msgid "[No name]"
-msgstr "பெயரற்ற ஆவணம்"
+msgstr "[Sense nom]"
 
 #: ../zathura.c:589
 msgid "Document does not contain any pages"

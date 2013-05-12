@@ -41,6 +41,11 @@ OPTIONS
   will be used for the first one and zathura will ask for the passwords of the
   remaining files if needed.
 
+-P [number], --page [number]
+  Open the document at the given page number. Pages are numbered starting with
+  1, and negative numbers indicate page numbers starting from the end of the
+  document, -1 being the last page.
+
 --fork
   Fork into the background
 
@@ -70,6 +75,8 @@ gg, G, nG
   Goto to the first, the last or to the nth page
 ^o, ^i
   Move backward and forward through the jump list
+^j, ^k
+  Bisect forward and backward between the last two jump points
 ^c, Escape
   Abort
 a, s
@@ -94,6 +101,8 @@ R
   Reload document
 Tab
   Show index and switch to **Index mode**
+d
+  Toggle dual page view
 F5
   Switch to fullscreen mode
 ^m

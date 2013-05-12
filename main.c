@@ -21,7 +21,9 @@ main(int argc, char* argv[])
   textdomain(GETTEXT_PACKAGE);
 
   /* init gtk */
+#if !GLIB_CHECK_VERSION(2, 31, 0)
   g_thread_init(NULL);
+#endif
   gdk_threads_init();
   gtk_init(&argc, &argv);
 
@@ -41,6 +43,7 @@ main(int argc, char* argv[])
   bool forkback         = false;
   bool print_version    = false;
   bool synctex          = false;
+  int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
 
 #if (GTK_MAJOR_VERSION == 3)
   Window embed = 0;
@@ -55,6 +58,7 @@ main(int argc, char* argv[])
     { "plugins-dir",            'p', 0, G_OPTION_ARG_STRING,   &plugin_path,    _("Path to the directories containing plugins"),        "path" },
     { "fork",                   '\0',0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
     { "password",               'w', 0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
+    { "page",                   'P', 0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
     { "debug",                  'l', 0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
     { "version",                'v', 0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
     { "synctex",                's', 0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
@@ -126,7 +130,9 @@ main(int argc, char* argv[])
 
   /* open document if passed */
   if (argc > 1) {
-    document_open_idle(zathura, argv[1], password);
+    if (page_number > 0)
+      --page_number;
+    document_open_idle(zathura, argv[1], password, page_number);
 
     /* open additional files */
     for (int i = 2; i < argc; i++) {

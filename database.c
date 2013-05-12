@@ -9,16 +9,6 @@ zathura_database_default_init(ZathuraDatabaseInterface* GIRARA_UNUSED(iface))
 {
 }
 
-void
-zathura_db_free(zathura_database_t* db)
-{
-  if (db == NULL) {
-    return;
-  }
-
-  g_object_unref(db);
-}
-
 bool
 zathura_db_add_bookmark(zathura_database_t* db, const char* file,
                         zathura_bookmark_t* bookmark)

@@ -51,13 +51,6 @@ struct _ZathuraDatabaseInterface
 GType zathura_database_get_type(void);
 
 /**
- * Free database instance.
- *
- * @param db The database instance to free.
- */
-void zathura_db_free(zathura_database_t* db);
-
-/**
  * Add or update bookmark in the database.
  *
  * @param db The database instance

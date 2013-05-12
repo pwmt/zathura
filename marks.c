@@ -235,9 +235,7 @@ mark_evaluate(zathura_t* zathura, int key)
   /* search for existing mark */
   GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
   if (mark != NULL && mark->key == key) {
-    double old_scale = zathura_document_get_scale(zathura->document);
     zathura_document_set_scale(zathura->document, mark->scale);
-    readjust_view_after_zooming(zathura, old_scale, true);
     render_all(zathura);
 
     position_set_delayed(zathura, mark->position_x, mark->position_y);

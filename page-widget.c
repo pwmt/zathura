@@ -7,6 +7,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
+#include "glib-compat.h"
 #include "links.h"
 #include "page-widget.h"
 #include "page.h"
@@ -21,8 +22,9 @@ typedef struct zathura_page_widget_private_s {
   zathura_page_t* page; /**< Page object */
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
+  bool render_requested; /**< No surface and rendering has been requested */
   gint64 last_view; /**< Last time the page has been viewed */
-  GStaticMutex lock; /**< Lock */
+  mutex lock; /**< Lock */
 
   struct {
     girara_list_t* list; /**< List of links on the page */
@@ -114,34 +116,35 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
 
   /* add properties */
   g_object_class_install_property(object_class, PROP_PAGE,
-                                  g_param_spec_pointer("page", "page", "the page to draw", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+                                  g_param_spec_pointer("page", "page", "the page to draw", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_ZATHURA,
-                                  g_param_spec_pointer("zathura", "zathura", "the zathura instance", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+                                  g_param_spec_pointer("zathura", "zathura", "the zathura instance", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_DRAW_LINKS,
-                                  g_param_spec_boolean("draw-links", "draw-links", "Set to true if links should be drawn", FALSE, G_PARAM_WRITABLE));
+                                  g_param_spec_boolean("draw-links", "draw-links", "Set to true if links should be drawn", FALSE, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_LINKS_OFFSET,
-                                  g_param_spec_int("offset-links", "offset-links", "Offset for the link numbers", 0, INT_MAX, 0, G_PARAM_WRITABLE));
+                                  g_param_spec_int("offset-links", "offset-links", "Offset for the link numbers", 0, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_LINKS_NUMBER,
-                                  g_param_spec_int("number-of-links", "number-of-links", "Number of links", 0, INT_MAX, 0, G_PARAM_READABLE));
+                                  g_param_spec_int("number-of-links", "number-of-links", "Number of links", 0, INT_MAX, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS,
-                                  g_param_spec_pointer("search-results", "search-results", "Set to the list of search results", G_PARAM_WRITABLE | G_PARAM_READABLE));
+                                  g_param_spec_pointer("search-results", "search-results", "Set to the list of search results", G_PARAM_WRITABLE | G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_CURRENT,
-                                  g_param_spec_int("search-current", "search-current", "The current search result", -1, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_READABLE));
+                                  g_param_spec_int("search-current", "search-current", "The current search result", -1, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_LENGTH,
-                                  g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE));
+                                  g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_DRAW_SEACH_RESULTS,
-                                  g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_WRITABLE));
+                                  g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_LAST_VIEW,
-                                  g_param_spec_int("last-view", "last-view", "Last time the page has been viewed", -1, INT_MAX, 0, G_PARAM_READABLE));
+                                  g_param_spec_int64("last-view", "last-view", "Last time the page has been viewed", -1, G_MAXINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
 zathura_page_widget_init(ZathuraPage* widget)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  priv->page      = NULL;
-  priv->surface   = NULL;
-  priv->last_view = g_get_real_time();
+  priv->page             = NULL;
+  priv->surface          = NULL;
+  priv->render_requested = false;
+  priv->last_view        = g_get_real_time();
 
   priv->links.list      = NULL;
   priv->links.retrieved = false;
@@ -162,7 +165,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->mouse.selection_basepoint.x = -1;
   priv->mouse.selection_basepoint.y = -1;
 
-  g_static_mutex_init(&(priv->lock));
+  mutex_init(&(priv->lock));
 
   /* we want mouse events */
   gtk_widget_add_events(GTK_WIDGET(widget),
@@ -195,7 +198,7 @@ zathura_page_widget_finalize(GObject* object)
     girara_list_free(priv->links.list);
   }
 
-  g_static_mutex_free(&(priv->lock));
+  mutex_free(&(priv->lock));
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
@@ -294,7 +297,7 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
       g_value_set_pointer(value, priv->search.list);
       break;
     case PROP_LAST_VIEW:
-      g_value_set_int(value, priv->last_view);
+      g_value_set_int64(value, priv->last_view);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -325,7 +328,7 @@ static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  g_static_mutex_lock(&(priv->lock));
+  mutex_lock(&(priv->lock));
 
   zathura_document_t* document = zathura_page_get_document(priv->page);
 
@@ -435,7 +438,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       GdkColor color = priv->zathura->ui.colors.recolor_light_color;
       cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     } else {
-      cairo_set_source_rgb(cairo, 1, 1, 1);
+      GdkColor color = priv->zathura->ui.colors.render_loading_bg;
+      cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     }
     cairo_rectangle(cairo, 0, 0, page_width, page_height);
     cairo_fill(cairo);
@@ -449,7 +453,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         GdkColor color = priv->zathura->ui.colors.recolor_dark_color;
         cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       } else {
-        cairo_set_source_rgb(cairo, 0, 0, 0);
+        GdkColor color = priv->zathura->ui.colors.render_loading_fg;
+        cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       }
 
       const char* text = _("Loading...");
@@ -464,9 +469,12 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* render real page */
-    render_page(priv->zathura->sync.render_thread, priv->page);
+    if (priv->render_requested == false) {
+      priv->render_requested = true;
+      render_page(priv->zathura->sync.render_thread, priv->page);
+    }
   }
-  g_static_mutex_unlock(&(priv->lock));
+  mutex_unlock(&(priv->lock));
   return FALSE;
 }
 
@@ -481,15 +489,18 @@ void
 zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  g_static_mutex_lock(&(priv->lock));
+  mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
     cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
   }
+  priv->render_requested = false;
   priv->surface = surface;
-  g_static_mutex_unlock(&(priv->lock));
+  mutex_unlock(&(priv->lock));
   /* force a redraw here */
-  zathura_page_widget_redraw_canvas(widget);
+  if (priv->surface != NULL) {
+    zathura_page_widget_redraw_canvas(widget);
+  }
 }
 
 static void
@@ -847,21 +858,5 @@ zathura_page_widget_update_view_time(ZathuraPage* widget)
 
   if (zathura_page_get_visibility(priv->page) == true) {
     priv->last_view = g_get_real_time();
-  }
-}
-
-void
-zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold)
-{
-  g_return_if_fail(ZATHURA_IS_PAGE(widget) == TRUE);
-  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  if (zathura_page_get_visibility(priv->page) == true || priv->surface == NULL || threshold <= 0) {
-    return;
-  }
-
-  const gint64 now =  g_get_real_time();
-  if (now - priv->last_view >= threshold * G_USEC_PER_SEC) {
-    girara_debug("purge page %d from cache (unseen for %f seconds)", zathura_page_get_index(priv->page), ((double)now - priv->last_view) / G_USEC_PER_SEC);
-    zathura_page_widget_update_surface(widget, NULL);
   }
 }

@@ -2,7 +2,6 @@
 
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE 700
-// TODO: Implement realpath
 
 #include <sys/wait.h>
 #include <stdlib.h>
@@ -12,6 +11,9 @@
 #include <errno.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#ifdef WITH_MAGIC
+#include <magic.h>
+#endif
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -45,7 +47,7 @@ struct zathura_document_s {
   unsigned int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
-  unsigned int page_offset; /**< Page offset */
+  int page_offset; /**< Page offset */
 
   /**
    * Document pages
@@ -360,14 +362,10 @@ zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mo
     return;
   }
 
-  if (mode == ZATHURA_ADJUST_BESTFIT || mode == ZATHURA_ADJUST_WIDTH) {
-    document->adjust_mode = mode;
-  } else {
-    document->adjust_mode = ZATHURA_ADJUST_NONE;
-  }
+  document->adjust_mode = mode;
 }
 
-unsigned int
+int
 zathura_document_get_page_offset(zathura_document_t* document)
 {
   if (document == NULL) {
@@ -384,9 +382,7 @@ zathura_document_set_page_offset(zathura_document_t* document, unsigned int page
     return;
   }
 
-  if (page_offset < document->number_of_pages) {
-    document->page_offset = page_offset;
-  }
+  document->page_offset = page_offset;
 }
 
 void
@@ -518,17 +514,61 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
 static const gchar*
 guess_type(const char* path)
 {
-  gboolean uncertain;
-  const gchar* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
-  if (content_type == NULL) {
-    return NULL;
+  const gchar* content_type = NULL;
+#ifdef WITH_MAGIC
+  const char* mime_type = NULL;
+
+  /* creat magic cookie */
+  const int flags =
+    MAGIC_MIME_TYPE |
+    MAGIC_SYMLINK |
+    MAGIC_NO_CHECK_APPTYPE |
+    MAGIC_NO_CHECK_CDF |
+    MAGIC_NO_CHECK_ELF |
+    MAGIC_NO_CHECK_ENCODING;
+  magic_t magic = magic_open(flags);
+  if (magic == NULL) {
+    girara_debug("failed creating the magic cookie");
+    goto cleanup;
   }
 
-  if (uncertain == FALSE) {
+  /* ... and load mime database */
+  if (magic_load(magic, NULL) < 0) {
+    girara_debug("failed loading the magic database: %s", magic_error(magic));
+    goto cleanup;
+  }
+
+  /* get the mime type */
+  mime_type = magic_file(magic, path);
+  if (mime_type == NULL) {
+    girara_debug("failed guessing filetype: %s", magic_error(magic));
+    goto cleanup;
+  }
+
+  girara_debug("magic detected filetype: %s", mime_type);
+  content_type = g_strdup(mime_type);
+
+cleanup:
+  if (magic != NULL) {
+    magic_close(magic);
+  }
+
+  if (content_type != NULL) {
     return content_type;
   }
-
-  girara_debug("g_content_type is uncertain, guess: %s\n", content_type);
+  /* else fallback to g_content_type_guess method */
+#endif /*WITH_MAGIC*/
+  gboolean uncertain = FALSE;
+  content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  if (content_type == NULL) {
+    girara_debug("g_content_type failed\n");
+  } else {
+    if (uncertain == FALSE) {
+      girara_debug("g_content_type detected filetype: %s", content_type);
+      return content_type;
+    }
+    girara_debug("g_content_type is uncertain, guess: %s", content_type);
+  }
 
   FILE* f = fopen(path, "rb");
   if (f == NULL) {
@@ -551,7 +591,7 @@ guess_type(const char* path)
 
     length += bytes_read;
     content_type = g_content_type_guess(NULL, content, length, &uncertain);
-    girara_debug("new guess: %s uncertain: %d, read: %zu\n", content_type, uncertain, length);
+    girara_debug("new guess: %s uncertain: %d, read: %zu", content_type, uncertain, length);
   }
 
   fclose(f);

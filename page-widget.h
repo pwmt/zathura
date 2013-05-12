@@ -88,12 +88,4 @@ zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int i
  */
 void zathura_page_widget_update_view_time(ZathuraPage* widget);
 
-/**
- * If the page has not been viewed for some time, purge the surface.
- *
- * @param widget the widget
- * @param threshold the threshold (in seconds)
- */
-void zathura_page_widget_purge_unused(ZathuraPage* widget, gint64 threshold);
-
 #endif
