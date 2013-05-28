@@ -110,7 +110,7 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
 
   if (plugin == NULL) {
     girara_error("unknown file type\n");
-    error = ZATHURA_ERROR_UNKNOWN;
+    *error = ZATHURA_ERROR_UNKNOWN;
     goto error_free;
   }
 
