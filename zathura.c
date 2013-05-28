@@ -562,6 +562,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, password, &error);
 
   if (document == NULL) {
+    if (error == NULL ) {
+      girara_notify(zathura->ui.session, GIRARA_ERROR, _("Unsupported file type. Please install the necessary plugin."), false, NULL, NULL, NULL);
+    }
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
       zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info != NULL) {
