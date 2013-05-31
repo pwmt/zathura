@@ -147,10 +147,10 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
             (double)(pages_per_row * cell_width);
     zathura_document_set_scale(zathura->document, scale);
 
-    bool show_scrollbars = false;
-    girara_setting_get(session, "show-scrollbars", &show_scrollbars);
+    bool show_vscrollbar = false;
+    girara_setting_get(session, "show-v-scrollbar", &show_vscrollbar);
 
-    if (show_scrollbars) {
+    if (show_vscrollbar) {
       /* If the document is taller than the view, there's a vertical
        * scrollbar; we need to substract its width from the view's width. */
       zathura_get_document_size(zathura, cell_height, cell_width,
