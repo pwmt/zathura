@@ -447,7 +447,21 @@ Defines the background color for the focused tab
 
 show-scrollbars
 ^^^^^^^^^^^^^^^
-Defines if scrollbars should be shown or not
+Defines if both the horizontal and vertical scrollbars should be shown or not
+
+* Value type: Boolean
+* Default value: false
+
+show-h-scrollbar
+^^^^^^^^^^^^^^^^
+Defines whether to show/hide the horizontal scrollbar
+
+* Value type: Boolean
+* Default value: false
+
+show-v-scrollbar
+^^^^^^^^^^^^^^^^
+Defines whether to show/hide the vertical scrollbar
 
 * Value type: Boolean
 * Default value: false
