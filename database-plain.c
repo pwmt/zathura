@@ -647,7 +647,7 @@ plain_io_read(GiraraInputHistoryIO* db)
   girara_list_t* res = girara_list_new2(g_free);
   char** tmp = g_strsplit(content, "\n", 0);
   for (size_t i = 0; tmp[i] != NULL; ++i) {
-    if (strlen(tmp[i]) == 0 || strchr(":/", tmp[i][0]) == NULL) {
+    if (strlen(tmp[i]) == 0 || strchr(":/?", tmp[i][0]) == NULL) {
       continue;
     }
     girara_list_append(res, g_strdup(tmp[i]));
@@ -688,7 +688,7 @@ plain_io_append(GiraraInputHistoryIO* db, const char* input)
 
   /* write input history file */
   for (size_t i = 0; tmp[i] != NULL; ++i) {
-    if (strlen(tmp[i]) == 0 || strchr(":/", tmp[i][0]) == NULL || strcmp(tmp[i], input) == 0) {
+    if (strlen(tmp[i]) == 0 || strchr(":/?", tmp[i][0]) == NULL || strcmp(tmp[i], input) == 0) {
       continue;
     }
     fprintf(file, "%s\n", tmp[i]);
