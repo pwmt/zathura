@@ -339,7 +339,6 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     return false;
   }
 
-  bool firsthit = true;
   zathura_error_t error = ZATHURA_ERROR_OK;
 
   /* set search direction */
@@ -351,10 +350,6 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   /* reset search highlighting */
   bool nohlsearch = false;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
-
-  if (nohlsearch == false) {
-    document_draw_search_results(zathura, true);
-  }
 
   /* search pages */
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
@@ -383,19 +378,20 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     }
 
     g_object_set(page_widget, "search-results", result, NULL);
-    if (firsthit == true) {
-      if (page_id != 0) {
-        page_set_delayed(zathura, zathura_page_get_index(page));
-      }
-      if (argument->n == BACKWARD) {
-        /* start at bottom hit in page */
-        g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
-      } else {
-        g_object_set(page_widget, "search-current", 0, NULL);
-      }
-      firsthit = false;
+
+    if (argument->n == BACKWARD) {
+      /* start at bottom hit in page */
+      g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
+    } else {
+      g_object_set(page_widget, "search-current", 0, NULL);
     }
   }
+
+  girara_argument_t* arg = g_malloc0(sizeof(girara_argument_t));
+
+  arg->n = FORWARD;
+  sc_search(session, arg, NULL, 0);
+  g_free(arg);
 
   return true;
 }

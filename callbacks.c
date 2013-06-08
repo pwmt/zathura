@@ -106,6 +106,13 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       }
     } else {
       zathura_page_set_visibility(page, false);
+
+      girara_list_t* results = NULL;
+      g_object_get(page_widget, "search-results", &results, NULL);
+
+      if (results != NULL) {
+	g_object_set(page_widget, "search-current", 0, NULL);
+      }
     }
   }
 
