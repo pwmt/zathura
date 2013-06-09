@@ -238,7 +238,9 @@ mark_evaluate(zathura_t* zathura, int key)
     zathura_document_set_scale(zathura->document, mark->scale);
     render_all(zathura);
 
-    position_set_delayed(zathura, mark->position_x, mark->position_y);
+    zathura_jumplist_add(zathura);
+    position_set(zathura, mark->position_x, mark->position_y);
+    zathura_jumplist_add(zathura);
 
     cb_view_vadjustment_value_changed(NULL, zathura);
 

@@ -28,7 +28,7 @@ enum {
   ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
 };
 
-/* forward declaration for types form database.h */
+/* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
 /* forward declaration for types from render.h */
