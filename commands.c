@@ -111,7 +111,11 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  return page_set(zathura, bookmark->page - 1);
+  zathura_jumplist_add(zathura);
+  page_set(zathura, bookmark->page - 1);
+  zathura_jumplist_add(zathura);
+
+  return true;
 }
 
 bool
