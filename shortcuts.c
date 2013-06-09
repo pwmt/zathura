@@ -313,7 +313,7 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  zathura_jumplist_save(zathura);
+  zathura_jumplist_add(zathura);
   if (t != 0) {
     /* add offset */
     t += zathura_document_get_page_offset(zathura->document);
@@ -328,7 +328,6 @@ sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
   /* adjust horizontal position */
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   cb_view_hadjustment_changed(hadjustment, zathura);
-
   zathura_jumplist_add(zathura);
 
   return false;
@@ -726,20 +725,19 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   zathura_jump_t* jump = NULL;
   switch(argument->n) {
     case FORWARD:
-      zathura_jumplist_save(zathura);
       zathura_jumplist_forward(zathura);
       jump = zathura_jumplist_current(zathura);
       break;
 
     case BACKWARD:
-      zathura_jumplist_save(zathura);
       zathura_jumplist_backward(zathura);
       jump = zathura_jumplist_current(zathura);
       break;
   }
 
   if (jump != NULL) {
-    page_set(zathura, jump->page);
+    zathura_document_set_current_page_number(zathura->document, jump->page);
+    statusbar_page_number_update(zathura);
     const double s = zathura_document_get_scale(zathura->document);
     position_set_delayed(zathura, jump->x * s, jump->y * s);
   }
@@ -770,13 +768,11 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
   prev_page = prev2_page = 0;
   have_prev = have_prev2 = false;
 
-  /* save position at current jump point */
-  zathura_jumplist_save(zathura);
-
   /* process arguments */
   int direction;
   if (t > 0 && t <= number_of_pages) {
     /* jump to page t, and bisect between cur_page and t */
+    zathura_jumplist_add(zathura);
     page_set(zathura, t-1);
     zathura_jumplist_add(zathura);
     if (t-1 > cur_page) {
@@ -825,6 +821,7 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       if (have_prev && cur_page <= prev_page) {
         /* add a new jump point */
         if (cur_page < prev_page) {
+          zathura_jumplist_add(zathura);
           page_set(zathura, (cur_page + prev_page)/2);
           zathura_jumplist_add(zathura);
         }
@@ -833,14 +830,15 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
         /* save current position at previous jump point */
         if (cur_page < prev2_page) {
           zathura_jumplist_backward(zathura);
-          zathura_jumplist_save(zathura);
+          zathura_jumplist_add(zathura);
           zathura_jumplist_forward(zathura);
 
           page_set(zathura, (cur_page + prev2_page)/2);
-          zathura_jumplist_save(zathura);
+          zathura_jumplist_add(zathura);
         }
       } else {
         /* none of prev_page or prev2_page comes after cur_page */
+        zathura_jumplist_add(zathura);
         page_set(zathura, (cur_page + number_of_pages - 1)/2);
         zathura_jumplist_add(zathura);
       }
@@ -850,6 +848,7 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       if (have_prev && prev_page <= cur_page) {
         /* add a new jump point */
         if (prev_page < cur_page) {
+          zathura_jumplist_add(zathura);
           page_set(zathura, (cur_page + prev_page)/2);
           zathura_jumplist_add(zathura);
         }
@@ -858,15 +857,16 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
         /* save current position at previous jump point */
         if (prev2_page < cur_page) {
           zathura_jumplist_backward(zathura);
-          zathura_jumplist_save(zathura);
+          zathura_jumplist_add(zathura);
           zathura_jumplist_forward(zathura);
 
           page_set(zathura, (cur_page + prev2_page)/2);
-          zathura_jumplist_save(zathura);
+          zathura_jumplist_add(zathura);
         }
 
       } else {
         /* none of prev_page or prev2_page comes before cur_page */
+        zathura_jumplist_add(zathura);
         page_set(zathura, cur_page/2);
         zathura_jumplist_add(zathura);
       }
@@ -947,8 +947,6 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       target_idx = current - 1;
     } else {
       /* the next result is on a different page */
-      zathura_jumplist_save(zathura);
-
       g_object_set(page_widget, "search-current", -1, NULL);
 
       for (int npage_id = 1; page_id < num_pages; ++npage_id) {
@@ -962,8 +960,6 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
           break;
         }
       }
-
-      zathura_jumplist_add(zathura);
     }
 
     break;
@@ -979,6 +975,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
     page_offset_t offset;
     page_calculate_offset(zathura, target_page, &offset);
+    zathura_jumplist_add(zathura);
 
     if (zathura_page_get_index(target_page) != cur_page) {
       page_set(zathura, zathura_page_get_index(target_page));
@@ -995,6 +992,8 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       int x = offset.x - gtk_adjustment_get_page_size(view_hadjustment) / 2 + rectangle.x1;
       zathura_adjustment_set_value(view_hadjustment, x);
     }
+
+    zathura_jumplist_add(zathura);
   }
 
   return false;
@@ -1190,7 +1189,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     hvalue = gtk_adjustment_get_value(hadjustment);
 
     /* save current position to the jumplist */
-    zathura_jumplist_save(zathura);
+    zathura_jumplist_add(zathura);
 
     girara_set_view(session, zathura->ui.index);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));

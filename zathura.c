@@ -57,6 +57,9 @@ static bool zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_i
 static ssize_t zathura_page_cache_lru_invalidate(zathura_t* zathura);
 static void zathura_page_cache_invalidate_all(zathura_t* zathura);
 static bool zathura_page_cache_is_full(zathura_t* zathura, bool* result);
+static void zathura_jumplist_reset_current(zathura_t* zathura);
+static void zathura_jumplist_append_jump(zathura_t* zathura);
+static void zathura_jumplist_save(zathura_t* zathura);
 
 /* function implementation */
 zathura_t*
@@ -275,8 +278,6 @@ zathura_init(zathura_t* zathura)
   zathura->jumplist.list = girara_list_new2(g_free);
   zathura->jumplist.size = 0;
   zathura->jumplist.cur = NULL;
-  zathura_jumplist_append_jump(zathura);
-  zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
 
   /* page cache */
 
@@ -1111,9 +1112,11 @@ position_set_delayed_impl(gpointer data)
   return FALSE;
 }
 
-bool
+void
 position_set_delayed(zathura_t* zathura, double position_x, double position_y)
 {
+  g_return_if_fail(zathura != NULL);
+
   position_set_delayed_t* p = g_malloc0(sizeof(position_set_delayed_t));
 
   p->zathura    = zathura;
@@ -1121,10 +1124,26 @@ position_set_delayed(zathura_t* zathura, double position_x, double position_y)
   p->position_y = position_y;
 
   gdk_threads_add_idle(position_set_delayed_impl, p);
-
-  return FALSE;
 }
 
+void
+position_set(zathura_t* zathura, double position_x, double position_y)
+{
+  g_return_if_fail(zathura != NULL);
+
+  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
+
+  /* negative values mean: don't set the position */
+  if (position_x >= 0) {
+    zathura_adjustment_set_value(hadjustment, position_x);
+  }
+
+  if (position_y >= 0) {
+    zathura_adjustment_set_value(vadjustment, position_y);
+  }
+}
 
 bool
 zathura_jumplist_has_previous(zathura_t* zathura)
@@ -1133,7 +1152,7 @@ zathura_jumplist_has_previous(zathura_t* zathura)
 }
 
 bool
-zathura_jumplist_has_has_next(zathura_t* zathura)
+zathura_jumplist_has_next(zathura_t* zathura)
 {
   return girara_list_iterator_has_next(zathura->jumplist.cur);
 }
@@ -1164,7 +1183,25 @@ zathura_jumplist_backward(zathura_t* zathura)
   }
 }
 
-void
+static void
+zathura_jumplist_reset_current(zathura_t* zathura)
+{
+  g_return_if_fail(zathura != NULL || zathura->jumplist.cur != NULL);
+
+  if (girara_list_iterator_has_next(zathura->jumplist.cur) == false) {
+    return;
+  }
+
+  while (true) {
+    girara_list_iterator_next(zathura->jumplist.cur);
+
+    if (girara_list_iterator_has_next(zathura->jumplist.cur) == false) {
+      return;
+    }
+  }
+}
+
+static void
 zathura_jumplist_append_jump(zathura_t* zathura)
 {
   zathura_jump_t *jump = g_malloc(sizeof(zathura_jump_t));
@@ -1172,17 +1209,6 @@ zathura_jumplist_append_jump(zathura_t* zathura)
     jump->page = 0;
     jump->x = 0;
     jump->y = 0;
-
-    /* remove right tail after current */
-    if (zathura->jumplist.cur != NULL) {
-      girara_list_iterator_t *it = girara_list_iterator_copy(zathura->jumplist.cur);
-      girara_list_iterator_next(it);
-      while (girara_list_iterator_is_valid(it)) {
-        girara_list_iterator_remove(it);
-        zathura->jumplist.size = zathura->jumplist.size - 1;
-      }
-      g_free(it);
-    }
 
     /* trim from beginning until max_size */
     girara_list_iterator_t *it = girara_list_iterator(zathura->jumplist.list);
@@ -1193,6 +1219,11 @@ zathura_jumplist_append_jump(zathura_t* zathura)
     g_free(it);
 
     girara_list_append(zathura->jumplist.list, jump);
+
+    if (zathura->jumplist.size == 0) {
+      zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
+    }
+
     zathura->jumplist.size = zathura->jumplist.size + 1;
   }
 }
@@ -1201,20 +1232,29 @@ void
 zathura_jumplist_add(zathura_t* zathura)
 {
   if (zathura->jumplist.list != NULL) {
+
     unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
+    GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    double x, y;
+
+    x = gtk_adjustment_get_value(view_hadjustment) / zathura_document_get_scale(zathura->document);
+    y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);
+    zathura_jumplist_reset_current(zathura);
+
     zathura_jump_t* cur = zathura_jumplist_current(zathura);
-    if (cur && cur->page == pagenum) {
+
+    if (cur && cur->page == pagenum && cur->x == x && cur->y == y) {
       return;
     }
 
     zathura_jumplist_append_jump(zathura);
-    girara_list_iterator_next(zathura->jumplist.cur);
+    zathura_jumplist_reset_current(zathura);
     zathura_jumplist_save(zathura);
   }
 }
 
-
-void
+static void
 zathura_jumplist_save(zathura_t* zathura)
 {
   zathura_jump_t* cur = zathura_jumplist_current(zathura);
@@ -1228,7 +1268,7 @@ zathura_jumplist_save(zathura_t* zathura)
 
     cur->page = pagenum;
     cur->x = gtk_adjustment_get_value(view_hadjustment) / zathura_document_get_scale(zathura->document);
-    cur->y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);;
+    cur->y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);
   }
 }
 

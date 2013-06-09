@@ -333,7 +333,7 @@ handle_link(GtkEntry* entry, girara_session_t* session,
         invalid_index = false;
         switch (action) {
           case ZATHURA_LINK_ACTION_FOLLOW:
-            zathura_jumplist_save(zathura);
+            zathura_jumplist_add(zathura);
             zathura_link_evaluate(zathura, link);
             zathura_jumplist_add(zathura);
             break;
@@ -534,7 +534,7 @@ cb_unknown_command(girara_session_t* session, const char* input)
     }
   }
 
-  zathura_jumplist_save(zathura);
+  zathura_jumplist_add(zathura);
   page_set(zathura, atoi(input) - 1);
   zathura_jumplist_add(zathura);
 

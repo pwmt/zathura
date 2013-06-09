@@ -157,9 +157,9 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
         girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
         if (link_hadjust == true) {
-          position_set_delayed(zathura, offset.x, offset.y);
+          position_set(zathura, offset.x, offset.y);
         } else {
-          position_set_delayed(zathura, -1, offset.y);
+          position_set(zathura, -1, offset.y);
         }
       }
       break;
