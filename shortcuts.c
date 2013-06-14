@@ -722,24 +722,51 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
+  const double scale = zathura_document_get_scale(zathura->document);
+  double x = gtk_adjustment_get_value(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view))) / scale;
+  double y = gtk_adjustment_get_value(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view))) / scale;
   zathura_jump_t* jump = NULL;
+  zathura_jump_t* prev_jump = zathura_jumplist_current(zathura);
+  bool go_to_current = false;
+
+  if (!zathura_jumplist_has_next(zathura) || !zathura_jumplist_has_previous(zathura)) {
+    if (x == prev_jump->x && y == prev_jump->y) {
+      go_to_current = false;
+    } else {
+      go_to_current = true;
+    }
+  }
+
   switch(argument->n) {
     case FORWARD:
-      zathura_jumplist_forward(zathura);
-      jump = zathura_jumplist_current(zathura);
+      if (go_to_current == true && zathura_jumplist_has_previous(zathura) == false) {
+        jump = zathura_jumplist_current(zathura);
+      } else {
+        zathura_jumplist_forward(zathura);
+        jump = zathura_jumplist_current(zathura);
+      }
       break;
-
     case BACKWARD:
-      zathura_jumplist_backward(zathura);
-      jump = zathura_jumplist_current(zathura);
+      if (go_to_current == true && zathura_jumplist_has_next(zathura) == false) {
+        jump = zathura_jumplist_current(zathura);
+      } else {
+        zathura_jumplist_backward(zathura);
+        jump = zathura_jumplist_current(zathura);
+      }
       break;
+  }
+
+  if (jump == prev_jump) {
+    if (zathura_jumplist_has_previous(zathura) == false && argument->n == BACKWARD ||
+        zathura_jumplist_has_next(zathura) == false && argument->n == FORWARD) {
+      jump = NULL;
+    }
   }
 
   if (jump != NULL) {
     zathura_document_set_current_page_number(zathura->document, jump->page);
     statusbar_page_number_update(zathura);
-    const double s = zathura_document_get_scale(zathura->document);
-    position_set_delayed(zathura, jump->x * s, jump->y * s);
+    position_set_delayed(zathura, jump->x * scale, jump->y * scale);
   }
 
   return false;
