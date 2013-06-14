@@ -721,6 +721,7 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
+  g_return_val_if_fail(zathura->jumplist.size != 0, false);
 
   const double scale = zathura_document_get_scale(zathura->document);
   double x = gtk_adjustment_get_value(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view))) / scale;
