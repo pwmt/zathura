@@ -61,6 +61,15 @@ can be used
     set option4 hello\ world
     set option5 "hello world"
 
+
+If you want to use ``color codes`` for some options, make sure to quote them
+accordingly or to escape the hash symbol.
+
+::
+
+    set default-fg "#CCBBCC"
+    set default-fg \#CCBBCC
+
 map - Mapping a shortcut
 ------------------------
 It is possible to map or remap new key bindings to shortcut functions which
