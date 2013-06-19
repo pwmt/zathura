@@ -17,6 +17,6 @@ Comment[pt_BR]=Um visualizador de documentos minimalista
 Comment[ru]=Минималистичный просмотрщик документов
 Comment[tr]=Minimalist bir belge görüntüleyicisi
 Comment[uk_UA]=Легкий переглядач документів
-Exec=zathura
+Exec=zathura %f
 Terminal=false
 Categories=Office;Viewer;
