@@ -730,7 +730,7 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   zathura_jump_t* prev_jump = zathura_jumplist_current(zathura);
   bool go_to_current = false;
 
-  if (!zathura_jumplist_has_next(zathura) || !zathura_jumplist_has_previous(zathura)) {
+  if (zathura_jumplist_has_next(zathura) == false || zathura_jumplist_has_previous(zathura) == false) {
     if (x == prev_jump->x && y == prev_jump->y) {
       go_to_current = false;
     } else {
@@ -758,8 +758,8 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   }
 
   if (jump == prev_jump) {
-    if (zathura_jumplist_has_previous(zathura) == false && argument->n == BACKWARD ||
-        zathura_jumplist_has_next(zathura) == false && argument->n == FORWARD) {
+    if ((zathura_jumplist_has_previous(zathura) == false && argument->n == BACKWARD) ||
+        (zathura_jumplist_has_next(zathura) == false && argument->n == FORWARD)) {
       jump = NULL;
     }
   }
