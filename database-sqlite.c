@@ -123,6 +123,8 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "file TEXT,"
     "id TEXT,"
     "page INTEGER,"
+    "hadj_ratio FLOAT,"
+    "vadj_ratio FLOAT,"
     "PRIMARY KEY(file, id));";
 
   static const char SQL_FILEINFO_INIT[] =
