@@ -328,7 +328,18 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
   }
 
   char* name = prepare_filename(file);
-  g_key_file_set_integer(priv->bookmarks, name, bookmark->id, bookmark->page);
+  char* val_list[] = { g_strdup_printf("%d", bookmark->page),
+                       g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
+                       g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->y) };
+
+  gsize num_vals = sizeof(val_list)/sizeof(char *);
+
+  g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, num_vals);
+
+  for (unsigned int i = 0; i < num_vals; ++i) {
+    g_free(val_list[i]);
+  }
+
   g_free(name);
 
   zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
@@ -337,8 +348,7 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
 }
 
 static bool
-plain_remove_bookmark(zathura_database_t* db, const char* file, const char*
-                      GIRARA_UNUSED(id))
+plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
   if (priv->bookmarks == NULL || priv->bookmark_path == NULL) {
@@ -347,12 +357,13 @@ plain_remove_bookmark(zathura_database_t* db, const char* file, const char*
 
   char* name = prepare_filename(file);
   if (g_key_file_has_group(priv->bookmarks, name) == TRUE) {
-    g_key_file_remove_group(priv->bookmarks, name, NULL);
+    if (g_key_file_remove_key(priv->bookmarks, name, id, NULL) == TRUE) {
 
-    zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
-    g_free(name);
+      zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
+      g_free(name);
 
-    return true;
+      return true;
+    }
   }
   g_free(name);
 
@@ -377,21 +388,37 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
                           zathura_bookmarks_compare, (girara_free_function_t)
                           zathura_bookmark_free);
 
-  gsize length;
-  char** keys = g_key_file_get_keys(priv->bookmarks, name, &length, NULL);
+  gsize num_keys;
+  char** keys = g_key_file_get_keys(priv->bookmarks, name, &num_keys, NULL);
   if (keys == NULL) {
     girara_list_free(result);
     g_free(name);
     return NULL;
   }
 
-  for (gsize i = 0; i < length; i++) {
+  char **val_list = NULL;
+  gsize num_vals = 0;
+
+  for (gsize i = 0; i < num_keys; i++) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
 
     bookmark->id   = g_strdup(keys[i]);
-    bookmark->page = g_key_file_get_integer(priv->bookmarks, name, keys[i], NULL);
+    val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i], &num_vals, NULL);
+
+    bookmark->page = atoi(val_list[0]);
+
+    if (num_vals == 3) {
+      bookmark->x = g_ascii_strtod(val_list[1], NULL);
+      bookmark->y = g_ascii_strtod(val_list[2], NULL);
+    } else if (num_vals == 1) {
+       bookmark->x = DBL_MIN;
+       bookmark->y = DBL_MIN;
+    } else {
+      girara_debug("This must be a BUG");
+    }
 
     girara_list_append(result, bookmark);
+    g_strfreev(val_list);
   }
 
   g_free(name);
@@ -579,7 +606,7 @@ zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file)
   }
 
   /* open file */
-  int fd = open(file, O_RDWR);
+  int fd = open(file, O_RDWR | O_TRUNC);
   if (fd == -1) {
     g_free(content);
     return;

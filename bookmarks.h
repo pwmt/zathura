@@ -10,6 +10,8 @@ struct zathura_bookmark_s
 {
   gchar* id;
   unsigned int page;
+  double x;
+  double y;
 };
 
 typedef struct zathura_bookmark_s zathura_bookmark_t;

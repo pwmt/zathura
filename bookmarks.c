@@ -4,9 +4,11 @@
 #include "bookmarks.h"
 #include "database.h"
 #include "document.h"
+#include "adjustment.h"
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
+#include <girara/session.h>
 
 static int
 bookmark_compare_find(const void* item, const void* data)
@@ -23,14 +25,35 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
   g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
-  zathura_bookmark_t* old = girara_list_find(zathura->bookmarks.bookmarks, bookmark_compare_find, id);
+  double x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+  double y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+  zathura_bookmark_t* old = zathura_bookmark_get(zathura, id);
+
   if (old != NULL) {
-    return NULL;
+    old->page = page;
+    old->x = x;
+    old->y = y;
+
+    if (zathura->database != NULL) {
+      const char* path = zathura_document_get_path(zathura->document);
+      if (zathura_db_remove_bookmark(zathura->database, path, old->id) == false) {
+        girara_warning("Failed to remove old bookmark from database.");
+      }
+
+      if (zathura_db_add_bookmark(zathura->database, path, old) == false) {
+        girara_warning("Failed to add new bookmark to database.");
+      }
+    }
+
+    return old;
   }
 
   zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
+
   bookmark->id = g_strdup(id);
   bookmark->page = page;
+  bookmark->x = x;
+  bookmark->y = y;
   girara_list_append(zathura->bookmarks.bookmarks, bookmark);
 
   if (zathura->database != NULL) {

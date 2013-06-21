@@ -146,6 +146,10 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   static const char SQL_FILEINFO_ALTER2[] =
     "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
 
+  static const char SQL_BOOKMARK_ALTER[] =
+    "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
+    "ALTER TABLE bookmarks ADD COLUMN vadj_ratio FLOAT;";
+
   static const char SQL_HISTORY_INIT[] =
     "CREATE TABLE IF NOT EXISTS history ("
     "time TIMESTAMP,"
@@ -188,6 +192,15 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   if (sqlite3_table_column_metadata(session, NULL, "fileinfo", "first_page_column", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout");
+    }
+  }
+
+  data_type = NULL;
+  if (sqlite3_table_column_metadata(session, NULL, "bookmarks", "hadj_ratio", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK &&
+      sqlite3_table_column_metadata(session, NULL, "bookmarks", "vadj_ratio", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK) {
+    girara_debug("old database table layout detected; updating ...");
+    if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
@@ -241,7 +254,7 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_BOOKMARK_ADD[] =
-    "REPLACE INTO bookmarks (file, id, page) VALUES (?, ?, ?);";
+    "REPLACE INTO bookmarks (file, id, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
   if (stmt == NULL) {
@@ -250,7 +263,10 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
       sqlite3_bind_text(stmt, 2, bookmark->id, -1, NULL) != SQLITE_OK ||
-      sqlite3_bind_int(stmt, 3, bookmark->page) != SQLITE_OK) {
+      sqlite3_bind_int(stmt, 3, bookmark->page) != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 4, bookmark->x) != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 5, bookmark->y) != SQLITE_OK) {
+
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
@@ -295,7 +311,7 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_BOOKMARK_SELECT[] =
-    "SELECT id, page FROM bookmarks WHERE file = ?;";
+    "SELECT id, page, hadj_ratio, vadj_ratio FROM bookmarks WHERE file = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_SELECT);
   if (stmt == NULL) {
@@ -316,6 +332,13 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 
     bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
     bookmark->page = sqlite3_column_int(stmt, 1);
+    bookmark->x = sqlite3_column_double(stmt, 2);
+    bookmark->y = sqlite3_column_double(stmt, 3);
+
+    if (bookmark->page > 1) {
+      bookmark->x = bookmark->x == 0.0 ? DBL_MIN : bookmark->x;
+      bookmark->y = bookmark->y == 0.0 ? DBL_MIN : bookmark->y;
+    }
 
     girara_list_append(result, bookmark);
   }

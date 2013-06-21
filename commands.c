@@ -18,6 +18,7 @@
 #include "plugin.h"
 #include "internal.h"
 #include "render.h"
+#include "adjustment.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -44,19 +45,24 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
 
   const char* bookmark_name = girara_list_nth(argument_list, 0);
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
-  if (bookmark != NULL) {
-    bookmark->page = zathura_document_get_current_page_number(zathura->document) + 1;
-    girara_notify(session, GIRARA_INFO, _("Bookmark successfuly updated: %s"), bookmark_name);
-    return true;
-  }
+  bool update = bookmark != NULL ? true : false;
 
   bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura_document_get_current_page_number(zathura->document) + 1);
   if (bookmark == NULL) {
-    girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
+    if (update == true) {
+      girara_notify(session, GIRARA_ERROR, _("Could not update bookmark: %s"), bookmark_name);
+    } else {
+      girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
+    }
     return false;
+  } else {
+    if (update == true) {
+      girara_notify(session, GIRARA_INFO, _("Bookmark successfully updated: %s"), bookmark_name);
+    } else {
+      girara_notify(session, GIRARA_INFO, _("Bookmark successfully created: %s"), bookmark_name);
+    }
   }
 
-  girara_notify(session, GIRARA_INFO, _("Bookmark successfuly created: %s"), bookmark_name);
   return true;
 }
 
@@ -112,7 +118,16 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
   }
 
   zathura_jumplist_add(zathura);
-  page_set(zathura, bookmark->page - 1);
+  if (bookmark->x != DBL_MIN && bookmark->y != DBL_MIN) {
+    GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    zathura_adjustment_set_value_from_ratio(hadjustment, bookmark->x);
+    zathura_adjustment_set_value_from_ratio(vadjustment, bookmark->y);
+    zathura_document_set_current_page_number(zathura->document, bookmark->page - 1);
+    statusbar_page_number_update(zathura);
+  } else {
+    page_set(zathura, bookmark->page - 1);
+  }
   zathura_jumplist_add(zathura);
 
   return true;
