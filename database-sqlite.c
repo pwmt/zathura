@@ -15,6 +15,7 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
+static bool check_column(sqlite3* session, const char* table, const char* col, bool* result);
 static void sqlite_finalize(GObject* object);
 static bool sqlite_add_bookmark(zathura_database_t* db, const char* file,
                                 zathura_bookmark_t* bookmark);
@@ -182,25 +183,30 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     return;
   }
 
-  const char* data_type = NULL;
-  if (sqlite3_table_column_metadata(session, NULL, "fileinfo", "pages_per_row", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK) {
+  bool res1, res2, ret1, ret2;
+
+  ret1 = check_column(session, "fileinfo", "pages_per_row", &res1);
+
+  if (ret1 == true && res1 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
 
-  data_type = NULL;
-  if (sqlite3_table_column_metadata(session, NULL, "fileinfo", "first_page_column", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK) {
+  ret1 = check_column(session, "fileinfo", "first_page_column", &res1);
+
+  if (ret1 == true && res1 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
 
-  data_type = NULL;
-  if (sqlite3_table_column_metadata(session, NULL, "bookmarks", "hadj_ratio", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK &&
-      sqlite3_table_column_metadata(session, NULL, "bookmarks", "vadj_ratio", &data_type, NULL, NULL, NULL, NULL) != SQLITE_OK) {
+  ret1 = check_column(session, "bookmarks", "hadj_ratio", &res1);
+  ret2 = check_column(session, "bookmarks", "vadj_ratio", &res2);
+
+  if (ret1 == true && ret2 == true && res1 == false && res2 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
@@ -247,6 +253,35 @@ prepare_statement(sqlite3* session, const char* statement)
   }
 
   return pp_stmt;
+}
+
+static bool
+check_column(sqlite3* session, const char* table, const char* col, bool* res)
+{
+  char* query = g_strdup_printf("PRAGMA table_info(%s);", table);
+  sqlite3_stmt* stmt = prepare_statement(session, query);
+
+  if (stmt == NULL) {
+    return false;
+  }
+
+  *res = false;
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
+      *res = true;
+      break;
+    }
+  }
+
+  if (*res == false) {
+    girara_debug("column %s in table %s is NOT found", col, table);
+  }
+
+  sqlite3_finalize(stmt);
+  g_free(query);
+
+  return true;
 }
 
 static bool
