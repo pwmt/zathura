@@ -118,7 +118,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
 {
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
-  /* create bookmarks database */
+  /* create bookmarks table */
   static const char SQL_BOOKMARK_INIT[] =
     "CREATE TABLE IF NOT EXISTS bookmarks ("
     "file TEXT,"
@@ -128,6 +128,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "vadj_ratio FLOAT,"
     "PRIMARY KEY(file, id));";
 
+  /* create fileinfo table */
   static const char SQL_FILEINFO_INIT[] =
     "CREATE TABLE IF NOT EXISTS fileinfo ("
     "file TEXT PRIMARY KEY,"
@@ -141,23 +142,27 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "position_y FLOAT"
     ");";
 
-  static const char SQL_FILEINFO_ALTER[] =
-    "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
-    "ALTER TABLE fileinfo ADD COLUMN position_x FLOAT;"
-    "ALTER TABLE fileinfo ADD COLUMN position_y FLOAT;";
-
-  static const char SQL_FILEINFO_ALTER2[] =
-    "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
-
-  static const char SQL_BOOKMARK_ALTER[] =
-    "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
-    "ALTER TABLE bookmarks ADD COLUMN vadj_ratio FLOAT;";
-
+  /* create history table */
   static const char SQL_HISTORY_INIT[] =
     "CREATE TABLE IF NOT EXISTS history ("
     "time TIMESTAMP,"
     "line TEXT,"
     "PRIMARY KEY(line));";
+
+  /* update fileinfo table (part 1) */
+  static const char SQL_FILEINFO_ALTER[] =
+    "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
+    "ALTER TABLE fileinfo ADD COLUMN position_x FLOAT;"
+    "ALTER TABLE fileinfo ADD COLUMN position_y FLOAT;";
+
+  /* update fileinfo table (part 2) */
+  static const char SQL_FILEINFO_ALTER2[] =
+    "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
+
+  /* update bookmark table */
+  static const char SQL_BOOKMARK_ALTER[] =
+    "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
+    "ALTER TABLE bookmarks ADD COLUMN vadj_ratio FLOAT;";
 
   sqlite3* session = NULL;
   if (sqlite3_open(path, &session) != SQLITE_OK) {
@@ -165,6 +170,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     return;
   }
 
+  /* create tables if they don't exist */
   if (sqlite3_exec(session, SQL_BOOKMARK_INIT, NULL, 0, NULL) != SQLITE_OK) {
     girara_error("Failed to initialize database: %s\n", path);
     sqlite3_close(session);
@@ -183,6 +189,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     return;
   }
 
+  /* check existing tables for missing columns */
   bool res1, res2, ret1, ret2;
 
   ret1 = check_column(session, "fileinfo", "pages_per_row", &res1);
