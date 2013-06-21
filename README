@@ -22,9 +22,7 @@ And also note that rst2man from python-docutils is needed to build the man pages
 If it is not installed, the man pages won't be built.
 
 If you don't want to build with support for sqlite databases, you can set
-WITH_SQLITE=0 and sqlite support won't be available. Please note that sqlite3
-with meta data support is required, i.e. sqlite3 has to be built with
-SQLITE_ENABLE_COLUMN_METADATA defined.
+WITH_SQLITE=0 and sqlite support won't be available.
 
 The use of magic to detect mime types is optional and can be disabled by setting
 WITH_MAGIC=0.
