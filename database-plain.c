@@ -15,18 +15,19 @@
 
 #include "database-plain.h"
 
-#define BOOKMARKS "bookmarks"
-#define HISTORY "history"
-#define INPUT_HISTORY "input-history"
+#define BOOKMARKS                 "bookmarks"
+#define HISTORY                   "history"
+#define INPUT_HISTORY             "input-history"
 
-#define KEY_PAGE "page"
-#define KEY_OFFSET "offset"
-#define KEY_SCALE "scale"
-#define KEY_ROTATE "rotate"
-#define KEY_PAGES_PER_ROW "pages-per-row"
-#define KEY_FIRST_PAGE_COLUMN "first-page-column"
-#define KEY_POSITION_X "position-x"
-#define KEY_POSITION_Y "position-y"
+#define KEY_PAGE                  "page"
+#define KEY_OFFSET                "offset"
+#define KEY_SCALE                 "scale"
+#define KEY_ROTATE                "rotate"
+#define KEY_PAGES_PER_ROW         "pages-per-row"
+#define KEY_FIRST_PAGE_COLUMN     "first-page-column"
+#define KEY_POSITION_X            "position-x"
+#define KEY_POSITION_Y            "position-y"
+#define KEY_JUMPLIST              "jumplist"
 
 #ifdef __GNU__
 #include <sys/file.h>
@@ -46,28 +47,23 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJE
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
-static void plain_finalize(GObject* object);
-static bool plain_add_bookmark(zathura_database_t* db, const char* file,
-                               zathura_bookmark_t* bookmark);
-static bool plain_remove_bookmark(zathura_database_t* db, const char* file,
-                                  const char* id);
-static girara_list_t* plain_load_bookmarks(zathura_database_t* db,
-    const char* file);
-static bool plain_set_fileinfo(zathura_database_t* db, const char* file,
-                               zathura_fileinfo_t* file_info);
-static bool plain_get_fileinfo(zathura_database_t* db, const char* file,
-                               zathura_fileinfo_t* file_info);
-static void plain_set_property(GObject* object, guint prop_id,
-                               const GValue* value, GParamSpec* pspec);
-static void plain_io_append(GiraraInputHistoryIO* db, const char*);
+static void           plain_finalize(GObject* object);
+static bool           plain_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
+static bool           plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
+static girara_list_t* plain_load_bookmarks(zathura_database_t* db, const char* file);
+static girara_list_t* plain_load_jumplist(zathura_database_t* db, const char* file);
+static bool           plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist);
+static bool           plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t* file_info);
+static bool           plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t* file_info);
+static void           plain_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void           plain_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* plain_io_read(GiraraInputHistoryIO* db);
 
 /* forward declaration */
-static bool zathura_db_check_file(const char* path);
-static GKeyFile* zathura_db_read_key_file_from_file(const char* path);
-static void zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file);
-static void cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile*
-                                     other_file, GFileMonitorEvent event, zathura_database_t* database);
+static bool           zathura_db_check_file(const char* path);
+static GKeyFile*      zathura_db_read_key_file_from_file(const char* path);
+static void           zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file);
+static void           cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile* other_file, GFileMonitorEvent event, zathura_database_t* database);
 
 typedef struct zathura_plaindatabase_private_s {
   char* bookmark_path;
@@ -110,6 +106,8 @@ zathura_database_interface_init(ZathuraDatabaseInterface* iface)
   iface->add_bookmark    = plain_add_bookmark;
   iface->remove_bookmark = plain_remove_bookmark;
   iface->load_bookmarks  = plain_load_bookmarks;
+  iface->load_jumplist   = plain_load_jumplist;
+  iface->save_jumplist   = plain_save_jumplist;
   iface->set_fileinfo    = plain_set_fileinfo;
   iface->get_fileinfo    = plain_get_fileinfo;
 }
@@ -427,6 +425,73 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
   return result;
 }
 
+static girara_list_t*
+get_jumplist_from_str(const char* str)
+{
+  g_return_val_if_fail(str != NULL, NULL);
+
+  if (*str == 0) {
+    return girara_list_new2(g_free);
+  }
+
+  girara_list_t* result = girara_list_new2(g_free);
+  char* copy = g_strdup(str);
+  char* token = strtok(copy, " ");
+
+  while (token != NULL) {
+    zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
+
+    jump->page = strtoul(token, NULL, 0);
+    token = strtok(NULL, " ");
+    jump->x = strtod(token, NULL);
+    token = strtok(NULL, " ");
+    jump->y = strtod(token, NULL);
+    girara_list_append(result, jump);
+    token = strtok(NULL, " ");
+  }
+
+  g_free(copy);
+
+  return result;
+}
+
+static girara_list_t*
+plain_load_jumplist(zathura_database_t* db, const char* file)
+{
+  g_return_val_if_fail(db != NULL && file != NULL, NULL);
+
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  char* str_value = g_key_file_get_string(priv->history, file, KEY_JUMPLIST, NULL);
+
+  if (str_value == NULL) {
+    return girara_list_new2(g_free);
+  }
+
+  return get_jumplist_from_str(str_value);
+}
+
+static bool
+plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist)
+{
+  g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
+
+  GString* str_val = g_string_new(NULL);
+
+  GIRARA_LIST_FOREACH(jumplist, zathura_jump_t*, iter, jump)
+  g_string_append(str_val, g_strdup_printf("%d ", jump->page));
+  g_string_append(str_val, g_strdup_printf("%.20f ", jump->x));
+  g_string_append(str_val, g_strdup_printf("%.20f ", jump->y));
+  GIRARA_LIST_FOREACH_END(jumplist, zathura_jump_t*, iter, jump);
+
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
+  g_key_file_set_string(priv->history, file, KEY_JUMPLIST, str_val->str);
+  zathura_db_write_key_file_to_file(priv->history_path, priv->history);
+  g_string_free(str_val, TRUE);
+
+  return true;
+}
+
 static bool
 plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
                    file_info)
@@ -441,7 +506,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   g_key_file_set_integer(priv->history, name, KEY_PAGE,   file_info->current_page);
   g_key_file_set_integer(priv->history, name, KEY_OFFSET, file_info->page_offset);
 
-  char* tmp = g_strdup_printf("%f", file_info->scale);
+  char* tmp = g_strdup_printf("%.20f", file_info->scale);
   g_key_file_set_string (priv->history, name, KEY_SCALE, tmp);
   g_free(tmp);
 
@@ -449,11 +514,11 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
   g_key_file_set_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, file_info->first_page_column);
 
-  tmp = g_strdup_printf("%f", file_info->position_x);
+  tmp = g_strdup_printf("%.20f", file_info->position_x);
   g_key_file_set_string(priv->history,  name, KEY_POSITION_X, tmp);
   g_free(tmp);
 
-  tmp = g_strdup_printf("%f", file_info->position_y);
+  tmp = g_strdup_printf("%.20f", file_info->position_y);
   g_key_file_set_string(priv->history,  name, KEY_POSITION_Y, tmp);
   g_free(tmp);
 

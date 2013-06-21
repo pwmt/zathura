@@ -388,6 +388,23 @@ void zathura_jumplist_backward(zathura_t* zathura);
 void zathura_jumplist_add(zathura_t* zathura);
 
 /**
+ * Trim entries from the beginning of the jumplist to maintain it's maximum size constraint.
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_trim(zathura_t* zathura);
+
+/**
+ * Load the jumplist of the specified file
+ *
+ * @param zathura The zathura session
+ * @param file The file whose jumplist is to be loaded
+ *
+ * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
+ */
+bool zathura_jumplist_load(zathura_t* zathura, const char* file);
+
+/**
  * Add a page to the page cache
  *
  * @param zathura The zathura session

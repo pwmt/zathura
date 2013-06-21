@@ -273,10 +273,11 @@ zathura_init(zathura_t* zathura)
 
   /* jumplist */
 
-  zathura->jumplist.max_size = 20;
-  girara_setting_get(zathura->ui.session, "jumplist-size", &(zathura->jumplist.max_size));
+  int jumplist_size = 20;
+  girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
 
-  zathura->jumplist.list = girara_list_new2(g_free);
+  zathura->jumplist.max_size = jumplist_size < 0 ? 0 : jumplist_size;
+  zathura->jumplist.list = NULL;
   zathura->jumplist.size = 0;
   zathura->jumplist.cur = NULL;
 
@@ -770,6 +771,11 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   /* bookmarks */
   zathura_bookmarks_load(zathura, file_path);
 
+  /* jumplist */
+  if (zathura_jumplist_load(zathura, file_path) == false) {
+    zathura->jumplist.list = girara_list_new2(g_free);
+  }
+
   /* update title */
   basename_only = false;
   girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
@@ -929,6 +935,14 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* save file info */
   zathura_db_set_fileinfo(zathura->database, path, &file_info);
+
+  /* save jumplist */
+  zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
+  girara_list_iterator_free(zathura->jumplist.cur);
+  zathura->jumplist.cur = NULL;
+  girara_list_free(zathura->jumplist.list);
+  zathura->jumplist.list = NULL;
+  zathura->jumplist.size = 0;
 
   /* release render thread */
   render_free(zathura->sync.render_thread);
@@ -1224,27 +1238,43 @@ zathura_jumplist_reset_current(zathura_t* zathura)
 static void
 zathura_jumplist_append_jump(zathura_t* zathura)
 {
+  g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL);
+
   zathura_jump_t *jump = g_malloc(sizeof(zathura_jump_t));
-  if (jump != NULL) {
-    jump->page = 0;
-    jump->x = 0;
-    jump->y = 0;
+  jump->page = 0;
+  jump->x = 0.0;
+  jump->y = 0.0;
+  girara_list_append(zathura->jumplist.list, jump);
 
-    /* trim from beginning until max_size */
-    girara_list_iterator_t *it = girara_list_iterator(zathura->jumplist.list);
-    while (zathura->jumplist.size >= zathura->jumplist.max_size && girara_list_iterator_is_valid(it)) {
-      girara_list_iterator_remove(it);
-      zathura->jumplist.size = zathura->jumplist.size - 1;
+  if (zathura->jumplist.size == 0) {
+    zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
+  }
+
+  ++zathura->jumplist.size;
+  zathura_jumplist_trim(zathura);
+}
+
+void
+zathura_jumplist_trim(zathura_t* zathura)
+{
+  g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL && zathura->jumplist.size != 0);
+
+  girara_list_iterator_t* cur = girara_list_iterator(zathura->jumplist.list);
+
+  while (zathura->jumplist.size > zathura->jumplist.max_size) {
+    if (girara_list_iterator_data(cur) == girara_list_iterator_data(zathura->jumplist.cur)) {
+      girara_list_iterator_free(zathura->jumplist.cur);
+      zathura->jumplist.cur = NULL;
     }
-    g_free(it);
 
-    girara_list_append(zathura->jumplist.list, jump);
+    girara_list_iterator_remove(cur);
+    --zathura->jumplist.size;
+  }
 
-    if (zathura->jumplist.size == 0) {
-      zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
-    }
-
-    zathura->jumplist.size = zathura->jumplist.size + 1;
+  if (zathura->jumplist.size == 0) {
+    girara_list_iterator_free(cur);
+  } else if (zathura->jumplist.cur == NULL) {
+    zathura->jumplist.cur = cur;
   }
 }
 
@@ -1258,17 +1288,48 @@ zathura_jumplist_add(zathura_t* zathura)
   double x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
   double y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
 
-  zathura_jumplist_reset_current(zathura);
+  if (zathura->jumplist.size != 0) {
+    zathura_jumplist_reset_current(zathura);
 
-  zathura_jump_t* cur = zathura_jumplist_current(zathura);
+    zathura_jump_t* cur = zathura_jumplist_current(zathura);
 
-  if (cur && cur->page == pagenum && cur->x == x && cur->y == y) {
-    return;
+    if (cur != NULL) {
+      if (cur->page == pagenum && cur->x == x && cur->y == y) {
+        return;
+      }
+    }
   }
 
   zathura_jumplist_append_jump(zathura);
   zathura_jumplist_reset_current(zathura);
   zathura_jumplist_save(zathura);
+}
+
+bool
+zathura_jumplist_load(zathura_t* zathura, const char* file)
+{
+  g_return_val_if_fail(zathura != NULL && zathura->database != NULL && file != NULL, false);
+
+  zathura->jumplist.list = zathura_db_load_jumplist(zathura->database, file);
+
+  if (zathura->jumplist.list == NULL) {
+    girara_error("Failed to load the jumplist from the database");
+
+    return false;
+  }
+
+  zathura->jumplist.size = girara_list_size(zathura->jumplist.list);
+
+  if (zathura->jumplist.size != 0) {
+    zathura->jumplist.cur = girara_list_iterator(zathura->jumplist.list);
+    zathura_jumplist_reset_current(zathura);
+    zathura_jumplist_trim(zathura);
+    girara_debug("Loaded the jumplist from the database");
+  } else {
+    girara_debug("No jumplist for this file in the database yet");
+  }
+
+  return true;
 }
 
 static void

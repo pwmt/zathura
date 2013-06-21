@@ -15,21 +15,17 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
-static bool check_column(sqlite3* session, const char* table, const char* col, bool* result);
-static void sqlite_finalize(GObject* object);
-static bool sqlite_add_bookmark(zathura_database_t* db, const char* file,
-                                zathura_bookmark_t* bookmark);
-static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file,
-                                   const char* id);
-static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db,
-    const char* file);
-static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file,
-                                zathura_fileinfo_t* file_info);
-static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file,
-                                zathura_fileinfo_t* file_info);
-static void sqlite_set_property(GObject* object, guint prop_id,
-                                const GValue* value, GParamSpec* pspec);
-static void sqlite_io_append(GiraraInputHistoryIO* db, const char*);
+static bool           check_column(sqlite3* session, const char* table, const char* col, bool* result);
+static void           sqlite_finalize(GObject* object);
+static bool           sqlite_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
+static bool           sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
+static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* file);
+static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* file);
+static bool           sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist);
+static bool           sqlite_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t* file_info);
+static bool           sqlite_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t* file_info);
+static void           sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void           sqlite_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db);
 
 typedef struct zathura_sqldatabase_private_s {
@@ -51,6 +47,8 @@ zathura_database_interface_init(ZathuraDatabaseInterface* iface)
   iface->add_bookmark    = sqlite_add_bookmark;
   iface->remove_bookmark = sqlite_remove_bookmark;
   iface->load_bookmarks  = sqlite_load_bookmarks;
+  iface->load_jumplist   = sqlite_load_jumplist;
+  iface->save_jumplist   = sqlite_save_jumplist;
   iface->set_fileinfo    = sqlite_set_fileinfo;
   iface->get_fileinfo    = sqlite_get_fileinfo;
 }
@@ -128,6 +126,15 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "vadj_ratio FLOAT,"
     "PRIMARY KEY(file, id));";
 
+  static const char SQL_JUMPLIST_INIT[] =
+    "CREATE TABLE IF NOT EXISTS jumplist ("
+    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    "file TEXT,"
+    "page INTEGER,"
+    "hadj_ratio FLOAT,"
+    "vadj_ratio FLOAT"
+    ");";
+
   /* create fileinfo table */
   static const char SQL_FILEINFO_INIT[] =
     "CREATE TABLE IF NOT EXISTS fileinfo ("
@@ -172,6 +179,12 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
 
   /* create tables if they don't exist */
   if (sqlite3_exec(session, SQL_BOOKMARK_INIT, NULL, 0, NULL) != SQLITE_OK) {
+    girara_error("Failed to initialize database: %s\n", path);
+    sqlite3_close(session);
+    return;
+  }
+
+  if (sqlite3_exec(session, SQL_JUMPLIST_INIT, NULL, 0, NULL) != SQLITE_OK) {
     girara_error("Failed to initialize database: %s\n", path);
     sqlite3_close(session);
     return;
@@ -395,6 +408,139 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
   sqlite3_finalize(stmt);
 
   return result;
+}
+
+static bool
+sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist)
+{
+  g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  static const char SQL_INSERT_JUMP[] = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
+  static const char SQL_REMOVE_JUMPLIST[] = "DELETE FROM jumplist WHERE file = ?;";
+  sqlite3_stmt* stmt = NULL;
+  int res = 0;
+
+  if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
+    return false;
+  }
+
+  stmt = prepare_statement(priv->session, SQL_REMOVE_JUMPLIST);
+
+  if (stmt == NULL) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    girara_error("Failed to bind arguments.");
+    return false;
+  }
+
+  res = sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
+
+  if (res != SQLITE_DONE) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  if (girara_list_size(jumplist) == 0) {
+    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
+    return true;
+  }
+
+  girara_list_iterator_t* cur = girara_list_iterator(jumplist);
+  bool status = true;
+
+  while (true) {
+    zathura_jump_t* jump = girara_list_iterator_data(cur);
+
+    stmt = prepare_statement(priv->session, SQL_INSERT_JUMP);
+
+    if (stmt == NULL) {
+      status = false;
+      break;
+    }
+
+    if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
+        sqlite3_bind_int(stmt, 2, jump->page)      != SQLITE_OK ||
+        sqlite3_bind_double(stmt, 3, jump->x)      != SQLITE_OK ||
+        sqlite3_bind_double(stmt, 4, jump->y)      != SQLITE_OK) {
+
+      sqlite3_finalize(stmt);
+      girara_error("Failed to bind arguments.");
+      status = false;
+      break;
+    }
+
+    res = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    if (res != SQLITE_DONE) {
+      status = false;
+      break;
+    }
+
+    if (girara_list_iterator_has_next(cur) == true) {
+      girara_list_iterator_next(cur);
+    } else {
+      break;
+    }
+  }
+
+  if (status == false) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  } else {
+    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
+    return true;
+  }
+}
+
+static girara_list_t*
+sqlite_load_jumplist(zathura_database_t* db, const char* file)
+{
+  g_return_val_if_fail(db != NULL && file != NULL, NULL);
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  static const char SQL_GET_JUMPLIST[] = "SELECT page, hadj_ratio, vadj_ratio FROM jumplist WHERE file = ? ORDER BY id ASC;";
+  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_JUMPLIST);
+
+  if (stmt == NULL) {
+    return NULL;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    girara_error("Failed to bind arguments.");
+
+    return NULL;
+  }
+
+  girara_list_t* jumplist = girara_list_new2(g_free);
+  int res = 0;
+
+  while ((res = sqlite3_step(stmt)) == SQLITE_ROW) {
+    zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
+
+    jump->page = sqlite3_column_int(stmt, 0);
+    jump->x    = sqlite3_column_double(stmt, 1);
+    jump->y    = sqlite3_column_double(stmt, 2);
+    girara_list_append(jumplist, jump);
+  }
+
+  sqlite3_finalize(stmt);
+
+  if (res != SQLITE_DONE) {
+    girara_list_free(jumplist);
+
+    return NULL;
+  }
+
+  return jumplist;
 }
 
 static bool

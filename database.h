@@ -43,6 +43,10 @@ struct _ZathuraDatabaseInterface
 
   girara_list_t* (*load_bookmarks)(ZathuraDatabase* db, const char* file);
 
+  girara_list_t* (*load_jumplist)(ZathuraDatabase* db, const char* file);
+
+  bool (*save_jumplist)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
+
   bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
 
   bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
@@ -54,7 +58,7 @@ GType zathura_database_get_type(void);
  * Add or update bookmark in the database.
  *
  * @param db The database instance
- * @param file The file to which the bookmark belongs to.
+ * @param file The file to which the bookmark belongs.
  * @param bookmark The bookmark instance.
  * @return true on success, false otherwise
  */
@@ -62,10 +66,10 @@ bool zathura_db_add_bookmark(zathura_database_t* db, const char* file,
     zathura_bookmark_t* bookmark);
 
 /**
- * Add or update bookmark in the database.
+ * Remove a bookmark from the database.
  *
  * @param db The database instance
- * @param file The file to which the bookmark belongs to.
+ * @param file The file to which the bookmark belongs.
  * @param id The id of the bookmark
  * @return true on success, false otherwise
  */
@@ -83,10 +87,31 @@ girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char*
     file);
 
 /**
+ * Load the jumplist belonging to the specified file from the database.
+ *
+ * @param db The database instance.
+ * @param file The file to which the jumplist belongs.
+ *
+ * return A linked list constituting the jumplist of the specified file.
+ */
+girara_list_t* zathura_db_load_jumplist(ZathuraDatabase* db, const char* file);
+
+/**
+ * Save the jumplist belonging to the specified file to the database.
+ *
+ * @param db The database instance.
+ * @param file The file to which the jumplist belongs.
+ * @param jumplist The jumplist to be saved
+ *
+ * return true on success, false otherwise.
+ */
+bool zathura_db_save_jumplist(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
+
+/**
  * Set file info (last site, ...) in the database.
  *
  * @param db The database instance
- * @param file The file to which the file info belongs to.
+ * @param file The file to which the file info belongs.
  * @param file_info The file info
  * @return true on success, false otherwise.
  */
@@ -96,7 +121,7 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
 /* Get file info (last site, ...) from the database.
  *
  * @param db The database instance
- * @param file The file to which the file info belongs to.
+ * @param file The file to which the file info belongs.
  * @param file_info The file info
  * @return true on success, false otherwise.
  */
