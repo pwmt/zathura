@@ -1234,12 +1234,9 @@ zathura_jumplist_add(zathura_t* zathura)
   if (zathura->jumplist.list != NULL) {
 
     unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
-    GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    double x, y;
+    double x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+    double y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
 
-    x = gtk_adjustment_get_value(view_hadjustment) / zathura_document_get_scale(zathura->document);
-    y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);
     zathura_jumplist_reset_current(zathura);
 
     zathura_jump_t* cur = zathura_jumplist_current(zathura);
@@ -1262,13 +1259,9 @@ zathura_jumplist_save(zathura_t* zathura)
   unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
 
   if (cur) {
-    /* get position */
-    GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-
     cur->page = pagenum;
-    cur->x = gtk_adjustment_get_value(view_hadjustment) / zathura_document_get_scale(zathura->document);
-    cur->y = gtk_adjustment_get_value(view_vadjustment) / zathura_document_get_scale(zathura->document);
+    cur->x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+    cur->y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
   }
 }
 
