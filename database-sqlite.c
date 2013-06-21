@@ -265,9 +265,14 @@ prepare_statement(sqlite3* session, const char* statement)
 static bool
 check_column(sqlite3* session, const char* table, const char* col, bool* res)
 {
-  char* query = g_strdup_printf("PRAGMA table_info(%s);", table);
-  sqlite3_stmt* stmt = prepare_statement(session, query);
+  /* we can't actually bind the argument with sqlite3_bind_text because
+   * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
+  char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
+  if (query == NULL) {
+    return false;
+  }
 
+  sqlite3_stmt* stmt = prepare_statement(session, query);
   if (stmt == NULL) {
     return false;
   }
@@ -286,7 +291,7 @@ check_column(sqlite3* session, const char* table, const char* col, bool* res)
   }
 
   sqlite3_finalize(stmt);
-  g_free(query);
+  sqlite3_free(query);
 
   return true;
 }
