@@ -149,6 +149,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           }
         }
 
+        zathura_jumplist_add(zathura);
+
         /* jump to the page */
         page_set(zathura, link->target.page_number);
 
@@ -161,6 +163,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
         } else {
           position_set(zathura, -1, offset.y);
         }
+
+        zathura_jumplist_add(zathura);
       }
       break;
     case ZATHURA_LINK_GOTO_REMOTE:
