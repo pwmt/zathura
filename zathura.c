@@ -1173,7 +1173,7 @@ zathura_jumplist_hide_inputbar(zathura_t* zathura)
   }
 
   /* we want to do it immediately */
-
+  /* XXX: ... and we want this to go away */
   while (gtk_events_pending()) {
     gtk_main_iteration();
   }
