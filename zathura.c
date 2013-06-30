@@ -1220,18 +1220,14 @@ zathura_jumplist_backward(zathura_t* zathura)
 static void
 zathura_jumplist_reset_current(zathura_t* zathura)
 {
-  g_return_if_fail(zathura != NULL || zathura->jumplist.cur != NULL);
-
-  if (girara_list_iterator_has_next(zathura->jumplist.cur) == false) {
-    return;
-  }
+  g_return_if_fail(zathura != NULL && zathura->jumplist.cur != NULL);
 
   while (true) {
-    girara_list_iterator_next(zathura->jumplist.cur);
-
     if (girara_list_iterator_has_next(zathura->jumplist.cur) == false) {
       return;
     }
+
+    girara_list_iterator_next(zathura->jumplist.cur);
   }
 }
 
