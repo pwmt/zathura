@@ -163,6 +163,15 @@ struct zathura_s
     unsigned int size;
     unsigned int num_cached_pages;
   } page_cache;
+
+  /**
+   * Bisect stage
+   */
+  struct {
+    unsigned int last_jump; /**< Page jumped to by bisect */
+    unsigned int start; /**< Bisection range - start */
+    unsigned int end; /**< Bisection range - end */
+  } bisect;
 };
 
 /**
