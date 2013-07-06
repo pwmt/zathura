@@ -1031,6 +1031,9 @@ page_set(zathura_t* zathura, unsigned int page_id)
   zathura_adjustment_set_value(view_hadjustment, offset.x);
   zathura_adjustment_set_value(view_vadjustment, offset.y);
 
+  /* refresh horizontal adjustment, to honor zoom-center */
+  cb_view_hadjustment_changed(view_hadjustment, zathura);
+
   statusbar_page_number_update(zathura);
 
   return true;
