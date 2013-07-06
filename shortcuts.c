@@ -818,7 +818,7 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       zathura->bisect.start = 0;
       zathura->bisect.end = num_pages - 1;
 
-    } if (jump->page != cur_page || jump->page != zathura->bisect.last_jump) {
+    } else if (jump->page != cur_page || jump->page != zathura->bisect.last_jump) {
       girara_debug("last jump doesn't match up, starting new bisecting");
       zathura->bisect.start = 0;
       zathura->bisect.end = num_pages - 1;
