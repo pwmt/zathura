@@ -818,68 +818,38 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
   } else if (argument != NULL)  {
     direction = argument->n;
 
+    /* setup initial bisect range */
     zathura_jump_t* jump = zathura_jumplist_current(zathura);
     if (jump == NULL) {
       girara_debug("bisecting between first and last page because there are no jumps");
       zathura->bisect.start = 0;
       zathura->bisect.end = num_pages - 1;
-    } else {
-      if (jump->page != cur_page || jump->page != zathura->bisect.last_jump) {
-        girara_debug("last jump doesn't match up, starting new bisecting");
-        zathura->bisect.start = 0;
-        zathura->bisect.end = num_pages - 1;
 
-        /* check if we have previous jumps */
-        if (zathura_jumplist_has_previous(zathura) == true) {
-          zathura_jumplist_backward(zathura);
-          jump = zathura_jumplist_current(zathura);
+    } if (jump->page != cur_page || jump->page != zathura->bisect.last_jump) {
+      girara_debug("last jump doesn't match up, starting new bisecting");
+      zathura->bisect.start = 0;
+      zathura->bisect.end = num_pages - 1;
 
-          unsigned int prev_page = 0;
-          unsigned int prev_page2 = num_pages - 1;
-          if (jump != NULL) {
-            prev_page = jump->page;
-          }
-
-          prev_page2 = prev_page;
-          if (zathura_jumplist_has_previous(zathura) == true) {
-            zathura_jumplist_backward(zathura);
-            jump = zathura_jumplist_current(zathura);
-            if (jump != NULL) {
-              prev_page2 = jump->page;
-            }
-            zathura_jumplist_forward(zathura);
-          }
-          zathura_jumplist_forward(zathura);
-
-          if (prev_page == prev_page2) {
-            if (prev_page > cur_page) {
-              zathura->bisect.end = prev_page;
-            } else {
-              zathura->bisect.start = prev_page;
-            }
-          } else {
-            zathura->bisect.start = MIN(prev_page, prev_page2);
-            zathura->bisect.end = MAX(prev_page, prev_page2);
-          }
-        }
-
-        /* some sanity checks on new bounds */
-        if (cur_page < zathura->bisect.start) {
-          if (direction == FORWARD) {
-            zathura->bisect.start = cur_page;
-          } else {
-            zathura->bisect.start = cur_page;
-            zathura->bisect.end = 0;
-          }
-        } else if (cur_page > zathura->bisect.end) {
-          if (direction == BACKWARD) {
-            zathura->bisect.end = cur_page;
-          } else {
-            zathura->bisect.start = cur_page;
-            zathura->bisect.end = num_pages - 1;
-          }
-        }
+      unsigned int prev_page;
+      if (direction == FORWARD) {
+        prev_page = num_pages - 1;
+      } else {
+        prev_page = 0;
       }
+
+      /* check if we have previous jumps */
+      if (zathura_jumplist_has_previous(zathura) == true) {
+        zathura_jumplist_backward(zathura);
+        jump = zathura_jumplist_current(zathura);
+        if (jump != NULL) {
+          prev_page = jump->page;
+        }
+        zathura_jumplist_forward(zathura);
+      }
+
+      zathura->bisect.start = MIN(prev_page, cur_page);
+      zathura->bisect.end = MAX(prev_page, cur_page);
+      zathura->bisect.last_jump = cur_page;
     }
   } else {
     return false;
@@ -891,14 +861,13 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
     return false;
   }
 
-  /* now, we are back at the initial jump. prev_page and prev2_page contain
-   the pages for previous and second previous jump if they exist. */
-
   unsigned int next_page = cur_page;
   unsigned int next_start = zathura->bisect.start;
   unsigned int next_end = zathura->bisect.end;
 
-  /* bisect */
+  /* here we have next_start <= next_page <= next_end */
+
+  /* bisect step */
   switch(direction) {
     case FORWARD:
       if (cur_page != zathura->bisect.end) {
@@ -931,12 +900,9 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
   zathura->bisect.start = next_start;
   zathura->bisect.end = next_end;
 
+  zathura_jumplist_add(zathura);
   page_set(zathura, next_page);
   zathura_jumplist_add(zathura);
-
-  /* adjust horizontal position */
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-  cb_view_hadjustment_changed(hadjustment, zathura);
 
   return false;
 }
