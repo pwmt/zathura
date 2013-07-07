@@ -654,6 +654,11 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
   }
 
+  /* initialize bisect state */
+  zathura->bisect.start = 0;
+  zathura->bisect.last_jump = zathura_document_get_current_page_number(document);
+  zathura->bisect.end = number_of_pages - 1;
+
   /* update statusbar */
   bool basename_only = false;
   girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);

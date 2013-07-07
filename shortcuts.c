@@ -722,7 +722,11 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
-  g_return_val_if_fail(zathura->jumplist.size != 0, false);
+
+  /* if no jumps in the jumplist */
+  if (zathura->jumplist.size == 0) {
+    return;
+  }
 
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
   GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
