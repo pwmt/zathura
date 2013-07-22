@@ -665,9 +665,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   if (basename_only == false) {
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
   } else {
-    char* tmp = g_path_get_basename(file_path);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
-    g_free(tmp);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_basename(document));
   }
 
   /* install file monitor */
@@ -787,9 +785,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   if (basename_only == false) {
     girara_set_window_title(zathura->ui.session, file_path);
   } else {
-    char* tmp = g_path_get_basename(file_path);
-    girara_set_window_title(zathura->ui.session, tmp);
-    g_free(tmp);
+    girara_set_window_title(zathura->ui.session, zathura_document_get_basename(document));
   }
 
   g_free(file_uri);
@@ -1061,6 +1057,22 @@ statusbar_page_number_update(zathura_t* zathura)
   if (zathura->document != NULL) {
     char* page_number_text = g_strdup_printf("[%d/%d]", current_page_number + 1, number_of_pages);
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
+
+    bool page_number_in_window_title = false;
+    girara_setting_get(zathura->ui.session, "window-title-page", &page_number_in_window_title);
+
+    if (page_number_in_window_title == true) {
+      bool basename_only = false;
+      girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+      char* title = g_strdup_printf("%s %s",
+        (basename_only == true)
+          ? zathura_document_get_basename(zathura->document)
+          : zathura_document_get_path(zathura->document),
+        page_number_text);
+      girara_set_window_title(zathura->ui.session, title);
+      g_free(title);
+    }
+
     g_free(page_number_text);
   } else {
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, "");

@@ -39,6 +39,14 @@ zathura_error_t zathura_document_free(zathura_document_t* document);
 const char* zathura_document_get_path(zathura_document_t* document);
 
 /**
+ * Returns the basename of the document
+ *
+ * @param document The document
+ * @return The basename of the document
+ */
+const char* zathura_document_get_basename(zathura_document_t* document);
+
+/**
  * Returns the password of the document
  *
  * @param document The document

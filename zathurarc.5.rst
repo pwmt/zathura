@@ -370,6 +370,15 @@ Defines the font that will be used
 * Value type: String
 * Default value: monospace normal 9
 
+guioptions
+^^^^^^^^^^
+Shows or hides GUI elements.
+When it contains 'c', the command line is showed.
+When it contains 's', the statusbar is showed.
+
+* Value type: String
+* Default value: s
+
 inputbar-bg
 ^^^^^^^^^^^
 Defines the background color for the inputbar
@@ -694,6 +703,13 @@ En/Disables horizontally centered search results
 window-title-basename
 ^^^^^^^^^^^^^^^^^^^^^
 Use basename of the file in the window title.
+
+* Value type: Boolean
+* Default value: false
+
+window-title-page
+^^^^^^^^^^^^^^^^^
+Display the page number in the window title.
 
 * Value type: Boolean
 * Default value: false
