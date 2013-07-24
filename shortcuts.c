@@ -386,6 +386,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
           gtk_adjustment_get_value(x_adj) - (event->x - x));
       zathura_adjustment_set_value(y_adj,
           gtk_adjustment_get_value(y_adj) - (event->y - y));
+      zathura->global.update_page_number = true;
       break;
 
       /* unhandled events */
