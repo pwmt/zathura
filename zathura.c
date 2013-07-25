@@ -1400,7 +1400,7 @@ zathura_page_cache_lru_invalidate(zathura_t* zathura)
    g_return_val_if_fail(page_widget != NULL, -1);
 
    zathura_page_widget_update_surface(ZATHURA_PAGE(page_widget), NULL);
-   girara_debug("Invalidated page %d at cache index %ld", zathura->page_cache.cache[lru_index] + 1, lru_index);
+   girara_debug("Invalidated page %d at cache index %zd", zathura->page_cache.cache[lru_index] + 1, lru_index);
    zathura->page_cache.cache[lru_index] = -1;
    --zathura->page_cache.num_cached_pages;
 
@@ -1457,7 +1457,7 @@ zathura_page_cache_add(zathura_t* zathura, unsigned int page_index)
 
     zathura->page_cache.cache[idx] = page_index;
     ++zathura->page_cache.num_cached_pages;
-    girara_debug("Page %d is cached at cache index %ld", page_index + 1, idx);
+    girara_debug("Page %d is cached at cache index %zd", page_index + 1, idx);
     return;
   }
 

@@ -14,6 +14,7 @@
 #ifdef WITH_MAGIC
 #include <magic.h>
 #endif
+#include <unistd.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
