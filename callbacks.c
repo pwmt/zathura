@@ -95,9 +95,9 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       if (zathura_page_get_visibility(page) == false) {
-	zathura_page_set_visibility(page, true);
-	zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
-	zathura_page_cache_add(zathura, zathura_page_get_index(page));
+        zathura_page_set_visibility(page, true);
+        zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
+        zathura_page_cache_add(zathura, zathura_page_get_index(page));
       }
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
@@ -111,7 +111,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       g_object_get(page_widget, "search-results", &results, NULL);
 
       if (results != NULL) {
-	g_object_set(page_widget, "search-current", 0, NULL);
+        g_object_set(page_widget, "search-current", 0, NULL);
       }
     }
   }
