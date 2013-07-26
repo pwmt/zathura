@@ -725,7 +725,7 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
 
   /* if no jumps in the jumplist */
   if (zathura->jumplist.size == 0) {
-    return;
+    return true;
   }
 
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
