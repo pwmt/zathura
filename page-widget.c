@@ -505,11 +505,13 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
-    cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
   }
   priv->render_requested = false;
   priv->surface = surface;
+  if (priv->surface != NULL) {
+    cairo_surface_reference(surface);
+  }
   mutex_unlock(&(priv->lock));
   /* force a redraw here */
   if (priv->surface != NULL) {
