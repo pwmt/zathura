@@ -106,6 +106,12 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       }
     } else {
       zathura_page_set_visibility(page, false);
+      /* if the page is not visible and not cached, but still has a surface, we
+       * need to get rid of the surface */
+      if (zathura_page_widget_have_surface(ZATHURA_PAGE(page_widget)) == true &&
+          zathura_page_cache_is_cached(zathura, zathura_page_get_index(page)) == false) {
+        zathura_page_widget_update_surface(ZATHURA_PAGE(page_widget), NULL);
+      }
 
       girara_list_t* results = NULL;
       g_object_get(page_widget, "search-results", &results, NULL);

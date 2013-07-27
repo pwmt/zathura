@@ -88,4 +88,12 @@ zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int i
  */
 void zathura_page_widget_update_view_time(ZathuraPage* widget);
 
+/**
+ * Check if we have a surface.
+ *
+ * @param widget the widget
+ * @returns true if the widget has a surface, false otherwise
+ */
+bool zathura_page_widget_have_surface(ZathuraPage* widget);
+
 #endif

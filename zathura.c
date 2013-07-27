@@ -54,7 +54,6 @@ typedef struct position_set_delayed_s {
 } position_set_delayed_t;
 
 static gboolean document_info_open(gpointer data);
-static bool zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index);
 static ssize_t zathura_page_cache_lru_invalidate(zathura_t* zathura);
 static void zathura_page_cache_invalidate_all(zathura_t* zathura);
 static bool zathura_page_cache_is_full(zathura_t* zathura, bool* result);
@@ -1364,7 +1363,7 @@ zathura_jumplist_save(zathura_t* zathura)
   }
 }
 
-static bool
+bool
 zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index)
 {
   g_return_val_if_fail(zathura != NULL, false);
@@ -1452,7 +1451,7 @@ zathura_page_cache_add(zathura_t* zathura, unsigned int page_index)
 
   g_return_if_fail(page != NULL);
 
-  if (zathura_page_cache_is_cached(zathura, page_index)) {
+  if (zathura_page_cache_is_cached(zathura, page_index) == true) {
     return;
   }
 

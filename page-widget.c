@@ -506,11 +506,16 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
+    priv->surface = NULL;
   }
   priv->render_requested = false;
-  priv->surface = surface;
-  if (priv->surface != NULL) {
-    cairo_surface_reference(surface);
+  if (surface != NULL) {
+    /* if we're not visible or not cached, we don't care about the surface */
+    if (zathura_page_get_visibility(priv->page) == true ||
+        zathura_page_cache_is_cached(priv->zathura, zathura_page_get_index(priv->page)) == true) {
+      priv->surface = surface;
+      cairo_surface_reference(surface);
+    }
   }
   mutex_unlock(&(priv->lock));
   /* force a redraw here */
@@ -876,3 +881,12 @@ zathura_page_widget_update_view_time(ZathuraPage* widget)
     priv->last_view = g_get_real_time();
   }
 }
+
+bool
+zathura_page_widget_have_surface(ZathuraPage* widget)
+{
+  g_return_val_if_fail(ZATHURA_IS_PAGE(widget) == TRUE, false);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  return priv->surface != NULL;
+}
+
