@@ -1188,6 +1188,17 @@ zathura_jumplist_hide_inputbar(zathura_t* zathura)
   girara_isc_completion(zathura->ui.session, &arg, NULL, 0);
 
   if (zathura->ui.session->global.autohide_inputbar == true) {
+    char *input = gtk_editable_get_chars(GTK_EDITABLE(zathura->ui.session->gtk.inputbar_entry), 0, -1);
+    bool res = false;
+
+    girara_setting_get(zathura->ui.session, "incremental-search", &res);
+
+    if ((*input == '/' || *input == '?') && res == true) {
+      g_free(input);
+
+      return;
+    }
+
     gtk_widget_hide(zathura->ui.session->gtk.inputbar);
   }
 
