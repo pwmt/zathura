@@ -1188,6 +1188,9 @@ zathura_jumplist_hide_inputbar(zathura_t* zathura)
   girara_isc_completion(zathura->ui.session, &arg, NULL, 0);
 
   if (zathura->ui.session->global.autohide_inputbar == true) {
+    /* XXX: This is a workaround for incremental-search. We should revisit this
+     * when we drop GTK+3 support and the inputbar is placed in a GtkOverlay
+     * widget. */
     char *input = gtk_editable_get_chars(GTK_EDITABLE(zathura->ui.session->gtk.inputbar_entry), 0, -1);
     bool res = false;
 
@@ -1198,6 +1201,7 @@ zathura_jumplist_hide_inputbar(zathura_t* zathura)
 
       return;
     }
+    /* </workaround> */
 
     gtk_widget_hide(zathura->ui.session->gtk.inputbar);
   }
