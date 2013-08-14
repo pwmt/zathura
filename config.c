@@ -27,10 +27,18 @@ cb_jumplist_change(girara_session_t* session, const char* name,
   g_return_if_fail(session->global.data != NULL);
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
-  if (g_strcmp0(name, "jumplist-size") == 0) {
-    int* max_size = (int*) value;
-    zathura->jumplist.max_size = *max_size;
+
+  if (g_strcmp0(name, "jumplist-size") != 0) {
+    return;
   }
+
+  if (*(int *)value < 0) {
+    zathura->jumplist.max_size = 0;
+  } else {
+    zathura->jumplist.max_size = *(int *)value;
+  }
+
+  zathura_jumplist_trim(zathura);
 }
 
 static void
@@ -157,7 +165,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
   int_value = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
   girara_setting_add(gsession, "page-cache-size",       &int_value,   INT,    true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
-  int_value = 20;
+  int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
@@ -208,6 +216,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
   bool_value = false;

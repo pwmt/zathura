@@ -61,6 +61,15 @@ can be used
     set option4 hello\ world
     set option5 "hello world"
 
+
+If you want to use ``color codes`` for some options, make sure to quote them
+accordingly or to escape the hash symbol.
+
+::
+
+    set default-fg "#CCBBCC"
+    set default-fg \#CCBBCC
+
 map - Mapping a shortcut
 ------------------------
 It is possible to map or remap new key bindings to shortcut functions which
@@ -361,6 +370,15 @@ Defines the font that will be used
 * Value type: String
 * Default value: monospace normal 9
 
+guioptions
+^^^^^^^^^^
+Shows or hides GUI elements.
+When it contains 'c', the command line is showed.
+When it contains 's', the statusbar is showed.
+
+* Value type: String
+* Default value: s
+
 inputbar-bg
 ^^^^^^^^^^^
 Defines the background color for the inputbar
@@ -447,7 +465,21 @@ Defines the background color for the focused tab
 
 show-scrollbars
 ^^^^^^^^^^^^^^^
-Defines if scrollbars should be shown or not
+Defines if both the horizontal and vertical scrollbars should be shown or not
+
+* Value type: Boolean
+* Default value: false
+
+show-h-scrollbar
+^^^^^^^^^^^^^^^^
+Defines whether to show/hide the horizontal scrollbar
+
+* Value type: Boolean
+* Default value: false
+
+show-v-scrollbar
+^^^^^^^^^^^^^^^^
+Defines whether to show/hide the vertical scrollbar
 
 * Value type: Boolean
 * Default value: false
@@ -671,6 +703,13 @@ En/Disables horizontally centered search results
 window-title-basename
 ^^^^^^^^^^^^^^^^^^^^^
 Use basename of the file in the window title.
+
+* Value type: Boolean
+* Default value: false
+
+window-title-page
+^^^^^^^^^^^^^^^^^
+Display the page number in the window title.
 
 * Value type: Boolean
 * Default value: false

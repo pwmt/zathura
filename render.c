@@ -266,9 +266,9 @@ render(zathura_t* zathura, zathura_page_t* page)
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
     zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
     gdk_threads_leave();
-  } else {
-    cairo_surface_destroy(surface);
   }
+
+  cairo_surface_destroy(surface);
 
   return true;
 }

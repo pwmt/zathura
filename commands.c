@@ -18,6 +18,7 @@
 #include "plugin.h"
 #include "internal.h"
 #include "render.h"
+#include "adjustment.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -44,19 +45,24 @@ cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list)
 
   const char* bookmark_name = girara_list_nth(argument_list, 0);
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, bookmark_name);
-  if (bookmark != NULL) {
-    bookmark->page = zathura_document_get_current_page_number(zathura->document) + 1;
-    girara_notify(session, GIRARA_INFO, _("Bookmark successfuly updated: %s"), bookmark_name);
-    return true;
-  }
+  bool update = bookmark != NULL ? true : false;
 
   bookmark = zathura_bookmark_add(zathura, bookmark_name, zathura_document_get_current_page_number(zathura->document) + 1);
   if (bookmark == NULL) {
-    girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
+    if (update == true) {
+      girara_notify(session, GIRARA_ERROR, _("Could not update bookmark: %s"), bookmark_name);
+    } else {
+      girara_notify(session, GIRARA_ERROR, _("Could not create bookmark: %s"), bookmark_name);
+    }
     return false;
+  } else {
+    if (update == true) {
+      girara_notify(session, GIRARA_INFO, _("Bookmark successfully updated: %s"), bookmark_name);
+    } else {
+      girara_notify(session, GIRARA_INFO, _("Bookmark successfully created: %s"), bookmark_name);
+    }
   }
 
-  girara_notify(session, GIRARA_INFO, _("Bookmark successfuly created: %s"), bookmark_name);
   return true;
 }
 
@@ -111,7 +117,20 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  return page_set(zathura, bookmark->page - 1);
+  zathura_jumplist_add(zathura);
+  if (bookmark->x != DBL_MIN && bookmark->y != DBL_MIN) {
+    GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+    zathura_adjustment_set_value_from_ratio(hadjustment, bookmark->x);
+    zathura_adjustment_set_value_from_ratio(vadjustment, bookmark->y);
+    zathura_document_set_current_page_number(zathura->document, bookmark->page - 1);
+    statusbar_page_number_update(zathura);
+  } else {
+    page_set(zathura, bookmark->page - 1);
+  }
+  zathura_jumplist_add(zathura);
+
+  return true;
 }
 
 bool
@@ -339,7 +358,6 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     return false;
   }
 
-  bool firsthit = true;
   zathura_error_t error = ZATHURA_ERROR_OK;
 
   /* set search direction */
@@ -351,10 +369,6 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   /* reset search highlighting */
   bool nohlsearch = false;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
-
-  if (nohlsearch == false) {
-    document_draw_search_results(zathura, true);
-  }
 
   /* search pages */
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
@@ -383,19 +397,20 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     }
 
     g_object_set(page_widget, "search-results", result, NULL);
-    if (firsthit == true) {
-      if (page_id != 0) {
-        page_set_delayed(zathura, zathura_page_get_index(page));
-      }
-      if (argument->n == BACKWARD) {
-        /* start at bottom hit in page */
-        g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
-      } else {
-        g_object_set(page_widget, "search-current", 0, NULL);
-      }
-      firsthit = false;
+
+    if (argument->n == BACKWARD) {
+      /* start at bottom hit in page */
+      g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
+    } else {
+      g_object_set(page_widget, "search-current", 0, NULL);
     }
   }
+
+  girara_argument_t* arg = g_malloc0(sizeof(girara_argument_t));
+
+  arg->n = FORWARD;
+  sc_search(session, arg, NULL, 0);
+  g_free(arg);
 
   return true;
 }

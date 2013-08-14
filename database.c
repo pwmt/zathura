@@ -35,6 +35,22 @@ zathura_db_load_bookmarks(zathura_database_t* db, const char* file)
   return ZATHURA_DATABASE_GET_INTERFACE(db)->load_bookmarks(db, file);
 }
 
+girara_list_t*
+zathura_db_load_jumplist(zathura_database_t* db, const char* file)
+{
+  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL, NULL);
+
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->load_jumplist(db, file);
+}
+
+bool
+zathura_db_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist)
+{
+  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && jumplist != NULL, NULL);
+
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->save_jumplist(db, file, jumplist);
+}
+
 bool
 zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
                         zathura_fileinfo_t* file_info)

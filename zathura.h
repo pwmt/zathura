@@ -28,7 +28,7 @@ enum {
   ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
 };
 
-/* forward declaration for types form database.h */
+/* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
 /* forward declaration for types from render.h */
@@ -163,6 +163,15 @@ struct zathura_s
     unsigned int size;
     unsigned int num_cached_pages;
   } page_cache;
+
+  /**
+   * Bisect stage
+   */
+  struct {
+    unsigned int last_jump; /**< Page jumped to by bisect */
+    unsigned int start; /**< Bisection range - start */
+    unsigned int end; /**< Bisection range - end */
+  } bisect;
 };
 
 /**
@@ -313,9 +322,17 @@ bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
  * @param zathura Zathura session
  * @param position_x X coordinate
  * @param position_y Y coordinate
- * @return If no error occured true, otherwise false, is returned.
  */
-bool position_set_delayed(zathura_t* zathura, double position_x, double position_y);
+void position_set_delayed(zathura_t* zathura, double position_x, double position_y);
+
+/**
+ * Moves to the given position
+ *
+ * @param zathura Zathura session
+ * @param position_x X coordinate
+ * @param position_y Y coordinate
+ */
+void position_set(zathura_t* zathura, double position_x, double position_y);
 
 /**
  * Builds the box structure to show the rendered pages
@@ -373,13 +390,6 @@ void zathura_jumplist_forward(zathura_t* zathura);
 void zathura_jumplist_backward(zathura_t* zathura);
 
 /**
- * Save current page to the jumplist at current position
- *
- * @param zathura The zathura session
- */
-void zathura_jumplist_save(zathura_t* zathura);
-
-/**
  * Add current page as a new item to the jumplist after current position
  *
  * @param zathura The zathura session
@@ -387,11 +397,21 @@ void zathura_jumplist_save(zathura_t* zathura);
 void zathura_jumplist_add(zathura_t* zathura);
 
 /**
- * Add a page to the jumplist after current position
+ * Trim entries from the beginning of the jumplist to maintain it's maximum size constraint.
  *
  * @param zathura The zathura session
  */
-void zathura_jumplist_append_jump(zathura_t* zathura);
+void zathura_jumplist_trim(zathura_t* zathura);
+
+/**
+ * Load the jumplist of the specified file
+ *
+ * @param zathura The zathura session
+ * @param file The file whose jumplist is to be loaded
+ *
+ * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
+ */
+bool zathura_jumplist_load(zathura_t* zathura, const char* file);
 
 /**
  * Add a page to the page cache
@@ -400,5 +420,15 @@ void zathura_jumplist_append_jump(zathura_t* zathura);
  * @param page_index The index of the page to be cached
  */
 void zathura_page_cache_add(zathura_t* zathura, unsigned int page_index);
+
+/**
+ * Checks if the given page is cached
+ *
+ * @param zathura The zathura session
+ * @param page_index The index of the page that may be cached
+ *
+ * @return true if page is cached otherwise false
+ */
+bool zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index);
 
 #endif // ZATHURA_H

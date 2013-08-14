@@ -400,6 +400,6 @@ zathura_plugin_get_version(zathura_plugin_t* plugin)
     return plugin->version;
   }
 
-  zathura_plugin_version_t version = { 0 };
+  zathura_plugin_version_t version = { 0, 0, 0 };
   return version;
 }

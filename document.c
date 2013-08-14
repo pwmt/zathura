@@ -14,6 +14,7 @@
 #ifdef WITH_MAGIC
 #include <magic.h>
 #endif
+#include <unistd.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -40,6 +41,7 @@ static const gchar* guess_type(const char* path);
  */
 struct zathura_document_s {
   char* file_path; /**< File path of the document */
+  char* basename; /**< Basename of the document */
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
   unsigned int number_of_pages; /**< Number of pages */
@@ -110,12 +112,14 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
 
   if (plugin == NULL) {
     girara_error("unknown file type\n");
+    *error = ZATHURA_ERROR_UNKNOWN;
     goto error_free;
   }
 
   document = g_malloc0(sizeof(zathura_document_t));
 
   document->file_path   = real_path;
+  document->basename    = g_path_get_basename(real_path);
   document->password    = password;
   document->scale       = 1.0;
   document->plugin      = plugin;
@@ -198,6 +202,7 @@ zathura_document_free(zathura_document_t* document)
   if (document->file_path != NULL) {
     free(document->file_path);
   }
+  g_free(document->basename);
 
   g_free(document);
 
@@ -212,6 +217,16 @@ zathura_document_get_path(zathura_document_t* document)
   }
 
   return document->file_path;
+}
+
+const char*
+zathura_document_get_basename(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+
+  return document->basename;
 }
 
 const char*

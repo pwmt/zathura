@@ -6,6 +6,7 @@
 #include <glib/gi18n.h>
 #include <girara/utils.h>
 #include <locale.h>
+#include <unistd.h>
 
 #include "zathura.h"
 #include "utils.h"

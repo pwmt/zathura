@@ -108,7 +108,7 @@ zathura_link_target_t
 zathura_link_get_target(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_link_target_t target = { 0 };
+    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
     return target;
   }
 
@@ -149,6 +149,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           }
         }
 
+        zathura_jumplist_add(zathura);
+
         /* jump to the page */
         page_set(zathura, link->target.page_number);
 
@@ -157,10 +159,12 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
         girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
         if (link_hadjust == true) {
-          position_set_delayed(zathura, offset.x, offset.y);
+          position_set(zathura, offset.x, offset.y);
         } else {
-          position_set_delayed(zathura, -1, offset.y);
+          position_set(zathura, -1, offset.y);
         }
+
+        zathura_jumplist_add(zathura);
       }
       break;
     case ZATHURA_LINK_GOTO_REMOTE:

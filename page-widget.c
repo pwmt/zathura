@@ -86,7 +86,7 @@ enum properties_e {
   PROP_SEARCH_RESULTS,
   PROP_SEARCH_RESULTS_LENGTH,
   PROP_SEARCH_RESULTS_CURRENT,
-  PROP_DRAW_SEACH_RESULTS,
+  PROP_DRAW_SEARCH_RESULTS,
   PROP_LAST_VIEW,
 };
 
@@ -131,8 +131,8 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
                                   g_param_spec_int("search-current", "search-current", "The current search result", -1, INT_MAX, 0, G_PARAM_WRITABLE | G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_LENGTH,
                                   g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property(object_class, PROP_DRAW_SEACH_RESULTS,
-                                  g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property(object_class, PROP_DRAW_SEARCH_RESULTS,
+                                  g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_LAST_VIEW,
                                   g_param_spec_int64("last-view", "last-view", "Last time the page has been viewed", -1, G_MAXINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
@@ -154,7 +154,7 @@ zathura_page_widget_init(ZathuraPage* widget)
 
   priv->search.list    = NULL;
   priv->search.current = INT_MAX;
-  priv->search.draw    = true;
+  priv->search.draw    = false;
 
   priv->images.list      = NULL;
   priv->images.retrieved = false;
@@ -269,8 +269,19 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       }
       break;
     }
-    case PROP_DRAW_SEACH_RESULTS:
+    case PROP_DRAW_SEARCH_RESULTS:
       priv->search.draw = g_value_get_boolean(value);
+
+      /*
+       * we do the following instead of only redrawing the rectangles of the
+       * search results in order to avoid the rectangular margins that appear
+       * around the search terms after their highlighted rectangular areas are
+       * redrawn without highlighting.
+       */
+
+      if (priv->search.list != NULL && zathura_page_get_visibility(priv->page)) {
+	gtk_widget_queue_draw(GTK_WIDGET(object));
+      }
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -298,6 +309,9 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
       break;
     case PROP_LAST_VIEW:
       g_value_set_int64(value, priv->last_view);
+      break;
+    case PROP_DRAW_SEARCH_RESULTS:
+      g_value_set_boolean(value, priv->search.draw);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -491,11 +505,18 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
-    cairo_surface_finish(priv->surface);
     cairo_surface_destroy(priv->surface);
+    priv->surface = NULL;
   }
   priv->render_requested = false;
-  priv->surface = surface;
+  if (surface != NULL) {
+    /* if we're not visible or not cached, we don't care about the surface */
+    if (zathura_page_get_visibility(priv->page) == true ||
+        zathura_page_cache_is_cached(priv->zathura, zathura_page_get_index(priv->page)) == true) {
+      priv->surface = surface;
+      cairo_surface_reference(surface);
+    }
+  }
   mutex_unlock(&(priv->lock));
   /* force a redraw here */
   if (priv->surface != NULL) {
@@ -860,3 +881,12 @@ zathura_page_widget_update_view_time(ZathuraPage* widget)
     priv->last_view = g_get_real_time();
   }
 }
+
+bool
+zathura_page_widget_have_surface(ZathuraPage* widget)
+{
+  g_return_val_if_fail(ZATHURA_IS_PAGE(widget) == TRUE, false);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  return priv->surface != NULL;
+}
+

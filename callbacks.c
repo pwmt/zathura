@@ -95,9 +95,9 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       if (zathura_page_get_visibility(page) == false) {
-	zathura_page_set_visibility(page, true);
-	zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
-	zathura_page_cache_add(zathura, zathura_page_get_index(page));
+        zathura_page_set_visibility(page, true);
+        zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
+        zathura_page_cache_add(zathura, zathura_page_get_index(page));
       }
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
@@ -106,6 +106,19 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       }
     } else {
       zathura_page_set_visibility(page, false);
+      /* if the page is not visible and not cached, but still has a surface, we
+       * need to get rid of the surface */
+      if (zathura_page_widget_have_surface(ZATHURA_PAGE(page_widget)) == true &&
+          zathura_page_cache_is_cached(zathura, zathura_page_get_index(page)) == false) {
+        zathura_page_widget_update_surface(ZATHURA_PAGE(page_widget), NULL);
+      }
+
+      girara_list_t* results = NULL;
+      g_object_get(page_widget, "search-results", &results, NULL);
+
+      if (results != NULL) {
+        g_object_set(page_widget, "search-current", 0, NULL);
+      }
     }
   }
 
@@ -267,10 +280,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
     }
 
     sc_toggle_index(zathura->ui.session, NULL, NULL, 0);
-
-    /* zathura_jumplist_save is called when entering index mode */
     zathura_link_evaluate(zathura, index_element->link);
-    zathura_jumplist_add(zathura);
   }
 
   g_object_unref(model);
@@ -326,9 +336,7 @@ handle_link(GtkEntry* entry, girara_session_t* session,
         invalid_index = false;
         switch (action) {
           case ZATHURA_LINK_ACTION_FOLLOW:
-            zathura_jumplist_save(zathura);
             zathura_link_evaluate(zathura, link);
-            zathura_jumplist_add(zathura);
             break;
           case ZATHURA_LINK_ACTION_DISPLAY:
             zathura_link_display(zathura, link);
@@ -527,7 +535,7 @@ cb_unknown_command(girara_session_t* session, const char* input)
     }
   }
 
-  zathura_jumplist_save(zathura);
+  zathura_jumplist_add(zathura);
   page_set(zathura, atoi(input) - 1);
   zathura_jumplist_add(zathura);
 
