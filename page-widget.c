@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "shortcuts.h"
 #include "synctex.h"
+#include "zathura.h"
 
 G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 
@@ -22,6 +23,7 @@ typedef struct zathura_page_widget_private_s {
   zathura_page_t* page; /**< Page object */
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
+  ZathuraRenderRequest* render_request; /* Request object */
   bool render_requested; /**< No surface and rendering has been requested */
   gint64 last_view; /**< Last time the page has been viewed */
   mutex lock; /**< Lock */
@@ -144,6 +146,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->page             = NULL;
   priv->surface          = NULL;
   priv->render_requested = false;
+  priv->render_request   = NULL;
   priv->last_view        = g_get_real_time();
 
   priv->links.list      = NULL;
@@ -177,7 +180,18 @@ zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, "zathura", zathura, NULL);
+  GObject* ret = g_object_new(ZATHURA_TYPE_PAGE, "page", page, "zathura", zathura, NULL);
+  if (ret == NULL) {
+    return NULL;
+  }
+
+  ZathuraPage* widget = ZATHURA_PAGE(ret);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  priv->render_request = zathura_render_request_new(zathura->sync.render_thread, page);
+  g_signal_connect_object(priv->render_request, "completed",
+      G_CALLBACK(zathura_page_widget_update_surface), widget, G_CONNECT_SWAPPED);
+
+  return GTK_WIDGET(ret);
 }
 
 static void
@@ -188,6 +202,10 @@ zathura_page_widget_finalize(GObject* object)
 
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
+  }
+
+  if (priv->render_request != NULL) {
+    g_object_unref(priv->render_request);
   }
 
   if (priv->search.list != NULL) {
@@ -485,7 +503,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* render real page */
     if (priv->render_requested == false) {
       priv->render_requested = true;
-      render_page(priv->zathura->sync.render_thread, priv->page);
+      zathura_render_request(priv->render_request);
     }
   }
   mutex_unlock(&(priv->lock));

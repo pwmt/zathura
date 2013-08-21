@@ -711,6 +711,13 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   zathura->document = document;
 
+  /* threads */
+  zathura->sync.render_thread = zathura_renderer_new(zathura);
+
+  if (zathura->sync.render_thread == NULL) {
+    goto error_free;
+  }
+
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
   if (zathura->pages == NULL) {
@@ -758,13 +765,6 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   page_widget_set_mode(zathura, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
-
-  /* threads */
-  zathura->sync.render_thread = render_init(zathura);
-
-  if (zathura->sync.render_thread == NULL) {
-    goto error_free;
-  }
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     gtk_widget_realize(zathura->pages[page_id]);
@@ -883,6 +883,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
     return false;
   }
 
+  /* stop rendering */
+  zathura_renderer_stop(zathura->sync.render_thread);
+
   /* remove monitor */
   if (keep_monitor == false) {
     if (zathura->file_monitor.monitor != NULL) {
@@ -945,7 +948,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->jumplist.size = 0;
 
   /* release render thread */
-  render_free(zathura->sync.render_thread);
+  g_object_unref(zathura->sync.render_thread);
   zathura->sync.render_thread = NULL;
 
   /* remove widgets */

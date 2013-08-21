@@ -31,10 +31,6 @@ enum {
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
-/* forward declaration for types from render.h */
-struct render_thread_s;
-typedef struct render_thread_s render_thread_t;
-
 /**
  * Jump
  */
@@ -78,7 +74,7 @@ struct zathura_s
 
   struct
   {
-    render_thread_t* render_thread; /**< The thread responsible for rendering the pages */
+    ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
   } sync;
 
   struct

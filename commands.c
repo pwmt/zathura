@@ -381,9 +381,9 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(page_widget, "draw-links", FALSE, NULL);
 
-    render_lock(zathura->sync.render_thread);
+    zathura_renderer_lock(zathura->sync.render_thread);
     girara_list_t* result = zathura_page_search_text(page, input, &error);
-    render_unlock(zathura->sync.render_thread);
+    zathura_renderer_unlock(zathura->sync.render_thread);
 
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
