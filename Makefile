@@ -56,11 +56,11 @@ options:
 	@echo "CC      = ${CC}"
 
 version.h: version.h.in config.mk
-	$(QUIET)sed 's/ZVMAJOR/${ZATHURA_VERSION_MAJOR}/' < version.h.in | \
-		sed 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' | \
-		sed 's/ZVREV/${ZATHURA_VERSION_REV}/' | \
-		sed 's/ZVAPI/${ZATHURA_API_VERSION}/' | \
-		sed 's/ZVABI/${ZATHURA_ABI_VERSION}/' > version.h
+	$(QUIET)sed -e 's/ZVMAJOR/${ZATHURA_VERSION_MAJOR}/' \
+		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
+		-e 's/ZVREV/${ZATHURA_VERSION_REV}/' \
+		-e 's/ZVAPI/${ZATHURA_API_VERSION}/' \
+		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' version.h.in > version.h
 
 %.o: %.c
 	$(ECHO) CC $<
