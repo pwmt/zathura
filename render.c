@@ -25,7 +25,7 @@ static void zathura_render_request_finalize(GObject* object);
 static void render_job(void* data, void* user_data);
 static bool render(ZathuraRenderRequest* request, ZathuraRenderer* renderer);
 static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
-static void color2double(GdkColor* col, double* v);
+static void color2double(const GdkColor* col, double* v);
 
 
 /* private data for ZathuraRenderer */
@@ -40,7 +40,9 @@ typedef struct private_s {
     bool hue;
 
     double light[3];
+    GdkColor light_gdk;
     double dark[3];
+    GdkColor dark_gdk;
   } recolor;
 } private_t;
 
@@ -69,8 +71,6 @@ zathura_renderer_class_init(ZathuraRendererClass* class)
   /* overwrite methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize     = zathura_renderer_finalize;
-//  object_class->set_property = zathura_page_widget_set_property;
-//  object_class->get_property = zathura_page_widget_get_property;
 }
 
 static void
@@ -84,8 +84,8 @@ zathura_renderer_init(ZathuraRenderer* renderer)
 
   priv->recolor.enabled = false;
   priv->recolor.hue = true;
-  priv->recolor.light[0] = priv->recolor.light[1] = priv->recolor.light[2] = 1;
-  priv->recolor.dark[0] = priv->recolor.dark[1] = priv->recolor.dark[2] = 1;
+
+  zathura_renderer_set_recolor_colors_str(renderer, "#000000", "#FFFFFF");
 }
 
 ZathuraRenderer*
@@ -127,8 +127,6 @@ zathura_render_request_class_init(ZathuraRenderRequestClass* class)
   /* overwrite methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize     = zathura_render_request_finalize;
-//  object_class->set_property = zathura_page_widget_set_property;
-//  object_class->get_property = zathura_page_widget_get_property;
 
   request_signals[REQUEST_COMPLETED] = g_signal_new("completed",
       ZATHURA_TYPE_RENDER_REQUEST,
@@ -216,15 +214,64 @@ zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer, bool enable)
   GET_PRIVATE(renderer)->recolor.hue = enable;
 }
 
-void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
+void
+zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
+    const GdkColor* light, const GdkColor* dark)
+{
+  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
+
+  private_t* priv = GET_PRIVATE(renderer);
+  if (light != NULL) {
+    priv->recolor.light_gdk.red = light->red;
+    priv->recolor.light_gdk.blue = light->blue;
+    priv->recolor.light_gdk.green = light->green;
+    color2double(light, priv->recolor.light);
+  }
+  if (dark != NULL) {
+    priv->recolor.dark_gdk.red = dark->red;
+    priv->recolor.dark_gdk.blue = dark->blue;
+    priv->recolor.dark_gdk.green = dark->green;
+    color2double(dark, priv->recolor.dark);
+  }
+}
+
+void
+zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
+    const char* light, const char* dark)
+{
+  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
+
+  if (dark != NULL) {
+    GdkColor color;
+    gdk_color_parse(dark, &color);
+    zathura_renderer_set_recolor_colors(renderer, NULL, &color);
+  }
+  if (light != NULL) {
+    GdkColor color;
+    gdk_color_parse(light, &color);
+    zathura_renderer_set_recolor_colors(renderer, &color, NULL);
+  }
+}
+
+void
+zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
     GdkColor* light, GdkColor* dark)
 {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
-  g_return_if_fail(light != NULL && dark != NULL);
 
   private_t* priv = GET_PRIVATE(renderer);
-  color2double(light, priv->recolor.light);
-  color2double(dark, priv->recolor.dark);
+  if (light != NULL) {
+    light->red = priv->recolor.light_gdk.red;
+    light->blue = priv->recolor.light_gdk.blue;
+    light->green = priv->recolor.light_gdk.green;
+    color2double(light, priv->recolor.light);
+  }
+  if (dark != NULL) {
+    dark->red = priv->recolor.dark_gdk.red;
+    dark->blue = priv->recolor.dark_gdk.blue;
+    dark->green = priv->recolor.dark_gdk.green;
+    color2double(dark, priv->recolor.dark);
+  }
 }
 
 void
@@ -307,7 +354,7 @@ render_job(void* data, void* user_data)
 
 
 static void
-color2double(GdkColor* col, double* v)
+color2double(const GdkColor* col, double* v)
 {
   v[0] = (double) col->red / 65535.;
   v[1] = (double) col->green / 65535.;
@@ -525,7 +572,7 @@ render_all(zathura_t* zathura)
 }
 
 static gint
-render_thread_sort(gconstpointer a, gconstpointer b, gpointer data)
+render_thread_sort(gconstpointer a, gconstpointer b, gpointer UNUSED(data))
 {
   if (a == NULL || b == NULL) {
     return 0;

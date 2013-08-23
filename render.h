@@ -52,6 +52,10 @@ bool zathura_renderer_recolor_hue_enabled(ZathuraRenderer* renderer);
 void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
     bool enable);
 void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
+    const GdkColor* light, const GdkColor* dark);
+void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
+    const char* light, const char* dark);
+void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
     GdkColor* light, GdkColor* dark);
 
 void zathura_renderer_stop(ZathuraRenderer* renderer);

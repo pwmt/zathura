@@ -68,7 +68,6 @@ zathura_create(void)
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   /* global settings */
-  zathura->global.recolor            = false;
   zathura->global.update_page_number = true;
   zathura->global.search_direction = FORWARD;
 
@@ -717,6 +716,15 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   if (zathura->sync.render_thread == NULL) {
     goto error_free;
   }
+
+  char* recolor_dark = NULL;
+  char* recolor_light = NULL;
+  girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
+  girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
+  zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread,
+      recolor_light, recolor_dark);
+  g_free(recolor_dark);
+  g_free(recolor_light);
 
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));

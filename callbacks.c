@@ -488,11 +488,11 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  bool bool_value = *((bool*) value);
+  const bool bool_value = *((bool*) value);
 
-  if (zathura->global.recolor != bool_value) {
-    zathura->global.recolor = bool_value;
-    render_all(zathura);
+  if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_enabled(zathura->sync.render_thread) != bool_value) {
+     zathura_renderer_enable_recolor(zathura->sync.render_thread, bool_value);
+     render_all(zathura);
   }
 }
 
@@ -506,11 +506,11 @@ cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  bool bool_value = *((bool*) value);
+  const bool bool_value = *((bool*) value);
 
-  if (zathura->global.recolor_keep_hue != bool_value) {
-    zathura->global.recolor_keep_hue = bool_value;
-    render_all(zathura);
+  if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_hue_enabled(zathura->sync.render_thread) != bool_value) {
+     zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, bool_value);
+     render_all(zathura);
   }
 }
 
