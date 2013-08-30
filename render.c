@@ -21,7 +21,6 @@ static void zathura_renderer_finalize(GObject* object);
 static void zathura_render_request_finalize(GObject* object);
 
 static void render_job(void* data, void* user_data);
-static bool render(ZathuraRenderRequest* request, ZathuraRenderer* renderer);
 static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
 static void color2double(const GdkColor* col, double* v);
 
@@ -50,6 +49,7 @@ typedef struct request_private_s {
   zathura_page_t* page;
   bool requested;
   bool aborted;
+  gint64 last_view_time;
 } request_private_t;
 
 #define GET_PRIVATE(obj) \
@@ -298,7 +298,7 @@ zathura_renderer_stop(ZathuraRenderer* renderer)
 /* ZathuraRenderRequest methods */
 
 void
-zathura_render_request(ZathuraRenderRequest* request)
+zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
 {
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
 
@@ -307,6 +307,7 @@ zathura_render_request(ZathuraRenderRequest* request)
   if (request_priv->requested == false) {
     request_priv->requested = true;
     request_priv->aborted = false;
+    request_priv->last_view_time = last_view_time;
 
     g_thread_pool_push(priv->pool, request, NULL);
   }
@@ -326,26 +327,34 @@ zathura_render_request_abort(ZathuraRenderRequest* request)
 
 /* render job */
 
-static void
-render_job(void* data, void* user_data)
+typedef struct emit_completed_signal_s
 {
-  ZathuraRenderRequest* request = data;
-  ZathuraRenderer* renderer = user_data;
-  g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
-  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
+  ZathuraRenderer* renderer;
+  ZathuraRenderRequest* request;
+  cairo_surface_t* surface;
+} emit_completed_signal_t;
 
-  private_t* priv = GET_PRIVATE(renderer);
-  request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
-  if (priv->about_to_close == true || request_priv->aborted == true) {
-    /* back out early */
-    request_priv->requested = false;
-    return;
-  }
+static gboolean
+emit_completed_signal(void* data)
+{
+  emit_completed_signal_t* ecs = data;
+  private_t* priv = GET_PRIVATE(ecs->renderer);
+  request_private_t* request_priv = REQUEST_GET_PRIVATE(ecs->request);
 
-  girara_debug("Rendering page %d ...", zathura_page_get_index(request_priv->page) + 1);
-  if (render(request, renderer) != true) {
-    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(request_priv->page) + 1);
+  if (priv->about_to_close == false && request_priv->aborted == false) {
+    /* emit the signal */
+    g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
   }
+  /* mark the request as done */
+  request_priv->requested = false;
+
+  /* clean up the data */
+  cairo_surface_destroy(ecs->surface);
+  g_object_unref(ecs->renderer);
+  g_object_unref(ecs->request);
+  g_free(ecs);
+
+  return FALSE;
 }
 
 static void
@@ -398,36 +407,6 @@ colorumax(const double* h, double l, double l1, double l2)
 
   /* forces the returned value to be 0 on l1 and l2, trying not to distort colors too much */
   return fmin(u, v);
-}
-
-typedef struct emit_completed_signal_s
-{
-  ZathuraRenderer* renderer;
-  ZathuraRenderRequest* request;
-  cairo_surface_t* surface;
-} emit_completed_signal_t;
-
-static gboolean
-emit_completed_signal(void* data)
-{
-  emit_completed_signal_t* ecs = data;
-  private_t* priv = GET_PRIVATE(ecs->renderer);
-  request_private_t* request_priv = REQUEST_GET_PRIVATE(ecs->request);
-
-  if (priv->about_to_close == false && request_priv->aborted == false) {
-    /* emit the signal */
-    g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
-  }
-  /* mark the request as done */
-  request_priv->requested = false;
-
-  /* clean up the data */
-  cairo_surface_destroy(ecs->surface);
-  g_object_unref(ecs->renderer);
-  g_object_unref(ecs->request);
-  g_free(ecs);
-
-  return FALSE;
 }
 
 static void
@@ -583,6 +562,29 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   return true;
 }
 
+static void
+render_job(void* data, void* user_data)
+{
+  ZathuraRenderRequest* request = data;
+  ZathuraRenderer* renderer = user_data;
+  g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
+  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
+
+  private_t* priv = GET_PRIVATE(renderer);
+  request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
+  if (priv->about_to_close == true || request_priv->aborted == true) {
+    /* back out early */
+    request_priv->requested = false;
+    return;
+  }
+
+  girara_debug("Rendering page %d ...", zathura_page_get_index(request_priv->page) + 1);
+  if (render(request, renderer) != true) {
+    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(request_priv->page) + 1);
+  }
+}
+
+
 void
 render_all(zathura_t* zathura)
 {
@@ -615,10 +617,8 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer UNUSED(data))
   request_private_t* priv_a = REQUEST_GET_PRIVATE(request_a);
   request_private_t* priv_b = REQUEST_GET_PRIVATE(request_b);
   if (priv_a->aborted == priv_b->aborted) {
-    unsigned int page_a_index = zathura_page_get_index(priv_a->page);
-    unsigned int page_b_index = zathura_page_get_index(priv_b->page);
-    return page_a_index < page_b_index ? -1 :
-        (page_a_index > page_b_index ? 1 : 0);
+    return priv_a->last_view_time < priv_b->last_view_time ? -1 :
+        (priv_a->last_view_time > priv_b->last_view_time ? 1 : 0);
   }
 
   /* sort aborted entries earlier so that the are thrown out of the queue */

@@ -506,7 +506,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* render real page */
     if (priv->render_requested == false) {
       priv->render_requested = true;
-      zathura_render_request(priv->render_request);
+      zathura_render_request(priv->render_request, priv->last_view);
     }
   }
   mutex_unlock(&(priv->lock));

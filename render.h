@@ -41,42 +41,80 @@ struct zathura_renderer_class_s
  */
 GType zathura_renderer_get_type(void);
 /**
- * Create a page view widget.
- * @param zathura the zathura instance
- * @param page the page to be displayed
- * @return a page view widget
+ * Create a renderer.
+ * @return a renderer object
  */
 ZathuraRenderer* zathura_renderer_new(void);
 
+/**
+ * Return whether recoloring is enabled.
+ * @param renderer a renderer object
+ * @returns true if recoloring is enabled, false otherwise
+ */
 bool zathura_renderer_recolor_enabled(ZathuraRenderer* renderer);
+/**
+ * Enable/disable recoloring.
+ * @param renderer a renderer object
+ * @param enable wheter to enable or disable recoloring
+ */
 void zathura_renderer_enable_recolor(ZathuraRenderer* renderer, bool enable);
+/**
+ * Return whether hue should be preserved while recoloring.
+ * @param renderer a renderer object
+ * @returns true if hue should be preserved, false otherwise
+ */
 bool zathura_renderer_recolor_hue_enabled(ZathuraRenderer* renderer);
+/**
+ * Enable/disable preservation of hue while recoloring.
+ * @param renderer a renderer object
+ * @param enable wheter to enable or disable hue preservation
+ */
 void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
     bool enable);
+/**
+ * Set light and dark colors for recoloring.
+ * @param renderer a renderer object
+ * @param light light color
+ * @param dark dark color
+ */
 void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
     const GdkColor* light, const GdkColor* dark);
+/**
+ * Set light and dark colors for recoloring.
+ * @param renderer a renderer object
+ * @param light light color
+ * @param dark dark color
+ */
 void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
     const char* light, const char* dark);
+/**
+ * Get light and dark colors for recoloring.
+ * @param renderer a renderer object
+ * @param light light color
+ * @param dark dark color
+ */
 void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
     GdkColor* light, GdkColor* dark);
-
+/**
+ * Stop rendering.
+ * @param renderer a render object
+ */
 void zathura_renderer_stop(ZathuraRenderer* renderer);
 
 /**
  * Lock the render thread. This is useful if you want to render on your own (e.g
  * for printing).
  *
- * @param render_thread The render thread object.
+ * @param renderer renderer object
  */
 void zathura_renderer_lock(ZathuraRenderer* renderer);
 
 /**
  * Unlock the render thread.
  *
- * @param render_thread The render thread object.
+ * @param renderer renderer object.
  */
 void zathura_renderer_unlock(ZathuraRenderer* renderer);
-
 
 
 typedef struct zathura_render_request_s ZathuraRenderRequest;
@@ -109,15 +147,15 @@ struct zathura_render_request_class_s
                              ZathuraRenderRequestClass))
 
 /**
- * Returns the type of the renderer.
+ * Returns the type of the render request.
  * @return the type
  */
 GType zathura_page_render_info_get_type(void);
 /**
- * Create a page view widget.
- * @param zathura the zathura instance
+ * Create a render request object
+ * @param renderer a renderer object
  * @param page the page to be displayed
- * @return a page view widget
+ * @returns render request object
  */
 ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer,
     zathura_page_t* page);
@@ -127,8 +165,10 @@ ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer,
  * that should be rendered.
  *
  * @param request request object of the page that should be renderer
+ * @param last_view_time last view time of the page
  */
-void zathura_render_request(ZathuraRenderRequest* request);
+void zathura_render_request(ZathuraRenderRequest* request,
+    gint64 last_view_time);
 
 /**
  * Abort an existing render request.
