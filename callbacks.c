@@ -107,7 +107,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       }
     } else {
       zathura_page_set_visibility(page, false);
-      /* If a page becomes invisible, abort all render requests. */
+      /* If a page becomes invisible, abort the render request. */
       zathura_page_widget_abort_render_request(zathura_page_widget);
       /* if the page is not visible and not cached, but still has a surface, we
        * need to get rid of the surface */
@@ -370,6 +370,13 @@ cb_sc_display_link(GtkEntry* entry, girara_session_t* session)
   return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
 }
 
+static gboolean
+file_monitor_reload(void* data)
+{
+  sc_reload((girara_session_t*) data, NULL, NULL, 0);
+  return FALSE;
+}
+
 void
 cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), GFileMonitorEvent event, girara_session_t* session)
 {
@@ -380,9 +387,7 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
   switch (event) {
     case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
     case G_FILE_MONITOR_EVENT_CREATED:
-      gdk_threads_enter();
-      sc_reload(session, NULL, NULL, 0);
-      gdk_threads_leave();
+      g_main_context_invoke(NULL, file_monitor_reload, session);
       break;
     default:
       return;
