@@ -420,7 +420,7 @@ emit_completed_signal(void* data)
   /* clean up the data */
   cairo_surface_destroy(ecs->surface);
   g_free(ecs);
-  return true;
+  return FALSE;
 }
 
 static bool
