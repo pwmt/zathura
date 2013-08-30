@@ -430,6 +430,86 @@ emit_completed_signal(void* data)
   return FALSE;
 }
 
+static void
+recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
+    cairo_surface_t* surface)
+{
+  /* uses a representation of a rgb color as follows:
+     - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
+     - a hue vector, which indicates a radian direction from the grey axis, inside the equal lightness plane.
+     - a saturation scalar between 0,1. It is 0 when grey, 1 when the color is in the boundary of the rgb cube.
+  */
+
+  const int rowstride  = cairo_image_surface_get_stride(surface);
+  unsigned char* image = cairo_image_surface_get_data(surface);
+
+  /* RGB weights for computing lightness. Must sum to one */
+  static const double a[] = {0.30, 0.59, 0.11};
+
+#define rgb1 priv->recolor.dark
+#define rgb2 priv->recolor.light
+  const double l1 = (a[0]*rgb1[0] + a[1]*rgb1[1] + a[2]*rgb1[2]);
+  const double l2 = (a[0]*rgb2[0] + a[1]*rgb2[1] + a[2]*rgb2[2]);
+
+  const double rgb_diff[] = {
+    rgb2[0] - rgb1[0],
+    rgb2[1] - rgb1[1],
+    rgb2[2] - rgb1[2]
+  };
+
+  for (unsigned int y = 0; y < page_height; y++) {
+    unsigned char* data = image + y * rowstride;
+
+    for (unsigned int x = 0; x < page_width; x++, data += 4) {
+      /* Careful. data color components blue, green, red. */
+      const double rgb[3] = {
+        (double) data[2] / 256.,
+        (double) data[1] / 256.,
+        (double) data[0] / 256.
+      };
+
+      /* compute h, s, l data   */
+      double l = a[0]*rgb[0] + a[1]*rgb[1] + a[2]*rgb[2];
+
+      if (priv->recolor.hue == true) {
+        /* adjusting lightness keeping hue of current color. white and black
+         * go to grays of same ligtness as light and dark colors. */
+        const double h[3] = {
+          rgb[0] - l,
+          rgb[1] - l,
+          rgb[2] - l
+        };
+
+        /* u is the maximum possible saturation for given h and l. s is a
+         * rescaled saturation between 0 and 1 */
+        double u = colorumax(h, l, 0, 1);
+        double s = 0;
+        if (u != 0) {
+          s = 1/u;
+        }
+
+        /* Interpolates lightness between light and dark colors. white goes to
+         * light, and black goes to dark. */
+        l = l * (l2 - l1) + l1;
+        u = colorumax(h, l, l1, l2);
+
+        data[2] = (unsigned char)round(255.*(l + s*u * h[0]));
+        data[1] = (unsigned char)round(255.*(l + s*u * h[1]));
+        data[0] = (unsigned char)round(255.*(l + s*u * h[2]));
+      } else {
+        /* linear interpolation between dark and light with color ligtness as
+         * a parameter */
+        data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1[0]));
+        data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1[1]));
+        data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1[2]));
+      }
+    }
+  }
+
+#undef rgb1
+#undef rgb2
+}
+
 static bool
 render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 {
@@ -482,85 +562,9 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
     return true;
   }
 
-
   /* recolor */
-  /* uses a representation of a rgb color as follows:
-     - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
-     - a hue vector, which indicates a radian direction from the grey axis, inside the equal lightness plane.
-     - a saturation scalar between 0,1. It is 0 when grey, 1 when the color is in the boundary of the rgb cube.
-  */
   if (priv->recolor.enabled == true) {
-    const int rowstride  = cairo_image_surface_get_stride(surface);
-    unsigned char* image = cairo_image_surface_get_data(surface);
-
-    /* RGB weights for computing lightness. Must sum to one */
-    static const double a[] = {0.30, 0.59, 0.11};
-
-#define rgb1 priv->recolor.dark
-#define rgb2 priv->recolor.light
-    const double l1 = (a[0]*rgb1[0] + a[1]*rgb1[1] + a[2]*rgb1[2]);
-    const double l2 = (a[0]*rgb2[0] + a[1]*rgb2[1] + a[2]*rgb2[2]);
-
-    const double rgb_diff[] = {
-      rgb2[0] - rgb1[0],
-      rgb2[1] - rgb1[1],
-      rgb2[2] - rgb1[2]
-    };
-
-    for (unsigned int y = 0; y < page_height; y++) {
-      unsigned char* data = image + y * rowstride;
-
-      for (unsigned int x = 0; x < page_width; x++, data += 4) {
-        /* Careful. data color components blue, green, red. */
-        const double rgb[3] = {
-          (double) data[2] / 256.,
-          (double) data[1] / 256.,
-          (double) data[0] / 256.
-        };
-
-        /* compute h, s, l data   */
-        double l = a[0]*rgb[0] + a[1]*rgb[1] + a[2]*rgb[2];
-
-        const double h[3] = {
-          rgb[0] - l,
-          rgb[1] - l,
-          rgb[2] - l
-        };
-
-        /* u is the maximum possible saturation for given h and l. s is a
-         * rescaled saturation between 0 and 1 */
-        double u = colorumax(h, l, 0, 1);
-        double s;
-        if (u == 0) {
-          s = 0;
-        } else {
-          s = 1/u;
-        }
-
-        /* Interpolates lightness between light and dark colors. white goes to
-         * light, and black goes to dark. */
-        const double t = l;
-        l = t * (l2 - l1) + l1;
-
-        if (priv->recolor.hue == true) {
-          /* adjusting lightness keeping hue of current color. white and black
-           * go to grays of same ligtness as light and dark colors. */
-          u = colorumax(h, l, l1, l2);
-          data[2] = (unsigned char)round(255.*(l + s*u * h[0]));
-          data[1] = (unsigned char)round(255.*(l + s*u * h[1]));
-          data[0] = (unsigned char)round(255.*(l + s*u * h[2]));
-        } else {
-          /* linear interpolation between dark and light with color ligtness as
-           * a parameter */
-          data[2] = (unsigned char)round(255.*(t * rgb_diff[0] + rgb1[0]));
-          data[1] = (unsigned char)round(255.*(t * rgb_diff[1] + rgb1[1]));
-          data[0] = (unsigned char)round(255.*(t * rgb_diff[2] + rgb1[2]));
-        }
-      }
-    }
-
-#undef rgb1
-#undef rgb2
+    recolor(priv, page_width, page_height, surface);
   }
 
   emit_completed_signal_t* ecs = g_malloc(sizeof(ecs));
