@@ -405,6 +405,23 @@ colorumax(const double* h, double l, double l1, double l2)
   return fmin(u, v);
 }
 
+typedef struct emit_completed_signal_s
+{
+  ZathuraRenderRequest* request;
+  cairo_surface_t* surface;
+} emit_completed_signal_t;
+
+static gboolean
+emit_completed_signal(void* data)
+{
+  emit_completed_signal_t* ecs = data;
+  /* emit the signal */
+  g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
+  /* clean up the data */
+  cairo_surface_destroy(ecs->surface);
+  g_free(ecs);
+  return true;
+}
 
 static bool
 render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
@@ -534,16 +551,13 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   }
 
   if (priv->about_to_close == false && request_priv->aborted == false) {
-    /* update the widget */
-    /*
-    gdk_threads_enter();
-    GtkWidget* widget = zathura_page_get_widget(zathura, page);
-    zathura_page_widget_update_surface(ZATHURA_PAGE(widget), surface);
-    gdk_threads_leave(); */
+    emit_completed_signal_t* ecs = g_malloc(sizeof(ecs));
+    ecs->request = request;
+    ecs->surface = surface;
+    cairo_surface_reference(surface);
 
-    gdk_threads_enter();
-    g_signal_emit(request, request_signals[REQUEST_COMPLETED], 0, surface);
-    gdk_threads_leave();
+    /* emit signal from the main context, i.e. the main thread */
+    g_main_context_invoke(NULL, emit_completed_signal, ecs);
   }
 
   cairo_surface_destroy(surface);
