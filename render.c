@@ -87,11 +87,10 @@ zathura_renderer_init(ZathuraRenderer* renderer)
 }
 
 ZathuraRenderer*
-zathura_renderer_new(zathura_t* zathura)
+zathura_renderer_new()
 {
-  g_return_val_if_fail(zathura != NULL, NULL);
-
-  return g_object_new(ZATHURA_TYPE_RENDERER, /*"page", page, "zathura", zathura, */ NULL);
+  GObject* obj = g_object_new(ZATHURA_TYPE_RENDERER, NULL);
+  return ZATHURA_RENDERER(obj);
 }
 
 static void
@@ -324,6 +323,8 @@ zathura_render_request_abort(ZathuraRenderRequest* request)
   }
 }
 
+
+/* render job */
 
 static void
 render_job(void* data, void* user_data)

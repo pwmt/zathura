@@ -711,7 +711,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura->document = document;
 
   /* threads */
-  zathura->sync.render_thread = zathura_renderer_new(zathura);
+  zathura->sync.render_thread = zathura_renderer_new();
 
   if (zathura->sync.render_thread == NULL) {
     goto error_free;

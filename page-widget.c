@@ -299,7 +299,7 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
        */
 
       if (priv->search.list != NULL && zathura_page_get_visibility(priv->page)) {
-	gtk_widget_queue_draw(GTK_WIDGET(object));
+        gtk_widget_queue_draw(GTK_WIDGET(object));
       }
       break;
     default:

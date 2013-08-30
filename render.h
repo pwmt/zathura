@@ -46,7 +46,7 @@ GType zathura_renderer_get_type(void);
  * @param page the page to be displayed
  * @return a page view widget
  */
-ZathuraRenderer* zathura_renderer_new(zathura_t* zathura);
+ZathuraRenderer* zathura_renderer_new(void);
 
 bool zathura_renderer_recolor_enabled(ZathuraRenderer* renderer);
 void zathura_renderer_enable_recolor(ZathuraRenderer* renderer, bool enable);
