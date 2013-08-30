@@ -349,9 +349,7 @@ render_job(void* data, void* user_data)
   if (render(request, renderer) != true) {
     girara_error("Rendering failed (page %d)\n", zathura_page_get_index(request_priv->page) + 1);
   }
-  request_priv->requested = false;
 }
-
 
 static void
 color2double(const GdkColor* col, double* v)
@@ -407,6 +405,7 @@ colorumax(const double* h, double l, double l1, double l2)
 
 typedef struct emit_completed_signal_s
 {
+  ZathuraRenderer* renderer;
   ZathuraRenderRequest* request;
   cairo_surface_t* surface;
 } emit_completed_signal_t;
@@ -415,11 +414,22 @@ static gboolean
 emit_completed_signal(void* data)
 {
   emit_completed_signal_t* ecs = data;
-  /* emit the signal */
-  g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
+  private_t* priv = GET_PRIVATE(ecs->renderer);
+  request_private_t* request_priv = REQUEST_GET_PRIVATE(ecs->request);
+
+  if (priv->about_to_close == false && request_priv->aborted == false) {
+    /* emit the signal */
+    g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
+  }
+  /* mark the request as done */
+  request_priv->requested = false;
+
   /* clean up the data */
   cairo_surface_destroy(ecs->surface);
+  g_object_unref(ecs->renderer);
+  g_object_unref(ecs->request);
   g_free(ecs);
+
   return FALSE;
 }
 
@@ -550,15 +560,16 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 #undef rgb2
   }
 
-  if (priv->about_to_close == false && request_priv->aborted == false) {
-    emit_completed_signal_t* ecs = g_malloc(sizeof(ecs));
-    ecs->request = request;
-    ecs->surface = surface;
-    cairo_surface_reference(surface);
+  emit_completed_signal_t* ecs = g_malloc(sizeof(ecs));
+  ecs->renderer = renderer;
+  ecs->request = request;
+  ecs->surface = surface;
+  g_object_ref(renderer);
+  g_object_ref(request);
+  cairo_surface_reference(surface);
 
-    /* emit signal from the main context, i.e. the main thread */
-    g_main_context_invoke(NULL, emit_completed_signal, ecs);
-  }
+  /* emit signal from the main context, i.e. the main thread */
+  g_main_context_invoke(NULL, emit_completed_signal, ecs);
 
   cairo_surface_destroy(surface);
 
