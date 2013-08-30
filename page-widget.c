@@ -77,6 +77,7 @@ static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEvent
 static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
 static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
+static void cb_update_surface(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 
 enum properties_e {
   PROP_0,
@@ -189,7 +190,7 @@ zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page)
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   priv->render_request = zathura_render_request_new(zathura->sync.render_thread, page);
   g_signal_connect_object(priv->render_request, "completed",
-      G_CALLBACK(zathura_page_widget_update_surface), widget, G_CONNECT_SWAPPED);
+      G_CALLBACK(cb_update_surface), widget, 0);
 
   return GTK_WIDGET(ret);
 }
@@ -542,6 +543,14 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   if (priv->surface != NULL) {
     zathura_page_widget_redraw_canvas(widget);
   }
+}
+
+static void
+cb_update_surface(ZathuraRenderRequest* UNUSED(request), cairo_surface_t* surface, void* data)
+{
+  ZathuraPage* widget = data;
+  g_return_if_fail(ZATHURA_IS_PAGE(widget));
+  zathura_page_widget_update_surface(widget, surface);
 }
 
 static void
