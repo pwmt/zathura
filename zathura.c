@@ -717,6 +717,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     goto error_free;
   }
 
+  /* set up recolor info in ZathuraRenderer */
   char* recolor_dark = NULL;
   char* recolor_light = NULL;
   girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);

@@ -3,8 +3,6 @@
 #include <math.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
-#include <girara/session.h>
-#include <girara/settings.h>
 #include "glib-compat.h"
 #include "render.h"
 #include "zathura.h"
@@ -264,13 +262,11 @@ zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
     light->red = priv->recolor.light_gdk.red;
     light->blue = priv->recolor.light_gdk.blue;
     light->green = priv->recolor.light_gdk.green;
-    color2double(light, priv->recolor.light);
   }
   if (dark != NULL) {
     dark->red = priv->recolor.dark_gdk.red;
     dark->blue = priv->recolor.dark_gdk.blue;
     dark->green = priv->recolor.dark_gdk.green;
-    color2double(dark, priv->recolor.dark);
   }
 }
 
@@ -504,6 +500,12 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
     const double l1 = (a[0]*rgb1[0] + a[1]*rgb1[1] + a[2]*rgb1[2]);
     const double l2 = (a[0]*rgb2[0] + a[1]*rgb2[1] + a[2]*rgb2[2]);
 
+    const double rgb_diff[] = {
+      rgb2[0] - rgb1[0],
+      rgb2[1] - rgb1[1],
+      rgb2[2] - rgb1[2]
+    };
+
     for (unsigned int y = 0; y < page_height; y++) {
       unsigned char* data = image + y * rowstride;
 
@@ -549,9 +551,9 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
         } else {
           /* linear interpolation between dark and light with color ligtness as
            * a parameter */
-          data[2] = (unsigned char)round(255.*(t * (rgb2[0] - rgb1[0]) + rgb1[0]));
-          data[1] = (unsigned char)round(255.*(t * (rgb2[1] - rgb1[1]) + rgb1[1]));
-          data[0] = (unsigned char)round(255.*(t * (rgb2[2] - rgb1[2]) + rgb1[2]));
+          data[2] = (unsigned char)round(255.*(t * rgb_diff[0] + rgb1[0]));
+          data[1] = (unsigned char)round(255.*(t * rgb_diff[1] + rgb1[1]));
+          data[0] = (unsigned char)round(255.*(t * rgb_diff[2] + rgb1[2]));
         }
       }
     }

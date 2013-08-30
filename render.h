@@ -5,6 +5,8 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <girara/types.h>
 #include "types.h"
 
