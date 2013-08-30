@@ -727,6 +727,12 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   g_free(recolor_dark);
   g_free(recolor_light);
 
+  bool recolor = false;
+  girara_setting_get(zathura->ui.session, "recolor", &recolor);
+  zathura_renderer_enable_recolor(zathura->sync.render_thread, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
+  zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, recolor);
+
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
   if (zathura->pages == NULL) {
