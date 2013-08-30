@@ -537,6 +537,7 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close == true || request_priv->aborted == true) {
+    request_priv->requested = false;
     cairo_surface_destroy(surface);
     return true;
   }
@@ -581,6 +582,7 @@ render_job(void* data, void* user_data)
   girara_debug("Rendering page %d ...", zathura_page_get_index(request_priv->page) + 1);
   if (render(request, renderer) != true) {
     girara_error("Rendering failed (page %d)\n", zathura_page_get_index(request_priv->page) + 1);
+    request_priv->requested = false;
   }
 }
 

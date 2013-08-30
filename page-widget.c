@@ -24,7 +24,6 @@ typedef struct zathura_page_widget_private_s {
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
   ZathuraRenderRequest* render_request; /* Request object */
-  bool render_requested; /**< No surface and rendering has been requested */
   gint64 last_view; /**< Last time the page has been viewed */
   mutex lock; /**< Lock */
 
@@ -146,7 +145,6 @@ zathura_page_widget_init(ZathuraPage* widget)
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   priv->page             = NULL;
   priv->surface          = NULL;
-  priv->render_requested = false;
   priv->render_request   = NULL;
   priv->last_view        = g_get_real_time();
 
@@ -504,10 +502,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* render real page */
-    if (priv->render_requested == false) {
-      priv->render_requested = true;
-      zathura_render_request(priv->render_request, priv->last_view);
-    }
+    zathura_render_request(priv->render_request, priv->last_view);
   }
   mutex_unlock(&(priv->lock));
   return FALSE;
@@ -529,11 +524,10 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
     cairo_surface_destroy(priv->surface);
     priv->surface = NULL;
   }
-  priv->render_requested = false;
   if (surface != NULL) {
     /* if we're not visible or not cached, we don't care about the surface */
-    if (zathura_page_get_visibility(priv->page) == true ||
-        zathura_page_cache_is_cached(priv->zathura, zathura_page_get_index(priv->page)) == true) {
+    /*if (zathura_page_get_visibility(priv->page) == true ||
+        zathura_page_cache_is_cached(priv->zathura, zathura_page_get_index(priv->page)) == true) */ {
       priv->surface = surface;
       cairo_surface_reference(surface);
     }
@@ -917,5 +911,13 @@ zathura_page_widget_have_surface(ZathuraPage* widget)
   g_return_val_if_fail(ZATHURA_IS_PAGE(widget) == TRUE, false);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   return priv->surface != NULL;
+}
+
+void
+zathura_page_widget_abort_render_request(ZathuraPage* widget)
+{
+  g_return_if_fail(ZATHURA_IS_PAGE(widget));
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  zathura_render_request_abort(priv->render_request);
 }
 

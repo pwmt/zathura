@@ -90,13 +90,14 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       .height = zathura_page_get_height(page) * scale
     };
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    ZathuraPage* zathura_page_widget = ZATHURA_PAGE(page_widget);
     gtk_widget_translate_coordinates(page_widget,
                                      zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       if (zathura_page_get_visibility(page) == false) {
         zathura_page_set_visibility(page, true);
-        zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
+        zathura_page_widget_update_view_time(zathura_page_widget);
         zathura_page_cache_add(zathura, zathura_page_get_index(page));
       }
       if (zathura->global.update_page_number == true && updated == false
@@ -106,11 +107,13 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       }
     } else {
       zathura_page_set_visibility(page, false);
+      /* If a page becomes invisible, abort all render requests. */
+      zathura_page_widget_abort_render_request(zathura_page_widget);
       /* if the page is not visible and not cached, but still has a surface, we
        * need to get rid of the surface */
-      if (zathura_page_widget_have_surface(ZATHURA_PAGE(page_widget)) == true &&
+      if (zathura_page_widget_have_surface(zathura_page_widget) == true &&
           zathura_page_cache_is_cached(zathura, zathura_page_get_index(page)) == false) {
-        zathura_page_widget_update_surface(ZATHURA_PAGE(page_widget), NULL);
+        zathura_page_widget_update_surface(zathura_page_widget, NULL);
       }
 
       girara_list_t* results = NULL;
@@ -529,7 +532,8 @@ cb_unknown_command(girara_session_t* session, const char* input)
   }
 
   /* check for number */
-  for (unsigned int i = 0; i < strlen(input); i++) {
+  const size_t size = strlen(input);
+  for (size_t i = 0; i < size; i++) {
     if (g_ascii_isdigit(input[i]) == FALSE) {
       return false;
     }

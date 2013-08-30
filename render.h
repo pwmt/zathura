@@ -177,7 +177,6 @@ void zathura_render_request(ZathuraRenderRequest* request,
  */
 void zathura_render_request_abort(ZathuraRenderRequest* request);
 
-
 /**
  * This function is used to unmark all pages as not rendered. This should
  * be used if all pages should be rendered again (e.g.: the zoom level or the
