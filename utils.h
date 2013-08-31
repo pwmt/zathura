@@ -154,4 +154,14 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup);
  */
 char* replace_substring(const char* string, const char* old, const char* new);
 
+/**
+ * Get a pointer to the GdkAtom of the current clipboard.
+ *
+ * @param zathura The zathura instance
+ *
+ * @return A pointer to a GdkAtom object correspoinding to the current
+ * clipboard, or NULL.
+ */
+GdkAtom* get_selection(zathura_t* zathura);
+
 #endif // UTILS_H

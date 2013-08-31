@@ -669,15 +669,20 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
       char* text = zathura_page_get_text(priv->page, tmp, NULL);
       if (text != NULL) {
         if (strlen(text) > 0) {
-          /* copy to clipboard */
-          gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), text, -1);
+          GdkAtom* selection = get_selection(priv->zathura);
 
+          /* copy to clipboard */
+          if (selection != NULL) {
+            gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
+          }
 
           if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
             char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
             girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
             g_free(stripped_text);
           }
+
+          g_free(selection);
         }
 
         g_free(text);
@@ -832,9 +837,14 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL, 0, 0, 0,
                       0, width, height);
 
-  gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), pixbuf);
-  gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_PRIMARY), pixbuf);
+  GdkAtom* selection = get_selection(priv->zathura);
 
+  if (selection != NULL) {
+    gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
+    gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
+  }
+
+  g_free(selection);
   /* reset */
   priv->images.current = NULL;
 #endif

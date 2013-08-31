@@ -274,16 +274,24 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara
       g_free(tmp);
     }
 
+    GdkAtom* selection = get_selection(zathura);
+
     /* we save the X clipboard that will be clear by "grab_focus" */
-    gchar* x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+    gchar* x_clipboard_text;
+
+    if (selection != NULL) {
+      x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(*selection));
+    }
 
     gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
 
-    if (x_clipboard_text != NULL) {
+    if (x_clipboard_text != NULL && selection != NULL) {
       /* we reset the X clipboard with saved text */
-      gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), x_clipboard_text, -1);
+      gtk_clipboard_set_text(gtk_clipboard_get(*selection), x_clipboard_text, -1);
       g_free(x_clipboard_text);
     }
+
+    g_free(selection);
   }
 
   return true;

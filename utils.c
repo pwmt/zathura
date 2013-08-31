@@ -411,3 +411,29 @@ replace_substring(const char* string, const char* old, const char* new)
 
   return ret;
 }
+
+GdkAtom* get_selection(zathura_t* zathura)
+{
+    g_return_val_if_fail(zathura != NULL, NULL);
+
+    char* value;
+    girara_setting_get(zathura->ui.session, "selection-clipboard", &value);
+
+    GdkAtom* selection = g_malloc(sizeof(GdkAtom));
+
+    if (strcmp(value, "primary") == 0) {
+      *selection = GDK_SELECTION_PRIMARY;
+    } else if (strcmp(value, "clipboard") == 0) {
+      *selection = GDK_SELECTION_CLIPBOARD;
+    } else {
+      girara_error("Invalid value for the selection-clipboard setting");
+      g_free(value);
+      g_free(selection);
+
+      return NULL;
+    }
+
+    g_free(value);
+
+    return selection;
+}

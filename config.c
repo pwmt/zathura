@@ -128,6 +128,7 @@ config_load_default(zathura_t* zathura)
   float float_value          = 0;
   bool bool_value            = false;
   bool inc_search            = true;
+  char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */
@@ -222,6 +223,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
+  string_value = "clipboard";
+  girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);
