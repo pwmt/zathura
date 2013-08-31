@@ -541,3 +541,42 @@ cb_unknown_command(girara_session_t* session, const char* input)
 
   return true;
 }
+
+void
+cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
+{
+  g_return_if_fail(page != NULL);
+  g_return_if_fail(text != NULL);
+  g_return_if_fail(data != NULL);
+
+  zathura_t* zathura = data;
+  GdkAtom* selection = get_selection(zathura);
+
+  /* copy to clipboard */
+  if (selection != NULL) {
+    gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
+
+    char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
+    g_free(stripped_text);
+  }
+
+  g_free(selection);
+}
+
+void
+cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data)
+{
+  g_return_if_fail(page != NULL);
+  g_return_if_fail(pixbuf != NULL);
+  g_return_if_fail(data != NULL);
+
+  zathura_t* zathura = data;
+  GdkAtom* selection = get_selection(zathura);
+
+  if (selection != NULL) {
+    gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
+  }
+
+  g_free(selection);
+}

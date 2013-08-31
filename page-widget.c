@@ -90,6 +90,14 @@ enum properties_e {
   PROP_LAST_VIEW,
 };
 
+enum {
+  TEXT_SELECTED,
+  IMAGE_SELECTED,
+  LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 static void
 zathura_page_widget_class_init(ZathuraPageClass* class)
 {
@@ -135,6 +143,29 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
                                   g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_LAST_VIEW,
                                   g_param_spec_int64("last-view", "last-view", "Last time the page has been viewed", -1, G_MAXINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /* add signals */
+  signals[TEXT_SELECTED] = g_signal_new("text-selected",
+      ZATHURA_TYPE_PAGE,
+      G_SIGNAL_RUN_LAST,
+      0,
+      NULL,
+      NULL,
+      g_cclosure_marshal_generic,
+      G_TYPE_NONE,
+      1,
+      G_TYPE_STRING);
+
+  signals[IMAGE_SELECTED] = g_signal_new("image-selected",
+      ZATHURA_TYPE_PAGE,
+      G_SIGNAL_RUN_LAST,
+      0,
+      NULL,
+      NULL,
+      g_cclosure_marshal_generic,
+      G_TYPE_NONE,
+      1,
+      G_TYPE_OBJECT);
 }
 
 static void
@@ -669,20 +700,8 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
       char* text = zathura_page_get_text(priv->page, tmp, NULL);
       if (text != NULL) {
         if (strlen(text) > 0) {
-          GdkAtom* selection = get_selection(priv->zathura);
-
-          /* copy to clipboard */
-          if (selection != NULL) {
-            gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
-          }
-
-          if (priv->page != NULL && document != NULL && priv->zathura != NULL) {
-            char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-            girara_notify(priv->zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
-            g_free(stripped_text);
-          }
-
-          g_free(selection);
+          /* emit text-selected signal */
+          g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
         }
 
         g_free(text);
@@ -837,14 +856,9 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL, 0, 0, 0,
                       0, width, height);
 
-  GdkAtom* selection = get_selection(priv->zathura);
+  g_signal_emit(page, signals[IMAGE_SELECTED], 0, pixbuf);
+  g_object_unref(pixbuf);
 
-  if (selection != NULL) {
-    gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
-    gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
-  }
-
-  g_free(selection);
   /* reset */
   priv->images.current = NULL;
 #endif

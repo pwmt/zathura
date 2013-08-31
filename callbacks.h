@@ -202,4 +202,17 @@ void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* n
  */
 bool cb_unknown_command(girara_session_t* session, const char* input);
 
+/**
+ * Emitted when text has been selected in the page widget
+ *
+ * @param widget page view widget
+ * @param text selected text
+ * @param data user data
+ */
+void cb_page_widget_text_selected(ZathuraPage* page, const char* text,
+    void* data);
+
+void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf,
+    void* data);
+
 #endif // CALLBACKS_H

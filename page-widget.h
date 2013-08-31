@@ -4,6 +4,7 @@
 #define PAGE_WIDGET_H
 
 #include <gtk/gtk.h>
+#include "types.h"
 #include "document.h"
 
 /**
@@ -14,9 +15,6 @@
  * Before the properties contain the correct values, 'draw-links' has to be set
  * to TRUE at least one time.
  * */
-typedef struct zathura_page_widget_s ZathuraPage;
-typedef struct zathura_page_widget_class_s ZathuraPageClass;
-
 struct zathura_page_widget_s
 {
   GtkDrawingArea parent;

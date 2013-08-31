@@ -16,6 +16,11 @@ typedef struct zathura_document_s zathura_document_t;
  */
 typedef struct zathura_page_s zathura_page_t;
 /**
+ * Page widget
+ */
+typedef struct zathura_page_widget_s ZathuraPage;
+typedef struct zathura_page_widget_class_s ZathuraPageClass;
+/**
  * Zathura
  */
 typedef struct zathura_s zathura_t;

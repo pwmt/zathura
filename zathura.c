@@ -736,6 +736,11 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     page_calc_height_width(page, &page_height, &page_width, true);
 
     gtk_widget_set_size_request(page_widget, page_width, page_height);
+
+    g_signal_connect(G_OBJECT(page_widget), "text-selected",
+        G_CALLBACK(cb_page_widget_text_selected), zathura);
+    g_signal_connect(G_OBJECT(page_widget), "image-selected",
+        G_CALLBACK(cb_page_widget_text_selected), zathura);
   }
 
   /* view mode */
