@@ -758,7 +758,7 @@ data will be written to the PRIMARY clipboard, and can be pasted using the
 middle mouse button, or the Shift-Insert key combination.
 
 * Value type: String
-* Default value: clipbaord
+* Default value: primary
 
 SEE ALSO
 ========
