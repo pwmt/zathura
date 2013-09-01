@@ -246,9 +246,14 @@ behaviour of them. Those can be passed as the last argument:
 
 Possible arguments are:
 
+* best-fit
 * bottom
+* collapse
+* collapse-all
 * default
 * down
+* expand
+* expand-all
 * full-down
 * full-up
 * half-down
@@ -259,13 +264,12 @@ Possible arguments are:
 * out
 * previous
 * right
+* rotate-ccw
+* rotate-cw
 * specific
 * top
 * up
-* best-fit
 * width
-* rotate-cw
-* rotate-ccw
 
 unmap - Removing a shortcut
 ---------------------------
