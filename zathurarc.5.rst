@@ -755,7 +755,7 @@ Defines the amount of percent that is zoomed in or out on each command.
 
 selection-clipboard
 ^^^^^^^^^^^^^^^^^^^
-Defines the X clipbaord into which mouse-selected data will be written.  When it
+Defines the X clipboard into which mouse-selected data will be written.  When it
 is "clipboard", selected data will be written to the CLIPBOARD clipboard, and
 can be pasted using the Ctrl+v key combination.  When it is "primary", selected
 data will be written to the PRIMARY clipboard, and can be pasted using the
