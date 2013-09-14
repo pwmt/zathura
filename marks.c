@@ -71,8 +71,10 @@ cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
                                       G_CALLBACK(girara_callback_view_key_press_event), session);
 
   /* evaluate key */
-  if (((event->keyval >= 0x41 && event->keyval <= 0x5A) || (event->keyval >=
-       0x61 && event->keyval <= 0x7A)) == false) {
+  if (((event->keyval >= '0' && event->keyval <= '9') ||
+       (event->keyval >= 'a' && event->keyval <= 'z') ||
+       (event->keyval >= 'A' && event->keyval <= 'Z')
+       ) == false) {
     return false;
   }
 
@@ -95,8 +97,10 @@ bool cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventK
                                       G_CALLBACK(girara_callback_view_key_press_event), session);
 
   /* evaluate key */
-  if (((event->keyval >= 0x41 && event->keyval <= 0x5A) || (event->keyval >=
-       0x61 && event->keyval <= 0x7A)) == false) {
+  if (((event->keyval >= '0' && event->keyval <= '9') ||
+       (event->keyval >= 'a' && event->keyval <= 'z') ||
+       (event->keyval >= 'A' && event->keyval <= 'Z')
+       ) == false) {
     return true;
   }
 
