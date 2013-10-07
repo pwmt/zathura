@@ -277,7 +277,7 @@ sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara
     GdkAtom* selection = get_selection(zathura);
 
     /* we save the X clipboard that will be clear by "grab_focus" */
-    gchar* x_clipboard_text;
+    gchar* x_clipboard_text = NULL;
 
     if (selection != NULL) {
       x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(*selection));
