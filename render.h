@@ -44,7 +44,7 @@ GType zathura_renderer_get_type(void);
  * Create a renderer.
  * @return a renderer object
  */
-ZathuraRenderer* zathura_renderer_new(void);
+ZathuraRenderer* zathura_renderer_new(size_t cache_size);
 
 /**
  * Return whether recoloring is enabled.
@@ -115,6 +115,29 @@ void zathura_renderer_lock(ZathuraRenderer* renderer);
  * @param renderer renderer object.
  */
 void zathura_renderer_unlock(ZathuraRenderer* renderer);
+
+/**
+ * Add a page to the page cache
+ *
+ * @param zathura The zathura session
+ * @param page_index The index of the page to be cached
+ */
+void zathura_page_cache_add(ZathuraRenderer* renderer,
+    unsigned int page_index);
+
+/**
+ * Checks if the given page is cached
+ *
+ * @param zathura The zathura session
+ * @param page_index The index of the page that may be cached
+ *
+ * @return true if page is cached otherwise false
+ */
+bool zathura_page_cache_is_cached(ZathuraRenderer* renderer,
+    unsigned int page_index);
+
+
+
 
 
 typedef struct zathura_render_request_s ZathuraRenderRequest;

@@ -13,8 +13,6 @@
 #include <gtk/gtkx.h>
 #endif
 
-#define ZATHURA_PAGE_CACHE_DEFAULT_SIZE		15
-
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -26,6 +24,12 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
 /* unspecified page number */
 enum {
   ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
+};
+
+/* cache constants */
+enum {
+  ZATHURA_PAGE_CACHE_DEFAULT_SIZE = 15,
+  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024
 };
 
 /* forward declaration for types from database.h */
@@ -146,15 +150,6 @@ struct zathura_s
     gchar* file_path; /**< Save file path */
     gchar* password; /**< Save password */
   } file_monitor;
-
-  /**
-   * The page cache
-   */
-  struct {
-    int* cache;
-    unsigned int size;
-    unsigned int num_cached_pages;
-  } page_cache;
 
   /**
    * Bisect stage
@@ -404,23 +399,5 @@ void zathura_jumplist_trim(zathura_t* zathura);
  * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
-
-/**
- * Add a page to the page cache
- *
- * @param zathura The zathura session
- * @param page_index The index of the page to be cached
- */
-void zathura_page_cache_add(zathura_t* zathura, unsigned int page_index);
-
-/**
- * Checks if the given page is cached
- *
- * @param zathura The zathura session
- * @param page_index The index of the page that may be cached
- *
- * @return true if page is cached otherwise false
- */
-bool zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index);
 
 #endif // ZATHURA_H
