@@ -5,35 +5,177 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <glib-object.h>
+#include <gdk/gdk.h>
 #include <girara/types.h>
+#include "types.h"
 
-#include "zathura.h"
-#include "callbacks.h"
+typedef struct zathura_renderer_class_s ZathuraRendererClass;
+
+struct zathura_renderer_s
+{
+  GObject parent;
+};
+
+struct zathura_renderer_class_s
+{
+  GObjectClass parent_class;
+};
+
+#define ZATHURA_TYPE_RENDERER \
+  (zathura_renderer_get_type())
+#define ZATHURA_RENDERER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_RENDERER, ZathuraRenderer))
+#define ZATHURA_RENDERER_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_RENDERER, ZathuraRendererClass))
+#define ZATHURA_IS_RENDERER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_RENDERER))
+#define ZATHURA_IS_RENDERER_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_RENDERER))
+#define ZATHURA_RENDERER_GET_CLASS \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_RENDERER, ZathuraRendererClass))
 
 /**
- * This function initializes a render thread
- *
- * @param zathura object
- * @return The render thread object or NULL if an error occured
+ * Returns the type of the renderer.
+ * @return the type
  */
-render_thread_t* render_init(zathura_t* zathura);
+GType zathura_renderer_get_type(void);
+/**
+ * Create a renderer.
+ * @return a renderer object
+ */
+ZathuraRenderer* zathura_renderer_new(void);
 
 /**
- * This function destroys the render thread object
- *
- * @param render_thread The render thread object
+ * Return whether recoloring is enabled.
+ * @param renderer a renderer object
+ * @returns true if recoloring is enabled, false otherwise
  */
-void render_free(render_thread_t* render_thread);
+bool zathura_renderer_recolor_enabled(ZathuraRenderer* renderer);
+/**
+ * Enable/disable recoloring.
+ * @param renderer a renderer object
+ * @param enable wheter to enable or disable recoloring
+ */
+void zathura_renderer_enable_recolor(ZathuraRenderer* renderer, bool enable);
+/**
+ * Return whether hue should be preserved while recoloring.
+ * @param renderer a renderer object
+ * @returns true if hue should be preserved, false otherwise
+ */
+bool zathura_renderer_recolor_hue_enabled(ZathuraRenderer* renderer);
+/**
+ * Enable/disable preservation of hue while recoloring.
+ * @param renderer a renderer object
+ * @param enable wheter to enable or disable hue preservation
+ */
+void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
+    bool enable);
+/**
+ * Set light and dark colors for recoloring.
+ * @param renderer a renderer object
+ * @param light light color
+ * @param dark dark color
+ */
+void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
+    const GdkColor* light, const GdkColor* dark);
+/**
+ * Set light and dark colors for recoloring.
+ * @param renderer a renderer object
+ * @param light light color
+ * @param dark dark color
+ */
+void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
+    const char* light, const char* dark);
+/**
+ * Get light and dark colors for recoloring.
+ * @param renderer a renderer object
+ * @param light light color
+ * @param dark dark color
+ */
+void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
+    GdkColor* light, GdkColor* dark);
+/**
+ * Stop rendering.
+ * @param renderer a render object
+ */
+void zathura_renderer_stop(ZathuraRenderer* renderer);
+
+/**
+ * Lock the render thread. This is useful if you want to render on your own (e.g
+ * for printing).
+ *
+ * @param renderer renderer object
+ */
+void zathura_renderer_lock(ZathuraRenderer* renderer);
+
+/**
+ * Unlock the render thread.
+ *
+ * @param renderer renderer object.
+ */
+void zathura_renderer_unlock(ZathuraRenderer* renderer);
+
+
+typedef struct zathura_render_request_s ZathuraRenderRequest;
+typedef struct zathura_render_request_class_s ZathuraRenderRequestClass;
+
+struct zathura_render_request_s
+{
+  GObject parent;
+};
+
+struct zathura_render_request_class_s
+{
+  GObjectClass parent_class;
+};
+
+#define ZATHURA_TYPE_RENDER_REQUEST \
+  (zathura_render_request_get_type())
+#define ZATHURA_RENDER_REQUEST(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_RENDER_REQUEST, \
+                              ZathuraRenderRequest))
+#define ZATHURA_RENDER_REQUEST_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_RENDER_REQUEST, \
+                           ZathuraRenderRequestClass))
+#define ZATHURA_IS_RENDER_REQUEST(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_RENDER_REQUEST))
+#define ZATHURA_IS_RENDER_REQUEST_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_RENDER_REQUEST))
+#define ZATHURA_RENDER_REQUEST_GET_CLASS \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_RENDER_REQUEST, \
+                             ZathuraRenderRequestClass))
+
+/**
+ * Returns the type of the render request.
+ * @return the type
+ */
+GType zathura_page_render_info_get_type(void);
+/**
+ * Create a render request object
+ * @param renderer a renderer object
+ * @param page the page to be displayed
+ * @returns render request object
+ */
+ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer,
+    zathura_page_t* page);
 
 /**
  * This function is used to add a page to the render thread list
  * that should be rendered.
  *
- * @param render_thread The render thread object
- * @param page The page that should be rendered
- * @return true if no error occured
+ * @param request request object of the page that should be renderer
+ * @param last_view_time last view time of the page
  */
-bool render_page(render_thread_t* render_thread, zathura_page_t* page);
+void zathura_render_request(ZathuraRenderRequest* request,
+    gint64 last_view_time);
+
+/**
+ * Abort an existing render request.
+ *
+ * @param reqeust request that should be aborted
+ */
+void zathura_render_request_abort(ZathuraRenderRequest* request);
 
 /**
  * This function is used to unmark all pages as not rendered. This should
@@ -43,20 +185,5 @@ bool render_page(render_thread_t* render_thread, zathura_page_t* page);
  * @param zathura Zathura object
  */
 void render_all(zathura_t* zathura);
-
-/**
- * Lock the render thread. This is useful if you want to render on your own (e.g
- * for printing).
- *
- * @param render_thread The render thread object.
- */
-void render_lock(render_thread_t* render_thread);
-
-/**
- * Unlock the render thread.
- *
- * @param render_thread The render thread object.
- */
-void render_unlock(render_thread_t* render_thread);
 
 #endif // RENDER_H

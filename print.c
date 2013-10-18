@@ -109,9 +109,9 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   /* Try to render the page without a temporary surface. This only works with
    * plugins that support rendering to any surface.  */
   girara_debug("printing page %d ...", page_number);
-  render_lock(zathura->sync.render_thread);
+  zathura_renderer_lock(zathura->sync.render_thread);
   int err = zathura_page_render(page, cairo, true);
-  render_unlock(zathura->sync.render_thread);
+  zathura_renderer_unlock(zathura->sync.render_thread);
   if (err == ZATHURA_ERROR_OK) {
     return;
   }
@@ -144,9 +144,9 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
 
   /* Render the page to the temporary surface */
   girara_debug("printing page %d ...", page_number);
-  render_lock(zathura->sync.render_thread);
+  zathura_renderer_lock(zathura->sync.render_thread);
   err = zathura_page_render(page, temp_cairo, true);
-  render_unlock(zathura->sync.render_thread);
+  zathura_renderer_unlock(zathura->sync.render_thread);
   if (err != ZATHURA_ERROR_OK) {
     cairo_destroy(temp_cairo);
     cairo_surface_destroy(surface);

@@ -52,6 +52,9 @@ GTHREAD_LIB ?= $(shell pkg-config --libs   gthread-2.0)
 GMODULE_INC ?= $(shell pkg-config --cflags gmodule-no-export-2.0)
 GMODULE_LIB ?= $(shell pkg-config --libs   gmodule-no-export-2.0)
 
+GLIB_INC ?= $(shell pkg-config --cflags --atleast-version=2.28 glib-2.0)
+GLIB_LIB ?= $(shell pkg-config --libs --atleast-version=2.28 glib-2.0)
+
 GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk${ZATHURA_GTK_VERSION})
 GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
 
@@ -65,8 +68,8 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
-INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC}
-LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} -lpthread -lm
+INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)

@@ -94,4 +94,11 @@ void zathura_page_widget_update_view_time(ZathuraPage* widget);
  */
 bool zathura_page_widget_have_surface(ZathuraPage* widget);
 
+/**
+ * Abort outstanding render requests
+ *
+ * @param widget the widget
+ */
+void zathura_page_widget_abort_render_request(ZathuraPage* widget);
+
 #endif

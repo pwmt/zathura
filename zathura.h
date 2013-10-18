@@ -31,10 +31,6 @@ enum {
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
-/* forward declaration for types from render.h */
-struct render_thread_s;
-typedef struct render_thread_s render_thread_t;
-
 /**
  * Jump
  */
@@ -60,8 +56,6 @@ struct zathura_s
 
     struct
     {
-      GdkColor recolor_dark_color; /**< Dark color for recoloring */
-      GdkColor recolor_light_color; /**< Light color for recoloring */
       GdkColor highlight_color; /**< Color for highlighting */
       GdkColor highlight_color_active; /** Color for highlighting */
       GdkColor render_loading_bg; /**< Background color for render "Loading..." */
@@ -78,7 +72,7 @@ struct zathura_s
 
   struct
   {
-    render_thread_t* render_thread; /**< The thread responsible for rendering the pages */
+    ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
   } sync;
 
   struct
@@ -106,8 +100,6 @@ struct zathura_s
 
   struct
   {
-    bool recolor_keep_hue; /**< Keep hue when recoloring */
-    bool recolor; /**< Recoloring mode switch */
     bool update_page_number; /**< Update current page number */
     int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */

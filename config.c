@@ -57,9 +57,13 @@ cb_color_change(girara_session_t* session, const char* name,
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
+    if (zathura->sync.render_thread != NULL) {
+      zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
+    }
   } else if (g_strcmp0(name, "recolor-lightcolor") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
+    if (zathura->sync.render_thread != NULL) {
+      zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, string_value, NULL);
+    }
   } else if (g_strcmp0(name, "render-loading-bg") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_bg));
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
@@ -169,10 +173,8 @@ config_load_default(zathura_t* zathura)
   int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
-  girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
-  girara_setting_add(gsession, "recolor-lightcolor",     NULL, STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
-  girara_setting_set(gsession, "recolor-lightcolor",     "#000000");
+  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
   girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
   girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);

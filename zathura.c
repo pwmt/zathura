@@ -68,7 +68,6 @@ zathura_create(void)
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   /* global settings */
-  zathura->global.recolor            = false;
   zathura->global.update_page_number = true;
   zathura->global.search_direction = FORWARD;
 
@@ -711,6 +710,29 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   zathura->document = document;
 
+  /* threads */
+  zathura->sync.render_thread = zathura_renderer_new();
+
+  if (zathura->sync.render_thread == NULL) {
+    goto error_free;
+  }
+
+  /* set up recolor info in ZathuraRenderer */
+  char* recolor_dark = NULL;
+  char* recolor_light = NULL;
+  girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
+  girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
+  zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread,
+      recolor_light, recolor_dark);
+  g_free(recolor_dark);
+  g_free(recolor_light);
+
+  bool recolor = false;
+  girara_setting_get(zathura->ui.session, "recolor", &recolor);
+  zathura_renderer_enable_recolor(zathura->sync.render_thread, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
+  zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, recolor);
+
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
   if (zathura->pages == NULL) {
@@ -763,13 +785,6 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   page_widget_set_mode(zathura, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
-
-  /* threads */
-  zathura->sync.render_thread = render_init(zathura);
-
-  if (zathura->sync.render_thread == NULL) {
-    goto error_free;
-  }
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     gtk_widget_realize(zathura->pages[page_id]);
@@ -888,6 +903,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
     return false;
   }
 
+  /* stop rendering */
+  zathura_renderer_stop(zathura->sync.render_thread);
+
   /* remove monitor */
   if (keep_monitor == false) {
     if (zathura->file_monitor.monitor != NULL) {
@@ -950,7 +968,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->jumplist.size = 0;
 
   /* release render thread */
-  render_free(zathura->sync.render_thread);
+  g_object_unref(zathura->sync.render_thread);
   zathura->sync.render_thread = NULL;
 
   /* remove widgets */

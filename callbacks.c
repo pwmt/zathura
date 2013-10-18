@@ -90,13 +90,14 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       .height = zathura_page_get_height(page) * scale
     };
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    ZathuraPage* zathura_page_widget = ZATHURA_PAGE(page_widget);
     gtk_widget_translate_coordinates(page_widget,
                                      zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       if (zathura_page_get_visibility(page) == false) {
         zathura_page_set_visibility(page, true);
-        zathura_page_widget_update_view_time(ZATHURA_PAGE(page_widget));
+        zathura_page_widget_update_view_time(zathura_page_widget);
         zathura_page_cache_add(zathura, zathura_page_get_index(page));
       }
       if (zathura->global.update_page_number == true && updated == false
@@ -106,11 +107,13 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       }
     } else {
       zathura_page_set_visibility(page, false);
+      /* If a page becomes invisible, abort the render request. */
+      zathura_page_widget_abort_render_request(zathura_page_widget);
       /* if the page is not visible and not cached, but still has a surface, we
        * need to get rid of the surface */
-      if (zathura_page_widget_have_surface(ZATHURA_PAGE(page_widget)) == true &&
+      if (zathura_page_widget_have_surface(zathura_page_widget) == true &&
           zathura_page_cache_is_cached(zathura, zathura_page_get_index(page)) == false) {
-        zathura_page_widget_update_surface(ZATHURA_PAGE(page_widget), NULL);
+        zathura_page_widget_update_surface(zathura_page_widget, NULL);
       }
 
       girara_list_t* results = NULL;
@@ -367,6 +370,13 @@ cb_sc_display_link(GtkEntry* entry, girara_session_t* session)
   return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
 }
 
+static gboolean
+file_monitor_reload(void* data)
+{
+  sc_reload((girara_session_t*) data, NULL, NULL, 0);
+  return FALSE;
+}
+
 void
 cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), GFileMonitorEvent event, girara_session_t* session)
 {
@@ -377,9 +387,7 @@ cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), G
   switch (event) {
     case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
     case G_FILE_MONITOR_EVENT_CREATED:
-      gdk_threads_enter();
-      sc_reload(session, NULL, NULL, 0);
-      gdk_threads_leave();
+      g_main_context_invoke(NULL, file_monitor_reload, session);
       break;
     default:
       return;
@@ -488,11 +496,11 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  bool bool_value = *((bool*) value);
+  const bool bool_value = *((bool*) value);
 
-  if (zathura->global.recolor != bool_value) {
-    zathura->global.recolor = bool_value;
-    render_all(zathura);
+  if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_enabled(zathura->sync.render_thread) != bool_value) {
+     zathura_renderer_enable_recolor(zathura->sync.render_thread, bool_value);
+     render_all(zathura);
   }
 }
 
@@ -506,11 +514,11 @@ cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  bool bool_value = *((bool*) value);
+  const bool bool_value = *((bool*) value);
 
-  if (zathura->global.recolor_keep_hue != bool_value) {
-    zathura->global.recolor_keep_hue = bool_value;
-    render_all(zathura);
+  if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_hue_enabled(zathura->sync.render_thread) != bool_value) {
+     zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, bool_value);
+     render_all(zathura);
   }
 }
 
@@ -529,7 +537,8 @@ cb_unknown_command(girara_session_t* session, const char* input)
   }
 
   /* check for number */
-  for (unsigned int i = 0; i < strlen(input); i++) {
+  const size_t size = strlen(input);
+  for (size_t i = 0; i < size; i++) {
     if (g_ascii_isdigit(input[i]) == FALSE) {
       return false;
     }

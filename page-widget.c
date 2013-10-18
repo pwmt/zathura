@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "shortcuts.h"
 #include "synctex.h"
+#include "zathura.h"
 
 G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
 
@@ -22,7 +23,7 @@ typedef struct zathura_page_widget_private_s {
   zathura_page_t* page; /**< Page object */
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
-  bool render_requested; /**< No surface and rendering has been requested */
+  ZathuraRenderRequest* render_request; /* Request object */
   gint64 last_view; /**< Last time the page has been viewed */
   mutex lock; /**< Lock */
 
@@ -75,6 +76,7 @@ static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEvent
 static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
 static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
+static void cb_update_surface(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 
 enum properties_e {
   PROP_0,
@@ -174,7 +176,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   priv->page             = NULL;
   priv->surface          = NULL;
-  priv->render_requested = false;
+  priv->render_request   = NULL;
   priv->last_view        = g_get_real_time();
 
   priv->links.list      = NULL;
@@ -208,7 +210,18 @@ zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page)
 {
   g_return_val_if_fail(page != NULL, NULL);
 
-  return g_object_new(ZATHURA_TYPE_PAGE, "page", page, "zathura", zathura, NULL);
+  GObject* ret = g_object_new(ZATHURA_TYPE_PAGE, "page", page, "zathura", zathura, NULL);
+  if (ret == NULL) {
+    return NULL;
+  }
+
+  ZathuraPage* widget = ZATHURA_PAGE(ret);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  priv->render_request = zathura_render_request_new(zathura->sync.render_thread, page);
+  g_signal_connect_object(priv->render_request, "completed",
+      G_CALLBACK(cb_update_surface), widget, 0);
+
+  return GTK_WIDGET(ret);
 }
 
 static void
@@ -219,6 +232,10 @@ zathura_page_widget_finalize(GObject* object)
 
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
+  }
+
+  if (priv->render_request != NULL) {
+    g_object_unref(priv->render_request);
   }
 
   if (priv->search.list != NULL) {
@@ -311,7 +328,7 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
        */
 
       if (priv->search.list != NULL && zathura_page_get_visibility(priv->page)) {
-	gtk_widget_queue_draw(GTK_WIDGET(object));
+        gtk_widget_queue_draw(GTK_WIDGET(object));
       }
       break;
     default:
@@ -479,8 +496,9 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
   } else {
     /* set background color */
-    if (priv->zathura->global.recolor == true) {
-      GdkColor color = priv->zathura->ui.colors.recolor_light_color;
+    if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
+      GdkColor color;
+      zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color, NULL);
       cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
     } else {
       GdkColor color = priv->zathura->ui.colors.render_loading_bg;
@@ -494,8 +512,9 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
     /* write text */
     if (render_loading == true) {
-      if (priv->zathura->global.recolor == true) {
-        GdkColor color = priv->zathura->ui.colors.recolor_dark_color;
+      if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
+        GdkColor color;
+        zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, NULL, &color);
         cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
       } else {
         GdkColor color = priv->zathura->ui.colors.render_loading_fg;
@@ -514,10 +533,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* render real page */
-    if (priv->render_requested == false) {
-      priv->render_requested = true;
-      render_page(priv->zathura->sync.render_thread, priv->page);
-    }
+    zathura_render_request(priv->render_request, priv->last_view);
   }
   mutex_unlock(&(priv->lock));
   return FALSE;
@@ -539,11 +555,10 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
     cairo_surface_destroy(priv->surface);
     priv->surface = NULL;
   }
-  priv->render_requested = false;
   if (surface != NULL) {
     /* if we're not visible or not cached, we don't care about the surface */
-    if (zathura_page_get_visibility(priv->page) == true ||
-        zathura_page_cache_is_cached(priv->zathura, zathura_page_get_index(priv->page)) == true) {
+    /*if (zathura_page_get_visibility(priv->page) == true ||
+        zathura_page_cache_is_cached(priv->zathura, zathura_page_get_index(priv->page)) == true) */ {
       priv->surface = surface;
       cairo_surface_reference(surface);
     }
@@ -553,6 +568,14 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   if (priv->surface != NULL) {
     zathura_page_widget_redraw_canvas(widget);
   }
+}
+
+static void
+cb_update_surface(ZathuraRenderRequest* UNUSED(request), cairo_surface_t* surface, void* data)
+{
+  ZathuraPage* widget = data;
+  g_return_if_fail(ZATHURA_IS_PAGE(widget));
+  zathura_page_widget_update_surface(widget, surface);
 }
 
 static void
@@ -912,5 +935,13 @@ zathura_page_widget_have_surface(ZathuraPage* widget)
   g_return_val_if_fail(ZATHURA_IS_PAGE(widget) == TRUE, false);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   return priv->surface != NULL;
+}
+
+void
+zathura_page_widget_abort_render_request(ZathuraPage* widget)
+{
+  g_return_if_fail(ZATHURA_IS_PAGE(widget));
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  zathura_render_request_abort(priv->render_request);
 }
 
