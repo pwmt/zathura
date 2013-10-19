@@ -125,20 +125,6 @@ void zathura_renderer_unlock(ZathuraRenderer* renderer);
 void zathura_page_cache_add(ZathuraRenderer* renderer,
     unsigned int page_index);
 
-/**
- * Checks if the given page is cached
- *
- * @param zathura The zathura session
- * @param page_index The index of the page that may be cached
- *
- * @return true if page is cached otherwise false
- */
-bool zathura_page_cache_is_cached(ZathuraRenderer* renderer,
-    unsigned int page_index);
-
-
-
-
 
 typedef struct zathura_render_request_s ZathuraRenderRequest;
 typedef struct zathura_render_request_class_s ZathuraRenderRequestClass;
@@ -199,6 +185,8 @@ void zathura_render_request(ZathuraRenderRequest* request,
  * @param reqeust request that should be aborted
  */
 void zathura_render_request_abort(ZathuraRenderRequest* request);
+
+void zathura_render_request_update_view_time(ZathuraRenderRequest* request);
 
 /**
  * This function is used to unmark all pages as not rendered. This should

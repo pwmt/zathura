@@ -60,7 +60,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* current adjustment values */
-  GdkRectangle view_rect = {
+  const GdkRectangle view_rect = {
     .x      = 0,
     .y      = 0,
     .width  = gtk_adjustment_get_page_size(view_hadjustment),
@@ -70,15 +70,15 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
   int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
-  GdkRectangle center = {
+  const GdkRectangle center = {
     .x      = (view_rect.width  + 1) / 2,
     .y      = (view_rect.height + 1) / 2,
     .width  = (2 * page_padding) + 1,
     .height = (2 * page_padding) + 1
   };
 
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  double scale = zathura_document_get_scale(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const double scale = zathura_document_get_scale(zathura->document);
 
   bool updated = false;
   /* find page that fits */
@@ -91,8 +91,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
     };
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     ZathuraPage* zathura_page_widget = ZATHURA_PAGE(page_widget);
-    gtk_widget_translate_coordinates(page_widget,
-                                     zathura->ui.session->gtk.view, 0, 0, &page_rect.x, &page_rect.y);
+    gtk_widget_translate_coordinates(page_widget, zathura->ui.session->gtk.view,
+        0, 0, &page_rect.x, &page_rect.y);
 
     if (gdk_rectangle_intersect(&view_rect, &page_rect, NULL) == TRUE) {
       if (zathura_page_get_visibility(page) == false) {
@@ -106,14 +106,10 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
         updated = true;
       }
     } else {
-      zathura_page_set_visibility(page, false);
-      /* If a page becomes invisible, abort the render request. */
-      zathura_page_widget_abort_render_request(zathura_page_widget);
-      /* if the page is not visible and not cached, but still has a surface, we
-       * need to get rid of the surface */
-      if (zathura_page_widget_have_surface(zathura_page_widget) == true &&
-          zathura_page_cache_is_cached(zathura->sync.render_thread, zathura_page_get_index(page)) == false) {
-        zathura_page_widget_update_surface(zathura_page_widget, NULL);
+      if (zathura_page_get_visibility(page) == true) {
+        zathura_page_set_visibility(page, false);
+        /* If a page becomes invisible, abort the render request. */
+        zathura_page_widget_abort_render_request(zathura_page_widget);
       }
 
       girara_list_t* results = NULL;
