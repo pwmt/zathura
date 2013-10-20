@@ -300,24 +300,6 @@ bool document_close(zathura_t* zathura, bool keep_monitor);
 bool page_set(zathura_t* zathura, unsigned int page_id);
 
 /**
- * Opens the page with the given number (delayed)
- *
- * @param zathura The zathura session
- * @param page_id The id of the page that should be set
- * @return If no error occured true, otherwise false, is returned.
- */
-bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
-
-/**
- * Moves to the given position
- *
- * @param zathura Zathura session
- * @param position_x X coordinate
- * @param position_y Y coordinate
- */
-void position_set_delayed(zathura_t* zathura, double position_x, double position_y);
-
-/**
  * Moves to the given position
  *
  * @param zathura Zathura session

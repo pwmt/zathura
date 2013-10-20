@@ -42,16 +42,6 @@ typedef struct zathura_document_info_s {
   int page_number;
 } zathura_document_info_t;
 
-typedef struct page_set_delayed_s {
-  zathura_t* zathura;
-  unsigned int page;
-} page_set_delayed_t;
-
-typedef struct position_set_delayed_s {
-  zathura_t* zathura;
-  double position_x;
-  double position_y;
-} position_set_delayed_t;
 
 static gboolean document_info_open(gpointer data);
 static void zathura_jumplist_reset_current(zathura_t* zathura);
@@ -997,31 +987,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
   return true;
 }
 
-static gboolean
-page_set_delayed_impl(gpointer data)
-{
-  page_set_delayed_t* p = data;
-  page_set(p->zathura, p->page);
-
-  g_free(p);
-  return FALSE;
-}
-
-bool
-page_set_delayed(zathura_t* zathura, unsigned int page_id)
-{
-  if (zathura == NULL || zathura->document == NULL ||
-      (page_id >= zathura_document_get_number_of_pages(zathura->document))) {
-    return false;
-  }
-
-  page_set_delayed_t* p = g_malloc(sizeof(page_set_delayed_t));
-  p->zathura = zathura;
-  p->page = page_id;
-  gdk_threads_add_idle(page_set_delayed_impl, p);
-  return true;
-}
-
 bool
 page_set(zathura_t* zathura, unsigned int page_id)
 {
@@ -1130,43 +1095,6 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);
-}
-
-static gboolean
-position_set_delayed_impl(gpointer data)
-{
-  position_set_delayed_t* p = (position_set_delayed_t*) data;
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(p->zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  /* negative values mean: don't set the position */
-  if (p->position_x >= 0) {
-    zathura_adjustment_set_value(hadjustment, p->position_x);
-  }
-
-  if (p->position_y >= 0) {
-    zathura_adjustment_set_value(vadjustment, p->position_y);
-  }
-
-  g_free(p);
-
-  return FALSE;
-}
-
-void
-position_set_delayed(zathura_t* zathura, double position_x, double position_y)
-{
-  g_return_if_fail(zathura != NULL);
-
-  position_set_delayed_t* p = g_malloc0(sizeof(position_set_delayed_t));
-
-  p->zathura    = zathura;
-  p->position_x = position_x;
-  p->position_y = position_y;
-
-  gdk_threads_add_idle(position_set_delayed_impl, p);
 }
 
 bool
