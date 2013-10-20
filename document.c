@@ -50,6 +50,8 @@ struct zathura_document_s {
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
   int page_offset; /**< Page offset */
+  double cell_width; /**< width of a page cell in the document (not ransformed by scale and rotation) */
+  double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
 
   /**
    * Document pages
@@ -124,6 +126,8 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   document->scale       = 1.0;
   document->plugin      = plugin;
   document->adjust_mode = ZATHURA_ADJUST_NONE;
+  document->cell_width  = 0.0;
+  document->cell_height = 0.0;
 
   /* open document */
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
@@ -155,6 +159,15 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
     }
 
     document->pages[page_id] = page;
+
+    /* cell_width and cell_height is the maximum of all the pages width and height */
+    double width = zathura_page_get_width(page);
+    if (document->cell_width < width)
+      document->cell_width = width;
+
+    double height = zathura_page_get_height(page);
+    if (document->cell_height < height)
+      document->cell_height = height;
   }
 
   return document;
@@ -406,26 +419,9 @@ zathura_document_get_cell_size(zathura_document_t* document,
 {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-  unsigned int number_of_pages =
-    zathura_document_get_number_of_pages(document);
-  *width = 0;
-  *height = 0;
+  page_calc_height_width(document, document->cell_height, document->cell_width,
+                         height, width, true);
 
-  /* Get the size of each cell of the table/grid, assuming it is homogeneous
-   * (i.e. each cell has the same dimensions. */
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_document_get_page(document, page_id);
-    if (page == NULL)
-      continue;
-
-    unsigned int page_width = 0, page_height = 0;
-    page_calc_height_width(page, &page_height, &page_width, true);
-
-    if (*width < page_width)
-      *width = page_width;
-    if (*height < page_height)
-      *height = page_height;
-  }
 }
 
 zathura_error_t
