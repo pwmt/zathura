@@ -52,6 +52,9 @@ struct zathura_document_s {
   int page_offset; /**< Page offset */
   double cell_width; /**< width of a page cell in the document (not ransformed by scale and rotation) */
   double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
+  unsigned int pages_per_row; /**< number of pages in a row */
+  unsigned int first_page_column; /**< column of the first page */
+  unsigned int page_padding; /**< padding between pages */
 
   /**
    * Document pages
@@ -422,6 +425,43 @@ zathura_document_get_cell_size(zathura_document_t* document,
   page_calc_height_width(document, document->cell_height, document->cell_width,
                          height, width, true);
 
+}
+
+void
+zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
+                                 unsigned int pages_per_row, unsigned int first_page_column)
+{
+  g_return_if_fail(document != NULL);
+  document->page_padding = page_padding;
+  document->pages_per_row = pages_per_row;
+  document->first_page_column = first_page_column;
+}
+
+unsigned int
+zathura_document_get_page_padding(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+  return document->page_padding;
+}
+
+unsigned int
+zathura_document_get_pages_per_row(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+  return document->pages_per_row;
+}
+
+unsigned int
+zathura_document_get_first_page_column(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+  return document->first_page_column;
 }
 
 zathura_error_t

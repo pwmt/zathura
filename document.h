@@ -189,6 +189,41 @@ void zathura_document_get_cell_size(zathura_document_t* document,
                                     unsigned int* height, unsigned int* width);
 
 /**
+ * Sets the layout of the pages in the document
+ *
+ * @param[in]  document          The document instance
+ * @param[in]  page_padding      pixels of padding between pages
+ * @param[in]  pages_per_row     number of pages per row
+ * @param[in]  first_page_column column of the first page (first column is 1)
+ */
+void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
+                                      unsigned int pages_per_row, unsigned int first_page_column);
+
+/**
+ * Returns the padding in pixels betwen pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+unsigned int zathura_document_get_page_padding(zathura_document_t* document);
+
+/**
+ * Returns the number of pages per row
+ *
+ * @param document The document
+ * @return The number of pages per row
+ */
+unsigned int zathura_document_get_pages_per_row(zathura_document_t* document);
+
+/**
+ * Returns the column for the first page (first column = 1)
+ *
+ * @param document The document
+ * @return The column for the first page
+ */
+unsigned int zathura_document_get_first_page_column(zathura_document_t* document);
+
+/**
  * Save the document
  *
  * @param document The document object
