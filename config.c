@@ -74,27 +74,6 @@ cb_color_change(girara_session_t* session, const char* name,
 }
 
 static void
-cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
-                        girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
-{
-  g_return_if_fail(value != NULL);
-  g_return_if_fail(session != NULL);
-  g_return_if_fail(session->global.data != NULL);
-  zathura_t* zathura = session->global.data;
-
-  int val = *(int*) value;
-  if (GTK_IS_TABLE(zathura->ui.page_widget) == TRUE) {
-#if (GTK_MAJOR_VERSION == 3)
-    gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), val);
-    gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), val);
-#else
-    gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-    gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-#endif
-  }
-}
-
-static void
 cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
                       girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
@@ -153,11 +132,11 @@ config_load_default(zathura_t* zathura)
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),   cb_page_padding_changed, NULL);
+  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),   cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
+  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"),cb_first_page_column_value_changed, NULL);
+  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"),cb_page_layout_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
   float_value = 40;
