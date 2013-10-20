@@ -745,7 +745,10 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     /* set widget size */
     unsigned int page_height = 0;
     unsigned int page_width  = 0;
-    page_calc_height_width(page, &page_height, &page_width, true);
+
+    double height = zathura_page_get_height(page);
+    double width = zathura_page_get_width(page);
+    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
 
     gtk_widget_set_size_request(page_widget, page_width, page_height);
 

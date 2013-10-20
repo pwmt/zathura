@@ -600,8 +600,14 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
-  const double real_scale = page_calc_height_width(page, &page_height,
-      &page_width, false);
+
+  zathura_document_t* document = zathura_page_get_document(page);
+  double height = zathura_page_get_height(page);
+  double width = zathura_page_get_width(page);
+
+  const double real_scale = page_calc_height_width(document, height, width,
+                                                   &page_height, &page_width, false);
+
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
       page_width, page_height);
@@ -705,7 +711,9 @@ render_all(zathura_t* zathura)
     zathura_page_t* page = zathura_document_get_page(zathura->document,
         page_id);
     unsigned int page_height = 0, page_width = 0;
-    page_calc_height_width(page, &page_height, &page_width, true);
+    double height = zathura_page_get_height(page);
+    double width = zathura_page_get_width(page);
+    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
 
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
     gtk_widget_set_size_request(widget, page_width, page_height);

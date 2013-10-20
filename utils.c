@@ -241,17 +241,11 @@ error_ret:
 }
 
 double
-page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate)
+page_calc_height_width(zathura_document_t* document, double height, double width,
+                       unsigned int* page_height, unsigned int* page_width, bool rotate)
 {
-  g_return_val_if_fail(page != NULL && page_height != NULL && page_width != NULL, 0.0);
+  g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
 
-  zathura_document_t* document = zathura_page_get_document(page);
-  if (document == NULL) {
-    return 0.0;
-  }
-
-  double height = zathura_page_get_height(page);
-  double width  = zathura_page_get_width(page);
   double scale  = zathura_document_get_scale(document);
   double real_scale;
 

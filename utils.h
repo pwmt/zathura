@@ -96,7 +96,8 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
  * @return real scale after rounding
  */
 double
-page_calc_height_width(zathura_page_t* page, unsigned int* page_height, unsigned int* page_width, bool rotate);
+page_calc_height_width(zathura_document_t* document, double height, double width,
+                       unsigned int* page_height, unsigned int* page_width, bool rotate);
 
 /**
  * Compute the size of the entire document to be displayed (in pixels), taking
@@ -138,7 +139,7 @@ void document_draw_search_results(zathura_t* zathura, bool value);
  *
  * @param zathura The zathura instance
  * @param markup Enable markup
- * @return Version string 
+ * @return Version string
  */
 char* zathura_get_version_string(zathura_t* zathura, bool markup);
 
