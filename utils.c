@@ -262,42 +262,6 @@ page_calc_height_width(zathura_document_t* document, double height, double width
   return real_scale;
 }
 
-void
-zathura_get_document_size(zathura_t* zathura,
-                          unsigned int cell_height, unsigned int cell_width,
-                          unsigned int* height, unsigned int* width)
-{
-  g_return_if_fail(zathura != NULL && zathura->document != NULL &&
-                   height != NULL && width != NULL);
-
-  unsigned int pages_per_row = 1;
-  girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
-  if (pages_per_row == 0)
-    pages_per_row = 1;
-
-  unsigned int first_page_column = 1;
-  girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column);
-  if (first_page_column < 1)
-    first_page_column = 1;
-  if (first_page_column > pages_per_row)
-    first_page_column = (first_page_column - 1) % pages_per_row + 1;
-
-  int padding = 1;
-  girara_setting_get(zathura->ui.session, "page-padding", &padding);
-
-  double scale = zathura_document_get_scale(zathura->document);
-
-  cell_height = ceil(cell_height * scale);
-  cell_width  = ceil(cell_width * scale);
-
-  *width = pages_per_row * cell_width + (pages_per_row - 1) * padding;
-  unsigned int effective_number_of_pages =
-    zathura_document_get_number_of_pages(zathura->document) +
-    first_page_column - 1;
-  unsigned int rows = effective_number_of_pages / pages_per_row +
-                     (effective_number_of_pages % pages_per_row ? 1 : 0);
-  *height = rows * cell_height + (rows - 1) * padding;
-}
 
 GtkWidget*
 zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)

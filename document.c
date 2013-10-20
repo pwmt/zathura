@@ -428,6 +428,26 @@ zathura_document_get_cell_size(zathura_document_t* document,
 }
 
 void
+zathura_document_get_document_size(zathura_document_t* document,
+                                   unsigned int* height, unsigned int* width)
+{
+  g_return_if_fail(document != NULL && height != NULL && width != NULL);
+
+
+  unsigned int npag  = zathura_document_get_number_of_pages(document);
+  unsigned int ncol  = zathura_document_get_pages_per_row(document);
+  unsigned int c0    = zathura_document_get_first_page_column(document);
+  unsigned int nrow  = (npag + c0 - 1 + ncol - 1) / ncol;  /* number of rows */
+  unsigned int pad   = zathura_document_get_page_padding(document);
+
+  unsigned int cell_height=0, cell_width=0;
+  zathura_document_get_cell_size(document, &cell_height, &cell_width);
+
+  *width  = ncol * cell_width + (ncol - 1) * pad;
+  *height = nrow * cell_height + (nrow - 1) * pad;
+}
+
+void
 zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
                                  unsigned int pages_per_row, unsigned int first_page_column)
 {

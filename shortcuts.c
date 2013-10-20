@@ -144,8 +144,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
 
   zathura_document_set_scale(zathura->document, scale);
   zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
-  zathura_get_document_size(zathura, cell_height, cell_width,
-                            &document_height, &document_width);
+  zathura_document_get_document_size(zathura->document, &document_height, &document_width);
 
   double page_ratio   = (double)cell_height / (double)document_width;
   double window_ratio = (double)height / (double)width;
@@ -162,8 +161,7 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
     if (show_vscrollbar) {
       /* If the document is taller than the view, there's a vertical
        * scrollbar; we need to substract its width from the view's width. */
-      zathura_get_document_size(zathura, cell_height, cell_width,
-                                &document_height, &document_width);
+      zathura_document_get_document_size(zathura->document, &document_height, &document_width);
       if (height < document_height) {
         GtkWidget* vscrollbar = gtk_scrolled_window_get_vscrollbar(
             GTK_SCROLLED_WINDOW(session->gtk.view));

@@ -189,6 +189,18 @@ void zathura_document_get_cell_size(zathura_document_t* document,
                                     unsigned int* height, unsigned int* width);
 
 /**
+ * Compute the size of the entire document to be displayed (in pixels), taking
+ * into account the scale, the layout of the pages, and the padding between
+ * them. It should be equal to the allocation of zathura->ui.page_widget once
+ * it's shown.
+ *
+ * @param[in]  document               The document
+ * @param[out] height,width           The height and width of the document
+ */
+void zathura_document_get_document_size(zathura_document_t* document,
+                                        unsigned int* height, unsigned int* width);
+
+/**
  * Sets the layout of the pages in the document
  *
  * @param[in]  document          The document instance
