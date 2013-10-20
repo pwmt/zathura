@@ -117,12 +117,12 @@ void zathura_renderer_lock(ZathuraRenderer* renderer);
 void zathura_renderer_unlock(ZathuraRenderer* renderer);
 
 /**
- * Add a page to the page cache
+ * Add a page to the page cache.
  *
- * @param zathura The zathura session
- * @param page_index The index of the page to be cached
+ * @param renderer renderer object.
+ * @param page_index The index of the page to be cached.
  */
-void zathura_page_cache_add(ZathuraRenderer* renderer,
+void zathura_renderer_page_cache_add(ZathuraRenderer* renderer,
     unsigned int page_index);
 
 
@@ -186,6 +186,12 @@ void zathura_render_request(ZathuraRenderRequest* request,
  */
 void zathura_render_request_abort(ZathuraRenderRequest* request);
 
+/**
+ * Update the time the page associated to the render request has been viewed the
+ * last time.
+ *
+ * @param request request that should be updated
+ */
 void zathura_render_request_update_view_time(ZathuraRenderRequest* request);
 
 /**

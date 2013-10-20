@@ -828,7 +828,8 @@ page_cache_invalidate_all(ZathuraRenderer* renderer)
 }
 
 void
-zathura_page_cache_add(ZathuraRenderer* renderer, unsigned int page_index)
+zathura_renderer_page_cache_add(ZathuraRenderer* renderer,
+    unsigned int page_index)
 {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
   if (page_cache_is_cached(renderer, page_index) == true) {

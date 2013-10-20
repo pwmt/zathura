@@ -98,7 +98,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* GIRARA_UNUSED(adjustment), gpoi
       if (zathura_page_get_visibility(page) == false) {
         zathura_page_set_visibility(page, true);
         zathura_page_widget_update_view_time(zathura_page_widget);
-        zathura_page_cache_add(zathura->sync.render_thread, zathura_page_get_index(page));
+        zathura_renderer_page_cache_add(zathura->sync.render_thread, zathura_page_get_index(page));
       }
       if (zathura->global.update_page_number == true && updated == false
           && gdk_rectangle_intersect(&center, &page_rect, NULL) == TRUE) {
