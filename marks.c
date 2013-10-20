@@ -244,7 +244,6 @@ mark_evaluate(zathura_t* zathura, int key)
     position_set(zathura, mark->position_x, mark->position_y);
     zathura_jumplist_add(zathura);
 
-    zathura->global.update_page_number = true;
     return;
   }
   GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);

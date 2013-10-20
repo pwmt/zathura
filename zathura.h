@@ -101,7 +101,6 @@ struct zathura_s
 
   struct
   {
-    bool update_page_number; /**< Update current page number */
     int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */

@@ -55,7 +55,6 @@ zathura_create(void)
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   /* global settings */
-  zathura->global.update_page_number = true;
   zathura->global.search_direction = FORWARD;
 
   /* plugins */
@@ -1114,10 +1113,6 @@ position_set(zathura_t* zathura, double position_x, double position_y)
   /* set the position */
   zathura_document_set_position_x(zathura->document, position_x);
   zathura_document_set_position_y(zathura->document, position_y);
-
-  /* prevent cb_view_adjustment_value_changed from updating document page number and
-     position from the adjustments. */
-  zathura->global.update_page_number = false;
 
   /* trigger a 'change' event for both adjustments */
   refresh_view(zathura);
