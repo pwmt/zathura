@@ -325,10 +325,12 @@ void position_set(zathura_t* zathura, double position_x, double position_y);
  * Builds the box structure to show the rendered pages
  *
  * @param zathura The zathura session
+ * @param page_padding padding in pixels between pages
  * @param pages_per_row Number of shown pages per row
  * @param first_page_column Column on which first page start
  */
-void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column);
+void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
+                          unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

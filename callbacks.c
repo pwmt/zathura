@@ -223,7 +223,11 @@ cb_pages_per_row_value_changed(girara_session_t* session, const char* UNUSED(nam
   unsigned int first_page_column = 1;
   girara_setting_get(session, "first-page-column", &first_page_column);
 
-  page_widget_set_mode(zathura, pages_per_row, first_page_column);
+  unsigned int page_padding = 1;
+  girara_setting_get(session, "page-padding", &page_padding);
+
+  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
+  zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
 
   if (zathura->document != NULL) {
     unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
@@ -248,7 +252,11 @@ cb_first_page_column_value_changed(girara_session_t* session, const char* UNUSED
   unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
 
-  page_widget_set_mode(zathura, pages_per_row, first_page_column);
+  unsigned int page_padding = 1;
+  girara_setting_get(session, "page-padding", &page_padding);
+
+  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
+  zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
 
   if (zathura->document != NULL) {
     unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
