@@ -219,36 +219,6 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
-cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data)
-{
-  GtkAdjustment* tracker = data;
-
-  gdouble lower = gtk_adjustment_get_lower(adjustment);
-  gdouble upper = gtk_adjustment_get_upper(adjustment);
-  if (lower != gtk_adjustment_get_lower(tracker) ||
-      upper != gtk_adjustment_get_upper(tracker)) {
-    return;
-  }
-
-  gdouble value = gtk_adjustment_get_value(adjustment);
-  gtk_adjustment_set_value(tracker, value);
-}
-
-void
-cb_adjustment_track_bounds(GtkAdjustment* adjustment, gpointer data)
-{
-  GtkAdjustment* tracker = data;
-  gdouble value = gtk_adjustment_get_value(adjustment);
-  gdouble lower = gtk_adjustment_get_lower(adjustment);
-  gdouble upper = gtk_adjustment_get_upper(adjustment);
-  gdouble page_size = gtk_adjustment_get_page_size(adjustment);
-  gtk_adjustment_set_value(tracker, value);
-  gtk_adjustment_set_lower(tracker, lower);
-  gtk_adjustment_set_upper(tracker, upper);
-  gtk_adjustment_set_page_size(tracker, page_size);
-}
-
-void
 cb_page_layout_value_changed(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);

@@ -69,9 +69,6 @@ struct zathura_s
     GtkWidget *page_widget_alignment;
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
-
-    GtkAdjustment *hadjustment; /**< Tracking hadjustment */
-    GtkAdjustment *vadjustment; /**< Tracking vadjustment */
   } ui;
 
   struct

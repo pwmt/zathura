@@ -160,37 +160,23 @@ zathura_init(zathura_t* zathura)
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
-  /* Setup hadjustment tracker */
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(
-      GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  zathura->ui.hadjustment = zathura_adjustment_clone(hadjustment);
-  g_object_ref_sink(zathura->ui.hadjustment);
+                 GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* Connect hadjustment signals */
   g_signal_connect(G_OBJECT(hadjustment), "value-changed",
       G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
-  g_signal_connect(G_OBJECT(hadjustment), "value-changed",
-      G_CALLBACK(cb_adjustment_track_value), zathura->ui.hadjustment);
   g_signal_connect(G_OBJECT(hadjustment), "changed",
       G_CALLBACK(cb_view_hadjustment_changed), zathura);
-  g_signal_connect(G_OBJECT(hadjustment), "changed",
-      G_CALLBACK(cb_adjustment_track_bounds), zathura->ui.hadjustment);
 
-  /* Setup vadjustment tracker */
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
-      GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  zathura->ui.vadjustment = zathura_adjustment_clone(vadjustment);
-  g_object_ref_sink(zathura->ui.vadjustment);
+                 GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* Connect vadjustment signals */
   g_signal_connect(G_OBJECT(vadjustment), "value-changed",
       G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
-  g_signal_connect(G_OBJECT(vadjustment), "value-changed",
-      G_CALLBACK(cb_adjustment_track_value), zathura->ui.vadjustment);
   g_signal_connect(G_OBJECT(vadjustment), "changed",
       G_CALLBACK(cb_view_vadjustment_changed), zathura);
-  g_signal_connect(G_OBJECT(vadjustment), "changed",
-      G_CALLBACK(cb_adjustment_track_bounds), zathura->ui.vadjustment);
 
   /* page view alignment */
   zathura->ui.page_widget_alignment = gtk_alignment_new(0.5, 0.5, 0, 0);
@@ -295,13 +281,6 @@ zathura_free(zathura_t* zathura)
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
-  }
-
-  if (zathura->ui.hadjustment != NULL) {
-    g_object_unref(G_OBJECT(zathura->ui.hadjustment));
-  }
-  if (zathura->ui.vadjustment != NULL) {
-    g_object_unref(G_OBJECT(zathura->ui.vadjustment));
   }
 
   /* stdin support */
