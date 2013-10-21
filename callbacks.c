@@ -562,8 +562,12 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
     gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
 
     char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied selected text to clipboard: %s"), stripped_text);
+    char* escaped_text = g_markup_printf_escaped(
+        _("Copied selected text to clipboard: %s"), stripped_text);
     g_free(stripped_text);
+
+    girara_notify(zathura->ui.session, GIRARA_INFO, escaped_text);
+    g_free(escaped_text);
   }
 
   g_free(selection);
