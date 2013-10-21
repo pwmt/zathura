@@ -566,7 +566,7 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
         _("Copied selected text to clipboard: %s"), stripped_text);
     g_free(stripped_text);
 
-    girara_notify(zathura->ui.session, GIRARA_INFO, escaped_text);
+    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
     g_free(escaped_text);
   }
 
