@@ -122,10 +122,13 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     return;
   }
 
+  bool link_zoom = true;
+  girara_setting_get(zathura->ui.session, "link-zoom", &link_zoom);
+
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
       if (link->target.destination_type != ZATHURA_LINK_DESTINATION_UNKNOWN) {
-        if (link->target.scale != 0) {
+        if (link->target.scale != 0 && link_zoom) {
           zathura_document_set_scale(zathura->document, link->target.scale);
         }
 
