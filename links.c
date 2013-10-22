@@ -11,6 +11,7 @@
 #include "zathura.h"
 #include "document.h"
 #include "utils.h"
+#include "page.h"
 
 struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
@@ -140,34 +141,47 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           return;
         }
 
-          page_offset_t offset;
-          page_calculate_offset(zathura, page, &offset);
+        /* compute the position with the page aligned to the top and left
+           of the viewport */
+        double pos_x=0, pos_y=0;
+        page_number_to_position(zathura->document, link->target.page_number,
+                                0.0, 0.0, &pos_x, &pos_y);
 
-        if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ) {
-          if (link->target.left != -1) {
-            offset.x += link->target.left * zathura_document_get_scale(zathura->document);
-          }
+        /* correct to place the target position at the top of the viewport     */
+        /* NOTE: link->target is in page units, needs to be scaled and rotated */
+        unsigned int cell_height=0, cell_width=0;
+        zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
 
-          if (link->target.top != -1) {
-            offset.y += link->target.top * zathura_document_get_scale(zathura->document);
-          }
-        }
+        unsigned int doc_height=0, doc_width=0;
+        zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
-        zathura_jumplist_add(zathura);
-
-        /* jump to the page */
-        page_set(zathura, link->target.page_number);
-
-        /* move to the target position */
         bool link_hadjust = true;
         girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
-        if (link_hadjust == true) {
-          position_set(zathura, offset.x, offset.y);
+        /* scale and rotate */
+        double scale = zathura_document_get_scale(zathura->document);
+        double shiftx = link->target.left * scale / (double)cell_width;
+        double shifty = link->target.top * scale / (double)cell_height;
+        page_calc_position(zathura->document, shiftx, shifty, &shiftx, &shifty);
+
+        /* shift the position or set to auto */
+        if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
+            link->target.left != -1 && link_hadjust == true) {
+          pos_x += shiftx / (double)doc_width;
         } else {
-          position_set(zathura, -1, offset.y);
+          pos_x = -1;     /* -1 means automatic */
         }
 
+        if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
+            link->target.top != -1) {
+          pos_y += shifty / (double)doc_height;
+        } else {
+          pos_y = -1;     /* -1 means automatic */
+        }
+
+        /* move to position */
+        zathura_jumplist_add(zathura);
+        position_set(zathura, pos_x, pos_y);
         zathura_jumplist_add(zathura);
       }
       break;
