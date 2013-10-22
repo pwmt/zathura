@@ -1115,24 +1115,14 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     gtk_widget_show(treeview);
   }
 
-  static double vvalue = 0;
-  static double hvalue = 0;
-
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
     girara_set_view(session, zathura->ui.page_widget_alignment);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
 
-    /* reset adjustment */
-    position_set(zathura, hvalue, vvalue);
+    /* refresh view */
+    refresh_view(zathura);
   } else {
-    /* save adjustment */
-    GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-    GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-
-    vvalue = gtk_adjustment_get_value(vadjustment);
-    hvalue = gtk_adjustment_get_value(hadjustment);
-
     /* save current position to the jumplist */
     zathura_jumplist_add(zathura);
 
