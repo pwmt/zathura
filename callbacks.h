@@ -61,6 +61,17 @@ void cb_view_hadjustment_changed(GtkAdjustment *adjustment, gpointer data);
  */
 void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
 
+/**
+ * This function gets called when the program need to refresh the document view.
+ *
+ * It adjusts the value of the scrollbars, triggering a redraw in the new
+ * position.
+ *
+ * @param view The view GtkWidget
+ * @param data The zathura instance
+ */
+void cb_refresh_view(GtkWidget* view, gpointer data);
+
 /* This function gets called when the value of the adjustment changes.
  *
  * It updates the value of the tracking adjustment, only if the bounds of the

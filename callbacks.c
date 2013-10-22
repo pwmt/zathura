@@ -177,6 +177,32 @@ cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
 }
 
 void
+cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+  if (page == NULL) {
+    return;
+  }
+
+  GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+
+  double position_x = zathura_document_get_position_x(zathura->document);
+  double position_y = zathura_document_get_position_y(zathura->document);
+
+  zathura_adjustment_set_value_from_ratio(vadj, position_y);
+  zathura_adjustment_set_value_from_ratio(hadj, position_x);
+
+  statusbar_page_number_update(zathura);
+}
+
+void
 cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data)
 {
   GtkAdjustment* tracker = data;

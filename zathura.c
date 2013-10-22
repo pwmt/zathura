@@ -141,6 +141,21 @@ zathura_init(zathura_t* zathura)
   zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
+  /* zathura signals */
+  zathura->signals.refresh_view = g_signal_new("refresh-view",
+                                               GTK_TYPE_WIDGET,
+                                               G_SIGNAL_RUN_LAST,
+                                               0,
+                                               NULL,
+                                               NULL,
+                                               g_cclosure_marshal_generic,
+                                               G_TYPE_NONE,
+                                               1,
+                                               G_TYPE_POINTER);
+
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
+                   G_CALLBACK(cb_refresh_view), zathura);
+
   /* page view */
 #if (GTK_MAJOR_VERSION == 3)
   zathura->ui.page_widget = gtk_grid_new();
@@ -1193,6 +1208,16 @@ position_set(zathura_t* zathura, double position_x, double position_y)
   if (position_y >= 0) {
     zathura_adjustment_set_value(vadjustment, position_y);
   }
+}
+
+
+void
+refresh_view(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+
+  /* emit a custom refresh-view signal */
+  g_signal_emit(zathura->ui.session->gtk.view, zathura->signals.refresh_view,
+                0, zathura);
 }
 
 static void

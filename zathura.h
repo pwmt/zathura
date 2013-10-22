@@ -134,6 +134,11 @@ struct zathura_s
 
   struct
   {
+    guint refresh_view;
+  } signals;
+
+  struct
+  {
     gchar* file;
   } stdin_support;
 
@@ -320,6 +325,13 @@ void position_set_delayed(zathura_t* zathura, double position_x, double position
  * @param position_y Y coordinate
  */
 void position_set(zathura_t* zathura, double position_x, double position_y);
+
+/**
+ * Refresh the page view
+ *
+ * @param zathura Zathura session
+ */
+void refresh_view(zathura_t* zathura);
 
 /**
  * Builds the box structure to show the rendered pages
