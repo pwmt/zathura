@@ -178,7 +178,7 @@ zathura_init(zathura_t* zathura)
 
   /* Connect hadjustment signals */
   g_signal_connect(G_OBJECT(hadjustment), "value-changed",
-      G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+      G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
   g_signal_connect(G_OBJECT(hadjustment), "value-changed",
       G_CALLBACK(cb_adjustment_track_value), zathura->ui.hadjustment);
   g_signal_connect(G_OBJECT(hadjustment), "changed",

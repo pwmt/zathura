@@ -28,6 +28,15 @@ gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura);
 void cb_buffer_changed(girara_session_t* session);
 
 /**
+ * This function gets called when the value of the horizontal scrollbars
+ * changes (e.g.: by scrolling, moving to another page)
+ *
+ * @param adjustment The hadjustment of the page view
+ * @param data NULL
+ */
+void cb_view_hadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
+
+/**
  * This function gets called when the value of the vertical scrollbars
  * changes (e.g.: by scrolling, moving to another page)
  *
