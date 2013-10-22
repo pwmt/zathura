@@ -475,7 +475,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
   /* render all pages again */
   render_all(zathura);
 
-  page_set_delayed(zathura, page_number);
+  page_set(zathura, page_number);
 
   return false;
 }
@@ -1122,7 +1122,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
 
     /* reset adjustment */
-    position_set_delayed(zathura, hvalue, vvalue);
+    position_set(zathura, hvalue, vvalue);
   } else {
     /* save adjustment */
     GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
@@ -1220,7 +1220,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     /* reset scale */
     zathura_document_set_scale(zathura->document, zoom);
     render_all(zathura);
-    page_set_delayed(zathura, zathura_document_get_current_page_number(zathura->document));
+    page_set(zathura, zathura_document_get_current_page_number(zathura->document));
 
     /* setm ode */
     girara_mode_set(session, zathura->modes.normal);
@@ -1248,7 +1248,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
 
     /* set full screen */
     gtk_window_fullscreen(GTK_WINDOW(session->gtk.window));
-    page_set_delayed(zathura, zathura_document_get_current_page_number(zathura->document));
+    page_set(zathura, zathura_document_get_current_page_number(zathura->document));
 
     /* setm ode */
     girara_mode_set(session, zathura->modes.fullscreen);
@@ -1325,6 +1325,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   render_all(zathura);
+  page_set(zathura, zathura_document_get_current_page_number(zathura->document));
 
   return false;
 }

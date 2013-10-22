@@ -816,11 +816,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   adjust_view(zathura);
 
   /* set position */
+  page_set(zathura, zathura_document_get_current_page_number(document));
   if (file_info.position_x != 0 || file_info.position_y != 0) {
-    position_set_delayed(zathura, file_info.position_x, file_info.position_y);
-  } else {
-    page_set_delayed(zathura, zathura_document_get_current_page_number(document));
-    cb_view_vadjustment_value_changed(NULL, zathura);
+    position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
   return true;
