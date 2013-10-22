@@ -913,26 +913,32 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
     zathura_rectangle_t* rect = girara_list_nth(results, target_idx);
     zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
-    page_offset_t offset;
-    page_calculate_offset(zathura, target_page, &offset);
-    zathura_jumplist_add(zathura);
-
-    if (zathura_page_get_index(target_page) != cur_page) {
-      page_set(zathura, zathura_page_get_index(target_page));
-    }
-
-    GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    int y = offset.y - gtk_adjustment_get_page_size(view_vadjustment) / 2 + rectangle.y1;
-    zathura_adjustment_set_value(view_vadjustment, y);
 
     bool search_hadjust = true;
     girara_setting_get(session, "search-hadjust", &search_hadjust);
+
+    /* compute the position of the center of the page */
+    double pos_x=0, pos_y=0;
+    page_number_to_position(zathura->document, zathura_page_get_index(target_page),
+                            0.5, 0.5, &pos_x, &pos_y);
+
+    /* correction to center the current result                          */
+    /* NOTE: rectangle is in viewport units, already scaled and rotated */
+    unsigned int cell_height=0, cell_width=0;
+    zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+
+    unsigned int doc_height=0, doc_width=0;
+    zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+
+    pos_y += (rectangle.y1 - (double)cell_height/2) / (double)doc_height;
+
     if (search_hadjust == true) {
-      GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-      int x = offset.x - gtk_adjustment_get_page_size(view_hadjustment) / 2 + rectangle.x1;
-      zathura_adjustment_set_value(view_hadjustment, x);
+      pos_x += (rectangle.x1 - (double)cell_width/2) / (double)doc_width;
     }
 
+    /* move to position */
+    zathura_jumplist_add(zathura);
+    position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
   }
 
