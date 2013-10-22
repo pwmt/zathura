@@ -323,8 +323,9 @@ void position_set_delayed(zathura_t* zathura, double position_x, double position
  * @param zathura Zathura session
  * @param position_x X coordinate
  * @param position_y Y coordinate
+ * @return If no error occured true, otherwise false, is returned.
  */
-void position_set(zathura_t* zathura, double position_x, double position_y);
+bool position_set(zathura_t* zathura, double position_x, double position_y);
 
 /**
  * Refresh the page view

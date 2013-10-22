@@ -1035,33 +1035,17 @@ page_set(zathura_t* zathura, unsigned int page_id)
     goto error_out;
   }
 
-  /* render page */
   zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-
   if (page == NULL) {
     goto error_out;
   }
 
   zathura_document_set_current_page_number(zathura->document, page_id);
-  zathura->global.update_page_number = false;
 
-  page_offset_t offset;
-  page_calculate_offset(zathura, page, &offset);
-
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  zathura_adjustment_set_value(view_hadjustment, offset.x);
-  zathura_adjustment_set_value(view_vadjustment, offset.y);
-
-  /* refresh horizontal adjustment, to honor zoom-center */
-  cb_view_hadjustment_changed(view_hadjustment, zathura);
-
-  statusbar_page_number_update(zathura);
-
-  return true;
+  /* negative position means auto */
+  return position_set(zathura, -1, -1);
 
 error_out:
-
   return false;
 }
 
@@ -1191,23 +1175,56 @@ position_set_delayed(zathura_t* zathura, double position_x, double position_y)
   gdk_threads_add_idle(position_set_delayed_impl, p);
 }
 
-void
+bool
 position_set(zathura_t* zathura, double position_x, double position_y)
 {
-  g_return_if_fail(zathura != NULL);
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  /* negative values mean: don't set the position */
-  if (position_x >= 0) {
-    zathura_adjustment_set_value(hadjustment, position_x);
+  if (zathura == NULL || zathura->document == NULL) {
+    goto error_out;
   }
 
-  if (position_y >= 0) {
-    zathura_adjustment_set_value(vadjustment, position_y);
+  double comppos_x, comppos_y;
+  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+
+  /* xalign = 0.5: center horizontally (with the page, not the document) */
+  /* yalign = 0.0: align page an viewport edges at the top               */
+  page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+
+  /* automatic horizontal adjustment */
+  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+
+  /* negative position_x mean: use the computed value */
+  if (position_x < 0) {
+    position_x = comppos_x;
+    bool zoom_center = false;
+    girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
+
+    /* center horizontally */
+    if (adjust_mode == ZATHURA_ADJUST_BESTFIT ||
+      adjust_mode == ZATHURA_ADJUST_WIDTH ||
+      zoom_center) {
+        position_x = 0.5;
+    }
   }
+
+  if (position_y < 0) {
+    position_y = comppos_y;
+  }
+
+  /* set the position */
+  zathura_document_set_position_x(zathura->document, position_x);
+  zathura_document_set_position_y(zathura->document, position_y);
+
+  /* prevent cb_view_adjustment_value_changed from updating document page number and
+     position from the adjustments. */
+  zathura->global.update_page_number = false;
+
+  /* trigger a 'change' event for both adjustments */
+  refresh_view(zathura);
+
+  return true;
+
+error_out:
+  return false;
 }
 
 
