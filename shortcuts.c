@@ -648,10 +648,9 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
     return true;
   }
 
-  GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-  GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-  double x = zathura_adjustment_get_ratio(hadj);
-  double y = zathura_adjustment_get_ratio(vadj);
+  double x = zathura_document_get_position_x(zathura->document);
+  double y = zathura_document_get_position_y(zathura->document);
+
   zathura_jump_t* jump = NULL;
   zathura_jump_t* prev_jump = zathura_jumplist_current(zathura);
   bool go_to_current = false;
@@ -691,11 +690,9 @@ sc_jumplist(girara_session_t* session, girara_argument_t* argument,
   }
 
   if (jump != NULL) {
-    zathura_adjustment_set_value_from_ratio(hadj, jump->x);
-    zathura_adjustment_set_value_from_ratio(vadj, jump->y);
-    zathura_document_set_current_page_number(zathura->document, jump->page);
-    statusbar_page_number_update(zathura);
-}
+    page_set(zathura, jump->page);
+    position_set(zathura, jump->x, jump->y);
+  }
 
   return false;
 }
