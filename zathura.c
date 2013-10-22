@@ -946,12 +946,8 @@ document_close(zathura_t* zathura, bool keep_monitor)
   girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column));
 
   /* get position */
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  file_info.position_x = gtk_adjustment_get_value(hadjustment);
-  file_info.position_y = gtk_adjustment_get_value(vadjustment);
+  file_info.position_x = zathura_document_get_position_x(zathura->document);
+  file_info.position_y = zathura_document_get_position_y(zathura->document);
 
   /* save file info */
   zathura_db_set_fileinfo(zathura->database, path, &file_info);

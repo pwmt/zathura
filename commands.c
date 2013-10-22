@@ -118,16 +118,9 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
   }
 
   zathura_jumplist_add(zathura);
-  if (bookmark->x != DBL_MIN && bookmark->y != DBL_MIN) {
-    GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    zathura_adjustment_set_value_from_ratio(hadjustment, bookmark->x);
-    zathura_adjustment_set_value_from_ratio(vadjustment, bookmark->y);
-    zathura_document_set_current_page_number(zathura->document, bookmark->page - 1);
-    statusbar_page_number_update(zathura);
-  } else {
-    page_set(zathura, bookmark->page - 1);
-  }
+  page_set(zathura, bookmark->page - 1);
+  if (bookmark->x != DBL_MIN && bookmark->y != DBL_MIN)
+    position_set(zathura, bookmark->x, bookmark->y);
   zathura_jumplist_add(zathura);
 
   return true;
