@@ -240,29 +240,6 @@ error_ret:
   return rectangle;
 }
 
-double
-page_calc_height_width(zathura_document_t* document, double height, double width,
-                       unsigned int* page_height, unsigned int* page_width, bool rotate)
-{
-  g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
-
-  double scale  = zathura_document_get_scale(document);
-  double real_scale;
-
-  if (rotate && zathura_document_get_rotation(document) % 180) {
-    *page_width  = ceil(height * scale);
-    *page_height = ceil(width  * scale);
-    real_scale = MAX(*page_width / height, *page_height / width);
-  } else {
-    *page_width  = ceil(width  * scale);
-    *page_height = ceil(height * scale);
-    real_scale = MAX(*page_width / width, *page_height / height);
-  }
-
-  return real_scale;
-}
-
-
 GtkWidget*
 zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
 {

@@ -6,6 +6,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+#include "adjustment.h"
 #include "links.h"
 #include "zathura.h"
 #include "document.h"

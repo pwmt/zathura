@@ -87,19 +87,6 @@ zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int
 zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle);
 
 /**
- * Calculate the page size according to the corrent scaling and rotation if
- * desired.
- * @param page the page
- * @param page_height the resulting page height
- * @param page_width the resultung page width
- * @param rotate honor page's rotation
- * @return real scale after rounding
- */
-double
-page_calc_height_width(zathura_document_t* document, double height, double width,
-                       unsigned int* page_height, unsigned int* page_width, bool rotate);
-
-/**
  * Returns the page widget of the page
  *
  * @param zathura The zathura instance

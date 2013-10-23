@@ -4,7 +4,9 @@
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include "glib-compat.h"
+
 #include "render.h"
+#include "adjustment.h"
 #include "zathura.h"
 #include "document.h"
 #include "page.h"

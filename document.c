@@ -22,6 +22,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+#include "adjustment.h"
 #include "document.h"
 #include "utils.h"
 #include "zathura.h"
