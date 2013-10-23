@@ -496,18 +496,14 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     t = 1;
   }
 
-  GtkAdjustment* adjustment = NULL;
-  if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
-       (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
-    adjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-  } else {
-    adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-  }
+  unsigned int view_width=0, view_height=0;
+  zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
 
-  gdouble view_size                  = gtk_adjustment_get_page_size(adjustment);
-  gdouble value                      = gtk_adjustment_get_value(adjustment);
-  gdouble max                        = gtk_adjustment_get_upper(adjustment) - view_size;
-  zathura->global.update_page_number = true;
+  unsigned int cell_width=0, cell_height=0;
+  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+
+  unsigned int doc_width=0, doc_height=0;
+  zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);
@@ -527,108 +523,111 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   int padding = 1;
   girara_setting_get(session, "page-padding", &padding);
 
-  gdouble new_value;
+  double pos_x = zathura_document_get_position_x(zathura->document);
+  double pos_y = zathura_document_get_position_y(zathura->document);
+  double page_id = zathura_document_get_current_page_number(zathura->document);
+  double direction = 1.0;
 
+  /* if TOP or BOTTOM, go there and we are done */
+  if (argument->n == TOP) {
+    position_set(zathura, -1, 0);
+    return false;
+  } else if (argument->n == BOTTOM) {
+    position_set(zathura, -1, 1.0);
+    return false;
+  }
+
+  /* compute the direction of scrolling */
+  if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
+       (argument->n == UP) || (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
+    direction = -1.0;
+  } else {
+    direction = 1.0;
+  }
+
+  double vstep = (double)(cell_height + padding) / (double)doc_height;
+  double hstep = (double)(cell_width + padding) / (double)doc_width;
+
+  /* compute new position */
   switch(argument->n) {
     case FULL_UP:
-    case FULL_LEFT:
-      new_value = value - (1.0 - scroll_full_overlap) * view_size - padding;
-      break;
     case FULL_DOWN:
+      pos_y += direction * (1.0 - scroll_full_overlap) * vstep;
+      break;
+
+    case FULL_LEFT:
     case FULL_RIGHT:
-      new_value = value + (1.0 - scroll_full_overlap) * view_size + padding;
+      pos_x += direction * (1.0 - scroll_full_overlap) * hstep;
       break;
+
     case HALF_UP:
-    case HALF_LEFT:
-      new_value = value - ((view_size + padding) / 2);
-      break;
     case HALF_DOWN:
+      pos_y += direction * 0.5 * vstep;
+      break;
+
+    case HALF_LEFT:
     case HALF_RIGHT:
-      new_value = value + ((view_size + padding) / 2);
+      pos_x += direction * 0.5 * hstep;
       break;
-    case LEFT:
-      new_value = value - scroll_hstep * t;
-      break;
+
     case UP:
-      new_value = value - scroll_step * t;
-      break;
-    case RIGHT:
-      new_value = value + scroll_hstep * t;
-      break;
     case DOWN:
-      new_value = value + scroll_step * t;
+      pos_y += direction * t * scroll_step / (double)doc_height;
       break;
-    case TOP:
-      new_value = 0;
+
+    case LEFT:
+    case RIGHT:
+      pos_x += direction * t * scroll_hstep / (double)doc_width;
       break;
-    case BOTTOM:
-      new_value = max;
-      break;
-    default:
-      new_value = value;
   }
 
-  if (scroll_wrap == true) {
-    if (new_value < 0)
-      new_value = max;
-    else if (new_value > max)
-      new_value = 0;
+  /* handle boundaries */
+  double end_x = 0.5 * (double)view_width / (double)doc_width;
+  double end_y = 0.5 * (double)view_height / (double)doc_height;
+
+  double new_x = scroll_wrap ? 1.0 - end_x : end_x;
+  double new_y = scroll_wrap ? 1.0 - end_y : end_y;
+
+  if (pos_x < end_x) {
+    pos_x = new_x;
+  } else if (pos_x > 1.0 - end_x) {
+    pos_x = 1 - new_x;
   }
 
-  if (scroll_page_aware == true) {
-    int page_offset;
-    double page_size;
+  if (pos_y < end_y) {
+    pos_y = new_y;
+  } else if (pos_y > 1.0 - end_y) {
+    pos_y = 1 - new_y;
+  }
 
-    {
-      unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
-      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-      page_offset_t offset;
-      page_calculate_offset(zathura, page, &offset);
+  /* snap to the border if we change page */
+  double dummy;
+  unsigned int new_page_id = position_to_page_number(zathura->document, pos_x, pos_y);
+  if (scroll_page_aware == true && page_id != new_page_id) {
+    switch(argument->n) {
+      case FULL_LEFT:
+      case HALF_LEFT:
+        page_number_to_position(zathura->document, new_page_id, 1.0, 0.0, &pos_x, &dummy);
+        break;
 
-      double scale = zathura_document_get_scale(zathura->document);
+      case FULL_RIGHT:
+      case HALF_RIGHT:
+        page_number_to_position(zathura->document, new_page_id, 0.0, 0.0, &pos_x, &dummy);
+        break;
 
-      if ((argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
-          (argument->n == RIGHT) || (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
-        page_offset = offset.x;
-        page_size = zathura_page_get_width(page) * scale;
-      } else {
-        page_offset = offset.y;
-        page_size = zathura_page_get_height(page) * scale;
-      }
+      case FULL_UP:
+      case HALF_UP:
+        page_number_to_position(zathura->document, new_page_id, 0.0, 1.0, &dummy, &pos_y);
+        break;
 
-      page_offset -= padding / 2;
-      page_size   += padding;
-    }
-
-    if ((argument->n == FULL_DOWN) || (argument->n == HALF_DOWN) ||
-        (argument->n == FULL_RIGHT) || (argument->n == HALF_RIGHT)) {
-      if ((page_offset > value) &&
-          (page_offset < value + view_size)) {
-        new_value = page_offset;
-      } else if ((page_offset <= value) &&
-                 (page_offset + page_size < value + view_size)) {
-        new_value = page_offset + page_size + 1;
-      } else if ((page_offset <= value) &&
-                 (page_offset + page_size < new_value + view_size)) {
-        new_value = page_offset + page_size - view_size + 1;
-      }
-    } else if ((argument->n == FULL_UP) || (argument->n == HALF_UP) ||
-               (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT)) {
-      if ((page_offset + 1 >= value) &&
-          (page_offset < value + view_size)) {
-        new_value = page_offset - view_size;
-      } else if ((page_offset <= value) &&
-                 (page_offset + page_size + 1 < value + view_size)) {
-        new_value = page_offset + page_size - view_size;
-      } else if ((page_offset <= value) &&
-                 (page_offset > new_value)) {
-        new_value = page_offset;
-      }
+      case FULL_DOWN:
+      case HALF_DOWN:
+        page_number_to_position(zathura->document, new_page_id, 0.0, 0.0, &dummy, &pos_y);
+        break;
     }
   }
 
-  zathura_adjustment_set_value(adjustment, new_value);
-
+  position_set(zathura, pos_x, pos_y);
   return false;
 }
 
