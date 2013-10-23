@@ -1133,39 +1133,6 @@ refresh_view(zathura_t* zathura) {
                 0, zathura);
 }
 
-static void
-zathura_jumplist_hide_inputbar(zathura_t* zathura)
-{
-  g_return_if_fail(zathura != NULL && zathura->ui.session->gtk.inputbar != NULL);
-
-  girara_argument_t arg = { GIRARA_HIDE, NULL };
-  girara_isc_completion(zathura->ui.session, &arg, NULL, 0);
-
-  if (zathura->ui.session->global.autohide_inputbar == true) {
-    /* XXX: This is a workaround for incremental-search. We should revisit this
-     * when we drop GTK+3 support and the inputbar is placed in a GtkOverlay
-     * widget. */
-    char *input = gtk_editable_get_chars(GTK_EDITABLE(zathura->ui.session->gtk.inputbar_entry), 0, -1);
-    bool res = false;
-
-    girara_setting_get(zathura->ui.session, "incremental-search", &res);
-
-    if ((*input == '/' || *input == '?') && res == true) {
-      g_free(input);
-
-      return;
-    }
-    /* </workaround> */
-
-    gtk_widget_hide(zathura->ui.session->gtk.inputbar);
-  }
-
-  /* we want to do it immediately */
-  /* XXX: ... and we want this to go away */
-  while (gtk_events_pending()) {
-    gtk_main_iteration();
-  }
-}
 
 bool
 adjust_view(zathura_t* zathura) {
@@ -1329,7 +1296,6 @@ void
 zathura_jumplist_add(zathura_t* zathura)
 {
   g_return_if_fail(zathura != NULL && zathura->document != NULL && zathura->jumplist.list != NULL);
-  zathura_jumplist_hide_inputbar(zathura);
 
   unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
   double x = zathura_document_get_position_x(zathura->document);
