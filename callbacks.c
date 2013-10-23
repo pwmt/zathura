@@ -92,6 +92,11 @@ cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
     return;
   }
 
+  /* Do nothing in index mode */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
+    return;
+  }
+
   update_visible_pages(zathura);
 
   double position_x = zathura_adjustment_get_ratio(adjustment);
@@ -110,6 +115,11 @@ cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
 {
   zathura_t* zathura = data;
   if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  /* Do nothing in index mode */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
     return;
   }
 
@@ -135,6 +145,11 @@ cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_adjust_mode_t adjust_mode =
     zathura_document_get_adjust_mode(zathura->document);
 
+  /* Do nothing in index mode */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
+    return;
+  }
+
   /* Don't scroll we're focusing the inputbar. */
   if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
     return;
@@ -157,6 +172,11 @@ cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
 
   zathura_adjust_mode_t adjust_mode =
     zathura_document_get_adjust_mode(zathura->document);
+
+  /* Do nothing in index mode */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
+    return;
+  }
 
   /* Don't scroll we're focusing the inputbar. */
   if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
