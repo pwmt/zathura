@@ -459,23 +459,19 @@ error_ret:
 }
 
 bool
-cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* allocation, zathura_t* zathura)
+cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return false;
   }
 
-  static int height = -1;
-  static int width = -1;
+  /* adjust the scale according to settings. If nothing needs to be resized,
+     it does not trigger the resize event.
 
-  /* adjust only if the allocation changed */
-  if (width != allocation->width || height != allocation->height) {
-    girara_argument_t argument = { zathura_document_get_adjust_mode(zathura->document), NULL };
-    sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
-
-    width  = allocation->width;
-    height = allocation->height;
-  }
+     The right viewport size is already in the document object, due to a
+     previous call to adjustment_changed. We don't want to use the allocation in
+     here, because we would have to subtract scrollbars, etc. */
+  adjust_view(zathura);
 
   return false;
 }

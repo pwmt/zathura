@@ -811,9 +811,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   g_free(file_uri);
 
-  /* adjust window */
-  girara_argument_t argument = { zathura_document_get_adjust_mode(document), NULL };
-  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+
+  /* adjust_view and set position*/
+  adjust_view(zathura);
 
   /* set position */
   if (file_info.position_x != 0 || file_info.position_y != 0) {
@@ -1269,6 +1269,69 @@ zathura_jumplist_hide_inputbar(zathura_t* zathura)
   while (gtk_events_pending()) {
     gtk_main_iteration();
   }
+}
+
+bool
+adjust_view(zathura_t* zathura) {
+    g_return_val_if_fail(zathura != NULL, false);
+
+  if (zathura->ui.page_widget == NULL || zathura->document == NULL) {
+    goto error_ret;
+  }
+
+  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+  if (adjust_mode == ZATHURA_ADJUST_NONE) {
+    /* there is nothing todo */
+    goto error_ret;
+  }
+
+  unsigned int cell_height = 0, cell_width = 0;
+  unsigned int document_height = 0, document_width = 0;
+  unsigned int view_height = 0, view_width = 0;
+
+  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+  zathura_document_get_document_size(zathura->document, &document_height, &document_width);
+  zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
+
+  double scale = zathura_document_get_scale(zathura->document);
+
+  if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0) {
+    goto error_ret;
+  }
+
+  double page_ratio   = (double)cell_height / (double)document_width;
+  double view_ratio = (double)view_height / (double)view_width;
+  double newscale = scale;
+
+  if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
+      (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
+    newscale = scale * (double)view_width / (double)document_width;
+
+  } else if (adjust_mode == ZATHURA_ADJUST_BESTFIT) {
+    newscale = scale * (double)view_height / (double)cell_height;
+
+  } else {
+    goto error_ret;
+  }
+
+  /* save new scale and recompute cell size */
+  zathura_document_set_scale(zathura->document, newscale);
+  unsigned int new_cell_height = 0, new_cell_width = 0;
+  zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
+
+  /* if the change in scale changes page cell dimensions by at least one pixel, render */
+  if (abs(new_cell_width - cell_width) > 1 ||
+      abs(new_cell_height - cell_height) > 1) {
+    render_all(zathura);
+    refresh_view(zathura);
+
+ /* otherwise set the old scale and leave */
+  } else {
+    zathura_document_set_scale(zathura->document, scale);
+  }
+
+error_ret:
+  return false;
 }
 
 bool

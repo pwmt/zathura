@@ -335,6 +335,13 @@ bool position_set(zathura_t* zathura, double position_x, double position_y);
 void refresh_view(zathura_t* zathura);
 
 /**
+ * Recompute the scale according to settings
+ *
+ * @param zathura Zathura session
+ */
+bool adjust_view(zathura_t* zathura);
+
+/**
  * Builds the box structure to show the rendered pages
  *
  * @param zathura The zathura session
