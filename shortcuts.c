@@ -169,15 +169,15 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
             GTK_SCROLLED_WINDOW(session->gtk.view));
 
         if (vscrollbar != NULL) {
-            int scroll_width;
+          int scroll_width;
 #if (GTK_MAJOR_VERSION == 3)
-            gtk_widget_get_preferred_width(GTK_WIDGET(vscrollbar), NULL, &scroll_width);
+          gtk_widget_get_preferred_width(GTK_WIDGET(vscrollbar), NULL, &scroll_width);
 #else
           GtkRequisition requisition;
           gtk_widget_get_requisition(vscrollbar, &requisition);
           scroll_width = requisition.width;
 #endif
-          if (0 < scroll_width && (unsigned)scroll_width < width) {
+          if (0 < scroll_width && (unsigned int)scroll_width < width) {
             width -= scroll_width;
             scale = (double)(width - (pages_per_row - 1) * padding) /
                     (double)(pages_per_row * cell_width);
