@@ -971,7 +971,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       continue;
     }
 
-    if (first_time_after_abort == true && num_search_results > 0) {
+    if ((first_time_after_abort == true && num_search_results > 0) || ((tmp + num_pages) % num_pages != cur_page)) {
       target_page = page;
       target_idx = diff == 1 ? 0 : num_search_results - 1;
       break;
