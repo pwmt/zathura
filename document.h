@@ -98,6 +98,42 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
     int current_page);
 
 /**
+ * Returns the X position, as a value relative to the document width (0=left,
+ * 1=right).
+ *
+ * @param document The document
+ * @return X adjustment
+ */
+double zathura_document_get_position_x(zathura_document_t* document);
+
+/**
+ * Returns the Y position as value relative to the document height (0=top,
+ * 1=bottom)
+ *
+ * @param document The document
+ * @return Y adjustment
+ */
+double zathura_document_get_position_y(zathura_document_t* document);
+
+/**
+ * Sets the X position as a value relative to the document width (0=left,
+ * 1=right)
+ *
+ * @param document The document
+ * @param position_x the X adjustment
+ */
+void zathura_document_set_position_x(zathura_document_t* document, double position_x);
+
+/**
+ * Sets the Y position as a value relative to the document height (0=top,
+ * 1=bottom)
+ *
+ * @param document The document
+ * @param position_y the Y adjustment
+ */
+void zathura_document_set_position_y(zathura_document_t* document, double position_y);
+
+/**
  * Returns the current scale value of the document
  *
  * @param document The document
@@ -178,9 +214,37 @@ void* zathura_document_get_data(zathura_document_t* document);
 void zathura_document_set_data(zathura_document_t* document, void* data);
 
 /**
- * Return the size of a cell in the document's layout table, assuming that
- * the table is homogeneous (i.e. every cell has the same dimensions). It takes
- * the current scale into account.
+ * Sets the width of the viewport in pixels.
+ *
+ * @param[in] document     The document instance
+ * @param[in] width        The width of the viewport
+ */
+void
+zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width);
+
+/**
+ * Sets the height of the viewport in pixels.
+ *
+ * @param[in] document     The document instance
+ * @param[in] height       The height of the viewport
+ */
+void
+zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
+
+/**
+ * Return the size of the viewport in pixels.
+ *
+ * @param[in]  document     The document instance
+ * @param[out] height,width The width and height of the viewport
+ */
+void
+zathura_document_get_viewport_size(zathura_document_t* document,
+                                   unsigned int *height, unsigned int* width);
+
+/**
+ * Return the size of a cell from the document's layout table in pixels. Assumes
+ * that the table is homogeneous (i.e. every cell has the same dimensions). It
+ * takes the current scale into account.
  *
  * @param[in]  document     The document instance
  * @param[out] height,width The computed height and width of the cell
@@ -189,10 +253,9 @@ void zathura_document_get_cell_size(zathura_document_t* document,
                                     unsigned int* height, unsigned int* width);
 
 /**
- * Compute the size of the entire document to be displayed (in pixels), taking
- * into account the scale, the layout of the pages, and the padding between
- * them. It should be equal to the allocation of zathura->ui.page_widget once
- * it's shown.
+ * Compute the size of the entire document to be displayed in pixels. Takes into
+ * account the scale, the layout of the pages, and the padding between them. It
+ * should be equal to the allocation of zathura->ui.page_widget once it's shown.
  *
  * @param[in]  document               The document
  * @param[out] height,width           The height and width of the document

@@ -52,9 +52,13 @@ struct zathura_document_s {
   int page_offset; /**< Page offset */
   double cell_width; /**< width of a page cell in the document (not ransformed by scale and rotation) */
   double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
+  unsigned int view_width; /**< width of current viewport */
+  unsigned int view_height; /**< height of current viewport */
   unsigned int pages_per_row; /**< number of pages in a row */
   unsigned int first_page_column; /**< column of the first page */
   unsigned int page_padding; /**< padding between pages */
+  double position_x; /**< X adjustment */
+  double position_y; /**< Y adjustment */
 
   /**
    * Document pages
@@ -131,6 +135,10 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   document->adjust_mode = ZATHURA_ADJUST_NONE;
   document->cell_width  = 0.0;
   document->cell_height = 0.0;
+  document->view_height = 0;
+  document->view_width  = 0;
+  document->position_x  = 0.0;
+  document->position_y  = 0.0;
 
   /* open document */
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
@@ -327,6 +335,46 @@ zathura_document_set_current_page_number(zathura_document_t* document, unsigned 
 }
 
 double
+zathura_document_get_position_x(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->position_x;
+}
+
+double
+zathura_document_get_position_y(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->position_y;
+}
+
+void
+zathura_document_set_position_x(zathura_document_t* document, double position_x)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->position_x = position_x;
+}
+
+void
+zathura_document_set_position_y(zathura_document_t* document, double position_y)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->position_y = position_y;
+}
+
+double
 zathura_document_get_scale(zathura_document_t* document)
 {
   if (document == NULL) {
@@ -414,6 +462,33 @@ zathura_document_set_page_offset(zathura_document_t* document, unsigned int page
   }
 
   document->page_offset = page_offset;
+}
+
+void
+zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width)
+{
+  if (document == NULL) {
+    return;
+  }
+  document->view_width = width;
+}
+
+void
+zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height)
+{
+  if (document == NULL) {
+    return;
+  }
+  document->view_height = height;
+}
+
+void
+zathura_document_get_viewport_size(zathura_document_t* document,
+                                   unsigned int *height, unsigned int* width)
+{
+  g_return_if_fail(document != NULL && height != NULL && width != NULL);
+  *height = document->view_height;
+  *width = document->view_width;
 }
 
 void
