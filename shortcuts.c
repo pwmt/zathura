@@ -965,13 +965,12 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
 
     int num_search_results = 0, current = -1;
-    g_object_get(page_widget, "search-current", &current,
-                 "search-length", &num_search_results, NULL);
+    g_object_get(page_widget, "search-current", &current, "search-length", &num_search_results, NULL);
     if (num_search_results == 0 || current == -1) {
       continue;
     }
 
-    if ((first_time_after_abort == true && num_search_results > 0) || ((tmp + num_pages) % num_pages != cur_page)) {
+    if (first_time_after_abort == true || (tmp + num_pages) % num_pages != cur_page) {
       target_page = page;
       target_idx = diff == 1 ? 0 : num_search_results - 1;
       break;
