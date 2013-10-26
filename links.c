@@ -130,6 +130,7 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       if (link->target.destination_type != ZATHURA_LINK_DESTINATION_UNKNOWN) {
         if (link->target.scale != 0 && link_zoom) {
           zathura_document_set_scale(zathura->document, link->target.scale);
+          render_all(zathura);
         }
 
         /* get page */
