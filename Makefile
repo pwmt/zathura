@@ -42,11 +42,15 @@ DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 
 all: options ${PROJECT} po build-manpages
 
-girara-version-check:
-ifneq ($(GIRARA_VERSION_CHECK), 0)
-	$(error "The minimum required version of girara is ${GIRARA_MIN_VERSION}")
-endif
-	$(QUIET)touch girara-version-check
+# pkg-config based version checks
+.version-checks/%:
+	$(QUIET)test $($(*)_VERSION_CHECK) -eq 0 || \
+		pkg-config --atleast-version $($(*)_MIN_VERSION) $($(*)_PKG_CONFIG_NAME) || ( \
+		echo "The minium required version of $(*) is $($(*)_MIN_VERSION)" && \
+		false \
+	)
+	@mkdir -p .version-checks
+	$(QUIET)touch $@
 
 options:
 	@echo ${PROJECT} build options:
@@ -72,8 +76,8 @@ version.h: version.h.in config.mk
 	@mkdir -p .depend
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
-${OBJECTS}:  config.mk version.h girara-version-check
-${DOBJECTS}: config.mk version.h girara-version-check
+${OBJECTS} ${DOBJECTS}: config.mk version.h \
+	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
 
 ${PROJECT}: ${OBJECTS}
 	$(ECHO) CC -o $@
@@ -83,7 +87,7 @@ clean:
 	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
 		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
-		girara-version-check
+		.version-checks
 ifneq "$(wildcard ${RSTTOMAN})" ""
 	$(QUIET)rm -f zathura.1 zathurarc.5
 endif

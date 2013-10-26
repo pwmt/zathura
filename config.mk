@@ -14,10 +14,21 @@ VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_RE
 # note: zathura with GTK+ 3 is broken!
 ZATHURA_GTK_VERSION ?= 2
 
-# minimum required zathura version
-# If you want to disable the check, set GIRARA_VERSION_CHECK to 0.
+# version checks
+# If you want to disable any of the checks, set *_VERSION_CHECK to 0.
+
+# girara
+GIRARA_VERSION_CHECK ?= 1
 GIRARA_MIN_VERSION = 0.1.6
-GIRARA_VERSION_CHECK ?= $(shell pkg-config --atleast-version=$(GIRARA_MIN_VERSION) girara-gtk${ZATHURA_GTK_VERSION}; echo $$?)
+GIRARA_PKG_CONFIG_NAME = girara-gtk$(ZATHURA_GTK_VERSION)
+# glib
+GLIB_VERSION_CHECK ?= 1
+GLIB_MIN_VERSION = 2.28
+GLIB_PKG_CONFIG_NAME = glib-2.0
+# GTK
+GTK_VERSION_CHECK ?= 1
+GTK_MIN_VERSION = 2.18
+GTK_PKG_CONFIG_NAME = gtk+-$(ZATHURA_GTK_VERSION).0
 
 # database
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
