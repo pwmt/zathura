@@ -184,6 +184,7 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 
         /* move to position */
         zathura_jumplist_add(zathura);
+        zathura_document_set_current_page_number(zathura->document, link->target.page_number);
         position_set(zathura, pos_x, pos_y);
         zathura_jumplist_add(zathura);
       }
