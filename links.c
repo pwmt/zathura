@@ -143,16 +143,19 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 
         /* compute the position with the page aligned to the top and left
            of the viewport */
-        double pos_x=0, pos_y=0;
+        double pos_x = 0;
+        double pos_y = 0;
         page_number_to_position(zathura->document, link->target.page_number,
                                 0.0, 0.0, &pos_x, &pos_y);
 
         /* correct to place the target position at the top of the viewport     */
         /* NOTE: link->target is in page units, needs to be scaled and rotated */
-        unsigned int cell_height=0, cell_width=0;
+        unsigned int cell_height = 0;
+        unsigned int cell_width = 0;
         zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
 
-        unsigned int doc_height=0, doc_width=0;
+        unsigned int doc_height = 0;
+        unsigned int doc_width = 0;
         zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
         bool link_hadjust = true;

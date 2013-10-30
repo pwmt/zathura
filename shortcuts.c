@@ -916,16 +916,19 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     girara_setting_get(session, "search-hadjust", &search_hadjust);
 
     /* compute the position of the center of the page */
-    double pos_x=0, pos_y=0;
+    double pos_x = 0;
+    double pos_y = 0;
     page_number_to_position(zathura->document, zathura_page_get_index(target_page),
                             0.5, 0.5, &pos_x, &pos_y);
 
     /* correction to center the current result                          */
     /* NOTE: rectangle is in viewport units, already scaled and rotated */
-    unsigned int cell_height=0, cell_width=0;
+    unsigned int cell_height = 0;
+    unsigned int cell_width = 0;
     zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
 
-    unsigned int doc_height=0, doc_width=0;
+    unsigned int doc_height = 0;
+    unsigned int doc_width = 0;
     zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
     pos_y += (rectangle.y1 - (double)cell_height/2) / (double)doc_height;
