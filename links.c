@@ -140,8 +140,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
           return;
         }
 
-          page_offset_t offset;
-          page_calculate_offset(zathura, page, &offset);
+        page_offset_t offset;
+        page_calculate_offset(zathura, page, &offset);
 
         if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ) {
           if (link->target.left != -1) {
