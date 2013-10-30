@@ -128,21 +128,21 @@ config_load_default(zathura_t* zathura)
   girara_mode_set(gsession, zathura->modes.normal);
 
   /* zathura settings */
-  girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),        NULL, NULL);
+  girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),         NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
+  girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),   cb_page_layout_value_changed, NULL);
+  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),    cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_page_layout_value_changed, NULL);
+  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"),cb_page_layout_value_changed, NULL);
+  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
+  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              NULL, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),             NULL, NULL);
+  girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),   NULL, NULL);
   float_value = 0.0;
-  girara_setting_add(gsession, "scroll-full-overlap",   &float_value, FLOAT,  false, _("Full page scroll overlap"),           NULL, NULL);
+  girara_setting_add(gsession, "scroll-full-overlap",   &float_value, FLOAT,  false, _("Full page scroll overlap"), NULL, NULL);
   int_value = 10;
   girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
@@ -154,13 +154,13 @@ config_load_default(zathura_t* zathura)
 
   girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
   girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
-  girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
-  girara_setting_add(gsession, "render-loading-bg",      NULL, STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),  cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
-  girara_setting_add(gsession, "render-loading-fg",      NULL, STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),  cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
   bool_value = false;
