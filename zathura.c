@@ -726,7 +726,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     g_signal_connect(G_OBJECT(page_widget), "text-selected",
         G_CALLBACK(cb_page_widget_text_selected), zathura);
     g_signal_connect(G_OBJECT(page_widget), "image-selected",
-        G_CALLBACK(cb_page_widget_text_selected), zathura);
+        G_CALLBACK(cb_page_widget_image_selected), zathura);
   }
 
   /* view mode */
