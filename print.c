@@ -120,8 +120,9 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   const gdouble width = gtk_print_context_get_width(context);
   const gdouble height = gtk_print_context_get_height(context);
 
-  const double page_height = zathura_page_get_height(page);
-  const double page_width  = zathura_page_get_width(page);
+  /* Render to a surface that is 5 times larger to workaround quality issues. */
+  const double page_height = zathura_page_get_height(page) * 5;
+  const double page_width  = zathura_page_get_width(page) * 5;
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
   if (surface == NULL) {
     gtk_print_operation_cancel(print_operation);
@@ -143,7 +144,7 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   cairo_restore(temp_cairo);
 
   /* Render the page to the temporary surface */
-  girara_debug("printing page %d ...", page_number);
+  girara_debug("printing page %d (fallback) ...", page_number);
   zathura_renderer_lock(zathura->sync.render_thread);
   err = zathura_page_render(page, temp_cairo, true);
   zathura_renderer_unlock(zathura->sync.render_thread);
