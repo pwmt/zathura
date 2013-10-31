@@ -12,6 +12,7 @@
 #include "document.h"
 #include "utils.h"
 #include "page.h"
+#include "render.h"
 
 struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
