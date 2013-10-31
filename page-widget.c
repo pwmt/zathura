@@ -809,10 +809,6 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   g_return_if_fail(event != NULL);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
-#if GTK_MAJOR_VERSION == 3 // FIXME
-  return;
-#endif
-
   if (priv->images.retrieved == false) {
     priv->images.list      = zathura_page_images_get(priv->page, NULL);
     priv->images.retrieved = true;
@@ -881,7 +877,6 @@ cb_zathura_page_widget_popup_menu(GtkWidget* widget)
 static void
 cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
 {
-#if GTK_MAJOR_VERSION == 2 // FIXME
   g_return_if_fail(item != NULL);
   g_return_if_fail(page != NULL);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(page);
@@ -892,9 +887,10 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
     return;
   }
 
-  int width  = cairo_image_surface_get_width(surface);
-  int height = cairo_image_surface_get_height(surface);
+  const int width  = cairo_image_surface_get_width(surface);
+  const int height = cairo_image_surface_get_height(surface);
 
+#if GTK_MAJOR_VERSION == 2
   GdkPixmap* pixmap = gdk_pixmap_new(gtk_widget_get_window(GTK_WIDGET(item)), width, height, -1);
   cairo_t* cairo    = gdk_cairo_create(pixmap);
 
@@ -904,13 +900,15 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
 
   GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL, 0, 0, 0,
                       0, width, height);
-
+#else
+  GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface(surface, 0, 0, width, height);
+#endif
   g_signal_emit(page, signals[IMAGE_SELECTED], 0, pixbuf);
   g_object_unref(pixbuf);
+  cairo_surface_destroy(surface);
 
   /* reset */
   priv->images.current = NULL;
-#endif
 }
 
 static void
