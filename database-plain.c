@@ -394,14 +394,13 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  char **val_list = NULL;
   gsize num_vals = 0;
 
   for (gsize i = 0; i < num_keys; i++) {
     zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
 
-    bookmark->id   = g_strdup(keys[i]);
-    val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i], &num_vals, NULL);
+    bookmark->id    = g_strdup(keys[i]);
+    char **val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i], &num_vals, NULL);
 
     bookmark->page = atoi(val_list[0]);
 
