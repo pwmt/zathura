@@ -42,16 +42,6 @@ typedef struct zathura_document_info_s {
   int page_number;
 } zathura_document_info_t;
 
-typedef struct page_set_delayed_s {
-  zathura_t* zathura;
-  unsigned int page;
-} page_set_delayed_t;
-
-typedef struct position_set_delayed_s {
-  zathura_t* zathura;
-  double position_x;
-  double position_y;
-} position_set_delayed_t;
 
 static gboolean document_info_open(gpointer data);
 static void zathura_jumplist_reset_current(zathura_t* zathura);
@@ -65,7 +55,6 @@ zathura_create(void)
   zathura_t* zathura = g_malloc0(sizeof(zathura_t));
 
   /* global settings */
-  zathura->global.update_page_number = true;
   zathura->global.search_direction = FORWARD;
 
   /* plugins */
@@ -141,6 +130,21 @@ zathura_init(zathura_t* zathura)
   zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
+  /* zathura signals */
+  zathura->signals.refresh_view = g_signal_new("refresh-view",
+                                               GTK_TYPE_WIDGET,
+                                               G_SIGNAL_RUN_LAST,
+                                               0,
+                                               NULL,
+                                               NULL,
+                                               g_cclosure_marshal_generic,
+                                               G_TYPE_NONE,
+                                               1,
+                                               G_TYPE_POINTER);
+
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
+                   G_CALLBACK(cb_refresh_view), zathura);
+
   /* page view */
 #if (GTK_MAJOR_VERSION == 3)
   zathura->ui.page_widget = gtk_grid_new();
@@ -155,37 +159,23 @@ zathura_init(zathura_t* zathura)
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
-  /* Setup hadjustment tracker */
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(
-      GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  zathura->ui.hadjustment = zathura_adjustment_clone(hadjustment);
-  g_object_ref_sink(zathura->ui.hadjustment);
+                 GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* Connect hadjustment signals */
   g_signal_connect(G_OBJECT(hadjustment), "value-changed",
-      G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
-  g_signal_connect(G_OBJECT(hadjustment), "value-changed",
-      G_CALLBACK(cb_adjustment_track_value), zathura->ui.hadjustment);
+      G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
   g_signal_connect(G_OBJECT(hadjustment), "changed",
       G_CALLBACK(cb_view_hadjustment_changed), zathura);
-  g_signal_connect(G_OBJECT(hadjustment), "changed",
-      G_CALLBACK(cb_adjustment_track_bounds), zathura->ui.hadjustment);
 
-  /* Setup vadjustment tracker */
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
-      GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  zathura->ui.vadjustment = zathura_adjustment_clone(vadjustment);
-  g_object_ref_sink(zathura->ui.vadjustment);
+                 GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* Connect vadjustment signals */
   g_signal_connect(G_OBJECT(vadjustment), "value-changed",
       G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
-  g_signal_connect(G_OBJECT(vadjustment), "value-changed",
-      G_CALLBACK(cb_adjustment_track_value), zathura->ui.vadjustment);
   g_signal_connect(G_OBJECT(vadjustment), "changed",
       G_CALLBACK(cb_view_vadjustment_changed), zathura);
-  g_signal_connect(G_OBJECT(vadjustment), "changed",
-      G_CALLBACK(cb_adjustment_track_bounds), zathura->ui.vadjustment);
 
   /* page view alignment */
   zathura->ui.page_widget_alignment = gtk_alignment_new(0.5, 0.5, 0, 0);
@@ -224,18 +214,6 @@ zathura_init(zathura_t* zathura)
 
   /* signals */
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
-
-  /* set page padding */
-  int page_padding = 1;
-  girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
-
-#if (GTK_MAJOR_VERSION == 3)
-  gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
-  gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
-#else
-  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-#endif
 
   /* database */
   char* database = NULL;
@@ -302,13 +280,6 @@ zathura_free(zathura_t* zathura)
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
-  }
-
-  if (zathura->ui.hadjustment != NULL) {
-    g_object_unref(G_OBJECT(zathura->ui.hadjustment));
-  }
-  if (zathura->ui.vadjustment != NULL) {
-    g_object_unref(G_OBJECT(zathura->ui.vadjustment));
   }
 
   /* stdin support */
@@ -745,7 +716,10 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     /* set widget size */
     unsigned int page_height = 0;
     unsigned int page_width  = 0;
-    page_calc_height_width(page, &page_height, &page_width, true);
+
+    double height = zathura_page_get_height(page);
+    double width = zathura_page_get_width(page);
+    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
 
     gtk_widget_set_size_request(page_widget, page_width, page_height);
 
@@ -756,8 +730,12 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* view mode */
-  int pages_per_row = 1;
-  int first_page_column = 1;
+  unsigned int pages_per_row = 1;
+  unsigned int first_page_column = 1;
+  unsigned int page_padding = 1;
+
+  girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
+
   if (file_info.pages_per_row > 0) {
     pages_per_row = file_info.pages_per_row;
   } else {
@@ -772,7 +750,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
   girara_setting_set(zathura->ui.session, "first-page-column", &first_page_column);
-  page_widget_set_mode(zathura, pages_per_row, first_page_column);
+
+  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
+  zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
 
@@ -799,16 +779,14 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   g_free(file_uri);
 
-  /* adjust window */
-  girara_argument_t argument = { zathura_document_get_adjust_mode(document), NULL };
-  sc_adjust_window(zathura->ui.session, &argument, NULL, 0);
+
+  /* adjust_view and set position*/
+  adjust_view(zathura);
 
   /* set position */
+  page_set(zathura, zathura_document_get_current_page_number(document));
   if (file_info.position_x != 0 || file_info.position_y != 0) {
-    position_set_delayed(zathura, file_info.position_x, file_info.position_y);
-  } else {
-    page_set_delayed(zathura, zathura_document_get_current_page_number(document));
-    cb_view_vadjustment_value_changed(NULL, zathura);
+    position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
   return true;
@@ -936,12 +914,8 @@ document_close(zathura_t* zathura, bool keep_monitor)
   girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column));
 
   /* get position */
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  file_info.position_x = gtk_adjustment_get_value(hadjustment);
-  file_info.position_y = gtk_adjustment_get_value(vadjustment);
+  file_info.position_x = zathura_document_get_position_x(zathura->document);
+  file_info.position_y = zathura_document_get_position_y(zathura->document);
 
   /* save file info */
   zathura_db_set_fileinfo(zathura->database, path, &file_info);
@@ -991,31 +965,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
   return true;
 }
 
-static gboolean
-page_set_delayed_impl(gpointer data)
-{
-  page_set_delayed_t* p = data;
-  page_set(p->zathura, p->page);
-
-  g_free(p);
-  return FALSE;
-}
-
-bool
-page_set_delayed(zathura_t* zathura, unsigned int page_id)
-{
-  if (zathura == NULL || zathura->document == NULL ||
-      (page_id >= zathura_document_get_number_of_pages(zathura->document))) {
-    return false;
-  }
-
-  page_set_delayed_t* p = g_malloc(sizeof(page_set_delayed_t));
-  p->zathura = zathura;
-  p->page = page_id;
-  gdk_threads_add_idle(page_set_delayed_impl, p);
-  return true;
-}
-
 bool
 page_set(zathura_t* zathura, unsigned int page_id)
 {
@@ -1023,33 +972,17 @@ page_set(zathura_t* zathura, unsigned int page_id)
     goto error_out;
   }
 
-  /* render page */
   zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-
   if (page == NULL) {
     goto error_out;
   }
 
   zathura_document_set_current_page_number(zathura->document, page_id);
-  zathura->global.update_page_number = false;
 
-  page_offset_t offset;
-  page_calculate_offset(zathura, page, &offset);
-
-  GtkAdjustment* view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  GtkAdjustment* view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  zathura_adjustment_set_value(view_hadjustment, offset.x);
-  zathura_adjustment_set_value(view_vadjustment, offset.y);
-
-  /* refresh horizontal adjustment, to honor zoom-center */
-  cb_view_hadjustment_changed(view_hadjustment, zathura);
-
-  statusbar_page_number_update(zathura);
-
-  return true;
+  /* negative position means auto */
+  return position_set(zathura, -1, -1);
 
 error_out:
-
   return false;
 }
 
@@ -1089,7 +1022,8 @@ statusbar_page_number_update(zathura_t* zathura)
 }
 
 void
-page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column)
+page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
+                     unsigned int pages_per_row, unsigned int first_page_column)
 {
   /* show at least one page */
   if (pages_per_row == 0) {
@@ -1100,7 +1034,6 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned in
   if (first_page_column < 1) {
     first_page_column = 1;
   }
-
   if (first_page_column > pages_per_row) {
     first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
   }
@@ -1112,9 +1045,18 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned in
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)0);
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
+
 #if (GTK_MAJOR_VERSION == 3)
+  gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
+  gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
+
 #else
-  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), ceil((number_of_pages + first_page_column - 1) / pages_per_row), pages_per_row);
+  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
+  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
+
+  unsigned int ncol = pages_per_row;
+  unsigned int nrow = (number_of_pages + first_page_column - 1 + ncol - 1) / ncol;
+  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), nrow, ncol);
 #endif
 
   for (unsigned int i = 0; i < number_of_pages; i++) {
@@ -1133,94 +1075,126 @@ page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned in
   gtk_widget_show_all(zathura->ui.page_widget);
 }
 
-static gboolean
-position_set_delayed_impl(gpointer data)
-{
-  position_set_delayed_t* p = (position_set_delayed_t*) data;
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(p->zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  /* negative values mean: don't set the position */
-  if (p->position_x >= 0) {
-    zathura_adjustment_set_value(hadjustment, p->position_x);
-  }
-
-  if (p->position_y >= 0) {
-    zathura_adjustment_set_value(vadjustment, p->position_y);
-  }
-
-  g_free(p);
-
-  return FALSE;
-}
-
-void
-position_set_delayed(zathura_t* zathura, double position_x, double position_y)
-{
-  g_return_if_fail(zathura != NULL);
-
-  position_set_delayed_t* p = g_malloc0(sizeof(position_set_delayed_t));
-
-  p->zathura    = zathura;
-  p->position_x = position_x;
-  p->position_y = position_y;
-
-  gdk_threads_add_idle(position_set_delayed_impl, p);
-}
-
-void
+bool
 position_set(zathura_t* zathura, double position_x, double position_y)
 {
-  g_return_if_fail(zathura != NULL);
-
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(window);
-
-  /* negative values mean: don't set the position */
-  if (position_x >= 0) {
-    zathura_adjustment_set_value(hadjustment, position_x);
+  if (zathura == NULL || zathura->document == NULL) {
+    goto error_out;
   }
 
-  if (position_y >= 0) {
-    zathura_adjustment_set_value(vadjustment, position_y);
+  double comppos_x, comppos_y;
+  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+
+  /* xalign = 0.5: center horizontally (with the page, not the document) */
+  /* yalign = 0.0: align page an viewport edges at the top               */
+  page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+
+  /* automatic horizontal adjustment */
+  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+
+  /* negative position_x mean: use the computed value */
+  if (position_x < 0) {
+    position_x = comppos_x;
+    bool zoom_center = false;
+    girara_setting_get(zathura->ui.session, "zoom-center", &zoom_center);
+
+    /* center horizontally */
+    if (adjust_mode == ZATHURA_ADJUST_BESTFIT ||
+      adjust_mode == ZATHURA_ADJUST_WIDTH ||
+      zoom_center) {
+        position_x = 0.5;
+    }
   }
+
+  if (position_y < 0) {
+    position_y = comppos_y;
+  }
+
+  /* set the position */
+  zathura_document_set_position_x(zathura->document, position_x);
+  zathura_document_set_position_y(zathura->document, position_y);
+
+  /* trigger a 'change' event for both adjustments */
+  refresh_view(zathura);
+
+  return true;
+
+error_out:
+  return false;
 }
 
-static void
-zathura_jumplist_hide_inputbar(zathura_t* zathura)
-{
-  g_return_if_fail(zathura != NULL && zathura->ui.session->gtk.inputbar != NULL);
 
-  girara_argument_t arg = { GIRARA_HIDE, NULL };
-  girara_isc_completion(zathura->ui.session, &arg, NULL, 0);
+void
+refresh_view(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
 
-  if (zathura->ui.session->global.autohide_inputbar == true) {
-    /* XXX: This is a workaround for incremental-search. We should revisit this
-     * when we drop GTK+3 support and the inputbar is placed in a GtkOverlay
-     * widget. */
-    char *input = gtk_editable_get_chars(GTK_EDITABLE(zathura->ui.session->gtk.inputbar_entry), 0, -1);
-    bool res = false;
+  /* emit a custom refresh-view signal */
+  g_signal_emit(zathura->ui.session->gtk.view, zathura->signals.refresh_view,
+                0, zathura);
+}
 
-    girara_setting_get(zathura->ui.session, "incremental-search", &res);
 
-    if ((*input == '/' || *input == '?') && res == true) {
-      g_free(input);
+bool
+adjust_view(zathura_t* zathura) {
+    g_return_val_if_fail(zathura != NULL, false);
 
-      return;
-    }
-    /* </workaround> */
-
-    gtk_widget_hide(zathura->ui.session->gtk.inputbar);
+  if (zathura->ui.page_widget == NULL || zathura->document == NULL) {
+    goto error_ret;
   }
 
-  /* we want to do it immediately */
-  /* XXX: ... and we want this to go away */
-  while (gtk_events_pending()) {
-    gtk_main_iteration();
+  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+  if (adjust_mode == ZATHURA_ADJUST_NONE) {
+    /* there is nothing todo */
+    goto error_ret;
   }
+
+  unsigned int cell_height = 0, cell_width = 0;
+  unsigned int document_height = 0, document_width = 0;
+  unsigned int view_height = 0, view_width = 0;
+
+  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+  zathura_document_get_document_size(zathura->document, &document_height, &document_width);
+  zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
+
+  double scale = zathura_document_get_scale(zathura->document);
+
+  if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0) {
+    goto error_ret;
+  }
+
+  double page_ratio   = (double)cell_height / (double)document_width;
+  double view_ratio = (double)view_height / (double)view_width;
+  double newscale = scale;
+
+  if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
+      (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
+    newscale = scale * (double)view_width / (double)document_width;
+
+  } else if (adjust_mode == ZATHURA_ADJUST_BESTFIT) {
+    newscale = scale * (double)view_height / (double)cell_height;
+
+  } else {
+    goto error_ret;
+  }
+
+  /* save new scale and recompute cell size */
+  zathura_document_set_scale(zathura->document, newscale);
+  unsigned int new_cell_height = 0, new_cell_width = 0;
+  zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
+
+  /* if the change in scale changes page cell dimensions by at least one pixel, render */
+  if (abs(new_cell_width - cell_width) > 1 ||
+      abs(new_cell_height - cell_height) > 1) {
+    render_all(zathura);
+    refresh_view(zathura);
+
+ /* otherwise set the old scale and leave */
+  } else {
+    zathura_document_set_scale(zathura->document, scale);
+  }
+
+error_ret:
+  return false;
 }
 
 bool
@@ -1321,12 +1295,11 @@ zathura_jumplist_trim(zathura_t* zathura)
 void
 zathura_jumplist_add(zathura_t* zathura)
 {
-  g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL);
-  zathura_jumplist_hide_inputbar(zathura);
+  g_return_if_fail(zathura != NULL && zathura->document != NULL && zathura->jumplist.list != NULL);
 
   unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
-  double x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
-  double y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+  double x = zathura_document_get_position_x(zathura->document);
+  double y = zathura_document_get_position_y(zathura->document);
 
   if (zathura->jumplist.size != 0) {
     zathura_jumplist_reset_current(zathura);
@@ -1375,7 +1348,7 @@ zathura_jumplist_load(zathura_t* zathura, const char* file)
 static void
 zathura_jumplist_save(zathura_t* zathura)
 {
-  g_return_if_fail(zathura != NULL);
+  g_return_if_fail(zathura != NULL && zathura->document != NULL);
 
   zathura_jump_t* cur = zathura_jumplist_current(zathura);
 
@@ -1383,7 +1356,7 @@ zathura_jumplist_save(zathura_t* zathura)
 
   if (cur) {
     cur->page = pagenum;
-    cur->x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
-    cur->y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+    cur->x = zathura_document_get_position_x(zathura->document);
+    cur->y = zathura_document_get_position_y(zathura->document);
   }
 }

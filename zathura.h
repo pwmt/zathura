@@ -69,9 +69,6 @@ struct zathura_s
     GtkWidget *page_widget_alignment;
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
-
-    GtkAdjustment *hadjustment; /**< Tracking hadjustment */
-    GtkAdjustment *vadjustment; /**< Tracking vadjustment */
   } ui;
 
   struct
@@ -104,7 +101,6 @@ struct zathura_s
 
   struct
   {
-    bool update_page_number; /**< Update current page number */
     int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
@@ -131,6 +127,11 @@ struct zathura_s
     unsigned int size;
     unsigned int max_size;
   } jumplist;
+
+  struct
+  {
+    guint refresh_view;
+  } signals;
 
   struct
   {
@@ -295,40 +296,39 @@ bool document_close(zathura_t* zathura, bool keep_monitor);
 bool page_set(zathura_t* zathura, unsigned int page_id);
 
 /**
- * Opens the page with the given number (delayed)
+ * Moves to the given position
  *
- * @param zathura The zathura session
- * @param page_id The id of the page that should be set
+ * @param zathura Zathura session
+ * @param position_x X coordinate
+ * @param position_y Y coordinate
  * @return If no error occured true, otherwise false, is returned.
  */
-bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
+bool position_set(zathura_t* zathura, double position_x, double position_y);
 
 /**
- * Moves to the given position
+ * Refresh the page view
  *
  * @param zathura Zathura session
- * @param position_x X coordinate
- * @param position_y Y coordinate
  */
-void position_set_delayed(zathura_t* zathura, double position_x, double position_y);
+void refresh_view(zathura_t* zathura);
 
 /**
- * Moves to the given position
+ * Recompute the scale according to settings
  *
  * @param zathura Zathura session
- * @param position_x X coordinate
- * @param position_y Y coordinate
  */
-void position_set(zathura_t* zathura, double position_x, double position_y);
+bool adjust_view(zathura_t* zathura);
 
 /**
  * Builds the box structure to show the rendered pages
  *
  * @param zathura The zathura session
+ * @param page_padding padding in pixels between pages
  * @param pages_per_row Number of shown pages per row
  * @param first_page_column Column on which first page start
  */
-void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column);
+void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
+                          unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

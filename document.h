@@ -98,6 +98,42 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
     int current_page);
 
 /**
+ * Returns the X position, as a value relative to the document width (0=left,
+ * 1=right).
+ *
+ * @param document The document
+ * @return X adjustment
+ */
+double zathura_document_get_position_x(zathura_document_t* document);
+
+/**
+ * Returns the Y position as value relative to the document height (0=top,
+ * 1=bottom)
+ *
+ * @param document The document
+ * @return Y adjustment
+ */
+double zathura_document_get_position_y(zathura_document_t* document);
+
+/**
+ * Sets the X position as a value relative to the document width (0=left,
+ * 1=right)
+ *
+ * @param document The document
+ * @param position_x the X adjustment
+ */
+void zathura_document_set_position_x(zathura_document_t* document, double position_x);
+
+/**
+ * Sets the Y position as a value relative to the document height (0=top,
+ * 1=bottom)
+ *
+ * @param document The document
+ * @param position_y the Y adjustment
+ */
+void zathura_document_set_position_y(zathura_document_t* document, double position_y);
+
+/**
  * Returns the current scale value of the document
  *
  * @param document The document
@@ -178,15 +214,89 @@ void* zathura_document_get_data(zathura_document_t* document);
 void zathura_document_set_data(zathura_document_t* document, void* data);
 
 /**
- * Computes the size of a cell in the document's layout table, assuming that
- * the table is homogeneous (i.e. every cell has the same dimensions). It takes
- * the current scale into account.
+ * Sets the width of the viewport in pixels.
+ *
+ * @param[in] document     The document instance
+ * @param[in] width        The width of the viewport
+ */
+void
+zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width);
+
+/**
+ * Sets the height of the viewport in pixels.
+ *
+ * @param[in] document     The document instance
+ * @param[in] height       The height of the viewport
+ */
+void
+zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
+
+/**
+ * Return the size of the viewport in pixels.
+ *
+ * @param[in]  document     The document instance
+ * @param[out] height,width The width and height of the viewport
+ */
+void
+zathura_document_get_viewport_size(zathura_document_t* document,
+                                   unsigned int *height, unsigned int* width);
+
+/**
+ * Return the size of a cell from the document's layout table in pixels. Assumes
+ * that the table is homogeneous (i.e. every cell has the same dimensions). It
+ * takes the current scale into account.
  *
  * @param[in]  document     The document instance
  * @param[out] height,width The computed height and width of the cell
  */
 void zathura_document_get_cell_size(zathura_document_t* document,
                                     unsigned int* height, unsigned int* width);
+
+/**
+ * Compute the size of the entire document to be displayed in pixels. Takes into
+ * account the scale, the layout of the pages, and the padding between them. It
+ * should be equal to the allocation of zathura->ui.page_widget once it's shown.
+ *
+ * @param[in]  document               The document
+ * @param[out] height,width           The height and width of the document
+ */
+void zathura_document_get_document_size(zathura_document_t* document,
+                                        unsigned int* height, unsigned int* width);
+
+/**
+ * Sets the layout of the pages in the document
+ *
+ * @param[in]  document          The document instance
+ * @param[in]  page_padding      pixels of padding between pages
+ * @param[in]  pages_per_row     number of pages per row
+ * @param[in]  first_page_column column of the first page (first column is 1)
+ */
+void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
+                                      unsigned int pages_per_row, unsigned int first_page_column);
+
+/**
+ * Returns the padding in pixels betwen pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+unsigned int zathura_document_get_page_padding(zathura_document_t* document);
+
+/**
+ * Returns the number of pages per row
+ *
+ * @param document The document
+ * @return The number of pages per row
+ */
+unsigned int zathura_document_get_pages_per_row(zathura_document_t* document);
+
+/**
+ * Returns the column for the first page (first column = 1)
+ *
+ * @param document The document
+ * @return The column for the first page
+ */
+unsigned int zathura_document_get_first_page_column(zathura_document_t* document);
 
 /**
  * Save the document

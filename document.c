@@ -22,6 +22,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 
+#include "adjustment.h"
 #include "document.h"
 #include "utils.h"
 #include "zathura.h"
@@ -50,6 +51,15 @@ struct zathura_document_s {
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
   int page_offset; /**< Page offset */
+  double cell_width; /**< width of a page cell in the document (not ransformed by scale and rotation) */
+  double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
+  unsigned int view_width; /**< width of current viewport */
+  unsigned int view_height; /**< height of current viewport */
+  unsigned int pages_per_row; /**< number of pages in a row */
+  unsigned int first_page_column; /**< column of the first page */
+  unsigned int page_padding; /**< padding between pages */
+  double position_x; /**< X adjustment */
+  double position_y; /**< Y adjustment */
 
   /**
    * Document pages
@@ -124,6 +134,12 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   document->scale       = 1.0;
   document->plugin      = plugin;
   document->adjust_mode = ZATHURA_ADJUST_NONE;
+  document->cell_width  = 0.0;
+  document->cell_height = 0.0;
+  document->view_height = 0;
+  document->view_width  = 0;
+  document->position_x  = 0.0;
+  document->position_y  = 0.0;
 
   /* open document */
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
@@ -155,6 +171,15 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
     }
 
     document->pages[page_id] = page;
+
+    /* cell_width and cell_height is the maximum of all the pages width and height */
+    double width = zathura_page_get_width(page);
+    if (document->cell_width < width)
+      document->cell_width = width;
+
+    double height = zathura_page_get_height(page);
+    if (document->cell_height < height)
+      document->cell_height = height;
   }
 
   return document;
@@ -311,6 +336,46 @@ zathura_document_set_current_page_number(zathura_document_t* document, unsigned 
 }
 
 double
+zathura_document_get_position_x(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->position_x;
+}
+
+double
+zathura_document_get_position_y(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->position_y;
+}
+
+void
+zathura_document_set_position_x(zathura_document_t* document, double position_x)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->position_x = position_x;
+}
+
+void
+zathura_document_set_position_y(zathura_document_t* document, double position_y)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->position_y = position_y;
+}
+
+double
 zathura_document_get_scale(zathura_document_t* document)
 {
   if (document == NULL) {
@@ -401,31 +466,98 @@ zathura_document_set_page_offset(zathura_document_t* document, unsigned int page
 }
 
 void
+zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width)
+{
+  if (document == NULL) {
+    return;
+  }
+  document->view_width = width;
+}
+
+void
+zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height)
+{
+  if (document == NULL) {
+    return;
+  }
+  document->view_height = height;
+}
+
+void
+zathura_document_get_viewport_size(zathura_document_t* document,
+                                   unsigned int *height, unsigned int* width)
+{
+  g_return_if_fail(document != NULL && height != NULL && width != NULL);
+  *height = document->view_height;
+  *width = document->view_width;
+}
+
+void
 zathura_document_get_cell_size(zathura_document_t* document,
                                unsigned int* height, unsigned int* width)
 {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-  unsigned int number_of_pages =
-    zathura_document_get_number_of_pages(document);
-  *width = 0;
-  *height = 0;
+  page_calc_height_width(document, document->cell_height, document->cell_width,
+                         height, width, true);
 
-  /* Get the size of each cell of the table/grid, assuming it is homogeneous
-   * (i.e. each cell has the same dimensions. */
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_document_get_page(document, page_id);
-    if (page == NULL)
-      continue;
+}
 
-    unsigned int page_width = 0, page_height = 0;
-    page_calc_height_width(page, &page_height, &page_width, true);
+void
+zathura_document_get_document_size(zathura_document_t* document,
+                                   unsigned int* height, unsigned int* width)
+{
+  g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-    if (*width < page_width)
-      *width = page_width;
-    if (*height < page_height)
-      *height = page_height;
+
+  unsigned int npag  = zathura_document_get_number_of_pages(document);
+  unsigned int ncol  = zathura_document_get_pages_per_row(document);
+  unsigned int c0    = zathura_document_get_first_page_column(document);
+  unsigned int nrow  = (npag + c0 - 1 + ncol - 1) / ncol;  /* number of rows */
+  unsigned int pad   = zathura_document_get_page_padding(document);
+
+  unsigned int cell_height=0, cell_width=0;
+  zathura_document_get_cell_size(document, &cell_height, &cell_width);
+
+  *width  = ncol * cell_width + (ncol - 1) * pad;
+  *height = nrow * cell_height + (nrow - 1) * pad;
+}
+
+void
+zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
+                                 unsigned int pages_per_row, unsigned int first_page_column)
+{
+  g_return_if_fail(document != NULL);
+  document->page_padding = page_padding;
+  document->pages_per_row = pages_per_row;
+  document->first_page_column = first_page_column;
+}
+
+unsigned int
+zathura_document_get_page_padding(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
   }
+  return document->page_padding;
+}
+
+unsigned int
+zathura_document_get_pages_per_row(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+  return document->pages_per_row;
+}
+
+unsigned int
+zathura_document_get_first_page_column(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+  return document->first_page_column;
 }
 
 zathura_error_t

@@ -23,7 +23,8 @@ struct zathura_mark_s {
   int key; /**> Marks key */
   double position_x; /**> Horizontal adjustment */
   double position_y; /**> Vertical adjustment */
-  float scale; /**> Zoom level */
+  unsigned int page; /**> Page number */
+  double scale; /**> Zoom level */
 };
 
 bool
@@ -196,21 +197,16 @@ mark_add(zathura_t* zathura, int key)
     return;
   }
 
-  GtkScrolledWindow *window = GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view);
-  GtkAdjustment* v_adjustment = gtk_scrolled_window_get_vadjustment(window);
-  GtkAdjustment* h_adjustment = gtk_scrolled_window_get_hadjustment(window);
+  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  double position_x    = zathura_document_get_position_x(zathura->document);
+  double position_y    = zathura_document_get_position_y(zathura->document);
 
-  if (v_adjustment == NULL || h_adjustment == NULL) {
-    return;
-  }
-
-  double position_x = gtk_adjustment_get_value(h_adjustment);
-  double position_y = gtk_adjustment_get_value(v_adjustment);
-  float scale       = zathura_document_get_scale(zathura->document);
+  double scale      = zathura_document_get_scale(zathura->document);
 
   /* search for existing mark */
   GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
   if (mark->key == key) {
+    mark->page       = page_id;
     mark->position_x = position_x;
     mark->position_y = position_y;
     mark->scale      = scale;
@@ -222,6 +218,7 @@ mark_add(zathura_t* zathura, int key)
   zathura_mark_t* mark = g_malloc0(sizeof(zathura_mark_t));
 
   mark->key        = key;
+  mark->page       = page_id;
   mark->position_x = position_x;
   mark->position_y = position_y;
   mark->scale      = scale;
@@ -243,12 +240,10 @@ mark_evaluate(zathura_t* zathura, int key)
     render_all(zathura);
 
     zathura_jumplist_add(zathura);
+    page_set(zathura, mark->page);
     position_set(zathura, mark->position_x, mark->position_y);
     zathura_jumplist_add(zathura);
 
-    cb_view_vadjustment_value_changed(NULL, zathura);
-
-    zathura->global.update_page_number = true;
     return;
   }
   GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);
