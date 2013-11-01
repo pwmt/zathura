@@ -159,14 +159,14 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   };
 
   struct meta_field meta_fields[] = {
-    { "Title",            ZATHURA_DOCUMENT_INFORMATION_TITLE },
-    { "Author",           ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
-    { "Subject",          ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
-    { "Keywords",         ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
-    { "Creator",          ZATHURA_DOCUMENT_INFORMATION_CREATOR },
-    { "Producer",         ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
-    { "Creation date",    ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
-    { "Modiciation date", ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
+    { "Title",             ZATHURA_DOCUMENT_INFORMATION_TITLE },
+    { "Author",            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
+    { "Subject",           ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
+    { "Keywords",          ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { "Creator",           ZATHURA_DOCUMENT_INFORMATION_CREATOR },
+    { "Producer",          ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
+    { "Creation date",     ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
+    { "Modification date", ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
   };
 
   girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
