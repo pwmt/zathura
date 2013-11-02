@@ -158,15 +158,15 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     zathura_document_information_type_t field;
   };
 
-  struct meta_field meta_fields[] = {
-    { "Title",            ZATHURA_DOCUMENT_INFORMATION_TITLE },
-    { "Author",           ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
-    { "Subject",          ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
-    { "Keywords",         ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
-    { "Creator",          ZATHURA_DOCUMENT_INFORMATION_CREATOR },
-    { "Producer",         ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
-    { "Creation date",    ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
-    { "Modiciation date", ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
+  const struct meta_field meta_fields[] = {
+    { _("Title"),             ZATHURA_DOCUMENT_INFORMATION_TITLE },
+    { _("Author"),            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
+    { _("Subject"),           ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
+    { _("Keywords"),          ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { _("Creator"),           ZATHURA_DOCUMENT_INFORMATION_CREATOR },
+    { _("Producer"),          ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
+    { _("Creation date"),     ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
+    { _("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
   };
 
   girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
