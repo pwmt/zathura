@@ -5,7 +5,7 @@ girara user interface library and several document libraries.
 
 Requirements
 ------------
-gtk2 (>= 2.18)
+gtk2 (>= 2.18) or gtk3
 glib (>= 2.28)
 girara
 sqlite3 (optional, >= 3.5.9)
