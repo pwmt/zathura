@@ -11,7 +11,6 @@ ZATHURA_ABI_VERSION = 2
 VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_REV}
 
 # the GTK+ version to use
-# note: zathura with GTK+ 3 is broken!
 ZATHURA_GTK_VERSION ?= 2
 
 # version checks
