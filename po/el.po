@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-01 14:05+0100\n"
-"PO-Revision-Date: 2013-08-15 00:34+0200\n"
+"PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/zathura/language/"
 "el/)\n"
@@ -336,9 +336,8 @@ msgid "Use basename of the file in the window title"
 msgstr "Χρήση του ονόματος του αρχείο στο τίτλο του παραθύρου"
 
 #: ../config.c:204
-#, fuzzy
 msgid "Display the page number in the window title"
-msgstr "Χρήση του ονόματος του αρχείο στο τίτλο του παραθύρου"
+msgstr ""
 
 #: ../config.c:206
 msgid "Use basename of the file in the statusbar"

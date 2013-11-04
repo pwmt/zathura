@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-01 14:05+0100\n"
-"PO-Revision-Date: 2013-11-01 14:11+0100\n"
+"PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/zathura/language/"
 "de/)\n"
@@ -214,7 +214,7 @@ msgstr "Horizontale Schrittgröße beim Scrollen"
 
 #: ../config.c:145
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Überlappung beim Scrollen von ganzen Seiten"
 
 #: ../config.c:147
 msgid "Zoom minimum"
@@ -226,11 +226,11 @@ msgstr "Maximale Vergrößerungsstufe"
 
 #: ../config.c:151
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Maximale Seitenzahl im Zwischenspeicher"
 
 #: ../config.c:153
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Anzahl der Liste zu behaltenden Positionen"
 
 #: ../config.c:155
 msgid "Recoloring (dark color)"
@@ -272,7 +272,7 @@ msgstr "Scroll-Umbruch"
 
 #: ../config.c:173
 msgid "Page aware scrolling"
-msgstr ""
+msgstr "Seiten beim Scrollen beachten"
 
 #: ../config.c:175
 msgid "Advance number of pages per row"
@@ -284,7 +284,7 @@ msgstr "Horizontal zentrierter Zoom"
 
 #: ../config.c:179
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Linkziel links ausrichten"
 
 #: ../config.c:181
 msgid "Let zoom be changed when following links"
@@ -324,7 +324,7 @@ msgstr "Hebe Suchergebnisse hervor"
 
 #: ../config.c:198
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Aktiviere inkrementelle Suche"
 
 #: ../config.c:200
 msgid "Clear search results on abort"
@@ -471,7 +471,7 @@ msgstr "Dokument Passwort"
 
 #: ../main.c:64
 msgid "Page number to go to"
-msgstr "Seitenzahl zu der gewechselt werden soll"
+msgstr "Zur Seitenzahl springen"
 
 #: ../main.c:65
 msgid "Log level (debug, info, warning, error)"

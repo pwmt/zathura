@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-01 14:05+0100\n"
-"PO-Revision-Date: 2013-08-15 00:35+0200\n"
+"PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "zathura/language/pt_BR/)\n"
@@ -336,7 +336,7 @@ msgstr "Usar nome do arquivo na barra de titulo"
 
 #: ../config.c:204
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Exibir o número da página no título da janela."
 
 #: ../config.c:206
 msgid "Use basename of the file in the statusbar"
@@ -507,7 +507,7 @@ msgstr "[Sem nome]"
 
 #: ../zathura.c:535
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Formato de arquivo não suportado. Por favor, instale o plugin necessário."
 
 #: ../zathura.c:545
 msgid "Document does not contain any pages"

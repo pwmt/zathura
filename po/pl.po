@@ -2,13 +2,14 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
-# p  <poczciwiec@gmail.com>, 2012.
+# Łukasz Hryniuk <lukequaint@gmail.com>, 2013
+# p <poczciwiec@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-01 14:05+0100\n"
-"PO-Revision-Date: 2013-08-15 00:35+0200\n"
+"PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: p <poczciwiec@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.net/projects/p/zathura/language/"
 "pl/)\n"
@@ -372,7 +373,7 @@ msgstr "Wyświetl informacje o pliku"
 
 #: ../config.c:374
 msgid "Execute a command"
-msgstr ""
+msgstr "Wykonaj polecenie"
 
 #: ../config.c:375
 msgid "Show help"

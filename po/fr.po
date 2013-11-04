@@ -2,16 +2,16 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
-# Dorian  <munto@free.fr>, 2012.
-# Quentin Stiévenart <quentin.stievenart@gmail.com>, 2012.
-# Stéphane Aulery <lkppo@free.fr>, 2012.
-# Benoît Knecht <benoit.knecht@gmail.com>, 2012.
+# bknecht <benoit.knecht@gmail.com>, 2012
+# Dorian <munto@free.fr>, 2012
+# Quentin Stiévenart <quentin.stievenart@gmail.com>, 2012
+# Stéphane Aulery <lkppo@free.fr>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-01 14:05+0100\n"
-"PO-Revision-Date: 2013-08-15 00:34+0200\n"
+"PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: Benoît Knecht <benoit.knecht@fsfe.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
 "fr/)\n"
@@ -338,9 +338,8 @@ msgid "Use basename of the file in the window title"
 msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
 
 #: ../config.c:204
-#, fuzzy
 msgid "Display the page number in the window title"
-msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
+msgstr ""
 
 #: ../config.c:206
 msgid "Use basename of the file in the statusbar"
@@ -516,9 +515,3 @@ msgstr ""
 #: ../zathura.c:545
 msgid "Document does not contain any pages"
 msgstr "Ce document ne contient aucune page"
-
-#~ msgid "Life time (in seconds) of a hidden page"
-#~ msgstr "Durée de vie (en secondes) d'une page cachée"
-
-#~ msgid "Amount of seconds between each cache purge"
-#~ msgstr "Délai en secondes entre chaque purge du cache"

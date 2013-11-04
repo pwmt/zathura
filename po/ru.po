@@ -2,13 +2,15 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
-# Mikhail Krutov <>, 2012.
+# AlexanderR <alexander.r@gmx.com>, 2013
+# Alissa <Chertik89@gmail.com>, 2013
+# Mikhail Krutov <>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-01 14:05+0100\n"
-"PO-Revision-Date: 2013-08-15 00:35+0200\n"
+"PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
 "ru/)\n"
@@ -149,22 +151,22 @@ msgstr "Файл %s сохранён в %s"
 #: ../commands.c:489
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr ""
+msgstr "Файл '%s' сохранён в '%s'"
 
 #: ../commands.c:491
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr ""
+msgstr "Не могу сохранить приложенный файл %s в %s"
 
 #: ../commands.c:498
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Неизвестный файл %s."
 
 #: ../commands.c:502
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Неизвестное вложение %s."
 
 #: ../commands.c:553
 msgid "Argument must be a number."
@@ -173,16 +175,16 @@ msgstr "Аргумент должен быть числом"
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "Страница %d"
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr ""
+msgstr "Прикепленные файлы"
 
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr ""
+msgstr "Изображения"
 
 #. zathura settings
 #: ../config.c:131
@@ -211,7 +213,7 @@ msgstr "Шаг прокрутки"
 
 #: ../config.c:143
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Шаг горизонтальной прокрутки"
 
 #: ../config.c:145
 msgid "Full page scroll overlap"
@@ -231,7 +233,7 @@ msgstr ""
 
 #: ../config.c:153
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Длина истории переходов"
 
 #: ../config.c:155
 msgid "Recoloring (dark color)"
@@ -251,11 +253,11 @@ msgstr "Цвет для подсветки (активной)"
 
 #: ../config.c:161
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "Цвет фона загрузочной заставки"
 
 #: ../config.c:163
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "Цвет загрузочной заставки"
 
 #: ../config.c:167
 msgid "Recolor pages"
@@ -291,7 +293,7 @@ msgstr ""
 
 #: ../config.c:183
 msgid "Center result horizontally"
-msgstr ""
+msgstr "Центрировать результат по горизонтали"
 
 #: ../config.c:185
 msgid "Transparency for highlighting"
@@ -319,27 +321,27 @@ msgstr "Всегда открывать на первой странице"
 
 #: ../config.c:196
 msgid "Highlight search results"
-msgstr ""
+msgstr "Подсветить результаты поиска"
 
 #: ../config.c:198
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Инкрементальный поиск"
 
 #: ../config.c:200
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Сбросить результаты при отмене поиска"
 
 #: ../config.c:202
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Использовать базовое имя файла в заголовке"
 
 #: ../config.c:204
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Отображать номер страницы в заголовке"
 
 #: ../config.c:206
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Использовать базовое имя файла в строке состояния"
 
 #: ../config.c:208 ../main.c:67
 msgid "Enable synctex support"
@@ -372,7 +374,7 @@ msgstr "Показать информацию о файле"
 
 #: ../config.c:374
 msgid "Execute a command"
-msgstr ""
+msgstr "Выполнить команду"
 
 #: ../config.c:375
 msgid "Show help"
@@ -416,15 +418,15 @@ msgstr "Удалить указанные пометки"
 
 #: ../config.c:385
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "Не подсвечивать результаты текущего поиска"
 
 #: ../config.c:386
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Подсветить результаты текущего поиска"
 
 #: ../config.c:387
 msgid "Show version information"
-msgstr ""
+msgstr "Показать информацию о версии файла"
 
 #: ../links.c:199 ../links.c:278
 msgid "Failed to run xdg-open."
@@ -433,12 +435,12 @@ msgstr "Не удалось запустить xdg-open"
 #: ../links.c:217
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Ссылка: страница %d"
 
 #: ../links.c:224
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Ссылка: %s"
 
 #: ../links.c:228
 msgid "Link: Invalid"
@@ -466,11 +468,11 @@ msgstr "Уйти в бэкграунд"
 
 #: ../main.c:63
 msgid "Document password"
-msgstr ""
+msgstr "Пароль документа"
 
 #: ../main.c:64
 msgid "Page number to go to"
-msgstr ""
+msgstr "Перейти к странице номер"
 
 #: ../main.c:65
 msgid "Log level (debug, info, warning, error)"
@@ -486,7 +488,7 @@ msgstr ""
 
 #: ../page-widget.c:526
 msgid "Loading..."
-msgstr ""
+msgstr "Загрузка..."
 
 #: ../page-widget.c:845
 msgid "Copy image"
@@ -494,7 +496,7 @@ msgstr "Скопировать изображение"
 
 #: ../page-widget.c:846
 msgid "Save image as"
-msgstr ""
+msgstr "Созранить как"
 
 #: ../shortcuts.c:1076
 msgid "This document does not contain any index"
@@ -506,8 +508,8 @@ msgstr "[No name]"
 
 #: ../zathura.c:535
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Тип файла не поддерживается. Установите соответствующий плагин."
 
 #: ../zathura.c:545
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Документ не содержит ни одной страницы"
