@@ -15,7 +15,7 @@
  * @param path Path to the document
  * @param password Password of the document or NULL
  * @param error Optional error parameter
- * @return The document object
+ * @return The document object and NULL if an error occurs
  */
 zathura_document_t* zathura_document_open(zathura_plugin_manager_t*
     plugin_manager, const char* path, const char* password, zathura_error_t*
