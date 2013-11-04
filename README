@@ -37,8 +37,13 @@ To build and install zathura:
 
   make install
 
-Uninstall:
-----------
+Uninstall
+---------
 To delete zathura from your system, just type:
 
   make uninstall
+
+Bugs
+----
+Please report bugs at http://bugs.pwmt.org or contact us on our mailing list at
+zathura@lists.pwmt.org.
