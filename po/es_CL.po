@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-11-01 14:05+0100\n"
+"POT-Creation-Date: 2013-11-04 19:57+0100\n"
 "PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: watsh1ken <wat.sh1ken@gmail.com>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.net/projects/p/zathura/"
@@ -502,6 +502,10 @@ msgstr "Este document no contiene índice"
 #: ../zathura.c:213 ../zathura.c:959
 msgid "[No name]"
 msgstr "[Sin nombre]"
+
+#: ../zathura.c:486
+msgid "Could not read file from stdin and write it to a temporary file."
+msgstr ""
 
 #: ../zathura.c:535
 msgid "Unsupported file type. Please install the necessary plugin."

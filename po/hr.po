@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-11-01 14:05+0100\n"
+"POT-Creation-Date: 2013-11-04 19:57+0100\n"
 "PO-Revision-Date: 2013-11-01 13:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/zathura/"
@@ -501,6 +501,10 @@ msgstr ""
 
 #: ../zathura.c:213 ../zathura.c:959
 msgid "[No name]"
+msgstr ""
+
+#: ../zathura.c:486
+msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
 #: ../zathura.c:535
