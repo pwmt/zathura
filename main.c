@@ -111,7 +111,7 @@ main(int argc, char* argv[])
   zathura_set_argv(zathura, argv);
 
   /* Init zathura */
-  if(zathura_init(zathura) == false) {
+  if (zathura_init(zathura) == false) {
     girara_error("Could not initialize zathura.");
     zathura_free(zathura);
     return -1;

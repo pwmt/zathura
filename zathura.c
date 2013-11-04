@@ -483,7 +483,7 @@ document_info_open(gpointer data)
       file = prepare_document_open_from_stdin(document_info->zathura);
       if (file == NULL) {
         girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
-                      "Could not read file from stdin and write it to a temporary file.");
+                      _("Could not read file from stdin and write it to a temporary file."));
       } else {
         document_info->zathura->stdin_support.file = g_strdup(file);
       }
