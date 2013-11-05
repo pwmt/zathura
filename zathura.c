@@ -694,6 +694,17 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
   zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, recolor);
 
+  /* get view port size */
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(
+                 GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
+                 GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+
+  const unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
+  zathura_document_set_viewport_width(zathura->document, view_width);
+  const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(hadjustment));
+  zathura_document_set_viewport_height(zathura->document, view_height);
+
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
   if (zathura->pages == NULL) {
@@ -712,16 +723,6 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     }
 
     zathura->pages[page_id] = page_widget;
-
-    /* set widget size */
-    unsigned int page_height = 0;
-    unsigned int page_width  = 0;
-
-    double height = zathura_page_get_height(page);
-    double width = zathura_page_get_width(page);
-    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
-
-    gtk_widget_set_size_request(page_widget, page_width, page_height);
 
     g_signal_connect(G_OBJECT(page_widget), "text-selected",
         G_CALLBACK(cb_page_widget_text_selected), zathura);
@@ -756,9 +757,6 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
 
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    gtk_widget_realize(zathura->pages[page_id]);
-  }
 
   /* bookmarks */
   zathura_bookmarks_load(zathura, file_path);
@@ -779,9 +777,25 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   g_free(file_uri);
 
-
-  /* adjust_view and set position*/
+  /* adjust_view */
   adjust_view(zathura);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    /* set widget size */
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    unsigned int page_height = 0;
+    unsigned int page_width  = 0;
+
+    /* adjust_view calls render_all in some cases and render_all calls
+     * gtk_widget_set_size_request. To be sure that it's really called, do it
+     * here once again. */
+    double height = zathura_page_get_height(page);
+    double width = zathura_page_get_width(page);
+    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
+    gtk_widget_set_size_request(zathura->pages[page_id], page_width, page_height);
+
+    /* show widget */
+    gtk_widget_show(zathura->pages[page_id]);
+  }
 
   /* set position */
   page_set(zathura, zathura_document_get_current_page_number(document));
@@ -1156,14 +1170,13 @@ adjust_view(zathura_t* zathura) {
   zathura_document_get_document_size(zathura->document, &document_height, &document_width);
   zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
 
-  double scale = zathura_document_get_scale(zathura->document);
-
   if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0) {
     goto error_ret;
   }
 
-  double page_ratio   = (double)cell_height / (double)document_width;
+  double page_ratio = (double)cell_height / (double)document_width;
   double view_ratio = (double)view_height / (double)view_width;
+  double scale = zathura_document_get_scale(zathura->document);
   double newscale = scale;
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
