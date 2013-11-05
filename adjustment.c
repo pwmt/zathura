@@ -11,20 +11,18 @@ page_calc_height_width(zathura_document_t* document, double height, double width
 {
   g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
 
-  double scale  = zathura_document_get_scale(document);
-  double real_scale;
-
+  double scale = zathura_document_get_scale(document);
   if (rotate && zathura_document_get_rotation(document) % 180) {
     *page_width  = round(height * scale);
     *page_height = round(width  * scale);
-    real_scale = MAX(*page_width / height, *page_height / width);
+    scale = MAX(*page_width / height, *page_height / width);
   } else {
     *page_width  = round(width  * scale);
     *page_height = round(height * scale);
-    real_scale = MAX(*page_width / width, *page_height / height);
+    scale = MAX(*page_width / width, *page_height / height);
   }
 
-  return real_scale;
+  return scale;
 }
 
 void
