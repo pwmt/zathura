@@ -700,9 +700,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
                  GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
-  const unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
+  const unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(hadjustment));
   zathura_document_set_viewport_width(zathura->document, view_width);
-  const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(hadjustment));
+  const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
 
   /* create blank pages */
