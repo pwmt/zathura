@@ -604,8 +604,8 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   unsigned int page_height = 0;
 
   zathura_document_t* document = zathura_page_get_document(page);
-  double height = zathura_page_get_height(page);
-  double width = zathura_page_get_width(page);
+  const double height = zathura_page_get_height(page);
+  const double width = zathura_page_get_width(page);
 
   const double real_scale = page_calc_height_width(document, height, width,
                                                    &page_height, &page_width, false);
@@ -635,16 +635,14 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   }
 
   zathura_renderer_lock(renderer);
-  if (zathura_page_render(page, cairo, false) != ZATHURA_ERROR_OK) {
-    zathura_renderer_unlock(renderer);
-    cairo_destroy(cairo);
-    cairo_surface_destroy(surface);
-    return false;
-  }
-
+  const int err = zathura_page_render(page, cairo, false);
   zathura_renderer_unlock(renderer);
   cairo_restore(cairo);
   cairo_destroy(cairo);
+  if (err != ZATHURA_ERROR_OK) {
+    cairo_surface_destroy(surface);
+    return false;
+  }
 
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close == true || request_priv->aborted == true) {
@@ -659,12 +657,9 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   }
 
   emit_completed_signal_t* ecs = g_malloc(sizeof(ecs));
-  ecs->renderer = renderer;
-  ecs->request = request;
-  ecs->surface = surface;
-  g_object_ref(renderer);
-  g_object_ref(request);
-  cairo_surface_reference(surface);
+  ecs->renderer = g_object_ref(renderer);
+  ecs->request = g_object_ref(request);
+  ecs->surface = cairo_surface_reference(surface);
 
   /* emit signal from the main context, i.e. the main thread */
   g_main_context_invoke(NULL, emit_completed_signal, ecs);
@@ -708,7 +703,7 @@ render_all(zathura_t* zathura)
   }
 
   /* unmark all pages */
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document,
         page_id);
