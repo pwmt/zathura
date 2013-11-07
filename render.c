@@ -66,8 +66,8 @@ typedef struct private_s {
 typedef struct request_private_s {
   ZathuraRenderer* renderer;
   zathura_page_t* page;
-  bool requested;
-  bool aborted;
+  volatile bool requested;
+  volatile bool aborted;
   gint64 last_view_time;
 } request_private_t;
 
