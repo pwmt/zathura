@@ -663,7 +663,7 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
     recolor(priv, page_width, page_height, surface);
   }
 
-  emit_completed_signal_t* ecs = g_malloc(sizeof(ecs));
+  emit_completed_signal_t* ecs = g_malloc(sizeof(emit_completed_signal_t));
   ecs->renderer = g_object_ref(renderer);
   ecs->request = g_object_ref(request);
   ecs->surface = cairo_surface_reference(surface);
@@ -715,8 +715,8 @@ render_all(zathura_t* zathura)
     zathura_page_t* page = zathura_document_get_page(zathura->document,
         page_id);
     unsigned int page_height = 0, page_width = 0;
-    double height = zathura_page_get_height(page);
-    double width = zathura_page_get_width(page);
+    const double height = zathura_page_get_height(page);
+    const double width = zathura_page_get_width(page);
     page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
 
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
