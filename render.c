@@ -66,9 +66,9 @@ typedef struct private_s {
 typedef struct request_private_s {
   ZathuraRenderer* renderer;
   zathura_page_t* page;
-  volatile bool requested;
-  volatile bool aborted;
   gint64 last_view_time;
+  girara_list_t* active_jobs;
+  mutex jobs_mutex;
 } request_private_t;
 
 #define GET_PRIVATE(obj) \
@@ -76,6 +76,12 @@ typedef struct request_private_s {
 #define REQUEST_GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE((obj), ZATHURA_TYPE_RENDER_REQUEST, \
                                request_private_t))
+
+/* job descritption for render thread */
+typedef struct render_job_s {
+  ZathuraRenderRequest* request;
+  volatile bool aborted;
+} render_job_t;
 
 /* init, new and free for ZathuraRenderer */
 
@@ -247,8 +253,8 @@ zathura_render_request_new(ZathuraRenderer* renderer, zathura_page_t* page)
   /* we want to make sure that renderer lives long enough */
   priv->renderer = g_object_ref(renderer);
   priv->page = page;
-  priv->aborted = false;
-  priv->requested = false;
+  priv->active_jobs = girara_list_new();
+  mutex_init(&priv->jobs_mutex);
 
   /* register the request with the renderer */
   renderer_register_request(renderer, request);
@@ -268,6 +274,11 @@ render_request_finalize(GObject* object)
     /* release our private reference to the renderer */
     g_object_unref(priv->renderer);
   }
+  if (girara_list_size(priv->active_jobs) != 0) {
+    girara_error("This should not happen!");
+  }
+  girara_list_free(priv->active_jobs);
+  mutex_free(&priv->jobs_mutex);
 }
 
 /* renderer methods */
@@ -396,14 +407,30 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
 
   request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
-  if (request_priv->requested == false) {
-    request_priv->requested = true;
-    request_priv->aborted = false;
+  mutex_lock(&request_priv->jobs_mutex);
+
+  bool unfinished_jobs = false;
+  /* check if there are any active jobs left */
+  GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
+    if (job->aborted != false) {
+      unfinished_jobs = true;
+    }
+  GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
+
+  /* only add a new job if there are no active ones left */
+  if (unfinished_jobs == false) {
     request_priv->last_view_time = last_view_time;
 
+    render_job_t* job = g_malloc0(sizeof(render_job_t));
+    job->request = g_object_ref(request);
+    job->aborted = false;
+    girara_list_append(request_priv->active_jobs, job);
+
     private_t* priv = GET_PRIVATE(request_priv->renderer);
-    g_thread_pool_push(priv->pool, request, NULL);
+    g_thread_pool_push(priv->pool, job, NULL);
   }
+
+  mutex_unlock(&request_priv->jobs_mutex);
 }
 
 void
@@ -412,9 +439,11 @@ zathura_render_request_abort(ZathuraRenderRequest* request)
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
 
   request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
-  if (request_priv->requested == true) {
-    request_priv->aborted = true;
-  }
+  mutex_lock(&request_priv->jobs_mutex);
+  GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
+    job->aborted = true;
+  GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
+  mutex_unlock(&request_priv->jobs_mutex);
 }
 
 void
@@ -428,10 +457,22 @@ zathura_render_request_update_view_time(ZathuraRenderRequest* request)
 
 /* render job */
 
+static void
+remove_job_and_free(render_job_t* job)
+{
+  request_private_t* request_priv = REQUEST_GET_PRIVATE(job->request);
+
+  mutex_lock(&request_priv->jobs_mutex);
+  girara_list_remove(request_priv->active_jobs, job);
+  mutex_unlock(&request_priv->jobs_mutex);
+
+  g_object_unref(job->request);
+  g_free(job);
+}
+
 typedef struct emit_completed_signal_s
 {
-  ZathuraRenderer* renderer;
-  ZathuraRenderRequest* request;
+  render_job_t* job;
   cairo_surface_t* surface;
 } emit_completed_signal_t;
 
@@ -439,25 +480,24 @@ static gboolean
 emit_completed_signal(void* data)
 {
   emit_completed_signal_t* ecs = data;
-  private_t* priv = GET_PRIVATE(ecs->renderer);
-  request_private_t* request_priv = REQUEST_GET_PRIVATE(ecs->request);
+  render_job_t* job = ecs->job;
+  request_private_t* request_priv = REQUEST_GET_PRIVATE(job->request);
+  private_t* priv = GET_PRIVATE(request_priv->renderer);
 
-  if (priv->about_to_close == false && request_priv->aborted == false) {
+  if (priv->about_to_close == false && job->aborted == false) {
     /* emit the signal */
     girara_debug("Emitting signal for page %d",
         zathura_page_get_index(request_priv->page) + 1);
-    g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
+    g_signal_emit(job->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
   } else {
     girara_debug("Rendering of page %d aborted",
         zathura_page_get_index(request_priv->page) + 1);
   }
   /* mark the request as done */
-  request_priv->requested = false;
+  remove_job_and_free(job);
 
   /* clean up the data */
   cairo_surface_destroy(ecs->surface);
-  g_object_unref(ecs->renderer);
-  g_object_unref(ecs->request);
   g_free(ecs);
 
   return FALSE;
@@ -598,7 +638,7 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
 }
 
 static bool
-render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
+render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 {
   private_t* priv = GET_PRIVATE(renderer);
   request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
@@ -650,10 +690,10 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   }
 
   /* before recoloring, check if we've been aborted */
-  if (priv->about_to_close == true || request_priv->aborted == true) {
+  if (priv->about_to_close == true || job->aborted == true) {
     girara_debug("Rendering of page %d aborted",
         zathura_page_get_index(request_priv->page) + 1);
-    request_priv->requested = false;
+    remove_job_and_free(job);
     cairo_surface_destroy(surface);
     return true;
   }
@@ -664,8 +704,7 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
   }
 
   emit_completed_signal_t* ecs = g_malloc(sizeof(emit_completed_signal_t));
-  ecs->renderer = g_object_ref(renderer);
-  ecs->request = g_object_ref(request);
+  ecs->job = job;
   ecs->surface = cairo_surface_reference(surface);
 
   /* emit signal from the main context, i.e. the main thread */
@@ -679,25 +718,26 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 static void
 render_job(void* data, void* user_data)
 {
-  ZathuraRenderRequest* request = data;
+  render_job_t* job = data;
+  ZathuraRenderRequest* request = job->request;
   ZathuraRenderer* renderer = user_data;
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   private_t* priv = GET_PRIVATE(renderer);
-  request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
-  if (priv->about_to_close == true || request_priv->aborted == true) {
+  if (priv->about_to_close == true || job->aborted == true) {
     /* back out early */
-    request_priv->requested = false;
+    remove_job_and_free(job);
     return;
   }
 
+  request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
   girara_debug("Rendering page %d ...",
       zathura_page_get_index(request_priv->page) + 1);
-  if (render(request, renderer) != true) {
+  if (render(job, request, renderer) != true) {
     girara_error("Rendering failed (page %d)\n",
         zathura_page_get_index(request_priv->page) + 1);
-    request_priv->requested = false;
+    remove_job_and_free(job);
   }
 }
 
@@ -732,19 +772,19 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer UNUSED(data))
     return 0;
   }
 
-  ZathuraRenderRequest* request_a = (ZathuraRenderRequest*) a;
-  ZathuraRenderRequest* request_b = (ZathuraRenderRequest*) b;
-  request_private_t* priv_a = REQUEST_GET_PRIVATE(request_a);
-  request_private_t* priv_b = REQUEST_GET_PRIVATE(request_b);
-  if (priv_a->aborted == priv_b->aborted) {
+  const render_job_t* job_a = a;
+  const render_job_t* job_b = b;
+  if (job_a->aborted == job_b->aborted) {
+    request_private_t* priv_a = REQUEST_GET_PRIVATE(job_a->request);
+    request_private_t* priv_b = REQUEST_GET_PRIVATE(job_b->request);
+
     return priv_a->last_view_time < priv_b->last_view_time ? -1 :
         (priv_a->last_view_time > priv_b->last_view_time ? 1 : 0);
   }
 
   /* sort aborted entries earlier so that the are thrown out of the queue */
-  return priv_a->aborted ? 1 : -1;
+  return job_a->aborted ? 1 : -1;
 }
-
 
 /* cache functions */
 
