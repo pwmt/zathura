@@ -444,7 +444,12 @@ emit_completed_signal(void* data)
 
   if (priv->about_to_close == false && request_priv->aborted == false) {
     /* emit the signal */
+    girara_debug("Emitting signal for page %d",
+        zathura_page_get_index(request_priv->page) + 1);
     g_signal_emit(ecs->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
+  } else {
+    girara_debug("Rendering of page %d aborted",
+        zathura_page_get_index(request_priv->page) + 1);
   }
   /* mark the request as done */
   request_priv->requested = false;
@@ -646,6 +651,8 @@ render(ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close == true || request_priv->aborted == true) {
+    girara_debug("Rendering of page %d aborted",
+        zathura_page_get_index(request_priv->page) + 1);
     request_priv->requested = false;
     cairo_surface_destroy(surface);
     return true;
