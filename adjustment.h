@@ -4,8 +4,73 @@
 #define ZATHURA_ADJUSTMENT_H
 
 #include <gtk/gtk.h>
+#include <stdbool.h>
+#include "document.h"
 
-/* Clone a GtkAdjustment
+/**
+ * Calculate the page size according to the corrent scaling and rotation if
+ * desired.
+ *
+ * @param document the document
+ * @param height width the original height and width
+ * @return page_height page_width the scaled and rotated height and width
+ * @param rotate honor page's rotation
+ * @return real scale after rounding
+ */
+double page_calc_height_width(zathura_document_t* document, double height, double width,
+                       unsigned int* page_height, unsigned int* page_width, bool rotate);
+
+/**
+ * Calculate a page relative position after a rotation. The positions x y are
+ * relative to a page, i.e. 0=top of page, 1=bottom of page. They are NOT
+ * relative to the entire document.
+ *
+ * @param document the document
+ * @param x y the x y coordinates on the unrotated page
+ * @param xn yn the x y coordinates after rotation
+ */
+void page_calc_position(zathura_document_t* document, double x, double y,
+                        double *xn, double *yn);
+
+/**
+ * Converts a relative position within the document to a page number.
+ *
+ * @param document The document
+ * @param pos_x pos_y the position relative to the document
+ * @return page sitting in that position
+ */
+unsigned int position_to_page_number(zathura_document_t* document,
+                                         double pos_x, double pos_y);
+
+/**
+ * Converts a page number to a position in units relative to the document
+ *
+ * We can specify where to aliwn the viewport and the page. For instance, xalign
+ * = 0 means align them on the left margin, xalign = 0.5 means centered, and
+ * xalign = 1.0 align them on the right margin.
+ *
+ * The return value is the position in in units relative to the document (0=top
+ * 1=bottom) of the point thet will lie at the center of the viewport.
+ *
+ * @param document The document
+ * @param page_number the given page number
+ * @param xalign yalign where to align the viewport and the page
+ * @return pos_x pos_y position that will lie at the center of the viewport.
+ */
+void page_number_to_position(zathura_document_t* document, unsigned int page_number,
+                             double xalign, double yalign, double *pos_x, double *pos_y);
+
+/**
+ * Checks whether a given page falls within the viewport
+ *
+ * @param document The document
+ * @param page_number the page number
+ * @return true if the page intersects the viewport
+ */
+bool page_is_visible(zathura_document_t *document, unsigned int page_number);
+
+/**
+ * Clone a GtkAdjustment
  *
  * Creates a new adjustment with the same value, lower and upper bounds, step
  * and page increments and page_size as the original adjustment.

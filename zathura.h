@@ -13,8 +13,6 @@
 #include <gtk/gtkx.h>
 #endif
 
-#define ZATHURA_PAGE_CACHE_DEFAULT_SIZE		15
-
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
   PREVIOUS_GROUP, ZOOM_IN, ZOOM_OUT, ZOOM_ORIGINAL, ZOOM_SPECIFIC, FORWARD,
@@ -28,12 +26,14 @@ enum {
   ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
 };
 
+/* cache constants */
+enum {
+  ZATHURA_PAGE_CACHE_DEFAULT_SIZE = 15,
+  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024
+};
+
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
-
-/* forward declaration for types from render.h */
-struct render_thread_s;
-typedef struct render_thread_s render_thread_t;
 
 /**
  * Jump
@@ -60,8 +60,6 @@ struct zathura_s
 
     struct
     {
-      GdkColor recolor_dark_color; /**< Dark color for recoloring */
-      GdkColor recolor_light_color; /**< Light color for recoloring */
       GdkColor highlight_color; /**< Color for highlighting */
       GdkColor highlight_color_active; /** Color for highlighting */
       GdkColor render_loading_bg; /**< Background color for render "Loading..." */
@@ -71,14 +69,11 @@ struct zathura_s
     GtkWidget *page_widget_alignment;
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
-
-    GtkAdjustment *hadjustment; /**< Tracking hadjustment */
-    GtkAdjustment *vadjustment; /**< Tracking vadjustment */
   } ui;
 
   struct
   {
-    render_thread_t* render_thread; /**< The thread responsible for rendering the pages */
+    ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
   } sync;
 
   struct
@@ -106,9 +101,6 @@ struct zathura_s
 
   struct
   {
-    bool recolor_keep_hue; /**< Keep hue when recoloring */
-    bool recolor; /**< Recoloring mode switch */
-    bool update_page_number; /**< Update current page number */
     int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
@@ -138,6 +130,11 @@ struct zathura_s
 
   struct
   {
+    guint refresh_view;
+  } signals;
+
+  struct
+  {
     gchar* file;
   } stdin_support;
 
@@ -154,15 +151,6 @@ struct zathura_s
     gchar* file_path; /**< Save file path */
     gchar* password; /**< Save password */
   } file_monitor;
-
-  /**
-   * The page cache
-   */
-  struct {
-    int* cache;
-    unsigned int size;
-    unsigned int num_cached_pages;
-  } page_cache;
 
   /**
    * Bisect stage
@@ -308,40 +296,39 @@ bool document_close(zathura_t* zathura, bool keep_monitor);
 bool page_set(zathura_t* zathura, unsigned int page_id);
 
 /**
- * Opens the page with the given number (delayed)
+ * Moves to the given position
  *
- * @param zathura The zathura session
- * @param page_id The id of the page that should be set
+ * @param zathura Zathura session
+ * @param position_x X coordinate
+ * @param position_y Y coordinate
  * @return If no error occured true, otherwise false, is returned.
  */
-bool page_set_delayed(zathura_t* zathura, unsigned int page_id);
+bool position_set(zathura_t* zathura, double position_x, double position_y);
 
 /**
- * Moves to the given position
+ * Refresh the page view
  *
  * @param zathura Zathura session
- * @param position_x X coordinate
- * @param position_y Y coordinate
  */
-void position_set_delayed(zathura_t* zathura, double position_x, double position_y);
+void refresh_view(zathura_t* zathura);
 
 /**
- * Moves to the given position
+ * Recompute the scale according to settings
  *
  * @param zathura Zathura session
- * @param position_x X coordinate
- * @param position_y Y coordinate
  */
-void position_set(zathura_t* zathura, double position_x, double position_y);
+bool adjust_view(zathura_t* zathura);
 
 /**
  * Builds the box structure to show the rendered pages
  *
  * @param zathura The zathura session
+ * @param page_padding padding in pixels between pages
  * @param pages_per_row Number of shown pages per row
  * @param first_page_column Column on which first page start
  */
-void page_widget_set_mode(zathura_t* zathura, unsigned int pages_per_row, unsigned int first_page_column);
+void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
+                          unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the
@@ -412,23 +399,5 @@ void zathura_jumplist_trim(zathura_t* zathura);
  * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
-
-/**
- * Add a page to the page cache
- *
- * @param zathura The zathura session
- * @param page_index The index of the page to be cached
- */
-void zathura_page_cache_add(zathura_t* zathura, unsigned int page_index);
-
-/**
- * Checks if the given page is cached
- *
- * @param zathura The zathura session
- * @param page_index The index of the page that may be cached
- *
- * @return true if page is cached otherwise false
- */
-bool zathura_page_cache_is_cached(zathura_t* zathura, unsigned int page_index);
 
 #endif // ZATHURA_H

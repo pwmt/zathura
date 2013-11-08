@@ -118,15 +118,9 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
   }
 
   zathura_jumplist_add(zathura);
+  page_set(zathura, bookmark->page - 1);
   if (bookmark->x != DBL_MIN && bookmark->y != DBL_MIN) {
-    GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-    zathura_adjustment_set_value_from_ratio(hadjustment, bookmark->x);
-    zathura_adjustment_set_value_from_ratio(vadjustment, bookmark->y);
-    zathura_document_set_current_page_number(zathura->document, bookmark->page - 1);
-    statusbar_page_number_update(zathura);
-  } else {
-    page_set(zathura, bookmark->page - 1);
+    position_set(zathura, bookmark->x, bookmark->y);
   }
   zathura_jumplist_add(zathura);
 
@@ -164,15 +158,15 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     zathura_document_information_type_t field;
   };
 
-  struct meta_field meta_fields[] = {
-    { "Title",            ZATHURA_DOCUMENT_INFORMATION_TITLE },
-    { "Author",           ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
-    { "Subject",          ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
-    { "Keywords",         ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
-    { "Creator",          ZATHURA_DOCUMENT_INFORMATION_CREATOR },
-    { "Producer",         ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
-    { "Creation date",    ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
-    { "Modiciation date", ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
+  const struct meta_field meta_fields[] = {
+    { _("Title"),             ZATHURA_DOCUMENT_INFORMATION_TITLE },
+    { _("Author"),            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
+    { _("Subject"),           ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
+    { _("Keywords"),          ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { _("Creator"),           ZATHURA_DOCUMENT_INFORMATION_CREATOR },
+    { _("Producer"),          ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
+    { _("Creation date"),     ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
+    { _("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
   };
 
   girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
@@ -381,9 +375,9 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(page_widget, "draw-links", FALSE, NULL);
 
-    render_lock(zathura->sync.render_thread);
+    zathura_renderer_lock(zathura->sync.render_thread);
     girara_list_t* result = zathura_page_search_text(page, input, &error);
-    render_unlock(zathura->sync.render_thread);
+    zathura_renderer_unlock(zathura->sync.render_thread);
 
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);

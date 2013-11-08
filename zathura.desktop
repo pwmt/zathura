@@ -20,3 +20,4 @@ Comment[uk_UA]=Легкий переглядач документів
 Exec=zathura %f
 Terminal=false
 Categories=Office;Viewer;
+Keywords=PDF;PS;PostScript;DjVU;document;presentation;

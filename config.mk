@@ -3,7 +3,7 @@
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 2
-ZATHURA_VERSION_REV = 4
+ZATHURA_VERSION_REV = 5
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -11,13 +11,23 @@ ZATHURA_ABI_VERSION = 2
 VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_REV}
 
 # the GTK+ version to use
-# note: zathura with GTK+ 3 is broken!
-ZATHURA_GTK_VERSION ?= 2
+ZATHURA_GTK_VERSION ?= 3
 
-# minimum required zathura version
-# If you want to disable the check, set GIRARA_VERSION_CHECK to 0.
-GIRARA_MIN_VERSION = 0.1.6
-GIRARA_VERSION_CHECK ?= $(shell pkg-config --atleast-version=$(GIRARA_MIN_VERSION) girara-gtk${ZATHURA_GTK_VERSION}; echo $$?)
+# version checks
+# If you want to disable any of the checks, set *_VERSION_CHECK to 0.
+
+# girara
+GIRARA_VERSION_CHECK ?= 1
+GIRARA_MIN_VERSION = 0.1.8
+GIRARA_PKG_CONFIG_NAME = girara-gtk$(ZATHURA_GTK_VERSION)
+# glib
+GLIB_VERSION_CHECK ?= 1
+GLIB_MIN_VERSION = 2.28
+GLIB_PKG_CONFIG_NAME = glib-2.0
+# GTK
+GTK_VERSION_CHECK ?= 1
+GTK_MIN_VERSION = 2.18
+GTK_PKG_CONFIG_NAME = gtk+-$(ZATHURA_GTK_VERSION).0
 
 # database
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
@@ -52,6 +62,9 @@ GTHREAD_LIB ?= $(shell pkg-config --libs   gthread-2.0)
 GMODULE_INC ?= $(shell pkg-config --cflags gmodule-no-export-2.0)
 GMODULE_LIB ?= $(shell pkg-config --libs   gmodule-no-export-2.0)
 
+GLIB_INC ?= $(shell pkg-config --cflags glib-2.0)
+GLIB_LIB ?= $(shell pkg-config --libs glib-2.0)
+
 GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk${ZATHURA_GTK_VERSION})
 GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
 
@@ -65,8 +78,8 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
-INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC}
-LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} -lpthread -lm
+INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)

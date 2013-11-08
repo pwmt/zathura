@@ -246,9 +246,14 @@ behaviour of them. Those can be passed as the last argument:
 
 Possible arguments are:
 
+* best-fit
 * bottom
+* collapse
+* collapse-all
 * default
 * down
+* expand
+* expand-all
 * full-down
 * full-up
 * half-down
@@ -259,13 +264,12 @@ Possible arguments are:
 * out
 * previous
 * right
+* rotate-ccw
+* rotate-cw
 * specific
 * top
 * up
-* best-fit
 * width
-* rotate-cw
-* rotate-ccw
 
 unmap - Removing a shortcut
 ---------------------------
@@ -686,6 +690,13 @@ Defines if scrolling by half or full pages stops at page boundaries.
 * Value type: Boolean
 * Default value: false
 
+link-zoom
+^^^^^^^^^
+En/Disables the hability of changing zoom when following links.
+
+* Value type: Boolean
+* Default value: true
+
 link-hadjust
 ^^^^^^^^^^^^
 En/Disables aligning to the left internal link targets, for example from the index
@@ -748,6 +759,17 @@ Defines the amount of percent that is zoomed in or out on each command.
 
 * Value type: Integer
 * Default value: 10
+
+selection-clipboard
+^^^^^^^^^^^^^^^^^^^
+Defines the X clipboard into which mouse-selected data will be written.  When it
+is "clipboard", selected data will be written to the CLIPBOARD clipboard, and
+can be pasted using the Ctrl+v key combination.  When it is "primary", selected
+data will be written to the PRIMARY clipboard, and can be pasted using the
+middle mouse button, or the Shift-Insert key combination.
+
+* Value type: String
+* Default value: primary
 
 SEE ALSO
 ========

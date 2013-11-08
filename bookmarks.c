@@ -25,14 +25,14 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
   g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
-  double x = zathura_adjustment_get_ratio(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
-  double y = zathura_adjustment_get_ratio(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view)));
+  double position_x = zathura_document_get_position_x(zathura->document);
+  double position_y = zathura_document_get_position_y(zathura->document);
   zathura_bookmark_t* old = zathura_bookmark_get(zathura, id);
 
   if (old != NULL) {
     old->page = page;
-    old->x = x;
-    old->y = y;
+    old->x = position_x;
+    old->y = position_y;
 
     if (zathura->database != NULL) {
       const char* path = zathura_document_get_path(zathura->document);
@@ -52,8 +52,8 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
 
   bookmark->id = g_strdup(id);
   bookmark->page = page;
-  bookmark->x = x;
-  bookmark->y = y;
+  bookmark->x = position_x;
+  bookmark->y = position_y;
   girara_list_append(zathura->bookmarks.bookmarks, bookmark);
 
   if (zathura->database != NULL) {

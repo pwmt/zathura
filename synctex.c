@@ -97,7 +97,7 @@ synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool 
   g_object_set(page_widget, "search-results", hits, NULL);
 
   if (first) {
-    page_set_delayed(zathura, zathura_page_get_index(page));
+    page_set(zathura, zathura_page_get_index(page));
     g_object_set(page_widget, "search-current", 0, NULL);
   }
 }

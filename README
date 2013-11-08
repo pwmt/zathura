@@ -5,7 +5,8 @@ girara user interface library and several document libraries.
 
 Requirements
 ------------
-gtk2 (>= 2.28)
+gtk2 (>= 2.18) or gtk3
+glib (>= 2.28)
 girara
 sqlite3 (optional, >= 3.5.9)
 check (for tests)
@@ -36,8 +37,13 @@ To build and install zathura:
 
   make install
 
-Uninstall:
-----------
+Uninstall
+---------
 To delete zathura from your system, just type:
 
   make uninstall
+
+Bugs
+----
+Please report bugs at http://bugs.pwmt.org or contact us on our mailing list at
+zathura@lists.pwmt.org.

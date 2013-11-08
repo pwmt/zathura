@@ -4,6 +4,7 @@
 #define PAGE_WIDGET_H
 
 #include <gtk/gtk.h>
+#include "types.h"
 #include "document.h"
 
 /**
@@ -14,9 +15,6 @@
  * Before the properties contain the correct values, 'draw-links' has to be set
  * to TRUE at least one time.
  * */
-typedef struct zathura_page_widget_s ZathuraPage;
-typedef struct zathura_page_widget_class_s ZathuraPageClass;
-
 struct zathura_page_widget_s
 {
   GtkDrawingArea parent;
@@ -95,5 +93,12 @@ void zathura_page_widget_update_view_time(ZathuraPage* widget);
  * @returns true if the widget has a surface, false otherwise
  */
 bool zathura_page_widget_have_surface(ZathuraPage* widget);
+
+/**
+ * Abort outstanding render requests
+ *
+ * @param widget the widget
+ */
+void zathura_page_widget_abort_render_request(ZathuraPage* widget);
 
 #endif

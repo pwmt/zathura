@@ -57,9 +57,13 @@ cb_color_change(girara_session_t* session, const char* name,
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_dark_color));
+    if (zathura->sync.render_thread != NULL) {
+      zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
+    }
   } else if (g_strcmp0(name, "recolor-lightcolor") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.recolor_light_color));
+    if (zathura->sync.render_thread != NULL) {
+      zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, string_value, NULL);
+    }
   } else if (g_strcmp0(name, "render-loading-bg") == 0) {
     gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_bg));
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
@@ -67,27 +71,6 @@ cb_color_change(girara_session_t* session, const char* name,
   }
 
   render_all(zathura);
-}
-
-static void
-cb_page_padding_changed(girara_session_t* session, const char* UNUSED(name),
-                        girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
-{
-  g_return_if_fail(value != NULL);
-  g_return_if_fail(session != NULL);
-  g_return_if_fail(session->global.data != NULL);
-  zathura_t* zathura = session->global.data;
-
-  int val = *(int*) value;
-  if (GTK_IS_TABLE(zathura->ui.page_widget) == TRUE) {
-#if (GTK_MAJOR_VERSION == 3)
-    gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), val);
-    gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), val);
-#else
-    gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-    gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), val);
-#endif
-  }
 }
 
 static void
@@ -128,6 +111,7 @@ config_load_default(zathura_t* zathura)
   float float_value          = 0;
   bool bool_value            = false;
   bool inc_search            = true;
+  char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */
@@ -144,21 +128,21 @@ config_load_default(zathura_t* zathura)
   girara_mode_set(gsession, zathura->modes.normal);
 
   /* zathura settings */
-  girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),        NULL, NULL);
+  girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),         NULL, NULL);
   int_value = 10;
-  girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),               NULL, NULL);
+  girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),   cb_page_padding_changed, NULL);
+  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),    cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"), cb_pages_per_row_value_changed, NULL);
+  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"),cb_first_page_column_value_changed, NULL);
+  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),             NULL, NULL);
+  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              NULL, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),             NULL, NULL);
+  girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),   NULL, NULL);
   float_value = 0.0;
-  girara_setting_add(gsession, "scroll-full-overlap",   &float_value, FLOAT,  false, _("Full page scroll overlap"),           NULL, NULL);
+  girara_setting_add(gsession, "scroll-full-overlap",   &float_value, FLOAT,  false, _("Full page scroll overlap"), NULL, NULL);
   int_value = 10;
   girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
@@ -168,17 +152,15 @@ config_load_default(zathura_t* zathura)
   int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      NULL, STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
-  girara_setting_set(gsession, "recolor-darkcolor",      "#FFFFFF");
-  girara_setting_add(gsession, "recolor-lightcolor",     NULL, STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
-  girara_setting_set(gsession, "recolor-lightcolor",     "#000000");
-  girara_setting_add(gsession, "highlight-color",        NULL, STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
-  girara_setting_add(gsession, "highlight-active-color", NULL, STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
-  girara_setting_add(gsession, "render-loading-bg",      NULL, STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),  cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
-  girara_setting_add(gsession, "render-loading-fg",      NULL, STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),  cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
   bool_value = false;
@@ -195,6 +177,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "link-hadjust",           &bool_value,  BOOLEAN, false, _("Align link target to the left"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "link-zoom",              &bool_value,  BOOLEAN, false, _("Let zoom be changed when following links"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "search-hadjust",         &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
   float_value = 0.5;
@@ -222,6 +206,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
+  string_value = "primary";
+  girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
 
   /* define default shortcuts */
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,          NULL, sc_abort,                    0,          0,               NULL);

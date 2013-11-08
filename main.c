@@ -25,7 +25,9 @@ main(int argc, char* argv[])
 #if !GLIB_CHECK_VERSION(2, 31, 0)
   g_thread_init(NULL);
 #endif
+#if !GTK_CHECK_VERSION(3, 6, 0)
   gdk_threads_init();
+#endif
   gtk_init(&argc, &argv);
 
   /* create zathura session */
@@ -46,7 +48,7 @@ main(int argc, char* argv[])
   bool synctex          = false;
   int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
 
-#if (GTK_MAJOR_VERSION == 3)
+#if GTK_CHECK_VERSION(3, 0, 0)
   Window embed = 0;
 #else
   GdkNativeWindow embed = 0;
@@ -109,7 +111,7 @@ main(int argc, char* argv[])
   zathura_set_argv(zathura, argv);
 
   /* Init zathura */
-  if(zathura_init(zathura) == false) {
+  if (zathura_init(zathura) == false) {
     girara_error("Could not initialize zathura.");
     zathura_free(zathura);
     return -1;
@@ -148,9 +150,13 @@ main(int argc, char* argv[])
   }
 
   /* run zathura */
+#if !GTK_CHECK_VERSION(3, 6, 0)
   gdk_threads_enter();
+#endif
   gtk_main();
+#if !GTK_CHECK_VERSION(3, 6, 0)
   gdk_threads_leave();
+#endif
 
   /* free zathura */
   zathura_free(zathura);

@@ -28,6 +28,15 @@ gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura);
 void cb_buffer_changed(girara_session_t* session);
 
 /**
+ * This function gets called when the value of the horizontal scrollbars
+ * changes (e.g.: by scrolling, moving to another page)
+ *
+ * @param adjustment The hadjustment of the page view
+ * @param data NULL
+ */
+void cb_view_hadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
+
+/**
  * This function gets called when the value of the vertical scrollbars
  * changes (e.g.: by scrolling, moving to another page)
  *
@@ -40,9 +49,7 @@ void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  * This function gets called when the bounds or the page_size of the horizontal
  * scrollbar change (e.g. when the zoom level is changed).
  *
- * It adjusts the value of the horizontal scrollbar, possibly based on its
- * previous adjustment, stored in the tracking adjustment
- * zathura->ui.hadjustment.
+ * It adjusts the value of the horizontal scrollbar
  *
  * @param adjustment The horizontal adjustment of a gtkScrolledWindow
  * @param data The zathura instance
@@ -61,26 +68,16 @@ void cb_view_hadjustment_changed(GtkAdjustment *adjustment, gpointer data);
  */
 void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
 
-/* This function gets called when the value of the adjustment changes.
+/**
+ * This function gets called when the program need to refresh the document view.
  *
- * It updates the value of the tracking adjustment, only if the bounds of the
- * adjustment have not changed (if they did change,
- * cb_adjustment_track_bounds() will take care of updating everything).
+ * It adjusts the value of the scrollbars, triggering a redraw in the new
+ * position.
  *
- * @param adjustment The adjustment instance
- * @param data The tracking adjustment instance
+ * @param view The view GtkWidget
+ * @param data The zathura instance
  */
-void cb_adjustment_track_value(GtkAdjustment* adjustment, gpointer data);
-
-/* This function gets called when the bounds or the page_size of the adjustment
- * change.
- *
- * It updates the value, bounds and page_size of the tracking adjustment.
- *
- * @param adjustment The adjustment instance
- * @param data The tracking adjustment instance
- */
-void cb_adjustment_track_bounds(GtkAdjustment* adjustment, gpointer data);
+void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
  * This function gets called when the value of the "pages-per-row"
@@ -92,19 +89,7 @@ void cb_adjustment_track_bounds(GtkAdjustment* adjustment, gpointer data);
  * @param value The value
  * @param data Custom data
  */
-void cb_pages_per_row_value_changed(girara_session_t* session, const char* name,
-    girara_setting_type_t type, void* value, void* data);
-/**
- * This function gets called when the value of the "first-page-column"
- * variable changes
- *
- * @param session The current girara session
- * @param name The name of the row
- * @param type The settings type
- * @param value The value
- * @param data Custom data
- */
-void cb_first_page_column_value_changed(girara_session_t* session, const char* name,
+void cb_page_layout_value_changed(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
 
 /**
@@ -201,5 +186,18 @@ void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* n
  * @return true if the input has been handled
  */
 bool cb_unknown_command(girara_session_t* session, const char* input);
+
+/**
+ * Emitted when text has been selected in the page widget
+ *
+ * @param widget page view widget
+ * @param text selected text
+ * @param data user data
+ */
+void cb_page_widget_text_selected(ZathuraPage* page, const char* text,
+    void* data);
+
+void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf,
+    void* data);
 
 #endif // CALLBACKS_H
