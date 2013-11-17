@@ -226,6 +226,10 @@ cb_page_layout_value_changed(girara_session_t* session, const char* UNUSED(name)
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
+  if (zathura->document == NULL) {
+    /* no document has been openend yet */
+    return;
+  }
 
   unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
