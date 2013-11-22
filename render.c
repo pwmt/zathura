@@ -412,7 +412,7 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
   bool unfinished_jobs = false;
   /* check if there are any active jobs left */
   GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
-    if (job->aborted != false) {
+    if (job->aborted == false) {
       unfinished_jobs = true;
     }
   GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
