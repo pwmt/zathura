@@ -534,7 +534,7 @@ zathura_document_set_page_layout(zathura_document_t* document, unsigned int page
   if (first_page_column < 1) {
     first_page_column = 1;
   } else if (first_page_column > pages_per_row) {
-    first_page_column = pages_per_row;
+    first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
   }
 
   document->first_page_column = first_page_column;
