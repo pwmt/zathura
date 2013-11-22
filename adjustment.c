@@ -69,7 +69,12 @@ position_to_page_number(zathura_document_t* document, double pos_x,
   unsigned int col = floor(pos_x * (double)doc_width  / (double)(cell_width + pad));
   unsigned int row = floor(pos_y * (double)doc_height / (double)(cell_height + pad));
 
-  return ncol * (row % nrow) + (col % ncol) - (c0 - 1);
+  unsigned int page = ncol * (row % nrow) + (col % ncol);
+  if (page < c0 - 1) {
+    return 0;
+  } else {
+    return page - (c0 - 1);
+  }
 }
 
 
