@@ -6,8 +6,9 @@
 
 
 double
-page_calc_height_width(zathura_document_t* document, double height, double width,
-                       unsigned int* page_height, unsigned int* page_width, bool rotate)
+page_calc_height_width(zathura_document_t* document, double height,
+                       double width, unsigned int* page_height,
+                       unsigned int* page_width, bool rotate)
 {
   g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
 
@@ -26,17 +27,16 @@ page_calc_height_width(zathura_document_t* document, double height, double width
 }
 
 void
-page_calc_position(zathura_document_t* document, double x, double y,
-                   double *xn, double *yn) {
-
+page_calc_position(zathura_document_t* document, double x, double y, double* xn,
+                   double* yn)
+{
   g_return_if_fail(document != NULL && xn != NULL && yn != NULL);
 
-  unsigned int rot = zathura_document_get_rotation(document);
-
+  const unsigned int rot = zathura_document_get_rotation(document);
   if (rot == 90) {
     *xn = 1 - y;
     *yn = x;
-  }else if (rot == 180) {
+  } else if (rot == 180) {
     *xn = 1 - x;
     *yn = 1 - y;
   } else if (rot == 270) {
@@ -48,11 +48,10 @@ page_calc_position(zathura_document_t* document, double x, double y,
   }
 }
 
-
 unsigned int
-position_to_page_number(zathura_document_t* document,
-                            double pos_x, double pos_y){
-
+position_to_page_number(zathura_document_t* document, double pos_x,
+                        double pos_y)
+{
   g_return_val_if_fail(document != NULL, 0);
 
   unsigned int doc_width, doc_height;
@@ -76,7 +75,9 @@ position_to_page_number(zathura_document_t* document,
 
 void
 page_number_to_position(zathura_document_t* document, unsigned int page_number,
-                        double xalign, double yalign, double *pos_x, double *pos_y) {
+                        double xalign, double yalign, double* pos_x,
+                        double* pos_y)
+{
   g_return_if_fail(document != NULL);
 
   unsigned int c0   = zathura_document_get_first_page_column(document);
@@ -115,7 +116,8 @@ page_number_to_position(zathura_document_t* document, unsigned int page_number,
 
 
 bool
-page_is_visible(zathura_document_t *document, unsigned int page_number) {
+page_is_visible(zathura_document_t *document, unsigned int page_number)
+{
   g_return_val_if_fail(document != NULL, false);
 
   /* position at the center of the viewport */
