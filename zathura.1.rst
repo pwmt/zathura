@@ -122,6 +122,28 @@ mX
 q
   Quit
 
+Fullscreen mode
+---------------
+
+J, K
+  Go to the next or previous page
+space, <S-space>, <BackSpace>
+  Scroll a full page down or up
+gg, G, nG
+  Goto to the first, the last or to the nth page
+^c, Escape
+  Abort
+F5
+  Switch to normal mode
++, -, =
+  Zoom in, out or to the original size
+zI, zO, z0
+  Zoom in, out or to the original size
+n=
+  Zoom to size n
+q
+  Quit
+
 Index mode
 ----------
 
