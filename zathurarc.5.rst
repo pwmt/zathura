@@ -502,6 +502,20 @@ Defines the foreground color of the statusbar
 * Value type: String
 * Default value: #FFFFFF
 
+statusbar-h-padding
+^^^^^^^^^^^^^^^^^^^
+Defines the horizontal padding of the statusbar and notificationbar
+
+* Value type: Integer
+* Default value: 8
+
+statusbar-v-padding
+^^^^^^^^^^^^^^^^^^^
+Defines the vertical padding of the statusbar and notificationbar
+
+* Value type: Integer
+* Default value: 2
+
 window-height
 ^^^^^^^^^^^^^
 Defines the window height on startup
