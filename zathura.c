@@ -146,13 +146,9 @@ zathura_init(zathura_t* zathura)
                    G_CALLBACK(cb_refresh_view), zathura);
 
   /* page view */
-#if (GTK_MAJOR_VERSION == 3)
   zathura->ui.page_widget = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
   gtk_grid_set_column_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
-#else
-  zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);
-#endif
   if (zathura->ui.page_widget == NULL) {
     goto error_free;
   }
@@ -184,13 +180,10 @@ zathura_init(zathura_t* zathura)
   }
   gtk_container_add(GTK_CONTAINER(zathura->ui.page_widget_alignment), zathura->ui.page_widget);
 
-#if (GTK_MAJOR_VERSION == 3)
   gtk_widget_set_hexpand_set(zathura->ui.page_widget_alignment, TRUE);
   gtk_widget_set_hexpand(zathura->ui.page_widget_alignment, FALSE);
   gtk_widget_set_vexpand_set(zathura->ui.page_widget_alignment, TRUE);
   gtk_widget_set_vexpand(zathura->ui.page_widget_alignment, FALSE);
-#endif
-
 
   gtk_widget_show(zathura->ui.page_widget);
 
@@ -325,11 +318,7 @@ zathura_free(zathura_t* zathura)
 }
 
 void
-#if (GTK_MAJOR_VERSION == 2)
-zathura_set_xid(zathura_t* zathura, GdkNativeWindow xid)
-#else
 zathura_set_xid(zathura_t* zathura, Window xid)
-#endif
 {
   g_return_if_fail(zathura != NULL);
 
@@ -1060,18 +1049,8 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
 
-#if (GTK_MAJOR_VERSION == 3)
   gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
   gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
-
-#else
-  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-
-  unsigned int ncol = pages_per_row;
-  unsigned int nrow = (number_of_pages + first_page_column - 1 + ncol - 1) / ncol;
-  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), nrow, ncol);
-#endif
 
   for (unsigned int i = 0; i < number_of_pages; i++) {
     int x = (i + first_page_column - 1) % pages_per_row;
@@ -1079,11 +1058,7 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
 
     zathura_page_t* page   = zathura_document_get_page(zathura->document, i);
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-#if (GTK_MAJOR_VERSION == 3)
     gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
-#else
-    gtk_table_attach(GTK_TABLE(zathura->ui.page_widget), page_widget, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-#endif
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);
