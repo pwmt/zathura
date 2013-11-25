@@ -249,6 +249,17 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* argument,
 bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Toggle presentation mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occured otherwise false
+ */
+bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Quit zathura
  *
  * @param session The used girara session

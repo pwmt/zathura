@@ -1194,6 +1194,35 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
   }
 
   static bool fullscreen = false;
+  if (fullscreen == true) {
+    gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
+    refresh_view(zathura);
+    girara_mode_set(session, zathura->modes.normal);
+  } else {
+    gtk_window_fullscreen(GTK_WINDOW(session->gtk.window));
+    refresh_view(zathura);
+    girara_mode_set(session, zathura->modes.fullscreen);
+  }
+
+  fullscreen = fullscreen ? false : true;
+
+  return false;
+}
+
+bool
+sc_toggle_presentation(girara_session_t* session, girara_argument_t*
+                     UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
+
+  static bool fullscreen = false;
   static int pages_per_row = 1;
   static int first_page_column = 1;
   static double zoom = 1.0;
@@ -1245,7 +1274,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     refresh_view(zathura);
 
     /* setm ode */
-    girara_mode_set(session, zathura->modes.fullscreen);
+    girara_mode_set(session, zathura->modes.presentation);
   }
 
   fullscreen = fullscreen ? false : true;

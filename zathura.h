@@ -112,6 +112,7 @@ struct zathura_s
     girara_mode_t fullscreen; /**< Fullscreen mode */
     girara_mode_t index; /**< Index mode */
     girara_mode_t insert; /**< Insert mode */
+    girara_mode_t presentation; /**< Presentation mode */
   } modes;
 
   struct
