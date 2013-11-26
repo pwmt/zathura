@@ -61,8 +61,10 @@ OPTIONS
 MOUSE AND KEY BINDINGS
 ======================
 
-J, K
-  Go to the next or previous page
+J, PgDn
+  Go to the next page
+K, PgUp
+  Go to the previous page
 h, k, j, l
   Scroll to the left, down, up or right direction
 Left, Down, Up, Right
