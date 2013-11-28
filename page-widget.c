@@ -608,7 +608,10 @@ static void
 zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation)
 {
   GTK_WIDGET_CLASS(zathura_page_widget_parent_class)->size_allocate(widget, allocation);
-  zathura_page_widget_update_surface(ZATHURA_PAGE(widget), NULL);
+
+  ZathuraPage* page = ZATHURA_PAGE(widget);
+  zathura_page_widget_abort_render_request(page);
+  zathura_page_widget_update_surface(page, NULL);
 }
 
 static void
