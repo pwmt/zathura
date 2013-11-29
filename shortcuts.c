@@ -491,6 +491,15 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     return false;
   }
 
+  /* if TOP or BOTTOM, go there and we are done */
+  if (argument->n == TOP) {
+    position_set(zathura, -1, 0);
+    return false;
+  } else if (argument->n == BOTTOM) {
+    position_set(zathura, -1, 1.0);
+    return false;
+  }
+
   if (t == 0) {
     t = 1;
   }
@@ -527,31 +536,21 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   double pos_x = zathura_document_get_position_x(zathura->document);
   double pos_y = zathura_document_get_position_y(zathura->document);
-  double page_id = zathura_document_get_current_page_number(zathura->document);
-  double direction = 1.0;
 
-  /* if TOP or BOTTOM, go there and we are done */
-  if (argument->n == TOP) {
-    position_set(zathura, -1, 0);
-    return false;
-  } else if (argument->n == BOTTOM) {
-    position_set(zathura, -1, 1.0);
-    return false;
-  }
+  const unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
 
   /* compute the direction of scrolling */
-  if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
-       (argument->n == UP) || (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
+  double direction = 1.0;
+  if ((argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
+      (argument->n == UP) || (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
     direction = -1.0;
-  } else {
-    direction = 1.0;
   }
 
   const double vstep = (double)(cell_height + padding) / (double)doc_height;
   const double hstep = (double)(cell_width + padding) / (double)doc_width;
 
   /* compute new position */
-  switch(argument->n) {
+  switch (argument->n) {
     case FULL_UP:
     case FULL_DOWN:
       pos_y += direction * (1.0 - scroll_full_overlap) * vstep;
@@ -603,9 +602,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* snap to the border if we change page */
-  double dummy;
-  unsigned int new_page_id = position_to_page_number(zathura->document, pos_x, pos_y);
+  const unsigned int new_page_id = position_to_page_number(zathura->document, pos_x, pos_y);
   if (scroll_page_aware == true && page_id != new_page_id) {
+    double dummy = 0.0;
     switch(argument->n) {
       case FULL_LEFT:
       case HALF_LEFT:
