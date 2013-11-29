@@ -527,9 +527,6 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   bool scroll_wrap = false;
   girara_setting_get(session, "scroll-wrap", &scroll_wrap);
 
-  int padding = 1;
-  girara_setting_get(session, "page-padding", &padding);
-
   double pos_x = zathura_document_get_position_x(zathura->document);
   double pos_y = zathura_document_get_position_y(zathura->document);
 
@@ -579,11 +576,11 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* handle boundaries */
-  double end_x = 0.5 * (double)view_width / (double)doc_width;
-  double end_y = 0.5 * (double)view_height / (double)doc_height;
+  const double end_x = 0.5 * (double)view_width / (double)doc_width;
+  const double end_y = 0.5 * (double)view_height / (double)doc_height;
 
-  double new_x = scroll_wrap ? 1.0 - end_x : end_x;
-  double new_y = scroll_wrap ? 1.0 - end_y : end_y;
+  const double new_x = scroll_wrap ? 1.0 - end_x : end_x;
+  const double new_y = scroll_wrap ? 1.0 - end_y : end_y;
 
   if (pos_x < end_x) {
     pos_x = new_x;
