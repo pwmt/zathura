@@ -508,10 +508,6 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   unsigned int view_height = 0;
   zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
 
-  unsigned int cell_width  = 0;
-  unsigned int cell_height = 0;
-  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
-
   unsigned int doc_width  = 0;
   unsigned int doc_height = 0;
   zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
@@ -546,8 +542,8 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     direction = -1.0;
   }
 
-  const double vstep = (double)(cell_height + padding) / (double)doc_height;
-  const double hstep = (double)(cell_width + padding) / (double)doc_width;
+  const double vstep = (double)view_height / (double)doc_height;
+  const double hstep = (double)view_width / (double)doc_width;
 
   /* compute new position */
   switch (argument->n) {
