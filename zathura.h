@@ -57,10 +57,10 @@ struct zathura_s
 
     struct
     {
-      GdkColor highlight_color; /**< Color for highlighting */
-      GdkColor highlight_color_active; /** Color for highlighting */
-      GdkColor render_loading_bg; /**< Background color for render "Loading..." */
-      GdkColor render_loading_fg; /**< Foreground color for render "Loading..." */
+      GdkRGBA highlight_color; /**< Color for highlighting */
+      GdkRGBA highlight_color_active; /** Color for highlighting */
+      GdkRGBA render_loading_bg; /**< Background color for render "Loading..." */
+      GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
     } colors;
 
     GtkWidget *page_widget_alignment;

@@ -52,9 +52,9 @@ cb_color_change(girara_session_t* session, const char* name,
 
   char* string_value = (char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color));
+    gdk_rgba_parse(&(zathura->ui.colors.highlight_color), string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
+    gdk_rgba_parse(&(zathura->ui.colors.highlight_color_active), string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
     if (zathura->sync.render_thread != NULL) {
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
@@ -64,9 +64,9 @@ cb_color_change(girara_session_t* session, const char* name,
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, string_value, NULL);
     }
   } else if (g_strcmp0(name, "render-loading-bg") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_bg));
+    gdk_rgba_parse(&(zathura->ui.colors.render_loading_bg), string_value);
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_fg));
+    gdk_rgba_parse(&(zathura->ui.colors.render_loading_fg), string_value);
   }
 
   render_all(zathura);
