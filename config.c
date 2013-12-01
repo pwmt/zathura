@@ -15,7 +15,6 @@
 #include <girara/shortcuts.h>
 #include <girara/config.h>
 #include <girara/commands.h>
-#include <girara/gtk2-compat.h>
 #include <glib/gi18n.h>
 
 static void

@@ -6,12 +6,9 @@
 #include <stdbool.h>
 #include <girara/types.h>
 #include <gtk/gtk.h>
+#include <gtk/gtkx.h>
 #include "macros.h"
 #include "types.h"
-
-#if (GTK_MAJOR_VERSION == 3)
-#include <gtk/gtkx.h>
-#endif
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
@@ -190,11 +187,7 @@ void zathura_free(zathura_t* zathura);
  * @param zathura The zathura session
  * @param xid The window id
  */
-#if (GTK_MAJOR_VERSION == 2)
-void zathura_set_xid(zathura_t* zathura, GdkNativeWindow xid);
-#else
 void zathura_set_xid(zathura_t* zathura, Window xid);
-#endif
 
 /**
  * Set the path to the configuration directory

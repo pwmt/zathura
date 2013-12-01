@@ -5,9 +5,9 @@ girara user interface library and several document libraries.
 
 Requirements
 ------------
-gtk2 (>= 2.18) or gtk3
+gtk3
 glib (>= 2.28)
-girara
+girara (>= 0.1.8)
 sqlite3 (optional, >= 3.5.9)
 check (for tests)
 intltool

@@ -61,9 +61,6 @@ typedef struct zathura_page_widget_private_s {
                                zathura_page_widget_private_t))
 
 static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo);
-#if GTK_MAJOR_VERSION == 2
-static gboolean zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event);
-#endif
 static void zathura_page_widget_finalize(GObject* object);
 static void zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
@@ -111,11 +108,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
 
   /* overwrite methods */
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
-#if GTK_MAJOR_VERSION == 2
-  widget_class->expose_event         = zathura_page_widget_expose;
-#else
   widget_class->draw                 = zathura_page_widget_draw;
-#endif
   widget_class->size_allocate        = zathura_page_widget_size_allocate;
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
@@ -368,43 +361,15 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   }
 }
 
-#if GTK_MAJOR_VERSION == 2
-static gboolean
-zathura_page_widget_expose(GtkWidget* widget, GdkEventExpose* event)
-{
-  cairo_t* cairo = gdk_cairo_create(gtk_widget_get_window(widget));
-  if (cairo == NULL) {
-    girara_error("Could not retrieve cairo object");
-    return FALSE;
-  }
-
-  /* set clip region */
-  cairo_rectangle(cairo, event->area.x, event->area.y, event->area.width, event->area.height);
-  cairo_clip(cairo);
-
-  const gboolean ret = zathura_page_widget_draw(widget, cairo);
-  cairo_destroy(cairo);
-  return ret;
-}
-#endif
-
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   mutex_lock(&(priv->lock));
 
-  zathura_document_t* document = zathura_page_get_document(priv->page);
-
-#if GTK_MAJOR_VERSION == 2
-  GtkAllocation allocation;
-  gtk_widget_get_allocation(widget, &allocation);
-  const unsigned int page_height = allocation.height;
-  const unsigned int page_width  = allocation.width;
-#else
+  zathura_document_t* document   = zathura_page_get_document(priv->page);
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
-#endif
 
   if (priv->surface != NULL) {
     cairo_save(cairo);
@@ -623,11 +588,7 @@ redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle)
   grect.y = rectangle->y1;
   grect.width  = (rectangle->x2 + 1) - rectangle->x1;
   grect.height = (rectangle->y2 + 1) - rectangle->y1;
-#if GTK_MAJOR_VERSION == 2
-  gdk_window_invalidate_rect(gtk_widget_get_window(GTK_WIDGET(widget)), &grect, TRUE);
-#else
   gtk_widget_queue_draw_area(GTK_WIDGET(widget), grect.x, grect.y, grect.width, grect.height);
-#endif
 }
 
 static void
@@ -893,19 +854,7 @@ cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page)
   const int width  = cairo_image_surface_get_width(surface);
   const int height = cairo_image_surface_get_height(surface);
 
-#if GTK_MAJOR_VERSION == 2
-  GdkPixmap* pixmap = gdk_pixmap_new(gtk_widget_get_window(GTK_WIDGET(item)), width, height, -1);
-  cairo_t* cairo    = gdk_cairo_create(pixmap);
-
-  cairo_set_source_surface(cairo, surface, 0, 0);
-  cairo_paint(cairo);
-  cairo_destroy(cairo);
-
-  GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL, 0, 0, 0,
-                      0, width, height);
-#else
   GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface(surface, 0, 0, width, height);
-#endif
   g_signal_emit(page, signals[IMAGE_SELECTED], 0, pixbuf);
   g_object_unref(pixbuf);
   cairo_surface_destroy(surface);
