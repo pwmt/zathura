@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <math.h>
+#include <string.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include "glib-compat.h"
@@ -24,7 +25,6 @@ static void render_request_finalize(GObject* object);
 
 static void render_job(void* data, void* user_data);
 static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
-static void color2double(const GdkColor* col, double* v);
 static ssize_t page_cache_lru_invalidate(ZathuraRenderer* renderer);
 static void page_cache_invalidate_all(ZathuraRenderer* renderer);
 static bool page_cache_is_full(ZathuraRenderer* renderer, bool* result);
@@ -43,10 +43,8 @@ typedef struct private_s {
     bool enabled;
     bool hue;
 
-    double light[3];
-    GdkColor light_gdk;
-    double dark[3];
-    GdkColor dark_gdk;
+    GdkRGBA light;
+    GdkRGBA dark;
   } recolor;
 
   /*
@@ -317,22 +315,16 @@ zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer, bool enable)
 
 void
 zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
-    const GdkColor* light, const GdkColor* dark)
+    const GdkRGBA* light, const GdkRGBA* dark)
 {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   private_t* priv = GET_PRIVATE(renderer);
   if (light != NULL) {
-    priv->recolor.light_gdk.red = light->red;
-    priv->recolor.light_gdk.blue = light->blue;
-    priv->recolor.light_gdk.green = light->green;
-    color2double(light, priv->recolor.light);
+    memcpy(&priv->recolor.light, light, sizeof(GdkRGBA));
   }
   if (dark != NULL) {
-    priv->recolor.dark_gdk.red = dark->red;
-    priv->recolor.dark_gdk.blue = dark->blue;
-    priv->recolor.dark_gdk.green = dark->green;
-    color2double(dark, priv->recolor.dark);
+    memcpy(&priv->recolor.dark, dark, sizeof(GdkRGBA));
   }
 }
 
@@ -343,33 +335,29 @@ zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   if (dark != NULL) {
-    GdkColor color;
-    gdk_color_parse(dark, &color);
+    GdkRGBA color;
+    gdk_rgba_parse(&color, dark);
     zathura_renderer_set_recolor_colors(renderer, NULL, &color);
   }
   if (light != NULL) {
-    GdkColor color;
-    gdk_color_parse(light, &color);
+    GdkRGBA color;
+    gdk_rgba_parse(&color, light);
     zathura_renderer_set_recolor_colors(renderer, &color, NULL);
   }
 }
 
 void
 zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
-    GdkColor* light, GdkColor* dark)
+    GdkRGBA* light, GdkRGBA* dark)
 {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   private_t* priv = GET_PRIVATE(renderer);
   if (light != NULL) {
-    light->red = priv->recolor.light_gdk.red;
-    light->blue = priv->recolor.light_gdk.blue;
-    light->green = priv->recolor.light_gdk.green;
+    memcpy(light, &priv->recolor.light, sizeof(GdkRGBA));
   }
   if (dark != NULL) {
-    dark->red = priv->recolor.dark_gdk.red;
-    dark->blue = priv->recolor.dark_gdk.blue;
-    dark->green = priv->recolor.dark_gdk.green;
+    memcpy(dark, &priv->recolor.dark, sizeof(GdkRGBA));
   }
 }
 
@@ -503,14 +491,6 @@ emit_completed_signal(void* data)
   return FALSE;
 }
 
-static void
-color2double(const GdkColor* col, double* v)
-{
-  v[0] = (double) col->red / 65535.;
-  v[1] = (double) col->green / 65535.;
-  v[2] = (double) col->blue / 65535.;
-}
-
 /* Returns the maximum possible saturation for given h and l.
    Assumes that l is in the interval l1, l2 and corrects the value to
    force u=0 on l1 and l2 */
@@ -575,13 +555,13 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
 
 #define rgb1 priv->recolor.dark
 #define rgb2 priv->recolor.light
-  const double l1 = (a[0]*rgb1[0] + a[1]*rgb1[1] + a[2]*rgb1[2]);
-  const double l2 = (a[0]*rgb2[0] + a[1]*rgb2[1] + a[2]*rgb2[2]);
+  const double l1 = a[0]*rgb1.red + a[1]*rgb1.green + a[2]*rgb1.blue;
+  const double l2 = a[0]*rgb2.red + a[1]*rgb2.green + a[2]*rgb2.blue;
 
   const double rgb_diff[] = {
-    rgb2[0] - rgb1[0],
-    rgb2[1] - rgb1[1],
-    rgb2[2] - rgb1[2]
+    rgb2.red - rgb1.red,
+    rgb2.green - rgb1.green,
+    rgb2.blue - rgb1.blue
   };
 
   for (unsigned int y = 0; y < page_height; y++) {
@@ -626,9 +606,9 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
       } else {
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
-        data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1[0]));
-        data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1[1]));
-        data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1[2]));
+        data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1.red));
+        data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1.green));
+        data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1.blue));
       }
     }
   }

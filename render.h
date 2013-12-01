@@ -78,7 +78,7 @@ void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
  * @param dark dark color
  */
 void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
-    const GdkColor* light, const GdkColor* dark);
+    const GdkRGBA* light, const GdkRGBA* dark);
 /**
  * Set light and dark colors for recoloring.
  * @param renderer a renderer object
@@ -94,7 +94,7 @@ void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
  * @param dark dark color
  */
 void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
-    GdkColor* light, GdkColor* dark);
+    GdkRGBA* light, GdkRGBA* dark);
 /**
  * Stop rendering.
  * @param renderer a render object

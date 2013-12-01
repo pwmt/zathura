@@ -464,9 +464,9 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   } else {
     /* set background color */
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
-      GdkColor color;
+      GdkRGBA color;
       zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color, NULL);
-      cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
+      cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
     } else {
       GdkColor color = priv->zathura->ui.colors.render_loading_bg;
       cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
@@ -480,9 +480,9 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* write text */
     if (render_loading == true) {
       if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
-        GdkColor color;
+        GdkRGBA color;
         zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, NULL, &color);
-        cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
+        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
       } else {
         GdkColor color = priv->zathura->ui.colors.render_loading_fg;
         cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
