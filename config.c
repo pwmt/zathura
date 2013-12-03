@@ -50,7 +50,7 @@ cb_color_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  char* string_value = (char*) value;
+  const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     gdk_rgba_parse(&(zathura->ui.colors.highlight_color), string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
