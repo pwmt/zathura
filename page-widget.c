@@ -24,7 +24,12 @@ typedef struct zathura_page_widget_private_s {
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
   ZathuraRenderRequest* render_request; /* Request object */
-  mutex lock; /**< Lock */
+  /** Lock
+   *
+   * This mutex can probably be removed. All functions are now called from the
+   * main thread.
+   */
+  mutex lock;
   bool cached; /**< Cached state */
 
   struct {
