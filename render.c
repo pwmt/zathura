@@ -497,17 +497,17 @@ emit_completed_signal(void* data)
 static double
 colorumax(const double* h, double l, double l1, double l2)
 {
-  double u, uu, v, vv, lv;
   if (h[0] == 0 && h[1] == 0 && h[2] == 0) {
     return 0;
   }
 
-  lv = (l - l1)/(l2 - l1);    /* Remap l to the whole interval 0,1 */
-  u = v = 1000000;
+  const double lv = (l - l1)/(l2 - l1);    /* Remap l to the whole interval 0,1 */
+  double u = 1000000;
+  double v = u;
   for (int k = 0; k < 3; k++) {
     if (h[k] > 0) {
-      uu = fabs((1-l)/h[k]);
-      vv = fabs((1-lv)/h[k]);
+      const double uu = fabs((1-l)/h[k]);
+      const double vv = fabs((1-lv)/h[k]);
 
       if (uu < u) {
         u = uu;
@@ -516,8 +516,8 @@ colorumax(const double* h, double l, double l1, double l2)
         v = vv;
       }
     } else if (h[k] < 0) {
-      uu = fabs(l/h[k]);
-      vv = fabs(lv/h[k]);
+      const double uu = fabs(l/h[k]);
+      const double vv = fabs(lv/h[k]);
 
       if (uu < u) {
         u = uu;
