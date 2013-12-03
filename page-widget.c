@@ -7,7 +7,6 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
-#include "glib-compat.h"
 #include "links.h"
 #include "page-widget.h"
 #include "page.h"
@@ -24,12 +23,6 @@ typedef struct zathura_page_widget_private_s {
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
   ZathuraRenderRequest* render_request; /* Request object */
-  /** Lock
-   *
-   * This mutex can probably be removed. All functions are now called from the
-   * main thread.
-   */
-  mutex lock;
   bool cached; /**< Cached state */
 
   struct {
@@ -197,8 +190,6 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->mouse.selection_basepoint.x = -1;
   priv->mouse.selection_basepoint.y = -1;
 
-  mutex_init(&(priv->lock));
-
   /* we want mouse events */
   gtk_widget_add_events(GTK_WIDGET(widget),
                         GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
@@ -248,8 +239,6 @@ zathura_page_widget_finalize(GObject* object)
   if (priv->links.list != NULL) {
     girara_list_free(priv->links.list);
   }
-
-  mutex_free(&(priv->lock));
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
@@ -370,7 +359,6 @@ static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  mutex_lock(&(priv->lock));
 
   zathura_document_t* document   = zathura_page_get_document(priv->page);
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
@@ -507,7 +495,6 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     /* render real page */
     zathura_render_request(priv->render_request, g_get_real_time());
   }
-  mutex_unlock(&(priv->lock));
   return FALSE;
 }
 
@@ -522,7 +509,6 @@ void
 zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  mutex_lock(&(priv->lock));
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
     priv->surface = NULL;
@@ -531,7 +517,6 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
     priv->surface = surface;
     cairo_surface_reference(surface);
   }
-  mutex_unlock(&(priv->lock));
   /* force a redraw here */
   if (priv->surface != NULL) {
     zathura_page_widget_redraw_canvas(widget);
