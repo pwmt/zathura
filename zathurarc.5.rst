@@ -262,6 +262,8 @@ Possible arguments are:
 * left
 * next
 * out
+* page-bottom
+* page-top
 * previous
 * right
 * rotate-ccw
