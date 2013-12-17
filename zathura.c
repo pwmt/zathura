@@ -799,9 +799,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   page_set(zathura, zathura_document_get_current_page_number(document));
 
   /* Set position (only if restoring from history file) */
-  if (file_info.current_page == zathura_document_get_current_page_number(document)
-  && (file_info.position_x != 0 || file_info.position_y != 0)) {
-      position_set(zathura, file_info.position_x, file_info.position_y);
+  if (file_info.current_page == zathura_document_get_current_page_number(document) &&
+      (file_info.position_x != 0 || file_info.position_y != 0)) {
+    position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
   return true;
