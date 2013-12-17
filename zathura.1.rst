@@ -75,6 +75,8 @@ t, ^f, ^b, space, <S-space>, y
   Scroll a full page left, down, up or right
 gg, G, nG
   Goto to the first, the last or to the nth page
+H, L
+  Goto top or bottom of the current page
 ^o, ^i
   Move backward and forward through the jump list
 ^j, ^k
