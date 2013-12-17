@@ -281,6 +281,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_Up,         NULL, sc_scroll,                   NORMAL,     UP,              NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Down,       NULL, sc_scroll,                   NORMAL,     DOWN,            NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Right,      NULL, sc_scroll,                   NORMAL,     RIGHT,           NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_H,          NULL, sc_scroll,                   NORMAL,     PAGE_TOP,        NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_L,          NULL, sc_scroll,                   NORMAL,     PAGE_BOTTOM,     NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_t,          NULL, sc_scroll,                   NORMAL,     HALF_LEFT,       NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d,          NULL, sc_scroll,                   NORMAL,     HALF_DOWN,       NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_u,          NULL, sc_scroll,                   NORMAL,     HALF_UP,         NULL);
@@ -436,6 +438,8 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "left",         LEFT);
   girara_argument_mapping_add(gsession, "next",         NEXT);
   girara_argument_mapping_add(gsession, "out",          ZOOM_OUT);
+  girara_argument_mapping_add(gsession, "page-top",     PAGE_TOP);
+  girara_argument_mapping_add(gsession, "page-bottom",  PAGE_BOTTOM);
   girara_argument_mapping_add(gsession, "previous",     PREVIOUS);
   girara_argument_mapping_add(gsession, "right",        RIGHT);
   girara_argument_mapping_add(gsession, "specific",     ZOOM_SPECIFIC);

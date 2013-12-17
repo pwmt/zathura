@@ -500,6 +500,22 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     return false;
   }
 
+  /* Retrieve current page and position */
+  const unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  double pos_x = zathura_document_get_position_x(zathura->document);
+  double pos_y = zathura_document_get_position_y(zathura->document);
+
+  /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
+  if (argument->n == PAGE_TOP) {
+    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &pos_x, &pos_y);
+    position_set(zathura, -1, pos_y);
+    return false;
+  } else if (argument->n == PAGE_BOTTOM) {
+    page_number_to_position(zathura->document, page_id, 0.5, 1.0, &pos_x, &pos_y);
+    position_set(zathura, -1, pos_y);
+    return false;
+  }
+
   if (t == 0) {
     t = 1;
   }
@@ -526,11 +542,6 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   bool scroll_wrap = false;
   girara_setting_get(session, "scroll-wrap", &scroll_wrap);
-
-  double pos_x = zathura_document_get_position_x(zathura->document);
-  double pos_y = zathura_document_get_position_y(zathura->document);
-
-  const unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
 
   /* compute the direction of scrolling */
   double direction = 1.0;
