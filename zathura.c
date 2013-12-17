@@ -536,8 +536,17 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* read history file */
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 0, 0, 0, 0 };
-  bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
+  zathura_fileinfo_t file_info = {
+    .current_page = 0,
+    .page_offset = 0,
+    .scale = 1,
+    .rotation = 0,
+    .pages_per_row = 0,
+    .first_page_column = 0,
+    .position_x = 0,
+    .position_y = 0
+  };
+  const bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
   /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
