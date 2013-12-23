@@ -89,6 +89,7 @@ struct zathura_s
   {
     bool enabled;
     gchar* editor;
+    ZathuraSynctexDbus* dbus;
   } synctex;
 
   struct

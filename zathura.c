@@ -34,6 +34,7 @@
 #include "page-widget.h"
 #include "plugin.h"
 #include "adjustment.h"
+#include "synctex-dbus.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -804,6 +805,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
+  /* Start D-Bus */
+  zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
+
   return true;
 
 error_free:
@@ -885,6 +889,12 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
+
+  /* stop D-Bus */
+  if (zathura->synctex.dbus != NULL) {
+    g_object_unref(zathura->synctex.dbus);
+    zathura->synctex.dbus = NULL;
+  }
 
   /* remove monitor */
   if (keep_monitor == false) {
