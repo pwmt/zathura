@@ -18,8 +18,6 @@ struct zathura_synctex_dbus_s
 struct zathura_synctex_dbus_class_s
 {
   GObjectClass parent_class;
-
-  bool (*view)(ZathuraSynctexDbus* synctex_dbus, const char* position);
 };
 
 #define ZATHURA_TYPE_SYNCTEX_DBUS \
@@ -41,9 +39,6 @@ struct zathura_synctex_dbus_class_s
 GType zathura_synctex_dbus_get_type(void);
 
 ZathuraSynctexDbus* zathura_synctex_dbus_new(zathura_t* zathura);
-
-/* bool zathura_synctex_dbus_view(ZathuraSynctexDbus* synctex_dbus,
-    const char* position); */
 
 /**
  * Forward synctex position to zathura instance having the right file open.

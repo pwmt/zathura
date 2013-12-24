@@ -45,9 +45,6 @@ static const char SYNCTEX_DBUS_INTROSPECTION[] =
 
 static const GDBusInterfaceVTable interface_vtable;
 
-static bool synctex_dbus_view(ZathuraSynctexDbus* synctex_view,
-    const char* position);
-
 static void
 finalize(GObject* object)
 {
@@ -72,9 +69,6 @@ finalize(GObject* object)
 static void
 zathura_synctex_dbus_class_init(ZathuraSynctexDbusClass* class)
 {
-  /* initialize methods */
-  class->view = synctex_dbus_view;
-
   /* add private members */
   g_type_class_add_private(class, sizeof(private_t));
 
@@ -162,23 +156,6 @@ zathura_synctex_dbus_new(zathura_t* zathura)
   return synctex_dbus;
 }
 
-static bool
-synctex_dbus_view(ZathuraSynctexDbus* synctex_dbus, const char* position)
-{
-  private_t* priv = GET_PRIVATE(synctex_dbus);
-  return synctex_view(priv->zathura, position);
-}
-
-bool
-zathura_synctex_dbus_view(ZathuraSynctexDbus* synctex_dbus, const char* position)
-{
-  g_return_val_if_fail(ZATHURA_IS_SYNCTEX_DBUS(synctex_dbus), false);
-  g_return_val_if_fail(position != NULL, false);
-
-  return ZATHURA_SYNCTEX_DBUS_GET_CLASS(synctex_dbus)->view(synctex_dbus,
-      position);
-}
-
 /* D-Bus handler */
 
 static void
@@ -189,12 +166,13 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     GDBusMethodInvocation* invocation, void* data)
 {
   ZathuraSynctexDbus* synctex_dbus = data;
+  private_t* priv = GET_PRIVATE(synctex_dbus);
 
   if (g_strcmp0(method_name, "View") == 0) {
       gchar* position = NULL;
       g_variant_get(parameters, "(s)", &position);
 
-      const bool ret = zathura_synctex_dbus_view(synctex_dbus, position);
+      const bool ret = synctex_view(priv->zathura, position);
       g_free(position);
 
       GVariant* result = g_variant_new("(b)", ret);
