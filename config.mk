@@ -43,6 +43,7 @@ MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
 LIBDIR ?= ${PREFIX}/lib
 INCLUDEDIR ?= ${PREFIX}/include
+DBUSINTERFACEDIR =? ${PREFIX}/share/dbus-1/interfaces
 
 # plugin directory
 PLUGINDIR ?= ${LIBDIR}/zathura

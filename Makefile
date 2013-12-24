@@ -128,6 +128,7 @@ dist: clean build-manpages
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}.desktop version.h.in \
 			${PROJECT}.1 ${PROJECT}rc.5 \
+			org.pwmt.zathura.synxtex.xml \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
@@ -184,7 +185,12 @@ install-headers: ${PROJECT}.pc
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
-install: all install-headers install-manpages
+install-dbus:
+	$(ECHO) installing D-Bus interface definitions
+	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
+	$(QUIET)install -m 644 org.pwmt.zathura.synxtex.xml $(DESTDIR)$(DBUSINTERFACEDIR)
+
+install: all install-headers install-manpages install-dbus
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin

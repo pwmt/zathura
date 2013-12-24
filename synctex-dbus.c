@@ -14,8 +14,10 @@ G_DEFINE_TYPE(ZathuraSynctexDbus, zathura_synctex_dbus, G_TYPE_OBJECT)
 
 /* template for bus name */
 static const char DBUS_NAME_TEMPLATE[] = "org.pwmt.zathura.PID-%d";
-/* template for object path */
-const char DBUS_OBJPATH[] = "/org/pwmt/zathura/synctex";
+/* object path */
+static const char DBUS_OBJPATH[] = "/org/pwmt/zathura/synctex";
+/* interface name */
+static const char DBUS_INTERFACE[] = "org.pwmt.zathura.synctex";
 
 typedef struct private_s {
   zathura_t* zathura;
@@ -32,7 +34,7 @@ typedef struct private_s {
 /* Introspection data for the service we are exporting */
 static const char SYNCTEX_DBUS_INTROSPECTION[] =
   "<node>\n"
-  "  <interface name='org.pwmt.zathura.Synctex'>\n"
+  "  <interface name='org.pwmt.zathura.synctex'>\n"
   "    <method name='View'>\n"
   "      <arg type='s' name='position' direction='in' />\n"
   "      <arg type='b' name='return' direction='out' />\n"
@@ -270,7 +272,7 @@ synctex_forward_position(const char* filename, const char* position)
 
     GVariant* vfilename = g_dbus_connection_call_sync(connection,
       name, DBUS_OBJPATH, "org.freedesktop.DBus.Properties",
-      "Get", g_variant_new("(ss)", "org.pwmt.zathura.Synctex", "filename"),
+      "Get", g_variant_new("(ss)", DBUS_INTERFACE, "filename"),
       G_VARIANT_TYPE("(v)"), G_DBUS_CALL_FLAGS_NONE,
       TIMEOUT, NULL, &error);
     if (vfilename == NULL) {
@@ -296,7 +298,7 @@ synctex_forward_position(const char* filename, const char* position)
     found_one = true;
 
     GVariant* ret = g_dbus_connection_call_sync(connection,
-      name, DBUS_OBJPATH, "org.pwmt.zathura.Synctex", "View",
+      name, DBUS_OBJPATH, DBUS_INTERFACE, "View",
       g_variant_new("(s)", position), G_VARIANT_TYPE("(b)"),
       G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
     if (ret == NULL) {
