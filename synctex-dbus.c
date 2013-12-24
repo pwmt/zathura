@@ -308,6 +308,7 @@ synctex_forward_position(const char* filename, const char* position)
   }
   g_variant_iter_free(iter);
   g_variant_unref(vnames);
+  g_object_unref(connection);
 
   return found_one;
 }
