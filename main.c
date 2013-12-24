@@ -96,12 +96,15 @@ main(int argc, char* argv[])
 
   if (synctex_fwd != NULL) {
     if (argc != 2) {
-      girara_error(_("Too many arguments or missing filename while running with --syntex-forward"));
+      girara_error("Too many arguments or missing filename while running with --syntex-forward");
       return -1;
     }
 
     if (synctex_forward_position(argv[1], synctex_fwd) == true) {
       return 0;
+    } else {
+      girara_error("Could not find open instance for '%s'., argv[1]);
+      return -1;
     }
   }
 
