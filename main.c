@@ -85,6 +85,15 @@ main(int argc, char* argv[])
   }
   g_option_context_free(context);
 
+  /* Set log level. */
+  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
+    girara_set_debug_level(GIRARA_INFO);
+  } else if (g_strcmp0(loglevel, "warning") == 0) {
+    girara_set_debug_level(GIRARA_WARNING);
+  } else if (g_strcmp0(loglevel, "error") == 0) {
+    girara_set_debug_level(GIRARA_ERROR);
+  }
+
   if (synctex_fwd != NULL) {
     if (argc != 2) {
       girara_error(_("Too many arguments or missing filename while running with --syntex-forward"));
@@ -107,15 +116,6 @@ main(int argc, char* argv[])
     }
 
     setsid();
-  }
-
-  /* Set log level. */
-  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
-    girara_set_debug_level(GIRARA_INFO);
-  } else if (g_strcmp0(loglevel, "warning") == 0) {
-    girara_set_debug_level(GIRARA_WARNING);
-  } else if (g_strcmp0(loglevel, "error") == 0) {
-    girara_set_debug_level(GIRARA_ERROR);
   }
 
   zathura_set_xid(zathura, embed);
