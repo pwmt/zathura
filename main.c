@@ -10,6 +10,7 @@
 
 #include "zathura.h"
 #include "utils.h"
+#include "synctex-dbus.h"
 
 /* main function */
 int
@@ -43,6 +44,7 @@ main(int argc, char* argv[])
   gchar* loglevel       = NULL;
   gchar* password       = NULL;
   gchar* synctex_editor = NULL;
+  gchar* synctex_fwd    = NULL;
   bool forkback         = false;
   bool print_version    = false;
   bool synctex          = false;
@@ -55,17 +57,18 @@ main(int argc, char* argv[])
 #endif
 
   GOptionEntry entries[] = {
-    { "reparent",               'e', 0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
-    { "config-dir",             'c', 0, G_OPTION_ARG_FILENAME, &config_dir,     _("Path to the config directory"),                      "path" },
-    { "data-dir",               'd', 0, G_OPTION_ARG_FILENAME, &data_dir,       _("Path to the data directory"),                        "path" },
-    { "plugins-dir",            'p', 0, G_OPTION_ARG_STRING,   &plugin_path,    _("Path to the directories containing plugins"),        "path" },
-    { "fork",                   '\0',0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
-    { "password",               'w', 0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
-    { "page",                   'P', 0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
-    { "debug",                  'l', 0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
-    { "version",                'v', 0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
-    { "synctex",                's', 0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
-    { "synctex-editor-command", 'x', 0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
+    { "reparent",               'e',  0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
+    { "config-dir",             'c',  0, G_OPTION_ARG_FILENAME, &config_dir,     _("Path to the config directory"),                      "path" },
+    { "data-dir",               'd',  0, G_OPTION_ARG_FILENAME, &data_dir,       _("Path to the data directory"),                        "path" },
+    { "plugins-dir",            'p',  0, G_OPTION_ARG_STRING,   &plugin_path,    _("Path to the directories containing plugins"),        "path" },
+    { "fork",                   '\0', 0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
+    { "password",               'w',  0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
+    { "page",                   'P',  0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
+    { "debug",                  'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
+    { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
+    { "synctex",                's',  0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
+    { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
+    { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Synctex forward ..."),                               "position" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -82,11 +85,23 @@ main(int argc, char* argv[])
   }
   g_option_context_free(context);
 
+  if (synctex_fwd != NULL) {
+    if (argc != 2) {
+      girara_error(_("Too many arguments or missing filename while running with --syntex-forward"));
+      return -1;
+    }
+
+    if (synctex_forward_position(argv[1], synctex_fwd) == true) {
+      return 0;
+    }
+  }
+
+
   /* Fork into the background if the user really wants to ... */
   if (forkback == true) {
-    int pid = fork();
+    const int pid = fork();
     if (pid > 0) { /* parent */
-      exit(0);
+      return 0;
     } else if (pid < 0) { /* error */
       girara_error("Couldn't fork.");
     }

@@ -223,3 +223,92 @@ static const GDBusInterfaceVTable interface_vtable =
   .set_property = NULL
 };
 
+static const unsigned int TIMEOUT = 3000;
+
+bool
+synctex_forward_position(const char* filename, const char* position)
+{
+  if (filename == NULL || position == NULL) {
+    return false;
+  }
+
+  GError* error = NULL;
+  GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SESSION,
+      NULL, &error);
+  /* GDBusProxy* proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SESSION,
+    G_DBUS_PROXY_FLAGS_NONE, NULL, "org.freedesktop.DBus",
+    "/org/freedesktop/DBus", "org.freedesktop.DBus", NULL, &error); */
+  if (connection == NULL) {
+    girara_error("Could not create proxy for 'org.freedesktop.DBus': %s",
+        error->message);
+    g_error_free(error);
+    return false;
+  }
+
+  GVariant* vnames = g_dbus_connection_call_sync(connection,
+      "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
+      "ListNames", NULL, G_VARIANT_TYPE("(as)"), G_DBUS_CALL_FLAGS_NONE,
+      TIMEOUT, NULL, &error);
+  if (vnames == NULL) {
+    girara_error("Could not list available names: %s", error->message);
+    g_error_free(error);
+    // g_object_unref(proxy);
+    g_object_unref(connection);
+    return false;
+  }
+
+  GVariantIter* iter = NULL;
+  g_variant_get(vnames, "(as)", &iter);
+
+  gchar* name = NULL;
+  bool found_one = false;
+  while (g_variant_iter_loop(iter, "s", &name) == TRUE) {
+    if (g_str_has_prefix(name, "org.pwmt.zathura.PID") == FALSE) {
+      continue;
+    }
+    girara_debug("Found name: %s", name);
+
+    GVariant* vfilename = g_dbus_connection_call_sync(connection,
+      name, DBUS_OBJPATH, "org.freedesktop.DBus.Properties",
+      "Get", g_variant_new("(ss)", "org.pwmt.zathura.Synctex", "filename"),
+      G_VARIANT_TYPE("(v)"), G_DBUS_CALL_FLAGS_NONE,
+      TIMEOUT, NULL, &error);
+    if (vfilename == NULL) {
+      girara_error("Failed to query 'filename' property from '%s': %s",
+          name, error->message);
+      g_error_free(error);
+      continue;
+    }
+
+    GVariant* tmp = NULL;
+    g_variant_get(vfilename, "(v)", &tmp);
+    gchar* remote_filename = g_variant_dup_string(tmp, NULL);
+    girara_debug("Filename from '%s': %s", name, remote_filename);
+    g_variant_unref(tmp);
+    g_variant_unref(vfilename);
+
+    if (g_strcmp0(filename, remote_filename) != 0) {
+      g_free(remote_filename);
+      continue;
+    }
+
+    g_free(remote_filename);
+    found_one = true;
+
+    GVariant* ret = g_dbus_connection_call_sync(connection,
+      name, DBUS_OBJPATH, "org.pwmt.zathura.Synctex", "View",
+      g_variant_new("(s)", position), G_VARIANT_TYPE("(b)"),
+      G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
+    if (ret == NULL) {
+      girara_error("Failed to run View on '%s': %s", name, error->message);
+      g_error_free(error);
+    } else {
+      g_variant_unref(ret);
+    }
+  }
+  g_variant_iter_free(iter);
+  g_variant_unref(vnames);
+
+  return found_one;
+}
+

@@ -45,5 +45,13 @@ ZathuraSynctexDbus* zathura_synctex_dbus_new(zathura_t* zathura);
 /* bool zathura_synctex_dbus_view(ZathuraSynctexDbus* synctex_dbus,
     const char* position); */
 
+/**
+ * Forward synctex position to zathura instance having the right file open.
+ * @param filename filename
+ * @param position synctex position
+ * @returns true if a instance was found that has the given filename open, false
+ * otherwise
+ */
+bool synctex_forward_position(const char* filename, const char* position);
 
 #endif
