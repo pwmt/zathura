@@ -1,11 +1,17 @@
 /* See LICENSE file for license and copyright information */
 
+#define _BSD_SOURCE
+#define _XOPEN_SOURCE 700
+
+#include <errno.h>
+#include <girara/utils.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+#include <limits.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <glib/gstdio.h>
-#include <glib/gi18n.h>
-#include <girara/utils.h>
-#include <locale.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "zathura.h"
@@ -100,10 +106,19 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    if (synctex_forward_position(argv[1], synctex_fwd) == true) {
+    char* real_path = realpath(argv[1], NULL);
+    if (real_path == NULL) {
+      girara_error("Failed to determine real path: %s", strerror(errno));
+      return -1;
+    }
+
+    const bool ret = synctex_forward_position(argv[1], synctex_fwd);
+    free(real_path);
+
+    if (ret == true) {
       return 0;
     } else {
-      girara_error("Could not find open instance for '%s'", argv[1]);
+      girara_error("Could not find open instance for '%s'", real_path);
       return -1;
     }
   }
