@@ -69,7 +69,7 @@ main(int argc, char* argv[])
     { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
     { "synctex",                's',  0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
-    { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Synctex forward ..."),                               "position" },
+    { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
