@@ -14,6 +14,7 @@ SYNOPOSIS
 =========
 | zathura [OPTION]...
 | zathura [OPTION]... FILE [FILE ...]
+| zathura --syntex-forward INPUT FILE
 
 DESCRIPTION
 ===========
@@ -57,6 +58,10 @@ OPTIONS
 
 -x [cmd], --synctex-editor-command [cmd]
   Set the synctex editor command
+
+--syntex-forward [input],
+  Jump to the given position. The switch expcects the same format as specified
+  for syntex's view -i.
 
 MOUSE AND KEY BINDINGS
 ======================
