@@ -107,7 +107,7 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    const bool ret = synctex_forward_position(argv[1], synctex_fwd);
+    const bool ret = synctex_forward_position(real_path, synctex_fwd);
     free(real_path);
 
     if (ret == true) {
