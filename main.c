@@ -55,12 +55,7 @@ main(int argc, char* argv[])
   bool print_version    = false;
   bool synctex          = false;
   int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-
-#if GTK_CHECK_VERSION(3, 0, 0)
-  Window embed = 0;
-#else
-  GdkNativeWindow embed = 0;
-#endif
+  Window embed          = 0;
 
   GOptionEntry entries[] = {
     { "reparent",               'e',  0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
