@@ -107,13 +107,12 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    const bool ret = synctex_forward_position(real_path, synctex_fwd);
-    free(real_path);
-
-    if (ret == true) {
+    if (synctex_forward_position(real_path, synctex_fwd) == true) {
+      free(real_path);
       return 0;
     } else {
       girara_error("Could not find open instance for '%s'", real_path);
+      free(real_path);
       return -1;
     }
   }
