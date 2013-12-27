@@ -103,7 +103,7 @@ main(int argc, char* argv[])
     if (synctex_forward_position(argv[1], synctex_fwd) == true) {
       return 0;
     } else {
-      girara_error("Could not find open instance for '%s'., argv[1]);
+      girara_error("Could not find open instance for '%s'", argv[1]);
       return -1;
     }
   }
