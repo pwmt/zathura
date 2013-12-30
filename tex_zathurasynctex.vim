@@ -45,8 +45,8 @@ function! Zathura_SyncTexForward()
     endif
   endif
 
-  let execstr = "silent !zathura --synctex-forward=".input." ".shellescape(output)
-  exec execstr
+  let execstr = "zathura --synctex-forward=".input." ".shellescape(output)
+  silent call system(execstr)
 endfunction
 
 nmap <buffer> <Leader>f :call Zathura_SyncTexForward()<Enter><Enter>
