@@ -128,9 +128,8 @@ dist: clean build-manpages
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}.desktop version.h.in \
 			${PROJECT}.1 ${PROJECT}rc.5 \
-			org.pwmt.zathura.synctex.xml \
-			tex_zathurasynctex.tex \
 			${PROJECT}-${VERSION}
+	$(QUIET)cp -r data ${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
 	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
@@ -189,12 +188,12 @@ install-headers: ${PROJECT}.pc
 install-dbus:
 	$(ECHO) installing D-Bus interface definitions
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
-	$(QUIET)install -m 644 org.pwmt.zathura.synctex.xml $(DESTDIR)$(DBUSINTERFACEDIR)
+	$(QUIET)install -m 644 data/org.pwmt.zathura.synctex.xml $(DESTDIR)$(DBUSINTERFACEDIR)
 
 install-vimftplugin:
 	$(ECHO) installing Vim filetype plugin
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(VIMFTPLUGINDIR)
-	$(QUIET)install -m 644 tex_zathurasynctex.vim $(DESTDIR)$(VIMFTPLUGINDIR)
+	$(QUIET)install -m 644 data/tex_zathurasynctex.vim $(DESTDIR)$(VIMFTPLUGINDIR)
 
 install: all install-headers install-manpages install-dbus
 	$(ECHO) installing executable file
