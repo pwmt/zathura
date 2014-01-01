@@ -49,4 +49,4 @@ function! Zathura_SyncTexForward()
   silent call system(execstr)
 endfunction
 
-nmap <buffer> <Leader>f :call Zathura_SyncTexForward()<Enter><Enter>
+nmap <buffer> <Leader>f :call Zathura_SyncTexForward()<Enter>
