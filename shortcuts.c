@@ -507,12 +507,14 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
   if (argument->n == PAGE_TOP) {
-    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &pos_x, &pos_y);
-    position_set(zathura, -1, pos_y);
+    double dontcare = 0.5;
+    page_number_to_position(zathura->document, page_id, dontcare, 0.0, &dontcare, &pos_y);
+    position_set(zathura, pos_x, pos_y);
     return false;
   } else if (argument->n == PAGE_BOTTOM) {
-    page_number_to_position(zathura->document, page_id, 0.5, 1.0, &pos_x, &pos_y);
-    position_set(zathura, -1, pos_y);
+    double dontcare = 0.5;
+    page_number_to_position(zathura->document, page_id, dontcare, 1.0, &dontcare, &pos_y);
+    position_set(zathura, pos_x, pos_y);
     return false;
   }
 
