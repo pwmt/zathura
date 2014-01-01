@@ -43,7 +43,7 @@ DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 all: options ${PROJECT} po build-manpages
 
 # pkg-config based version checks
-.version-checks/%:
+.version-checks/%: config.mk
 	$(QUIET)test $($(*)_VERSION_CHECK) -eq 0 || \
 		pkg-config --atleast-version $($(*)_MIN_VERSION) $($(*)_PKG_CONFIG_NAME) || ( \
 		echo "The minium required version of $(*) is $($(*)_MIN_VERSION)" && \
