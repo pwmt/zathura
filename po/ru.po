@@ -5,16 +5,17 @@
 # AlexanderR <alexander.r@gmx.com>, 2013
 # Alissa <Chertik89@gmail.com>, 2013
 # Mikhail Krutov <>, 2012
+# vp1981 <irk.translator@yandex.ru>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-04 19:57+0100\n"
-"PO-Revision-Date: 2013-11-01 13:12+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"PO-Revision-Date: 2013-12-16 13:11+0000\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
 "ru/)\n"
 "Language: ru\n"
+"Last-Translator: vp1981 <irk.translator@yandex.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,12 +25,12 @@ msgstr ""
 #: ../callbacks.c:297
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Неправильный ввод: %s"
+msgstr "Неправильный ввод: %s."
 
 #: ../callbacks.c:333
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Получен неверный индекс %s"
+msgstr "Получен неверный индекс: %s."
 
 #: ../callbacks.c:546
 #, c-format
@@ -41,11 +42,11 @@ msgstr "Выделенный текст скопирован в буфер: %s"
 #: ../commands.c:540 ../shortcuts.c:403 ../shortcuts.c:1163
 #: ../shortcuts.c:1192
 msgid "No document opened."
-msgstr "Документ не открыт"
+msgstr "Нет открытых документов."
 
 #: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:424
 msgid "Invalid number of arguments given."
-msgstr "Неверное число аргументов"
+msgstr "Указано неверное число аргументов."
 
 #: ../commands.c:53
 #, c-format
@@ -55,7 +56,7 @@ msgstr "Не могу создать закладку %s"
 #: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Не могу создать закладку %s"
+msgstr "Не удалось создать закладку %s"
 
 #: ../commands.c:60
 #, c-format
@@ -84,93 +85,93 @@ msgstr "Закладки %s не существует"
 
 #: ../commands.c:162
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #: ../commands.c:163
 msgid "Author"
-msgstr ""
+msgstr "Автор"
 
 #: ../commands.c:164
 msgid "Subject"
-msgstr ""
+msgstr "Тема"
 
 #: ../commands.c:165
 msgid "Keywords"
-msgstr ""
+msgstr "Ключевые слова"
 
 #: ../commands.c:166
 msgid "Creator"
-msgstr ""
+msgstr "Создатель"
 
 #: ../commands.c:167
 msgid "Producer"
-msgstr ""
+msgstr "Производитель"
 
 #: ../commands.c:168
 msgid "Creation date"
-msgstr ""
+msgstr "Время создания"
 
 #: ../commands.c:169
 msgid "Modification date"
-msgstr ""
+msgstr "Время изменения"
 
 #: ../commands.c:174 ../commands.c:196
 msgid "No information available."
-msgstr "Нет доступной информации"
+msgstr "Нет доступной информации."
 
 #: ../commands.c:234
 msgid "Too many arguments."
-msgstr "Слишком много аргументов"
+msgstr "Слишком много аргументов."
 
 #: ../commands.c:245
 msgid "No arguments given."
-msgstr "Отсутствуют аргументы"
+msgstr "Отсутствуют аргументы."
 
 #: ../commands.c:304 ../commands.c:330
 msgid "Document saved."
-msgstr "Документ сохранён"
+msgstr "Документ сохранён."
 
 #: ../commands.c:306 ../commands.c:332
 msgid "Failed to save document."
-msgstr "Не удалось сохранить документ"
+msgstr "Не удалось сохранить документ."
 
 #: ../commands.c:309 ../commands.c:335
 msgid "Invalid number of arguments."
-msgstr "Неверное количество аргументов"
+msgstr "Неверное количество аргументов."
 
 #: ../commands.c:443
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Не могу сохранить приложенный файл %s в %s"
+msgstr "Не удалось сохранить приложенный файл «%s» в «%s»."
 
 #: ../commands.c:445
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Файл %s сохранён в %s"
+msgstr "Файл «%s» сохранён в «%s»."
 
 #: ../commands.c:489
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Файл '%s' сохранён в '%s'"
+msgstr "Изображение «%s» сохранено в «%s»."
 
 #: ../commands.c:491
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Не могу сохранить приложенный файл %s в %s"
+msgstr "Не удалось записать изображение «%s» в «%s»."
 
 #: ../commands.c:498
 #, c-format
 msgid "Unknown image '%s'."
-msgstr "Неизвестный файл %s."
+msgstr "Неизвестное изображение «%s»."
 
 #: ../commands.c:502
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Неизвестное вложение %s."
+msgstr "Неизвестное вложение или изображение «%s»."
 
 #: ../commands.c:553
 msgid "Argument must be a number."
-msgstr "Аргумент должен быть числом"
+msgstr "Аргумент должен быть числом."
 
 #: ../completion.c:250
 #, c-format
@@ -179,7 +180,7 @@ msgstr "Страница %d"
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "Прикепленные файлы"
+msgstr "Прикреплённые файлы"
 
 #. add images
 #: ../completion.c:324
@@ -205,7 +206,7 @@ msgstr "Количество страниц в ряд"
 
 #: ../config.c:139
 msgid "Column of the first page"
-msgstr ""
+msgstr "Столбец первой страницы"
 
 #: ../config.c:141
 msgid "Scroll step"
@@ -217,7 +218,7 @@ msgstr "Шаг горизонтальной прокрутки"
 
 #: ../config.c:145
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Перекрытие страниц при прокрутке"
 
 #: ../config.c:147
 msgid "Zoom minimum"
@@ -229,7 +230,7 @@ msgstr "Максимальное увеличение"
 
 #: ../config.c:151
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Максимальное количество страниц хранимых в кэше"
 
 #: ../config.c:153
 msgid "Number of positions to remember in the jumplist"
@@ -265,7 +266,7 @@ msgstr "Перекрасить страницы"
 
 #: ../config.c:169
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
+msgstr "При перекраске сохранять оттенок и изменять только осветление"
 
 #: ../config.c:171
 msgid "Wrap scrolling"
@@ -273,7 +274,7 @@ msgstr "Плавная прокрутка"
 
 #: ../config.c:173
 msgid "Page aware scrolling"
-msgstr ""
+msgstr "Постраничная прокрутка"
 
 #: ../config.c:175
 msgid "Advance number of pages per row"
@@ -281,15 +282,15 @@ msgstr "Увеличить количество страниц в ряду"
 
 #: ../config.c:177
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Центрировать увеличение по горизонтали"
 
 #: ../config.c:179
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Выровнять цель ссылки по левому краю"
 
 #: ../config.c:181
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Разрешить изменять размер при следовании по ссылкам"
 
 #: ../config.c:183
 msgid "Center result horizontally"
@@ -301,19 +302,19 @@ msgstr "Прозрачность подсветки"
 
 #: ../config.c:187
 msgid "Render 'Loading ...'"
-msgstr "Рендер 'Загружается ...'"
+msgstr "Рендер «Загружается ...»"
 
 #: ../config.c:188
 msgid "Adjust to when opening file"
-msgstr ""
+msgstr "Подогнать размеры при открытии документа"
 
 #: ../config.c:190
 msgid "Show hidden files and directories"
-msgstr "Показывать скрытые файлы и директории"
+msgstr "Показывать скрытые файлы и каталоги"
 
 #: ../config.c:192
 msgid "Show directories"
-msgstr "Показывать директории"
+msgstr "Показывать каталоги"
 
 #: ../config.c:194
 msgid "Always open on first page"
@@ -325,7 +326,7 @@ msgstr "Подсветить результаты поиска"
 
 #: ../config.c:198
 msgid "Enable incremental search"
-msgstr "Инкрементальный поиск"
+msgstr "Включить инкрементальный поиск"
 
 #: ../config.c:200
 msgid "Clear search results on abort"
@@ -337,7 +338,7 @@ msgstr "Использовать базовое имя файла в загол�
 
 #: ../config.c:204
 msgid "Display the page number in the window title"
-msgstr "Отображать номер страницы в заголовке"
+msgstr "Показывать номер страницы в заголовке"
 
 #: ../config.c:206
 msgid "Use basename of the file in the statusbar"
@@ -345,11 +346,11 @@ msgstr "Использовать базовое имя файла в строк�
 
 #: ../config.c:208 ../main.c:67
 msgid "Enable synctex support"
-msgstr ""
+msgstr "Включить поддержку synctex"
 
 #: ../config.c:210
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "Буфер для записи данных из области выделенных мышкой"
 
 #. define default inputbar commands
 #: ../config.c:369
@@ -398,7 +399,7 @@ msgstr "Сохранить документ"
 
 #: ../config.c:380
 msgid "Save document (and force overwriting)"
-msgstr "Сохранить документ (с перезапиьсю)"
+msgstr "Сохранить документ (с перезаписью)"
 
 #: ../config.c:381
 msgid "Save attachments"
@@ -444,7 +445,7 @@ msgstr "Ссылка: %s"
 
 #: ../links.c:228
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Ссылка: неправильная"
 
 #: ../main.c:58
 msgid "Reparents to window specified by xid"
@@ -452,19 +453,19 @@ msgstr "Сменить материнское окно на окно, указа
 
 #: ../main.c:59
 msgid "Path to the config directory"
-msgstr "Путь к директории конфига"
+msgstr "Путь к каталогу с настройкой"
 
 #: ../main.c:60
 msgid "Path to the data directory"
-msgstr "Путь к директории с данными"
+msgstr "Путь к каталогу с данными"
 
 #: ../main.c:61
 msgid "Path to the directories containing plugins"
-msgstr "Путь к директории с плагинами"
+msgstr "Путь к каталогу с плагинами"
 
 #: ../main.c:62
 msgid "Fork into the background"
-msgstr "Уйти в бэкграунд"
+msgstr "Запустить в фоне"
 
 #: ../main.c:63
 msgid "Document password"
@@ -476,7 +477,7 @@ msgstr "Перейти к странице номер"
 
 #: ../main.c:65
 msgid "Log level (debug, info, warning, error)"
-msgstr "Уровень логирования (debug,info,warning,error)"
+msgstr "Уровень журналирования (debug, info, warning, error)"
 
 #: ../main.c:66
 msgid "Print version information"
@@ -484,7 +485,7 @@ msgstr "Показать информацию о файле"
 
 #: ../main.c:68
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "Редактор для synctex (передаётся далее программе synctex)"
 
 #: ../page-widget.c:526
 msgid "Loading..."
@@ -496,19 +497,19 @@ msgstr "Скопировать изображение"
 
 #: ../page-widget.c:846
 msgid "Save image as"
-msgstr "Созранить как"
+msgstr "Сохранить изображение как"
 
 #: ../shortcuts.c:1076
 msgid "This document does not contain any index"
-msgstr "В документе нету индекса"
+msgstr "В документе нет индекса"
 
 #: ../zathura.c:213 ../zathura.c:959
 msgid "[No name]"
-msgstr "[No name]"
+msgstr "[Без названия]"
 
 #: ../zathura.c:486
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Не удалось прочитать файл со стандартного входа и записать его во временный файл."
 
 #: ../zathura.c:535
 msgid "Unsupported file type. Please install the necessary plugin."
@@ -516,4 +517,4 @@ msgstr "Тип файла не поддерживается. Установит�
 
 #: ../zathura.c:545
 msgid "Document does not contain any pages"
-msgstr "Документ не содержит ни одной страницы"
+msgstr "В документе нет страниц"
