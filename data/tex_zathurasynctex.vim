@@ -1,4 +1,4 @@
-" See LICENSE file for license and copyright information 
+" See LICENSE file for license and copyright information
 
 " avoid re-execution
 if exists("b:did_zathura_synctex_plugin")
