@@ -752,7 +752,7 @@ zoom-center
 ^^^^^^^^^^^
 En/Disables horizontally centered zooming
 
-* Value type: Bool
+* Value type: Boolean
 * Default value: False
 
 zoom-max
@@ -786,6 +786,13 @@ middle mouse button, or the Shift-Insert key combination.
 
 * Value type: String
 * Default value: primary
+
+syntex-dbus-service
+^^^^^^^^^^^^^^^^^^^
+En/disables the D-Bus service required for synctex forward synchronization.
+
+* Value type: Boolean
+* Default value: true
 
 SEE ALSO
 ========

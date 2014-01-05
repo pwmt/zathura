@@ -805,8 +805,12 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
-  /* Start D-Bus */
-  zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
+  /* Start D-Bus service for synctex forward synchronization */
+  bool synctex_dbus = true;
+  girara_setting_get(zathura->ui.session, "synctex-dbus-service", &synctex_dbus);
+  if (synctex_dbus == true) {
+    zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
+  }
 
   return true;
 

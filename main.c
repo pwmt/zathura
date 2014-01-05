@@ -97,7 +97,7 @@ main(int argc, char* argv[])
 
   if (synctex_fwd != NULL) {
     if (argc != 2) {
-      girara_error("Too many arguments or missing filename while running with --syntex-forward");
+      girara_error("Too many arguments or missing filename while running with --synctex-forward");
       return -1;
     }
 
