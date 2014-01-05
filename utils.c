@@ -23,21 +23,6 @@
 #include "page.h"
 #include "plugin.h"
 
-const char*
-file_get_extension(const char* path)
-{
-  if (path == NULL) {
-    return NULL;
-  }
-
-  const char* res = strrchr(path, '.');
-  if (res == NULL) {
-    return NULL;
-  }
-
-  return res + 1;
-}
-
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
 {
@@ -85,17 +70,6 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   }
 
   GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
-}
-
-void
-page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* offset)
-{
-  g_return_if_fail(page != NULL);
-  g_return_if_fail(offset != NULL);
-  GtkWidget* widget = zathura_page_get_widget(zathura, page);
-
-  g_return_if_fail(gtk_widget_translate_coordinates(widget,
-                   zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
 zathura_rectangle_t
