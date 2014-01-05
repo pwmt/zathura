@@ -9,9 +9,10 @@
 #include <sys/wait.h>
 #include <math.h>
 #include <gtk/gtk.h>
+#include <girara/datastructures.h>
 #include <girara/session.h>
-#include <girara/utils.h>
 #include <girara/settings.h>
+#include <girara/utils.h>
 #include <glib/gi18n.h>
 
 #include "links.h"
@@ -21,10 +22,6 @@
 #include "document.h"
 #include "page.h"
 #include "plugin.h"
-
-#include <girara/datastructures.h>
-
-#define BLOCK_SIZE 64
 
 const char*
 file_get_extension(const char* path)
@@ -57,82 +54,6 @@ file_valid_extension(zathura_t* zathura, const char* path)
   g_free((void*)content_type);
 
   return (plugin == NULL) ? false : true;
-}
-
-bool
-execute_command(char* const argv[], char** output)
-{
-  if (!output) {
-    return false;
-  }
-
-  int p[2];
-  if (pipe(p)) {
-    return -1;
-  }
-
-  pid_t pid = fork();
-
-  if (pid == -1) { // failure
-    return false;
-  } else if (pid == 0) { // child
-    dup2(p[1], 1);
-    close(p[0]);
-
-    if (execvp(argv[0], argv) == -1) {
-      return false;
-    }
-  } else { // parent
-    dup2(p[0], 0);
-    close(p[1]);
-
-    /* read output */
-    unsigned int bc = BLOCK_SIZE;
-    unsigned int i  = 0;
-    char* buffer    = malloc(sizeof(char) * bc);
-    *output = NULL;
-
-    if (!buffer) {
-      close(p[0]);
-      return false;
-    }
-
-    char c;
-    while (1 == read(p[0], &c, 1)) {
-      buffer[i++] = c;
-
-      if (i == bc) {
-        bc += BLOCK_SIZE;
-        char* tmp = realloc(buffer, sizeof(char) * bc);
-
-        if (!tmp) {
-          free(buffer);
-          close(p[0]);
-          return false;
-        }
-
-        buffer = tmp;
-      }
-    }
-
-    char* tmp = realloc(buffer, sizeof(char) * (bc + 1));
-    if (!tmp) {
-      free(buffer);
-      close(p[0]);
-      return false;
-    }
-
-    buffer = tmp;
-    buffer[i] = '\0';
-
-    *output = buffer;
-
-    /* wait for child to terminate */
-    waitpid(pid, NULL, 0);
-    close(p[0]);
-  }
-
-  return true;
 }
 
 void
