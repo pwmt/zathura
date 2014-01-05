@@ -665,11 +665,9 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
   return result;
 }
 
-static const gchar*
-guess_type(const char* path)
-{
-  const gchar* content_type = NULL;
 #ifdef WITH_MAGIC
+static const char*
+guess_type_magic(const char* path) {
   const char* mime_type = NULL;
 
   /* creat magic cookie */
@@ -698,22 +696,30 @@ guess_type(const char* path)
     girara_debug("failed guessing filetype: %s", magic_error(magic));
     goto cleanup;
   }
+  /* dup so we own the memory */
+  mime_type = g_strdup(mime_type);
 
   girara_debug("magic detected filetype: %s", mime_type);
-  content_type = g_strdup(mime_type);
 
 cleanup:
   if (magic != NULL) {
     magic_close(magic);
   }
 
-  if (content_type != NULL) {
-    return content_type;
-  }
-  /* else fallback to g_content_type_guess method */
-#endif /*WITH_MAGIC*/
+  return mime_type;
+}
+#else
+static const char*
+guess_type_magic(const char* UNUSED(path)) {
+  return NULL;
+}
+#endif
+
+static const char*
+guess_type_glib(const char* path)
+{
   gboolean uncertain = FALSE;
-  content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  const char* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
     girara_debug("g_content_type failed\n");
   } else {
@@ -755,8 +761,26 @@ cleanup:
   }
 
   g_free((void*)content_type);
-  content_type = NULL;
+  return NULL;
+}
 
+static const char*
+guess_type(const char* path)
+{
+  /* try libmagic first */
+  const char* content_type = guess_type_magic(path);
+  if (content_type != NULL) {
+    return content_type;
+  }
+  /* else fallback to g_content_type_guess method */
+  content_type = guess_type_glib(path);
+  if (content_type != NULL) {
+    return content_type;
+  }
+#ifdef WITH_MAGIC
+  return NULL;
+#else
+  /* and if libmagic is not available, try file as last resort */
   girara_debug("falling back to file");
 
   GString* command = g_string_new("file -b --mime-type ");
@@ -784,6 +808,7 @@ cleanup:
 
   g_strdelimit(out, "\n\r", '\0');
   return out;
+#endif
 }
 
 zathura_plugin_t*
