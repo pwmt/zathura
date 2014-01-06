@@ -708,10 +708,46 @@ cleanup:
 
   return mime_type;
 }
+
+static const char*
+guess_type_file(const char* UNUSED(path))
+{
+  return NULL;
+}
 #else
 static const char*
 guess_type_magic(const char* UNUSED(path)) {
   return NULL;
+}
+
+static const char*
+guess_type_file(const char* path)
+{
+  GString* command = g_string_new("file -b --mime-type ");
+  char* tmp        = g_shell_quote(path);
+
+  g_string_append(command, tmp);
+  g_free(tmp);
+
+  GError* error = NULL;
+  char* out = NULL;
+  int ret = 0;
+  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
+  g_string_free(command, TRUE);
+  if (error != NULL) {
+    girara_warning("failed to execute command: %s", error->message);
+    g_error_free(error);
+    g_free(out);
+    return NULL;
+  }
+  if (WEXITSTATUS(ret) != 0) {
+    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
+    g_free(out);
+    return NULL;
+  }
+
+  g_strdelimit(out, "\n\r", '\0');
+  return out;
 }
 #endif
 
@@ -777,38 +813,8 @@ guess_type(const char* path)
   if (content_type != NULL) {
     return content_type;
   }
-#ifdef WITH_MAGIC
-  return NULL;
-#else
   /* and if libmagic is not available, try file as last resort */
-  girara_debug("falling back to file");
-
-  GString* command = g_string_new("file -b --mime-type ");
-  char* tmp        = g_shell_quote(path);
-
-  g_string_append(command, tmp);
-  g_free(tmp);
-
-  GError* error = NULL;
-  char* out = NULL;
-  int ret = 0;
-  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
-  g_string_free(command, TRUE);
-  if (error != NULL) {
-    girara_warning("failed to execute command: %s", error->message);
-    g_error_free(error);
-    g_free(out);
-    return NULL;
-  }
-  if (WEXITSTATUS(ret) != 0) {
-    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
-    g_free(out);
-    return NULL;
-  }
-
-  g_strdelimit(out, "\n\r", '\0');
-  return out;
-#endif
+  return guess_type_file(path);
 }
 
 zathura_plugin_t*
