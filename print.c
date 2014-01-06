@@ -168,8 +168,8 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
 
 static void
 cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation),
-                            GtkPrintContext* UNUSED(context), gint page_number, GtkPageSetup* setup,
-                            zathura_t* zathura)
+                            GtkPrintContext* UNUSED(context), gint page_number,
+                            GtkPageSetup* setup, zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return;

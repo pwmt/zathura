@@ -15,7 +15,11 @@
 #include <girara/shortcuts.h>
 #include <girara/config.h>
 #include <girara/commands.h>
+#include <girara/utils.h>
 #include <glib/gi18n.h>
+
+#define GLOBAL_RC  "/etc/zathurarc"
+#define ZATHURA_RC "zathurarc"
 
 static void
 cb_jumplist_change(girara_session_t* session, const char* name,
@@ -454,11 +458,25 @@ config_load_default(zathura_t* zathura)
 }
 
 void
-config_load_file(zathura_t* zathura, const char* path)
+config_load_files(zathura_t* zathura)
 {
-  if (zathura == NULL || path == NULL) {
-    return;
+  /* load global configuration files */
+  char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
+  girara_list_t* config_dirs = girara_split_path_array(config_path);
+  ssize_t size = girara_list_size(config_dirs) - 1;
+  for (; size >= 0; --size) {
+    const char* dir = girara_list_nth(config_dirs, size);
+    char* file = g_build_filename(dir, ZATHURA_RC, NULL);
+    girara_config_parse(zathura->ui.session, file);
+    g_free(file);
   }
+  girara_list_free(config_dirs);
+  g_free(config_path);
 
-  girara_config_parse(zathura->ui.session, path);
+  girara_config_parse(zathura->ui.session, GLOBAL_RC);
+
+  /* load local configuration files */
+  char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
+  girara_config_parse(zathura->ui.session, configuration_file);
+  g_free(configuration_file);
 }

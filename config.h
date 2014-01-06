@@ -3,9 +3,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define GLOBAL_RC  "/etc/zathurarc"
-#define ZATHURA_RC "zathurarc"
-
 #include "zathura.h"
 
 /**
@@ -21,6 +18,6 @@ void config_load_default(zathura_t* zathura);
  * @param zathura The zathura session
  * @param path Path to the configuration file
  */
-void config_load_file(zathura_t* zathura, const char* path);
+void config_load_files(zathura_t* zathura);
 
 #endif // CONFIG_H
