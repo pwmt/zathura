@@ -210,7 +210,7 @@ replace_substring(const char* string, const char* old, const char* new)
   size_t old_len = strlen(old);
   size_t new_len = strlen(new);
 
-  /* count occurences */
+  /* count occurrences */
   unsigned int count = 0;
   unsigned int i = 0;
 

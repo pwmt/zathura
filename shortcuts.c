@@ -1287,7 +1287,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
-  /* retreive zoom step value */
+  /* retrieve zoom step value */
   int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 

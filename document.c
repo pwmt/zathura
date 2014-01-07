@@ -35,7 +35,7 @@
 /** Read a most GT_MAX_READ bytes before falling back to file. */
 static const size_t GT_MAX_READ = 1 << 16;
 
-static const gchar* guess_type(const char* path);
+static const char* guess_type(const char* path);
 
 /**
  * Document
@@ -86,7 +86,7 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
     return NULL;
   }
 
-  const gchar* content_type = guess_type(path);
+  const char* content_type = guess_type(path);
   if (content_type == NULL) {
     girara_error("Could not determine file type.");
     return NULL;
