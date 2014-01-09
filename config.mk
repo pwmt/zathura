@@ -43,6 +43,8 @@ MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
 LIBDIR ?= ${PREFIX}/lib
 INCLUDEDIR ?= ${PREFIX}/include
+DBUSINTERFACEDIR ?= ${PREFIX}/share/dbus-1/interfaces
+VIMFTPLUGINDIR ?= ${PREFIX}/share/vim/addons/ftplugin
 
 # plugin directory
 PLUGINDIR ?= ${LIBDIR}/zathura

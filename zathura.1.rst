@@ -14,6 +14,7 @@ SYNOPOSIS
 =========
 | zathura [OPTION]...
 | zathura [OPTION]... FILE [FILE ...]
+| zathura --syntex-forward INPUT FILE
 
 DESCRIPTION
 ===========
@@ -58,11 +59,17 @@ OPTIONS
 -x [cmd], --synctex-editor-command [cmd]
   Set the synctex editor command
 
+--syntex-forward [input],
+  Jump to the given position. The switch expcects the same format as specified
+  for syntex's view -i.
+
 MOUSE AND KEY BINDINGS
 ======================
 
-J, K
-  Go to the next or previous page
+J, PgDn
+  Go to the next page
+K, PgUp
+  Go to the previous page
 h, k, j, l
   Scroll to the left, down, up or right direction
 Left, Down, Up, Right
@@ -73,6 +80,8 @@ t, ^f, ^b, space, <S-space>, y
   Scroll a full page left, down, up or right
 gg, G, nG
   Goto to the first, the last or to the nth page
+H, L
+  Goto top or bottom of the current page
 ^o, ^i
   Move backward and forward through the jump list
 ^j, ^k

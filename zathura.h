@@ -6,12 +6,9 @@
 #include <stdbool.h>
 #include <girara/types.h>
 #include <gtk/gtk.h>
+#include <gtk/gtkx.h>
 #include "macros.h"
 #include "types.h"
-
-#if (GTK_MAJOR_VERSION == 3)
-#include <gtk/gtkx.h>
-#endif
 
 enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   DELETE_LAST_WORD, DELETE_LAST_CHAR, DEFAULT, ERROR, WARNING, NEXT_GROUP,
@@ -19,7 +16,8 @@ enum { NEXT, PREVIOUS, LEFT, RIGHT, UP, DOWN, BOTTOM, TOP, HIDE, HIGHLIGHT,
   BACKWARD, CONTINUOUS, DELETE_LAST, EXPAND, EXPAND_ALL, COLLAPSE_ALL, COLLAPSE,
   SELECT, GOTO_DEFAULT, GOTO_LABELS, GOTO_OFFSET, HALF_UP, HALF_DOWN, FULL_UP,
   FULL_DOWN, HALF_LEFT, HALF_RIGHT, FULL_LEFT, FULL_RIGHT, NEXT_CHAR,
-  PREVIOUS_CHAR, DELETE_TO_LINE_START, APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW };
+  PREVIOUS_CHAR, DELETE_TO_LINE_START, APPEND_FILEPATH, ROTATE_CW, ROTATE_CCW,
+  PAGE_BOTTOM, PAGE_TOP };
 
 /* unspecified page number */
 enum {
@@ -60,10 +58,10 @@ struct zathura_s
 
     struct
     {
-      GdkColor highlight_color; /**< Color for highlighting */
-      GdkColor highlight_color_active; /** Color for highlighting */
-      GdkColor render_loading_bg; /**< Background color for render "Loading..." */
-      GdkColor render_loading_fg; /**< Foreground color for render "Loading..." */
+      GdkRGBA highlight_color; /**< Color for highlighting */
+      GdkRGBA highlight_color_active; /** Color for highlighting */
+      GdkRGBA render_loading_bg; /**< Background color for render "Loading..." */
+      GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
     } colors;
 
     GtkWidget *page_widget_alignment;
@@ -91,6 +89,7 @@ struct zathura_s
   {
     bool enabled;
     gchar* editor;
+    ZathuraSynctexDbus* dbus;
   } synctex;
 
   struct
@@ -191,11 +190,7 @@ void zathura_free(zathura_t* zathura);
  * @param zathura The zathura session
  * @param xid The window id
  */
-#if (GTK_MAJOR_VERSION == 2)
-void zathura_set_xid(zathura_t* zathura, GdkNativeWindow xid);
-#else
 void zathura_set_xid(zathura_t* zathura, Window xid);
-#endif
 
 /**
  * Set the path to the configuration directory

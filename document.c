@@ -35,7 +35,7 @@
 /** Read a most GT_MAX_READ bytes before falling back to file. */
 static const size_t GT_MAX_READ = 1 << 16;
 
-static const gchar* guess_type(const char* path);
+static const char* guess_type(const char* path);
 
 /**
  * Document
@@ -86,7 +86,7 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
     return NULL;
   }
 
-  const gchar* content_type = guess_type(path);
+  const char* content_type = guess_type(path);
   if (content_type == NULL) {
     girara_error("Could not determine file type.");
     return NULL;
@@ -665,11 +665,9 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
   return result;
 }
 
-static const gchar*
-guess_type(const char* path)
-{
-  const gchar* content_type = NULL;
 #ifdef WITH_MAGIC
+static const char*
+guess_type_magic(const char* path) {
   const char* mime_type = NULL;
 
   /* creat magic cookie */
@@ -698,22 +696,66 @@ guess_type(const char* path)
     girara_debug("failed guessing filetype: %s", magic_error(magic));
     goto cleanup;
   }
+  /* dup so we own the memory */
+  mime_type = g_strdup(mime_type);
 
   girara_debug("magic detected filetype: %s", mime_type);
-  content_type = g_strdup(mime_type);
 
 cleanup:
   if (magic != NULL) {
     magic_close(magic);
   }
 
-  if (content_type != NULL) {
-    return content_type;
+  return mime_type;
+}
+
+static const char*
+guess_type_file(const char* UNUSED(path))
+{
+  return NULL;
+}
+#else
+static const char*
+guess_type_magic(const char* UNUSED(path)) {
+  return NULL;
+}
+
+static const char*
+guess_type_file(const char* path)
+{
+  GString* command = g_string_new("file -b --mime-type ");
+  char* tmp        = g_shell_quote(path);
+
+  g_string_append(command, tmp);
+  g_free(tmp);
+
+  GError* error = NULL;
+  char* out = NULL;
+  int ret = 0;
+  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
+  g_string_free(command, TRUE);
+  if (error != NULL) {
+    girara_warning("failed to execute command: %s", error->message);
+    g_error_free(error);
+    g_free(out);
+    return NULL;
   }
-  /* else fallback to g_content_type_guess method */
-#endif /*WITH_MAGIC*/
+  if (WEXITSTATUS(ret) != 0) {
+    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
+    g_free(out);
+    return NULL;
+  }
+
+  g_strdelimit(out, "\n\r", '\0');
+  return out;
+}
+#endif
+
+static const char*
+guess_type_glib(const char* path)
+{
   gboolean uncertain = FALSE;
-  content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  const char* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
     girara_debug("g_content_type failed\n");
   } else {
@@ -755,35 +797,24 @@ cleanup:
   }
 
   g_free((void*)content_type);
-  content_type = NULL;
+  return NULL;
+}
 
-  girara_debug("falling back to file");
-
-  GString* command = g_string_new("file -b --mime-type ");
-  char* tmp        = g_shell_quote(path);
-
-  g_string_append(command, tmp);
-  g_free(tmp);
-
-  GError* error = NULL;
-  char* out = NULL;
-  int ret = 0;
-  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
-  g_string_free(command, TRUE);
-  if (error != NULL) {
-    girara_warning("failed to execute command: %s", error->message);
-    g_error_free(error);
-    g_free(out);
-    return NULL;
+static const char*
+guess_type(const char* path)
+{
+  /* try libmagic first */
+  const char* content_type = guess_type_magic(path);
+  if (content_type != NULL) {
+    return content_type;
   }
-  if (WEXITSTATUS(ret) != 0) {
-    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
-    g_free(out);
-    return NULL;
+  /* else fallback to g_content_type_guess method */
+  content_type = guess_type_glib(path);
+  if (content_type != NULL) {
+    return content_type;
   }
-
-  g_strdelimit(out, "\n\r", '\0');
-  return out;
+  /* and if libmagic is not available, try file as last resort */
+  return guess_type_file(path);
 }
 
 zathura_plugin_t*

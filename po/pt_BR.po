@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-04 19:57+0100\n"
-"PO-Revision-Date: 2013-11-01 13:12+0000\n"
+"PO-Revision-Date: 2013-11-20 09:50+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "zathura/language/pt_BR/)\n"
@@ -82,35 +82,35 @@ msgstr "Não há favoritos: %s"
 
 #: ../commands.c:162
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: ../commands.c:163
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: ../commands.c:164
 msgid "Subject"
-msgstr ""
+msgstr "Assunto"
 
 #: ../commands.c:165
 msgid "Keywords"
-msgstr ""
+msgstr "Palavras-chave"
 
 #: ../commands.c:166
 msgid "Creator"
-msgstr ""
+msgstr "Criador"
 
 #: ../commands.c:167
 msgid "Producer"
-msgstr ""
+msgstr "Produtor"
 
 #: ../commands.c:168
 msgid "Creation date"
-msgstr ""
+msgstr "Data de criação"
 
 #: ../commands.c:169
 msgid "Modification date"
-msgstr ""
+msgstr "Data de modificação"
 
 #: ../commands.c:174 ../commands.c:196
 msgid "No information available."
@@ -263,8 +263,7 @@ msgstr "Recolorir páginas"
 
 #: ../config.c:169
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-"Quando recolorir, manter tonalidade original e ajustar somente a luminosidade"
+msgstr "Quando recolorir, manter tonalidade original e ajustar somente a luminosidade"
 
 #: ../config.c:171
 msgid "Wrap scrolling"
@@ -288,7 +287,7 @@ msgstr "Alinhe destino do link à esquerda"
 
 #: ../config.c:181
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Zoom será mudado quando seguir os links"
 
 #: ../config.c:183
 msgid "Center result horizontally"
@@ -348,7 +347,7 @@ msgstr "Ativar suporte synctex"
 
 #: ../config.c:210
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "A área de transferência em que o dados selecionados com o mouse vão ser escritos"
 
 #. define default inputbar commands
 #: ../config.c:369
@@ -507,12 +506,11 @@ msgstr "[Sem nome]"
 
 #: ../zathura.c:486
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Não foi possível ler o arquivo a partir de stdin e gravá-lo em um arquivo temporário."
 
 #: ../zathura.c:535
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
-"Formato de arquivo não suportado. Por favor, instale o plugin necessário."
+msgstr "Formato de arquivo não suportado. Por favor, instale o plugin necessário."
 
 #: ../zathura.c:545
 msgid "Document does not contain any pages"

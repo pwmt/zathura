@@ -9,9 +9,10 @@
 #include <sys/wait.h>
 #include <math.h>
 #include <gtk/gtk.h>
+#include <girara/datastructures.h>
 #include <girara/session.h>
-#include <girara/utils.h>
 #include <girara/settings.h>
+#include <girara/utils.h>
 #include <glib/gi18n.h>
 
 #include "links.h"
@@ -21,25 +22,6 @@
 #include "document.h"
 #include "page.h"
 #include "plugin.h"
-
-#include <girara/datastructures.h>
-
-#define BLOCK_SIZE 64
-
-const char*
-file_get_extension(const char* path)
-{
-  if (path == NULL) {
-    return NULL;
-  }
-
-  const char* res = strrchr(path, '.');
-  if (res == NULL) {
-    return NULL;
-  }
-
-  return res + 1;
-}
 
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
@@ -57,82 +39,6 @@ file_valid_extension(zathura_t* zathura, const char* path)
   g_free((void*)content_type);
 
   return (plugin == NULL) ? false : true;
-}
-
-bool
-execute_command(char* const argv[], char** output)
-{
-  if (!output) {
-    return false;
-  }
-
-  int p[2];
-  if (pipe(p)) {
-    return -1;
-  }
-
-  pid_t pid = fork();
-
-  if (pid == -1) { // failure
-    return false;
-  } else if (pid == 0) { // child
-    dup2(p[1], 1);
-    close(p[0]);
-
-    if (execvp(argv[0], argv) == -1) {
-      return false;
-    }
-  } else { // parent
-    dup2(p[0], 0);
-    close(p[1]);
-
-    /* read output */
-    unsigned int bc = BLOCK_SIZE;
-    unsigned int i  = 0;
-    char* buffer    = malloc(sizeof(char) * bc);
-    *output = NULL;
-
-    if (!buffer) {
-      close(p[0]);
-      return false;
-    }
-
-    char c;
-    while (1 == read(p[0], &c, 1)) {
-      buffer[i++] = c;
-
-      if (i == bc) {
-        bc += BLOCK_SIZE;
-        char* tmp = realloc(buffer, sizeof(char) * bc);
-
-        if (!tmp) {
-          free(buffer);
-          close(p[0]);
-          return false;
-        }
-
-        buffer = tmp;
-      }
-    }
-
-    char* tmp = realloc(buffer, sizeof(char) * (bc + 1));
-    if (!tmp) {
-      free(buffer);
-      close(p[0]);
-      return false;
-    }
-
-    buffer = tmp;
-    buffer[i] = '\0';
-
-    *output = buffer;
-
-    /* wait for child to terminate */
-    waitpid(pid, NULL, 0);
-    close(p[0]);
-  }
-
-  return true;
 }
 
 void
@@ -164,17 +70,6 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   }
 
   GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
-}
-
-void
-page_calculate_offset(zathura_t* zathura, zathura_page_t* page, page_offset_t* offset)
-{
-  g_return_if_fail(page != NULL);
-  g_return_if_fail(offset != NULL);
-  GtkWidget* widget = zathura_page_get_widget(zathura, page);
-
-  g_return_if_fail(gtk_widget_translate_coordinates(widget,
-                   zathura->ui.page_widget, 0, 0, &(offset->x), &(offset->y)) == true);
 }
 
 zathura_rectangle_t
@@ -315,7 +210,7 @@ replace_substring(const char* string, const char* old, const char* new)
   size_t old_len = strlen(old);
   size_t new_len = strlen(new);
 
-  /* count occurences */
+  /* count occurrences */
   unsigned int count = 0;
   unsigned int i = 0;
 
@@ -349,26 +244,26 @@ replace_substring(const char* string, const char* old, const char* new)
 
 GdkAtom* get_selection(zathura_t* zathura)
 {
-    g_return_val_if_fail(zathura != NULL, NULL);
+  g_return_val_if_fail(zathura != NULL, NULL);
 
-    char* value;
-    girara_setting_get(zathura->ui.session, "selection-clipboard", &value);
+  char* value;
+  girara_setting_get(zathura->ui.session, "selection-clipboard", &value);
 
-    GdkAtom* selection = g_malloc(sizeof(GdkAtom));
+  GdkAtom* selection = g_malloc(sizeof(GdkAtom));
 
-    if (strcmp(value, "primary") == 0) {
-      *selection = GDK_SELECTION_PRIMARY;
-    } else if (strcmp(value, "clipboard") == 0) {
-      *selection = GDK_SELECTION_CLIPBOARD;
-    } else {
-      girara_error("Invalid value for the selection-clipboard setting");
-      g_free(value);
-      g_free(selection);
-
-      return NULL;
-    }
-
+  if (strcmp(value, "primary") == 0) {
+    *selection = GDK_SELECTION_PRIMARY;
+  } else if (strcmp(value, "clipboard") == 0) {
+    *selection = GDK_SELECTION_CLIPBOARD;
+  } else {
+    girara_error("Invalid value for the selection-clipboard setting");
     g_free(value);
+    g_free(selection);
 
-    return selection;
+    return NULL;
+  }
+
+  g_free(value);
+
+  return selection;
 }

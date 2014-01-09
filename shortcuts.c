@@ -491,17 +491,43 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     return false;
   }
 
+  /* if TOP or BOTTOM, go there and we are done */
+  if (argument->n == TOP) {
+    position_set(zathura, -1, 0);
+    return false;
+  } else if (argument->n == BOTTOM) {
+    position_set(zathura, -1, 1.0);
+    return false;
+  }
+
+  /* Retrieve current page and position */
+  const unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  double pos_x = zathura_document_get_position_x(zathura->document);
+  double pos_y = zathura_document_get_position_y(zathura->document);
+
+  /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
+  if (argument->n == PAGE_TOP) {
+    double dontcare = 0.5;
+    page_number_to_position(zathura->document, page_id, dontcare, 0.0, &dontcare, &pos_y);
+    position_set(zathura, pos_x, pos_y);
+    return false;
+  } else if (argument->n == PAGE_BOTTOM) {
+    double dontcare = 0.5;
+    page_number_to_position(zathura->document, page_id, dontcare, 1.0, &dontcare, &pos_y);
+    position_set(zathura, pos_x, pos_y);
+    return false;
+  }
+
   if (t == 0) {
     t = 1;
   }
 
-  unsigned int view_width=0, view_height=0;
+  unsigned int view_width  = 0;
+  unsigned int view_height = 0;
   zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
 
-  unsigned int cell_width=0, cell_height=0;
-  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
-
-  unsigned int doc_width=0, doc_height=0;
+  unsigned int doc_width  = 0;
+  unsigned int doc_height = 0;
   zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
   float scroll_step = 40;
@@ -519,36 +545,18 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   bool scroll_wrap = false;
   girara_setting_get(session, "scroll-wrap", &scroll_wrap);
 
-  int padding = 1;
-  girara_setting_get(session, "page-padding", &padding);
-
-  double pos_x = zathura_document_get_position_x(zathura->document);
-  double pos_y = zathura_document_get_position_y(zathura->document);
-  double page_id = zathura_document_get_current_page_number(zathura->document);
-  double direction = 1.0;
-
-  /* if TOP or BOTTOM, go there and we are done */
-  if (argument->n == TOP) {
-    position_set(zathura, -1, 0);
-    return false;
-  } else if (argument->n == BOTTOM) {
-    position_set(zathura, -1, 1.0);
-    return false;
-  }
-
   /* compute the direction of scrolling */
-  if ( (argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
-       (argument->n == UP) || (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
+  double direction = 1.0;
+  if ((argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) ||
+      (argument->n == UP) || (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
     direction = -1.0;
-  } else {
-    direction = 1.0;
   }
 
-  double vstep = (double)(cell_height + padding) / (double)doc_height;
-  double hstep = (double)(cell_width + padding) / (double)doc_width;
+  const double vstep = (double)view_height / (double)doc_height;
+  const double hstep = (double)view_width / (double)doc_width;
 
   /* compute new position */
-  switch(argument->n) {
+  switch (argument->n) {
     case FULL_UP:
     case FULL_DOWN:
       pos_y += direction * (1.0 - scroll_full_overlap) * vstep;
@@ -581,11 +589,11 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* handle boundaries */
-  double end_x = 0.5 * (double)view_width / (double)doc_width;
-  double end_y = 0.5 * (double)view_height / (double)doc_height;
+  const double end_x = 0.5 * (double)view_width / (double)doc_width;
+  const double end_y = 0.5 * (double)view_height / (double)doc_height;
 
-  double new_x = scroll_wrap ? 1.0 - end_x : end_x;
-  double new_y = scroll_wrap ? 1.0 - end_y : end_y;
+  const double new_x = scroll_wrap ? 1.0 - end_x : end_x;
+  const double new_y = scroll_wrap ? 1.0 - end_y : end_y;
 
   if (pos_x < end_x) {
     pos_x = new_x;
@@ -600,9 +608,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
   }
 
   /* snap to the border if we change page */
-  double dummy;
-  unsigned int new_page_id = position_to_page_number(zathura->document, pos_x, pos_y);
+  const unsigned int new_page_id = position_to_page_number(zathura->document, pos_x, pos_y);
   if (scroll_page_aware == true && page_id != new_page_id) {
+    double dummy = 0.0;
     switch(argument->n) {
       case FULL_LEFT:
       case HALF_LEFT:
@@ -1308,7 +1316,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
-  /* retreive zoom step value */
+  /* retrieve zoom step value */
   int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 

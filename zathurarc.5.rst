@@ -262,6 +262,8 @@ Possible arguments are:
 * left
 * next
 * out
+* page-bottom
+* page-top
 * previous
 * right
 * rotate-ccw
@@ -706,21 +708,22 @@ Defines if scrolling by half or full pages stops at page boundaries.
 
 link-zoom
 ^^^^^^^^^
-En/Disables the hability of changing zoom when following links.
+En/Disables the ability of changing zoom when following links.
 
 * Value type: Boolean
 * Default value: true
 
 link-hadjust
 ^^^^^^^^^^^^
-En/Disables aligning to the left internal link targets, for example from the index
+En/Disables aligning to the left internal link targets, for example from the
+index.
 
 * Value type: Boolean
 * Default value: true
 
 search-hadjust
 ^^^^^^^^^^^^^^
-En/Disables horizontally centered search results
+En/Disables horizontally centered search results.
 
 * Value type: Boolean
 * Default value: true
@@ -748,21 +751,21 @@ Use basename of the file in the statusbar.
 
 zoom-center
 ^^^^^^^^^^^
-En/Disables horizontally centered zooming
+En/Disables horizontally centered zooming.
 
-* Value type: Bool
+* Value type: Boolean
 * Default value: False
 
 zoom-max
 ^^^^^^^^
-Defines the maximum percentage that the zoom level can be
+Defines the maximum percentage that the zoom level can be.
 
 * Value type: Integer
 * Default value: 1000
 
 zoom-min
 ^^^^^^^^
-Defines the minimum percentage that the zoom level can be
+Defines the minimum percentage that the zoom level can be.
 
 * Value type: Integer
 * Default value: 10
@@ -784,6 +787,13 @@ middle mouse button, or the Shift-Insert key combination.
 
 * Value type: String
 * Default value: primary
+
+syntex-dbus-service
+^^^^^^^^^^^^^^^^^^^
+En/Disables the D-Bus service required for synctex forward synchronization.
+
+* Value type: Boolean
+* Default value: true
 
 SEE ALSO
 ========

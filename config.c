@@ -15,8 +15,11 @@
 #include <girara/shortcuts.h>
 #include <girara/config.h>
 #include <girara/commands.h>
-#include <girara/gtk2-compat.h>
+#include <girara/utils.h>
 #include <glib/gi18n.h>
+
+#define GLOBAL_RC  "/etc/zathurarc"
+#define ZATHURA_RC "zathurarc"
 
 static void
 cb_jumplist_change(girara_session_t* session, const char* name,
@@ -51,11 +54,11 @@ cb_color_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  char* string_value = (char*) value;
+  const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color));
+    gdk_rgba_parse(&(zathura->ui.colors.highlight_color), string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.highlight_color_active));
+    gdk_rgba_parse(&(zathura->ui.colors.highlight_color_active), string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
     if (zathura->sync.render_thread != NULL) {
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
@@ -65,9 +68,9 @@ cb_color_change(girara_session_t* session, const char* name,
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, string_value, NULL);
     }
   } else if (g_strcmp0(name, "render-loading-bg") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_bg));
+    gdk_rgba_parse(&(zathura->ui.colors.render_loading_bg), string_value);
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
-    gdk_color_parse(string_value, &(zathura->ui.colors.render_loading_fg));
+    gdk_rgba_parse(&(zathura->ui.colors.render_loading_fg), string_value);
   }
 
   render_all(zathura);
@@ -110,7 +113,6 @@ config_load_default(zathura_t* zathura)
   int int_value              = 0;
   float float_value          = 0;
   bool bool_value            = false;
-  bool inc_search            = true;
   char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
@@ -197,8 +199,9 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Highlight search results"), cb_nohlsearch_changed, NULL);
-  inc_search = false;
-  girara_setting_add(gsession, "incremental-search",     &inc_search,  BOOLEAN, false, _("Enable incremental search"), cb_incsearch_changed, NULL);
+#define INCREMENTAL_SEARCH false
+  bool_value = INCREMENTAL_SEARCH;
+  girara_setting_add(gsession, "incremental-search",     &bool_value,  BOOLEAN, false, _("Enable incremental search"), cb_incsearch_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
@@ -209,6 +212,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "synctex-dbus-service",   &bool_value,  BOOLEAN, false, _("Enable D-Bus service for synctex forward synchronization support"), NULL, NULL);
   string_value = "primary";
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
 
@@ -255,6 +260,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_Left,       NULL, sc_scroll,                  (mode),     LEFT,                   NULL); \
   girara_shortcut_add(gsession, 0,                GDK_KEY_Up,         NULL, sc_scroll,                  (mode),     UP,                     NULL); \
   girara_shortcut_add(gsession, 0,                GDK_KEY_Down,       NULL, sc_scroll,                  (mode),     DOWN,                   NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_H,          NULL, sc_scroll,                  (mode),     PAGE_TOP,               NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_L,          NULL, sc_scroll,                  (mode),     PAGE_BOTTOM,            NULL); \
   girara_shortcut_add(gsession, 0,                GDK_KEY_Right,      NULL, sc_scroll,                  (mode),     RIGHT,                  NULL); \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_t,          NULL, sc_scroll,                  (mode),     HALF_LEFT,              NULL); \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d,          NULL, sc_scroll,                  (mode),     HALF_DOWN,              NULL); \
@@ -392,8 +399,8 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
   girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,         NULL,         _("Show version information"));
 
-  girara_special_command_add(gsession, '/', cmd_search, inc_search, FORWARD,  NULL);
-  girara_special_command_add(gsession, '?', cmd_search, inc_search, BACKWARD, NULL);
+  girara_special_command_add(gsession, '/', cmd_search, INCREMENTAL_SEARCH, FORWARD,  NULL);
+  girara_special_command_add(gsession, '?', cmd_search, INCREMENTAL_SEARCH, BACKWARD, NULL);
 
   /* add shortcut mappings */
   girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
@@ -444,6 +451,8 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "left",         LEFT);
   girara_argument_mapping_add(gsession, "next",         NEXT);
   girara_argument_mapping_add(gsession, "out",          ZOOM_OUT);
+  girara_argument_mapping_add(gsession, "page-top",     PAGE_TOP);
+  girara_argument_mapping_add(gsession, "page-bottom",  PAGE_BOTTOM);
   girara_argument_mapping_add(gsession, "previous",     PREVIOUS);
   girara_argument_mapping_add(gsession, "right",        RIGHT);
   girara_argument_mapping_add(gsession, "specific",     ZOOM_SPECIFIC);
@@ -456,11 +465,25 @@ config_load_default(zathura_t* zathura)
 }
 
 void
-config_load_file(zathura_t* zathura, char* path)
+config_load_files(zathura_t* zathura)
 {
-  if (zathura == NULL || path == NULL) {
-    return;
+  /* load global configuration files */
+  char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
+  girara_list_t* config_dirs = girara_split_path_array(config_path);
+  ssize_t size = girara_list_size(config_dirs) - 1;
+  for (; size >= 0; --size) {
+    const char* dir = girara_list_nth(config_dirs, size);
+    char* file = g_build_filename(dir, ZATHURA_RC, NULL);
+    girara_config_parse(zathura->ui.session, file);
+    g_free(file);
   }
+  girara_list_free(config_dirs);
+  g_free(config_path);
 
-  girara_config_parse(zathura->ui.session, path);
+  girara_config_parse(zathura->ui.session, GLOBAL_RC);
+
+  /* load local configuration files */
+  char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
+  girara_config_parse(zathura->ui.session, configuration_file);
+  g_free(configuration_file);
 }

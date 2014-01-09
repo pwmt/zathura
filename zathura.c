@@ -34,6 +34,7 @@
 #include "page-widget.h"
 #include "plugin.h"
 #include "adjustment.h"
+#include "synctex-dbus.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -100,26 +101,7 @@ zathura_init(zathura_t* zathura)
 
   /* configuration */
   config_load_default(zathura);
-
-  /* load global configuration files */
-  char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
-  girara_list_t* config_dirs = girara_split_path_array(config_path);
-  ssize_t size = girara_list_size(config_dirs) - 1;
-  for (; size >= 0; --size) {
-    const char* dir = girara_list_nth(config_dirs, size);
-    char* file = g_build_filename(dir, ZATHURA_RC, NULL);
-    config_load_file(zathura, file);
-    g_free(file);
-  }
-  girara_list_free(config_dirs);
-  g_free(config_path);
-
-  config_load_file(zathura, GLOBAL_RC);
-
-  /* load local configuration files */
-  char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
-  config_load_file(zathura, configuration_file);
-  g_free(configuration_file);
+  config_load_files(zathura);
 
   /* UI */
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
@@ -146,13 +128,9 @@ zathura_init(zathura_t* zathura)
                    G_CALLBACK(cb_refresh_view), zathura);
 
   /* page view */
-#if (GTK_MAJOR_VERSION == 3)
   zathura->ui.page_widget = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
   gtk_grid_set_column_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
-#else
-  zathura->ui.page_widget = gtk_table_new(0, 0, TRUE);
-#endif
   if (zathura->ui.page_widget == NULL) {
     goto error_free;
   }
@@ -184,13 +162,10 @@ zathura_init(zathura_t* zathura)
   }
   gtk_container_add(GTK_CONTAINER(zathura->ui.page_widget_alignment), zathura->ui.page_widget);
 
-#if (GTK_MAJOR_VERSION == 3)
   gtk_widget_set_hexpand_set(zathura->ui.page_widget_alignment, TRUE);
   gtk_widget_set_hexpand(zathura->ui.page_widget_alignment, FALSE);
   gtk_widget_set_vexpand_set(zathura->ui.page_widget_alignment, TRUE);
   gtk_widget_set_vexpand(zathura->ui.page_widget_alignment, FALSE);
-#endif
-
 
   gtk_widget_show(zathura->ui.page_widget);
 
@@ -325,11 +300,7 @@ zathura_free(zathura_t* zathura)
 }
 
 void
-#if (GTK_MAJOR_VERSION == 2)
-zathura_set_xid(zathura_t* zathura, GdkNativeWindow xid)
-#else
 zathura_set_xid(zathura_t* zathura, Window xid)
-#endif
 {
   g_return_if_fail(zathura != NULL);
 
@@ -547,8 +518,17 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* read history file */
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 0, 0, 0, 0 };
-  bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
+  zathura_fileinfo_t file_info = {
+    .current_page = 0,
+    .page_offset = 0,
+    .scale = 1,
+    .rotation = 0,
+    .pages_per_row = 0,
+    .first_page_column = 0,
+    .position_x = 0,
+    .position_y = 0
+  };
+  const bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
 
   /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
@@ -788,8 +768,8 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     /* adjust_view calls render_all in some cases and render_all calls
      * gtk_widget_set_size_request. To be sure that it's really called, do it
      * here once again. */
-    double height = zathura_page_get_height(page);
-    double width = zathura_page_get_width(page);
+    const double height = zathura_page_get_height(page);
+    const double width = zathura_page_get_width(page);
     page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
     gtk_widget_set_size_request(zathura->pages[page_id], page_width, page_height);
 
@@ -797,10 +777,20 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     gtk_widget_show(zathura->pages[page_id]);
   }
 
-  /* set position */
+  /* Set page */
   page_set(zathura, zathura_document_get_current_page_number(document));
-  if (file_info.position_x != 0 || file_info.position_y != 0) {
+
+  /* Set position (only if restoring from history file) */
+  if (file_info.current_page == zathura_document_get_current_page_number(document) &&
+      (file_info.position_x != 0 || file_info.position_y != 0)) {
     position_set(zathura, file_info.position_x, file_info.position_y);
+  }
+
+  /* Start D-Bus service for synctex forward synchronization */
+  bool synctex_dbus = true;
+  girara_setting_get(zathura->ui.session, "synctex-dbus-service", &synctex_dbus);
+  if (synctex_dbus == true) {
+    zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
   }
 
   return true;
@@ -884,6 +874,12 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
+
+  /* stop D-Bus */
+  if (zathura->synctex.dbus != NULL) {
+    g_object_unref(zathura->synctex.dbus);
+    zathura->synctex.dbus = NULL;
+  }
 
   /* remove monitor */
   if (keep_monitor == false) {
@@ -1060,18 +1056,8 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
 
-#if (GTK_MAJOR_VERSION == 3)
   gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
   gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
-
-#else
-  gtk_table_set_row_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-  gtk_table_set_col_spacings(GTK_TABLE(zathura->ui.page_widget), page_padding);
-
-  unsigned int ncol = pages_per_row;
-  unsigned int nrow = (number_of_pages + first_page_column - 1 + ncol - 1) / ncol;
-  gtk_table_resize(GTK_TABLE(zathura->ui.page_widget), nrow, ncol);
-#endif
 
   for (unsigned int i = 0; i < number_of_pages; i++) {
     int x = (i + first_page_column - 1) % pages_per_row;
@@ -1079,11 +1065,7 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
 
     zathura_page_t* page   = zathura_document_get_page(zathura->document, i);
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-#if (GTK_MAJOR_VERSION == 3)
     gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
-#else
-    gtk_table_attach(GTK_TABLE(zathura->ui.page_widget), page_widget, x, x + 1, y, y + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-#endif
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);

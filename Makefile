@@ -43,7 +43,7 @@ DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
 all: options ${PROJECT} po build-manpages
 
 # pkg-config based version checks
-.version-checks/%:
+.version-checks/%: config.mk
 	$(QUIET)test $($(*)_VERSION_CHECK) -eq 0 || \
 		pkg-config --atleast-version $($(*)_MIN_VERSION) $($(*)_PKG_CONFIG_NAME) || ( \
 		echo "The minium required version of $(*) is $($(*)_MIN_VERSION)" && \
@@ -129,6 +129,7 @@ dist: clean build-manpages
 			${PROJECT}.desktop version.h.in \
 			${PROJECT}.1 ${PROJECT}rc.5 \
 			${PROJECT}-${VERSION}
+	$(QUIET)cp -r data ${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
 	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
@@ -184,7 +185,17 @@ install-headers: ${PROJECT}.pc
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
-install: all install-headers install-manpages
+install-dbus:
+	$(ECHO) installing D-Bus interface definitions
+	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
+	$(QUIET)install -m 644 data/org.pwmt.zathura.synctex.xml $(DESTDIR)$(DBUSINTERFACEDIR)
+
+install-vimftplugin:
+	$(ECHO) installing Vim filetype plugin
+	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(VIMFTPLUGINDIR)
+	$(QUIET)install -m 644 data/tex_zathurasynctex.vim $(DESTDIR)$(VIMFTPLUGINDIR)
+
+install: all install-headers install-manpages install-dbus
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin

@@ -52,7 +52,6 @@ static GScannerConfig scanner_config = {
 
 static void synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool first);
 static double scan_float(GScanner* scanner);
-static bool synctex_view(zathura_t* zathura, char* position);
 
 void
 synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
@@ -71,18 +70,19 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
     return;
   }
 
-  int page_idx = zathura_page_get_index(page);
-  char *buffer = g_strdup_printf("%d:%d:%d:%s", page_idx + 1, x, y, filename);
-
+  char** argv = g_malloc0(sizeof(char*) * (zathura->synctex.editor != NULL ?
+      6 : 4));
+  argv[0] = g_strdup("synctex");
+  argv[1] = g_strdup("edit");
+  argv[2] = g_strdup("-o");
+  argv[3] = g_strdup_printf("%d:%d:%d:%s", zathura_page_get_index(page) + 1, x, y, filename);
   if (zathura->synctex.editor != NULL) {
-    char* argv[] = {"synctex", "edit", "-o", buffer, "-x", zathura->synctex.editor, NULL};
-    g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-  } else {
-    char* argv[] = {"synctex", "edit", "-o", buffer, NULL};
-    g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+    argv[4] = g_strdup("-x");
+    argv[5] = g_strdup(zathura->synctex.editor);
   }
 
-  g_free(buffer);
+  g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+  g_strfreev(argv);
 }
 
 static void
@@ -96,7 +96,7 @@ synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool 
   g_object_set(page_widget, "draw-links", FALSE, NULL);
   g_object_set(page_widget, "search-results", hits, NULL);
 
-  if (first) {
+  if (first == true) {
     page_set(zathura, zathura_page_get_index(page));
     g_object_set(page_widget, "search-current", 0, NULL);
   }
@@ -115,15 +115,26 @@ scan_float(GScanner* scanner)
   }
 }
 
-static bool
-synctex_view(zathura_t* zathura, char* position)
+bool
+synctex_view(zathura_t* zathura, const char* position)
 {
-  char* filename = g_strdup(zathura_document_get_path(zathura->document));
-  char* argv[] = {"synctex", "view", "-i", position, "-o", filename, NULL};
-  gint output;
+  if (zathura->document == NULL) {
+    return false;
+  }
 
-  bool ret = g_spawn_async_with_pipes(NULL, argv, NULL, G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL, NULL, NULL, NULL, NULL, &output, NULL, NULL);
-  g_free(filename);
+  char** argv = g_malloc0(sizeof(char*) * 6);
+  argv[0] = g_strdup("synctex");
+  argv[1] = g_strdup("view");
+  argv[2] = g_strdup("-i");
+  argv[3] = g_strdup(position);
+  argv[4] = g_strdup("-o");
+  argv[5] = g_strdup(zathura_document_get_path(zathura->document));
+
+  gint output;
+  bool ret = g_spawn_async_with_pipes(NULL, argv, NULL,
+      G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL, NULL, NULL, NULL, NULL,
+      &output, NULL, NULL);
+  g_strfreev(argv);
 
   if (ret == false) {
     return false;

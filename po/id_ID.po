@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2013-11-04 19:57+0100\n"
-"PO-Revision-Date: 2013-11-01 13:12+0000\n"
+"PO-Revision-Date: 2013-12-15 05:57+0000\n"
 "Last-Translator: andjeng <teratower8@gmail.com>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/"
 "zathura/language/id_ID/)\n"
@@ -81,35 +81,35 @@ msgstr "Tidak ada bookmark: %s"
 
 #: ../commands.c:162
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: ../commands.c:163
 msgid "Author"
-msgstr ""
+msgstr "Penulis"
 
 #: ../commands.c:164
 msgid "Subject"
-msgstr ""
+msgstr "Subjek"
 
 #: ../commands.c:165
 msgid "Keywords"
-msgstr ""
+msgstr "Kata kunci"
 
 #: ../commands.c:166
 msgid "Creator"
-msgstr ""
+msgstr "Pembuat"
 
 #: ../commands.c:167
 msgid "Producer"
-msgstr ""
+msgstr "Produser"
 
 #: ../commands.c:168
 msgid "Creation date"
-msgstr ""
+msgstr "Tanggal pembuatan"
 
 #: ../commands.c:169
 msgid "Modification date"
-msgstr ""
+msgstr "Tanggal ubahan"
 
 #: ../commands.c:174 ../commands.c:196
 msgid "No information available."
@@ -186,7 +186,7 @@ msgstr "Citra"
 #. zathura settings
 #: ../config.c:131
 msgid "Database backend"
-msgstr ""
+msgstr "backend database"
 
 #: ../config.c:133
 msgid "Zoom step"
@@ -226,7 +226,7 @@ msgstr "Pembesaran maksimal"
 
 #: ../config.c:151
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Jumlah laman yang disimpan pada cache"
 
 #: ../config.c:153
 msgid "Number of positions to remember in the jumplist"
@@ -250,11 +250,11 @@ msgstr "Warna sorotan (aktif)"
 
 #: ../config.c:161
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "'Memuat ...; warna latar"
 
 #: ../config.c:163
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "'Memuat ...' warna depan"
 
 #: ../config.c:167
 msgid "Recolor pages"
@@ -282,11 +282,11 @@ msgstr "Pembesaran horisontal tengah"
 
 #: ../config.c:179
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Ratakan tautan ke kiri"
 
 #: ../config.c:181
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Biarkan pembesaran berubah saat mengikuti pranala"
 
 #: ../config.c:183
 msgid "Center result horizontally"
@@ -334,11 +334,11 @@ msgstr "Gunakan nama dasar file pada judul jendela"
 
 #: ../config.c:204
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Tampilkan nomor laman pada jendela judul"
 
 #: ../config.c:206
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Gunakan nama dasar berkas pada statusbar"
 
 #: ../config.c:208 ../main.c:67
 msgid "Enable synctex support"
@@ -346,7 +346,7 @@ msgstr "Support synctex"
 
 #: ../config.c:210
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "Data yang dipilih tetikus akan ditulis ke clipboard"
 
 #. define default inputbar commands
 #: ../config.c:369
@@ -419,7 +419,7 @@ msgstr "Jangan menyorot hasil cari sekarang"
 
 #: ../config.c:386
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Sorot hasil pencarian sekarang"
 
 #: ../config.c:387
 msgid "Show version information"
@@ -469,7 +469,7 @@ msgstr "Kata sandi dokumen"
 
 #: ../main.c:64
 msgid "Page number to go to"
-msgstr ""
+msgstr "Nomor halaman tujuan"
 
 #: ../main.c:65
 msgid "Log level (debug, info, warning, error)"
@@ -505,12 +505,12 @@ msgstr "[Tidak berjudul]"
 
 #: ../zathura.c:486
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Tidak dapat membaca berkas dari stdin dan menulisnya ke berkas sementar"
 
 #: ../zathura.c:535
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Tipe berkas tidak didukung. Silakan memasang plugin yang dibutuhkan."
 
 #: ../zathura.c:545
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Dokumen tidak mempunyai laman apapun"

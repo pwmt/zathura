@@ -60,7 +60,7 @@ print(zathura_t* zathura)
     zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(print_operation));
     zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(print_operation));
   } else if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
-    girara_error("Error occured while printing progress");
+    girara_error("Error pccurred while printing progress");
   }
 
   g_object_unref(print_operation);
@@ -168,8 +168,8 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
 
 static void
 cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation),
-                            GtkPrintContext* UNUSED(context), gint page_number, GtkPageSetup* setup,
-                            zathura_t* zathura)
+                            GtkPrintContext* UNUSED(context), gint page_number,
+                            GtkPageSetup* setup, zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return;
