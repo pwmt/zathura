@@ -282,6 +282,19 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_d,          NULL, sc_toggle_page_mode,        (mode),     0,                      NULL); \
 \
   girara_shortcut_add(gsession, 0,                GDK_KEY_q,          NULL, sc_quit,                    (mode),     0,                      NULL); \
+\
+  girara_shortcut_add(gsession, 0,                GDK_KEY_plus,       NULL, sc_zoom,                    (mode),     ZOOM_IN,                NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_KP_Add,     NULL, sc_zoom,                    (mode),     ZOOM_IN,                NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_minus,      NULL, sc_zoom,                    (mode),     ZOOM_OUT,               NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_KP_Subtract,NULL, sc_zoom,                    (mode),     ZOOM_OUT,               NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_equal,      NULL, sc_zoom,                    (mode),     ZOOM_SPECIFIC,          NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "zi", sc_zoom,                    (mode),     ZOOM_IN,                NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "zI", sc_zoom,                    (mode),     ZOOM_IN,                NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "zo", sc_zoom,                    (mode),     ZOOM_OUT,               NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "zO", sc_zoom,                    (mode),     ZOOM_OUT,               NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "z0", sc_zoom,                    (mode),     ZOOM_ORIGINAL,          NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "zz", sc_zoom,                    (mode),     ZOOM_SPECIFIC,          NULL); \
+  girara_shortcut_add(gsession, 0,                0,                  "zZ", sc_zoom,                    (mode),     ZOOM_SPECIFIC,          NULL);
 
 #define DEFAULT_MOUSE_EVENTS(mode) \
   girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_UP,      UP,    NULL); \
