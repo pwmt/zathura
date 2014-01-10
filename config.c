@@ -452,6 +452,7 @@ config_load_default(zathura_t* zathura)
   girara_argument_mapping_add(gsession, "expand",       EXPAND);
   girara_argument_mapping_add(gsession, "expand-all",   EXPAND_ALL);
   girara_argument_mapping_add(gsession, "select",       SELECT);
+  girara_argument_mapping_add(gsession, "toggle",       TOGGLE);
   girara_argument_mapping_add(gsession, "forward",      FORWARD);
   girara_argument_mapping_add(gsession, "full-down",    FULL_DOWN);
   girara_argument_mapping_add(gsession, "full-up",      FULL_UP);

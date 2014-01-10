@@ -989,7 +989,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
          * moving anywhere. */
         is_valid_path = gtk_tree_path_up(path) && (gtk_tree_path_get_depth(path) > 0);
       } else { /* row above */
-        while(gtk_tree_view_row_expanded(tree_view, path)) {
+        while (gtk_tree_view_row_expanded(tree_view, path)) {
           gtk_tree_model_get_iter(model, &iter, path);
           /* select last child */
           gtk_tree_model_iter_nth_child(model, &child_iter, &iter,
@@ -1035,13 +1035,23 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       path = gtk_tree_path_new_first();
       gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
       break;
+    case TOGGLE:
+      gtk_tree_model_get_iter(model, &iter, path);
+      if (gtk_tree_model_iter_has_child(model, &iter) == TRUE) {
+        if (gtk_tree_view_row_expanded(tree_view, path) == TRUE) {
+          gtk_tree_view_collapse_row(tree_view, path);
+        } else {
+          gtk_tree_view_expand_row(tree_view, path, FALSE);
+        }
+        break;
+      }
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
       gtk_tree_path_free(path);
       return false;
   }
 
-  if (is_valid_path) {
+  if (is_valid_path == TRUE) {
     gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
   }
 
