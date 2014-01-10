@@ -435,18 +435,25 @@ get_jumplist_from_str(const char* str)
 
   girara_list_t* result = girara_list_new2(g_free);
   char* copy = g_strdup(str);
-  char* token = strtok(copy, " ");
+  char* saveptr = NULL;
+  char* token = strtok_r(copy, " ", &saveptr);
 
   while (token != NULL) {
     zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
 
     jump->page = strtoul(token, NULL, 0);
-    token = strtok(NULL, " ");
+    token = strtok_r(NULL, " ", &saveptr);
+    if (token == NULL) {
+      girara_warning("Could not parse jumplist information.");
+      g_free(jump);
+      break;
+    }
+
     jump->x = g_ascii_strtod(token, NULL);
-    token = strtok(NULL, " ");
+    token = strtok_r(NULL, " ", &saveptr);
     jump->y = g_ascii_strtod(token, NULL);
     girara_list_append(result, jump);
-    token = strtok(NULL, " ");
+    token = strtok_r(NULL, " ", &saveptr);
   }
 
   g_free(copy);
