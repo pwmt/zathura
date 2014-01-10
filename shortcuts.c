@@ -984,10 +984,12 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   switch(argument->n) {
     case TOP:
+      /* go to the first node */
       gtk_tree_path_free(path);
       path = gtk_tree_path_new_first();
       break;
     case BOTTOM:
+      /* go to the last visiible node */
       gtk_tree_path_free(path);
       path = gtk_tree_path_new_from_indices(gtk_tree_model_iter_n_children(model, NULL) - 1, -1);
       gtk_tree_model_get_iter(model, &iter, path);
@@ -1343,9 +1345,9 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
-  int nt = (t == 0) ? 1 : t;
-  float zoom_step = value / 100.0f * nt;
-  float old_zoom = zathura_document_get_scale(zathura->document);
+  const int nt = (t == 0) ? 1 : t;
+  const double zoom_step = value / 100.0 * nt;
+  const double old_zoom = zathura_document_get_scale(zathura->document);
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
@@ -1354,12 +1356,12 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
     zathura_document_set_scale(zathura->document, old_zoom - zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
-      zathura_document_set_scale(zathura->document, 1.0f);
+      zathura_document_set_scale(zathura->document, 1.0);
     } else {
-      zathura_document_set_scale(zathura->document, t / 100.0f);
+      zathura_document_set_scale(zathura->document, t / 100.0);
     }
   } else {
-    zathura_document_set_scale(zathura->document, 1.0f);
+    zathura_document_set_scale(zathura->document, 1.0);
   }
 
   /* zoom limitations */
@@ -1368,10 +1370,10 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   girara_setting_get(session, "zoom-min", &zoom_min_int);
   girara_setting_get(session, "zoom-max", &zoom_max_int);
 
-  float zoom_min = zoom_min_int * 0.01f;
-  float zoom_max = zoom_max_int * 0.01f;
+  const double zoom_min = zoom_min_int * 0.01;
+  const double zoom_max = zoom_max_int * 0.01;
 
-  float scale = zathura_document_get_scale(zathura->document);
+  const double scale = zathura_document_get_scale(zathura->document);
   if (scale < zoom_min) {
     zathura_document_set_scale(zathura->document, zoom_min);
   } else if (scale > zoom_max) {

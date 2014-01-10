@@ -29,7 +29,6 @@
 #include "render.h"
 #include "database.h"
 #include "page.h"
-#include "page-widget.h"
 #include "plugin.h"
 
 /** Read a most GT_MAX_READ bytes before falling back to file. */

@@ -316,7 +316,8 @@ zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathu
   return functions->page_image_get_cairo(page, page->data, image, error);
 }
 
-char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error)
+char*
+zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error)
 {
   if (page == NULL || page->document == NULL ) {
     if (error) {
