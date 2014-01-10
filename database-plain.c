@@ -448,10 +448,16 @@ get_jumplist_from_str(const char* str)
       g_free(jump);
       break;
     }
-
     jump->x = g_ascii_strtod(token, NULL);
+
     token = strtok_r(NULL, " ", &saveptr);
+    if (token == NULL) {
+      girara_warning("Could not parse jumplist information.");
+      g_free(jump);
+      break;
+    }
     jump->y = g_ascii_strtod(token, NULL);
+
     girara_list_append(result, jump);
     token = strtok_r(NULL, " ", &saveptr);
   }
