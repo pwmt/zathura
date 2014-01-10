@@ -983,6 +983,19 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   gboolean is_valid_path = TRUE;
 
   switch(argument->n) {
+    case TOP:
+      gtk_tree_path_free(path);
+      path = gtk_tree_path_new_first();
+      break;
+    case BOTTOM:
+      gtk_tree_path_free(path);
+      path = gtk_tree_path_new_from_indices(gtk_tree_model_iter_n_children(model, NULL) - 1, -1);
+      gtk_tree_model_get_iter(model, &iter, path);
+      while (gtk_tree_model_iter_has_child(model, &iter) == TRUE &&
+          gtk_tree_view_row_expanded(tree_view, path) == TRUE) {
+          gtk_tree_path_append_index(path, gtk_tree_model_iter_n_children(model, &iter) - 1);
+      }
+      break;
     case UP:
       if (gtk_tree_path_prev(path) == FALSE) {
         /* For some reason gtk_tree_path_up returns TRUE although we're not
