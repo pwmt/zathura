@@ -268,7 +268,9 @@ Possible arguments are:
 * right
 * rotate-ccw
 * rotate-cw
+* select
 * specific
+* toggle
 * top
 * up
 * width
