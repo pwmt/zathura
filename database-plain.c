@@ -14,6 +14,7 @@
 #include <girara/input-history.h>
 
 #include "database-plain.h"
+#include "utils.h"
 
 #define BOOKMARKS                 "bookmarks"
 #define HISTORY                   "history"
@@ -326,18 +327,17 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
   }
 
   char* name = prepare_filename(file);
-  char* val_list[] = { g_strdup_printf("%d", bookmark->page),
-                       g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
-                       g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->y) };
+  char* val_list[] = {
+    g_strdup_printf("%d", bookmark->page),
+    g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
+    g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->y)
+  };
 
-  gsize num_vals = sizeof(val_list)/sizeof(char *);
+  g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, LENGTH(val_list));
 
-  g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, num_vals);
-
-  for (unsigned int i = 0; i < num_vals; ++i) {
+  for (unsigned int i = 0; i < LENGTH(val_list); ++i) {
     g_free(val_list[i]);
   }
-
   g_free(name);
 
   zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
@@ -429,7 +429,7 @@ get_jumplist_from_str(const char* str)
 {
   g_return_val_if_fail(str != NULL, NULL);
 
-  if (*str == 0) {
+  if (*str == '\0') {
     return girara_list_new2(g_free);
   }
 
@@ -442,9 +442,9 @@ get_jumplist_from_str(const char* str)
 
     jump->page = strtoul(token, NULL, 0);
     token = strtok(NULL, " ");
-    jump->x = strtod(token, NULL);
+    jump->x = g_ascii_strtod(token, NULL);
     token = strtok(NULL, " ");
-    jump->y = strtod(token, NULL);
+    jump->y = g_ascii_strtod(token, NULL);
     girara_list_append(result, jump);
     token = strtok(NULL, " ");
   }
@@ -477,9 +477,13 @@ plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jum
   GString* str_val = g_string_new(NULL);
 
   GIRARA_LIST_FOREACH(jumplist, zathura_jump_t*, iter, jump)
-  g_string_append(str_val, g_strdup_printf("%d ", jump->page));
-  g_string_append(str_val, g_strdup_printf("%.20f ", jump->x));
-  g_string_append(str_val, g_strdup_printf("%.20f ", jump->y));
+    char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
+
+    g_string_append_printf(str_val, "%d ", jump->page);
+    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->x));
+    g_string_append_c(str_val, ' ');
+    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
+    g_string_append_c(str_val, ' ');
   GIRARA_LIST_FOREACH_END(jumplist, zathura_jump_t*, iter, jump);
 
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
@@ -502,24 +506,14 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   char* name = prepare_filename(file);
 
-  g_key_file_set_integer(priv->history, name, KEY_PAGE,   file_info->current_page);
-  g_key_file_set_integer(priv->history, name, KEY_OFFSET, file_info->page_offset);
-
-  char* tmp = g_strdup_printf("%.20f", file_info->scale);
-  g_key_file_set_string (priv->history, name, KEY_SCALE, tmp);
-  g_free(tmp);
-
+  g_key_file_set_integer(priv->history, name, KEY_PAGE,              file_info->current_page);
+  g_key_file_set_integer(priv->history, name, KEY_OFFSET,            file_info->page_offset);
+  g_key_file_set_double (priv->history, name, KEY_SCALE,             file_info->scale);
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
   g_key_file_set_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, file_info->first_page_column);
-
-  tmp = g_strdup_printf("%.20f", file_info->position_x);
-  g_key_file_set_string(priv->history,  name, KEY_POSITION_X, tmp);
-  g_free(tmp);
-
-  tmp = g_strdup_printf("%.20f", file_info->position_y);
-  g_key_file_set_string(priv->history,  name, KEY_POSITION_Y, tmp);
-  g_free(tmp);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_X,        file_info->position_x);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_Y,        file_info->position_y);
 
   g_free(name);
 
@@ -549,26 +543,21 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   file_info->current_page      = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
   file_info->page_offset       = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
+  file_info->scale             = g_key_file_get_double (priv->history, name, KEY_SCALE, NULL);
   file_info->rotation          = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
-  file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
-  file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
 
-  char* scale_string = g_key_file_get_string(priv->history, name, KEY_SCALE, NULL);
-  if (scale_string != NULL) {
-    file_info->scale  = strtod(scale_string, NULL);
-    g_free(scale_string);
+  /* the following flags got introduced at a later point */
+  if (g_key_file_has_key(priv->history, name, KEY_PAGES_PER_ROW, NULL) == TRUE) {
+    file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
   }
-
-  char* position_x_string = g_key_file_get_string(priv->history, name, KEY_POSITION_X, NULL);
-  if (position_x_string != NULL) {
-    file_info->position_x = strtod(position_x_string, NULL);
-    g_free(position_x_string);
+  if (g_key_file_has_key(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL) == TRUE) {
+    file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
   }
-
-  char* position_y_string = g_key_file_get_string(priv->history, name, KEY_POSITION_Y, NULL);
-  if (position_y_string != NULL) {
-    file_info->position_y = strtod(position_y_string, NULL);
-    g_free(position_y_string);
+  if (g_key_file_has_key(priv->history, name, KEY_POSITION_X, NULL) == TRUE) {
+    file_info->position_x        = g_key_file_get_double(priv->history, name, KEY_POSITION_X, NULL);
+  }
+  if (g_key_file_has_key(priv->history, name, KEY_POSITION_Y, NULL) == TRUE) {
+    file_info->position_y        = g_key_file_get_double(priv->history, name, KEY_POSITION_Y, NULL);
   }
 
   g_free(name);
