@@ -233,7 +233,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
 
     GObject* widget = G_OBJECT(priv->zathura->pages[page - 1]);
     g_object_set(widget, "draw-links", FALSE, "search-results", rectangles,
-        "search-current", 0, NULL);
+        "search-current", 0, "draw-search-results", TRUE, NULL);
   }
 }
 
@@ -267,8 +267,11 @@ static const GDBusInterfaceVTable interface_vtable =
 static const unsigned int TIMEOUT = 3000;
 
 bool
-zathura_dbus_goto_page_and_highlight(const char* filename, int page, girara_list_t* rectangles)
+zathura_dbus_goto_page_and_highlight(const char* filename, int page,
+    girara_list_t* rectangles)
 {
+  /* note: page is [1, number_of_pages] here */
+
   if (filename == NULL) {
     return false;
   }
