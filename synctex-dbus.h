@@ -41,12 +41,18 @@ GType zathura_synctex_dbus_get_type(void);
 ZathuraSynctexDbus* zathura_synctex_dbus_new(zathura_t* zathura);
 
 /**
- * Forward synctex position to zathura instance having the right file open.
+ * Look for zathura instance having filename open and cause it to open give page
+ * and move to the given position on that page.
+ *
  * @param filename filename
- * @param position synctex position
+ * @param page page number
+ * @param position_x x coordinate on the page
+ * @param position_y y coordinate on the page
  * @returns true if a instance was found that has the given filename open, false
  * otherwise
  */
-bool synctex_forward_position(const char* filename, const char* position);
+bool zathura_dbus_goto_page_and_highlight(const char* filename, int page, girara_list_t* rectangles);
+
+bool zathura_dbus_synctex_position(const char* filename, const char* position);
 
 #endif

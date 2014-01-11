@@ -107,7 +107,7 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    if (synctex_forward_position(real_path, synctex_fwd) == true) {
+    if (zathura_dbus_synctex_position(real_path, synctex_fwd) == true) {
       free(real_path);
       return 0;
     } else {
