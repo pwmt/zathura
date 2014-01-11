@@ -1,7 +1,6 @@
 /* See LICENSE file for license and copyright information */
 
 #include <glib.h>
-#include <glib/gi18n.h>
 
 #include "synctex.h"
 
@@ -9,8 +8,6 @@
 #include "page.h"
 #include "document.h"
 #include "utils.h"
-
-#include <girara/session.h>
 
 enum {
   SYNCTEX_RESULT_BEGIN = 1,
@@ -50,9 +47,6 @@ static GScannerConfig scanner_config = {
   .numbers_2_int         = TRUE,
 };
 
-static void synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool first);
-static double scan_float(GScanner* scanner);
-
 void
 synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
 {
@@ -85,23 +79,6 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
   g_strfreev(argv);
 }
 
-static void
-synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool first)
-{
-  zathura_page_t* page = zathura_document_get_page(zathura->document, page_idx-1);
-  if (page == NULL)
-    return;
-
-  GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-  g_object_set(page_widget, "draw-links", FALSE, NULL);
-  g_object_set(page_widget, "search-results", hits, NULL);
-
-  if (first == true) {
-    page_set(zathura, zathura_page_get_index(page));
-    g_object_set(page_widget, "search-current", 0, NULL);
-  }
-}
-
 static double
 scan_float(GScanner* scanner)
 {
@@ -115,11 +92,11 @@ scan_float(GScanner* scanner)
   }
 }
 
-bool
-synctex_view(zathura_t* zathura, const char* position)
+girara_list_t*
+synctex_rectangles_from_position(const char* filename, const char* position, int* page)
 {
-  if (zathura->document == NULL) {
-    return false;
+  if (filename == NULL || position == NULL || page == NULL) {
+    return NULL;
   }
 
   char** argv = g_malloc0(sizeof(char*) * 6);
@@ -128,7 +105,7 @@ synctex_view(zathura_t* zathura, const char* position)
   argv[2] = g_strdup("-i");
   argv[3] = g_strdup(position);
   argv[4] = g_strdup("-o");
-  argv[5] = g_strdup(zathura_document_get_path(zathura->document));
+  argv[5] = g_strdup(filename);
 
   gint output;
   bool ret = g_spawn_async_with_pipes(NULL, argv, NULL,
@@ -170,20 +147,9 @@ synctex_view(zathura_t* zathura, const char* position)
     }
   }
 
-  if (found_begin == true) {
-    unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-    for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-      if (page == NULL) {
-        continue;
-      }
-      g_object_set(zathura_page_get_widget(zathura, page), "search-results", NULL, NULL);
-    }
-  }
-
-  ret = false;
-  int page = -1, nextpage;
-  girara_list_t* hitlist = NULL;
+  *page = -1;
+  int current_page;
+  girara_list_t* hitlist = girara_list_new2(g_free);;
   zathura_rectangle_t* rectangle = NULL;
 
   while (found_end == false) {
@@ -200,17 +166,18 @@ synctex_view(zathura_t* zathura, const char* position)
 
           case SYNCTEX_PROP_PAGE:
             if (g_scanner_get_next_token(scanner) == G_TOKEN_INT) {
-              nextpage = g_scanner_cur_value(scanner).v_int;
-              if (page != nextpage) {
-                if (hitlist) {
-                  synctex_record_hits(zathura, page, hitlist, !ret);
-                  ret = true;
-                }
-                hitlist = girara_list_new2((girara_free_function_t) g_free);
-                page = nextpage;
+              current_page = g_scanner_cur_value(scanner).v_int;
+              if (*page == -1) {
+                *page = current_page;
               }
+
+              if (*page == current_page && rectangle != NULL) {
+                girara_list_append(hitlist, rectangle);
+                rectangle = NULL;
+              }
+
+              g_free(rectangle);
               rectangle = g_malloc0(sizeof(zathura_rectangle_t));
-              girara_list_append(hitlist, rectangle);
             }
             break;
 
@@ -237,13 +204,16 @@ synctex_view(zathura_t* zathura, const char* position)
     }
   }
 
-  if (hitlist != NULL) {
-    synctex_record_hits(zathura, page, hitlist, !ret);
-    ret = true;
+  if (rectangle != NULL) {
+    if (current_page == *page) {
+      girara_list_append(hitlist, rectangle);
+    } else {
+      g_free(rectangle);
+    }
   }
 
   g_scanner_destroy(scanner);
   close(output);
 
-  return ret;
+  return hitlist;
 }
