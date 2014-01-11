@@ -4,7 +4,7 @@ include config.mk
 include common.mk
 
 PROJECT    = zathura
-OSOURCE    = $(wildcard *.c)
+OSOURCE    = $(filter-out dbus-interface-definitions.c, $(wildcard *.c))
 HEADER     = $(wildcard *.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
@@ -37,8 +37,8 @@ ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 
-OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
-DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
+OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o
+DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
 
 all: options ${PROJECT} po build-manpages
 
@@ -64,7 +64,14 @@ version.h: version.h.in config.mk
 		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
 		-e 's/ZVREV/${ZATHURA_VERSION_REV}/' \
 		-e 's/ZVAPI/${ZATHURA_API_VERSION}/' \
-		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' version.h.in > version.h
+		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' version.h.in > version.h.tmp
+	$(QUIET)mv version.h.tmp version.h
+
+dbus-interface-definitions.c: data/org.pwmt.zathura.xml
+	$(QUIET)echo "const char* DBUS_INTERFACE_XML =" > dbus-interface-definitions.c.tmp
+	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> dbus-interface-definitions.c.tmp
+	$(QUIET)echo ";" >> dbus-interface-definitions.c.tmp
+	$(QUIET)mv dbus-interface-definitions.c.tmp dbus-interface-definitions.c
 
 %.o: %.c
 	$(ECHO) CC $<
@@ -84,8 +91,18 @@ ${PROJECT}: ${OBJECTS}
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
 
 clean:
-	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
-		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
+	$(QUIET)rm -rf ${PROJECT} \
+		${OBJECTS} \
+		${PROJECT}-${VERSION}.tar.gz \
+		${DOBJECTS} \
+		${PROJECT}-debug \
+		.depend \
+		${PROJECT}.pc \
+		doc \
+		version.h \
+		version.h.tmp \
+		dbus-interface-definitions.c \
+		dbus-interface-definitions.c.tmp \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		.version-checks
 ifneq "$(wildcard ${RSTTOMAN})" ""
@@ -188,7 +205,7 @@ install-headers: ${PROJECT}.pc
 install-dbus:
 	$(ECHO) installing D-Bus interface definitions
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
-	$(QUIET)install -m 644 data/org.pwmt.zathura.synctex.xml $(DESTDIR)$(DBUSINTERFACEDIR)
+	$(QUIET)install -m 644 data/org.pwmt.zathura.xml $(DESTDIR)$(DBUSINTERFACEDIR)
 
 install-vimftplugin:
 	$(ECHO) installing Vim filetype plugin

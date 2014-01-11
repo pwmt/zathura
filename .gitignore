@@ -18,3 +18,4 @@ doc/
 zathura.1
 zathurarc.5
 .version-checks/
+dbus-interface-definitions.c

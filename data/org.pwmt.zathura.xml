@@ -1,0 +1,29 @@
+<!DOCTYPE node PUBLIC '-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'
+  'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>
+<node>
+  <interface name='org.pwmt.zathura'>
+    <!-- Open a document in a running zathura instance. -->
+    <method name='OpenDocument'>
+      <arg type='s' name='path' direction='in' />
+      <arg type='s' name='password' direction='in' />
+      <arg type='i' name='page' direction='in' />
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <!-- Close open document. -->
+    <method name='CloseDocument'>
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <!-- Go to a specific page . -->
+    <method name='GotoPage'>
+      <arg type='i' name='page' direction='in' />
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <!-- Go to a page and highlight rectangles there. -->
+    <method name='HighlightRects'>
+      <arg type='i' name='page' direction='in' />
+      <arg type='a(dddd)' name='rectangles' direction='out' />
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <property type='s' name='filename' access='read' />
+  </interface>
+</node>
