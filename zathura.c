@@ -229,6 +229,13 @@ zathura_init(zathura_t* zathura)
   zathura->jumplist.size = 0;
   zathura->jumplist.cur = NULL;
 
+  /* Start D-Bus service */
+  bool synctex_dbus = true;
+  girara_setting_get(zathura->ui.session, "dbus-service", &synctex_dbus);
+  if (synctex_dbus == true) {
+    zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
+  }
+
   return true;
 
 error_free:
@@ -252,6 +259,12 @@ zathura_free(zathura_t* zathura)
   }
 
   document_close(zathura, false);
+
+  /* stop D-Bus */
+  if (zathura->synctex.dbus != NULL) {
+    g_object_unref(zathura->synctex.dbus);
+    zathura->synctex.dbus = NULL;
+  }
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
@@ -786,13 +799,6 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
-  /* Start D-Bus service for synctex forward synchronization */
-  bool synctex_dbus = true;
-  girara_setting_get(zathura->ui.session, "synctex-dbus-service", &synctex_dbus);
-  if (synctex_dbus == true) {
-    zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
-  }
-
   return true;
 
 error_free:
@@ -874,12 +880,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
-
-  /* stop D-Bus */
-  if (zathura->synctex.dbus != NULL) {
-    g_object_unref(zathura->synctex.dbus);
-    zathura->synctex.dbus = NULL;
-  }
 
   /* remove monitor */
   if (keep_monitor == false) {

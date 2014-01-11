@@ -213,7 +213,7 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   bool_value = true;
-  girara_setting_add(gsession, "synctex-dbus-service",   &bool_value,  BOOLEAN, false, _("Enable D-Bus service for synctex forward synchronization support"), NULL, NULL);
+  girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
   string_value = "primary";
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
 
