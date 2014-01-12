@@ -34,7 +34,7 @@
 #include "page-widget.h"
 #include "plugin.h"
 #include "adjustment.h"
-#include "synctex-dbus.h"
+#include "dbus-interface.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -229,10 +229,10 @@ zathura_init(zathura_t* zathura)
   zathura->jumplist.cur = NULL;
 
   /* Start D-Bus service */
-  bool synctex_dbus = true;
-  girara_setting_get(zathura->ui.session, "dbus-service", &synctex_dbus);
-  if (synctex_dbus == true) {
-    zathura->synctex.dbus = zathura_synctex_dbus_new(zathura);
+  bool dbus = true;
+  girara_setting_get(zathura->ui.session, "dbus-service", &dbus);
+  if (dbus == true) {
+    zathura->dbus = zathura_dbus_new(zathura);
   }
 
   return true;
@@ -260,9 +260,9 @@ zathura_free(zathura_t* zathura)
   document_close(zathura, false);
 
   /* stop D-Bus */
-  if (zathura->synctex.dbus != NULL) {
-    g_object_unref(zathura->synctex.dbus);
-    zathura->synctex.dbus = NULL;
+  if (zathura->dbus != NULL) {
+    g_object_unref(zathura->dbus);
+    zathura->dbus = NULL;
   }
 
   if (zathura->ui.session != NULL) {

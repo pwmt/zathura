@@ -36,9 +36,9 @@ typedef struct zathura_plugin_manager_s zathura_plugin_manager_t;
 typedef struct zathura_renderer_s ZathuraRenderer;
 
 /**
- * Synctex DBus manager
+ * D-Bus manager
  */
-typedef struct zathura_synctex_dbus_s ZathuraSynctexDbus;
+typedef struct zathura_dbus_s ZathuraDbus;
 
 /**
  * Error types

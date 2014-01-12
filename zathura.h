@@ -133,7 +133,6 @@ struct zathura_s
   {
     bool enabled;
     gchar* editor;
-    ZathuraSynctexDbus* dbus;
   } synctex;
 
   struct
@@ -185,6 +184,7 @@ struct zathura_s
   zathura_document_t* document; /**< The current document */
   GtkWidget** pages; /**< The page widgets */
   zathura_database_t* database; /**< The database */
+  ZathuraDbus* dbus; /**< D-Bus service */
 
   /**
    * File monitor

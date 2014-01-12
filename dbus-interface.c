@@ -1,6 +1,6 @@
 /* See LICENSE file for license and copyright information */
 
-#include "synctex-dbus.h"
+#include "dbus-interface.h"
 #include "synctex.h"
 #include "macros.h"
 #include "zathura.h"
@@ -11,7 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
-G_DEFINE_TYPE(ZathuraSynctexDbus, zathura_synctex_dbus, G_TYPE_OBJECT)
+G_DEFINE_TYPE(ZathuraDbus, zathura_dbus, G_TYPE_OBJECT)
 
 /* template for bus name */
 static const char DBUS_NAME_TEMPLATE[] = "org.pwmt.zathura.PID-%d";
@@ -29,7 +29,7 @@ typedef struct private_s {
 } private_t;
 
 #define GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), ZATHURA_TYPE_SYNCTEX_DBUS, \
+  (G_TYPE_INSTANCE_GET_PRIVATE((obj), ZATHURA_TYPE_DBUS, \
                                private_t))
 
 /* in dbus-interface-definitions.c */
@@ -40,8 +40,8 @@ static const GDBusInterfaceVTable interface_vtable;
 static void
 finalize(GObject* object)
 {
-  ZathuraSynctexDbus* synctex_dbus = ZATHURA_SYNCTEX_DBUS(object);
-  private_t* priv                  = GET_PRIVATE(synctex_dbus);
+  ZathuraDbus* dbus = ZATHURA_DBUS(object);
+  private_t* priv   = GET_PRIVATE(dbus);
 
   if (priv->connection != NULL && priv->registration_id > 0) {
     g_dbus_connection_unregister_object(priv->connection, priv->registration_id);
@@ -55,11 +55,11 @@ finalize(GObject* object)
     g_dbus_node_info_unref(priv->introspection_data);
   }
 
-  G_OBJECT_CLASS(zathura_synctex_dbus_parent_class)->finalize(object);
+  G_OBJECT_CLASS(zathura_dbus_parent_class)->finalize(object);
 }
 
 static void
-zathura_synctex_dbus_class_init(ZathuraSynctexDbusClass* class)
+zathura_dbus_class_init(ZathuraDbusClass* class)
 {
   /* add private members */
   g_type_class_add_private(class, sizeof(private_t));
@@ -70,9 +70,9 @@ zathura_synctex_dbus_class_init(ZathuraSynctexDbusClass* class)
 }
 
 static void
-zathura_synctex_dbus_init(ZathuraSynctexDbus* synctex_dbus)
+zathura_dbus_init(ZathuraDbus* dbus)
 {
-  private_t* priv          = GET_PRIVATE(synctex_dbus);
+  private_t* priv          = GET_PRIVATE(dbus);
   priv->zathura            = NULL;
   priv->introspection_data = NULL;
   priv->connection         = NULL;
@@ -85,8 +85,8 @@ bus_acquired(GDBusConnection* connection, const gchar* name, void* data)
 {
   girara_debug("Bus acquired at '%s'.", name);
 
-  ZathuraSynctexDbus* dbus = data;
-  private_t* priv          = GET_PRIVATE(dbus);
+  ZathuraDbus* dbus = data;
+  private_t* priv   = GET_PRIVATE(dbus);
 
   GError* error = NULL;
   priv->registration_id = g_dbus_connection_register_object(connection,
@@ -117,17 +117,17 @@ name_lost(GDBusConnection* UNUSED(connection), const gchar* name,
       name);
 }
 
-ZathuraSynctexDbus*
-zathura_synctex_dbus_new(zathura_t* zathura)
+ZathuraDbus*
+zathura_dbus_new(zathura_t* zathura)
 {
-  GObject* obj = g_object_new(ZATHURA_TYPE_SYNCTEX_DBUS, NULL);
+  GObject* obj = g_object_new(ZATHURA_TYPE_DBUS, NULL);
   if (obj == NULL) {
     return NULL;
   }
 
-  ZathuraSynctexDbus* synctex_dbus = ZATHURA_SYNCTEX_DBUS(obj);
-  private_t* priv                  = GET_PRIVATE(synctex_dbus);
-  priv->zathura                    = zathura;
+  ZathuraDbus* dbus = ZATHURA_DBUS(obj);
+  private_t* priv   = GET_PRIVATE(dbus);
+  priv->zathura     = zathura;
 
   GError* error = NULL;
   priv->introspection_data = g_dbus_node_info_new_for_xml(DBUS_INTERFACE_XML, &error);
@@ -141,10 +141,10 @@ zathura_synctex_dbus_new(zathura_t* zathura)
   char* well_known_name = g_strdup_printf(DBUS_NAME_TEMPLATE, getpid());
   priv->owner_id = g_bus_own_name(G_BUS_TYPE_SESSION,
       well_known_name, G_BUS_NAME_OWNER_FLAGS_NONE, bus_acquired,
-      name_acquired, name_lost, synctex_dbus, NULL);
+      name_acquired, name_lost, dbus, NULL);
   g_free(well_known_name);
 
-  return synctex_dbus;
+  return dbus;
 }
 
 /* D-Bus handler */
@@ -156,8 +156,8 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     const gchar* method_name, GVariant* parameters,
     GDBusMethodInvocation* invocation, void* data)
 {
-  ZathuraSynctexDbus* synctex_dbus = data;
-  private_t* priv = GET_PRIVATE(synctex_dbus);
+  ZathuraDbus* dbus = data;
+  private_t* priv   = GET_PRIVATE(dbus);
 
   girara_debug("Handling call '%s.%s' on '%s'.", interface_name, method_name,
                object_path);
@@ -243,8 +243,8 @@ handle_get_property(GDBusConnection* UNUSED(connection),
     const gchar* UNUSED(interface_name), const gchar* property_name,
     GError** error, void* data)
 {
-  ZathuraSynctexDbus* synctex_dbus = data;
-  private_t* priv = GET_PRIVATE(synctex_dbus);
+  ZathuraDbus* dbus = data;
+  private_t* priv   = GET_PRIVATE(dbus);
 
   if (g_strcmp0(property_name, "filename") == 0) {
     if (priv->zathura->document == NULL) {

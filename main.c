@@ -16,7 +16,7 @@
 
 #include "zathura.h"
 #include "utils.h"
-#include "synctex-dbus.h"
+#include "dbus-interface.h"
 
 /* main function */
 int

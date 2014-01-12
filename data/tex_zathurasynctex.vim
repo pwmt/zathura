@@ -2,7 +2,8 @@
 
 " This is a sample plugin that can be used for synctex forward synchronization.
 " It currently uses latexsuite to obtain the file name of the document. If you
-" are not using latexsuite, it should be enough to adopt output accordingly.
+" are not using latexsuite, it should be enough to adopt the calculation of
+" 'output' accordingly.
 
 " avoid re-execution
 if exists("b:did_zathura_synctex_plugin") || !exists("*Tex_GetMainFileName")
