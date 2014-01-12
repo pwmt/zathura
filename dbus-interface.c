@@ -196,7 +196,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
 
   /* methods that require an open document */
   if (g_strcmp0(method_name, "GotoPage") == 0) {
-    gint page = 0;
+    gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
     g_variant_get(parameters, "(i)", &page);
 
     bool ret = true;
@@ -209,7 +209,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     GVariant* result = g_variant_new("(b)", ret);
     g_dbus_method_invocation_return_value(invocation, result);
   } else if (g_strcmp0(method_name, "HighlightRects") == 0) {
-    gint page = 0;
+    gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
     GVariantIter* iter = NULL;
     g_variant_get(parameters, "(ia(dddd))", &page, &iter);
 
@@ -369,7 +369,7 @@ zathura_dbus_synctex_position(const char* filename, const char* position)
     return false;
   }
 
-  int page = -1;
+  int page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   girara_list_t* rectangles = synctex_rectangles_from_position(filename, position, &page);
   if (rectangles == NULL) {
     return false;

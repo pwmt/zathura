@@ -147,7 +147,7 @@ synctex_rectangles_from_position(const char* filename, const char* position, int
     }
   }
 
-  *page = -1;
+  *page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   int current_page;
   girara_list_t* hitlist = girara_list_new2(g_free);;
   zathura_rectangle_t* rectangle = NULL;
@@ -167,7 +167,7 @@ synctex_rectangles_from_position(const char* filename, const char* position, int
           case SYNCTEX_PROP_PAGE:
             if (g_scanner_get_next_token(scanner) == G_TOKEN_INT) {
               current_page = g_scanner_cur_value(scanner).v_int;
-              if (*page == -1) {
+              if (*page == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
                 *page = current_page;
               }
 
