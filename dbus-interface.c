@@ -5,6 +5,8 @@
 #include "macros.h"
 #include "zathura.h"
 #include "document.h"
+#include "utils.h"
+
 #include <girara/utils.h>
 #include <gio/gio.h>
 #include <sys/types.h>
@@ -150,6 +152,28 @@ zathura_dbus_new(zathura_t* zathura)
 /* D-Bus handler */
 
 static void
+highlight_rects(zathura_t* zathura, unsigned int page,
+                girara_list_t** rectangles)
+{
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+
+  for (unsigned int p = 0; p != number_of_pages; ++p) {
+    GObject* widget = G_OBJECT(priv->zathura->pages[p]);
+
+    g_object_set(widget, "draw-links", FALSE, "search-results", rectangles[p],
+        NULL);
+    if (p == page) {
+      g_object_set(widget, "search-current", 0, NULL);
+    } else {
+      g_object_set(widget, "search-current", -1, NULL);
+    }
+  }
+
+  page_set(zathura, page);
+  document_draw_search_results(zathura, true);
+}
+
+static void
 handle_method_call(GDBusConnection* UNUSED(connection),
     const gchar* UNUSED(sender), const gchar* object_path,
     const gchar* interface_name,
@@ -211,29 +235,52 @@ handle_method_call(GDBusConnection* UNUSED(connection),
   } else if (g_strcmp0(method_name, "HighlightRects") == 0) {
     gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
     GVariantIter* iter = NULL;
-    g_variant_get(parameters, "(ia(dddd))", &page, &iter);
+    GVariantIter* secondary_iter = NULL;
+    g_variant_get(parameters, "(ia(dddd)a(idddd))", &page, &iter,
+        &secondary_iter);
 
     if (page < 1 || (unsigned int)page >= number_of_pages) {
       GVariant* result = g_variant_new("(b)", false);
+      g_variant_iter_free(iter);
+      g_variant_iter_free(secondary_iter);
       g_dbus_method_invocation_return_value(invocation, result);
+      return;
     }
 
     /* get rectangles */
-    girara_list_t* rectangles = girara_list_new2(g_free);
+    girara_list_t** rectangles = g_malloc0(number_of_pages * sizeof(girara_list_t*));
+    rectangles[page - 1] = girara_list_new2(g_free);
+
     zathura_rectangle_t temp_rect;
     while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
           &temp_rect.y1, &temp_rect.y2)) {
       zathura_rectangle_t* rect = g_malloc0(sizeof(zathura_rectangle_t));
       memcpy(rect, &temp_rect, sizeof(zathura_rectangle_t));
-      girara_list_append(rectangles, rect);
+      girara_list_append(rectangles[page - 1], rect);
     }
     g_variant_iter_free(iter);
 
-    page_set(priv->zathura, page - 1);
+    /* get secondary rectangles */
+    int temp_page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+    while (g_variant_iter_loop(secondary_iter, "(idddd)", &temp_page,
+          &temp_rect.x1, &temp_rect.x2, &temp_rect.y1, &temp_rect.y2)) {
+      if (temp_page < 0 || (unsigned int)temp_page >= number_of_pages) {
+        /* error out here? */
+        continue;
+      }
 
-    GObject* widget = G_OBJECT(priv->zathura->pages[page - 1]);
-    g_object_set(widget, "draw-links", FALSE, "search-results", rectangles,
-        "search-current", 0, "draw-search-results", TRUE, NULL);
+      if (rectangles[temp_page] == NULL) {
+        rectangles[temp_page] = girara_list_new2(g_free);
+      }
+
+      zathura_rectangle_t* rect = g_malloc0(sizeof(zathura_rectangle_t));
+      memcpy(rect, &temp_rect, sizeof(zathura_rectangle_t));
+      girara_list_append(rectangles[temp_page], rect);
+    }
+    g_variant_iter_free(secondary_iter);
+
+    highlight_rects(priv->zathura, page - 1, rectangles);
+    g_free(rectangles);
   }
 }
 
@@ -268,7 +315,7 @@ static const unsigned int TIMEOUT = 3000;
 
 bool
 zathura_dbus_goto_page_and_highlight(const char* filename, int page,
-    girara_list_t* rectangles)
+    girara_list_t* rectangles, girara_list_t* secondary_rects)
 {
   /* note: page is [1, number_of_pages] here */
 
@@ -343,9 +390,17 @@ zathura_dbus_goto_page_and_highlight(const char* filename, int page,
       GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect);
     }
 
+    GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(idddd)"));
+    if (secondary_rects != NULL) {
+      GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
+        g_variant_builder_add(builder, "(idddd)", rect->page, rect->rect.x1,
+            rect->rect.x2, rect->rect.y1, rect->rect.y2);
+      GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
+    }
+
     GVariant* ret = g_dbus_connection_call_sync(connection,
       name, DBUS_OBJPATH, DBUS_INTERFACE, "HighlightRects",
-      g_variant_new("(ia(dddd))", page, builder),
+      g_variant_new("(ia(dddd)a(idddd))", page, builder, second_builder),
       G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
     g_variant_builder_unref(builder);
     if (ret == NULL) {
@@ -370,12 +425,16 @@ zathura_dbus_synctex_position(const char* filename, const char* position)
   }
 
   int page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  girara_list_t* rectangles = synctex_rectangles_from_position(filename, position, &page);
+  girara_list_t* secondary_rects = NULL;
+  girara_list_t* rectangles = synctex_rectangles_from_position(filename,
+      position, &page, &secondary_rects);
   if (rectangles == NULL) {
     return false;
   }
 
-  bool ret = zathura_dbus_goto_page_and_highlight(filename, page, rectangles);
+  const bool ret = zathura_dbus_goto_page_and_highlight(filename, page,
+      rectangles, secondary_rects);
   girara_list_free(rectangles);
+  girara_list_free(secondary_rects);
   return ret;
 }

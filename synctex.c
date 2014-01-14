@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <glib.h>
+#include <string.h>
 
 #include "synctex.h"
 
@@ -69,7 +70,8 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
   argv[0] = g_strdup("synctex");
   argv[1] = g_strdup("edit");
   argv[2] = g_strdup("-o");
-  argv[3] = g_strdup_printf("%d:%d:%d:%s", zathura_page_get_index(page) + 1, x, y, filename);
+  argv[3] = g_strdup_printf("%d:%d:%d:%s", zathura_page_get_index(page) + 1, x,
+      y, filename);
   if (zathura->synctex.editor != NULL) {
     argv[4] = g_strdup("-x");
     argv[5] = g_strdup(zathura->synctex.editor);
@@ -93,9 +95,10 @@ scan_float(GScanner* scanner)
 }
 
 girara_list_t*
-synctex_rectangles_from_position(const char* filename, const char* position, int* page)
+synctex_rectangles_from_position(const char* filename, const char* position,
+                                 int* page, girara_list_t** secondary_rects)
 {
-  if (filename == NULL || position == NULL || page == NULL) {
+  if (filename == NULL || position == NULL || page) {
     return NULL;
   }
 
@@ -107,7 +110,7 @@ synctex_rectangles_from_position(const char* filename, const char* position, int
   argv[4] = g_strdup("-o");
   argv[5] = g_strdup(filename);
 
-  gint output;
+  gint output = -1;
   bool ret = g_spawn_async_with_pipes(NULL, argv, NULL,
       G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL, NULL, NULL, NULL, NULL,
       &output, NULL, NULL);
@@ -147,9 +150,10 @@ synctex_rectangles_from_position(const char* filename, const char* position, int
     }
   }
 
-  *page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  int current_page;
-  girara_list_t* hitlist = girara_list_new2(g_free);;
+  int rpage = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  int current_page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  girara_list_t* hitlist = girara_list_new2(g_free);
+  girara_list_t* other_rects = girara_list_new2(g_free);
   zathura_rectangle_t* rectangle = NULL;
 
   while (found_end == false) {
@@ -167,13 +171,18 @@ synctex_rectangles_from_position(const char* filename, const char* position, int
           case SYNCTEX_PROP_PAGE:
             if (g_scanner_get_next_token(scanner) == G_TOKEN_INT) {
               current_page = g_scanner_cur_value(scanner).v_int;
-              if (*page == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
-                *page = current_page;
+              if (rpage == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
+                rpage = current_page;
               }
 
               if (*page == current_page && rectangle != NULL) {
                 girara_list_append(hitlist, rectangle);
                 rectangle = NULL;
+              } else if (rectangle != NULL) {
+                synctex_page_rect_t* page_rect = g_malloc0(sizeof(synctex_page_rect_t));
+                page_rect->page = current_page;
+                memcpy(&page_rect->rect, rectangle, sizeof(zathura_rectangle_t));
+                girara_list_append(other_rects, page_rect);
               }
 
               g_free(rectangle);
@@ -205,15 +214,28 @@ synctex_rectangles_from_position(const char* filename, const char* position, int
   }
 
   if (rectangle != NULL) {
-    if (current_page == *page) {
+    if (current_page == rpage) {
       girara_list_append(hitlist, rectangle);
     } else {
+      synctex_page_rect_t* page_rect = g_malloc0(sizeof(synctex_page_rect_t));
+      page_rect->page = current_page;
+      memcpy(&page_rect->rect, rectangle, sizeof(zathura_rectangle_t));
+      girara_list_append(other_rects, page_rect);
       g_free(rectangle);
     }
   }
 
   g_scanner_destroy(scanner);
   close(output);
+
+  if (page != NULL) {
+    *page = rpage;
+  }
+  if (secondary_rects != NULL) {
+    *secondary_rects = other_rects;
+  } else {
+    girara_list_free(other_rects);
+  }
 
   return hitlist;
 }

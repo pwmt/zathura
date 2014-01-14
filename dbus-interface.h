@@ -47,11 +47,13 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
  * @param filename filename
  * @param page page number
  * @param rectangles list of rectangles to highlight
+ * @param secondary_rects list of synctex_page_rect_ts for rectangles not on the
+ *                        page given by page
  * @returns true if a instance was found that has the given filename open, false
- * otherwise
+ *          otherwise
  */
 bool zathura_dbus_goto_page_and_highlight(const char* filename, int page,
-    girara_list_t* rectangles);
+    girara_list_t* rectangles, girara_list_t* secondary_rects);
 
 bool zathura_dbus_synctex_position(const char* filename, const char* position);
 
