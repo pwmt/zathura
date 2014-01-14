@@ -13,7 +13,6 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/utils.h>
-#include <glib/gi18n.h>
 
 #include "links.h"
 #include "utils.h"
@@ -22,6 +21,7 @@
 #include "document.h"
 #include "page.h"
 #include "plugin.h"
+#include "content-type.h"
 
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
@@ -30,7 +30,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-  const gchar* content_type = g_content_type_guess(path, NULL, 0, NULL);
+  const gchar* content_type = guess_content_type(path);
   if (content_type == NULL) {
     return false;
   }

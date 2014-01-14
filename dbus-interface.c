@@ -158,7 +158,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
 
   for (unsigned int p = 0; p != number_of_pages; ++p) {
-    GObject* widget = G_OBJECT(priv->zathura->pages[p]);
+    GObject* widget = G_OBJECT(zathura->pages[p]);
 
     g_object_set(widget, "draw-links", FALSE, "search-results", rectangles[p],
         NULL);
@@ -255,7 +255,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
           &temp_rect.y1, &temp_rect.y2)) {
       zathura_rectangle_t* rect = g_malloc0(sizeof(zathura_rectangle_t));
-      memcpy(rect, &temp_rect, sizeof(zathura_rectangle_t));
+      *rect = temp_rect;
       girara_list_append(rectangles[page - 1], rect);
     }
     g_variant_iter_free(iter);
@@ -274,7 +274,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
       }
 
       zathura_rectangle_t* rect = g_malloc0(sizeof(zathura_rectangle_t));
-      memcpy(rect, &temp_rect, sizeof(zathura_rectangle_t));
+      *rect = temp_rect;
       girara_list_append(rectangles[temp_page], rect);
     }
     g_variant_iter_free(secondary_iter);

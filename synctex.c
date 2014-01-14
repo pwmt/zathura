@@ -1,10 +1,8 @@
 /* See LICENSE file for license and copyright information */
 
 #include <glib.h>
-#include <string.h>
 
 #include "synctex.h"
-
 #include "zathura.h"
 #include "page.h"
 #include "document.h"
@@ -181,7 +179,7 @@ synctex_rectangles_from_position(const char* filename, const char* position,
               } else if (rectangle != NULL) {
                 synctex_page_rect_t* page_rect = g_malloc0(sizeof(synctex_page_rect_t));
                 page_rect->page = current_page;
-                memcpy(&page_rect->rect, rectangle, sizeof(zathura_rectangle_t));
+                page_rect->rect = *rectangle;
                 girara_list_append(other_rects, page_rect);
               }
 
@@ -219,7 +217,7 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     } else {
       synctex_page_rect_t* page_rect = g_malloc0(sizeof(synctex_page_rect_t));
       page_rect->page = current_page;
-      memcpy(&page_rect->rect, rectangle, sizeof(zathura_rectangle_t));
+      page_rect->rect = *rectangle;
       girara_list_append(other_rects, page_rect);
       g_free(rectangle);
     }

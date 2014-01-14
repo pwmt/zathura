@@ -1074,7 +1074,7 @@ bool
 position_set(zathura_t* zathura, double position_x, double position_y)
 {
   if (zathura == NULL || zathura->document == NULL) {
-    goto error_out;
+    return false;
   }
 
   double comppos_x, comppos_y;
@@ -1113,9 +1113,6 @@ position_set(zathura_t* zathura, double position_x, double position_y)
   refresh_view(zathura);
 
   return true;
-
-error_out:
-  return false;
 }
 
 
