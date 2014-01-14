@@ -4,23 +4,17 @@
 #define _XOPEN_SOURCE 700
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <limits.h>
 #include <glib.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
-#include <girara/statusbar.h>
-#include <girara/session.h>
-#include <girara/settings.h>
 
 #include "adjustment.h"
 #include "document.h"
 #include "utils.h"
 #include "zathura.h"
-#include "render.h"
-#include "database.h"
 #include "page.h"
 #include "plugin.h"
 #include "content-type.h"
