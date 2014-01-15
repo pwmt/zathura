@@ -208,11 +208,6 @@ install-dbus:
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
 	$(QUIET)install -m 644 data/org.pwmt.zathura.xml $(DESTDIR)$(DBUSINTERFACEDIR)
 
-install-vimftplugin:
-	$(ECHO) installing Vim filetype plugin
-	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(VIMFTPLUGINDIR)
-	$(QUIET)install -m 644 data/tex_zathurasynctex.vim $(DESTDIR)$(VIMFTPLUGINDIR)
-
 install: all install-headers install-manpages install-dbus
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
@@ -236,9 +231,12 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
 	$(ECHO) removing desktop file
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
+	$(ECHO) removing D-Bus interface definitions
+	$(QUIET)rm -f $(DESTDIR)$(DBUSINTERFACEDIR)/org.pwmt.zathura.xml
 	$(MAKE) -C po uninstall
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test \
-	po install-headers uninstall-headers update-po install-manpages build-manpages
+.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall \
+	test po install-headers uninstall-headers update-po install-manpages \
+	build-manpages install-dbus
