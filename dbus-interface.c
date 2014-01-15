@@ -1,12 +1,13 @@
 /* See LICENSE file for license and copyright information */
 
 #include "dbus-interface.h"
+#include "dbus-interface-definitions.h"
 #include "synctex.h"
 #include "macros.h"
 #include "zathura.h"
 #include "document.h"
 #include "utils.h"
-#include "dbus-interface-definitions.h"
+#include "adjustment.h"
 
 #include <girara/utils.h>
 #include <gio/gio.h>
@@ -169,6 +170,34 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   page_set(zathura, page);
   document_draw_search_results(zathura, true);
+
+  if (rectangles[0] == NULL || girara_list_size(rectangles[0]) == 0) {
+    return;
+  }
+
+  /* compute the position of the center of the page */
+  double pos_x = 0;
+  double pos_y = 0;
+  page_number_to_position(zathura->document, page, 0.5, 0.5, &pos_x, &pos_y);
+
+  /* correction to center the current result                          */
+  /* NOTE: rectangle is in viewport units, already scaled and rotated */
+  unsigned int cell_height = 0;
+  unsigned int cell_width = 0;
+  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+
+  unsigned int doc_height = 0;
+  unsigned int doc_width = 0;
+  zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+
+  zathura_rectangle_t* rectangle = girara_list_nth(rectangles[0], 0);
+  pos_y += (rectangle->y1 - (double)cell_height/2) / (double)doc_height;
+  pos_x += (rectangle->x1 - (double)cell_width/2) / (double)doc_width;
+
+  /* move to position */
+  zathura_jumplist_add(zathura);
+  position_set(zathura, pos_x, pos_y);
+  zathura_jumplist_add(zathura);
 }
 
 static void
