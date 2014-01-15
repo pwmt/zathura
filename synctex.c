@@ -96,7 +96,7 @@ girara_list_t*
 synctex_rectangles_from_position(const char* filename, const char* position,
                                  int* page, girara_list_t** secondary_rects)
 {
-  if (filename == NULL || position == NULL || page) {
+  if (filename == NULL || position == NULL || page == NULL) {
     return NULL;
   }
 

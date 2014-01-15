@@ -163,15 +163,13 @@ highlight_rects(zathura_t* zathura, unsigned int page,
         NULL);
     if (p == page) {
       g_object_set(widget, "search-current", 0, NULL);
-    } else {
-      g_object_set(widget, "search-current", -1, NULL);
     }
   }
 
-  page_set(zathura, page);
   document_draw_search_results(zathura, true);
 
   if (rectangles[0] == NULL || girara_list_size(rectangles[0]) == 0) {
+    page_set(zathura, page);
     return;
   }
 
@@ -308,6 +306,9 @@ handle_method_call(GDBusConnection* UNUSED(connection),
 
     highlight_rects(priv->zathura, page - 1, rectangles);
     g_free(rectangles);
+
+    GVariant* result = g_variant_new("(b)", true);
+    g_dbus_method_invocation_return_value(invocation, result);
   }
 }
 
@@ -354,8 +355,7 @@ zathura_dbus_goto_page_and_highlight(const char* filename, int page,
   GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SESSION,
       NULL, &error);
   if (connection == NULL) {
-    girara_error("Could not create proxy for 'org.freedesktop.DBus': %s",
-        error->message);
+    girara_error("Could not connect to session bus: %s", error->message);
     g_error_free(error);
     return false;
   }
@@ -420,8 +420,8 @@ zathura_dbus_goto_page_and_highlight(const char* filename, int page,
     GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(idddd)"));
     if (secondary_rects != NULL) {
       GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
-        g_variant_builder_add(builder, "(idddd)", rect->page, rect->rect.x1,
-            rect->rect.x2, rect->rect.y1, rect->rect.y2);
+        g_variant_builder_add(second_builder, "(idddd)", rect->page,
+            rect->rect.x1, rect->rect.x2, rect->rect.y1, rect->rect.y2);
       GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
     }
 
