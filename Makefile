@@ -68,9 +68,10 @@ version.h: version.h.in config.mk
 	$(QUIET)mv version.h.tmp version.h
 
 dbus-interface-definitions.c: data/org.pwmt.zathura.xml
-	$(QUIET)echo "const char* DBUS_INTERFACE_XML =" > dbus-interface-definitions.c.tmp
+	$(QUIET)echo '#include "dbus-interface-definitions.h"' > dbus-interface-definitions.c.tmp
+	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> dbus-interface-definitions.c.tmp
 	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> dbus-interface-definitions.c.tmp
-	$(QUIET)echo ";" >> dbus-interface-definitions.c.tmp
+	$(QUIET)echo ';' >> dbus-interface-definitions.c.tmp
 	$(QUIET)mv dbus-interface-definitions.c.tmp dbus-interface-definitions.c
 
 %.o: %.c

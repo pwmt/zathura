@@ -6,6 +6,7 @@
 #include "zathura.h"
 #include "document.h"
 #include "utils.h"
+#include "dbus-interface-definitions.h"
 
 #include <girara/utils.h>
 #include <gio/gio.h>
@@ -33,9 +34,6 @@ typedef struct private_s {
 #define GET_PRIVATE(obj) \
   (G_TYPE_INSTANCE_GET_PRIVATE((obj), ZATHURA_TYPE_DBUS, \
                                private_t))
-
-/* in dbus-interface-definitions.c */
-extern const char* DBUS_INTERFACE_XML;
 
 static const GDBusInterfaceVTable interface_vtable;
 
