@@ -9,17 +9,17 @@ HEADER     = $(wildcard *.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
 ifneq (${WITH_SQLITE},0)
-INCS   += $(SQLITE_INC)
-LIBS   += $(SQLITE_LIB)
-SOURCE = $(OSOURCE)
+INCS     += $(SQLITE_INC)
+LIBS     += $(SQLITE_LIB)
+SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE = $(filter-out database-sqlite.c,$(OSOURCE))
+SOURCE    = $(filter-out database-sqlite.c,$(OSOURCE))
 endif
 
 ifneq ($(WITH_MAGIC),0)
-INCS += $(MAGIC_INC)
-LIBS += $(MAGIC_LIB)
+INCS     += $(MAGIC_INC)
+LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
@@ -125,7 +125,7 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo abiversion=${ZATHURA_ABI_VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${INCLUDEDIR} >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
-	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
+	$(QUIET)echo GTK_VERSION=3 >> ${PROJECT}.pc
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
