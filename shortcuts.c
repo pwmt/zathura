@@ -917,6 +917,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     g_object_set(page_widget, "search-current", target_idx, NULL);
     g_object_get(page_widget, "search-results", &results, NULL);
 
+    /* Need to adjust rectangle to page scale and orientation */
     zathura_rectangle_t* rect = girara_list_nth(results, target_idx);
     zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
 

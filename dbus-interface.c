@@ -188,9 +188,13 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   unsigned int doc_width = 0;
   zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
-  zathura_rectangle_t* rectangle = girara_list_nth(rectangles[page], 0);
-  pos_y += (rectangle->y1 - (double)cell_height/2) / (double)doc_height;
-  pos_x += (rectangle->x1 - (double)cell_width/2) / (double)doc_width;
+  /* Need to adjust rectangle to page scale and orientation */
+  zathura_page_t* doc_page = zathura_document_get_page(zathura->document, page);
+  zathura_rectangle_t* rect = girara_list_nth(rectangles[page], 0);
+  zathura_rectangle_t rectangle = recalc_rectangle(doc_page, *rect);
+
+  pos_y += (rectangle.y1 - (double)cell_height/2) / (double)doc_height;
+  pos_x += (rectangle.x1 - (double)cell_width/2) / (double)doc_width;
 
   /* move to position */
   zathura_jumplist_add(zathura);
