@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "adjustment.h"
 
+#include <girara/session.h>
 #include <girara/utils.h>
 #include <gio/gio.h>
 #include <sys/types.h>
@@ -173,6 +174,9 @@ highlight_rects(zathura_t* zathura, unsigned int page,
     return;
   }
 
+  bool search_hadjust = true;
+  girara_setting_get(zathura->ui.session, "search-hadjust", &search_hadjust);
+
   /* compute the position of the center of the page */
   double pos_x = 0;
   double pos_y = 0;
@@ -199,7 +203,9 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   double center_y = (rectangle.y1 + rectangle.y2) / 2;
 
   pos_y += (center_y - (double)cell_height/2) / (double)doc_height;
-  pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
+  if (search_hadjust == true) {
+    pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
+  }
 
   /* move to position */
   zathura_jumplist_add(zathura);
