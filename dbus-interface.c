@@ -168,7 +168,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   document_draw_search_results(zathura, true);
 
-  if (rectangles[0] == NULL || girara_list_size(rectangles[0]) == 0) {
+  if (rectangles[page] == NULL || girara_list_size(rectangles[page]) == 0) {
     page_set(zathura, page);
     return;
   }
@@ -188,7 +188,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   unsigned int doc_width = 0;
   zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
-  zathura_rectangle_t* rectangle = girara_list_nth(rectangles[0], 0);
+  zathura_rectangle_t* rectangle = girara_list_nth(rectangles[page], 0);
   pos_y += (rectangle->y1 - (double)cell_height/2) / (double)doc_height;
   pos_x += (rectangle->x1 - (double)cell_width/2) / (double)doc_width;
 
