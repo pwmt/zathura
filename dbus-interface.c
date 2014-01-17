@@ -249,7 +249,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     g_variant_get(parameters, "(i)", &page);
 
     bool ret = true;
-    if (page < 1 || (unsigned int)page >= number_of_pages) {
+    if (page < 1 || (unsigned int)page > number_of_pages) {
       ret = false;
     } else {
       page_set(priv->zathura, page - 1);
@@ -264,7 +264,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     g_variant_get(parameters, "(ia(dddd)a(idddd))", &page, &iter,
         &secondary_iter);
 
-    if (page < 1 || (unsigned int)page >= number_of_pages) {
+    if (page < 1 || (unsigned int)page > number_of_pages) {
       GVariant* result = g_variant_new("(b)", false);
       g_variant_iter_free(iter);
       g_variant_iter_free(secondary_iter);
