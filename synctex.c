@@ -94,7 +94,8 @@ scan_float(GScanner* scanner)
 
 girara_list_t*
 synctex_rectangles_from_position(const char* filename, const char* position,
-                                 int* page, girara_list_t** secondary_rects)
+                                 unsigned int* page,
+                                 girara_list_t** secondary_rects)
 {
   if (filename == NULL || position == NULL || page == NULL) {
     return NULL;
@@ -148,8 +149,9 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     }
   }
 
-  int rpage = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  int current_page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  ret = false;
+  unsigned int rpage = 0;
+  unsigned int current_page = 0;
   girara_list_t* hitlist = girara_list_new2(g_free);
   girara_list_t* other_rects = girara_list_new2(g_free);
   zathura_rectangle_t* rectangle = NULL;
@@ -169,7 +171,8 @@ synctex_rectangles_from_position(const char* filename, const char* position,
           case SYNCTEX_PROP_PAGE:
             if (g_scanner_get_next_token(scanner) == G_TOKEN_INT) {
               current_page = g_scanner_cur_value(scanner).v_int - 1;
-              if (rpage == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
+              if (ret == false) {
+                ret = true;
                 rpage = current_page;
               }
 

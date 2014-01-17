@@ -52,8 +52,8 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
  * @returns true if a instance was found that has the given filename open, false
  *          otherwise
  */
-bool zathura_dbus_goto_page_and_highlight(const char* filename, int page,
-    girara_list_t* rectangles, girara_list_t* secondary_rects);
+bool zathura_dbus_goto_page_and_highlight(const char* filename,
+    unsigned int page,girara_list_t* rectangles, girara_list_t* secondary_rects);
 
 bool zathura_dbus_synctex_position(const char* filename, const char* position);
 

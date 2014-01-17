@@ -245,11 +245,11 @@ handle_method_call(GDBusConnection* UNUSED(connection),
 
   /* methods that require an open document */
   if (g_strcmp0(method_name, "GotoPage") == 0) {
-    gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-    g_variant_get(parameters, "(i)", &page);
+    guint page = 0;
+    g_variant_get(parameters, "(u)", &page);
 
     bool ret = true;
-    if (page < 0 || (unsigned int)page >= number_of_pages) {
+    if (page >= number_of_pages) {
       ret = false;
     } else {
       page_set(priv->zathura, page);
@@ -258,13 +258,13 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     GVariant* result = g_variant_new("(b)", ret);
     g_dbus_method_invocation_return_value(invocation, result);
   } else if (g_strcmp0(method_name, "HighlightRects") == 0) {
-    gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+    guint page = 0;
     GVariantIter* iter = NULL;
     GVariantIter* secondary_iter = NULL;
-    g_variant_get(parameters, "(ia(dddd)a(idddd))", &page, &iter,
+    g_variant_get(parameters, "(ua(dddd)a(udddd))", &page, &iter,
         &secondary_iter);
 
-    if (page < 0 || (unsigned int)page >= number_of_pages) {
+    if (page >= number_of_pages) {
       GVariant* result = g_variant_new("(b)", false);
       g_variant_iter_free(iter);
       g_variant_iter_free(secondary_iter);
@@ -286,10 +286,10 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     g_variant_iter_free(iter);
 
     /* get secondary rectangles */
-    int temp_page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-    while (g_variant_iter_loop(secondary_iter, "(idddd)", &temp_page,
+    guint temp_page = 0;
+    while (g_variant_iter_loop(secondary_iter, "(udddd)", &temp_page,
           &temp_rect.x1, &temp_rect.x2, &temp_rect.y1, &temp_rect.y2)) {
-      if (temp_page < 0 || (unsigned int)temp_page >= number_of_pages) {
+      if (temp_page >= number_of_pages) {
         /* error out here? */
         continue;
       }
@@ -342,7 +342,7 @@ static const GDBusInterfaceVTable interface_vtable =
 static const unsigned int TIMEOUT = 3000;
 
 bool
-zathura_dbus_goto_page_and_highlight(const char* filename, int page,
+zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
     girara_list_t* rectangles, girara_list_t* secondary_rects)
 {
   /* note: page is [1, number_of_pages] here */
@@ -420,14 +420,14 @@ zathura_dbus_goto_page_and_highlight(const char* filename, int page,
     GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(idddd)"));
     if (secondary_rects != NULL) {
       GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
-        g_variant_builder_add(second_builder, "(idddd)", rect->page,
+        g_variant_builder_add(second_builder, "(udddd)", rect->page,
             rect->rect.x1, rect->rect.x2, rect->rect.y1, rect->rect.y2);
       GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
     }
 
     GVariant* ret = g_dbus_connection_call_sync(connection,
       name, DBUS_OBJPATH, DBUS_INTERFACE, "HighlightRects",
-      g_variant_new("(ia(dddd)a(idddd))", page, builder, second_builder),
+      g_variant_new("(ua(dddd)a(idddd))", page, builder, second_builder),
       G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
     g_variant_builder_unref(builder);
     if (ret == NULL) {
@@ -451,7 +451,7 @@ zathura_dbus_synctex_position(const char* filename, const char* position)
     return false;
   }
 
-  int page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  unsigned int page = 0;
   girara_list_t* secondary_rects = NULL;
   girara_list_t* rectangles = synctex_rectangles_from_position(filename,
       position, &page, &secondary_rects);
