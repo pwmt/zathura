@@ -940,10 +940,14 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     unsigned int doc_width = 0;
     zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
-    pos_y += (rectangle.y1 - (double)cell_height/2) / (double)doc_height;
+    /* compute the center of the rectangle, which will be aligned to the center
+       of the viewport */
+    double center_x = (rectangle.x1 + rectangle.x2) / 2;
+    double center_y = (rectangle.y1 + rectangle.y2) / 2;
 
+    pos_y += (center_y - (double)cell_height/2) / (double)doc_height;
     if (search_hadjust == true) {
-      pos_x += (rectangle.x1 - (double)cell_width/2) / (double)doc_width;
+      pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
     }
 
     /* move to position */

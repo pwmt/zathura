@@ -193,8 +193,13 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   zathura_rectangle_t* rect = girara_list_nth(rectangles[page], 0);
   zathura_rectangle_t rectangle = recalc_rectangle(doc_page, *rect);
 
-  pos_y += (rectangle.y1 - (double)cell_height/2) / (double)doc_height;
-  pos_x += (rectangle.x1 - (double)cell_width/2) / (double)doc_width;
+  /* compute the center of the rectangle, which will be aligned to the center
+     of the viewport */
+  double center_x = (rectangle.x1 + rectangle.x2) / 2;
+  double center_y = (rectangle.y1 + rectangle.y2) / 2;
+
+  pos_y += (center_y - (double)cell_height/2) / (double)doc_height;
+  pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
 
   /* move to position */
   zathura_jumplist_add(zathura);
