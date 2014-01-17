@@ -168,7 +168,7 @@ synctex_rectangles_from_position(const char* filename, const char* position,
 
           case SYNCTEX_PROP_PAGE:
             if (g_scanner_get_next_token(scanner) == G_TOKEN_INT) {
-              current_page = g_scanner_cur_value(scanner).v_int;
+              current_page = g_scanner_cur_value(scanner).v_int - 1;
               if (rpage == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
                 rpage = current_page;
               }
