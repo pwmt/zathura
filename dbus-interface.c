@@ -426,7 +426,7 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
       GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect);
     }
 
-    GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(idddd)"));
+    GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(udddd)"));
     if (secondary_rects != NULL) {
       GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
         g_variant_builder_add(second_builder, "(udddd)", rect->page,
@@ -436,7 +436,7 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
 
     GVariant* ret = g_dbus_connection_call_sync(connection,
       name, DBUS_OBJPATH, DBUS_INTERFACE, "HighlightRects",
-      g_variant_new("(ua(dddd)a(idddd))", page, builder, second_builder),
+      g_variant_new("(ua(dddd)a(udddd))", page, builder, second_builder),
       G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
     g_variant_builder_unref(builder);
     if (ret == NULL) {
