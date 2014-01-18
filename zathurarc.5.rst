@@ -381,8 +381,10 @@ Defines the font that will be used
 guioptions
 ^^^^^^^^^^
 Shows or hides GUI elements.
-When it contains 'c', the command line is showed.
-When it contains 's', the statusbar is showed.
+If it contains 'c', the command line is displayed.
+If it contains 's', the statusbar is displayed.
+If it contains 'h', the vertical scrollbar is displayed.
+If it contains 'v', the horizontal scrollbar is displayed.
 
 * Value type: String
 * Default value: s
@@ -473,21 +475,24 @@ Defines the background color for the focused tab
 
 show-scrollbars
 ^^^^^^^^^^^^^^^
-Defines if both the horizontal and vertical scrollbars should be shown or not
+Defines if both the horizontal and vertical scrollbars should be shown or not.
+Deprecated, use 'guioptions' instead.
 
 * Value type: Boolean
 * Default value: false
 
 show-h-scrollbar
 ^^^^^^^^^^^^^^^^
-Defines whether to show/hide the horizontal scrollbar
+Defines whether to show/hide the horizontal scrollbar. Deprecated, use
+'guioptions' instead.
 
 * Value type: Boolean
 * Default value: false
 
 show-v-scrollbar
 ^^^^^^^^^^^^^^^^
-Defines whether to show/hide the vertical scrollbar
+Defines whether to show/hide the vertical scrollbar. Deprecated, use
+'guioptions' instead.
 
 * Value type: Boolean
 * Default value: false
