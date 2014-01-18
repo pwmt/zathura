@@ -11,6 +11,7 @@
 
 #include <girara/session.h>
 #include <girara/utils.h>
+#include <girara/settings.h>
 #include <gio/gio.h>
 #include <sys/types.h>
 #include <string.h>
