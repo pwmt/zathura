@@ -64,7 +64,7 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
   }
 
   char** argv = g_try_malloc0(sizeof(char*) * (zathura->synctex.editor != NULL ?
-      6 : 4));
+      7 : 5));
   if (argv == NULL) {
     return;
   }
@@ -105,7 +105,7 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     return NULL;
   }
 
-  char** argv = g_try_malloc0(sizeof(char*) * 6);
+  char** argv = g_try_malloc0(sizeof(char*) * 7);
   if (argv == NULL) {
     return NULL;
   }
