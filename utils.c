@@ -211,8 +211,8 @@ replace_substring(const char* string, const char* old, const char* new)
   size_t new_len = strlen(new);
 
   /* count occurrences */
-  unsigned int count = 0;
-  unsigned int i = 0;
+  size_t count = 0;
+  size_t i     = 0;
 
   for (i = 0; string[i] != '\0'; i++) {
     if (strstr(&string[i], old) == &string[i]) {
@@ -230,9 +230,8 @@ replace_substring(const char* string, const char* old, const char* new)
     return NULL;
   }
 
-  i = 0;
-
   /* replace */
+  i = 0;
   while (*string != '\0') {
     if (strstr(string, old) == string) {
       strncpy(&ret[i], new, new_len);

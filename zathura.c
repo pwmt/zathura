@@ -1251,14 +1251,14 @@ zathura_jumplist_append_jump(zathura_t* zathura)
 {
   g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL);
 
-  zathura_jump_t *jump = g_try_malloc(sizeof(zathura_jump_t));
+  zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
   if (jump == NULL) {
     return;
   }
 
   jump->page = 0;
-  jump->x = 0.0;
-  jump->y = 0.0;
+  jump->x    = 0.0;
+  jump->y    = 0.0;
   girara_list_append(zathura->jumplist.list, jump);
 
   if (zathura->jumplist.size == 0) {

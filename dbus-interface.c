@@ -291,18 +291,40 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     /* get rectangles */
     girara_list_t** rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
     if (rectangles == NULL) {
+      g_variant_iter_free(iter);
+      g_variant_iter_free(secondary_iter);
+      g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                            G_DBUS_ERROR_NO_MEMORY,
+                                            "Failed to allocate memory.");
       return;
     }
 
     rectangles[page] = girara_list_new2(g_free);
+    if (rectangles[page] == NULL) {
+      g_free(rectangles);
+      g_variant_iter_free(iter);
+      g_variant_iter_free(secondary_iter);
+      g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                            G_DBUS_ERROR_NO_MEMORY,
+                                            "Failed to allocate memory.");
+      return;
+    }
 
     zathura_rectangle_t temp_rect;
     while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
           &temp_rect.y1, &temp_rect.y2)) {
       zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
       if (rect == NULL) {
-        continue;
+        g_variant_iter_free(iter);
+        g_variant_iter_free(secondary_iter);
+        girara_list_free(rectangles[page]);
+        g_free(rectangles);
+        g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                              G_DBUS_ERROR_NO_MEMORY,
+                                              "Failed to allocate memory.");
+        return;
       }
+
       *rect = temp_rect;
       girara_list_append(rectangles[page], rect);
     }
@@ -322,9 +344,19 @@ handle_method_call(GDBusConnection* UNUSED(connection),
       }
 
       zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
-      if (rect == NULL) {
-        continue;
+      if (rect == NULL || rectangles[temp_page] == NULL) {
+        g_variant_iter_free(secondary_iter);
+        for (unsigned int p = 0; p != number_of_pages; ++p) {
+          girara_list_free(rectangles[p]);
+        }
+        g_free(rectangles);
+        g_free(rect);
+        g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                              G_DBUS_ERROR_NO_MEMORY,
+                                              "Failed to allocate memory.");
+        return;
       }
+
       *rect = temp_rect;
       girara_list_append(rectangles[temp_page], rect);
     }

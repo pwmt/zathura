@@ -326,26 +326,22 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
     return false;
   }
 
-  char* bmx = g_try_malloc(G_ASCII_DTOSTR_BUF_SIZE);
-  if (bmx == NULL) {
-    return false;
-  }
-
-  char* bmy = g_try_malloc(G_ASCII_DTOSTR_BUF_SIZE);
-  if (bmy == NULL) {
-    g_free(bmx);
-    return false;
-  }
-
   char* name = prepare_filename(file);
   char* val_list[] = {
     g_strdup_printf("%d", bookmark->page),
-    g_ascii_dtostr(bmx, G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
-    g_ascii_dtostr(bmy, G_ASCII_DTOSTR_BUF_SIZE, bookmark->y)
+    g_try_malloc0(G_ASCII_DTOSTR_BUF_SIZE),
+    g_try_malloc0(G_ASCII_DTOSTR_BUF_SIZE)
   };
+  if (name == NULL || val_list[1] == NULL || val_list[2] == NULL) {
+    g_free(name);
+    for (unsigned int i = 0; i < LENGTH(val_list); ++i) {
+      g_free(val_list[i]);
+    }
+    return false;
+  }
 
-  g_free(bmx);
-  g_free(bmy);
+  g_ascii_dtostr(val_list[1], G_ASCII_DTOSTR_BUF_SIZE, bookmark->x);
+  g_ascii_dtostr(val_list[2], G_ASCII_DTOSTR_BUF_SIZE, bookmark->y);
 
   g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, LENGTH(val_list));
 
@@ -417,7 +413,15 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     }
 
     bookmark->id    = g_strdup(keys[i]);
-    char **val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i], &num_vals, NULL);
+    char** val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i],
+                                                 &num_vals, NULL);
+
+    if (num_vals != 1 && num_vals != 3) {
+      girara_error("Unexpected number of values.");
+      g_free(bookmark);
+      g_strfreev(val_list);
+      continue;
+    }
 
     bookmark->page = atoi(val_list[0]);
 
@@ -427,8 +431,6 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     } else if (num_vals == 1) {
        bookmark->x = DBL_MIN;
        bookmark->y = DBL_MIN;
-    } else {
-      girara_debug("This must be a BUG");
     }
 
     girara_list_append(result, bookmark);

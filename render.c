@@ -122,14 +122,13 @@ page_cache_init(ZathuraRenderer* renderer, size_t cache_size)
 {
   private_t* priv = GET_PRIVATE(renderer);
 
-  priv->page_cache.size = cache_size;
-  priv->page_cache.cache = g_try_malloc(cache_size * sizeof(int));
+  priv->page_cache.size  = cache_size;
+  priv->page_cache.cache = g_try_malloc0(cache_size * sizeof(int));
   if (priv->page_cache.cache == NULL) {
     return false;
   }
 
   page_cache_invalidate_all(renderer);
-
   return true;
 }
 
@@ -142,6 +141,7 @@ zathura_renderer_new(size_t cache_size)
   ZathuraRenderer* ret = ZATHURA_RENDERER(obj);
 
   if (page_cache_init(ret, cache_size) == false) {
+    g_object_unref(obj);
     return NULL;
   }
 
@@ -646,7 +646,8 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   const double width = zathura_page_get_width(page);
 
   const double real_scale = page_calc_height_width(document, height, width,
-                                                   &page_height, &page_width, false);
+                                                   &page_height, &page_width,
+                                                   false);
 
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
@@ -685,7 +686,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close == true || job->aborted == true) {
     girara_debug("Rendering of page %d aborted",
-        zathura_page_get_index(request_priv->page) + 1);
+                 zathura_page_get_index(request_priv->page) + 1);
     remove_job_and_free(job);
     cairo_surface_destroy(surface);
     return true;
@@ -696,12 +697,13 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     recolor(priv, page_width, page_height, surface);
   }
 
-  emit_completed_signal_t* ecs = g_try_malloc(sizeof(emit_completed_signal_t));
+  emit_completed_signal_t* ecs = g_try_malloc0(sizeof(emit_completed_signal_t));
   if (ecs == NULL) {
+    cairo_surface_destroy(surface);
     return false;
   }
 
-  ecs->job = job;
+  ecs->job     = job;
   ecs->surface = cairo_surface_reference(surface);
 
   /* emit signal from the main context, i.e. the main thread */
