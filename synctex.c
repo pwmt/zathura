@@ -157,12 +157,13 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     }
   }
 
-  ret = false;
-  unsigned int rpage = 0;
-  unsigned int current_page = 0;
-  girara_list_t* hitlist = girara_list_new2(g_free);
+  ret                        = false;
+  unsigned int rpage         = 0;
+  unsigned int current_page  = 0;
+  girara_list_t* hitlist     = girara_list_new2(g_free);
   girara_list_t* other_rects = girara_list_new2(g_free);
-  zathura_rectangle_t* rectangle = NULL;
+  bool got_rect              = false;
+  zathura_rectangle_t rectangle;
 
   while (found_end == false) {
     switch (g_scanner_get_next_token(scanner)) {
@@ -184,51 +185,51 @@ synctex_rectangles_from_position(const char* filename, const char* position,
                 rpage = current_page;
               }
 
-              if (*page == current_page && rectangle != NULL) {
-                girara_list_append(hitlist, rectangle);
-                rectangle = NULL;
-              } else if (rectangle != NULL) {
-                synctex_page_rect_t* page_rect = g_try_malloc0(sizeof(synctex_page_rect_t));
+              if (got_rect == false) {
+                continue;
+              }
+              got_rect = false;
+
+              if (*page == current_page) {
+                zathura_rectangle_t* real_rect = g_try_malloc(sizeof(zathura_rectangle_t));
+                if (real_rect == NULL) {
+                  continue;
+                }
+
+                *real_rect = rectangle;
+                girara_list_append(hitlist, real_rect);
+              } else {
+                synctex_page_rect_t* page_rect = g_try_malloc(sizeof(synctex_page_rect_t));
                 if (page_rect == NULL) {
                   continue;
                 }
 
                 page_rect->page = current_page;
-                page_rect->rect = *rectangle;
+                page_rect->rect = rectangle;
 
                 girara_list_append(other_rects, page_rect);
-              }
-
-              g_free(rectangle);
-              rectangle = g_try_malloc0(sizeof(zathura_rectangle_t));
-              if (rectangle == NULL) {
-                continue;
               }
             }
             break;
 
           case SYNCTEX_PROP_H:
-            if (rectangle != NULL) {
-              rectangle->x1 = scan_float(scanner);
-            }
+            rectangle.x1 = scan_float(scanner);
+            got_rect     = true;
             break;
 
-          case SYNCTEX_PROP_V:
-            if (rectangle != NULL) {
-              rectangle->y2 = scan_float(scanner);
-            }
+            case SYNCTEX_PROP_V:
+            rectangle.y2 = scan_float(scanner);
+            got_rect     = true;
             break;
 
-          case SYNCTEX_PROP_WIDTH:
-            if (rectangle != NULL) {
-              rectangle->x2 = rectangle->x1 + scan_float(scanner);
-            }
+            case SYNCTEX_PROP_WIDTH:
+            rectangle.x2 = rectangle.x1 + scan_float(scanner);
+            got_rect     = true;
             break;
 
-          case SYNCTEX_PROP_HEIGHT:
-            if (rectangle != NULL) {
-              rectangle->y1 = rectangle->y2 - scan_float(scanner);
-            }
+            case SYNCTEX_PROP_HEIGHT:
+            rectangle.y1 = rectangle.y2 - scan_float(scanner);
+            got_rect     = true;
             break;
         }
         break;
@@ -238,16 +239,19 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     }
   }
 
-  if (rectangle != NULL) {
+  if (got_rect == true) {
     if (current_page == rpage) {
-      girara_list_append(hitlist, rectangle);
+      zathura_rectangle_t* real_rect = g_try_malloc(sizeof(zathura_rectangle_t));
+      if (real_rect != NULL) {
+        *real_rect = rectangle;
+        girara_list_append(hitlist, real_rect);
+      }
     } else {
-      synctex_page_rect_t* page_rect = g_try_malloc0(sizeof(synctex_page_rect_t));
+      synctex_page_rect_t* page_rect = g_try_malloc(sizeof(synctex_page_rect_t));
       if (page_rect != NULL) {
         page_rect->page = current_page;
-        page_rect->rect = *rectangle;
+        page_rect->rect = rectangle;
         girara_list_append(other_rects, page_rect);
-        g_free(rectangle);
       }
     }
   }
