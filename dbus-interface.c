@@ -289,13 +289,20 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     }
 
     /* get rectangles */
-    girara_list_t** rectangles = g_malloc0(number_of_pages * sizeof(girara_list_t*));
+    girara_list_t** rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
+    if (rectangles == NULL) {
+      return;
+    }
+
     rectangles[page] = girara_list_new2(g_free);
 
     zathura_rectangle_t temp_rect;
     while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
           &temp_rect.y1, &temp_rect.y2)) {
-      zathura_rectangle_t* rect = g_malloc0(sizeof(zathura_rectangle_t));
+      zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
+      if (rect == NULL) {
+        continue;
+      }
       *rect = temp_rect;
       girara_list_append(rectangles[page], rect);
     }
@@ -314,7 +321,10 @@ handle_method_call(GDBusConnection* UNUSED(connection),
         rectangles[temp_page] = girara_list_new2(g_free);
       }
 
-      zathura_rectangle_t* rect = g_malloc0(sizeof(zathura_rectangle_t));
+      zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
+      if (rect == NULL) {
+        continue;
+      }
       *rect = temp_rect;
       girara_list_append(rectangles[temp_page], rect);
     }

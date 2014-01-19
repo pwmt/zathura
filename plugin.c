@@ -54,7 +54,10 @@ static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapp
 zathura_plugin_manager_t*
 zathura_plugin_manager_new()
 {
-  zathura_plugin_manager_t* plugin_manager = g_malloc0(sizeof(zathura_plugin_manager_t));
+  zathura_plugin_manager_t* plugin_manager = g_try_malloc0(sizeof(zathura_plugin_manager_t));
+  if (plugin_manager == NULL) {
+    return NULL;
+  }
 
   plugin_manager->plugins = girara_list_new2((girara_free_function_t) zathura_plugin_free);
   plugin_manager->path    = girara_list_new2(g_free);
@@ -159,7 +162,11 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       continue;
     }
 
-    plugin = g_malloc0(sizeof(zathura_plugin_t));
+    plugin = g_try_malloc0(sizeof(zathura_plugin_t));
+    if (plugin == NULL) {
+      continue;
+    }
+
     plugin->content_types = girara_list_new2(g_free);
     plugin->handle = handle;
 
@@ -294,7 +301,11 @@ plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, 
   }
   GIRARA_LIST_FOREACH_END(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
-  zathura_type_plugin_mapping_t* mapping = g_malloc(sizeof(zathura_type_plugin_mapping_t));
+  zathura_type_plugin_mapping_t* mapping = g_try_malloc(sizeof(zathura_type_plugin_mapping_t));
+  if (mapping == NULL) {
+    return false;
+  }
+
   mapping->type   = g_strdup(type);
   mapping->plugin = plugin;
   girara_list_append(plugin_manager->type_plugin_mapping, mapping);

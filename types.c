@@ -15,7 +15,10 @@ zathura_index_element_new(const char* title)
     return NULL;
   }
 
-  zathura_index_element_t* res = g_malloc0(sizeof(zathura_index_element_t));
+  zathura_index_element_t* res = g_try_malloc0(sizeof(zathura_index_element_t));
+  if (res == NULL) {
+    return NULL;
+  }
 
   res->title = g_strdup(title);
 
@@ -86,7 +89,10 @@ zathura_document_information_entry_new(zathura_document_information_type_t type,
   }
 
   zathura_document_information_entry_t* entry =
-    g_malloc0(sizeof(zathura_document_information_entry_t));
+    g_try_malloc0(sizeof(zathura_document_information_entry_t));
+  if (entry == NULL) {
+    return NULL;
+  }
 
   entry->type  = type;
   entry->value = g_strdup(value);

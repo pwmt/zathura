@@ -225,7 +225,11 @@ replace_substring(const char* string, const char* old, const char* new)
     return NULL;
   }
 
-  char* ret = g_malloc0(sizeof(char) * (i - count * old_len + count * new_len + 1));
+  char* ret = g_try_malloc0(sizeof(char) * (i - count * old_len + count * new_len + 1));
+  if (ret == NULL) {
+    return NULL;
+  }
+
   i = 0;
 
   /* replace */
@@ -249,7 +253,10 @@ GdkAtom* get_selection(zathura_t* zathura)
   char* value;
   girara_setting_get(zathura->ui.session, "selection-clipboard", &value);
 
-  GdkAtom* selection = g_malloc(sizeof(GdkAtom));
+  GdkAtom* selection = g_try_malloc(sizeof(GdkAtom));
+  if (selection == NULL) {
+    return NULL;
+  }
 
   if (strcmp(value, "primary") == 0) {
     *selection = GDK_SELECTION_PRIMARY;

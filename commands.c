@@ -400,7 +400,10 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     }
   }
 
-  girara_argument_t* arg = g_malloc0(sizeof(girara_argument_t));
+  girara_argument_t* arg = g_try_malloc0(sizeof(girara_argument_t));
+  if (arg == NULL) {
+    return false;
+  }
 
   arg->n = FORWARD;
   sc_search(session, arg, NULL, 0);

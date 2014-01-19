@@ -53,7 +53,10 @@ static void zathura_jumplist_save(zathura_t* zathura);
 zathura_t*
 zathura_create(void)
 {
-  zathura_t* zathura = g_malloc0(sizeof(zathura_t));
+  zathura_t* zathura = g_try_malloc0(sizeof(zathura_t));
+  if (zathura == NULL) {
+    return NULL;
+  }
 
   /* global settings */
   zathura->global.search_direction = FORWARD;
@@ -821,7 +824,10 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
     return;
   }
 
-  zathura_document_info_t* document_info = g_malloc0(sizeof(zathura_document_info_t));
+  zathura_document_info_t* document_info = g_try_malloc0(sizeof(zathura_document_info_t));
+  if (document_info == NULL) {
+    return;
+  }
 
   document_info->zathura     = zathura;
   document_info->path        = path;
@@ -1245,7 +1251,11 @@ zathura_jumplist_append_jump(zathura_t* zathura)
 {
   g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL);
 
-  zathura_jump_t *jump = g_malloc(sizeof(zathura_jump_t));
+  zathura_jump_t *jump = g_try_malloc(sizeof(zathura_jump_t));
+  if (jump == NULL) {
+    return;
+  }
+
   jump->page = 0;
   jump->x = 0.0;
   jump->y = 0.0;

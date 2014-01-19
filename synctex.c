@@ -63,8 +63,12 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
     return;
   }
 
-  char** argv = g_malloc0(sizeof(char*) * (zathura->synctex.editor != NULL ?
+  char** argv = g_try_malloc0(sizeof(char*) * (zathura->synctex.editor != NULL ?
       6 : 4));
+  if (argv == NULL) {
+    return;
+  }
+
   argv[0] = g_strdup("synctex");
   argv[1] = g_strdup("edit");
   argv[2] = g_strdup("-o");
@@ -101,7 +105,11 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     return NULL;
   }
 
-  char** argv = g_malloc0(sizeof(char*) * 6);
+  char** argv = g_try_malloc0(sizeof(char*) * 6);
+  if (argv == NULL) {
+    return NULL;
+  }
+
   argv[0] = g_strdup("synctex");
   argv[1] = g_strdup("view");
   argv[2] = g_strdup("-i");
@@ -180,31 +188,47 @@ synctex_rectangles_from_position(const char* filename, const char* position,
                 girara_list_append(hitlist, rectangle);
                 rectangle = NULL;
               } else if (rectangle != NULL) {
-                synctex_page_rect_t* page_rect = g_malloc0(sizeof(synctex_page_rect_t));
+                synctex_page_rect_t* page_rect = g_try_malloc0(sizeof(synctex_page_rect_t));
+                if (page_rect == NULL) {
+                  continue;
+                }
+
                 page_rect->page = current_page;
                 page_rect->rect = *rectangle;
+
                 girara_list_append(other_rects, page_rect);
               }
 
               g_free(rectangle);
-              rectangle = g_malloc0(sizeof(zathura_rectangle_t));
+              rectangle = g_try_malloc0(sizeof(zathura_rectangle_t));
+              if (rectangle == NULL) {
+                continue;
+              }
             }
             break;
 
           case SYNCTEX_PROP_H:
-            rectangle->x1 = scan_float(scanner);
+            if (rectangle != NULL) {
+              rectangle->x1 = scan_float(scanner);
+            }
             break;
 
           case SYNCTEX_PROP_V:
-            rectangle->y2 = scan_float(scanner);
+            if (rectangle != NULL) {
+              rectangle->y2 = scan_float(scanner);
+            }
             break;
 
           case SYNCTEX_PROP_WIDTH:
-            rectangle->x2 = rectangle->x1 + scan_float(scanner);
+            if (rectangle != NULL) {
+              rectangle->x2 = rectangle->x1 + scan_float(scanner);
+            }
             break;
 
           case SYNCTEX_PROP_HEIGHT:
-            rectangle->y1 = rectangle->y2 - scan_float(scanner);
+            if (rectangle != NULL) {
+              rectangle->y1 = rectangle->y2 - scan_float(scanner);
+            }
             break;
         }
         break;
@@ -218,11 +242,13 @@ synctex_rectangles_from_position(const char* filename, const char* position,
     if (current_page == rpage) {
       girara_list_append(hitlist, rectangle);
     } else {
-      synctex_page_rect_t* page_rect = g_malloc0(sizeof(synctex_page_rect_t));
-      page_rect->page = current_page;
-      page_rect->rect = *rectangle;
-      girara_list_append(other_rects, page_rect);
-      g_free(rectangle);
+      synctex_page_rect_t* page_rect = g_try_malloc0(sizeof(synctex_page_rect_t));
+      if (page_rect != NULL) {
+        page_rect->page = current_page;
+        page_rect->rect = *rectangle;
+        girara_list_append(other_rects, page_rect);
+        g_free(rectangle);
+      }
     }
   }
 

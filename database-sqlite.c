@@ -390,7 +390,10 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
                           (girara_free_function_t) zathura_bookmark_free);
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
+    zathura_bookmark_t* bookmark = g_try_malloc0(sizeof(zathura_bookmark_t));
+    if (bookmark == NULL) {
+      continue;
+    }
 
     bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
     bookmark->page = sqlite3_column_int(stmt, 1);
@@ -524,7 +527,10 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
   int res = 0;
 
   while ((res = sqlite3_step(stmt)) == SQLITE_ROW) {
-    zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
+    zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
+    if (jump == NULL) {
+      continue;
+    }
 
     jump->page = sqlite3_column_int(stmt, 0);
     jump->x    = sqlite3_column_double(stmt, 1);

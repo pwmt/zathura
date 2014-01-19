@@ -104,11 +104,19 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
 
   if (plugin == NULL) {
     girara_error("unknown file type\n");
-    *error = ZATHURA_ERROR_UNKNOWN;
+    if (error != NULL) {
+      *error = ZATHURA_ERROR_UNKNOWN;
+    }
     goto error_free;
   }
 
-  document = g_malloc0(sizeof(zathura_document_t));
+  document = g_try_malloc0(sizeof(zathura_document_t));
+  if (document == NULL) {
+    if (error != NULL) {
+      *error = ZATHURA_ERROR_OUT_OF_MEMORY;
+    }
+    goto error_free;
+  }
 
   document->file_path   = real_path;
   document->basename    = g_path_get_basename(real_path);

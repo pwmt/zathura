@@ -31,7 +31,13 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error
   }
 
   /* init page */
-  zathura_page_t* page = g_malloc0(sizeof(zathura_page_t));
+  zathura_page_t* page = g_try_malloc0(sizeof(zathura_page_t));
+  if (page == NULL) {
+    if (error != NULL) {
+      *error = ZATHURA_ERROR_OUT_OF_MEMORY;
+    }
+    goto error_ret;
+  }
 
   page->index    = index;
   page->visible  = false;
@@ -45,7 +51,7 @@ zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error
     if (error != NULL) {
       *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
     }
-    goto error_ret;
+    goto error_free;
   }
 
   zathura_error_t ret = functions->page_init(page);

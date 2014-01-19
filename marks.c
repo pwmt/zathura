@@ -215,7 +215,10 @@ mark_add(zathura_t* zathura, int key)
   GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);
 
   /* add new mark */
-  zathura_mark_t* mark = g_malloc0(sizeof(zathura_mark_t));
+  zathura_mark_t* mark = g_try_malloc0(sizeof(zathura_mark_t));
+  if (mark == NULL) {
+    return NULL;
+  }
 
   mark->key        = key;
   mark->page       = page_id;

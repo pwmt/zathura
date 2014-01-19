@@ -117,14 +117,20 @@ zathura_renderer_init(ZathuraRenderer* renderer)
   priv->requests = girara_list_new();
 }
 
-static void
+static bool
 page_cache_init(ZathuraRenderer* renderer, size_t cache_size)
 {
   private_t* priv = GET_PRIVATE(renderer);
 
   priv->page_cache.size = cache_size;
-  priv->page_cache.cache = g_malloc(cache_size * sizeof(int));
+  priv->page_cache.cache = g_try_malloc(cache_size * sizeof(int));
+  if (priv->page_cache.cache == NULL) {
+    return false;
+  }
+
   page_cache_invalidate_all(renderer);
+
+  return true;
 }
 
 ZathuraRenderer*
@@ -134,7 +140,10 @@ zathura_renderer_new(size_t cache_size)
 
   GObject* obj = g_object_new(ZATHURA_TYPE_RENDERER, NULL);
   ZathuraRenderer* ret = ZATHURA_RENDERER(obj);
-  page_cache_init(ret, cache_size);
+
+  if (page_cache_init(ret, cache_size) == false) {
+    return NULL;
+  }
 
   return ret;
 }
@@ -409,7 +418,11 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
   if (unfinished_jobs == false) {
     request_priv->last_view_time = last_view_time;
 
-    render_job_t* job = g_malloc0(sizeof(render_job_t));
+    render_job_t* job = g_try_malloc0(sizeof(render_job_t));
+    if (job == NULL) {
+      return;
+    }
+
     job->request = g_object_ref(request);
     job->aborted = false;
     girara_list_append(request_priv->active_jobs, job);
@@ -683,7 +696,11 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     recolor(priv, page_width, page_height, surface);
   }
 
-  emit_completed_signal_t* ecs = g_malloc(sizeof(emit_completed_signal_t));
+  emit_completed_signal_t* ecs = g_try_malloc(sizeof(emit_completed_signal_t));
+  if (ecs == NULL) {
+    return false;
+  }
+
   ecs->job = job;
   ecs->surface = cairo_surface_reference(surface);
 

@@ -326,12 +326,26 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
     return false;
   }
 
+  char* bmx = g_try_malloc(G_ASCII_DTOSTR_BUF_SIZE);
+  if (bmx == NULL) {
+    return false;
+  }
+
+  char* bmy = g_try_malloc(G_ASCII_DTOSTR_BUF_SIZE);
+  if (bmy == NULL) {
+    g_free(bmx);
+    return false;
+  }
+
   char* name = prepare_filename(file);
   char* val_list[] = {
     g_strdup_printf("%d", bookmark->page),
-    g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
-    g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->y)
+    g_ascii_dtostr(bmx, G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
+    g_ascii_dtostr(bmy, G_ASCII_DTOSTR_BUF_SIZE, bookmark->y)
   };
+
+  g_free(bmx);
+  g_free(bmy);
 
   g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, LENGTH(val_list));
 
@@ -397,7 +411,10 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
   gsize num_vals = 0;
 
   for (gsize i = 0; i < num_keys; i++) {
-    zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
+    zathura_bookmark_t* bookmark = g_try_malloc0(sizeof(zathura_bookmark_t));
+    if (bookmark == NULL) {
+      continue;
+    }
 
     bookmark->id    = g_strdup(keys[i]);
     char **val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i], &num_vals, NULL);
@@ -439,7 +456,10 @@ get_jumplist_from_str(const char* str)
   char* token = strtok_r(copy, " ", &saveptr);
 
   while (token != NULL) {
-    zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
+    zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
+    if (jump == NULL) {
+      continue;
+    }
 
     jump->page = strtoul(token, NULL, 0);
     token = strtok_r(NULL, " ", &saveptr);
