@@ -37,12 +37,6 @@ main(int argc, char* argv[])
 #endif
   gtk_init(&argc, &argv);
 
-  /* create zathura session */
-  zathura_t* zathura = zathura_create();
-  if (zathura == NULL) {
-    return -1;
-  }
-
   /* parse command line arguments */
   gchar* config_dir     = NULL;
   gchar* data_dir       = NULL;
@@ -128,6 +122,12 @@ main(int argc, char* argv[])
     }
 
     setsid();
+  }
+
+  /* create zathura session */
+  zathura_t* zathura = zathura_create();
+  if (zathura == NULL) {
+    return -1;
   }
 
   zathura_set_xid(zathura, embed);
