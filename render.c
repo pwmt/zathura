@@ -155,7 +155,7 @@ renderer_finalize(GObject* object)
   private_t* priv = GET_PRIVATE(renderer);
 
   zathura_renderer_stop(renderer);
-  if (priv->pool) {
+  if (priv->pool != NULL) {
     g_thread_pool_free(priv->pool, TRUE, TRUE);
   }
   mutex_free(&(priv->mutex));
@@ -286,6 +286,8 @@ render_request_finalize(GObject* object)
   }
   girara_list_free(priv->active_jobs);
   mutex_free(&priv->jobs_mutex);
+
+  GOBJECT_CLASS(render_request_parent_class)->finalize(object);
 }
 
 /* renderer methods */
