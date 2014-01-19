@@ -60,6 +60,7 @@ typedef struct zathura_page_widget_private_s {
 
 static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo);
 static void zathura_page_widget_finalize(GObject* object);
+static void zathura_page_widget_dispose(GObject* object);
 static void zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
 static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
@@ -114,6 +115,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   widget_class->popup_menu           = cb_zathura_page_widget_popup_menu;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
+  object_class->dispose      = zathura_page_widget_dispose;
   object_class->finalize     = zathura_page_widget_finalize;
   object_class->set_property = zathura_page_widget_set_property;
   object_class->get_property = zathura_page_widget_get_property;
@@ -219,6 +221,17 @@ zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page)
 }
 
 static void
+zathura_page_widget_dispose(GObject* object)
+{
+  ZathuraPage* widget = ZATHURA_PAGE(object);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+
+  g_clear_object(&priv->render_request);
+
+  G_OBJECT_CLASS(zathura_page_widget_parent_class)->dispose(object);
+}
+
+static void
 zathura_page_widget_finalize(GObject* object)
 {
   ZathuraPage* widget = ZATHURA_PAGE(object);
@@ -226,10 +239,6 @@ zathura_page_widget_finalize(GObject* object)
 
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
-  }
-
-  if (priv->render_request != NULL) {
-    g_object_unref(priv->render_request);
   }
 
   if (priv->search.list != NULL) {

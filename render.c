@@ -21,6 +21,7 @@ G_DEFINE_TYPE(ZathuraRenderRequest, zathura_render_request, G_TYPE_OBJECT)
 /* private methods for ZathuraRenderer  */
 static void renderer_finalize(GObject* object);
 /* private methods for ZathuraRenderRequest */
+static void render_request_dispose(GObject* object);
 static void render_request_finalize(GObject* object);
 
 static void render_job(void* data, void* user_data);
@@ -203,6 +204,7 @@ zathura_render_request_class_init(ZathuraRenderRequestClass* class)
 
   /* overwrite methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
+  object_class->dispose      = render_request_dispose;
   object_class->finalize     = render_request_finalize;
 
   request_signals[REQUEST_COMPLETED] = g_signal_new("completed",
@@ -270,24 +272,34 @@ zathura_render_request_new(ZathuraRenderer* renderer, zathura_page_t* page)
 }
 
 static void
+render_request_dispose(GObject* object)
+{
+  ZathuraRenderRequest* request = ZATHURA_RENDER_REQUEST(object);
+  request_private_t* priv = REQUEST_GET_PRIVATE(request);
+
+  if (priv->renderer != NULL) {
+    /* unregister the request */
+    renderer_unregister_request(priv->renderer, request);
+    /* release our private reference to the renderer */
+    g_clear_object(&priv->renderer);
+  }
+
+  G_OBJECT_CLASS(zathura_render_request_parent_class)->dispose(object);
+}
+
+static void
 render_request_finalize(GObject* object)
 {
   ZathuraRenderRequest* request = ZATHURA_RENDER_REQUEST(object);
   request_private_t* priv = REQUEST_GET_PRIVATE(request);
 
-  if (priv->renderer) {
-    /* unregister the request */
-    renderer_unregister_request(priv->renderer, request);
-    /* release our private reference to the renderer */
-    g_object_unref(priv->renderer);
-  }
   if (girara_list_size(priv->active_jobs) != 0) {
     girara_error("This should not happen!");
   }
   girara_list_free(priv->active_jobs);
   mutex_free(&priv->jobs_mutex);
 
-  GOBJECT_CLASS(render_request_parent_class)->finalize(object);
+  G_OBJECT_CLASS(zathura_render_request_parent_class)->finalize(object);
 }
 
 /* renderer methods */
