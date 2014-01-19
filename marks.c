@@ -217,7 +217,7 @@ mark_add(zathura_t* zathura, int key)
   /* add new mark */
   zathura_mark_t* mark = g_try_malloc0(sizeof(zathura_mark_t));
   if (mark == NULL) {
-    return NULL;
+    return;
   }
 
   mark->key        = key;
