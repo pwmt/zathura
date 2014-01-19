@@ -134,10 +134,11 @@ guess_type_glib(const char* path)
     g_free((void*)content_type);
     content_type = NULL;
 
-    content = g_try_realloc(content, length + BUFSIZ);
-    if (content == NULL) {
-      continue;
+    guchar* temp_content = g_try_realloc(content, length + BUFSIZ);
+    if (temp_content == NULL) {
+      break;
     }
+    content = temp_content;
 
     bytes_read = read(fd, content + length, BUFSIZ);
     if (bytes_read == -1) {
