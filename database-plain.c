@@ -48,6 +48,7 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJE
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
+static void           plain_dispose(GObject* object);
 static void           plain_finalize(GObject* object);
 static bool           plain_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
 static bool           plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
@@ -129,6 +130,7 @@ zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
 
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
+  object_class->dispose      = plain_dispose;
   object_class->finalize     = plain_finalize;
   object_class->set_property = plain_set_property;
 
@@ -283,6 +285,18 @@ plain_set_property(GObject* object, guint prop_id, const GValue* value, GParamSp
 }
 
 static void
+plain_dispose(GObject* object)
+{
+  ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
+  g_clear_object(&priv->bookmark_monitor);
+  g_clear_object(&priv->history_monitor);
+
+  G_OBJECT_CLASS(zathura_plaindatabase_parent_class)->dispose(object);
+}
+
+static void
 plain_finalize(GObject* object)
 {
   ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
@@ -291,20 +305,12 @@ plain_finalize(GObject* object)
   /* bookmarks */
   g_free(priv->bookmark_path);
 
-  if (priv->bookmark_monitor != NULL) {
-    g_object_unref(priv->bookmark_monitor);
-  }
-
   if (priv->bookmarks != NULL) {
     g_key_file_free(priv->bookmarks);
   }
 
   /* history */
   g_free(priv->history_path);
-
-  if (priv->history_monitor != NULL) {
-    g_object_unref(priv->history_monitor);
-  }
 
   if (priv->history != NULL) {
     g_key_file_free(priv->history);
