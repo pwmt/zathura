@@ -717,6 +717,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
       goto error_free;
     }
 
+    g_object_ref(page_widget);
     zathura->pages[page_id] = page_widget;
 
     g_signal_connect(G_OBJECT(page_widget), "text-selected",
@@ -951,7 +952,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer) 1);
   for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
     g_object_unref(zathura->pages[i]);
-    g_object_unref(zathura->pages[i]); // FIXME
   }
   free(zathura->pages);
   zathura->pages = NULL;
@@ -1068,9 +1068,18 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
     int x = (i + first_page_column - 1) % pages_per_row;
     int y = (i + first_page_column - 1) / pages_per_row;
 
-    zathura_page_t* page   = zathura_document_get_page(zathura->document, i);
-    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
+    GtkWidget* page_widget = zathura->pages[i];
+
+    GtkWidget* align = gtk_alignment_new(0.5, 0.5, 0, 0);
+    GtkWidget* parent = gtk_widget_get_parent(page_widget);
+    if (parent)
+    {
+      gtk_container_remove(GTK_CONTAINER(parent), page_widget);
+      g_object_unref(parent);
+    }
+
+    gtk_container_add(GTK_CONTAINER(align), page_widget);
+    gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), align, x, y, 1, 1);
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);
