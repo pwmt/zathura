@@ -54,10 +54,10 @@ OPTIONS
   Set log debug level (debug, info, warning, error)
 
 -s, --synctex
-  Enable synctex support
+  Enable synctex support for backwards synchronization.
 
 -x [cmd], --synctex-editor-command [cmd]
-  Set the synctex editor command
+  Set the synctex editor command for backwards synchronization.
 
 --synctex-forward [input]
   Jump to the given position. The switch expcects the same format as specified
@@ -216,6 +216,17 @@ CONFIGURATION
 The default appearance and behaviour of zathura can be overwritten by modifying
 the *zathurarc* file (default path: ~/.config/zathura/zathurarc). For a detailed
 description please consult zathurarc(5).
+
+SYNCTEX SUPPORT
+===============
+Both synctex forward and backwards synchronization are supported by zathura, To
+enable synctex forward synchronization, please look at the *--syntex* and
+*--synctex-editor* options. To support synctex backwards synchronization,
+zathura provides a D-Bus interface that can be called by the editor. For
+convince zathura also knows how to parse the output of the *synctex view*
+command. It is enough to pass the arguments to *synctex view*'s *-i* option to
+zathura via *--syntex-forward* and zathura will pass the information to the
+correct instance.
 
 KNOWN BUGS
 ==========
