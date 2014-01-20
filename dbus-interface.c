@@ -399,9 +399,73 @@ static const GDBusInterfaceVTable interface_vtable =
 
 static const unsigned int TIMEOUT = 3000;
 
+static bool
+call_hightlight_rects(GDBusConnection* connection, const char* filename,
+    const char* name, unsigned int page, girara_list_t* rectangles,
+    girara_list_t* secondary_rects)
+{
+  GError* error       = NULL;
+  GVariant* vfilename = g_dbus_connection_call_sync(connection,
+    name, DBUS_OBJPATH, "org.freedesktop.DBus.Properties",
+    "Get", g_variant_new("(ss)", DBUS_INTERFACE, "filename"),
+    G_VARIANT_TYPE("(v)"), G_DBUS_CALL_FLAGS_NONE,
+    TIMEOUT, NULL, &error);
+  if (vfilename == NULL) {
+    girara_error("Failed to query 'filename' property from '%s': %s",
+        name, error->message);
+    g_error_free(error);
+    return false;
+  }
+
+  GVariant* tmp = NULL;
+  g_variant_get(vfilename, "(v)", &tmp);
+  gchar* remote_filename = g_variant_dup_string(tmp, NULL);
+  girara_debug("Filename from '%s': %s", name, remote_filename);
+  g_variant_unref(tmp);
+  g_variant_unref(vfilename);
+
+  if (g_strcmp0(filename, remote_filename) != 0) {
+    g_free(remote_filename);
+    return false;
+  }
+
+  g_free(remote_filename);
+
+  GVariantBuilder* builder = g_variant_builder_new(G_VARIANT_TYPE("a(dddd)"));
+  if (rectangles != NULL) {
+    GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect)
+      g_variant_builder_add(builder, "(dddd)", rect->x1, rect->x2, rect->y1,
+          rect->y2);
+    GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect);
+  }
+
+  GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(udddd)"));
+  if (secondary_rects != NULL) {
+    GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
+      g_variant_builder_add(second_builder, "(udddd)", rect->page,
+          rect->rect.x1, rect->rect.x2, rect->rect.y1, rect->rect.y2);
+    GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
+  }
+
+  GVariant* ret = g_dbus_connection_call_sync(connection,
+    name, DBUS_OBJPATH, DBUS_INTERFACE, "HighlightRects",
+    g_variant_new("(ua(dddd)a(udddd))", page, builder, second_builder),
+    G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
+  g_variant_builder_unref(builder);
+  if (ret == NULL) {
+    girara_error("Failed to run HighlightRects on '%s': %s", name,
+                 error->message);
+    g_error_free(error);
+    return false;
+  }
+
+  g_variant_unref(ret);
+  return true;
+}
+
 bool
 zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
-    girara_list_t* rectangles, girara_list_t* secondary_rects)
+    girara_list_t* rectangles, girara_list_t* secondary_rects, pid_t hint)
 {
   /* note: page is [1, number_of_pages] here */
 
@@ -416,6 +480,14 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
     girara_error("Could not connect to session bus: %s", error->message);
     g_error_free(error);
     return false;
+  }
+
+  if (hint != -1) {
+    char* well_known_name = g_strdup_printf(DBUS_NAME_TEMPLATE, hint);
+    const bool ret = call_hightlight_rects(connection, filename,
+        well_known_name, page, rectangles, secondary_rects);
+    g_free(well_known_name);
+    return ret;
   }
 
   GVariant* vnames = g_dbus_connection_call_sync(connection,
@@ -440,59 +512,9 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
     }
     girara_debug("Found name: %s", name);
 
-    GVariant* vfilename = g_dbus_connection_call_sync(connection,
-      name, DBUS_OBJPATH, "org.freedesktop.DBus.Properties",
-      "Get", g_variant_new("(ss)", DBUS_INTERFACE, "filename"),
-      G_VARIANT_TYPE("(v)"), G_DBUS_CALL_FLAGS_NONE,
-      TIMEOUT, NULL, &error);
-    if (vfilename == NULL) {
-      girara_error("Failed to query 'filename' property from '%s': %s",
-          name, error->message);
-      g_error_free(error);
-      continue;
-    }
-
-    GVariant* tmp = NULL;
-    g_variant_get(vfilename, "(v)", &tmp);
-    gchar* remote_filename = g_variant_dup_string(tmp, NULL);
-    girara_debug("Filename from '%s': %s", name, remote_filename);
-    g_variant_unref(tmp);
-    g_variant_unref(vfilename);
-
-    if (g_strcmp0(filename, remote_filename) != 0) {
-      g_free(remote_filename);
-      continue;
-    }
-
-    g_free(remote_filename);
-    found_one = true;
-
-    GVariantBuilder* builder = g_variant_builder_new(G_VARIANT_TYPE("a(dddd)"));
-    if (rectangles != NULL) {
-      GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect)
-        g_variant_builder_add(builder, "(dddd)", rect->x1, rect->x2, rect->y1,
-            rect->y2);
-      GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect);
-    }
-
-    GVariantBuilder* second_builder = g_variant_builder_new(G_VARIANT_TYPE("a(udddd)"));
-    if (secondary_rects != NULL) {
-      GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
-        g_variant_builder_add(second_builder, "(udddd)", rect->page,
-            rect->rect.x1, rect->rect.x2, rect->rect.y1, rect->rect.y2);
-      GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
-    }
-
-    GVariant* ret = g_dbus_connection_call_sync(connection,
-      name, DBUS_OBJPATH, DBUS_INTERFACE, "HighlightRects",
-      g_variant_new("(ua(dddd)a(udddd))", page, builder, second_builder),
-      G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
-    g_variant_builder_unref(builder);
-    if (ret == NULL) {
-      girara_error("Failed to run HighlightRects on '%s': %s", name, error->message);
-      g_error_free(error);
-    } else {
-      g_variant_unref(ret);
+    if (call_hightlight_rects(connection, filename, name, page, rectangles,
+          secondary_rects) == true) {
+      found_one = true;
     }
   }
   g_variant_iter_free(iter);
@@ -503,7 +525,8 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
 }
 
 bool
-zathura_dbus_synctex_position(const char* filename, const char* position)
+zathura_dbus_synctex_position(const char* filename, const char* position,
+                              pid_t hint)
 {
   if (filename == NULL || position == NULL) {
     return false;
@@ -518,7 +541,7 @@ zathura_dbus_synctex_position(const char* filename, const char* position)
   }
 
   const bool ret = zathura_dbus_goto_page_and_highlight(filename, page,
-      rectangles, secondary_rects);
+      rectangles, secondary_rects, hint);
   girara_list_free(rectangles);
   girara_list_free(secondary_rects);
   return ret;

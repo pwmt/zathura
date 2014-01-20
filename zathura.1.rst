@@ -59,9 +59,13 @@ OPTIONS
 -x [cmd], --synctex-editor-command [cmd]
   Set the synctex editor command
 
---syntex-forward [input],
+--synctex-forward [input]
   Jump to the given position. The switch expcects the same format as specified
   for syntex's view -i.
+
+--synctex-pid [pid]
+  If not -1, forward synctex input to process with the given pid. Otherwise, try
+  all zathura process to find the correct one.
 
 MOUSE AND KEY BINDINGS
 ======================

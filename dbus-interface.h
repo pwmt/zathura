@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <girara/types.h>
 #include <glib-object.h>
+#include <sys/types.h>
 #include "types.h"
 
 typedef struct zathura_dbus_class_s ZathuraDbusClass;
@@ -53,8 +54,10 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
  *          otherwise
  */
 bool zathura_dbus_goto_page_and_highlight(const char* filename,
-    unsigned int page,girara_list_t* rectangles, girara_list_t* secondary_rects);
+    unsigned int page, girara_list_t* rectangles, girara_list_t* secondary_rects,
+    pid_t pidhint);
 
-bool zathura_dbus_synctex_position(const char* filename, const char* position);
+bool zathura_dbus_synctex_position(const char* filename, const char* position,
+    pid_t pidhint);
 
 #endif

@@ -49,6 +49,7 @@ main(int argc, char* argv[])
   bool print_version    = false;
   bool synctex          = false;
   int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  int synctex_pid       = -1;
   Window embed          = 0;
 
   GOptionEntry entries[] = {
@@ -64,6 +65,7 @@ main(int argc, char* argv[])
     { "synctex",                's',  0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
     { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
+    { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -101,7 +103,7 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    if (zathura_dbus_synctex_position(real_path, synctex_fwd) == true) {
+    if (zathura_dbus_synctex_position(real_path, synctex_fwd, synctex_pid) == true) {
       free(real_path);
       return 0;
     } else {
