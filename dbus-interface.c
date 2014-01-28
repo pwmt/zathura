@@ -379,12 +379,17 @@ handle_get_property(GDBusConnection* UNUSED(connection),
   ZathuraDbus* dbus = data;
   private_t* priv   = GET_PRIVATE(dbus);
 
+  if (priv->zathura->document == NULL) {
+    g_set_error(error, G_IO_ERROR, G_IO_ERROR_FAILED, "No document open.");
+    return NULL;
+  }
+
   if (g_strcmp0(property_name, "filename") == 0) {
-    if (priv->zathura->document == NULL) {
-      g_set_error(error, G_IO_ERROR, G_IO_ERROR_FAILED, "No document open.");
-    } else {
-      return g_variant_new_string(zathura_document_get_path(priv->zathura->document));
-    }
+    return g_variant_new_string(zathura_document_get_path(priv->zathura->document));
+  } else if (g_strcmp0(property_name, "pagenumber") == 0) {
+    return g_variant_new_uint32(zathura_document_get_current_page_number(priv->zathura->document));
+  } else if (g_strcmp0(property_name, "numberofpages") == 0) {
+    return g_variant_new_uint32(zathura_document_get_number_of_pages(priv->zathura->document));
   }
 
   return NULL;

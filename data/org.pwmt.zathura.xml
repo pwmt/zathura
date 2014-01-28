@@ -26,5 +26,7 @@
       <arg type='b' name='return' direction='out' />
     </method>
     <property type='s' name='filename' access='read' />
+    <property type='u' name='pagenumber' access='read' />
+    <property type='u' name='numberofpages' access='read' />
   </interface>
 </node>
