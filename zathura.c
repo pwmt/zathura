@@ -41,6 +41,7 @@ typedef struct zathura_document_info_s {
   const char* path;
   const char* password;
   int page_number;
+  const char* mode;
 } zathura_document_info_t;
 
 
@@ -481,6 +482,18 @@ document_info_open(gpointer data)
       document_open(document_info->zathura, file, document_info->password,
                     document_info->page_number);
       g_free(file);
+
+      if (document_info->mode != NULL) {
+        if (g_strcmp0(document_info->mode, "presentation") == 0) {
+          sc_toggle_presentation(document_info->zathura->ui.session, NULL, NULL,
+                                 0);
+        } else if (g_strcmp0(document_info->mode, "fullscreen") == 0) {
+          sc_toggle_fullscreen(document_info->zathura->ui.session, NULL, NULL,
+                               0);
+        } else {
+          girara_error("Unknown mode: %s", document_info->mode);
+        }
+      }
     }
   }
 
@@ -819,7 +832,7 @@ error_out:
 
 void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
-                   int page_number)
+                   int page_number, const char* mode)
 {
   if (zathura == NULL || path == NULL) {
     return;
@@ -834,6 +847,7 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
   document_info->path        = path;
   document_info->password    = password;
   document_info->page_number = page_number;
+  document_info->mode        = mode;
 
   gdk_threads_add_idle(document_info_open, document_info);
 }

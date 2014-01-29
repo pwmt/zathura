@@ -304,7 +304,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* password,
  * @param password The password of the file
  */
 void document_open_idle(zathura_t* zathura, const char* path,
-                        const char* password, int page_number);
+                        const char* password, int page_number,
+                        const char* mode);
 
 /**
  * Save a open file

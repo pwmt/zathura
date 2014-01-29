@@ -45,6 +45,7 @@ main(int argc, char* argv[])
   gchar* password       = NULL;
   gchar* synctex_editor = NULL;
   gchar* synctex_fwd    = NULL;
+  gchar* mode           = NULL;
   bool forkback         = false;
   bool print_version    = false;
   bool synctex          = false;
@@ -66,6 +67,7 @@ main(int argc, char* argv[])
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
     { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
     { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
+    { "mode",                   '\0', 0, G_OPTION_ARG_STRING,   &mode,           _("Start in a non-default mode"),                       "mode" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -91,6 +93,7 @@ main(int argc, char* argv[])
     girara_set_debug_level(GIRARA_ERROR);
   }
 
+  /* handle synctex forward synchronization */
   if (synctex_fwd != NULL) {
     if (argc != 2) {
       girara_error("Too many arguments or missing filename while running with --synctex-forward");
@@ -113,6 +116,11 @@ main(int argc, char* argv[])
     }
   }
 
+  /* check mode */
+  if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
+    girara_error("Invalid argument for --mode: %s", mode);
+    return -1;
+  }
 
   /* Fork into the background if the user really wants to ... */
   if (forkback == true) {
@@ -164,7 +172,7 @@ main(int argc, char* argv[])
   if (argc > 1) {
     if (page_number > 0)
       --page_number;
-    document_open_idle(zathura, argv[1], password, page_number);
+    document_open_idle(zathura, argv[1], password, page_number, mode);
 
     /* open additional files */
     for (int i = 2; i < argc; i++) {

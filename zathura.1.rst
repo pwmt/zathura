@@ -67,6 +67,9 @@ OPTIONS
   If not -1, forward synctex input to process with the given pid. Otherwise, try
   all zathura process to find the correct one.
 
+--mode [mode]
+  Switch to mode (presentation, fullscreen) after opening a document.
+
 MOUSE AND KEY BINDINGS
 ======================
 
