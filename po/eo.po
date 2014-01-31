@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-11-04 19:57+0100\n"
+"POT-Creation-Date: 2014-01-31 10:35+0100\n"
 "PO-Revision-Date: 2013-11-20 09:50+0000\n"
 "Last-Translator: norbux <manelsales@ono.com>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/zathura/"
@@ -18,29 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../callbacks.c:297
+#: ../callbacks.c:301
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Nevalida enigo '%s' uzata."
 
-#: ../callbacks.c:333
+#: ../callbacks.c:337
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Nevalida indekso '%s' uzata."
 
-#: ../callbacks.c:546
+#: ../callbacks.c:550
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Selektita teksto estas kopiita en la poŝo: %s"
 
 #: ../commands.c:36 ../commands.c:76 ../commands.c:103 ../commands.c:152
-#: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:419
-#: ../commands.c:540 ../shortcuts.c:403 ../shortcuts.c:1163
-#: ../shortcuts.c:1192
+#: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:422
+#: ../commands.c:543 ../shortcuts.c:403 ../shortcuts.c:1201
+#: ../shortcuts.c:1230 ../shortcuts.c:1259
 msgid "No document opened."
 msgstr "Neniu dokumento malfermita."
 
-#: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:424
+#: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:427
 msgid "Invalid number of arguments given."
 msgstr "Nevalida nombro da argumentoj uzata."
 
@@ -135,37 +135,37 @@ msgstr "Neeble konservi dokumenton."
 msgid "Invalid number of arguments."
 msgstr "Nevalida nombro da argumentoj."
 
-#: ../commands.c:443
+#: ../commands.c:446
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Neeble skribi kunsendaĵon '%s' en '%s'."
 
-#: ../commands.c:445
+#: ../commands.c:448
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Skribis kunsendaĵon '%s' en '%s'."
 
-#: ../commands.c:489
+#: ../commands.c:492
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Skribis kunsendaĵon '%s' en '%s'."
 
-#: ../commands.c:491
+#: ../commands.c:494
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Neeble skribi kunsendaĵon '%s' en '%s'."
 
-#: ../commands.c:498
+#: ../commands.c:501
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Nekonata bildo '%s'."
 
-#: ../commands.c:502
+#: ../commands.c:505
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr ""
 
-#: ../commands.c:553
+#: ../commands.c:556
 msgid "Argument must be a number."
 msgstr "Argumento devas esti nombro."
 
@@ -184,333 +184,354 @@ msgid "Images"
 msgstr "Bildoj"
 
 #. zathura settings
-#: ../config.c:131
+#: ../config.c:136
 msgid "Database backend"
 msgstr ""
 
-#: ../config.c:133
+#: ../config.c:138
 msgid "Zoom step"
 msgstr "Zompaŝo"
 
-#: ../config.c:135
+#: ../config.c:140
 msgid "Padding between pages"
 msgstr "Interpaĝa plenigo"
 
-#: ../config.c:137
+#: ../config.c:142
 msgid "Number of pages per row"
 msgstr "Nombro da paĝoj po vico"
 
-#: ../config.c:139
+#: ../config.c:144
 msgid "Column of the first page"
 msgstr ""
 
-#: ../config.c:141
+#: ../config.c:146
 msgid "Scroll step"
 msgstr "Rulumpaŝo"
 
-#: ../config.c:143
+#: ../config.c:148
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../config.c:145
+#: ../config.c:150
 msgid "Full page scroll overlap"
 msgstr ""
 
-#: ../config.c:147
+#: ../config.c:152
 msgid "Zoom minimum"
 msgstr "Mimimuma zomo"
 
-#: ../config.c:149
+#: ../config.c:154
 msgid "Zoom maximum"
 msgstr "Maksimuma zomo"
 
-#: ../config.c:151
+#: ../config.c:156
 msgid "Maximum number of pages to keep in the cache"
 msgstr ""
 
-#: ../config.c:153
+#: ../config.c:158
 msgid "Number of positions to remember in the jumplist"
 msgstr ""
 
-#: ../config.c:155
+#: ../config.c:160
 msgid "Recoloring (dark color)"
 msgstr "Rekolorigo (malhela koloro)"
 
-#: ../config.c:156
+#: ../config.c:161
 msgid "Recoloring (light color)"
 msgstr "Rekolorigo (hela koloro)"
 
-#: ../config.c:157
+#: ../config.c:162
 msgid "Color for highlighting"
 msgstr "Koloro por fonlumo"
 
-#: ../config.c:159
+#: ../config.c:164
 msgid "Color for highlighting (active)"
 msgstr "Koloro por fonlumo (aktiva)"
 
-#: ../config.c:161
+#: ../config.c:166
 msgid "'Loading ...' background color"
 msgstr ""
 
-#: ../config.c:163
+#: ../config.c:168
 msgid "'Loading ...' foreground color"
 msgstr ""
 
-#: ../config.c:167
+#: ../config.c:172
 msgid "Recolor pages"
 msgstr "Rekoloru paĝojn"
 
-#: ../config.c:169
+#: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 
-#: ../config.c:171
+#: ../config.c:176
 msgid "Wrap scrolling"
 msgstr "Ĉirkaŭflua rulumado"
 
-#: ../config.c:173
+#: ../config.c:178
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../config.c:175
+#: ../config.c:180
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:177
+#: ../config.c:182
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../config.c:179
+#: ../config.c:184
 msgid "Align link target to the left"
 msgstr ""
 
-#: ../config.c:181
+#: ../config.c:186
 msgid "Let zoom be changed when following links"
 msgstr ""
 
-#: ../config.c:183
+#: ../config.c:188
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:185
+#: ../config.c:190
 msgid "Transparency for highlighting"
 msgstr "Travidebleco por fonlumo"
 
-#: ../config.c:187
+#: ../config.c:192
 msgid "Render 'Loading ...'"
 msgstr "Bildigu 'Ŝargado ...'"
 
-#: ../config.c:188
+#: ../config.c:193
 msgid "Adjust to when opening file"
 msgstr "Adaptaĵo ĉe malfermo de dosiero"
 
-#: ../config.c:190
+#: ../config.c:195
 msgid "Show hidden files and directories"
 msgstr "Montru kaŝitajn dosierojn kaj -ujojn"
 
-#: ../config.c:192
+#: ../config.c:197
 msgid "Show directories"
 msgstr "Montru dosierujojn"
 
-#: ../config.c:194
+#: ../config.c:199
 msgid "Always open on first page"
 msgstr "Ĉiam malfermu ĉe unua paĝo"
 
-#: ../config.c:196
+#: ../config.c:201
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:198
+#: ../config.c:204
 msgid "Enable incremental search"
 msgstr ""
 
-#: ../config.c:200
+#: ../config.c:206
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:202
+#: ../config.c:208
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../config.c:204
+#: ../config.c:210
 msgid "Display the page number in the window title"
 msgstr ""
 
-#: ../config.c:206
+#: ../config.c:212
 msgid "Use basename of the file in the statusbar"
 msgstr ""
 
-#: ../config.c:208 ../main.c:67
+#: ../config.c:214 ../main.c:66
 msgid "Enable synctex support"
 msgstr ""
 
-#: ../config.c:210
+#: ../config.c:216
+msgid "Enable D-Bus service"
+msgstr ""
+
+#: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:369
+#: ../config.c:398
 msgid "Add a bookmark"
 msgstr "Aldonu paĝosignon"
 
-#: ../config.c:370
+#: ../config.c:399
 msgid "Delete a bookmark"
 msgstr "Forigu paĝosignon"
 
-#: ../config.c:371
+#: ../config.c:400
 msgid "List all bookmarks"
 msgstr "Listigu ĉiujn paĝosignojn"
 
-#: ../config.c:372
+#: ../config.c:401
 msgid "Close current file"
 msgstr "Fermu nunan dosieron"
 
-#: ../config.c:373
+#: ../config.c:402
 msgid "Show file information"
 msgstr "Montru dosiera informacio"
 
-#: ../config.c:374
+#: ../config.c:403
 msgid "Execute a command"
 msgstr ""
 
-#: ../config.c:375
+#: ../config.c:404
 msgid "Show help"
 msgstr "Montru helpon"
 
-#: ../config.c:376
+#: ../config.c:405
 msgid "Open document"
 msgstr "Malfermu dokumenton"
 
-#: ../config.c:377
+#: ../config.c:406
 msgid "Close zathura"
 msgstr "Fermu zathura"
 
-#: ../config.c:378
+#: ../config.c:407
 msgid "Print document"
 msgstr "Presu dokumenton"
 
-#: ../config.c:379
+#: ../config.c:408
 msgid "Save document"
 msgstr "Konservu dokumenton"
 
-#: ../config.c:380
+#: ../config.c:409
 msgid "Save document (and force overwriting)"
 msgstr "Konservu dokumenton (deviga anstataŭo)"
 
-#: ../config.c:381
+#: ../config.c:410
 msgid "Save attachments"
 msgstr "Konservu kunsendaĵojn"
 
-#: ../config.c:382
+#: ../config.c:411
 msgid "Set page offset"
 msgstr "Agordu paĝdelokado"
 
-#: ../config.c:383
+#: ../config.c:412
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:384
+#: ../config.c:413
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:385
+#: ../config.c:414
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:386
+#: ../config.c:415
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:387
+#: ../config.c:416
 msgid "Show version information"
 msgstr ""
 
-#: ../links.c:199 ../links.c:278
+#: ../links.c:202 ../links.c:281
 msgid "Failed to run xdg-open."
 msgstr "Fiaskis iro de xdg-open"
 
-#: ../links.c:217
+#: ../links.c:220
 #, c-format
 msgid "Link: page %d"
 msgstr ""
 
-#: ../links.c:224
+#: ../links.c:227
 #, c-format
 msgid "Link: %s"
 msgstr ""
 
-#: ../links.c:228
+#: ../links.c:231
 msgid "Link: Invalid"
 msgstr ""
 
-#: ../main.c:58
+#: ../main.c:57
 msgid "Reparents to window specified by xid"
 msgstr ""
 
-#: ../main.c:59
+#: ../main.c:58
 msgid "Path to the config directory"
 msgstr "Vojo al la agorda dosierujo"
 
-#: ../main.c:60
+#: ../main.c:59
 msgid "Path to the data directory"
 msgstr "Vojo al la datuma dosierujo"
 
-#: ../main.c:61
+#: ../main.c:60
 msgid "Path to the directories containing plugins"
 msgstr "Vojoj al dosierujoj enhavantaj kromaĵojn"
 
-#: ../main.c:62
+#: ../main.c:61
 msgid "Fork into the background"
 msgstr ""
 
-#: ../main.c:63
+#: ../main.c:62
 msgid "Document password"
 msgstr ""
 
-#: ../main.c:64
+#: ../main.c:63
 msgid "Page number to go to"
 msgstr ""
 
-#: ../main.c:65
+#: ../main.c:64
 msgid "Log level (debug, info, warning, error)"
 msgstr "Nivelo de ĵurnalo (debug, info, warning, error)"
 
-#: ../main.c:66
+#: ../main.c:65
 msgid "Print version information"
 msgstr "Montru dosiera informacio"
 
-#: ../main.c:68
+#: ../main.c:67
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr ""
 
-#: ../page-widget.c:526
+#: ../main.c:68
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../main.c:69
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../main.c:70
+msgid "Start in a non-default mode"
+msgstr ""
+
+#: ../page-widget.c:493
 msgid "Loading..."
 msgstr "Ŝargado ..."
 
-#: ../page-widget.c:845
+#: ../page-widget.c:808
 msgid "Copy image"
 msgstr "Kopiu bildon"
 
-#: ../page-widget.c:846
+#: ../page-widget.c:809
 msgid "Save image as"
 msgstr "Savi bildojn kiel"
 
-#: ../shortcuts.c:1076
+#: ../print.c:64 ../print.c:211
+#, c-format
+msgid "Printing failed: %s"
+msgstr ""
+
+#: ../shortcuts.c:1114
 msgid "This document does not contain any index"
 msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
 
-#: ../zathura.c:213 ../zathura.c:959
+#: ../zathura.c:192 ../zathura.c:988
 msgid "[No name]"
 msgstr "[Neniu nomo]"
 
-#: ../zathura.c:486
+#: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: ../zathura.c:535
+#: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: ../zathura.c:545
+#: ../zathura.c:544
 msgid "Document does not contain any pages"
 msgstr ""
