@@ -38,11 +38,13 @@ print(zathura_t* zathura)
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
 
   if (zathura->print.settings != NULL) {
-    gtk_print_operation_set_print_settings(print_operation, zathura->print.settings);
+    gtk_print_operation_set_print_settings(print_operation,
+                                           zathura->print.settings);
   }
 
   if (zathura->print.page_setup != NULL) {
-    gtk_print_operation_set_default_page_setup(print_operation, zathura->print.page_setup);
+    gtk_print_operation_set_default_page_setup(print_operation,
+                                               zathura->print.page_setup);
   }
   gtk_print_operation_set_embed_page_setup(print_operation, TRUE);
 
@@ -71,7 +73,8 @@ static void
 cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
              UNUSED(context), zathura_t* zathura)
 {
-  if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL) {
+  if (zathura == NULL || zathura->ui.session == NULL ||
+      zathura->document == NULL) {
     return;
   }
 
