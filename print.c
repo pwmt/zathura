@@ -8,6 +8,7 @@
 #include <girara/utils.h>
 #include <girara/statusbar.h>
 #include <girara/session.h>
+#include <glib/gi18n.h>
 
 static void cb_print_draw_page(GtkPrintOperation* print_operation,
                                GtkPrintContext* context, gint page_number,
@@ -52,11 +53,15 @@ print(zathura_t* zathura)
   g_signal_connect(print_operation, "done",               G_CALLBACK(cb_print_done),               zathura);
 
   /* print */
+  GError* error = NULL;
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation,
-                                   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
+                                   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                                   NULL, &error);
 
   if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
-    girara_error("Error occurred while printing progress");
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
+                  error->message);
+    g_error_free(error);
   }
 
   g_object_unref(print_operation);
@@ -200,7 +205,7 @@ cb_print_done(GtkPrintOperation* operation, GtkPrintOperationResult result,
   } else if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
     GError* error = NULL;
     gtk_print_operation_get_error(operation, &error);
-    girara_notify(zathura->ui.session, GIRARA_ERROR, "Printing failed: %s",
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
                   error->message);
     g_error_free(error);
   }
