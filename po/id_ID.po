@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2013-12-15 05:57+0000\n"
+"PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: andjeng <teratower8@gmail.com>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/"
 "zathura/language/id_ID/)\n"
@@ -526,8 +526,7 @@ msgstr "[Tidak berjudul]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
-"Tidak dapat membaca berkas dari stdin dan menulisnya ke berkas sementar"
+msgstr "Tidak dapat membaca berkas dari stdin dan menulisnya ke berkas sementar"
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."

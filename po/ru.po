@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2013-12-16 13:11+0000\n"
+"PO-Revision-Date: 2014-02-14 03:22+0000\n"
 "Last-Translator: vp1981 <irk.translator@yandex.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
 "ru/)\n"
@@ -350,7 +350,7 @@ msgstr "Включить поддержку synctex"
 
 #: ../config.c:216
 msgid "Enable D-Bus service"
-msgstr ""
+msgstr "Включить сервис D-Bus"
 
 #: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
@@ -493,15 +493,15 @@ msgstr "Редактор для synctex (передаётся далее про�
 
 #: ../main.c:68
 msgid "Move to given synctex position"
-msgstr ""
+msgstr "Перейти к указанному положению synctex"
 
 #: ../main.c:69
 msgid "Highlight given position in the given process"
-msgstr ""
+msgstr "Подсветка заданного положения в заданном процессе"
 
 #: ../main.c:70
 msgid "Start in a non-default mode"
-msgstr ""
+msgstr "Запустить в специальном режиме"
 
 #: ../page-widget.c:493
 msgid "Loading..."
@@ -518,7 +518,7 @@ msgstr "Сохранить изображение как"
 #: ../print.c:64 ../print.c:211
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Не удалось напечатать %s"
 
 #: ../shortcuts.c:1114
 msgid "This document does not contain any index"
@@ -530,9 +530,7 @@ msgstr "[Без названия]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
-"Не удалось прочитать файл со стандартного входа и записать его во временный "
-"файл."
+msgstr "Не удалось прочитать файл со стандартного входа и записать его во временный файл."
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."

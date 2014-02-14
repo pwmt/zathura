@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2013-11-20 09:50+0000\n"
+"PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "zathura/language/pt_BR/)\n"
@@ -263,8 +263,7 @@ msgstr "Recolorir páginas"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-"Quando recolorir, manter tonalidade original e ajustar somente a luminosidade"
+msgstr "Quando recolorir, manter tonalidade original e ajustar somente a luminosidade"
 
 #: ../config.c:176
 msgid "Wrap scrolling"
@@ -352,9 +351,7 @@ msgstr ""
 
 #: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
-"A área de transferência em que o dados selecionados com o mouse vão ser "
-"escritos"
+msgstr "A área de transferência em que o dados selecionados com o mouse vão ser escritos"
 
 #. define default inputbar commands
 #: ../config.c:398
@@ -530,14 +527,11 @@ msgstr "[Sem nome]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
-"Não foi possível ler o arquivo a partir de stdin e gravá-lo em um arquivo "
-"temporário."
+msgstr "Não foi possível ler o arquivo a partir de stdin e gravá-lo em um arquivo temporário."
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
-"Formato de arquivo não suportado. Por favor, instale o plugin necessário."
+msgstr "Formato de arquivo não suportado. Por favor, instale o plugin necessário."
 
 #: ../zathura.c:544
 msgid "Document does not contain any pages"

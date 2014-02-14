@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2014-01-02 18:42+0000\n"
+"PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: rike\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
 "fr/)\n"
@@ -266,9 +266,7 @@ msgstr "Recoloriser les pages"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-"Lors de la recoloration garder la teinte d'origine et ajuster seulement la "
-"luminosité"
+msgstr "Lors de la recoloration garder la teinte d'origine et ajuster seulement la luminosité"
 
 #: ../config.c:176
 msgid "Wrap scrolling"
@@ -532,14 +530,11 @@ msgstr "[Sans nom]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
-"Impossible de lire le fichier depuis stdin et de le sauvegarder dans un "
-"fichier temporaire."
+msgstr "Impossible de lire le fichier depuis stdin et de le sauvegarder dans un fichier temporaire."
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
-"Type de fichier non supporté. Veuillez installer l'extension nécessaire."
+msgstr "Type de fichier non supporté. Veuillez installer l'extension nécessaire."
 
 #: ../zathura.c:544
 msgid "Document does not contain any pages"

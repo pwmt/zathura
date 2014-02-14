@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2013-11-20 09:50+0000\n"
+"PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/zathura/language/"
 "el/)\n"
@@ -263,9 +263,7 @@ msgstr "Επαναχρωματισμός σελίδων"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-"Κατά τον επαναχρωματισμό της σελιδάς διατήρηση της αρχικής απόχρωσης και "
-"αλλαγή μόνο της φωτεινότητας"
+msgstr "Κατά τον επαναχρωματισμό της σελιδάς διατήρηση της αρχικής απόχρωσης και αλλαγή μόνο της φωτεινότητας"
 
 #: ../config.c:176
 msgid "Wrap scrolling"

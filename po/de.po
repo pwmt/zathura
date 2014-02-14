@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2013-11-20 09:50+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"PO-Revision-Date: 2014-02-11 22:39+0000\n"
+"Last-Translator: simon04 <simon.legner@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/zathura/language/"
 "de/)\n"
 "Language: de\n"
@@ -262,9 +262,7 @@ msgstr "Färbe die Seiten ein"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-"Behalte beim Neuzeichnen den ursprünglichen Hue-Wert bei und stimme nur die "
-"Helligkeit ab"
+msgstr "Behalte beim Neuzeichnen den ursprünglichen Hue-Wert bei und stimme nur die Helligkeit ab"
 
 #: ../config.c:176
 msgid "Wrap scrolling"
@@ -288,7 +286,7 @@ msgstr "Linkziel links ausrichten"
 
 #: ../config.c:186
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Erlaube Zoom-Änderungen beim Folgen von Links"
 
 #: ../config.c:188
 msgid "Center result horizontally"
@@ -348,11 +346,11 @@ msgstr "Aktiviere SyncTeX-Unterstützung"
 
 #: ../config.c:216
 msgid "Enable D-Bus service"
-msgstr ""
+msgstr "D-Bus-Dienst aktivieren"
 
 #: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "Zwischenablage, in die mit der Maus gewählte Text kopiert wird"
 
 #. define default inputbar commands
 #: ../config.c:398
@@ -491,15 +489,15 @@ msgstr "Synctex Editor (wird an synctex weitergeleitet)"
 
 #: ../main.c:68
 msgid "Move to given synctex position"
-msgstr ""
+msgstr "Zur gewählten SyncTeX-Position springen"
 
 #: ../main.c:69
 msgid "Highlight given position in the given process"
-msgstr ""
+msgstr "Gewählte Position im Prozess hervorheben"
 
 #: ../main.c:70
 msgid "Start in a non-default mode"
-msgstr ""
+msgstr "In einem Nicht-Standardmodus starten"
 
 #: ../page-widget.c:493
 msgid "Loading..."
@@ -516,7 +514,7 @@ msgstr "Bild speichern als"
 #: ../print.c:64 ../print.c:211
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Drucken fehlgeschlagen: %s"
 
 #: ../shortcuts.c:1114
 msgid "This document does not contain any index"
@@ -528,7 +526,7 @@ msgstr "[Kein Name]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Konnte Datei nicht von stdin lesen und in temporäre Datei schreiben."
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
