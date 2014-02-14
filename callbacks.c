@@ -50,7 +50,8 @@ cb_buffer_changed(girara_session_t* session)
 }
 
 static void
-update_visible_pages(zathura_t* zathura) {
+update_visible_pages(zathura_t* zathura)
+{
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
@@ -539,6 +540,11 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
   g_return_if_fail(data != NULL);
 
   zathura_t* zathura = data;
+  girara_mode_t mode = girara_mode_get(zathura->ui.session);
+  if (mode != zathura->modes.normal && mode != zathura->modes.fullscreen) {
+    return;
+  }
+
   GdkAtom* selection = get_selection(zathura);
 
   /* copy to clipboard */

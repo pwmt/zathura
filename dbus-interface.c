@@ -483,8 +483,8 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
   }
 
   GError* error = NULL;
-  GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SESSION,
-      NULL, &error);
+  GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL,
+                                               &error);
   if (connection == NULL) {
     girara_error("Could not connect to session bus: %s", error->message);
     g_error_free(error);

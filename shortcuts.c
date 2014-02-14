@@ -1242,7 +1242,7 @@ sc_toggle_fullscreen(girara_session_t* session, girara_argument_t*
     girara_mode_set(session, zathura->modes.fullscreen);
   }
 
-  fullscreen = fullscreen ? false : true;
+  fullscreen = !fullscreen;
 
   return false;
 }
@@ -1315,7 +1315,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     girara_mode_set(session, zathura->modes.presentation);
   }
 
-  fullscreen = fullscreen ? false : true;
+  fullscreen = !fullscreen;
 
   return false;
 }
