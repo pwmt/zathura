@@ -87,7 +87,10 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
     }
   }
 
-  girara_mode_set(session, session->modes.normal);
+  /* Setting the mode back here has not worked for ages. We need another way to
+   * do this. Let's disable this for now.
+   */
+  /* girara_mode_set(session, session->modes.normal); */
   girara_sc_abort(session, NULL, NULL, 0);
 
   return false;
