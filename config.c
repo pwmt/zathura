@@ -129,6 +129,14 @@ config_load_default(zathura_t* zathura)
 #define FULLSCREEN zathura->modes.fullscreen
 #define PRESENTATION zathura->modes.presentation
 
+  const girara_mode_t all_modes[] = {
+    NORMAL,
+    INSERT,
+    INDEX,
+    FULLSCREEN,
+    PRESENTATION
+  };
+
   /* Set default mode */
   girara_mode_set(gsession, zathura->modes.normal);
 
@@ -318,9 +326,13 @@ config_load_default(zathura_t* zathura)
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, (mode),     GIRARA_EVENT_BUTTON_RELEASE, 0,    NULL); \
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0,                    sc_mouse_scroll, (mode),     GIRARA_EVENT_MOTION_NOTIFY,  0,    NULL); \
 
-  /* Define mode-less shortcuts */
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,      NULL, sc_abort, 0, 0, NULL);
-  girara_shortcut_add(gsession, 0,                GDK_KEY_Escape, NULL, sc_abort, 0, 0, NULL);
+  /* Define mode-less shortcuts
+   * girara adds them only for normal mode, so passing 0 as mode is currently
+   * not enough. We need to add/override for every mode. */
+  for (size_t idx = 0; idx != LENGTH(all_modes); ++idx) {
+    girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,      NULL, sc_abort, all_modes[idx], 0, NULL);
+    girara_shortcut_add(gsession, 0,                GDK_KEY_Escape, NULL, sc_abort, all_modes[idx], 0, NULL);
+  }
 
   /* Normal mode */
   girara_shortcut_add(gsession, 0, GDK_KEY_F5,  NULL, sc_toggle_presentation, NORMAL, 0, NULL);
