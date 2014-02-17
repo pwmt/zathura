@@ -2,21 +2,19 @@
 # See LICENSE file for license and copyright information
 #
 # Translators:
-# salmora8 <shorterfire@gmail.com>, 2013
-# salmora8 <shorterfire@gmail.com>, 2012-2013
+# salmora8 <shorterfire@gmail.com>, 2012-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2014-01-31 09:37+0000\n"
+"PO-Revision-Date: 2014-02-17 12:14+0100\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
-"zathura/language/pt_BR/)\n"
-"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/zathura/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../callbacks.c:301
@@ -347,7 +345,7 @@ msgstr "Ativar suporte synctex"
 
 #: ../config.c:216
 msgid "Enable D-Bus service"
-msgstr ""
+msgstr "Habilitar serviço D-Bus"
 
 #: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
@@ -490,15 +488,15 @@ msgstr "Editor synctex (encaminhado para o comando synctex)"
 
 #: ../main.c:68
 msgid "Move to given synctex position"
-msgstr ""
+msgstr "Mover para determinada posição synctex"
 
 #: ../main.c:69
 msgid "Highlight given position in the given process"
-msgstr ""
+msgstr "Destacar determinada posição no determinado processo"
 
 #: ../main.c:70
 msgid "Start in a non-default mode"
-msgstr ""
+msgstr "Começar em um modo não padrão"
 
 #: ../page-widget.c:493
 msgid "Loading..."
@@ -515,7 +513,7 @@ msgstr "Salvar imagem para"
 #: ../print.c:64 ../print.c:211
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Impressão falhou: %s"
 
 #: ../shortcuts.c:1114
 msgid "This document does not contain any index"
