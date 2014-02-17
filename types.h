@@ -33,7 +33,12 @@ typedef struct zathura_plugin_manager_s zathura_plugin_manager_t;
 /**
  * Renderer
  */
-typedef struct  zathura_renderer_s ZathuraRenderer;
+typedef struct zathura_renderer_s ZathuraRenderer;
+
+/**
+ * D-Bus manager
+ */
+typedef struct zathura_dbus_s ZathuraDbus;
 
 /**
  * Error types

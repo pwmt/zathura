@@ -4,22 +4,22 @@ include config.mk
 include common.mk
 
 PROJECT    = zathura
-OSOURCE    = $(wildcard *.c)
+OSOURCE    = $(filter-out dbus-interface-definitions.c, $(wildcard *.c))
 HEADER     = $(wildcard *.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
 ifneq (${WITH_SQLITE},0)
-INCS   += $(SQLITE_INC)
-LIBS   += $(SQLITE_LIB)
-SOURCE = $(OSOURCE)
+INCS     += $(SQLITE_INC)
+LIBS     += $(SQLITE_LIB)
+SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE = $(filter-out database-sqlite.c,$(OSOURCE))
+SOURCE    = $(filter-out database-sqlite.c,$(OSOURCE))
 endif
 
 ifneq ($(WITH_MAGIC),0)
-INCS += $(MAGIC_INC)
-LIBS += $(MAGIC_LIB)
+INCS     += $(MAGIC_INC)
+LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
@@ -37,13 +37,13 @@ ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 
-OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE))
-DOBJECTS = $(patsubst %.c, %.do, $(SOURCE))
+OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o
+DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
 
 all: options ${PROJECT} po build-manpages
 
 # pkg-config based version checks
-.version-checks/%:
+.version-checks/%: config.mk
 	$(QUIET)test $($(*)_VERSION_CHECK) -eq 0 || \
 		pkg-config --atleast-version $($(*)_MIN_VERSION) $($(*)_PKG_CONFIG_NAME) || ( \
 		echo "The minium required version of $(*) is $($(*)_MIN_VERSION)" && \
@@ -64,7 +64,15 @@ version.h: version.h.in config.mk
 		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
 		-e 's/ZVREV/${ZATHURA_VERSION_REV}/' \
 		-e 's/ZVAPI/${ZATHURA_API_VERSION}/' \
-		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' version.h.in > version.h
+		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' version.h.in > version.h.tmp
+	$(QUIET)mv version.h.tmp version.h
+
+dbus-interface-definitions.c: data/org.pwmt.zathura.xml
+	$(QUIET)echo '#include "dbus-interface-definitions.h"' > dbus-interface-definitions.c.tmp
+	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> dbus-interface-definitions.c.tmp
+	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> dbus-interface-definitions.c.tmp
+	$(QUIET)echo ';' >> dbus-interface-definitions.c.tmp
+	$(QUIET)mv dbus-interface-definitions.c.tmp dbus-interface-definitions.c
 
 %.o: %.c
 	$(ECHO) CC $<
@@ -84,8 +92,18 @@ ${PROJECT}: ${OBJECTS}
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
 
 clean:
-	$(QUIET)rm -rf ${PROJECT} ${OBJECTS} ${PROJECT}-${VERSION}.tar.gz \
-		${DOBJECTS} ${PROJECT}-debug .depend ${PROJECT}.pc doc version.h \
+	$(QUIET)rm -rf ${PROJECT} \
+		${OBJECTS} \
+		${PROJECT}-${VERSION}.tar.gz \
+		${DOBJECTS} \
+		${PROJECT}-debug \
+		.depend \
+		${PROJECT}.pc \
+		doc \
+		version.h \
+		version.h.tmp \
+		dbus-interface-definitions.c \
+		dbus-interface-definitions.c.tmp \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		.version-checks
 ifneq "$(wildcard ${RSTTOMAN})" ""
@@ -107,7 +125,7 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo abiversion=${ZATHURA_ABI_VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo includedir=${INCLUDEDIR} >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
-	$(QUIET)echo GTK_VERSION=${ZATHURA_GTK_VERSION} >> ${PROJECT}.pc
+	$(QUIET)echo GTK_VERSION=3 >> ${PROJECT}.pc
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
 
 valgrind: debug
@@ -129,6 +147,7 @@ dist: clean build-manpages
 			${PROJECT}.desktop version.h.in \
 			${PROJECT}.1 ${PROJECT}rc.5 \
 			${PROJECT}-${VERSION}
+	$(QUIET)cp -r data ${PROJECT}-${VERSION}
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
 	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
@@ -184,7 +203,12 @@ install-headers: ${PROJECT}.pc
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
-install: all install-headers install-manpages
+install-dbus:
+	$(ECHO) installing D-Bus interface definitions
+	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
+	$(QUIET)install -m 644 data/org.pwmt.zathura.xml $(DESTDIR)$(DBUSINTERFACEDIR)
+
+install: all install-headers install-manpages install-dbus
 	$(ECHO) installing executable file
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
@@ -207,9 +231,12 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
 	$(ECHO) removing desktop file
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
+	$(ECHO) removing D-Bus interface definitions
+	$(QUIET)rm -f $(DESTDIR)$(DBUSINTERFACEDIR)/org.pwmt.zathura.xml
 	$(MAKE) -C po uninstall
 
 -include $(wildcard .depend/*.dep)
 
-.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall test \
-	po install-headers uninstall-headers update-po install-manpages build-manpages
+.PHONY: all options clean doc debug valgrind gdb dist doc install uninstall \
+	test po install-headers uninstall-headers update-po install-manpages \
+	build-manpages install-dbus

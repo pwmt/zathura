@@ -70,17 +70,6 @@ void page_number_to_position(zathura_document_t* document, unsigned int page_num
 bool page_is_visible(zathura_document_t *document, unsigned int page_number);
 
 /**
- * Clone a GtkAdjustment
- *
- * Creates a new adjustment with the same value, lower and upper bounds, step
- * and page increments and page_size as the original adjustment.
- *
- * @param adjustment Adjustment instance to be cloned
- * @return Pointer to the new adjustment
- */
-GtkAdjustment* zathura_adjustment_clone(GtkAdjustment* adjustment);
-
-/**
  * Set the adjustment value while enforcing its limits
  *
  * @param adjustment Adjustment instance

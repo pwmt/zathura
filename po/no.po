@@ -1,204 +1,203 @@
-# zathura - language file (Italian)
+# zathura - language file (Norwegian)
 # See LICENSE file for license and copyright information
-#
+# 
 # Translators:
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2012
+# maccyber <jonas.enge@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2014-01-31 09:37+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/zathura/language/"
-"it/)\n"
-"Language: it\n"
+"PO-Revision-Date: 2014-02-17 12:13+0100\n"
+"Last-Translator: maccyber <jonas.enge@gmail.com>\n"
+"Language-Team: Norwegian (http://www.transifex.com/projects/p/zathura/language/no/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: no\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../callbacks.c:301
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Input inserito '%s' non valido."
+msgstr "Ugyldig inndata '%s' gitt."
 
 #: ../callbacks.c:337
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Indice inserito '%s' non valido."
+msgstr "Ugyldig index '%s' gitt."
 
 #: ../callbacks.c:550
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr "La selezione è stato copiata negli appunti:%s"
+msgstr "Kopierte markert tekst til utklippstavlen: %s"
 
 #: ../commands.c:36 ../commands.c:76 ../commands.c:103 ../commands.c:152
 #: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:422
 #: ../commands.c:543 ../shortcuts.c:403 ../shortcuts.c:1201
 #: ../shortcuts.c:1230 ../shortcuts.c:1259
 msgid "No document opened."
-msgstr "Nessun documento aperto."
+msgstr "Ingen dokumenter åpnet."
 
 #: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:427
 msgid "Invalid number of arguments given."
-msgstr "Numero di argomenti errato."
+msgstr "Ugyldig nummer av argumenter gitt."
 
 #: ../commands.c:53
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "Impossibile creare il segnalibro:%s"
+msgstr "Kunne ikke oppdatere bokmerke: %s"
 
 #: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Impossibile creare il segnalibro:%s"
+msgstr "Kunne ikke lage bokmerke: %s"
 
 #: ../commands.c:60
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr "Segnalibro aggiornato con successo:%s"
+msgstr "Bokmerke er oppdatert: %s"
 
 #: ../commands.c:62
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr "Segnalibro creato con successo:%s"
+msgstr "Bokmerket er laget: %s"
 
 #: ../commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Segnalibro rimosso:%s"
+msgstr "Fjernet bokmerke: %s"
 
 #: ../commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Impossibile rimuovere il segnalibro:%s"
+msgstr "Kunne ikke fjerne bokmerke: %s"
 
 #: ../commands.c:116
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Nessun segnalibro corrispondente:%s"
+msgstr "Bokmerke eksisterer ikke: %s"
 
 #: ../commands.c:162
 msgid "Title"
-msgstr ""
+msgstr "Tittel"
 
 #: ../commands.c:163
 msgid "Author"
-msgstr ""
+msgstr "Forfatter"
 
 #: ../commands.c:164
 msgid "Subject"
-msgstr ""
+msgstr "Subjekt"
 
 #: ../commands.c:165
 msgid "Keywords"
-msgstr ""
+msgstr "Nøkkelord"
 
 #: ../commands.c:166
 msgid "Creator"
-msgstr ""
+msgstr "Laget av"
 
 #: ../commands.c:167
 msgid "Producer"
-msgstr ""
+msgstr "Produsent"
 
 #: ../commands.c:168
 msgid "Creation date"
-msgstr ""
+msgstr "Laget dato"
 
 #: ../commands.c:169
 msgid "Modification date"
-msgstr ""
+msgstr "Modifisert dato"
 
 #: ../commands.c:174 ../commands.c:196
 msgid "No information available."
-msgstr "Nessun' informazione disponibile."
+msgstr "Ingen informasjon tilgjengelig."
 
 #: ../commands.c:234
 msgid "Too many arguments."
-msgstr "Numero di argomenti eccessivo."
+msgstr "For mange argumenter."
 
 #: ../commands.c:245
 msgid "No arguments given."
-msgstr "Nessun argomento specificato."
+msgstr "Ingen argumenter gitt."
 
 #: ../commands.c:304 ../commands.c:330
 msgid "Document saved."
-msgstr "Documento salvato."
+msgstr "Dokumentet er lagret."
 
 #: ../commands.c:306 ../commands.c:332
 msgid "Failed to save document."
-msgstr "Impossibile salvare il documento."
+msgstr "Kunne ikke lagre dokumentet."
 
 #: ../commands.c:309 ../commands.c:335
 msgid "Invalid number of arguments."
-msgstr "Numero di argomenti non valido."
+msgstr "Ugyldig nummer av argumenter."
 
 #: ../commands.c:446
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Impossibile salvare l' allegato '%s' in '%s'"
+msgstr "Kunne ikke skrive vedlegg '%s' til '%s'."
 
 #: ../commands.c:448
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Allegato '%s' salvato in '%s'"
+msgstr "Skrev vedlegg '%s' til '%s'."
 
 #: ../commands.c:492
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr ""
+msgstr "Skrev bilde '%s' til '%s'."
 
 #: ../commands.c:494
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr ""
+msgstr "Kunne ikke skrive bilde '%s' til '%s'."
 
 #: ../commands.c:501
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Ukjent bilde '%s'."
 
 #: ../commands.c:505
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Ukjent vedlegg eller bilde '%s'."
 
 #: ../commands.c:556
 msgid "Argument must be a number."
-msgstr "L' argomento dev' essere un numero."
+msgstr "Argumentet må være et tall."
 
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "Side %d"
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr ""
+msgstr "Vedlegg"
 
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr ""
+msgstr "Bilder"
 
 #. zathura settings
 #: ../config.c:136
 msgid "Database backend"
-msgstr "Backend del database"
+msgstr "Database backend"
 
 #: ../config.c:138
 msgid "Zoom step"
-msgstr ""
+msgstr "Zoom nivå"
 
 #: ../config.c:140
 msgid "Padding between pages"
-msgstr "Spaziatura tra le pagine"
+msgstr "Avstand mellom sider"
 
 #: ../config.c:142
 msgid "Number of pages per row"
-msgstr "Numero di pagine per riga"
+msgstr "Nummer av sider per rad"
 
 #: ../config.c:144
 msgid "Column of the first page"
@@ -206,7 +205,7 @@ msgstr ""
 
 #: ../config.c:146
 msgid "Scroll step"
-msgstr ""
+msgstr "Skrolle nivå"
 
 #: ../config.c:148
 msgid "Horizontal scroll step"
@@ -218,47 +217,47 @@ msgstr ""
 
 #: ../config.c:152
 msgid "Zoom minimum"
-msgstr "Zoom minimo"
+msgstr "Zoom minimum"
 
 #: ../config.c:154
 msgid "Zoom maximum"
-msgstr "Zoom massimo"
+msgstr "Zoom maximum"
 
 #: ../config.c:156
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Maksimum antall sider å holde i mellomlagringen"
 
 #: ../config.c:158
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Antall posisjoner å huske i hopp-til-listen"
 
 #: ../config.c:160
 msgid "Recoloring (dark color)"
-msgstr ""
+msgstr "Om-farger (mørk farge)"
 
 #: ../config.c:161
 msgid "Recoloring (light color)"
-msgstr ""
+msgstr "Om-farge (lys farge)"
 
 #: ../config.c:162
 msgid "Color for highlighting"
-msgstr ""
+msgstr "Farge for utheving"
 
 #: ../config.c:164
 msgid "Color for highlighting (active)"
-msgstr ""
+msgstr "Farge for utheving (aktiv)"
 
 #: ../config.c:166
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "'Laster ...' bakgrunnsfarge"
 
 #: ../config.c:168
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "'Laster ...' forgrunnsfarge"
 
 #: ../config.c:172
 msgid "Recolor pages"
-msgstr "Ricolora le pagine"
+msgstr "Om-farge sider"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
@@ -266,7 +265,7 @@ msgstr ""
 
 #: ../config.c:176
 msgid "Wrap scrolling"
-msgstr "Scrolling continuo"
+msgstr ""
 
 #: ../config.c:178
 msgid "Page aware scrolling"
@@ -278,7 +277,7 @@ msgstr ""
 
 #: ../config.c:182
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Horisontalsentrert zoom"
 
 #: ../config.c:184
 msgid "Align link target to the left"
@@ -286,39 +285,39 @@ msgstr ""
 
 #: ../config.c:186
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "La zoom bli endret når følgende linker"
 
 #: ../config.c:188
 msgid "Center result horizontally"
-msgstr ""
+msgstr "Sentrer resultatene horisontalt"
 
 #: ../config.c:190
 msgid "Transparency for highlighting"
-msgstr ""
+msgstr "Klarhet for utheving"
 
 #: ../config.c:192
 msgid "Render 'Loading ...'"
-msgstr ""
+msgstr "Render 'Laster ...'"
 
 #: ../config.c:193
 msgid "Adjust to when opening file"
-msgstr ""
+msgstr "Juster til når du åpner filen"
 
 #: ../config.c:195
 msgid "Show hidden files and directories"
-msgstr "Mostra file e cartelle nascosti"
+msgstr "Vis skjulte filer og mapper"
 
 #: ../config.c:197
 msgid "Show directories"
-msgstr "Mostra cartelle"
+msgstr "Vis mapper"
 
 #: ../config.c:199
 msgid "Always open on first page"
-msgstr "Apri sempre alla prima pagina"
+msgstr "Alltid åpne på første side"
 
 #: ../config.c:201
 msgid "Highlight search results"
-msgstr ""
+msgstr "Uthev søkeresultater"
 
 #: ../config.c:204
 msgid "Enable incremental search"
@@ -326,7 +325,7 @@ msgstr ""
 
 #: ../config.c:206
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Stryk ut søkeresulteter ved avbrytelse"
 
 #: ../config.c:208
 msgid "Use basename of the file in the window title"
@@ -334,7 +333,7 @@ msgstr ""
 
 #: ../config.c:210
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Vis nummer av sider i vinduestittelen"
 
 #: ../config.c:212
 msgid "Use basename of the file in the statusbar"
@@ -346,7 +345,7 @@ msgstr ""
 
 #: ../config.c:216
 msgid "Enable D-Bus service"
-msgstr ""
+msgstr "Aktiv D-Bus servicen"
 
 #: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
@@ -355,88 +354,88 @@ msgstr ""
 #. define default inputbar commands
 #: ../config.c:398
 msgid "Add a bookmark"
-msgstr "Aggiungi un segnalibro"
+msgstr "Legg til bokmerke"
 
 #: ../config.c:399
 msgid "Delete a bookmark"
-msgstr "Elimina un segnalibro"
+msgstr "Slett bokmerke"
 
 #: ../config.c:400
 msgid "List all bookmarks"
-msgstr "Mostra i segnalibri"
+msgstr "List alle bokmerker"
 
 #: ../config.c:401
 msgid "Close current file"
-msgstr "Chiudi il file corrente"
+msgstr "Lukk den gjeldende filen"
 
 #: ../config.c:402
 msgid "Show file information"
-msgstr "Mostra le informazioni sul file"
+msgstr "Vis filinformasjon"
 
 #: ../config.c:403
 msgid "Execute a command"
-msgstr ""
+msgstr "Kjør en kommando"
 
 #: ../config.c:404
 msgid "Show help"
-msgstr "Mostra l' aiuto"
+msgstr "Vis hjelp"
 
 #: ../config.c:405
 msgid "Open document"
-msgstr "Apri un documento"
+msgstr "Åpne dokument"
 
 #: ../config.c:406
 msgid "Close zathura"
-msgstr "Chiudi zathura"
+msgstr "Lukk zathura"
 
 #: ../config.c:407
 msgid "Print document"
-msgstr "Stampa il documento"
+msgstr "Skriv ut dokument"
 
 #: ../config.c:408
 msgid "Save document"
-msgstr "Salva il documento"
+msgstr "Lagre dokument"
 
 #: ../config.c:409
 msgid "Save document (and force overwriting)"
-msgstr "Salva il documento (e sovrascrivi)"
+msgstr "Lagre dokument (og tving til å skrive over)"
 
 #: ../config.c:410
 msgid "Save attachments"
-msgstr "Salva allegati"
+msgstr "Lagre vedlegg"
 
 #: ../config.c:411
 msgid "Set page offset"
-msgstr "Imposta l' offset della pagina"
+msgstr ""
 
 #: ../config.c:412
 msgid "Mark current location within the document"
-msgstr ""
+msgstr "Marker nåværende lokalasjon i dokumentet"
 
 #: ../config.c:413
 msgid "Delete the specified marks"
-msgstr ""
+msgstr "Slett spesifiserte merker"
 
 #: ../config.c:414
 msgid "Don't highlight current search results"
-msgstr ""
+msgstr "Ikke uthev gjeldende søkeresultater"
 
 #: ../config.c:415
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Uthev følgende søkeresultater"
 
 #: ../config.c:416
 msgid "Show version information"
-msgstr ""
+msgstr "Vis versjonsinformasjon"
 
 #: ../links.c:202 ../links.c:281
 msgid "Failed to run xdg-open."
-msgstr "Impossibile eseguire xdg-open."
+msgstr "Klarte ikke å kjøre xdg-open."
 
 #: ../links.c:220
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Link: side %d"
 
 #: ../links.c:227
 #, c-format
@@ -445,7 +444,7 @@ msgstr ""
 
 #: ../links.c:231
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Link: Ugyldig"
 
 #: ../main.c:57
 msgid "Reparents to window specified by xid"
@@ -453,35 +452,35 @@ msgstr ""
 
 #: ../main.c:58
 msgid "Path to the config directory"
-msgstr "Percorso della directory della configurazione"
+msgstr "Sti til konfigureringsmappe"
 
 #: ../main.c:59
 msgid "Path to the data directory"
-msgstr "Percorso della directory dei dati"
+msgstr "Sti til data-mappe"
 
 #: ../main.c:60
 msgid "Path to the directories containing plugins"
-msgstr "Percorso della directory contenente i plugin"
+msgstr "Sti til mapper som inneholder plugins"
 
 #: ../main.c:61
 msgid "Fork into the background"
-msgstr "Crea un processo separato"
+msgstr ""
 
 #: ../main.c:62
 msgid "Document password"
-msgstr ""
+msgstr "Dokument passord"
 
 #: ../main.c:63
 msgid "Page number to go to"
-msgstr ""
+msgstr "Sidetall å gå til"
 
 #: ../main.c:64
 msgid "Log level (debug, info, warning, error)"
-msgstr "Livello di log (debug, info, warning, error)"
+msgstr "Logg nivå (diagnostisering, info, advarsler, feil)"
 
 #: ../main.c:65
 msgid "Print version information"
-msgstr "Mostra le informazioni sul file"
+msgstr "Skriv ut versjonsinformasjon"
 
 #: ../main.c:67
 msgid "Synctex editor (forwarded to the synctex command)"
@@ -497,41 +496,41 @@ msgstr ""
 
 #: ../main.c:70
 msgid "Start in a non-default mode"
-msgstr ""
+msgstr "Start i ikke-standard modus"
 
 #: ../page-widget.c:493
 msgid "Loading..."
-msgstr ""
+msgstr "Laster..."
 
 #: ../page-widget.c:808
 msgid "Copy image"
-msgstr "Copia immagine"
+msgstr "Kopier bilde"
 
 #: ../page-widget.c:809
 msgid "Save image as"
-msgstr ""
+msgstr "Lagre bilde som"
 
 #: ../print.c:64 ../print.c:211
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Utskrift feilet: %s"
 
 #: ../shortcuts.c:1114
 msgid "This document does not contain any index"
-msgstr "Questo documento non contiene l' indice"
+msgstr "Dette dokumenetet inneholder ikke noen index"
 
 #: ../zathura.c:192 ../zathura.c:988
 msgid "[No name]"
-msgstr "[Nessun nome]"
+msgstr "[Inget navn]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Usupportert filtype. Vennligst innstaller den nødvendige pluginen."
 
 #: ../zathura.c:544
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Dokumentet inneholder ingen sider"

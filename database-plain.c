@@ -14,6 +14,7 @@
 #include <girara/input-history.h>
 
 #include "database-plain.h"
+#include "utils.h"
 
 #define BOOKMARKS                 "bookmarks"
 #define HISTORY                   "history"
@@ -47,6 +48,7 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJE
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
+static void           plain_dispose(GObject* object);
 static void           plain_finalize(GObject* object);
 static bool           plain_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
 static bool           plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
@@ -128,6 +130,7 @@ zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
 
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
+  object_class->dispose      = plain_dispose;
   object_class->finalize     = plain_finalize;
   object_class->set_property = plain_set_property;
 
@@ -282,6 +285,18 @@ plain_set_property(GObject* object, guint prop_id, const GValue* value, GParamSp
 }
 
 static void
+plain_dispose(GObject* object)
+{
+  ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
+  g_clear_object(&priv->bookmark_monitor);
+  g_clear_object(&priv->history_monitor);
+
+  G_OBJECT_CLASS(zathura_plaindatabase_parent_class)->dispose(object);
+}
+
+static void
 plain_finalize(GObject* object)
 {
   ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
@@ -290,20 +305,12 @@ plain_finalize(GObject* object)
   /* bookmarks */
   g_free(priv->bookmark_path);
 
-  if (priv->bookmark_monitor != NULL) {
-    g_object_unref(priv->bookmark_monitor);
-  }
-
   if (priv->bookmarks != NULL) {
     g_key_file_free(priv->bookmarks);
   }
 
   /* history */
   g_free(priv->history_path);
-
-  if (priv->history_monitor != NULL) {
-    g_object_unref(priv->history_monitor);
-  }
 
   if (priv->history != NULL) {
     g_key_file_free(priv->history);
@@ -326,18 +333,27 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
   }
 
   char* name = prepare_filename(file);
-  char* val_list[] = { g_strdup_printf("%d", bookmark->page),
-                       g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->x),
-                       g_ascii_dtostr(g_malloc(G_ASCII_DTOSTR_BUF_SIZE), G_ASCII_DTOSTR_BUF_SIZE, bookmark->y) };
-
-  gsize num_vals = sizeof(val_list)/sizeof(char *);
-
-  g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, num_vals);
-
-  for (unsigned int i = 0; i < num_vals; ++i) {
-    g_free(val_list[i]);
+  char* val_list[] = {
+    g_strdup_printf("%d", bookmark->page),
+    g_try_malloc0(G_ASCII_DTOSTR_BUF_SIZE),
+    g_try_malloc0(G_ASCII_DTOSTR_BUF_SIZE)
+  };
+  if (name == NULL || val_list[1] == NULL || val_list[2] == NULL) {
+    g_free(name);
+    for (unsigned int i = 0; i < LENGTH(val_list); ++i) {
+      g_free(val_list[i]);
+    }
+    return false;
   }
 
+  g_ascii_dtostr(val_list[1], G_ASCII_DTOSTR_BUF_SIZE, bookmark->x);
+  g_ascii_dtostr(val_list[2], G_ASCII_DTOSTR_BUF_SIZE, bookmark->y);
+
+  g_key_file_set_string_list(priv->bookmarks, name, bookmark->id, (const char**)val_list, LENGTH(val_list));
+
+  for (unsigned int i = 0; i < LENGTH(val_list); ++i) {
+    g_free(val_list[i]);
+  }
   g_free(name);
 
   zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
@@ -397,10 +413,21 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
   gsize num_vals = 0;
 
   for (gsize i = 0; i < num_keys; i++) {
-    zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
+    zathura_bookmark_t* bookmark = g_try_malloc0(sizeof(zathura_bookmark_t));
+    if (bookmark == NULL) {
+      continue;
+    }
 
     bookmark->id    = g_strdup(keys[i]);
-    char **val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i], &num_vals, NULL);
+    char** val_list = g_key_file_get_string_list(priv->bookmarks, name, keys[i],
+                                                 &num_vals, NULL);
+
+    if (num_vals != 1 && num_vals != 3) {
+      girara_error("Unexpected number of values.");
+      g_free(bookmark);
+      g_strfreev(val_list);
+      continue;
+    }
 
     bookmark->page = atoi(val_list[0]);
 
@@ -410,8 +437,6 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     } else if (num_vals == 1) {
        bookmark->x = DBL_MIN;
        bookmark->y = DBL_MIN;
-    } else {
-      girara_debug("This must be a BUG");
     }
 
     girara_list_append(result, bookmark);
@@ -429,24 +454,40 @@ get_jumplist_from_str(const char* str)
 {
   g_return_val_if_fail(str != NULL, NULL);
 
-  if (*str == 0) {
+  if (*str == '\0') {
     return girara_list_new2(g_free);
   }
 
   girara_list_t* result = girara_list_new2(g_free);
   char* copy = g_strdup(str);
-  char* token = strtok(copy, " ");
+  char* saveptr = NULL;
+  char* token = strtok_r(copy, " ", &saveptr);
 
   while (token != NULL) {
-    zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
+    zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
+    if (jump == NULL) {
+      continue;
+    }
 
     jump->page = strtoul(token, NULL, 0);
-    token = strtok(NULL, " ");
-    jump->x = strtod(token, NULL);
-    token = strtok(NULL, " ");
-    jump->y = strtod(token, NULL);
+    token = strtok_r(NULL, " ", &saveptr);
+    if (token == NULL) {
+      girara_warning("Could not parse jumplist information.");
+      g_free(jump);
+      break;
+    }
+    jump->x = g_ascii_strtod(token, NULL);
+
+    token = strtok_r(NULL, " ", &saveptr);
+    if (token == NULL) {
+      girara_warning("Could not parse jumplist information.");
+      g_free(jump);
+      break;
+    }
+    jump->y = g_ascii_strtod(token, NULL);
+
     girara_list_append(result, jump);
-    token = strtok(NULL, " ");
+    token = strtok_r(NULL, " ", &saveptr);
   }
 
   g_free(copy);
@@ -477,9 +518,13 @@ plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jum
   GString* str_val = g_string_new(NULL);
 
   GIRARA_LIST_FOREACH(jumplist, zathura_jump_t*, iter, jump)
-  g_string_append(str_val, g_strdup_printf("%d ", jump->page));
-  g_string_append(str_val, g_strdup_printf("%.20f ", jump->x));
-  g_string_append(str_val, g_strdup_printf("%.20f ", jump->y));
+    char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
+
+    g_string_append_printf(str_val, "%d ", jump->page);
+    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->x));
+    g_string_append_c(str_val, ' ');
+    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
+    g_string_append_c(str_val, ' ');
   GIRARA_LIST_FOREACH_END(jumplist, zathura_jump_t*, iter, jump);
 
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
@@ -502,24 +547,14 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   char* name = prepare_filename(file);
 
-  g_key_file_set_integer(priv->history, name, KEY_PAGE,   file_info->current_page);
-  g_key_file_set_integer(priv->history, name, KEY_OFFSET, file_info->page_offset);
-
-  char* tmp = g_strdup_printf("%.20f", file_info->scale);
-  g_key_file_set_string (priv->history, name, KEY_SCALE, tmp);
-  g_free(tmp);
-
+  g_key_file_set_integer(priv->history, name, KEY_PAGE,              file_info->current_page);
+  g_key_file_set_integer(priv->history, name, KEY_OFFSET,            file_info->page_offset);
+  g_key_file_set_double (priv->history, name, KEY_SCALE,             file_info->scale);
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
   g_key_file_set_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, file_info->first_page_column);
-
-  tmp = g_strdup_printf("%.20f", file_info->position_x);
-  g_key_file_set_string(priv->history,  name, KEY_POSITION_X, tmp);
-  g_free(tmp);
-
-  tmp = g_strdup_printf("%.20f", file_info->position_y);
-  g_key_file_set_string(priv->history,  name, KEY_POSITION_Y, tmp);
-  g_free(tmp);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_X,        file_info->position_x);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_Y,        file_info->position_y);
 
   g_free(name);
 
@@ -549,26 +584,21 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   file_info->current_page      = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
   file_info->page_offset       = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
+  file_info->scale             = g_key_file_get_double (priv->history, name, KEY_SCALE, NULL);
   file_info->rotation          = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
-  file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
-  file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
 
-  char* scale_string = g_key_file_get_string(priv->history, name, KEY_SCALE, NULL);
-  if (scale_string != NULL) {
-    file_info->scale  = strtod(scale_string, NULL);
-    g_free(scale_string);
+  /* the following flags got introduced at a later point */
+  if (g_key_file_has_key(priv->history, name, KEY_PAGES_PER_ROW, NULL) == TRUE) {
+    file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
   }
-
-  char* position_x_string = g_key_file_get_string(priv->history, name, KEY_POSITION_X, NULL);
-  if (position_x_string != NULL) {
-    file_info->position_x = strtod(position_x_string, NULL);
-    g_free(position_x_string);
+  if (g_key_file_has_key(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL) == TRUE) {
+    file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
   }
-
-  char* position_y_string = g_key_file_get_string(priv->history, name, KEY_POSITION_Y, NULL);
-  if (position_y_string != NULL) {
-    file_info->position_y = strtod(position_y_string, NULL);
-    g_free(position_y_string);
+  if (g_key_file_has_key(priv->history, name, KEY_POSITION_X, NULL) == TRUE) {
+    file_info->position_x        = g_key_file_get_double(priv->history, name, KEY_POSITION_X, NULL);
+  }
+  if (g_key_file_has_key(priv->history, name, KEY_POSITION_Y, NULL) == TRUE) {
+    file_info->position_y        = g_key_file_get_double(priv->history, name, KEY_POSITION_Y, NULL);
   }
 
   g_free(name);

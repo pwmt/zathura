@@ -1,15 +1,22 @@
 /* See LICENSE file for license and copyright information */
 
+#define _BSD_SOURCE
+#define _XOPEN_SOURCE 700
+
+#include <errno.h>
+#include <girara/utils.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+#include <limits.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <glib/gstdio.h>
-#include <glib/gi18n.h>
-#include <girara/utils.h>
-#include <locale.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "zathura.h"
 #include "utils.h"
+#include "dbus-interface.h"
 
 /* main function */
 int
@@ -30,12 +37,6 @@ main(int argc, char* argv[])
 #endif
   gtk_init(&argc, &argv);
 
-  /* create zathura session */
-  zathura_t* zathura = zathura_create();
-  if (zathura == NULL) {
-    return -1;
-  }
-
   /* parse command line arguments */
   gchar* config_dir     = NULL;
   gchar* data_dir       = NULL;
@@ -43,29 +44,30 @@ main(int argc, char* argv[])
   gchar* loglevel       = NULL;
   gchar* password       = NULL;
   gchar* synctex_editor = NULL;
+  gchar* synctex_fwd    = NULL;
+  gchar* mode           = NULL;
   bool forkback         = false;
   bool print_version    = false;
   bool synctex          = false;
   int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-
-#if GTK_CHECK_VERSION(3, 0, 0)
-  Window embed = 0;
-#else
-  GdkNativeWindow embed = 0;
-#endif
+  int synctex_pid       = -1;
+  Window embed          = 0;
 
   GOptionEntry entries[] = {
-    { "reparent",               'e', 0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
-    { "config-dir",             'c', 0, G_OPTION_ARG_FILENAME, &config_dir,     _("Path to the config directory"),                      "path" },
-    { "data-dir",               'd', 0, G_OPTION_ARG_FILENAME, &data_dir,       _("Path to the data directory"),                        "path" },
-    { "plugins-dir",            'p', 0, G_OPTION_ARG_STRING,   &plugin_path,    _("Path to the directories containing plugins"),        "path" },
-    { "fork",                   '\0',0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
-    { "password",               'w', 0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
-    { "page",                   'P', 0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
-    { "debug",                  'l', 0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
-    { "version",                'v', 0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
-    { "synctex",                's', 0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
-    { "synctex-editor-command", 'x', 0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
+    { "reparent",               'e',  0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
+    { "config-dir",             'c',  0, G_OPTION_ARG_FILENAME, &config_dir,     _("Path to the config directory"),                      "path" },
+    { "data-dir",               'd',  0, G_OPTION_ARG_FILENAME, &data_dir,       _("Path to the data directory"),                        "path" },
+    { "plugins-dir",            'p',  0, G_OPTION_ARG_STRING,   &plugin_path,    _("Path to the directories containing plugins"),        "path" },
+    { "fork",                   '\0', 0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
+    { "password",               'w',  0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
+    { "page",                   'P',  0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
+    { "debug",                  'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
+    { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
+    { "synctex",                's',  0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
+    { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
+    { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
+    { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
+    { "mode",                   '\0', 0, G_OPTION_ARG_STRING,   &mode,           _("Start in a non-default mode"),                       "mode" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
 
@@ -82,18 +84,6 @@ main(int argc, char* argv[])
   }
   g_option_context_free(context);
 
-  /* Fork into the background if the user really wants to ... */
-  if (forkback == true) {
-    int pid = fork();
-    if (pid > 0) { /* parent */
-      exit(0);
-    } else if (pid < 0) { /* error */
-      girara_error("Couldn't fork.");
-    }
-
-    setsid();
-  }
-
   /* Set log level. */
   if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
     girara_set_debug_level(GIRARA_INFO);
@@ -101,6 +91,53 @@ main(int argc, char* argv[])
     girara_set_debug_level(GIRARA_WARNING);
   } else if (g_strcmp0(loglevel, "error") == 0) {
     girara_set_debug_level(GIRARA_ERROR);
+  }
+
+  /* handle synctex forward synchronization */
+  if (synctex_fwd != NULL) {
+    if (argc != 2) {
+      girara_error("Too many arguments or missing filename while running with --synctex-forward");
+      return -1;
+    }
+
+    char* real_path = realpath(argv[1], NULL);
+    if (real_path == NULL) {
+      girara_error("Failed to determine real path: %s", strerror(errno));
+      return -1;
+    }
+
+    if (zathura_dbus_synctex_position(real_path, synctex_fwd, synctex_pid) == true) {
+      free(real_path);
+      return 0;
+    } else {
+      girara_error("Could not find open instance for '%s'", real_path);
+      free(real_path);
+      return -1;
+    }
+  }
+
+  /* check mode */
+  if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
+    girara_error("Invalid argument for --mode: %s", mode);
+    return -1;
+  }
+
+  /* Fork into the background if the user really wants to ... */
+  if (forkback == true) {
+    const int pid = fork();
+    if (pid > 0) { /* parent */
+      return 0;
+    } else if (pid < 0) { /* error */
+      girara_error("Couldn't fork.");
+    }
+
+    setsid();
+  }
+
+  /* create zathura session */
+  zathura_t* zathura = zathura_create();
+  if (zathura == NULL) {
+    return -1;
   }
 
   zathura_set_xid(zathura, embed);
@@ -135,7 +172,7 @@ main(int argc, char* argv[])
   if (argc > 1) {
     if (page_number > 0)
       --page_number;
-    document_open_idle(zathura, argv[1], password, page_number);
+    document_open_idle(zathura, argv[1], password, page_number, mode);
 
     /* open additional files */
     for (int i = 2; i < argc; i++) {

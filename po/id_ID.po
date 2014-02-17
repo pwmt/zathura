@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2013-11-04 19:57+0100\n"
-"PO-Revision-Date: 2013-11-01 13:12+0000\n"
+"POT-Creation-Date: 2014-01-31 10:35+0100\n"
+"PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: andjeng <teratower8@gmail.com>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/"
 "zathura/language/id_ID/)\n"
@@ -18,29 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../callbacks.c:297
+#: ../callbacks.c:301
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Masukan '%s' tidak valid"
 
-#: ../callbacks.c:333
+#: ../callbacks.c:337
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Index '%s' tidak valid"
 
-#: ../callbacks.c:546
+#: ../callbacks.c:550
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Menyalin teks terpilih ke papan semat: %s"
 
 #: ../commands.c:36 ../commands.c:76 ../commands.c:103 ../commands.c:152
-#: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:419
-#: ../commands.c:540 ../shortcuts.c:403 ../shortcuts.c:1163
-#: ../shortcuts.c:1192
+#: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:422
+#: ../commands.c:543 ../shortcuts.c:403 ../shortcuts.c:1201
+#: ../shortcuts.c:1230 ../shortcuts.c:1259
 msgid "No document opened."
 msgstr "Tidak ada dokumen yang terbuka."
 
-#: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:424
+#: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:427
 msgid "Invalid number of arguments given."
 msgstr "jumlah argumen yang diberikan tidak valid"
 
@@ -81,35 +81,35 @@ msgstr "Tidak ada bookmark: %s"
 
 #: ../commands.c:162
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: ../commands.c:163
 msgid "Author"
-msgstr ""
+msgstr "Penulis"
 
 #: ../commands.c:164
 msgid "Subject"
-msgstr ""
+msgstr "Subjek"
 
 #: ../commands.c:165
 msgid "Keywords"
-msgstr ""
+msgstr "Kata kunci"
 
 #: ../commands.c:166
 msgid "Creator"
-msgstr ""
+msgstr "Pembuat"
 
 #: ../commands.c:167
 msgid "Producer"
-msgstr ""
+msgstr "Produser"
 
 #: ../commands.c:168
 msgid "Creation date"
-msgstr ""
+msgstr "Tanggal pembuatan"
 
 #: ../commands.c:169
 msgid "Modification date"
-msgstr ""
+msgstr "Tanggal ubahan"
 
 #: ../commands.c:174 ../commands.c:196
 msgid "No information available."
@@ -135,37 +135,37 @@ msgstr "Gagal menyimpan dokumen"
 msgid "Invalid number of arguments."
 msgstr "Jumlah argumen tidak valid"
 
-#: ../commands.c:443
+#: ../commands.c:446
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Tidak dapat menulis lampiran '%s' ke '%s'"
 
-#: ../commands.c:445
+#: ../commands.c:448
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Tidak dapat menyimpan lampiran '%s' ke '%s'"
 
-#: ../commands.c:489
+#: ../commands.c:492
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Menulis citra dari '%s' ke '%s'"
 
-#: ../commands.c:491
+#: ../commands.c:494
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Tidak dapat menulis citra '%s' ke %s'"
 
-#: ../commands.c:498
+#: ../commands.c:501
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Citra tidak diketahui '%s'"
 
-#: ../commands.c:502
+#: ../commands.c:505
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Lampiran atau gambar tidak diketahui '%s'"
 
-#: ../commands.c:553
+#: ../commands.c:556
 msgid "Argument must be a number."
 msgstr "Argumen harus berupa angka."
 
@@ -184,333 +184,354 @@ msgid "Images"
 msgstr "Citra"
 
 #. zathura settings
-#: ../config.c:131
+#: ../config.c:136
 msgid "Database backend"
-msgstr ""
+msgstr "backend database"
 
-#: ../config.c:133
+#: ../config.c:138
 msgid "Zoom step"
 msgstr "Tingkat pembesaran"
 
-#: ../config.c:135
+#: ../config.c:140
 msgid "Padding between pages"
 msgstr "Selisih antar halaman"
 
-#: ../config.c:137
+#: ../config.c:142
 msgid "Number of pages per row"
 msgstr "Jumlah halaman tiap kolom"
 
-#: ../config.c:139
+#: ../config.c:144
 msgid "Column of the first page"
 msgstr "Kolom pada halaman pertama"
 
-#: ../config.c:141
+#: ../config.c:146
 msgid "Scroll step"
 msgstr "Tingkat menggulung"
 
-#: ../config.c:143
+#: ../config.c:148
 msgid "Horizontal scroll step"
 msgstr "Tingkat penggulungan horisontal"
 
-#: ../config.c:145
+#: ../config.c:150
 msgid "Full page scroll overlap"
 msgstr ""
 
-#: ../config.c:147
+#: ../config.c:152
 msgid "Zoom minimum"
 msgstr "Pembesaran minimum"
 
-#: ../config.c:149
+#: ../config.c:154
 msgid "Zoom maximum"
 msgstr "Pembesaran maksimal"
 
-#: ../config.c:151
+#: ../config.c:156
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Jumlah laman yang disimpan pada cache"
 
-#: ../config.c:153
+#: ../config.c:158
 msgid "Number of positions to remember in the jumplist"
 msgstr "Jumlah posisi yang diingat pada jumplist"
 
-#: ../config.c:155
+#: ../config.c:160
 msgid "Recoloring (dark color)"
 msgstr "Mewarnai ulang (warna gelap)"
 
-#: ../config.c:156
+#: ../config.c:161
 msgid "Recoloring (light color)"
 msgstr "Mewarnai ulang (warna cerah)"
 
-#: ../config.c:157
+#: ../config.c:162
 msgid "Color for highlighting"
 msgstr "Warna sorotan"
 
-#: ../config.c:159
+#: ../config.c:164
 msgid "Color for highlighting (active)"
 msgstr "Warna sorotan (aktif)"
 
-#: ../config.c:161
+#: ../config.c:166
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "'Memuat ...; warna latar"
 
-#: ../config.c:163
+#: ../config.c:168
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "'Memuat ...' warna depan"
 
-#: ../config.c:167
+#: ../config.c:172
 msgid "Recolor pages"
 msgstr "Mewarnai ulang halaman"
 
-#: ../config.c:169
+#: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "Ketika mewarnai ulang, jaga hue dan sesuaikan kecerahan saja"
 
-#: ../config.c:171
+#: ../config.c:176
 msgid "Wrap scrolling"
 msgstr ""
 
-#: ../config.c:173
+#: ../config.c:178
 msgid "Page aware scrolling"
 msgstr "Penggulungan sadar halaman"
 
-#: ../config.c:175
+#: ../config.c:180
 msgid "Advance number of pages per row"
 msgstr "Jumlah halaman per baris \"lanjutan\""
 
-#: ../config.c:177
+#: ../config.c:182
 msgid "Horizontally centered zoom"
 msgstr "Pembesaran horisontal tengah"
 
-#: ../config.c:179
+#: ../config.c:184
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Ratakan tautan ke kiri"
 
-#: ../config.c:181
+#: ../config.c:186
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Biarkan pembesaran berubah saat mengikuti pranala"
 
-#: ../config.c:183
+#: ../config.c:188
 msgid "Center result horizontally"
 msgstr "Tengah-horisontalkan hasil"
 
-#: ../config.c:185
+#: ../config.c:190
 msgid "Transparency for highlighting"
 msgstr "Transparansi sorotan"
 
-#: ../config.c:187
+#: ../config.c:192
 msgid "Render 'Loading ...'"
 msgstr "Memuat Render..."
 
-#: ../config.c:188
+#: ../config.c:193
 msgid "Adjust to when opening file"
 msgstr "Menyesuaikan ketika membuka file"
 
-#: ../config.c:190
+#: ../config.c:195
 msgid "Show hidden files and directories"
 msgstr "Perlihatkan file dan direktori tersembunyi"
 
-#: ../config.c:192
+#: ../config.c:197
 msgid "Show directories"
 msgstr "Perlihatkan direktori"
 
-#: ../config.c:194
+#: ../config.c:199
 msgid "Always open on first page"
 msgstr "Selalu buka halaman pertama"
 
-#: ../config.c:196
+#: ../config.c:201
 msgid "Highlight search results"
 msgstr "Sorot hasil pencarian"
 
-#: ../config.c:198
+#: ../config.c:204
 msgid "Enable incremental search"
 msgstr "Fungsikan pencarian berkelanjutan"
 
-#: ../config.c:200
+#: ../config.c:206
 msgid "Clear search results on abort"
 msgstr "Hapus hasil pencarian ketika batal mencari"
 
-#: ../config.c:202
+#: ../config.c:208
 msgid "Use basename of the file in the window title"
 msgstr "Gunakan nama dasar file pada judul jendela"
 
-#: ../config.c:204
+#: ../config.c:210
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Tampilkan nomor laman pada jendela judul"
 
-#: ../config.c:206
+#: ../config.c:212
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Gunakan nama dasar berkas pada statusbar"
 
-#: ../config.c:208 ../main.c:67
+#: ../config.c:214 ../main.c:66
 msgid "Enable synctex support"
 msgstr "Support synctex"
 
-#: ../config.c:210
-msgid "The clipboard into which mouse-selected data will be written"
+#: ../config.c:216
+msgid "Enable D-Bus service"
 msgstr ""
 
+#: ../config.c:218
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr "Data yang dipilih tetikus akan ditulis ke clipboard"
+
 #. define default inputbar commands
-#: ../config.c:369
+#: ../config.c:398
 msgid "Add a bookmark"
 msgstr "Tambahkan pada bookmark"
 
-#: ../config.c:370
+#: ../config.c:399
 msgid "Delete a bookmark"
 msgstr "Hapus bookmark"
 
-#: ../config.c:371
+#: ../config.c:400
 msgid "List all bookmarks"
 msgstr "Perlihatkan semua bookmark"
 
-#: ../config.c:372
+#: ../config.c:401
 msgid "Close current file"
 msgstr "Tutup file ini"
 
-#: ../config.c:373
+#: ../config.c:402
 msgid "Show file information"
 msgstr "Informasi file"
 
-#: ../config.c:374
+#: ../config.c:403
 msgid "Execute a command"
 msgstr "Jalankan perintah"
 
-#: ../config.c:375
+#: ../config.c:404
 msgid "Show help"
 msgstr "Bantuan"
 
-#: ../config.c:376
+#: ../config.c:405
 msgid "Open document"
 msgstr "Buka dokumen"
 
-#: ../config.c:377
+#: ../config.c:406
 msgid "Close zathura"
 msgstr "Tutup zathura"
 
-#: ../config.c:378
+#: ../config.c:407
 msgid "Print document"
 msgstr "Cetak dokumen"
 
-#: ../config.c:379
+#: ../config.c:408
 msgid "Save document"
 msgstr "Simpan dokumen"
 
-#: ../config.c:380
+#: ../config.c:409
 msgid "Save document (and force overwriting)"
 msgstr "Simpan dokumen (dan menimpa berkas)"
 
-#: ../config.c:381
+#: ../config.c:410
 msgid "Save attachments"
 msgstr "Simpan lampiran"
 
-#: ../config.c:382
+#: ../config.c:411
 msgid "Set page offset"
 msgstr "Set offset halaman"
 
-#: ../config.c:383
+#: ../config.c:412
 msgid "Mark current location within the document"
 msgstr "Tandai lokasi sekarang dalam dokumen"
 
-#: ../config.c:384
+#: ../config.c:413
 msgid "Delete the specified marks"
 msgstr "Hapus tanda terpilih"
 
-#: ../config.c:385
+#: ../config.c:414
 msgid "Don't highlight current search results"
 msgstr "Jangan menyorot hasil cari sekarang"
 
-#: ../config.c:386
+#: ../config.c:415
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Sorot hasil pencarian sekarang"
 
-#: ../config.c:387
+#: ../config.c:416
 msgid "Show version information"
 msgstr "Tunjukan informasi versi"
 
-#: ../links.c:199 ../links.c:278
+#: ../links.c:202 ../links.c:281
 msgid "Failed to run xdg-open."
 msgstr "Gagal menjalankan program xdg-open"
 
-#: ../links.c:217
+#: ../links.c:220
 #, c-format
 msgid "Link: page %d"
 msgstr "Link: halaman %d"
 
-#: ../links.c:224
+#: ../links.c:227
 #, c-format
 msgid "Link: %s"
 msgstr "Link: %s"
 
-#: ../links.c:228
+#: ../links.c:231
 msgid "Link: Invalid"
 msgstr "Link: Tidak valid"
 
-#: ../main.c:58
+#: ../main.c:57
 msgid "Reparents to window specified by xid"
 msgstr "Mengembalikan jendela sesuai dengan xid yang ditentukan"
 
-#: ../main.c:59
+#: ../main.c:58
 msgid "Path to the config directory"
 msgstr "Path ke direktori konfigurasi"
 
-#: ../main.c:60
+#: ../main.c:59
 msgid "Path to the data directory"
 msgstr "Path ke direktori data"
 
-#: ../main.c:61
+#: ../main.c:60
 msgid "Path to the directories containing plugins"
 msgstr "Path ke direktori plugin"
 
-#: ../main.c:62
+#: ../main.c:61
 msgid "Fork into the background"
 msgstr "Jalankan pada latar"
 
-#: ../main.c:63
+#: ../main.c:62
 msgid "Document password"
 msgstr "Kata sandi dokumen"
 
-#: ../main.c:64
+#: ../main.c:63
 msgid "Page number to go to"
-msgstr ""
+msgstr "Nomor halaman tujuan"
 
-#: ../main.c:65
+#: ../main.c:64
 msgid "Log level (debug, info, warning, error)"
 msgstr "Tingkat log (debug, info, peringatan, error)"
 
-#: ../main.c:66
+#: ../main.c:65
 msgid "Print version information"
 msgstr "Cetak informasi versi"
 
-#: ../main.c:68
+#: ../main.c:67
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Synctex editor (diteruskan ke perintah synctex)"
 
-#: ../page-widget.c:526
+#: ../main.c:68
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../main.c:69
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../main.c:70
+msgid "Start in a non-default mode"
+msgstr ""
+
+#: ../page-widget.c:493
 msgid "Loading..."
 msgstr "Memuat....."
 
-#: ../page-widget.c:845
+#: ../page-widget.c:808
 msgid "Copy image"
 msgstr "Salin gambar"
 
-#: ../page-widget.c:846
+#: ../page-widget.c:809
 msgid "Save image as"
 msgstr "Simpan gambar sebagai"
 
-#: ../shortcuts.c:1076
+#: ../print.c:64 ../print.c:211
+#, c-format
+msgid "Printing failed: %s"
+msgstr ""
+
+#: ../shortcuts.c:1114
 msgid "This document does not contain any index"
 msgstr "Dokumen ini tidak mempunyai indeks"
 
-#: ../zathura.c:213 ../zathura.c:959
+#: ../zathura.c:192 ../zathura.c:988
 msgid "[No name]"
 msgstr "[Tidak berjudul]"
 
-#: ../zathura.c:486
+#: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Tidak dapat membaca berkas dari stdin dan menulisnya ke berkas sementar"
 
-#: ../zathura.c:535
+#: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Tipe berkas tidak didukung. Silakan memasang plugin yang dibutuhkan."
 
-#: ../zathura.c:545
+#: ../zathura.c:544
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Dokumen tidak mempunyai laman apapun"

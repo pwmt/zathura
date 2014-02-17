@@ -7,14 +7,20 @@
 
 #include <girara/utils.h>
 #include <girara/statusbar.h>
+#include <girara/session.h>
+#include <glib/gi18n.h>
 
 static void cb_print_draw_page(GtkPrintOperation* print_operation,
-                               GtkPrintContext* context, gint page_number, zathura_t* zathura);
+                               GtkPrintContext* context, gint page_number,
+                               zathura_t* zathura);
 static void cb_print_end(GtkPrintOperation* print_operation, GtkPrintContext*
                          context, zathura_t* zathura);
 static void cb_print_request_page_setup(GtkPrintOperation* print_operation,
-                                        GtkPrintContext* context, gint page_number, GtkPageSetup* setup, zathura_t*
-                                        zathura);
+                                        GtkPrintContext* context,
+                                        gint page_number, GtkPageSetup* setup,
+                                        zathura_t* zathura);
+static void cb_print_done(GtkPrintOperation* operation,
+                          GtkPrintOperationResult result, zathura_t* zathura);
 
 void
 print(zathura_t* zathura)
@@ -25,42 +31,39 @@ print(zathura_t* zathura)
   GtkPrintOperation* print_operation = gtk_print_operation_new();
 
   /* print operation settings */
-  if (zathura->print.settings != NULL) {
-    gtk_print_operation_set_print_settings(print_operation, zathura->print.settings);
-  }
-
-  if (zathura->print.page_setup != NULL) {
-    gtk_print_operation_set_default_page_setup(print_operation, zathura->print.page_setup);
-  }
-
+  gtk_print_operation_set_job_name(print_operation, zathura_document_get_path(zathura->document));
   gtk_print_operation_set_allow_async(print_operation, TRUE);
   gtk_print_operation_set_n_pages(print_operation, zathura_document_get_number_of_pages(zathura->document));
   gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(zathura->document));
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
+
+  if (zathura->print.settings != NULL) {
+    gtk_print_operation_set_print_settings(print_operation,
+                                           zathura->print.settings);
+  }
+
+  if (zathura->print.page_setup != NULL) {
+    gtk_print_operation_set_default_page_setup(print_operation,
+                                               zathura->print.page_setup);
+  }
   gtk_print_operation_set_embed_page_setup(print_operation, TRUE);
 
   /* print operation signals */
   g_signal_connect(print_operation, "draw-page",          G_CALLBACK(cb_print_draw_page),          zathura);
   g_signal_connect(print_operation, "end-print",          G_CALLBACK(cb_print_end),                zathura);
   g_signal_connect(print_operation, "request-page-setup", G_CALLBACK(cb_print_request_page_setup), zathura);
+  g_signal_connect(print_operation, "done",               G_CALLBACK(cb_print_done),               zathura);
 
   /* print */
+  GError* error = NULL;
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation,
-                                   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
+                                   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                                   NULL, &error);
 
-  if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
-    if (zathura->print.settings != NULL) {
-      g_object_unref(zathura->print.settings);
-    }
-    if (zathura->print.page_setup != NULL) {
-      g_object_unref(zathura->print.page_setup);
-    }
-
-    /* save previous settings */
-    zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(print_operation));
-    zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(print_operation));
-  } else if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
-    girara_error("Error occured while printing progress");
+  if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
+                  error->message);
+    g_error_free(error);
   }
 
   g_object_unref(print_operation);
@@ -70,7 +73,8 @@ static void
 cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
              UNUSED(context), zathura_t* zathura)
 {
-  if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL) {
+  if (zathura == NULL || zathura->ui.session == NULL ||
+      zathura->document == NULL) {
     return;
   }
 
@@ -168,8 +172,8 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
 
 static void
 cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation),
-                            GtkPrintContext* UNUSED(context), gint page_number, GtkPageSetup* setup,
-                            zathura_t* zathura)
+                            GtkPrintContext* UNUSED(context), gint page_number,
+                            GtkPageSetup* setup, zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
     return;
@@ -185,3 +189,28 @@ cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation),
     gtk_page_setup_set_orientation(setup, GTK_PAGE_ORIENTATION_PORTRAIT);
   }
 }
+
+static void
+cb_print_done(GtkPrintOperation* operation, GtkPrintOperationResult result,
+              zathura_t* zathura)
+{
+  if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
+    if (zathura->print.settings != NULL) {
+      g_object_unref(zathura->print.settings);
+    }
+    if (zathura->print.page_setup != NULL) {
+      g_object_unref(zathura->print.page_setup);
+    }
+
+    /* save previous settings */
+    zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(operation));
+    zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(operation));
+  } else if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
+    GError* error = NULL;
+    gtk_print_operation_get_error(operation, &error);
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
+                  error->message);
+    g_error_free(error);
+  }
+}
+

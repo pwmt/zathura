@@ -239,7 +239,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
     }
 
     document_open(zathura, girara_list_nth(argument_list, 0),
-                  (argc == 2) ?  girara_list_nth(argument_list, 1) :  NULL,
+                  (argc == 2) ? girara_list_nth(argument_list, 1) : NULL,
                   ZATHURA_PAGE_NUMBER_UNSPECIFIED);
   } else {
     girara_notify(session, GIRARA_ERROR, _("No arguments given."));
@@ -400,7 +400,10 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     }
   }
 
-  girara_argument_t* arg = g_malloc0(sizeof(girara_argument_t));
+  girara_argument_t* arg = g_try_malloc0(sizeof(girara_argument_t));
+  if (arg == NULL) {
+    return false;
+  }
 
   arg->n = FORWARD;
   sc_search(session, arg, NULL, 0);

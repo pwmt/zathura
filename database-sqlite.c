@@ -388,14 +388,21 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 
   girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
                           (girara_free_function_t) zathura_bookmark_free);
+  if (result != NULL) {
+    sqlite3_finalize(stmt);
+    return NULL;
+  }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
+    zathura_bookmark_t* bookmark = g_try_malloc0(sizeof(zathura_bookmark_t));
+    if (bookmark == NULL) {
+      continue;
+    }
 
     bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
     bookmark->page = sqlite3_column_int(stmt, 1);
-    bookmark->x = sqlite3_column_double(stmt, 2);
-    bookmark->y = sqlite3_column_double(stmt, 3);
+    bookmark->x    = sqlite3_column_double(stmt, 2);
+    bookmark->y    = sqlite3_column_double(stmt, 3);
 
     if (bookmark->page > 1) {
       bookmark->x = bookmark->x == 0.0 ? DBL_MIN : bookmark->x;
@@ -521,10 +528,17 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
   }
 
   girara_list_t* jumplist = girara_list_new2(g_free);
-  int res = 0;
+  if (jumplist == NULL) {
+    sqlite3_finalize(stmt);
+    return NULL;
+  }
 
+  int res = 0;
   while ((res = sqlite3_step(stmt)) == SQLITE_ROW) {
-    zathura_jump_t* jump = g_malloc0(sizeof(zathura_jump_t));
+    zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
+    if (jump == NULL) {
+      continue;
+    }
 
     jump->page = sqlite3_column_int(stmt, 0);
     jump->x    = sqlite3_column_double(stmt, 1);

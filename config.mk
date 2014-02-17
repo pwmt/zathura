@@ -3,15 +3,12 @@
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 2
-ZATHURA_VERSION_REV = 6
+ZATHURA_VERSION_REV = 7
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
 ZATHURA_ABI_VERSION = 2
 VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_REV}
-
-# the GTK+ version to use
-ZATHURA_GTK_VERSION ?= 3
 
 # version checks
 # If you want to disable any of the checks, set *_VERSION_CHECK to 0.
@@ -19,15 +16,15 @@ ZATHURA_GTK_VERSION ?= 3
 # girara
 GIRARA_VERSION_CHECK ?= 1
 GIRARA_MIN_VERSION = 0.1.8
-GIRARA_PKG_CONFIG_NAME = girara-gtk$(ZATHURA_GTK_VERSION)
+GIRARA_PKG_CONFIG_NAME = girara-gtk3
 # glib
 GLIB_VERSION_CHECK ?= 1
 GLIB_MIN_VERSION = 2.28
 GLIB_PKG_CONFIG_NAME = glib-2.0
 # GTK
 GTK_VERSION_CHECK ?= 1
-GTK_MIN_VERSION = 2.18
-GTK_PKG_CONFIG_NAME = gtk+-$(ZATHURA_GTK_VERSION).0
+GTK_MIN_VERSION = 3.0
+GTK_PKG_CONFIG_NAME = gtk+-3.0
 
 # database
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
@@ -43,6 +40,8 @@ MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
 LIBDIR ?= ${PREFIX}/lib
 INCLUDEDIR ?= ${PREFIX}/include
+DBUSINTERFACEDIR ?= ${PREFIX}/share/dbus-1/interfaces
+VIMFTPLUGINDIR ?= ${PREFIX}/share/vim/addons/ftplugin
 
 # plugin directory
 PLUGINDIR ?= ${LIBDIR}/zathura
@@ -53,8 +52,8 @@ LOCALEDIR ?= ${PREFIX}/share/locale
 RSTTOMAN ?= /usr/bin/rst2man
 
 # libs
-GTK_INC ?= $(shell pkg-config --cflags gtk+-${ZATHURA_GTK_VERSION}.0)
-GTK_LIB ?= $(shell pkg-config --libs gtk+-${ZATHURA_GTK_VERSION}.0)
+GTK_INC ?= $(shell pkg-config --cflags gtk+-3.0)
+GTK_LIB ?= $(shell pkg-config --libs gtk+-3.0)
 
 GTHREAD_INC ?= $(shell pkg-config --cflags gthread-2.0)
 GTHREAD_LIB ?= $(shell pkg-config --libs   gthread-2.0)
@@ -65,8 +64,8 @@ GMODULE_LIB ?= $(shell pkg-config --libs   gmodule-no-export-2.0)
 GLIB_INC ?= $(shell pkg-config --cflags glib-2.0)
 GLIB_LIB ?= $(shell pkg-config --libs glib-2.0)
 
-GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk${ZATHURA_GTK_VERSION})
-GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk${ZATHURA_GTK_VERSION})
+GIRARA_INC ?= $(shell pkg-config --cflags girara-gtk3)
+GIRARA_LIB ?= $(shell pkg-config --libs girara-gtk3)
 
 ifneq (${WITH_SQLITE},0)
 SQLITE_INC ?= $(shell pkg-config --cflags sqlite3)

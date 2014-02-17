@@ -262,11 +262,15 @@ Possible arguments are:
 * left
 * next
 * out
+* page-bottom
+* page-top
 * previous
 * right
 * rotate-ccw
 * rotate-cw
+* select
 * specific
+* toggle
 * top
 * up
 * width
@@ -377,8 +381,10 @@ Defines the font that will be used
 guioptions
 ^^^^^^^^^^
 Shows or hides GUI elements.
-When it contains 'c', the command line is showed.
-When it contains 's', the statusbar is showed.
+If it contains 'c', the command line is displayed.
+If it contains 's', the statusbar is displayed.
+If it contains 'h', the vertical scrollbar is displayed.
+If it contains 'v', the horizontal scrollbar is displayed.
 
 * Value type: String
 * Default value: s
@@ -469,21 +475,24 @@ Defines the background color for the focused tab
 
 show-scrollbars
 ^^^^^^^^^^^^^^^
-Defines if both the horizontal and vertical scrollbars should be shown or not
+Defines if both the horizontal and vertical scrollbars should be shown or not.
+Deprecated, use 'guioptions' instead.
 
 * Value type: Boolean
 * Default value: false
 
 show-h-scrollbar
 ^^^^^^^^^^^^^^^^
-Defines whether to show/hide the horizontal scrollbar
+Defines whether to show/hide the horizontal scrollbar. Deprecated, use
+'guioptions' instead.
 
 * Value type: Boolean
 * Default value: false
 
 show-v-scrollbar
 ^^^^^^^^^^^^^^^^
-Defines whether to show/hide the vertical scrollbar
+Defines whether to show/hide the vertical scrollbar. Deprecated, use
+'guioptions' instead.
 
 * Value type: Boolean
 * Default value: false
@@ -706,21 +715,22 @@ Defines if scrolling by half or full pages stops at page boundaries.
 
 link-zoom
 ^^^^^^^^^
-En/Disables the hability of changing zoom when following links.
+En/Disables the ability of changing zoom when following links.
 
 * Value type: Boolean
 * Default value: true
 
 link-hadjust
 ^^^^^^^^^^^^
-En/Disables aligning to the left internal link targets, for example from the index
+En/Disables aligning to the left internal link targets, for example from the
+index.
 
 * Value type: Boolean
 * Default value: true
 
 search-hadjust
 ^^^^^^^^^^^^^^
-En/Disables horizontally centered search results
+En/Disables horizontally centered search results.
 
 * Value type: Boolean
 * Default value: true
@@ -748,21 +758,21 @@ Use basename of the file in the statusbar.
 
 zoom-center
 ^^^^^^^^^^^
-En/Disables horizontally centered zooming
+En/Disables horizontally centered zooming.
 
-* Value type: Bool
+* Value type: Boolean
 * Default value: False
 
 zoom-max
 ^^^^^^^^
-Defines the maximum percentage that the zoom level can be
+Defines the maximum percentage that the zoom level can be.
 
 * Value type: Integer
 * Default value: 1000
 
 zoom-min
 ^^^^^^^^
-Defines the minimum percentage that the zoom level can be
+Defines the minimum percentage that the zoom level can be.
 
 * Value type: Integer
 * Default value: 10
@@ -784,6 +794,13 @@ middle mouse button, or the Shift-Insert key combination.
 
 * Value type: String
 * Default value: primary
+
+syntex-dbus-service
+^^^^^^^^^^^^^^^^^^^
+En/Disables the D-Bus service required for synctex forward synchronization.
+
+* Value type: Boolean
+* Default value: true
 
 SEE ALSO
 ========

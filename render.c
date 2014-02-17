@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <math.h>
+#include <string.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include "glib-compat.h"
@@ -20,11 +21,11 @@ G_DEFINE_TYPE(ZathuraRenderRequest, zathura_render_request, G_TYPE_OBJECT)
 /* private methods for ZathuraRenderer  */
 static void renderer_finalize(GObject* object);
 /* private methods for ZathuraRenderRequest */
+static void render_request_dispose(GObject* object);
 static void render_request_finalize(GObject* object);
 
 static void render_job(void* data, void* user_data);
 static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer data);
-static void color2double(const GdkColor* col, double* v);
 static ssize_t page_cache_lru_invalidate(ZathuraRenderer* renderer);
 static void page_cache_invalidate_all(ZathuraRenderer* renderer);
 static bool page_cache_is_full(ZathuraRenderer* renderer, bool* result);
@@ -43,10 +44,8 @@ typedef struct private_s {
     bool enabled;
     bool hue;
 
-    double light[3];
-    GdkColor light_gdk;
-    double dark[3];
-    GdkColor dark_gdk;
+    GdkRGBA light;
+    GdkRGBA dark;
   } recolor;
 
   /*
@@ -119,14 +118,19 @@ zathura_renderer_init(ZathuraRenderer* renderer)
   priv->requests = girara_list_new();
 }
 
-static void
+static bool
 page_cache_init(ZathuraRenderer* renderer, size_t cache_size)
 {
   private_t* priv = GET_PRIVATE(renderer);
 
-  priv->page_cache.size = cache_size;
-  priv->page_cache.cache = g_malloc(cache_size * sizeof(int));
+  priv->page_cache.size  = cache_size;
+  priv->page_cache.cache = g_try_malloc0(cache_size * sizeof(int));
+  if (priv->page_cache.cache == NULL) {
+    return false;
+  }
+
   page_cache_invalidate_all(renderer);
+  return true;
 }
 
 ZathuraRenderer*
@@ -136,7 +140,11 @@ zathura_renderer_new(size_t cache_size)
 
   GObject* obj = g_object_new(ZATHURA_TYPE_RENDERER, NULL);
   ZathuraRenderer* ret = ZATHURA_RENDERER(obj);
-  page_cache_init(ret, cache_size);
+
+  if (page_cache_init(ret, cache_size) == false) {
+    g_object_unref(obj);
+    return NULL;
+  }
 
   return ret;
 }
@@ -148,7 +156,7 @@ renderer_finalize(GObject* object)
   private_t* priv = GET_PRIVATE(renderer);
 
   zathura_renderer_stop(renderer);
-  if (priv->pool) {
+  if (priv->pool != NULL) {
     g_thread_pool_free(priv->pool, TRUE, TRUE);
   }
   mutex_free(&(priv->mutex));
@@ -196,6 +204,7 @@ zathura_render_request_class_init(ZathuraRenderRequestClass* class)
 
   /* overwrite methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
+  object_class->dispose      = render_request_dispose;
   object_class->finalize     = render_request_finalize;
 
   request_signals[REQUEST_COMPLETED] = g_signal_new("completed",
@@ -263,22 +272,34 @@ zathura_render_request_new(ZathuraRenderer* renderer, zathura_page_t* page)
 }
 
 static void
+render_request_dispose(GObject* object)
+{
+  ZathuraRenderRequest* request = ZATHURA_RENDER_REQUEST(object);
+  request_private_t* priv = REQUEST_GET_PRIVATE(request);
+
+  if (priv->renderer != NULL) {
+    /* unregister the request */
+    renderer_unregister_request(priv->renderer, request);
+    /* release our private reference to the renderer */
+    g_clear_object(&priv->renderer);
+  }
+
+  G_OBJECT_CLASS(zathura_render_request_parent_class)->dispose(object);
+}
+
+static void
 render_request_finalize(GObject* object)
 {
   ZathuraRenderRequest* request = ZATHURA_RENDER_REQUEST(object);
   request_private_t* priv = REQUEST_GET_PRIVATE(request);
 
-  if (priv->renderer) {
-    /* unregister the request */
-    renderer_unregister_request(priv->renderer, request);
-    /* release our private reference to the renderer */
-    g_object_unref(priv->renderer);
-  }
   if (girara_list_size(priv->active_jobs) != 0) {
     girara_error("This should not happen!");
   }
   girara_list_free(priv->active_jobs);
   mutex_free(&priv->jobs_mutex);
+
+  G_OBJECT_CLASS(zathura_render_request_parent_class)->finalize(object);
 }
 
 /* renderer methods */
@@ -317,22 +338,16 @@ zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer, bool enable)
 
 void
 zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
-    const GdkColor* light, const GdkColor* dark)
+    const GdkRGBA* light, const GdkRGBA* dark)
 {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   private_t* priv = GET_PRIVATE(renderer);
   if (light != NULL) {
-    priv->recolor.light_gdk.red = light->red;
-    priv->recolor.light_gdk.blue = light->blue;
-    priv->recolor.light_gdk.green = light->green;
-    color2double(light, priv->recolor.light);
+    memcpy(&priv->recolor.light, light, sizeof(GdkRGBA));
   }
   if (dark != NULL) {
-    priv->recolor.dark_gdk.red = dark->red;
-    priv->recolor.dark_gdk.blue = dark->blue;
-    priv->recolor.dark_gdk.green = dark->green;
-    color2double(dark, priv->recolor.dark);
+    memcpy(&priv->recolor.dark, dark, sizeof(GdkRGBA));
   }
 }
 
@@ -343,33 +358,29 @@ zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   if (dark != NULL) {
-    GdkColor color;
-    gdk_color_parse(dark, &color);
+    GdkRGBA color;
+    gdk_rgba_parse(&color, dark);
     zathura_renderer_set_recolor_colors(renderer, NULL, &color);
   }
   if (light != NULL) {
-    GdkColor color;
-    gdk_color_parse(light, &color);
+    GdkRGBA color;
+    gdk_rgba_parse(&color, light);
     zathura_renderer_set_recolor_colors(renderer, &color, NULL);
   }
 }
 
 void
 zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
-    GdkColor* light, GdkColor* dark)
+    GdkRGBA* light, GdkRGBA* dark)
 {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
   private_t* priv = GET_PRIVATE(renderer);
   if (light != NULL) {
-    light->red = priv->recolor.light_gdk.red;
-    light->blue = priv->recolor.light_gdk.blue;
-    light->green = priv->recolor.light_gdk.green;
+    memcpy(light, &priv->recolor.light, sizeof(GdkRGBA));
   }
   if (dark != NULL) {
-    dark->red = priv->recolor.dark_gdk.red;
-    dark->blue = priv->recolor.dark_gdk.blue;
-    dark->green = priv->recolor.dark_gdk.green;
+    memcpy(dark, &priv->recolor.dark, sizeof(GdkRGBA));
   }
 }
 
@@ -421,7 +432,11 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
   if (unfinished_jobs == false) {
     request_priv->last_view_time = last_view_time;
 
-    render_job_t* job = g_malloc0(sizeof(render_job_t));
+    render_job_t* job = g_try_malloc0(sizeof(render_job_t));
+    if (job == NULL) {
+      return;
+    }
+
     job->request = g_object_ref(request);
     job->aborted = false;
     girara_list_append(request_priv->active_jobs, job);
@@ -503,31 +518,23 @@ emit_completed_signal(void* data)
   return FALSE;
 }
 
-static void
-color2double(const GdkColor* col, double* v)
-{
-  v[0] = (double) col->red / 65535.;
-  v[1] = (double) col->green / 65535.;
-  v[2] = (double) col->blue / 65535.;
-}
-
 /* Returns the maximum possible saturation for given h and l.
    Assumes that l is in the interval l1, l2 and corrects the value to
    force u=0 on l1 and l2 */
 static double
 colorumax(const double* h, double l, double l1, double l2)
 {
-  double u, uu, v, vv, lv;
   if (h[0] == 0 && h[1] == 0 && h[2] == 0) {
     return 0;
   }
 
-  lv = (l - l1)/(l2 - l1);    /* Remap l to the whole interval 0,1 */
-  u = v = 1000000;
+  const double lv = (l - l1)/(l2 - l1);    /* Remap l to the whole interval 0,1 */
+  double u = 1000000;
+  double v = u;
   for (int k = 0; k < 3; k++) {
     if (h[k] > 0) {
-      uu = fabs((1-l)/h[k]);
-      vv = fabs((1-lv)/h[k]);
+      const double uu = fabs((1-l)/h[k]);
+      const double vv = fabs((1-lv)/h[k]);
 
       if (uu < u) {
         u = uu;
@@ -536,8 +543,8 @@ colorumax(const double* h, double l, double l1, double l2)
         v = vv;
       }
     } else if (h[k] < 0) {
-      uu = fabs(l/h[k]);
-      vv = fabs(lv/h[k]);
+      const double uu = fabs(l/h[k]);
+      const double vv = fabs(lv/h[k]);
 
       if (uu < u) {
         u = uu;
@@ -575,13 +582,13 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
 
 #define rgb1 priv->recolor.dark
 #define rgb2 priv->recolor.light
-  const double l1 = (a[0]*rgb1[0] + a[1]*rgb1[1] + a[2]*rgb1[2]);
-  const double l2 = (a[0]*rgb2[0] + a[1]*rgb2[1] + a[2]*rgb2[2]);
+  const double l1 = a[0]*rgb1.red + a[1]*rgb1.green + a[2]*rgb1.blue;
+  const double l2 = a[0]*rgb2.red + a[1]*rgb2.green + a[2]*rgb2.blue;
 
   const double rgb_diff[] = {
-    rgb2[0] - rgb1[0],
-    rgb2[1] - rgb1[1],
-    rgb2[2] - rgb1[2]
+    rgb2.red - rgb1.red,
+    rgb2.green - rgb1.green,
+    rgb2.blue - rgb1.blue
   };
 
   for (unsigned int y = 0; y < page_height; y++) {
@@ -626,9 +633,9 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
       } else {
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
-        data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1[0]));
-        data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1[1]));
-        data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1[2]));
+        data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1.red));
+        data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1.green));
+        data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1.blue));
       }
     }
   }
@@ -653,7 +660,8 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   const double width = zathura_page_get_width(page);
 
   const double real_scale = page_calc_height_width(document, height, width,
-                                                   &page_height, &page_width, false);
+                                                   &page_height, &page_width,
+                                                   false);
 
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
@@ -692,7 +700,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close == true || job->aborted == true) {
     girara_debug("Rendering of page %d aborted",
-        zathura_page_get_index(request_priv->page) + 1);
+                 zathura_page_get_index(request_priv->page) + 1);
     remove_job_and_free(job);
     cairo_surface_destroy(surface);
     return true;
@@ -703,8 +711,13 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     recolor(priv, page_width, page_height, surface);
   }
 
-  emit_completed_signal_t* ecs = g_malloc(sizeof(emit_completed_signal_t));
-  ecs->job = job;
+  emit_completed_signal_t* ecs = g_try_malloc0(sizeof(emit_completed_signal_t));
+  if (ecs == NULL) {
+    cairo_surface_destroy(surface);
+    return false;
+  }
+
+  ecs->job     = job;
   ecs->surface = cairo_surface_reference(surface);
 
   /* emit signal from the main context, i.e. the main thread */

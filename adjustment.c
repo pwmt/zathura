@@ -146,20 +146,6 @@ page_is_visible(zathura_document_t *document, unsigned int page_number)
            fabs(pos_y - page_y) < 0.5 * (double)(view_height + cell_height) / (double)doc_height);
 }
 
-GtkAdjustment*
-zathura_adjustment_clone(GtkAdjustment* adjustment)
-{
-  gdouble value          = gtk_adjustment_get_value(adjustment);
-  gdouble lower          = gtk_adjustment_get_lower(adjustment);
-  gdouble upper          = gtk_adjustment_get_upper(adjustment);
-  gdouble step_increment = gtk_adjustment_get_step_increment(adjustment);
-  gdouble page_increment = gtk_adjustment_get_page_increment(adjustment);
-  gdouble page_size      = gtk_adjustment_get_page_size(adjustment);
-
-  return GTK_ADJUSTMENT(gtk_adjustment_new(value, lower, upper, step_increment,
-        page_increment, page_size));
-}
-
 void
 zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value)
 {

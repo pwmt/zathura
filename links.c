@@ -28,7 +28,10 @@ zathura_link_t*
 zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
                  zathura_link_target_t target)
 {
-  zathura_link_t* link = g_malloc0(sizeof(zathura_link_t));
+  zathura_link_t* link = g_try_malloc0(sizeof(zathura_link_t));
+  if (link == NULL) {
+    return NULL;
+  }
 
   link->type     = type;
   link->position = position;

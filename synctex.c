@@ -1,16 +1,12 @@
 /* See LICENSE file for license and copyright information */
 
 #include <glib.h>
-#include <glib/gi18n.h>
 
 #include "synctex.h"
-
 #include "zathura.h"
 #include "page.h"
 #include "document.h"
 #include "utils.h"
-
-#include <girara/session.h>
 
 enum {
   SYNCTEX_RESULT_BEGIN = 1,
@@ -50,10 +46,6 @@ static GScannerConfig scanner_config = {
   .numbers_2_int         = TRUE,
 };
 
-static void synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool first);
-static double scan_float(GScanner* scanner);
-static bool synctex_view(zathura_t* zathura, char* position);
-
 void
 synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
 {
@@ -71,35 +63,24 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
     return;
   }
 
-  int page_idx = zathura_page_get_index(page);
-  char *buffer = g_strdup_printf("%d:%d:%d:%s", page_idx + 1, x, y, filename);
-
-  if (zathura->synctex.editor != NULL) {
-    char* argv[] = {"synctex", "edit", "-o", buffer, "-x", zathura->synctex.editor, NULL};
-    g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-  } else {
-    char* argv[] = {"synctex", "edit", "-o", buffer, NULL};
-    g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-  }
-
-  g_free(buffer);
-}
-
-static void
-synctex_record_hits(zathura_t* zathura, int page_idx, girara_list_t* hits, bool first)
-{
-  zathura_page_t* page = zathura_document_get_page(zathura->document, page_idx-1);
-  if (page == NULL)
+  char** argv = g_try_malloc0(sizeof(char*) * (zathura->synctex.editor != NULL ?
+      7 : 5));
+  if (argv == NULL) {
     return;
-
-  GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-  g_object_set(page_widget, "draw-links", FALSE, NULL);
-  g_object_set(page_widget, "search-results", hits, NULL);
-
-  if (first) {
-    page_set(zathura, zathura_page_get_index(page));
-    g_object_set(page_widget, "search-current", 0, NULL);
   }
+
+  argv[0] = g_strdup("synctex");
+  argv[1] = g_strdup("edit");
+  argv[2] = g_strdup("-o");
+  argv[3] = g_strdup_printf("%d:%d:%d:%s", zathura_page_get_index(page) + 1, x,
+      y, filename);
+  if (zathura->synctex.editor != NULL) {
+    argv[4] = g_strdup("-x");
+    argv[5] = g_strdup(zathura->synctex.editor);
+  }
+
+  g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+  g_strfreev(argv);
 }
 
 static double
@@ -115,15 +96,32 @@ scan_float(GScanner* scanner)
   }
 }
 
-static bool
-synctex_view(zathura_t* zathura, char* position)
+girara_list_t*
+synctex_rectangles_from_position(const char* filename, const char* position,
+                                 unsigned int* page,
+                                 girara_list_t** secondary_rects)
 {
-  char* filename = g_strdup(zathura_document_get_path(zathura->document));
-  char* argv[] = {"synctex", "view", "-i", position, "-o", filename, NULL};
-  gint output;
+  if (filename == NULL || position == NULL || page == NULL) {
+    return NULL;
+  }
 
-  bool ret = g_spawn_async_with_pipes(NULL, argv, NULL, G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL, NULL, NULL, NULL, NULL, &output, NULL, NULL);
-  g_free(filename);
+  char** argv = g_try_malloc0(sizeof(char*) * 7);
+  if (argv == NULL) {
+    return NULL;
+  }
+
+  argv[0] = g_strdup("synctex");
+  argv[1] = g_strdup("view");
+  argv[2] = g_strdup("-i");
+  argv[3] = g_strdup(position);
+  argv[4] = g_strdup("-o");
+  argv[5] = g_strdup(filename);
+
+  gint output = -1;
+  bool ret = g_spawn_async_with_pipes(NULL, argv, NULL,
+      G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL, NULL, NULL, NULL, NULL,
+      &output, NULL, NULL);
+  g_strfreev(argv);
 
   if (ret == false) {
     return false;
@@ -159,21 +157,13 @@ synctex_view(zathura_t* zathura, char* position)
     }
   }
 
-  if (found_begin == true) {
-    unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-    for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-      if (page == NULL) {
-        continue;
-      }
-      g_object_set(zathura_page_get_widget(zathura, page), "search-results", NULL, NULL);
-    }
-  }
-
-  ret = false;
-  int page = -1, nextpage;
-  girara_list_t* hitlist = NULL;
-  zathura_rectangle_t* rectangle = NULL;
+  ret                        = false;
+  unsigned int rpage         = 0;
+  unsigned int current_page  = 0;
+  girara_list_t* hitlist     = girara_list_new2(g_free);
+  girara_list_t* other_rects = girara_list_new2(g_free);
+  bool got_rect              = false;
+  zathura_rectangle_t rectangle;
 
   while (found_end == false) {
     switch (g_scanner_get_next_token(scanner)) {
@@ -189,34 +179,57 @@ synctex_view(zathura_t* zathura, char* position)
 
           case SYNCTEX_PROP_PAGE:
             if (g_scanner_get_next_token(scanner) == G_TOKEN_INT) {
-              nextpage = g_scanner_cur_value(scanner).v_int;
-              if (page != nextpage) {
-                if (hitlist) {
-                  synctex_record_hits(zathura, page, hitlist, !ret);
-                  ret = true;
-                }
-                hitlist = girara_list_new2((girara_free_function_t) g_free);
-                page = nextpage;
+              current_page = g_scanner_cur_value(scanner).v_int - 1;
+              if (ret == false) {
+                ret = true;
+                rpage = current_page;
               }
-              rectangle = g_malloc0(sizeof(zathura_rectangle_t));
-              girara_list_append(hitlist, rectangle);
+
+              if (got_rect == false) {
+                continue;
+              }
+              got_rect = false;
+
+              if (*page == current_page) {
+                zathura_rectangle_t* real_rect = g_try_malloc(sizeof(zathura_rectangle_t));
+                if (real_rect == NULL) {
+                  continue;
+                }
+
+                *real_rect = rectangle;
+                girara_list_append(hitlist, real_rect);
+              } else {
+                synctex_page_rect_t* page_rect = g_try_malloc(sizeof(synctex_page_rect_t));
+                if (page_rect == NULL) {
+                  continue;
+                }
+
+                page_rect->page = current_page;
+                page_rect->rect = rectangle;
+
+                girara_list_append(other_rects, page_rect);
+              }
             }
             break;
 
           case SYNCTEX_PROP_H:
-            rectangle->x1 = scan_float(scanner);
+            rectangle.x1 = scan_float(scanner);
+            got_rect     = true;
             break;
 
-          case SYNCTEX_PROP_V:
-            rectangle->y2 = scan_float(scanner);
+            case SYNCTEX_PROP_V:
+            rectangle.y2 = scan_float(scanner);
+            got_rect     = true;
             break;
 
-          case SYNCTEX_PROP_WIDTH:
-            rectangle->x2 = rectangle->x1 + scan_float(scanner);
+            case SYNCTEX_PROP_WIDTH:
+            rectangle.x2 = rectangle.x1 + scan_float(scanner);
+            got_rect     = true;
             break;
 
-          case SYNCTEX_PROP_HEIGHT:
-            rectangle->y1 = rectangle->y2 - scan_float(scanner);
+            case SYNCTEX_PROP_HEIGHT:
+            rectangle.y1 = rectangle.y2 - scan_float(scanner);
+            got_rect     = true;
             break;
         }
         break;
@@ -226,13 +239,34 @@ synctex_view(zathura_t* zathura, char* position)
     }
   }
 
-  if (hitlist != NULL) {
-    synctex_record_hits(zathura, page, hitlist, !ret);
-    ret = true;
+  if (got_rect == true) {
+    if (current_page == rpage) {
+      zathura_rectangle_t* real_rect = g_try_malloc(sizeof(zathura_rectangle_t));
+      if (real_rect != NULL) {
+        *real_rect = rectangle;
+        girara_list_append(hitlist, real_rect);
+      }
+    } else {
+      synctex_page_rect_t* page_rect = g_try_malloc(sizeof(synctex_page_rect_t));
+      if (page_rect != NULL) {
+        page_rect->page = current_page;
+        page_rect->rect = rectangle;
+        girara_list_append(other_rects, page_rect);
+      }
+    }
   }
 
   g_scanner_destroy(scanner);
   close(output);
 
-  return ret;
+  if (page != NULL) {
+    *page = rpage;
+  }
+  if (secondary_rects != NULL) {
+    *secondary_rects = other_rects;
+  } else {
+    girara_list_free(other_rects);
+  }
+
+  return hitlist;
 }

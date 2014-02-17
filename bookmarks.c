@@ -48,7 +48,10 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
     return old;
   }
 
-  zathura_bookmark_t* bookmark = g_malloc0(sizeof(zathura_bookmark_t));
+  zathura_bookmark_t* bookmark = g_try_malloc0(sizeof(zathura_bookmark_t));
+  if (bookmark == NULL) {
+    return NULL;
+  }
 
   bookmark->id = g_strdup(id);
   bookmark->page = page;

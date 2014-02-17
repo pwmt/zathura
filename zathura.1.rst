@@ -14,6 +14,7 @@ SYNOPOSIS
 =========
 | zathura [OPTION]...
 | zathura [OPTION]... FILE [FILE ...]
+| zathura --syntex-forward INPUT FILE
 
 DESCRIPTION
 ===========
@@ -53,16 +54,29 @@ OPTIONS
   Set log debug level (debug, info, warning, error)
 
 -s, --synctex
-  Enable synctex support
+  Enable synctex support for backwards synchronization.
 
 -x [cmd], --synctex-editor-command [cmd]
-  Set the synctex editor command
+  Set the synctex editor command for backwards synchronization.
+
+--synctex-forward [input]
+  Jump to the given position. The switch expcects the same format as specified
+  for syntex's view -i.
+
+--synctex-pid [pid]
+  If not -1, forward synctex input to process with the given pid. Otherwise, try
+  all zathura process to find the correct one.
+
+--mode [mode]
+  Switch to mode (presentation, fullscreen) after opening a document.
 
 MOUSE AND KEY BINDINGS
 ======================
 
-J, K
-  Go to the next or previous page
+J, PgDn
+  Go to the next page
+K, PgUp
+  Go to the previous page
 h, k, j, l
   Scroll to the left, down, up or right direction
 Left, Down, Up, Right
@@ -73,6 +87,8 @@ t, ^f, ^b, space, <S-space>, y
   Scroll a full page left, down, up or right
 gg, G, nG
   Goto to the first, the last or to the nth page
+H, L
+  Goto top or bottom of the current page
 ^o, ^i
   Move backward and forward through the jump list
 ^j, ^k
@@ -119,6 +135,28 @@ mX
   Set a quickmark to a letter or number X
 'X
   Goto quickmark saved at letter or number X
+q
+  Quit
+
+Fullscreen mode
+---------------
+
+J, K
+  Go to the next or previous page
+space, <S-space>, <BackSpace>
+  Scroll a full page down or up
+gg, G, nG
+  Goto to the first, the last or to the nth page
+^c, Escape
+  Abort
+F5
+  Switch to normal mode
++, -, =
+  Zoom in, out or to the original size
+zI, zO, z0
+  Zoom in, out or to the original size
+n=
+  Zoom to size n
 q
   Quit
 
@@ -181,6 +219,17 @@ CONFIGURATION
 The default appearance and behaviour of zathura can be overwritten by modifying
 the *zathurarc* file (default path: ~/.config/zathura/zathurarc). For a detailed
 description please consult zathurarc(5).
+
+SYNCTEX SUPPORT
+===============
+Both synctex forward and backwards synchronization are supported by zathura, To
+enable synctex forward synchronization, please look at the *--syntex* and
+*--synctex-editor* options. To support synctex backwards synchronization,
+zathura provides a D-Bus interface that can be called by the editor. For
+convince zathura also knows how to parse the output of the *synctex view*
+command. It is enough to pass the arguments to *synctex view*'s *-i* option to
+zathura via *--syntex-forward* and zathura will pass the information to the
+correct instance.
 
 KNOWN BUGS
 ==========
