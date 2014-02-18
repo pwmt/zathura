@@ -697,7 +697,7 @@ Defines the proportion of the current viewing area that should be
 visible after scrolling a full page.
 
 * Value type: Float
-* Default value: 0.1
+* Default value: 0
 
 scroll-wrap
 ^^^^^^^^^^^
