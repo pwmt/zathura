@@ -206,35 +206,103 @@ Shortcut functions
 ^^^^^^^^^^^^^^^^^^
 The following shortcut functions can be mapped:
 
+* ``abort``
 
-::
+  Switch back to normal mode.
 
-    Function          Description
+* ``adjust_window``
 
-    abort             Switch back to normal mode
-    adjust_window     Adjust page width
-    change_mode       Change current mode
-    display_link      Display link target
-    focus_inputbar    Focus inputbar
-    follow            Follow a link
-    goto              Go to a certain page
-    jumplist          Move forwards/backwards in the jumplist
-    navigate          Navigate to the next/previous page
-    navigate_index    Navigate through the index
-    print             Show the print dialog
-    quit              Quit zathura
-    recolor           Recolor the pages
-    reload            Reload the document
-    rotate            Rotate the page
-    scroll            Scroll
-    search            Search next/previous item
-    set               Set an option
-    toggle_fullscreen Toggle fullscreen
-    toggle_index      Show or hide index
-    toggle_inputbar   Show or hide inputbar
-    toggle_page_mode  Toggle between one and multiple pages per row
-    toggle_statusbar  Show or hide statusbar
-    zoom              Zoom in or out
+  Adjust page width. Possible arguments are ``best-fit`` and ``width``.
+
+* ``change_mode``
+
+  Change current mode. Pass the desired mode as argument.
+
+* ``display_link``:
+
+  Display link target.
+
+* ``focus_inputbar``
+
+  Focus inputbar.
+
+* ``follow``
+
+  Follow a link.
+
+* ``goto``
+
+  Go to a certain page.
+
+* ``jumplist``
+
+  Move forwards/backwards in the jumplist.
+
+* ``navigate``
+
+  Navigate to the next/previous page.
+
+* ``navigate_index``
+
+  Navigate through the index.
+
+* ``print``
+
+  Show the print dialog.
+
+* ``quit``
+
+  Quit zathura.
+
+* ``recolor``
+
+  Recolor pages.
+
+* ``reload``
+
+  Reload the document.
+
+* ``rotate``
+
+  Rotate the page. Pass ``rotate-ccw`` as argument for counterclockwise rotation
+  and ``rotate-cw`` for clockwise rotation.
+
+* ``scroll``
+
+  Scroll.
+
+* ``search``
+
+  Search next/previous item. Pass ``forward`` as argument to search for the next
+  hit and ``backward`` to search for the previous hit.
+
+* ``set``
+
+  Set an option.
+
+* ``toggle_fullscreen``
+
+  Toggle fullscreen.
+
+* ``toggle_index``
+
+  Show or hide index.
+
+* ``toggle_inputbar``
+
+  Show or hide inputbar.
+
+* ``toggle_page_mode``
+
+  Toggle between one and multiple pages per row.
+
+* ``toggle_statusbar``
+
+  Show or hide statusbar.
+
+* ``zoom``
+
+  Zoom in or out.
 
 Pass arguments
 ^^^^^^^^^^^^^^
