@@ -172,6 +172,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   girara_list_t* rect_list = rectangles[page];
   if (rect_list == NULL || girara_list_size(rect_list) == 0) {
+    girara_debug("No rectangles for the given page. Jumping to page %u.", page);
     page_set(zathura, page);
     return;
   }
@@ -198,7 +199,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   zathura_page_t* doc_page = zathura_document_get_page(zathura->document, page);
   zathura_rectangle_t* rect = girara_list_nth(rect_list, 0);
   if (rect == NULL) {
-    girara_debug("List of rects is broken.");
+    girara_debug("List of rectangles is broken. Jumping to page %u.", page);
     page_set(zathura, page);
     return;
   }
@@ -216,6 +217,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   }
 
   /* move to position */
+  girara_debug("Jumping to page %u position (%f, %f).", page, pos_x, pos_y);
   zathura_jumplist_add(zathura);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);
