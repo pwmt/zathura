@@ -170,7 +170,8 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   document_draw_search_results(zathura, true);
 
-  if (rectangles[page] == NULL || girara_list_size(rectangles[page]) == 0) {
+  girara_list_t* rect_list = rectangles[page];
+  if (rect_list == NULL || girara_list_size(rect_list) == 0) {
     page_set(zathura, page);
     return;
   }
@@ -195,7 +196,13 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   /* Need to adjust rectangle to page scale and orientation */
   zathura_page_t* doc_page = zathura_document_get_page(zathura->document, page);
-  zathura_rectangle_t* rect = girara_list_nth(rectangles[page], 0);
+  zathura_rectangle_t* rect = girara_list_nth(rect_list, 0);
+  if (rect == NULL) {
+    girara_debug("List of rects is broken.");
+    page_set(zathura, page);
+    return;
+  }
+
   zathura_rectangle_t rectangle = recalc_rectangle(doc_page, *rect);
 
   /* compute the center of the rectangle, which will be aligned to the center
@@ -283,6 +290,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
                   &secondary_iter);
 
     if (page >= number_of_pages) {
+      girara_debug("Got invalid page number.");
       GVariant* result = g_variant_new("(b)", false);
       g_variant_iter_free(iter);
       g_variant_iter_free(secondary_iter);
