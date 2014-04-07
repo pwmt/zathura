@@ -310,9 +310,9 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
         priv->search.current = girara_list_size(priv->search.list);
       } else {
         priv->search.current = val;
-        zathura_rectangle_t* rect = girara_list_nth(priv->search.list, priv->search.current);
-        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-        if (priv->search.draw) {
+        if (priv->search.draw == true && val >= 0 && val < (signed) girara_list_size(priv->search.list)) {
+          zathura_rectangle_t* rect = girara_list_nth(priv->search.list, priv->search.current);
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
           redraw_rect(pageview, &rectangle);
         }
       }
