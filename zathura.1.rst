@@ -61,7 +61,8 @@ OPTIONS
 
 --synctex-forward [input]
   Jump to the given position. The switch expcects the same format as specified
-  for syntex's view -i.
+  for synctex's view -i. Please note that synctex starts counting at 0, so line
+  and column numbers need to be adjusted accordingly.
 
 --synctex-pid [pid]
   If not -1, forward synctex input to process with the given pid. Otherwise, try
