@@ -110,7 +110,7 @@ main(int argc, char* argv[])
       free(real_path);
       return 0;
     } else {
-      girara_error("Could not find open instance for '%s'", real_path);
+      girara_error("Could not find open instance for '%s' or got no usable output from 'synctex view'.", real_path);
       free(real_path);
       return -1;
     }

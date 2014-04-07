@@ -1,6 +1,7 @@
 /* See LICENSE file for license and copyright information */
 
 #include <glib.h>
+#include <girara/utils.h>
 
 #include "synctex.h"
 #include "zathura.h"
@@ -258,6 +259,13 @@ synctex_rectangles_from_position(const char* filename, const char* position,
 
   g_scanner_destroy(scanner);
   close(output);
+
+  if (ret == false) {
+    girara_debug("Got no usable output from running synctex view.");
+    girara_list_free(hitlist);
+    girara_list_free(other_rects);
+    return NULL;
+  }
 
   if (page != NULL) {
     *page = rpage;
