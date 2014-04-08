@@ -10,13 +10,13 @@ Welcome to zathura's documentation!
    :maxdepth: 2
    :numbered:
 
-  installation/index
-  usage/index
-  configuration/index
-  api/index
-  faq
+   installation/index
+   usage/index
+   configuration/index
+   api/index
+   faq
 
 .. toctree::
-  :hidden:
+   :hidden:
 
   manpage
