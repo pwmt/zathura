@@ -99,7 +99,6 @@ clean:
 		${PROJECT}-debug \
 		.depend \
 		${PROJECT}.pc \
-		doc \
 		version.h \
 		version.h.tmp \
 		dbus-interface-definitions.c \
@@ -111,6 +110,7 @@ ifneq "$(wildcard ${RSTTOMAN})" ""
 endif
 	$(QUIET)$(MAKE) -C tests clean
 	$(QUIET)$(MAKE) -C po clean
+	$(QUIET)$(MAKE) -C doc clean
 
 ${PROJECT}-debug: ${DOBJECTS}
 	$(ECHO) CC -o $@
@@ -156,7 +156,7 @@ dist: clean build-manpages
 	$(QUIET)rm -rf ${PROJECT}-${VERSION}
 
 doc:
-	$(QUIET)doxygen Doxyfile
+	$(QUIET)make -C doc
 
 gcov: clean
 	$(QUIET)CFLAGS="${CFLAGS} -fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
