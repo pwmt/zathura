@@ -7,7 +7,10 @@ import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
-extensions     = ['sphinx.ext.todo', 'breathe']
+extensions     = [
+    'sphinx.ext.todo',
+    'breathe'
+]
 source_suffix  = '.rst'
 master_doc     = 'index'
 templates_path = ['_templates']
