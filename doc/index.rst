@@ -19,4 +19,4 @@ Welcome to zathura's documentation!
 .. toctree::
    :hidden:
 
-  manpage
+  man/zathura.1

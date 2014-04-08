@@ -4,4 +4,5 @@ Usage
 
 Commandline invocation
 ======================
-.. include:: synopsis.rst
+
+.. include:: ../man/_synopsis.txt
