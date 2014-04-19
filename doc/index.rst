@@ -20,3 +20,4 @@ Welcome to zathura's documentation!
    :hidden:
 
   man/zathura.1
+  man/zathurarc.5

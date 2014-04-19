@@ -38,7 +38,8 @@ htmlhelp_basename = 'zathuradoc'
 # -- Options for manual page output ---------------------------------------
 
 man_pages = [
-    ('manpage', 'zathura', 'a document viewer', ['pwmt.org'], 1)
+    ('man/zathura.1', 'zathura', 'a document viewer', ['pwmt.org'], 1),
+    ('man/zathurarc.5', 'zathurarc', 'a document viewer', ['pwmt.org'], 5)
 ]
 
 

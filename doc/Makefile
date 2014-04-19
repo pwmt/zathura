@@ -8,7 +8,7 @@ ifeq ($(shell which $(SPHINX_BIN) >/dev/null 2>&1; echo $$?), 1)
 	$(error The '$(SPHINX_BIN)' command was not found.)
 endif
 
-all: init html man
+all: html man
 
 init:
 	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)/
@@ -22,7 +22,7 @@ html: doxygen
 man: doxygen
 	$(QUIET)$(SPHINX_BIN) -b man $(SPHINX_OPTS) $(SPHINX_BUILDDIR)/man
 
-doxygen:
+doxygen: init
 	$(QUIET)$(DOXYGEN_BIN) Doxyfile
 
 .PHONY: clean html man
