@@ -99,7 +99,6 @@ clean:
 		${PROJECT}-debug \
 		.depend \
 		${PROJECT}.pc \
-		doc \
 		version.h \
 		version.h.tmp \
 		dbus-interface-definitions.c \
@@ -111,6 +110,7 @@ ifneq "$(wildcard ${RSTTOMAN})" ""
 endif
 	$(QUIET)$(MAKE) -C tests clean
 	$(QUIET)$(MAKE) -C po clean
+	$(QUIET)$(MAKE) -C doc clean
 
 ${PROJECT}-debug: ${DOBJECTS}
 	$(ECHO) CC -o $@
@@ -142,12 +142,26 @@ dist: clean build-manpages
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
 	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/po
-	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
+	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/doc
+	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS \
 			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
 			${PROJECT}.desktop version.h.in \
 			${PROJECT}.1 ${PROJECT}rc.5 \
 			${PROJECT}-${VERSION}
 	$(QUIET)cp -r data ${PROJECT}-${VERSION}
+	$(QUIET)cp -r \
+		doc/Makefile \
+		doc/Doxyfile \
+		doc/config.mk \
+		doc/conf.py \
+		doc/*.rst \
+		doc/requirements.txt \
+		doc/api \
+		doc/configuration \
+		doc/installation \
+		doc/man \
+		doc/usage \
+		${PROJECT}-${VERSION}/doc
 	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
 			${PROJECT}-${VERSION}/tests
 	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
@@ -156,7 +170,7 @@ dist: clean build-manpages
 	$(QUIET)rm -rf ${PROJECT}-${VERSION}
 
 doc:
-	$(QUIET)doxygen Doxyfile
+	$(QUIET)make -C doc
 
 gcov: clean
 	$(QUIET)CFLAGS="${CFLAGS} -fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
@@ -170,29 +184,17 @@ po:
 update-po:
 	$(QUIET)${MAKE} -C po update-po
 
-ifneq "$(wildcard ${RSTTOMAN})" ""
-%.1 %.5: config.mk
-	$(QUIET)sed "s/VERSION/${VERSION}/g" < $@.rst > $@.tmp
-	$(QUIET)${RSTTOMAN} $@.tmp > $@.out.tmp
-	$(QUIET)mv $@.out.tmp $@
-	$(QUIET)rm $@.tmp
-
-${PROJECT}.1: ${PROJECT}.1.rst
-${PROJECT}rc.5: ${PROJECT}rc.5.rst
-
-build-manpages: ${PROJECT}.1 ${PROJECT}rc.5
-else
 build-manpages:
-endif
+	$(QUIET)${MAKE} -C doc man
 
 install-manpages: build-manpages
 	$(ECHO) installing manual pages
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
-ifneq "$(wildcard ${PROJECT}.1)" ""
-	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
+ifneq "$(wildcard ./doc/_build/man/${PROJECT}.1)" ""
+	$(QUIET)install -m 644 ./doc/_build/man/${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
 endif
-ifneq "$(wildcard ${PROJECT}rc.5)" ""
-	$(QUIET)install -m 644 ${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
+ifneq "$(wildcard ./doc/_build/man/${PROJECT}rc.5)" ""
+	$(QUIET)install -m 644 ./doc/_build/man/${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
 endif
 
 install-headers: ${PROJECT}.pc

@@ -31,6 +31,9 @@ WITH_MAGIC=0.
 If you pass these flags as a command line argument to make, you have to ensure
 to pass the same flags when executing the install target.
 
+If you want to build zathuras documentation, please install all python
+dependencies from the ./doc/requirements.txt file.
+
 Installation
 ------------
 To build and install zathura:
