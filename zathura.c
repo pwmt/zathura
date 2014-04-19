@@ -208,12 +208,12 @@ zathura_init(zathura_t* zathura)
     zathura->database = zathura_sqldatabase_new(tmp);
     g_free(tmp);
 #endif
-  } else {
+  } else if (g_strcmp0(database, "null") != 0) {
     girara_error("Database backend '%s' is not supported.", database);
   }
   g_free(database);
 
-  if (zathura->database == NULL) {
+  if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
     girara_error("Unable to initialize database. Bookmarks won't be available.");
   } else {
     g_object_set(zathura->ui.session->command_history, "io", zathura->database, NULL);

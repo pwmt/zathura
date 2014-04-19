@@ -634,6 +634,15 @@ Defines if the number of pages per row should be honored when advancing a page.
 * Value type: Boolean
 * Default value: false
 
+database
+^^^^^^^^
+Defines the database backend to use for bookmarks and input history. Possible
+values are "plain", "sqlite" (if built with sqlite support) and "null". If
+"null" is used, bookmarks and input history will not be stored.
+
+* Value type: String
+* Default value: plain
+
 incremental-search
 ^^^^^^^^^^^^^^^^^^
 En/Disables incremental search (search while typing).
