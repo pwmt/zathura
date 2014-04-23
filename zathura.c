@@ -17,6 +17,10 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 
+#ifdef G_OS_UNIX
+#include <glib-unix.h>
+#endif
+
 #include "bookmarks.h"
 #include "callbacks.h"
 #include "config.h"
@@ -50,6 +54,10 @@ static void zathura_jumplist_reset_current(zathura_t* zathura);
 static void zathura_jumplist_append_jump(zathura_t* zathura);
 static void zathura_jumplist_save(zathura_t* zathura);
 
+#ifdef G_OS_UNIX
+static gboolean zathura_signal_sigterm(gpointer data);
+#endif
+
 /* function implementation */
 zathura_t*
 zathura_create(void)
@@ -72,6 +80,11 @@ zathura_create(void)
   if ((zathura->ui.session = girara_session_create()) == NULL) {
     goto error_out;
   }
+
+#ifdef G_OS_UNIX
+  /* signal handler */
+  zathura->signals.sigterm = g_unix_signal_add(SIGTERM, zathura_signal_sigterm, zathura);
+#endif
 
   zathura->ui.session->global.data = zathura;
 
@@ -1384,3 +1397,18 @@ zathura_jumplist_save(zathura_t* zathura)
     cur->y = zathura_document_get_position_y(zathura->document);
   }
 }
+
+#ifdef G_OS_UNIX
+static gboolean
+zathura_signal_sigterm(gpointer data)
+{
+  if (data == NULL) {
+    return TRUE;
+  }
+
+  zathura_t* zathura = (zathura_t*) data;
+  cb_destroy(NULL, zathura);
+
+  return TRUE;
+}
+#endif
