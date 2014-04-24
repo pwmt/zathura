@@ -4,7 +4,6 @@ include config.mk
 include colors.mk
 include common.mk
 
-PROJECT    = zathura
 OSOURCE    = $(filter-out dbus-interface-definitions.c, $(wildcard *.c))
 HEADER     = $(wildcard *.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
@@ -140,36 +139,13 @@ test: ${OBJECTS}
 	$(QUIET)make -C tests run
 
 dist: clean build-manpages
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/po
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/doc
-
-	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS \
-			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
-			${PROJECT}.desktop version.h.in \
-			${PROJECT}.1 ${PROJECT}rc.5 \
-			${PROJECT}-${VERSION}
-	$(QUIET)cp -r data ${PROJECT}-${VERSION}
-	$(QUIET)cp -r \
-		doc/Makefile \
-		doc/Doxyfile \
-		doc/config.mk \
-		doc/conf.py \
-		doc/*.rst \
-		doc/requirements.txt \
-		doc/api \
-		doc/configuration \
-		doc/installation \
-		doc/man \
-		doc/usage \
-		${PROJECT}-${VERSION}/doc
-	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
-			${PROJECT}-${VERSION}/tests
-	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
-	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
-	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
-	$(QUIET)rm -rf ${PROJECT}-${VERSION}
+	$(QUIET)tar -czf $(TARFILE) `git ls-files`
+	$(QUIET)rm -rf ${TARDIR}
+	$(QUIET)mkdir -p ${TARDIR}
+	$(QUIET)tar -xvf ${TARFILE} -C ${TARDIR}
+	$(QUIET)find ${TARDIR} -name '.gitignore' -exec rm {} \;
+	$(QUIET)tar -czf ${TARFILE} ${TARDIR}
+	$(QUIET)rm -rf ${TARDIR}
 
 doc:
 	$(QUIET)make -C doc

@@ -1,6 +1,9 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
+# project
+PROJECT = zathura
+
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 2
 ZATHURA_VERSION_REV = 7
@@ -106,3 +109,7 @@ VERBOSE ?= 0
 
 # colors
 COLOR ?= 1
+
+# dist
+TARFILE = ${PROJECT}-${VERSION}.tar.gz
+TARDIR = ${PROJECT}-${VERSION}
