@@ -104,3 +104,5 @@ VALGRIND_SUPPRESSION_FILE = zathura.suppression
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
 
+# colors
+COLOR ?= 1
