@@ -94,7 +94,8 @@ ${PROJECT}: ${OBJECTS}
 clean:
 	$(QUIET)rm -rf ${PROJECT} \
 		${OBJECTS} \
-		${PROJECT}-${VERSION}.tar.gz \
+		${TARFILE} \
+		${TARDIR} \
 		${DOBJECTS} \
 		${PROJECT}-debug \
 		.depend \
@@ -105,9 +106,6 @@ clean:
 		dbus-interface-definitions.c.tmp \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		.version-checks
-ifneq "$(wildcard ${RSTTOMAN})" ""
-	$(QUIET)rm -f zathura.1 zathurarc.5
-endif
 	$(QUIET)$(MAKE) -C tests clean
 	$(QUIET)$(MAKE) -C po clean
 	$(QUIET)$(MAKE) -C doc clean
