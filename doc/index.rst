@@ -19,5 +19,5 @@ Welcome to zathura's documentation!
 .. toctree::
    :hidden:
 
-  man/zathura.1
-  man/zathurarc.5
+   man/zathura.1
+   man/zathurarc.5
