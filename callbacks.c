@@ -220,12 +220,23 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
-cb_page_layout_value_changed(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
+
+  /* pages-per-row must not be 0 */
+  if (g_strcmp0(name, "pages-per-row") == 0) {
+    unsigned int pages_per_row = *((unsigned int*) value);
+    if (pages_per_row == 0) {
+      pages_per_row = 1;
+      girara_setting_set(session, name, &pages_per_row);
+      girara_notify(session, GIRARA_WARNING, _("'%s' must not be 0. Set to 1.."), name);
+      return;
+    }
+  }
 
   if (zathura->document == NULL) {
     /* no document has been openend yet */
