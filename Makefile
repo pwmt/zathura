@@ -77,7 +77,7 @@ dbus-interface-definitions.c: data/org.pwmt.zathura.xml
 
 css-definitions.c: data/zathura.css_t
 	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
-	$(QUIET)echo 'const char* CSS_TEMPLATE =' >> $@.tmp
+	$(QUIET)echo 'const char* CSS_TEMPLATE_INDEX =' >> $@.tmp
 	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' $< >> $@.tmp
 	$(QUIET)echo ';' >> $@.tmp
 	$(QUIET)mv $@.tmp $@

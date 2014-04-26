@@ -1,3 +1,5 @@
+/* Index mode colors */
+
 #@session@ .indexmode {
   color: @index-fg@;
   background-color: @index-bg@;

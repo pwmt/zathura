@@ -174,6 +174,11 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),  cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
+  girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, true, _("Index mode foreground color"), NULL, NULL);
+  girara_setting_add(gsession, "index-bg",        "#232323", STRING, true, _("Index mode background color"), NULL, NULL);
+  girara_setting_add(gsession, "index-active-fg", "#232323", STRING, true, _("Index mode foreground color (active element)"), NULL, NULL);
+  girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, true, _("Index mode background color (active element)"), NULL, NULL);
+
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
   bool_value = false;

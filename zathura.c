@@ -14,6 +14,7 @@
 #include <girara/statusbar.h>
 #include <girara/settings.h>
 #include <girara/shortcuts.h>
+#include <girara/template.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 
@@ -39,6 +40,7 @@
 #include "plugin.h"
 #include "adjustment.h"
 #include "dbus-interface.h"
+#include "css-definitions.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -244,6 +246,37 @@ zathura_init(zathura_t* zathura)
   zathura->jumplist.list = NULL;
   zathura->jumplist.size = 0;
   zathura->jumplist.cur = NULL;
+
+  /* CSS for index mode */
+  GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
+
+  static const char* index_settings[] = {
+    "index-fg",
+    "index-bg",
+    "index-active-fg",
+    "index-active-bg"
+  };
+
+  for (size_t s = 0; s < LENGTH(index_settings); ++s) {
+    girara_template_add_variable(csstemplate, index_settings[s]);
+
+    char* tmp_value = NULL;
+    GdkRGBA rgba = { 0, 0, 0, 0 };
+    girara_setting_get(zathura->ui.session, index_settings[s], &tmp_value);
+    if (tmp_value != NULL) {
+      gdk_rgba_parse(&rgba, tmp_value);
+      g_free(tmp_value);
+    }
+
+    char* color = gdk_rgba_to_string(&rgba);
+    girara_template_set_variable_value(csstemplate,
+        index_settings[s], color);
+    g_free(color);
+  }
+
+  char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate), CSS_TEMPLATE_INDEX);
+  girara_template_set_base(csstemplate, css);
+  g_free(css);
 
   /* Start D-Bus service */
   bool dbus = true;

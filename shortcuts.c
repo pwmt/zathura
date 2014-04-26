@@ -1128,6 +1128,9 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
       goto error_free;
     }
 
+    gtk_style_context_add_class(gtk_widget_get_style_context(treeview),
+        "indexmode");
+
     g_object_unref(model);
 
     renderer = gtk_cell_renderer_text_new();
