@@ -4,7 +4,7 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out dbus-interface-definitions.c, $(wildcard *.c))
+OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c)))
 HEADER     = $(wildcard *.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
@@ -37,10 +37,11 @@ ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 
-OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o
+OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o css-definitions.o
 DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
 
-all: options ${PROJECT} po build-manpages
+all: options ${PROJECT} po 
+# build-manpages
 
 # pkg-config based version checks
 .version-checks/%: config.mk
@@ -68,11 +69,18 @@ version.h: version.h.in config.mk
 	$(QUIET)mv version.h.tmp version.h
 
 dbus-interface-definitions.c: data/org.pwmt.zathura.xml
-	$(QUIET)echo '#include "dbus-interface-definitions.h"' > dbus-interface-definitions.c.tmp
-	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> dbus-interface-definitions.c.tmp
-	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> dbus-interface-definitions.c.tmp
-	$(QUIET)echo ';' >> dbus-interface-definitions.c.tmp
-	$(QUIET)mv dbus-interface-definitions.c.tmp dbus-interface-definitions.c
+	$(QUIET)echo '#include "dbus-interface-definitions.h"' > $@.tmp
+	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> $@.tmp
+	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> $@.tmp
+	$(QUIET)echo ';' >> $@.tmp
+	$(QUIET)mv $@.tmp $@.c
+
+css-definitions.c: data/zathura.css_t
+	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
+	$(QUIET)echo 'const char* CSS_TEMPLATE =' >> $@.tmp
+	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' $< >> $@.tmp
+	$(QUIET)echo ';' >> $@.tmp
+	$(QUIET)mv $@.tmp $@
 
 %.o: %.c
 	$(call colorecho,CC,$<)
