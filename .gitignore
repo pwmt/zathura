@@ -23,3 +23,4 @@ css-definitions.c
 .ycm_extra_conf.py
 .ropeproject
 compile_commands.json
+zathura-*.tar.gz
