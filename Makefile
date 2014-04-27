@@ -73,7 +73,7 @@ dbus-interface-definitions.c: data/org.pwmt.zathura.xml
 	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> $@.tmp
 	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> $@.tmp
 	$(QUIET)echo ';' >> $@.tmp
-	$(QUIET)mv $@.tmp $@.c
+	$(QUIET)mv $@.tmp $@
 
 css-definitions.c: data/zathura.css_t
 	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
