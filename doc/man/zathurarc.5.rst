@@ -886,6 +886,35 @@ En/Disables the D-Bus service required for synctex forward synchronization.
 * Value type: Boolean
 * Default value: true
 
+index-fg
+^^^^^^^^
+Defines the foreground color of the index mode.
+
+* Value type: String
+* Default value: #DDDDDD
+
+index-bg
+^^^^^^^^
+Define the background color of the index mode.
+
+* Value type: String
+* Default value: #232323
+
+index-active-fg
+^^^^^^^^^^^^^^^
+Defines the foreground color of the selected element in index mode.
+
+* Value type: String
+* Default value: #232323
+
+index-active-bg
+^^^^^^^^^^^^^^^
+Define the background color of the selected element in index mode.
+
+* Value type: String
+* Default value: #9FBC00
+
+
 SEE ALSO
 ========
 
