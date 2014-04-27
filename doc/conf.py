@@ -34,15 +34,6 @@ html_theme_path   = [sphinx_rtd_theme.get_html_theme_path()]
 html_static_path  = ['_static']
 htmlhelp_basename = 'zathuradoc'
 
-
-# -- Options for manual page output ---------------------------------------
-
-man_pages = [
-    ('man/zathura.1', 'zathura', 'a document viewer', ['pwmt.org'], 1),
-    ('man/zathurarc.5', 'zathurarc', 'a document viewer', ['pwmt.org'], 5)
-]
-
-
 # -- Options for breathe ---------------------------------------
 
 breathe_projects = { "zathura": "_build/doxygen/xml" }

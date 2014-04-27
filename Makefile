@@ -40,8 +40,7 @@ endif
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o css-definitions.o
 DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
 
-all: options ${PROJECT} po 
-# build-manpages
+all: options ${PROJECT} po build-manpages
 
 # pkg-config based version checks
 .version-checks/%: config.mk

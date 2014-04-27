@@ -5,29 +5,50 @@ include ../common.mk
 include ../colors.mk
 include config.mk
 
+MAN_SOURCES=$(wildcard man/*.txt) $(wildcard man/*.txt) man/conf.py
+DOXYGEN_SOURCES=$(wildcard ../*.h) Doxyfile
+HTML_SORUCES=$(wildcard *.rst api/*.rst configuration/*.rst installation/*.rst usage/*.rst) conf.py
+
+SPHINX_OPTS+=-d $(SPHINX_BUILDDIR)/doctrees
+
 ifeq ($(shell which $(SPHINX_BIN) >/dev/null 2>&1; echo $$?), 1)
 	$(error The '$(SPHINX_BIN)' command was not found.)
 endif
 
-all: html man
-
-init:
-	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)/
+all: man html
 
 clean:
 	$(call colorecho,RM,doc/$(SPHINX_BUILDDIR))
 	$(QUIET)rm -rf $(SPHINX_BUILDDIR)/
 
-html: doxygen
+$(SPHINX_BUILDDIR)/html/index.html: $(HTML_SOURCES) $(SPHINX_BUILDDIR)/doxygen/xml/index.xml
 	$(call colorecho,DOC,"Build HTML documentation")
-	$(QUIET)$(SPHINX_BIN) -b html $(SPHINX_OPTS) $(SPHINX_BUILDDIR)/html
+	$(QUIET)$(SPHINX_BIN) -b html $(SPHINX_OPTS) . $(SPHINX_BUILDDIR)/html
 
-man: doxygen
+$(SPHINX_BUILDDIR)/zathura.1 $(SPHINX_BUILDDIR)/zathurarc.5: $(MAN_SOURCES)
 	$(call colorecho,DOC,"Build man pages")
-	$(QUIET)$(SPHINX_BIN) -b man $(SPHINX_OPTS) $(SPHINX_BUILDDIR)/man
+	$(QUIET)$(SPHINX_BIN) -b man $(SPHINX_OPTS) man $(SPHINX_BUILDDIR)
 
-doxygen: init
+$(SPHINX_BUILDDIR)/doxygen/xml/index.xml: $(DOXYGEN_SOURCES)
+	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)
 	$(call colorecho,DOC,"Run doxygen")
 	$(QUIET)$(DOXYGEN_BIN) Doxyfile
 
-.PHONY: clean html man
+ifeq ($(shell which $(SPHINX_BIN) >/dev/null 2>&1; echo $$?), 1)
+man:
+html:
+else
+man: $(SPHINX_BUILDDIR)/zathura.1 $(SPHINX_BUILDDIR)/zathurarc.5
+
+ifeq ($(shell which $(DOXYGEN_BIN) >/dev/null 2>&1; echo $$?), 0)
+ifeq ($(shell $(PYTHON_BIN) -c "import breathe; import sphinx_rtd_theme" >/dev/null 2>&1; echo $$?), 0)
+html: $(SPHINX_BUILDDIR)/html/index.html
+else
+html:
+endif
+else
+html:
+endif
+endif
+
+.PHONY: clean html man all
