@@ -144,13 +144,7 @@ test: ${OBJECTS}
 	$(QUIET)make -C tests run
 
 dist: clean build-manpages
-	$(QUIET)tar -czf $(TARFILE) `git ls-files`
-	$(QUIET)rm -rf ${TARDIR}
-	$(QUIET)mkdir -p ${TARDIR}
-	$(QUIET)tar -xvf ${TARFILE} -C ${TARDIR}
-	$(QUIET)find ${TARDIR} -name '.gitignore' -exec rm {} \;
-	$(QUIET)tar -czf ${TARFILE} ${TARDIR}
-	$(QUIET)rm -rf ${TARDIR}
+	$(QUIET)tar -czf $(TARFILE) --exclude=.gitignore `git ls-files`
 
 doc:
 	$(QUIET)make -C doc
