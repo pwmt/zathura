@@ -40,12 +40,9 @@ html:
 else
 man: $(SPHINX_BUILDDIR)/zathura.1 $(SPHINX_BUILDDIR)/zathurarc.5
 
-ifeq ($(shell which $(DOXYGEN_BIN) >/dev/null 2>&1; echo $$?), 0)
-ifeq ($(shell $(PYTHON_BIN) -c "import breathe; import sphinx_rtd_theme" >/dev/null 2>&1; echo $$?), 0)
+# TODO: Make a better test for breathe and sphinx_rtd_theme
+ifeq ($(shell which $(DOXYGEN_BIN) >/dev/null 2>&1 && $(PYTHON_BIN) -c "import breathe; import sphinx_rtd_theme" >/dev/null 2>&1; echo $$?), 0)
 html: $(SPHINX_BUILDDIR)/html/index.html
-else
-html:
-endif
 else
 html:
 endif
