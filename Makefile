@@ -167,11 +167,11 @@ build-manpages:
 install-manpages: build-manpages
 	$(call colorecho,INSTALL,"man pages")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
-ifneq "$(wildcard ./doc/_build/man/${PROJECT}.1)" ""
-	$(QUIET)install -m 644 ./doc/_build/man/${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
+ifneq "$(wildcard doc/_build/${PROJECT}.1)" ""
+	$(QUIET)install -m 644 doc/_build/${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
 endif
-ifneq "$(wildcard ./doc/_build/man/${PROJECT}rc.5)" ""
-	$(QUIET)install -m 644 ./doc/_build/man/${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
+ifneq "$(wildcard doc/_build/${PROJECT}rc.5)" ""
+	$(QUIET)install -m 644 doc/_build/${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
 endif
 
 install-headers: ${PROJECT}.pc
