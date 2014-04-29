@@ -11,10 +11,6 @@ HTML_SORUCES=$(wildcard *.rst api/*.rst configuration/*.rst installation/*.rst u
 
 SPHINX_OPTS+=-d $(SPHINX_BUILDDIR)/doctrees
 
-ifeq ($(shell which $(SPHINX_BIN) >/dev/null 2>&1; echo $$?), 1)
-	$(error The '$(SPHINX_BIN)' command was not found.)
-endif
-
 all: man html
 
 clean:
