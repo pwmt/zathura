@@ -161,6 +161,7 @@ are currently available:
     Space      Space
     Super      Windows key
     Tab        Tab
+    Print      Print key
 
 Of course it is possible to combine those special keys with a modifier. The
 usage of those keys should be explained by the following examples:
