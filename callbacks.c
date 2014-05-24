@@ -590,3 +590,16 @@ cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data)
 
   g_free(selection);
 }
+
+void
+cb_page_widget_link(ZathuraPage* page, void* data)
+{
+  g_return_if_fail(page != NULL);
+
+  bool enter = (bool) data;
+
+  GdkWindow* window = gtk_widget_get_parent_window(GTK_WIDGET(page));
+  GdkCursor* cursor = gdk_cursor_new(enter == true ? GDK_HAND1 : GDK_LEFT_PTR);
+  gdk_window_set_cursor(window, cursor);
+  g_object_unref(cursor);
+}

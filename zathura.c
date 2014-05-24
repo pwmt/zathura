@@ -783,6 +783,10 @@ document_open(zathura_t* zathura, const char* path, const char* password,
         G_CALLBACK(cb_page_widget_text_selected), zathura);
     g_signal_connect(G_OBJECT(page_widget), "image-selected",
         G_CALLBACK(cb_page_widget_image_selected), zathura);
+    g_signal_connect(G_OBJECT(page_widget), "enter-link",
+        G_CALLBACK(cb_page_widget_link), (gpointer) true);
+    g_signal_connect(G_OBJECT(page_widget), "leave-link",
+        G_CALLBACK(cb_page_widget_link), (gpointer) false);
   }
 
   /* view mode */
