@@ -71,6 +71,7 @@ static void zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* ev
 static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button);
 static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* button);
 static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event);
+static gboolean cb_zathura_page_widget_leave_notify(GtkWidget* widget, GdkEventCrossing* event);
 static gboolean cb_zathura_page_widget_popup_menu(GtkWidget* widget);
 static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPage* page);
 static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
@@ -115,6 +116,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
   widget_class->motion_notify_event  = cb_zathura_page_widget_motion_notify;
+  widget_class->leave_notify_event   = cb_zathura_page_widget_leave_notify;
   widget_class->popup_menu           = cb_zathura_page_widget_popup_menu;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
@@ -215,9 +217,9 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->mouse.selection_basepoint.x = -1;
   priv->mouse.selection_basepoint.y = -1;
 
-  /* we want mouse events */
-  gtk_widget_add_events(GTK_WIDGET(widget),
-                        GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
+  const unsigned int event_mask = GDK_BUTTON_PRESS_MASK |
+    GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK;
+  gtk_widget_add_events(GTK_WIDGET(widget), event_mask);
 }
 
 GtkWidget*
@@ -812,6 +814,19 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
   redraw_rect(ZATHURA_PAGE(widget), &tmp);
   priv->mouse.selection = tmp;
 
+  return false;
+}
+
+static gboolean
+cb_zathura_page_widget_leave_notify(GtkWidget* widget, GdkEventCrossing* UNUSED(event))
+{
+  g_return_val_if_fail(widget != NULL, false);
+
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  if (priv->mouse.over_link == true) {
+    g_signal_emit(ZATHURA_PAGE(widget), signals[LEAVE_LINK], 0);
+    priv->mouse.over_link = false;
+  }
   return false;
 }
 
