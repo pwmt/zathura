@@ -512,7 +512,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
       } else {
         const GdkRGBA color = priv->zathura->ui.colors.render_loading_fg;
-        cairo_set_source_rgb(cairo, color.red/65535.0, color.green/65535.0, color.blue/65535.0);
+        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
       }
 
       const char* text = _("Loading...");
@@ -621,8 +621,8 @@ redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles)
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
   GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect)
-  zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-  redraw_rect(widget, &rectangle);
+    zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+    redraw_rect(widget, &rectangle);
   GIRARA_LIST_FOREACH_END(rectangles, zathura_recantgle_t*, iter, rect);
 }
 
@@ -849,10 +849,10 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   /* search for underlaying image */
   zathura_image_t* image = NULL;
   GIRARA_LIST_FOREACH(priv->images.list, zathura_image_t*, iter, image_it)
-  zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
-  if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
-    image = image_it;
-  }
+    zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
+    if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
+      image = image_it;
+    }
   GIRARA_LIST_FOREACH_END(priv->images.list, zathura_image_t*, iter, image_it);
 
   if (image == NULL) {
