@@ -47,6 +47,8 @@ General
   d
     Toggle dual page view
   F5
+    Switch to presentation mode
+  F11
     Switch to fullscreen mode
   ^m
     Toggle inputbar
@@ -76,7 +78,7 @@ Fullscreen mode
     Goto to the first, the last or to the nth page
   ^c, Escape
     Abort
-  F5
+  F11
     Switch to normal mode
   +, -, =
     Zoom in, out or to the original size
@@ -87,6 +89,16 @@ Fullscreen mode
   q
     Quit
 
+Presentation mode
+
+  space, <S-space>, <BackSpace>
+    Scroll a full page down or up
+  ^c, Escape
+    Abort
+  F5
+    Switch to normal mode
+  q
+    Quit
 
 Index mode
 
