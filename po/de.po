@@ -534,4 +534,4 @@ msgstr "Dateityp ist nicht unterstützt. Installiere das benötigete Plugin."
 
 #: ../zathura.c:544
 msgid "Document does not contain any pages"
-msgstr "Dieses Dokument beinhaltet kein Seiten"
+msgstr "Dieses Dokument beinhaltet keine Seiten"
