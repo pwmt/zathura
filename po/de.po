@@ -47,7 +47,7 @@ msgstr "Ungültige Anzahl an Argumenten angegeben."
 #: ../commands.c:53
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "Konnte Lesezeichen nicht erstellen: %s"
+msgstr "Konnte Lesezeichen nicht aktualisieren: %s"
 
 #: ../commands.c:55
 #, c-format
@@ -262,7 +262,7 @@ msgstr "Färbe die Seiten ein"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr "Behalte beim Neuzeichnen den ursprünglichen Hue-Wert bei und stimme nur die Helligkeit ab"
+msgstr "Behalte beim Neufärben den ursprünglichen Farbton bei und passe nur die Helligkeit an"
 
 #: ../config.c:176
 msgid "Wrap scrolling"
@@ -294,7 +294,7 @@ msgstr "Zentriere Ergebnis horizontal"
 
 #: ../config.c:190
 msgid "Transparency for highlighting"
-msgstr "Transparenz einer Markierung"
+msgstr "Transparenz für Markierungen"
 
 #: ../config.c:192
 msgid "Render 'Loading ...'"
@@ -473,7 +473,7 @@ msgstr "Dokument Passwort"
 
 #: ../main.c:63
 msgid "Page number to go to"
-msgstr "Zur Seitenzahl springen"
+msgstr "Zur Seite springen"
 
 #: ../main.c:64
 msgid "Log level (debug, info, warning, error)"
@@ -534,4 +534,4 @@ msgstr "Dateityp ist nicht unterstützt. Installiere das benötigete Plugin."
 
 #: ../zathura.c:544
 msgid "Document does not contain any pages"
-msgstr "Dieses Dokument beinhaltet kein Seiten"
+msgstr "Dieses Dokument beinhaltet keine Seiten"
