@@ -322,7 +322,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
       return;
     }
 
-    zathura_rectangle_t temp_rect;
+    zathura_rectangle_t temp_rect = { 0, 0, 0, 0 };
     while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
                                &temp_rect.y1, &temp_rect.y2)) {
       zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
