@@ -545,17 +545,17 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
 }
 
 bool
-zathura_dbus_synctex_position(const char* filename, const char* position,
-                              pid_t hint)
+zathura_dbus_synctex_position(const char* filename, const char* input_file,
+                              int line, int column, pid_t hint)
 {
-  if (filename == NULL || position == NULL) {
+  if (filename == NULL || input_file == NULL) {
     return false;
   }
 
   unsigned int page = 0;
   girara_list_t* secondary_rects = NULL;
   girara_list_t* rectangles = synctex_rectangles_from_position(
-      filename, position, &page, &secondary_rects);
+      filename, input_file, line, column, &page, &secondary_rects);
   if (rectangles == NULL) {
     return false;
   }
