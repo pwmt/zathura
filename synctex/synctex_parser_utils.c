@@ -52,6 +52,7 @@ authorization from the copyright holder.
 #include <string.h>
 
 #include <sys/stat.h>
+#include <time.h>
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
 #define SYNCTEX_WINDOWS 1
