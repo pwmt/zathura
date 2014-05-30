@@ -8,13 +8,12 @@
 #include "page.h"
 #include "document.h"
 #include "utils.h"
-
 #include "synctex/synctex_parser.h"
 
 void
 synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
 {
-  if (zathura == NULL || page == NULL) {
+  if (zathura == NULL || page == NULL || zathura->synctex.editor == NULL) {
     return;
   }
 
@@ -28,24 +27,55 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
     return;
   }
 
-  char** argv = g_try_malloc0(sizeof(char*) * (zathura->synctex.editor != NULL ?
-      7 : 5));
-  if (argv == NULL) {
+  synctex_scanner_t scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
+  if (scanner == NULL) {
+    girara_debug("Failed to create synctex scanner.");
     return;
   }
 
-  argv[0] = g_strdup("synctex");
-  argv[1] = g_strdup("edit");
-  argv[2] = g_strdup("-o");
-  argv[3] = g_strdup_printf("%d:%d:%d:%s", zathura_page_get_index(page) + 1, x,
-      y, filename);
-  if (zathura->synctex.editor != NULL) {
-    argv[4] = g_strdup("-x");
-    argv[5] = g_strdup(zathura->synctex.editor);
+  synctex_scanner_t temp = synctex_scanner_parse(scanner);
+  if (temp == NULL) {
+    girara_debug("Failed to parse synctex file.");
+    synctex_scanner_free(scanner);
+    return;
   }
 
-  g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-  g_strfreev(argv);
+  if (synctex_edit_query(scanner, zathura_page_get_index(page) + 1, x, y) > 0) {
+    /* Assume that a backward search returns either at most one result. */
+    synctex_node_t node = synctex_next_result(scanner);
+    if (node != NULL) {
+      const char* input_file = synctex_scanner_get_name(scanner, synctex_node_tag(node));
+      const int line = synctex_node_line(node);
+      const int column = synctex_node_column (node);
+
+      char* linestr = g_strdup_printf("%d", line);
+      char* columnstr = g_strdup_printf("%d", column);
+
+      gchar** argv = NULL;
+      gint    argc = 0;
+      if (g_shell_parse_argv(zathura->synctex.editor, &argc, &argv, NULL) == TRUE) {
+        for (gint i = 0; i != argc; ++i) {
+          char* temp = girara_replace_substring(argv[i], "%{line}", linestr);
+          g_free(argv[i]);
+          argv[i] = temp;
+          temp = girara_replace_substring(argv[i], "%{column}", columnstr);
+          g_free(argv[i]);
+          argv[i] = temp;
+          temp = girara_replace_substring(argv[i], "%{input}", input_file);
+          g_free(argv[i]);
+          argv[i] = temp;
+        }
+
+        g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+        g_strfreev(argv);
+      }
+
+      g_free(linestr);
+      g_free(columnstr);
+    }
+  }
+
+  synctex_scanner_free(scanner);
 }
 
 girara_list_t*
