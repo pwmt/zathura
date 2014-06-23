@@ -137,32 +137,45 @@ cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   statusbar_page_number_update(zathura);
 }
 
+static void
+cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zathura,
+    bool width)
+{
+  /* Do nothing in index mode */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
+    return;
+  }
+
+  const zathura_adjust_mode_t adjust_mode =
+    zathura_document_get_adjust_mode(zathura->document);
+
+  /* Don't scroll, we're focusing the inputbar. */
+  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
+    return;
+  }
+
+  /* Save the viewport size */
+  unsigned int size = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
+  if (width == true) {
+    zathura_document_set_viewport_width(zathura->document, size);
+  } else {
+    zathura_document_set_viewport_height(zathura->document, size);
+  }
+
+  /* reset the adjustment, in case bounds have changed */
+  const double ratio = width == true ?
+    zathura_document_get_position_x(zathura->document) :
+    zathura_document_get_position_x(zathura->document);
+  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+}
+
 void
 cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data)
 {
   zathura_t* zathura = data;
   g_return_if_fail(zathura != NULL);
 
-  zathura_adjust_mode_t adjust_mode =
-    zathura_document_get_adjust_mode(zathura->document);
-
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
-  }
-
-  /* Don't scroll we're focusing the inputbar. */
-  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-    return;
-  }
-
-  /* save the viewport size */
-  unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
-  zathura_document_set_viewport_width(zathura->document, view_width);
-
-  /* reset the adjustment, in case bounds have changed */
-  double ratio = zathura_document_get_position_x(zathura->document);
-  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+  cb_view_adjustment_changed(adjustment, zathura, true);
 }
 
 void
@@ -171,26 +184,7 @@ cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_t* zathura = data;
   g_return_if_fail(zathura != NULL);
 
-  zathura_adjust_mode_t adjust_mode =
-    zathura_document_get_adjust_mode(zathura->document);
-
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
-  }
-
-  /* Don't scroll we're focusing the inputbar. */
-  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-    return;
-  }
-
-  /* save the viewport size */
-  unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
-  zathura_document_set_viewport_height(zathura->document, view_height);
-
-  /* reset the adjustment, in case bounds have changed */
-  double ratio = zathura_document_get_position_y(zathura->document);
-  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+  cb_view_adjustment_changed(adjustment, zathura, false);
 }
 
 void
