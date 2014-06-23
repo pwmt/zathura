@@ -81,7 +81,7 @@ position_to_page_number(zathura_document_t* document, double pos_x,
   if (page < c0 - 1) {
     return 0;
   } else {
-    return page - (c0 - 1);
+    return MIN(page - (c0 - 1), npag - 1);
   }
 }
 
