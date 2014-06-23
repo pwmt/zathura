@@ -227,7 +227,7 @@ cb_page_layout_value_changed(girara_session_t* session, const char* name, girara
     if (pages_per_row == 0) {
       pages_per_row = 1;
       girara_setting_set(session, name, &pages_per_row);
-      girara_notify(session, GIRARA_WARNING, _("'%s' must not be 0. Set to 1.."), name);
+      girara_notify(session, GIRARA_WARNING, _("'%s' must not be 0. Set to 1."), name);
       return;
     }
   }
