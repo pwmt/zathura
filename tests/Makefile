@@ -8,7 +8,7 @@ PROJECT = tests
 SOURCE  = tests.c $(wildcard test_*.c)
 OBJECTS = ${SOURCE:.c=.o}
 
-ZOSOURCE   = $(filter-out ../main.c,$(wildcard ../*.c))
+ZOSOURCE   = $(filter-out ../main.c,$(wildcard ../*.c) $(wildcard ../synctex/*.c))
 
 ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
