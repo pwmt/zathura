@@ -1,218 +1,215 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# 
+# zathura - language file (Lithuanian)
+# See LICENSE file for license and copyright information
+#
 # Translators:
-# Łukasz Hryniuk <lukequaint@gmail.com>, 2013
-# p <inactive+poczciwiec@transifex.com>, 2012,2014
-# p <inactive+poczciwiec@transifex.com>, 2012
+# gns_ank <anikevicius@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2014-02-23 17:09+0000\n"
-"Last-Translator: p <inactive+poczciwiec@transifex.com>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/zathura/language/pl/)\n"
+"PO-Revision-Date: 2014-06-24 21:33+0200\n"
+"Last-Translator: gns_ank <anikevicius@gmail.com>\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/zathura/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../callbacks.c:301
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Nieprawidłowy argument: %s"
+msgstr "Netinkama įvestis: „%s“."
 
 #: ../callbacks.c:337
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Nieprawidłowy indeks: %s"
+msgstr "Duotas netinkamas indeksas: „%s“."
 
 #: ../callbacks.c:550
 #, c-format
 msgid "Copied selected text to clipboard: %s"
-msgstr "Zaznaczony tekst skopiowano do schowka: %s"
+msgstr "Nukopijuotas tekstas į iškarpinę: %s"
 
 #: ../commands.c:36 ../commands.c:76 ../commands.c:103 ../commands.c:152
 #: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:422
 #: ../commands.c:543 ../shortcuts.c:403 ../shortcuts.c:1201
 #: ../shortcuts.c:1230 ../shortcuts.c:1259
 msgid "No document opened."
-msgstr "Nie otwarto żadnego pliku"
+msgstr "Nėra atidarytų dokumentų."
 
 #: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:427
 msgid "Invalid number of arguments given."
-msgstr "Nieprawidłowa liczba parametrów polecenia"
+msgstr "Duotų parametrų skaičius yra neteisingas."
 
 #: ../commands.c:53
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "Nie można stworzyć zakładki: %s"
+msgstr "Žymė negalėjo būti atnaujinta: %s"
 
 #: ../commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Nie można stworzyć zakładki: %s"
+msgstr "Žymė negalėjo būti sukurta: %s"
 
 #: ../commands.c:60
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr "Zaktualizowano zakładkę: %s"
+msgstr "Žymė sėkmingai atnaujinta: %s"
 
 #: ../commands.c:62
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr "Utworzono zakładkę: %s"
+msgstr "Žymė sėkmingai sukurta: %s"
 
 #: ../commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Usunięto zakładkę: %s"
+msgstr "Žymė ištrinta: %s"
 
 #: ../commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Nie można usunąć zakładki: %s"
+msgstr "Žymė negalėjo būti panaikinta: %s"
 
 #: ../commands.c:116
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Nie znaleziono zakładki: %s"
+msgstr "Nėra tokios žymės: %s"
 
 #: ../commands.c:162
 msgid "Title"
-msgstr "Tytuł"
+msgstr "Pavadinimas"
 
 #: ../commands.c:163
 msgid "Author"
-msgstr "Autor"
+msgstr "Autorius"
 
 #: ../commands.c:164
 msgid "Subject"
-msgstr "Temat"
+msgstr ""
 
 #: ../commands.c:165
 msgid "Keywords"
-msgstr "Słowa kluczowe"
+msgstr "Raktažodžiai"
 
 #: ../commands.c:166
 msgid "Creator"
-msgstr "Twórca"
+msgstr ""
 
 #: ../commands.c:167
 msgid "Producer"
-msgstr "Producent"
+msgstr "Gamintojas"
 
 #: ../commands.c:168
 msgid "Creation date"
-msgstr "Data utworzenia"
+msgstr "Sukūrimo data"
 
 #: ../commands.c:169
 msgid "Modification date"
-msgstr "Data modyfikacji"
+msgstr "Pakeitimo data"
 
 #: ../commands.c:174 ../commands.c:196
 msgid "No information available."
-msgstr "Brak informacji o pliku"
+msgstr "Nėra informacijos."
 
 #: ../commands.c:234
 msgid "Too many arguments."
-msgstr "Za dużo parametrów polecenia"
+msgstr "Per daug parametrų."
 
 #: ../commands.c:245
 msgid "No arguments given."
-msgstr "Nie podano parametrów polecenia"
+msgstr "Parametrai neduoti."
 
 #: ../commands.c:304 ../commands.c:330
 msgid "Document saved."
-msgstr "Zapisano dokument"
+msgstr "Dokumentas išsaugotas."
 
 #: ../commands.c:306 ../commands.c:332
 msgid "Failed to save document."
-msgstr "Błąd zapisu"
+msgstr "Dokumento išsaugoti nepavyko."
 
 #: ../commands.c:309 ../commands.c:335
 msgid "Invalid number of arguments."
-msgstr "Niewłaściwa liczba parametrów polecenia"
+msgstr "Neteisingas parametrų skaičius."
 
 #: ../commands.c:446
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Nie można dodać załącznika %s do pliku %s"
+msgstr "Priedas „%s“ negalėjo būti įrašytas į „%s“."
 
 #: ../commands.c:448
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Zapisano załącznik %s do pliku %s"
+msgstr "Priedas „%s“ įrašytas į „%s“."
 
 #: ../commands.c:492
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Obrazek %s zapisano do pliku %s"
+msgstr "Atvaizdas „%s“ įrašytas į „%s“."
 
 #: ../commands.c:494
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Nie można dodać obrazka %s do pliku %s"
+msgstr "Atvaizdas „%s“ negalėjo būti įrašytas į „%s“,"
 
 #: ../commands.c:501
 #, c-format
 msgid "Unknown image '%s'."
-msgstr "Nieznany obrazek '%s'."
+msgstr "Nežinomas atvaizdas „%s“."
 
 #: ../commands.c:505
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Nieznany załącznik lub obrazek '%s'."
+msgstr "Nežinomas priedas ar atvaizdas „%s“."
 
 #: ../commands.c:556
 msgid "Argument must be a number."
-msgstr "Parametr polecenia musi być liczbą"
+msgstr "Parametras turi būti skaičius."
 
 #: ../completion.c:250
 #, c-format
 msgid "Page %d"
-msgstr "Strona %d"
+msgstr "%d puslapis"
 
 #: ../completion.c:293
 msgid "Attachments"
-msgstr "Załączniki"
+msgstr "Priedai"
 
 #. add images
 #: ../completion.c:324
 msgid "Images"
-msgstr "Obrazki"
+msgstr "Atvaizdai"
 
 #. zathura settings
 #: ../config.c:136
 msgid "Database backend"
-msgstr "Baza danych"
+msgstr "Duomenų bazės posistemė"
 
 #: ../config.c:138
 msgid "Zoom step"
-msgstr "Skok powiększenia"
+msgstr "Priartinimo žingsnis"
 
 #: ../config.c:140
 msgid "Padding between pages"
-msgstr "Odstęp pomiędzy stronami"
+msgstr "Užpildymas tarp puslapių"
 
 #: ../config.c:142
 msgid "Number of pages per row"
-msgstr "Liczba stron w wierszu"
+msgstr "Puslapių skaičius eilutėje"
 
 #: ../config.c:144
 msgid "Column of the first page"
-msgstr ""
+msgstr "Pirmo puslapio stulpelis"
 
 #: ../config.c:146
 msgid "Scroll step"
-msgstr "Skok przewijania"
+msgstr "Slinkties žingsnis"
 
 #: ../config.c:148
 msgid "Horizontal scroll step"
-msgstr "Skok przewijania poziomego"
+msgstr "Horizontalios slinksties žingsnis"
 
 #: ../config.c:150
 msgid "Full page scroll overlap"
@@ -220,15 +217,15 @@ msgstr ""
 
 #: ../config.c:152
 msgid "Zoom minimum"
-msgstr "Minimalne powiększenie"
+msgstr "Mažiausias priartinimas"
 
 #: ../config.c:154
 msgid "Zoom maximum"
-msgstr "Maksymalne powiększenie"
+msgstr "Didžiausias priartinimas"
 
 #: ../config.c:156
 msgid "Maximum number of pages to keep in the cache"
-msgstr "Maksymalna liczba stron w pamięci podręcznej"
+msgstr "Puslapių limitas spartinančioje atmintinėje"
 
 #: ../config.c:158
 msgid "Number of positions to remember in the jumplist"
@@ -236,51 +233,51 @@ msgstr ""
 
 #: ../config.c:160
 msgid "Recoloring (dark color)"
-msgstr "Ciemny kolor negatywu"
+msgstr "Spalvų keitimas (tamsi spalva)"
 
 #: ../config.c:161
 msgid "Recoloring (light color)"
-msgstr "Jasny kolor negatywu"
+msgstr "Spalvų keitimas (šviesi spalva)"
 
 #: ../config.c:162
 msgid "Color for highlighting"
-msgstr "Kolor wyróżnienia"
+msgstr "Žymos spalva"
 
 #: ../config.c:164
 msgid "Color for highlighting (active)"
-msgstr "Kolor wyróżnienia bieżącego elementu"
+msgstr "Žymos spalva (aktyvi)"
 
 #: ../config.c:166
 msgid "'Loading ...' background color"
-msgstr "Kolor tła komunikatu „Wczytywanie pliku...”"
+msgstr "„Kraunama ...“ fono spalva"
 
 #: ../config.c:168
 msgid "'Loading ...' foreground color"
-msgstr "Kolor komunikatu „Wczytywanie pliku...”"
+msgstr "„Kraunama ...“ pagrindinė spalva"
 
 #: ../config.c:172
 msgid "Recolor pages"
-msgstr "Negatyw"
+msgstr "Pakeisti spalvas"
 
 #: ../config.c:174
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr "Dla negatywu zachowaj oryginalny odcień i zmień tylko jasność"
+msgstr ""
 
 #: ../config.c:176
 msgid "Wrap scrolling"
-msgstr "Zawijanie dokumentu"
+msgstr ""
 
 #: ../config.c:178
 msgid "Page aware scrolling"
-msgstr ""
+msgstr "Puslapių ribas atpažįstanti slinktis"
 
 #: ../config.c:180
 msgid "Advance number of pages per row"
-msgstr "Zwiększ liczbę stron w wierszu"
+msgstr "Padidinti puslapių skaičių eilutėje"
 
 #: ../config.c:182
 msgid "Horizontally centered zoom"
-msgstr "Powiększenie względem środka"
+msgstr ""
 
 #: ../config.c:184
 msgid "Align link target to the left"
@@ -292,63 +289,63 @@ msgstr ""
 
 #: ../config.c:188
 msgid "Center result horizontally"
-msgstr "Poziome wyśrodkowanie wyniku"
+msgstr ""
 
 #: ../config.c:190
 msgid "Transparency for highlighting"
-msgstr "Przezroczystość wyróżnienia"
+msgstr "Žymų skaidrumas"
 
 #: ../config.c:192
 msgid "Render 'Loading ...'"
-msgstr "Wyświetlaj: „Wczytywanie pliku...”"
+msgstr "Atvaizduoti „Kraunama ...“"
 
 #: ../config.c:193
 msgid "Adjust to when opening file"
-msgstr "Dopasowanie widoku pliku"
+msgstr "Prisitaikyti atidarant bylą"
 
 #: ../config.c:195
 msgid "Show hidden files and directories"
-msgstr "Wyświetl ukryte pliki i katalogi"
+msgstr "Rodyti paslėptus failus ir katalogus"
 
 #: ../config.c:197
 msgid "Show directories"
-msgstr "Wyświetl katalogi"
+msgstr "Rodyti katalogų sąrašą"
 
 #: ../config.c:199
 msgid "Always open on first page"
-msgstr "Zawsze otwieraj na pierwszej stronie"
+msgstr "Visada atverti pirmą puslapį"
 
 #: ../config.c:201
 msgid "Highlight search results"
-msgstr "Podświetl wyniki wyszukiwania"
+msgstr "Pažymėti paieškos rezultatus"
 
 #: ../config.c:204
 msgid "Enable incremental search"
-msgstr "Włącz wyszukiwanie przyrostowe"
+msgstr "Įjungti prieauginę paiešką"
 
 #: ../config.c:206
 msgid "Clear search results on abort"
-msgstr "Wyczyść wyniki wyszukiwania po przerwaniu"
+msgstr "Išvalyti paieškos rezultatus nutraukiant"
 
 #: ../config.c:208
 msgid "Use basename of the file in the window title"
-msgstr "Pokaż nazwę pliku w pasku tytułu"
+msgstr ""
 
 #: ../config.c:210
 msgid "Display the page number in the window title"
-msgstr "Wyświetl numer strony w pasku tytułu"
+msgstr "Rodyti puslapio skaičių lango pavadinime"
 
 #: ../config.c:212
 msgid "Use basename of the file in the statusbar"
-msgstr "Nazwa pliku w pasku stanu"
+msgstr "Naudoti bylos vardą būsenos juostoje"
 
 #: ../config.c:214 ../main.c:66
 msgid "Enable synctex support"
-msgstr "Włącz synctex"
+msgstr "Įjungti synctex palaikymą"
 
 #: ../config.c:216
 msgid "Enable D-Bus service"
-msgstr "Uruchom serwis D-Bus"
+msgstr ""
 
 #: ../config.c:218
 msgid "The clipboard into which mouse-selected data will be written"
@@ -357,137 +354,137 @@ msgstr ""
 #. define default inputbar commands
 #: ../config.c:398
 msgid "Add a bookmark"
-msgstr "Dodaj zakładkę"
+msgstr "Pridėti žymę"
 
 #: ../config.c:399
 msgid "Delete a bookmark"
-msgstr "Usuń zakładkę"
+msgstr "Ištrinti žymę"
 
 #: ../config.c:400
 msgid "List all bookmarks"
-msgstr "Wyświetl zakładki"
+msgstr "Žymių sąrašas"
 
 #: ../config.c:401
 msgid "Close current file"
-msgstr "Zamknij plik"
+msgstr "Uždaryti dabartinę bylą"
 
 #: ../config.c:402
 msgid "Show file information"
-msgstr "Wyświetl informacje o pliku"
+msgstr "Rodyti bylos informaciją"
 
 #: ../config.c:403
 msgid "Execute a command"
-msgstr "Wykonaj polecenie"
+msgstr ""
 
 #: ../config.c:404
 msgid "Show help"
-msgstr "Wyświetl pomoc"
+msgstr "Rodyti pagalbą"
 
 #: ../config.c:405
 msgid "Open document"
-msgstr "Otwórz plik"
+msgstr "Atidryti dokumentą"
 
 #: ../config.c:406
 msgid "Close zathura"
-msgstr "Zakończ"
+msgstr "Uždaryti zathura"
 
 #: ../config.c:407
 msgid "Print document"
-msgstr "Wydrukuj"
+msgstr "Atspausdinti dokumentą"
 
 #: ../config.c:408
 msgid "Save document"
-msgstr "Zapisz"
+msgstr "Išsaugoti dokumentą"
 
 #: ../config.c:409
 msgid "Save document (and force overwriting)"
-msgstr "Zapisz (nadpisując istniejący plik)"
+msgstr "Išsaugoti dokumentą (ir priverstinai perašyti)"
 
 #: ../config.c:410
 msgid "Save attachments"
-msgstr "Zapisz załączniki"
+msgstr "Išsaugoti priedus"
 
 #: ../config.c:411
 msgid "Set page offset"
-msgstr "Ustaw przesunięcie numerów stron"
+msgstr "Nustatyti puslapio poslinkį"
 
 #: ../config.c:412
 msgid "Mark current location within the document"
-msgstr "Zaznacz aktualną pozycję w dokumencie"
+msgstr "Pažymėti dabartinę dokumento vietą"
 
 #: ../config.c:413
 msgid "Delete the specified marks"
-msgstr "Skasuj określone zakładki"
+msgstr "Ištrinti šias žymes"
 
 #: ../config.c:414
 msgid "Don't highlight current search results"
-msgstr "Nie podświetlaj aktualnych wyników wyszukiwania "
+msgstr "Nežymėti dabartinės paieškos rezultatų"
 
 #: ../config.c:415
 msgid "Highlight current search results"
-msgstr "Podświetl aktualne wyniki wyszukiwania"
+msgstr "Pažymėti dabartinės paieškos rezultatus"
 
 #: ../config.c:416
 msgid "Show version information"
-msgstr "Wyświetl informacje o wersji"
+msgstr "Rodyti versijos informaciją"
 
 #: ../links.c:202 ../links.c:281
 msgid "Failed to run xdg-open."
-msgstr "Wystąpił problem z uruchomieniem xdg-open"
+msgstr "Klaida xdg-open paleidime."
 
 #: ../links.c:220
 #, c-format
 msgid "Link: page %d"
-msgstr "Link: strona %d"
+msgstr "Nuoroda: %d puslapis"
 
 #: ../links.c:227
 #, c-format
 msgid "Link: %s"
-msgstr "Link: %s"
+msgstr "Nuoroda: %s"
 
 #: ../links.c:231
 msgid "Link: Invalid"
-msgstr "Nieprawidłowy link"
+msgstr "Neteisinga nuoroda"
 
 #: ../main.c:57
 msgid "Reparents to window specified by xid"
-msgstr "Przypisz proces do rodzica o danym xid"
+msgstr ""
 
 #: ../main.c:58
 msgid "Path to the config directory"
-msgstr "Położenie katalogu konfiguracyjnego"
+msgstr "Konfigūracinių failų aplanko adresas"
 
 #: ../main.c:59
 msgid "Path to the data directory"
-msgstr "Położenie katalogu danych"
+msgstr "Duomenų aplanko adresas"
 
 #: ../main.c:60
 msgid "Path to the directories containing plugins"
-msgstr "Położenie katalogu wtyczek"
+msgstr "Įskiepių aplanko adresas"
 
 #: ../main.c:61
 msgid "Fork into the background"
-msgstr "Forkuj w tle"
+msgstr ""
 
 #: ../main.c:62
 msgid "Document password"
-msgstr "Hasło dokumentu"
+msgstr "Dokumento slaptažodis"
 
 #: ../main.c:63
 msgid "Page number to go to"
-msgstr ""
+msgstr "Pereiti į puslapį"
 
 #: ../main.c:64
 msgid "Log level (debug, info, warning, error)"
-msgstr "Szczegółowość komunikatów (debug, info, warning, error)"
+msgstr "Registravimo lygis (derinimas, informacija, įspėjimai, klaidos)"
 
 #: ../main.c:65
 msgid "Print version information"
-msgstr "Wyświetl informacje o wersji"
+msgstr "Spausdinti versijos informaciją"
 
 #: ../main.c:67
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Edytor synctex (przekierowanie do komendy synctex)"
+msgstr "Synctex redaktorius (naudojama synctex komandoje)"
 
 #: ../main.c:68
 msgid "Move to given synctex position"
@@ -503,28 +500,28 @@ msgstr ""
 
 #: ../page-widget.c:493
 msgid "Loading..."
-msgstr "Wczytywanie pliku..."
+msgstr "Kraunama..."
 
 #: ../page-widget.c:808
 msgid "Copy image"
-msgstr "Skopiuj obrazek"
+msgstr "Kopijuoti atvaizdą"
 
 #: ../page-widget.c:809
 msgid "Save image as"
-msgstr "Zapisz obrazek jako"
+msgstr "Irašyti atvaizdą kaip"
 
 #: ../print.c:64 ../print.c:211
 #, c-format
 msgid "Printing failed: %s"
-msgstr "Nie można wydrukować: %s"
+msgstr ""
 
 #: ../shortcuts.c:1114
 msgid "This document does not contain any index"
-msgstr "Dokument nie zawiera indeksu"
+msgstr "Šit dokumentas neturi turinio"
 
 #: ../zathura.c:192 ../zathura.c:988
 msgid "[No name]"
-msgstr "[bez nazwy]"
+msgstr "[Bevardis]"
 
 #: ../zathura.c:473
 msgid "Could not read file from stdin and write it to a temporary file."
@@ -532,8 +529,8 @@ msgstr ""
 
 #: ../zathura.c:534
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr "Niewspierany rodzaj pliku. Zainstaluj wymagane wtyczki"
+msgstr "Bylos tipas nepalaikomas. Įdiekite tam skirtus įskiepius."
 
 #: ../zathura.c:544
 msgid "Document does not contain any pages"
-msgstr "Dokument nie zawiera żadnej strony"
+msgstr "Dokumente puslapių nėra"
