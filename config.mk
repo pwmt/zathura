@@ -77,8 +77,11 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
-INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
-LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
+ZLIB_INC ?= $(shell pkg-config --cflags zlib)
+ZLIB_LIB ?= $(shell pkg-config --libs zlib)
+
+INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC} $(ZLIB_INC)
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} $(ZLIB_LIB) -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)

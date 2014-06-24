@@ -12,6 +12,7 @@ typedef struct synctex_page_rect_s {
 
 void synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y);
 girara_list_t* synctex_rectangles_from_position(const char* filename,
-    const char* position, unsigned int* page, girara_list_t** secondary_rects);
+    const char* input_file, int line, int column, unsigned int* page,
+    girara_list_t** secondary_rects);
 
 #endif

@@ -4,8 +4,8 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c)))
-HEADER     = $(wildcard *.h)
+OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c))) $(wildcard synctex/*.c)
+HEADER     = $(wildcard *.h) $(wildcard synctex/*.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
 ifneq (${WITH_SQLITE},0)
@@ -36,6 +36,13 @@ endif
 ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
+ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
+CPPFLAGS += -Isynctex
+endif
+ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
+CPPFLAGS += -DSYNCTEX_VERBOSE=0
+endif
+
 
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o css-definitions.o
 DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
@@ -83,7 +90,7 @@ css-definitions.c: data/zathura.css_t
 
 %.o: %.c
 	$(call colorecho,CC,$<)
-	$(QUIET) mkdir -p .depend
+	$(QUIET) mkdir -p $(shell dirname .depend/$@.dep)
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 %.do: %.c
