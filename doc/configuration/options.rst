@@ -25,7 +25,7 @@ General settings
   a page.
 
 	 :type: Boolean
-	 :default: false
+	 :default: true
 
 .. describe:: database
 
