@@ -13,9 +13,14 @@ zathura.pc
 gcov/
 *.swp
 version.h
-doc/
+./doc/_build
 *.tmp
 zathura.1
 zathurarc.5
 .version-checks/
 dbus-interface-definitions.c
+css-definitions.c
+.ycm_extra_conf.py
+.ropeproject
+compile_commands.json
+zathura-*.tar.gz

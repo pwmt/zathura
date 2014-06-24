@@ -7,20 +7,24 @@ Requirements
 ------------
 gtk3
 glib (>= 2.28)
-girara (>= 0.1.8)
+girara (>= 0.2.0)
 sqlite3 (optional, >= 3.5.9)
 check (for tests)
 intltool
-python-docutils (optional, for man pages)
 libmagic from file(1) (optional, for mime-type detection)
+Sphinx (optional, for manpages and HTML documentation)
+doxygen (optional, for HTML documentation)
+breathe (optional, for HTML documentation)
+sphinx_rtd_theme (optional, for HTML documentation)
 
 Please note that you need to have a working pkg-config installation and that the
 Makefile is only compatible with GNU make. If you don't have a working
 pkg-config installation please set the GTK_INC, GTK_LIB, GIRARA_INC, GIRARA_LIB,
 SQLITE_INC and SQLITE_LIB variables accordingly.
 
-And also note that rst2man from python-docutils is needed to build the man pages.
-If it is not installed, the man pages won't be built.
+Also note that Sphinx is needed to build the manpages.  If it is not
+installed, the man pages won't be built. For the HTML documentation, doxygen,
+breathe and sphinx_rtd_theme are needed in additioan to Sphinx.
 
 If you don't want to build with support for sqlite databases, you can set
 WITH_SQLITE=0 and sqlite support won't be available.
@@ -30,6 +34,9 @@ WITH_MAGIC=0.
 
 If you pass these flags as a command line argument to make, you have to ensure
 to pass the same flags when executing the install target.
+
+If you want to build zathuras documentation, please install all python
+dependencies from the ./doc/requirements.txt file.
 
 Installation
 ------------

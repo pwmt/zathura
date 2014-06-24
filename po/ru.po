@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2014-01-31 10:35+0100\n"
-"PO-Revision-Date: 2014-02-14 03:22+0000\n"
+"POT-Creation-Date: 2014-06-24 21:36+0200\n"
+"PO-Revision-Date: 2014-06-24 21:39+0200\n"
 "Last-Translator: vp1981 <irk.translator@yandex.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
 "ru/)\n"
@@ -22,25 +22,277 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: ../callbacks.c:301
+#: ../print.c:64 ../print.c:211
 #, c-format
-msgid "Invalid input '%s' given."
-msgstr "Неправильный ввод: %s."
+msgid "Printing failed: %s"
+msgstr "Не удалось напечатать %s"
 
-#: ../callbacks.c:337
-#, c-format
-msgid "Invalid index '%s' given."
-msgstr "Получен неверный индекс: %s."
+#. zathura settings
+#: ../config.c:142
+msgid "Database backend"
+msgstr "Бэкэнд базы данных"
 
-#: ../callbacks.c:550
-#, c-format
-msgid "Copied selected text to clipboard: %s"
-msgstr "Выделенный текст скопирован в буфер: %s"
+#: ../config.c:144
+msgid "Zoom step"
+msgstr "Шаг увеличения"
+
+#: ../config.c:146
+msgid "Padding between pages"
+msgstr "Разрыв между страницами"
+
+#: ../config.c:148
+msgid "Number of pages per row"
+msgstr "Количество страниц в ряд"
+
+#: ../config.c:150
+msgid "Column of the first page"
+msgstr "Столбец первой страницы"
+
+#: ../config.c:152
+msgid "Scroll step"
+msgstr "Шаг прокрутки"
+
+#: ../config.c:154
+msgid "Horizontal scroll step"
+msgstr "Шаг горизонтальной прокрутки"
+
+#: ../config.c:156
+msgid "Full page scroll overlap"
+msgstr "Перекрытие страниц при прокрутке"
+
+#: ../config.c:158
+msgid "Zoom minimum"
+msgstr "Минимальное увеличение"
+
+#: ../config.c:160
+msgid "Zoom maximum"
+msgstr "Максимальное увеличение"
+
+#: ../config.c:162
+msgid "Maximum number of pages to keep in the cache"
+msgstr "Максимальное количество страниц хранимых в кэше"
+
+#: ../config.c:164
+msgid "Number of positions to remember in the jumplist"
+msgstr "Длина истории переходов"
+
+#: ../config.c:166
+msgid "Recoloring (dark color)"
+msgstr "Перекрашивание (тёмные тона)"
+
+#: ../config.c:167
+msgid "Recoloring (light color)"
+msgstr "Перекрашивание (светлые тона)"
+
+#: ../config.c:168
+msgid "Color for highlighting"
+msgstr "Цвет для подсветки"
+
+#: ../config.c:170
+msgid "Color for highlighting (active)"
+msgstr "Цвет для подсветки (активной)"
+
+#: ../config.c:172
+msgid "'Loading ...' background color"
+msgstr "Цвет фона загрузочной заставки"
+
+#: ../config.c:174
+msgid "'Loading ...' foreground color"
+msgstr "Цвет загрузочной заставки"
+
+#: ../config.c:177
+msgid "Index mode foreground color"
+msgstr ""
+
+#: ../config.c:178
+msgid "Index mode background color"
+msgstr ""
+
+#: ../config.c:179
+msgid "Index mode foreground color (active element)"
+msgstr ""
+
+#: ../config.c:180
+msgid "Index mode background color (active element)"
+msgstr ""
+
+#: ../config.c:183
+msgid "Recolor pages"
+msgstr "Перекрасить страницы"
+
+#: ../config.c:185
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr "При перекраске сохранять оттенок и изменять только осветление"
+
+#: ../config.c:187
+msgid "Wrap scrolling"
+msgstr "Плавная прокрутка"
+
+#: ../config.c:189
+msgid "Page aware scrolling"
+msgstr "Постраничная прокрутка"
+
+#: ../config.c:191
+msgid "Advance number of pages per row"
+msgstr "Увеличить количество страниц в ряду"
+
+#: ../config.c:193
+msgid "Horizontally centered zoom"
+msgstr "Центрировать увеличение по горизонтали"
+
+#: ../config.c:195
+msgid "Align link target to the left"
+msgstr "Выровнять цель ссылки по левому краю"
+
+#: ../config.c:197
+msgid "Let zoom be changed when following links"
+msgstr "Разрешить изменять размер при следовании по ссылкам"
+
+#: ../config.c:199
+msgid "Center result horizontally"
+msgstr "Центрировать результат по горизонтали"
+
+#: ../config.c:201
+msgid "Transparency for highlighting"
+msgstr "Прозрачность подсветки"
+
+#: ../config.c:203
+msgid "Render 'Loading ...'"
+msgstr "Рендер «Загружается ...»"
+
+#: ../config.c:204
+msgid "Adjust to when opening file"
+msgstr "Подогнать размеры при открытии документа"
+
+#: ../config.c:206
+msgid "Show hidden files and directories"
+msgstr "Показывать скрытые файлы и каталоги"
+
+#: ../config.c:208
+msgid "Show directories"
+msgstr "Показывать каталоги"
+
+#: ../config.c:210
+msgid "Always open on first page"
+msgstr "Всегда открывать на первой странице"
+
+#: ../config.c:212
+msgid "Highlight search results"
+msgstr "Подсветить результаты поиска"
+
+#: ../config.c:215
+msgid "Enable incremental search"
+msgstr "Включить инкрементальный поиск"
+
+#: ../config.c:217
+msgid "Clear search results on abort"
+msgstr "Сбросить результаты при отмене поиска"
+
+#: ../config.c:219
+msgid "Use basename of the file in the window title"
+msgstr "Использовать базовое имя файла в заголовке"
+
+#: ../config.c:221
+msgid "Display the page number in the window title"
+msgstr "Показывать номер страницы в заголовке"
+
+#: ../config.c:223
+msgid "Use basename of the file in the statusbar"
+msgstr "Использовать базовое имя файла в строке состояния"
+
+#: ../config.c:225 ../main.c:66
+msgid "Enable synctex support"
+msgstr "Включить поддержку synctex"
+
+#: ../config.c:227
+msgid "Enable D-Bus service"
+msgstr "Включить сервис D-Bus"
+
+#: ../config.c:229
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr "Буфер для записи данных из области выделенных мышкой"
+
+#. define default inputbar commands
+#: ../config.c:413
+msgid "Add a bookmark"
+msgstr "Добавить закладку"
+
+#: ../config.c:414
+msgid "Delete a bookmark"
+msgstr "Удалить закладку"
+
+#: ../config.c:415
+msgid "List all bookmarks"
+msgstr "Показать все закладки"
+
+#: ../config.c:416
+msgid "Close current file"
+msgstr "Закрыть текущий файл"
+
+#: ../config.c:417
+msgid "Show file information"
+msgstr "Показать информацию о файле"
+
+#: ../config.c:418
+msgid "Execute a command"
+msgstr "Выполнить команду"
+
+#: ../config.c:419
+msgid "Show help"
+msgstr "Помощь"
+
+#: ../config.c:420
+msgid "Open document"
+msgstr "Открыть документ"
+
+#: ../config.c:421
+msgid "Close zathura"
+msgstr "Выход"
+
+#: ../config.c:422
+msgid "Print document"
+msgstr "Печать"
+
+#: ../config.c:423
+msgid "Save document"
+msgstr "Сохранить документ"
+
+#: ../config.c:424
+msgid "Save document (and force overwriting)"
+msgstr "Сохранить документ (с перезаписью)"
+
+#: ../config.c:425
+msgid "Save attachments"
+msgstr "Сохранить прикреплённые файлы"
+
+#: ../config.c:426
+msgid "Set page offset"
+msgstr "Сохранить смещение страницы"
+
+#: ../config.c:427
+msgid "Mark current location within the document"
+msgstr "Пометить текущую позицию в документе"
+
+#: ../config.c:428
+msgid "Delete the specified marks"
+msgstr "Удалить указанные пометки"
+
+#: ../config.c:429
+msgid "Don't highlight current search results"
+msgstr "Не подсвечивать результаты текущего поиска"
+
+#: ../config.c:430
+msgid "Highlight current search results"
+msgstr "Подсветить результаты текущего поиска"
+
+#: ../config.c:431
+msgid "Show version information"
+msgstr "Показать информацию о версии файла"
 
 #: ../commands.c:36 ../commands.c:76 ../commands.c:103 ../commands.c:152
 #: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:422
-#: ../commands.c:543 ../shortcuts.c:403 ../shortcuts.c:1201
-#: ../shortcuts.c:1230 ../shortcuts.c:1259
+#: ../commands.c:543 ../shortcuts.c:406 ../shortcuts.c:1207
+#: ../shortcuts.c:1236 ../shortcuts.c:1263
 msgid "No document opened."
 msgstr "Нет открытых документов."
 
@@ -173,283 +425,17 @@ msgstr "Неизвестное вложение или изображение «
 msgid "Argument must be a number."
 msgstr "Аргумент должен быть числом."
 
-#: ../completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "Страница %d"
-
-#: ../completion.c:293
-msgid "Attachments"
-msgstr "Прикреплённые файлы"
-
-#. add images
-#: ../completion.c:324
-msgid "Images"
-msgstr "Изображения"
-
-#. zathura settings
-#: ../config.c:136
-msgid "Database backend"
-msgstr "Бэкэнд базы данных"
-
-#: ../config.c:138
-msgid "Zoom step"
-msgstr "Шаг увеличения"
-
-#: ../config.c:140
-msgid "Padding between pages"
-msgstr "Разрыв между страницами"
-
-#: ../config.c:142
-msgid "Number of pages per row"
-msgstr "Количество страниц в ряд"
-
-#: ../config.c:144
-msgid "Column of the first page"
-msgstr "Столбец первой страницы"
-
-#: ../config.c:146
-msgid "Scroll step"
-msgstr "Шаг прокрутки"
-
-#: ../config.c:148
-msgid "Horizontal scroll step"
-msgstr "Шаг горизонтальной прокрутки"
-
-#: ../config.c:150
-msgid "Full page scroll overlap"
-msgstr "Перекрытие страниц при прокрутке"
-
-#: ../config.c:152
-msgid "Zoom minimum"
-msgstr "Минимальное увеличение"
-
-#: ../config.c:154
-msgid "Zoom maximum"
-msgstr "Максимальное увеличение"
-
-#: ../config.c:156
-msgid "Maximum number of pages to keep in the cache"
-msgstr "Максимальное количество страниц хранимых в кэше"
-
-#: ../config.c:158
-msgid "Number of positions to remember in the jumplist"
-msgstr "Длина истории переходов"
-
-#: ../config.c:160
-msgid "Recoloring (dark color)"
-msgstr "Перекрашивание (тёмные тона)"
-
-#: ../config.c:161
-msgid "Recoloring (light color)"
-msgstr "Перекрашивание (светлые тона)"
-
-#: ../config.c:162
-msgid "Color for highlighting"
-msgstr "Цвет для подсветки"
-
-#: ../config.c:164
-msgid "Color for highlighting (active)"
-msgstr "Цвет для подсветки (активной)"
-
-#: ../config.c:166
-msgid "'Loading ...' background color"
-msgstr "Цвет фона загрузочной заставки"
-
-#: ../config.c:168
-msgid "'Loading ...' foreground color"
-msgstr "Цвет загрузочной заставки"
-
-#: ../config.c:172
-msgid "Recolor pages"
-msgstr "Перекрасить страницы"
-
-#: ../config.c:174
-msgid "When recoloring keep original hue and adjust lightness only"
-msgstr "При перекраске сохранять оттенок и изменять только осветление"
-
-#: ../config.c:176
-msgid "Wrap scrolling"
-msgstr "Плавная прокрутка"
-
-#: ../config.c:178
-msgid "Page aware scrolling"
-msgstr "Постраничная прокрутка"
-
-#: ../config.c:180
-msgid "Advance number of pages per row"
-msgstr "Увеличить количество страниц в ряду"
-
-#: ../config.c:182
-msgid "Horizontally centered zoom"
-msgstr "Центрировать увеличение по горизонтали"
-
-#: ../config.c:184
-msgid "Align link target to the left"
-msgstr "Выровнять цель ссылки по левому краю"
-
-#: ../config.c:186
-msgid "Let zoom be changed when following links"
-msgstr "Разрешить изменять размер при следовании по ссылкам"
-
-#: ../config.c:188
-msgid "Center result horizontally"
-msgstr "Центрировать результат по горизонтали"
-
-#: ../config.c:190
-msgid "Transparency for highlighting"
-msgstr "Прозрачность подсветки"
-
-#: ../config.c:192
-msgid "Render 'Loading ...'"
-msgstr "Рендер «Загружается ...»"
-
-#: ../config.c:193
-msgid "Adjust to when opening file"
-msgstr "Подогнать размеры при открытии документа"
-
-#: ../config.c:195
-msgid "Show hidden files and directories"
-msgstr "Показывать скрытые файлы и каталоги"
-
-#: ../config.c:197
-msgid "Show directories"
-msgstr "Показывать каталоги"
-
-#: ../config.c:199
-msgid "Always open on first page"
-msgstr "Всегда открывать на первой странице"
-
-#: ../config.c:201
-msgid "Highlight search results"
-msgstr "Подсветить результаты поиска"
-
-#: ../config.c:204
-msgid "Enable incremental search"
-msgstr "Включить инкрементальный поиск"
-
-#: ../config.c:206
-msgid "Clear search results on abort"
-msgstr "Сбросить результаты при отмене поиска"
-
-#: ../config.c:208
-msgid "Use basename of the file in the window title"
-msgstr "Использовать базовое имя файла в заголовке"
-
-#: ../config.c:210
-msgid "Display the page number in the window title"
-msgstr "Показывать номер страницы в заголовке"
-
-#: ../config.c:212
-msgid "Use basename of the file in the statusbar"
-msgstr "Использовать базовое имя файла в строке состояния"
-
-#: ../config.c:214 ../main.c:66
-msgid "Enable synctex support"
-msgstr "Включить поддержку synctex"
-
-#: ../config.c:216
-msgid "Enable D-Bus service"
-msgstr "Включить сервис D-Bus"
-
-#: ../config.c:218
-msgid "The clipboard into which mouse-selected data will be written"
-msgstr "Буфер для записи данных из области выделенных мышкой"
-
-#. define default inputbar commands
-#: ../config.c:398
-msgid "Add a bookmark"
-msgstr "Добавить закладку"
-
-#: ../config.c:399
-msgid "Delete a bookmark"
-msgstr "Удалить закладку"
-
-#: ../config.c:400
-msgid "List all bookmarks"
-msgstr "Показать все закладки"
-
-#: ../config.c:401
-msgid "Close current file"
-msgstr "Закрыть текущий файл"
-
-#: ../config.c:402
-msgid "Show file information"
-msgstr "Показать информацию о файле"
-
-#: ../config.c:403
-msgid "Execute a command"
-msgstr "Выполнить команду"
-
-#: ../config.c:404
-msgid "Show help"
-msgstr "Помощь"
-
-#: ../config.c:405
-msgid "Open document"
-msgstr "Открыть документ"
-
-#: ../config.c:406
-msgid "Close zathura"
-msgstr "Выход"
-
-#: ../config.c:407
-msgid "Print document"
-msgstr "Печать"
-
-#: ../config.c:408
-msgid "Save document"
-msgstr "Сохранить документ"
-
-#: ../config.c:409
-msgid "Save document (and force overwriting)"
-msgstr "Сохранить документ (с перезаписью)"
-
-#: ../config.c:410
-msgid "Save attachments"
-msgstr "Сохранить прикреплённые файлы"
-
-#: ../config.c:411
-msgid "Set page offset"
-msgstr "Сохранить смещение страницы"
-
-#: ../config.c:412
-msgid "Mark current location within the document"
-msgstr "Пометить текущую позицию в документе"
-
-#: ../config.c:413
-msgid "Delete the specified marks"
-msgstr "Удалить указанные пометки"
-
-#: ../config.c:414
-msgid "Don't highlight current search results"
-msgstr "Не подсвечивать результаты текущего поиска"
-
-#: ../config.c:415
-msgid "Highlight current search results"
-msgstr "Подсветить результаты текущего поиска"
-
-#: ../config.c:416
-msgid "Show version information"
-msgstr "Показать информацию о версии файла"
-
-#: ../links.c:202 ../links.c:281
-msgid "Failed to run xdg-open."
-msgstr "Не удалось запустить xdg-open"
-
-#: ../links.c:220
-#, c-format
-msgid "Link: page %d"
-msgstr "Ссылка: страница %d"
-
-#: ../links.c:227
-#, c-format
-msgid "Link: %s"
-msgstr "Ссылка: %s"
-
-#: ../links.c:231
-msgid "Link: Invalid"
-msgstr "Ссылка: неправильная"
+#: ../page-widget.c:518
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: ../page-widget.c:873
+msgid "Copy image"
+msgstr "Скопировать изображение"
+
+#: ../page-widget.c:874
+msgid "Save image as"
+msgstr "Сохранить изображение как"
 
 #: ../main.c:57
 msgid "Reparents to window specified by xid"
@@ -503,39 +489,76 @@ msgstr "Подсветка заданного положения в заданн
 msgid "Start in a non-default mode"
 msgstr "Запустить в специальном режиме"
 
-#: ../page-widget.c:493
-msgid "Loading..."
-msgstr "Загрузка..."
+#: ../links.c:202 ../links.c:281
+msgid "Failed to run xdg-open."
+msgstr "Не удалось запустить xdg-open"
 
-#: ../page-widget.c:808
-msgid "Copy image"
-msgstr "Скопировать изображение"
-
-#: ../page-widget.c:809
-msgid "Save image as"
-msgstr "Сохранить изображение как"
-
-#: ../print.c:64 ../print.c:211
+#: ../links.c:220
 #, c-format
-msgid "Printing failed: %s"
-msgstr "Не удалось напечатать %s"
+msgid "Link: page %d"
+msgstr "Ссылка: страница %d"
 
-#: ../shortcuts.c:1114
+#: ../links.c:227
+#, c-format
+msgid "Link: %s"
+msgstr "Ссылка: %s"
+
+#: ../links.c:231
+msgid "Link: Invalid"
+msgstr "Ссылка: неправильная"
+
+#: ../completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr "Страница %d"
+
+#: ../completion.c:293
+msgid "Attachments"
+msgstr "Прикреплённые файлы"
+
+#. add images
+#: ../completion.c:324
+msgid "Images"
+msgstr "Изображения"
+
+#: ../shortcuts.c:1117
 msgid "This document does not contain any index"
 msgstr "В документе нет индекса"
 
-#: ../zathura.c:192 ../zathura.c:988
+#: ../zathura.c:207 ../zathura.c:1038
 msgid "[No name]"
 msgstr "[Без названия]"
 
-#: ../zathura.c:473
+#: ../zathura.c:519
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr "Не удалось прочитать файл со стандартного входа и записать его во временный файл."
+msgstr ""
+"Не удалось прочитать файл со стандартного входа и записать его во временный "
+"файл."
 
-#: ../zathura.c:534
+#: ../zathura.c:580
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Тип файла не поддерживается. Установите соответствующий плагин."
 
-#: ../zathura.c:544
+#: ../zathura.c:590
 msgid "Document does not contain any pages"
 msgstr "В документе нет страниц"
+
+#: ../callbacks.c:230
+#, c-format
+msgid "'%s' must not be 0. Set to 1."
+msgstr ""
+
+#: ../callbacks.c:307
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "Неправильный ввод: %s."
+
+#: ../callbacks.c:343
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "Получен неверный индекс: %s."
+
+#: ../callbacks.c:561
+#, c-format
+msgid "Copied selected text to clipboard: %s"
+msgstr "Выделенный текст скопирован в буфер: %s"

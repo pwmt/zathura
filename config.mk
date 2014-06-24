@@ -1,9 +1,12 @@
 # See LICENSE file for license and copyright information
 # zathura make config
 
+# project
+PROJECT = zathura
+
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 2
-ZATHURA_VERSION_REV = 7
+ZATHURA_VERSION_REV = 8
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -15,7 +18,7 @@ VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_RE
 
 # girara
 GIRARA_VERSION_CHECK ?= 1
-GIRARA_MIN_VERSION = 0.1.8
+GIRARA_MIN_VERSION = 0.2.0
 GIRARA_PKG_CONFIG_NAME = girara-gtk3
 # glib
 GLIB_VERSION_CHECK ?= 1
@@ -48,9 +51,6 @@ PLUGINDIR ?= ${LIBDIR}/zathura
 # locale directory
 LOCALEDIR ?= ${PREFIX}/share/locale
 
-# rst2man
-RSTTOMAN ?= /usr/bin/rst2man
-
 # libs
 GTK_INC ?= $(shell pkg-config --cflags gtk+-3.0)
 GTK_LIB ?= $(shell pkg-config --libs gtk+-3.0)
@@ -77,8 +77,11 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
-INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
-LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
+ZLIB_INC ?= $(shell pkg-config --cflags zlib)
+ZLIB_LIB ?= $(shell pkg-config --libs zlib)
+
+INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC} $(ZLIB_INC)
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} $(ZLIB_LIB) -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
@@ -107,3 +110,9 @@ VALGRIND_SUPPRESSION_FILE = zathura.suppression
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
 
+# colors
+COLOR ?= 1
+
+# dist
+TARFILE = ${PROJECT}-${VERSION}.tar.gz
+TARDIR = ${PROJECT}-${VERSION}

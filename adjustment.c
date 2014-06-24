@@ -63,8 +63,16 @@ position_to_page_number(zathura_document_t* document, double pos_x,
   unsigned int c0   = zathura_document_get_first_page_column(document);
   unsigned int npag = zathura_document_get_number_of_pages(document);
   unsigned int ncol = zathura_document_get_pages_per_row(document);
-  unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;   /* number of rows */
+  unsigned int nrow = 0;
   unsigned int pad  = zathura_document_get_page_padding(document);
+
+  if (c0 == 1) {
+    /* There is no offset, so this is easy. */
+    nrow = (npag + ncol - 1) / ncol;
+  } else {
+    /* If there is a offset, we handle the first row extra. */
+    nrow = 1 + (npag - (ncol - c0 - 1) + (ncol - 1)) / ncol;
+  }
 
   unsigned int col = floor(pos_x * (double)doc_width  / (double)(cell_width + pad));
   unsigned int row = floor(pos_y * (double)doc_height / (double)(cell_height + pad));
@@ -73,7 +81,7 @@ position_to_page_number(zathura_document_t* document, double pos_x,
   if (page < c0 - 1) {
     return 0;
   } else {
-    return page - (c0 - 1);
+    return MIN(page - (c0 - 1), npag - 1);
   }
 }
 

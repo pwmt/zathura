@@ -1,11 +1,11 @@
 # See LICENSE file for license and copyright information
 
 include config.mk
+include colors.mk
 include common.mk
 
-PROJECT    = zathura
-OSOURCE    = $(filter-out dbus-interface-definitions.c, $(wildcard *.c))
-HEADER     = $(wildcard *.h)
+OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c))) $(wildcard synctex/*.c)
+HEADER     = $(wildcard *.h) $(wildcard synctex/*.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
 ifneq (${WITH_SQLITE},0)
@@ -36,8 +36,15 @@ endif
 ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
+ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
+CPPFLAGS += -Isynctex
+endif
+ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
+CPPFLAGS += -DSYNCTEX_VERBOSE=0
+endif
 
-OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o
+
+OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o css-definitions.o
 DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
 
 all: options ${PROJECT} po build-manpages
@@ -68,19 +75,26 @@ version.h: version.h.in config.mk
 	$(QUIET)mv version.h.tmp version.h
 
 dbus-interface-definitions.c: data/org.pwmt.zathura.xml
-	$(QUIET)echo '#include "dbus-interface-definitions.h"' > dbus-interface-definitions.c.tmp
-	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> dbus-interface-definitions.c.tmp
-	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> dbus-interface-definitions.c.tmp
-	$(QUIET)echo ';' >> dbus-interface-definitions.c.tmp
-	$(QUIET)mv dbus-interface-definitions.c.tmp dbus-interface-definitions.c
+	$(QUIET)echo '#include "dbus-interface-definitions.h"' > $@.tmp
+	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> $@.tmp
+	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> $@.tmp
+	$(QUIET)echo ';' >> $@.tmp
+	$(QUIET)mv $@.tmp $@
+
+css-definitions.c: data/zathura.css_t
+	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
+	$(QUIET)echo 'const char* CSS_TEMPLATE_INDEX =' >> $@.tmp
+	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' $< >> $@.tmp
+	$(QUIET)echo ';' >> $@.tmp
+	$(QUIET)mv $@.tmp $@
 
 %.o: %.c
-	$(ECHO) CC $<
-	@mkdir -p .depend
+	$(call colorecho,CC,$<)
+	$(QUIET) mkdir -p $(shell dirname .depend/$@.dep)
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 %.do: %.c
-	$(ECHO) CC $<
+	$(call colorecho,CC,$<)
 	@mkdir -p .depend
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
@@ -88,32 +102,30 @@ ${OBJECTS} ${DOBJECTS}: config.mk version.h \
 	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
 
 ${PROJECT}: ${OBJECTS}
-	$(ECHO) CC -o $@
+	$(call colorecho,CC,$@)
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS}
 
 clean:
 	$(QUIET)rm -rf ${PROJECT} \
 		${OBJECTS} \
-		${PROJECT}-${VERSION}.tar.gz \
+		${TARFILE} \
+		${TARDIR} \
 		${DOBJECTS} \
 		${PROJECT}-debug \
 		.depend \
 		${PROJECT}.pc \
-		doc \
 		version.h \
 		version.h.tmp \
 		dbus-interface-definitions.c \
 		dbus-interface-definitions.c.tmp \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		.version-checks
-ifneq "$(wildcard ${RSTTOMAN})" ""
-	$(QUIET)rm -f zathura.1 zathurarc.5
-endif
 	$(QUIET)$(MAKE) -C tests clean
 	$(QUIET)$(MAKE) -C po clean
+	$(QUIET)$(MAKE) -C doc clean
 
 ${PROJECT}-debug: ${DOBJECTS}
-	$(ECHO) CC -o $@
+	$(call colorecho,CC,$@)
 	$(QUIET)${CC} ${LDFLAGS} -o $@ ${DOBJECTS} ${LIBS}
 
 debug: ${PROJECT}-debug
@@ -139,24 +151,13 @@ test: ${OBJECTS}
 	$(QUIET)make -C tests run
 
 dist: clean build-manpages
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/tests
-	$(QUIET)mkdir -p ${PROJECT}-${VERSION}/po
-	$(QUIET)cp LICENSE Makefile config.mk common.mk README AUTHORS Doxyfile \
-			${PROJECT}.1.rst ${PROJECT}rc.5.rst ${OSOURCE} ${HEADER} ${PROJECT}.pc.in \
-			${PROJECT}.desktop version.h.in \
-			${PROJECT}.1 ${PROJECT}rc.5 \
-			${PROJECT}-${VERSION}
-	$(QUIET)cp -r data ${PROJECT}-${VERSION}
-	$(QUIET)cp tests/Makefile tests/config.mk tests/*.c \
-			${PROJECT}-${VERSION}/tests
-	$(QUIET)cp po/Makefile po/*.po ${PROJECT}-${VERSION}/po
-	$(QUIET)tar -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
-	$(QUIET)gzip ${PROJECT}-${VERSION}.tar
-	$(QUIET)rm -rf ${PROJECT}-${VERSION}
+	$(QUIET)tar -czf $(TARFILE) --exclude=.gitignore \
+		--transform 's,^,zathura-$(VERSION)/,' \
+		`git ls-files` \
+		doc/_build/$(PROJECT).1 doc/_build/$(PROJECT)rc.5
 
 doc:
-	$(QUIET)doxygen Doxyfile
+	$(QUIET)make -C doc
 
 gcov: clean
 	$(QUIET)CFLAGS="${CFLAGS} -fprofile-arcs -ftest-coverage" LDFLAGS="${LDFLAGS} -fprofile-arcs" ${MAKE} $(PROJECT)
@@ -170,68 +171,58 @@ po:
 update-po:
 	$(QUIET)${MAKE} -C po update-po
 
-ifneq "$(wildcard ${RSTTOMAN})" ""
-%.1 %.5: config.mk
-	$(QUIET)sed "s/VERSION/${VERSION}/g" < $@.rst > $@.tmp
-	$(QUIET)${RSTTOMAN} $@.tmp > $@.out.tmp
-	$(QUIET)mv $@.out.tmp $@
-	$(QUIET)rm $@.tmp
-
-${PROJECT}.1: ${PROJECT}.1.rst
-${PROJECT}rc.5: ${PROJECT}rc.5.rst
-
-build-manpages: ${PROJECT}.1 ${PROJECT}rc.5
-else
 build-manpages:
-endif
+	$(QUIET)${MAKE} -C doc man
 
 install-manpages: build-manpages
-	$(ECHO) installing manual pages
+	$(call colorecho,INSTALL,"man pages")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${MANPREFIX}/man1 ${DESTDIR}${MANPREFIX}/man5
-ifneq "$(wildcard ${PROJECT}.1)" ""
-	$(QUIET)install -m 644 ${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
+ifneq "$(wildcard doc/_build/${PROJECT}.1)" ""
+	$(QUIET)install -m 644 doc/_build/${PROJECT}.1 ${DESTDIR}${MANPREFIX}/man1
 endif
-ifneq "$(wildcard ${PROJECT}rc.5)" ""
-	$(QUIET)install -m 644 ${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
+ifneq "$(wildcard doc/_build/${PROJECT}rc.5)" ""
+	$(QUIET)install -m 644 doc/_build/${PROJECT}rc.5 ${DESTDIR}${MANPREFIX}/man5
 endif
 
 install-headers: ${PROJECT}.pc
-	$(ECHO) installing header files
+	$(call colorecho,INSTALL,"header files")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${INCLUDEDIR}/${PROJECT}
 	$(QUIET)install -m 644 ${HEADERINST} ${DESTDIR}${INCLUDEDIR}/${PROJECT}
-	$(ECHO) installing pkgconfig file
+
+	$(call colorecho,INSTALL,"pkgconfig file")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${LIBDIR}/pkgconfig
 	$(QUIET)install -m 644 ${PROJECT}.pc ${DESTDIR}${LIBDIR}/pkgconfig
 
 install-dbus:
-	$(ECHO) installing D-Bus interface definitions
+	$(call colorecho,INSTALL,"D-Bus interface definitions")
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
 	$(QUIET)install -m 644 data/org.pwmt.zathura.xml $(DESTDIR)$(DBUSINTERFACEDIR)
 
 install: all install-headers install-manpages install-dbus
-	$(ECHO) installing executable file
+	$(call colorecho,INSTALL,"executeable file")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${DESKTOPPREFIX}
-	$(ECHO) installing desktop file
+	$(call colorecho,INSTALL,"desktop file")
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}
 	$(MAKE) -C po install
 
 uninstall-headers:
-	$(ECHO) removing header files
+	$(call colorecho,UNINSTALL,"header files")
 	$(QUIET)rm -rf ${DESTDIR}${INCLUDEDIR}/${PROJECT}
-	$(ECHO) removing pkgconfig file
+	$(call colorecho,UNINSTALL,"pkgconfig file")
 	$(QUIET)rm -f ${DESTDIR}${LIBDIR}/pkgconfig/${PROJECT}.pc
 
 uninstall: uninstall-headers
 	$(ECHO) removing executable file
+	$(call colorecho,UNINSTALL,"executeable")
 	$(QUIET)rm -f ${DESTDIR}${PREFIX}/bin/${PROJECT}
-	$(ECHO) removing manual pages
+	$(call colorecho,UNINSTALL,"man pages")
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man1/${PROJECT}.1
 	$(QUIET)rm -f ${DESTDIR}${MANPREFIX}/man5/${PROJECT}rc.5
-	$(ECHO) removing desktop file
+	$(call colorecho,UNINSTALL,"desktop file")
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
-	$(ECHO) removing D-Bus interface definitions
+	$(call colorecho,UNINSTALL,"D-Bus interface definitions")
 	$(QUIET)rm -f $(DESTDIR)$(DBUSINTERFACEDIR)/org.pwmt.zathura.xml
 	$(MAKE) -C po uninstall
 

@@ -523,8 +523,8 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
     const char* path = zathura_document_get_path(zathura->document);
 
     GIRARA_LIST_FOREACH(argument_list, char*, iter, value)
-    char* r = NULL;
-    if ((r = replace_substring(value, "$FILE", path)) != NULL) {
+    char* r = girara_replace_substring(value, "$FILE", path);
+    if (r != NULL) {
       girara_list_iterator_set(iter, r);
     }
     GIRARA_LIST_FOREACH_END(argument_list, char*, iter, value);

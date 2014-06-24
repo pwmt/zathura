@@ -106,11 +106,25 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    if (zathura_dbus_synctex_position(real_path, synctex_fwd, synctex_pid) == true) {
+    char** split_fwd = g_strsplit(synctex_fwd, ":", 0);
+    if (split_fwd == NULL || split_fwd[0] == NULL || split_fwd[1] == NULL ||
+        split_fwd[2] == NULL || split_fwd[3] != NULL) {
+      girara_error("Failed to parse argument to --synctex-forward.");
+      free(real_path);
+      g_strfreev(split_fwd);
+      return -1;
+    }
+
+    const int line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
+    const int column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
+    const bool ret = zathura_dbus_synctex_position(real_path, split_fwd[2], line, column, synctex_pid);
+    g_strfreev(split_fwd);
+
+    if (ret == true) {
       free(real_path);
       return 0;
     } else {
-      girara_error("Could not find open instance for '%s'", real_path);
+      girara_error("Could not find open instance for '%s' or got no usable data from synctex.", real_path);
       free(real_path);
       return -1;
     }

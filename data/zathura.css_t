@@ -1,0 +1,11 @@
+/* Index mode colors */
+
+#@session@ .indexmode {
+  color: @index-fg@;
+  background-color: @index-bg@;
+}
+
+#@session@ .indexmode:selected {
+  color: @index-active-fg@;
+  background-color: @index-active-bg@;
+}

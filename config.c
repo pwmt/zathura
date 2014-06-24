@@ -31,17 +31,15 @@ cb_jumplist_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  if (g_strcmp0(name, "jumplist-size") != 0) {
-    return;
-  }
-
   if (*(int *)value < 0) {
     zathura->jumplist.max_size = 0;
   } else {
     zathura->jumplist.max_size = *(int *)value;
   }
 
-  zathura_jumplist_trim(zathura);
+  if (zathura->jumplist.list != NULL && zathura->jumplist.size != 0) {
+    zathura_jumplist_trim(zathura);
+  }
 }
 
 static void
@@ -176,6 +174,11 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),  cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
+  girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, true, _("Index mode foreground color"), NULL, NULL);
+  girara_setting_add(gsession, "index-bg",        "#232323", STRING, true, _("Index mode background color"), NULL, NULL);
+  girara_setting_add(gsession, "index-active-fg", "#232323", STRING, true, _("Index mode foreground color (active element)"), NULL, NULL);
+  girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, true, _("Index mode background color (active element)"), NULL, NULL);
+
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
   bool_value = false;
@@ -184,7 +187,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "scroll-page-aware",      &bool_value,  BOOLEAN, false, _("Page aware scrolling"), NULL, NULL);
-  bool_value = false;
+  bool_value = true;
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);

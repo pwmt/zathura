@@ -174,6 +174,9 @@ struct zathura_s
   struct
   {
     guint refresh_view;
+#ifdef G_OS_UNIX
+    guint sigterm;
+#endif
   } signals;
 
   struct

@@ -170,7 +170,9 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   document_draw_search_results(zathura, true);
 
-  if (rectangles[page] == NULL || girara_list_size(rectangles[page]) == 0) {
+  girara_list_t* rect_list = rectangles[page];
+  if (rect_list == NULL || girara_list_size(rect_list) == 0) {
+    girara_debug("No rectangles for the given page. Jumping to page %u.", page);
     page_set(zathura, page);
     return;
   }
@@ -195,7 +197,13 @@ highlight_rects(zathura_t* zathura, unsigned int page,
 
   /* Need to adjust rectangle to page scale and orientation */
   zathura_page_t* doc_page = zathura_document_get_page(zathura->document, page);
-  zathura_rectangle_t* rect = girara_list_nth(rectangles[page], 0);
+  zathura_rectangle_t* rect = girara_list_nth(rect_list, 0);
+  if (rect == NULL) {
+    girara_debug("List of rectangles is broken. Jumping to page %u.", page);
+    page_set(zathura, page);
+    return;
+  }
+
   zathura_rectangle_t rectangle = recalc_rectangle(doc_page, *rect);
 
   /* compute the center of the rectangle, which will be aligned to the center
@@ -209,6 +217,7 @@ highlight_rects(zathura_t* zathura, unsigned int page,
   }
 
   /* move to position */
+  girara_debug("Jumping to page %u position (%f, %f).", page, pos_x, pos_y);
   zathura_jumplist_add(zathura);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);
@@ -283,6 +292,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
                   &secondary_iter);
 
     if (page >= number_of_pages) {
+      girara_debug("Got invalid page number.");
       GVariant* result = g_variant_new("(b)", false);
       g_variant_iter_free(iter);
       g_variant_iter_free(secondary_iter);
@@ -312,7 +322,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
       return;
     }
 
-    zathura_rectangle_t temp_rect;
+    zathura_rectangle_t temp_rect = { 0, 0, 0, 0 };
     while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
                                &temp_rect.y1, &temp_rect.y2)) {
       zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
@@ -535,17 +545,17 @@ zathura_dbus_goto_page_and_highlight(const char* filename, unsigned int page,
 }
 
 bool
-zathura_dbus_synctex_position(const char* filename, const char* position,
-                              pid_t hint)
+zathura_dbus_synctex_position(const char* filename, const char* input_file,
+                              int line, int column, pid_t hint)
 {
-  if (filename == NULL || position == NULL) {
+  if (filename == NULL || input_file == NULL) {
     return false;
   }
 
   unsigned int page = 0;
   girara_list_t* secondary_rects = NULL;
   girara_list_t* rectangles = synctex_rectangles_from_position(
-      filename, position, &page, &secondary_rects);
+      filename, input_file, line, column, &page, &secondary_rects);
   if (rectangles == NULL) {
     return false;
   }

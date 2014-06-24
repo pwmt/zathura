@@ -137,32 +137,45 @@ cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   statusbar_page_number_update(zathura);
 }
 
+static void
+cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zathura,
+    bool width)
+{
+  /* Do nothing in index mode */
+  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
+    return;
+  }
+
+  const zathura_adjust_mode_t adjust_mode =
+    zathura_document_get_adjust_mode(zathura->document);
+
+  /* Don't scroll, we're focusing the inputbar. */
+  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
+    return;
+  }
+
+  /* Save the viewport size */
+  unsigned int size = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
+  if (width == true) {
+    zathura_document_set_viewport_width(zathura->document, size);
+  } else {
+    zathura_document_set_viewport_height(zathura->document, size);
+  }
+
+  /* reset the adjustment, in case bounds have changed */
+  const double ratio = width == true ?
+    zathura_document_get_position_x(zathura->document) :
+    zathura_document_get_position_y(zathura->document);
+  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+}
+
 void
 cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data)
 {
   zathura_t* zathura = data;
   g_return_if_fail(zathura != NULL);
 
-  zathura_adjust_mode_t adjust_mode =
-    zathura_document_get_adjust_mode(zathura->document);
-
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
-  }
-
-  /* Don't scroll we're focusing the inputbar. */
-  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-    return;
-  }
-
-  /* save the viewport size */
-  unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
-  zathura_document_set_viewport_width(zathura->document, view_width);
-
-  /* reset the adjustment, in case bounds have changed */
-  double ratio = zathura_document_get_position_x(zathura->document);
-  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+  cb_view_adjustment_changed(adjustment, zathura, true);
 }
 
 void
@@ -171,26 +184,7 @@ cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_t* zathura = data;
   g_return_if_fail(zathura != NULL);
 
-  zathura_adjust_mode_t adjust_mode =
-    zathura_document_get_adjust_mode(zathura->document);
-
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
-  }
-
-  /* Don't scroll we're focusing the inputbar. */
-  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-    return;
-  }
-
-  /* save the viewport size */
-  unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
-  zathura_document_set_viewport_height(zathura->document, view_height);
-
-  /* reset the adjustment, in case bounds have changed */
-  double ratio = zathura_document_get_position_y(zathura->document);
-  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
+  cb_view_adjustment_changed(adjustment, zathura, false);
 }
 
 void
@@ -220,12 +214,23 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
-cb_page_layout_value_changed(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
+
+  /* pages-per-row must not be 0 */
+  if (g_strcmp0(name, "pages-per-row") == 0) {
+    unsigned int pages_per_row = *((unsigned int*) value);
+    if (pages_per_row == 0) {
+      pages_per_row = 1;
+      girara_setting_set(session, name, &pages_per_row);
+      girara_notify(session, GIRARA_WARNING, _("'%s' must not be 0. Set to 1."), name);
+      return;
+    }
+  }
 
   if (zathura->document == NULL) {
     /* no document has been openend yet */
@@ -578,4 +583,17 @@ cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data)
   }
 
   g_free(selection);
+}
+
+void
+cb_page_widget_link(ZathuraPage* page, void* data)
+{
+  g_return_if_fail(page != NULL);
+
+  bool enter = (bool) data;
+
+  GdkWindow* window = gtk_widget_get_parent_window(GTK_WIDGET(page));
+  GdkCursor* cursor = gdk_cursor_new(enter == true ? GDK_HAND1 : GDK_LEFT_PTR);
+  gdk_window_set_cursor(window, cursor);
+  g_object_unref(cursor);
 }

@@ -57,7 +57,7 @@ bool zathura_dbus_goto_page_and_highlight(const char* filename,
     unsigned int page, girara_list_t* rectangles, girara_list_t* secondary_rects,
     pid_t pidhint);
 
-bool zathura_dbus_synctex_position(const char* filename, const char* position,
-    pid_t pidhint);
+bool zathura_dbus_synctex_position(const char* filename, const char* input_file,
+    int line, int column, pid_t hint);
 
 #endif
