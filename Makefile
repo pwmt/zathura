@@ -151,7 +151,10 @@ test: ${OBJECTS}
 	$(QUIET)make -C tests run
 
 dist: clean build-manpages
-	$(QUIET)tar -czf $(TARFILE) --exclude=.gitignore `git ls-files`
+	$(QUIET)tar -czf $(TARFILE) --exclude=.gitignore \
+		--transform 's,^,zathura-$(VERSION)/,' \
+		`git ls-files` \
+		doc/_build/$(PROJECT).1 doc/_build/$(PROJECT)rc.5
 
 doc:
 	$(QUIET)make -C doc
