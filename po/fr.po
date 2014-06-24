@@ -1,14 +1,10 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# zathura - language file (French)
+# See LICENSE file for license and copyright information
 #
 # Translators:
 # bknecht <benoit.knecht@gmail.com>, 2012
-# bknecht <benoit.knecht@gmail.com>, 2012
 # Dorian <munto@free.fr>, 2012,2014
-# Dorian <munto@free.fr>, 2012
 # Quentin Stiévenart <quentin.stievenart@gmail.com>, 2012
-# rike, 2014
 # rike <u@451f.org>, 2014
 # Stéphane Aulery <lkppo@free.fr>, 2012
 msgid ""
@@ -16,7 +12,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2014-06-24 21:36+0200\n"
-"PO-Revision-Date: 2014-06-24 21:38+0200\n"
+"PO-Revision-Date: 2014-06-24 21:41+0200\n"
 "Last-Translator: Dorian <munto@free.fr>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/zathura/language/"
 "fr/)\n"
