@@ -187,7 +187,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "scroll-page-aware",      &bool_value,  BOOLEAN, false, _("Page aware scrolling"), NULL, NULL);
-  bool_value = false;
+  bool_value = true;
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
