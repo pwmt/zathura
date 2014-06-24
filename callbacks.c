@@ -165,7 +165,7 @@ cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zathura,
   /* reset the adjustment, in case bounds have changed */
   const double ratio = width == true ?
     zathura_document_get_position_x(zathura->document) :
-    zathura_document_get_position_x(zathura->document);
+    zathura_document_get_position_y(zathura->document);
   zathura_adjustment_set_value_from_ratio(adjustment, ratio);
 }
 
