@@ -118,6 +118,8 @@ clean:
 		version.h.tmp \
 		dbus-interface-definitions.c \
 		dbus-interface-definitions.c.tmp \
+		css-definitions.c \
+		css-definitions.c.tmp \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		.version-checks
 	$(QUIET)$(MAKE) -C tests clean
