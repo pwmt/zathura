@@ -4,7 +4,7 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c))) $(wildcard synctex/*.c)
+OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c)))
 HEADER     = $(wildcard *.h) $(wildcard synctex/*.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
@@ -23,6 +23,22 @@ LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
+ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+INCS   += $(SYNCTEX_INC)
+LIBS   += $(SYNCTEX_LIB)
+else
+INCS   += $(ZLIB_INC)
+LIBS   += $(ZLIB_LIB)
+SOURCE += $(wildcard synctex/*.c)
+
+ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
+CPPFLAGS += -Isynctex
+endif
+ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
+CPPFLAGS += -DSYNCTEX_VERBOSE=0
+endif
+endif
+
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
 endif
@@ -36,13 +52,6 @@ endif
 ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
-ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
-CPPFLAGS += -Isynctex
-endif
-ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
-CPPFLAGS += -DSYNCTEX_VERBOSE=0
-endif
-
 
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o css-definitions.o
 DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
