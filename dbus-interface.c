@@ -83,9 +83,22 @@ zathura_dbus_init(ZathuraDbus* dbus)
 }
 
 static void
+gdbus_connection_closed(GDBusConnection* UNUSED(connection),
+    gboolean UNUSED(remote_peer_vanished), GError* error, void* UNUSED(data))
+{
+  if (error != NULL) {
+    girara_debug("D-Bus connection closed: %s", error->message);
+  }
+}
+
+static void
 bus_acquired(GDBusConnection* connection, const gchar* name, void* data)
 {
   girara_debug("Bus acquired at '%s'.", name);
+
+  /* register callback for GDBusConnection's closed signal */
+  g_signal_connect(G_OBJECT(connection), "closed",
+                   G_CALLBACK(gdbus_connection_closed), NULL);
 
   ZathuraDbus* dbus = data;
   private_t* priv   = GET_PRIVATE(dbus);
