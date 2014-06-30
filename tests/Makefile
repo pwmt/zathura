@@ -8,7 +8,7 @@ PROJECT = tests
 SOURCE  = tests.c $(wildcard test_*.c)
 OBJECTS = ${SOURCE:.c=.o}
 
-ZOSOURCE   = $(filter-out ../main.c,$(wildcard ../*.c) $(wildcard ../synctex/*.c))
+ZOSOURCE   = $(filter-out ../main.c,$(wildcard ../*.c))
 
 ifneq (${WITH_SQLITE},0)
 INCS   += $(SQLITE_INC)
@@ -25,6 +25,27 @@ ifneq ($(WITH_MAGIC),0)
 INCS += $(MAGIC_INC)
 LIBS += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
+endif
+
+ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+INCS   += $(SYNCTEX_INC)
+LIBS   += $(SYNCTEX_LIB)
+else
+INCS   += $(ZLIB_INC)
+LIBS   += $(ZLIB_LIB)
+ZSOURCE += $(wildcard ../synctex/*.c)
+CPPFLAGS += -I../synctex
+
+ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
+CPPFLAGS += -DSYNCTEX_VERBOSE=0
+endif
+endif
+
+ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
+CPPFLAGS += -Isynctex
+endif
+ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
+CPPFLAGS += -DSYNCTEX_VERBOSE=0
 endif
 
 ZOBJECTS = ${ZSOURCE:.c=.o}
