@@ -385,8 +385,12 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
     }
   }
 
-  if ((new_page < 0 || new_page >= number_of_pages) && !scroll_wrap) {
-    return false;
+  if (!scroll_wrap) {
+    if (new_page <= 0) {
+      new_page = 0;
+    } else if (new_page >= number_of_pages) {
+      new_page = number_of_pages - 1;
+    }
   }
 
   page_set(zathura, new_page);
