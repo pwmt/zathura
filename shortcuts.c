@@ -285,6 +285,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
     case GIRARA_EVENT_SCROLL_DOWN:
     case GIRARA_EVENT_SCROLL_LEFT:
     case GIRARA_EVENT_SCROLL_RIGHT:
+    case GIRARA_EVENT_SCROLL_BIDIRECTIONAL:
       return sc_scroll(session, argument, NULL, t);
 
       /* drag */
@@ -338,6 +339,9 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
       break;
     case GIRARA_EVENT_SCROLL_DOWN:
       argument->n = ZOOM_OUT;
+      break;
+    case GIRARA_EVENT_SCROLL_BIDIRECTIONAL:
+      argument->n = ZOOM_SMOOTH;
       break;
     default:
       return false;
@@ -589,6 +593,13 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     case RIGHT:
       pos_x += direction * t * scroll_hstep / (double)doc_width;
       break;
+
+    case BIDIRECTIONAL: {
+      double* movement = (double*)argument->data;
+      pos_x += movement[0] * t * scroll_hstep / (double)doc_width;
+      pos_y += movement[1] * t * scroll_step / (double)doc_height;
+      break;
+    }
   }
 
   /* handle boundaries */
@@ -1367,6 +1378,9 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
     } else {
       zathura_document_set_scale(zathura->document, t / 100.0);
     }
+  } else if (argument->n == ZOOM_SMOOTH) {
+     double dy = ((double*)argument->data)[1];
+     zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
   } else {
     zathura_document_set_scale(zathura->document, 1.0);
   }

@@ -60,7 +60,9 @@ enum {
   ROTATE_CW,
   ROTATE_CCW,
   PAGE_BOTTOM,
-  PAGE_TOP
+  PAGE_TOP,
+  BIDIRECTIONAL,
+  ZOOM_SMOOTH
 };
 
 /* unspecified page number */
