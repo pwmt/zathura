@@ -5,6 +5,7 @@
 
 #include <errno.h>
 #include <girara/utils.h>
+#include <girara/settings.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <limits.h>
@@ -48,7 +49,6 @@ main(int argc, char* argv[])
   gchar* mode           = NULL;
   bool forkback         = false;
   bool print_version    = false;
-  bool synctex          = false;
   int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   int synctex_pid       = -1;
   Window embed          = 0;
@@ -63,7 +63,6 @@ main(int argc, char* argv[])
     { "page",                   'P',  0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
     { "debug",                  'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
     { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
-    { "synctex",                's',  0, G_OPTION_ARG_NONE,     &synctex,        _("Enable synctex support"),                            NULL },
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
     { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
     { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
@@ -158,7 +157,6 @@ main(int argc, char* argv[])
   zathura_set_config_dir(zathura, config_dir);
   zathura_set_data_dir(zathura, data_dir);
   zathura_set_plugin_dir(zathura, plugin_path);
-  zathura_set_synctex_editor_command(zathura, synctex_editor);
   zathura_set_argv(zathura, argv);
 
   /* Init zathura */
@@ -168,8 +166,9 @@ main(int argc, char* argv[])
     return -1;
   }
 
-  /* Enable/Disable synctex support */
-  zathura_set_synctex(zathura, synctex);
+  if (synctex_editor != NULL) {
+    girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
+  }
 
   /* Print version */
   if (print_version == true) {

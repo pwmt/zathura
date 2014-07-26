@@ -131,12 +131,6 @@ struct zathura_s
 
   struct
   {
-    bool enabled;
-    gchar* editor;
-  } synctex;
-
-  struct
-  {
     GtkPrintSettings* settings; /**< Print settings */
     GtkPageSetup* page_setup; /**< Saved page setup */
   } print;
@@ -262,22 +256,6 @@ void zathura_set_data_dir(zathura_t* zathura, const char* dir);
  * @param dir Directory path
  */
 void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
-
-/**
- * Enables synctex support and sets the synctex editor command
- *
- * @param zathura The zathura session
- * @param command Synctex editor command
- */
-void zathura_set_synctex_editor_command(zathura_t* zathura, const char* command);
-
-/**
- * En/Disable zathuras synctex support
- *
- * @param zathura The zathura session
- * @param value The value
- */
-void zathura_set_synctex(zathura_t* zathura, bool value);
 
 /**
  * Sets the program parameters

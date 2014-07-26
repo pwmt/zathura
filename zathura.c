@@ -422,31 +422,6 @@ zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
 }
 
 void
-zathura_set_synctex_editor_command(zathura_t* zathura, const char* command)
-{
-  g_return_if_fail(zathura != NULL);
-
-  if (zathura->synctex.editor != NULL) {
-    g_free(zathura->synctex.editor);
-  }
-
-  if (command != NULL) {
-    zathura->synctex.editor = g_strdup(command);
-  } else {
-    zathura->synctex.editor = NULL;
-  }
-}
-
-void
-zathura_set_synctex(zathura_t* zathura, bool value)
-{
-  g_return_if_fail(zathura != NULL);
-  g_return_if_fail(zathura->ui.session != NULL);
-
-  girara_setting_set(zathura->ui.session, "synctex", &value);
-}
-
-void
 zathura_set_argv(zathura_t* zathura, char** argv)
 {
   g_return_if_fail(zathura != NULL);

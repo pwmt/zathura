@@ -880,9 +880,23 @@ middle mouse button, or the Shift-Insert key combination.
 * Value type: String
 * Default value: primary
 
+synctex
+^^^^^^^
+En/Disables SyncTeX backward synchronization support.
+
+* Value type: Boolean
+* Default value: true
+
+synctex-editor-command
+^^^^^^^^^^^^^^^^^^^^^^
+Defines the command executed for SyncTeX backward synchronization.
+
+* Value type: String
+* Default value:
+
 syntex-dbus-service
 ^^^^^^^^^^^^^^^^^^^
-En/Disables the D-Bus service required for synctex forward synchronization.
+En/Disables the D-Bus service required for SyncTeX forward synchronization.
 
 * Value type: Boolean
 * Default value: true

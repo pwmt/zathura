@@ -2,18 +2,18 @@
 
 #include <glib.h>
 #include <girara/utils.h>
+#include <synctex/synctex_parser.h>
 
 #include "synctex.h"
 #include "zathura.h"
 #include "page.h"
 #include "document.h"
 #include "utils.h"
-#include "synctex/synctex_parser.h"
 
 void
-synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
+synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
 {
-  if (zathura == NULL || page == NULL || zathura->synctex.editor == NULL) {
+  if (editor == NULL || page == NULL) {
     return;
   }
 
@@ -53,7 +53,7 @@ synctex_edit(zathura_t* zathura, zathura_page_t* page, int x, int y)
 
       gchar** argv = NULL;
       gint    argc = 0;
-      if (g_shell_parse_argv(zathura->synctex.editor, &argc, &argv, NULL) == TRUE) {
+      if (g_shell_parse_argv(editor, &argc, &argv, NULL) == TRUE) {
         for (gint i = 0; i != argc; ++i) {
           char* temp = girara_replace_substring(argv[i], "%{line}", linestr);
           g_free(argv[i]);

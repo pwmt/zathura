@@ -721,10 +721,15 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 
     if (synctex == true && button->state & GDK_CONTROL_MASK) {
       /* synctex backwards sync */
-      double scale = zathura_document_get_scale(document);
-      int x = button->x / scale, y = button->y / scale;
+      char* editor = NULL;
+      girara_setting_get(priv->zathura->ui.session, "synctex-editor-command", &editor);
+      if (editor != NULL && *editor != '\0') {
+        double scale = zathura_document_get_scale(document);
+        int x = button->x / scale, y = button->y / scale;
 
-      synctex_edit(priv->zathura, priv->page, x, y);
+        synctex_edit(editor, priv->page, x, y);
+      }
+      g_free(editor);
     } else {
       zathura_rectangle_t tmp = priv->mouse.selection;
 
