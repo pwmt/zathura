@@ -2,7 +2,12 @@
 
 #include <glib.h>
 #include <girara/utils.h>
+
+#ifdef WITH_SYSTEM_SYNCTEX
 #include <synctex/synctex_parser.h>
+#else
+#include "synctex/synctex_parser.h"
+#endif
 
 #include "synctex.h"
 #include "zathura.h"
