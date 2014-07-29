@@ -6,6 +6,11 @@ Synopsis
 
 .. include:: _synopsis.txt
 
+Description
+-----------
+
+.. include:: _description.txt
+
 Options
 -------
 
