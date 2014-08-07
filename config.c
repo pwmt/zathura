@@ -229,6 +229,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
   string_value = "primary";
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \

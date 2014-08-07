@@ -846,7 +846,7 @@ zoom-center
 En/Disables horizontally centered zooming.
 
 * Value type: Boolean
-* Default value: False
+* Default value: false
 
 zoom-max
 ^^^^^^^^
@@ -879,6 +879,13 @@ middle mouse button, or the Shift-Insert key combination.
 
 * Value type: String
 * Default value: primary
+
+selection-notification
+^^^^^^^^^^^^^^^^^^^^^^
+Defines if a notification should be displayed after selecting text.
+
+* Value type: Boolean
+* Default value: true
 
 synctex
 ^^^^^^^

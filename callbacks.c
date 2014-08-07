@@ -556,13 +556,18 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
   if (selection != NULL) {
     gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
 
-    char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-    char* escaped_text = g_markup_printf_escaped(
-        _("Copied selected text to clipboard: %s"), stripped_text);
-    g_free(stripped_text);
+    bool notification = true;
+    girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
-    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-    g_free(escaped_text);
+    if (notification == true) {
+      char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+      char* escaped_text = g_markup_printf_escaped(
+          _("Copied selected text to clipboard: %s"), stripped_text);
+      g_free(stripped_text);
+
+      girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+      g_free(escaped_text);
+    }
   }
 
   g_free(selection);
