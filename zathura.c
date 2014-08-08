@@ -430,9 +430,23 @@ zathura_set_argv(zathura_t* zathura, char** argv)
 }
 
 static gchar*
-prepare_document_open_from_stdin(zathura_t* zathura)
+prepare_document_open_from_stdin(zathura_t* zathura, const char* path)
 {
   g_return_val_if_fail(zathura, NULL);
+
+  int infileno = -1;
+  if (g_strcmp0(path, "-") == 0) {
+    infileno = fileno(stdin);
+  } else if (g_str_has_prefix(path, "/proc/self/fd/") == true) {
+    char* begin = g_strrstr(path, "/") + 1;
+    gint64 temp = g_ascii_strtoll(begin, NULL, 0);
+    if (temp > INT_MAX || temp < 0) {
+      return NULL;
+    }
+    infileno = (int) temp;
+  } else {
+    return NULL;
+  }
 
   GError* error = NULL;
   gchar* file = NULL;
@@ -445,10 +459,9 @@ prepare_document_open_from_stdin(zathura_t* zathura)
     return NULL;
   }
 
-  // read from stdin and dump to temporary file
-  int stdinfno = fileno(stdin);
-  if (stdinfno == -1) {
-    girara_error("Can not read from stdin.");
+  // read and dump to temporary file
+  if (infileno == -1) {
+    girara_error("Can not read from file descriptor.");
     close(handle);
     g_unlink(file);
     g_free(file);
@@ -457,7 +470,7 @@ prepare_document_open_from_stdin(zathura_t* zathura)
 
   char buffer[BUFSIZ];
   ssize_t count = 0;
-  while ((count = read(stdinfno, buffer, BUFSIZ)) > 0) {
+  while ((count = read(infileno, buffer, BUFSIZ)) > 0) {
     if (write(handle, buffer, count) != count) {
       girara_error("Can not write to temporary file: %s", file);
       close(handle);
@@ -470,7 +483,7 @@ prepare_document_open_from_stdin(zathura_t* zathura)
   close(handle);
 
   if (count != 0) {
-    girara_error("Can not read from stdin.");
+    girara_error("Can not read from file descriptor.");
     g_unlink(file);
     g_free(file);
     return NULL;
@@ -487,8 +500,9 @@ document_info_open(gpointer data)
 
   if (document_info->zathura != NULL && document_info->path != NULL) {
     char* file = NULL;
-    if (g_strcmp0(document_info->path, "-") == 0) {
-      file = prepare_document_open_from_stdin(document_info->zathura);
+    if (g_strcmp0(document_info->path, "-") == 0 ||
+        g_str_has_prefix(document_info->path, "/proc/self/fd/") == true) {
+      file = prepare_document_open_from_stdin(document_info->zathura, document_info->path);
       if (file == NULL) {
         girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
                       _("Could not read file from stdin and write it to a temporary file."));
