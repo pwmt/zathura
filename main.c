@@ -1,9 +1,5 @@
 /* See LICENSE file for license and copyright information */
 
-#define _BSD_SOURCE
-#define _XOPEN_SOURCE 700
-
-#include <errno.h>
 #include <girara/utils.h>
 #include <girara/settings.h>
 #include <glib/gi18n.h>
@@ -13,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "zathura.h"
 #include "utils.h"
@@ -101,9 +96,16 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    char* real_path = realpath(argv[1], NULL);
+    GFile* file = g_file_new_for_commandline_arg(argv[1]);
+    if (file == NULL) {
+      girara_error("Unable to handle argument '%s'.", argv[1]);
+      return -1;
+    }
+
+    char* real_path = g_file_get_path(file);
+    g_object_unref(file);
     if (real_path == NULL) {
-      girara_error("Failed to determine real path: %s", strerror(errno));
+      girara_error("Failed to determine path for '%s'", argv[1]);
       return -1;
     }
 
@@ -111,7 +113,7 @@ main(int argc, char* argv[])
     if (split_fwd == NULL || split_fwd[0] == NULL || split_fwd[1] == NULL ||
         split_fwd[2] == NULL || split_fwd[3] != NULL) {
       girara_error("Failed to parse argument to --synctex-forward.");
-      free(real_path);
+      g_free(real_path);
       g_strfreev(split_fwd);
       return -1;
     }
@@ -121,14 +123,12 @@ main(int argc, char* argv[])
     const bool ret = zathura_dbus_synctex_position(real_path, split_fwd[2], line, column, synctex_pid);
     g_strfreev(split_fwd);
 
-    if (ret == true) {
-      free(real_path);
-      return 0;
-    } else {
+    if (ret == false) {
       girara_error("Could not find open instance for '%s' or got no usable data from synctex.", real_path);
-      free(real_path);
-      return -1;
     }
+
+    g_free(real_path);
+    return ret == true ? 0 : -1;
   }
 
   /* check mode */

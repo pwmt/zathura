@@ -874,7 +874,7 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     void (*callback)(GtkMenuItem*, ZathuraPage*);
   } menu_item_t;
 
-  menu_item_t menu_items[] = {
+  const menu_item_t menu_items[] = {
     { _("Copy image"),    cb_menu_image_copy },
     { _("Save image as"), cb_menu_image_save },
   };
