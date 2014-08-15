@@ -348,6 +348,7 @@ zathura_free(zathura_t* zathura)
   /* free config variables */
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
+  g_free(zathura->config.cache_dir);
 
   /* free jumplist */
   if (zathura->jumplist.list != NULL) {
@@ -386,6 +387,8 @@ zathura_set_config_dir(zathura_t* zathura, const char* dir)
 void
 zathura_set_data_dir(zathura_t* zathura, const char* dir)
 {
+  g_return_if_fail(zathura != NULL);
+
   if (dir != NULL) {
     zathura->config.data_dir = g_strdup(dir);
   } else {
@@ -393,8 +396,20 @@ zathura_set_data_dir(zathura_t* zathura, const char* dir)
     zathura->config.data_dir = g_build_filename(path, "zathura", NULL);
     g_free(path);
   }
+}
 
+void
+zathura_set_cache_dir(zathura_t* zathura, const char* dir)
+{
   g_return_if_fail(zathura != NULL);
+
+  if (dir != NULL) {
+    zathura->config.cache_dir = g_strdup(dir);
+  } else {
+    gchar* path = girara_get_xdg_path(XDG_CACHE);
+    zathura->config.cache_dir = g_build_filename(path, "zathura", NULL);
+    g_free(path);
+  }
 }
 
 void

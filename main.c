@@ -41,6 +41,7 @@ main(int argc, char* argv[])
   /* parse command line arguments */
   gchar* config_dir     = NULL;
   gchar* data_dir       = NULL;
+  gchar* cache_dir      = NULL;
   gchar* plugin_path    = NULL;
   gchar* loglevel       = NULL;
   gchar* password       = NULL;
@@ -57,6 +58,7 @@ main(int argc, char* argv[])
     { "reparent",               'e',  0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
     { "config-dir",             'c',  0, G_OPTION_ARG_FILENAME, &config_dir,     _("Path to the config directory"),                      "path" },
     { "data-dir",               'd',  0, G_OPTION_ARG_FILENAME, &data_dir,       _("Path to the data directory"),                        "path" },
+    { "cache-dir",              '\0', 0, G_OPTION_ARG_FILENAME, &cache_dir,      _("Path to the cache directory"),                       "path"},
     { "plugins-dir",            'p',  0, G_OPTION_ARG_STRING,   &plugin_path,    _("Path to the directories containing plugins"),        "path" },
     { "fork",                   '\0', 0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
     { "password",               'w',  0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
@@ -156,6 +158,7 @@ main(int argc, char* argv[])
   zathura_set_xid(zathura, embed);
   zathura_set_config_dir(zathura, config_dir);
   zathura_set_data_dir(zathura, data_dir);
+  zathura_set_cache_dir(zathura, cache_dir);
   zathura_set_plugin_dir(zathura, plugin_path);
   zathura_set_argv(zathura, argv);
 

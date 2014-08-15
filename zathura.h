@@ -127,6 +127,7 @@ struct zathura_s
   {
     gchar* config_dir; /**< Path to the configuration directory */
     gchar* data_dir; /**< Path to the data directory */
+    gchar* cache_dir; /**< Path to the cache directory */
   } config;
 
   struct
@@ -248,6 +249,14 @@ void zathura_set_config_dir(zathura_t* zathura, const char* dir);
  * @param dir Directory path
  */
 void zathura_set_data_dir(zathura_t* zathura, const char* dir);
+
+/**
+ * Set the path to the cache directory.
+ *
+ * @param zathura The Zathura session
+ * @param dir Directory path
+ */
+void zathura_set_cache_dir(zathura_t* zathura, const char* dir);
 
 /**
  * Set the path to the plugin directory
