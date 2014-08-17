@@ -798,6 +798,13 @@ Defines if scrolling by half or full pages stops at page boundaries.
 * Value type: Boolean
 * Default value: false
 
+smooth-scroll
+^^^^^^^^^^^^^
+Defines if scrolling via touchpad should be smooth(only available with gtk >= 3.4).
+
+* Value type: Boolean
+* Default value: false
+
 link-zoom
 ^^^^^^^^^
 En/Disables the ability of changing zoom when following links.
