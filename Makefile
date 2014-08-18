@@ -104,7 +104,7 @@ css-definitions.c: data/zathura.css_t
 
 %.do: %.c
 	$(call colorecho,CC,$<)
-	@mkdir -p .depend
+	$(QUIET) mkdir -p $(shell dirname .depend/$@.dep)
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 ${OBJECTS} ${DOBJECTS}: config.mk version.h \
