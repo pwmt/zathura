@@ -319,16 +319,18 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                0,                  "zZ", sc_zoom,                    (mode),     ZOOM_SPECIFIC,          NULL);
 
 #define DEFAULT_MOUSE_EVENTS(mode) \
-  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_UP,      UP,    NULL); \
-  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_DOWN,    DOWN,  NULL); \
-  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_LEFT,    LEFT,  NULL); \
-  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_RIGHT,   RIGHT, NULL); \
+  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_UP,            UP,            NULL); \
+  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_DOWN,          DOWN,          NULL); \
+  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_LEFT,          LEFT,          NULL); \
+  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_RIGHT,         RIGHT,         NULL); \
+  girara_mouse_event_add(gsession, 0, 0,                                   sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_BIDIRECTIONAL, BIDIRECTIONAL, NULL); \
 \
   girara_mouse_event_add(gsession, GDK_SHIFT_MASK, 0,                      sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_UP,      LEFT,  NULL); \
   girara_mouse_event_add(gsession, GDK_SHIFT_MASK, 0,                      sc_mouse_scroll, (mode),     GIRARA_EVENT_SCROLL_DOWN,    RIGHT, NULL); \
 \
-  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   (mode),     GIRARA_EVENT_SCROLL_UP,      UP,   NULL); \
-  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   (mode),     GIRARA_EVENT_SCROLL_DOWN,    DOWN, NULL); \
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   (mode),     GIRARA_EVENT_SCROLL_UP,            UP,            NULL); \
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   (mode),     GIRARA_EVENT_SCROLL_DOWN,          DOWN,          NULL); \
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   (mode),     GIRARA_EVENT_SCROLL_BIDIRECTIONAL, BIDIRECTIONAL, NULL); \
   girara_mouse_event_add(gsession, 0,                GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, (mode),     GIRARA_EVENT_BUTTON_PRESS,   0,    NULL); \
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, (mode),     GIRARA_EVENT_BUTTON_RELEASE, 0,    NULL); \
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0,                    sc_mouse_scroll, (mode),     GIRARA_EVENT_MOTION_NOTIFY,  0,    NULL); \
