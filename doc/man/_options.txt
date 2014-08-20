@@ -27,7 +27,8 @@
   Set the synctex editor command. Overrides the synctex-editor-command setting.
 
 --synctex-forward=input
-  Jump to the given position. The switch expects the same format as specified for synctex's view -i.
+  Jump to the given position. The switch expects the same format as specified
+  for synctex's view -i.
 
 --fork
   Fork into background
