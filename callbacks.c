@@ -20,6 +20,8 @@
 #include "page-widget.h"
 #include "page.h"
 #include "adjustment.h"
+#include "synctex.h"
+#include "dbus-interface.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
@@ -602,3 +604,38 @@ cb_page_widget_link(ZathuraPage* page, void* data)
   gdk_window_set_cursor(window, cursor);
   g_object_unref(cursor);
 }
+
+void
+cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event,
+    void* data)
+{
+  if (event->button != 1 || !(event->state & GDK_CONTROL_MASK)) {
+    return;
+  }
+
+  zathura_t* zathura = data;
+
+  bool synctex = false;
+  girara_setting_get(zathura->ui.session, "synctex", &synctex);
+
+  if (synctex == false) {
+    return;
+  }
+
+  zathura_page_t* page = zathura_page_widget_get_page(page_widget);
+
+  if (zathura->dbus != NULL) {
+    zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
+  }
+
+  char* editor = NULL;
+  girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
+  if (editor == NULL || *editor == '\0') {
+    g_free(editor);
+    return;
+  }
+
+  synctex_edit(editor, page, event->x, event->y);
+  g_free(editor);
+}
+

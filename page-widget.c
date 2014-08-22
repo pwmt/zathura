@@ -13,7 +13,6 @@
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"
-#include "synctex.h"
 #include "zathura.h"
 
 G_DEFINE_TYPE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA)
@@ -96,6 +95,7 @@ enum properties_e {
 enum {
   TEXT_SELECTED,
   IMAGE_SELECTED,
+  BUTTON_RELEASE,
   ENTER_LINK,
   LEAVE_LINK,
   LAST_SIGNAL
@@ -187,6 +187,17 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
       g_cclosure_marshal_generic,
       G_TYPE_NONE,
       0);
+
+  signals[BUTTON_RELEASE] = g_signal_new("scaled-button-release",
+      ZATHURA_TYPE_PAGE,
+      G_SIGNAL_RUN_LAST,
+      0,
+      NULL,
+      NULL,
+      g_cclosure_marshal_generic,
+      G_TYPE_NONE,
+      1,
+      G_TYPE_POINTER);
 }
 
 static void
@@ -688,12 +699,30 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 {
   g_return_val_if_fail(widget != NULL, false);
   g_return_val_if_fail(button != NULL, false);
-  if (button->type != GDK_BUTTON_RELEASE || button->button != 1) {
+
+  if (button->type != GDK_BUTTON_RELEASE) {
     return false;
   }
 
+  const int oldx = button->x;
+  const int oldy = button->y;
+
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   zathura_document_t* document        = zathura_page_get_document(priv->page);
+
+  const double scale = zathura_document_get_scale(document);
+
+  button->x /= scale;
+  button->y /= scale;
+
+  g_signal_emit(ZATHURA_PAGE(widget), signals[BUTTON_RELEASE], 0, button);
+
+  button->x = oldx;
+  button->y = oldy;
+
+  if (button->button != 1) {
+    return false;
+  }
 
   if (priv->mouse.selection.y2 == -1 && priv->mouse.selection.x2 == -1 ) {
     /* simple single click */
@@ -716,38 +745,22 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   } else {
     redraw_rect(ZATHURA_PAGE(widget), &priv->mouse.selection);
 
-    bool synctex = false;
-    girara_setting_get(priv->zathura->ui.session, "synctex", &synctex);
+    zathura_rectangle_t tmp = priv->mouse.selection;
 
-    if (synctex == true && button->state & GDK_CONTROL_MASK) {
-      /* synctex backwards sync */
-      char* editor = NULL;
-      girara_setting_get(priv->zathura->ui.session, "synctex-editor-command", &editor);
-      if (editor != NULL && *editor != '\0') {
-        double scale = zathura_document_get_scale(document);
-        int x = button->x / scale, y = button->y / scale;
+    double scale = zathura_document_get_scale(document);
+    tmp.x1 /= scale;
+    tmp.x2 /= scale;
+    tmp.y1 /= scale;
+    tmp.y2 /= scale;
 
-        synctex_edit(editor, priv->page, x, y);
+    char* text = zathura_page_get_text(priv->page, tmp, NULL);
+    if (text != NULL) {
+      if (strlen(text) > 0) {
+        /* emit text-selected signal */
+        g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
       }
-      g_free(editor);
-    } else {
-      zathura_rectangle_t tmp = priv->mouse.selection;
 
-      double scale = zathura_document_get_scale(document);
-      tmp.x1 /= scale;
-      tmp.x2 /= scale;
-      tmp.y1 /= scale;
-      tmp.y2 /= scale;
-
-      char* text = zathura_page_get_text(priv->page, tmp, NULL);
-      if (text != NULL) {
-        if (strlen(text) > 0) {
-          /* emit text-selected signal */
-          g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
-        }
-
-        g_free(text);
-      }
+      g_free(text);
     }
   }
 
@@ -999,3 +1012,10 @@ zathura_page_widget_abort_render_request(ZathuraPage* widget)
   }
 }
 
+zathura_page_t*
+zathura_page_widget_get_page(ZathuraPage* widget) {
+  g_return_val_if_fail(ZATHURA_IS_PAGE(widget), NULL);
+  zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+
+  return priv->page;
+}

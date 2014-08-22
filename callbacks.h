@@ -200,6 +200,9 @@ void cb_page_widget_text_selected(ZathuraPage* page, const char* text,
 void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf,
     void* data);
 
+void cb_page_widget_scaled_button_release(ZathuraPage* page,
+    GdkEventButton* event, void* data);
+
 void
 cb_page_widget_link(ZathuraPage* page, void* data);
 

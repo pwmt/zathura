@@ -791,6 +791,8 @@ document_open(zathura_t* zathura, const char* path, const char* password,
         G_CALLBACK(cb_page_widget_link), (gpointer) true);
     g_signal_connect(G_OBJECT(page_widget), "leave-link",
         G_CALLBACK(cb_page_widget_link), (gpointer) false);
+    g_signal_connect(G_OBJECT(page_widget), "scaled-button-release",
+        G_CALLBACK(cb_page_widget_scaled_button_release), zathura);
   }
 
   /* view mode */
