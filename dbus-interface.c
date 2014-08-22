@@ -163,6 +163,33 @@ zathura_dbus_new(zathura_t* zathura)
   return dbus;
 }
 
+void
+zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned int y) {
+  private_t* priv = GET_PRIVATE(edit);
+
+  const char* filename = zathura_document_get_path(priv->zathura->document);
+
+  char* input_file = NULL;
+  unsigned int line = 0;
+  unsigned int column = 0;
+
+  if (synctex_get_input_line_column(filename, page, x, y, &input_file, &line,
+        &column) == false) {
+    return;
+  }
+
+  GError* error = NULL;
+  g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH,
+    DBUS_INTERFACE, "Edit", g_variant_new("(suu)", input_file, x, y), &error);
+
+  g_free(input_file);
+
+  if (error != NULL) {
+    girara_debug("Failed to emit 'Edit' signal: %s", error->message);
+    g_error_free(error);
+  }
+}
+
 /* D-Bus handler */
 
 static void

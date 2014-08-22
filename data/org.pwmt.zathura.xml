@@ -28,5 +28,11 @@
     <property type='s' name='filename' access='read' />
     <property type='u' name='pagenumber' access='read' />
     <property type='u' name='numberofpages' access='read' />
+    <!-- Open editor with given input file at line and column. -->
+    <signal name='Edit'>
+      <arg type='s' name='input' direction='out' />
+      <arg type='u' name='line' direction='out' />
+      <arg type='u' name='column' direction='out' />
+    </signal>
   </interface>
 </node>
