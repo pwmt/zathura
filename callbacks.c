@@ -51,7 +51,7 @@ cb_buffer_changed(girara_session_t* session)
   }
 }
 
-static void
+void
 update_visible_pages(zathura_t* zathura)
 {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);

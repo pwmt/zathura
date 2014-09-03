@@ -206,5 +206,8 @@ void cb_page_widget_scaled_button_release(ZathuraPage* page,
 void
 cb_page_widget_link(ZathuraPage* page, void* data);
 
+void
+update_visible_pages(zathura_t* zathura);
+
 
 #endif // CALLBACKS_H

@@ -871,6 +871,8 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
+  update_visible_pages(zathura);
+
   return true;
 
 error_free:
