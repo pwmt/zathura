@@ -108,6 +108,12 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       continue;
     }
 
+    if (g_str_has_suffix(path, ".so") == FALSE) {
+      girara_debug("%s is not a plugin file. Skipping.", path);
+      g_free(path);
+      continue;
+    }
+
     zathura_plugin_t* plugin = NULL;
 
     /* load plugin */
