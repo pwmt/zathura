@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "database-sqlite.h"
+#include "utils.h"
 
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 static void io_interface_init(GiraraInputHistoryIOInterface* iface);
@@ -126,6 +127,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "vadj_ratio FLOAT,"
     "PRIMARY KEY(file, id));";
 
+  /* ceate jumplist table */
   static const char SQL_JUMPLIST_INIT[] =
     "CREATE TABLE IF NOT EXISTS jumplist ("
     "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -156,6 +158,13 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "line TEXT,"
     "PRIMARY KEY(line));";
 
+  static const char* ALL_INIT[] = {
+    SQL_BOOKMARK_INIT,
+    SQL_JUMPLIST_INIT,
+    SQL_FILEINFO_INIT,
+    SQL_HISTORY_INIT
+  };
+
   /* update fileinfo table (part 1) */
   static const char SQL_FILEINFO_ALTER[] =
     "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
@@ -178,28 +187,12 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   }
 
   /* create tables if they don't exist */
-  if (sqlite3_exec(session, SQL_BOOKMARK_INIT, NULL, 0, NULL) != SQLITE_OK) {
-    girara_error("Failed to initialize database: %s\n", path);
-    sqlite3_close(session);
-    return;
-  }
-
-  if (sqlite3_exec(session, SQL_JUMPLIST_INIT, NULL, 0, NULL) != SQLITE_OK) {
-    girara_error("Failed to initialize database: %s\n", path);
-    sqlite3_close(session);
-    return;
-  }
-
-  if (sqlite3_exec(session, SQL_FILEINFO_INIT, NULL, 0, NULL) != SQLITE_OK) {
-    girara_error("Failed to initialize database: %s\n", path);
-    sqlite3_close(session);
-    return;
-  }
-
-  if (sqlite3_exec(session, SQL_HISTORY_INIT, NULL, 0, NULL) != SQLITE_OK) {
-    girara_error("Failed to initialize database: %s\n", path);
-    sqlite3_close(session);
-    return;
+  for (size_t s = 0; s < LENGTH(ALL_INIT); ++s) {
+    if (sqlite3_exec(session, ALL_INIT[s], NULL, 0, NULL) != SQLITE_OK) {
+      girara_error("Failed to initialize database: %s\n", path);
+      sqlite3_close(session);
+      return;
+    }
   }
 
   /* check existing tables for missing columns */
@@ -686,3 +679,4 @@ sqlite_io_read(GiraraInputHistoryIO* db)
   sqlite3_finalize(stmt);
   return list;
 }
+
