@@ -173,13 +173,16 @@ error_free:
   if (file != NULL) {
     g_object_unref(file);
   }
+
   g_free(real_path);
 
   if (document != NULL) {
     zathura_document_free(document);
+    document = NULL; /* prevent double-free */
   }
 
   g_free(document);
+
   return NULL;
 }
 
