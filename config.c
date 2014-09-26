@@ -31,10 +31,12 @@ cb_jumplist_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  if (*(int *)value < 0) {
+  const int* ivalue = value;
+
+  if (*ivalue < 0) {
     zathura->jumplist.max_size = 0;
   } else {
-    zathura->jumplist.max_size = *(int *)value;
+    zathura->jumplist.max_size = *ivalue;
   }
 
   if (zathura->jumplist.list != NULL && zathura->jumplist.size != 0) {
