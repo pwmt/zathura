@@ -175,16 +175,13 @@ zathura_init(zathura_t* zathura)
       G_CALLBACK(cb_view_vadjustment_changed), zathura);
 
   /* page view alignment */
-  zathura->ui.page_widget_alignment = gtk_alignment_new(0.5, 0.5, 0, 0);
-  if (zathura->ui.page_widget_alignment == NULL) {
-    goto error_free;
-  }
-  gtk_container_add(GTK_CONTAINER(zathura->ui.page_widget_alignment), zathura->ui.page_widget);
+  gtk_widget_set_halign(zathura->ui.page_widget, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(zathura->ui.page_widget, GTK_ALIGN_CENTER);
 
-  gtk_widget_set_hexpand_set(zathura->ui.page_widget_alignment, TRUE);
-  gtk_widget_set_hexpand(zathura->ui.page_widget_alignment, FALSE);
-  gtk_widget_set_vexpand_set(zathura->ui.page_widget_alignment, TRUE);
-  gtk_widget_set_vexpand(zathura->ui.page_widget_alignment, FALSE);
+  gtk_widget_set_hexpand_set(zathura->ui.page_widget, TRUE);
+  gtk_widget_set_hexpand(zathura->ui.page_widget, FALSE);
+  gtk_widget_set_vexpand_set(zathura->ui.page_widget, TRUE);
+  gtk_widget_set_vexpand(zathura->ui.page_widget, FALSE);
 
   gtk_widget_show(zathura->ui.page_widget);
 
@@ -291,10 +288,6 @@ error_free:
 
   if (zathura->ui.page_widget != NULL) {
     g_object_unref(zathura->ui.page_widget);
-  }
-
-  if (zathura->ui.page_widget_alignment != NULL) {
-    g_object_unref(zathura->ui.page_widget_alignment);
   }
 
   return false;
@@ -783,6 +776,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     g_object_ref(page_widget);
     zathura->pages[page_id] = page_widget;
 
+    gtk_widget_set_halign(page_widget, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(page_widget, GTK_ALIGN_CENTER);
+
     g_signal_connect(G_OBJECT(page_widget), "text-selected",
         G_CALLBACK(cb_page_widget_text_selected), zathura);
     g_signal_connect(G_OBJECT(page_widget), "image-selected",
@@ -820,7 +816,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
   zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
 
-  girara_set_view(zathura->ui.session, zathura->ui.page_widget_alignment);
+  girara_set_view(zathura->ui.session, zathura->ui.page_widget);
 
 
   /* bookmarks */
@@ -1144,16 +1140,7 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
 
     GtkWidget* page_widget = zathura->pages[i];
 
-    GtkWidget* align = gtk_alignment_new(0.5, 0.5, 0, 0);
-    GtkWidget* parent = gtk_widget_get_parent(page_widget);
-    if (parent)
-    {
-      gtk_container_remove(GTK_CONTAINER(parent), page_widget);
-      g_object_unref(parent);
-    }
-
-    gtk_container_add(GTK_CONTAINER(align), page_widget);
-    gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), align, x, y, 1, 1);
+    gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
   }
 
   gtk_widget_show_all(zathura->ui.page_widget);

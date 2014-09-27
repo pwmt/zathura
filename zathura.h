@@ -110,7 +110,6 @@ struct zathura_s
       GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
     } colors;
 
-    GtkWidget *page_widget_alignment;
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
   } ui;
