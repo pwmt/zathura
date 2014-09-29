@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 pwmt.org -->
+
+<application>
+  <id type="desktop">zathura.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>Zlib</project_license>
+  <description>
+    <p>
+      zathura is a highly customizable and functional document viewer. It
+      provides a minimalistic and space saving interface as well as an easy
+      usage that mainly focuses on keyboard interaction. zathura makes it
+      possible to completely view and navigate through documents without using a
+      mouse.
+    </p>
+    <p>
+      Other features include:
+      <ul>
+        <li>SyncTeX forward and backward synchronization support.</li>
+        <li>Quickmarks and bookmarks.</li>
+        <li>Automatic document reloading.</li>
+      </ul>
+    </p>
+  </description>
+  <url type="homepage">http://pwmt.org/projects/zathura</url>
+  <screenshots>
+    <screenshot type="default">http://pwmt.org/projects/zathura/img/zathura-cover.png</screenshot>
+    <screenshot>http://pwmt.org/projects/zathura/img/zathura-completion.png</screenshot>
+    <screenshot>http://pwmt.org/projects/zathura/img/zathura-follow.png</screenshot>
+    <screenshot>http://pwmt.org/projects/zathura/img/zathura-bookmarks.png</screenshot>
+  </screenshots>
+  <updatecontact>zathura@lists.pwmt.org</updatecontact>
+</application>

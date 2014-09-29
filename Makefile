@@ -209,7 +209,12 @@ install-dbus:
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
 	$(QUIET)install -m 644 data/org.pwmt.zathura.xml $(DESTDIR)$(DBUSINTERFACEDIR)
 
-install: all install-headers install-manpages install-dbus
+install-appdata:
+	$(call colorecho,INSTALL,"AppData file")
+	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(APPDATAPREFIX)
+	$(QUIET)install -m 644 data/$(PROJECT).appdata.xml $(DESTDIR)$(APPDATAPREFIX)
+
+install: all install-headers install-manpages install-dbus install-appdata
 	$(call colorecho,INSTALL,"executeable file")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
@@ -235,6 +240,8 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
 	$(call colorecho,UNINSTALL,"D-Bus interface definitions")
 	$(QUIET)rm -f $(DESTDIR)$(DBUSINTERFACEDIR)/org.pwmt.zathura.xml
+	$(call colorecho,UNINSTALL,"AppData file")
+	$(QUIET)rm -f $(DESTDIR)$(APPDATAPREFIX)/$(PROJECT).appdata.xml
 	$(MAKE) -C po uninstall
 
 -include $(wildcard .depend/*.dep)

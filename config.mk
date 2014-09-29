@@ -45,6 +45,7 @@ WITH_MAGIC ?= 1
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
+APPDATAPREFIX ?= ${PREFIX}/share/appdata
 LIBDIR ?= ${PREFIX}/lib
 INCLUDEDIR ?= ${PREFIX}/include
 DBUSINTERFACEDIR ?= ${PREFIX}/share/dbus-1/interfaces
