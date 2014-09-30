@@ -186,6 +186,8 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "recolor-keephue",        &bool_value,  BOOLEAN, false, _("When recoloring keep original hue and adjust lightness only"), cb_setting_recolor_keep_hue_change, NULL);
   bool_value = false;
+  girara_setting_add(gsession, "recolor-reverse-video",  &bool_value,  BOOLEAN, false, _("When recoloring keep original image colors"), cb_setting_recolor_keep_reverse_video_change, NULL);
+  bool_value = false;
   girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "scroll-page-aware",      &bool_value,  BOOLEAN, false, _("Page aware scrolling"), NULL, NULL);

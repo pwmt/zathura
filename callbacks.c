@@ -510,6 +510,23 @@ cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
   }
 }
 
+void
+cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, const char* name,
+                                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const bool bool_value = *((bool*) value);
+
+  if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_reverse_video_enabled(zathura->sync.render_thread) != bool_value) {
+     zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, bool_value);
+     render_all(zathura);
+  }
+}
 
 bool
 cb_unknown_command(girara_session_t* session, const char* input)

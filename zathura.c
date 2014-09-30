@@ -744,6 +744,8 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura_renderer_enable_recolor(zathura->sync.render_thread, recolor);
   girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
   zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-reverse-video", &recolor);
+  zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, recolor);
 
   /* get view port size */
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(

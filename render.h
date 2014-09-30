@@ -72,6 +72,19 @@ bool zathura_renderer_recolor_hue_enabled(ZathuraRenderer* renderer);
 void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
     bool enable);
 /**
+ * Return whether images should be recolored while recoloring.
+ * @param renderer a renderer object
+ * @returns true if images should be recolored, false otherwise
+ */
+bool zathura_renderer_recolor_reverse_video_enabled(ZathuraRenderer* renderer);
+/**
+ * Enable/disable recoloring of images while recoloring.
+ * @param renderer a renderer object
+ * @param enable or disable images recoloring
+ */
+void zathura_renderer_enable_recolor_reverse_video(ZathuraRenderer* renderer,
+    bool enable);
+/**
  * Set light and dark colors for recoloring.
  * @param renderer a renderer object
  * @param light light color
