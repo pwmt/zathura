@@ -741,6 +741,13 @@ Defines the color value that is used to represent light colors in recoloring mod
 * Value type: String
 * Default value: #000000
 
+recolor-reverse-video
+^^^^^^^^^^^^^^^^^^^^^
+Defines if original image colors should be kept while recoloring.
+
+* Value type: Boolean
+* Default value: false
+
 render-loading
 ^^^^^^^^^^^^^^
 Defines if the "Loading..." text should be displayed if a page is rendered.
