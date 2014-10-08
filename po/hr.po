@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2014-06-24 21:36+0200\n"
+"POT-Creation-Date: 2014-10-08 15:33+0200\n"
 "PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/zathura/"
@@ -23,273 +23,15 @@ msgstr ""
 msgid "Printing failed: %s"
 msgstr ""
 
-#. zathura settings
-#: ../config.c:142
-msgid "Database backend"
-msgstr ""
-
-#: ../config.c:144
-msgid "Zoom step"
-msgstr ""
-
-#: ../config.c:146
-msgid "Padding between pages"
-msgstr ""
-
-#: ../config.c:148
-msgid "Number of pages per row"
-msgstr ""
-
-#: ../config.c:150
-msgid "Column of the first page"
-msgstr ""
-
-#: ../config.c:152
-msgid "Scroll step"
-msgstr ""
-
-#: ../config.c:154
-msgid "Horizontal scroll step"
-msgstr ""
-
-#: ../config.c:156
-msgid "Full page scroll overlap"
-msgstr ""
-
-#: ../config.c:158
-msgid "Zoom minimum"
-msgstr ""
-
-#: ../config.c:160
-msgid "Zoom maximum"
-msgstr ""
-
-#: ../config.c:162
-msgid "Maximum number of pages to keep in the cache"
-msgstr ""
-
-#: ../config.c:164
-msgid "Number of positions to remember in the jumplist"
-msgstr ""
-
-#: ../config.c:166
-msgid "Recoloring (dark color)"
-msgstr ""
-
-#: ../config.c:167
-msgid "Recoloring (light color)"
-msgstr ""
-
-#: ../config.c:168
-msgid "Color for highlighting"
-msgstr ""
-
-#: ../config.c:170
-msgid "Color for highlighting (active)"
-msgstr ""
-
-#: ../config.c:172
-msgid "'Loading ...' background color"
-msgstr ""
-
-#: ../config.c:174
-msgid "'Loading ...' foreground color"
-msgstr ""
-
-#: ../config.c:177
-msgid "Index mode foreground color"
-msgstr ""
-
-#: ../config.c:178
-msgid "Index mode background color"
-msgstr ""
-
-#: ../config.c:179
-msgid "Index mode foreground color (active element)"
-msgstr ""
-
-#: ../config.c:180
-msgid "Index mode background color (active element)"
-msgstr ""
-
-#: ../config.c:183
-msgid "Recolor pages"
-msgstr ""
-
-#: ../config.c:185
-msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-
-#: ../config.c:187
-msgid "Wrap scrolling"
-msgstr ""
-
-#: ../config.c:189
-msgid "Page aware scrolling"
-msgstr ""
-
-#: ../config.c:191
-msgid "Advance number of pages per row"
-msgstr ""
-
-#: ../config.c:193
-msgid "Horizontally centered zoom"
-msgstr ""
-
-#: ../config.c:195
-msgid "Align link target to the left"
-msgstr ""
-
-#: ../config.c:197
-msgid "Let zoom be changed when following links"
-msgstr ""
-
-#: ../config.c:199
-msgid "Center result horizontally"
-msgstr ""
-
-#: ../config.c:201
-msgid "Transparency for highlighting"
-msgstr ""
-
-#: ../config.c:203
-msgid "Render 'Loading ...'"
-msgstr ""
-
-#: ../config.c:204
-msgid "Adjust to when opening file"
-msgstr ""
-
-#: ../config.c:206
-msgid "Show hidden files and directories"
-msgstr ""
-
-#: ../config.c:208
-msgid "Show directories"
-msgstr ""
-
-#: ../config.c:210
-msgid "Always open on first page"
-msgstr ""
-
-#: ../config.c:212
-msgid "Highlight search results"
-msgstr ""
-
-#: ../config.c:215
-msgid "Enable incremental search"
-msgstr ""
-
-#: ../config.c:217
-msgid "Clear search results on abort"
-msgstr ""
-
-#: ../config.c:219
-msgid "Use basename of the file in the window title"
-msgstr ""
-
-#: ../config.c:221
-msgid "Display the page number in the window title"
-msgstr ""
-
-#: ../config.c:223
-msgid "Use basename of the file in the statusbar"
-msgstr ""
-
-#: ../config.c:225 ../main.c:66
-msgid "Enable synctex support"
-msgstr ""
-
-#: ../config.c:227
-msgid "Enable D-Bus service"
-msgstr ""
-
-#: ../config.c:229
-msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
-
-#. define default inputbar commands
-#: ../config.c:413
-msgid "Add a bookmark"
-msgstr ""
-
-#: ../config.c:414
-msgid "Delete a bookmark"
-msgstr ""
-
-#: ../config.c:415
-msgid "List all bookmarks"
-msgstr ""
-
-#: ../config.c:416
-msgid "Close current file"
-msgstr ""
-
-#: ../config.c:417
-msgid "Show file information"
-msgstr ""
-
-#: ../config.c:418
-msgid "Execute a command"
-msgstr ""
-
-#: ../config.c:419
-msgid "Show help"
-msgstr ""
-
-#: ../config.c:420
-msgid "Open document"
-msgstr ""
-
-#: ../config.c:421
-msgid "Close zathura"
-msgstr ""
-
-#: ../config.c:422
-msgid "Print document"
-msgstr ""
-
-#: ../config.c:423
-msgid "Save document"
-msgstr ""
-
-#: ../config.c:424
-msgid "Save document (and force overwriting)"
-msgstr ""
-
-#: ../config.c:425
-msgid "Save attachments"
-msgstr ""
-
-#: ../config.c:426
-msgid "Set page offset"
-msgstr ""
-
-#: ../config.c:427
-msgid "Mark current location within the document"
-msgstr ""
-
-#: ../config.c:428
-msgid "Delete the specified marks"
-msgstr ""
-
-#: ../config.c:429
-msgid "Don't highlight current search results"
-msgstr ""
-
-#: ../config.c:430
-msgid "Highlight current search results"
-msgstr ""
-
-#: ../config.c:431
-msgid "Show version information"
-msgstr ""
-
-#: ../commands.c:36 ../commands.c:76 ../commands.c:103 ../commands.c:152
-#: ../commands.c:268 ../commands.c:298 ../commands.c:324 ../commands.c:422
-#: ../commands.c:543 ../shortcuts.c:406 ../shortcuts.c:1207
-#: ../shortcuts.c:1236 ../shortcuts.c:1263
+#: ../shortcuts.c:414 ../shortcuts.c:1221 ../shortcuts.c:1250
+#: ../shortcuts.c:1277 ../commands.c:36 ../commands.c:76 ../commands.c:103
+#: ../commands.c:152 ../commands.c:268 ../commands.c:298 ../commands.c:324
+#: ../commands.c:422 ../commands.c:549
 msgid "No document opened."
+msgstr ""
+
+#: ../shortcuts.c:1131
+msgid "This document does not contain any index"
 msgstr ""
 
 #: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:427
@@ -417,72 +159,20 @@ msgstr ""
 msgid "Unknown attachment or image '%s'."
 msgstr ""
 
-#: ../commands.c:556
+#: ../commands.c:562
 msgid "Argument must be a number."
 msgstr ""
 
-#: ../page-widget.c:518
+#: ../page-widget.c:529
 msgid "Loading..."
 msgstr ""
 
-#: ../page-widget.c:873
+#: ../page-widget.c:891
 msgid "Copy image"
 msgstr ""
 
-#: ../page-widget.c:874
+#: ../page-widget.c:892
 msgid "Save image as"
-msgstr ""
-
-#: ../main.c:57
-msgid "Reparents to window specified by xid"
-msgstr ""
-
-#: ../main.c:58
-msgid "Path to the config directory"
-msgstr ""
-
-#: ../main.c:59
-msgid "Path to the data directory"
-msgstr ""
-
-#: ../main.c:60
-msgid "Path to the directories containing plugins"
-msgstr ""
-
-#: ../main.c:61
-msgid "Fork into the background"
-msgstr ""
-
-#: ../main.c:62
-msgid "Document password"
-msgstr ""
-
-#: ../main.c:63
-msgid "Page number to go to"
-msgstr ""
-
-#: ../main.c:64
-msgid "Log level (debug, info, warning, error)"
-msgstr ""
-
-#: ../main.c:65
-msgid "Print version information"
-msgstr ""
-
-#: ../main.c:67
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
-
-#: ../main.c:68
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../main.c:69
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../main.c:70
-msgid "Start in a non-default mode"
 msgstr ""
 
 #: ../links.c:202 ../links.c:281
@@ -517,42 +207,369 @@ msgstr ""
 msgid "Images"
 msgstr ""
 
-#: ../shortcuts.c:1117
-msgid "This document does not contain any index"
-msgstr ""
-
-#: ../zathura.c:207 ../zathura.c:1038
-msgid "[No name]"
-msgstr ""
-
-#: ../zathura.c:519
-msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
-
-#: ../zathura.c:580
-msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
-
-#: ../zathura.c:590
-msgid "Document does not contain any pages"
-msgstr ""
-
-#: ../callbacks.c:230
+#: ../callbacks.c:232
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: ../callbacks.c:307
+#: ../callbacks.c:309
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr ""
 
-#: ../callbacks.c:343
+#: ../callbacks.c:345
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr ""
 
-#: ../callbacks.c:561
+#: ../callbacks.c:584
 #, c-format
 msgid "Copied selected text to clipboard: %s"
+msgstr ""
+
+#: ../zathura.c:204 ../zathura.c:1046
+msgid "[No name]"
+msgstr ""
+
+#: ../zathura.c:516
+msgid "Could not read file from stdin and write it to a temporary file."
+msgstr ""
+
+#: ../zathura.c:577
+msgid "Unsupported file type. Please install the necessary plugin."
+msgstr ""
+
+#: ../zathura.c:587
+msgid "Document does not contain any pages"
+msgstr ""
+
+#. zathura settings
+#: ../config.c:144
+msgid "Database backend"
+msgstr ""
+
+#: ../config.c:146
+msgid "Zoom step"
+msgstr ""
+
+#: ../config.c:148
+msgid "Padding between pages"
+msgstr ""
+
+#: ../config.c:150
+msgid "Number of pages per row"
+msgstr ""
+
+#: ../config.c:152
+msgid "Column of the first page"
+msgstr ""
+
+#: ../config.c:154
+msgid "Scroll step"
+msgstr ""
+
+#: ../config.c:156
+msgid "Horizontal scroll step"
+msgstr ""
+
+#: ../config.c:158
+msgid "Full page scroll overlap"
+msgstr ""
+
+#: ../config.c:160
+msgid "Zoom minimum"
+msgstr ""
+
+#: ../config.c:162
+msgid "Zoom maximum"
+msgstr ""
+
+#: ../config.c:164
+msgid "Maximum number of pages to keep in the cache"
+msgstr ""
+
+#: ../config.c:166
+msgid "Number of positions to remember in the jumplist"
+msgstr ""
+
+#: ../config.c:168
+msgid "Recoloring (dark color)"
+msgstr ""
+
+#: ../config.c:169
+msgid "Recoloring (light color)"
+msgstr ""
+
+#: ../config.c:170
+msgid "Color for highlighting"
+msgstr ""
+
+#: ../config.c:172
+msgid "Color for highlighting (active)"
+msgstr ""
+
+#: ../config.c:174
+msgid "'Loading ...' background color"
+msgstr ""
+
+#: ../config.c:176
+msgid "'Loading ...' foreground color"
+msgstr ""
+
+#: ../config.c:179
+msgid "Index mode foreground color"
+msgstr ""
+
+#: ../config.c:180
+msgid "Index mode background color"
+msgstr ""
+
+#: ../config.c:181
+msgid "Index mode foreground color (active element)"
+msgstr ""
+
+#: ../config.c:182
+msgid "Index mode background color (active element)"
+msgstr ""
+
+#: ../config.c:185
+msgid "Recolor pages"
+msgstr ""
+
+#: ../config.c:187
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr ""
+
+#: ../config.c:189
+msgid "When recoloring keep original image colors"
+msgstr ""
+
+#: ../config.c:191
+msgid "Wrap scrolling"
+msgstr ""
+
+#: ../config.c:193
+msgid "Page aware scrolling"
+msgstr ""
+
+#: ../config.c:195
+msgid "Advance number of pages per row"
+msgstr ""
+
+#: ../config.c:197
+msgid "Horizontally centered zoom"
+msgstr ""
+
+#: ../config.c:199
+msgid "Align link target to the left"
+msgstr ""
+
+#: ../config.c:201
+msgid "Let zoom be changed when following links"
+msgstr ""
+
+#: ../config.c:203
+msgid "Center result horizontally"
+msgstr ""
+
+#: ../config.c:205
+msgid "Transparency for highlighting"
+msgstr ""
+
+#: ../config.c:207
+msgid "Render 'Loading ...'"
+msgstr ""
+
+#: ../config.c:208
+msgid "Adjust to when opening file"
+msgstr ""
+
+#: ../config.c:210
+msgid "Show hidden files and directories"
+msgstr ""
+
+#: ../config.c:212
+msgid "Show directories"
+msgstr ""
+
+#: ../config.c:214
+msgid "Always open on first page"
+msgstr ""
+
+#: ../config.c:216
+msgid "Highlight search results"
+msgstr ""
+
+#: ../config.c:219
+msgid "Enable incremental search"
+msgstr ""
+
+#: ../config.c:221
+msgid "Clear search results on abort"
+msgstr ""
+
+#: ../config.c:223
+msgid "Use basename of the file in the window title"
+msgstr ""
+
+#: ../config.c:225
+msgid "Display the page number in the window title"
+msgstr ""
+
+#: ../config.c:227
+msgid "Use basename of the file in the statusbar"
+msgstr ""
+
+#: ../config.c:229
+msgid "Enable synctex support"
+msgstr ""
+
+#: ../config.c:231
+msgid "Synctex editor command"
+msgstr ""
+
+#: ../config.c:233
+msgid "Enable D-Bus service"
+msgstr ""
+
+#: ../config.c:235
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr ""
+
+#: ../config.c:237
+msgid "Enable notification after selecting text"
+msgstr ""
+
+#. define default inputbar commands
+#: ../config.c:423
+msgid "Add a bookmark"
+msgstr ""
+
+#: ../config.c:424
+msgid "Delete a bookmark"
+msgstr ""
+
+#: ../config.c:425
+msgid "List all bookmarks"
+msgstr ""
+
+#: ../config.c:426
+msgid "Close current file"
+msgstr ""
+
+#: ../config.c:427
+msgid "Show file information"
+msgstr ""
+
+#: ../config.c:428 ../config.c:429
+msgid "Execute a command"
+msgstr ""
+
+#. like vim
+#: ../config.c:430
+msgid "Show help"
+msgstr ""
+
+#: ../config.c:431
+msgid "Open document"
+msgstr ""
+
+#: ../config.c:432
+msgid "Close zathura"
+msgstr ""
+
+#: ../config.c:433
+msgid "Print document"
+msgstr ""
+
+#: ../config.c:434
+msgid "Save document"
+msgstr ""
+
+#: ../config.c:435
+msgid "Save document (and force overwriting)"
+msgstr ""
+
+#: ../config.c:436
+msgid "Save attachments"
+msgstr ""
+
+#: ../config.c:437
+msgid "Set page offset"
+msgstr ""
+
+#: ../config.c:438
+msgid "Mark current location within the document"
+msgstr ""
+
+#: ../config.c:439
+msgid "Delete the specified marks"
+msgstr ""
+
+#: ../config.c:440
+msgid "Don't highlight current search results"
+msgstr ""
+
+#: ../config.c:441
+msgid "Highlight current search results"
+msgstr ""
+
+#: ../config.c:442
+msgid "Show version information"
+msgstr ""
+
+#: ../main.c:53
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../main.c:54
+msgid "Path to the config directory"
+msgstr ""
+
+#: ../main.c:55
+msgid "Path to the data directory"
+msgstr ""
+
+#: ../main.c:56
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../main.c:57
+msgid "Path to the directories containing plugins"
+msgstr ""
+
+#: ../main.c:58
+msgid "Fork into the background"
+msgstr ""
+
+#: ../main.c:59
+msgid "Document password"
+msgstr ""
+
+#: ../main.c:60
+msgid "Page number to go to"
+msgstr ""
+
+#: ../main.c:61
+msgid "Log level (debug, info, warning, error)"
+msgstr ""
+
+#: ../main.c:62
+msgid "Print version information"
+msgstr ""
+
+#: ../main.c:63
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../main.c:64
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../main.c:65
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../main.c:66
+msgid "Start in a non-default mode"
 msgstr ""
