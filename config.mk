@@ -5,8 +5,8 @@
 PROJECT = zathura
 
 ZATHURA_VERSION_MAJOR = 0
-ZATHURA_VERSION_MINOR = 2
-ZATHURA_VERSION_REV = 9
+ZATHURA_VERSION_MINOR = 3
+ZATHURA_VERSION_REV = 0
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -18,7 +18,7 @@ VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_RE
 
 # girara
 GIRARA_VERSION_CHECK ?= 1
-GIRARA_MIN_VERSION = 0.2.2
+GIRARA_MIN_VERSION = 0.2.3
 GIRARA_PKG_CONFIG_NAME = girara-gtk3
 # glib
 GLIB_VERSION_CHECK ?= 1
@@ -33,6 +33,10 @@ GTK_PKG_CONFIG_NAME = gtk+-3.0
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
 WITH_SQLITE ?= $(shell (pkg-config --atleast-version=3.5.9 sqlite3 && echo 1) || echo 0)
 
+# synctex
+# To use the embedded copy of the syntex parser set WITH_SYSTEM_SYNCTEX to 0.
+WITH_SYSTEM_SYNCTEX ?= $(shell (pkg-config synctex && echo 1) || echo 0)
+
 # mimetype detection
 # To disable support for mimetype detction with libmagic set WITH_MAGIC to 0.
 WITH_MAGIC ?= 1
@@ -41,6 +45,7 @@ WITH_MAGIC ?= 1
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
 DESKTOPPREFIX ?= ${PREFIX}/share/applications
+APPDATAPREFIX ?= ${PREFIX}/share/appdata
 LIBDIR ?= ${PREFIX}/lib
 INCLUDEDIR ?= ${PREFIX}/include
 DBUSINTERFACEDIR ?= ${PREFIX}/share/dbus-1/interfaces
@@ -77,11 +82,16 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
+ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+SYNCTEX_INC ?= $(shell pkg-config --cflags synctex)
+SYNCTEX_LIB ?= $(shell pkg-config --libs synctex)
+else
 ZLIB_INC ?= $(shell pkg-config --cflags zlib)
 ZLIB_LIB ?= $(shell pkg-config --libs zlib)
+endif
 
-INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC} $(ZLIB_INC)
-LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} $(ZLIB_LIB) -lpthread -lm
+INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
+LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
 
 # flags
 CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)

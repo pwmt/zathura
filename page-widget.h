@@ -69,7 +69,6 @@ void zathura_page_widget_draw_rectangle(ZathuraPage* widget, zathura_rectangle_t
  * @param widget the widget
  */
 void zathura_page_widget_clear_rectangles(ZathuraPage* widget);
-
 /**
  * Returns the zathura link object at the given index
  *
@@ -78,14 +77,12 @@ void zathura_page_widget_clear_rectangles(ZathuraPage* widget);
  * @return Link object or NULL if an error occured
  */
 zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index);
-
 /**
  * Update the last view time of the page.
  *
  * @param widget the widget
  */
 void zathura_page_widget_update_view_time(ZathuraPage* widget);
-
 /**
  * Check if we have a surface.
  *
@@ -93,12 +90,18 @@ void zathura_page_widget_update_view_time(ZathuraPage* widget);
  * @returns true if the widget has a surface, false otherwise
  */
 bool zathura_page_widget_have_surface(ZathuraPage* widget);
-
 /**
  * Abort outstanding render requests
  *
  * @param widget the widget
  */
 void zathura_page_widget_abort_render_request(ZathuraPage* widget);
+/**
+ * Get underlying page
+ *
+ * @param widget the widget
+ * @return underlying zathura_page_t instance
+ */
+zathura_page_t* zathura_page_widget_get_page(ZathuraPage* widget);
 
 #endif

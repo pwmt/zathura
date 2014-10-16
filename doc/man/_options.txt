@@ -23,14 +23,12 @@
 -l, --debug=level
   Set log debug level (debug, info, warning, error)
 
--s, --synctex
-  Enables synctex support
-
 -x, --synctex-editor-command=command
-  Set the synctex editor command
+  Set the synctex editor command. Overrides the synctex-editor-command setting.
 
 --synctex-forward=input
-  Jump to the given position. The switch expects the same format as specified for synctex's view -i.
+  Jump to the given position. The switch expects the same format as specified
+  for synctex's view -i.
 
 --fork
   Fork into background

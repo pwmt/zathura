@@ -285,6 +285,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
     case GIRARA_EVENT_SCROLL_DOWN:
     case GIRARA_EVENT_SCROLL_LEFT:
     case GIRARA_EVENT_SCROLL_RIGHT:
+    case GIRARA_EVENT_SCROLL_BIDIRECTIONAL:
       return sc_scroll(session, argument, NULL, t);
 
       /* drag */
@@ -339,6 +340,9 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
     case GIRARA_EVENT_SCROLL_DOWN:
       argument->n = ZOOM_OUT;
       break;
+    case GIRARA_EVENT_SCROLL_BIDIRECTIONAL:
+      argument->n = ZOOM_SMOOTH;
+      break;
     default:
       return false;
   }
@@ -385,8 +389,12 @@ sc_navigate(girara_session_t* session, girara_argument_t* argument,
     }
   }
 
-  if ((new_page < 0 || new_page >= number_of_pages) && !scroll_wrap) {
-    return false;
+  if (!scroll_wrap) {
+    if (new_page <= 0) {
+      new_page = 0;
+    } else if (new_page >= number_of_pages) {
+      new_page = number_of_pages - 1;
+    }
   }
 
   page_set(zathura, new_page);
@@ -484,7 +492,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
 
 bool
 sc_scroll(girara_session_t* session, girara_argument_t* argument,
-          girara_event_t* UNUSED(event), unsigned int t)
+          girara_event_t* event, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -589,6 +597,12 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     case RIGHT:
       pos_x += direction * t * scroll_hstep / (double)doc_width;
       break;
+
+    case BIDIRECTIONAL: {
+      pos_x += event->x * t * scroll_hstep / (double)doc_width;
+      pos_y += event->y * t * scroll_step / (double)doc_height;
+      break;
+    }
   }
 
   /* handle boundaries */
@@ -1162,7 +1176,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
   }
 
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
-    girara_set_view(session, zathura->ui.page_widget_alignment);
+    girara_set_view(session, zathura->ui.page_widget);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
 
@@ -1338,7 +1352,7 @@ sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument),
 
 bool
 sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
-        UNUSED(event), unsigned int t)
+        event, unsigned int t)
 {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -1367,6 +1381,9 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
     } else {
       zathura_document_set_scale(zathura->document, t / 100.0);
     }
+  } else if (argument->n == ZOOM_SMOOTH) {
+     const double dy = event->y;
+     zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
   } else {
     zathura_document_set_scale(zathura->document, 1.0);
   }

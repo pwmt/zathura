@@ -741,6 +741,13 @@ Defines the color value that is used to represent light colors in recoloring mod
 * Value type: String
 * Default value: #000000
 
+recolor-reverse-video
+^^^^^^^^^^^^^^^^^^^^^
+Defines if original image colors should be kept while recoloring.
+
+* Value type: Boolean
+* Default value: false
+
 render-loading
 ^^^^^^^^^^^^^^
 Defines if the "Loading..." text should be displayed if a page is rendered.
@@ -798,6 +805,13 @@ Defines if scrolling by half or full pages stops at page boundaries.
 * Value type: Boolean
 * Default value: false
 
+smooth-scroll
+^^^^^^^^^^^^^
+Defines if scrolling via touchpad should be smooth(only available with gtk >= 3.4).
+
+* Value type: Boolean
+* Default value: false
+
 link-zoom
 ^^^^^^^^^
 En/Disables the ability of changing zoom when following links.
@@ -846,7 +860,7 @@ zoom-center
 En/Disables horizontally centered zooming.
 
 * Value type: Boolean
-* Default value: False
+* Default value: false
 
 zoom-max
 ^^^^^^^^
@@ -880,9 +894,30 @@ middle mouse button, or the Shift-Insert key combination.
 * Value type: String
 * Default value: primary
 
+selection-notification
+^^^^^^^^^^^^^^^^^^^^^^
+Defines if a notification should be displayed after selecting text.
+
+* Value type: Boolean
+* Default value: true
+
+synctex
+^^^^^^^
+En/Disables SyncTeX backward synchronization support.
+
+* Value type: Boolean
+* Default value: true
+
+synctex-editor-command
+^^^^^^^^^^^^^^^^^^^^^^
+Defines the command executed for SyncTeX backward synchronization.
+
+* Value type: String
+* Default value:
+
 syntex-dbus-service
 ^^^^^^^^^^^^^^^^^^^
-En/Disables the D-Bus service required for synctex forward synchronization.
+En/Disables the D-Bus service required for SyncTeX forward synchronization.
 
 * Value type: Boolean
 * Default value: true

@@ -4,7 +4,7 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c))) $(wildcard synctex/*.c)
+OSOURCE    = $(filter-out css-definitions.c, $(filter-out dbus-interface-definitions.c, $(wildcard *.c)))
 HEADER     = $(wildcard *.h) $(wildcard synctex/*.h)
 HEADERINST = version.h document.h macros.h page.h types.h plugin-api.h links.h
 
@@ -23,6 +23,22 @@ LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
+ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+INCS   += $(SYNCTEX_INC)
+LIBS   += $(SYNCTEX_LIB)
+else
+INCS   += $(ZLIB_INC)
+LIBS   += $(ZLIB_LIB)
+SOURCE += $(wildcard synctex/*.c)
+
+ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
+CPPFLAGS += -Isynctex
+endif
+ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
+CPPFLAGS += -DSYNCTEX_VERBOSE=0
+endif
+endif
+
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
 endif
@@ -36,13 +52,6 @@ endif
 ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
-ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
-CPPFLAGS += -Isynctex
-endif
-ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
-CPPFLAGS += -DSYNCTEX_VERBOSE=0
-endif
-
 
 OBJECTS  = $(patsubst %.c, %.o,  $(SOURCE)) dbus-interface-definitions.o css-definitions.o
 DOBJECTS = $(patsubst %.o, %.do, $(OBJECTS))
@@ -95,7 +104,7 @@ css-definitions.c: data/zathura.css_t
 
 %.do: %.c
 	$(call colorecho,CC,$<)
-	@mkdir -p .depend
+	$(QUIET) mkdir -p $(shell dirname .depend/$@.dep)
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} -o $@ $< -MMD -MF .depend/$@.dep
 
 ${OBJECTS} ${DOBJECTS}: config.mk version.h \
@@ -118,6 +127,8 @@ clean:
 		version.h.tmp \
 		dbus-interface-definitions.c \
 		dbus-interface-definitions.c.tmp \
+		css-definitions.c \
+		css-definitions.c.tmp \
 		*gcda *gcno $(PROJECT).info gcov *.tmp \
 		.version-checks
 	$(QUIET)$(MAKE) -C tests clean
@@ -198,7 +209,12 @@ install-dbus:
 	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(DBUSINTERFACEDIR)
 	$(QUIET)install -m 644 data/org.pwmt.zathura.xml $(DESTDIR)$(DBUSINTERFACEDIR)
 
-install: all install-headers install-manpages install-dbus
+install-appdata:
+	$(call colorecho,INSTALL,"AppData file")
+	$(QUIET)mkdir -m 755 -p $(DESTDIR)$(APPDATAPREFIX)
+	$(QUIET)install -m 644 data/$(PROJECT).appdata.xml $(DESTDIR)$(APPDATAPREFIX)
+
+install: all install-headers install-manpages install-dbus install-appdata
 	$(call colorecho,INSTALL,"executeable file")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
 	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
@@ -224,6 +240,8 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f ${DESTDIR}${DESKTOPPREFIX}/${PROJECT}.desktop
 	$(call colorecho,UNINSTALL,"D-Bus interface definitions")
 	$(QUIET)rm -f $(DESTDIR)$(DBUSINTERFACEDIR)/org.pwmt.zathura.xml
+	$(call colorecho,UNINSTALL,"AppData file")
+	$(QUIET)rm -f $(DESTDIR)$(APPDATAPREFIX)/$(PROJECT).appdata.xml
 	$(MAKE) -C po uninstall
 
 -include $(wildcard .depend/*.dep)

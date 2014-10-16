@@ -20,6 +20,8 @@
 #include "page-widget.h"
 #include "page.h"
 #include "adjustment.h"
+#include "synctex.h"
+#include "dbus-interface.h"
 
 gboolean
 cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura)
@@ -49,7 +51,7 @@ cb_buffer_changed(girara_session_t* session)
   }
 }
 
-static void
+void
 update_visible_pages(zathura_t* zathura)
 {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
@@ -508,6 +510,23 @@ cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
   }
 }
 
+void
+cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, const char* name,
+                                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const bool bool_value = *((bool*) value);
+
+  if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_reverse_video_enabled(zathura->sync.render_thread) != bool_value) {
+     zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, bool_value);
+     render_all(zathura);
+  }
+}
 
 bool
 cb_unknown_command(girara_session_t* session, const char* input)
@@ -556,13 +575,18 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
   if (selection != NULL) {
     gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
 
-    char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-    char* escaped_text = g_markup_printf_escaped(
-        _("Copied selected text to clipboard: %s"), stripped_text);
-    g_free(stripped_text);
+    bool notification = true;
+    girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
-    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-    g_free(escaped_text);
+    if (notification == true) {
+      char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+      char* escaped_text = g_markup_printf_escaped(
+          _("Copied selected text to clipboard: %s"), stripped_text);
+      g_free(stripped_text);
+
+      girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+      g_free(escaped_text);
+    }
   }
 
   g_free(selection);
@@ -597,3 +621,38 @@ cb_page_widget_link(ZathuraPage* page, void* data)
   gdk_window_set_cursor(window, cursor);
   g_object_unref(cursor);
 }
+
+void
+cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event,
+    void* data)
+{
+  if (event->button != 1 || !(event->state & GDK_CONTROL_MASK)) {
+    return;
+  }
+
+  zathura_t* zathura = data;
+
+  bool synctex = false;
+  girara_setting_get(zathura->ui.session, "synctex", &synctex);
+
+  if (synctex == false) {
+    return;
+  }
+
+  zathura_page_t* page = zathura_page_widget_get_page(page_widget);
+
+  if (zathura->dbus != NULL) {
+    zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
+  }
+
+  char* editor = NULL;
+  girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
+  if (editor == NULL || *editor == '\0') {
+    g_free(editor);
+    return;
+  }
+
+  synctex_edit(editor, page, event->x, event->y);
+  g_free(editor);
+}
+

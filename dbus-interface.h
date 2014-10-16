@@ -42,6 +42,16 @@ GType zathura_dbus_get_type(void);
 ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
 
 /**
+ * Emit the 'Edit' signal on the D-Bus connection.
+ *
+ * @param dbus ZathuraDbus instance
+ * @param page page
+ * @param x x coordinate
+ * @param y y coordinate
+ */
+void zathura_dbus_edit(ZathuraDbus* dbus, unsigned int page, unsigned int x, unsigned int y);
+
+/**
  * Look for zathura instance having filename open and cause it to open give page
  * and highlight rectangles on the given page
  *

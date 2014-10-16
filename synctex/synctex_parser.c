@@ -240,14 +240,11 @@ struct __synctex_class_t {
 		SYNCTEX_GETTER(NODE,next_hbox)[0]=NEXT_HBOX;\
 	}
 
-void _synctex_free_node(synctex_node_t node);
-void _synctex_free_leaf(synctex_node_t node);
-
 /*  A node is meant to own its child and sibling.
  *  It is not owned by its parent, unless it is its first child.
  *  This destructor is for all nodes with children.
  */
-void _synctex_free_node(synctex_node_t node) {
+static void _synctex_free_node(synctex_node_t node) {
 	if (node) {
 		(*((node->class)->sibling))(node);
 		SYNCTEX_FREE(SYNCTEX_SIBLING(node));
@@ -262,7 +259,7 @@ void _synctex_free_node(synctex_node_t node) {
  *  This destructor is for nodes with no child.
  *  The first sheet is onwned by the scanner.
  */
-void _synctex_free_leaf(synctex_node_t node) {
+static void _synctex_free_leaf(synctex_node_t node) {
 	if (node) {
 		SYNCTEX_FREE(SYNCTEX_SIBLING(node));
 		free(node);
@@ -345,8 +342,7 @@ struct __synctex_scanner_t {
  *  It is only used for pointer values
  */
 #   define SYNCTEX_MAKE_GET(SYNCTEX_GETTER,OFFSET)\
-synctex_node_t * SYNCTEX_GETTER (synctex_node_t node);\
-synctex_node_t * SYNCTEX_GETTER (synctex_node_t node) {\
+static synctex_node_t * SYNCTEX_GETTER (synctex_node_t node) {\
 	return node?(synctex_node_t *)((&((node)->implementation))+OFFSET):NULL;\
 }
 SYNCTEX_MAKE_GET(_synctex_implementation_0,0)
@@ -363,9 +359,25 @@ typedef struct {
 	                         *  SYNCTEX_PAGE_IDX */
 } synctex_node_sheet_t;
 
-synctex_node_t _synctex_new_sheet(synctex_scanner_t scanner);
-void _synctex_display_sheet(synctex_node_t node);
-void _synctex_log_sheet(synctex_node_t node);
+/*  sheet node creator */
+
+#define DEFINE_synctex_new_NODE(NAME)\
+static synctex_node_t _synctex_new_##NAME(synctex_scanner_t scanner) {\
+	if (scanner) {\
+		synctex_node_t node = _synctex_malloc(sizeof(synctex_node_##NAME##_t));\
+		if (node) {\
+			SYNCTEX_IMPLEMENT_CHARINDEX(node,0);\
+			++SYNCTEX_CUR;\
+			node->class = scanner->class+synctex_node_type_##NAME;\
+		}\
+		return node;\
+	}\
+	return NULL;\
+}
+DEFINE_synctex_new_NODE(sheet)
+
+static void _synctex_display_sheet(synctex_node_t node);
+static void _synctex_log_sheet(synctex_node_t node);
 
 static _synctex_class_t synctex_class_sheet = {
 	NULL,                       /*  No scanner yet */
@@ -381,23 +393,6 @@ static _synctex_class_t synctex_class_sheet = {
 	&_synctex_implementation_2, /*  Next hbox */
 	(_synctex_info_getter_t)&_synctex_implementation_3  /*  info */
 };
-
-/*  sheet node creator */
-
-#define DEFINE_synctex_new_NODE(NAME)\
-synctex_node_t _synctex_new_##NAME(synctex_scanner_t scanner) {\
-	if (scanner) {\
-		synctex_node_t node = _synctex_malloc(sizeof(synctex_node_##NAME##_t));\
-		if (node) {\
-			SYNCTEX_IMPLEMENT_CHARINDEX(node,0);\
-			++SYNCTEX_CUR;\
-			node->class = scanner->class+synctex_node_type_##NAME;\
-		}\
-		return node;\
-	}\
-	return NULL;\
-}
-DEFINE_synctex_new_NODE(sheet)
 
 /*  A box node contains navigation and synctex information
  *  There are different kind of boxes.
@@ -432,9 +427,11 @@ typedef struct {
 								*  SYNCTEX_HORIZ,SYNCTEX_VERT,SYNCTEX_WIDTH,SYNCTEX_HEIGHT,SYNCTEX_DEPTH */
 } synctex_node_vbox_t;
 
-synctex_node_t _synctex_new_vbox(synctex_scanner_t scanner);
-void _synctex_log_vbox(synctex_node_t node);
-void _synctex_display_vbox(synctex_node_t node);
+/*  vertical box node creator */
+DEFINE_synctex_new_NODE(vbox)
+
+static void _synctex_log_vbox(synctex_node_t node);
+static void _synctex_display_vbox(synctex_node_t node);
 
 /*  These are static class objects, each scanner will make a copy of them and setup the scanner field.
  */
@@ -452,9 +449,6 @@ static _synctex_class_t synctex_class_vbox = {
 	&_synctex_implementation_4, /*  next hbox */
 	(_synctex_info_getter_t)&_synctex_implementation_5
 };
-
-/*  vertical box node creator */
-DEFINE_synctex_new_NODE(vbox)
 
 /*  Horizontal boxes must contain visible size, because 0 width does not mean emptiness.
  *  They also contain an average of the line numbers of the containing nodes. */
@@ -487,9 +481,11 @@ typedef struct {
 						*  SYNCTEX_HORIZ_V,SYNCTEX_VERT_V,SYNCTEX_WIDTH_V,SYNCTEX_HEIGHT_V,SYNCTEX_DEPTH_V*/
 } synctex_node_hbox_t;
 
-synctex_node_t _synctex_new_hbox(synctex_scanner_t scanner);
-void _synctex_display_hbox(synctex_node_t node);
-void _synctex_log_hbox(synctex_node_t node);
+/*  horizontal box node creator */
+DEFINE_synctex_new_NODE(hbox)
+
+static void _synctex_display_hbox(synctex_node_t node);
+static void _synctex_log_hbox(synctex_node_t node);
 
 
 static _synctex_class_t synctex_class_hbox = {
@@ -507,9 +503,6 @@ static _synctex_class_t synctex_class_hbox = {
 	(_synctex_info_getter_t)&_synctex_implementation_5
 };
 
-/*  horizontal box node creator */
-DEFINE_synctex_new_NODE(hbox)
-
 /*  This void box node implementation is either horizontal or vertical
  *  It does not contain a child field.
  */
@@ -521,9 +514,11 @@ typedef struct {
 					  *  SYNCTEX_HORIZ,SYNCTEX_VERT,SYNCTEX_WIDTH,SYNCTEX_HEIGHT,SYNCTEX_DEPTH*/
 } synctex_node_void_vbox_t;
 
-synctex_node_t _synctex_new_void_vbox(synctex_scanner_t scanner);
-void _synctex_log_void_box(synctex_node_t node);
-void _synctex_display_void_vbox(synctex_node_t node);
+/*  vertical void box node creator */
+DEFINE_synctex_new_NODE(void_vbox)
+
+static void _synctex_log_void_box(synctex_node_t node);
+static void _synctex_display_void_vbox(synctex_node_t node);
 
 static _synctex_class_t synctex_class_void_vbox = {
 	NULL,                       /*  No scanner yet */
@@ -540,13 +535,12 @@ static _synctex_class_t synctex_class_void_vbox = {
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
 
-/*  vertical void box node creator */
-DEFINE_synctex_new_NODE(void_vbox)
-
 typedef synctex_node_void_vbox_t synctex_node_void_hbox_t;
 
-synctex_node_t _synctex_new_void_hbox(synctex_scanner_t scanner);
-void _synctex_display_void_hbox(synctex_node_t node);
+/*  horizontal void box node creator */
+DEFINE_synctex_new_NODE(void_hbox)
+
+static void _synctex_display_void_hbox(synctex_node_t node);
 
 static _synctex_class_t synctex_class_void_hbox = {
 	NULL,                       /*  No scanner yet */
@@ -562,9 +556,6 @@ static _synctex_class_t synctex_class_void_hbox = {
 	NULL,						/*  No next hbox */
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
-
-/*  horizontal void box node creator */
-DEFINE_synctex_new_NODE(void_hbox)
 
 /*  The medium nodes correspond to kern, glue, penalty and math nodes.
  *  In LuaTeX, the size of the nodes may have changed.  */
@@ -584,13 +575,14 @@ typedef struct {
 	
 #define SYNCTEX_HAS_CHILDREN(NODE) (NODE && SYNCTEX_CHILD(NODE))
 	
-void _synctex_log_medium_node(synctex_node_t node);
+static void _synctex_log_medium_node(synctex_node_t node);
 
 typedef synctex_node_medium_t synctex_node_math_t;
 
 /*  math node creator */
-synctex_node_t _synctex_new_math(synctex_scanner_t scanner);
-void _synctex_display_math(synctex_node_t node);
+DEFINE_synctex_new_NODE(math)
+
+static void _synctex_display_math(synctex_node_t node);
 
 static _synctex_class_t synctex_class_math = {
 	NULL,                       /*  No scanner yet */
@@ -607,13 +599,12 @@ static _synctex_class_t synctex_class_math = {
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
 
-DEFINE_synctex_new_NODE(math)
-
 typedef synctex_node_medium_t synctex_node_kern_t;
 
 /*  kern node creator */
-synctex_node_t _synctex_new_kern(synctex_scanner_t scanner);
-void _synctex_display_kern(synctex_node_t node);
+DEFINE_synctex_new_NODE(kern)
+
+static void _synctex_display_kern(synctex_node_t node);
 
 static _synctex_class_t synctex_class_kern = {
 	NULL,                       /*  No scanner yet */
@@ -630,8 +621,6 @@ static _synctex_class_t synctex_class_kern = {
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
 
-DEFINE_synctex_new_NODE(kern)
-
 /*  The small nodes correspond to glue and boundary nodes.  */
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
@@ -641,12 +630,12 @@ typedef struct {
 					  *  SYNCTEX_HORIZ,SYNCTEX_VERT */
 } synctex_node_small_t;
 
-void _synctex_log_small_node(synctex_node_t node);
+static void _synctex_log_small_node(synctex_node_t node);
 
 /*  glue node creator */
 typedef synctex_node_small_t synctex_node_glue_t;
-synctex_node_t _synctex_new_glue(synctex_scanner_t scanner);
-void _synctex_display_glue(synctex_node_t node);
+DEFINE_synctex_new_NODE(glue)
+static void _synctex_display_glue(synctex_node_t node);
 
 static _synctex_class_t synctex_class_glue = {
 	NULL,                       /*  No scanner yet */
@@ -662,12 +651,12 @@ static _synctex_class_t synctex_class_glue = {
 	NULL,                       /*  No next hbox */
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
-DEFINE_synctex_new_NODE(glue)
 
 /*  boundary node creator */
 typedef synctex_node_small_t synctex_node_boundary_t;
-synctex_node_t _synctex_new_boundary(synctex_scanner_t scanner);
-void _synctex_display_boundary(synctex_node_t node);
+DEFINE_synctex_new_NODE(boundary)
+
+static void _synctex_display_boundary(synctex_node_t node);
 
 static _synctex_class_t synctex_class_boundary = {
 	NULL,                       /*  No scanner yet */
@@ -684,8 +673,6 @@ static _synctex_class_t synctex_class_boundary = {
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
 
-DEFINE_synctex_new_NODE(boundary)
-
 #   define SYNCTEX_NAME_IDX (SYNCTEX_TAG_IDX+1)
 #   define SYNCTEX_NAME(NODE) SYNCTEX_INFO(NODE)[SYNCTEX_NAME_IDX].PTR
 
@@ -698,10 +685,29 @@ typedef struct {
 	                          *  SYNCTEX_TAG,SYNCTEX_NAME */
 } synctex_input_t;
 
-synctex_node_t _synctex_new_input(synctex_scanner_t scanner);
-void _synctex_free_input(synctex_node_t node);
-void _synctex_display_input(synctex_node_t node);
-void _synctex_log_input(synctex_node_t node);
+#   define SYNCTEX_INPUT_MARK "Input:"
+static synctex_node_t _synctex_new_input(synctex_scanner_t scanner) {
+	if (scanner) {
+		synctex_node_t node = _synctex_malloc(sizeof(synctex_input_t));
+		if (node) {
+            SYNCTEX_IMPLEMENT_CHARINDEX(node,strlen(SYNCTEX_INPUT_MARK));
+			node->class = scanner->class+synctex_node_type_input;
+		}
+		return node;
+	}
+	return NULL;
+}
+
+static void _synctex_free_input(synctex_node_t node){
+	if (node) {
+		SYNCTEX_FREE(SYNCTEX_SIBLING(node));
+		free(SYNCTEX_NAME(node));
+		free(node);
+	}
+}
+
+static void _synctex_display_input(synctex_node_t node);
+static void _synctex_log_input(synctex_node_t node);
 
 static _synctex_class_t synctex_class_input = {
 	NULL,                       /*  No scanner yet */
@@ -718,26 +724,6 @@ static _synctex_class_t synctex_class_input = {
 	(_synctex_info_getter_t)&_synctex_implementation_1
 };
 
-#   define SYNCTEX_INPUT_MARK "Input:"
-
-synctex_node_t _synctex_new_input(synctex_scanner_t scanner) {
-	if (scanner) {
-		synctex_node_t node = _synctex_malloc(sizeof(synctex_input_t));
-		if (node) {
-            SYNCTEX_IMPLEMENT_CHARINDEX(node,strlen(SYNCTEX_INPUT_MARK));
-			node->class = scanner->class+synctex_node_type_input;
-		}
-		return node;
-	}
-	return NULL;
-}
-void _synctex_free_input(synctex_node_t node){
-	if (node) {
-		SYNCTEX_FREE(SYNCTEX_SIBLING(node));
-		free(SYNCTEX_NAME(node));
-		free(node);
-	}
-}
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #       pragma mark Navigation
@@ -810,14 +796,14 @@ void synctex_node_log(synctex_node_t node) {
 	SYNCTEX_LOG(node);
 }
 
-void _synctex_log_input(synctex_node_t node) {
+static void _synctex_log_input(synctex_node_t node) {
 	if (node) {
         printf("%s:%i,%s",synctex_node_isa(node),SYNCTEX_TAG(node),SYNCTEX_NAME(node));
         printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
     }
 }
 
-void _synctex_log_sheet(synctex_node_t node) {
+static void _synctex_log_sheet(synctex_node_t node) {
 	if (node) {
 		printf("%s:%i",synctex_node_isa(node),SYNCTEX_PAGE(node));
         SYNCTEX_PRINT_CHARINDEX;
@@ -830,7 +816,7 @@ void _synctex_log_sheet(synctex_node_t node) {
 	}
 }
 
-void _synctex_log_small_node(synctex_node_t node) {
+static void _synctex_log_small_node(synctex_node_t node) {
 	if (node) {
         printf("%s:%i,%i:%i,%i",
             synctex_node_isa(node),
@@ -847,7 +833,7 @@ void _synctex_log_small_node(synctex_node_t node) {
     }
 }
 
-void _synctex_log_medium_node(synctex_node_t node) {
+static void _synctex_log_medium_node(synctex_node_t node) {
 	if (node) {
         printf("%s:%i,%i:%i,%i:%i",
             synctex_node_isa(node),
@@ -865,7 +851,7 @@ void _synctex_log_medium_node(synctex_node_t node) {
     }
 }
 
-void _synctex_log_void_box(synctex_node_t node) {
+static void _synctex_log_void_box(synctex_node_t node) {
 	if (node) {
         printf("%s",synctex_node_isa(node));
         printf(":%i",SYNCTEX_TAG(node));
@@ -885,7 +871,7 @@ void _synctex_log_void_box(synctex_node_t node) {
     }
 }
 
-void _synctex_log_vbox(synctex_node_t node) {
+static void _synctex_log_vbox(synctex_node_t node) {
 	if (node) {
         printf("%s",synctex_node_isa(node));
         printf(":%i",SYNCTEX_TAG(node));
@@ -906,7 +892,7 @@ void _synctex_log_vbox(synctex_node_t node) {
     }
 }
 
-void _synctex_log_hbox(synctex_node_t node) {
+static void _synctex_log_hbox(synctex_node_t node) {
 	if (node) {
         printf("%s",synctex_node_isa(node));
         printf(":%i",SYNCTEX_TAG(node));
@@ -938,7 +924,7 @@ void synctex_node_display(synctex_node_t node) {
 	SYNCTEX_DISPLAY(node);
 }
 
-void _synctex_display_input(synctex_node_t node) {
+static void _synctex_display_input(synctex_node_t node) {
     if (node) {
         printf("....Input:%i:%s",
             SYNCTEX_TAG(node),
@@ -948,7 +934,7 @@ void _synctex_display_input(synctex_node_t node) {
     }
 }
 
-void _synctex_display_sheet(synctex_node_t node) {
+static void _synctex_display_sheet(synctex_node_t node) {
 	if (node) {
 		printf("....{%i",SYNCTEX_PAGE(node));
         SYNCTEX_PRINT_CHARINDEX;
@@ -958,7 +944,7 @@ void _synctex_display_sheet(synctex_node_t node) {
 	}
 }
 
-void _synctex_display_vbox(synctex_node_t node) {
+static void _synctex_display_vbox(synctex_node_t node) {
     if (node) {
         printf("....[%i,%i:%i,%i:%i,%i,%i",
             SYNCTEX_TAG(node),
@@ -975,7 +961,7 @@ void _synctex_display_vbox(synctex_node_t node) {
     }
 }
 
-void _synctex_display_hbox(synctex_node_t node) {
+static void _synctex_display_hbox(synctex_node_t node) {
     if (node) {
         printf("....(%i,%i~%i*%i:%i,%i:%i,%i,%i",
             SYNCTEX_TAG(node),
@@ -994,7 +980,7 @@ void _synctex_display_hbox(synctex_node_t node) {
     }
 }
 
-void _synctex_display_void_vbox(synctex_node_t node) {
+static void _synctex_display_void_vbox(synctex_node_t node) {
     if (node) {
         printf("....v%i,%i;%i,%i:%i,%i,%i",
             SYNCTEX_TAG(node),
@@ -1009,7 +995,7 @@ void _synctex_display_void_vbox(synctex_node_t node) {
     }
 }
 
-void _synctex_display_void_hbox(synctex_node_t node) {
+static void _synctex_display_void_hbox(synctex_node_t node) {
     if (node) {
         printf("....h%i,%i:%i,%i:%i,%i,%i",
             SYNCTEX_TAG(node),
@@ -1024,7 +1010,7 @@ void _synctex_display_void_hbox(synctex_node_t node) {
     }
 }
 
-void _synctex_display_glue(synctex_node_t node) {
+static void _synctex_display_glue(synctex_node_t node) {
     if (node) {
         printf("....glue:%i,%i:%i,%i",
             SYNCTEX_TAG(node),
@@ -1036,7 +1022,7 @@ void _synctex_display_glue(synctex_node_t node) {
     }
 }
 
-void _synctex_display_math(synctex_node_t node) {
+static void _synctex_display_math(synctex_node_t node) {
     if (node) {
         printf("....math:%i,%i:%i,%i",
             SYNCTEX_TAG(node),
@@ -1048,7 +1034,7 @@ void _synctex_display_math(synctex_node_t node) {
     }
 }
 
-void _synctex_display_kern(synctex_node_t node) {
+static void _synctex_display_kern(synctex_node_t node) {
     if (node) {
         printf("....kern:%i,%i:%i,%i:%i",
             SYNCTEX_TAG(node),
@@ -1061,7 +1047,7 @@ void _synctex_display_kern(synctex_node_t node) {
     }
 }
 
-void _synctex_display_boundary(synctex_node_t node) {
+static void _synctex_display_boundary(synctex_node_t node) {
     if (node) {
         printf("....boundary:%i,%i:%i,%i",
             SYNCTEX_TAG(node),
@@ -2728,15 +2714,13 @@ synctex_scanner_t synctex_scanner_new_with_output_file(const char * output, cons
 	return parse? synctex_scanner_parse(scanner):scanner;
 }
 
-int __synctex_open(const char * output, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_mode_ref);
-
 /*	This functions opens the file at the "output" given location.
  *  It manages the problem of quoted filenames that appear with pdftex and filenames containing the space character.
  *  In TeXLive 2008, the synctex file created with pdftex did contain unexpected quotes.
  *	This function will remove them if possible.
  *  All the reference arguments will take a value on return. They must be non NULL.
  *	0 on success, non 0 on error. */
-int __synctex_open(const char * output, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_mode_ref) {
+static int __synctex_open(const char * output, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_mode_ref) {
 	if (synctex_name_ref && file_ref && io_mode_ref) {
         /*  1 local variables that uses dynamic memory */
         char * synctex_name = NULL;
@@ -2878,6 +2862,7 @@ int _synctex_open(const char * output, const char * build_directory, char ** syn
 				build_output[0] = '\0';
 			} else {
 				if (build_output != strcpy(build_output,output)) {
+					free(build_output);
 					return -4;
 				}
 				build_output[lpc-output]='\0';
@@ -2886,15 +2871,20 @@ int _synctex_open(const char * output, const char * build_directory, char ** syn
 				/*	Append a path separator if necessary. */
 				if (!SYNCTEX_IS_PATH_SEPARATOR(build_output[strlen(build_directory)-1])) {
 					if (build_output != strcat(build_output,"/")) {
+						free(build_output);
 						return -2;
 					}
 				}
 				/*	Append the last path component of the output. */
 				if (build_output != strcat(build_output,lpc)) {
+					free(build_output);
 					return -3;
 				}
-				return __synctex_open(build_output,synctex_name_ref,file_ref,add_quotes,io_mode_ref);
+				result = __synctex_open(build_output,synctex_name_ref,file_ref,add_quotes,io_mode_ref);
+				free(build_output);
+				return result;
 			}
+			free(build_output);
 		}
 		return -1;
 	}

@@ -83,9 +83,22 @@ zathura_dbus_init(ZathuraDbus* dbus)
 }
 
 static void
+gdbus_connection_closed(GDBusConnection* UNUSED(connection),
+    gboolean UNUSED(remote_peer_vanished), GError* error, void* UNUSED(data))
+{
+  if (error != NULL) {
+    girara_debug("D-Bus connection closed: %s", error->message);
+  }
+}
+
+static void
 bus_acquired(GDBusConnection* connection, const gchar* name, void* data)
 {
   girara_debug("Bus acquired at '%s'.", name);
+
+  /* register callback for GDBusConnection's closed signal */
+  g_signal_connect(G_OBJECT(connection), "closed",
+                   G_CALLBACK(gdbus_connection_closed), NULL);
 
   ZathuraDbus* dbus = data;
   private_t* priv   = GET_PRIVATE(dbus);
@@ -148,6 +161,33 @@ zathura_dbus_new(zathura_t* zathura)
   g_free(well_known_name);
 
   return dbus;
+}
+
+void
+zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned int y) {
+  private_t* priv = GET_PRIVATE(edit);
+
+  const char* filename = zathura_document_get_path(priv->zathura->document);
+
+  char* input_file = NULL;
+  unsigned int line = 0;
+  unsigned int column = 0;
+
+  if (synctex_get_input_line_column(filename, page, x, y, &input_file, &line,
+        &column) == false) {
+    return;
+  }
+
+  GError* error = NULL;
+  g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH,
+    DBUS_INTERFACE, "Edit", g_variant_new("(suu)", input_file, x, y), &error);
+
+  g_free(input_file);
+
+  if (error != NULL) {
+    girara_debug("Failed to emit 'Edit' signal: %s", error->message);
+    g_error_free(error);
+  }
 }
 
 /* D-Bus handler */

@@ -176,6 +176,17 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name,
 void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
     girara_setting_type_t type, void* value, void* data);
 
+/**
+ * Emitted when the 'recolor-reverse-video' setting is changed
+ *
+ * @param session Girara session
+ * @param name Name of the setting ("recolor")
+ * @param type Type of the setting (BOOLEAN)
+ * @param value New value
+ * @param data Custom data
+ */
+void cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, 
+    const char* name, girara_setting_type_t type, void* value, void* data);
 
 /**
  * Unknown command handler which is used to handle the strict numeric goto
@@ -200,8 +211,14 @@ void cb_page_widget_text_selected(ZathuraPage* page, const char* text,
 void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf,
     void* data);
 
+void cb_page_widget_scaled_button_release(ZathuraPage* page,
+    GdkEventButton* event, void* data);
+
 void
 cb_page_widget_link(ZathuraPage* page, void* data);
+
+void
+update_visible_pages(zathura_t* zathura);
 
 
 #endif // CALLBACKS_H

@@ -1,12 +1,10 @@
 /* See LICENSE file for license and copyright information */
 
-#define _BSD_SOURCE
-#define _XOPEN_SOURCE 700
-
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <glib.h>
+#include <gio/gio.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -54,6 +52,12 @@ struct zathura_document_s {
   zathura_plugin_t* plugin;
 };
 
+static void
+check_set_error(zathura_error_t* error, zathura_error_t code) {
+  if (error != NULL) {
+    *error = code;
+  }
+}
 
 zathura_document_t*
 zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
@@ -63,63 +67,50 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
     return NULL;
   }
 
-  if (g_file_test(path, G_FILE_TEST_EXISTS) == FALSE) {
-    girara_error("File '%s' does not exist", path);
-    return NULL;
-  }
-
-  const char* content_type = guess_content_type(path);
-  if (content_type == NULL) {
-    girara_error("Could not determine file type.");
-    return NULL;
-  }
-
-  /* determine real path */
-  long path_max;
-#ifdef PATH_MAX
-  path_max = PATH_MAX;
-#else
-  path_max = pathconf(path,_PC_PATH_MAX);
-  if (path_max <= 0)
-    path_max = 4096;
-#endif
-
-  char* real_path              = NULL;
+  GFile* file = g_file_new_for_path(path);
+  char* real_path = NULL;
+  const char* content_type = NULL;
+  zathura_plugin_t* plugin = NULL;
   zathura_document_t* document = NULL;
 
-  real_path = malloc(sizeof(char) * path_max);
+  if (file == NULL) {
+    girara_error("Error while handling path '%s'.", path);
+    check_set_error(error, ZATHURA_ERROR_UNKNOWN);
+    goto error_free;
+  }
+
+  real_path = g_file_get_path(file);
   if (real_path == NULL) {
-    g_free((void*)content_type);
-    return NULL;
+    girara_error("Error while handling path '%s'.", path);
+    check_set_error(error, ZATHURA_ERROR_UNKNOWN);
+    goto error_free;
   }
 
-  if (realpath(path, real_path) == NULL) {
-    g_free((void*)content_type);
-    free(real_path);
-    return NULL;
+  content_type = guess_content_type(real_path);
+  if (content_type == NULL) {
+    girara_error("Could not determine file type.");
+    check_set_error(error, ZATHURA_ERROR_UNKNOWN);
+    goto error_free;
   }
 
-  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(plugin_manager, content_type);
+  plugin = zathura_plugin_manager_get_plugin(plugin_manager, content_type);
   g_free((void*)content_type);
+  content_type = NULL;
 
   if (plugin == NULL) {
-    girara_error("unknown file type\n");
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_UNKNOWN;
-    }
+    girara_error("Unknown file type: '%s'", content_type);
+    check_set_error(error, ZATHURA_ERROR_UNKNOWN);
     goto error_free;
   }
 
   document = g_try_malloc0(sizeof(zathura_document_t));
   if (document == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_OUT_OF_MEMORY;
-    }
+    check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);
     goto error_free;
   }
 
   document->file_path   = real_path;
-  document->basename    = g_path_get_basename(real_path);
+  document->basename    = g_file_get_basename(file);
   document->password    = password;
   document->scale       = 1.0;
   document->plugin      = plugin;
@@ -131,6 +122,10 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   document->position_x  = 0.0;
   document->position_y  = 0.0;
 
+  real_path = NULL;
+  g_object_unref(file);
+  file = NULL;
+
   /* open document */
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
   if (functions->document_open == NULL) {
@@ -140,10 +135,7 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
 
   zathura_error_t int_error = functions->document_open(document);
   if (int_error != ZATHURA_ERROR_OK) {
-    if (error != NULL) {
-      *error = int_error;
-    }
-
+    check_set_error(error, int_error);
     girara_error("could not open document\n");
     goto error_free;
   }
@@ -151,12 +143,14 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   /* read all pages */
   document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
   if (document->pages == NULL) {
+    check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);
     goto error_free;
   }
 
   for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
     zathura_page_t* page = zathura_page_new(document, page_id, NULL);
     if (page == NULL) {
+      check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);
       goto error_free;
     }
 
@@ -176,17 +170,19 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
 
 error_free:
 
-  free(real_path);
+  if (file != NULL) {
+    g_object_unref(file);
+  }
 
-  if (document != NULL && document->pages != NULL) {
-    for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
-      zathura_page_free(document->pages[page_id]);
-    }
+  g_free(real_path);
 
-    free(document->pages);
+  if (document != NULL) {
+    zathura_document_free(document);
+    document = NULL; /* prevent double-free */
   }
 
   g_free(document);
+
   return NULL;
 }
 
@@ -197,13 +193,14 @@ zathura_document_free(zathura_document_t* document)
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  /* free pages */
-  for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
-    zathura_page_free(document->pages[page_id]);
-    document->pages[page_id] = NULL;
+  if (document->pages != NULL) {
+    /* free pages */
+    for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
+      zathura_page_free(document->pages[page_id]);
+      document->pages[page_id] = NULL;
+    }
+    free(document->pages);
   }
-
-  free(document->pages);
 
   /* free document */
   zathura_error_t error = ZATHURA_ERROR_OK;
@@ -576,17 +573,13 @@ girara_tree_node_t*
 zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error)
 {
   if (document == NULL || document->plugin == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
-    }
+    check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
     return NULL;
   }
 
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_index_generate == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
-    }
+    check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
     return NULL;
   }
 
@@ -597,17 +590,13 @@ girara_list_t*
 zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error)
 {
   if (document == NULL || document->plugin == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
-    }
+    check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
     return NULL;
   }
 
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_attachments_get == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
-    }
+    check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
     return NULL;
   }
 
@@ -633,17 +622,13 @@ girara_list_t*
 zathura_document_get_information(zathura_document_t* document, zathura_error_t* error)
 {
   if (document == NULL || document->plugin == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
-    }
+    check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
     return NULL;
   }
 
   zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_get_information == NULL) {
-    if (error != NULL) {
-      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
-    }
+    check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
     return NULL;
   }
 

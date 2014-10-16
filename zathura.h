@@ -60,7 +60,9 @@ enum {
   ROTATE_CW,
   ROTATE_CCW,
   PAGE_BOTTOM,
-  PAGE_TOP
+  PAGE_TOP,
+  BIDIRECTIONAL,
+  ZOOM_SMOOTH
 };
 
 /* unspecified page number */
@@ -108,7 +110,6 @@ struct zathura_s
       GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
     } colors;
 
-    GtkWidget *page_widget_alignment;
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
     GtkWidget *index; /**< Widget to show the index of the document */
   } ui;
@@ -127,13 +128,8 @@ struct zathura_s
   {
     gchar* config_dir; /**< Path to the configuration directory */
     gchar* data_dir; /**< Path to the data directory */
+    gchar* cache_dir; /**< Path to the cache directory */
   } config;
-
-  struct
-  {
-    bool enabled;
-    gchar* editor;
-  } synctex;
 
   struct
   {
@@ -256,28 +252,20 @@ void zathura_set_config_dir(zathura_t* zathura, const char* dir);
 void zathura_set_data_dir(zathura_t* zathura, const char* dir);
 
 /**
+ * Set the path to the cache directory.
+ *
+ * @param zathura The Zathura session
+ * @param dir Directory path
+ */
+void zathura_set_cache_dir(zathura_t* zathura, const char* dir);
+
+/**
  * Set the path to the plugin directory
  *
  * @param zathura The zathura session
  * @param dir Directory path
  */
 void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
-
-/**
- * Enables synctex support and sets the synctex editor command
- *
- * @param zathura The zathura session
- * @param command Synctex editor command
- */
-void zathura_set_synctex_editor_command(zathura_t* zathura, const char* command);
-
-/**
- * En/Disable zathuras synctex support
- *
- * @param zathura The zathura session
- * @param value The value
- */
-void zathura_set_synctex(zathura_t* zathura, bool value);
 
 /**
  * Sets the program parameters

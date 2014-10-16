@@ -43,6 +43,7 @@ typedef struct private_s {
   struct {
     bool enabled;
     bool hue;
+    bool reverse_video;
 
     GdkRGBA light;
     GdkRGBA dark;
@@ -107,6 +108,7 @@ zathura_renderer_init(ZathuraRenderer* renderer)
   /* recolor */
   priv->recolor.enabled = false;
   priv->recolor.hue = true;
+  priv->recolor.reverse_video = false;
 
   /* page cache */
   priv->page_cache.size = 0;
@@ -336,6 +338,21 @@ zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer, bool enable)
   GET_PRIVATE(renderer)->recolor.hue = enable;
 }
 
+bool
+zathura_renderer_recolor_reverse_video_enabled(ZathuraRenderer* renderer)
+{
+  g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer), false);
+
+  return GET_PRIVATE(renderer)->recolor.reverse_video;
+}
+
+void
+zathura_renderer_enable_recolor_reverse_video(ZathuraRenderer* renderer, bool enable)
+{
+  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
+
+  GET_PRIVATE(renderer)->recolor.reverse_video = enable;
+}
 void
 zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
     const GdkRGBA* light, const GdkRGBA* dark)
@@ -563,8 +580,8 @@ colorumax(const double* h, double l, double l1, double l2)
 }
 
 static void
-recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
-    cairo_surface_t* surface)
+recolor(private_t* priv, zathura_page_t* page, unsigned int page_width, 
+        unsigned int page_height, cairo_surface_t* surface)
 {
   /* uses a representation of a rgb color as follows:
      - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
@@ -573,6 +590,12 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
      - a saturation scalar between 0,1. It is 0 when grey, 1 when the color is
        in the boundary of the rgb cube.
   */
+
+  /* TODO: split handling of image handling off
+   * Ideally we would create a mask surface for the location of the images and
+   * we would blit the the recolored and unmodified surfaces together to get the
+   * same effect.
+   */
 
   const int rowstride  = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
@@ -591,10 +614,54 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
     rgb2.blue - rgb1.blue
   };
 
+  girara_list_t* images     = NULL;
+  girara_list_t* rectangles = NULL;
+  bool found_images         = false;
+
+  /* If in reverse video mode retrieve images */
+  if (priv->recolor.reverse_video == true) {
+    images = zathura_page_images_get(page, NULL);
+    found_images = (images != NULL);
+
+    rectangles = girara_list_new();
+    if (rectangles == NULL) {
+      found_images = false;
+      girara_warning("Failed to retrieve images.\n");
+    }
+
+    if (found_images == true) {
+      /* Get images bounding boxes */
+      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, image_it)
+        zathura_rectangle_t* rect = g_try_malloc(sizeof(zathura_rectangle_t));
+        if (rect == NULL) {
+          break;
+        }
+        *rect = recalc_rectangle(page, image_it->position);
+        girara_list_append(rectangles, rect);
+      GIRARA_LIST_FOREACH_END(images, zathura_image_t*, iter, image_it);
+    }
+  }
+
   for (unsigned int y = 0; y < page_height; y++) {
     unsigned char* data = image + y * rowstride;
 
     for (unsigned int x = 0; x < page_width; x++, data += 4) {
+      /* Check if the pixel belongs to an image when in reverse video mode*/
+      if (priv->recolor.reverse_video == true && found_images == true){
+        bool inside_image = false;
+        GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect_it)
+          if (rect_it->x1 <= x && rect_it->x2 >= x &&
+              rect_it->y1 <= y && rect_it->y2 >= y) {
+            inside_image = true;
+            break;
+          }
+        GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect_it);
+        /* If it's inside and image don't recolor */
+        if (inside_image == true) {
+          continue;
+        }
+      }
+
       /* Careful. data color components blue, green, red. */
       const double rgb[3] = {
         (double) data[2] / 256.,
@@ -638,6 +705,13 @@ recolor(private_t* priv, unsigned int page_width, unsigned int page_height,
         data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1.blue));
       }
     }
+  }
+
+  if (images != NULL) {
+    girara_list_free(images);
+  }
+  if (rectangles != NULL) {
+    girara_list_free(rectangles);
   }
 
 #undef rgb1
@@ -708,7 +782,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
 
   /* recolor */
   if (priv->recolor.enabled == true) {
-    recolor(priv, page_width, page_height, surface);
+    recolor(priv, page, page_width, page_height, surface);
   }
 
   emit_completed_signal_t* ecs = g_try_malloc0(sizeof(emit_completed_signal_t));
