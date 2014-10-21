@@ -286,7 +286,7 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
     case GIRARA_EVENT_SCROLL_LEFT:
     case GIRARA_EVENT_SCROLL_RIGHT:
     case GIRARA_EVENT_SCROLL_BIDIRECTIONAL:
-      return sc_scroll(session, argument, NULL, t);
+      return sc_scroll(session, argument, event, t);
 
       /* drag */
     case GIRARA_EVENT_BUTTON_PRESS:
