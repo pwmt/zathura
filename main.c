@@ -118,8 +118,16 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    const int line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
-    const int column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
+    int line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
+    int column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
+    /* SyncTeX starts indexing at 1, but we use 0 */
+    if (line > 0) {
+      --line;
+    }
+    if (column > 0) {
+      --column;
+    }
+
     const bool ret = zathura_dbus_synctex_position(real_path, split_fwd[2], line, column, synctex_pid);
     g_strfreev(split_fwd);
 
