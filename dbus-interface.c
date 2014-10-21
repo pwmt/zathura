@@ -421,6 +421,50 @@ handle_method_call(GDBusConnection* UNUSED(connection),
 
     GVariant* result = g_variant_new("(b)", true);
     g_dbus_method_invocation_return_value(invocation, result);
+  } else if (g_strcmp0(method_name, "SynctexView") == 0) {
+    gchar* input_file = NULL;
+    guint line = 0;
+    guint column = 0;
+    g_variant_get(parameters, "(suu)", &input_file, &line, &column);
+
+    unsigned int page = 0;
+    girara_list_t* secondary_rects = NULL;
+    girara_list_t* rectangles = synctex_rectangles_from_position(
+      zathura_document_get_path(priv->zathura->document), input_file, line,
+      column, &page, &secondary_rects);
+    g_free(input_file);
+
+    if (rectangles == NULL) {
+      GVariant* result = g_variant_new("(b)", false);
+      g_dbus_method_invocation_return_value(invocation, result);
+      return;
+    }
+
+    girara_list_t** all_rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
+    for (unsigned int p = 0; p != number_of_pages; ++p) {
+      if (p == page) {
+        all_rectangles[p] = rectangles;
+      } else {
+        all_rectangles[p] = girara_list_new2(g_free);
+      }
+    }
+
+    if (secondary_rects != NULL) {
+      GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
+        zathura_rectangle_t* newrect = g_try_malloc0(sizeof(zathura_rectangle_t));
+        *newrect = rect->rect;
+        girara_list_append(all_rectangles[rect->page], newrect);
+      GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
+    }
+
+    highlight_rects(priv->zathura, page, all_rectangles);
+
+    girara_list_free(secondary_rects);
+    g_free(all_rectangles);
+
+    GVariant* result = g_variant_new("(b)", true);
+    g_dbus_method_invocation_return_value(invocation, result);
+
   }
 }
 
