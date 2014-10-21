@@ -52,21 +52,10 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
 void zathura_dbus_edit(ZathuraDbus* dbus, unsigned int page, unsigned int x, unsigned int y);
 
 /**
- * Look for zathura instance having filename open and cause it to open give page
- * and highlight rectangles on the given page
- *
- * @param filename filename
- * @param page page number
- * @param rectangles list of rectangles to highlight
- * @param secondary_rects list of synctex_page_rect_ts for rectangles not on the
- *                        page given by page
- * @returns true if a instance was found that has the given filename open, false
- *          otherwise
+ * Highlight rectangles in a zathura instance that has filename open.
+ * input_file, line and column determine the rectangles to display and are
+ * passed to SyncTeX.
  */
-bool zathura_dbus_goto_page_and_highlight(const char* filename,
-    unsigned int page, girara_list_t* rectangles, girara_list_t* secondary_rects,
-    pid_t pidhint);
-
 bool zathura_dbus_synctex_position(const char* filename, const char* input_file,
     int line, int column, pid_t hint);
 
