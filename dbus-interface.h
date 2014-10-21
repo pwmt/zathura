@@ -55,6 +55,12 @@ void zathura_dbus_edit(ZathuraDbus* dbus, unsigned int page, unsigned int x, uns
  * Highlight rectangles in a zathura instance that has filename open.
  * input_file, line and column determine the rectangles to display and are
  * passed to SyncTeX.
+ *
+ * @param filename path of the document
+ * @param input_file path of the input file
+ * @param line line index (starts at 0)
+ * @param column column index (starts at 0)
+ * @param hint zathura process ID that has filename open
  */
 bool zathura_dbus_synctex_position(const char* filename, const char* input_file,
     int line, int column, pid_t hint);
