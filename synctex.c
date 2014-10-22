@@ -122,6 +122,10 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
     return NULL;
   }
 
+  /* We use indexes starting at 0 but SyncTeX uses 1 */
+  ++line;
+  ++column;
+
   synctex_scanner_t scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
   if (scanner == NULL) {
     girara_debug("Failed to create synctex scanner.");
@@ -187,3 +191,4 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
 
   return hitlist;
 }
+

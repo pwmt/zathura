@@ -34,5 +34,15 @@
       <arg type='u' name='line' direction='out' />
       <arg type='u' name='column' direction='out' />
     </signal>
+    <!--
+      Go to a page and highlight rectangles there based on the information
+      SyncTeX provides for the given input file, line and column.
+    -->
+    <method name='SynctexView'>
+      <arg type='s' name='input' direction='in' />
+      <arg type='u' name='line' direction='in' />
+      <arg type='u' name='column' direction='in' />
+      <arg type='b' name='return' direction='out' />
+    </method>
   </interface>
 </node>
