@@ -1,4 +1,4 @@
--x, --reparent=xid
+-e, --reparent=xid
   Reparents to window specified by xid
 
 -c, --config-dir=path
