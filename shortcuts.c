@@ -1382,7 +1382,7 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
       zathura_document_set_scale(zathura->document, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
-     const double dy = event->y;
+     const double dy = (event != NULL) ? event->y : 1.0;
      zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
   } else {
     zathura_document_set_scale(zathura->document, 1.0);
