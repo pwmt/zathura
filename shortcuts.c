@@ -347,7 +347,7 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
       return false;
   }
 
-  return sc_zoom(session, argument, NULL, t);
+  return sc_zoom(session, argument, event, t);
 }
 
 bool
