@@ -47,10 +47,14 @@ main(int argc, char* argv[])
   bool print_version    = false;
   int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   int synctex_pid       = -1;
+#ifdef GDK_WINDOWING_X11
   Window embed          = 0;
+#endif
 
   GOptionEntry entries[] = {
+#ifdef GDK_WINDOWING_X11
     { "reparent",               'e',  0, G_OPTION_ARG_INT,      &embed,          _("Reparents to window specified by xid"),              "xid"  },
+#endif
     { "config-dir",             'c',  0, G_OPTION_ARG_FILENAME, &config_dir,     _("Path to the config directory"),                      "path" },
     { "data-dir",               'd',  0, G_OPTION_ARG_FILENAME, &data_dir,       _("Path to the data directory"),                        "path" },
     { "cache-dir",              '\0', 0, G_OPTION_ARG_FILENAME, &cache_dir,      _("Path to the cache directory"),                       "path"},
@@ -163,7 +167,9 @@ main(int argc, char* argv[])
     return -1;
   }
 
+#ifdef GDK_WINDOWING_X11
   zathura_set_xid(zathura, embed);
+#endif
   zathura_set_config_dir(zathura, config_dir);
   zathura_set_data_dir(zathura, data_dir);
   zathura_set_cache_dir(zathura, cache_dir);

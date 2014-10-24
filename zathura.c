@@ -355,6 +355,7 @@ zathura_free(zathura_t* zathura)
   g_free(zathura);
 }
 
+#ifdef GDK_WINDOWING_X11
 void
 zathura_set_xid(zathura_t* zathura, Window xid)
 {
@@ -362,6 +363,7 @@ zathura_set_xid(zathura_t* zathura, Window xid)
 
   zathura->ui.session->gtk.embed = xid;
 }
+#endif
 
 void
 zathura_set_config_dir(zathura_t* zathura, const char* dir)
