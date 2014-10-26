@@ -594,14 +594,16 @@ surface_small_enough(cairo_surface_t* surface, cairo_surface_t* old)
 
   const unsigned int width = cairo_image_surface_get_width(surface);
   const unsigned int height = cairo_image_surface_get_height(surface);
-  if (width * height > THUMBNAIL_MAX_SIZE)
+  if (width * height > THUMBNAIL_MAX_SIZE) {
     return false;
+  }
 
   if (old != NULL) {
     const unsigned int width_old = cairo_image_surface_get_width(old);
     const unsigned int height_old = cairo_image_surface_get_height(old);
-    if (width * height < width_old * height_old)
+    if (width * height < width_old * height_old) {
       return false;
+    }
   }
 
   return true;
@@ -613,8 +615,9 @@ draw_thumbnail_image(cairo_surface_t* surface)
   unsigned int width = cairo_image_surface_get_width(surface);
   unsigned int height = cairo_image_surface_get_height(surface);
   double scale = sqrt((double)THUMBNAIL_INITIAL_SIZE / (width * height));
-  if (scale > THUMBNAIL_MAX_SCALE)
+  if (scale > THUMBNAIL_MAX_SCALE) {
     scale = THUMBNAIL_MAX_SCALE;
+  }
   width = width * scale;
   height = height * scale;
 
@@ -647,8 +650,9 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
     cairo_surface_reference(surface);
 
     if (surface_small_enough(surface, priv->thumbnail)) {
-      if (priv->thumbnail != NULL)
+      if (priv->thumbnail != NULL) {
         cairo_surface_destroy(priv->thumbnail);
+      }
       priv->thumbnail = surface;
       cairo_surface_reference(surface);
     } else if (new_render) {

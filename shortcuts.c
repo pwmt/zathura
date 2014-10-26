@@ -1406,8 +1406,9 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   }
 
   const double new_zoom = zathura_document_get_scale(zathura->document);
-  if (fabs(new_zoom - old_zoom) <= DBL_EPSILON)
+  if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
     return false;
+  }
 
   render_all(zathura);
   refresh_view(zathura);
