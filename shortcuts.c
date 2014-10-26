@@ -18,6 +18,7 @@
 #include "print.h"
 #include "page-widget.h"
 #include "adjustment.h"
+#include <math.h>
 
 #ifndef MIN
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -1403,6 +1404,10 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   } else if (scale > zoom_max) {
     zathura_document_set_scale(zathura->document, zoom_max);
   }
+
+  const double new_zoom = zathura_document_get_scale(zathura->document);
+  if (fabs(new_zoom - old_zoom) <= DBL_EPSILON)
+    return false;
 
   render_all(zathura);
   refresh_view(zathura);
