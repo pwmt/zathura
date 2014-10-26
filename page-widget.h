@@ -55,8 +55,9 @@ GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page);
  * thread.
  * @param widget the widget
  * @param surface the new surface
+ * @param keep_thumbnail don't destroy when surface is NULL
  */
-void zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface);
+void zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface, bool keep_thumbnail);
 /**
  * Draw a rectangle to mark links or search results
  * @param widget the widget

@@ -6,6 +6,7 @@
 #include <girara/session.h>
 #include <string.h>
 #include <glib/gi18n.h>
+#include <math.h>
 
 #include "links.h"
 #include "page-widget.h"
@@ -21,6 +22,7 @@ typedef struct zathura_page_widget_private_s {
   zathura_page_t* page; /**< Page object */
   zathura_t* zathura; /**< Zathura object */
   cairo_surface_t* surface; /**< Cairo surface */
+  cairo_surface_t* thumbnail; /**< Cairo surface */
   ZathuraRenderRequest* render_request; /* Request object */
   bool cached; /**< Cached state */
 
@@ -77,6 +79,8 @@ static void cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page);
 static void cb_update_surface(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 static void cb_cache_added(ZathuraRenderRequest* request, void* data);
 static void cb_cache_invalidated(ZathuraRenderRequest* request, void* data);
+static bool surface_small_enough(cairo_surface_t* surface, cairo_surface_t* old);
+static cairo_surface_t *draw_thumbnail_image(cairo_surface_t* surface);
 
 enum properties_e {
   PROP_0,
@@ -206,6 +210,7 @@ zathura_page_widget_init(ZathuraPage* widget)
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
   priv->page             = NULL;
   priv->surface          = NULL;
+  priv->thumbnail        = NULL;
   priv->render_request   = NULL;
   priv->cached           = false;
 
@@ -275,6 +280,10 @@ zathura_page_widget_finalize(GObject* object)
 
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
+  }
+
+  if (priv->thumbnail != NULL) {
+    cairo_surface_destroy(priv->thumbnail);
   }
 
   if (priv->search.list != NULL) {
@@ -409,7 +418,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
 
-  if (priv->surface != NULL) {
+  if (priv->surface != NULL || priv->thumbnail != NULL) {
     cairo_save(cairo);
 
     unsigned int rotation = zathura_document_get_rotation(document);
@@ -429,9 +438,29 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       cairo_rotate(cairo, rotation * G_PI / 180.0);
     }
 
-    cairo_set_source_surface(cairo, priv->surface, 0, 0);
-    cairo_paint(cairo);
-    cairo_restore(cairo);
+    if (priv->surface != NULL) {
+      cairo_set_source_surface(cairo, priv->surface, 0, 0);
+      cairo_paint(cairo);
+      cairo_restore(cairo);
+    } else {
+      const unsigned int height = cairo_image_surface_get_height(priv->thumbnail);
+      const unsigned int width = cairo_image_surface_get_width(priv->thumbnail);
+      const unsigned int pheight = (rotation % 180 ? page_width : page_height);
+      const unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+
+      cairo_scale(cairo, pwidth / (double)width, pheight / (double)height);
+      cairo_set_source_surface(cairo, priv->thumbnail, 0, 0);
+      cairo_pattern_set_extend(cairo_get_source(cairo), CAIRO_EXTEND_PAD);
+      if (pwidth < width || pheight < height) {
+        /* pixman bilinear downscaling is slow */
+        cairo_pattern_set_filter(cairo_get_source(cairo), CAIRO_FILTER_FAST);
+      }
+      cairo_set_operator(cairo, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(cairo);
+      cairo_restore(cairo);
+      zathura_render_request(priv->render_request, g_get_real_time());
+      return FALSE;
+    }
 
     /* draw rectangles */
     char* font = NULL;
@@ -550,10 +579,65 @@ zathura_page_widget_redraw_canvas(ZathuraPage* pageview)
   gtk_widget_queue_draw(widget);
 }
 
+/* high enough but not causing noticable delay in scaling */
+#define THUMBNAIL_MAX_SIZE (8*1024*1024)
+/* smaller than max to be replaced by actual renders */
+#define THUMBNAIL_INITIAL_SIZE (THUMBNAIL_MAX_SIZE/4)
+/* small enough to make bilinear downscaling fast */
+#define THUMBNAIL_MAX_SCALE 0.5
+
+static bool
+surface_small_enough(cairo_surface_t* surface, cairo_surface_t* old)
+{
+  if (cairo_surface_get_type(surface) != CAIRO_SURFACE_TYPE_IMAGE)
+    return true;
+
+  const unsigned int width = cairo_image_surface_get_width(surface);
+  const unsigned int height = cairo_image_surface_get_height(surface);
+  if (width * height > THUMBNAIL_MAX_SIZE)
+    return false;
+
+  if (old != NULL) {
+    const unsigned int width_old = cairo_image_surface_get_width(old);
+    const unsigned int height_old = cairo_image_surface_get_height(old);
+    if (width * height < width_old * height_old)
+      return false;
+  }
+
+  return true;
+}
+
+static cairo_surface_t *
+draw_thumbnail_image(cairo_surface_t* surface)
+{
+  unsigned int width = cairo_image_surface_get_width(surface);
+  unsigned int height = cairo_image_surface_get_height(surface);
+  double scale = sqrt((double)THUMBNAIL_INITIAL_SIZE / (width * height));
+  if (scale > THUMBNAIL_MAX_SCALE)
+    scale = THUMBNAIL_MAX_SCALE;
+  width = width * scale;
+  height = height * scale;
+
+  cairo_surface_t *thumbnail;
+  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, width, height);
+  cairo_t *cr = cairo_create(thumbnail);
+
+  cairo_scale(cr, scale, scale);
+  cairo_set_source_surface(cr, surface, 0, 0);
+  cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BILINEAR);
+  cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+  cairo_paint(cr);
+  cairo_destroy(cr);
+
+  return thumbnail;
+}
+
 void
-zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface)
+zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface, bool keep_thumbnail)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
+  bool new_render = (priv->surface == NULL && priv->thumbnail == NULL);
+
   if (priv->surface != NULL) {
     cairo_surface_destroy(priv->surface);
     priv->surface = NULL;
@@ -561,6 +645,18 @@ zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface
   if (surface != NULL) {
     priv->surface = surface;
     cairo_surface_reference(surface);
+
+    if (surface_small_enough(surface, priv->thumbnail)) {
+      if (priv->thumbnail != NULL)
+        cairo_surface_destroy(priv->thumbnail);
+      priv->thumbnail = surface;
+      cairo_surface_reference(surface);
+    } else if (new_render) {
+      priv->thumbnail = draw_thumbnail_image(surface);
+    }
+  } else if (!keep_thumbnail && priv->thumbnail != NULL) {
+    cairo_surface_destroy(priv->thumbnail);
+    priv->thumbnail = NULL;
   }
   /* force a redraw here */
   if (priv->surface != NULL) {
@@ -574,7 +670,7 @@ cb_update_surface(ZathuraRenderRequest* UNUSED(request),
 {
   ZathuraPage* widget = data;
   g_return_if_fail(ZATHURA_IS_PAGE(widget));
-  zathura_page_widget_update_surface(widget, surface);
+  zathura_page_widget_update_surface(widget, surface, false);
 }
 
 static void
@@ -599,7 +695,7 @@ cb_cache_invalidated(ZathuraRenderRequest* UNUSED(request), void* data)
       zathura_page_get_visibility(priv->page) == false) {
     /* The page was in the cache but got removed and is invisible, so get rid of
      * the surface. */
-    zathura_page_widget_update_surface(widget, NULL);
+    zathura_page_widget_update_surface(widget, NULL, false);
   }
   priv->cached = false;
 }
@@ -611,7 +707,7 @@ zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation)
 
   ZathuraPage* page = ZATHURA_PAGE(widget);
   zathura_page_widget_abort_render_request(page);
-  zathura_page_widget_update_surface(page, NULL);
+  zathura_page_widget_update_surface(page, NULL, true);
 }
 
 static void
@@ -1008,7 +1104,7 @@ zathura_page_widget_abort_render_request(ZathuraPage* widget)
    * TODO: Maybe this should be moved somewhere else. */
   if (zathura_page_widget_have_surface(widget) == true &&
       priv->cached == false) {
-    zathura_page_widget_update_surface(widget, NULL);
+    zathura_page_widget_update_surface(widget, NULL, false);
   }
 }
 
