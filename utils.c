@@ -26,10 +26,6 @@
 double
 zathura_correct_scale_value(girara_session_t* session, const double scale)
 {
-  if (scale <= FLT_EPSILON) {
-    return 1;
-  }
-
   if (session == NULL) {
     return scale;
   }

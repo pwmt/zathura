@@ -607,6 +607,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura_document_set_page_offset(document, file_info.page_offset);
 
   /* check for valid scale value */
+  if (file_info.scale <= DBL_EPSILON) {
+    file_info.scale = 1;
+  }
   zathura_document_set_scale(document,
       zathura_correct_scale_value(zathura->ui.session, file_info.scale));
 
