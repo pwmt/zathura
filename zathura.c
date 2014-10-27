@@ -607,12 +607,8 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura_document_set_page_offset(document, file_info.page_offset);
 
   /* check for valid scale value */
-  if (file_info.scale <= FLT_EPSILON) {
-    girara_warning("document info: '%s' has non positive scale", file_path);
-    zathura_document_set_scale(document, 1);
-  } else {
-    zathura_document_set_scale(document, file_info.scale);
-  }
+  zathura_document_set_scale(document,
+      zathura_correct_scale_value(zathura->ui.session, file_info.scale));
 
   /* check current page number */
   /* if it wasn't specified on the command-line, get it from file_info */

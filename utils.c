@@ -23,6 +23,35 @@
 #include "plugin.h"
 #include "content-type.h"
 
+double
+zathura_correct_scale_value(girara_session_t* session, const double scale)
+{
+  if (scale <= FLT_EPSILON) {
+    return 1;
+  }
+
+  if (session == NULL) {
+    return scale;
+  }
+
+  /* zoom limitations */
+  int zoom_min_int = 10;
+  int zoom_max_int = 1000;
+  girara_setting_get(session, "zoom-min", &zoom_min_int);
+  girara_setting_get(session, "zoom-max", &zoom_max_int);
+
+  const double zoom_min = zoom_min_int * 0.01;
+  const double zoom_max = zoom_max_int * 0.01;
+
+  if (scale < zoom_min) {
+    return zoom_min;
+  } else if (scale > zoom_max) {
+    return zoom_max;
+  } else {
+    return scale;
+  }
+}
+
 bool
 file_valid_extension(zathura_t* zathura, const char* path)
 {
