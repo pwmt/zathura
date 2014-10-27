@@ -1196,7 +1196,8 @@ position_set(zathura_t* zathura, double position_x, double position_y)
 
 
 void
-refresh_view(zathura_t* zathura) {
+refresh_view(zathura_t* zathura)
+{
   g_return_if_fail(zathura != NULL);
 
   /* emit a custom refresh-view signal */
@@ -1206,8 +1207,9 @@ refresh_view(zathura_t* zathura) {
 
 
 bool
-adjust_view(zathura_t* zathura) {
-    g_return_val_if_fail(zathura != NULL, false);
+adjust_view(zathura_t* zathura)
+{
+  g_return_val_if_fail(zathura != NULL, false);
 
   if (zathura->ui.page_widget == NULL || zathura->document == NULL) {
     goto error_ret;
@@ -1428,7 +1430,7 @@ zathura_jumplist_save(zathura_t* zathura)
 
   unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
 
-  if (cur) {
+  if (cur != NULL) {
     cur->page = pagenum;
     cur->x = zathura_document_get_position_x(zathura->document);
     cur->y = zathura_document_get_position_y(zathura->document);
