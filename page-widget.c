@@ -458,7 +458,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       cairo_set_operator(cairo, CAIRO_OPERATOR_SOURCE);
       cairo_paint(cairo);
       cairo_restore(cairo);
-      zathura_render_request(priv->render_request, g_get_real_time());
+      /* All but the last jobs requested here are aborted during zooming.
+       * Processing and aborting smaller jobs first improves responsiveness. */
+      const gint64 penalty = pwidth * pheight;
+      zathura_render_request(priv->render_request, g_get_real_time() + penalty);
       return FALSE;
     }
 
