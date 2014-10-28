@@ -623,7 +623,14 @@ draw_thumbnail_image(cairo_surface_t* surface)
 
   cairo_surface_t *thumbnail;
   thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, width, height);
+  if (thumbnail == NULL) {
+    return NULL;
+  }
   cairo_t *cr = cairo_create(thumbnail);
+  if (cr == NULL) {
+    cairo_surface_destroy(thumbnail);
+    return NULL;
+  }
 
   cairo_scale(cr, scale, scale);
   cairo_set_source_surface(cr, surface, 0, 0);
