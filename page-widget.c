@@ -580,7 +580,7 @@ zathura_page_widget_redraw_canvas(ZathuraPage* pageview)
 }
 
 /* high enough but not causing noticable delay in scaling */
-#define THUMBNAIL_MAX_SIZE (8*1024*1024)
+#define THUMBNAIL_MAX_SIZE (4*1024*1024)
 /* smaller than max to be replaced by actual renders */
 #define THUMBNAIL_INITIAL_SIZE (THUMBNAIL_MAX_SIZE/4)
 /* small enough to make bilinear downscaling fast */
@@ -594,14 +594,16 @@ surface_small_enough(cairo_surface_t* surface, cairo_surface_t* old)
 
   const unsigned int width = cairo_image_surface_get_width(surface);
   const unsigned int height = cairo_image_surface_get_height(surface);
-  if (width * height > THUMBNAIL_MAX_SIZE) {
+  const size_t new_size = width * height;
+  if (new_size > THUMBNAIL_MAX_SIZE) {
     return false;
   }
 
   if (old != NULL) {
     const unsigned int width_old = cairo_image_surface_get_width(old);
     const unsigned int height_old = cairo_image_surface_get_height(old);
-    if (width * height < width_old * height_old) {
+    const size_t old_size = width_old * height_old;
+    if (new_size < old_size && new_size >= old_size * THUMBNAIL_MAX_SCALE * THUMBNAIL_MAX_SCALE) {
       return false;
     }
   }
