@@ -73,7 +73,8 @@ enum {
 /* cache constants */
 enum {
   ZATHURA_PAGE_CACHE_DEFAULT_SIZE = 15,
-  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024
+  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024,
+  ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4*1024*1024
 };
 
 /* forward declaration for types from database.h */
