@@ -61,11 +61,10 @@ all: ${PROJECT}
 # release
 
 ${PROJECT}: options ${OBJECTS}
-	@echo "zathura objects: ${ZATHURA_OBJECTS}"
 	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. zathura
 	$(call colorecho,CC,$@)
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ \
-		${OBJECTS} ${ZATHURA_OBJECTS} ${LIBS} ${ZATHURA_RELEASE}
+		${OBJECTS} ${ZATHURA_OBJECTS} ${LIBS}
 
 ${OBJECTS}: config.mk ../config.mk ../zathura/version.h
 
@@ -87,7 +86,7 @@ ${PROJECT}-debug: ${OBJECTS_DEBUG}
 	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. zathura-debug
 	$(call colorecho,CC,$@)
 	$(QUIET)${CC} ${LDFLAGS} -o $@ \
-		${OBJECTS_DEBUG} ${ZATHURA_OBJECTS_DEBUG} ${LIBS} ${ZATHURA_DEBUG}
+		${OBJECTS_DEBUG} ${ZATHURA_OBJECTS_DEBUG} ${LIBS}
 
 ${OBJECTS_DEBUG}: config.mk ../config.mk ../zathura/version.h
 
@@ -109,7 +108,7 @@ ${PROJECT}-gcov: options ${OBJECTS_GCOV}
 	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. zathura-gcov
 	$(call colorecho,CC,$@)
 	$(QUIET)${CC} ${LDFLAGS} ${GCOV_LDFLAGS} -o $@ \
-		${OBJECTS_GCOV} ${ZATHURA_OBJECTS_GCOV} ${LIBS} ${ZATHURA_GCOV}
+		${OBJECTS_GCOV} ${ZATHURA_OBJECTS_GCOV} ${LIBS}
 
 ${OBJECTS_GCOV}: config.mk ../config.mk ../zathura/version.h
 
@@ -136,8 +135,6 @@ clean:
 	$(QUIET)rm -rf ${PROJECT}-gcov
 	$(QUIET)rm -rf ${BUILDDIR}
 	$(QUIET)rm -rf ${DEPENDDIR}
-
-	$(QUIET)${MAKE} -C plugin clean
 
 .PHONY: all options clean debug run
 
