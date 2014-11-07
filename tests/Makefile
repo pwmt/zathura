@@ -52,25 +52,9 @@ ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
 endif
 
-ifeq (,$(findstring -DZATHURA_PLUGINDIR,${CPPFLAGS}))
-CPPFLAGS += -DZATHURA_PLUGINDIR=\"${PLUGINDIR}\"
-endif
-ifeq (,$(findstring -DGETTEXT_PACKAGE,${CPPFLAGS}))
-CPPFLAGS += -DGETTEXT_PACKAGE=\"${PROJECT}\"
-endif
-ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
-CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
-endif
-
-all: ${PROJECT}
+all: release
 
 # release
-
-${PROJECT}: options ${OBJECTS}
-	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. zathura
-	$(call colorecho,CC,$@)
-	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} -o $@ \
-		${OBJECTS} ${ZATHURA_OBJECTS} ${LIBS}
 
 ${OBJECTS}: config.mk ../config.mk ../zathura/version.h
 
@@ -81,18 +65,20 @@ ${BUILDDIR_RELEASE}/%.o: %.c
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} \
 		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
 
-run: ${PROJECT}
-	$(QUIET)${FIU_EXEC} ./${PROJECT}
+${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}: ${OBJECTS}
+	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. ${BUILDDIR_RELEASE}/${BINDIR}/zathura
+	$(call colorecho,CC,$@)
+	@mkdir -p ${BUILDDIR_RELEASE}/${BINDIR}
+	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} \
+		-o ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT} \
+		${OBJECTS} ${ZATHURA_OBJECTS} ${LIBS}
+
+release: ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}
+
+run: ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}
+	$(QUIET)${FIU_EXEC} ./${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}
 
 # debug
-
-debug: options ${PROJECT}-debug
-
-${PROJECT}-debug: ${OBJECTS_DEBUG}
-	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. zathura-debug
-	$(call colorecho,CC,$@)
-	$(QUIET)${CC} ${LDFLAGS} -o $@ \
-		${OBJECTS_DEBUG} ${ZATHURA_OBJECTS_DEBUG} ${LIBS}
 
 ${OBJECTS_DEBUG}: config.mk ../config.mk ../zathura/version.h
 
@@ -103,18 +89,20 @@ ${BUILDDIR_DEBUG}/%.o: %.c
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} \
 		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
 
-run-debug: ${PROJECT}-debug
-	$(QUIET)${FIU_EXEC} ./${PROJECT}-debug
+${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}: ${OBJECTS_DEBUG}
+	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. ${BUILDDIR_DEBUG}/${BINDIR}/zathura
+	$(call colorecho,CC,$@)
+	@mkdir -p ${BUILDDIR_DEBUG}/${BINDIR}
+	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} \
+		-o ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT} \
+		${OBJECTS} ${ZATHURA_OBJECTS_DEBUG} ${LIBS}
+
+debug: ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
+
+run-debug: ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
+	$(QUIET)${FIU_EXEC} ./${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 # gcov
-
-gcov: options ${PROJECT}-gcov
-
-${PROJECT}-gcov: options ${OBJECTS_GCOV}
-	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. zathura-gcov
-	$(call colorecho,CC,$@)
-	$(QUIET)${CC} ${LDFLAGS} ${GCOV_LDFLAGS} -o $@ \
-		${OBJECTS_GCOV} ${ZATHURA_OBJECTS_GCOV} ${LIBS}
 
 ${OBJECTS_GCOV}: config.mk ../config.mk ../zathura/version.h
 
@@ -125,8 +113,18 @@ ${BUILDDIR_GCOV}/%.o: %.c
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${GCOV_CFLAGS} ${DFLAGS} ${GCOV_DFLAGS} \
 		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
 
-run-gcov: ${PROJECT}-gcov
-	$(QUIET)${FIU_EXEC} ./${PROJECT}-gcov
+${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}: ${OBJECTS_GCOV}
+	$(QUIET)${MAKE} WITH_LIBFIU=1 -C .. ${BUILDDIR_GCOV}/${BINDIR}/zathura
+	$(call colorecho,CC,$@)
+	@mkdir -p ${BUILDDIR_GCOV}/${BINDIR}
+	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} ${GCOV_CFLAGS} ${GCOV_LDFLAGS} \
+		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} \
+		${OBJECTS} ${ZATHURA_OBJECTS_GCOV} ${LIBS}
+
+gcov: ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
+
+run-gcov: gcov
+	$(QUIET)${FIU_EXEC} ./${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 
 ../zathura/version.h:
 	$(MAKE) -C .. zathura/version.h

@@ -115,11 +115,15 @@ ${BUILDDIR_RELEASE}/%.o: %.c
 	@mkdir -p $(dir $(abspath $@))
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
 
-${PROJECT}: ${OBJECTS}
+${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}: ${OBJECTS}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_RELEASE}/${BINDIR}
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} \
 		-o ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT} ${OBJECTS} ${LIBS}
+
+${PROJECT}: ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}
+
+release: ${PROJECT}
 
 # debug build
 
@@ -133,13 +137,13 @@ ${BUILDDIR_DEBUG}/%.o: %.c
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} \
 		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
 
-${PROJECT}-debug: ${OBJECTS_DEBUG}
+${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}: ${OBJECTS_DEBUG}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_DEBUG}/${BINDIR}
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} \
 		-o ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT} ${OBJECTS} ${LIBS}
 
-debug: ${PROJECT}-debug
+debug: ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 # gcov build
 
@@ -153,13 +157,13 @@ ${BUILDDIR_GCOV}/%.o: %.c
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${GCOV_CFLAGS} \
 		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
 
-${PROJECT}-gcov: ${OBJECTS_GCOV}
+${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}: ${OBJECTS_GCOV}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_GCOV}/${BINDIR}
 	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} ${GCOV_CFLAGS} ${GCOV_LDFLAGS} \
 		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS} ${LIBS}
 
-gcov: options ${PROJECT}-gcov
+gcov: options ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 	$(QUIET)${MAKE} -C tests run-gcov
 	$(call colorecho,LCOV,"Analyse data")
 	$(QUIET)${LCOV_EXEC} ${LCOV_FLAGS}
