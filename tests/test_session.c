@@ -2,7 +2,7 @@
 
 #include <check.h>
 
-#include "../zathura.h"
+#include "zathura.h"
 
 START_TEST(test_create) {
   zathura_t* zathura = zathura_create();

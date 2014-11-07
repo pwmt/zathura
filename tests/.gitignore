@@ -1,1 +1,3 @@
 tests
+tests-gcov
+tests-debug
