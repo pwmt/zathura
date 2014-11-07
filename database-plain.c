@@ -507,7 +507,9 @@ plain_load_jumplist(zathura_database_t* db, const char* file)
     return girara_list_new2(g_free);
   }
 
-  return get_jumplist_from_str(str_value);
+  girara_list_t* list = get_jumplist_from_str(str_value);
+  g_free(str_value);
+  return list;
 }
 
 static bool
