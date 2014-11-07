@@ -941,12 +941,8 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
 }
 
 static void
-remove_page_from_table(GtkWidget* page, gpointer permanent)
+remove_page_from_table(GtkWidget* page, gpointer UNUSED(permanent))
 {
-  if ((bool)permanent == false) {
-    g_object_ref(G_OBJECT(page));
-  }
-
   gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(page)), page);
 }
 
@@ -1022,7 +1018,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->sync.render_thread = NULL;
 
   /* remove widgets */
-  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer) true);
+  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
   for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
     g_object_unref(zathura->pages[i]);
   }
@@ -1130,7 +1126,7 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
     return;
   }
 
-  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, (gpointer)0);
+  gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
 
