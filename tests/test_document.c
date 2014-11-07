@@ -2,7 +2,7 @@
 
 #include <check.h>
 
-#include "../document.h"
+#include "document.h"
 
 START_TEST(test_open) {
   fail_unless(zathura_document_open(NULL, NULL, NULL, NULL) == NULL, "Could create document", NULL);

@@ -2,7 +2,7 @@
 
 #include <check.h>
 
-#include "../utils.h"
+#include "utils.h"
 
 START_TEST(test_file_valid_extension_null) {
   fail_unless(file_valid_extension(NULL, NULL) == false, NULL);
