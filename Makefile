@@ -61,7 +61,7 @@ OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o}) \
 	${BUILDDIR_GCOV}/${PROJECT}/css-definitions.o \
 	${BUILDDIR_GCOV}/${PROJECT}/dbus-interface-definitions.o
 HEADER        = $(wildcard ${PROJECT}/*.h) $(wildcard synctex/*.h)
-HEADERINST    = version.h document.h macros.h page.h types.h plugin-api.h links.h
+HEADERINST    = $(addprefix ${PROJECT}/,version.h document.h macros.h page.h types.h plugin-api.h links.h)
 
 all: options ${PROJECT} po build-manpages
 
@@ -171,6 +171,7 @@ gcov: options ${PROJECT}-gcov
 clean:
 	$(QUIET)rm -rf \
 		${BUILDDIR} \
+		${DEPENDDIR} \
 		${TARFILE} \
 		${TARDIR} \
 		${PROJECT}.pc \
@@ -180,11 +181,8 @@ clean:
 		${PROJECT}/dbus-interface-definitions.c.tmp \
 		${PROJECT}/css-definitions.c \
 		${PROJECT}/css-definitions.c.tmp \
-		*gcda \
-		*gcno \
 		$(PROJECT).info \
 		gcov \
-		*.tmp \
 		.version-checks
 	$(QUIET)$(MAKE) -C tests clean
 	$(QUIET)$(MAKE) -C po clean
@@ -260,7 +258,7 @@ install-appdata:
 install: all install-headers install-manpages install-dbus install-appdata
 	$(call colorecho,INSTALL,"executeable file")
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${PREFIX}/bin
-	$(QUIET)install -m 755 ${PROJECT} ${DESTDIR}${PREFIX}/bin
+	$(QUIET)install -m 755 ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT} ${DESTDIR}${PREFIX}/bin
 	$(QUIET)mkdir -m 755 -p ${DESTDIR}${DESKTOPPREFIX}
 	$(call colorecho,INSTALL,"desktop file")
 	$(QUIET)install -m 644 ${PROJECT}.desktop ${DESTDIR}${DESKTOPPREFIX}

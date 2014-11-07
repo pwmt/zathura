@@ -14,6 +14,10 @@ OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o})
 
 ZATHURA_OBJECTS =  \
 	$(filter-out ../${BUILDDIR_RELEASE}/zathura/main.o, $(wildcard ../${BUILDDIR_RELEASE}/zathura/*.o))
+ZATHURA_OBJECTS_DEBUG =  \
+	$(filter-out ../${BUILDDIR_DEBUG}/zathura/main.o, $(wildcard ../${BUILDDIR_DEBUG}/zathura/*.o))
+ZATHURA_OBJECTS_GCOV=  \
+	$(filter-out ../${BUILDDIR_GCOV}/zathura/main.o, $(wildcard ../${BUILDDIR_GCOV}/zathura/*.o))
 
 ifneq (${WITH_SQLITE},0)
 INCS     += $(SQLITE_INC)
@@ -31,11 +35,13 @@ endif
 
 ifneq ($(WITH_SYSTEM_SYNCTEX),0)
 else
-ZATHURA_OBJECTS += $(wildcard ../${BUILDDIR_RELEASE}/zathura/synctex/*.o)
+ZATHURA_OBJECTS       += $(wildcard ../${BUILDDIR_RELEASE}/zathura/synctex/*.o)
+ZATHURA_OBJECTS_DEBUG += $(wildcard ../${BUILDDIR_DEBUG}/zathura/synctex/*.o)
+ZATHURA_OBJECTS_GCOV  += $(wildcard ../${BUILDDIR_GCOV}/zathura/synctex/*.o)
 LIBS   += $(ZLIB_LIB)
 
 ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
-CPPFLAGS += -I${PROJECT}/synctex
+CPPFLAGS += -I../zathura/synctex
 endif
 ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
 CPPFLAGS += -DSYNCTEX_VERBOSE=0
