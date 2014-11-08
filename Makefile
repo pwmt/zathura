@@ -125,6 +125,9 @@ ${PROJECT}: ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}
 
 release: ${PROJECT}
 
+run: release
+	$(QUIET)./${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}
+
 # debug build
 
 ${OBJECTS_DEBUG}: config.mk ${PROJECT}/version.h \
@@ -144,6 +147,9 @@ ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}: ${OBJECTS_DEBUG}
 		-o ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT} ${OBJECTS} ${LIBS}
 
 debug: ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
+
+run-debug: debug
+	$(QUIET)./${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 # gcov build
 
@@ -169,6 +175,9 @@ gcov: options ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 	$(QUIET)${LCOV_EXEC} ${LCOV_FLAGS}
 	$(call colorecho,LCOV,"Generate report")
 	$(QUIET)${GENHTML_EXEC} ${GENHTML_FLAGS}
+
+run-gcov: ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
+	$(QUIET)./${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 
 # clean
 
