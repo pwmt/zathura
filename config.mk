@@ -6,7 +6,7 @@ PROJECT = zathura
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 3
-ZATHURA_VERSION_REV = 1
+ZATHURA_VERSION_REV = 2
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -50,6 +50,12 @@ LIBDIR ?= ${PREFIX}/lib
 INCLUDEDIR ?= ${PREFIX}/include
 DBUSINTERFACEDIR ?= ${PREFIX}/share/dbus-1/interfaces
 VIMFTPLUGINDIR ?= ${PREFIX}/share/vim/addons/ftplugin
+DEPENDDIR ?= .depend
+BUILDDIR ?= build
+BUILDDIR_RELEASE ?= ${BUILDDIR}/release
+BUILDDIR_DEBUG ?= ${BUILDDIR}/debug
+BUILDDIR_GCOV ?= ${BUILDDIR}/gcov
+BINDIR ?= bin
 
 # plugin directory
 PLUGINDIR ?= ${LIBDIR}/zathura
@@ -110,6 +116,16 @@ SFLAGS ?= -s
 
 # msgfmt
 MSGFMT ?= msgfmt
+
+# gcov & lcov
+GCOV_CFLAGS=-fprofile-arcs -ftest-coverage
+GCOV_LDFLAGS=-fprofile-arcs
+LCOV_OUTPUT=gcov
+LCOV_EXEC=lcov
+LCOV_FLAGS=--base-directory . --directory ${BUILDDIR_GCOV} --capture --rc \
+					 lcov_branch_coverage=1 --output-file ${BUILDDIR_GCOV}/$(PROJECT).info
+GENHTML_EXEC=genhtml
+GENHTML_FLAGS=--rc lcov_branch_coverage=1 --output-directory ${LCOV_OUTPUT} ${BUILDDIR_GCOV}/$(PROJECT).info
 
 # valgrind
 VALGRIND = valgrind

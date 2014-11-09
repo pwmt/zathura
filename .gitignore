@@ -1,26 +1,44 @@
+# build files
 *.o
 *.do
-*~
-*.rej
-*.swp
-.depend
-zathura
-zathura-debug
-zathura.pc
-*.info
-*.gcno
 *.gcda
-gcov/
-*.swp
-version.h
-./doc/_build
-*.tmp
-zathura.1
-zathurarc.5
-.version-checks/
+*.gcno
+*.info
+*.pc
+*.sw[a-z]
+*.pyc
+
+# generated files
 dbus-interface-definitions.c
 css-definitions.c
-.ycm_extra_conf.py
-.ropeproject
-compile_commands.json
+zathura.1
+zathurarc.5
+
+# dist files
 zathura-*.tar.gz
+
+# patch files
+*.diff
+*.patch
+
+# build dirs
+.depend
+.tx
+gcov/
+doc/_build
+
+# binaries
+zathura
+zathura-debug
+
+# version file
+version.h
+.version-checks/
+
+# development files
+.clang_complete
+.lvimrc
+.ropeproject
+.frama-c
+compile_commands.json
+*.log

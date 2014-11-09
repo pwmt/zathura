@@ -239,7 +239,8 @@ mark_evaluate(zathura_t* zathura, int key)
   /* search for existing mark */
   GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
   if (mark != NULL && mark->key == key) {
-    zathura_document_set_scale(zathura->document, mark->scale);
+    zathura_document_set_scale(zathura->document,
+        zathura_correct_scale_value(zathura->ui.session, mark->scale));
     render_all(zathura);
 
     zathura_jumplist_add(zathura);

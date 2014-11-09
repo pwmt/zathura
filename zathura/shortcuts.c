@@ -18,6 +18,7 @@
 #include "print.h"
 #include "page-widget.h"
 #include "adjustment.h"
+#include <math.h>
 
 #ifndef MIN
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -347,7 +348,7 @@ sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_eve
       return false;
   }
 
-  return sc_zoom(session, argument, NULL, t);
+  return sc_zoom(session, argument, event, t);
 }
 
 bool
@@ -1382,26 +1383,19 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
       zathura_document_set_scale(zathura->document, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
-     const double dy = event->y;
+     const double dy = (event != NULL) ? event->y : 1.0;
      zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
   } else {
     zathura_document_set_scale(zathura->document, 1.0);
   }
 
   /* zoom limitations */
-  int zoom_min_int = 10;
-  int zoom_max_int = 1000;
-  girara_setting_get(session, "zoom-min", &zoom_min_int);
-  girara_setting_get(session, "zoom-max", &zoom_max_int);
-
-  const double zoom_min = zoom_min_int * 0.01;
-  const double zoom_max = zoom_max_int * 0.01;
-
   const double scale = zathura_document_get_scale(zathura->document);
-  if (scale < zoom_min) {
-    zathura_document_set_scale(zathura->document, zoom_min);
-  } else if (scale > zoom_max) {
-    zathura_document_set_scale(zathura->document, zoom_max);
+  zathura_document_set_scale(zathura->document, zathura_correct_scale_value(session, scale));
+
+  const double new_zoom = zathura_document_get_scale(zathura->document);
+  if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
+    return false;
   }
 
   render_all(zathura);

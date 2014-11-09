@@ -95,4 +95,16 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup);
  */
 GdkAtom* get_selection(zathura_t* zathura);
 
+/**
+ * Returns the valid scale value which needs to lie in the interval of zoom_min
+ * and zoom_max specified in the girara session
+ *
+ * @param[in] session The session
+ * @param[in] scale The proposed scale value
+ *
+ * @return The corrected scale value
+ */
+double zathura_correct_scale_value(girara_session_t* session, const double
+    scale);
+
 #endif // UTILS_H

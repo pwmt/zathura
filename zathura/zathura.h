@@ -73,7 +73,8 @@ enum {
 /* cache constants */
 enum {
   ZATHURA_PAGE_CACHE_DEFAULT_SIZE = 15,
-  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024
+  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024,
+  ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4*1024*1024
 };
 
 /* forward declaration for types from database.h */
@@ -227,6 +228,7 @@ bool zathura_init(zathura_t* zathura);
  */
 void zathura_free(zathura_t* zathura);
 
+#ifdef GDK_WINDOWING_X11
 /**
  * Set parent window id
  *
@@ -234,6 +236,7 @@ void zathura_free(zathura_t* zathura);
  * @param xid The window id
  */
 void zathura_set_xid(zathura_t* zathura, Window xid);
+#endif
 
 /**
  * Set the path to the configuration directory

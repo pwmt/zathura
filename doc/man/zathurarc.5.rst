@@ -699,6 +699,18 @@ consuming a significant portion of the system memory.
 * Value type: Integer
 * Default value: 15
 
+page-thumbnail-size
+^^^^^^^^^^^^^^^^^^^
+Defines the maximum size in pixels of the thumbnail that could be kept in the
+thumbnail cache per page. The thumbnail is scaled for a quick preview during
+zooming before the page is rendered. When the page is rendered, the result is
+saved as the thumbnail only if the size is no more than this value. A larger
+value increases quality but introduces longer delay in zooming and uses more
+system memory.
+
+* Value type: Integer
+* Default value: 4194304 (4M)
+
 pages-per-row
 ^^^^^^^^^^^^^
 Defines the number of pages that are rendered next to each other in a row.

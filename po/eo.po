@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2014-10-08 15:33+0200\n"
+"POT-Creation-Date: 2014-11-08 12:31+0100\n"
 "PO-Revision-Date: 2014-10-08 15:39+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/zathura/"
@@ -19,558 +19,565 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../print.c:64 ../print.c:211
+#: ../zathura/print.c:64 ../zathura/print.c:211
 #, c-format
 msgid "Printing failed: %s"
 msgstr ""
 
-#: ../shortcuts.c:414 ../shortcuts.c:1221 ../shortcuts.c:1250
-#: ../shortcuts.c:1277 ../commands.c:36 ../commands.c:76 ../commands.c:103
-#: ../commands.c:152 ../commands.c:268 ../commands.c:298 ../commands.c:324
-#: ../commands.c:422 ../commands.c:549
-msgid "No document opened."
-msgstr "Neniu dokumento malfermita."
-
-#: ../shortcuts.c:1131
-msgid "This document does not contain any index"
-msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
-
-#: ../commands.c:42 ../commands.c:82 ../commands.c:109 ../commands.c:427
-msgid "Invalid number of arguments given."
-msgstr "Nevalida nombro da argumentoj uzata."
-
-#: ../commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "Neeble krei paĝosignon: %s"
-
-#: ../commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "Neeble krei paĝosignon: %s"
-
-#: ../commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Paĝosigno sukcese aktualigita: %s"
-
-#: ../commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Paĝosigno sukcese kreita: %s"
-
-#: ../commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Paĝosigno forigita: %s"
-
-#: ../commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Neeble forigi paĝosignon: %s"
-
-#: ../commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "Neniu paĝosigno: %s"
-
-#: ../commands.c:162
-msgid "Title"
-msgstr ""
-
-#: ../commands.c:163
-msgid "Author"
-msgstr ""
-
-#: ../commands.c:164
-msgid "Subject"
-msgstr ""
-
-#: ../commands.c:165
-msgid "Keywords"
-msgstr ""
-
-#: ../commands.c:166
-msgid "Creator"
-msgstr ""
-
-#: ../commands.c:167
-msgid "Producer"
-msgstr ""
-
-#: ../commands.c:168
-msgid "Creation date"
-msgstr ""
-
-#: ../commands.c:169
-msgid "Modification date"
-msgstr ""
-
-#: ../commands.c:174 ../commands.c:196
-msgid "No information available."
-msgstr "Neniu informacio disponebla."
-
-#: ../commands.c:234
-msgid "Too many arguments."
-msgstr "Tro multe da argumentoj."
-
-#: ../commands.c:245
-msgid "No arguments given."
-msgstr "Neniuj argumentoj uzata."
-
-#: ../commands.c:304 ../commands.c:330
-msgid "Document saved."
-msgstr "Dokumento konservita."
-
-#: ../commands.c:306 ../commands.c:332
-msgid "Failed to save document."
-msgstr "Neeble konservi dokumenton."
-
-#: ../commands.c:309 ../commands.c:335
-msgid "Invalid number of arguments."
-msgstr "Nevalida nombro da argumentoj."
-
-#: ../commands.c:446
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Neeble skribi kunsendaĵon '%s' en '%s'."
-
-#: ../commands.c:448
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr "Skribis kunsendaĵon '%s' en '%s'."
-
-#: ../commands.c:492
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr "Skribis kunsendaĵon '%s' en '%s'."
-
-#: ../commands.c:494
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr "Neeble skribi kunsendaĵon '%s' en '%s'."
-
-#: ../commands.c:501
-#, c-format
-msgid "Unknown image '%s'."
-msgstr "Nekonata bildo '%s'."
-
-#: ../commands.c:505
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr ""
-
-#: ../commands.c:562
-msgid "Argument must be a number."
-msgstr "Argumento devas esti nombro."
-
-#: ../page-widget.c:529
-msgid "Loading..."
-msgstr "Ŝargado ..."
-
-#: ../page-widget.c:891
-msgid "Copy image"
-msgstr "Kopiu bildon"
-
-#: ../page-widget.c:892
-msgid "Save image as"
-msgstr "Savi bildojn kiel"
-
-#: ../links.c:202 ../links.c:281
-msgid "Failed to run xdg-open."
-msgstr "Fiaskis iro de xdg-open"
-
-#: ../links.c:220
-#, c-format
-msgid "Link: page %d"
-msgstr ""
-
-#: ../links.c:227
-#, c-format
-msgid "Link: %s"
-msgstr ""
-
-#: ../links.c:231
-msgid "Link: Invalid"
-msgstr ""
-
-#: ../completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "Paĝo %d"
-
-#: ../completion.c:293
-msgid "Attachments"
-msgstr "Konservu kunsendaĵojn"
-
-#. add images
-#: ../completion.c:324
-msgid "Images"
-msgstr "Bildoj"
-
-#: ../callbacks.c:232
+#: ../zathura/callbacks.c:232
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: ../callbacks.c:309
+#: ../zathura/callbacks.c:309
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Nevalida enigo '%s' uzata."
 
-#: ../callbacks.c:345
+#: ../zathura/callbacks.c:345
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Nevalida indekso '%s' uzata."
 
-#: ../callbacks.c:584
+#: ../zathura/callbacks.c:584
 #, c-format
 msgid "Copied selected text to clipboard: %s"
 msgstr "Selektita teksto estas kopiita en la poŝo: %s"
 
-#: ../zathura.c:204 ../zathura.c:1046
-msgid "[No name]"
-msgstr "[Neniu nomo]"
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:422 ../zathura/commands.c:549
+#: ../zathura/shortcuts.c:415 ../zathura/shortcuts.c:1222
+#: ../zathura/shortcuts.c:1251 ../zathura/shortcuts.c:1278
+msgid "No document opened."
+msgstr "Neniu dokumento malfermita."
 
-#: ../zathura.c:516
-msgid "Could not read file from stdin and write it to a temporary file."
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:427
+msgid "Invalid number of arguments given."
+msgstr "Nevalida nombro da argumentoj uzata."
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Neeble krei paĝosignon: %s"
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Neeble krei paĝosignon: %s"
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Paĝosigno sukcese aktualigita: %s"
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Paĝosigno sukcese kreita: %s"
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Paĝosigno forigita: %s"
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Neeble forigi paĝosignon: %s"
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Neniu paĝosigno: %s"
+
+#: ../zathura/commands.c:162
+msgid "Title"
 msgstr ""
 
-#: ../zathura.c:577
-msgid "Unsupported file type. Please install the necessary plugin."
+#: ../zathura/commands.c:163
+msgid "Author"
 msgstr ""
 
-#: ../zathura.c:587
-msgid "Document does not contain any pages"
+#: ../zathura/commands.c:164
+msgid "Subject"
 msgstr ""
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr ""
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr ""
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr ""
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr ""
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr ""
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "Neniu informacio disponebla."
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "Tro multe da argumentoj."
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "Neniuj argumentoj uzata."
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "Dokumento konservita."
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "Neeble konservi dokumenton."
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "Nevalida nombro da argumentoj."
+
+#: ../zathura/commands.c:446
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Neeble skribi kunsendaĵon '%s' en '%s'."
+
+#: ../zathura/commands.c:448
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Skribis kunsendaĵon '%s' en '%s'."
+
+#: ../zathura/commands.c:492
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Skribis kunsendaĵon '%s' en '%s'."
+
+#: ../zathura/commands.c:494
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "Neeble skribi kunsendaĵon '%s' en '%s'."
+
+#: ../zathura/commands.c:501
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "Nekonata bildo '%s'."
+
+#: ../zathura/commands.c:505
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:562
+msgid "Argument must be a number."
+msgstr "Argumento devas esti nombro."
+
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr "Ŝargado ..."
+
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "Kopiu bildon"
+
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr "Savi bildojn kiel"
+
+#: ../zathura/main.c:56
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../zathura/main.c:58
+msgid "Path to the config directory"
+msgstr "Vojo al la agorda dosierujo"
+
+#: ../zathura/main.c:59
+msgid "Path to the data directory"
+msgstr "Vojo al la datuma dosierujo"
+
+#: ../zathura/main.c:60
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:61
+msgid "Path to the directories containing plugins"
+msgstr "Vojoj al dosierujoj enhavantaj kromaĵojn"
+
+#: ../zathura/main.c:62
+msgid "Fork into the background"
+msgstr ""
+
+#: ../zathura/main.c:63
+msgid "Document password"
+msgstr ""
+
+#: ../zathura/main.c:64
+msgid "Page number to go to"
+msgstr ""
+
+#: ../zathura/main.c:65
+msgid "Log level (debug, info, warning, error)"
+msgstr "Nivelo de ĵurnalo (debug, info, warning, error)"
+
+#: ../zathura/main.c:66
+msgid "Print version information"
+msgstr "Montru dosiera informacio"
+
+#: ../zathura/main.c:67
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../zathura/main.c:68
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:69
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:70
+msgid "Start in a non-default mode"
+msgstr ""
+
+#: ../zathura/links.c:203 ../zathura/links.c:282
+msgid "Failed to run xdg-open."
+msgstr "Fiaskis iro de xdg-open"
+
+#: ../zathura/links.c:221
+#, c-format
+msgid "Link: page %d"
+msgstr ""
+
+#: ../zathura/links.c:228
+#, c-format
+msgid "Link: %s"
+msgstr ""
+
+#: ../zathura/links.c:232
+msgid "Link: Invalid"
+msgstr ""
+
+#: ../zathura/completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr "Paĝo %d"
+
+#: ../zathura/completion.c:293
+msgid "Attachments"
+msgstr "Konservu kunsendaĵojn"
+
+#. add images
+#: ../zathura/completion.c:324
+msgid "Images"
+msgstr "Bildoj"
+
+#: ../zathura/shortcuts.c:1132
+msgid "This document does not contain any index"
+msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
 
 #. zathura settings
-#: ../config.c:144
+#: ../zathura/config.c:144
 msgid "Database backend"
 msgstr ""
 
-#: ../config.c:146
+#: ../zathura/config.c:146
 msgid "Zoom step"
 msgstr "Zompaŝo"
 
-#: ../config.c:148
+#: ../zathura/config.c:148
 msgid "Padding between pages"
 msgstr "Interpaĝa plenigo"
 
-#: ../config.c:150
+#: ../zathura/config.c:150
 msgid "Number of pages per row"
 msgstr "Nombro da paĝoj po vico"
 
-#: ../config.c:152
+#: ../zathura/config.c:152
 msgid "Column of the first page"
 msgstr ""
 
-#: ../config.c:154
+#: ../zathura/config.c:154
 msgid "Scroll step"
 msgstr "Rulumpaŝo"
 
-#: ../config.c:156
+#: ../zathura/config.c:156
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../config.c:158
+#: ../zathura/config.c:158
 msgid "Full page scroll overlap"
 msgstr ""
 
-#: ../config.c:160
+#: ../zathura/config.c:160
 msgid "Zoom minimum"
 msgstr "Mimimuma zomo"
 
-#: ../config.c:162
+#: ../zathura/config.c:162
 msgid "Zoom maximum"
 msgstr "Maksimuma zomo"
 
-#: ../config.c:164
+#: ../zathura/config.c:164
 msgid "Maximum number of pages to keep in the cache"
 msgstr ""
 
-#: ../config.c:166
+#: ../zathura/config.c:166
+msgid "Maximum size in pixels of thumbnails to keep in the cache"
+msgstr ""
+
+#: ../zathura/config.c:168
 msgid "Number of positions to remember in the jumplist"
 msgstr ""
 
-#: ../config.c:168
+#: ../zathura/config.c:170
 msgid "Recoloring (dark color)"
 msgstr "Rekolorigo (malhela koloro)"
 
-#: ../config.c:169
+#: ../zathura/config.c:171
 msgid "Recoloring (light color)"
 msgstr "Rekolorigo (hela koloro)"
 
-#: ../config.c:170
+#: ../zathura/config.c:172
 msgid "Color for highlighting"
 msgstr "Koloro por fonlumo"
 
-#: ../config.c:172
+#: ../zathura/config.c:174
 msgid "Color for highlighting (active)"
 msgstr "Koloro por fonlumo (aktiva)"
 
-#: ../config.c:174
+#: ../zathura/config.c:176
 msgid "'Loading ...' background color"
 msgstr ""
 
-#: ../config.c:176
+#: ../zathura/config.c:178
 msgid "'Loading ...' foreground color"
 msgstr ""
 
-#: ../config.c:179
+#: ../zathura/config.c:181
 msgid "Index mode foreground color"
 msgstr ""
 
-#: ../config.c:180
+#: ../zathura/config.c:182
 msgid "Index mode background color"
 msgstr ""
 
-#: ../config.c:181
+#: ../zathura/config.c:183
 msgid "Index mode foreground color (active element)"
 msgstr ""
 
-#: ../config.c:182
+#: ../zathura/config.c:184
 msgid "Index mode background color (active element)"
 msgstr ""
 
-#: ../config.c:185
+#: ../zathura/config.c:187
 msgid "Recolor pages"
 msgstr "Rekoloru paĝojn"
 
-#: ../config.c:187
+#: ../zathura/config.c:189
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 
-#: ../config.c:189
+#: ../zathura/config.c:191
 msgid "When recoloring keep original image colors"
 msgstr ""
 
-#: ../config.c:191
+#: ../zathura/config.c:193
 msgid "Wrap scrolling"
 msgstr "Ĉirkaŭflua rulumado"
 
-#: ../config.c:193
+#: ../zathura/config.c:195
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../config.c:195
+#: ../zathura/config.c:197
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../config.c:197
+#: ../zathura/config.c:199
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../config.c:199
+#: ../zathura/config.c:201
 msgid "Align link target to the left"
 msgstr ""
 
-#: ../config.c:201
+#: ../zathura/config.c:203
 msgid "Let zoom be changed when following links"
 msgstr ""
 
-#: ../config.c:203
+#: ../zathura/config.c:205
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../config.c:205
+#: ../zathura/config.c:207
 msgid "Transparency for highlighting"
 msgstr "Travidebleco por fonlumo"
 
-#: ../config.c:207
+#: ../zathura/config.c:209
 msgid "Render 'Loading ...'"
 msgstr "Bildigu 'Ŝargado ...'"
 
-#: ../config.c:208
+#: ../zathura/config.c:210
 msgid "Adjust to when opening file"
 msgstr "Adaptaĵo ĉe malfermo de dosiero"
 
-#: ../config.c:210
+#: ../zathura/config.c:212
 msgid "Show hidden files and directories"
 msgstr "Montru kaŝitajn dosierojn kaj -ujojn"
 
-#: ../config.c:212
+#: ../zathura/config.c:214
 msgid "Show directories"
 msgstr "Montru dosierujojn"
 
-#: ../config.c:214
+#: ../zathura/config.c:216
 msgid "Always open on first page"
 msgstr "Ĉiam malfermu ĉe unua paĝo"
 
-#: ../config.c:216
+#: ../zathura/config.c:218
 msgid "Highlight search results"
 msgstr ""
 
-#: ../config.c:219
+#: ../zathura/config.c:221
 msgid "Enable incremental search"
 msgstr ""
 
-#: ../config.c:221
+#: ../zathura/config.c:223
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../config.c:223
+#: ../zathura/config.c:225
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../config.c:225
+#: ../zathura/config.c:227
 msgid "Display the page number in the window title"
 msgstr ""
 
-#: ../config.c:227
+#: ../zathura/config.c:229
 msgid "Use basename of the file in the statusbar"
 msgstr ""
 
-#: ../config.c:229
+#: ../zathura/config.c:231
 msgid "Enable synctex support"
 msgstr ""
 
-#: ../config.c:231
+#: ../zathura/config.c:233
 msgid "Synctex editor command"
 msgstr ""
 
-#: ../config.c:233
+#: ../zathura/config.c:235
 msgid "Enable D-Bus service"
 msgstr ""
 
-#: ../config.c:235
+#: ../zathura/config.c:237
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: ../config.c:237
+#: ../zathura/config.c:239
 msgid "Enable notification after selecting text"
 msgstr ""
 
 #. define default inputbar commands
-#: ../config.c:423
+#: ../zathura/config.c:425
 msgid "Add a bookmark"
 msgstr "Aldonu paĝosignon"
 
-#: ../config.c:424
+#: ../zathura/config.c:426
 msgid "Delete a bookmark"
 msgstr "Forigu paĝosignon"
 
-#: ../config.c:425
+#: ../zathura/config.c:427
 msgid "List all bookmarks"
 msgstr "Listigu ĉiujn paĝosignojn"
 
-#: ../config.c:426
+#: ../zathura/config.c:428
 msgid "Close current file"
 msgstr "Fermu nunan dosieron"
 
-#: ../config.c:427
+#: ../zathura/config.c:429
 msgid "Show file information"
 msgstr "Montru dosiera informacio"
 
-#: ../config.c:428 ../config.c:429
+#: ../zathura/config.c:430 ../zathura/config.c:431
 msgid "Execute a command"
 msgstr ""
 
 #. like vim
-#: ../config.c:430
+#: ../zathura/config.c:432
 msgid "Show help"
 msgstr "Montru helpon"
 
-#: ../config.c:431
+#: ../zathura/config.c:433
 msgid "Open document"
 msgstr "Malfermu dokumenton"
 
-#: ../config.c:432
+#: ../zathura/config.c:434
 msgid "Close zathura"
 msgstr "Fermu zathura"
 
-#: ../config.c:433
+#: ../zathura/config.c:435
 msgid "Print document"
 msgstr "Presu dokumenton"
 
-#: ../config.c:434
+#: ../zathura/config.c:436
 msgid "Save document"
 msgstr "Konservu dokumenton"
 
-#: ../config.c:435
+#: ../zathura/config.c:437
 msgid "Save document (and force overwriting)"
 msgstr "Konservu dokumenton (deviga anstataŭo)"
 
-#: ../config.c:436
+#: ../zathura/config.c:438
 msgid "Save attachments"
 msgstr "Konservu kunsendaĵojn"
 
-#: ../config.c:437
+#: ../zathura/config.c:439
 msgid "Set page offset"
 msgstr "Agordu paĝdelokado"
 
-#: ../config.c:438
+#: ../zathura/config.c:440
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../config.c:439
+#: ../zathura/config.c:441
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../config.c:440
+#: ../zathura/config.c:442
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../config.c:441
+#: ../zathura/config.c:443
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../config.c:442
+#: ../zathura/config.c:444
 msgid "Show version information"
 msgstr ""
 
-#: ../main.c:53
-msgid "Reparents to window specified by xid"
+#: ../zathura/zathura.c:204 ../zathura/zathura.c:1043
+msgid "[No name]"
+msgstr "[Neniu nomo]"
+
+#: ../zathura/zathura.c:518
+msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: ../main.c:54
-msgid "Path to the config directory"
-msgstr "Vojo al la agorda dosierujo"
-
-#: ../main.c:55
-msgid "Path to the data directory"
-msgstr "Vojo al la datuma dosierujo"
-
-#: ../main.c:56
-msgid "Path to the cache directory"
+#: ../zathura/zathura.c:579
+msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: ../main.c:57
-msgid "Path to the directories containing plugins"
-msgstr "Vojoj al dosierujoj enhavantaj kromaĵojn"
-
-#: ../main.c:58
-msgid "Fork into the background"
-msgstr ""
-
-#: ../main.c:59
-msgid "Document password"
-msgstr ""
-
-#: ../main.c:60
-msgid "Page number to go to"
-msgstr ""
-
-#: ../main.c:61
-msgid "Log level (debug, info, warning, error)"
-msgstr "Nivelo de ĵurnalo (debug, info, warning, error)"
-
-#: ../main.c:62
-msgid "Print version information"
-msgstr "Montru dosiera informacio"
-
-#: ../main.c:63
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
-
-#: ../main.c:64
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../main.c:65
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../main.c:66
-msgid "Start in a non-default mode"
+#: ../zathura/zathura.c:589
+msgid "Document does not contain any pages"
 msgstr ""

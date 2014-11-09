@@ -7,7 +7,7 @@ include config.mk
 
 MAN_SOURCES=$(wildcard man/*.rst) $(wildcard man/*.txt) man/conf.py
 DOXYGEN_SOURCES=$(wildcard ../*.h) Doxyfile
-HTML_SORUCES=$(wildcard *.rst api/*.rst configuration/*.rst installation/*.rst usage/*.rst) conf.py
+HTML_SOURCES=$(wildcard *.rst api/*.rst configuration/*.rst installation/*.rst usage/*.rst) conf.py
 
 SPHINX_OPTS+=-d $(SPHINX_BUILDDIR)/doctrees
 
