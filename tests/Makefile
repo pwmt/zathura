@@ -34,6 +34,8 @@ CPPFLAGS += -DWITH_MAGIC
 endif
 
 ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+INCS   += $(SYNCTEX_INC)
+LIBS   += $(SYNCTEX_LIB)
 else
 ZATHURA_OBJECTS       += $(wildcard ../${BUILDDIR_RELEASE}/zathura/synctex/*.o)
 ZATHURA_OBJECTS_DEBUG += $(wildcard ../${BUILDDIR_DEBUG}/zathura/synctex/*.o)
