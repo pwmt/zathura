@@ -188,8 +188,8 @@ clean:
 		${TARFILE} \
 		${TARDIR} \
 		${PROJECT}.pc \
-		version.h \
-		version.h.tmp \
+		${PROJECT}/version.h \
+		${PROJECT}/version.h.tmp \
 		${PROJECT}/dbus-interface-definitions.c \
 		${PROJECT}/dbus-interface-definitions.c.tmp \
 		${PROJECT}/css-definitions.c \
