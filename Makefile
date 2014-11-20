@@ -219,7 +219,7 @@ gdb: debug
 	$(QUIET)cgdb ${PROJECT}-debug
 
 test: ${OBJECTS}
-	$(QUIET)make -C tests run
+	$(QUIET)$(MAKE) -C tests run
 
 dist: clean build-manpages
 	$(QUIET)tar -czf $(TARFILE) --exclude=.gitignore \
@@ -228,7 +228,7 @@ dist: clean build-manpages
 		doc/_build/$(PROJECT).1 doc/_build/$(PROJECT)rc.5
 
 doc:
-	$(QUIET)make -C doc
+	$(QUIET)$(MAKE) -C doc
 
 po:
 	$(QUIET)${MAKE} -C po
