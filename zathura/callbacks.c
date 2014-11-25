@@ -79,9 +79,10 @@ update_visible_pages(zathura_t* zathura)
 
       /* reset current search result */
       girara_list_t* results = NULL;
-      g_object_get(page_widget, "search-results", &results, NULL);
+      GObject* obj_page_widget = G_OBJECT(page_widget);
+      g_object_get(obj_page_widget, "search-results", &results, NULL);
       if (results != NULL) {
-        g_object_set(page_widget, "search-current", 0, NULL);
+        g_object_set(obj_page_widget, "search-current", 0, NULL);
       }
     }
   }
@@ -264,7 +265,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
   GtkTreeModel  *model;
   GtkTreeIter   iter;
 
-  g_object_get(tree_view, "model", &model, NULL);
+  g_object_get(G_OBJECT(tree_view), "model", &model, NULL);
 
   if(gtk_tree_model_get_iter(model, &iter, path)) {
     zathura_index_element_t* index_element;
@@ -322,7 +323,7 @@ handle_link(GtkEntry* entry, girara_session_t* session,
     }
 
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    g_object_set(page_widget, "draw-links", FALSE, NULL);
+    g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
 
     if (eval == true) {
       zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
