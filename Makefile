@@ -298,7 +298,7 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f $(DESTDIR)$(APPDATAPREFIX)/$(PROJECT).appdata.xml
 	$(MAKE) -C po uninstall
 
--include $(wildcard .depend/*.dep)
+-include $(wildcard ${DEPENDDIR}/*.dep)
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall \
 	test po install-headers uninstall-headers update-po install-manpages \
