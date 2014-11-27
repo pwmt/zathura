@@ -12,7 +12,7 @@ LIBS     += $(SQLITE_LIB)
 SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE    = $(filter-out database-sqlite.c,$(OSOURCE))
+SOURCE    = $(filter-out ${PROJECT}/database-sqlite.c,$(OSOURCE))
 endif
 
 ifneq ($(WITH_MAGIC),0)
