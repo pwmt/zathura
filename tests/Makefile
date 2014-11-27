@@ -142,6 +142,6 @@ clean:
 	$(QUIET)rm -rf ${BUILDDIR}
 	$(QUIET)rm -rf ${DEPENDDIR}
 
-.PHONY: all options clean debug run
+.PHONY: all clean debug run
 
 -include $(wildcard ${DEPENDDIR}/*.dep)
