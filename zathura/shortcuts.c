@@ -861,9 +861,11 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
   const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
   GtkWidget *cur_page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
-  bool nohlsearch, first_time_after_abort, draw;
+  bool nohlsearch, first_time_after_abort;
+  gboolean draw;
 
-  nohlsearch = first_time_after_abort = draw = false;
+  nohlsearch = first_time_after_abort = false;
+  draw = FALSE;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
 
   if (nohlsearch == false) {
