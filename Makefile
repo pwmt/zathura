@@ -12,7 +12,7 @@ LIBS     += $(SQLITE_LIB)
 SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE    = $(filter-out database-sqlite.c,$(OSOURCE))
+SOURCE    = $(filter-out ${PROJECT}/database-sqlite.c,$(OSOURCE))
 endif
 
 ifneq ($(WITH_MAGIC),0)
@@ -87,8 +87,8 @@ ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
 		-e 's/ZVREV/${ZATHURA_VERSION_REV}/' \
 		-e 's/ZVAPI/${ZATHURA_API_VERSION}/' \
-		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > version.h.tmp
-	$(QUIET)mv version.h.tmp ${PROJECT}/version.h
+		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > ${PROJECT}/version.h.tmp
+	$(QUIET)mv ${PROJECT}/version.h.tmp ${PROJECT}/version.h
 
 ${PROJECT}/dbus-interface-definitions.c: data/org.pwmt.zathura.xml
 	$(QUIET)echo '#include "dbus-interface-definitions.h"' > $@.tmp
@@ -298,7 +298,7 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f $(DESTDIR)$(APPDATAPREFIX)/$(PROJECT).appdata.xml
 	$(MAKE) -C po uninstall
 
--include $(wildcard .depend/*.dep)
+-include $(wildcard ${DEPENDDIR}/*.dep)
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall \
 	test po install-headers uninstall-headers update-po install-manpages \

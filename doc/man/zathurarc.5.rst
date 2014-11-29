@@ -651,6 +651,14 @@ values are "plain", "sqlite" (if built with sqlite support) and "null". If
 * Value type: String
 * Default value: plain
 
+dbus-service
+^^^^^^^^^^^^^^^^^^^
+En/Disables the D-Bus service. If the services is disabled, SyncTeX forward
+synchronization is not available.
+
+* Value type: Boolean
+* Default value: true
+
 incremental-search
 ^^^^^^^^^^^^^^^^^^
 En/Disables incremental search (search while typing).
@@ -926,13 +934,6 @@ Defines the command executed for SyncTeX backward synchronization.
 
 * Value type: String
 * Default value:
-
-syntex-dbus-service
-^^^^^^^^^^^^^^^^^^^
-En/Disables the D-Bus service required for SyncTeX forward synchronization.
-
-* Value type: Boolean
-* Default value: true
 
 index-fg
 ^^^^^^^^
