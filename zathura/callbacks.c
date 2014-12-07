@@ -580,9 +580,13 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
     girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
     if (notification == true) {
+      char* target = NULL;
+      girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+
       char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
       char* escaped_text = g_markup_printf_escaped(
-          _("Copied selected text to clipboard: %s"), stripped_text);
+          _("Copied selected text to selection %s: %s"), target, stripped_text);
+      g_free(target);
       g_free(stripped_text);
 
       girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);

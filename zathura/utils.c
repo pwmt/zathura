@@ -229,11 +229,15 @@ GdkAtom* get_selection(zathura_t* zathura)
 {
   g_return_val_if_fail(zathura != NULL, NULL);
 
-  char* value;
+  char* value = NULL;
   girara_setting_get(zathura->ui.session, "selection-clipboard", &value);
+  if (value == NULL) {
+    return NULL;
+  }
 
   GdkAtom* selection = g_try_malloc(sizeof(GdkAtom));
   if (selection == NULL) {
+    g_free(selection);
     return NULL;
   }
 
