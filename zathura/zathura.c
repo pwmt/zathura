@@ -223,13 +223,13 @@ zathura_init(zathura_t* zathura)
   } else if (g_strcmp0(database, "null") != 0) {
     girara_error("Database backend '%s' is not supported.", database);
   }
-  g_free(database);
 
   if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
     girara_error("Unable to initialize database. Bookmarks won't be available.");
   } else {
     g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
   }
+  g_free(database);
 
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
