@@ -601,7 +601,10 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     .position_x = 0,
     .position_y = 0
   };
-  const bool known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
+  bool known_file = false;
+  if (zathura->database != NULL) {
+    known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
+  }
 
   /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
@@ -823,13 +826,15 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
 
   /* bookmarks */
-  if (zathura_bookmarks_load(zathura, file_path) == false) {
-    girara_warning("Failed to loads bookmarks.");
-  }
+  if (zathura->database != NULL) {
+    if (zathura_bookmarks_load(zathura, file_path) == false) {
+      girara_warning("Failed to loads bookmarks.");
+    }
 
-  /* jumplist */
-  if (zathura_jumplist_load(zathura, file_path) == false) {
-    zathura->jumplist.list = girara_list_new2(g_free);
+    /* jumplist */
+    if (zathura_jumplist_load(zathura, file_path) == false) {
+      zathura->jumplist.list = girara_list_new2(g_free);
+    }
   }
 
   /* update title */
@@ -1002,11 +1007,14 @@ document_close(zathura_t* zathura, bool keep_monitor)
   file_info.position_x = zathura_document_get_position_x(zathura->document);
   file_info.position_y = zathura_document_get_position_y(zathura->document);
 
-  /* save file info */
-  zathura_db_set_fileinfo(zathura->database, path, &file_info);
+  if (zathura->database != NULL) {
+    /* save file info */
+    zathura_db_set_fileinfo(zathura->database, path, &file_info);
 
-  /* save jumplist */
-  zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
+    /* save jumplist */
+    zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
+  }
+
   girara_list_iterator_free(zathura->jumplist.cur);
   zathura->jumplist.cur = NULL;
   girara_list_free(zathura->jumplist.list);
@@ -1393,7 +1401,11 @@ zathura_jumplist_add(zathura_t* zathura)
 bool
 zathura_jumplist_load(zathura_t* zathura, const char* file)
 {
-  g_return_val_if_fail(zathura != NULL && zathura->database != NULL && file != NULL, false);
+  g_return_val_if_fail(zathura != NULL && file != NULL, false);
+
+  if (zathura->database == NULL) {
+    return false;
+  }
 
   zathura->jumplist.list = zathura_db_load_jumplist(zathura->database, file);
 
