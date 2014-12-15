@@ -213,10 +213,10 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 
 valgrind: debug
 	 $(QUIET)G_SLICE=always-malloc G_DEBUG=gc-friendly ${VALGRIND} ${VALGRIND_ARGUMENTS} \
-		 ./${PROJECT}-debug
+		 ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 gdb: debug
-	$(QUIET)cgdb ${PROJECT}-debug
+	$(QUIET)cgdb ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 test: ${OBJECTS}
 	$(QUIET)$(MAKE) -C tests run
