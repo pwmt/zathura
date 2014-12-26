@@ -16,7 +16,6 @@ void config_load_default(zathura_t* zathura);
  * Loads and evaluates a configuration file
  *
  * @param zathura The zathura session
- * @param path Path to the configuration file
  */
 void config_load_files(zathura_t* zathura);
 

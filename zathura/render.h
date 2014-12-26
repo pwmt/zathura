@@ -195,7 +195,7 @@ void zathura_render_request(ZathuraRenderRequest* request,
 /**
  * Abort an existing render request.
  *
- * @param reqeust request that should be aborted
+ * @param request request that should be aborted
  */
 void zathura_render_request_abort(ZathuraRenderRequest* request);
 
