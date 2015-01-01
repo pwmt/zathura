@@ -19,5 +19,5 @@ release   = '0.2.7'
 
 man_pages = [
     ('zathura.1', 'zathura', 'a document viewer', ['pwmt.org'], 1),
-    ('zathurarc.5', 'zathurarc', 'a document viewer', ['pwmt.org'], 5)
+    ('zathurarc.5', 'zathurarc', 'zathura configuration file', ['pwmt.org'], 5)
 ]

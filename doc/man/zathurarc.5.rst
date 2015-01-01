@@ -2,14 +2,6 @@
 zathurarc
 =========
 
---------------------------
-zathura configuration file
---------------------------
-
-:Author: pwmt.org
-:Date: VERSION
-:Manual section: 5
-
 SYNOPSIS
 ========
 
