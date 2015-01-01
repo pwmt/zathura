@@ -33,3 +33,6 @@ write(!)
 
 export
   Export attachments
+
+dump
+  Write values, descriptions, etc. of all current settings to a file.
