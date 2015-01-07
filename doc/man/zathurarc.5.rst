@@ -72,6 +72,16 @@ the *zathurarc* file to make those changes permanent:
 
     map [mode] <binding> <shortcut function> <argument>
 
+include - Including another config file
+---------------------------------------
+This commands allows to include other configuration files. If a relative path is
+given, the path will be resolved relative to the configuration file that is
+currently processed.
+
+::
+
+    include another-config
+
 Mode
 ^^^^
 The ``map`` command expects several arguments where only the ``binding`` as well as
