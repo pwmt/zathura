@@ -828,7 +828,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   /* bookmarks */
   if (zathura->database != NULL) {
     if (zathura_bookmarks_load(zathura, file_path) == false) {
-      girara_warning("Failed to loads bookmarks.");
+      girara_debug("Failed to load bookmarks.");
     }
 
     /* jumplist */
