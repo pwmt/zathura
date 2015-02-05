@@ -1240,6 +1240,7 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
   }
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
+  adjust_view(zathura);
 
   return true;
 }
