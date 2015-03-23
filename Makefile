@@ -206,7 +206,7 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 	$(QUIET)echo version=${VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo apiversion=${ZATHURA_API_VERSION} >> ${PROJECT}.pc
 	$(QUIET)echo abiversion=${ZATHURA_ABI_VERSION} >> ${PROJECT}.pc
-	$(QUIET)echo includedir=${INCLUDEDIR} >> ${PROJECT}.pc
+	$(QUIET)echo includedir=${DESTDIR}${INCLUDEDIR} >> ${PROJECT}.pc
 	$(QUIET)echo plugindir=${PLUGINDIR} >> ${PROJECT}.pc
 	$(QUIET)echo GTK_VERSION=3 >> ${PROJECT}.pc
 	$(QUIET)cat ${PROJECT}.pc.in >> ${PROJECT}.pc
