@@ -52,7 +52,7 @@ install: ${MOS}
 uninstall: ${MOS}
 	$(ECHO) removing translations
 	$(QUIET)set -e && for f in $^ ; do \
-		rm -f $(LOCALEDIR)/$$f; \
+		rm -f $(DESTDIR)$(LOCALEDIR)/$$f; \
 	done
 
 .PHONY: all clean update-po install uninstall
