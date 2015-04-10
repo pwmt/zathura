@@ -83,6 +83,22 @@ zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const c
   girara_list_append(plugin_manager->path, g_strdup(dir));
 }
 
+static bool
+check_suffix(const char* path)
+{
+  if (g_str_has_suffix(path, ".so") == TRUE) {
+    return true;
+  }
+
+#ifdef __APPLE__
+  if (g_str_has_suffix(path, ".dylib") == TRUE) {
+    return true;
+  }
+#endif
+
+  return false;
+}
+
 void
 zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
 {
@@ -108,7 +124,7 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       continue;
     }
 
-    if (g_str_has_suffix(path, ".so") == FALSE) {
+    if (check_suffix(path) == false) {
       girara_debug("%s is not a plugin file. Skipping.", path);
       g_free(path);
       continue;
