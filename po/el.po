@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2014-11-08 12:31+0100\n"
-"PO-Revision-Date: 2014-10-08 15:39+0100\n"
+"POT-Creation-Date: 2015-04-13 19:42+0200\n"
+"PO-Revision-Date: 2015-04-13 19:46+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/zathura/language/"
 "el/)\n"
@@ -20,273 +20,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../zathura/print.c:64 ../zathura/print.c:211
-#, c-format
-msgid "Printing failed: %s"
-msgstr ""
-
-#: ../zathura/callbacks.c:232
+#: ../zathura/callbacks.c:233
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: ../zathura/callbacks.c:309
+#: ../zathura/callbacks.c:310
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Η είσοδος '%s' είναι άκυρη."
 
-#: ../zathura/callbacks.c:345
+#: ../zathura/callbacks.c:346
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Ο δείκτης '%s' είναι άκυρος."
 
-#: ../zathura/callbacks.c:584
+#: ../zathura/callbacks.c:588
 #, c-format
-msgid "Copied selected text to clipboard: %s"
-msgstr "Το επιλεγμένο κείμενο αποθηκεύτηκε στην μνήμη: %s"
-
-#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
-#: ../zathura/commands.c:152 ../zathura/commands.c:268
-#: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:422 ../zathura/commands.c:549
-#: ../zathura/shortcuts.c:415 ../zathura/shortcuts.c:1222
-#: ../zathura/shortcuts.c:1251 ../zathura/shortcuts.c:1278
-msgid "No document opened."
-msgstr "Δεν άνοιξε κανένα αρχείο. "
-
-#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:427
-msgid "Invalid number of arguments given."
-msgstr "Μη έγκυρος αριθμός παραμέτρων."
-
-#: ../zathura/commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "Η δημιουργία του σελιδοδείκτη: %s δεν ήταν δυνατή."
-
-#: ../zathura/commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "Η δημιουργία του σελιδοδείκτη: %s δεν ήταν δυνατή."
-
-#: ../zathura/commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Η ενημέρωση του σελιδοδείκτη: %s ήταν επιτυχής. "
-
-#: ../zathura/commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Η δημιουργία του σελιδοδείκτη: %s ήταν επιτυχής."
-
-#: ../zathura/commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Ο σελιδοδείκτης: %s διεγράφει. "
-
-#: ../zathura/commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Η διαγραφή του σελιδοδείκτη: %s απέτυχε. "
-
-#: ../zathura/commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "Ο σελιδοδείκτης: %s δεν βρέθηκε. "
-
-#: ../zathura/commands.c:162
-msgid "Title"
+msgid "Copied selected text to selection %s: %s"
 msgstr ""
-
-#: ../zathura/commands.c:163
-msgid "Author"
-msgstr ""
-
-#: ../zathura/commands.c:164
-msgid "Subject"
-msgstr ""
-
-#: ../zathura/commands.c:165
-msgid "Keywords"
-msgstr ""
-
-#: ../zathura/commands.c:166
-msgid "Creator"
-msgstr ""
-
-#: ../zathura/commands.c:167
-msgid "Producer"
-msgstr ""
-
-#: ../zathura/commands.c:168
-msgid "Creation date"
-msgstr ""
-
-#: ../zathura/commands.c:169
-msgid "Modification date"
-msgstr ""
-
-#: ../zathura/commands.c:174 ../zathura/commands.c:196
-msgid "No information available."
-msgstr "Δεν υπάρχουν διαθέσιμες πληροφορίες."
-
-#: ../zathura/commands.c:234
-msgid "Too many arguments."
-msgstr "Εισήχθησαν πολλές παράμετροι. "
-
-#: ../zathura/commands.c:245
-msgid "No arguments given."
-msgstr "Δεν εισήχθησαν παράμετροι. "
-
-#: ../zathura/commands.c:304 ../zathura/commands.c:330
-msgid "Document saved."
-msgstr "Το αρχείο αποθηκεύτηκε."
-
-#: ../zathura/commands.c:306 ../zathura/commands.c:332
-msgid "Failed to save document."
-msgstr "Η αποθήκευση του αρχείου απέτυχε. "
-
-#: ../zathura/commands.c:309 ../zathura/commands.c:335
-msgid "Invalid number of arguments."
-msgstr "Μη έγκυρος ο αριθμός των παραμέτρων. "
-
-#: ../zathura/commands.c:446
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Μη επιτυχής η εγγραγή της προσάρτησης '%s' στην '%s'."
-
-#: ../zathura/commands.c:448
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr "Επιτυχής η εγγραφή της προσάρτησης '%s' στην '%s'."
-
-#: ../zathura/commands.c:492
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr "Ενεγράφει η εικόνα '%s' στην '%s'"
-
-#: ../zathura/commands.c:494
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr "Δεν ενεγράφει η εικόνα '%s' στην '%s'."
-
-#: ../zathura/commands.c:501
-#, c-format
-msgid "Unknown image '%s'."
-msgstr "Άγνωστη εικόνα '%s'. "
-
-#: ../zathura/commands.c:505
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr "Άγνωστο προσάρτημα είτε εικόνα '%s'. "
-
-#: ../zathura/commands.c:562
-msgid "Argument must be a number."
-msgstr "Η παράμετρος πρέπει να είναι αριθμός."
-
-#: ../zathura/page-widget.c:561
-msgid "Loading..."
-msgstr "Φορτώνει ..."
-
-#: ../zathura/page-widget.c:1006
-msgid "Copy image"
-msgstr "Αντιγραφή εικόνας"
-
-#: ../zathura/page-widget.c:1007
-msgid "Save image as"
-msgstr "Αποθήκευση εικόνας ως..."
-
-#: ../zathura/main.c:56
-msgid "Reparents to window specified by xid"
-msgstr "Reparents to window specified by xid"
-
-#: ../zathura/main.c:58
-msgid "Path to the config directory"
-msgstr "Διαδρομή του αρχείου ρυθμίσεων"
-
-#: ../zathura/main.c:59
-msgid "Path to the data directory"
-msgstr "Διαδρομή του φακέλου δεδομένων"
-
-#: ../zathura/main.c:60
-msgid "Path to the cache directory"
-msgstr ""
-
-#: ../zathura/main.c:61
-msgid "Path to the directories containing plugins"
-msgstr "Διαδρομή φακέλου που περιέχει τα πρόσθετα"
-
-#: ../zathura/main.c:62
-msgid "Fork into the background"
-msgstr "Διακλάδωση στο παρασκήνιο"
-
-#: ../zathura/main.c:63
-msgid "Document password"
-msgstr "Κωδικός αρχείου"
-
-#: ../zathura/main.c:64
-msgid "Page number to go to"
-msgstr ""
-
-#: ../zathura/main.c:65
-msgid "Log level (debug, info, warning, error)"
-msgstr "Επίπεδο καταγραφής (debug, info, warning, error)"
-
-#: ../zathura/main.c:66
-msgid "Print version information"
-msgstr "Εκτύπωση πληροφοριών έκδοσης"
-
-#: ../zathura/main.c:67
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Synctex editor (Προώθηση στην εντολή synctex)"
-
-#: ../zathura/main.c:68
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../zathura/main.c:69
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../zathura/main.c:70
-msgid "Start in a non-default mode"
-msgstr ""
-
-#: ../zathura/links.c:203 ../zathura/links.c:282
-msgid "Failed to run xdg-open."
-msgstr "Απέτυχε η εκτέλεση του xdg-open. "
-
-#: ../zathura/links.c:221
-#, c-format
-msgid "Link: page %d"
-msgstr ""
-
-#: ../zathura/links.c:228
-#, c-format
-msgid "Link: %s"
-msgstr ""
-
-#: ../zathura/links.c:232
-msgid "Link: Invalid"
-msgstr ""
-
-#: ../zathura/completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "Σελίδα %d"
-
-#: ../zathura/completion.c:293
-msgid "Attachments"
-msgstr "Προσαρτήσεις"
-
-#. add images
-#: ../zathura/completion.c:324
-msgid "Images"
-msgstr "Εικόνες"
-
-#: ../zathura/shortcuts.c:1132
-msgid "This document does not contain any index"
-msgstr "Το αρχείο δεν περιέχει κανένα δείκτη"
 
 #. zathura settings
 #: ../zathura/config.c:144
@@ -569,7 +321,199 @@ msgstr "Τονισμός στα τρέχοντα αποτελέσματα της
 msgid "Show version information"
 msgstr "Εμφάνιση πληροφοριών έκδοσης"
 
-#: ../zathura/zathura.c:204 ../zathura/zathura.c:1043
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:423 ../zathura/commands.c:550
+#: ../zathura/shortcuts.c:417 ../zathura/shortcuts.c:1227
+#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
+msgid "No document opened."
+msgstr "Δεν άνοιξε κανένα αρχείο. "
+
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:428
+msgid "Invalid number of arguments given."
+msgstr "Μη έγκυρος αριθμός παραμέτρων."
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Η δημιουργία του σελιδοδείκτη: %s δεν ήταν δυνατή."
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Η δημιουργία του σελιδοδείκτη: %s δεν ήταν δυνατή."
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Η ενημέρωση του σελιδοδείκτη: %s ήταν επιτυχής. "
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Η δημιουργία του σελιδοδείκτη: %s ήταν επιτυχής."
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Ο σελιδοδείκτης: %s διεγράφει. "
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Η διαγραφή του σελιδοδείκτη: %s απέτυχε. "
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Ο σελιδοδείκτης: %s δεν βρέθηκε. "
+
+#: ../zathura/commands.c:162
+msgid "Title"
+msgstr ""
+
+#: ../zathura/commands.c:163
+msgid "Author"
+msgstr ""
+
+#: ../zathura/commands.c:164
+msgid "Subject"
+msgstr ""
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr ""
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr ""
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr ""
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr ""
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr ""
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "Δεν υπάρχουν διαθέσιμες πληροφορίες."
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "Εισήχθησαν πολλές παράμετροι. "
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "Δεν εισήχθησαν παράμετροι. "
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "Το αρχείο αποθηκεύτηκε."
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "Η αποθήκευση του αρχείου απέτυχε. "
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "Μη έγκυρος ο αριθμός των παραμέτρων. "
+
+#: ../zathura/commands.c:447
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Μη επιτυχής η εγγραγή της προσάρτησης '%s' στην '%s'."
+
+#: ../zathura/commands.c:449
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Επιτυχής η εγγραφή της προσάρτησης '%s' στην '%s'."
+
+#: ../zathura/commands.c:493
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Ενεγράφει η εικόνα '%s' στην '%s'"
+
+#: ../zathura/commands.c:495
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "Δεν ενεγράφει η εικόνα '%s' στην '%s'."
+
+#: ../zathura/commands.c:502
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "Άγνωστη εικόνα '%s'. "
+
+#: ../zathura/commands.c:506
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "Άγνωστο προσάρτημα είτε εικόνα '%s'. "
+
+#: ../zathura/commands.c:563
+msgid "Argument must be a number."
+msgstr "Η παράμετρος πρέπει να είναι αριθμός."
+
+#: ../zathura/completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr "Σελίδα %d"
+
+#: ../zathura/completion.c:293
+msgid "Attachments"
+msgstr "Προσαρτήσεις"
+
+#. add images
+#: ../zathura/completion.c:324
+msgid "Images"
+msgstr "Εικόνες"
+
+#: ../zathura/print.c:64 ../zathura/print.c:211
+#, c-format
+msgid "Printing failed: %s"
+msgstr ""
+
+#: ../zathura/shortcuts.c:1137
+msgid "This document does not contain any index"
+msgstr "Το αρχείο δεν περιέχει κανένα δείκτη"
+
+#: ../zathura/links.c:203 ../zathura/links.c:282
+msgid "Failed to run xdg-open."
+msgstr "Απέτυχε η εκτέλεση του xdg-open. "
+
+#: ../zathura/links.c:221
+#, c-format
+msgid "Link: page %d"
+msgstr ""
+
+#: ../zathura/links.c:228
+#, c-format
+msgid "Link: %s"
+msgstr ""
+
+#: ../zathura/links.c:232
+msgid "Link: Invalid"
+msgstr ""
+
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr "Φορτώνει ..."
+
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "Αντιγραφή εικόνας"
+
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr "Αποθήκευση εικόνας ως..."
+
+#: ../zathura/zathura.c:204 ../zathura/zathura.c:1051
 msgid "[No name]"
 msgstr "[Χωρίς όνομα]"
 
@@ -583,4 +527,60 @@ msgstr ""
 
 #: ../zathura/zathura.c:589
 msgid "Document does not contain any pages"
+msgstr ""
+
+#: ../zathura/main.c:56
+msgid "Reparents to window specified by xid"
+msgstr "Reparents to window specified by xid"
+
+#: ../zathura/main.c:58
+msgid "Path to the config directory"
+msgstr "Διαδρομή του αρχείου ρυθμίσεων"
+
+#: ../zathura/main.c:59
+msgid "Path to the data directory"
+msgstr "Διαδρομή του φακέλου δεδομένων"
+
+#: ../zathura/main.c:60
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:61
+msgid "Path to the directories containing plugins"
+msgstr "Διαδρομή φακέλου που περιέχει τα πρόσθετα"
+
+#: ../zathura/main.c:62
+msgid "Fork into the background"
+msgstr "Διακλάδωση στο παρασκήνιο"
+
+#: ../zathura/main.c:63
+msgid "Document password"
+msgstr "Κωδικός αρχείου"
+
+#: ../zathura/main.c:64
+msgid "Page number to go to"
+msgstr ""
+
+#: ../zathura/main.c:65
+msgid "Log level (debug, info, warning, error)"
+msgstr "Επίπεδο καταγραφής (debug, info, warning, error)"
+
+#: ../zathura/main.c:66
+msgid "Print version information"
+msgstr "Εκτύπωση πληροφοριών έκδοσης"
+
+#: ../zathura/main.c:67
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr "Synctex editor (Προώθηση στην εντολή synctex)"
+
+#: ../zathura/main.c:68
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:69
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:70
+msgid "Start in a non-default mode"
 msgstr ""

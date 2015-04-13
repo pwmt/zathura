@@ -43,19 +43,20 @@ draw_links(zathura_t* zathura)
     }
 
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    g_object_set(page_widget, "draw-search-results", FALSE, NULL);
+    GObject* obj_page_widget = G_OBJECT(page_widget);
+    g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
     if (zathura_page_get_visibility(page) == true) {
-      g_object_set(page_widget, "draw-links", TRUE, NULL);
+      g_object_set(obj_page_widget, "draw-links", TRUE, NULL);
 
       int number_of_links = 0;
-      g_object_get(page_widget, "number-of-links", &number_of_links, NULL);
+      g_object_get(obj_page_widget, "number-of-links", &number_of_links, NULL);
       if (number_of_links != 0) {
         show_links = true;
       }
-      g_object_set(page_widget, "offset-links", page_offset, NULL);
+      g_object_set(obj_page_widget, "offset-links", page_offset, NULL);
       page_offset += number_of_links;
     } else {
-      g_object_set(page_widget, "draw-links", FALSE, NULL);
+      g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
     }
   }
   return show_links;
@@ -81,9 +82,10 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
       }
 
       GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-      g_object_set(page_widget, "draw-links", FALSE, NULL);
+      GObject* obj_page_widget = G_OBJECT(page_widget);
+      g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
       if (clear_search == true) {
-        g_object_set(page_widget, "draw-search-results", FALSE, NULL);
+        g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
       }
     }
   }
@@ -859,13 +861,15 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
   const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
   GtkWidget *cur_page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
-  bool nohlsearch, first_time_after_abort, draw;
+  bool nohlsearch, first_time_after_abort;
+  gboolean draw;
 
-  nohlsearch = first_time_after_abort = draw = false;
+  nohlsearch = first_time_after_abort = false;
+  draw = FALSE;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
 
   if (nohlsearch == false) {
-    g_object_get(cur_page_widget, "draw-search-results", &draw, NULL);
+    g_object_get(G_OBJECT(cur_page_widget), "draw-search-results", &draw, NULL);
 
     if (draw == false) {
       first_time_after_abort = true;
@@ -891,7 +895,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
 
     int num_search_results = 0, current = -1;
-    g_object_get(page_widget, "search-current", &current, "search-length", &num_search_results, NULL);
+    g_object_get(G_OBJECT(page_widget), "search-current", &current, "search-length", &num_search_results, NULL);
     if (num_search_results == 0 || current == -1) {
       continue;
     }
@@ -911,13 +915,13 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       target_idx = current - 1;
     } else {
       /* the next result is on a different page */
-      g_object_set(page_widget, "search-current", -1, NULL);
+      g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
 
       for (int npage_id = 1; page_id < num_pages; ++npage_id) {
         int ntmp = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura_document_get_page(zathura->document, (ntmp + 2*num_pages) % num_pages);
         GtkWidget* npage_page_widget = zathura_page_get_widget(zathura, npage);
-        g_object_get(npage_page_widget, "search-length", &num_search_results, NULL);
+        g_object_get(G_OBJECT(npage_page_widget), "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {
           target_page = npage;
           target_idx = diff == 1 ? 0 : num_search_results - 1;
@@ -932,8 +936,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   if (target_page != NULL) {
     girara_list_t* results = NULL;
     GtkWidget* page_widget = zathura_page_get_widget(zathura, target_page);
-    g_object_set(page_widget, "search-current", target_idx, NULL);
-    g_object_get(page_widget, "search-results", &results, NULL);
+    GObject* obj_page_widget = G_OBJECT(page_widget);
+    g_object_set(obj_page_widget, "search-current", target_idx, NULL);
+    g_object_get(obj_page_widget, "search-results", &results, NULL);
 
     /* Need to adjust rectangle to page scale and orientation */
     zathura_rectangle_t* rect = girara_list_nth(results, target_idx);
@@ -1235,6 +1240,7 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
   }
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
+  adjust_view(zathura);
 
   return true;
 }

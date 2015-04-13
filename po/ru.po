@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2014-11-08 12:31+0100\n"
-"PO-Revision-Date: 2014-11-07 15:49+0100\n"
+"POT-Creation-Date: 2015-04-13 19:42+0200\n"
+"PO-Revision-Date: 2015-04-13 19:49+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
 "ru/)\n"
@@ -23,273 +23,25 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 1.6.10\n"
 
-#: ../zathura/print.c:64 ../zathura/print.c:211
-#, c-format
-msgid "Printing failed: %s"
-msgstr "Не удалось напечатать %s"
-
-#: ../zathura/callbacks.c:232
+#: ../zathura/callbacks.c:233
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: ../zathura/callbacks.c:309
+#: ../zathura/callbacks.c:310
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Неправильный ввод: %s."
 
-#: ../zathura/callbacks.c:345
+#: ../zathura/callbacks.c:346
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Получен неверный индекс: %s."
 
-#: ../zathura/callbacks.c:584
+#: ../zathura/callbacks.c:588
 #, c-format
-msgid "Copied selected text to clipboard: %s"
-msgstr "Выделенный текст скопирован в буфер: %s"
-
-#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
-#: ../zathura/commands.c:152 ../zathura/commands.c:268
-#: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:422 ../zathura/commands.c:549
-#: ../zathura/shortcuts.c:415 ../zathura/shortcuts.c:1222
-#: ../zathura/shortcuts.c:1251 ../zathura/shortcuts.c:1278
-msgid "No document opened."
-msgstr "Нет открытых документов."
-
-#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:427
-msgid "Invalid number of arguments given."
-msgstr "Указано неверное число аргументов."
-
-#: ../zathura/commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "Не могу создать закладку %s"
-
-#: ../zathura/commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "Не удалось создать закладку %s"
-
-#: ../zathura/commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Закладка %s успешно обновлена"
-
-#: ../zathura/commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Закладка %s успешно создана"
-
-#: ../zathura/commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Закладка %s удалена"
-
-#: ../zathura/commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Не удалось удалить закладку %s"
-
-#: ../zathura/commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "Закладки %s не существует"
-
-#: ../zathura/commands.c:162
-msgid "Title"
-msgstr "Заголовок"
-
-#: ../zathura/commands.c:163
-msgid "Author"
-msgstr "Автор"
-
-#: ../zathura/commands.c:164
-msgid "Subject"
-msgstr "Тема"
-
-#: ../zathura/commands.c:165
-msgid "Keywords"
-msgstr "Ключевые слова"
-
-#: ../zathura/commands.c:166
-msgid "Creator"
-msgstr "Создатель"
-
-#: ../zathura/commands.c:167
-msgid "Producer"
-msgstr "Производитель"
-
-#: ../zathura/commands.c:168
-msgid "Creation date"
-msgstr "Время создания"
-
-#: ../zathura/commands.c:169
-msgid "Modification date"
-msgstr "Время изменения"
-
-#: ../zathura/commands.c:174 ../zathura/commands.c:196
-msgid "No information available."
-msgstr "Нет доступной информации."
-
-#: ../zathura/commands.c:234
-msgid "Too many arguments."
-msgstr "Слишком много аргументов."
-
-#: ../zathura/commands.c:245
-msgid "No arguments given."
-msgstr "Отсутствуют аргументы."
-
-#: ../zathura/commands.c:304 ../zathura/commands.c:330
-msgid "Document saved."
-msgstr "Документ сохранён."
-
-#: ../zathura/commands.c:306 ../zathura/commands.c:332
-msgid "Failed to save document."
-msgstr "Не удалось сохранить документ."
-
-#: ../zathura/commands.c:309 ../zathura/commands.c:335
-msgid "Invalid number of arguments."
-msgstr "Неверное количество аргументов."
-
-#: ../zathura/commands.c:446
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Не удалось сохранить приложенный файл «%s» в «%s»."
-
-#: ../zathura/commands.c:448
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr "Файл «%s» сохранён в «%s»."
-
-#: ../zathura/commands.c:492
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr "Изображение «%s» сохранено в «%s»."
-
-#: ../zathura/commands.c:494
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr "Не удалось записать изображение «%s» в «%s»."
-
-#: ../zathura/commands.c:501
-#, c-format
-msgid "Unknown image '%s'."
-msgstr "Неизвестное изображение «%s»."
-
-#: ../zathura/commands.c:505
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr "Неизвестное вложение или изображение «%s»."
-
-#: ../zathura/commands.c:562
-msgid "Argument must be a number."
-msgstr "Аргумент должен быть числом."
-
-#: ../zathura/page-widget.c:561
-msgid "Loading..."
-msgstr "Загрузка..."
-
-#: ../zathura/page-widget.c:1006
-msgid "Copy image"
-msgstr "Скопировать изображение"
-
-#: ../zathura/page-widget.c:1007
-msgid "Save image as"
-msgstr "Сохранить изображение как"
-
-#: ../zathura/main.c:56
-msgid "Reparents to window specified by xid"
-msgstr "Сменить материнское окно на окно, указанное в xid"
-
-#: ../zathura/main.c:58
-msgid "Path to the config directory"
-msgstr "Путь к каталогу с настройкой"
-
-#: ../zathura/main.c:59
-msgid "Path to the data directory"
-msgstr "Путь к каталогу с данными"
-
-#: ../zathura/main.c:60
-msgid "Path to the cache directory"
+msgid "Copied selected text to selection %s: %s"
 msgstr ""
-
-#: ../zathura/main.c:61
-msgid "Path to the directories containing plugins"
-msgstr "Путь к каталогу с плагинами"
-
-#: ../zathura/main.c:62
-msgid "Fork into the background"
-msgstr "Запустить в фоне"
-
-#: ../zathura/main.c:63
-msgid "Document password"
-msgstr "Пароль документа"
-
-#: ../zathura/main.c:64
-msgid "Page number to go to"
-msgstr "Перейти к странице номер"
-
-#: ../zathura/main.c:65
-msgid "Log level (debug, info, warning, error)"
-msgstr "Уровень журналирования (debug, info, warning, error)"
-
-#: ../zathura/main.c:66
-msgid "Print version information"
-msgstr "Показать информацию о файле"
-
-#: ../zathura/main.c:67
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Редактор для synctex (передаётся далее программе synctex)"
-
-#: ../zathura/main.c:68
-msgid "Move to given synctex position"
-msgstr "Перейти к указанному положению synctex"
-
-#: ../zathura/main.c:69
-msgid "Highlight given position in the given process"
-msgstr "Подсветка заданного положения в заданном процессе"
-
-#: ../zathura/main.c:70
-msgid "Start in a non-default mode"
-msgstr "Запустить в специальном режиме"
-
-#: ../zathura/links.c:203 ../zathura/links.c:282
-msgid "Failed to run xdg-open."
-msgstr "Не удалось запустить xdg-open"
-
-#: ../zathura/links.c:221
-#, c-format
-msgid "Link: page %d"
-msgstr "Ссылка: страница %d"
-
-#: ../zathura/links.c:228
-#, c-format
-msgid "Link: %s"
-msgstr "Ссылка: %s"
-
-#: ../zathura/links.c:232
-msgid "Link: Invalid"
-msgstr "Ссылка: неправильная"
-
-#: ../zathura/completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "Страница %d"
-
-#: ../zathura/completion.c:293
-msgid "Attachments"
-msgstr "Прикреплённые файлы"
-
-#. add images
-#: ../zathura/completion.c:324
-msgid "Images"
-msgstr "Изображения"
-
-#: ../zathura/shortcuts.c:1132
-msgid "This document does not contain any index"
-msgstr "В документе нет индекса"
 
 #. zathura settings
 #: ../zathura/config.c:144
@@ -570,7 +322,199 @@ msgstr "Подсветить результаты текущего поиска"
 msgid "Show version information"
 msgstr "Показать информацию о версии файла"
 
-#: ../zathura/zathura.c:204 ../zathura/zathura.c:1043
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:423 ../zathura/commands.c:550
+#: ../zathura/shortcuts.c:417 ../zathura/shortcuts.c:1227
+#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
+msgid "No document opened."
+msgstr "Нет открытых документов."
+
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:428
+msgid "Invalid number of arguments given."
+msgstr "Указано неверное число аргументов."
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Не могу создать закладку %s"
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Не удалось создать закладку %s"
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Закладка %s успешно обновлена"
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Закладка %s успешно создана"
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Закладка %s удалена"
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Не удалось удалить закладку %s"
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Закладки %s не существует"
+
+#: ../zathura/commands.c:162
+msgid "Title"
+msgstr "Заголовок"
+
+#: ../zathura/commands.c:163
+msgid "Author"
+msgstr "Автор"
+
+#: ../zathura/commands.c:164
+msgid "Subject"
+msgstr "Тема"
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr "Ключевые слова"
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr "Создатель"
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr "Производитель"
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr "Время создания"
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr "Время изменения"
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "Нет доступной информации."
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "Слишком много аргументов."
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "Отсутствуют аргументы."
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "Документ сохранён."
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "Не удалось сохранить документ."
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "Неверное количество аргументов."
+
+#: ../zathura/commands.c:447
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Не удалось сохранить приложенный файл «%s» в «%s»."
+
+#: ../zathura/commands.c:449
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Файл «%s» сохранён в «%s»."
+
+#: ../zathura/commands.c:493
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Изображение «%s» сохранено в «%s»."
+
+#: ../zathura/commands.c:495
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "Не удалось записать изображение «%s» в «%s»."
+
+#: ../zathura/commands.c:502
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "Неизвестное изображение «%s»."
+
+#: ../zathura/commands.c:506
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "Неизвестное вложение или изображение «%s»."
+
+#: ../zathura/commands.c:563
+msgid "Argument must be a number."
+msgstr "Аргумент должен быть числом."
+
+#: ../zathura/completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr "Страница %d"
+
+#: ../zathura/completion.c:293
+msgid "Attachments"
+msgstr "Прикреплённые файлы"
+
+#. add images
+#: ../zathura/completion.c:324
+msgid "Images"
+msgstr "Изображения"
+
+#: ../zathura/print.c:64 ../zathura/print.c:211
+#, c-format
+msgid "Printing failed: %s"
+msgstr "Не удалось напечатать %s"
+
+#: ../zathura/shortcuts.c:1137
+msgid "This document does not contain any index"
+msgstr "В документе нет индекса"
+
+#: ../zathura/links.c:203 ../zathura/links.c:282
+msgid "Failed to run xdg-open."
+msgstr "Не удалось запустить xdg-open"
+
+#: ../zathura/links.c:221
+#, c-format
+msgid "Link: page %d"
+msgstr "Ссылка: страница %d"
+
+#: ../zathura/links.c:228
+#, c-format
+msgid "Link: %s"
+msgstr "Ссылка: %s"
+
+#: ../zathura/links.c:232
+msgid "Link: Invalid"
+msgstr "Ссылка: неправильная"
+
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "Скопировать изображение"
+
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr "Сохранить изображение как"
+
+#: ../zathura/zathura.c:204 ../zathura/zathura.c:1051
 msgid "[No name]"
 msgstr "[Без названия]"
 
@@ -587,3 +531,59 @@ msgstr "Тип файла не поддерживается. Установит�
 #: ../zathura/zathura.c:589
 msgid "Document does not contain any pages"
 msgstr "В документе нет страниц"
+
+#: ../zathura/main.c:56
+msgid "Reparents to window specified by xid"
+msgstr "Сменить материнское окно на окно, указанное в xid"
+
+#: ../zathura/main.c:58
+msgid "Path to the config directory"
+msgstr "Путь к каталогу с настройкой"
+
+#: ../zathura/main.c:59
+msgid "Path to the data directory"
+msgstr "Путь к каталогу с данными"
+
+#: ../zathura/main.c:60
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:61
+msgid "Path to the directories containing plugins"
+msgstr "Путь к каталогу с плагинами"
+
+#: ../zathura/main.c:62
+msgid "Fork into the background"
+msgstr "Запустить в фоне"
+
+#: ../zathura/main.c:63
+msgid "Document password"
+msgstr "Пароль документа"
+
+#: ../zathura/main.c:64
+msgid "Page number to go to"
+msgstr "Перейти к странице номер"
+
+#: ../zathura/main.c:65
+msgid "Log level (debug, info, warning, error)"
+msgstr "Уровень журналирования (debug, info, warning, error)"
+
+#: ../zathura/main.c:66
+msgid "Print version information"
+msgstr "Показать информацию о файле"
+
+#: ../zathura/main.c:67
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr "Редактор для synctex (передаётся далее программе synctex)"
+
+#: ../zathura/main.c:68
+msgid "Move to given synctex position"
+msgstr "Перейти к указанному положению synctex"
+
+#: ../zathura/main.c:69
+msgid "Highlight given position in the given process"
+msgstr "Подсветка заданного положения в заданном процессе"
+
+#: ../zathura/main.c:70
+msgid "Start in a non-default mode"
+msgstr "Запустить в специальном режиме"

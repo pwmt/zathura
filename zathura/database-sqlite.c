@@ -611,7 +611,7 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
 
   if (sqlite3_step(stmt) != SQLITE_ROW) {
     sqlite3_finalize(stmt);
-    girara_info("No info for file %s available.", file);
+    girara_debug("No info for file %s available.", file);
     return false;
   }
 

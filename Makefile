@@ -12,7 +12,7 @@ LIBS     += $(SQLITE_LIB)
 SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE    = $(filter-out database-sqlite.c,$(OSOURCE))
+SOURCE    = $(filter-out ${PROJECT}/database-sqlite.c,$(OSOURCE))
 endif
 
 ifneq ($(WITH_MAGIC),0)
@@ -68,8 +68,8 @@ all: options ${PROJECT} po build-manpages
 # pkg-config based version checks
 .version-checks/%: config.mk
 	$(QUIET)test $($(*)_VERSION_CHECK) -eq 0 || \
-		pkg-config --atleast-version $($(*)_MIN_VERSION) $($(*)_PKG_CONFIG_NAME) || ( \
-		echo "The minium required version of $(*) is $($(*)_MIN_VERSION)" && \
+		${PKG_CONFIG} --atleast-version $($(*)_MIN_VERSION) $($(*)_PKG_CONFIG_NAME) || ( \
+		echo "The minimum required version of $(*) is $($(*)_MIN_VERSION)" && \
 		false \
 	)
 	@mkdir -p .version-checks
@@ -87,8 +87,8 @@ ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
 		-e 's/ZVREV/${ZATHURA_VERSION_REV}/' \
 		-e 's/ZVAPI/${ZATHURA_API_VERSION}/' \
-		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > version.h.tmp
-	$(QUIET)mv version.h.tmp ${PROJECT}/version.h
+		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > ${PROJECT}/version.h.tmp
+	$(QUIET)mv ${PROJECT}/version.h.tmp ${PROJECT}/version.h
 
 ${PROJECT}/dbus-interface-definitions.c: data/org.pwmt.zathura.xml
 	$(QUIET)echo '#include "dbus-interface-definitions.h"' > $@.tmp
@@ -143,8 +143,8 @@ ${BUILDDIR_DEBUG}/%.o: %.c
 ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}: ${OBJECTS_DEBUG}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_DEBUG}/${BINDIR}
-	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} \
-		-o ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT} ${OBJECTS} ${LIBS}
+	$(QUIET)${CC} ${LDFLAGS} \
+		-o ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT} ${OBJECTS_DEBUG} ${LIBS}
 
 debug: ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
@@ -166,8 +166,8 @@ ${BUILDDIR_GCOV}/%.o: %.c
 ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}: ${OBJECTS_GCOV}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_GCOV}/${BINDIR}
-	$(QUIET)${CC} ${SFLAGS} ${LDFLAGS} ${GCOV_CFLAGS} ${GCOV_LDFLAGS} \
-		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS} ${LIBS}
+	$(QUIET)${CC} ${LDFLAGS} ${GCOV_CFLAGS} ${GCOV_LDFLAGS} \
+		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS_GCOv} ${LIBS}
 
 gcov: options ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 	$(QUIET)${MAKE} -C tests run-gcov
@@ -188,8 +188,8 @@ clean:
 		${TARFILE} \
 		${TARDIR} \
 		${PROJECT}.pc \
-		version.h \
-		version.h.tmp \
+		${PROJECT}/version.h \
+		${PROJECT}/version.h.tmp \
 		${PROJECT}/dbus-interface-definitions.c \
 		${PROJECT}/dbus-interface-definitions.c.tmp \
 		${PROJECT}/css-definitions.c \
@@ -213,13 +213,13 @@ ${PROJECT}.pc: ${PROJECT}.pc.in config.mk
 
 valgrind: debug
 	 $(QUIET)G_SLICE=always-malloc G_DEBUG=gc-friendly ${VALGRIND} ${VALGRIND_ARGUMENTS} \
-		 ./${PROJECT}-debug
+		 ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 gdb: debug
-	$(QUIET)cgdb ${PROJECT}-debug
+	$(QUIET)cgdb ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 test: ${OBJECTS}
-	$(QUIET)make -C tests run
+	$(QUIET)$(MAKE) -C tests run
 
 dist: clean build-manpages
 	$(QUIET)tar -czf $(TARFILE) --exclude=.gitignore \
@@ -228,7 +228,7 @@ dist: clean build-manpages
 		doc/_build/$(PROJECT).1 doc/_build/$(PROJECT)rc.5
 
 doc:
-	$(QUIET)make -C doc
+	$(QUIET)$(MAKE) -C doc
 
 po:
 	$(QUIET)${MAKE} -C po
@@ -298,7 +298,7 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f $(DESTDIR)$(APPDATAPREFIX)/$(PROJECT).appdata.xml
 	$(MAKE) -C po uninstall
 
--include $(wildcard .depend/*.dep)
+-include $(wildcard ${DEPENDDIR}/*.dep)
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall \
 	test po install-headers uninstall-headers update-po install-manpages \

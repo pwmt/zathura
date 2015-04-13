@@ -94,14 +94,19 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   }
 
   plugin = zathura_plugin_manager_get_plugin(plugin_manager, content_type);
-  g_free((void*)content_type);
-  content_type = NULL;
 
   if (plugin == NULL) {
     girara_error("Unknown file type: '%s'", content_type);
     check_set_error(error, ZATHURA_ERROR_UNKNOWN);
+
+    g_free((void*)content_type);
+    content_type = NULL;
+
     goto error_free;
   }
+
+  g_free((void*)content_type);
+  content_type = NULL;
 
   document = g_try_malloc0(sizeof(zathura_document_t));
   if (document == NULL) {

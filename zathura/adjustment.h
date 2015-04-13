@@ -12,8 +12,10 @@
  * desired.
  *
  * @param document the document
- * @param height width the original height and width
- * @return page_height page_width the scaled and rotated height and width
+ * @param height the original height 
+ * @param width the original width
+ * @param page_height the scaled and rotated height 
+ * @param page_width the scaled and rotated width
  * @param rotate honor page's rotation
  * @return real scale after rounding
  */
@@ -26,8 +28,10 @@ double page_calc_height_width(zathura_document_t* document, double height, doubl
  * relative to the entire document.
  *
  * @param document the document
- * @param x y the x y coordinates on the unrotated page
- * @param xn yn the x y coordinates after rotation
+ * @param x the x coordinates on the unrotated page
+ * @param y the y coordinates on the unrotated page
+ * @param xn the x coordinates after rotation
+ * @param yn the y coordinates after rotation
  */
 void page_calc_position(zathura_document_t* document, double x, double y,
                         double *xn, double *yn);
@@ -36,7 +40,8 @@ void page_calc_position(zathura_document_t* document, double x, double y,
  * Converts a relative position within the document to a page number.
  *
  * @param document The document
- * @param pos_x pos_y the position relative to the document
+ * @param pos_x the x position relative to the document
+ * @param pos_y the y position relative to the document
  * @return page sitting in that position
  */
 unsigned int position_to_page_number(zathura_document_t* document,
@@ -54,8 +59,10 @@ unsigned int position_to_page_number(zathura_document_t* document,
  *
  * @param document The document
  * @param page_number the given page number
- * @param xalign yalign where to align the viewport and the page
- * @return pos_x pos_y position that will lie at the center of the viewport.
+ * @param xalign where to align the viewport and the page
+ * @param yalign where to align the viewport and the page
+ * @param pos_x position that will lie at the center of the viewport.
+ * @param pos_y position that will lie at the center of the viewport.
  */
 void page_number_to_position(zathura_document_t* document, unsigned int page_number,
                              double xalign, double yalign, double *pos_x, double *pos_y);

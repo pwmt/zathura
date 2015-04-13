@@ -2,14 +2,6 @@
 zathurarc
 =========
 
---------------------------
-zathura configuration file
---------------------------
-
-:Author: pwmt.org
-:Date: VERSION
-:Manual section: 5
-
 SYNOPSIS
 ========
 
@@ -79,6 +71,16 @@ the *zathurarc* file to make those changes permanent:
 ::
 
     map [mode] <binding> <shortcut function> <argument>
+
+include - Including another config file
+---------------------------------------
+This commands allows to include other configuration files. If a relative path is
+given, the path will be resolved relative to the configuration file that is
+currently processed.
+
+::
+
+    include another-config
 
 Mode
 ^^^^
@@ -651,6 +653,14 @@ values are "plain", "sqlite" (if built with sqlite support) and "null". If
 * Value type: String
 * Default value: plain
 
+dbus-service
+^^^^^^^^^^^^^^^^^^^
+En/Disables the D-Bus service. If the services is disabled, SyncTeX forward
+synchronization is not available.
+
+* Value type: Boolean
+* Default value: true
+
 incremental-search
 ^^^^^^^^^^^^^^^^^^
 En/Disables incremental search (search while typing).
@@ -926,13 +936,6 @@ Defines the command executed for SyncTeX backward synchronization.
 
 * Value type: String
 * Default value:
-
-syntex-dbus-service
-^^^^^^^^^^^^^^^^^^^
-En/Disables the D-Bus service required for SyncTeX forward synchronization.
-
-* Value type: Boolean
-* Default value: true
 
 index-fg
 ^^^^^^^^

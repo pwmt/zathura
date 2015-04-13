@@ -373,7 +373,8 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
     }
 
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    g_object_set(page_widget, "draw-links", FALSE, NULL);
+    GObject* obj_page_widget = G_OBJECT(page_widget);
+    g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
 
     zathura_renderer_lock(zathura->sync.render_thread);
     girara_list_t* result = zathura_page_search_text(page, input, &error);
@@ -381,7 +382,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
 
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);
-      g_object_set(page_widget, "search-results", NULL, NULL);
+      g_object_set(obj_page_widget, "search-results", NULL, NULL);
 
       if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
         break;
@@ -390,13 +391,13 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
       }
     }
 
-    g_object_set(page_widget, "search-results", result, NULL);
+    g_object_set(obj_page_widget, "search-results", result, NULL);
 
     if (argument->n == BACKWARD) {
       /* start at bottom hit in page */
-      g_object_set(page_widget, "search-current", girara_list_size(result) - 1, NULL);
+      g_object_set(obj_page_widget, "search-current", girara_list_size(result) - 1, NULL);
     } else {
-      g_object_set(page_widget, "search-current", 0, NULL);
+      g_object_set(obj_page_widget, "search-current", 0, NULL);
     }
   }
 

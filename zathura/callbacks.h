@@ -201,7 +201,7 @@ bool cb_unknown_command(girara_session_t* session, const char* input);
 /**
  * Emitted when text has been selected in the page widget
  *
- * @param widget page view widget
+ * @param page page view widget
  * @param text selected text
  * @param data user data
  */
