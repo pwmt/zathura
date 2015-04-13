@@ -6,7 +6,7 @@ PROJECT = zathura
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 3
-ZATHURA_VERSION_REV = 2
+ZATHURA_VERSION_REV = 3
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -18,7 +18,7 @@ VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_RE
 
 # girara
 GIRARA_VERSION_CHECK ?= 1
-GIRARA_MIN_VERSION = 0.2.3
+GIRARA_MIN_VERSION = 0.2.4
 GIRARA_PKG_CONFIG_NAME = girara-gtk3
 # glib
 GLIB_VERSION_CHECK ?= 1
