@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2014-11-08 12:31+0100\n"
+"POT-Creation-Date: 2015-04-13 19:42+0200\n"
 "PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: mankand007 <mankand007@gmail.com>\n"
 "Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
@@ -18,273 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../zathura/print.c:64 ../zathura/print.c:211
-#, c-format
-msgid "Printing failed: %s"
-msgstr ""
-
-#: ../zathura/callbacks.c:232
+#: ../zathura/callbacks.c:233
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: ../zathura/callbacks.c:309
+#: ../zathura/callbacks.c:310
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "கொடுக்கப்பட்ட உள்ளீடு(input) '%s' தவறு"
 
-#: ../zathura/callbacks.c:345
+#: ../zathura/callbacks.c:346
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "கொடுக்கப்பட்ட index '%s' தவறு"
 
-#: ../zathura/callbacks.c:584
+#: ../zathura/callbacks.c:588
 #, c-format
-msgid "Copied selected text to clipboard: %s"
+msgid "Copied selected text to selection %s: %s"
 msgstr ""
-
-#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
-#: ../zathura/commands.c:152 ../zathura/commands.c:268
-#: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:422 ../zathura/commands.c:549
-#: ../zathura/shortcuts.c:415 ../zathura/shortcuts.c:1222
-#: ../zathura/shortcuts.c:1251 ../zathura/shortcuts.c:1278
-msgid "No document opened."
-msgstr "எந்தக் ஆவணமும் திறக்கப்படவில்லை"
-
-#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:427
-msgid "Invalid number of arguments given."
-msgstr "கொடுக்கப்பட்ட arguments-களின் எண்ணிக்கை தவறு"
-
-#: ../zathura/commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
-
-#: ../zathura/commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
-
-#: ../zathura/commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Bookmark வெற்றிகரமாக நிகழ்நிலை(update) படுத்தப்பட்டது: %s"
-
-#: ../zathura/commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Bookmark வெற்றிகரமாக உருவாக்கப்பட்டது: %s"
-
-#: ../zathura/commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Bookmark அழிக்கப்பட்டது: %s"
-
-#: ../zathura/commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Bookmark-ஐ அழிக்க இயலவில்லை: %s"
-
-#: ../zathura/commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "அந்தப் பெயரில் எந்த bookmark-ம் இல்லை: %s"
-
-#: ../zathura/commands.c:162
-msgid "Title"
-msgstr ""
-
-#: ../zathura/commands.c:163
-msgid "Author"
-msgstr ""
-
-#: ../zathura/commands.c:164
-msgid "Subject"
-msgstr ""
-
-#: ../zathura/commands.c:165
-msgid "Keywords"
-msgstr ""
-
-#: ../zathura/commands.c:166
-msgid "Creator"
-msgstr ""
-
-#: ../zathura/commands.c:167
-msgid "Producer"
-msgstr ""
-
-#: ../zathura/commands.c:168
-msgid "Creation date"
-msgstr ""
-
-#: ../zathura/commands.c:169
-msgid "Modification date"
-msgstr ""
-
-#: ../zathura/commands.c:174 ../zathura/commands.c:196
-msgid "No information available."
-msgstr "எந்தத் தகவலும் இல்லை"
-
-#: ../zathura/commands.c:234
-msgid "Too many arguments."
-msgstr "Argumentகளின் எண்ணிக்கை மிகவும் அதிகம்"
-
-#: ../zathura/commands.c:245
-msgid "No arguments given."
-msgstr "எந்த argument-ம் தரப்படவில்லை"
-
-#: ../zathura/commands.c:304 ../zathura/commands.c:330
-msgid "Document saved."
-msgstr "கோப்பு சேமிக்கப்பட்டது"
-
-#: ../zathura/commands.c:306 ../zathura/commands.c:332
-msgid "Failed to save document."
-msgstr "ஆவணத்தை சேமிக்க இயலவில்லை"
-
-#: ../zathura/commands.c:309 ../zathura/commands.c:335
-msgid "Invalid number of arguments."
-msgstr "கொடுக்கப்பட்ட argument-களின் எண்ணிக்கை தவறு"
-
-#: ../zathura/commands.c:446
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:448
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:492
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:494
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:501
-#, c-format
-msgid "Unknown image '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:505
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:562
-msgid "Argument must be a number."
-msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
-
-#: ../zathura/page-widget.c:561
-msgid "Loading..."
-msgstr ""
-
-#: ../zathura/page-widget.c:1006
-msgid "Copy image"
-msgstr "படத்தை ஒரு பிரதியெடு"
-
-#: ../zathura/page-widget.c:1007
-msgid "Save image as"
-msgstr ""
-
-#: ../zathura/main.c:56
-msgid "Reparents to window specified by xid"
-msgstr ""
-
-#: ../zathura/main.c:58
-msgid "Path to the config directory"
-msgstr ""
-
-#: ../zathura/main.c:59
-msgid "Path to the data directory"
-msgstr ""
-
-#: ../zathura/main.c:60
-msgid "Path to the cache directory"
-msgstr ""
-
-#: ../zathura/main.c:61
-msgid "Path to the directories containing plugins"
-msgstr ""
-
-#: ../zathura/main.c:62
-msgid "Fork into the background"
-msgstr ""
-
-#: ../zathura/main.c:63
-msgid "Document password"
-msgstr ""
-
-#: ../zathura/main.c:64
-msgid "Page number to go to"
-msgstr ""
-
-#: ../zathura/main.c:65
-msgid "Log level (debug, info, warning, error)"
-msgstr ""
-
-#: ../zathura/main.c:66
-msgid "Print version information"
-msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
-
-#: ../zathura/main.c:67
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
-
-#: ../zathura/main.c:68
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../zathura/main.c:69
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../zathura/main.c:70
-msgid "Start in a non-default mode"
-msgstr ""
-
-#: ../zathura/links.c:203 ../zathura/links.c:282
-msgid "Failed to run xdg-open."
-msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
-
-#: ../zathura/links.c:221
-#, c-format
-msgid "Link: page %d"
-msgstr ""
-
-#: ../zathura/links.c:228
-#, c-format
-msgid "Link: %s"
-msgstr ""
-
-#: ../zathura/links.c:232
-msgid "Link: Invalid"
-msgstr ""
-
-#: ../zathura/completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr ""
-
-#: ../zathura/completion.c:293
-msgid "Attachments"
-msgstr "இணைப்புகளைச் சேமிக்கவும்"
-
-#. add images
-#: ../zathura/completion.c:324
-msgid "Images"
-msgstr ""
-
-#: ../zathura/shortcuts.c:1132
-msgid "This document does not contain any index"
-msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
 
 #. zathura settings
 #: ../zathura/config.c:144
@@ -565,7 +317,199 @@ msgstr ""
 msgid "Show version information"
 msgstr ""
 
-#: ../zathura/zathura.c:204 ../zathura/zathura.c:1043
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:423 ../zathura/commands.c:550
+#: ../zathura/shortcuts.c:417 ../zathura/shortcuts.c:1227
+#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
+msgid "No document opened."
+msgstr "எந்தக் ஆவணமும் திறக்கப்படவில்லை"
+
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:428
+msgid "Invalid number of arguments given."
+msgstr "கொடுக்கப்பட்ட arguments-களின் எண்ணிக்கை தவறு"
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Bookmark-ஐ உருவாக்க முடியவில்லை: %s"
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Bookmark வெற்றிகரமாக நிகழ்நிலை(update) படுத்தப்பட்டது: %s"
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Bookmark வெற்றிகரமாக உருவாக்கப்பட்டது: %s"
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Bookmark அழிக்கப்பட்டது: %s"
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Bookmark-ஐ அழிக்க இயலவில்லை: %s"
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "அந்தப் பெயரில் எந்த bookmark-ம் இல்லை: %s"
+
+#: ../zathura/commands.c:162
+msgid "Title"
+msgstr ""
+
+#: ../zathura/commands.c:163
+msgid "Author"
+msgstr ""
+
+#: ../zathura/commands.c:164
+msgid "Subject"
+msgstr ""
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr ""
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr ""
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr ""
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr ""
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr ""
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "எந்தத் தகவலும் இல்லை"
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "Argumentகளின் எண்ணிக்கை மிகவும் அதிகம்"
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "எந்த argument-ம் தரப்படவில்லை"
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "கோப்பு சேமிக்கப்பட்டது"
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "ஆவணத்தை சேமிக்க இயலவில்லை"
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "கொடுக்கப்பட்ட argument-களின் எண்ணிக்கை தவறு"
+
+#: ../zathura/commands.c:447
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:449
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:493
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:495
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:502
+#, c-format
+msgid "Unknown image '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:506
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:563
+msgid "Argument must be a number."
+msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
+
+#: ../zathura/completion.c:250
+#, c-format
+msgid "Page %d"
+msgstr ""
+
+#: ../zathura/completion.c:293
+msgid "Attachments"
+msgstr "இணைப்புகளைச் சேமிக்கவும்"
+
+#. add images
+#: ../zathura/completion.c:324
+msgid "Images"
+msgstr ""
+
+#: ../zathura/print.c:64 ../zathura/print.c:211
+#, c-format
+msgid "Printing failed: %s"
+msgstr ""
+
+#: ../zathura/shortcuts.c:1137
+msgid "This document does not contain any index"
+msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
+
+#: ../zathura/links.c:203 ../zathura/links.c:282
+msgid "Failed to run xdg-open."
+msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
+
+#: ../zathura/links.c:221
+#, c-format
+msgid "Link: page %d"
+msgstr ""
+
+#: ../zathura/links.c:228
+#, c-format
+msgid "Link: %s"
+msgstr ""
+
+#: ../zathura/links.c:232
+msgid "Link: Invalid"
+msgstr ""
+
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr ""
+
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "படத்தை ஒரு பிரதியெடு"
+
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr ""
+
+#: ../zathura/zathura.c:204 ../zathura/zathura.c:1051
 msgid "[No name]"
 msgstr "பெயரற்ற ஆவணம்"
 
@@ -579,4 +523,60 @@ msgstr ""
 
 #: ../zathura/zathura.c:589
 msgid "Document does not contain any pages"
+msgstr ""
+
+#: ../zathura/main.c:56
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../zathura/main.c:58
+msgid "Path to the config directory"
+msgstr ""
+
+#: ../zathura/main.c:59
+msgid "Path to the data directory"
+msgstr ""
+
+#: ../zathura/main.c:60
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:61
+msgid "Path to the directories containing plugins"
+msgstr ""
+
+#: ../zathura/main.c:62
+msgid "Fork into the background"
+msgstr ""
+
+#: ../zathura/main.c:63
+msgid "Document password"
+msgstr ""
+
+#: ../zathura/main.c:64
+msgid "Page number to go to"
+msgstr ""
+
+#: ../zathura/main.c:65
+msgid "Log level (debug, info, warning, error)"
+msgstr ""
+
+#: ../zathura/main.c:66
+msgid "Print version information"
+msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
+
+#: ../zathura/main.c:67
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../zathura/main.c:68
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:69
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:70
+msgid "Start in a non-default mode"
 msgstr ""
