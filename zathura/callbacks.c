@@ -622,7 +622,7 @@ cb_page_widget_link(ZathuraPage* page, void* data)
   bool enter = (bool) data;
 
   GdkWindow* window = gtk_widget_get_parent_window(GTK_WIDGET(page));
-  GdkCursor* cursor = gdk_cursor_new(enter == true ? GDK_HAND1 : GDK_LEFT_PTR);
+  GdkCursor* cursor = gdk_cursor_new_for_display(gdk_display_get_default(), enter == true ? GDK_HAND1 : GDK_LEFT_PTR);
   gdk_window_set_cursor(window, cursor);
   g_object_unref(cursor);
 }
