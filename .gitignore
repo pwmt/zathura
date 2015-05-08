@@ -24,12 +24,9 @@ zathura-*.tar.gz
 # build dirs
 .depend
 .tx
+build/
 gcov/
 doc/_build
-
-# binaries
-zathura
-zathura-debug
 
 # version file
 version.h
