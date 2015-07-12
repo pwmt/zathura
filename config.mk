@@ -102,13 +102,16 @@ endif
 INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
 LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
 
-# flags
+# pre-processor flags
+CPPFLAGS += -D_FILE_OFFSET_BITS=64
+
+# compiler flags
 CFLAGS += -std=c11 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
 
 # debug
 DFLAGS ?= -g
 
-# ld
+# linker flags
 LDFLAGS += -rdynamic
 
 # compiler
