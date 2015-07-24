@@ -820,6 +820,28 @@ Defines if the last/first page should be wrapped
 * Value type: Boolean
 * Default value: false
 
+
+show-directories
+^^^^^^^^^^^^^^^^
+Defines if the directories should be displayed in completion.
+
+* Value type: Boolean
+* Default value: true
+
+show-hidden
+^^^^^^^^^^^
+Defines if hidden files and directories should be displayed in completion.
+
+* Value type: Boolean
+* Default value: false
+
+show-recent
+^^^^^^^^^^^
+Defines if recent files should be displayed in completion.
+
+* Value type: Boolean
+* Default value: true
+
 scroll-page-aware
 ^^^^^^^^^^^^^^^^^
 Defines if scrolling by half or full pages stops at page boundaries.

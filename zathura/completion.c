@@ -12,6 +12,7 @@
 #include "completion.h"
 #include "utils.h"
 #include "page.h"
+#include "database.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -32,7 +33,7 @@ compare_case_insensitive(const char* str1, const char* str2)
 
 static girara_list_t*
 list_files(zathura_t* zathura, const char* current_path, const char* current_file,
-           unsigned int current_file_length, bool is_dir, bool check_file_ext)
+           size_t current_file_length, bool is_dir, bool check_file_ext)
 {
   if (zathura == NULL || zathura->ui.session == NULL || current_path == NULL) {
     return NULL;
@@ -113,15 +114,20 @@ error_free:
 }
 
 static girara_completion_t*
-list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext)
+list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, bool include_history)
 {
   girara_completion_t* completion  = girara_completion_init();
-  girara_completion_group_t* group = girara_completion_group_create(zathura->ui.session, NULL);
+  girara_completion_group_t* group = girara_completion_group_create(zathura->ui.session, "files");
+  girara_completion_group_t* history_group = NULL;
 
   gchar* path         = NULL;
   gchar* current_path = NULL;
 
-  if (completion == NULL || group == NULL) {
+  if (include_history == true) {
+    history_group = girara_completion_group_create(zathura->ui.session, "recent files");
+  }
+
+  if (completion == NULL || group == NULL || (include_history == true && history_group == NULL)) {
     goto error_free;
   }
 
@@ -169,12 +175,12 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext)
 
   /* get current file */
   gchar* current_file     = is_dir ? "" : basename(path);
-  int current_file_length = strlen(current_file);
+  const size_t current_file_length = strlen(current_file);
 
   /* read directory */
   if (g_file_test(current_path, G_FILE_TEST_IS_DIR) == TRUE) {
     girara_list_t* names = list_files(zathura, current_path, current_file, current_file_length, is_dir, check_file_ext);
-    if (!names) {
+    if (names == NULL) {
       goto error_free;
     }
 
@@ -184,10 +190,26 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext)
     girara_list_free(names);
   }
 
+  if (include_history == true) {
+    girara_list_t* recent_files = zathura_db_get_recent_files(zathura->database);
+    if (recent_files == NULL) {
+      goto error_free;
+    }
+
+    const size_t path_len = strlen(path);
+    GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
+      if (strncmp(path, file, path_len) == 0) {
+        girara_completion_group_add_element(history_group, file, NULL);
+      }
+    GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
+    girara_list_free(recent_files);
+  }
+
   g_free(path);
   g_free(current_path);
 
   girara_completion_add_group(completion, group);
+  girara_completion_add_group(completion, history_group);
 
   return completion;
 
@@ -195,6 +217,9 @@ error_free:
 
   if (completion) {
     girara_completion_free(completion);
+  }
+  if (history_group) {
+    girara_completion_group_free(history_group);
   }
   if (group) {
     girara_completion_group_free(group);
@@ -213,7 +238,10 @@ cc_open(girara_session_t* session, const char* input)
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
 
-  return list_files_for_cc(zathura, input, true);
+  bool show_recent = true;
+  girara_setting_get(zathura->ui.session, "show-recent", &show_recent);
+
+  return list_files_for_cc(zathura, input, true, show_recent);
 }
 
 girara_completion_t*
@@ -223,7 +251,7 @@ cc_write(girara_session_t* session, const char* input)
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
 
-  return list_files_for_cc(zathura, input, false);
+  return list_files_for_cc(zathura, input, false, false);
 }
 
 girara_completion_t*
