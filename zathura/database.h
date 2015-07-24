@@ -50,6 +50,8 @@ struct _ZathuraDatabaseInterface
   bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
 
   bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
+
+  girara_list_t* (*get_recent_files)(ZathuraDatabase* db);
 };
 
 GType zathura_database_get_type(void);
@@ -127,5 +129,14 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
  */
 bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
     zathura_fileinfo_t* file_info);
+
+/* Get a list of recent files from the database. The most recent file is listed
+ * first.
+ *
+ * @param db The database instance
+ * @return list of files
+ */
+girara_list_t* zathura_db_get_recent_files(zathura_database_t* db);
+
 
 #endif // DATABASE_H
