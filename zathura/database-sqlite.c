@@ -28,6 +28,7 @@ static bool           sqlite_get_fileinfo(zathura_database_t* db, const char* fi
 static void           sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void           sqlite_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db);
+static girara_list_t* sqlite_get_recent_files(zathura_database_t* db);
 
 typedef struct zathura_sqldatabase_private_s {
   sqlite3* session;
@@ -45,13 +46,14 @@ static void
 zathura_database_interface_init(ZathuraDatabaseInterface* iface)
 {
   /* initialize interface */
-  iface->add_bookmark    = sqlite_add_bookmark;
-  iface->remove_bookmark = sqlite_remove_bookmark;
-  iface->load_bookmarks  = sqlite_load_bookmarks;
-  iface->load_jumplist   = sqlite_load_jumplist;
-  iface->save_jumplist   = sqlite_save_jumplist;
-  iface->set_fileinfo    = sqlite_set_fileinfo;
-  iface->get_fileinfo    = sqlite_get_fileinfo;
+  iface->add_bookmark     = sqlite_add_bookmark;
+  iface->remove_bookmark  = sqlite_remove_bookmark;
+  iface->load_bookmarks   = sqlite_load_bookmarks;
+  iface->load_jumplist    = sqlite_load_jumplist;
+  iface->save_jumplist    = sqlite_save_jumplist;
+  iface->set_fileinfo     = sqlite_set_fileinfo;
+  iface->get_fileinfo     = sqlite_get_fileinfo;
+  iface->get_recent_files = sqlite_get_recent_files;
 }
 
 static void
@@ -148,7 +150,8 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "pages_per_row INTEGER,"
     "first_page_column INTEGER,"
     "position_x FLOAT,"
-    "position_y FLOAT"
+    "position_y FLOAT,"
+    "time TIMESTAMP"
     ");";
 
   /* create history table */
@@ -174,6 +177,10 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   /* update fileinfo table (part 2) */
   static const char SQL_FILEINFO_ALTER2[] =
     "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
+
+  /* update fileinfo table (part 2) */
+  static const char SQL_FILEINFO_ALTER3[] =
+    "ALTER TABLE fileinfo ADD COLUMN time TIMESTAMP;";
 
   /* update bookmark table */
   static const char SQL_BOOKMARK_ALTER[] =
@@ -212,6 +219,15 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   if (ret1 == true && res1 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout");
+    }
+  }
+
+  ret1 = check_column(session, "fileinfo", "time", &res1);
+
+  if (ret1 == true && res1 == false) {
+    girara_debug("old database table layout detected; updating ...");
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
@@ -558,7 +574,7 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, scale, rotation, pages_per_row, first_page_column, position_x, position_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    "REPLACE INTO fileinfo (file, page, offset, scale, rotation, pages_per_row, first_page_column, position_x, position_y, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'));";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
@@ -677,3 +693,28 @@ sqlite_io_read(GiraraInputHistoryIO* db)
   return list;
 }
 
+static girara_list_t*
+sqlite_get_recent_files(zathura_database_t* db)
+{
+  static const char SQL_HISTORY_GET[] =
+    "SELECT file FROM fileinfo ORDER BY time DESC";
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_GET);
+  if (stmt == NULL) {
+    return NULL;
+  }
+
+  girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);
+  if (list == NULL) {
+    sqlite3_finalize(stmt);
+    return NULL;
+  }
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    girara_list_append(list, g_strdup((const char*) sqlite3_column_text(stmt, 0)));
+  }
+
+  sqlite3_finalize(stmt);
+  return list;
+}
