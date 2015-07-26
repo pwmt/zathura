@@ -114,7 +114,7 @@ error_free:
 }
 
 static girara_completion_t*
-list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, bool include_history)
+list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, int show_recent)
 {
   girara_completion_t* completion  = girara_completion_init();
   girara_completion_group_t* group = girara_completion_group_create(zathura->ui.session, "files");
@@ -123,11 +123,11 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, bo
   gchar* path         = NULL;
   gchar* current_path = NULL;
 
-  if (include_history == true) {
+  if (show_recent > 0) {
     history_group = girara_completion_group_create(zathura->ui.session, "recent files");
   }
 
-  if (completion == NULL || group == NULL || (include_history == true && history_group == NULL)) {
+  if (completion == NULL || group == NULL || (show_recent > 0 && history_group == NULL)) {
     goto error_free;
   }
 
@@ -190,8 +190,8 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, bo
     girara_list_free(names);
   }
 
-  if (include_history == true) {
-    girara_list_t* recent_files = zathura_db_get_recent_files(zathura->database);
+  if (show_recent > 0) {
+    girara_list_t* recent_files = zathura_db_get_recent_files(zathura->database, show_recent);
     if (recent_files == NULL) {
       goto error_free;
     }
@@ -208,8 +208,10 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, bo
   g_free(path);
   g_free(current_path);
 
+  if (history_group != NULL) {
+    girara_completion_add_group(completion, history_group);
+  }
   girara_completion_add_group(completion, group);
-  girara_completion_add_group(completion, history_group);
 
   return completion;
 
@@ -238,7 +240,7 @@ cc_open(girara_session_t* session, const char* input)
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
 
-  bool show_recent = true;
+  int show_recent = 0;
   girara_setting_get(zathura->ui.session, "show-recent", &show_recent);
 
   return list_files_for_cc(zathura, input, true, show_recent);

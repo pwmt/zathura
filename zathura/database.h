@@ -51,7 +51,7 @@ struct _ZathuraDatabaseInterface
 
   bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
 
-  girara_list_t* (*get_recent_files)(ZathuraDatabase* db);
+  girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max);
 };
 
 GType zathura_database_get_type(void);
@@ -134,9 +134,11 @@ bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
  * first.
  *
  * @param db The database instance
+ * @param max The maximum number of recent files. If max is less than zero, now
+ * limit is applied.
  * @return list of files
  */
-girara_list_t* zathura_db_get_recent_files(zathura_database_t* db);
+girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max);
 
 
 #endif // DATABASE_H

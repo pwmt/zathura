@@ -837,10 +837,12 @@ Defines if hidden files and directories should be displayed in completion.
 
 show-recent
 ^^^^^^^^^^^
-Defines if recent files should be displayed in completion.
+Defines the number of recent files that should be displayed in completion.
+If the value is negative, no upper bounds are applied. If the value is 0, no
+recent files are shown.
 
-* Value type: Boolean
-* Default value: true
+* Value type: Integer
+* Default value: 10
 
 scroll-page-aware
 ^^^^^^^^^^^^^^^^^

@@ -28,7 +28,7 @@ static bool           sqlite_get_fileinfo(zathura_database_t* db, const char* fi
 static void           sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void           sqlite_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db);
-static girara_list_t* sqlite_get_recent_files(zathura_database_t* db);
+static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max);
 
 typedef struct zathura_sqldatabase_private_s {
   sqlite3* session;
@@ -694,15 +694,25 @@ sqlite_io_read(GiraraInputHistoryIO* db)
 }
 
 static girara_list_t*
-sqlite_get_recent_files(zathura_database_t* db)
+sqlite_get_recent_files(zathura_database_t* db, int max)
 {
   static const char SQL_HISTORY_GET[] =
-    "SELECT file FROM fileinfo ORDER BY time DESC";
+    "SELECT file FROM fileinfo ORDER BY time DESC LIMIT ?";
 
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_GET);
   if (stmt == NULL) {
     return NULL;
+  }
+
+  if (max < 0) {
+    max = INT_MAX;
+  }
+
+  if (sqlite3_bind_int(stmt, 1, max) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    girara_error("Failed to bind arguments.");
+    return false;
   }
 
   girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);

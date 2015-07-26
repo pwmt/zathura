@@ -70,9 +70,9 @@ zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
 }
 
 girara_list_t*
-zathura_db_get_recent_files(zathura_database_t* db)
+zathura_db_get_recent_files(zathura_database_t* db, int max)
 {
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db), NULL);
 
-  return ZATHURA_DATABASE_GET_INTERFACE(db)->get_recent_files(db);
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->get_recent_files(db, max);
 }

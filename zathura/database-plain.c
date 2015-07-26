@@ -63,7 +63,7 @@ static bool           plain_get_fileinfo(zathura_database_t* db, const char* fil
 static void           plain_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void           plain_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* plain_io_read(GiraraInputHistoryIO* db);
-static girara_list_t* plain_get_recent_files(zathura_database_t* db);
+static girara_list_t* plain_get_recent_files(zathura_database_t* db, int max);
 
 /* forward declaration */
 static bool           zathura_db_check_file(const char* path);
@@ -853,7 +853,7 @@ compare_time(const void* l, const void* r, void* data)
 }
 
 static girara_list_t*
-plain_get_recent_files(zathura_database_t* db)
+plain_get_recent_files(zathura_database_t* db, int max)
 {
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
 
@@ -867,6 +867,10 @@ plain_get_recent_files(zathura_database_t* db)
 
   if (groups_size > 0) {
     g_qsort_with_data(groups, groups_size, sizeof(gchar*), compare_time, priv->history);
+  }
+
+  if (max >= 0 && (gsize) max < groups_size) {
+    groups_size = max;
   }
 
   for (gsize s = 0; s != groups_size; ++s) {
