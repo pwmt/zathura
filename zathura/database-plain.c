@@ -830,8 +830,8 @@ plain_io_append(GiraraInputHistoryIO* db, const char* input)
 static int
 compare_time(const void* l, const void* r, void* data)
 {
-  const gchar* lhs = l;
-  const gchar* rhs = r;
+  const gchar* lhs = *(const gchar**) l;
+  const gchar* rhs = *(const gchar**) r;
   GKeyFile* keyfile = data;
 
   time_t lhs_time = 0;
@@ -874,8 +874,9 @@ plain_get_recent_files(zathura_database_t* db, int max)
   }
 
   for (gsize s = 0; s != groups_size; ++s) {
-    girara_list_append(result, groups[s]);
+    girara_list_append(result, g_strdup(groups[s]));
   }
+  g_strfreev(groups);
 
   return result;
 }
