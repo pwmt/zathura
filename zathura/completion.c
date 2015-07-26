@@ -196,13 +196,18 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
       goto error_free;
     }
 
-    const size_t path_len = strlen(path);
-    GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
-      if (strncmp(path, file, path_len) == 0) {
-        girara_completion_group_add_element(history_group, file, NULL);
-      }
-    GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
-    girara_list_free(recent_files);
+    if (girara_list_size(recent_files) != 0) {
+      const size_t path_len = strlen(path);
+      GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
+        if (strncmp(path, file, path_len) == 0) {
+          girara_completion_group_add_element(history_group, file, NULL);
+        }
+      GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
+      girara_list_free(recent_files);
+    } else {
+      girara_completion_group_free(history_group);
+      history_group = NULL;
+    }
   }
 
   g_free(path);

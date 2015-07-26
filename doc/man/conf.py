@@ -2,11 +2,25 @@
 #
 # See LICENSE file for license and copyright information
 
+import os.path
+import glob
+import time
+
+dirname = os.path.dirname(__file__)
+files = glob.glob(os.path.join(dirname, '*.rst'))
+files.extend(glob.glob(os.path.join(dirname, '*.txt')))
+
+maxdate = 0
+for path in files:
+    s = os.stat(path)
+    maxdate = max(maxdate, s.st_mtime)
+
 # -- General configuration ------------------------------------------------
 
 source_suffix  = '.rst'
 master_doc     = 'zathura.1'
 templates_path = ['_templates']
+today          = time.strftime('%Y-%m-%d', time.gmtime(maxdate))
 
 # -- Project configuration ------------------------------------------------
 
