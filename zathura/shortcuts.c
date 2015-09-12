@@ -1240,6 +1240,10 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
   }
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
+  /* if switching from/to double page layout, set first page column as well */
+  if (value <= 2) {
+    girara_setting_set(zathura->ui.session, "first-page-column", &value);
+  }
   adjust_view(zathura);
 
   return true;
