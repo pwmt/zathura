@@ -1122,8 +1122,6 @@ statusbar_page_number_update(zathura_t* zathura)
     girara_setting_get(zathura->ui.session, "window-title-page", &page_number_in_window_title);
 
     if (page_number_in_window_title == true) {
-      bool basename_only = false;
-      girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
       char* title = g_strdup_printf("%s %s",
         get_window_title_filename(zathura, zathura_document_get_path(zathura->document)),
         page_number_text);
