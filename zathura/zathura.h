@@ -278,6 +278,8 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
  */
 void zathura_set_argv(zathura_t* zathura, char** argv);
 
+const char* get_window_title_filename(zathura_t* zathura, const char* file_path);
+
 /**
  * Opens a file
  *

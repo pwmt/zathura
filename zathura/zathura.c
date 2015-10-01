@@ -546,6 +546,38 @@ document_info_open(gpointer data)
   return FALSE;
 }
 
+const char*
+get_window_title_filename(zathura_t* zathura, const char* file_path)
+{
+  bool basename_only = false;
+  girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+  if (basename_only == false) {
+    bool home_tilde = false;
+    girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
+    if (home_tilde) {
+      char *home = getenv("HOME");
+      int home_len = home ? strlen(home) : 0;
+      int file_path_len = file_path ? strlen(file_path) : 0;
+
+      if (home_len > 1 && strncmp(home, file_path, home_len) == 0 && (!file_path[home_len] || file_path[home_len] == '/')) {
+        // Length should be total length of path - length of $HOME + 1 for '~' + 1 for '\0'
+        int tlen = file_path_len - home_len + 2;
+        char *tdir = malloc(sizeof(char) * tlen);
+        strncpy(tdir + 1, file_path + home_len, tlen);
+        tdir[0] = '~';
+        tdir[tlen - 1] = '\0';
+        return tdir;
+      } else {
+        return file_path;
+      }
+    } else {
+      return file_path;
+    }
+  } else {
+    return zathura_document_get_basename(zathura->document);
+  }
+}
+
 bool
 document_open(zathura_t* zathura, const char* path, const char* password,
               int page_number)
@@ -838,13 +870,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* update title */
-  basename_only = false;
-  girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
-  if (basename_only == false) {
-    girara_set_window_title(zathura->ui.session, file_path);
-  } else {
-    girara_set_window_title(zathura->ui.session, zathura_document_get_basename(document));
-  }
+  girara_set_window_title(zathura->ui.session, get_window_title_filename(zathura, file_path));
 
   g_free(file_uri);
 
