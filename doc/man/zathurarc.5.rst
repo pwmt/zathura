@@ -980,7 +980,6 @@ Define the background color of the selected element in index mode.
 * Default value: #9FBC00
 
 
-
 SEE ALSO
 ========
 
