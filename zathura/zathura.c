@@ -580,20 +580,14 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
         tdir[tlen - 1] = '\0';
         return tdir;
       } else {
-        char* path = g_try_malloc(sizeof(char) * strlen(file_path));
-        strncpy(path, file_path, file_path_len);
-        return path;
+        return g_strdup(file_path);
       }
     } else {
-      char* path = g_try_malloc(sizeof(char) * strlen(file_path));
-      strncpy(path, file_path, file_path_len);
-      return path;
+      return g_strdup(file_path);
     }
   } else {
     const char* basename = zathura_document_get_basename(zathura->document);
-    char* basename_copy = g_try_malloc(sizeof(char) * strlen(basename));
-    strncpy(basename_copy, basename, strlen(basename));
-    return basename_copy;
+    return g_strdup(basename);
   }
 }
 
