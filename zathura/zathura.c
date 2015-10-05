@@ -547,13 +547,24 @@ document_info_open(gpointer data)
 }
 
 const char*
-get_window_title_filename(zathura_t* zathura, const char* file_path)
+get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar)
 {
   bool basename_only = false;
-  girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+  if (statusbar) {
+    girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+  } else {
+    girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
+  }
+
   if (basename_only == false) {
+
     bool home_tilde = false;
-    girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
+    if (statusbar) {
+      girara_setting_get(zathura->ui.session, "statusbar-home-tilde", &home_tilde);
+    } else {
+      girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
+    }
+
     if (home_tilde) {
       char *home = getenv("HOME");
       size_t home_len = home ? strlen(home) : 0;
@@ -697,13 +708,8 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura->bisect.end = number_of_pages - 1;
 
   /* update statusbar */
-  bool basename_only = false;
-  girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
-  if (basename_only == false) {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
-  } else {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_basename(document));
-  }
+  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file,
+      get_formatted_filename(zathura, file_path, true));
 
   /* install file monitor */
   file_uri = g_filename_to_uri(file_path, NULL, NULL);
@@ -870,7 +876,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* update title */
-  girara_set_window_title(zathura->ui.session, get_window_title_filename(zathura, file_path));
+  girara_set_window_title(zathura->ui.session, get_formatted_filename(zathura, file_path, false));
 
   g_free(file_uri);
 
@@ -1123,7 +1129,7 @@ statusbar_page_number_update(zathura_t* zathura)
 
     if (page_number_in_window_title == true) {
       char* title = g_strdup_printf("%s %s",
-        get_window_title_filename(zathura, zathura_document_get_path(zathura->document)),
+        get_formatted_filename(zathura, zathura_document_get_path(zathura->document), false),
         page_number_text);
       girara_set_window_title(zathura->ui.session, title);
       g_free(title);

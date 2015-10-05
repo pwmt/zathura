@@ -863,6 +863,13 @@ Use basename of the file in the window title.
 * Value type: Boolean
 * Default value: false
 
+window-title-home-tilde
+^^^^^^^^^^^^^^^^^^^^^^^
+Display a short version of the file path, which replaces $HOME with ~, in the window title.
+
+* Value type: Boolean
+* Default value: false
+
 window-title-page
 ^^^^^^^^^^^^^^^^^
 Display the page number in the window title.
@@ -873,6 +880,13 @@ Display the page number in the window title.
 statusbar-basename
 ^^^^^^^^^^^^^^^^^^
 Use basename of the file in the statusbar.
+
+* Value type: Boolean
+* Default value: false
+
+statusbar-home-tilde
+^^^^^^^^^^^^^^^^^^^^
+Display a short version of the file path, which replaces $HOME with ~, in the statusbar.
 
 * Value type: Boolean
 * Default value: false
@@ -965,13 +979,6 @@ Define the background color of the selected element in index mode.
 * Value type: String
 * Default value: #9FBC00
 
-window-title-home-tilde
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Display a short version of the file path, which replaces $HOME with ~, in the window title.
-
-* Value type: Boolean
-* Default value: false
 
 
 SEE ALSO

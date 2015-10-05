@@ -278,7 +278,15 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
  */
 void zathura_set_argv(zathura_t* zathura, char** argv);
 
-const char* get_window_title_filename(zathura_t* zathura, const char* file_path);
+/**
+ * Returns the filename formatted according to the user config.
+ * Takes into account the basename setting and the home-tilde setting.
+ *
+ * @param zatura The zathura session
+ * @param file_path The filename to be formatted
+ * @param statusbar True if for statusbar, false if for window title
+ */
+const char* get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar);
 
 /**
  * Opens a file
