@@ -546,7 +546,7 @@ document_info_open(gpointer data)
   return FALSE;
 }
 
-const char*
+char*
 get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar)
 {
   bool basename_only = false;
@@ -565,10 +565,11 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
       girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
     }
 
+    size_t file_path_len = file_path ? strlen(file_path) : 0;
+
     if (home_tilde) {
-      char *home = getenv("HOME");
+      char *home = girara_get_home_directory(NULL);
       size_t home_len = home ? strlen(home) : 0;
-      size_t file_path_len = file_path ? strlen(file_path) : 0;
 
       if (home_len > 1 && strncmp(home, file_path, home_len) == 0 && (!file_path[home_len] || file_path[home_len] == '/')) {
         // Length should be total length of path - length of $HOME + 1 for '~' + 1 for '\0'
@@ -579,13 +580,20 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
         tdir[tlen - 1] = '\0';
         return tdir;
       } else {
-        return file_path;
+        char* path = g_try_malloc(sizeof(char) * strlen(file_path));
+        strncpy(path, file_path, file_path_len);
+        return path;
       }
     } else {
-      return file_path;
+      char* path = g_try_malloc(sizeof(char) * strlen(file_path));
+      strncpy(path, file_path, file_path_len);
+      return path;
     }
   } else {
-    return zathura_document_get_basename(zathura->document);
+    const char* basename = zathura_document_get_basename(zathura->document);
+    char* basename_copy = g_try_malloc(sizeof(char) * strlen(basename));
+    strncpy(basename_copy, basename, strlen(basename));
+    return basename_copy;
   }
 }
 
@@ -708,8 +716,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura->bisect.end = number_of_pages - 1;
 
   /* update statusbar */
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file,
-      get_formatted_filename(zathura, file_path, true));
+  char* filename = get_formatted_filename(zathura, file_path, true);
+  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, filename);
+  g_free(filename);
 
   /* install file monitor */
   file_uri = g_filename_to_uri(file_path, NULL, NULL);
@@ -876,7 +885,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* update title */
-  girara_set_window_title(zathura->ui.session, get_formatted_filename(zathura, file_path, false));
+  char* formatted_filename = get_formatted_filename(zathura, file_path, false);
+  girara_set_window_title(zathura->ui.session, formatted_filename);
+  g_free(formatted_filename);
 
   g_free(file_uri);
 
@@ -1128,11 +1139,11 @@ statusbar_page_number_update(zathura_t* zathura)
     girara_setting_get(zathura->ui.session, "window-title-page", &page_number_in_window_title);
 
     if (page_number_in_window_title == true) {
-      char* title = g_strdup_printf("%s %s",
-        get_formatted_filename(zathura, zathura_document_get_path(zathura->document), false),
-        page_number_text);
+      char* filename = get_formatted_filename(zathura, zathura_document_get_path(zathura->document), false);
+      char* title = g_strdup_printf("%s %s", filename, page_number_text);
       girara_set_window_title(zathura->ui.session, title);
       g_free(title);
+      g_free(filename);
     }
 
     g_free(page_number_text);

@@ -286,7 +286,7 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  * @param file_path The filename to be formatted
  * @param statusbar True if for statusbar, false if for window title
  */
-const char* get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar);
+char* get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar);
 
 /**
  * Opens a file
