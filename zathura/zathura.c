@@ -556,13 +556,13 @@ get_window_title_filename(zathura_t* zathura, const char* file_path)
     girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
     if (home_tilde) {
       char *home = getenv("HOME");
-      int home_len = home ? strlen(home) : 0;
-      int file_path_len = file_path ? strlen(file_path) : 0;
+      size_t home_len = home ? strlen(home) : 0;
+      size_t file_path_len = file_path ? strlen(file_path) : 0;
 
       if (home_len > 1 && strncmp(home, file_path, home_len) == 0 && (!file_path[home_len] || file_path[home_len] == '/')) {
         // Length should be total length of path - length of $HOME + 1 for '~' + 1 for '\0'
         int tlen = file_path_len - home_len + 2;
-        char *tdir = malloc(sizeof(char) * tlen);
+        char *tdir = g_try_malloc(sizeof(char) * tlen);
         strncpy(tdir + 1, file_path + home_len, tlen);
         tdir[0] = '~';
         tdir[tlen - 1] = '\0';
