@@ -74,9 +74,9 @@ the *zathurarc* file to make those changes permanent:
 
 include - Including another config file
 ---------------------------------------
-This commands allows to include other configuration files. If a relative path is
-given, the path will be resolved relative to the configuration file that is
-currently processed.
+This commands allows one to include other configuration files. If a relative
+path is given, the path will be resolved relative to the configuration file that
+is currently processed.
 
 ::
 
