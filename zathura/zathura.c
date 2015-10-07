@@ -576,13 +576,7 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
           && g_str_has_prefix(file_path, home)
           && (!file_path[home_len] || file_path[home_len] == '/')) {
 
-        size_t remaining_len = file_path_len - home_len;
-
-        GString* remaining_path = g_string_new_len(&file_path[home_len], remaining_len);
-        char* tilde_path = g_strdup_printf("~%s", remaining_path->str);
-        g_string_free(remaining_path, true);
-
-        return tilde_path;
+        return g_strdup_printf("~%s", &file_path[home_len]);
       } else {
         return g_strdup(file_path);
       }
