@@ -571,14 +571,18 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
       char *home = girara_get_home_directory(NULL);
       size_t home_len = home ? strlen(home) : 0;
 
-      if (home_len > 1 && strncmp(home, file_path, home_len) == 0 && (!file_path[home_len] || file_path[home_len] == '/')) {
-        // Length should be total length of path - length of $HOME + 1 for '~' + 1 for '\0'
-        int tlen = file_path_len - home_len + 2;
-        char *tdir = g_try_malloc(sizeof(char) * tlen);
-        strncpy(tdir + 1, file_path + home_len, tlen);
-        tdir[0] = '~';
-        tdir[tlen - 1] = '\0';
-        return tdir;
+      if (home_len > 1
+          && file_path_len >= home_len
+          && g_str_has_prefix(file_path, home)
+          && (!file_path[home_len] || file_path[home_len] == '/')) {
+
+        size_t remaining_len = file_path_len - home_len;
+
+        GString* remaining_path = g_string_new_len(&file_path[home_len], remaining_len);
+        char* tilde_path = g_strdup_printf("~%s", remaining_path->str);
+        g_string_free(remaining_path, true);
+
+        return tilde_path;
       } else {
         return g_strdup(file_path);
       }
