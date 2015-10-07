@@ -192,6 +192,7 @@ main(int argc, char* argv[])
     char* string = zathura_get_version_string(zathura, false);
     if (string != NULL) {
       fprintf(stdout, "%s\n", string);
+      g_free(string);
     }
     zathura_free(zathura);
 
