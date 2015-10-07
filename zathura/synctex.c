@@ -192,3 +192,32 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
   return hitlist;
 }
 
+bool
+synctex_parse_input(const char* synctex, char** input_file, int* line,
+                    int* column)
+{
+  if (synctex == NULL || input_file == NULL || line == NULL || column == NULL) {
+    return false;
+  }
+
+  char** split_fwd = g_strsplit(synctex, ":", 0);
+  if (split_fwd == NULL || split_fwd[0] == NULL || split_fwd[1] == NULL ||
+      split_fwd[2] == NULL || split_fwd[3] != NULL) {
+    g_strfreev(split_fwd);
+    return false;
+  }
+
+  *line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
+  *column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
+  /* SyncTeX starts indexing at 1, but we use 0 */
+  if (*line > 0) {
+    --*line;
+  }
+  if (*column > 0) {
+    --*column;
+  }
+  *input_file = g_strdup(split_fwd[2]);
+
+  g_strfreev(split_fwd);
+  return true;
+}

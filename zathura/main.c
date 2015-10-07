@@ -13,6 +13,7 @@
 #include "zathura.h"
 #include "utils.h"
 #include "dbus-interface.h"
+#include "synctex.h"
 
 /* main function */
 int
@@ -113,27 +114,18 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    char** split_fwd = g_strsplit(synctex_fwd, ":", 0);
-    if (split_fwd == NULL || split_fwd[0] == NULL || split_fwd[1] == NULL ||
-        split_fwd[2] == NULL || split_fwd[3] != NULL) {
+    int line = 0;
+    int column = 0;
+    char* input_file = NULL;
+    if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
       girara_error("Failed to parse argument to --synctex-forward.");
       g_free(real_path);
-      g_strfreev(split_fwd);
       return -1;
     }
 
-    int line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
-    int column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
-    /* SyncTeX starts indexing at 1, but we use 0 */
-    if (line > 0) {
-      --line;
-    }
-    if (column > 0) {
-      --column;
-    }
-
-    const bool ret = zathura_dbus_synctex_position(real_path, split_fwd[2], line, column, synctex_pid);
-    g_strfreev(split_fwd);
+    const int ret = zathura_dbus_synctex_position(real_path, input_file, line, column, synctex_pid);
+    g_free(input_file);
+    g_free(real_path);
 
     if (ret == false) {
       girara_error("Could not find open instance for '%s' or got no usable data from synctex.", real_path);

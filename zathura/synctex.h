@@ -15,6 +15,9 @@ bool synctex_get_input_line_column(const char* filename, unsigned int page,
 
 void synctex_edit(const char* editor, zathura_page_t* page, int x, int y);
 
+bool synctex_parse_input(const char* synctex, char** input_file, int* line,
+                         int* column);
+
 girara_list_t* synctex_rectangles_from_position(const char* filename,
     const char* input_file, int line, int column, unsigned int* page,
     girara_list_t** secondary_rects);
