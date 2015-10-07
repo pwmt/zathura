@@ -550,14 +550,13 @@ static char*
 get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar)
 {
   bool basename_only = false;
-  if (statusbar) {
+  if (statusbar == true) {
     girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
   } else {
     girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
   }
 
   if (basename_only == false) {
-
     bool home_tilde = false;
     if (statusbar) {
       girara_setting_get(zathura->ui.session, "statusbar-home-tilde", &home_tilde);
@@ -565,11 +564,11 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
       girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
     }
 
-    size_t file_path_len = file_path ? strlen(file_path) : 0;
+    const size_t file_path_len = file_path ? strlen(file_path) : 0;
 
-    if (home_tilde) {
-      char *home = girara_get_home_directory(NULL);
-      size_t home_len = home ? strlen(home) : 0;
+    if (home_tilde == true) {
+      char* home = girara_get_home_directory(NULL);
+      const size_t home_len = home ? strlen(home) : 0;
 
       if (home_len > 1
           && file_path_len >= home_len
