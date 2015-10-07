@@ -22,4 +22,10 @@ girara_list_t* synctex_rectangles_from_position(const char* filename,
     const char* input_file, int line, int column, unsigned int* page,
     girara_list_t** secondary_rects);
 
+void synctex_highlight_rects(zathura_t* zathura, unsigned int page,
+                             girara_list_t** rectangles);
+
+bool synctex_view(zathura_t* zathura, const char* input_file,
+                  unsigned int line, unsigned int column);
+
 #endif
