@@ -200,16 +200,69 @@ main(int argc, char* argv[])
     if (page_number > 0)
       --page_number;
     document_open_idle(zathura, argv[1], password, page_number, mode, synctex_fwd);
+  }
+  if (argc > 2) {
+    char* new_argv[2 * sizeof(entries) / sizeof(GOptionEntry) + 3] = {
+      NULL
+    };
+
+    size_t idx = 0;
+    new_argv[idx++] = g_strdup(zathura->global.arguments[0]);
+
+    /* pass arguments to new process */
+    if (config_dir != NULL) {
+      new_argv[idx++] = g_strdup("--config-dir");
+      new_argv[idx++] = g_strdup(config_dir);
+    }
+    if (data_dir != NULL) {
+      new_argv[idx++] = g_strdup("--data-dir");
+      new_argv[idx++] = g_strdup(data_dir);
+    }
+    if (cache_dir != NULL) {
+      new_argv[idx++] = g_strdup("--cache-dir");
+      new_argv[idx++] = g_strdup(cache_dir);
+    }
+    if (plugin_path != NULL) {
+      new_argv[idx++] = g_strdup("--plugins-dir");
+      new_argv[idx++] = g_strdup(plugin_path);
+    }
+    /* no need to pass fork */
+    if (password != NULL) {
+      new_argv[idx++] = g_strdup("--password");
+      new_argv[idx++] = g_strdup(password);
+    }
+    if (page_number != ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
+      new_argv[idx++] = g_strdup("--page");
+      new_argv[idx++] = g_strdup_printf("%d", page_number);
+    }
+    if (loglevel != NULL) {
+      new_argv[idx++] = g_strdup("--debug");
+      new_argv[idx++] = g_strdup(loglevel);
+    }
+    if (synctex_editor != NULL) {
+      new_argv[idx++] = g_strdup("--synctex-editor-command");
+      new_argv[idx++] = g_strdup(synctex_editor);
+    }
+    if (synctex_fwd != NULL) {
+      new_argv[idx++] = g_strdup("--synctex-forward");
+      new_argv[idx++] = g_strdup(synctex_fwd);
+    }
+    /* no need to pass synctex-pid */
+    if (mode != NULL) {
+      new_argv[idx++] = g_strdup("--mode");
+      new_argv[idx++] = g_strdup(mode);
+    }
 
     /* open additional files */
     for (int i = 2; i < argc; i++) {
-      char* new_argv[] = {
-        *(zathura->global.arguments),
-        argv[i],
-        NULL
-      };
+      g_free(new_argv[idx]);
+      new_argv[idx] = g_strdup(argv[i]);
 
       g_spawn_async(NULL, new_argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+    }
+
+    for (size_t s = 0; s <= idx; ++s) {
+      g_free(new_argv[s]);
     }
   }
 
