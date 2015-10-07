@@ -575,9 +575,10 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
           && file_path_len >= home_len
           && g_str_has_prefix(file_path, home)
           && (!file_path[home_len] || file_path[home_len] == '/')) {
-
+        g_free(home);
         return g_strdup_printf("~%s", &file_path[home_len]);
       } else {
+        g_free(home);
         return g_strdup(file_path);
       }
     } else {
