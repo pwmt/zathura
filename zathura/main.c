@@ -151,7 +151,7 @@ main(int argc, char* argv[])
 
   /* Fork into the background if the user really wants to ... */
   if (forkback == true) {
-    const int pid = fork();
+    const pid_t pid = fork();
     if (pid > 0) { /* parent */
       return 0;
     } else if (pid < 0) { /* error */
