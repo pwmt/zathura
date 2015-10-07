@@ -441,6 +441,13 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     }
 
     girara_list_t** all_rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
+    if (all_rectangles == NULL) {
+      girara_list_free(rectangles);
+      GVariant* result = g_variant_new("(b)", false);
+      g_dbus_method_invocation_return_value(invocation, result);
+      return;
+    }
+
     for (unsigned int p = 0; p != number_of_pages; ++p) {
       if (p == page) {
         all_rectangles[p] = rectangles;
