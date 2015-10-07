@@ -546,7 +546,7 @@ document_info_open(gpointer data)
   return FALSE;
 }
 
-char*
+static char*
 get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar)
 {
   bool basename_only = false;
