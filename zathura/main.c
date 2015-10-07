@@ -127,12 +127,16 @@ main(int argc, char* argv[])
     g_free(input_file);
     g_free(real_path);
 
-    if (ret == false) {
-      girara_error("Could not find open instance for '%s' or got no usable data from synctex.", real_path);
+    if (ret == -1) {
+      /* D-Bus or SyncTeX failed */
+      girara_error("Got no usable data from SyncTeX or D-Bus failed in some way.");
+      return -1;
+    } else if (ret == 1) {
+      /* Found a instance */
+      return 0;
     }
 
-    g_free(real_path);
-    return ret == true ? 0 : -1;
+    girara_debug("No instance found. Starting new one.");
   }
 
   /* check mode */
@@ -195,7 +199,7 @@ main(int argc, char* argv[])
   if (argc > 1) {
     if (page_number > 0)
       --page_number;
-    document_open_idle(zathura, argv[1], password, page_number, mode);
+    document_open_idle(zathura, argv[1], password, page_number, mode, synctex_fwd);
 
     /* open additional files */
     for (int i = 2; i < argc; i++) {

@@ -445,13 +445,13 @@ call_synctex_view(GDBusConnection* connection, const char* filename,
   return true;
 }
 
-static bool
+static int
 iterate_instances_call_synctex_view(const char* filename,
                                     const char* input_file, unsigned int line,
                                     unsigned int column, pid_t hint)
 {
   if (filename == NULL) {
-    return false;
+    return -1;
   }
 
   GError* error = NULL;
@@ -460,7 +460,7 @@ iterate_instances_call_synctex_view(const char* filename,
   if (connection == NULL) {
     girara_error("Could not connect to session bus: %s", error->message);
     g_error_free(error);
-    return false;
+    return -1;
   }
 
   if (hint != -1) {
@@ -468,7 +468,7 @@ iterate_instances_call_synctex_view(const char* filename,
     const bool ret = call_synctex_view(connection, filename, well_known_name,
                                        input_file, line, column);
     g_free(well_known_name);
-    return ret;
+    return ret ? 1 : 0;
   }
 
   GVariant* vnames = g_dbus_connection_call_sync(
@@ -479,7 +479,7 @@ iterate_instances_call_synctex_view(const char* filename,
     girara_error("Could not list available names: %s", error->message);
     g_error_free(error);
     g_object_unref(connection);
-    return false;
+    return -1;
   }
 
   GVariantIter* iter = NULL;
@@ -487,25 +487,22 @@ iterate_instances_call_synctex_view(const char* filename,
 
   gchar* name = NULL;
   bool found_one = false;
-  while (g_variant_iter_loop(iter, "s", &name) == TRUE) {
+  while (found_one == false && g_variant_iter_loop(iter, "s", &name) == TRUE) {
     if (g_str_has_prefix(name, "org.pwmt.zathura.PID") == FALSE) {
       continue;
     }
     girara_debug("Found name: %s", name);
 
-    if (call_synctex_view(connection, filename, name, input_file, line, column)
-        == true) {
-      found_one = true;
-    }
+    found_one = call_synctex_view(connection, filename, name, input_file, line, column);
   }
   g_variant_iter_free(iter);
   g_variant_unref(vnames);
   g_object_unref(connection);
 
-  return found_one;
+  return found_one ? 1 : 0;
 }
 
-bool
+int
 zathura_dbus_synctex_position(const char* filename, const char* input_file,
                               int line, int column, pid_t hint)
 {

@@ -41,6 +41,7 @@
 #include "adjustment.h"
 #include "dbus-interface.h"
 #include "css-definitions.h"
+#include "synctex.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -48,6 +49,7 @@ typedef struct zathura_document_info_s {
   const char* password;
   int page_number;
   const char* mode;
+  const char* synctex;
 } zathura_document_info_t;
 
 
@@ -524,8 +526,13 @@ document_info_open(gpointer data)
     }
 
     if (file != NULL) {
-      document_open(document_info->zathura, file, document_info->password,
-                    document_info->page_number);
+      if (document_info->synctex != NULL) {
+        document_open_synctex(document_info->zathura, file,
+                              document_info->password, document_info->synctex);
+      } else {
+        document_open(document_info->zathura, file, document_info->password,
+                      document_info->page_number);
+      }
       g_free(file);
 
       if (document_info->mode != NULL) {
@@ -929,9 +936,34 @@ error_out:
   return false;
 }
 
+bool
+document_open_synctex(zathura_t* zathura, const char* path,
+                      const char* password, const char* synctex)
+{
+  bool ret = document_open(zathura, path, password,
+                           ZATHURA_PAGE_NUMBER_UNSPECIFIED);
+  if (ret == false) {
+    return false;
+  }
+  if (synctex == NULL) {
+    return true;
+  }
+
+  int line = 0;
+  int column = 0;
+  char* input_file = NULL;
+  if (synctex_parse_input(synctex, &input_file, &line, &column) == false) {
+    return false;
+  }
+
+  ret = synctex_view(zathura, input_file, line, column);
+  g_free(input_file);
+  return ret;
+}
+
 void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
-                   int page_number, const char* mode)
+                   int page_number, const char* mode, const char* synctex)
 {
   if (zathura == NULL || path == NULL) {
     return;
@@ -947,6 +979,7 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
   document_info->password    = password;
   document_info->page_number = page_number;
   document_info->mode        = mode;
+  document_info->synctex     = synctex;
 
   gdk_threads_add_idle(document_info_open, document_info);
 }
