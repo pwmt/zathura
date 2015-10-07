@@ -224,9 +224,13 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
   bool_value = false;
+  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), NULL, NULL);
+  bool_value = false;
   girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   string_value = "";

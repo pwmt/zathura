@@ -546,6 +546,55 @@ document_info_open(gpointer data)
   return FALSE;
 }
 
+char*
+get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar)
+{
+  bool basename_only = false;
+  if (statusbar) {
+    girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+  } else {
+    girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
+  }
+
+  if (basename_only == false) {
+
+    bool home_tilde = false;
+    if (statusbar) {
+      girara_setting_get(zathura->ui.session, "statusbar-home-tilde", &home_tilde);
+    } else {
+      girara_setting_get(zathura->ui.session, "window-title-home-tilde", &home_tilde);
+    }
+
+    size_t file_path_len = file_path ? strlen(file_path) : 0;
+
+    if (home_tilde) {
+      char *home = girara_get_home_directory(NULL);
+      size_t home_len = home ? strlen(home) : 0;
+
+      if (home_len > 1
+          && file_path_len >= home_len
+          && g_str_has_prefix(file_path, home)
+          && (!file_path[home_len] || file_path[home_len] == '/')) {
+
+        size_t remaining_len = file_path_len - home_len;
+
+        GString* remaining_path = g_string_new_len(&file_path[home_len], remaining_len);
+        char* tilde_path = g_strdup_printf("~%s", remaining_path->str);
+        g_string_free(remaining_path, true);
+
+        return tilde_path;
+      } else {
+        return g_strdup(file_path);
+      }
+    } else {
+      return g_strdup(file_path);
+    }
+  } else {
+    const char* basename = zathura_document_get_basename(zathura->document);
+    return g_strdup(basename);
+  }
+}
+
 bool
 document_open(zathura_t* zathura, const char* path, const char* password,
               int page_number)
@@ -665,13 +714,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   zathura->bisect.end = number_of_pages - 1;
 
   /* update statusbar */
-  bool basename_only = false;
-  girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
-  if (basename_only == false) {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
-  } else {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_basename(document));
-  }
+  char* filename = get_formatted_filename(zathura, file_path, true);
+  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, filename);
+  g_free(filename);
 
   /* install file monitor */
   file_uri = g_filename_to_uri(file_path, NULL, NULL);
@@ -838,13 +883,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* update title */
-  basename_only = false;
-  girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
-  if (basename_only == false) {
-    girara_set_window_title(zathura->ui.session, file_path);
-  } else {
-    girara_set_window_title(zathura->ui.session, zathura_document_get_basename(document));
-  }
+  char* formatted_filename = get_formatted_filename(zathura, file_path, false);
+  girara_set_window_title(zathura->ui.session, formatted_filename);
+  g_free(formatted_filename);
 
   g_free(file_uri);
 
@@ -1096,15 +1137,11 @@ statusbar_page_number_update(zathura_t* zathura)
     girara_setting_get(zathura->ui.session, "window-title-page", &page_number_in_window_title);
 
     if (page_number_in_window_title == true) {
-      bool basename_only = false;
-      girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
-      char* title = g_strdup_printf("%s %s",
-        (basename_only == true)
-          ? zathura_document_get_basename(zathura->document)
-          : zathura_document_get_path(zathura->document),
-        page_number_text);
+      char* filename = get_formatted_filename(zathura, zathura_document_get_path(zathura->document), false);
+      char* title = g_strdup_printf("%s %s", filename, page_number_text);
       girara_set_window_title(zathura->ui.session, title);
       g_free(title);
+      g_free(filename);
     }
 
     g_free(page_number_text);
