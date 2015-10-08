@@ -38,7 +38,7 @@ WITH_SQLITE ?= $(shell (${PKG_CONFIG} --atleast-version=3.5.9 sqlite3 && echo 1)
 
 # synctex
 # To use the embedded copy of the syntex parser set WITH_SYSTEM_SYNCTEX to 0.
-WITH_SYSTEM_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
+WITH_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
 
 # mimetype detection
 # To disable support for mimetype detction with libmagic set WITH_MAGIC to 0.
@@ -91,12 +91,9 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
-ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+ifneq ($(WITH_SYNCTEX),0)
 SYNCTEX_INC ?= $(shell ${PKG_CONFIG} --cflags synctex)
 SYNCTEX_LIB ?= $(shell ${PKG_CONFIG} --libs synctex)
-else
-ZLIB_INC ?= $(shell ${PKG_CONFIG} --cflags zlib)
-ZLIB_LIB ?= $(shell ${PKG_CONFIG} --libs zlib)
 endif
 
 INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}

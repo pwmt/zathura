@@ -4,10 +4,8 @@
 #include <girara/utils.h>
 #include <girara/settings.h>
 
-#ifdef WITH_SYSTEM_SYNCTEX
+#ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>
-#else
-#include "synctex/synctex_parser.h"
 #endif
 
 #include "synctex.h"
@@ -17,6 +15,7 @@
 #include "utils.h"
 #include "adjustment.h"
 
+#ifdef WITH_SYNCTEX
 bool
 synctex_get_input_line_column(const char* filename, unsigned int page, int x, int y,
     char** input_file, unsigned int* line, unsigned int* column)
@@ -193,6 +192,32 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
 
   return hitlist;
 }
+#else
+bool
+synctex_get_input_line_column(const char* UNUSED(filename),
+                              unsigned int UNUSED(page), int UNUSED(x),
+                              int UNUSED(y), char** UNUSED(input_file),
+                              unsigned int* UNUSED(line),
+                              unsigned int* UNUSED(column))
+{
+  return false;
+}
+
+void
+synctex_edit(const char* UNUSED(editor), zathura_page_t* UNUSED(page),
+             int UNUSED(x), int UNUSED(y))
+{}
+
+girara_list_t*
+synctex_rectangles_from_position(const char* UNUSED(filename),
+                                 const char* UNUSED(input_file),
+                                 int UNUSED(line), int UNUSED(column),
+                                 unsigned int* UNUSED(page),
+                                 girara_list_t** UNUSED(secondary_rects))
+{
+  return NULL;
+}
+#endif
 
 bool
 synctex_parse_input(const char* synctex, char** input_file, int* line,

@@ -21,20 +21,10 @@ LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
-ifneq ($(WITH_SYSTEM_SYNCTEX),0)
-INCS   += $(SYNCTEX_INC)
-LIBS   += $(SYNCTEX_LIB)
-else
-INCS   += $(ZLIB_INC)
-LIBS   += $(ZLIB_LIB)
-SOURCE += $(wildcard ${PROJECT}/synctex/*.c)
-
-ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
-CPPFLAGS += -I${PROJECT}/synctex
-endif
-ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
-CPPFLAGS += -DSYNCTEX_VERBOSE=0
-endif
+ifneq ($(WITH_SYNCTEX),0)
+INCS     += $(SYNCTEX_INC)
+LIBS     += $(SYNCTEX_LIB)
+CPPFLAGS += -DWITH_SYNCTEX
 endif
 
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
