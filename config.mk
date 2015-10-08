@@ -37,7 +37,7 @@ PKG_CONFIG ?= pkg-config
 WITH_SQLITE ?= $(shell (${PKG_CONFIG} --atleast-version=3.5.9 sqlite3 && echo 1) || echo 0)
 
 # synctex
-# To use the embedded copy of the syntex parser set WITH_SYSTEM_SYNCTEX to 0.
+# To disable support for synctex with libsynctex set WITH_SYNCTEX to 0.
 WITH_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
 
 # mimetype detection
