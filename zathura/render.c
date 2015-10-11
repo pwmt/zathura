@@ -160,7 +160,7 @@ renderer_finalize(GObject* object)
   if (priv->pool != NULL) {
     g_thread_pool_free(priv->pool, TRUE, TRUE);
   }
-  g_mutex_free(&(priv->mutex));
+  g_mutex_clear(&(priv->mutex));
 
   free(priv->page_cache.cache);
   girara_list_free(priv->requests);
@@ -298,7 +298,7 @@ render_request_finalize(GObject* object)
     girara_error("This should not happen!");
   }
   girara_list_free(priv->active_jobs);
-  g_mutex_free(&priv->jobs_mutex);
+  g_mutex_clear(&priv->jobs_mutex);
 
   G_OBJECT_CLASS(zathura_render_request_parent_class)->finalize(object);
 }
