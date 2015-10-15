@@ -596,6 +596,16 @@ get_formatted_filename(zathura_t* zathura, const char* file_path, bool statusbar
   }
 }
 
+static gboolean
+document_open_password_dialog(gpointer data)
+{
+  zathura_password_dialog_info_t* password_dialog_info = data;
+
+  girara_dialog(password_dialog_info->zathura->ui.session, _("Enter password:"), true, NULL,
+                (girara_callback_inputbar_activate_t) cb_password_dialog, password_dialog_info);
+  return FALSE;
+}
+
 bool
 document_open(zathura_t* zathura, const char* path, const char* password,
               int page_number)
@@ -610,14 +620,14 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
+      girara_debug("Invalid or no password.");
       zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info != NULL) {
         password_dialog_info->zathura = zathura;
 
         if (path != NULL) {
           password_dialog_info->path = g_strdup(path);
-          girara_dialog(zathura->ui.session, "Enter password:", true, NULL,
-                        (girara_callback_inputbar_activate_t) cb_password_dialog, password_dialog_info);
+          gdk_threads_add_idle(document_open_password_dialog, password_dialog_info);
           goto error_out;
         } else {
           free(password_dialog_info);
