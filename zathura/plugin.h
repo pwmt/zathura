@@ -29,7 +29,7 @@ typedef struct zathura_plugin_version_s {
  *
  * @return A plugin manager object or NULL if an error occured
  */
-zathura_plugin_manager_t* zathura_plugin_manager_new();
+zathura_plugin_manager_t* zathura_plugin_manager_new(void);
 
 /**
  * Frees the plugin manager
