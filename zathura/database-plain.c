@@ -559,7 +559,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   g_key_file_set_double (priv->history, name, KEY_SCALE,             file_info->scale);
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
-  g_key_file_set_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, file_info->first_page_column);
+  g_key_file_set_string(priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
   g_key_file_set_double (priv->history, name, KEY_POSITION_X,        file_info->position_x);
   g_key_file_set_double (priv->history, name, KEY_POSITION_Y,        file_info->position_y);
   g_key_file_set_integer(priv->history, name, KEY_TIME,              time(NULL));
@@ -600,7 +600,7 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
     file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
   }
   if (g_key_file_has_key(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL) == TRUE) {
-    file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
+    file_info->first_page_column_list = g_key_file_get_string(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
   }
   if (g_key_file_has_key(priv->history, name, KEY_POSITION_X, NULL) == TRUE) {
     file_info->position_x        = g_key_file_get_double(priv->history, name, KEY_POSITION_X, NULL);
