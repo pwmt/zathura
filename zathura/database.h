@@ -15,7 +15,7 @@ typedef struct zathura_fileinfo_s {
   double scale;
   unsigned int rotation;
   unsigned int pages_per_row;
-  unsigned int first_page_column;
+  char* first_page_column_list;
   double position_x;
   double position_y;
 } zathura_fileinfo_t;
@@ -50,6 +50,8 @@ struct _ZathuraDatabaseInterface
   bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
 
   bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
+
+  girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max);
 };
 
 GType zathura_database_get_type(void);
@@ -127,5 +129,16 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
  */
 bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
     zathura_fileinfo_t* file_info);
+
+/* Get a list of recent files from the database. The most recent file is listed
+ * first.
+ *
+ * @param db The database instance
+ * @param max The maximum number of recent files. If max is less than zero, now
+ * limit is applied.
+ * @return list of files
+ */
+girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max);
+
 
 #endif // DATABASE_H

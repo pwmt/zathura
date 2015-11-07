@@ -74,9 +74,9 @@ the *zathurarc* file to make those changes permanent:
 
 include - Including another config file
 ---------------------------------------
-This commands allows to include other configuration files. If a relative path is
-given, the path will be resolved relative to the configuration file that is
-currently processed.
+This commands allows one to include other configuration files. If a relative
+path is given, the path will be resolved relative to the configuration file that
+is currently processed.
 
 ::
 
@@ -731,9 +731,12 @@ Defines the number of pages that are rendered next to each other in a row.
 first-page-column
 ^^^^^^^^^^^^^^^^^
 Defines the column in which the first page will be displayed.
+This setting is stored separately for every value of pages-per-row according to
+the following pattern <1 page per row>:[<2 pages per row>[: ...]]. Per default,
+the first column is set to 2 for double-page layout.
 
-* Value type: Integer
-* Default value: 1
+* Value type: String
+* Default value: 1:2
 
 recolor
 ^^^^^^^
@@ -820,6 +823,30 @@ Defines if the last/first page should be wrapped
 * Value type: Boolean
 * Default value: false
 
+
+show-directories
+^^^^^^^^^^^^^^^^
+Defines if the directories should be displayed in completion.
+
+* Value type: Boolean
+* Default value: true
+
+show-hidden
+^^^^^^^^^^^
+Defines if hidden files and directories should be displayed in completion.
+
+* Value type: Boolean
+* Default value: false
+
+show-recent
+^^^^^^^^^^^
+Defines the number of recent files that should be displayed in completion.
+If the value is negative, no upper bounds are applied. If the value is 0, no
+recent files are shown.
+
+* Value type: Integer
+* Default value: 10
+
 scroll-page-aware
 ^^^^^^^^^^^^^^^^^
 Defines if scrolling by half or full pages stops at page boundaries.
@@ -863,6 +890,13 @@ Use basename of the file in the window title.
 * Value type: Boolean
 * Default value: false
 
+window-title-home-tilde
+^^^^^^^^^^^^^^^^^^^^^^^
+Display a short version of the file path, which replaces $HOME with ~, in the window title.
+
+* Value type: Boolean
+* Default value: false
+
 window-title-page
 ^^^^^^^^^^^^^^^^^
 Display the page number in the window title.
@@ -873,6 +907,13 @@ Display the page number in the window title.
 statusbar-basename
 ^^^^^^^^^^^^^^^^^^
 Use basename of the file in the statusbar.
+
+* Value type: Boolean
+* Default value: false
+
+statusbar-home-tilde
+^^^^^^^^^^^^^^^^^^^^
+Display a short version of the file path, which replaces $HOME with ~, in the statusbar.
 
 * Value type: Boolean
 * Default value: false

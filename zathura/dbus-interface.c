@@ -193,77 +193,6 @@ zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned
 /* D-Bus handler */
 
 static void
-highlight_rects(zathura_t* zathura, unsigned int page,
-                girara_list_t** rectangles)
-{
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-
-  for (unsigned int p = 0; p != number_of_pages; ++p) {
-    GObject* widget = G_OBJECT(zathura->pages[p]);
-
-    g_object_set(widget, "draw-links", FALSE, "search-results", rectangles[p],
-                 NULL);
-    if (p == page) {
-      g_object_set(widget, "search-current", 0, NULL);
-    }
-  }
-
-  document_draw_search_results(zathura, true);
-
-  girara_list_t* rect_list = rectangles[page];
-  if (rect_list == NULL || girara_list_size(rect_list) == 0) {
-    girara_debug("No rectangles for the given page. Jumping to page %u.", page);
-    page_set(zathura, page);
-    return;
-  }
-
-  bool search_hadjust = true;
-  girara_setting_get(zathura->ui.session, "search-hadjust", &search_hadjust);
-
-  /* compute the position of the center of the page */
-  double pos_x = 0;
-  double pos_y = 0;
-  page_number_to_position(zathura->document, page, 0.5, 0.5, &pos_x, &pos_y);
-
-  /* correction to center the current result                          */
-  /* NOTE: rectangle is in viewport units, already scaled and rotated */
-  unsigned int cell_height = 0;
-  unsigned int cell_width = 0;
-  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
-
-  unsigned int doc_height = 0;
-  unsigned int doc_width = 0;
-  zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
-
-  /* Need to adjust rectangle to page scale and orientation */
-  zathura_page_t* doc_page = zathura_document_get_page(zathura->document, page);
-  zathura_rectangle_t* rect = girara_list_nth(rect_list, 0);
-  if (rect == NULL) {
-    girara_debug("List of rectangles is broken. Jumping to page %u.", page);
-    page_set(zathura, page);
-    return;
-  }
-
-  zathura_rectangle_t rectangle = recalc_rectangle(doc_page, *rect);
-
-  /* compute the center of the rectangle, which will be aligned to the center
-     of the viewport */
-  double center_x = (rectangle.x1 + rectangle.x2) / 2;
-  double center_y = (rectangle.y1 + rectangle.y2) / 2;
-
-  pos_y += (center_y - (double)cell_height/2) / (double)doc_height;
-  if (search_hadjust == true) {
-    pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
-  }
-
-  /* move to position */
-  girara_debug("Jumping to page %u position (%f, %f).", page, pos_x, pos_y);
-  zathura_jumplist_add(zathura);
-  position_set(zathura, pos_x, pos_y);
-  zathura_jumplist_add(zathura);
-}
-
-static void
 handle_method_call(GDBusConnection* UNUSED(connection),
                    const gchar* UNUSED(sender), const gchar* object_path,
                    const gchar* interface_name, const gchar* method_name,
@@ -416,7 +345,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     }
     g_variant_iter_free(secondary_iter);
 
-    highlight_rects(priv->zathura, page, rectangles);
+    synctex_highlight_rects(priv->zathura, page, rectangles);
     g_free(rectangles);
 
     GVariant* result = g_variant_new("(b)", true);
@@ -427,44 +356,11 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     guint column = 0;
     g_variant_get(parameters, "(suu)", &input_file, &line, &column);
 
-    unsigned int page = 0;
-    girara_list_t* secondary_rects = NULL;
-    girara_list_t* rectangles = synctex_rectangles_from_position(
-      zathura_document_get_path(priv->zathura->document), input_file, line,
-      column, &page, &secondary_rects);
+    const bool ret = synctex_view(priv->zathura, input_file, line, column);
     g_free(input_file);
 
-    if (rectangles == NULL) {
-      GVariant* result = g_variant_new("(b)", false);
-      g_dbus_method_invocation_return_value(invocation, result);
-      return;
-    }
-
-    girara_list_t** all_rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
-    for (unsigned int p = 0; p != number_of_pages; ++p) {
-      if (p == page) {
-        all_rectangles[p] = rectangles;
-      } else {
-        all_rectangles[p] = girara_list_new2(g_free);
-      }
-    }
-
-    if (secondary_rects != NULL) {
-      GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
-        zathura_rectangle_t* newrect = g_try_malloc0(sizeof(zathura_rectangle_t));
-        *newrect = rect->rect;
-        girara_list_append(all_rectangles[rect->page], newrect);
-      GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
-    }
-
-    highlight_rects(priv->zathura, page, all_rectangles);
-
-    girara_list_free(secondary_rects);
-    g_free(all_rectangles);
-
-    GVariant* result = g_variant_new("(b)", true);
+    GVariant* result = g_variant_new("(b)", ret);
     g_dbus_method_invocation_return_value(invocation, result);
-
   }
 }
 
@@ -549,13 +445,13 @@ call_synctex_view(GDBusConnection* connection, const char* filename,
   return true;
 }
 
-static bool
+static int
 iterate_instances_call_synctex_view(const char* filename,
                                     const char* input_file, unsigned int line,
                                     unsigned int column, pid_t hint)
 {
   if (filename == NULL) {
-    return false;
+    return -1;
   }
 
   GError* error = NULL;
@@ -564,7 +460,7 @@ iterate_instances_call_synctex_view(const char* filename,
   if (connection == NULL) {
     girara_error("Could not connect to session bus: %s", error->message);
     g_error_free(error);
-    return false;
+    return -1;
   }
 
   if (hint != -1) {
@@ -572,7 +468,7 @@ iterate_instances_call_synctex_view(const char* filename,
     const bool ret = call_synctex_view(connection, filename, well_known_name,
                                        input_file, line, column);
     g_free(well_known_name);
-    return ret;
+    return ret ? 1 : 0;
   }
 
   GVariant* vnames = g_dbus_connection_call_sync(
@@ -583,7 +479,7 @@ iterate_instances_call_synctex_view(const char* filename,
     girara_error("Could not list available names: %s", error->message);
     g_error_free(error);
     g_object_unref(connection);
-    return false;
+    return -1;
   }
 
   GVariantIter* iter = NULL;
@@ -591,25 +487,22 @@ iterate_instances_call_synctex_view(const char* filename,
 
   gchar* name = NULL;
   bool found_one = false;
-  while (g_variant_iter_loop(iter, "s", &name) == TRUE) {
+  while (found_one == false && g_variant_iter_loop(iter, "s", &name) == TRUE) {
     if (g_str_has_prefix(name, "org.pwmt.zathura.PID") == FALSE) {
       continue;
     }
     girara_debug("Found name: %s", name);
 
-    if (call_synctex_view(connection, filename, name, input_file, line, column)
-        == true) {
-      found_one = true;
-    }
+    found_one = call_synctex_view(connection, filename, name, input_file, line, column);
   }
   g_variant_iter_free(iter);
   g_variant_unref(vnames);
   g_object_unref(connection);
 
-  return found_one;
+  return found_one ? 1 : 0;
 }
 
-bool
+int
 zathura_dbus_synctex_position(const char* filename, const char* input_file,
                               int line, int column, pid_t hint)
 {

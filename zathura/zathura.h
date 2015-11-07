@@ -292,6 +292,19 @@ bool document_open(zathura_t* zathura, const char* path, const char* password,
                    int page_number);
 
 /**
+ * Opens a file
+ *
+ * @param zathura The zathura session
+ * @param path The path to the file
+ * @param password The password of the file
+ * @param synctex Open at the given SyncTeX string
+ *
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool document_open_synctex(zathura_t* zathura, const char* path,
+                           const char* password, const char* synctex);
+
+/**
  * Opens a file (idle)
  *
  * @param zathura The zathura session
@@ -299,10 +312,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* password,
  * @param password The password of the file
  * @param page_number Open given page number
  * @param mode Open in given page mode
+ * @param synctex SyncTeX string
  */
 void document_open_idle(zathura_t* zathura, const char* path,
                         const char* password, int page_number,
-                        const char* mode);
+                        const char* mode, const char* synctex);
 
 /**
  * Save a open file

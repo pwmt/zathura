@@ -6,12 +6,13 @@ girara user interface library and several document libraries.
 Requirements
 ------------
 gtk3
-glib (>= 2.28)
+glib (>= 2.32)
 girara (>= 0.2.4)
 sqlite3 (optional, >= 3.5.9)
 check (for tests)
 intltool
 libmagic from file(1) (optional, for mime-type detection)
+libsynctex from TeXLive (option, for SyncTeX support)
 Sphinx (optional, for manpages and HTML documentation)
 doxygen (optional, for HTML documentation)
 breathe (optional, for HTML documentation)
@@ -24,7 +25,7 @@ SQLITE_INC and SQLITE_LIB variables accordingly.
 
 Also note that Sphinx is needed to build the manpages.  If it is not
 installed, the man pages won't be built. For the HTML documentation, doxygen,
-breathe and sphinx_rtd_theme are needed in additioan to Sphinx.
+breathe and sphinx_rtd_theme are needed in addition to Sphinx.
 
 If you don't want to build with support for sqlite databases, you can set
 WITH_SQLITE=0 and sqlite support won't be available.
@@ -35,7 +36,7 @@ WITH_MAGIC=0.
 If you pass these flags as a command line argument to make, you have to ensure
 to pass the same flags when executing the install target.
 
-If you want to build zathuras documentation, please install all python
+If you want to build zathura's documentation, please install all python
 dependencies from the ./doc/requirements.txt file.
 
 Installation

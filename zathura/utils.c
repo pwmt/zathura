@@ -257,3 +257,26 @@ GdkAtom* get_selection(zathura_t* zathura)
 
   return selection;
 }
+
+unsigned int find_first_page_column(const char* first_page_column_list,
+                                    const unsigned int pages_per_row) {
+  /* copy settings list */
+  char* settings = malloc(strlen(first_page_column_list));
+  strcpy(settings, first_page_column_list);
+
+  /* save first setting as default value for omitted settings */
+  unsigned int first_page_column = atoi(strtok(settings, ":"));
+  unsigned int first_page_column_default = first_page_column;
+
+  /* find value for first_page_column corresponding to pages_per_row*/
+  for (unsigned int i=1; i<pages_per_row; ++i) {
+    char* token = strtok(NULL, ":");
+    if (token != NULL) {
+      first_page_column = atoi(token);
+    } else {
+      first_page_column = first_page_column_default;
+    }
+  }
+
+  return first_page_column;
+}

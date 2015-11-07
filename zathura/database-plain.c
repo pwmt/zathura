@@ -9,9 +9,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
 #include <girara/input-history.h>
+#include <time.h>
 
 #include "database-plain.h"
 #include "utils.h"
@@ -29,6 +31,7 @@
 #define KEY_POSITION_X            "position-x"
 #define KEY_POSITION_Y            "position-y"
 #define KEY_JUMPLIST              "jumplist"
+#define KEY_TIME                  "time"
 
 #ifdef __GNU__
 #include <sys/file.h>
@@ -60,6 +63,7 @@ static bool           plain_get_fileinfo(zathura_database_t* db, const char* fil
 static void           plain_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void           plain_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* plain_io_read(GiraraInputHistoryIO* db);
+static girara_list_t* plain_get_recent_files(zathura_database_t* db, int max);
 
 /* forward declaration */
 static bool           zathura_db_check_file(const char* path);
@@ -105,13 +109,14 @@ static void
 zathura_database_interface_init(ZathuraDatabaseInterface* iface)
 {
   /* initialize interface */
-  iface->add_bookmark    = plain_add_bookmark;
-  iface->remove_bookmark = plain_remove_bookmark;
-  iface->load_bookmarks  = plain_load_bookmarks;
-  iface->load_jumplist   = plain_load_jumplist;
-  iface->save_jumplist   = plain_save_jumplist;
-  iface->set_fileinfo    = plain_set_fileinfo;
-  iface->get_fileinfo    = plain_get_fileinfo;
+  iface->add_bookmark     = plain_add_bookmark;
+  iface->remove_bookmark  = plain_remove_bookmark;
+  iface->load_bookmarks   = plain_load_bookmarks;
+  iface->load_jumplist    = plain_load_jumplist;
+  iface->save_jumplist    = plain_save_jumplist;
+  iface->set_fileinfo     = plain_set_fileinfo;
+  iface->get_fileinfo     = plain_get_fileinfo;
+  iface->get_recent_files = plain_get_recent_files;
 }
 
 static void
@@ -554,9 +559,10 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   g_key_file_set_double (priv->history, name, KEY_SCALE,             file_info->scale);
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
-  g_key_file_set_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, file_info->first_page_column);
+  g_key_file_set_string(priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
   g_key_file_set_double (priv->history, name, KEY_POSITION_X,        file_info->position_x);
   g_key_file_set_double (priv->history, name, KEY_POSITION_Y,        file_info->position_y);
+  g_key_file_set_integer(priv->history, name, KEY_TIME,              time(NULL));
 
   g_free(name);
 
@@ -594,7 +600,7 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
     file_info->pages_per_row     = g_key_file_get_integer(priv->history, name, KEY_PAGES_PER_ROW, NULL);
   }
   if (g_key_file_has_key(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL) == TRUE) {
-    file_info->first_page_column = g_key_file_get_integer(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
+    file_info->first_page_column_list = g_key_file_get_string(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
   }
   if (g_key_file_has_key(priv->history, name, KEY_POSITION_X, NULL) == TRUE) {
     file_info->position_x        = g_key_file_get_double(priv->history, name, KEY_POSITION_X, NULL);
@@ -781,8 +787,6 @@ plain_io_read(GiraraInputHistoryIO* db)
   return res;
 }
 
-#include <errno.h>
-
 static void
 plain_io_append(GiraraInputHistoryIO* db, const char* input)
 {
@@ -821,4 +825,58 @@ plain_io_append(GiraraInputHistoryIO* db, const char* input)
 
   file_lock_set(fileno(file), F_UNLCK);
   fclose(file);
+}
+
+static int
+compare_time(const void* l, const void* r, void* data)
+{
+  const gchar* lhs = *(const gchar**) l;
+  const gchar* rhs = *(const gchar**) r;
+  GKeyFile* keyfile = data;
+
+  time_t lhs_time = 0;
+  time_t rhs_time = 0;
+
+  if (g_key_file_has_key(keyfile, lhs, KEY_TIME, NULL) == TRUE) {
+    lhs_time = g_key_file_get_uint64(keyfile, lhs, KEY_TIME, NULL);
+  }
+  if (g_key_file_has_key(keyfile, rhs, KEY_TIME, NULL) == TRUE) {
+    rhs_time = g_key_file_get_uint64(keyfile, rhs, KEY_TIME, NULL);
+  }
+
+  if (lhs_time < rhs_time) {
+    return 1;
+  } else if (lhs_time > rhs_time) {
+    return -1;
+  }
+  return 0;
+}
+
+static girara_list_t*
+plain_get_recent_files(zathura_database_t* db, int max)
+{
+  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+
+  girara_list_t* result = girara_list_new2(g_free);
+  if (result == NULL) {
+    return NULL;
+  }
+
+  gsize groups_size = 0;
+  gchar** groups = g_key_file_get_groups(priv->history, &groups_size);
+
+  if (groups_size > 0) {
+    g_qsort_with_data(groups, groups_size, sizeof(gchar*), compare_time, priv->history);
+  }
+
+  if (max >= 0 && (gsize) max < groups_size) {
+    groups_size = max;
+  }
+
+  for (gsize s = 0; s != groups_size; ++s) {
+    girara_list_append(result, g_strdup(groups[s]));
+  }
+  g_strfreev(groups);
+
+  return result;
 }

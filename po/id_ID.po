@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2015-04-13 19:42+0200\n"
-"PO-Revision-Date: 2015-04-13 19:47+0200\n"
+"POT-Creation-Date: 2015-10-15 23:03+0200\n"
+"PO-Revision-Date: 2015-10-15 23:06+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/"
 "zathura/language/id_ID/)\n"
@@ -17,26 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.5\n"
 
-#: ../zathura/callbacks.c:233
+#: ../zathura/print.c:64 ../zathura/print.c:211
 #, c-format
-msgid "'%s' must not be 0. Set to 1."
-msgstr ""
-
-#: ../zathura/callbacks.c:310
-#, c-format
-msgid "Invalid input '%s' given."
-msgstr "Masukan '%s' tidak valid"
-
-#: ../zathura/callbacks.c:346
-#, c-format
-msgid "Invalid index '%s' given."
-msgstr "Index '%s' tidak valid"
-
-#: ../zathura/callbacks.c:588
-#, c-format
-msgid "Copied selected text to selection %s: %s"
+msgid "Printing failed: %s"
 msgstr ""
 
 #. zathura settings
@@ -193,130 +178,162 @@ msgid "Show directories"
 msgstr "Perlihatkan direktori"
 
 #: ../zathura/config.c:216
+msgid "Show recent files"
+msgstr ""
+
+#: ../zathura/config.c:218
 msgid "Always open on first page"
 msgstr "Selalu buka halaman pertama"
 
-#: ../zathura/config.c:218
+#: ../zathura/config.c:220
 msgid "Highlight search results"
 msgstr "Sorot hasil pencarian"
 
-#: ../zathura/config.c:221
+#: ../zathura/config.c:223
 msgid "Enable incremental search"
 msgstr "Fungsikan pencarian berkelanjutan"
 
-#: ../zathura/config.c:223
+#: ../zathura/config.c:225
 msgid "Clear search results on abort"
 msgstr "Hapus hasil pencarian ketika batal mencari"
 
-#: ../zathura/config.c:225
+#: ../zathura/config.c:227
 msgid "Use basename of the file in the window title"
 msgstr "Gunakan nama dasar file pada judul jendela"
 
-#: ../zathura/config.c:227
+#: ../zathura/config.c:229
+msgid "Use ~ instead of $HOME in the filename in the window title"
+msgstr ""
+
+#: ../zathura/config.c:231
 msgid "Display the page number in the window title"
 msgstr "Tampilkan nomor laman pada jendela judul"
 
-#: ../zathura/config.c:229
+#: ../zathura/config.c:233
 msgid "Use basename of the file in the statusbar"
 msgstr "Gunakan nama dasar berkas pada statusbar"
 
-#: ../zathura/config.c:231
-msgid "Enable synctex support"
-msgstr "Support synctex"
-
-#: ../zathura/config.c:233
-msgid "Synctex editor command"
-msgstr ""
-
 #: ../zathura/config.c:235
-msgid "Enable D-Bus service"
+msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
 #: ../zathura/config.c:237
+msgid "Enable synctex support"
+msgstr "Support synctex"
+
+#: ../zathura/config.c:239
+msgid "Synctex editor command"
+msgstr ""
+
+#: ../zathura/config.c:241
+msgid "Enable D-Bus service"
+msgstr ""
+
+#: ../zathura/config.c:243
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Data yang dipilih tetikus akan ditulis ke clipboard"
 
-#: ../zathura/config.c:239
+#: ../zathura/config.c:245
 msgid "Enable notification after selecting text"
 msgstr ""
 
 #. define default inputbar commands
-#: ../zathura/config.c:425
+#: ../zathura/config.c:435
 msgid "Add a bookmark"
 msgstr "Tambahkan pada bookmark"
 
-#: ../zathura/config.c:426
+#: ../zathura/config.c:436
 msgid "Delete a bookmark"
 msgstr "Hapus bookmark"
 
-#: ../zathura/config.c:427
+#: ../zathura/config.c:437
 msgid "List all bookmarks"
 msgstr "Perlihatkan semua bookmark"
 
-#: ../zathura/config.c:428
+#: ../zathura/config.c:438
 msgid "Close current file"
 msgstr "Tutup file ini"
 
-#: ../zathura/config.c:429
+#: ../zathura/config.c:439
 msgid "Show file information"
 msgstr "Informasi file"
 
-#: ../zathura/config.c:430 ../zathura/config.c:431
+#: ../zathura/config.c:440 ../zathura/config.c:441
 msgid "Execute a command"
 msgstr "Jalankan perintah"
 
 #. like vim
-#: ../zathura/config.c:432
+#: ../zathura/config.c:442
 msgid "Show help"
 msgstr "Bantuan"
 
-#: ../zathura/config.c:433
+#: ../zathura/config.c:443
 msgid "Open document"
 msgstr "Buka dokumen"
 
-#: ../zathura/config.c:434
+#: ../zathura/config.c:444
 msgid "Close zathura"
 msgstr "Tutup zathura"
 
-#: ../zathura/config.c:435
+#: ../zathura/config.c:445
 msgid "Print document"
 msgstr "Cetak dokumen"
 
-#: ../zathura/config.c:436
+#: ../zathura/config.c:446
 msgid "Save document"
 msgstr "Simpan dokumen"
 
-#: ../zathura/config.c:437
+#: ../zathura/config.c:447
 msgid "Save document (and force overwriting)"
 msgstr "Simpan dokumen (dan menimpa berkas)"
 
-#: ../zathura/config.c:438
+#: ../zathura/config.c:448
 msgid "Save attachments"
 msgstr "Simpan lampiran"
 
-#: ../zathura/config.c:439
+#: ../zathura/config.c:449
 msgid "Set page offset"
 msgstr "Set offset halaman"
 
-#: ../zathura/config.c:440
+#: ../zathura/config.c:450
 msgid "Mark current location within the document"
 msgstr "Tandai lokasi sekarang dalam dokumen"
 
-#: ../zathura/config.c:441
+#: ../zathura/config.c:451
 msgid "Delete the specified marks"
 msgstr "Hapus tanda terpilih"
 
-#: ../zathura/config.c:442
+#: ../zathura/config.c:452
 msgid "Don't highlight current search results"
 msgstr "Jangan menyorot hasil cari sekarang"
 
-#: ../zathura/config.c:443
+#: ../zathura/config.c:453
 msgid "Highlight current search results"
 msgstr "Sorot hasil pencarian sekarang"
 
-#: ../zathura/config.c:444
+#: ../zathura/config.c:454
 msgid "Show version information"
 msgstr "Tunjukan informasi versi"
+
+#: ../zathura/callbacks.c:233
+#, c-format
+msgid "'%s' must not be 0. Set to 1."
+msgstr ""
+
+#: ../zathura/callbacks.c:310
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "Masukan '%s' tidak valid"
+
+#: ../zathura/callbacks.c:346
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "Index '%s' tidak valid"
+
+#: ../zathura/callbacks.c:588
+#, c-format
+msgid "Copied selected text to selection %s: %s"
+msgstr ""
 
 #: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
 #: ../zathura/commands.c:152 ../zathura/commands.c:268
@@ -457,28 +474,73 @@ msgstr "Lampiran atau gambar tidak diketahui '%s'"
 msgid "Argument must be a number."
 msgstr "Argumen harus berupa angka."
 
-#: ../zathura/completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "Halaman %d"
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr "Memuat....."
 
-#: ../zathura/completion.c:293
-msgid "Attachments"
-msgstr "Lampiran"
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "Salin gambar"
 
-#. add images
-#: ../zathura/completion.c:324
-msgid "Images"
-msgstr "Citra"
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr "Simpan gambar sebagai"
 
-#: ../zathura/print.c:64 ../zathura/print.c:211
-#, c-format
-msgid "Printing failed: %s"
+#: ../zathura/main.c:60
+msgid "Reparents to window specified by xid"
+msgstr "Mengembalikan jendela sesuai dengan xid yang ditentukan"
+
+#: ../zathura/main.c:62
+msgid "Path to the config directory"
+msgstr "Path ke direktori konfigurasi"
+
+#: ../zathura/main.c:63
+msgid "Path to the data directory"
+msgstr "Path ke direktori data"
+
+#: ../zathura/main.c:64
+msgid "Path to the cache directory"
 msgstr ""
 
-#: ../zathura/shortcuts.c:1137
-msgid "This document does not contain any index"
-msgstr "Dokumen ini tidak mempunyai indeks"
+#: ../zathura/main.c:65
+msgid "Path to the directories containing plugins"
+msgstr "Path ke direktori plugin"
+
+#: ../zathura/main.c:66
+msgid "Fork into the background"
+msgstr "Jalankan pada latar"
+
+#: ../zathura/main.c:67
+msgid "Document password"
+msgstr "Kata sandi dokumen"
+
+#: ../zathura/main.c:68
+msgid "Page number to go to"
+msgstr "Nomor halaman tujuan"
+
+#: ../zathura/main.c:69
+msgid "Log level (debug, info, warning, error)"
+msgstr "Tingkat log (debug, info, peringatan, error)"
+
+#: ../zathura/main.c:70
+msgid "Print version information"
+msgstr "Cetak informasi versi"
+
+#: ../zathura/main.c:72
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr "Synctex editor (diteruskan ke perintah synctex)"
+
+#: ../zathura/main.c:73
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:74
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:76
+msgid "Start in a non-default mode"
+msgstr ""
 
 #: ../zathura/links.c:203 ../zathura/links.c:282
 msgid "Failed to run xdg-open."
@@ -498,87 +560,41 @@ msgstr "Link: %s"
 msgid "Link: Invalid"
 msgstr "Link: Tidak valid"
 
-#: ../zathura/page-widget.c:561
-msgid "Loading..."
-msgstr "Memuat....."
+#: ../zathura/shortcuts.c:1137
+msgid "This document does not contain any index"
+msgstr "Dokumen ini tidak mempunyai indeks"
 
-#: ../zathura/page-widget.c:1006
-msgid "Copy image"
-msgstr "Salin gambar"
+#: ../zathura/completion.c:285
+#, c-format
+msgid "Page %d"
+msgstr "Halaman %d"
 
-#: ../zathura/page-widget.c:1007
-msgid "Save image as"
-msgstr "Simpan gambar sebagai"
+#: ../zathura/completion.c:328
+msgid "Attachments"
+msgstr "Lampiran"
 
-#: ../zathura/zathura.c:204 ../zathura/zathura.c:1051
+#. add images
+#: ../zathura/completion.c:359
+msgid "Images"
+msgstr "Citra"
+
+#: ../zathura/zathura.c:206 ../zathura/zathura.c:1129
 msgid "[No name]"
 msgstr "[Tidak berjudul]"
 
-#: ../zathura/zathura.c:518
+#: ../zathura/zathura.c:520
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Tidak dapat membaca berkas dari stdin dan menulisnya ke berkas sementar"
 
-#: ../zathura/zathura.c:579
+#: ../zathura/zathura.c:604
+msgid "Enter password:"
+msgstr ""
+
+#: ../zathura/zathura.c:639
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Tipe berkas tidak didukung. Silakan memasang plugin yang dibutuhkan."
 
-#: ../zathura/zathura.c:589
+#: ../zathura/zathura.c:649
 msgid "Document does not contain any pages"
 msgstr "Dokumen tidak mempunyai laman apapun"
-
-#: ../zathura/main.c:56
-msgid "Reparents to window specified by xid"
-msgstr "Mengembalikan jendela sesuai dengan xid yang ditentukan"
-
-#: ../zathura/main.c:58
-msgid "Path to the config directory"
-msgstr "Path ke direktori konfigurasi"
-
-#: ../zathura/main.c:59
-msgid "Path to the data directory"
-msgstr "Path ke direktori data"
-
-#: ../zathura/main.c:60
-msgid "Path to the cache directory"
-msgstr ""
-
-#: ../zathura/main.c:61
-msgid "Path to the directories containing plugins"
-msgstr "Path ke direktori plugin"
-
-#: ../zathura/main.c:62
-msgid "Fork into the background"
-msgstr "Jalankan pada latar"
-
-#: ../zathura/main.c:63
-msgid "Document password"
-msgstr "Kata sandi dokumen"
-
-#: ../zathura/main.c:64
-msgid "Page number to go to"
-msgstr "Nomor halaman tujuan"
-
-#: ../zathura/main.c:65
-msgid "Log level (debug, info, warning, error)"
-msgstr "Tingkat log (debug, info, peringatan, error)"
-
-#: ../zathura/main.c:66
-msgid "Print version information"
-msgstr "Cetak informasi versi"
-
-#: ../zathura/main.c:67
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Synctex editor (diteruskan ke perintah synctex)"
-
-#: ../zathura/main.c:68
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../zathura/main.c:69
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../zathura/main.c:70
-msgid "Start in a non-default mode"
-msgstr ""

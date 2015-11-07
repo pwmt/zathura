@@ -1286,7 +1286,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
   }
 
   static int pages_per_row = 1;
-  static int first_page_column = 1;
+  static char first_page_column_list[] = "1:2";
   static double zoom = 1.0;
 
   const girara_mode_t old_mode = girara_mode_get(session);
@@ -1295,7 +1295,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     girara_setting_set(session, "pages-per-row", &pages_per_row);
 
     /* reset first page column */
-    girara_setting_set(session, "first-page-column", &first_page_column);
+    girara_setting_set(session, "first-page-column", first_page_column_list);
 
     /* show status bar */
     gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
@@ -1308,14 +1308,14 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     render_all(zathura);
     refresh_view(zathura);
 
-    /* setm ode */
+    /* set mode */
     girara_mode_set(session, zathura->modes.normal);
   } else if (old_mode == zathura->modes.normal) {
     /* backup pages per row */
     girara_setting_get(session, "pages-per-row", &pages_per_row);
 
     /* backup first page column */
-    girara_setting_get(session, "first-page-column", &first_page_column);
+    girara_setting_get(session, "first-page-column", first_page_column_list);
 
     /* set single view */
     int int_value = 1;
@@ -1336,7 +1336,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     gtk_window_fullscreen(GTK_WINDOW(session->gtk.window));
     refresh_view(zathura);
 
-    /* setm ode */
+    /* set mode */
     girara_mode_set(session, zathura->modes.presentation);
   }
 

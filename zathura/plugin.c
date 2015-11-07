@@ -52,7 +52,7 @@ static void zathura_plugin_free(zathura_plugin_t* plugin);
 static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping);
 
 zathura_plugin_manager_t*
-zathura_plugin_manager_new()
+zathura_plugin_manager_new(void)
 {
   zathura_plugin_manager_t* plugin_manager = g_try_malloc0(sizeof(zathura_plugin_manager_t));
   if (plugin_manager == NULL) {
