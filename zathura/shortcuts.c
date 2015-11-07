@@ -1308,7 +1308,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     render_all(zathura);
     refresh_view(zathura);
 
-    /* setm ode */
+    /* set mode */
     girara_mode_set(session, zathura->modes.normal);
   } else if (old_mode == zathura->modes.normal) {
     /* backup pages per row */
@@ -1336,7 +1336,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     gtk_window_fullscreen(GTK_WINDOW(session->gtk.window));
     refresh_view(zathura);
 
-    /* setm ode */
+    /* set mode */
     girara_mode_set(session, zathura->modes.presentation);
   }
 
