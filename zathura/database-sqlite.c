@@ -148,7 +148,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "scale FLOAT,"
     "rotation INTEGER,"
     "pages_per_row INTEGER,"
-    "first_page_column INTEGER,"
+    "first_page_column TEXT,"
     "position_x FLOAT,"
     "position_y FLOAT,"
     "time TIMESTAMP"
@@ -176,7 +176,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
 
   /* update fileinfo table (part 2) */
   static const char SQL_FILEINFO_ALTER2[] =
-    "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
+    "ALTER TABLE fileinfo ADD COLUMN first_page_column TEXT;";
 
   /* update fileinfo table (part 2) */
   static const char SQL_FILEINFO_ALTER3[] =
@@ -587,7 +587,8 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
       sqlite3_bind_double(stmt, 4, file_info->scale)             != SQLITE_OK ||
       sqlite3_bind_int(stmt,    5, file_info->rotation)          != SQLITE_OK ||
       sqlite3_bind_int(stmt,    6, file_info->pages_per_row)     != SQLITE_OK ||
-      sqlite3_bind_int(stmt,    7, file_info->first_page_column) != SQLITE_OK ||
+      sqlite3_bind_text(stmt,   7, file_info->first_page_column_list, -1, NULL)
+                                                                 != SQLITE_OK ||
       sqlite3_bind_double(stmt, 8, file_info->position_x)        != SQLITE_OK ||
       sqlite3_bind_double(stmt, 9, file_info->position_y)        != SQLITE_OK) {
     sqlite3_finalize(stmt);
@@ -631,14 +632,14 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
     return false;
   }
 
-  file_info->current_page      = sqlite3_column_int(stmt, 0);
-  file_info->page_offset       = sqlite3_column_int(stmt, 1);
-  file_info->scale             = sqlite3_column_double(stmt, 2);
-  file_info->rotation          = sqlite3_column_int(stmt, 3);
-  file_info->pages_per_row     = sqlite3_column_int(stmt, 4);
-  file_info->first_page_column = sqlite3_column_int(stmt, 5);
-  file_info->position_x        = sqlite3_column_double(stmt, 6);
-  file_info->position_y        = sqlite3_column_double(stmt, 7);
+  file_info->current_page           = sqlite3_column_int(stmt, 0);
+  file_info->page_offset            = sqlite3_column_int(stmt, 1);
+  file_info->scale                  = sqlite3_column_double(stmt, 2);
+  file_info->rotation               = sqlite3_column_int(stmt, 3);
+  file_info->pages_per_row          = sqlite3_column_int(stmt, 4);
+  file_info->first_page_column_list = (char*) sqlite3_column_text(stmt, 5);
+  file_info->position_x             = sqlite3_column_double(stmt, 6);
+  file_info->position_y             = sqlite3_column_double(stmt, 7);
 
   sqlite3_finalize(stmt);
 
