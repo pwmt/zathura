@@ -857,7 +857,6 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   /* view mode */
   unsigned int pages_per_row = 1;
-  unsigned int first_page_column = 1;
   char* first_page_column_list = first_page_column_list_default;
   unsigned int page_padding = 1;
 
@@ -873,11 +872,15 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   if (strcmp(file_info.first_page_column_list, "")) {
     first_page_column_list = file_info.first_page_column_list;
   } else {
-    girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column);
+    girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column_list);
   }
 
+  /* find value for first_page_column */
+  unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
+
   girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
-  girara_setting_set(zathura->ui.session, "first-page-column", &first_page_column);
+  girara_setting_set(zathura->ui.session, "first-page-column", first_page_column_list);
+  g_free(first_page_column_list);
 
   page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
   zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
@@ -1096,6 +1099,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
     /* save jumplist */
     zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
   }
+
+  /* free buffers */
+  g_free(file_info.first_page_column_list);
 
   girara_list_iterator_free(zathura->jumplist.cur);
   zathura->jumplist.cur = NULL;

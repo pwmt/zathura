@@ -107,4 +107,17 @@ GdkAtom* get_selection(zathura_t* zathura);
 double zathura_correct_scale_value(girara_session_t* session, const double
     scale);
 
+
+/**
+ * Extracts the column the first page should be rendered in from the specified
+ * list of settings corresponding to the specified pages per row
+ *
+ * @param[in] first_page_column_list The settings list
+ * @param[in] pages_per_row The current pages per row
+ *
+ * @return The column the first page should be rendered in
+ */
+unsigned int find_first_page_column(const char* first_page_column_list,
+                                    const unsigned int pages_per_row);
+
 #endif // UTILS_H
