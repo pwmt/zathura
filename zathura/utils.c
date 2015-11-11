@@ -225,7 +225,8 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   return version;
 }
 
-GdkAtom* get_selection(zathura_t* zathura)
+GdkAtom*
+get_selection(zathura_t* zathura)
 {
   g_return_val_if_fail(zathura != NULL, NULL);
 
