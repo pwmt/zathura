@@ -35,7 +35,7 @@ draw_links(zathura_t* zathura)
   /* set pages to draw links */
   bool show_links = false;
   unsigned int page_offset = 0;
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
     if (page == NULL) {
@@ -74,7 +74,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
   girara_setting_get(session, "abort-clear-search", &clear_search);
 
   if (zathura->document != NULL) {
-    unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+    const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
     for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
       zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
       if (page == NULL) {
@@ -469,7 +469,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  unsigned int page_number = zathura_document_get_current_page_number(zathura->document);
+  const unsigned int page_number = zathura_document_get_current_page_number(zathura->document);
 
   int angle = 90;
   if (argument != NULL && argument->n == ROTATE_CCW) {
