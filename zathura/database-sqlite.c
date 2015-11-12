@@ -251,24 +251,19 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     girara_debug("old database table layout detected; updating ...");
 
     /* prepare transaction */
-    char tx_begin[] = "BEGIN TRANSACTION;"
-                      "ALTER TABLE fileinfo RENAME TO tmp;";
-    char tx_end[] = "INSERT INTO fileinfo SELECT * FROM tmp;"
-                    "DROP TABLE tmp;"
-                    "COMMIT;";
-
-    /* calculate requred buffer size */
-    size_t tx_buffer_size = strlen(tx_begin);
-    tx_buffer_size += strlen(SQL_FILEINFO_INIT);
-    tx_buffer_size += strlen(tx_end);
-    ++tx_buffer_size;
+    static const char tx_begin[] =
+      "BEGIN TRANSACTION;"
+      "ALTER TABLE fileinfo RENAME TO tmp;";
+    static const char tx_end[] =
+      "INSERT INTO fileinfo SELECT * FROM tmp;"
+      "DROP TABLE tmp;"
+      "COMMIT;";
 
     /* assemble transaction */
-    char transaction[tx_buffer_size];
-    bzero(transaction, tx_buffer_size);
-    strcat(transaction, tx_begin);
-    strcat(transaction, SQL_FILEINFO_INIT);
-    strcat(transaction, tx_end);
+    char transaction[sizeof(tx_begin) + sizeof(SQL_FILEINFO_INIT) + sizeof(tx_end) - 2] = { '\0' };
+    g_strlcat(transaction, tx_begin, sizeof(transaction));
+    g_strlcat(transaction, SQL_FILEINFO_INIT, sizeof(transaction));
+    g_strlcat(transaction, tx_end, sizeof(transaction));
 
     if (sqlite3_exec(session, transaction, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
