@@ -253,3 +253,33 @@ get_selection(zathura_t* zathura)
 
   return selection;
 }
+
+unsigned int
+find_first_page_column(const char* first_page_column_list,
+                       const unsigned int pages_per_row)
+{
+  /* sanity checks */
+  unsigned int first_page_column = 1;
+  g_return_val_if_fail(first_page_column_list != NULL,     first_page_column);
+  g_return_val_if_fail(strcmp(first_page_column_list, ""), first_page_column);
+  g_return_val_if_fail(pages_per_row > 0,                  first_page_column);
+
+  /* split settings list */
+  char** settings = g_strsplit(first_page_column_list, ":", pages_per_row+1);
+
+  size_t settings_size = 0;
+  while (settings[settings_size] != NULL) {
+    ++settings_size;
+  }
+
+  /* read setting value corresponding to the specified pages per row */
+  unsigned int index = pages_per_row - 1;
+  if (settings_size > index && strcmp(settings[index], "")) {
+    first_page_column = atoi(settings[index]);
+  }
+
+  /* free buffers */
+  g_strfreev(settings);
+
+  return first_page_column;
+}

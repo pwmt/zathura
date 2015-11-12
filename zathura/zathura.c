@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
+#include <string.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -651,13 +652,14 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* read history file */
+  char first_page_column_list_default[] = "1:2";
   zathura_fileinfo_t file_info = {
     .current_page = 0,
     .page_offset = 0,
     .scale = 1,
     .rotation = 0,
     .pages_per_row = 0,
-    .first_page_column = 0,
+    .first_page_column_list = first_page_column_list_default,
     .position_x = 0,
     .position_y = 0
   };
@@ -855,7 +857,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   /* view mode */
   unsigned int pages_per_row = 1;
-  unsigned int first_page_column = 1;
+  char* first_page_column_list = first_page_column_list_default;
   unsigned int page_padding = 1;
 
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
@@ -866,14 +868,19 @@ document_open(zathura_t* zathura, const char* path, const char* password,
     girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
   }
 
-  if (file_info.first_page_column > 0) {
-    first_page_column = file_info.first_page_column;
+  /* read first_page_column list */
+  if (strcmp(file_info.first_page_column_list, "")) {
+    first_page_column_list = file_info.first_page_column_list;
   } else {
-    girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column);
+    girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column_list);
   }
 
+  /* find value for first_page_column */
+  unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
+
   girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
-  girara_setting_set(zathura->ui.session, "first-page-column", &first_page_column);
+  girara_setting_set(zathura->ui.session, "first-page-column", first_page_column_list);
+  g_free(first_page_column_list);
 
   page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
   zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
@@ -1072,14 +1079,14 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* store file information */
   const char* path = zathura_document_get_path(zathura->document);
 
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, 1, 0, 0 };
+  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, "1:2", 0, 0 };
   file_info.current_page = zathura_document_get_current_page_number(zathura->document);
   file_info.page_offset  = zathura_document_get_page_offset(zathura->document);
   file_info.scale        = zathura_document_get_scale(zathura->document);
   file_info.rotation     = zathura_document_get_rotation(zathura->document);
 
   girara_setting_get(zathura->ui.session, "pages-per-row", &(file_info.pages_per_row));
-  girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column));
+  girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column_list));
 
   /* get position */
   file_info.position_x = zathura_document_get_position_x(zathura->document);
@@ -1092,6 +1099,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
     /* save jumplist */
     zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
   }
+
+  /* free buffers */
+  g_free(file_info.first_page_column_list);
 
   girara_list_iterator_free(zathura->jumplist.cur);
   zathura->jumplist.cur = NULL;

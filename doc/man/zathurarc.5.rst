@@ -731,9 +731,12 @@ Defines the number of pages that are rendered next to each other in a row.
 first-page-column
 ^^^^^^^^^^^^^^^^^
 Defines the column in which the first page will be displayed.
+This setting is stored separately for every value of pages-per-row according to
+the following pattern <1 page per row>:[<2 pages per row>[: ...]]. Per default,
+the first column is set to 2 for double-page layout.
 
-* Value type: Integer
-* Default value: 1
+* Value type: String
+* Default value: 1:2
 
 recolor
 ^^^^^^^

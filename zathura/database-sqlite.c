@@ -5,6 +5,7 @@
 #include <girara/datastructures.h>
 #include <girara/input-history.h>
 #include <string.h>
+#include <strings.h>
 
 #include "database-sqlite.h"
 #include "utils.h"
@@ -17,6 +18,7 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
 
 static bool           check_column(sqlite3* session, const char* table, const char* col, bool* result);
+static bool           check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* result);
 static void           sqlite_finalize(GObject* object);
 static bool           sqlite_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
 static bool           sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
@@ -148,7 +150,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "scale FLOAT,"
     "rotation INTEGER,"
     "pages_per_row INTEGER,"
-    "first_page_column INTEGER,"
+    "first_page_column TEXT,"
     "position_x FLOAT,"
     "position_y FLOAT,"
     "time TIMESTAMP"
@@ -176,9 +178,9 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
 
   /* update fileinfo table (part 2) */
   static const char SQL_FILEINFO_ALTER2[] =
-    "ALTER TABLE fileinfo ADD COLUMN first_page_column INTEGER;";
+    "ALTER TABLE fileinfo ADD COLUMN first_page_column TEXT;";
 
-  /* update fileinfo table (part 2) */
+  /* update fileinfo table (part 3) */
   static const char SQL_FILEINFO_ALTER3[] =
     "ALTER TABLE fileinfo ADD COLUMN time TIMESTAMP;";
 
@@ -238,6 +240,37 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   if (ret1 == true && ret2 == true && res1 == false && res2 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout");
+    }
+  }
+
+  /* check existing tables for correct column types */
+  ret1 = check_column_type(session, "fileinfo", "first_page_column", "TEXT", &res1);
+
+  if (ret1 == true && res1 == false) {
+    girara_debug("old database table layout detected; updating ...");
+
+    /* prepare transaction */
+    char tx_begin[] = "BEGIN TRANSACTION;"
+                      "ALTER TABLE fileinfo RENAME TO tmp;";
+    char tx_end[] = "INSERT INTO fileinfo SELECT * FROM tmp;"
+                    "DROP TABLE tmp;"
+                    "COMMIT;";
+
+    /* calculate requred buffer size */
+    size_t tx_buffer_size = strlen(tx_begin);
+    tx_buffer_size += strlen(SQL_FILEINFO_INIT);
+    tx_buffer_size += strlen(tx_end);
+    ++tx_buffer_size;
+
+    /* assemble transaction */
+    char transaction[tx_buffer_size];
+    bzero(transaction, tx_buffer_size);
+    strcat(transaction, tx_begin);
+    strcat(transaction, SQL_FILEINFO_INIT);
+    strcat(transaction, tx_end);
+
+    if (sqlite3_exec(session, transaction, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
@@ -310,6 +343,42 @@ check_column(sqlite3* session, const char* table, const char* col, bool* res)
 
   if (*res == false) {
     girara_debug("column %s in table %s is NOT found", col, table);
+  }
+
+  sqlite3_finalize(stmt);
+  sqlite3_free(query);
+
+  return true;
+}
+
+static bool
+check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* res)
+{
+  /* we can't actually bind the argument with sqlite3_bind_text because
+   * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
+  char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
+  if (query == NULL) {
+    return false;
+  }
+
+  sqlite3_stmt* stmt = prepare_statement(session, query);
+  if (stmt == NULL) {
+    return false;
+  }
+
+  *res = false;
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
+      if (strcmp((const char*) sqlite3_column_text(stmt, 2), type) == 0) {
+        *res = true;
+        break;
+      }
+    }
+  }
+
+  if (*res == false) {
+    girara_debug("column %s in table %s has wrong type", col, table);
   }
 
   sqlite3_finalize(stmt);
@@ -587,7 +656,8 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
       sqlite3_bind_double(stmt, 4, file_info->scale)             != SQLITE_OK ||
       sqlite3_bind_int(stmt,    5, file_info->rotation)          != SQLITE_OK ||
       sqlite3_bind_int(stmt,    6, file_info->pages_per_row)     != SQLITE_OK ||
-      sqlite3_bind_int(stmt,    7, file_info->first_page_column) != SQLITE_OK ||
+      sqlite3_bind_text(stmt,   7, file_info->first_page_column_list, -1, NULL)
+                                                                 != SQLITE_OK ||
       sqlite3_bind_double(stmt, 8, file_info->position_x)        != SQLITE_OK ||
       sqlite3_bind_double(stmt, 9, file_info->position_y)        != SQLITE_OK) {
     sqlite3_finalize(stmt);
@@ -631,14 +701,14 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
     return false;
   }
 
-  file_info->current_page      = sqlite3_column_int(stmt, 0);
-  file_info->page_offset       = sqlite3_column_int(stmt, 1);
-  file_info->scale             = sqlite3_column_double(stmt, 2);
-  file_info->rotation          = sqlite3_column_int(stmt, 3);
-  file_info->pages_per_row     = sqlite3_column_int(stmt, 4);
-  file_info->first_page_column = sqlite3_column_int(stmt, 5);
-  file_info->position_x        = sqlite3_column_double(stmt, 6);
-  file_info->position_y        = sqlite3_column_double(stmt, 7);
+  file_info->current_page           = sqlite3_column_int(stmt, 0);
+  file_info->page_offset            = sqlite3_column_int(stmt, 1);
+  file_info->scale                  = sqlite3_column_double(stmt, 2);
+  file_info->rotation               = sqlite3_column_int(stmt, 3);
+  file_info->pages_per_row          = sqlite3_column_int(stmt, 4);
+  file_info->first_page_column_list = g_strdup((const char*) sqlite3_column_text(stmt, 5));
+  file_info->position_x             = sqlite3_column_double(stmt, 6);
+  file_info->position_y             = sqlite3_column_double(stmt, 7);
 
   sqlite3_finalize(stmt);
 
