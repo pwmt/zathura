@@ -278,6 +278,16 @@ zathura_init(zathura_t* zathura)
   girara_template_set_base(csstemplate, css);
   g_free(css);
 
+  /* Shortcut helpers */
+  zathura->shortcut.mouse.x = 0;
+  zathura->shortcut.mouse.y = 0;
+
+  zathura->shortcut.toggle_page_mode.pages = 2;
+
+  zathura->shortcut.toggle_presentation_mode.pages = 1;
+  zathura->shortcut.toggle_presentation_mode.first_page_column_list = NULL;
+  zathura->shortcut.toggle_presentation_mode.zoom = 1.0;
+
   /* Start D-Bus service */
   bool dbus = true;
   girara_setting_get(zathura->ui.session, "dbus-service", &dbus);
@@ -314,6 +324,9 @@ zathura_free(zathura_t* zathura)
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
   }
+
+  /* shortcut */
+  g_free(zathura->shortcut.toggle_presentation_mode.first_page_column_list);
 
   /* stdin support */
   if (zathura->stdin_support.file != NULL) {

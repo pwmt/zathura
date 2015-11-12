@@ -204,6 +204,24 @@ struct zathura_s
     unsigned int start; /**< Bisection range - start */
     unsigned int end; /**< Bisection range - end */
   } bisect;
+
+  /**
+   * Storage for shortcuts.
+   */
+  struct {
+    struct {
+      int x;
+      int y;
+    } mouse;
+    struct {
+      int pages;
+    } toggle_page_mode;
+    struct {
+      int pages;
+      char* first_page_column_list;
+      double zoom;
+    } toggle_presentation_mode;
+  } shortcut;
 };
 
 /**
