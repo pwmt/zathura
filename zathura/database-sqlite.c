@@ -568,6 +568,8 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
     }
   }
 
+  girara_list_iterator_free(cur);
+
   if (status == false) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     return false;
