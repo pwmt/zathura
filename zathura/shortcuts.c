@@ -20,14 +20,6 @@
 #include "adjustment.h"
 #include <math.h>
 
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
-
-#ifndef MAX
-#define MAX(a,b) (((a)>(b))?(a):(b))
-#endif
-
 /* Helper function; see sc_display_link and sc_follow. */
 static bool
 draw_links(zathura_t* zathura)
