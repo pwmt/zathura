@@ -665,14 +665,13 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* read history file */
-  char first_page_column_list_default[] = "1:2";
   zathura_fileinfo_t file_info = {
     .current_page = 0,
     .page_offset = 0,
     .scale = 1,
     .rotation = 0,
     .pages_per_row = 0,
-    .first_page_column_list = first_page_column_list_default,
+    .first_page_column_list = NULL,
     .position_x = 0,
     .position_y = 0
   };
@@ -870,7 +869,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   /* view mode */
   unsigned int pages_per_row = 1;
-  char* first_page_column_list = first_page_column_list_default;
+  char* first_page_column_list = NULL;
   unsigned int page_padding = 1;
 
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
@@ -882,8 +881,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
   }
 
   /* read first_page_column list */
-  if (strcmp(file_info.first_page_column_list, "")) {
+  if (file_info.first_page_column_list != NULL && strcmp(file_info.first_page_column_list, "")) {
     first_page_column_list = file_info.first_page_column_list;
+    file_info.first_page_column_list = NULL;
   } else {
     girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column_list);
   }
@@ -893,6 +893,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
   girara_setting_set(zathura->ui.session, "first-page-column", first_page_column_list);
+  g_free(file_info.first_page_column_list);
   g_free(first_page_column_list);
 
   page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
