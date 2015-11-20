@@ -28,9 +28,6 @@ main(int argc, char* argv[])
   textdomain(GETTEXT_PACKAGE);
 
   /* init gtk */
-#if !GTK_CHECK_VERSION(3, 6, 0)
-  gdk_threads_init();
-#endif
   gtk_init(&argc, &argv);
 
   /* parse command line arguments */
@@ -282,13 +279,7 @@ main(int argc, char* argv[])
   }
 
   /* run zathura */
-#if !GTK_CHECK_VERSION(3, 6, 0)
-  gdk_threads_enter();
-#endif
   gtk_main();
-#if !GTK_CHECK_VERSION(3, 6, 0)
-  gdk_threads_leave();
-#endif
 
   /* free zathura */
   zathura_free(zathura);
