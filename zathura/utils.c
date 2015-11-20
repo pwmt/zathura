@@ -263,11 +263,7 @@ find_first_page_column(const char* first_page_column_list,
 
   /* split settings list */
   char** settings = g_strsplit(first_page_column_list, ":", pages_per_row+1);
-
-  size_t settings_size = 0;
-  while (settings[settings_size] != NULL) {
-    ++settings_size;
-  }
+  const size_t settings_size = g_strv_length(settings);
 
   /* read setting value corresponding to the specified pages per row */
   unsigned int index = pages_per_row - 1;
