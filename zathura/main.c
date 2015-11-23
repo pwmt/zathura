@@ -4,6 +4,7 @@
 #include <girara/settings.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <errno.h>
 #include <limits.h>
 #include <locale.h>
 #include <stdio.h>
@@ -155,10 +156,14 @@ main(int argc, char* argv[])
     if (pid > 0) { /* parent */
       return 0;
     } else if (pid < 0) { /* error */
-      girara_error("Couldn't fork.");
+      girara_error("Could not fork: %s", strerror(errno));
+      return -1;
     }
 
-    setsid();
+    if (setsid() == -1) {
+      girara_error("Could not start new process group: %s", strerror(errno));
+      return -1;
+    }
   }
 
   /* create zathura session */
