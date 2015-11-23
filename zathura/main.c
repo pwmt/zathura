@@ -18,15 +18,115 @@
 #include "synctex.h"
 #endif
 
-/* main function */
-int
-main(int argc, char* argv[])
+/* Init locale */
+static void
+init_locale(void)
 {
-  /* init locale */
   setlocale(LC_ALL, "");
   bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   textdomain(GETTEXT_PACKAGE);
+}
+
+/* Set log level */
+static void
+set_log_level(const char* loglevel)
+{
+  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
+    girara_set_debug_level(GIRARA_INFO);
+  } else if (g_strcmp0(loglevel, "warning") == 0) {
+    girara_set_debug_level(GIRARA_WARNING);
+  } else if (g_strcmp0(loglevel, "error") == 0) {
+    girara_set_debug_level(GIRARA_ERROR);
+  }
+}
+
+/* Handle synctex forward synchronization */
+#ifdef WITH_SYNCTEX
+static int
+run_synctex_forward(const char* synctex_fwd, const char* filename,
+    int synctex_pid)
+{
+  GFile* file = g_file_new_for_commandline_arg(filename);
+  if (file == NULL) {
+    girara_error("Unable to handle argument '%s'.", filename);
+    return -1;
+  }
+
+  char* real_path = g_file_get_path(file);
+  g_object_unref(file);
+  if (real_path == NULL) {
+    girara_error("Failed to determine path for '%s'", filename);
+    return -1;
+  }
+
+  int line = 0;
+  int column = 0;
+  char* input_file = NULL;
+  if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
+    girara_error("Failed to parse argument to --synctex-forward.");
+    g_free(real_path);
+    return -1;
+  }
+
+  const int ret = zathura_dbus_synctex_position(real_path, input_file, line, column, synctex_pid);
+  g_free(input_file);
+  g_free(real_path);
+
+  if (ret == -1) {
+    /* D-Bus or SyncTeX failed */
+    girara_error("Got no usable data from SyncTeX or D-Bus failed in some way.");
+  }
+
+  return ret;
+}
+#endif
+
+static zathura_t*
+init_zathura(const char* config_dir, const char* data_dir,
+    const char* cache_dir, const char* plugin_path, char** argv,
+#ifdef GDK_WINDOWING_X11
+    char* synctex_editor, Window embed)
+#else
+    char* synctex_editor)
+#endif
+{
+  /* create zathura session */
+  zathura_t* zathura = zathura_create();
+  if (zathura == NULL) {
+    return NULL;
+  }
+
+#ifdef GDK_WINDOWING_X11
+  zathura_set_xid(zathura, embed);
+#endif
+  zathura_set_config_dir(zathura, config_dir);
+  zathura_set_data_dir(zathura, data_dir);
+  zathura_set_cache_dir(zathura, cache_dir);
+  zathura_set_plugin_dir(zathura, plugin_path);
+  zathura_set_argv(zathura, argv);
+
+  /* Init zathura */
+  if (zathura_init(zathura) == false) {
+    zathura_free(zathura);
+    return NULL;
+  }
+
+#ifdef WITH_SYNCTEX
+  if (synctex_editor != NULL) {
+    girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
+  }
+#endif
+
+  return zathura;
+}
+
+
+/* main function */
+int
+main(int argc, char* argv[])
+{
+  init_locale();
 
   /* parse command line arguments */
   gchar* config_dir     = NULL;
@@ -85,14 +185,7 @@ main(int argc, char* argv[])
   }
   g_option_context_free(context);
 
-  /* Set log level. */
-  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
-    girara_set_debug_level(GIRARA_INFO);
-  } else if (g_strcmp0(loglevel, "warning") == 0) {
-    girara_set_debug_level(GIRARA_WARNING);
-  } else if (g_strcmp0(loglevel, "error") == 0) {
-    girara_set_debug_level(GIRARA_ERROR);
-  }
+  set_log_level(loglevel);
 
 #ifdef WITH_SYNCTEX
   /* handle synctex forward synchronization */
@@ -102,39 +195,10 @@ main(int argc, char* argv[])
       return -1;
     }
 
-    GFile* file = g_file_new_for_commandline_arg(argv[1]);
-    if (file == NULL) {
-      girara_error("Unable to handle argument '%s'.", argv[1]);
-      return -1;
-    }
-
-    char* real_path = g_file_get_path(file);
-    g_object_unref(file);
-    if (real_path == NULL) {
-      girara_error("Failed to determine path for '%s'", argv[1]);
-      return -1;
-    }
-
-    int line = 0;
-    int column = 0;
-    char* input_file = NULL;
-    if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
-      girara_error("Failed to parse argument to --synctex-forward.");
-      g_free(real_path);
-      return -1;
-    }
-
-    const int ret = zathura_dbus_synctex_position(real_path, input_file, line, column, synctex_pid);
-    g_free(input_file);
-    g_free(real_path);
-
-    if (ret == -1) {
-      /* D-Bus or SyncTeX failed */
-      girara_error("Got no usable data from SyncTeX or D-Bus failed in some way.");
-      return -1;
-    } else if (ret == 1) {
-      /* Found a instance */
-      return 0;
+    const int ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
+    if (ret != 0) {
+      /* Error or instance found */
+      return ret;
     }
 
     girara_debug("No instance found. Starting new one.");
@@ -167,32 +231,16 @@ main(int argc, char* argv[])
   gtk_init(&argc, &argv);
 
   /* create zathura session */
-  zathura_t* zathura = zathura_create();
-  if (zathura == NULL) {
-    return -1;
-  }
-
+  zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir,
 #ifdef GDK_WINDOWING_X11
-  zathura_set_xid(zathura, embed);
+      plugin_path, argv, synctex_editor, embed);
+#else
+      plugin_path, argv, synctex_editor);
 #endif
-  zathura_set_config_dir(zathura, config_dir);
-  zathura_set_data_dir(zathura, data_dir);
-  zathura_set_cache_dir(zathura, cache_dir);
-  zathura_set_plugin_dir(zathura, plugin_path);
-  zathura_set_argv(zathura, argv);
-
-  /* Init zathura */
-  if (zathura_init(zathura) == false) {
+  if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
-    zathura_free(zathura);
     return -1;
   }
-
-#ifdef WITH_SYNCTEX
-  if (synctex_editor != NULL) {
-    girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
-  }
-#endif
 
   /* Print version */
   if (print_version == true) {
