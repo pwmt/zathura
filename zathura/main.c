@@ -28,9 +28,6 @@ main(int argc, char* argv[])
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   textdomain(GETTEXT_PACKAGE);
 
-  /* init gtk */
-  gtk_init(&argc, &argv);
-
   /* parse command line arguments */
   gchar* config_dir     = NULL;
   gchar* data_dir       = NULL;
@@ -165,6 +162,9 @@ main(int argc, char* argv[])
       return -1;
     }
   }
+
+  /* init gtk */
+  gtk_init(&argc, &argv);
 
   /* create zathura session */
   zathura_t* zathura = zathura_create();
