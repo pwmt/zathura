@@ -203,8 +203,9 @@ main(int argc, char* argv[])
 
   /* open document if passed */
   if (argc > 1) {
-    if (page_number > 0)
+    if (page_number > 0) {
       --page_number;
+    }
 #ifdef WITH_SYNCTEX
     document_open_idle(zathura, argv[1], password, page_number, mode, synctex_fwd);
 #else
