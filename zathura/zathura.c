@@ -638,9 +638,9 @@ document_open(zathura_t* zathura, const char* path, const char* password,
       zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info != NULL) {
         password_dialog_info->zathura = zathura;
+        password_dialog_info->path = g_strdup(path);
 
-        if (path != NULL) {
-          password_dialog_info->path = g_strdup(path);
+        if (password_dialog_info->path != NULL) {
           gdk_threads_add_idle(document_open_password_dialog, password_dialog_info);
           goto error_out;
         } else {
