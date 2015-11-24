@@ -211,8 +211,26 @@ main(int argc, char* argv[])
     return -1;
   }
 
+  size_t file_idx = argc > 1 ? 1 : 0;
+  /* Fork instances for other files. */
+  if (print_version == false && argc > 2) {
+    for (int idx = 2; idx < argc; ++idx) {
+      const pid_t pid = fork();
+      if (pid == 0) { /* child */
+        file_idx = idx;
+        if (setsid() == -1) {
+          girara_error("Could not start new process group: %s", strerror(errno));
+          return -1;
+        }
+      } else if (pid < 0) { /* error */
+        girara_error("Could not fork: %s", strerror(errno));
+        return -1;
+      }
+    }
+  }
+
   /* Fork into the background if the user really wants to ... */
-  if (forkback == true) {
+  if (print_version == false && forkback == true && file_idx < 2) {
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
       return 0;
@@ -227,10 +245,10 @@ main(int argc, char* argv[])
     }
   }
 
-  /* init gtk */
+  /* Initialize GTK+ */
   gtk_init(&argc, &argv);
 
-  /* create zathura session */
+  /* Create zathura session */
   zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir,
 #ifdef GDK_WINDOWING_X11
       plugin_path, argv, synctex_editor, embed);
@@ -255,81 +273,15 @@ main(int argc, char* argv[])
   }
 
   /* open document if passed */
-  if (argc > 1) {
+  if (file_idx != 0) {
     if (page_number > 0) {
       --page_number;
     }
 #ifdef WITH_SYNCTEX
-    document_open_idle(zathura, argv[1], password, page_number, mode, synctex_fwd);
+    document_open_idle(zathura, argv[file_idx], password, page_number, mode, synctex_fwd);
 #else
-    document_open_idle(zathura, argv[1], password, page_number, mode, NULL);
+    document_open_idle(zathura, argv[file_idx], password, page_number, mode, NULL);
 #endif
-  }
-  if (argc > 2) {
-    char* new_argv[2 * sizeof(entries) / sizeof(GOptionEntry) + 3] = {
-      NULL
-    };
-
-    size_t idx = 0;
-    new_argv[idx++] = g_strdup(zathura->global.arguments[0]);
-
-    /* pass arguments to new process */
-    if (config_dir != NULL) {
-      new_argv[idx++] = g_strdup("--config-dir");
-      new_argv[idx++] = g_strdup(config_dir);
-    }
-    if (data_dir != NULL) {
-      new_argv[idx++] = g_strdup("--data-dir");
-      new_argv[idx++] = g_strdup(data_dir);
-    }
-    if (cache_dir != NULL) {
-      new_argv[idx++] = g_strdup("--cache-dir");
-      new_argv[idx++] = g_strdup(cache_dir);
-    }
-    if (plugin_path != NULL) {
-      new_argv[idx++] = g_strdup("--plugins-dir");
-      new_argv[idx++] = g_strdup(plugin_path);
-    }
-    /* no need to pass fork */
-    if (password != NULL) {
-      new_argv[idx++] = g_strdup("--password");
-      new_argv[idx++] = g_strdup(password);
-    }
-    if (page_number != ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
-      new_argv[idx++] = g_strdup("--page");
-      new_argv[idx++] = g_strdup_printf("%d", page_number);
-    }
-    if (loglevel != NULL) {
-      new_argv[idx++] = g_strdup("--debug");
-      new_argv[idx++] = g_strdup(loglevel);
-    }
-#ifdef WITH_SYNCTEX
-    if (synctex_editor != NULL) {
-      new_argv[idx++] = g_strdup("--synctex-editor-command");
-      new_argv[idx++] = g_strdup(synctex_editor);
-    }
-    if (synctex_fwd != NULL) {
-      new_argv[idx++] = g_strdup("--synctex-forward");
-      new_argv[idx++] = g_strdup(synctex_fwd);
-    }
-#endif
-    /* no need to pass synctex-pid */
-    if (mode != NULL) {
-      new_argv[idx++] = g_strdup("--mode");
-      new_argv[idx++] = g_strdup(mode);
-    }
-
-    /* open additional files */
-    for (int i = 2; i < argc; i++) {
-      g_free(new_argv[idx]);
-      new_argv[idx] = g_strdup(argv[i]);
-
-      g_spawn_async(NULL, new_argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-    }
-
-    for (size_t s = 0; s <= idx; ++s) {
-      g_free(new_argv[s]);
-    }
   }
 
   /* run zathura */
