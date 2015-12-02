@@ -502,6 +502,51 @@ prepare_document_open_from_stdin(zathura_t* zathura, const char* path)
   return file;
 }
 
+static void
+copy_progress_callback(goffset current_num_bytes, goffset total_num_bytes, gpointer user_data)
+{
+  zathura_t *zathura = user_data;
+  float percent = current_num_bytes/(100.0*total_num_bytes);
+  girara_notify(zathura->ui.session, GIRARA_INFO,
+                        _("Download Progress: %f"), percent);
+  //printf("copy progress %ld %ld\n", current_num_bytes, total_num_bytes);
+}
+
+static gchar*
+prepare_document_open_from_gfile(zathura_t* zathura, GFile* source)
+{
+  g_return_val_if_fail(zathura, NULL);
+  gchar* file = NULL;
+  GFileIOStream *iostream;
+  GError* error = NULL;
+  
+  GFile *tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
+  if(tmpfile == NULL) {
+    if (error != NULL) {
+      girara_error("Can not create temporary file: %s", error->message);
+      g_error_free(error);
+    }
+    return NULL;
+  }
+  
+  gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, copy_progress_callback, zathura, &error);
+  if(rc == FALSE) {
+    if (error != NULL) {
+      girara_error("Can not copy to temporary file: %s", error->message);
+      g_error_free(error);
+    }
+    g_object_unref(iostream);
+    g_object_unref(tmpfile);
+    return NULL;
+  }
+
+  file = g_file_get_path(tmpfile);
+  g_object_unref(iostream);
+  g_object_unref(tmpfile);
+  
+  return file;
+}
+
 static gboolean
 document_info_open(gpointer data)
 {
@@ -520,7 +565,20 @@ document_info_open(gpointer data)
         document_info->zathura->stdin_support.file = g_strdup(file);
       }
     } else {
-      file = g_strdup(document_info->path);
+      GFile *gf = g_file_new_for_commandline_arg(document_info->path);
+      if(g_file_is_native(gf)) {
+        file = g_strdup(document_info->path);
+      }
+      else {
+        file = prepare_document_open_from_gfile(document_info->zathura, gf);
+        if (file == NULL) {
+          girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
+                        _("Could not read file from GIO and copy it to a temporary file."));
+        } else {
+          document_info->zathura->stdin_support.file = g_strdup(file);
+        }
+      }
+      g_object_unref(gf);
     }
 
     if (file != NULL) {
