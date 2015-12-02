@@ -502,16 +502,6 @@ prepare_document_open_from_stdin(zathura_t* zathura, const char* path)
   return file;
 }
 
-static void
-copy_progress_callback(goffset current_num_bytes, goffset total_num_bytes, gpointer user_data)
-{
-  zathura_t *zathura = user_data;
-  float percent = current_num_bytes/(100.0*total_num_bytes);
-  girara_notify(zathura->ui.session, GIRARA_INFO,
-                        _("Download Progress: %f"), percent);
-  //printf("copy progress %ld %ld\n", current_num_bytes, total_num_bytes);
-}
-
 static gchar*
 prepare_document_open_from_gfile(zathura_t* zathura, GFile* source)
 {
@@ -529,7 +519,7 @@ prepare_document_open_from_gfile(zathura_t* zathura, GFile* source)
     return NULL;
   }
   
-  gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, copy_progress_callback, zathura, &error);
+  gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
   if(rc == FALSE) {
     if (error != NULL) {
       girara_error("Can not copy to temporary file: %s", error->message);
