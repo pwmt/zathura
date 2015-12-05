@@ -13,12 +13,13 @@
  *
  * @param plugin_manager The plugin manager
  * @param path Path to the document
+ * @param display_uri The uri to display
  * @param password Password of the document or NULL
  * @param error Optional error parameter
  * @return The document object and NULL if an error occurs
  */
 zathura_document_t* zathura_document_open(zathura_plugin_manager_t*
-    plugin_manager, const char* path, const char* password, zathura_error_t*
+    plugin_manager, const char* path, const char *display_uri, const char* password, zathura_error_t*
     error);
 
 /**
@@ -45,6 +46,15 @@ const char* zathura_document_get_path(zathura_document_t* document);
  * @return The basename of the document
  */
 const char* zathura_document_get_basename(zathura_document_t* document);
+
+/**
+ * Returns the display filename of the document
+ *
+ * @param document The document
+ * @param basename wether to return the basename instead of full name
+ * @return The display filename of the document
+ */
+const char* zathura_document_get_display_name(zathura_document_t* document, bool basename);
 
 /**
  * Returns the password of the document

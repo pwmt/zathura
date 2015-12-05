@@ -238,7 +238,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
       document_close(zathura, false);
     }
 
-    document_open(zathura, girara_list_nth(argument_list, 0),
+    document_open(zathura, girara_list_nth(argument_list, 0), NULL,
                   (argc == 2) ? girara_list_nth(argument_list, 1) : NULL,
                   ZATHURA_PAGE_NUMBER_UNSPECIFIED);
   } else {

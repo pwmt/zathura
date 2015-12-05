@@ -518,11 +518,47 @@ prepare_document_open_from_stdin(zathura_t* zathura, const char* path)
   return file;
 }
 
+static gchar*
+prepare_document_open_from_gfile(zathura_t* zathura, GFile* source)
+{
+  g_return_val_if_fail(zathura, NULL);
+  gchar* file = NULL;
+  GFileIOStream *iostream;
+  GError* error = NULL;
+
+  GFile *tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
+  if(tmpfile == NULL) {
+    if (error != NULL) {
+      girara_error("Can not create temporary file: %s", error->message);
+      g_error_free(error);
+    }
+    return NULL;
+  }
+
+  gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
+  if(rc == FALSE) {
+    if (error != NULL) {
+      girara_error("Can not copy to temporary file: %s", error->message);
+      g_error_free(error);
+    }
+    g_object_unref(iostream);
+    g_object_unref(tmpfile);
+    return NULL;
+  }
+
+  file = g_file_get_path(tmpfile);
+  g_object_unref(iostream);
+  g_object_unref(tmpfile);
+
+  return file;
+}
+
 static gboolean
 document_info_open(gpointer data)
 {
   zathura_document_info_t* document_info = data;
   g_return_val_if_fail(document_info != NULL, FALSE);
+  char *display_uri = NULL;
 
   if (document_info->zathura != NULL && document_info->path != NULL) {
     char* file = NULL;
@@ -536,7 +572,21 @@ document_info_open(gpointer data)
         document_info->zathura->stdin_support.file = g_strdup(file);
       }
     } else {
-      file = g_strdup(document_info->path);
+      GFile *gf = g_file_new_for_commandline_arg(document_info->path);
+      if(g_file_is_native(gf)) {
+        file = g_strdup(document_info->path);
+      }
+      else {
+        display_uri = g_file_get_uri(gf);
+        file = prepare_document_open_from_gfile(document_info->zathura, gf);
+        if (file == NULL) {
+          girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
+                        _("Could not read file from GIO and copy it to a temporary file."));
+        } else {
+          document_info->zathura->stdin_support.file = g_strdup(file);
+        }
+      }
+      g_object_unref(gf);
     }
 
     if (file != NULL) {
@@ -544,10 +594,12 @@ document_info_open(gpointer data)
         document_open_synctex(document_info->zathura, file,
                               document_info->password, document_info->synctex);
       } else {
-        document_open(document_info->zathura, file, document_info->password,
+        document_open(document_info->zathura, file, display_uri, document_info->password,
                       document_info->page_number);
       }
+
       g_free(file);
+      g_free(display_uri);
 
       if (document_info->mode != NULL) {
         if (g_strcmp0(document_info->mode, "presentation") == 0) {
@@ -621,7 +673,7 @@ document_open_password_dialog(gpointer data)
 }
 
 bool
-document_open(zathura_t* zathura, const char* path, const char* password,
+document_open(zathura_t* zathura, const char* path, const char *display_uri, const char* password,
               int page_number)
 {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
@@ -630,7 +682,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   gchar* file_uri = NULL;
   zathura_error_t error = ZATHURA_ERROR_OK;
-  zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, password, &error);
+  zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, display_uri, password, &error);
 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
@@ -971,7 +1023,7 @@ bool
 document_open_synctex(zathura_t* zathura, const char* path,
                       const char* password, const char* synctex)
 {
-  bool ret = document_open(zathura, path, password,
+  bool ret = document_open(zathura, path, NULL, password,
                            ZATHURA_PAGE_NUMBER_UNSPECIFIED);
   if (ret == false) {
     return false;
