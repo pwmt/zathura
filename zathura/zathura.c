@@ -558,6 +558,7 @@ document_info_open(gpointer data)
 {
   zathura_document_info_t* document_info = data;
   g_return_val_if_fail(document_info != NULL, FALSE);
+  char *display_uri = NULL;
 
   if (document_info->zathura != NULL && document_info->path != NULL) {
     char* file = NULL;
@@ -576,6 +577,7 @@ document_info_open(gpointer data)
         file = g_strdup(document_info->path);
       }
       else {
+        display_uri = g_file_get_uri(gf);
         file = prepare_document_open_from_gfile(document_info->zathura, gf);
         if (file == NULL) {
           girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
@@ -596,6 +598,7 @@ document_info_open(gpointer data)
                       document_info->page_number);
       }
       g_free(file);
+      g_free(display_uri);
 
       if (document_info->mode != NULL) {
         if (g_strcmp0(document_info->mode, "presentation") == 0) {
@@ -669,7 +672,7 @@ document_open_password_dialog(gpointer data)
 }
 
 bool
-document_open(zathura_t* zathura, const char* path, const char* password,
+document_open(zathura_t* zathura, const char* path, const char *display_uri, const char* password,
               int page_number)
 {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
@@ -678,7 +681,7 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
   gchar* file_uri = NULL;
   zathura_error_t error = ZATHURA_ERROR_OK;
-  zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, password, &error);
+  zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, display_uri, password, &error);
 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
