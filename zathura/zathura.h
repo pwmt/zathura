@@ -283,12 +283,13 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  *
  * @param zathura The zathura session
  * @param path The path to the file
+ * @param display_uri The uri to display
  * @param password The password of the file
  * @param page_number Open given page number
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open(zathura_t* zathura, const char* path, const char* password,
+bool document_open(zathura_t* zathura, const char* path, const char *display_uri, const char* password,
                    int page_number);
 
 /**

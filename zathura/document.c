@@ -23,6 +23,7 @@
 struct zathura_document_s {
   char* file_path; /**< File path of the document */
   char* basename; /**< Basename of the document */
+  char *display_uri; /**< URI of the document, for display purposes only */
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
   unsigned int number_of_pages; /**< Number of pages */
@@ -61,7 +62,7 @@ check_set_error(zathura_error_t* error, zathura_error_t code) {
 
 zathura_document_t*
 zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
-                      path, const char* password, zathura_error_t* error)
+                      path, const char *display_uri, const char* password, zathura_error_t* error)
 {
   if (path == NULL) {
     return NULL;
@@ -114,8 +115,16 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
     goto error_free;
   }
 
+  if(display_uri == NULL) {
+    document->basename    = g_file_get_basename(file);
+  }
+  else {
+    GFile *gf = g_file_new_for_uri(display_uri);
+    document->basename = g_file_get_basename(gf);
+    g_object_unref(gf);
+  }
+  document->display_uri = g_strdup(display_uri);
   document->file_path   = real_path;
-  document->basename    = g_file_get_basename(file);
   document->password    = password;
   document->scale       = 1.0;
   document->plugin      = plugin;
@@ -220,6 +229,7 @@ zathura_document_free(zathura_document_t* document)
     free(document->file_path);
   }
   g_free(document->basename);
+  g_free(document->display_uri);
 
   g_free(document);
 
@@ -244,6 +254,25 @@ zathura_document_get_basename(zathura_document_t* document)
   }
 
   return document->basename;
+}
+
+const char*
+zathura_document_get_display_name(zathura_document_t* document, bool basename)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+  if(basename) {
+    return document->basename;
+  }
+  else {
+    if(document->display_uri) {
+      return document->display_uri;
+    }
+    else {
+      return document->file_path;
+    }
+  }
 }
 
 const char*

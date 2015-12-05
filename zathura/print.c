@@ -8,6 +8,7 @@
 #include <girara/utils.h>
 #include <girara/statusbar.h>
 #include <girara/session.h>
+#include <girara/settings.h>
 #include <glib/gi18n.h>
 
 static void cb_print_draw_page(GtkPrintOperation* print_operation,
@@ -78,12 +79,11 @@ cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     return;
   }
 
-  const char* file_path = zathura_document_get_path(zathura->document);
-
-  if (file_path != NULL) {
-    girara_statusbar_item_set_text(zathura->ui.session,
-                                   zathura->ui.statusbar.file, file_path);
-  }
+  bool basename_only = false;
+  girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+  girara_statusbar_item_set_text(zathura->ui.session,
+                                 zathura->ui.statusbar.file,
+                                 zathura_document_get_display_name(zathura->document, basename_only));
 }
 
 static void

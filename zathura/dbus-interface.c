@@ -284,7 +284,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     g_variant_get(parameters, "(ssi)", &filename, &password, &page);
 
     document_close(priv->zathura, false);
-    const bool ret = document_open(priv->zathura, filename,
+    const bool ret = document_open(priv->zathura, filename, NULL,
                                    strlen(password) > 0 ? password : NULL,
                                    page);
     g_free(filename);
