@@ -213,13 +213,14 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     g_variant_get(parameters, "(ssi)", &filename, &password, &page);
 
     document_close(priv->zathura, false);
-    const bool ret = document_open(priv->zathura, filename,
-                                   strlen(password) > 0 ? password : NULL,
-                                   page);
+    document_open_idle(priv->zathura, filename,
+                       strlen(password) > 0 ? password : NULL,
+                       page,
+                       NULL, NULL);
     g_free(filename);
     g_free(password);
 
-    GVariant* result = g_variant_new("(b)", ret);
+    GVariant* result = g_variant_new("(b)", true);
     g_dbus_method_invocation_return_value(invocation, result);
     return;
   } else if (g_strcmp0(method_name, "CloseDocument") == 0) {
