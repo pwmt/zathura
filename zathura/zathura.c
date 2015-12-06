@@ -577,19 +577,13 @@ document_info_open(gpointer data)
         file = g_file_get_path(gf);
       }
       else {
-        char* gf_file_path = g_file_get_path(gf);
-        if (gf_file_path != NULL) {
-          /* file is not given via a native path, but available from a path */
-          file = gf_file_path;
+        /* copy file with GIO */
+        file = prepare_document_open_from_gfile(document_info->zathura, gf);
+        if (file == NULL) {
+          girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
+                        _("Could not read file from GIO and copy it to a temporary file."));
         } else {
-          /* copy file with GIO */
-          file = prepare_document_open_from_gfile(document_info->zathura, gf);
-          if (file == NULL) {
-            girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
-                          _("Could not read file from GIO and copy it to a temporary file."));
-          } else {
-            document_info->zathura->stdin_support.file = g_strdup(file);
-          }
+          document_info->zathura->stdin_support.file = g_strdup(file);
         }
       }
       g_object_unref(gf);
