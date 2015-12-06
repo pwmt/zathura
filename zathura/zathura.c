@@ -524,7 +524,7 @@ prepare_document_open_from_gfile(GFile* source)
   GError* error = NULL;
 
   GFile *tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
-  if(tmpfile == NULL) {
+  if (tmpfile == NULL) {
     if (error != NULL) {
       girara_error("Can not create temporary file: %s", error->message);
       g_error_free(error);
@@ -533,7 +533,7 @@ prepare_document_open_from_gfile(GFile* source)
   }
 
   gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
-  if(rc == FALSE) {
+  if (rc == FALSE) {
     if (error != NULL) {
       girara_error("Can not copy to temporary file: %s", error->message);
       g_error_free(error);
