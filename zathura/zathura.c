@@ -46,11 +46,11 @@
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
-  const char* path;
-  const char* password;
+  char* path;
+  char* password;
   int page_number;
-  const char* mode;
-  const char* synctex;
+  char* mode;
+  char* synctex;
 } zathura_document_info_t;
 
 
@@ -62,6 +62,20 @@ static void zathura_jumplist_save(zathura_t* zathura);
 #ifdef G_OS_UNIX
 static gboolean zathura_signal_sigterm(gpointer data);
 #endif
+
+static void
+free_document_info(zathura_document_info_t* document_info)
+{
+  if (document_info == NULL) {
+    return;
+  }
+
+  g_free(document_info->path);
+  g_free(document_info->password);
+  g_free(document_info->mode);
+  g_free(document_info->synctex);
+  g_free(document_info);
+}
 
 /* function implementation */
 zathura_t*
@@ -610,7 +624,7 @@ document_info_open(gpointer data)
     }
   }
 
-  g_free(document_info);
+  free_document_info(document_info);
   return FALSE;
 }
 
@@ -1043,9 +1057,8 @@ void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
                    int page_number, const char* mode, const char* synctex)
 {
-  if (zathura == NULL || path == NULL) {
-    return;
-  }
+  g_return_if_fail(zathura != NULL);
+  g_return_if_fail(path != NULL);
 
   zathura_document_info_t* document_info = g_try_malloc0(sizeof(zathura_document_info_t));
   if (document_info == NULL) {
@@ -1053,11 +1066,17 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
   }
 
   document_info->zathura     = zathura;
-  document_info->path        = path;
-  document_info->password    = password;
+  document_info->path        = g_strdup(path);
+  if (password != NULL) {
+    document_info->password  = g_strdup(password);
+  }
   document_info->page_number = page_number;
-  document_info->mode        = mode;
-  document_info->synctex     = synctex;
+  if (mode != NULL) {
+    document_info->mode      = g_strdup(mode);
+  }
+  if (synctex != NULL) {
+    document_info->synctex   = g_strdup(synctex);
+  }
 
   gdk_threads_add_idle(document_info_open, document_info);
 }
