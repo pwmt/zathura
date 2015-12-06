@@ -571,17 +571,25 @@ document_info_open(gpointer data)
         document_info->zathura->stdin_support.file = g_strdup(file);
       }
     } else {
-      GFile *gf = g_file_new_for_commandline_arg(document_info->path);
-      if(g_file_is_native(gf)) {
-        file = g_strdup(document_info->path);
+      GFile* gf = g_file_new_for_commandline_arg(document_info->path);
+      if (g_file_is_native(gf) == TRUE) {
+        /* file was given as a native path */
+        file = g_file_get_path(gf);
       }
       else {
-        file = prepare_document_open_from_gfile(document_info->zathura, gf);
-        if (file == NULL) {
-          girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
-                        _("Could not read file from GIO and copy it to a temporary file."));
+        char* gf_file_path = g_file_get_path(gf);
+        if (gf_file_path != NULL) {
+          /* file is not given via a native path, but available from a path */
+          file = gf_file_path;
         } else {
-          document_info->zathura->stdin_support.file = g_strdup(file);
+          /* copy file with GIO */
+          file = prepare_document_open_from_gfile(document_info->zathura, gf);
+          if (file == NULL) {
+            girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
+                          _("Could not read file from GIO and copy it to a temporary file."));
+          } else {
+            document_info->zathura->stdin_support.file = g_strdup(file);
+          }
         }
       }
       g_object_unref(gf);
