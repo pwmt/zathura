@@ -456,10 +456,8 @@ zathura_set_argv(zathura_t* zathura, char** argv)
 }
 
 static gchar*
-prepare_document_open_from_stdin(zathura_t* zathura, const char* path)
+prepare_document_open_from_stdin(const char* path)
 {
-  g_return_val_if_fail(zathura, NULL);
-
   int infileno = -1;
   if (g_strcmp0(path, "-") == 0) {
     infileno = fileno(stdin);
@@ -519,11 +517,10 @@ prepare_document_open_from_stdin(zathura_t* zathura, const char* path)
 }
 
 static gchar*
-prepare_document_open_from_gfile(zathura_t* zathura, GFile* source)
+prepare_document_open_from_gfile(GFile* source)
 {
-  g_return_val_if_fail(zathura, NULL);
   gchar* file = NULL;
-  GFileIOStream *iostream;
+  GFileIOStream* iostream = NULL;
   GError* error = NULL;
 
   GFile *tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
@@ -563,7 +560,7 @@ document_info_open(gpointer data)
     char* file = NULL;
     if (g_strcmp0(document_info->path, "-") == 0 ||
         g_str_has_prefix(document_info->path, "/proc/self/fd/") == true) {
-      file = prepare_document_open_from_stdin(document_info->zathura, document_info->path);
+      file = prepare_document_open_from_stdin(document_info->path);
       if (file == NULL) {
         girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
                       _("Could not read file from stdin and write it to a temporary file."));
@@ -578,7 +575,7 @@ document_info_open(gpointer data)
       }
       else {
         /* copy file with GIO */
-        file = prepare_document_open_from_gfile(document_info->zathura, gf);
+        file = prepare_document_open_from_gfile(gf);
         if (file == NULL) {
           girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
                         _("Could not read file from GIO and copy it to a temporary file."));
