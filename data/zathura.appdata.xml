@@ -22,20 +22,20 @@
       </ul>
     </p>
   </description>
-  <url type="homepage">http://pwmt.org/projects/zathura</url>
+  <url type="homepage">https://pwmt.org/projects/zathura</url>
   <url type="bugtracker">https://bugs.pwmt.org/project/zathura</url>
   <screenshots>
     <screenshot type="default">
-      <image>http://pwmt.org/projects/zathura/img/zathura-cover.png</image>
+      <image>https://pwmt.org/projects/zathura/img/zathura-cover.png</image>
     </screenshot>
     <screenshot>
-      <image>http://pwmt.org/projects/zathura/img/zathura-completion.png</image>
+      <image>https://pwmt.org/projects/zathura/img/zathura-completion.png</image>
     </screenshot>
     <screenshot>
-      <image>http://pwmt.org/projects/zathura/img/zathura-follow.png</image>
+      <image>https://pwmt.org/projects/zathura/img/zathura-follow.png</image>
     </screenshot>
     <screenshot>
-      <image>http://pwmt.org/projects/zathura/img/zathura-bookmarks.png</image>
+      <image>https://pwmt.org/projects/zathura/img/zathura-bookmarks.png</image>
     </screenshot>
   </screenshots>
   <update_contact>zathura@lists.pwmt.org</update_contact>
