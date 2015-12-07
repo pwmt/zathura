@@ -306,7 +306,7 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open(zathura_t* zathura, const char* path, const char* password,
+bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
                    int page_number);
 
 /**
@@ -319,7 +319,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* password,
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open_synctex(zathura_t* zathura, const char* path,
+bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
                            const char* password, const char* synctex);
 
 /**
@@ -469,5 +469,15 @@ void zathura_jumplist_trim(zathura_t* zathura);
  * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
+
+/**
+ * Gets the nicely formatted filename of the loaded document according to settings
+ *
+ * @param zathura The zathura session
+ * @param statusbar Whether return value will be dispalyed in status bar
+ *
+ * return Printable filename. Free with g_free.
+ */
+char* get_formatted_filename(zathura_t* zathura, bool statusbar);
 
 #endif // ZATHURA_H

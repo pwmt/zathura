@@ -440,11 +440,12 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
   }
 
   /* try to open document again */
-  if (document_open(dialog->zathura, dialog->path, input,
+  if (document_open(dialog->zathura, dialog->path, dialog->uri, input,
                     ZATHURA_PAGE_NUMBER_UNSPECIFIED) == false) {
     gdk_threads_add_idle(password_dialog, dialog);
   } else {
     g_free(dialog->path);
+    g_free(dialog->uri);
     free(dialog);
   }
 
