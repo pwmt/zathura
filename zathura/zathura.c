@@ -636,7 +636,7 @@ get_formatted_filename(zathura_t* zathura, bool statusbar)
 {
   bool basename_only = false;
   const char* file_path = zathura_document_get_uri(zathura->document);
-  if(file_path == NULL) {
+  if (file_path == NULL) {
     file_path = zathura_document_get_path(zathura->document);
   }
   if (statusbar == true) {
@@ -673,16 +673,8 @@ get_formatted_filename(zathura_t* zathura, bool statusbar)
       return g_strdup(file_path);
     }
   } else {
-    char *basename = NULL;
-    if(zathura_document_get_uri(zathura->document) == NULL) {
-      basename = g_strdup(zathura_document_get_basename(zathura->document));
-    }
-    else {
-      GFile *gf = g_file_new_for_uri(zathura_document_get_uri(zathura->document));
-      basename = g_file_get_basename(gf);
-      g_object_unref(gf);
-    }
-    return basename;
+    const char* basename = zathura_document_get_basename(zathura->document);
+    return g_strdup(basename);
   }
 }
 

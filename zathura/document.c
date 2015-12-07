@@ -116,8 +116,15 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   }
 
   document->file_path   = real_path;
-  document->basename    = g_file_get_basename(file);
   document->uri         = g_strdup(uri);
+  if (document->uri == NULL) {
+    document->basename    = g_file_get_basename(file);
+  }
+  else {
+    GFile *gf = g_file_new_for_uri(document->uri);
+    document->basename = g_file_get_basename(gf);
+    g_object_unref(gf);
+  }
   document->password    = password;
   document->scale       = 1.0;
   document->plugin      = plugin;
