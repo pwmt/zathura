@@ -162,7 +162,7 @@ renderer_finalize(GObject* object)
   }
   g_mutex_clear(&(priv->mutex));
 
-  free(priv->page_cache.cache);
+  g_free(priv->page_cache.cache);
   girara_list_free(priv->requests);
 }
 
