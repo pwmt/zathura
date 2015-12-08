@@ -78,12 +78,10 @@ cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     return;
   }
 
-  const char* file_path = zathura_document_get_path(zathura->document);
-
-  if (file_path != NULL) {
-    girara_statusbar_item_set_text(zathura->ui.session,
-                                   zathura->ui.statusbar.file, file_path);
-  }
+  char* file_path = get_formatted_filename(zathura, true);
+  girara_statusbar_item_set_text(zathura->ui.session,
+                                 zathura->ui.statusbar.file, file_path);
+  g_free(file_path);
 }
 
 static void

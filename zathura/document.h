@@ -18,7 +18,7 @@
  * @return The document object and NULL if an error occurs
  */
 zathura_document_t* zathura_document_open(zathura_plugin_manager_t*
-    plugin_manager, const char* path, const char* password, zathura_error_t*
+    plugin_manager, const char* path, const char *uri, const char* password, zathura_error_t*
     error);
 
 /**
@@ -37,6 +37,14 @@ zathura_error_t zathura_document_free(zathura_document_t* document);
  * @return The file path of the document
  */
 const char* zathura_document_get_path(zathura_document_t* document);
+
+/**
+ * Returns the URI of the document
+ *
+ * @param document The document
+ * @return The URI of the document
+ */
+const char* zathura_document_get_uri(zathura_document_t* document);
 
 /**
  * Returns the basename of the document

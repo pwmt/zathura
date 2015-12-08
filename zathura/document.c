@@ -22,6 +22,7 @@
  */
 struct zathura_document_s {
   char* file_path; /**< File path of the document */
+  char* uri; /**< URI of the document */
   char* basename; /**< Basename of the document */
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
@@ -61,7 +62,7 @@ check_set_error(zathura_error_t* error, zathura_error_t code) {
 
 zathura_document_t*
 zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
-                      path, const char* password, zathura_error_t* error)
+                      path, const char *uri, const char* password, zathura_error_t* error)
 {
   if (path == NULL) {
     return NULL;
@@ -115,7 +116,15 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
   }
 
   document->file_path   = real_path;
-  document->basename    = g_file_get_basename(file);
+  document->uri         = g_strdup(uri);
+  if (document->uri == NULL) {
+    document->basename    = g_file_get_basename(file);
+  }
+  else {
+    GFile *gf = g_file_new_for_uri(document->uri);
+    document->basename = g_file_get_basename(gf);
+    g_object_unref(gf);
+  }
   document->password    = password;
   document->scale       = 1.0;
   document->plugin      = plugin;
@@ -216,9 +225,8 @@ zathura_document_free(zathura_document_t* document)
     error = functions->document_free(document, document->data);
   }
 
-  if (document->file_path != NULL) {
-    free(document->file_path);
-  }
+  g_free(document->file_path);
+  g_free(document->uri);
   g_free(document->basename);
 
   g_free(document);
@@ -234,6 +242,16 @@ zathura_document_get_path(zathura_document_t* document)
   }
 
   return document->file_path;
+}
+
+const char*
+zathura_document_get_uri(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+
+  return document->uri;
 }
 
 const char*
