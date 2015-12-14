@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2015-10-15 23:03+0200\n"
+"POT-Creation-Date: 2015-12-14 22:03+0100\n"
 "PO-Revision-Date: 2015-10-15 23:06+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Norwegian (http://www.transifex.com/projects/p/zathura/"
@@ -19,10 +19,178 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.5\n"
 
-#: ../zathura/print.c:64 ../zathura/print.c:211
+#: ../zathura/callbacks.c:233
 #, c-format
-msgid "Printing failed: %s"
-msgstr "Utskrift feilet: %s"
+msgid "'%s' must not be 0. Set to 1."
+msgstr ""
+
+#: ../zathura/callbacks.c:315
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "Ugyldig inndata '%s' gitt."
+
+#: ../zathura/callbacks.c:351
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "Ugyldig index '%s' gitt."
+
+#: ../zathura/callbacks.c:594
+#, c-format
+msgid "Copied selected text to selection %s: %s"
+msgstr ""
+
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:423 ../zathura/commands.c:550
+#: ../zathura/shortcuts.c:406 ../zathura/shortcuts.c:1216
+#: ../zathura/shortcuts.c:1245 ../zathura/shortcuts.c:1272
+msgid "No document opened."
+msgstr "Ingen dokumenter åpnet."
+
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:428
+msgid "Invalid number of arguments given."
+msgstr "Ugyldig nummer av argumenter gitt."
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Kunne ikke oppdatere bokmerke: %s"
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Kunne ikke lage bokmerke: %s"
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Bokmerke er oppdatert: %s"
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Bokmerket er laget: %s"
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Fjernet bokmerke: %s"
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Kunne ikke fjerne bokmerke: %s"
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Bokmerke eksisterer ikke: %s"
+
+#: ../zathura/commands.c:162
+msgid "Title"
+msgstr "Tittel"
+
+#: ../zathura/commands.c:163
+msgid "Author"
+msgstr "Forfatter"
+
+#: ../zathura/commands.c:164
+msgid "Subject"
+msgstr "Subjekt"
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr "Nøkkelord"
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr "Laget av"
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr "Produsent"
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr "Laget dato"
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr "Modifisert dato"
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "Ingen informasjon tilgjengelig."
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "For mange argumenter."
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "Ingen argumenter gitt."
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "Dokumentet er lagret."
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "Kunne ikke lagre dokumentet."
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "Ugyldig nummer av argumenter."
+
+#: ../zathura/commands.c:447
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Kunne ikke skrive vedlegg '%s' til '%s'."
+
+#: ../zathura/commands.c:449
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Skrev vedlegg '%s' til '%s'."
+
+#: ../zathura/commands.c:493
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Skrev bilde '%s' til '%s'."
+
+#: ../zathura/commands.c:495
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "Kunne ikke skrive bilde '%s' til '%s'."
+
+#: ../zathura/commands.c:502
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "Ukjent bilde '%s'."
+
+#: ../zathura/commands.c:506
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "Ukjent vedlegg eller bilde '%s'."
+
+#: ../zathura/commands.c:563
+msgid "Argument must be a number."
+msgstr "Argumentet må være et tall."
+
+#: ../zathura/completion.c:285
+#, c-format
+msgid "Page %d"
+msgstr "Side %d"
+
+#: ../zathura/completion.c:328
+msgid "Attachments"
+msgstr "Vedlegg"
+
+#. add images
+#: ../zathura/completion.c:359
+msgid "Images"
+msgstr "Bilder"
 
 #. zathura settings
 #: ../zathura/config.c:144
@@ -315,233 +483,6 @@ msgstr "Uthev følgende søkeresultater"
 msgid "Show version information"
 msgstr "Vis versjonsinformasjon"
 
-#: ../zathura/callbacks.c:233
-#, c-format
-msgid "'%s' must not be 0. Set to 1."
-msgstr ""
-
-#: ../zathura/callbacks.c:310
-#, c-format
-msgid "Invalid input '%s' given."
-msgstr "Ugyldig inndata '%s' gitt."
-
-#: ../zathura/callbacks.c:346
-#, c-format
-msgid "Invalid index '%s' given."
-msgstr "Ugyldig index '%s' gitt."
-
-#: ../zathura/callbacks.c:588
-#, c-format
-msgid "Copied selected text to selection %s: %s"
-msgstr ""
-
-#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
-#: ../zathura/commands.c:152 ../zathura/commands.c:268
-#: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:423 ../zathura/commands.c:550
-#: ../zathura/shortcuts.c:417 ../zathura/shortcuts.c:1227
-#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
-msgid "No document opened."
-msgstr "Ingen dokumenter åpnet."
-
-#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:428
-msgid "Invalid number of arguments given."
-msgstr "Ugyldig nummer av argumenter gitt."
-
-#: ../zathura/commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "Kunne ikke oppdatere bokmerke: %s"
-
-#: ../zathura/commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "Kunne ikke lage bokmerke: %s"
-
-#: ../zathura/commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Bokmerke er oppdatert: %s"
-
-#: ../zathura/commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Bokmerket er laget: %s"
-
-#: ../zathura/commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Fjernet bokmerke: %s"
-
-#: ../zathura/commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Kunne ikke fjerne bokmerke: %s"
-
-#: ../zathura/commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "Bokmerke eksisterer ikke: %s"
-
-#: ../zathura/commands.c:162
-msgid "Title"
-msgstr "Tittel"
-
-#: ../zathura/commands.c:163
-msgid "Author"
-msgstr "Forfatter"
-
-#: ../zathura/commands.c:164
-msgid "Subject"
-msgstr "Subjekt"
-
-#: ../zathura/commands.c:165
-msgid "Keywords"
-msgstr "Nøkkelord"
-
-#: ../zathura/commands.c:166
-msgid "Creator"
-msgstr "Laget av"
-
-#: ../zathura/commands.c:167
-msgid "Producer"
-msgstr "Produsent"
-
-#: ../zathura/commands.c:168
-msgid "Creation date"
-msgstr "Laget dato"
-
-#: ../zathura/commands.c:169
-msgid "Modification date"
-msgstr "Modifisert dato"
-
-#: ../zathura/commands.c:174 ../zathura/commands.c:196
-msgid "No information available."
-msgstr "Ingen informasjon tilgjengelig."
-
-#: ../zathura/commands.c:234
-msgid "Too many arguments."
-msgstr "For mange argumenter."
-
-#: ../zathura/commands.c:245
-msgid "No arguments given."
-msgstr "Ingen argumenter gitt."
-
-#: ../zathura/commands.c:304 ../zathura/commands.c:330
-msgid "Document saved."
-msgstr "Dokumentet er lagret."
-
-#: ../zathura/commands.c:306 ../zathura/commands.c:332
-msgid "Failed to save document."
-msgstr "Kunne ikke lagre dokumentet."
-
-#: ../zathura/commands.c:309 ../zathura/commands.c:335
-msgid "Invalid number of arguments."
-msgstr "Ugyldig nummer av argumenter."
-
-#: ../zathura/commands.c:447
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Kunne ikke skrive vedlegg '%s' til '%s'."
-
-#: ../zathura/commands.c:449
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr "Skrev vedlegg '%s' til '%s'."
-
-#: ../zathura/commands.c:493
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr "Skrev bilde '%s' til '%s'."
-
-#: ../zathura/commands.c:495
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr "Kunne ikke skrive bilde '%s' til '%s'."
-
-#: ../zathura/commands.c:502
-#, c-format
-msgid "Unknown image '%s'."
-msgstr "Ukjent bilde '%s'."
-
-#: ../zathura/commands.c:506
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr "Ukjent vedlegg eller bilde '%s'."
-
-#: ../zathura/commands.c:563
-msgid "Argument must be a number."
-msgstr "Argumentet må være et tall."
-
-#: ../zathura/page-widget.c:561
-msgid "Loading..."
-msgstr "Laster..."
-
-#: ../zathura/page-widget.c:1006
-msgid "Copy image"
-msgstr "Kopier bilde"
-
-#: ../zathura/page-widget.c:1007
-msgid "Save image as"
-msgstr "Lagre bilde som"
-
-#: ../zathura/main.c:60
-msgid "Reparents to window specified by xid"
-msgstr ""
-
-#: ../zathura/main.c:62
-msgid "Path to the config directory"
-msgstr "Sti til konfigureringsmappe"
-
-#: ../zathura/main.c:63
-msgid "Path to the data directory"
-msgstr "Sti til data-mappe"
-
-#: ../zathura/main.c:64
-msgid "Path to the cache directory"
-msgstr ""
-
-#: ../zathura/main.c:65
-msgid "Path to the directories containing plugins"
-msgstr "Sti til mapper som inneholder plugins"
-
-#: ../zathura/main.c:66
-msgid "Fork into the background"
-msgstr ""
-
-#: ../zathura/main.c:67
-msgid "Document password"
-msgstr "Dokument passord"
-
-#: ../zathura/main.c:68
-msgid "Page number to go to"
-msgstr "Sidetall å gå til"
-
-#: ../zathura/main.c:69
-msgid "Log level (debug, info, warning, error)"
-msgstr "Logg nivå (diagnostisering, info, advarsler, feil)"
-
-#: ../zathura/main.c:70
-msgid "Print version information"
-msgstr "Skriv ut versjonsinformasjon"
-
-#: ../zathura/main.c:72
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
-
-#: ../zathura/main.c:73
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../zathura/main.c:74
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../zathura/main.c:76
-msgid "Start in a non-default mode"
-msgstr "Start i ikke-standard modus"
-
 #: ../zathura/links.c:203 ../zathura/links.c:282
 msgid "Failed to run xdg-open."
 msgstr "Klarte ikke å kjøre xdg-open."
@@ -560,40 +501,104 @@ msgstr ""
 msgid "Link: Invalid"
 msgstr "Link: Ugyldig"
 
-#: ../zathura/shortcuts.c:1137
+#: ../zathura/main.c:155
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../zathura/main.c:157
+msgid "Path to the config directory"
+msgstr "Sti til konfigureringsmappe"
+
+#: ../zathura/main.c:158
+msgid "Path to the data directory"
+msgstr "Sti til data-mappe"
+
+#: ../zathura/main.c:159
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:160
+msgid "Path to the directories containing plugins"
+msgstr "Sti til mapper som inneholder plugins"
+
+#: ../zathura/main.c:161
+msgid "Fork into the background"
+msgstr ""
+
+#: ../zathura/main.c:162
+msgid "Document password"
+msgstr "Dokument passord"
+
+#: ../zathura/main.c:163
+msgid "Page number to go to"
+msgstr "Sidetall å gå til"
+
+#: ../zathura/main.c:164
+msgid "Log level (debug, info, warning, error)"
+msgstr "Logg nivå (diagnostisering, info, advarsler, feil)"
+
+#: ../zathura/main.c:165
+msgid "Print version information"
+msgstr "Skriv ut versjonsinformasjon"
+
+#: ../zathura/main.c:167
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../zathura/main.c:168
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:169
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:171
+msgid "Start in a non-default mode"
+msgstr "Start i ikke-standard modus"
+
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr "Laster..."
+
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "Kopier bilde"
+
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr "Lagre bilde som"
+
+#: ../zathura/print.c:64 ../zathura/print.c:209
+#, c-format
+msgid "Printing failed: %s"
+msgstr "Utskrift feilet: %s"
+
+#: ../zathura/shortcuts.c:1126
 msgid "This document does not contain any index"
 msgstr "Dette dokumenetet inneholder ikke noen index"
 
-#: ../zathura/completion.c:285
-#, c-format
-msgid "Page %d"
-msgstr "Side %d"
-
-#: ../zathura/completion.c:328
-msgid "Attachments"
-msgstr "Vedlegg"
-
-#. add images
-#: ../zathura/completion.c:359
-msgid "Images"
-msgstr "Bilder"
-
-#: ../zathura/zathura.c:206 ../zathura/zathura.c:1129
+#: ../zathura/zathura.c:218 ../zathura/zathura.c:1224
 msgid "[No name]"
 msgstr "[Inget navn]"
 
-#: ../zathura/zathura.c:520
+#: ../zathura/zathura.c:578
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
 
-#: ../zathura/zathura.c:604
+#: ../zathura/zathura.c:594
+#, fuzzy
+msgid "Could not read file from GIO and copy it to a temporary file."
+msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
+
+#: ../zathura/zathura.c:683
 msgid "Enter password:"
 msgstr ""
 
-#: ../zathura/zathura.c:639
+#: ../zathura/zathura.c:719
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Usupportert filtype. Vennligst innstaller den nødvendige pluginen."
 
-#: ../zathura/zathura.c:649
+#: ../zathura/zathura.c:731
 msgid "Document does not contain any pages"
 msgstr "Dokumentet inneholder ingen sider"

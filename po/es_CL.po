@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2015-10-15 23:03+0200\n"
+"POT-Creation-Date: 2015-12-14 22:03+0100\n"
 "PO-Revision-Date: 2015-10-15 23:07+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.net/projects/p/zathura/"
@@ -19,9 +19,177 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.5\n"
 
-#: ../zathura/print.c:64 ../zathura/print.c:211
+#: ../zathura/callbacks.c:233
 #, c-format
-msgid "Printing failed: %s"
+msgid "'%s' must not be 0. Set to 1."
+msgstr ""
+
+#: ../zathura/callbacks.c:315
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "Entrada inválida: '%s'."
+
+#: ../zathura/callbacks.c:351
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "Índice invalido: '%s'."
+
+#: ../zathura/callbacks.c:594
+#, c-format
+msgid "Copied selected text to selection %s: %s"
+msgstr ""
+
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:423 ../zathura/commands.c:550
+#: ../zathura/shortcuts.c:406 ../zathura/shortcuts.c:1216
+#: ../zathura/shortcuts.c:1245 ../zathura/shortcuts.c:1272
+msgid "No document opened."
+msgstr "Ningún documento abierto."
+
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:428
+msgid "Invalid number of arguments given."
+msgstr "Número de argumentos inválido."
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "No se pudo crear marcador: %s"
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "No se pudo crear marcador: %s"
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Marcador actualizado exitosamente: %s"
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Marcador creado exitosamente: %s"
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Marcador eliminado: %s"
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Error al eliminar marcador: %s"
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "No existe marcador: %s"
+
+#: ../zathura/commands.c:162
+msgid "Title"
+msgstr ""
+
+#: ../zathura/commands.c:163
+msgid "Author"
+msgstr ""
+
+#: ../zathura/commands.c:164
+msgid "Subject"
+msgstr ""
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr ""
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr ""
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr ""
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr ""
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr ""
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "No hay información disponible."
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "Demasiados argumentos."
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "Ningún argumento recibido."
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "Documento guardado."
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "Error al guardar el documento."
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "Número de argumentos inválido."
+
+#: ../zathura/commands.c:447
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
+
+#: ../zathura/commands.c:449
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Fichero adjunto escrito '%s' a '%s'."
+
+#: ../zathura/commands.c:493
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Fichero adjunto escrito '%s' a '%s'."
+
+#: ../zathura/commands.c:495
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
+
+#: ../zathura/commands.c:502
+#, c-format
+msgid "Unknown image '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:506
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr ""
+
+#: ../zathura/commands.c:563
+msgid "Argument must be a number."
+msgstr "El argumento debe ser un número."
+
+#: ../zathura/completion.c:285
+#, c-format
+msgid "Page %d"
+msgstr ""
+
+#: ../zathura/completion.c:328
+msgid "Attachments"
+msgstr "Guardar archivos adjuntos"
+
+#. add images
+#: ../zathura/completion.c:359
+msgid "Images"
 msgstr ""
 
 #. zathura settings
@@ -315,233 +483,6 @@ msgstr ""
 msgid "Show version information"
 msgstr ""
 
-#: ../zathura/callbacks.c:233
-#, c-format
-msgid "'%s' must not be 0. Set to 1."
-msgstr ""
-
-#: ../zathura/callbacks.c:310
-#, c-format
-msgid "Invalid input '%s' given."
-msgstr "Entrada inválida: '%s'."
-
-#: ../zathura/callbacks.c:346
-#, c-format
-msgid "Invalid index '%s' given."
-msgstr "Índice invalido: '%s'."
-
-#: ../zathura/callbacks.c:588
-#, c-format
-msgid "Copied selected text to selection %s: %s"
-msgstr ""
-
-#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
-#: ../zathura/commands.c:152 ../zathura/commands.c:268
-#: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:423 ../zathura/commands.c:550
-#: ../zathura/shortcuts.c:417 ../zathura/shortcuts.c:1227
-#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
-msgid "No document opened."
-msgstr "Ningún documento abierto."
-
-#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:428
-msgid "Invalid number of arguments given."
-msgstr "Número de argumentos inválido."
-
-#: ../zathura/commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "No se pudo crear marcador: %s"
-
-#: ../zathura/commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "No se pudo crear marcador: %s"
-
-#: ../zathura/commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Marcador actualizado exitosamente: %s"
-
-#: ../zathura/commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Marcador creado exitosamente: %s"
-
-#: ../zathura/commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Marcador eliminado: %s"
-
-#: ../zathura/commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Error al eliminar marcador: %s"
-
-#: ../zathura/commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "No existe marcador: %s"
-
-#: ../zathura/commands.c:162
-msgid "Title"
-msgstr ""
-
-#: ../zathura/commands.c:163
-msgid "Author"
-msgstr ""
-
-#: ../zathura/commands.c:164
-msgid "Subject"
-msgstr ""
-
-#: ../zathura/commands.c:165
-msgid "Keywords"
-msgstr ""
-
-#: ../zathura/commands.c:166
-msgid "Creator"
-msgstr ""
-
-#: ../zathura/commands.c:167
-msgid "Producer"
-msgstr ""
-
-#: ../zathura/commands.c:168
-msgid "Creation date"
-msgstr ""
-
-#: ../zathura/commands.c:169
-msgid "Modification date"
-msgstr ""
-
-#: ../zathura/commands.c:174 ../zathura/commands.c:196
-msgid "No information available."
-msgstr "No hay información disponible."
-
-#: ../zathura/commands.c:234
-msgid "Too many arguments."
-msgstr "Demasiados argumentos."
-
-#: ../zathura/commands.c:245
-msgid "No arguments given."
-msgstr "Ningún argumento recibido."
-
-#: ../zathura/commands.c:304 ../zathura/commands.c:330
-msgid "Document saved."
-msgstr "Documento guardado."
-
-#: ../zathura/commands.c:306 ../zathura/commands.c:332
-msgid "Failed to save document."
-msgstr "Error al guardar el documento."
-
-#: ../zathura/commands.c:309 ../zathura/commands.c:335
-msgid "Invalid number of arguments."
-msgstr "Número de argumentos inválido."
-
-#: ../zathura/commands.c:447
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
-
-#: ../zathura/commands.c:449
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr "Fichero adjunto escrito '%s' a '%s'."
-
-#: ../zathura/commands.c:493
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr "Fichero adjunto escrito '%s' a '%s'."
-
-#: ../zathura/commands.c:495
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr "No se pudo escribir el fichero adjunto '%s' a '%s'."
-
-#: ../zathura/commands.c:502
-#, c-format
-msgid "Unknown image '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:506
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr ""
-
-#: ../zathura/commands.c:563
-msgid "Argument must be a number."
-msgstr "El argumento debe ser un número."
-
-#: ../zathura/page-widget.c:561
-msgid "Loading..."
-msgstr "Cargando..."
-
-#: ../zathura/page-widget.c:1006
-msgid "Copy image"
-msgstr "Copiar imagen"
-
-#: ../zathura/page-widget.c:1007
-msgid "Save image as"
-msgstr ""
-
-#: ../zathura/main.c:60
-msgid "Reparents to window specified by xid"
-msgstr "Reasignar a la ventana especificada por xid"
-
-#: ../zathura/main.c:62
-msgid "Path to the config directory"
-msgstr "Ruta al directorio de configuración"
-
-#: ../zathura/main.c:63
-msgid "Path to the data directory"
-msgstr "Ruta al directorio de datos"
-
-#: ../zathura/main.c:64
-msgid "Path to the cache directory"
-msgstr ""
-
-#: ../zathura/main.c:65
-msgid "Path to the directories containing plugins"
-msgstr "Ruta al directorio que contiene plugins"
-
-#: ../zathura/main.c:66
-msgid "Fork into the background"
-msgstr "Ejecución en background"
-
-#: ../zathura/main.c:67
-msgid "Document password"
-msgstr ""
-
-#: ../zathura/main.c:68
-msgid "Page number to go to"
-msgstr ""
-
-#: ../zathura/main.c:69
-msgid "Log level (debug, info, warning, error)"
-msgstr "Nivel de log (debug, info, warning, error)"
-
-#: ../zathura/main.c:70
-msgid "Print version information"
-msgstr "Mostrar información del archivo"
-
-#: ../zathura/main.c:72
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
-
-#: ../zathura/main.c:73
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../zathura/main.c:74
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../zathura/main.c:76
-msgid "Start in a non-default mode"
-msgstr ""
-
 #: ../zathura/links.c:203 ../zathura/links.c:282
 msgid "Failed to run xdg-open."
 msgstr "Error al ejecutar xdg-open."
@@ -560,40 +501,103 @@ msgstr ""
 msgid "Link: Invalid"
 msgstr ""
 
-#: ../zathura/shortcuts.c:1137
+#: ../zathura/main.c:155
+msgid "Reparents to window specified by xid"
+msgstr "Reasignar a la ventana especificada por xid"
+
+#: ../zathura/main.c:157
+msgid "Path to the config directory"
+msgstr "Ruta al directorio de configuración"
+
+#: ../zathura/main.c:158
+msgid "Path to the data directory"
+msgstr "Ruta al directorio de datos"
+
+#: ../zathura/main.c:159
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:160
+msgid "Path to the directories containing plugins"
+msgstr "Ruta al directorio que contiene plugins"
+
+#: ../zathura/main.c:161
+msgid "Fork into the background"
+msgstr "Ejecución en background"
+
+#: ../zathura/main.c:162
+msgid "Document password"
+msgstr ""
+
+#: ../zathura/main.c:163
+msgid "Page number to go to"
+msgstr ""
+
+#: ../zathura/main.c:164
+msgid "Log level (debug, info, warning, error)"
+msgstr "Nivel de log (debug, info, warning, error)"
+
+#: ../zathura/main.c:165
+msgid "Print version information"
+msgstr "Mostrar información del archivo"
+
+#: ../zathura/main.c:167
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr ""
+
+#: ../zathura/main.c:168
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:169
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:171
+msgid "Start in a non-default mode"
+msgstr ""
+
+#: ../zathura/page-widget.c:561
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: ../zathura/page-widget.c:1006
+msgid "Copy image"
+msgstr "Copiar imagen"
+
+#: ../zathura/page-widget.c:1007
+msgid "Save image as"
+msgstr ""
+
+#: ../zathura/print.c:64 ../zathura/print.c:209
+#, c-format
+msgid "Printing failed: %s"
+msgstr ""
+
+#: ../zathura/shortcuts.c:1126
 msgid "This document does not contain any index"
 msgstr "Este document no contiene índice"
 
-#: ../zathura/completion.c:285
-#, c-format
-msgid "Page %d"
-msgstr ""
-
-#: ../zathura/completion.c:328
-msgid "Attachments"
-msgstr "Guardar archivos adjuntos"
-
-#. add images
-#: ../zathura/completion.c:359
-msgid "Images"
-msgstr ""
-
-#: ../zathura/zathura.c:206 ../zathura/zathura.c:1129
+#: ../zathura/zathura.c:218 ../zathura/zathura.c:1224
 msgid "[No name]"
 msgstr "[Sin nombre]"
 
-#: ../zathura/zathura.c:520
+#: ../zathura/zathura.c:578
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: ../zathura/zathura.c:604
+#: ../zathura/zathura.c:594
+msgid "Could not read file from GIO and copy it to a temporary file."
+msgstr ""
+
+#: ../zathura/zathura.c:683
 msgid "Enter password:"
 msgstr ""
 
-#: ../zathura/zathura.c:639
+#: ../zathura/zathura.c:719
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: ../zathura/zathura.c:649
+#: ../zathura/zathura.c:731
 msgid "Document does not contain any pages"
 msgstr ""
