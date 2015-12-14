@@ -587,9 +587,8 @@ msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
 
 #: ../zathura/zathura.c:594
-#, fuzzy
 msgid "Could not read file from GIO and copy it to a temporary file."
-msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
+msgstr ""
 
 #: ../zathura/zathura.c:683
 msgid "Enter password:"
