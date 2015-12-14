@@ -139,6 +139,9 @@ VALGRIND_SUPPRESSION_FILE = zathura.suppression
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
 
+# gettext package name
+GETTEXT_PACKAGE ?= ${PROJECT}
+
 # colors
 COLOR ?= 1
 
