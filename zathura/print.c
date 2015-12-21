@@ -130,6 +130,11 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     gtk_print_operation_cancel(print_operation);
     return;
   }
+  if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    gtk_print_operation_cancel(print_operation);
+    cairo_surface_destroy(surface);
+    return;
+  }
 
   cairo_t* temp_cairo = cairo_create(surface);
   if (cairo == NULL) {

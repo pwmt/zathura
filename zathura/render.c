@@ -746,6 +746,10 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   if (surface == NULL) {
     return false;
   }
+  if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    cairo_surface_destroy(surface);
+    return false;
+  }
 
   cairo_t* cairo = cairo_create(surface);
   if (cairo == NULL) {
