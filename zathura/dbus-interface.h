@@ -62,7 +62,7 @@ void zathura_dbus_edit(ZathuraDbus* dbus, unsigned int page, unsigned int x, uns
  * @param column column index (starts at 0)
  * @param hint zathura process ID that has filename open
  */
-bool zathura_dbus_synctex_position(const char* filename, const char* input_file,
+int zathura_dbus_synctex_position(const char* filename, const char* input_file,
     int line, int column, pid_t hint);
 
 #endif

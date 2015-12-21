@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2015-04-13 19:42+0200\n"
-"PO-Revision-Date: 2015-04-13 19:48+0200\n"
+"POT-Creation-Date: 2015-12-14 22:03+0100\n"
+"PO-Revision-Date: 2015-10-15 23:06+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/zathura/"
 "language/lt/)\n"
@@ -18,27 +18,180 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #: ../zathura/callbacks.c:233
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: ../zathura/callbacks.c:310
+#: ../zathura/callbacks.c:315
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Netinkama įvestis: „%s“."
 
-#: ../zathura/callbacks.c:346
+#: ../zathura/callbacks.c:351
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Duotas netinkamas indeksas: „%s“."
 
-#: ../zathura/callbacks.c:588
+#: ../zathura/callbacks.c:594
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr ""
+
+#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
+#: ../zathura/commands.c:152 ../zathura/commands.c:268
+#: ../zathura/commands.c:298 ../zathura/commands.c:324
+#: ../zathura/commands.c:423 ../zathura/commands.c:550
+#: ../zathura/shortcuts.c:406 ../zathura/shortcuts.c:1216
+#: ../zathura/shortcuts.c:1245 ../zathura/shortcuts.c:1272
+msgid "No document opened."
+msgstr "Nėra atidarytų dokumentų."
+
+#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
+#: ../zathura/commands.c:428
+msgid "Invalid number of arguments given."
+msgstr "Duotų parametrų skaičius yra neteisingas."
+
+#: ../zathura/commands.c:53
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Žymė negalėjo būti atnaujinta: %s"
+
+#: ../zathura/commands.c:55
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Žymė negalėjo būti sukurta: %s"
+
+#: ../zathura/commands.c:60
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Žymė sėkmingai atnaujinta: %s"
+
+#: ../zathura/commands.c:62
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Žymė sėkmingai sukurta: %s"
+
+#: ../zathura/commands.c:88
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Žymė ištrinta: %s"
+
+#: ../zathura/commands.c:90
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Žymė negalėjo būti panaikinta: %s"
+
+#: ../zathura/commands.c:116
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Nėra tokios žymės: %s"
+
+#: ../zathura/commands.c:162
+msgid "Title"
+msgstr "Pavadinimas"
+
+#: ../zathura/commands.c:163
+msgid "Author"
+msgstr "Autorius"
+
+#: ../zathura/commands.c:164
+msgid "Subject"
+msgstr ""
+
+#: ../zathura/commands.c:165
+msgid "Keywords"
+msgstr "Raktažodžiai"
+
+#: ../zathura/commands.c:166
+msgid "Creator"
+msgstr ""
+
+#: ../zathura/commands.c:167
+msgid "Producer"
+msgstr "Gamintojas"
+
+#: ../zathura/commands.c:168
+msgid "Creation date"
+msgstr "Sukūrimo data"
+
+#: ../zathura/commands.c:169
+msgid "Modification date"
+msgstr "Pakeitimo data"
+
+#: ../zathura/commands.c:174 ../zathura/commands.c:196
+msgid "No information available."
+msgstr "Nėra informacijos."
+
+#: ../zathura/commands.c:234
+msgid "Too many arguments."
+msgstr "Per daug parametrų."
+
+#: ../zathura/commands.c:245
+msgid "No arguments given."
+msgstr "Parametrai neduoti."
+
+#: ../zathura/commands.c:304 ../zathura/commands.c:330
+msgid "Document saved."
+msgstr "Dokumentas išsaugotas."
+
+#: ../zathura/commands.c:306 ../zathura/commands.c:332
+msgid "Failed to save document."
+msgstr "Dokumento išsaugoti nepavyko."
+
+#: ../zathura/commands.c:309 ../zathura/commands.c:335
+msgid "Invalid number of arguments."
+msgstr "Neteisingas parametrų skaičius."
+
+#: ../zathura/commands.c:447
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Priedas „%s“ negalėjo būti įrašytas į „%s“."
+
+#: ../zathura/commands.c:449
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Priedas „%s“ įrašytas į „%s“."
+
+#: ../zathura/commands.c:493
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Atvaizdas „%s“ įrašytas į „%s“."
+
+#: ../zathura/commands.c:495
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "Atvaizdas „%s“ negalėjo būti įrašytas į „%s“,"
+
+#: ../zathura/commands.c:502
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "Nežinomas atvaizdas „%s“."
+
+#: ../zathura/commands.c:506
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "Nežinomas priedas ar atvaizdas „%s“."
+
+#: ../zathura/commands.c:563
+msgid "Argument must be a number."
+msgstr "Parametras turi būti skaičius."
+
+#: ../zathura/completion.c:285
+#, c-format
+msgid "Page %d"
+msgstr "%d puslapis"
+
+#: ../zathura/completion.c:328
+msgid "Attachments"
+msgstr "Priedai"
+
+#. add images
+#: ../zathura/completion.c:359
+msgid "Images"
+msgstr "Atvaizdai"
 
 #. zathura settings
 #: ../zathura/config.c:144
@@ -194,292 +347,142 @@ msgid "Show directories"
 msgstr "Rodyti katalogų sąrašą"
 
 #: ../zathura/config.c:216
+msgid "Show recent files"
+msgstr ""
+
+#: ../zathura/config.c:218
 msgid "Always open on first page"
 msgstr "Visada atverti pirmą puslapį"
 
-#: ../zathura/config.c:218
+#: ../zathura/config.c:220
 msgid "Highlight search results"
 msgstr "Pažymėti paieškos rezultatus"
 
-#: ../zathura/config.c:221
+#: ../zathura/config.c:223
 msgid "Enable incremental search"
 msgstr "Įjungti prieauginę paiešką"
 
-#: ../zathura/config.c:223
+#: ../zathura/config.c:225
 msgid "Clear search results on abort"
 msgstr "Išvalyti paieškos rezultatus nutraukiant"
 
-#: ../zathura/config.c:225
+#: ../zathura/config.c:227
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../zathura/config.c:227
+#: ../zathura/config.c:229
+msgid "Use ~ instead of $HOME in the filename in the window title"
+msgstr ""
+
+#: ../zathura/config.c:231
 msgid "Display the page number in the window title"
 msgstr "Rodyti puslapio skaičių lango pavadinime"
 
-#: ../zathura/config.c:229
+#: ../zathura/config.c:233
 msgid "Use basename of the file in the statusbar"
 msgstr "Naudoti bylos vardą būsenos juostoje"
 
-#: ../zathura/config.c:231
-msgid "Enable synctex support"
-msgstr "Įjungti synctex palaikymą"
-
-#: ../zathura/config.c:233
-msgid "Synctex editor command"
-msgstr ""
-
 #: ../zathura/config.c:235
-msgid "Enable D-Bus service"
+msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
 #: ../zathura/config.c:237
+msgid "Enable synctex support"
+msgstr "Įjungti synctex palaikymą"
+
+#: ../zathura/config.c:239
+msgid "Synctex editor command"
+msgstr ""
+
+#: ../zathura/config.c:241
+msgid "Enable D-Bus service"
+msgstr ""
+
+#: ../zathura/config.c:243
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: ../zathura/config.c:239
+#: ../zathura/config.c:245
 msgid "Enable notification after selecting text"
 msgstr ""
 
 #. define default inputbar commands
-#: ../zathura/config.c:425
+#: ../zathura/config.c:435
 msgid "Add a bookmark"
 msgstr "Pridėti žymę"
 
-#: ../zathura/config.c:426
+#: ../zathura/config.c:436
 msgid "Delete a bookmark"
 msgstr "Ištrinti žymę"
 
-#: ../zathura/config.c:427
+#: ../zathura/config.c:437
 msgid "List all bookmarks"
 msgstr "Žymių sąrašas"
 
-#: ../zathura/config.c:428
+#: ../zathura/config.c:438
 msgid "Close current file"
 msgstr "Uždaryti dabartinę bylą"
 
-#: ../zathura/config.c:429
+#: ../zathura/config.c:439
 msgid "Show file information"
 msgstr "Rodyti bylos informaciją"
 
-#: ../zathura/config.c:430 ../zathura/config.c:431
+#: ../zathura/config.c:440 ../zathura/config.c:441
 msgid "Execute a command"
 msgstr ""
 
 #. like vim
-#: ../zathura/config.c:432
+#: ../zathura/config.c:442
 msgid "Show help"
 msgstr "Rodyti pagalbą"
 
-#: ../zathura/config.c:433
+#: ../zathura/config.c:443
 msgid "Open document"
 msgstr "Atidryti dokumentą"
 
-#: ../zathura/config.c:434
+#: ../zathura/config.c:444
 msgid "Close zathura"
 msgstr "Uždaryti zathura"
 
-#: ../zathura/config.c:435
+#: ../zathura/config.c:445
 msgid "Print document"
 msgstr "Atspausdinti dokumentą"
 
-#: ../zathura/config.c:436
+#: ../zathura/config.c:446
 msgid "Save document"
 msgstr "Išsaugoti dokumentą"
 
-#: ../zathura/config.c:437
+#: ../zathura/config.c:447
 msgid "Save document (and force overwriting)"
 msgstr "Išsaugoti dokumentą (ir priverstinai perašyti)"
 
-#: ../zathura/config.c:438
+#: ../zathura/config.c:448
 msgid "Save attachments"
 msgstr "Išsaugoti priedus"
 
-#: ../zathura/config.c:439
+#: ../zathura/config.c:449
 msgid "Set page offset"
 msgstr "Nustatyti puslapio poslinkį"
 
-#: ../zathura/config.c:440
+#: ../zathura/config.c:450
 msgid "Mark current location within the document"
 msgstr "Pažymėti dabartinę dokumento vietą"
 
-#: ../zathura/config.c:441
+#: ../zathura/config.c:451
 msgid "Delete the specified marks"
 msgstr "Ištrinti šias žymes"
 
-#: ../zathura/config.c:442
+#: ../zathura/config.c:452
 msgid "Don't highlight current search results"
 msgstr "Nežymėti dabartinės paieškos rezultatų"
 
-#: ../zathura/config.c:443
+#: ../zathura/config.c:453
 msgid "Highlight current search results"
 msgstr "Pažymėti dabartinės paieškos rezultatus"
 
-#: ../zathura/config.c:444
+#: ../zathura/config.c:454
 msgid "Show version information"
 msgstr "Rodyti versijos informaciją"
-
-#: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
-#: ../zathura/commands.c:152 ../zathura/commands.c:268
-#: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:423 ../zathura/commands.c:550
-#: ../zathura/shortcuts.c:417 ../zathura/shortcuts.c:1227
-#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
-msgid "No document opened."
-msgstr "Nėra atidarytų dokumentų."
-
-#: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:428
-msgid "Invalid number of arguments given."
-msgstr "Duotų parametrų skaičius yra neteisingas."
-
-#: ../zathura/commands.c:53
-#, c-format
-msgid "Could not update bookmark: %s"
-msgstr "Žymė negalėjo būti atnaujinta: %s"
-
-#: ../zathura/commands.c:55
-#, c-format
-msgid "Could not create bookmark: %s"
-msgstr "Žymė negalėjo būti sukurta: %s"
-
-#: ../zathura/commands.c:60
-#, c-format
-msgid "Bookmark successfully updated: %s"
-msgstr "Žymė sėkmingai atnaujinta: %s"
-
-#: ../zathura/commands.c:62
-#, c-format
-msgid "Bookmark successfully created: %s"
-msgstr "Žymė sėkmingai sukurta: %s"
-
-#: ../zathura/commands.c:88
-#, c-format
-msgid "Removed bookmark: %s"
-msgstr "Žymė ištrinta: %s"
-
-#: ../zathura/commands.c:90
-#, c-format
-msgid "Failed to remove bookmark: %s"
-msgstr "Žymė negalėjo būti panaikinta: %s"
-
-#: ../zathura/commands.c:116
-#, c-format
-msgid "No such bookmark: %s"
-msgstr "Nėra tokios žymės: %s"
-
-#: ../zathura/commands.c:162
-msgid "Title"
-msgstr "Pavadinimas"
-
-#: ../zathura/commands.c:163
-msgid "Author"
-msgstr "Autorius"
-
-#: ../zathura/commands.c:164
-msgid "Subject"
-msgstr ""
-
-#: ../zathura/commands.c:165
-msgid "Keywords"
-msgstr "Raktažodžiai"
-
-#: ../zathura/commands.c:166
-msgid "Creator"
-msgstr ""
-
-#: ../zathura/commands.c:167
-msgid "Producer"
-msgstr "Gamintojas"
-
-#: ../zathura/commands.c:168
-msgid "Creation date"
-msgstr "Sukūrimo data"
-
-#: ../zathura/commands.c:169
-msgid "Modification date"
-msgstr "Pakeitimo data"
-
-#: ../zathura/commands.c:174 ../zathura/commands.c:196
-msgid "No information available."
-msgstr "Nėra informacijos."
-
-#: ../zathura/commands.c:234
-msgid "Too many arguments."
-msgstr "Per daug parametrų."
-
-#: ../zathura/commands.c:245
-msgid "No arguments given."
-msgstr "Parametrai neduoti."
-
-#: ../zathura/commands.c:304 ../zathura/commands.c:330
-msgid "Document saved."
-msgstr "Dokumentas išsaugotas."
-
-#: ../zathura/commands.c:306 ../zathura/commands.c:332
-msgid "Failed to save document."
-msgstr "Dokumento išsaugoti nepavyko."
-
-#: ../zathura/commands.c:309 ../zathura/commands.c:335
-msgid "Invalid number of arguments."
-msgstr "Neteisingas parametrų skaičius."
-
-#: ../zathura/commands.c:447
-#, c-format
-msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Priedas „%s“ negalėjo būti įrašytas į „%s“."
-
-#: ../zathura/commands.c:449
-#, c-format
-msgid "Wrote attachment '%s' to '%s'."
-msgstr "Priedas „%s“ įrašytas į „%s“."
-
-#: ../zathura/commands.c:493
-#, c-format
-msgid "Wrote image '%s' to '%s'."
-msgstr "Atvaizdas „%s“ įrašytas į „%s“."
-
-#: ../zathura/commands.c:495
-#, c-format
-msgid "Couldn't write image '%s' to '%s'."
-msgstr "Atvaizdas „%s“ negalėjo būti įrašytas į „%s“,"
-
-#: ../zathura/commands.c:502
-#, c-format
-msgid "Unknown image '%s'."
-msgstr "Nežinomas atvaizdas „%s“."
-
-#: ../zathura/commands.c:506
-#, c-format
-msgid "Unknown attachment or image '%s'."
-msgstr "Nežinomas priedas ar atvaizdas „%s“."
-
-#: ../zathura/commands.c:563
-msgid "Argument must be a number."
-msgstr "Parametras turi būti skaičius."
-
-#: ../zathura/completion.c:250
-#, c-format
-msgid "Page %d"
-msgstr "%d puslapis"
-
-#: ../zathura/completion.c:293
-msgid "Attachments"
-msgstr "Priedai"
-
-#. add images
-#: ../zathura/completion.c:324
-msgid "Images"
-msgstr "Atvaizdai"
-
-#: ../zathura/print.c:64 ../zathura/print.c:211
-#, c-format
-msgid "Printing failed: %s"
-msgstr ""
-
-#: ../zathura/shortcuts.c:1137
-msgid "This document does not contain any index"
-msgstr "Šit dokumentas neturi turinio"
 
 #: ../zathura/links.c:203 ../zathura/links.c:282
 msgid "Failed to run xdg-open."
@@ -499,6 +502,62 @@ msgstr "Nuoroda: %s"
 msgid "Link: Invalid"
 msgstr "Neteisinga nuoroda"
 
+#: ../zathura/main.c:155
+msgid "Reparents to window specified by xid"
+msgstr ""
+
+#: ../zathura/main.c:157
+msgid "Path to the config directory"
+msgstr "Konfigūracinių failų aplanko adresas"
+
+#: ../zathura/main.c:158
+msgid "Path to the data directory"
+msgstr "Duomenų aplanko adresas"
+
+#: ../zathura/main.c:159
+msgid "Path to the cache directory"
+msgstr ""
+
+#: ../zathura/main.c:160
+msgid "Path to the directories containing plugins"
+msgstr "Įskiepių aplanko adresas"
+
+#: ../zathura/main.c:161
+msgid "Fork into the background"
+msgstr ""
+
+#: ../zathura/main.c:162
+msgid "Document password"
+msgstr "Dokumento slaptažodis"
+
+#: ../zathura/main.c:163
+msgid "Page number to go to"
+msgstr "Pereiti į puslapį"
+
+#: ../zathura/main.c:164
+msgid "Log level (debug, info, warning, error)"
+msgstr "Registravimo lygis (derinimas, informacija, įspėjimai, klaidos)"
+
+#: ../zathura/main.c:165
+msgid "Print version information"
+msgstr "Spausdinti versijos informaciją"
+
+#: ../zathura/main.c:167
+msgid "Synctex editor (forwarded to the synctex command)"
+msgstr "Synctex redaktorius (naudojama synctex komandoje)"
+
+#: ../zathura/main.c:168
+msgid "Move to given synctex position"
+msgstr ""
+
+#: ../zathura/main.c:169
+msgid "Highlight given position in the given process"
+msgstr ""
+
+#: ../zathura/main.c:171
+msgid "Start in a non-default mode"
+msgstr ""
+
 #: ../zathura/page-widget.c:561
 msgid "Loading..."
 msgstr "Kraunama..."
@@ -511,74 +570,35 @@ msgstr "Kopijuoti atvaizdą"
 msgid "Save image as"
 msgstr "Irašyti atvaizdą kaip"
 
-#: ../zathura/zathura.c:204 ../zathura/zathura.c:1051
+#: ../zathura/print.c:64 ../zathura/print.c:209
+#, c-format
+msgid "Printing failed: %s"
+msgstr ""
+
+#: ../zathura/shortcuts.c:1126
+msgid "This document does not contain any index"
+msgstr "Šit dokumentas neturi turinio"
+
+#: ../zathura/zathura.c:218 ../zathura/zathura.c:1224
 msgid "[No name]"
 msgstr "[Bevardis]"
 
-#: ../zathura/zathura.c:518
+#: ../zathura/zathura.c:578
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: ../zathura/zathura.c:579
+#: ../zathura/zathura.c:594
+msgid "Could not read file from GIO and copy it to a temporary file."
+msgstr ""
+
+#: ../zathura/zathura.c:683
+msgid "Enter password:"
+msgstr ""
+
+#: ../zathura/zathura.c:719
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Bylos tipas nepalaikomas. Įdiekite tam skirtus įskiepius."
 
-#: ../zathura/zathura.c:589
+#: ../zathura/zathura.c:731
 msgid "Document does not contain any pages"
 msgstr "Dokumente puslapių nėra"
-
-#: ../zathura/main.c:56
-msgid "Reparents to window specified by xid"
-msgstr ""
-
-#: ../zathura/main.c:58
-msgid "Path to the config directory"
-msgstr "Konfigūracinių failų aplanko adresas"
-
-#: ../zathura/main.c:59
-msgid "Path to the data directory"
-msgstr "Duomenų aplanko adresas"
-
-#: ../zathura/main.c:60
-msgid "Path to the cache directory"
-msgstr ""
-
-#: ../zathura/main.c:61
-msgid "Path to the directories containing plugins"
-msgstr "Įskiepių aplanko adresas"
-
-#: ../zathura/main.c:62
-msgid "Fork into the background"
-msgstr ""
-
-#: ../zathura/main.c:63
-msgid "Document password"
-msgstr "Dokumento slaptažodis"
-
-#: ../zathura/main.c:64
-msgid "Page number to go to"
-msgstr "Pereiti į puslapį"
-
-#: ../zathura/main.c:65
-msgid "Log level (debug, info, warning, error)"
-msgstr "Registravimo lygis (derinimas, informacija, įspėjimai, klaidos)"
-
-#: ../zathura/main.c:66
-msgid "Print version information"
-msgstr "Spausdinti versijos informaciją"
-
-#: ../zathura/main.c:67
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Synctex redaktorius (naudojama synctex komandoje)"
-
-#: ../zathura/main.c:68
-msgid "Move to given synctex position"
-msgstr ""
-
-#: ../zathura/main.c:69
-msgid "Highlight given position in the given process"
-msgstr ""
-
-#: ../zathura/main.c:70
-msgid "Start in a non-default mode"
-msgstr ""

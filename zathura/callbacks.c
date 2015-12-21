@@ -243,8 +243,13 @@ cb_page_layout_value_changed(girara_session_t* session, const char* name, girara
   unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
 
-  unsigned int first_page_column = 1;
-  girara_setting_get(session, "first-page-column", &first_page_column);
+  /* get list of first_page_column settings */
+  char* first_page_column_list = NULL;
+  girara_setting_get(session, "first-page-column", &first_page_column_list);
+
+  /* find value for first_page_column */
+  unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
+  g_free(first_page_column_list);
 
   unsigned int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
@@ -435,11 +440,12 @@ cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
   }
 
   /* try to open document again */
-  if (document_open(dialog->zathura, dialog->path, input,
+  if (document_open(dialog->zathura, dialog->path, dialog->uri, input,
                     ZATHURA_PAGE_NUMBER_UNSPECIFIED) == false) {
     gdk_threads_add_idle(password_dialog, dialog);
   } else {
     g_free(dialog->path);
+    g_free(dialog->uri);
     free(dialog);
   }
 
@@ -622,7 +628,8 @@ cb_page_widget_link(ZathuraPage* page, void* data)
   bool enter = (bool) data;
 
   GdkWindow* window = gtk_widget_get_parent_window(GTK_WIDGET(page));
-  GdkCursor* cursor = gdk_cursor_new(enter == true ? GDK_HAND1 : GDK_LEFT_PTR);
+  GdkDisplay* display = gtk_widget_get_display(GTK_WIDGET(page));
+  GdkCursor* cursor = gdk_cursor_new_for_display(display, enter == true ? GDK_HAND1 : GDK_LEFT_PTR);
   gdk_window_set_cursor(window, cursor);
   g_object_unref(cursor);
 }

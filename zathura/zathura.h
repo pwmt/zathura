@@ -204,6 +204,24 @@ struct zathura_s
     unsigned int start; /**< Bisection range - start */
     unsigned int end; /**< Bisection range - end */
   } bisect;
+
+  /**
+   * Storage for shortcuts.
+   */
+  struct {
+    struct {
+      int x;
+      int y;
+    } mouse;
+    struct {
+      int pages;
+    } toggle_page_mode;
+    struct {
+      int pages;
+      char* first_page_column_list;
+      double zoom;
+    } toggle_presentation_mode;
+  } shortcut;
 };
 
 /**
@@ -288,8 +306,21 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  *
  * @return If no error occured true, otherwise false, is returned.
  */
-bool document_open(zathura_t* zathura, const char* path, const char* password,
+bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
                    int page_number);
+
+/**
+ * Opens a file
+ *
+ * @param zathura The zathura session
+ * @param path The path to the file
+ * @param password The password of the file
+ * @param synctex Open at the given SyncTeX string
+ *
+ * @return If no error occured true, otherwise false, is returned.
+ */
+bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
+                           const char* password, const char* synctex);
 
 /**
  * Opens a file (idle)
@@ -299,10 +330,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* password,
  * @param password The password of the file
  * @param page_number Open given page number
  * @param mode Open in given page mode
+ * @param synctex SyncTeX string
  */
 void document_open_idle(zathura_t* zathura, const char* path,
                         const char* password, int page_number,
-                        const char* mode);
+                        const char* mode, const char* synctex);
 
 /**
  * Save a open file
@@ -437,5 +469,15 @@ void zathura_jumplist_trim(zathura_t* zathura);
  * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
+
+/**
+ * Gets the nicely formatted filename of the loaded document according to settings
+ *
+ * @param zathura The zathura session
+ * @param statusbar Whether return value will be dispalyed in status bar
+ *
+ * return Printable filename. Free with g_free.
+ */
+char* get_formatted_filename(zathura_t* zathura, bool statusbar);
 
 #endif // ZATHURA_H

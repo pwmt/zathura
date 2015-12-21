@@ -78,12 +78,81 @@ cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext*
     return;
   }
 
-  const char* file_path = zathura_document_get_path(zathura->document);
+  char* file_path = get_formatted_filename(zathura, true);
+  girara_statusbar_item_set_text(zathura->ui.session,
+                                 zathura->ui.statusbar.file, file_path);
+  g_free(file_path);
+}
 
-  if (file_path != NULL) {
-    girara_statusbar_item_set_text(zathura->ui.session,
-                                   zathura->ui.statusbar.file, file_path);
+static bool
+draw_page_cairo(cairo_t* cairo, zathura_t* zathura, zathura_page_t* page)
+{
+  /* Try to render the page without a temporary surface. This only works with
+   * plugins that support rendering to any surface.  */
+  zathura_renderer_lock(zathura->sync.render_thread);
+  const int err = zathura_page_render(page, cairo, true);
+  zathura_renderer_unlock(zathura->sync.render_thread);
+
+  return err == ZATHURA_ERROR_OK;
+}
+
+static bool
+draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t* zathura,
+                zathura_page_t* page)
+{
+  /* Try to render the page on a temporary image surface. */
+  const double width = gtk_print_context_get_width(context);
+  const double height = gtk_print_context_get_height(context);
+
+  const double scale_height = 5;
+  const double scale_width  = 5;
+
+  /* Render to a surface that is 5 times larger to workaround quality issues. */
+  const double page_height = zathura_page_get_height(page) * scale_height;
+  const double page_width  = zathura_page_get_width(page) * scale_width;
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
+  if (surface == NULL) {
+    return false;
   }
+  if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    cairo_surface_destroy(surface);
+    return false;
+  }
+
+  cairo_t* temp_cairo = cairo_create(surface);
+  if (cairo == NULL) {
+    cairo_surface_destroy(surface);
+    return false;
+  }
+
+  /* Draw a white background. */
+  cairo_save(temp_cairo);
+  cairo_set_source_rgb(temp_cairo, 1, 1, 1);
+  cairo_rectangle(temp_cairo, 0, 0, page_width, page_height);
+  cairo_fill(temp_cairo);
+  cairo_restore(temp_cairo);
+
+  /* Render the page to the temporary surface */
+  zathura_renderer_lock(zathura->sync.render_thread);
+  const int err = zathura_page_render(page, temp_cairo, true);
+  zathura_renderer_unlock(zathura->sync.render_thread);
+  if (err != ZATHURA_ERROR_OK) {
+    cairo_destroy(temp_cairo);
+    cairo_surface_destroy(surface);
+    return false;
+  }
+
+  /* Rescale the page and keep the aspect ratio */
+  const gdouble scale = MIN(width / page_width, height / page_height);
+  cairo_scale(cairo, scale, scale);
+
+  /* Blit temporary surface to original cairo object. */
+  cairo_set_source_surface(cairo, surface, 0.0, 0.0);
+  cairo_paint(cairo);
+  cairo_destroy(temp_cairo);
+  cairo_surface_destroy(surface);
+
+  return true;
 }
 
 static void
@@ -110,64 +179,15 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
     return;
   }
 
-  /* Try to render the page without a temporary surface. This only works with
-   * plugins that support rendering to any surface.  */
   girara_debug("printing page %d ...", page_number);
-  zathura_renderer_lock(zathura->sync.render_thread);
-  int err = zathura_page_render(page, cairo, true);
-  zathura_renderer_unlock(zathura->sync.render_thread);
-  if (err == ZATHURA_ERROR_OK) {
+  if (draw_page_cairo(cairo, zathura, page) == true) {
     return;
   }
 
-  /* Try to render the page on a temporary image surface. */
-  const gdouble width = gtk_print_context_get_width(context);
-  const gdouble height = gtk_print_context_get_height(context);
-
-  /* Render to a surface that is 5 times larger to workaround quality issues. */
-  const double page_height = zathura_page_get_height(page) * 5;
-  const double page_width  = zathura_page_get_width(page) * 5;
-  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
-  if (surface == NULL) {
-    gtk_print_operation_cancel(print_operation);
-    return;
-  }
-
-  cairo_t* temp_cairo = cairo_create(surface);
-  if (cairo == NULL) {
-    gtk_print_operation_cancel(print_operation);
-    cairo_surface_destroy(surface);
-    return;
-  }
-
-  /* Draw a white background. */
-  cairo_save(temp_cairo);
-  cairo_set_source_rgb(temp_cairo, 1, 1, 1);
-  cairo_rectangle(temp_cairo, 0, 0, page_width, page_height);
-  cairo_fill(temp_cairo);
-  cairo_restore(temp_cairo);
-
-  /* Render the page to the temporary surface */
   girara_debug("printing page %d (fallback) ...", page_number);
-  zathura_renderer_lock(zathura->sync.render_thread);
-  err = zathura_page_render(page, temp_cairo, true);
-  zathura_renderer_unlock(zathura->sync.render_thread);
-  if (err != ZATHURA_ERROR_OK) {
-    cairo_destroy(temp_cairo);
-    cairo_surface_destroy(surface);
+  if (draw_page_image(cairo, context, zathura, page) == false) {
     gtk_print_operation_cancel(print_operation);
-    return;
   }
-
-  /* Rescale the page and keep the aspect ratio */
-  const gdouble scale = MIN(width / page_width, height / page_height);
-  cairo_scale(cairo, scale, scale);
-
-  /* Blit temporary surface to original cairo object. */
-  cairo_set_source_surface(cairo, surface, 0.0, 0.0);
-  cairo_paint(cairo);
-  cairo_destroy(temp_cairo);
-  cairo_surface_destroy(surface);
 }
 
 static void

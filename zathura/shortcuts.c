@@ -20,14 +20,6 @@
 #include "adjustment.h"
 #include <math.h>
 
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
-
-#ifndef MAX
-#define MAX(a,b) (((a)>(b))?(a):(b))
-#endif
-
 /* Helper function; see sc_display_link and sc_follow. */
 static bool
 draw_links(zathura_t* zathura)
@@ -35,7 +27,7 @@ draw_links(zathura_t* zathura)
   /* set pages to draw links */
   bool show_links = false;
   unsigned int page_offset = 0;
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
     if (page == NULL) {
@@ -74,7 +66,7 @@ sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument),
   girara_setting_get(session, "abort-clear-search", &clear_search);
 
   if (zathura->document != NULL) {
-    unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+    const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
     for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
       zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
       if (page == NULL) {
@@ -276,9 +268,6 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
     return false;
   }
 
-  static int x = 0;
-  static int y = 0;
-
   GtkAdjustment* x_adj = NULL;
   GtkAdjustment* y_adj = NULL;
 
@@ -293,12 +282,12 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
 
       /* drag */
     case GIRARA_EVENT_BUTTON_PRESS:
-      x = event->x;
-      y = event->y;
+      zathura->shortcut.mouse.x = event->x;
+      zathura->shortcut.mouse.y = event->y;
       break;
     case GIRARA_EVENT_BUTTON_RELEASE:
-      x = 0;
-      y = 0;
+      zathura->shortcut.mouse.x = 0;
+      zathura->shortcut.mouse.y = 0;
       break;
     case GIRARA_EVENT_MOTION_NOTIFY:
       x_adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
@@ -309,9 +298,9 @@ sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_e
       }
 
       zathura_adjustment_set_value(x_adj,
-          gtk_adjustment_get_value(x_adj) - (event->x - x));
+          gtk_adjustment_get_value(x_adj) - (event->x - zathura->shortcut.mouse.x));
       zathura_adjustment_set_value(y_adj,
-          gtk_adjustment_get_value(y_adj) - (event->y - y));
+          gtk_adjustment_get_value(y_adj) - (event->y - zathura->shortcut.mouse.y));
       break;
 
       /* unhandled events */
@@ -453,7 +442,7 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   document_close(zathura, true);
 
   /* reopen document */
-  document_open(zathura, zathura->file_monitor.file_path,
+  document_open(zathura, zathura->file_monitor.file_path, NULL,
                 zathura->file_monitor.password,
                 ZATHURA_PAGE_NUMBER_UNSPECIFIED);
 
@@ -469,7 +458,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  unsigned int page_number = zathura_document_get_current_page_number(zathura->document);
+  const unsigned int page_number = zathura_document_get_current_page_number(zathura->document);
 
   int angle = 90;
   if (argument != NULL && argument->n == ROTATE_CCW) {
@@ -1231,12 +1220,11 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
   int pages_per_row = 1;
   girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
 
-  static int tmp = 2;
   int value = 1;
   if (pages_per_row == 1) {
-    value = tmp;
+    value = zathura->shortcut.toggle_page_mode.pages;
   } else {
-    tmp = pages_per_row;
+    zathura->shortcut.toggle_page_mode.pages = pages_per_row;
   }
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
@@ -1285,17 +1273,15 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     return false;
   }
 
-  static int pages_per_row = 1;
-  static int first_page_column = 1;
-  static double zoom = 1.0;
-
   const girara_mode_t old_mode = girara_mode_get(session);
   if (old_mode == zathura->modes.presentation) {
     /* reset pages per row */
-    girara_setting_set(session, "pages-per-row", &pages_per_row);
+    girara_setting_set(session, "pages-per-row", &zathura->shortcut.toggle_presentation_mode.pages);
 
     /* reset first page column */
-    girara_setting_set(session, "first-page-column", &first_page_column);
+    if (zathura->shortcut.toggle_presentation_mode.first_page_column_list != NULL) {
+      girara_setting_set(session, "first-page-column", zathura->shortcut.toggle_presentation_mode.first_page_column_list);
+    }
 
     /* show status bar */
     gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
@@ -1304,25 +1290,28 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
 
     /* reset scale */
-    zathura_document_set_scale(zathura->document, zoom);
+    zathura_document_set_scale(zathura->document, zathura->shortcut.toggle_presentation_mode.zoom);
     render_all(zathura);
     refresh_view(zathura);
 
-    /* setm ode */
+    /* set mode */
     girara_mode_set(session, zathura->modes.normal);
   } else if (old_mode == zathura->modes.normal) {
     /* backup pages per row */
-    girara_setting_get(session, "pages-per-row", &pages_per_row);
+    girara_setting_get(session, "pages-per-row", &zathura->shortcut.toggle_presentation_mode.pages);
 
     /* backup first page column */
-    girara_setting_get(session, "first-page-column", &first_page_column);
+    g_free(zathura->shortcut.toggle_presentation_mode.first_page_column_list);
+    zathura->shortcut.toggle_presentation_mode.first_page_column_list = NULL;
+    /* this will leak. we need to move the values somewhere else */
+    girara_setting_get(session, "first-page-column", &zathura->shortcut.toggle_presentation_mode.first_page_column_list);
 
     /* set single view */
     int int_value = 1;
     girara_setting_set(session, "pages-per-row", &int_value);
 
     /* back up zoom */
-    zoom = zathura_document_get_scale(zathura->document);
+    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_scale(zathura->document);
 
     /* adjust window */
     girara_argument_t argument = { ZATHURA_ADJUST_BESTFIT, NULL };
@@ -1336,7 +1325,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     gtk_window_fullscreen(GTK_WINDOW(session->gtk.window));
     refresh_view(zathura);
 
-    /* setm ode */
+    /* set mode */
     girara_mode_set(session, zathura->modes.presentation);
   }
 

@@ -6,7 +6,7 @@ PROJECT = zathura
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 3
-ZATHURA_VERSION_REV = 3
+ZATHURA_VERSION_REV = 4
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
@@ -18,15 +18,15 @@ VERSION = ${ZATHURA_VERSION_MAJOR}.${ZATHURA_VERSION_MINOR}.${ZATHURA_VERSION_RE
 
 # girara
 GIRARA_VERSION_CHECK ?= 1
-GIRARA_MIN_VERSION = 0.2.4
+GIRARA_MIN_VERSION = 0.2.5
 GIRARA_PKG_CONFIG_NAME = girara-gtk3
 # glib
 GLIB_VERSION_CHECK ?= 1
-GLIB_MIN_VERSION = 2.28
+GLIB_MIN_VERSION = 2.32
 GLIB_PKG_CONFIG_NAME = glib-2.0
 # GTK
 GTK_VERSION_CHECK ?= 1
-GTK_MIN_VERSION = 3.0
+GTK_MIN_VERSION = 3.6
 GTK_PKG_CONFIG_NAME = gtk+-3.0
 
 # pkg-config binary
@@ -37,8 +37,8 @@ PKG_CONFIG ?= pkg-config
 WITH_SQLITE ?= $(shell (${PKG_CONFIG} --atleast-version=3.5.9 sqlite3 && echo 1) || echo 0)
 
 # synctex
-# To use the embedded copy of the syntex parser set WITH_SYSTEM_SYNCTEX to 0.
-WITH_SYSTEM_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
+# To disable support for synctex with libsynctex set WITH_SYNCTEX to 0.
+WITH_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
 
 # mimetype detection
 # To disable support for mimetype detction with libmagic set WITH_MAGIC to 0.
@@ -91,24 +91,24 @@ MAGIC_INC ?=
 MAGIC_LIB ?= -lmagic
 endif
 
-ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+ifneq ($(WITH_SYNCTEX),0)
 SYNCTEX_INC ?= $(shell ${PKG_CONFIG} --cflags synctex)
 SYNCTEX_LIB ?= $(shell ${PKG_CONFIG} --libs synctex)
-else
-ZLIB_INC ?= $(shell ${PKG_CONFIG} --cflags zlib)
-ZLIB_LIB ?= $(shell ${PKG_CONFIG} --libs zlib)
 endif
 
 INCS = ${GIRARA_INC} ${GTK_INC} ${GTHREAD_INC} ${GMODULE_INC} ${GLIB_INC}
 LIBS = ${GIRARA_LIB} ${GTK_LIB} ${GTHREAD_LIB} ${GMODULE_LIB} ${GLIB_LIB} -lpthread -lm
 
-# flags
-CFLAGS += -std=c99 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
+# pre-processor flags
+CPPFLAGS += -D_FILE_OFFSET_BITS=64
+
+# compiler flags
+CFLAGS += -std=c11 -pedantic -Wall -Wno-format-zero-length -Wextra $(INCS)
 
 # debug
 DFLAGS ?= -g
 
-# ld
+# linker flags
 LDFLAGS += -rdynamic
 
 # compiler
@@ -138,6 +138,9 @@ VALGRIND_SUPPRESSION_FILE = zathura.suppression
 
 # set to something != 0 if you want verbose build output
 VERBOSE ?= 0
+
+# gettext package name
+GETTEXT_PACKAGE ?= ${PROJECT}
 
 # colors
 COLOR ?= 1

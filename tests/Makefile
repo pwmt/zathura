@@ -33,21 +33,10 @@ LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
-ifneq ($(WITH_SYSTEM_SYNCTEX),0)
+ifneq ($(WITH_SYNCTEX),0)
 INCS   += $(SYNCTEX_INC)
 LIBS   += $(SYNCTEX_LIB)
-else
-ZATHURA_OBJECTS       += $(wildcard ../${BUILDDIR_RELEASE}/zathura/synctex/*.o)
-ZATHURA_OBJECTS_DEBUG += $(wildcard ../${BUILDDIR_DEBUG}/zathura/synctex/*.o)
-ZATHURA_OBJECTS_GCOV  += $(wildcard ../${BUILDDIR_GCOV}/zathura/synctex/*.o)
-LIBS   += $(ZLIB_LIB)
-
-ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
-CPPFLAGS += -I../zathura/synctex
-endif
-ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
-CPPFLAGS += -DSYNCTEX_VERBOSE=0
-endif
+CPPFLAGS += -DWITH_SYNCTEX
 endif
 
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)

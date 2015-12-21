@@ -149,7 +149,7 @@ config_load_default(zathura_t* zathura)
   int_value = 1;
   girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "first-page-column",     &int_value,   INT,    false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
+  girara_setting_add(gsession, "first-page-column",     "1:2",        STRING, false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              NULL, NULL);
   float_value = 40;
@@ -212,6 +212,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, _("Show directories"), NULL, NULL);
+  int_value = 10;
+  girara_setting_add(gsession, "show-recent",            &int_value,   INT,     false, _("Show recent files"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
   bool_value = false;
@@ -224,9 +226,13 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
   bool_value = false;
+  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), NULL, NULL);
+  bool_value = false;
   girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   string_value = "";
@@ -369,21 +375,25 @@ config_load_default(zathura_t* zathura)
   /* Index mode */
   girara_shortcut_add(gsession, 0,              GDK_KEY_Tab,       NULL, sc_toggle_index,        INDEX,        0,            NULL);
 
-  girara_shortcut_add(gsession, 0,              GDK_KEY_k,         NULL, sc_navigate_index,      INDEX,        UP,           NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_j,         NULL, sc_navigate_index,      INDEX,        DOWN,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_h,         NULL, sc_navigate_index,      INDEX,        COLLAPSE,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_l,         NULL, sc_navigate_index,      INDEX,        EXPAND,       NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_L,         NULL, sc_navigate_index,      INDEX,        EXPAND_ALL,   NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_H,         NULL, sc_navigate_index,      INDEX,        COLLAPSE_ALL, NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Up,        NULL, sc_navigate_index,      INDEX,        UP,           NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Down,      NULL, sc_navigate_index,      INDEX,        DOWN,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Left,      NULL, sc_navigate_index,      INDEX,        COLLAPSE,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Right,     NULL, sc_navigate_index,      INDEX,        EXPAND,       NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_space,     NULL, sc_navigate_index,      INDEX,        SELECT,       NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Return,    NULL, sc_navigate_index,      INDEX,        SELECT,       NULL);
-  girara_shortcut_add(gsession, 0,              0,                 "gg", sc_navigate_index,      INDEX,        TOP,          NULL);
-  girara_shortcut_add(gsession, 0,              0,                 "G", sc_navigate_index,       INDEX,        BOTTOM,       NULL);
-
+  girara_shortcut_add(gsession, 0,                GDK_KEY_k,           NULL, sc_navigate_index,      INDEX,        UP,           NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_j,           NULL, sc_navigate_index,      INDEX,        DOWN,         NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_h,           NULL, sc_navigate_index,      INDEX,        COLLAPSE,     NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_l,           NULL, sc_navigate_index,      INDEX,        EXPAND,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_L,           NULL, sc_navigate_index,      INDEX,        EXPAND_ALL,   NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_H,           NULL, sc_navigate_index,      INDEX,        COLLAPSE_ALL, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Up,          NULL, sc_navigate_index,      INDEX,        UP,           NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Down,        NULL, sc_navigate_index,      INDEX,        DOWN,         NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Left,        NULL, sc_navigate_index,      INDEX,        COLLAPSE,     NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Right,       NULL, sc_navigate_index,      INDEX,        EXPAND,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_space,       NULL, sc_navigate_index,      INDEX,        SELECT,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Return,      NULL, sc_navigate_index,      INDEX,        SELECT,       NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_j,           NULL, sc_navigate_index,      INDEX,        SELECT,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_q,           NULL, sc_quit,                INDEX,        0,            NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "gg", sc_navigate_index,      INDEX,        TOP,          NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "G",  sc_navigate_index,      INDEX,        BOTTOM,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_toggle_index,        INDEX,        0,            NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_toggle_index,        INDEX,        0,            NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_toggle_index,        INDEX,        0,            NULL);
 
   /* Presentation mode */
   girara_shortcut_add(gsession, 0,              GDK_KEY_J,         NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);

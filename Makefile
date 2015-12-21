@@ -21,20 +21,10 @@ LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
-ifneq ($(WITH_SYSTEM_SYNCTEX),0)
-INCS   += $(SYNCTEX_INC)
-LIBS   += $(SYNCTEX_LIB)
-else
-INCS   += $(ZLIB_INC)
-LIBS   += $(ZLIB_LIB)
-SOURCE += $(wildcard ${PROJECT}/synctex/*.c)
-
-ifeq (,$(findstring -Isynctex,${CPPFLAGS}))
-CPPFLAGS += -I${PROJECT}/synctex
-endif
-ifeq (,$(findstring -DSYNCTEX_VERBOSE=0,${CPPFLAGS}))
-CPPFLAGS += -DSYNCTEX_VERBOSE=0
-endif
+ifneq ($(WITH_SYNCTEX),0)
+INCS     += $(SYNCTEX_INC)
+LIBS     += $(SYNCTEX_LIB)
+CPPFLAGS += -DWITH_SYNCTEX
 endif
 
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
@@ -111,9 +101,9 @@ ${OBJECTS}: config.mk ${PROJECT}/version.h \
 
 ${BUILDDIR_RELEASE}/%.o: %.c
 	$(call colorecho,CC,$<)
-	@mkdir -p ${DEPENDDIR}/$(dir $(abspath $@))
+	@mkdir -p ${DEPENDDIR}/$(dir $@)
 	@mkdir -p $(dir $(abspath $@))
-	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
+	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} -o $@ $< -MMD -MF ${DEPENDDIR}/$@.dep
 
 ${BUILDDIR_RELEASE}/${BINDIR}/${PROJECT}: ${OBJECTS}
 	$(call colorecho,CC,$@)
@@ -135,10 +125,10 @@ ${OBJECTS_DEBUG}: config.mk ${PROJECT}/version.h \
 
 ${BUILDDIR_DEBUG}/%.o: %.c
 	$(call colorecho,CC,$<)
-	@mkdir -p ${DEPENDDIR}/$(dir $(abspath $@))
+	@mkdir -p ${DEPENDDIR}/$(dir $@)
 	@mkdir -p $(dir $(abspath $@))
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} \
-		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
+		-o $@ $< -MMD -MF ${DEPENDDIR}/$@.dep
 
 ${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}: ${OBJECTS_DEBUG}
 	$(call colorecho,CC,$@)
@@ -158,10 +148,10 @@ ${OBJECTS_GCOV}: config.mk ${PROJECT}/version.h \
 
 ${BUILDDIR_GCOV}/%.o: %.c
 	$(call colorecho,CC,$<)
-	@mkdir -p ${DEPENDDIR}/$(dir $(abspath $@))
+	@mkdir -p ${DEPENDDIR}/$(dir $@)
 	@mkdir -p $(dir $(abspath $@))
 	$(QUIET)${CC} -c ${CPPFLAGS} ${CFLAGS} ${GCOV_CFLAGS} \
-		-o $@ $< -MMD -MF ${DEPENDDIR}/$(abspath $@).dep
+		-o $@ $< -MMD -MF ${DEPENDDIR}/$@.dep
 
 ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}: ${OBJECTS_GCOV}
 	$(call colorecho,CC,$@)
@@ -298,7 +288,8 @@ uninstall: uninstall-headers
 	$(QUIET)rm -f $(DESTDIR)$(APPDATAPREFIX)/$(PROJECT).appdata.xml
 	$(MAKE) -C po uninstall
 
--include $(wildcard ${DEPENDDIR}/*.dep)
+DEPENDS = ${DEPENDDIRS:^=${DEPENDDIR}/}$(addprefix ${DEPENDDIR}/,${OBJECTS:.o=.o.dep})
+-include ${DEPENDS}
 
 .PHONY: all options clean doc debug valgrind gdb dist doc install uninstall \
 	test po install-headers uninstall-headers update-po install-manpages \

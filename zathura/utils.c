@@ -4,9 +4,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <math.h>
 #include <gtk/gtk.h>
 #include <girara/datastructures.h>
@@ -195,9 +192,7 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   GString* string = g_string_new(NULL);
 
   /* zathura version */
-  char* zathura_version = g_strdup_printf("zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
-  g_string_append(string, zathura_version);
-  g_free(zathura_version);
+  g_string_append_printf(string, "zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
 
   const char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
 
@@ -207,15 +202,12 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
     GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin) {
       char* name = zathura_plugin_get_name(plugin);
       zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
-      char* text = g_strdup_printf(format,
-                                   (name == NULL) ? "-" : name,
-                                   version.major,
-                                   version.minor,
-                                   version.rev,
-                                   zathura_plugin_get_path(plugin)
-                                  );
-      g_string_append(string, text);
-      g_free(text);
+      g_string_append_printf(string, format,
+                             (name == NULL) ? "-" : name,
+                             version.major,
+                             version.minor,
+                             version.rev,
+                             zathura_plugin_get_path(plugin));
     } GIRARA_LIST_FOREACH_END(plugins, zathura_plugin_t*, iter, plugin);
   }
 
@@ -225,7 +217,8 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   return version;
 }
 
-GdkAtom* get_selection(zathura_t* zathura)
+GdkAtom*
+get_selection(zathura_t* zathura)
 {
   g_return_val_if_fail(zathura != NULL, NULL);
 
@@ -256,4 +249,30 @@ GdkAtom* get_selection(zathura_t* zathura)
   g_free(value);
 
   return selection;
+}
+
+unsigned int
+find_first_page_column(const char* first_page_column_list,
+                       const unsigned int pages_per_row)
+{
+  /* sanity checks */
+  unsigned int first_page_column = 1;
+  g_return_val_if_fail(first_page_column_list != NULL,     first_page_column);
+  g_return_val_if_fail(strcmp(first_page_column_list, ""), first_page_column);
+  g_return_val_if_fail(pages_per_row > 0,                  first_page_column);
+
+  /* split settings list */
+  char** settings = g_strsplit(first_page_column_list, ":", pages_per_row+1);
+  const size_t settings_size = g_strv_length(settings);
+
+  /* read setting value corresponding to the specified pages per row */
+  unsigned int index = pages_per_row - 1;
+  if (settings_size > index && strcmp(settings[index], "")) {
+    first_page_column = atoi(settings[index]);
+  }
+
+  /* free buffers */
+  g_strfreev(settings);
+
+  return first_page_column;
 }
