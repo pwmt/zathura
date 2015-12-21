@@ -135,10 +135,8 @@ main(int argc, char* argv[])
   gchar* plugin_path    = NULL;
   gchar* loglevel       = NULL;
   gchar* password       = NULL;
-#ifdef WITH_SYNCTEX
   gchar* synctex_editor = NULL;
   gchar* synctex_fwd    = NULL;
-#endif
   gchar* mode           = NULL;
   bool forkback         = false;
   bool print_version    = false;
