@@ -665,9 +665,9 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
 
       /* Careful. data color components blue, green, red. */
       const double rgb[3] = {
-        (double) data[2] / 256.,
-        (double) data[1] / 256.,
-        (double) data[0] / 256.
+        data[2] / 255.,
+        data[1] / 255.,
+        data[0] / 255.
       };
 
       /* compute h, s, l data   */
