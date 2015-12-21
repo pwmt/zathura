@@ -596,6 +596,8 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
    * same effect.
    */
 
+  cairo_surface_flush(surface);
+
   const int rowstride  = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
 
@@ -712,6 +714,8 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
   if (rectangles != NULL) {
     girara_list_free(rectangles);
   }
+
+  cairo_surface_mark_dirty(surface);
 
 #undef rgb1
 #undef rgb2
