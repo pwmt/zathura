@@ -84,12 +84,14 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
 
 static zathura_t*
 init_zathura(const char* config_dir, const char* data_dir,
-    const char* cache_dir, const char* plugin_path, char** argv,
-#ifdef GDK_WINDOWING_X11
-    char* synctex_editor, Window embed)
-#else
-    char* synctex_editor)
+    const char* cache_dir, const char* plugin_path, char** argv
+#ifdef WITH_SYNCTEX
+    , char* synctex_editor
 #endif
+#ifdef GDK_WINDOWING_X11
+    , Window embed
+#endif
+    )
 {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
@@ -250,11 +252,14 @@ main(int argc, char* argv[])
 
   /* Create zathura session */
   zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir,
-#ifdef GDK_WINDOWING_X11
-      plugin_path, argv, synctex_editor, embed);
-#else
-      plugin_path, argv, synctex_editor);
+      plugin_path, argv
+#ifdef WITH_SYNCTEX
+      , synctex_editor
 #endif
+#ifdef GDK_WINDOWING_X11
+      , embed
+#endif
+      );
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     return -1;
