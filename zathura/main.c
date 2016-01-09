@@ -194,9 +194,13 @@ main(int argc, char* argv[])
     }
 
     const int ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
-    if (ret != 0) {
-      /* Error or instance found */
-      return ret;
+    if (ret > 0) {
+      /* Instance found. */
+      return 0;
+    }
+    else if (ret < 0) {
+      /* Error occurred. */
+      return -1;
     }
 
     girara_debug("No instance found. Starting new one.");
