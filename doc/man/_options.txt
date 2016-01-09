@@ -28,7 +28,13 @@
 
 --synctex-forward=input
   Jump to the given position. The switch expects the same format as specified
-  for synctex's view -i.
+  for synctex's view -i. If no instance is running for the specified document,
+  a new instance will be launched (only if --synctex-pid is not specified).
+
+--synctex-pid=pid
+  Instead of looking for an instance having the correct file opened, try only
+  the instance with the given PID. Note that if the given PID does not have the
+  correct file open or does not exist, no new instance will be spanned.
 
 --fork
   Fork into background

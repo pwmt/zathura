@@ -1,2 +1,3 @@
 zathura [-e XID] [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
-[--fork] [-l LEVEL] [-s] [-x CMD] [--synctex-forward INPUT] <files>
+[--fork] [-l LEVEL] [-s] [-x CMD] [--synctex-forward INPUT] [--synctex-pid PID]
+<files>
