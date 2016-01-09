@@ -1413,10 +1413,10 @@ adjust_view(zathura_t* zathura)
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
       (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
-    newscale = scale * (double)view_width / (double)document_width;
+    newscale *= (double)view_width / (double)document_width;
 
   } else if (adjust_mode == ZATHURA_ADJUST_BESTFIT) {
-    newscale = scale * (double)view_height / (double)cell_height;
+    newscale *= (double)view_height / (double)cell_height;
 
   } else {
     goto error_ret;
@@ -1428,8 +1428,8 @@ adjust_view(zathura_t* zathura)
   zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
 
   /* if the change in scale changes page cell dimensions by at least one pixel, render */
-  if (abs(new_cell_width - cell_width) > 1 ||
-      abs(new_cell_height - cell_height) > 1) {
+  if (abs((int)new_cell_width - (int)cell_width) > 1 ||
+      abs((int)new_cell_height - (int)cell_height) > 1) {
     render_all(zathura);
     refresh_view(zathura);
 
