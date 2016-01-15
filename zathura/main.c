@@ -213,10 +213,19 @@ main(int argc, char* argv[])
     return -1;
   }
 
-  size_t file_idx = argc > 1 ? 1 : 0;
+  /* g_option_context_parse has some funny (documented) behavior:
+   * * for "-- a b c" you get no -- in argv
+   * * for "-- --" you get -- in argv twice
+   * * for "-- -a" you get -- in argv
+   *
+   * So if there is one -- in argv, we need to ignore it. */
+  const bool has_double_dash = argc > 1 && g_strcmp0(argv[1], "--") == 0;
+  const int file_idx_base = has_double_dash ? 2 : 1;
+
+  int file_idx = argc > file_idx_base ? file_idx_base : 0;
   /* Fork instances for other files. */
-  if (print_version == false && argc > 2) {
-    for (int idx = 2; idx < argc; ++idx) {
+  if (print_version == false && argc > file_idx_base + 1) {
+    for (int idx = file_idx_base + 1; idx < argc; ++idx) {
       const pid_t pid = fork();
       if (pid == 0) { /* child */
         file_idx = idx;
@@ -232,7 +241,7 @@ main(int argc, char* argv[])
   }
 
   /* Fork into the background if the user really wants to ... */
-  if (print_version == false && forkback == true && file_idx < 2) {
+  if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
       return 0;
