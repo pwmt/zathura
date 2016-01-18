@@ -233,6 +233,7 @@ main(int argc, char* argv[])
           girara_error("Could not start new process group: %s", strerror(errno));
           return -1;
         }
+        break;
       } else if (pid < 0) { /* error */
         girara_error("Could not fork: %s", strerror(errno));
         return -1;
