@@ -18,6 +18,10 @@
 #include "synctex.h"
 #endif
 
+#ifndef GDK_WINDOWING_X11
+typedef int Window;
+#endif
+
 /* Init locale */
 static void
 init_locale(void)
@@ -45,7 +49,7 @@ set_log_level(const char* loglevel)
 #ifdef WITH_SYNCTEX
 static int
 run_synctex_forward(const char* synctex_fwd, const char* filename,
-    int synctex_pid)
+                    int synctex_pid)
 {
   GFile* file = g_file_new_for_commandline_arg(filename);
   if (file == NULL) {
@@ -60,8 +64,8 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
     return -1;
   }
 
-  int line = 0;
-  int column = 0;
+  int   line       = 0;
+  int   column     = 0;
   char* input_file = NULL;
   if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
     girara_error("Failed to parse argument to --synctex-forward.");
@@ -69,13 +73,15 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
     return -1;
   }
 
-  const int ret = zathura_dbus_synctex_position(real_path, input_file, line, column, synctex_pid);
+  const int ret = zathura_dbus_synctex_position(real_path, input_file, line,
+                                                column, synctex_pid);
   g_free(input_file);
   g_free(real_path);
 
   if (ret == -1) {
     /* D-Bus or SyncTeX failed */
-    girara_error("Got no usable data from SyncTeX or D-Bus failed in some way.");
+    girara_error(
+      "Got no usable data from SyncTeX or D-Bus failed in some way.");
   }
 
   return ret;
@@ -84,12 +90,8 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
 
 static zathura_t*
 init_zathura(const char* config_dir, const char* data_dir,
-    const char* cache_dir, const char* plugin_path, char** argv,
-#ifdef GDK_WINDOWING_X11
-    char* synctex_editor, Window embed)
-#else
-    char* synctex_editor)
-#endif
+             const char* cache_dir, const char* plugin_path, char** argv,
+             char* synctex_editor, Window embed)
 {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
@@ -114,7 +116,8 @@ init_zathura(const char* config_dir, const char* data_dir,
 
 #ifdef WITH_SYNCTEX
   if (synctex_editor != NULL) {
-    girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
+    girara_setting_set(zathura->ui.session, "synctex-editor-command",
+                       synctex_editor);
   }
 #endif
 
@@ -138,11 +141,11 @@ main(int argc, char* argv[])
   gchar* synctex_editor = NULL;
   gchar* synctex_fwd    = NULL;
   gchar* mode           = NULL;
-  bool forkback         = false;
-  bool print_version    = false;
-  int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  bool   forkback       = false;
+  bool   print_version  = false;
+  int    page_number    = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
 #ifdef WITH_SYNCTEX
-  int synctex_pid       = -1;
+  int    synctex_pid    = -1;
 #endif
 #ifdef GDK_WINDOWING_X11
   Window embed          = 0;
@@ -189,7 +192,8 @@ main(int argc, char* argv[])
   /* handle synctex forward synchronization */
   if (synctex_fwd != NULL) {
     if (argc != 2) {
-      girara_error("Too many arguments or missing filename while running with --synctex-forward");
+      girara_error("Too many arguments or missing filename while running with "
+                   "--synctex-forward");
       return -1;
     }
 
@@ -208,7 +212,8 @@ main(int argc, char* argv[])
 #endif
 
   /* check mode */
-  if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
+  if (mode != NULL && g_strcmp0(mode, "presentation") != 0 &&
+      g_strcmp0(mode, "fullscreen") != 0) {
     girara_error("Invalid argument for --mode: %s", mode);
     return -1;
   }
@@ -220,7 +225,7 @@ main(int argc, char* argv[])
    *
    * So if there is one -- in argv, we need to ignore it. */
   const bool has_double_dash = argc > 1 && g_strcmp0(argv[1], "--") == 0;
-  const int file_idx_base = has_double_dash ? 2 : 1;
+  const int  file_idx_base   = has_double_dash ? 2 : 1;
 
   int file_idx = argc > file_idx_base ? file_idx_base : 0;
   /* Fork instances for other files. */
@@ -230,11 +235,13 @@ main(int argc, char* argv[])
       if (pid == 0) { /* child */
         file_idx = idx;
         if (setsid() == -1) {
-          girara_error("Could not start new process group: %s", strerror(errno));
+          girara_error("Could not start new process group: %s",
+                       strerror(errno));
           return -1;
         }
         break;
-      } else if (pid < 0) { /* error */
+      }
+      else if (pid < 0) { /* error */
         girara_error("Could not fork: %s", strerror(errno));
         return -1;
       }
@@ -242,11 +249,13 @@ main(int argc, char* argv[])
   }
 
   /* Fork into the background if the user really wants to ... */
-  if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
+  if (print_version == false && forkback == true &&
+      file_idx < file_idx_base + 1) {
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
       return 0;
-    } else if (pid < 0) { /* error */
+    }
+    else if (pid < 0) { /* error */
       girara_error("Could not fork: %s", strerror(errno));
       return -1;
     }
@@ -262,11 +271,7 @@ main(int argc, char* argv[])
 
   /* Create zathura session */
   zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir,
-#ifdef GDK_WINDOWING_X11
-      plugin_path, argv, synctex_editor, embed);
-#else
-      plugin_path, argv, synctex_editor);
-#endif
+                                    plugin_path, argv, synctex_editor, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     return -1;
@@ -289,11 +294,8 @@ main(int argc, char* argv[])
     if (page_number > 0) {
       --page_number;
     }
-#ifdef WITH_SYNCTEX
-    document_open_idle(zathura, argv[file_idx], password, page_number, mode, synctex_fwd);
-#else
-    document_open_idle(zathura, argv[file_idx], password, page_number, mode, NULL);
-#endif
+    document_open_idle(zathura, argv[file_idx], password, page_number, mode,
+                       synctex_fwd);
   }
 
   /* run zathura */
