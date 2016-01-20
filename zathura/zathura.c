@@ -542,6 +542,11 @@ prepare_document_open_from_stdin(const char* path)
     return NULL;
   }
 
+  if (infileno == -1) {
+    girara_error("Can not read from file descriptor.");
+    return NULL;
+  }
+
   GError* error = NULL;
   gchar* file = NULL;
   gint handle = g_file_open_tmp("zathura.stdin.XXXXXX", &file, &error);
@@ -554,14 +559,6 @@ prepare_document_open_from_stdin(const char* path)
   }
 
   // read and dump to temporary file
-  if (infileno == -1) {
-    girara_error("Can not read from file descriptor.");
-    close(handle);
-    g_unlink(file);
-    g_free(file);
-    return NULL;
-  }
-
   char buffer[BUFSIZ];
   ssize_t count = 0;
   while ((count = read(infileno, buffer, BUFSIZ)) > 0) {
