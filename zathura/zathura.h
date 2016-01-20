@@ -6,7 +6,9 @@
 #include <stdbool.h>
 #include <girara/types.h>
 #include <gtk/gtk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
+#endif
 #include "macros.h"
 #include "types.h"
 
@@ -222,6 +224,11 @@ struct zathura_s
       double zoom;
     } toggle_presentation_mode;
   } shortcut;
+
+  /**
+   * Context for MIME type detection
+   */
+  zathura_content_type_context_t* content_type_context;
 };
 
 /**

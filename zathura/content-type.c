@@ -17,14 +17,23 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-/** Read a most GT_MAX_READ bytes before falling back to file. */
-static const size_t GT_MAX_READ = 1 << 16;
+struct zathura_content_type_context_s
+{
+#ifdef WITH_MAGIC
+  magic_t magic;
+#endif
+};
+
+zathura_content_type_context_t*
+zathura_content_type_new(void)
+{
+  zathura_content_type_context_t* context =
+    g_try_malloc0(sizeof(zathura_content_type_context_t));
+  if (context == NULL) {
+    return NULL;
+  }
 
 #ifdef WITH_MAGIC
-static const char*
-guess_type_magic(const char* path) {
-  const char* mime_type = NULL;
-
   /* creat magic cookie */
   const int flags =
     MAGIC_MIME_TYPE |
@@ -36,30 +45,62 @@ guess_type_magic(const char* path) {
   magic_t magic = magic_open(flags);
   if (magic == NULL) {
     girara_debug("failed creating the magic cookie");
-    goto cleanup;
+    return context;
   }
 
   /* ... and load mime database */
   if (magic_load(magic, NULL) < 0) {
     girara_debug("failed loading the magic database: %s", magic_error(magic));
-    goto cleanup;
+    magic_close(magic);
+    return context;
   }
 
+  context->magic = magic;
+#endif
+
+  return context;
+}
+
+void
+zathura_content_type_free(zathura_content_type_context_t* context)
+{
+  if (context == NULL) {
+    return;
+  }
+
+#ifdef WITH_MAGIC
+  if (context->magic != NULL) {
+    magic_close(context->magic);
+  }
+#endif
+
+  g_free(context);
+}
+
+
+/** Read a most GT_MAX_READ bytes before falling back to file. */
+static const size_t GT_MAX_READ = 1 << 16;
+
+#ifdef WITH_MAGIC
+static const char*
+guess_type_magic(zathura_content_type_context_t* context, const char* path)
+{
+  if (context == NULL || context->magic == NULL) {
+    return NULL;
+  }
+
+  const char* mime_type = NULL;
+
   /* get the mime type */
-  mime_type = magic_file(magic, path);
+  mime_type = magic_file(context->magic, path);
   if (mime_type == NULL) {
-    girara_debug("failed guessing filetype: %s", magic_error(magic));
-    goto cleanup;
+    girara_debug("failed guessing filetype: %s", magic_error(context->magic));
+    return NULL;
   }
   /* dup so we own the memory */
   mime_type = g_strdup(mime_type);
 
   girara_debug("magic detected filetype: %s", mime_type);
-
-cleanup:
-  if (magic != NULL) {
-    magic_close(magic);
-  }
 
   return mime_type;
 }
@@ -71,7 +112,9 @@ guess_type_file(const char* UNUSED(path))
 }
 #else
 static const char*
-guess_type_magic(const char* UNUSED(path)) {
+guess_type_magic(zathura_content_type_context_t* UNUSED(context),
+                 const char* UNUSED(path))
+{
   return NULL;
 }
 
@@ -161,10 +204,11 @@ guess_type_glib(const char* path)
 }
 
 const char*
-guess_content_type(const char* path)
+zathura_content_type_guess(zathura_content_type_context_t* context,
+                           const char* path)
 {
   /* try libmagic first */
-  const char* content_type = guess_type_magic(path);
+  const char* content_type = guess_type_magic(context, path);
   if (content_type != NULL) {
     return content_type;
   }

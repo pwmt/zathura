@@ -52,12 +52,14 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-  const gchar* content_type = guess_content_type(path);
+  const gchar* content_type =
+    zathura_content_type_guess(zathura->content_type_context, path);
   if (content_type == NULL) {
     return false;
   }
 
-  zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
+  zathura_plugin_t* plugin =
+    zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free((void*)content_type);
 
   return (plugin == NULL) ? false : true;

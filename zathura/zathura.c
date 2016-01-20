@@ -43,6 +43,7 @@
 #include "dbus-interface.h"
 #include "css-definitions.h"
 #include "synctex.h"
+#include "content-type.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -102,6 +103,9 @@ zathura_create(void)
   /* signal handler */
   zathura->signals.sigterm = g_unix_signal_add(SIGTERM, zathura_signal_sigterm, zathura);
 #endif
+
+  /* MIME type detection */
+  zathura->content_type_context = zathura_content_type_new();
 
   zathura->ui.session->global.data = zathura;
 
@@ -375,6 +379,9 @@ zathura_free(zathura_t* zathura)
   }
 
   document_close(zathura, false);
+
+  /* MIME type detection */
+  zathura_content_type_free(zathura->content_type_context);
 
 #ifdef G_OS_UNIX
   if (zathura->signals.sigterm > 0) {
@@ -760,7 +767,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
 
   gchar* file_uri = NULL;
   zathura_error_t error = ZATHURA_ERROR_OK;
-  zathura_document_t* document = zathura_document_open(zathura->plugins.manager, path, uri, password, &error);
+  zathura_document_t* document = zathura_document_open(zathura, path, uri, password, &error);
 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {

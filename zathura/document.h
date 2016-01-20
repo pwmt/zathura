@@ -11,14 +11,14 @@
 /**
  * Open the document
  *
- * @param plugin_manager The plugin manager
+ * @param plugin_manager The zathura instance
  * @param path Path to the document
  * @param password Password of the document or NULL
  * @param error Optional error parameter
  * @return The document object and NULL if an error occurs
  */
-zathura_document_t* zathura_document_open(zathura_plugin_manager_t*
-    plugin_manager, const char* path, const char *uri, const char* password, zathura_error_t*
+zathura_document_t* zathura_document_open(zathura_t* zathura,
+    const char* path, const char *uri, const char* password, zathura_error_t*
     error);
 
 /**

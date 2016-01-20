@@ -148,7 +148,7 @@ typedef struct zathura_image_s
 typedef enum zathura_link_type_e
 {
   ZATHURA_LINK_INVALID, /**< Invalid type */
-	ZATHURA_LINK_NONE, /**< No action */
+  ZATHURA_LINK_NONE, /**< No action */
   ZATHURA_LINK_GOTO_DEST, /**< Links to a page */
   ZATHURA_LINK_GOTO_REMOTE, /**< Links to a page */
   ZATHURA_LINK_URI, /**< Links to an external source */
@@ -158,15 +158,15 @@ typedef enum zathura_link_type_e
 
 typedef enum zathura_link_destination_type_e
 {
-	ZATHURA_LINK_DESTINATION_UNKNOWN,
-	ZATHURA_LINK_DESTINATION_XYZ,
-	ZATHURA_LINK_DESTINATION_FIT,
-	ZATHURA_LINK_DESTINATION_FITH,
-	ZATHURA_LINK_DESTINATION_FITV,
-	ZATHURA_LINK_DESTINATION_FITR,
-	ZATHURA_LINK_DESTINATION_FITB,
-	ZATHURA_LINK_DESTINATION_FITBH,
-	ZATHURA_LINK_DESTINATION_FITBV
+  ZATHURA_LINK_DESTINATION_UNKNOWN,
+  ZATHURA_LINK_DESTINATION_XYZ,
+  ZATHURA_LINK_DESTINATION_FIT,
+  ZATHURA_LINK_DESTINATION_FITH,
+  ZATHURA_LINK_DESTINATION_FITV,
+  ZATHURA_LINK_DESTINATION_FITR,
+  ZATHURA_LINK_DESTINATION_FITB,
+  ZATHURA_LINK_DESTINATION_FITBH,
+  ZATHURA_LINK_DESTINATION_FITBV
 } zathura_link_destination_type_t;
 
 typedef struct zathura_link_target_s
@@ -254,5 +254,10 @@ zathura_document_information_entry_new(zathura_document_information_type_t
  * @param entry The entry that should be freed
  */
 void zathura_document_information_entry_free(zathura_document_information_entry_t* entry);
+
+/**
+ * Context for MIME type detection
+ */
+typedef struct zathura_content_type_context_s zathura_content_type_context_t;
 
 #endif // TYPES_H
