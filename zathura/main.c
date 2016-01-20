@@ -147,9 +147,7 @@ main(int argc, char* argv[])
 #ifdef WITH_SYNCTEX
   int    synctex_pid    = -1;
 #endif
-#ifdef GDK_WINDOWING_X11
   Window embed          = 0;
-#endif
 
   GOptionEntry entries[] = {
 #ifdef GDK_WINDOWING_X11
