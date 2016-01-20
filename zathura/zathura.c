@@ -114,32 +114,27 @@ error_out:
   return NULL;
 }
 
-bool
-zathura_init(zathura_t* zathura)
+static void
+create_directories(zathura_t* zathura)
 {
-  if (zathura == NULL) {
-    return false;
+  static const unsigned int mode = 0711;
+
+  if (g_mkdir_with_parents(zathura->config.config_dir, mode) == -1) {
+    girara_error("Could not create '%s': %s", zathura->config.config_dir,
+                 strerror(errno));
   }
 
-  /* create zathura (config/data) directory */
-  if (g_mkdir_with_parents(zathura->config.config_dir, 0771) == -1) {
-    girara_error("Could not create '%s': %s", zathura->config.config_dir, strerror(errno));
+  if (g_mkdir_with_parents(zathura->config.data_dir, mode) == -1) {
+    girara_error("Could not create '%s': %s", zathura->config.data_dir,
+                 strerror(errno));
   }
+}
 
-  if (g_mkdir_with_parents(zathura->config.data_dir, 0771) == -1) {
-    girara_error("Could not create '%s': %s", zathura->config.data_dir, strerror(errno));
-  }
-
-  /* load plugins */
-  zathura_plugin_manager_load(zathura->plugins.manager);
-
-  /* configuration */
-  config_load_default(zathura);
-  config_load_files(zathura);
-
-  /* UI */
+static bool
+init_ui(zathura_t* zathura)
+{
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
-    goto error_free;
+    return false;
   }
 
   /* girara events */
@@ -147,16 +142,9 @@ zathura_init(zathura_t* zathura)
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
   /* zathura signals */
-  zathura->signals.refresh_view = g_signal_new("refresh-view",
-                                               GTK_TYPE_WIDGET,
-                                               G_SIGNAL_RUN_LAST,
-                                               0,
-                                               NULL,
-                                               NULL,
-                                               g_cclosure_marshal_generic,
-                                               G_TYPE_NONE,
-                                               1,
-                                               G_TYPE_POINTER);
+  zathura->signals.refresh_view = g_signal_new(
+    "refresh-view", GTK_TYPE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+    g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
                    G_CALLBACK(cb_refresh_view), zathura);
@@ -166,28 +154,29 @@ zathura_init(zathura_t* zathura)
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
   gtk_grid_set_column_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
   if (zathura->ui.page_widget == NULL) {
-    goto error_free;
+    return false;
   }
 
-  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate",
+                   G_CALLBACK(cb_view_resized), zathura);
 
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(
                  GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* Connect hadjustment signals */
   g_signal_connect(G_OBJECT(hadjustment), "value-changed",
-      G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
+                   G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
   g_signal_connect(G_OBJECT(hadjustment), "changed",
-      G_CALLBACK(cb_view_hadjustment_changed), zathura);
+                   G_CALLBACK(cb_view_hadjustment_changed), zathura);
 
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
                  GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   /* Connect vadjustment signals */
   g_signal_connect(G_OBJECT(vadjustment), "value-changed",
-      G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
+                   G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
   g_signal_connect(G_OBJECT(vadjustment), "changed",
-      G_CALLBACK(cb_view_vadjustment_changed), zathura);
+                   G_CALLBACK(cb_view_vadjustment_changed), zathura);
 
   /* page view alignment */
   gtk_widget_set_halign(zathura->ui.page_widget, GTK_ALIGN_CENTER);
@@ -201,66 +190,39 @@ zathura_init(zathura_t* zathura)
   gtk_widget_show(zathura->ui.page_widget);
 
   /* statusbar */
-  zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
+  zathura->ui.statusbar.file =
+    girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
   if (zathura->ui.statusbar.file == NULL) {
-    goto error_free;
+    return false;
   }
 
-  zathura->ui.statusbar.buffer = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  zathura->ui.statusbar.buffer =
+    girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.buffer == NULL) {
-    goto error_free;
+    return false;
   }
 
-  zathura->ui.statusbar.page_number = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  zathura->ui.statusbar.page_number =
+    girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.page_number == NULL) {
-    goto error_free;
+    return false;
   }
 
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, _("[No name]"));
+  girara_statusbar_item_set_text(zathura->ui.session,
+                                 zathura->ui.statusbar.file, _("[No name]"));
 
   /* signals */
-  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy",
+                   G_CALLBACK(cb_destroy), zathura);
 
-  /* database */
-  char* database = NULL;
-  girara_setting_get(zathura->ui.session, "database", &database);
+  return true;
+}
 
-  if (g_strcmp0(database, "plain") == 0) {
-    girara_debug("Using plain database backend.");
-    zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
-#ifdef WITH_SQLITE
-  } else if (g_strcmp0(database, "sqlite") == 0) {
-    girara_debug("Using sqlite database backend.");
-    char* tmp = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
-    zathura->database = zathura_sqldatabase_new(tmp);
-    g_free(tmp);
-#endif
-  } else if (g_strcmp0(database, "null") != 0) {
-    girara_error("Database backend '%s' is not supported.", database);
-  }
-
-  if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
-    girara_error("Unable to initialize database. Bookmarks won't be available.");
-  } else {
-    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
-  }
-  g_free(database);
-
-  /* bookmarks */
-  zathura->bookmarks.bookmarks = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
-                                 (girara_free_function_t) zathura_bookmark_free);
-
-  /* jumplist */
-  int jumplist_size = 20;
-  girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
-
-  zathura->jumplist.max_size = jumplist_size < 0 ? 0 : jumplist_size;
-  zathura->jumplist.list = NULL;
-  zathura->jumplist.size = 0;
-  zathura->jumplist.cur = NULL;
-
-  /* CSS for index mode */
-  GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
+static void
+init_css(zathura_t* zathura)
+{
+  GiraraTemplate* csstemplate =
+    girara_session_get_template(zathura->ui.session);
 
   static const char* index_settings[] = {
     "index-fg",
@@ -272,8 +234,8 @@ zathura_init(zathura_t* zathura)
   for (size_t s = 0; s < LENGTH(index_settings); ++s) {
     girara_template_add_variable(csstemplate, index_settings[s]);
 
-    char* tmp_value = NULL;
-    GdkRGBA rgba = { 0, 0, 0, 0 };
+    char*   tmp_value = NULL;
+    GdkRGBA rgba      = {0, 0, 0, 0};
     girara_setting_get(zathura->ui.session, index_settings[s], &tmp_value);
     if (tmp_value != NULL) {
       gdk_rgba_parse(&rgba, tmp_value);
@@ -281,24 +243,111 @@ zathura_init(zathura_t* zathura)
     }
 
     char* color = gdk_rgba_to_string(&rgba);
-    girara_template_set_variable_value(csstemplate,
-        index_settings[s], color);
+    girara_template_set_variable_value(csstemplate, index_settings[s], color);
     g_free(color);
   }
 
-  char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate), CSS_TEMPLATE_INDEX);
+  char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate),
+                              CSS_TEMPLATE_INDEX);
   girara_template_set_base(csstemplate, css);
   g_free(css);
+}
 
-  /* Shortcut helpers */
+static void
+init_database(zathura_t* zathura)
+{
+  char* database = NULL;
+  girara_setting_get(zathura->ui.session, "database", &database);
+
+  if (g_strcmp0(database, "plain") == 0) {
+    girara_debug("Using plain database backend.");
+    zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
+#ifdef WITH_SQLITE
+  } else if (g_strcmp0(database, "sqlite") == 0) {
+    girara_debug("Using sqlite database backend.");
+    char* tmp =
+      g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+    zathura->database = zathura_sqldatabase_new(tmp);
+    g_free(tmp);
+#endif
+  } else if (g_strcmp0(database, "null") != 0) {
+    girara_error("Database backend '%s' is not supported.", database);
+  }
+
+  if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
+    girara_error(
+      "Unable to initialize database. Bookmarks won't be available.");
+  }
+  else {
+    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io",
+                 zathura->database, NULL);
+  }
+  g_free(database);
+}
+
+static void
+init_jumplist(zathura_t* zathura)
+{
+  int jumplist_size = 20;
+  girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
+
+  zathura->jumplist.max_size = jumplist_size < 0 ? 0 : jumplist_size;
+  zathura->jumplist.list     = NULL;
+  zathura->jumplist.size     = 0;
+  zathura->jumplist.cur      = NULL;
+}
+
+static void
+init_shortcut_helpers(zathura_t* zathura)
+{
   zathura->shortcut.mouse.x = 0;
   zathura->shortcut.mouse.y = 0;
 
   zathura->shortcut.toggle_page_mode.pages = 2;
 
-  zathura->shortcut.toggle_presentation_mode.pages = 1;
+  zathura->shortcut.toggle_presentation_mode.pages                  = 1;
   zathura->shortcut.toggle_presentation_mode.first_page_column_list = NULL;
-  zathura->shortcut.toggle_presentation_mode.zoom = 1.0;
+  zathura->shortcut.toggle_presentation_mode.zoom                   = 1.0;
+}
+
+bool
+zathura_init(zathura_t* zathura)
+{
+  if (zathura == NULL) {
+    return false;
+  }
+
+  /* create zathura (config/data) directory */
+  create_directories(zathura);
+
+  /* load plugins */
+  zathura_plugin_manager_load(zathura->plugins.manager);
+
+  /* configuration */
+  config_load_default(zathura);
+  config_load_files(zathura);
+
+  /* UI */
+  if (!init_ui(zathura)) {
+    goto error_free;
+  }
+
+  /* database */
+  init_database(zathura);
+
+  /* bookmarks */
+  zathura->bookmarks.bookmarks = girara_sorted_list_new2(
+    (girara_compare_function_t)zathura_bookmarks_compare,
+    (girara_free_function_t)zathura_bookmark_free);
+
+  /* jumplist */
+  init_jumplist(zathura);
+
+  /* CSS for index mode */
+  init_css(zathura);
+
+  /* Shortcut helpers */
+  init_shortcut_helpers(zathura);
 
   /* Start D-Bus service */
   bool dbus = true;
@@ -345,7 +394,9 @@ zathura_free(zathura_t* zathura)
   }
 
   /* shortcut */
-  g_free(zathura->shortcut.toggle_presentation_mode.first_page_column_list);
+  if (zathura->shortcut.toggle_presentation_mode.first_page_column_list != NULL) {
+    g_free(zathura->shortcut.toggle_presentation_mode.first_page_column_list);
+  }
 
   /* stdin support */
   if (zathura->stdin_support.file != NULL) {
@@ -538,9 +589,9 @@ prepare_document_open_from_stdin(const char* path)
 static gchar*
 prepare_document_open_from_gfile(GFile* source)
 {
-  gchar* file = NULL;
+  gchar*         file     = NULL;
   GFileIOStream* iostream = NULL;
-  GError* error = NULL;
+  GError*        error    = NULL;
 
   GFile *tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
   if (tmpfile == NULL) {
