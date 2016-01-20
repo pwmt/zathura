@@ -5,7 +5,6 @@
 
 #include <errno.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <math.h>
 #include <string.h>
 
@@ -21,6 +20,7 @@
 
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
+#include <gio/gunixinputstream.h>
 #endif
 
 #include "bookmarks.h"
@@ -525,6 +525,7 @@ zathura_set_argv(zathura_t* zathura, char** argv)
   zathura->global.arguments = argv;
 }
 
+#ifdef G_OS_UNIX
 static gchar*
 prepare_document_open_from_stdin(const char* path)
 {
@@ -547,41 +548,46 @@ prepare_document_open_from_stdin(const char* path)
     return NULL;
   }
 
-  GError* error = NULL;
-  gchar* file = NULL;
-  gint handle = g_file_open_tmp("zathura.stdin.XXXXXX", &file, &error);
-  if (handle == -1) {
+  GInputStream* input_stream = g_unix_input_stream_new(infileno, false);
+  if (input_stream == NULL) {
+    girara_error("Can not read from file descriptor.");
+    return NULL;
+
+  }
+
+  GFileIOStream* iostream = NULL;
+  GError*        error    = NULL;
+  GFile* tmpfile = g_file_new_tmp("zathura.stdin.XXXXXX", &iostream, &error);
+  if (tmpfile == NULL) {
     if (error != NULL) {
       girara_error("Can not create temporary file: %s", error->message);
       g_error_free(error);
     }
+    g_object_unref(input_stream);
     return NULL;
   }
 
-  // read and dump to temporary file
-  char buffer[BUFSIZ];
-  ssize_t count = 0;
-  while ((count = read(infileno, buffer, BUFSIZ)) > 0) {
-    if (write(handle, buffer, count) != count) {
-      girara_error("Can not write to temporary file: %s", file);
-      close(handle);
-      g_unlink(file);
-      g_free(file);
-      return NULL;
+  const ssize_t count = g_output_stream_splice(
+    g_io_stream_get_output_stream(G_IO_STREAM(iostream)), input_stream,
+    G_OUTPUT_STREAM_SPLICE_NONE, NULL, &error);
+  g_object_unref(input_stream);
+  g_object_unref(iostream);
+  if (count == -1) {
+    if (error != NULL) {
+      girara_error("Can not write to temporary file: %s", error->message);
+      g_error_free(error);
     }
-  }
-
-  close(handle);
-
-  if (count != 0) {
-    girara_error("Can not read from file descriptor.");
-    g_unlink(file);
-    g_free(file);
+    g_file_delete(tmpfile, NULL, NULL);
+    g_object_unref(tmpfile);
     return NULL;
   }
+
+  char* file = g_file_get_path(tmpfile);
+  g_object_unref(tmpfile);
 
   return file;
 }
+#endif
 
 static gchar*
 prepare_document_open_from_gfile(GFile* source)
@@ -590,7 +596,7 @@ prepare_document_open_from_gfile(GFile* source)
   GFileIOStream* iostream = NULL;
   GError*        error    = NULL;
 
-  GFile *tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
+  GFile* tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
   if (tmpfile == NULL) {
     if (error != NULL) {
       girara_error("Can not create temporary file: %s", error->message);
@@ -599,7 +605,8 @@ prepare_document_open_from_gfile(GFile* source)
     return NULL;
   }
 
-  gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
+  gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL,
+                            NULL, &error);
   if (rc == FALSE) {
     if (error != NULL) {
       girara_error("Can not copy to temporary file: %s", error->message);
@@ -628,7 +635,9 @@ document_info_open(gpointer data)
     char* file = NULL;
     if (g_strcmp0(document_info->path, "-") == 0 ||
         g_str_has_prefix(document_info->path, "/proc/self/fd/") == true) {
+#ifdef G_OS_UNIX
       file = prepare_document_open_from_stdin(document_info->path);
+#endif
       if (file == NULL) {
         girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
                       _("Could not read file from stdin and write it to a temporary file."));
