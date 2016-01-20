@@ -82,7 +82,7 @@ zathura_content_type_free(zathura_content_type_context_t* context)
 static const size_t GT_MAX_READ = 1 << 16;
 
 #ifdef WITH_MAGIC
-static const char*
+static char*
 guess_type_magic(zathura_content_type_context_t* context, const char* path)
 {
   if (context == NULL || context->magic == NULL) {
@@ -97,15 +97,13 @@ guess_type_magic(zathura_content_type_context_t* context, const char* path)
     girara_debug("failed guessing filetype: %s", magic_error(context->magic));
     return NULL;
   }
-  /* dup so we own the memory */
-  mime_type = g_strdup(mime_type);
-
   girara_debug("magic detected filetype: %s", mime_type);
 
-  return mime_type;
+  /* dup so we own the memory */
+  return g_strdup(mime_type);;
 }
 
-static const char*
+static char*
 guess_type_file(const char* UNUSED(path))
 {
   return NULL;
@@ -118,7 +116,7 @@ guess_type_magic(zathura_content_type_context_t* UNUSED(context),
   return NULL;
 }
 
-static const char*
+static char*
 guess_type_file(const char* path)
 {
   GString* command = g_string_new("file -b --mime-type ");
@@ -149,11 +147,11 @@ guess_type_file(const char* path)
 }
 #endif
 
-static const char*
+static char*
 guess_type_glib(const char* path)
 {
   gboolean uncertain = FALSE;
-  const char* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
+  char* content_type = g_content_type_guess(path, NULL, 0, &uncertain);
   if (content_type == NULL) {
     girara_debug("g_content_type failed\n");
   } else {
@@ -203,12 +201,12 @@ guess_type_glib(const char* path)
   return NULL;
 }
 
-const char*
+char*
 zathura_content_type_guess(zathura_content_type_context_t* context,
                            const char* path)
 {
   /* try libmagic first */
-  const char* content_type = guess_type_magic(context, path);
+  char* content_type = guess_type_magic(context, path);
   if (content_type != NULL) {
     return content_type;
   }

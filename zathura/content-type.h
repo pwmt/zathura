@@ -24,9 +24,9 @@ void zathura_content_type_free(zathura_content_type_context_t* context);
  * the available libraries.
  *
  * @param path file name
- * @return content type of path
+ * @return content type of path, needs to freeed with g_free.
  */
-const char* zathura_content_type_guess(zathura_content_type_context_t* context,
-                                       const char* path);
+char* zathura_content_type_guess(zathura_content_type_context_t* context,
+                                 const char* path);
 
 #endif

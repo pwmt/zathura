@@ -70,7 +70,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
 
   GFile* file = g_file_new_for_path(path);
   char* real_path = NULL;
-  const char* content_type = NULL;
+  char* content_type = NULL;
   zathura_plugin_t* plugin = NULL;
   zathura_document_t* document = NULL;
 
@@ -106,7 +106,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
     goto error_free;
   }
 
-  g_free((void*)content_type);
+  g_free(content_type);
   content_type = NULL;
 
   document = g_try_malloc0(sizeof(zathura_document_t));
