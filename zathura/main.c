@@ -184,6 +184,7 @@ main(int argc, char* argv[])
   }
   g_option_context_free(context);
 
+  int ret = 0;
   set_log_level(loglevel);
 
 #ifdef WITH_SYNCTEX
@@ -192,17 +193,20 @@ main(int argc, char* argv[])
     if (argc != 2) {
       girara_error("Too many arguments or missing filename while running with "
                    "--synctex-forward");
-      return -1;
+      ret = -1;
+      goto free_and_ret;
     }
 
-    const int ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
+    ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
     if (ret > 0) {
       /* Instance found. */
-      return 0;
+      ret = 0;
+      goto free_and_ret;
     }
     else if (ret < 0) {
       /* Error occurred. */
-      return -1;
+      ret = -1;
+      goto free_and_ret;
     }
 
     girara_debug("No instance found. Starting new one.");
@@ -213,7 +217,8 @@ main(int argc, char* argv[])
   if (mode != NULL && g_strcmp0(mode, "presentation") != 0 &&
       g_strcmp0(mode, "fullscreen") != 0) {
     girara_error("Invalid argument for --mode: %s", mode);
-    return -1;
+    ret = -1;
+    goto free_and_ret;
   }
 
   /* g_option_context_parse has some funny (documented) behavior:
@@ -235,13 +240,15 @@ main(int argc, char* argv[])
         if (setsid() == -1) {
           girara_error("Could not start new process group: %s",
                        strerror(errno));
-          return -1;
+          ret = -1;
+          goto free_and_ret;
         }
         break;
       }
       else if (pid < 0) { /* error */
         girara_error("Could not fork: %s", strerror(errno));
-        return -1;
+        ret = -1;
+        goto free_and_ret;
       }
     }
   }
@@ -251,16 +258,18 @@ main(int argc, char* argv[])
       file_idx < file_idx_base + 1) {
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
-      return 0;
+      goto free_and_ret;
     }
     else if (pid < 0) { /* error */
       girara_error("Could not fork: %s", strerror(errno));
-      return -1;
+      ret = -1;
+      goto free_and_ret;
     }
 
     if (setsid() == -1) {
       girara_error("Could not start new process group: %s", strerror(errno));
-      return -1;
+      ret = -1;
+      goto free_and_ret;
     }
   }
 
@@ -272,7 +281,8 @@ main(int argc, char* argv[])
                                     plugin_path, argv, synctex_editor, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
-    return -1;
+    ret = -1;
+    goto free_and_ret;
   }
 
   /* Print version */
@@ -284,7 +294,7 @@ main(int argc, char* argv[])
     }
     zathura_free(zathura);
 
-    return 0;
+    goto free_and_ret;
   }
 
   /* open document if passed */
@@ -302,5 +312,16 @@ main(int argc, char* argv[])
   /* free zathura */
   zathura_free(zathura);
 
-  return 0;
+free_and_ret:
+  g_free(config_dir);
+  g_free(data_dir);
+  g_free(cache_dir);
+  g_free(plugin_path);
+  g_free(loglevel);
+  g_free(password);
+  g_free(synctex_editor);
+  g_free(synctex_fwd);
+  g_free(mode);
+
+  return ret;
 }
