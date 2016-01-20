@@ -93,7 +93,8 @@ zathura_create(void)
   }
 
   /* UI */
-  if ((zathura->ui.session = girara_session_create()) == NULL) {
+  zathura->ui.session = girara_session_create();
+  if (zathura->ui.session == NULL) {
     goto error_out;
   }
 
@@ -325,6 +326,13 @@ zathura_free(zathura_t* zathura)
   }
 
   document_close(zathura, false);
+
+#ifdef G_OS_UNIX
+  if (zathura->signals.sigterm > 0) {
+    g_source_remove(zathura->signals.sigterm);
+    zathura->signals.sigterm = 0;
+  }
+#endif
 
   /* stop D-Bus */
   if (zathura->dbus != NULL) {
@@ -870,7 +878,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   }
 
   /* set up recolor info in ZathuraRenderer */
-  char* recolor_dark = NULL;
+  char* recolor_dark  = NULL;
   char* recolor_light = NULL;
   girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
   girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
