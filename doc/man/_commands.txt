@@ -16,9 +16,6 @@ exec
 info
   Show document information
 
-help
-  Show help page
-
 open
   Open a document
 
