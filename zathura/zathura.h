@@ -311,7 +311,7 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  * @param password The password of the file
  * @param page_number Open given page number
  *
- * @return If no error occured true, otherwise false, is returned.
+ * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
                    int page_number);
@@ -324,7 +324,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
  * @param password The password of the file
  * @param synctex Open at the given SyncTeX string
  *
- * @return If no error occured true, otherwise false, is returned.
+ * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
                            const char* password, const char* synctex);
@@ -350,7 +350,7 @@ void document_open_idle(zathura_t* zathura, const char* path,
  * @param path The path
  * @param overwrite Overwrite existing file
  *
- * @return If no error occured true, otherwise false, is returned.
+ * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_save(zathura_t* zathura, const char* path, bool overwrite);
 
@@ -359,7 +359,7 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite);
  *
  * @param zathura The zathura session
  * @param keep_monitor Set to true if monitor should be kept (sc_reload)
- * @return If no error occured true, otherwise false, is returned.
+ * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_close(zathura_t* zathura, bool keep_monitor);
 
@@ -368,7 +368,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor);
  *
  * @param zathura The zathura session
  * @param page_id The id of the page that should be set
- * @return If no error occured true, otherwise false, is returned.
+ * @return If no error occurred true, otherwise false, is returned.
  */
 bool page_set(zathura_t* zathura, unsigned int page_id);
 
@@ -378,7 +378,7 @@ bool page_set(zathura_t* zathura, unsigned int page_id);
  * @param zathura Zathura session
  * @param position_x X coordinate
  * @param position_y Y coordinate
- * @return If no error occured true, otherwise false, is returned.
+ * @return If no error occurred true, otherwise false, is returned.
  */
 bool position_set(zathura_t* zathura, double position_x, double position_y);
 

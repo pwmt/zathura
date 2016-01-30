@@ -12,7 +12,7 @@
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -23,7 +23,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* argument, girara_eve
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -34,7 +34,7 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, gi
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -45,7 +45,7 @@ bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, gira
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_display_link(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -56,8 +56,8 @@ bool sc_display_link(girara_session_t* session, girara_argument_t* argument, gir
  * @param argument The argument
  * @param event Girara event
  * @param t Number of executions
- * @return true No error occured
- * @return false An error occured (abort execution)
+ * @return true No error occurred
+ * @return false An error occurred (abort execution)
  */
 bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -68,7 +68,7 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_follow(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -79,7 +79,7 @@ bool sc_follow(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -90,7 +90,7 @@ bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_even
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -101,7 +101,7 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -112,7 +112,7 @@ bool sc_mouse_zoom(girara_session_t* session, girara_argument_t* argument, girar
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -123,7 +123,7 @@ bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_print(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -134,7 +134,7 @@ bool sc_print(girara_session_t* session, girara_argument_t* argument, girara_eve
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_recolor(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -145,7 +145,7 @@ bool sc_recolor(girara_session_t* session, girara_argument_t* argument, girara_e
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_reload(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -156,7 +156,7 @@ bool sc_reload(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -167,7 +167,7 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -178,7 +178,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -189,7 +189,7 @@ bool sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_bisect(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -200,7 +200,7 @@ bool sc_bisect(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -211,7 +211,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -222,7 +222,7 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -233,7 +233,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, gir
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -244,7 +244,7 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* argument,
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -255,7 +255,7 @@ bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -266,7 +266,7 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* argume
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_quit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
@@ -277,7 +277,7 @@ bool sc_quit(girara_session_t* session, girara_argument_t* argument, girara_even
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 

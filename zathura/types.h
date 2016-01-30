@@ -45,8 +45,8 @@ typedef struct zathura_dbus_s ZathuraDbus;
  */
 typedef enum zathura_plugin_error_e
 {
-  ZATHURA_ERROR_OK, /**< No error occured */
-  ZATHURA_ERROR_UNKNOWN, /**< An unknown error occured */
+  ZATHURA_ERROR_OK, /**< No error occurred */
+  ZATHURA_ERROR_UNKNOWN, /**< An unknown error occurred */
   ZATHURA_ERROR_OUT_OF_MEMORY, /**< Out of memory */
   ZATHURA_ERROR_NOT_IMPLEMENTED, /**< The called function has not been implemented */
   ZATHURA_ERROR_INVALID_ARGUMENTS, /**< Invalid arguments have been passed */
@@ -109,7 +109,7 @@ typedef enum zathura_adjust_mode_e
  *
  * @param width Width of the image stored in the buffer
  * @param height Height of the image stored in the buffer
- * @return Image buffer or NULL if an error occured
+ * @return Image buffer or NULL if an error occurred
  */
 zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned int height);
 
@@ -232,7 +232,7 @@ void zathura_index_element_free(zathura_index_element_t* index);
  * Creates a list that should be used to store \ref
  * zathura_document_information_entry_t entries
  *
- * @return A list or NULL if an error occured
+ * @return A list or NULL if an error occurred
  */
 girara_list_t* zathura_document_information_entry_list_new();
 
@@ -242,7 +242,7 @@ girara_list_t* zathura_document_information_entry_list_new();
  * @param type The type
  * @param value The value
  *
- * @return A new entry or NULL if an error occured
+ * @return A new entry or NULL if an error occurred
  */
 zathura_document_information_entry_t*
 zathura_document_information_entry_new(zathura_document_information_type_t

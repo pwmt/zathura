@@ -28,7 +28,7 @@ typedef struct page_offset_s
 bool file_valid_extension(zathura_t* zathura, const char* path);
 
 /**
- * Generates the document index based upon the list retreived from the document
+ * Generates the document index based upon the list retrieved from the document
  * object.
  *
  * @param model The tree model
@@ -64,7 +64,7 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
  * @param zathura The zathura instance
  * @param page The page object
  * @return The page widget of the page
- * @return NULL if an error occured
+ * @return NULL if an error occurred
  */
 GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
 

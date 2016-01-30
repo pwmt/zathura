@@ -75,7 +75,7 @@ void zathura_page_widget_clear_rectangles(ZathuraPage* widget);
  *
  * @param widget the widget
  * @param index Index of the link
- * @return Link object or NULL if an error occured
+ * @return Link object or NULL if an error occurred
  */
 zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index);
 /**
