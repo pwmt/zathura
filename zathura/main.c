@@ -89,7 +89,7 @@ init_zathura(const char* config_dir, const char* data_dir,
     char* synctex_editor, Window embed)
 #else
     char* synctex_editor)
-#endif /*GDK_WINDOWING_X11*/
+#endif
 {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
