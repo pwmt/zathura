@@ -12,7 +12,7 @@ sqlite3 (optional, >= 3.5.9)
 check (for tests)
 intltool
 libmagic from file(1) (optional, for mime-type detection)
-libsynctex from TeXLive (option, for SyncTeX support)
+libsynctex from TeXLive (optional, for SyncTeX support)
 Sphinx (optional, for manpages and HTML documentation)
 doxygen (optional, for HTML documentation)
 breathe (optional, for HTML documentation)
