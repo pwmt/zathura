@@ -114,12 +114,10 @@ init_zathura(const char* config_dir, const char* data_dir,
     return NULL;
   }
 
-#ifdef WITH_SYNCTEX
   if (synctex_editor != NULL) {
     girara_setting_set(zathura->ui.session, "synctex-editor-command",
                        synctex_editor);
   }
-#endif
 
   return zathura;
 }

@@ -466,6 +466,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
   girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
   girara_shortcut_mapping_add(gsession, "bisect",            sc_bisect);
+  girara_shortcut_mapping_add(gsession, "mark_add",          sc_mark_add);
+  girara_shortcut_mapping_add(gsession, "mark_evaluate",     sc_mark_evaluate);
   girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
   girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "print",             sc_print);

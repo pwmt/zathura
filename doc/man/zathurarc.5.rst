@@ -307,6 +307,13 @@ The following shortcut functions can be mapped:
 
   Zoom in or out.
 
+* ``mark_add``
+  Set a quickmark.
+
+* ``mark_evaluate``
+  Go to a quickmark.
+
+
 Pass arguments
 ^^^^^^^^^^^^^^
 Some shortcut function require or have optional arguments which influence the
