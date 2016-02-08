@@ -19,10 +19,10 @@ all: ${MOS}
 clean:
 	$(QUIET)rm -rf POTFILES.in POTFILES.in.tmp $(patsubst %.po, %, $(CATALOGS)) ${PROJECT}.pot
 
-POTFILES.in: $(sort $(wildcard ../girara/*.c))
+POTFILES.in: $(sort $(wildcard ../zathura/*.c))
 	$(QUIET) set -e && rm -f $@.tmp && touch $@.tmp && \
 	for f in $(^F) ; do \
-		echo girara/$$f >> $@.tmp ; \
+		echo zathura/$$f >> $@.tmp ; \
 	done && \
 	mv $@.tmp $@
 
