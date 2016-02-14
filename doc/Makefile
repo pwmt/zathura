@@ -6,7 +6,7 @@ include ../colors.mk
 include config.mk
 
 MAN_SOURCES=$(wildcard man/*.rst) $(wildcard man/*.txt) man/conf.py
-DOXYGEN_SOURCES=$(wildcard ../*.h) Doxyfile
+DOXYGEN_SOURCES=$(wildcard ../zathura/*.h) Doxyfile
 HTML_SOURCES=$(wildcard *.rst api/*.rst configuration/*.rst installation/*.rst usage/*.rst) conf.py
 
 SPHINX_OPTS+=-d $(SPHINX_BUILDDIR)/doctrees
@@ -18,15 +18,17 @@ clean:
 	$(QUIET)rm -rf $(SPHINX_BUILDDIR)/
 
 $(SPHINX_BUILDDIR)/html/index.html: $(HTML_SOURCES) $(SPHINX_BUILDDIR)/doxygen/xml/index.xml
+	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)/html
 	$(call colorecho,DOC,"Build HTML documentation")
 	$(QUIET)$(SPHINX_BIN) -b html $(SPHINX_OPTS) . $(SPHINX_BUILDDIR)/html
 
 $(SPHINX_BUILDDIR)/zathura.1 $(SPHINX_BUILDDIR)/zathurarc.5: $(MAN_SOURCES)
+	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)
 	$(call colorecho,DOC,"Build man pages")
 	$(QUIET)$(SPHINX_BIN) -b man $(SPHINX_OPTS) man $(SPHINX_BUILDDIR)
 
 $(SPHINX_BUILDDIR)/doxygen/xml/index.xml: $(DOXYGEN_SOURCES)
-	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)
+	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)/doxygen/xml
 	$(call colorecho,DOC,"Run doxygen")
 	$(QUIET)$(DOXYGEN_BIN) Doxyfile
 

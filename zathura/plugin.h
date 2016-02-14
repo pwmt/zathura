@@ -27,7 +27,7 @@ typedef struct zathura_plugin_version_s {
 /**
  * Creates a new instance of the plugin manager
  *
- * @return A plugin manager object or NULL if an error occured
+ * @return A plugin manager object or NULL if an error occurred
  */
 zathura_plugin_manager_t* zathura_plugin_manager_new(void);
 

@@ -469,7 +469,7 @@ iterate_instances_call_synctex_view(const char* filename,
     const bool ret = call_synctex_view(connection, filename, well_known_name,
                                        input_file, line, column);
     g_free(well_known_name);
-    return ret ? 1 : 0;
+    return ret ? 1 : -1;
   }
 
   GVariant* vnames = g_dbus_connection_call_sync(

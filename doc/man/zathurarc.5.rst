@@ -307,6 +307,13 @@ The following shortcut functions can be mapped:
 
   Zoom in or out.
 
+* ``mark_add``
+  Set a quickmark.
+
+* ``mark_evaluate``
+  Go to a quickmark.
+
+
 Pass arguments
 ^^^^^^^^^^^^^^
 Some shortcut function require or have optional arguments which influence the
@@ -454,8 +461,8 @@ guioptions
 Shows or hides GUI elements.
 If it contains 'c', the command line is displayed.
 If it contains 's', the statusbar is displayed.
-If it contains 'h', the vertical scrollbar is displayed.
-If it contains 'v', the horizontal scrollbar is displayed.
+If it contains 'h', the horizontal scrollbar is displayed.
+If it contains 'v', the vertical scrollbar is displayed.
 
 * Value type: String
 * Default value: s

@@ -16,7 +16,7 @@ typedef struct zathura_mark_s zathura_mark_t;
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_mark_add(girara_session_t* session, girara_argument_t* argument,
     girara_event_t* event, unsigned int t);
@@ -28,7 +28,7 @@ bool sc_mark_add(girara_session_t* session, girara_argument_t* argument,
  * @param argument The used argument
  * @param event Girara event
  * @param t Number of executions
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* argument,
     girara_event_t* event, unsigned int t);
@@ -38,7 +38,7 @@ bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* argument,
  *
  * @param session The girara session
  * @param argument_list Argument list
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list);
 
@@ -47,7 +47,7 @@ bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The girara session
  * @param argument_list Argument list
- * @return true if no error occured otherwise false
+ * @return true if no error occurred otherwise false
  */
 bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list);
 

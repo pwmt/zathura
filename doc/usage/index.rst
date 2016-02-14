@@ -5,4 +5,4 @@ Usage
    :maxdepth: 2
    :numbered:
 
-    commands
+   commands

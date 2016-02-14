@@ -55,7 +55,7 @@ bool zathura_renderer_recolor_enabled(ZathuraRenderer* renderer);
 /**
  * Enable/disable recoloring.
  * @param renderer a renderer object
- * @param enable wheter to enable or disable recoloring
+ * @param enable whether to enable or disable recoloring
  */
 void zathura_renderer_enable_recolor(ZathuraRenderer* renderer, bool enable);
 /**
@@ -67,7 +67,7 @@ bool zathura_renderer_recolor_hue_enabled(ZathuraRenderer* renderer);
 /**
  * Enable/disable preservation of hue while recoloring.
  * @param renderer a renderer object
- * @param enable wheter to enable or disable hue preservation
+ * @param enable whether to enable or disable hue preservation
  */
 void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
     bool enable);

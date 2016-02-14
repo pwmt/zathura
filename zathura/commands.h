@@ -11,7 +11,7 @@
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list);
 
@@ -20,7 +20,7 @@ bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list);
 
@@ -29,7 +29,7 @@ bool cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list);
 
@@ -38,7 +38,7 @@ bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_close(girara_session_t* session, girara_list_t* argument_list);
 
@@ -47,7 +47,7 @@ bool cmd_close(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_info(girara_session_t* session, girara_list_t* argument_list);
 
@@ -56,7 +56,7 @@ bool cmd_info(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_help(girara_session_t* session, girara_list_t* argument_list);
 
@@ -65,7 +65,7 @@ bool cmd_help(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_hlsearch(girara_session_t* session, girara_list_t* argument_list);
 
@@ -74,7 +74,7 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_open(girara_session_t* session, girara_list_t* argument_list);
 
@@ -83,7 +83,7 @@ bool cmd_open(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_print(girara_session_t* session, girara_list_t* argument_list);
 
@@ -92,7 +92,7 @@ bool cmd_print(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_nohlsearch(girara_session_t* session, girara_list_t* argument_list);
 
@@ -101,7 +101,7 @@ bool cmd_nohlsearch(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_quit(girara_session_t* session, girara_list_t* argument_list);
 
@@ -110,7 +110,7 @@ bool cmd_quit(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_save(girara_session_t* session, girara_list_t* argument_list);
 
@@ -119,7 +119,7 @@ bool cmd_save(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_savef(girara_session_t* session, girara_list_t* argument_list);
 
@@ -129,7 +129,7 @@ bool cmd_savef(girara_session_t* session, girara_list_t* argument_list);
  * @param session The used girara session
  * @param input The current input
  * @param argument Passed argument
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_search(girara_session_t* session, const char* input, girara_argument_t* argument);
 
@@ -138,7 +138,7 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_export(girara_session_t* session, girara_list_t* argument_list);
 
@@ -147,7 +147,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_exec(girara_session_t* session, girara_list_t* argument_list);
 
@@ -156,7 +156,7 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_offset(girara_session_t* session, girara_list_t* argument_list);
 
@@ -165,7 +165,7 @@ bool cmd_offset(girara_session_t* session, girara_list_t* argument_list);
  *
  * @param session The used girara session
  * @param argument_list List of passed arguments
- * @return true if no error occured
+ * @return true if no error occurred
  */
 bool cmd_version(girara_session_t* session, girara_list_t* argument_list);
 

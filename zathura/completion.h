@@ -11,7 +11,7 @@
  *
  * @param session The used girara session
  * @param input The current input
- * @return The completion object or NULL if an error occured
+ * @return The completion object or NULL if an error occurred
  */
 girara_completion_t* cc_open(girara_session_t* session, const char* input);
 
@@ -21,7 +21,7 @@ girara_completion_t* cc_open(girara_session_t* session, const char* input);
  *
  * @param session The used girara session
  * @param input The current input
- * @return The completion object or NULL if an error occured
+ * @return The completion object or NULL if an error occurred
  */
 girara_completion_t* cc_write(girara_session_t* session, const char* input);
 
@@ -30,7 +30,7 @@ girara_completion_t* cc_write(girara_session_t* session, const char* input);
  *
  * @param session The used girara session
  * @param input The current input
- * @return The completion object or NULL if an error occured
+ * @return The completion object or NULL if an error occurred
  */
 girara_completion_t* cc_bookmarks(girara_session_t* session, const char* input);
 

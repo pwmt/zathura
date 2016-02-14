@@ -11,21 +11,21 @@
 /**
  * Open the document
  *
- * @param plugin_manager The plugin manager
+ * @param plugin_manager The zathura instance
  * @param path Path to the document
  * @param password Password of the document or NULL
  * @param error Optional error parameter
  * @return The document object and NULL if an error occurs
  */
-zathura_document_t* zathura_document_open(zathura_plugin_manager_t*
-    plugin_manager, const char* path, const char *uri, const char* password, zathura_error_t*
+zathura_document_t* zathura_document_open(zathura_t* zathura,
+    const char* path, const char *uri, const char* password, zathura_error_t*
     error);
 
 /**
  * Free the document
  *
  * @param document
- * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
 zathura_error_t zathura_document_free(zathura_document_t* document);
@@ -67,7 +67,7 @@ const char* zathura_document_get_password(zathura_document_t* document);
  *
  * @param document The document
  * @param index The index of the page
- * @return The page or NULL if an error occured
+ * @return The page or NULL if an error occurred
  */
 zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned int index);
 
@@ -283,7 +283,7 @@ void zathura_document_set_page_layout(zathura_document_t* document, unsigned int
                                       unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
- * Returns the padding in pixels betwen pages
+ * Returns the padding in pixels between pages
  *
  * @param document The document
  * @return The padding in pixels between pages
@@ -311,7 +311,7 @@ unsigned int zathura_document_get_first_page_column(zathura_document_t* document
  *
  * @param document The document object
  * @param path Path for the saved file
- * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
 zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
@@ -321,7 +321,7 @@ zathura_error_t zathura_document_save_as(zathura_document_t* document, const cha
  *
  * @param document The document object
  * @param error Set to an error value (see \ref zathura_error_t) if an
- *   error occured
+ *   error occurred
  * @return Generated index
  */
 
@@ -332,7 +332,7 @@ girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document
  *
  * @param document The document object
  * @param error Set to an error value (see \ref zathura_error_t) if an
- *   error occured
+ *   error occurred
  * @return List of attachments
  */
 girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error);
@@ -343,7 +343,7 @@ girara_list_t* zathura_document_attachments_get(zathura_document_t* document, za
  * @param document The document objects
  * @param attachment name of the attachment
  * @param file the target filename
- * @return ZATHURA_ERROR_OK when no error occured, otherwise see
+ * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
 zathura_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
@@ -353,8 +353,8 @@ zathura_error_t zathura_document_attachment_save(zathura_document_t* document, c
  *
  * @param document The zathura document
  * @param error Set to an error value (see \ref zathura_error_t) if an
- *   error occured
- * @return List of document information entries or NULL if information could not be retreived
+ *   error occurred
+ * @return List of document information entries or NULL if information could not be retrieved
  */
 girara_list_t* zathura_document_get_information(zathura_document_t* document, zathura_error_t* error);
 
