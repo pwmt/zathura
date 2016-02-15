@@ -22,10 +22,16 @@ $(SPHINX_BUILDDIR)/html/index.html: $(HTML_SOURCES) $(SPHINX_BUILDDIR)/doxygen/x
 	$(call colorecho,DOC,"Build HTML documentation")
 	$(QUIET)$(SPHINX_BIN) -b html $(SPHINX_OPTS) . $(SPHINX_BUILDDIR)/html
 
-$(SPHINX_BUILDDIR)/zathura.1 $(SPHINX_BUILDDIR)/zathurarc.5: $(MAN_SOURCES)
+$(SPHINX_BUILDDIR)/zathura.1: $(MAN_SOURCES)
 	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)
 	$(call colorecho,DOC,"Build man pages")
 	$(QUIET)$(SPHINX_BIN) -b man $(SPHINX_OPTS) man $(SPHINX_BUILDDIR)
+
+$(SPHINX_BUILDDIR)/zathurarc.5: $(SPHINX_BUILDDIR)/zathura.1
+	@if test -f $@; then :; else \
+		rm -f $(SPHINX_BUILDDIR)/zathura.1; \
+		$(MAKE) $(SPHINX_BUILDDIR)/zathura.1; \
+	fi
 
 $(SPHINX_BUILDDIR)/doxygen/xml/index.xml: $(DOXYGEN_SOURCES)
 	$(QUIET)mkdir -p $(SPHINX_BUILDDIR)/doxygen/xml
