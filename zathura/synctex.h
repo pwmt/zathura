@@ -15,6 +15,9 @@ bool synctex_get_input_line_column(const char* filename, unsigned int page,
 
 void synctex_edit(const char* editor, zathura_page_t* page, int x, int y);
 
+// NEOVIM
+void synctex_edit_msg(int fd, zathura_page_t* page, int x, int y);
+
 bool synctex_parse_input(const char* synctex, char** input_file, int* line,
                          int* column);
 

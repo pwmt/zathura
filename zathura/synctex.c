@@ -114,6 +114,41 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
   }
 }
 
+// NEOVIM
+void
+synctex_edit_msg(int fd, zathura_page_t* page, int x, int y)
+{
+  if (fd == 0 || page == NULL) {
+    return;
+  }
+
+  zathura_document_t* document = zathura_page_get_document(page);
+  if (document == NULL) {
+    return;
+  }
+
+  const char* filename = zathura_document_get_path(document);
+  if (filename == NULL) {
+    return;
+  }
+
+  unsigned int line = 0;
+  unsigned int column = 0;
+  char* input_file = NULL;
+
+  if (synctex_get_input_line_column(filename, zathura_page_get_index(page), x, y,
+        &input_file, &line, &column) == true) {
+
+	char* forkstr = g_strdup_printf("edit +%d %s\n", line, input_file);
+
+	write(fd, forkstr, strlen(forkstr));
+
+    g_free(forkstr);
+
+    g_free(input_file);
+  }
+}
+
 girara_list_t*
 synctex_rectangles_from_position(const char* filename, const char* input_file,
                                  int line, int column, unsigned int* page,

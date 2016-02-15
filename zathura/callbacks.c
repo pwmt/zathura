@@ -657,6 +657,16 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
     zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
   }
 
+#ifdef WITH_SYNCTEX
+  // NEOVIM
+  int fd = 0;
+  girara_setting_get(zathura->ui.session, "synctex-python-fd", &fd);
+  if (fd != 0) {
+    synctex_edit_msg(fd, page, event->x, event->y);
+  }
+#endif
+
+
   char* editor = NULL;
   girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
   if (editor == NULL || *editor == '\0') {
