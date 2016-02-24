@@ -53,11 +53,7 @@ zathura_jumplist_reset_current(zathura_t* zathura)
 {
   g_return_if_fail(zathura != NULL && zathura->jumplist.cur != NULL);
 
-  while (true) {
-    if (girara_list_iterator_has_next(zathura->jumplist.cur) == false) {
-      return;
-    }
-
+  while (girara_list_iterator_has_next(zathura->jumplist.cur) == true) {
     girara_list_iterator_next(zathura->jumplist.cur);
   }
 }
