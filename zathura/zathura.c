@@ -792,7 +792,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     }
     goto error_out;
   }
-  
+
   zathura->document = document;
 
   const char* file_path        = zathura_document_get_path(document);
@@ -1193,6 +1193,35 @@ remove_page_from_table(GtkWidget* page, gpointer UNUSED(permanent))
   gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(page)), page);
 }
 
+static void
+save_fileinfo_to_db(zathura_t* zathura)
+{
+  const char* path = zathura_document_get_path(zathura->document);
+
+  zathura_fileinfo_t file_info = {
+    .current_page = zathura_document_get_current_page_number(zathura->document),
+    .page_offset = zathura_document_get_page_offset(zathura->document),
+    .scale = zathura_document_get_scale(zathura->document),
+    .rotation = zathura_document_get_rotation(zathura->document),
+    .pages_per_row = 1,
+    .first_page_column_list = "1:2",
+    .position_x = zathura_document_get_position_x(zathura->document),
+    .position_y = zathura_document_get_position_y(zathura->document)
+  };
+
+  girara_setting_get(zathura->ui.session, "pages-per-row",
+                     &(file_info.pages_per_row));
+  girara_setting_get(zathura->ui.session, "first-page-column",
+                     &(file_info.first_page_column_list));
+
+  /* save file info */
+  zathura_db_set_fileinfo(zathura->database, path, &file_info);
+  /* save jumplist */
+  zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
+
+  g_free(file_info.first_page_column_list);
+}
+
 bool
 document_close(zathura_t* zathura, bool keep_monitor)
 {
@@ -1234,31 +1263,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
   }
 
   /* store file information */
-  const char* path = zathura_document_get_path(zathura->document);
-
-  zathura_fileinfo_t file_info = { 0, 0, 1, 0, 1, "1:2", 0, 0 };
-  file_info.current_page = zathura_document_get_current_page_number(zathura->document);
-  file_info.page_offset  = zathura_document_get_page_offset(zathura->document);
-  file_info.scale        = zathura_document_get_scale(zathura->document);
-  file_info.rotation     = zathura_document_get_rotation(zathura->document);
-
-  girara_setting_get(zathura->ui.session, "pages-per-row", &(file_info.pages_per_row));
-  girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column_list));
-
-  /* get position */
-  file_info.position_x = zathura_document_get_position_x(zathura->document);
-  file_info.position_y = zathura_document_get_position_y(zathura->document);
-
   if (zathura->database != NULL) {
-    /* save file info */
-    zathura_db_set_fileinfo(zathura->database, path, &file_info);
-
-    /* save jumplist */
-    zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
+    save_fileinfo_to_db(zathura);
   }
-
-  /* free buffers */
-  g_free(file_info.first_page_column_list);
 
   girara_list_iterator_free(zathura->jumplist.cur);
   zathura->jumplist.cur = NULL;
