@@ -1,3 +1,5 @@
+#include "jumplist.h"
+
 #include "zathura.h"
 #include "document.h"
 #include "database.h"
