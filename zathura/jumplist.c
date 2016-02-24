@@ -5,6 +5,7 @@
 #include "database.h"
 
 #include <girara/utils.h>
+#include <math.h>
 
 static void zathura_jumplist_reset_current(zathura_t* zathura);
 static void zathura_jumplist_append_jump(zathura_t* zathura);
@@ -120,7 +121,7 @@ zathura_jumplist_add(zathura_t* zathura)
     zathura_jump_t* cur = zathura_jumplist_current(zathura);
 
     if (cur != NULL) {
-      if (cur->page == pagenum && cur->x == x && cur->y == y) {
+      if (cur->page == pagenum && fabs(cur->x - x) <= DBL_EPSILON && fabs(cur->y - y) <= DBL_EPSILON) {
         return;
       }
     }
