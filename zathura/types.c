@@ -7,6 +7,7 @@
 #include "types.h"
 #include "links.h"
 #include "internal.h"
+#include "checked-integer-arithmetic.h"
 
 zathura_index_element_t*
 zathura_index_element_new(const char* title)
@@ -40,13 +41,22 @@ zathura_index_element_free(zathura_index_element_t* index)
 zathura_image_buffer_t*
 zathura_image_buffer_create(unsigned int width, unsigned int height)
 {
+  g_return_val_if_fail(width != 0, NULL);
+  g_return_val_if_fail(height != 0, NULL);
+
+  unsigned int size = 0;
+  if (checked_umul(width, height, &size) == false ||
+      checked_umul(size, 3, &size) == false) {
+    return NULL;
+  }
+
   zathura_image_buffer_t* image_buffer = malloc(sizeof(zathura_image_buffer_t));
 
   if (image_buffer == NULL) {
     return NULL;
   }
 
-  image_buffer->data = calloc(width * height * 3, sizeof(unsigned char));
+  image_buffer->data = calloc(size, sizeof(unsigned char));
 
   if (image_buffer->data == NULL) {
     free(image_buffer);
