@@ -29,7 +29,7 @@ extern "C" {
  * @param[out] res result
  * @return true if an overflow occurred, false otherwise
  */
-HIDDEN bool checked_umul(unsigned int lhs, unsigned int rhs, unsigned int* res);
+GIRARA_HIDDEN bool checked_umul(unsigned int lhs, unsigned int rhs, unsigned int* res);
 #endif
 
 #ifdef __cplusplus
