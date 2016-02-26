@@ -18,10 +18,6 @@
 #include "synctex.h"
 #endif
 
-#ifndef GDK_WINDOWING_X11
-typedef int Window;
-#endif
-
 /* Init locale */
 static void
 init_locale(void)
