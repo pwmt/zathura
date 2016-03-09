@@ -791,8 +791,6 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     goto error_out;
   }
 
-  zathura->document = document;
-
   const char* file_path        = zathura_document_get_path(document);
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
@@ -801,6 +799,8 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
         _("Document does not contain any pages"));
     goto error_free;
   }
+
+  zathura->document = document;
 
   /* read history file */
   zathura_fileinfo_t file_info = {
