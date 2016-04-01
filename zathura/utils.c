@@ -257,17 +257,17 @@ find_first_page_column(const char* first_page_column_list,
 {
   /* sanity checks */
   unsigned int first_page_column = 1;
-  g_return_val_if_fail(first_page_column_list != NULL,     first_page_column);
-  g_return_val_if_fail(strcmp(first_page_column_list, ""), first_page_column);
-  g_return_val_if_fail(pages_per_row > 0,                  first_page_column);
+  g_return_val_if_fail(first_page_column_list != NULL,  first_page_column);
+  g_return_val_if_fail(*first_page_column_list != '\0', first_page_column);
+  g_return_val_if_fail(pages_per_row > 0,               first_page_column);
 
   /* split settings list */
-  char** settings = g_strsplit(first_page_column_list, ":", pages_per_row+1);
+  char** settings = g_strsplit(first_page_column_list, ":", pages_per_row + 1);
   const size_t settings_size = g_strv_length(settings);
 
   /* read setting value corresponding to the specified pages per row */
   unsigned int index = pages_per_row - 1;
-  if (settings_size > index && strcmp(settings[index], "")) {
+  if (index < settings_size && *settings[index] != '\0') {
     first_page_column = atoi(settings[index]);
   }
 
