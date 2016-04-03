@@ -269,6 +269,8 @@ find_first_page_column(const char* first_page_column_list,
   unsigned int index = pages_per_row - 1;
   if (index < settings_size && *settings[index] != '\0') {
     first_page_column = atoi(settings[index]);
+  } else if (*settings[settings_size - 1] != '\0') {
+    first_page_column = atoi(settings[settings_size - 1]);
   }
 
   /* free buffers */

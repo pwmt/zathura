@@ -739,8 +739,11 @@ first-page-column
 ^^^^^^^^^^^^^^^^^
 Defines the column in which the first page will be displayed.
 This setting is stored separately for every value of pages-per-row according to
-the following pattern <1 page per row>:[<2 pages per row>[: ...]]. Per default,
-the first column is set to 2 for double-page layout.
+the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
+value in the list will be used for all other number of pages per row if not set
+explicitely.
+
+Per default, the first column is set to 2 for double-page layout.
 
 * Value type: String
 * Default value: 1:2
