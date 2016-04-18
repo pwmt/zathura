@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2016-04-18 21:03+0200\n"
+"POT-Creation-Date: 2016-04-18 21:08+0200\n"
 "PO-Revision-Date: 2015-10-15 23:07+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/zathura/"
@@ -502,7 +502,7 @@ msgid "Link: Invalid"
 msgstr ""
 
 #: ../zathura/main.c:145
-msgid "Reparents to window specified by xid (X11 only)"
+msgid "Reparents to window specified by xid (X11)"
 msgstr ""
 
 #: ../zathura/main.c:146

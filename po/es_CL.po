@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2016-04-18 21:03+0200\n"
-"PO-Revision-Date: 2015-10-15 23:07+0200\n"
+"POT-Creation-Date: 2016-04-18 21:08+0200\n"
+"PO-Revision-Date: 2016-04-18 21:10+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.net/projects/p/zathura/"
 "language/es_CL/)\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ../zathura/callbacks.c:233
 #, c-format
@@ -502,9 +502,8 @@ msgid "Link: Invalid"
 msgstr ""
 
 #: ../zathura/main.c:145
-#, fuzzy
-msgid "Reparents to window specified by xid (X11 only)"
-msgstr "Reasignar a la ventana especificada por xid"
+msgid "Reparents to window specified by xid (X11)"
+msgstr "Reasignar a la ventana especificada por xid (X11)"
 
 #: ../zathura/main.c:146
 msgid "Path to the config directory"
