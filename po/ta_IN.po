@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2015-12-14 22:03+0100\n"
+"POT-Creation-Date: 2016-04-18 21:03+0200\n"
 "PO-Revision-Date: 2014-01-31 09:37+0000\n"
 "Last-Translator: mankand007 <mankand007@gmail.com>\n"
 "Language-Team: Tamil (India) (http://www.transifex.net/projects/p/zathura/"
@@ -500,59 +500,59 @@ msgstr ""
 msgid "Link: Invalid"
 msgstr ""
 
-#: ../zathura/main.c:155
-msgid "Reparents to window specified by xid"
+#: ../zathura/main.c:145
+msgid "Reparents to window specified by xid (X11 only)"
 msgstr ""
 
-#: ../zathura/main.c:157
+#: ../zathura/main.c:146
 msgid "Path to the config directory"
 msgstr ""
 
-#: ../zathura/main.c:158
+#: ../zathura/main.c:147
 msgid "Path to the data directory"
 msgstr ""
 
-#: ../zathura/main.c:159
+#: ../zathura/main.c:148
 msgid "Path to the cache directory"
 msgstr ""
 
-#: ../zathura/main.c:160
+#: ../zathura/main.c:149
 msgid "Path to the directories containing plugins"
 msgstr ""
 
-#: ../zathura/main.c:161
+#: ../zathura/main.c:150
 msgid "Fork into the background"
 msgstr ""
 
-#: ../zathura/main.c:162
+#: ../zathura/main.c:151
 msgid "Document password"
 msgstr ""
 
-#: ../zathura/main.c:163
+#: ../zathura/main.c:152
 msgid "Page number to go to"
 msgstr ""
 
-#: ../zathura/main.c:164
+#: ../zathura/main.c:153
 msgid "Log level (debug, info, warning, error)"
 msgstr ""
 
-#: ../zathura/main.c:165
+#: ../zathura/main.c:154
 msgid "Print version information"
 msgstr "ஆவணம் பற்றிய தகவல்களைக் காட்டு"
 
-#: ../zathura/main.c:167
+#: ../zathura/main.c:156
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr ""
 
-#: ../zathura/main.c:168
+#: ../zathura/main.c:157
 msgid "Move to given synctex position"
 msgstr ""
 
-#: ../zathura/main.c:169
+#: ../zathura/main.c:158
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: ../zathura/main.c:171
+#: ../zathura/main.c:160
 msgid "Start in a non-default mode"
 msgstr ""
 
@@ -568,7 +568,7 @@ msgstr "படத்தை ஒரு பிரதியெடு"
 msgid "Save image as"
 msgstr ""
 
-#: ../zathura/print.c:64 ../zathura/print.c:209
+#: ../zathura/print.c:64 ../zathura/print.c:231
 #, c-format
 msgid "Printing failed: %s"
 msgstr ""
@@ -577,26 +577,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "இந்த ஆவணத்தில் எந்த index-ம் இல்லை"
 
-#: ../zathura/zathura.c:218 ../zathura/zathura.c:1224
+#: ../zathura/zathura.c:216 ../zathura/zathura.c:1301
 msgid "[No name]"
 msgstr "பெயரற்ற ஆவணம்"
 
-#: ../zathura/zathura.c:578
+#: ../zathura/zathura.c:648
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: ../zathura/zathura.c:594
+#: ../zathura/zathura.c:664
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: ../zathura/zathura.c:683
+#: ../zathura/zathura.c:753
 msgid "Enter password:"
 msgstr ""
 
-#: ../zathura/zathura.c:719
+#: ../zathura/zathura.c:789
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: ../zathura/zathura.c:731
+#: ../zathura/zathura.c:799
 msgid "Document does not contain any pages"
 msgstr ""
