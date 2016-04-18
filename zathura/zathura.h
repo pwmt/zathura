@@ -11,6 +11,7 @@
 #endif
 #include "macros.h"
 #include "types.h"
+#include "jumplist.h"
 
 enum {
   NEXT,
@@ -82,16 +83,6 @@ enum {
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
-/**
- * Jump
- */
-typedef struct zathura_jump_s
-{
-  unsigned int page;
-  double x;
-  double y;
-} zathura_jump_t;
-
 struct zathura_s
 {
   struct
@@ -162,13 +153,7 @@ struct zathura_s
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 
-  struct
-  {
-    girara_list_t* list;
-    girara_list_iterator_t *cur;
-    unsigned int size;
-    unsigned int max_size;
-  } jumplist;
+  zathura_jumplist_t jumplist;
 
   struct
   {
@@ -253,15 +238,14 @@ bool zathura_init(zathura_t* zathura);
  */
 void zathura_free(zathura_t* zathura);
 
-#ifdef GDK_WINDOWING_X11
 /**
- * Set parent window id
+ * Set parent window id. This does not have an effect if the underlying Gtk
+ * backend is not X11.
  *
  * @param zathura The zathura session
  * @param xid The window id
  */
 void zathura_set_xid(zathura_t* zathura, Window xid);
-#endif
 
 /**
  * Set the path to the configuration directory
@@ -414,68 +398,6 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
  * @param zathura The zathura session
  */
 void statusbar_page_number_update(zathura_t* zathura);
-
-/**
- * Checks whether current jump has a previous jump
- *
- * @param zathura The zathura session
- * @return true if current jump has a previous jump
- */
-bool zathura_jumplist_has_previous(zathura_t* zathura);
-
-/**
- * Checks whether current jump has a next jump
- *
- * @param zathura The zathura session
- * @return true if current jump has a next jump
- */
-bool zathura_jumplist_has_next(zathura_t* zathura);
-
-/**
- * Return current jump in the jumplist
- *
- * @param zathura The zathura session
- * @return current jump
- */
-zathura_jump_t* zathura_jumplist_current(zathura_t* zathura);
-
-/**
- * Move forward in the jumplist
- *
- * @param zathura The zathura session
- */
-void zathura_jumplist_forward(zathura_t* zathura);
-
-/**
- * Move backward in the jumplist
- *
- * @param zathura The zathura session
- */
-void zathura_jumplist_backward(zathura_t* zathura);
-
-/**
- * Add current page as a new item to the jumplist after current position
- *
- * @param zathura The zathura session
- */
-void zathura_jumplist_add(zathura_t* zathura);
-
-/**
- * Trim entries from the beginning of the jumplist to maintain it's maximum size constraint.
- *
- * @param zathura The zathura session
- */
-void zathura_jumplist_trim(zathura_t* zathura);
-
-/**
- * Load the jumplist of the specified file
- *
- * @param zathura The zathura session
- * @param file The file whose jumplist is to be loaded
- *
- * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
- */
-bool zathura_jumplist_load(zathura_t* zathura, const char* file);
 
 /**
  * Gets the nicely formatted filename of the loaded document according to settings

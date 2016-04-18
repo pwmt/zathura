@@ -1,8 +1,11 @@
+#include "jumplist.h"
+
 #include "zathura.h"
 #include "document.h"
 #include "database.h"
 
 #include <girara/utils.h>
+#include <math.h>
 
 static void zathura_jumplist_reset_current(zathura_t* zathura);
 static void zathura_jumplist_append_jump(zathura_t* zathura);
@@ -51,11 +54,7 @@ zathura_jumplist_reset_current(zathura_t* zathura)
 {
   g_return_if_fail(zathura != NULL && zathura->jumplist.cur != NULL);
 
-  while (true) {
-    if (girara_list_iterator_has_next(zathura->jumplist.cur) == false) {
-      return;
-    }
-
+  while (girara_list_iterator_has_next(zathura->jumplist.cur) == true) {
     girara_list_iterator_next(zathura->jumplist.cur);
   }
 }
@@ -122,7 +121,7 @@ zathura_jumplist_add(zathura_t* zathura)
     zathura_jump_t* cur = zathura_jumplist_current(zathura);
 
     if (cur != NULL) {
-      if (cur->page == pagenum && cur->x == x && cur->y == y) {
+      if (cur->page == pagenum && fabs(cur->x - x) <= DBL_EPSILON && fabs(cur->y - y) <= DBL_EPSILON) {
         return;
       }
     }

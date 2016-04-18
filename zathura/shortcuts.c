@@ -1363,14 +1363,14 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   const int nt = (t == 0) ? 1 : t;
-  const double zoom_step = value / 100.0 * nt;
+  const double zoom_step = 1.0 + value / 100.0 * nt;
   const double old_zoom = zathura_document_get_scale(zathura->document);
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
-    zathura_document_set_scale(zathura->document, old_zoom + zoom_step);
+    zathura_document_set_scale(zathura->document, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
-    zathura_document_set_scale(zathura->document, old_zoom - zoom_step);
+    zathura_document_set_scale(zathura->document, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
       zathura_document_set_scale(zathura->document, 1.0);

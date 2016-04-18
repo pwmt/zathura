@@ -193,10 +193,181 @@ zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned
 /* D-Bus handler */
 
 static void
+handle_open_document(zathura_t* zathura, GVariant* parameters,
+                     GDBusMethodInvocation* invocation)
+{
+  gchar* filename = NULL;
+  gchar* password = NULL;
+  gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  g_variant_get(parameters, "(ssi)", &filename, &password, &page);
+
+  document_close(zathura, false);
+  document_open_idle(zathura, filename,
+                     strlen(password) > 0 ? password : NULL,
+                     page,
+                     NULL, NULL);
+  g_free(filename);
+  g_free(password);
+
+  GVariant* result = g_variant_new("(b)", true);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
+handle_close_document(zathura_t* zathura, GVariant* UNUSED(parameters),
+                      GDBusMethodInvocation* invocation)
+{
+  const bool ret = document_close(zathura, false);
+
+  GVariant* result = g_variant_new("(b)", ret);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
+handle_goto_page(zathura_t* zathura, GVariant* parameters,
+                 GDBusMethodInvocation* invocation)
+{
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+
+  guint page = 0;
+  g_variant_get(parameters, "(u)", &page);
+
+  bool ret = true;
+  if (page >= number_of_pages) {
+    ret = false;
+  } else {
+    page_set(zathura, page);
+  }
+
+  GVariant* result = g_variant_new("(b)", ret);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
+handle_highlight_rects(zathura_t* zathura, GVariant* parameters,
+                       GDBusMethodInvocation* invocation)
+{
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+
+  guint page = 0;
+  GVariantIter* iter = NULL;
+  GVariantIter* secondary_iter = NULL;
+  g_variant_get(parameters, "(ua(dddd)a(udddd))", &page, &iter,
+                &secondary_iter);
+
+  if (page >= number_of_pages) {
+    girara_debug("Got invalid page number.");
+    GVariant* result = g_variant_new("(b)", false);
+    g_variant_iter_free(iter);
+    g_variant_iter_free(secondary_iter);
+    g_dbus_method_invocation_return_value(invocation, result);
+    return;
+  }
+
+  /* get rectangles */
+  girara_list_t** rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
+  if (rectangles == NULL) {
+    g_variant_iter_free(iter);
+    g_variant_iter_free(secondary_iter);
+    g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                          G_DBUS_ERROR_NO_MEMORY,
+                                          "Failed to allocate memory.");
+    return;
+  }
+
+  rectangles[page] = girara_list_new2(g_free);
+  if (rectangles[page] == NULL) {
+    g_free(rectangles);
+    g_variant_iter_free(iter);
+    g_variant_iter_free(secondary_iter);
+    g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                          G_DBUS_ERROR_NO_MEMORY,
+                                          "Failed to allocate memory.");
+    return;
+  }
+
+  zathura_rectangle_t temp_rect = { 0, 0, 0, 0 };
+  while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
+                             &temp_rect.y1, &temp_rect.y2)) {
+    zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
+    if (rect == NULL) {
+      g_variant_iter_free(iter);
+      g_variant_iter_free(secondary_iter);
+      girara_list_free(rectangles[page]);
+      g_free(rectangles);
+      g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                            G_DBUS_ERROR_NO_MEMORY,
+                                            "Failed to allocate memory.");
+      return;
+    }
+
+    *rect = temp_rect;
+    girara_list_append(rectangles[page], rect);
+  }
+  g_variant_iter_free(iter);
+
+  /* get secondary rectangles */
+  guint temp_page = 0;
+  while (g_variant_iter_loop(secondary_iter, "(udddd)", &temp_page,
+                             &temp_rect.x1, &temp_rect.x2, &temp_rect.y1,
+                             &temp_rect.y2)) {
+    if (temp_page >= number_of_pages) {
+      /* error out here? */
+      girara_debug("Got invalid page number.");
+      continue;
+    }
+
+    if (rectangles[temp_page] == NULL) {
+      rectangles[temp_page] = girara_list_new2(g_free);
+    }
+
+    zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
+    if (rect == NULL || rectangles[temp_page] == NULL) {
+      g_variant_iter_free(secondary_iter);
+      for (unsigned int p = 0; p != number_of_pages; ++p) {
+        girara_list_free(rectangles[p]);
+      }
+      g_free(rectangles);
+      g_free(rect);
+      g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
+                                            G_DBUS_ERROR_NO_MEMORY,
+                                            "Failed to allocate memory.");
+      return;
+    }
+
+    *rect = temp_rect;
+    girara_list_append(rectangles[temp_page], rect);
+  }
+  g_variant_iter_free(secondary_iter);
+
+  synctex_highlight_rects(zathura, page, rectangles);
+  g_free(rectangles);
+
+  GVariant* result = g_variant_new("(b)", true);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
+handle_synctex_view(zathura_t* zathura, GVariant* parameters,
+                    GDBusMethodInvocation* invocation)
+{
+  gchar* input_file = NULL;
+  guint line = 0;
+  guint column = 0;
+  g_variant_get(parameters, "(suu)", &input_file, &line, &column);
+
+  const bool ret = synctex_view(zathura, input_file, line, column);
+  g_free(input_file);
+
+  GVariant* result = g_variant_new("(b)", ret);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
 handle_method_call(GDBusConnection* UNUSED(connection),
                    const gchar* UNUSED(sender), const gchar* object_path,
                    const gchar* interface_name, const gchar* method_name,
-                   GVariant* parameters, GDBusMethodInvocation* invocation,
+                   GVariant*    parameters, GDBusMethodInvocation* invocation,
                    void* data)
 {
   ZathuraDbus* dbus = data;
@@ -205,163 +376,32 @@ handle_method_call(GDBusConnection* UNUSED(connection),
   girara_debug("Handling call '%s.%s' on '%s'.", interface_name, method_name,
                object_path);
 
-  /* methods that work without open document */
-  if (g_strcmp0(method_name, "OpenDocument") == 0) {
-    gchar* filename = NULL;
-    gchar* password = NULL;
-    gint page = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-    g_variant_get(parameters, "(ssi)", &filename, &password, &page);
+  static const struct {
+    const char* method;
+    void (*handler)(zathura_t*, GVariant*, GDBusMethodInvocation*);
+    bool needs_document;
+  } handlers[] = {
+    { "OpenDocument", handle_open_document, false },
+    { "CloseDocument", handle_close_document, false },
+    { "GotoPage", handle_goto_page, true },
+    { "HighlightRects", handle_highlight_rects, true },
+    { "SynctexView", handle_synctex_view, true }
+  };
 
-    document_close(priv->zathura, false);
-    document_open_idle(priv->zathura, filename,
-                       strlen(password) > 0 ? password : NULL,
-                       page,
-                       NULL, NULL);
-    g_free(filename);
-    g_free(password);
-
-    GVariant* result = g_variant_new("(b)", true);
-    g_dbus_method_invocation_return_value(invocation, result);
-    return;
-  } else if (g_strcmp0(method_name, "CloseDocument") == 0) {
-    const bool ret = document_close(priv->zathura, false);
-
-    GVariant* result = g_variant_new("(b)", ret);
-    g_dbus_method_invocation_return_value(invocation, result);
-    return;
-  }
-
-  if (priv->zathura->document == NULL) {
-    g_dbus_method_invocation_return_dbus_error(invocation,
-                                               "org.pwmt.zathura.NoOpenDocumen",
-                                               "No document has been opened.");
-    return;
-  }
-
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->zathura->document);
-
-  /* methods that require an open document */
-  if (g_strcmp0(method_name, "GotoPage") == 0) {
-    guint page = 0;
-    g_variant_get(parameters, "(u)", &page);
-
-    bool ret = true;
-    if (page >= number_of_pages) {
-      ret = false;
-    } else {
-      page_set(priv->zathura, page);
+  for (size_t idx = 0; idx != sizeof(handlers) / sizeof(handlers[0]); ++idx) {
+    if (g_strcmp0(method_name, handlers[idx].method) != 0) {
+      continue;
     }
 
-    GVariant* result = g_variant_new("(b)", ret);
-    g_dbus_method_invocation_return_value(invocation, result);
-  } else if (g_strcmp0(method_name, "HighlightRects") == 0) {
-    guint page = 0;
-    GVariantIter* iter = NULL;
-    GVariantIter* secondary_iter = NULL;
-    g_variant_get(parameters, "(ua(dddd)a(udddd))", &page, &iter,
-                  &secondary_iter);
-
-    if (page >= number_of_pages) {
-      girara_debug("Got invalid page number.");
-      GVariant* result = g_variant_new("(b)", false);
-      g_variant_iter_free(iter);
-      g_variant_iter_free(secondary_iter);
-      g_dbus_method_invocation_return_value(invocation, result);
+    if (handlers[idx].needs_document == true && priv->zathura->document == NULL) {
+      g_dbus_method_invocation_return_dbus_error(
+          invocation, "org.pwmt.zathura.NoOpenDocumen",
+          "No document has been opened.");
       return;
     }
 
-    /* get rectangles */
-    girara_list_t** rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
-    if (rectangles == NULL) {
-      g_variant_iter_free(iter);
-      g_variant_iter_free(secondary_iter);
-      g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
-                                            G_DBUS_ERROR_NO_MEMORY,
-                                            "Failed to allocate memory.");
-      return;
-    }
-
-    rectangles[page] = girara_list_new2(g_free);
-    if (rectangles[page] == NULL) {
-      g_free(rectangles);
-      g_variant_iter_free(iter);
-      g_variant_iter_free(secondary_iter);
-      g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
-                                            G_DBUS_ERROR_NO_MEMORY,
-                                            "Failed to allocate memory.");
-      return;
-    }
-
-    zathura_rectangle_t temp_rect = { 0, 0, 0, 0 };
-    while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2,
-                               &temp_rect.y1, &temp_rect.y2)) {
-      zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
-      if (rect == NULL) {
-        g_variant_iter_free(iter);
-        g_variant_iter_free(secondary_iter);
-        girara_list_free(rectangles[page]);
-        g_free(rectangles);
-        g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
-                                              G_DBUS_ERROR_NO_MEMORY,
-                                              "Failed to allocate memory.");
-        return;
-      }
-
-      *rect = temp_rect;
-      girara_list_append(rectangles[page], rect);
-    }
-    g_variant_iter_free(iter);
-
-    /* get secondary rectangles */
-    guint temp_page = 0;
-    while (g_variant_iter_loop(secondary_iter, "(udddd)", &temp_page,
-                               &temp_rect.x1, &temp_rect.x2, &temp_rect.y1,
-                               &temp_rect.y2)) {
-      if (temp_page >= number_of_pages) {
-        /* error out here? */
-        girara_debug("Got invalid page number.");
-        continue;
-      }
-
-      if (rectangles[temp_page] == NULL) {
-        rectangles[temp_page] = girara_list_new2(g_free);
-      }
-
-      zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
-      if (rect == NULL || rectangles[temp_page] == NULL) {
-        g_variant_iter_free(secondary_iter);
-        for (unsigned int p = 0; p != number_of_pages; ++p) {
-          girara_list_free(rectangles[p]);
-        }
-        g_free(rectangles);
-        g_free(rect);
-        g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR,
-                                              G_DBUS_ERROR_NO_MEMORY,
-                                              "Failed to allocate memory.");
-        return;
-      }
-
-      *rect = temp_rect;
-      girara_list_append(rectangles[temp_page], rect);
-    }
-    g_variant_iter_free(secondary_iter);
-
-    synctex_highlight_rects(priv->zathura, page, rectangles);
-    g_free(rectangles);
-
-    GVariant* result = g_variant_new("(b)", true);
-    g_dbus_method_invocation_return_value(invocation, result);
-  } else if (g_strcmp0(method_name, "SynctexView") == 0) {
-    gchar* input_file = NULL;
-    guint line = 0;
-    guint column = 0;
-    g_variant_get(parameters, "(suu)", &input_file, &line, &column);
-
-    const bool ret = synctex_view(priv->zathura, input_file, line, column);
-    g_free(input_file);
-
-    GVariant* result = g_variant_new("(b)", ret);
-    g_dbus_method_invocation_return_value(invocation, result);
+    (*handlers[idx].handler)(priv->zathura, parameters, invocation);
+    return;
   }
 }
 

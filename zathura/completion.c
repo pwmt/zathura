@@ -190,7 +190,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
     girara_list_free(names);
   }
 
-  if (show_recent > 0) {
+  if (show_recent > 0 && zathura->database != NULL) {
     girara_list_t* recent_files = zathura_db_get_recent_files(zathura->database, show_recent);
     if (recent_files == NULL) {
       goto error_free;

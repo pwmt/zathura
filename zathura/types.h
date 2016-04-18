@@ -214,6 +214,16 @@ typedef struct zathura_form_s
 } zathura_form_t;
 
 /**
+ * Jump
+ */
+typedef struct zathura_jump_s
+{
+  unsigned int page;
+  double x;
+  double y;
+} zathura_jump_t;
+
+/**
  * Create new index element
  *
  * @param title Title of the index element

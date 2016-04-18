@@ -518,8 +518,13 @@ zathura_document_get_document_size(zathura_document_t* document,
 {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-  const unsigned int npag  = zathura_document_get_number_of_pages(document);
-  const unsigned int ncol  = zathura_document_get_pages_per_row(document);
+  const unsigned int npag = zathura_document_get_number_of_pages(document);
+  const unsigned int ncol = zathura_document_get_pages_per_row(document);
+
+  if (npag == 0 || ncol == 0) {
+    return;
+  }
+
   const unsigned int c0    = zathura_document_get_first_page_column(document);
   const unsigned int nrow  = (npag + c0 - 1 + ncol - 1) / ncol;  /* number of rows */
   const unsigned int pad   = zathura_document_get_page_padding(document);
