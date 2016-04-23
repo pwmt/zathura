@@ -114,7 +114,7 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
   g_type_class_add_private(class, sizeof(zathura_page_widget_private_t));
 
   /* overwrite methods */
-  GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
+  GtkWidgetClass* widget_class       = GTK_WIDGET_CLASS(class);
   widget_class->draw                 = zathura_page_widget_draw;
   widget_class->size_allocate        = zathura_page_widget_size_allocate;
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
@@ -208,11 +208,11 @@ static void
 zathura_page_widget_init(ZathuraPage* widget)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
-  priv->page             = NULL;
-  priv->surface          = NULL;
-  priv->thumbnail        = NULL;
-  priv->render_request   = NULL;
-  priv->cached           = false;
+  priv->page                          = NULL;
+  priv->surface                       = NULL;
+  priv->thumbnail                     = NULL;
+  priv->render_request                = NULL;
+  priv->cached                        = false;
 
   priv->links.list      = NULL;
   priv->links.retrieved = false;
