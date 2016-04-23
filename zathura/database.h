@@ -36,7 +36,7 @@ struct _ZathuraDatabaseInterface
 {
   GTypeInterface parent_iface;
 
-  /* interface methords */
+  /* interface methods */
   bool (*add_bookmark)(ZathuraDatabase* db, const char* file, zathura_bookmark_t* bookmark);
 
   bool (*remove_bookmark)(ZathuraDatabase* db, const char* file, const char* id);
