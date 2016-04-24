@@ -376,20 +376,12 @@ file_monitor_reload(void* data)
 }
 
 void
-cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), GFileMonitorEvent event, girara_session_t* session)
+cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session)
 {
   g_return_if_fail(monitor  != NULL);
-  g_return_if_fail(file     != NULL);
   g_return_if_fail(session  != NULL);
 
-  switch (event) {
-    case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
-    case G_FILE_MONITOR_EVENT_CREATED:
-      g_main_context_invoke(NULL, file_monitor_reload, session);
-      break;
-    default:
-      return;
-  }
+  g_main_context_invoke(NULL, file_monitor_reload, session);
 }
 
 static gboolean

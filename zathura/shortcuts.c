@@ -434,7 +434,7 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->file_monitor.file_path == NULL) {
+  if (zathura->file_monitor.monitor == NULL) {
     return false;
   }
 
@@ -442,9 +442,9 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   document_close(zathura, true);
 
   /* reopen document */
-  document_open(zathura, zathura->file_monitor.file_path, NULL,
-                zathura->file_monitor.password,
-                ZATHURA_PAGE_NUMBER_UNSPECIFIED);
+  document_open(
+    zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor),
+    NULL, zathura->file_monitor.password, ZATHURA_PAGE_NUMBER_UNSPECIFIED);
 
   return false;
 }

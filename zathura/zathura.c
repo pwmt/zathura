@@ -763,7 +763,6 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     goto error_out;
   }
 
-  gchar* file_uri = NULL;
   zathura_error_t error = ZATHURA_ERROR_OK;
   zathura_document_t* document = zathura_document_open(zathura, path, uri, password, &error);
 
@@ -882,31 +881,22 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   g_free(filename);
 
   /* install file monitor */
-  file_uri = g_filename_to_uri(file_path, NULL, NULL);
-  if (file_uri == NULL) {
-    goto error_free;
-  }
-
-  if (zathura->file_monitor.file == NULL) {
-    zathura->file_monitor.file = g_file_new_for_uri(file_uri);
-    if (zathura->file_monitor.file == NULL) {
-      goto error_free;
-    }
-  }
-
   if (zathura->file_monitor.monitor == NULL) {
-    zathura->file_monitor.monitor = g_file_monitor_file(zathura->file_monitor.file, G_FILE_MONITOR_NONE, NULL, NULL);
+    char* filemonitor_backend = NULL;
+    girara_setting_get(zathura->ui.session, "filemonitor", &filemonitor_backend);
+    zathura_filemonitor_type_t type = ZATHURA_FILEMONITOR_GLIB;
+#ifdef G_OS_UNIX
+    if (g_strcmp0(filemonitor_backend, "signal") == 0) {
+      type = ZATHURA_FILEMONITOR_SIGNAL;
+    }
+#endif
+
+    zathura->file_monitor.monitor = zathura_filemonitor_new(file_path, type);
     if (zathura->file_monitor.monitor == NULL) {
       goto error_free;
     }
-    g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "changed", G_CALLBACK(cb_file_monitor), zathura->ui.session);
-  }
-
-  if (zathura->file_monitor.file_path == NULL) {
-    zathura->file_monitor.file_path = g_strdup(file_path);
-    if (zathura->file_monitor.file_path == NULL) {
-      goto error_free;
-    }
+    g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "reload-file",
+                     G_CALLBACK(cb_file_monitor), zathura->ui.session);
   }
 
   if (password != NULL) {
@@ -1055,8 +1045,6 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   girara_set_window_title(zathura->ui.session, formatted_filename);
   g_free(formatted_filename);
 
-  g_free(file_uri);
-
   /* adjust_view */
   adjust_view(zathura);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
@@ -1091,10 +1079,6 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   return true;
 
 error_free:
-
-  if (file_uri != NULL) {
-    g_free(file_uri);
-  }
 
   zathura_document_free(document);
 
@@ -1233,19 +1217,8 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* remove monitor */
   if (keep_monitor == false) {
     if (zathura->file_monitor.monitor != NULL) {
-      g_file_monitor_cancel(zathura->file_monitor.monitor);
       g_object_unref(zathura->file_monitor.monitor);
       zathura->file_monitor.monitor = NULL;
-    }
-
-    if (zathura->file_monitor.file != NULL) {
-      g_object_unref(zathura->file_monitor.file);
-      zathura->file_monitor.file = NULL;
-    }
-
-    if (zathura->file_monitor.file_path != NULL) {
-      g_free(zathura->file_monitor.file_path);
-      zathura->file_monitor.file_path = NULL;
     }
 
     if (zathura->file_monitor.password != NULL) {

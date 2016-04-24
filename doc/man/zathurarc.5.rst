@@ -661,12 +661,20 @@ values are "plain", "sqlite" (if built with sqlite support) and "null". If
 * Default value: plain
 
 dbus-service
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 En/Disables the D-Bus service. If the services is disabled, SyncTeX forward
 synchronization is not available.
 
 * Value type: Boolean
 * Default value: true
+
+filemonitor
+^^^^^^^^^^^
+Defines the filemonitor backend. Possible values are "glib" and "signal" (if
+signal handling is supported).
+
+* Value type: String
+* Default value: glib
 
 incremental-search
 ^^^^^^^^^^^^^^^^^^

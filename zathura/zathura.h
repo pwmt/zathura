@@ -12,6 +12,7 @@
 #include "macros.h"
 #include "types.h"
 #include "jumplist.h"
+#include "file-monitor.h"
 
 enum {
   NEXT,
@@ -177,9 +178,7 @@ struct zathura_s
    * File monitor
    */
   struct {
-    GFileMonitor* monitor; /**< File monitor */
-    GFile* file; /**< File for file monitor */
-    gchar* file_path; /**< Save file path */
+    ZathuraFileMonitor* monitor; /**< File monitor */
     gchar* password; /**< Save password */
   } file_monitor;
 
