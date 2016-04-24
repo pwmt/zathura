@@ -2,8 +2,12 @@
 
 #include "file-monitor.h"
 #include "file-monitor-glib.h"
+#ifdef G_OS_UNIX
 #include "file-monitor-signal.h"
+#endif
 #include "macros.h"
+
+#include <girara/utils.h>
 
 G_DEFINE_TYPE(ZathuraFileMonitor, zathura_filemonitor, G_TYPE_OBJECT)
 
@@ -126,11 +130,14 @@ zathura_filemonitor_new(const char*                file_path,
       ret = g_object_new(ZATHURA_TYPE_GLIBFILEMONITOR, "file-path", file_path,
                          NULL);
       break;
+#ifdef G_OS_UNIX
     case ZATHURA_FILEMONITOR_SIGNAL:
       ret = g_object_new(ZATHURA_TYPE_SIGNALFILEMONITOR, "file-path", file_path,
                          NULL);
       break;
+#endif
     default:
+      girara_debug("invalid filemonitor type: %d", filemonitor_type);
       g_return_val_if_fail(false, NULL);
   }
 
