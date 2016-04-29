@@ -160,6 +160,7 @@ cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list)
 
   GIRARA_LIST_FOREACH(argument_list, char*, iter, key_string)
   if (key_string == NULL) {
+    girara_list_iterator_next(iter);
     continue;
   }
 

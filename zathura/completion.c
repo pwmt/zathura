@@ -294,11 +294,11 @@ cc_bookmarks(girara_session_t* session, const char* input)
 
 error_free:
 
-  if (completion) {
+  if (completion != NULL) {
     girara_completion_free(completion);
   }
 
-  if (group) {
+  if (group != NULL) {
     girara_completion_group_free(group);
   }
 
