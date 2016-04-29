@@ -166,7 +166,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
 
   /* Append a slash if the given argument is a directory */
   bool is_dir = (path[strlen(path) - 1] == '/') ? true : false;
-  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && !is_dir) {
+  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && is_dir == false) {
     char* tmp_path = g_strdup_printf("%s/", path);
     g_free(path);
     path = tmp_path;
