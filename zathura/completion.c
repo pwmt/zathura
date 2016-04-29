@@ -145,21 +145,16 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
   /* If the path does not begin with a slash we update the path with the current
    * working directory */
   if (strlen(path) == 0 || path[0] != '/') {
-    long path_max;
-#ifdef PATH_MAX
-    path_max = PATH_MAX;
-#else
-    path_max = pathconf(path,_PC_PATH_MAX);
-    if (path_max <= 0)
-      path_max = 4096;
-#endif
-
-    char cwd[path_max];
-    if (getcwd(cwd, path_max) == NULL) {
+    char* cwd = g_get_current_dir();
+    if (cwd == NULL) {
       goto error_free;
     }
 
     char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
+    g_free(cwd);
+    if (tmp_path == NULL) {
+      goto error_free;
+    }
 
     g_free(path);
     path = tmp_path;
