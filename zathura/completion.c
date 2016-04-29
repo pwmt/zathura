@@ -105,6 +105,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   if (girara_list_size(res) == 1) {
     char* path = girara_list_nth(res, 0);
     if (g_file_test(path, G_FILE_TEST_IS_DIR) == true) {
+      girara_debug("changing to directory %s", path);
       char* newpath = g_strdup_printf("%s/", path);
       girara_list_clear(res);
       girara_list_append(res, newpath);
