@@ -175,12 +175,10 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
   }
 
   /* get current path */
-  char* tmp    = g_strdup(path);
-  current_path = is_dir ? g_strdup(tmp) : g_strdup(dirname(tmp));
-  g_free(tmp);
+  current_path = is_dir ? g_strdup(path) : g_path_get_dirname(path);
 
   /* get current file */
-  gchar* current_file     = is_dir ? "" : basename(path);
+  gchar* current_file              = is_dir ? "" : basename(path);
   const size_t current_file_length = strlen(current_file);
 
   /* read directory */
