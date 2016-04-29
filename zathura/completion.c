@@ -39,6 +39,8 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     return NULL;
   }
 
+  girara_debug("checking files in %s", current_path);
+
   /* read directory */
   GDir* dir = g_dir_open(current_path, 0, NULL);
   if (dir == NULL) {
@@ -79,20 +81,23 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     };
 
     char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
+    g_free(e_name);
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
       if (show_directories == false) {
-        g_free(e_name);
+        girara_debug("ignoring %s (directory)", full_path);
         g_free(full_path);
         continue;
       }
+      girara_debug("adding %s (directory)", full_path);
       girara_list_append(res, full_path);
     } else if (check_file_ext == false || file_valid_extension(zathura, full_path) == true) {
+      girara_debug("adding %s (file)", full_path);
       girara_list_append(res, full_path);
     } else {
+      girara_debug("ignoring %s (file)", full_path);
       g_free(full_path);
     }
-    g_free(e_name);
   }
 
   g_dir_close(dir);
@@ -200,6 +205,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
       const size_t path_len = strlen(path);
       GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
         if (strncmp(path, file, path_len) == 0) {
+          girara_debug("adding %s (recent file)", file);
           girara_completion_group_add_element(history_group, file, NULL);
         }
       GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
