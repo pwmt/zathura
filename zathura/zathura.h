@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <girara/types.h>
+#include <girara/session.h>
 #include <gtk/gtk.h>
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
