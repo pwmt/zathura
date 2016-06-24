@@ -46,13 +46,7 @@ start(ZathuraFileMonitor* file_monitor)
     zathura_filemonitor_get_filepath(file_monitor);
 
   /* install file monitor */
-  char* file_uri = g_filename_to_uri(file_path, NULL, NULL);
-  if (file_uri == NULL) {
-    return;
-  }
-
-  glib_file_monitor->file = g_file_new_for_uri(file_uri);
-  g_free(file_uri);
+  glib_file_monitor->file = g_file_new_for_path(file_path);
   if (glib_file_monitor->file == NULL) {
     return;
   }
