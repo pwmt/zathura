@@ -1007,7 +1007,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   }
 
   /* read first_page_column list */
-  if (file_info.first_page_column_list != NULL && strcmp(file_info.first_page_column_list, "")) {
+  if (file_info.first_page_column_list != NULL && *file_info.first_page_column_list != '\0') {
     first_page_column_list = file_info.first_page_column_list;
     file_info.first_page_column_list = NULL;
   } else {
