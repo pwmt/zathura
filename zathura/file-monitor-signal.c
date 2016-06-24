@@ -2,6 +2,7 @@
 
 #include "file-monitor-signal.h"
 
+#include <girara/utils.h>
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #endif
@@ -24,6 +25,7 @@ signal_handler(gpointer data)
 
   ZathuraSignalFileMonitor* signalfilemonitor = data;
 
+  girara_debug("SIGHUP received");
   g_signal_emit_by_name(signalfilemonitor, "reload-file");
 
   return TRUE;

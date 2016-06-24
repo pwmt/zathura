@@ -127,11 +127,13 @@ zathura_filemonitor_new(const char*                file_path,
   GObject* ret = NULL;
   switch (filemonitor_type) {
     case ZATHURA_FILEMONITOR_GLIB:
+      girara_debug("using glib file monitor");
       ret = g_object_new(ZATHURA_TYPE_GLIBFILEMONITOR, "file-path", file_path,
                          NULL);
       break;
 #ifdef G_OS_UNIX
     case ZATHURA_FILEMONITOR_SIGNAL:
+      girara_debug("using SIGHUB file monitor");
       ret = g_object_new(ZATHURA_TYPE_SIGNALFILEMONITOR, "file-path", file_path,
                          NULL);
       break;
