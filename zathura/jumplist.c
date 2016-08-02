@@ -99,7 +99,7 @@ zathura_jumplist_trim(zathura_t* zathura)
     --zathura->jumplist.size;
   }
 
-  if (zathura->jumplist.size == 0 || (zathura->jumplist.size != 0 && zathura->jumplist.cur != NULL)) {
+  if (zathura->jumplist.size == 0 || zathura->jumplist.cur != NULL) {
     girara_list_iterator_free(cur);
   } else {
     zathura->jumplist.cur = cur;
