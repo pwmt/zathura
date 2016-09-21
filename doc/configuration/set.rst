@@ -1,7 +1,7 @@
 set - Changing options
 ======================
 
-In addition to the build-in *:set* command zathura offers more options
+In addition to the built-in *:set* command zathura offers more options
 to be changed and makes those changes permanent. To overwrite an option
 you just have to add a line structured like the following
 
