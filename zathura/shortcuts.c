@@ -1217,6 +1217,8 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
     return false;
   }
 
+  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+
   int pages_per_row = 1;
   girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
 
@@ -1229,6 +1231,10 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
   adjust_view(zathura);
+
+  page_set(zathura, page_id);
+  render_all(zathura);
+  refresh_view(zathura);
 
   return true;
 }
