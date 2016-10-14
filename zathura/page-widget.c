@@ -800,6 +800,10 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
       priv->mouse.selection.y2 = -1;
     }
 
+    /* set page number (but don't scroll there. it was clicked on, so it's visible) */
+    zathura_document_set_current_page_number(priv->zathura->document, zathura_page_get_index(priv->page));
+    refresh_view(priv->zathura);
+
     return true;
   } else if (button->button == 3) { /* right click */
     zathura_page_widget_popup_menu(widget, button);
