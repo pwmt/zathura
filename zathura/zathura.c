@@ -751,7 +751,7 @@ document_open_password_dialog(gpointer data)
   zathura_password_dialog_info_t* password_dialog_info = data;
 
   girara_dialog(password_dialog_info->zathura->ui.session, _("Enter password:"), true, NULL,
-                (girara_callback_inputbar_activate_t) cb_password_dialog, password_dialog_info);
+                cb_password_dialog, password_dialog_info);
   return FALSE;
 }
 

@@ -110,7 +110,7 @@ void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
+bool cb_sc_follow(GtkEntry* entry, void* session);
 
 /**
  * Called when input has been passed to the sc_display_link dialog
@@ -119,7 +119,7 @@ bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-bool cb_sc_display_link(GtkEntry* entry, girara_session_t* session);
+bool cb_sc_display_link(GtkEntry* entry, void* session);
 
 /**
  * Emitted when file has been changed
@@ -136,7 +136,7 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session);
  * @param dialog The dialog information
  * @return true if input has been handled
  */
-bool cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog);
+bool cb_password_dialog(GtkEntry* entry, void* dialog);
 
 /**
  * Emitted when the view has been resized

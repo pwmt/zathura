@@ -357,14 +357,16 @@ handle_link(GtkEntry* entry, girara_session_t* session,
 }
 
 bool
-cb_sc_follow(GtkEntry* entry, girara_session_t* session)
+cb_sc_follow(GtkEntry* entry, void* data)
 {
+  girara_session_t* session = data;
   return handle_link(entry, session, ZATHURA_LINK_ACTION_FOLLOW);
 }
 
 bool
-cb_sc_display_link(GtkEntry* entry, girara_session_t* session)
+cb_sc_display_link(GtkEntry* entry, void* data)
 {
+  girara_session_t* session = data;
   return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
 }
 
@@ -395,7 +397,7 @@ password_dialog(gpointer data)
       "Incorrect password. Enter password:",
       true,
       NULL,
-      (girara_callback_inputbar_activate_t) cb_password_dialog,
+      cb_password_dialog,
       dialog
     );
   }
@@ -404,11 +406,13 @@ password_dialog(gpointer data)
 }
 
 bool
-cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
+cb_password_dialog(GtkEntry* entry, void* data)
 {
-  if (entry == NULL || dialog == NULL) {
+  if (entry == NULL || data == NULL) {
     goto error_ret;
   }
+
+  zathura_password_dialog_info_t* dialog = data;
 
   if (dialog->path == NULL) {
     free(dialog);
