@@ -356,14 +356,14 @@ handle_link(GtkEntry* entry, girara_session_t* session,
   return (eval == TRUE) ? TRUE : FALSE;
 }
 
-bool
+gboolean
 cb_sc_follow(GtkEntry* entry, void* data)
 {
   girara_session_t* session = data;
   return handle_link(entry, session, ZATHURA_LINK_ACTION_FOLLOW);
 }
 
-bool
+gboolean
 cb_sc_display_link(GtkEntry* entry, void* data)
 {
   girara_session_t* session = data;
@@ -405,7 +405,7 @@ password_dialog(gpointer data)
   return FALSE;
 }
 
-bool
+gboolean
 cb_password_dialog(GtkEntry* entry, void* data)
 {
   if (entry == NULL || data == NULL) {
