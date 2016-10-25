@@ -146,7 +146,7 @@ bool cb_password_dialog(GtkEntry* entry, void* dialog);
  * @param zathura Zathura session
  * @return true if signal has been handled successfully
  */
-bool cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
+gboolean cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
 
 /**
  * Emitted when the 'recolor' setting is changed

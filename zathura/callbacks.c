@@ -459,7 +459,7 @@ error_ret:
   return false;
 }
 
-bool
+gboolean
 cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
