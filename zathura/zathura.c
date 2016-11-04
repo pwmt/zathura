@@ -1482,9 +1482,8 @@ adjust_view(zathura_t* zathura)
       abs((int)new_cell_height - (int)cell_height) > 1) {
     render_all(zathura);
     refresh_view(zathura);
-
- /* otherwise set the old scale and leave */
   } else {
+    /* otherwise set the old scale and leave */
     zathura_document_set_scale(zathura->document, scale);
   }
 
