@@ -100,8 +100,15 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
-  zathura_document_set_adjust_mode(zathura->document, argument->n);
-  adjust_view(zathura);
+  if (argument->n < ZATHURA_ADJUST_NONE || argument->n >= ZATHURA_ADJUST_MODE_NUMBER) {
+    girara_error("Invalid adjust mode: %d", argument->n);
+    girara_notify(session, GIRARA_ERROR, _("Invalid adjust mode: %d"), argument->n);
+  } else {
+    girara_debug("Setting adjust mode to: %d", argument->n);
+
+    zathura_document_set_adjust_mode(zathura->document, argument->n);
+    adjust_view(zathura);
+  }
 
   return false;
 }

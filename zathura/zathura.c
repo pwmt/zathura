@@ -121,7 +121,7 @@ error_out:
 static void
 create_directories(zathura_t* zathura)
 {
-  static const unsigned int mode = 0711;
+  static const unsigned int mode = 0700;
 
   if (g_mkdir_with_parents(zathura->config.config_dir, mode) == -1) {
     girara_error("Could not create '%s': %s", zathura->config.config_dir,
