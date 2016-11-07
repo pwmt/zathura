@@ -801,7 +801,7 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
     }
 
     return true;
-  } else if (button->button == 3) { /* right click */
+  } else if (gdk_event_triggers_context_menu((GdkEvent*) button) == TRUE && button->type == GDK_BUTTON_PRESS) { /* right click */
     zathura_page_widget_popup_menu(widget, button);
     return true;
   }
