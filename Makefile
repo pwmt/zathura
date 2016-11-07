@@ -4,7 +4,7 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out ${PROJECT}/css-definitions.c, $(filter-out ${PROJECT}/dbus-interface-definitions.c, $(wildcard ${PROJECT}/*.c)))
+OSOURCE    = $(filter-out ${PROJECT}/css-definitions.c, $(filter-out ${PROJECT}/dbus-interface-definitions.c, $(sort $(wildcard ${PROJECT}/*.c))))
 
 ifneq (${WITH_SQLITE},0)
 INCS     += $(SQLITE_INC)
