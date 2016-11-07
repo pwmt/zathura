@@ -862,21 +862,18 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 
     zathura_rectangle_t tmp = priv->mouse.selection;
 
-    double scale = zathura_document_get_scale(document);
+    const double scale = zathura_document_get_scale(document);
     tmp.x1 /= scale;
     tmp.x2 /= scale;
     tmp.y1 /= scale;
     tmp.y2 /= scale;
 
     char* text = zathura_page_get_text(priv->page, tmp, NULL);
-    if (text != NULL) {
-      if (strlen(text) > 0) {
-        /* emit text-selected signal */
-        g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
-      }
-
-      g_free(text);
+    if (text != NULL && *text != '\0') {
+      /* emit text-selected signal */
+      g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
     }
+    g_free(text);
   }
 
   priv->mouse.selection_basepoint.x = -1;
