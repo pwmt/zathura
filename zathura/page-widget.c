@@ -967,7 +967,11 @@ static void
 zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
 {
   g_return_if_fail(widget != NULL);
-  g_return_if_fail(event != NULL);
+  if (event == NULL) {
+    /* do something here in the future in case we have general popups */
+    return;
+  }
+
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
   if (priv->images.retrieved == false) {
@@ -1015,16 +1019,8 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
   }
 
   /* attach and popup */
-  int event_button = 0;
-  int event_time   = gtk_get_current_event_time();
-
-  if (event != NULL) {
-    event_button = event->button;
-    event_time   = event->time;
-  }
-
   gtk_menu_attach_to_widget(GTK_MENU(menu), widget, NULL);
-  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event_button, event_time);
+  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
 }
 
 static gboolean
