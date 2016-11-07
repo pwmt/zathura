@@ -835,7 +835,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   button->x = oldx;
   button->y = oldy;
 
-  if (button->button != 1) {
+  if (button->button != GDK_BUTTON_PRIMARY) {
     return false;
   }
 
