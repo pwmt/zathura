@@ -779,7 +779,7 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
     return true;
   }
 
-  if (button->button == 1) { /* left click */
+  if (button->button == GDK_BUTTON_PRIMARY) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
       /* start the selection */
       priv->mouse.selection_basepoint.x = button->x;
