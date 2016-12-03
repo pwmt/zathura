@@ -634,11 +634,19 @@ void
 cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event,
     void* data)
 {
+  zathura_t* zathura = data;
+
+  zathura_page_t* page = zathura_page_widget_get_page(page_widget);
+
+  /* set page number (but don't scroll there. it was clicked on, so it's visible) */
+  if (event->button == 1) {
+    zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
+    refresh_view(zathura);
+  }
+
   if (event->button != 1 || !(event->state & GDK_CONTROL_MASK)) {
     return;
   }
-
-  zathura_t* zathura = data;
 
   bool synctex = false;
   girara_setting_get(zathura->ui.session, "synctex", &synctex);
@@ -646,8 +654,6 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   if (synctex == false) {
     return;
   }
-
-  zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 
   if (zathura->dbus != NULL) {
     zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
