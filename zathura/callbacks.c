@@ -639,7 +639,7 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 
   /* set page number (but don't scroll there. it was clicked on, so it's visible) */
-  if (event->button == 1) {
+  if (event->button == GDK_BUTTON_PRIMARY) {
     zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
     refresh_view(zathura);
   }
