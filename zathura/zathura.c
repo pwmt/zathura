@@ -1152,7 +1152,7 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
   if (g_file_test(file_path, G_FILE_TEST_IS_DIR) == TRUE) {
     char* basename = g_path_get_basename(zathura_document_get_path(zathura->document));
     char* tmp = file_path;
-    file_path = g_strconcat(file_path, "/", basename, NULL);
+    file_path = g_build_filename(file_path, basename, NULL);
     g_free(tmp);
     g_free(basename);
   }
