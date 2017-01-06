@@ -20,8 +20,8 @@
   with 1, and negative numbers indicate page numbers starting from the end
   of the document, -1 being the last page.
 
--l, --debug=level
-  Set log debug level (debug, info, warning, error)
+-l, --log-level=level
+  Set log level (debug, info, warning, error)
 
 -x, --synctex-editor-command=command
   Set the synctex editor command. Overrides the synctex-editor-command setting.
