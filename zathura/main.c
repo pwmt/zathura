@@ -1,7 +1,8 @@
 /* See LICENSE file for license and copyright information */
 
-#include <girara/utils.h>
 #include <girara/settings.h>
+#include <girara/log.h>
+
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <errno.h>
@@ -33,11 +34,11 @@ static void
 set_log_level(const char* loglevel)
 {
   if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
-    girara_set_debug_level(GIRARA_INFO);
+    girara_set_log_level(GIRARA_INFO);
   } else if (g_strcmp0(loglevel, "warning") == 0) {
-    girara_set_debug_level(GIRARA_WARNING);
+    girara_set_log_level(GIRARA_WARNING);
   } else if (g_strcmp0(loglevel, "error") == 0) {
-    girara_set_debug_level(GIRARA_ERROR);
+    girara_set_log_level(GIRARA_ERROR);
   }
 }
 
