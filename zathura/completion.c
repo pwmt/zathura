@@ -39,6 +39,8 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     return NULL;
   }
 
+  girara_debug("checking files in %s", current_path);
+
   /* read directory */
   GDir* dir = g_dir_open(current_path, 0, NULL);
   if (dir == NULL) {
@@ -79,20 +81,23 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     };
 
     char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
+    g_free(e_name);
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
       if (show_directories == false) {
-        g_free(e_name);
+        girara_debug("ignoring %s (directory)", full_path);
         g_free(full_path);
         continue;
       }
+      girara_debug("adding %s (directory)", full_path);
       girara_list_append(res, full_path);
     } else if (check_file_ext == false || file_valid_extension(zathura, full_path) == true) {
+      girara_debug("adding %s (file)", full_path);
       girara_list_append(res, full_path);
     } else {
+      girara_debug("ignoring %s (file)", full_path);
       g_free(full_path);
     }
-    g_free(e_name);
   }
 
   g_dir_close(dir);
@@ -100,6 +105,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   if (girara_list_size(res) == 1) {
     char* path = girara_list_nth(res, 0);
     if (g_file_test(path, G_FILE_TEST_IS_DIR) == true) {
+      girara_debug("changing to directory %s", path);
       char* newpath = g_strdup_printf("%s/", path);
       girara_list_clear(res);
       girara_list_append(res, newpath);
@@ -139,21 +145,16 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
   /* If the path does not begin with a slash we update the path with the current
    * working directory */
   if (strlen(path) == 0 || path[0] != '/') {
-    long path_max;
-#ifdef PATH_MAX
-    path_max = PATH_MAX;
-#else
-    path_max = pathconf(path,_PC_PATH_MAX);
-    if (path_max <= 0)
-      path_max = 4096;
-#endif
-
-    char cwd[path_max];
-    if (getcwd(cwd, path_max) == NULL) {
+    char* cwd = g_get_current_dir();
+    if (cwd == NULL) {
       goto error_free;
     }
 
     char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
+    g_free(cwd);
+    if (tmp_path == NULL) {
+      goto error_free;
+    }
 
     g_free(path);
     path = tmp_path;
@@ -161,7 +162,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
 
   /* Append a slash if the given argument is a directory */
   bool is_dir = (path[strlen(path) - 1] == '/') ? true : false;
-  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && !is_dir) {
+  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && is_dir == false) {
     char* tmp_path = g_strdup_printf("%s/", path);
     g_free(path);
     path = tmp_path;
@@ -169,12 +170,10 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
   }
 
   /* get current path */
-  char* tmp    = g_strdup(path);
-  current_path = is_dir ? g_strdup(tmp) : g_strdup(dirname(tmp));
-  g_free(tmp);
+  current_path = is_dir ? g_strdup(path) : g_path_get_dirname(path);
 
   /* get current file */
-  gchar* current_file     = is_dir ? "" : basename(path);
+  gchar* current_file              = is_dir ? "" : basename(path);
   const size_t current_file_length = strlen(current_file);
 
   /* read directory */
@@ -200,6 +199,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
       const size_t path_len = strlen(path);
       GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
         if (strncmp(path, file, path_len) == 0) {
+          girara_debug("adding %s (recent file)", file);
           girara_completion_group_add_element(history_group, file, NULL);
         }
       GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
@@ -294,11 +294,11 @@ cc_bookmarks(girara_session_t* session, const char* input)
 
 error_free:
 
-  if (completion) {
+  if (completion != NULL) {
     girara_completion_free(completion);
   }
 
-  if (group) {
+  if (group != NULL) {
     girara_completion_group_free(group);
   }
 

@@ -22,7 +22,7 @@ COMMANDS
 set - Changing options
 ----------------------
 
-In addition to the build-in ``:set`` command zathura offers more options to be
+In addition to the built-in ``:set`` command zathura offers more options to be
 changed and makes those changes permanent. To overwrite an option you just have
 to add a line structured like the following
 
@@ -661,12 +661,20 @@ values are "plain", "sqlite" (if built with sqlite support) and "null". If
 * Default value: plain
 
 dbus-service
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 En/Disables the D-Bus service. If the services is disabled, SyncTeX forward
 synchronization is not available.
 
 * Value type: Boolean
 * Default value: true
+
+filemonitor
+^^^^^^^^^^^
+Defines the filemonitor backend. Possible values are "glib" and "signal" (if
+signal handling is supported).
+
+* Value type: String
+* Default value: glib
 
 incremental-search
 ^^^^^^^^^^^^^^^^^^
@@ -741,7 +749,7 @@ Defines the column in which the first page will be displayed.
 This setting is stored separately for every value of pages-per-row according to
 the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
 value in the list will be used for all other number of pages per row if not set
-explicitely.
+explicitly.
 
 Per default, the first column is set to 2 for double-page layout.
 

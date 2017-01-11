@@ -142,6 +142,7 @@ config_load_default(zathura_t* zathura)
 
   /* zathura settings */
   girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),         NULL, NULL);
+  girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);
   int_value = 1;

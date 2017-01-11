@@ -100,8 +100,15 @@ sc_adjust_window(girara_session_t* session, girara_argument_t* argument,
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
-  zathura_document_set_adjust_mode(zathura->document, argument->n);
-  adjust_view(zathura);
+  if (argument->n < ZATHURA_ADJUST_NONE || argument->n >= ZATHURA_ADJUST_MODE_NUMBER) {
+    girara_error("Invalid adjust mode: %d", argument->n);
+    girara_notify(session, GIRARA_ERROR, _("Invalid adjust mode: %d"), argument->n);
+  } else {
+    girara_debug("Setting adjust mode to: %d", argument->n);
+
+    zathura_document_set_adjust_mode(zathura->document, argument->n);
+    adjust_view(zathura);
+  }
 
   return false;
 }
@@ -135,7 +142,7 @@ sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
   if (show_links) {
     zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
     girara_dialog(zathura->ui.session, "Display link:", FALSE, NULL,
-        (girara_callback_inputbar_activate_t) cb_sc_display_link,
+        cb_sc_display_link,
         zathura->ui.session);
   }
 
@@ -223,7 +230,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   /* ask for input */
   if (show_links == true) {
     zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, (girara_callback_inputbar_activate_t) cb_sc_follow, zathura->ui.session);
+    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, cb_sc_follow, zathura->ui.session);
   }
 
   return false;
@@ -434,7 +441,7 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->file_monitor.file_path == NULL) {
+  if (zathura->file_monitor.monitor == NULL) {
     return false;
   }
 
@@ -442,9 +449,9 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
   document_close(zathura, true);
 
   /* reopen document */
-  document_open(zathura, zathura->file_monitor.file_path, NULL,
-                zathura->file_monitor.password,
-                ZATHURA_PAGE_NUMBER_UNSPECIFIED);
+  document_open(
+    zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor),
+    NULL, zathura->file_monitor.password, ZATHURA_PAGE_NUMBER_UNSPECIFIED);
 
   return false;
 }
@@ -1217,6 +1224,8 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
     return false;
   }
 
+  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+
   int pages_per_row = 1;
   girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
 
@@ -1229,6 +1238,10 @@ sc_toggle_page_mode(girara_session_t* session, girara_argument_t*
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
   adjust_view(zathura);
+
+  page_set(zathura, page_id);
+  render_all(zathura);
+  refresh_view(zathura);
 
   return true;
 }
@@ -1368,19 +1381,25 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
+    girara_debug("Increasing zoom by %f.", zoom_step - 1.0);
     zathura_document_set_scale(zathura->document, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
+    girara_debug("Decreasing zoom by %f.", zoom_step - 1.0);
     zathura_document_set_scale(zathura->document, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
+      girara_debug("Setting zoom to 1.");
       zathura_document_set_scale(zathura->document, 1.0);
     } else {
+      girara_debug("Setting zoom to %f.", t / 100.0);
       zathura_document_set_scale(zathura->document, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
-     const double dy = (event != NULL) ? event->y : 1.0;
-     zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
+    const double dy = (event != NULL) ? event->y : 1.0;
+    girara_debug("Increasing zoom by %f.", zoom_step * dy - 1.0);
+    zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
   } else {
+    girara_debug("Setting zoom to 1.");
     zathura_document_set_scale(zathura->document, 1.0);
   }
 
@@ -1390,9 +1409,11 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   const double new_zoom = zathura_document_get_scale(zathura->document);
   if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
+    girara_debug("New and old zoom level are too close: %f vs. %f, diff = %f", new_zoom, old_zoom, fabs(new_zoom - old_zoom));
     return false;
   }
 
+  girara_debug("Re-rendering with new zoom level %f.", new_zoom);
   render_all(zathura);
   refresh_view(zathura);
 
