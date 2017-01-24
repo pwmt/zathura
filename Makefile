@@ -47,7 +47,6 @@ endif
 OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})
 OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o})
 OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o})
-HEADER        = $(wildcard ${PROJECT}/*.h)
 HEADERINST    = $(addprefix ${PROJECT}/,version.h document.h macros.h page.h types.h plugin-api.h links.h)
 
 all: options ${PROJECT} po build-manpages
