@@ -68,6 +68,8 @@ options:
 	@echo "DFLAGS  = ${DFLAGS}"
 	@echo "CC      = ${CC}"
 
+# generated files
+
 ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 	$(QUIET)sed -e 's/ZVMAJOR/${ZATHURA_VERSION_MAJOR}/' \
 		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
@@ -90,10 +92,12 @@ ${PROJECT}/css-definitions.c: data/zathura.css_t
 	$(QUIET)echo ';' >> $@.tmp
 	$(QUIET)mv $@.tmp $@
 
-# release build
+# common dependencies
 
-${OBJECTS}: config.mk ${PROJECT}/version.h \
+${OBJECTS} ${OBJECTS_DEBUG} ${OBJECTS_GCOV}: config.mk ${PROJECT}/version.h \
 	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
+
+# rlease build
 
 ${BUILDDIR_RELEASE}/%.o: %.c
 	$(call colorecho,CC,$<)
@@ -116,9 +120,6 @@ run: release
 
 # debug build
 
-${OBJECTS_DEBUG}: config.mk ${PROJECT}/version.h \
-	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
-
 ${BUILDDIR_DEBUG}/%.o: %.c
 	$(call colorecho,CC,$<)
 	@mkdir -p ${DEPENDDIR}/$(dir $@)
@@ -138,9 +139,6 @@ run-debug: debug
 	$(QUIET)./${BUILDDIR_DEBUG}/${BINDIR}/${PROJECT}
 
 # gcov build
-
-${OBJECTS_GCOV}: config.mk ${PROJECT}/version.h \
-	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
 
 ${BUILDDIR_GCOV}/%.o: %.c
 	$(call colorecho,CC,$<)
