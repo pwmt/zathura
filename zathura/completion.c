@@ -56,8 +56,8 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   girara_setting_get(zathura->ui.session, "show-directories", &show_directories);
 
   /* read files */
-  char* name = NULL;
-  while ((name = (char*) g_dir_read_name(dir)) != NULL) {
+  const char* name = NULL;
+  while ((name = g_dir_read_name(dir)) != NULL) {
     char* e_name   = g_filename_display_name(name);
     if (e_name == NULL) {
       goto error_free;
