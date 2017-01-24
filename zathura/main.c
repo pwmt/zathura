@@ -132,6 +132,7 @@ main(int argc, char* argv[])
   gchar* loglevel       = NULL;
   gchar* password       = NULL;
   gchar* synctex_editor = NULL;
+#ifdef WITH_SYNCTEX
   gchar* synctex_fwd    = NULL;
   gchar* mode           = NULL;
   bool   forkback       = false;
