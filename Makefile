@@ -4,7 +4,10 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out ${PROJECT}/css-definitions.c, $(filter-out ${PROJECT}/dbus-interface-definitions.c, $(sort $(wildcard ${PROJECT}/*.c))))
+# source files
+OSOURCE    = $(sort $(wildcard ${PROJECT}/*.c) \
+						 ${PROJECT}/css-definitions.c \
+						 ${PROJECT}/dbus-interface-definitions.c)
 
 ifneq (${WITH_SQLITE},0)
 INCS     += $(SQLITE_INC)
@@ -41,15 +44,9 @@ ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 
-OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o}) \
-	${BUILDDIR_RELEASE}/${PROJECT}/css-definitions.o \
-	${BUILDDIR_RELEASE}/${PROJECT}/dbus-interface-definitions.o
-OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o}) \
-	${BUILDDIR_DEBUG}/${PROJECT}/css-definitions.o \
-	${BUILDDIR_DEBUG}/${PROJECT}/dbus-interface-definitions.o
-OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o}) \
-	${BUILDDIR_GCOV}/${PROJECT}/css-definitions.o \
-	${BUILDDIR_GCOV}/${PROJECT}/dbus-interface-definitions.o
+OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})
+OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o})
+OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o})
 HEADER        = $(wildcard ${PROJECT}/*.h)
 HEADERINST    = $(addprefix ${PROJECT}/,version.h document.h macros.h page.h types.h plugin-api.h links.h)
 
