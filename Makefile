@@ -50,7 +50,7 @@ OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o}) \
 OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o}) \
 	${BUILDDIR_GCOV}/${PROJECT}/css-definitions.o \
 	${BUILDDIR_GCOV}/${PROJECT}/dbus-interface-definitions.o
-HEADER        = $(wildcard ${PROJECT}/*.h) $(wildcard synctex/*.h)
+HEADER        = $(wildcard ${PROJECT}/*.h)
 HEADERINST    = $(addprefix ${PROJECT}/,version.h document.h macros.h page.h types.h plugin-api.h links.h)
 
 all: options ${PROJECT} po build-manpages
