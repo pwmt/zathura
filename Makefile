@@ -5,16 +5,16 @@ include colors.mk
 include common.mk
 
 # source files
-OSOURCE    = $(sort $(wildcard ${PROJECT}/*.c) \
-						 ${PROJECT}/css-definitions.c)
+OSOURCE       = $(sort $(wildcard ${PROJECT}/*.c) \
+                ${PROJECT}/css-definitions.c)
+SOURCE_FILTER =
 
 ifneq (${WITH_SQLITE},0)
 INCS     += $(SQLITE_INC)
 LIBS     += $(SQLITE_LIB)
-SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE    = $(filter-out ${PROJECT}/database-sqlite.c,$(OSOURCE))
+SOURCE_FILTER += ${PROJECT}/database-sqlite.c
 endif
 
 ifneq ($(WITH_MAGIC),0)
@@ -50,6 +50,7 @@ CPPFLAGS += -DDBUSINTERFACEDIR=\"${DBUSINTERFACEDIR}\"
 endif
 endif
 
+SOURCE        = $(filter-out $(SOURCE_FILTER),$(OSOURCE))
 OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})
 OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o})
 OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o})
