@@ -6,8 +6,7 @@ include common.mk
 
 # source files
 OSOURCE    = $(sort $(wildcard ${PROJECT}/*.c) \
-						 ${PROJECT}/css-definitions.c \
-						 ${PROJECT}/dbus-interface-definitions.c)
+						 ${PROJECT}/css-definitions.c)
 
 ifneq (${WITH_SQLITE},0)
 INCS     += $(SQLITE_INC)
@@ -43,6 +42,13 @@ endif
 ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
+ifeq (,$(findstring -DDBUSINTERFACEDIR,${CPPFLAGS}))
+ifneq ($(WITH_LOCAL_DBUS_XML),0)
+CPPFLAGS += -DDBUSINTERFACEDIR=\"${PWD}/data\"
+else
+CPPFLAGS += -DDBUSINTERFACEDIR=\"${DBUSINTERFACEDIR}\"
+endif
+endif
 
 OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})
 OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o})
@@ -77,13 +83,6 @@ ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 		-e 's/ZVAPI/${ZATHURA_API_VERSION}/' \
 		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > ${PROJECT}/version.h.tmp
 	$(QUIET)mv ${PROJECT}/version.h.tmp ${PROJECT}/version.h
-
-${PROJECT}/dbus-interface-definitions.c: data/org.pwmt.zathura.xml
-	$(QUIET)echo '#include "dbus-interface-definitions.h"' > $@.tmp
-	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> $@.tmp
-	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> $@.tmp
-	$(QUIET)echo ';' >> $@.tmp
-	$(QUIET)mv $@.tmp $@
 
 ${PROJECT}/css-definitions.c: data/zathura.css_t
 	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
@@ -174,8 +173,6 @@ clean:
 		${PROJECT}.pc \
 		${PROJECT}/version.h \
 		${PROJECT}/version.h.tmp \
-		${PROJECT}/dbus-interface-definitions.c \
-		${PROJECT}/dbus-interface-definitions.c.tmp \
 		${PROJECT}/css-definitions.c \
 		${PROJECT}/css-definitions.c.tmp \
 		$(PROJECT).info \
