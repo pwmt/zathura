@@ -115,6 +115,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   return res;
 
 error_free:
+  g_dir_close(dir);
   girara_list_free(res);
   return NULL;
 }
