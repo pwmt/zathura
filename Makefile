@@ -44,7 +44,8 @@ CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 ifeq (,$(findstring -DDBUSINTERFACEDIR,${CPPFLAGS}))
 ifneq ($(WITH_LOCAL_DBUS_XML),0)
-CPPFLAGS += -DDBUSINTERFACEDIR=\"${PWD}/data\"
+CDIR     := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+CPPFLAGS += -DDBUSINTERFACEDIR=\"$(CDIR)/data\"
 else
 CPPFLAGS += -DDBUSINTERFACEDIR=\"${DBUSINTERFACEDIR}\"
 endif
