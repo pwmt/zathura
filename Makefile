@@ -153,7 +153,7 @@ ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}: ${OBJECTS_GCOV}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_GCOV}/${BINDIR}
 	$(QUIET)${CC} ${LDFLAGS} ${GCOV_CFLAGS} ${GCOV_LDFLAGS} \
-		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS_GCOv} ${LIBS}
+		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS_GCOV} ${LIBS}
 
 gcov: options ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 	$(QUIET)${MAKE} -C tests run-gcov
