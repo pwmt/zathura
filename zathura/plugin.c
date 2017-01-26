@@ -16,12 +16,10 @@
  */
 struct zathura_plugin_s {
   girara_list_t* content_types; /**< List of supported content types */
-  zathura_plugin_register_function_t register_function; /**< Document open function */
   zathura_plugin_functions_t functions; /**< Document functions */
   GModule* handle; /**< DLL handle */
-  char* name; /**< Name of the plugin */
   char* path; /**< Path to the plugin */
-  zathura_plugin_version_t version; /**< Version information */
+  const zathura_plugin_definition_t* definition;
 };
 
 /**
@@ -41,11 +39,7 @@ struct zathura_plugin_manager_s {
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
 };
 
-typedef void (*zathura_plugin_register_service_t)(zathura_plugin_t*);
-typedef unsigned int (*zathura_plugin_api_version_t)(void);
-typedef unsigned int (*zathura_plugin_abi_version_t)(void);
-typedef unsigned int (*zathura_plugin_version_function_t)(void);
-
+static void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
 static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin);
 static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin);
 static void zathura_plugin_free(zathura_plugin_t* plugin);
@@ -141,45 +135,38 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
     }
 
     /* resolve symbols and check API and ABI version*/
-    zathura_plugin_api_version_t api_version = NULL;
-    if (g_module_symbol(handle, PLUGIN_API_VERSION_FUNCTION, (gpointer*) &api_version) == FALSE ||
-        api_version == NULL) {
-      girara_error("could not find '%s' function in plugin %s", PLUGIN_API_VERSION_FUNCTION, path);
+    const zathura_plugin_definition_t* plugin_definition = NULL;
+    if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**) &plugin_definition) == FALSE ||
+        plugin_definition == NULL) {
+      girara_error("could not find '%s' in plugin %s - is not a plugin or needs to be rebuilt", G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), path);
       g_free(path);
       g_module_close(handle);
       continue;
     }
 
-    if (api_version() != ZATHURA_API_VERSION) {
-      girara_error("plugin %s has been built againt zathura with a different API version (plugin: %d, zathura: %d)",
-                   path, api_version(), ZATHURA_API_VERSION);
+    /* check name */
+    if (plugin_definition->name == NULL) {
+      girara_error("plugin has no name");
       g_free(path);
+      g_free(plugin);
       g_module_close(handle);
       continue;
     }
 
-    zathura_plugin_abi_version_t abi_version = NULL;
-    if (g_module_symbol(handle, PLUGIN_ABI_VERSION_FUNCTION, (gpointer*) &abi_version) == FALSE ||
-        abi_version == NULL) {
-      girara_error("could not find '%s' function in plugin %s", PLUGIN_ABI_VERSION_FUNCTION, path);
+    /* check mime type */
+    if (plugin_definition->mime_types == NULL || plugin_definition->mime_types_size == 0) {
+      girara_error("plugin has no mime_types");
       g_free(path);
+      g_free(plugin);
       g_module_close(handle);
       continue;
     }
 
-    if (abi_version() != ZATHURA_ABI_VERSION) {
-      girara_error("plugin %s has been built againt zathura with a different ABI version (plugin: %d, zathura: %d)",
-                   path, abi_version(), ZATHURA_ABI_VERSION);
+    /* check register functions */
+    if (plugin_definition->register_function == NULL) {
+      girara_error("plugin has no document functions register function");
       g_free(path);
-      g_module_close(handle);
-      continue;
-    }
-
-    zathura_plugin_register_service_t register_service = NULL;
-    if (g_module_symbol(handle, PLUGIN_REGISTER_FUNCTION, (gpointer*) &register_service) == FALSE ||
-        register_service == NULL) {
-      girara_error("could not find '%s' function in plugin %s", PLUGIN_REGISTER_FUNCTION, path);
-      g_free(path);
+      g_free(plugin);
       g_module_close(handle);
       continue;
     }
@@ -192,22 +179,17 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       continue;
     }
 
+    plugin->definition = plugin_definition;
     plugin->content_types = girara_list_new2(g_free);
     plugin->handle = handle;
-
-    register_service(plugin);
-
-    /* register functions */
-    if (plugin->register_function == NULL) {
-      girara_error("plugin has no document functions register function");
-      g_free(path);
-      g_free(plugin);
-      g_module_close(handle);
-      continue;
-    }
-
-    plugin->register_function(&(plugin->functions));
     plugin->path = path;
+
+    // register mime types
+    for (size_t s = 0; s != plugin_definition->mime_types_size; ++s) {
+      zathura_plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
+    }
+    // register functions
+    plugin->definition->register_function(&(plugin->functions));
 
     bool ret = register_plugin(plugin_manager, plugin);
     if (ret == false) {
@@ -215,19 +197,9 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       zathura_plugin_free(plugin);
     } else {
       girara_debug("successfully loaded plugin %s", path);
-
-      zathura_plugin_version_function_t plugin_major = NULL, plugin_minor = NULL, plugin_rev = NULL;
-      g_module_symbol(handle, PLUGIN_VERSION_MAJOR_FUNCTION,    (gpointer*) &plugin_major);
-      g_module_symbol(handle, PLUGIN_VERSION_MINOR_FUNCTION,    (gpointer*) &plugin_minor);
-      g_module_symbol(handle, PLUGIN_VERSION_REVISION_FUNCTION, (gpointer*) &plugin_rev);
-      if (plugin_major != NULL && plugin_minor != NULL && plugin_rev != NULL) {
-        plugin->version.major = plugin_major();
-        plugin->version.minor = plugin_minor();
-        plugin->version.rev   = plugin_rev();
-        girara_debug("plugin '%s': version %u.%u.%u", path,
-                     plugin->version.major, plugin->version.minor,
-                     plugin->version.rev);
-      }
+      girara_debug("plugin '%s': version %u.%u.%u", path,
+                   plugin_definition->version.major, plugin_definition->version.minor,
+                   plugin_definition->version.rev);
     }
   }
   g_dir_close(dir);
@@ -289,7 +261,6 @@ register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plug
 {
   if (plugin == NULL
       || plugin->content_types == NULL
-      || plugin->register_function == NULL
       || plugin_manager == NULL
       || plugin_manager->plugins == NULL) {
     girara_error("plugin: could not register\n");
@@ -355,11 +326,7 @@ zathura_plugin_free(zathura_plugin_t* plugin)
   if (plugin == NULL) {
     return;
   }
-
-  if (plugin->name != NULL) {
-    g_free(plugin->name);
-  }
-
+ 
   if (plugin->path != NULL) {
     g_free(plugin->path);
   }
@@ -370,18 +337,7 @@ zathura_plugin_free(zathura_plugin_t* plugin)
   g_free(plugin);
 }
 
-/* plugin-api.h */
-void
-zathura_plugin_set_register_functions_function(zathura_plugin_t* plugin, zathura_plugin_register_function_t register_function)
-{
-  if (plugin == NULL || register_function == NULL) {
-    return;
-  }
-
-  plugin->register_function = register_function;
-}
-
-void
+static void
 zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
 {
   if (plugin == NULL || mime_type == NULL) {
@@ -401,19 +357,11 @@ zathura_plugin_get_functions(zathura_plugin_t* plugin)
   }
 }
 
-void
-zathura_plugin_set_name(zathura_plugin_t* plugin, const char* name)
-{
-  if (plugin != NULL && name != NULL) {
-    plugin->name = g_strdup(name);
-  }
-}
-
 const char*
 zathura_plugin_get_name(zathura_plugin_t* plugin)
 {
-  if (plugin != NULL) {
-    return plugin->name;
+  if (plugin != NULL && plugin->definition != NULL) {
+    return plugin->definition->name;
   } else {
     return NULL;
   }
@@ -432,8 +380,8 @@ zathura_plugin_get_path(zathura_plugin_t* plugin)
 zathura_plugin_version_t
 zathura_plugin_get_version(zathura_plugin_t* plugin)
 {
-  if (plugin != NULL) {
-    return plugin->version;
+  if (plugin != NULL && plugin->definition != NULL) {
+    return plugin->definition->version;
   }
 
   zathura_plugin_version_t version = { 0, 0, 0 };

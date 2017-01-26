@@ -9,7 +9,6 @@
 #include "version.h"
 
 typedef struct zathura_plugin_functions_s zathura_plugin_functions_t;
-
 /**
  * Functions register function
  *
@@ -17,31 +16,26 @@ typedef struct zathura_plugin_functions_s zathura_plugin_functions_t;
  */
 typedef void (*zathura_plugin_register_function_t)(zathura_plugin_functions_t* functions);
 
-/**
- * Sets the functions register function of the plugin
- *
- * @param plugin The plugin
- * @param register_function The register function that registers the document
- * functions
- */
-void zathura_plugin_set_register_functions_function(zathura_plugin_t* plugin,
-    zathura_plugin_register_function_t register_function);
+typedef struct zathura_plugin_version_s {
+  unsigned int major; /**< Major */
+  unsigned int minor; /**< Minor */
+  unsigned int rev; /**< Revision */
+} zathura_plugin_version_t;
 
-/**
- * Sets the name of the plugin
- *
- * @param plugin The plugin
- * @param name The name of the plugin
- */
-void zathura_plugin_set_name(zathura_plugin_t* plugin, const char* name);
+typedef struct zathura_plugin_definition_s
+{
+  const char* name;
+  const zathura_plugin_version_t version;
+  zathura_plugin_register_function_t register_function;
+  const size_t mime_types_size;
+  const char** mime_types;
+} zathura_plugin_definition_t;
 
-/**
- * Sets the functions register function of the plugin
- *
- * @param plugin The plugin
- * @param mime_type The mime type that should be added
- */
-void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
+#define JOIN(x, y) JOIN2(x, y)
+#define JOIN2(x, y) x ## _ ## y
+
+#define ZATHURA_PLUGIN_DEFINITION_SYMBOL \
+  JOIN(zathura_plugin, JOIN(ZATHURA_API_VERSION, ZATHURA_ABI_VERSION))
 
 /**
  * Register a plugin.
@@ -54,24 +48,15 @@ void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type
  * @param mimetypes a char array of mime types supported by the plugin
  */
 #define ZATHURA_PLUGIN_REGISTER(plugin_name, major, minor, rev, register_functions, mimetypes) \
-  unsigned int zathura_plugin_version_major(void) { return major; } \
-  unsigned int zathura_plugin_version_minor(void) { return minor; } \
-  unsigned int zathura_plugin_version_revision(void) { return rev; } \
-  unsigned int zathura_plugin_api_version(void) { return ZATHURA_API_VERSION; } \
-  unsigned int zathura_plugin_abi_version(void) { return ZATHURA_ABI_VERSION; } \
+  static const char* zathura_plugin_mime_types[] = mimetypes; \
   \
-  void zathura_plugin_register(zathura_plugin_t* plugin) \
-  { \
-    if (plugin == NULL) { \
-      return; \
-    } \
-    zathura_plugin_set_register_functions_function(plugin, register_functions); \
-    zathura_plugin_set_name(plugin, plugin_name); \
-    static const char* mime_types[] = mimetypes; \
-    for (size_t s = 0; s != sizeof(mime_types) / sizeof(const char*); ++s) { \
-      zathura_plugin_add_mimetype(plugin, mime_types[s]); \
-    } \
-  } \
+  const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = { \
+    .name = plugin_name, \
+    .version = { major, minor, rev }, \
+    .register_function = register_functions, \
+    .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]), \
+    .mime_types = zathura_plugin_mime_types \
+  }; \
 
 #define ZATHURA_PLUGIN_MIMETYPES(...) __VA_ARGS__
 
