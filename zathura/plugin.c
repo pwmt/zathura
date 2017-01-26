@@ -409,7 +409,7 @@ zathura_plugin_set_name(zathura_plugin_t* plugin, const char* name)
   }
 }
 
-char*
+const char*
 zathura_plugin_get_name(zathura_plugin_t* plugin)
 {
   if (plugin != NULL) {

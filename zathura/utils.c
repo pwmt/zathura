@@ -200,7 +200,7 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
   if (plugins != NULL) {
     GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin) {
-      char* name = zathura_plugin_get_name(plugin);
+      const char* name = zathura_plugin_get_name(plugin);
       zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
       g_string_append_printf(string, format,
                              (name == NULL) ? "-" : name,
