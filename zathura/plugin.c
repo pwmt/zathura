@@ -196,8 +196,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       girara_error("could not register plugin %s", path);
       zathura_plugin_free(plugin);
     } else {
-      girara_debug("successfully loaded plugin %s", path);
-      girara_debug("plugin '%s': version %u.%u.%u", path,
+      girara_debug("successfully loaded plugin from %s", path);
+      girara_debug("plugin %s: version %u.%u.%u", plugin_definition->name,
                    plugin_definition->version.major, plugin_definition->version.minor,
                    plugin_definition->version.rev);
     }
