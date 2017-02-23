@@ -198,6 +198,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "vertical-center",        &bool_value,  BOOLEAN, false, _("Vertically center pages"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "link-hadjust",           &bool_value,  BOOLEAN, false, _("Align link target to the left"), NULL, NULL);
   bool_value = true;
