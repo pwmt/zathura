@@ -1382,9 +1382,17 @@ position_set(zathura_t* zathura, double position_x, double position_y)
   double comppos_x, comppos_y;
   unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
 
+  bool vertical_center = false;
+  girara_setting_get(zathura->ui.session, "vertical-center", &vertical_center);
+
   /* xalign = 0.5: center horizontally (with the page, not the document) */
-  /* yalign = 0.0: align page an viewport edges at the top               */
-  page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+  if (vertical_center) {
+    /* yalign = 0.0: align page an viewport edges at the top               */
+    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+  } else {
+    /* yalign = 0.5: center vertically */
+    page_number_to_position(zathura->document, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
+  }
 
   /* automatic horizontal adjustment */
   zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);

@@ -943,6 +943,13 @@ En/Disables horizontally centered zooming.
 * Value type: Boolean
 * Default value: false
 
+vertical-center
+^^^^^^^^^^^
+Center the screen at the vertical midpoint of the page by default.
+
+* Value type: Boolean
+* Default value: false
+
 zoom-max
 ^^^^^^^^
 Defines the maximum percentage that the zoom level can be.
