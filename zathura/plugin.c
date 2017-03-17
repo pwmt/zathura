@@ -162,15 +162,6 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       continue;
     }
 
-    /* check register functions */
-    if (plugin_definition->register_function == NULL) {
-      girara_error("plugin has no document functions register function");
-      g_free(path);
-      g_free(plugin);
-      g_module_close(handle);
-      continue;
-    }
-
     plugin = g_try_malloc0(sizeof(zathura_plugin_t));
     if (plugin == NULL) {
       girara_error("Failed to allocate memory for plugin.");
@@ -180,6 +171,7 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
     }
 
     plugin->definition = plugin_definition;
+    plugin->functions = plugin_definition->functions;
     plugin->content_types = girara_list_new2(g_free);
     plugin->handle = handle;
     plugin->path = path;
@@ -189,7 +181,9 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       zathura_plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
     }
     // register functions
-    plugin->definition->register_function(&(plugin->functions));
+    if (plugin->definition->register_function != NULL) {
+      plugin->definition->register_function(&(plugin->functions));
+    }
 
     bool ret = register_plugin(plugin_manager, plugin);
     if (ret == false) {
