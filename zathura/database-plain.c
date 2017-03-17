@@ -246,10 +246,7 @@ error_free:
   g_free(priv->bookmark_path);
   priv->bookmark_path = NULL;
 
-  if (priv->bookmark_monitor != NULL) {
-    g_object_unref(priv->bookmark_monitor);
-    priv->bookmark_monitor = NULL;
-  }
+  g_clear_object(&priv->bookmark_monitor);
 
   if (priv->bookmarks != NULL) {
     g_key_file_free(priv->bookmarks);
@@ -260,10 +257,7 @@ error_free:
   g_free(priv->history_path);
   priv->history_path = NULL;
 
-  if (priv->history_monitor != NULL) {
-    g_object_unref(priv->history_monitor);
-    priv->history_monitor = NULL;
-  }
+  g_clear_object(&priv->history_monitor);
 
   if (priv->history != NULL) {
     g_key_file_free(priv->history);

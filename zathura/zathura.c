@@ -391,10 +391,7 @@ zathura_free(zathura_t* zathura)
 #endif
 
   /* stop D-Bus */
-  if (zathura->dbus != NULL) {
-    g_object_unref(zathura->dbus);
-    zathura->dbus = NULL;
-  }
+  g_clear_object(&zathura->dbus);
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
@@ -415,18 +412,11 @@ zathura_free(zathura_t* zathura)
   girara_list_free(zathura->bookmarks.bookmarks);
 
   /* database */
-  if (zathura->database != NULL) {
-    g_object_unref(G_OBJECT(zathura->database));
-  }
+  g_clear_object(&zathura->database);
 
   /* free print settings */
-  if (zathura->print.settings != NULL) {
-    g_object_unref(zathura->print.settings);
-  }
-
-  if (zathura->print.page_setup != NULL) {
-    g_object_unref(zathura->print.page_setup);
-  }
+  g_clear_object(&zathura->print.settings);
+  g_clear_object(&zathura->print.page_setup);
 
   /* free registered plugins */
   zathura_plugin_manager_free(zathura->plugins.manager);
@@ -1216,10 +1206,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* remove monitor */
   if (keep_monitor == false) {
-    if (zathura->file_monitor.monitor != NULL) {
-      g_object_unref(zathura->file_monitor.monitor);
-      zathura->file_monitor.monitor = NULL;
-    }
+    g_clear_object(&zathura->file_monitor.monitor);
 
     if (zathura->file_monitor.password != NULL) {
       g_free(zathura->file_monitor.password);
@@ -1245,8 +1232,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->jumplist.size = 0;
 
   /* release render thread */
-  g_object_unref(zathura->sync.render_thread);
-  zathura->sync.render_thread = NULL;
+  g_clear_object(&zathura->sync.render_thread);
 
   /* remove widgets */
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);

@@ -119,8 +119,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   document->uri         = g_strdup(uri);
   if (document->uri == NULL) {
     document->basename    = g_file_get_basename(file);
-  }
-  else {
+  } else {
     GFile *gf = g_file_new_for_uri(document->uri);
     document->basename = g_file_get_basename(gf);
     g_object_unref(gf);
