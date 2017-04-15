@@ -7,7 +7,7 @@ Requirements
 ------------
 gtk3 (>= 3.6)
 glib (>= 2.32)
-girara (>= 0.2.4)
+girara (>= 0.2.7)
 sqlite3 (optional, >= 3.5.9)
 check (for tests)
 intltool
