@@ -54,7 +54,7 @@ struct _ZathuraDatabaseInterface
   girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max);
 };
 
-GType zathura_database_get_type(void);
+GType zathura_database_get_type(void) G_GNUC_CONST;
 
 /**
  * Add or update bookmark in the database.

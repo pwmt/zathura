@@ -48,7 +48,7 @@ struct zathura_filemonitor_class_s
  *
  * @return the type
  */
-GType zathura_filemonitor_get_type(void);
+GType zathura_filemonitor_get_type(void) G_GNUC_CONST;
 
 /**
  * Type of file monitor.
