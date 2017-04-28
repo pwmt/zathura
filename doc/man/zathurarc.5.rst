@@ -370,7 +370,7 @@ OPTIONS
 
 girara
 ------
-This section describes settings concerning the behaviour of libgirara and
+This section describes settings concerning the behaviour of girara and
 zathura. The settings described here can be changed with ``set``.
 
 n-completion-items
@@ -444,7 +444,7 @@ Defines the default background color
 
 exec-command
 ^^^^^^^^^^^^
-Defines a command the should be prepanded to any command run with exec.
+Defines a command the should be prepended to any command run with exec.
 
 * Value type: String
 * Default value:
@@ -944,7 +944,7 @@ En/Disables horizontally centered zooming.
 * Default value: false
 
 vertical-center
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 Center the screen at the vertical midpoint of the page by default.
 
 * Value type: Boolean
