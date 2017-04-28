@@ -874,7 +874,7 @@ Defines if scrolling by half or full pages stops at page boundaries.
 
 smooth-scroll
 ^^^^^^^^^^^^^
-Defines if scrolling via touchpad should be smooth(only available with gtk >= 3.4).
+Defines if scrolling via touchpad should be smooth.
 
 * Value type: Boolean
 * Default value: false
