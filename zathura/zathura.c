@@ -880,6 +880,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
       type = ZATHURA_FILEMONITOR_SIGNAL;
     }
 #endif
+    g_free(filemonitor_backend);
 
     zathura->file_monitor.monitor = zathura_filemonitor_new(file_path, type);
     if (zathura->file_monitor.monitor == NULL) {
