@@ -766,7 +766,7 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
   static const char SQL_HISTORY_GET[] =
     "SELECT file FROM fileinfo ORDER BY time DESC LIMIT ?";
   static const char SQL_HISTORY_GET_WITH_BASEPATH[] =
-    "SELECT file FROM fileinfo WHERE file LIKE '?%' ORDER BY time DESC LIMIT ?";
+    "SELECT file FROM fileinfo WHERE file LIKE ? || '%' ORDER BY time DESC LIMIT ?";
 
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   sqlite3_stmt* stmt = prepare_statement(priv->session, basepath == NULL ? SQL_HISTORY_GET : SQL_HISTORY_GET_WITH_BASEPATH);
