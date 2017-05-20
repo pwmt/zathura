@@ -91,6 +91,7 @@ argument which can take one of the following values:
 
 * normal (default)
 * fullscreen
+* presentation
 * index
 
 The brackets around the value are mandatory.
