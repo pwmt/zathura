@@ -421,7 +421,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   if (priv->surface != NULL || priv->thumbnail != NULL) {
     cairo_save(cairo);
 
-    unsigned int rotation = zathura_document_get_rotation(document);
+    const unsigned int rotation = zathura_document_get_rotation(document);
     switch (rotation) {
       case 90:
         cairo_translate(cairo, page_width, 0);
