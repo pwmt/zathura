@@ -1281,6 +1281,12 @@ page_set(zathura_t* zathura, unsigned int page_id)
 
   zathura_document_set_current_page_number(zathura->document, page_id);
 
+  bool continuous_hist_save = false;
+  girara_setting_get(zathura->ui.session, "continuous-hist-save", &continuous_hist_save);
+  if (continuous_hist_save) {
+    save_fileinfo_to_db(zathura);
+  }
+
   /* negative position means auto */
   return position_set(zathura, -1, -1);
 

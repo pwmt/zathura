@@ -652,6 +652,14 @@ Defines if the number of pages per row should be honored when advancing a page.
 * Value type: Boolean
 * Default value: false
 
+continuous-hist-save
+^^^^^^^^^^^^^^^^^^^^
+Tells zathura whether to save document history at each page change or only when
+closing a document.
+
+* Value type: Boolean
+* Default value: false
+
 database
 ^^^^^^^^
 Defines the database backend to use for bookmarks and input history. Possible
