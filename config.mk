@@ -32,6 +32,9 @@ GTK_PKG_CONFIG_NAME = gtk+-3.0
 # pkg-config binary
 PKG_CONFIG ?= pkg-config
 
+# glib-compile-resources
+GLIB_COMPILE_RESOURCES ?= glib-compile-resources
+
 # database
 # To disable support for the sqlite backend set WITH_SQLITE to 0.
 WITH_SQLITE ?= $(shell (${PKG_CONFIG} --atleast-version=3.5.9 sqlite3 && echo 1) || echo 0)

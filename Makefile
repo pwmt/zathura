@@ -85,16 +85,17 @@ ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > ${PROJECT}/version.h.tmp
 	$(QUIET)mv ${PROJECT}/version.h.tmp ${PROJECT}/version.h
 
-${PROJECT}/css-definitions.c: data/zathura.css_t
-	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
-	$(QUIET)echo 'const char* CSS_TEMPLATE_INDEX =' >> $@.tmp
-	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' $< >> $@.tmp
-	$(QUIET)echo ';' >> $@.tmp
-	$(QUIET)mv $@.tmp $@
+${PROJECT}/css-definitions.%: data/zathura-css.gresource.xml config.mk
+	$(call colorecho,GEN,$@)
+	@mkdir -p ${DEPENDDIR}/$(dir $@)
+	$(QUIET)$(GLIB_COMPILE_RESOURCES) --generate --c-name=zathura_css --internal \
+		--dependency-file=$(DEPENDDIR)/$@.dep \
+		--sourcedir=data --target=$@ data/zathura-css.gresource.xml
 
 # common dependencies
 
-${OBJECTS} ${OBJECTS_DEBUG} ${OBJECTS_GCOV}: config.mk ${PROJECT}/version.h \
+${OBJECTS} ${OBJECTS_DEBUG} ${OBJECTS_GCOV}: config.mk \
+	${PROJECT}/version.h ${PROJECT}/css-definitions.h \
 	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
 
 # rlease build

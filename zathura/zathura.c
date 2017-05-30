@@ -251,10 +251,17 @@ init_css(zathura_t* zathura)
     g_free(color);
   }
 
-  char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate),
-                              CSS_TEMPLATE_INDEX);
-  girara_template_set_base(csstemplate, css);
-  g_free(css);
+  GResource* css_resource = zathura_css_get_resource();
+  GBytes* css_data = g_resource_lookup_data(css_resource,
+                                            "/org/pwmt/zathura/CSS/zathura.css_t",
+                                            G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
+  if (css_data != NULL) {
+    char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate),
+                                g_bytes_get_data(css_data, NULL));
+    girara_template_set_base(csstemplate, css);
+    g_free(css);
+    g_bytes_unref(css_data);
+  }
 }
 
 static void
