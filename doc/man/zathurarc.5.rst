@@ -226,6 +226,10 @@ The following shortcut functions can be mapped:
 
   Display link target.
 
+* ``exec``:
+
+  Execute an external command.
+
 * ``focus_inputbar``
 
   Focus inputbar.
