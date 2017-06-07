@@ -1419,3 +1419,40 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   return false;
 }
+
+bool
+sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (argument == NULL || argument->data == NULL) {
+    return false;
+  }
+
+  if (zathura->document != NULL) {
+    const char* path = zathura_document_get_path(zathura->document);
+
+    girara_argument_t new_argument = *argument;
+
+    char* r = girara_replace_substring(argument->data, "$FILE", path);
+    if (r == NULL) {
+      return false;
+    }
+
+    char* s = girara_replace_substring(r, "%", path);
+    g_free(r);
+
+    if (s == NULL) {
+      return false;
+    }
+
+    new_argument.data = s;
+    const bool ret = girara_sc_exec(session, &new_argument, event, t);
+    g_free(s);
+    return ret;
+  }
+
+  return girara_sc_exec(session, argument, event, t);
+}

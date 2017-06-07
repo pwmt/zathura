@@ -467,6 +467,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "bisect",            sc_bisect);
   girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
   girara_shortcut_mapping_add(gsession, "display_link",      sc_display_link);
+  girara_shortcut_mapping_add(gsession, "exec",              sc_exec);
   girara_shortcut_mapping_add(gsession, "focus_inputbar",    sc_focus_inputbar);
   girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
   girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
