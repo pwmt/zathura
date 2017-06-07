@@ -85,7 +85,8 @@ cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  document_draw_search_results(zathura, !(*(bool*) value));
+  bool* bvalue = value;
+  document_draw_search_results(zathura, !*bvalue);
   render_all(zathura);
 }
 
@@ -378,8 +379,7 @@ config_load_default(zathura_t* zathura)
   DEFAULT_MOUSE_EVENTS(FULLSCREEN)
 
   /* Index mode */
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Tab,       NULL, sc_toggle_index,        INDEX,        0,            NULL);
-
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Tab,         NULL, sc_toggle_index,        INDEX,        0,            NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_k,           NULL, sc_navigate_index,      INDEX,        UP,           NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_j,           NULL, sc_navigate_index,      INDEX,        DOWN,         NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_h,           NULL, sc_navigate_index,      INDEX,        COLLAPSE,     NULL);
