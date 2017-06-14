@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2017-01-05 15:52+0100\n"
+"POT-Creation-Date: 2017-06-14 21:53+0200\n"
 "PO-Revision-Date: 2015-10-15 23:07+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/zathura/"
@@ -43,8 +43,8 @@ msgstr ""
 #: ../zathura/commands.c:152 ../zathura/commands.c:268
 #: ../zathura/commands.c:298 ../zathura/commands.c:324
 #: ../zathura/commands.c:423 ../zathura/commands.c:550
-#: ../zathura/shortcuts.c:413 ../zathura/shortcuts.c:1223
-#: ../zathura/shortcuts.c:1258 ../zathura/shortcuts.c:1285
+#: ../zathura/shortcuts.c:413 ../zathura/shortcuts.c:1222
+#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
 msgid "No document opened."
 msgstr "Neniu dokumento malfermita."
 
@@ -178,312 +178,320 @@ msgstr ""
 msgid "Argument must be a number."
 msgstr "Argumento devas esti nombro."
 
-#: ../zathura/completion.c:285
+#: ../zathura/completion.c:283
 #, c-format
 msgid "Page %d"
 msgstr "Paĝo %d"
 
-#: ../zathura/completion.c:328
+#: ../zathura/completion.c:326
 msgid "Attachments"
 msgstr "Konservu kunsendaĵojn"
 
 #. add images
-#: ../zathura/completion.c:359
+#: ../zathura/completion.c:357
 msgid "Images"
 msgstr "Bildoj"
 
 #. zathura settings
-#: ../zathura/config.c:144
+#: ../zathura/config.c:145
 msgid "Database backend"
 msgstr ""
 
-#: ../zathura/config.c:145
+#: ../zathura/config.c:146
 msgid "File monitor backend"
 msgstr ""
 
-#: ../zathura/config.c:147
+#: ../zathura/config.c:148
 msgid "Zoom step"
 msgstr "Zompaŝo"
 
-#: ../zathura/config.c:149
+#: ../zathura/config.c:150
 msgid "Padding between pages"
 msgstr "Interpaĝa plenigo"
 
-#: ../zathura/config.c:151
+#: ../zathura/config.c:152
 msgid "Number of pages per row"
 msgstr "Nombro da paĝoj po vico"
 
-#: ../zathura/config.c:153
+#: ../zathura/config.c:154
 msgid "Column of the first page"
 msgstr ""
 
-#: ../zathura/config.c:155
+#: ../zathura/config.c:156
 msgid "Scroll step"
 msgstr "Rulumpaŝo"
 
-#: ../zathura/config.c:157
+#: ../zathura/config.c:158
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: ../zathura/config.c:159
+#: ../zathura/config.c:160
 msgid "Full page scroll overlap"
 msgstr ""
 
-#: ../zathura/config.c:161
+#: ../zathura/config.c:162
 msgid "Zoom minimum"
 msgstr "Mimimuma zomo"
 
-#: ../zathura/config.c:163
+#: ../zathura/config.c:164
 msgid "Zoom maximum"
 msgstr "Maksimuma zomo"
 
-#: ../zathura/config.c:165
+#: ../zathura/config.c:166
 msgid "Maximum number of pages to keep in the cache"
 msgstr ""
 
-#: ../zathura/config.c:167
+#: ../zathura/config.c:168
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
 
-#: ../zathura/config.c:169
+#: ../zathura/config.c:170
 msgid "Number of positions to remember in the jumplist"
 msgstr ""
 
-#: ../zathura/config.c:171
+#: ../zathura/config.c:172
 msgid "Recoloring (dark color)"
 msgstr "Rekolorigo (malhela koloro)"
 
-#: ../zathura/config.c:172
+#: ../zathura/config.c:173
 msgid "Recoloring (light color)"
 msgstr "Rekolorigo (hela koloro)"
 
-#: ../zathura/config.c:173
+#: ../zathura/config.c:174
 msgid "Color for highlighting"
 msgstr "Koloro por fonlumo"
 
-#: ../zathura/config.c:175
+#: ../zathura/config.c:176
 msgid "Color for highlighting (active)"
 msgstr "Koloro por fonlumo (aktiva)"
 
-#: ../zathura/config.c:177
+#: ../zathura/config.c:178
 msgid "'Loading ...' background color"
 msgstr ""
 
-#: ../zathura/config.c:179
+#: ../zathura/config.c:180
 msgid "'Loading ...' foreground color"
 msgstr ""
 
-#: ../zathura/config.c:182
+#: ../zathura/config.c:183
 msgid "Index mode foreground color"
 msgstr ""
 
-#: ../zathura/config.c:183
+#: ../zathura/config.c:184
 msgid "Index mode background color"
 msgstr ""
 
-#: ../zathura/config.c:184
+#: ../zathura/config.c:185
 msgid "Index mode foreground color (active element)"
 msgstr ""
 
-#: ../zathura/config.c:185
+#: ../zathura/config.c:186
 msgid "Index mode background color (active element)"
 msgstr ""
 
-#: ../zathura/config.c:188
+#: ../zathura/config.c:189
 msgid "Recolor pages"
 msgstr "Rekoloru paĝojn"
 
-#: ../zathura/config.c:190
+#: ../zathura/config.c:191
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 
-#: ../zathura/config.c:192
+#: ../zathura/config.c:193
 msgid "When recoloring keep original image colors"
 msgstr ""
 
-#: ../zathura/config.c:194
+#: ../zathura/config.c:195
 msgid "Wrap scrolling"
 msgstr "Ĉirkaŭflua rulumado"
 
-#: ../zathura/config.c:196
+#: ../zathura/config.c:197
 msgid "Page aware scrolling"
 msgstr ""
 
-#: ../zathura/config.c:198
+#: ../zathura/config.c:199
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: ../zathura/config.c:200
+#: ../zathura/config.c:201
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: ../zathura/config.c:202
+#: ../zathura/config.c:203
+msgid "Vertically center pages"
+msgstr ""
+
+#: ../zathura/config.c:205
 msgid "Align link target to the left"
 msgstr ""
 
-#: ../zathura/config.c:204
+#: ../zathura/config.c:207
 msgid "Let zoom be changed when following links"
 msgstr ""
 
-#: ../zathura/config.c:206
+#: ../zathura/config.c:209
 msgid "Center result horizontally"
 msgstr ""
 
-#: ../zathura/config.c:208
+#: ../zathura/config.c:211
 msgid "Transparency for highlighting"
 msgstr "Travidebleco por fonlumo"
 
-#: ../zathura/config.c:210
+#: ../zathura/config.c:213
 msgid "Render 'Loading ...'"
 msgstr "Bildigu 'Ŝargado ...'"
 
-#: ../zathura/config.c:211
+#: ../zathura/config.c:214
 msgid "Adjust to when opening file"
 msgstr "Adaptaĵo ĉe malfermo de dosiero"
 
-#: ../zathura/config.c:213
+#: ../zathura/config.c:216
 msgid "Show hidden files and directories"
 msgstr "Montru kaŝitajn dosierojn kaj -ujojn"
 
-#: ../zathura/config.c:215
+#: ../zathura/config.c:218
 msgid "Show directories"
 msgstr "Montru dosierujojn"
 
-#: ../zathura/config.c:217
+#: ../zathura/config.c:220
 msgid "Show recent files"
 msgstr ""
 
-#: ../zathura/config.c:219
+#: ../zathura/config.c:222
 msgid "Always open on first page"
 msgstr "Ĉiam malfermu ĉe unua paĝo"
 
-#: ../zathura/config.c:221
+#: ../zathura/config.c:224
 msgid "Highlight search results"
 msgstr ""
 
-#: ../zathura/config.c:224
+#: ../zathura/config.c:227
 msgid "Enable incremental search"
 msgstr ""
 
-#: ../zathura/config.c:226
+#: ../zathura/config.c:229
 msgid "Clear search results on abort"
 msgstr ""
 
-#: ../zathura/config.c:228
+#: ../zathura/config.c:231
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: ../zathura/config.c:230
+#: ../zathura/config.c:233
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr ""
 
-#: ../zathura/config.c:232
+#: ../zathura/config.c:235
 msgid "Display the page number in the window title"
 msgstr ""
 
-#: ../zathura/config.c:234
+#: ../zathura/config.c:237
 msgid "Use basename of the file in the statusbar"
 msgstr ""
 
-#: ../zathura/config.c:236
+#: ../zathura/config.c:239
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
-#: ../zathura/config.c:238
+#: ../zathura/config.c:241
 msgid "Enable synctex support"
 msgstr ""
 
-#: ../zathura/config.c:240
+#: ../zathura/config.c:243
 msgid "Synctex editor command"
 msgstr ""
 
-#: ../zathura/config.c:242
+#: ../zathura/config.c:245
 msgid "Enable D-Bus service"
 msgstr ""
 
-#: ../zathura/config.c:244
+#: ../zathura/config.c:247
+msgid "Save history at each page change"
+msgstr ""
+
+#: ../zathura/config.c:249
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: ../zathura/config.c:246
+#: ../zathura/config.c:251
 msgid "Enable notification after selecting text"
 msgstr ""
 
 #. define default inputbar commands
-#: ../zathura/config.c:436
+#: ../zathura/config.c:440
 msgid "Add a bookmark"
 msgstr "Aldonu paĝosignon"
 
-#: ../zathura/config.c:437
+#: ../zathura/config.c:441
 msgid "Delete a bookmark"
 msgstr "Forigu paĝosignon"
 
-#: ../zathura/config.c:438
+#: ../zathura/config.c:442
 msgid "List all bookmarks"
 msgstr "Listigu ĉiujn paĝosignojn"
 
-#: ../zathura/config.c:439
+#: ../zathura/config.c:443
 msgid "Close current file"
 msgstr "Fermu nunan dosieron"
 
-#: ../zathura/config.c:440
+#: ../zathura/config.c:444
 msgid "Show file information"
 msgstr "Montru dosiera informacio"
 
-#: ../zathura/config.c:441 ../zathura/config.c:442
+#: ../zathura/config.c:445 ../zathura/config.c:446
 msgid "Execute a command"
 msgstr ""
 
 #. like vim
-#: ../zathura/config.c:443
+#: ../zathura/config.c:447
 msgid "Show help"
 msgstr "Montru helpon"
 
-#: ../zathura/config.c:444
+#: ../zathura/config.c:448
 msgid "Open document"
 msgstr "Malfermu dokumenton"
 
-#: ../zathura/config.c:445
+#: ../zathura/config.c:449
 msgid "Close zathura"
 msgstr "Fermu zathura"
 
-#: ../zathura/config.c:446
+#: ../zathura/config.c:450
 msgid "Print document"
 msgstr "Presu dokumenton"
 
-#: ../zathura/config.c:447
+#: ../zathura/config.c:451
 msgid "Save document"
 msgstr "Konservu dokumenton"
 
-#: ../zathura/config.c:448
+#: ../zathura/config.c:452
 msgid "Save document (and force overwriting)"
 msgstr "Konservu dokumenton (deviga anstataŭo)"
 
-#: ../zathura/config.c:449
+#: ../zathura/config.c:453
 msgid "Save attachments"
 msgstr "Konservu kunsendaĵojn"
 
-#: ../zathura/config.c:450
+#: ../zathura/config.c:454
 msgid "Set page offset"
 msgstr "Agordu paĝdelokado"
 
-#: ../zathura/config.c:451
+#: ../zathura/config.c:455
 msgid "Mark current location within the document"
 msgstr ""
 
-#: ../zathura/config.c:452
+#: ../zathura/config.c:456
 msgid "Delete the specified marks"
 msgstr ""
 
-#: ../zathura/config.c:453
+#: ../zathura/config.c:457
 msgid "Don't highlight current search results"
 msgstr ""
 
-#: ../zathura/config.c:454
+#: ../zathura/config.c:458
 msgid "Highlight current search results"
 msgstr ""
 
-#: ../zathura/config.c:455
+#: ../zathura/config.c:459
 msgid "Show version information"
 msgstr ""
 
@@ -505,59 +513,59 @@ msgstr ""
 msgid "Link: Invalid"
 msgstr ""
 
-#: ../zathura/main.c:145
+#: ../zathura/main.c:146
 msgid "Reparents to window specified by xid (X11)"
 msgstr ""
 
-#: ../zathura/main.c:146
+#: ../zathura/main.c:147
 msgid "Path to the config directory"
 msgstr "Vojo al la agorda dosierujo"
 
-#: ../zathura/main.c:147
+#: ../zathura/main.c:148
 msgid "Path to the data directory"
 msgstr "Vojo al la datuma dosierujo"
 
-#: ../zathura/main.c:148
+#: ../zathura/main.c:149
 msgid "Path to the cache directory"
 msgstr ""
 
-#: ../zathura/main.c:149
+#: ../zathura/main.c:150
 msgid "Path to the directories containing plugins"
 msgstr "Vojoj al dosierujoj enhavantaj kromaĵojn"
 
-#: ../zathura/main.c:150
+#: ../zathura/main.c:151
 msgid "Fork into the background"
 msgstr ""
 
-#: ../zathura/main.c:151
+#: ../zathura/main.c:152
 msgid "Document password"
 msgstr ""
 
-#: ../zathura/main.c:152
+#: ../zathura/main.c:153
 msgid "Page number to go to"
 msgstr ""
 
-#: ../zathura/main.c:153
+#: ../zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
 msgstr "Nivelo de ĵurnalo (debug, info, warning, error)"
 
-#: ../zathura/main.c:154
+#: ../zathura/main.c:155
 msgid "Print version information"
 msgstr "Montru dosiera informacio"
 
-#: ../zathura/main.c:156
+#: ../zathura/main.c:157
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr ""
 
-#: ../zathura/main.c:157
+#: ../zathura/main.c:158
 msgid "Move to given synctex position"
 msgstr ""
 
-#: ../zathura/main.c:158
+#: ../zathura/main.c:159
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: ../zathura/main.c:160
+#: ../zathura/main.c:161
 msgid "Start in a non-default mode"
 msgstr ""
 
@@ -573,7 +581,7 @@ msgstr "Kopiu bildon"
 msgid "Save image as"
 msgstr "Savi bildojn kiel"
 
-#: ../zathura/print.c:64 ../zathura/print.c:231
+#: ../zathura/print.c:64 ../zathura/print.c:227
 #, c-format
 msgid "Printing failed: %s"
 msgstr ""
@@ -583,30 +591,30 @@ msgstr ""
 msgid "Invalid adjust mode: %d"
 msgstr ""
 
-#: ../zathura/shortcuts.c:1133
+#: ../zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
 msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
 
-#: ../zathura/zathura.c:216 ../zathura/zathura.c:1274
+#: ../zathura/zathura.c:216 ../zathura/zathura.c:1268
 msgid "[No name]"
 msgstr "[Neniu nomo]"
 
-#: ../zathura/zathura.c:648
+#: ../zathura/zathura.c:645
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: ../zathura/zathura.c:664
+#: ../zathura/zathura.c:661
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: ../zathura/zathura.c:753
+#: ../zathura/zathura.c:750
 msgid "Enter password:"
 msgstr ""
 
-#: ../zathura/zathura.c:788
+#: ../zathura/zathura.c:785
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: ../zathura/zathura.c:798
+#: ../zathura/zathura.c:795
 msgid "Document does not contain any pages"
 msgstr ""
