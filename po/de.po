@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2017-06-14 21:53+0200\n"
-"PO-Revision-Date: 2017-01-05 15:55+0100\n"
+"PO-Revision-Date: 2017-06-14 22:04+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/zathura/language/"
 "de/)\n"
@@ -323,7 +323,7 @@ msgstr "Horizontal zentrierter Zoom"
 
 #: ../zathura/config.c:203
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Zentriere Seiten vertikal"
 
 #: ../zathura/config.c:205
 msgid "Align link target to the left"
@@ -411,7 +411,7 @@ msgstr "D-Bus-Dienst aktivieren"
 
 #: ../zathura/config.c:247
 msgid "Save history at each page change"
-msgstr ""
+msgstr "Speichere Verlauf bei jedem Seitenwechsel"
 
 #: ../zathura/config.c:249
 msgid "The clipboard into which mouse-selected data will be written"
