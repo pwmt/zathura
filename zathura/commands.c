@@ -407,6 +407,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   }
 
   arg->n = FORWARD;
+  arg->data = (void*) input;
   sc_search(session, arg, NULL, 0);
   g_free(arg);
 

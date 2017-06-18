@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
-"POT-Creation-Date: 2017-06-14 21:53+0200\n"
+"POT-Creation-Date: 2017-06-25 21:55+0200\n"
 "PO-Revision-Date: 2017-06-14 22:04+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/zathura/language/"
@@ -43,14 +43,14 @@ msgstr "Der gewählte Text wurde in die Zwischenablage %s kopiert: %s"
 #: ../zathura/commands.c:36 ../zathura/commands.c:76 ../zathura/commands.c:103
 #: ../zathura/commands.c:152 ../zathura/commands.c:268
 #: ../zathura/commands.c:298 ../zathura/commands.c:324
-#: ../zathura/commands.c:423 ../zathura/commands.c:550
-#: ../zathura/shortcuts.c:413 ../zathura/shortcuts.c:1222
-#: ../zathura/shortcuts.c:1257 ../zathura/shortcuts.c:1284
+#: ../zathura/commands.c:424 ../zathura/commands.c:551
+#: ../zathura/shortcuts.c:413 ../zathura/shortcuts.c:1225
+#: ../zathura/shortcuts.c:1260 ../zathura/shortcuts.c:1287
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
 #: ../zathura/commands.c:42 ../zathura/commands.c:82 ../zathura/commands.c:109
-#: ../zathura/commands.c:428
+#: ../zathura/commands.c:429
 msgid "Invalid number of arguments given."
 msgstr "Ungültige Anzahl an Argumenten angegeben."
 
@@ -145,37 +145,37 @@ msgstr "Konnte Dokument nicht speichern."
 msgid "Invalid number of arguments."
 msgstr "Ungültige Anzahl an Argumenten."
 
-#: ../zathura/commands.c:447
+#: ../zathura/commands.c:448
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
-#: ../zathura/commands.c:449
+#: ../zathura/commands.c:450
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
 
-#: ../zathura/commands.c:493
+#: ../zathura/commands.c:494
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Anhang '%s' nach '%s' geschrieben."
 
-#: ../zathura/commands.c:495
+#: ../zathura/commands.c:496
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Konnte Anhang '%s' nicht nach '%s' schreiben."
 
-#: ../zathura/commands.c:502
+#: ../zathura/commands.c:503
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Unbekanntes Bild '%s'."
 
-#: ../zathura/commands.c:506
+#: ../zathura/commands.c:507
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Unbekannter Anhanng oder Bild '%s'."
 
-#: ../zathura/commands.c:563
+#: ../zathura/commands.c:564
 msgid "Argument must be a number."
 msgstr "Das Argument ist keine Zahl."
 
@@ -595,7 +595,12 @@ msgstr "Drucken fehlgeschlagen: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Ungültiger Anpassungsmodus: %d"
 
-#: ../zathura/shortcuts.c:1132
+#: ../zathura/shortcuts.c:977
+#, c-format
+msgid "Pattern not found: %s"
+msgstr ""
+
+#: ../zathura/shortcuts.c:1135
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis."
 
