@@ -1081,8 +1081,8 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
         } else {
           gtk_tree_view_expand_row(tree_view, path, FALSE);
         }
-        break;
       }
+      break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
       gtk_tree_path_free(path);
