@@ -257,7 +257,7 @@ init_css(zathura_t* zathura)
                                             G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
   if (css_data != NULL) {
     char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate),
-                                g_bytes_get_data(css_data, NULL));
+                                (const char*) g_bytes_get_data(css_data, NULL));
     girara_template_set_base(csstemplate, css);
     g_free(css);
     g_bytes_unref(css_data);
