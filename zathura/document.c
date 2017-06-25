@@ -421,16 +421,15 @@ zathura_document_set_rotation(zathura_document_t* document, unsigned int rotatio
     return;
   }
 
-  document->rotate = rotation % 360;
-
-  if (document->rotate > 0 && document->rotate <= 90) {
-    document->rotate = 90;
-  } else if (document->rotate > 0 && document->rotate <= 180) {
-    document->rotate = 180;
-  } else if (document->rotate > 0 && document->rotate <= 270) {
-    document->rotate = 270;
-  } else {
+  rotation = rotation % 360;
+  if (rotation == 0 || rotation > 270) {
     document->rotate = 0;
+  } else if (rotation <= 90) {
+    document->rotate = 90;
+  } else if (rotation <= 180) {
+    document->rotate = 180;
+  } else {
+    document->rotate = 270;
   }
 }
 
