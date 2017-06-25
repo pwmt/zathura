@@ -590,8 +590,9 @@ zathura_page_widget_redraw_canvas(ZathuraPage* pageview)
 static bool
 surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t* old)
 {
-  if (cairo_surface_get_type(surface) != CAIRO_SURFACE_TYPE_IMAGE)
+  if (cairo_surface_get_type(surface) != CAIRO_SURFACE_TYPE_IMAGE) {
     return true;
+  }
 
   const unsigned int width = cairo_image_surface_get_width(surface);
   const unsigned int height = cairo_image_surface_get_height(surface);
