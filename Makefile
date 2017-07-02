@@ -10,22 +10,16 @@ OSOURCE       = $(sort $(wildcard ${PROJECT}/*.c) \
 SOURCE_FILTER =
 
 ifneq (${WITH_SQLITE},0)
-INCS     += $(SQLITE_INC)
-LIBS     += $(SQLITE_LIB)
 CPPFLAGS += -DWITH_SQLITE
 else
 SOURCE_FILTER += ${PROJECT}/database-sqlite.c
 endif
 
 ifneq ($(WITH_MAGIC),0)
-INCS     += $(MAGIC_INC)
-LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
 ifneq ($(WITH_SYNCTEX),0)
-INCS     += $(SYNCTEX_INC)
-LIBS     += $(SYNCTEX_LIB)
 CPPFLAGS += -DWITH_SYNCTEX
 endif
 
