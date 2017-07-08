@@ -6,7 +6,7 @@ include common.mk
 
 # source files
 OSOURCE       = $(sort $(wildcard ${PROJECT}/*.c) \
-                ${PROJECT}/css-definitions.c)
+                ${PROJECT}/resources.c)
 SOURCE_FILTER =
 
 ifneq (${WITH_SQLITE},0)
@@ -79,17 +79,17 @@ ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > ${PROJECT}/version.h.tmp
 	$(QUIET)mv ${PROJECT}/version.h.tmp ${PROJECT}/version.h
 
-${PROJECT}/css-definitions.%: data/zathura-css.gresource.xml config.mk
+${PROJECT}/resources.%: data/zathura.gresource.xml config.mk
 	$(call colorecho,GEN,$@)
 	@mkdir -p ${DEPENDDIR}/$(dir $@)
-	$(QUIET)$(GLIB_COMPILE_RESOURCES) --generate --c-name=zathura_css --internal \
+	$(QUIET)$(GLIB_COMPILE_RESOURCES) --generate --c-name=zathura_resources --internal \
 		--dependency-file=$(DEPENDDIR)/$@.dep \
-		--sourcedir=data --target=$@ data/zathura-css.gresource.xml
+		--sourcedir=data --target=$@ data/zathura.gresource.xml
 
 # common dependencies
 
 ${OBJECTS} ${OBJECTS_DEBUG} ${OBJECTS_GCOV}: config.mk \
-	${PROJECT}/version.h ${PROJECT}/css-definitions.h \
+	${PROJECT}/version.h ${PROJECT}/resources.h \
 	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
 
 # rlease build
@@ -169,8 +169,8 @@ clean:
 		${PROJECT}.pc \
 		${PROJECT}/version.h \
 		${PROJECT}/version.h.tmp \
-		${PROJECT}/css-definitions.c \
-		${PROJECT}/css-definitions.c.tmp \
+		${PROJECT}/resources.c \
+		${PROJECT}/resources.h \
 		$(PROJECT).info \
 		gcov \
 		.version-checks

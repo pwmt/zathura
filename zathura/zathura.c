@@ -41,7 +41,7 @@
 #include "plugin.h"
 #include "adjustment.h"
 #include "dbus-interface.h"
-#include "css-definitions.h"
+#include "resources.h"
 #include "synctex.h"
 #include "content-type.h"
 
@@ -251,7 +251,7 @@ init_css(zathura_t* zathura)
     g_free(color);
   }
 
-  GResource* css_resource = zathura_css_get_resource();
+  GResource* css_resource = zathura_resources_get_resource();
   GBytes* css_data = g_resource_lookup_data(css_resource,
                                             "/org/pwmt/zathura/CSS/zathura.css_t",
                                             G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
