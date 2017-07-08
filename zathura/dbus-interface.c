@@ -7,6 +7,7 @@
 #include "document.h"
 #include "utils.h"
 #include "adjustment.h"
+#include "resources.h"
 
 #include <girara/session.h>
 #include <girara/utils.h>
@@ -16,24 +17,17 @@
 #include <string.h>
 #include <unistd.h>
 
-static const char DBUS_XML_FILENAME[] = "org.pwmt.zathura.xml";
+static const char DBUS_XML_FILENAME[] = "/org/pwmt/zathura/DBus/org.pwmt.zathura.xml";
 
-static char* load_xml_data(void)
+static GBytes* load_xml_data(void)
 {
-#ifdef DBUSINTERFACEDIR
-  char* file_path = g_build_filename(DBUSINTERFACEDIR, DBUS_XML_FILENAME, NULL);
-  if (file_path == NULL) {
-    return NULL;
+  GResource* resource = zathura_resources_get_resource();
+  if (resource != NULL) {
+    return g_resource_lookup_data(resource, DBUS_XML_FILENAME,
+                                  G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
   }
 
-  girara_debug("Loading D-Bus interface data from %s.", file_path);
-  char* content = girara_file_read(file_path);
-  g_free(file_path);
-  return content;
-#else
-  girara_error("DBUSINTERFACEDIR is not defined. D-Bus interface will not be available.");
   return NULL;
-#endif
 }
 
 G_DEFINE_TYPE(ZathuraDbus, zathura_dbus, G_TYPE_OBJECT)
@@ -163,7 +157,7 @@ zathura_dbus_new(zathura_t* zathura)
   private_t* priv   = GET_PRIVATE(dbus);
   priv->zathura     = zathura;
 
-  char* xml_data = load_xml_data();
+  GBytes* xml_data = load_xml_data();
   if (xml_data == NULL)
   {
     girara_warning("Failed to load introspection data.");
@@ -172,8 +166,8 @@ zathura_dbus_new(zathura_t* zathura)
   }
 
   GError* error = NULL;
-  priv->introspection_data = g_dbus_node_info_new_for_xml(xml_data, &error);
-  g_free(xml_data);
+  priv->introspection_data = g_dbus_node_info_new_for_xml((const char*) g_bytes_get_data(xml_data, NULL), &error);
+  g_bytes_unref(xml_data);
 
   if (priv->introspection_data == NULL) {
     girara_warning("Failed to parse introspection data: %s", error->message);

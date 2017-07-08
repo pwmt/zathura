@@ -36,13 +36,6 @@ endif
 ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
-ifeq (,$(findstring -DDBUSINTERFACEDIR,${CPPFLAGS}))
-ifneq ($(WITH_LOCAL_DBUS_XML),0)
-CPPFLAGS += -DDBUSINTERFACEDIR=\"$(abspath data)\"
-else
-CPPFLAGS += -DDBUSINTERFACEDIR=\"${DBUSINTERFACEDIR}\"
-endif
-endif
 
 SOURCE        = $(filter-out $(SOURCE_FILTER),$(OSOURCE))
 OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})

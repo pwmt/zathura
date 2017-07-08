@@ -47,11 +47,6 @@ WITH_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
 # To disable support for mimetype detction with libmagic set WITH_MAGIC to 0.
 WITH_MAGIC ?= 1
 
-# use local D-Bus interface
-# Enable this if the D-Bus interface XML from data should be used (useful for
-# development).
-WITH_LOCAL_DBUS_XML ?= 0
-
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
