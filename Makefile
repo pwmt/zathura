@@ -82,8 +82,11 @@ ${PROJECT}/resources.%: data/zathura.gresource.xml config.mk
 # common dependencies
 
 ${OBJECTS} ${OBJECTS_DEBUG} ${OBJECTS_GCOV}: config.mk \
-	${PROJECT}/version.h ${PROJECT}/resources.h \
-	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
+	.version-checks/GIRARA \
+	.version-checks/GLIB \
+	.version-checks/GTK \
+	${PROJECT}/version.h \
+	${PROJECT}/resources.h
 
 # rlease build
 
