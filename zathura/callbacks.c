@@ -611,9 +611,23 @@ cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data)
 
   if (selection != NULL) {
     gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
-  }
 
-  g_free(selection);
+    bool notification = true;
+    girara_setting_get(zathura->ui.session, "selection-notification", &notification);
+
+    if (notification == true) {
+      char* target = NULL;
+      girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+
+      char* escaped_text = g_markup_printf_escaped(
+          _("Copied selected image to selection %s"), target);
+      g_free(target);
+
+      girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+    }
+
+    g_free(selection);
+  }
 }
 
 void
