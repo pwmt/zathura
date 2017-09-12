@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: http://bugs.pwmt.org\n"
 "POT-Creation-Date: 2017-06-25 21:55+0200\n"
-"PO-Revision-Date: 2017-06-25 21:58+0200\n"
+"PO-Revision-Date: 2017-09-12 10:46+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/zathura/language/"
 "de/)\n"
@@ -598,7 +598,7 @@ msgstr "Ungültiger Anpassungsmodus: %d"
 #: ../zathura/shortcuts.c:977
 #, c-format
 msgid "Pattern not found: %s"
-msgstr "Sucheausdruck nicht gefunden: %s"
+msgstr "Suchausdruck nicht gefunden: %s"
 
 #: ../zathura/shortcuts.c:1135
 msgid "This document does not contain any index"
