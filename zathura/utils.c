@@ -84,7 +84,9 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 
     GtkTreeIter tree_iter;
     gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
-    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, index_element->title, 1, description, 2, index_element, -1);
+    gchar* markup = g_markup_escape_text(index_element->title, -1);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, index_element, -1);
+    g_free(markup);
     g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
     g_free(description);
 
