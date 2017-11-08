@@ -56,8 +56,8 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   girara_setting_get(zathura->ui.session, "show-directories", &show_directories);
 
   /* read files */
-  char* name = NULL;
-  while ((name = (char*) g_dir_read_name(dir)) != NULL) {
+  const char* name = NULL;
+  while ((name = g_dir_read_name(dir)) != NULL) {
     char* e_name   = g_filename_display_name(name);
     if (e_name == NULL) {
       goto error_free;
@@ -115,6 +115,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   return res;
 
 error_free:
+  g_dir_close(dir);
   girara_list_free(res);
   return NULL;
 }
@@ -190,18 +191,15 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
   }
 
   if (show_recent > 0 && zathura->database != NULL) {
-    girara_list_t* recent_files = zathura_db_get_recent_files(zathura->database, show_recent);
+    girara_list_t* recent_files = zathura_db_get_recent_files(zathura->database, show_recent, path);
     if (recent_files == NULL) {
       goto error_free;
     }
 
     if (girara_list_size(recent_files) != 0) {
-      const size_t path_len = strlen(path);
       GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
-        if (strncmp(path, file, path_len) == 0) {
-          girara_debug("adding %s (recent file)", file);
-          girara_completion_group_add_element(history_group, file, NULL);
-        }
+        girara_debug("adding %s (recent file)", file);
+        girara_completion_group_add_element(history_group, file, NULL);
       GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
       girara_list_free(recent_files);
     } else {

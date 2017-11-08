@@ -215,12 +215,8 @@ cb_print_done(GtkPrintOperation* operation, GtkPrintOperationResult result,
               zathura_t* zathura)
 {
   if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
-    if (zathura->print.settings != NULL) {
-      g_object_unref(zathura->print.settings);
-    }
-    if (zathura->print.page_setup != NULL) {
-      g_object_unref(zathura->print.page_setup);
-    }
+    g_clear_object(&zathura->print.settings);
+    g_clear_object(&zathura->print.page_setup);
 
     /* save previous settings */
     zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(operation));

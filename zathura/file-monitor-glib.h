@@ -28,6 +28,6 @@ struct zathura_glibfilemonitor_class_s
   ZathuraFileMonitorClass parent_class;
 };
 
-GType zathura_glibfilemonitor_get_type(void);
+GType zathura_glibfilemonitor_get_type(void) G_GNUC_CONST;
 
 #endif

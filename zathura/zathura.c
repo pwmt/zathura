@@ -41,7 +41,7 @@
 #include "plugin.h"
 #include "adjustment.h"
 #include "dbus-interface.h"
-#include "css-definitions.h"
+#include "resources.h"
 #include "synctex.h"
 #include "content-type.h"
 
@@ -251,10 +251,17 @@ init_css(zathura_t* zathura)
     g_free(color);
   }
 
-  char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate),
-                              CSS_TEMPLATE_INDEX);
-  girara_template_set_base(csstemplate, css);
-  g_free(css);
+  GResource* css_resource = zathura_resources_get_resource();
+  GBytes* css_data = g_resource_lookup_data(css_resource,
+                                            "/org/pwmt/zathura/CSS/zathura.css_t",
+                                            G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
+  if (css_data != NULL) {
+    char* css = g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate),
+                                (const char*) g_bytes_get_data(css_data, NULL));
+    girara_template_set_base(csstemplate, css);
+    g_free(css);
+    g_bytes_unref(css_data);
+  }
 }
 
 static void
@@ -391,10 +398,7 @@ zathura_free(zathura_t* zathura)
 #endif
 
   /* stop D-Bus */
-  if (zathura->dbus != NULL) {
-    g_object_unref(zathura->dbus);
-    zathura->dbus = NULL;
-  }
+  g_clear_object(&zathura->dbus);
 
   if (zathura->ui.session != NULL) {
     girara_session_destroy(zathura->ui.session);
@@ -415,18 +419,11 @@ zathura_free(zathura_t* zathura)
   girara_list_free(zathura->bookmarks.bookmarks);
 
   /* database */
-  if (zathura->database != NULL) {
-    g_object_unref(G_OBJECT(zathura->database));
-  }
+  g_clear_object(&zathura->database);
 
   /* free print settings */
-  if (zathura->print.settings != NULL) {
-    g_object_unref(zathura->print.settings);
-  }
-
-  if (zathura->print.page_setup != NULL) {
-    g_object_unref(zathura->print.page_setup);
-  }
+  g_clear_object(&zathura->print.settings);
+  g_clear_object(&zathura->print.page_setup);
 
   /* free registered plugins */
   zathura_plugin_manager_free(zathura->plugins.manager);
@@ -890,6 +887,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
       type = ZATHURA_FILEMONITOR_SIGNAL;
     }
 #endif
+    g_free(filemonitor_backend);
 
     zathura->file_monitor.monitor = zathura_filemonitor_new(file_path, type);
     if (zathura->file_monitor.monitor == NULL) {
@@ -1216,10 +1214,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* remove monitor */
   if (keep_monitor == false) {
-    if (zathura->file_monitor.monitor != NULL) {
-      g_object_unref(zathura->file_monitor.monitor);
-      zathura->file_monitor.monitor = NULL;
-    }
+    g_clear_object(&zathura->file_monitor.monitor);
 
     if (zathura->file_monitor.password != NULL) {
       g_free(zathura->file_monitor.password);
@@ -1245,8 +1240,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
   zathura->jumplist.size = 0;
 
   /* release render thread */
-  g_object_unref(zathura->sync.render_thread);
-  zathura->sync.render_thread = NULL;
+  g_clear_object(&zathura->sync.render_thread);
 
   /* remove widgets */
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
@@ -1293,6 +1287,12 @@ page_set(zathura_t* zathura, unsigned int page_id)
   }
 
   zathura_document_set_current_page_number(zathura->document, page_id);
+
+  bool continuous_hist_save = false;
+  girara_setting_get(zathura->ui.session, "continuous-hist-save", &continuous_hist_save);
+  if (continuous_hist_save) {
+    save_fileinfo_to_db(zathura);
+  }
 
   /* negative position means auto */
   return position_set(zathura, -1, -1);
@@ -1380,11 +1380,19 @@ position_set(zathura_t* zathura, double position_x, double position_y)
   }
 
   double comppos_x, comppos_y;
-  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  const unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+
+  bool vertical_center = false;
+  girara_setting_get(zathura->ui.session, "vertical-center", &vertical_center);
 
   /* xalign = 0.5: center horizontally (with the page, not the document) */
-  /* yalign = 0.0: align page an viewport edges at the top               */
-  page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+  if (vertical_center == true) {
+    /* yalign = 0.0: align page an viewport edges at the top               */
+    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+  } else {
+    /* yalign = 0.5: center vertically */
+    page_number_to_position(zathura->document, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
+  }
 
   /* automatic horizontal adjustment */
   zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
@@ -1398,7 +1406,7 @@ position_set(zathura_t* zathura, double position_x, double position_y)
     /* center horizontally */
     if (adjust_mode == ZATHURA_ADJUST_BESTFIT ||
       adjust_mode == ZATHURA_ADJUST_WIDTH ||
-      zoom_center) {
+      zoom_center == true) {
         position_x = 0.5;
     }
   }

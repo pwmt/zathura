@@ -7,3 +7,8 @@ knows how to parse the output of the *synctex view* command. It is enough to
 pass the arguments to *synctex view*'s *-i* option to zathura via
 *--syntex-forward* and zathura will pass the information to the correct
 instance.
+
+Some editors support zathura as viewer out of the box:
+
+* LaTeXTools for SublimeText
+  (https://latextools.readthedocs.io/en/latest/available-viewers/#zathura)

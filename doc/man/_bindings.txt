@@ -39,7 +39,7 @@ General
   r
     Rotate by 90 degrees
   ^r
-    Recolor
+    Recolor (grayscale and invert colors)
   R
     Reload document
   Tab

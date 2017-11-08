@@ -4,26 +4,22 @@ include config.mk
 include colors.mk
 include common.mk
 
-OSOURCE    = $(filter-out ${PROJECT}/css-definitions.c, $(filter-out ${PROJECT}/dbus-interface-definitions.c, $(sort $(wildcard ${PROJECT}/*.c))))
+# source files
+OSOURCE       = $(sort $(wildcard ${PROJECT}/*.c) \
+                ${PROJECT}/resources.c)
+SOURCE_FILTER =
 
 ifneq (${WITH_SQLITE},0)
-INCS     += $(SQLITE_INC)
-LIBS     += $(SQLITE_LIB)
-SOURCE    = $(OSOURCE)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE    = $(filter-out ${PROJECT}/database-sqlite.c,$(OSOURCE))
+SOURCE_FILTER += ${PROJECT}/database-sqlite.c
 endif
 
 ifneq ($(WITH_MAGIC),0)
-INCS     += $(MAGIC_INC)
-LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
 ifneq ($(WITH_SYNCTEX),0)
-INCS     += $(SYNCTEX_INC)
-LIBS     += $(SYNCTEX_LIB)
 CPPFLAGS += -DWITH_SYNCTEX
 endif
 
@@ -41,16 +37,10 @@ ifeq (,$(findstring -DLOCALEDIR,${CPPFLAGS}))
 CPPFLAGS += -DLOCALEDIR=\"${LOCALEDIR}\"
 endif
 
-OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o}) \
-	${BUILDDIR_RELEASE}/${PROJECT}/css-definitions.o \
-	${BUILDDIR_RELEASE}/${PROJECT}/dbus-interface-definitions.o
-OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o}) \
-	${BUILDDIR_DEBUG}/${PROJECT}/css-definitions.o \
-	${BUILDDIR_DEBUG}/${PROJECT}/dbus-interface-definitions.o
-OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o}) \
-	${BUILDDIR_GCOV}/${PROJECT}/css-definitions.o \
-	${BUILDDIR_GCOV}/${PROJECT}/dbus-interface-definitions.o
-HEADER        = $(wildcard ${PROJECT}/*.h) $(wildcard synctex/*.h)
+SOURCE        = $(filter-out $(SOURCE_FILTER),$(OSOURCE))
+OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})
+OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o})
+OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o})
 HEADERINST    = $(addprefix ${PROJECT}/,version.h document.h macros.h page.h types.h plugin-api.h links.h)
 
 all: options ${PROJECT} po build-manpages
@@ -72,6 +62,8 @@ options:
 	@echo "DFLAGS  = ${DFLAGS}"
 	@echo "CC      = ${CC}"
 
+# generated files
+
 ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 	$(QUIET)sed -e 's/ZVMAJOR/${ZATHURA_VERSION_MAJOR}/' \
 		-e 's/ZVMINOR/${ZATHURA_VERSION_MINOR}/' \
@@ -80,24 +72,23 @@ ${PROJECT}/version.h: ${PROJECT}/version.h.in config.mk
 		-e 's/ZVABI/${ZATHURA_ABI_VERSION}/' ${PROJECT}/version.h.in > ${PROJECT}/version.h.tmp
 	$(QUIET)mv ${PROJECT}/version.h.tmp ${PROJECT}/version.h
 
-${PROJECT}/dbus-interface-definitions.c: data/org.pwmt.zathura.xml
-	$(QUIET)echo '#include "dbus-interface-definitions.h"' > $@.tmp
-	$(QUIET)echo 'const char* DBUS_INTERFACE_XML =' >> $@.tmp
-	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' data/org.pwmt.zathura.xml >> $@.tmp
-	$(QUIET)echo ';' >> $@.tmp
-	$(QUIET)mv $@.tmp $@
+${PROJECT}/resources.%: data/zathura.gresource.xml config.mk
+	$(call colorecho,GEN,$@)
+	@mkdir -p ${DEPENDDIR}/$(dir $@)
+	$(QUIET)$(GLIB_COMPILE_RESOURCES) --generate --c-name=zathura_resources --internal \
+		--dependency-file=$(DEPENDDIR)/$@.dep \
+		--sourcedir=data --target=$@ data/zathura.gresource.xml
 
-${PROJECT}/css-definitions.c: data/zathura.css_t
-	$(QUIET)echo '#include "css-definitions.h"' > $@.tmp
-	$(QUIET)echo 'const char* CSS_TEMPLATE_INDEX =' >> $@.tmp
-	$(QUIET)sed 's/^\(.*\)$$/"\1\\n"/' $< >> $@.tmp
-	$(QUIET)echo ';' >> $@.tmp
-	$(QUIET)mv $@.tmp $@
+# common dependencies
 
-# release build
+${OBJECTS} ${OBJECTS_DEBUG} ${OBJECTS_GCOV}: config.mk \
+	.version-checks/GIRARA \
+	.version-checks/GLIB \
+	.version-checks/GTK \
+	${PROJECT}/version.h \
+	${PROJECT}/resources.h
 
-${OBJECTS}: config.mk ${PROJECT}/version.h \
-	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
+# rlease build
 
 ${BUILDDIR_RELEASE}/%.o: %.c
 	$(call colorecho,CC,$<)
@@ -120,9 +111,6 @@ run: release
 
 # debug build
 
-${OBJECTS_DEBUG}: config.mk ${PROJECT}/version.h \
-	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
-
 ${BUILDDIR_DEBUG}/%.o: %.c
 	$(call colorecho,CC,$<)
 	@mkdir -p ${DEPENDDIR}/$(dir $@)
@@ -143,9 +131,6 @@ run-debug: debug
 
 # gcov build
 
-${OBJECTS_GCOV}: config.mk ${PROJECT}/version.h \
-	.version-checks/GIRARA .version-checks/GLIB .version-checks/GTK
-
 ${BUILDDIR_GCOV}/%.o: %.c
 	$(call colorecho,CC,$<)
 	@mkdir -p ${DEPENDDIR}/$(dir $@)
@@ -157,7 +142,7 @@ ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}: ${OBJECTS_GCOV}
 	$(call colorecho,CC,$@)
 	@mkdir -p ${BUILDDIR_GCOV}/${BINDIR}
 	$(QUIET)${CC} ${LDFLAGS} ${GCOV_CFLAGS} ${GCOV_LDFLAGS} \
-		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS_GCOv} ${LIBS}
+		-o ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT} ${OBJECTS_GCOV} ${LIBS}
 
 gcov: options ${BUILDDIR_GCOV}/${BINDIR}/${PROJECT}
 	$(QUIET)${MAKE} -C tests run-gcov
@@ -180,10 +165,8 @@ clean:
 		${PROJECT}.pc \
 		${PROJECT}/version.h \
 		${PROJECT}/version.h.tmp \
-		${PROJECT}/dbus-interface-definitions.c \
-		${PROJECT}/dbus-interface-definitions.c.tmp \
-		${PROJECT}/css-definitions.c \
-		${PROJECT}/css-definitions.c.tmp \
+		${PROJECT}/resources.c \
+		${PROJECT}/resources.h \
 		$(PROJECT).info \
 		gcov \
 		.version-checks

@@ -1,13 +1,13 @@
 /* See LICENSE file for license and copyright information */
 
 #include "dbus-interface.h"
-#include "dbus-interface-definitions.h"
 #include "synctex.h"
 #include "macros.h"
 #include "zathura.h"
 #include "document.h"
 #include "utils.h"
 #include "adjustment.h"
+#include "resources.h"
 
 #include <girara/session.h>
 #include <girara/utils.h>
@@ -16,6 +16,19 @@
 #include <sys/types.h>
 #include <string.h>
 #include <unistd.h>
+
+static const char DBUS_XML_FILENAME[] = "/org/pwmt/zathura/DBus/org.pwmt.zathura.xml";
+
+static GBytes* load_xml_data(void)
+{
+  GResource* resource = zathura_resources_get_resource();
+  if (resource != NULL) {
+    return g_resource_lookup_data(resource, DBUS_XML_FILENAME,
+                                  G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
+  }
+
+  return NULL;
+}
 
 G_DEFINE_TYPE(ZathuraDbus, zathura_dbus, G_TYPE_OBJECT)
 
@@ -144,9 +157,18 @@ zathura_dbus_new(zathura_t* zathura)
   private_t* priv   = GET_PRIVATE(dbus);
   priv->zathura     = zathura;
 
+  GBytes* xml_data = load_xml_data();
+  if (xml_data == NULL)
+  {
+    girara_warning("Failed to load introspection data.");
+    g_object_unref(obj);
+    return NULL;
+  }
+
   GError* error = NULL;
-  priv->introspection_data = g_dbus_node_info_new_for_xml(DBUS_INTERFACE_XML,
-                                                          &error);
+  priv->introspection_data = g_dbus_node_info_new_for_xml((const char*) g_bytes_get_data(xml_data, NULL), &error);
+  g_bytes_unref(xml_data);
+
   if (priv->introspection_data == NULL) {
     girara_warning("Failed to parse introspection data: %s", error->message);
     g_error_free(error);

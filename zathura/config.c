@@ -85,7 +85,8 @@ cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  document_draw_search_results(zathura, !(*(bool*) value));
+  bool* bvalue = value;
+  document_draw_search_results(zathura, !*bvalue);
   render_all(zathura);
 }
 
@@ -198,6 +199,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "vertical-center",        &bool_value,  BOOLEAN, false, _("Vertically center pages"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "link-hadjust",           &bool_value,  BOOLEAN, false, _("Align link target to the left"), NULL, NULL);
   bool_value = true;
@@ -240,6 +243,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "synctex-editor-command", string_value, STRING,  false, _("Synctex editor command"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "continuous-hist-save",   &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
   string_value = "primary";
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
@@ -374,8 +379,7 @@ config_load_default(zathura_t* zathura)
   DEFAULT_MOUSE_EVENTS(FULLSCREEN)
 
   /* Index mode */
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Tab,       NULL, sc_toggle_index,        INDEX,        0,            NULL);
-
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Tab,         NULL, sc_toggle_index,        INDEX,        0,            NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_k,           NULL, sc_navigate_index,      INDEX,        UP,           NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_j,           NULL, sc_navigate_index,      INDEX,        DOWN,         NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_h,           NULL, sc_navigate_index,      INDEX,        COLLAPSE,     NULL);
@@ -458,33 +462,32 @@ config_load_default(zathura_t* zathura)
   girara_special_command_add(gsession, '?', cmd_search, INCREMENTAL_SEARCH, BACKWARD, NULL);
 
   /* add shortcut mappings */
-  girara_shortcut_mapping_add(gsession, "abort",             sc_abort);
-  girara_shortcut_mapping_add(gsession, "adjust_window",     sc_adjust_window);
-  girara_shortcut_mapping_add(gsession, "change_mode",       sc_change_mode);
-  girara_shortcut_mapping_add(gsession, "display_link",      sc_display_link);
-  girara_shortcut_mapping_add(gsession, "focus_inputbar",    sc_focus_inputbar);
-  girara_shortcut_mapping_add(gsession, "follow",            sc_follow);
-  girara_shortcut_mapping_add(gsession, "goto",              sc_goto);
-  girara_shortcut_mapping_add(gsession, "jumplist",          sc_jumplist);
-  girara_shortcut_mapping_add(gsession, "bisect",            sc_bisect);
-  girara_shortcut_mapping_add(gsession, "mark_add",          sc_mark_add);
-  girara_shortcut_mapping_add(gsession, "mark_evaluate",     sc_mark_evaluate);
-  girara_shortcut_mapping_add(gsession, "navigate",          sc_navigate);
-  girara_shortcut_mapping_add(gsession, "navigate_index",    sc_navigate_index);
-  girara_shortcut_mapping_add(gsession, "print",             sc_print);
-  girara_shortcut_mapping_add(gsession, "quit",              sc_quit);
-  girara_shortcut_mapping_add(gsession, "recolor",           sc_recolor);
-  girara_shortcut_mapping_add(gsession, "reload",            sc_reload);
-  girara_shortcut_mapping_add(gsession, "rotate",            sc_rotate);
-  girara_shortcut_mapping_add(gsession, "scroll",            sc_scroll);
-  girara_shortcut_mapping_add(gsession, "search",            sc_search);
-  girara_shortcut_mapping_add(gsession, "toggle_fullscreen", sc_toggle_fullscreen);
+  girara_shortcut_mapping_add(gsession, "abort",               sc_abort);
+  girara_shortcut_mapping_add(gsession, "adjust_window",       sc_adjust_window);
+  girara_shortcut_mapping_add(gsession, "bisect",              sc_bisect);
+  girara_shortcut_mapping_add(gsession, "change_mode",         sc_change_mode);
+  girara_shortcut_mapping_add(gsession, "display_link",        sc_display_link);
+  girara_shortcut_mapping_add(gsession, "exec",                sc_exec);
+  girara_shortcut_mapping_add(gsession, "focus_inputbar",      sc_focus_inputbar);
+  girara_shortcut_mapping_add(gsession, "follow",              sc_follow);
+  girara_shortcut_mapping_add(gsession, "goto",                sc_goto);
+  girara_shortcut_mapping_add(gsession, "jumplist",            sc_jumplist);
+  girara_shortcut_mapping_add(gsession, "mark_add",            sc_mark_add);
+  girara_shortcut_mapping_add(gsession, "mark_evaluate",       sc_mark_evaluate);
+  girara_shortcut_mapping_add(gsession, "navigate",            sc_navigate);
+  girara_shortcut_mapping_add(gsession, "navigate_index",      sc_navigate_index);
+  girara_shortcut_mapping_add(gsession, "print",               sc_print);
+  girara_shortcut_mapping_add(gsession, "quit",                sc_quit);
+  girara_shortcut_mapping_add(gsession, "recolor",             sc_recolor);
+  girara_shortcut_mapping_add(gsession, "reload",              sc_reload);
+  girara_shortcut_mapping_add(gsession, "rotate",              sc_rotate);
+  girara_shortcut_mapping_add(gsession, "scroll",              sc_scroll);
+  girara_shortcut_mapping_add(gsession, "search",              sc_search);
+  girara_shortcut_mapping_add(gsession, "toggle_fullscreen",   sc_toggle_fullscreen);
+  girara_shortcut_mapping_add(gsession, "toggle_index",        sc_toggle_index);
+  girara_shortcut_mapping_add(gsession, "toggle_page_mode",    sc_toggle_page_mode);
   girara_shortcut_mapping_add(gsession, "toggle_presentation", sc_toggle_presentation);
-  girara_shortcut_mapping_add(gsession, "toggle_index",      sc_toggle_index);
-  girara_shortcut_mapping_add(gsession, "toggle_inputbar",   girara_sc_toggle_inputbar);
-  girara_shortcut_mapping_add(gsession, "toggle_page_mode",  sc_toggle_page_mode);
-  girara_shortcut_mapping_add(gsession, "toggle_statusbar",  girara_sc_toggle_statusbar);
-  girara_shortcut_mapping_add(gsession, "zoom",              sc_zoom);
+  girara_shortcut_mapping_add(gsession, "zoom",                sc_zoom);
 
   /* add argument mappings */
   girara_argument_mapping_add(gsession, "backward",     BACKWARD);

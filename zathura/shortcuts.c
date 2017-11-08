@@ -856,15 +856,13 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
   const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
-  GtkWidget *cur_page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
-  bool nohlsearch, first_time_after_abort;
-  gboolean draw;
+  GtkWidget* cur_page_widget   = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
+  bool nohlsearch              = false;
+  bool first_time_after_abort  = false;
 
-  nohlsearch = first_time_after_abort = false;
-  draw = FALSE;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
-
   if (nohlsearch == false) {
+    gboolean draw = FALSE;
     g_object_get(G_OBJECT(cur_page_widget), "draw-search-results", &draw, NULL);
 
     if (draw == false) {
@@ -875,8 +873,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
   }
 
   int diff = argument->n == FORWARD ? 1 : -1;
-  if (zathura->global.search_direction == BACKWARD)
+  if (zathura->global.search_direction == BACKWARD) {
     diff = -diff;
+  }
 
   zathura_page_t* target_page = NULL;
   int target_idx = 0;
@@ -973,6 +972,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
+  } else if (target_page == NULL && argument->data != NULL) {
+    const char* input = argument->data;
+    girara_notify(session, GIRARA_ERROR, _("Pattern not found: %s"), input);
   }
 
   return false;
@@ -1082,8 +1084,8 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
         } else {
           gtk_tree_view_expand_row(tree_view, path, FALSE);
         }
-        break;
       }
+      break;
     case SELECT:
       cb_index_row_activated(tree_view, path, NULL, zathura);
       gtk_tree_path_free(path);
@@ -1418,4 +1420,41 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
   refresh_view(zathura);
 
   return false;
+}
+
+bool
+sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (argument == NULL || argument->data == NULL) {
+    return false;
+  }
+
+  if (zathura->document != NULL) {
+    const char* path = zathura_document_get_path(zathura->document);
+
+    girara_argument_t new_argument = *argument;
+
+    char* r = girara_replace_substring(argument->data, "$FILE", path);
+    if (r == NULL) {
+      return false;
+    }
+
+    char* s = girara_replace_substring(r, "%", path);
+    g_free(r);
+
+    if (s == NULL) {
+      return false;
+    }
+
+    new_argument.data = s;
+    const bool ret = girara_sc_exec(session, &new_argument, event, t);
+    g_free(s);
+    return ret;
+  }
+
+  return girara_sc_exec(session, argument, event, t);
 }
