@@ -194,9 +194,7 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   if (entry != NULL) {
     for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
       if (meta_fields[i].field == entry->type) {
-        char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
-        g_string_append(string, text);
-        g_free(text);
+        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
       }
     }
   }
