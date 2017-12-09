@@ -106,7 +106,20 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
-    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
+    GString* string = g_string_new(NULL);
+
+    GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+      g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
+    GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+
+    if (strlen(string->str) > 0) {
+      g_string_erase(string, strlen(string->str) - 1, 1);
+      girara_notify(session, GIRARA_INFO, "%s", string->str);
+    } else {
+      girara_notify(session, GIRARA_INFO, _("No bookmarks available."));
+    }
+
+    g_string_free(string, TRUE);
     return false;
   }
 
