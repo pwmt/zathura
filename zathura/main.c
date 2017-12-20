@@ -1,7 +1,8 @@
 /* See LICENSE file for license and copyright information */
 
-#include <girara/utils.h>
 #include <girara/settings.h>
+#include <girara/log.h>
+
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <errno.h>
@@ -33,11 +34,11 @@ static void
 set_log_level(const char* loglevel)
 {
   if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
-    girara_set_debug_level(GIRARA_INFO);
+    girara_set_log_level(GIRARA_INFO);
   } else if (g_strcmp0(loglevel, "warning") == 0) {
-    girara_set_debug_level(GIRARA_WARNING);
+    girara_set_log_level(GIRARA_WARNING);
   } else if (g_strcmp0(loglevel, "error") == 0) {
-    girara_set_debug_level(GIRARA_ERROR);
+    girara_set_log_level(GIRARA_ERROR);
   }
 }
 
@@ -150,7 +151,7 @@ main(int argc, char* argv[])
     { "fork",                   '\0', 0, G_OPTION_ARG_NONE,     &forkback,       _("Fork into the background"),                          NULL },
     { "password",               'w',  0, G_OPTION_ARG_STRING,   &password,       _("Document password"),                                 "password" },
     { "page",                   'P',  0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
-    { "debug",                  'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
+    { "log-level",              'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
     { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
 #ifdef WITH_SYNCTEX
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },

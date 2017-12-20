@@ -106,7 +106,20 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
-    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
+    GString* string = g_string_new(NULL);
+
+    GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+      g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
+    GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+
+    if (strlen(string->str) > 0) {
+      g_string_erase(string, strlen(string->str) - 1, 1);
+      girara_notify(session, GIRARA_INFO, "%s", string->str);
+    } else {
+      girara_notify(session, GIRARA_INFO, _("No bookmarks available."));
+    }
+
+    g_string_free(string, TRUE);
     return false;
   }
 
@@ -181,9 +194,7 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   if (entry != NULL) {
     for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
       if (meta_fields[i].field == entry->type) {
-        char* text = g_strdup_printf("<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
-        g_string_append(string, text);
-        g_free(text);
+        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
       }
     }
   }
@@ -407,6 +418,7 @@ cmd_search(girara_session_t* session, const char* input, girara_argument_t* argu
   }
 
   arg->n = FORWARD;
+  arg->data = (void*) input;
   sc_search(session, arg, NULL, 0);
   g_free(arg);
 

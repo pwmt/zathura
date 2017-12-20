@@ -127,7 +127,7 @@ cmd_marks_add(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  if (strlen(key_string) < 1 || strlen(key_string) > 1) {
+  if (strlen(key_string) != 1) {
     return false;
   }
 
@@ -160,6 +160,7 @@ cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list)
 
   GIRARA_LIST_FOREACH(argument_list, char*, iter, key_string)
   if (key_string == NULL) {
+    girara_list_iterator_next(iter);
     continue;
   }
 

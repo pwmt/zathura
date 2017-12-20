@@ -37,7 +37,7 @@ struct zathura_dbus_class_s
   (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DBUS, \
                              ZathuraDbusClass))
 
-GType zathura_dbus_get_type(void);
+GType zathura_dbus_get_type(void) G_GNUC_CONST;
 
 ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
 

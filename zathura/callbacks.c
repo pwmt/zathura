@@ -356,15 +356,17 @@ handle_link(GtkEntry* entry, girara_session_t* session,
   return (eval == TRUE) ? TRUE : FALSE;
 }
 
-bool
-cb_sc_follow(GtkEntry* entry, girara_session_t* session)
+gboolean
+cb_sc_follow(GtkEntry* entry, void* data)
 {
+  girara_session_t* session = data;
   return handle_link(entry, session, ZATHURA_LINK_ACTION_FOLLOW);
 }
 
-bool
-cb_sc_display_link(GtkEntry* entry, girara_session_t* session)
+gboolean
+cb_sc_display_link(GtkEntry* entry, void* data)
 {
+  girara_session_t* session = data;
   return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
 }
 
@@ -376,20 +378,12 @@ file_monitor_reload(void* data)
 }
 
 void
-cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* UNUSED(other_file), GFileMonitorEvent event, girara_session_t* session)
+cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session)
 {
   g_return_if_fail(monitor  != NULL);
-  g_return_if_fail(file     != NULL);
   g_return_if_fail(session  != NULL);
 
-  switch (event) {
-    case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
-    case G_FILE_MONITOR_EVENT_CREATED:
-      g_main_context_invoke(NULL, file_monitor_reload, session);
-      break;
-    default:
-      return;
-  }
+  g_main_context_invoke(NULL, file_monitor_reload, session);
 }
 
 static gboolean
@@ -403,7 +397,7 @@ password_dialog(gpointer data)
       "Incorrect password. Enter password:",
       true,
       NULL,
-      (girara_callback_inputbar_activate_t) cb_password_dialog,
+      cb_password_dialog,
       dialog
     );
   }
@@ -411,12 +405,14 @@ password_dialog(gpointer data)
   return FALSE;
 }
 
-bool
-cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
+gboolean
+cb_password_dialog(GtkEntry* entry, void* data)
 {
-  if (entry == NULL || dialog == NULL) {
+  if (entry == NULL || data == NULL) {
     goto error_ret;
   }
+
+  zathura_password_dialog_info_t* dialog = data;
 
   if (dialog->path == NULL) {
     free(dialog);
@@ -463,7 +459,7 @@ error_ret:
   return false;
 }
 
-bool
+gboolean
 cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura)
 {
   if (zathura == NULL || zathura->document == NULL) {
@@ -615,9 +611,23 @@ cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data)
 
   if (selection != NULL) {
     gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
-  }
 
-  g_free(selection);
+    bool notification = true;
+    girara_setting_get(zathura->ui.session, "selection-notification", &notification);
+
+    if (notification == true) {
+      char* target = NULL;
+      girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+
+      char* escaped_text = g_markup_printf_escaped(
+          _("Copied selected image to selection %s"), target);
+      g_free(target);
+
+      girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+    }
+
+    g_free(selection);
+  }
 }
 
 void
@@ -638,11 +648,19 @@ void
 cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event,
     void* data)
 {
+  zathura_t* zathura = data;
+
+  zathura_page_t* page = zathura_page_widget_get_page(page_widget);
+
+  /* set page number (but don't scroll there. it was clicked on, so it's visible) */
+  if (event->button == GDK_BUTTON_PRIMARY) {
+    zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
+    refresh_view(zathura);
+  }
+
   if (event->button != 1 || !(event->state & GDK_CONTROL_MASK)) {
     return;
   }
-
-  zathura_t* zathura = data;
 
   bool synctex = false;
   girara_setting_get(zathura->ui.session, "synctex", &synctex);
@@ -650,8 +668,6 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   if (synctex == false) {
     return;
   }
-
-  zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 
   if (zathura->dbus != NULL) {
     zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);

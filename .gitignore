@@ -9,8 +9,7 @@
 *.pyc
 
 # generated files
-dbus-interface-definitions.c
-css-definitions.c
+resources.*
 zathura.1
 zathurarc.5
 

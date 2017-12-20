@@ -845,7 +845,7 @@ render_all(zathura_t* zathura)
 
   /* unmark all pages */
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
     zathura_page_t* page = zathura_document_get_page(zathura->document,
         page_id);
     unsigned int page_height = 0, page_width = 0;
@@ -853,6 +853,7 @@ render_all(zathura_t* zathura)
     const double width = zathura_page_get_width(page);
     page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
 
+    girara_debug("Queuing resize for page %u to %u x %u (%f x %f).", page_id, page_width, page_height, width, height);
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
     gtk_widget_set_size_request(widget, page_width, page_height);
     gtk_widget_queue_resize(widget);

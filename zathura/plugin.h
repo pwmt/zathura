@@ -11,19 +11,6 @@
 #include "version.h"
 #include "zathura.h"
 
-#define PLUGIN_REGISTER_FUNCTION         "zathura_plugin_register"
-#define PLUGIN_API_VERSION_FUNCTION      "zathura_plugin_api_version"
-#define PLUGIN_ABI_VERSION_FUNCTION      "zathura_plugin_abi_version"
-#define PLUGIN_VERSION_MAJOR_FUNCTION    "zathura_plugin_version_major"
-#define PLUGIN_VERSION_MINOR_FUNCTION    "zathura_plugin_version_minor"
-#define PLUGIN_VERSION_REVISION_FUNCTION "zathura_plugin_version_revision"
-
-typedef struct zathura_plugin_version_s {
-  unsigned int major; /**< Major */
-  unsigned int minor; /**< Minor */
-  unsigned int rev; /**< Revision */
-} zathura_plugin_version_t;
-
 /**
  * Creates a new instance of the plugin manager
  *
@@ -84,7 +71,7 @@ zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t* plugi
  * @param plugin The plugin
  * @return The name of the plugin or NULL
  */
-char* zathura_plugin_get_name(zathura_plugin_t* plugin);
+const char* zathura_plugin_get_name(zathura_plugin_t* plugin);
 
 /**
  * Returns the path to the plugin

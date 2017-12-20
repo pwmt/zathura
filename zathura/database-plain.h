@@ -31,7 +31,7 @@ struct _ZathuraPlainDatabaseClass
   GObjectClass parent_class;
 };
 
-GType zathura_plaindatabase_get_type(void);
+GType zathura_plaindatabase_get_type(void) G_GNUC_CONST;
 /**
  * Initialize database system.
  *

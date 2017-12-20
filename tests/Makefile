@@ -12,32 +12,28 @@ OBJECTS       = $(addprefix ${BUILDDIR_RELEASE}/,${SOURCE:.c=.o})
 OBJECTS_DEBUG = $(addprefix ${BUILDDIR_DEBUG}/,${SOURCE:.c=.o})
 OBJECTS_GCOV  = $(addprefix ${BUILDDIR_GCOV}/,${SOURCE:.c=.o})
 
-ZATHURA_OBJECTS =  \
-	$(filter-out ../${BUILDDIR_RELEASE}/zathura/main.o, $(wildcard ../${BUILDDIR_RELEASE}/zathura/*.o))
-ZATHURA_OBJECTS_DEBUG =  \
-	$(filter-out ../${BUILDDIR_DEBUG}/zathura/main.o, $(wildcard ../${BUILDDIR_DEBUG}/zathura/*.o))
-ZATHURA_OBJECTS_GCOV=  \
-	$(filter-out ../${BUILDDIR_GCOV}/zathura/main.o, $(wildcard ../${BUILDDIR_GCOV}/zathura/*.o))
+FILTER = %/main.o
 
 ifneq (${WITH_SQLITE},0)
-INCS     += $(SQLITE_INC)
-LIBS     += $(SQLITE_LIB)
 CPPFLAGS += -DWITH_SQLITE
 else
-SOURCE = $(filter-out database-sqlite.c,$(OSOURCE))
+FILTER += %/database-sqlite.o
 endif
 
 ifneq ($(WITH_MAGIC),0)
-INCS     += $(MAGIC_INC)
-LIBS     += $(MAGIC_LIB)
 CPPFLAGS += -DWITH_MAGIC
 endif
 
 ifneq ($(WITH_SYNCTEX),0)
-INCS   += $(SYNCTEX_INC)
-LIBS   += $(SYNCTEX_LIB)
 CPPFLAGS += -DWITH_SYNCTEX
 endif
+
+ZATHURA_OBJECTS =  \
+	$(filter-out $(FILTER), $(wildcard ../${BUILDDIR_RELEASE}/zathura/*.o))
+ZATHURA_OBJECTS_DEBUG =  \
+	$(filter-out $(FILTER), $(wildcard ../${BUILDDIR_DEBUG}/zathura/*.o))
+ZATHURA_OBJECTS_GCOV=  \
+	$(filter-out $(FILTER), $(wildcard ../${BUILDDIR_GCOV}/zathura/*.o))
 
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}

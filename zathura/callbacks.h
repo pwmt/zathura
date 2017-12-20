@@ -110,7 +110,7 @@ void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
+gboolean cb_sc_follow(GtkEntry* entry, void* session);
 
 /**
  * Called when input has been passed to the sc_display_link dialog
@@ -119,19 +119,15 @@ bool cb_sc_follow(GtkEntry* entry, girara_session_t* session);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-bool cb_sc_display_link(GtkEntry* entry, girara_session_t* session);
+gboolean cb_sc_display_link(GtkEntry* entry, void* session);
 
 /**
  * Emitted when file has been changed
  *
  * @param monitor The file monitor
- * @param file The file
- * @param other_file A file or NULL
- * @param event The monitor event
  * @param session The girara session
  */
-void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file,
-    GFileMonitorEvent event, girara_session_t* session);
+void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session);
 
 /**
  * Callback to read new password for file that should be opened
@@ -140,7 +136,7 @@ void cb_file_monitor(GFileMonitor* monitor, GFile* file, GFile* other_file,
  * @param dialog The dialog information
  * @return true if input has been handled
  */
-bool cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog);
+gboolean cb_password_dialog(GtkEntry* entry, void* dialog);
 
 /**
  * Emitted when the view has been resized
@@ -150,7 +146,7 @@ bool cb_password_dialog(GtkEntry* entry, zathura_password_dialog_info_t* dialog)
  * @param zathura Zathura session
  * @return true if signal has been handled successfully
  */
-bool cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
+gboolean cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
 
 /**
  * Emitted when the 'recolor' setting is changed

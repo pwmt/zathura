@@ -22,7 +22,7 @@ COMMANDS
 set - Changing options
 ----------------------
 
-In addition to the build-in ``:set`` command zathura offers more options to be
+In addition to the built-in ``:set`` command zathura offers more options to be
 changed and makes those changes permanent. To overwrite an option you just have
 to add a line structured like the following
 
@@ -91,6 +91,7 @@ argument which can take one of the following values:
 
 * normal (default)
 * fullscreen
+* presentation
 * index
 
 The brackets around the value are mandatory.
@@ -224,6 +225,10 @@ The following shortcut functions can be mapped:
 * ``display_link``:
 
   Display link target.
+
+* ``exec``:
+
+  Execute an external command.
 
 * ``focus_inputbar``
 
@@ -370,7 +375,7 @@ OPTIONS
 
 girara
 ------
-This section describes settings concerning the behaviour of libgirara and
+This section describes settings concerning the behaviour of girara and
 zathura. The settings described here can be changed with ``set``.
 
 n-completion-items
@@ -444,7 +449,7 @@ Defines the default background color
 
 exec-command
 ^^^^^^^^^^^^
-Defines a command the should be prepanded to any command run with exec.
+Defines a command the should be prepended to any command run with exec.
 
 * Value type: String
 * Default value:
@@ -651,6 +656,14 @@ Defines if the number of pages per row should be honored when advancing a page.
 * Value type: Boolean
 * Default value: false
 
+continuous-hist-save
+^^^^^^^^^^^^^^^^^^^^
+Tells zathura whether to save document history at each page change or only when
+closing a document.
+
+* Value type: Boolean
+* Default value: false
+
 database
 ^^^^^^^^
 Defines the database backend to use for bookmarks and input history. Possible
@@ -661,12 +674,20 @@ values are "plain", "sqlite" (if built with sqlite support) and "null". If
 * Default value: plain
 
 dbus-service
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 En/Disables the D-Bus service. If the services is disabled, SyncTeX forward
 synchronization is not available.
 
 * Value type: Boolean
 * Default value: true
+
+filemonitor
+^^^^^^^^^^^
+Defines the filemonitor backend. Possible values are "glib" and "signal" (if
+signal handling is supported).
+
+* Value type: String
+* Default value: glib
 
 incremental-search
 ^^^^^^^^^^^^^^^^^^
@@ -741,7 +762,7 @@ Defines the column in which the first page will be displayed.
 This setting is stored separately for every value of pages-per-row according to
 the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
 value in the list will be used for all other number of pages per row if not set
-explicitely.
+explicitly.
 
 Per default, the first column is set to 2 for double-page layout.
 
@@ -866,7 +887,7 @@ Defines if scrolling by half or full pages stops at page boundaries.
 
 smooth-scroll
 ^^^^^^^^^^^^^
-Defines if scrolling via touchpad should be smooth(only available with gtk >= 3.4).
+Defines if scrolling via touchpad should be smooth.
 
 * Value type: Boolean
 * Default value: false
@@ -931,6 +952,13 @@ Display a short version of the file path, which replaces $HOME with ~, in the st
 zoom-center
 ^^^^^^^^^^^
 En/Disables horizontally centered zooming.
+
+* Value type: Boolean
+* Default value: false
+
+vertical-center
+^^^^^^^^^^^^^^^
+Center the screen at the vertical midpoint of the page by default.
 
 * Value type: Boolean
 * Default value: false
