@@ -6,7 +6,7 @@ PROJECT = zathura
 
 ZATHURA_VERSION_MAJOR = 0
 ZATHURA_VERSION_MINOR = 3
-ZATHURA_VERSION_REV = 7
+ZATHURA_VERSION_REV = 8
 # If the API changes, the API version and the ABI version have to be bumped.
 ZATHURA_API_VERSION = 2
 # If the ABI breaks for any reason, this has to be bumped.
