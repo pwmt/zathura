@@ -19,6 +19,11 @@
 #include "synctex.h"
 #endif
 
+#ifdef WITH_SECCOMP
+#include <unistd.h>
+#include "libsec.h"
+#endif
+
 /* Init locale */
 static void
 init_locale(void)
@@ -122,6 +127,11 @@ init_zathura(const char* config_dir, const char* data_dir,
 int
 main(int argc, char* argv[])
 {
+
+#ifdef WITH_SECCOMP
+  protectedView();
+#endif
+
   init_locale();
 
   /* parse command line arguments */
@@ -288,6 +298,11 @@ main(int argc, char* argv[])
     goto free_and_ret;
   }
 
+#ifdef WITH_SECCOMP
+  /* enforce strict syscall filter before parsing the document */
+  strictFilter();
+#endif
+  
   /* open document if passed */
   if (file_idx != 0) {
     if (page_number > 0) {

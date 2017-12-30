@@ -14,6 +14,10 @@
 #include "page.h"
 #include "render.h"
 
+#ifdef WITH_SECCOMP
+#include "libsec.h"
+#endif
+
 struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
   zathura_link_type_t type; /**< Link type */
@@ -199,9 +203,14 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       link_remote(zathura, link->target.value);
       break;
     case ZATHURA_LINK_URI:
+#ifndef WITH_SECCOMP
       if (girara_xdg_open(link->target.value) == false) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
       }
+#endif
+#ifdef WITH_SECCOMP
+        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external apps in protectedView Sandbox mode is not permitted"));
+#endif
       break;
     case ZATHURA_LINK_LAUNCH:
       link_launch(zathura, link);

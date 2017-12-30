@@ -23,6 +23,10 @@ ifneq ($(WITH_SYNCTEX),0)
 CPPFLAGS += -DWITH_SYNCTEX
 endif
 
+ifneq ($(WITH_SECCOMP),0)
+CPPFLAGS += -DWITH_SECCOMP
+endif
+
 ifneq ($(wildcard ${VALGRIND_SUPPRESSION_FILE}),)
 VALGRIND_ARGUMENTS += --suppressions=${VALGRIND_SUPPRESSION_FILE}
 endif
