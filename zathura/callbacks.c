@@ -216,6 +216,28 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
   statusbar_page_number_update(zathura);
 }
 
+gboolean
+cb_window_configure(GtkWidget* widget, GdkEventConfigure* UNUSED(configure), zathura_t* zathura)
+{
+  if (widget == NULL || zathura == NULL || zathura->document == NULL) {
+    return false;
+  }
+
+  int new_factor = gtk_widget_get_scale_factor(widget);
+
+  double current_x;
+  double current_y;
+  zathura_document_get_device_scale(zathura->document, &current_x, &current_y);
+
+  if (new_factor != current_x || new_factor != current_y) {
+    zathura_document_set_device_scale(zathura->document, new_factor, new_factor);
+    girara_debug("New device scale: %d", new_factor);
+    render_all(zathura);
+  }
+
+  return false;
+}
+
 void
 cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {

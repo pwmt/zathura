@@ -153,6 +153,9 @@ init_ui(zathura_t* zathura)
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
                    G_CALLBACK(cb_refresh_view), zathura);
 
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "configure-event",
+                   G_CALLBACK(cb_window_configure), zathura);
+
   /* page view */
   zathura->ui.page_widget = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);

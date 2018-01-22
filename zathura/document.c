@@ -36,6 +36,8 @@ struct zathura_document_s {
   double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
   unsigned int view_width; /**< width of current viewport */
   unsigned int view_height; /**< height of current viewport */
+  double device_scale_x; /**< x scale factor (for e.g. HiDPI) */
+  double device_scale_y; /**< y scale factor (for e.g. HiDPI) */
   unsigned int pages_per_row; /**< number of pages in a row */
   unsigned int first_page_column; /**< column of the first page */
   unsigned int page_padding; /**< padding between pages */
@@ -132,6 +134,8 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   document->cell_height = 0.0;
   document->view_height = 0;
   document->view_width  = 0;
+  document->device_scale_x = 0.0;
+  document->device_scale_y = 0.0;
   document->position_x  = 0.0;
   document->position_y  = 0.0;
 
@@ -498,6 +502,26 @@ zathura_document_get_viewport_size(zathura_document_t* document,
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
   *height = document->view_height;
   *width = document->view_width;
+}
+
+void
+zathura_document_set_device_scale(zathura_document_t* document,
+                                  double x_factor, double y_factor)
+{
+  if (document == NULL) {
+    return;
+  }
+  document->device_scale_x = x_factor;
+  document->device_scale_y = y_factor;
+}
+
+void
+zathura_document_get_device_scale(zathura_document_t* document,
+                                  double *x_factor, double* y_factor)
+{
+  g_return_if_fail(document != NULL && x_factor != NULL && y_factor != NULL);
+  *x_factor = document->device_scale_x;
+  *y_factor = document->device_scale_y;
 }
 
 void

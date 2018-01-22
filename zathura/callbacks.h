@@ -80,6 +80,21 @@ void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
+ * This function gets called when the main window is reconfigured, i.e. when
+ * its size, position or stacking order has changed, or when the device scale
+ * factor has changed (e.g. when moving from a regular to a HiDPI screen).
+ *
+ * It checks if the device scale factor has changed and if yes, records the new
+ * value and triggers a re-rendering of the document.
+ *
+ * @param widget The main window GtkWidget
+ * @param configure The GDK configure event
+ * @param zathura The zathura instance
+ */
+gboolean cb_window_configure(GtkWidget* widget, GdkEventConfigure* configure,
+    zathura_t* zathura);
+
+/**
  * This function gets called when the value of the "pages-per-row"
  * variable changes
  *
