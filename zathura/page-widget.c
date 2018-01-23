@@ -452,7 +452,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       double device_scale_x;
       double device_scale_y;
       cairo_surface_get_device_scale(priv->thumbnail, &device_scale_x, &device_scale_y);
-      if (device_scale_x != 0.0 && device_scale_y != 0.0) {
+      if (fabs(device_scale_x) >= DBL_EPSILON && fabs(device_scale_y) >= DBL_EPSILON) {
         pwidth *= device_scale_x;
         pheight *= device_scale_y;
       }

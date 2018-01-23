@@ -745,7 +745,10 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   double device_scale_y;
   zathura_document_get_device_scale(document, &device_scale_x, &device_scale_y);
 
-  if (device_scale_x != 0.0 && device_scale_y != 0.0) {
+  gboolean scales_nonzero = (fabs(device_scale_x) >= DBL_EPSILON &&
+          fabs(device_scale_y) >= DBL_EPSILON);
+
+  if (scales_nonzero) {
     page_width *= device_scale_x;
     page_height *= device_scale_y;
   }
@@ -762,7 +765,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   }
 
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
-  if (device_scale_x != 0.0 && device_scale_y != 0.0) {
+  if (scales_nonzero) {
     cairo_surface_set_device_scale(surface, device_scale_x, device_scale_y);
     if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
       cairo_surface_destroy(surface);
