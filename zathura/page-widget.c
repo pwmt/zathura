@@ -445,8 +445,18 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     } else {
       const unsigned int height = cairo_image_surface_get_height(priv->thumbnail);
       const unsigned int width = cairo_image_surface_get_width(priv->thumbnail);
-      const unsigned int pheight = (rotation % 180 ? page_width : page_height);
-      const unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+      unsigned int pheight = (rotation % 180 ? page_width : page_height);
+      unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+
+#ifdef HAVE_HIDPI_SUPPORT
+      double device_scale_x;
+      double device_scale_y;
+      cairo_surface_get_device_scale(priv->thumbnail, &device_scale_x, &device_scale_y);
+      if (device_scale_x != 0.0 && device_scale_y != 0.0) {
+        pwidth *= device_scale_x;
+        pheight *= device_scale_y;
+      }
+#endif
 
       cairo_scale(cairo, pwidth / (double)width, pheight / (double)height);
       cairo_set_source_surface(cairo, priv->thumbnail, 0, 0);
