@@ -217,14 +217,15 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
-cb_scale_factor(GtkWidget* widget, GParamSpec* UNUSED(pspec), zathura_t* zathura)
+cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
 {
-  if (widget == NULL || zathura == NULL || zathura->document == NULL) {
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
     return;
   }
 
 #ifdef HAVE_HIDPI_SUPPORT
-  int new_factor = gtk_widget_get_scale_factor(widget);
+  int new_factor = gtk_widget_get_scale_factor(GTK_WIDGET(object));
 #else
   int new_factor = 1;
 #endif

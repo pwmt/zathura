@@ -85,11 +85,11 @@ void cb_refresh_view(GtkWidget* view, gpointer data);
  *
  * It records the new value and triggers a re-rendering of the document.
  *
- * @param widget The view widget
+ * @param object The view widget
  * @param pspec The GParamSpec for the scale-factor property
- * @param zathura The zathura instance
+ * @param gpointer The zathura instance
  */
-void cb_scale_factor(GtkWidget* widget, GParamSpec *pspec, zathura_t* zathura);
+void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
 
 /**
  * This function gets called when the value of the "pages-per-row"
