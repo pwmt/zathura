@@ -740,7 +740,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
                                                    &page_height, &page_width,
                                                    false);
 
-#ifdef HAVE_HIDPI_SUPPORT
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
   double device_scale_x;
   double device_scale_y;
   zathura_document_get_device_scale(document, &device_scale_x, &device_scale_y);
@@ -761,7 +761,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     return false;
   }
 
-#ifdef HAVE_HIDPI_SUPPORT
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
   if (device_scale_x != 0.0 && device_scale_y != 0.0) {
     cairo_surface_set_device_scale(surface, device_scale_x, device_scale_y);
     if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {

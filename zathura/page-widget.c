@@ -448,7 +448,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       unsigned int pheight = (rotation % 180 ? page_width : page_height);
       unsigned int pwidth = (rotation % 180 ? page_height : page_width);
 
-#ifdef HAVE_HIDPI_SUPPORT
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
       double device_scale_x;
       double device_scale_y;
       cairo_surface_get_device_scale(priv->thumbnail, &device_scale_x, &device_scale_y);
