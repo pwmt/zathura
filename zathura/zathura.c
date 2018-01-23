@@ -153,10 +153,8 @@ init_ui(zathura_t* zathura)
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
                    G_CALLBACK(cb_refresh_view), zathura);
 
-#ifdef HAVE_HIDPI_SUPPORT
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
       "notify::scale-factor", G_CALLBACK(cb_scale_factor), zathura);
-#endif
 
   /* page view */
   zathura->ui.page_widget = gtk_grid_new();

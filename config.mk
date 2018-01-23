@@ -26,7 +26,7 @@ GLIB_MIN_VERSION = 2.50
 GLIB_PKG_CONFIG_NAME = glib-2.0
 # GTK
 GTK_VERSION_CHECK ?= 1
-GTK_MIN_VERSION = 3.6
+GTK_MIN_VERSION = 3.10
 GTK_PKG_CONFIG_NAME = gtk+-3.0
 
 # pkg-config binary
@@ -49,11 +49,8 @@ WITH_MAGIC ?= 1
 
 # HiDPI
 HIDPI_SUPPORT_CAIRO = $(shell (${PKG_CONFIG} --atleast-version=1.14 cairo && echo 1) || echo 0)
-HIDPI_SUPPORT_GTK = $(shell (${PKG_CONFIG} --atleast-version=3.10 ${GTK_PKG_CONFIG_NAME} && echo 1) || echo 0)
 ifeq (${HIDPI_SUPPORT_CAIRO},1)
-ifeq (${HIDPI_SUPPORT_GTK},1)
 CPPFLAGS += -DHAVE_HIDPI_SUPPORT
-endif
 endif
 
 # paths

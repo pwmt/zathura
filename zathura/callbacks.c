@@ -224,11 +224,7 @@ cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
     return;
   }
 
-#ifdef HAVE_HIDPI_SUPPORT
   int new_factor = gtk_widget_get_scale_factor(GTK_WIDGET(object));
-#else
-  int new_factor = 1;
-#endif
 
   double current_x;
   double current_y;
