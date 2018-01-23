@@ -216,11 +216,11 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
   statusbar_page_number_update(zathura);
 }
 
-gboolean
-cb_window_configure(GtkWidget* widget, GdkEventConfigure* UNUSED(configure), zathura_t* zathura)
+void
+cb_scale_factor(GtkWidget* widget, GParamSpec* UNUSED(pspec), zathura_t* zathura)
 {
   if (widget == NULL || zathura == NULL || zathura->document == NULL) {
-    return false;
+    return;
   }
 
   int new_factor = gtk_widget_get_scale_factor(widget);
@@ -230,12 +230,11 @@ cb_window_configure(GtkWidget* widget, GdkEventConfigure* UNUSED(configure), zat
   zathura_document_get_device_scale(zathura->document, &current_x, &current_y);
 
   if (new_factor != current_x || new_factor != current_y) {
-    zathura_document_set_device_scale(zathura->document, new_factor, new_factor);
+    zathura_document_set_device_scale(zathura->document, new_factor,
+        new_factor);
     girara_debug("New device scale: %d", new_factor);
     render_all(zathura);
   }
-
-  return false;
 }
 
 void
