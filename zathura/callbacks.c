@@ -223,7 +223,11 @@ cb_scale_factor(GtkWidget* widget, GParamSpec* UNUSED(pspec), zathura_t* zathura
     return;
   }
 
+#ifdef HAVE_HIDPI_SUPPORT
   int new_factor = gtk_widget_get_scale_factor(widget);
+#else
+  int new_factor = 1;
+#endif
 
   double current_x;
   double current_y;

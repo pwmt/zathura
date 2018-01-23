@@ -740,6 +740,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
                                                    &page_height, &page_width,
                                                    false);
 
+#ifdef HAVE_HIDPI_SUPPORT
   double device_scale_x;
   double device_scale_y;
   zathura_document_get_device_scale(document, &device_scale_x, &device_scale_y);
@@ -748,6 +749,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     page_width *= device_scale_x;
     page_height *= device_scale_y;
   }
+#endif
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
       page_width, page_height);
@@ -759,6 +761,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     return false;
   }
 
+#ifdef HAVE_HIDPI_SUPPORT
   if (device_scale_x != 0.0 && device_scale_y != 0.0) {
     cairo_surface_set_device_scale(surface, device_scale_x, device_scale_y);
     if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
@@ -766,6 +769,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
       return false;
     }
   }
+#endif
 
   cairo_t* cairo = cairo_create(surface);
   if (cairo == NULL) {

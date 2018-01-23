@@ -47,6 +47,15 @@ WITH_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
 # To disable support for mimetype detction with libmagic set WITH_MAGIC to 0.
 WITH_MAGIC ?= 1
 
+# HiDPI
+HIDPI_SUPPORT_CAIRO = $(shell (${PKG_CONFIG} --atleast-version=1.14 cairo && echo 1) || echo 0)
+HIDPI_SUPPORT_GTK = $(shell (${PKG_CONFIG} --atleast-version=3.10 ${GTK_PKG_CONFIG_NAME} && echo 1) || echo 0)
+ifeq (${HIDPI_SUPPORT_CAIRO},1)
+ifeq (${HIDPI_SUPPORT_GTK},1)
+CPPFLAGS += -DHAVE_HIDPI_SUPPORT
+endif
+endif
+
 # paths
 PREFIX ?= /usr
 MANPREFIX ?= ${PREFIX}/share/man
