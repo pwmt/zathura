@@ -654,8 +654,14 @@ draw_thumbnail_image(cairo_surface_t* surface, size_t max_size)
   width = width * scale;
   height = height * scale;
 
+  /* note: this always returns 1 and 1 if Cairo too old for device scale API */
+  zathura_device_factors_t device = get_safe_device_factors(surface);
+  const unsigned int user_width = width / device.x;
+  const unsigned int user_height = height / device.y;
+
+  /* create thumbnail surface, taking width and height as device sizes */
   cairo_surface_t *thumbnail;
-  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, width, height);
+  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, user_width, user_height);
   if (thumbnail == NULL) {
     return NULL;
   }
