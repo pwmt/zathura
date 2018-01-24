@@ -225,15 +225,16 @@ cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
   }
 
   int new_factor = gtk_widget_get_scale_factor(GTK_WIDGET(object));
+  if (new_factor == 0) {
+    girara_debug("Ignoring new device scale factor = 0");
+    return;
+  }
 
-  double current_x;
-  double current_y;
-  zathura_document_get_device_scale(zathura->document, &current_x, &current_y);
-
-  if (new_factor != current_x || new_factor != current_y) {
-    zathura_document_set_device_scale(zathura->document, new_factor,
-        new_factor);
-    girara_debug("New device scale: %d", new_factor);
+  zathura_device_factors_t current = zathura_document_get_device_factors(zathura->document);
+  if (fabs(new_factor - current.x) >= DBL_EPSILON ||
+      fabs(new_factor - current.y) >= DBL_EPSILON) {
+    zathura_document_set_device_factors(zathura->document, new_factor, new_factor);
+    girara_debug("New device scale factor: %d", new_factor);
     render_all(zathura);
   }
 }

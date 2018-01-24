@@ -409,6 +409,30 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   }
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
+static zathura_device_factors_t
+get_safe_device_factors(cairo_surface_t* surface)
+{
+    zathura_device_factors_t factors;
+    cairo_surface_get_device_scale(surface, &factors.x, &factors.y);
+
+    if (fabs(factors.x) < DBL_EPSILON) {
+        factors.x = 1.0;
+    }
+    if (fabs(factors.y) < DBL_EPSILON) {
+        factors.y = 1.0;
+    }
+
+    return factors;
+}
+#else
+static zathura_device_factors_t
+get_safe_device_factors(cairo_surface_t* UNUSED(surface))
+{
+  return (zathura_device_factors_t){1.0, 1.0};
+}
+#endif
+
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
@@ -448,15 +472,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       unsigned int pheight = (rotation % 180 ? page_width : page_height);
       unsigned int pwidth = (rotation % 180 ? page_height : page_width);
 
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
-      double device_scale_x;
-      double device_scale_y;
-      cairo_surface_get_device_scale(priv->thumbnail, &device_scale_x, &device_scale_y);
-      if (fabs(device_scale_x) >= DBL_EPSILON && fabs(device_scale_y) >= DBL_EPSILON) {
-        pwidth *= device_scale_x;
-        pheight *= device_scale_y;
-      }
-#endif
+      /* note: this always returns 1 and 1 if Cairo too old for device scale API */
+      zathura_device_factors_t device = get_safe_device_factors(priv->thumbnail);
+      pwidth *= device.x;
+      pheight *= device.y;
 
       cairo_scale(cairo, pwidth / (double)width, pheight / (double)height);
       cairo_set_source_surface(cairo, priv->thumbnail, 0, 0);

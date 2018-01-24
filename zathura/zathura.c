@@ -960,8 +960,8 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_document_set_viewport_height(zathura->document, view_height);
 
   /* get initial device scale */
-  int device_scale = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
-  zathura_document_set_device_scale(zathura->document, device_scale, device_scale);
+  int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+  zathura_document_set_device_factors(zathura->document, device_factor, device_factor);
 
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));

@@ -257,16 +257,15 @@ zathura_document_get_viewport_size(zathura_document_t* document,
  * @param[in] x_factor,yfactor The x and y scale factors
  */
 void
-zathura_document_set_device_scale(zathura_document_t* document,
+zathura_document_set_device_factors(zathura_document_t* document,
                                   double x_factor, double y_factor);
 /**
- * Return the current device scale factors.
+ * Return the current device scale factors (guaranteed to be non-zero).
  *
- * @param[out] x_factor,yfactor The x and y scale factors
+ * @return The x and y device scale factors
  */
-void
-zathura_document_get_device_scale(zathura_document_t* document,
-                                  double *x_factor, double* y_factor);
+zathura_device_factors_t
+zathura_document_get_device_factors(zathura_document_t* document);
 
 /**
  * Return the size of a cell from the document's layout table in pixels. Assumes
