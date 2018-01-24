@@ -153,6 +153,9 @@ init_ui(zathura_t* zathura)
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
                    G_CALLBACK(cb_refresh_view), zathura);
 
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
+      "notify::scale-factor", G_CALLBACK(cb_scale_factor), zathura);
+
   /* page view */
   zathura->ui.page_widget = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
@@ -955,6 +958,10 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_document_set_viewport_width(zathura->document, view_width);
   const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
+
+  /* get initial device scale */
+  int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+  zathura_document_set_device_factors(zathura->document, device_factor, device_factor);
 
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));

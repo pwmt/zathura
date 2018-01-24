@@ -80,6 +80,18 @@ void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
+ * This function gets called when the view widget scale factor changes (e.g.
+ * when moving from a regular to a HiDPI screen).
+ *
+ * It records the new value and triggers a re-rendering of the document.
+ *
+ * @param object The view widget
+ * @param pspec The GParamSpec for the scale-factor property
+ * @param gpointer The zathura instance
+ */
+void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
+
+/**
  * This function gets called when the value of the "pages-per-row"
  * variable changes
  *

@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <glib.h>
 #include <gio/gio.h>
+#include <math.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
@@ -36,6 +37,7 @@ struct zathura_document_s {
   double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
   unsigned int view_width; /**< width of current viewport */
   unsigned int view_height; /**< height of current viewport */
+  zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   unsigned int pages_per_row; /**< number of pages in a row */
   unsigned int first_page_column; /**< column of the first page */
   unsigned int page_padding; /**< padding between pages */
@@ -132,6 +134,8 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   document->cell_height = 0.0;
   document->view_height = 0;
   document->view_width  = 0;
+  document->device_factors.x = 1.0;
+  document->device_factors.y = 1.0;
   document->position_x  = 0.0;
   document->position_y  = 0.0;
 
@@ -498,6 +502,34 @@ zathura_document_get_viewport_size(zathura_document_t* document,
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
   *height = document->view_height;
   *width = document->view_width;
+}
+
+void
+zathura_document_set_device_factors(zathura_document_t* document,
+                                    double x_factor, double y_factor)
+{
+  if (document == NULL) {
+    return;
+  }
+  if (fabs(x_factor) < DBL_EPSILON || fabs(y_factor) < DBL_EPSILON) {
+    girara_debug("Ignoring new device factors %f and %f: too small",
+        x_factor, y_factor);
+    return;
+  }
+
+  document->device_factors.x = x_factor;
+  document->device_factors.y = y_factor;
+}
+
+zathura_device_factors_t
+zathura_document_get_device_factors(zathura_document_t* document)
+{
+  if (document == NULL) {
+    /* The function is guaranteed to not return zero values */
+    return (zathura_device_factors_t){1.0, 1.0};
+  }
+
+  return document->device_factors;
 }
 
 void

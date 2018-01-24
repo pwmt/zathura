@@ -409,6 +409,30 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   }
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
+static zathura_device_factors_t
+get_safe_device_factors(cairo_surface_t* surface)
+{
+    zathura_device_factors_t factors;
+    cairo_surface_get_device_scale(surface, &factors.x, &factors.y);
+
+    if (fabs(factors.x) < DBL_EPSILON) {
+        factors.x = 1.0;
+    }
+    if (fabs(factors.y) < DBL_EPSILON) {
+        factors.y = 1.0;
+    }
+
+    return factors;
+}
+#else
+static zathura_device_factors_t
+get_safe_device_factors(cairo_surface_t* UNUSED(surface))
+{
+  return (zathura_device_factors_t){1.0, 1.0};
+}
+#endif
+
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
@@ -445,8 +469,13 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     } else {
       const unsigned int height = cairo_image_surface_get_height(priv->thumbnail);
       const unsigned int width = cairo_image_surface_get_width(priv->thumbnail);
-      const unsigned int pheight = (rotation % 180 ? page_width : page_height);
-      const unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+      unsigned int pheight = (rotation % 180 ? page_width : page_height);
+      unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+
+      /* note: this always returns 1 and 1 if Cairo too old for device scale API */
+      zathura_device_factors_t device = get_safe_device_factors(priv->thumbnail);
+      pwidth *= device.x;
+      pheight *= device.y;
 
       cairo_scale(cairo, pwidth / (double)width, pheight / (double)height);
       cairo_set_source_surface(cairo, priv->thumbnail, 0, 0);
@@ -625,8 +654,14 @@ draw_thumbnail_image(cairo_surface_t* surface, size_t max_size)
   width = width * scale;
   height = height * scale;
 
+  /* note: this always returns 1 and 1 if Cairo too old for device scale API */
+  zathura_device_factors_t device = get_safe_device_factors(surface);
+  const unsigned int user_width = width / device.x;
+  const unsigned int user_height = height / device.y;
+
+  /* create thumbnail surface, taking width and height as device sizes */
   cairo_surface_t *thumbnail;
-  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, width, height);
+  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, user_width, user_height);
   if (thumbnail == NULL) {
     return NULL;
   }

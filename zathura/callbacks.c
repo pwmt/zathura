@@ -217,6 +217,29 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
+cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  int new_factor = gtk_widget_get_scale_factor(GTK_WIDGET(object));
+  if (new_factor == 0) {
+    girara_debug("Ignoring new device scale factor = 0");
+    return;
+  }
+
+  zathura_device_factors_t current = zathura_document_get_device_factors(zathura->document);
+  if (fabs(new_factor - current.x) >= DBL_EPSILON ||
+      fabs(new_factor - current.y) >= DBL_EPSILON) {
+    zathura_document_set_device_factors(zathura->document, new_factor, new_factor);
+    girara_debug("New device scale factor: %d", new_factor);
+    render_all(zathura);
+  }
+}
+
+void
 cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);

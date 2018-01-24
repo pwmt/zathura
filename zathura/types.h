@@ -271,4 +271,13 @@ void zathura_document_information_entry_free(zathura_document_information_entry_
  */
 typedef struct zathura_content_type_context_s zathura_content_type_context_t;
 
+/**
+ * Device scaling structure.
+ */
+typedef struct zathura_device_factors_s
+{
+  double x;
+  double y;
+} zathura_device_factors_t;
+
 #endif // TYPES_H

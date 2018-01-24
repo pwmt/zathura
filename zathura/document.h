@@ -250,6 +250,24 @@ zathura_document_get_viewport_size(zathura_document_t* document,
                                    unsigned int *height, unsigned int* width);
 
 /**
+ * Set the device scale factors (e.g. for HiDPI). These are generally integers
+ * and equal for x and y. These scaling factors are only used when rendering to
+ * the screen.
+ *
+ * @param[in] x_factor,yfactor The x and y scale factors
+ */
+void
+zathura_document_set_device_factors(zathura_document_t* document,
+                                  double x_factor, double y_factor);
+/**
+ * Return the current device scale factors (guaranteed to be non-zero).
+ *
+ * @return The x and y device scale factors
+ */
+zathura_device_factors_t
+zathura_document_get_device_factors(zathura_document_t* document);
+
+/**
  * Return the size of a cell from the document's layout table in pixels. Assumes
  * that the table is homogeneous (i.e. every cell has the same dimensions). It
  * takes the current scale into account.
