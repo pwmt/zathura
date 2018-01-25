@@ -413,17 +413,17 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
 static zathura_device_factors_t
 get_safe_device_factors(cairo_surface_t* surface)
 {
-    zathura_device_factors_t factors;
-    cairo_surface_get_device_scale(surface, &factors.x, &factors.y);
+  zathura_device_factors_t factors;
+  cairo_surface_get_device_scale(surface, &factors.x, &factors.y);
 
-    if (fabs(factors.x) < DBL_EPSILON) {
-        factors.x = 1.0;
-    }
-    if (fabs(factors.y) < DBL_EPSILON) {
-        factors.y = 1.0;
-    }
+  if (fabs(factors.x) < DBL_EPSILON) {
+    factors.x = 1.0;
+  }
+  if (fabs(factors.y) < DBL_EPSILON) {
+    factors.y = 1.0;
+  }
 
-    return factors;
+  return factors;
 }
 #else
 static zathura_device_factors_t
@@ -656,12 +656,12 @@ draw_thumbnail_image(cairo_surface_t* surface, size_t max_size)
 
   /* note: this always returns 1 and 1 if Cairo too old for device scale API */
   zathura_device_factors_t device = get_safe_device_factors(surface);
-  const unsigned int user_width = width / device.x;
-  const unsigned int user_height = height / device.y;
+  const unsigned int unscaled_width = width / device.x;
+  const unsigned int unscaled_height = height / device.y;
 
-  /* create thumbnail surface, taking width and height as device sizes */
+  /* create thumbnail surface, taking width and height as _unscaled_ device units */
   cairo_surface_t *thumbnail;
-  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, user_width, user_height);
+  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, unscaled_width, unscaled_height);
   if (thumbnail == NULL) {
     return NULL;
   }
