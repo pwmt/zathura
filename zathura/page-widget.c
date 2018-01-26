@@ -298,6 +298,49 @@ zathura_page_widget_finalize(GObject* object)
 }
 
 static void
+set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_font_weight_t weight)
+{
+  if (zathura == NULL) {
+    return;
+  }
+
+  /* get user font description */
+  char* font = NULL;
+  girara_setting_get(zathura->ui.session, "font", &font);
+  if (font == NULL) {
+    return;
+  }
+
+  /* use pango to extract font family and size */
+  PangoFontDescription* descr = pango_font_description_from_string(font);
+
+  const char* family = pango_font_description_get_family(descr);
+
+  /* get font size: can be points or absolute.
+   * absolute units: value = 10*PANGO_SCALE = 10 (unscaled) device units (logical pixels)
+   * point units:    value = 10*PANGO_SCALE = 10 points = 10*(font dpi config / 72) device units */
+  double size = pango_font_description_get_size(descr) / PANGO_SCALE;
+
+  /* convert point size to device units */
+  if (!pango_font_description_get_size_is_absolute(descr)) {
+    double font_dpi = 96.0;
+    if (zathura->ui.session != NULL) {
+      if (gtk_widget_has_screen(zathura->ui.session->gtk.view)) {
+        GdkScreen* screen = gtk_widget_get_screen(zathura->ui.session->gtk.view);
+        font_dpi = gdk_screen_get_resolution(screen);
+      }
+    }
+    size = size * font_dpi / 72;
+  }
+
+  cairo_select_font_face(cairo, family, CAIRO_FONT_SLANT_NORMAL, weight);
+  cairo_set_font_size(cairo, size);
+
+  pango_font_description_free(descr);
+  g_free(font);
+}
+
+static void
 zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
   ZathuraPage* pageview = ZATHURA_PAGE(object);
@@ -494,20 +537,12 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       return FALSE;
     }
 
-    /* draw rectangles */
-    char* font = NULL;
-    girara_setting_get(priv->zathura->ui.session, "font", &font);
+    /* draw links */
+    set_font_from_property(cairo, priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
 
     float transparency = 0.5;
     girara_setting_get(priv->zathura->ui.session, "highlight-transparency", &transparency);
 
-    if (font != NULL) {
-      cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    }
-
-    g_free(font);
-
-    /* draw links */
     if (priv->links.draw == true && priv->links.n != 0) {
       unsigned int link_counter = 0;
       GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
@@ -523,7 +558,6 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
         /* draw text */
         cairo_set_source_rgba(cairo, 0, 0, 0, 1);
-        cairo_set_font_size(cairo, 10);
         cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
         char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
         cairo_show_text(cairo, link_number);
