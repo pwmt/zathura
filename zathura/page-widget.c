@@ -340,11 +340,46 @@ set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_font_weight_t w
   g_free(font);
 }
 
+static cairo_text_extents_t
+get_text_extents(const char* string, zathura_t* zathura, cairo_font_weight_t weight) {
+  cairo_text_extents_t text = {0,};
+
+  if (zathura == NULL) {
+    return text;
+  }
+
+  /* make dummy surface to satisfy API requirements */
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, 0, 0);
+  if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    return text;
+  }
+
+  cairo_t* cairo = cairo_create(surface);
+  if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS) {
+    cairo_surface_destroy(surface);
+    return text;
+  }
+
+  set_font_from_property(cairo, zathura, weight);
+  cairo_text_extents(cairo, string, &text);
+
+  /* add some margin (for some reason the reported extents can be a bit short) */
+  text.width += 6;
+  text.height += 2;
+
+  cairo_destroy(cairo);
+  cairo_surface_destroy(surface);
+
+  return text;
+}
+
 static void
 zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
   ZathuraPage* pageview = ZATHURA_PAGE(object);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(pageview);
+
+  cairo_text_extents_t text;
 
   switch (prop_id) {
     case PROP_PAGE:
@@ -363,9 +398,18 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       }
 
       if (priv->links.retrieved == TRUE && priv->links.list != NULL) {
+        /* get size of text that should be large enough for every link hint */
+        text = get_text_extents("888", priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
+
         GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
         if (link != NULL) {
+          /* redraw link area */
           zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
+          redraw_rect(pageview, &rectangle);
+
+          /* also redraw area for link hint */
+          rectangle.x2 = rectangle.x1 + text.width;
+          rectangle.y1 = rectangle.y2 - text.height;
           redraw_rect(pageview, &rectangle);
         }
         GIRARA_LIST_FOREACH_END(priv->links.list, zathura_link_t*, iter, link);
