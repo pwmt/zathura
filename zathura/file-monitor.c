@@ -118,6 +118,16 @@ const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor)
   return private->file_path;
 }
 
+void zathura_filemonitor_start(ZathuraFileMonitor* file_monitor)
+{
+  ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->start(file_monitor);
+}
+
+void zathura_filemonitor_stop(ZathuraFileMonitor* file_monitor)
+{
+  ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->stop(file_monitor);
+}
+
 ZathuraFileMonitor*
 zathura_filemonitor_new(const char*                file_path,
                         zathura_filemonitor_type_t filemonitor_type)
