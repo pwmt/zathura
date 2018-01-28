@@ -157,10 +157,6 @@ zathura_filemonitor_new(const char*                file_path,
     return NULL;
   }
 
-  girara_debug("starting file monitor");
-  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(ret);
-  ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->start(file_monitor);
-
-  return file_monitor;
+  return ZATHURA_FILEMONITOR(ret);
 }
 

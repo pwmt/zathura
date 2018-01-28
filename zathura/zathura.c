@@ -898,6 +898,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     }
     g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "reload-file",
                      G_CALLBACK(cb_file_monitor), zathura->ui.session);
+
+    girara_debug("starting file monitor");
+    zathura_filemonitor_start(zathura->file_monitor.monitor);
   }
 
   if (password != NULL) {
