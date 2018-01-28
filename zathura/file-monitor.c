@@ -111,9 +111,9 @@ zathura_filemonitor_init(ZathuraFileMonitor* file_monitor)
   private->file_path = NULL;
 }
 
-const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* filemonitor)
+const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor)
 {
-  private_t* private = GET_PRIVATE(filemonitor);
+  private_t* private = GET_PRIVATE(file_monitor);
 
   return private->file_path;
 }
