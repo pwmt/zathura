@@ -20,7 +20,6 @@
 #endif
 
 #ifdef WITH_SECCOMP
-#include <unistd.h>
 #include "libsec.h"
 #endif
 
@@ -129,7 +128,7 @@ main(int argc, char* argv[])
 {
 
 #ifdef WITH_SECCOMP
-  protectedView();
+  seccomp_enable_protected_view();
 #endif
 
   init_locale();
@@ -300,7 +299,7 @@ main(int argc, char* argv[])
 
 #ifdef WITH_SECCOMP
   /* enforce strict syscall filter before parsing the document */
-  strictFilter();
+  seccomp_enable_strict_filter();
 #endif
   
   /* open document if passed */

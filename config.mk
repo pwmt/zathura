@@ -121,11 +121,12 @@ endif
 endif
 
 ifneq (${WITH_SECCOMP},0)
-SECCOMP_INC ?=
-SECCOMP_LIB ?= -lseccomp
-
-INCS += ${SECCOMP_INC}
-LIBS += ${SECCOMP_LIB}
+ifeq (${LIBSECCOMP_INC}-${LIBSECCOMP_LIB},-)
+PKG_CONFIG_LIBS += libseccomp
+else
+INCS += ${LIBSECCOMP_INC}
+LIBS += ${LIBSECCOMP_LIB}
+endif
 endif
 
 ifneq (${PKG_CONFIG_LIBS},)

@@ -13,12 +13,10 @@
 #define DENY_RULE(call) { if (seccomp_rule_add (ctx, SCMP_ACT_KILL, SCMP_SYS(call), 0) < 0) goto out; }
 #define ALLOW_RULE(call) { if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(call), 0) < 0) goto out; }
 
-scmp_filter_ctx ctx;
-
-
-
-int protectedMode(void){
-
+int seccomp_enable_protected_mode(void){
+    
+    scmp_filter_ctx ctx;
+ 
     /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
     if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
         perror("prctl SET_NO_NEW_PRIVS");
@@ -37,7 +35,6 @@ int protectedMode(void){
 	perror("seccomp_init failed");
         exit(EXIT_FAILURE);
     }
-
     
     DENY_RULE (_sysctl);
     DENY_RULE (acct);
@@ -91,7 +88,6 @@ int protectedMode(void){
     DENY_RULE (uselib);
     DENY_RULE (vmsplice);
 
-
     /* applying filter... */
     if (seccomp_load (ctx) >= 0){
 	/* free ctx after the filter has been loaded into the kernel */
@@ -103,12 +99,13 @@ int protectedMode(void){
     /* something went wrong */
     seccomp_release(ctx);
     return 1;
-
 }
 
 
-int protectedView(void){
+int seccomp_enable_protected_view(void){
 
+    scmp_filter_ctx ctx;
+	
     /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
     if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
         perror("prctl SET_NO_NEW_PRIVS");
@@ -127,7 +124,6 @@ int protectedView(void){
 	perror("seccomp_init failed");
         exit(EXIT_FAILURE);
     }
-
     
     ALLOW_RULE (access);
     ALLOW_RULE (bind);
@@ -210,22 +206,18 @@ int protectedView(void){
     ALLOW_RULE (writev); 
     ALLOW_RULE (wait4);  /* trying to open links should not crash the app */
 
-
     /* allowed for use with container */
 
     ALLOW_RULE (chmod);
     ALLOW_RULE (link);
-    ALLOW_RULE (rename);
-
-    
+    ALLOW_RULE (rename); 
 
     /* allowed for debugging: */
 
     /* ALLOW_RULE (prctl); */
     /* ALLOW_RULE (ioctl); */
 
-
-
+    
     /* incomplete */
     
     /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
@@ -271,8 +263,6 @@ int protectedView(void){
     /* 			  SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG)) < 0) */
     /* 	goto out; */
 
-
-
     
     /* when zathura is run on wayland, with X11 server available but blocked, unset the DISPLAY variable */
     /* otherwise it will try to connect to X11 using inet socket protocol */
@@ -286,7 +276,6 @@ int protectedView(void){
     if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(socket), 1,
     			  SCMP_CMP(0, SCMP_CMP_EQ, AF_LOCAL)) < 0)
     	goto out;
-
 
 
     /* TODO: avoid the need for the open syscall to be allowed with write permissions */
@@ -307,11 +296,7 @@ int protectedView(void){
     /* 	goto out; */
 
 
-
-
-
     /*  ------------ experimental filters --------------- */
-
     
     /* /\* this filter is susceptible to TOCTOU race conditions, providing limited use *\/ */
     /* /\* allow opening only specified files identified by their file descriptors*\/ */
@@ -381,12 +366,12 @@ int protectedView(void){
     /* something went wrong */
     seccomp_release(ctx);
     return 1;
-
-
 }
 
 
-int strictFilter(void){
+int seccomp_enable_strict_filter(void){
+
+    scmp_filter_ctx ctx;
 
     /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
     if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
@@ -407,7 +392,6 @@ int strictFilter(void){
         exit(EXIT_FAILURE);
     }
 
-    
     ALLOW_RULE (access);
     /* ALLOW_RULE (arch_prctl); */
     ALLOW_RULE (bind);
@@ -487,7 +471,7 @@ int strictFilter(void){
     ALLOW_RULE (writev); 
     ALLOW_RULE (wait4);  /* trying to open links should not crash the app */
 
-
+    
     /* Special requirements for ioctl, allowed on stdout/stderr */
     if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 1,
     			  SCMP_CMP(0, SCMP_CMP_EQ, 1)) < 0)
@@ -496,8 +480,7 @@ int strictFilter(void){
     			  SCMP_CMP(0, SCMP_CMP_EQ, 2)) < 0)
     	goto out;
 
-
-    
+   
     /* needed by gtk??? (does not load content without) */
 
     /* special restrictions for prctl, only allow PR_SET_NAME/PR_SET_PDEATHSIG */
@@ -508,7 +491,6 @@ int strictFilter(void){
     if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(prctl), 1,
     			  SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG)) < 0)
     	goto out;
-
 
     
     /* allowed for debugging: */
@@ -527,27 +509,6 @@ int strictFilter(void){
   out:
     /* something went wrong */
     seccomp_release(ctx);
-    return 1;
-}
-
-
-#else /* WITH_SECCOMP */
-
-int protectedMode(void){
-
-    perror("No seccomp support compiled-in\n");
-    return 1;
-}
-
-int protectedView(void){
-
-    perror("No seccomp support compiled-in\n");
-    return 1;
-}
-
-int strictFilter(void){
-
-    perror("No seccomp support compiled-in\n");
     return 1;
 }
 

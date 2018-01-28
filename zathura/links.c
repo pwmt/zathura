@@ -207,9 +207,8 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       if (girara_xdg_open(link->target.value) == false) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
       }
-#endif
-#ifdef WITH_SECCOMP
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external apps in protectedView Sandbox mode is not permitted"));
+#else
+      girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external apps in protectedView Sandbox mode is not permitted"));
 #endif
       break;
     case ZATHURA_LINK_LAUNCH:
