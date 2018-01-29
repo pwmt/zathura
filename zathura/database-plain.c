@@ -518,7 +518,7 @@ plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jum
 
   GString* str_val = g_string_new(NULL);
 
-  GIRARA_LIST_FOREACH(jumplist, zathura_jump_t*, iter, jump)
+  GIRARA_LIST_FOREACH_BODY(jumplist, zathura_jump_t*, jump,
     char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
 
     g_string_append_printf(str_val, "%d ", jump->page);
@@ -526,7 +526,7 @@ plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jum
     g_string_append_c(str_val, ' ');
     g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
     g_string_append_c(str_val, ' ');
-  GIRARA_LIST_FOREACH_END(jumplist, zathura_jump_t*, iter, jump);
+  );
 
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
 

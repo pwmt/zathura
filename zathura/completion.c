@@ -184,9 +184,9 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
       goto error_free;
     }
 
-    GIRARA_LIST_FOREACH(names, const char*, iter, file)
-    girara_completion_group_add_element(group, file, NULL);
-    GIRARA_LIST_FOREACH_END(names, const char*, iter, file);
+    GIRARA_LIST_FOREACH_BODY(names, const char*, file,
+      girara_completion_group_add_element(group, file, NULL);
+    );
     girara_list_free(names);
   }
 
@@ -197,10 +197,10 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
     }
 
     if (girara_list_size(recent_files) != 0) {
-      GIRARA_LIST_FOREACH(recent_files, const char*, iter, file)
+      GIRARA_LIST_FOREACH_BODY(recent_files, const char*, file,
         girara_debug("adding %s (recent file)", file);
         girara_completion_group_add_element(history_group, file, NULL);
-      GIRARA_LIST_FOREACH_END(recent_files, const char*, iter, file);
+      );
       girara_list_free(recent_files);
     } else {
       girara_completion_group_free(history_group);
@@ -278,13 +278,13 @@ cc_bookmarks(girara_session_t* session, const char* input)
   }
 
   const size_t input_length = strlen(input);
-  GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
-  if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
-    gchar* paged = g_strdup_printf(_("Page %d"), bookmark->page);
-    girara_completion_group_add_element(group, bookmark->id, paged);
-    g_free(paged);
-  }
-  GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+  GIRARA_LIST_FOREACH_BODY(zathura->bookmarks.bookmarks, zathura_bookmark_t*, bookmark,
+    if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
+      gchar* paged = g_strdup_printf(_("Page %d"), bookmark->page);
+      girara_completion_group_add_element(group, bookmark->id, paged);
+      g_free(paged);
+    }
+  );
 
   girara_completion_add_group(completion, group);
 
@@ -334,14 +334,14 @@ cc_export(girara_session_t* session, const char* input)
   if (attachments != NULL) {
     bool added = false;
 
-    GIRARA_LIST_FOREACH(attachments, const char*, iter, attachment)
-    if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
-      char* attachment_string = g_strdup_printf("attachment-%s", attachment);
-      girara_completion_group_add_element(attachment_group, attachment_string, NULL);
-      g_free(attachment_string);
-      added = true;
-    }
-    GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+    GIRARA_LIST_FOREACH_BODY(attachments, const char*, attachment,
+      if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
+        char* attachment_string = g_strdup_printf("attachment-%s", attachment);
+        girara_completion_group_add_element(attachment_group, attachment_string, NULL);
+        g_free(attachment_string);
+        added = true;
+      }
+    );
 
     if (added == true) {
       girara_completion_add_group(completion, attachment_group);
@@ -371,14 +371,14 @@ cc_export(girara_session_t* session, const char* input)
     girara_list_t* images = zathura_page_images_get(page, NULL);
     if (images != NULL) {
       unsigned int image_number = 1;
-      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, UNUSED(image))
-      char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
-      girara_completion_group_add_element(image_group, image_string, NULL);
-      g_free(image_string);
+      GIRARA_LIST_FOREACH_BODY(images, zathura_image_t*, UNUSED(image),
+        char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
+        girara_completion_group_add_element(image_group, image_string, NULL);
+        g_free(image_string);
 
-      added = true;
-      image_number++;
-      GIRARA_LIST_FOREACH_END(images, zathura_image_t*, iter, image);
+        added = true;
+        image_number++;
+      );
       girara_list_free(images);
     }
   }

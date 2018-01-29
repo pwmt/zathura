@@ -506,16 +506,16 @@ zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
 
   if (dir != NULL) {
     girara_list_t* paths = girara_split_path_array(dir);
-    GIRARA_LIST_FOREACH(paths, char*, iter, path)
-    zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
-    GIRARA_LIST_FOREACH_END(paths, char*, iter, path);
+    GIRARA_LIST_FOREACH_BODY(paths, char*, path,
+      zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
+    );
     girara_list_free(paths);
   } else {
 #ifdef ZATHURA_PLUGINDIR
     girara_list_t* paths = girara_split_path_array(ZATHURA_PLUGINDIR);
-    GIRARA_LIST_FOREACH(paths, char*, iter, path)
-    zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
-    GIRARA_LIST_FOREACH_END(paths, char*, iter, path);
+    GIRARA_LIST_FOREACH_BODY(paths, char*, path,
+      zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
+    );
     girara_list_free(paths);
 #endif
   }

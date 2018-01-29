@@ -438,11 +438,12 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
 
   bool unfinished_jobs = false;
   /* check if there are any active jobs left */
-  GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
+  GIRARA_LIST_FOREACH_BODY(request_priv->active_jobs, render_job_t*, job,
     if (job->aborted == false) {
       unfinished_jobs = true;
+      break;
     }
-  GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
+  );
 
   /* only add a new job if there are no active ones left */
   if (unfinished_jobs == false) {
@@ -471,9 +472,9 @@ zathura_render_request_abort(ZathuraRenderRequest* request)
 
   request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
   g_mutex_lock(&request_priv->jobs_mutex);
-  GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
+  GIRARA_LIST_FOREACH_BODY(request_priv->active_jobs, render_job_t*, job,
     job->aborted = true;
-  GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
+  );
   g_mutex_unlock(&request_priv->jobs_mutex);
 }
 
@@ -632,14 +633,14 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
 
     if (found_images == true) {
       /* Get images bounding boxes */
-      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, image_it)
+      GIRARA_LIST_FOREACH_BODY(images, zathura_image_t*, image_it,
         zathura_rectangle_t* rect = g_try_malloc(sizeof(zathura_rectangle_t));
         if (rect == NULL) {
           break;
         }
         *rect = recalc_rectangle(page, image_it->position);
         girara_list_append(rectangles, rect);
-      GIRARA_LIST_FOREACH_END(images, zathura_image_t*, iter, image_it);
+      );
     }
   }
 
@@ -650,13 +651,13 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
       /* Check if the pixel belongs to an image when in reverse video mode*/
       if (priv->recolor.reverse_video == true && found_images == true){
         bool inside_image = false;
-        GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect_it)
+        GIRARA_LIST_FOREACH_BODY(rectangles, zathura_rectangle_t*, rect_it,
           if (rect_it->x1 <= x && rect_it->x2 >= x &&
               rect_it->y1 <= y && rect_it->y2 >= y) {
             inside_image = true;
             break;
           }
-        GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect_it);
+        );
         /* If it's inside and image don't recolor */
         if (inside_image == true) {
           continue;

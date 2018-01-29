@@ -355,13 +355,13 @@ synctex_view(zathura_t* zathura, const char* input_file,
   }
 
   if (secondary_rects != NULL) {
-    GIRARA_LIST_FOREACH(secondary_rects, synctex_page_rect_t*, iter, rect)
+    GIRARA_LIST_FOREACH_BODY(secondary_rects, synctex_page_rect_t*, rect,
       zathura_rectangle_t* newrect = g_try_malloc0(sizeof(zathura_rectangle_t));
       if (newrect != NULL) {
         *newrect = rect->rect;
         girara_list_append(all_rectangles[rect->page], newrect);
       }
-    GIRARA_LIST_FOREACH_END(secondary_rects, synctex_page_rect_t*, iter, rect);
+    );
   }
 
   synctex_highlight_rects(zathura, page, all_rectangles);
