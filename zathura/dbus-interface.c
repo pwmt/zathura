@@ -202,7 +202,7 @@ zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned
 
   GError* error = NULL;
   g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH,
-    DBUS_INTERFACE, "Edit", g_variant_new("(suu)", input_file, x, y), &error);
+    DBUS_INTERFACE, "Edit", g_variant_new("(suu)", input_file, line, column), &error);
 
   g_free(input_file);
 
@@ -575,4 +575,3 @@ zathura_dbus_synctex_position(const char* filename, const char* input_file,
 
   return iterate_instances_call_synctex_view(filename, input_file, line, column, hint);
 }
-
