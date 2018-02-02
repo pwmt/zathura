@@ -375,13 +375,15 @@ zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
 
   if (dark != NULL) {
     GdkRGBA color;
-    gdk_rgba_parse(&color, dark);
-    zathura_renderer_set_recolor_colors(renderer, NULL, &color);
+    if (parse_color(&color, dark) == true) {
+      zathura_renderer_set_recolor_colors(renderer, NULL, &color);
+    }
   }
   if (light != NULL) {
     GdkRGBA color;
-    gdk_rgba_parse(&color, light);
-    zathura_renderer_set_recolor_colors(renderer, &color, NULL);
+    if (parse_color(&color, light) == true) {
+      zathura_renderer_set_recolor_colors(renderer, &color, NULL);
+    }
   }
 }
 

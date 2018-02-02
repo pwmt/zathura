@@ -280,3 +280,13 @@ find_first_page_column(const char* first_page_column_list,
 
   return first_page_column;
 }
+
+bool
+parse_color(GdkRGBA* color, const char* str)
+{
+  if (gdk_rgba_parse(color, str) == FALSE) {
+    girara_warning("Failed to parse color string '%s'.", str);
+    return false;
+  }
+  return true;
+}

@@ -120,4 +120,14 @@ double zathura_correct_scale_value(girara_session_t* session, const double
 unsigned int find_first_page_column(const char* first_page_column_list,
                                     const unsigned int pages_per_row);
 
+/**
+ * Parse color string and print warning if color cannot be parsed.
+ *
+ * @param[out] color The color
+ * @param[in] str Color string
+ *
+ * @return True if color string can be parsed, false otherwise.
+ */
+bool parse_color(GdkRGBA* color, const char* str);
+
 #endif // UTILS_H

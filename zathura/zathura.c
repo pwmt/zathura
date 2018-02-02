@@ -245,7 +245,7 @@ init_css(zathura_t* zathura)
     GdkRGBA rgba      = {0, 0, 0, 0};
     girara_setting_get(zathura->ui.session, index_settings[s], &tmp_value);
     if (tmp_value != NULL) {
-      gdk_rgba_parse(&rgba, tmp_value);
+      parse_color(&rgba, tmp_value);
       g_free(tmp_value);
     }
 
