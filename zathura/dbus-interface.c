@@ -417,7 +417,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
 
     if (handlers[idx].needs_document == true && priv->zathura->document == NULL) {
       g_dbus_method_invocation_return_dbus_error(
-          invocation, "org.pwmt.zathura.NoOpenDocumen",
+          invocation, "org.pwmt.zathura.NoOpenDocument",
           "No document has been opened.");
       return;
     }
