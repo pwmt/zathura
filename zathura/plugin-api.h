@@ -91,9 +91,14 @@ typedef char* (*zathura_plugin_page_get_text_t)(zathura_page_t* page, void* data
 typedef zathura_image_buffer_t* (*zathura_plugin_page_render_t)(zathura_page_t* page, void* data, zathura_error_t* error);
 
 /**
- * Renders the page
+ * Renders the page to a cairo surface.
  */
 typedef zathura_error_t (*zathura_plugin_page_render_cairo_t)(zathura_page_t* page, void* data, cairo_t* cairo, bool printing);
+
+/**
+ * Get page label.
+ */
+typedef zathura_error_t (*zathura_plugin_page_get_label_t)(zathura_page_t* page, void* data, char** label);
 
 
 struct zathura_plugin_functions_s
@@ -179,9 +184,14 @@ struct zathura_plugin_functions_s
   zathura_plugin_page_render_t page_render;
 
   /**
-   * Renders the page
+   * Renders the page to a cairo surface.
    */
   zathura_plugin_page_render_cairo_t page_render_cairo;
+
+  /**
+   * Get page label.
+   */
+  zathura_plugin_page_get_label_t page_get_label;
 };
 
 /**

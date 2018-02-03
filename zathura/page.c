@@ -359,3 +359,34 @@ zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
 
   return functions->page_render_cairo(page, page->data, cairo, printing);
 }
+
+char*
+zathura_page_get_label(zathura_page_t* page, zathura_error_t* error)
+{
+  if (page == NULL || page->document == NULL) {
+    if (error) {
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
+    }
+    return NULL;
+  }
+
+  zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
+  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_get_label == NULL) {
+    if (error) {
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
+    }
+    return NULL;
+  }
+
+  char* ret = NULL;
+  zathura_error_t e = functions->page_get_label(page, page->data, &ret);
+  if (e != ZATHURA_ERROR_OK) {
+    if (error) {
+      *error = e;
+    }
+    return NULL;
+  }
+
+  return ret;
+}

@@ -203,4 +203,15 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
  */
 zathura_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
 
+/**
+ * Get page label. Note that the page label might not exist, in this case NULL
+ * is returned.
+ *
+ * @param page Page
+ * @param error Set to an error value (see \ref zathura_Error_t) if an error
+ *    occurred.
+ * @return Page label
+ */
+char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error);
+
 #endif // PAGE_H
