@@ -180,10 +180,6 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       for (size_t s = 0; s != plugin_definition->mime_types_size; ++s) {
         zathura_plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
       }
-      // register functions
-      if (plugin->definition->register_function != NULL) {
-        plugin->definition->register_function(&(plugin->functions));
-      }
 
       bool ret = register_plugin(plugin_manager, plugin);
       if (ret == false) {

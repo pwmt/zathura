@@ -194,13 +194,6 @@ struct zathura_plugin_functions_s
   zathura_plugin_page_get_label_t page_get_label;
 };
 
-/**
- * Functions register function
- *
- * @param functions The functions struct
- */
-typedef void (*zathura_plugin_register_function_t)(zathura_plugin_functions_t* functions);
-
 typedef struct zathura_plugin_version_s {
   unsigned int major; /**< Major */
   unsigned int minor; /**< Minor */
@@ -210,7 +203,6 @@ typedef struct zathura_plugin_version_s {
 typedef struct zathura_plugin_definition_s {
   const char* name;
   const zathura_plugin_version_t version;
-  const zathura_plugin_register_function_t register_function;
   zathura_plugin_functions_t functions;
   const size_t mime_types_size;
   const char** mime_types;
@@ -259,7 +251,6 @@ typedef struct zathura_plugin_definition_s {
   const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = { \
     .name = plugin_name, \
     .version = { major, minor, rev }, \
-    .register_function = NULL, \
     .functions = plugin_functions, \
     .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]), \
     .mime_types = zathura_plugin_mime_types \
