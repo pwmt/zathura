@@ -1322,7 +1322,16 @@ statusbar_page_number_update(zathura_t* zathura)
   unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
 
   if (zathura->document != NULL) {
-    char* page_number_text = g_strdup_printf("[%d/%d]", current_page_number + 1, number_of_pages);
+    zathura_page_t* page = zathura_document_get_page(zathura->document, current_page_number);
+    char* page_label = zathura_page_get_label(page, NULL);
+
+    char* page_number_text = NULL;
+    if (page_label != NULL) {
+      page_number_text = g_strdup_printf("[%s (%d/%d)]", page_label, current_page_number + 1, number_of_pages);
+      g_free(page_label);
+    } else {
+      page_number_text = g_strdup_printf("[%d/%d]", current_page_number + 1, number_of_pages);
+    }
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
 
     bool page_number_in_window_title = false;
