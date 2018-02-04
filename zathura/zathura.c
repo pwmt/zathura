@@ -1491,10 +1491,8 @@ adjust_view(zathura_t* zathura)
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
       (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
     newscale *= (double)view_width / (double)document_width;
-
   } else if (adjust_mode == ZATHURA_ADJUST_BESTFIT) {
     newscale *= (double)view_height / (double)cell_height;
-
   } else {
     goto error_ret;
   }
