@@ -190,8 +190,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
       continue;
     }
 
-    char* name = NULL;
-    while ((name = (char*) g_dir_read_name(dir)) != NULL) {
+    const char* name = NULL;
+    while ((name = g_dir_read_name(dir)) != NULL) {
       load_plugin(plugin_manager, plugindir, name);
     }
     g_dir_close(dir);
