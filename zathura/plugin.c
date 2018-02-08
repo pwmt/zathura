@@ -343,11 +343,11 @@ plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
   }
 }
 
-zathura_plugin_functions_t*
+const zathura_plugin_functions_t*
 zathura_plugin_get_functions(zathura_plugin_t* plugin)
 {
   if (plugin != NULL) {
-    return &(plugin->functions);
+    return &plugin->functions;
   } else {
     return NULL;
   }

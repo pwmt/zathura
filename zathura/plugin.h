@@ -63,7 +63,7 @@ girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plug
  * @param plugin The plugin
  * @return The plugin functions
  */
-zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t* plugin);
+const zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t* plugin);
 
 /**
  * Returns the name of the plugin

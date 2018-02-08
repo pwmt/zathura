@@ -144,7 +144,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   file = NULL;
 
   /* open document */
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
   if (functions->document_open == NULL) {
     girara_error("plugin has no open function\n");
     goto error_free;
@@ -221,7 +221,7 @@ zathura_document_free(zathura_document_t* document)
 
   /* free document */
   zathura_error_t error = ZATHURA_ERROR_OK;
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_free == NULL) {
     error = ZATHURA_ERROR_NOT_IMPLEMENTED;
   } else {
@@ -619,7 +619,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
     return ZATHURA_ERROR_UNKNOWN;
   }
 
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_save_as == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
@@ -635,7 +635,7 @@ zathura_document_index_generate(zathura_document_t* document, zathura_error_t* e
     return NULL;
   }
 
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_index_generate == NULL) {
     check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
     return NULL;
@@ -652,7 +652,7 @@ zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* 
     return NULL;
   }
 
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_attachments_get == NULL) {
     check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
     return NULL;
@@ -668,7 +668,7 @@ zathura_document_attachment_save(zathura_document_t* document, const char* attac
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_attachment_save == NULL) {
     return ZATHURA_ERROR_NOT_IMPLEMENTED;
   }
@@ -684,7 +684,7 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
     return NULL;
   }
 
-  zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
   if (functions->document_get_information == NULL) {
     check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
     return NULL;
