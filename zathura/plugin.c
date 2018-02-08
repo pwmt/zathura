@@ -181,20 +181,18 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
     return;
   }
 
-  GIRARA_LIST_FOREACH_BODY_WITH_ITER(plugin_manager->path, char*, iter, plugindir,
+  GIRARA_LIST_FOREACH_BODY(plugin_manager->path, char*, plugindir,
     /* read all files in the plugin directory */
     GDir* dir = g_dir_open(plugindir, 0, NULL);
     if (dir == NULL) {
       girara_error("could not open plugin directory: %s", plugindir);
-      girara_list_iterator_next(iter);
-      continue;
+    } else {
+      const char* name = NULL;
+      while ((name = g_dir_read_name(dir)) != NULL) {
+        load_plugin(plugin_manager, plugindir, name);
+      }
+      g_dir_close(dir);
     }
-
-    const char* name = NULL;
-    while ((name = g_dir_read_name(dir)) != NULL) {
-      load_plugin(plugin_manager, plugindir, name);
-    }
-    g_dir_close(dir);
   );
 }
 
