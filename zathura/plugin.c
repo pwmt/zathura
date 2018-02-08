@@ -281,12 +281,17 @@ plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, 
   g_return_val_if_fail(type           != NULL, false);
   g_return_val_if_fail(plugin         != NULL, false);
 
-  GIRARA_LIST_FOREACH_BODY_WITH_ITER(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping,
+  bool already_registered = false;
+  GIRARA_LIST_FOREACH_BODY(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, mapping,
     if (g_content_type_equals(type, mapping->type)) {
-      girara_list_iterator_free(iter);
-      return false;
+      already_registered = true;
+      break;
     }
   );
+
+  if (already_registered == true) {
+    return false;
+  }
 
   zathura_type_plugin_mapping_t* mapping = g_try_malloc0(sizeof(zathura_type_plugin_mapping_t));
   if (mapping == NULL) {
