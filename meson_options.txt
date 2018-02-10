@@ -1,0 +1,15 @@
+option('enable-sqlite',
+  type: 'boolean',
+  value: true,
+  description: 'Enable sqlite support if available.'
+)
+option('enable-synctex',
+  type: 'boolean',
+  value: true,
+  description: 'Enable synctex support if available.'
+)
+option('enable-magic',
+  type: 'boolean',
+  value: true,
+  description: 'Enable magic support if available.'
+)
