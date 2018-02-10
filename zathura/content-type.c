@@ -97,7 +97,7 @@ guess_type_magic(zathura_content_type_context_t* context, const char* path)
   girara_debug("magic detected filetype: %s", mime_type);
 
   /* dup so we own the memory */
-  return g_strdup(mime_type);;
+  return g_strdup(mime_type);
 }
 
 static char*
@@ -106,7 +106,7 @@ guess_type_file(const char* UNUSED(path))
   return NULL;
 }
 #else
-static const char*
+static char*
 guess_type_magic(zathura_content_type_context_t* UNUSED(context),
                  const char* UNUSED(path))
 {
