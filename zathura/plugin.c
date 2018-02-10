@@ -39,7 +39,7 @@ struct zathura_plugin_manager_s {
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
 };
 
-static void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
+static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
 static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin);
 static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin);
 static void zathura_plugin_free(zathura_plugin_t* plugin);
@@ -159,7 +159,7 @@ load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, con
 
   // register mime types
   for (size_t s = 0; s != plugin_definition->mime_types_size; ++s) {
-    zathura_plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
+    plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
   }
 
   bool ret = register_plugin(plugin_manager, plugin);
@@ -328,13 +328,18 @@ zathura_plugin_free(zathura_plugin_t* plugin)
 }
 
 static void
-zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
+plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
 {
   if (plugin == NULL || mime_type == NULL) {
     return;
   }
 
-  girara_list_append(plugin->content_types, g_content_type_from_mime_type(mime_type));
+  char* content_type = g_content_type_from_mime_type(mime_type);
+  if (content_type == NULL) {
+    girara_warning("plugin: unable to convert mime type: %s", mime_type);
+  } else {
+    girara_list_append(plugin->content_types, content_type);
+  }
 }
 
 zathura_plugin_functions_t*
