@@ -253,15 +253,16 @@ register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plug
       || plugin->content_types == NULL
       || plugin_manager == NULL
       || plugin_manager->plugins == NULL) {
-    girara_error("plugin: could not register\n");
+    girara_error("plugin: could not register");
     return false;
   }
 
   bool at_least_one = false;
   GIRARA_LIST_FOREACH_BODY(plugin->content_types, gchar*, type,
     if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
-      girara_error("plugin: already registered for filetype %s\n", type);
+      girara_error("plugin: filetype already registered: %s", type);
     } else {
+      girara_debug("plugin: filetype mapping addded: %s", type);
       at_least_one = true;
     }
   );
