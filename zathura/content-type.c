@@ -1,8 +1,5 @@
 /* See LICENSE file for license and copyright information */
 
-#define _DEFAULT_SOURCE
-#define _XOPEN_SOURCE 700
-
 #include "content-type.h"
 #include "macros.h"
 
