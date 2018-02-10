@@ -15,9 +15,10 @@ custom_target('man pages',
     'man/_synctex.txt',
     'man/zathura.1.rst'
   ],
-  build_by_default: true
-)
-install_man(
-  join_paths(meson.current_build_dir(), 'zathura.1'),
-  join_paths(meson.current_build_dir(), 'zathurarc.5')
+  build_by_default: true,
+  install: true,
+  install_dir: [
+    join_paths(get_option('mandir'), 'man1'),
+    join_paths(get_option('mandir'), 'man5')
+  ]
 )
