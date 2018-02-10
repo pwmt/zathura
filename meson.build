@@ -14,8 +14,8 @@ version_array = version.split('.')
 # * If any of the exported datastructures have changed in a incompatible way
 #   bump SOMAJOR and set SOMINOR to 0.
 # * If a function has been added bump SOMINOR.
-plugin_api_version = '2'
-plugin_abi_version = '3'
+plugin_api_version = '3'
+plugin_abi_version = '4'
 
 conf_data = configuration_data()
 conf_data.set('ZVMAJOR', version_array[0])
