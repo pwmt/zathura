@@ -18,6 +18,10 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/gdkwayland.h>
+#endif
+
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #include <gio/gunixinputstream.h>
@@ -132,6 +136,63 @@ create_directories(zathura_t* zathura)
     girara_error("Could not create '%s': %s", zathura->config.data_dir,
                  strerror(errno));
   }
+}
+
+void
+zathura_update_view_dpi(zathura_t* zathura)
+{
+  if (zathura == NULL) {
+    return;
+  }
+
+  /* get view widget GdkMonitor */
+  GdkWindow* window = gtk_widget_get_window (zathura->ui.session->gtk.view); // NULL if not realized
+  if (window == NULL) {
+    return;
+  }
+  GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.view);
+  if (display == NULL) {
+    return;
+  }
+  GdkMonitor* monitor = gdk_display_get_monitor_at_window(display, window);
+  if (monitor == NULL) {
+    return;
+  }
+
+  /* physical width of monitor */
+  int width_mm = gdk_monitor_get_width_mm(monitor);
+
+  /* size of monitor in pixels */
+  GdkRectangle monitor_geom;
+  gdk_monitor_get_geometry(monitor, &monitor_geom);
+
+  /* calculate dpi, knowing that 1 inch = 25.4 mm */
+  double dpi = 0.0;
+  if (width_mm == 0) {
+    girara_debug("cannot calculate DPI: monitor has zero width");
+  } else {
+    dpi = monitor_geom.width * 25.4 / width_mm;
+  }
+
+#ifdef GDK_WINDOWING_WAYLAND
+    /* work around apparend bug in GDK: on Wayland, monitor geometry doesn't
+     * return values in application pixels as documented, but in device pixels.
+     * */
+    if (GDK_IS_WAYLAND_DISPLAY(display))
+    {
+      girara_debug("on Wayland, correcting DPI for device scale factor");
+      /* not using the cached value for the scale factor here to avoid issues
+       * if this function is called before the cached value is updated */
+      int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+      if (device_factor != 0) {
+        dpi /= device_factor;
+      }
+    }
+#endif
+
+  girara_debug("monitor width: %d mm, pixels: %d, dpi: %f", width_mm, monitor_geom.width, dpi);
+
+  zathura_document_set_viewport_dpi(zathura->document, dpi);
 }
 
 static bool
@@ -961,6 +1022,8 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_document_set_viewport_width(zathura->document, view_width);
   const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
+
+  zathura_update_view_dpi(zathura);
 
   /* get initial device scale */
   int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);

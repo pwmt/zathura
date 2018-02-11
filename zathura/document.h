@@ -240,6 +240,15 @@ void
 zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
 
 /**
+ * Sets the viewport DPI (value based on the physical resolution of the monitor).
+ *
+ * @param[in] document     The document instance
+ * @param[in] height       The viewport DPI
+ */
+void
+zathura_document_set_viewport_dpi(zathura_document_t* document, double dpi);
+
+/**
  * Return the size of the viewport in pixels.
  *
  * @param[in]  document     The document instance
@@ -248,6 +257,15 @@ zathura_document_set_viewport_height(zathura_document_t* document, unsigned int 
 void
 zathura_document_get_viewport_size(zathura_document_t* document,
                                    unsigned int *height, unsigned int* width);
+
+/**
+ * Return the size of the viewport in pixels.
+ *
+ * @param[in] document     The document instance
+ * @return    The viewport DPI (value based on the physical resolution of the monitor)
+ */
+double
+zathura_document_get_viewport_dpi(zathura_document_t* document);
 
 /**
  * Set the device scale factors (e.g. for HiDPI). These are generally integers
