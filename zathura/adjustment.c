@@ -13,6 +13,14 @@ page_calc_height_width(zathura_document_t* document, double height,
   g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
 
   double scale = zathura_document_get_scale(document);
+
+  /* If monitor DPI information is available, use it to match 100% zoom to physical page size */
+  double dpi = zathura_document_get_viewport_dpi(document);
+  if (fabs(dpi) != DBL_EPSILON) {
+    /* real scale = 1 means: 1 point = 1 pixel, and there are 72 points in one inch */
+    scale *= dpi / 72.0;
+  }
+
   if (rotate == true && zathura_document_get_rotation(document) % 180 != 0) {
     *page_width  = round(height * scale);
     *page_height = round(width  * scale);

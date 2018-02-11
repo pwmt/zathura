@@ -740,7 +740,11 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   const double height = zathura_page_get_height(page);
   const double width = zathura_page_get_width(page);
 
-  /* page size in user pixels base on document zoom: 100% results in 1 pixel per point */
+  /* page size in user pixels based on document zoom: if DPI information is
+   * available, 100% results in 72 documents points per inch of screen (i.e.
+   * document size on screen matching the physical paper size). If DPI
+   * information is unavailable, the page size in pixels will be 1 pixel per
+   * document point. */
   const double real_scale = page_calc_height_width(document, height, width,
                                                    &page_height, &page_width,
                                                    false);
