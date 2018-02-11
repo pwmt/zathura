@@ -80,6 +80,30 @@ void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
+ * This function gets called when the monitors associated with the GdkScreen
+ * change.
+ *
+ * It udpates the stored value for the monitor DPI.
+ *
+ * @param screen The GDK screen
+ * @param gpointer The zathura instance
+ */
+void cb_monitors_changed(GdkScreen* screen, gpointer data);
+
+/**
+ * This function gets called when the screen associated with the view widget
+ * changes.
+ *
+ * It udpates updates the connection on the monitors-changed ignal and the
+ * stored value for the monitor DPI.
+ *
+ * @param widget The view widget
+ * @param previous_screen The widget's previous screen
+ * @param gpointer The zathura instance
+ */
+void cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer data);
+
+/**
  * This function gets called when the view widget scale factor changes (e.g.
  * when moving from a regular to a HiDPI screen).
  *

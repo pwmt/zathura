@@ -217,6 +217,44 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
+cb_monitors_changed(GdkScreen* screen, gpointer data)
+{
+  girara_debug("signal received");
+
+  zathura_t* zathura = data;
+  if (screen == NULL || zathura == NULL) {
+    return;
+  }
+
+  zathura_update_view_dpi(zathura);
+}
+
+void
+cb_widget_screen_changed(GtkWidget* widget, GdkScreen* UNUSED(previous_screen), gpointer data)
+{
+  girara_debug("signal received");
+
+  zathura_t* zathura = data;
+  if (widget == NULL || zathura == NULL) {
+    return;
+  }
+
+  if (gtk_widget_has_screen(widget)) {
+    GdkScreen* screen = gtk_widget_get_screen(widget);
+
+    /* disconnect signal on previous screen */
+    g_signal_handlers_disconnect_matched(screen, G_SIGNAL_MATCH_FUNC, 0, 0,
+        NULL, (gpointer) cb_monitors_changed, zathura);
+
+    /* connect to new screen */
+    g_signal_connect(G_OBJECT(screen),
+        "monitors-changed", G_CALLBACK(cb_monitors_changed), zathura);
+  }
+
+  zathura_update_view_dpi(zathura);
+}
+
+void
 cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
 {
   zathura_t* zathura = data;
@@ -235,6 +273,7 @@ cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
       fabs(new_factor - current.y) >= DBL_EPSILON) {
     zathura_document_set_device_factors(zathura->document, new_factor, new_factor);
     girara_debug("New device scale factor: %d", new_factor);
+    zathura_update_view_dpi(zathura);
     render_all(zathura);
   }
 }

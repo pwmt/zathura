@@ -217,6 +217,9 @@ init_ui(zathura_t* zathura)
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
       "notify::scale-factor", G_CALLBACK(cb_scale_factor), zathura);
 
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
+      "screen-changed", G_CALLBACK(cb_widget_screen_changed), zathura);
+
   /* page view */
   zathura->ui.page_widget = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
@@ -1024,6 +1027,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_document_set_viewport_height(zathura->document, view_height);
 
   zathura_update_view_dpi(zathura);
+
+  /* call screen-changed callback to connect monitors-changed signal on initial screen */
+  cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
 
   /* get initial device scale */
   int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
