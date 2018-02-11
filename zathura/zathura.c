@@ -154,6 +154,10 @@ zathura_update_view_dpi(zathura_t* zathura)
   if (display == NULL) {
     return;
   }
+
+  double dpi = 0.0;
+
+#if GTK_CHECK_VERSION(3,22,0)
   GdkMonitor* monitor = gdk_display_get_monitor_at_window(display, window);
   if (monitor == NULL) {
     return;
@@ -167,12 +171,12 @@ zathura_update_view_dpi(zathura_t* zathura)
   gdk_monitor_get_geometry(monitor, &monitor_geom);
 
   /* calculate dpi, knowing that 1 inch = 25.4 mm */
-  double dpi = 0.0;
   if (width_mm == 0) {
     girara_debug("cannot calculate DPI: monitor has zero width");
   } else {
     dpi = monitor_geom.width * 25.4 / width_mm;
   }
+#endif
 
 #ifdef GDK_WINDOWING_WAYLAND
     /* work around apparend bug in GDK: on Wayland, monitor geometry doesn't
