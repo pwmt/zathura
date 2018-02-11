@@ -33,8 +33,8 @@ struct zathura_document_s {
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
   int page_offset; /**< Page offset */
-  double cell_width; /**< width of a page cell in the document (not ransformed by scale and rotation) */
-  double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
+  double cell_width; /**< width of a page cell in the document (not transformed by scale and rotation) */
+  double cell_height; /**< height of a page cell in the document (not transformed by scale and rotation) */
   unsigned int view_width; /**< width of current viewport */
   unsigned int view_height; /**< height of current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
