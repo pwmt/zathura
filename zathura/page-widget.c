@@ -496,7 +496,6 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   }
 }
 
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
 static zathura_device_factors_t
 get_safe_device_factors(cairo_surface_t* surface)
 {
@@ -512,13 +511,6 @@ get_safe_device_factors(cairo_surface_t* surface)
 
   return factors;
 }
-#else
-static zathura_device_factors_t
-get_safe_device_factors(cairo_surface_t* UNUSED(surface))
-{
-  return (zathura_device_factors_t){1.0, 1.0};
-}
-#endif
 
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)

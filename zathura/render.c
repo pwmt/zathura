@@ -747,20 +747,18 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
                                                    &page_height, &page_width,
                                                    false);
 
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
   zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
   page_width *= device_factors.x;
   page_height *= device_factors.y;
-#endif
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
       page_width, page_height);
   if (surface == NULL) {
     return false;
   }
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
+
   cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
-#endif
+
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
     cairo_surface_destroy(surface);
     return false;
