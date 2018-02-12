@@ -176,7 +176,6 @@ zathura_update_view_ppi(zathura_t* zathura)
   } else {
     ppi = monitor_geom.width * 25.4 / width_mm;
   }
-#endif
 
 #ifdef GDK_WINDOWING_WAYLAND
     /* work around apparend bug in GDK: on Wayland, monitor geometry doesn't
@@ -195,6 +194,7 @@ zathura_update_view_ppi(zathura_t* zathura)
 #endif
 
   girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
+#endif
 
   zathura_document_set_viewport_ppi(zathura->document, ppi);
 }
