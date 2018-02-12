@@ -154,7 +154,7 @@ double zathura_document_get_zoom(zathura_document_t* document);
  * PPI)
  *
  * @param document The document
- * @return The current scale value
+ * @return The current scale value, in pixels per point
  */
 double zathura_document_get_scale(zathura_document_t* document);
 

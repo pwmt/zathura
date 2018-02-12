@@ -417,15 +417,14 @@ zathura_document_get_scale(zathura_document_t* document)
     return 0;
   }
 
-  /* If monitor PPI information is available, use it to match 100% zoom to
-   * physical page size */
-  if (document->view_ppi > DBL_EPSILON) {
-    /* scale = pixels per point, and there are 72 points in one inch */
-    return document->zoom * document->view_ppi / 72.0;
+  double ppi = document->view_ppi;
+  if (ppi < DBL_EPSILON) {
+    /* No PPI information -> use a typical value */
+    ppi = 100;
   }
 
-  /* No PPI information -> scale == zoom */
-  return document->zoom;
+  /* scale = pixels per point, and there are 72 points in one inch */
+  return document->zoom * ppi / 72.0;
 }
 
 unsigned int
