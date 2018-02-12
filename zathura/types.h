@@ -179,7 +179,7 @@ typedef struct zathura_link_target_s
   double right; /**< Right coordinate */
   double top; /**< Top coordinate */
   double bottom; /**< Bottom coordinate */
-  double scale; /**< Scale */
+  double zoom; /**< Scale */
 } zathura_link_target_t;
 
 /**

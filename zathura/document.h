@@ -142,7 +142,16 @@ void zathura_document_set_position_x(zathura_document_t* document, double positi
 void zathura_document_set_position_y(zathura_document_t* document, double position_y);
 
 /**
- * Returns the current scale value of the document
+ * Returns the current zoom value of the document
+ *
+ * @param document The document
+ * @return The current zoom value
+ */
+double zathura_document_get_zoom(zathura_document_t* document);
+
+/**
+ * Returns the current scale value of the document (based on zoom and screen
+ * DPI)
  *
  * @param document The document
  * @return The current scale value
@@ -150,12 +159,12 @@ void zathura_document_set_position_y(zathura_document_t* document, double positi
 double zathura_document_get_scale(zathura_document_t* document);
 
 /**
- * Sets the new scale value of the document
+ * Sets the new zoom value of the document
  *
  * @param document The document
- * @param scale The new scale value
+ * @param zoom The new zoom value
  */
-void zathura_document_set_scale(zathura_document_t* document, double scale);
+void zathura_document_set_zoom(zathura_document_t* document, double zoom);
 
 /**
  * Returns the rotation value of zathura (0..360)

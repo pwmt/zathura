@@ -873,7 +873,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_fileinfo_t file_info = {
     .current_page = 0,
     .page_offset = 0,
-    .scale = 1,
+    .zoom = 1,
     .rotation = 0,
     .pages_per_row = 0,
     .first_page_column_list = NULL,
@@ -888,12 +888,12 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
 
-  /* check for valid scale value */
-  if (file_info.scale <= DBL_EPSILON) {
-    file_info.scale = 1;
+  /* check for valid zoom value */
+  if (file_info.zoom <= DBL_EPSILON) {
+    file_info.zoom = 1;
   }
-  zathura_document_set_scale(document,
-      zathura_correct_scale_value(zathura->ui.session, file_info.scale));
+  zathura_document_set_zoom(document,
+      zathura_correct_zoom_value(zathura->ui.session, file_info.zoom));
 
   /* check current page number */
   /* if it wasn't specified on the command-line, get it from file_info */
@@ -1264,7 +1264,7 @@ save_fileinfo_to_db(zathura_t* zathura)
   zathura_fileinfo_t file_info = {
     .current_page = zathura_document_get_current_page_number(zathura->document),
     .page_offset = zathura_document_get_page_offset(zathura->document),
-    .scale = zathura_document_get_scale(zathura->document),
+    .zoom = zathura_document_get_zoom(zathura->document),
     .rotation = zathura_document_get_rotation(zathura->document),
     .pages_per_row = 1,
     .first_page_column_list = "1:2",
@@ -1558,31 +1558,31 @@ adjust_view(zathura_t* zathura)
 
   double page_ratio = (double)cell_height / (double)document_width;
   double view_ratio = (double)view_height / (double)view_width;
-  double scale = zathura_document_get_scale(zathura->document);
-  double newscale = scale;
+  double zoom = zathura_document_get_zoom(zathura->document);
+  double newzoom = zoom;
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
       (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
-    newscale *= (double)view_width / (double)document_width;
+    newzoom *= (double)view_width / (double)document_width;
   } else if (adjust_mode == ZATHURA_ADJUST_BESTFIT) {
-    newscale *= (double)view_height / (double)cell_height;
+    newzoom *= (double)view_height / (double)cell_height;
   } else {
     goto error_ret;
   }
 
-  /* save new scale and recompute cell size */
-  zathura_document_set_scale(zathura->document, newscale);
+  /* save new zoom and recompute cell size */
+  zathura_document_set_zoom(zathura->document, newzoom);
   unsigned int new_cell_height = 0, new_cell_width = 0;
   zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
 
-  /* if the change in scale changes page cell dimensions by at least one pixel, render */
+  /* if the change in zoom changes page cell dimensions by at least one pixel, render */
   if (abs((int)new_cell_width - (int)cell_width) > 1 ||
       abs((int)new_cell_height - (int)cell_height) > 1) {
     render_all(zathura);
     refresh_view(zathura);
   } else {
-    /* otherwise set the old scale and leave */
-    zathura_document_set_scale(zathura->document, scale);
+    /* otherwise set the old zoom and leave */
+    zathura_document_set_zoom(zathura->document, zoom);
   }
 
 error_ret:

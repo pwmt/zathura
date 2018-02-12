@@ -24,7 +24,7 @@
 
 #define KEY_PAGE                  "page"
 #define KEY_OFFSET                "offset"
-#define KEY_SCALE                 "scale"
+#define KEY_ZOOM                  "zoom"
 #define KEY_ROTATE                "rotate"
 #define KEY_PAGES_PER_ROW         "pages-per-row"
 #define KEY_FIRST_PAGE_COLUMN     "first-page-column"
@@ -550,7 +550,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   g_key_file_set_integer(priv->history, name, KEY_PAGE,              file_info->current_page);
   g_key_file_set_integer(priv->history, name, KEY_OFFSET,            file_info->page_offset);
-  g_key_file_set_double (priv->history, name, KEY_SCALE,             file_info->scale);
+  g_key_file_set_double (priv->history, name, KEY_ZOOM,              file_info->zoom);
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
   g_key_file_set_string(priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
@@ -586,7 +586,7 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   file_info->current_page      = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
   file_info->page_offset       = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
-  file_info->scale             = g_key_file_get_double (priv->history, name, KEY_SCALE, NULL);
+  file_info->zoom              = g_key_file_get_double (priv->history, name, KEY_ZOOM, NULL);
   file_info->rotation          = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
 
   /* the following flags got introduced at a later point */

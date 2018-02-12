@@ -28,7 +28,7 @@ struct zathura_document_s {
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
   unsigned int number_of_pages; /**< Number of pages */
-  double scale; /**< Scale value */
+  double zoom; /**< Zoom value */
   unsigned int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
@@ -128,7 +128,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
     g_object_unref(gf);
   }
   document->password    = password;
-  document->scale       = 1.0;
+  document->zoom        = 1.0;
   document->plugin      = plugin;
   document->adjust_mode = ZATHURA_ADJUST_NONE;
   document->cell_width  = 0.0;
@@ -391,23 +391,41 @@ zathura_document_set_position_y(zathura_document_t* document, double position_y)
 }
 
 double
+zathura_document_get_zoom(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->zoom;
+}
+
+void
+zathura_document_set_zoom(zathura_document_t* document, double zoom)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->zoom = zoom;
+}
+
+double
 zathura_document_get_scale(zathura_document_t* document)
 {
   if (document == NULL) {
     return 0;
   }
 
-  return document->scale;
-}
-
-void
-zathura_document_set_scale(zathura_document_t* document, double scale)
-{
-  if (document == NULL) {
-    return;
+  /* If monitor DPI information is available, use it to match 100% zoom to
+   * physical page size */
+  if (document->view_dpi > DBL_EPSILON) {
+    /* scale 1 means: 1 point = 1 pixel, and there are 72 points in one inch */
+    return document->zoom * document->view_dpi / 72.0;
   }
 
-  document->scale = scale;
+  /* No DPI information -> scale == zoom */
+  return document->zoom;
 }
 
 unsigned int
