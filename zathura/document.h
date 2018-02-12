@@ -151,7 +151,7 @@ double zathura_document_get_zoom(zathura_document_t* document);
 
 /**
  * Returns the current scale value of the document (based on zoom and screen
- * DPI)
+ * PPI)
  *
  * @param document The document
  * @return The current scale value
@@ -249,15 +249,6 @@ void
 zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
 
 /**
- * Sets the viewport DPI (value based on the physical resolution of the monitor).
- *
- * @param[in] document     The document instance
- * @param[in] height       The viewport DPI
- */
-void
-zathura_document_set_viewport_dpi(zathura_document_t* document, double dpi);
-
-/**
  * Return the size of the viewport in pixels.
  *
  * @param[in]  document     The document instance
@@ -268,13 +259,24 @@ zathura_document_get_viewport_size(zathura_document_t* document,
                                    unsigned int *height, unsigned int* width);
 
 /**
- * Return the size of the viewport in pixels.
+ Sets the viewport PPI (pixels per inch: the resolution of the monitor, after
+ scaling with the device factor).
  *
  * @param[in] document     The document instance
- * @return    The viewport DPI (value based on the physical resolution of the monitor)
+ * @param[in] height       The viewport PPI
+ */
+void
+zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi);
+
+/**
+ * Return the viewport PPI (pixels per inch: the resolution of the monitor,
+ * after scaling with the device factor).
+ *
+ * @param[in] document     The document instance
+ * @return    The viewport PPI
  */
 double
-zathura_document_get_viewport_dpi(zathura_document_t* document);
+zathura_document_get_viewport_ppi(zathura_document_t* document);
 
 /**
  * Set the device scale factors (e.g. for HiDPI). These are generally integers

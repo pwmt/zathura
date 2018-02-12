@@ -37,7 +37,7 @@ struct zathura_document_s {
   double cell_height; /**< height of a page cell in the document (not transformed by scale and rotation) */
   unsigned int view_width; /**< width of current viewport */
   unsigned int view_height; /**< height of current viewport */
-  double view_dpi; /**<DPI of the current viewport */
+  double view_ppi; /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   unsigned int pages_per_row; /**< number of pages in a row */
   unsigned int first_page_column; /**< column of the first page */
@@ -135,7 +135,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   document->cell_height = 0.0;
   document->view_height = 0;
   document->view_width  = 0;
-  document->view_dpi    = 0.0;
+  document->view_ppi    = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
   document->position_x  = 0.0;
@@ -417,14 +417,14 @@ zathura_document_get_scale(zathura_document_t* document)
     return 0;
   }
 
-  /* If monitor DPI information is available, use it to match 100% zoom to
+  /* If monitor PPI information is available, use it to match 100% zoom to
    * physical page size */
-  if (document->view_dpi > DBL_EPSILON) {
-    /* scale 1 means: 1 point = 1 pixel, and there are 72 points in one inch */
-    return document->zoom * document->view_dpi / 72.0;
+  if (document->view_ppi > DBL_EPSILON) {
+    /* scale = pixels per point, and there are 72 points in one inch */
+    return document->zoom * document->view_ppi / 72.0;
   }
 
-  /* No DPI information -> scale == zoom */
+  /* No PPI information -> scale == zoom */
   return document->zoom;
 }
 
@@ -516,12 +516,12 @@ zathura_document_set_viewport_height(zathura_document_t* document, unsigned int 
 }
 
 void
-zathura_document_set_viewport_dpi(zathura_document_t* document, double dpi)
+zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi)
 {
   if (document == NULL) {
     return;
   }
-  document->view_dpi = dpi;
+  document->view_ppi = ppi;
 }
 
 void
@@ -534,12 +534,12 @@ zathura_document_get_viewport_size(zathura_document_t* document,
 }
 
 double
-zathura_document_get_viewport_dpi(zathura_document_t* document)
+zathura_document_get_viewport_ppi(zathura_document_t* document)
 {
   if (document == NULL) {
     return 0.0;
   }
-  return document->view_dpi;
+  return document->view_ppi;
 }
 
 void

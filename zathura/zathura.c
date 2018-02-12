@@ -139,7 +139,7 @@ create_directories(zathura_t* zathura)
 }
 
 void
-zathura_update_view_dpi(zathura_t* zathura)
+zathura_update_view_ppi(zathura_t* zathura)
 {
   if (zathura == NULL) {
     return;
@@ -155,7 +155,7 @@ zathura_update_view_dpi(zathura_t* zathura)
     return;
   }
 
-  double dpi = 0.0;
+  double ppi = 0.0;
 
 #if GTK_CHECK_VERSION(3,22,0)
   GdkMonitor* monitor = gdk_display_get_monitor_at_window(display, window);
@@ -170,11 +170,11 @@ zathura_update_view_dpi(zathura_t* zathura)
   GdkRectangle monitor_geom;
   gdk_monitor_get_geometry(monitor, &monitor_geom);
 
-  /* calculate dpi, knowing that 1 inch = 25.4 mm */
+  /* calculate ppi, knowing that 1 inch = 25.4 mm */
   if (width_mm == 0) {
-    girara_debug("cannot calculate DPI: monitor has zero width");
+    girara_debug("cannot calculate PPI: monitor has zero width");
   } else {
-    dpi = monitor_geom.width * 25.4 / width_mm;
+    ppi = monitor_geom.width * 25.4 / width_mm;
   }
 #endif
 
@@ -184,19 +184,19 @@ zathura_update_view_dpi(zathura_t* zathura)
      * */
     if (GDK_IS_WAYLAND_DISPLAY(display))
     {
-      girara_debug("on Wayland, correcting DPI for device scale factor");
+      girara_debug("on Wayland, correcting PPI for device scale factor");
       /* not using the cached value for the scale factor here to avoid issues
        * if this function is called before the cached value is updated */
       int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
       if (device_factor != 0) {
-        dpi /= device_factor;
+        ppi /= device_factor;
       }
     }
 #endif
 
-  girara_debug("monitor width: %d mm, pixels: %d, dpi: %f", width_mm, monitor_geom.width, dpi);
+  girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
 
-  zathura_document_set_viewport_dpi(zathura->document, dpi);
+  zathura_document_set_viewport_ppi(zathura->document, ppi);
 }
 
 static bool
@@ -1030,7 +1030,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
 
-  zathura_update_view_dpi(zathura);
+  zathura_update_view_ppi(zathura);
 
   /* call screen-changed callback to connect monitors-changed signal on initial screen */
   cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);

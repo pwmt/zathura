@@ -226,7 +226,7 @@ cb_monitors_changed(GdkScreen* screen, gpointer data)
     return;
   }
 
-  zathura_update_view_dpi(zathura);
+  zathura_update_view_ppi(zathura);
 }
 
 void
@@ -251,7 +251,7 @@ cb_widget_screen_changed(GtkWidget* widget, GdkScreen* UNUSED(previous_screen), 
         "monitors-changed", G_CALLBACK(cb_monitors_changed), zathura);
   }
 
-  zathura_update_view_dpi(zathura);
+  zathura_update_view_ppi(zathura);
 }
 
 void
@@ -273,7 +273,7 @@ cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
       fabs(new_factor - current.y) >= DBL_EPSILON) {
     zathura_document_set_device_factors(zathura->document, new_factor, new_factor);
     girara_debug("New device scale factor: %d", new_factor);
-    zathura_update_view_dpi(zathura);
+    zathura_update_view_ppi(zathura);
     render_all(zathura);
   }
 }

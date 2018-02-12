@@ -288,11 +288,11 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
 void zathura_set_argv(zathura_t* zathura, char** argv);
 
 /**
- * Calculate and store the monitor DPI for the view widget
+ * Calculate and store the monitor PPI for the view widget
  *
  * @param zathura The zathura session
  */
-void zathura_update_view_dpi(zathura_t* zathura);
+void zathura_update_view_ppi(zathura_t* zathura);
 
 /**
  * Opens a file
