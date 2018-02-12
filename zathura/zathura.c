@@ -157,7 +157,6 @@ zathura_update_view_ppi(zathura_t* zathura)
 
   double ppi = 0.0;
 
-#if GTK_CHECK_VERSION(3,22,0)
   GdkMonitor* monitor = gdk_display_get_monitor_at_window(display, window);
   if (monitor == NULL) {
     return;
@@ -194,7 +193,6 @@ zathura_update_view_ppi(zathura_t* zathura)
 #endif
 
   girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
-#endif
 
   zathura_document_set_viewport_ppi(zathura->document, ppi);
 }
