@@ -184,6 +184,10 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   static const char SQL_FILEINFO_ALTER3[] =
     "ALTER TABLE fileinfo ADD COLUMN time TIMESTAMP;";
 
+  /* update fileinfo table (part 4) */
+  static const char SQL_FILEINFO_ALTER4[] =
+    "ALTER TABLE fileinfo ADD COLUMN zoom FLOAT;";
+
   /* update bookmark table */
   static const char SQL_BOOKMARK_ALTER[] =
     "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
@@ -230,6 +234,15 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   if (ret1 == true && res1 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout");
+    }
+  }
+
+  ret1 = check_column(session, "fileinfo", "zoom", &res1);
+
+  if (ret1 == true && res1 == false) {
+    girara_debug("old database table layout detected; updating ...");
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER4, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
