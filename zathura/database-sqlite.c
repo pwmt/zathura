@@ -401,7 +401,6 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
       sqlite3_bind_int(stmt, 3, bookmark->page) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 4, bookmark->x) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 5, bookmark->y) != SQLITE_OK) {
-
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
