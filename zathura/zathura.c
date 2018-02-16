@@ -222,6 +222,9 @@ init_ui(zathura_t* zathura)
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
       "screen-changed", G_CALLBACK(cb_widget_screen_changed), zathura);
 
+  /* initialize the screen-changed handler to 0 (i.e. invalid) */
+  zathura->signals.monitors_changed_handler = 0;
+
   /* page view */
   zathura->ui.page_widget = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);

@@ -163,6 +163,8 @@ struct zathura_s
 #ifdef G_OS_UNIX
     guint sigterm;
 #endif
+
+    gulong monitors_changed_handler; /**< Signal handler for monitors-changed */
   } signals;
 
   struct

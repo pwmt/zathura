@@ -230,24 +230,26 @@ cb_monitors_changed(GdkScreen* screen, gpointer data)
 }
 
 void
-cb_widget_screen_changed(GtkWidget* widget, GdkScreen* UNUSED(previous_screen), gpointer data)
+cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer data)
 {
-  girara_debug("signal received");
+  girara_debug("called");
 
   zathura_t* zathura = data;
   if (widget == NULL || zathura == NULL) {
     return;
   }
 
+  /* disconnect previous screen handler if present */
+  if (previous_screen != NULL && zathura->signals.monitors_changed_handler > 0) {
+    g_signal_handler_disconnect(previous_screen, zathura->signals.monitors_changed_handler);
+    zathura->signals.monitors_changed_handler = 0;
+  }
+
   if (gtk_widget_has_screen(widget)) {
     GdkScreen* screen = gtk_widget_get_screen(widget);
 
-    /* disconnect signal on previous screen */
-    g_signal_handlers_disconnect_matched(screen, G_SIGNAL_MATCH_FUNC, 0, 0,
-        NULL, (gpointer) cb_monitors_changed, zathura);
-
     /* connect to new screen */
-    g_signal_connect(G_OBJECT(screen),
+    zathura->signals.monitors_changed_handler = g_signal_connect(G_OBJECT(screen),
         "monitors-changed", G_CALLBACK(cb_monitors_changed), zathura);
   }
 
