@@ -1,15 +1,18 @@
 zathura - a document viewer
 ===========================
+
 zathura is a highly customizable and functional document viewer based on the
 girara user interface library and several document libraries.
 
 Requirements
 ------------
+
+meson (>= 0.43)
 gtk3 (>= 3.10)
 glib (>= 2.50)
 girara (>= 0.2.8)
 sqlite3 (optional, >= 3.5.9)
-check (for tests)
+check (optional, for tests)
 intltool
 libmagic from file(1) (optional, for mime-type detection)
 libsynctex from TeXLive (optional, for SyncTeX support)
@@ -18,42 +21,28 @@ doxygen (optional, for HTML documentation)
 breathe (optional, for HTML documentation)
 sphinx_rtd_theme (optional, for HTML documentation)
 
-Please note that you need to have a working pkg-config installation and that the
-Makefile is only compatible with GNU make. If you don't have a working
-pkg-config installation please set the GTK_INC, GTK_LIB, GIRARA_INC, GIRARA_LIB,
-SQLITE_INC and SQLITE_LIB variables accordingly.
-
 Also note that Sphinx is needed to build the manpages.  If it is not
 installed, the man pages won't be built. For the HTML documentation, doxygen,
 breathe and sphinx_rtd_theme are needed in addition to Sphinx.
 
 If you don't want to build with support for sqlite databases, you can set
-WITH_SQLITE=0 and sqlite support won't be available.
+enable-sqlite=off and sqlite support won't be available.
 
 The use of magic to detect mime types is optional and can be disabled by setting
-WITH_MAGIC=0.
-
-If you pass these flags as a command line argument to make, you have to ensure
-to pass the same flags when executing the install target.
-
-If you want to build zathura's HTML documentation, please install all python
-dependencies from the ./doc/requirements.txt file and run:
-
-  make doc
+enable-magic=off.
 
 Installation
 ------------
+
 To build and install zathura:
 
-  make install
-
-Uninstall
----------
-To delete zathura from your system, just type:
-
-  make uninstall
+  meson build
+  cd build
+  ninja
+  ninja install
 
 Bugs
 ----
+
 Please report bugs at http://bugs.pwmt.org or contact us on our mailing list at
 zathura@lists.pwmt.org.
