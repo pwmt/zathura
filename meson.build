@@ -93,7 +93,7 @@ endif
 # generate version header file
 version_header = configure_file(
   input: 'zathura/version.h.in',
-  output: 'version.h',
+  output: 'zathura-version.h',
   configuration: conf_data
 )
 include_directories = [
