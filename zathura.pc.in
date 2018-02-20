@@ -1,9 +1,0 @@
-
-INC_PATH=-I${includedir}
-
-Name: ${project}
-Description: document viewer
-Version: ${version}
-URL: http://pwmt.org/projects/zathura
-Cflags: ${INC_PATH}
-Requires.private: girara-gtk${GTK_VERSION} cairo
