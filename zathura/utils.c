@@ -194,7 +194,8 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   GString* string = g_string_new(NULL);
 
   /* zathura version */
-  g_string_append_printf(string, "zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
+  g_string_append(string, "zathura " ZATHURA_VERSION);
+  g_string_append_printf(string, "\ngirara " GIRARA_VERSION " (runtime: %s)", girara_version());
 
   const char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
 
