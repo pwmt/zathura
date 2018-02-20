@@ -397,7 +397,7 @@ int seccomp_enable_strict_filter(void){
     ALLOW_RULE (bind);
     ALLOW_RULE (brk);
     ALLOW_RULE (clock_getres);
-    ALLOW_RULE (clone);
+    ALLOW_RULE (clone); /* TODO: investigate */
     ALLOW_RULE (close);
     /* ALLOW_RULE (connect); */
     ALLOW_RULE (eventfd2);
@@ -435,8 +435,8 @@ int seccomp_enable_strict_filter(void){
     ALLOW_RULE (mprotect);
     ALLOW_RULE (mremap);
     ALLOW_RULE (munmap);
-    ALLOW_RULE (open);  /* (zathura needs to open for writing) TODO: avoid needing this somehow */
-    ALLOW_RULE (openat);
+    //ALLOW_RULE (open);  /* (zathura needs to open for writing) TODO: avoid needing this somehow */
+    //ALLOW_RULE (openat);
     ALLOW_RULE (pipe);
     ALLOW_RULE (poll);
     ALLOW_RULE (pwrite64); /* TODO: build detailed filter */
@@ -492,7 +492,34 @@ int seccomp_enable_strict_filter(void){
     			  SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG)) < 0)
     	goto out;
 
-    
+
+    /* special restrictions for open, prevent opening files for writing */ 
+    if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 1,
+                          SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) < 0) 
+     	goto out;
+
+    if (seccomp_rule_add (ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(open), 1,
+                          SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY)) < 0) 
+    	goto out;
+
+    if (seccomp_rule_add (ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(open), 1,
+                          SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR)) < 0)
+     	goto out;
+
+    /* special restrictions for openat, prevent opening files for writing */ 
+    if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 1,
+                          SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) < 0) 
+     	goto out;
+
+    if (seccomp_rule_add (ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(openat), 1,
+                          SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY)) < 0) 
+    	goto out;
+
+    if (seccomp_rule_add (ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(openat), 1,
+                          SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR)) < 0)
+    	goto out;
+
+
     /* allowed for debugging: */
 
     /* ALLOW_RULE (prctl); */
