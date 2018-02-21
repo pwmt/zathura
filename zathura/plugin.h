@@ -8,7 +8,7 @@
 
 #include "types.h"
 #include "plugin-api.h"
-#include "version.h"
+#include "zathura-version.h"
 #include "zathura.h"
 
 /**
