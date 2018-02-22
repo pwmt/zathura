@@ -47,9 +47,9 @@ WITH_SYNCTEX ?= $(shell (${PKG_CONFIG} synctex && echo 1) || echo 0)
 # To disable support for mimetype detction with libmagic set WITH_MAGIC to 0.
 WITH_MAGIC ?= 1
 
-# seccomp
-# To enable support for seccomp filter set WITH_SECCOMP to 1.
-WITH_SECCOMP ?= 0
+# seccomp sandbox
+# To disable support for seccomp filter set WITH_SECCOMP to 0.
+WITH_SECCOMP ?= 1
 
 # paths
 PREFIX ?= /usr

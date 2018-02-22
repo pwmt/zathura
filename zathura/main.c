@@ -127,10 +127,6 @@ int
 main(int argc, char* argv[])
 {
 
-#ifdef WITH_SECCOMP
-  seccomp_enable_protected_view();
-#endif
-
   init_locale();
 
   /* parse command line arguments */
@@ -298,8 +294,20 @@ main(int argc, char* argv[])
   }
 
 #ifdef WITH_SECCOMP
-  /* enforce strict syscall filter before parsing the document */
-  seccomp_enable_strict_filter();
+  
+  char* sandbox = NULL;
+  girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
+  
+  if (g_strcmp0(sandbox, "none") == 0) {
+    girara_debug("Sandbox deactivated.");
+  } else if (g_strcmp0(sandbox, "normal") == 0)  {
+    girara_debug("Basic sandbox allowing normal operation.");
+    seccomp_enable_basic_filter();
+  } else if (g_strcmp0(sandbox, "strict") == 0) {
+    girara_debug("Strict sandbox preventing write and network access.");
+    seccomp_enable_strict_filter();
+  }
+
 #endif
   
   /* open document if passed */
