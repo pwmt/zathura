@@ -868,8 +868,10 @@ render_all(zathura_t* zathura)
 
     girara_debug("Queuing resize for page %u to %u x %u (%f x %f).", page_id, page_width, page_height, width, height);
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
-    gtk_widget_set_size_request(widget, page_width, page_height);
-    gtk_widget_queue_resize(widget);
+    if (widget != NULL) {
+      gtk_widget_set_size_request(widget, page_width, page_height);
+      gtk_widget_queue_resize(widget);
+    }
   }
 }
 

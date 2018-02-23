@@ -257,6 +257,17 @@ cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer
 }
 
 void
+cb_widget_configured(GtkWidget* UNUSED(widget), GdkEvent* UNUSED(event), gpointer data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL) {
+    return;
+  }
+
+  zathura_update_view_ppi(zathura);
+}
+
+void
 cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
 {
   zathura_t* zathura = data;
