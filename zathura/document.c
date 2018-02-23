@@ -28,15 +28,16 @@ struct zathura_document_s {
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
   unsigned int number_of_pages; /**< Number of pages */
-  double scale; /**< Scale value */
+  double zoom; /**< Zoom value */
   unsigned int rotate; /**< Rotation */
   void* data; /**< Custom data */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
   int page_offset; /**< Page offset */
-  double cell_width; /**< width of a page cell in the document (not ransformed by scale and rotation) */
-  double cell_height; /**< height of a page cell in the document (not ransformed by scale and rotation) */
+  double cell_width; /**< width of a page cell in the document (not transformed by scale and rotation) */
+  double cell_height; /**< height of a page cell in the document (not transformed by scale and rotation) */
   unsigned int view_width; /**< width of current viewport */
   unsigned int view_height; /**< height of current viewport */
+  double view_ppi; /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   unsigned int pages_per_row; /**< number of pages in a row */
   unsigned int first_page_column; /**< column of the first page */
@@ -127,13 +128,14 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
     g_object_unref(gf);
   }
   document->password    = password;
-  document->scale       = 1.0;
+  document->zoom        = 1.0;
   document->plugin      = plugin;
   document->adjust_mode = ZATHURA_ADJUST_NONE;
   document->cell_width  = 0.0;
   document->cell_height = 0.0;
   document->view_height = 0;
   document->view_width  = 0;
+  document->view_ppi    = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
   document->position_x  = 0.0;
@@ -389,23 +391,40 @@ zathura_document_set_position_y(zathura_document_t* document, double position_y)
 }
 
 double
+zathura_document_get_zoom(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0;
+  }
+
+  return document->zoom;
+}
+
+void
+zathura_document_set_zoom(zathura_document_t* document, double zoom)
+{
+  if (document == NULL) {
+    return;
+  }
+
+  document->zoom = zoom;
+}
+
+double
 zathura_document_get_scale(zathura_document_t* document)
 {
   if (document == NULL) {
     return 0;
   }
 
-  return document->scale;
-}
-
-void
-zathura_document_set_scale(zathura_document_t* document, double scale)
-{
-  if (document == NULL) {
-    return;
+  double ppi = document->view_ppi;
+  if (ppi < DBL_EPSILON) {
+    /* No PPI information -> use a typical value */
+    ppi = 100;
   }
 
-  document->scale = scale;
+  /* scale = pixels per point, and there are 72 points in one inch */
+  return document->zoom * ppi / 72.0;
 }
 
 unsigned int
@@ -496,12 +515,30 @@ zathura_document_set_viewport_height(zathura_document_t* document, unsigned int 
 }
 
 void
+zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi)
+{
+  if (document == NULL) {
+    return;
+  }
+  document->view_ppi = ppi;
+}
+
+void
 zathura_document_get_viewport_size(zathura_document_t* document,
                                    unsigned int *height, unsigned int* width)
 {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
   *height = document->view_height;
   *width = document->view_width;
+}
+
+double
+zathura_document_get_viewport_ppi(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return 0.0;
+  }
+  return document->view_ppi;
 }
 
 void

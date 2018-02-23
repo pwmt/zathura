@@ -24,7 +24,7 @@ struct zathura_mark_s {
   double position_x; /**> Horizontal adjustment */
   double position_y; /**> Vertical adjustment */
   unsigned int page; /**> Page number */
-  double scale; /**> Zoom level */
+  double zoom; /**> Zoom level */
 };
 
 bool
@@ -202,7 +202,7 @@ mark_add(zathura_t* zathura, int key)
   double position_x    = zathura_document_get_position_x(zathura->document);
   double position_y    = zathura_document_get_position_y(zathura->document);
 
-  double scale      = zathura_document_get_scale(zathura->document);
+  double zoom          = zathura_document_get_zoom(zathura->document);
 
   /* search for existing mark */
   GIRARA_LIST_FOREACH_BODY_WITH_ITER(zathura->global.marks, zathura_mark_t*, iter, mark,
@@ -210,7 +210,7 @@ mark_add(zathura_t* zathura, int key)
       mark->page       = page_id;
       mark->position_x = position_x;
       mark->position_y = position_y;
-      mark->scale      = scale;
+      mark->zoom       = zoom;
       girara_list_iterator_free(iter);
       return;
     }
@@ -226,7 +226,7 @@ mark_add(zathura_t* zathura, int key)
   mark->page       = page_id;
   mark->position_x = position_x;
   mark->position_y = position_y;
-  mark->scale      = scale;
+  mark->zoom       = zoom;
 
   girara_list_append(zathura->global.marks, mark);
 }
@@ -241,8 +241,8 @@ mark_evaluate(zathura_t* zathura, int key)
   /* search for existing mark */
   GIRARA_LIST_FOREACH_BODY(zathura->global.marks, zathura_mark_t*, mark,
     if (mark != NULL && mark->key == key) {
-      zathura_document_set_scale(zathura->document,
-          zathura_correct_scale_value(zathura->ui.session, mark->scale));
+      zathura_document_set_zoom(zathura->document,
+          zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
       render_all(zathura);
 
       zathura_jumplist_add(zathura);

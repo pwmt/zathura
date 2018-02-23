@@ -1304,8 +1304,8 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     /* set full screen */
     gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
 
-    /* reset scale */
-    zathura_document_set_scale(zathura->document, zathura->shortcut.toggle_presentation_mode.zoom);
+    /* reset zoom */
+    zathura_document_set_zoom(zathura->document, zathura->shortcut.toggle_presentation_mode.zoom);
     render_all(zathura);
     refresh_view(zathura);
 
@@ -1326,7 +1326,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     girara_setting_set(session, "pages-per-row", &int_value);
 
     /* back up zoom */
-    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_scale(zathura->document);
+    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
 
     /* adjust window */
     girara_argument_t argument = { ZATHURA_ADJUST_BESTFIT, NULL };
@@ -1379,37 +1379,37 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   const int nt = (t == 0) ? 1 : t;
   const double zoom_step = 1.0 + value / 100.0 * nt;
-  const double old_zoom = zathura_document_get_scale(zathura->document);
+  const double old_zoom = zathura_document_get_zoom(zathura->document);
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
     girara_debug("Increasing zoom by %f.", zoom_step - 1.0);
-    zathura_document_set_scale(zathura->document, old_zoom * zoom_step);
+    zathura_document_set_zoom(zathura->document, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
     girara_debug("Decreasing zoom by %f.", zoom_step - 1.0);
-    zathura_document_set_scale(zathura->document, old_zoom / zoom_step);
+    zathura_document_set_zoom(zathura->document, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
       girara_debug("Setting zoom to 1.");
-      zathura_document_set_scale(zathura->document, 1.0);
+      zathura_document_set_zoom(zathura->document, 1.0);
     } else {
       girara_debug("Setting zoom to %f.", t / 100.0);
-      zathura_document_set_scale(zathura->document, t / 100.0);
+      zathura_document_set_zoom(zathura->document, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
     const double dy = (event != NULL) ? event->y : 1.0;
     girara_debug("Increasing zoom by %f.", zoom_step * dy - 1.0);
-    zathura_document_set_scale(zathura->document, old_zoom + zoom_step * dy);
+    zathura_document_set_zoom(zathura->document, old_zoom + zoom_step * dy);
   } else {
     girara_debug("Setting zoom to 1.");
-    zathura_document_set_scale(zathura->document, 1.0);
+    zathura_document_set_zoom(zathura->document, 1.0);
   }
 
   /* zoom limitations */
-  const double scale = zathura_document_get_scale(zathura->document);
-  zathura_document_set_scale(zathura->document, zathura_correct_scale_value(session, scale));
+  const double zoom = zathura_document_get_zoom(zathura->document);
+  zathura_document_set_zoom(zathura->document, zathura_correct_zoom_value(session, zoom));
 
-  const double new_zoom = zathura_document_get_scale(zathura->document);
+  const double new_zoom = zathura_document_get_zoom(zathura->document);
   if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
     girara_debug("New and old zoom level are too close: %f vs. %f, diff = %f", new_zoom, old_zoom, fabs(new_zoom - old_zoom));
     return false;

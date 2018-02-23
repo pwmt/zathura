@@ -21,10 +21,10 @@
 #include "content-type.h"
 
 double
-zathura_correct_scale_value(girara_session_t* session, const double scale)
+zathura_correct_zoom_value(girara_session_t* session, const double zoom)
 {
   if (session == NULL) {
-    return scale;
+    return zoom;
   }
 
   /* zoom limitations */
@@ -36,12 +36,12 @@ zathura_correct_scale_value(girara_session_t* session, const double scale)
   const double zoom_min = zoom_min_int * 0.01;
   const double zoom_max = zoom_max_int * 0.01;
 
-  if (scale < zoom_min) {
+  if (zoom < zoom_min) {
     return zoom_min;
-  } else if (scale > zoom_max) {
+  } else if (zoom > zoom_max) {
     return zoom_max;
   } else {
-    return scale;
+    return zoom;
   }
 }
 

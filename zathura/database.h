@@ -12,7 +12,7 @@
 typedef struct zathura_fileinfo_s {
   unsigned int current_page;
   unsigned int page_offset;
-  double scale;
+  double zoom;
   unsigned int rotation;
   unsigned int pages_per_row;
   char* first_page_column_list;

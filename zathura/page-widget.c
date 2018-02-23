@@ -317,8 +317,8 @@ set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_font_weight_t w
   const char* family = pango_font_description_get_family(descr);
 
   /* get font size: can be points or absolute.
-   * absolute units: value = 10*PANGO_SCALE = 10 (unscaled) device units (logical pixels)
-   * point units:    value = 10*PANGO_SCALE = 10 points = 10*(font dpi config / 72) device units */
+   * absolute units: example: value 10*PANGO_SCALE = 10 (unscaled) device units (logical pixels)
+   * point units:    example: value 10*PANGO_SCALE = 10 points = 10*(font dpi config / 72) device units */
   double size = pango_font_description_get_size(descr) / PANGO_SCALE;
 
   /* convert point size to device units */
@@ -496,7 +496,6 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   }
 }
 
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
 static zathura_device_factors_t
 get_safe_device_factors(cairo_surface_t* surface)
 {
@@ -512,13 +511,6 @@ get_safe_device_factors(cairo_surface_t* surface)
 
   return factors;
 }
-#else
-static zathura_device_factors_t
-get_safe_device_factors(cairo_surface_t* UNUSED(surface))
-{
-  return (zathura_device_factors_t){1.0, 1.0};
-}
-#endif
 
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
@@ -690,9 +682,9 @@ zathura_page_widget_redraw_canvas(ZathuraPage* pageview)
 }
 
 /* smaller than max to be replaced by actual renders */
-#define THUMBNAIL_INITIAL_SCALE 0.5
+#define THUMBNAIL_INITIAL_ZOOM 0.5
 /* small enough to make bilinear downscaling fast */
-#define THUMBNAIL_MAX_SCALE 0.5
+#define THUMBNAIL_MAX_ZOOM 0.5
 
 static bool
 surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t* old)
@@ -712,7 +704,7 @@ surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t*
     const unsigned int width_old = cairo_image_surface_get_width(old);
     const unsigned int height_old = cairo_image_surface_get_height(old);
     const size_t old_size = width_old * height_old;
-    if (new_size < old_size && new_size >= old_size * THUMBNAIL_MAX_SCALE * THUMBNAIL_MAX_SCALE) {
+    if (new_size < old_size && new_size >= old_size * THUMBNAIL_MAX_ZOOM * THUMBNAIL_MAX_ZOOM) {
       return false;
     }
   }
@@ -725,9 +717,9 @@ draw_thumbnail_image(cairo_surface_t* surface, size_t max_size)
 {
   unsigned int width = cairo_image_surface_get_width(surface);
   unsigned int height = cairo_image_surface_get_height(surface);
-  double scale = sqrt((double)max_size / (width * height)) * THUMBNAIL_INITIAL_SCALE;
-  if (scale > THUMBNAIL_MAX_SCALE) {
-    scale = THUMBNAIL_MAX_SCALE;
+  double scale = sqrt((double)max_size / (width * height)) * THUMBNAIL_INITIAL_ZOOM;
+  if (scale > THUMBNAIL_MAX_ZOOM) {
+    scale = THUMBNAIL_MAX_ZOOM;
   }
   width = width * scale;
   height = height * scale;

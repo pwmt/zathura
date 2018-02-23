@@ -114,7 +114,7 @@ zathura_link_target_t
 zathura_link_get_target(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
+    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, { 0 } };
     return target;
   }
 
@@ -134,9 +134,9 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
       if (link->target.destination_type != ZATHURA_LINK_DESTINATION_UNKNOWN) {
-        if (link->target.scale >= DBL_EPSILON && link_zoom) {
-          zathura_document_set_scale(zathura->document,
-              zathura_correct_scale_value(zathura->ui.session, link->target.scale));
+        if (link->target.zoom >= DBL_EPSILON && link_zoom) {
+          zathura_document_set_zoom(zathura->document,
+              zathura_correct_zoom_value(zathura->ui.session, link->target.zoom));
           render_all(zathura);
         }
 

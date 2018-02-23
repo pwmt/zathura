@@ -41,7 +41,7 @@ girara = dependency('girara-gtk3', version: '>=0.2.8')
 glib = dependency('glib-2.0', version: '>=2.50')
 gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
-gtk3 = dependency('gtk+-3.0', version: '>=3.10')
+gtk3 = dependency('gtk+-3.0', version: '>=3.22')
 
 build_dependencies = [libm, girara, glib, gthread, gmodule, gtk3]
 

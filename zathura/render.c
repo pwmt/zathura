@@ -740,25 +740,25 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   const double height = zathura_page_get_height(page);
   const double width = zathura_page_get_width(page);
 
-  /* page size in user pixels base on document zoom: 100% results in 1 pixel per point */
+  /* page size in user pixels based on document zoom: if PPI information is
+   * correct, 100% zoom will result in 72 documents points per inch of screen
+   * (i.e. document size on screen matching the physical paper size). */
   const double real_scale = page_calc_height_width(document, height, width,
                                                    &page_height, &page_width,
                                                    false);
 
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
   zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
   page_width *= device_factors.x;
   page_height *= device_factors.y;
-#endif
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
       page_width, page_height);
   if (surface == NULL) {
     return false;
   }
-#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,14,0)
+
   cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
-#endif
+
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
     cairo_surface_destroy(surface);
     return false;
@@ -868,8 +868,10 @@ render_all(zathura_t* zathura)
 
     girara_debug("Queuing resize for page %u to %u x %u (%f x %f).", page_id, page_width, page_height, width, height);
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
-    gtk_widget_set_size_request(widget, page_width, page_height);
-    gtk_widget_queue_resize(widget);
+    if (widget != NULL) {
+      gtk_widget_set_size_request(widget, page_width, page_height);
+      gtk_widget_queue_resize(widget);
+    }
   }
 }
 

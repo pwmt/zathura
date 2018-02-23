@@ -142,20 +142,29 @@ void zathura_document_set_position_x(zathura_document_t* document, double positi
 void zathura_document_set_position_y(zathura_document_t* document, double position_y);
 
 /**
- * Returns the current scale value of the document
+ * Returns the current zoom value of the document
  *
  * @param document The document
- * @return The current scale value
+ * @return The current zoom value
+ */
+double zathura_document_get_zoom(zathura_document_t* document);
+
+/**
+ * Returns the current scale value of the document (based on zoom and screen
+ * PPI)
+ *
+ * @param document The document
+ * @return The current scale value, in pixels per point
  */
 double zathura_document_get_scale(zathura_document_t* document);
 
 /**
- * Sets the new scale value of the document
+ * Sets the new zoom value of the document
  *
  * @param document The document
- * @param scale The new scale value
+ * @param zoom The new zoom value
  */
-void zathura_document_set_scale(zathura_document_t* document, double scale);
+void zathura_document_set_zoom(zathura_document_t* document, double zoom);
 
 /**
  * Returns the rotation value of zathura (0..360)
@@ -248,6 +257,26 @@ zathura_document_set_viewport_height(zathura_document_t* document, unsigned int 
 void
 zathura_document_get_viewport_size(zathura_document_t* document,
                                    unsigned int *height, unsigned int* width);
+
+/**
+ Sets the viewport PPI (pixels per inch: the resolution of the monitor, after
+ scaling with the device factor).
+ *
+ * @param[in] document     The document instance
+ * @param[in] height       The viewport PPI
+ */
+void
+zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi);
+
+/**
+ * Return the viewport PPI (pixels per inch: the resolution of the monitor,
+ * after scaling with the device factor).
+ *
+ * @param[in] document     The document instance
+ * @return    The viewport PPI
+ */
+double
+zathura_document_get_viewport_ppi(zathura_document_t* document);
 
 /**
  * Set the device scale factors (e.g. for HiDPI). These are generally integers

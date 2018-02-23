@@ -13,6 +13,7 @@ page_calc_height_width(zathura_document_t* document, double height,
   g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
 
   double scale = zathura_document_get_scale(document);
+
   if (rotate == true && zathura_document_get_rotation(document) % 180 != 0) {
     *page_width  = round(height * scale);
     *page_height = round(width  * scale);
