@@ -177,19 +177,19 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 
 #ifdef GDK_WINDOWING_WAYLAND
-    /* work around apparend bug in GDK: on Wayland, monitor geometry doesn't
-     * return values in application pixels as documented, but in device pixels.
-     * */
-    if (GDK_IS_WAYLAND_DISPLAY(display))
-    {
-      girara_debug("on Wayland, correcting PPI for device scale factor");
-      /* not using the cached value for the scale factor here to avoid issues
-       * if this function is called before the cached value is updated */
-      int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
-      if (device_factor != 0) {
-        ppi /= device_factor;
-      }
+  /* work around apparent bug in GDK: on Wayland, monitor geometry doesn't
+   * return values in application pixels as documented, but in device pixels.
+   * */
+  if (GDK_IS_WAYLAND_DISPLAY(display))
+  {
+    /* not using the cached value for the scale factor here to avoid issues
+     * if this function is called before the cached value is updated */
+    int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+    girara_debug("on Wayland, correcting PPI for device scale factor = %d", device_factor);
+    if (device_factor != 0) {
+      ppi /= device_factor;
     }
+  }
 #endif
 
   girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
