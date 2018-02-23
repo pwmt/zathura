@@ -1,8 +1,5 @@
 /* See LICENSE file for license and copyright information */
 
-#define _DEFAULT_SOURCE
-#define _XOPEN_SOURCE 700
-
 #include "content-type.h"
 #include "macros.h"
 
@@ -115,7 +112,7 @@ guess_type_file(const char* UNUSED(path))
   return NULL;
 }
 #else
-static const char*
+static char*
 guess_type_magic(zathura_content_type_context_t* UNUSED(context),
                  const char* UNUSED(path))
 {

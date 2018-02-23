@@ -288,12 +288,7 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 bool
 cmd_nohlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 {
-  g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
-
-  document_draw_search_results(zathura, false);
-  render_all(zathura);
+  sc_nohlsearch(session, NULL, NULL, 0);
 
   return true;
 }

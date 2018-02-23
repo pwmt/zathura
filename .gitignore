@@ -21,15 +21,9 @@ zathura-*.tar.gz
 *.patch
 
 # build dirs
-.depend
 .tx
 build/
 gcov/
-doc/_build
-
-# version file
-version.h
-.version-checks/
 
 # development files
 .clang_complete
