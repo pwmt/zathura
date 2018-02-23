@@ -226,6 +226,9 @@ init_ui(zathura_t* zathura)
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
       "screen-changed", G_CALLBACK(cb_widget_screen_changed), zathura);
 
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window),
+      "configure-event", G_CALLBACK(cb_widget_configured), zathura);
+
   /* initialize the screen-changed handler to 0 (i.e. invalid) */
   zathura->signals.monitors_changed_handler = 0;
 

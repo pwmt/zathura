@@ -83,7 +83,8 @@ void cb_refresh_view(GtkWidget* view, gpointer data);
  * This function gets called when the monitors associated with the GdkScreen
  * change.
  *
- * It udpates the stored value for the monitor PPI.
+ * It checks for a change of monitor PPI, storing the new value and triggering
+ * a refresh if appropriate.
  *
  * @param screen The GDK screen
  * @param gpointer The zathura instance
@@ -94,14 +95,29 @@ void cb_monitors_changed(GdkScreen* screen, gpointer data);
  * This function gets called when the screen associated with the view widget
  * changes.
  *
- * It udpates updates the connection on the monitors-changed ignal and the
- * stored value for the monitor PPI.
+ * It updates the connection on the monitors-changed signal and checks for a
+ * change of monitor PPI, storing the new value and triggering a refresh if
+ * appropriate.
  *
  * @param widget The view widget
  * @param previous_screen The widget's previous screen
  * @param gpointer The zathura instance
  */
 void cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer data);
+
+/**
+ * This function gets called when the main window's size, position or stacking
+ * changes.
+ *
+ * It checks for a change of monitor PPI (due to the window moving between
+ * different monitors), storing the new value and triggering a refresh if
+ * appropriate.
+ *
+ * @param widget The main window widget
+ * @param event The configure event
+ * @param gpointer The zathura instance
+ */
+void cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
 
 /**
  * This function gets called when the view widget scale factor changes (e.g.
