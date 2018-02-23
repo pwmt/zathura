@@ -192,9 +192,13 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 #endif
 
-  girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
-
-  zathura_document_set_viewport_ppi(zathura->document, ppi);
+  double current_ppi = zathura_document_get_viewport_ppi(zathura->document);
+  if (fabs(ppi - current_ppi) > DBL_EPSILON) {
+    girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
+    zathura_document_set_viewport_ppi(zathura->document, ppi);
+    render_all(zathura);
+    refresh_view(zathura);
+  }
 }
 
 static bool
