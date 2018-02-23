@@ -180,7 +180,7 @@ typedef struct zathura_link_target_s
   double top; /**< Top coordinate */
   double bottom; /**< Bottom coordinate */
   union {
-    double scale; /**< @deprecated Scale */
+    double DEPRECATED(scale); /**< @deprecated Scale */
     double zoom; /**< Zoom */
   };
 } zathura_link_target_t;
