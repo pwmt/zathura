@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-25 17:56+0100\n"
+"POT-Creation-Date: 2018-02-25 18:36+0100\n"
 "PO-Revision-Date: 2015-10-15 23:07+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Estonian (http://www.transifex.net/projects/p/zathura/"
@@ -18,6 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.5\n"
+
+#: data/zathura.desktop.in:5
+#, fuzzy
+msgid "Zathura"
+msgstr "Sule zathura"
+
+#: data/zathura.desktop.in:6
+msgid "A minimalistic document viewer"
+msgstr ""
+
+#. Translators: Search terms to find this application. Do not translate or
+#. localize the semicolons. The list must also end with a semicolon.
+#: data/zathura.desktop.in:12
+msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
+msgstr ""
 
 #: zathura/callbacks.c:308
 #, c-format

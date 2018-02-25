@@ -1,3 +1,4 @@
+data/zathura.desktop.in
 zathura/adjustment.c
 zathura/bookmarks.c
 zathura/callbacks.c

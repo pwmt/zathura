@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-25 17:56+0100\n"
-"PO-Revision-Date: 2016-04-18 21:09+0200\n"
+"POT-Creation-Date: 2018-02-25 18:36+0100\n"
+"PO-Revision-Date: 2018-02-25 18:30+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/zathura/language/"
 "ru/)\n"
@@ -21,7 +21,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: data/zathura.desktop.in:5
+msgid "Zathura"
+msgstr "Zathura"
+
+#: data/zathura.desktop.in:6
+msgid "A minimalistic document viewer"
+msgstr "Минималистичный просмотрщик документов"
+
+#. Translators: Search terms to find this application. Do not translate or
+#. localize the semicolons. The list must also end with a semicolon.
+#: data/zathura.desktop.in:12
+msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
+msgstr ""
 
 #: zathura/callbacks.c:308
 #, c-format

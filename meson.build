@@ -184,7 +184,5 @@ pkg.generate(
   ]
 )
 
-install_data('zathura.desktop', install_dir: desktopdir)
-
 subdir('doc')
 subdir('tests')

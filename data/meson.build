@@ -8,3 +8,13 @@ zathura_resources = gnome.compile_resources(
 
 install_data('zathura.appdata.xml', install_dir: metainfodir)
 install_data('org.pwmt.zathura.xml', install_dir: dbusinterfacesdir)
+
+i18n = import('i18n')
+i18n.merge_file('desktop',
+  input: 'zathura.desktop.in',
+  output: 'zathura.desktop',
+  install: true,
+  install_dir: desktopdir,
+  po_dir: join_paths(meson.source_root(), 'po'),
+  type: 'desktop'
+)
