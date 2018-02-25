@@ -100,6 +100,9 @@ zathura_create(void)
     goto error_out;
   }
 
+  /* set default icon */
+  girara_setting_set(zathura->ui.session, "window-icon", "org.pwmt.zathura");
+
 #ifdef G_OS_UNIX
   /* signal handler */
   zathura->signals.sigterm = g_unix_signal_add(SIGTERM, zathura_signal_sigterm, zathura);
