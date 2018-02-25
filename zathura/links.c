@@ -114,7 +114,7 @@ zathura_link_target_t
 zathura_link_get_target(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, { 0 } };
+    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
     return target;
   }
 
