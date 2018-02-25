@@ -15,7 +15,8 @@
       mouse.
     </p>
     <p>
-      Other features include:
+      Zathura can be extended to support multiple document formats using
+      plugins. Other features include:
       <ul>
         <li>SyncTeX forward and backward synchronization support.</li>
         <li>Quickmarks and bookmarks.</li>
