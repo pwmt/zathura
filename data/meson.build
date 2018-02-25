@@ -7,6 +7,7 @@ zathura_resources = gnome.compile_resources(
 )
 
 install_data('org.pwmt.zathura.xml', install_dir: dbusinterfacesdir)
+install_data('org.pwmt.zathura.png', install_dir: join_paths(datadir, 'icons', 'hicolor', '128x128'))
 
 i18n = import('i18n')
 podir = join_paths(meson.source_root(), 'po')
