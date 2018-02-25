@@ -10,7 +10,7 @@ install_data('org.pwmt.zathura.appdata.xml', install_dir: metainfodir)
 install_data('org.pwmt.zathura.xml', install_dir: dbusinterfacesdir)
 
 i18n = import('i18n')
-i18n.merge_file('desktop',
+desktop = i18n.merge_file('desktop',
   input: 'org.pwmt.zathura.desktop.in',
   output: 'org.pwmt.zathura.desktop',
   install: true,
@@ -18,3 +18,11 @@ i18n.merge_file('desktop',
   po_dir: join_paths(meson.source_root(), 'po'),
   type: 'desktop'
 )
+
+desktop_file_validate = find_program('desktop-file-validate', required: false)
+if desktop_file_validate.found()
+  test('validate-desktop',
+    desktop_file_validate,
+    args: [desktop.full_path()]
+  )
+endif
