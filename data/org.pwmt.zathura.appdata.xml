@@ -2,7 +2,7 @@
 <!-- Copyright 2014-2015 pwmt.org -->
 
 <component type="desktop">
-  <id>zathura.desktop</id>
+  <id>org.pwmt.zathura.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>Zlib</project_license>
   <description>
