@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-25 18:36+0100\n"
+"POT-Creation-Date: 2018-02-25 20:12+0100\n"
 "PO-Revision-Date: 2018-02-25 18:31+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Ukrainian (Ukraine) (http://www.transifex.com/projects/p/"
@@ -20,17 +20,38 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: data/zathura.desktop.in:5
+#: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
 msgstr "Zathura"
 
-#: data/zathura.desktop.in:6
+#: data/org.pwmt.zathura.appdata.xml.in:8 data/org.pwmt.zathura.desktop.in:6
 msgid "A minimalistic document viewer"
 msgstr "Легкий переглядач документів"
 
+#: data/org.pwmt.zathura.appdata.xml.in:10
+msgid ""
+"Zathura is a highly customizable and functional document viewer. It provides "
+"a minimalistic and space saving interface as well as an easy usage that "
+"mainly focuses on keyboard interaction. Zathura makes it possible to "
+"completely view and navigate through documents without using a mouse."
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:21
+msgid "SyncTeX forward and backward synchronization support."
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:22
+#, fuzzy
+msgid "Quickmarks and bookmarks."
+msgstr "Дивитись усі закладки"
+
+#: data/org.pwmt.zathura.appdata.xml.in:23
+msgid "Automatic document reloading."
+msgstr ""
+
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
-#: data/zathura.desktop.in:12
+#: data/org.pwmt.zathura.desktop.in:12
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr ""
 
