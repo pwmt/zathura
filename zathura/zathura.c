@@ -513,12 +513,12 @@ zathura_free(zathura_t* zathura)
   g_free(zathura->config.cache_dir);
 
   /* free jumplist */
-  if (zathura->jumplist.list != NULL) {
-    girara_list_free(zathura->jumplist.list);
-  }
-
   if (zathura->jumplist.cur != NULL) {
     girara_list_iterator_free(zathura->jumplist.cur);
+  }
+
+  if (zathura->jumplist.list != NULL) {
+    girara_list_free(zathura->jumplist.list);
   }
 
   g_free(zathura);
