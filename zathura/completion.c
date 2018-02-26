@@ -120,6 +120,15 @@ error_free:
   return NULL;
 }
 
+static void
+group_add_element(void* data, void* userdata)
+{
+  const char* element              = data;
+  girara_completion_group_t* group = userdata;
+
+  girara_completion_group_add_element(group, element, NULL);
+}
+
 static girara_completion_t*
 list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, int show_recent)
 {
@@ -184,9 +193,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
       goto error_free;
     }
 
-    GIRARA_LIST_FOREACH_BODY(names, const char*, file,
-      girara_completion_group_add_element(group, file, NULL);
-    );
+    girara_list_foreach(names, group_add_element, group);
     girara_list_free(names);
   }
 
@@ -197,10 +204,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
     }
 
     if (girara_list_size(recent_files) != 0) {
-      GIRARA_LIST_FOREACH_BODY(recent_files, const char*, file,
-        girara_debug("adding %s (recent file)", file);
-        girara_completion_group_add_element(history_group, file, NULL);
-      );
+      girara_list_foreach(recent_files, group_add_element, history_group);
       girara_list_free(recent_files);
     } else {
       girara_completion_group_free(history_group);

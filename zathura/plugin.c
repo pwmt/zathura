@@ -174,6 +174,24 @@ load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, con
   }
 }
 
+static void
+load_dir(void* data, void* userdata)
+{
+  const char* plugindir                    = data;
+  zathura_plugin_manager_t* plugin_manager = userdata;
+
+  GDir* dir = g_dir_open(plugindir, 0, NULL);
+  if (dir == NULL) {
+    girara_error("could not open plugin directory: %s", plugindir);
+  } else {
+    const char* name = NULL;
+    while ((name = g_dir_read_name(dir)) != NULL) {
+      load_plugin(plugin_manager, plugindir, name);
+    }
+    g_dir_close(dir);
+  }
+}
+
 void
 zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
 {
@@ -181,19 +199,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
     return;
   }
 
-  GIRARA_LIST_FOREACH_BODY(plugin_manager->path, char*, plugindir,
-    /* read all files in the plugin directory */
-    GDir* dir = g_dir_open(plugindir, 0, NULL);
-    if (dir == NULL) {
-      girara_error("could not open plugin directory: %s", plugindir);
-    } else {
-      const char* name = NULL;
-      while ((name = g_dir_read_name(dir)) != NULL) {
-        load_plugin(plugin_manager, plugindir, name);
-      }
-      g_dir_close(dir);
-    }
-  );
+  /* read all files in the plugin directory */
+  girara_list_foreach(plugin_manager->path, load_dir, plugin_manager);
 }
 
 zathura_plugin_t*

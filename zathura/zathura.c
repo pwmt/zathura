@@ -574,6 +574,23 @@ zathura_set_cache_dir(zathura_t* zathura, const char* dir)
   }
 }
 
+static void
+add_dir(void* data, void* userdata)
+{
+  const char* path                         = data;
+  zathura_plugin_manager_t* plugin_manager = userdata;
+
+  zathura_plugin_manager_add_dir(plugin_manager, path);
+}
+
+static void
+set_plugin_dir(zathura_t* zathura, const char* dir)
+{
+  girara_list_t* paths = girara_split_path_array(dir);
+  girara_list_foreach(paths, add_dir, zathura->plugins.manager);
+  girara_list_free(paths);
+}
+
 void
 zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
 {
@@ -581,21 +598,12 @@ zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
   g_return_if_fail(zathura->plugins.manager != NULL);
 
   if (dir != NULL) {
-    girara_list_t* paths = girara_split_path_array(dir);
-    GIRARA_LIST_FOREACH_BODY(paths, char*, path,
-      zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
-    );
-    girara_list_free(paths);
-  } else {
+    set_plugin_dir(zathura, dir);
 #ifdef ZATHURA_PLUGINDIR
-    girara_list_t* paths = girara_split_path_array(ZATHURA_PLUGINDIR);
-    GIRARA_LIST_FOREACH_BODY(paths, char*, path,
-      zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
-    );
-    girara_list_free(paths);
+  } else {
+    set_plugin_dir(zathura, ZATHURA_PLUGINDIR);
 #endif
   }
-
 }
 
 void

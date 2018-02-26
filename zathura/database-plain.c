@@ -511,22 +511,28 @@ plain_load_jumplist(zathura_database_t* db, const char* file)
   return list;
 }
 
+static void
+jump_to_str(void* data, void* userdata)
+{
+  const zathura_jump_t* jump = data;
+  GString* str_val           = userdata;
+
+  char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
+
+  g_string_append_printf(str_val, "%d ", jump->page);
+  g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->x));
+  g_string_append_c(str_val, ' ');
+  g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
+  g_string_append_c(str_val, ' ');
+}
+
 static bool
 plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist)
 {
   g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
 
   GString* str_val = g_string_new(NULL);
-
-  GIRARA_LIST_FOREACH_BODY(jumplist, zathura_jump_t*, jump,
-    char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
-
-    g_string_append_printf(str_val, "%d ", jump->page);
-    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->x));
-    g_string_append_c(str_val, ' ');
-    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
-    g_string_append_c(str_val, ' ');
-  );
+  girara_list_foreach(jumplist, jump_to_str, str_val);
 
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
 
