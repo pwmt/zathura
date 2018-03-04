@@ -350,7 +350,7 @@ check_column(sqlite3* session, const char* table, const char* col, bool* res)
   }
 
   if (*res == false) {
-    girara_debug("column %s in table %s is NOT found", col, table);
+    girara_debug("Column '%s' in table '%s' NOT found.", col, table);
   }
 
   sqlite3_finalize(stmt);
@@ -386,7 +386,7 @@ check_column_type(sqlite3* session, const char* table, const char* col, const ch
   }
 
   if (*res == false) {
-    girara_debug("column %s in table %s has wrong type", col, table);
+    girara_debug("Column '%s' in table '%s' has wrong type.", col, table);
   }
 
   sqlite3_finalize(stmt);
