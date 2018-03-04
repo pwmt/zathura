@@ -504,11 +504,12 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
 {
   g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
-  static const char SQL_INSERT_JUMP[] = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
+  static const char SQL_INSERT_JUMP[]     = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
   static const char SQL_REMOVE_JUMPLIST[] = "DELETE FROM jumplist WHERE file = ?;";
-  sqlite3_stmt* stmt = NULL;
-  int res = 0;
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt                  = NULL;
+  int res                             = 0;
 
   if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
     return false;
@@ -582,9 +583,10 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
 {
   g_return_val_if_fail(db != NULL && file != NULL, NULL);
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   static const char SQL_GET_JUMPLIST[] = "SELECT page, hadj_ratio, vadj_ratio FROM jumplist WHERE file = ? ORDER BY id ASC;";
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_JUMPLIST);
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt                  = prepare_statement(priv->session, SQL_GET_JUMPLIST);
 
   if (stmt == NULL) {
     return NULL;
