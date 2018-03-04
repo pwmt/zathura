@@ -82,7 +82,7 @@ zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
 }
 
 girara_list_t*
-zathura_document_information_entry_list_new()
+zathura_document_information_entry_list_new(void)
 {
   girara_list_t* list = girara_list_new2((girara_free_function_t)
                                          zathura_document_information_entry_free);

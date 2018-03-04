@@ -112,14 +112,14 @@ typedef enum zathura_adjust_mode_e
  * @param height Height of the image stored in the buffer
  * @return Image buffer or NULL if an error occurred
  */
-zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned int height);
+ZATHURA_PLUGIN_API zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned int height);
 
 /**
  * Frees the image buffer
  *
  * @param buffer The image buffer
  */
-void zathura_image_buffer_free(zathura_image_buffer_t* buffer);
+ZATHURA_PLUGIN_API void zathura_image_buffer_free(zathura_image_buffer_t* buffer);
 
 /**
  * Rectangle structure.
@@ -230,14 +230,14 @@ typedef struct zathura_jump_s
  * @param title Title of the index element
  * @return Index element
  */
-zathura_index_element_t* zathura_index_element_new(const char* title);
+ZATHURA_PLUGIN_API zathura_index_element_t* zathura_index_element_new(const char* title);
 
 /**
  * Free index element
  *
  * @param index The index element
  */
-void zathura_index_element_free(zathura_index_element_t* index);
+ZATHURA_PLUGIN_API void zathura_index_element_free(zathura_index_element_t* index);
 
 /**
  * Creates a list that should be used to store \ref
@@ -245,7 +245,7 @@ void zathura_index_element_free(zathura_index_element_t* index);
  *
  * @return A list or NULL if an error occurred
  */
-girara_list_t* zathura_document_information_entry_list_new();
+ZATHURA_PLUGIN_API girara_list_t* zathura_document_information_entry_list_new(void);
 
 /**
  * Creates a new document information entry
@@ -255,7 +255,7 @@ girara_list_t* zathura_document_information_entry_list_new();
  *
  * @return A new entry or NULL if an error occurred
  */
-zathura_document_information_entry_t*
+ZATHURA_PLUGIN_API zathura_document_information_entry_t*
 zathura_document_information_entry_new(zathura_document_information_type_t
     type, const char* value);
 
@@ -264,7 +264,7 @@ zathura_document_information_entry_new(zathura_document_information_type_t
  *
  * @param entry The entry that should be freed
  */
-void zathura_document_information_entry_free(zathura_document_information_entry_t* entry);
+ZATHURA_PLUGIN_API void zathura_document_information_entry_free(zathura_document_information_entry_t* entry);
 
 /**
  * Context for MIME type detection

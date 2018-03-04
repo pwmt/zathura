@@ -119,7 +119,7 @@ init_zathura(const char* config_dir, const char* data_dir,
 
 
 /* main function */
-int
+GIRARA_VISIBLE int
 main(int argc, char* argv[])
 {
   init_locale();

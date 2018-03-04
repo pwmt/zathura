@@ -3,6 +3,9 @@
 #ifndef PLUGIN_API_H
 #define PLUGIN_API_H
 
+#include <cairo.h>
+
+#include "types.h"
 #include "page.h"
 #include "document.h"
 #include "links.h"
@@ -227,7 +230,7 @@ typedef struct zathura_plugin_definition_s {
 #define ZATHURA_PLUGIN_REGISTER_WITH_FUNCTIONS(plugin_name, major, minor, rev, plugin_functions, mimetypes) \
   static const char* zathura_plugin_mime_types[] = mimetypes; \
   \
-  const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = { \
+  ZATHURA_PLUGIN_API const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = { \
     .name = plugin_name, \
     .version = { major, minor, rev }, \
     .functions = plugin_functions, \

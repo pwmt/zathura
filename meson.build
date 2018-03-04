@@ -59,7 +59,8 @@ flags = [
   '-Wextra',
   '-pedantic',
   '-Werror=implicit-function-declaration',
-  '-Werror=vla'
+  '-Werror=vla',
+  '-fvisibility=hidden'
 ]
 flags = cc.get_supported_arguments(flags)
 

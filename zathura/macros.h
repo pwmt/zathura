@@ -7,6 +7,7 @@
 
 #define UNUSED(x) GIRARA_UNUSED(x)
 #define DEPRECATED(x) GIRARA_DEPRECATED(x)
+#define ZATHURA_PLUGIN_API GIRARA_VISIBLE
 
 #ifndef MIN
 #define MIN(a,b) (((a)<(b))?(a):(b))
