@@ -80,12 +80,12 @@ zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const c
 static bool
 check_suffix(const char* path)
 {
-  if (g_str_has_suffix(path, ".so") == TRUE) {
-    return true;
-  }
-
 #ifdef __APPLE__
   if (g_str_has_suffix(path, ".dylib") == TRUE) {
+    return true;
+  }
+#else
+  if (g_str_has_suffix(path, ".so") == TRUE) {
     return true;
   }
 #endif
