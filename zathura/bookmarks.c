@@ -134,7 +134,7 @@ zathura_bookmarks_load(zathura_t* zathura, const gchar* file)
 }
 
 int
-zathura_bookmarks_compare(zathura_bookmark_t* lhs, zathura_bookmark_t* rhs)
+zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs)
 {
   if (lhs == NULL && rhs == NULL) {
     return 0;
