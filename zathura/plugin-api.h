@@ -221,27 +221,6 @@ typedef struct zathura_plugin_definition_s {
  * @param major the plugin's major version
  * @param minor the plugin's minor version
  * @param rev the plugin's revision
- * @param register_functions function to register the plugin's document functions
- * @param mimetypes a char array of mime types supported by the plugin
- */
-#define ZATHURA_PLUGIN_REGISTER(plugin_name, major, minor, rev, register_functions, mimetypes) \
-  static const char* zathura_plugin_mime_types[] = mimetypes; \
-  \
-  const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = { \
-    .name = plugin_name, \
-    .version = { major, minor, rev }, \
-    .register_function = register_functions, \
-    .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]), \
-    .mime_types = zathura_plugin_mime_types \
-  }; \
-
-/**
- * Register a plugin.
- *
- * @param plugin_name the name of the plugin
- * @param major the plugin's major version
- * @param minor the plugin's minor version
- * @param rev the plugin's revision
  * @param plugin_functions function to register the plugin's document functions
  * @param mimetypes a char array of mime types supported by the plugin
  */
