@@ -397,9 +397,7 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t)
-                          zathura_bookmarks_compare, (girara_free_function_t)
-                          zathura_bookmark_free);
+  girara_list_t* result = bookmarks_list_new();
 
   gsize num_keys;
   char** keys = g_key_file_get_keys(priv->bookmarks, name, &num_keys, NULL);
