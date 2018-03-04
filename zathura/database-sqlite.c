@@ -746,7 +746,7 @@ sqlite_io_read(GiraraInputHistoryIO* db)
     return NULL;
   }
 
-  girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);
+  girara_list_t* list = girara_list_new2(g_free);
   if (list == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
@@ -791,7 +791,7 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
     return false;
   }
 
-  girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);
+  girara_list_t* list = girara_list_new2(g_free);
   if (list == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
