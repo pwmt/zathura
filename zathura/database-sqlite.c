@@ -488,8 +488,8 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
     bookmark->page = sqlite3_column_int(stmt, 1);
     bookmark->x    = sqlite3_column_double(stmt, 2);
     bookmark->y    = sqlite3_column_double(stmt, 3);
-    bookmark->x    = bookmark->x <= 0.0 ? DBL_MIN : bookmark->x;
-    bookmark->y    = bookmark->y <= 0.0 ? DBL_MIN : bookmark->y;
+    bookmark->x    = MAX(DBL_MIN, bookmark->x);
+    bookmark->y    = MAX(DBL_MIN, bookmark->y);
 
     girara_list_append(result, bookmark);
   }
