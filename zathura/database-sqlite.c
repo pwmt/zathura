@@ -10,6 +10,12 @@
 #include "database-sqlite.h"
 #include "utils.h"
 
+static char*
+sqlite3_column_text_dup(sqlite3_stmt* stmt, int col)
+{
+  return g_strdup((const char*) sqlite3_column_text(stmt, col));
+}
+
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 static void io_interface_init(GiraraInputHistoryIOInterface* iface);
 
@@ -110,6 +116,7 @@ sqlite_finalize(GObject* object)
   ZathuraSQLDatabase* db = ZATHURA_SQLDATABASE(object);
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   if (priv->session) {
+    sqlite3_exec(priv->session, "VACUUM;", NULL, 0, NULL);
     sqlite3_close(priv->session);
   }
 
@@ -483,7 +490,7 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
       continue;
     }
 
-    bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
+    bookmark->id   = sqlite3_column_text_dup(stmt, 0);
     bookmark->page = sqlite3_column_int(stmt, 1);
     bookmark->x    = sqlite3_column_double(stmt, 2);
     bookmark->y    = sqlite3_column_double(stmt, 3);
@@ -702,7 +709,7 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
   file_info->zoom                   = sqlite3_column_double(stmt, 2);
   file_info->rotation               = sqlite3_column_int(stmt, 3);
   file_info->pages_per_row          = sqlite3_column_int(stmt, 4);
-  file_info->first_page_column_list = g_strdup((const char*) sqlite3_column_text(stmt, 5));
+  file_info->first_page_column_list = sqlite3_column_text_dup(stmt, 5);
   file_info->position_x             = sqlite3_column_double(stmt, 6);
   file_info->position_y             = sqlite3_column_double(stmt, 7);
 
@@ -752,7 +759,7 @@ sqlite_io_read(GiraraInputHistoryIO* db)
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    girara_list_append(list, g_strdup((const char*) sqlite3_column_text(stmt, 0)));
+    girara_list_append(list, sqlite3_column_text_dup(stmt, 0));
   }
 
   sqlite3_finalize(stmt);
@@ -797,7 +804,7 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    girara_list_append(list, g_strdup((const char*) sqlite3_column_text(stmt, 0)));
+    girara_list_append(list, sqlite3_column_text_dup(stmt, 0));
   }
 
   sqlite3_finalize(stmt);
