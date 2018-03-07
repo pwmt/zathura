@@ -307,7 +307,7 @@ init_css(zathura_t* zathura)
   GiraraTemplate* csstemplate =
     girara_session_get_template(zathura->ui.session);
 
-  static const char* index_settings[] = {
+  static const char index_settings[][16] = {
     "index-fg",
     "index-bg",
     "index-active-fg",
