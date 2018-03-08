@@ -7,7 +7,7 @@ girara user interface library and several document libraries.
 Requirements
 ------------
 
-meson (>= 0.43)
+meson (>= 0.45)
 gtk3 (>= 3.22)
 glib (>= 2.50)
 girara (>= 0.2.8)

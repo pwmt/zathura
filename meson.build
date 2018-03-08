@@ -1,6 +1,6 @@
 project('zathura', 'c',
   version: '0.3.8',
-  meson_version: '>=0.43',
+  meson_version: '>=0.45',
   default_options: 'c_std=c11',
 )
 
@@ -64,12 +64,6 @@ flags = [
   '-fvisibility=hidden'
 ]
 flags = cc.get_supported_arguments(flags)
-
-# linker flags
-linker_flags = [
-  '-rdynamic'
-]
-linker_flags = cc.get_supported_arguments(linker_flags)
 
 # optional dependencies
 additional_sources = []
@@ -167,7 +161,7 @@ zathura = executable(
   install: true,
   include_directories: include_directories,
   c_args: defines + flags,
-  link_args: linker_flags, # replace with export_dynamic: true once we have meson >= 0.45
+  export_dynamic: true,
   gui_app: true
 )
 install_headers(headers, subdir: 'zathura')
