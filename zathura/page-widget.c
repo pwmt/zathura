@@ -960,6 +960,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
         if (rect.x1 <= oldx && rect.x2 >= oldx
             && rect.y1 <= oldy && rect.y2 >= oldy) {
           zathura_link_evaluate(priv->zathura, link);
+          break;
         }
       );
     }
