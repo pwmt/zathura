@@ -957,8 +957,8 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     if (priv->links.list != NULL && priv->links.n > 0) {
       GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
         const zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
-        if (rect.x1 <= button->x && rect.x2 >= button->x
-            && rect.y1 <= button->y && rect.y2 >= button->y) {
+        if (rect.x1 <= oldx && rect.x2 >= oldx
+            && rect.y1 <= oldy && rect.y2 >= oldy) {
           zathura_link_evaluate(priv->zathura, link);
         }
       );
@@ -968,7 +968,6 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
 
     zathura_rectangle_t tmp = priv->mouse.selection;
 
-    const double scale = zathura_document_get_scale(document);
     tmp.x1 /= scale;
     tmp.x2 /= scale;
     tmp.y1 /= scale;
