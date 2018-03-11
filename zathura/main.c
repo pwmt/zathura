@@ -309,7 +309,6 @@ main(int argc, char* argv[])
   } else {
     girara_error("Invalid sandbox option");
     ret = -1;
-    goto free_and_ret;
   }
 
   g_free(sandbox);
