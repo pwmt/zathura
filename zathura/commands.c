@@ -287,7 +287,7 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     g_free(sandbox);
     return false;
   }
-
+  g_free(sandbox);
 
   print(zathura);
 
