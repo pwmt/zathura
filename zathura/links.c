@@ -221,6 +221,7 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     default:
       break;
   }
+  g_free(sandbox);
 }
 
 void

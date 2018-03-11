@@ -19,21 +19,21 @@ int seccomp_enable_basic_filter(void){
  
     /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
     if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
-        perror("prctl SET_NO_NEW_PRIVS");
-        exit(EXIT_FAILURE);
+        girara_error("prctl SET_NO_NEW_PRIVS");
+        return -1;
     }
 
     /* prevent escape via ptrace */
     if(prctl (PR_SET_DUMPABLE, 0, 0, 0, 0)){
-        perror("prctl PR_SET_DUMPABLE");
-        exit(EXIT_FAILURE);
+        girara_error("prctl PR_SET_DUMPABLE");
+        return -1;
     }
 
     /* initialize the filter */
     ctx = seccomp_init(SCMP_ACT_ALLOW);
     if (ctx == NULL){
-	perror("seccomp_init failed");
-        exit(EXIT_FAILURE);
+        girara_error("seccomp_init failed");
+        return -1;
     }
     
     DENY_RULE (_sysctl);
@@ -101,7 +101,7 @@ int seccomp_enable_basic_filter(void){
   out:
     /* something went wrong */
     seccomp_release(ctx);
-    return 1;
+    return -1;
 }
 
 
@@ -370,7 +370,7 @@ int seccomp_enable_strict_filter(void){
   out:
     /* something went wrong */
     seccomp_release(ctx);
-    return 1;
+    return -1;
 }
 
 #endif /* WITH_SECCOMP */

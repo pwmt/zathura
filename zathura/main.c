@@ -302,11 +302,25 @@ main(int argc, char* argv[])
     girara_debug("Sandbox deactivated.");
   } else if (g_strcmp0(sandbox, "normal") == 0)  {
     girara_debug("Basic sandbox allowing normal operation.");
-    seccomp_enable_basic_filter();
+    ret = seccomp_enable_basic_filter();
+    if (ret){
+      goto free_and_ret;
+    }
   } else if (g_strcmp0(sandbox, "strict") == 0) {
     girara_debug("Strict sandbox preventing write and network access.");
-    seccomp_enable_strict_filter();
+    ret = seccomp_enable_strict_filter();
+    if (ret){
+      goto free_and_ret;
+    }
+  } else {
+    girara_error("Invalid sandbox option");
+    ret = -1;
+    goto free_and_ret;
   }
+  
+
+
+  g_free(sandbox);
 
 #endif
   
