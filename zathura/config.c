@@ -185,8 +185,6 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "index-active-fg", "#232323", STRING, true, _("Index mode foreground color (active element)"), NULL, NULL);
   girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, true, _("Index mode background color (active element)"), NULL, NULL);
 
-  girara_setting_add(gsession, "sandbox",              "normal",      STRING, true,  _("Sandbox level"),         NULL, NULL);
-  
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
   bool_value = false;
@@ -251,6 +249,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
+  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), NULL, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \
