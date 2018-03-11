@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #ifdef WITH_SECCOMP
-
+#include <girara/log.h>
 #include <seccomp.h> /* libseccomp */
 #include <sys/prctl.h> /* prctl */
 #include <sys/socket.h>
