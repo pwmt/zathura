@@ -293,10 +293,8 @@ main(int argc, char* argv[])
   }
 
 #ifdef WITH_SECCOMP
-  
   char* sandbox = NULL;
   girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
-  
   if (g_strcmp0(sandbox, "none") == 0) {
     girara_debug("Sandbox deactivated.");
   } else if (g_strcmp0(sandbox, "normal") == 0)  {
@@ -309,14 +307,13 @@ main(int argc, char* argv[])
     girara_error("Invalid sandbox option");
     ret = -1;
   }
-
   g_free(sandbox);
-  if (ret){
+
+  if (ret != 0) {
     goto free_and_ret;
   }
-
 #endif
-  
+
   /* open document if passed */
   if (file_idx != 0) {
     if (page_number > 0) {
