@@ -70,11 +70,12 @@ additional_sources = []
 sqlite = dependency('sqlite3', version: '>=3.5.9', required: false)
 synctex = dependency('synctex', required: false)
 magic = cc.find_library('magic', required: false)
+seccomp = dependency('libseccomp', required: false)
 
 if get_option('enable-sqlite') and sqlite.found()
   build_dependencies += sqlite
   defines += '-DWITH_SQLITE'
-  additional_sources = files('zathura/database-sqlite.c')
+  additional_sources += files('zathura/database-sqlite.c')
 endif
 
 if get_option('enable-synctex') and synctex.found()
@@ -85,6 +86,12 @@ endif
 if get_option('enable-magic') and magic.found()
   build_dependencies += magic
   defines += '-DWITH_MAGIC'
+endif
+
+if get_option('enable-seccomp') and seccomp.found()
+  build_dependencies += seccomp
+  defines += '-DWITH_SECCOMP'
+  additional_sources += files('zathura/libsec.c')
 endif
 
 # generate version header file

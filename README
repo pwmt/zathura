@@ -16,6 +16,7 @@ check (optional, for tests)
 intltool
 libmagic from file(1) (optional, for mime-type detection)
 libsynctex from TeXLive (optional, for SyncTeX support)
+libseccomp (optional, for sandbox support)
 Sphinx (optional, for manpages and HTML documentation)
 doxygen (optional, for HTML documentation)
 breathe (optional, for HTML documentation)
@@ -30,6 +31,9 @@ enable-sqlite=off and sqlite support won't be available.
 
 The use of magic to detect mime types is optional and can be disabled by setting
 enable-magic=off.
+
+The use of seccomp to create a sandboxed environment is optional and can be
+enabled by setting enable-seccomp=on.
 
 Installation
 ------------
