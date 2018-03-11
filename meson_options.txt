@@ -15,6 +15,6 @@ option('enable-magic',
 )
 option('enable-seccomp',
   type: 'boolean',
-  value: true,
-  description: 'Enable seccomp support if available.'
+  value: false,
+  description: 'Enable experimental seccomp support if available.'
 )
