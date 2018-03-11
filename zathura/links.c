@@ -15,7 +15,7 @@
 #include "render.h"
 
 #ifdef WITH_SECCOMP
-#include "libsec.h"
+#include "seccomp-filters.h"
 #endif
 
 struct zathura_link_s {

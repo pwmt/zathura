@@ -1,4 +1,4 @@
-#include "libsec.h"
+#include "seccomp-filters.h"
 #include <stdio.h>
 
 #ifdef WITH_SECCOMP

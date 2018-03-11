@@ -91,7 +91,7 @@ endif
 if get_option('enable-seccomp') and seccomp.found()
   build_dependencies += seccomp
   defines += '-DWITH_SECCOMP'
-  additional_sources += files('zathura/libsec.c')
+  additional_sources += files('zathura/seccomp-filters.c')
 endif
 
 # generate version header file

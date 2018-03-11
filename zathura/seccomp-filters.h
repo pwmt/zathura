@@ -1,5 +1,5 @@
-#ifndef SECCOMP_H
-#define SECCOMP_H
+#ifndef ZATHURA_SECCOMP_FILTERS_H
+#define ZATHURA_SECCOMP_FILTERS_H
 
 /* basic filter */
 /* this mode allows normal use */

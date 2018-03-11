@@ -18,9 +18,8 @@
 #ifdef WITH_SYNCTEX
 #include "synctex.h"
 #endif
-
 #ifdef WITH_SECCOMP
-#include "libsec.h"
+#include "seccomp-filters.h"
 #endif
 
 /* Init locale */
