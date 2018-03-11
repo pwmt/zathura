@@ -1,3 +1,5 @@
+/* See LICENSE file for license and copyright information */
+
 #include "seccomp-filters.h"
 
 #ifdef WITH_SECCOMP

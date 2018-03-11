@@ -1,3 +1,5 @@
+/* See LICENSE file for license and copyright information */
+
 #ifndef ZATHURA_SECCOMP_FILTERS_H
 #define ZATHURA_SECCOMP_FILTERS_H
 
