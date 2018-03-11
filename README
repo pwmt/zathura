@@ -33,7 +33,9 @@ The use of magic to detect mime types is optional and can be disabled by setting
 enable-magic=off.
 
 The use of seccomp to create a sandboxed environment is optional and can be
-enabled by setting enable-seccomp=on.
+enabled by setting enable-seccomp=on. Note that the sandbox is currently only
+available as experimental preview. Some commands, shortcuts and other
+functionality might break.
 
 Installation
 ------------
