@@ -298,10 +298,88 @@ zathura_page_widget_finalize(GObject* object)
 }
 
 static void
+set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_font_weight_t weight)
+{
+  if (zathura == NULL) {
+    return;
+  }
+
+  /* get user font description */
+  char* font = NULL;
+  girara_setting_get(zathura->ui.session, "font", &font);
+  if (font == NULL) {
+    return;
+  }
+
+  /* use pango to extract font family and size */
+  PangoFontDescription* descr = pango_font_description_from_string(font);
+
+  const char* family = pango_font_description_get_family(descr);
+
+  /* get font size: can be points or absolute.
+   * absolute units: example: value 10*PANGO_SCALE = 10 (unscaled) device units (logical pixels)
+   * point units:    example: value 10*PANGO_SCALE = 10 points = 10*(font dpi config / 72) device units */
+  double size = pango_font_description_get_size(descr) / PANGO_SCALE;
+
+  /* convert point size to device units */
+  if (!pango_font_description_get_size_is_absolute(descr)) {
+    double font_dpi = 96.0;
+    if (zathura->ui.session != NULL) {
+      if (gtk_widget_has_screen(zathura->ui.session->gtk.view)) {
+        GdkScreen* screen = gtk_widget_get_screen(zathura->ui.session->gtk.view);
+        font_dpi = gdk_screen_get_resolution(screen);
+      }
+    }
+    size = size * font_dpi / 72;
+  }
+
+  cairo_select_font_face(cairo, family, CAIRO_FONT_SLANT_NORMAL, weight);
+  cairo_set_font_size(cairo, size);
+
+  pango_font_description_free(descr);
+  g_free(font);
+}
+
+static cairo_text_extents_t
+get_text_extents(const char* string, zathura_t* zathura, cairo_font_weight_t weight) {
+  cairo_text_extents_t text = {0,};
+
+  if (zathura == NULL) {
+    return text;
+  }
+
+  /* make dummy surface to satisfy API requirements */
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, 0, 0);
+  if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    return text;
+  }
+
+  cairo_t* cairo = cairo_create(surface);
+  if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS) {
+    cairo_surface_destroy(surface);
+    return text;
+  }
+
+  set_font_from_property(cairo, zathura, weight);
+  cairo_text_extents(cairo, string, &text);
+
+  /* add some margin (for some reason the reported extents can be a bit short) */
+  text.width += 6;
+  text.height += 2;
+
+  cairo_destroy(cairo);
+  cairo_surface_destroy(surface);
+
+  return text;
+}
+
+static void
 zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
   ZathuraPage* pageview = ZATHURA_PAGE(object);
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(pageview);
+
+  cairo_text_extents_t text;
 
   switch (prop_id) {
     case PROP_PAGE:
@@ -320,12 +398,21 @@ zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* v
       }
 
       if (priv->links.retrieved == TRUE && priv->links.list != NULL) {
-        GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
-        if (link != NULL) {
-          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
-          redraw_rect(pageview, &rectangle);
-        }
-        GIRARA_LIST_FOREACH_END(priv->links.list, zathura_link_t*, iter, link);
+        /* get size of text that should be large enough for every link hint */
+        text = get_text_extents("888", priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
+
+        GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
+          if (link != NULL) {
+            /* redraw link area */
+            zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
+            redraw_rect(pageview, &rectangle);
+
+            /* also redraw area for link hint */
+            rectangle.x2 = rectangle.x1 + text.width;
+            rectangle.y1 = rectangle.y2 - text.height;
+            redraw_rect(pageview, &rectangle);
+          }
+        );
       }
       break;
     case PROP_LINKS_OFFSET:
@@ -409,6 +496,22 @@ zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, 
   }
 }
 
+static zathura_device_factors_t
+get_safe_device_factors(cairo_surface_t* surface)
+{
+  zathura_device_factors_t factors;
+  cairo_surface_get_device_scale(surface, &factors.x, &factors.y);
+
+  if (fabs(factors.x) < DBL_EPSILON) {
+    factors.x = 1.0;
+  }
+  if (fabs(factors.y) < DBL_EPSILON) {
+    factors.y = 1.0;
+  }
+
+  return factors;
+}
+
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
@@ -445,8 +548,13 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     } else {
       const unsigned int height = cairo_image_surface_get_height(priv->thumbnail);
       const unsigned int width = cairo_image_surface_get_width(priv->thumbnail);
-      const unsigned int pheight = (rotation % 180 ? page_width : page_height);
-      const unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+      unsigned int pheight = (rotation % 180 ? page_width : page_height);
+      unsigned int pwidth = (rotation % 180 ? page_height : page_width);
+
+      /* note: this always returns 1 and 1 if Cairo too old for device scale API */
+      zathura_device_factors_t device = get_safe_device_factors(priv->thumbnail);
+      pwidth *= device.x;
+      pheight *= device.y;
 
       cairo_scale(cairo, pwidth / (double)width, pheight / (double)height);
       cairo_set_source_surface(cairo, priv->thumbnail, 0, 0);
@@ -465,63 +573,54 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       return FALSE;
     }
 
-    /* draw rectangles */
-    char* font = NULL;
-    girara_setting_get(priv->zathura->ui.session, "font", &font);
+    /* draw links */
+    set_font_from_property(cairo, priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
 
     float transparency = 0.5;
     girara_setting_get(priv->zathura->ui.session, "highlight-transparency", &transparency);
 
-    if (font != NULL) {
-      cairo_select_font_face(cairo, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    }
-
-    g_free(font);
-
-    /* draw links */
     if (priv->links.draw == true && priv->links.n != 0) {
       unsigned int link_counter = 0;
-      GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
-      if (link != NULL) {
-        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
+      GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
+        if (link != NULL) {
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
 
-        /* draw position */
-        const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
-        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-        cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-                        (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
-        cairo_fill(cairo);
+          /* draw position */
+          const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
+                          (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
+          cairo_fill(cairo);
 
-        /* draw text */
-        cairo_set_source_rgba(cairo, 0, 0, 0, 1);
-        cairo_set_font_size(cairo, 10);
-        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
-        char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
-        cairo_show_text(cairo, link_number);
-        g_free(link_number);
-      }
-      GIRARA_LIST_FOREACH_END(priv->links.list, zathura_link_t*, iter, link);
+          /* draw text */
+          cairo_set_source_rgba(cairo, 0, 0, 0, 1);
+          cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
+          char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
+          cairo_show_text(cairo, link_number);
+          g_free(link_number);
+        }
+      );
     }
 
     /* draw search results */
     if (priv->search.list != NULL && priv->search.draw == true) {
       int idx = 0;
-      GIRARA_LIST_FOREACH(priv->search.list, zathura_rectangle_t*, iter, rect)
-      zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+      GIRARA_LIST_FOREACH_BODY(priv->search.list, zathura_rectangle_t*, rect,
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
 
-      /* draw position */
-      if (idx == priv->search.current) {
-        const GdkRGBA color = priv->zathura->ui.colors.highlight_color_active;
-        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-      } else {
-        const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
-        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-      }
-      cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-                      (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
-      cairo_fill(cairo);
-      ++idx;
-      GIRARA_LIST_FOREACH_END(priv->search.list, zathura_rectangle_t*, iter, rect);
+        /* draw position */
+        if (idx == priv->search.current) {
+          const GdkRGBA color = priv->zathura->ui.colors.highlight_color_active;
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+        } else {
+          const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+        }
+        cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
+                        (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
+        cairo_fill(cairo);
+        ++idx;
+      );
     }
     /* draw selection */
     if (priv->mouse.selection.y2 != -1 && priv->mouse.selection.x2 != -1) {
@@ -583,9 +682,9 @@ zathura_page_widget_redraw_canvas(ZathuraPage* pageview)
 }
 
 /* smaller than max to be replaced by actual renders */
-#define THUMBNAIL_INITIAL_SCALE 0.5
+#define THUMBNAIL_INITIAL_ZOOM 0.5
 /* small enough to make bilinear downscaling fast */
-#define THUMBNAIL_MAX_SCALE 0.5
+#define THUMBNAIL_MAX_ZOOM 0.5
 
 static bool
 surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t* old)
@@ -605,7 +704,7 @@ surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t*
     const unsigned int width_old = cairo_image_surface_get_width(old);
     const unsigned int height_old = cairo_image_surface_get_height(old);
     const size_t old_size = width_old * height_old;
-    if (new_size < old_size && new_size >= old_size * THUMBNAIL_MAX_SCALE * THUMBNAIL_MAX_SCALE) {
+    if (new_size < old_size && new_size >= old_size * THUMBNAIL_MAX_ZOOM * THUMBNAIL_MAX_ZOOM) {
       return false;
     }
   }
@@ -618,15 +717,21 @@ draw_thumbnail_image(cairo_surface_t* surface, size_t max_size)
 {
   unsigned int width = cairo_image_surface_get_width(surface);
   unsigned int height = cairo_image_surface_get_height(surface);
-  double scale = sqrt((double)max_size / (width * height)) * THUMBNAIL_INITIAL_SCALE;
-  if (scale > THUMBNAIL_MAX_SCALE) {
-    scale = THUMBNAIL_MAX_SCALE;
+  double scale = sqrt((double)max_size / (width * height)) * THUMBNAIL_INITIAL_ZOOM;
+  if (scale > THUMBNAIL_MAX_ZOOM) {
+    scale = THUMBNAIL_MAX_ZOOM;
   }
   width = width * scale;
   height = height * scale;
 
+  /* note: this always returns 1 and 1 if Cairo too old for device scale API */
+  zathura_device_factors_t device = get_safe_device_factors(surface);
+  const unsigned int unscaled_width = width / device.x;
+  const unsigned int unscaled_height = height / device.y;
+
+  /* create thumbnail surface, taking width and height as _unscaled_ device units */
   cairo_surface_t *thumbnail;
-  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, width, height);
+  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, unscaled_width, unscaled_height);
   if (thumbnail == NULL) {
     return NULL;
   }
@@ -747,10 +852,10 @@ redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles)
 {
   zathura_page_widget_private_t* priv = ZATHURA_PAGE_GET_PRIVATE(widget);
 
-  GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect)
+  GIRARA_LIST_FOREACH_BODY(rectangles, zathura_rectangle_t*, rect,
     zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
     redraw_rect(widget, &rectangle);
-  GIRARA_LIST_FOREACH_END(rectangles, zathura_recantgle_t*, iter, rect);
+  );
 }
 
 zathura_link_t*
@@ -850,20 +955,20 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     }
 
     if (priv->links.list != NULL && priv->links.n > 0) {
-      GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
-      zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
-      if (rect.x1 <= button->x && rect.x2 >= button->x
-          && rect.y1 <= button->y && rect.y2 >= button->y) {
-        zathura_link_evaluate(priv->zathura, link);
-      }
-      GIRARA_LIST_FOREACH_END(priv->links.list, zathura_link_t*, iter, link);
+      GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
+        const zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
+        if (rect.x1 <= oldx && rect.x2 >= oldx
+            && rect.y1 <= oldy && rect.y2 >= oldy) {
+          zathura_link_evaluate(priv->zathura, link);
+          break;
+        }
+      );
     }
   } else {
     redraw_rect(ZATHURA_PAGE(widget), &priv->mouse.selection);
 
     zathura_rectangle_t tmp = priv->mouse.selection;
 
-    const double scale = zathura_document_get_scale(document);
     tmp.x1 /= scale;
     tmp.x2 /= scale;
     tmp.y1 /= scale;
@@ -904,12 +1009,13 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
 
     if (priv->links.list != NULL && priv->links.n > 0) {
       bool over_link = false;
-      GIRARA_LIST_FOREACH(priv->links.list, zathura_link_t*, iter, link)
+      GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
         zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
         if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
           over_link = true;
+          break;
         }
-      GIRARA_LIST_FOREACH_END(priv->links.list, zathura_link_t*, iter, link);
+      );
 
       if (priv->mouse.over_link != over_link) {
         if (over_link == true) {
@@ -983,12 +1089,12 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
 
   /* search for underlaying image */
   zathura_image_t* image = NULL;
-  GIRARA_LIST_FOREACH(priv->images.list, zathura_image_t*, iter, image_it)
+  GIRARA_LIST_FOREACH_BODY(priv->images.list, zathura_image_t*, image_it,
     zathura_rectangle_t rect = recalc_rectangle(priv->page, image_it->position);
     if (rect.x1 <= event->x && rect.x2 >= event->x && rect.y1 <= event->y && rect.y2 >= event->y) {
       image = image_it;
     }
-  GIRARA_LIST_FOREACH_END(priv->images.list, zathura_image_t*, iter, image_it);
+  );
 
   if (image == NULL) {
     return;
@@ -1071,13 +1177,13 @@ cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page)
   unsigned int page_id  = zathura_page_get_index(priv->page) + 1;
   unsigned int image_id = 1;
 
-  GIRARA_LIST_FOREACH(priv->images.list, zathura_image_t*, iter, image_it)
+  GIRARA_LIST_FOREACH_BODY(priv->images.list, zathura_image_t*, image_it,
     if (image_it == priv->images.current) {
       break;
     }
 
     image_id++;
-  GIRARA_LIST_FOREACH_END(priv->images.list, zathura_image_t*, iter, image_it);
+  );
 
   /* set command */
   char* export_command = g_strdup_printf(":export image-p%d-%d ", page_id, image_id);

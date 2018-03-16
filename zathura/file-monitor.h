@@ -74,6 +74,16 @@ zathura_filemonitor_new(const char*                file_path,
  *
  * @return path of monitored file
  */
-const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* filemonitor);
+const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor);
+
+/**
+ * Start file monitor.
+ */
+void zathura_filemonitor_start(ZathuraFileMonitor* file_monitor);
+
+/**
+ * Stop file monitor.
+ */
+void zathura_filemonitor_stop(ZathuraFileMonitor* file_monitor);
 
 #endif

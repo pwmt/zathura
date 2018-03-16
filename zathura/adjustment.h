@@ -8,7 +8,7 @@
 #include "document.h"
 
 /**
- * Calculate the page size according to the corrent scaling and rotation if
+ * Calculate the page size according to the current scaling and rotation if
  * desired.
  *
  * @param document the document

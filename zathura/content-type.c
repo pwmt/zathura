@@ -1,8 +1,5 @@
 /* See LICENSE file for license and copyright information */
 
-#define _DEFAULT_SOURCE
-#define _XOPEN_SOURCE 700
-
 #include "content-type.h"
 #include "macros.h"
 
@@ -99,8 +96,14 @@ guess_type_magic(zathura_content_type_context_t* context, const char* path)
   }
   girara_debug("magic detected filetype: %s", mime_type);
 
-  /* dup so we own the memory */
-  return g_strdup(mime_type);;
+  char* content_type = g_content_type_from_mime_type(mime_type);
+  if (content_type == NULL) {
+    girara_warning("failed to convert mime type to content type: %s", mime_type);
+    /* dup so we own the memory */
+    return g_strdup(mime_type);
+  }
+
+  return content_type;
 }
 
 static char*
@@ -109,7 +112,7 @@ guess_type_file(const char* UNUSED(path))
   return NULL;
 }
 #else
-static const char*
+static char*
 guess_type_magic(zathura_content_type_context_t* UNUSED(context),
                  const char* UNUSED(path))
 {
@@ -143,7 +146,16 @@ guess_type_file(const char* path)
   }
 
   g_strdelimit(out, "\n\r", '\0');
-  return out;
+  girara_debug("file detected filetype: %s", out);
+
+  char* content_type = g_content_type_from_mime_type(out);
+  if (content_type == NULL) {
+    girara_warning("failed to convert mime type to content type: %s", out);
+    return out;
+  }
+
+  g_free(out);
+  return content_type;
 }
 #endif
 

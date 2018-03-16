@@ -8,7 +8,25 @@ pass the arguments to *synctex view*'s *-i* option to zathura via
 *--syntex-forward* and zathura will pass the information to the correct
 instance.
 
+For gvim forward and backwards synchronization support can be set up as follows:
+First add the following to the vim configuration:
+
+::
+
+    function! Synctex()
+      execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . g:syncpdf
+      redraw!
+    endfunction
+    map <C-enter> :call Synctex()<cr>
+
+Then launch *zathura* with
+
+::
+
+    zathura -x "gvim --servername vim -c \"let g:syncpdf='$1'\" --remote +%{line} %{input}" $file
+
 Some editors support zathura as viewer out of the box:
 
 * LaTeXTools for SublimeText
   (https://latextools.readthedocs.io/en/latest/available-viewers/#zathura)
+* LaTeX for Atom (https://atom.io/packages/latex)

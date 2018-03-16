@@ -1044,6 +1044,16 @@ Define the background color of the selected element in index mode.
 * Value type: String
 * Default value: #9FBC00
 
+sandbox
+^^^^^^^
+Defines the sandbox mode to use for the seccomp syscall filter. Possible
+values are "none", "normal" and "strict". If "none" is used, the sandbox
+will be disabled. The use of "normal" will provide minimal protection and
+allow normal use of seccomp with support for all features. The "strict" mode
+is a read only sandbox that is intended for viewing documents only.
+
+* Value type: String
+* Default value: normal
 
 SEE ALSO
 ========

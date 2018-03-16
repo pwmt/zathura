@@ -21,10 +21,10 @@
 #include "content-type.h"
 
 double
-zathura_correct_scale_value(girara_session_t* session, const double scale)
+zathura_correct_zoom_value(girara_session_t* session, const double zoom)
 {
   if (session == NULL) {
-    return scale;
+    return zoom;
   }
 
   /* zoom limitations */
@@ -36,12 +36,12 @@ zathura_correct_scale_value(girara_session_t* session, const double scale)
   const double zoom_min = zoom_min_int * 0.01;
   const double zoom_max = zoom_max_int * 0.01;
 
-  if (scale < zoom_min) {
+  if (zoom < zoom_min) {
     return zoom_min;
-  } else if (scale > zoom_max) {
+  } else if (zoom > zoom_max) {
     return zoom_max;
   } else {
-    return scale;
+    return zoom;
   }
 }
 
@@ -69,7 +69,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
 {
   girara_list_t* list = girara_node_get_children(tree);
 
-  GIRARA_LIST_FOREACH(list, girara_tree_node_t*, iter, node) {
+  GIRARA_LIST_FOREACH_BODY(list, girara_tree_node_t*, node,
     zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
 
     zathura_link_type_t type     = zathura_link_get_type(index_element->link);
@@ -93,7 +93,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
     if (girara_node_get_num_children(node) > 0) {
       document_index_build(model, &tree_iter, node);
     }
-  } GIRARA_LIST_FOREACH_END(list, gchar*, iter, name);
+  );
 }
 
 zathura_rectangle_t
@@ -194,14 +194,15 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
   GString* string = g_string_new(NULL);
 
   /* zathura version */
-  g_string_append_printf(string, "zathura %d.%d.%d", ZATHURA_VERSION_MAJOR, ZATHURA_VERSION_MINOR, ZATHURA_VERSION_REV);
+  g_string_append(string, "zathura " ZATHURA_VERSION);
+  g_string_append_printf(string, "\ngirara " GIRARA_VERSION " (runtime: %s)", girara_version());
 
   const char* format = (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
 
   /* plugin information */
   girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
   if (plugins != NULL) {
-    GIRARA_LIST_FOREACH(plugins, zathura_plugin_t*, iter, plugin) {
+    GIRARA_LIST_FOREACH_BODY(plugins, zathura_plugin_t*, plugin,
       const char* name = zathura_plugin_get_name(plugin);
       zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
       g_string_append_printf(string, format,
@@ -210,7 +211,7 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
                              version.minor,
                              version.rev,
                              zathura_plugin_get_path(plugin));
-    } GIRARA_LIST_FOREACH_END(plugins, zathura_plugin_t*, iter, plugin);
+    );
   }
 
   char* version = string->str;
@@ -279,4 +280,14 @@ find_first_page_column(const char* first_page_column_list,
   g_strfreev(settings);
 
   return first_page_column;
+}
+
+bool
+parse_color(GdkRGBA* color, const char* str)
+{
+  if (gdk_rgba_parse(color, str) == FALSE) {
+    girara_warning("Failed to parse color string '%s'.", str);
+    return false;
+  }
+  return true;
 }

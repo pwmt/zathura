@@ -76,3 +76,24 @@ zathura_db_get_recent_files(zathura_database_t* db, int max, const char* basepat
 
   return ZATHURA_DATABASE_GET_INTERFACE(db)->get_recent_files(db, max, basepath);
 }
+
+static int
+bookmarks_compare(const void* l, const void* r)
+{
+  const zathura_bookmark_t* lhs = l;
+  const zathura_bookmark_t* rhs = r;
+
+  return zathura_bookmarks_compare(lhs, rhs);
+}
+
+static void
+bookmarks_free(void* p)
+{
+  zathura_bookmark_t* bookmark = p;
+  zathura_bookmark_free(bookmark);
+}
+
+girara_list_t* bookmarks_list_new(void)
+{
+  return girara_sorted_list_new2(bookmarks_compare, bookmarks_free);
+}

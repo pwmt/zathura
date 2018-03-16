@@ -24,7 +24,7 @@
 
 #define KEY_PAGE                  "page"
 #define KEY_OFFSET                "offset"
-#define KEY_SCALE                 "scale"
+#define KEY_ZOOM                  "zoom"
 #define KEY_ROTATE                "rotate"
 #define KEY_PAGES_PER_ROW         "pages-per-row"
 #define KEY_FIRST_PAGE_COLUMN     "first-page-column"
@@ -397,9 +397,7 @@ plain_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t)
-                          zathura_bookmarks_compare, (girara_free_function_t)
-                          zathura_bookmark_free);
+  girara_list_t* result = bookmarks_list_new();
 
   gsize num_keys;
   char** keys = g_key_file_get_keys(priv->bookmarks, name, &num_keys, NULL);
@@ -511,22 +509,28 @@ plain_load_jumplist(zathura_database_t* db, const char* file)
   return list;
 }
 
+static void
+jump_to_str(void* data, void* userdata)
+{
+  const zathura_jump_t* jump = data;
+  GString* str_val           = userdata;
+
+  char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
+
+  g_string_append_printf(str_val, "%d ", jump->page);
+  g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->x));
+  g_string_append_c(str_val, ' ');
+  g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
+  g_string_append_c(str_val, ' ');
+}
+
 static bool
 plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist)
 {
   g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
 
   GString* str_val = g_string_new(NULL);
-
-  GIRARA_LIST_FOREACH(jumplist, zathura_jump_t*, iter, jump)
-    char buffer[G_ASCII_DTOSTR_BUF_SIZE] = { '\0' };
-
-    g_string_append_printf(str_val, "%d ", jump->page);
-    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->x));
-    g_string_append_c(str_val, ' ');
-    g_string_append(str_val, g_ascii_dtostr(buffer, G_ASCII_DTOSTR_BUF_SIZE, jump->y));
-    g_string_append_c(str_val, ' ');
-  GIRARA_LIST_FOREACH_END(jumplist, zathura_jump_t*, iter, jump);
+  girara_list_foreach(jumplist, jump_to_str, str_val);
 
   zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
 
@@ -550,7 +554,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   g_key_file_set_integer(priv->history, name, KEY_PAGE,              file_info->current_page);
   g_key_file_set_integer(priv->history, name, KEY_OFFSET,            file_info->page_offset);
-  g_key_file_set_double (priv->history, name, KEY_SCALE,             file_info->scale);
+  g_key_file_set_double (priv->history, name, KEY_ZOOM,              file_info->zoom);
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
   g_key_file_set_string(priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
@@ -586,7 +590,7 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 
   file_info->current_page      = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
   file_info->page_offset       = g_key_file_get_integer(priv->history, name, KEY_OFFSET, NULL);
-  file_info->scale             = g_key_file_get_double (priv->history, name, KEY_SCALE, NULL);
+  file_info->zoom              = g_key_file_get_double (priv->history, name, KEY_ZOOM, NULL);
   file_info->rotation          = g_key_file_get_integer(priv->history, name, KEY_ROTATE, NULL);
 
   /* the following flags got introduced at a later point */

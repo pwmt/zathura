@@ -6,14 +6,14 @@
 #include "types.h"
 
 /**
- * Create new context for MIME type detection.
+ * Create new context for content type detection.
  *
  * @return new context
  */
 zathura_content_type_context_t* zathura_content_type_new(void);
 
 /**
- * Free MIME type detection context.
+ * Free content type detection context.
  *
  * @param context The context.
  */

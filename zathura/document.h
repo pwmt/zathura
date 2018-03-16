@@ -28,7 +28,7 @@ zathura_document_t* zathura_document_open(zathura_t* zathura,
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_document_free(zathura_document_t* document);
+ZATHURA_PLUGIN_API zathura_error_t zathura_document_free(zathura_document_t* document);
 
 /**
  * Returns the path of the document
@@ -36,7 +36,7 @@ zathura_error_t zathura_document_free(zathura_document_t* document);
  * @param document The document
  * @return The file path of the document
  */
-const char* zathura_document_get_path(zathura_document_t* document);
+ZATHURA_PLUGIN_API const char* zathura_document_get_path(zathura_document_t* document);
 
 /**
  * Returns the URI of the document
@@ -44,7 +44,7 @@ const char* zathura_document_get_path(zathura_document_t* document);
  * @param document The document
  * @return The URI of the document
  */
-const char* zathura_document_get_uri(zathura_document_t* document);
+ZATHURA_PLUGIN_API const char* zathura_document_get_uri(zathura_document_t* document);
 
 /**
  * Returns the basename of the document
@@ -52,7 +52,7 @@ const char* zathura_document_get_uri(zathura_document_t* document);
  * @param document The document
  * @return The basename of the document
  */
-const char* zathura_document_get_basename(zathura_document_t* document);
+ZATHURA_PLUGIN_API const char* zathura_document_get_basename(zathura_document_t* document);
 
 /**
  * Returns the password of the document
@@ -60,7 +60,7 @@ const char* zathura_document_get_basename(zathura_document_t* document);
  * @param document The document
  * @return Returns the password of the document
  */
-const char* zathura_document_get_password(zathura_document_t* document);
+ZATHURA_PLUGIN_API const char* zathura_document_get_password(zathura_document_t* document);
 
 /**
  * Returns the page at the given index
@@ -69,7 +69,7 @@ const char* zathura_document_get_password(zathura_document_t* document);
  * @param index The index of the page
  * @return The page or NULL if an error occurred
  */
-zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned int index);
+ZATHURA_PLUGIN_API zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned int index);
 
 /**
  * Returns the number of pages
@@ -77,7 +77,7 @@ zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned
  * @param document The document
  * @return Number of pages
  */
-unsigned int zathura_document_get_number_of_pages(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_number_of_pages(zathura_document_t* document);
 
 /**
  * Sets the number of pages
@@ -85,7 +85,7 @@ unsigned int zathura_document_get_number_of_pages(zathura_document_t* document);
  * @param document The document
  * @param number_of_pages Number of pages
  */
-void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned
+ZATHURA_PLUGIN_API void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned
     int number_of_pages);
 
 /**
@@ -94,7 +94,7 @@ void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned
  * @param document The document
  * @return Current page
  */
-unsigned int zathura_document_get_current_page_number(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_current_page_number(zathura_document_t* document);
 
 /**
  * Sets the number of pages
@@ -102,7 +102,7 @@ unsigned int zathura_document_get_current_page_number(zathura_document_t* docume
  * @param document The document
  * @param current_page The current page number
  */
-void zathura_document_set_current_page_number(zathura_document_t* document, unsigned
+ZATHURA_PLUGIN_API void zathura_document_set_current_page_number(zathura_document_t* document, unsigned
     int current_page);
 
 /**
@@ -112,7 +112,7 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
  * @param document The document
  * @return X adjustment
  */
-double zathura_document_get_position_x(zathura_document_t* document);
+ZATHURA_PLUGIN_API double zathura_document_get_position_x(zathura_document_t* document);
 
 /**
  * Returns the Y position as value relative to the document height (0=top,
@@ -121,7 +121,7 @@ double zathura_document_get_position_x(zathura_document_t* document);
  * @param document The document
  * @return Y adjustment
  */
-double zathura_document_get_position_y(zathura_document_t* document);
+ZATHURA_PLUGIN_API double zathura_document_get_position_y(zathura_document_t* document);
 
 /**
  * Sets the X position as a value relative to the document width (0=left,
@@ -130,7 +130,7 @@ double zathura_document_get_position_y(zathura_document_t* document);
  * @param document The document
  * @param position_x the X adjustment
  */
-void zathura_document_set_position_x(zathura_document_t* document, double position_x);
+ZATHURA_PLUGIN_API void zathura_document_set_position_x(zathura_document_t* document, double position_x);
 
 /**
  * Sets the Y position as a value relative to the document height (0=top,
@@ -139,23 +139,32 @@ void zathura_document_set_position_x(zathura_document_t* document, double positi
  * @param document The document
  * @param position_y the Y adjustment
  */
-void zathura_document_set_position_y(zathura_document_t* document, double position_y);
+ZATHURA_PLUGIN_API void zathura_document_set_position_y(zathura_document_t* document, double position_y);
 
 /**
- * Returns the current scale value of the document
+ * Returns the current zoom value of the document
  *
  * @param document The document
- * @return The current scale value
+ * @return The current zoom value
  */
-double zathura_document_get_scale(zathura_document_t* document);
+ZATHURA_PLUGIN_API double zathura_document_get_zoom(zathura_document_t* document);
 
 /**
- * Sets the new scale value of the document
+ * Returns the current scale value of the document (based on zoom and screen
+ * PPI)
  *
  * @param document The document
- * @param scale The new scale value
+ * @return The current scale value, in pixels per point
  */
-void zathura_document_set_scale(zathura_document_t* document, double scale);
+ZATHURA_PLUGIN_API double zathura_document_get_scale(zathura_document_t* document);
+
+/**
+ * Sets the new zoom value of the document
+ *
+ * @param document The document
+ * @param zoom The new zoom value
+ */
+ZATHURA_PLUGIN_API void zathura_document_set_zoom(zathura_document_t* document, double zoom);
 
 /**
  * Returns the rotation value of zathura (0..360)
@@ -163,7 +172,7 @@ void zathura_document_set_scale(zathura_document_t* document, double scale);
  * @param document The document
  * @return The current rotation value
  */
-unsigned int zathura_document_get_rotation(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_rotation(zathura_document_t* document);
 
 /**
  * Sets the new rotation value
@@ -171,7 +180,7 @@ unsigned int zathura_document_get_rotation(zathura_document_t* document);
  * @param document The document
  * @param rotation The new rotation value
  */
-void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation);
+ZATHURA_PLUGIN_API void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation);
 
 /**
  * Returns the adjust mode of the document
@@ -179,7 +188,7 @@ void zathura_document_set_rotation(zathura_document_t* document, unsigned int ro
  * @param document The document
  * @return The adjust mode
  */
-zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
+ZATHURA_PLUGIN_API zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
 
 /**
  * Sets the new adjust mode of the document
@@ -187,7 +196,7 @@ zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* docum
  * @param document The document
  * @param mode The new adjust mode
  */
-void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode);
+ZATHURA_PLUGIN_API void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode);
 
 /**
  * Returns the page offset of the document
@@ -195,7 +204,7 @@ void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adju
  * @param document The document
  * @return The page offset
  */
-int zathura_document_get_page_offset(zathura_document_t* document);
+ZATHURA_PLUGIN_API int zathura_document_get_page_offset(zathura_document_t* document);
 
 /**
  * Sets the new page offset of the document
@@ -203,7 +212,7 @@ int zathura_document_get_page_offset(zathura_document_t* document);
  * @param document The document
  * @param page_offset The new page offset
  */
-void zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset);
+ZATHURA_PLUGIN_API void zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset);
 
 /**
  * Returns the private data of the document
@@ -211,7 +220,7 @@ void zathura_document_set_page_offset(zathura_document_t* document, unsigned int
  * @param document The document
  * @return The private data or NULL
  */
-void* zathura_document_get_data(zathura_document_t* document);
+ZATHURA_PLUGIN_API void* zathura_document_get_data(zathura_document_t* document);
 
 /**
  * Sets the private data of the document
@@ -219,7 +228,7 @@ void* zathura_document_get_data(zathura_document_t* document);
  * @param document The document
  * @param data The new private data
  */
-void zathura_document_set_data(zathura_document_t* document, void* data);
+ZATHURA_PLUGIN_API void zathura_document_set_data(zathura_document_t* document, void* data);
 
 /**
  * Sets the width of the viewport in pixels.
@@ -228,7 +237,7 @@ void zathura_document_set_data(zathura_document_t* document, void* data);
  * @param[in] width        The width of the viewport
  */
 void
-zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width);
+ZATHURA_PLUGIN_API zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width);
 
 /**
  * Sets the height of the viewport in pixels.
@@ -237,7 +246,7 @@ zathura_document_set_viewport_width(zathura_document_t* document, unsigned int w
  * @param[in] height       The height of the viewport
  */
 void
-zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
+ZATHURA_PLUGIN_API zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
 
 /**
  * Return the size of the viewport in pixels.
@@ -246,8 +255,46 @@ zathura_document_set_viewport_height(zathura_document_t* document, unsigned int 
  * @param[out] height,width The width and height of the viewport
  */
 void
-zathura_document_get_viewport_size(zathura_document_t* document,
+ZATHURA_PLUGIN_API zathura_document_get_viewport_size(zathura_document_t* document,
                                    unsigned int *height, unsigned int* width);
+
+/**
+ Sets the viewport PPI (pixels per inch: the resolution of the monitor, after
+ scaling with the device factor).
+ *
+ * @param[in] document     The document instance
+ * @param[in] height       The viewport PPI
+ */
+void
+ZATHURA_PLUGIN_API zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi);
+
+/**
+ * Return the viewport PPI (pixels per inch: the resolution of the monitor,
+ * after scaling with the device factor).
+ *
+ * @param[in] document     The document instance
+ * @return    The viewport PPI
+ */
+double
+ZATHURA_PLUGIN_API zathura_document_get_viewport_ppi(zathura_document_t* document);
+
+/**
+ * Set the device scale factors (e.g. for HiDPI). These are generally integers
+ * and equal for x and y. These scaling factors are only used when rendering to
+ * the screen.
+ *
+ * @param[in] x_factor,yfactor The x and y scale factors
+ */
+void
+ZATHURA_PLUGIN_API zathura_document_set_device_factors(zathura_document_t* document,
+                                  double x_factor, double y_factor);
+/**
+ * Return the current device scale factors (guaranteed to be non-zero).
+ *
+ * @return The x and y device scale factors
+ */
+ZATHURA_PLUGIN_API zathura_device_factors_t
+zathura_document_get_device_factors(zathura_document_t* document);
 
 /**
  * Return the size of a cell from the document's layout table in pixels. Assumes
@@ -257,7 +304,7 @@ zathura_document_get_viewport_size(zathura_document_t* document,
  * @param[in]  document     The document instance
  * @param[out] height,width The computed height and width of the cell
  */
-void zathura_document_get_cell_size(zathura_document_t* document,
+ZATHURA_PLUGIN_API void zathura_document_get_cell_size(zathura_document_t* document,
                                     unsigned int* height, unsigned int* width);
 
 /**
@@ -268,7 +315,7 @@ void zathura_document_get_cell_size(zathura_document_t* document,
  * @param[in]  document               The document
  * @param[out] height,width           The height and width of the document
  */
-void zathura_document_get_document_size(zathura_document_t* document,
+ZATHURA_PLUGIN_API void zathura_document_get_document_size(zathura_document_t* document,
                                         unsigned int* height, unsigned int* width);
 
 /**
@@ -279,7 +326,7 @@ void zathura_document_get_document_size(zathura_document_t* document,
  * @param[in]  pages_per_row     number of pages per row
  * @param[in]  first_page_column column of the first page (first column is 1)
  */
-void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
+ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
                                       unsigned int pages_per_row, unsigned int first_page_column);
 
 /**
@@ -288,7 +335,7 @@ void zathura_document_set_page_layout(zathura_document_t* document, unsigned int
  * @param document The document
  * @return The padding in pixels between pages
  */
-unsigned int zathura_document_get_page_padding(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_padding(zathura_document_t* document);
 
 /**
  * Returns the number of pages per row
@@ -296,7 +343,7 @@ unsigned int zathura_document_get_page_padding(zathura_document_t* document);
  * @param document The document
  * @return The number of pages per row
  */
-unsigned int zathura_document_get_pages_per_row(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_pages_per_row(zathura_document_t* document);
 
 /**
  * Returns the column for the first page (first column = 1)
@@ -304,7 +351,7 @@ unsigned int zathura_document_get_pages_per_row(zathura_document_t* document);
  * @param document The document
  * @return The column for the first page
  */
-unsigned int zathura_document_get_first_page_column(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_first_page_column(zathura_document_t* document);
 
 /**
  * Save the document
@@ -314,7 +361,7 @@ unsigned int zathura_document_get_first_page_column(zathura_document_t* document
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
+ZATHURA_PLUGIN_API zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path);
 
 /**
  * Generate the document index
@@ -324,8 +371,7 @@ zathura_error_t zathura_document_save_as(zathura_document_t* document, const cha
  *   error occurred
  * @return Generated index
  */
-
-girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error);
 
 /**
  * Get list of attachments
@@ -335,7 +381,7 @@ girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document
  *   error occurred
  * @return List of attachments
  */
-girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error);
 
 /**
  * Save document attachment
@@ -346,7 +392,7 @@ girara_list_t* zathura_document_attachments_get(zathura_document_t* document, za
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
+ZATHURA_PLUGIN_API zathura_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file);
 
 /**
  * Returns a string of the requested information
@@ -356,6 +402,6 @@ zathura_error_t zathura_document_attachment_save(zathura_document_t* document, c
  *   error occurred
  * @return List of document information entries or NULL if information could not be retrieved
  */
-girara_list_t* zathura_document_get_information(zathura_document_t* document, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_document_get_information(zathura_document_t* document, zathura_error_t* error);
 
 #endif // DOCUMENT_H

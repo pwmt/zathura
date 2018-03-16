@@ -39,7 +39,7 @@ struct zathura_plugin_manager_s {
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
 };
 
-static void zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
+static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
 static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin);
 static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin);
 static void zathura_plugin_free(zathura_plugin_t* plugin);
@@ -80,17 +80,116 @@ zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const c
 static bool
 check_suffix(const char* path)
 {
-  if (g_str_has_suffix(path, ".so") == TRUE) {
-    return true;
-  }
-
 #ifdef __APPLE__
   if (g_str_has_suffix(path, ".dylib") == TRUE) {
+    return true;
+  }
+#else
+  if (g_str_has_suffix(path, ".so") == TRUE) {
     return true;
   }
 #endif
 
   return false;
+}
+
+static void
+load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, const char* name)
+{
+  char* path = g_build_filename(plugindir, name, NULL);
+  if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
+    girara_debug("'%s' is not a regular file. Skipping.", path);
+    g_free(path);
+    return;
+  }
+
+  if (check_suffix(path) == false) {
+    girara_debug("'%s' is not a plugin file. Skipping.", path);
+    g_free(path);
+    return;
+  }
+
+  /* load plugin */
+  GModule* handle = g_module_open(path, G_MODULE_BIND_LOCAL);
+  if (handle == NULL) {
+    girara_error("Could not load plugin '%s' (%s).", path, g_module_error());
+    g_free(path);
+    return;
+  }
+
+  /* resolve symbols and check API and ABI version*/
+  const zathura_plugin_definition_t* plugin_definition = NULL;
+  if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**) &plugin_definition) == FALSE ||
+      plugin_definition == NULL) {
+    girara_error("Could not find '%s' in plugin %s - is not a plugin or needs to be rebuilt.", G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), path);
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  /* check name */
+  if (plugin_definition->name == NULL) {
+    girara_error("Plugin has no name.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  /* check mime type */
+  if (plugin_definition->mime_types == NULL || plugin_definition->mime_types_size == 0) {
+    girara_error("Plugin does not handly any mime types.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  zathura_plugin_t* plugin = g_try_malloc0(sizeof(zathura_plugin_t));
+  if (plugin == NULL) {
+    girara_error("Failed to allocate memory for plugin.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  plugin->definition = plugin_definition;
+  plugin->functions = plugin_definition->functions;
+  plugin->content_types = girara_list_new2(g_free);
+  plugin->handle = handle;
+  plugin->path = path;
+
+  // register mime types
+  for (size_t s = 0; s != plugin_definition->mime_types_size; ++s) {
+    plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
+  }
+
+  bool ret = register_plugin(plugin_manager, plugin);
+  if (ret == false) {
+    girara_error("Could not register plugin '%s'.", path);
+    zathura_plugin_free(plugin);
+  } else {
+    girara_debug("Successfully loaded plugin from '%s'.", path);
+    girara_debug("plugin %s: version %u.%u.%u", plugin_definition->name,
+                 plugin_definition->version.major, plugin_definition->version.minor,
+                 plugin_definition->version.rev);
+  }
+}
+
+static void
+load_dir(void* data, void* userdata)
+{
+  const char* plugindir                    = data;
+  zathura_plugin_manager_t* plugin_manager = userdata;
+
+  GDir* dir = g_dir_open(plugindir, 0, NULL);
+  if (dir == NULL) {
+    girara_error("could not open plugin directory: %s", plugindir);
+  } else {
+    const char* name = NULL;
+    while ((name = g_dir_read_name(dir)) != NULL) {
+      load_plugin(plugin_manager, plugindir, name);
+    }
+    g_dir_close(dir);
+  }
 }
 
 void
@@ -100,104 +199,8 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
     return;
   }
 
-  GIRARA_LIST_FOREACH(plugin_manager->path, char*, iter, plugindir)
   /* read all files in the plugin directory */
-  GDir* dir = g_dir_open(plugindir, 0, NULL);
-  if (dir == NULL) {
-    girara_error("could not open plugin directory: %s", plugindir);
-    girara_list_iterator_next(iter);
-    continue;
-  }
-
-  char* name = NULL;
-  while ((name = (char*) g_dir_read_name(dir)) != NULL) {
-    char* path = g_build_filename(plugindir, name, NULL);
-    if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
-      girara_debug("%s is not a regular file. Skipping.", path);
-      g_free(path);
-      continue;
-    }
-
-    if (check_suffix(path) == false) {
-      girara_debug("%s is not a plugin file. Skipping.", path);
-      g_free(path);
-      continue;
-    }
-
-    zathura_plugin_t* plugin = NULL;
-
-    /* load plugin */
-    GModule* handle = g_module_open(path, G_MODULE_BIND_LOCAL);
-    if (handle == NULL) {
-      girara_error("could not load plugin %s (%s)", path, g_module_error());
-      g_free(path);
-      continue;
-    }
-
-    /* resolve symbols and check API and ABI version*/
-    const zathura_plugin_definition_t* plugin_definition = NULL;
-    if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**) &plugin_definition) == FALSE ||
-        plugin_definition == NULL) {
-      girara_error("could not find '%s' in plugin %s - is not a plugin or needs to be rebuilt", G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), path);
-      g_free(path);
-      g_module_close(handle);
-      continue;
-    }
-
-    /* check name */
-    if (plugin_definition->name == NULL) {
-      girara_error("plugin has no name");
-      g_free(path);
-      g_free(plugin);
-      g_module_close(handle);
-      continue;
-    }
-
-    /* check mime type */
-    if (plugin_definition->mime_types == NULL || plugin_definition->mime_types_size == 0) {
-      girara_error("plugin has no mime_types");
-      g_free(path);
-      g_free(plugin);
-      g_module_close(handle);
-      continue;
-    }
-
-    plugin = g_try_malloc0(sizeof(zathura_plugin_t));
-    if (plugin == NULL) {
-      girara_error("Failed to allocate memory for plugin.");
-      g_free(path);
-      g_module_close(handle);
-      continue;
-    }
-
-    plugin->definition = plugin_definition;
-    plugin->functions = plugin_definition->functions;
-    plugin->content_types = girara_list_new2(g_free);
-    plugin->handle = handle;
-    plugin->path = path;
-
-    // register mime types
-    for (size_t s = 0; s != plugin_definition->mime_types_size; ++s) {
-      zathura_plugin_add_mimetype(plugin, plugin_definition->mime_types[s]);
-    }
-    // register functions
-    if (plugin->definition->register_function != NULL) {
-      plugin->definition->register_function(&(plugin->functions));
-    }
-
-    bool ret = register_plugin(plugin_manager, plugin);
-    if (ret == false) {
-      girara_error("could not register plugin %s", path);
-      zathura_plugin_free(plugin);
-    } else {
-      girara_debug("successfully loaded plugin from %s", path);
-      girara_debug("plugin %s: version %u.%u.%u", plugin_definition->name,
-                   plugin_definition->version.major, plugin_definition->version.minor,
-                   plugin_definition->version.rev);
-    }
-  }
-  g_dir_close(dir);
-  GIRARA_LIST_FOREACH_END(zathura->plugins.path, char*, iter, plugindir);
+  girara_list_foreach(plugin_manager->path, load_dir, plugin_manager);
 }
 
 zathura_plugin_t*
@@ -208,12 +211,12 @@ zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, cons
   }
 
   zathura_plugin_t* plugin = NULL;
-  GIRARA_LIST_FOREACH(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-  if (g_content_type_equals(type, mapping->type)) {
-    plugin = mapping->plugin;
-    break;
-  }
-  GIRARA_LIST_FOREACH_END(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
+  GIRARA_LIST_FOREACH_BODY(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, mapping,
+    if (g_content_type_equals(type, mapping->type)) {
+      plugin = mapping->plugin;
+      break;
+    }
+  );
 
   return plugin;
 }
@@ -257,18 +260,19 @@ register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plug
       || plugin->content_types == NULL
       || plugin_manager == NULL
       || plugin_manager->plugins == NULL) {
-    girara_error("plugin: could not register\n");
+    girara_error("plugin: could not register");
     return false;
   }
 
   bool at_least_one = false;
-  GIRARA_LIST_FOREACH(plugin->content_types, gchar*, iter, type)
-  if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
-    girara_error("plugin: already registered for filetype %s\n", type);
-  } else {
-    at_least_one = true;
-  }
-  GIRARA_LIST_FOREACH_END(plugin->content_types, gchar*, iter, type);
+  GIRARA_LIST_FOREACH_BODY(plugin->content_types, gchar*, type,
+    if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
+      girara_error("plugin: filetype already registered: %s", type);
+    } else {
+      girara_debug("plugin: filetype mapping addded: %s", type);
+      at_least_one = true;
+    }
+  );
 
   if (at_least_one == true) {
     girara_list_append(plugin_manager->plugins, plugin);
@@ -284,12 +288,17 @@ plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, 
   g_return_val_if_fail(type           != NULL, false);
   g_return_val_if_fail(plugin         != NULL, false);
 
-  GIRARA_LIST_FOREACH(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping)
-  if (g_content_type_equals(type, mapping->type)) {
-    girara_list_iterator_free(iter);
+  bool already_registered = false;
+  GIRARA_LIST_FOREACH_BODY(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, mapping,
+    if (g_content_type_equals(type, mapping->type)) {
+      already_registered = true;
+      break;
+    }
+  );
+
+  if (already_registered == true) {
     return false;
   }
-  GIRARA_LIST_FOREACH_END(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, iter, mapping);
 
   zathura_type_plugin_mapping_t* mapping = g_try_malloc0(sizeof(zathura_type_plugin_mapping_t));
   if (mapping == NULL) {
@@ -332,20 +341,25 @@ zathura_plugin_free(zathura_plugin_t* plugin)
 }
 
 static void
-zathura_plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
+plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
 {
   if (plugin == NULL || mime_type == NULL) {
     return;
   }
 
-  girara_list_append(plugin->content_types, g_content_type_from_mime_type(mime_type));
+  char* content_type = g_content_type_from_mime_type(mime_type);
+  if (content_type == NULL) {
+    girara_warning("plugin: unable to convert mime type: %s", mime_type);
+  } else {
+    girara_list_append(plugin->content_types, content_type);
+  }
 }
 
-zathura_plugin_functions_t*
+const zathura_plugin_functions_t*
 zathura_plugin_get_functions(zathura_plugin_t* plugin)
 {
   if (plugin != NULL) {
-    return &(plugin->functions);
+    return &plugin->functions;
   } else {
     return NULL;
   }

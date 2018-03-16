@@ -10,6 +10,12 @@
 #include "database-sqlite.h"
 #include "utils.h"
 
+static char*
+sqlite3_column_text_dup(sqlite3_stmt* stmt, int col)
+{
+  return g_strdup((const char*) sqlite3_column_text(stmt, col));
+}
+
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 static void io_interface_init(GiraraInputHistoryIOInterface* iface);
 
@@ -110,6 +116,7 @@ sqlite_finalize(GObject* object)
   ZathuraSQLDatabase* db = ZATHURA_SQLDATABASE(object);
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   if (priv->session) {
+    sqlite3_exec(priv->session, "VACUUM;", NULL, 0, NULL);
     sqlite3_close(priv->session);
   }
 
@@ -147,7 +154,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "file TEXT PRIMARY KEY,"
     "page INTEGER,"
     "offset INTEGER,"
-    "scale FLOAT,"
+    "zoom FLOAT,"
     "rotation INTEGER,"
     "pages_per_row INTEGER,"
     "first_page_column TEXT,"
@@ -183,6 +190,10 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   /* update fileinfo table (part 3) */
   static const char SQL_FILEINFO_ALTER3[] =
     "ALTER TABLE fileinfo ADD COLUMN time TIMESTAMP;";
+
+  /* update fileinfo table (part 4) */
+  static const char SQL_FILEINFO_ALTER4[] =
+    "ALTER TABLE fileinfo ADD COLUMN zoom FLOAT;";
 
   /* update bookmark table */
   static const char SQL_BOOKMARK_ALTER[] =
@@ -230,6 +241,15 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   if (ret1 == true && res1 == false) {
     girara_debug("old database table layout detected; updating ...");
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout");
+    }
+  }
+
+  ret1 = check_column(session, "fileinfo", "zoom", &res1);
+
+  if (ret1 == true && res1 == false) {
+    girara_debug("old database table layout detected; updating ...");
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER4, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout");
     }
   }
@@ -337,7 +357,7 @@ check_column(sqlite3* session, const char* table, const char* col, bool* res)
   }
 
   if (*res == false) {
-    girara_debug("column %s in table %s is NOT found", col, table);
+    girara_debug("Column '%s' in table '%s' NOT found.", col, table);
   }
 
   sqlite3_finalize(stmt);
@@ -373,7 +393,7 @@ check_column_type(sqlite3* session, const char* table, const char* col, const ch
   }
 
   if (*res == false) {
-    girara_debug("column %s in table %s has wrong type", col, table);
+    girara_debug("Column '%s' in table '%s' has wrong type.", col, table);
   }
 
   sqlite3_finalize(stmt);
@@ -401,7 +421,6 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
       sqlite3_bind_int(stmt, 3, bookmark->page) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 4, bookmark->x) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 5, bookmark->y) != SQLITE_OK) {
-
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
@@ -459,8 +478,7 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
     return NULL;
   }
 
-  girara_list_t* result = girara_sorted_list_new2((girara_compare_function_t) zathura_bookmarks_compare,
-                          (girara_free_function_t) zathura_bookmark_free);
+  girara_list_t* result = bookmarks_list_new();
   if (result == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
@@ -472,12 +490,12 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
       continue;
     }
 
-    bookmark->id   = g_strdup((const char*) sqlite3_column_text(stmt, 0));
+    bookmark->id   = sqlite3_column_text_dup(stmt, 0);
     bookmark->page = sqlite3_column_int(stmt, 1);
     bookmark->x    = sqlite3_column_double(stmt, 2);
     bookmark->y    = sqlite3_column_double(stmt, 3);
-    bookmark->x    = bookmark->x <= 0.0 ? DBL_MIN : bookmark->x;
-    bookmark->y    = bookmark->y <= 0.0 ? DBL_MIN : bookmark->y;
+    bookmark->x    = MAX(DBL_MIN, bookmark->x);
+    bookmark->y    = MAX(DBL_MIN, bookmark->y);
 
     girara_list_append(result, bookmark);
   }
@@ -492,11 +510,12 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
 {
   g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
-  static const char SQL_INSERT_JUMP[] = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
+  static const char SQL_INSERT_JUMP[]     = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
   static const char SQL_REMOVE_JUMPLIST[] = "DELETE FROM jumplist WHERE file = ?;";
-  sqlite3_stmt* stmt = NULL;
-  int res = 0;
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt                  = NULL;
+  int res                             = 0;
 
   if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
     return false;
@@ -529,14 +548,9 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
     return true;
   }
 
-  girara_list_iterator_t* cur = girara_list_iterator(jumplist);
   bool status = true;
-
-  while (true) {
-    zathura_jump_t* jump = girara_list_iterator_data(cur);
-
+  GIRARA_LIST_FOREACH_BODY(jumplist, zathura_jump_t*, jump,
     stmt = prepare_statement(priv->session, SQL_INSERT_JUMP);
-
     if (stmt == NULL) {
       status = false;
       break;
@@ -546,7 +560,6 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
         sqlite3_bind_int(stmt, 2, jump->page)      != SQLITE_OK ||
         sqlite3_bind_double(stmt, 3, jump->x)      != SQLITE_OK ||
         sqlite3_bind_double(stmt, 4, jump->y)      != SQLITE_OK) {
-
       sqlite3_finalize(stmt);
       girara_error("Failed to bind arguments.");
       status = false;
@@ -560,15 +573,7 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
       status = false;
       break;
     }
-
-    if (girara_list_iterator_has_next(cur) == true) {
-      girara_list_iterator_next(cur);
-    } else {
-      break;
-    }
-  }
-
-  girara_list_iterator_free(cur);
+  );
 
   if (status == false) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
@@ -584,9 +589,10 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
 {
   g_return_val_if_fail(db != NULL && file != NULL, NULL);
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
   static const char SQL_GET_JUMPLIST[] = "SELECT page, hadj_ratio, vadj_ratio FROM jumplist WHERE file = ? ORDER BY id ASC;";
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_JUMPLIST);
+
+  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  sqlite3_stmt* stmt                  = prepare_statement(priv->session, SQL_GET_JUMPLIST);
 
   if (stmt == NULL) {
     return NULL;
@@ -640,7 +646,7 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, scale, rotation, pages_per_row, first_page_column, position_x, position_y, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'));";
+    "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'));";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
@@ -650,7 +656,7 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
   if (sqlite3_bind_text(stmt,   1, file, -1, NULL)               != SQLITE_OK ||
       sqlite3_bind_int(stmt,    2, file_info->current_page)      != SQLITE_OK ||
       sqlite3_bind_int(stmt,    3, file_info->page_offset)       != SQLITE_OK ||
-      sqlite3_bind_double(stmt, 4, file_info->scale)             != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 4, file_info->zoom)              != SQLITE_OK ||
       sqlite3_bind_int(stmt,    5, file_info->rotation)          != SQLITE_OK ||
       sqlite3_bind_int(stmt,    6, file_info->pages_per_row)     != SQLITE_OK ||
       sqlite3_bind_text(stmt,   7, file_info->first_page_column_list, -1, NULL)
@@ -679,7 +685,7 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
   zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
 
   static const char SQL_FILEINFO_GET[] =
-    "SELECT page, offset, scale, rotation, pages_per_row, first_page_column, position_x, position_y FROM fileinfo WHERE file = ?;";
+    "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y FROM fileinfo WHERE file = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
@@ -700,10 +706,10 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
 
   file_info->current_page           = sqlite3_column_int(stmt, 0);
   file_info->page_offset            = sqlite3_column_int(stmt, 1);
-  file_info->scale                  = sqlite3_column_double(stmt, 2);
+  file_info->zoom                   = sqlite3_column_double(stmt, 2);
   file_info->rotation               = sqlite3_column_int(stmt, 3);
   file_info->pages_per_row          = sqlite3_column_int(stmt, 4);
-  file_info->first_page_column_list = g_strdup((const char*) sqlite3_column_text(stmt, 5));
+  file_info->first_page_column_list = sqlite3_column_text_dup(stmt, 5);
   file_info->position_x             = sqlite3_column_double(stmt, 6);
   file_info->position_y             = sqlite3_column_double(stmt, 7);
 
@@ -746,14 +752,14 @@ sqlite_io_read(GiraraInputHistoryIO* db)
     return NULL;
   }
 
-  girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);
+  girara_list_t* list = girara_list_new2(g_free);
   if (list == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    girara_list_append(list, g_strdup((const char*) sqlite3_column_text(stmt, 0)));
+    girara_list_append(list, sqlite3_column_text_dup(stmt, 0));
   }
 
   sqlite3_finalize(stmt);
@@ -791,14 +797,14 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
     return false;
   }
 
-  girara_list_t* list = girara_list_new2((girara_free_function_t) g_free);
+  girara_list_t* list = girara_list_new2(g_free);
   if (list == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    girara_list_append(list, g_strdup((const char*) sqlite3_column_text(stmt, 0)));
+    girara_list_append(list, sqlite3_column_text_dup(stmt, 0));
   }
 
   sqlite3_finalize(stmt);

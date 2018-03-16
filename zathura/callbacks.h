@@ -80,6 +80,58 @@ void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
+ * This function gets called when the monitors associated with the GdkScreen
+ * change.
+ *
+ * It checks for a change of monitor PPI, storing the new value and triggering
+ * a refresh if appropriate.
+ *
+ * @param screen The GDK screen
+ * @param gpointer The zathura instance
+ */
+void cb_monitors_changed(GdkScreen* screen, gpointer data);
+
+/**
+ * This function gets called when the screen associated with the view widget
+ * changes.
+ *
+ * It updates the connection on the monitors-changed signal and checks for a
+ * change of monitor PPI, storing the new value and triggering a refresh if
+ * appropriate.
+ *
+ * @param widget The view widget
+ * @param previous_screen The widget's previous screen
+ * @param gpointer The zathura instance
+ */
+void cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer data);
+
+/**
+ * This function gets called when the main window's size, position or stacking
+ * changes.
+ *
+ * It checks for a change of monitor PPI (due to the window moving between
+ * different monitors), storing the new value and triggering a refresh if
+ * appropriate.
+ *
+ * @param widget The main window widget
+ * @param event The configure event
+ * @param gpointer The zathura instance
+ */
+void cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
+
+/**
+ * This function gets called when the view widget scale factor changes (e.g.
+ * when moving from a regular to a HiDPI screen).
+ *
+ * It records the new value and triggers a re-rendering of the document.
+ *
+ * @param object The view widget
+ * @param pspec The GParamSpec for the scale-factor property
+ * @param gpointer The zathura instance
+ */
+void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
+
+/**
  * This function gets called when the value of the "pages-per-row"
  * variable changes
  *

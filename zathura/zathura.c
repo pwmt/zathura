@@ -1,8 +1,5 @@
 /* See LICENSE file for license and copyright information */
 
-#define _DEFAULT_SOURCE
-#define _XOPEN_SOURCE 700
-
 #include <errno.h>
 #include <stdlib.h>
 #include <math.h>
@@ -17,6 +14,10 @@
 #include <girara/template.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
+
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/gdkwayland.h>
+#endif
 
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
@@ -99,6 +100,9 @@ zathura_create(void)
     goto error_out;
   }
 
+  /* set default icon */
+  girara_setting_set(zathura->ui.session, "window-icon", "org.pwmt.zathura");
+
 #ifdef G_OS_UNIX
   /* signal handler */
   zathura->signals.sigterm = g_unix_signal_add(SIGTERM, zathura_signal_sigterm, zathura);
@@ -134,6 +138,69 @@ create_directories(zathura_t* zathura)
   }
 }
 
+void
+zathura_update_view_ppi(zathura_t* zathura)
+{
+  if (zathura == NULL) {
+    return;
+  }
+
+  /* get view widget GdkMonitor */
+  GdkWindow* window = gtk_widget_get_window (zathura->ui.session->gtk.view); // NULL if not realized
+  if (window == NULL) {
+    return;
+  }
+  GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.view);
+  if (display == NULL) {
+    return;
+  }
+
+  double ppi = 0.0;
+
+  GdkMonitor* monitor = gdk_display_get_monitor_at_window(display, window);
+  if (monitor == NULL) {
+    return;
+  }
+
+  /* physical width of monitor */
+  int width_mm = gdk_monitor_get_width_mm(monitor);
+
+  /* size of monitor in pixels */
+  GdkRectangle monitor_geom;
+  gdk_monitor_get_geometry(monitor, &monitor_geom);
+
+  /* calculate ppi, knowing that 1 inch = 25.4 mm */
+  if (width_mm == 0) {
+    girara_debug("cannot calculate PPI: monitor has zero width");
+  } else {
+    ppi = monitor_geom.width * 25.4 / width_mm;
+  }
+
+#ifdef GDK_WINDOWING_WAYLAND
+  /* work around apparent bug in GDK: on Wayland, monitor geometry doesn't
+   * return values in application pixels as documented, but in device pixels.
+   * */
+  if (GDK_IS_WAYLAND_DISPLAY(display))
+  {
+    /* not using the cached value for the scale factor here to avoid issues
+     * if this function is called before the cached value is updated */
+    int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+    girara_debug("on Wayland, correcting PPI for device scale factor = %d", device_factor);
+    if (device_factor != 0) {
+      ppi /= device_factor;
+    }
+  }
+#endif
+
+  double current_ppi = zathura_document_get_viewport_ppi(zathura->document);
+  if (fabs(ppi - current_ppi) > DBL_EPSILON) {
+    girara_debug("monitor width: %d mm, pixels: %d, ppi: %f", width_mm, monitor_geom.width, ppi);
+    zathura_document_set_viewport_ppi(zathura->document, ppi);
+    render_all(zathura);
+    refresh_view(zathura);
+  }
+}
+
 static bool
 init_ui(zathura_t* zathura)
 {
@@ -152,6 +219,18 @@ init_ui(zathura_t* zathura)
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view",
                    G_CALLBACK(cb_refresh_view), zathura);
+
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
+      "notify::scale-factor", G_CALLBACK(cb_scale_factor), zathura);
+
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view),
+      "screen-changed", G_CALLBACK(cb_widget_screen_changed), zathura);
+
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window),
+      "configure-event", G_CALLBACK(cb_widget_configured), zathura);
+
+  /* initialize the screen-changed handler to 0 (i.e. invalid) */
+  zathura->signals.monitors_changed_handler = 0;
 
   /* page view */
   zathura->ui.page_widget = gtk_grid_new();
@@ -228,7 +307,7 @@ init_css(zathura_t* zathura)
   GiraraTemplate* csstemplate =
     girara_session_get_template(zathura->ui.session);
 
-  static const char* index_settings[] = {
+  static const char index_settings[][16] = {
     "index-fg",
     "index-bg",
     "index-active-fg",
@@ -242,7 +321,7 @@ init_css(zathura_t* zathura)
     GdkRGBA rgba      = {0, 0, 0, 0};
     girara_setting_get(zathura->ui.session, index_settings[s], &tmp_value);
     if (tmp_value != NULL) {
-      gdk_rgba_parse(&rgba, tmp_value);
+      parse_color(&rgba, tmp_value);
       g_free(tmp_value);
     }
 
@@ -434,12 +513,12 @@ zathura_free(zathura_t* zathura)
   g_free(zathura->config.cache_dir);
 
   /* free jumplist */
-  if (zathura->jumplist.list != NULL) {
-    girara_list_free(zathura->jumplist.list);
-  }
-
   if (zathura->jumplist.cur != NULL) {
     girara_list_iterator_free(zathura->jumplist.cur);
+  }
+
+  if (zathura->jumplist.list != NULL) {
+    girara_list_free(zathura->jumplist.list);
   }
 
   g_free(zathura);
@@ -495,6 +574,23 @@ zathura_set_cache_dir(zathura_t* zathura, const char* dir)
   }
 }
 
+static void
+add_dir(void* data, void* userdata)
+{
+  const char* path                         = data;
+  zathura_plugin_manager_t* plugin_manager = userdata;
+
+  zathura_plugin_manager_add_dir(plugin_manager, path);
+}
+
+static void
+set_plugin_dir(zathura_t* zathura, const char* dir)
+{
+  girara_list_t* paths = girara_split_path_array(dir);
+  girara_list_foreach(paths, add_dir, zathura->plugins.manager);
+  girara_list_free(paths);
+}
+
 void
 zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
 {
@@ -502,21 +598,12 @@ zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
   g_return_if_fail(zathura->plugins.manager != NULL);
 
   if (dir != NULL) {
-    girara_list_t* paths = girara_split_path_array(dir);
-    GIRARA_LIST_FOREACH(paths, char*, iter, path)
-    zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
-    GIRARA_LIST_FOREACH_END(paths, char*, iter, path);
-    girara_list_free(paths);
-  } else {
+    set_plugin_dir(zathura, dir);
 #ifdef ZATHURA_PLUGINDIR
-    girara_list_t* paths = girara_split_path_array(ZATHURA_PLUGINDIR);
-    GIRARA_LIST_FOREACH(paths, char*, iter, path)
-    zathura_plugin_manager_add_dir(zathura->plugins.manager, path);
-    GIRARA_LIST_FOREACH_END(paths, char*, iter, path);
-    girara_list_free(paths);
+  } else {
+    set_plugin_dir(zathura, ZATHURA_PLUGINDIR);
 #endif
   }
-
 }
 
 void
@@ -802,7 +889,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_fileinfo_t file_info = {
     .current_page = 0,
     .page_offset = 0,
-    .scale = 1,
+    .zoom = 1,
     .rotation = 0,
     .pages_per_row = 0,
     .first_page_column_list = NULL,
@@ -817,12 +904,12 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   /* set page offset */
   zathura_document_set_page_offset(document, file_info.page_offset);
 
-  /* check for valid scale value */
-  if (file_info.scale <= DBL_EPSILON) {
-    file_info.scale = 1;
+  /* check for valid zoom value */
+  if (file_info.zoom <= DBL_EPSILON) {
+    file_info.zoom = 1;
   }
-  zathura_document_set_scale(document,
-      zathura_correct_scale_value(zathura->ui.session, file_info.scale));
+  zathura_document_set_zoom(document,
+      zathura_correct_zoom_value(zathura->ui.session, file_info.zoom));
 
   /* check current page number */
   /* if it wasn't specified on the command-line, get it from file_info */
@@ -895,6 +982,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     }
     g_signal_connect(G_OBJECT(zathura->file_monitor.monitor), "reload-file",
                      G_CALLBACK(cb_file_monitor), zathura->ui.session);
+
+    girara_debug("starting file monitor");
+    zathura_filemonitor_start(zathura->file_monitor.monitor);
   }
 
   if (password != NULL) {
@@ -955,6 +1045,15 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   zathura_document_set_viewport_width(zathura->document, view_width);
   const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
+
+  zathura_update_view_ppi(zathura);
+
+  /* call screen-changed callback to connect monitors-changed signal on initial screen */
+  cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
+
+  /* get initial device scale */
+  int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+  zathura_document_set_device_factors(zathura->document, device_factor, device_factor);
 
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
@@ -1181,7 +1280,7 @@ save_fileinfo_to_db(zathura_t* zathura)
   zathura_fileinfo_t file_info = {
     .current_page = zathura_document_get_current_page_number(zathura->document),
     .page_offset = zathura_document_get_page_offset(zathura->document),
-    .scale = zathura_document_get_scale(zathura->document),
+    .zoom = zathura_document_get_zoom(zathura->document),
     .rotation = zathura_document_get_rotation(zathura->document),
     .pages_per_row = 1,
     .first_page_column_list = "1:2",
@@ -1312,7 +1411,16 @@ statusbar_page_number_update(zathura_t* zathura)
   unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
 
   if (zathura->document != NULL) {
-    char* page_number_text = g_strdup_printf("[%d/%d]", current_page_number + 1, number_of_pages);
+    zathura_page_t* page = zathura_document_get_page(zathura->document, current_page_number);
+    char* page_label = zathura_page_get_label(page, NULL);
+
+    char* page_number_text = NULL;
+    if (page_label != NULL) {
+      page_number_text = g_strdup_printf("[%s (%d/%d)]", page_label, current_page_number + 1, number_of_pages);
+      g_free(page_label);
+    } else {
+      page_number_text = g_strdup_printf("[%d/%d]", current_page_number + 1, number_of_pages);
+    }
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
 
     bool page_number_in_window_title = false;
@@ -1387,11 +1495,11 @@ position_set(zathura_t* zathura, double position_x, double position_y)
 
   /* xalign = 0.5: center horizontally (with the page, not the document) */
   if (vertical_center == true) {
-    /* yalign = 0.0: align page an viewport edges at the top               */
-    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
-  } else {
     /* yalign = 0.5: center vertically */
     page_number_to_position(zathura->document, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
+  } else {
+    /* yalign = 0.0: align page an viewport edges at the top               */
+    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
   }
 
   /* automatic horizontal adjustment */
@@ -1466,33 +1574,31 @@ adjust_view(zathura_t* zathura)
 
   double page_ratio = (double)cell_height / (double)document_width;
   double view_ratio = (double)view_height / (double)view_width;
-  double scale = zathura_document_get_scale(zathura->document);
-  double newscale = scale;
+  double zoom = zathura_document_get_zoom(zathura->document);
+  double newzoom = zoom;
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
       (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
-    newscale *= (double)view_width / (double)document_width;
-
+    newzoom *= (double)view_width / (double)document_width;
   } else if (adjust_mode == ZATHURA_ADJUST_BESTFIT) {
-    newscale *= (double)view_height / (double)cell_height;
-
+    newzoom *= (double)view_height / (double)cell_height;
   } else {
     goto error_ret;
   }
 
-  /* save new scale and recompute cell size */
-  zathura_document_set_scale(zathura->document, newscale);
+  /* save new zoom and recompute cell size */
+  zathura_document_set_zoom(zathura->document, newzoom);
   unsigned int new_cell_height = 0, new_cell_width = 0;
   zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
 
-  /* if the change in scale changes page cell dimensions by at least one pixel, render */
+  /* if the change in zoom changes page cell dimensions by at least one pixel, render */
   if (abs((int)new_cell_width - (int)cell_width) > 1 ||
       abs((int)new_cell_height - (int)cell_height) > 1) {
     render_all(zathura);
     refresh_view(zathura);
   } else {
-    /* otherwise set the old scale and leave */
-    zathura_document_set_scale(zathura->document, scale);
+    /* otherwise set the old zoom and leave */
+    zathura_document_set_zoom(zathura->document, zoom);
   }
 
 error_ret:

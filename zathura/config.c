@@ -56,9 +56,9 @@ cb_color_change(girara_session_t* session, const char* name,
 
   const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
-    gdk_rgba_parse(&(zathura->ui.colors.highlight_color), string_value);
+    parse_color(&zathura->ui.colors.highlight_color, string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
-    gdk_rgba_parse(&(zathura->ui.colors.highlight_color_active), string_value);
+    parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
     if (zathura->sync.render_thread != NULL) {
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
@@ -68,9 +68,9 @@ cb_color_change(girara_session_t* session, const char* name,
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, string_value, NULL);
     }
   } else if (g_strcmp0(name, "render-loading-bg") == 0) {
-    gdk_rgba_parse(&(zathura->ui.colors.render_loading_bg), string_value);
+    parse_color(&zathura->ui.colors.render_loading_bg, string_value);
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
-    gdk_rgba_parse(&(zathura->ui.colors.render_loading_fg), string_value);
+    parse_color(&zathura->ui.colors.render_loading_fg, string_value);
   }
 
   render_all(zathura);
@@ -249,6 +249,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
+  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), NULL, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \
@@ -476,6 +477,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "mark_evaluate",       sc_mark_evaluate);
   girara_shortcut_mapping_add(gsession, "navigate",            sc_navigate);
   girara_shortcut_mapping_add(gsession, "navigate_index",      sc_navigate_index);
+  girara_shortcut_mapping_add(gsession, "nohlsearch",          sc_nohlsearch);
   girara_shortcut_mapping_add(gsession, "print",               sc_print);
   girara_shortcut_mapping_add(gsession, "quit",                sc_quit);
   girara_shortcut_mapping_add(gsession, "recolor",             sc_recolor);

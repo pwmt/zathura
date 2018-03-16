@@ -96,16 +96,16 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup);
 GdkAtom* get_selection(zathura_t* zathura);
 
 /**
- * Returns the valid scale value which needs to lie in the interval of zoom_min
+ * Returns the valid zoom value which needs to lie in the interval of zoom_min
  * and zoom_max specified in the girara session
  *
  * @param[in] session The session
- * @param[in] scale The proposed scale value
+ * @param[in] zoom The proposed zoom value
  *
- * @return The corrected scale value
+ * @return The corrected zoom value
  */
-double zathura_correct_scale_value(girara_session_t* session, const double
-    scale);
+double zathura_correct_zoom_value(girara_session_t* session, const double
+    zoom);
 
 
 /**
@@ -119,5 +119,15 @@ double zathura_correct_scale_value(girara_session_t* session, const double
  */
 unsigned int find_first_page_column(const char* first_page_column_list,
                                     const unsigned int pages_per_row);
+
+/**
+ * Parse color string and print warning if color cannot be parsed.
+ *
+ * @param[out] color The color
+ * @param[in] str Color string
+ *
+ * @return True if color string can be parsed, false otherwise.
+ */
+bool parse_color(GdkRGBA* color, const char* str);
 
 #endif // UTILS_H

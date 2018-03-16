@@ -111,11 +111,21 @@ zathura_filemonitor_init(ZathuraFileMonitor* file_monitor)
   private->file_path = NULL;
 }
 
-const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* filemonitor)
+const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor)
 {
-  private_t* private = GET_PRIVATE(filemonitor);
+  private_t* private = GET_PRIVATE(file_monitor);
 
   return private->file_path;
+}
+
+void zathura_filemonitor_start(ZathuraFileMonitor* file_monitor)
+{
+  ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->start(file_monitor);
+}
+
+void zathura_filemonitor_stop(ZathuraFileMonitor* file_monitor)
+{
+  ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->stop(file_monitor);
 }
 
 ZathuraFileMonitor*
@@ -147,10 +157,6 @@ zathura_filemonitor_new(const char*                file_path,
     return NULL;
   }
 
-  girara_debug("starting file monitor");
-  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(ret);
-  ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->start(file_monitor);
-
-  return file_monitor;
+  return ZATHURA_FILEMONITOR(ret);
 }
 

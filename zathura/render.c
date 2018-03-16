@@ -375,13 +375,15 @@ zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
 
   if (dark != NULL) {
     GdkRGBA color;
-    gdk_rgba_parse(&color, dark);
-    zathura_renderer_set_recolor_colors(renderer, NULL, &color);
+    if (parse_color(&color, dark) == true) {
+      zathura_renderer_set_recolor_colors(renderer, NULL, &color);
+    }
   }
   if (light != NULL) {
     GdkRGBA color;
-    gdk_rgba_parse(&color, light);
-    zathura_renderer_set_recolor_colors(renderer, &color, NULL);
+    if (parse_color(&color, light) == true) {
+      zathura_renderer_set_recolor_colors(renderer, &color, NULL);
+    }
   }
 }
 
@@ -438,11 +440,12 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
 
   bool unfinished_jobs = false;
   /* check if there are any active jobs left */
-  GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
+  GIRARA_LIST_FOREACH_BODY(request_priv->active_jobs, render_job_t*, job,
     if (job->aborted == false) {
       unfinished_jobs = true;
+      break;
     }
-  GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
+  );
 
   /* only add a new job if there are no active ones left */
   if (unfinished_jobs == false) {
@@ -471,9 +474,9 @@ zathura_render_request_abort(ZathuraRenderRequest* request)
 
   request_private_t* request_priv = REQUEST_GET_PRIVATE(request);
   g_mutex_lock(&request_priv->jobs_mutex);
-  GIRARA_LIST_FOREACH(request_priv->active_jobs, render_job_t*, iter, job)
+  GIRARA_LIST_FOREACH_BODY(request_priv->active_jobs, render_job_t*, job,
     job->aborted = true;
-  GIRARA_LIST_FOREACH_END(request_priv->active_jobs, render_job_t*, iter, job);
+  );
   g_mutex_unlock(&request_priv->jobs_mutex);
 }
 
@@ -632,14 +635,14 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
 
     if (found_images == true) {
       /* Get images bounding boxes */
-      GIRARA_LIST_FOREACH(images, zathura_image_t*, iter, image_it)
+      GIRARA_LIST_FOREACH_BODY(images, zathura_image_t*, image_it,
         zathura_rectangle_t* rect = g_try_malloc(sizeof(zathura_rectangle_t));
         if (rect == NULL) {
           break;
         }
         *rect = recalc_rectangle(page, image_it->position);
         girara_list_append(rectangles, rect);
-      GIRARA_LIST_FOREACH_END(images, zathura_image_t*, iter, image_it);
+      );
     }
   }
 
@@ -650,13 +653,13 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
       /* Check if the pixel belongs to an image when in reverse video mode*/
       if (priv->recolor.reverse_video == true && found_images == true){
         bool inside_image = false;
-        GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, iter, rect_it)
+        GIRARA_LIST_FOREACH_BODY(rectangles, zathura_rectangle_t*, rect_it,
           if (rect_it->x1 <= x && rect_it->x2 >= x &&
               rect_it->y1 <= y && rect_it->y2 >= y) {
             inside_image = true;
             break;
           }
-        GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, iter, rect_it);
+        );
         /* If it's inside and image don't recolor */
         if (inside_image == true) {
           continue;
@@ -732,20 +735,30 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
 
+  /* page size in points */
   zathura_document_t* document = zathura_page_get_document(page);
   const double height = zathura_page_get_height(page);
   const double width = zathura_page_get_width(page);
 
+  /* page size in user pixels based on document zoom: if PPI information is
+   * correct, 100% zoom will result in 72 documents points per inch of screen
+   * (i.e. document size on screen matching the physical paper size). */
   const double real_scale = page_calc_height_width(document, height, width,
                                                    &page_height, &page_width,
                                                    false);
 
+  zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
+  page_width *= device_factors.x;
+  page_height *= device_factors.y;
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
       page_width, page_height);
   if (surface == NULL) {
     return false;
   }
+
+  cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
+
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
     cairo_surface_destroy(surface);
     return false;
@@ -759,11 +772,11 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
 
   cairo_save(cairo);
   cairo_set_source_rgb(cairo, 1, 1, 1);
-  cairo_rectangle(cairo, 0, 0, page_width, page_height);
-  cairo_fill(cairo);
+  cairo_paint(cairo);
   cairo_restore(cairo);
   cairo_save(cairo);
 
+  /* apply scale (used by e.g. Poppler as pixels per point) */
   if (fabs(real_scale - 1.0f) > FLT_EPSILON) {
     cairo_scale(cairo, real_scale, real_scale);
   }
@@ -855,8 +868,10 @@ render_all(zathura_t* zathura)
 
     girara_debug("Queuing resize for page %u to %u x %u (%f x %f).", page_id, page_width, page_height, width, height);
     GtkWidget* widget = zathura_page_get_widget(zathura, page);
-    gtk_widget_set_size_request(widget, page_width, page_height);
-    gtk_widget_queue_resize(widget);
+    if (widget != NULL) {
+      gtk_widget_set_size_request(widget, page_width, page_height);
+      gtk_widget_queue_resize(widget);
+    }
   }
 }
 

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Zathura
+Comment=A minimalistic document viewer
+Exec=zathura %U
+# Translators: Icon of the desktop entry.
+Icon=org.pwmt.zathura
+Terminal=false
+Categories=Office;Viewer;
+# Translators: Search terms to find this application. Do not translate or
+# localize the semicolons. The list must also end with a semicolon.
+Keywords=PDF;PS;PostScript;DjVU;document;presentation;viewer;

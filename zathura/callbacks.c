@@ -217,6 +217,81 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
 }
 
 void
+cb_monitors_changed(GdkScreen* screen, gpointer data)
+{
+  girara_debug("signal received");
+
+  zathura_t* zathura = data;
+  if (screen == NULL || zathura == NULL) {
+    return;
+  }
+
+  zathura_update_view_ppi(zathura);
+}
+
+void
+cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer data)
+{
+  girara_debug("called");
+
+  zathura_t* zathura = data;
+  if (widget == NULL || zathura == NULL) {
+    return;
+  }
+
+  /* disconnect previous screen handler if present */
+  if (previous_screen != NULL && zathura->signals.monitors_changed_handler > 0) {
+    g_signal_handler_disconnect(previous_screen, zathura->signals.monitors_changed_handler);
+    zathura->signals.monitors_changed_handler = 0;
+  }
+
+  if (gtk_widget_has_screen(widget)) {
+    GdkScreen* screen = gtk_widget_get_screen(widget);
+
+    /* connect to new screen */
+    zathura->signals.monitors_changed_handler = g_signal_connect(G_OBJECT(screen),
+        "monitors-changed", G_CALLBACK(cb_monitors_changed), zathura);
+  }
+
+  zathura_update_view_ppi(zathura);
+}
+
+void
+cb_widget_configured(GtkWidget* UNUSED(widget), GdkEvent* UNUSED(event), gpointer data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL) {
+    return;
+  }
+
+  zathura_update_view_ppi(zathura);
+}
+
+void
+cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  int new_factor = gtk_widget_get_scale_factor(GTK_WIDGET(object));
+  if (new_factor == 0) {
+    girara_debug("Ignoring new device scale factor = 0");
+    return;
+  }
+
+  zathura_device_factors_t current = zathura_document_get_device_factors(zathura->document);
+  if (fabs(new_factor - current.x) >= DBL_EPSILON ||
+      fabs(new_factor - current.y) >= DBL_EPSILON) {
+    zathura_document_set_device_factors(zathura->document, new_factor, new_factor);
+    girara_debug("New device scale factor: %d", new_factor);
+    zathura_update_view_ppi(zathura);
+    render_all(zathura);
+  }
+}
+
+void
 cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);

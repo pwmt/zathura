@@ -163,6 +163,8 @@ struct zathura_s
 #ifdef G_OS_UNIX
     guint sigterm;
 #endif
+
+    gulong monitors_changed_handler; /**< Signal handler for monitors-changed */
   } signals;
 
   struct
@@ -286,6 +288,13 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
  * @param argv List of arguments
  */
 void zathura_set_argv(zathura_t* zathura, char** argv);
+
+/**
+ * Calculate and store the monitor PPI for the view widget
+ *
+ * @param zathura The zathura session
+ */
+void zathura_update_view_ppi(zathura_t* zathura);
 
 /**
  * Opens a file

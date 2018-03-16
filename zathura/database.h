@@ -12,7 +12,7 @@
 typedef struct zathura_fileinfo_s {
   unsigned int current_page;
   unsigned int page_offset;
-  double scale;
+  double zoom;
   unsigned int rotation;
   unsigned int pages_per_row;
   char* first_page_column_list;
@@ -139,6 +139,12 @@ bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
  * @return list of files
  */
 girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max, const char* basepath);
+
+/**
+ * Create list of bookmarks.
+ * @return empty list of bookmarks
+ */
+girara_list_t* bookmarks_list_new(void);
 
 
 #endif // DATABASE_H

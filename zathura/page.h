@@ -16,7 +16,7 @@
  * @param error Optional error
  * @return Page object or NULL if an error occurred
  */
-zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
+ZATHURA_PLUGIN_API zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
     index, zathura_error_t* error);
 
 /**
@@ -26,7 +26,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_page_free(zathura_page_t* page);
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_free(zathura_page_t* page);
 
 /**
  * Returns the associated document
@@ -35,7 +35,7 @@ zathura_error_t zathura_page_free(zathura_page_t* page);
  * @return The associated document
  * @return NULL if an error occurred
  */
-zathura_document_t* zathura_page_get_document(zathura_page_t* page);
+ZATHURA_PLUGIN_API zathura_document_t* zathura_page_get_document(zathura_page_t* page);
 
 /**
  * Returns the set id of the page
@@ -43,7 +43,7 @@ zathura_document_t* zathura_page_get_document(zathura_page_t* page);
  * @param page The page object
  * @return The id of the page
  */
-unsigned int zathura_page_get_index(zathura_page_t* page);
+ZATHURA_PLUGIN_API unsigned int zathura_page_get_index(zathura_page_t* page);
 
 /**
  * Returns the width of the page
@@ -52,7 +52,7 @@ unsigned int zathura_page_get_index(zathura_page_t* page);
  * @return Width of the page
  * @return -1 If an error occurred
  */
-double zathura_page_get_width(zathura_page_t* page);
+ZATHURA_PLUGIN_API double zathura_page_get_width(zathura_page_t* page);
 
 /**
  * Sets the new width of the page
@@ -60,7 +60,7 @@ double zathura_page_get_width(zathura_page_t* page);
  * @param page The page object
  * @param width The new width of the page
  */
-void zathura_page_set_width(zathura_page_t* page, double width);
+ZATHURA_PLUGIN_API void zathura_page_set_width(zathura_page_t* page, double width);
 
 /**
  * Returns the height of the page
@@ -69,7 +69,7 @@ void zathura_page_set_width(zathura_page_t* page, double width);
  * @return Height of the page
  * @return -1 If an error occurred
  */
-double zathura_page_get_height(zathura_page_t* page);
+ZATHURA_PLUGIN_API double zathura_page_get_height(zathura_page_t* page);
 
 /**
  * Sets the new height of the page
@@ -77,7 +77,7 @@ double zathura_page_get_height(zathura_page_t* page);
  * @param page The page object
  * @param height The new height of the page
  */
-void zathura_page_set_height(zathura_page_t* page, double height);
+ZATHURA_PLUGIN_API void zathura_page_set_height(zathura_page_t* page, double height);
 
 /**
  * Returns the visibility of the page
@@ -86,7 +86,7 @@ void zathura_page_set_height(zathura_page_t* page, double height);
  * @return true if the page is visible
  * @return false if the page is hidden
  */
-bool zathura_page_get_visibility(zathura_page_t* page);
+ZATHURA_PLUGIN_API bool zathura_page_get_visibility(zathura_page_t* page);
 
 /**
  * Sets the visibility of the page
@@ -94,7 +94,7 @@ bool zathura_page_get_visibility(zathura_page_t* page);
  * @param page The page object
  * @param visibility The new visibility value
  */
-void zathura_page_set_visibility(zathura_page_t* page, bool visibility);
+ZATHURA_PLUGIN_API void zathura_page_set_visibility(zathura_page_t* page, bool visibility);
 
 /**
  * Returns the custom data
@@ -102,7 +102,7 @@ void zathura_page_set_visibility(zathura_page_t* page, bool visibility);
  * @param page The page object
  * @return The custom data or NULL
  */
-void* zathura_page_get_data(zathura_page_t* page);
+ZATHURA_PLUGIN_API void* zathura_page_get_data(zathura_page_t* page);
 
 /**
  * Sets the custom data
@@ -110,7 +110,7 @@ void* zathura_page_get_data(zathura_page_t* page);
  * @param page The page object
  * @param data The custom data
  */
-void zathura_page_set_data(zathura_page_t* page, void* data);
+ZATHURA_PLUGIN_API void zathura_page_set_data(zathura_page_t* page, void* data);
 
 /**
  * Search page
@@ -121,7 +121,7 @@ void zathura_page_set_data(zathura_page_t* page, void* data);
  *   error occurred
  * @return List of results
  */
-girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t* error);
 
 /**
  * Get page links
@@ -131,7 +131,7 @@ girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, 
  *   error occurred
  * @return List of links
  */
-girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Free page links
@@ -140,7 +140,7 @@ girara_list_t* zathura_page_links_get(zathura_page_t* page, zathura_error_t* err
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_page_links_free(girara_list_t* list);
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_links_free(girara_list_t* list);
 
 /**
  * Get list of form fields
@@ -150,7 +150,7 @@ zathura_error_t zathura_page_links_free(girara_list_t* list);
  *   error occurred
  * @return List of form fields
  */
-girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Free list of form fields
@@ -159,7 +159,7 @@ girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_error_
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_page_form_fields_free(girara_list_t* list);
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_form_fields_free(girara_list_t* list);
 
 /**
  * Get list of images
@@ -169,7 +169,7 @@ zathura_error_t zathura_page_form_fields_free(girara_list_t* list);
  *   error occurred
  * @return List of images or NULL if an error occurred
  */
-girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Get image
@@ -180,7 +180,7 @@ girara_list_t* zathura_page_images_get(zathura_page_t* page, zathura_error_t* er
  *   error occurred
  * @return The cairo image surface or NULL if an error occurred
  */
-cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_error_t* error);
+ZATHURA_PLUGIN_API cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_error_t* error);
 
 /**
  * Get text for selection
@@ -190,7 +190,7 @@ cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_imag
  * occurred
  * @return The selected text (needs to be deallocated with g_free)
  */
-char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
+ZATHURA_PLUGIN_API char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
  * Render page
@@ -201,6 +201,17 @@ char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
  * @return ZATHURA_ERROR_OK when no error occurred, otherwise see
  *    zathura_error_t
  */
-zathura_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing);
+
+/**
+ * Get page label. Note that the page label might not exist, in this case NULL
+ * is returned.
+ *
+ * @param page Page
+ * @param error Set to an error value (see \ref zathura_Error_t) if an error
+ *    occurred.
+ * @return Page label
+ */
+ZATHURA_PLUGIN_API char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error);
 
 #endif // PAGE_H

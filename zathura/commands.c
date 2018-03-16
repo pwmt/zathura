@@ -108,9 +108,9 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
   if (argc != 1) {
     GString* string = g_string_new(NULL);
 
-    GIRARA_LIST_FOREACH(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark)
+    GIRARA_LIST_FOREACH_BODY(zathura->bookmarks.bookmarks, zathura_bookmark_t*, bookmark,
       g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
-    GIRARA_LIST_FOREACH_END(zathura->bookmarks.bookmarks, zathura_bookmark_t*, iter, bookmark);
+    );
 
     if (strlen(string->str) > 0) {
       g_string_erase(string, strlen(string->str) - 1, 1);
@@ -190,15 +190,15 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
   GString* string = g_string_new(NULL);
 
-  GIRARA_LIST_FOREACH(information, zathura_document_information_entry_t*, iter, entry)
-  if (entry != NULL) {
-    for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
-      if (meta_fields[i].field == entry->type) {
-        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+  GIRARA_LIST_FOREACH_BODY(information, zathura_document_information_entry_t*, entry,
+    if (entry != NULL) {
+      for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+        if (meta_fields[i].field == entry->type) {
+          g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+        }
       }
     }
-  }
-  GIRARA_LIST_FOREACH_END(information, zathura_document_information_entry_t*, iter, entry);
+  );
 
   if (strlen(string->str) > 0) {
     g_string_erase(string, strlen(string->str) - 1, 1);
@@ -280,6 +280,15 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     return false;
   }
 
+  char* sandbox = NULL;
+  girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
+  if (g_strcmp0(sandbox, "strict") == 0) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
+    g_free(sandbox);
+    return false;
+  }
+  g_free(sandbox);
+
   print(zathura);
 
   return true;
@@ -288,12 +297,7 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 bool
 cmd_nohlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 {
-  g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
-
-  document_draw_search_results(zathura, false);
-  render_all(zathura);
+  sc_nohlsearch(session, NULL, NULL, 0);
 
   return true;
 }
@@ -535,7 +539,7 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
 
-    GIRARA_LIST_FOREACH(argument_list, char*, iter, value)
+    GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, value,
       char* r = girara_replace_substring(value, "$FILE", path);
 
       if (r != NULL) {
@@ -546,7 +550,7 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
           girara_list_iterator_set(iter, s);
         }
       }
-    GIRARA_LIST_FOREACH_END(argument_list, char*, iter, value);
+    );
   }
 
   return girara_exec_with_argument_list(session, argument_list);

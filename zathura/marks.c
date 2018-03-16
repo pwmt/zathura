@@ -24,7 +24,7 @@ struct zathura_mark_s {
   double position_x; /**> Horizontal adjustment */
   double position_y; /**> Vertical adjustment */
   unsigned int page; /**> Page number */
-  double scale; /**> Zoom level */
+  double zoom; /**> Zoom level */
 };
 
 bool
@@ -158,35 +158,35 @@ cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  GIRARA_LIST_FOREACH(argument_list, char*, iter, key_string)
-  if (key_string == NULL) {
-    girara_list_iterator_next(iter);
-    continue;
-  }
-
-  for (unsigned int i = 0; i < strlen(key_string); i++) {
-    char key = key_string[i];
-    if (((key >= 0x41 && key <= 0x5A) || (key >=
-                                          0x61 && key <= 0x7A)) == false) {
+  GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, key_string,
+    if (key_string == NULL) {
+      girara_list_iterator_next(iter);
       continue;
     }
 
-    /* search for existing mark */
-    girara_list_iterator_t* mark_iter = girara_list_iterator(zathura->global.marks);
-    do {
-      zathura_mark_t* mark = (zathura_mark_t*) girara_list_iterator_data(mark_iter);
-      if (mark == NULL) {
+    for (unsigned int i = 0; i < strlen(key_string); i++) {
+      char key = key_string[i];
+      if (((key >= 0x41 && key <= 0x5A) || (key >=
+                                            0x61 && key <= 0x7A)) == false) {
         continue;
       }
 
-      if (mark->key == key) {
-        girara_list_remove(zathura->global.marks, mark);
-        continue;
-      }
-    } while (girara_list_iterator_next(mark_iter) != NULL);
-    girara_list_iterator_free(mark_iter);
-  }
-  GIRARA_LIST_FOREACH_END(argument_list, char*, iter, key_string);
+      /* search for existing mark */
+      girara_list_iterator_t* mark_iter = girara_list_iterator(zathura->global.marks);
+      do {
+        zathura_mark_t* mark = (zathura_mark_t*) girara_list_iterator_data(mark_iter);
+        if (mark == NULL) {
+          continue;
+        }
+
+        if (mark->key == key) {
+          girara_list_remove(zathura->global.marks, mark);
+          continue;
+        }
+      } while (girara_list_iterator_next(mark_iter) != NULL);
+      girara_list_iterator_free(mark_iter);
+    }
+  );
 
   return true;
 }
@@ -202,18 +202,19 @@ mark_add(zathura_t* zathura, int key)
   double position_x    = zathura_document_get_position_x(zathura->document);
   double position_y    = zathura_document_get_position_y(zathura->document);
 
-  double scale      = zathura_document_get_scale(zathura->document);
+  double zoom          = zathura_document_get_zoom(zathura->document);
 
   /* search for existing mark */
-  GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
-  if (mark->key == key) {
-    mark->page       = page_id;
-    mark->position_x = position_x;
-    mark->position_y = position_y;
-    mark->scale      = scale;
-    return;
-  }
-  GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);
+  GIRARA_LIST_FOREACH_BODY_WITH_ITER(zathura->global.marks, zathura_mark_t*, iter, mark,
+    if (mark->key == key) {
+      mark->page       = page_id;
+      mark->position_x = position_x;
+      mark->position_y = position_y;
+      mark->zoom       = zoom;
+      girara_list_iterator_free(iter);
+      return;
+    }
+  );
 
   /* add new mark */
   zathura_mark_t* mark = g_try_malloc0(sizeof(zathura_mark_t));
@@ -225,7 +226,7 @@ mark_add(zathura_t* zathura, int key)
   mark->page       = page_id;
   mark->position_x = position_x;
   mark->position_y = position_y;
-  mark->scale      = scale;
+  mark->zoom       = zoom;
 
   girara_list_append(zathura->global.marks, mark);
 }
@@ -238,20 +239,20 @@ mark_evaluate(zathura_t* zathura, int key)
   }
 
   /* search for existing mark */
-  GIRARA_LIST_FOREACH(zathura->global.marks, zathura_mark_t*, iter, mark)
-  if (mark != NULL && mark->key == key) {
-    zathura_document_set_scale(zathura->document,
-        zathura_correct_scale_value(zathura->ui.session, mark->scale));
-    render_all(zathura);
+  GIRARA_LIST_FOREACH_BODY(zathura->global.marks, zathura_mark_t*, mark,
+    if (mark != NULL && mark->key == key) {
+      zathura_document_set_zoom(zathura->document,
+          zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
+      render_all(zathura);
 
-    zathura_jumplist_add(zathura);
-    page_set(zathura, mark->page);
-    position_set(zathura, mark->position_x, mark->position_y);
-    zathura_jumplist_add(zathura);
+      zathura_jumplist_add(zathura);
+      page_set(zathura, mark->page);
+      position_set(zathura, mark->position_x, mark->position_y);
+      zathura_jumplist_add(zathura);
 
-    return;
-  }
-  GIRARA_LIST_FOREACH_END(zathura->global.marks, zathura_mark_t*, iter, mark);
+      break;
+    }
+  );
 }
 
 void
