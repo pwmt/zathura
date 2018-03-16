@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-11 20:56+0100\n"
-"PO-Revision-Date: 2018-02-25 18:25+0100\n"
+"POT-Creation-Date: 2018-03-16 01:11+0100\n"
+"PO-Revision-Date: 2018-03-11 19:53+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Czech (http://www.transifex.com/pwmt/zathura/language/cs/)\n"
 "Language: cs\n"
@@ -16,11 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 2.0.6\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
-msgstr ""
+msgstr "Zathura"
 
 #: data/org.pwmt.zathura.appdata.xml.in:8 data/org.pwmt.zathura.desktop.in:6
 msgid "A minimalistic document viewer"
@@ -39,9 +38,8 @@ msgid "SyncTeX forward and backward synchronization support."
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
-#, fuzzy
 msgid "Quickmarks and bookmarks."
-msgstr "Vypsat všechny záložky"
+msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:23
 msgid "Automatic document reloading."
@@ -79,9 +77,9 @@ msgid "Copied selected text to selection %s: %s"
 msgstr "Vybraný text zkopírován do výběru %s: %s"
 
 #: zathura/callbacks.c:698
-#, fuzzy, c-format
+#, c-format
 msgid "Copied selected image to selection %s"
-msgstr "Vybraný text zkopírován do výběru %s: %s"
+msgstr ""
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:279 zathura/commands.c:313
@@ -126,9 +124,8 @@ msgid "Failed to remove bookmark: %s"
 msgstr "Nepodařilo se smazat záložku: %s"
 
 #: zathura/commands.c:119
-#, fuzzy
 msgid "No bookmarks available."
-msgstr "Nejsou dostupné žádné informace."
+msgstr ""
 
 #: zathura/commands.c:129
 #, c-format
@@ -250,7 +247,7 @@ msgstr "Databázová vrstva"
 
 #: zathura/config.c:146
 msgid "File monitor backend"
-msgstr ""
+msgstr "Vrstva pro sledování souboru"
 
 #: zathura/config.c:148
 msgid "Zoom step"
@@ -370,7 +367,7 @@ msgstr "Vodorovně vystředěné přiblížení"
 
 #: zathura/config.c:203
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Vystředit strany svisle"
 
 #: zathura/config.c:205
 msgid "Align link target to the left"
@@ -458,7 +455,7 @@ msgstr "Povolit službu D-Bus"
 
 #: zathura/config.c:247
 msgid "Save history at each page change"
-msgstr ""
+msgstr "Uložit historii při každé změně strany"
 
 #: zathura/config.c:249
 msgid "The clipboard into which mouse-selected data will be written"
@@ -648,7 +645,7 @@ msgstr "Nepodařilo se vytisknout: %s"
 #: zathura/shortcuts.c:105
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr ""
+msgstr "Neplatný režim úprav: %d"
 
 #: zathura/shortcuts.c:977
 #, c-format

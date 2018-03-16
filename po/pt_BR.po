@@ -7,17 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-11 20:56+0100\n"
-"PO-Revision-Date: 2018-02-25 18:30+0100\n"
+"POT-Creation-Date: 2018-03-16 01:11+0100\n"
+"PO-Revision-Date: 2018-03-11 19:53+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
-"zathura/language/pt_BR/)\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/pwmt/zathura/"
+"language/pt_BR/)\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.0.6\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
@@ -40,9 +39,8 @@ msgid "SyncTeX forward and backward synchronization support."
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
-#, fuzzy
 msgid "Quickmarks and bookmarks."
-msgstr "Listar todos favoritos"
+msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:23
 msgid "Automatic document reloading."
@@ -62,7 +60,7 @@ msgstr ""
 #: zathura/callbacks.c:308
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr ""
+msgstr "'%s' não deve ser 0. Defina para 1."
 
 #: zathura/callbacks.c:390
 #, c-format
@@ -127,9 +125,8 @@ msgid "Failed to remove bookmark: %s"
 msgstr "Falha ao remover favorito: %s"
 
 #: zathura/commands.c:119
-#, fuzzy
 msgid "No bookmarks available."
-msgstr "Nenhuma informação disponível."
+msgstr ""
 
 #: zathura/commands.c:129
 #, c-format
@@ -295,7 +292,7 @@ msgstr "Número máximo de páginas para manter no cache"
 
 #: zathura/config.c:168
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr ""
+msgstr "Tamanho máximo em pixels de miniaturas para manter no cache"
 
 #: zathura/config.c:170
 msgid "Number of positions to remember in the jumplist"
@@ -327,19 +324,19 @@ msgstr "'Carregando ...' cor de primeiro plano"
 
 #: zathura/config.c:183
 msgid "Index mode foreground color"
-msgstr ""
+msgstr "Cor modo de índice no primeiro plano"
 
 #: zathura/config.c:184
 msgid "Index mode background color"
-msgstr ""
+msgstr "Cor modo de índice, fundo"
 
 #: zathura/config.c:185
 msgid "Index mode foreground color (active element)"
-msgstr ""
+msgstr "Cor modo de índice no primeiro plano (elemento ativo)"
 
 #: zathura/config.c:186
 msgid "Index mode background color (active element)"
-msgstr ""
+msgstr "Cor modo de índice, fundo (elemento ativo)"
 
 #: zathura/config.c:189
 msgid "Recolor pages"
@@ -352,7 +349,7 @@ msgstr ""
 
 #: zathura/config.c:193
 msgid "When recoloring keep original image colors"
-msgstr ""
+msgstr "Quando recolorir, manter cores de imagens originais"
 
 #: zathura/config.c:195
 msgid "Wrap scrolling"
@@ -452,7 +449,7 @@ msgstr "Ativar suporte synctex"
 
 #: zathura/config.c:243
 msgid "Synctex editor command"
-msgstr ""
+msgstr "Comando editor Synctex"
 
 #: zathura/config.c:245
 msgid "Enable D-Bus service"
@@ -470,7 +467,7 @@ msgstr ""
 
 #: zathura/config.c:251
 msgid "Enable notification after selecting text"
-msgstr ""
+msgstr "Habilitar notificação após a seleção de texto"
 
 #: zathura/config.c:252
 msgid "Sandbox level"
@@ -590,7 +587,7 @@ msgstr "Caminho para diretório de dados"
 
 #: zathura/main.c:153
 msgid "Path to the cache directory"
-msgstr ""
+msgstr "Caminho para o diretório de cache"
 
 #: zathura/main.c:154
 msgid "Path to the directories containing plugins"
