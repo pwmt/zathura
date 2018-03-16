@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.3.8',
+  version: '0.3.9',
   meson_version: '>=0.45',
   default_options: 'c_std=c11',
 )
@@ -37,7 +37,7 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('libm')
-girara = dependency('girara-gtk3', version: '>=0.2.8')
+girara = dependency('girara-gtk3', version: '>=0.2.9')
 glib = dependency('glib-2.0', version: '>=2.50')
 gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
