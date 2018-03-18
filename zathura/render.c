@@ -548,8 +548,8 @@ colorumax(const double h[3], double l, double l1, double l2)
   }
 
   const double lv = (l - l1) / (l2 - l1);    /* Remap l to the whole interval [0,1] */
-  double u = 1000000;
-  double v = u;
+  double u = DBL_MAX;
+  double v = DBL_MAX;
   for (int k = 0; k < 3; k++) {
     if (h[k] > DBL_EPSILON) {
       const double uu = fabs((1-l)/h[k]);
