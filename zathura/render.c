@@ -595,7 +595,7 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
 
   /* TODO: split handling of image handling off
    * Ideally we would create a mask surface for the location of the images and
-   * we would blit the the recolored and unmodified surfaces together to get the
+   * we would blit the recolored and unmodified surfaces together to get the
    * same effect.
    */
 
