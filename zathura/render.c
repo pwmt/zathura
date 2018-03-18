@@ -541,17 +541,17 @@ emit_completed_signal(void* data)
    Assumes that l is in the interval l1, l2 and corrects the value to
    force u=0 on l1 and l2 */
 static double
-colorumax(const double* h, double l, double l1, double l2)
+colorumax(const double h[3], double l, double l1, double l2)
 {
-  if (h[0] == 0 && h[1] == 0 && h[2] == 0) {
+  if (fabs(h[0]) <= DBL_EPSILON && fabs(h[1]) <= DBL_EPSILON && fabs(h[2]) <= DBL_EPSILON) {
     return 0;
   }
 
-  const double lv = (l - l1)/(l2 - l1);    /* Remap l to the whole interval 0,1 */
+  const double lv = (l - l1) / (l2 - l1);    /* Remap l to the whole interval [0,1] */
   double u = 1000000;
   double v = u;
   for (int k = 0; k < 3; k++) {
-    if (h[k] > 0) {
+    if (h[k] > DBL_EPSILON) {
       const double uu = fabs((1-l)/h[k]);
       const double vv = fabs((1-lv)/h[k]);
 
@@ -561,7 +561,7 @@ colorumax(const double* h, double l, double l1, double l2)
       if (vv < v) {
         v = vv;
       }
-    } else if (h[k] < 0) {
+    } else if (h[k] < -DBL_EPSILON) {
       const double uu = fabs(l/h[k]);
       const double vv = fabs(lv/h[k]);
 
@@ -607,8 +607,9 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
   /* RGB weights for computing lightness. Must sum to one */
   static const double a[] = {0.30, 0.59, 0.11};
 
-#define rgb1 priv->recolor.dark
-#define rgb2 priv->recolor.light
+  const GdkRGBA rgb1 = priv->recolor.dark;
+  const GdkRGBA rgb2 = priv->recolor.light;
+
   const double l1 = a[0]*rgb1.red + a[1]*rgb1.green + a[2]*rgb1.blue;
   const double l2 = a[0]*rgb2.red + a[1]*rgb2.green + a[2]*rgb2.blue;
 
@@ -630,7 +631,7 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
     rectangles = girara_list_new();
     if (rectangles == NULL) {
       found_images = false;
-      girara_warning("Failed to retrieve images.\n");
+      girara_warning("Failed to retrieve images.");
     }
 
     if (found_images == true) {
@@ -687,20 +688,17 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
 
         /* u is the maximum possible saturation for given h and l. s is a
          * rescaled saturation between 0 and 1 */
-        double u = colorumax(h, l, 0, 1);
-        double s = 0;
-        if (u != 0) {
-          s = 1/u;
-        }
+        const double u = colorumax(h, l, 0, 1);
+        const double s = fabs(u) > DBL_EPSILON ? 1.0 / u : 0.0;
 
         /* Interpolates lightness between light and dark colors. white goes to
          * light, and black goes to dark. */
         l = l * (l2 - l1) + l1;
-        u = colorumax(h, l, l1, l2);
 
-        data[2] = (unsigned char)round(255.*(l + s*u * h[0]));
-        data[1] = (unsigned char)round(255.*(l + s*u * h[1]));
-        data[0] = (unsigned char)round(255.*(l + s*u * h[2]));
+        const double su = s * colorumax(h, l, l1, l2);
+        data[2] = (unsigned char)round(255.*(l + su * h[0]));
+        data[1] = (unsigned char)round(255.*(l + su * h[1]));
+        data[0] = (unsigned char)round(255.*(l + su * h[2]));
       } else {
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
@@ -719,9 +717,6 @@ recolor(private_t* priv, zathura_page_t* page, unsigned int page_width,
   }
 
   cairo_surface_mark_dirty(surface);
-
-#undef rgb1
-#undef rgb2
 }
 
 static bool
