@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-16 01:11+0100\n"
-"PO-Revision-Date: 2018-03-16 01:11+0100\n"
+"PO-Revision-Date: 2018-03-18 17:21+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
@@ -33,10 +34,14 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura ist ein anpassbarer und funktionaler Dokumentenbetrachter. Er bietet "
+"eine minimalistische und platzsparende Oberfläche und Verwendung ist auf "
+"Tastaturinteraktionen fokussiert. Zathura ermöglicht es ein Dokument "
+"gänzlich ohne der Verwendung einer Maus zu betrachten."
 
 #: data/org.pwmt.zathura.appdata.xml.in:21
 msgid "SyncTeX forward and backward synchronization support."
-msgstr "Unterstützung für SyncTeX-Synchronisation"
+msgstr "Unterstützung für SyncTeX-Synchronisation."
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "Quickmarks and bookmarks."
