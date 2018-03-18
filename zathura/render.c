@@ -550,27 +550,13 @@ colorumax(const double h[3], double l, double l1, double l2)
   const double lv = (l - l1) / (l2 - l1);    /* Remap l to the whole interval [0,1] */
   double u = DBL_MAX;
   double v = DBL_MAX;
-  for (int k = 0; k < 3; k++) {
+  for (unsigned int k = 0; k < 3; ++k) {
     if (h[k] > DBL_EPSILON) {
-      const double uu = fabs((1-l)/h[k]);
-      const double vv = fabs((1-lv)/h[k]);
-
-      if (uu < u) {
-        u = uu;
-      }
-      if (vv < v) {
-        v = vv;
-      }
+      u = fmin(fabs((1-l)/h[k]), u);
+      v = fmin(fabs((1-lv)/h[k]), v);
     } else if (h[k] < -DBL_EPSILON) {
-      const double uu = fabs(l/h[k]);
-      const double vv = fabs(lv/h[k]);
-
-      if (uu < u) {
-        u = uu;
-      }
-      if (vv < v) {
-        v = vv;
-      }
+      u = fmin(fabs(l/h[k]), u);
+      v = fmin(fabs(lv/h[k]), v);
     }
   }
 
@@ -742,7 +728,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
                                                    &page_height, &page_width,
                                                    false);
 
-  zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
+  const zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
   page_width *= device_factors.x;
   page_height *= device_factors.y;
 
