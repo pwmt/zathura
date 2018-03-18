@@ -873,7 +873,7 @@ render_thread_sort(gconstpointer a, gconstpointer b, gpointer UNUSED(data))
         (priv_a->last_view_time > priv_b->last_view_time ? 1 : 0);
   }
 
-  /* sort aborted entries earlier so that the are thrown out of the queue */
+  /* sort aborted entries earlier so that they are thrown out of the queue */
   return job_a->aborted ? 1 : -1;
 }
 
