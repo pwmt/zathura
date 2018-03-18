@@ -314,7 +314,7 @@ synctex_highlight_rects(zathura_t* zathura, unsigned int page,
   }
 
   /* move to position */
-  girara_debug("Jumping to page %u position (%f, %f).", page, pos_x, pos_y);
+  girara_debug("Jumping to page %u position (%0.2f, %0.2f).", page, pos_x, pos_y);
   zathura_jumplist_add(zathura);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);
