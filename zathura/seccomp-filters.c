@@ -155,6 +155,7 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(getresgid);
   ALLOW_RULE(getresuid);
   ALLOW_RULE(getrlimit);
+  ALLOW_RULE(getpeername);
   /* ALLOW_RULE (getsockname); */
   /* ALLOW_RULE (getsockopt);   needed for access to x11 socket in network namespace (without abstract sockets) */
   ALLOW_RULE(inotify_add_watch);
