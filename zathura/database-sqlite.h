@@ -6,7 +6,7 @@
 #include "database.h"
 
 #define ZATHURA_TYPE_SQLDATABASE \
-  (zathura_sqldatabase_get_type ())
+  (zathura_sqldatabase_get_type())
 #define ZATHURA_SQLDATABASE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), ZATHURA_TYPE_SQLDATABASE, ZathuraSQLDatabase))
 #define ZATHURA_IS_SQLDATABASE(obj) \
