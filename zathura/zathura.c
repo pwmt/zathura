@@ -163,7 +163,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 
   /* physical width of monitor */
-  int width_mm = gdk_monitor_get_width_mm(monitor);
+  const int width_mm = gdk_monitor_get_width_mm(monitor);
 
   /* size of monitor in pixels */
   GdkRectangle monitor_geom;
@@ -184,7 +184,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   {
     /* not using the cached value for the scale factor here to avoid issues
      * if this function is called before the cached value is updated */
-    int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+    const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
     girara_debug("on Wayland, correcting PPI for device scale factor = %d", device_factor);
     if (device_factor != 0) {
       ppi /= device_factor;
@@ -192,7 +192,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 #endif
 
-  double current_ppi = zathura_document_get_viewport_ppi(zathura->document);
+  const double current_ppi = zathura_document_get_viewport_ppi(zathura->document);
   if (fabs(ppi - current_ppi) > DBL_EPSILON) {
     girara_debug("monitor width: %d mm, pixels: %d, ppi: %0.2f", width_mm, monitor_geom.width, ppi);
     zathura_document_set_viewport_ppi(zathura->document, ppi);
