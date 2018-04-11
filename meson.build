@@ -39,12 +39,13 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 libm = cc.find_library('libm', required: false)
 girara = dependency('girara-gtk3', version: '>=0.2.9')
 glib = dependency('glib-2.0', version: '>=2.50')
+gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
 gtk3 = dependency('gtk+-3.0', version: '>=3.22')
 cairo = dependency('cairo')
 
-build_dependencies = [libm, girara, glib, gthread, gmodule, gtk3, cairo]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo]
 
 # defines
 defines = [
