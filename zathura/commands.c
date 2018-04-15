@@ -532,6 +532,15 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  char* sandbox = NULL;
+  girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
+  if (g_strcmp0(sandbox, "strict") == 0) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exec is not permitted in strict sandbox mode"));
+    g_free(sandbox);
+    return false;
+  }
+  g_free(sandbox);
+
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
 
