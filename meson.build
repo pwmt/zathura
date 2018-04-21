@@ -82,6 +82,9 @@ endif
 if get_option('enable-synctex') and synctex.found()
   build_dependencies += synctex
   defines += '-DWITH_SYNCTEX'
+  if synctex.version() < '2.0.0'
+    defines += '-DWITH_SYNCTEX1'
+  endif
 endif
 
 if get_option('enable-magic') and magic.found()

@@ -16,6 +16,14 @@
 #include "adjustment.h"
 
 #ifdef WITH_SYNCTEX
+#ifdef WITH_SYNCTEX1
+typedef synctex_scanner_t synctex_scanner_p;
+typedef synctex_node_t synctex_node_p;
+
+#define synctex_scanner_next_result(scanner) synctex_next_result(scanner)
+#define synctex_display_query(scanner, file, line, column, page) synctex_display_query(scanner, file, line, column)
+#endif
+
 bool
 synctex_get_input_line_column(const char* filename, unsigned int page, int x, int y,
     char** input_file, unsigned int* line, unsigned int* column)
@@ -24,13 +32,13 @@ synctex_get_input_line_column(const char* filename, unsigned int page, int x, in
     return false;
   }
 
-  synctex_scanner_t scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
+  synctex_scanner_p scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
   if (scanner == NULL) {
     girara_debug("Failed to create synctex scanner.");
     return false;
   }
 
-  synctex_scanner_t temp = synctex_scanner_parse(scanner);
+  synctex_scanner_p temp = synctex_scanner_parse(scanner);
   if (temp == NULL) {
     girara_debug("Failed to parse synctex file.");
     synctex_scanner_free(scanner);
@@ -41,7 +49,7 @@ synctex_get_input_line_column(const char* filename, unsigned int page, int x, in
 
   if (synctex_edit_query(scanner, page + 1u, x, y) > 0) {
     /* Assume that a backward search returns at most one result. */
-    synctex_node_t node = synctex_next_result(scanner);
+    synctex_node_p node = synctex_scanner_next_result(scanner);
     if (node != NULL) {
       if (input_file != NULL) {
         *input_file = g_strdup(synctex_scanner_get_name(scanner, synctex_node_tag(node)));
@@ -127,13 +135,13 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
   ++line;
   ++column;
 
-  synctex_scanner_t scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
+  synctex_scanner_p scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
   if (scanner == NULL) {
     girara_debug("Failed to create synctex scanner.");
     return NULL;
   }
 
-  synctex_scanner_t temp = synctex_scanner_parse(scanner);
+  synctex_scanner_p temp = synctex_scanner_parse(scanner);
   if (temp == NULL) {
     girara_debug("Failed to parse synctex file.");
     synctex_scanner_free(scanner);
@@ -143,11 +151,11 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
   girara_list_t* hitlist     = girara_list_new2(g_free);
   girara_list_t* other_rects = girara_list_new2(g_free);
 
-  if (synctex_display_query(scanner, input_file, line, column) > 0) {
-    synctex_node_t node        = NULL;
+  if (synctex_display_query(scanner, input_file, line, column, -1) > 0) {
+    synctex_node_p node        = NULL;
     bool got_page              = false;
 
-    while ((node = synctex_next_result (scanner)) != NULL) {
+    while ((node = synctex_scanner_next_result(scanner)) != NULL) {
       const unsigned int current_page = synctex_node_page(node) - 1;
       if (got_page == false) {
         got_page = true;
