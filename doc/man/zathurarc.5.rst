@@ -324,6 +324,8 @@ Pass arguments
 Some shortcut function require or have optional arguments which influence the
 behaviour of them. Those can be passed as the last argument:
 
+::
+
     map <C-i> zoom in
     map <C-o> zoom out
 
