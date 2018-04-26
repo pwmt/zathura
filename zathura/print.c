@@ -52,7 +52,6 @@ print(zathura_t* zathura)
   g_signal_connect(print_operation, "draw-page",          G_CALLBACK(cb_print_draw_page),          zathura);
   g_signal_connect(print_operation, "end-print",          G_CALLBACK(cb_print_end),                zathura);
   g_signal_connect(print_operation, "request-page-setup", G_CALLBACK(cb_print_request_page_setup), zathura);
-  g_signal_connect(print_operation, "done",               G_CALLBACK(cb_print_done),               zathura);
 
   /* print */
   GError* error = NULL;
@@ -64,6 +63,13 @@ print(zathura_t* zathura)
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
                   error->message);
     g_error_free(error);
+  } else if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
+    g_clear_object(&zathura->print.settings);
+    g_clear_object(&zathura->print.page_setup);
+
+    /* save previous settings */
+    zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(print_operation));
+    zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(print_operation));
   }
 
   g_object_unref(print_operation);
@@ -209,24 +215,3 @@ cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation),
     gtk_page_setup_set_orientation(setup, GTK_PAGE_ORIENTATION_PORTRAIT);
   }
 }
-
-static void
-cb_print_done(GtkPrintOperation* operation, GtkPrintOperationResult result,
-              zathura_t* zathura)
-{
-  if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
-    g_clear_object(&zathura->print.settings);
-    g_clear_object(&zathura->print.page_setup);
-
-    /* save previous settings */
-    zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(operation));
-    zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(operation));
-  } else if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
-    GError* error = NULL;
-    gtk_print_operation_get_error(operation, &error);
-    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
-                  error->message);
-    g_error_free(error);
-  }
-}
-
