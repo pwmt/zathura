@@ -58,7 +58,7 @@ print(zathura_t* zathura)
   GError* error = NULL;
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation,
                                    GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-                                   NULL, &error);
+                                   GTK_WINDOW(zathura->ui.session->gtk.window), &error);
 
   if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"),
