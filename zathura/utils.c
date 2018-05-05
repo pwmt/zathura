@@ -63,6 +63,13 @@ file_valid_extension(zathura_t* zathura, const char* path)
   return (plugin == NULL) ? false : true;
 }
 
+static void
+index_element_free(void* data, GObject* UNUSED(object))
+{
+  zathura_index_element_t* element = data;
+  zathura_index_element_free(element);
+}
+
 void
 document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
                      girara_tree_node_t* tree)
@@ -70,7 +77,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
   girara_list_t* list = girara_node_get_children(tree);
 
   GIRARA_LIST_FOREACH_BODY(list, girara_tree_node_t*, node,
-    zathura_index_element_t* index_element = (zathura_index_element_t*)girara_node_get_data(node);
+    zathura_index_element_t* index_element = girara_node_get_data(node);
 
     zathura_link_type_t type     = zathura_link_get_type(index_element->link);
     zathura_link_target_t target = zathura_link_get_target(index_element->link);
@@ -87,7 +94,7 @@ document_index_build(GtkTreeModel* model, GtkTreeIter* parent,
     gchar* markup = g_markup_escape_text(index_element->title, -1);
     gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, index_element, -1);
     g_free(markup);
-    g_object_weak_ref(G_OBJECT(model), (GWeakNotify) zathura_index_element_free, index_element);
+    g_object_weak_ref(G_OBJECT(model), index_element_free, index_element);
     g_free(description);
 
     if (girara_node_get_num_children(node) > 0) {
