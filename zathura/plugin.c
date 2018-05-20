@@ -269,7 +269,7 @@ register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plug
     if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
       girara_error("plugin: filetype already registered: %s", type);
     } else {
-      girara_debug("plugin: filetype mapping addded: %s", type);
+      girara_debug("plugin: filetype mapping added: %s", type);
       at_least_one = true;
     }
   );

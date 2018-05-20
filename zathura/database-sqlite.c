@@ -138,7 +138,7 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "vadj_ratio FLOAT,"
     "PRIMARY KEY(file, id));";
 
-  /* ceate jumplist table */
+  /* create jumplist table */
   static const char SQL_JUMPLIST_INIT[] =
     "CREATE TABLE IF NOT EXISTS jumplist ("
     "id INTEGER PRIMARY KEY AUTOINCREMENT,"

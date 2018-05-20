@@ -21,7 +21,7 @@ typedef struct zathura_fileinfo_s {
 } zathura_fileinfo_t;
 
 #define ZATHURA_TYPE_DATABASE \
-  (zathura_database_get_type ())
+  (zathura_database_get_type())
 #define ZATHURA_DATABASE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabase))
 #define ZATHURA_IS_DATABASE(obj) \

@@ -549,7 +549,7 @@ zathura_document_set_device_factors(zathura_document_t* document,
     return;
   }
   if (fabs(x_factor) < DBL_EPSILON || fabs(y_factor) < DBL_EPSILON) {
-    girara_debug("Ignoring new device factors %f and %f: too small",
+    girara_debug("Ignoring new device factors %0.2f and %0.2f: too small",
         x_factor, y_factor);
     return;
   }

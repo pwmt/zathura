@@ -1383,22 +1383,22 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
-    girara_debug("Increasing zoom by %f.", zoom_step - 1.0);
+    girara_debug("Increasing zoom by %0.2f.", zoom_step - 1.0);
     zathura_document_set_zoom(zathura->document, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
-    girara_debug("Decreasing zoom by %f.", zoom_step - 1.0);
+    girara_debug("Decreasing zoom by %0.2f.", zoom_step - 1.0);
     zathura_document_set_zoom(zathura->document, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
       girara_debug("Setting zoom to 1.");
       zathura_document_set_zoom(zathura->document, 1.0);
     } else {
-      girara_debug("Setting zoom to %f.", t / 100.0);
+      girara_debug("Setting zoom to %0.2f.", t / 100.0);
       zathura_document_set_zoom(zathura->document, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
     const double dy = (event != NULL) ? event->y : 1.0;
-    girara_debug("Increasing zoom by %f.", zoom_step * dy - 1.0);
+    girara_debug("Increasing zoom by %0.2f.", zoom_step * dy - 1.0);
     zathura_document_set_zoom(zathura->document, old_zoom + zoom_step * dy);
   } else {
     girara_debug("Setting zoom to 1.");
@@ -1411,11 +1411,11 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
 
   const double new_zoom = zathura_document_get_zoom(zathura->document);
   if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
-    girara_debug("New and old zoom level are too close: %f vs. %f, diff = %f", new_zoom, old_zoom, fabs(new_zoom - old_zoom));
+    girara_debug("New and old zoom level are too close: %0.2f vs. %0.2f", new_zoom, old_zoom);
     return false;
   }
 
-  girara_debug("Re-rendering with new zoom level %f.", new_zoom);
+  girara_debug("Re-rendering with new zoom level %0.2f.", new_zoom);
   render_all(zathura);
   refresh_view(zathura);
 

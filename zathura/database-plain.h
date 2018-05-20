@@ -6,7 +6,7 @@
 #include "database.h"
 
 #define ZATHURA_TYPE_PLAINDATABASE \
-  (zathura_plaindatabase_get_type ())
+  (zathura_plaindatabase_get_type())
 #define ZATHURA_PLAINDATABASE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), ZATHURA_TYPE_PLAINDATABASE, ZathuraPlainDatabase))
 #define ZATHURA_IS_PLAINDATABASE(obj) \

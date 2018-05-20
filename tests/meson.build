@@ -20,5 +20,7 @@ if check.found()
     c_args: defines + flags
   )
 
-  test('tests', tests)
+  test('tests', tests,
+    timeout: 60*60
+  )
 endif
