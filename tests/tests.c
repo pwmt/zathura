@@ -14,11 +14,9 @@ int run_suite(Suite* suite)
   int ret = EXIT_SUCCESS;
   if (number_failed != 0) {
     ret = EXIT_FAILURE;
-
-    const int tests_run = srunner_ntests_run(suite_runner);
     TestResult** results = srunner_failures(suite_runner);
 
-    for (int i = 0; i < tests_run; ++i) {
+    for (int i = 0; i < number_failed; ++i) {
       if (tr_ctx(results[i]) == CK_CTX_SETUP) {
         /* mark tests as skipped */
         ret = 77;
