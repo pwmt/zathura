@@ -3,6 +3,7 @@
 #include <check.h>
 
 #include "document.h"
+#include "tests.h"
 
 START_TEST(test_open) {
   fail_unless(zathura_document_open(NULL, NULL, NULL, NULL, NULL) == NULL, "Could create document", NULL);
@@ -11,7 +12,7 @@ START_TEST(test_open) {
   fail_unless(zathura_document_open(NULL, "fl", NULL, "pw", NULL) == NULL, "Could create document", NULL);
 } END_TEST
 
-Suite* suite_document()
+static Suite* suite_document(void)
 {
   TCase* tcase = NULL;
   Suite* suite = suite_create("Document");
@@ -22,4 +23,9 @@ Suite* suite_document()
   suite_add_tcase(suite, tcase);
 
   return suite;
+}
+
+int main()
+{
+  return run_suite(suite_document());
 }
