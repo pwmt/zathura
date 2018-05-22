@@ -82,6 +82,12 @@ enum {
   ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4*1024*1024
 };
 
+typedef enum {
+  ZATHURA_SANDBOX_NONE,
+  ZATHURA_SANDBOX_NORMAL,
+  ZATHURA_SANDBOX_STRICT
+} zathura_sandbox_t;
+
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
@@ -138,6 +144,7 @@ struct zathura_s
     int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
+    zathura_sandbox_t sandbox; /**< Sandbox mode */
   } global;
 
   struct

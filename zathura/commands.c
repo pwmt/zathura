@@ -280,14 +280,10 @@ cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     return false;
   }
 
-  char* sandbox = NULL;
-  girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
-  if (g_strcmp0(sandbox, "strict") == 0) {
+  if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
-    g_free(sandbox);
     return false;
   }
-  g_free(sandbox);
 
   print(zathura);
 

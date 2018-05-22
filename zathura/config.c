@@ -103,6 +103,26 @@ cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
   girara_special_command_add(session, '?', cmd_search, inc_search, BACKWARD, NULL);
 }
 
+static void
+cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
+                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const char* sandbox = value;
+  if (g_strcmp0(sandbox, "none") == 0) {
+    zathura->global.sandbox = ZATHURA_SANDBOX_NONE;
+  } else if (g_strcmp0(sandbox, "normal") == 0)  {
+    zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
+  } else if (g_strcmp0(sandbox, "strict") == 0) {
+    zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
+  } else {
+    girara_error("Invalid sandbox option");
+  }
+}
 
 void
 config_load_default(zathura_t* zathura)
@@ -249,7 +269,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), NULL, NULL);
+  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \

@@ -135,10 +135,6 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
   bool link_zoom = true;
   girara_setting_get(zathura->ui.session, "link-zoom", &link_zoom);
 
-  /* required below to prevent opening hyperlinks in strict sandbox mode */
-  char* sandbox = NULL;
-  girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
-  
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
       if (link->target.destination_type != ZATHURA_LINK_DESTINATION_UNKNOWN) {
@@ -207,7 +203,7 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       link_remote(zathura, link->target.value);
       break;
     case ZATHURA_LINK_URI:
-      if (g_strcmp0(sandbox, "strict") == 0) {
+      if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
       } else {
         if (girara_xdg_open(link->target.value) == false) {
@@ -221,7 +217,6 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     default:
       break;
   }
-  g_free(sandbox);
 }
 
 void

@@ -87,6 +87,7 @@ zathura_create(void)
 
   /* global settings */
   zathura->global.search_direction = FORWARD;
+  zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
 
   /* plugins */
   zathura->plugins.manager = zathura_plugin_manager_new();
