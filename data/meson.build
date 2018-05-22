@@ -52,5 +52,11 @@ bash_completion = configure_file(
   output: 'zathura',
   configuration: conf_data
 )
+zsh_completion = configure_file(
+  input: 'zsh-completion.in',
+  output: '_zathura',
+  configuration: conf_data
+)
 
 install_data(bash_completion, install_dir: join_paths(datadir, 'bash-completion', 'completions'))
+install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'vendor-completions'))
