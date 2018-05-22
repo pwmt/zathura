@@ -45,6 +45,9 @@
 #include "resources.h"
 #include "synctex.h"
 #include "content-type.h"
+#ifdef WITH_SECCOMP
+#include "seccomp-filters.h"
+#endif
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -417,6 +420,27 @@ zathura_init(zathura_t* zathura)
   /* configuration */
   config_load_default(zathura);
   config_load_files(zathura);
+
+#ifdef WITH_SECCOMP
+  /* initialize seccomp filters */
+  switch (zathura->global.sandbox) {
+    case ZATHURA_SANDBOX_NONE:
+      girara_debug("Sandbox deactivated.");
+      break;
+    case ZATHURA_SANDBOX_NORMAL:
+      girara_debug("Basic sandbox allowing normal operation.");
+      if (seccomp_enable_basic_filter() != 0) {
+        goto error_free;
+      }
+      break;
+    case ZATHURA_SANDBOX_STRICT:
+      girara_debug("Strict sandbox preventing write and network access.");
+      if (seccomp_enable_strict_filter() != 0) {
+        goto error_free;
+      }
+      break;
+  }
+#endif
 
   /* UI */
   if (!init_ui(zathura)) {
