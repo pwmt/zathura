@@ -1634,12 +1634,10 @@ error_ret:
 static gboolean
 zathura_signal_sigterm(gpointer data)
 {
-  if (data == NULL) {
-    return TRUE;
+  if (data != NULL) {
+    zathura_t* zathura = data;
+    cb_destroy(NULL, zathura);
   }
-
-  zathura_t* zathura = (zathura_t*) data;
-  cb_destroy(NULL, zathura);
 
   return TRUE;
 }
