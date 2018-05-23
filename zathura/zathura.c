@@ -150,7 +150,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 
   /* get view widget GdkMonitor */
-  GdkWindow* window = gtk_widget_get_window (zathura->ui.session->gtk.view); // NULL if not realized
+  GdkWindow* window = gtk_widget_get_window(zathura->ui.session->gtk.view); // NULL if not realized
   if (window == NULL) {
     return;
   }
