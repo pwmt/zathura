@@ -1149,7 +1149,6 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget);
 
-
   /* bookmarks */
   if (zathura->database != NULL) {
     if (zathura_bookmarks_load(zathura, file_path) == false) {
@@ -1558,7 +1557,6 @@ position_set(zathura_t* zathura, double position_x, double position_y)
   return true;
 }
 
-
 void
 refresh_view(zathura_t* zathura)
 {
@@ -1568,7 +1566,6 @@ refresh_view(zathura_t* zathura)
   g_signal_emit(zathura->ui.session->gtk.view, zathura->signals.refresh_view,
                 0, zathura);
 }
-
 
 bool
 adjust_view(zathura_t* zathura)
