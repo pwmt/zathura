@@ -16,6 +16,11 @@ Options
 
 .. include:: _options.txt
 
+Environment variables
+---------------------
+
+.. include:: _env.txt
+
 Mouse and key bindings
 ----------------------
 

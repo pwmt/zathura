@@ -12,8 +12,8 @@
 
 -w, --password=password
   The documents password. If multiple documents are opened at once, the
-  password will be  used for the first one and zathura will ask for the
-  passwords of the remaining files if needed .
+  password will be used for the first one and zathura will ask for the
+  passwords of the remaining files if needed.
 
 -P, --page=number
   Opens the document at the given page number. Pages are numbered starting
