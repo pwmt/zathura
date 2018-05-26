@@ -1,0 +1,3 @@
+ZATHURA_PLUGINS_PATH
+  Path to the directory containing plugins. This directory is only considered if
+  no other directory was specified using --plugins-dir.
