@@ -624,6 +624,8 @@ zathura_set_plugin_dir(zathura_t* zathura, const char* dir)
 
   if (dir != NULL) {
     set_plugin_dir(zathura, dir);
+  } else if (g_getenv("ZATHURA_PLUGIN_PATH") != NULL) {
+    set_plugin_dir(zathura, g_getenv("ZATHURA_PLUGIN_PATH"));
 #ifdef ZATHURA_PLUGINDIR
   } else {
     set_plugin_dir(zathura, ZATHURA_PLUGINDIR);
