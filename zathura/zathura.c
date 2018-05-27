@@ -305,7 +305,7 @@ init_ui(zathura_t* zathura)
   return true;
 }
 
-static void
+static bool
 init_css(zathura_t* zathura)
 {
   GiraraTemplate* csstemplate =
@@ -344,7 +344,11 @@ init_css(zathura_t* zathura)
     girara_template_set_base(csstemplate, css);
     g_free(css);
     g_bytes_unref(css_data);
+  } else {
+    return false;
   }
+
+  return true;
 }
 
 static void
@@ -459,7 +463,9 @@ zathura_init(zathura_t* zathura)
   init_jumplist(zathura);
 
   /* CSS for index mode */
-  init_css(zathura);
+  if (init_css(zathura) == false) {
+    goto error_free;
+  }
 
   /* Shortcut helpers */
   init_shortcut_helpers(zathura);
@@ -782,7 +788,7 @@ document_info_open(gpointer data)
 
     if (file != NULL) {
       if (document_info->synctex != NULL) {
-        document_open_synctex(document_info->zathura, file, uri, 
+        document_open_synctex(document_info->zathura, file, uri,
                               document_info->password, document_info->synctex);
       } else {
         document_open(document_info->zathura, file, uri, document_info->password,
