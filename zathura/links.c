@@ -258,7 +258,11 @@ link_remote(zathura_t* zathura, const char* file)
     NULL
   };
 
-  g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+  GError* error = NULL;
+  if (g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
+    girara_error("Failed to execute synctex command: %s", error->message);
+    g_error_free(error);
+  }
 
   g_free(uri);
   g_free(dir);
