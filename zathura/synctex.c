@@ -111,7 +111,11 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
         argv[i] = temp;
       }
 
-      g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+      GError* error = NULL;
+      if (g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
+        girara_error("Failed to execute synctex command: %s", error->message);
+        g_error_free(error);
+      }
       g_strfreev(argv);
     }
 
