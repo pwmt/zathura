@@ -92,7 +92,7 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
   char* input_file = NULL;
 
   if (synctex_get_input_line_column(filename, zathura_page_get_index(page), x, y,
-        &input_file, &line, &column) == true) {
+        &input_file, &line, &column) == true && input_file != NULL) {
     char* linestr = g_strdup_printf("%d", line);
     char* columnstr = g_strdup_printf("%d", column);
 
@@ -100,14 +100,15 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
     gint    argc = 0;
     if (g_shell_parse_argv(editor, &argc, &argv, NULL) == TRUE) {
       for (gint i = 0; i != argc; ++i) {
-        char* temp = girara_replace_substring(argv[i], "%{line}", linestr);
-        g_free(argv[i]);
-        argv[i] = temp;
-        temp = girara_replace_substring(argv[i], "%{column}", columnstr);
-        g_free(argv[i]);
-        argv[i] = temp;
-        temp = girara_replace_substring(argv[i], "%{input}", input_file);
-        g_free(argv[i]);
+        char* arg = argv[i];
+        char* temp = girara_replace_substring(arg, "%{line}", linestr);
+        g_free(arg);
+        arg = temp;
+        temp = girara_replace_substring(arg, "%{column}", columnstr);
+        g_free(arg);
+        arg = temp;
+        temp = girara_replace_substring(arg, "%{input}", input_file);
+        g_free(arg);
         argv[i] = temp;
       }
 
@@ -121,8 +122,9 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
 
     g_free(linestr);
     g_free(columnstr);
-
     g_free(input_file);
+  } else {
+    girara_warning("Failed to obtain data via SyncTeX or data is incomplete.");
   }
 }
 
