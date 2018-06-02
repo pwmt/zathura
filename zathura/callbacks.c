@@ -739,7 +739,6 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
 
   bool synctex = false;
   girara_setting_get(zathura->ui.session, "synctex", &synctex);
-
   if (synctex == false) {
     return;
   }
@@ -751,6 +750,7 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   char* editor = NULL;
   girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
   if (editor == NULL || *editor == '\0') {
+    girara_debug("No SyncTeX editor specified.");
     g_free(editor);
     return;
   }
