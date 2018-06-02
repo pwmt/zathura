@@ -102,14 +102,20 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
       for (gint i = 0; i != argc; ++i) {
         char* arg = argv[i];
         char* temp = girara_replace_substring(arg, "%{line}", linestr);
-        g_free(arg);
         arg = temp;
         temp = girara_replace_substring(arg, "%{column}", columnstr);
         g_free(arg);
         arg = temp;
         temp = girara_replace_substring(arg, "%{input}", input_file);
         g_free(arg);
-        argv[i] = temp;
+        arg = temp;
+
+        if (arg != NULL) {
+          g_free(argv[i]);
+          argv[i] = arg;
+        } else {
+          girara_error("Failed to update '%s' with line (%s), column (%s) and input file (%s) data.", argv[i], linestr, columnstr, input_file);
+        }
       }
 
       GError* error = NULL;
