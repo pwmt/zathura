@@ -733,7 +733,7 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
     refresh_view(zathura);
   }
 
-  if (event->button != 1 || !(event->state & GDK_CONTROL_MASK)) {
+  if (event->button != GDK_BUTTON_PRIMARY || !(event->state & GDK_CONTROL_MASK)) {
     return;
   }
 
@@ -758,4 +758,3 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   synctex_edit(editor, page, event->x, event->y);
   g_free(editor);
 }
-
