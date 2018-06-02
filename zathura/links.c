@@ -14,19 +14,11 @@
 #include "page.h"
 #include "render.h"
 
-#ifdef WITH_SECCOMP
-#include "seccomp-filters.h"
-#endif
-
 struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
   zathura_link_type_t type; /**< Link type */
   zathura_link_target_t target; /**< Link target */
 };
-
-/* forward declarations */
-static void link_remote(zathura_t* zathura, const char* file);
-static void link_launch(zathura_t* zathura, zathura_link_t* link);
 
 zathura_link_t*
 zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
@@ -123,6 +115,62 @@ zathura_link_get_target(zathura_link_t* link)
   }
 
   return link->target;
+}
+
+static void
+link_remote(zathura_t* zathura, const char* file)
+{
+  if (zathura == NULL || file == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  const char* path = zathura_document_get_path(zathura->document);
+  char* dir        = g_path_get_dirname(path);
+  char* uri        = g_build_filename(dir, file, NULL);
+
+  char* argv[] = {
+    *(zathura->global.arguments),
+    uri,
+    NULL
+  };
+
+  GError* error = NULL;
+  if (g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
+    girara_error("Failed to execute command: %s", error->message);
+    g_error_free(error);
+  }
+
+  g_free(uri);
+  g_free(dir);
+}
+
+static void
+link_launch(zathura_t* zathura, zathura_link_t* link)
+{
+  if (zathura == NULL || link == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  /* get file path */
+  if (link->target.value == NULL) {
+    return;
+  };
+
+  char* path = NULL;
+  if (g_path_is_absolute(link->target.value) == TRUE) {
+    path = g_strdup(link->target.value);
+  } else {
+    const char* document = zathura_document_get_path(zathura->document);
+    char* dir  = g_path_get_dirname(document);
+    path = g_build_filename(dir, link->target.value, NULL);
+    g_free(dir);
+  }
+
+  if (girara_xdg_open(path) == false) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
+  }
+
+  g_free(path);
 }
 
 void
@@ -239,60 +287,4 @@ zathura_link_display(zathura_t* zathura, zathura_link_t* link)
     default:
       girara_notify(zathura->ui.session, GIRARA_ERROR, _("Link: Invalid"));
   }
-}
-
-static void
-link_remote(zathura_t* zathura, const char* file)
-{
-  if (zathura == NULL || file == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  const char* path = zathura_document_get_path(zathura->document);
-  char* dir        = g_path_get_dirname(path);
-  char* uri        = g_build_filename(dir, file, NULL);
-
-  char* argv[] = {
-    *(zathura->global.arguments),
-    uri,
-    NULL
-  };
-
-  GError* error = NULL;
-  if (g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
-    girara_error("Failed to execute command: %s", error->message);
-    g_error_free(error);
-  }
-
-  g_free(uri);
-  g_free(dir);
-}
-
-static void
-link_launch(zathura_t* zathura, zathura_link_t* link)
-{
-  if (zathura == NULL || link == NULL || zathura->document == NULL) {
-    return;
-  }
-
-  /* get file path */
-  if (link->target.value == NULL) {
-    return;
-  };
-
-  char* path = NULL;
-  if (g_path_is_absolute(link->target.value) == TRUE) {
-    path = g_strdup(link->target.value);
-  } else {
-    const char* document = zathura_document_get_path(zathura->document);
-    char* dir  = g_path_get_dirname(document);
-    path = g_build_filename(dir, link->target.value, NULL);
-    g_free(dir);
-  }
-
-  if (girara_xdg_open(path) == false) {
-    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-  }
-
-  g_free(path);
 }
