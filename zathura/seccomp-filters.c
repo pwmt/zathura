@@ -248,17 +248,17 @@ seccomp_enable_strict_filter(void)
 
   /* special restrictions for openat, prevent opening files for writing */
   if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 1,
-                        SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) < 0) {
+                        SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) < 0) {
     goto out;
   }
 
   if (seccomp_rule_add(ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(openat), 1,
-                        SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY)) < 0) {
+                        SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY)) < 0) {
     goto out;
   }
 
   if (seccomp_rule_add(ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(openat), 1,
-                        SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR)) < 0) {
+                        SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR)) < 0) {
     goto out;
   }
 
