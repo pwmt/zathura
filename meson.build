@@ -83,7 +83,7 @@ if get_option('enable-synctex') and synctex.found()
   build_dependencies += synctex
   defines += '-DWITH_SYNCTEX'
   if synctex.version() < '2.0.0'
-    if synctex.version() < '1.19.0'
+    if synctex.version() >= '1.19.0'
       warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
     else
       defines += '-DWITH_SYNCTEX1'
