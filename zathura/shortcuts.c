@@ -751,7 +751,7 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       zathura->bisect.end = cur_page;
       direction = FORWARD;
     }
-  } else if (argument != NULL)  {
+  } else {
     direction = argument->n;
 
     /* setup initial bisect range */
@@ -787,8 +787,6 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       zathura->bisect.end = MAX(prev_page, cur_page);
       zathura->bisect.last_jump = cur_page;
     }
-  } else {
-    return false;
   }
 
   girara_debug("bisecting between %d and %d, at %d", zathura->bisect.start, zathura->bisect.end, cur_page);
