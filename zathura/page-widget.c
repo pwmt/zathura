@@ -319,7 +319,7 @@ set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_font_weight_t w
   /* get font size: can be points or absolute.
    * absolute units: example: value 10*PANGO_SCALE = 10 (unscaled) device units (logical pixels)
    * point units:    example: value 10*PANGO_SCALE = 10 points = 10*(font dpi config / 72) device units */
-  double size = pango_font_description_get_size(descr) / PANGO_SCALE;
+  double size = pango_font_description_get_size(descr) / (double)PANGO_SCALE;
 
   /* convert point size to device units */
   if (!pango_font_description_get_size_is_absolute(descr)) {
