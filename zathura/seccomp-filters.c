@@ -207,13 +207,6 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(writev);
   ALLOW_RULE(wait4);  /* trying to open links should not crash the app */
 
-
-  /* debian based systems require this, but only use sig_0, should be safe */
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(kill), 1,
-          SCMP_CMP(1, SCMP_CMP_EQ, 0)) < 0) {
-    goto out;
-  }
-
   /* Special requirements for ioctl, allowed on stdout/stderr */
   if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 1,
           SCMP_CMP(0, SCMP_CMP_EQ, 1)) < 0) {
