@@ -1057,6 +1057,12 @@ is a read only sandbox that is intended for viewing documents only.
 * Value type: String
 * Default value: normal
 
+Blocked features in strcit sandbox mode:
+- saving/writing files
+- use of input methods like ibus
+- printing
+- bookmarks and history
+
 SEE ALSO
 ========
 
