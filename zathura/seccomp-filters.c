@@ -208,13 +208,11 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(wait4);  /* trying to open links should not crash the app */
 
 
-  /* only ubuntu requires this (tested on 18.04 and 18.10), but only uses sig_0, should be safe */
-  /* debian stretch, and buster (alpha3) don't need this, likely caused by some ubuntu feature */
-  /* if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(kill), 1, */
-  /*         SCMP_CMP(1, SCMP_CMP_EQ, 0)) < 0) { */
-  /*   goto out; */
-  /* } */
-  
+  /* debian based systems require this, but only use sig_0, should be safe */
+  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(kill), 1,
+          SCMP_CMP(1, SCMP_CMP_EQ, 0)) < 0) {
+    goto out;
+  }
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
   if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 1,
