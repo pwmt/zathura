@@ -442,6 +442,8 @@ zathura_init(zathura_t* zathura)
       if (seccomp_enable_strict_filter() != 0) {
         goto error_free;
       }
+      /* unset the input method to avoid communication with external services */
+      unsetenv("GTK_IM_MODULE");
       break;
   }
 #endif
