@@ -45,8 +45,8 @@ zathura_image_buffer_create(unsigned int width, unsigned int height)
   g_return_val_if_fail(height != 0, NULL);
 
   unsigned int size = 0;
-  if (checked_umul(width, height, &size) == false ||
-      checked_umul(size, 3, &size) == false) {
+  if (checked_umul(width, height, &size) == true ||
+      checked_umul(size, 3, &size) == true) {
     return NULL;
   }
 
