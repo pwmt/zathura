@@ -146,6 +146,7 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
   ALLOW_RULE(getdents);
+  ALLOW_RULE(getdents64);
   ALLOW_RULE(getegid);
   ALLOW_RULE(geteuid);
   ALLOW_RULE(getgid);
