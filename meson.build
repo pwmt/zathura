@@ -25,7 +25,7 @@ conf_data.set('ZVAPI', plugin_api_version)
 conf_data.set('ZVABI', plugin_abi_version)
 conf_data.set('version', version)
 
-cc = meson.get_compiler('c', required: false)
+cc = meson.get_compiler('c')
 
 prefix = get_option('prefix')
 localedir = get_option('localedir')
