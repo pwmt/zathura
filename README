@@ -33,11 +33,11 @@ The use of magic to detect mime types is optional and can be disabled by
 configuring the build system with -Denable-magic=false.
 
 The use of seccomp to create a sandboxed environment is optional and can be
-disabled by configure the build system with -Denable-seccomp=false.
-The sandbox will by default be set to "normal" mode, which should not interfere
-with the normal operation of zathura. For strict sandbox mode set "sandbox strict"
-in zathurarc. Strict sandbox mode will reduce the available functionality of zathura
-and provide a read only document viewer.
+disabled by configure the build system with -Denable-seccomp=false. The sandbox
+will by default be set to "normal" mode, which should not interfere with the
+normal operation of zathura. For strict sandbox mode set "sandbox strict" in
+zathurarc. Strict sandbox mode will reduce the available functionality of
+zathura and provide a read only document viewer.
 
 Installation
 ------------

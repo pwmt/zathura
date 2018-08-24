@@ -5,7 +5,7 @@ interface. To support synctex backwards synchronization, zathura provides a
 D-Bus interface that can be called by the editor. For convince zathura also
 knows how to parse the output of the *synctex view* command. It is enough to
 pass the arguments to *synctex view*'s *-i* option to zathura via
-*--syntex-forward* and zathura will pass the information to the correct
+*--synctex-forward* and zathura will pass the information to the correct
 instance.
 
 For gvim forward and backwards synchronization support can be set up as follows:
