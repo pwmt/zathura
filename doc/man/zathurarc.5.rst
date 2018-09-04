@@ -766,7 +766,10 @@ the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
 value in the list will be used for all other number of pages per row if not set
 explicitly.
 
-Per default, the first column is set to 2 for double-page layout.
+Per default, the first column is set to 2 for double-page layout, i.e. the faule
+is set to 1:2. A value of 1:1:3 would put the first page in dual-page layour in
+the first column, and for layouts with more columns the first page would be put
+in the 3rd column.
 
 * Value type: String
 * Default value: 1:2
