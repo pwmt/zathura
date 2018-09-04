@@ -25,7 +25,7 @@ today          = time.strftime('%Y-%m-%d', time.gmtime(maxdate))
 # -- Project configuration ------------------------------------------------
 
 project   = 'zathura'
-copyright = '2009-2015, pwmt.org'
+copyright = '2009-2018, pwmt.org'
 version   = '0.2.7'
 release   = '0.2.7'
 

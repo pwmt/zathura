@@ -760,7 +760,6 @@ sc_bisect(girara_session_t* session, girara_argument_t* argument,
       girara_debug("bisecting between first and last page because there are no jumps");
       zathura->bisect.start = 0;
       zathura->bisect.end = num_pages - 1;
-
     } else if (jump->page != cur_page || jump->page != zathura->bisect.last_jump) {
       girara_debug("last jump doesn't match up, starting new bisecting");
       zathura->bisect.start = 0;
