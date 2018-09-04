@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-23 22:37+0200\n"
-"PO-Revision-Date: 2018-05-23 22:38+0200\n"
+"POT-Creation-Date: 2018-09-04 18:27+0200\n"
+"PO-Revision-Date: 2018-09-04 18:32+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
@@ -89,9 +88,9 @@ msgstr "Das gewählte Bild wurde in die Zwischenablage %s kopiert"
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:279 zathura/commands.c:309
-#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:562
-#: zathura/shortcuts.c:413 zathura/shortcuts.c:1225 zathura/shortcuts.c:1260
-#: zathura/shortcuts.c:1287
+#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:567
+#: zathura/shortcuts.c:413 zathura/shortcuts.c:1222 zathura/shortcuts.c:1257
+#: zathura/shortcuts.c:1284
 msgid "No document opened."
 msgstr "Kein Dokument geöffnet."
 
@@ -228,7 +227,11 @@ msgstr "Unbekanntes Bild '%s'."
 msgid "Unknown attachment or image '%s'."
 msgstr "Unbekannter Anhanng oder Bild '%s'."
 
-#: zathura/commands.c:575
+#: zathura/commands.c:536
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr "Im strikten Sandkastenmodus ist Anwendungen ausführen nicht erlaubt"
+
+#: zathura/commands.c:580
 msgid "Argument must be a number."
 msgstr "Das Argument ist keine Zahl."
 
@@ -556,26 +559,26 @@ msgstr "Hebe aktuelle Suchergebnisse hervor"
 msgid "Show version information"
 msgstr "Zeige Versionsinformationen an"
 
-#: zathura/links.c:207
+#: zathura/links.c:239 zathura/links.c:263
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 "Ausführen externer Anwendungen ist im strikten Sandkastenmodus nicht erlaubt"
 
-#: zathura/links.c:210 zathura/links.c:290
+#: zathura/links.c:241 zathura/links.c:265
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
-#: zathura/links.c:229
+#: zathura/links.c:283
 #, c-format
 msgid "Link: page %d"
 msgstr "Verknüpfung: Seite %d"
 
-#: zathura/links.c:236
+#: zathura/links.c:290
 #, c-format
 msgid "Link: %s"
 msgstr "Verknüpfung: %s"
 
-#: zathura/links.c:240
+#: zathura/links.c:294
 msgid "Link: Invalid"
 msgstr "Verknüpfung: ungültig"
 
@@ -663,35 +666,35 @@ msgstr "Drucken fehlgeschlagen: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Ungültiger Anpassungsmodus: %d"
 
-#: zathura/shortcuts.c:977
+#: zathura/shortcuts.c:974
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Suchausdruck nicht gefunden: %s"
 
-#: zathura/shortcuts.c:1135
+#: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
 msgstr "Dieses Dokument beinhaltet kein Inhaltsverzeichnis"
 
-#: zathura/zathura.c:299 zathura/zathura.c:1391
+#: zathura/zathura.c:299 zathura/zathura.c:1401
 msgid "[No name]"
 msgstr "[Kein Name]"
 
-#: zathura/zathura.c:757
+#: zathura/zathura.c:767
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Konnte Datei nicht von stdin lesen und in temporäre Datei schreiben."
 
-#: zathura/zathura.c:773
+#: zathura/zathura.c:783
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "Konnte Datei nicht mittels GIO in temporäre Datei kopieren."
 
-#: zathura/zathura.c:862
+#: zathura/zathura.c:872
 msgid "Enter password:"
 msgstr "Passwort:"
 
-#: zathura/zathura.c:897
+#: zathura/zathura.c:907
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Dateityp ist nicht unterstützt. Installiere das benötigete Plugin."
 
-#: zathura/zathura.c:907
+#: zathura/zathura.c:917
 msgid "Document does not contain any pages"
 msgstr "Dieses Dokument beinhaltet keine Seiten"

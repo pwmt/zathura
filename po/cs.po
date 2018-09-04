@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-23 22:37+0200\n"
-"PO-Revision-Date: 2018-05-23 22:41+0200\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"POT-Creation-Date: 2018-09-04 18:27+0200\n"
+"PO-Revision-Date: 2018-09-04 18:32+0200\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/pwmt/zathura/language/cs/)\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n "
+"<= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
@@ -32,29 +33,33 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura je hodně přizpůsobitelný výborný prohlížeč dokumentů. Vyznačuje se "
+"poskytováním minimalistického prostor šetřícího rozhraní a snadným "
+"používáním s důrazným zaměřením na používání klávesnice Zathura umožňuje "
+"plné zobrazení a pohyb v dokumentech bez použití myšího zařízení \"myšítka\"."
 
 #: data/org.pwmt.zathura.appdata.xml.in:21
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "Podpora pro dopředné a zpětné seřízení SyncTeX."
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "Rychlé značky a záložky."
 
 #: data/org.pwmt.zathura.appdata.xml.in:23
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Automatické znovunahrání dokumentu."
 
 #. Translators: Icon of the desktop entry.
 #: data/org.pwmt.zathura.desktop.in:9
 msgid "org.pwmt.zathura"
-msgstr ""
+msgstr "org.pwmt.zathura"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 #: data/org.pwmt.zathura.desktop.in:14
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr ""
+msgstr "PDF;PS;PostScript;DjVU;dokument;představení;prohlížeč;"
 
 #: zathura/callbacks.c:308
 #, c-format
@@ -79,13 +84,13 @@ msgstr "Vybraný text zkopírován do výběru %s: %s"
 #: zathura/callbacks.c:698
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr ""
+msgstr "Vybraný text zkopírován do výběru %s"
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:279 zathura/commands.c:309
-#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:562
-#: zathura/shortcuts.c:413 zathura/shortcuts.c:1225 zathura/shortcuts.c:1260
-#: zathura/shortcuts.c:1287
+#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:567
+#: zathura/shortcuts.c:413 zathura/shortcuts.c:1222 zathura/shortcuts.c:1257
+#: zathura/shortcuts.c:1284
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
@@ -125,7 +130,7 @@ msgstr "Nepodařilo se smazat záložku: %s"
 
 #: zathura/commands.c:119
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Nejsou dostupné žádné záložky."
 
 #: zathura/commands.c:129
 #, c-format
@@ -178,7 +183,7 @@ msgstr "Nezadali jste argumenty."
 
 #: zathura/commands.c:284
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Tisk není v režimu přísného pískoviště dovolen"
 
 #: zathura/commands.c:315 zathura/commands.c:341
 msgid "Document saved."
@@ -222,7 +227,11 @@ msgstr "Neznámý obrázek '%s'."
 msgid "Unknown attachment or image '%s'."
 msgstr "Neznámá příloha nebo obrázek '%s'."
 
-#: zathura/commands.c:575
+#: zathura/commands.c:536
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr ""
+
+#: zathura/commands.c:580
 msgid "Argument must be a number."
 msgstr "Argumentem musí být číslo."
 
@@ -467,7 +476,7 @@ msgstr "Povolit oznámení po vybrání textu"
 
 #: zathura/config.c:272
 msgid "Sandbox level"
-msgstr ""
+msgstr "Úroveň pískoviště"
 
 #. define default inputbar commands
 #: zathura/config.c:461
@@ -547,25 +556,25 @@ msgstr "Zvýrazňovat výsledky tohoto hledání"
 msgid "Show version information"
 msgstr "Ukázat údaj o verzi"
 
-#: zathura/links.c:207
+#: zathura/links.c:239 zathura/links.c:263
 msgid "Opening external applications in strict sandbox mode is not permitted"
-msgstr ""
+msgstr "Otevírání vnějších programů v režimu přísného pískoviště není dovoleno"
 
-#: zathura/links.c:210 zathura/links.c:290
+#: zathura/links.c:241 zathura/links.c:265
 msgid "Failed to run xdg-open."
 msgstr "Nepodařilo se spustit xdg-open."
 
-#: zathura/links.c:229
+#: zathura/links.c:283
 #, c-format
 msgid "Link: page %d"
 msgstr "Odkaz: strana %d"
 
-#: zathura/links.c:236
+#: zathura/links.c:290
 #, c-format
 msgid "Link: %s"
 msgstr "Odkaz: %s"
 
-#: zathura/links.c:240
+#: zathura/links.c:294
 msgid "Link: Invalid"
 msgstr "Odkaz: Neplatný"
 
@@ -641,7 +650,7 @@ msgstr "Uložit obrázek jako"
 #: zathura/print.c:110
 #, c-format
 msgid "Printing page %d ..."
-msgstr ""
+msgstr "Tiskne se strana %d ..."
 
 #: zathura/print.c:192
 #, c-format
@@ -653,38 +662,38 @@ msgstr "Nepodařilo se vytisknout: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Neplatný režim úprav: %d"
 
-#: zathura/shortcuts.c:977
+#: zathura/shortcuts.c:974
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "Vzor nenalezen: %s"
 
-#: zathura/shortcuts.c:1135
+#: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
 msgstr "Tento dokument neobsahuje žádný rejstřík"
 
-#: zathura/zathura.c:299 zathura/zathura.c:1391
+#: zathura/zathura.c:299 zathura/zathura.c:1401
 msgid "[No name]"
 msgstr "[Nepojmenovaný]"
 
-#: zathura/zathura.c:757
+#: zathura/zathura.c:767
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Nepodařilo se přečíst soubor z stdin a zapsat jej do dočasného souboru."
 
-#: zathura/zathura.c:773
+#: zathura/zathura.c:783
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Nepodařilo se přečíst soubor z GIO a zkopírovat jej do dočasného souboru."
 
-#: zathura/zathura.c:862
+#: zathura/zathura.c:872
 msgid "Enter password:"
 msgstr "Zadat heslo:"
 
-#: zathura/zathura.c:897
+#: zathura/zathura.c:907
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 "Nepodporovaný typ souboru. Nainstalujte, prosím, nezbytný přídavný modul."
 
-#: zathura/zathura.c:907
+#: zathura/zathura.c:917
 msgid "Document does not contain any pages"
 msgstr "Dokument neobsahuje žádné strany"

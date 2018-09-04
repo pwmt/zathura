@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-23 22:37+0200\n"
-"PO-Revision-Date: 2018-05-23 22:41+0200\n"
+"POT-Creation-Date: 2018-09-04 18:27+0200\n"
+"PO-Revision-Date: 2018-05-23 20:44+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/pwmt/zathura/language/"
 "lt/)\n"
@@ -16,8 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
-"%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < "
+"11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? "
+"1 : n % 1 != 0 ? 2: 3);\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
@@ -85,9 +86,9 @@ msgstr ""
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:279 zathura/commands.c:309
-#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:562
-#: zathura/shortcuts.c:413 zathura/shortcuts.c:1225 zathura/shortcuts.c:1260
-#: zathura/shortcuts.c:1287
+#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:567
+#: zathura/shortcuts.c:413 zathura/shortcuts.c:1222 zathura/shortcuts.c:1257
+#: zathura/shortcuts.c:1284
 msgid "No document opened."
 msgstr "Nėra atidarytų dokumentų."
 
@@ -224,7 +225,11 @@ msgstr "Nežinomas atvaizdas „%s“."
 msgid "Unknown attachment or image '%s'."
 msgstr "Nežinomas priedas ar atvaizdas „%s“."
 
-#: zathura/commands.c:575
+#: zathura/commands.c:536
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr ""
+
+#: zathura/commands.c:580
 msgid "Argument must be a number."
 msgstr "Parametras turi būti skaičius."
 
@@ -549,25 +554,25 @@ msgstr "Pažymėti dabartinės paieškos rezultatus"
 msgid "Show version information"
 msgstr "Rodyti versijos informaciją"
 
-#: zathura/links.c:207
+#: zathura/links.c:239 zathura/links.c:263
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
-#: zathura/links.c:210 zathura/links.c:290
+#: zathura/links.c:241 zathura/links.c:265
 msgid "Failed to run xdg-open."
 msgstr "Klaida xdg-open paleidime."
 
-#: zathura/links.c:229
+#: zathura/links.c:283
 #, c-format
 msgid "Link: page %d"
 msgstr "Nuoroda: %d puslapis"
 
-#: zathura/links.c:236
+#: zathura/links.c:290
 #, c-format
 msgid "Link: %s"
 msgstr "Nuoroda: %s"
 
-#: zathura/links.c:240
+#: zathura/links.c:294
 msgid "Link: Invalid"
 msgstr "Neteisinga nuoroda"
 
@@ -655,35 +660,35 @@ msgstr ""
 msgid "Invalid adjust mode: %d"
 msgstr ""
 
-#: zathura/shortcuts.c:977
+#: zathura/shortcuts.c:974
 #, c-format
 msgid "Pattern not found: %s"
 msgstr ""
 
-#: zathura/shortcuts.c:1135
+#: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
 msgstr "Šit dokumentas neturi turinio"
 
-#: zathura/zathura.c:299 zathura/zathura.c:1391
+#: zathura/zathura.c:299 zathura/zathura.c:1401
 msgid "[No name]"
 msgstr "[Bevardis]"
 
-#: zathura/zathura.c:757
+#: zathura/zathura.c:767
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:773
+#: zathura/zathura.c:783
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:862
+#: zathura/zathura.c:872
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:897
+#: zathura/zathura.c:907
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Bylos tipas nepalaikomas. Įdiekite tam skirtus įskiepius."
 
-#: zathura/zathura.c:907
+#: zathura/zathura.c:917
 msgid "Document does not contain any pages"
 msgstr "Dokumente puslapių nėra"

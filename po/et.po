@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-23 22:37+0200\n"
-"PO-Revision-Date: 2018-03-11 19:53+0000\n"
+"POT-Creation-Date: 2018-09-04 18:27+0200\n"
+"PO-Revision-Date: 2018-05-23 20:44+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Estonian (http://www.transifex.com/pwmt/zathura/language/"
 "et/)\n"
@@ -84,9 +84,9 @@ msgstr ""
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:279 zathura/commands.c:309
-#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:562
-#: zathura/shortcuts.c:413 zathura/shortcuts.c:1225 zathura/shortcuts.c:1260
-#: zathura/shortcuts.c:1287
+#: zathura/commands.c:335 zathura/commands.c:435 zathura/commands.c:567
+#: zathura/shortcuts.c:413 zathura/shortcuts.c:1222 zathura/shortcuts.c:1257
+#: zathura/shortcuts.c:1284
 msgid "No document opened."
 msgstr ""
 
@@ -223,7 +223,11 @@ msgstr ""
 msgid "Unknown attachment or image '%s'."
 msgstr ""
 
-#: zathura/commands.c:575
+#: zathura/commands.c:536
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr ""
+
+#: zathura/commands.c:580
 msgid "Argument must be a number."
 msgstr ""
 
@@ -548,25 +552,25 @@ msgstr ""
 msgid "Show version information"
 msgstr ""
 
-#: zathura/links.c:207
+#: zathura/links.c:239 zathura/links.c:263
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
-#: zathura/links.c:210 zathura/links.c:290
+#: zathura/links.c:241 zathura/links.c:265
 msgid "Failed to run xdg-open."
 msgstr ""
 
-#: zathura/links.c:229
+#: zathura/links.c:283
 #, c-format
 msgid "Link: page %d"
 msgstr ""
 
-#: zathura/links.c:236
+#: zathura/links.c:290
 #, c-format
 msgid "Link: %s"
 msgstr ""
 
-#: zathura/links.c:240
+#: zathura/links.c:294
 msgid "Link: Invalid"
 msgstr ""
 
@@ -654,35 +658,35 @@ msgstr ""
 msgid "Invalid adjust mode: %d"
 msgstr ""
 
-#: zathura/shortcuts.c:977
+#: zathura/shortcuts.c:974
 #, c-format
 msgid "Pattern not found: %s"
 msgstr ""
 
-#: zathura/shortcuts.c:1135
+#: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
 msgstr ""
 
-#: zathura/zathura.c:299 zathura/zathura.c:1391
+#: zathura/zathura.c:299 zathura/zathura.c:1401
 msgid "[No name]"
 msgstr "[Nime pole]"
 
-#: zathura/zathura.c:757
+#: zathura/zathura.c:767
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:773
+#: zathura/zathura.c:783
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:862
+#: zathura/zathura.c:872
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:897
+#: zathura/zathura.c:907
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: zathura/zathura.c:907
+#: zathura/zathura.c:917
 msgid "Document does not contain any pages"
 msgstr ""
