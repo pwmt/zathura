@@ -9,14 +9,11 @@
 
 #include <girara/utils.h>
 
-G_DEFINE_TYPE(ZathuraFileMonitor, zathura_filemonitor, G_TYPE_OBJECT)
-
 typedef struct private_s {
   char* file_path;
-} private_t;
+} ZathuraFileMonitorPrivate;
 
-#define GET_PRIVATE(obj)                                                       \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), ZATHURA_TYPE_FILEMONITOR, private_t))
+G_DEFINE_TYPE_WITH_CODE(ZathuraFileMonitor, zathura_filemonitor, G_TYPE_OBJECT, G_ADD_PRIVATE(ZathuraFileMonitor))
 
 enum {
   PROP_0,
@@ -34,7 +31,7 @@ static void
 finalize(GObject* object)
 {
   ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
-  private_t* private               = GET_PRIVATE(file_monitor);
+  ZathuraFileMonitorPrivate* private               = zathura_filemonitor_get_instance_private(file_monitor);
 
   if (private->file_path != NULL) {
     g_free(private->file_path);
@@ -47,7 +44,7 @@ static void
 set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
   ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
-  private_t* private               = GET_PRIVATE(file_monitor);
+  ZathuraFileMonitorPrivate* private               = zathura_filemonitor_get_instance_private(file_monitor);
 
   switch (prop_id) {
     case PROP_FILE_PATH:
@@ -65,7 +62,7 @@ static void
 get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
 {
   ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
-  private_t* private               = GET_PRIVATE(file_monitor);
+  ZathuraFileMonitorPrivate* private               = zathura_filemonitor_get_instance_private(file_monitor);
 
   switch (prop_id) {
     case PROP_FILE_PATH:
@@ -79,9 +76,6 @@ get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
 static void
 zathura_filemonitor_class_init(ZathuraFileMonitorClass* class)
 {
-  /* add private members */
-  g_type_class_add_private(class, sizeof(private_t));
-
   /* set up methods */
   class->start = NULL;
   class->stop  = NULL;
@@ -107,14 +101,13 @@ zathura_filemonitor_class_init(ZathuraFileMonitorClass* class)
 static void
 zathura_filemonitor_init(ZathuraFileMonitor* file_monitor)
 {
-  private_t* private = GET_PRIVATE(file_monitor);
-  private->file_path = NULL;
+  ZathuraFileMonitorPrivate* private = zathura_filemonitor_get_instance_private(file_monitor);
+  private->file_path                 = NULL;
 }
 
 const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor)
 {
-  private_t* private = GET_PRIVATE(file_monitor);
-
+  ZathuraFileMonitorPrivate* private = zathura_filemonitor_get_instance_private(file_monitor);
   return private->file_path;
 }
 

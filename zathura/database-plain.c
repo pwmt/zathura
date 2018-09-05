@@ -48,6 +48,18 @@ file_lock_set(int fd, short cmd)
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 static void io_interface_init(GiraraInputHistoryIOInterface* iface);
 
+typedef struct zathura_plaindatabase_private_s {
+  char* bookmark_path;
+  GKeyFile* bookmarks;
+  GFileMonitor* bookmark_monitor;
+
+  char* history_path;
+  GKeyFile* history;
+  GFileMonitor* history_monitor;
+
+  char* input_history_path;
+} ZathuraPlainDatabasePrivate;
+
 G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
@@ -71,21 +83,6 @@ static bool           zathura_db_check_file(const char* path);
 static GKeyFile*      zathura_db_read_key_file_from_file(const char* path);
 static void           zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file);
 static void           cb_zathura_db_watch_file(GFileMonitor* monitor, GFile* file, GFile* other_file, GFileMonitorEvent event, zathura_database_t* database);
-
-typedef struct zathura_plaindatabase_private_s {
-  char* bookmark_path;
-  GKeyFile* bookmarks;
-  GFileMonitor* bookmark_monitor;
-
-  char* history_path;
-  GKeyFile* history;
-  GFileMonitor* history_monitor;
-
-  char* input_history_path;
-} zathura_plaindatabase_private_t;
-
-#define ZATHURA_PLAINDATABASE_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_PLAINDATABASE, zathura_plaindatabase_private_t))
 
 enum {
   PROP_0,
@@ -131,9 +128,6 @@ io_interface_init(GiraraInputHistoryIOInterface* iface)
 static void
 zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
 {
-  /* add private members */
-  g_type_class_add_private(class, sizeof(zathura_plaindatabase_private_t));
-
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->dispose      = plain_dispose;
@@ -148,7 +142,7 @@ zathura_plaindatabase_class_init(ZathuraPlainDatabaseClass* class)
 static void
 zathura_plaindatabase_init(ZathuraPlainDatabase* db)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(db);
 
   priv->bookmark_path         = NULL;
   priv->bookmark_monitor      = NULL;
@@ -165,7 +159,7 @@ zathura_plaindatabase_new(const char* path)
   g_return_val_if_fail(path != NULL && strlen(path) != 0, NULL);
 
   zathura_database_t* db = g_object_new(ZATHURA_TYPE_PLAINDATABASE, "path", path, NULL);
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(ZATHURA_PLAINDATABASE(db));
   if (priv->bookmark_path == NULL) {
     g_object_unref(db);
     return NULL;
@@ -177,7 +171,7 @@ zathura_plaindatabase_new(const char* path)
 static void
 plain_db_init(ZathuraPlainDatabase* db, const char* dir)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(db);
 
   /* bookmarks */
   priv->bookmark_path = g_build_filename(dir, BOOKMARKS, NULL);
@@ -288,7 +282,7 @@ static void
 plain_dispose(GObject* object)
 {
   ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(db);
 
   g_clear_object(&priv->bookmark_monitor);
   g_clear_object(&priv->history_monitor);
@@ -300,7 +294,7 @@ static void
 plain_finalize(GObject* object)
 {
   ZathuraPlainDatabase* db = ZATHURA_PLAINDATABASE(object);
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(db);
 
   /* bookmarks */
   g_free(priv->bookmark_path);
@@ -326,7 +320,8 @@ static bool
 plain_add_bookmark(zathura_database_t* db, const char* file,
                    zathura_bookmark_t* bookmark)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
   if (priv->bookmarks == NULL || priv->bookmark_path == NULL ||
       bookmark->id == NULL) {
     return false;
@@ -364,7 +359,8 @@ plain_add_bookmark(zathura_database_t* db, const char* file,
 static bool
 plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
   if (priv->bookmarks == NULL || priv->bookmark_path == NULL) {
     return false;
   }
@@ -387,7 +383,8 @@ plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id)
 static girara_list_t*
 plain_load_bookmarks(zathura_database_t* db, const char* file)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
   if (priv->bookmarks == NULL) {
     return NULL;
   }
@@ -498,9 +495,10 @@ plain_load_jumplist(zathura_database_t* db, const char* file)
 {
   g_return_val_if_fail(db != NULL && file != NULL, NULL);
 
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
-  char* str_value = g_key_file_get_string(priv->history, file, KEY_JUMPLIST, NULL);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
 
+  char* str_value = g_key_file_get_string(priv->history, file, KEY_JUMPLIST, NULL);
   if (str_value == NULL) {
     return girara_list_new2(g_free);
   }
@@ -533,7 +531,8 @@ plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jum
   GString* str_val = g_string_new(NULL);
   girara_list_foreach(jumplist, jump_to_str, str_val);
 
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
 
   g_key_file_set_string(priv->history, file, KEY_JUMPLIST, str_val->str);
   zathura_db_write_key_file_to_file(priv->history_path, priv->history);
@@ -546,7 +545,8 @@ static bool
 plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
                    file_info)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
   if (priv->history == NULL || file_info == NULL || file == NULL) {
     return false;
   }
@@ -578,7 +578,8 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
     return false;
   }
 
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
   if (priv->history == NULL) {
     return false;
   }
@@ -742,7 +743,8 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
     return;
   }
 
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(database);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(database);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
   if (priv->bookmark_path && strcmp(priv->bookmark_path, path) == 0) {
     if (priv->bookmarks != NULL) {
       g_key_file_free(priv->bookmarks);
@@ -763,7 +765,8 @@ cb_zathura_db_watch_file(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
 static girara_list_t*
 plain_io_read(GiraraInputHistoryIO* db)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
 
   /* open file */
   FILE* file = fopen(priv->input_history_path, "r");
@@ -794,7 +797,8 @@ plain_io_read(GiraraInputHistoryIO* db)
 static void
 plain_io_append(GiraraInputHistoryIO* db, const char* input)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
 
   /* open file */
   FILE* file = fopen(priv->input_history_path, "r+");
@@ -859,7 +863,8 @@ compare_time(const void* l, const void* r, void* data)
 static girara_list_t*
 plain_get_recent_files(zathura_database_t* db, int max, const char* basepath)
 {
-  zathura_plaindatabase_private_t* priv = ZATHURA_PLAINDATABASE_GET_PRIVATE(db);
+  ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
+  ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
 
   girara_list_t* result = girara_list_new2(g_free);
   if (result == NULL) {

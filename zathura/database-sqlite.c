@@ -19,9 +19,14 @@ sqlite3_column_text_dup(sqlite3_stmt* stmt, int col)
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
 static void io_interface_init(GiraraInputHistoryIOInterface* iface);
 
+typedef struct zathura_sqldatabase_private_s {
+  sqlite3* session;
+} ZathuraSQLDatabasePrivate;
+
 G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
-                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
+                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init)
+                        G_ADD_PRIVATE(ZathuraSQLDatabase))
 
 static bool           check_column(sqlite3* session, const char* table, const char* col, bool* result);
 static bool           check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* result);
@@ -37,13 +42,6 @@ static void           sqlite_set_property(GObject* object, guint prop_id, const 
 static void           sqlite_io_append(GiraraInputHistoryIO* db, const char*);
 static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db);
 static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath);
-
-typedef struct zathura_sqldatabase_private_s {
-  sqlite3* session;
-} zathura_sqldatabase_private_t;
-
-#define ZATHURA_SQLDATABASE_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), ZATHURA_TYPE_SQLDATABASE, zathura_sqldatabase_private_t))
 
 enum {
   PROP_0,
@@ -75,9 +73,6 @@ io_interface_init(GiraraInputHistoryIOInterface* iface)
 static void
 zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
 {
-  /* add private members */
-  g_type_class_add_private(class, sizeof(zathura_sqldatabase_private_t));
-
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize     = sqlite_finalize;
@@ -91,7 +86,7 @@ zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
 static void
 zathura_sqldatabase_init(ZathuraSQLDatabase* db)
 {
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
   priv->session = NULL;
 }
 
@@ -101,7 +96,7 @@ zathura_sqldatabase_new(const char* path)
   g_return_val_if_fail(path != NULL && strlen(path) != 0, NULL);
 
   zathura_database_t* db = g_object_new(ZATHURA_TYPE_SQLDATABASE, "path", path, NULL);
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(ZATHURA_SQLDATABASE(db));
   if (priv->session == NULL) {
     g_object_unref(G_OBJECT(db));
     return NULL;
@@ -114,7 +109,7 @@ static void
 sqlite_finalize(GObject* object)
 {
   ZathuraSQLDatabase* db = ZATHURA_SQLDATABASE(object);
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
   if (priv->session) {
     sqlite3_exec(priv->session, "VACUUM;", NULL, 0, NULL);
     sqlite3_close(priv->session);
@@ -126,7 +121,7 @@ sqlite_finalize(GObject* object)
 static void
 sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
 {
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
 
   /* create bookmarks table */
   static const char SQL_BOOKMARK_INIT[] =
@@ -296,8 +291,8 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
 static void
 sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
-  ZathuraSQLDatabase* db = ZATHURA_SQLDATABASE(object);
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* db          = ZATHURA_SQLDATABASE(object);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
 
   switch (prop_id) {
     case PROP_PATH:
@@ -406,7 +401,8 @@ static bool
 sqlite_add_bookmark(zathura_database_t* db, const char* file,
                     zathura_bookmark_t* bookmark)
 {
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_BOOKMARK_ADD[] =
     "REPLACE INTO bookmarks (file, id, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?, ?);";
@@ -436,7 +432,8 @@ static bool
 sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char*
                        id)
 {
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb      = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_BOOKMARK_ADD[] =
     "DELETE FROM bookmarks WHERE file = ? AND id = ?;";
@@ -462,7 +459,8 @@ sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char*
 static girara_list_t*
 sqlite_load_bookmarks(zathura_database_t* db, const char* file)
 {
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_BOOKMARK_SELECT[] =
     "SELECT id, page, hadj_ratio, vadj_ratio FROM bookmarks WHERE file = ?;";
@@ -513,9 +511,11 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
   static const char SQL_INSERT_JUMP[]     = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
   static const char SQL_REMOVE_JUMPLIST[] = "DELETE FROM jumplist WHERE file = ?;";
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
-  sqlite3_stmt* stmt                  = NULL;
-  int res                             = 0;
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
+  sqlite3_stmt* stmt = NULL;
+  int res            = 0;
 
   if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
     return false;
@@ -591,9 +591,10 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
 
   static const char SQL_GET_JUMPLIST[] = "SELECT page, hadj_ratio, vadj_ratio FROM jumplist WHERE file = ? ORDER BY id ASC;";
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
-  sqlite3_stmt* stmt                  = prepare_statement(priv->session, SQL_GET_JUMPLIST);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
+  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_JUMPLIST);
   if (stmt == NULL) {
     return NULL;
   }
@@ -643,7 +644,8 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
     return false;
   }
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_SET[] =
     "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'));";
@@ -682,7 +684,8 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file,
     return false;
   }
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_GET[] =
     "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y FROM fileinfo WHERE file = ?;";
@@ -724,7 +727,9 @@ sqlite_io_append(GiraraInputHistoryIO* db, const char* input)
   static const char SQL_HISTORY_SET[] =
     "REPLACE INTO history (line, time) VALUES (?, DATETIME('now'));";
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_SET);
   if (stmt == NULL) {
     return;
@@ -746,7 +751,9 @@ sqlite_io_read(GiraraInputHistoryIO* db)
   static const char SQL_HISTORY_GET[] =
     "SELECT line FROM history ORDER BY time";
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_GET);
   if (stmt == NULL) {
     return NULL;
@@ -774,7 +781,9 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
   static const char SQL_HISTORY_GET_WITH_BASEPATH[] =
     "SELECT file FROM fileinfo WHERE file LIKE ? || '%' ORDER BY time DESC LIMIT ?";
 
-  zathura_sqldatabase_private_t* priv = ZATHURA_SQLDATABASE_GET_PRIVATE(db);
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
   sqlite3_stmt* stmt = prepare_statement(priv->session, basepath == NULL ? SQL_HISTORY_GET : SQL_HISTORY_GET_WITH_BASEPATH);
   if (stmt == NULL) {
     return NULL;

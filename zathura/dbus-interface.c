@@ -30,7 +30,15 @@ static GBytes* load_xml_data(void)
   return NULL;
 }
 
-G_DEFINE_TYPE(ZathuraDbus, zathura_dbus, G_TYPE_OBJECT)
+typedef struct private_s {
+  zathura_t* zathura;
+  GDBusNodeInfo* introspection_data;
+  GDBusConnection* connection;
+  guint owner_id;
+  guint registration_id;
+} ZathuraDbusPrivate;
+
+G_DEFINE_TYPE_WITH_CODE(ZathuraDbus, zathura_dbus, G_TYPE_OBJECT, G_ADD_PRIVATE(ZathuraDbus))
 
 /* template for bus name */
 static const char DBUS_NAME_TEMPLATE[] = "org.pwmt.zathura.PID-%d";
@@ -39,24 +47,13 @@ static const char DBUS_OBJPATH[] = "/org/pwmt/zathura";
 /* interface name */
 static const char DBUS_INTERFACE[] = "org.pwmt.zathura";
 
-typedef struct private_s {
-  zathura_t* zathura;
-  GDBusNodeInfo* introspection_data;
-  GDBusConnection* connection;
-  guint owner_id;
-  guint registration_id;
-} private_t;
-
-#define GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), ZATHURA_TYPE_DBUS, private_t))
-
 static const GDBusInterfaceVTable interface_vtable;
 
 static void
 finalize(GObject* object)
 {
-  ZathuraDbus* dbus = ZATHURA_DBUS(object);
-  private_t* priv   = GET_PRIVATE(dbus);
+  ZathuraDbus* dbus        = ZATHURA_DBUS(object);
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
 
   if (priv->connection != NULL && priv->registration_id > 0) {
     g_dbus_connection_unregister_object(priv->connection, priv->registration_id);
@@ -76,9 +73,6 @@ finalize(GObject* object)
 static void
 zathura_dbus_class_init(ZathuraDbusClass* class)
 {
-  /* add private members */
-  g_type_class_add_private(class, sizeof(private_t));
-
   /* overwrite methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize     = finalize;
@@ -87,7 +81,7 @@ zathura_dbus_class_init(ZathuraDbusClass* class)
 static void
 zathura_dbus_init(ZathuraDbus* dbus)
 {
-  private_t* priv          = GET_PRIVATE(dbus);
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
   priv->zathura            = NULL;
   priv->introspection_data = NULL;
   priv->connection         = NULL;
@@ -113,8 +107,8 @@ bus_acquired(GDBusConnection* connection, const gchar* name, void* data)
   g_signal_connect(G_OBJECT(connection), "closed",
                    G_CALLBACK(gdbus_connection_closed), NULL);
 
-  ZathuraDbus* dbus = data;
-  private_t* priv   = GET_PRIVATE(dbus);
+  ZathuraDbus* dbus        = data;
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
 
   GError* error = NULL;
   priv->registration_id = g_dbus_connection_register_object(
@@ -154,7 +148,7 @@ zathura_dbus_new(zathura_t* zathura)
   }
 
   ZathuraDbus* dbus = ZATHURA_DBUS(obj);
-  private_t* priv   = GET_PRIVATE(dbus);
+  ZathuraDbusPrivate* priv   = zathura_dbus_get_instance_private(dbus);
   priv->zathura     = zathura;
 
   GBytes* xml_data = load_xml_data();
@@ -187,7 +181,7 @@ zathura_dbus_new(zathura_t* zathura)
 
 void
 zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned int y) {
-  private_t* priv = GET_PRIVATE(edit);
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(edit);
 
   const char* filename = zathura_document_get_path(priv->zathura->document);
 
@@ -393,7 +387,7 @@ handle_method_call(GDBusConnection* UNUSED(connection),
                    void* data)
 {
   ZathuraDbus* dbus = data;
-  private_t* priv   = GET_PRIVATE(dbus);
+  ZathuraDbusPrivate* priv   = zathura_dbus_get_instance_private(dbus);
 
   girara_debug("Handling call '%s.%s' on '%s'.", interface_name, method_name,
                object_path);
@@ -434,8 +428,8 @@ handle_get_property(GDBusConnection* UNUSED(connection),
                     const gchar* UNUSED(interface_name),
                     const gchar* property_name, GError** error, void* data)
 {
-  ZathuraDbus* dbus = data;
-  private_t* priv   = GET_PRIVATE(dbus);
+  ZathuraDbus* dbus        = data;
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
 
   if (priv->zathura->document == NULL) {
     g_set_error(error, G_IO_ERROR, G_IO_ERROR_FAILED, "No document open.");
