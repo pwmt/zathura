@@ -124,6 +124,25 @@ cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
   }
 }
 
+static void
+cb_window_statbusbar_changed(girara_session_t* session, const char* name,
+                             girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const bool is_window_setting = g_str_has_prefix(name, "window-");
+  if (is_window_setting) {
+    char* formatted_filename = get_formatted_filename(zathura, !is_window_setting);
+    girara_set_window_title(zathura->ui.session, formatted_filename);
+    g_free(formatted_filename);
+  } else {
+    statusbar_page_number_update(zathura);
+  }
+}
+
 void
 config_load_default(zathura_t* zathura)
 {
@@ -248,15 +267,15 @@ config_load_default(zathura_t* zathura)
   bool_value = true;
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
+  girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), NULL, NULL);
+  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), NULL, NULL);
+  girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
+  girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), NULL, NULL);
+  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   string_value = "";
