@@ -36,6 +36,11 @@ typedef struct zathura_plugin_manager_s zathura_plugin_manager_t;
 typedef struct zathura_renderer_s ZathuraRenderer;
 
 /**
+ * Render request
+ */
+typedef struct zathura_render_request_s ZathuraRenderRequest;
+
+/**
  * D-Bus manager
  */
 typedef struct zathura_dbus_s ZathuraDbus;

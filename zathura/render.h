@@ -139,7 +139,6 @@ void zathura_renderer_page_cache_add(ZathuraRenderer* renderer,
     unsigned int page_index);
 
 
-typedef struct zathura_render_request_s ZathuraRenderRequest;
 typedef struct zathura_render_request_class_s ZathuraRenderRequestClass;
 
 struct zathura_render_request_s
