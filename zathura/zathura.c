@@ -650,7 +650,8 @@ zathura_set_argv(zathura_t* zathura, char** argv)
 }
 
 static bool
-setup_renderer(zathura_t* zathura, zathura_document_t* document) {
+setup_renderer(zathura_t* zathura, zathura_document_t* document)
+{
  /* page cache size */
   int cache_size = 0;
   girara_setting_get(zathura->ui.session, "page-cache-size", &cache_size);
@@ -660,6 +661,7 @@ setup_renderer(zathura_t* zathura, zathura_document_t* document) {
     cache_size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
   }
 
+  girara_debug("starting renderer with cache size %d", cache_size);
   ZathuraRenderer* renderer = zathura_renderer_new(cache_size);
   if (renderer == NULL) {
     return false;
@@ -683,6 +685,18 @@ setup_renderer(zathura_t* zathura, zathura_document_t* document) {
   zathura_renderer_enable_recolor_reverse_video(renderer, recolor);
 
   zathura->sync.render_thread = renderer;
+
+  /* create render request to render window icon */
+  bool window_icon = false;
+  girara_setting_get(zathura->ui.session, "window-icon-document", &window_icon);
+  if (window_icon == true) {
+    girara_debug("starting render request for window icon");
+    ZathuraRenderRequest* request = zathura_render_request_new(renderer, zathura_document_get_page(document, 0));
+    g_signal_connect(request, "completed", G_CALLBACK(cb_window_update_icon), zathura);
+    zathura_render_request_set_render_plain(request, true);
+    zathura_render_request(request, 0);
+    zathura->window_icon_render_request = request;
+  }
 
   return true;
 }
@@ -1351,8 +1365,17 @@ document_close(zathura_t* zathura, bool keep_monitor)
     return false;
   }
 
+  /* reset window icon */
+  if (zathura->ui.session != NULL && zathura->window_icon_render_request != NULL) {
+    char* window_icon = NULL;
+    girara_setting_get(zathura->ui.session, "window-icon", &window_icon);
+    girara_setting_set(zathura->ui.session, "window-icon", window_icon);
+    g_free(window_icon);
+  }
+
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
+  g_clear_object(&zathura->window_icon_render_request);
 
   /* remove monitor */
   if (keep_monitor == false) {
@@ -1375,6 +1398,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
     save_fileinfo_to_db(zathura);
   }
 
+  /* remove jump list */
   girara_list_iterator_free(zathura->jumplist.cur);
   zathura->jumplist.cur = NULL;
   girara_list_free(zathura->jumplist.list);

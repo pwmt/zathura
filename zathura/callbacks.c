@@ -758,3 +758,18 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   synctex_edit(editor, page, event->x, event->y);
   g_free(editor);
 }
+
+void
+cb_window_update_icon(ZathuraRenderRequest* GIRARA_UNUSED(request), cairo_surface_t* surface, void* data)
+{
+  zathura_t* zathura = data;
+
+  girara_debug("updating window icon");
+  GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface(surface, 0, 0, cairo_image_surface_get_width(surface), cairo_image_surface_get_height(surface));
+  if (pixbuf == NULL) {
+    girara_error("Unable to convert cairo surface to Gdk Pixbuf.");
+  }
+
+  gtk_window_set_icon(GTK_WINDOW(zathura->ui.session->gtk.window), pixbuf);
+  g_object_unref(pixbuf);
+}

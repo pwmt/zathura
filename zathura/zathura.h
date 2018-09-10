@@ -183,6 +183,7 @@ struct zathura_s
   GtkWidget** pages; /**< The page widgets */
   zathura_database_t* database; /**< The database */
   ZathuraDbus* dbus; /**< D-Bus service */
+  ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
 
   /**
    * File monitor

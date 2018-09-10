@@ -1069,6 +1069,14 @@ Some features are disabled when using strict sandbox mode:
 
 No feature regressions are expected when using normal sandbox mode.
 
+window-icon-document
+^^^^^^^^^^^^^^^^^^^^
+Defines whether the window document should be updated based on the first page of
+a dcument.
+
+* Value type: Boolean
+* default value: false
+
 SEE ALSO
 ========
 

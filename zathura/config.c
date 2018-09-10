@@ -273,6 +273,8 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
+  girara_setting_add(gsession, "window-icon-document",   &bool_value,  BOOLEAN, false, _("Use first page of a document as window icon"), NULL, NULL);
+  bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
