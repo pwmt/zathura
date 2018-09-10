@@ -51,6 +51,7 @@ typedef struct request_private_s {
   gint64 last_view_time;
   girara_list_t* active_jobs;
   GMutex jobs_mutex;
+  bool render_plain;
 } ZathuraRenderRequestPrivate;
 
 /* define the two types */
@@ -252,6 +253,7 @@ zathura_render_request_new(ZathuraRenderer* renderer, zathura_page_t* page)
   priv->page = page;
   priv->active_jobs = girara_list_new();
   g_mutex_init(&priv->jobs_mutex);
+  priv->render_plain = false;
 
   /* register the request with the renderer */
   renderer_register_request(renderer, request);
@@ -759,16 +761,22 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   const double height = zathura_page_get_height(page);
   const double width = zathura_page_get_width(page);
 
-  /* page size in user pixels based on document zoom: if PPI information is
-   * correct, 100% zoom will result in 72 documents points per inch of screen
-   * (i.e. document size on screen matching the physical paper size). */
-  const double real_scale = page_calc_height_width(document, height, width,
-                                                   &page_height, &page_width,
-                                                   false);
+  zathura_device_factors_t device_factors = { 0 };
+  double real_scale = 1;
+  if (request_priv->render_plain == false) {
+    /* page size in user pixels based on document zoom: if PPI information is
+     * correct, 100% zoom will result in 72 documents points per inch of screen
+     * (i.e. document size on screen matching the physical paper size). */
+    real_scale = page_calc_height_width(document, height, width,
+                                        &page_height, &page_width, false);
 
-  const zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
-  page_width *= device_factors.x;
-  page_height *= device_factors.y;
+    device_factors = zathura_document_get_device_factors(document);
+    page_width *= device_factors.x;
+    page_height *= device_factors.y;
+  } else {
+    page_width = width;
+    page_height = height;
+  }
 
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
       page_width, page_height);
@@ -776,7 +784,9 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     return false;
   }
 
-  cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
+  if (request_priv->render_plain == false) {
+    cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
+  }
 
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
     cairo_surface_destroy(surface);
@@ -799,7 +809,7 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
   }
 
   /* recolor */
-  if (priv->recolor.enabled == true) {
+  if (request_priv->render_plain == false && priv->recolor.enabled == true) {
     recolor(priv, page, page_width, page_height, surface);
   }
 
@@ -1013,3 +1023,22 @@ zathura_renderer_page_cache_add(ZathuraRenderer* renderer,
   g_return_if_fail(request != NULL);
   g_signal_emit(request, request_signals[REQUEST_CACHE_ADDED], 0);
 }
+
+void zathura_render_request_set_render_plain(ZathuraRenderRequest* request,
+    bool render_plain)
+{
+  g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
+
+  ZathuraRenderRequestPrivate* priv = zathura_render_request_get_instance_private(request);
+  priv->render_plain =render_plain;
+}
+
+bool
+zathura_render_request_get_render_plain(ZathuraRenderRequest* request)
+{
+  g_return_val_if_fail(ZATHURA_IS_RENDER_REQUEST(request), false);
+
+  ZathuraRenderRequestPrivate* priv = zathura_render_request_get_instance_private(request);
+  return priv->render_plain;
+}
+
