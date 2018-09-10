@@ -700,6 +700,50 @@ recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_wi
 }
 
 static bool
+invoke_completed_signal(render_job_t* job, cairo_surface_t* surface)
+{
+  emit_completed_signal_t* ecs = g_try_malloc0(sizeof(emit_completed_signal_t));
+  if (ecs == NULL) {
+    return false;
+  }
+
+  ecs->job     = job;
+  ecs->surface = cairo_surface_reference(surface);
+
+  /* emit signal from the main context, i.e. the main thread */
+  g_main_context_invoke(NULL, emit_completed_signal, ecs);
+  return true;
+}
+
+static bool
+render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* page, ZathuraRenderer* renderer, double real_scale)
+{
+  cairo_t* cairo = cairo_create(surface);
+  if (cairo == NULL) {
+    return false;
+  }
+
+  cairo_save(cairo);
+  cairo_set_source_rgb(cairo, 1, 1, 1);
+  cairo_paint(cairo);
+  cairo_restore(cairo);
+  cairo_save(cairo);
+
+  /* apply scale (used by e.g. Poppler as pixels per point) */
+  if (fabs(real_scale - 1.0f) > FLT_EPSILON) {
+    cairo_scale(cairo, real_scale, real_scale);
+  }
+
+  zathura_renderer_lock(renderer);
+  const int err = zathura_page_render(page, cairo, false);
+  zathura_renderer_unlock(renderer);
+  cairo_restore(cairo);
+  cairo_destroy(cairo);
+
+  return err == ZATHURA_ERROR_OK;
+}
+
+static bool
 render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* renderer)
 {
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
@@ -739,29 +783,8 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     return false;
   }
 
-  cairo_t* cairo = cairo_create(surface);
-  if (cairo == NULL) {
-    cairo_surface_destroy(surface);
-    return false;
-  }
-
-  cairo_save(cairo);
-  cairo_set_source_rgb(cairo, 1, 1, 1);
-  cairo_paint(cairo);
-  cairo_restore(cairo);
-  cairo_save(cairo);
-
-  /* apply scale (used by e.g. Poppler as pixels per point) */
-  if (fabs(real_scale - 1.0f) > FLT_EPSILON) {
-    cairo_scale(cairo, real_scale, real_scale);
-  }
-
-  zathura_renderer_lock(renderer);
-  const int err = zathura_page_render(page, cairo, false);
-  zathura_renderer_unlock(renderer);
-  cairo_restore(cairo);
-  cairo_destroy(cairo);
-  if (err != ZATHURA_ERROR_OK) {
+  /* actually render to the surface */
+  if (!render_to_cairo_surface(surface, page, renderer, real_scale)) {
     cairo_surface_destroy(surface);
     return false;
   }
@@ -780,17 +803,10 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     recolor(priv, page, page_width, page_height, surface);
   }
 
-  emit_completed_signal_t* ecs = g_try_malloc0(sizeof(emit_completed_signal_t));
-  if (ecs == NULL) {
+  if (!invoke_completed_signal(job, surface)) {
     cairo_surface_destroy(surface);
     return false;
   }
-
-  ecs->job     = job;
-  ecs->surface = cairo_surface_reference(surface);
-
-  /* emit signal from the main context, i.e. the main thread */
-  g_main_context_invoke(NULL, emit_completed_signal, ecs);
 
   cairo_surface_destroy(surface);
 
