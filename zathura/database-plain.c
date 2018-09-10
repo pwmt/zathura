@@ -62,7 +62,8 @@ typedef struct zathura_plaindatabase_private_s {
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraPlainDatabase, zathura_plaindatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
-                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init))
+                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init)
+                        G_ADD_PRIVATE(ZathuraPlainDatabase))
 
 static void           plain_dispose(GObject* object);
 static void           plain_finalize(GObject* object);
