@@ -649,6 +649,44 @@ zathura_set_argv(zathura_t* zathura, char** argv)
   zathura->global.arguments = argv;
 }
 
+static bool
+setup_renderer(zathura_t* zathura, zathura_document_t* document) {
+ /* page cache size */
+  int cache_size = 0;
+  girara_setting_get(zathura->ui.session, "page-cache-size", &cache_size);
+  if (cache_size <= 0) {
+    girara_warning("page-cache-size is not positive, using %d instead",
+        ZATHURA_PAGE_CACHE_DEFAULT_SIZE);
+    cache_size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
+  }
+
+  ZathuraRenderer* renderer = zathura_renderer_new(cache_size);
+  if (renderer == NULL) {
+    return false;
+  }
+
+  /* set up recolor info in ZathuraRenderer */
+  char* recolor_dark  = NULL;
+  char* recolor_light = NULL;
+  girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
+  girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
+  zathura_renderer_set_recolor_colors_str(renderer, recolor_light, recolor_dark);
+  g_free(recolor_dark);
+  g_free(recolor_light);
+
+  bool recolor = false;
+  girara_setting_get(zathura->ui.session, "recolor", &recolor);
+  zathura_renderer_enable_recolor(renderer, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
+  zathura_renderer_enable_recolor_hue(renderer, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-reverse-video", &recolor);
+  zathura_renderer_enable_recolor_reverse_video(renderer, recolor);
+
+  zathura->sync.render_thread = renderer;
+
+  return true;
+}
+
 #ifdef G_OS_UNIX
 static gchar*
 prepare_document_open_from_stdin(const char* path)
@@ -1036,39 +1074,10 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     goto error_free;
   }
 
-  /* page cache size */
-  int cache_size = 0;
-  girara_setting_get(zathura->ui.session, "page-cache-size", &cache_size);
-  if (cache_size <= 0) {
-    girara_warning("page-cache-size is not positive, using %d instead",
-        ZATHURA_PAGE_CACHE_DEFAULT_SIZE);
-    cache_size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
-  }
-
   /* threads */
-  zathura->sync.render_thread = zathura_renderer_new(cache_size);
-
-  if (zathura->sync.render_thread == NULL) {
+  if (!setup_renderer(zathura, document)) {
     goto error_free;
   }
-
-  /* set up recolor info in ZathuraRenderer */
-  char* recolor_dark  = NULL;
-  char* recolor_light = NULL;
-  girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
-  girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
-  zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread,
-      recolor_light, recolor_dark);
-  g_free(recolor_dark);
-  g_free(recolor_light);
-
-  bool recolor = false;
-  girara_setting_get(zathura->ui.session, "recolor", &recolor);
-  zathura_renderer_enable_recolor(zathura->sync.render_thread, recolor);
-  girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
-  zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, recolor);
-  girara_setting_get(zathura->ui.session, "recolor-reverse-video", &recolor);
-  zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, recolor);
 
   /* get view port size */
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(
