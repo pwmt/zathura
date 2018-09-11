@@ -1075,7 +1075,14 @@ Defines whether the window document should be updated based on the first page of
 a dcument.
 
 * Value type: Boolean
-* default value: false
+* Default value: false
+
+page-right-to-left
+^^^^^^^^^^^^^^^^^^
+Defines whether pages in multi-column view should start from the right side.
+
+* Value type: Boolean
+* Default value: false
 
 SEE ALSO
 ========
