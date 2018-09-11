@@ -980,6 +980,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     .rotation = 0,
     .pages_per_row = 0,
     .first_page_column_list = NULL,
+    .page_right_to_left = false,
     .position_x = 0,
     .position_y = 0
   };
@@ -1152,6 +1153,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   unsigned int pages_per_row = 1;
   char* first_page_column_list = NULL;
   unsigned int page_padding = 1;
+  bool page_right_to_left = false;
 
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
@@ -1177,7 +1179,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   g_free(file_info.first_page_column_list);
   g_free(first_page_column_list);
 
-  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
+  page_right_to_left = file_info.page_right_to_left;
+
+  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
   zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget);
@@ -1341,6 +1345,7 @@ save_fileinfo_to_db(zathura_t* zathura)
     .rotation = zathura_document_get_rotation(zathura->document),
     .pages_per_row = 1,
     .first_page_column_list = "1:2",
+    .page_right_to_left = false,
     .position_x = zathura_document_get_position_x(zathura->document),
     .position_y = zathura_document_get_position_y(zathura->document)
   };
@@ -1349,6 +1354,8 @@ save_fileinfo_to_db(zathura_t* zathura)
                      &(file_info.pages_per_row));
   girara_setting_get(zathura->ui.session, "first-page-column",
                      &(file_info.first_page_column_list));
+  girara_setting_get(zathura->ui.session, "page-right-to-left",
+                     &(file_info.page_right_to_left));
 
   /* save file info */
   zathura_db_set_fileinfo(zathura->database, path, &file_info);
@@ -1509,7 +1516,8 @@ statusbar_page_number_update(zathura_t* zathura)
 
 void
 page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
-                     unsigned int pages_per_row, unsigned int first_page_column)
+                     unsigned int pages_per_row, unsigned int first_page_column,
+                     bool page_right_to_left)
 {
   /* show at least one page */
   if (pages_per_row == 0) {
@@ -1540,6 +1548,9 @@ page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
     int y = (i + first_page_column - 1) / pages_per_row;
 
     GtkWidget* page_widget = zathura->pages[i];
+    if (page_right_to_left) {
+      x = pages_per_row - 1 - x;
+    }
 
     gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
   }

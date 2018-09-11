@@ -191,6 +191,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "first-page-column",     "1:2",        STRING, false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "page-right-to-left",    &bool_value,  BOOLEAN, false, _("Render pages from right to left"),  cb_page_layout_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              NULL, NULL);
   float_value = 40;

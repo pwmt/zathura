@@ -404,9 +404,11 @@ bool adjust_view(zathura_t* zathura);
  * @param page_padding padding in pixels between pages
  * @param pages_per_row Number of shown pages per row
  * @param first_page_column Column on which first page start
+ * @param page_right_to_left Render pages right to left
  */
 void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
-                          unsigned int pages_per_row, unsigned int first_page_column);
+                          unsigned int pages_per_row, unsigned int first_page_column,
+                          bool page_right_to_left);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

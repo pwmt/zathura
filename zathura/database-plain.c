@@ -27,6 +27,7 @@
 #define KEY_ZOOM                  "zoom"
 #define KEY_ROTATE                "rotate"
 #define KEY_PAGES_PER_ROW         "pages-per-row"
+#define KEY_PAGE_RIGHT_TO_LEFT    "page-right-to-left"
 #define KEY_FIRST_PAGE_COLUMN     "first-page-column"
 #define KEY_POSITION_X            "position-x"
 #define KEY_POSITION_Y            "position-y"
@@ -560,6 +561,7 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
   g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
   g_key_file_set_string(priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
+  g_key_file_set_boolean(priv->history, name, KEY_PAGE_RIGHT_TO_LEFT,file_info->page_right_to_left);
   g_key_file_set_double (priv->history, name, KEY_POSITION_X,        file_info->position_x);
   g_key_file_set_double (priv->history, name, KEY_POSITION_Y,        file_info->position_y);
   g_key_file_set_integer(priv->history, name, KEY_TIME,              time(NULL));
@@ -602,6 +604,9 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
   }
   if (g_key_file_has_key(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL) == TRUE) {
     file_info->first_page_column_list = g_key_file_get_string(priv->history, name, KEY_FIRST_PAGE_COLUMN, NULL);
+  }
+  if (g_key_file_has_key(priv->history, name, KEY_PAGE_RIGHT_TO_LEFT, NULL) == TRUE) {
+    file_info->page_right_to_left = g_key_file_get_boolean(priv->history, name, KEY_PAGE_RIGHT_TO_LEFT, NULL);
   }
   if (g_key_file_has_key(priv->history, name, KEY_POSITION_X, NULL) == TRUE) {
     file_info->position_x        = g_key_file_get_double(priv->history, name, KEY_POSITION_X, NULL);
