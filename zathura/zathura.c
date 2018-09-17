@@ -1057,8 +1057,11 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     char* filemonitor_backend = NULL;
     girara_setting_get(zathura->ui.session, "filemonitor", &filemonitor_backend);
     zathura_filemonitor_type_t type = ZATHURA_FILEMONITOR_GLIB;
+    if (g_strcmp0(filemonitor_backend, "noop") == 0) {
+      type = ZATHURA_FILEMONITOR_NOOP;
+    }
 #ifdef G_OS_UNIX
-    if (g_strcmp0(filemonitor_backend, "signal") == 0) {
+    else if (g_strcmp0(filemonitor_backend, "signal") == 0) {
       type = ZATHURA_FILEMONITOR_SIGNAL;
     }
 #endif

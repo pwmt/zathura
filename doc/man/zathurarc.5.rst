@@ -685,8 +685,9 @@ synchronization is not available.
 
 filemonitor
 ^^^^^^^^^^^
-Defines the filemonitor backend. Possible values are "glib" and "signal" (if
-signal handling is supported).
+Defines the file monitor backend used to check for changes in files. Possible
+values are "glib", "signal" (if signal handling is supported), and "noop". The
+"noop" file monitor does not trigger reloads.
 
 * Value type: String
 * Default value: glib
