@@ -137,7 +137,7 @@ zathura_filemonitor_new(const char*                file_path,
       break;
 #ifdef G_OS_UNIX
     case ZATHURA_FILEMONITOR_SIGNAL:
-      girara_debug("using SIGHUB file monitor");
+      girara_debug("using SIGHUP file monitor");
       ret = g_object_new(ZATHURA_TYPE_SIGNALFILEMONITOR, "file-path", file_path,
                          NULL);
       break;
