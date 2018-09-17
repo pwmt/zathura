@@ -5,6 +5,7 @@
 #ifdef G_OS_UNIX
 #include "file-monitor-signal.h"
 #endif
+#include "file-monitor-noop.h"
 #include "macros.h"
 
 #include <girara/utils.h>
@@ -141,6 +142,11 @@ zathura_filemonitor_new(const char*                file_path,
                          NULL);
       break;
 #endif
+    case ZATHURA_FILEMONITOR_NOOP:
+      girara_debug("using noop file monitor");
+      ret = g_object_new(ZATHURA_TYPE_NOOPFILEMONITOR, "file-path", file_path,
+                         NULL);
+      break;
     default:
       girara_debug("invalid filemonitor type: %d", filemonitor_type);
       g_return_val_if_fail(false, NULL);

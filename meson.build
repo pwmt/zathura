@@ -131,6 +131,7 @@ sources = files(
   'zathura/document.c',
   'zathura/file-monitor.c',
   'zathura/file-monitor-glib.c',
+  'zathura/file-monitor-noop.c',
   'zathura/file-monitor-signal.c',
   'zathura/jumplist.c',
   'zathura/links.c',

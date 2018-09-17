@@ -55,7 +55,8 @@ GType zathura_filemonitor_get_type(void) G_GNUC_CONST;
  */
 typedef enum zathura_filemonitor_type_e {
   ZATHURA_FILEMONITOR_GLIB, /**< Use filemonitor from GLib */
-  ZATHURA_FILEMONITOR_SIGNAL /**< Reload when receiving SIGHUP */
+  ZATHURA_FILEMONITOR_SIGNAL, /**< Reload when receiving SIGHUP */
+  ZATHURA_FILEMONITOR_NOOP /**< Monitor that does nothing */
 } zathura_filemonitor_type_t;
 
 /**
