@@ -1,41 +1,36 @@
 /* See LICENSE file for license and copyright information */
 
-#include <check.h>
-#include <stdlib.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 
-#define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
+#include "tests.h"
 
-extern Suite* suite_session();
-extern Suite* suite_utils();
-extern Suite* suite_document();
-
-typedef Suite* (*suite_create_fnt_t)(void);
-
-const suite_create_fnt_t suites[] = {
-  suite_utils,
-  suite_document,
-  suite_session,
-};
-
-int
-main(int argc, char* argv[])
+int run_suite(Suite* suite)
 {
-  Suite* suite          = NULL;
-  SRunner* suite_runner = NULL;
-  int number_failed = 0;
+  SRunner* suite_runner = srunner_create(suite);
+  srunner_run_all(suite_runner, CK_NORMAL);
+  const int number_failed = srunner_ntests_failed(suite_runner);
 
-  /* init gtk */
-  gtk_init(&argc, &argv);
+  int ret = EXIT_SUCCESS;
+  if (number_failed != 0) {
+    ret = EXIT_FAILURE;
+    TestResult** results = srunner_failures(suite_runner);
 
-  /* run test suites */
-  for (unsigned int i = 0; i < LENGTH(suites); i++) {
-    suite = suites[i]();
-    suite_runner = srunner_create(suite);
-    srunner_run_all(suite_runner, CK_NORMAL);
-    number_failed += srunner_ntests_failed(suite_runner);
-    srunner_free(suite_runner);
+    for (int i = 0; i < number_failed; ++i) {
+      if (tr_ctx(results[i]) == CK_CTX_SETUP) {
+        /* mark tests as skipped */
+        ret = 77;
+        break;
+      }
+    }
   }
 
-  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  srunner_free(suite_runner);
+
+  return ret;
+}
+
+void setup(void)
+{
+  fail_unless(gtk_init_check(NULL, NULL) == TRUE, "GTK+ initializitation failed", NULL);
 }

@@ -1,0 +1,27 @@
+_zathura() {
+  _init_completion || return
+
+  local EXTS=""
+  for PLUGIN in @PLUGINDIR@/lib*.so; do
+    case ${PLUGIN##*/} in
+      libpdf-poppler.so)
+        EXTS="$EXTS|pdf"
+        ;;
+      libpdf-mupdf.so)
+        EXTS="$EXTS|pdf|epub|oxps"
+        ;;
+      libps.so)
+        EXTS="$EXTS|ps|eps|epsi|epsf"
+        ;;
+      libdjvu.so)
+        EXTS="$EXTS|djvu|djv"
+        ;;
+      libcb.so)
+        EXTS="$EXTS|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
+        ;;
+      esac
+  done
+
+  _filedir "${EXTS#|}"
+}
+complete -F _zathura zathura

@@ -103,6 +103,45 @@ cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
   girara_special_command_add(session, '?', cmd_search, inc_search, BACKWARD, NULL);
 }
 
+static void
+cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
+                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const char* sandbox = value;
+  if (g_strcmp0(sandbox, "none") == 0) {
+    zathura->global.sandbox = ZATHURA_SANDBOX_NONE;
+  } else if (g_strcmp0(sandbox, "normal") == 0)  {
+    zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
+  } else if (g_strcmp0(sandbox, "strict") == 0) {
+    zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
+  } else {
+    girara_error("Invalid sandbox option");
+  }
+}
+
+static void
+cb_window_statbusbar_changed(girara_session_t* session, const char* name,
+                             girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const bool is_window_setting = g_str_has_prefix(name, "window-");
+  if (is_window_setting) {
+    char* formatted_filename = get_formatted_filename(zathura, !is_window_setting);
+    girara_set_window_title(zathura->ui.session, formatted_filename);
+    g_free(formatted_filename);
+  } else {
+    statusbar_page_number_update(zathura);
+  }
+}
 
 void
 config_load_default(zathura_t* zathura)
@@ -152,6 +191,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "first-page-column",     "1:2",        STRING, false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "page-right-to-left",    &bool_value,  BOOLEAN, false, _("Render pages from right to left"),  cb_page_layout_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              NULL, NULL);
   float_value = 40;
@@ -228,15 +269,17 @@ config_load_default(zathura_t* zathura)
   bool_value = true;
   girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
+  girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), NULL, NULL);
+  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), NULL, NULL);
+  girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
+  girara_setting_add(gsession, "window-icon-document",   &bool_value,  BOOLEAN, false, _("Use first page of a document as window icon"), NULL, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), NULL, NULL);
+  girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   string_value = "";
@@ -249,7 +292,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), NULL, NULL);
+  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \

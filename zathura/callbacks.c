@@ -329,7 +329,10 @@ cb_page_layout_value_changed(girara_session_t* session, const char* name, girara
   unsigned int page_padding = 1;
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
 
-  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column);
+  bool page_right_to_left = false;
+  girara_setting_get(zathura->ui.session, "page-right-to-left", &page_right_to_left);
+
+  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
   zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
 }
 
@@ -733,13 +736,12 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
     refresh_view(zathura);
   }
 
-  if (event->button != 1 || !(event->state & GDK_CONTROL_MASK)) {
+  if (event->button != GDK_BUTTON_PRIMARY || !(event->state & GDK_CONTROL_MASK)) {
     return;
   }
 
   bool synctex = false;
   girara_setting_get(zathura->ui.session, "synctex", &synctex);
-
   if (synctex == false) {
     return;
   }
@@ -751,6 +753,7 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   char* editor = NULL;
   girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
   if (editor == NULL || *editor == '\0') {
+    girara_debug("No SyncTeX editor specified.");
     g_free(editor);
     return;
   }
@@ -759,3 +762,17 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
   g_free(editor);
 }
 
+void
+cb_window_update_icon(ZathuraRenderRequest* GIRARA_UNUSED(request), cairo_surface_t* surface, void* data)
+{
+  zathura_t* zathura = data;
+
+  girara_debug("updating window icon");
+  GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface(surface, 0, 0, cairo_image_surface_get_width(surface), cairo_image_surface_get_height(surface));
+  if (pixbuf == NULL) {
+    girara_error("Unable to convert cairo surface to Gdk Pixbuf.");
+  }
+
+  gtk_window_set_icon(GTK_WINDOW(zathura->ui.session->gtk.window), pixbuf);
+  g_object_unref(pixbuf);
+}

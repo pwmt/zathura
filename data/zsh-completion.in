@@ -1,0 +1,52 @@
+#compdef zathura
+
+local -a all_opts
+all_opts=(
+  '(-c --config-dir=DIR)'{-c,--config-dir}'[Path to config directory]:config directory:_files -/'
+  '(-d --data-dir=DIR)'{-d,--data-dir}'[Path to data directory]:data directory:_files -/'
+  '--cache-dir=DIR[Path to cache directory]:cache directory:_files -/'
+  '(-p --plugins-dir=DIR)'{-p,--plugins-dir}'[Path to plugins directory]:plugins directory:_files -/'
+  '(-e --reparent=XID)'{-e,--reparent}'[Reparents to window specified by XID (X11)]:xid'
+  '(-w --password=password)'{-w,--password}'[Document password]:password'
+  '(-P --page=page)'{-p,--page}'[Page number to go to]:page number'
+  '(-l --log-level=level)'{-l,--log-level}'[Log level]:level:(error warning info debug)'
+  '(-x --snyctex-editor-command=cmd)'{-x,--synxtec-editor-command}'[Synctex editor (forwarded to the synctex command)]:command'
+  '--synctex-forward=position[Move to given synctex position]:position'
+  '--synctex-pid=pid[Highlight position in given process]:pid'
+  '--mode=mode[Start in a non-default mode]:mode:(presentation fullscreen)'
+  '--fork[Fork into the background]'
+  '-h --help[Show help message]'
+  '-V --version[Print version information]'
+  '*:file:->files'
+)
+
+local context state state_descr line
+typeset -A opt_args
+_arguments -S "$all_opts[@]" && return 0
+
+local exts
+for PLUGIN in @PLUGINDIR@/lib*.so; do
+  case ${PLUGIN##*/} in
+    libpdf-poppler.so)
+      exts="$exts|pdf"
+      ;;
+    libpdf-mupdf.so)
+      exts="$exts|pdf|epub|oxps"
+      ;;
+    libps.so)
+      exts="$exts|ps|eps|epsi|epsf"
+      ;;
+    libdjvu.so)
+      exts="$exts|djvu|djv"
+      ;;
+    libcb.so)
+      exts="$exts|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
+      ;;
+    esac
+done
+
+case $state in
+  (files)
+    _files -g "*.($exts)"
+    ;;
+esac

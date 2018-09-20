@@ -139,7 +139,6 @@ void zathura_renderer_page_cache_add(ZathuraRenderer* renderer,
     unsigned int page_index);
 
 
-typedef struct zathura_render_request_s ZathuraRenderRequest;
 typedef struct zathura_render_request_class_s ZathuraRenderRequestClass;
 
 struct zathura_render_request_s
@@ -183,8 +182,7 @@ ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer,
     zathura_page_t* page);
 
 /**
- * This function is used to add a page to the render thread list
- * that should be rendered.
+ * Add a page to the render thread list that should be rendered.
  *
  * @param request request object of the page that should be renderer
  * @param last_view_time last view time of the page
@@ -206,6 +204,21 @@ void zathura_render_request_abort(ZathuraRenderRequest* request);
  * @param request request that should be updated
  */
 void zathura_render_request_update_view_time(ZathuraRenderRequest* request);
+
+/**
+ * Set "plain" rendering mode, i.e. disabling scaling, recoloring, etc.
+ * @param request request that should be updated
+ * @param render_plain "plain" rendering setting
+ */
+void zathura_render_request_set_render_plain(ZathuraRenderRequest* request,
+    bool render_plain);
+
+/**
+ * Get "plain" rendering mode, i.e. disabling scaling, recoloring, etc.
+ * @param request request that should be updated
+ * @returns "plain" rendering setting
+ */
+bool zathura_render_request_get_render_plain(ZathuraRenderRequest* request);
 
 /**
  * This function is used to unmark all pages as not rendered. This should

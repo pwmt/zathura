@@ -1,6 +1,12 @@
 sphinx = find_program('sphinx-build')
 custom_target('man pages',
-  command: [sphinx, '-b', 'man', join_paths(meson.current_source_dir(), 'man'), meson.current_build_dir()],
+  command: [
+    sphinx,
+    '-b', 'man',
+    '-D', 'version=' + version,
+    '-D', 'release=' + version,
+    join_paths(meson.current_source_dir(), 'man'),
+    meson.current_build_dir()],
   output: ['zathura.1', 'zathurarc.5'],
   input: [
     'man/conf.py',

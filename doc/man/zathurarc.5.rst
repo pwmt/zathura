@@ -685,8 +685,9 @@ synchronization is not available.
 
 filemonitor
 ^^^^^^^^^^^
-Defines the filemonitor backend. Possible values are "glib" and "signal" (if
-signal handling is supported).
+Defines the file monitor backend used to check for changes in files. Possible
+values are "glib", "signal" (if signal handling is supported), and "noop". The
+"noop" file monitor does not trigger reloads.
 
 * Value type: String
 * Default value: glib
@@ -766,7 +767,10 @@ the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
 value in the list will be used for all other number of pages per row if not set
 explicitly.
 
-Per default, the first column is set to 2 for double-page layout.
+Per default, the first column is set to 2 for double-page layout, i.e. the faule
+is set to 1:2. A value of 1:1:3 would put the first page in dual-page layour in
+the first column, and for layouts with more columns the first page would be put
+in the 3rd column.
 
 * Value type: String
 * Default value: 1:2
@@ -1056,6 +1060,30 @@ is a read only sandbox that is intended for viewing documents only.
 
 * Value type: String
 * Default value: normal
+
+Some features are disabled when using strict sandbox mode:
+
+* saving/writing files
+* use of input methods like ibus
+* printing
+* bookmarks and history
+
+No feature regressions are expected when using normal sandbox mode.
+
+window-icon-document
+^^^^^^^^^^^^^^^^^^^^
+Defines whether the window document should be updated based on the first page of
+a dcument.
+
+* Value type: Boolean
+* Default value: false
+
+page-right-to-left
+^^^^^^^^^^^^^^^^^^
+Defines whether pages in multi-column view should start from the right side.
+
+* Value type: Boolean
+* Default value: false
 
 SEE ALSO
 ========

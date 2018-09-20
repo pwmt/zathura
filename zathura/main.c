@@ -18,9 +18,6 @@
 #ifdef WITH_SYNCTEX
 #include "synctex.h"
 #endif
-#ifdef WITH_SECCOMP
-#include "seccomp-filters.h"
-#endif
 
 /* Init locale */
 static void
@@ -291,28 +288,6 @@ main(int argc, char* argv[])
 
     goto free_and_ret;
   }
-
-#ifdef WITH_SECCOMP
-  char* sandbox = NULL;
-  girara_setting_get(zathura->ui.session, "sandbox", &sandbox);
-  if (g_strcmp0(sandbox, "none") == 0) {
-    girara_debug("Sandbox deactivated.");
-  } else if (g_strcmp0(sandbox, "normal") == 0)  {
-    girara_debug("Basic sandbox allowing normal operation.");
-    ret = seccomp_enable_basic_filter();
-  } else if (g_strcmp0(sandbox, "strict") == 0) {
-    girara_debug("Strict sandbox preventing write and network access.");
-    ret = seccomp_enable_strict_filter();
-  } else {
-    girara_error("Invalid sandbox option");
-    ret = -1;
-  }
-  g_free(sandbox);
-
-  if (ret != 0) {
-    goto free_and_ret;
-  }
-#endif
 
   /* open document if passed */
   if (file_idx != 0) {

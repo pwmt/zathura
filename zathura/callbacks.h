@@ -262,11 +262,14 @@ void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf,
 void cb_page_widget_scaled_button_release(ZathuraPage* page,
     GdkEventButton* event, void* data);
 
-void
-cb_page_widget_link(ZathuraPage* page, void* data);
+void cb_page_widget_link(ZathuraPage* page, void* data);
 
-void
-update_visible_pages(zathura_t* zathura);
+void update_visible_pages(zathura_t* zathura);
+
+/**
+ * Update window icon from cairo surface.
+ */
+void cb_window_update_icon(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 
 
 #endif // CALLBACKS_H

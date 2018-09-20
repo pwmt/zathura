@@ -82,6 +82,12 @@ enum {
   ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4*1024*1024
 };
 
+typedef enum {
+  ZATHURA_SANDBOX_NONE,
+  ZATHURA_SANDBOX_NORMAL,
+  ZATHURA_SANDBOX_STRICT
+} zathura_sandbox_t;
+
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 
@@ -138,6 +144,7 @@ struct zathura_s
     int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
+    zathura_sandbox_t sandbox; /**< Sandbox mode */
   } global;
 
   struct
@@ -176,6 +183,7 @@ struct zathura_s
   GtkWidget** pages; /**< The page widgets */
   zathura_database_t* database; /**< The database */
   ZathuraDbus* dbus; /**< D-Bus service */
+  ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
 
   /**
    * File monitor
@@ -396,9 +404,11 @@ bool adjust_view(zathura_t* zathura);
  * @param page_padding padding in pixels between pages
  * @param pages_per_row Number of shown pages per row
  * @param first_page_column Column on which first page start
+ * @param page_right_to_left Render pages right to left
  */
 void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
-                          unsigned int pages_per_row, unsigned int first_page_column);
+                          unsigned int pages_per_row, unsigned int first_page_column,
+                          bool page_right_to_left);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

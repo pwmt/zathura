@@ -44,3 +44,19 @@ if appstream_util.found()
     args: ['validate-relax', appdata.full_path()]
   )
 endif
+
+conf_data = configuration_data()
+conf_data.set('PLUGINDIR', join_paths(prefix, plugindir))
+bash_completion = configure_file(
+  input: 'bash-completion.in',
+  output: 'zathura',
+  configuration: conf_data
+)
+zsh_completion = configure_file(
+  input: 'zsh-completion.in',
+  output: '_zathura',
+  configuration: conf_data
+)
+
+install_data(bash_completion, install_dir: join_paths(datadir, 'bash-completion', 'completions'))
+install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'vendor-completions'))

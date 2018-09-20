@@ -107,7 +107,7 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   }
 
   /* Update statusbar. */
-  char* tmp = g_strdup_printf("Printing %d...", page_number);
+  char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number);
   girara_statusbar_item_set_text(zathura->ui.session,
                                  zathura->ui.statusbar.file, tmp);
   g_free(tmp);
