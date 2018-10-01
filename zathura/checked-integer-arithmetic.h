@@ -5,12 +5,8 @@
 #include "macros.h"
 #include <stdbool.h>
 
-#if __GNUC__ >= 5
+#if __GNUC__ >= 5 || __has_builtin(__builtin_add_overflow)
 #define HAVE_BUILTIN
-#elif defined(__clang__)
-#if __has_builtin(__builtin_add_overflow)
-#define HAVE_BUILTIN
-#endif
 #endif
 
 #ifdef __cplusplus
