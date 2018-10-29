@@ -36,7 +36,7 @@ dbusinterfacesdir = join_paths(datadir, 'dbus-1', 'interfaces')
 plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
-libm = cc.find_library('libm', required: false)
+libm = cc.find_library('m', required: false)
 girara = dependency('girara-gtk3', version: '>=0.2.9')
 glib = dependency('glib-2.0', version: '>=2.50')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
