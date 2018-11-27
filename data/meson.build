@@ -48,7 +48,7 @@ appstream_util = find_program('appstream-util', required: false, native: true)
 if appstream_util.found()
   test('validate-appdata',
     appstream_util,
-    args: ['validate-relax', appdata.full_path()]
+    args: ['validate-relax', '--nonet', appdata.full_path()]
   )
 endif
 
