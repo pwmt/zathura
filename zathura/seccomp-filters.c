@@ -12,8 +12,26 @@
 #include <errno.h>
 #include <girara/utils.h>
 
-#define DENY_RULE(call) { if (seccomp_rule_add (ctx, SCMP_ACT_KILL, SCMP_SYS(call), 0) < 0) goto out; }
-#define ALLOW_RULE(call) { if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(call), 0) < 0) goto out; }
+#define DENY_RULE(call)                                                        \
+  do {                                                                         \
+    girara_debug("denying " G_STRINGIFY(call));                                \
+    const int err = seccomp_rule_add(ctx, SCMP_ACT_KILL, SCMP_SYS(call), 0);   \
+    if (err < 0) {                                                             \
+      girara_error("failed to deny " G_STRINGIFY(call) ": %s",                 \
+                   g_strerror(-err));                                          \
+      goto out;                                                                \
+    }                                                                          \
+  } while (0)
+#define ALLOW_RULE(call)                                                       \
+  do {                                                                         \
+    girara_debug("allowing " G_STRINGIFY(call));                               \
+    const int err = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(call), 0);  \
+    if (err < 0) {                                                             \
+      girara_error("failed to allow " G_STRINGIFY(call) ": %s",                \
+                   g_strerror(-err));                                          \
+      goto out;                                                                \
+    }                                                                          \
+  } while (0)
 
 int
 seccomp_enable_basic_filter(void)
