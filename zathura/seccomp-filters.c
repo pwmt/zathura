@@ -12,26 +12,19 @@
 #include <errno.h>
 #include <girara/utils.h>
 
-#define DENY_RULE(call)                                                        \
+#define ADD_RULE(str_action, action, call, ...)                                \
   do {                                                                         \
-    girara_debug("denying " G_STRINGIFY(call));                                \
-    const int err = seccomp_rule_add(ctx, SCMP_ACT_KILL, SCMP_SYS(call), 0);   \
+    girara_debug("adding rule " str_action " to " G_STRINGIFY(call));          \
+    const int err =                                                            \
+      seccomp_rule_add(ctx, action, SCMP_SYS(call), __VA_ARGS__);              \
     if (err < 0) {                                                             \
-      girara_error("failed to deny " G_STRINGIFY(call) ": %s",                 \
-                   g_strerror(-err));                                          \
+      girara_error("failed: %s", g_strerror(-err));                            \
       goto out;                                                                \
     }                                                                          \
   } while (0)
-#define ALLOW_RULE(call)                                                       \
-  do {                                                                         \
-    girara_debug("allowing " G_STRINGIFY(call));                               \
-    const int err = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(call), 0);  \
-    if (err < 0) {                                                             \
-      girara_error("failed to allow " G_STRINGIFY(call) ": %s",                \
-                   g_strerror(-err));                                          \
-      goto out;                                                                \
-    }                                                                          \
-  } while (0)
+
+#define DENY_RULE(call) ADD_RULE("kill", SCMP_ACT_KILL, call, 0)
+#define ALLOW_RULE(call) ADD_RULE("allow", SCMP_ACT_ALLOW, call, 0)
 
 int
 seccomp_enable_basic_filter(void)
@@ -111,7 +104,7 @@ seccomp_enable_basic_filter(void)
   /* DENY_RULE (execve); */
 
   /* applying filter... */
-  if (seccomp_load (ctx) >= 0) {
+  if (seccomp_load(ctx) >= 0) {
     /* free ctx after the filter has been loaded into the kernel */
     seccomp_release(ctx);
     return 0;
@@ -227,59 +220,24 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(wait4);  /* trying to open links should not crash the app */
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 1,
-          SCMP_CMP(0, SCMP_CMP_EQ, 1)) < 0) {
-    goto out;
-  }
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 1,
-          SCMP_CMP(0, SCMP_CMP_EQ, 2)) < 0) {
-    goto out;
-  }
+  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 2));
 
   /* needed by gtk??? (does not load content without) */
 
   /* special restrictions for prctl, only allow PR_SET_NAME/PR_SET_PDEATHSIG */
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(prctl), 1,
-          SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME)) < 0) {
-    goto out;
-  }
-
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(prctl), 1,
-          SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG)) < 0) {
-    goto out;
-  }
+  ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
   /* special restrictions for open, prevent opening files for writing */
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 1,
-                        SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) < 0) {
-    goto out;
-  }
-
-  if (seccomp_rule_add(ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(open), 1,
-                        SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY)) < 0) {
-    goto out;
-  }
-
-  if (seccomp_rule_add(ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(open), 1,
-                        SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR)) < 0) {
-    goto out;
-  }
+  ADD_RULE("allow", SCMP_ACT_ALLOW, open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
 
   /* special restrictions for openat, prevent opening files for writing */
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 1,
-                        SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) < 0) {
-    goto out;
-  }
-
-  if (seccomp_rule_add(ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(openat), 1,
-                        SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY)) < 0) {
-    goto out;
-  }
-
-  if (seccomp_rule_add(ctx, SCMP_ACT_ERRNO (EACCES), SCMP_SYS(openat), 1,
-                        SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR)) < 0) {
-    goto out;
-  }
+  ADD_RULE("allow", SCMP_ACT_ALLOW, openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
 
   /* allowed for debugging: */
 
