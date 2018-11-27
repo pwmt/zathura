@@ -1,6 +1,6 @@
 project('zathura', 'c',
   version: '0.4.1',
-  meson_version: '>=0.45',
+  meson_version: '>=0.47',
   default_options: 'c_std=c11',
 )
 
@@ -68,18 +68,18 @@ flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
 additional_sources = []
-sqlite = dependency('sqlite3', version: '>=3.5.9', required: false)
-synctex = dependency('synctex', required: false)
-magic = cc.find_library('magic', required: false)
-seccomp = dependency('libseccomp', required: false)
+sqlite = dependency('sqlite3', version: '>=3.5.9', required: get_option('sqlite'))
+synctex = dependency('synctex', required: get_option('synctex'))
+magic = cc.find_library('magic', required: get_option('magic'))
+seccomp = dependency('libseccomp', required: get_option('seccomp'))
 
-if get_option('enable-sqlite') and sqlite.found()
+if sqlite.found()
   build_dependencies += sqlite
   defines += '-DWITH_SQLITE'
   additional_sources += files('zathura/database-sqlite.c')
 endif
 
-if get_option('enable-synctex') and synctex.found()
+if synctex.found()
   build_dependencies += synctex
   defines += '-DWITH_SYNCTEX'
   if synctex.version() < '2.0.0'
@@ -91,12 +91,12 @@ if get_option('enable-synctex') and synctex.found()
   endif
 endif
 
-if get_option('enable-magic') and magic.found()
+if magic.found()
   build_dependencies += magic
   defines += '-DWITH_MAGIC'
 endif
 
-if get_option('enable-seccomp') and seccomp.found()
+if seccomp.found()
   build_dependencies += seccomp
   defines += '-DWITH_SECCOMP'
   additional_sources += files('zathura/seccomp-filters.c')

@@ -7,7 +7,7 @@ girara user interface library and several document libraries.
 Requirements
 ------------
 
-meson (>= 0.45)
+meson (>= 0.47)
 gtk3 (>= 3.22)
 glib (>= 2.50)
 girara (>= 0.2.8)
@@ -23,17 +23,17 @@ breathe (optional, for HTML documentation)
 sphinx_rtd_theme (optional, for HTML documentation)
 
 Note that Sphinx is needed to build the manpages.  If it is not installed, the
-man pages won't be built. For the HTML documentation, doxygen, breathe and
-sphinx_rtd_theme are needed in addition to Sphinx.
+man pages won't be built. For building the HTML documentation, doxygen, breathe
+and sphinx_rtd_theme are needed in addition to Sphinx.
 
 If you don't want to build with support for sqlite databases, you can configure
-the build system with -Denable-sqlite=false and sqlite support won't be available.
+the build system with -Dsqlite=disabled and sqlite support won't be available.
 
 The use of magic to detect mime types is optional and can be disabled by
-configuring the build system with -Denable-magic=false.
+configuring the build system with -Dmagic=disabled.
 
 The use of seccomp to create a sandboxed environment is optional and can be
-disabled by configure the build system with -Denable-seccomp=false. The sandbox
+disabled by configure the build system with -Dseccomp=disabled. The sandbox
 will by default be set to "normal" mode, which should not interfere with the
 normal operation of zathura. For strict sandbox mode set "sandbox strict" in
 zathurarc. Strict sandbox mode will reduce the available functionality of
