@@ -1,5 +1,5 @@
 # zathura - language file (Ukrainian (Ukrain))
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # sevenfourk <sevenfourk@gmail.com>, 2012

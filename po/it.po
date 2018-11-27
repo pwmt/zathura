@@ -1,5 +1,5 @@
 # zathura - language file (Italian)
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # TheLemonMan <segnalazionidalweb@gmail.com>, 2015

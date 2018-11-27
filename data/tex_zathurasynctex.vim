@@ -1,4 +1,4 @@
-" See LICENSE file for license and copyright information
+" SPDX-License-Identifier: Zlib
 
 " This is a sample plugin that can be used for synctex forward synchronization.
 " It currently uses latexsuite to obtain the file name of the document. If you

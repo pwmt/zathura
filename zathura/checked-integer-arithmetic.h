@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 #ifndef ZATHURA_CHECKED_INTEGER_ARITHMETIC_H
 #define ZATHURA_CHECKED_INTEGER_ARITHMETIC_H
 

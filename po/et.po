@@ -1,5 +1,5 @@
 # zathura - language file (Estonian)
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # Rivo Zängov <eraser@eraser.ee>, 2012

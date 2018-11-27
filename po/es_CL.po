@@ -1,5 +1,5 @@
 # zathura - language file (Spanish (Chile))
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # watsh1ken <wat.sh1ken@gmail.com>, 2012

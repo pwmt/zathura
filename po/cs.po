@@ -1,5 +1,5 @@
 # zathura - language file (Czech)
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # fri, 2016

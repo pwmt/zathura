@@ -1,5 +1,5 @@
 # zathura - language file (Portuguese (Brazil))
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # salmora8 <shorterfire@gmail.com>, 2012-2014

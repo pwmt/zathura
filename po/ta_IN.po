@@ -1,5 +1,5 @@
 # zathura - language file (Tamil (India))
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # mankand007 <mankand007@gmail.com>, 2012

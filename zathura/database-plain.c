@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #define _POSIX_SOURCE
 #define _XOPEN_SOURCE 500

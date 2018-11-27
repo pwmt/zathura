@@ -1,5 +1,5 @@
 # zathura - language file (Inonesian (Indonesia))
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # andjeng <teratower8@gmail.com>, 2013

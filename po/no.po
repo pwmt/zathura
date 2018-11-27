@@ -1,5 +1,5 @@
 # zathura - language file (Norwegian)
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # maccyber <jonas.enge@gmail.com>, 2014

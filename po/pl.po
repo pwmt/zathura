@@ -1,5 +1,5 @@
 # zathura - language file (Polish)
-# See LICENSE file for license and copyright information#
+# SPDX-License-Identifier: Zlib#
 #
 # Translators:
 # Łukasz Hryniuk <lukequaint@gmail.com>, 2013

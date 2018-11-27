@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 
 import sphinx_rtd_theme
 

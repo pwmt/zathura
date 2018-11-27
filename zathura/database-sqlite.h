@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #ifndef ZATHURA_DATABASE_SQLITE_H
 #define ZATHURA_DATABASE_SQLITE_H
