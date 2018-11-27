@@ -2,8 +2,8 @@
 
 #include "adjustment.h"
 #include "utils.h"
-#include <math.h>
 
+#include <math.h>
 
 double
 page_calc_height_width(zathura_document_t* document, double height,

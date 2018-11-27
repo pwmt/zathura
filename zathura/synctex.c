@@ -254,8 +254,10 @@ synctex_parse_input(const char* synctex, char** input_file, int* line,
     return false;
   }
 
-  *line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
-  *column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
+  gint64 tmp = g_ascii_strtoll(split_fwd[0], NULL, 10);
+  *line = MIN(INT_MAX, tmp);
+  tmp = g_ascii_strtoll(split_fwd[1], NULL, 10);
+  *column = MIN(INT_MAX, tmp);
   /* SyncTeX starts indexing at 1, but we use 0 */
   if (*line > 0) {
     --*line;
