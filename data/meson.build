@@ -36,7 +36,7 @@ appdata = i18n.merge_file('appdata',
   po_dir: podir,
 )
 
-desktop_file_validate = find_program('desktop-file-validate', required: false)
+desktop_file_validate = find_program('desktop-file-validate', required: false, native: true)
 if desktop_file_validate.found()
   test('validate-desktop',
     desktop_file_validate,
@@ -44,7 +44,7 @@ if desktop_file_validate.found()
   )
 endif
 
-appstream_util = find_program('appstream-util', required: false)
+appstream_util = find_program('appstream-util', required: false, native: true)
 if appstream_util.found()
   test('validate-appdata',
     appstream_util,
