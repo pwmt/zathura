@@ -23,3 +23,8 @@ option('manpages',
   value: 'auto',
   description: 'manual pages'
 )
+option('tests',
+  type: 'feature',
+  value: 'auto',
+  description: 'run tests'
+)

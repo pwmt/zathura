@@ -1,4 +1,4 @@
-check = dependency('check', required: false)
+check = dependency('check', required: get_option('tests'))
 if check.found()
   test_dependencies = [
     declare_dependency(link_with: libzathura),
