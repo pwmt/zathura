@@ -18,4 +18,8 @@ option('seccomp',
   value: 'auto',
   description: 'seccomp-based sandbox'
 )
+option('manpages',
+  type: 'feature',
+  value: 'auto',
+  description: 'manual pages'
 )
