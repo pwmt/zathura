@@ -178,7 +178,7 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
       rect.x1 = synctex_node_box_visible_h(node);
       rect.y1 = synctex_node_box_visible_v(node) - synctex_node_box_visible_height(node);
       rect.x2 = rect.x1 + synctex_node_box_visible_width(node);
-      rect.y2 = synctex_node_box_visible_depth(node) + synctex_node_box_visible_height (node) + rect.y1;
+      rect.y2 = synctex_node_box_visible_depth(node) + synctex_node_box_visible_height(node) + rect.y1;
 
       if (*page == current_page) {
         zathura_rectangle_t* real_rect = g_try_malloc(sizeof(zathura_rectangle_t));
