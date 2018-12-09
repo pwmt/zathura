@@ -28,3 +28,8 @@ option('tests',
   value: 'auto',
   description: 'run tests'
 )
+option('convert-icon',
+  type: 'feature',
+  value: 'auto',
+  description: 'convert icon to PNG'
+)

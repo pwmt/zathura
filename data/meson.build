@@ -9,7 +9,7 @@ zathura_resources = gnome.compile_resources(
 install_data('org.pwmt.zathura.xml', install_dir: dbusinterfacesdir)
 install_data('org.pwmt.zathura.svg', install_dir: join_paths(datadir, 'icons', 'scalable', 'apps'))
 
-rsvg_convert = find_program('rsvg-convert', required: false, native: true)
+rsvg_convert = find_program('rsvg-convert', required: get_option('convert-icon'), native: true)
 if rsvg_convert.found()
   foreach width : [16, 32, 64, 128, 256]
     subdir('icon-@0@'.format(width))
