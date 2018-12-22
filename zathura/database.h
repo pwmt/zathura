@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #ifndef DATABASE_H
 #define DATABASE_H

@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #ifndef DBUS_INTERFACE_H
 #define DBUS_INTERFACE_H

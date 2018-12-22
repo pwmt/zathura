@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #ifndef FILEMONITOR_H
 #define FILEMONITOR_H

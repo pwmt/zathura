@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #ifndef ZATHURA_CONTENT_TYPE_H
 #define ZATHURA_CONTENT_TYPE_H

@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #include <errno.h>
 #include <stdlib.h>
@@ -209,6 +209,7 @@ static bool
 init_ui(zathura_t* zathura)
 {
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
+    girara_error("Failed to initialize girara.");
     return false;
   }
 
@@ -241,6 +242,7 @@ init_ui(zathura_t* zathura)
   gtk_grid_set_row_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
   gtk_grid_set_column_homogeneous(GTK_GRID(zathura->ui.page_widget), TRUE);
   if (zathura->ui.page_widget == NULL) {
+    girara_error("Failed to create page widget.");
     return false;
   }
 
@@ -280,18 +282,21 @@ init_ui(zathura_t* zathura)
   zathura->ui.statusbar.file =
     girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
   if (zathura->ui.statusbar.file == NULL) {
+    girara_error("Failed to create status bar item.");
     return false;
   }
 
   zathura->ui.statusbar.buffer =
     girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.buffer == NULL) {
+    girara_error("Failed to create status bar item.");
     return false;
   }
 
   zathura->ui.statusbar.page_number =
     girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.page_number == NULL) {
+    girara_error("Failed to create status bar item.");
     return false;
   }
 
@@ -434,12 +439,14 @@ zathura_init(zathura_t* zathura)
     case ZATHURA_SANDBOX_NORMAL:
       girara_debug("Basic sandbox allowing normal operation.");
       if (seccomp_enable_basic_filter() != 0) {
+        girara_error("Failed to initialize basic seccomp filter.");
         goto error_free;
       }
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");
       if (seccomp_enable_strict_filter() != 0) {
+        girara_error("Failed to initialize strict seccomp filter.");
         goto error_free;
       }
       /* unset the input method to avoid communication with external services */
@@ -449,7 +456,8 @@ zathura_init(zathura_t* zathura)
 #endif
 
   /* UI */
-  if (!init_ui(zathura)) {
+  if (init_ui(zathura) == false) {
+    girara_error("Failed to initialize UI.");
     goto error_free;
   }
 
@@ -466,6 +474,7 @@ zathura_init(zathura_t* zathura)
 
   /* CSS for index mode */
   if (init_css(zathura) == false) {
+    girara_error("Failed to initialize CSS.");
     goto error_free;
   }
 

@@ -1,20 +1,35 @@
-option('enable-sqlite',
-  type: 'boolean',
-  value: true,
-  description: 'Enable sqlite support if available.'
+option('sqlite',
+  type: 'feature',
+  value: 'auto',
+  description: 'SQLite database backend'
 )
-option('enable-synctex',
-  type: 'boolean',
-  value: true,
-  description: 'Enable synctex support if available.'
+option('synctex',
+  type: 'feature',
+  value: 'auto',
+  description: 'SyncTeX integration'
 )
-option('enable-magic',
-  type: 'boolean',
-  value: true,
-  description: 'Enable magic support if available.'
+option('magic',
+  type: 'feature',
+  value: 'auto',
+  description: 'magic-based MIME type detection'
 )
-option('enable-seccomp',
-  type: 'boolean',
-  value: true,
-  description: 'Enable experimental seccomp support if available.'
+option('seccomp',
+  type: 'feature',
+  value: 'auto',
+  description: 'seccomp-based sandbox'
+)
+option('manpages',
+  type: 'feature',
+  value: 'auto',
+  description: 'manual pages'
+)
+option('tests',
+  type: 'feature',
+  value: 'auto',
+  description: 'run tests'
+)
+option('convert-icon',
+  type: 'feature',
+  value: 'auto',
+  description: 'convert icon to PNG'
 )

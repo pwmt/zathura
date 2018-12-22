@@ -1,4 +1,4 @@
-/* See LICENSE file for license and copyright information */
+/* SPDX-License-Identifier: Zlib */
 
 #include <glib.h>
 #include <girara/utils.h>
@@ -178,7 +178,7 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
       rect.x1 = synctex_node_box_visible_h(node);
       rect.y1 = synctex_node_box_visible_v(node) - synctex_node_box_visible_height(node);
       rect.x2 = rect.x1 + synctex_node_box_visible_width(node);
-      rect.y2 = synctex_node_box_visible_depth(node) + synctex_node_box_visible_height (node) + rect.y1;
+      rect.y2 = synctex_node_box_visible_depth(node) + synctex_node_box_visible_height(node) + rect.y1;
 
       if (*page == current_page) {
         zathura_rectangle_t* real_rect = g_try_malloc(sizeof(zathura_rectangle_t));
@@ -254,8 +254,10 @@ synctex_parse_input(const char* synctex, char** input_file, int* line,
     return false;
   }
 
-  *line = MIN(INT_MAX, g_ascii_strtoll(split_fwd[0], NULL, 10));
-  *column = MIN(INT_MAX, g_ascii_strtoll(split_fwd[1], NULL, 10));
+  gint64 tmp = g_ascii_strtoll(split_fwd[0], NULL, 10);
+  *line = MIN(INT_MAX, tmp);
+  tmp = g_ascii_strtoll(split_fwd[1], NULL, 10);
+  *column = MIN(INT_MAX, tmp);
   /* SyncTeX starts indexing at 1, but we use 0 */
   if (*line > 0) {
     --*line;

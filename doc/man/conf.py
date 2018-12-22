@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 
 import os.path
 import glob

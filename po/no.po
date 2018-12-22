@@ -1,5 +1,5 @@
 # zathura - language file (Norwegian)
-# See LICENSE file for license and copyright information
+# SPDX-License-Identifier: Zlib
 #
 # Translators:
 # maccyber <jonas.enge@gmail.com>, 2014
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-04 18:27+0200\n"
+"POT-Creation-Date: 2018-12-09 23:06+0100\n"
 "PO-Revision-Date: 2018-05-23 20:44+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Norwegian (http://www.transifex.com/pwmt/zathura/language/"
@@ -62,22 +62,22 @@ msgstr ""
 msgid "'%s' must not be 0. Set to 1."
 msgstr ""
 
-#: zathura/callbacks.c:390
+#: zathura/callbacks.c:393
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Ugyldig inndata '%s' gitt."
 
-#: zathura/callbacks.c:426
+#: zathura/callbacks.c:429
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Ugyldig index '%s' gitt."
 
-#: zathura/callbacks.c:665
+#: zathura/callbacks.c:668
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr ""
 
-#: zathura/callbacks.c:698
+#: zathura/callbacks.c:701
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr ""
@@ -246,309 +246,317 @@ msgid "Images"
 msgstr "Bilder"
 
 #. zathura settings
-#: zathura/config.c:165
+#: zathura/config.c:184
 msgid "Database backend"
 msgstr "Database backend"
 
-#: zathura/config.c:166
+#: zathura/config.c:185
 msgid "File monitor backend"
 msgstr ""
 
-#: zathura/config.c:168
+#: zathura/config.c:187
 msgid "Zoom step"
 msgstr "Zoom nivå"
 
-#: zathura/config.c:170
+#: zathura/config.c:189
 msgid "Padding between pages"
 msgstr "Avstand mellom sider"
 
-#: zathura/config.c:172
+#: zathura/config.c:191
 msgid "Number of pages per row"
 msgstr "Nummer av sider per rad"
 
-#: zathura/config.c:174
+#: zathura/config.c:193
 msgid "Column of the first page"
 msgstr ""
 
-#: zathura/config.c:176
+#: zathura/config.c:195
+msgid "Render pages from right to left"
+msgstr ""
+
+#: zathura/config.c:197
 msgid "Scroll step"
 msgstr "Skrolle nivå"
 
-#: zathura/config.c:178
+#: zathura/config.c:199
 msgid "Horizontal scroll step"
 msgstr ""
 
-#: zathura/config.c:180
+#: zathura/config.c:201
 msgid "Full page scroll overlap"
 msgstr ""
 
-#: zathura/config.c:182
+#: zathura/config.c:203
 msgid "Zoom minimum"
 msgstr "Zoom minimum"
 
-#: zathura/config.c:184
+#: zathura/config.c:205
 msgid "Zoom maximum"
 msgstr "Zoom maximum"
 
-#: zathura/config.c:186
+#: zathura/config.c:207
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Maksimum antall sider å holde i mellomlagringen"
 
-#: zathura/config.c:188
+#: zathura/config.c:209
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
 
-#: zathura/config.c:190
+#: zathura/config.c:211
 msgid "Number of positions to remember in the jumplist"
 msgstr "Antall posisjoner å huske i hopp-til-listen"
 
-#: zathura/config.c:192
+#: zathura/config.c:213
 msgid "Recoloring (dark color)"
 msgstr "Om-farger (mørk farge)"
 
-#: zathura/config.c:193
+#: zathura/config.c:214
 msgid "Recoloring (light color)"
 msgstr "Om-farge (lys farge)"
 
-#: zathura/config.c:194
+#: zathura/config.c:215
 msgid "Color for highlighting"
 msgstr "Farge for utheving"
 
-#: zathura/config.c:196
+#: zathura/config.c:217
 msgid "Color for highlighting (active)"
 msgstr "Farge for utheving (aktiv)"
 
-#: zathura/config.c:198
+#: zathura/config.c:219
 msgid "'Loading ...' background color"
 msgstr "'Laster ...' bakgrunnsfarge"
 
-#: zathura/config.c:200
+#: zathura/config.c:221
 msgid "'Loading ...' foreground color"
 msgstr "'Laster ...' forgrunnsfarge"
 
-#: zathura/config.c:203
+#: zathura/config.c:224
 msgid "Index mode foreground color"
 msgstr ""
 
-#: zathura/config.c:204
+#: zathura/config.c:225
 msgid "Index mode background color"
 msgstr ""
 
-#: zathura/config.c:205
+#: zathura/config.c:226
 msgid "Index mode foreground color (active element)"
 msgstr ""
 
-#: zathura/config.c:206
+#: zathura/config.c:227
 msgid "Index mode background color (active element)"
 msgstr ""
 
-#: zathura/config.c:209
+#: zathura/config.c:230
 msgid "Recolor pages"
 msgstr "Om-farge sider"
 
-#: zathura/config.c:211
+#: zathura/config.c:232
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 
-#: zathura/config.c:213
+#: zathura/config.c:234
 msgid "When recoloring keep original image colors"
 msgstr ""
 
-#: zathura/config.c:215
+#: zathura/config.c:236
 msgid "Wrap scrolling"
 msgstr ""
 
-#: zathura/config.c:217
+#: zathura/config.c:238
 msgid "Page aware scrolling"
 msgstr ""
 
-#: zathura/config.c:219
+#: zathura/config.c:240
 msgid "Advance number of pages per row"
 msgstr ""
 
-#: zathura/config.c:221
+#: zathura/config.c:242
 msgid "Horizontally centered zoom"
 msgstr "Horisontalsentrert zoom"
 
-#: zathura/config.c:223
+#: zathura/config.c:244
 msgid "Vertically center pages"
 msgstr ""
 
-#: zathura/config.c:225
+#: zathura/config.c:246
 msgid "Align link target to the left"
 msgstr ""
 
-#: zathura/config.c:227
+#: zathura/config.c:248
 msgid "Let zoom be changed when following links"
 msgstr "La zoom bli endret når følgende linker"
 
-#: zathura/config.c:229
+#: zathura/config.c:250
 msgid "Center result horizontally"
 msgstr "Sentrer resultatene horisontalt"
 
-#: zathura/config.c:231
+#: zathura/config.c:252
 msgid "Transparency for highlighting"
 msgstr "Klarhet for utheving"
 
-#: zathura/config.c:233
+#: zathura/config.c:254
 msgid "Render 'Loading ...'"
 msgstr "Render 'Laster ...'"
 
-#: zathura/config.c:234
+#: zathura/config.c:255
 msgid "Adjust to when opening file"
 msgstr "Juster til når du åpner filen"
 
-#: zathura/config.c:236
+#: zathura/config.c:257
 msgid "Show hidden files and directories"
 msgstr "Vis skjulte filer og mapper"
 
-#: zathura/config.c:238
+#: zathura/config.c:259
 msgid "Show directories"
 msgstr "Vis mapper"
 
-#: zathura/config.c:240
+#: zathura/config.c:261
 msgid "Show recent files"
 msgstr ""
 
-#: zathura/config.c:242
+#: zathura/config.c:263
 msgid "Always open on first page"
 msgstr "Alltid åpne på første side"
 
-#: zathura/config.c:244
+#: zathura/config.c:265
 msgid "Highlight search results"
 msgstr "Uthev søkeresultater"
 
-#: zathura/config.c:247
+#: zathura/config.c:268
 msgid "Enable incremental search"
 msgstr ""
 
-#: zathura/config.c:249
+#: zathura/config.c:270
 msgid "Clear search results on abort"
 msgstr "Stryk ut søkeresulteter ved avbrytelse"
 
-#: zathura/config.c:251
+#: zathura/config.c:272
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: zathura/config.c:253
+#: zathura/config.c:274
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr ""
 
-#: zathura/config.c:255
+#: zathura/config.c:276
 msgid "Display the page number in the window title"
 msgstr "Vis nummer av sider i vinduestittelen"
 
-#: zathura/config.c:257
+#: zathura/config.c:278
+msgid "Use first page of a document as window icon"
+msgstr ""
+
+#: zathura/config.c:280
 msgid "Use basename of the file in the statusbar"
 msgstr ""
 
-#: zathura/config.c:259
+#: zathura/config.c:282
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
-#: zathura/config.c:261
+#: zathura/config.c:284
 msgid "Enable synctex support"
 msgstr ""
 
-#: zathura/config.c:263
+#: zathura/config.c:286
 msgid "Synctex editor command"
 msgstr ""
 
-#: zathura/config.c:265
+#: zathura/config.c:288
 msgid "Enable D-Bus service"
 msgstr "Aktiv D-Bus servicen"
 
-#: zathura/config.c:267
+#: zathura/config.c:290
 msgid "Save history at each page change"
 msgstr ""
 
-#: zathura/config.c:269
+#: zathura/config.c:292
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: zathura/config.c:271
+#: zathura/config.c:294
 msgid "Enable notification after selecting text"
 msgstr ""
 
-#: zathura/config.c:272
+#: zathura/config.c:295
 msgid "Sandbox level"
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:461
+#: zathura/config.c:484
 msgid "Add a bookmark"
 msgstr "Legg til bokmerke"
 
-#: zathura/config.c:462
+#: zathura/config.c:485
 msgid "Delete a bookmark"
 msgstr "Slett bokmerke"
 
-#: zathura/config.c:463
+#: zathura/config.c:486
 msgid "List all bookmarks"
 msgstr "List alle bokmerker"
 
-#: zathura/config.c:464
+#: zathura/config.c:487
 msgid "Close current file"
 msgstr "Lukk den gjeldende filen"
 
-#: zathura/config.c:465
+#: zathura/config.c:488
 msgid "Show file information"
 msgstr "Vis filinformasjon"
 
-#: zathura/config.c:466 zathura/config.c:467
+#: zathura/config.c:489 zathura/config.c:490
 msgid "Execute a command"
 msgstr "Kjør en kommando"
 
 #. like vim
-#: zathura/config.c:468
+#: zathura/config.c:491
 msgid "Show help"
 msgstr "Vis hjelp"
 
-#: zathura/config.c:469
+#: zathura/config.c:492
 msgid "Open document"
 msgstr "Åpne dokument"
 
-#: zathura/config.c:470
+#: zathura/config.c:493
 msgid "Close zathura"
 msgstr "Lukk zathura"
 
-#: zathura/config.c:471
+#: zathura/config.c:494
 msgid "Print document"
 msgstr "Skriv ut dokument"
 
-#: zathura/config.c:472
+#: zathura/config.c:495
 msgid "Save document"
 msgstr "Lagre dokument"
 
-#: zathura/config.c:473
+#: zathura/config.c:496
 msgid "Save document (and force overwriting)"
 msgstr "Lagre dokument (og tving til å skrive over)"
 
-#: zathura/config.c:474
+#: zathura/config.c:497
 msgid "Save attachments"
 msgstr "Lagre vedlegg"
 
-#: zathura/config.c:475
+#: zathura/config.c:498
 msgid "Set page offset"
 msgstr ""
 
-#: zathura/config.c:476
+#: zathura/config.c:499
 msgid "Mark current location within the document"
 msgstr "Marker nåværende lokalasjon i dokumentet"
 
-#: zathura/config.c:477
+#: zathura/config.c:500
 msgid "Delete the specified marks"
 msgstr "Slett spesifiserte merker"
 
-#: zathura/config.c:478
+#: zathura/config.c:501
 msgid "Don't highlight current search results"
 msgstr "Ikke uthev gjeldende søkeresultater"
 
-#: zathura/config.c:479
+#: zathura/config.c:502
 msgid "Highlight current search results"
 msgstr "Uthev følgende søkeresultater"
 
-#: zathura/config.c:480
+#: zathura/config.c:503
 msgid "Show version information"
 msgstr "Vis versjonsinformasjon"
 
@@ -630,15 +638,15 @@ msgstr ""
 msgid "Start in a non-default mode"
 msgstr "Start i ikke-standard modus"
 
-#: zathura/page-widget.c:660
+#: zathura/page-widget.c:654
 msgid "Loading..."
 msgstr "Laster..."
 
-#: zathura/page-widget.c:1114
+#: zathura/page-widget.c:1113
 msgid "Copy image"
 msgstr "Kopier bilde"
 
-#: zathura/page-widget.c:1115
+#: zathura/page-widget.c:1114
 msgid "Save image as"
 msgstr "Lagre bilde som"
 
@@ -667,26 +675,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Dette dokumenetet inneholder ikke noen index"
 
-#: zathura/zathura.c:299 zathura/zathura.c:1401
+#: zathura/zathura.c:304 zathura/zathura.c:1453
 msgid "[No name]"
 msgstr "[Inget navn]"
 
-#: zathura/zathura.c:767
+#: zathura/zathura.c:828
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
 
-#: zathura/zathura.c:783
+#: zathura/zathura.c:844
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:872
+#: zathura/zathura.c:933
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:907
+#: zathura/zathura.c:968
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Usupportert filtype. Vennligst innstaller den nødvendige pluginen."
 
-#: zathura/zathura.c:917
+#: zathura/zathura.c:978
 msgid "Document does not contain any pages"
 msgstr "Dokumentet inneholder ingen sider"

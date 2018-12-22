@@ -7,7 +7,14 @@ zathura_resources = gnome.compile_resources(
 )
 
 install_data('org.pwmt.zathura.xml', install_dir: dbusinterfacesdir)
-install_data('org.pwmt.zathura.png', install_dir: join_paths(datadir, 'icons', 'hicolor', '128x128', 'apps'))
+install_data('org.pwmt.zathura.svg', install_dir: join_paths(datadir, 'icons', 'scalable', 'apps'))
+
+rsvg_convert = find_program('rsvg-convert', required: get_option('convert-icon'), native: true)
+if rsvg_convert.found()
+  foreach width : [16, 32, 64, 128, 256]
+    subdir('icon-@0@'.format(width))
+  endforeach
+endif
 
 i18n = import('i18n')
 podir = join_paths(meson.source_root(), 'po')
@@ -29,7 +36,7 @@ appdata = i18n.merge_file('appdata',
   po_dir: podir,
 )
 
-desktop_file_validate = find_program('desktop-file-validate', required: false)
+desktop_file_validate = find_program('desktop-file-validate', required: get_option('tests'), native: true)
 if desktop_file_validate.found()
   test('validate-desktop',
     desktop_file_validate,
@@ -37,11 +44,11 @@ if desktop_file_validate.found()
   )
 endif
 
-appstream_util = find_program('appstream-util', required: false)
+appstream_util = find_program('appstream-util', required: get_option('tests'), native: true)
 if appstream_util.found()
   test('validate-appdata',
     appstream_util,
-    args: ['validate-relax', appdata.full_path()]
+    args: ['validate-relax', '--nonet', appdata.full_path()]
   )
 endif
 
