@@ -10,7 +10,7 @@ Requirements
 meson (>= 0.47)
 gtk3 (>= 3.22)
 glib (>= 2.50)
-girara (>= 0.2.8)
+girara (>= 0.3.2)
 sqlite3 (optional, >= 3.5.9)
 check (optional build dependency, for tests)
 libmagic from file(1) (optional, for mime-type detection)
