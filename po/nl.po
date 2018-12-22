@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-09 23:06+0100\n"
-"PO-Revision-Date: 2018-09-04 19:17+0000\n"
+"PO-Revision-Date: 2018-12-10 12:13+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/pwmt/zathura/language/nl/)\n"
 "Language: nl\n"
@@ -276,7 +276,7 @@ msgstr "Kolom van de eerste pagina"
 
 #: zathura/config.c:195
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Pagina's van rechts naar links tonen"
 
 #: zathura/config.c:197
 msgid "Scroll step"
@@ -452,7 +452,7 @@ msgstr "Paginanummer weergeven in de venstertitel"
 
 #: zathura/config.c:278
 msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Eerste documentpagina gebruiken als vensterpictogram"
 
 #: zathura/config.c:280
 msgid "Use basename of the file in the statusbar"
