@@ -12,15 +12,15 @@ gtk3 (>= 3.22)
 glib (>= 2.50)
 girara (>= 0.2.8)
 sqlite3 (optional, >= 3.5.9)
-check (optional, for tests)
-intltool
+check (optional build dependency, for tests)
 libmagic from file(1) (optional, for mime-type detection)
 libsynctex from TeXLive (optional, for SyncTeX support)
 libseccomp (optional, for sandbox support)
-Sphinx (optional, for manpages and HTML documentation)
-doxygen (optional, for HTML documentation)
-breathe (optional, for HTML documentation)
-sphinx_rtd_theme (optional, for HTML documentation)
+librvsg-bin (optional build dependency, for icons)
+Sphinx (optional build dependency, for manpages and HTML documentation)
+doxygen (optional build dependency, for HTML documentation)
+breathe (optional build dependency, for HTML documentation)
+sphinx_rtd_theme (optional build dependency, for HTML documentation)
 
 Note that Sphinx is needed to build the manpages.  If it is not installed, the
 man pages won't be built. For building the HTML documentation, doxygen, breathe
