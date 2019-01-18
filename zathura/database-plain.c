@@ -653,8 +653,13 @@ zathura_db_read_key_file_from_file(const char* path)
   }
 
   /* open file */
-  FILE* file = fopen(path, "rw");
+  FILE* file = fopen(path, "r+");
   if (file == NULL) {
+    return NULL;
+  }
+  /* and lock it */
+  if (file_lock_set(fileno(file), F_WRLCK) != 0) {
+    fclose(file);
     return NULL;
   }
 
@@ -665,7 +670,6 @@ zathura_db_read_key_file_from_file(const char* path)
   }
 
   /* read config file */
-  file_lock_set(fileno(file), F_WRLCK);
   char* content = girara_file_read2(file);
   fclose(file);
   if (content == NULL) {
@@ -728,8 +732,7 @@ zathura_db_write_key_file_to_file(const char* file, GKeyFile* key_file)
     return;
   }
 
-  file_lock_set(fd, F_WRLCK);
-  if (write(fd, content, strlen(content)) == 0) {
+  if (file_lock_set(fd, F_WRLCK) != 0 || write(fd, content, strlen(content)) == 0) {
     girara_error("Failed to write to %s", file);
   }
   close(fd);
@@ -782,7 +785,10 @@ plain_io_read(GiraraInputHistoryIO* db)
   }
 
   /* read input history file */
-  file_lock_set(fileno(file), F_RDLCK);
+  if (file_lock_set(fileno(file), F_RDLCK) != 0) {
+    fclose(file);
+    return NULL;
+  }
   char* content = girara_file_read2(file);
   fclose(file);
 
@@ -813,7 +819,10 @@ plain_io_append(GiraraInputHistoryIO* db, const char* input)
   }
 
   /* read input history file */
-  file_lock_set(fileno(file), F_WRLCK);
+  if (file_lock_set(fileno(file), F_WRLCK) != 0) {
+    fclose(file);
+    return;
+  }
   char* content = girara_file_read2(file);
 
   rewind(file);
