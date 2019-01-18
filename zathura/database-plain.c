@@ -36,7 +36,11 @@
 
 #ifdef __GNU__
 #include <sys/file.h>
-#define file_lock_set(fd, cmd) flock(fd, cmd)
+static int
+file_lock_set(int fd, int cmd)
+{
+  return flock(fd, cmd);
+}
 #else
 static int
 file_lock_set(int fd, short cmd)
