@@ -46,7 +46,7 @@ static int
 file_lock_set(int fd, short cmd)
 {
   struct flock lock = { .l_type = cmd, .l_start = 0, .l_whence = SEEK_SET, .l_len = 0};
-  return fcntl(fd, F_SETLK, lock);
+  return fcntl(fd, F_SETLKW, lock);
 }
 #endif
 
