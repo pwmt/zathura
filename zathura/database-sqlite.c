@@ -251,6 +251,13 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
   if (new_db == true)
     return;
 
+#ifndef SQLITE_OMIT_COMPILEOPTION_DIAGS
+  if (sqlite3_compileoption_used("SQLITE_OMIT_ALTERTABLE") == 1) {
+    girara_error("sqlite3 built without support for ALTER, cannot update database");
+    return;
+  }
+#endif
+
   bool all_updates_ok = true;
   if (database_version < 1)
   {

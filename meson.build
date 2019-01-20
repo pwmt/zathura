@@ -68,7 +68,7 @@ flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
 additional_sources = []
-sqlite = dependency('sqlite3', version: '>=3.5.9', required: get_option('sqlite'))
+sqlite = dependency('sqlite3', version: '>=3.6.23', required: get_option('sqlite'))
 synctex = dependency('synctex', required: get_option('synctex'))
 magic = cc.find_library('magic', required: get_option('magic'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))

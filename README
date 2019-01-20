@@ -15,7 +15,7 @@ The following dependencies are required:
 
 The following dependencies are optional:
 
-* sqlite3 (>= 3.5.9): splite3 database backend
+* sqlite3 (>= 3.6.23): splite3 database backend
 * libmagic from file(1): for mime-type detection
 * libsynctex from TeXLive: SyncTeX support
 * libseccomp: sandbox support
