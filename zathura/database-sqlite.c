@@ -255,12 +255,12 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
   if (database_version < 1)
   {
     /* check existing tables for missing columns */
-    bool res1, res2, ret1, ret2;
+    bool res1, ret1;
     ret1 = check_column(session, "fileinfo", "pages_per_row", &res1);
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: pages_per_row, position_x, position_y");
         all_updates_ok = false;
       }
     }
@@ -269,7 +269,7 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: first_page_column");
         all_updates_ok = false;
       }
     }
@@ -278,7 +278,7 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: time");
         all_updates_ok = false;
       }
     }
@@ -287,7 +287,7 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER4, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: zoom");
         all_updates_ok = false;
       }
     }
@@ -296,17 +296,16 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER5, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: pages_right_to_left");
         all_updates_ok = false;
       }
     }
 
     ret1 = check_column(session, "bookmarks", "hadj_ratio", &res1);
-    ret2 = check_column(session, "bookmarks", "vadj_ratio", &res2);
 
-    if (ret1 == true && ret2 == true && res1 == false && res2 == false) {
+    if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: hadj_ration, vadj_ratio");
         all_updates_ok = false;
       }
     }
@@ -331,7 +330,7 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
       g_strlcat(transaction, tx_end, sizeof(transaction));
 
       if (sqlite3_exec(session, transaction, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout");
+        girara_warning("failed to update database table layout: first_page_column");
         all_updates_ok = false;
       }
     }
