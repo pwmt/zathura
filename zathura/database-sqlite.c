@@ -354,6 +354,9 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     return;
   }
 
+  /* Set busy timeout to 1s. */
+  sqlite3_busy_timeout(session, 1000);
+
   const int database_version = sqlite_get_user_version(session);
   if (database_version == -1) {
     girara_error("Failed to query database version.");
