@@ -19,7 +19,7 @@ _zathura() {
       libcb.so)
         EXTS="$EXTS|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
         ;;
-      esac
+    esac
   done
 
   _filedir "${EXTS#|}"
