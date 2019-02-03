@@ -5,10 +5,10 @@ _zathura() {
   for PLUGIN in @PLUGINDIR@/lib*.so; do
     case ${PLUGIN##*/} in
       libpdf-poppler.so)
-        EXTS="$EXTS|pdf"
+        EXTS="$EXTS|pdf|PDF"
         ;;
       libpdf-mupdf.so)
-        EXTS="$EXTS|pdf|epub|oxps"
+        EXTS="$EXTS|pdf|PDF|epub|oxps"
         ;;
       libps.so)
         EXTS="$EXTS|ps|eps|epsi|epsf"
