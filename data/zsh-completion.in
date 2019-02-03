@@ -42,7 +42,7 @@ for PLUGIN in @PLUGINDIR@/lib*.so; do
     libcb.so)
       exts="$exts|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
       ;;
-    esac
+  esac
 done
 
 case $state in
