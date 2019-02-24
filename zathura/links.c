@@ -225,21 +225,14 @@ link_launch(zathura_t* zathura, const zathura_link_t* link)
     return;
   };
 
-  char* path = NULL;
-  if (g_path_is_absolute(link->target.value) == TRUE) {
-    path = g_strdup(link->target.value);
-  } else {
-    const char* document = zathura_document_get_path(zathura->document);
-    char* dir  = g_path_get_dirname(document);
-    path = g_build_filename(dir, link->target.value, NULL);
-    g_free(dir);
-  }
+  const char* document = zathura_document_get_path(zathura->document);
+  char* dir  = g_path_get_dirname(document);
 
-  if (girara_xdg_open(path) == false) {
+  if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
 
-  g_free(path);
+  g_free(dir);
 }
 
 void
