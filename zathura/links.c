@@ -235,9 +235,7 @@ link_launch(zathura_t* zathura, const zathura_link_t* link)
     g_free(dir);
   }
 
-  if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
-    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
-  } else  if (girara_xdg_open(path) == false) {
+  if (girara_xdg_open(path) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
 
@@ -251,6 +249,11 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     return;
   }
 
+  if (link->type != ZATHURA_LINK_GOTO_DEST && zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
+    return;
+  }
+
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
       link_goto_dest(zathura, link);
@@ -259,9 +262,7 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       link_remote(zathura, link->target.value);
       break;
     case ZATHURA_LINK_URI:
-      if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
-      } else if (girara_xdg_open(link->target.value) == false) {
+      if (girara_xdg_open(link->target.value) == false) {
         girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
       }
       break;
