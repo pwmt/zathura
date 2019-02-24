@@ -1055,7 +1055,7 @@ sandbox
 Defines the sandbox mode to use for the seccomp syscall filter. Possible
 values are "none", "normal" and "strict". If "none" is used, the sandbox
 will be disabled. The use of "normal" will provide minimal protection and
-allow normal use of seccomp with support for all features. The "strict" mode
+allow normal use of zathura with support for all features. The "strict" mode
 is a read only sandbox that is intended for viewing documents only.
 
 * Value type: String
@@ -1069,6 +1069,9 @@ Some features are disabled when using strict sandbox mode:
 * bookmarks and history
 
 No feature regressions are expected when using normal sandbox mode.
+
+When running under WSL, the default is "none" since seccomp is not supported in
+that environment.
 
 window-icon-document
 ^^^^^^^^^^^^^^^^^^^^

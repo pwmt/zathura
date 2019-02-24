@@ -292,7 +292,9 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
+  /* default to no sandbox when running in WSL */
+  string_value = running_under_wsl() ? "none" : "normal";
+  girara_setting_add(gsession, "sandbox",                string_value, STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \
