@@ -893,10 +893,11 @@ Defines if scrolling by half or full pages stops at page boundaries.
 
 smooth-scroll
 ^^^^^^^^^^^^^
-Defines if scrolling via touchpad should be smooth.
+Defines if scrolling via touchpad should be smooth. Note that under Wayland
+smooth scrolling needs to be enabled for touchpads to be usable.
 
 * Value type: Boolean
-* Default value: false
+* Default value: true
 
 link-zoom
 ^^^^^^^^^
