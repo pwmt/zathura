@@ -255,9 +255,7 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
       link_remote(zathura, link->target.value);
       break;
     case ZATHURA_LINK_URI:
-      if (girara_xdg_open(link->target.value) == false) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-      }
+      link_launch(zathura, link);
       break;
     case ZATHURA_LINK_LAUNCH:
       link_launch(zathura, link);
