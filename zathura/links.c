@@ -249,15 +249,19 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
 
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
+      girara_debug("Going to link destination: page: %d", link->target.page_number);
       link_goto_dest(zathura, link);
       break;
     case ZATHURA_LINK_GOTO_REMOTE:
+      girara_debug("Going to remote destination: %s", link->target.value);
       link_remote(zathura, link->target.value);
       break;
     case ZATHURA_LINK_URI:
+      girara_debug("Opening URI: %s", link->target.value);
       link_launch(zathura, link);
       break;
     case ZATHURA_LINK_LAUNCH:
+      girara_debug("Launching link: %s", link->target.value);
       link_launch(zathura, link);
       break;
     default:
