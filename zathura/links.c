@@ -16,8 +16,8 @@
 
 struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
-  zathura_link_type_t type; /**< Link type */
   zathura_link_target_t target; /**< Link target */
+  zathura_link_type_t type; /**< Link type */
 };
 
 zathura_link_t*
