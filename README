@@ -17,7 +17,7 @@ The following dependencies are optional:
 
 * sqlite3 (>= 3.6.23): splite3 database backend
 * libmagic from file(1): for mime-type detection
-* libsynctex from TeXLive: SyncTeX support
+* libsynctex from TeXLive (>= 1.19): SyncTeX support
 * libseccomp: sandbox support
 
 For building zathura, the following dependencies are also required:

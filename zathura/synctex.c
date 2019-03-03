@@ -16,14 +16,6 @@
 #include "adjustment.h"
 
 #ifdef WITH_SYNCTEX
-#ifdef WITH_SYNCTEX1
-typedef synctex_scanner_t synctex_scanner_p;
-typedef synctex_node_t synctex_node_p;
-
-#define synctex_scanner_next_result(scanner) synctex_next_result(scanner)
-#define synctex_display_query(scanner, file, line, column, page) synctex_display_query(scanner, file, line, column)
-#endif
-
 bool
 synctex_get_input_line_column(const char* filename, unsigned int page, int x, int y,
     char** input_file, unsigned int* line, unsigned int* column)
