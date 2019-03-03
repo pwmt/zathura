@@ -24,19 +24,19 @@ zathura_link_t*
 zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
                  zathura_link_target_t target)
 {
-  zathura_link_t* link = g_try_malloc0(sizeof(zathura_link_t));
+  zathura_link_t* link = g_slice_new(zathura_link_t);
   if (link == NULL) {
     return NULL;
   }
 
-  link->type     = type;
   link->position = position;
+  link->target   = target;
+  link->type     = type;
 
+  /* duplicate target.value if necessary */
   switch (type) {
     case ZATHURA_LINK_NONE:
     case ZATHURA_LINK_GOTO_DEST:
-      link->target = target;
-
       if (target.value != NULL) {
         link->target.value = g_strdup(target.value);
       }
@@ -45,15 +45,16 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
     case ZATHURA_LINK_URI:
     case ZATHURA_LINK_LAUNCH:
     case ZATHURA_LINK_NAMED:
+      /* target.value is required for these cases */
       if (target.value == NULL) {
-        g_free(link);
+        g_slice_free(zathura_link_t, link);
         return NULL;
       }
 
       link->target.value = g_strdup(target.value);
       break;
     default:
-      g_free(link);
+      g_slice_free(zathura_link_t, link);
       return NULL;
   }
 
@@ -82,7 +83,7 @@ zathura_link_free(zathura_link_t* link)
       break;
   }
 
-  g_free(link);
+  g_slice_free(zathura_link_t, link);
 }
 
 zathura_link_type_t
