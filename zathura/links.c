@@ -99,7 +99,7 @@ zathura_rectangle_t
 zathura_link_get_position(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_rectangle_t position = { 0, 0, 0, 0 };
+    const zathura_rectangle_t position = { 0, 0, 0, 0 };
     return position;
   }
 
@@ -110,7 +110,7 @@ zathura_link_target_t
 zathura_link_get_target(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
+    const zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
     return target;
   }
 
@@ -163,22 +163,22 @@ link_goto_dest(zathura_t* zathura, const zathura_link_t* link)
   girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
   /* scale and rotate */
-  double scale = zathura_document_get_scale(zathura->document);
-  double shiftx = link->target.left * scale / (double)cell_width;
-  double shifty = link->target.top * scale / (double)cell_height;
+  const double scale = zathura_document_get_scale(zathura->document);
+  double shiftx = link->target.left * scale / cell_width;
+  double shifty = link->target.top * scale / cell_height;
   page_calc_position(zathura->document, shiftx, shifty, &shiftx, &shifty);
 
   /* shift the position or set to auto */
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
       link->target.left != -1 && link_hadjust == true) {
-    pos_x += shiftx / (double)doc_width;
+    pos_x += shiftx / doc_width;
   } else {
     pos_x = -1;     /* -1 means automatic */
   }
 
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
       link->target.top != -1) {
-    pos_y += shifty / (double)doc_height;
+    pos_y += shifty / doc_height;
   } else {
     pos_y = -1;     /* -1 means automatic */
   }
@@ -223,10 +223,10 @@ link_launch(zathura_t* zathura, const zathura_link_t* link)
   /* get file path */
   if (link->target.value == NULL) {
     return;
-  };
+  }
 
   const char* document = zathura_document_get_path(zathura->document);
-  char* dir  = g_path_get_dirname(document);
+  char* dir            = g_path_get_dirname(document);
 
   if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
