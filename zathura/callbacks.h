@@ -116,8 +116,9 @@ void cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpo
  * @param widget The main window widget
  * @param event The configure event
  * @param gpointer The zathura instance
+ * @return true if no error occurred and the event has been handled
  */
-void cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
+gboolean cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
 
 /**
  * This function gets called when the view widget scale factor changes (e.g.

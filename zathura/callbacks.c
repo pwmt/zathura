@@ -256,15 +256,17 @@ cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer
   zathura_update_view_ppi(zathura);
 }
 
-void
+gboolean
 cb_widget_configured(GtkWidget* UNUSED(widget), GdkEvent* UNUSED(event), gpointer data)
 {
   zathura_t* zathura = data;
   if (zathura == NULL) {
-    return;
+    return false;
   }
 
   zathura_update_view_ppi(zathura);
+
+  return false;
 }
 
 void
