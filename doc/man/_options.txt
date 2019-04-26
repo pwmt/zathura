@@ -35,6 +35,9 @@
   Instead of looking for an instance having the correct file opened, try only
   the instance with the given PID. Note that if the given PID does not have the
   correct file open or does not exist, no new instance will be spanned.
+  
+--mode=mode
+  Start in a non-default mode
 
 --fork
   Fork into background
