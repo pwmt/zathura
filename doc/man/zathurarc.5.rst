@@ -62,16 +62,6 @@ accordingly or to escape the hash symbol.
     set default-fg "#CCBBCC"
     set default-fg \#CCBBCC
 
-map - Mapping a shortcut
-------------------------
-It is possible to map or remap new key bindings to shortcut functions which
-allows a high level of customization. The ``:map`` command can also be used in
-the *zathurarc* file to make those changes permanent:
-
-::
-
-    map [mode] <binding> <shortcut function> <argument>
-
 include - Including another config file
 ---------------------------------------
 This commands allows one to include other configuration files. If a relative
@@ -81,6 +71,16 @@ is currently processed.
 ::
 
     include another-config
+
+map - Mapping a shortcut
+------------------------
+It is possible to map or remap new key bindings to shortcut functions which
+allows a high level of customization. The ``:map`` command can also be used in
+the *zathurarc* file to make those changes permanent:
+
+::
+
+    map [mode] <binding> <shortcut function> <argument>
 
 Mode
 ^^^^
@@ -122,7 +122,8 @@ keyboard. It is possible to use the following modifiers:
 * C - Control
 * S - Shift
 
-Now it is required to define the ``binding`` with the following structure:
+If any of the modifiers should be used for a binding, it is required to define
+the ``binding`` with the following structure:
 
 ::
 
@@ -313,10 +314,18 @@ The following shortcut functions can be mapped:
   Zoom in or out.
 
 * ``mark_add``
+
   Set a quickmark.
 
 * ``mark_evaluate``
+
   Go to a quickmark.
+
+* ``feedkeys``
+
+  Simulate key presses. Note that all keys will be interpreted as if pressing a
+  key on the keyboard. To input uppercase letters, follow the same convention as
+  for key bindings, i.e. for ``X``, use ``<S-X>``.
 
 
 Pass arguments
