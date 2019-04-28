@@ -153,7 +153,6 @@ config_load_default(zathura_t* zathura)
   int int_value              = 0;
   float float_value          = 0;
   bool bool_value            = false;
-  char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */
@@ -279,21 +278,19 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
+  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,   BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
-  string_value = "";
-  girara_setting_add(gsession, "synctex-editor-command", string_value, STRING,  false, _("Synctex editor command"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "continuous-hist-save",   &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
-  string_value = "primary";
-  girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
+  girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
   /* default to no sandbox when running in WSL */
-  string_value = running_under_wsl() ? "none" : "normal";
+  const char* string_value = running_under_wsl() ? "none" : "normal";
   girara_setting_add(gsession, "sandbox",                string_value, STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
