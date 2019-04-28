@@ -23,7 +23,7 @@
 
 static void
 cb_jumplist_change(girara_session_t* session, const char* name,
-                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -46,7 +46,7 @@ cb_jumplist_change(girara_session_t* session, const char* name,
 
 static void
 cb_color_change(girara_session_t* session, const char* name,
-                girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -78,34 +78,34 @@ cb_color_change(girara_session_t* session, const char* name,
 
 static void
 cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
-                      girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                      girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  bool* bvalue = value;
+  const bool* bvalue = value;
   document_draw_search_results(zathura, !*bvalue);
   render_all(zathura);
 }
 
 static void
 cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
-                     girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                     girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
 
-  bool inc_search = *(bool*) value;
+  bool inc_search = *(const bool*) value;
   girara_special_command_add(session, '/', cmd_search, inc_search, FORWARD,  NULL);
   girara_special_command_add(session, '?', cmd_search, inc_search, BACKWARD, NULL);
 }
 
 static void
 cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
-                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -126,7 +126,7 @@ cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
 
 static void
 cb_window_statbusbar_changed(girara_session_t* session, const char* name,
-                             girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                             girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
