@@ -180,7 +180,8 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     { _("Producer"),          ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
     { _("Creation date"),     ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
     { _("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE },
-    { _("Format"),            ZATHURA_DOCUMENT_INFORMATION_FORMAT }
+    { _("Format"),            ZATHURA_DOCUMENT_INFORMATION_FORMAT },
+    { _("Other"),             ZATHURA_DOCUMENT_INFORMATION_OTHER }
   };
 
   girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
