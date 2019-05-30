@@ -167,7 +167,7 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   }
 
   struct meta_field {
-    char* name;
+    const char* name;
     zathura_document_information_type_t field;
   };
 
