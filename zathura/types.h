@@ -71,7 +71,8 @@ typedef enum zathura_document_information_type_e
   ZATHURA_DOCUMENT_INFORMATION_PRODUCER, /**< Producer of the document */
   ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE, /**< Creation data */
   ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE, /**< Modification data */
-  ZATHURA_DOCUMENT_INFORMATION_OTHER /**< Any other information */
+  ZATHURA_DOCUMENT_INFORMATION_OTHER, /**< Any other information */
+  ZATHURA_DOCUMENT_INFORMATION_FORMAT /**< Format of the document */
 } zathura_document_information_type_t;
 
 /**
