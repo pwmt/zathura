@@ -173,9 +173,9 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
   const struct meta_field meta_fields[] = {
     { _("Title"),             ZATHURA_DOCUMENT_INFORMATION_TITLE },
-    { _("Author"),            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
     { _("Subject"),           ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
     { _("Keywords"),          ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { _("Author"),            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
     { _("Creator"),           ZATHURA_DOCUMENT_INFORMATION_CREATOR },
     { _("Producer"),          ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
     { _("Creation date"),     ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
