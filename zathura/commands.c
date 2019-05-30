@@ -201,8 +201,8 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
     }
   );
 
-  if (strlen(string->str) > 0) {
-    g_string_erase(string, strlen(string->str) - 1, 1);
+  if (string->len > 0) {
+    g_string_erase(string, string->len - 1, 1);
     girara_notify(session, GIRARA_INFO, "%s", string->str);
   } else {
     girara_notify(session, GIRARA_INFO, _("No information available."));
