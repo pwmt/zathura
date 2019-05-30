@@ -191,15 +191,15 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
   GString* string = g_string_new(NULL);
 
-  GIRARA_LIST_FOREACH_BODY(information, zathura_document_information_entry_t*, entry,
-    if (entry != NULL) {
-      for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+  for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+    GIRARA_LIST_FOREACH_BODY(information, zathura_document_information_entry_t*, entry,
+      if (entry != NULL) {
         if (meta_fields[i].field == entry->type) {
           g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
         }
       }
-    }
-  );
+    );
+  }
 
   if (string->len > 0) {
     g_string_erase(string, string->len - 1, 1);
