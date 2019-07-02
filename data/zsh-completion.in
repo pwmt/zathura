@@ -16,7 +16,7 @@ all_opts=(
   '--mode=mode[Start in a non-default mode]:mode:(presentation fullscreen)'
   '--fork[Fork into the background]'
   '-h --help[Show help message]'
-  '-V --version[Print version information]'
+  '-v --version[Print version information]'
   '*:file:->files'
 )
 
