@@ -104,14 +104,14 @@ hand it is possible to just assign single letters, numbers or signs to it:
 
 ::
 
-    map a shortcut_function
-    map b shortcut_function
-    map c shortcut_function
-    map 1 shortcut_function
-    map 2 shortcut_function
-    map 3 shortcut_function
-    map ! shortcut_function
-    map ? shortcut_function
+    map a shortcut_function optional_argument
+    map b shortcut_function optional_argument
+    map c shortcut_function optional_argument
+    map 1 shortcut_function optional_argument
+    map 2 shortcut_function optional_argument
+    map 3 shortcut_function optional_argument
+    map ! shortcut_function optional_argument
+    map ? shortcut_function optional_argument
 
 Using modifiers
 ^^^^^^^^^^^^^^^
