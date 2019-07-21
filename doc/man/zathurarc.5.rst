@@ -244,7 +244,8 @@ The following shortcut functions can be mapped:
 
 * ``jumplist``
 
-  Move forwards/backwards in the jumplist.
+  Move forwards/backwards in the jumplist. Pass ``forward`` as argument to
+  move to the next entry and ``backward`` to move to the previous one.
 
 * ``navigate``
 
@@ -333,12 +334,14 @@ Possible arguments are:
 
 * best-fit
 * bottom
+* backward
 * collapse
 * collapse-all
 * default
 * down
 * expand
 * expand-all
+* forward
 * full-down
 * full-up
 * half-down
