@@ -104,14 +104,14 @@ hand it is possible to just assign single letters, numbers or signs to it:
 
 ::
 
-    map a shortcut_function
-    map b shortcut_function
-    map c shortcut_function
-    map 1 shortcut_function
-    map 2 shortcut_function
-    map 3 shortcut_function
-    map ! shortcut_function
-    map ? shortcut_function
+    map a shortcut_function optional_argument
+    map b shortcut_function optional_argument
+    map c shortcut_function optional_argument
+    map 1 shortcut_function optional_argument
+    map 2 shortcut_function optional_argument
+    map 3 shortcut_function optional_argument
+    map ! shortcut_function optional_argument
+    map ? shortcut_function optional_argument
 
 Using modifiers
 ^^^^^^^^^^^^^^^
@@ -245,7 +245,8 @@ The following shortcut functions can be mapped:
 
 * ``jumplist``
 
-  Move forwards/backwards in the jumplist.
+  Move forwards/backwards in the jumplist. Pass ``forward`` as argument to
+  move to the next entry and ``backward`` to move to the previous one.
 
 * ``navigate``
 
@@ -342,12 +343,14 @@ Possible arguments are:
 
 * best-fit
 * bottom
+* backward
 * collapse
 * collapse-all
 * default
 * down
 * expand
 * expand-all
+* forward
 * full-down
 * full-up
 * half-down
