@@ -420,6 +420,9 @@ zathura_init(zathura_t* zathura)
     return false;
   }
 
+  /* Set application ID */
+  g_set_prgname("org.pwmt.zathura");
+
   /* create zathura (config/data) directory */
   create_directories(zathura);
 
