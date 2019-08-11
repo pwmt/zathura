@@ -66,4 +66,4 @@ zsh_completion = configure_file(
 )
 
 install_data(bash_completion, install_dir: join_paths(datadir, 'bash-completion', 'completions'))
-install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'vendor-completions'))
+install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'site-functions'))
