@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-01 11:05+0200\n"
+"POT-Creation-Date: 2019-08-11 21:42+0200\n"
 "PO-Revision-Date: 2018-12-10 12:13+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/pwmt/zathura/language/nl/)\n"
@@ -695,30 +695,30 @@ msgstr "Patroon niet gevonden: %s"
 msgid "This document does not contain any index"
 msgstr "Dit document bevat geen index"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1453
+#: zathura/zathura.c:304 zathura/zathura.c:1456
 msgid "[No name]"
 msgstr "[Naamloos]"
 
-#: zathura/zathura.c:828
+#: zathura/zathura.c:831
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Bestand kan niet worden gelezen uit stdin en worden weggeschreven naar een "
 "tijdelijk bestand."
 
-#: zathura/zathura.c:844
+#: zathura/zathura.c:847
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Bestand kan niet worden gelezen uit GIO en worden gekopieerd naar een "
 "tijdelijk bestand."
 
-#: zathura/zathura.c:933
+#: zathura/zathura.c:936
 msgid "Enter password:"
 msgstr "Wachtwoord invoeren:"
 
-#: zathura/zathura.c:968
+#: zathura/zathura.c:971
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Niet-ondersteund bestandstype. Installeer de benodigde plug-in."
 
-#: zathura/zathura.c:978
+#: zathura/zathura.c:981
 msgid "Document does not contain any pages"
 msgstr "Document bevat geen pagina's"

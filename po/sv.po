@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-01 11:05+0200\n"
-"PO-Revision-Date: 2018-12-09 23:05+0100\n"
+"POT-Creation-Date: 2019-08-11 21:42+0200\n"
+"PO-Revision-Date: 2019-08-08 12:29+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/pwmt/zathura/language/sv/)\n"
 "Language: sv\n"
@@ -284,7 +284,7 @@ msgstr "Kolumn för den första sidan"
 
 #: zathura/config.c:194
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Rendera sidor från höger till vänster"
 
 #: zathura/config.c:196
 msgid "Scroll step"
@@ -456,7 +456,7 @@ msgstr "Visa sidnummer i fönstertiteln"
 
 #: zathura/config.c:277
 msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Använd den första sidan från ett dokument som fönsterikon"
 
 #: zathura/config.c:279
 msgid "Use basename of the file in the statusbar"
@@ -687,26 +687,26 @@ msgstr "Mönster hittades inte: %s"
 msgid "This document does not contain any index"
 msgstr "Detta dokument innehåller inget index"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1453
+#: zathura/zathura.c:304 zathura/zathura.c:1456
 msgid "[No name]"
 msgstr "[Namnlös]"
 
-#: zathura/zathura.c:828
+#: zathura/zathura.c:831
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunde inte läsa fil från stdin och skriva den till en temporärfil."
 
-#: zathura/zathura.c:844
+#: zathura/zathura.c:847
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "Kunde inte läsa fil från GIO och kopiera den till en temporärfil."
 
-#: zathura/zathura.c:933
+#: zathura/zathura.c:936
 msgid "Enter password:"
 msgstr "Ange lösenord:"
 
-#: zathura/zathura.c:968
+#: zathura/zathura.c:971
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Filtyp stöds ej. Installera det nödvändiga insticket."
 
-#: zathura/zathura.c:978
+#: zathura/zathura.c:981
 msgid "Document does not contain any pages"
 msgstr "Dokument innehåller inga sidor"

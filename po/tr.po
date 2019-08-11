@@ -2,15 +2,16 @@
 # SPDX-License-Identifier: Zlib
 #
 # Translators:
-#   <dead-bodies-everywhere@hotmail.com>, 2012.
-#   <femnad@gmail.com>, 2012.
+# hsngrms <dead-bodies-everywhere@hotmail.com>, 2012
+# femnad <femnad@gmail.com>, 2012
+# spero, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-01 11:05+0200\n"
-"PO-Revision-Date: 2018-05-23 20:44+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"POT-Creation-Date: 2019-08-11 21:42+0200\n"
+"PO-Revision-Date: 2019-06-24 08:54+0000\n"
+"Last-Translator: spero\n"
 "Language-Team: Turkish (http://www.transifex.com/pwmt/zathura/language/tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -126,7 +127,7 @@ msgstr "Yer imi silinemedi: %s"
 
 #: zathura/commands.c:119
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Yer imleri bulunamadı."
 
 #: zathura/commands.c:129
 #, c-format
@@ -135,19 +136,19 @@ msgstr "Böyle bir yer imi yok: %s"
 
 #: zathura/commands.c:175
 msgid "Title"
-msgstr ""
+msgstr "Başlık"
 
 #: zathura/commands.c:176
 msgid "Subject"
-msgstr ""
+msgstr "Konu"
 
 #: zathura/commands.c:177
 msgid "Keywords"
-msgstr ""
+msgstr "Anahtar kelimeler"
 
 #: zathura/commands.c:178
 msgid "Author"
-msgstr ""
+msgstr "Yazar"
 
 #: zathura/commands.c:179
 msgid "Creator"
@@ -159,11 +160,11 @@ msgstr ""
 
 #: zathura/commands.c:181
 msgid "Creation date"
-msgstr ""
+msgstr "Oluşturulma tarihi"
 
 #: zathura/commands.c:182
 msgid "Modification date"
-msgstr ""
+msgstr "Düzenleme tarihi"
 
 #: zathura/commands.c:183
 msgid "Format"
@@ -420,7 +421,7 @@ msgstr "Dizinleri göster"
 
 #: zathura/config.c:260
 msgid "Show recent files"
-msgstr ""
+msgstr "Son dosyaları göster"
 
 #: zathura/config.c:262
 msgid "Always open on first page"
@@ -448,11 +449,11 @@ msgstr ""
 
 #: zathura/config.c:275
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Sayfa numarasını pencere başlığında göster"
 
 #: zathura/config.c:277
 msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Pencere ikonu olarak belgenin ilk sayfasını kullan"
 
 #: zathura/config.c:279
 msgid "Use basename of the file in the statusbar"
@@ -579,16 +580,16 @@ msgstr ""
 #: zathura/links.c:280
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Bağlantı: sayfa %d"
 
 #: zathura/links.c:287
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Bağlantı: %s"
 
 #: zathura/links.c:291
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Bağlantı: Geçersiz"
 
 #: zathura/main.c:147
 msgid "Reparents to window specified by xid (X11)"
@@ -604,7 +605,7 @@ msgstr "Veri dizini adresi"
 
 #: zathura/main.c:150
 msgid "Path to the cache directory"
-msgstr ""
+msgstr "Önbellek dizininin adresi"
 
 #: zathura/main.c:151
 msgid "Path to the directories containing plugins"
@@ -683,26 +684,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Bu belge fihrist içermiyor"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1453
+#: zathura/zathura.c:304 zathura/zathura.c:1456
 msgid "[No name]"
 msgstr "[İsimsiz]"
 
-#: zathura/zathura.c:828
+#: zathura/zathura.c:831
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:844
+#: zathura/zathura.c:847
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:933
+#: zathura/zathura.c:936
 msgid "Enter password:"
-msgstr ""
+msgstr "Şifre girin:"
 
-#: zathura/zathura.c:968
+#: zathura/zathura.c:971
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Desteklenmeyen dosya türü. Lütfen gerekli eklentileri yükleyin."
 
-#: zathura/zathura.c:978
+#: zathura/zathura.c:981
 msgid "Document does not contain any pages"
 msgstr ""

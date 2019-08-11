@@ -2,17 +2,18 @@
 # SPDX-License-Identifier: Zlib
 #
 # Translators:
+# Alexander Filev <avfill@outlook.com>, 2019
 # AlexanderR <alexander.r@gmx.com>, 2013
 # Alissa <Chertik89@gmail.com>, 2013
 # Mikhail Krutov <>, 2012
-# vp1981 <irk.translator@yandex.ru>, 2013
+# Vladimir Lomov <irk.translator@yandex.ru>, 2013-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-01 11:05+0200\n"
-"PO-Revision-Date: 2018-05-23 20:44+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"POT-Creation-Date: 2019-08-11 21:42+0200\n"
+"PO-Revision-Date: 2019-07-13 17:26+0000\n"
+"Last-Translator: Alexander Filev <avfill@outlook.com>\n"
 "Language-Team: Russian (http://www.transifex.com/pwmt/zathura/language/ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -37,29 +38,34 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura - это настраиваемая и функциональная программа для просмотра "
+"документов. Она обеспечивает минималистичный и компактный интерфейс, а также "
+"простое использование, которое в основном сосредоточено на взаимодействии с "
+"клавиатурой. Zathura позволяет полностью просматривать и перемещаться по "
+"документам без использования мыши."
 
 #: data/org.pwmt.zathura.appdata.xml.in:21
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "SyncTeX поддержка прямой и обратной синхронизации."
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "Быстрые заметки и закладки."
 
 #: data/org.pwmt.zathura.appdata.xml.in:23
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Автоматическая перезагрузка документов."
 
 #. Translators: Icon of the desktop entry.
 #: data/org.pwmt.zathura.desktop.in:9
 msgid "org.pwmt.zathura"
-msgstr ""
+msgstr "org.pwmt.zathura"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 #: data/org.pwmt.zathura.desktop.in:14
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr ""
+msgstr "PDF,PS,PostScript,DjVU,документ,презентация,просмотрщик;"
 
 #: zathura/callbacks.c:310
 #, c-format
@@ -84,7 +90,7 @@ msgstr "Выделенный текст скопирован в выделени
 #: zathura/callbacks.c:703
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr ""
+msgstr "Скопировано выбранное изображение в выделение %s"
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:281 zathura/commands.c:311
@@ -130,7 +136,7 @@ msgstr "Не удалось удалить закладку %s"
 
 #: zathura/commands.c:119
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Нет доступных закладок."
 
 #: zathura/commands.c:129
 #, c-format
@@ -191,7 +197,7 @@ msgstr "Отсутствуют аргументы."
 
 #: zathura/commands.c:286
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Печать не разрешена в строгом режиме песочницы"
 
 #: zathura/commands.c:317 zathura/commands.c:343
 msgid "Document saved."
@@ -237,7 +243,7 @@ msgstr "Неизвестное вложение или изображение «
 
 #: zathura/commands.c:538
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Exec не разрешен в строгом режиме песочницы"
 
 #: zathura/commands.c:582
 msgid "Argument must be a number."
@@ -264,7 +270,7 @@ msgstr "Бэкэнд базы данных"
 
 #: zathura/config.c:184
 msgid "File monitor backend"
-msgstr ""
+msgstr "Бэкэнд файлового монитора"
 
 #: zathura/config.c:186
 msgid "Zoom step"
@@ -284,7 +290,7 @@ msgstr "Столбец первой страницы"
 
 #: zathura/config.c:194
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Рендеринг страниц справа налево"
 
 #: zathura/config.c:196
 msgid "Scroll step"
@@ -388,7 +394,7 @@ msgstr "Центрировать увеличение по горизонтал�
 
 #: zathura/config.c:243
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Вертикально по центру страницы"
 
 #: zathura/config.c:245
 msgid "Align link target to the left"
@@ -456,7 +462,7 @@ msgstr "Показывать номер страницы в заголовке"
 
 #: zathura/config.c:277
 msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Использовать первую страницу документа в качестве значка окна"
 
 #: zathura/config.c:279
 msgid "Use basename of the file in the statusbar"
@@ -480,7 +486,7 @@ msgstr "Включить сервис D-Bus"
 
 #: zathura/config.c:288
 msgid "Save history at each page change"
-msgstr ""
+msgstr "Сохранить историю при каждом изменении страницы"
 
 #: zathura/config.c:289
 msgid "The clipboard into which mouse-selected data will be written"
@@ -492,7 +498,7 @@ msgstr "Включить уведомления после выделения т
 
 #: zathura/config.c:294
 msgid "Sandbox level"
-msgstr ""
+msgstr "Уровень песочницы"
 
 #. define default inputbar commands
 #: zathura/config.c:483
@@ -578,7 +584,7 @@ msgstr "Не удалось запустить xdg-open"
 
 #: zathura/links.c:247
 msgid "Opening external applications in strict sandbox mode is not permitted"
-msgstr ""
+msgstr "Запрещено открывать внешние приложения в режиме строгой песочницы"
 
 #: zathura/links.c:280
 #, c-format
@@ -666,7 +672,7 @@ msgstr "Сохранить изображение как"
 #: zathura/print.c:110
 #, c-format
 msgid "Printing page %d ..."
-msgstr ""
+msgstr "Печать страницы %d ..."
 
 #: zathura/print.c:192
 #, c-format
@@ -676,40 +682,40 @@ msgstr "Не удалось напечатать %s"
 #: zathura/shortcuts.c:105
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr ""
+msgstr "Неверный режим настройки: %d"
 
 #: zathura/shortcuts.c:974
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "Шаблон не найден: %s"
 
 #: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
 msgstr "В документе нет индекса"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1453
+#: zathura/zathura.c:304 zathura/zathura.c:1456
 msgid "[No name]"
 msgstr "[Без названия]"
 
-#: zathura/zathura.c:828
+#: zathura/zathura.c:831
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Не удалось прочитать файл со стандартного входа и записать его во временный "
 "файл."
 
-#: zathura/zathura.c:844
+#: zathura/zathura.c:847
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Не удалось прочитать файл через GIO и скопировать его во временный файл."
 
-#: zathura/zathura.c:933
+#: zathura/zathura.c:936
 msgid "Enter password:"
 msgstr "Введите пароль:"
 
-#: zathura/zathura.c:968
+#: zathura/zathura.c:971
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Тип файла не поддерживается. Установите соответствующий плагин."
 
-#: zathura/zathura.c:978
+#: zathura/zathura.c:981
 msgid "Document does not contain any pages"
 msgstr "В документе нет страниц"
