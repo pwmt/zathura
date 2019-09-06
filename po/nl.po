@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the zathura package.
 #
 # Translators:
-# Heimen Stoffels <vistausss@outlook.com>, 2017-2018
+# Heimen Stoffels <vistausss@outlook.com>, 2017-2019
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-11 21:42+0200\n"
-"PO-Revision-Date: 2018-12-10 12:13+0000\n"
+"POT-Creation-Date: 2019-09-06 22:48+0200\n"
+"PO-Revision-Date: 2019-08-12 09:52+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/pwmt/zathura/language/nl/)\n"
 "Language: nl\n"
@@ -171,11 +171,11 @@ msgstr "Bijwerkdatum"
 
 #: zathura/commands.c:183
 msgid "Format"
-msgstr ""
+msgstr "Formaat"
 
 #: zathura/commands.c:184
 msgid "Other"
-msgstr ""
+msgstr "Overig"
 
 #: zathura/commands.c:189 zathura/commands.c:209
 msgid "No information available."

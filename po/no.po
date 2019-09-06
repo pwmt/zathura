@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-01 11:05+0200\n"
-"PO-Revision-Date: 2018-05-23 20:44+0000\n"
+"POT-Creation-Date: 2019-09-06 22:48+0200\n"
+"PO-Revision-Date: 2019-08-11 19:46+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Norwegian (http://www.transifex.com/pwmt/zathura/language/"
 "no/)\n"
@@ -683,26 +683,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Dette dokumenetet inneholder ikke noen index"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1453
+#: zathura/zathura.c:304 zathura/zathura.c:1456
 msgid "[No name]"
 msgstr "[Inget navn]"
 
-#: zathura/zathura.c:828
+#: zathura/zathura.c:831
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
 
-#: zathura/zathura.c:844
+#: zathura/zathura.c:847
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:933
+#: zathura/zathura.c:936
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:968
+#: zathura/zathura.c:971
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Usupportert filtype. Vennligst innstaller den nødvendige pluginen."
 
-#: zathura/zathura.c:978
+#: zathura/zathura.c:981
 msgid "Document does not contain any pages"
 msgstr "Dokumentet inneholder ingen sider"
