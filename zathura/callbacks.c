@@ -256,15 +256,17 @@ cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer
   zathura_update_view_ppi(zathura);
 }
 
-void
+gboolean
 cb_widget_configured(GtkWidget* UNUSED(widget), GdkEvent* UNUSED(event), gpointer data)
 {
   zathura_t* zathura = data;
   if (zathura == NULL) {
-    return;
+    return false;
   }
 
   zathura_update_view_ppi(zathura);
+
+  return false;
 }
 
 void
@@ -292,7 +294,7 @@ cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data)
 }
 
 void
-cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -301,7 +303,7 @@ cb_page_layout_value_changed(girara_session_t* session, const char* name, girara
 
   /* pages-per-row must not be 0 */
   if (g_strcmp0(name, "pages-per-row") == 0) {
-    unsigned int pages_per_row = *((unsigned int*) value);
+    unsigned int pages_per_row = *((const unsigned int*) value);
     if (pages_per_row == 0) {
       pages_per_row = 1;
       girara_setting_set(session, name, &pages_per_row);
@@ -557,7 +559,7 @@ cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), za
 
 void
 cb_setting_recolor_change(girara_session_t* session, const char* name,
-                          girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                          girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -565,7 +567,7 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((bool*) value);
+  const bool bool_value = *((const bool*) value);
 
   if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_enabled(zathura->sync.render_thread) != bool_value) {
      zathura_renderer_enable_recolor(zathura->sync.render_thread, bool_value);
@@ -575,7 +577,7 @@ cb_setting_recolor_change(girara_session_t* session, const char* name,
 
 void
 cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
-                                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -583,7 +585,7 @@ cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((bool*) value);
+  const bool bool_value = *((const bool*) value);
 
   if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_hue_enabled(zathura->sync.render_thread) != bool_value) {
      zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, bool_value);
@@ -593,7 +595,7 @@ cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
 
 void
 cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, const char* name,
-                                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -601,7 +603,7 @@ cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, const ch
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((bool*) value);
+  const bool bool_value = *((const bool*) value);
 
   if (zathura->sync.render_thread != NULL && zathura_renderer_recolor_reverse_video_enabled(zathura->sync.render_thread) != bool_value) {
      zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, bool_value);

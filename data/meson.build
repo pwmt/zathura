@@ -64,6 +64,12 @@ zsh_completion = configure_file(
   output: '_zathura',
   configuration: conf_data
 )
+fish_completion = configure_file(
+  input: 'fish-completion.in',
+  output: 'zathura.fish',
+  configuration: conf_data
+)
 
 install_data(bash_completion, install_dir: join_paths(datadir, 'bash-completion', 'completions'))
-install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'vendor-completions'))
+install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'site-functions'))
+install_data(fish_completion, install_dir: join_paths(datadir, 'fish', 'completions'))

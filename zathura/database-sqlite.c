@@ -10,6 +10,9 @@
 #include "database-sqlite.h"
 #include "utils.h"
 
+/* version of the database layout */
+#define DATABASE_VERSION 1
+
 static char*
 sqlite3_column_text_dup(sqlite3_stmt* stmt, int col)
 {
@@ -118,11 +121,48 @@ sqlite_finalize(GObject* object)
   G_OBJECT_CLASS(zathura_sqldatabase_parent_class)->finalize(object);
 }
 
-static void
-sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
+static sqlite3_stmt*
+prepare_statement(sqlite3* session, const char* statement)
 {
-  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
+  if (session == NULL || statement == NULL) {
+    return NULL;
+  }
 
+  const char* pz_tail   = NULL;
+  sqlite3_stmt* pp_stmt = NULL;
+
+  if (sqlite3_prepare_v2(session, statement, -1, &pp_stmt, &pz_tail) != SQLITE_OK) {
+    girara_error("Failed to prepare query: %s", statement);
+    sqlite3_finalize(pp_stmt);
+    return NULL;
+  } else if (pz_tail && *pz_tail != '\0') {
+    girara_error("Unused portion of statement: %s", pz_tail);
+    sqlite3_finalize(pp_stmt);
+    return NULL;
+  }
+
+  return pp_stmt;
+}
+
+static int
+sqlite_get_user_version(sqlite3* session)
+{
+  sqlite3_stmt* stmt = prepare_statement(session, "PRAGMA user_version;");
+  if (stmt == NULL) {
+    return -1;
+  }
+
+  int version = -1;
+  if (sqlite3_step(stmt) == SQLITE_ROW) {
+    version = sqlite3_column_int(stmt, 0);
+  }
+  sqlite3_finalize(stmt);
+  return version;
+}
+
+static void
+sqlite_db_check_layout(sqlite3* session, const int database_version, const bool new_db)
+{
   /* create bookmarks table */
   static const char SQL_BOOKMARK_INIT[] =
     "CREATE TABLE IF NOT EXISTS bookmarks ("
@@ -200,103 +240,141 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
     "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
     "ALTER TABLE bookmarks ADD COLUMN vadj_ratio FLOAT;";
 
+  /* create tables if they don't exist */
+  for (size_t s = 0; s < LENGTH(ALL_INIT); ++s) {
+    if (sqlite3_exec(session, ALL_INIT[s], NULL, 0, NULL) != SQLITE_OK) {
+      girara_error("Failed to initialize database");
+      sqlite3_close(session);
+      return;
+    }
+  }
+  if (new_db == true)
+    return;
+
+#ifndef SQLITE_OMIT_COMPILEOPTION_DIAGS
+  if (sqlite3_compileoption_used("SQLITE_OMIT_ALTERTABLE") == 1) {
+    girara_error("sqlite3 built without support for ALTER, cannot update database");
+    return;
+  }
+#endif
+
+  bool all_updates_ok = true;
+  if (database_version < 1)
+  {
+    /* check existing tables for missing columns */
+    bool res1, ret1;
+    ret1 = check_column(session, "fileinfo", "pages_per_row", &res1);
+
+    if (ret1 == true && res1 == false) {
+      if (sqlite3_exec(session, SQL_FILEINFO_ALTER, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: pages_per_row, position_x, position_y");
+        all_updates_ok = false;
+      }
+    }
+
+    ret1 = check_column(session, "fileinfo", "first_page_column", &res1);
+
+    if (ret1 == true && res1 == false) {
+      if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: first_page_column");
+        all_updates_ok = false;
+      }
+    }
+
+    ret1 = check_column(session, "fileinfo", "time", &res1);
+
+    if (ret1 == true && res1 == false) {
+      if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: time");
+        all_updates_ok = false;
+      }
+    }
+
+    ret1 = check_column(session, "fileinfo", "zoom", &res1);
+
+    if (ret1 == true && res1 == false) {
+      if (sqlite3_exec(session, SQL_FILEINFO_ALTER4, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: zoom");
+        all_updates_ok = false;
+      }
+    }
+
+    ret1 = check_column(session, "fileinfo", "page_right_to_left", &res1);
+
+    if (ret1 == true && res1 == false) {
+      if (sqlite3_exec(session, SQL_FILEINFO_ALTER5, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: pages_right_to_left");
+        all_updates_ok = false;
+      }
+    }
+
+    ret1 = check_column(session, "bookmarks", "hadj_ratio", &res1);
+
+    if (ret1 == true && res1 == false) {
+      if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: hadj_ration, vadj_ratio");
+        all_updates_ok = false;
+      }
+    }
+
+    /* check existing tables for correct column types */
+    ret1 = check_column_type(session, "fileinfo", "first_page_column", "TEXT", &res1);
+
+    if (ret1 == true && res1 == false) {
+      /* prepare transaction */
+      static const char tx_begin[] =
+        "BEGIN TRANSACTION;"
+        "ALTER TABLE fileinfo RENAME TO tmp;";
+      static const char tx_end[] =
+        "INSERT INTO fileinfo SELECT * FROM tmp;"
+        "DROP TABLE tmp;"
+        "COMMIT;";
+
+      /* assemble transaction */
+      char transaction[sizeof(tx_begin) + sizeof(SQL_FILEINFO_INIT) + sizeof(tx_end) - 2] = { '\0' };
+      g_strlcat(transaction, tx_begin, sizeof(transaction));
+      g_strlcat(transaction, SQL_FILEINFO_INIT, sizeof(transaction));
+      g_strlcat(transaction, tx_end, sizeof(transaction));
+
+      if (sqlite3_exec(session, transaction, NULL, 0, NULL) != SQLITE_OK) {
+        girara_warning("failed to update database table layout: first_page_column");
+        all_updates_ok = false;
+      }
+    }
+  }
+
+  /* update database version if all updates were successful */
+  if (all_updates_ok == true) {
+    sqlite3_exec(session, "PRAGMA user_version = " G_STRINGIFY(DATABASE_VERSION) ";", NULL, 0, NULL);
+  }
+}
+
+static void
+sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
+{
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
+
+  const bool db_exists = g_file_test(path, G_FILE_TEST_EXISTS);
   sqlite3* session = NULL;
   if (sqlite3_open(path, &session) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
     return;
   }
 
-  /* create tables if they don't exist */
-  for (size_t s = 0; s < LENGTH(ALL_INIT); ++s) {
-    if (sqlite3_exec(session, ALL_INIT[s], NULL, 0, NULL) != SQLITE_OK) {
-      girara_error("Failed to initialize database: %s\n", path);
-      sqlite3_close(session);
-      return;
-    }
+  /* Set busy timeout to 1s. */
+  sqlite3_busy_timeout(session, 1000);
+
+  const int database_version = sqlite_get_user_version(session);
+  if (database_version == -1) {
+    girara_error("Failed to query database version.");
+    sqlite3_close(session);
+    return;
   }
 
-  /* check existing tables for missing columns */
-  bool res1, res2, ret1, ret2;
-
-  ret1 = check_column(session, "fileinfo", "pages_per_row", &res1);
-
-  if (ret1 == true && res1 == false) {
+  girara_debug("database version: %d (current: %d)", database_version, DATABASE_VERSION);
+  if (database_version < DATABASE_VERSION) {
     girara_debug("old database table layout detected; updating ...");
-    if (sqlite3_exec(session, SQL_FILEINFO_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
-  }
-
-  ret1 = check_column(session, "fileinfo", "first_page_column", &res1);
-
-  if (ret1 == true && res1 == false) {
-    girara_debug("old database table layout detected; updating ...");
-    if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
-  }
-
-  ret1 = check_column(session, "fileinfo", "time", &res1);
-
-  if (ret1 == true && res1 == false) {
-    girara_debug("old database table layout detected; updating ...");
-    if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
-  }
-
-  ret1 = check_column(session, "fileinfo", "zoom", &res1);
-
-  if (ret1 == true && res1 == false) {
-    girara_debug("old database table layout detected; updating ...");
-    if (sqlite3_exec(session, SQL_FILEINFO_ALTER4, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
-  }
-
-  ret1 = check_column(session, "fileinfo", "page_right_to_left", &res1);
-
-  if (ret1 == true && res1 == false) {
-    girara_debug("old database table layout detected; updating ...");
-    if (sqlite3_exec(session, SQL_FILEINFO_ALTER5, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
-  }
-
-  ret1 = check_column(session, "bookmarks", "hadj_ratio", &res1);
-  ret2 = check_column(session, "bookmarks", "vadj_ratio", &res2);
-
-  if (ret1 == true && ret2 == true && res1 == false && res2 == false) {
-    girara_debug("old database table layout detected; updating ...");
-    if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
-  }
-
-  /* check existing tables for correct column types */
-  ret1 = check_column_type(session, "fileinfo", "first_page_column", "TEXT", &res1);
-
-  if (ret1 == true && res1 == false) {
-    girara_debug("old database table layout detected; updating ...");
-
-    /* prepare transaction */
-    static const char tx_begin[] =
-      "BEGIN TRANSACTION;"
-      "ALTER TABLE fileinfo RENAME TO tmp;";
-    static const char tx_end[] =
-      "INSERT INTO fileinfo SELECT * FROM tmp;"
-      "DROP TABLE tmp;"
-      "COMMIT;";
-
-    /* assemble transaction */
-    char transaction[sizeof(tx_begin) + sizeof(SQL_FILEINFO_INIT) + sizeof(tx_end) - 2] = { '\0' };
-    g_strlcat(transaction, tx_begin, sizeof(transaction));
-    g_strlcat(transaction, SQL_FILEINFO_INIT, sizeof(transaction));
-    g_strlcat(transaction, tx_end, sizeof(transaction));
-
-    if (sqlite3_exec(session, transaction, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout");
-    }
+    sqlite_db_check_layout(session, database_version, !db_exists);
   }
 
   priv->session = session;
@@ -316,29 +394,6 @@ sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamS
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
-}
-
-static sqlite3_stmt*
-prepare_statement(sqlite3* session, const char* statement)
-{
-  if (session == NULL || statement == NULL) {
-    return NULL;
-  }
-
-  const char* pz_tail   = NULL;
-  sqlite3_stmt* pp_stmt = NULL;
-
-  if (sqlite3_prepare_v2(session, statement, -1, &pp_stmt, &pz_tail) != SQLITE_OK) {
-    girara_error("Failed to prepare query: %s", statement);
-    sqlite3_finalize(pp_stmt);
-    return NULL;
-  } else if (pz_tail && *pz_tail != '\0') {
-    girara_error("Unused portion of statement: %s", pz_tail);
-    sqlite3_finalize(pp_stmt);
-    return NULL;
-  }
-
-  return pp_stmt;
 }
 
 static bool

@@ -16,27 +16,27 @@
 
 struct zathura_link_s {
   zathura_rectangle_t position; /**< Position of the link */
-  zathura_link_type_t type; /**< Link type */
   zathura_link_target_t target; /**< Link target */
+  zathura_link_type_t type; /**< Link type */
 };
 
 zathura_link_t*
 zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
                  zathura_link_target_t target)
 {
-  zathura_link_t* link = g_try_malloc0(sizeof(zathura_link_t));
+  zathura_link_t* link = g_slice_new(zathura_link_t);
   if (link == NULL) {
     return NULL;
   }
 
-  link->type     = type;
   link->position = position;
+  link->target   = target;
+  link->type     = type;
 
+  /* duplicate target.value if necessary */
   switch (type) {
     case ZATHURA_LINK_NONE:
     case ZATHURA_LINK_GOTO_DEST:
-      link->target = target;
-
       if (target.value != NULL) {
         link->target.value = g_strdup(target.value);
       }
@@ -45,15 +45,16 @@ zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
     case ZATHURA_LINK_URI:
     case ZATHURA_LINK_LAUNCH:
     case ZATHURA_LINK_NAMED:
+      /* target.value is required for these cases */
       if (target.value == NULL) {
-        g_free(link);
+        g_slice_free(zathura_link_t, link);
         return NULL;
       }
 
       link->target.value = g_strdup(target.value);
       break;
     default:
-      g_free(link);
+      g_slice_free(zathura_link_t, link);
       return NULL;
   }
 
@@ -82,7 +83,7 @@ zathura_link_free(zathura_link_t* link)
       break;
   }
 
-  g_free(link);
+  g_slice_free(zathura_link_t, link);
 }
 
 zathura_link_type_t
@@ -99,7 +100,7 @@ zathura_rectangle_t
 zathura_link_get_position(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_rectangle_t position = { 0, 0, 0, 0 };
+    const zathura_rectangle_t position = { 0, 0, 0, 0 };
     return position;
   }
 
@@ -110,7 +111,7 @@ zathura_link_target_t
 zathura_link_get_target(zathura_link_t* link)
 {
   if (link == NULL) {
-    zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
+    const zathura_link_target_t target = { 0, NULL, 0, 0, 0, 0, 0, 0 };
     return target;
   }
 
@@ -163,22 +164,22 @@ link_goto_dest(zathura_t* zathura, const zathura_link_t* link)
   girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
   /* scale and rotate */
-  double scale = zathura_document_get_scale(zathura->document);
-  double shiftx = link->target.left * scale / (double)cell_width;
-  double shifty = link->target.top * scale / (double)cell_height;
+  const double scale = zathura_document_get_scale(zathura->document);
+  double shiftx = link->target.left * scale / cell_width;
+  double shifty = link->target.top * scale / cell_height;
   page_calc_position(zathura->document, shiftx, shifty, &shiftx, &shifty);
 
   /* shift the position or set to auto */
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
       link->target.left != -1 && link_hadjust == true) {
-    pos_x += shiftx / (double)doc_width;
+    pos_x += shiftx / doc_width;
   } else {
     pos_x = -1;     /* -1 means automatic */
   }
 
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
       link->target.top != -1) {
-    pos_y += shifty / (double)doc_height;
+    pos_y += shifty / doc_height;
   } else {
     pos_y = -1;     /* -1 means automatic */
   }
@@ -223,25 +224,16 @@ link_launch(zathura_t* zathura, const zathura_link_t* link)
   /* get file path */
   if (link->target.value == NULL) {
     return;
-  };
-
-  char* path = NULL;
-  if (g_path_is_absolute(link->target.value) == TRUE) {
-    path = g_strdup(link->target.value);
-  } else {
-    const char* document = zathura_document_get_path(zathura->document);
-    char* dir  = g_path_get_dirname(document);
-    path = g_build_filename(dir, link->target.value, NULL);
-    g_free(dir);
   }
 
-  if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
-    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
-  } else  if (girara_xdg_open(path) == false) {
+  const char* document = zathura_document_get_path(zathura->document);
+  char* dir            = g_path_get_dirname(document);
+
+  if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
 
-  g_free(path);
+  g_free(dir);
 }
 
 void
@@ -251,21 +243,26 @@ zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
     return;
   }
 
+  if (link->type != ZATHURA_LINK_GOTO_DEST && zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
+    return;
+  }
+
   switch (link->type) {
     case ZATHURA_LINK_GOTO_DEST:
+      girara_debug("Going to link destination: page: %d", link->target.page_number);
       link_goto_dest(zathura, link);
       break;
     case ZATHURA_LINK_GOTO_REMOTE:
+      girara_debug("Going to remote destination: %s", link->target.value);
       link_remote(zathura, link->target.value);
       break;
     case ZATHURA_LINK_URI:
-      if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
-      } else if (girara_xdg_open(link->target.value) == false) {
-        girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-      }
+      girara_debug("Opening URI: %s", link->target.value);
+      link_launch(zathura, link);
       break;
     case ZATHURA_LINK_LAUNCH:
+      girara_debug("Launching link: %s", link->target.value);
       link_launch(zathura, link);
       break;
     default:

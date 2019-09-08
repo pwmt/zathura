@@ -62,16 +62,6 @@ accordingly or to escape the hash symbol.
     set default-fg "#CCBBCC"
     set default-fg \#CCBBCC
 
-map - Mapping a shortcut
-------------------------
-It is possible to map or remap new key bindings to shortcut functions which
-allows a high level of customization. The ``:map`` command can also be used in
-the *zathurarc* file to make those changes permanent:
-
-::
-
-    map [mode] <binding> <shortcut function> <argument>
-
 include - Including another config file
 ---------------------------------------
 This commands allows one to include other configuration files. If a relative
@@ -81,6 +71,16 @@ is currently processed.
 ::
 
     include another-config
+
+map - Mapping a shortcut
+------------------------
+It is possible to map or remap new key bindings to shortcut functions which
+allows a high level of customization. The ``:map`` command can also be used in
+the *zathurarc* file to make those changes permanent:
+
+::
+
+    map [mode] <binding> <shortcut function> <argument>
 
 Mode
 ^^^^
@@ -104,14 +104,14 @@ hand it is possible to just assign single letters, numbers or signs to it:
 
 ::
 
-    map a shortcut_function
-    map b shortcut_function
-    map c shortcut_function
-    map 1 shortcut_function
-    map 2 shortcut_function
-    map 3 shortcut_function
-    map ! shortcut_function
-    map ? shortcut_function
+    map a shortcut_function optional_argument
+    map b shortcut_function optional_argument
+    map c shortcut_function optional_argument
+    map 1 shortcut_function optional_argument
+    map 2 shortcut_function optional_argument
+    map 3 shortcut_function optional_argument
+    map ! shortcut_function optional_argument
+    map ? shortcut_function optional_argument
 
 Using modifiers
 ^^^^^^^^^^^^^^^
@@ -122,7 +122,8 @@ keyboard. It is possible to use the following modifiers:
 * C - Control
 * S - Shift
 
-Now it is required to define the ``binding`` with the following structure:
+If any of the modifiers should be used for a binding, it is required to define
+the ``binding`` with the following structure:
 
 ::
 
@@ -244,7 +245,8 @@ The following shortcut functions can be mapped:
 
 * ``jumplist``
 
-  Move forwards/backwards in the jumplist.
+  Move forwards/backwards in the jumplist. Pass ``forward`` as argument to
+  move to the next entry and ``backward`` to move to the previous one.
 
 * ``navigate``
 
@@ -313,10 +315,18 @@ The following shortcut functions can be mapped:
   Zoom in or out.
 
 * ``mark_add``
+
   Set a quickmark.
 
 * ``mark_evaluate``
+
   Go to a quickmark.
+
+* ``feedkeys``
+
+  Simulate key presses. Note that all keys will be interpreted as if pressing a
+  key on the keyboard. To input uppercase letters, follow the same convention as
+  for key bindings, i.e. for ``X``, use ``<S-X>``.
 
 
 Pass arguments
@@ -333,12 +343,14 @@ Possible arguments are:
 
 * best-fit
 * bottom
+* backward
 * collapse
 * collapse-all
 * default
 * down
 * expand
 * expand-all
+* forward
 * full-down
 * full-up
 * half-down
@@ -891,13 +903,6 @@ Defines if scrolling by half or full pages stops at page boundaries.
 * Value type: Boolean
 * Default value: false
 
-smooth-scroll
-^^^^^^^^^^^^^
-Defines if scrolling via touchpad should be smooth.
-
-* Value type: Boolean
-* Default value: false
-
 link-zoom
 ^^^^^^^^^
 En/Disables the ability of changing zoom when following links.
@@ -1055,7 +1060,7 @@ sandbox
 Defines the sandbox mode to use for the seccomp syscall filter. Possible
 values are "none", "normal" and "strict". If "none" is used, the sandbox
 will be disabled. The use of "normal" will provide minimal protection and
-allow normal use of seccomp with support for all features. The "strict" mode
+allow normal use of zathura with support for all features. The "strict" mode
 is a read only sandbox that is intended for viewing documents only.
 
 * Value type: String
@@ -1069,6 +1074,9 @@ Some features are disabled when using strict sandbox mode:
 * bookmarks and history
 
 No feature regressions are expected when using normal sandbox mode.
+
+When running under WSL, the default is "none" since seccomp is not supported in
+that environment.
 
 window-icon-document
 ^^^^^^^^^^^^^^^^^^^^

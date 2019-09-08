@@ -116,8 +116,9 @@ void cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpo
  * @param widget The main window widget
  * @param event The configure event
  * @param gpointer The zathura instance
+ * @return true if no error occurred and the event has been handled
  */
-void cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
+gboolean cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
 
 /**
  * This function gets called when the view widget scale factor changes (e.g.
@@ -142,7 +143,7 @@ void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
  * @param data Custom data
  */
 void cb_page_layout_value_changed(girara_session_t* session, const char* name,
-    girara_setting_type_t type, void* value, void* data);
+    girara_setting_type_t type, const void* value, void* data);
 
 /**
  * Called when an index element is activated (e.g.: double click)
@@ -210,7 +211,7 @@ gboolean cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t
  * @param data Custom data
  */
 void cb_setting_recolor_change(girara_session_t* session, const char* name,
-    girara_setting_type_t type, void* value, void* data);
+    girara_setting_type_t type, const void* value, void* data);
 
 /**
  * Emitted when the 'recolor-keephue' setting is changed
@@ -222,7 +223,7 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name,
  * @param data Custom data
  */
 void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
-    girara_setting_type_t type, void* value, void* data);
+    girara_setting_type_t type, const void* value, void* data);
 
 /**
  * Emitted when the 'recolor-reverse-video' setting is changed
@@ -234,7 +235,7 @@ void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* n
  * @param data Custom data
  */
 void cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, 
-    const char* name, girara_setting_type_t type, void* value, void* data);
+    const char* name, girara_setting_type_t type, const void* value, void* data);
 
 /**
  * Unknown command handler which is used to handle the strict numeric goto

@@ -88,7 +88,7 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
 static zathura_t*
 init_zathura(const char* config_dir, const char* data_dir,
              const char* cache_dir, const char* plugin_path, char** argv,
-             char* synctex_editor, Window embed)
+             const char* synctex_editor, Window embed)
 {
   /* create zathura session */
   zathura_t* zathura = zathura_create();

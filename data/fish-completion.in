@@ -1,0 +1,52 @@
+# Complete custom suffix based on libraries installed
+function __fish_complete_zathura
+    for plugin in @PLUGINDIR@/*.so
+        switch (basename $plugin)
+            case libpdf-poppler.so
+                __fish_complete_suffix .pdf
+            case libpdf-mupdf.so
+                __fish_complete_suffix .pdf
+                __fish_complete_suffix .epub
+                __fish_complete_suffix .oxps
+            case libps.so
+                __fish_complete_suffix .ps
+                __fish_complete_suffix .eps
+                __fish_complete_suffix .epsi
+                __fish_complete_suffix .epsf
+            case libdjvu.so
+                __fish_complete_suffix .djvu
+                __fish_complete_suffix .djv
+            case libcb.so
+                __fish_complete_suffix .cb7
+                __fish_complete_suffix .cbr
+                __fish_complete_suffix .cbz
+                __fish_complete_suffix .cbt
+                __fish_complete_suffix .rar
+                __fish_complete_suffix .zip
+                __fish_complete_suffix .7z
+                __fish_complete_suffix .tar
+        end
+    end
+end
+
+complete -c zathura -x -a '(__fish_complete_zathura)'
+
+complete -c zathura -s e -l reparent -d 'Reparents to window specified by xid'
+complete -c zathura -s c -l config-dir -d 'Path to config directory' \
+         -x -a '(__fish_complete_directories (commandline -ct) "Config directory")'
+complete -c zathura -s d -l data-dir -d 'Path to data directory' \
+         -x -a '(__fish_complete_directories (commandline -ct) "Data directory")'
+complete -c zathura -l cache-dir -d 'Path to cache directory' \
+         -x -a '(__fish_complete_directories (commandline -ct) "Cache directory")'
+complete -c zathura -s p -l plugins-dir -d 'Path to plugins directory' \
+         -x -a '(__fish_complete_directories (commandline -ct) "Plugins directory")'
+complete -c zathura -s w -l password -d 'Document password'
+complete -c zathura -s P -l page -d 'Page number to go to'
+complete -c zathura -s l -l log-level -d 'Log level' -x -a 'debug info warning error'
+complete -c zathura -s x -l synctex-editor-command -d 'Synctex editor (forwarded to the synctex command)' -x
+complete -c zathura -l synctex-forward -d 'Move to given synctex position' -x
+complete -c zathura -l synctex-pid -d 'Highlight position in given process' -x -a '(__fish_complete_pids)'
+complete -c zathura -l mode -d 'Start in a non-default mode' -x -a 'presentation fullscreen'
+complete -c zathura -l fork -d 'Fork into the background'
+complete -c zathura -s h -l help -d 'Show help options'
+complete -c zathura -s v -l version -d 'Print version information'

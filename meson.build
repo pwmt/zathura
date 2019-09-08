@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.4.3',
+  version: '0.4.4',
   meson_version: '>=0.47',
   default_options: 'c_std=c11',
 )
@@ -37,7 +37,7 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.3.2')
+girara = dependency('girara-gtk3', version: '>=0.3.3')
 glib = dependency('glib-2.0', version: '>=2.50')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
@@ -68,8 +68,8 @@ flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
 additional_sources = []
-sqlite = dependency('sqlite3', version: '>=3.5.9', required: get_option('sqlite'))
-synctex = dependency('synctex', required: get_option('synctex'))
+sqlite = dependency('sqlite3', version: '>=3.6.23', required: get_option('sqlite'))
+synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
 magic = cc.find_library('magic', required: get_option('magic'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
 
@@ -82,12 +82,8 @@ endif
 if synctex.found()
   build_dependencies += synctex
   defines += '-DWITH_SYNCTEX'
-  if synctex.version() < '2.0.0'
-    if synctex.version() >= '1.19.0'
-      warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
-    else
-      defines += '-DWITH_SYNCTEX1'
-    endif
+  if synctex.version() < '2.0.0' and synctex.version() >= '1.19.0'
+    warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
   endif
 endif
 

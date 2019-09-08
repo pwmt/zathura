@@ -7,20 +7,32 @@ girara user interface library and several document libraries.
 Requirements
 ------------
 
-meson (>= 0.47)
-gtk3 (>= 3.22)
-glib (>= 2.50)
-girara (>= 0.3.2)
-sqlite3 (optional, >= 3.5.9)
-check (optional build dependency, for tests)
-libmagic from file(1) (optional, for mime-type detection)
-libsynctex from TeXLive (optional, for SyncTeX support)
-libseccomp (optional, for sandbox support)
-librvsg-bin (optional build dependency, for icons)
-Sphinx (optional build dependency, for manpages and HTML documentation)
-doxygen (optional build dependency, for HTML documentation)
-breathe (optional build dependency, for HTML documentation)
-sphinx_rtd_theme (optional build dependency, for HTML documentation)
+The following dependencies are required:
+
+* gtk3 (>= 3.22)
+* glib (>= 2.50)
+* girara (>= 0.3.2)
+
+The following dependencies are optional:
+
+* sqlite3 (>= 3.6.23): splite3 database backend
+* libmagic from file(1): for mime-type detection
+* libsynctex from TeXLive (>= 1.19): SyncTeX support
+* libseccomp: sandbox support
+
+For building zathura, the following dependencies are also required:
+
+* meson (>= 0.47)
+* gettext
+
+The following dependencies are optional build-time only dependencies:
+
+* check: for tests
+* librvsg-bin: PNG icons
+* Sphinx: manpages and HTML documentation
+* doxygen: HTML documentation
+* breathe: for HTML documentation
+* sphinx_rtd_theme: for HTML documentation
 
 Note that Sphinx is needed to build the manpages.  If it is not installed, the
 man pages won't be built. For building the HTML documentation, doxygen, breathe

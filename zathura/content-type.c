@@ -32,7 +32,7 @@ zathura_content_type_new(void)
 
 #ifdef WITH_MAGIC
   /* creat magic cookie */
-  const int flags =
+  static const int flags =
     MAGIC_MIME_TYPE |
     MAGIC_SYMLINK |
     MAGIC_NO_CHECK_APPTYPE |

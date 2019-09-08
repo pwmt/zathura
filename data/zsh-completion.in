@@ -16,7 +16,7 @@ all_opts=(
   '--mode=mode[Start in a non-default mode]:mode:(presentation fullscreen)'
   '--fork[Fork into the background]'
   '-h --help[Show help message]'
-  '-V --version[Print version information]'
+  '-v --version[Print version information]'
   '*:file:->files'
 )
 
@@ -28,10 +28,10 @@ local exts
 for PLUGIN in @PLUGINDIR@/lib*.so; do
   case ${PLUGIN##*/} in
     libpdf-poppler.so)
-      exts="$exts|pdf"
+      exts="$exts|pdf|PDF"
       ;;
     libpdf-mupdf.so)
-      exts="$exts|pdf|epub|oxps"
+      exts="$exts|pdf|PDF|epub|oxps"
       ;;
     libps.so)
       exts="$exts|ps|eps|epsi|epsf"
@@ -42,7 +42,7 @@ for PLUGIN in @PLUGINDIR@/lib*.so; do
     libcb.so)
       exts="$exts|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
       ;;
-    esac
+  esac
 done
 
 case $state in

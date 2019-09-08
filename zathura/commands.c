@@ -167,19 +167,21 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   }
 
   struct meta_field {
-    char* name;
+    const char* name;
     zathura_document_information_type_t field;
   };
 
   const struct meta_field meta_fields[] = {
     { _("Title"),             ZATHURA_DOCUMENT_INFORMATION_TITLE },
-    { _("Author"),            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
     { _("Subject"),           ZATHURA_DOCUMENT_INFORMATION_SUBJECT },
     { _("Keywords"),          ZATHURA_DOCUMENT_INFORMATION_KEYWORDS },
+    { _("Author"),            ZATHURA_DOCUMENT_INFORMATION_AUTHOR },
     { _("Creator"),           ZATHURA_DOCUMENT_INFORMATION_CREATOR },
     { _("Producer"),          ZATHURA_DOCUMENT_INFORMATION_PRODUCER },
     { _("Creation date"),     ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE },
-    { _("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE }
+    { _("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE },
+    { _("Format"),            ZATHURA_DOCUMENT_INFORMATION_FORMAT },
+    { _("Other"),             ZATHURA_DOCUMENT_INFORMATION_OTHER }
   };
 
   girara_list_t* information = zathura_document_get_information(zathura->document, NULL);
@@ -190,18 +192,18 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
 
   GString* string = g_string_new(NULL);
 
-  GIRARA_LIST_FOREACH_BODY(information, zathura_document_information_entry_t*, entry,
-    if (entry != NULL) {
-      for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+  for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
+    GIRARA_LIST_FOREACH_BODY(information, zathura_document_information_entry_t*, entry,
+      if (entry != NULL) {
         if (meta_fields[i].field == entry->type) {
           g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
         }
       }
-    }
-  );
+    );
+  }
 
-  if (strlen(string->str) > 0) {
-    g_string_erase(string, strlen(string->str) - 1, 1);
+  if (string->len > 0) {
+    g_string_erase(string, string->len - 1, 1);
     girara_notify(session, GIRARA_INFO, "%s", string->str);
   } else {
     girara_notify(session, GIRARA_INFO, _("No information available."));

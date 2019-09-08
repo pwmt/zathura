@@ -130,4 +130,11 @@ unsigned int find_first_page_column(const char* first_page_column_list,
  */
 bool parse_color(GdkRGBA* color, const char* str);
 
+/**
+ * Check if zathura is running under the Linux subsystem on Windows.
+ *
+ * @return true if running under WSL, false otherwise
+ */
+bool running_under_wsl(void);
+
 #endif // UTILS_H

@@ -23,7 +23,7 @@
 
 static void
 cb_jumplist_change(girara_session_t* session, const char* name,
-                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -46,7 +46,7 @@ cb_jumplist_change(girara_session_t* session, const char* name,
 
 static void
 cb_color_change(girara_session_t* session, const char* name,
-                girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -78,34 +78,34 @@ cb_color_change(girara_session_t* session, const char* name,
 
 static void
 cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
-                      girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                      girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  bool* bvalue = value;
+  const bool* bvalue = value;
   document_draw_search_results(zathura, !*bvalue);
   render_all(zathura);
 }
 
 static void
 cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
-                     girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                     girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
 
-  bool inc_search = *(bool*) value;
+  bool inc_search = *(const bool*) value;
   girara_special_command_add(session, '/', cmd_search, inc_search, FORWARD,  NULL);
   girara_special_command_add(session, '?', cmd_search, inc_search, BACKWARD, NULL);
 }
 
 static void
 cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
-                   girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -126,7 +126,7 @@ cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
 
 static void
 cb_window_statbusbar_changed(girara_session_t* session, const char* name,
-                             girara_setting_type_t UNUSED(type), void* value, void* UNUSED(data))
+                             girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
@@ -153,7 +153,6 @@ config_load_default(zathura_t* zathura)
   int int_value              = 0;
   float float_value          = 0;
   bool bool_value            = false;
-  char* string_value         = NULL;
   girara_session_t* gsession = zathura->ui.session;
 
   /* mode settings */
@@ -279,20 +278,20 @@ config_load_default(zathura_t* zathura)
   bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
+  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,   BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
-  string_value = "";
-  girara_setting_add(gsession, "synctex-editor-command", string_value, STRING,  false, _("Synctex editor command"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "continuous-hist-save",   &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
-  string_value = "primary";
-  girara_setting_add(gsession, "selection-clipboard",    string_value, STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
+  girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  girara_setting_add(gsession, "sandbox",                "normal",     STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
+  /* default to no sandbox when running in WSL */
+  const char* string_value = running_under_wsl() ? "none" : "normal";
+  girara_setting_add(gsession, "sandbox",                string_value, STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
 
 #define DEFAULT_SHORTCUTS(mode) \
   girara_shortcut_add(gsession, 0,                GDK_KEY_a,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_BESTFIT, NULL); \
