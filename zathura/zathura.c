@@ -833,7 +833,11 @@ document_info_open(gpointer data)
         document_info->zathura->stdin_support.file = g_strdup(file);
       }
     } else {
-      GFile* gf = g_file_new_for_commandline_arg(document_info->path);
+      /* expand ~ and ~user in paths if present */
+      char* tmp_path = *document_info->path == '~' ? girara_fix_path(document_info->path) : NULL;
+      GFile* gf = g_file_new_for_commandline_arg(tmp_path != NULL ? tmp_path : document_info->path);
+      g_free(tmp_path);
+
       if (g_file_is_native(gf) == TRUE) {
         /* file was given as a native path */
         file = g_file_get_path(gf);
@@ -946,8 +950,12 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     goto error_out;
   }
 
+  /* FIXME: since there are many call chains leading here, check again if we need to expand ~ or
+   * ~user. We should fix all call sites instead */
+  char* tmp_path = *path == '~' ? girara_fix_path(path) : NULL;
   zathura_error_t error = ZATHURA_ERROR_OK;
-  zathura_document_t* document = zathura_document_open(zathura, path, uri, password, &error);
+  zathura_document_t* document = zathura_document_open(zathura, tmp_path != NULL ? tmp_path : path, uri, password, &error);
+  g_free(tmp_path);
 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
