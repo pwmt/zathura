@@ -54,13 +54,19 @@ can be used
     set option5 "hello world"
 
 
-If you want to use ``color codes`` for some options, make sure to quote them
-accordingly or to escape the hash symbol.
+For colors, zathura supports HTML color codes and CSS3-style ``rgb(r,g,b)`` and ``rgba(r,g,b,a)``
+values. If you want to use color codes for some options, make sure to quote them accordingly or
+to escape the hash symbol.
 
 ::
 
     set default-fg "#CCBBCC"
     set default-fg \#CCBBCC
+
+
+For ``rgba``, note that it parses the color components as integers between 0 and 255 and the alpha
+component as float between 0 and 1.
+
 
 include - Including another config file
 ---------------------------------------
