@@ -1395,8 +1395,8 @@ sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t*
     }
   } else if (argument->n == ZOOM_SMOOTH) {
     const double dy = (event != NULL) ? event->y : 1.0;
-    girara_debug("Increasing zoom by %0.2f.", zoom_step * dy - 1.0);
-    zathura_document_set_zoom(zathura->document, old_zoom + zoom_step * dy);
+    girara_debug("Increasing zoom by %0.2f.", pow(zoom_step, -dy) - 1.0);
+    zathura_document_set_zoom(zathura->document, old_zoom * pow(zoom_step, -dy));
   } else {
     girara_debug("Setting zoom to 1.");
     zathura_document_set_zoom(zathura->document, 1.0);
