@@ -2,51 +2,54 @@
 
 local -a all_opts
 all_opts=(
-  '(-c --config-dir=DIR)'{-c,--config-dir}'[Path to config directory]:config directory:_files -/'
-  '(-d --data-dir=DIR)'{-d,--data-dir}'[Path to data directory]:data directory:_files -/'
-  '--cache-dir=DIR[Path to cache directory]:cache directory:_files -/'
-  '(-p --plugins-dir=DIR)'{-p,--plugins-dir}'[Path to plugins directory]:plugins directory:_files -/'
-  '(-e --reparent=XID)'{-e,--reparent}'[Reparents to window specified by XID (X11)]:xid'
-  '(-w --password=password)'{-w,--password}'[Document password]:password'
-  '(-P --page=page)'{-p,--page}'[Page number to go to]:page number'
-  '(-l --log-level=level)'{-l,--log-level}'[Log level]:level:(error warning info debug)'
-  '(-x --snyctex-editor-command=cmd)'{-x,--synxtec-editor-command}'[Synctex editor (forwarded to the synctex command)]:command'
-  '--synctex-forward=position[Move to given synctex position]:position'
-  '--synctex-pid=pid[Highlight position in given process]:pid'
-  '--mode=mode[Start in a non-default mode]:mode:(presentation fullscreen)'
-  '--fork[Fork into the background]'
-  '-h --help[Show help message]'
-  '-v --version[Print version information]'
+  '(-c --config-dir)'{-c,--config-dir=}'[specify path to config directory]:config directory:_files -/'
+  '(-d --data-dir)'{-d,--data-dir=}'[specify path to data directory]:data directory:_files -/'
+  '--cache-dir=[specify path to cache directory]:cache directory:_files -/'
+  '(-p --plugins-dir)'{-p,--plugins-dir=}'[specify path to plugins directory]:plugins directory:_files -/'
+  '(-e --reparent)'{-e,--reparent=}'[reparent to window specified by XID (X11)]: :_x_window'
+  '(-w --password)'{-w,--password=}'[specify a password for the document]:password'
+  '(-P --page)'{-p,--page=}'[open the document at the given page number]:page number'
+  '(-l --log-level)'{-l,--log-level=}'[set log level]:level:(error warning info debug)'
+  '(-x --snyctex-editor-command)'{-x,--synxtec-editor-command=}'[specify synctex editor (forwarded to the synctex command)]:command'
+  '--synctex-forward=[move to the given position]:position'
+  '--synctex-pid=[highlight position in given process]:pid:_pids'
+  '--mode[start in a non-default mode]:mode:(presentation fullscreen)'
+  '--fork[fork into the background]'
+  '(- :)'{-h,--help}'[show help message]'
+  '(- :)'{-v,--version}'[print version information]'
   '*:file:->files'
 )
 
-local context state state_descr line
+local curcontext="$curcontext" state state_descr line ret=1
 typeset -A opt_args
-_arguments -S "$all_opts[@]" && return 0
+_arguments -C -s -S "$all_opts[@]" && ret=0
 
-local exts
+local PLUGIN
+local -a exts
 for PLUGIN in @PLUGINDIR@/lib*.so; do
   case ${PLUGIN##*/} in
     libpdf-poppler.so)
-      exts="$exts|pdf|PDF"
+      exts+=( pdf PDF )
       ;;
     libpdf-mupdf.so)
-      exts="$exts|pdf|PDF|epub|oxps"
+      exts+=( pdf PDF epub oxps )
       ;;
     libps.so)
-      exts="$exts|ps|eps|epsi|epsf"
+      exts+=( ps eps epsi epsf )
       ;;
     libdjvu.so)
-      exts="$exts|djvu|djv"
+      exts+=( djvu djv )
       ;;
     libcb.so)
-      exts="$exts|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
+      exts+=( cb7 cbr cbz cbt rar zip 7z tar )
       ;;
   esac
 done
 
 case $state in
   (files)
-    _files -g "*.($exts)"
+    _wanted files expl file _files -g "*.(${(j:|:)exts:-pdf})(-.)" && ret=0
     ;;
 esac
+
+return ret
