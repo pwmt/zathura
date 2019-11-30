@@ -1,7 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "content-type.h"
-#include "macros.h"
 
 #include <girara/utils.h>
 #ifdef WITH_MAGIC
@@ -138,8 +137,8 @@ guess_type_file(const char* path)
                               G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL,
                               NULL, NULL, &out, NULL, &ret, &error);
   g_free(argv[3]);
-  if (r == false || error != NULL) {
-    girara_warning("failed to execute command: %s", error ? error->message : "unknown");
+  if (r == false) {
+    girara_warning("failed to execute command: %s", error->message);
     g_error_free(error);
     g_free(out);
     return NULL;
