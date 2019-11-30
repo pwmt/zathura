@@ -18,6 +18,8 @@ struct zathura_content_type_context_s
 {
 #ifdef WITH_MAGIC
   magic_t magic;
+#else
+  void* magic;
 #endif
 };
 
@@ -126,7 +128,7 @@ guess_type_file(const char* path)
   /* g_spawn_async expects char** */
   static char cmd_file[] = "file";
   static char opt_b[] = "-b";
-  static char opt_mime_type = "--mime-type";
+  static char opt_mime_type[] = "--mime-type";
   char* argv[] = { cmd_file, opt_b, opt_mime_type, g_strdup(path), NULL };
 
   GError* error = NULL;
