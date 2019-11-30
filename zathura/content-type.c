@@ -123,25 +123,28 @@ guess_type_magic(zathura_content_type_context_t* UNUSED(context),
 static char*
 guess_type_file(const char* path)
 {
-  GString* command = g_string_new("file -b --mime-type ");
-  char* tmp        = g_shell_quote(path);
-
-  g_string_append(command, tmp);
-  g_free(tmp);
+  /* g_spawn_async expects char** */
+  static char cmd_file[] = "file";
+  static char opt_b[] = "-b";
+  static char opt_mime_type = "--mime-type";
+  char* argv[] = { cmd_file, opt_b, opt_mime_type, g_strdup(path), NULL };
 
   GError* error = NULL;
   char* out = NULL;
   int ret = 0;
-  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
-  g_string_free(command, TRUE);
-  if (error != NULL) {
-    girara_warning("failed to execute command: %s", error->message);
+  const bool r = g_spawn_sync(NULL, argv, NULL,
+                              G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL,
+                              NULL, NULL, &out, NULL, &ret, &error);
+  g_free(argv[3]);
+  if (r == false || error != NULL) {
+    girara_warning("failed to execute command: %s", error ? error->message : "unknown");
     g_error_free(error);
     g_free(out);
     return NULL;
   }
-  if (WEXITSTATUS(ret) != 0) {
-    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
+  if (g_spawn_check_exit_status(ret, &error) == false) {
+    girara_warning("file failed: %s", error->message);
+    g_error_free(error);
     g_free(out);
     return NULL;
   }
