@@ -33,6 +33,7 @@ zathura_content_type_new(void)
 #ifdef WITH_MAGIC
   /* creat magic cookie */
   static const int flags =
+    MAGIC_ERROR |
     MAGIC_MIME_TYPE |
     MAGIC_SYMLINK |
     MAGIC_NO_CHECK_APPTYPE |
@@ -90,7 +91,7 @@ guess_type_magic(zathura_content_type_context_t* context, const char* path)
 
   /* get the mime type */
   mime_type = magic_file(context->magic, path);
-  if (mime_type == NULL) {
+  if (mime_type == NULL || magic_errno(context->magic) != 0) {
     girara_debug("failed guessing filetype: %s", magic_error(context->magic));
     return NULL;
   }
