@@ -58,6 +58,14 @@ zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* pl
 girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager);
 
 /**
+ * Return a list of supported content types
+ *
+ * @param plugin_manager The plugin manager
+ * @return List of plugins or NULL
+ */
+girara_list_t* zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager);
+
+/**
  * Returns the plugin functions
  *
  * @param plugin The plugin
