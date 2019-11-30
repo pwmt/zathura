@@ -179,12 +179,10 @@ guess_type_glib(const char* path)
     return NULL;
   }
 
-  const int fd = fileno(f);
   guchar* content = NULL;
-  size_t length = 0u;
-  ssize_t bytes_read = -1;
-  while (uncertain == TRUE && length < GT_MAX_READ && bytes_read != 0) {
-    g_free((void*)content_type);
+  size_t length = 0;
+  while (uncertain == TRUE && length < GT_MAX_READ) {
+    g_free(content_type);
     content_type = NULL;
 
     guchar* temp_content = g_try_realloc(content, length + BUFSIZ);
@@ -193,8 +191,8 @@ guess_type_glib(const char* path)
     }
     content = temp_content;
 
-    bytes_read = read(fd, content + length, BUFSIZ);
-    if (bytes_read == -1) {
+    size_t bytes_read = fread(content + length, 1, BUFSIZ, f);
+    if (bytes_read == 0) {
       break;
     }
 
@@ -209,7 +207,7 @@ guess_type_glib(const char* path)
     return content_type;
   }
 
-  g_free((void*)content_type);
+  g_free(content_type);
   return NULL;
 }
 
