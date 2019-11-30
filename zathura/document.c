@@ -90,7 +90,7 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
     goto error_free;
   }
 
-  content_type = zathura_content_type_guess(zathura->content_type_context, real_path);
+  content_type = zathura_content_type_guess(zathura->content_type_context, real_path, zathura_plugin_manager_get_content_types(zathura->plugins.manager));
   if (content_type == NULL) {
     girara_error("Could not determine file type.");
     check_set_error(error, ZATHURA_ERROR_UNKNOWN);
@@ -98,7 +98,6 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   }
 
   plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
-
   if (plugin == NULL) {
     girara_error("Unknown file type: '%s'", content_type);
     check_set_error(error, ZATHURA_ERROR_UNKNOWN);

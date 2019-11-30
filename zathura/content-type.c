@@ -213,19 +213,36 @@ guess_type_glib(const char* path)
   return NULL;
 }
 
+static int compare_content_types(const void* lhs, const void* rhs) {
+  return g_strcmp0(lhs, rhs);
+}
+
 char*
 zathura_content_type_guess(zathura_content_type_context_t* context,
-                           const char* path)
+                           const char* path,
+                           const girara_list_t* supported_content_types)
 {
   /* try libmagic first */
-  char* content_type = guess_type_magic(context, path);
+  char *content_type = guess_type_magic(context, path);
   if (content_type != NULL) {
-    return content_type;
+    if (supported_content_types == NULL ||
+        girara_list_find(supported_content_types, compare_content_types,
+                         content_type) != NULL) {
+      return content_type;
+    }
+    girara_debug("content type '%s' not supported, trying again", content_type);
+    g_free(content_type);
   }
   /* else fallback to g_content_type_guess method */
   content_type = guess_type_glib(path);
   if (content_type != NULL) {
-    return content_type;
+    if (supported_content_types == NULL ||
+        girara_list_find(supported_content_types, compare_content_types,
+                         content_type) != NULL) {
+      return content_type;
+    }
+    girara_debug("content type '%s' not supported, trying again", content_type);
+    g_free(content_type);
   }
   /* and if libmagic is not available, try file as last resort */
   return guess_type_file(path);
