@@ -25,6 +25,7 @@ struct zathura_document_s {
   char* file_path; /**< File path of the document */
   char* uri; /**< URI of the document */
   char* basename; /**< Basename of the document */
+  uint8_t hash_sha256[32]; /**< SHA256 hash of the document */
   const char* password; /**< Password of the document */
   unsigned int current_page_number; /**< Current page number */
   unsigned int number_of_pages; /**< Number of pages */
@@ -61,6 +62,39 @@ check_set_error(zathura_error_t* error, zathura_error_t code) {
   if (error != NULL) {
     *error = code;
   }
+}
+
+static bool
+hash_file_sha256(uint8_t* dst, const char* path)
+{
+  FILE* f = fopen(path, "rb");
+  if (f == NULL) {
+    return false;
+  }
+
+  GChecksum* checksum = g_checksum_new(G_CHECKSUM_SHA256);
+  if (checksum == NULL) {
+    fclose(f);
+    return false;
+  }
+
+  uint8_t buf[BUFSIZ];
+  size_t read;
+  while ((read = fread(buf, 1, sizeof(buf), f)) != 0) {
+    g_checksum_update(checksum, buf, read);
+  }
+
+  if (ferror(f) != 0) {
+    g_checksum_free(checksum);
+    fclose(f);
+    return false;
+  }
+
+  fclose(f);
+  gsize dst_size = 32;
+  g_checksum_get_digest(checksum, dst, &dst_size);
+  g_checksum_free(checksum);
+  return true;
 }
 
 zathura_document_t*
@@ -122,10 +156,11 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
   if (document->uri == NULL) {
     document->basename    = g_file_get_basename(file);
   } else {
-    GFile *gf = g_file_new_for_uri(document->uri);
+    GFile*gf = g_file_new_for_uri(document->uri);
     document->basename = g_file_get_basename(gf);
     g_object_unref(gf);
   }
+  hash_file_sha256(document->hash_sha256, document->file_path);
   document->password    = password;
   document->zoom        = 1.0;
   document->plugin      = plugin;
@@ -246,6 +281,16 @@ zathura_document_get_path(zathura_document_t* document)
   }
 
   return document->file_path;
+}
+
+const uint8_t*
+zathura_document_get_hash(zathura_document_t* document)
+{
+  if (document == NULL) {
+    return NULL;
+  }
+
+  return document->hash_sha256;
 }
 
 const char*
