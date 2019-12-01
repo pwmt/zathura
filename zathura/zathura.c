@@ -1006,7 +1006,8 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   };
   bool known_file = false;
   if (zathura->database != NULL) {
-    known_file = zathura_db_get_fileinfo(zathura->database, file_path, &file_info);
+    const uint8_t* file_hash = zathura_document_get_hash(document);
+    known_file = zathura_db_get_fileinfo(zathura->database, file_path, file_hash, &file_info);
   }
 
   /* set page offset */
@@ -1360,6 +1361,7 @@ static void
 save_fileinfo_to_db(zathura_t* zathura)
 {
   const char* path = zathura_document_get_path(zathura->document);
+  const uint8_t* file_hash = zathura_document_get_hash(zathura->document);
 
   zathura_fileinfo_t file_info = {
     .current_page = zathura_document_get_current_page_number(zathura->document),
@@ -1381,7 +1383,7 @@ save_fileinfo_to_db(zathura_t* zathura)
                      &(file_info.page_right_to_left));
 
   /* save file info */
-  zathura_db_set_fileinfo(zathura->database, path, &file_info);
+  zathura_db_set_fileinfo(zathura->database, path, file_hash, &file_info);
   /* save jumplist */
   zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
 

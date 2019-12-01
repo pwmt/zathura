@@ -633,8 +633,8 @@ plain_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jum
 }
 
 static bool
-plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
-                   file_info)
+plain_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+                   zathura_fileinfo_t* file_info)
 {
   ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
   ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
@@ -663,8 +663,8 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
 }
 
 static bool
-plain_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t*
-                   file_info)
+plain_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+                   zathura_fileinfo_t* file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
     return false;

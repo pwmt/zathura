@@ -649,7 +649,7 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
 }
 
 static bool
-sqlite_set_fileinfo(zathura_database_t* db, const char* file,
+sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
                     zathura_fileinfo_t* file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
@@ -690,7 +690,7 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file,
 }
 
 static bool
-sqlite_get_fileinfo(zathura_database_t* db, const char* file,
+sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
                     zathura_fileinfo_t* file_info)
 {
   if (db == NULL || file == NULL || file_info == NULL) {
