@@ -11,7 +11,7 @@
 #include "utils.h"
 
 /* version of the database layout */
-#define DATABASE_VERSION 1
+#define DATABASE_VERSION 2
 
 static char*
 sqlite3_column_text_dup(sqlite3_stmt* stmt, int col)
@@ -209,7 +209,8 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
     "position_x FLOAT,"
     "position_y FLOAT,"
     "time TIMESTAMP,"
-    "page_right_to_left INTEGER"
+    "page_right_to_left INTEGER,"
+    "sha256 BLOB"
     ");";
 
   /* create history table */
@@ -247,6 +248,10 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
   /* update fileinfo table (part 5) */
   static const char SQL_FILEINFO_ALTER5[] =
     "ALTER TABLE fileinfo ADD COLUMN page_right_to_left INTEGER;";
+
+  /* update fileinfo table (part 6) */
+  static const char SQL_FILEINFO_ALTER6[] =
+    "ALTER TABLE fileinfo ADD COLUMN sha256 BLOB;";
 
   /* update bookmark table */
   static const char SQL_BOOKMARK_ALTER[] =
@@ -353,6 +358,12 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
         girara_warning("failed to update database table layout: first_page_column");
         all_updates_ok = false;
       }
+    }
+  }
+  if (database_version < 2) {
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER6, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout: sha256");
+      all_updates_ok = false;
     }
   }
 
@@ -652,7 +663,7 @@ static bool
 sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
                     zathura_fileinfo_t* file_info)
 {
-  if (db == NULL || file == NULL || file_info == NULL) {
+  if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
     return false;
   }
 
@@ -660,24 +671,25 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* has
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, time, page_right_to_left) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'), ?);";
+    "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, time, page_right_to_left, sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'), ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
     return false;
   }
 
-  if (sqlite3_bind_text(stmt,    1, file, -1, NULL)                != SQLITE_OK ||
+  if (sqlite3_bind_text(stmt,    1, file, -1, SQLITE_STATIC)       != SQLITE_OK ||
       sqlite3_bind_int(stmt,     2, file_info->current_page)       != SQLITE_OK ||
       sqlite3_bind_int(stmt,     3, file_info->page_offset)        != SQLITE_OK ||
       sqlite3_bind_double(stmt,  4, file_info->zoom)               != SQLITE_OK ||
       sqlite3_bind_int(stmt,     5, file_info->rotation)           != SQLITE_OK ||
       sqlite3_bind_int(stmt,     6, file_info->pages_per_row)      != SQLITE_OK ||
-      sqlite3_bind_text(stmt,    7, file_info->first_page_column_list, -1, NULL)
+      sqlite3_bind_text(stmt,    7, file_info->first_page_column_list, -1, SQLITE_STATIC)
                                                                    != SQLITE_OK ||
       sqlite3_bind_double(stmt,  8, file_info->position_x)         != SQLITE_OK ||
       sqlite3_bind_double(stmt,  9, file_info->position_y)         != SQLITE_OK ||
-      sqlite3_bind_int(stmt,    10, file_info->page_right_to_left) != SQLITE_OK) {
+      sqlite3_bind_int(stmt,    10, file_info->page_right_to_left) != SQLITE_OK ||
+      sqlite3_bind_blob(stmt,   11, hash_sha256, 32, SQLITE_STATIC) != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
@@ -693,7 +705,7 @@ static bool
 sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
                     zathura_fileinfo_t* file_info)
 {
-  if (db == NULL || file == NULL || file_info == NULL) {
+  if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
     return false;
   }
 
@@ -701,14 +713,15 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* has
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_GET[] =
-    "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, page_right_to_left FROM fileinfo WHERE file = ?;";
+    "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, page_right_to_left FROM fileinfo WHERE file = ? OR sha256 = ? ORDER BY time DESC LIMIT 1;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
     return false;
   }
 
-  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
+  if (sqlite3_bind_text(stmt, 1, file, -1, SQLITE_STATIC) != SQLITE_OK ||
+      sqlite3_bind_blob(stmt, 2, hash_sha256, 32, SQLITE_STATIC) != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
