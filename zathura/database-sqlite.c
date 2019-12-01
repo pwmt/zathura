@@ -31,67 +31,10 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init)
                         G_ADD_PRIVATE(ZathuraSQLDatabase))
 
-static bool           check_column(sqlite3* session, const char* table, const char* col, bool* result);
-static bool           check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* result);
-static void           sqlite_finalize(GObject* object);
-static bool           sqlite_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
-static bool           sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
-static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* file);
-static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* file);
-static bool           sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist);
-static bool           sqlite_set_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t* file_info);
-static bool           sqlite_get_fileinfo(zathura_database_t* db, const char* file, zathura_fileinfo_t* file_info);
-static void           sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
-static void           sqlite_io_append(GiraraInputHistoryIO* db, const char*);
-static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db);
-static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath);
-
 enum {
   PROP_0,
   PROP_PATH
 };
-
-static void
-zathura_database_interface_init(ZathuraDatabaseInterface* iface)
-{
-  /* initialize interface */
-  iface->add_bookmark     = sqlite_add_bookmark;
-  iface->remove_bookmark  = sqlite_remove_bookmark;
-  iface->load_bookmarks   = sqlite_load_bookmarks;
-  iface->load_jumplist    = sqlite_load_jumplist;
-  iface->save_jumplist    = sqlite_save_jumplist;
-  iface->set_fileinfo     = sqlite_set_fileinfo;
-  iface->get_fileinfo     = sqlite_get_fileinfo;
-  iface->get_recent_files = sqlite_get_recent_files;
-}
-
-static void
-io_interface_init(GiraraInputHistoryIOInterface* iface)
-{
-  /* initialize interface */
-  iface->append = sqlite_io_append;
-  iface->read = sqlite_io_read;
-}
-
-static void
-zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
-{
-  /* override methods */
-  GObjectClass* object_class = G_OBJECT_CLASS(class);
-  object_class->finalize     = sqlite_finalize;
-  object_class->set_property = sqlite_set_property;
-
-  g_object_class_install_property(object_class, PROP_PATH,
-    g_param_spec_string("path", "path", "path to the database", NULL,
-      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
-}
-
-static void
-zathura_sqldatabase_init(ZathuraSQLDatabase* db)
-{
-  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
-  priv->session = NULL;
-}
 
 zathura_database_t*
 zathura_sqldatabase_new(const char* path)
@@ -158,6 +101,76 @@ sqlite_get_user_version(sqlite3* session)
   }
   sqlite3_finalize(stmt);
   return version;
+}
+
+static bool
+check_column(sqlite3* session, const char* table, const char* col, bool* res)
+{
+  /* we can't actually bind the argument with sqlite3_bind_text because
+   * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
+  char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
+  if (query == NULL) {
+    return false;
+  }
+
+  sqlite3_stmt* stmt = prepare_statement(session, query);
+  if (stmt == NULL) {
+    return false;
+  }
+
+  *res = false;
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
+      *res = true;
+      break;
+    }
+  }
+
+  if (*res == false) {
+    girara_debug("Column '%s' in table '%s' NOT found.", col, table);
+  }
+
+  sqlite3_finalize(stmt);
+  sqlite3_free(query);
+
+  return true;
+}
+
+static bool
+check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* res)
+{
+  /* we can't actually bind the argument with sqlite3_bind_text because
+   * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
+  char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
+  if (query == NULL) {
+    return false;
+  }
+
+  sqlite3_stmt* stmt = prepare_statement(session, query);
+  if (stmt == NULL) {
+    return false;
+  }
+
+  *res = false;
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
+      if (strcmp((const char*) sqlite3_column_text(stmt, 2), type) == 0) {
+        *res = true;
+        break;
+      }
+    }
+  }
+
+  if (*res == false) {
+    girara_debug("Column '%s' in table '%s' has wrong type.", col, table);
+  }
+
+  sqlite3_finalize(stmt);
+  sqlite3_free(query);
+
+  return true;
 }
 
 static void
@@ -394,76 +407,6 @@ sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamS
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
-}
-
-static bool
-check_column(sqlite3* session, const char* table, const char* col, bool* res)
-{
-  /* we can't actually bind the argument with sqlite3_bind_text because
-   * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
-  char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
-  if (query == NULL) {
-    return false;
-  }
-
-  sqlite3_stmt* stmt = prepare_statement(session, query);
-  if (stmt == NULL) {
-    return false;
-  }
-
-  *res = false;
-
-  while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
-      *res = true;
-      break;
-    }
-  }
-
-  if (*res == false) {
-    girara_debug("Column '%s' in table '%s' NOT found.", col, table);
-  }
-
-  sqlite3_finalize(stmt);
-  sqlite3_free(query);
-
-  return true;
-}
-
-static bool
-check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* res)
-{
-  /* we can't actually bind the argument with sqlite3_bind_text because
-   * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
-  char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
-  if (query == NULL) {
-    return false;
-  }
-
-  sqlite3_stmt* stmt = prepare_statement(session, query);
-  if (stmt == NULL) {
-    return false;
-  }
-
-  *res = false;
-
-  while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
-      if (strcmp((const char*) sqlite3_column_text(stmt, 2), type) == 0) {
-        *res = true;
-        break;
-      }
-    }
-  }
-
-  if (*res == false) {
-    girara_debug("Column '%s' in table '%s' has wrong type.", col, table);
-  }
-
-  sqlite3_finalize(stmt);
-  sqlite3_free(query);
-
-  return true;
 }
 
 static bool
@@ -889,4 +832,46 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
 
   sqlite3_finalize(stmt);
   return list;
+}
+
+static void
+zathura_database_interface_init(ZathuraDatabaseInterface* iface)
+{
+  /* initialize interface */
+  iface->add_bookmark     = sqlite_add_bookmark;
+  iface->remove_bookmark  = sqlite_remove_bookmark;
+  iface->load_bookmarks   = sqlite_load_bookmarks;
+  iface->load_jumplist    = sqlite_load_jumplist;
+  iface->save_jumplist    = sqlite_save_jumplist;
+  iface->set_fileinfo     = sqlite_set_fileinfo;
+  iface->get_fileinfo     = sqlite_get_fileinfo;
+  iface->get_recent_files = sqlite_get_recent_files;
+}
+
+static void
+io_interface_init(GiraraInputHistoryIOInterface* iface)
+{
+  /* initialize interface */
+  iface->append = sqlite_io_append;
+  iface->read = sqlite_io_read;
+}
+
+static void
+zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
+{
+  /* override methods */
+  GObjectClass* object_class = G_OBJECT_CLASS(class);
+  object_class->finalize     = sqlite_finalize;
+  object_class->set_property = sqlite_set_property;
+
+  g_object_class_install_property(object_class, PROP_PATH,
+    g_param_spec_string("path", "path", "path to the database", NULL,
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+}
+
+static void
+zathura_sqldatabase_init(ZathuraSQLDatabase* db)
+{
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
+  priv->session = NULL;
 }
