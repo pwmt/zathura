@@ -75,7 +75,7 @@ prepare_statement(sqlite3* session, const char* statement)
   sqlite3_stmt* pp_stmt = NULL;
 
   if (sqlite3_prepare_v2(session, statement, -1, &pp_stmt, &pz_tail) != SQLITE_OK) {
-    girara_error("Failed to prepare query: %s", statement);
+    girara_error("Failed to prepare query: %s - %s", statement, sqlite3_errmsg(session));
     sqlite3_finalize(pp_stmt);
     return NULL;
   } else if (pz_tail && *pz_tail != '\0') {
