@@ -96,6 +96,12 @@ prepare_filename(const char* file)
   return g_base64_encode((const guchar*) file, strlen(file));
 }
 
+static char*
+prepare_hash_key(const uint8_t* hash_sha256)
+{
+  return g_base64_encode(hash_sha256, 32);
+}
+
 static bool
 zathura_db_check_file(const char* path)
 {
@@ -638,22 +644,36 @@ plain_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash
 {
   ZathuraPlainDatabase* plaindb     = ZATHURA_PLAINDATABASE(db);
   ZathuraPlainDatabasePrivate* priv = zathura_plaindatabase_get_instance_private(plaindb);
-  if (priv->history == NULL || file_info == NULL || file == NULL) {
+  if (priv->history == NULL || file_info == NULL || hash_sha256 == NULL || file == NULL) {
     return false;
   }
 
   char* name = prepare_filename(file);
 
-  g_key_file_set_integer(priv->history, name, KEY_PAGE,              file_info->current_page);
-  g_key_file_set_integer(priv->history, name, KEY_OFFSET,            file_info->page_offset);
-  g_key_file_set_double (priv->history, name, KEY_ZOOM,              file_info->zoom);
-  g_key_file_set_integer(priv->history, name, KEY_ROTATE,            file_info->rotation);
-  g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,     file_info->pages_per_row);
-  g_key_file_set_string(priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
-  g_key_file_set_boolean(priv->history, name, KEY_PAGE_RIGHT_TO_LEFT,file_info->page_right_to_left);
-  g_key_file_set_double (priv->history, name, KEY_POSITION_X,        file_info->position_x);
-  g_key_file_set_double (priv->history, name, KEY_POSITION_Y,        file_info->position_y);
-  g_key_file_set_integer(priv->history, name, KEY_TIME,              time(NULL));
+  g_key_file_set_integer(priv->history, name, KEY_PAGE,               file_info->current_page);
+  g_key_file_set_integer(priv->history, name, KEY_OFFSET,             file_info->page_offset);
+  g_key_file_set_double (priv->history, name, KEY_ZOOM,               file_info->zoom);
+  g_key_file_set_integer(priv->history, name, KEY_ROTATE,             file_info->rotation);
+  g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,      file_info->pages_per_row);
+  g_key_file_set_string (priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
+  g_key_file_set_boolean(priv->history, name, KEY_PAGE_RIGHT_TO_LEFT, file_info->page_right_to_left);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_X,         file_info->position_x);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_Y,         file_info->position_y);
+  g_key_file_set_integer(priv->history, name, KEY_TIME,               time(NULL));
+
+  g_free(name);
+  name = prepare_hash_key(hash_sha256);
+
+  g_key_file_set_integer(priv->history, name, KEY_PAGE,               file_info->current_page);
+  g_key_file_set_integer(priv->history, name, KEY_OFFSET,             file_info->page_offset);
+  g_key_file_set_double (priv->history, name, KEY_ZOOM,               file_info->zoom);
+  g_key_file_set_integer(priv->history, name, KEY_ROTATE,             file_info->rotation);
+  g_key_file_set_integer(priv->history, name, KEY_PAGES_PER_ROW,      file_info->pages_per_row);
+  g_key_file_set_string (priv->history, name, KEY_FIRST_PAGE_COLUMN,  file_info->first_page_column_list);
+  g_key_file_set_boolean(priv->history, name, KEY_PAGE_RIGHT_TO_LEFT, file_info->page_right_to_left);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_X,         file_info->position_x);
+  g_key_file_set_double (priv->history, name, KEY_POSITION_Y,         file_info->position_y);
+  g_key_file_set_integer(priv->history, name, KEY_TIME,               time(NULL));
 
   g_free(name);
 
@@ -666,7 +686,7 @@ static bool
 plain_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
                    zathura_fileinfo_t* file_info)
 {
-  if (db == NULL || file == NULL || file_info == NULL) {
+  if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
     return false;
   }
 
@@ -679,7 +699,11 @@ plain_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash
   char* name = prepare_filename(file);
   if (g_key_file_has_group(priv->history, name) == FALSE) {
     g_free(name);
-    return false;
+    name = prepare_hash_key(hash_sha256);
+    if (g_key_file_has_group(priv->history, name) == FALSE) {
+      g_free(name);
+      return false;
+    }
   }
 
   file_info->current_page      = g_key_file_get_integer(priv->history, name, KEY_PAGE, NULL);
