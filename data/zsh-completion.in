@@ -10,7 +10,7 @@ all_opts=(
   '(-w --password)'{-w,--password=}'[specify a password for the document]:password'
   '(-P --page)'{-p,--page=}'[open the document at the given page number]:page number'
   '(-l --log-level)'{-l,--log-level=}'[set log level]:level:(error warning info debug)'
-  '(-x --snyctex-editor-command)'{-x,--synxtec-editor-command=}'[specify synctex editor (forwarded to the synctex command)]:command'
+  '(-x --synctex-editor-command)'{-x,--synctex-editor-command=}'[specify synctex editor (forwarded to the synctex command)]:command'
   '--synctex-forward=[move to the given position]:position'
   '--synctex-pid=[highlight position in given process]:pid:_pids'
   '--mode[start in a non-default mode]:mode:(presentation fullscreen)'
