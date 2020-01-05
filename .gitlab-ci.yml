@@ -3,7 +3,7 @@ stages:
   - test
 
 # Cache
-cache:
+cache: &girara_cache
   key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
   paths:
     - subprojects/girara
@@ -18,6 +18,8 @@ build:archlinux:
     - mkdir -p build && cd build
     - meson ..
     - ninja
+  cache:
+    <<: *girara_cache
   artifacts:
     expire_in: 1 day
     paths:
@@ -33,6 +35,9 @@ test:archlinux:
   script:
     - cd build
     - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
   dependencies:
     - build:archlinux
   except:
@@ -48,6 +53,8 @@ build:debian-buster:
     - mkdir -p build && cd build
     - meson ..
     - ninja
+  cache:
+    <<: *girara_cache
   artifacts:
     expire_in: 1 day
     paths:
@@ -63,6 +70,9 @@ test:debian-buster:
   script:
     - cd build
     - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
   dependencies:
     - build:debian-buster
   except:
@@ -78,6 +88,8 @@ build:ubuntu-bionic:
     - mkdir -p build && cd build
     - meson ..
     - ninja
+  cache:
+    <<: *girara_cache
   artifacts:
     expire_in: 1 day
     paths:
@@ -93,6 +105,9 @@ test:ubuntu-bionic:
   script:
     - cd build
     - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
   dependencies:
     - build:ubuntu-bionic
   except:
@@ -108,6 +123,8 @@ build:ubuntu-eoan:
     - mkdir -p build && cd build
     - meson ..
     - ninja
+  cache:
+    <<: *girara_cache
   artifacts:
     expire_in: 1 day
     paths:
@@ -123,6 +140,9 @@ test:ubuntu-eoan:
   script:
     - cd build
     - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
   dependencies:
     - build:ubuntu-eoan
   except:
