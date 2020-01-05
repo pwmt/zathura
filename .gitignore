@@ -7,6 +7,7 @@
 *.pc
 *.sw[a-z]
 *.pyc
+tags
 
 # generated files
 resources.*
@@ -24,6 +25,7 @@ zathura-*.tar.gz
 .tx
 build/
 gcov/
+subprojects/girara
 
 # development files
 .clang_complete
