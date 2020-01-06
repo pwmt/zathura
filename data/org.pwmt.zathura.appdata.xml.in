@@ -46,4 +46,5 @@
   <provides>
     <binary>zathura</binary>
   </provides>
+  <content_rating type="oars-1.0" />
 </component>
