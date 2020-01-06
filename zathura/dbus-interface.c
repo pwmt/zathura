@@ -396,12 +396,13 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     const char* method;
     void (*handler)(zathura_t*, GVariant*, GDBusMethodInvocation*);
     bool needs_document;
+    bool present_window;
   } handlers[] = {
-    { "OpenDocument", handle_open_document, false },
-    { "CloseDocument", handle_close_document, false },
-    { "GotoPage", handle_goto_page, true },
-    { "HighlightRects", handle_highlight_rects, true },
-    { "SynctexView", handle_synctex_view, true }
+    { "OpenDocument", handle_open_document, false, true },
+    { "CloseDocument", handle_close_document, false, false },
+    { "GotoPage", handle_goto_page, true, true },
+    { "HighlightRects", handle_highlight_rects, true, true },
+    { "SynctexView", handle_synctex_view, true, true }
   };
 
   for (size_t idx = 0; idx != sizeof(handlers) / sizeof(handlers[0]); ++idx) {
@@ -417,6 +418,11 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     }
 
     (*handlers[idx].handler)(priv->zathura, parameters, invocation);
+
+    if (handlers[idx].present_window == true && priv->zathura->ui.session->gtk.embed == 0) {
+      gtk_window_present(GTK_WINDOW(priv->zathura->ui.session->gtk.window));
+    }
+
     return;
   }
 }

@@ -52,7 +52,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
     return false;
   }
 
-  char* content_type = zathura_content_type_guess(zathura->content_type_context, path);
+  char* content_type = zathura_content_type_guess(zathura->content_type_context, path, NULL);
   if (content_type == NULL) {
     return false;
   }

@@ -1,7 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "content-type.h"
-#include "macros.h"
 
 #include <girara/utils.h>
 #ifdef WITH_MAGIC
@@ -18,6 +17,8 @@ struct zathura_content_type_context_s
 {
 #ifdef WITH_MAGIC
   magic_t magic;
+#else
+  void* magic;
 #endif
 };
 
@@ -33,6 +34,7 @@ zathura_content_type_new(void)
 #ifdef WITH_MAGIC
   /* creat magic cookie */
   static const int flags =
+    MAGIC_ERROR |
     MAGIC_MIME_TYPE |
     MAGIC_SYMLINK |
     MAGIC_NO_CHECK_APPTYPE |
@@ -90,7 +92,7 @@ guess_type_magic(zathura_content_type_context_t* context, const char* path)
 
   /* get the mime type */
   mime_type = magic_file(context->magic, path);
-  if (mime_type == NULL) {
+  if (mime_type == NULL || magic_errno(context->magic) != 0) {
     girara_debug("failed guessing filetype: %s", magic_error(context->magic));
     return NULL;
   }
@@ -122,25 +124,28 @@ guess_type_magic(zathura_content_type_context_t* UNUSED(context),
 static char*
 guess_type_file(const char* path)
 {
-  GString* command = g_string_new("file -b --mime-type ");
-  char* tmp        = g_shell_quote(path);
-
-  g_string_append(command, tmp);
-  g_free(tmp);
+  /* g_spawn_async expects char** */
+  static char cmd_file[] = "file";
+  static char opt_b[] = "-b";
+  static char opt_mime_type[] = "--mime-type";
+  char* argv[] = { cmd_file, opt_b, opt_mime_type, g_strdup(path), NULL };
 
   GError* error = NULL;
   char* out = NULL;
   int ret = 0;
-  g_spawn_command_line_sync(command->str, &out, NULL, &ret, &error);
-  g_string_free(command, TRUE);
-  if (error != NULL) {
+  const bool r = g_spawn_sync(NULL, argv, NULL,
+                              G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL,
+                              NULL, NULL, &out, NULL, &ret, &error);
+  g_free(argv[3]);
+  if (r == false) {
     girara_warning("failed to execute command: %s", error->message);
     g_error_free(error);
     g_free(out);
     return NULL;
   }
-  if (WEXITSTATUS(ret) != 0) {
-    girara_warning("file failed with error code: %d", WEXITSTATUS(ret));
+  if (g_spawn_check_exit_status(ret, &error) == false) {
+    girara_warning("file failed: %s", error->message);
+    g_error_free(error);
     g_free(out);
     return NULL;
   }
@@ -179,12 +184,10 @@ guess_type_glib(const char* path)
     return NULL;
   }
 
-  const int fd = fileno(f);
   guchar* content = NULL;
-  size_t length = 0u;
-  ssize_t bytes_read = -1;
-  while (uncertain == TRUE && length < GT_MAX_READ && bytes_read != 0) {
-    g_free((void*)content_type);
+  size_t length = 0;
+  while (uncertain == TRUE && length < GT_MAX_READ) {
+    g_free(content_type);
     content_type = NULL;
 
     guchar* temp_content = g_try_realloc(content, length + BUFSIZ);
@@ -193,8 +196,8 @@ guess_type_glib(const char* path)
     }
     content = temp_content;
 
-    bytes_read = read(fd, content + length, BUFSIZ);
-    if (bytes_read == -1) {
+    size_t bytes_read = fread(content + length, 1, BUFSIZ, f);
+    if (bytes_read == 0) {
       break;
     }
 
@@ -209,23 +212,40 @@ guess_type_glib(const char* path)
     return content_type;
   }
 
-  g_free((void*)content_type);
+  g_free(content_type);
   return NULL;
+}
+
+static int compare_content_types(const void* lhs, const void* rhs) {
+  return g_strcmp0(lhs, rhs);
 }
 
 char*
 zathura_content_type_guess(zathura_content_type_context_t* context,
-                           const char* path)
+                           const char* path,
+                           const girara_list_t* supported_content_types)
 {
   /* try libmagic first */
-  char* content_type = guess_type_magic(context, path);
+  char *content_type = guess_type_magic(context, path);
   if (content_type != NULL) {
-    return content_type;
+    if (supported_content_types == NULL ||
+        girara_list_find(supported_content_types, compare_content_types,
+                         content_type) != NULL) {
+      return content_type;
+    }
+    girara_debug("content type '%s' not supported, trying again", content_type);
+    g_free(content_type);
   }
   /* else fallback to g_content_type_guess method */
   content_type = guess_type_glib(path);
   if (content_type != NULL) {
-    return content_type;
+    if (supported_content_types == NULL ||
+        girara_list_find(supported_content_types, compare_content_types,
+                         content_type) != NULL) {
+      return content_type;
+    }
+    girara_debug("content type '%s' not supported, trying again", content_type);
+    g_free(content_type);
   }
   /* and if libmagic is not available, try file as last resort */
   return guess_type_file(path);

@@ -37,6 +37,7 @@ struct zathura_plugin_manager_s {
   girara_list_t* plugins; /**< List of plugins */
   girara_list_t* path; /**< List of plugin paths */
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
+  girara_list_t* content_types; /**< List of all registered content types */
 };
 
 static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
@@ -56,10 +57,12 @@ zathura_plugin_manager_new(void)
   plugin_manager->plugins = girara_list_new2((girara_free_function_t) zathura_plugin_free);
   plugin_manager->path    = girara_list_new2(g_free);
   plugin_manager->type_plugin_mapping = girara_list_new2((girara_free_function_t)zathura_type_plugin_mapping_free);
+  plugin_manager->content_types = girara_list_new2(g_free);
 
   if (plugin_manager->plugins == NULL
       || plugin_manager->path == NULL
-      || plugin_manager->type_plugin_mapping == NULL) {
+      || plugin_manager->type_plugin_mapping == NULL
+      || plugin_manager->content_types == NULL) {
     zathura_plugin_manager_free(plugin_manager);
     return NULL;
   }
@@ -231,6 +234,16 @@ zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager)
   return plugin_manager->plugins;
 }
 
+girara_list_t*
+zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager)
+{
+  if (plugin_manager == NULL) {
+    return NULL;
+  }
+
+  return plugin_manager->content_types;
+}
+
 void
 zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager)
 {
@@ -238,17 +251,10 @@ zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager)
     return;
   }
 
-  if (plugin_manager->plugins != NULL) {
-    girara_list_free(plugin_manager->plugins);
-  }
-
-  if (plugin_manager->path != NULL) {
-    girara_list_free(plugin_manager->path);
-  }
-
-  if (plugin_manager->type_plugin_mapping != NULL) {
-    girara_list_free(plugin_manager->type_plugin_mapping);
-  }
+  girara_list_free(plugin_manager->content_types);
+  girara_list_free(plugin_manager->type_plugin_mapping);
+  girara_list_free(plugin_manager->path);
+  girara_list_free(plugin_manager->plugins);
 
   g_free(plugin_manager);
 }
@@ -308,6 +314,7 @@ plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, 
   mapping->type   = g_strdup(type);
   mapping->plugin = plugin;
   girara_list_append(plugin_manager->type_plugin_mapping, mapping);
+  girara_list_append(plugin_manager->content_types, g_strdup(type));
 
   return true;
 }

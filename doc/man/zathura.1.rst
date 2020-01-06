@@ -16,11 +16,6 @@ Options
 
 .. include:: _options.txt
 
-Environment variables
----------------------
-
-.. include:: _env.txt
-
 Mouse and key bindings
 ----------------------
 
@@ -40,6 +35,11 @@ Synctex support
 ---------------
 
 .. include:: _synctex.txt
+
+Environment variables
+---------------------
+
+.. include:: _env.txt
 
 Known bugs
 ----------

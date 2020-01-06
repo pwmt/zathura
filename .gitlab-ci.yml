@@ -1,0 +1,149 @@
+stages:
+  - build
+  - test
+
+# Cache
+cache: &girara_cache
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+  paths:
+    - subprojects/girara
+
+# Archlinux
+build:archlinux:
+  tags:
+    - pwmt
+  stage: build
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/archlinux:latest
+  script:
+    - mkdir -p build && cd build
+    - meson ..
+    - ninja
+  cache:
+    <<: *girara_cache
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - build
+  except:
+    - tags
+
+test:archlinux:
+  tags:
+    - pwmt
+  stage: test
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/archlinux:latest
+  script:
+    - cd build
+    - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
+  dependencies:
+    - build:archlinux
+  except:
+    - tags
+
+# Debian 10 (Buster)
+build:debian-buster:
+  tags:
+    - pwmt
+  stage: build
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:buster
+  script:
+    - mkdir -p build && cd build
+    - meson ..
+    - ninja
+  cache:
+    <<: *girara_cache
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - build
+  except:
+    - tags
+
+test:debian-buster:
+  tags:
+    - pwmt
+  stage: test
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:buster
+  script:
+    - cd build
+    - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
+  dependencies:
+    - build:debian-buster
+  except:
+    - tags
+
+# Ubuntu 18.04 LTS (Bionic Beaver)
+build:ubuntu-bionic:
+  tags:
+    - pwmt
+  stage: build
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:bionic
+  script:
+    - mkdir -p build && cd build
+    - meson ..
+    - ninja
+  cache:
+    <<: *girara_cache
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - build
+  except:
+    - tags
+
+test:ubuntu-bionic:
+  tags:
+    - pwmt
+  stage: test
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:bionic
+  script:
+    - cd build
+    - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
+  dependencies:
+    - build:ubuntu-bionic
+  except:
+    - tags
+
+# Ubuntu 19.10 (Eoan Ermine)
+build:ubuntu-eoan:
+  tags:
+    - pwmt
+  stage: build
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:eoan
+  script:
+    - mkdir -p build && cd build
+    - meson ..
+    - ninja
+  cache:
+    <<: *girara_cache
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - build
+  except:
+    - tags
+
+test:ubuntu-eoan:
+  tags:
+    - pwmt
+  stage: test
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:eoan
+  script:
+    - cd build
+    - ninja test
+  cache:
+    <<: *girara_cache
+    policy: pull
+  dependencies:
+    - build:ubuntu-eoan
+  except:
+    - tags

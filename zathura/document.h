@@ -4,6 +4,8 @@
 #define DOCUMENT_H
 
 #include <stdbool.h>
+#include <stdint.h>
+
 #include <girara/types.h>
 
 #include "types.h"
@@ -53,6 +55,14 @@ ZATHURA_PLUGIN_API const char* zathura_document_get_uri(zathura_document_t* docu
  * @return The basename of the document
  */
 ZATHURA_PLUGIN_API const char* zathura_document_get_basename(zathura_document_t* document);
+
+/**
+ * Returns the SHA256 hash of the document
+ *
+ * @param document The document
+ * @return The SHA256 hash of the document
+ */
+ZATHURA_PLUGIN_API const uint8_t* zathura_document_get_hash(zathura_document_t* document);
 
 /**
  * Returns the password of the document

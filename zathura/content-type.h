@@ -27,6 +27,7 @@ void zathura_content_type_free(zathura_content_type_context_t* context);
  * @return content type of path, needs to freeed with g_free.
  */
 char* zathura_content_type_guess(zathura_content_type_context_t* context,
-                                 const char* path);
+                                 const char* path,
+                                 const girara_list_t* supported_content_types);
 
 #endif

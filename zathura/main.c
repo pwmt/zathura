@@ -138,9 +138,7 @@ main(int argc, char* argv[])
   bool   forkback       = false;
   bool   print_version  = false;
   int    page_number    = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-#ifdef WITH_SYNCTEX
   int    synctex_pid    = -1;
-#endif
   Window embed          = 0;
 
   GOptionEntry entries[] = {
@@ -154,11 +152,9 @@ main(int argc, char* argv[])
     { "page",                   'P',  0, G_OPTION_ARG_INT,      &page_number,    _("Page number to go to"),                              "number" },
     { "log-level",              'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
     { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
-#ifdef WITH_SYNCTEX
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
     { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
     { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
-#endif
     { "mode",                   '\0', 0, G_OPTION_ARG_STRING,   &mode,           _("Start in a non-default mode"),                       "mode" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
@@ -202,6 +198,12 @@ main(int argc, char* argv[])
     }
 
     girara_debug("No instance found. Starting new one.");
+  }
+#else
+  if (synctex_fwd != NULL || synctex_editor != NULL || synctex_pid != -1) {
+    girara_error("Built without synctex support, but synctex specific option was specified.");
+    ret = -1;
+    goto free_and_ret;
   }
 #endif
 

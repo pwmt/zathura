@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-06 22:48+0200\n"
+"POT-Creation-Date: 2020-01-06 10:17+0100\n"
 "PO-Revision-Date: 2019-08-11 19:46+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: French (http://www.transifex.com/pwmt/zathura/language/fr/)\n"
@@ -595,59 +595,59 @@ msgstr "Lien : %s"
 msgid "Link: Invalid"
 msgstr "Lien : Invalide"
 
-#: zathura/main.c:147
+#: zathura/main.c:145
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Rattacher à la fenêtre spécifiée par xid (X11)"
 
-#: zathura/main.c:148
+#: zathura/main.c:146
 msgid "Path to the config directory"
 msgstr "Chemin vers le dossier de configuration"
 
-#: zathura/main.c:149
+#: zathura/main.c:147
 msgid "Path to the data directory"
 msgstr "Chemin vers le dossier de données"
 
-#: zathura/main.c:150
+#: zathura/main.c:148
 msgid "Path to the cache directory"
 msgstr ""
 
-#: zathura/main.c:151
+#: zathura/main.c:149
 msgid "Path to the directories containing plugins"
 msgstr "Chemin vers le dossier de plugins"
 
-#: zathura/main.c:152
+#: zathura/main.c:150
 msgid "Fork into the background"
 msgstr "Détacher en arrière-plan"
 
-#: zathura/main.c:153
+#: zathura/main.c:151
 msgid "Document password"
 msgstr "Mot de passe du document"
 
-#: zathura/main.c:154
+#: zathura/main.c:152
 msgid "Page number to go to"
 msgstr "Numéro de page où aller"
 
-#: zathura/main.c:155
+#: zathura/main.c:153
 msgid "Log level (debug, info, warning, error)"
 msgstr "Niveau de journalisation (debug, info, warning, error)"
 
-#: zathura/main.c:156
+#: zathura/main.c:154
 msgid "Print version information"
 msgstr "Afficher les informations de version"
 
-#: zathura/main.c:158
+#: zathura/main.c:155
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Éditeur synctex (transféré à la commande synctex)"
 
-#: zathura/main.c:159
+#: zathura/main.c:156
 msgid "Move to given synctex position"
 msgstr ""
 
-#: zathura/main.c:160
+#: zathura/main.c:157
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: zathura/main.c:162
+#: zathura/main.c:158
 msgid "Start in a non-default mode"
 msgstr "Démarrer dans un mode non-défaut"
 
@@ -688,7 +688,7 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1456
+#: zathura/zathura.c:304 zathura/zathura.c:1466
 msgid "[No name]"
 msgstr "[Sans nom]"
 
@@ -698,19 +698,19 @@ msgstr ""
 "Impossible de lire le fichier depuis stdin et de le sauvegarder dans un "
 "fichier temporaire."
 
-#: zathura/zathura.c:847
+#: zathura/zathura.c:851
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:936
+#: zathura/zathura.c:940
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:971
+#: zathura/zathura.c:979
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 "Type de fichier non supporté. Veuillez installer l'extension nécessaire."
 
-#: zathura/zathura.c:981
+#: zathura/zathura.c:989
 msgid "Document does not contain any pages"
 msgstr "Ce document ne contient aucune page"

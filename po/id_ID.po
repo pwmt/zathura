@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-06 22:48+0200\n"
+"POT-Creation-Date: 2020-01-06 10:17+0100\n"
 "PO-Revision-Date: 2019-08-11 19:46+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/pwmt/zathura/"
@@ -591,59 +591,59 @@ msgstr "Link: %s"
 msgid "Link: Invalid"
 msgstr "Link: Tidak valid"
 
-#: zathura/main.c:147
+#: zathura/main.c:145
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Mengembalikan jendela sesuai dengan xid yang ditentukan (X11)"
 
-#: zathura/main.c:148
+#: zathura/main.c:146
 msgid "Path to the config directory"
 msgstr "Path ke direktori konfigurasi"
 
-#: zathura/main.c:149
+#: zathura/main.c:147
 msgid "Path to the data directory"
 msgstr "Path ke direktori data"
 
-#: zathura/main.c:150
+#: zathura/main.c:148
 msgid "Path to the cache directory"
 msgstr "Path ke direktori tembolok"
 
-#: zathura/main.c:151
+#: zathura/main.c:149
 msgid "Path to the directories containing plugins"
 msgstr "Path ke direktori plugin"
 
-#: zathura/main.c:152
+#: zathura/main.c:150
 msgid "Fork into the background"
 msgstr "Jalankan pada latar"
 
-#: zathura/main.c:153
+#: zathura/main.c:151
 msgid "Document password"
 msgstr "Kata sandi dokumen"
 
-#: zathura/main.c:154
+#: zathura/main.c:152
 msgid "Page number to go to"
 msgstr "Nomor halaman tujuan"
 
-#: zathura/main.c:155
+#: zathura/main.c:153
 msgid "Log level (debug, info, warning, error)"
 msgstr "Tingkat log (debug, info, peringatan, error)"
 
-#: zathura/main.c:156
+#: zathura/main.c:154
 msgid "Print version information"
 msgstr "Cetak informasi versi"
 
-#: zathura/main.c:158
+#: zathura/main.c:155
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Synctex editor (diteruskan ke perintah synctex)"
 
-#: zathura/main.c:159
+#: zathura/main.c:156
 msgid "Move to given synctex position"
 msgstr "Pindahkan ke posisi synctex yang diberikan"
 
-#: zathura/main.c:160
+#: zathura/main.c:157
 msgid "Highlight given position in the given process"
 msgstr "Sorot posisi pada proses yang diberikan"
 
-#: zathura/main.c:162
+#: zathura/main.c:158
 msgid "Start in a non-default mode"
 msgstr "Mulai pada mode non-bawaan"
 
@@ -684,7 +684,7 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Dokumen ini tidak mempunyai indeks"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1456
+#: zathura/zathura.c:304 zathura/zathura.c:1466
 msgid "[No name]"
 msgstr "[Tidak berjudul]"
 
@@ -693,18 +693,18 @@ msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Tidak dapat membaca berkas dari stdin dan menulisnya ke berkas sementar"
 
-#: zathura/zathura.c:847
+#: zathura/zathura.c:851
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:936
+#: zathura/zathura.c:940
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:971
+#: zathura/zathura.c:979
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Tipe berkas tidak didukung. Silakan memasang plugin yang dibutuhkan."
 
-#: zathura/zathura.c:981
+#: zathura/zathura.c:989
 msgid "Document does not contain any pages"
 msgstr "Dokumen tidak mempunyai laman apapun"

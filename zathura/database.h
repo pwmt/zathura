@@ -4,6 +4,8 @@
 #define DATABASE_H
 
 #include <stdbool.h>
+#include <stdint.h>
+
 #include <girara/types.h>
 #include <glib-object.h>
 
@@ -48,9 +50,9 @@ struct _ZathuraDatabaseInterface
 
   bool (*save_jumplist)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
 
-  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
+  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256, zathura_fileinfo_t* file_info);
 
-  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, zathura_fileinfo_t* file_info);
+  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256, zathura_fileinfo_t* file_info);
 
   girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max, const char* basepath);
 };
@@ -115,20 +117,23 @@ bool zathura_db_save_jumplist(ZathuraDatabase* db, const char* file, girara_list
  *
  * @param db The database instance
  * @param file The file to which the file info belongs.
+ * @param hash_sha256 The file's hash
  * @param file_info The file info
  * @return true on success, false otherwise.
  */
-bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file,
+bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
     zathura_fileinfo_t* file_info);
 
-/* Get file info (last site, ...) from the database.
+/* Get file info (last site, ...) from the database. The info is first looked up by file and then by
+ * its hash.
  *
  * @param db The database instance
  * @param file The file to which the file info belongs.
+ * @param hash_sha256  The file's hash
  * @param file_info The file info
  * @return true on success, false otherwise.
  */
-bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file,
+bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
     zathura_fileinfo_t* file_info);
 
 /* Get a list of recent files from the database. The most recent file is listed
