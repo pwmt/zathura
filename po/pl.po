@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-06 22:48+0200\n"
+"POT-Creation-Date: 2020-01-06 10:17+0100\n"
 "PO-Revision-Date: 2019-08-11 19:46+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Polish (http://www.transifex.com/pwmt/zathura/language/pl/)\n"
@@ -592,59 +592,59 @@ msgstr "Link: %s"
 msgid "Link: Invalid"
 msgstr "Nieprawidłowy link"
 
-#: zathura/main.c:147
+#: zathura/main.c:145
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Przypisz proces do rodzica o danym xid (X11)"
 
-#: zathura/main.c:148
+#: zathura/main.c:146
 msgid "Path to the config directory"
 msgstr "Położenie katalogu konfiguracyjnego"
 
-#: zathura/main.c:149
+#: zathura/main.c:147
 msgid "Path to the data directory"
 msgstr "Położenie katalogu danych"
 
-#: zathura/main.c:150
+#: zathura/main.c:148
 msgid "Path to the cache directory"
 msgstr ""
 
-#: zathura/main.c:151
+#: zathura/main.c:149
 msgid "Path to the directories containing plugins"
 msgstr "Położenie katalogu wtyczek"
 
-#: zathura/main.c:152
+#: zathura/main.c:150
 msgid "Fork into the background"
 msgstr "Forkuj w tle"
 
-#: zathura/main.c:153
+#: zathura/main.c:151
 msgid "Document password"
 msgstr "Hasło dokumentu"
 
-#: zathura/main.c:154
+#: zathura/main.c:152
 msgid "Page number to go to"
 msgstr ""
 
-#: zathura/main.c:155
+#: zathura/main.c:153
 msgid "Log level (debug, info, warning, error)"
 msgstr "Szczegółowość komunikatów (debug, info, warning, error)"
 
-#: zathura/main.c:156
+#: zathura/main.c:154
 msgid "Print version information"
 msgstr "Wyświetl informacje o wersji"
 
-#: zathura/main.c:158
+#: zathura/main.c:155
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Edytor synctex (przekierowanie do komendy synctex)"
 
-#: zathura/main.c:159
+#: zathura/main.c:156
 msgid "Move to given synctex position"
 msgstr ""
 
-#: zathura/main.c:160
+#: zathura/main.c:157
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: zathura/main.c:162
+#: zathura/main.c:158
 msgid "Start in a non-default mode"
 msgstr ""
 
@@ -685,7 +685,7 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Dokument nie zawiera indeksu"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1456
+#: zathura/zathura.c:304 zathura/zathura.c:1466
 msgid "[No name]"
 msgstr "[bez nazwy]"
 
@@ -693,18 +693,18 @@ msgstr "[bez nazwy]"
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:847
+#: zathura/zathura.c:851
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:936
+#: zathura/zathura.c:940
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:971
+#: zathura/zathura.c:979
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Niewspierany rodzaj pliku. Zainstaluj wymagane wtyczki"
 
-#: zathura/zathura.c:981
+#: zathura/zathura.c:989
 msgid "Document does not contain any pages"
 msgstr "Dokument nie zawiera żadnej strony"

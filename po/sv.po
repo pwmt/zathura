@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-06 22:48+0200\n"
+"POT-Creation-Date: 2020-01-06 10:17+0100\n"
 "PO-Revision-Date: 2019-08-11 19:46+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -594,59 +594,59 @@ msgstr "Länk: %s"
 msgid "Link: Invalid"
 msgstr "Länk: Ogiltig"
 
-#: zathura/main.c:147
+#: zathura/main.c:145
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Ändrar förälder till förster angivet av xid (X11)"
 
-#: zathura/main.c:148
+#: zathura/main.c:146
 msgid "Path to the config directory"
 msgstr "Sökväg till konfigurationskatalogen"
 
-#: zathura/main.c:149
+#: zathura/main.c:147
 msgid "Path to the data directory"
 msgstr "Sökväg till datakatlogen"
 
-#: zathura/main.c:150
+#: zathura/main.c:148
 msgid "Path to the cache directory"
 msgstr "Sökväg till cachekatalogen"
 
-#: zathura/main.c:151
+#: zathura/main.c:149
 msgid "Path to the directories containing plugins"
 msgstr "Sökväg till kataloger som innehåller instick"
 
-#: zathura/main.c:152
+#: zathura/main.c:150
 msgid "Fork into the background"
 msgstr "Forka till bakgrunden"
 
-#: zathura/main.c:153
+#: zathura/main.c:151
 msgid "Document password"
 msgstr "Dokumentlösenord"
 
-#: zathura/main.c:154
+#: zathura/main.c:152
 msgid "Page number to go to"
 msgstr "Sidnummer att gå til"
 
-#: zathura/main.c:155
+#: zathura/main.c:153
 msgid "Log level (debug, info, warning, error)"
 msgstr "Loggningsnivå (debug, info, warning, error)"
 
-#: zathura/main.c:156
+#: zathura/main.c:154
 msgid "Print version information"
 msgstr "Skriv ut versionsinformation"
 
-#: zathura/main.c:158
+#: zathura/main.c:155
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Synctex-redigerare (vidareskickat till synctex-kommandot)"
 
-#: zathura/main.c:159
+#: zathura/main.c:156
 msgid "Move to given synctex position"
 msgstr "Flytta till angiven synctex-position"
 
-#: zathura/main.c:160
+#: zathura/main.c:157
 msgid "Highlight given position in the given process"
 msgstr "Färgmarkera angiven position i den angivna processen"
 
-#: zathura/main.c:162
+#: zathura/main.c:158
 msgid "Start in a non-default mode"
 msgstr "Starta i ett icke-standardläge"
 
@@ -687,7 +687,7 @@ msgstr "Mönster hittades inte: %s"
 msgid "This document does not contain any index"
 msgstr "Detta dokument innehåller inget index"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1456
+#: zathura/zathura.c:304 zathura/zathura.c:1466
 msgid "[No name]"
 msgstr "[Namnlös]"
 
@@ -695,18 +695,18 @@ msgstr "[Namnlös]"
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunde inte läsa fil från stdin och skriva den till en temporärfil."
 
-#: zathura/zathura.c:847
+#: zathura/zathura.c:851
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "Kunde inte läsa fil från GIO och kopiera den till en temporärfil."
 
-#: zathura/zathura.c:936
+#: zathura/zathura.c:940
 msgid "Enter password:"
 msgstr "Ange lösenord:"
 
-#: zathura/zathura.c:971
+#: zathura/zathura.c:979
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Filtyp stöds ej. Installera det nödvändiga insticket."
 
-#: zathura/zathura.c:981
+#: zathura/zathura.c:989
 msgid "Document does not contain any pages"
 msgstr "Dokument innehåller inga sidor"
