@@ -201,7 +201,7 @@ main(int argc, char* argv[])
   }
 #else
   if (synctex_fwd != NULL || synctex_editor != NULL || synctex_pid != -1) {
-    girara_error("Built without syntex support, but syntex specific option was specified.");
+    girara_error("Built without synctex support, but synctex specific option was specified.");
     ret = -1;
     goto free_and_ret;
   }
