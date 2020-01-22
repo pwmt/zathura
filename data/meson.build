@@ -81,7 +81,7 @@ fish_comp = dependency('fish', required: false)
 if fish_comp.found()
   fish_compdir = fish_comp.get_pkgconfig_variable('completionsdir')
 else
-  fish_compdir = join_paths(datadir, 'fish', 'completions')
+  fish_compdir = join_paths(datadir, 'fish', 'vendor_completions.d')
 endif
 
 install_data(bash_completion, install_dir: bash_compdir)
