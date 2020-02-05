@@ -1692,9 +1692,14 @@ adjust_view(zathura_t* zathura)
   unsigned int new_cell_height = 0, new_cell_width = 0;
   zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
 
-  /* if the change in zoom changes page cell dimensions by at least one pixel, render */
-  if (abs((int)new_cell_width - (int)cell_width) > 1 ||
-      abs((int)new_cell_height - (int)cell_height) > 1) {
+  /*
+   * XXX requiring a larger difference apparently circumvents #94 for some users; this is not a
+   * proper fix
+   */
+  static const unsigned int min_change = 2;
+  /* if the change in zoom changes page cell dimensions, render */
+  if (abs((int)new_cell_width - (int)cell_width) > min_change ||
+      abs((int)new_cell_height - (int)cell_height) > min_change) {
     render_all(zathura);
     refresh_view(zathura);
   } else {
