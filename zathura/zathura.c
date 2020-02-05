@@ -1696,7 +1696,7 @@ adjust_view(zathura_t* zathura)
    * XXX requiring a larger difference apparently circumvents #94 for some users; this is not a
    * proper fix
    */
-  static const unsigned int min_change = 2;
+  static const int min_change = 2;
   /* if the change in zoom changes page cell dimensions, render */
   if (abs((int)new_cell_width - (int)cell_width) > min_change ||
       abs((int)new_cell_height - (int)cell_height) > min_change) {
