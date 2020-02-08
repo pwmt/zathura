@@ -594,12 +594,32 @@ recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_wi
 
   const double l1 = a[0]*rgb1.red + a[1]*rgb1.green + a[2]*rgb1.blue;
   const double l2 = a[0]*rgb2.red + a[1]*rgb2.green + a[2]*rgb2.blue;
+  const double negalph1 = 1. - rgb1.alpha;
+  const double negalph2 = 1. - rgb2.alpha;
 
   const double rgb_diff[] = {
     rgb2.red - rgb1.red,
     rgb2.green - rgb1.green,
     rgb2.blue - rgb1.blue
   };
+
+  const double h1[3] = {
+    rgb1.red*rgb1.alpha - l1,
+    rgb1.green*rgb1.alpha - l1,
+    rgb1.blue*rgb1.alpha - l1,
+  };
+
+  const double h2[3] = {
+    rgb2.red*rgb2.alpha - l2,
+    rgb2.green*rgb2.alpha - l2,
+    rgb2.blue*rgb2.alpha - l2,
+  };
+
+  /* Decide if we can use the older, faster formulas */
+  const bool fast_formula = (!priv->recolor.hue || (
+        fabs(rgb1.red - rgb1.blue) < DBL_EPSILON && fabs(rgb1.red - rgb1.green) < DBL_EPSILON &&
+        fabs(rgb2.red - rgb2.blue) < DBL_EPSILON && fabs(rgb2.red - rgb2.green) < DBL_EPSILON
+      )) && (rgb1.alpha >= 1. - DBL_EPSILON && rgb2.alpha >= 1. - DBL_EPSILON);
 
   girara_list_t* images     = NULL;
   girara_list_t* rectangles = NULL;
@@ -645,6 +665,8 @@ recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_wi
         );
         /* If it's inside and image don't recolor */
         if (inside_image == true) {
+          /* It is not guaranteed that the pixel is already opaque. */
+          data[3] = 255;
           continue;
         }
       }
@@ -678,15 +700,38 @@ recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_wi
         l = l * (l2 - l1) + l1;
 
         const double su = s * colorumax(h, l, l1, l2);
-        data[2] = (unsigned char)round(255.*(l + su * h[0]));
-        data[1] = (unsigned char)round(255.*(l + su * h[1]));
-        data[0] = (unsigned char)round(255.*(l + su * h[2]));
+
+        if (fast_formula) {
+          data[3] = 255;
+          data[2] = (unsigned char)round(255.*(l + su * h[0]));
+          data[1] = (unsigned char)round(255.*(l + su * h[1]));
+          data[0] = (unsigned char)round(255.*(l + su * h[2]));
+        } else {
+          /* Mix lightcolor, darkcolor and the original color, according to the
+           * minimal and maximal channel of the original color */
+          const double tr1 = (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2]));
+          const double tr2 = fmin(fmin(rgb[0], rgb[1]), rgb[2]);
+          data[3] = (unsigned char)round(255.*(1. - tr1*negalph1 - tr2*negalph2));
+          data[2] = (unsigned char)round(255.*fmin(1, fmax(0, tr1*h1[0] + tr2*h2[0] + (l + su * h[0]))));
+          data[1] = (unsigned char)round(255.*fmin(1, fmax(0, tr1*h1[1] + tr2*h2[1] + (l + su * h[1]))));
+          data[0] = (unsigned char)round(255.*fmin(1, fmax(0, tr1*h1[2] + tr2*h2[2] + (l + su * h[2]))));
+        }
       } else {
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
-        data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1.red));
-        data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1.green));
-        data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1.blue));
+        if (fast_formula) {
+          data[3] = 255;
+          data[2] = (unsigned char)round(255.*(l * rgb_diff[0] + rgb1.red));
+          data[1] = (unsigned char)round(255.*(l * rgb_diff[1] + rgb1.green));
+          data[0] = (unsigned char)round(255.*(l * rgb_diff[2] + rgb1.blue));
+        } else {
+          const double f1 = 1. - (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2]))*negalph1;
+          const double f2 = fmin(fmin(rgb[0], rgb[1]), rgb[2])*negalph2;
+          data[3] = (unsigned char)round(255.*(f1 - f2));
+          data[2] = (unsigned char)round(255.*(l * rgb_diff[0] - f2*rgb2.red + f1*rgb1.red));
+          data[1] = (unsigned char)round(255.*(l * rgb_diff[1] - f2*rgb2.green + f1*rgb1.green));
+          data[0] = (unsigned char)round(255.*(l * rgb_diff[2] - f2*rgb2.blue + f1*rgb1.blue));
+        }
       }
     }
   }
@@ -778,8 +823,16 @@ render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* render
     page_height = height;
   }
 
-  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+  cairo_format_t format;
+  if (priv->recolor.enabled) {
+    format = CAIRO_FORMAT_ARGB32;
+  }
+  else {
+    format = CAIRO_FORMAT_RGB24;
+  }
+  cairo_surface_t* surface = cairo_image_surface_create(format,
       page_width, page_height);
+
   if (surface == NULL) {
     return false;
   }
