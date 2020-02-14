@@ -458,10 +458,10 @@ girara
   * Default value:
 
 *font*
-  Defines the font that will be used
+  Defines the font that will be used, in pango font description `Pango format <https://developer.gnome.org/pango/stable/pango-Fonts.html#pango-font-description-from-string`_
 
   * Value type: String
-  * Default value: monospace normal 9
+  * Default value: "monospace normal 9"
 
 *guioptions*
   Shows or hides GUI elements.
