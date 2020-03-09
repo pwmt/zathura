@@ -373,7 +373,7 @@ typedef enum zathura_link_action_e
   ZATHURA_LINK_ACTION_DISPLAY
 } zathura_link_action_t;
 
-static bool
+static gboolean
 handle_link(GtkEntry* entry, girara_session_t* session,
             zathura_link_action_t action)
 {
@@ -381,19 +381,19 @@ handle_link(GtkEntry* entry, girara_session_t* session,
   g_return_val_if_fail(session->global.data != NULL, FALSE);
 
   zathura_t* zathura = session->global.data;
-  bool eval = true;
+  gboolean eval = TRUE;
 
   char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
   if (input == NULL || strlen(input) == 0) {
-    eval = false;
+    eval = FALSE;
   }
 
   int index = 0;
-  if (eval == true) {
+  if (eval == TRUE) {
     index = atoi(input);
     if (index == 0 && g_strcmp0(input, "0") != 0) {
       girara_notify(session, GIRARA_WARNING, _("Invalid input '%s' given."), input);
-      eval = false;
+      eval = FALSE;
     }
     index = index - 1;
   }
@@ -410,30 +410,32 @@ handle_link(GtkEntry* entry, girara_session_t* session,
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
 
-    if (eval == true) {
-      zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
+    if (eval == FALSE) {
+      /* nothing to evaluate */
+      continue;
+    }
 
-      if (link != NULL) {
-        invalid_index = false;
-        switch (action) {
-          case ZATHURA_LINK_ACTION_FOLLOW:
-            zathura_link_evaluate(zathura, link);
-            break;
-          case ZATHURA_LINK_ACTION_DISPLAY:
-            zathura_link_display(zathura, link);
-            break;
-        }
+    zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
+    if (link != NULL) {
+      invalid_index = false;
+      switch (action) {
+        case ZATHURA_LINK_ACTION_FOLLOW:
+          zathura_link_evaluate(zathura, link);
+          break;
+        case ZATHURA_LINK_ACTION_DISPLAY:
+          zathura_link_display(zathura, link);
+          break;
       }
     }
   }
 
-  if (eval == true && invalid_index == true) {
+  if (eval == TRUE && invalid_index == true) {
     girara_notify(session, GIRARA_WARNING, _("Invalid index '%s' given."), input);
   }
 
   g_free(input);
 
-  return (eval == TRUE) ? TRUE : FALSE;
+  return eval;
 }
 
 gboolean
