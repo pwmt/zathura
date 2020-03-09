@@ -122,20 +122,15 @@ cmd_marks_add(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  char* key_string = girara_list_nth(argument_list, 0);
+  const char* key_string = girara_list_nth(argument_list, 0);
 
-  if (key_string == NULL) {
+  if (key_string == NULL || strlen(key_string) != 1) {
     return false;
   }
 
-  if (strlen(key_string) != 1) {
-    return false;
-  }
-
-  char key = key_string[0];
-
-  if (((key >= 0x41 && key <= 0x5A) || (key >=
-                                        0x61 && key <= 0x7A)) == false) {
+  const char key = key_string[0];
+  if (((key >= 0x41 && key <= 0x5A) ||
+       (key >= 0x61 && key <= 0x7A)) == false) {
     return false;
   }
 
