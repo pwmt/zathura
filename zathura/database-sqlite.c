@@ -155,11 +155,10 @@ check_column_type(sqlite3* session, const char* table, const char* col, const ch
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
-      if (strcmp((const char*) sqlite3_column_text(stmt, 2), type) == 0) {
-        *res = true;
-        break;
-      }
+    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0 &&
+        strcmp((const char*) sqlite3_column_text(stmt, 2), type) == 0) {
+      *res = true;
+      break;
     }
   }
 
