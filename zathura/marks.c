@@ -57,7 +57,7 @@ sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argument),
   return true;
 }
 
-bool
+static bool
 cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
                                   girara_session_t* session)
 {
@@ -84,8 +84,9 @@ cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
   return true;
 }
 
-bool cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey*
-    event, girara_session_t* session)
+static bool
+cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey*
+                                       event, girara_session_t* session)
 {
   g_return_val_if_fail(session != NULL,              FALSE);
   g_return_val_if_fail(session->gtk.view != NULL,    FALSE);
@@ -191,7 +192,7 @@ cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list)
   return true;
 }
 
-void
+static void
 mark_add(zathura_t* zathura, int key)
 {
   if (zathura == NULL || zathura->document == NULL || zathura->global.marks == NULL) {
@@ -231,7 +232,7 @@ mark_add(zathura_t* zathura, int key)
   girara_list_append(zathura->global.marks, mark);
 }
 
-void
+static void
 mark_evaluate(zathura_t* zathura, int key)
 {
   if (zathura == NULL || zathura->global.marks == NULL) {
