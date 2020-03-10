@@ -131,7 +131,7 @@ cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
 
   const double position_x = zathura_document_get_position_x(zathura->document);
   const double position_y = zathura_adjustment_get_ratio(adjustment);
-  unsigned int page_id = position_to_page_number(zathura->document, position_x, position_y);
+  const unsigned int page_id = position_to_page_number(zathura->document, position_x, position_y);
 
   zathura_document_set_position_x(zathura->document, position_x);
   zathura_document_set_position_y(zathura->document, position_y);

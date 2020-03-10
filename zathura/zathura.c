@@ -1124,9 +1124,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
                  GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
-  const unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(hadjustment));
+  const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
   zathura_document_set_viewport_width(zathura->document, view_width);
-  const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
+  const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
 
   zathura_update_view_ppi(zathura);
@@ -1135,7 +1135,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
 
   /* get initial device scale */
-  int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+  const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
   zathura_document_set_device_factors(zathura->document, device_factor, device_factor);
 
   /* create blank pages */
