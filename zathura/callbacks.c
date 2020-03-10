@@ -103,8 +103,8 @@ cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
 
   update_visible_pages(zathura);
 
-  double position_x = zathura_adjustment_get_ratio(adjustment);
-  double position_y = zathura_document_get_position_y(zathura->document);
+  const double position_x = zathura_adjustment_get_ratio(adjustment);
+  const double position_y = zathura_document_get_position_y(zathura->document);
   unsigned int page_id = position_to_page_number(zathura->document, position_x, position_y);
 
   zathura_document_set_position_x(zathura->document, position_x);
@@ -129,8 +129,8 @@ cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
 
   update_visible_pages(zathura);
 
-  double position_x = zathura_document_get_position_x(zathura->document);
-  double position_y = zathura_adjustment_get_ratio(adjustment);
+  const double position_x = zathura_document_get_position_x(zathura->document);
+  const double position_y = zathura_adjustment_get_ratio(adjustment);
   unsigned int page_id = position_to_page_number(zathura->document, position_x, position_y);
 
   zathura_document_set_position_x(zathura->document, position_x);
@@ -158,7 +158,7 @@ cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zathura,
   }
 
   /* Save the viewport size */
-  unsigned int size = (unsigned int)floor(gtk_adjustment_get_page_size(adjustment));
+  const unsigned int size = floor(gtk_adjustment_get_page_size(adjustment));
   if (width == true) {
     zathura_document_set_viewport_width(zathura->document, size);
   } else {
@@ -207,8 +207,8 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
   GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
-  double position_x = zathura_document_get_position_x(zathura->document);
-  double position_y = zathura_document_get_position_y(zathura->document);
+  const double position_x = zathura_document_get_position_x(zathura->document);
+  const double position_y = zathura_document_get_position_y(zathura->document);
 
   zathura_adjustment_set_value_from_ratio(vadj, position_y);
   zathura_adjustment_set_value_from_ratio(hadj, position_x);
@@ -655,27 +655,28 @@ cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data)
   }
 
   GdkAtom* selection = get_selection(zathura);
+  if (selection == NULL) {
+    return;
+  }
 
   /* copy to clipboard */
-  if (selection != NULL) {
-    gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
+  gtk_clipboard_set_text(gtk_clipboard_get(*selection), text, -1);
 
-    bool notification = true;
-    girara_setting_get(zathura->ui.session, "selection-notification", &notification);
+  bool notification = true;
+  girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
-    if (notification == true) {
-      char* target = NULL;
-      girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+  if (notification == true) {
+    char* target = NULL;
+    girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
 
-      char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-      char* escaped_text = g_markup_printf_escaped(
-          _("Copied selected text to selection %s: %s"), target, stripped_text);
-      g_free(target);
-      g_free(stripped_text);
+    char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+    char* escaped_text = g_markup_printf_escaped(
+        _("Copied selected text to selection %s: %s"), target, stripped_text);
+    g_free(target);
+    g_free(stripped_text);
 
-      girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-      g_free(escaped_text);
-    }
+    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+    g_free(escaped_text);
   }
 
   g_free(selection);
@@ -731,7 +732,6 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
     void* data)
 {
   zathura_t* zathura = data;
-
   zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 
   /* set page number (but don't scroll there. it was clicked on, so it's visible) */
