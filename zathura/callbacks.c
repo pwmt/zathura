@@ -775,6 +775,7 @@ cb_window_update_icon(ZathuraRenderRequest* GIRARA_UNUSED(request), cairo_surfac
   GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface(surface, 0, 0, cairo_image_surface_get_width(surface), cairo_image_surface_get_height(surface));
   if (pixbuf == NULL) {
     girara_error("Unable to convert cairo surface to Gdk Pixbuf.");
+    return;
   }
 
   gtk_window_set_icon(GTK_WINDOW(zathura->ui.session->gtk.window), pixbuf);
