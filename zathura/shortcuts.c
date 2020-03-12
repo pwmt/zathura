@@ -969,7 +969,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
-  } else if (target_page == NULL && argument->data != NULL) {
+  } else if (argument->data != NULL) {
     const char* input = argument->data;
     girara_notify(session, GIRARA_ERROR, _("Pattern not found: %s"), input);
   }
