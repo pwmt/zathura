@@ -138,3 +138,5 @@ bool parse_color(GdkRGBA* color, const char* str);
 bool running_under_wsl(void);
 
 #endif // UTILS_H
+
+girara_list_t* flatten_rectangles(girara_list_t* rectangles);
