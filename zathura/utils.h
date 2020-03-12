@@ -107,7 +107,6 @@ GdkAtom* get_selection(zathura_t* zathura);
 double zathura_correct_zoom_value(girara_session_t* session, const double
     zoom);
 
-
 /**
  * Extracts the column the first page should be rendered in from the specified
  * list of settings corresponding to the specified pages per row
@@ -137,6 +136,13 @@ bool parse_color(GdkRGBA* color, const char* str);
  */
 bool running_under_wsl(void);
 
-#endif // UTILS_H
-
+/**
+ * Flatten list of overlapping rectangles.
+ *
+ * @param[in] rectangles A list of rectangles
+ *
+ * @return List of rectangles
+ */
 girara_list_t* flatten_rectangles(girara_list_t* rectangles);
+
+#endif // UTILS_H
