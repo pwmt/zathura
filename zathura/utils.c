@@ -356,38 +356,42 @@ girara_list_append_unique(girara_list_t* l, girara_compare_function_t cmp, void*
 }
 
 static void
+append_unique_point(girara_list_t* list, const double x, const double y) {
+  zathura_point_t* p = g_try_malloc(sizeof(zathura_point_t));
+  if (p == NULL) {
+    return;
+  }
+
+  p->x = x;
+  p->y = y;
+
+  if (girara_list_append_unique(list, cmp_point, p) == false) {
+    g_free(p);
+  }
+}
+
+static void
 rectangle_to_points(void* vrect, void* vlist) {
   const zathura_rectangle_t* rect = vrect;
   girara_list_t* list = vlist;
 
-  zathura_point_t* p1 = g_try_malloc0(sizeof(zathura_point_t));
-  zathura_point_t* p2 = g_try_malloc0(sizeof(zathura_point_t));
-  zathura_point_t* p3 = g_try_malloc0(sizeof(zathura_point_t));
-  zathura_point_t* p4 = g_try_malloc0(sizeof(zathura_point_t));
-  if (p1 == NULL || p2 == NULL || p3 == NULL || p4 == NULL) {
-    g_free(p4);
-    g_free(p3);
-    g_free(p2);
-    g_free(p1);
+  append_unique_point(list, rect->x1, rect->y1);
+  append_unique_point(list, rect->x1, rect->y2);
+  append_unique_point(list, rect->x2, rect->y1);
+  append_unique_point(list, rect->x2, rect->y2);
+}
+
+static void
+append_unique_double(girara_list_t* list, const double v) {
+  double* p = g_try_malloc(sizeof(double));
+  if (p == NULL) {
     return;
   }
 
-  *p1 = (zathura_point_t) { rect->x1, rect->y1 };
-  *p2 = (zathura_point_t) { rect->x1, rect->y2 };
-  *p3 = (zathura_point_t) { rect->x2, rect->y1 };
-  *p4 = (zathura_point_t) { rect->x2, rect->y2 };
+  *p = v;
 
-  if (!girara_list_append_unique(list, cmp_point, p1)) {
-    g_free(p1);
-  }
-  if (!girara_list_append_unique(list, cmp_point, p2)) {
-    g_free(p2);
-  }
-  if (!girara_list_append_unique(list, cmp_point, p3)) {
-    g_free(p3);
-  }
-  if (!girara_list_append_unique(list, cmp_point, p4)) {
-    g_free(p4);
+  if (girara_list_append_unique(list, cmp_double, p) == false) {
+    g_free(p);
   }
 }
 
@@ -398,52 +402,29 @@ cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points, girara_lis
   girara_list_t* xs = girara_sorted_list_new2(cmp_double, g_free);
   girara_list_t* ys = girara_sorted_list_new2(cmp_double, g_free);
 
-  double* rX2 = g_try_malloc(sizeof(double));
-  double* rY2 = g_try_malloc(sizeof(double));
-  if (rX2 == NULL || rY2 == NULL) {
-
-    return;
-  }
-
-  *rX2 = rect->x2;
-  *rY2 = rect->y2;
-  girara_list_append(xs, rX2);
-  girara_list_append(ys, rY2);
+  append_unique_double(xs, rect->x2);
+  append_unique_double(ys, rect->y2);
 
   GIRARA_LIST_FOREACH(points, zathura_point_t*, i_pt, pt)
     if (pt->x > rect->x1 && pt->x < rect->x2) {
-      double* v = g_try_malloc(sizeof(double));
-      if (v == NULL) {
-        return;
-      }
-      *v = pt->x;
-      if (!girara_list_append_unique(xs, cmp_double, v)) {
-        g_free(v);
-      }
+      append_unique_double(xs, pt->x);
     }
     if (pt->y > rect->y1 && pt->y < rect->y2) {
-      double* v = g_try_malloc(sizeof(double));
-      if (v == NULL) {
-        return;
-      }
-      *v = pt->y;
-      if (!girara_list_append_unique(ys, cmp_double, v)) {
-        g_free(v);
-      }
+      append_unique_double(ys, pt->y);
     }
   GIRARA_LIST_FOREACH_END(points, zathura_point_t*, i_pt, pt);
 
   double x = rect->x1;
-  GIRARA_LIST_FOREACH(xs, double*, ix, cx)
+  GIRARA_LIST_FOREACH(xs, const double*, ix, cx)
     double y = rect->y1;
-    GIRARA_LIST_FOREACH(ys, double*, iy, cy)
+    GIRARA_LIST_FOREACH(ys, const double*, iy, cy)
       zathura_rectangle_t* r = g_try_malloc(sizeof(zathura_rectangle_t));
       *r = (zathura_rectangle_t) {x, y, *cx, *cy};
       y = *cy;
       girara_list_append_unique(rectangles, cmp_rectangle, r);
-    GIRARA_LIST_FOREACH_END(ys, double*, iy, cy);
+    GIRARA_LIST_FOREACH_END(ys, const double*, iy, cy);
     x = *cx;
-  GIRARA_LIST_FOREACH_END(xs, double*, ix, cx);
+  GIRARA_LIST_FOREACH_END(xs, const double*, ix, cx);
 
   girara_list_free(xs);
   girara_list_free(ys);
@@ -455,9 +436,9 @@ flatten_rectangles(girara_list_t* rectangles) {
   girara_list_t* points = girara_list_new2(g_free);
   girara_list_foreach(rectangles, rectangle_to_points, points);
 
-  GIRARA_LIST_FOREACH(rectangles, zathura_rectangle_t*, i, r)
+  GIRARA_LIST_FOREACH(rectangles, const zathura_rectangle_t*, i, r)
     cut_rectangle(r, points, new_rectangles);
-  GIRARA_LIST_FOREACH_END(rectangles, zathura_rectangle_t*, i, r);
+  GIRARA_LIST_FOREACH_END(rectangles, const zathura_rectangle_t*, i, r);
   girara_list_free(points);
   return new_rectangles;
 }
