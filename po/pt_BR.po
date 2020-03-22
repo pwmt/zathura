@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Zlib
 #
 # Translators:
-# salmora8 <shorterfire@gmail.com>, 2012-2014
+# Alexandro Casanova <shorterfire@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 10:17+0100\n"
+"POT-Creation-Date: 2020-03-22 23:44+0100\n"
 "PO-Revision-Date: 2019-08-11 19:46+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/pwmt/zathura/"
@@ -34,15 +34,21 @@ msgid ""
 "completely view and navigate through documents without using a mouse."
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:21
-msgid "SyncTeX forward and backward synchronization support."
+#: data/org.pwmt.zathura.appdata.xml.in:17
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
-msgid "Quickmarks and bookmarks."
+msgid "SyncTeX forward and backward synchronization support."
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:23
+msgid "Quickmarks and bookmarks."
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:24
 msgid "Automatic document reloading."
 msgstr ""
 
@@ -67,17 +73,17 @@ msgstr "'%s' não deve ser 0. Defina para 1."
 msgid "Invalid input '%s' given."
 msgstr "Dados de entrada inválida '%s' ."
 
-#: zathura/callbacks.c:431
+#: zathura/callbacks.c:433
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Dados de índice invalido '%s'."
 
-#: zathura/callbacks.c:670
+#: zathura/callbacks.c:674
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr ""
 
-#: zathura/callbacks.c:703
+#: zathura/callbacks.c:706
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr ""

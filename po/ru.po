@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 10:17+0100\n"
+"POT-Creation-Date: 2020-03-22 23:44+0100\n"
 "PO-Revision-Date: 2019-11-28 12:40+0000\n"
 "Last-Translator: Alexander Filev\n"
 "Language-Team: Russian (http://www.transifex.com/pwmt/zathura/language/ru/)\n"
@@ -44,15 +44,21 @@ msgstr ""
 "клавиатурой. Zathura позволяет полностью просматривать и перемещаться по "
 "документам без использования мыши."
 
-#: data/org.pwmt.zathura.appdata.xml.in:21
+#: data/org.pwmt.zathura.appdata.xml.in:17
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "SyncTeX forward and backward synchronization support."
 msgstr "SyncTeX поддержка прямой и обратной синхронизации."
 
-#: data/org.pwmt.zathura.appdata.xml.in:22
+#: data/org.pwmt.zathura.appdata.xml.in:23
 msgid "Quickmarks and bookmarks."
 msgstr "Быстрые заметки и закладки."
 
-#: data/org.pwmt.zathura.appdata.xml.in:23
+#: data/org.pwmt.zathura.appdata.xml.in:24
 msgid "Automatic document reloading."
 msgstr "Автоматическая перезагрузка документов."
 
@@ -77,17 +83,17 @@ msgstr "«%s» не может быть 0, установлен как 1."
 msgid "Invalid input '%s' given."
 msgstr "Неправильный ввод: %s."
 
-#: zathura/callbacks.c:431
+#: zathura/callbacks.c:433
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Получен неверный индекс: %s."
 
-#: zathura/callbacks.c:670
+#: zathura/callbacks.c:674
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "Выделенный текст скопирован в выделение %s: %s"
 
-#: zathura/callbacks.c:703
+#: zathura/callbacks.c:706
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "Скопировано выбранное изображение в выделение %s"
