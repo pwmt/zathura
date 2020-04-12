@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-22 23:44+0100\n"
-"PO-Revision-Date: 2019-08-11 19:46+0000\n"
-"Last-Translator: spero\n"
+"POT-Creation-Date: 2020-04-12 17:53+0200\n"
+"PO-Revision-Date: 2020-03-30 00:26+0000\n"
+"Last-Translator: abc Def <hdogan1974@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/pwmt/zathura/language/tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:24
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Otomatik belge yeniden yükleme."
 
 #. Translators: Icon of the desktop entry.
 #: data/org.pwmt.zathura.desktop.in:9
@@ -174,11 +174,11 @@ msgstr "Düzenleme tarihi"
 
 #: zathura/commands.c:183
 msgid "Format"
-msgstr ""
+msgstr "Biçim"
 
 #: zathura/commands.c:184
 msgid "Other"
-msgstr ""
+msgstr "Diğer"
 
 #: zathura/commands.c:189 zathura/commands.c:209
 msgid "No information available."
