@@ -1,0 +1,79 @@
+app-id: org.pwmt.zathura
+branch: 0.4.5
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: zathura
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --filesystem=home:ro
+
+cleanup:
+  - /include
+  - /lib/debug
+  - /lib/pkgconfig
+  - '*.la'
+
+modules:
+  - name: libnotify
+    buildsystem: meson
+    cleanup:
+      - /bin
+    config-opts:
+      - -Dtests=false
+      - -Dintrospection=disabled
+      - -Dman=false
+      - -Dgtk_doc=false
+      - -Ddocbook_docs=disabled
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/libnotify/0.7/libnotify-0.7.9.tar.xz
+        sha256: 66c0517ed16df7af258e83208faaf5069727dfd66995c4bbc51c16954d674761
+
+  - name: json-c
+    buildsystem: autotools
+    config-opts:
+      - --prefix=/app
+      - --disable-static
+      - CFLAGS=-Wno-error=implicit-fallthrough
+    sources:
+      - type: archive
+        url: https://s3.amazonaws.com/json-c_releases/releases/json-c-0.12.1.tar.gz
+        sha256: 2a136451a7932d80b7d197b10441e26e39428d67b1443ec43bbba824705e1123
+
+  - name: poppler
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DENABLE_LIBOPENJPEG=none
+      - -DENABLE_GOBJECT_INTROSPECTION=OFF
+    cleanup:
+      - /bin
+      - /share/man
+    sources:
+      - type: archive
+        url: https://poppler.freedesktop.org/poppler-0.87.0.tar.xz
+        sha256: 6f602b9c24c2d05780be93e7306201012e41459f289b8279a27a79431ad4150e
+
+  - name: girara
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://git.pwmt.org/pwmt/girara
+        tag: 0.3.4
+
+  - name: zathura
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://git.pwmt.org/pwmt/zathura
+        tag: 0.4.5
+
+  - name: zathura-pdf-poppler
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://git.pwmt.org/pwmt/zathura-pdf-poppler
+        tag: 0.3.0
