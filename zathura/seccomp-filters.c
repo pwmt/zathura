@@ -163,6 +163,7 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(getgid);
   ALLOW_RULE(getuid);
   ALLOW_RULE(getpid);
+  ALLOW_RULE(gettid);
   /* ALLOW_RULE (getpeername); */
   ALLOW_RULE(getresgid);
   ALLOW_RULE(getresuid);
@@ -218,6 +219,9 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(write);  /* specified below (zathura needs to write files)*/
   ALLOW_RULE(writev);
   ALLOW_RULE(wait4);  /* trying to open links should not crash the app */
+
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_setattr, 0);
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_getattr, 0);
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
