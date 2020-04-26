@@ -1,7 +1,7 @@
 project('zathura', 'c',
   version: '0.4.5',
   meson_version: '>=0.47',
-  default_options: 'c_std=c11',
+  default_options: ['c_std=c11', 'warning_level=3'],
 )
 
 version = meson.project_version()
@@ -57,9 +57,6 @@ defines = [
 
 # compile flags
 flags = [
-  '-Wall',
-  '-Wextra',
-  '-pedantic',
   '-Werror=implicit-function-declaration',
   '-Werror=vla',
   '-fvisibility=hidden'
