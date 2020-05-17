@@ -44,8 +44,9 @@ gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
 gtk3 = dependency('gtk+-3.0', version: '>=3.22')
 cairo = dependency('cairo')
+gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, gtk_mac_integration]
 
 # defines
 defines = [
