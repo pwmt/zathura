@@ -187,6 +187,7 @@ seccomp_enable_strict_filter(void)
   //ALLOW_RULE (open);  /* (zathura needs to open for writing) TODO: avoid needing this somehow */
   //ALLOW_RULE (openat);
   ALLOW_RULE(pipe);
+  ALLOW_RULE(pipe2);
   ALLOW_RULE(poll);
   ALLOW_RULE(pwrite64); /* TODO: build detailed filter */
   ALLOW_RULE(pread64);
