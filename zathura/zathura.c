@@ -448,8 +448,17 @@ zathura_init(zathura_t* zathura)
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");
-      if (seccomp_enable_strict_filter() != 0) {
+      if (seccomp_enable_strict_filter(0) != 0) {
         girara_error("Failed to initialize strict seccomp filter.");
+        goto error_free;
+      }
+      /* unset the input method to avoid communication with external services */
+      unsetenv("GTK_IM_MODULE");
+      break;
+    case ZATHURA_SANDBOX_TEST:
+      girara_debug("Strict sandbox preventing write and network access, testmode.");
+      if (seccomp_enable_strict_filter(1) != 0) {
+        girara_error("Failed to initialize test seccomp filter.");
         goto error_free;
       }
       /* unset the input method to avoid communication with external services */
@@ -464,8 +473,12 @@ zathura_init(zathura_t* zathura)
     goto error_free;
   }
 
-  /* database */
-  init_database(zathura);
+  /* disable unsupported features in strict sandbox mode */
+  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT){
+  
+    /* database */
+    init_database(zathura);
+  }
 
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_sorted_list_new2(
