@@ -117,7 +117,7 @@ out:
 }
 
 int
-seccomp_enable_strict_filter(bool test)
+seccomp_enable_strict_filter(void)
 {
   /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
   if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
@@ -224,11 +224,10 @@ seccomp_enable_strict_filter(bool test)
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_setattr, 0);
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_getattr, 0);
 
-/* check test flag, allow additional syscalls for test mode */
-  if (test) {
-    ALLOW_RULE(timer_create);
-    ALLOW_RULE(timer_delete);
-  }
+  /* required for testing only */
+  ALLOW_RULE(timer_create);
+  ALLOW_RULE(timer_delete);
+  
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
