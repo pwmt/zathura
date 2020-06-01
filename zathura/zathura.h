@@ -85,7 +85,7 @@ enum {
 typedef enum {
   ZATHURA_SANDBOX_NONE,
   ZATHURA_SANDBOX_NORMAL,
-  ZATHURA_SANDBOX_STRICT,
+  ZATHURA_SANDBOX_STRICT
 } zathura_sandbox_t;
 
 /* forward declaration for types from database.h */
