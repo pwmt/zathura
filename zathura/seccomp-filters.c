@@ -225,7 +225,7 @@ seccomp_enable_strict_filter(bool test)
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_getattr, 0);
 
 /* check test flag, allow additional syscalls for test mode */
-  if (test){
+  if (test) {
     ALLOW_RULE(timer_create);
     ALLOW_RULE(timer_delete);
   }

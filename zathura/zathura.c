@@ -448,7 +448,7 @@ zathura_init(zathura_t* zathura)
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");
-      if (seccomp_enable_strict_filter(0) != 0) {
+      if (seccomp_enable_strict_filter(false) != 0) {
         girara_error("Failed to initialize strict seccomp filter.");
         goto error_free;
       }
@@ -457,7 +457,7 @@ zathura_init(zathura_t* zathura)
       break;
     case ZATHURA_SANDBOX_TEST:
       girara_debug("Strict sandbox preventing write and network access, testmode.");
-      if (seccomp_enable_strict_filter(1) != 0) {
+      if (seccomp_enable_strict_filter(true) != 0) {
         girara_error("Failed to initialize test seccomp filter.");
         goto error_free;
       }
