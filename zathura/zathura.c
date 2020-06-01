@@ -464,8 +464,12 @@ zathura_init(zathura_t* zathura)
     goto error_free;
   }
 
-  /* database */
-  init_database(zathura);
+  /* disable unsupported features in strict sandbox mode */
+  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT){
+  
+    /* database */
+    init_database(zathura);
+  }
 
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_sorted_list_new2(
