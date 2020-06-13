@@ -342,7 +342,8 @@ bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri
  */
 void document_open_idle(zathura_t* zathura, const char* path,
                         const char* password, int page_number,
-                        const char* mode, const char* synctex);
+                        const char* mode, const char* synctex,
+                        const char* search_string);
 
 /**
  * Save a open file

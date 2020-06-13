@@ -27,6 +27,7 @@
 #include "bookmarks.h"
 #include "callbacks.h"
 #include "config.h"
+#include "commands.h"
 #ifdef WITH_SQLITE
 #include "database-sqlite.h"
 #endif
@@ -56,6 +57,7 @@ typedef struct zathura_document_info_s {
   int page_number;
   char* mode;
   char* synctex;
+  char* search_string;
 } zathura_document_info_t;
 
 
@@ -76,6 +78,7 @@ free_document_info(zathura_document_info_t* document_info)
   g_free(document_info->password);
   g_free(document_info->mode);
   g_free(document_info->synctex);
+  g_free(document_info->search_string);
   g_free(document_info);
 }
 
@@ -879,6 +882,14 @@ document_info_open(gpointer data)
           girara_error("Unknown mode: %s", document_info->mode);
         }
       }
+
+      if (document_info->search_string != NULL) {
+        girara_argument_t search_arg;
+        search_arg.n = 1; // Forward search
+        search_arg.data = NULL;
+        cmd_search(document_info->zathura->ui.session, document_info->search_string,
+                &search_arg);
+      }
     }
   }
 
@@ -1297,7 +1308,8 @@ document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
 
 void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
-                   int page_number, const char* mode, const char* synctex)
+                   int page_number, const char* mode, const char* synctex,
+                   const char *search_string)
 {
   g_return_if_fail(zathura != NULL);
   g_return_if_fail(path != NULL);
@@ -1318,6 +1330,9 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
   }
   if (synctex != NULL) {
     document_info->synctex   = g_strdup(synctex);
+  }
+  if (search_string != NULL) {
+    document_info->search_string = g_strdup(search_string);
   }
 
   gdk_threads_add_idle(document_info_open, document_info);

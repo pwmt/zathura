@@ -20,6 +20,9 @@
   with 1, and negative numbers indicate page numbers starting from the end
   of the document, -1 being the last page.
 
+-f, --find=string
+  Opens the document and searches for the given string.
+
 -l, --log-level=level
   Set log level (debug, info, warning, error)
 
