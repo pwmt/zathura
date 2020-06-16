@@ -358,6 +358,11 @@ init_database(zathura_t* zathura)
   char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
 
+  /* create zathura data directory if database enabled */
+  if (g_strcmp0(database, "null") != 0) {
+    create_directories(zathura);
+  }
+
   if (g_strcmp0(database, "plain") == 0) {
     girara_debug("Using plain database backend.");
     zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
@@ -418,9 +423,6 @@ zathura_init(zathura_t* zathura)
 
   /* Set application ID */
   g_set_prgname("org.pwmt.zathura");
-
-  /* create zathura data directory */
-  create_directories(zathura);
 
   /* load plugins */
   zathura_plugin_manager_load(zathura->plugins.manager);
