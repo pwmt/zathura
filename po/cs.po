@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 17:53+0200\n"
+"POT-Creation-Date: 2020-06-16 23:57+0200\n"
 "PO-Revision-Date: 2020-03-22 22:48+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Czech (http://www.transifex.com/pwmt/zathura/language/cs/)\n"
@@ -693,29 +693,29 @@ msgstr "Vzor nenalezen: %s"
 msgid "This document does not contain any index"
 msgstr "Tento dokument neobsahuje žádný rejstřík"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1466
+#: zathura/zathura.c:300 zathura/zathura.c:1467
 msgid "[No name]"
 msgstr "[Nepojmenovaný]"
 
-#: zathura/zathura.c:831
+#: zathura/zathura.c:832
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Nepodařilo se přečíst soubor z stdin a zapsat jej do dočasného souboru."
 
-#: zathura/zathura.c:851
+#: zathura/zathura.c:852
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Nepodařilo se přečíst soubor z GIO a zkopírovat jej do dočasného souboru."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:941
 msgid "Enter password:"
 msgstr "Zadat heslo:"
 
-#: zathura/zathura.c:979
+#: zathura/zathura.c:980
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 "Nepodporovaný typ souboru. Nainstalujte, prosím, nezbytný přídavný modul."
 
-#: zathura/zathura.c:989
+#: zathura/zathura.c:990
 msgid "Document does not contain any pages"
 msgstr "Dokument neobsahuje žádné strany"

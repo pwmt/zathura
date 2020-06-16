@@ -3,13 +3,14 @@
 #
 # Translators:
 # Alexandro Casanova <shorterfire@gmail.com>, 2013-2014
+# Fernando Henrique <liquuid@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 17:53+0200\n"
-"PO-Revision-Date: 2020-03-22 22:48+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"POT-Creation-Date: 2020-06-16 23:57+0200\n"
+"PO-Revision-Date: 2020-04-27 01:40+0000\n"
+"Last-Translator: Fernando Henrique <liquuid@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/pwmt/zathura/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -33,12 +34,18 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura é um visualizador de documentos funcional e customizável. Ele "
+"oferece uma interface minimalista,  fácil de usar e focada na interação por "
+"teclado. Zathura torna possível visualizar e navegar por documentos "
+"completamente sem o uso do mouse."
 
 #: data/org.pwmt.zathura.appdata.xml.in:17
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
+"Zathura pode ser estendido para suportar múltiplos formatos de documentos "
+"usando plugins. Outros recursos incluem "
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "SyncTeX forward and backward synchronization support."
@@ -692,29 +699,29 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Este documento não contem qualquer índice"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1466
+#: zathura/zathura.c:300 zathura/zathura.c:1467
 msgid "[No name]"
 msgstr "[Sem nome]"
 
-#: zathura/zathura.c:831
+#: zathura/zathura.c:832
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Não foi possível ler o arquivo a partir de stdin e gravá-lo em um arquivo "
 "temporário."
 
-#: zathura/zathura.c:851
+#: zathura/zathura.c:852
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:941
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:979
+#: zathura/zathura.c:980
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 "Formato de arquivo não suportado. Por favor, instale o plugin necessário."
 
-#: zathura/zathura.c:989
+#: zathura/zathura.c:990
 msgid "Document does not contain any pages"
 msgstr "Documento não contém quaisquer páginas"

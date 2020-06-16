@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 17:53+0200\n"
+"POT-Creation-Date: 2020-06-16 23:57+0200\n"
 "PO-Revision-Date: 2020-03-22 22:48+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -693,26 +693,26 @@ msgstr "Mönster hittades inte: %s"
 msgid "This document does not contain any index"
 msgstr "Detta dokument innehåller inget index"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1466
+#: zathura/zathura.c:300 zathura/zathura.c:1467
 msgid "[No name]"
 msgstr "[Namnlös]"
 
-#: zathura/zathura.c:831
+#: zathura/zathura.c:832
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunde inte läsa fil från stdin och skriva den till en temporärfil."
 
-#: zathura/zathura.c:851
+#: zathura/zathura.c:852
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "Kunde inte läsa fil från GIO och kopiera den till en temporärfil."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:941
 msgid "Enter password:"
 msgstr "Ange lösenord:"
 
-#: zathura/zathura.c:979
+#: zathura/zathura.c:980
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Filtyp stöds ej. Installera det nödvändiga insticket."
 
-#: zathura/zathura.c:989
+#: zathura/zathura.c:990
 msgid "Document does not contain any pages"
 msgstr "Dokument innehåller inga sidor"
