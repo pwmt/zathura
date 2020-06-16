@@ -131,11 +131,6 @@ create_directories(zathura_t* zathura)
 {
   static const unsigned int mode = 0700;
 
-  if (g_mkdir_with_parents(zathura->config.config_dir, mode) == -1) {
-    girara_error("Could not create '%s': %s", zathura->config.config_dir,
-                 strerror(errno));
-  }
-
   if (g_mkdir_with_parents(zathura->config.data_dir, mode) == -1) {
     girara_error("Could not create '%s': %s", zathura->config.data_dir,
                  strerror(errno));
@@ -424,7 +419,7 @@ zathura_init(zathura_t* zathura)
   /* Set application ID */
   g_set_prgname("org.pwmt.zathura");
 
-  /* create zathura (config/data) directory */
+  /* create zathura data directory */
   create_directories(zathura);
 
   /* load plugins */
@@ -467,7 +462,6 @@ zathura_init(zathura_t* zathura)
 
   /* disable unsupported features in strict sandbox mode */
   if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT){
-  
     /* database */
     init_database(zathura);
   }
