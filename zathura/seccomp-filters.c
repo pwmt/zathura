@@ -163,8 +163,10 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(getgid);
   ALLOW_RULE(getuid);
   ALLOW_RULE(getpid);
+  ALLOW_RULE(getppid);
   ALLOW_RULE(gettid);
   /* ALLOW_RULE (getpeername); */
+  ALLOW_RULE(getrandom);
   ALLOW_RULE(getresgid);
   ALLOW_RULE(getresuid);
   ALLOW_RULE(getrlimit);
