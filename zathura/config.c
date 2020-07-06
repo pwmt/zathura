@@ -359,6 +359,8 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_n,          NULL, sc_search,                  (mode),     FORWARD,                NULL); \
   girara_shortcut_add(gsession, 0,                GDK_KEY_N,          NULL, sc_search,                  (mode),     BACKWARD,               NULL); \
 \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_P,          NULL, sc_snap_to_page,            (mode),     0,                      NULL); \
+\
   girara_shortcut_add(gsession, 0,                GDK_KEY_Tab,        NULL, sc_toggle_index,            (mode),     0,                      NULL); \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n,          NULL, girara_sc_toggle_statusbar, (mode),     0,                      NULL); \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_m,          NULL, girara_sc_toggle_inputbar,  (mode),     0,                      NULL); \
@@ -527,6 +529,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "rotate",              sc_rotate);
   girara_shortcut_mapping_add(gsession, "scroll",              sc_scroll);
   girara_shortcut_mapping_add(gsession, "search",              sc_search);
+  girara_shortcut_mapping_add(gsession, "snap_to_page",        sc_snap_to_page);
   girara_shortcut_mapping_add(gsession, "toggle_fullscreen",   sc_toggle_fullscreen);
   girara_shortcut_mapping_add(gsession, "toggle_index",        sc_toggle_index);
   girara_shortcut_mapping_add(gsession, "toggle_page_mode",    sc_toggle_page_mode);

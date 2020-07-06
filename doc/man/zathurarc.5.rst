@@ -289,6 +289,10 @@ They can also be combined with modifiers:
 
     Set an option.
 
+  * ``snap_to_page``
+
+    Snaps to the current page. Equivalent to ``goto <current_page>``
+
   * ``toggle_fullscreen``
 
     Toggle fullscreen.

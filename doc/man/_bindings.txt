@@ -14,6 +14,8 @@ General
     Scroll a full page left, down, up or right
   gg, G, nG
     Goto to the first, the last or to the nth page
+  P
+    Snaps to the current page
   H, L
     Goto top or bottom of the current page
   ^o, ^i
