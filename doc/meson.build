@@ -11,15 +11,7 @@ if sphinx.found()
     output: ['zathura.1', 'zathurarc.5'],
     input: [
       'man/conf.py',
-      'man/_bindings.txt',
-      'man/_commands.txt',
-      'man/_options.txt',
-      'man/_synopsis.txt',
       'man/zathurarc.5.rst',
-      'man/_bugs.txt',
-      'man/_configuration.txt',
-      'man/_description.txt',
-      'man/_synctex.txt',
       'man/zathura.1.rst'
     ],
     build_by_default: true,

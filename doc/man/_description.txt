@@ -1,3 +1,0 @@
-**zathura** displays the given files. If a single hyphen-minus (-) is given as
-file name, the content will be read from the standard input. If no files are
-given, an empty **zathura** instance launches.
