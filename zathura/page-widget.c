@@ -629,7 +629,7 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
       GdkRGBA color;
       zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color, NULL);
-      cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
     } else {
       const GdkRGBA color = priv->zathura->ui.colors.render_loading_bg;
       cairo_set_source_rgb(cairo, color.red, color.green, color.blue);

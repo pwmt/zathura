@@ -5,15 +5,16 @@
 # Alexander Filev <avfill@outlook.com>, 2019
 # AlexanderR <alexander.r@gmx.com>, 2013
 # Alissa <Chertik89@gmail.com>, 2013
+# crt0r citrus, 2020
 # Mikhail Krutov <>, 2012
 # Vladimir Lomov <irk.translator@yandex.ru>, 2013-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 10:17+0100\n"
-"PO-Revision-Date: 2019-11-28 12:40+0000\n"
-"Last-Translator: Alexander Filev\n"
+"POT-Creation-Date: 2020-07-27 10:06+0200\n"
+"PO-Revision-Date: 2020-04-28 19:42+0000\n"
+"Last-Translator: crt0r citrus\n"
 "Language-Team: Russian (http://www.transifex.com/pwmt/zathura/language/ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -44,15 +45,23 @@ msgstr ""
 "клавиатурой. Zathura позволяет полностью просматривать и перемещаться по "
 "документам без использования мыши."
 
-#: data/org.pwmt.zathura.appdata.xml.in:21
+#: data/org.pwmt.zathura.appdata.xml.in:17
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
+msgstr ""
+"Zathura может быть расширена для использования нескольких форматов "
+"документов при помощи плагинов."
+
+#: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "SyncTeX forward and backward synchronization support."
 msgstr "SyncTeX поддержка прямой и обратной синхронизации."
 
-#: data/org.pwmt.zathura.appdata.xml.in:22
+#: data/org.pwmt.zathura.appdata.xml.in:23
 msgid "Quickmarks and bookmarks."
 msgstr "Быстрые заметки и закладки."
 
-#: data/org.pwmt.zathura.appdata.xml.in:23
+#: data/org.pwmt.zathura.appdata.xml.in:24
 msgid "Automatic document reloading."
 msgstr "Автоматическая перезагрузка документов."
 
@@ -77,17 +86,17 @@ msgstr "«%s» не может быть 0, установлен как 1."
 msgid "Invalid input '%s' given."
 msgstr "Неправильный ввод: %s."
 
-#: zathura/callbacks.c:431
+#: zathura/callbacks.c:433
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Получен неверный индекс: %s."
 
-#: zathura/callbacks.c:670
+#: zathura/callbacks.c:674
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "Выделенный текст скопирован в выделение %s: %s"
 
-#: zathura/callbacks.c:703
+#: zathura/callbacks.c:706
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "Скопировано выбранное изображение в выделение %s"
@@ -501,80 +510,80 @@ msgid "Sandbox level"
 msgstr "Уровень песочницы"
 
 #. define default inputbar commands
-#: zathura/config.c:483
+#: zathura/config.c:485
 msgid "Add a bookmark"
 msgstr "Добавить закладку"
 
-#: zathura/config.c:484
+#: zathura/config.c:486
 msgid "Delete a bookmark"
 msgstr "Удалить закладку"
 
-#: zathura/config.c:485
+#: zathura/config.c:487
 msgid "List all bookmarks"
 msgstr "Показать все закладки"
 
-#: zathura/config.c:486
+#: zathura/config.c:488
 msgid "Close current file"
 msgstr "Закрыть текущий файл"
 
-#: zathura/config.c:487
+#: zathura/config.c:489
 msgid "Show file information"
 msgstr "Показать информацию о файле"
 
-#: zathura/config.c:488 zathura/config.c:489
+#: zathura/config.c:490 zathura/config.c:491
 msgid "Execute a command"
 msgstr "Выполнить команду"
 
 #. like vim
-#: zathura/config.c:490
+#: zathura/config.c:492
 msgid "Show help"
 msgstr "Помощь"
 
-#: zathura/config.c:491
+#: zathura/config.c:493
 msgid "Open document"
 msgstr "Открыть документ"
 
-#: zathura/config.c:492
+#: zathura/config.c:494
 msgid "Close zathura"
 msgstr "Выход"
 
-#: zathura/config.c:493
+#: zathura/config.c:495
 msgid "Print document"
 msgstr "Печать"
 
-#: zathura/config.c:494
+#: zathura/config.c:496
 msgid "Save document"
 msgstr "Сохранить документ"
 
-#: zathura/config.c:495
+#: zathura/config.c:497
 msgid "Save document (and force overwriting)"
 msgstr "Сохранить документ (с перезаписью)"
 
-#: zathura/config.c:496
+#: zathura/config.c:498
 msgid "Save attachments"
 msgstr "Сохранить прикреплённые файлы"
 
-#: zathura/config.c:497
+#: zathura/config.c:499
 msgid "Set page offset"
 msgstr "Сохранить смещение страницы"
 
-#: zathura/config.c:498
+#: zathura/config.c:500
 msgid "Mark current location within the document"
 msgstr "Пометить текущую позицию в документе"
 
-#: zathura/config.c:499
+#: zathura/config.c:501
 msgid "Delete the specified marks"
 msgstr "Удалить указанные пометки"
 
-#: zathura/config.c:500
+#: zathura/config.c:502
 msgid "Don't highlight current search results"
 msgstr "Не подсвечивать результаты текущего поиска"
 
-#: zathura/config.c:501
+#: zathura/config.c:503
 msgid "Highlight current search results"
 msgstr "Подсветить результаты текущего поиска"
 
-#: zathura/config.c:502
+#: zathura/config.c:504
 msgid "Show version information"
 msgstr "Показать информацию о версии файла"
 
@@ -600,61 +609,65 @@ msgstr "Ссылка: %s"
 msgid "Link: Invalid"
 msgstr "Ссылка: неправильная"
 
-#: zathura/main.c:145
+#: zathura/main.c:146
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Сменить материнское окно на окно, указанное в xid (X11)"
 
-#: zathura/main.c:146
+#: zathura/main.c:147
 msgid "Path to the config directory"
 msgstr "Путь к каталогу с настройкой"
 
-#: zathura/main.c:147
+#: zathura/main.c:148
 msgid "Path to the data directory"
 msgstr "Путь к каталогу с данными"
 
-#: zathura/main.c:148
+#: zathura/main.c:149
 msgid "Path to the cache directory"
 msgstr "Путь к каталогу с кэшем"
 
-#: zathura/main.c:149
+#: zathura/main.c:150
 msgid "Path to the directories containing plugins"
 msgstr "Путь к каталогу с плагинами"
 
-#: zathura/main.c:150
+#: zathura/main.c:151
 msgid "Fork into the background"
 msgstr "Запустить в фоне"
 
-#: zathura/main.c:151
+#: zathura/main.c:152
 msgid "Document password"
 msgstr "Пароль документа"
 
-#: zathura/main.c:152
+#: zathura/main.c:153
 msgid "Page number to go to"
 msgstr "Перейти к странице номер"
 
-#: zathura/main.c:153
+#: zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
 msgstr "Уровень журналирования (debug, info, warning, error)"
 
-#: zathura/main.c:154
+#: zathura/main.c:155
 msgid "Print version information"
 msgstr "Показать информацию о файле"
 
-#: zathura/main.c:155
+#: zathura/main.c:156
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Редактор для synctex (передаётся далее программе synctex)"
 
-#: zathura/main.c:156
+#: zathura/main.c:157
 msgid "Move to given synctex position"
 msgstr "Перейти к указанному положению synctex"
 
-#: zathura/main.c:157
+#: zathura/main.c:158
 msgid "Highlight given position in the given process"
 msgstr "Подсветка заданного положения в заданном процессе"
 
-#: zathura/main.c:158
+#: zathura/main.c:159
 msgid "Start in a non-default mode"
 msgstr "Запустить в специальном режиме"
+
+#: zathura/main.c:160
+msgid "Search for the given phrase and display results"
+msgstr ""
 
 #: zathura/page-widget.c:654
 msgid "Loading..."
@@ -693,29 +706,29 @@ msgstr "Шаблон не найден: %s"
 msgid "This document does not contain any index"
 msgstr "В документе нет индекса"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1466
+#: zathura/zathura.c:303 zathura/zathura.c:1482
 msgid "[No name]"
 msgstr "[Без названия]"
 
-#: zathura/zathura.c:831
+#: zathura/zathura.c:835
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Не удалось прочитать файл со стандартного входа и записать его во временный "
 "файл."
 
-#: zathura/zathura.c:851
+#: zathura/zathura.c:855
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Не удалось прочитать файл через GIO и скопировать его во временный файл."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:952
 msgid "Enter password:"
 msgstr "Введите пароль:"
 
-#: zathura/zathura.c:979
+#: zathura/zathura.c:991
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Тип файла не поддерживается. Установите соответствующий плагин."
 
-#: zathura/zathura.c:989
+#: zathura/zathura.c:1001
 msgid "Document does not contain any pages"
 msgstr "В документе нет страниц"

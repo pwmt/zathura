@@ -24,6 +24,15 @@ if check.found()
   test('session', session,
     timeout: 60*60
   )
+  
+  sandbox = executable('test_sandbox', ['test_sandbox.c', 'tests.c'],
+    dependencies: build_dependencies + test_dependencies,
+    include_directories: include_directories,
+    c_args: defines + flags
+  )
+  test('sandbox', sandbox,
+    timeout: 60*60
+  )
 
   utils = executable('test_utils', ['test_utils.c', 'tests.c'],
     dependencies: build_dependencies + test_dependencies,

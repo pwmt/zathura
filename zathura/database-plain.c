@@ -463,14 +463,11 @@ plain_remove_bookmark(zathura_database_t* db, const char* file, const char* id)
   }
 
   char* name = prepare_filename(file);
-  if (g_key_file_has_group(priv->bookmarks, name) == TRUE) {
-    if (g_key_file_remove_key(priv->bookmarks, name, id, NULL) == TRUE) {
+  if (g_key_file_has_group(priv->bookmarks, name) == TRUE && g_key_file_remove_key(priv->bookmarks, name, id, NULL) == TRUE) {
+    zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
+    g_free(name);
 
-      zathura_db_write_key_file_to_file(priv->bookmark_path, priv->bookmarks);
-      g_free(name);
-
-      return true;
-    }
+    return true;
   }
   g_free(name);
 

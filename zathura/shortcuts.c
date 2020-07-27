@@ -909,7 +909,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
       /* the next result is on a different page */
       g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
 
-      for (int npage_id = 1; page_id < num_pages; ++npage_id) {
+      for (unsigned int npage_id = 1; npage_id < num_pages; ++npage_id) {
         int ntmp = cur_page + diff * (page_id + npage_id);
         zathura_page_t* npage = zathura_document_get_page(zathura->document, (ntmp + 2*num_pages) % num_pages);
         GtkWidget* npage_page_widget = zathura_page_get_widget(zathura, npage);
@@ -969,7 +969,7 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
-  } else if (target_page == NULL && argument->data != NULL) {
+  } else if (argument->data != NULL) {
     const char* input = argument->data;
     girara_notify(session, GIRARA_ERROR, _("Pattern not found: %s"), input);
   }
@@ -1468,4 +1468,17 @@ sc_nohlsearch(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
   render_all(zathura);
 
   return false;
+}
+
+bool sc_snap_to_page(girara_session_t *session,
+                     girara_argument_t *UNUSED(argument),
+                     girara_event_t *UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t *zathura = session->global.data;
+  g_return_val_if_fail(zathura->document != NULL, false);
+  zathura_document_t *document = zathura->document;
+
+  int page = zathura_document_get_current_page_number(document);
+  return page_set(zathura, page);
 }

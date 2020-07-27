@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 10:17+0100\n"
-"PO-Revision-Date: 2019-08-11 19:46+0000\n"
-"Last-Translator: spero\n"
+"POT-Creation-Date: 2020-07-27 10:06+0200\n"
+"PO-Revision-Date: 2020-03-30 00:26+0000\n"
+"Last-Translator: abc Def <hdogan1974@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/pwmt/zathura/language/tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -35,17 +35,23 @@ msgid ""
 "completely view and navigate through documents without using a mouse."
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:21
-msgid "SyncTeX forward and backward synchronization support."
+#: data/org.pwmt.zathura.appdata.xml.in:17
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
-msgid "Quickmarks and bookmarks."
+msgid "SyncTeX forward and backward synchronization support."
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:23
-msgid "Automatic document reloading."
+msgid "Quickmarks and bookmarks."
 msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:24
+msgid "Automatic document reloading."
+msgstr "Otomatik belge yeniden yükleme."
 
 #. Translators: Icon of the desktop entry.
 #: data/org.pwmt.zathura.desktop.in:9
@@ -68,17 +74,17 @@ msgstr ""
 msgid "Invalid input '%s' given."
 msgstr "Hatalı girdi '%s'"
 
-#: zathura/callbacks.c:431
+#: zathura/callbacks.c:433
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Hatalı dizin '%s'"
 
-#: zathura/callbacks.c:670
+#: zathura/callbacks.c:674
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr ""
 
-#: zathura/callbacks.c:703
+#: zathura/callbacks.c:706
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr ""
@@ -168,11 +174,11 @@ msgstr "Düzenleme tarihi"
 
 #: zathura/commands.c:183
 msgid "Format"
-msgstr ""
+msgstr "Biçim"
 
 #: zathura/commands.c:184
 msgid "Other"
-msgstr ""
+msgstr "Diğer"
 
 #: zathura/commands.c:189 zathura/commands.c:209
 msgid "No information available."
@@ -492,80 +498,80 @@ msgid "Sandbox level"
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:483
+#: zathura/config.c:485
 msgid "Add a bookmark"
 msgstr "Yer imi ekle"
 
-#: zathura/config.c:484
+#: zathura/config.c:486
 msgid "Delete a bookmark"
 msgstr "Yer imi sil"
 
-#: zathura/config.c:485
+#: zathura/config.c:487
 msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
-#: zathura/config.c:486
+#: zathura/config.c:488
 msgid "Close current file"
 msgstr "Geçerli dosyayı kapat"
 
-#: zathura/config.c:487
+#: zathura/config.c:489
 msgid "Show file information"
 msgstr "Dosya bilgisi göster"
 
-#: zathura/config.c:488 zathura/config.c:489
+#: zathura/config.c:490 zathura/config.c:491
 msgid "Execute a command"
 msgstr "Bir komut çalıştır"
 
 #. like vim
-#: zathura/config.c:490
+#: zathura/config.c:492
 msgid "Show help"
 msgstr "Yardım bilgisi göster"
 
-#: zathura/config.c:491
+#: zathura/config.c:493
 msgid "Open document"
 msgstr "Belge aç"
 
-#: zathura/config.c:492
+#: zathura/config.c:494
 msgid "Close zathura"
 msgstr "Zathura'yı kapat"
 
-#: zathura/config.c:493
+#: zathura/config.c:495
 msgid "Print document"
 msgstr "Belge yazdır"
 
-#: zathura/config.c:494
+#: zathura/config.c:496
 msgid "Save document"
 msgstr "Belgeyi kaydet"
 
-#: zathura/config.c:495
+#: zathura/config.c:497
 msgid "Save document (and force overwriting)"
 msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
 
-#: zathura/config.c:496
+#: zathura/config.c:498
 msgid "Save attachments"
 msgstr "Ekleri kaydet"
 
-#: zathura/config.c:497
+#: zathura/config.c:499
 msgid "Set page offset"
 msgstr "Sayfa derinliğini ayarla"
 
-#: zathura/config.c:498
+#: zathura/config.c:500
 msgid "Mark current location within the document"
 msgstr "Bu belgede bu konumu işaretle"
 
-#: zathura/config.c:499
+#: zathura/config.c:501
 msgid "Delete the specified marks"
 msgstr "Seçilen işaretlemeleri sil"
 
-#: zathura/config.c:500
+#: zathura/config.c:502
 msgid "Don't highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgulama"
 
-#: zathura/config.c:501
+#: zathura/config.c:503
 msgid "Highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgula"
 
-#: zathura/config.c:502
+#: zathura/config.c:504
 msgid "Show version information"
 msgstr "Versiyon bilgisi göster"
 
@@ -591,60 +597,64 @@ msgstr "Bağlantı: %s"
 msgid "Link: Invalid"
 msgstr "Bağlantı: Geçersiz"
 
-#: zathura/main.c:145
+#: zathura/main.c:146
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Xid tarafından belirlendiği gibi bir üst seviye pencereye bağlı (X11)"
 
-#: zathura/main.c:146
+#: zathura/main.c:147
 msgid "Path to the config directory"
 msgstr "Ayar dizini adresi"
 
-#: zathura/main.c:147
+#: zathura/main.c:148
 msgid "Path to the data directory"
 msgstr "Veri dizini adresi"
 
-#: zathura/main.c:148
+#: zathura/main.c:149
 msgid "Path to the cache directory"
 msgstr "Önbellek dizininin adresi"
 
-#: zathura/main.c:149
+#: zathura/main.c:150
 msgid "Path to the directories containing plugins"
 msgstr "Eklentileri içeren dizinin adresi"
 
-#: zathura/main.c:150
+#: zathura/main.c:151
 msgid "Fork into the background"
 msgstr "Arka planda işlemden çocuk oluştur"
 
-#: zathura/main.c:151
+#: zathura/main.c:152
 msgid "Document password"
 msgstr "Belge şifresi"
 
-#: zathura/main.c:152
+#: zathura/main.c:153
 msgid "Page number to go to"
 msgstr ""
 
-#: zathura/main.c:153
+#: zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
 msgstr "Kayıt seviyesi (hata ayıklama, bilgi, uyarı, hata)"
 
-#: zathura/main.c:154
+#: zathura/main.c:155
 msgid "Print version information"
 msgstr "Dosya bilgisi göster"
 
-#: zathura/main.c:155
+#: zathura/main.c:156
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr ""
 
-#: zathura/main.c:156
+#: zathura/main.c:157
 msgid "Move to given synctex position"
 msgstr ""
 
-#: zathura/main.c:157
+#: zathura/main.c:158
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: zathura/main.c:158
+#: zathura/main.c:159
 msgid "Start in a non-default mode"
+msgstr ""
+
+#: zathura/main.c:160
+msgid "Search for the given phrase and display results"
 msgstr ""
 
 #: zathura/page-widget.c:654
@@ -684,26 +694,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Bu belge fihrist içermiyor"
 
-#: zathura/zathura.c:304 zathura/zathura.c:1466
+#: zathura/zathura.c:303 zathura/zathura.c:1482
 msgid "[No name]"
 msgstr "[İsimsiz]"
 
-#: zathura/zathura.c:831
+#: zathura/zathura.c:835
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:851
+#: zathura/zathura.c:855
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:952
 msgid "Enter password:"
 msgstr "Şifre girin:"
 
-#: zathura/zathura.c:979
+#: zathura/zathura.c:991
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Desteklenmeyen dosya türü. Lütfen gerekli eklentileri yükleyin."
 
-#: zathura/zathura.c:989
+#: zathura/zathura.c:1001
 msgid "Document does not contain any pages"
 msgstr ""

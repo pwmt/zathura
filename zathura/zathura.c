@@ -27,6 +27,7 @@
 #include "bookmarks.h"
 #include "callbacks.h"
 #include "config.h"
+#include "commands.h"
 #ifdef WITH_SQLITE
 #include "database-sqlite.h"
 #endif
@@ -56,6 +57,7 @@ typedef struct zathura_document_info_s {
   int page_number;
   char* mode;
   char* synctex;
+  char* search_string;
 } zathura_document_info_t;
 
 
@@ -76,6 +78,7 @@ free_document_info(zathura_document_info_t* document_info)
   g_free(document_info->password);
   g_free(document_info->mode);
   g_free(document_info->synctex);
+  g_free(document_info->search_string);
   g_free(document_info);
 }
 
@@ -130,11 +133,6 @@ static void
 create_directories(zathura_t* zathura)
 {
   static const unsigned int mode = 0700;
-
-  if (g_mkdir_with_parents(zathura->config.config_dir, mode) == -1) {
-    girara_error("Could not create '%s': %s", zathura->config.config_dir,
-                 strerror(errno));
-  }
 
   if (g_mkdir_with_parents(zathura->config.data_dir, mode) == -1) {
     girara_error("Could not create '%s': %s", zathura->config.data_dir,
@@ -200,6 +198,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   if (fabs(ppi - current_ppi) > DBL_EPSILON) {
     girara_debug("monitor width: %d mm, pixels: %d, ppi: %0.2f", width_mm, monitor_geom.width, ppi);
     zathura_document_set_viewport_ppi(zathura->document, ppi);
+    adjust_view(zathura);
     render_all(zathura);
     refresh_view(zathura);
   }
@@ -362,6 +361,11 @@ init_database(zathura_t* zathura)
   char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
 
+  /* create zathura data directory if database enabled */
+  if (g_strcmp0(database, "null") != 0) {
+    create_directories(zathura);
+  }
+
   if (g_strcmp0(database, "plain") == 0) {
     girara_debug("Using plain database backend.");
     zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
@@ -423,9 +427,6 @@ zathura_init(zathura_t* zathura)
   /* Set application ID */
   g_set_prgname("org.pwmt.zathura");
 
-  /* create zathura (config/data) directory */
-  create_directories(zathura);
-
   /* load plugins */
   zathura_plugin_manager_load(zathura->plugins.manager);
 
@@ -464,8 +465,11 @@ zathura_init(zathura_t* zathura)
     goto error_free;
   }
 
-  /* database */
-  init_database(zathura);
+  /* disable unsupported features in strict sandbox mode */
+  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT){
+    /* database */
+    init_database(zathura);
+  }
 
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_sorted_list_new2(
@@ -878,6 +882,14 @@ document_info_open(gpointer data)
           girara_error("Unknown mode: %s", document_info->mode);
         }
       }
+
+      if (document_info->search_string != NULL) {
+        girara_argument_t search_arg;
+        search_arg.n = 1; // Forward search
+        search_arg.data = NULL;
+        cmd_search(document_info->zathura->ui.session, document_info->search_string,
+                &search_arg);
+      }
     }
   }
 
@@ -1124,9 +1136,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(
                  GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
-  const unsigned int view_width = (unsigned int)floor(gtk_adjustment_get_page_size(hadjustment));
+  const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
   zathura_document_set_viewport_width(zathura->document, view_width);
-  const unsigned int view_height = (unsigned int)floor(gtk_adjustment_get_page_size(vadjustment));
+  const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
 
   zathura_update_view_ppi(zathura);
@@ -1135,7 +1147,7 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
   cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
 
   /* get initial device scale */
-  int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+  const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
   zathura_document_set_device_factors(zathura->document, device_factor, device_factor);
 
   /* create blank pages */
@@ -1296,7 +1308,8 @@ document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
 
 void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
-                   int page_number, const char* mode, const char* synctex)
+                   int page_number, const char* mode, const char* synctex,
+                   const char *search_string)
 {
   g_return_if_fail(zathura != NULL);
   g_return_if_fail(path != NULL);
@@ -1317,6 +1330,9 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
   }
   if (synctex != NULL) {
     document_info->synctex   = g_strdup(synctex);
+  }
+  if (search_string != NULL) {
+    document_info->search_string = g_strdup(search_string);
   }
 
   gdk_threads_add_idle(document_info_open, document_info);
@@ -1692,9 +1708,14 @@ adjust_view(zathura_t* zathura)
   unsigned int new_cell_height = 0, new_cell_width = 0;
   zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
 
-  /* if the change in zoom changes page cell dimensions by at least one pixel, render */
-  if (abs((int)new_cell_width - (int)cell_width) > 1 ||
-      abs((int)new_cell_height - (int)cell_height) > 1) {
+  /*
+   * XXX requiring a larger difference apparently circumvents #94 for some users; this is not a
+   * proper fix
+   */
+  static const int min_change = 2;
+  /* if the change in zoom changes page cell dimensions, render */
+  if (abs((int)new_cell_width - (int)cell_width) > min_change ||
+      abs((int)new_cell_height - (int)cell_height) > min_change) {
     render_all(zathura);
     refresh_view(zathura);
   } else {

@@ -57,7 +57,7 @@ sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argument),
   return true;
 }
 
-bool
+static bool
 cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
                                   girara_session_t* session)
 {
@@ -84,8 +84,9 @@ cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
   return true;
 }
 
-bool cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey*
-    event, girara_session_t* session)
+static bool
+cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey*
+                                       event, girara_session_t* session)
 {
   g_return_val_if_fail(session != NULL,              FALSE);
   g_return_val_if_fail(session->gtk.view != NULL,    FALSE);
@@ -121,20 +122,15 @@ cmd_marks_add(girara_session_t* session, girara_list_t* argument_list)
     return false;
   }
 
-  char* key_string = girara_list_nth(argument_list, 0);
+  const char* key_string = girara_list_nth(argument_list, 0);
 
-  if (key_string == NULL) {
+  if (key_string == NULL || strlen(key_string) != 1) {
     return false;
   }
 
-  if (strlen(key_string) != 1) {
-    return false;
-  }
-
-  char key = key_string[0];
-
-  if (((key >= 0x41 && key <= 0x5A) || (key >=
-                                        0x61 && key <= 0x7A)) == false) {
+  const char key = key_string[0];
+  if (((key >= 0x41 && key <= 0x5A) ||
+       (key >= 0x61 && key <= 0x7A)) == false) {
     return false;
   }
 
@@ -191,7 +187,7 @@ cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list)
   return true;
 }
 
-void
+static void
 mark_add(zathura_t* zathura, int key)
 {
   if (zathura == NULL || zathura->document == NULL || zathura->global.marks == NULL) {
@@ -231,7 +227,7 @@ mark_add(zathura_t* zathura, int key)
   girara_list_append(zathura->global.marks, mark);
 }
 
-void
+static void
 mark_evaluate(zathura_t* zathura, int key)
 {
   if (zathura == NULL || zathura->global.marks == NULL) {

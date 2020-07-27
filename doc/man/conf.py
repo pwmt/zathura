@@ -8,7 +8,6 @@ import time
 
 dirname = os.path.dirname(__file__)
 files = glob.glob(os.path.join(dirname, '*.rst'))
-files.extend(glob.glob(os.path.join(dirname, '*.txt')))
 
 maxdate = 0
 for path in files:

@@ -52,6 +52,7 @@ stop(ZathuraFileMonitor* file_monitor)
 
   if (signal_file_monitor->handle > 0) {
     g_source_remove(signal_file_monitor->handle);
+    signal_file_monitor->handle = 0;
   }
 #endif
 }

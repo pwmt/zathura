@@ -7,7 +7,7 @@ zathura_resources = gnome.compile_resources(
 )
 
 install_data('org.pwmt.zathura.xml', install_dir: dbusinterfacesdir)
-install_data('org.pwmt.zathura.svg', install_dir: join_paths(datadir, 'icons', 'scalable', 'apps'))
+install_data('org.pwmt.zathura.svg', install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps'))
 
 rsvg_convert = find_program('rsvg-convert', required: get_option('convert-icon'), native: true)
 if rsvg_convert.found()
@@ -70,6 +70,20 @@ fish_completion = configure_file(
   configuration: conf_data
 )
 
-install_data(bash_completion, install_dir: join_paths(datadir, 'bash-completion', 'completions'))
+bash_comp = dependency('bash-completion', required: false)
+if bash_comp.found()
+  bash_compdir = bash_comp.get_pkgconfig_variable('completionsdir')
+else
+  bash_compdir = join_paths(datadir, 'bash-completion', 'completions')
+endif
+
+fish_comp = dependency('fish', required: false)
+if fish_comp.found()
+  fish_compdir = fish_comp.get_pkgconfig_variable('completionsdir')
+else
+  fish_compdir = join_paths(datadir, 'fish', 'vendor_completions.d')
+endif
+
+install_data(bash_completion, install_dir: bash_compdir)
 install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'site-functions'))
-install_data(fish_completion, install_dir: join_paths(datadir, 'fish', 'completions'))
+install_data(fish_completion, install_dir: fish_compdir)
