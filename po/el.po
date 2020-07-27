@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-16 23:57+0200\n"
+"POT-Creation-Date: 2020-07-27 10:06+0200\n"
 "PO-Revision-Date: 2020-03-22 22:48+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Greek (http://www.transifex.com/pwmt/zathura/language/el/)\n"
@@ -499,80 +499,80 @@ msgid "Sandbox level"
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:483
+#: zathura/config.c:485
 msgid "Add a bookmark"
 msgstr "Προσθήκη σελιδοδείκτη"
 
-#: zathura/config.c:484
+#: zathura/config.c:486
 msgid "Delete a bookmark"
 msgstr "Διαγραφή σελιδοδείκτη"
 
-#: zathura/config.c:485
+#: zathura/config.c:487
 msgid "List all bookmarks"
 msgstr "Εμφάνιση όλων των σελιδοδεικτών"
 
-#: zathura/config.c:486
+#: zathura/config.c:488
 msgid "Close current file"
 msgstr "Κλείσιμο αρχείου"
 
-#: zathura/config.c:487
+#: zathura/config.c:489
 msgid "Show file information"
 msgstr "Προβολή πληροφοριών αρχείου"
 
-#: zathura/config.c:488 zathura/config.c:489
+#: zathura/config.c:490 zathura/config.c:491
 msgid "Execute a command"
 msgstr "Εκτέλεση εντολής"
 
 #. like vim
-#: zathura/config.c:490
+#: zathura/config.c:492
 msgid "Show help"
 msgstr "Εμφάνιση βοήθειας"
 
-#: zathura/config.c:491
+#: zathura/config.c:493
 msgid "Open document"
 msgstr "Άνοιγμα αρχείου"
 
-#: zathura/config.c:492
+#: zathura/config.c:494
 msgid "Close zathura"
 msgstr "Κλείσιμο"
 
-#: zathura/config.c:493
+#: zathura/config.c:495
 msgid "Print document"
 msgstr "Εκτύπωση αρχείου"
 
-#: zathura/config.c:494
+#: zathura/config.c:496
 msgid "Save document"
 msgstr "Αποθήκευση αρχείου"
 
-#: zathura/config.c:495
+#: zathura/config.c:497
 msgid "Save document (and force overwriting)"
 msgstr "Αποθήκευση αρχείου (και αντικατάσταση)"
 
-#: zathura/config.c:496
+#: zathura/config.c:498
 msgid "Save attachments"
 msgstr "Αποθήκευση προσαρτήσεων. "
 
-#: zathura/config.c:497
+#: zathura/config.c:499
 msgid "Set page offset"
 msgstr "Ρύθμιση αντιστάθμισης σελίδας"
 
-#: zathura/config.c:498
+#: zathura/config.c:500
 msgid "Mark current location within the document"
 msgstr "Επισήμανση τρέχουσας θέσης στο κείμενο"
 
-#: zathura/config.c:499
+#: zathura/config.c:501
 msgid "Delete the specified marks"
 msgstr "Διαγραφή επιλεγμένων σημείων"
 
-#: zathura/config.c:500
+#: zathura/config.c:502
 msgid "Don't highlight current search results"
 msgstr "Χωρίς τονισμό τα τρέχοντα αποτελέσματα της αναζήτησης"
 
-#: zathura/config.c:501
+#: zathura/config.c:503
 msgid "Highlight current search results"
 msgstr "Τονισμός στα τρέχοντα αποτελέσματα της αναζήτησης"
 
-#: zathura/config.c:502
+#: zathura/config.c:504
 msgid "Show version information"
 msgstr "Εμφάνιση πληροφοριών έκδοσης"
 
@@ -598,60 +598,64 @@ msgstr ""
 msgid "Link: Invalid"
 msgstr ""
 
-#: zathura/main.c:145
+#: zathura/main.c:146
 msgid "Reparents to window specified by xid (X11)"
 msgstr ""
 
-#: zathura/main.c:146
+#: zathura/main.c:147
 msgid "Path to the config directory"
 msgstr "Διαδρομή του αρχείου ρυθμίσεων"
 
-#: zathura/main.c:147
+#: zathura/main.c:148
 msgid "Path to the data directory"
 msgstr "Διαδρομή του φακέλου δεδομένων"
 
-#: zathura/main.c:148
+#: zathura/main.c:149
 msgid "Path to the cache directory"
 msgstr ""
 
-#: zathura/main.c:149
+#: zathura/main.c:150
 msgid "Path to the directories containing plugins"
 msgstr "Διαδρομή φακέλου που περιέχει τα πρόσθετα"
 
-#: zathura/main.c:150
+#: zathura/main.c:151
 msgid "Fork into the background"
 msgstr "Διακλάδωση στο παρασκήνιο"
 
-#: zathura/main.c:151
+#: zathura/main.c:152
 msgid "Document password"
 msgstr "Κωδικός αρχείου"
 
-#: zathura/main.c:152
+#: zathura/main.c:153
 msgid "Page number to go to"
 msgstr ""
 
-#: zathura/main.c:153
+#: zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
 msgstr "Επίπεδο καταγραφής (debug, info, warning, error)"
 
-#: zathura/main.c:154
+#: zathura/main.c:155
 msgid "Print version information"
 msgstr "Εκτύπωση πληροφοριών έκδοσης"
 
-#: zathura/main.c:155
+#: zathura/main.c:156
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Synctex editor (Προώθηση στην εντολή synctex)"
 
-#: zathura/main.c:156
+#: zathura/main.c:157
 msgid "Move to given synctex position"
 msgstr ""
 
-#: zathura/main.c:157
+#: zathura/main.c:158
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: zathura/main.c:158
+#: zathura/main.c:159
 msgid "Start in a non-default mode"
+msgstr ""
+
+#: zathura/main.c:160
+msgid "Search for the given phrase and display results"
 msgstr ""
 
 #: zathura/page-widget.c:654
@@ -691,26 +695,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Το αρχείο δεν περιέχει κανένα δείκτη"
 
-#: zathura/zathura.c:300 zathura/zathura.c:1467
+#: zathura/zathura.c:303 zathura/zathura.c:1482
 msgid "[No name]"
 msgstr "[Χωρίς όνομα]"
 
-#: zathura/zathura.c:832
+#: zathura/zathura.c:835
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:852
+#: zathura/zathura.c:855
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:941
+#: zathura/zathura.c:952
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:980
+#: zathura/zathura.c:991
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
-#: zathura/zathura.c:990
+#: zathura/zathura.c:1001
 msgid "Document does not contain any pages"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-16 23:57+0200\n"
+"POT-Creation-Date: 2020-07-27 10:06+0200\n"
 "PO-Revision-Date: 2020-03-22 22:48+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/pwmt/zathura/language/"
@@ -499,80 +499,80 @@ msgid "Sandbox level"
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:483
+#: zathura/config.c:485
 msgid "Add a bookmark"
 msgstr "Pridėti žymę"
 
-#: zathura/config.c:484
+#: zathura/config.c:486
 msgid "Delete a bookmark"
 msgstr "Ištrinti žymę"
 
-#: zathura/config.c:485
+#: zathura/config.c:487
 msgid "List all bookmarks"
 msgstr "Žymių sąrašas"
 
-#: zathura/config.c:486
+#: zathura/config.c:488
 msgid "Close current file"
 msgstr "Uždaryti dabartinę bylą"
 
-#: zathura/config.c:487
+#: zathura/config.c:489
 msgid "Show file information"
 msgstr "Rodyti bylos informaciją"
 
-#: zathura/config.c:488 zathura/config.c:489
+#: zathura/config.c:490 zathura/config.c:491
 msgid "Execute a command"
 msgstr ""
 
 #. like vim
-#: zathura/config.c:490
+#: zathura/config.c:492
 msgid "Show help"
 msgstr "Rodyti pagalbą"
 
-#: zathura/config.c:491
+#: zathura/config.c:493
 msgid "Open document"
 msgstr "Atidryti dokumentą"
 
-#: zathura/config.c:492
+#: zathura/config.c:494
 msgid "Close zathura"
 msgstr "Uždaryti zathura"
 
-#: zathura/config.c:493
+#: zathura/config.c:495
 msgid "Print document"
 msgstr "Atspausdinti dokumentą"
 
-#: zathura/config.c:494
+#: zathura/config.c:496
 msgid "Save document"
 msgstr "Išsaugoti dokumentą"
 
-#: zathura/config.c:495
+#: zathura/config.c:497
 msgid "Save document (and force overwriting)"
 msgstr "Išsaugoti dokumentą (ir priverstinai perašyti)"
 
-#: zathura/config.c:496
+#: zathura/config.c:498
 msgid "Save attachments"
 msgstr "Išsaugoti priedus"
 
-#: zathura/config.c:497
+#: zathura/config.c:499
 msgid "Set page offset"
 msgstr "Nustatyti puslapio poslinkį"
 
-#: zathura/config.c:498
+#: zathura/config.c:500
 msgid "Mark current location within the document"
 msgstr "Pažymėti dabartinę dokumento vietą"
 
-#: zathura/config.c:499
+#: zathura/config.c:501
 msgid "Delete the specified marks"
 msgstr "Ištrinti šias žymes"
 
-#: zathura/config.c:500
+#: zathura/config.c:502
 msgid "Don't highlight current search results"
 msgstr "Nežymėti dabartinės paieškos rezultatų"
 
-#: zathura/config.c:501
+#: zathura/config.c:503
 msgid "Highlight current search results"
 msgstr "Pažymėti dabartinės paieškos rezultatus"
 
-#: zathura/config.c:502
+#: zathura/config.c:504
 msgid "Show version information"
 msgstr "Rodyti versijos informaciją"
 
@@ -598,60 +598,64 @@ msgstr "Nuoroda: %s"
 msgid "Link: Invalid"
 msgstr "Neteisinga nuoroda"
 
-#: zathura/main.c:145
+#: zathura/main.c:146
 msgid "Reparents to window specified by xid (X11)"
 msgstr ""
 
-#: zathura/main.c:146
+#: zathura/main.c:147
 msgid "Path to the config directory"
 msgstr "Konfigūracinių failų aplanko adresas"
 
-#: zathura/main.c:147
+#: zathura/main.c:148
 msgid "Path to the data directory"
 msgstr "Duomenų aplanko adresas"
 
-#: zathura/main.c:148
+#: zathura/main.c:149
 msgid "Path to the cache directory"
 msgstr ""
 
-#: zathura/main.c:149
+#: zathura/main.c:150
 msgid "Path to the directories containing plugins"
 msgstr "Įskiepių aplanko adresas"
 
-#: zathura/main.c:150
+#: zathura/main.c:151
 msgid "Fork into the background"
 msgstr ""
 
-#: zathura/main.c:151
+#: zathura/main.c:152
 msgid "Document password"
 msgstr "Dokumento slaptažodis"
 
-#: zathura/main.c:152
+#: zathura/main.c:153
 msgid "Page number to go to"
 msgstr "Pereiti į puslapį"
 
-#: zathura/main.c:153
+#: zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
 msgstr "Registravimo lygis (derinimas, informacija, įspėjimai, klaidos)"
 
-#: zathura/main.c:154
+#: zathura/main.c:155
 msgid "Print version information"
 msgstr "Spausdinti versijos informaciją"
 
-#: zathura/main.c:155
+#: zathura/main.c:156
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "Synctex redaktorius (naudojama synctex komandoje)"
 
-#: zathura/main.c:156
+#: zathura/main.c:157
 msgid "Move to given synctex position"
 msgstr ""
 
-#: zathura/main.c:157
+#: zathura/main.c:158
 msgid "Highlight given position in the given process"
 msgstr ""
 
-#: zathura/main.c:158
+#: zathura/main.c:159
 msgid "Start in a non-default mode"
+msgstr ""
+
+#: zathura/main.c:160
+msgid "Search for the given phrase and display results"
 msgstr ""
 
 #: zathura/page-widget.c:654
@@ -691,26 +695,26 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Šit dokumentas neturi turinio"
 
-#: zathura/zathura.c:300 zathura/zathura.c:1467
+#: zathura/zathura.c:303 zathura/zathura.c:1482
 msgid "[No name]"
 msgstr "[Bevardis]"
 
-#: zathura/zathura.c:832
+#: zathura/zathura.c:835
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:852
+#: zathura/zathura.c:855
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:941
+#: zathura/zathura.c:952
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:980
+#: zathura/zathura.c:991
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Bylos tipas nepalaikomas. Įdiekite tam skirtus įskiepius."
 
-#: zathura/zathura.c:990
+#: zathura/zathura.c:1001
 msgid "Document does not contain any pages"
 msgstr "Dokumente puslapių nėra"
