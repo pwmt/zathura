@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.4.5',
+  version: '0.4.6',
   meson_version: '>=0.47',
   default_options: ['c_std=c11', 'warning_level=3'],
 )
