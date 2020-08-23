@@ -1685,7 +1685,7 @@ adjust_view(zathura_t* zathura)
   zathura_document_get_document_size(zathura->document, &document_height, &document_width);
   zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
 
-  if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0) {
+  if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0 || document_width == 0) {
     goto error_ret;
   }
 
