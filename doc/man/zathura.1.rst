@@ -118,7 +118,7 @@ General
   r
     Rotate by 90 degrees
   ^r
-    Recolor (grayscale and invert colors) aka "dark mode"
+    Recolor (grayscale and invert colors a.k.a. "dark mode" or "night mode"). Can be adjusted using recolor-* options, see zathurarc(5) for details
   R
     Reload document
   Tab
