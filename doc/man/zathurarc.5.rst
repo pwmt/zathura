@@ -465,7 +465,7 @@ girara
   Defines the font that will be used
 
   * Value type: String
-  * Default value: monospace normal 9
+  * Default value: "monospace normal 9"
 
 *guioptions*
   Shows or hides GUI elements.
