@@ -118,7 +118,7 @@ General
   r
     Rotate by 90 degrees
   ^r
-    Recolor (grayscale and invert colors)
+    Recolor (grayscale and invert colors) aka "dark mode"
   R
     Reload document
   Tab
