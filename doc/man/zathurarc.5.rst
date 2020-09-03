@@ -741,7 +741,7 @@ zathura
   * Default value: 1:2
 
 *recolor*
-  En/Disables recoloring
+  En/Disables recoloring a.k.a "dark mode" or "night mode"
 
   * Value type: Boolean
   * Default value: false
