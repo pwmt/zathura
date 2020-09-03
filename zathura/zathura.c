@@ -1356,15 +1356,21 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
   }
 
   if ((overwrite == false) && g_file_test(file_path, G_FILE_TEST_EXISTS)) {
-    girara_error("File already exists: %s. Use :write! to overwrite it.", file_path);
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("File already exists: %s. Use :write! to overwrite it."), file_path);
     g_free(file_path);
     return false;
   }
 
-  zathura_error_t error = zathura_document_save_as(zathura->document, file_path);
+  const zathura_error_t error = zathura_document_save_as(zathura->document, file_path);
   g_free(file_path);
 
-  return (error == ZATHURA_ERROR_OK) ? true : false;
+  if (error != ZATHURA_ERROR_OK) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to save document."));
+    return false;
+  }
+
+  girara_notify(zathura->ui.session, GIRARA_INFO, _("Document saved."));
+  return true;
 }
 
 static void
