@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-24 21:36+0200\n"
-"PO-Revision-Date: 2020-08-24 21:39+0200\n"
+"POT-Creation-Date: 2020-09-03 21:33+0200\n"
+"PO-Revision-Date: 2020-07-27 15:17+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/pwmt/zathura/language/nl/)\n"
 "Language: nl\n"
@@ -434,11 +434,11 @@ msgstr "Mappen tonen"
 
 #: zathura/config.c:260
 msgid "Show recent files"
-msgstr "Recente bestanden tonen"
+msgstr "Onlangs geopende bestanden tonen"
 
 #: zathura/config.c:262
 msgid "Always open on first page"
-msgstr "Altijd openen op eerste pagina"
+msgstr "Altijd de eerste pagina openen"
 
 #: zathura/config.c:264
 msgid "Highlight search results"
@@ -462,7 +462,7 @@ msgstr "~ gebruiken i.p.v. $HOME in de bestandsnaam in de venstertitel"
 
 #: zathura/config.c:275
 msgid "Display the page number in the window title"
-msgstr "Paginanummer weergeven in de venstertitel"
+msgstr "Paginanummer tonen in de venstertitel"
 
 #: zathura/config.c:277
 msgid "Use first page of a document as window icon"
@@ -490,21 +490,21 @@ msgstr "D-Bus-dienst inschakelen"
 
 #: zathura/config.c:288
 msgid "Save history at each page change"
-msgstr "Geschiedenis opslaan bij elke paginawijziging"
+msgstr "Geschiedenis opslaan na elke pagina-omslag"
 
 #: zathura/config.c:289
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
-"Het klembord waarnaar met de muis geselecteerde gegevens moet worden "
+"Het klembord waarnaar met de muis geselecteerde gegevens moeten worden "
 "weggeschreven"
 
 #: zathura/config.c:291
 msgid "Enable notification after selecting text"
-msgstr "Melding inschakelen na selecteren van tekst"
+msgstr "Melding tonen na selecteren van tekst"
 
 #: zathura/config.c:294
 msgid "Sandbox level"
-msgstr "Sandbox-niveau"
+msgstr "Sandboxniveau"
 
 #. define default inputbar commands
 #: zathura/config.c:485
@@ -554,7 +554,7 @@ msgstr "Document opslaan"
 
 #: zathura/config.c:497
 msgid "Save document (and force overwriting)"
-msgstr "Document opslaan (en overschrijven forceren)"
+msgstr "Document opslaan (en overschrijven afdwingen)"
 
 #: zathura/config.c:498
 msgid "Save attachments"
@@ -586,13 +586,13 @@ msgstr "Versie-informatie tonen"
 
 #: zathura/links.c:233
 msgid "Failed to run xdg-open."
-msgstr "Uitvoeren van xdg-open mislukt."
+msgstr "xdg-open kan niet worden uitgevoerd."
 
 #: zathura/links.c:247
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
-"Het openen van externe applicaties is niet toegestaan in de strenge sandbox-"
-"modus"
+"Het openen van externe programma's is niet toegestaan in de strenge "
+"sandboxmodus"
 
 #: zathura/links.c:280
 #, c-format
@@ -626,7 +626,7 @@ msgstr "Pad naar de cachemap"
 
 #: zathura/main.c:150
 msgid "Path to the directories containing plugins"
-msgstr "Pad naar de mappen die plug-ins bevatten"
+msgstr "Pad naar de plug-inmappen"
 
 #: zathura/main.c:151
 msgid "Fork into the background"
@@ -638,7 +638,7 @@ msgstr "Documentwachtwoord"
 
 #: zathura/main.c:153
 msgid "Page number to go to"
-msgstr "Paginanummer om naartoe te gaan"
+msgstr "Ga naar paginanummer"
 
 #: zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
