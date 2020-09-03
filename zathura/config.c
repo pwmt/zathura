@@ -493,6 +493,8 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,            cc_open,      _("Open document"));
   girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,            NULL,         _("Close zathura"));
   girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,           NULL,         _("Print document"));
+  girara_inputbar_command_add(gsession, "save",       NULL,   cmd_save,            cc_write,     _("Alias for :write"));
+  girara_inputbar_command_add(gsession, "save!",      NULL,   cmd_savef,           cc_write,     _("Alias for :write!"));
   girara_inputbar_command_add(gsession, "write",      NULL,   cmd_save,            cc_write,     _("Save document"));
   girara_inputbar_command_add(gsession, "write!",     NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
   girara_inputbar_command_add(gsession, "export",     NULL,   cmd_export,          cc_export,    _("Save attachments"));
