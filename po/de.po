@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-27 10:06+0200\n"
-"PO-Revision-Date: 2020-07-27 10:09+0200\n"
+"POT-Creation-Date: 2020-08-24 21:36+0200\n"
+"PO-Revision-Date: 2020-07-27 08:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -664,7 +664,7 @@ msgstr "In einem Nicht-Standardmodus starten"
 
 #: zathura/main.c:160
 msgid "Search for the given phrase and display results"
-  msgstr "Suche nach der gegeben Phrase und anzeigen der Ergebnisse"
+msgstr "Suche nach der gegeben Phrase und anzeigen der Ergebnisse"
 
 #: zathura/page-widget.c:654
 msgid "Loading..."

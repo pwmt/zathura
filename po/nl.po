@@ -1,13 +1,14 @@
+# zathura - language file (Dutch)
 # SPDX-License-Identifier: Zlib
 #
 # Translators:
-# Heimen Stoffels <vistausss@outlook.com>, 2017-2019
+# Heimen Stoffels <vistausss@outlook.com>, 2017-2020
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-27 10:06+0200\n"
-"PO-Revision-Date: 2020-03-22 22:48+0000\n"
+"POT-Creation-Date: 2020-09-03 21:33+0200\n"
+"PO-Revision-Date: 2020-07-27 15:17+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/pwmt/zathura/language/nl/)\n"
 "Language: nl\n"
@@ -22,7 +23,7 @@ msgstr "Zathura"
 
 #: data/org.pwmt.zathura.appdata.xml.in:8 data/org.pwmt.zathura.desktop.in:6
 msgid "A minimalistic document viewer"
-msgstr "Een minimalistische documentweergave-applicatie"
+msgstr "Een minimalistisch documentweergaveprogramma"
 
 #: data/org.pwmt.zathura.appdata.xml.in:10
 msgid ""
@@ -31,9 +32,9 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
-"Zathrua is een zeer aanpasbare en functionele documentweergave-applicatie. "
-"Het biedt een minimalistisch en ruimtebesparend uiterlijk en is vooral "
-"gefocust op eenvoudig navigeren middels het toetsenbord. Zathura maakt het "
+"Zathura is een zeer aanpasbaar en functioneel documentweergaveprogramma. "
+"Zathura heeft een minimalistische, ruimtebesparende vormgeving en is vooral "
+"gefocust op eenvoudig navigeren middels het toetsenbord. Dit maakt het "
 "mogelijk om volledig zonder muis door documenten te kunnen bladeren."
 
 #: data/org.pwmt.zathura.appdata.xml.in:17
@@ -41,6 +42,8 @@ msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
+"Met plug-ins kun je ondersteuning toevoegen voor meerdere bestandsformaten. "
+"Andere mogelijkheden zijn:"
 
 #: data/org.pwmt.zathura.appdata.xml.in:22
 msgid "SyncTeX forward and backward synchronization support."
@@ -52,7 +55,7 @@ msgstr "Verwijzingen en bladwijzers."
 
 #: data/org.pwmt.zathura.appdata.xml.in:24
 msgid "Automatic document reloading."
-msgstr "Automatische documentherlading."
+msgstr "Automatisch documenten herladen."
 
 #. Translators: Icon of the desktop entry.
 #: data/org.pwmt.zathura.desktop.in:9
@@ -73,22 +76,22 @@ msgstr "'%s' mag niet op 0 worden ingesteld. Stel in op 1."
 #: zathura/callbacks.c:395
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Ongeldige invoer, '%s', opgegeven."
+msgstr "Ongeldige invoer '%s' opgegeven."
 
 #: zathura/callbacks.c:433
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Ongeldige index, '%s', opgegeven."
+msgstr "Ongeldige index '%s' opgegeven."
 
 #: zathura/callbacks.c:674
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr "Tekst gekopieerd naar selectie %s: %s"
+msgstr "De tekst is gekopieerd naar de selectie %s: %s"
 
 #: zathura/callbacks.c:706
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr "Afbeelding gekopieerd naar selectie %s"
+msgstr "De afbeelding is gekopieerd naar de selectie %s"
 
 #: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
 #: zathura/commands.c:165 zathura/commands.c:281 zathura/commands.c:311
@@ -96,7 +99,7 @@ msgstr "Afbeelding gekopieerd naar selectie %s"
 #: zathura/shortcuts.c:413 zathura/shortcuts.c:1222 zathura/shortcuts.c:1257
 #: zathura/shortcuts.c:1284
 msgid "No document opened."
-msgstr "Geen geopend document."
+msgstr "Geen document geopend."
 
 #: zathura/commands.c:42 zathura/commands.c:82 zathura/commands.c:442
 msgid "Invalid number of arguments given."
@@ -105,32 +108,32 @@ msgstr "Ongeldig aantal argumenten opgegeven."
 #: zathura/commands.c:53
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "Bladwijzer kan niet worden bijgewerkt: %s"
+msgstr "De bladwijzer kan niet worden bijgewerkt: %s"
 
 #: zathura/commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Bladwijzer kan niet worden gecreëerd: %s"
+msgstr "De bladwijzer kan niet worden toegevoegd: %s"
 
 #: zathura/commands.c:60
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr "Bladwijzer bijgewerkt: %s"
+msgstr "De bladwijzer is bijgewerkt: %s"
 
 #: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr "Bladwijzer gecreëerd: %s"
+msgstr "De bladwijzer is toegevoegd: %s"
 
 #: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Bladwijzer verwijderd: %s"
+msgstr "De bladwijzer is verwijderd: %s"
 
 #: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Bladwijzer verwijderen mislukt: %s"
+msgstr "De bladwijzer kan niet worden verwijderd: %s"
 
 #: zathura/commands.c:119
 msgid "No bookmarks available."
@@ -139,7 +142,7 @@ msgstr "Geen bladwijzers beschikbaar."
 #: zathura/commands.c:129
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Geen bladwijzer: %s"
+msgstr "Bladwijzer bestaat niet: %s"
 
 #: zathura/commands.c:175
 msgid "Title"
@@ -151,7 +154,7 @@ msgstr "Onderwerp"
 
 #: zathura/commands.c:177
 msgid "Keywords"
-msgstr "Sleutelwoorden"
+msgstr "Trefwoorden"
 
 #: zathura/commands.c:178
 msgid "Author"
@@ -167,11 +170,11 @@ msgstr "Producent"
 
 #: zathura/commands.c:181
 msgid "Creation date"
-msgstr "Creatiedatum"
+msgstr "Aangemaakt op"
 
 #: zathura/commands.c:182
 msgid "Modification date"
-msgstr "Bijwerkdatum"
+msgstr "Bijgewerkt op"
 
 #: zathura/commands.c:183
 msgid "Format"
@@ -187,7 +190,7 @@ msgstr "Geen informatie beschikbaar."
 
 #: zathura/commands.c:247
 msgid "Too many arguments."
-msgstr "Teveel argumenten."
+msgstr "Te veel argumenten."
 
 #: zathura/commands.c:258
 msgid "No arguments given."
@@ -195,15 +198,15 @@ msgstr "Geen argumenten opgegeven."
 
 #: zathura/commands.c:286
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Afdrukken is niet toegestaan in de strenge sandbox-modus"
+msgstr "Afdrukken is niet toegestaan in de strenge sandboxmodus"
 
 #: zathura/commands.c:317 zathura/commands.c:343
 msgid "Document saved."
-msgstr "Document opgeslagen."
+msgstr "Het document is opgeslagen."
 
 #: zathura/commands.c:319 zathura/commands.c:345
 msgid "Failed to save document."
-msgstr "Document opslaan mislukt."
+msgstr "Het document kan niet worden opgeslagen."
 
 #: zathura/commands.c:322 zathura/commands.c:348
 msgid "Invalid number of arguments."
@@ -212,40 +215,40 @@ msgstr "Ongeldig aantal argumenten."
 #: zathura/commands.c:461
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Bijlage '%s' kan niet worden weggeschreven naar '%s'."
+msgstr "De bijlage '%s' kan niet worden weggeschreven naar '%s'."
 
 #: zathura/commands.c:463
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Bijlage '%s' weggeschreven naar '%s'."
+msgstr "De bijlage '%s' is weggeschreven naar '%s'."
 
 #: zathura/commands.c:507
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Afbeelding '%s' weggeschreven naar '%s'."
+msgstr "De afbeelding '%s' is weggeschreven naar '%s'."
 
 #: zathura/commands.c:509
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Afbeelding '%s' kan niet worden weggeschreven naar '%s'."
+msgstr "De afbeelding '%s' kan niet worden weggeschreven naar '%s'."
 
 #: zathura/commands.c:516
 #, c-format
 msgid "Unknown image '%s'."
-msgstr "Onbekende afbeelding '%s'."
+msgstr "Onbekende afbeelding: '%s'."
 
 #: zathura/commands.c:520
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Onbekende bijlage of afbeelding '%s'."
+msgstr "Onbekende bijlage of afbeelding: '%s'."
 
 #: zathura/commands.c:538
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr "Uitvoeren is niet toegestaan in de strenge sandbox-modus"
+msgstr "Uitvoeren is niet toegestaan in de strenge sandboxmodus"
 
 #: zathura/commands.c:582
 msgid "Argument must be a number."
-msgstr "Argument moet een getal zijn."
+msgstr "Het argument moet een getal zijn."
 
 #: zathura/completion.c:287
 #, c-format
@@ -264,11 +267,11 @@ msgstr "Afbeeldingen"
 #. zathura settings
 #: zathura/config.c:183
 msgid "Database backend"
-msgstr "Database-backend"
+msgstr "Databankback-end"
 
 #: zathura/config.c:184
 msgid "File monitor backend"
-msgstr "Bestandsmonitor-backend"
+msgstr "Bestandsmonitorback-end"
 
 #: zathura/config.c:186
 msgid "Zoom step"
@@ -292,11 +295,11 @@ msgstr "Pagina's van rechts naar links tonen"
 
 #: zathura/config.c:196
 msgid "Scroll step"
-msgstr "Scrollschaal"
+msgstr "Scrollsnelheid"
 
 #: zathura/config.c:198
 msgid "Horizontal scroll step"
-msgstr "Horizontale scrollschaal"
+msgstr "Horizontale scrollsnelheid"
 
 #: zathura/config.c:200
 msgid "Full page scroll overlap"
@@ -304,33 +307,32 @@ msgstr "Scrolloverlapping op volledige pagina"
 
 #: zathura/config.c:202
 msgid "Zoom minimum"
-msgstr "Minimale zoom"
+msgstr "Minimaal zoomniveau"
 
 #: zathura/config.c:204
 msgid "Zoom maximum"
-msgstr "Maximale zoom"
+msgstr "Maximaal zoomniveau"
 
 #: zathura/config.c:206
 msgid "Maximum number of pages to keep in the cache"
-msgstr "Maximaal aantal pagina's dat moet worden bewaard in de cache"
+msgstr "Het maximumaantal pagina's dat moet worden bewaard in de cache"
 
 #: zathura/config.c:208
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
-"Maximaal aantal in pixels van voorbeeldweergaven die moeten worden bewaard "
-"in de cache"
+"Het maximumaantal miniaturen dat moet worden bewaard in de cache (in pixels)"
 
 #: zathura/config.c:210
 msgid "Number of positions to remember in the jumplist"
-msgstr "Aantal posities dat moet worden onthouden in de jumplist"
+msgstr "Het aantal posities dat moet worden onthouden in de jumplist"
 
 #: zathura/config.c:212
 msgid "Recoloring (dark color)"
-msgstr "Herkleuren (donkere kleur)"
+msgstr "Herinkleuren (donkere kleur)"
 
 #: zathura/config.c:213
 msgid "Recoloring (light color)"
-msgstr "Herkleuren (lichte kleur)"
+msgstr "Herinkleuren (lichte kleur)"
 
 #: zathura/config.c:214
 msgid "Color for highlighting"
@@ -366,13 +368,13 @@ msgstr "Indexmodus-achtergrondkleur (actief element)"
 
 #: zathura/config.c:229
 msgid "Recolor pages"
-msgstr "Pagina's herkleuren"
+msgstr "Pagina's herinkleuren"
 
 #: zathura/config.c:231
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
-"Behoudt tijdens het herkleuren de originele tint en pas alleen de belichting "
-"aan"
+"Behoudt tijdens het herinkleuren de oorspronkelijke tint en pas alleen de "
+"belichting aan"
 
 #: zathura/config.c:233
 msgid "When recoloring keep original image colors"
@@ -404,7 +406,7 @@ msgstr "Linkdoel uitlijnen naar links"
 
 #: zathura/config.c:247
 msgid "Let zoom be changed when following links"
-msgstr "Zoom wijzigen bij volgen van links"
+msgstr "Zoom aanpassen bij volgen van links"
 
 #: zathura/config.c:249
 msgid "Center result horizontally"
@@ -412,11 +414,11 @@ msgstr "Resultaat horizontaal centreren"
 
 #: zathura/config.c:251
 msgid "Transparency for highlighting"
-msgstr "Doorzichtigheid bij markeren"
+msgstr "Markeerdoorzichtigheid"
 
 #: zathura/config.c:253
 msgid "Render 'Loading ...'"
-msgstr "'Bezig met laden...' renderen"
+msgstr "'Bezig met laden...' tonen"
 
 #: zathura/config.c:254
 msgid "Adjust to when opening file"
@@ -432,11 +434,11 @@ msgstr "Mappen tonen"
 
 #: zathura/config.c:260
 msgid "Show recent files"
-msgstr "Recente bestanden tonen"
+msgstr "Onlangs geopende bestanden tonen"
 
 #: zathura/config.c:262
 msgid "Always open on first page"
-msgstr "Altijd openen op eerste pagina"
+msgstr "Altijd de eerste pagina openen"
 
 #: zathura/config.c:264
 msgid "Highlight search results"
@@ -460,7 +462,7 @@ msgstr "~ gebruiken i.p.v. $HOME in de bestandsnaam in de venstertitel"
 
 #: zathura/config.c:275
 msgid "Display the page number in the window title"
-msgstr "Paginanummer weergeven in de venstertitel"
+msgstr "Paginanummer tonen in de venstertitel"
 
 #: zathura/config.c:277
 msgid "Use first page of a document as window icon"
@@ -488,21 +490,21 @@ msgstr "D-Bus-dienst inschakelen"
 
 #: zathura/config.c:288
 msgid "Save history at each page change"
-msgstr "Geschiedenis opslaan bij elke paginawijziging"
+msgstr "Geschiedenis opslaan na elke pagina-omslag"
 
 #: zathura/config.c:289
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
-"Het klembord waarnaar met de muis geselecteerde gegevens moet worden "
+"Het klembord waarnaar met de muis geselecteerde gegevens moeten worden "
 "weggeschreven"
 
 #: zathura/config.c:291
 msgid "Enable notification after selecting text"
-msgstr "Melding inschakelen na selecteren van tekst"
+msgstr "Melding tonen na selecteren van tekst"
 
 #: zathura/config.c:294
 msgid "Sandbox level"
-msgstr "Sandbox-niveau"
+msgstr "Sandboxniveau"
 
 #. define default inputbar commands
 #: zathura/config.c:485
@@ -552,7 +554,7 @@ msgstr "Document opslaan"
 
 #: zathura/config.c:497
 msgid "Save document (and force overwriting)"
-msgstr "Document opslaan (en overschrijven forceren)"
+msgstr "Document opslaan (en overschrijven afdwingen)"
 
 #: zathura/config.c:498
 msgid "Save attachments"
@@ -584,13 +586,13 @@ msgstr "Versie-informatie tonen"
 
 #: zathura/links.c:233
 msgid "Failed to run xdg-open."
-msgstr "Uitvoeren van xdg-open mislukt."
+msgstr "xdg-open kan niet worden uitgevoerd."
 
 #: zathura/links.c:247
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
-"Het openen van externe applicaties is niet toegestaan in de strenge sandbox-"
-"modus"
+"Het openen van externe programma's is niet toegestaan in de strenge "
+"sandboxmodus"
 
 #: zathura/links.c:280
 #, c-format
@@ -624,7 +626,7 @@ msgstr "Pad naar de cachemap"
 
 #: zathura/main.c:150
 msgid "Path to the directories containing plugins"
-msgstr "Pad naar de mappen die plug-ins bevatten"
+msgstr "Pad naar de plug-inmappen"
 
 #: zathura/main.c:151
 msgid "Fork into the background"
@@ -636,7 +638,7 @@ msgstr "Documentwachtwoord"
 
 #: zathura/main.c:153
 msgid "Page number to go to"
-msgstr "Paginanummer om naartoe te gaan"
+msgstr "Ga naar paginanummer"
 
 #: zathura/main.c:154
 msgid "Log level (debug, info, warning, error)"
@@ -664,7 +666,7 @@ msgstr "Starten in een niet-standaardmodus"
 
 #: zathura/main.c:160
 msgid "Search for the given phrase and display results"
-msgstr ""
+msgstr "Zoeken naar zoekterm en resultaten tonen"
 
 #: zathura/page-widget.c:654
 msgid "Loading..."
@@ -687,7 +689,7 @@ msgstr "Bezig met afdrukken van pagina %d..."
 #: zathura/print.c:192
 #, c-format
 msgid "Printing failed: %s"
-msgstr "Afdrukken mislukt: %s"
+msgstr "Het afdrukken is mislukt: %s"
 
 #: zathura/shortcuts.c:105
 #, c-format
@@ -697,7 +699,7 @@ msgstr "Ongeldige aanpassingsmodus: %d"
 #: zathura/shortcuts.c:974
 #, c-format
 msgid "Pattern not found: %s"
-msgstr "Patroon niet gevonden: %s"
+msgstr "Het patroon is niet gevonden: %s"
 
 #: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
@@ -710,14 +712,14 @@ msgstr "[Naamloos]"
 #: zathura/zathura.c:835
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
-"Bestand kan niet worden gelezen uit stdin en worden weggeschreven naar een "
+"Het bestand kan niet worden gelezen uit stdin en weggeschreven naar een "
 "tijdelijk bestand."
 
 #: zathura/zathura.c:855
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
-"Bestand kan niet worden gelezen uit GIO en worden gekopieerd naar een "
-"tijdelijk bestand."
+"Het bestand kan niet worden gelezen uit GIO en gekopieerd naar een tijdelijk "
+"bestand."
 
 #: zathura/zathura.c:952
 msgid "Enter password:"
@@ -729,4 +731,4 @@ msgstr "Niet-ondersteund bestandstype. Installeer de benodigde plug-in."
 
 #: zathura/zathura.c:1001
 msgid "Document does not contain any pages"
-msgstr "Document bevat geen pagina's"
+msgstr "Het document bevat geen pagina's"
