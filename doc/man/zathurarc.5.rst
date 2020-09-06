@@ -53,6 +53,9 @@ can be used
     set option4 hello\ world
     set option5 "hello world"
 
+Especially for options with strings as values, note that escaping of special characters and white
+spaces is necessary. In the above example, ``option4`` and ``option5`` are both set to ``hello
+world``, but ``set option6 hello world`` would set ``option6`` only to ``hello``.
 
 For colors, zathura supports HTML color codes and CSS3-style ``rgb(r,g,b)`` and ``rgba(r,g,b,a)``
 values. If you want to use color codes for some options, make sure to quote them accordingly or
