@@ -12,6 +12,7 @@
 #include <girara/session.h>
 #include <girara/utils.h>
 #include <girara/settings.h>
+#include <girara/commands.h>
 #include <gio/gio.h>
 #include <sys/types.h>
 #include <string.h>
@@ -380,6 +381,20 @@ handle_synctex_view(zathura_t* zathura, GVariant* parameters,
 }
 
 static void
+handle_execute_command(zathura_t* zathura, GVariant* parameters,
+                       GDBusMethodInvocation* invocation)
+{
+  gchar* input = NULL;
+  g_variant_get(parameters, "(s)", &input);
+
+  const bool ret = girara_command_run(zathura->ui.session, input);
+  g_free(input);
+
+  GVariant* result = g_variant_new("(b)", ret);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
 handle_method_call(GDBusConnection* UNUSED(connection),
                    const gchar* UNUSED(sender), const gchar* object_path,
                    const gchar* interface_name, const gchar* method_name,
@@ -402,7 +417,8 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     { "CloseDocument", handle_close_document, false, false },
     { "GotoPage", handle_goto_page, true, true },
     { "HighlightRects", handle_highlight_rects, true, true },
-    { "SynctexView", handle_synctex_view, true, true }
+    { "SynctexView", handle_synctex_view, true, true },
+    { "ExecuteCommand", handle_execute_command, false, false }
   };
 
   for (size_t idx = 0; idx != sizeof(handlers) / sizeof(handlers[0]); ++idx) {
