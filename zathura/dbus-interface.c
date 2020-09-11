@@ -222,7 +222,7 @@ handle_open_document(zathura_t* zathura, GVariant* parameters,
   document_open_idle(zathura, filename,
                      strlen(password) > 0 ? password : NULL,
                      page,
-                     NULL, NULL, NULL);
+                     NULL, NULL, NULL, NULL);
   g_free(filename);
   g_free(password);
 
