@@ -1190,9 +1190,9 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     const zathura_adjust_mode_t adjust_mode =
       zathura_document_get_adjust_mode(zathura->document);
 
-    /* zathura goes to the first page when toggling index mode if this isn't done*/
+    /* zathura goes to the first page when toggling index mode if this isn't done */
     if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-        zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+      zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
     }
 
     girara_set_view(session, zathura->ui.index);
