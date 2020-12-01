@@ -16,7 +16,7 @@ build:archlinux:
   image: registry.pwmt.org/pwmt/gitlab-runner-images/archlinux:latest
   script:
     - mkdir -p build && cd build
-    - meson --force-fallback-for girara ..
+    - meson --force-fallback-for=girara ..
     - ninja
   cache:
     <<: *girara_cache
@@ -51,7 +51,7 @@ build:debian-buster:
   image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:buster
   script:
     - mkdir -p build && cd build
-    - meson --force-fallback-for girara ..
+    - meson --force-fallback-for=girara ..
     - ninja
   cache:
     <<: *girara_cache
@@ -86,7 +86,7 @@ build:ubuntu-bionic:
   image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:bionic
   script:
     - mkdir -p build && cd build
-    - meson --force-fallback-for girara ..
+    - meson --force-fallback-for=girara ..
     - ninja
   cache:
     <<: *girara_cache
@@ -121,7 +121,7 @@ build:ubuntu-eoan:
   image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:eoan
   script:
     - mkdir -p build && cd build
-    - meson --force-fallback-for girara ..
+    - meson --force-fallback-for=girara ..
     - ninja
   cache:
     <<: *girara_cache
