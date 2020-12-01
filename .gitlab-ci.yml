@@ -15,6 +15,7 @@ build:archlinux:
   stage: build
   image: registry.pwmt.org/pwmt/gitlab-runner-images/archlinux:latest
   script:
+    - meson subprojects update
     - mkdir -p build && cd build
     - meson --force-fallback-for=girara ..
     - ninja
@@ -50,6 +51,7 @@ build:debian-buster:
   stage: build
   image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:buster
   script:
+    - meson subprojects update
     - mkdir -p build && cd build
     - meson --force-fallback-for=girara ..
     - ninja
@@ -85,6 +87,7 @@ build:ubuntu-bionic:
   stage: build
   image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:bionic
   script:
+    - meson subprojects update
     - mkdir -p build && cd build
     - meson --force-fallback-for=girara ..
     - ninja
@@ -120,6 +123,7 @@ build:ubuntu-eoan:
   stage: build
   image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:eoan
   script:
+    - meson subprojects update
     - mkdir -p build && cd build
     - meson --force-fallback-for=girara ..
     - ninja
