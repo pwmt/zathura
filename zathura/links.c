@@ -5,6 +5,7 @@
 #include <girara/utils.h>
 #include <girara/session.h>
 #include <girara/settings.h>
+#include <gtk/gtk.h>
 
 #include "adjustment.h"
 #include "links.h"
@@ -285,6 +286,30 @@ zathura_link_display(zathura_t* zathura, zathura_link_t* link)
     case ZATHURA_LINK_LAUNCH:
     case ZATHURA_LINK_NAMED:
       girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: %s"),
+          target.value);
+      break;
+    default:
+      girara_notify(zathura->ui.session, GIRARA_ERROR, _("Link: Invalid"));
+  }
+}
+
+void
+zathura_link_copy(zathura_t* zathura, zathura_link_t* link)
+{
+  zathura_link_type_t type = zathura_link_get_type(link);
+  zathura_link_target_t target = zathura_link_get_target(link);
+  switch (type) {
+    case ZATHURA_LINK_GOTO_DEST:
+      copy_int_to_clipboard(target.page_number);
+      girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %d"),
+          target.page_number);
+      break;
+    case ZATHURA_LINK_GOTO_REMOTE:
+    case ZATHURA_LINK_URI:
+    case ZATHURA_LINK_LAUNCH:
+    case ZATHURA_LINK_NAMED:
+      copy_str_to_clipboard(target.value);
+      girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied link: %s"),
           target.value);
       break;
     default:

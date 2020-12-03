@@ -370,6 +370,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
 typedef enum zathura_link_action_e
 {
   ZATHURA_LINK_ACTION_FOLLOW,
+  ZATHURA_LINK_ACTION_COPY,
   ZATHURA_LINK_ACTION_DISPLAY
 } zathura_link_action_t;
 
@@ -425,6 +426,9 @@ handle_link(GtkEntry* entry, girara_session_t* session,
         case ZATHURA_LINK_ACTION_DISPLAY:
           zathura_link_display(zathura, link);
           break;
+        case ZATHURA_LINK_ACTION_COPY:
+          zathura_link_copy(zathura, link);
+          break;
       }
     }
   }
@@ -450,6 +454,13 @@ cb_sc_display_link(GtkEntry* entry, void* data)
 {
   girara_session_t* session = data;
   return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
+}
+
+gboolean
+cb_sc_copy_link(GtkEntry* entry, void* data)
+{
+  girara_session_t* session = data;
+  return handle_link(entry, session, ZATHURA_LINK_ACTION_COPY);
 }
 
 static gboolean

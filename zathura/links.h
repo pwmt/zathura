@@ -64,4 +64,12 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link);
  */
 void zathura_link_display(zathura_t* zathura, zathura_link_t* link);
 
+/**
+ * Copy a link into the clipboard using and display it using girara_notify
+ *
+ * @param zathura Zathura instance
+ * @param link The link
+ */
+void zathura_link_copy(zathura_t* zathura, zathura_link_t* link);
+
 #endif // LINK_H
