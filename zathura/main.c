@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "zathura-os-dependency.h"
 #include <girara/settings.h>
 #include <girara/log.h>
 
@@ -307,6 +308,19 @@ main(int argc, char* argv[])
     goto free_and_ret;
   }
 
+#ifdef GTKOSXAPPLICATION
+  GtkosxApplication *zathuraApp;
+  zathuraApp  = g_object_new (GTKOSX_TYPE_APPLICATION, NULL);
+  gtkosx_application_set_use_quartz_accelerators (zathuraApp, FALSE);
+  gtkosx_application_ready (zathuraApp);
+  {
+    const gchar *id = gtkosx_application_get_bundle_id ();
+    if (id != NULL)
+      {
+        g_print ("TestIntegration Error! Bundle Has ID %s\n", id);
+      }
+  }
+#endif //GTKOSXAPPLICATION
   /* run zathura */
   gtk_main();
 
