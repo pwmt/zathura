@@ -1,6 +1,9 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include "zathura-os-dependency.h"
+#ifdef GTKOSXAPPLICATION
+#include <gtkosxapplication.h>
+#endif
+
 #include <girara/settings.h>
 #include <girara/log.h>
 

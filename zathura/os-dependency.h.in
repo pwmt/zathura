@@ -1,8 +1,0 @@
-/* SPDX-License-Identifier: Zlib */
-
-#mesondefine GTKOSXAPPLICATION
-
-#ifdef GTKOSXAPPLICATION
-#include <gtkosxapplication.h>
-#endif
-
