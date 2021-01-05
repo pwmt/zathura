@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <gtkosxapplication.h>
+#include "zathura-os-dependency.h"
 #include <girara/settings.h>
 #include <girara/log.h>
 
@@ -19,23 +19,6 @@
 #ifdef WITH_SYNCTEX
 #include "synctex.h"
 #endif
-
-/* Uncomment ONE of these to test menu-mangling: */
-//#define GTKMACINTEGRATION
-#define GTKOSXAPPLICATION
-
-/* These others are optional */
-#define GTK_DISABLE_DEPRECATION_WARNINGS 1
-#define BUILT_UI //The built UI uses deprecated functions
-//#define QUARTZ_HANDLERS
-
-/* GTKMACINTEGRATION uses Carbon, which isn't available for 64-bit builds. */
-#ifdef __x86_64__
-#undef GTKMACINTEGRATION
-# ifndef GTKOSXAPPLICATION
-#define GTKOSXAPPLICATION
-# endif
-#endif //__x86_64__
 
 /* Init locale */
 static void
@@ -320,15 +303,8 @@ main(int argc, char* argv[])
 
 #ifdef GTKOSXAPPLICATION
   GtkosxApplication *zathuraApp;
-#endif //GTKOSXAPPLICATION
   zathuraApp  = g_object_new (GTKOSX_TYPE_APPLICATION, NULL);
-  {
-    gboolean falseval = FALSE;
-    gboolean trueval = TRUE;
-  }
-# ifndef QUARTZ_HANDLERS
   gtkosx_application_set_use_quartz_accelerators (zathuraApp, FALSE);
-# endif //QUARTZ_HANDLERS
   gtkosx_application_ready (zathuraApp);
   {
     const gchar *id = gtkosx_application_get_bundle_id ();
@@ -337,6 +313,7 @@ main(int argc, char* argv[])
         g_print ("TestIntegration Error! Bundle Has ID %s\n", id);
       }
   }
+#endif //GTKOSXAPPLICATION
   /* run zathura */
   gtk_main();
 

@@ -44,9 +44,15 @@ gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
 gtk3 = dependency('gtk+-3.0', version: '>=3.22')
 cairo = dependency('cairo')
-gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, gtk_mac_integration]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo]
+
+if host_machine.system() == 'darwin'
+    gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
+    build_dependencies += gtk_mac_integration
+    conf_data.set('GTKOSXAPPLICATION', true)
+endif
+
 
 # defines
 defines = [
@@ -105,6 +111,13 @@ version_header = configure_file(
   output: 'zathura-version.h',
   configuration: conf_data
 )
+
+os_dependency_header = configure_file(
+  input: 'zathura/os-dependency.h.in',
+  output: 'zathura-os-dependency.h',
+  configuration: conf_data
+)
+
 include_directories = [
   include_directories('.')
 ]
@@ -157,6 +170,7 @@ headers = files(
   'zathura/types.h',
 )
 headers += version_header
+headers += os_dependency_header
 
 # zathura helper library
 libzathura = static_library('zathura',
