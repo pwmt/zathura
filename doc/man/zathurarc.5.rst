@@ -552,27 +552,6 @@ girara
   * Value type: String
   * Default value: #000000
 
-*show-scrollbars*
-  Defines if both the horizontal and vertical scrollbars should be shown or not.
-  Deprecated, use 'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-h-scrollbar*
-  Defines whether to show/hide the horizontal scrollbar. Deprecated, use
-  'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-v-scrollbar*
-  Defines whether to show/hide the vertical scrollbar. Deprecated, use
-  'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
 *statusbar-bg*
   Defines the background color of the statusbar
 
