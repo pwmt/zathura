@@ -139,6 +139,7 @@ main(int argc, char* argv[])
   gchar* synctex_editor = NULL;
   gchar* synctex_fwd    = NULL;
   gchar* mode           = NULL;
+  gchar* bookmark_name  = NULL;
   gchar* search_string  = NULL;
   bool   forkback       = false;
   bool   print_version  = false;
@@ -161,6 +162,7 @@ main(int argc, char* argv[])
     { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
     { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
     { "mode",                   '\0', 0, G_OPTION_ARG_STRING,   &mode,           _("Start in a non-default mode"),                       "mode" },
+    { "bookmark",               'b',  0, G_OPTION_ARG_STRING,   &bookmark_name,  _("Bookmark to go to"),                                 "bookmark" },
     { "find",                   'f',  0, G_OPTION_ARG_STRING,   &search_string,  _("Search for the given phrase and display results"),   "string" },
     { NULL, '\0', 0, 0, NULL, NULL, NULL }
   };
@@ -302,8 +304,13 @@ main(int argc, char* argv[])
     if (page_number > 0) {
       --page_number;
     }
-    document_open_idle(zathura, argv[file_idx], password, page_number, mode,
-                       synctex_fwd, search_string);
+    document_open_idle(zathura, argv[file_idx], password, page_number,
+                       mode, synctex_fwd, bookmark_name, search_string);
+  } else if (bookmark_name != NULL) {
+    girara_error("Can not use bookmark argument when no file is given");
+    ret = -1;
+    zathura_free(zathura);
+    goto free_and_ret;
   } else if (search_string != NULL) {
     girara_error("Can not use find argument when no file is given");
     ret = -1;
@@ -340,6 +347,7 @@ free_and_ret:
   g_free(synctex_editor);
   g_free(synctex_fwd);
   g_free(mode);
+  g_free(bookmark_name);
   g_free(search_string);
 
   return ret;

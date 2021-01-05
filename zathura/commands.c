@@ -253,7 +253,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
 
     document_open_idle(zathura, girara_list_nth(argument_list, 0),
                        (argc == 2) ? girara_list_nth(argument_list, 1) : NULL,
-                       ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL, NULL, NULL);
+                       ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL, NULL, NULL, NULL);
   } else {
     girara_notify(session, GIRARA_ERROR, _("No arguments given."));
     return false;
