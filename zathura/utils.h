@@ -145,18 +145,4 @@ bool running_under_wsl(void);
  */
 girara_list_t* flatten_rectangles(girara_list_t* rectangles);
 
-/**
- * Copy text into the clipboard.
- *
- * @param str The string to be copied
- */
-void copy_str_to_clipboard(const char* text);
-
-/**
- * Copy integer as a string into the clipboard.
- *
- * @param n The integer to be copied
- */
-void copy_int_to_clipboard(int n);
-
 #endif // UTILS_H

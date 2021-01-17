@@ -426,9 +426,16 @@ handle_link(GtkEntry* entry, girara_session_t* session,
         case ZATHURA_LINK_ACTION_DISPLAY:
           zathura_link_display(zathura, link);
           break;
-        case ZATHURA_LINK_ACTION_COPY:
-          zathura_link_copy(zathura, link);
+        case ZATHURA_LINK_ACTION_COPY: {
+          GdkAtom* selection = get_selection(zathura);
+          if (selection == NULL) {
+            break;
+          }
+
+          zathura_link_copy(zathura, link, selection);
+          g_free(selection);
           break;
+        }
       }
     }
   }

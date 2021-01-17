@@ -460,18 +460,3 @@ flatten_rectangles(girara_list_t* rectangles) {
   girara_list_free(points);
   return new_rectangles;
 }
-
-void copy_str_to_clipboard(const char* text) {
-  GtkClipboard* clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  gtk_clipboard_set_text(clipboard, text, -1);
-}
-
-void copy_int_to_clipboard(int n) {
-  char* str;
-  const char fmt[] = "%d";
-  const int len = 1 + snprintf(NULL, 0, fmt, n);
-  str = malloc(len);
-  snprintf(str, len, fmt, n);
-  copy_str_to_clipboard(str);
-  free(str);
-}

@@ -5,6 +5,8 @@
 
 #include "types.h"
 
+#include <gtk/gtk.h>
+
 /**
  * Creates a new zathura link
  *
@@ -69,7 +71,8 @@ void zathura_link_display(zathura_t* zathura, zathura_link_t* link);
  *
  * @param zathura Zathura instance
  * @param link The link
+ * @param selection target clipboard
  */
-void zathura_link_copy(zathura_t* zathura, zathura_link_t* link);
+void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* selection);
 
 #endif // LINK_H
