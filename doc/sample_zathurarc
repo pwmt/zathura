@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------#
 # Author:           Matþew T. Scarbrough (matthewtatescarbrough@tutanota.com)  #
-# Date Created:     23 January                                                 #
-# Date Revised:     25 January                                                 #
+# Date Created:     23 January  2021                                           #
+# Date Revised:     02 February 2021                                           #
 # Version Number:   v1.00                                                      #
 # Note(s):          + Information taken directly from Zathura's `config.c`     #
 #                   + This file extends the base configuration logically.      #
