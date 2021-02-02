@@ -150,6 +150,31 @@ sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
 }
 
 bool
+sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
+             girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
+    return false;
+  }
+
+  bool show_links = draw_links(zathura);
+
+  /* ask for input */
+  if (show_links) {
+    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
+    girara_dialog(zathura->ui.session, "Copy link:", FALSE, NULL,
+        cb_sc_copy_link,
+        zathura->ui.session);
+  }
+
+  return false;
+}
+
+bool
 sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);

@@ -291,3 +291,30 @@ zathura_link_display(zathura_t* zathura, zathura_link_t* link)
       girara_notify(zathura->ui.session, GIRARA_ERROR, _("Link: Invalid"));
   }
 }
+
+void
+zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* selection)
+{
+  zathura_link_type_t type = zathura_link_get_type(link);
+  zathura_link_target_t target = zathura_link_get_target(link);
+  switch (type) {
+    case ZATHURA_LINK_GOTO_DEST: {
+      gchar* tmp = g_strdup_printf("%d", target.page_number);
+      gtk_clipboard_set_text(gtk_clipboard_get(*selection), tmp, -1);
+      g_free(tmp);
+      girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %d"),
+          target.page_number);
+      break;
+    }
+    case ZATHURA_LINK_GOTO_REMOTE:
+    case ZATHURA_LINK_URI:
+    case ZATHURA_LINK_LAUNCH:
+    case ZATHURA_LINK_NAMED:
+      gtk_clipboard_set_text(gtk_clipboard_get(*selection), target.value, -1);
+      girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied link: %s"),
+          target.value);
+      break;
+    default:
+      girara_notify(zathura->ui.session, GIRARA_ERROR, _("Link: Invalid"));
+  }
+}

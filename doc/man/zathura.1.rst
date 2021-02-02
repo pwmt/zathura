@@ -113,6 +113,8 @@ General
     Follow links
   F
     Display link target
+  c
+    Copy link target into the clipboard
   \:
     Enter command
   r

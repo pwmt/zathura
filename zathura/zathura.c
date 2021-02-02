@@ -57,6 +57,7 @@ typedef struct zathura_document_info_s {
   int page_number;
   char* mode;
   char* synctex;
+  char* bookmark_name;
   char* search_string;
 } zathura_document_info_t;
 
@@ -78,6 +79,7 @@ free_document_info(zathura_document_info_t* document_info)
   g_free(document_info->password);
   g_free(document_info->mode);
   g_free(document_info->synctex);
+  g_free(document_info->bookmark_name);
   g_free(document_info->search_string);
   g_free(document_info);
 }
@@ -883,6 +885,13 @@ document_info_open(gpointer data)
         }
       }
 
+      if (document_info->bookmark_name != NULL) {
+        girara_list_t* arg_list = girara_list_new();
+        girara_list_append(arg_list, document_info->bookmark_name);
+        cmd_bookmark_open(document_info->zathura->ui.session, arg_list);
+        girara_list_free(arg_list);
+      }
+
       if (document_info->search_string != NULL) {
         girara_argument_t search_arg;
         search_arg.n = 1; // Forward search
@@ -1309,7 +1318,7 @@ document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
 void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
                    int page_number, const char* mode, const char* synctex,
-                   const char *search_string)
+                   const char* bookmark_name, const char *search_string)
 {
   g_return_if_fail(zathura != NULL);
   g_return_if_fail(path != NULL);
@@ -1330,6 +1339,9 @@ document_open_idle(zathura_t* zathura, const char* path, const char* password,
   }
   if (synctex != NULL) {
     document_info->synctex   = g_strdup(synctex);
+  }
+  if (bookmark_name != NULL) {
+      document_info->bookmark_name = g_strdup(bookmark_name);
   }
   if (search_string != NULL) {
     document_info->search_string = g_strdup(search_string);
@@ -1356,15 +1368,21 @@ document_save(zathura_t* zathura, const char* path, bool overwrite)
   }
 
   if ((overwrite == false) && g_file_test(file_path, G_FILE_TEST_EXISTS)) {
-    girara_error("File already exists: %s. Use :write! to overwrite it.", file_path);
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("File already exists: %s. Use :write! to overwrite it."), file_path);
     g_free(file_path);
     return false;
   }
 
-  zathura_error_t error = zathura_document_save_as(zathura->document, file_path);
+  const zathura_error_t error = zathura_document_save_as(zathura->document, file_path);
   g_free(file_path);
 
-  return (error == ZATHURA_ERROR_OK) ? true : false;
+  if (error != ZATHURA_ERROR_OK) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to save document."));
+    return false;
+  }
+
+  girara_notify(zathura->ui.session, GIRARA_INFO, _("Document saved."));
+  return true;
 }
 
 static void

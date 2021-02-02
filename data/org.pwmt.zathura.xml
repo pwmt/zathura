@@ -44,5 +44,10 @@
       <arg type='u' name='column' direction='in' />
       <arg type='b' name='return' direction='out' />
     </method>
+    <!-- Execute a command as if entered in the inputbar. -->
+    <method name='ExecuteCommand'>
+      <arg type='s' name='input' direction='in' />
+      <arg type='b' name='return' direction='out' />
+    </method>
   </interface>
 </node>

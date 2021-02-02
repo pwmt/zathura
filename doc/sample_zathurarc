@@ -1,0 +1,754 @@
+#------------------------------------------------------------------------------#
+# Author:           Matþew T. Scarbrough (matthewtatescarbrough@tutanota.com)  #
+# Date Created:     23 January                                                 #
+# Date Revised:     25 January                                                 #
+# Version Number:   v1.00                                                      #
+# Note(s):          + Information taken directly from Zathura's `config.c`     #
+#                   + This file extends the base configuration logically.      #
+#                   + Line Width: 80                                           #
+#                   + Tab Width:  4                                            #
+#                                                                              #
+# ===TODO:===                                                                  #
+#                                                                              #
+# 1. Find out about input bar keymappings;                                     #
+# 2. Reorganise file--consider breaking up, regardless of necessity, the pres- #
+#    entation and index options into their own files.  This would allow a dem- #
+#    onstration of `zathurarc`'s ability to call this microconfiguration files #
+#    using `include /path/to/config`.                                          #
+# 3. Add options for setting the config defaults: status and bg colour, etc.   #
+#------------------------------------------------------------------------------#
+
+
+################################################################################
+#  _____    ___    _____   _   _   _   _   ____     ___         ____     ___   #
+# |___  |  / _ \  |_   _| | | | | | | | | |  _ \   / _ \       |  _ \   / _ \  #
+#    / /  | |_| |   | |   | |_| | | | | | | |_) ) | |_| |      | |_) ) | | |_| #
+#   / /   |  _  |   | |   |  _  | | | | | |    /  |  _  |  __  |    /  | |  _  #
+#  / /__  | | | |   | |   | | | | | |_| | | |\ \  | | | | |  | | |\ \  | |_| | #
+# |_____| |_| |_|   |_|   |_| |_|  \___/  |_| \_\ |_| |_| |__| |_| \_\  \___/  #
+#                                                                              #
+################################################################################
+
+
+#------------------------------------------------------------------------------#
+# ┏━━━━┱────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┲━━━━━━━━━┓ #
+# ┃TLDE┃AE01│AE02│AE03│AE04│AE05│AE06│AE07│AE08│AE09│AE10│AE11│AE12┃BKSP     ┃ #
+# ┃` ~ ┃1 ! │2 @ │3 # │4 $ │5 % │6 ^ │7 & │8 * │9 ( │0 ) │- _ │= + ┃⌫        ┃ #
+# ┣━━━━┻━━┱─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┺━━┯━━━━━━┩ #
+# ┃TAB    ┃AD01│AD02│AD03│AD04│AD05│AD06│AD07│AD08│AD09│AD10│AD11│AD12│BKSL  │ #
+# ┃↹      ┃Q   │W   │E   │R   │T   │Y   │U   │I   │O   │P   │[ { │] } │\ |   │ #
+# ┣━━━━━━━┻┱───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┲━━━┷━━━━━━┪ #
+# ┃CAPS    ┃AC01│AC02│AC03│AC04│AC05│AC06│AC07│AC08│AC09│AC10│AC11┃RTRN      ┃ #
+# ┃⇬       ┃A   │S   │D   │F   │G   │H   │J   │K   │L   │; : │' " ┃⏎         ┃ #
+# ┣━━━━━━━━┻━━┱─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┲━┻━━━━━━━━━━┫ #
+# ┃LFSH <S->  ┃AB01│AB02│AB03│AB04│AB05│AB06│AB07│AB08│AB09│AB10┃RTSH <S->   ┃ #
+# ┃⇧          ┃Z   │X   │C   │V   │B   │N   │M   │, < │. > │/ ? ┃⇧           ┃ #
+# ┣━━━━━━━┳━━━┻━┳━━┷━━┳━┷━━━━┷━━━━┷━━━━┷━━━━┷━━━━┷━━━┳┷━━━━╈━━━━┻┳━━━━━┳━━━━━┫ #
+# ┃LCTL   ┃LWIN ┃LALT ┃SPCE                          ┃RALT ┃RWIN ┃MENU ┃RCTL ┃ #
+# ┃<C->   ┃     ┃<A-> ┃                              ┃     ┃     ┃     ┃<C-> ┃ #
+# ┗━━━━━━━┻━━━━━┻━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┛ #
+#------------------------------------------------------------------------------#
+# ┏━━━━┓  ┏━━━━┳━━━━┳━━━━┳━━━━┓  |  ┏━━━━┳━━━━┳━━━━┓     ┏━━━━┳━━━━┳━━━━┳━━━━┓ #
+# ┃ESC ┃  ┃FK01┃FK02┃FK03┃FK04┃  |  ┃INS ┃HOME┃PGUP┃     ┃NMLK┃KPDV┃KPMU┃KPSU┃ #
+# ┃    ┃  ┃    ┃    ┃    ┃    ┃  |  ┃    ┃    ┃    ┃     ┃    ┃    ┃    ┃    ┃ #
+# ┗━━━━┛  ┗━━━━┻━━━━┻━━━━┻━━━━┛  |  ┣━━━━╋━━━━╋━━━━┫     ┣━━━━╋━━━━╋━━━━╋━━━━┫ #
+#         ┏━━━━┳━━━━┳━━━━┳━━━━┓  |  ┃DELE┃END ┃PGDN┃     ┃KP7 ┃KP8 ┃KP9 ┃KPAD┃ #
+#         ┃FK05┃FK06┃FK07┃FK08┃  |  ┃    ┃    ┃    ┃     ┃    ┃    ┃    ┃    ┃ #
+#         ┃    ┃    ┃    ┃    ┃  |  ┗━━━━┻━━━━┻━━━━┛     ┣━━━━╋━━━━╋━━━━┫    ┃ #
+#         ┗━━━━┻━━━━┻━━━━┻━━━━┛  |                       ┃KP4 ┃KP5 ┃KP6 ┃    ┃ #
+#         ┏━━━━┳━━━━┳━━━━┳━━━━┓  |                       ┃    ┃    ┃    ┃    ┃ #
+#         ┃FK09┃FK10┃FK11┃FK12┃  |       ┏━━━━┓          ┣━━━━╋━━━━╋━━━━╋━━━━┫ #
+#         ┃    ┃    ┃    ┃    ┃  |       ┃UP  ┃          ┃KP1 ┃KP2 ┃KP3 ┃KPEN┃ #
+#         ┗━━━━┻━━━━┻━━━━┻━━━━┛  |       ┃    ┃          ┃    ┃    ┃    ┃    ┃ #
+#              ┏━━━━┳━━━━┳━━━━┓  |  ┏━━━━╋━━━━╋━━━━┓     ┣━━━━┻━━━━╋━━━━┫    ┃ #
+#              ┃PRSC┃SCLK┃PAUS┃  |  ┃LEFT┃DOWN┃RGHT┃     ┃KP0      ┃KPDL┃    ┃ #
+#              ┃    ┃    ┃    ┃  |  ┃    ┃    ┃    ┃     ┃         ┃    ┃    ┃ #
+#              ┗━━━━┻━━━━┻━━━━┛  |  ┗━━━━┻━━━━┻━━━━┛     ┗━━━━━━━━━┻━━━━┻━━━━┛ #
+#------------------------------------------------------------------------------#
+
+
+#==============================================================================#
+# ===ADJUST WIDTH===                                                           #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# ADJUST BESTWIDTH                                                         #
+	#                                                                          #
+	# Whatever displays all of the page(s) best will be selected.  If the page #
+	# be taller than wide, then height shall be chose.  Case that the opposite #
+	# thes width shall be chosen.                                              #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "a"		adjust_window	bestfit
+		map [normal]        "s"		adjust_width	width
+
+
+#==============================================================================#
+# ===LINK FUNCTIONS===                                                         #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# OPEN LINK                                                                #
+	#                                                                          #
+	# This displays all links as numbers.  Whatever number is typed in is then #
+	# followed.                                                                #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "f"		follow
+
+
+	#--------------------------------------------------------------------------#
+	# DISPLAY LINK                                                             #
+	#                                                                          #
+	# This displays all links as numbers.  Whatever number is typed in is then #
+	# copied.                                                                  #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<A-f>"	display_link
+
+
+	#--------------------------------------------------------------------------#
+	# COPY LINK                                                                #
+	#                                                                          #
+	# What this does, I have no idea.  I assume originally there was some in-  #
+	# tent on making copying links a manual function?  By default, whatever    #
+	# key is bound to `display_link` seems to automatically copy the link.     #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "c"		copy_link
+
+    
+	#--------------------------------------------------------------------------#
+	# RELOAD DOCUMENT                                                          #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "R"		reload
+
+
+	#--------------------------------------------------------------------------#
+	# QUIT DOCUMENT                                                            #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "Q"		quit
+
+
+	#--------------------------------------------------------------------------#
+	# PRINT DOCUMENT                                                           #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-p>"	print
+
+
+#==============================================================================#
+# ===SEARCHING===                                                              #
+#==============================================================================#
+
+	############################################################################
+	# TODO: Figure out how to map it so that "Caps" may be ignored.  In the    #
+	# source this is mapped with:                                              #
+	#                                                                          #
+	#     girara_shortcut_add(                                               \ #
+	#         gsession,                                                      \ #
+	#         GDK_SHIFT_MASK,                                                \ #
+	#         GDK_KEY_slash,                                                 \ #
+	#         NULL,                                                          \ #
+	#         sc_focus_inputbar,                                             \ #
+	#         (mode),                                                        \ #
+	#         0,                                                             \ #
+	#         &("/")                                                         \ #
+	#     );                                                                   #
+	############################################################################
+
+	#--------------------------------------------------------------------------#
+	# FORWARD SEARCH                                                           #
+	#                                                                          #
+	# Whatever pattern is entered, from the current page onward it will be     #
+	# searched for.                                                            #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "/"		focus_inputbar	"/"
+		map [normal]        "<A-/>"	focus_inputbar	"/"
+
+
+	#--------------------------------------------------------------------------#
+	# BACKWARD SEARCH                                                          #
+	#                                                                          #
+	# Whatever pattern is entered, from the current page backward it will be   #
+	# searched for.                                                            #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<A-/>"	focus_inputbar	"?"
+
+
+#==============================================================================#
+# ===OPEN===                                                                   #
+#==============================================================================#
+
+	############################################################################
+	# TODO: Figure out how to map "<O>" to its function of opening in the cur- #
+	# cent file path.  In the source this is mapped with:                      #
+	#                                                                          #
+	#     girara_shortcut_add(                                               \ #
+	#         gsession,                                                      \ #
+	#         0,                                                             \ #
+	#         GDK_KEY_O,                                                     \ #
+	#         NULL,                                                          \ #
+	#         sc_focus_inputbar,                                             \ #
+	#         (mode),                                                        \ #
+	#         APPEND_FILEPATh,                                               \ #
+	#         &(":open ")                                                    \ #
+	#     );                                                                   #
+	############################################################################
+
+	#--------------------------------------------------------------------------#
+	# OPEN OPEN DIALOGUE                                                       #
+	#                                                                          #
+	# Opens the input bar and prints ':open ' into it.                         #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "o"		focus_inputbar	":open "
+
+
+#==============================================================================#
+# ===FOCUS BAR===                                                              #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# OPEN OPEN DIALOGUE                                                       #
+	#                                                                          #
+	# Opens the input bar and prints ': ' into it.open                         #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<A-;>"	focus_inputbar	":"
+
+
+#==============================================================================#
+# ===GOING===                                                                  #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# FIRST PAGE                                                               #
+	#                                                                          #
+	# Goes to the first page.                                                  #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "gg"	goto			TOP
+
+
+	#--------------------------------------------------------------------------#
+	# LAST PAGE                                                                #
+	#                                                                          #
+	# Go to last page.                                                         #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<A-g>"	goto			BOTTOM
+
+
+#==============================================================================#
+# ===MARKING===                                                                #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# ADDING A MARK                                                            #
+	#                                                                          #
+	# This is done by pressing the hotkey and typing a number or letter.       #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "m"		mark_add
+
+
+	#--------------------------------------------------------------------------#
+	# CALLING A MARK                                                           #
+	#                                                                          #
+	# This is done by pressing the hotkey and typing the number or letter that #
+	# is sought after.                                                         #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "'"		mark_evaluate
+
+
+#==============================================================================#
+# ===MOVING===                                                                 #
+#==============================================================================#
+
+	############################################################################
+	# TODO: Figure out how to map RIGHT and LEFT to CAPS LOCK MASK to not be   #
+	# not be affected by capslock.  The code is:                               #
+	#                                                                          #
+	#     girara_shortcut_add(                                               \ #
+	#         gsession,                                                      \ #
+	#         GDK_MOD1_MAST,                                                 \ #
+	#         GDK_KEY_Right,                                                 \ #
+	#         NULL,                                                          \ #
+	#         sc_navigate,                                                   \ #
+	#         (mode),                                                        \ #
+	#         NEXT,                                                          \ #
+	#         NULL                                                           \ #
+	#     );                                                                   #
+	#                                                                          #
+	#     girara_shortcut_add(                                               \ #
+	#         gsession,                                                      \ #
+	#         GDK_MOD1_MAST,                                                 \ #
+	#         GDK_KEY_Left,                                                  \ #
+	#         NULL,                                                          \ #
+	#         sc_navigate,                                                   \ #
+	#         (mode),                                                        \ #
+	#         PREVIOUS,                                                      \ #
+	#         NULL                                                           \ #
+	#     );                                                                   #
+	############################################################################
+
+	#--------------------------------------------------------------------------#
+	# JUMP BY PAGES                                                            #
+	#                                                                          #
+	# When pressed, these jump to the top of the next or previous pages.       #
+	#--------------------------------------------------------------------------#
+
+		# Backward
+		map [normal]        "<A-k>"		navigate		PREVIOUS
+		map [normal]        "<A-LEFT>"	navigate		PREVIOUS
+		map [normal]        "PageDown"	navigate		PREVIOUS
+
+		map [fullscreen]    "<A-k>"		navigate		PREVIOUS
+		map [fullscreen]    "<A-LEFT>"	navigate		PREVIOUS
+		map [fullscreen]    "PageDown"	navigate		PREVIOUS
+
+		map [presentation]  "<A-k>"		navigate		PREVIOUS
+		map [presentation]  "<A-LEFT>"	navigate		PREVIOUS
+		map [presentation]  "PageDown"	navigate		PREVIOUS
+
+		# Forward
+		map [normal]        "<A-j>"		navigate		NEXT
+		map [normal]        "<A-RGHT>"	navigate		NEXT
+		map [normal]        "PageUp"	navigate		NEXT
+
+		map [fullscreen]    "<A-j>"		navigate		NEXT
+		map [fullscreen]    "<A-RGHT>"	navigate		NEXT
+		map [fullscreen]    "PageUp"	navigate		NEXT
+
+		map [presentation]  "<A-j>"		navigate		NEXT
+		map [presentation]  "<A-RGHT>"	navigate		NEXT
+		map [presentation]  "PageUp"	navigate		NEXT
+
+
+	#--------------------------------------------------------------------------#
+	# ONE STEP SCROLLING                                                       #
+	#                                                                          #
+	# When pressing a given button, it moves the page one step in whichever    #
+	# direction.                                                               #
+	#                                                                          #
+	#     You may also jump to the top or bottom of the current page.          #
+	#--------------------------------------------------------------------------#
+
+		# HOME ROW   - hjkl
+		map [normal]        "h"			scroll			LEFT
+		map [normal]        "k"			scroll			DOWN
+		map [normal]        "j"			scroll			UP
+		map [normal]        "l"			scroll			RIGHT
+
+		map [fullscreen]    "h"			scroll			LEFT
+		map [fullscreen]    "k"			scroll			DOWN
+		map [fullscreen]    "j"			scroll			UP
+		map [fullscreen]    "l"			scroll			RIGHT
+
+		map [presentation]  "h"			scroll			LEFT
+		map [presentation]  "k"			scroll			DOWN
+		map [presentation]  "j"			scroll			UP
+		map [presentation]  "l"			scroll			RIGHT
+
+		# ARROW KEYS - hjkl
+		map [normal]        "Left"		scroll			LEFT
+		map [normal]        "Down"		scroll			DOWN
+		map [normal]        "Up"		scroll			UP
+		map [normal]        "Right"		scroll			RIGHT
+
+		map [fullscreen]    "Left"		scroll			LEFT
+		map [fullscreen]    "Down"		scroll			DOWN
+		map [fullscreen]    "Up"		scroll			UP
+		map [fullscreen]    "Right"		scroll			RIGHT
+
+		map [presentation]  "Left"		scroll			LEFT
+		map [presentation]  "Down"		scroll			DOWN
+		map [presentation]  "Up"		scroll			UP
+		map [presentation]  "Right"		scroll			RIGHT
+
+		# Top / Bottom
+		map [normal]        "<A-h>"		scroll			PAGE-TOP
+		map [normal]        "<A-l>"		scroll			PAGE-BOTTOM
+
+		map [fullscreen]    "<A-h>"		scroll			PAGE-TOP
+		map [fullscreen]    "<A-l>"		scroll			PAGE-BOTTOM
+
+		map [presentation]  "<A-h>"		scroll			PAGE-TOP
+		map [presentation]  "<A-l>"		scroll			PAGE-BOTTOM
+
+
+	#--------------------------------------------------------------------------#
+	# HALF-PAGE SCROLLING                                                      #
+	#                                                                          #
+	# The location of the view is moved half the height of of a page.  To be   #
+	# more clear, if the view is on the lower 1/4 of a top page and upper 3/4  #
+	# of a bottom page, this view will be shifted to the bottom 3/4 of of the  #
+	# bottom page and the top 1/4 of the next page after:                      #
+	#                                                                          #
+	#  |      ┌────────────┐            |  |                                |  #
+	#  |      │ Pg. 1      │            |  |                                |  #
+	#  |      │            │            |  |                                |  #
+	#  |      │            │            |  |                                |  #
+	#  |  ┏━━━┿━━━━━━━━━━━━┿━━━┓        |  |        ┏━━━┿━━━━━━━━━━━━┿━━━┓  |  #
+	#  |  ┃   │            │   ┃ ←─View |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   └────────────┘   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   ┌────────────┐   ┃  |  #
+	#  |  ┃   └────────────┘   ┃        |  |        ┃   │ Pg. 2      │   ┃  |  #
+	#  |  ┃   ┌────────────┐   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │ Pg. 2      │   ┃        |  | View─→ ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┗━━━┿━━━━━━━━━━━━┿━━━┛        |  |        ┗━━━┿━━━━━━━━━━━━┿━━━┛  |  #
+	#  |                                |  |            │            │      |  #
+	#  |                                |  |            │            │      |  #
+	#  |                                |  |            │            │      |  #
+	#  |                                |  |            └────────────┘      |  #
+	#                                                                          #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-t>"		scroll		HALF-LEFT
+		map [normal]        "<C-e>"		scroll		HALF-DOWN
+		map [normal]        "<C-u>"		scroll		HALF-UP
+		map [normal]        "<C-y>"		scroll		HALF-UP
+
+		map [fullscreen]    "<C-t>"		scroll		HALF-LEFT
+		map [fullscreen]    "<C-e>"		scroll		HALF-DOWN
+		map [fullscreen]    "<C-u>"		scroll		HALF-UP
+		map [fullscreen]    "<C-y>"		scroll		HALF-UP
+
+		map [presentation]  "<C-t>"		scroll		HALF-LEFT
+		map [presentation]  "<C-e>"		scroll		HALF-DOWN
+		map [presentation]  "<C-u>"		scroll		HALF-UP
+		map [presentation]  "<C-y>"		scroll		HALF-UP
+
+
+	#--------------------------------------------------------------------------#
+	# FULL-PAGE SCROLLING                                                      #
+	#                                                                          #
+	# The location of the view is moved the full height of of a page.  To be   #
+	# more clear, if the view is on the lower 1/4 of a top page and upper 3/4  #
+	# of a bottom page, this view will be shifted to the bottom 1/4 of of the  #
+	# bottom page and the top 3/4 of the next page after:                      #
+	#                                                                          #
+	#  |      ┌────────────┐            |  |            ┌────────────┐      |  #
+	#  |      │ Pg. 1      │            |  |            │ Pg. 2      │      |  #
+	#  |      │            │            |  |            │            │      |  #
+	#  |      │            │            |  |            │            │      |  #
+	#  |  ┏━━━┿━━━━━━━━━━━━┿━━━┓        |  |        ┏━━━┿━━━━━━━━━━━━┿━━━┓  |  #
+	#  |  ┃   │            │   ┃ ←─View |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   └────────────┘   ┃        |  |        ┃   └────────────┘   ┃  |  #
+	#  |  ┃   ┌────────────┐   ┃        |  |        ┃   ┌────────────┐   ┃  |  #
+	#  |  ┃   │ Pg. 2      │   ┃        |  | View─→ ┃   │ Pg. 3      │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┗━━━┿━━━━━━━━━━━━┿━━━┛        |  |        ┗━━━┿━━━━━━━━━━━━┿━━━┛  |  #
+	#                                                                          #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "t"			scroll		FULL-LEFT
+		map [normal]        "<C-r>"		scroll		FULL-DOWN
+		map [normal]        "<C-t>"		scroll		FULL-UP
+		map [normal]        "y"			scroll		FULL-RIGHT
+
+		map [fullscreen]    "t"			scroll		FULL-LEFT
+		map [fullscreen]    "<C-r>"		scroll		FULL-DOWN
+		map [fullscreen]    "<C-t>"		scroll		FULL-UP
+		map [fullscreen]    "y"			scroll		FULL-RIGHT
+
+		map [presentation]  "t"			scroll		FULL-LEFT
+		map [presentation]  "<C-r>"		scroll		FULL-DOWN
+		map [presentation]  "<C-t>"		scroll		FULL-UP
+		map [presentation]  "y"			scroll		FULL-RIGHT
+
+		map [normal]        "Space"		scroll		FULL-DOWN
+		map [normal]        "<S-Space>"	scroll		FULL-UP
+
+		map [fullscreen]    "Space"		scroll		FULL-DOWN
+		map [fullscreen]    "<S-Space>"	scroll		FULL-UP
+
+		map [presentation]  "Space"		scroll		FULL-DOWN
+		map [presentation]  "<S-Space>"	scroll		FULL-UP
+
+
+	#--------------------------------------------------------------------------#
+	# JUMP HALF-WAY BETWEEN LAST TWO JUMP POINTS                               #
+	#                                                                          #
+	# If you jump down five pages, pressing 'bisect-backwards' will bring you  #
+	# back to the third page you jumped down to.  e.g.:                        #
+	#                                                                          #
+	#  |  ┏━━━┯━━━━━━━━━━━━┯━━━┓        |  |                                |  #
+	#  |  ┃   │ Pg. 1      │   ┃ ←─View |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |            Ctrl+o              |  #
+	#  |  ┃   │            │   ┃        |  |     ┏━━━┯━━━━━━━━━━━━┯━━━┓     |  #
+	#  |  ┃   │            │   ┃        |  |     ┃   │ Pg. 3      │   ┃     |  #
+	#  |  ┃   │            │   ┃        |  |     ┃   │            │   ┃     |  #
+	#  |  ┗━━━┷━━━━━━━━━━━━┷━━━┛        |  |     ┃   │            │   ┃     |  #
+	#              5J - ↓               |  |     ┃   │            │   ┃     |  #
+	#  |  ┏━━━┯━━━━━━━━━━━━┯━━━┓        |  |     ┃   │            │   ┃     |  #
+	#  |  ┃   │ Pg. 5      │   ┃        |  |     ┃   │            │   ┃     |  #
+	#  |  ┃   │            │   ┃        |  |     ┃   │            │   ┃     |  #
+	#  |  ┃   │            │   ┃        |  |     ┃   │            │   ┃     |  #
+	#  |  ┃   │            │   ┃        |  |     ┗━━━┷━━━━━━━━━━━━┷━━━┛     |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┃   │            │   ┃        |  |                                |  #
+	#  |  ┗━━━┷━━━━━━━━━━━━┷━━━┛        |  |                                |  #
+	#                                                                          #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-j>"		bisect		BACKWARD
+		map [normal]        "<C-k>"		bisect		FORWARD
+
+		map [fullscreen]    "<C-j>"		bisect		BACKWARD
+		map [fullscreen]    "<C-k>"		bisect		FORWARD
+
+		map [presentation]  "<C-j>"		bisect		BACKWARD
+		map [presentation]  "<C-k>"		bisect		FORWARD
+
+
+	#--------------------------------------------------------------------------#
+	# PAGE SNAP                                                                #
+	#                                                                          #
+	# Page snaping, whichever page takes up the majority of the view, this     #
+	# page will be snapped to.  e.g.                                           #
+	#                                                                          #
+	#  |      ┌────────────┐            |  |        ┏━━━┿━━━━━━━━━━━━┿━━━┓  |  #
+	#  |      │ Pg. 1      │            |  |        ┃   │            │   ┃  |  #
+	#  |      │            │            |  |        ┃   │            │   ┃  |  #
+	#  |      │            │            |  |        ┃   └────────────┘   ┃  |  #
+	#  |  ┏━━━┿━━━━━━━━━━━━┿━━━┓        |  |        ┃   ┌────────────┐   ┃  |  #
+	#  |  ┃   │            │   ┃ ←─View |  |        ┃   │ Pg. 2      │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  | View─→ ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   └────────────┘   ┃        |  |        ┗━━━┿━━━━━━━━━━━━┿━━━┛  |  #
+	#  |  ┃   ┌────────────┐   ┃        |  |            │            │      |  #
+	#  |  ┃   │ Pg. 2      │   ┃        |  |            │            │      |  #
+	#  |  ┃   │            │   ┃        |  |            │            │      |  #
+	#  |  ┗━━━┿━━━━━━━━━━━━┿━━━┛        |  |            └────────────┘      |  #
+	#  |            P                   |  |                  P             |  #
+	#  |  ┏━━━┯━━━━━━━━━━━━┯━━━┓        |  |        ┏━━━┯━━━━━━━━━━━━┯━━━┓  |  #
+	#  |  ┃   │ Pg. 1      │   ┃ ←─New  |  |        ┃   │ Pg. 2      │   ┃  |  #
+	#  |  ┃   │            │   ┃   view |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  |        ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  | New ─→ ┃   │            │   ┃  |  #
+	#  |  ┃   │            │   ┃        |  | view   ┃   │            │   ┃  |  #
+	#  |  ┗━━━┷━━━━━━━━━━━━┷━━━┛        |  |        ┗━━━┷━━━━━━━━━━━━┷━━━┛  |  #
+	#                                                                          #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "P"			snap_to_page
+
+		map [normal]        "P"			snap_to_page
+
+		map [normal]        "P"			snap_to_page
+
+
+	#--------------------------------------------------------------------------#
+	# JUMP THROUGH HISTORY                                                     #
+	#                                                                          #
+	# Referred to 'jumplist', this seems to jump back and forth through the    #
+	# history.  If you click on a link, pressing the key for backward will     #
+	# take you backward to the previous page the link navigated you away from. #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-o>"		jumplist	BACKWARD
+		map [normal]        "<C-i>"		jumplist	FORWARD
+
+
+	#--------------------------------------------------------------------------#
+	# REGEX SEARCH NAVIGATION                                                  #
+	#                                                                          #
+	# To go forwards and backwards to the next matched term.                   #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "n"			search		FORWARD
+		map [normal]        "<A-n>"		search		BACKWARD
+	#--------------------------------------------------------------------------#
+	# DEFAULT DOCUMENT COLOURS                                                 #
+	#--------------------------------------------------------------------------#
+
+
+	#--------------------------------------------------------------------------#
+	# RECOLOUR DOCUMENT                                                        #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-r>"	recolor
+
+
+#==============================================================================#
+# ===ZOOMING===                                                                #
+#==============================================================================#
+
+
+	#--------------------------------------------------------------------------#
+	# z+"<x>"                                                                  #
+	#                                                                          #
+	# Zoom 'IN' zooms in a step; 'OUT'--out a step.  'ORIGINAL'--to 0% zoom.   #
+	# "<xxx>" + 'SPECIFIC' zooms whatever number (xxx) you have entered.  This #
+	# is a percent.  If no number is specified, 'SPECIFIC' will set zoom to 0. #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "zi"		zoom		ZOOM_IN
+		map [normal]        "zI"		zoom		ZOOM_IN
+		map [normal]        "zo"		zoom		ZOOM_OUT
+		map [normal]        "zO"		zoom		ZOOM_OUT
+		map [normal]        "zz"		zoom		ZOOM_SPECIFIC
+		map [normal]        "z<A-z>"	zoom		ZOOM_SPECIFIC
+
+
+	#--------------------------------------------------------------------------#
+	# MNEMONICS                                                                #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "+"				zoom	ZOOM_IN
+		map [normal]        "KP_Add"		zoom	ZOOM_IN
+		map [normal]        "-"				zoom	ZOOM_OUT
+		map [normal]        "KP_Subtract"	zoom	ZOOM_OUT
+		map [normal]        "="				zoom	ZOOM_SPECIFIC
+
+
+#==============================================================================#
+# ===ZATHURA FEATURES===                                                       #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# RECOLOUR DOCUMENT                                                        #
+	#                                                                          #
+	# `set recolour true` will automatically recolour documents on startup.    #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-r>"		recolor
+###		set recolor true
+
+
+	#--------------------------------------------------------------------------#
+	# ROTATE                                                                   #
+	#                                                                          #
+	# Rotates page.  By defaulte, this will rotate clockwise 'ROTATE_CW', but  #
+	# you can alternative rotoate contrawise 'ROTATE_CCW'.                     #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "r"			rotate
+
+
+	#--------------------------------------------------------------------------#
+	# TOGGLE INDEX                                                             #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "Tab"		toggle_index
+		map [index]         "Tab"		toggle_index
+		map [index]         "<C-[>"		toggle_index
+		map [index]         "<C-c>"		toggle_index
+		map [index]         "Esc"		toggle_index
+
+
+	#--------------------------------------------------------------------------#
+	# TOGGLE STATUSBAR                                                         #
+	#                                                                          #
+	# The status bar is the bar that shows the name of the file you are vie-   #
+	# wing and its path.                                                       #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-n>"		toggle_statusbar
+
+
+	#--------------------------------------------------------------------------#
+	# TOGGLE INPUTBAR                                                          #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "<C-m>"		toggle_inputbar
+
+
+	#--------------------------------------------------------------------------#
+	# TOGGLE DUAL PAGE                                                         #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "d"			toggle_page_mode
+
+
+	#--------------------------------------------------------------------------#
+	# TOGGLE FULL SCREEN                                                       #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "F11"		toggle_fullscreen
+		map [fullscreen]    "F11"		toggle_fullscreen
+
+
+	#--------------------------------------------------------------------------#
+	# TOGGLE PRESENTATION                                                      #
+	#--------------------------------------------------------------------------#
+
+		map [normal]        "F5"		toggle_presentation
+		map [presentation]  "F5"		toggle_presentation
+
+
+	#--------------------------------------------------------------------------#
+	# CLIPBOARD OPTIONS                                                        #
+	#                                                                          #
+	# This will copy whatever you select automatically to the system's clip-   #
+	# board.                                                                   #
+	#--------------------------------------------------------------------------#
+
+		set selection-clipboard clipboard
+
+
+#==============================================================================#
+# ===INDEX MODE===                                                             #
+#==============================================================================#
+
+	#--------------------------------------------------------------------------#
+	# NAVIGATION                                                               #
+	#--------------------------------------------------------------------------#
+
+		# HOME ROW
+		map [index]         "<A-h>"		navigate_index	COLLAPSE_ALL
+		map [index]         "h"			navigate_index	COLLAPSE
+		map [index]         "k"			navigate_index	DOWN
+		map [index]         "j"			navigate_index	UP
+		map [index]         "l"			navigate_index	EXPAND
+		map [index]         "<A-l>"		navigate_index	EXPAND_ALL
+
+		# ARROW KEYS
+		map [index]         "Left"		navigate_index	COLLAPSE
+		map [index]         "Down"		navigate_index	DOWN
+		map [index]         "Up"		navigate_index	UP
+		map [index]         "Right"		navigate_index	EXPAND
+
+		# <G>, <gg>
+		map [index]         "<A-g>"		navigate_index	BOTTOM
+		map [index]         "gg"		navigate_index	TOP
+
+
+	#--------------------------------------------------------------------------#
+	# SELECTING                                                                #
+	#--------------------------------------------------------------------------#
+
+		# HOME ROW
+		map [index]         "<C-k>"		navigate_index	SELECT
+		map [index]         "Return"	navigate_index	SELECT
+
+		# SPACE BAR
+		map [index]         "Space"		navigate_index	SELECT
+
+
+	#--------------------------------------------------------------------------#
+	# QUIT                                                                     #
+	#--------------------------------------------------------------------------#
+
+		map [index]         "q"			quit			SELECT

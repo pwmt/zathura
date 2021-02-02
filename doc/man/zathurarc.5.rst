@@ -53,6 +53,9 @@ can be used
     set option4 hello\ world
     set option5 "hello world"
 
+Especially for options with strings as values, note that escaping of special characters and white
+spaces is necessary. In the above example, ``option4`` and ``option5`` are both set to ``hello
+world``, but ``set option6 hello world`` would set ``option6`` only to ``hello``.
 
 For colors, zathura supports HTML color codes and CSS3-style ``rgb(r,g,b)`` and ``rgba(r,g,b,a)``
 values. If you want to use color codes for some options, make sure to quote them accordingly or
@@ -548,27 +551,6 @@ girara
 
   * Value type: String
   * Default value: #000000
-
-*show-scrollbars*
-  Defines if both the horizontal and vertical scrollbars should be shown or not.
-  Deprecated, use 'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-h-scrollbar*
-  Defines whether to show/hide the horizontal scrollbar. Deprecated, use
-  'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-v-scrollbar*
-  Defines whether to show/hide the vertical scrollbar. Deprecated, use
-  'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
 
 *statusbar-bg*
   Defines the background color of the statusbar
