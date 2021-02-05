@@ -4,8 +4,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-// @debug
-#include <stdio.h>
 
 #include <girara/datastructures.h>
 #include <girara/session.h>
@@ -916,6 +914,56 @@ static gboolean document_open_password_dialog(gpointer data) {
   return FALSE;
 }
 
+typedef struct sample_s {
+  double h;
+  double w;
+  unsigned int freq;
+} sample_t;
+
+static int document_page_size_comp(const void *a, const void *b) {
+  return ((sample_t *)a)->freq - ((sample_t *)b)->freq;
+}
+
+static void document_open_page_most_frequent_size(zathura_document_t *document,
+                                                  unsigned int *width,
+                                                  unsigned int *height) {
+  sample_t samples[32] = {{0}}; /* a max heap */
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  unsigned int last_sample = (number_of_pages > 32) ? 32 : number_of_pages;
+
+  for (int i = 0; i < 32; ++i) {
+    fprintf(stderr, "i: %d, w: %f, h: %f, freq: %d\n", i, samples[i].h,
+            samples[i].w, samples[i].freq);
+  }
+
+  for (unsigned int page_id = 0; page_id < last_sample; page_id++) {
+    zathura_page_t *page = zathura_document_get_page(document, page_id);
+    double w = zathura_page_get_width(page), h = zathura_page_get_height(page);
+    unsigned int i = 0;
+    for (i = 0; i < last_sample; i++) {
+      if (samples[i].h == h && samples[i].w == w) {
+        samples[i].freq++;
+        break;
+      }
+    }
+    if (i == last_sample) { /* insert */
+      samples[page_id].h = h;
+      samples[page_id].w = w;
+      samples[page_id].freq = 1;
+    }
+  }
+
+  qsort((void *)samples, 32, sizeof(sample_t), document_page_size_comp);
+
+  for (int i = 0; i < 32; ++i) {
+    fprintf(stderr, "i: %d, w: %f, h: %f, freq: %d\n", i, samples[i].h,
+            samples[i].w, samples[i].freq);
+  }
+
+  *width = samples[31].w;
+  *height = samples[31].h;
+}
+
 bool document_open(zathura_t *zathura, const char *path, const char *uri,
                    const char *password, int page_number) {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
@@ -1113,17 +1161,6 @@ bool document_open(zathura_t *zathura, const char *path, const char *uri,
       floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(zathura->document, view_height);
 
-  // @debug
-  /* unsigned int h, w; */
-  /* zathura_document_get_viewport_size(zathura->document, &h, &w); */
-  /* fprintf(stderr, "view_width: %d\n", h); */
-  /* fprintf(stderr, "view_height: %d\n", w); */
-  /* zathura_document_set_viewport_width(zathura->document, 1000); */
-  /* zathura_document_set_viewport_height(zathura->document, 1000); */
-  /* zathura_document_get_viewport_size(zathura->document, &h, &w); */
-  /* fprintf(stderr, "view_width: %d\n", h); */
-  /* fprintf(stderr, "view_height: %d\n", w); */
-
   zathura_update_view_ppi(zathura);
 
   /* call screen-changed callback to connect monitors-changed signal on initial
@@ -1142,30 +1179,18 @@ bool document_open(zathura_t *zathura, const char *path, const char *uri,
     goto error_free;
   }
 
-  // @debug prev_height, prev_width
-  for (unsigned int page_id = 0, prev_height = 0, prev_width = 0,
-                    begined = false;
-       page_id < number_of_pages; page_id++) {
+  unsigned int most_freq_width, most_freq_height;
+  document_open_page_most_frequent_size(document, &most_freq_width,
+                                        &most_freq_height);
+
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t *page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       goto error_free;
     }
 
-    // @debug
-    if (!begined) {
-      prev_width = zathura_page_get_width(page);
-      prev_height = zathura_page_get_height(page);
-      begined = true;
-    } else {
-      zathura_page_set_width(page, prev_width);
-      zathura_page_set_height(page, prev_height);
-    }
-
-    // @debug
-    fprintf(stderr, "page %d\n", page_id);
-    fprintf(stderr, "page.width %f\n", zathura_page_get_width(page));
-    fprintf(stderr, "page.height %f\n", zathura_page_get_height(page));
-    fprintf(stderr, "-\n");
+    zathura_page_set_width(page, most_freq_width);
+    zathura_page_set_height(page, most_freq_height);
 
     GtkWidget *page_widget = zathura_page_widget_new(zathura, page);
     if (page_widget == NULL) {
@@ -1197,8 +1222,6 @@ bool document_open(zathura_t *zathura, const char *path, const char *uri,
   bool page_right_to_left = false;
 
   girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
-  // @debug
-  fprintf(stderr, "page padding %d\n", page_padding);
 
   if (file_info.pages_per_row > 0) {
     pages_per_row = file_info.pages_per_row;
@@ -1230,12 +1253,6 @@ bool document_open(zathura_t *zathura, const char *path, const char *uri,
 
   page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column,
                        page_right_to_left);
-
-  // @debug
-  fprintf(stderr, "page_per_row: %d\n", pages_per_row);
-  fprintf(stderr, "first_page_column: %d\n", first_page_column);
-  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column,
-                       true);
 
   zathura_document_set_page_layout(zathura->document, page_padding,
                                    pages_per_row, first_page_column);
@@ -1272,9 +1289,6 @@ bool document_open(zathura_t *zathura, const char *path, const char *uri,
      * here once again. */
     const double height = zathura_page_get_height(page);
     const double width = zathura_page_get_width(page);
-    // @debug
-    fprintf(stderr, "height in z: %f\n", height);
-    fprintf(stderr, "width in z: %f\n", width);
 
     page_calc_height_width(zathura->document, height, width, &page_height,
                            &page_width, true);
@@ -1625,10 +1639,6 @@ void page_widget_set_mode(zathura_t *zathura, unsigned int page_padding,
       x = pages_per_row - 1 - x;
     }
 
-    //@debug
-    fprintf(stderr, "x:: %d\n", x);
-    fprintf(stderr, "y:: %d\n", y);
-
     gtk_grid_attach(GTK_GRID(zathura->ui.page_widget), page_widget, x, y, 1, 1);
   }
 
@@ -1682,9 +1692,6 @@ bool position_set(zathura_t *zathura, double position_x, double position_y) {
   /* set the position */
   zathura_document_set_position_x(zathura->document, position_x);
   zathura_document_set_position_y(zathura->document, position_y);
-  //@debug
-  fprintf(stderr, "position x %f\n", position_x);
-  fprintf(stderr, "position y %f\n", position_y);
 
   /* trigger a 'change' event for both adjustments */
   refresh_view(zathura);

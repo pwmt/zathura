@@ -765,11 +765,6 @@ static bool render(render_job_t *job, ZathuraRenderRequest *request,
   const double height = zathura_page_get_height(page);
   const double width = zathura_page_get_width(page);
 
-  // @debug
-  fprintf(stderr, "height %f\n", height);
-  fprintf(stderr, "width %f\n", width);
-  // @
-
   zathura_device_factors_t device_factors = {0};
   double real_scale = 1;
   if (request_priv->render_plain == false) {

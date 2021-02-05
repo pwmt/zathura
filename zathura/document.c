@@ -17,8 +17,6 @@
 #include "plugin.h"
 #include "utils.h"
 #include "zathura.h"
-// @debug
-#include <stdio.h>
 
 /**
  * Document

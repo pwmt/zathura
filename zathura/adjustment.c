@@ -5,9 +5,6 @@
 
 #include <math.h>
 
-// @debug
-#include <stdio.h>
-
 double page_calc_height_width(zathura_document_t *document, double height,
                               double width, unsigned int *page_height,
                               unsigned int *page_width, bool rotate) {
