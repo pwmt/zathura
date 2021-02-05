@@ -1142,15 +1142,28 @@ bool document_open(zathura_t *zathura, const char *path, const char *uri,
     goto error_free;
   }
 
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+  // @debug prev_height, prev_width
+  for (unsigned int page_id = 0, prev_height = 0, prev_width = 0,
+                    begined = false;
+       page_id < number_of_pages; page_id++) {
     zathura_page_t *page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       goto error_free;
     }
 
     // @debug
+    if (!begined) {
+      prev_width = zathura_page_get_width(page);
+      prev_height = zathura_page_get_height(page);
+      begined = true;
+    } else {
+      zathura_page_set_width(page, prev_width);
+      zathura_page_set_height(page, prev_height);
+    }
+
+    // @debug
     fprintf(stderr, "page %d\n", page_id);
-    fprintf(stderr, "page.wdith %f\n", zathura_page_get_width(page));
+    fprintf(stderr, "page.width %f\n", zathura_page_get_width(page));
     fprintf(stderr, "page.height %f\n", zathura_page_get_height(page));
     fprintf(stderr, "-\n");
 
