@@ -661,6 +661,13 @@ zathura
   * Value type: String
   * Default value: #9FBC00
 
+*highlight-fg*
+  Defines the color that is used for text when highlighting parts of the
+  document (e.g.: number for links).
+
+  * Value type: String
+  * Default value: #9FBC00
+
 *highlight-active-color*
   Defines the color that is used to show the current selected highlighted element
   (e.g: current search result)
