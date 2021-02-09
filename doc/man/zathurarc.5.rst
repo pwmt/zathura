@@ -528,30 +528,6 @@ girara
   * Value type: String
   * Default value: #FFF712
 
-*tabbar-fg*
-  Defines the foreground color for a tab
-
-  * Value type: String
-  * Default value: #FFFFFF
-
-*tabbar-bg*
-  Defines the background color for a tab
-
-  * Value type: String
-  * Default value: #000000
-
-*tabbar-focus-fg*
-  Defines the foreground color for the focused tab
-
-  * Value type: String
-  * Default value: #9FBC00
-
-*tabbar-focus-bg*
-  Defines the background color for the focused tab
-
-  * Value type: String
-  * Default value: #000000
-
 *statusbar-bg*
   Defines the background color of the statusbar
 
