@@ -186,6 +186,7 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(mprotect);
   ALLOW_RULE(mremap);
   ALLOW_RULE(munmap);
+  ALLOW_RULE(newfstatat);
   /* ALLOW_RULE (open); specified below */
   /* ALLOW_RULE (openat); specified below */
   ALLOW_RULE(pipe);
