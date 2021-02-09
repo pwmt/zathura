@@ -982,11 +982,11 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
     /* compute the center of the rectangle, which will be aligned to the center
        of the viewport */
-    double center_x = (rectangle.x1 + rectangle.x2) / 2;
-    double center_y = (rectangle.y1 + rectangle.y2) / 2;
-
+    const double center_y = (rectangle.y1 + rectangle.y2) / 2;
     pos_y += (center_y - (double)cell_height/2) / (double)doc_height;
+
     if (search_hadjust == true) {
+      const double center_x = (rectangle.x1 + rectangle.x2) / 2;
       pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
     }
 
