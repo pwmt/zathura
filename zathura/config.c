@@ -57,6 +57,8 @@ cb_color_change(girara_session_t* session, const char* name,
   const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color, string_value);
+  } else if (g_strcmp0(name, "highlight-fg") == 0) {
+    parse_color(&zathura->ui.colors.highlight_color_fg, string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
@@ -209,15 +211,17 @@ config_load_default(zathura_t* zathura)
   int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
-  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),            cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),           cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),             cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
-  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),  cb_color_change, NULL);
+  girara_setting_set(gsession, "highlight-fg",           "#000000");
+  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"),    cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
-  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),  cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
-  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),  cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
   girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, true, _("Index mode foreground color"), NULL, NULL);
