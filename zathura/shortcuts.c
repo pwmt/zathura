@@ -1212,6 +1212,14 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     /* save current position to the jumplist */
     zathura_jumplist_add(zathura);
 
+    const zathura_adjust_mode_t adjust_mode =
+      zathura_document_get_adjust_mode(zathura->document);
+
+    /* zathura goes to the first page when toggling index mode if this isn't done */
+    if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
+      zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+    }
+
     girara_set_view(session, zathura->ui.index);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.index);
