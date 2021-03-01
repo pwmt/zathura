@@ -9,3 +9,7 @@
   color: @index-active-fg@;
   background-color: @index-active-bg@;
 }
+
+#@session@ grid {
+    background-color: #444;
+}
