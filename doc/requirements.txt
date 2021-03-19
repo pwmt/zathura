@@ -1,4 +1,4 @@
-Jinja2==2.7.2
+Jinja2==2.11.3
 MarkupSafe==0.19
 Pygments==1.6
 Sphinx==1.2.2
