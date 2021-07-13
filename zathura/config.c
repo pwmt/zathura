@@ -288,6 +288,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
+  girara_setting_add(gsession, "dbus-raise-window",      &bool_value,  BOOLEAN, false, _("Raise window on certain D-Bus commands"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "continuous-hist-save",   &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
   girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);

@@ -436,7 +436,11 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     (*handlers[idx].handler)(priv->zathura, parameters, invocation);
 
     if (handlers[idx].present_window == true && priv->zathura->ui.session->gtk.embed == 0) {
-      gtk_window_present(GTK_WINDOW(priv->zathura->ui.session->gtk.window));
+      bool present_window = true;
+      girara_setting_get(priv->zathura->ui.session, "dbus-raise-window", &present_window);
+      if (present_window == true) {
+        gtk_window_present(GTK_WINDOW(priv->zathura->ui.session->gtk.window));
+      }
     }
 
     return;
