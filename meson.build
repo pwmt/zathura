@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.4.7',
+  version: '0.4.8',
   meson_version: '>=0.47',
   default_options: ['c_std=c11', 'warning_level=3'],
 )
@@ -37,7 +37,7 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.3.3', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara-gtk3', version: '>=0.3.6', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.50')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
@@ -47,6 +47,12 @@ cairo = dependency('cairo')
 
 build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo]
 
+if host_machine.system() == 'darwin'
+    gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
+    build_dependencies += gtk_mac_integration
+endif
+
+
 # defines
 defines = [
   '-DGETTEXT_PACKAGE="zathura"',
@@ -54,6 +60,10 @@ defines = [
   '-DZATHURA_PLUGINDIR="@0@"'.format(join_paths(prefix, plugindir)),
   '-D_DEFAULT_SOURCE',
 ]
+
+if host_machine.system() == 'darwin'
+  defines += '-DGTKOSXAPPLICATION'
+endif
 
 # compile flags
 flags = [
@@ -101,6 +111,7 @@ version_header = configure_file(
   output: 'zathura-version.h',
   configuration: conf_data
 )
+
 include_directories = [
   include_directories('.')
 ]
@@ -143,7 +154,7 @@ sources = files(
 sources += zathura_resources
 sources += additional_sources
 
-# header fiels to install
+# header files to install
 headers = files(
   'zathura/document.h',
   'zathura/links.h',

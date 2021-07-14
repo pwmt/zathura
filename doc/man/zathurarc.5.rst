@@ -53,6 +53,9 @@ can be used
     set option4 hello\ world
     set option5 "hello world"
 
+Especially for options with strings as values, note that escaping of special characters and white
+spaces is necessary. In the above example, ``option4`` and ``option5`` are both set to ``hello
+world``, but ``set option6 hello world`` would set ``option6`` only to ``hello``.
 
 For colors, zathura supports HTML color codes and CSS3-style ``rgb(r,g,b)`` and ``rgba(r,g,b,a)``
 values. If you want to use color codes for some options, make sure to quote them accordingly or
@@ -525,51 +528,6 @@ girara
   * Value type: String
   * Default value: #FFF712
 
-*tabbar-fg*
-  Defines the foreground color for a tab
-
-  * Value type: String
-  * Default value: #FFFFFF
-
-*tabbar-bg*
-  Defines the background color for a tab
-
-  * Value type: String
-  * Default value: #000000
-
-*tabbar-focus-fg*
-  Defines the foreground color for the focused tab
-
-  * Value type: String
-  * Default value: #9FBC00
-
-*tabbar-focus-bg*
-  Defines the background color for the focused tab
-
-  * Value type: String
-  * Default value: #000000
-
-*show-scrollbars*
-  Defines if both the horizontal and vertical scrollbars should be shown or not.
-  Deprecated, use 'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-h-scrollbar*
-  Defines whether to show/hide the horizontal scrollbar. Deprecated, use
-  'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-v-scrollbar*
-  Defines whether to show/hide the vertical scrollbar. Deprecated, use
-  'guioptions' instead.
-
-  * Value type: Boolean
-  * Default value: false
-
 *statusbar-bg*
   Defines the background color of the statusbar
 
@@ -658,6 +616,13 @@ zathura
   * Value type: Boolean
   * Default value: true
 
+*dbus-raise-window*
+  Defines whether zathura's window should be raised when receiving certain
+  commands via D-Bus.
+
+  * Value type: Boolean
+  * Default value: true
+
 *filemonitor*
   Defines the file monitor backend used to check for changes in files. Possible
   values are "glib", "signal" (if signal handling is supported), and "noop". The
@@ -675,6 +640,13 @@ zathura
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
   show search results)
+
+  * Value type: String
+  * Default value: #9FBC00
+
+*highlight-fg*
+  Defines the color that is used for text when highlighting parts of the
+  document (e.g.: number for links).
 
   * Value type: String
   * Default value: #9FBC00

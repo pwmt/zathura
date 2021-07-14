@@ -150,6 +150,31 @@ sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
 }
 
 bool
+sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
+             girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
+    return false;
+  }
+
+  bool show_links = draw_links(zathura);
+
+  /* ask for input */
+  if (show_links) {
+    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
+    girara_dialog(zathura->ui.session, "Copy link:", FALSE, NULL,
+        cb_sc_copy_link,
+        zathura->ui.session);
+  }
+
+  return false;
+}
+
+bool
 sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
@@ -562,8 +587,9 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
     direction = -1.0;
   }
 
-  const double vstep = (double)view_height / (double)doc_height;
-  const double hstep = (double)view_width / (double)doc_width;
+  unsigned int pad  = zathura_document_get_page_padding(zathura->document);
+  const double vstep = (double)(view_height + pad) / (double)doc_height;
+  const double hstep = (double)(view_width + pad) / (double)doc_width;
 
   /* compute new position */
   switch (argument->n) {
@@ -957,11 +983,11 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
 
     /* compute the center of the rectangle, which will be aligned to the center
        of the viewport */
-    double center_x = (rectangle.x1 + rectangle.x2) / 2;
-    double center_y = (rectangle.y1 + rectangle.y2) / 2;
-
+    const double center_y = (rectangle.y1 + rectangle.y2) / 2;
     pos_y += (center_y - (double)cell_height/2) / (double)doc_height;
+
     if (search_hadjust == true) {
+      const double center_x = (rectangle.x1 + rectangle.x2) / 2;
       pos_x += (center_x - (double)cell_width/2) / (double)doc_width;
     }
 
@@ -971,7 +997,9 @@ sc_search(girara_session_t* session, girara_argument_t* argument,
     zathura_jumplist_add(zathura);
   } else if (argument->data != NULL) {
     const char* input = argument->data;
-    girara_notify(session, GIRARA_ERROR, _("Pattern not found: %s"), input);
+    char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
+    girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
+    g_free(escaped_text);
   }
 
   return false;
@@ -1186,6 +1214,14 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
   } else {
     /* save current position to the jumplist */
     zathura_jumplist_add(zathura);
+
+    const zathura_adjust_mode_t adjust_mode =
+      zathura_document_get_adjust_mode(zathura->document);
+
+    /* zathura goes to the first page when toggling index mode if this isn't done */
+    if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
+      zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+    }
 
     girara_set_view(session, zathura->ui.index);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));

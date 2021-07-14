@@ -186,15 +186,16 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(mprotect);
   ALLOW_RULE(mremap);
   ALLOW_RULE(munmap);
-  //ALLOW_RULE (open);  /* (zathura needs to open for writing) TODO: avoid needing this somehow */
-  //ALLOW_RULE (openat);
+  ALLOW_RULE(newfstatat);
+  /* ALLOW_RULE (open); specified below */
+  /* ALLOW_RULE (openat); specified below */
   ALLOW_RULE(pipe);
   ALLOW_RULE(pipe2);
   ALLOW_RULE(poll);
   ALLOW_RULE(pwrite64); /* TODO: build detailed filter */
   ALLOW_RULE(pread64);
   /* ALLOW_RULE (prlimit64); */
-  /* ALLOW_RULE (prctl);   specified below  */
+  /* ALLOW_RULE (prctl); specified below  */
   ALLOW_RULE(read);
   ALLOW_RULE(readlink);
   ALLOW_RULE(recvfrom);
@@ -214,6 +215,7 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(shmget);
   ALLOW_RULE(shutdown);
   ALLOW_RULE(stat);
+  ALLOW_RULE(statx);
   ALLOW_RULE(statfs);
   /* ALLOW_RULE (socket); */
   ALLOW_RULE(sysinfo);
@@ -223,8 +225,17 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(writev);
   ALLOW_RULE(wait4);  /* trying to open links should not crash the app */
 
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_setattr, 0);
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_getattr, 0);
+  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_setattr, 0); */
+  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_getattr, 0); */
+
+  /* required by glib */
+  ALLOW_RULE(sched_setattr);
+  ALLOW_RULE(sched_getattr);
+
+  /* required by some X11 setups */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), umask, 0);
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), socket, 0);
+
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
@@ -233,8 +244,6 @@ seccomp_enable_strict_filter(void)
   /* Special requirements for ioctl, allowed on stdout/stderr */
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 2));
-
-  /* needed by gtk??? (does not load content without) */
 
   /* special restrictions for prctl, only allow PR_SET_NAME/PR_SET_PDEATHSIG */
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME));
@@ -292,60 +301,6 @@ seccomp_enable_strict_filter(void)
   /* when zathura is run on wayland, with X11 server available but blocked, unset the DISPLAY variable */
   /* otherwise it will try to connect to X11 using inet socket protocol */
 
-  /*  ------------ experimental filters --------------- */
-
-  /* /\* this filter is susceptible to TOCTOU race conditions, providing limited use *\/ */
-  /* /\* allow opening only specified files identified by their file descriptors*\/ */
-
-  /*  this requires either a list of all files to open (A LOT!!!) */
-  /*  or needs to be applied only after initialisation, right before parsing */
-  /*  if(seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1, */
-  /*       SCMP_CMP(SCMP_CMP_EQ, fd)) < 0) /\* or < 1 ??? *\/ */
-  /*      goto out; */
-
-  /* /\* restricting write access *\/ */
-
-  /* /\* allow stdin *\/ */
-  /*  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1, */
-  /*                          SCMP_CMP(0, SCMP_CMP_EQ, 0)) < 0 ) */
-  /*      goto out; */
-
-  /* /\* allow stdout *\/ */
-  /*  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1, */
-  /*                              SCMP_CMP(0, SCMP_CMP_EQ, 1)) < 0 ) */
-  /*      goto out; */
-
-
-  /* /\* allow stderr *\/ */
-  /* if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1, */
-  /*                              SCMP_CMP(0, SCMP_CMP_EQ, 2)) < 0 ) */
-  /*     goto out; */
-
-  /* /\* restrict writev (write a vector) access *\/ */
-  /*  this does not seem reliable but it surprisingly is. investigate more */
-  /* if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(writev), 1, */
-  /*                             SCMP_CMP(0, SCMP_CMP_EQ, 3)) < 0 ) */
-  /*     goto out; */
-
-  /* test if repeating this after some time or denying it works */
-
-
-  /*  first attempt to filter poll requests */
-  /*  if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(poll), 1, */
-  /*                          SCMP_CMP(0, SCMP_CMP_MASKED_EQ, POLLIN | POLL, 0)) < 0) */
-  /*    goto out; */
-
-
-  /* /\* restrict fcntl calls *\/ */
-  /*  this syscall sets the file descriptor to read write */
-  /* if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
-  /*                             SCMP_CMP(0, SCMP_CMP_EQ, 3)) < 0 ) */
-  /*     goto out; */
-  /*  fcntl(3, F_GETFL)                       = 0x2 (flags O_RDWR) */
-  /*  fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK)    = 0 */
-  /*  fcntl(3, F_SETFD, FD_CLOEXEC)           = 0 */
-
-  /*  ------------------ end of experimental filters ------------------ */
 
   /* applying filter... */
   if (seccomp_load(ctx) >= 0) {

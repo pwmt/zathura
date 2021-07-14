@@ -57,6 +57,8 @@ cb_color_change(girara_session_t* session, const char* name,
   const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color, string_value);
+  } else if (g_strcmp0(name, "highlight-fg") == 0) {
+    parse_color(&zathura->ui.colors.highlight_color_fg, string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
@@ -209,15 +211,17 @@ config_load_default(zathura_t* zathura)
   int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),         cb_color_change, NULL);
-  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),        cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),          cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),            cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),           cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),             cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-color",        "#9FBC00");
-  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),  cb_color_change, NULL);
+  girara_setting_set(gsession, "highlight-fg",           "#000000");
+  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"),    cb_color_change, NULL);
   girara_setting_set(gsession, "highlight-active-color", "#00BC00");
-  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),  cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
-  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),  cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
   girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, true, _("Index mode foreground color"), NULL, NULL);
@@ -284,6 +288,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
+  girara_setting_add(gsession, "dbus-raise-window",      &bool_value,  BOOLEAN, false, _("Raise window on certain D-Bus commands"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "continuous-hist-save",   &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
   girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
@@ -298,6 +303,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_s,          NULL, sc_adjust_window,           (mode),     ZATHURA_ADJUST_WIDTH,   NULL); \
 \
   girara_shortcut_add(gsession, 0,                GDK_KEY_F,          NULL, sc_display_link,            (mode),     0,                      NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_c,          NULL, sc_copy_link,               (mode),     0,                      NULL); \
 \
   girara_shortcut_add(gsession, 0,                GDK_KEY_slash,      NULL, sc_focus_inputbar,          (mode),     0,                      &("/")); \
   girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_slash,      NULL, sc_focus_inputbar,          (mode),     0,                      &("/")); \
@@ -493,6 +499,8 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,            cc_open,      _("Open document"));
   girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,            NULL,         _("Close zathura"));
   girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,           NULL,         _("Print document"));
+  girara_inputbar_command_add(gsession, "save",       NULL,   cmd_save,            cc_write,     _("Save document"));
+  girara_inputbar_command_add(gsession, "save!",      NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
   girara_inputbar_command_add(gsession, "write",      NULL,   cmd_save,            cc_write,     _("Save document"));
   girara_inputbar_command_add(gsession, "write!",     NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
   girara_inputbar_command_add(gsession, "export",     NULL,   cmd_export,          cc_export,    _("Save attachments"));
@@ -512,6 +520,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "bisect",              sc_bisect);
   girara_shortcut_mapping_add(gsession, "change_mode",         sc_change_mode);
   girara_shortcut_mapping_add(gsession, "display_link",        sc_display_link);
+  girara_shortcut_mapping_add(gsession, "copy_link",           sc_copy_link);
   girara_shortcut_mapping_add(gsession, "exec",                sc_exec);
   girara_shortcut_mapping_add(gsession, "focus_inputbar",      sc_focus_inputbar);
   girara_shortcut_mapping_add(gsession, "follow",              sc_follow);

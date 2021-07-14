@@ -587,7 +587,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
           cairo_fill(cairo);
 
           /* draw text */
-          cairo_set_source_rgba(cairo, 0, 0, 0, 1);
+          const GdkRGBA color_fg = priv->zathura->ui.colors.highlight_color_fg;
+          cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, transparency);
           cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
           char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
           cairo_show_text(cairo, link_number);

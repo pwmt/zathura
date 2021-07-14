@@ -253,7 +253,7 @@ cmd_open(girara_session_t* session, girara_list_t* argument_list)
 
     document_open_idle(zathura, girara_list_nth(argument_list, 0),
                        (argc == 2) ? girara_list_nth(argument_list, 1) : NULL,
-                       ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL, NULL, NULL);
+                       ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL, NULL, NULL, NULL);
   } else {
     girara_notify(session, GIRARA_ERROR, _("No arguments given."));
     return false;
@@ -313,11 +313,7 @@ cmd_save(girara_session_t* session, girara_list_t* argument_list)
   }
 
   if (girara_list_size(argument_list) == 1) {
-    if (document_save(zathura, girara_list_nth(argument_list, 0), false) == true) {
-      girara_notify(session, GIRARA_INFO, _("Document saved."));
-    } else {
-      girara_notify(session, GIRARA_INFO, _("Failed to save document."));
-    }
+    document_save(zathura, girara_list_nth(argument_list, 0), false);
   } else {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));
     return false;
@@ -339,11 +335,7 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
   }
 
   if (girara_list_size(argument_list) == 1) {
-    if (document_save(zathura, girara_list_nth(argument_list, 0), true) == true) {
-      girara_notify(session, GIRARA_INFO, _("Document saved."));
-    } else {
-      girara_notify(session, GIRARA_INFO, _("Failed to save document."));
-    }
+    document_save(zathura, girara_list_nth(argument_list, 0), true);
   } else {
     girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments."));
     return false;

@@ -43,6 +43,14 @@ General settings
    :type: String
    :default: #9FBC00
 
+.. describe:: highlight-fg
+
+  Defines the color that is for text when highlighting parts of the document
+  (e.g.: numbers for links)
+
+   :type: String
+   :default: #FFFFFF
+
 .. describe:: highlight-active-color
 
   Defines the color that is used to show the current selected highlighted
