@@ -225,7 +225,8 @@ close
   Close document
 
 exec
-  Execute an external command
+  Execute an external command. ``$f`` expands to the current document path, and ``$p`` to the
+  current page number
 
 info
   Show document information

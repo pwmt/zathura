@@ -231,7 +231,8 @@ They can also be combined with modifiers:
 
   * ``exec``:
 
-    Execute an external command.
+    Execute an external command. ``$f`` expands to the current document path,
+    and ``$p`` to the current page number.
 
   * ``focus_inputbar``
 

@@ -519,6 +519,7 @@ error_ret:
   return true;
 }
 
+
 bool
 cmd_exec(girara_session_t* session, girara_list_t* argument_list)
 {
@@ -533,18 +534,33 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
 
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
+    unsigned int page = zathura_document_get_current_page_number(zathura->document);
+    char page_buf[ZATHURA_PAGE_NUMBER_MAX_DIGITS];
+    snprintf(page_buf, ZATHURA_PAGE_NUMBER_MAX_DIGITS, "%d", page);
 
     GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, value,
       char* r = girara_replace_substring(value, "$FILE", path);
+      char* s = NULL;
 
       if (r != NULL) {
-        char* s = girara_replace_substring(r, "%", path);
+        s = girara_replace_substring(r, "%", path);
         g_free(r);
-
-        if (s != NULL) {
-          girara_list_iterator_set(iter, s);
-        }
+        r = NULL;
       }
+
+      if (s != NULL) {
+        r = girara_replace_substring(s, "$f", path);
+        g_free(s);
+        s = NULL;
+      }
+
+      if (r != NULL) {
+        s = girara_replace_substring(r, "$p", page_buf);
+        g_free(r);
+        r = NULL;
+      }
+
+      girara_list_iterator_set(iter, s ? s : r);
     );
   }
 

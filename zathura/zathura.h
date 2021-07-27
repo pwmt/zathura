@@ -70,8 +70,11 @@ enum {
   ZOOM_SMOOTH
 };
 
-/* unspecified page number */
+/* on page numbers */
 enum {
+  /* We should never open a pdf with more that 99.999 pages... right? */
+  ZATHURA_PAGE_NUMBER_MAX_DIGITS = 5,
+  /* unspecified page numbers */
   ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
 };
 

@@ -1469,6 +1469,9 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
 
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
+    unsigned int page = zathura_document_get_current_page_number(zathura->document);
+    char page_buf[ZATHURA_PAGE_NUMBER_MAX_DIGITS];
+    snprintf(page_buf, ZATHURA_PAGE_NUMBER_MAX_DIGITS, "%d", page + 1);
 
     girara_argument_t new_argument = *argument;
 
@@ -1478,6 +1481,20 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
     }
 
     char* s = girara_replace_substring(r, "%", path);
+    g_free(r);
+
+    if (s == NULL) {
+      return false;
+    }
+
+    r = girara_replace_substring(s, "$f", path);
+    g_free(s);
+
+    if (r == NULL) {
+      return false;
+    }
+
+    s = girara_replace_substring(r, "$p", page_buf);
     g_free(r);
 
     if (s == NULL) {
