@@ -536,7 +536,7 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
     const char* path = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
     char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
-    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page);
+    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
     GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, value,
       char* r = girara_replace_substring(value, "$FILE", path);
@@ -550,8 +550,6 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
         }
       }
     );
-
-    g_free(page_buf);
   }
 
   return girara_exec_with_argument_list(session, argument_list);

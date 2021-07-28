@@ -1471,7 +1471,7 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
     const char* path = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
     char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
-    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page);
+    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
     girara_argument_t new_argument = *argument;
 
