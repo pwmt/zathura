@@ -535,33 +535,23 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
-    char page_buf[ZATHURA_PAGE_NUMBER_MAX_DIGITS];
-    snprintf(page_buf, ZATHURA_PAGE_NUMBER_MAX_DIGITS, "%d", page);
+    char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
+    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page);
 
     GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, value,
       char* r = girara_replace_substring(value, "$FILE", path);
-      char* s = NULL;
 
       if (r != NULL) {
-        s = girara_replace_substring(r, "%", path);
+        char* s = girara_replace_substring(r, "$PAGE", page_buf);
         g_free(r);
-        r = NULL;
-      }
 
-      if (s != NULL) {
-        r = girara_replace_substring(s, "$f", path);
-        g_free(s);
-        s = NULL;
+        if (s != NULL) {
+          girara_list_iterator_set(iter, s);
+        }
       }
-
-      if (r != NULL) {
-        s = girara_replace_substring(r, "$p", page_buf);
-        g_free(r);
-        r = NULL;
-      }
-
-      girara_list_iterator_set(iter, s ? s : r);
     );
+
+    g_free(page_buf);
   }
 
   return girara_exec_with_argument_list(session, argument_list);
