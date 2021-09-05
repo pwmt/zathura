@@ -9,7 +9,7 @@ _zathura() {
         EXTS="$EXTS|pdf|PDF"
         ;;
       libpdf-mupdf.so)
-        EXTS="$EXTS|pdf|PDF|epub|oxps"
+        EXTS="$EXTS|pdf|PDF|epub|oxps|xhtml"
         ;;
       libps.so)
         EXTS="$EXTS|ps|eps|epsi|epsf"
