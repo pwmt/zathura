@@ -1,6 +1,6 @@
 project('zathura', 'c',
   version: '0.4.8',
-  meson_version: '>=0.47',
+  meson_version: '>=0.56',
   default_options: ['c_std=c11', 'warning_level=3'],
 )
 
@@ -182,7 +182,7 @@ zathura = executable(
   include_directories: include_directories,
   c_args: defines + flags,
   export_dynamic: true,
-  gui_app: true
+  win_subsystem: 'windows'
 )
 install_headers(headers, subdir: 'zathura')
 

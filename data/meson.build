@@ -17,7 +17,7 @@ if rsvg_convert.found()
 endif
 
 i18n = import('i18n')
-podir = join_paths(meson.source_root(), 'po')
+podir = join_paths(meson.project_source_root(), 'po')
 
 desktop = i18n.merge_file('desktop',
   input: 'org.pwmt.zathura.desktop.in',
