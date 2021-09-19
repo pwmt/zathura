@@ -27,7 +27,7 @@ For building zathura, the following dependencies are also required:
 
 The following dependencies are optional build-time only dependencies:
 
-* `check`: for tests
+* `check` (>= 0.11): for tests
 * `librvsg-bin`: PNG icons
 * `Sphinx`: manpages and HTML documentation
 * `doxygen`: HTML documentation
