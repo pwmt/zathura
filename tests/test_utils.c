@@ -6,9 +6,9 @@
 #include "tests.h"
 
 START_TEST(test_file_valid_extension_null) {
-  fail_unless(file_valid_extension(NULL, NULL) == false, NULL);
-  fail_unless(file_valid_extension((void*) 0xDEAD, NULL) == false, NULL);
-  fail_unless(file_valid_extension(NULL, "pdf") == false, NULL);
+  ck_assert(file_valid_extension(NULL, NULL) == false);
+  ck_assert(file_valid_extension((void*) 0xDEAD, NULL) == false);
+  ck_assert(file_valid_extension(NULL, "pdf") == false);
 } END_TEST
 
 static Suite* suite_utils(void)
