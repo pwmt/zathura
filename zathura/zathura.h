@@ -111,6 +111,7 @@ struct zathura_s
       GdkRGBA highlight_color_active; /** Color for highlighting */
       GdkRGBA render_loading_bg; /**< Background color for render "Loading..." */
       GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
+      GdkRGBA link_fg; /**< Foreground color for each link */
     } colors;
 
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */

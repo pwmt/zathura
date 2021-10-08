@@ -73,6 +73,8 @@ cb_color_change(girara_session_t* session, const char* name,
     parse_color(&zathura->ui.colors.render_loading_bg, string_value);
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
     parse_color(&zathura->ui.colors.render_loading_fg, string_value);
+  } else if (g_strcmp0(name, "link-fg") == 0) {
+	  parse_color(&zathura->ui.colors.link_fg, string_value);
   }
 
   render_all(zathura);
@@ -223,6 +225,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
+  girara_setting_add(gsession, "link-fg",                NULL,      STRING, false, _("Link foreground color"),              cb_color_change, NULL);
+  girara_setting_set(gsession, "link-fg",                "#000000");
 
   girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, true, _("Index mode foreground color"), NULL, NULL);
   girara_setting_add(gsession, "index-bg",        "#232323", STRING, true, _("Index mode background color"), NULL, NULL);
