@@ -762,7 +762,7 @@ zathura
   * Default value: #000000
 
 *link-fg*
-  Defines the foreground color that is used for the link text.
+  Defines the foreground color that is used for the links text.
 
   * Value type: String
   * Default value: #000000
