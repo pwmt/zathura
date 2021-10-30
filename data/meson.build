@@ -19,7 +19,7 @@ endif
 i18n = import('i18n')
 podir = join_paths(meson.project_source_root(), 'po')
 
-desktop = i18n.merge_file('desktop',
+desktop = i18n.merge_file(
   input: 'org.pwmt.zathura.desktop.in',
   output: 'org.pwmt.zathura.desktop',
   install: true,
@@ -28,7 +28,7 @@ desktop = i18n.merge_file('desktop',
   type: 'desktop'
 )
 
-appdata = i18n.merge_file('appdata',
+appdata = i18n.merge_file(
   input: 'org.pwmt.zathura.appdata.xml.in',
   output: 'org.pwmt.zathura.appdata.xml',
   install: true,
