@@ -427,6 +427,7 @@ void zathura_document_set_zoom(zathura_document_t *document, double zoom) {
     return;
   }
 
+  /* fprintf(stderr, "orig_zoom: %f\t new_zoom: %f\n", document->zoom, zoom); */
   document->zoom = zoom;
 }
 
@@ -602,6 +603,14 @@ void zathura_document_get_document_size(zathura_document_t *document,
   *width = ncol * cell_width + (ncol - 1) * pad;
   *height = nrow * cell_height + (nrow - 1) * pad;
 }
+
+void zathura_document_set_cell_size(zathura_document_t *document,
+                                      unsigned int cell_height,
+                                      unsigned int cell_width) {
+  document->cell_width = cell_width;
+  document->cell_height = cell_height;
+}
+
 
 void zathura_document_set_page_layout(zathura_document_t *document,
                                       unsigned int page_padding,

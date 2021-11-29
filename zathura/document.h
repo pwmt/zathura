@@ -328,6 +328,18 @@ ZATHURA_PLUGIN_API void zathura_document_get_cell_size(zathura_document_t* docum
 ZATHURA_PLUGIN_API void zathura_document_get_document_size(zathura_document_t* document,
                                         unsigned int* height, unsigned int* width);
 
+
+/**
+ * Sets the cell height and width of the document
+ *
+ * @param[in]  document          The document instance
+ * @param[in]  cell_height       The desired cell height
+ * @param[in]  cell_width        The desired cell width
+ */
+ZATHURA_PLUGIN_API void zathura_document_set_cell_size(zathura_document_t *document,
+                                      unsigned int cell_height,
+                                      unsigned int cell_width);
+
 /**
  * Sets the layout of the pages in the document
  *
