@@ -57,8 +57,6 @@ cb_color_change(girara_session_t* session, const char* name,
   const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color, string_value);
-  } else if (g_strcmp0(name, "highlight-fg") == 0) {
-    parse_color(&zathura->ui.colors.highlight_color_fg, string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {

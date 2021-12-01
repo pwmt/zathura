@@ -1374,7 +1374,7 @@ document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
 void
 document_open_idle(zathura_t* zathura, const char* path, const char* password,
                    int page_number, const char* mode, const char* synctex,
-                   const char* search_string)
+                   const char* bookmark_name, const char *search_string)
 {
   g_return_if_fail(zathura != NULL);
   g_return_if_fail(path != NULL);

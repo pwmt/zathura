@@ -519,6 +519,7 @@ error_ret:
   return true;
 }
 
+
 bool
 cmd_exec(girara_session_t* session, girara_list_t* argument_list)
 {
