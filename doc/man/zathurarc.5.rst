@@ -231,7 +231,8 @@ They can also be combined with modifiers:
 
   * ``exec``:
 
-    Execute an external command.
+    Execute an external command. ``$FILE`` expands to the current document path,
+    and ``$PAGE`` to the current page number.
 
   * ``focus_inputbar``
 
@@ -528,30 +529,6 @@ girara
   * Value type: String
   * Default value: #FFF712
 
-*tabbar-fg*
-  Defines the foreground color for a tab
-
-  * Value type: String
-  * Default value: #FFFFFF
-
-*tabbar-bg*
-  Defines the background color for a tab
-
-  * Value type: String
-  * Default value: #000000
-
-*tabbar-focus-fg*
-  Defines the foreground color for the focused tab
-
-  * Value type: String
-  * Default value: #9FBC00
-
-*tabbar-focus-bg*
-  Defines the background color for the focused tab
-
-  * Value type: String
-  * Default value: #000000
-
 *statusbar-bg*
   Defines the background color of the statusbar
 
@@ -640,6 +617,13 @@ zathura
   * Value type: Boolean
   * Default value: true
 
+*dbus-raise-window*
+  Defines whether zathura's window should be raised when receiving certain
+  commands via D-Bus.
+
+  * Value type: Boolean
+  * Default value: true
+
 *filemonitor*
   Defines the file monitor backend used to check for changes in files. Possible
   values are "glib", "signal" (if signal handling is supported), and "noop". The
@@ -657,6 +641,13 @@ zathura
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
   show search results)
+
+  * Value type: String
+  * Default value: #9FBC00
+
+*highlight-fg*
+  Defines the color that is used for text when highlighting parts of the
+  document (e.g.: number for links).
 
   * Value type: String
   * Default value: #9FBC00
