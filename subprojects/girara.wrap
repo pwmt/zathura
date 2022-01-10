@@ -1,4 +1,4 @@
 [wrap-git]
 directory=girara
-url=https://github.com/pwmt/girara.git
+url=https://git.pwmt.org/pwmt/girara.git
 revision=develop
