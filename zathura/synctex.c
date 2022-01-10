@@ -204,7 +204,7 @@ synctex_rectangles_from_position(const char* filename, const char* input_file,
 
   girara_list_t* hitlist_flat = flatten_rectangles(hitlist);
   girara_list_free(hitlist);
-
+  
   return hitlist_flat;
 }
 #else

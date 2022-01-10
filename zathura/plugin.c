@@ -336,7 +336,7 @@ zathura_plugin_free(zathura_plugin_t* plugin)
   if (plugin == NULL) {
     return;
   }
-
+ 
   if (plugin->path != NULL) {
     g_free(plugin->path);
   }
