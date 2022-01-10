@@ -1,5 +1,6 @@
+#!/bin/bash
 _zathura() {
-  _init_completion || return
+  _init_completion 2>/dev/null || true
 
   local EXTS=""
   for PLUGIN in @PLUGINDIR@/lib*.so; do
@@ -8,7 +9,7 @@ _zathura() {
         EXTS="$EXTS|pdf|PDF"
         ;;
       libpdf-mupdf.so)
-        EXTS="$EXTS|pdf|PDF|epub|oxps"
+        EXTS="$EXTS|pdf|PDF|epub|oxps|xhtml"
         ;;
       libps.so)
         EXTS="$EXTS|ps|eps|epsi|epsf"
@@ -22,6 +23,6 @@ _zathura() {
     esac
   done
 
-  _filedir "${EXTS#|}"
+  _filedir "${EXTS#|}" 2>/dev/null || COMPREPLY=($(shopt -s extglob; compgen -f -X "!*.@($EXTS)"))
 }
 complete -F _zathura zathura

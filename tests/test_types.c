@@ -7,12 +7,12 @@
 #include "tests.h"
 
 START_TEST(test_image_buffer_fail) {
-  fail_unless(zathura_image_buffer_create(UINT_MAX, UINT_MAX) == NULL, NULL);
+  ck_assert_ptr_null(zathura_image_buffer_create(UINT_MAX, UINT_MAX));
 } END_TEST
 
 START_TEST(test_image_buffer) {
   zathura_image_buffer_t* buffer = zathura_image_buffer_create(1, 1);
-  fail_unless(buffer != NULL, NULL);
+  ck_assert_ptr_nonnull(buffer);
   zathura_image_buffer_free(buffer);
 } END_TEST
 

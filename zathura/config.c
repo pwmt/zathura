@@ -57,6 +57,8 @@ cb_color_change(girara_session_t* session, const char* name,
   const char* string_value = (const char*) value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color, string_value);
+  } else if (g_strcmp0(name, "highlight-fg") == 0) {
+    parse_color(&zathura->ui.colors.highlight_color_fg, string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
@@ -353,6 +355,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_add(gsession, 0,                GDK_KEY_y,          NULL, sc_scroll,                  (mode),     FULL_RIGHT,             NULL); \
   girara_shortcut_add(gsession, 0,                GDK_KEY_space,      NULL, sc_scroll,                  (mode),     FULL_DOWN,              NULL); \
   girara_shortcut_add(gsession, GDK_SHIFT_MASK,   GDK_KEY_space,      NULL, sc_scroll,                  (mode),     FULL_UP,                NULL); \
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Y,          NULL, sc_copy_filepath,           (mode),     0,                      NULL); \
 \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_o,          NULL, sc_jumplist,                (mode),     BACKWARD,               NULL); \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i,          NULL, sc_jumplist,                (mode),     FORWARD,                NULL); \
@@ -508,6 +511,7 @@ config_load_default(zathura_t* zathura)
   girara_inputbar_command_add(gsession, "nohlsearch", "nohl", cmd_nohlsearch,      NULL,         _("Don't highlight current search results"));
   girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
   girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,         NULL,         _("Show version information"));
+  girara_inputbar_command_add(gsession, "source",     NULL,   cmd_source,          NULL,         _("Source config file"));
 
   girara_special_command_add(gsession, '/', cmd_search, INCREMENTAL_SEARCH, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, INCREMENTAL_SEARCH, BACKWARD, NULL);
@@ -519,6 +523,7 @@ config_load_default(zathura_t* zathura)
   girara_shortcut_mapping_add(gsession, "change_mode",         sc_change_mode);
   girara_shortcut_mapping_add(gsession, "display_link",        sc_display_link);
   girara_shortcut_mapping_add(gsession, "copy_link",           sc_copy_link);
+  girara_shortcut_mapping_add(gsession, "copy_filepath",       sc_copy_filepath);
   girara_shortcut_mapping_add(gsession, "exec",                sc_exec);
   girara_shortcut_mapping_add(gsession, "focus_inputbar",      sc_focus_inputbar);
   girara_shortcut_mapping_add(gsession, "follow",              sc_follow);

@@ -8,8 +8,8 @@
 START_TEST(test_create) {
   zathura_t* zathura = zathura_create();
   zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
-  fail_unless(zathura != NULL, "Could not create strictly sandboxed session", NULL);
-  fail_unless(zathura_init(zathura) == true, "Could not initialize strictly sandboxed session", NULL);
+  ck_assert_ptr_nonnull(zathura);
+  ck_assert(zathura_init(zathura));
   zathura_free(zathura);
 } END_TEST
 

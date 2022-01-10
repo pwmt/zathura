@@ -169,4 +169,13 @@ bool cmd_offset(girara_session_t* session, girara_list_t* argument_list);
  */
 bool cmd_version(girara_session_t* session, girara_list_t* argument_list);
 
+/**
+ * Source config file
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_source(girara_session_t* session, girara_list_t* argument_list);
+
 #endif // COMMANDS_H

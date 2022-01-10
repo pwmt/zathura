@@ -1,6 +1,6 @@
 project('zathura', 'c',
-  version: '0.4.7',
-  meson_version: '>=0.47',
+  version: '0.4.8',
+  meson_version: '>=0.56',
   default_options: ['c_std=c11', 'warning_level=3'],
 )
 
@@ -37,7 +37,7 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.3.3', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara-gtk3', version: '>=0.3.6', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.50')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
@@ -182,7 +182,7 @@ zathura = executable(
   include_directories: include_directories,
   c_args: defines + flags,
   export_dynamic: true,
-  gui_app: true
+  win_subsystem: 'windows'
 )
 install_headers(headers, subdir: 'zathura')
 

@@ -22,12 +22,12 @@ The following dependencies are optional:
 
 For building zathura, the following dependencies are also required:
 
-* `meson` (>= 0.47)
+* `meson` (>= 0.56)
 * `gettext`
 
 The following dependencies are optional build-time only dependencies:
 
-* `check`: for tests
+* `check` (>= 0.11): for tests
 * `librvsg-bin`: PNG icons
 * `Sphinx`: manpages and HTML documentation
 * `doxygen`: HTML documentation
