@@ -856,6 +856,12 @@ zathura
   * Value type: Boolean
   * Default value: false
 
+*statusbar-page-percent*
+  Display (current page / total pages) as a percent in the statusbar.
+
+  * Value type: Boolean
+  * Default value: false
+
 *statusbar-home-tilde*
   Display a short version of the file path, which replaces $HOME with ~, in the statusbar.
 

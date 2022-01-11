@@ -283,6 +283,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,   BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-page-percent",  &bool_value, BOOLEAN, false, _("Display (current page / total pages) as a percent in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
