@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-06 15:07+0100\n"
-"PO-Revision-Date: 2020-07-27 08:12+0000\n"
+"POT-Creation-Date: 2022-02-12 12:54+0100\n"
+"PO-Revision-Date: 2022-01-06 14:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Greek (http://www.transifex.com/pwmt/zathura/language/el/)\n"
 "Language: el\n"
@@ -462,116 +462,120 @@ msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
 #: zathura/config.c:287
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+
+#: zathura/config.c:289
 msgid "Enable synctex support"
 msgstr "Ενεργοποίηση υποστήριξης synctex"
 
-#: zathura/config.c:288
+#: zathura/config.c:290
 msgid "Synctex editor command"
 msgstr ""
 
-#: zathura/config.c:290
+#: zathura/config.c:292
 msgid "Enable D-Bus service"
 msgstr ""
 
-#: zathura/config.c:291
+#: zathura/config.c:293
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:293
+#: zathura/config.c:295
 msgid "Save history at each page change"
 msgstr ""
 
-#: zathura/config.c:294
+#: zathura/config.c:296
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: zathura/config.c:296
+#: zathura/config.c:298
 msgid "Enable notification after selecting text"
 msgstr ""
 
-#: zathura/config.c:299
+#: zathura/config.c:301
 msgid "Sandbox level"
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:492
+#: zathura/config.c:494
 msgid "Add a bookmark"
 msgstr "Προσθήκη σελιδοδείκτη"
 
-#: zathura/config.c:493
+#: zathura/config.c:495
 msgid "Delete a bookmark"
 msgstr "Διαγραφή σελιδοδείκτη"
 
-#: zathura/config.c:494
+#: zathura/config.c:496
 msgid "List all bookmarks"
 msgstr "Εμφάνιση όλων των σελιδοδεικτών"
 
-#: zathura/config.c:495
+#: zathura/config.c:497
 msgid "Close current file"
 msgstr "Κλείσιμο αρχείου"
 
-#: zathura/config.c:496
+#: zathura/config.c:498
 msgid "Show file information"
 msgstr "Προβολή πληροφοριών αρχείου"
 
-#: zathura/config.c:497 zathura/config.c:498
+#: zathura/config.c:499 zathura/config.c:500
 msgid "Execute a command"
 msgstr "Εκτέλεση εντολής"
 
 #. like vim
-#: zathura/config.c:499
+#: zathura/config.c:501
 msgid "Show help"
 msgstr "Εμφάνιση βοήθειας"
 
-#: zathura/config.c:500
+#: zathura/config.c:502
 msgid "Open document"
 msgstr "Άνοιγμα αρχείου"
 
-#: zathura/config.c:501
+#: zathura/config.c:503
 msgid "Close zathura"
 msgstr "Κλείσιμο"
 
-#: zathura/config.c:502
+#: zathura/config.c:504
 msgid "Print document"
 msgstr "Εκτύπωση αρχείου"
 
-#: zathura/config.c:503 zathura/config.c:505
+#: zathura/config.c:505 zathura/config.c:507
 msgid "Save document"
 msgstr "Αποθήκευση αρχείου"
 
-#: zathura/config.c:504 zathura/config.c:506
+#: zathura/config.c:506 zathura/config.c:508
 msgid "Save document (and force overwriting)"
 msgstr "Αποθήκευση αρχείου (και αντικατάσταση)"
 
-#: zathura/config.c:507
+#: zathura/config.c:509
 msgid "Save attachments"
 msgstr "Αποθήκευση προσαρτήσεων. "
 
-#: zathura/config.c:508
+#: zathura/config.c:510
 msgid "Set page offset"
 msgstr "Ρύθμιση αντιστάθμισης σελίδας"
 
-#: zathura/config.c:509
+#: zathura/config.c:511
 msgid "Mark current location within the document"
 msgstr "Επισήμανση τρέχουσας θέσης στο κείμενο"
 
-#: zathura/config.c:510
+#: zathura/config.c:512
 msgid "Delete the specified marks"
 msgstr "Διαγραφή επιλεγμένων σημείων"
 
-#: zathura/config.c:511
+#: zathura/config.c:513
 msgid "Don't highlight current search results"
 msgstr "Χωρίς τονισμό τα τρέχοντα αποτελέσματα της αναζήτησης"
 
-#: zathura/config.c:512
+#: zathura/config.c:514
 msgid "Highlight current search results"
 msgstr "Τονισμός στα τρέχοντα αποτελέσματα της αναζήτησης"
 
-#: zathura/config.c:513
+#: zathura/config.c:515
 msgid "Show version information"
 msgstr "Εμφάνιση πληροφοριών έκδοσης"
 
-#: zathura/config.c:514
+#: zathura/config.c:516
 msgid "Source config file"
 msgstr ""
 

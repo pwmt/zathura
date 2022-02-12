@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-06 15:07+0100\n"
-"PO-Revision-Date: 2020-07-27 08:12+0000\n"
+"POT-Creation-Date: 2022-02-12 12:54+0100\n"
+"PO-Revision-Date: 2022-01-06 14:12+0000\n"
 "Last-Translator: Юрій Яновський <lytvyn349@ukr.net>\n"
 "Language-Team: Ukrainian (Ukraine) (http://www.transifex.com/pwmt/zathura/"
 "language/uk_UA/)\n"
@@ -472,116 +472,120 @@ msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "Використовувати ~ замість $HOME у назві файлу на панелі стану"
 
 #: zathura/config.c:287
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+
+#: zathura/config.c:289
 msgid "Enable synctex support"
 msgstr "Увімкнути підтримку Synctex"
 
-#: zathura/config.c:288
+#: zathura/config.c:290
 msgid "Synctex editor command"
 msgstr "Команда редактора Synctex"
 
-#: zathura/config.c:290
+#: zathura/config.c:292
 msgid "Enable D-Bus service"
 msgstr "Увімкнути службу D-Bus"
 
-#: zathura/config.c:291
+#: zathura/config.c:293
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:293
+#: zathura/config.c:295
 msgid "Save history at each page change"
 msgstr "Зберігати історію при кожній зміні сторінки"
 
-#: zathura/config.c:294
+#: zathura/config.c:296
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Буфер обміну, в який будуть записані дані, вибрані мишею"
 
-#: zathura/config.c:296
+#: zathura/config.c:298
 msgid "Enable notification after selecting text"
 msgstr "Увімкніть сповіщення після вибору тексту"
 
-#: zathura/config.c:299
+#: zathura/config.c:301
 msgid "Sandbox level"
 msgstr "Рівень пісочниці"
 
 #. define default inputbar commands
-#: zathura/config.c:492
+#: zathura/config.c:494
 msgid "Add a bookmark"
 msgstr "Додати закладку"
 
-#: zathura/config.c:493
+#: zathura/config.c:495
 msgid "Delete a bookmark"
 msgstr "Вилучити закладку"
 
-#: zathura/config.c:494
+#: zathura/config.c:496
 msgid "List all bookmarks"
 msgstr "Список усіх закладок"
 
-#: zathura/config.c:495
+#: zathura/config.c:497
 msgid "Close current file"
 msgstr "Закрити поточний файл"
 
-#: zathura/config.c:496
+#: zathura/config.c:498
 msgid "Show file information"
 msgstr "Показати інформацію про файл"
 
-#: zathura/config.c:497 zathura/config.c:498
+#: zathura/config.c:499 zathura/config.c:500
 msgid "Execute a command"
 msgstr "Виконати команду"
 
 #. like vim
-#: zathura/config.c:499
+#: zathura/config.c:501
 msgid "Show help"
 msgstr "Покажіть довідку"
 
-#: zathura/config.c:500
+#: zathura/config.c:502
 msgid "Open document"
 msgstr "Відкрити документ"
 
-#: zathura/config.c:501
+#: zathura/config.c:503
 msgid "Close zathura"
 msgstr "Закрити zathura"
 
-#: zathura/config.c:502
+#: zathura/config.c:504
 msgid "Print document"
 msgstr "Надрукувати документ"
 
-#: zathura/config.c:503 zathura/config.c:505
+#: zathura/config.c:505 zathura/config.c:507
 msgid "Save document"
 msgstr "Зберегти документ"
 
-#: zathura/config.c:504 zathura/config.c:506
+#: zathura/config.c:506 zathura/config.c:508
 msgid "Save document (and force overwriting)"
 msgstr "Зберегти документ (і примусово перезаписати)"
 
-#: zathura/config.c:507
+#: zathura/config.c:509
 msgid "Save attachments"
 msgstr "Зберегти вкладення"
 
-#: zathura/config.c:508
+#: zathura/config.c:510
 msgid "Set page offset"
 msgstr "Встановити зміщення сторінки"
 
-#: zathura/config.c:509
+#: zathura/config.c:511
 msgid "Mark current location within the document"
 msgstr "Позначити поточне розташування в документі"
 
-#: zathura/config.c:510
+#: zathura/config.c:512
 msgid "Delete the specified marks"
 msgstr "Вилучити зазначені позначки"
 
-#: zathura/config.c:511
+#: zathura/config.c:513
 msgid "Don't highlight current search results"
 msgstr "Не виділяти поточні результати пошуку"
 
-#: zathura/config.c:512
+#: zathura/config.c:514
 msgid "Highlight current search results"
 msgstr "Виділити поточні результати пошуку"
 
-#: zathura/config.c:513
+#: zathura/config.c:515
 msgid "Show version information"
 msgstr "Показати інформацію про версію"
 
-#: zathura/config.c:514
+#: zathura/config.c:516
 msgid "Source config file"
 msgstr ""
 
@@ -754,6 +758,3 @@ msgstr "Не вдалося зберегти документ."
 #: zathura/zathura.c:1384
 msgid "Document saved."
 msgstr "Документ збережено."
-
-#~ msgid "org.pwmt.zathura"
-#~ msgstr "org.pwmt.zathura"
