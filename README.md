@@ -11,7 +11,7 @@ The following dependencies are required:
 
 * `gtk3` (>= 3.22)
 * `glib` (>= 2.50)
-* `girara` (>= 0.3.2)
+* `girara` (>= 0.3.7)
 
 The following dependencies are optional:
 
