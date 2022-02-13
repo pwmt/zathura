@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-12 12:54+0100\n"
-"PO-Revision-Date: 2022-01-06 14:12+0000\n"
+"PO-Revision-Date: 2022-02-13 19:17+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://www.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -470,7 +470,7 @@ msgstr "Verwende ~ statt $HOME im Dateinamen in der Statusleiste"
 
 #: zathura/config.c:287
 msgid "Display (current page / total pages) as a percent in the statusbar"
-msgstr ""
+msgstr "Zeige (aktuelle Seite / Anzahl Seiten) als Prozente in Statusbalken an"
 
 #: zathura/config.c:289
 msgid "Enable synctex support"
