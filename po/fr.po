@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-14 17:36+0200\n"
-"PO-Revision-Date: 2020-11-08 00:03+0000\n"
+"POT-Creation-Date: 2022-02-12 12:54+0100\n"
+"PO-Revision-Date: 2022-01-06 14:12+0000\n"
 "Last-Translator: Benjamin Betti <benjamin@betti.me>\n"
 "Language-Team: French (http://www.transifex.com/pwmt/zathura/language/fr/)\n"
 "Language: fr\n"
@@ -93,152 +93,152 @@ msgstr "Texte sélectionné copié dans la sélection %s:%s"
 msgid "Copied selected image to selection %s"
 msgstr "Image sélectionnée copiée dans la sélection %s"
 
-#: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
-#: zathura/commands.c:165 zathura/commands.c:281 zathura/commands.c:311
-#: zathura/commands.c:333 zathura/commands.c:429 zathura/commands.c:561
-#: zathura/shortcuts.c:438 zathura/shortcuts.c:1257 zathura/shortcuts.c:1292
-#: zathura/shortcuts.c:1319
+#: zathura/commands.c:37 zathura/commands.c:77 zathura/commands.c:104
+#: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:312
+#: zathura/commands.c:334 zathura/commands.c:430 zathura/commands.c:566
+#: zathura/shortcuts.c:463 zathura/shortcuts.c:1283 zathura/shortcuts.c:1318
+#: zathura/shortcuts.c:1345
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
-#: zathura/commands.c:42 zathura/commands.c:82 zathura/commands.c:434
+#: zathura/commands.c:43 zathura/commands.c:83 zathura/commands.c:435
 msgid "Invalid number of arguments given."
 msgstr "Nombre d'arguments invalide."
 
-#: zathura/commands.c:53
+#: zathura/commands.c:54
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "Impossible de mettre à jour le favori : %s"
 
-#: zathura/commands.c:55
+#: zathura/commands.c:56
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Impossible de créer le favori : %s"
 
-#: zathura/commands.c:60
+#: zathura/commands.c:61
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Favori mis à jour avec succès : %s"
 
-#: zathura/commands.c:62
+#: zathura/commands.c:63
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Favori créé avec succès : %s"
 
-#: zathura/commands.c:88
+#: zathura/commands.c:89
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Favori supprimé : %s"
 
-#: zathura/commands.c:90
+#: zathura/commands.c:91
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Échec lors de la suppression du favori : %s"
 
-#: zathura/commands.c:119
+#: zathura/commands.c:120
 msgid "No bookmarks available."
 msgstr "Aucun favori disponible."
 
-#: zathura/commands.c:129
+#: zathura/commands.c:130
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Aucun favori correspondant : %s"
 
-#: zathura/commands.c:175
+#: zathura/commands.c:176
 msgid "Title"
 msgstr "Titre"
 
-#: zathura/commands.c:176
+#: zathura/commands.c:177
 msgid "Subject"
 msgstr "Sujet"
 
-#: zathura/commands.c:177
+#: zathura/commands.c:178
 msgid "Keywords"
 msgstr "Mots clé"
 
-#: zathura/commands.c:178
+#: zathura/commands.c:179
 msgid "Author"
 msgstr "Auteur"
 
-#: zathura/commands.c:179
+#: zathura/commands.c:180
 msgid "Creator"
 msgstr "Créateur"
 
-#: zathura/commands.c:180
+#: zathura/commands.c:181
 msgid "Producer"
 msgstr "Producteur"
 
-#: zathura/commands.c:181
+#: zathura/commands.c:182
 msgid "Creation date"
 msgstr "Date de création"
 
-#: zathura/commands.c:182
+#: zathura/commands.c:183
 msgid "Modification date"
 msgstr "Date de modification"
 
-#: zathura/commands.c:183
+#: zathura/commands.c:184
 msgid "Format"
 msgstr "Format"
 
-#: zathura/commands.c:184
+#: zathura/commands.c:185
 msgid "Other"
 msgstr "Autres"
 
-#: zathura/commands.c:189 zathura/commands.c:209
+#: zathura/commands.c:190 zathura/commands.c:210
 msgid "No information available."
 msgstr "Aucune information disponible."
 
-#: zathura/commands.c:247
+#: zathura/commands.c:248 zathura/commands.c:619
 msgid "Too many arguments."
 msgstr "Trop d'arguments."
 
-#: zathura/commands.c:258
+#: zathura/commands.c:259
 msgid "No arguments given."
 msgstr "Aucun argument passé."
 
-#: zathura/commands.c:286
+#: zathura/commands.c:287
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "L'impression n'est pas autorisée en mode d'isolation stricte"
 
-#: zathura/commands.c:318 zathura/commands.c:340
+#: zathura/commands.c:319 zathura/commands.c:341
 msgid "Invalid number of arguments."
 msgstr "Nombre d'arguments invalide."
 
-#: zathura/commands.c:453
+#: zathura/commands.c:454
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Impossible d'écrire la pièce jointe '%s' dans '%s'."
 
-#: zathura/commands.c:455
+#: zathura/commands.c:456
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Pièce jointe '%s' écrite dans '%s'."
 
-#: zathura/commands.c:499
+#: zathura/commands.c:500
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Image '%s' écrite dans '%s'."
 
-#: zathura/commands.c:501
+#: zathura/commands.c:502
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Impossible d'écrire l'image '%s' dans '%s'."
 
-#: zathura/commands.c:508
+#: zathura/commands.c:509
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Image '%s' inconnue."
 
-#: zathura/commands.c:512
+#: zathura/commands.c:513
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Pièce jointe ou image '%s' inconnue."
 
-#: zathura/commands.c:530
+#: zathura/commands.c:532
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Exec n'est pas autorisé en mode d'isolation stricte"
 
-#: zathura/commands.c:574
+#: zathura/commands.c:579
 msgid "Argument must be a number."
 msgstr "L'argument doit être un nombre."
 
@@ -475,114 +475,122 @@ msgstr ""
 "Utiliser ~ au lieu de $HOME dans le nom du fichier dans la barre d'état"
 
 #: zathura/config.c:287
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+
+#: zathura/config.c:289
 msgid "Enable synctex support"
 msgstr "Activer la prise en charge de synctex"
 
-#: zathura/config.c:288
+#: zathura/config.c:290
 msgid "Synctex editor command"
 msgstr "Commande pour l'éditeur Synctex"
 
-#: zathura/config.c:290
+#: zathura/config.c:292
 msgid "Enable D-Bus service"
 msgstr "Activer le service D-Bus"
 
-#: zathura/config.c:291
+#: zathura/config.c:293
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:293
+#: zathura/config.c:295
 msgid "Save history at each page change"
 msgstr "Enregistrer l'historique à chaque changement de page"
 
-#: zathura/config.c:294
+#: zathura/config.c:296
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Le presse-papiers qui recevra les données sélectionnées avec la souris"
 
-#: zathura/config.c:296
+#: zathura/config.c:298
 msgid "Enable notification after selecting text"
 msgstr "Activer une notification après avoir sélectionné du texte"
 
-#: zathura/config.c:299
+#: zathura/config.c:301
 msgid "Sandbox level"
 msgstr "Niveau d'isolation"
 
 #. define default inputbar commands
-#: zathura/config.c:491
+#: zathura/config.c:494
 msgid "Add a bookmark"
 msgstr "Ajouter un favori"
 
-#: zathura/config.c:492
+#: zathura/config.c:495
 msgid "Delete a bookmark"
 msgstr "Supprimer un favori"
 
-#: zathura/config.c:493
+#: zathura/config.c:496
 msgid "List all bookmarks"
 msgstr "Lister tous les favoris"
 
-#: zathura/config.c:494
+#: zathura/config.c:497
 msgid "Close current file"
 msgstr "Fermer le fichier actuel"
 
-#: zathura/config.c:495
+#: zathura/config.c:498
 msgid "Show file information"
 msgstr "Montrer les informations sur le fichier"
 
-#: zathura/config.c:496 zathura/config.c:497
+#: zathura/config.c:499 zathura/config.c:500
 msgid "Execute a command"
 msgstr "Exécuter une commande"
 
 #. like vim
-#: zathura/config.c:498
+#: zathura/config.c:501
 msgid "Show help"
 msgstr "Afficher l'aide"
 
-#: zathura/config.c:499
+#: zathura/config.c:502
 msgid "Open document"
 msgstr "Ouvrir un document"
 
-#: zathura/config.c:500
+#: zathura/config.c:503
 msgid "Close zathura"
 msgstr "Quitter zathura"
 
-#: zathura/config.c:501
+#: zathura/config.c:504
 msgid "Print document"
 msgstr "Imprimer le document"
 
-#: zathura/config.c:502 zathura/config.c:504
+#: zathura/config.c:505 zathura/config.c:507
 msgid "Save document"
 msgstr "Sauver le document"
 
-#: zathura/config.c:503 zathura/config.c:505
+#: zathura/config.c:506 zathura/config.c:508
 msgid "Save document (and force overwriting)"
 msgstr "Sauver le document (et forcer l'écrasement)"
 
-#: zathura/config.c:506
+#: zathura/config.c:509
 msgid "Save attachments"
 msgstr "Enregistrer les pièces jointes"
 
-#: zathura/config.c:507
+#: zathura/config.c:510
 msgid "Set page offset"
 msgstr "Définir le décalage de page"
 
-#: zathura/config.c:508
+#: zathura/config.c:511
 msgid "Mark current location within the document"
 msgstr "Marquer l'emplacement actuel dans le document"
 
-#: zathura/config.c:509
+#: zathura/config.c:512
 msgid "Delete the specified marks"
 msgstr "Supprimer les marques indiquées"
 
-#: zathura/config.c:510
+#: zathura/config.c:513
 msgid "Don't highlight current search results"
 msgstr "Ne pas surligner les résultats de la recherche en cours"
 
-#: zathura/config.c:511
+#: zathura/config.c:514
 msgid "Highlight current search results"
 msgstr "Surligner les résultats de la recherche en cours"
 
-#: zathura/config.c:512
+#: zathura/config.c:515
 msgid "Show version information"
 msgstr "Afficher les informations de version"
+
+#: zathura/config.c:516
+msgid "Source config file"
+msgstr ""
 
 #: zathura/links.c:233
 msgid "Failed to run xdg-open."
@@ -710,12 +718,12 @@ msgstr "Echec d'impression : %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Mode d'ajustement invalide: %d"
 
-#: zathura/shortcuts.c:999
+#: zathura/shortcuts.c:1025
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Motif introuvable: %s"
 
-#: zathura/shortcuts.c:1159
+#: zathura/shortcuts.c:1185
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
@@ -760,6 +768,3 @@ msgstr "Échec lors de l'enregistrement du document."
 #: zathura/zathura.c:1384
 msgid "Document saved."
 msgstr "Document enregistré."
-
-#~ msgid "org.pwmt.zathura"
-#~ msgstr "org.pwmt.zathura"

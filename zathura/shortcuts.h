@@ -60,6 +60,18 @@ bool sc_display_link(girara_session_t* session, girara_argument_t* argument, gir
  */
 bool sc_copy_link(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
+
+/**
+ * Copy opened file path
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_copy_filepath(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
 /**
  * Shortcut function to focus the inputbar
  *

@@ -19,6 +19,7 @@
 #include "internal.h"
 #include "render.h"
 #include "adjustment.h"
+#include "config.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -519,6 +520,7 @@ error_ret:
   return true;
 }
 
+
 bool
 cmd_exec(girara_session_t* session, girara_list_t* argument_list)
 {
@@ -533,12 +535,15 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
 
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
+    unsigned int page = zathura_document_get_current_page_number(zathura->document);
+    char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
+    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
     GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, value,
       char* r = girara_replace_substring(value, "$FILE", path);
 
       if (r != NULL) {
-        char* s = girara_replace_substring(r, "%", path);
+        char* s = girara_replace_substring(r, "$PAGE", page_buf);
         g_free(r);
 
         if (s != NULL) {
@@ -598,6 +603,27 @@ cmd_version(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   girara_notify(session, GIRARA_INFO, "%s", string);
 
   g_free(string);
+
+  return true;
+}
+
+bool
+cmd_source(girara_session_t* session, girara_list_t* argument_list)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  const int argc = girara_list_size(argument_list);
+  if (argc > 1) {
+    girara_notify(session, GIRARA_ERROR, _("Too many arguments."));
+    return false;
+  } else if (argc == 1) {
+    zathura_set_config_dir(zathura, girara_list_nth(argument_list, 0));
+    config_load_files(zathura);
+  } else {
+    config_load_files(zathura);
+  }
 
   return true;
 }

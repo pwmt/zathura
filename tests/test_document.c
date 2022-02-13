@@ -6,10 +6,10 @@
 #include "tests.h"
 
 START_TEST(test_open) {
-  fail_unless(zathura_document_open(NULL, NULL, NULL, NULL, NULL) == NULL, "Could create document", NULL);
-  fail_unless(zathura_document_open(NULL, "fl", NULL, NULL, NULL) == NULL, "Could create document", NULL);
-  fail_unless(zathura_document_open(NULL, "fl", "ur", NULL, NULL) == NULL, "Could create document", NULL);
-  fail_unless(zathura_document_open(NULL, "fl", NULL, "pw", NULL) == NULL, "Could create document", NULL);
+  ck_assert_ptr_null(zathura_document_open(NULL, NULL, NULL, NULL, NULL));
+  ck_assert_ptr_null(zathura_document_open(NULL, "fl", NULL, NULL, NULL));
+  ck_assert_ptr_null(zathura_document_open(NULL, "fl", "ur", NULL, NULL));
+  ck_assert_ptr_null(zathura_document_open(NULL, "fl", NULL, "pw", NULL));
 } END_TEST
 
 static Suite* suite_document(void)

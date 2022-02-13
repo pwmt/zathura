@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-14 17:36+0200\n"
-"PO-Revision-Date: 2020-07-27 08:12+0000\n"
+"POT-Creation-Date: 2022-02-12 12:54+0100\n"
+"PO-Revision-Date: 2022-01-06 14:12+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Catalan (http://www.transifex.com/pwmt/zathura/language/ca/)\n"
 "Language: ca\n"
@@ -83,152 +83,152 @@ msgstr ""
 msgid "Copied selected image to selection %s"
 msgstr ""
 
-#: zathura/commands.c:36 zathura/commands.c:76 zathura/commands.c:103
-#: zathura/commands.c:165 zathura/commands.c:281 zathura/commands.c:311
-#: zathura/commands.c:333 zathura/commands.c:429 zathura/commands.c:561
-#: zathura/shortcuts.c:438 zathura/shortcuts.c:1257 zathura/shortcuts.c:1292
-#: zathura/shortcuts.c:1319
+#: zathura/commands.c:37 zathura/commands.c:77 zathura/commands.c:104
+#: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:312
+#: zathura/commands.c:334 zathura/commands.c:430 zathura/commands.c:566
+#: zathura/shortcuts.c:463 zathura/shortcuts.c:1283 zathura/shortcuts.c:1318
+#: zathura/shortcuts.c:1345
 msgid "No document opened."
 msgstr "No s'ha obert cap document."
 
-#: zathura/commands.c:42 zathura/commands.c:82 zathura/commands.c:434
+#: zathura/commands.c:43 zathura/commands.c:83 zathura/commands.c:435
 msgid "Invalid number of arguments given."
 msgstr "Nombre d'arguments invàlids."
 
-#: zathura/commands.c:53
+#: zathura/commands.c:54
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "No s'ha pogut crear el marcador: %s"
 
-#: zathura/commands.c:55
+#: zathura/commands.c:56
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "No s'ha pogut crear el marcador: %s"
 
-#: zathura/commands.c:60
+#: zathura/commands.c:61
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Marcador actualitzat correctament: %s"
 
-#: zathura/commands.c:62
+#: zathura/commands.c:63
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Marcador creat correctament: %s"
 
-#: zathura/commands.c:88
+#: zathura/commands.c:89
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Esborrat el marcador: %s"
 
-#: zathura/commands.c:90
+#: zathura/commands.c:91
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "No s'ha pogut esborrar el marcador: %s"
 
-#: zathura/commands.c:119
+#: zathura/commands.c:120
 msgid "No bookmarks available."
 msgstr ""
 
-#: zathura/commands.c:129
+#: zathura/commands.c:130
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Marcador no existent: %s"
 
-#: zathura/commands.c:175
+#: zathura/commands.c:176
 msgid "Title"
 msgstr ""
 
-#: zathura/commands.c:176
+#: zathura/commands.c:177
 msgid "Subject"
 msgstr ""
 
-#: zathura/commands.c:177
+#: zathura/commands.c:178
 msgid "Keywords"
 msgstr ""
 
-#: zathura/commands.c:178
+#: zathura/commands.c:179
 msgid "Author"
 msgstr ""
 
-#: zathura/commands.c:179
+#: zathura/commands.c:180
 msgid "Creator"
 msgstr ""
 
-#: zathura/commands.c:180
+#: zathura/commands.c:181
 msgid "Producer"
 msgstr ""
 
-#: zathura/commands.c:181
+#: zathura/commands.c:182
 msgid "Creation date"
 msgstr ""
 
-#: zathura/commands.c:182
+#: zathura/commands.c:183
 msgid "Modification date"
 msgstr ""
 
-#: zathura/commands.c:183
+#: zathura/commands.c:184
 msgid "Format"
 msgstr ""
 
-#: zathura/commands.c:184
+#: zathura/commands.c:185
 msgid "Other"
 msgstr ""
 
-#: zathura/commands.c:189 zathura/commands.c:209
+#: zathura/commands.c:190 zathura/commands.c:210
 msgid "No information available."
 msgstr "Cap informació disponible."
 
-#: zathura/commands.c:247
+#: zathura/commands.c:248 zathura/commands.c:619
 msgid "Too many arguments."
 msgstr "Massa arguments."
 
-#: zathura/commands.c:258
+#: zathura/commands.c:259
 msgid "No arguments given."
 msgstr "Cap argument subministrat."
 
-#: zathura/commands.c:286
+#: zathura/commands.c:287
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:318 zathura/commands.c:340
+#: zathura/commands.c:319 zathura/commands.c:341
 msgid "Invalid number of arguments."
 msgstr "Nombre d'arguments invàlids."
 
-#: zathura/commands.c:453
+#: zathura/commands.c:454
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "No s'ha pogut escriure el fitxer adjunt '%s' a '%s'."
 
-#: zathura/commands.c:455
+#: zathura/commands.c:456
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "S'ha escrit el fitxer adjunt '%s' a '%s'."
 
-#: zathura/commands.c:499
+#: zathura/commands.c:500
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "S'ha escrit la imatge '%s' a '%s'."
 
-#: zathura/commands.c:501
+#: zathura/commands.c:502
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "No s'ha pogut escriure la imatge '%s' a '%s'."
 
-#: zathura/commands.c:508
+#: zathura/commands.c:509
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Imatge desconeguda '%s'."
 
-#: zathura/commands.c:512
+#: zathura/commands.c:513
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Imatge o fitxer adjunt desconegut '%s'."
 
-#: zathura/commands.c:530
+#: zathura/commands.c:532
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:574
+#: zathura/commands.c:579
 msgid "Argument must be a number."
 msgstr "L'argument ha de ser un nombre."
 
@@ -460,114 +460,122 @@ msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
 #: zathura/config.c:287
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+
+#: zathura/config.c:289
 msgid "Enable synctex support"
 msgstr "Habilitar la compatibilitat amb synctex"
 
-#: zathura/config.c:288
+#: zathura/config.c:290
 msgid "Synctex editor command"
 msgstr ""
 
-#: zathura/config.c:290
+#: zathura/config.c:292
 msgid "Enable D-Bus service"
 msgstr ""
 
-#: zathura/config.c:291
+#: zathura/config.c:293
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:293
+#: zathura/config.c:295
 msgid "Save history at each page change"
 msgstr ""
 
-#: zathura/config.c:294
+#: zathura/config.c:296
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: zathura/config.c:296
+#: zathura/config.c:298
 msgid "Enable notification after selecting text"
 msgstr ""
 
-#: zathura/config.c:299
+#: zathura/config.c:301
 msgid "Sandbox level"
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:491
+#: zathura/config.c:494
 msgid "Add a bookmark"
 msgstr "Afegir un marcador"
 
-#: zathura/config.c:492
+#: zathura/config.c:495
 msgid "Delete a bookmark"
 msgstr "Esborrar un marcador"
 
-#: zathura/config.c:493
+#: zathura/config.c:496
 msgid "List all bookmarks"
 msgstr "Llista tots els marcadors"
 
-#: zathura/config.c:494
+#: zathura/config.c:497
 msgid "Close current file"
 msgstr "Tancar el fitxer actual"
 
-#: zathura/config.c:495
+#: zathura/config.c:498
 msgid "Show file information"
 msgstr "Mostra informació sobre el fitxer"
 
-#: zathura/config.c:496 zathura/config.c:497
+#: zathura/config.c:499 zathura/config.c:500
 msgid "Execute a command"
 msgstr "Executar una comanda"
 
 #. like vim
-#: zathura/config.c:498
+#: zathura/config.c:501
 msgid "Show help"
 msgstr "Mostrar l'ajuda"
 
-#: zathura/config.c:499
+#: zathura/config.c:502
 msgid "Open document"
 msgstr "Obrir document"
 
-#: zathura/config.c:500
+#: zathura/config.c:503
 msgid "Close zathura"
 msgstr "Tancar Zathura"
 
-#: zathura/config.c:501
+#: zathura/config.c:504
 msgid "Print document"
 msgstr "Imprimir document"
 
-#: zathura/config.c:502 zathura/config.c:504
+#: zathura/config.c:505 zathura/config.c:507
 msgid "Save document"
 msgstr "Desar document"
 
-#: zathura/config.c:503 zathura/config.c:505
+#: zathura/config.c:506 zathura/config.c:508
 msgid "Save document (and force overwriting)"
 msgstr "Desar document (i forçar la sobreescritura)"
 
-#: zathura/config.c:506
+#: zathura/config.c:509
 msgid "Save attachments"
 msgstr "Desa els fitxers adjunts"
 
-#: zathura/config.c:507
+#: zathura/config.c:510
 msgid "Set page offset"
 msgstr "Assigna el desplaçament de pàgina"
 
-#: zathura/config.c:508
+#: zathura/config.c:511
 msgid "Mark current location within the document"
 msgstr "Marca la posició actual dins el document"
 
-#: zathura/config.c:509
+#: zathura/config.c:512
 msgid "Delete the specified marks"
 msgstr "Esborrar les marques especificades"
 
-#: zathura/config.c:510
+#: zathura/config.c:513
 msgid "Don't highlight current search results"
 msgstr "No realcis els resultats de la recerca actual"
 
-#: zathura/config.c:511
+#: zathura/config.c:514
 msgid "Highlight current search results"
 msgstr "Realça els resultats de recerca actual"
 
-#: zathura/config.c:512
+#: zathura/config.c:515
 msgid "Show version information"
 msgstr "Mostra informació sobre la versió"
+
+#: zathura/config.c:516
+msgid "Source config file"
+msgstr ""
 
 #: zathura/links.c:233
 msgid "Failed to run xdg-open."
@@ -693,12 +701,12 @@ msgstr ""
 msgid "Invalid adjust mode: %d"
 msgstr ""
 
-#: zathura/shortcuts.c:999
+#: zathura/shortcuts.c:1025
 #, c-format
 msgid "Pattern not found: %s"
 msgstr ""
 
-#: zathura/shortcuts.c:1159
+#: zathura/shortcuts.c:1185
 msgid "This document does not contain any index"
 msgstr "Aquest document no conté cap índex"
 

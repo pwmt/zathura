@@ -175,6 +175,31 @@ sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
 }
 
 bool
+sc_copy_filepath(girara_session_t* session, girara_argument_t*  UNUSED(argument), girara_event_t* UNUSED(event), unsigned int UNUSED(t))
+{
+    g_return_val_if_fail(session != NULL, false);
+    g_return_val_if_fail(session->global.data != NULL, false);
+    zathura_t* zathura = session->global.data;
+
+    GdkAtom* selection = get_selection(zathura);
+    if (selection == NULL) {
+        return false;
+    }
+
+    const char* file_path = zathura_document_get_path(zathura->document);
+    if (file_path == NULL) {
+        girara_debug("Could not get file path for copying");
+        return false;
+    }
+
+    girara_debug("Copying file path to clipboard");
+    gtk_clipboard_set_text(gtk_clipboard_get(*selection), file_path, -1);
+
+    g_free(selection);
+    return true;
+}
+
+bool
 sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {
   g_return_val_if_fail(session != NULL, false);
@@ -1469,6 +1494,9 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
 
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
+    unsigned int page = zathura_document_get_current_page_number(zathura->document);
+    char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
+    g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
     girara_argument_t new_argument = *argument;
 
@@ -1477,7 +1505,7 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
       return false;
     }
 
-    char* s = girara_replace_substring(r, "%", path);
+    char* s = girara_replace_substring(r, "$PAGE", page_buf);
     g_free(r);
 
     if (s == NULL) {

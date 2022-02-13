@@ -231,7 +231,8 @@ They can also be combined with modifiers:
 
   * ``exec``:
 
-    Execute an external command.
+    Execute an external command. ``$FILE`` expands to the current document path,
+    and ``$PAGE`` to the current page number.
 
   * ``focus_inputbar``
 
@@ -851,6 +852,12 @@ zathura
 
 *statusbar-basename*
   Use basename of the file in the statusbar.
+
+  * Value type: Boolean
+  * Default value: false
+
+*statusbar-page-percent*
+  Display (current page / total pages) as a percent in the statusbar.
 
   * Value type: Boolean
   * Default value: false

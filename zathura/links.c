@@ -172,14 +172,14 @@ link_goto_dest(zathura_t* zathura, const zathura_link_t* link)
   /* shift the position or set to auto */
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
       link->target.left != -1 && link_hadjust == true) {
-    pos_x += shiftx / doc_width;
+    pos_x += shiftx * cell_width / doc_width;
   } else {
     pos_x = -1;     /* -1 means automatic */
   }
 
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ &&
       link->target.top != -1) {
-    pos_y += shifty / doc_height;
+    pos_y += shifty * cell_height / doc_height;
   } else {
     pos_y = -1;     /* -1 means automatic */
   }
