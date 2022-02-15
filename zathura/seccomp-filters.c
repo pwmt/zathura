@@ -203,6 +203,7 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(recvfrom);
   ALLOW_RULE(recvmsg);
   ALLOW_RULE(restart_syscall);
+  ALLOW_RULE(rseq);
   ALLOW_RULE(rt_sigaction);
   ALLOW_RULE(rt_sigprocmask);
   ALLOW_RULE(sendmsg);
