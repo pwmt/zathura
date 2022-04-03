@@ -132,7 +132,10 @@ seccomp_enable_strict_filter(void)
   }
 
   /* initialize the filter */
-  scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_KILL);
+  /* ENOSYS tells the calling process that the syscall is not implemented, 
+   * allowing for a potential fallback function to execute 
+   * scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ERRNO(ENOSYS));*/
+  scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_KILL_PROCESS);
   if (ctx == NULL){
     girara_error("seccomp_init failed");
     return -1;
