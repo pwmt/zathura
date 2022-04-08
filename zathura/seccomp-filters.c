@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <girara/utils.h>
+#include <linux/sched.h> /* for clone filter */
+
+
 
 #define ADD_RULE(str_action, action, call, ...)                                \
   do {                                                                         \
@@ -100,8 +103,12 @@ seccomp_enable_basic_filter(void)
   DENY_RULE(uselib);
   DENY_RULE(vmsplice);
 
-  /* TODO: check for additional syscalls to blacklist */
-  /* DENY_RULE (execve); */
+  /*TODO
+   *
+   * In case this basic filter is actually triggered, print a clear error message to report this
+   *   The syscalls here should never be executed by an unprivileged process
+   *
+   * */
 
   /* applying filter... */
   if (seccomp_load(ctx) >= 0) {
@@ -142,13 +149,11 @@ seccomp_enable_strict_filter(void)
   }
 
   ALLOW_RULE(access);
-  /* ALLOW_RULE (arch_prctl); */
   ALLOW_RULE(bind);
   ALLOW_RULE(brk);
   ALLOW_RULE(clock_getres);
-  ALLOW_RULE(clone); /* TODO: investigate */
+  /* ALLOW_RULE(clone); specified below */
   ALLOW_RULE(close);
-  /* ALLOW_RULE (connect); */
   ALLOW_RULE(eventfd2);
   ALLOW_RULE(exit);
   ALLOW_RULE(exit_group);
@@ -170,23 +175,19 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(getpid);
   ALLOW_RULE(getppid);
   ALLOW_RULE(gettid);
-  /* ALLOW_RULE (getpeername); */
   ALLOW_RULE(getrandom);
   ALLOW_RULE(getresgid);
   ALLOW_RULE(getresuid);
   ALLOW_RULE(getrlimit);
   ALLOW_RULE(getpeername);
-  /* ALLOW_RULE (getsockname); */
-  /* ALLOW_RULE (getsockopt);   needed for access to x11 socket in network namespace (without abstract sockets) */
   ALLOW_RULE(inotify_add_watch);
   ALLOW_RULE(inotify_init1);
   ALLOW_RULE(inotify_rm_watch);
-  /* ALLOW_RULE (ioctl);  specified below  */
+  /* ALLOW_RULE (ioctl); specified below  */
   ALLOW_RULE(lseek);
   ALLOW_RULE(lstat);
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
-  ALLOW_RULE(mkdir); /* needed for first run only */
   ALLOW_RULE(mmap);
   ALLOW_RULE(mprotect);
   ALLOW_RULE(mremap);
@@ -197,9 +198,8 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(pipe);
   ALLOW_RULE(pipe2);
   ALLOW_RULE(poll);
-  ALLOW_RULE(pwrite64); /* TODO: build detailed filter */
+  ALLOW_RULE(pwrite64); 
   ALLOW_RULE(pread64);
-  /* ALLOW_RULE (prlimit64); */
   /* ALLOW_RULE (prctl); specified below  */
   ALLOW_RULE(read);
   ALLOW_RULE(readlink);
@@ -209,12 +209,12 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(rseq);
   ALLOW_RULE(rt_sigaction);
   ALLOW_RULE(rt_sigprocmask);
+  ALLOW_RULE(sched_setattr);
+  ALLOW_RULE(sched_getattr);
   ALLOW_RULE(sendmsg);
   ALLOW_RULE(sendto);
   ALLOW_RULE(select);
   ALLOW_RULE(set_robust_list);
-  /* ALLOW_RULE (set_tid_address); */
-  /* ALLOW_RULE (setsockopt); */
   ALLOW_RULE(shmat);
   ALLOW_RULE(shmctl);
   ALLOW_RULE(shmdt);
@@ -223,29 +223,50 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(stat);
   ALLOW_RULE(statx);
   ALLOW_RULE(statfs);
-  /* ALLOW_RULE (socket); */
   ALLOW_RULE(sysinfo);
   ALLOW_RULE(uname);
   ALLOW_RULE(unlink);
-  ALLOW_RULE(write);  /* specified below (zathura needs to write files)*/
+  ALLOW_RULE(write);  
   ALLOW_RULE(writev);
-  ALLOW_RULE(wait4);  /* trying to open links should not crash the app */
+  ALLOW_RULE(wait4);  
 
-  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_setattr, 0); */
-  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), sched_getattr, 0); */
-
-  /* required by glib */
-  ALLOW_RULE(sched_setattr);
-  ALLOW_RULE(sched_getattr);
 
   /* required by some X11 setups */
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), umask, 0);
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), socket, 0);
+  /* X11 no longer supported in strict sandbox mode */
+  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), umask, 0); */
+  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), socket, 0); */
 
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
   ALLOW_RULE(timer_delete);
+
+
+  /* filter clone arguments */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
+              CLONE_VM | \
+              CLONE_FS | \
+              CLONE_FILES | \
+              CLONE_SIGHAND | \
+              CLONE_THREAD | \
+              CLONE_SYSVSEM | \
+              CLONE_SETTLS | \
+              CLONE_PARENT_SETTID | \
+              CLONE_CHILD_CLEARTID));
+
+
+
+  /* fcntl filter - not yet working */
+  /*ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
+              F_GETFL | \
+              F_SETFL | \
+              F_ADD_SEALS | \
+              F_SEAL_SEAL | \
+              F_SEAL_SHRINK | \
+              F_DUPFD_CLOEXEC | \
+              F_SETFD | \
+              FD_CLOEXEC )); */
+  
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
@@ -256,53 +277,34 @@ seccomp_enable_strict_filter(void)
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
   /* special restrictions for open, prevent opening files for writing */
-  ADD_RULE("allow", SCMP_ACT_ALLOW, open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
 
   /* special restrictions for openat, prevent opening files for writing */
-  ADD_RULE("allow", SCMP_ACT_ALLOW, openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("allow", SCMP_ACT_ALLOW,         openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
 
-  /* allowed for debugging: */
-
-  /* ALLOW_RULE (prctl); */
-  /* ALLOW_RULE (ioctl); */
-
-  /* TODO: test fcntl rules */
-  /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, F_GETFL)) < 0) */
-  /*  goto out; */
-
-  /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, F_SETFL)) < 0) */
-  /*  goto out; */
-
-  /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, F_SETFD)) < 0) */
-  /*  goto out; */
-
-  /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, F_GETFD)) < 0) */
-  /*  goto out; */
-
-  /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, F_SETLK)) < 0) */
-  /*  goto out; */
 
 
-  /* TODO: build detailed filter for prctl */
-  /*  needed by gtk??? (does not load content without) */
 
-  /* /\* special restrictions for prctl, only allow PR_SET_NAME/PR_SET_PDEATHSIG *\/ */
-  /*     if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(prctl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME)) < 0) */
-  /*  goto out; */
+  /* Sandbox Status Notes:
+   *
+   * write: no actual files on the filesystem are opened with write permissions 
+   *    exception is /run/user/UID/dconf/user (file descriptor not available during runtime)
+   *
+   *
+   * mkdir: needed for first run only to create /run/user/UID/dconf (before seccomp init)
+   * wait4: required to attempt opening links (which is then blocked)
+   *
+   * X11 environments require umask and socket syscalls after sandbox setup 
+   *   no longer supported since X11 cannot be easily secured anyway
+   *
+   * TODO: prevent dbus socket connection before sandbox init - by checking the sandbox settings in zathurarc 
+   *
+   */
 
-  /* if (seccomp_rule_add (ctx, SCMP_ACT_ALLOW, SCMP_SYS(prctl), 1, */
-  /*        SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG)) < 0) */
-  /*  goto out; */
 
   /* when zathura is run on wayland, with X11 server available but blocked, unset the DISPLAY variable */
   /* otherwise it will try to connect to X11 using inet socket protocol */
