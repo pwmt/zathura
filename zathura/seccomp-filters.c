@@ -224,22 +224,20 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(statx);
   ALLOW_RULE(statfs);
   ALLOW_RULE(sysinfo);
+  ALLOW_RULE(umask); /* required by X11 */
   ALLOW_RULE(uname);
   ALLOW_RULE(unlink);
   ALLOW_RULE(write);  
   ALLOW_RULE(writev);
   ALLOW_RULE(wait4);  
 
-
-  /* required by some X11 setups */
-  /* X11 no longer supported in strict sandbox mode */
-  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), umask, 0); */
-  /* ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), socket, 0); */
-
-
   /* required for testing only */
   ALLOW_RULE(timer_create);
   ALLOW_RULE(timer_delete);
+
+  
+  /* permit the socket syscall for local UNIX domain sockets (required by X11) */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, socket, 1, SCMP_CMP(0, SCMP_CMP_EQ, AF_UNIX));
 
 
   /* filter clone arguments */
@@ -253,7 +251,6 @@ seccomp_enable_strict_filter(void)
               CLONE_SETTLS | \
               CLONE_PARENT_SETTID | \
               CLONE_CHILD_CLEARTID));
-
 
 
   /* fcntl filter - not yet working */
@@ -303,6 +300,7 @@ seccomp_enable_strict_filter(void)
    *
    * TODO: prevent dbus socket connection before sandbox init - by checking the sandbox settings in zathurarc 
    *
+   * TODO: check requirement of pipe/pipe2 syscalls when dbus is disabled
    */
 
 
