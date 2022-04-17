@@ -13,6 +13,9 @@
 #include <girara/utils.h>
 #include <linux/sched.h> /* for clone filter */
 
+#ifdef GDK_WINDOWING_X11
+#include <gtk/gtkx.h>
+#endif
 
 
 #define ADD_RULE(str_action, action, call, ...)                                \
@@ -124,7 +127,7 @@ out:
 }
 
 int
-seccomp_enable_strict_filter(void)
+seccomp_enable_strict_filter(zathura_t* zathura)
 {
   /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
   if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
@@ -235,9 +238,26 @@ seccomp_enable_strict_filter(void)
   ALLOW_RULE(timer_create);
   ALLOW_RULE(timer_delete);
 
+
+/* Permit X11 specific syscalls */
+#ifdef GDK_WINDOWING_X11
+  GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.view);
+
+  if (GDK_IS_X11_DISPLAY (display)) {
   
-  /* permit the socket syscall for local UNIX domain sockets (required by X11) */
-  ADD_RULE("allow", SCMP_ACT_ALLOW, socket, 1, SCMP_CMP(0, SCMP_CMP_EQ, AF_UNIX));
+    girara_debug("On X11, supporting X11 syscalls");
+
+    /* permit the socket syscall for local UNIX domain sockets (required by X11) */
+    ADD_RULE("allow", SCMP_ACT_ALLOW, socket, 1, SCMP_CMP(0, SCMP_CMP_EQ, AF_UNIX));
+
+    ALLOW_RULE(mkdir);
+    ALLOW_RULE(setsockopt);
+    ALLOW_RULE(connect);
+  }
+  else {
+    girara_debug("On Wayland, blocking X11 syscalls");
+  }
+#endif
 
 
   /* filter clone arguments */
