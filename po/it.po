@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 12:54+0100\n"
-"PO-Revision-Date: 2022-01-06 14:12+0000\n"
+"POT-Creation-Date: 2022-05-07 23:53+0200\n"
+"PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Simone Dotto <simonedotto@protonmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/pwmt/zathura/language/it/)\n"
 "Language: it\n"
@@ -331,7 +331,7 @@ msgstr "Colore per evidenziare"
 
 #: zathura/config.c:218
 msgid "Foreground color for highlighting"
-msgstr ""
+msgstr "Colore di primo piano per l'evidenziazione"
 
 #: zathura/config.c:220
 msgid "Color for highlighting (active)"
@@ -474,6 +474,7 @@ msgstr "Usa ~ al posto di $HOME nel nome del file nella barra di stato"
 #: zathura/config.c:287
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
+"Mostra (pagina attuale / pagine totali) in percentuale nella barra di stato"
 
 #: zathura/config.c:289
 msgid "Enable synctex support"
@@ -489,7 +490,7 @@ msgstr "Abilita il servizio D-Bus"
 
 #: zathura/config.c:293
 msgid "Raise window on certain D-Bus commands"
-msgstr ""
+msgstr "Solleva la finestra in corrispondenza di certi comandi di D-Bus"
 
 #: zathura/config.c:295
 msgid "Save history at each page change"
@@ -587,7 +588,7 @@ msgstr "Mostra informazioni sulla versione"
 
 #: zathura/config.c:516
 msgid "Source config file"
-msgstr ""
+msgstr "File di configurazione sorgente"
 
 #: zathura/links.c:233
 msgid "Failed to run xdg-open."
@@ -616,12 +617,12 @@ msgstr "Link: non valido"
 #: zathura/links.c:305
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "Copiata pagina numero: %d"
 
 #: zathura/links.c:314
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
+msgstr "Copiato il link: %s"
 
 #: zathura/main.c:151
 msgid "Reparents to window specified by xid (X11)"
@@ -681,7 +682,7 @@ msgstr "Avvia in una modalità non standard"
 
 #: zathura/main.c:165
 msgid "Bookmark to go to"
-msgstr ""
+msgstr "Segnalibro a cui andare"
 
 #: zathura/main.c:166
 msgid "Search for the given phrase and display results"
@@ -753,7 +754,7 @@ msgstr "Il documento non contiene alcuna pagina"
 #: zathura/zathura.c:1371
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr ""
+msgstr "Il file esiste già: %s. Usa :write! per sovrascriverlo."
 
 #: zathura/zathura.c:1380
 msgid "Failed to save document."
