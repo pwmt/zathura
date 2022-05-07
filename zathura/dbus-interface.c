@@ -260,6 +260,40 @@ handle_goto_page(zathura_t* zathura, GVariant* parameters,
   g_dbus_method_invocation_return_value(invocation, result);
 }
 
+typedef struct {
+  zathura_t*      zathura;
+  girara_list_t** rectangles;
+  unsigned int    page;
+  unsigned int    number_of_pages;
+} highlights_rect_data_t;
+
+static gboolean
+synctex_highlight_rects_impl(gpointer ptr)
+{
+  highlights_rect_data_t* data = ptr;
+
+  synctex_highlight_rects(data->zathura, data->page, data->rectangles);
+
+  for (unsigned int i = 0; i != data->number_of_pages; ++i) {
+    girara_list_free(data->rectangles[i]);
+  }
+  g_free(data->rectangles);
+  return false;
+}
+
+static void
+synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rectangles,
+                             unsigned int page, unsigned number_of_pages)
+{
+  highlights_rect_data_t* data = g_try_malloc0(sizeof(highlights_rect_data_t));
+  data->zathura                = zathura;
+  data->rectangles             = rectangles;
+  data->page                   = page;
+  data->number_of_pages        = number_of_pages;
+
+  gdk_threads_add_idle(synctex_highlight_rects_impl, data);
+}
+
 static void
 handle_highlight_rects(zathura_t* zathura, GVariant* parameters,
                        GDBusMethodInvocation* invocation)
@@ -357,8 +391,8 @@ handle_highlight_rects(zathura_t* zathura, GVariant* parameters,
   }
   g_variant_iter_free(secondary_iter);
 
-  synctex_highlight_rects(zathura, page, rectangles);
-  g_free(rectangles);
+  /* run synctex_highlight_rects in main thread when idle */
+  synctex_highlight_rects_idle(zathura, rectangles, page, number_of_pages);
 
   GVariant* result = g_variant_new("(b)", true);
   g_dbus_method_invocation_return_value(invocation, result);
