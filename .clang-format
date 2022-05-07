@@ -1,0 +1,20 @@
+---
+Language: Cpp
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignOperands: true
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterDefinitionReturnType: All
+BreakBeforeBraces: Linux
+ContinuationIndentWidth: 2
+ColumnLimit: 120
+ForEachMacros: ['GIRARA_LIST_FOREACH']
+IndentWidth: 2
+PointerAlignment: Left
+TabWidth: 2
+IndentCaseLabels: true
+...
+
