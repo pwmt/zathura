@@ -90,6 +90,8 @@ typedef enum {
 
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
+/* forward declaration for types from content-type.h */
+typedef struct zathura_content_type_context_s zathura_content_type_context_t;
 
 struct zathura_s
 {

@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "content-type.h"
+#include "macros.h"
 
 #include <girara/utils.h>
 #ifdef WITH_MAGIC
