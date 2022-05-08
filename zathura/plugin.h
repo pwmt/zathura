@@ -37,8 +37,9 @@ void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, co
  * Loads all plugins available in the previously given directories
  *
  * @param plugin_manager The plugin manager
+ * @return Success if some plugins have been loaded, false otherwise
  */
-void zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager);
+bool zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager);
 
 /**
  * Returns the (if available) associated plugin

@@ -195,15 +195,16 @@ load_dir(void* data, void* userdata)
   }
 }
 
-void
+bool
 zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
 {
   if (plugin_manager == NULL || plugin_manager->path == NULL) {
-    return;
+    return false;
   }
 
   /* read all files in the plugin directory */
   girara_list_foreach(plugin_manager->path, load_dir, plugin_manager);
+  return girara_list_size(plugin_manager->plugins) > 0;
 }
 
 zathura_plugin_t*

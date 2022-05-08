@@ -430,7 +430,9 @@ zathura_init(zathura_t* zathura)
   g_set_prgname("org.pwmt.zathura");
 
   /* load plugins */
-  zathura_plugin_manager_load(zathura->plugins.manager);
+  if (zathura_plugin_manager_load(zathura->plugins.manager) == false) {
+    girara_error("Found no plugins. Please install at least one plugin.");
+  }
 
   /* configuration */
   config_load_default(zathura);
