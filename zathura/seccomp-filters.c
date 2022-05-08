@@ -227,7 +227,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(statx);
   ALLOW_RULE(statfs);
   ALLOW_RULE(sysinfo);
-  ALLOW_RULE(umask); /* required by X11 */
+  /* ALLOW_RULE(umask); allowed for X11 only below */ 
   ALLOW_RULE(uname);
   ALLOW_RULE(unlink);
   ALLOW_RULE(write);  
@@ -253,6 +253,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
     ALLOW_RULE(mkdir);
     ALLOW_RULE(setsockopt);
     ALLOW_RULE(connect);
+    ALLOW_RULE(umask);
   }
   else {
     girara_debug("On Wayland, blocking X11 syscalls");
@@ -315,8 +316,6 @@ seccomp_enable_strict_filter(zathura_t* zathura)
    * mkdir: needed for first run only to create /run/user/UID/dconf (before seccomp init)
    * wait4: required to attempt opening links (which is then blocked)
    *
-   * X11 environments require umask and socket syscalls after sandbox setup 
-   *   no longer supported since X11 cannot be easily secured anyway
    *
    * TODO: prevent dbus socket connection before sandbox init - by checking the sandbox settings in zathurarc 
    *
