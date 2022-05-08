@@ -117,7 +117,7 @@ test:debian-bookworm:
     - tags
 
 # Ubuntu 20.04 LTS (Focal)
-build:ubuntu-bionic:
+build:ubuntu-focal:
   tags:
     - pwmt
   stage: build
