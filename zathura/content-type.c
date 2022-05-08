@@ -82,12 +82,6 @@ guess_type_magic(zathura_content_type_context_t* context, const char* path)
 }
 
 static char*
-guess_type_file(const char* UNUSED(path))
-{
-  return NULL;
-}
-
-static char*
 guess_type_glib(const char* path)
 {
   gboolean uncertain    = FALSE;
@@ -166,9 +160,8 @@ zathura_content_type_guess(zathura_content_type_context_t* context, const char* 
         girara_list_find(supported_content_types, compare_content_types, content_type) != NULL) {
       return content_type;
     }
-    girara_debug("content type '%s' not supported, trying again", content_type);
+    girara_debug("content type '%s' not supported", content_type);
     g_free(content_type);
   }
-  /* and if libmagic is not available, try file as last resort */
-  return guess_type_file(path);
+  return NULL;
 }
