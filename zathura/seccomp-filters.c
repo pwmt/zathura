@@ -106,12 +106,15 @@ seccomp_enable_basic_filter(void)
   DENY_RULE(uselib);
   DENY_RULE(vmsplice);
 
-  /*TODO
+  /*
    *
    * In case this basic filter is actually triggered, print a clear error message to report this
    *   The syscalls here should never be executed by an unprivileged process
    *
    * */
+
+  girara_debug("Using a basic seccomp filter to blacklist privileged system calls! \
+          Errors reporting 'bad system call' may be an indicator of compromise");
 
   /* applying filter... */
   if (seccomp_load(ctx) >= 0) {
