@@ -12,11 +12,11 @@ The following dependencies are required:
 * `gtk3` (>= 3.22)
 * `glib` (>= 2.50)
 * `girara` (>= 0.3.7)
+* `libmagic` from file(1): for mime-type detection
 
 The following dependencies are optional:
 
 * `sqlite3` (>= 3.6.23): splite3 database backend
-* `libmagic` from file(1): for mime-type detection
 * `libsynctex` from TeXLive (>= 1.19): SyncTeX support
 * `libseccomp`: sandbox support
 

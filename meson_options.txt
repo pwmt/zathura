@@ -8,11 +8,6 @@ option('synctex',
   value: 'auto',
   description: 'SyncTeX integration'
 )
-option('magic',
-  type: 'feature',
-  value: 'auto',
-  description: 'magic-based MIME type detection'
-)
 option('seccomp',
   type: 'feature',
   value: 'auto',
