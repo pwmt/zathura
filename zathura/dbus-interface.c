@@ -398,19 +398,48 @@ handle_highlight_rects(zathura_t* zathura, GVariant* parameters,
   g_dbus_method_invocation_return_value(invocation, result);
 }
 
+typedef struct {
+  zathura_t*   zathura;
+  gchar*       input_file;
+  unsigned int line;
+  unsigned int column;
+} view_data_t;
+
+static gboolean
+synctex_view_impl(gpointer ptr)
+{
+  view_data_t* data = ptr;
+
+  synctex_view(data->zathura, data->input_file, data->line, data->column);
+
+  g_free(data->input_file);
+  g_free(data);
+  return false;
+}
+
 static void
-handle_synctex_view(zathura_t* zathura, GVariant* parameters,
-                    GDBusMethodInvocation* invocation)
+synctex_view_idle(zathura_t* zathura, gchar* input_file, unsigned int line, unsigned int column)
+{
+  view_data_t* data = g_try_malloc0(sizeof(view_data_t));
+  data->zathura     = zathura;
+  data->input_file  = input_file;
+  data->line        = line;
+  data->column      = column;
+
+  gdk_threads_add_idle(synctex_view_impl, data);
+}
+
+static void
+handle_synctex_view(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation)
 {
   gchar* input_file = NULL;
-  guint line = 0;
-  guint column = 0;
+  guint  line       = 0;
+  guint  column     = 0;
   g_variant_get(parameters, "(suu)", &input_file, &line, &column);
 
-  const bool ret = synctex_view(zathura, input_file, line, column);
-  g_free(input_file);
+  synctex_view_idle(zathura, input_file, line, column);
 
-  GVariant* result = g_variant_new("(b)", ret);
+  GVariant* result = g_variant_new("(b)", true);
   g_dbus_method_invocation_return_value(invocation, result);
 }
 
