@@ -649,11 +649,10 @@ iterate_instances_call_synctex_view(const char* filename,
 }
 
 int
-zathura_dbus_synctex_position(const char* filename, const char* input_file,
-                              int line, int column, pid_t hint)
+zathura_dbus_synctex_position(const char* filename, const char* input_file, int line, int column, pid_t hint)
 {
   if (filename == NULL || input_file == NULL || line < 0 || column < 0) {
-    return false;
+    return -1;
   }
 
   return iterate_instances_call_synctex_view(filename, input_file, line, column, hint);
