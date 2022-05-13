@@ -21,13 +21,6 @@ enum {
   PROP_FILE_PATH
 };
 
-enum {
-  RELOAD_FILE,
-  LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
 static void
 finalize(GObject* object)
 {
@@ -94,9 +87,8 @@ zathura_filemonitor_class_init(ZathuraFileMonitorClass* class)
                           G_PARAM_STATIC_STRINGS));
 
   /* add signals */
-  signals[RELOAD_FILE] =
-    g_signal_new("reload-file", ZATHURA_TYPE_FILEMONITOR, G_SIGNAL_RUN_LAST, 0,
-                 NULL, NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 0);
+  g_signal_new("reload-file", ZATHURA_TYPE_FILEMONITOR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_generic,
+               G_TYPE_NONE, 0);
 }
 
 static void
