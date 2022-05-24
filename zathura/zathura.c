@@ -173,10 +173,12 @@ zathura_update_view_ppi(zathura_t* zathura)
   GdkRectangle monitor_geom;
   gdk_monitor_get_geometry(monitor, &monitor_geom);
 
-  /* calculate ppi, knowing that 1 inch = 25.4 mm */
-  if (width_mm == 0) {
+  /* Due to a bug in Gtk, width is sometimes incorrectly reported to be 1mm
+   * see https://gitlab.gnome.org/GNOME/gtk/issues/3115 for details */
+  if (width_mm <= 1) {
     girara_debug("cannot calculate PPI: monitor has zero width");
   } else {
+    /* calculate ppi, knowing that 1 inch = 25.4 mm */
     ppi = monitor_geom.width * 25.4 / width_mm;
   }
 
