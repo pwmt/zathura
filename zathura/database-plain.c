@@ -168,7 +168,7 @@ zathura_db_read_key_file_from_file(const char* path)
       g_key_file_free(key_file);
       return NULL;
     }
-    g_strlcat(content, dummy_content, dummy_len + 1);
+    strcpy(content, dummy_content);
     contentlen = dummy_len;
   }
 
