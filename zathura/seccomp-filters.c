@@ -233,9 +233,9 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(umask); allowed for X11 only below */ 
   ALLOW_RULE(uname);
   ALLOW_RULE(unlink);
-  ALLOW_RULE(write);  
+  ALLOW_RULE(write);
   ALLOW_RULE(writev);
-  ALLOW_RULE(wait4);  
+  ALLOW_RULE(wait4);
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
@@ -247,7 +247,6 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.view);
 
   if (GDK_IS_X11_DISPLAY (display)) {
-  
     girara_debug("On X11, supporting X11 syscalls");
 
     /* permit the socket syscall for local UNIX domain sockets (required by X11) */
@@ -275,7 +274,8 @@ seccomp_enable_strict_filter(zathura_t* zathura)
               CLONE_SETTLS | \
               CLONE_PARENT_SETTID | \
               CLONE_CHILD_CLEARTID));
-
+  /* trigger fallback to clone */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(ENOSYS), clone3, 0);
 
   /* fcntl filter - not yet working */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
@@ -287,7 +287,6 @@ seccomp_enable_strict_filter(zathura_t* zathura)
               F_DUPFD_CLOEXEC | \
               F_SETFD | \
               FD_CLOEXEC )); */
-  
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
