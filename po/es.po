@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 12:54+0100\n"
-"PO-Revision-Date: 2022-01-06 14:12+0000\n"
+"POT-Creation-Date: 2022-05-07 23:53+0200\n"
+"PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Spanish (http://www.transifex.com/pwmt/zathura/language/es/)\n"
 "Language: es\n"
@@ -32,9 +32,9 @@ msgid ""
 "completely view and navigate through documents without using a mouse."
 msgstr ""
 "Zathura es un visor de documentos altamente personalizable y funcional. "
-"Proporciona una interfaz ligera y minimalista, fácil de usar, pensada para ser"
-" utilizada con teclado. Zathura posibilita ver y navegar por documentos sin "
-"necesidad de utilizar el ratón."
+"Proporciona una interfaz ligera y minimalista, fácil de usar, pensada para "
+"ser utilizada con teclado. Zathura posibilita ver y navegar por documentos "
+"sin necesidad de utilizar el ratón."
 
 #: data/org.pwmt.zathura.appdata.xml.in:17
 msgid ""
@@ -447,8 +447,8 @@ msgstr "Mostrar el nombre del archivo en el título de la ventana"
 
 #: zathura/config.c:277
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr "Mostrar ~ en lugar de $HOME en el nombre de archivo del título de la "
-"ventana"
+msgstr ""
+"Mostrar ~ en lugar de $HOME en el nombre de archivo del título de la ventana"
 
 #: zathura/config.c:279
 msgid "Display the page number in the window title"
@@ -464,8 +464,8 @@ msgstr "Mostrar el nombre corto del archivo en la barra de estado"
 
 #: zathura/config.c:285
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr "Mostrar ~ en lugar de $HOME en el nombre de archivo de la barra de "
-"estado"
+msgstr ""
+"Mostrar ~ en lugar de $HOME en el nombre de archivo de la barra de estado"
 
 #: zathura/config.c:287
 msgid "Display (current page / total pages) as a percent in the statusbar"
@@ -591,7 +591,8 @@ msgstr "Error al tratar de ejecutar xdg-open"
 
 #: zathura/links.c:247
 msgid "Opening external applications in strict sandbox mode is not permitted"
-msgstr "La apertura de aplicaciones externas en modo sandbox estricto no está "
+msgstr ""
+"La apertura de aplicaciones externas en modo sandbox estricto no está "
 "permitida"
 
 #: zathura/links.c:280
@@ -725,8 +726,8 @@ msgstr "[Sin nombre]"
 
 #: zathura/zathura.c:837
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr "No se pudo leer el archivo desde stdin y escribirlo en un archivo "
-"temporal."
+msgstr ""
+"No se pudo leer el archivo desde stdin y escribirlo en un archivo temporal."
 
 #: zathura/zathura.c:857
 msgid "Could not read file from GIO and copy it to a temporary file."

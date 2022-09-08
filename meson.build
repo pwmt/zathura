@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.4.9',
+  version: '0.5.0',
   meson_version: '>=0.56',
   default_options: ['c_std=c11', 'warning_level=3'],
 )
@@ -44,8 +44,9 @@ gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
 gtk3 = dependency('gtk+-3.0', version: '>=3.22')
 cairo = dependency('cairo')
+magic = cc.find_library('magic', required: true)
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic]
 
 if host_machine.system() == 'darwin'
     gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
@@ -77,7 +78,6 @@ flags = cc.get_supported_arguments(flags)
 additional_sources = []
 sqlite = dependency('sqlite3', version: '>=3.6.23', required: get_option('sqlite'))
 synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
-magic = cc.find_library('magic', required: get_option('magic'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
 
 if sqlite.found()
@@ -92,11 +92,6 @@ if synctex.found()
   if synctex.version() < '2.0.0' and synctex.version() >= '1.19.0'
     warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
   endif
-endif
-
-if magic.found()
-  build_dependencies += magic
-  defines += '-DWITH_MAGIC'
 endif
 
 if seccomp.found()

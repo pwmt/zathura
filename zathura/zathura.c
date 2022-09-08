@@ -173,10 +173,12 @@ zathura_update_view_ppi(zathura_t* zathura)
   GdkRectangle monitor_geom;
   gdk_monitor_get_geometry(monitor, &monitor_geom);
 
-  /* calculate ppi, knowing that 1 inch = 25.4 mm */
-  if (width_mm == 0) {
+  /* Due to a bug in Gtk, width is sometimes incorrectly reported to be 1mm
+   * see https://gitlab.gnome.org/GNOME/gtk/issues/3115 for details */
+  if (width_mm <= 1) {
     girara_debug("cannot calculate PPI: monitor has zero width");
   } else {
+    /* calculate ppi, knowing that 1 inch = 25.4 mm */
     ppi = monitor_geom.width * 25.4 / width_mm;
   }
 
@@ -430,7 +432,9 @@ zathura_init(zathura_t* zathura)
   g_set_prgname("org.pwmt.zathura");
 
   /* load plugins */
-  zathura_plugin_manager_load(zathura->plugins.manager);
+  if (zathura_plugin_manager_load(zathura->plugins.manager) == false) {
+    girara_error("Found no plugins. Please install at least one plugin.");
+  }
 
   /* configuration */
   config_load_default(zathura);
@@ -451,7 +455,7 @@ zathura_init(zathura_t* zathura)
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");
-      if (seccomp_enable_strict_filter() != 0) {
+      if (seccomp_enable_strict_filter(zathura) != 0) {
         girara_error("Failed to initialize strict seccomp filter.");
         goto error_free;
       }

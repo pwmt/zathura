@@ -967,6 +967,9 @@ zathura
   * printing
   * bookmarks and history
 
+  The strict sandbox mode is still experimental with some libc implementations.
+  Currently supported and tested libc implementations: glibc
+
   No feature regressions are expected when using normal sandbox mode.
 
   When running under WSL, the default is "none" since seccomp is not supported in

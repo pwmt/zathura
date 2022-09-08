@@ -3,7 +3,9 @@
 #ifndef ZATHURA_CONTENT_TYPE_H
 #define ZATHURA_CONTENT_TYPE_H
 
-#include "types.h"
+#include <girara/datastructures.h>
+
+typedef struct zathura_content_type_context_s zathura_content_type_context_t;
 
 /**
  * Create new context for content type detection.
@@ -26,8 +28,7 @@ void zathura_content_type_free(zathura_content_type_context_t* context);
  * @param path file name
  * @return content type of path, needs to freeed with g_free.
  */
-char* zathura_content_type_guess(zathura_content_type_context_t* context,
-                                 const char* path,
+char* zathura_content_type_guess(zathura_content_type_context_t* context, const char* path,
                                  const girara_list_t* supported_content_types);
 
 #endif

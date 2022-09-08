@@ -45,13 +45,11 @@ zathura_image_buffer_create(unsigned int width, unsigned int height)
   g_return_val_if_fail(height != 0, NULL);
 
   unsigned int size = 0;
-  if (checked_umul(width, height, &size) == true ||
-      checked_umul(size, 3, &size) == true) {
+  if (checked_umul(width, height, &size) == true || checked_umul(size, 3, &size) == true) {
     return NULL;
   }
 
   zathura_image_buffer_t* image_buffer = malloc(sizeof(zathura_image_buffer_t));
-
   if (image_buffer == NULL) {
     return NULL;
   }
@@ -81,25 +79,27 @@ zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
   free(image_buffer);
 }
 
+static void
+document_information_entry_free(void* data)
+{
+  zathura_document_information_entry_t* entry = data;
+  zathura_document_information_entry_free(entry);
+}
+
 girara_list_t*
 zathura_document_information_entry_list_new(void)
 {
-  girara_list_t* list = girara_list_new2((girara_free_function_t)
-                                         zathura_document_information_entry_free);
-
-  return list;
+  return girara_list_new2(document_information_entry_free);
 }
 
 zathura_document_information_entry_t*
-zathura_document_information_entry_new(zathura_document_information_type_t type,
-                                       const char* value)
+zathura_document_information_entry_new(zathura_document_information_type_t type, const char* value)
 {
   if (value == NULL) {
     return NULL;
   }
 
-  zathura_document_information_entry_t* entry =
-    g_try_malloc0(sizeof(zathura_document_information_entry_t));
+  zathura_document_information_entry_t* entry = g_try_malloc0(sizeof(zathura_document_information_entry_t));
   if (entry == NULL) {
     return NULL;
   }
@@ -117,9 +117,6 @@ zathura_document_information_entry_free(zathura_document_information_entry_t* en
     return;
   }
 
-  if (entry->value != NULL) {
-    g_free(entry->value);
-  }
-
+  g_free(entry->value);
   g_free(entry);
 }

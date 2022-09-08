@@ -10,7 +10,7 @@
 
 #include <girara/utils.h>
 
-typedef struct private_s {
+typedef struct {
   char* file_path;
 } ZathuraFileMonitorPrivate;
 
@@ -21,21 +21,14 @@ enum {
   PROP_FILE_PATH
 };
 
-enum {
-  RELOAD_FILE,
-  LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
 static void
 finalize(GObject* object)
 {
-  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
-  ZathuraFileMonitorPrivate* private               = zathura_filemonitor_get_instance_private(file_monitor);
+  ZathuraFileMonitor*        file_monitor = ZATHURA_FILEMONITOR(object);
+  ZathuraFileMonitorPrivate* priv         = zathura_filemonitor_get_instance_private(file_monitor);
 
-  if (private->file_path != NULL) {
-    g_free(private->file_path);
+  if (priv->file_path != NULL) {
+    g_free(priv->file_path);
   }
 
   G_OBJECT_CLASS(zathura_filemonitor_parent_class)->finalize(object);
@@ -44,15 +37,15 @@ finalize(GObject* object)
 static void
 set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
 {
-  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
-  ZathuraFileMonitorPrivate* private               = zathura_filemonitor_get_instance_private(file_monitor);
+  ZathuraFileMonitor*        file_monitor = ZATHURA_FILEMONITOR(object);
+  ZathuraFileMonitorPrivate* priv         = zathura_filemonitor_get_instance_private(file_monitor);
 
   switch (prop_id) {
     case PROP_FILE_PATH:
-      if (private->file_path != NULL) {
-        g_free(private->file_path);
+      if (priv->file_path != NULL) {
+        g_free(priv->file_path);
       }
-      private->file_path = g_value_dup_string(value);
+      priv->file_path = g_value_dup_string(value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -62,12 +55,12 @@ set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* ps
 static void
 get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
 {
-  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
-  ZathuraFileMonitorPrivate* private               = zathura_filemonitor_get_instance_private(file_monitor);
+  ZathuraFileMonitor*        file_monitor = ZATHURA_FILEMONITOR(object);
+  ZathuraFileMonitorPrivate* priv         = zathura_filemonitor_get_instance_private(file_monitor);
 
   switch (prop_id) {
     case PROP_FILE_PATH:
-      g_value_set_string(value, private->file_path);
+      g_value_set_string(value, priv->file_path);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -94,22 +87,21 @@ zathura_filemonitor_class_init(ZathuraFileMonitorClass* class)
                           G_PARAM_STATIC_STRINGS));
 
   /* add signals */
-  signals[RELOAD_FILE] =
-    g_signal_new("reload-file", ZATHURA_TYPE_FILEMONITOR, G_SIGNAL_RUN_LAST, 0,
-                 NULL, NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 0);
+  g_signal_new("reload-file", ZATHURA_TYPE_FILEMONITOR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_generic,
+               G_TYPE_NONE, 0);
 }
 
 static void
 zathura_filemonitor_init(ZathuraFileMonitor* file_monitor)
 {
-  ZathuraFileMonitorPrivate* private = zathura_filemonitor_get_instance_private(file_monitor);
-  private->file_path                 = NULL;
+  ZathuraFileMonitorPrivate* priv = zathura_filemonitor_get_instance_private(file_monitor);
+  priv->file_path                 = NULL;
 }
 
 const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor)
 {
-  ZathuraFileMonitorPrivate* private = zathura_filemonitor_get_instance_private(file_monitor);
-  return private->file_path;
+  ZathuraFileMonitorPrivate* priv = zathura_filemonitor_get_instance_private(file_monitor);
+  return priv->file_path;
 }
 
 void zathura_filemonitor_start(ZathuraFileMonitor* file_monitor)

@@ -265,8 +265,11 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
       return;
     }
   }
-  if (new_db == true)
+  if (new_db == true) {
+    /* set version if initializing a new database */
+    sqlite3_exec(session, "PRAGMA user_version = " G_STRINGIFY(DATABASE_VERSION) ";", NULL, 0, NULL);
     return;
+  }
 
 #ifndef SQLITE_OMIT_COMPILEOPTION_DIAGS
   if (sqlite3_compileoption_used("SQLITE_OMIT_ALTERTABLE") == 1) {
