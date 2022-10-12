@@ -164,6 +164,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(exit);
   ALLOW_RULE(exit_group);
   ALLOW_RULE(epoll_create);
+  ALLOW_RULE(epoll_create1);
   ALLOW_RULE(epoll_ctl);
   ALLOW_RULE(fadvise64);
   ALLOW_RULE(fallocate);
