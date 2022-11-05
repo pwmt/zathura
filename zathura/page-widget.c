@@ -7,7 +7,6 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include <math.h>
-#include <float.h>
 
 #include "links.h"
 #include "page-widget.h"
@@ -16,7 +15,6 @@
 #include "utils.h"
 #include "shortcuts.h"
 #include "zathura.h"
-#include "zathura/document.h"
 
 typedef struct zathura_page_widget_private_s {
   zathura_page_t* page; /**< Page object */
@@ -626,24 +624,14 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       );
     }
     if (priv->selection.list != NULL && priv->selection.draw == true) {
-      int i = 0;
       const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
       cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
       GIRARA_LIST_FOREACH_BODY(priv->selection.list, zathura_rectangle_t*, rect,
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
         cairo_fill(cairo);
-        ++i;
       );
     }
-    /* draw selection */
-    /* if (priv->mouse.selection.y2 != -1 && priv->mouse.selection.x2 != -1) { */
-    /*   const GdkRGBA color = priv->zathura->ui.colors.highlight_color; */
-    /*   cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency); */
-    /*   cairo_rectangle(cairo, priv->mouse.selection.x1, priv->mouse.selection.y1, */
-    /*                   (priv->mouse.selection.x2 - priv->mouse.selection.x1), (priv->mouse.selection.y2 - priv->mouse.selection.y1)); */
-    /*   cairo_fill(cairo); */
-    /* } */
   } else {
     /* set background color */
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
@@ -907,7 +895,6 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
   if (button->button == GDK_BUTTON_PRIMARY) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
-
       /* start the selection */
       priv->mouse.selection_basepoint.x = button->x;
       priv->mouse.selection_basepoint.y = button->y;
