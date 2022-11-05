@@ -1056,48 +1056,42 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
     return false;
   }
 
-  zathura_rectangle_t tmp = priv->mouse.selection;
-  if (event->x < priv->mouse.selection_basepoint.x) {
-    tmp.x1 = event->x;
-    tmp.x2 = priv->mouse.selection_basepoint.x;
-  } else {
-    tmp.x2 = event->x;
-    tmp.x1 = priv->mouse.selection_basepoint.x;
-  }
-  if (event->y < priv->mouse.selection_basepoint.y) {
-    tmp.y1 = event->y;
-    tmp.y2 = priv->mouse.selection_basepoint.y;
-  } else {
-    tmp.y1 = priv->mouse.selection_basepoint.y;
-    tmp.y2 = event->y;
-  }
+  const zathura_rectangle_t tmp = {
+      priv->mouse.selection_basepoint.x,
+      priv->mouse.selection_basepoint.y,
+      event->x,
+      event->y
+  };
 
   if (priv->selection.list != NULL) {
       girara_list_free(priv->selection.list);
   }
 
-  zathura_rectangle_t scaled_mouse_selection = priv->mouse.selection;
+  zathura_rectangle_t scaled_mouse_selection = tmp;
 
   scaled_mouse_selection.x1 /= scale;
   scaled_mouse_selection.x2 /= scale;
   scaled_mouse_selection.y1 /= scale;
   scaled_mouse_selection.y2 /= scale;
 
-  /* zathura_rectangle_t redraw_bounds = {0, DBL_MAX, zathura_page_get_width(priv->page) * scale, 0}; */
-  zathura_rectangle_t redraw_bounds = {DBL_MAX, DBL_MAX, 0, 0};
+  const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
+  float y1, y2;
+
+  if (tmp.y1 < tmp.y2) {
+    y1 = tmp.y1;
+    y2 = tmp.y2;
+  } else {
+    y1 = tmp.y2;
+    y2 = tmp.y1;
+  }
+  zathura_rectangle_t redraw_bounds = {0, y1, page_width, y2};
   priv->selection.list = zathura_page_get_selection(priv->page, scaled_mouse_selection, NULL);
 
   priv->selection.list = zathura_page_get_selection(priv->page, scaled_mouse_selection, NULL);
   if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
     GIRARA_LIST_FOREACH_BODY(priv->selection.list, zathura_rectangle_t*, rect,
-      double x1_s = rect->x1 * scale;
-      if (x1_s < redraw_bounds.x1) redraw_bounds.x1 = x1_s;
-      double y1_s = rect->y1 * scale;
-      if (y1_s < redraw_bounds.y1) redraw_bounds.y1 = y1_s;
-      double x2_s = rect->x2 * scale;
-      if (x2_s > redraw_bounds.x2) redraw_bounds.x2 = x2_s;
-      double y2_s = rect->y2 * scale;
-      if (y2_s > redraw_bounds.y2) redraw_bounds.y2 = y2_s;
+      redraw_bounds.y1 = fmin(rect->y1 * scale, redraw_bounds.y1);
+      redraw_bounds.y2 = fmax(rect->y2 * scale, redraw_bounds.y2);
     );
 
     priv->selection.draw = false;
@@ -1106,7 +1100,6 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
     redraw_rect(page, &redraw_bounds);
 
     priv->selection.bounds = redraw_bounds;
-
   }
   priv->mouse.selection = tmp;
 
