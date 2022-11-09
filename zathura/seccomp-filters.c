@@ -169,7 +169,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(fadvise64);
   ALLOW_RULE(fallocate);
   ALLOW_RULE(fcntl);  /* TODO: build detailed filter */
-  /* ALLOW_RULE(fstat); unused?, stat (below), lstat(below), fstatat, newfstatat(below) */
+  ALLOW_RULE(fstat); /* used by older libc, stat (below), lstat(below), fstatat, newfstatat(below) */
   ALLOW_RULE(fstatfs); /* statfs (below) */
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
@@ -227,15 +227,15 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /*  ALLOW_RULE(shmdt); X11 only */
   /*  ALLOW_RULE(shmget); X11 only */
   ALLOW_RULE(shutdown);
-  /*  ALLOW_RULE(stat); unused? */
+  ALLOW_RULE(stat); /* used by older libc */
   ALLOW_RULE(statx);
-  ALLOW_RULE(statfs); /* used by filemonotor, fstatfs above */
+  ALLOW_RULE(statfs); /* used by filemonitor, fstatfs above */
   ALLOW_RULE(sysinfo);
   /* ALLOW_RULE(umask); X11 only */ 
   /* ALLOW_RULE(uname); X11 only */
-  ALLOW_RULE(unlink); /* unused?, unlinkat */
+  /* ALLOW_RULE(unlink); unused?, unlinkat */
   ALLOW_RULE(write); /* investigate further */
-  /*  ALLOW_RULE(writev); X11 only, pwritev, pwritev2 */
+  /*  ALLOW_RULE(writev); X11 only */
   /*  ALLOW_RULE(wait4); unused? */
 
   /* required for testing only */
@@ -265,7 +265,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
     ALLOW_RULE(shmctl);
     ALLOW_RULE(shmdt);
     ALLOW_RULE(shmget);
-    ALLOW_RULE(writev);
+    ALLOW_RULE(writev); /* pwritev, pwritev2 */
   }
   else {
     girara_debug("On Wayland, blocking X11 syscalls");
@@ -341,6 +341,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
    * Since the seccomp mechanism is unable to examine system-call arguments that are passed in separate structures
    * it will be unable to make decisions based on the flags given to clone3().
    * Code meant to be sandboxed with seccomp should not use clone3() at all until it is possible to inspect its arguments.
+   *
    *
    */
 
