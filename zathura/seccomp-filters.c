@@ -155,25 +155,25 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   }
 
   ALLOW_RULE(access); /* faccessat, faccessat2 */
-  ALLOW_RULE(bind); /* unused? */
+  /* ALLOW_RULE(bind);  unused? */
   ALLOW_RULE(brk);
-  ALLOW_RULE(clock_getres); /* unused? */
+  /* ALLOW_RULE(clock_getres); unused? */
   /* ALLOW_RULE(clone); specified below, clone3 see comment below */
   ALLOW_RULE(close);
   ALLOW_RULE(eventfd2);
   ALLOW_RULE(exit);
   ALLOW_RULE(exit_group);
-  ALLOW_RULE(epoll_create); /* outdated, to be removed */
+  /* ALLOW_RULE(epoll_create); outdated, to be removed */
   ALLOW_RULE(epoll_create1);
   ALLOW_RULE(epoll_ctl);
   ALLOW_RULE(fadvise64);
   ALLOW_RULE(fallocate);
   ALLOW_RULE(fcntl);  /* TODO: build detailed filter */
-  ALLOW_RULE(fstat); /* unused?, stat (below), lstat(below), fstatat, newfstatat(below) */
+  /* ALLOW_RULE(fstat); unused?, stat (below), lstat(below), fstatat, newfstatat(below) */
   ALLOW_RULE(fstatfs); /* statfs (below) */
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
-  ALLOW_RULE(getdents); /* unused? */
+  /* ALLOW_RULE(getdents); unused? */
   ALLOW_RULE(getdents64);
   ALLOW_RULE(getegid);
   ALLOW_RULE(geteuid);
@@ -185,14 +185,14 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(getrandom);
   ALLOW_RULE(getresgid);
   ALLOW_RULE(getresuid);
-  ALLOW_RULE(getrlimit); /* unused? */
+  /* ALLOW_RULE(getrlimit); unused? */
   ALLOW_RULE(getpeername);
-  ALLOW_RULE(inotify_add_watch); /* unused? */
-  ALLOW_RULE(inotify_init1); /* unused?, inotify_init (glib<2.9) */
-  ALLOW_RULE(inotify_rm_watch); /* unused? */
+  ALLOW_RULE(inotify_add_watch); /* required by filemonitor feature */
+  ALLOW_RULE(inotify_init1); /* used by filemonitor, inotify_init (glib<2.9) */
+  ALLOW_RULE(inotify_rm_watch); /* used by filemonitor */
   /* ALLOW_RULE (ioctl); specified below  */
   ALLOW_RULE(lseek);
-  ALLOW_RULE(lstat); /* unused? */
+  /* ALLOW_RULE(lstat); unused? */
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
@@ -202,8 +202,8 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(newfstatat);
   /* ALLOW_RULE (open); specified below */
   /* ALLOW_RULE (openat); specified below */
-  ALLOW_RULE(pipe); /* unused? */
-  ALLOW_RULE(pipe2); /* unused? */
+  /* ALLOW_RULE(pipe); unused? */
+  /* ALLOW_RULE(pipe2); unused? required by x11, see below */
   ALLOW_RULE(poll);
   ALLOW_RULE(pwrite64); /* equals pwrite */
   ALLOW_RULE(pread64); /* equals pread */
@@ -212,7 +212,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(readlink); /* readlinkat */
   ALLOW_RULE(recvfrom);
   ALLOW_RULE(recvmsg);
-  ALLOW_RULE(restart_syscall); /* unused? */
+  /*  ALLOW_RULE(restart_syscall); unused? */
   ALLOW_RULE(rseq);
   ALLOW_RULE(rt_sigaction);
   ALLOW_RULE(rt_sigprocmask);
@@ -222,21 +222,21 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(sendto); /* ipc, investigate */
   ALLOW_RULE(select); /* pselect (equals pselect6), unused? */
   ALLOW_RULE(set_robust_list);
-  ALLOW_RULE(shmat);
-  ALLOW_RULE(shmctl);
-  ALLOW_RULE(shmdt);
-  ALLOW_RULE(shmget);
+  /*  ALLOW_RULE(shmat); X11 only */ 
+  /*  ALLOW_RULE(shmctl); X11 only */
+  /*  ALLOW_RULE(shmdt); X11 only */
+  /*  ALLOW_RULE(shmget); X11 only */
   ALLOW_RULE(shutdown);
-  ALLOW_RULE(stat); /* unused? */
+  /*  ALLOW_RULE(stat); unused? */
   ALLOW_RULE(statx);
-  ALLOW_RULE(statfs); /* unused?, fstatfs above */
+  ALLOW_RULE(statfs); /* used by filemonotor, fstatfs above */
   ALLOW_RULE(sysinfo);
-  /* ALLOW_RULE(umask); allowed for X11 only below */ 
-  ALLOW_RULE(uname);
-  ALLOW_RULE(unlink); /* unlinkat */
+  /* ALLOW_RULE(umask); X11 only */ 
+  /* ALLOW_RULE(uname); X11 only */
+  ALLOW_RULE(unlink); /* unused?, unlinkat */
   ALLOW_RULE(write); /* investigate further */
-  ALLOW_RULE(writev); /* unused?, pwritev, pwritev2 */
-  ALLOW_RULE(wait4); /* unused? */
+  /*  ALLOW_RULE(writev); X11 only, pwritev, pwritev2 */
+  /*  ALLOW_RULE(wait4); unused? */
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
@@ -255,8 +255,17 @@ seccomp_enable_strict_filter(zathura_t* zathura)
 
     ALLOW_RULE(mkdir); /* mkdirat */
     ALLOW_RULE(setsockopt);
+    ALLOW_RULE(getsockopt);
+    ALLOW_RULE(getsockname);
+    ALLOW_RULE(pipe2);
     ALLOW_RULE(connect);
     ALLOW_RULE(umask);
+    ALLOW_RULE(uname);
+    ALLOW_RULE(shmat); 
+    ALLOW_RULE(shmctl);
+    ALLOW_RULE(shmdt);
+    ALLOW_RULE(shmget);
+    ALLOW_RULE(writev);
   }
   else {
     girara_debug("On Wayland, blocking X11 syscalls");
@@ -297,12 +306,12 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME));
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
-
-  /* open sycall to be removed? openat is used instead */
+  /* open syscall to be removed? openat is used instead */
   /* special restrictions for open, prevent opening files for writing */
-  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
-  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
+  /*  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
+  * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
+  */
 
   /* special restrictions for openat, prevent opening files for writing */
   ADD_RULE("allow", SCMP_ACT_ALLOW,         openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
