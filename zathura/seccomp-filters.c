@@ -203,7 +203,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE (open); specified below */
   /* ALLOW_RULE (openat); specified below */
   /* ALLOW_RULE(pipe); unused? */
-  /* ALLOW_RULE(pipe2); unused? required by x11, see below */
+  ALLOW_RULE(pipe2);
   ALLOW_RULE(poll);
   ALLOW_RULE(pwrite64); /* equals pwrite */
   ALLOW_RULE(pread64); /* equals pread */
@@ -257,7 +257,6 @@ seccomp_enable_strict_filter(zathura_t* zathura)
     ALLOW_RULE(setsockopt);
     ALLOW_RULE(getsockopt);
     ALLOW_RULE(getsockname);
-    ALLOW_RULE(pipe2);
     ALLOW_RULE(connect);
     ALLOW_RULE(umask);
     ALLOW_RULE(uname);
