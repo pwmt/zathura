@@ -29,7 +29,7 @@ function __fish_complete_zathura
     end
 end
 
-complete -c zathura -x -a '(__fish_complete_zathura)'
+complete -c zathura -kxa '(__fish_complete_zathura)'
 
 complete -c zathura -s e -l reparent -d 'Reparents to window specified by xid'
 complete -c zathura -s c -l config-dir -d 'Path to config directory' \
