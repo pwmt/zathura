@@ -344,6 +344,28 @@ zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathu
   return functions->page_get_text(page, page->data, rectangle, error);
 }
 
+girara_list_t*
+zathura_page_get_selection(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error)
+{
+  if (page == NULL || page->document == NULL ) {
+    if (error) {
+      *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
+    }
+    return NULL;
+  }
+
+  zathura_plugin_t* plugin = zathura_document_get_plugin(page->document);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_get_selection == NULL) {
+    if (error) {
+      *error = ZATHURA_ERROR_NOT_IMPLEMENTED;
+    }
+    return NULL;
+  }
+
+  return functions->page_get_selection(page, page->data, rectangle, error);
+}
+
 zathura_error_t
 zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing)
 {

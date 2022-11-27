@@ -6,15 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-07 23:53+0200\n"
+"POT-Creation-Date: 2022-11-27 16:22+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
-"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish (http://www.transifex.com/pwmt/zathura/language/es/)\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
 
 #: data/org.pwmt.zathura.appdata.xml.in:7 data/org.pwmt.zathura.desktop.in:5
 msgid "Zathura"
@@ -88,14 +89,14 @@ msgid "Copied selected image to selection %s"
 msgstr "Imagen seleccionada copiada a la selección %s"
 
 #: zathura/commands.c:37 zathura/commands.c:77 zathura/commands.c:104
-#: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:312
-#: zathura/commands.c:334 zathura/commands.c:430 zathura/commands.c:566
+#: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:317
+#: zathura/commands.c:344 zathura/commands.c:446 zathura/commands.c:582
 #: zathura/shortcuts.c:463 zathura/shortcuts.c:1283 zathura/shortcuts.c:1318
 #: zathura/shortcuts.c:1345
 msgid "No document opened."
 msgstr "Ningún documento abierto."
 
-#: zathura/commands.c:43 zathura/commands.c:83 zathura/commands.c:435
+#: zathura/commands.c:43 zathura/commands.c:83 zathura/commands.c:451
 msgid "Invalid number of arguments given."
 msgstr "Número de argumentos incorrecto."
 
@@ -182,7 +183,7 @@ msgstr "Otros"
 msgid "No information available."
 msgstr "No hay información disponible."
 
-#: zathura/commands.c:248 zathura/commands.c:619
+#: zathura/commands.c:248 zathura/commands.c:635
 msgid "Too many arguments."
 msgstr "Demasiados argumentos."
 
@@ -194,45 +195,53 @@ msgstr "Sin argumentos."
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "No se permite imprimir en modo sandbox estricto"
 
-#: zathura/commands.c:319 zathura/commands.c:341
+#: zathura/commands.c:312 zathura/commands.c:339
+msgid "Saving is not permitted in strict sandbox mode"
+msgstr ""
+
+#: zathura/commands.c:324 zathura/commands.c:351
 msgid "Invalid number of arguments."
 msgstr "Número de argumentos incorrecto."
 
-#: zathura/commands.c:454
+#: zathura/commands.c:441
+msgid "Exporting attachments is not permitted in strict sandbox mode"
+msgstr ""
+
+#: zathura/commands.c:470
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "No se pudo escribir el  adjunto '%s' a '%s'."
 
-#: zathura/commands.c:456
+#: zathura/commands.c:472
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Escrito adjunto '%s' a '%s'."
 
-#: zathura/commands.c:500
+#: zathura/commands.c:516
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Incorporada imagen '%s' a '%s'."
 
-#: zathura/commands.c:502
+#: zathura/commands.c:518
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "No se pudo incorporar la imagen '%s' a '%s'."
 
-#: zathura/commands.c:509
+#: zathura/commands.c:525
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Imagen desconocida '%s'."
 
-#: zathura/commands.c:513
+#: zathura/commands.c:529
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Adjunto o imagen desconocidos '%s'."
 
-#: zathura/commands.c:532
+#: zathura/commands.c:548
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Exec no está permitido en modo sandbox estricto"
 
-#: zathura/commands.c:579
+#: zathura/commands.c:595
 msgid "Argument must be a number."
 msgstr "El argumento ha de ser un número."
 
@@ -683,15 +692,15 @@ msgstr "Marcador al que ir"
 msgid "Search for the given phrase and display results"
 msgstr "Buscar la frase proporcionada y mostrar los resultados"
 
-#: zathura/page-widget.c:655
+#: zathura/page-widget.c:662
 msgid "Loading..."
 msgstr "Cargando ..."
 
-#: zathura/page-widget.c:1114
+#: zathura/page-widget.c:1159
 msgid "Copy image"
 msgstr "Copiar imagen"
 
-#: zathura/page-widget.c:1115
+#: zathura/page-widget.c:1160
 msgid "Save image as"
 msgstr "Guardar imagen como"
 
@@ -720,40 +729,40 @@ msgstr "Patrón no encontrado: %s"
 msgid "This document does not contain any index"
 msgstr "Este documento no contiene ningún índice"
 
-#: zathura/zathura.c:305 zathura/zathura.c:1500
+#: zathura/zathura.c:307 zathura/zathura.c:1504
 msgid "[No name]"
 msgstr "[Sin nombre]"
 
-#: zathura/zathura.c:837
+#: zathura/zathura.c:841
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "No se pudo leer el archivo desde stdin y escribirlo en un archivo temporal."
 
-#: zathura/zathura.c:857
+#: zathura/zathura.c:861
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "No se pudo leer el archivo desde GIO y copiarlo a un archivo temporal."
 
-#: zathura/zathura.c:961
+#: zathura/zathura.c:965
 msgid "Enter password:"
 msgstr "Introducir contraseña:"
 
-#: zathura/zathura.c:1000
+#: zathura/zathura.c:1004
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Tipo de archivo no soportado. Por favor, instale el plugin adecuado."
 
-#: zathura/zathura.c:1010
+#: zathura/zathura.c:1014
 msgid "Document does not contain any pages"
 msgstr "El documento no contiene páginas"
 
-#: zathura/zathura.c:1371
+#: zathura/zathura.c:1375
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "El archivo ya existe: %s. Utilice :write! para sobrescribirlo."
 
-#: zathura/zathura.c:1380
+#: zathura/zathura.c:1384
 msgid "Failed to save document."
 msgstr "Error al guardar el documento."
 
-#: zathura/zathura.c:1384
+#: zathura/zathura.c:1388
 msgid "Document saved."
 msgstr "Documento guardado."

@@ -16,7 +16,7 @@ The following dependencies are required:
 
 The following dependencies are optional:
 
-* `sqlite3` (>= 3.6.23): splite3 database backend
+* `sqlite3` (>= 3.6.23): sqlite3 database backend
 * `libsynctex` from TeXLive (>= 1.19): SyncTeX support
 * `libseccomp`: sandbox support
 
@@ -24,6 +24,7 @@ For building zathura, the following dependencies are also required:
 
 * `meson` (>= 0.56)
 * `gettext`
+* `pkgconf`
 
 The following dependencies are optional build-time only dependencies:
 

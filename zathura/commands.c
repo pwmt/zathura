@@ -308,6 +308,11 @@ cmd_save(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Saving is not permitted in strict sandbox mode"));
+    return false;
+  }
+
   if (zathura->document == NULL) {
     girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;
@@ -329,6 +334,11 @@ cmd_savef(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
+
+  if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Saving is not permitted in strict sandbox mode"));
+    return false;
+  }
 
   if (zathura->document == NULL) {
     girara_notify(session, GIRARA_ERROR, _("No document opened."));
@@ -426,6 +436,12 @@ cmd_export(girara_session_t* session, girara_list_t* argument_list)
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
+
+  if (zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exporting attachments is not permitted in strict sandbox mode"));
+    return false;
+  }
+
   if (zathura->document == NULL) {
     girara_notify(session, GIRARA_ERROR, _("No document opened."));
     return false;

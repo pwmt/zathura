@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.5.1',
+  version: '0.5.2',
   meson_version: '>=0.56',
   default_options: ['c_std=c11', 'warning_level=3'],
 )
@@ -14,8 +14,8 @@ version_array = version.split('.')
 # * If any of the exported datastructures have changed in a incompatible way
 #   bump SOMAJOR and set SOMINOR to 0.
 # * If a function has been added bump SOMINOR.
-plugin_api_version = '3'
-plugin_abi_version = '4'
+plugin_api_version = '4'
+plugin_abi_version = '5'
 
 conf_data = configuration_data()
 conf_data.set('ZVMAJOR', version_array[0])
