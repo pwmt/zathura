@@ -193,6 +193,16 @@ ZATHURA_PLUGIN_API cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t*
 ZATHURA_PLUGIN_API char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
+ * Get rectangles from selection
+ * @param page Page
+ * @param rectangle Selection
+ * @param error Set to an error value (see \ref zathura_error_t) if an error
+ * occurred
+ * @return List of rectangles or NULL if an error occurred
+ */
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_selection(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
+
+/**
  * Render page
  *
  * @param page The page object
