@@ -31,6 +31,7 @@
 
 #define DENY_RULE(call) ADD_RULE("kill", SCMP_ACT_KILL, call, 0)
 #define ALLOW_RULE(call) ADD_RULE("allow", SCMP_ACT_ALLOW, call, 0)
+#define ERRNO_RULE(call) ADD_RULE("errno", SCMP_ACT_ERRNO(ENOSYS), call, 0)
 
 int
 seccomp_enable_basic_filter(void)
@@ -242,6 +243,18 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(timer_create);
   ALLOW_RULE(timer_delete);
 
+  /* Gracefully fail syscalls that may be used by dependencies in the future 
+     These rules will still block the syscalls but since there usually is fallback code 
+     for new syscalls, it will not shut down zathura and give us more time to
+     analyse the newly required syscall before potentionally allowing it.
+  */
+
+  ERRNO_RULE(openat2);
+  ERRNO_RULE(faccessat2);
+  ERRNO_RULE(pwritev2);
+#ifdef __NR_readfile
+  ERRNO_RULE(readfile);
+#endif
 
 /* Permit X11 specific syscalls */
 #ifdef GDK_WINDOWING_X11
@@ -284,7 +297,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
               CLONE_PARENT_SETTID | \
               CLONE_CHILD_CLEARTID));
   /* trigger fallback to clone */
-  ADD_RULE("errno", SCMP_ACT_ERRNO(ENOSYS), clone3, 0);
+  ERRNO_RULE(clone3);
 
   /* fcntl filter - not yet working */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
