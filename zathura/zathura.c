@@ -978,7 +978,7 @@ document_page_size_comp(const void *a, const void *b)
 {
   const sample_t* lhs = a;
   const sample_t* rhs = b;
-  return lhs->freq - rhs->freq;
+  return rhs->freq - lhs->freq;
 }
 
 static void
@@ -986,31 +986,39 @@ document_open_page_most_frequent_size(zathura_document_t *document,
                                       unsigned int *width,
                                       unsigned int *height)
 {
-  sample_t samples[32] = {{0}}; /* a max heap */
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  unsigned int last_sample = (number_of_pages > 32) ? 32 : number_of_pages;
+  girara_list_t* samples = girara_list_new2(g_free);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
-  for (unsigned int page_id = 0; page_id < last_sample; page_id++) {
-    zathura_page_t *page = zathura_document_get_page(document, page_id);
-    double w = zathura_page_get_width(page), h = zathura_page_get_height(page);
-    unsigned int i = 0;
-    for (i = 0; i < last_sample; i++) {
-      if (samples[i].h == h && samples[i].w == w) {
-        samples[i].freq++;
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    const double w = zathura_page_get_width(page);
+    const double h = zathura_page_get_height(page);
+
+    bool found = false;
+    GIRARA_LIST_FOREACH_BODY(samples, sample_t*, sample,
+      if (sample->h == h && sample->w == w) {
+        sample->freq++;
+        found = true;
         break;
       }
-    }
-    if (i == last_sample) { /* insert */
-      samples[page_id].h = h;
-      samples[page_id].w = w;
-      samples[page_id].freq = 1;
+    );
+
+    if (found == false) {
+      sample_t* sample = g_try_malloc0(sizeof(sample_t));
+      sample->w = w;
+      sample->h = h;
+      sample->freq = 1;
+      girara_list_append(samples, sample);
     }
   }
 
-  qsort(samples, 32, sizeof(sample_t), document_page_size_comp);
+  girara_list_sort(samples, document_page_size_comp);
 
-  *width = samples[31].w;
-  *height = samples[31].h;
+  sample_t* max_sample = girara_list_nth(samples, 0);
+  *width = max_sample->w;
+  *height = max_sample->h;
+
+  girara_list_free(samples);
 }
 
 bool
