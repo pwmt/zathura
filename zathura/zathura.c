@@ -996,7 +996,7 @@ document_open_page_most_frequent_size(zathura_document_t *document,
 
     bool found = false;
     GIRARA_LIST_FOREACH_BODY(samples, sample_t*, sample,
-      if (sample->h == h && sample->w == w) {
+      if (fabs(sample->h - h) <= DBL_EPSILON && fabs(sample->w - w) <= DBL_EPSILON) {
         sample->freq++;
         found = true;
         break;
