@@ -967,19 +967,25 @@ document_open_password_dialog(gpointer data)
   return FALSE;
 }
 
-typedef struct sample_s {
+typedef struct {
   double h;
   double w;
-  unsigned int freq;
+  int freq;
 } sample_t;
 
-static int document_page_size_comp(const void *a, const void *b) {
-  return ((sample_t *)a)->freq - ((sample_t *)b)->freq;
+static int
+document_page_size_comp(const void *a, const void *b)
+{
+  const sample_t* lhs = a;
+  const sample_t* rhs = b;
+  return lhs->freq - rhs->freq;
 }
 
-static void document_open_page_most_frequent_size(zathura_document_t *document,
-                                                  unsigned int *width,
-                                                  unsigned int *height) {
+static void
+document_open_page_most_frequent_size(zathura_document_t *document,
+                                      unsigned int *width,
+                                      unsigned int *height)
+{
   sample_t samples[32] = {{0}}; /* a max heap */
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   unsigned int last_sample = (number_of_pages > 32) ? 32 : number_of_pages;
@@ -1001,7 +1007,7 @@ static void document_open_page_most_frequent_size(zathura_document_t *document,
     }
   }
 
-  qsort((void *)samples, 32, sizeof(sample_t), document_page_size_comp);
+  qsort(samples, 32, sizeof(sample_t), document_page_size_comp);
 
   *width = samples[31].w;
   *height = samples[31].h;
