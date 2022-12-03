@@ -967,6 +967,51 @@ document_open_password_dialog(gpointer data)
   return FALSE;
 }
 
+typedef struct sample_s {
+  double h;
+  double w;
+  unsigned int freq;
+} sample_t;
+
+static int document_page_size_comp(const void *a, const void *b) {
+  return ((sample_t *)a)->freq - ((sample_t *)b)->freq;
+}
+
+static void document_open_page_most_frequent_size(zathura_document_t *document,
+                                                  unsigned int *width,
+                                                  unsigned int *height) {
+  sample_t samples[32] = {{0}}; /* a max heap */
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  unsigned int last_sample = (number_of_pages > 32) ? 32 : number_of_pages;
+
+  for (unsigned int page_id = 0; page_id < last_sample; page_id++) {
+    zathura_page_t *page = zathura_document_get_page(document, page_id);
+    double w = zathura_page_get_width(page), h = zathura_page_get_height(page);
+    unsigned int i = 0;
+    for (i = 0; i < last_sample; i++) {
+      if (samples[i].h == h && samples[i].w == w) {
+        samples[i].freq++;
+        break;
+      }
+    }
+    if (i == last_sample) { /* insert */
+      samples[page_id].h = h;
+      samples[page_id].w = w;
+      samples[page_id].freq = 1;
+    }
+  }
+
+  qsort((void *)samples, 32, sizeof(sample_t), document_page_size_comp);
+
+  for (int i = 0; i < 32; ++i) {
+    /* fprintf(stderr, "i: %d, w: %f, h: %f, freq: %d\n", i, samples[i].h,
+            samples[i].w, samples[i].freq); */
+  }
+
+  *width = samples[31].w;
+  *height = samples[31].h;
+}
+
 bool
 document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
               int page_number)
@@ -1169,11 +1214,22 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     goto error_free;
   }
 
+  unsigned int most_freq_width, most_freq_height;
+  document_open_page_most_frequent_size(document, &most_freq_width,
+                                        &most_freq_height);
+
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       goto error_free;
     }
+
+    unsigned int cell_height = 0, cell_width = 0;
+    zathura_document_get_cell_size(document, &cell_height, &cell_width);
+    /* fprintf(stderr, "new_cell_height: %d \t new_cell_width: %d\n", most_freq_height, most_freq_width); */
+    zathura_document_set_cell_size(document, most_freq_height, most_freq_width);
+    zathura_page_set_width(page, most_freq_width);
+    zathura_page_set_height(page, most_freq_height);
 
     GtkWidget* page_widget = zathura_page_widget_new(zathura, page);
     if (page_widget == NULL) {
@@ -1727,6 +1783,9 @@ adjust_view(zathura_t* zathura)
   double view_ratio = (double)view_height / (double)view_width;
   double zoom = zathura_document_get_zoom(zathura->document);
   double newzoom = zoom;
+
+    /* fprintf(stderr, "cell_height: %d \t cell_width: %d \t page_ratio: %f\n", cell_height, cell_width, page_ratio); */
+    /* fprintf(stderr, "view_height: %d \t view_width: %d \t view_ratio: %f\n", view_height, view_width, view_ratio); */
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
       (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
