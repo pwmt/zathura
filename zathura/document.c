@@ -451,7 +451,6 @@ zathura_document_set_zoom(zathura_document_t* document, double zoom)
     return;
   }
 
-  /* fprintf(stderr, "orig_zoom: %f\t new_zoom: %f\n", document->zoom, zoom); */
   document->zoom = zoom;
 }
 

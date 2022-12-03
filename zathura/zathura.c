@@ -1003,11 +1003,6 @@ static void document_open_page_most_frequent_size(zathura_document_t *document,
 
   qsort((void *)samples, 32, sizeof(sample_t), document_page_size_comp);
 
-  for (int i = 0; i < 32; ++i) {
-    /* fprintf(stderr, "i: %d, w: %f, h: %f, freq: %d\n", i, samples[i].h,
-            samples[i].w, samples[i].freq); */
-  }
-
   *width = samples[31].w;
   *height = samples[31].h;
 }
@@ -1226,7 +1221,6 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
 
     unsigned int cell_height = 0, cell_width = 0;
     zathura_document_get_cell_size(document, &cell_height, &cell_width);
-    /* fprintf(stderr, "new_cell_height: %d \t new_cell_width: %d\n", most_freq_height, most_freq_width); */
     zathura_document_set_cell_size(document, most_freq_height, most_freq_width);
     zathura_page_set_width(page, most_freq_width);
     zathura_page_set_height(page, most_freq_height);
@@ -1783,9 +1777,6 @@ adjust_view(zathura_t* zathura)
   double view_ratio = (double)view_height / (double)view_width;
   double zoom = zathura_document_get_zoom(zathura->document);
   double newzoom = zoom;
-
-    /* fprintf(stderr, "cell_height: %d \t cell_width: %d \t page_ratio: %f\n", cell_height, cell_width, page_ratio); */
-    /* fprintf(stderr, "view_height: %d \t view_width: %d \t view_ratio: %f\n", view_height, view_width, view_ratio); */
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH ||
       (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
