@@ -1,0 +1,30 @@
+name: Ninja/Meson Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: archlinux:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+    - name: Install dependencies
+      run: |
+        pacman-key --init
+        pacman --noconfirm -Sy appstream-glib check cmake desktop-file-utils file file gcc girara git libsynctex meson ninja pkg-config python-sphinx sqlite texlive-bin
+    - name: Run the build
+      run: |
+        meson build
+        cd build
+        ninja
+    - name: Upload built artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: zathura-build
+        path: build
