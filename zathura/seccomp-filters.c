@@ -160,6 +160,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(brk);
   /* ALLOW_RULE(clock_getres); unused? */
   /* ALLOW_RULE(clone); specified below, clone3 see comment below */
+  ALLOW_RULE(clock_gettime);
   ALLOW_RULE(close);
   ALLOW_RULE(eventfd2);
   ALLOW_RULE(exit);
@@ -183,6 +184,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(getpid);
   ALLOW_RULE(getppid); /* required inside containers */
   ALLOW_RULE(gettid);
+  ALLOW_RULE(gettimeofday);
   ALLOW_RULE(getrandom);
   ALLOW_RULE(getresgid);
   ALLOW_RULE(getresuid);
