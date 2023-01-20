@@ -217,7 +217,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(pwrite64); equals pwrite */
   ALLOW_RULE(read);
   ALLOW_RULE(readlink); /* readlinkat */
-  /* ALLOW_RULE(recvfrom); */
+  /* ALLOW_RULE(recvfrom); X11 only */
   ALLOW_RULE(recvmsg);
   /* ALLOW_RULE(restart_syscall); used by the kernel only */
   ALLOW_RULE(rseq);
@@ -274,6 +274,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
     ALLOW_RULE(shmctl);
     ALLOW_RULE(shmdt);
     ALLOW_RULE(shmget);
+    ALLOW_RULE(recvfrom);
     ALLOW_RULE(writev); /* pwritev, pwritev2 */
   }
   else {
