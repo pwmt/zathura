@@ -221,10 +221,7 @@ zathura_get_version_string(zathura_t* zathura, bool markup)
     );
   }
 
-  char* version = string->str;
-  g_string_free(string, FALSE);
-
-  return version;
+  return g_string_free(string, FALSE);
 }
 
 GdkAtom*
