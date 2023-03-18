@@ -556,10 +556,9 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
     GIRARA_LIST_FOREACH_BODY_WITH_ITER(argument_list, char*, iter, value,
-      char* r = girara_replace_substring(value, "$FILE", path);
-
+      char* r = girara_replace_substring(value, "$PAGE", page_buf);
       if (r != NULL) {
-        char* s = girara_replace_substring(r, "$PAGE", page_buf);
+        char* s = girara_replace_substring(r, "$FILE", path);
         g_free(r);
 
         if (s != NULL) {
