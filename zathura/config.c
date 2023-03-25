@@ -93,6 +93,18 @@ cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
 }
 
 static void
+cb_doubleclick_changed(girara_session_t* session, const char* UNUSED(name),
+                      girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  zathura->global.double_click_follow = *(const bool*) value;
+}
+
+static void
 cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
                      girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
@@ -266,6 +278,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Highlight search results"), cb_nohlsearch_changed, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "double-click-follow",    &bool_value,  BOOLEAN, false, _("Double click to follow links"), cb_doubleclick_changed, NULL);
 #define INCREMENTAL_SEARCH false
   bool_value = INCREMENTAL_SEARCH;
   girara_setting_add(gsession, "incremental-search",     &bool_value,  BOOLEAN, false, _("Enable incremental search"), cb_incsearch_changed, NULL);

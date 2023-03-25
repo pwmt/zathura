@@ -624,6 +624,12 @@ zathura
   * Value type: Boolean
   * Default value: true
 
+*double-click-follow*
+  Defines whether double or single click on a link should trigger follow.
+
+  * Value type: Boolean
+  * Default value: true
+
 *filemonitor*
   Defines the file monitor backend used to check for changes in files. Possible
   values are "glib", "signal" (if signal handling is supported), and "noop". The
