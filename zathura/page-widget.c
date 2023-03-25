@@ -70,6 +70,7 @@ static void zathura_page_widget_get_property(GObject* object, guint prop_id, GVa
 static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void redraw_rect(ZathuraPage* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles);
+static void evaluate_link_at_mouse_position(ZathuraPage* widget, int oldx, int oldy);
 static void zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event);
 static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button);
 static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* button);
@@ -860,6 +861,30 @@ redraw_all_rects(ZathuraPage* widget, girara_list_t* rectangles)
   );
 }
 
+static void
+evaluate_link_at_mouse_position(ZathuraPage* page, int oldx, int oldy)
+{
+  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  /* simple single click */
+  /* get links */
+  if (priv->links.retrieved == false) {
+    priv->links.list      = zathura_page_links_get(priv->page, NULL);
+    priv->links.retrieved = true;
+    priv->links.n         = (priv->links.list == NULL) ? 0 : girara_list_size(priv->links.list);
+  }
+
+  if (priv->links.list != NULL && priv->links.n > 0) {
+    GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
+        const zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
+        if (rect.x1 <= oldx && rect.x2 >= oldx
+          && rect.y1 <= oldy && rect.y2 >= oldy) {
+        zathura_link_evaluate(priv->zathura, link);
+        break;
+      }
+    );
+  }
+}
+
 zathura_link_t*
 zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
 {
@@ -958,22 +983,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   if (priv->mouse.selection.y2 == -1 && priv->mouse.selection.x2 == -1 ) {
     /* simple single click */
     /* get links */
-    if (priv->links.retrieved == false) {
-      priv->links.list      = zathura_page_links_get(priv->page, NULL);
-      priv->links.retrieved = true;
-      priv->links.n         = (priv->links.list == NULL) ? 0 : girara_list_size(priv->links.list);
-    }
-
-    if (priv->links.list != NULL && priv->links.n > 0) {
-      GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
-        const zathura_rectangle_t rect = recalc_rectangle(priv->page, zathura_link_get_position(link));
-        if (rect.x1 <= oldx && rect.x2 >= oldx
-            && rect.y1 <= oldy && rect.y2 >= oldy) {
-          zathura_link_evaluate(priv->zathura, link);
-          break;
-        }
-      );
-    }
+    evaluate_link_at_mouse_position(page, oldx, oldy);
   } else {
     zathura_rectangle_t tmp = priv->mouse.selection;
 
