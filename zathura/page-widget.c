@@ -983,7 +983,9 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   if (priv->mouse.selection.y2 == -1 && priv->mouse.selection.x2 == -1 ) {
     /* simple single click */
     /* get links */
-    evaluate_link_at_mouse_position(page, oldx, oldy);
+    if (priv->zathura->global.double_click_follow) {
+      evaluate_link_at_mouse_position(page, oldx, oldy);
+    }
   } else {
     zathura_rectangle_t tmp = priv->mouse.selection;
 
@@ -996,6 +998,8 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     if (text != NULL && *text != '\0') {
       /* emit text-selected signal */
       g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
+    } else if (priv->zathura->global.double_click_follow == false) {
+      evaluate_link_at_mouse_position(page, oldx, oldy);
     }
     g_free(text);
   }
