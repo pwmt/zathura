@@ -408,49 +408,42 @@ handle_link(GtkEntry* entry, girara_session_t* session,
     index = index - 1;
   }
 
-  /* set pages to draw links */
-  bool invalid_index = true;
+  /* find the link*/
+  zathura_link_t* link = NULL;
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-    if (page == NULL || zathura_page_get_visibility(page) == false) {
+    if (page == NULL || zathura_page_get_visibility(page) == false || eval == false) {
       continue;
     }
-
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
-
-    if (eval == FALSE) {
-      /* nothing to evaluate */
-      continue;
-    }
-
-    zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
+    link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
     if (link != NULL) {
-      invalid_index = false;
-      switch (action) {
-        case ZATHURA_LINK_ACTION_FOLLOW:
-          zathura_link_evaluate(zathura, link);
-          break;
-        case ZATHURA_LINK_ACTION_DISPLAY:
-          zathura_link_display(zathura, link);
-          break;
-        case ZATHURA_LINK_ACTION_COPY: {
-          GdkAtom* selection = get_selection(zathura);
-          if (selection == NULL) {
-            break;
-          }
-
-          zathura_link_copy(zathura, link, selection);
-          g_free(selection);
-          break;
-        }
-      }
+      break;
     }
   }
 
-  if (eval == TRUE && invalid_index == true) {
+  if (eval == TRUE && link == NULL) {
     girara_notify(session, GIRARA_WARNING, _("Invalid index '%s' given."), input);
+  } else {
+    switch (action) {
+      case ZATHURA_LINK_ACTION_FOLLOW:
+        zathura_link_evaluate(zathura, link);
+        break;
+      case ZATHURA_LINK_ACTION_DISPLAY:
+        zathura_link_display(zathura, link);
+        break;
+      case ZATHURA_LINK_ACTION_COPY: {
+        GdkAtom* selection = get_selection(zathura);
+        if (selection == NULL) {
+          break;
+        }
+
+        zathura_link_copy(zathura, link, selection);
+        g_free(selection);
+        break;
+      }
+    }
   }
 
   g_free(input);
