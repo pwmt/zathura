@@ -21,7 +21,7 @@
 #include "adjustment.h"
 #include <math.h>
 
-/* Helper function; see sc_display_link and sc_follow. */
+/* Helper function for highlighting the links */
 static bool
 draw_links(zathura_t* zathura)
 {
@@ -53,6 +53,30 @@ draw_links(zathura_t* zathura)
     }
   }
   return show_links;
+}
+
+/* Common code for sc_follow, sc_display_link and sc_copy_link */
+static bool
+link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate_t callback,
+		       const char* text)
+{
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
+    return false;
+  }
+
+  bool show_links = draw_links(zathura);
+
+  /* ask for input */
+  if (show_links == true) {
+    GtkWidget *inputbar = zathura->ui.session->gtk.inputbar;
+    gulong handler_id = g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_links), zathura);
+    g_object_set_data(G_OBJECT(inputbar), "handler_id", GUINT_TO_POINTER(handler_id));
+
+    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
+    girara_dialog(zathura->ui.session, text, FALSE, NULL, callback, zathura->ui.session);
+  }
+
+  return false;
 }
 
 bool
@@ -133,21 +157,7 @@ sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
-    return false;
-  }
-
-  bool show_links = draw_links(zathura);
-
-  /* ask for input */
-  if (show_links) {
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Display link:", FALSE, NULL,
-        cb_sc_display_link,
-        zathura->ui.session);
-  }
-
-  return false;
+  return link_shortcuts(zathura, cb_sc_display_link, "Display Link: ");
 }
 
 bool
@@ -158,21 +168,7 @@ sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
-    return false;
-  }
-
-  bool show_links = draw_links(zathura);
-
-  /* ask for input */
-  if (show_links) {
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Copy link:", FALSE, NULL,
-        cb_sc_copy_link,
-        zathura->ui.session);
-  }
-
-  return false;
+  return link_shortcuts(zathura, cb_sc_copy_link, "Copy Link: ");
 }
 
 bool
@@ -272,19 +268,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
-    return false;
-  }
-
-  bool show_links = draw_links(zathura);
-
-  /* ask for input */
-  if (show_links == true) {
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, cb_sc_follow, zathura->ui.session);
-  }
-
-  return false;
+  return link_shortcuts(zathura, cb_sc_follow, "Follow Link: ");
 }
 
 bool
