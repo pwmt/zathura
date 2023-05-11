@@ -52,7 +52,7 @@ start(ZathuraFileMonitor* file_monitor)
   }
 
   glib_file_monitor->monitor = g_file_monitor_file(
-    glib_file_monitor->file, G_FILE_MONITOR_NONE, NULL, NULL);
+    glib_file_monitor->file, G_FILE_MONITOR_WATCH_HARD_LINKS, NULL, NULL);
   if (glib_file_monitor->monitor != NULL) {
     g_signal_connect_object(G_OBJECT(glib_file_monitor->monitor), "changed",
                             G_CALLBACK(file_changed), glib_file_monitor, 0);
