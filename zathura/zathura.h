@@ -148,6 +148,7 @@ struct zathura_s
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
     zathura_sandbox_t sandbox; /**< Sandbox mode */
+    bool double_click_follow; /**< Double/Single click to follow link */
   } global;
 
   struct

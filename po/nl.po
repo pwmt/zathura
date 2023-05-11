@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-27 16:22+0100\n"
+"POT-Creation-Date: 2023-03-25 23:15+0300\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/pwmt/zathura/language/nl/)\n"
@@ -90,7 +90,7 @@ msgstr "De afbeelding is gekopieerd naar de selectie %s"
 
 #: zathura/commands.c:37 zathura/commands.c:77 zathura/commands.c:104
 #: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:317
-#: zathura/commands.c:344 zathura/commands.c:446 zathura/commands.c:582
+#: zathura/commands.c:344 zathura/commands.c:446 zathura/commands.c:581
 #: zathura/shortcuts.c:463 zathura/shortcuts.c:1283 zathura/shortcuts.c:1318
 #: zathura/shortcuts.c:1345
 msgid "No document opened."
@@ -183,7 +183,7 @@ msgstr "Overig"
 msgid "No information available."
 msgstr "Geen informatie beschikbaar."
 
-#: zathura/commands.c:248 zathura/commands.c:635
+#: zathura/commands.c:248 zathura/commands.c:634
 msgid "Too many arguments."
 msgstr "Te veel argumenten."
 
@@ -241,7 +241,7 @@ msgstr "Onbekende bijlage of afbeelding: ‘%s’."
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Uitvoeren is niet toegestaan in de strenge sandboxmodus"
 
-#: zathura/commands.c:595
+#: zathura/commands.c:594
 msgid "Argument must be a number."
 msgstr "Het argument moet een getal zijn."
 
@@ -260,338 +260,342 @@ msgid "Images"
 msgstr "Afbeeldingen"
 
 #. zathura settings
-#: zathura/config.c:185
+#: zathura/config.c:197
 msgid "Database backend"
 msgstr "Databankback-end"
 
-#: zathura/config.c:186
+#: zathura/config.c:198
 msgid "File monitor backend"
 msgstr "Bestandsmonitorback-end"
 
-#: zathura/config.c:188
+#: zathura/config.c:200
 msgid "Zoom step"
 msgstr "Zoomschaal"
 
-#: zathura/config.c:190
+#: zathura/config.c:202
 msgid "Padding between pages"
 msgstr "Opvulling tussen pagina's"
 
-#: zathura/config.c:192
+#: zathura/config.c:204
 msgid "Number of pages per row"
 msgstr "Aantal pagina's per rij"
 
-#: zathura/config.c:194
+#: zathura/config.c:206
 msgid "Column of the first page"
 msgstr "Kolom van de eerste pagina"
 
-#: zathura/config.c:196
+#: zathura/config.c:208
 msgid "Render pages from right to left"
 msgstr "Pagina's van rechts naar links tonen"
 
-#: zathura/config.c:198
+#: zathura/config.c:210
 msgid "Scroll step"
 msgstr "Scrollsnelheid"
 
-#: zathura/config.c:200
+#: zathura/config.c:212
 msgid "Horizontal scroll step"
 msgstr "Horizontale scrollsnelheid"
 
-#: zathura/config.c:202
+#: zathura/config.c:214
 msgid "Full page scroll overlap"
 msgstr "Scrolloverlapping op volledige pagina"
 
-#: zathura/config.c:204
+#: zathura/config.c:216
 msgid "Zoom minimum"
 msgstr "Minimaal zoomniveau"
 
-#: zathura/config.c:206
+#: zathura/config.c:218
 msgid "Zoom maximum"
 msgstr "Maximaal zoomniveau"
 
-#: zathura/config.c:208
+#: zathura/config.c:220
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Het maximumaantal pagina's dat moet worden bewaard in de cache"
 
-#: zathura/config.c:210
+#: zathura/config.c:222
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
 "Het maximumaantal miniaturen dat moet worden bewaard in de cache (in pixels)"
 
-#: zathura/config.c:212
+#: zathura/config.c:224
 msgid "Number of positions to remember in the jumplist"
 msgstr "Het aantal posities dat moet worden onthouden in de jumplist"
 
-#: zathura/config.c:214
+#: zathura/config.c:226
 msgid "Recoloring (dark color)"
 msgstr "Herinkleuren (donkere kleur)"
 
-#: zathura/config.c:215
+#: zathura/config.c:227
 msgid "Recoloring (light color)"
 msgstr "Herinkleuren (lichte kleur)"
 
-#: zathura/config.c:216
+#: zathura/config.c:228
 msgid "Color for highlighting"
 msgstr "Markeerkleur"
 
-#: zathura/config.c:218
+#: zathura/config.c:230
 msgid "Foreground color for highlighting"
 msgstr "Voorgrond-markeerkleur"
 
-#: zathura/config.c:220
+#: zathura/config.c:232
 msgid "Color for highlighting (active)"
 msgstr "Markeerkleur (actief)"
 
-#: zathura/config.c:222
+#: zathura/config.c:234
 msgid "'Loading ...' background color"
 msgstr "‘Bezig met laden …’-achtergrondkleur"
 
-#: zathura/config.c:224
+#: zathura/config.c:236
 msgid "'Loading ...' foreground color"
 msgstr "‘Bezig met laden…’-voorgrondkleur"
 
-#: zathura/config.c:227
+#: zathura/config.c:239
 msgid "Index mode foreground color"
 msgstr "Indexmodus-voorgrondkleur"
 
-#: zathura/config.c:228
+#: zathura/config.c:240
 msgid "Index mode background color"
 msgstr "Indexmodus-achtergrondkleur"
 
-#: zathura/config.c:229
+#: zathura/config.c:241
 msgid "Index mode foreground color (active element)"
 msgstr "Indexmodus-voorgrondkleur (actief element)"
 
-#: zathura/config.c:230
+#: zathura/config.c:242
 msgid "Index mode background color (active element)"
 msgstr "Indexmodus-achtergrondkleur (actief element)"
 
-#: zathura/config.c:233
+#: zathura/config.c:245
 msgid "Recolor pages"
 msgstr "Pagina's herinkleuren"
 
-#: zathura/config.c:235
+#: zathura/config.c:247
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 "Behoudt tijdens het herinkleuren de oorspronkelijke tint en pas alleen de "
 "belichting aan"
 
-#: zathura/config.c:237
+#: zathura/config.c:249
 msgid "When recoloring keep original image colors"
 msgstr "Behoudt tijdens het herkleuren de originele afbeeldingskleuren"
 
-#: zathura/config.c:239
+#: zathura/config.c:251
 msgid "Wrap scrolling"
 msgstr "Scrollen omslaan"
 
-#: zathura/config.c:241
+#: zathura/config.c:253
 msgid "Page aware scrolling"
 msgstr "Paginabewust scrollen"
 
-#: zathura/config.c:243
+#: zathura/config.c:255
 msgid "Advance number of pages per row"
 msgstr "Aantal vooruit-pagina's per rij"
 
-#: zathura/config.c:245
+#: zathura/config.c:257
 msgid "Horizontally centered zoom"
 msgstr "Horizontaal-gecentreerde zoom"
 
-#: zathura/config.c:247
+#: zathura/config.c:259
 msgid "Vertically center pages"
 msgstr "Pagina's verticaal centreren"
 
-#: zathura/config.c:249
+#: zathura/config.c:261
 msgid "Align link target to the left"
 msgstr "Linkdoel uitlijnen naar links"
 
-#: zathura/config.c:251
+#: zathura/config.c:263
 msgid "Let zoom be changed when following links"
 msgstr "Zoom aanpassen bij volgen van links"
 
-#: zathura/config.c:253
+#: zathura/config.c:265
 msgid "Center result horizontally"
 msgstr "Resultaat horizontaal centreren"
 
-#: zathura/config.c:255
+#: zathura/config.c:267
 msgid "Transparency for highlighting"
 msgstr "Markeerdoorzichtigheid"
 
-#: zathura/config.c:257
+#: zathura/config.c:269
 msgid "Render 'Loading ...'"
 msgstr "‘Bezig met laden…’ tonen"
 
-#: zathura/config.c:258
+#: zathura/config.c:270
 msgid "Adjust to when opening file"
 msgstr "Aanpassen aan bij openen van bestand"
 
-#: zathura/config.c:260
+#: zathura/config.c:272
 msgid "Show hidden files and directories"
 msgstr "Verborgen bestanden en mappen tonen"
 
-#: zathura/config.c:262
+#: zathura/config.c:274
 msgid "Show directories"
 msgstr "Mappen tonen"
 
-#: zathura/config.c:264
+#: zathura/config.c:276
 msgid "Show recent files"
 msgstr "Onlangs geopende bestanden tonen"
 
-#: zathura/config.c:266
+#: zathura/config.c:278
 msgid "Always open on first page"
 msgstr "Altijd de eerste pagina openen"
 
-#: zathura/config.c:268
+#: zathura/config.c:280
 msgid "Highlight search results"
 msgstr "Zoekresultaten markeren"
 
-#: zathura/config.c:271
+#: zathura/config.c:282
+msgid "Double click to follow links"
+msgstr ""
+
+#: zathura/config.c:285
 msgid "Enable incremental search"
 msgstr "Stapsgewijs zoeken inschakelen"
 
-#: zathura/config.c:273
+#: zathura/config.c:287
 msgid "Clear search results on abort"
 msgstr "Zoekresultaten wissen na afbreken"
 
-#: zathura/config.c:275
+#: zathura/config.c:289
 msgid "Use basename of the file in the window title"
 msgstr "Basisnaam van bestand gebruiken in de venstertitel"
 
-#: zathura/config.c:277
+#: zathura/config.c:291
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr "~ gebruiken i.p.v. $HOME in de bestandsnaam in de venstertitel"
 
-#: zathura/config.c:279
+#: zathura/config.c:293
 msgid "Display the page number in the window title"
 msgstr "Paginanummer tonen in de venstertitel"
 
-#: zathura/config.c:281
+#: zathura/config.c:295
 msgid "Use first page of a document as window icon"
 msgstr "Eerste documentpagina gebruiken als vensterpictogram"
 
-#: zathura/config.c:283
+#: zathura/config.c:297
 msgid "Use basename of the file in the statusbar"
 msgstr "Basisnaam van bestand gebruiken in de statusbalk"
 
-#: zathura/config.c:285
+#: zathura/config.c:299
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "~ gebruiken i.p.v. $HOME in de bestandsnaam in de statusbalk"
 
-#: zathura/config.c:287
+#: zathura/config.c:301
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr "Huidige pagina/Totaalaantal in procenten tonen op statusbalk"
 
-#: zathura/config.c:289
+#: zathura/config.c:303
 msgid "Enable synctex support"
 msgstr "Synctex-ondersteuning inschakelen"
 
-#: zathura/config.c:290
+#: zathura/config.c:304
 msgid "Synctex editor command"
 msgstr "Synctex-bewerkeropdracht"
 
-#: zathura/config.c:292
+#: zathura/config.c:306
 msgid "Enable D-Bus service"
 msgstr "D-Bus-dienst inschakelen"
 
-#: zathura/config.c:293
+#: zathura/config.c:307
 msgid "Raise window on certain D-Bus commands"
 msgstr "Venster focussen na bepaalde D-Bus-opdrachten"
 
-#: zathura/config.c:295
+#: zathura/config.c:309
 msgid "Save history at each page change"
 msgstr "Geschiedenis opslaan na elke pagina-omslag"
 
-#: zathura/config.c:296
+#: zathura/config.c:310
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 "Het klembord waarnaar met de muis geselecteerde gegevens moeten worden "
 "weggeschreven"
 
-#: zathura/config.c:298
+#: zathura/config.c:312
 msgid "Enable notification after selecting text"
 msgstr "Melding tonen na selecteren van tekst"
 
-#: zathura/config.c:301
+#: zathura/config.c:315
 msgid "Sandbox level"
 msgstr "Sandboxniveau"
 
 #. define default inputbar commands
-#: zathura/config.c:494
+#: zathura/config.c:508
 msgid "Add a bookmark"
 msgstr "Bladwijzer toevoegen"
 
-#: zathura/config.c:495
+#: zathura/config.c:509
 msgid "Delete a bookmark"
 msgstr "Bladwijzer verwijderen"
 
-#: zathura/config.c:496
+#: zathura/config.c:510
 msgid "List all bookmarks"
 msgstr "Alle bladwijzers tonen"
 
-#: zathura/config.c:497
+#: zathura/config.c:511
 msgid "Close current file"
 msgstr "Huidig bestand sluiten"
 
-#: zathura/config.c:498
+#: zathura/config.c:512
 msgid "Show file information"
 msgstr "Bestandsinformatie tonen"
 
-#: zathura/config.c:499 zathura/config.c:500
+#: zathura/config.c:513 zathura/config.c:514
 msgid "Execute a command"
 msgstr "Opdracht uitvoeren"
 
 #. like vim
-#: zathura/config.c:501
+#: zathura/config.c:515
 msgid "Show help"
 msgstr "Hulp tonen"
 
-#: zathura/config.c:502
+#: zathura/config.c:516
 msgid "Open document"
 msgstr "Document openen"
 
-#: zathura/config.c:503
+#: zathura/config.c:517
 msgid "Close zathura"
 msgstr "Zathura sluiten"
 
-#: zathura/config.c:504
+#: zathura/config.c:518
 msgid "Print document"
 msgstr "Document afdrukken"
 
-#: zathura/config.c:505 zathura/config.c:507
+#: zathura/config.c:519 zathura/config.c:521
 msgid "Save document"
 msgstr "Document opslaan"
 
-#: zathura/config.c:506 zathura/config.c:508
+#: zathura/config.c:520 zathura/config.c:522
 msgid "Save document (and force overwriting)"
 msgstr "Document opslaan (en overschrijven afdwingen)"
 
-#: zathura/config.c:509
+#: zathura/config.c:523
 msgid "Save attachments"
 msgstr "Bijlagen opslaan"
 
-#: zathura/config.c:510
+#: zathura/config.c:524
 msgid "Set page offset"
 msgstr "Pagina-afwijking instellen"
 
-#: zathura/config.c:511
+#: zathura/config.c:525
 msgid "Mark current location within the document"
 msgstr "Huidige locatie in document markeren"
 
-#: zathura/config.c:512
+#: zathura/config.c:526
 msgid "Delete the specified marks"
 msgstr "Opgegeven markeringen verwijderen"
 
-#: zathura/config.c:513
+#: zathura/config.c:527
 msgid "Don't highlight current search results"
 msgstr "Huidige zoekresultaten niet markeren"
 
-#: zathura/config.c:514
+#: zathura/config.c:528
 msgid "Highlight current search results"
 msgstr "Huidige zoekresultaten markeren"
 
-#: zathura/config.c:515
+#: zathura/config.c:529
 msgid "Show version information"
 msgstr "Versie-informatie tonen"
 
-#: zathura/config.c:516
+#: zathura/config.c:530
 msgid "Source config file"
 msgstr "Bron-configuratiebestand"
 
@@ -693,15 +697,15 @@ msgstr "De te openen bladwijzer"
 msgid "Search for the given phrase and display results"
 msgstr "Zoeken naar zoekterm en resultaten tonen"
 
-#: zathura/page-widget.c:662
+#: zathura/page-widget.c:663
 msgid "Loading..."
 msgstr "Bezig met laden…"
 
-#: zathura/page-widget.c:1159
+#: zathura/page-widget.c:1169
 msgid "Copy image"
 msgstr "Afbeelding kopiëren"
 
-#: zathura/page-widget.c:1160
+#: zathura/page-widget.c:1170
 msgid "Save image as"
 msgstr "Afbeelding opslaan als"
 
@@ -730,7 +734,7 @@ msgstr "Het patroon is niet gevonden: %s"
 msgid "This document does not contain any index"
 msgstr "Dit document bevat geen index"
 
-#: zathura/zathura.c:307 zathura/zathura.c:1504
+#: zathura/zathura.c:307 zathura/zathura.c:1568
 msgid "[No name]"
 msgstr "[Naamloos]"
 
@@ -750,23 +754,23 @@ msgstr ""
 msgid "Enter password:"
 msgstr "Wachtwoord invoeren:"
 
-#: zathura/zathura.c:1004
+#: zathura/zathura.c:1058
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Niet-ondersteund bestandstype. Installeer de benodigde plug-in."
 
-#: zathura/zathura.c:1014
+#: zathura/zathura.c:1068
 msgid "Document does not contain any pages"
 msgstr "Dit document bevat geen pagina's"
 
-#: zathura/zathura.c:1375
+#: zathura/zathura.c:1439
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "Dit bestand bestaat al: %s. Ken :write! toe om het te overschrijven."
 
-#: zathura/zathura.c:1384
+#: zathura/zathura.c:1448
 msgid "Failed to save document."
 msgstr "Het document kan niet worden opgeslagen."
 
-#: zathura/zathura.c:1388
+#: zathura/zathura.c:1452
 msgid "Document saved."
 msgstr "Het document is opgeslagen."
