@@ -775,7 +775,6 @@ render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* page, ZathuraR
   cairo_set_source_rgb(cairo, 1, 1, 1);
   cairo_paint(cairo);
   cairo_restore(cairo);
-  cairo_save(cairo);
 
   /* apply scale (used by e.g. Poppler as pixels per point) */
   if (fabs(real_scale - 1.0f) > FLT_EPSILON) {
@@ -785,7 +784,6 @@ render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* page, ZathuraR
   zathura_renderer_lock(renderer);
   const int err = zathura_page_render(page, cairo, false);
   zathura_renderer_unlock(renderer);
-  cairo_restore(cairo);
   cairo_destroy(cairo);
 
   return err == ZATHURA_ERROR_OK;
