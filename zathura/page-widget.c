@@ -1086,7 +1086,6 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
     y2 = tmp.y1;
   }
   zathura_rectangle_t redraw_bounds = {0, y1, page_width, y2};
-  priv->selection.list = zathura_page_get_selection(priv->page, scaled_mouse_selection, NULL);
 
   priv->selection.list = zathura_page_get_selection(priv->page, scaled_mouse_selection, NULL);
   if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
