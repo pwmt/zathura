@@ -449,6 +449,7 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
 
     render_job_t* job = g_try_malloc0(sizeof(render_job_t));
     if (job == NULL) {
+      g_mutex_unlock(&request_priv->jobs_mutex);
       return;
     }
 
