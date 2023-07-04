@@ -509,25 +509,25 @@ girara
   Defines the background color for an error notification
 
   * Value type: String
-  * Default value: #FFFFFF
+  * Default value: #FF1212
 
 *notification-error-fg*
   Defines the foreground color for an error notification
 
   * Value type: String
-  * Default value: #FF1212
+  * Default value: #FFFFFF
 
 *notification-warning-bg*
   Defines the background color for a warning notification
 
   * Value type: String
-  * Default value: #FFFFFF
+  * Default value: #FFF712
 
 *notification-warning-fg*
   Defines the foreground color for a warning notification
 
   * Value type: String
-  * Default value: #FFF712
+  * Default value: #FFFFFF
 
 *statusbar-bg*
   Defines the background color of the statusbar
