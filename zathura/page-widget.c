@@ -733,23 +733,24 @@ draw_thumbnail_image(cairo_surface_t* surface, size_t max_size)
   const unsigned int unscaled_height = height / device.y;
 
   /* create thumbnail surface, taking width and height as _unscaled_ device units */
-  cairo_surface_t *thumbnail;
+  cairo_surface_t* thumbnail;
   thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, unscaled_width, unscaled_height);
-  if (thumbnail == NULL) {
+  if (cairo_surface_status(thumbnail) != CAIRO_STATUS_SUCCESS) {
     return NULL;
   }
-  cairo_t *cr = cairo_create(thumbnail);
-  if (cr == NULL) {
+
+  cairo_t* cairo = cairo_create(thumbnail);
+  if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS) {
     cairo_surface_destroy(thumbnail);
     return NULL;
   }
 
-  cairo_scale(cr, scale, scale);
-  cairo_set_source_surface(cr, surface, 0, 0);
-  cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BILINEAR);
-  cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-  cairo_paint(cr);
-  cairo_destroy(cr);
+  cairo_scale(cairo, scale, scale);
+  cairo_set_source_surface(cairo, surface, 0, 0);
+  cairo_pattern_set_filter(cairo_get_source(cairo), CAIRO_FILTER_BILINEAR);
+  cairo_set_operator(cairo, CAIRO_OPERATOR_SOURCE);
+  cairo_paint(cairo);
+  cairo_destroy(cairo);
 
   return thumbnail;
 }
