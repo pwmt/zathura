@@ -219,7 +219,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(readlink); /* readlinkat */
   /* ALLOW_RULE(recvfrom); X11 only */
   ALLOW_RULE(recvmsg);
-  /* ALLOW_RULE(restart_syscall); used by the kernel only */
+  ALLOW_RULE(restart_syscall); /* required for wakeup from suspense */
   ALLOW_RULE(rseq);
   ALLOW_RULE(rt_sigaction);
   ALLOW_RULE(rt_sigprocmask);
