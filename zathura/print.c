@@ -52,16 +52,12 @@ draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t* zathura,
   const double page_height = zathura_page_get_height(page) * scale_height;
   const double page_width  = zathura_page_get_width(page) * scale_width;
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
-  if (surface == NULL) {
-    return false;
-  }
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
-    cairo_surface_destroy(surface);
     return false;
   }
 
   cairo_t* temp_cairo = cairo_create(surface);
-  if (cairo == NULL) {
+  if (cairo_status(temp_cairo) != CAIRO_STATUS_SUCCESS) {
     cairo_surface_destroy(surface);
     return false;
   }
@@ -113,9 +109,9 @@ cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext*
   g_free(tmp);
 
   /* Get the page and cairo handle.  */
-  cairo_t* cairo       = gtk_print_context_get_cairo_context(context);
   zathura_page_t* page = zathura_document_get_page(zathura->document, page_number);
-  if (cairo == NULL || page == NULL) {
+  cairo_t* cairo       = gtk_print_context_get_cairo_context(context);
+  if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS || page == NULL) {
     gtk_print_operation_cancel(print_operation);
     return;
   }
