@@ -1494,6 +1494,32 @@ save_fileinfo_to_db(zathura_t* zathura)
 }
 
 bool
+document_predecessor_free(zathura_t* zathura) {
+  if (zathura == NULL
+	  || (zathura->predecessor_document == NULL
+		  && zathura->predecessor_pages == NULL)) {
+    return false;
+  }
+
+  if (zathura->predecessor_pages != NULL) {
+	  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->predecessor_document); i++) {
+		g_object_unref(zathura->predecessor_pages[i]);
+	  }
+	  free(zathura->predecessor_pages);
+	  zathura->predecessor_pages = NULL;
+	  girara_debug("freed predecessor pages");
+  }
+  if (zathura->predecessor_document != NULL) {
+	  /* remove document */
+	  zathura_document_free(zathura->predecessor_document);
+	  zathura->predecessor_document = NULL;
+	  girara_debug("freed predecessor document");
+  }
+
+  return true;
+}
+
+bool
 document_close(zathura_t* zathura, bool keep_monitor)
 {
   if (zathura == NULL || zathura->document == NULL) {
@@ -1507,6 +1533,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
     girara_setting_set(zathura->ui.session, "window-icon", window_icon);
     g_free(window_icon);
   }
+
+  bool smooth_reload = true;
+  girara_setting_get(zathura->ui.session, "smooth-reload", &smooth_reload);
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
@@ -1543,17 +1572,43 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* release render thread */
   g_clear_object(&zathura->sync.render_thread);
 
+  /* keep the current state to prevent flicker? */
+  bool override_predecessor = keep_monitor && smooth_reload;
+
+  if (override_predecessor) {
+	  /* do not override predecessor buffer with empty pages */
+	  unsigned int cur_page_num = zathura_document_get_current_page_number(zathura->document);
+	  ZathuraPage* cur_page = ZATHURA_PAGE(zathura->pages[cur_page_num]);
+	  if (!zathura_page_widget_have_surface(cur_page)) {
+		  override_predecessor = false;
+	  }
+  }
+
+  /* free predecessor buffer if we want to overwrite it or if we destroy the document for good */
+  if (override_predecessor || !keep_monitor || !smooth_reload) {
+	  document_predecessor_free(zathura);
+  }
+
   /* remove widgets */
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
-  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
-    g_object_unref(zathura->pages[i]);
-  }
-  free(zathura->pages);
-  zathura->pages = NULL;
 
-  /* remove document */
-  zathura_document_free(zathura->document);
-  zathura->document = NULL;
+  if (!override_predecessor) {
+	  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
+		g_object_unref(zathura->pages[i]);
+	  }
+	  free(zathura->pages);
+	  zathura->pages = NULL;
+
+	  /* remove document */
+	  zathura_document_free(zathura->document);
+	  zathura->document = NULL;
+  } else {
+	  girara_debug("preserving pages and document as predecessor");
+	  zathura->predecessor_pages = zathura->pages;
+	  zathura->pages = NULL;
+	  zathura->predecessor_document = zathura->document;
+	  zathura->document = NULL;
+  }
 
   /* remove index */
   if (zathura->ui.index != NULL) {

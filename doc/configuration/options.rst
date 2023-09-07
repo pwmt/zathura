@@ -142,6 +142,14 @@ General settings
    :type: Boolean
    :default: false
 
+.. describe:: smooth-reload
+
+   Defines if flickering will be removed when a file is reloaded on change.
+   This option might increase memory usage.
+
+   :type: Boolean
+   :default: true
+
 .. describe:: zoom-max
 
   Defines the maximum percentage that the zoom level can be

@@ -184,7 +184,9 @@ struct zathura_s
   } stdin_support;
 
   zathura_document_t* document; /**< The current document */
+  zathura_document_t* predecessor_document; /**< The document from before a reload */
   GtkWidget** pages; /**< The page widgets */
+  GtkWidget** predecessor_pages; /**< The page widgets from before a reload */
   zathura_database_t* database; /**< The database */
   ZathuraDbus* dbus; /**< D-Bus service */
   ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
@@ -359,6 +361,14 @@ void document_open_idle(zathura_t* zathura, const char* path,
  * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_save(zathura_t* zathura, const char* path, bool overwrite);
+
+/**
+ * Frees the "predecessor" buffers used for smooth-reload
+ *
+ * @param zathura The zathura session
+ * @return If no error occurred true, otherwise false, is returned.
+ */
+bool document_predecessor_free(zathura_t* zathura);
 
 /**
  * Closes the current opened document

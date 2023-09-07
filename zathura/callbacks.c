@@ -204,6 +204,15 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
     return;
   }
 
+  if (zathura->pages != NULL && zathura->pages[page_id] != NULL) {
+	  ZathuraPage* page_widget = ZATHURA_PAGE(zathura->pages[page_id]);
+	  if (page_widget != NULL) {
+		  if (zathura_page_widget_have_surface(page_widget)) {
+			  document_predecessor_free(zathura);
+		  }
+	  }
+  }
+
   GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 

@@ -267,6 +267,8 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "smooth-reload",          &bool_value,  BOOLEAN, false, _("Smooth over flicker when reloading file"), NULL, NULL);
   girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, _("Adjust to when opening file"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
