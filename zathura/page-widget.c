@@ -522,7 +522,28 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
 
-  if (priv->surface != NULL || priv->thumbnail != NULL) {
+  bool smooth_reload = true;
+  girara_setting_get(priv->zathura->ui.session, "smooth-reload", &smooth_reload);
+
+  bool surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
+
+  if (priv->zathura->predecessor_document != NULL && priv->zathura->predecessor_pages != NULL
+		  && smooth_reload && !surface_exists) {
+	  unsigned int page_index = zathura_page_get_index(priv->page);
+
+	  if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document)) {
+		  /* render real page */
+		  zathura_render_request(priv->render_request, g_get_real_time());
+
+		  girara_debug("using predecessor page for idx %d", page_index);
+		  document = priv->zathura->predecessor_document;
+		  page = ZATHURA_PAGE(priv->zathura->predecessor_pages[page_index]);
+		  priv = zathura_page_widget_get_instance_private(page);
+	  }
+	  surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
+  }
+
+  if (surface_exists) {
     cairo_save(cairo);
 
     const unsigned int rotation = zathura_document_get_rotation(document);
@@ -634,6 +655,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       );
     }
   } else {
+	if (smooth_reload) {
+		girara_debug("rendering loading screen, flicker might be happening");
+	}
+
     /* set background color */
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
       GdkRGBA color;

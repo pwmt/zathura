@@ -749,6 +749,13 @@ zathura
   * Value type: Boolean
   * Default value: false
 
+*smooth-reload*
+  Defines if flickering will be removed when a file is reloaded on change. This
+  option might increase memory usage.
+
+  * Value type: Boolean
+  * Default value: true
+
 *render-loading*
   Defines if the "Loading..." text should be displayed if a page is rendered.
 
