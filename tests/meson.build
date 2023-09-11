@@ -1,6 +1,5 @@
 check = dependency('check', required: get_option('tests'), version: '>=0.11')
-xvfb = find_program('xvfb-run', required: get_option('tests'))
-if check.found() and xvfb.found()
+if check.found()
   test_dependencies = [
     declare_dependency(link_with: libzathura),
     check
@@ -13,22 +12,41 @@ if check.found() and xvfb.found()
     include_directories: include_directories,
     c_args: defines + flags
   )
-  test('document', xvfb,
-    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', document],
+  test('document', document,
     timeout: 60*60
   )
 
-  session = executable('test_session', ['test_session.c', 'tests.c'],
+  types = executable('test_types', ['test_types.c', 'tests.c'],
     dependencies: build_dependencies + test_dependencies,
     include_directories: include_directories,
     c_args: defines + flags
   )
-  test('session', xvfb,
-    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', session],
+  test('types', types,
     timeout: 60*60
   )
 
-  if seccomp.found()
+  utils = executable('test_utils', ['test_utils.c', 'tests.c'],
+    dependencies: build_dependencies + test_dependencies,
+    include_directories: include_directories,
+    c_args: defines + flags
+  )
+  test('utils', utils,
+    timeout: 60*60
+  )
+
+  xvfb = find_program('xvfb-run', required: get_option('tests'))
+  if xvfb.found()
+    session = executable('test_session', ['test_session.c', 'tests.c'],
+      dependencies: build_dependencies + test_dependencies,
+      include_directories: include_directories,
+      c_args: defines + flags
+    )
+    test('session', xvfb,
+      args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', session],
+      timeout: 60*60
+    ) 
+
+    if seccomp.found()
     sandbox = executable('test_sandbox', ['test_sandbox.c', 'tests.c'],
       dependencies: build_dependencies + test_dependencies,
       include_directories: include_directories,
@@ -39,24 +57,5 @@ if check.found() and xvfb.found()
       timeout: 60*60
     )
   endif
-
-  utils = executable('test_utils', ['test_utils.c', 'tests.c'],
-    dependencies: build_dependencies + test_dependencies,
-    include_directories: include_directories,
-    c_args: defines + flags
-  )
-  test('utils', xvfb,
-    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', utils],
-    timeout: 60*60
-  )
-
-  types = executable('test_types', ['test_types.c', 'tests.c'],
-    dependencies: build_dependencies + test_dependencies,
-    include_directories: include_directories,
-    c_args: defines + flags
-  )
-  test('types', xvfb,
-    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', types],
-    timeout: 60*60
-  )
+  endif
 endif
