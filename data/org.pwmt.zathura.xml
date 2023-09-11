@@ -27,7 +27,6 @@
     </method>
     <property type='s' name='filename' access='read' />
     <property type='u' name='pagenumber' access='read' />
-    <!-- deprecated, will be removed in the next release -->
     <property type='u' name='numberofpages' access='read' />
     <property type='s' name='documentinfo' access='read' />
     <!-- Open editor with given input file at line and column. -->

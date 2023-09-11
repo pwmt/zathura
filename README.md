@@ -13,6 +13,7 @@ The following dependencies are required:
 * `glib` (>= 2.50)
 * `girara` (>= 0.3.7)
 * `libmagic` from file(1): for mime-type detection
+* `json-glib`
 
 The following dependencies are optional:
 
