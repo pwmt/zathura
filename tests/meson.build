@@ -1,5 +1,6 @@
 check = dependency('check', required: get_option('tests'), version: '>=0.11')
-if check.found()
+xvfb = find_program('xvfb-run', required: get_option('tests'))
+if check.found() and xvfb.found()
   test_dependencies = [
     declare_dependency(link_with: libzathura),
     check
@@ -12,7 +13,8 @@ if check.found()
     include_directories: include_directories,
     c_args: defines + flags
   )
-  test('document', document,
+  test('document', xvfb,
+    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', document],
     timeout: 60*60
   )
 
@@ -21,7 +23,8 @@ if check.found()
     include_directories: include_directories,
     c_args: defines + flags
   )
-  test('session', session,
+  test('session', xvfb,
+    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', session],
     timeout: 60*60
   )
 
@@ -31,7 +34,8 @@ if check.found()
       include_directories: include_directories,
       c_args: defines + flags
     )
-    test('sandbox', sandbox,
+    test('sandbox', xvfb,
+      args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', sandbox],
       timeout: 60*60
     )
   endif
@@ -41,7 +45,8 @@ if check.found()
     include_directories: include_directories,
     c_args: defines + flags
   )
-  test('utils', utils,
+  test('utils', xvfb,
+    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', utils],
     timeout: 60*60
   )
 
@@ -50,7 +55,8 @@ if check.found()
     include_directories: include_directories,
     c_args: defines + flags
   )
-  test('types', types,
+  test('types', xvfb,
+    args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', types],
     timeout: 60*60
   )
 endif
