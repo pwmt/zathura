@@ -1,13 +1,14 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "dbus-interface.h"
-#include "synctex.h"
-#include "macros.h"
-#include "zathura.h"
-#include "document.h"
-#include "utils.h"
 #include "adjustment.h"
+#include "config.h"
+#include "document.h"
+#include "macros.h"
 #include "resources.h"
+#include "synctex.h"
+#include "utils.h"
+#include "zathura.h"
 
 #include <girara/session.h>
 #include <girara/utils.h>
@@ -458,17 +459,37 @@ handle_execute_command(zathura_t* zathura, GVariant* parameters,
 }
 
 static void
-handle_method_call(GDBusConnection* UNUSED(connection),
-                   const gchar* UNUSED(sender), const gchar* object_path,
-                   const gchar* interface_name, const gchar* method_name,
-                   GVariant*    parameters, GDBusMethodInvocation* invocation,
-                   void* data)
+handle_source_config(zathura_t* zathura, GVariant* GIRARA_UNUSED(parameters), GDBusMethodInvocation* invocation)
 {
-  ZathuraDbus* dbus = data;
-  ZathuraDbusPrivate* priv   = zathura_dbus_get_instance_private(dbus);
+  config_load_files(zathura);
 
-  girara_debug("Handling call '%s.%s' on '%s'.", interface_name, method_name,
-               object_path);
+  GVariant* result = g_variant_new("(b)", true);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
+handle_source_config_from_dir(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation)
+{
+  gchar* input = NULL;
+  g_variant_get(parameters, "(s)", &input);
+
+  zathura_set_config_dir(zathura, input);
+  g_free(input);
+  config_load_files(zathura);
+
+  GVariant* result = g_variant_new("(b)", true);
+  g_dbus_method_invocation_return_value(invocation, result);
+}
+
+static void
+handle_method_call(GDBusConnection* UNUSED(connection), const gchar* UNUSED(sender), const gchar* object_path,
+                   const gchar* interface_name, const gchar* method_name, GVariant* parameters,
+                   GDBusMethodInvocation* invocation, void* data)
+{
+  ZathuraDbus*        dbus = data;
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
+
+  girara_debug("Handling call '%s.%s' on '%s'.", interface_name, method_name, object_path);
 
   static const struct {
     const char* method;
@@ -476,12 +497,14 @@ handle_method_call(GDBusConnection* UNUSED(connection),
     bool needs_document;
     bool present_window;
   } handlers[] = {
-    { "OpenDocument", handle_open_document, false, true },
-    { "CloseDocument", handle_close_document, false, false },
-    { "GotoPage", handle_goto_page, true, true },
-    { "HighlightRects", handle_highlight_rects, true, true },
-    { "SynctexView", handle_synctex_view, true, true },
-    { "ExecuteCommand", handle_execute_command, false, false }
+    {"OpenDocument", handle_open_document, false, true},
+    {"CloseDocument", handle_close_document, false, false},
+    {"GotoPage", handle_goto_page, true, true},
+    {"HighlightRects", handle_highlight_rects, true, true},
+    {"SynctexView", handle_synctex_view, true, true},
+    {"ExecuteCommand", handle_execute_command, false, false},
+    {"SourceConfig", handle_source_config, false, false},
+    {"SourceConfigFromDirectory", handle_source_config_from_dir, false, false},
   };
 
   for (size_t idx = 0; idx != sizeof(handlers) / sizeof(handlers[0]); ++idx) {

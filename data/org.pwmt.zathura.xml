@@ -49,5 +49,14 @@
       <arg type='s' name='input' direction='in' />
       <arg type='b' name='return' direction='out' />
     </method>
+    <!-- Reload configuration file -->
+    <method name='SourceConfig'>
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <!-- Reload configuration file from a directory -->
+    <method name='SourceConfigFromDirectory'>
+      <arg type='s' name='directory' direction='in' />
+      <arg type='b' name='return' direction='out' />
+    </method>
   </interface>
 </node>
