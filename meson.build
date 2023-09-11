@@ -43,10 +43,11 @@ gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
 gtk3 = dependency('gtk+-3.0', version: '>=3.22')
+json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = cc.find_library('magic', required: true)
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
 
 if host_machine.system() == 'darwin'
     gtk_mac_integration = dependency('gtk-mac-integration-gtk3')

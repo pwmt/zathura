@@ -4,6 +4,7 @@
 #include "adjustment.h"
 #include "config.h"
 #include "document.h"
+#include "links.h"
 #include "macros.h"
 #include "resources.h"
 #include "synctex.h"
@@ -16,6 +17,7 @@
 #include <girara/commands.h>
 #include <gio/gio.h>
 #include <sys/types.h>
+#include <json-glib/json-glib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -533,14 +535,73 @@ handle_method_call(GDBusConnection* UNUSED(connection), const gchar* UNUSED(send
   }
 }
 
-static GVariant*
-handle_get_property(GDBusConnection* UNUSED(connection),
-                    const gchar* UNUSED(sender),
-                    const gchar* UNUSED(object_path),
-                    const gchar* UNUSED(interface_name),
-                    const gchar* property_name, GError** error, void* data)
+static void
+json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t* index)
 {
-  ZathuraDbus* dbus        = data;
+  girara_list_t* list = girara_node_get_children(index);
+
+  GIRARA_LIST_FOREACH_BODY(
+    list, girara_tree_node_t*, node, do {
+      zathura_index_element_t* index_element = girara_node_get_data(node);
+
+      json_builder_begin_object(builder);
+      json_builder_set_member_name(builder, "title");
+      json_builder_add_string_value(builder, index_element->title);
+
+      zathura_link_type_t   type   = zathura_link_get_type(index_element->link);
+      zathura_link_target_t target = zathura_link_get_target(index_element->link);
+      if (type == ZATHURA_LINK_GOTO_DEST) {
+        json_builder_set_member_name(builder, "page");
+        json_builder_add_int_value(builder, target.page_number + 1);
+      } else {
+        json_builder_set_member_name(builder, "target");
+        json_builder_add_string_value(builder, target.value);
+      }
+
+      if (girara_node_get_num_children(node) > 0) {
+        json_builder_set_member_name(builder, "sub-index");
+        json_builder_begin_array(builder);
+        json_document_info_add_node(builder, node);
+        json_builder_end_array(builder);
+      }
+      json_builder_end_object(builder);
+    } while (0););
+}
+
+static GVariant*
+json_document_info(zathura_t* zathura)
+{
+  JsonBuilder* builder = json_builder_new();
+  json_builder_begin_object(builder);
+  json_builder_set_member_name(builder, "filename");
+  json_builder_add_string_value(builder, zathura_document_get_path(zathura->document));
+  json_builder_set_member_name(builder, "number-of-pages");
+  json_builder_add_int_value(builder, zathura_document_get_current_page_number(zathura->document));
+
+  json_builder_set_member_name(builder, "index");
+  json_builder_begin_array(builder);
+  girara_tree_node_t* index = zathura_document_index_generate(zathura->document, NULL);
+  if (index != NULL) {
+    json_document_info_add_node(builder, index);
+    girara_node_free(index);
+  }
+  json_builder_end_array(builder);
+
+  json_builder_end_object(builder);
+
+  JsonNode* root            = json_builder_get_root(builder);
+  char*     serialized_root = json_to_string(root, true);
+  json_node_free(root);
+  g_object_unref(builder);
+
+  return g_variant_new_take_string(serialized_root);
+}
+
+static GVariant*
+handle_get_property(GDBusConnection* UNUSED(connection), const gchar* UNUSED(sender), const gchar* UNUSED(object_path),
+                    const gchar* UNUSED(interface_name), const gchar* property_name, GError** error, void* data)
+{
+  ZathuraDbus*        dbus = data;
   ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
 
   if (priv->zathura->document == NULL) {
@@ -554,16 +615,17 @@ handle_get_property(GDBusConnection* UNUSED(connection),
     return g_variant_new_uint32(zathura_document_get_current_page_number(priv->zathura->document));
   } else if (g_strcmp0(property_name, "numberofpages") == 0) {
     return g_variant_new_uint32(zathura_document_get_number_of_pages(priv->zathura->document));
+  } else if (g_strcmp0(property_name, "documentinfo") == 0) {
+    return json_document_info(priv->zathura);
   }
 
   return NULL;
 }
 
-static const GDBusInterfaceVTable interface_vtable =
-{
+static const GDBusInterfaceVTable interface_vtable = {
   .method_call  = handle_method_call,
   .get_property = handle_get_property,
-  .set_property = NULL
+  .set_property = NULL,
 };
 
 static const unsigned int TIMEOUT = 3000;
