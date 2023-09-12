@@ -992,7 +992,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     char* text = zathura_page_get_text(priv->page, tmp, NULL);
     if (text != NULL && *text != '\0') {
       /* emit text-selected signal */
-      g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
+      g_signal_emit(page, signals[TEXT_SELECTED], 0, text);
     } else if (priv->zathura->global.double_click_follow == false) {
       evaluate_link_at_mouse_position(page, oldx, oldy);
     }
@@ -1057,9 +1057,9 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
 
       if (priv->mouse.over_link != over_link) {
         if (over_link == true) {
-          g_signal_emit(ZATHURA_PAGE(widget), signals[ENTER_LINK], 0);
+          g_signal_emit(page, signals[ENTER_LINK], 0);
         } else {
-          g_signal_emit(ZATHURA_PAGE(widget), signals[LEAVE_LINK], 0);
+          g_signal_emit(page, signals[LEAVE_LINK], 0);
         }
         priv->mouse.over_link = over_link;
       }
@@ -1081,7 +1081,7 @@ cb_zathura_page_widget_leave_notify(GtkWidget* widget, GdkEventCrossing* UNUSED(
     zathura_page_widget_redraw_canvas(page);
   }
   if (priv->mouse.over_link == true) {
-    g_signal_emit(ZATHURA_PAGE(widget), signals[LEAVE_LINK], 0);
+    g_signal_emit(page, signals[LEAVE_LINK], 0);
     priv->mouse.over_link = false;
   }
   return false;
@@ -1140,7 +1140,7 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     GtkWidget* item = gtk_menu_item_new_with_label(menu_items[i].text);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
     gtk_widget_show(item);
-    g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu_items[i].callback), ZATHURA_PAGE(widget));
+    g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu_items[i].callback), page);
   }
 
   /* attach and popup */
