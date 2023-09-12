@@ -901,14 +901,47 @@ zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
   }
 }
 
+static void
+rotate_point(zathura_document_t* document, double orig_x, double orig_y,
+             double* x, double* y)
+{
+  const unsigned int rotation = zathura_document_get_rotation(document);
+  if (rotation == 0) {
+    *x = orig_x;
+    *y = orig_y;
+    return;
+  }
+
+  unsigned int height, width;
+  zathura_document_get_cell_size(document, &height, &width);
+  switch (rotation) {
+    case 90:
+      *x = orig_y;
+      *y = width - orig_x;
+      break;
+    case 180:
+      *x = width - orig_x;
+      *y = height - orig_y;
+      break;
+    case 270:
+      *x = height - orig_y;
+      *y = orig_x;
+      break;
+    default:
+      *x = orig_x;
+      *y = orig_y;
+  }
+}
+
 static gboolean
 cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button)
 {
   g_return_val_if_fail(widget != NULL, false);
   g_return_val_if_fail(button != NULL, false);
 
-  ZathuraPage* page        = ZATHURA_PAGE(widget);
-  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  ZathuraPage* page            = ZATHURA_PAGE(widget);
+  ZathuraPagePrivate* priv     = zathura_page_widget_get_instance_private(page);
+  zathura_document_t* document = zathura_page_get_document(priv->page);
 
   if (girara_callback_view_button_press_event(widget, button, priv->zathura->ui.session) == true) {
     return true;
@@ -922,10 +955,13 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
   if (button->button == GDK_BUTTON_PRIMARY) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
       /* start the selection */
-      priv->mouse.selection.x1 = button->x;
-      priv->mouse.selection.y1 = button->y;
-      priv->mouse.selection.x2 = button->x;
-      priv->mouse.selection.y2 = button->y;
+      double x, y;
+      rotate_point(document, button->x, button->y, &x, &y);
+
+      priv->mouse.selection.x1 = x;
+      priv->mouse.selection.y1 = y;
+      priv->mouse.selection.x2 = x;
+      priv->mouse.selection.y2 = y;
 
     } else if (button->type == GDK_2BUTTON_PRESS || button->type == GDK_3BUTTON_PRESS) {
       /* abort the selection */
@@ -1020,8 +1056,9 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
   const double scale           = zathura_document_get_scale(document);
 
   if (event->state & GDK_BUTTON1_MASK) {
-    priv->mouse.selection.x2 = event->x;
-    priv->mouse.selection.y2 = event->y;
+    /* calculate next selection */
+    rotate_point(document, event->x, event->y,
+                 &priv->mouse.selection.x2, &priv->mouse.selection.y2);
 
     zathura_rectangle_t selection = priv->mouse.selection;
     selection.x1 /= scale;
