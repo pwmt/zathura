@@ -40,7 +40,6 @@ typedef struct zathura_page_widget_private_s {
 
   struct {
       girara_list_t *list; /**< List of selection rectangles that should be drawn */
-      zathura_rectangle_t bounds; /** Bounds of highlighted selection */
       gboolean draw; /** Used to clear previous selection */
   } selection;
 
@@ -51,11 +50,7 @@ typedef struct zathura_page_widget_private_s {
   } images;
 
   struct {
-    zathura_rectangle_t selection; /**< Region selected with the mouse */
-    struct {
-      int x; /**< X coordinate */
-      int y; /**< Y coordinate */
-    } selection_basepoint;
+    zathura_rectangle_t selection; /**< x1 y1: click point, x2 y2: current position */
     gboolean over_link;
   } mouse;
 } ZathuraPagePrivate;
@@ -209,6 +204,7 @@ zathura_page_widget_init(ZathuraPage* widget)
 {
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(widget);
   priv->page               = NULL;
+  priv->zathura            = NULL;
   priv->surface            = NULL;
   priv->thumbnail          = NULL;
   priv->render_request     = NULL;
@@ -224,14 +220,18 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->search.current = INT_MAX;
   priv->search.draw    = false;
 
+  priv->selection.list = NULL;
+  priv->selection.draw = false;
+
   priv->images.list      = NULL;
   priv->images.retrieved = false;
   priv->images.current   = NULL;
 
-  priv->mouse.selection.x1          = -1;
-  priv->mouse.selection.y1          = -1;
-  priv->mouse.selection_basepoint.x = -1;
-  priv->mouse.selection_basepoint.y = -1;
+  priv->mouse.selection.x1 = -1;
+  priv->mouse.selection.y1 = -1;
+  priv->mouse.selection.x2 = -1;
+  priv->mouse.selection.y2 = -1;
+  priv->mouse.over_link    = false;
 
   const unsigned int event_mask = GDK_BUTTON_PRESS_MASK |
     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK;
@@ -650,7 +650,8 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
       GIRARA_LIST_FOREACH_BODY(priv->selection.list, zathura_rectangle_t*, rect,
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-        cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
+        cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
+                        rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
         cairo_fill(cairo);
       );
     }
@@ -926,14 +927,47 @@ zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index)
   }
 }
 
+static void
+rotate_point(zathura_document_t* document, double orig_x, double orig_y,
+             double* x, double* y)
+{
+  const unsigned int rotation = zathura_document_get_rotation(document);
+  if (rotation == 0) {
+    *x = orig_x;
+    *y = orig_y;
+    return;
+  }
+
+  unsigned int height, width;
+  zathura_document_get_cell_size(document, &height, &width);
+  switch (rotation) {
+    case 90:
+      *x = orig_y;
+      *y = width - orig_x;
+      break;
+    case 180:
+      *x = width - orig_x;
+      *y = height - orig_y;
+      break;
+    case 270:
+      *x = height - orig_y;
+      *y = orig_x;
+      break;
+    default:
+      *x = orig_x;
+      *y = orig_y;
+  }
+}
+
 static gboolean
 cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button)
 {
   g_return_val_if_fail(widget != NULL, false);
   g_return_val_if_fail(button != NULL, false);
 
-  ZathuraPage* page        = ZATHURA_PAGE(widget);
-  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  ZathuraPage* page            = ZATHURA_PAGE(widget);
+  ZathuraPagePrivate* priv     = zathura_page_widget_get_instance_private(page);
+  zathura_document_t* document = zathura_page_get_document(priv->page);
 
   if (girara_callback_view_button_press_event(widget, button, priv->zathura->ui.session) == true) {
     return true;
@@ -941,25 +975,22 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
 
   if (priv->selection.list != NULL) {
     priv->selection.draw = false;
-    redraw_rect(page, &priv->selection.bounds);
+    zathura_page_widget_redraw_canvas(page);
   }
 
   if (button->button == GDK_BUTTON_PRIMARY) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
       /* start the selection */
-      priv->mouse.selection_basepoint.x = button->x;
-      priv->mouse.selection_basepoint.y = button->y;
+      double x, y;
+      rotate_point(document, button->x, button->y, &x, &y);
 
-      priv->mouse.selection.x1 = button->x;
-      priv->mouse.selection.y1 = button->y;
-      priv->mouse.selection.x2 = button->x;
-      priv->mouse.selection.y2 = button->y;
+      priv->mouse.selection.x1 = x;
+      priv->mouse.selection.y1 = y;
+      priv->mouse.selection.x2 = x;
+      priv->mouse.selection.y2 = y;
 
     } else if (button->type == GDK_2BUTTON_PRESS || button->type == GDK_3BUTTON_PRESS) {
       /* abort the selection */
-      priv->mouse.selection_basepoint.x = -1;
-      priv->mouse.selection_basepoint.y = -1;
-
       priv->mouse.selection.x1 = -1;
       priv->mouse.selection.y1 = -1;
       priv->mouse.selection.x2 = -1;
@@ -985,14 +1016,14 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     return false;
   }
 
-  const int oldx = button->x;
-  const int oldy = button->y;
-
   ZathuraPage* page        = ZATHURA_PAGE(widget);
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
 
   zathura_document_t* document = zathura_page_get_document(priv->page);
   const double scale           = zathura_document_get_scale(document);
+
+  const int oldx = button->x;
+  const int oldy = button->y;
 
   button->x /= scale;
   button->y /= scale;
@@ -1006,7 +1037,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     return false;
   }
 
-  if (priv->mouse.selection.y2 == -1 && priv->mouse.selection.x2 == -1 ) {
+  if (priv->mouse.selection.x2 == -1 && priv->mouse.selection.y2 == -1 ) {
     /* simple single click */
     /* get links */
     if (priv->zathura->global.double_click_follow) {
@@ -1023,15 +1054,12 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     char* text = zathura_page_get_text(priv->page, tmp, NULL);
     if (text != NULL && *text != '\0') {
       /* emit text-selected signal */
-      g_signal_emit(ZATHURA_PAGE(widget), signals[TEXT_SELECTED], 0, text);
+      g_signal_emit(page, signals[TEXT_SELECTED], 0, text);
     } else if (priv->zathura->global.double_click_follow == false) {
       evaluate_link_at_mouse_position(page, oldx, oldy);
     }
     g_free(text);
   }
-
-  priv->mouse.selection_basepoint.x = -1;
-  priv->mouse.selection_basepoint.y = -1;
 
   priv->mouse.selection.x1 = -1;
   priv->mouse.selection.y1 = -1;
@@ -1053,7 +1081,27 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
   zathura_document_t* document = zathura_page_get_document(priv->page);
   const double scale           = zathura_document_get_scale(document);
 
-  if ((event->state & GDK_BUTTON1_MASK) == 0) {
+  if (event->state & GDK_BUTTON1_MASK) {
+    /* calculate next selection */
+    rotate_point(document, event->x, event->y,
+                 &priv->mouse.selection.x2, &priv->mouse.selection.y2);
+
+    zathura_rectangle_t selection = priv->mouse.selection;
+    selection.x1 /= scale;
+    selection.y1 /= scale;
+    selection.x2 /= scale;
+    selection.y2 /= scale;
+
+    if (priv->selection.list != NULL) {
+      girara_list_free(priv->selection.list);
+    }
+
+    priv->selection.list = zathura_page_get_selection(priv->page, selection, NULL);
+    if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
+      priv->selection.draw = true;
+      zathura_page_widget_redraw_canvas(page);
+    }
+  } else {
     if (priv->links.retrieved == false) {
       priv->links.list      = zathura_page_links_get(priv->page, NULL);
       priv->links.retrieved = true;
@@ -1072,62 +1120,14 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
 
       if (priv->mouse.over_link != over_link) {
         if (over_link == true) {
-          g_signal_emit(ZATHURA_PAGE(widget), signals[ENTER_LINK], 0);
+          g_signal_emit(page, signals[ENTER_LINK], 0);
         } else {
-          g_signal_emit(ZATHURA_PAGE(widget), signals[LEAVE_LINK], 0);
+          g_signal_emit(page, signals[LEAVE_LINK], 0);
         }
         priv->mouse.over_link = over_link;
       }
     }
-
-    return false;
   }
-
-  const zathura_rectangle_t tmp = {
-      priv->mouse.selection_basepoint.x,
-      priv->mouse.selection_basepoint.y,
-      event->x,
-      event->y
-  };
-
-  if (priv->selection.list != NULL) {
-      girara_list_free(priv->selection.list);
-  }
-
-  zathura_rectangle_t scaled_mouse_selection = tmp;
-
-  scaled_mouse_selection.x1 /= scale;
-  scaled_mouse_selection.x2 /= scale;
-  scaled_mouse_selection.y1 /= scale;
-  scaled_mouse_selection.y2 /= scale;
-
-  const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
-  float y1, y2;
-
-  if (tmp.y1 < tmp.y2) {
-    y1 = tmp.y1;
-    y2 = tmp.y2;
-  } else {
-    y1 = tmp.y2;
-    y2 = tmp.y1;
-  }
-  zathura_rectangle_t redraw_bounds = {0, y1, page_width, y2};
-
-  priv->selection.list = zathura_page_get_selection(priv->page, scaled_mouse_selection, NULL);
-  if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
-    GIRARA_LIST_FOREACH_BODY(priv->selection.list, zathura_rectangle_t*, rect,
-      redraw_bounds.y1 = fmin(rect->y1 * scale, redraw_bounds.y1);
-      redraw_bounds.y2 = fmax(rect->y2 * scale, redraw_bounds.y2);
-    );
-
-    priv->selection.draw = false;
-    redraw_rect(page, &priv->selection.bounds);
-    priv->selection.draw = true;
-    redraw_rect(page, &redraw_bounds);
-
-    priv->selection.bounds = redraw_bounds;
-  }
-  priv->mouse.selection = tmp;
 
   return false;
 }
@@ -1140,11 +1140,11 @@ cb_zathura_page_widget_leave_notify(GtkWidget* widget, GdkEventCrossing* UNUSED(
   ZathuraPage* page        = ZATHURA_PAGE(widget);
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
   if (priv->selection.list != NULL) {
-      priv->selection.draw = false;
-      redraw_rect(page, &priv->selection.bounds);
+    priv->selection.draw = false;
+    zathura_page_widget_redraw_canvas(page);
   }
   if (priv->mouse.over_link == true) {
-    g_signal_emit(ZATHURA_PAGE(widget), signals[LEAVE_LINK], 0);
+    g_signal_emit(page, signals[LEAVE_LINK], 0);
     priv->mouse.over_link = false;
   }
   return false;
@@ -1203,7 +1203,7 @@ zathura_page_widget_popup_menu(GtkWidget* widget, GdkEventButton* event)
     GtkWidget* item = gtk_menu_item_new_with_label(menu_items[i].text);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
     gtk_widget_show(item);
-    g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu_items[i].callback), ZATHURA_PAGE(widget));
+    g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu_items[i].callback), page);
   }
 
   /* attach and popup */
