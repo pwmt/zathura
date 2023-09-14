@@ -207,6 +207,10 @@ Mouse bindings
     Pan the document
   Button1
     Follow link
+  Hold Button1
+    Select text
+  Hold ^Button1
+    Highlight region
 
 
 Commands
