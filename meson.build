@@ -189,7 +189,7 @@ pkg.generate(
   description: 'document viewer - plugin API',
   url: 'https://pwmt.org/projects/zathura',
   version: version,
-  requires_private: ['girara-gtk3', 'cairo'],
+  requires: ['girara-gtk3', 'cairo'],
   variables: [
     'apiversion=@0@'.format(plugin_api_version),
     'abiversion=@0@'.format(plugin_abi_version),

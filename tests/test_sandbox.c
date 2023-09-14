@@ -2,16 +2,19 @@
 
 #include <check.h>
 
-#include "zathura.h"
 #include "tests.h"
+#include "zathura.h"
 
-START_TEST(test_create) {
-  zathura_t* zathura = zathura_create();
+START_TEST(test_create)
+{
+  zathura_t* zathura      = zathura_create();
   zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
   ck_assert_ptr_nonnull(zathura);
   ck_assert(zathura_init(zathura));
   zathura_free(zathura);
-} END_TEST
+}
+END_TEST
+
 static void
 sandbox_setup(void)
 {
@@ -24,7 +27,8 @@ sandbox_setup(void)
 #endif
 }
 
-static Suite* suite_sandbox(void)
+static Suite*
+suite_sandbox(void)
 {
   TCase* tcase = NULL;
   Suite* suite = suite_create("Sandbox");
@@ -38,7 +42,8 @@ static Suite* suite_sandbox(void)
   return suite;
 }
 
-int main()
+int
+main()
 {
   return run_suite(suite_sandbox());
 }
