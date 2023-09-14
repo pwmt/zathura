@@ -40,7 +40,7 @@ typedef struct zathura_page_widget_private_s {
 
   struct {
       girara_list_t *list; /**< List of selection rectangles that should be drawn */
-      gboolean draw; /** Used to clear previous selection */
+      gboolean draw; /** Draw selection */
   } selection;
 
   struct {
@@ -53,6 +53,11 @@ typedef struct zathura_page_widget_private_s {
     zathura_rectangle_t selection; /**< x1 y1: click point, x2 y2: current position */
     gboolean over_link;
   } mouse;
+
+  struct {
+    zathura_rectangle_t bounds; /**< Highlight bounds */
+    gboolean draw; /**< Draw highlighted region */
+  } highlighter;
 } ZathuraPagePrivate;
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA, G_ADD_PRIVATE(ZathuraPage))
@@ -232,6 +237,12 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->mouse.selection.x2 = -1;
   priv->mouse.selection.y2 = -1;
   priv->mouse.over_link    = false;
+
+  priv->highlighter.bounds.x1 = -1;
+  priv->highlighter.bounds.y1 = -1;
+  priv->highlighter.bounds.x2 = -1;
+  priv->highlighter.bounds.y2 = -1;
+  priv->highlighter.draw      = false;
 
   const unsigned int event_mask = GDK_BUTTON_PRESS_MASK |
     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK;
@@ -634,6 +645,16 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
         cairo_fill(cairo);
       );
     }
+    if (priv->highlighter.bounds.x1 != -1
+        && priv->highlighter.bounds.y1 != -1
+        && priv->highlighter.draw == true) {
+      const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      zathura_rectangle_t rectangle = recalc_rectangle(priv->page, priv->highlighter.bounds);
+      cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
+                      rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
+      cairo_fill(cairo);
+    }
   } else {
     /* set background color */
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
@@ -947,8 +968,9 @@ cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* but
     return true;
   }
 
-  if (priv->selection.list != NULL) {
+  if (priv->selection.list != NULL || priv->highlighter.draw == true) {
     priv->selection.draw = false;
+    priv->highlighter.draw = false;
     zathura_page_widget_redraw_canvas(page);
   }
 
@@ -1011,7 +1033,7 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
     return false;
   }
 
-  if (priv->mouse.selection.x2 == -1 && priv->mouse.selection.y2 == -1 ) {
+  if (priv->mouse.selection.x2 == -1 && priv->mouse.selection.y2 == -1) {
     /* simple single click */
     /* get links */
     if (priv->zathura->global.double_click_follow) {
@@ -1043,6 +1065,31 @@ cb_zathura_page_widget_button_release_event(GtkWidget* widget, GdkEventButton* b
   return false;
 }
 
+static zathura_rectangle_t
+next_selection_rectangle(double basepoint_x, double basepoint_y,
+                         double next_x, double next_y)
+{
+  zathura_rectangle_t rect;
+
+  /* make sure that x2 > x1 && y2 > y1 holds */
+  if (next_x > basepoint_x) {
+    rect.x1 = basepoint_x;
+    rect.x2 = next_x;
+  } else {
+    rect.x1 = next_x;
+    rect.x2 = basepoint_x;
+  }
+  if (next_y > basepoint_y) {
+    rect.y1 = basepoint_y;
+    rect.y2 = next_y;
+  } else {
+    rect.y1 = next_y;
+    rect.y2 = basepoint_y;
+  }
+
+  return rect;
+}
+
 static gboolean
 cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
 {
@@ -1055,25 +1102,40 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
   zathura_document_t* document = zathura_page_get_document(priv->page);
   const double scale           = zathura_document_get_scale(document);
 
-  if (event->state & GDK_BUTTON1_MASK) {
-    /* calculate next selection */
-    rotate_point(document, event->x, event->y,
-                 &priv->mouse.selection.x2, &priv->mouse.selection.y2);
+  if (event->state & GDK_BUTTON1_MASK) { /* holding left mouse button */
+    if (event->state & GDK_CONTROL_MASK) {
+      double x, y;
+      rotate_point(document, event->x, event->y, &x, &y);
+      priv->highlighter.bounds = next_selection_rectangle(priv->mouse.selection.x1,
+                                                          priv->mouse.selection.y1,
+                                                          x, y);
+      priv->highlighter.bounds.x1 /= scale;
+      priv->highlighter.bounds.y1 /= scale;
+      priv->highlighter.bounds.x2 /= scale;
+      priv->highlighter.bounds.y2 /= scale;
 
-    zathura_rectangle_t selection = priv->mouse.selection;
-    selection.x1 /= scale;
-    selection.y1 /= scale;
-    selection.x2 /= scale;
-    selection.y2 /= scale;
-
-    if (priv->selection.list != NULL) {
-      girara_list_free(priv->selection.list);
-    }
-
-    priv->selection.list = zathura_page_get_selection(priv->page, selection, NULL);
-    if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
-      priv->selection.draw = true;
+      priv->highlighter.draw = true;
       zathura_page_widget_redraw_canvas(page);
+    } else {
+      /* calculate next selection */
+      rotate_point(document, event->x, event->y,
+                   &priv->mouse.selection.x2, &priv->mouse.selection.y2);
+
+      zathura_rectangle_t selection = priv->mouse.selection;
+      selection.x1 /= scale;
+      selection.y1 /= scale;
+      selection.x2 /= scale;
+      selection.y2 /= scale;
+
+      if (priv->selection.list != NULL) {
+        girara_list_free(priv->selection.list);
+      }
+
+      priv->selection.list = zathura_page_get_selection(priv->page, selection, NULL);
+      if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
+        priv->selection.draw = true;
+        zathura_page_widget_redraw_canvas(page);
+      }
     }
   } else {
     if (priv->links.retrieved == false) {
