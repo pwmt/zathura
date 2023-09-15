@@ -22,7 +22,7 @@ build:archlinux:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
@@ -58,7 +58,7 @@ build:debian-bookworm:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
@@ -94,7 +94,7 @@ build:debian-trixie:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
@@ -130,7 +130,7 @@ build:ubuntu-jammy:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
