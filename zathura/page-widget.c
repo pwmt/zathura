@@ -1129,7 +1129,7 @@ cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEventMotion* event)
   const double scale           = zathura_document_get_scale(document);
 
   if (event->state & GDK_BUTTON1_MASK) { /* holding left mouse button */
-    if (event->state & GDK_CONTROL_MASK) {
+    if (event->state & priv->zathura->global.highlighter_modmask) {
       double x, y;
       rotate_point(document, event->x, event->y, &x, &y);
       priv->highlighter.bounds = next_selection_rectangle(priv->mouse.selection.x1,
