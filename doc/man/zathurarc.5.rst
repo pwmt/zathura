@@ -680,6 +680,13 @@ zathura
   * Value type: Float
   * Default value: 0.5
 
+*highlighter-modifier*
+  Defines the modifier that needs to be pressed together with the left mouse button
+  to draw the highlighter. Possible values are "shift", "ctrl" and "alt".
+
+  * Value type: String
+  * Default value: shift
+
 *incremental-search*
   En/Disables incremental search (search while typing).
 
@@ -938,6 +945,14 @@ zathura
 
   * Value type: Boolean
   * Default value: true
+
+*synctex-edit-modifier*
+  Defines the modifier that needs to be pressed together with the left mouse button
+  to trigger the SyncTeX backward synchronization. Possible values are "shift",
+  "ctrl" and "alt".
+
+  * Value type: String
+  * Default value: ctrl
 
 *synctex-editor-command*
   Defines the command executed for SyncTeX backward synchronization.
