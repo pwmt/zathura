@@ -10,6 +10,7 @@
 
 #include "callbacks.h"
 #include "shortcuts.h"
+#include "dbus-interface.h"
 #include "document.h"
 #include "zathura.h"
 #include "render.h"
@@ -1492,33 +1493,40 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
     return false;
   }
 
+  girara_argument_t new_argument = *argument;
+  const char* bus_name           = zathura_dbus_get_name(zathura);
+  char* s                        = girara_replace_substring(new_argument.data, "$DBUS", bus_name);
+  if (s == NULL) {
+    return false;
+  }
+  new_argument.data = s;
+
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
     char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
-    girara_argument_t new_argument = *argument;
-
-    char* r = girara_replace_substring(argument->data, "$FILE", path);
-    if (r == NULL) {
-      return false;
-    }
-
-    char* s = girara_replace_substring(r, "$PAGE", page_buf);
-    g_free(r);
+    s = girara_replace_substring(new_argument.data, "$FILE", path);
+    g_free(new_argument.data);
 
     if (s == NULL) {
       return false;
     }
-
     new_argument.data = s;
-    const bool ret = girara_sc_exec(session, &new_argument, event, t);
-    g_free(s);
-    return ret;
+
+    s = girara_replace_substring(new_argument.data, "$PAGE", page_buf);
+    g_free(new_argument.data);
+
+    if (s == NULL) {
+      return false;
+    }
+    new_argument.data = s;
   }
 
-  return girara_sc_exec(session, argument, event, t);
+  const bool ret = girara_sc_exec(session, &new_argument, event, t);
+  g_free(new_argument.data);
+  return ret;
 }
 
 bool

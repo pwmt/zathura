@@ -230,7 +230,8 @@ close
 
 exec
   Execute an external command. ``$FILE`` expands to the current document path,
-  and ``$PAGE`` to the current page number
+  ``$PAGE`` to the current page number, and ``$DBUS`` to the bus name of the
+  D-Bus interface
 
 info
   Show document information

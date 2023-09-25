@@ -9,6 +9,7 @@
 #include "commands.h"
 #include "config.h"
 #include "database.h"
+#include "dbus-interface.h"
 #include "document.h"
 #include "internal.h"
 #include "page-widget.h"
@@ -543,6 +544,12 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exec is not permitted in strict sandbox mode"));
     return false;
   }
+
+  const char* bus_name = zathura_dbus_get_name(zathura);
+  GIRARA_LIST_FOREACH_BODY_WITH_ITER(
+    argument_list, char*, iter, value, char* s = girara_replace_substring(value, "$DBUS", bus_name); if (s != NULL) {
+      girara_list_iterator_set(iter, s);
+    });
 
   if (zathura->document != NULL) {
     const char*  path = zathura_document_get_path(zathura->document);
