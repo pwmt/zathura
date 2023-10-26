@@ -4,6 +4,7 @@
 #define TYPES_H
 
 #include <girara/datastructures.h>
+#include <glib.h>
 
 #include "macros.h"
 
@@ -285,5 +286,42 @@ typedef struct zathura_device_factors_s
   double x;
   double y;
 } zathura_device_factors_t;
+
+/**
+ * Signature state
+ */
+typedef enum zathura_signature_state_e {
+  ZATHURA_SIGNATURE_INVALID,
+  ZATHURA_SIGNATURE_VALID,
+  ZATHURA_SIGNATURE_CERTIFICATE_UNTRUSTED,
+  ZATHURA_SIGNATURE_CERTIFICATE_EXPIRED,
+  ZATHURA_SIGNATURE_CERTIFICATE_REVOKED,
+  ZATHURA_SIGNATURE_CERTIFICATE_INVALID,
+  ZATHURA_SIGNATURE_ERROR,
+} zathura_signature_state_t;
+
+/**
+ * Signature information
+ */
+typedef struct zathura_signature_info_s {
+  char*                     signer;
+  GDateTime*                time;
+  zathura_rectangle_t       position;
+  zathura_signature_state_t state;
+} zathura_signature_info_t;
+
+/**
+ *  Creates a new siganture info.
+ *
+ * @return A new signature info or NULL if an error occurred
+ */
+ZATHURA_PLUGIN_API zathura_signature_info_t* zathura_signature_info_new(void);
+
+/**
+ * Frees a signature info
+ *
+ * @param signature The signature info to be freed
+ */
+ZATHURA_PLUGIN_API void zathura_signature_info_free(zathura_signature_info_t* signature);
 
 #endif // TYPES_H

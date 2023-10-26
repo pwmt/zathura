@@ -526,32 +526,32 @@ get_safe_device_factors(cairo_surface_t* surface)
 static gboolean
 zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 {
-  ZathuraPage* page        = ZATHURA_PAGE(widget);
-  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  ZathuraPage*        page    = ZATHURA_PAGE(widget);
+  ZathuraPagePrivate* priv    = zathura_page_widget_get_instance_private(page);
+  zathura_t*          zathura = priv->zathura;
 
   zathura_document_t* document   = zathura_page_get_document(priv->page);
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
 
   bool smooth_reload = true;
-  girara_setting_get(priv->zathura->ui.session, "smooth-reload", &smooth_reload);
+  girara_setting_get(zathura->ui.session, "smooth-reload", &smooth_reload);
 
   bool surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
 
-  if (priv->zathura->predecessor_document != NULL && priv->zathura->predecessor_pages != NULL
-		  && smooth_reload && !surface_exists) {
-	  unsigned int page_index = zathura_page_get_index(priv->page);
+  if (zathura->predecessor_document != NULL && zathura->predecessor_pages != NULL && smooth_reload && !surface_exists) {
+    unsigned int page_index = zathura_page_get_index(priv->page);
 
-	  if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document)) {
-		  /* render real page */
-		  zathura_render_request(priv->render_request, g_get_real_time());
+    if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document)) {
+      /* render real page */
+      zathura_render_request(priv->render_request, g_get_real_time());
 
-		  girara_debug("using predecessor page for idx %d", page_index);
-		  document = priv->zathura->predecessor_document;
-		  page = ZATHURA_PAGE(priv->zathura->predecessor_pages[page_index]);
-		  priv = zathura_page_widget_get_instance_private(page);
-	  }
-	  surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
+      girara_debug("using predecessor page for idx %d", page_index);
+      document = priv->zathura->predecessor_document;
+      page     = ZATHURA_PAGE(priv->zathura->predecessor_pages[page_index]);
+      priv     = zathura_page_widget_get_instance_private(page);
+    }
+    surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
   }
 
   if (surface_exists) {
@@ -607,10 +607,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
     }
 
     /* draw links */
-    set_font_from_property(cairo, priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
+    set_font_from_property(cairo, zathura, CAIRO_FONT_WEIGHT_BOLD);
 
     float transparency = 0.5;
-    girara_setting_get(priv->zathura->ui.session, "highlight-transparency", &transparency);
+    girara_setting_get(zathura->ui.session, "highlight-transparency", &transparency);
 
     if (priv->links.draw == true && priv->links.n != 0) {
       unsigned int link_counter = 0;
@@ -620,14 +620,14 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
           zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
 
           /* draw position */
-          const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
+          const GdkRGBA color = zathura->ui.colors.highlight_color;
           cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-          cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-                          (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
+          cairo_rectangle(cairo, rectangle.x1, rectangle.y1, (rectangle.x2 - rectangle.x1),
+                          (rectangle.y2 - rectangle.y1));
           cairo_fill(cairo);
 
           /* draw text */
-          const GdkRGBA color_fg = priv->zathura->ui.colors.highlight_color_fg;
+          const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
           cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, transparency);
           cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
           char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
@@ -646,10 +646,10 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
 
         /* draw position */
         if (idx == priv->search.current) {
-          const GdkRGBA color = priv->zathura->ui.colors.highlight_color_active;
+          const GdkRGBA color = zathura->ui.colors.highlight_color_active;
           cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
         } else {
-          const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
+          const GdkRGBA color = zathura->ui.colors.highlight_color;
           cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
         }
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1, (rectangle.x2 - rectangle.x1),
