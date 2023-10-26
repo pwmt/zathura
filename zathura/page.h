@@ -218,10 +218,20 @@ ZATHURA_PLUGIN_API zathura_error_t zathura_page_render(zathura_page_t* page, cai
  * is returned.
  *
  * @param page Page
- * @param error Set to an error value (see \ref zathura_Error_t) if an error
+ * @param error Set to an error value (see \ref zathura_error_t) if an error
  *    occurred.
  * @return Page label
  */
 ZATHURA_PLUGIN_API char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error);
+
+/**
+ * Get signatures of a page
+ *
+ * @param page Page
+ * @param error Set to an error value (see \ref zathura_error_t) if an error
+ *    occurred.
+ * @return List of signatures
+ */
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error);
 
 #endif // PAGE_H
