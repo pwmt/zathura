@@ -72,6 +72,12 @@ cb_color_change(girara_session_t* session, const char* name,
     parse_color(&zathura->ui.colors.render_loading_bg, string_value);
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
     parse_color(&zathura->ui.colors.render_loading_fg, string_value);
+  } else if (g_strcmp0(name, "signature-success-color") == 0) {
+    parse_color(&zathura->ui.colors.signature_success, string_value);
+  } else if (g_strcmp0(name, "signature-warning-color") == 0) {
+    parse_color(&zathura->ui.colors.signature_warning, string_value);
+  } else if (g_strcmp0(name, "signature-error-color") == 0) {
+    parse_color(&zathura->ui.colors.signature_error, string_value);
   }
 
   render_all(zathura);
@@ -271,6 +277,15 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "index-bg",        "#232323", STRING, true, _("Index mode background color"), NULL, NULL);
   girara_setting_add(gsession, "index-active-fg", "#232323", STRING, true, _("Index mode foreground color (active element)"), NULL, NULL);
   girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, true, _("Index mode background color (active element)"), NULL, NULL);
+  girara_setting_add(gsession, "signature-success-color", NULL, STRING, false,
+                     _("Color used to highlight valid signatures"), cb_color_change, NULL);
+  girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
+  girara_setting_add(gsession, "signature-warning-color", NULL, STRING, false,
+                     _("Color used to highlight signatures with warnings"), cb_color_change, NULL);
+  girara_setting_set(gsession, "signature-warning-color", "rgba(100%,%84,0%,0.9)");
+  girara_setting_add(gsession, "signature-error-color", NULL, STRING, false,
+                     _("Color used to highlight invalid signatures"), cb_color_change, NULL);
+  girara_setting_set(gsession, "signature-error-color", "rgba(92%,11%,14%,0.9)");
 
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);

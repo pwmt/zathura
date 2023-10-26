@@ -106,13 +106,15 @@ struct zathura_s
       girara_statusbar_item_t* page_number; /**< page number statusbar entry */
     } statusbar;
 
-    struct
-    {
-      GdkRGBA highlight_color; /**< Color for highlighting */
-      GdkRGBA highlight_color_fg; /**< Color for highlighting (foreground) */
+    struct {
+      GdkRGBA highlight_color;        /**< Color for highlighting */
+      GdkRGBA highlight_color_fg;     /**< Color for highlighting (foreground) */
       GdkRGBA highlight_color_active; /** Color for highlighting */
-      GdkRGBA render_loading_bg; /**< Background color for render "Loading..." */
-      GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
+      GdkRGBA render_loading_bg;      /**< Background color for render "Loading..." */
+      GdkRGBA render_loading_fg;      /**< Foreground color for render "Loading..." */
+      GdkRGBA signature_success;      /**> Color for highlighing valid signatures */
+      GdkRGBA signature_warning;      /**> Color for highlighing  signatures with warnings */
+      GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
