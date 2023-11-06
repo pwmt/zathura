@@ -109,7 +109,6 @@ seccomp_enable_basic_filter(void)
   DENY_RULE(umount);
   DENY_RULE(umount2);
   DENY_RULE(uselib);
-  DENY_RULE(vmsplice);
 
   /*
    *
