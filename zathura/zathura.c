@@ -221,6 +221,13 @@ init_ui(zathura_t* zathura)
   zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
+  /* gestures */
+
+  GtkGesture* zoom = gtk_gesture_zoom_new(GTK_WIDGET(zathura->ui.session->gtk.view));
+  g_signal_connect(zoom, "scale-changed", G_CALLBACK(cb_gesture_zoom_scale_changed), zathura);
+  g_signal_connect(zoom, "begin", G_CALLBACK(cb_gesture_zoom_begin), zathura);
+  gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zathura->ui.session->gtk.view), GTK_PHASE_BUBBLE);
+
   /* zathura signals */
   zathura->signals.refresh_view = g_signal_new(
     "refresh-view", GTK_TYPE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,

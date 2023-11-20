@@ -227,6 +227,14 @@ struct zathura_s
   } shortcut;
 
   /**
+   * Storage for gestures.
+   */
+  struct {
+	  double initial_zoom;
+  } gesture;
+
+
+  /**
    * Context for MIME type detection
    */
   zathura_content_type_context_t* content_type_context;
