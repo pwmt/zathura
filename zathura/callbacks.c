@@ -829,7 +829,8 @@ cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void*
   }
 
   const double next_zoom = zathura->gesture.initial_zoom * scale;
-  zathura_document_set_zoom(zathura->document, next_zoom);
+  const double corrected_zoom = zathura_correct_zoom_value(zathura->ui.session, next_zoom);
+  zathura_document_set_zoom(zathura->document, corrected_zoom);
   render_all(zathura);
   refresh_view(zathura);
 }
