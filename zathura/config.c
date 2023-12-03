@@ -22,13 +22,12 @@
 #define ZATHURA_RC "zathurarc"
 
 static void
-cb_jumplist_change(girara_session_t* session, const char* name,
+cb_jumplist_change(girara_session_t* session, const char* UNUSED(name),
                    girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
-  g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
   const int* ivalue = value;
@@ -105,6 +104,38 @@ cb_doubleclick_changed(girara_session_t* session, const char* UNUSED(name),
 }
 
 static void
+cb_global_modifiers_changed(girara_session_t* session, const char* name,
+                            girara_setting_type_t UNUSED(type), const void* value,
+                            void* UNUSED(data))
+{
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  zathura_t* zathura = session->global.data;
+
+  GdkModifierType* p;
+  if (g_strcmp0(name, "synctex-edit-modifier") == 0) {
+    p = &(zathura->global.synctex_edit_modmask);
+  } else if (g_strcmp0(name, "highlighter-modifier") == 0) {
+    p = &(zathura->global.highlighter_modmask);
+  } else {
+    girara_error("unreachable");
+    return;
+  }
+
+  const char* modifier = value;
+  if (g_strcmp0(modifier, "shift") == 0) {
+    *p = GDK_SHIFT_MASK;
+  } else if (g_strcmp0(modifier, "ctrl") == 0)  {
+    *p = GDK_CONTROL_MASK;
+  } else if (g_strcmp0(modifier, "alt") == 0) {
+    *p = GDK_MOD1_MASK;
+  } else {
+    girara_error("Invalid %s option: '%s'", name, modifier);
+  }
+}
+
+static void
 cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
                      girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
@@ -118,7 +149,7 @@ cb_incsearch_changed(girara_session_t* session, const char* UNUSED(name),
 }
 
 static void
-cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
+cb_sandbox_changed(girara_session_t* session, const char* name,
                    girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
 {
   g_return_if_fail(value != NULL);
@@ -134,7 +165,7 @@ cb_sandbox_changed(girara_session_t* session, const char* UNUSED(name),
   } else if (g_strcmp0(sandbox, "strict") == 0) {
     zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
   } else {
-    girara_error("Invalid sandbox option");
+    girara_error("Invalid %s option: '%s'", name, sandbox);
   }
 }
 
@@ -304,6 +335,8 @@ config_load_default(zathura_t* zathura)
   bool_value = true;
   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
   girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-edit-modifier",  "ctrl",       STRING,  false, _("Synctex edit modifier"), cb_global_modifiers_changed, NULL);
+  girara_setting_add(gsession, "highlighter-modifier",   "shift",      STRING,  false, _("Highlighter modifier"), cb_global_modifiers_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
   girara_setting_add(gsession, "dbus-raise-window",      &bool_value,  BOOLEAN, false, _("Raise window on certain D-Bus commands"), NULL, NULL);

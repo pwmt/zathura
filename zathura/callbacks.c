@@ -756,41 +756,41 @@ cb_page_widget_link(ZathuraPage* page, void* data)
 
 void
 cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event,
-    void* data)
+                                     void* data)
 {
   zathura_t* zathura = data;
   zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 
+  if (event->button != GDK_BUTTON_PRIMARY) {
+    return;
+  }
+
   /* set page number (but don't scroll there. it was clicked on, so it's visible) */
-  if (event->button == GDK_BUTTON_PRIMARY) {
-    zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
-    refresh_view(zathura);
-  }
+  zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
+  refresh_view(zathura);
 
-  if (event->button != GDK_BUTTON_PRIMARY || !(event->state & GDK_CONTROL_MASK)) {
-    return;
-  }
+  if (event->state & zathura->global.synctex_edit_modmask) {
+    bool synctex = false;
+    girara_setting_get(zathura->ui.session, "synctex", &synctex);
+    if (synctex == false) {
+      return;
+    }
 
-  bool synctex = false;
-  girara_setting_get(zathura->ui.session, "synctex", &synctex);
-  if (synctex == false) {
-    return;
-  }
+    if (zathura->dbus != NULL) {
+      zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
+    }
 
-  if (zathura->dbus != NULL) {
-    zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
-  }
+    char* editor = NULL;
+    girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
+    if (editor == NULL || *editor == '\0') {
+      girara_debug("No SyncTeX editor specified.");
+      g_free(editor);
+      return;
+    }
 
-  char* editor = NULL;
-  girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
-  if (editor == NULL || *editor == '\0') {
-    girara_debug("No SyncTeX editor specified.");
+    synctex_edit(editor, page, event->x, event->y);
     g_free(editor);
-    return;
   }
-
-  synctex_edit(editor, page, event->x, event->y);
-  g_free(editor);
 }
 
 void
