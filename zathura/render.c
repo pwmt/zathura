@@ -426,9 +426,7 @@ zathura_renderer_stop(ZathuraRenderer* renderer)
 
 /* ZathuraRenderRequest methods */
 
-void
-zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
-{
+void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time) {
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
 
   ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
@@ -436,12 +434,13 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
 
   bool unfinished_jobs = false;
   /* check if there are any active jobs left */
-  GIRARA_LIST_FOREACH_BODY(request_priv->active_jobs, render_job_t*, job,
+  for (size_t idx = 0; idx != girara_list_size(request_priv->active_jobs); ++idx) {
+    render_job_t* job = girara_list_nth(request_priv->active_jobs, idx);
     if (job->aborted == false) {
       unfinished_jobs = true;
       break;
     }
-  );
+  }
 
   /* only add a new job if there are no active ones left */
   if (unfinished_jobs == false) {
@@ -464,16 +463,15 @@ zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time)
   g_mutex_unlock(&request_priv->jobs_mutex);
 }
 
-void
-zathura_render_request_abort(ZathuraRenderRequest* request)
-{
+void zathura_render_request_abort(ZathuraRenderRequest* request) {
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
 
   ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
   g_mutex_lock(&request_priv->jobs_mutex);
-  GIRARA_LIST_FOREACH_BODY(request_priv->active_jobs, render_job_t*, job,
-    job->aborted = true;
-  );
+  for (size_t idx = 0; idx != girara_list_size(request_priv->active_jobs); ++idx) {
+    render_job_t* job = girara_list_nth(request_priv->active_jobs, idx);
+    job->aborted      = true;
+  }
   g_mutex_unlock(&request_priv->jobs_mutex);
 }
 
@@ -639,14 +637,15 @@ recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_wi
 
     if (found_images == true) {
       /* Get images bounding boxes */
-      GIRARA_LIST_FOREACH_BODY(images, zathura_image_t*, image_it,
+      for (size_t idx = 0; idx != girara_list_size(images); ++idx) {
+        zathura_image_t* image_it = girara_list_nth(images, idx);
         zathura_rectangle_t* rect = g_try_malloc(sizeof(zathura_rectangle_t));
         if (rect == NULL) {
           break;
         }
         *rect = recalc_rectangle(page, image_it->position);
         girara_list_append(rectangles, rect);
-      );
+      }
     }
   }
 
@@ -655,15 +654,15 @@ recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_wi
 
     for (unsigned int x = 0; x < page_width; x++, data += 4) {
       /* Check if the pixel belongs to an image when in reverse video mode*/
-      if (priv->recolor.reverse_video == true && found_images == true){
+      if (priv->recolor.reverse_video == true && found_images == true) {
         bool inside_image = false;
-        GIRARA_LIST_FOREACH_BODY(rectangles, zathura_rectangle_t*, rect_it,
-          if (rect_it->x1 <= x && rect_it->x2 >= x &&
-              rect_it->y1 <= y && rect_it->y2 >= y) {
+        for (size_t idx = 0; idx != girara_list_size(rectangles); ++idx) {
+          zathura_rectangle_t* rect_it = girara_list_nth(rectangles, idx);
+          if (rect_it->x1 <= x && rect_it->x2 >= x && rect_it->y1 <= y && rect_it->y2 >= y) {
             inside_image = true;
             break;
           }
-        );
+        }
         /* If it's inside and image don't recolor */
         if (inside_image == true) {
           /* It is not guaranteed that the pixel is already opaque. */
