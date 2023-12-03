@@ -165,19 +165,16 @@ bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list) {
       }
 
       /* search for existing mark */
-      girara_list_iterator_t* mark_iter = girara_list_iterator(zathura->global.marks);
-      do {
-        zathura_mark_t* mark = (zathura_mark_t*)girara_list_iterator_data(mark_iter);
+      for (size_t inner_idx = girara_list_size(zathura->global.marks); inner_idx; --inner_idx) {
+        zathura_mark_t* mark = girara_list_nth(zathura->global.marks, inner_idx - 1);
         if (mark == NULL) {
           continue;
         }
 
         if (mark->key == key) {
           girara_list_remove(zathura->global.marks, mark);
-          continue;
         }
-      } while (girara_list_iterator_next(mark_iter) != NULL);
-      girara_list_iterator_free(mark_iter);
+      }
     }
   }
 
