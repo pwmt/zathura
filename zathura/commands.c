@@ -109,9 +109,10 @@ cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list)
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
     GString* string = g_string_new(NULL);
-
-    GIRARA_LIST_FOREACH_BODY(zathura->bookmarks.bookmarks, zathura_bookmark_t*, bookmark,
-                             g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page););
+    for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
+      zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
+      g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
+    }
 
     if (strlen(string->str) > 0) {
       g_string_erase(string, strlen(string->str) - 1, 1);
@@ -192,12 +193,14 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   GString* string = g_string_new(NULL);
 
   for (unsigned int i = 0; i < LENGTH(meta_fields); i++) {
-    GIRARA_LIST_FOREACH_BODY(
-      information, zathura_document_information_entry_t*, entry, if (entry != NULL) {
+    for (size_t idx = 0; idx != girara_list_size(information); ++idx) {
+      zathura_document_information_entry_t* entry = girara_list_nth(information, idx);
+      if (entry != NULL) {
         if (meta_fields[i].field == entry->type) {
           g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
         }
-      });
+      }
+    }
   }
 
   if (string->len > 0) {
@@ -533,9 +536,7 @@ error_ret:
   return true;
 }
 
-bool
-cmd_exec(girara_session_t* session, girara_list_t* argument_list)
-{
+bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -546,26 +547,32 @@ cmd_exec(girara_session_t* session, girara_list_t* argument_list)
   }
 
   const char* bus_name = zathura_dbus_get_name(zathura);
-  GIRARA_LIST_FOREACH_BODY_WITH_ITER(
-    argument_list, char*, iter, value, char* s = girara_replace_substring(value, "$DBUS", bus_name); if (s != NULL) {
-      girara_list_iterator_set(iter, s);
-    });
+  for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
+    char* value = girara_list_nth(argument_list, idx);
+    char* s     = girara_replace_substring(value, "$DBUS", bus_name);
+    if (s != NULL) {
+      girara_list_set_nth(argument_list, idx, s);
+    }
+  }
 
   if (zathura->document != NULL) {
-    const char*  path = zathura_document_get_path(zathura->document);
+    const char* path  = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
-    char         page_buf[G_ASCII_DTOSTR_BUF_SIZE];
+    char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page + 1);
 
-    GIRARA_LIST_FOREACH_BODY_WITH_ITER(
-      argument_list, char*, iter, value, char* r = girara_replace_substring(value, "$PAGE", page_buf); if (r != NULL) {
+    for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
+      char* value = girara_list_nth(argument_list, idx);
+      char* r     = girara_replace_substring(value, "$PAGE", page_buf);
+      if (r != NULL) {
         char* s = girara_replace_substring(r, "$FILE", path);
         g_free(r);
 
         if (s != NULL) {
-          girara_list_iterator_set(iter, s);
+          girara_list_set_nth(argument_list, idx, s);
         }
-      });
+      }
+    };
   }
 
   return girara_exec_with_argument_list(session, argument_list);
