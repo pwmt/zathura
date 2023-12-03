@@ -342,6 +342,10 @@ seccomp_enable_strict_filter(zathura_t* zathura)
 #ifdef __NR_readfile
   ERRNO_RULE(readfile);
 #endif
+#ifdef __NR_fchmodat2
+  ERRNO_RULE(fchmodat2);
+#endif
+
 
 
 
