@@ -40,6 +40,7 @@ typedef struct private_s {
   GDBusConnection* connection;
   guint            owner_id;
   guint            registration_id;
+  char*            bus_name;
 } ZathuraDbusPrivate;
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraDbus, zathura_dbus, G_TYPE_OBJECT, G_ADD_PRIVATE(ZathuraDbus))
@@ -71,6 +72,8 @@ finalize(GObject* object)
     g_dbus_node_info_unref(priv->introspection_data);
   }
 
+  g_free(priv->bus_name);
+
   G_OBJECT_CLASS(zathura_dbus_parent_class)->finalize(object);
 }
 
@@ -91,6 +94,7 @@ zathura_dbus_init(ZathuraDbus* dbus)
   priv->connection         = NULL;
   priv->owner_id           = 0;
   priv->registration_id    = 0;
+  priv->bus_name           = NULL;
 }
 
 static void
@@ -168,11 +172,19 @@ zathura_dbus_new(zathura_t* zathura)
   }
 
   char* well_known_name = g_strdup_printf(DBUS_NAME_TEMPLATE, getpid());
+  priv->bus_name        = well_known_name;
   priv->owner_id        = g_bus_own_name(G_BUS_TYPE_SESSION, well_known_name, G_BUS_NAME_OWNER_FLAGS_NONE, bus_acquired,
                                          name_acquired, name_lost, dbus, NULL);
-  g_free(well_known_name);
 
   return dbus;
+}
+
+const char*
+zathura_dbus_get_name(zathura_t* zathura)
+{
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(zathura->dbus);
+
+  return priv->bus_name;
 }
 
 void
