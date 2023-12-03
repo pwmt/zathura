@@ -523,37 +523,34 @@ handle_method_call(GDBusConnection* UNUSED(connection), const gchar* UNUSED(send
   }
 }
 
-static void
-json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t* index)
-{
+static void json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t* index) {
   girara_list_t* list = girara_node_get_children(index);
+  for (size_t idx = 0; idx != girara_list_size(list); ++idx) {
+    girara_tree_node_t* node               = girara_list_nth(list, idx);
+    zathura_index_element_t* index_element = girara_node_get_data(node);
 
-  GIRARA_LIST_FOREACH_BODY(
-    list, girara_tree_node_t*, node, do {
-      zathura_index_element_t* index_element = girara_node_get_data(node);
+    json_builder_begin_object(builder);
+    json_builder_set_member_name(builder, "title");
+    json_builder_add_string_value(builder, index_element->title);
 
-      json_builder_begin_object(builder);
-      json_builder_set_member_name(builder, "title");
-      json_builder_add_string_value(builder, index_element->title);
+    zathura_link_type_t type     = zathura_link_get_type(index_element->link);
+    zathura_link_target_t target = zathura_link_get_target(index_element->link);
+    if (type == ZATHURA_LINK_GOTO_DEST) {
+      json_builder_set_member_name(builder, "page");
+      json_builder_add_int_value(builder, target.page_number + 1);
+    } else {
+      json_builder_set_member_name(builder, "target");
+      json_builder_add_string_value(builder, target.value);
+    }
 
-      zathura_link_type_t   type   = zathura_link_get_type(index_element->link);
-      zathura_link_target_t target = zathura_link_get_target(index_element->link);
-      if (type == ZATHURA_LINK_GOTO_DEST) {
-        json_builder_set_member_name(builder, "page");
-        json_builder_add_int_value(builder, target.page_number + 1);
-      } else {
-        json_builder_set_member_name(builder, "target");
-        json_builder_add_string_value(builder, target.value);
-      }
-
-      if (girara_node_get_num_children(node) > 0) {
-        json_builder_set_member_name(builder, "sub-index");
-        json_builder_begin_array(builder);
-        json_document_info_add_node(builder, node);
-        json_builder_end_array(builder);
-      }
-      json_builder_end_object(builder);
-    } while (0););
+    if (girara_node_get_num_children(node) > 0) {
+      json_builder_set_member_name(builder, "sub-index");
+      json_builder_begin_array(builder);
+      json_document_info_add_node(builder, node);
+      json_builder_end_array(builder);
+    }
+    json_builder_end_object(builder);
+  }
 }
 
 static GVariant*
