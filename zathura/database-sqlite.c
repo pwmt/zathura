@@ -574,17 +574,16 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
   }
 
   bool status = true;
-  GIRARA_LIST_FOREACH_BODY(jumplist, zathura_jump_t*, jump,
-    stmt = prepare_statement(priv->session, SQL_INSERT_JUMP);
+  for (size_t idx = 0; idx != girara_list_size(jumplist) && status; ++idx) {
+    zathura_jump_t* jump = girara_list_nth(jumplist, idx);
+    stmt                 = prepare_statement(priv->session, SQL_INSERT_JUMP);
     if (stmt == NULL) {
       status = false;
       break;
     }
 
-    if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
-        sqlite3_bind_int(stmt, 2, jump->page)      != SQLITE_OK ||
-        sqlite3_bind_double(stmt, 3, jump->x)      != SQLITE_OK ||
-        sqlite3_bind_double(stmt, 4, jump->y)      != SQLITE_OK) {
+    if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK || sqlite3_bind_int(stmt, 2, jump->page) != SQLITE_OK ||
+        sqlite3_bind_double(stmt, 3, jump->x) != SQLITE_OK || sqlite3_bind_double(stmt, 4, jump->y) != SQLITE_OK) {
       sqlite3_finalize(stmt);
       girara_error("Failed to bind arguments.");
       status = false;
@@ -596,9 +595,8 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
 
     if (res != SQLITE_DONE) {
       status = false;
-      break;
     }
-  );
+  }
 
   if (status == false) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
