@@ -808,3 +808,29 @@ cb_window_update_icon(ZathuraRenderRequest* GIRARA_UNUSED(request), cairo_surfac
   gtk_window_set_icon(GTK_WINDOW(zathura->ui.session->gtk.window), pixbuf);
   g_object_unref(pixbuf);
 }
+
+void
+cb_gesture_zoom_begin(GtkGesture* UNUSED(self), GdkEventSequence* UNUSED(sequence), void* data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+  const double current_zoom     = zathura_document_get_zoom(zathura->document);
+  zathura->gesture.initial_zoom = current_zoom;
+}
+
+void
+cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void* data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  const double next_zoom = zathura->gesture.initial_zoom * scale;
+  const double corrected_zoom = zathura_correct_zoom_value(zathura->ui.session, next_zoom);
+  zathura_document_set_zoom(zathura->document, corrected_zoom);
+  render_all(zathura);
+  refresh_view(zathura);
+}
