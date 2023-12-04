@@ -834,3 +834,24 @@ cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void*
   render_all(zathura);
   refresh_view(zathura);
 }
+
+void cb_hide_links(GtkWidget* widget, gpointer data) {
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(data != NULL);
+
+  /* disconnect from signal */
+  gulong handler_id = GPOINTER_TO_UINT(g_object_steal_data(G_OBJECT(widget), "handler_id"));
+  g_signal_handler_disconnect(G_OBJECT(widget), handler_id);
+
+  zathura_t* zathura           = data;
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
+  }
+}

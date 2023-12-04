@@ -285,4 +285,12 @@ void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* d
 
 void cb_gesture_zoom_scale_changed(GtkGestureZoom* self, gdouble scale, void* data);
 
+/**
+ * Clears all highlighted links when the inputbar gets closed
+ *
+ * @param GtkWidget* Inputbar widget
+ * @param data The zathura instance
+ */
+void cb_hide_links(GtkWidget* widget, gpointer data);
+
 #endif // CALLBACKS_H
