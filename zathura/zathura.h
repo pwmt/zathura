@@ -234,9 +234,8 @@ struct zathura_s
    * Storage for gestures.
    */
   struct {
-	  double initial_zoom;
+    double initial_zoom;
   } gesture;
-
 
   /**
    * Context for MIME type detection
