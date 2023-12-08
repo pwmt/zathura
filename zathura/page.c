@@ -413,15 +413,7 @@ zathura_page_get_label(zathura_page_t* page, zathura_error_t* error)
   return ret;
 }
 
-static void
-sig_free(void* sig)
-{
-  zathura_signature_info_free(sig);
-}
-
-girara_list_t*
-zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error)
-{
+girara_list_t* zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error) {
   if (page == NULL || page->document == NULL) {
     if (error) {
       *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
@@ -429,7 +421,7 @@ zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error)
     return NULL;
   }
 
-  zathura_plugin_t*                 plugin    = zathura_document_get_plugin(page->document);
+  zathura_plugin_t* plugin                    = zathura_document_get_plugin(page->document);
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
   if (functions->page_get_signatures == NULL) {
     if (error) {
@@ -438,8 +430,8 @@ zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error)
     return NULL;
   }
 
-  girara_list_t*  ret = girara_list_new2(sig_free);
-  zathura_error_t e   = functions->page_get_signatures(page, page->data, ret);
+  zathura_error_t e  = ZATHURA_ERROR_OK;
+  girara_list_t* ret = functions->page_get_signatures(page, page->data, &e);
   if (e != ZATHURA_ERROR_OK) {
     if (error) {
       *error = e;
