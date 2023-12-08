@@ -1349,6 +1349,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
+  bool show_signature_information = false;
+  girara_setting_get(zathura->ui.session, "show-signature-information", &show_signature_information);
+  zathura_show_signature_information(zathura, show_signature_information);
   update_visible_pages(zathura);
 
   return true;
@@ -1896,3 +1899,21 @@ zathura_signal_sigterm(gpointer data)
   return TRUE;
 }
 #endif
+
+void zathura_show_signature_information(zathura_t* zathura, bool show) {
+  if (zathura->document == NULL) {
+    return;
+  }
+
+  GValue show_sig_info_value = {0};
+  g_value_init(&show_sig_info_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean(&show_sig_info_value, show);
+
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page = 0; page != number_of_pages; ++page) {
+    // draw signature info
+    g_object_set_property(G_OBJECT(zathura->pages[page]), "draw-signatures", &show_sig_info_value);
+  }
+
+  g_value_unset(&show_sig_info_value);
+}

@@ -58,6 +58,12 @@ typedef struct zathura_page_widget_private_s {
     zathura_rectangle_t bounds; /**< Highlight bounds */
     gboolean draw; /**< Draw highlighted region */
   } highlighter;
+
+  struct {
+    girara_list_t* list; /**< List of signatures on the page */
+    gboolean retrieved;  /**< True if we already tried to retrieve the list of signatures */
+    gboolean draw;       /**< True if links should be drawn */
+  } signatures;
 } ZathuraPagePrivate;
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA, G_ADD_PRIVATE(ZathuraPage))
@@ -97,6 +103,7 @@ enum properties_e {
   PROP_SEARCH_RESULTS_CURRENT,
   PROP_DRAW_SEARCH_RESULTS,
   PROP_LAST_VIEW,
+  PROP_DRAW_SIGNATURES,
 };
 
 enum {
@@ -148,6 +155,10 @@ zathura_page_widget_class_init(ZathuraPageClass* class)
                                   g_param_spec_int("search-length", "search-length", "The number of search results", -1, INT_MAX, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_DRAW_SEARCH_RESULTS,
                                   g_param_spec_boolean("draw-search-results", "draw-search-results", "Set to true if search results should be drawn", FALSE, G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property(object_class, PROP_DRAW_SIGNATURES,
+                                  g_param_spec_boolean("draw-signatures", "draw-signatures",
+                                                       "Set to true if signatures should be drawn", FALSE,
+                                                       G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
   /* add signals */
   signals[TEXT_SELECTED] = g_signal_new("text-selected",
@@ -244,8 +255,12 @@ zathura_page_widget_init(ZathuraPage* widget)
   priv->highlighter.bounds.y2 = -1;
   priv->highlighter.draw      = false;
 
-  const unsigned int event_mask = GDK_BUTTON_PRESS_MASK |
-    GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK;
+  priv->signatures.list      = NULL;
+  priv->signatures.retrieved = false;
+  priv->signatures.draw      = false;
+
+  const unsigned int event_mask =
+      GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK;
   gtk_widget_add_events(GTK_WIDGET(widget), event_mask);
 }
 
@@ -384,99 +399,118 @@ get_text_extents(const char* string, zathura_t* zathura, cairo_font_weight_t wei
   return text;
 }
 
-static void
-zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
-{
-  ZathuraPage* pageview = ZATHURA_PAGE(object);
+static void zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec) {
+  ZathuraPage* pageview    = ZATHURA_PAGE(object);
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(pageview);
 
   cairo_text_extents_t text;
 
   switch (prop_id) {
-    case PROP_PAGE:
-      priv->page = g_value_get_pointer(value);
-      break;
-    case PROP_ZATHURA:
-      priv->zathura = g_value_get_pointer(value);
-      break;
-    case PROP_DRAW_LINKS:
-      priv->links.draw = g_value_get_boolean(value);
-      /* get links */
-      if (priv->links.draw == TRUE && priv->links.retrieved == FALSE) {
-        priv->links.list      = zathura_page_links_get(priv->page, NULL);
-        priv->links.retrieved = TRUE;
-        priv->links.n         = (priv->links.list == NULL) ? 0 : girara_list_size(priv->links.list);
-      }
+  case PROP_PAGE:
+    priv->page = g_value_get_pointer(value);
+    break;
+  case PROP_ZATHURA:
+    priv->zathura = g_value_get_pointer(value);
+    break;
+  case PROP_DRAW_LINKS:
+    priv->links.draw = g_value_get_boolean(value);
+    /* get links */
+    if (priv->links.draw == TRUE && priv->links.retrieved == FALSE) {
+      priv->links.list      = zathura_page_links_get(priv->page, NULL);
+      priv->links.retrieved = TRUE;
+      priv->links.n         = (priv->links.list == NULL) ? 0 : girara_list_size(priv->links.list);
+    }
 
-      if (priv->links.retrieved == TRUE && priv->links.list != NULL) {
-        /* get size of text that should be large enough for every link hint */
-        text = get_text_extents("888", priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
+    if (priv->links.retrieved == TRUE && priv->links.list != NULL) {
+      /* get size of text that should be large enough for every link hint */
+      text = get_text_extents("888", priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
 
-        GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
-          if (link != NULL) {
-            /* redraw link area */
-            zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
-            redraw_rect(pageview, &rectangle);
+      for (size_t idx = 0; idx != girara_list_size(priv->links.list); ++idx) {
+        zathura_link_t* link = girara_list_nth(priv->links.list, idx);
+        if (link != NULL) {
+          /* redraw link area */
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
+          redraw_rect(pageview, &rectangle);
 
-            /* also redraw area for link hint */
-            rectangle.x2 = rectangle.x1 + text.width;
-            rectangle.y1 = rectangle.y2 - text.height;
-            redraw_rect(pageview, &rectangle);
-          }
-        );
-      }
-      break;
-    case PROP_LINKS_OFFSET:
-      priv->links.offset = g_value_get_int(value);
-      break;
-    case PROP_SEARCH_RESULTS:
-      if (priv->search.list != NULL && priv->search.draw) {
-        redraw_all_rects(pageview, priv->search.list);
-        girara_list_free(priv->search.list);
-      }
-      priv->search.list = g_value_get_pointer(value);
-      if (priv->search.list != NULL && priv->search.draw) {
-        priv->links.draw = FALSE;
-        redraw_all_rects(pageview, priv->search.list);
-      }
-      priv->search.current = -1;
-      break;
-    case PROP_SEARCH_RESULTS_CURRENT: {
-      g_return_if_fail(priv->search.list != NULL);
-      if (priv->search.current >= 0 && priv->search.current < (signed) girara_list_size(priv->search.list)) {
-        zathura_rectangle_t* rect = girara_list_nth(priv->search.list, priv->search.current);
-        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-        redraw_rect(pageview, &rectangle);
-      }
-      int val = g_value_get_int(value);
-      if (val < 0) {
-        priv->search.current = girara_list_size(priv->search.list);
-      } else {
-        priv->search.current = val;
-        if (priv->search.draw == TRUE && val >= 0 && val < (signed) girara_list_size(priv->search.list)) {
-          zathura_rectangle_t* rect = girara_list_nth(priv->search.list, priv->search.current);
-          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+          /* also redraw area for link hint */
+          rectangle.x2 = rectangle.x1 + text.width;
+          rectangle.y1 = rectangle.y2 - text.height;
           redraw_rect(pageview, &rectangle);
         }
       }
-      break;
     }
-    case PROP_DRAW_SEARCH_RESULTS:
-      priv->search.draw = g_value_get_boolean(value);
-
-      /*
-       * we do the following instead of only redrawing the rectangles of the
-       * search results in order to avoid the rectangular margins that appear
-       * around the search terms after their highlighted rectangular areas are
-       * redrawn without highlighting.
-       */
-
-      if (priv->search.list != NULL && zathura_page_get_visibility(priv->page)) {
-        gtk_widget_queue_draw(GTK_WIDGET(object));
+    break;
+  case PROP_LINKS_OFFSET:
+    priv->links.offset = g_value_get_int(value);
+    break;
+  case PROP_SEARCH_RESULTS:
+    if (priv->search.list != NULL && priv->search.draw) {
+      redraw_all_rects(pageview, priv->search.list);
+      girara_list_free(priv->search.list);
+    }
+    priv->search.list = g_value_get_pointer(value);
+    if (priv->search.list != NULL && priv->search.draw) {
+      priv->links.draw = FALSE;
+      redraw_all_rects(pageview, priv->search.list);
+    }
+    priv->search.current = -1;
+    break;
+  case PROP_SEARCH_RESULTS_CURRENT: {
+    g_return_if_fail(priv->search.list != NULL);
+    if (priv->search.current >= 0 && priv->search.current < (signed)girara_list_size(priv->search.list)) {
+      zathura_rectangle_t* rect     = girara_list_nth(priv->search.list, priv->search.current);
+      zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+      redraw_rect(pageview, &rectangle);
+    }
+    int val = g_value_get_int(value);
+    if (val < 0) {
+      priv->search.current = girara_list_size(priv->search.list);
+    } else {
+      priv->search.current = val;
+      if (priv->search.draw == TRUE && val >= 0 && val < (signed)girara_list_size(priv->search.list)) {
+        zathura_rectangle_t* rect     = girara_list_nth(priv->search.list, priv->search.current);
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+        redraw_rect(pageview, &rectangle);
       }
-      break;
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+    }
+    break;
+  }
+  case PROP_DRAW_SEARCH_RESULTS:
+    priv->search.draw = g_value_get_boolean(value);
+
+    /*
+     * we do the following instead of only redrawing the rectangles of the
+     * search results in order to avoid the rectangular margins that appear
+     * around the search terms after their highlighted rectangular areas are
+     * redrawn without highlighting.
+     */
+
+    if (priv->search.list != NULL && zathura_page_get_visibility(priv->page)) {
+      gtk_widget_queue_draw(GTK_WIDGET(object));
+    }
+    break;
+  case PROP_DRAW_SIGNATURES:
+    priv->signatures.draw = g_value_get_boolean(value);
+    /* get links */
+    if (priv->signatures.draw == TRUE && priv->signatures.retrieved == FALSE) {
+      priv->signatures.list      = zathura_page_get_signatures(priv->page, NULL);
+      priv->signatures.retrieved = TRUE;
+    }
+
+    if (priv->signatures.retrieved == TRUE && priv->signatures.list != NULL) {
+      for (size_t idx = 0; idx != girara_list_size(priv->signatures.list); ++idx) {
+        zathura_signature_info_t* signature = girara_list_nth(priv->signatures.list, idx);
+        if (signature == NULL) {
+          continue;
+        }
+        /* redraw signature area */
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, signature->position);
+        redraw_rect(pageview, &rectangle);
+      }
+    }
+    break;
+  default:
+    G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
 }
 
@@ -523,12 +557,10 @@ get_safe_device_factors(cairo_surface_t* surface)
   return factors;
 }
 
-static gboolean
-zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
-{
-  ZathuraPage*        page    = ZATHURA_PAGE(widget);
-  ZathuraPagePrivate* priv    = zathura_page_widget_get_instance_private(page);
-  zathura_t*          zathura = priv->zathura;
+static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
+  ZathuraPage* page        = ZATHURA_PAGE(widget);
+  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  zathura_t* zathura       = priv->zathura;
 
   zathura_document_t* document   = zathura_page_get_document(priv->page);
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
@@ -633,6 +665,70 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
           char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
           cairo_show_text(cairo, link_number);
           g_free(link_number);
+        }
+      }
+    }
+
+    /* draw signatures */
+    if (priv->signatures.draw == true && priv->signatures.list != NULL) {
+      for (size_t idx = 0; idx != girara_list_size(priv->signatures.list); ++idx) {
+        zathura_signature_info_t* signature = girara_list_nth(priv->signatures.list, idx);
+        if (signature == NULL) {
+          continue;
+        }
+
+        GdkRGBA color;
+        char* text     = NULL;
+        bool free_text = false;
+        switch (signature->state) {
+        case ZATHURA_SIGNATURE_VALID: {
+          color = zathura->ui.colors.signature_success;
+
+          char* sig_time = g_date_time_format(signature->time, "%F %T");
+          text = g_strdup_printf(_("Signature is valid.\nThis document is signed by\n  %s\non %s."), signature->signer,
+                                 sig_time);
+          free_text = true;
+          g_free(sig_time);
+          break;
+        }
+        case ZATHURA_SIGNATURE_CERTIFICATE_EXPIRED:
+          color = zathura->ui.colors.signature_warning;
+          text  = _("Signature certificate is expired.");
+          break;
+        case ZATHURA_SIGNATURE_CERTIFICATE_REVOKED:
+          color = zathura->ui.colors.signature_error;
+          text  = _("Signature certificate is revoked.");
+          break;
+        case ZATHURA_SIGNATURE_CERTIFICATE_UNTRUSTED:
+          color = zathura->ui.colors.signature_error;
+          text  = _("Signature certificate is not trusted.");
+          break;
+        case ZATHURA_SIGNATURE_CERTIFICATE_INVALID:
+          color = zathura->ui.colors.signature_error;
+          text  = _("Signature certificate is invalid.");
+          break;
+        default:
+          color = zathura->ui.colors.signature_error;
+          text  = _("Signature is invalid.");
+        }
+
+        /* draw position */
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, signature->position);
+        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
+        cairo_rectangle(cairo, rectangle.x1, rectangle.y1, (rectangle.x2 - rectangle.x1),
+                        (rectangle.y2 - rectangle.y1));
+        cairo_fill(cairo);
+
+        /* draw text */
+        const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
+        cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, transparency);
+        cairo_text_extents_t extents;
+        cairo_text_extents(cairo, text, &extents);
+
+        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 + extents.height + 1);
+        cairo_show_text(cairo, text);
+        if (free_text == true) {
+          g_free(text);
         }
       }
     }

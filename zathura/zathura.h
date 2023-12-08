@@ -455,4 +455,12 @@ void statusbar_page_number_update(zathura_t* zathura);
  */
 char* get_formatted_filename(zathura_t* zathura, bool statusbar);
 
+/**
+ * Show additional signature information
+ *
+ * @param zathura The zathura session
+ * @param show Whether to show the signature information
+ */
+void zathura_show_signature_information(zathura_t* zathura, bool show);
+
 #endif // ZATHURA_H
