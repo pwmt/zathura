@@ -301,14 +301,12 @@ running_under_wsl(void)
   return result;
 }
 
-typedef struct zathura_point_s
-{
-  unsigned int x;
-  unsigned int y;
+typedef struct zathura_point_s {
+  uintptr_t x;
+  uintptr_t y;
 } zathura_point_t;
 
-static int
-cmp_point(const void* va, const void* vb) {
+static int cmp_point(const void* va, const void* vb) {
   const zathura_point_t* a = va;
   const zathura_point_t* b = vb;
 
@@ -323,38 +321,32 @@ cmp_point(const void* va, const void* vb) {
   return a->x < b->x ? -1 : 1;
 }
 
-static unsigned int
-ufloor(double f) {
+static uintptr_t ufloor(double f) {
   return floor(f);
 }
 
-static unsigned int
-uceil(double f) {
+static uintptr_t uceil(double f) {
   return ceil(f);
 }
 
-static int
-cmp_uint(const void* vx, const void* vy) {
-  const unsigned int* x = vx;
-  const unsigned int* y = vy;
+static int cmp_uint(const void* vx, const void* vy) {
+  const uintptr_t x = (uintptr_t)vx;
+  const uintptr_t y = (uintptr_t)vy;
 
-  return *x == *y ? 0 : (*x > *y ? 1 : -1);
+  return x == y ? 0 : (x > y ? 1 : -1);
 }
 
-static int
-cmp_rectangle(const void* vr1, const void* vr2) {
+static int cmp_rectangle(const void* vr1, const void* vr2) {
   const zathura_rectangle_t* r1 = vr1;
   const zathura_rectangle_t* r2 = vr2;
 
-  return (ufloor(r1->x1) == ufloor(r2->x1) && uceil(r1->x2) == uceil(r2->x2) &&
-          ufloor(r1->y1) == ufloor(r2->y1) && uceil(r1->y2) == uceil(r2->y2))
-           ? 0
-           : -1;
+  return (ufloor(r1->x1) == ufloor(r2->x1) && uceil(r1->x2) == uceil(r2->x2) && ufloor(r1->y1) == ufloor(r2->y1) &&
+          uceil(r1->y2) == uceil(r2->y2))
+             ? 0
+             : -1;
 }
 
-
-static bool
-girara_list_append_unique(girara_list_t* l, girara_compare_function_t cmp, void* item) {
+static bool girara_list_append_unique(girara_list_t* l, girara_compare_function_t cmp, void* item) {
   if (girara_list_find(l, cmp, item) != NULL) {
     return false;
   }
@@ -363,8 +355,7 @@ girara_list_append_unique(girara_list_t* l, girara_compare_function_t cmp, void*
   return true;
 }
 
-static void
-append_unique_point(girara_list_t* list, const unsigned int x, const unsigned int y) {
+static void append_unique_point(girara_list_t* list, const uintptr_t x, const uintptr_t y) {
   zathura_point_t* p = g_try_malloc(sizeof(zathura_point_t));
   if (p == NULL) {
     return;
@@ -378,10 +369,9 @@ append_unique_point(girara_list_t* list, const unsigned int x, const unsigned in
   }
 }
 
-static void
-rectangle_to_points(void* vrect, void* vlist) {
+static void rectangle_to_points(void* vrect, void* vlist) {
   const zathura_rectangle_t* rect = vrect;
-  girara_list_t* list = vlist;
+  girara_list_t* list             = vlist;
 
   append_unique_point(list, ufloor(rect->x1), ufloor(rect->y1));
   append_unique_point(list, ufloor(rect->x1), uceil(rect->y2));
@@ -389,25 +379,15 @@ rectangle_to_points(void* vrect, void* vlist) {
   append_unique_point(list, uceil(rect->x2), uceil(rect->y2));
 }
 
-static void
-append_unique_uint(girara_list_t* list, const unsigned int v) {
-  unsigned int* p = g_try_malloc(sizeof(unsigned int));
-  if (p == NULL) {
-    return;
-  }
-
-  *p = v;
-
-  if (girara_list_append_unique(list, cmp_uint, p) == false) {
-    g_free(p);
-  }
+static void append_unique_uint(girara_list_t* list, const uintptr_t v) {
+  girara_list_append_unique(list, cmp_uint, (void*)v);
 }
 
 // transform a rectangle into multiple new ones according a grid of points
 static void cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points, girara_list_t* rectangles) {
   // Lists of ordred relevant points
-  girara_list_t* xs = girara_sorted_list_new2(cmp_uint, g_free);
-  girara_list_t* ys = girara_sorted_list_new2(cmp_uint, g_free);
+  girara_list_t* xs = girara_sorted_list_new(cmp_uint);
+  girara_list_t* ys = girara_sorted_list_new(cmp_uint);
 
   append_unique_uint(xs, uceil(rect->x2));
   append_unique_uint(ys, uceil(rect->y2));
@@ -424,17 +404,17 @@ static void cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points
 
   double x = ufloor(rect->x1);
   for (size_t idx = 0; idx != girara_list_size(xs); ++idx) {
-    const unsigned int* cx = girara_list_nth(xs, idx);
-    double y               = ufloor(rect->y1);
+    const uintptr_t cx = (uintptr_t)girara_list_nth(xs, idx);
+    double y           = ufloor(rect->y1);
     for (size_t inner_idx = 0; inner_idx != girara_list_size(ys); ++inner_idx) {
-      const unsigned int* cy = girara_list_nth(ys, inner_idx);
+      const uintptr_t cy     = (uintptr_t)girara_list_nth(ys, inner_idx);
       zathura_rectangle_t* r = g_try_malloc(sizeof(zathura_rectangle_t));
 
-      *r = (zathura_rectangle_t){x, y, *cx, *cy};
-      y  = *cy;
+      *r = (zathura_rectangle_t){x, y, cx, cy};
+      y  = cy;
       girara_list_append_unique(rectangles, cmp_rectangle, r);
     }
-    x = *cx;
+    x = cx;
   }
 
   girara_list_free(xs);
