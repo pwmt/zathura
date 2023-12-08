@@ -60,7 +60,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
   zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free(content_type);
 
-  return (plugin == NULL) ? false : true;
+  return plugin == NULL;
 }
 
 static void
@@ -141,7 +141,6 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
   }
 
   zathura_document_t* document = zathura_page_get_document(page);
-
   if (document == NULL) {
     goto error_ret;
   }
@@ -159,7 +158,6 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
   return tmp;
 
 error_ret:
-
   return rectangle;
 }
 

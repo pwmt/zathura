@@ -61,7 +61,6 @@ typedef struct zathura_document_info_s {
   char* search_string;
 } zathura_document_info_t;
 
-
 static gboolean document_info_open(gpointer data);
 
 #ifdef G_OS_UNIX
@@ -189,8 +188,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   /* work around apparent bug in GDK: on Wayland, monitor geometry doesn't
    * return values in application pixels as documented, but in device pixels.
    * */
-  if (GDK_IS_WAYLAND_DISPLAY(display))
-  {
+  if (GDK_IS_WAYLAND_DISPLAY(display)) {
     /* not using the cached value for the scale factor here to avoid issues
      * if this function is called before the cached value is updated */
     const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
@@ -482,7 +480,7 @@ zathura_init(zathura_t* zathura)
   }
 
   /* disable unsupported features in strict sandbox mode */
-  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT){
+  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT) {
     /* database */
     init_database(zathura);
   }
@@ -760,7 +758,6 @@ prepare_document_open_from_stdin(const char* path)
   if (input_stream == NULL) {
     girara_error("Can not read from file descriptor.");
     return NULL;
-
   }
 
   GFileIOStream* iostream = NULL;
@@ -861,8 +858,7 @@ document_info_open(gpointer data)
       if (g_file_is_native(gf) == TRUE) {
         /* file was given as a native path */
         file = g_file_get_path(gf);
-      }
-      else {
+      } else {
         /* copy file with GIO */
         uri = g_file_get_uri(gf);
         file = prepare_document_open_from_gfile(gf);
@@ -1592,7 +1588,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* free predecessor buffer if we want to overwrite it or if we destroy the document for good */
   if (override_predecessor || !keep_monitor || !smooth_reload) {
-	  document_predecessor_free(zathura);
+    document_predecessor_free(zathura);
   }
 
   /* remove widgets */
