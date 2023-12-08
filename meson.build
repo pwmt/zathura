@@ -7,15 +7,13 @@ project('zathura', 'c',
 version = meson.project_version()
 version_array = version.split('.')
 
-# Rules for so_major and so_minor:
-# Before a release perform the following checks against the last release:
-# * If a function has been removed or the paramaters of a function have changed
-#   bump SOMAJOR and set SOMINOR to 0.
-# * If any of the exported datastructures have changed in a incompatible way
-#   bump SOMAJOR and set SOMINOR to 0.
-# * If a function has been added bump SOMINOR.
-plugin_api_version = '4'
-plugin_abi_version = '5'
+# Rules for plugin API and ABI (non-exhaustive):
+# * zathura_plugin_function_t: If functions are addedd or removed or their
+#   signature changes, bump both ABI and API.
+# * zathura_plugin_definition_t: If the struct changes in an ABI-incompatible
+#   way, bump the ABI.
+plugin_api_version = '5'
+plugin_abi_version = '6'
 
 conf_data = configuration_data()
 conf_data.set('ZVMAJOR', version_array[0])
