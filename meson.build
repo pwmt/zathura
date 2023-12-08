@@ -35,7 +35,7 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.3.7', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara-gtk3', version: '>=0.4.1', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.50')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
