@@ -22,7 +22,7 @@ build:archlinux:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
@@ -44,42 +44,6 @@ test:archlinux:
   except:
     - tags
 
-# Debian 11 (bullseye)
-build:debian-bullseye:
-  tags:
-    - pwmt
-  stage: build
-  image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:bullseye
-  script:
-    - meson subprojects update
-    - mkdir -p build && cd build
-    - meson --force-fallback-for=girara ..
-    - ninja
-  cache:
-    <<: *girara_cache
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - build
-  except:
-    - tags
-
-test:debian-bullseye:
-  tags:
-    - pwmt
-  stage: test
-  image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:bullseye
-  script:
-    - cd build
-    - ninja test
-  cache:
-    <<: *girara_cache
-    policy: pull
-  dependencies:
-    - build:debian-bullseye
-  except:
-    - tags
-
 # Debian 12 (bookworm)
 build:debian-bookworm:
   tags:
@@ -94,7 +58,7 @@ build:debian-bookworm:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
@@ -116,12 +80,12 @@ test:debian-bookworm:
   except:
     - tags
 
-# Ubuntu 20.04 LTS (Focal)
-build:ubuntu-focal:
+# Debian 13 (trixie)
+build:debian-trixie:
   tags:
     - pwmt
   stage: build
-  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:focal
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:trixie
   script:
     - meson subprojects update
     - mkdir -p build && cd build
@@ -130,17 +94,17 @@ build:ubuntu-focal:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:
     - tags
 
-test:ubuntu-focal:
+test:debian-trixie:
   tags:
     - pwmt
   stage: test
-  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:focal
+  image: registry.pwmt.org/pwmt/gitlab-runner-images/debian:trixie
   script:
     - cd build
     - ninja test
@@ -148,7 +112,7 @@ test:ubuntu-focal:
     <<: *girara_cache
     policy: pull
   dependencies:
-    - build:ubuntu-focal
+    - build:debian-trixie
   except:
     - tags
 
@@ -166,7 +130,7 @@ build:ubuntu-jammy:
   cache:
     <<: *girara_cache
   artifacts:
-    expire_in: 1 day
+    expire_in: 6 hours
     paths:
       - build
   except:

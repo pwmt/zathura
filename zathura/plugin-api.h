@@ -108,6 +108,10 @@ typedef zathura_error_t (*zathura_plugin_page_render_cairo_t)(zathura_page_t* pa
  */
 typedef zathura_error_t (*zathura_plugin_page_get_label_t)(zathura_page_t* page, void* data, char** label);
 
+/**
+ * Get signatures
+ */
+typedef girara_list_t* (*zathura_plugin_page_get_signatures)(zathura_page_t* page, void* data, zathura_error_t* error);
 
 struct zathura_plugin_functions_s
 {
@@ -205,12 +209,17 @@ struct zathura_plugin_functions_s
    * Get page label.
    */
   zathura_plugin_page_get_label_t page_get_label;
+
+  /**
+   * Get signatures.
+   */
+  zathura_plugin_page_get_signatures page_get_signatures;
 };
 
 typedef struct zathura_plugin_version_s {
   unsigned int major; /**< Major */
   unsigned int minor; /**< Minor */
-  unsigned int rev; /**< Revision */
+  unsigned int rev;   /**< Revision */
 } zathura_plugin_version_t;
 
 typedef struct zathura_plugin_definition_s {

@@ -207,22 +207,19 @@ zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
   return girara_list_size(plugin_manager->plugins) > 0;
 }
 
-zathura_plugin_t*
-zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, const char* type)
-{
+zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, const char* type) {
   if (plugin_manager == NULL || plugin_manager->type_plugin_mapping == NULL || type == NULL) {
     return NULL;
   }
 
-  zathura_plugin_t* plugin = NULL;
-  GIRARA_LIST_FOREACH_BODY(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, mapping,
+  for (size_t idx = 0; idx != girara_list_size(plugin_manager->type_plugin_mapping); ++idx) {
+    zathura_type_plugin_mapping_t* mapping = girara_list_nth(plugin_manager->type_plugin_mapping, idx);
     if (g_content_type_equals(type, mapping->type)) {
-      plugin = mapping->plugin;
-      break;
+      return mapping->plugin;
     }
-  );
+  }
 
-  return plugin;
+  return NULL;
 }
 
 girara_list_t*
@@ -260,26 +257,22 @@ zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager)
   g_free(plugin_manager);
 }
 
-static bool
-register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin)
-{
-  if (plugin == NULL
-      || plugin->content_types == NULL
-      || plugin_manager == NULL
-      || plugin_manager->plugins == NULL) {
+static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin) {
+  if (plugin == NULL || plugin->content_types == NULL || plugin_manager == NULL || plugin_manager->plugins == NULL) {
     girara_error("plugin: could not register");
     return false;
   }
 
   bool at_least_one = false;
-  GIRARA_LIST_FOREACH_BODY(plugin->content_types, gchar*, type,
+  for (size_t idx = 0; idx != girara_list_size(plugin->content_types); ++idx) {
+    gchar* type = girara_list_nth(plugin->content_types, idx);
     if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
       girara_error("plugin: filetype already registered: %s", type);
     } else {
       girara_debug("plugin: filetype mapping added: %s", type);
       at_least_one = true;
     }
-  );
+  }
 
   if (at_least_one == true) {
     girara_list_append(plugin_manager->plugins, plugin);
@@ -288,23 +281,16 @@ register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plug
   return at_least_one;
 }
 
-static bool
-plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin)
-{
+static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin) {
   g_return_val_if_fail(plugin_manager != NULL, false);
-  g_return_val_if_fail(type           != NULL, false);
-  g_return_val_if_fail(plugin         != NULL, false);
+  g_return_val_if_fail(type != NULL, false);
+  g_return_val_if_fail(plugin != NULL, false);
 
-  bool already_registered = false;
-  GIRARA_LIST_FOREACH_BODY(plugin_manager->type_plugin_mapping, zathura_type_plugin_mapping_t*, mapping,
+  for (size_t idx = 0; idx != girara_list_size(plugin_manager->type_plugin_mapping); ++idx) {
+    zathura_type_plugin_mapping_t* mapping = girara_list_nth(plugin_manager->type_plugin_mapping, idx);
     if (g_content_type_equals(type, mapping->type)) {
-      already_registered = true;
-      break;
+      return false;
     }
-  );
-
-  if (already_registered == true) {
-    return false;
   }
 
   zathura_type_plugin_mapping_t* mapping = g_try_malloc0(sizeof(zathura_type_plugin_mapping_t));

@@ -12,10 +12,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-27 16:22+0100\n"
+"POT-Creation-Date: 2023-12-08 18:06+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: spero, 2019\n"
-"Language-Team: Turkish (http://www.transifex.com/pwmt/zathura/language/tr/)\n"
+"Language-Team: Turkish (http://app.transifex.com/pwmt/zathura/language/tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,78 +69,78 @@ msgstr "Otomatik belge yeniden yükleme."
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;dosya;sunum;görüntüleyici"
 
-#: zathura/callbacks.c:310
+#: zathura/callbacks.c:319
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' 0 olamaz. 1'e ayarlandı."
 
-#: zathura/callbacks.c:396
+#: zathura/callbacks.c:405
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Hatalı girdi '%s'"
 
-#: zathura/callbacks.c:444
+#: zathura/callbacks.c:427
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Hatalı dizin '%s'"
 
-#: zathura/callbacks.c:692
+#: zathura/callbacks.c:694
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "%s metni %s olarak kopyalandı."
 
-#: zathura/callbacks.c:724
+#: zathura/callbacks.c:726
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "%s seçili görüntü kopyalandı."
 
-#: zathura/commands.c:37 zathura/commands.c:77 zathura/commands.c:104
-#: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:317
-#: zathura/commands.c:344 zathura/commands.c:446 zathura/commands.c:582
-#: zathura/shortcuts.c:463 zathura/shortcuts.c:1283 zathura/shortcuts.c:1318
-#: zathura/shortcuts.c:1345
+#: zathura/commands.c:37 zathura/commands.c:78 zathura/commands.c:105
+#: zathura/commands.c:167 zathura/commands.c:280 zathura/commands.c:315
+#: zathura/commands.c:342 zathura/commands.c:445 zathura/commands.c:588
+#: zathura/shortcuts.c:448 zathura/shortcuts.c:1268 zathura/shortcuts.c:1303
+#: zathura/shortcuts.c:1330
 msgid "No document opened."
 msgstr "Açık belge yok."
 
-#: zathura/commands.c:43 zathura/commands.c:83 zathura/commands.c:451
+#: zathura/commands.c:43 zathura/commands.c:84 zathura/commands.c:450
 msgid "Invalid number of arguments given."
 msgstr "Yanlış sayıda argüman"
 
-#: zathura/commands.c:54
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "Yer imi yaratılamadı: %s"
 
-#: zathura/commands.c:56
+#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Yer imi yaratılamadı: %s"
 
-#: zathura/commands.c:61
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Yer imi başarıyla güncellendi: %s"
 
-#: zathura/commands.c:63
+#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Yer imi yaratıldı: %s"
 
-#: zathura/commands.c:89
+#: zathura/commands.c:90
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Yer imi silindi: %s"
 
-#: zathura/commands.c:91
+#: zathura/commands.c:92
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Yer imi silinemedi: %s"
 
-#: zathura/commands.c:120
+#: zathura/commands.c:121
 msgid "No bookmarks available."
 msgstr "Yer imleri bulunamadı."
 
-#: zathura/commands.c:130
+#: zathura/commands.c:131
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Böyle bir yer imi yok: %s"
@@ -185,31 +185,31 @@ msgstr "Biçim"
 msgid "Other"
 msgstr "Diğer"
 
-#: zathura/commands.c:190 zathura/commands.c:210
+#: zathura/commands.c:189 zathura/commands.c:210
 msgid "No information available."
 msgstr "Bilgi mevcut değil."
 
-#: zathura/commands.c:248 zathura/commands.c:635
+#: zathura/commands.c:246 zathura/commands.c:641
 msgid "Too many arguments."
 msgstr "Çok fazla sayıda argüman."
 
-#: zathura/commands.c:259
+#: zathura/commands.c:257
 msgid "No arguments given."
 msgstr "Argüman verilmedi."
 
-#: zathura/commands.c:287
+#: zathura/commands.c:285
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "Katı sanal-ortam kipinde yazdırma kullanılamaz"
 
-#: zathura/commands.c:312 zathura/commands.c:339
+#: zathura/commands.c:310 zathura/commands.c:337
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:324 zathura/commands.c:351
+#: zathura/commands.c:322 zathura/commands.c:349
 msgid "Invalid number of arguments."
 msgstr "Yanlış sayıda argüman."
 
-#: zathura/commands.c:441
+#: zathura/commands.c:440
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
 
@@ -243,356 +243,391 @@ msgstr "Tanınmayan resim dosyası '%s'"
 msgid "Unknown attachment or image '%s'."
 msgstr "Tanınmayan eklenti veya resim dosyası '%s'"
 
-#: zathura/commands.c:548
+#: zathura/commands.c:545
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Katı sanal-ortam kipinde yürütme yapılamaz"
 
-#: zathura/commands.c:595
+#: zathura/commands.c:601
 msgid "Argument must be a number."
 msgstr "Argüman bir sayı olmalı."
 
-#: zathura/completion.c:287
+#: zathura/completion.c:286
 #, c-format
 msgid "Page %d"
 msgstr "Sayfa %d"
 
-#: zathura/completion.c:330
+#: zathura/completion.c:327
 msgid "Attachments"
 msgstr "Ekleri kaydet"
 
 #. add images
-#: zathura/completion.c:361
+#: zathura/completion.c:359
 msgid "Images"
 msgstr "Resimler"
 
 #. zathura settings
-#: zathura/config.c:185
+#: zathura/config.c:247
 msgid "Database backend"
 msgstr "Veritabanı arkayüzü"
 
-#: zathura/config.c:186
+#: zathura/config.c:248
 msgid "File monitor backend"
 msgstr "Dosya gözlemi arka-ucu"
 
-#: zathura/config.c:188
+#: zathura/config.c:250
 msgid "Zoom step"
 msgstr "Yakınlaşma/uzaklaşma aralığı"
 
-#: zathura/config.c:190
+#: zathura/config.c:252
 msgid "Padding between pages"
 msgstr "Sayfalar arasındaki boşluk"
 
-#: zathura/config.c:192
+#: zathura/config.c:254
 msgid "Number of pages per row"
 msgstr "Satır başına sayfa sayısı"
 
-#: zathura/config.c:194
+#: zathura/config.c:256
 msgid "Column of the first page"
 msgstr "İlk sayfanın sütunu"
 
-#: zathura/config.c:196
+#: zathura/config.c:258
 msgid "Render pages from right to left"
 msgstr "Sayfaları sağdan sola işleyin"
 
-#: zathura/config.c:198
+#: zathura/config.c:260
 msgid "Scroll step"
 msgstr "Kaydırma aralığı"
 
-#: zathura/config.c:200
+#: zathura/config.c:262
 msgid "Horizontal scroll step"
 msgstr "Yatay kaydırma adımı"
 
-#: zathura/config.c:202
+#: zathura/config.c:264
 msgid "Full page scroll overlap"
 msgstr "Tam ekran kaydırma kaplaması"
 
-#: zathura/config.c:204
+#: zathura/config.c:266
 msgid "Zoom minimum"
 msgstr "En fazla uzaklaşma"
 
-#: zathura/config.c:206
+#: zathura/config.c:268
 msgid "Zoom maximum"
 msgstr "En fazla yakınlaşma"
 
-#: zathura/config.c:208
+#: zathura/config.c:270
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Önbellekte tutulacak maksimum sayfa sayısı"
 
-#: zathura/config.c:210
+#: zathura/config.c:272
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr "Önbellekte tutulacak küçük resimlerin piksel cinsinden maksimum boyutu"
 
-#: zathura/config.c:212
+#: zathura/config.c:274
 msgid "Number of positions to remember in the jumplist"
 msgstr "Atlama listesinde hatırlanacak pozisyon sayısı"
 
-#: zathura/config.c:214
+#: zathura/config.c:276
 msgid "Recoloring (dark color)"
 msgstr "Renk değişimi (koyu renk)"
 
-#: zathura/config.c:215
+#: zathura/config.c:277
 msgid "Recoloring (light color)"
 msgstr "Renk değişimi (açık renk)"
 
-#: zathura/config.c:216
+#: zathura/config.c:278
 msgid "Color for highlighting"
 msgstr "İşaretleme rengi"
 
-#: zathura/config.c:218
+#: zathura/config.c:280
 msgid "Foreground color for highlighting"
 msgstr "Vurgu için önplan rengi"
 
-#: zathura/config.c:220
+#: zathura/config.c:282
 msgid "Color for highlighting (active)"
 msgstr "İşaretleme rengi (etkin)"
 
-#: zathura/config.c:222
+#: zathura/config.c:284
 msgid "'Loading ...' background color"
 msgstr "'Yükleniyor...' arka plan rengi"
 
-#: zathura/config.c:224
+#: zathura/config.c:286
 msgid "'Loading ...' foreground color"
 msgstr "Ön plan rengi yükleniyor."
 
-#: zathura/config.c:227
+#: zathura/config.c:289
 msgid "Index mode foreground color"
 msgstr "İndex kipi önplan rengi"
 
-#: zathura/config.c:228
+#: zathura/config.c:290
 msgid "Index mode background color"
 msgstr "İndex kipi arkaplan rengi"
 
-#: zathura/config.c:229
+#: zathura/config.c:291
 msgid "Index mode foreground color (active element)"
 msgstr "İndex kipi önplan rengi (etkin öge)"
 
-#: zathura/config.c:230
+#: zathura/config.c:292
 msgid "Index mode background color (active element)"
 msgstr "İndex kipi arkaplan rengi (etkin öge)"
 
-#: zathura/config.c:233
+#: zathura/config.c:294
+#, fuzzy
+msgid "Color used to highlight valid signatures"
+msgstr "İşaretleme rengi (etkin)"
+
+#: zathura/config.c:297
+msgid "Color used to highlight signatures with warnings"
+msgstr ""
+
+#: zathura/config.c:300
+#, fuzzy
+msgid "Color used to highlight invalid signatures"
+msgstr "İşaretleme rengi (etkin)"
+
+#: zathura/config.c:304
 msgid "Recolor pages"
 msgstr "Sayga rengini değiştir"
 
-#: zathura/config.c:235
+#: zathura/config.c:306
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "Yeniden renklendirirken renk değerini tut ve sadece parlaklığı ayarla"
 
-#: zathura/config.c:237
+#: zathura/config.c:308
 msgid "When recoloring keep original image colors"
 msgstr "Yeniden renklendirme yaparken orijinal görüntü renklerini koru"
 
-#: zathura/config.c:239
+#: zathura/config.c:310
 msgid "Wrap scrolling"
 msgstr "Kaydırmayı sarmala"
 
-#: zathura/config.c:241
+#: zathura/config.c:312
 msgid "Page aware scrolling"
 msgstr "Sayfaya duyarlı kaydırma"
 
-#: zathura/config.c:243
+#: zathura/config.c:314
 msgid "Advance number of pages per row"
 msgstr "Satır başına sayfa sayısı"
 
-#: zathura/config.c:245
+#: zathura/config.c:316
 msgid "Horizontally centered zoom"
 msgstr "Yatay olarak ortalanmış büyütme"
 
-#: zathura/config.c:247
+#: zathura/config.c:318
 msgid "Vertically center pages"
 msgstr "Sayfaları dikey olarak ortala"
 
-#: zathura/config.c:249
+#: zathura/config.c:320
 msgid "Align link target to the left"
 msgstr "Bağlantı hedefini sola hizala"
 
-#: zathura/config.c:251
+#: zathura/config.c:322
 msgid "Let zoom be changed when following links"
 msgstr "Linkleri takip ederken yakınlaştırma değişebilsin."
 
-#: zathura/config.c:253
+#: zathura/config.c:324
 msgid "Center result horizontally"
 msgstr "Sonucu yatay olarak ortala"
 
-#: zathura/config.c:255
+#: zathura/config.c:326
 msgid "Transparency for highlighting"
 msgstr "Ön plana çıkarmak için saydamlaştır"
 
-#: zathura/config.c:257
+#: zathura/config.c:328
 msgid "Render 'Loading ...'"
 msgstr "'Yüklüyor ...' yazısını göster"
 
-#: zathura/config.c:258
+#: zathura/config.c:330
+msgid "Smooth over flicker when reloading file"
+msgstr ""
+
+#: zathura/config.c:331
 msgid "Adjust to when opening file"
 msgstr "Dosya açarken ayarla"
 
-#: zathura/config.c:260
+#: zathura/config.c:333
 msgid "Show hidden files and directories"
 msgstr "Gizli dosyaları ve dizinleri göster"
 
-#: zathura/config.c:262
+#: zathura/config.c:335
 msgid "Show directories"
 msgstr "Dizinleri göster"
 
-#: zathura/config.c:264
+#: zathura/config.c:337
 msgid "Show recent files"
 msgstr "Son dosyaları göster"
 
-#: zathura/config.c:266
+#: zathura/config.c:339
 msgid "Always open on first page"
 msgstr "Her zaman ilk sayfayı aç"
 
-#: zathura/config.c:268
+#: zathura/config.c:341
 msgid "Highlight search results"
 msgstr "Arama sonuçlarını vurgula"
 
-#: zathura/config.c:271
+#: zathura/config.c:343
+msgid "Double click to follow links"
+msgstr ""
+
+#: zathura/config.c:346
 msgid "Enable incremental search"
 msgstr "Artımlı aramayı etkinleştir"
 
-#: zathura/config.c:273
+#: zathura/config.c:348
 msgid "Clear search results on abort"
 msgstr "Kapatınca arama sonuçlarını temizle"
 
-#: zathura/config.c:275
+#: zathura/config.c:350
 msgid "Use basename of the file in the window title"
 msgstr "Pencere başlığı olarak dosyanın adını kullan"
 
-#: zathura/config.c:277
+#: zathura/config.c:352
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr "Pencere başlığında dosya adı olarak $HOME yerine ~ kullan "
 
-#: zathura/config.c:279
+#: zathura/config.c:354
 msgid "Display the page number in the window title"
 msgstr "Sayfa numarasını pencere başlığında göster"
 
-#: zathura/config.c:281
+#: zathura/config.c:356
 msgid "Use first page of a document as window icon"
 msgstr "Pencere ikonu olarak belgenin ilk sayfasını kullan"
 
-#: zathura/config.c:283
+#: zathura/config.c:358
 msgid "Use basename of the file in the statusbar"
 msgstr "Durum çubuğunda dosyanın asıl adını kullan"
 
-#: zathura/config.c:285
+#: zathura/config.c:360
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "Durum çubuğunda dosya adı olarak $HOME yerine ~ kullan "
 
-#: zathura/config.c:287
+#: zathura/config.c:362
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
-#: zathura/config.c:289
+#: zathura/config.c:364
 msgid "Enable synctex support"
 msgstr "Synctex desteğini etkinleştir"
 
-#: zathura/config.c:290
+#: zathura/config.c:365
 msgid "Synctex editor command"
 msgstr "Synctex düzenleyici komutu"
 
-#: zathura/config.c:292
+#: zathura/config.c:366
+#, fuzzy
+msgid "Synctex edit modifier"
+msgstr "Synctex düzenleyici komutu"
+
+#: zathura/config.c:367
+msgid "Highlighter modifier"
+msgstr ""
+
+#: zathura/config.c:369
 msgid "Enable D-Bus service"
 msgstr "D-Bus servisini etkinleştir"
 
-#: zathura/config.c:293
+#: zathura/config.c:370
 msgid "Raise window on certain D-Bus commands"
 msgstr "Belirli D-Bus komutlarında pencereyi kaldır"
 
-#: zathura/config.c:295
+#: zathura/config.c:372
 msgid "Save history at each page change"
 msgstr "Her sayfa değişiminde geçmişi kaydet"
 
-#: zathura/config.c:296
+#: zathura/config.c:373
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Fareyle seçilen verilerin yazılacağı pano"
 
-#: zathura/config.c:298
+#: zathura/config.c:375
 msgid "Enable notification after selecting text"
 msgstr "Metni seçtikten sonra bildirimi etkinleştir"
 
-#: zathura/config.c:301
+#: zathura/config.c:378
 msgid "Sandbox level"
 msgstr "Sanal-ortam seviyesi"
 
+#: zathura/config.c:381
+msgid "Disable additional information for signatures embedded in the document."
+msgstr ""
+
 #. define default inputbar commands
-#: zathura/config.c:494
+#: zathura/config.c:579
 msgid "Add a bookmark"
 msgstr "Yer imi ekle"
 
-#: zathura/config.c:495
+#: zathura/config.c:580
 msgid "Delete a bookmark"
 msgstr "Yer imi sil"
 
-#: zathura/config.c:496
+#: zathura/config.c:581
 msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
-#: zathura/config.c:497
+#: zathura/config.c:582
 msgid "Close current file"
 msgstr "Geçerli dosyayı kapat"
 
-#: zathura/config.c:498
+#: zathura/config.c:583
 msgid "Show file information"
 msgstr "Dosya bilgisi göster"
 
-#: zathura/config.c:499 zathura/config.c:500
+#: zathura/config.c:584 zathura/config.c:585
 msgid "Execute a command"
 msgstr "Bir komut çalıştır"
 
 #. like vim
-#: zathura/config.c:501
+#: zathura/config.c:586
 msgid "Show help"
 msgstr "Yardım bilgisi göster"
 
-#: zathura/config.c:502
+#: zathura/config.c:587
 msgid "Open document"
 msgstr "Belge aç"
 
-#: zathura/config.c:503
+#: zathura/config.c:588
 msgid "Close zathura"
 msgstr "Zathura'yı kapat"
 
-#: zathura/config.c:504
+#: zathura/config.c:589
 msgid "Print document"
 msgstr "Belge yazdır"
 
-#: zathura/config.c:505 zathura/config.c:507
+#: zathura/config.c:590 zathura/config.c:592
 msgid "Save document"
 msgstr "Belgeyi kaydet"
 
-#: zathura/config.c:506 zathura/config.c:508
+#: zathura/config.c:591 zathura/config.c:593
 msgid "Save document (and force overwriting)"
 msgstr "Belgeyi kaydet (ve sormadan üzerine yaz)"
 
-#: zathura/config.c:509
+#: zathura/config.c:594
 msgid "Save attachments"
 msgstr "Ekleri kaydet"
 
-#: zathura/config.c:510
+#: zathura/config.c:595
 msgid "Set page offset"
 msgstr "Sayfa derinliğini ayarla"
 
-#: zathura/config.c:511
+#: zathura/config.c:596
 msgid "Mark current location within the document"
 msgstr "Bu belgede bu konumu işaretle"
 
-#: zathura/config.c:512
+#: zathura/config.c:597
 msgid "Delete the specified marks"
 msgstr "Seçilen işaretlemeleri sil"
 
-#: zathura/config.c:513
+#: zathura/config.c:598
 msgid "Don't highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgulama"
 
-#: zathura/config.c:514
+#: zathura/config.c:599
 msgid "Highlight current search results"
 msgstr "Şuanki arama sonuçlarını vurgula"
 
-#: zathura/config.c:515
+#: zathura/config.c:600
 msgid "Show version information"
 msgstr "Versiyon bilgisi göster"
 
-#: zathura/config.c:516
+#: zathura/config.c:601
 msgid "Source config file"
 msgstr "Kaynak yapılandırma dosyası"
 
@@ -692,76 +727,105 @@ msgstr "Gidilecek yer imi"
 msgid "Search for the given phrase and display results"
 msgstr "Verilen kalıbı araştır ve sonuçları görüntüle"
 
-#: zathura/page-widget.c:662
+#: zathura/page-widget.c:688
+#, c-format
+msgid ""
+"Signature is valid.\n"
+"This document is signed by\n"
+"  %s\n"
+"on %s."
+msgstr ""
+
+#: zathura/page-widget.c:696
+msgid "Signature certificate is expired."
+msgstr ""
+
+#: zathura/page-widget.c:700
+msgid "Signature certificate is revoked."
+msgstr ""
+
+#: zathura/page-widget.c:704
+msgid "Signature certificate is not trusted."
+msgstr ""
+
+#: zathura/page-widget.c:708
+msgid "Signature certificate is invalid."
+msgstr ""
+
+#: zathura/page-widget.c:712
+msgid "Signature is invalid."
+msgstr ""
+
+#: zathura/page-widget.c:808
 msgid "Loading..."
 msgstr "Yüklüyor ..."
 
-#: zathura/page-widget.c:1159
+#: zathura/page-widget.c:1359
 msgid "Copy image"
 msgstr "Resim kopyala"
 
-#: zathura/page-widget.c:1160
+#: zathura/page-widget.c:1360
 msgid "Save image as"
 msgstr "Resmi farklı kaydet"
 
 #. Update statusbar.
-#: zathura/print.c:110
+#: zathura/print.c:106
 #, c-format
 msgid "Printing page %d ..."
 msgstr "Yazdırılan sayfa %d..."
 
-#: zathura/print.c:192
+#: zathura/print.c:188
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Yazdırma başarısız oldu: %s"
 
-#: zathura/shortcuts.c:105
+#: zathura/shortcuts.c:130
 #, c-format
 msgid "Invalid adjust mode: %d"
 msgstr "Geçersiz ayar modu: %d"
 
-#: zathura/shortcuts.c:1025
+#: zathura/shortcuts.c:1010
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Şekil bulunamadı: %s"
 
-#: zathura/shortcuts.c:1185
+#: zathura/shortcuts.c:1170
 msgid "This document does not contain any index"
 msgstr "Bu belge fihrist içermiyor"
 
-#: zathura/zathura.c:307 zathura/zathura.c:1504
+#: zathura/zathura.c:317 zathura/zathura.c:1630
 msgid "[No name]"
 msgstr "[İsimsiz]"
 
-#: zathura/zathura.c:841
+#: zathura/zathura.c:851
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "stdin'den dosya okunamadı ve geçici dosyaya yazılamadı."
 
-#: zathura/zathura.c:861
+#: zathura/zathura.c:871
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "GIO'dan dosya okunamadı ve geçici dosyaya yazılamadı."
 
-#: zathura/zathura.c:965
+#: zathura/zathura.c:975
 msgid "Enter password:"
 msgstr "Şifre girin:"
 
-#: zathura/zathura.c:1004
+#: zathura/zathura.c:1062
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Desteklenmeyen dosya türü. Lütfen gerekli eklentileri yükleyin."
 
-#: zathura/zathura.c:1014
+#: zathura/zathura.c:1072
 msgid "Document does not contain any pages"
 msgstr "Dosya herhangi bir sayfa içermiyor"
 
-#: zathura/zathura.c:1375
+#: zathura/zathura.c:1446
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "Dosya zaten mevcut:%s. Üzerine yazmak için :write! komutunu kullanın."
 
-#: zathura/zathura.c:1384
+#: zathura/zathura.c:1455
 msgid "Failed to save document."
 msgstr "Belge kaydedilemedi."
 
-#: zathura/zathura.c:1388
+#: zathura/zathura.c:1459
 msgid "Document saved."
 msgstr "Belge kaydedildi."

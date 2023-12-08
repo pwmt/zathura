@@ -1,21 +1,19 @@
 project('zathura', 'c',
-  version: '0.5.2',
-  meson_version: '>=0.56',
-  default_options: ['c_std=c11', 'warning_level=3'],
+  version: '0.5.3',
+  meson_version: '>=0.61',
+  default_options: ['c_std=c17', 'warning_level=3'],
 )
 
 version = meson.project_version()
 version_array = version.split('.')
 
-# Rules for so_major and so_minor:
-# Before a release perform the following checks against the last release:
-# * If a function has been removed or the paramaters of a function have changed
-#   bump SOMAJOR and set SOMINOR to 0.
-# * If any of the exported datastructures have changed in a incompatible way
-#   bump SOMAJOR and set SOMINOR to 0.
-# * If a function has been added bump SOMINOR.
-plugin_api_version = '4'
-plugin_abi_version = '5'
+# Rules for plugin API and ABI (non-exhaustive):
+# * zathura_plugin_function_t: If functions are addedd or removed or their
+#   signature changes, bump both ABI and API.
+# * zathura_plugin_definition_t: If the struct changes in an ABI-incompatible
+#   way, bump the ABI.
+plugin_api_version = '5'
+plugin_abi_version = '6'
 
 conf_data = configuration_data()
 conf_data.set('ZVMAJOR', version_array[0])
@@ -37,16 +35,17 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.3.7', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara-gtk3', version: '>=0.4.1', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.50')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.50')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
 gtk3 = dependency('gtk+-3.0', version: '>=3.22')
+json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = cc.find_library('magic', required: true)
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
 
 if host_machine.system() == 'darwin'
     gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
@@ -188,7 +187,7 @@ pkg.generate(
   description: 'document viewer - plugin API',
   url: 'https://pwmt.org/projects/zathura',
   version: version,
-  requires_private: ['girara-gtk3', 'cairo'],
+  requires: ['girara-gtk3', 'cairo'],
   variables: [
     'apiversion=@0@'.format(plugin_api_version),
     'abiversion=@0@'.format(plugin_abi_version),

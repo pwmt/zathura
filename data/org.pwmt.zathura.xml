@@ -28,6 +28,7 @@
     <property type='s' name='filename' access='read' />
     <property type='u' name='pagenumber' access='read' />
     <property type='u' name='numberofpages' access='read' />
+    <property type='s' name='documentinfo' access='read' />
     <!-- Open editor with given input file at line and column. -->
     <signal name='Edit'>
       <arg type='s' name='input' direction='out' />
@@ -47,6 +48,15 @@
     <!-- Execute a command as if entered in the inputbar. -->
     <method name='ExecuteCommand'>
       <arg type='s' name='input' direction='in' />
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <!-- Reload configuration file -->
+    <method name='SourceConfig'>
+      <arg type='b' name='return' direction='out' />
+    </method>
+    <!-- Reload configuration file from a directory -->
+    <method name='SourceConfigFromDirectory'>
+      <arg type='s' name='directory' direction='in' />
       <arg type='b' name='return' direction='out' />
     </method>
   </interface>

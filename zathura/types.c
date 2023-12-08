@@ -120,3 +120,19 @@ zathura_document_information_entry_free(zathura_document_information_entry_t* en
   g_free(entry->value);
   g_free(entry);
 }
+
+zathura_signature_info_t* zathura_signature_info_new(void) {
+  return g_try_malloc0(sizeof(zathura_signature_info_t));
+}
+
+void zathura_signature_info_free(zathura_signature_info_t* signature) {
+  if (signature == NULL) {
+    return;
+  }
+
+  g_free(signature->signer);
+  if (signature->time) {
+    g_date_time_unref(signature->time);
+  }
+  g_free(signature);
+}

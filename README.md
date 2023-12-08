@@ -11,8 +11,9 @@ The following dependencies are required:
 
 * `gtk3` (>= 3.22)
 * `glib` (>= 2.50)
-* `girara` (>= 0.3.7)
+* `girara` (>= 0.4.1)
 * `libmagic` from file(1): for mime-type detection
+* `json-glib`
 
 The following dependencies are optional:
 
@@ -22,7 +23,7 @@ The following dependencies are optional:
 
 For building zathura, the following dependencies are also required:
 
-* `meson` (>= 0.56)
+* `meson` (>= 0.61)
 * `gettext`
 * `pkgconf`
 

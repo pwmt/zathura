@@ -649,6 +649,14 @@ zathura_document_get_document_size(zathura_document_t* document,
 }
 
 void
+zathura_document_set_cell_size(zathura_document_t* document, unsigned int cell_height,
+                               unsigned int cell_width)
+{
+  document->cell_width = cell_width;
+  document->cell_height = cell_height;
+}
+
+void
 zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
                                  unsigned int pages_per_row, unsigned int first_page_column)
 {

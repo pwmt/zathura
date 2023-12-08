@@ -106,13 +106,15 @@ struct zathura_s
       girara_statusbar_item_t* page_number; /**< page number statusbar entry */
     } statusbar;
 
-    struct
-    {
-      GdkRGBA highlight_color; /**< Color for highlighting */
-      GdkRGBA highlight_color_fg; /**< Color for highlighting (foreground) */
+    struct {
+      GdkRGBA highlight_color;        /**< Color for highlighting */
+      GdkRGBA highlight_color_fg;     /**< Color for highlighting (foreground) */
       GdkRGBA highlight_color_active; /** Color for highlighting */
-      GdkRGBA render_loading_bg; /**< Background color for render "Loading..." */
-      GdkRGBA render_loading_fg; /**< Foreground color for render "Loading..." */
+      GdkRGBA render_loading_bg;      /**< Background color for render "Loading..." */
+      GdkRGBA render_loading_fg;      /**< Foreground color for render "Loading..." */
+      GdkRGBA signature_success;      /**> Color for highlighing valid signatures */
+      GdkRGBA signature_warning;      /**> Color for highlighing  signatures with warnings */
+      GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
     GtkWidget *page_widget; /**< Widget that contains all rendered pages */
@@ -144,10 +146,13 @@ struct zathura_s
 
   struct
   {
-    int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
     girara_list_t* marks; /**< Marker */
     char** arguments; /**> Arguments that were passed at startup */
+    int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
+    GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
+    GdkModifierType highlighter_modmask; /**< Modifier to draw with a highlighter */
     zathura_sandbox_t sandbox; /**< Sandbox mode */
+    bool double_click_follow; /**< Double/Single click to follow link */
   } global;
 
   struct
@@ -183,7 +188,9 @@ struct zathura_s
   } stdin_support;
 
   zathura_document_t* document; /**< The current document */
+  zathura_document_t* predecessor_document; /**< The document from before a reload */
   GtkWidget** pages; /**< The page widgets */
+  GtkWidget** predecessor_pages; /**< The page widgets from before a reload */
   zathura_database_t* database; /**< The database */
   ZathuraDbus* dbus; /**< D-Bus service */
   ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
@@ -222,6 +229,14 @@ struct zathura_s
       double zoom;
     } toggle_presentation_mode;
   } shortcut;
+
+  /**
+   * Storage for gestures.
+   */
+  struct {
+	  double initial_zoom;
+  } gesture;
+
 
   /**
    * Context for MIME type detection
@@ -360,6 +375,14 @@ void document_open_idle(zathura_t* zathura, const char* path,
 bool document_save(zathura_t* zathura, const char* path, bool overwrite);
 
 /**
+ * Frees the "predecessor" buffers used for smooth-reload
+ *
+ * @param zathura The zathura session
+ * @return If no error occurred true, otherwise false, is returned.
+ */
+bool document_predecessor_free(zathura_t* zathura);
+
+/**
  * Closes the current opened document
  *
  * @param zathura The zathura session
@@ -431,5 +454,13 @@ void statusbar_page_number_update(zathura_t* zathura);
  * return Printable filename. Free with g_free.
  */
 char* get_formatted_filename(zathura_t* zathura, bool statusbar);
+
+/**
+ * Show additional signature information
+ *
+ * @param zathura The zathura session
+ * @param show Whether to show the signature information
+ */
+void zathura_show_signature_information(zathura_t* zathura, bool show);
 
 #endif // ZATHURA_H

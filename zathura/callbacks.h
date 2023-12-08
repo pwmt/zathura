@@ -281,5 +281,16 @@ void update_visible_pages(zathura_t* zathura);
  */
 void cb_window_update_icon(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 
+void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* data);
+
+void cb_gesture_zoom_scale_changed(GtkGestureZoom* self, gdouble scale, void* data);
+
+/**
+ * Clears all highlighted links when the inputbar gets closed
+ *
+ * @param GtkWidget* Inputbar widget
+ * @param data The zathura instance
+ */
+void cb_hide_links(GtkWidget* widget, gpointer data);
 
 #endif // CALLBACKS_H

@@ -1,20 +1,15 @@
 ---
 Language: Cpp
+BasedOnStyle: LLVM
 AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignOperands: true
-AllowShortBlocksOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterDefinitionReturnType: All
-BreakBeforeBraces: Linux
-ContinuationIndentWidth: 2
-ColumnLimit: 120
-ForEachMacros: ['GIRARA_LIST_FOREACH']
-IndentWidth: 2
+AlwaysBreakTemplateDeclarations: true
+BreakBeforeBraces: Attach
+ConstructorInitializerIndentWidth: 2
+NamespaceIndentation: All
 PointerAlignment: Left
 TabWidth: 2
-IndentCaseLabels: true
+ColumnLimit: 120
+SortIncludes: false
 ...
-

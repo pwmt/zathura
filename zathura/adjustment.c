@@ -14,6 +14,8 @@ page_calc_height_width(zathura_document_t* document, double height,
 
   double scale = zathura_document_get_scale(document);
 
+  // TODO this just set all pages to the maximum.
+  // needs to adjust cell size based on the page size itself.
   if (rotate == true && zathura_document_get_rotation(document) % 180 != 0) {
     *page_width  = round(height * scale);
     *page_height = round(width  * scale);

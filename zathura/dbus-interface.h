@@ -40,6 +40,7 @@ struct zathura_dbus_class_s
 GType zathura_dbus_get_type(void) G_GNUC_CONST;
 
 ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
+const char* zathura_dbus_get_name(zathura_t* zathura);
 
 /**
  * Emit the 'Edit' signal on the D-Bus connection.

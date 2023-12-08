@@ -10,6 +10,7 @@
 
 #include "callbacks.h"
 #include "shortcuts.h"
+#include "dbus-interface.h"
 #include "document.h"
 #include "zathura.h"
 #include "render.h"
@@ -20,7 +21,7 @@
 #include "adjustment.h"
 #include <math.h>
 
-/* Helper function; see sc_display_link and sc_follow. */
+/* Helper function for highlighting the links */
 static bool
 draw_links(zathura_t* zathura)
 {
@@ -52,6 +53,30 @@ draw_links(zathura_t* zathura)
     }
   }
   return show_links;
+}
+
+/* Common code for sc_follow, sc_display_link and sc_copy_link */
+static bool
+link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate_t callback,
+		       const char* text)
+{
+  if (zathura->document == NULL || zathura->ui.session == NULL) {
+    return false;
+  }
+
+  bool show_links = draw_links(zathura);
+
+  /* ask for input */
+  if (show_links == true) {
+    GtkWidget *inputbar = zathura->ui.session->gtk.inputbar;
+    gulong handler_id = g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_links), zathura);
+    g_object_set_data(G_OBJECT(inputbar), "handler_id", GUINT_TO_POINTER(handler_id));
+
+    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
+    girara_dialog(zathura->ui.session, text, FALSE, NULL, callback, zathura->ui.session);
+  }
+
+  return false;
 }
 
 bool
@@ -132,21 +157,7 @@ sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
-    return false;
-  }
-
-  bool show_links = draw_links(zathura);
-
-  /* ask for input */
-  if (show_links) {
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Display link:", FALSE, NULL,
-        cb_sc_display_link,
-        zathura->ui.session);
-  }
-
-  return false;
+  return link_shortcuts(zathura, cb_sc_display_link, "Display Link: ");
 }
 
 bool
@@ -157,21 +168,7 @@ sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
-    return false;
-  }
-
-  bool show_links = draw_links(zathura);
-
-  /* ask for input */
-  if (show_links) {
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Copy link:", FALSE, NULL,
-        cb_sc_copy_link,
-        zathura->ui.session);
-  }
-
-  return false;
+  return link_shortcuts(zathura, cb_sc_copy_link, "Copy Link: ");
 }
 
 bool
@@ -271,19 +268,7 @@ sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
-    return false;
-  }
-
-  bool show_links = draw_links(zathura);
-
-  /* ask for input */
-  if (show_links == true) {
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, "Follow link:", FALSE, NULL, cb_sc_follow, zathura->ui.session);
-  }
-
-  return false;
+  return link_shortcuts(zathura, cb_sc_follow, "Follow Link: ");
 }
 
 bool
@@ -1492,33 +1477,40 @@ sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* 
     return false;
   }
 
+  girara_argument_t new_argument = *argument;
+  const char* bus_name           = zathura_dbus_get_name(zathura);
+  char* s                        = girara_replace_substring(new_argument.data, "$DBUS", bus_name);
+  if (s == NULL) {
+    return false;
+  }
+  new_argument.data = s;
+
   if (zathura->document != NULL) {
     const char* path = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
     char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page+1);
 
-    girara_argument_t new_argument = *argument;
-
-    char* r = girara_replace_substring(argument->data, "$FILE", path);
-    if (r == NULL) {
-      return false;
-    }
-
-    char* s = girara_replace_substring(r, "$PAGE", page_buf);
-    g_free(r);
+    s = girara_replace_substring(new_argument.data, "$FILE", path);
+    g_free(new_argument.data);
 
     if (s == NULL) {
       return false;
     }
-
     new_argument.data = s;
-    const bool ret = girara_sc_exec(session, &new_argument, event, t);
-    g_free(s);
-    return ret;
+
+    s = girara_replace_substring(new_argument.data, "$PAGE", page_buf);
+    g_free(new_argument.data);
+
+    if (s == NULL) {
+      return false;
+    }
+    new_argument.data = s;
   }
 
-  return girara_sc_exec(session, argument, event, t);
+  const bool ret = girara_sc_exec(session, &new_argument, event, t);
+  g_free(new_argument.data);
+  return ret;
 }
 
 bool

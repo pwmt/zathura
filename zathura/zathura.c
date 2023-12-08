@@ -95,7 +95,10 @@ zathura_create(void)
 
   /* global settings */
   zathura->global.search_direction = FORWARD;
+  zathura->global.synctex_edit_modmask = GDK_CONTROL_MASK;
+  zathura->global.highlighter_modmask = GDK_SHIFT_MASK;
   zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
+  zathura->global.double_click_follow = true;
 
   /* plugins */
   zathura->plugins.manager = zathura_plugin_manager_new();
@@ -219,6 +222,13 @@ init_ui(zathura_t* zathura)
   /* girara events */
   zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
   zathura->ui.session->events.unknown_command = cb_unknown_command;
+
+  /* gestures */
+
+  GtkGesture* zoom = gtk_gesture_zoom_new(GTK_WIDGET(zathura->ui.session->gtk.view));
+  g_signal_connect(zoom, "scale-changed", G_CALLBACK(cb_gesture_zoom_scale_changed), zathura);
+  g_signal_connect(zoom, "begin", G_CALLBACK(cb_gesture_zoom_begin), zathura);
+  gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zathura->ui.session->gtk.view), GTK_PHASE_BUBBLE);
 
   /* zathura signals */
   zathura->signals.refresh_view = g_signal_new(
@@ -967,6 +977,54 @@ document_open_password_dialog(gpointer data)
   return FALSE;
 }
 
+typedef struct {
+  double h;
+  double w;
+  int freq;
+} sample_t;
+
+static int document_page_size_comp(const void* a, const void* b) {
+  const sample_t* lhs = a;
+  const sample_t* rhs = b;
+  return rhs->freq - lhs->freq;
+}
+
+static void document_open_page_most_frequent_size(zathura_document_t* document, unsigned int* width,
+                                                  unsigned int* height) {
+  girara_list_t* samples             = girara_list_new2(g_free);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    const double w       = zathura_page_get_width(page);
+    const double h       = zathura_page_get_height(page);
+
+    bool found = false;
+    for (size_t idx = 0; idx != girara_list_size(samples) && !found; ++idx) {
+      sample_t* sample = girara_list_nth(samples, idx);
+      if (fabs(sample->h - h) <= DBL_EPSILON && fabs(sample->w - w) <= DBL_EPSILON) {
+        sample->freq++;
+      }
+    }
+
+    if (found == false) {
+      sample_t* sample = g_try_malloc0(sizeof(sample_t));
+      sample->w        = w;
+      sample->h        = h;
+      sample->freq     = 1;
+      girara_list_append(samples, sample);
+    }
+  }
+
+  girara_list_sort(samples, document_page_size_comp);
+
+  sample_t* max_sample = girara_list_nth(samples, 0);
+  *width               = max_sample->w;
+  *height              = max_sample->h;
+
+  girara_list_free(samples);
+}
+
 bool
 document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
               int page_number)
@@ -1169,11 +1227,21 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     goto error_free;
   }
 
+  unsigned int most_freq_width, most_freq_height;
+  document_open_page_most_frequent_size(document, &most_freq_width,
+                                        &most_freq_height);
+
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       goto error_free;
     }
+
+    unsigned int cell_height = 0, cell_width = 0;
+    zathura_document_get_cell_size(document, &cell_height, &cell_width);
+    zathura_document_set_cell_size(document, most_freq_height, most_freq_width);
+    zathura_page_set_width(page, most_freq_width);
+    zathura_page_set_height(page, most_freq_height);
 
     GtkWidget* page_widget = zathura_page_widget_new(zathura, page);
     if (page_widget == NULL) {
@@ -1281,6 +1349,9 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
+  bool show_signature_information = false;
+  girara_setting_get(zathura->ui.session, "show-signature-information", &show_signature_information);
+  zathura_show_signature_information(zathura, show_signature_information);
   update_visible_pages(zathura);
 
   return true;
@@ -1429,6 +1500,32 @@ save_fileinfo_to_db(zathura_t* zathura)
 }
 
 bool
+document_predecessor_free(zathura_t* zathura) {
+  if (zathura == NULL
+	  || (zathura->predecessor_document == NULL
+		  && zathura->predecessor_pages == NULL)) {
+    return false;
+  }
+
+  if (zathura->predecessor_pages != NULL) {
+	  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->predecessor_document); i++) {
+		g_object_unref(zathura->predecessor_pages[i]);
+	  }
+	  free(zathura->predecessor_pages);
+	  zathura->predecessor_pages = NULL;
+	  girara_debug("freed predecessor pages");
+  }
+  if (zathura->predecessor_document != NULL) {
+	  /* remove document */
+	  zathura_document_free(zathura->predecessor_document);
+	  zathura->predecessor_document = NULL;
+	  girara_debug("freed predecessor document");
+  }
+
+  return true;
+}
+
+bool
 document_close(zathura_t* zathura, bool keep_monitor)
 {
   if (zathura == NULL || zathura->document == NULL) {
@@ -1442,6 +1539,9 @@ document_close(zathura_t* zathura, bool keep_monitor)
     girara_setting_set(zathura->ui.session, "window-icon", window_icon);
     g_free(window_icon);
   }
+
+  bool smooth_reload = true;
+  girara_setting_get(zathura->ui.session, "smooth-reload", &smooth_reload);
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
@@ -1478,17 +1578,43 @@ document_close(zathura_t* zathura, bool keep_monitor)
   /* release render thread */
   g_clear_object(&zathura->sync.render_thread);
 
+  /* keep the current state to prevent flicker? */
+  bool override_predecessor = keep_monitor && smooth_reload;
+
+  if (override_predecessor) {
+	  /* do not override predecessor buffer with empty pages */
+	  unsigned int cur_page_num = zathura_document_get_current_page_number(zathura->document);
+	  ZathuraPage* cur_page = ZATHURA_PAGE(zathura->pages[cur_page_num]);
+	  if (!zathura_page_widget_have_surface(cur_page)) {
+		  override_predecessor = false;
+	  }
+  }
+
+  /* free predecessor buffer if we want to overwrite it or if we destroy the document for good */
+  if (override_predecessor || !keep_monitor || !smooth_reload) {
+	  document_predecessor_free(zathura);
+  }
+
   /* remove widgets */
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
-  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
-    g_object_unref(zathura->pages[i]);
-  }
-  free(zathura->pages);
-  zathura->pages = NULL;
 
-  /* remove document */
-  zathura_document_free(zathura->document);
-  zathura->document = NULL;
+  if (!override_predecessor) {
+	  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
+		g_object_unref(zathura->pages[i]);
+	  }
+	  free(zathura->pages);
+	  zathura->pages = NULL;
+
+	  /* remove document */
+	  zathura_document_free(zathura->document);
+	  zathura->document = NULL;
+  } else {
+	  girara_debug("preserving pages and document as predecessor");
+	  zathura->predecessor_pages = zathura->pages;
+	  zathura->pages = NULL;
+	  zathura->predecessor_document = zathura->document;
+	  zathura->document = NULL;
+  }
 
   /* remove index */
   if (zathura->ui.index != NULL) {
@@ -1773,3 +1899,21 @@ zathura_signal_sigterm(gpointer data)
   return TRUE;
 }
 #endif
+
+void zathura_show_signature_information(zathura_t* zathura, bool show) {
+  if (zathura->document == NULL) {
+    return;
+  }
+
+  GValue show_sig_info_value = {0};
+  g_value_init(&show_sig_info_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean(&show_sig_info_value, show);
+
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page = 0; page != number_of_pages; ++page) {
+    // draw signature info
+    g_object_set_property(G_OBJECT(zathura->pages[page]), "draw-signatures", &show_sig_info_value);
+  }
+
+  g_value_unset(&show_sig_info_value);
+}

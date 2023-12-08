@@ -12,9 +12,9 @@
  * desired.
  *
  * @param document the document
- * @param height the original height 
+ * @param height the original height
  * @param width the original width
- * @param page_height the scaled and rotated height 
+ * @param page_height the scaled and rotated height
  * @param page_width the scaled and rotated width
  * @param rotate honor page's rotation
  * @return real scale after rounding

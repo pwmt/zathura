@@ -204,6 +204,15 @@ cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data)
     return;
   }
 
+  if (zathura->pages != NULL && zathura->pages[page_id] != NULL) {
+	  ZathuraPage* page_widget = ZATHURA_PAGE(zathura->pages[page_id]);
+	  if (page_widget != NULL) {
+		  if (zathura_page_widget_have_surface(page_widget)) {
+			  document_predecessor_free(zathura);
+		  }
+	  }
+  }
+
   GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
@@ -399,49 +408,42 @@ handle_link(GtkEntry* entry, girara_session_t* session,
     index = index - 1;
   }
 
-  /* set pages to draw links */
-  bool invalid_index = true;
+  /* find the link*/
+  zathura_link_t* link = NULL;
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
-    if (page == NULL || zathura_page_get_visibility(page) == false) {
+    if (page == NULL || zathura_page_get_visibility(page) == false || eval == false) {
       continue;
     }
-
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
-
-    if (eval == FALSE) {
-      /* nothing to evaluate */
-      continue;
-    }
-
-    zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
+    link = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
     if (link != NULL) {
-      invalid_index = false;
-      switch (action) {
-        case ZATHURA_LINK_ACTION_FOLLOW:
-          zathura_link_evaluate(zathura, link);
-          break;
-        case ZATHURA_LINK_ACTION_DISPLAY:
-          zathura_link_display(zathura, link);
-          break;
-        case ZATHURA_LINK_ACTION_COPY: {
-          GdkAtom* selection = get_selection(zathura);
-          if (selection == NULL) {
-            break;
-          }
-
-          zathura_link_copy(zathura, link, selection);
-          g_free(selection);
-          break;
-        }
-      }
+      break;
     }
   }
 
-  if (eval == TRUE && invalid_index == true) {
+  if (eval == TRUE && link == NULL) {
     girara_notify(session, GIRARA_WARNING, _("Invalid index '%s' given."), input);
+  } else {
+    switch (action) {
+      case ZATHURA_LINK_ACTION_FOLLOW:
+        zathura_link_evaluate(zathura, link);
+        break;
+      case ZATHURA_LINK_ACTION_DISPLAY:
+        zathura_link_display(zathura, link);
+        break;
+      case ZATHURA_LINK_ACTION_COPY: {
+        GdkAtom* selection = get_selection(zathura);
+        if (selection == NULL) {
+          break;
+        }
+
+        zathura_link_copy(zathura, link, selection);
+        g_free(selection);
+        break;
+      }
+    }
   }
 
   g_free(input);
@@ -747,41 +749,41 @@ cb_page_widget_link(ZathuraPage* page, void* data)
 
 void
 cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event,
-    void* data)
+                                     void* data)
 {
   zathura_t* zathura = data;
   zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 
+  if (event->button != GDK_BUTTON_PRIMARY) {
+    return;
+  }
+
   /* set page number (but don't scroll there. it was clicked on, so it's visible) */
-  if (event->button == GDK_BUTTON_PRIMARY) {
-    zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
-    refresh_view(zathura);
-  }
+  zathura_document_set_current_page_number(zathura->document, zathura_page_get_index(page));
+  refresh_view(zathura);
 
-  if (event->button != GDK_BUTTON_PRIMARY || !(event->state & GDK_CONTROL_MASK)) {
-    return;
-  }
+  if (event->state & zathura->global.synctex_edit_modmask) {
+    bool synctex = false;
+    girara_setting_get(zathura->ui.session, "synctex", &synctex);
+    if (synctex == false) {
+      return;
+    }
 
-  bool synctex = false;
-  girara_setting_get(zathura->ui.session, "synctex", &synctex);
-  if (synctex == false) {
-    return;
-  }
+    if (zathura->dbus != NULL) {
+      zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
+    }
 
-  if (zathura->dbus != NULL) {
-    zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
-  }
+    char* editor = NULL;
+    girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
+    if (editor == NULL || *editor == '\0') {
+      girara_debug("No SyncTeX editor specified.");
+      g_free(editor);
+      return;
+    }
 
-  char* editor = NULL;
-  girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
-  if (editor == NULL || *editor == '\0') {
-    girara_debug("No SyncTeX editor specified.");
+    synctex_edit(editor, page, event->x, event->y);
     g_free(editor);
-    return;
   }
-
-  synctex_edit(editor, page, event->x, event->y);
-  g_free(editor);
 }
 
 void
@@ -798,4 +800,51 @@ cb_window_update_icon(ZathuraRenderRequest* GIRARA_UNUSED(request), cairo_surfac
 
   gtk_window_set_icon(GTK_WINDOW(zathura->ui.session->gtk.window), pixbuf);
   g_object_unref(pixbuf);
+}
+
+void
+cb_gesture_zoom_begin(GtkGesture* UNUSED(self), GdkEventSequence* UNUSED(sequence), void* data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+  const double current_zoom     = zathura_document_get_zoom(zathura->document);
+  zathura->gesture.initial_zoom = current_zoom;
+}
+
+void
+cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void* data)
+{
+  zathura_t* zathura = data;
+  if (zathura == NULL || zathura->document == NULL) {
+    return;
+  }
+
+  const double next_zoom = zathura->gesture.initial_zoom * scale;
+  const double corrected_zoom = zathura_correct_zoom_value(zathura->ui.session, next_zoom);
+  zathura_document_set_zoom(zathura->document, corrected_zoom);
+  render_all(zathura);
+  refresh_view(zathura);
+}
+
+void cb_hide_links(GtkWidget* widget, gpointer data) {
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(data != NULL);
+
+  /* disconnect from signal */
+  gulong handler_id = GPOINTER_TO_UINT(g_object_steal_data(G_OBJECT(widget), "handler_id"));
+  g_signal_handler_disconnect(G_OBJECT(widget), handler_id);
+
+  zathura_t* zathura           = data;
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
+  }
 }

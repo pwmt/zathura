@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-27 16:22+0100\n"
+"POT-Creation-Date: 2023-12-08 18:06+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
-"Language-Team: Ukrainian (Ukraine) (http://www.transifex.com/pwmt/zathura/"
+"Language-Team: Ukrainian (Ukraine) (http://app.transifex.com/pwmt/zathura/"
 "language/uk_UA/)\n"
 "Language: uk_UA\n"
 "MIME-Version: 1.0\n"
@@ -68,78 +68,78 @@ msgstr "Автоматичне перезавантаження документ
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;документ;презентація;переглядач;"
 
-#: zathura/callbacks.c:310
+#: zathura/callbacks.c:319
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' не має дорівнювати 0. Встановити значення 1."
 
-#: zathura/callbacks.c:396
+#: zathura/callbacks.c:405
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Введено неправильні дані '%s'."
 
-#: zathura/callbacks.c:444
+#: zathura/callbacks.c:427
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Вказано невірний покажчик %s."
 
-#: zathura/callbacks.c:692
+#: zathura/callbacks.c:694
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "Скопійовано вибраний текст у вибірку %s: %s"
 
-#: zathura/callbacks.c:724
+#: zathura/callbacks.c:726
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "Скопійовано вибране зображення у вибірку %s"
 
-#: zathura/commands.c:37 zathura/commands.c:77 zathura/commands.c:104
-#: zathura/commands.c:166 zathura/commands.c:282 zathura/commands.c:317
-#: zathura/commands.c:344 zathura/commands.c:446 zathura/commands.c:582
-#: zathura/shortcuts.c:463 zathura/shortcuts.c:1283 zathura/shortcuts.c:1318
-#: zathura/shortcuts.c:1345
+#: zathura/commands.c:37 zathura/commands.c:78 zathura/commands.c:105
+#: zathura/commands.c:167 zathura/commands.c:280 zathura/commands.c:315
+#: zathura/commands.c:342 zathura/commands.c:445 zathura/commands.c:588
+#: zathura/shortcuts.c:448 zathura/shortcuts.c:1268 zathura/shortcuts.c:1303
+#: zathura/shortcuts.c:1330
 msgid "No document opened."
 msgstr "Жодного документа не відкрито."
 
-#: zathura/commands.c:43 zathura/commands.c:83 zathura/commands.c:451
+#: zathura/commands.c:43 zathura/commands.c:84 zathura/commands.c:450
 msgid "Invalid number of arguments given."
 msgstr "Неправильна кількість наведених аргументів."
 
-#: zathura/commands.c:54
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "Не вдалося оновити закладку: %s"
 
-#: zathura/commands.c:56
+#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Не вдалося створити закладку: %s"
 
-#: zathura/commands.c:61
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Закладка успішно оновлена: %s"
 
-#: zathura/commands.c:63
+#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Закладка успішно створена: %s"
 
-#: zathura/commands.c:89
+#: zathura/commands.c:90
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Закладку вилучено: %s"
 
-#: zathura/commands.c:91
+#: zathura/commands.c:92
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Не вдалося вилучити закладку: %s"
 
-#: zathura/commands.c:120
+#: zathura/commands.c:121
 msgid "No bookmarks available."
 msgstr "Закладки не доступні."
 
-#: zathura/commands.c:130
+#: zathura/commands.c:131
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Такої закладки немає: %s"
@@ -184,31 +184,31 @@ msgstr "Формат"
 msgid "Other"
 msgstr "Інше"
 
-#: zathura/commands.c:190 zathura/commands.c:210
+#: zathura/commands.c:189 zathura/commands.c:210
 msgid "No information available."
 msgstr "Інформація відсутня."
 
-#: zathura/commands.c:248 zathura/commands.c:635
+#: zathura/commands.c:246 zathura/commands.c:641
 msgid "Too many arguments."
 msgstr "Занадто багато аргументів."
 
-#: zathura/commands.c:259
+#: zathura/commands.c:257
 msgid "No arguments given."
 msgstr "Жодного аргументу не наведено."
 
-#: zathura/commands.c:287
+#: zathura/commands.c:285
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "Друк заборонено в режимі суворої пісочниці"
 
-#: zathura/commands.c:312 zathura/commands.c:339
+#: zathura/commands.c:310 zathura/commands.c:337
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:324 zathura/commands.c:351
+#: zathura/commands.c:322 zathura/commands.c:349
 msgid "Invalid number of arguments."
 msgstr "Неправильна кількість аргументів."
 
-#: zathura/commands.c:441
+#: zathura/commands.c:440
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
 
@@ -242,358 +242,393 @@ msgstr "Невідоме зображення '%s'."
 msgid "Unknown attachment or image '%s'."
 msgstr "Невідоме вкладення або зображення \"%s\"."
 
-#: zathura/commands.c:548
+#: zathura/commands.c:545
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Запуск у суворому режимі пісочниці заборонено"
 
-#: zathura/commands.c:595
+#: zathura/commands.c:601
 msgid "Argument must be a number."
 msgstr "Аргумент повинен бути числом."
 
-#: zathura/completion.c:287
+#: zathura/completion.c:286
 #, c-format
 msgid "Page %d"
 msgstr "Сторінка  %d"
 
-#: zathura/completion.c:330
+#: zathura/completion.c:327
 msgid "Attachments"
 msgstr "Вкладення"
 
 #. add images
-#: zathura/completion.c:361
+#: zathura/completion.c:359
 msgid "Images"
 msgstr "Зображення"
 
 #. zathura settings
-#: zathura/config.c:185
+#: zathura/config.c:247
 msgid "Database backend"
 msgstr "Бекенд бази даних"
 
-#: zathura/config.c:186
+#: zathura/config.c:248
 msgid "File monitor backend"
 msgstr "Бекенд файлового монітора"
 
-#: zathura/config.c:188
+#: zathura/config.c:250
 msgid "Zoom step"
 msgstr "Крок масштабування"
 
-#: zathura/config.c:190
+#: zathura/config.c:252
 msgid "Padding between pages"
 msgstr "Заповнення між сторінками"
 
-#: zathura/config.c:192
+#: zathura/config.c:254
 msgid "Number of pages per row"
 msgstr "Кількість сторінок у рядку"
 
-#: zathura/config.c:194
+#: zathura/config.c:256
 msgid "Column of the first page"
 msgstr "Колонка першої сторінки"
 
-#: zathura/config.c:196
+#: zathura/config.c:258
 msgid "Render pages from right to left"
 msgstr "Відображати сторінки справа наліво"
 
-#: zathura/config.c:198
+#: zathura/config.c:260
 msgid "Scroll step"
 msgstr "Крок прокрутки"
 
-#: zathura/config.c:200
+#: zathura/config.c:262
 msgid "Horizontal scroll step"
 msgstr "Крок горизонтальної прокрутки"
 
-#: zathura/config.c:202
+#: zathura/config.c:264
 msgid "Full page scroll overlap"
 msgstr "Перекривання сторінки при прокрутці"
 
-#: zathura/config.c:204
+#: zathura/config.c:266
 msgid "Zoom minimum"
 msgstr "Мінімальний масштаб"
 
-#: zathura/config.c:206
+#: zathura/config.c:268
 msgid "Zoom maximum"
 msgstr "Максимальний масштаб"
 
-#: zathura/config.c:208
+#: zathura/config.c:270
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Максимальна кількість сторінок, що зберігаються в кеші"
 
-#: zathura/config.c:210
+#: zathura/config.c:272
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr "Максимальний розмір у пікселях ескізів, що зберігаються в кеші"
 
-#: zathura/config.c:212
+#: zathura/config.c:274
 msgid "Number of positions to remember in the jumplist"
 msgstr "Довжина історії переходів"
 
-#: zathura/config.c:214
+#: zathura/config.c:276
 msgid "Recoloring (dark color)"
 msgstr "Перефарбування (темний колір)"
 
-#: zathura/config.c:215
+#: zathura/config.c:277
 msgid "Recoloring (light color)"
 msgstr "Перефарбування (світлий колір)"
 
-#: zathura/config.c:216
+#: zathura/config.c:278
 msgid "Color for highlighting"
 msgstr "Колір для виділення"
 
-#: zathura/config.c:218
+#: zathura/config.c:280
 msgid "Foreground color for highlighting"
 msgstr ""
 
-#: zathura/config.c:220
+#: zathura/config.c:282
 msgid "Color for highlighting (active)"
 msgstr "Колір для виділення (активний)"
 
-#: zathura/config.c:222
+#: zathura/config.c:284
 msgid "'Loading ...' background color"
 msgstr "'Завантаження ...' колір тла"
 
-#: zathura/config.c:224
+#: zathura/config.c:286
 msgid "'Loading ...' foreground color"
 msgstr "'Завантаження ...' колір переднього плану"
 
-#: zathura/config.c:227
+#: zathura/config.c:289
 msgid "Index mode foreground color"
 msgstr "Колір переднього плану в режимі покажчика"
 
-#: zathura/config.c:228
+#: zathura/config.c:290
 msgid "Index mode background color"
 msgstr "Колір тла у режимі покажчика"
 
-#: zathura/config.c:229
+#: zathura/config.c:291
 msgid "Index mode foreground color (active element)"
 msgstr "Колір переднього плану в режимі покажчика (активний елемент)"
 
-#: zathura/config.c:230
+#: zathura/config.c:292
 msgid "Index mode background color (active element)"
 msgstr "Колір тла у режимі покажчика (активний елемент)"
 
-#: zathura/config.c:233
+#: zathura/config.c:294
+#, fuzzy
+msgid "Color used to highlight valid signatures"
+msgstr "Колір для виділення (активний)"
+
+#: zathura/config.c:297
+msgid "Color used to highlight signatures with warnings"
+msgstr ""
+
+#: zathura/config.c:300
+#, fuzzy
+msgid "Color used to highlight invalid signatures"
+msgstr "Колір для виділення (активний)"
+
+#: zathura/config.c:304
 msgid "Recolor pages"
 msgstr "Перефарбувати сторінки"
 
-#: zathura/config.c:235
+#: zathura/config.c:306
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 "Під час перефарбовування зберігати початковий відтінок і регулювати лише "
 "освітленість"
 
-#: zathura/config.c:237
+#: zathura/config.c:308
 msgid "When recoloring keep original image colors"
 msgstr "Під час перефарбовування зберігати початкові кольори зображення"
 
-#: zathura/config.c:239
+#: zathura/config.c:310
 msgid "Wrap scrolling"
 msgstr "Плавна прокрутка"
 
-#: zathura/config.c:241
+#: zathura/config.c:312
 msgid "Page aware scrolling"
 msgstr "Прокрутка по сторінкам"
 
-#: zathura/config.c:243
+#: zathura/config.c:314
 msgid "Advance number of pages per row"
 msgstr "Збільшити кількість сторінок на рядок"
 
-#: zathura/config.c:245
+#: zathura/config.c:316
 msgid "Horizontally centered zoom"
 msgstr "Горизонтально вирівняний масштаб"
 
-#: zathura/config.c:247
+#: zathura/config.c:318
 msgid "Vertically center pages"
 msgstr "Вертикально вирівнювати сторінки"
 
-#: zathura/config.c:249
+#: zathura/config.c:320
 msgid "Align link target to the left"
 msgstr "Вирівнювати ціль посилання ліворуч"
 
-#: zathura/config.c:251
+#: zathura/config.c:322
 msgid "Let zoom be changed when following links"
 msgstr "Нехай масштабується при переході за посиланнями"
 
-#: zathura/config.c:253
+#: zathura/config.c:324
 msgid "Center result horizontally"
 msgstr "Вирівнювати результат по горизонталі"
 
-#: zathura/config.c:255
+#: zathura/config.c:326
 msgid "Transparency for highlighting"
 msgstr "Прозорість для виділення"
 
-#: zathura/config.c:257
+#: zathura/config.c:328
 msgid "Render 'Loading ...'"
 msgstr "Візуалізація 'Завантаження ...'"
 
-#: zathura/config.c:258
+#: zathura/config.c:330
+msgid "Smooth over flicker when reloading file"
+msgstr ""
+
+#: zathura/config.c:331
 msgid "Adjust to when opening file"
 msgstr "Підлаштовуватись при відкритті файлу"
 
-#: zathura/config.c:260
+#: zathura/config.c:333
 msgid "Show hidden files and directories"
 msgstr "Показати приховані файли та каталоги"
 
-#: zathura/config.c:262
+#: zathura/config.c:335
 msgid "Show directories"
 msgstr "Показати каталоги"
 
-#: zathura/config.c:264
+#: zathura/config.c:337
 msgid "Show recent files"
 msgstr "Показати нещодавні файли"
 
-#: zathura/config.c:266
+#: zathura/config.c:339
 msgid "Always open on first page"
 msgstr "Завжди відкривати на першій сторінці"
 
-#: zathura/config.c:268
+#: zathura/config.c:341
 msgid "Highlight search results"
 msgstr "Виділяти результати пошуку"
 
-#: zathura/config.c:271
+#: zathura/config.c:343
+msgid "Double click to follow links"
+msgstr ""
+
+#: zathura/config.c:346
 msgid "Enable incremental search"
 msgstr "Увімкнути поступовий пошук"
 
-#: zathura/config.c:273
+#: zathura/config.c:348
 msgid "Clear search results on abort"
 msgstr "Очистити результати пошуку при скасуванні"
 
-#: zathura/config.c:275
+#: zathura/config.c:350
 msgid "Use basename of the file in the window title"
 msgstr "Використовувати базове ім'я файлу у заголовку вікна"
 
-#: zathura/config.c:277
+#: zathura/config.c:352
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr "Використовати ~ замість $HOME у назві файла у заголовку вікна"
 
-#: zathura/config.c:279
+#: zathura/config.c:354
 msgid "Display the page number in the window title"
 msgstr "Відображати номер сторінки у назві вікна"
 
-#: zathura/config.c:281
+#: zathura/config.c:356
 msgid "Use first page of a document as window icon"
 msgstr "Використовувати першу сторінку документа як піктограму вікна"
 
-#: zathura/config.c:283
+#: zathura/config.c:358
 msgid "Use basename of the file in the statusbar"
 msgstr "Використовувати базове ім'я файлу на панелі стану"
 
-#: zathura/config.c:285
+#: zathura/config.c:360
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "Використовувати ~ замість $HOME у назві файлу на панелі стану"
 
-#: zathura/config.c:287
+#: zathura/config.c:362
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
-#: zathura/config.c:289
+#: zathura/config.c:364
 msgid "Enable synctex support"
 msgstr "Увімкнути підтримку Synctex"
 
-#: zathura/config.c:290
+#: zathura/config.c:365
 msgid "Synctex editor command"
 msgstr "Команда редактора Synctex"
 
-#: zathura/config.c:292
+#: zathura/config.c:366
+#, fuzzy
+msgid "Synctex edit modifier"
+msgstr "Команда редактора Synctex"
+
+#: zathura/config.c:367
+msgid "Highlighter modifier"
+msgstr ""
+
+#: zathura/config.c:369
 msgid "Enable D-Bus service"
 msgstr "Увімкнути службу D-Bus"
 
-#: zathura/config.c:293
+#: zathura/config.c:370
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:295
+#: zathura/config.c:372
 msgid "Save history at each page change"
 msgstr "Зберігати історію при кожній зміні сторінки"
 
-#: zathura/config.c:296
+#: zathura/config.c:373
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Буфер обміну, в який будуть записані дані, вибрані мишею"
 
-#: zathura/config.c:298
+#: zathura/config.c:375
 msgid "Enable notification after selecting text"
 msgstr "Увімкніть сповіщення після вибору тексту"
 
-#: zathura/config.c:301
+#: zathura/config.c:378
 msgid "Sandbox level"
 msgstr "Рівень пісочниці"
 
+#: zathura/config.c:381
+msgid "Disable additional information for signatures embedded in the document."
+msgstr ""
+
 #. define default inputbar commands
-#: zathura/config.c:494
+#: zathura/config.c:579
 msgid "Add a bookmark"
 msgstr "Додати закладку"
 
-#: zathura/config.c:495
+#: zathura/config.c:580
 msgid "Delete a bookmark"
 msgstr "Вилучити закладку"
 
-#: zathura/config.c:496
+#: zathura/config.c:581
 msgid "List all bookmarks"
 msgstr "Список усіх закладок"
 
-#: zathura/config.c:497
+#: zathura/config.c:582
 msgid "Close current file"
 msgstr "Закрити поточний файл"
 
-#: zathura/config.c:498
+#: zathura/config.c:583
 msgid "Show file information"
 msgstr "Показати інформацію про файл"
 
-#: zathura/config.c:499 zathura/config.c:500
+#: zathura/config.c:584 zathura/config.c:585
 msgid "Execute a command"
 msgstr "Виконати команду"
 
 #. like vim
-#: zathura/config.c:501
+#: zathura/config.c:586
 msgid "Show help"
 msgstr "Покажіть довідку"
 
-#: zathura/config.c:502
+#: zathura/config.c:587
 msgid "Open document"
 msgstr "Відкрити документ"
 
-#: zathura/config.c:503
+#: zathura/config.c:588
 msgid "Close zathura"
 msgstr "Закрити zathura"
 
-#: zathura/config.c:504
+#: zathura/config.c:589
 msgid "Print document"
 msgstr "Надрукувати документ"
 
-#: zathura/config.c:505 zathura/config.c:507
+#: zathura/config.c:590 zathura/config.c:592
 msgid "Save document"
 msgstr "Зберегти документ"
 
-#: zathura/config.c:506 zathura/config.c:508
+#: zathura/config.c:591 zathura/config.c:593
 msgid "Save document (and force overwriting)"
 msgstr "Зберегти документ (і примусово перезаписати)"
 
-#: zathura/config.c:509
+#: zathura/config.c:594
 msgid "Save attachments"
 msgstr "Зберегти вкладення"
 
-#: zathura/config.c:510
+#: zathura/config.c:595
 msgid "Set page offset"
 msgstr "Встановити зміщення сторінки"
 
-#: zathura/config.c:511
+#: zathura/config.c:596
 msgid "Mark current location within the document"
 msgstr "Позначити поточне розташування в документі"
 
-#: zathura/config.c:512
+#: zathura/config.c:597
 msgid "Delete the specified marks"
 msgstr "Вилучити зазначені позначки"
 
-#: zathura/config.c:513
+#: zathura/config.c:598
 msgid "Don't highlight current search results"
 msgstr "Не виділяти поточні результати пошуку"
 
-#: zathura/config.c:514
+#: zathura/config.c:599
 msgid "Highlight current search results"
 msgstr "Виділити поточні результати пошуку"
 
-#: zathura/config.c:515
+#: zathura/config.c:600
 msgid "Show version information"
 msgstr "Показати інформацію про версію"
 
-#: zathura/config.c:516
+#: zathura/config.c:601
 msgid "Source config file"
 msgstr ""
 
@@ -693,76 +728,105 @@ msgstr ""
 msgid "Search for the given phrase and display results"
 msgstr ""
 
-#: zathura/page-widget.c:662
+#: zathura/page-widget.c:688
+#, c-format
+msgid ""
+"Signature is valid.\n"
+"This document is signed by\n"
+"  %s\n"
+"on %s."
+msgstr ""
+
+#: zathura/page-widget.c:696
+msgid "Signature certificate is expired."
+msgstr ""
+
+#: zathura/page-widget.c:700
+msgid "Signature certificate is revoked."
+msgstr ""
+
+#: zathura/page-widget.c:704
+msgid "Signature certificate is not trusted."
+msgstr ""
+
+#: zathura/page-widget.c:708
+msgid "Signature certificate is invalid."
+msgstr ""
+
+#: zathura/page-widget.c:712
+msgid "Signature is invalid."
+msgstr ""
+
+#: zathura/page-widget.c:808
 msgid "Loading..."
 msgstr "Завантаження..."
 
-#: zathura/page-widget.c:1159
+#: zathura/page-widget.c:1359
 msgid "Copy image"
 msgstr "Скопіювати зображення"
 
-#: zathura/page-widget.c:1160
+#: zathura/page-widget.c:1360
 msgid "Save image as"
 msgstr "Зберегти зображення як"
 
 #. Update statusbar.
-#: zathura/print.c:110
+#: zathura/print.c:106
 #, c-format
 msgid "Printing page %d ..."
 msgstr "Друк сторінки %d..."
 
-#: zathura/print.c:192
+#: zathura/print.c:188
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Не вдалося надрукувати: %s"
 
-#: zathura/shortcuts.c:105
+#: zathura/shortcuts.c:130
 #, c-format
 msgid "Invalid adjust mode: %d"
 msgstr "Недійсний режим коригування: %d"
 
-#: zathura/shortcuts.c:1025
+#: zathura/shortcuts.c:1010
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Шаблон не знайдено: %s"
 
-#: zathura/shortcuts.c:1185
+#: zathura/shortcuts.c:1170
 msgid "This document does not contain any index"
 msgstr "Цей документ не містить покажчика"
 
-#: zathura/zathura.c:307 zathura/zathura.c:1504
+#: zathura/zathura.c:317 zathura/zathura.c:1630
 msgid "[No name]"
 msgstr "[Без імені]"
 
-#: zathura/zathura.c:841
+#: zathura/zathura.c:851
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Не вдалося прочитати файл із stdin та записати його у тимчасовий файл."
 
-#: zathura/zathura.c:861
+#: zathura/zathura.c:871
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "Не вдалося прочитати файл із GIO та скопіювати його у тимчасовий файл."
 
-#: zathura/zathura.c:965
+#: zathura/zathura.c:975
 msgid "Enter password:"
 msgstr "Введіть пароль:"
 
-#: zathura/zathura.c:1004
+#: zathura/zathura.c:1062
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Непідтримуваний тип файлу. Установіть необхідне розширення."
 
-#: zathura/zathura.c:1014
+#: zathura/zathura.c:1072
 msgid "Document does not contain any pages"
 msgstr "Документ не містить жодної сторінки"
 
-#: zathura/zathura.c:1375
+#: zathura/zathura.c:1446
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr ""
 
-#: zathura/zathura.c:1384
+#: zathura/zathura.c:1455
 msgid "Failed to save document."
 msgstr "Не вдалося зберегти документ."
 
-#: zathura/zathura.c:1388
+#: zathura/zathura.c:1459
 msgid "Document saved."
 msgstr "Документ збережено."

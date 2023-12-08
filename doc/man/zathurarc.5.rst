@@ -232,7 +232,8 @@ They can also be combined with modifiers:
   * ``exec``:
 
     Execute an external command. ``$FILE`` expands to the current document path,
-    and ``$PAGE`` to the current page number.
+    ``$PAGE`` to the current page number, and ``$DBUS`` to the bus name of the
+    D-Bus interface.
 
   * ``focus_inputbar``
 
@@ -447,17 +448,17 @@ girara
   * Value type: String
   * Default value: #232323
 
-*default-fg*
-  Defines the default foreground color
-
-  * Value type: String
-  * Default value: #DDDDDD
-
 *default-bg*
   Defines the default background color
 
   * Value type: String
   * Default value: #000000
+
+*default-fg*
+  Defines the default foreground color
+
+  * Value type: String
+  * Default value: #DDDDDD
 
 *exec-command*
   Defines a command the should be prepended to any command run with exec.
@@ -509,25 +510,25 @@ girara
   Defines the background color for an error notification
 
   * Value type: String
-  * Default value: #FFFFFF
+  * Default value: #FF1212
 
 *notification-error-fg*
   Defines the foreground color for an error notification
 
   * Value type: String
-  * Default value: #FF1212
+  * Default value: #FFFFFF
 
 *notification-warning-bg*
   Defines the background color for a warning notification
 
   * Value type: String
-  * Default value: #FFFFFF
+  * Default value: #FFF712
 
 *notification-warning-fg*
   Defines the foreground color for a warning notification
 
   * Value type: String
-  * Default value: #FFF712
+  * Default value: #FFFFFF
 
 *statusbar-bg*
   Defines the background color of the statusbar
@@ -610,6 +611,13 @@ zathura
   * Value type: String
   * Default value: plain
 
+*dbus-raise-window*
+  Defines whether zathura's window should be raised when receiving certain
+  commands via D-Bus.
+
+  * Value type: Boolean
+  * Default value: true
+
 *dbus-service*
   En/Disables the D-Bus service. If the services is disabled, SyncTeX forward
   synchronization is not available.
@@ -617,9 +625,8 @@ zathura
   * Value type: Boolean
   * Default value: true
 
-*dbus-raise-window*
-  Defines whether zathura's window should be raised when receiving certain
-  commands via D-Bus.
+*double-click-follow*
+  Defines whether double or single click on a link should trigger follow.
 
   * Value type: Boolean
   * Default value: true
@@ -632,11 +639,27 @@ zathura
   * Value type: String
   * Default value: glib
 
-*incremental-search*
-  En/Disables incremental search (search while typing).
+*first-page-column*
+  Defines the column in which the first page will be displayed.
+  This setting is stored separately for every value of pages-per-row according to
+  the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
+  value in the list will be used for all other number of pages per row if not set
+  explicitly.
 
-  * Value type: Boolean
-  * Default value: true
+  Per default, the first column is set to 2 for double-page layout, i.e. the value
+  is set to 1:2. A value of 1:1:3 would put the first page in dual-page layout in
+  the first column, and for layouts with more columns the first page would be put
+  in the 3rd column.
+
+  * Value type: String
+  * Default value: 1:2
+
+*highlight-active-color*
+  Defines the color that is used to show the current selected highlighted element
+  (e.g: current search result)
+
+  * Value type: String
+  * Default value: #00BC00
 
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
@@ -652,24 +675,61 @@ zathura
   * Value type: String
   * Default value: #9FBC00
 
-*highlight-active-color*
-  Defines the color that is used to show the current selected highlighted element
-  (e.g: current search result)
-
-  * Value type: String
-  * Default value: #00BC00
-
 *highlight-transparency*
   Defines the opacity of a highlighted element
 
   * Value type: Float
   * Default value: 0.5
 
-*page-padding*
-  The page padding defines the gap in pixels between each rendered page.
+*highlighter-modifier*
+  Defines the modifier that needs to be pressed together with the left mouse button
+  to draw the highlighter. Possible values are "shift", "ctrl" and "alt".
 
-  * Value type: Integer
-  * Default value: 1
+  * Value type: String
+  * Default value: shift
+
+*incremental-search*
+  En/Disables incremental search (search while typing).
+
+  * Value type: Boolean
+  * Default value: true
+
+*index-active-bg*
+  Define the background color of the selected element in index mode.
+
+  * Value type: String
+  * Default value: #9FBC00
+
+*index-active-fg*
+  Defines the foreground color of the selected element in index mode.
+
+  * Value type: String
+  * Default value: #232323
+
+*index-bg*
+  Define the background color of the index mode.
+
+  * Value type: String
+  * Default value: #232323
+
+*index-fg*
+  Defines the foreground color of the index mode.
+
+  * Value type: String
+  * Default value: #DDDDDD
+
+*link-hadjust*
+  En/Disables aligning to the left internal link targets, for example from the
+  index.
+
+  * Value type: Boolean
+  * Default value: true
+
+*link-zoom*
+  En/Disables the ability of changing zoom when following links.
+
+  * Value type: Boolean
+  * Default value: true
 
 *page-cache-size*
   Defines the maximum number of pages that could be kept in the page cache. When
@@ -680,6 +740,18 @@ zathura
 
   * Value type: Integer
   * Default value: 15
+
+*page-padding*
+  The page padding defines the gap in pixels between each rendered page.
+
+  * Value type: Integer
+  * Default value: 1
+
+*page-right-to-left*
+  Defines whether pages in multi-column view should start from the right side.
+
+  * Value type: Boolean
+  * Default value: false
 
 *page-thumbnail-size*
   Defines the maximum size in pixels of the thumbnail that could be kept in the
@@ -698,29 +770,8 @@ zathura
   * Value type: Integer
   * Default value: 1
 
-*first-page-column*
-  Defines the column in which the first page will be displayed.
-  This setting is stored separately for every value of pages-per-row according to
-  the following pattern <1 page per row>:[<2 pages per row>[: ...]]. The last
-  value in the list will be used for all other number of pages per row if not set
-  explicitly.
-
-  Per default, the first column is set to 2 for double-page layout, i.e. the value
-  is set to 1:2. A value of 1:1:3 would put the first page in dual-page layout in
-  the first column, and for layouts with more columns the first page would be put
-  in the 3rd column.
-
-  * Value type: String
-  * Default value: 1:2
-
 *recolor*
   En/Disables recoloring
-
-  * Value type: Boolean
-  * Default value: false
-
-*recolor-keephue*
-  En/Disables keeping original hue when recoloring
 
   * Value type: Boolean
   * Default value: false
@@ -730,6 +781,12 @@ zathura
 
   * Value type: String
   * Default value: #FFFFFF
+
+*recolor-keephue*
+  En/Disables keeping original hue when recoloring
+
+  * Value type: Boolean
+  * Default value: false
 
 *recolor-lightcolor*
   Defines the color value that is used to represent light colors in recoloring mode
@@ -761,195 +818,6 @@ zathura
   * Value type: String
   * Default value: #000000
 
-*scroll-hstep*
-  Defines the horizontal step size of scrolling by calling the scroll command once
-
-  * Value type: Float
-  * Default value: -1
-
-*scroll-step*
-  Defines the step size of scrolling by calling the scroll command once
-
-  * Value type: Float
-  * Default value: 40
-
-*scroll-full-overlap*
-  Defines the proportion of the current viewing area that should be
-  visible after scrolling a full page.
-
-  * Value type: Float
-  * Default value: 0
-
-*scroll-wrap*
-  Defines if the last/first page should be wrapped
-
-  * Value type: Boolean
-  * Default value: false
-
-
-*show-directories*
-  Defines if the directories should be displayed in completion.
-
-  * Value type: Boolean
-  * Default value: true
-
-*show-hidden*
-  Defines if hidden files and directories should be displayed in completion.
-
-  * Value type: Boolean
-  * Default value: false
-
-*show-recent*
-  Defines the number of recent files that should be displayed in completion.
-  If the value is negative, no upper bounds are applied. If the value is 0, no
-  recent files are shown.
-
-  * Value type: Integer
-  * Default value: 10
-
-*scroll-page-aware*
-  Defines if scrolling by half or full pages stops at page boundaries.
-
-  * Value type: Boolean
-  * Default value: false
-
-*link-zoom*
-  En/Disables the ability of changing zoom when following links.
-
-  * Value type: Boolean
-  * Default value: true
-
-*link-hadjust*
-  En/Disables aligning to the left internal link targets, for example from the
-  index.
-
-  * Value type: Boolean
-  * Default value: true
-
-*search-hadjust*
-  En/Disables horizontally centered search results.
-
-  * Value type: Boolean
-  * Default value: true
-
-*window-title-basename*
-  Use basename of the file in the window title.
-
-  * Value type: Boolean
-  * Default value: false
-
-*window-title-home-tilde*
-  Display a short version of the file path, which replaces $HOME with ~, in the window title.
-
-  * Value type: Boolean
-  * Default value: false
-
-*window-title-page*
-  Display the page number in the window title.
-
-  * Value type: Boolean
-  * Default value: false
-
-*statusbar-basename*
-  Use basename of the file in the statusbar.
-
-  * Value type: Boolean
-  * Default value: false
-
-*statusbar-page-percent*
-  Display (current page / total pages) as a percent in the statusbar.
-
-  * Value type: Boolean
-  * Default value: false
-
-*statusbar-home-tilde*
-  Display a short version of the file path, which replaces $HOME with ~, in the statusbar.
-
-  * Value type: Boolean
-  * Default value: false
-
-*zoom-center*
-  En/Disables horizontally centered zooming.
-
-  * Value type: Boolean
-  * Default value: false
-
-*vertical-center*
-  Center the screen at the vertical midpoint of the page by default.
-
-  * Value type: Boolean
-  * Default value: false
-
-*zoom-max*
-  Defines the maximum percentage that the zoom level can be.
-
-  * Value type: Integer
-  * Default value: 1000
-
-*zoom-min*
-  Defines the minimum percentage that the zoom level can be.
-
-  * Value type: Integer
-  * Default value: 10
-
-*zoom-step*
-  Defines the amount of percent that is zoomed in or out on each command.
-
-  * Value type: Integer
-  * Default value: 10
-
-*selection-clipboard*
-  Defines the X clipboard into which mouse-selected data will be written.  When it
-  is "clipboard", selected data will be written to the CLIPBOARD clipboard, and
-  can be pasted using the Ctrl+v key combination.  When it is "primary", selected
-  data will be written to the PRIMARY clipboard, and can be pasted using the
-  middle mouse button, or the Shift-Insert key combination.
-
-  * Value type: String
-  * Default value: primary
-
-*selection-notification*
-  Defines if a notification should be displayed after selecting text.
-
-  * Value type: Boolean
-  * Default value: true
-
-*synctex*
-  En/Disables SyncTeX backward synchronization support.
-
-  * Value type: Boolean
-  * Default value: true
-
-*synctex-editor-command*
-  Defines the command executed for SyncTeX backward synchronization.
-
-  * Value type: String
-  * Default value:
-
-*index-fg*
-  Defines the foreground color of the index mode.
-
-  * Value type: String
-  * Default value: #DDDDDD
-
-*index-bg*
-  Define the background color of the index mode.
-
-  * Value type: String
-  * Default value: #232323
-
-*index-active-fg*
-  Defines the foreground color of the selected element in index mode.
-
-  * Value type: String
-  * Default value: #232323
-
-*index-active-bg*
-  Define the background color of the selected element in index mode.
-
-  * Value type: String
-  * Default value: #9FBC00
-
 *sandbox*
   Defines the sandbox mode to use for the seccomp syscall filter. Possible
   values are "none", "normal" and "strict". If "none" is used, the sandbox
@@ -975,6 +843,158 @@ zathura
   When running under WSL, the default is "none" since seccomp is not supported in
   that environment.
 
+*scroll-full-overlap*
+  Defines the proportion of the current viewing area that should be
+  visible after scrolling a full page.
+
+  * Value type: Float
+  * Default value: 0
+
+*scroll-hstep*
+  Defines the horizontal step size of scrolling by calling the scroll command once
+
+  * Value type: Float
+  * Default value: -1
+
+*scroll-step*
+  Defines the step size of scrolling by calling the scroll command once
+
+  * Value type: Float
+  * Default value: 40
+
+*scroll-page-aware*
+  Defines if scrolling by half or full pages stops at page boundaries.
+
+  * Value type: Boolean
+  * Default value: false
+
+*scroll-wrap*
+  Defines if the last/first page should be wrapped
+
+  * Value type: Boolean
+  * Default value: false
+
+*search-hadjust*
+  En/Disables horizontally centered search results.
+
+  * Value type: Boolean
+  * Default value: true
+
+*selection-clipboard*
+  Defines the X clipboard into which mouse-selected data will be written.  When it
+  is "clipboard", selected data will be written to the CLIPBOARD clipboard, and
+  can be pasted using the Ctrl+v key combination.  When it is "primary", selected
+  data will be written to the PRIMARY clipboard, and can be pasted using the
+  middle mouse button, or the Shift-Insert key combination.
+
+  * Value type: String
+  * Default value: primary
+
+*selection-notification*
+  Defines if a notification should be displayed after selecting text.
+
+  * Value type: Boolean
+  * Default value: true
+
+*signature-error-color*
+  Defines the background color when displaying additional information for
+  signatures with errors.
+
+  * Value type: String
+  * Default value: rgba(92%,11%,14%,0.9)
+
+*signature-success-color*
+  Defines the background color when displaying additional information for valid
+  signatures.
+
+  * Value type: String
+  * Default value: rgba(18%,80%,33%,0.9)
+
+*signature-warning-color*
+  Defines the background color when displaying additional information for
+  signatures with warnings.
+
+  * Value type: String
+  * Default value: rgba(100%,%84,0%,0.9)
+
+*show-directories*
+  Defines if the directories should be displayed in completion.
+
+  * Value type: Boolean
+  * Default value: true
+
+*show-hidden*
+  Defines if hidden files and directories should be displayed in completion.
+
+  * Value type: Boolean
+  * Default value: false
+
+*show-recent*
+  Defines the number of recent files that should be displayed in completion.
+  If the value is negative, no upper bounds are applied. If the value is 0, no
+  recent files are shown.
+
+  * Value type: Integer
+  * Default value: 10
+
+*show-signature-information*
+  Defines whether additional information on signatures embedded in documents
+  should be displayed.
+
+  * value type: Boolean
+  * Default value false
+
+*smooth-reload*
+  Defines if flickering will be removed when a file is reloaded on change. This
+  option might increase memory usage.
+
+  * Value type: Boolean
+  * Default value: true
+
+*statusbar-basename*
+  Use basename of the file in the statusbar.
+
+  * Value type: Boolean
+  * Default value: false
+
+*statusbar-home-tilde*
+  Display a short version of the file path, which replaces $HOME with ~, in the statusbar.
+
+  * Value type: Boolean
+  * Default value: false
+
+*statusbar-page-percent*
+  Display (current page / total pages) as a percent in the statusbar.
+
+  * Value type: Boolean
+  * Default value: false
+
+*synctex*
+  En/Disables SyncTeX backward synchronization support.
+
+  * Value type: Boolean
+  * Default value: true
+
+*synctex-edit-modifier*
+  Defines the modifier that needs to be pressed together with the left mouse button
+  to trigger the SyncTeX backward synchronization. Possible values are "shift",
+  "ctrl" and "alt".
+
+  * Value type: String
+  * Default value: ctrl
+
+*synctex-editor-command*
+  Defines the command executed for SyncTeX backward synchronization.
+
+  * Value type: String
+  * Default value:
+
+*vertical-center*
+  Center the screen at the vertical midpoint of the page by default.
+
+  * Value type: Boolean
+  * Default value: false
+
 *window-icon-document*
   Defines whether the window document should be updated based on the first page of
   a dcument.
@@ -982,11 +1002,47 @@ zathura
   * Value type: Boolean
   * Default value: false
 
-*page-right-to-left*
-  Defines whether pages in multi-column view should start from the right side.
+*window-title-basename*
+  Use basename of the file in the window title.
 
   * Value type: Boolean
   * Default value: false
+
+*window-title-home-tilde*
+  Display a short version of the file path, which replaces $HOME with ~, in the window title.
+
+  * Value type: Boolean
+  * Default value: false
+
+*window-title-page*
+  Display the page number in the window title.
+
+  * Value type: Boolean
+  * Default value: false
+
+*zoom-center*
+  En/Disables horizontally centered zooming.
+
+  * Value type: Boolean
+  * Default value: false
+
+*zoom-max*
+  Defines the maximum percentage that the zoom level can be.
+
+  * Value type: Integer
+  * Default value: 1000
+
+*zoom-min*
+  Defines the minimum percentage that the zoom level can be.
+
+  * Value type: Integer
+  * Default value: 10
+
+*zoom-step*
+  Defines the amount of percent that is zoomed in or out on each command.
+
+  * Value type: Integer
+  * Default value: 10
 
 SEE ALSO
 ========
