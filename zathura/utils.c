@@ -100,34 +100,29 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
   }
 }
 
-zathura_rectangle_t
-rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width)
-{
+zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width) {
   zathura_rectangle_t tmp;
   switch (degree) {
-    case 90:
-      tmp.x1 = height - rectangle.y2;
-      tmp.x2 = height - rectangle.y1;
-      tmp.y1 = rectangle.x1;
-      tmp.y2 = rectangle.x2;
-      break;
-    case 180:
-      tmp.x1 = width - rectangle.x2;
-      tmp.x2 = width - rectangle.x1;
-      tmp.y1 = height - rectangle.y2;
-      tmp.y2 = height - rectangle.y1;
-      break;
-    case 270:
-      tmp.x1 = rectangle.y1;
-      tmp.x2 = rectangle.y2;
-      tmp.y1 = width - rectangle.x2;
-      tmp.y2 = width - rectangle.x1;
-      break;
-    default:
-      tmp.x1 = rectangle.x1;
-      tmp.x2 = rectangle.x2;
-      tmp.y1 = rectangle.y1;
-      tmp.y2 = rectangle.y2;
+  case 90:
+    tmp.x1 = height - rectangle.y2;
+    tmp.x2 = height - rectangle.y1;
+    tmp.y1 = rectangle.x1;
+    tmp.y2 = rectangle.x2;
+    break;
+  case 180:
+    tmp.x1 = width - rectangle.x2;
+    tmp.x2 = width - rectangle.x1;
+    tmp.y1 = height - rectangle.y2;
+    tmp.y2 = height - rectangle.y1;
+    break;
+  case 270:
+    tmp.x1 = rectangle.y1;
+    tmp.x2 = rectangle.y2;
+    tmp.y1 = width - rectangle.x2;
+    tmp.y2 = width - rectangle.x1;
+    break;
+  default:
+    return rectangle;
   }
 
   return tmp;
