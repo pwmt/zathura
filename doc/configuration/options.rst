@@ -135,6 +135,27 @@ General settings
    :type: Float
    :default: 40
 
+.. describe:: signature-error-color
+
+   Defines the background color when displaying additional information for signatures with errors.
+
+   :type: String
+   :default: rgba(92%,11%,14%,0.9)
+
+.. describe:: signature-success-color
+
+   Defines the background color when displaying additional information for valid signatures.
+
+   :type: String
+   :default: rgba(18%,80%,33%,0.9)
+
+.. describe:: signature-warning-color
+
+   Defines the background color when displaying additional information for signatures with warnings.
+
+   :type: String
+   :default: rgba(100%,%84,0%,0.9)
+
 .. describe:: scroll-wrap
 
   Defines if the last/first page should be wrapped
@@ -149,6 +170,13 @@ General settings
 
    :type: Boolean
    :default: true
+
+.. describe:: show-signature-information
+
+   Defines whether additional information on signatures embedded in documents should be displayed.
+
+   :type: Boolean
+   :default: false
 
 .. describe:: zoom-max
 

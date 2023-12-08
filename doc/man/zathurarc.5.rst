@@ -896,6 +896,27 @@ zathura
   * Value type: Boolean
   * Default value: true
 
+*signature-error-color*
+  Defines the background color when displaying additional information for
+  signatures with errors.
+
+  * Value type: String
+  * Default value: rgba(92%,11%,14%,0.9)
+
+*signature-success-color*
+  Defines the background color when displaying additional information for valid
+  signatures.
+
+  * Value type: String
+  * Default value: rgba(18%,80%,33%,0.9)
+
+*signature-warning-color*
+  Defines the background color when displaying additional information for
+  signatures with warnings.
+
+  * Value type: String
+  * Default value: rgba(100%,%84,0%,0.9)
+
 *show-directories*
   Defines if the directories should be displayed in completion.
 
@@ -915,6 +936,13 @@ zathura
 
   * Value type: Integer
   * Default value: 10
+
+*show-signature-information*
+  Defines whether additional information on signatures embedded in documents
+  should be displayed.
+
+  * value type: Boolean
+  * Default value false
 
 *smooth-reload*
   Defines if flickering will be removed when a file is reloaded on change. This
