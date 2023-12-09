@@ -295,7 +295,7 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
   girara_setting_add(gsession, "signature-warning-color", NULL, STRING, false,
                      _("Color used to highlight signatures with warnings"), cb_color_change, NULL);
-  girara_setting_set(gsession, "signature-warning-color", "rgba(100%,%84,0%,0.9)");
+  girara_setting_set(gsession, "signature-warning-color", "rgba(100%,84%,0%,0.9)");
   girara_setting_add(gsession, "signature-error-color", NULL, STRING, false,
                      _("Color used to highlight invalid signatures"), cb_color_change, NULL);
   girara_setting_set(gsession, "signature-error-color", "rgba(92%,11%,14%,0.9)");
