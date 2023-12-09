@@ -86,7 +86,7 @@ seccomp_enable_basic_filter(void)
   DENY_RULE(migrate_pages);
   DENY_RULE(modify_ldt);
   DENY_RULE(mount);
-#ifdef __NR_mount_setattr 
+#if defined(__NR_mount_setattr) && defined(__SNR_mount_setattr)
   DENY_RULE(mount_setattr);
 #endif
   DENY_RULE(move_pages);
@@ -339,10 +339,10 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ERRNO_RULE(openat2);
   ERRNO_RULE(faccessat2);
   ERRNO_RULE(pwritev2);
-#ifdef __NR_readfile
+#if defined(__NR_readfile) && defined(__SNR_readfile)
   ERRNO_RULE(readfile);
 #endif
-#ifdef __NR_fchmodat2
+#if defined(__NR_fchmodat2) && defined(__SNR_fchmodat2)
   ERRNO_RULE(fchmodat2);
 #endif
 
