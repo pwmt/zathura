@@ -915,7 +915,7 @@ zathura
   signatures with warnings.
 
   * Value type: String
-  * Default value: rgba(100%,%84,0%,0.9)
+  * Default value: rgba(100%,84%,0%,0.9)
 
 *show-directories*
   Defines if the directories should be displayed in completion.

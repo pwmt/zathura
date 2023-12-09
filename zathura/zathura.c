@@ -61,7 +61,6 @@ typedef struct zathura_document_info_s {
   char* search_string;
 } zathura_document_info_t;
 
-
 static gboolean document_info_open(gpointer data);
 
 #ifdef G_OS_UNIX
@@ -189,8 +188,7 @@ zathura_update_view_ppi(zathura_t* zathura)
   /* work around apparent bug in GDK: on Wayland, monitor geometry doesn't
    * return values in application pixels as documented, but in device pixels.
    * */
-  if (GDK_IS_WAYLAND_DISPLAY(display))
-  {
+  if (GDK_IS_WAYLAND_DISPLAY(display)) {
     /* not using the cached value for the scale factor here to avoid issues
      * if this function is called before the cached value is updated */
     const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
@@ -211,9 +209,11 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 }
 
-static bool
-init_ui(zathura_t* zathura)
-{
+static void weak_ref_object_unref(void* data, GObject* UNUSED(object)) {
+  g_object_unref(data);
+}
+
+static bool init_ui(zathura_t* zathura) {
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
     girara_error("Failed to initialize girara.");
     return false;
@@ -228,7 +228,8 @@ init_ui(zathura_t* zathura)
   GtkGesture* zoom = gtk_gesture_zoom_new(GTK_WIDGET(zathura->ui.session->gtk.view));
   g_signal_connect(zoom, "scale-changed", G_CALLBACK(cb_gesture_zoom_scale_changed), zathura);
   g_signal_connect(zoom, "begin", G_CALLBACK(cb_gesture_zoom_begin), zathura);
-  gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zathura->ui.session->gtk.view), GTK_PHASE_BUBBLE);
+  gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zoom), GTK_PHASE_BUBBLE);
+  g_object_weak_ref(G_OBJECT(zathura->ui.session->gtk.view), weak_ref_object_unref, zoom);
 
   /* zathura signals */
   zathura->signals.refresh_view = g_signal_new(
@@ -482,7 +483,7 @@ zathura_init(zathura_t* zathura)
   }
 
   /* disable unsupported features in strict sandbox mode */
-  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT){
+  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT) {
     /* database */
     init_database(zathura);
   }
@@ -760,7 +761,6 @@ prepare_document_open_from_stdin(const char* path)
   if (input_stream == NULL) {
     girara_error("Can not read from file descriptor.");
     return NULL;
-
   }
 
   GFileIOStream* iostream = NULL;
@@ -861,8 +861,7 @@ document_info_open(gpointer data)
       if (g_file_is_native(gf) == TRUE) {
         /* file was given as a native path */
         file = g_file_get_path(gf);
-      }
-      else {
+      } else {
         /* copy file with GIO */
         uri = g_file_get_uri(gf);
         file = prepare_document_open_from_gfile(gf);
@@ -1592,7 +1591,7 @@ document_close(zathura_t* zathura, bool keep_monitor)
 
   /* free predecessor buffer if we want to overwrite it or if we destroy the document for good */
   if (override_predecessor || !keep_monitor || !smooth_reload) {
-	  document_predecessor_free(zathura);
+    document_predecessor_free(zathura);
   }
 
   /* remove widgets */

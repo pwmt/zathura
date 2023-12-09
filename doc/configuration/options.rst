@@ -154,7 +154,7 @@ General settings
    Defines the background color when displaying additional information for signatures with warnings.
 
    :type: String
-   :default: rgba(100%,%84,0%,0.9)
+   :default: rgba(100%,84%,0%,0.9)
 
 .. describe:: scroll-wrap
 

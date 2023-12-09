@@ -86,7 +86,7 @@ seccomp_enable_basic_filter(void)
   DENY_RULE(migrate_pages);
   DENY_RULE(modify_ldt);
   DENY_RULE(mount);
-#ifdef __NR_mount_setattr 
+#if defined(__NR_mount_setattr) && defined(__SNR_mount_setattr)
   DENY_RULE(mount_setattr);
 #endif
   DENY_RULE(move_pages);
@@ -153,7 +153,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
    * allowing for a potential fallback function to execute 
    * scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ERRNO(ENOSYS));*/
   scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_KILL_PROCESS);
-  if (ctx == NULL){
+  if (ctx == NULL) {
     girara_error("seccomp_init failed");
     return -1;
   }
@@ -254,7 +254,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
 #ifdef GDK_WINDOWING_X11
   GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.view);
 
-  if (GDK_IS_X11_DISPLAY (display)) {
+  if (GDK_IS_X11_DISPLAY(display)) {
     girara_debug("On X11, supporting X11 syscalls");
     girara_warning("Running strict sandbox mode on X11 provides only \
         incomplete process isolation.");
@@ -269,14 +269,13 @@ seccomp_enable_strict_filter(zathura_t* zathura)
     ALLOW_RULE(connect);
     ALLOW_RULE(umask);
     ALLOW_RULE(uname);
-    ALLOW_RULE(shmat); 
+    ALLOW_RULE(shmat);
     ALLOW_RULE(shmctl);
     ALLOW_RULE(shmdt);
     ALLOW_RULE(shmget);
     ALLOW_RULE(recvfrom);
     ALLOW_RULE(writev); /* pwritev, pwritev2 */
-  }
-  else {
+  } else {
     girara_debug("On Wayland, blocking X11 syscalls");
   }
 #endif
@@ -339,15 +338,12 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ERRNO_RULE(openat2);
   ERRNO_RULE(faccessat2);
   ERRNO_RULE(pwritev2);
-#ifdef __NR_readfile
+#if defined(__NR_readfile) && defined(__SNR_readfile)
   ERRNO_RULE(readfile);
 #endif
-#ifdef __NR_fchmodat2
+#if defined(__NR_fchmodat2) && defined(__SNR_fchmodat2)
   ERRNO_RULE(fchmodat2);
 #endif
-
-
-
 
   /* Sandbox Status Notes:
    *
@@ -373,10 +369,8 @@ seccomp_enable_strict_filter(zathura_t* zathura)
    *
    */
 
-
   /* when zathura is run on wayland, with X11 server available but blocked, unset the DISPLAY variable */
   /* otherwise it will try to connect to X11 using inet socket protocol */
-
 
   /* applying filter... */
   if (seccomp_load(ctx) >= 0) {
