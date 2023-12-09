@@ -209,9 +209,11 @@ zathura_update_view_ppi(zathura_t* zathura)
   }
 }
 
-static bool
-init_ui(zathura_t* zathura)
-{
+static void weak_ref_object_unref(void* data, GObject* UNUSED(object)) {
+  g_object_unref(data);
+}
+
+static bool init_ui(zathura_t* zathura) {
   if (girara_session_init(zathura->ui.session, "zathura") == false) {
     girara_error("Failed to initialize girara.");
     return false;
@@ -226,7 +228,8 @@ init_ui(zathura_t* zathura)
   GtkGesture* zoom = gtk_gesture_zoom_new(GTK_WIDGET(zathura->ui.session->gtk.view));
   g_signal_connect(zoom, "scale-changed", G_CALLBACK(cb_gesture_zoom_scale_changed), zathura);
   g_signal_connect(zoom, "begin", G_CALLBACK(cb_gesture_zoom_begin), zathura);
-  gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zathura->ui.session->gtk.view), GTK_PHASE_BUBBLE);
+  gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zoom), GTK_PHASE_BUBBLE);
+  g_object_weak_ref(G_OBJECT(zathura->ui.session->gtk.view), weak_ref_object_unref, zoom);
 
   /* zathura signals */
   zathura->signals.refresh_view = g_signal_new(
