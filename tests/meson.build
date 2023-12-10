@@ -36,13 +36,22 @@ if check.found()
 
   xvfb = find_program('xvfb-run', required: get_option('tests'))
   if xvfb.found()
+    xvfb_args = ['-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset']
+    xvfb_h_output = run_command(xvfb, '-h', capture: true, check: false)
+    if xvfb_h_output.stdout().contains('--auto-display')
+      # becasue Arch
+      xvfb_args += ['-d']
+    else
+      xvfb_args += ['-a']
+    endif
+
     session = executable('test_session', ['test_session.c', 'tests.c'],
       dependencies: build_dependencies + test_dependencies,
       include_directories: include_directories,
       c_args: defines + flags
     )
     test('session', xvfb,
-      args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', session],
+      args: xvfb_args + [session],
       timeout: 60*60
     )
 
@@ -53,7 +62,7 @@ if check.found()
         c_args: defines + flags
       )
       test('sandbox', xvfb,
-        args: ['-a', '-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset', sandbox],
+        args: xvfb_args + [sandbox],
         timeout: 60*60
       )
     endif
