@@ -60,7 +60,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
   zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free(content_type);
 
-  return plugin == NULL;
+  return plugin != NULL;
 }
 
 static void
