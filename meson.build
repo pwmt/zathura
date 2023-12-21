@@ -48,8 +48,8 @@ magic = cc.find_library('magic', required: true)
 build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
 
 if host_machine.system() == 'darwin'
-    gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
-    build_dependencies += gtk_mac_integration
+  gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
+  build_dependencies += gtk_mac_integration
 endif
 
 
