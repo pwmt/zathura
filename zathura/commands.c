@@ -546,12 +546,14 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
-  const char* bus_name = zathura_dbus_get_name(zathura);
-  for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
-    char* value = girara_list_nth(argument_list, idx);
-    char* s     = girara_replace_substring(value, "$DBUS", bus_name);
-    if (s != NULL) {
-      girara_list_set_nth(argument_list, idx, s);
+  if (zathura->dbus != NULL) {
+    const char* bus_name = zathura_dbus_get_name(zathura);
+    for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
+      char* value = girara_list_nth(argument_list, idx);
+      char* s     = girara_replace_substring(value, "$DBUS", bus_name);
+      if (s != NULL) {
+        girara_list_set_nth(argument_list, idx, s);
+      }
     }
   }
 
