@@ -1426,8 +1426,8 @@ cb_menu_image_save(GtkMenuItem* item, ZathuraPage* page)
   }
 
   /* set command */
-  char* export_command = g_strdup_printf(":export image-p%d-%d ", page_id, image_id);
-  girara_argument_t argument = { 0, export_command };
+  char* export_command       = g_strdup_printf(":export image-p%d-%d ", page_id, image_id);
+  girara_argument_t argument = {.n = 0, .data = export_command};
   sc_focus_inputbar(priv->zathura->ui.session, &argument, NULL, 0);
   g_free(export_command);
 

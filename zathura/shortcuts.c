@@ -513,7 +513,7 @@ sc_rotate(girara_session_t* session, girara_argument_t* argument,
   zathura_document_set_rotation(zathura->document, (rotation + angle * t) % 360);
 
   /* update scale */
-  girara_argument_t new_argument = { zathura_document_get_adjust_mode(zathura->document), NULL };
+  girara_argument_t new_argument = {.n = zathura_document_get_adjust_mode(zathura->document), .data = NULL};
   sc_adjust_window(zathura->ui.session, &new_argument, NULL, 0);
 
   /* render all pages again */
@@ -1372,7 +1372,7 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
     zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
 
     /* adjust window */
-    girara_argument_t argument = { ZATHURA_ADJUST_BESTFIT, NULL };
+    girara_argument_t argument = {.n = ZATHURA_ADJUST_BESTFIT, .data = NULL};
     sc_adjust_window(session, &argument, NULL, 0);
 
     /* hide status and inputbar */
@@ -1390,13 +1390,11 @@ sc_toggle_presentation(girara_session_t* session, girara_argument_t*
   return false;
 }
 
-bool
-sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument),
-        girara_event_t* UNUSED(event), unsigned int UNUSED(t))
-{
+bool sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+             unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
 
-  girara_argument_t arg = { GIRARA_HIDE, NULL };
+  girara_argument_t arg = {.n = GIRARA_HIDE, .data = NULL};
   girara_isc_completion(session, &arg, NULL, 0);
 
   cb_destroy(NULL, NULL);
