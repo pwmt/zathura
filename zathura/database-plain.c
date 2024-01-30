@@ -159,12 +159,11 @@ zathura_db_read_key_file_from_file(const char* path)
   size_t contentlen = strlen(content);
   if (contentlen == 0) {
     static const char dummy_content[] = "# nothing";
-    static const size_t dummy_len = sizeof(dummy_content) - 1;
+    static const size_t dummy_len     = sizeof(dummy_content) - 1;
 
-    free(content);
-    content = malloc(sizeof(char) * (dummy_len + 1));
-    if (content == NULL)
-    {
+    g_free(content);
+    content = g_malloc(sizeof(char) * (dummy_len + 1));
+    if (content == NULL) {
       g_key_file_free(key_file);
       return NULL;
     }
@@ -177,7 +176,7 @@ zathura_db_read_key_file_from_file(const char* path)
                                 G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error) ==
       FALSE) {
     if (error->code != 1) { /* ignore empty file */
-      free(content);
+      g_free(content);
       g_key_file_free(key_file);
       g_error_free(error);
       return NULL;
@@ -186,7 +185,7 @@ zathura_db_read_key_file_from_file(const char* path)
     g_error_free(error);
   }
 
-  free(content);
+  g_free(content);
 
   return key_file;
 }
@@ -759,7 +758,7 @@ plain_io_read(GiraraInputHistoryIO* db)
     girara_list_append(res, g_strdup(tmp[i]));
   }
   g_strfreev(tmp);
-  free(content);
+  g_free(content);
 
   return res;
 }
@@ -785,13 +784,13 @@ plain_io_append(GiraraInputHistoryIO* db, const char* input)
 
   rewind(file);
   if (ftruncate(fileno(file), 0) != 0) {
-    free(content);
+    g_free(content);
     fclose(file);
     return;
   }
 
   char** tmp = g_strsplit(content, "\n", 0);
-  free(content);
+  g_free(content);
 
   /* write input history file */
   for (size_t i = 0; tmp[i] != NULL; ++i) {
