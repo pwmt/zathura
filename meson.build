@@ -69,7 +69,8 @@ endif
 flags = [
   '-Werror=implicit-function-declaration',
   '-Werror=vla',
-  '-fvisibility=hidden'
+  '-fvisibility=hidden',
+  '-Werror=int-conversion'
 ]
 flags = cc.get_supported_arguments(flags)
 
