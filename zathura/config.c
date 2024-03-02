@@ -18,25 +18,18 @@
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
-#define GLOBAL_RC  "/etc/zathurarc"
+#define GLOBAL_RC "/etc/zathurarc"
 #define ZATHURA_RC "zathurarc"
 
-static void
-cb_jumplist_change(girara_session_t* session, const char* UNUSED(name),
-                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
-{
+static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
+                               const void* value, void* UNUSED(data)) {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  const int* ivalue = value;
-
-  if (*ivalue < 0) {
-    zathura->jumplist.max_size = 0;
-  } else {
-    zathura->jumplist.max_size = *ivalue;
-  }
+  const int* ivalue          = value;
+  zathura->jumplist.max_size = MAX(0, *ivalue);
 
   if (zathura->jumplist.list != NULL && zathura->jumplist.size != 0) {
     zathura_jumplist_trim(zathura);
