@@ -659,27 +659,21 @@ zathura
   (e.g: current search result)
 
   * Value type: String
-  * Default value: #00BC00
+  * Default value: rgba(0,188,0,0.5)
 
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
   show search results)
 
   * Value type: String
-  * Default value: #9FBC00
+  * Default value: rgba(159,251,0,0.5)
 
 *highlight-fg*
   Defines the color that is used for text when highlighting parts of the
   document (e.g.: number for links).
 
   * Value type: String
-  * Default value: #9FBC00
-
-*highlight-transparency*
-  Defines the opacity of a highlighted element
-
-  * Value type: Float
-  * Default value: 0.5
+  * Default value: rgba(0,0,0,0.5)
 
 *highlighter-modifier*
   Defines the modifier that needs to be pressed together with the left mouse button

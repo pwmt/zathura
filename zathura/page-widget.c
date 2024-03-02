@@ -641,9 +641,6 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
     /* draw links */
     set_font_from_property(cairo, zathura, CAIRO_FONT_WEIGHT_BOLD);
 
-    float transparency = 0.5;
-    girara_setting_get(zathura->ui.session, "highlight-transparency", &transparency);
-
     if (priv->links.draw == true && priv->links.n != 0) {
       unsigned int link_counter = 0;
       for (size_t idx = 0; idx != girara_list_size(priv->links.list); ++idx) {
@@ -653,14 +650,14 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
           /* draw position */
           const GdkRGBA color = zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
           cairo_rectangle(cairo, rectangle.x1, rectangle.y1, (rectangle.x2 - rectangle.x1),
                           (rectangle.y2 - rectangle.y1));
           cairo_fill(cairo);
 
           /* draw text */
           const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
-          cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, transparency);
+          cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color.alpha);
           cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
           char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
           cairo_show_text(cairo, link_number);
@@ -721,7 +718,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
         /* draw text */
         const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
-        cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, transparency);
+        cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color.alpha);
         cairo_text_extents_t extents;
         cairo_text_extents(cairo, text, &extents);
 
@@ -743,10 +740,10 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
         /* draw position */
         if (idx == priv->search.current) {
           const GdkRGBA color = zathura->ui.colors.highlight_color_active;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
         } else {
           const GdkRGBA color = zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
         }
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1, (rectangle.x2 - rectangle.x1),
                         (rectangle.y2 - rectangle.y1));
@@ -756,28 +753,24 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
     }
     if (priv->selection.list != NULL && priv->selection.draw == true) {
       const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
-      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-      GIRARA_LIST_FOREACH_BODY(priv->selection.list, zathura_rectangle_t*, rect,
-        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-        cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-                        rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
-        cairo_fill(cairo);
-      );
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
+      GIRARA_LIST_FOREACH_BODY(
+          priv->selection.list, zathura_rectangle_t*, rect,
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+          cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
+          cairo_fill(cairo););
     }
-    if (priv->highlighter.bounds.x1 != -1
-        && priv->highlighter.bounds.y1 != -1
-        && priv->highlighter.draw == true) {
+    if (priv->highlighter.bounds.x1 != -1 && priv->highlighter.bounds.y1 != -1 && priv->highlighter.draw == true) {
       const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
-      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
+      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
       zathura_rectangle_t rectangle = recalc_rectangle(priv->page, priv->highlighter.bounds);
-      cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-                      rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
+      cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
       cairo_fill(cairo);
     }
   } else {
-	if (smooth_reload) {
-		girara_debug("rendering loading screen, flicker might be happening");
-	}
+    if (smooth_reload) {
+      girara_debug("rendering loading screen, flicker might be happening");
+    }
 
     /* set background color */
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {

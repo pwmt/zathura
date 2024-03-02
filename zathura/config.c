@@ -243,6 +243,7 @@ void config_load_default(zathura_t* zathura) {
   /* Set default mode */
   girara_mode_set(gsession, zathura->modes.normal);
 
+  /* clang-format off */
   /* zathura settings */
   girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
@@ -276,11 +277,11 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),            cb_color_change, NULL);
   girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),           cb_color_change, NULL);
   girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),             cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-color",        "#9FBC00");
+  girara_setting_set(gsession, "highlight-color",        "rgba(159,251,0,0.5)");
   girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),  cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-fg",           "#000000");
+  girara_setting_set(gsession, "highlight-fg",           "rgba(0,0,0,0.5)");
   girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"),    cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-active-color", "#00BC00");
+  girara_setting_set(gsession, "highlight-active-color", "rgba(0,188,0,0.5)");
   girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
@@ -322,8 +323,6 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "link-zoom",              &bool_value,  BOOLEAN, false, _("Let zoom be changed when following links"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "search-hadjust",         &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
-  float_value = 0.5;
-  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
   bool_value = true;
@@ -670,6 +669,7 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "width",        ZATHURA_ADJUST_WIDTH);
   girara_argument_mapping_add(gsession, "rotate-cw",    ROTATE_CW);
   girara_argument_mapping_add(gsession, "rotate-ccw",   ROTATE_CCW);
+  /* clang-format on */
 }
 
 void

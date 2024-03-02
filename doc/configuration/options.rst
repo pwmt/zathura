@@ -41,7 +41,7 @@ General settings
   (e.g.: show search results)
 
    :type: String
-   :default: #9FBC00
+   :default: rgba(159,251,0,0.5)
 
 .. describe:: highlight-fg
 
@@ -49,7 +49,7 @@ General settings
   (e.g.: numbers for links)
 
    :type: String
-   :default: #FFFFFF
+   :default: rgba(0,0,0,0.5)
 
 .. describe:: highlight-active-color
 
@@ -57,14 +57,7 @@ General settings
   element (e.g: current search result)
 
    :type: String
-   :default: #00BC00
-
-.. describe:: highlight-transparency
-
-  Defines the opacity of a highlighted element
-
-   :type: Float
-   :default: 0.5
+   :default: rgba(0,188,0,0.5)
 
 .. describe:: page-padding
 
