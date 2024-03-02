@@ -9,8 +9,8 @@ Requirements
 
 The following dependencies are required:
 
-* `gtk3` (>= 3.22)
-* `glib` (>= 2.50)
+* `gtk3` (>= 3.24)
+* `glib` (>= 2.74)
 * `girara` (>= 0.4.3)
 * `libmagic` from file(1): for mime-type detection
 * `json-glib`
