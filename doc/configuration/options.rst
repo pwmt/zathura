@@ -156,14 +156,6 @@ General settings
    :type: Boolean
    :default: false
 
-.. describe:: smooth-reload
-
-   Defines if flickering will be removed when a file is reloaded on change.
-   This option might increase memory usage.
-
-   :type: Boolean
-   :default: true
-
 .. describe:: show-signature-information
 
    Defines whether additional information on signatures embedded in documents should be displayed.

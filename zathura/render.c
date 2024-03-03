@@ -164,7 +164,12 @@ static void renderer_register_request(ZathuraRenderer* renderer, ZathuraRenderRe
 
 /* init, new and free for ZathuraRenderRequest */
 
-enum { REQUEST_COMPLETED, REQUEST_CACHE_ADDED, REQUEST_CACHE_INVALIDATED, REQUEST_LAST_SIGNAL };
+enum {
+  REQUEST_COMPLETED,
+  REQUEST_CACHE_ADDED,
+  REQUEST_CACHE_INVALIDATED,
+  REQUEST_LAST_SIGNAL,
+};
 
 static guint request_signals[REQUEST_LAST_SIGNAL] = {0};
 

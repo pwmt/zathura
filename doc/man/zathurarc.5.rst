@@ -938,13 +938,6 @@ zathura
   * value type: Boolean
   * Default value false
 
-*smooth-reload*
-  Defines if flickering will be removed when a file is reloaded on change. This
-  option might increase memory usage.
-
-  * Value type: Boolean
-  * Default value: true
-
 *statusbar-basename*
   Use basename of the file in the statusbar.
 

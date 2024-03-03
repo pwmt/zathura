@@ -525,12 +525,9 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
   const unsigned int page_height = gtk_widget_get_allocated_height(widget);
   const unsigned int page_width  = gtk_widget_get_allocated_width(widget);
 
-  bool smooth_reload = true;
-  girara_setting_get(zathura->ui.session, "smooth-reload", &smooth_reload);
-
   bool surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
 
-  if (zathura->predecessor_document != NULL && zathura->predecessor_pages != NULL && smooth_reload && !surface_exists) {
+  if (zathura->predecessor_document != NULL && zathura->predecessor_pages != NULL && !surface_exists) {
     unsigned int page_index = zathura_page_get_index(priv->page);
 
     if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document)) {
@@ -727,9 +724,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
       cairo_fill(cairo);
     }
   } else {
-    if (smooth_reload) {
-      girara_debug("rendering loading screen, flicker might be happening");
-    }
+    girara_debug("rendering loading screen, flicker might be happening");
 
     /* set background color */
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
