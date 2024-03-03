@@ -44,8 +44,9 @@ gtk3 = dependency('gtk+-3.0', version: '>=3.24')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = cc.find_library('magic', required: true)
+sqlite = dependency('sqlite3', version: '>=3.6.23', required: true)
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib, sqlite]
 
 if host_machine.system() == 'darwin'
   gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
@@ -76,15 +77,8 @@ flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
 additional_sources = []
-sqlite = dependency('sqlite3', version: '>=3.6.23', required: get_option('sqlite'))
 synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
-
-if sqlite.found()
-  build_dependencies += sqlite
-  defines += '-DWITH_SQLITE'
-  additional_sources += files('zathura/database-sqlite.c')
-endif
 
 if synctex.found()
   build_dependencies += synctex
@@ -126,6 +120,7 @@ sources = files(
   'zathura/content-type.c',
   'zathura/database.c',
   'zathura/database-plain.c',
+  'zathura/database-sqlite.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',
   'zathura/file-monitor.c',

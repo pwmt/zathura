@@ -28,9 +28,7 @@
 #include "callbacks.h"
 #include "config.h"
 #include "commands.h"
-#ifdef WITH_SQLITE
 #include "database-sqlite.h"
-#endif
 #include "database-plain.h"
 #include "document.h"
 #include "shortcuts.h"
@@ -370,9 +368,7 @@ init_css(zathura_t* zathura)
   return true;
 }
 
-static void
-init_database(zathura_t* zathura)
-{
+static void init_database(zathura_t* zathura) {
   char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
 
@@ -384,30 +380,23 @@ init_database(zathura_t* zathura)
   if (g_strcmp0(database, "plain") == 0) {
     girara_debug("Using plain database backend.");
     zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
-#ifdef WITH_SQLITE
   } else if (g_strcmp0(database, "sqlite") == 0) {
     girara_debug("Using sqlite database backend.");
-    char* tmp =
-      g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+    char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database = zathura_sqldatabase_new(tmp);
     g_free(tmp);
-#endif
   } else if (g_strcmp0(database, "null") != 0) {
     girara_error("Database backend '%s' is not supported.", database);
   }
 
   if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
-    girara_error(
-      "Unable to initialize database. Bookmarks won't be available.");
-  }
-  else {
-    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io",
-                 zathura->database, NULL);
+    girara_error("Unable to initialize database. Bookmarks won't be available.");
+  } else {
+    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
   }
   g_free(database);
 }
 
-static void
 init_jumplist(zathura_t* zathura)
 {
   int jumplist_size = 20;

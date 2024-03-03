@@ -14,10 +14,9 @@ The following dependencies are required:
 * `girara` (>= 0.4.3)
 * `libmagic` from file(1): for mime-type detection
 * `json-glib`
+* `sqlite3` (>= 3.6.23): sqlite3 database backend
 
 The following dependencies are optional:
-
-* `sqlite3` (>= 3.6.23): sqlite3 database backend
 * `libsynctex` from TeXLive (>= 1.19): SyncTeX support
 * `libseccomp`: sandbox support
 
@@ -39,12 +38,6 @@ The following dependencies are optional build-time only dependencies:
 Note that `Sphinx` is needed to build the manpages. If it is not installed, the
 man pages won't be built. For building the HTML documentation, `doxygen`,
 `breathe` and `sphinx_rtd_theme` are needed in addition to `Sphinx`.
-
-If you don't want to build with support for sqlite databases, you can configure
-the build system with `-Dsqlite=disabled` and sqlite support won't be available.
-
-The use of magic to detect mime types is optional and can be disabled by
-configuring the build system with `-Dmagic=disabled`.
 
 The use of `libseccomp` to create a sandboxed environment is optional and can
 be disabled by configure the build system with `-Dseccomp=disabled`. The
