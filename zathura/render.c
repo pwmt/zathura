@@ -140,6 +140,7 @@ static void renderer_finalize(GObject* object) {
 
   zathura_renderer_stop(renderer);
   if (priv->pool != NULL) {
+    girara_debug("Waiting for thread pool to finish.");
     g_thread_pool_free(priv->pool, TRUE, TRUE);
   }
   g_mutex_clear(&(priv->mutex));
@@ -348,7 +349,8 @@ void zathura_renderer_unlock(ZathuraRenderer* renderer) {
 void zathura_renderer_stop(ZathuraRenderer* renderer) {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
-  priv->about_to_close         = true;
+  girara_debug("Setting about-to-close flag for renderer");
+  priv->about_to_close = true;
 }
 
 /* ZathuraRenderRequest methods */
