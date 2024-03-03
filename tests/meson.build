@@ -39,7 +39,7 @@ if check.found()
     xvfb_args = ['-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset']
     xvfb_h_output = run_command(xvfb, '-h', capture: true, check: false)
     if xvfb_h_output.stdout().contains('--auto-display')
-      # becasue Arch and Fedora
+      # because Arch and Fedora
       xvfb_args += ['-d']
     else
       xvfb_args += ['-a']
