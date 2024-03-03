@@ -882,9 +882,292 @@ zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
-static void
-zathura_sqldatabase_init(ZathuraSQLDatabase* db)
-{
+static void zathura_sqldatabase_init(ZathuraSQLDatabase* db) {
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
-  priv->session = NULL;
+  priv->session                   = NULL;
+}
+
+/* functions to import plain database into sqlite database */
+
+static GKeyFile* db_read_key_file_from_file(const char* path) {
+  if (path == NULL) {
+    return NULL;
+  }
+
+  /* open file */
+  GKeyFile* key_file = g_key_file_new();
+  if (key_file == NULL) {
+    return NULL;
+  }
+
+  GError* error = NULL;
+  if (g_key_file_load_from_file(key_file, path, 0, &error) == FALSE) {
+    girara_debug("Unable to parse key file: %s", path);
+    g_key_file_free(key_file);
+    g_error_free(error);
+    return NULL;
+  }
+
+  return key_file;
+}
+
+static char* unprepare_filename(const char* file) {
+  if (g_path_is_absolute(file)) {
+    return g_strdup(file);
+  }
+
+  gsize length    = 0;
+  guchar* decoded = g_base64_decode(file, &length);
+  if (length == 0) {
+    return NULL;
+  }
+
+  gchar* ret = g_malloc0(length + 1);
+  memcpy(ret, decoded, length);
+  g_free(decoded);
+
+  /* deocuded string not a path */
+  if (g_path_is_absolute(ret)) {
+    return ret;
+  }
+
+  g_free(ret);
+  return NULL;
+}
+
+#define BOOKMARKS "bookmarks"
+#define HISTORY "history"
+#define INPUT_HISTORY "input-history"
+
+#define KEY_PAGE "page"
+#define KEY_OFFSET "offset"
+#define KEY_ZOOM "zoom"
+#define KEY_ROTATE "rotate"
+#define KEY_PAGES_PER_ROW "pages-per-row"
+#define KEY_PAGE_RIGHT_TO_LEFT "page-right-to-left"
+#define KEY_FIRST_PAGE_COLUMN "first-page-column"
+#define KEY_POSITION_X "position-x"
+#define KEY_POSITION_Y "position-y"
+#define KEY_JUMPLIST "jumplist"
+#define KEY_TIME "time"
+
+static void import_bookmarks(zathura_database_t* db, const char* plain_dir) {
+  gchar* bookmark_path = g_build_filename(plain_dir, BOOKMARKS, NULL);
+  GKeyFile* key_file   = db_read_key_file_from_file(bookmark_path);
+  g_free(bookmark_path);
+
+  if (key_file == NULL) {
+    return;
+  }
+
+  gsize groups_length = 0;
+  gchar** groups      = g_key_file_get_groups(key_file, &groups_length);
+  for (gsize idx = 0; idx != groups_length; ++idx) {
+    gchar* group = groups[idx];
+    char* path   = unprepare_filename(group);
+    if (path == NULL) {
+      girara_debug("Unable to decode file path: %s", group);
+      continue;
+    }
+
+    gsize keys_length = 0;
+    char** keys       = g_key_file_get_keys(key_file, group, &keys_length, NULL);
+    if (keys == NULL) {
+      girara_error("No bookmarks");
+      continue;
+    }
+
+    for (gsize key_index = 0; key_index != keys_length; ++key_index) {
+      gchar* key = keys[key_index];
+
+      gsize num_vals  = 0;
+      char** val_list = g_key_file_get_string_list(key_file, group, key, &num_vals, NULL);
+
+      if (num_vals != 1 && num_vals != 3) {
+        girara_error("Unexpected number of values.");
+        g_strfreev(val_list);
+        continue;
+      }
+
+      zathura_bookmark_t bookmark;
+      bookmark.id   = key;
+      bookmark.page = atoi(val_list[0]);
+
+      if (num_vals == 3) {
+        bookmark.x = g_ascii_strtod(val_list[1], NULL);
+        bookmark.y = g_ascii_strtod(val_list[2], NULL);
+      } else if (num_vals == 1) {
+        bookmark.x = DBL_MIN;
+        bookmark.y = DBL_MIN;
+      }
+
+      zathura_db_add_bookmark(db, path, &bookmark);
+      g_strfreev(val_list);
+    }
+
+    g_strfreev(keys);
+    g_free(path);
+  }
+
+  g_strfreev(groups);
+  g_key_file_free(key_file);
+}
+
+static void import_history(zathura_database_t* db, const char* plain_dir) {
+  gchar* history_path = g_build_filename(plain_dir, HISTORY, NULL);
+  GKeyFile* key_file  = db_read_key_file_from_file(history_path);
+  g_free(history_path);
+
+  if (key_file == NULL) {
+    return;
+  }
+
+  gsize groups_length = 0;
+  gchar** groups      = g_key_file_get_groups(key_file, &groups_length);
+  for (gsize idx = 0; idx != groups_length; ++idx) {
+    gchar* group = groups[idx];
+    /* if path is NULL, then group was a check sum */
+    char* path      = unprepare_filename(group);
+    gsize hash_size = 0;
+    guchar* hash    = path == NULL ? g_base64_decode(group, &hash_size) : NULL;
+
+    if (path == NULL && hash == NULL) {
+      girara_debug("Unable to decode group: %s", group);
+      continue;
+    }
+
+    /* load fileinf o*/
+    zathura_fileinfo_t file_info;
+    file_info.current_page = g_key_file_get_integer(key_file, group, KEY_PAGE, NULL);
+    file_info.page_offset  = g_key_file_get_integer(key_file, group, KEY_OFFSET, NULL);
+    file_info.zoom         = g_key_file_get_double(key_file, group, KEY_ZOOM, NULL);
+    file_info.rotation     = g_key_file_get_integer(key_file, group, KEY_ROTATE, NULL);
+
+    /* the following flags got introduced at a later point */
+    if (g_key_file_has_key(key_file, group, KEY_PAGES_PER_ROW, NULL) == TRUE) {
+      file_info.pages_per_row = g_key_file_get_integer(key_file, group, KEY_PAGES_PER_ROW, NULL);
+    }
+    if (g_key_file_has_key(key_file, group, KEY_FIRST_PAGE_COLUMN, NULL) == TRUE) {
+      file_info.first_page_column_list = g_key_file_get_string(key_file, group, KEY_FIRST_PAGE_COLUMN, NULL);
+    }
+    if (g_key_file_has_key(key_file, group, KEY_PAGE_RIGHT_TO_LEFT, NULL) == TRUE) {
+      file_info.page_right_to_left = g_key_file_get_boolean(key_file, group, KEY_PAGE_RIGHT_TO_LEFT, NULL);
+    }
+    if (g_key_file_has_key(key_file, group, KEY_POSITION_X, NULL) == TRUE) {
+      file_info.position_x = g_key_file_get_double(key_file, group, KEY_POSITION_X, NULL);
+    }
+    if (g_key_file_has_key(key_file, group, KEY_POSITION_Y, NULL) == TRUE) {
+      file_info.position_y = g_key_file_get_double(key_file, group, KEY_POSITION_Y, NULL);
+    }
+
+    char* temporary_path = NULL;
+    if (path == NULL) {
+      /* unique path if imported via checksum */
+      temporary_path = g_build_filename("/IMPORTED", group, NULL);
+    }
+
+    static const uint8_t zero_digest[32] = {0};
+    sqlite_set_fileinfo(db, path != NULL ? path : temporary_path, path != NULL ? zero_digest : hash, &file_info);
+    g_free(temporary_path);
+
+    /* load jumplist */
+    char* jumplist_str = g_key_file_get_string(key_file, group, KEY_JUMPLIST, NULL);
+    if (path != NULL && jumplist_str != NULL) {
+      girara_list_t* jumplist = girara_list_new2(g_free);
+
+      char* copy    = g_strdup(jumplist_str);
+      char* saveptr = NULL;
+      char* token   = strtok_r(copy, " ", &saveptr);
+
+      while (token != NULL) {
+        zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
+        if (jump == NULL) {
+          continue;
+        }
+
+        jump->page = strtoul(token, NULL, 0);
+        token      = strtok_r(NULL, " ", &saveptr);
+        if (token == NULL) {
+          girara_warning("Could not parse jumplist information.");
+          g_free(jump);
+          break;
+        }
+        jump->x = g_ascii_strtod(token, NULL);
+
+        token = strtok_r(NULL, " ", &saveptr);
+        if (token == NULL) {
+          girara_warning("Could not parse jumplist information.");
+          g_free(jump);
+          break;
+        }
+        jump->y = g_ascii_strtod(token, NULL);
+
+        girara_list_append(jumplist, jump);
+        token = strtok_r(NULL, " ", &saveptr);
+      }
+      g_free(copy);
+
+      zathura_db_save_jumplist(db, path, jumplist);
+      girara_list_free(jumplist);
+    }
+
+    g_free(hash);
+    g_free(path);
+  }
+
+  g_strfreev(groups);
+
+  g_key_file_free(key_file);
+}
+
+static void import_input_history(GiraraInputHistoryIO* ih, const char* plain_dir) {
+  gchar* input_history_path   = g_build_filename(plain_dir, INPUT_HISTORY, NULL);
+  char* input_history_content = girara_file_read(input_history_path);
+  if (input_history_content != NULL) {
+    char** tmp = g_strsplit(input_history_content, "\n", 0);
+    for (size_t i = 0; tmp[i] != NULL; ++i) {
+      if (strlen(tmp[i]) == 0 || strchr(":/?", tmp[i][0]) == NULL) {
+        continue;
+      }
+      girara_input_history_io_append(ih, tmp[i]);
+    }
+    g_strfreev(tmp);
+    g_free(input_history_content);
+  }
+  g_free(input_history_path);
+}
+
+zathura_database_t* zathura_sqldatabase_new_from_plain(const char* sqlite_path, const char* plain_dir) {
+  g_return_val_if_fail(sqlite_path != NULL && strlen(sqlite_path) != 0, NULL);
+  g_return_val_if_fail(plain_dir != NULL && strlen(plain_dir) != 0, NULL);
+
+  girara_info("Opening plain database via sqlite backend.");
+  if (g_file_test(sqlite_path, G_FILE_TEST_EXISTS) == true) {
+    girara_warning("sqlite database already exists. Set your database backend to sqlite");
+    return zathura_sqldatabase_new(sqlite_path);
+  }
+
+  girara_debug("Migrating plain database.");
+
+  zathura_database_t* db          = g_object_new(ZATHURA_TYPE_SQLDATABASE, "path", sqlite_path, NULL);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(ZATHURA_SQLDATABASE(db));
+  if (priv->session == NULL) {
+    g_object_unref(G_OBJECT(db));
+    return NULL;
+  }
+
+  /* bookmarks */
+  girara_debug("Migrating bookmarks from plain database.");
+  import_bookmarks(db, plain_dir);
+
+  /* history */
+  girara_debug("Migrating file infrom from plain database.");
+  import_history(db, plain_dir);
+
+  /* input history */
+  girara_debug("Migrating input history from plain database.");
+  import_input_history(GIRARA_INPUT_HISTORY_IO(db), plain_dir);
+
+  girara_info("Database migration done. Set your database backend to sqlite.");
+  return db;
 }

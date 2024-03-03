@@ -153,38 +153,37 @@ test:ubuntu-jammy:
     - tags
 
 # Ubuntu 24.04 LTS (noble)
-build:ubuntu-noble:
-  tags:
-    - pwmt
-  stage: build
-  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:noble
-  script:
-    - meson subprojects update
-    - mkdir -p build && cd build
-    - meson --force-fallback-for=girara ..
-    - ninja
-  cache:
-    <<: *girara_cache
-  artifacts:
-    expire_in: 6 hours
-    paths:
-      - build
-  except:
-    - tags
+# build:ubuntu-noble:
+#   tags:
+#     - pwmt
+#   stage: build
+#   image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:noble
+#   script:
+#     - meson subprojects update
+#     - mkdir -p build && cd build
+#     - meson --force-fallback-for=girara ..
+#     - ninja
+#   cache:
+#     <<: *girara_cache
+#   artifacts:
+#     expire_in: 6 hours
+#     paths:
+#       - build
+#   except:
+#     - tags
 
-test:ubuntu-noble:
-  tags:
-    - pwmt
-  stage: test
-  image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:noble
-  script:
-    - cd build
-    - ninja test
-  cache:
-    <<: *girara_cache
-    policy: pull
-  dependencies:
-    - build:ubuntu-noble
-  except:
-    - tags
-
+# test:ubuntu-noble:
+#   tags:
+#     - pwmt
+#   stage: test
+#   image: registry.pwmt.org/pwmt/gitlab-runner-images/ubuntu:noble
+#   script:
+#     - cd build
+#     - ninja test
+#   cache:
+#     <<: *girara_cache
+#     policy: pull
+#   dependencies:
+#     - build:ubuntu-noble
+#   except:
+#     - tags

@@ -18,25 +18,18 @@
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
-#define GLOBAL_RC  "/etc/zathurarc"
+#define GLOBAL_RC "/etc/zathurarc"
 #define ZATHURA_RC "zathurarc"
 
-static void
-cb_jumplist_change(girara_session_t* session, const char* UNUSED(name),
-                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
-{
+static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
+                               const void* value, void* UNUSED(data)) {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  const int* ivalue = value;
-
-  if (*ivalue < 0) {
-    zathura->jumplist.max_size = 0;
-  } else {
-    zathura->jumplist.max_size = *ivalue;
-  }
+  const int* ivalue          = value;
+  zathura->jumplist.max_size = MAX(0, *ivalue);
 
   if (zathura->jumplist.list != NULL && zathura->jumplist.size != 0) {
     zathura_jumplist_trim(zathura);
@@ -243,6 +236,7 @@ void config_load_default(zathura_t* zathura) {
   /* Set default mode */
   girara_mode_set(gsession, zathura->modes.normal);
 
+  /* clang-format off */
   /* zathura settings */
   girara_setting_add(gsession, "database",              "plain",      STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
@@ -276,11 +270,11 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),            cb_color_change, NULL);
   girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),           cb_color_change, NULL);
   girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),             cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-color",        "#9FBC00");
+  girara_setting_set(gsession, "highlight-color",        "rgba(159,251,0,0.5)");
   girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),  cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-fg",           "#000000");
+  girara_setting_set(gsession, "highlight-fg",           "rgba(0,0,0,0.5)");
   girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"),    cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-active-color", "#00BC00");
+  girara_setting_set(gsession, "highlight-active-color", "rgba(0,188,0,0.5)");
   girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
@@ -322,12 +316,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "link-zoom",              &bool_value,  BOOLEAN, false, _("Let zoom be changed when following links"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "search-hadjust",         &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
-  float_value = 0.5;
-  girara_setting_add(gsession, "highlight-transparency", &float_value, FLOAT,   false, _("Transparency for highlighting"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "smooth-reload",          &bool_value,  BOOLEAN, false, _("Smooth over flicker when reloading file"), NULL, NULL);
   girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, _("Adjust to when opening file"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
@@ -373,8 +363,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  /* default to no sandbox when running in WSL */
-  const char* string_value = running_under_wsl() ? "none" : "normal";
+  /* default to no sandbox */
+  const char* string_value = "none";
   girara_setting_add(gsession, "sandbox",                string_value, STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,
@@ -670,6 +660,7 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "width",        ZATHURA_ADJUST_WIDTH);
   girara_argument_mapping_add(gsession, "rotate-cw",    ROTATE_CW);
   girara_argument_mapping_add(gsession, "rotate-ccw",   ROTATE_CCW);
+  /* clang-format on */
 }
 
 void

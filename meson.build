@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.5.4',
+  version: '0.5.5',
   meson_version: '>=0.61',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
@@ -35,21 +35,22 @@ plugindir = join_paths(get_option('libdir'), 'zathura')
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.4.1', fallback: ['girara', 'girara_dependency'])
-glib = dependency('glib-2.0', version: '>=2.50')
+girara = dependency('girara-gtk3', version: '>=0.4.3', fallback: ['girara', 'girara_dependency'])
+glib = dependency('glib-2.0', version: '>=2.74')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
-gthread = dependency('gthread-2.0', version: '>=2.50')
-gmodule = dependency('gmodule-no-export-2.0', version: '>=2.50')
-gtk3 = dependency('gtk+-3.0', version: '>=3.22')
+gthread = dependency('gthread-2.0', version: '>=2.74')
+gmodule = dependency('gmodule-no-export-2.0', version: '>=2.74')
+gtk3 = dependency('gtk+-3.0', version: '>=3.24')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = cc.find_library('magic', required: true)
+sqlite = dependency('sqlite3', version: '>=3.6.23', required: true)
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib, sqlite]
 
 if host_machine.system() == 'darwin'
-    gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
-    build_dependencies += gtk_mac_integration
+  gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
+  build_dependencies += gtk_mac_integration
 endif
 
 
@@ -69,21 +70,15 @@ endif
 flags = [
   '-Werror=implicit-function-declaration',
   '-Werror=vla',
-  '-fvisibility=hidden'
+  '-fvisibility=hidden',
+  '-Werror=int-conversion'
 ]
 flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
 additional_sources = []
-sqlite = dependency('sqlite3', version: '>=3.6.23', required: get_option('sqlite'))
 synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
-
-if sqlite.found()
-  build_dependencies += sqlite
-  defines += '-DWITH_SQLITE'
-  additional_sources += files('zathura/database-sqlite.c')
-endif
 
 if synctex.found()
   build_dependencies += synctex
@@ -124,7 +119,7 @@ sources = files(
   'zathura/config.c',
   'zathura/content-type.c',
   'zathura/database.c',
-  'zathura/database-plain.c',
+  'zathura/database-sqlite.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',
   'zathura/file-monitor.c',

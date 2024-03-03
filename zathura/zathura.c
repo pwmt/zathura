@@ -28,10 +28,7 @@
 #include "callbacks.h"
 #include "config.h"
 #include "commands.h"
-#ifdef WITH_SQLITE
 #include "database-sqlite.h"
-#endif
-#include "database-plain.h"
 #include "document.h"
 #include "shortcuts.h"
 #include "zathura.h"
@@ -370,9 +367,7 @@ init_css(zathura_t* zathura)
   return true;
 }
 
-static void
-init_database(zathura_t* zathura)
-{
+static void init_database(zathura_t* zathura) {
   char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
 
@@ -383,33 +378,27 @@ init_database(zathura_t* zathura)
 
   if (g_strcmp0(database, "plain") == 0) {
     girara_debug("Using plain database backend.");
-    zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
-#ifdef WITH_SQLITE
+    char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+    zathura->database = zathura_sqldatabase_new_from_plain(tmp, zathura->config.data_dir);
+    g_free(tmp);
   } else if (g_strcmp0(database, "sqlite") == 0) {
     girara_debug("Using sqlite database backend.");
-    char* tmp =
-      g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+    char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database = zathura_sqldatabase_new(tmp);
     g_free(tmp);
-#endif
   } else if (g_strcmp0(database, "null") != 0) {
     girara_error("Database backend '%s' is not supported.", database);
   }
 
   if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
-    girara_error(
-      "Unable to initialize database. Bookmarks won't be available.");
-  }
-  else {
-    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io",
-                 zathura->database, NULL);
+    girara_error("Unable to initialize database. Bookmarks won't be available.");
+  } else {
+    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
   }
   g_free(database);
 }
 
-static void
-init_jumplist(zathura_t* zathura)
-{
+static void init_jumplist(zathura_t* zathura) {
   int jumplist_size = 20;
   girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
 
@@ -1498,35 +1487,30 @@ save_fileinfo_to_db(zathura_t* zathura)
   g_free(file_info.first_page_column_list);
 }
 
-bool
-document_predecessor_free(zathura_t* zathura) {
-  if (zathura == NULL
-	  || (zathura->predecessor_document == NULL
-		  && zathura->predecessor_pages == NULL)) {
+bool document_predecessor_free(zathura_t* zathura) {
+  if (zathura == NULL || (zathura->predecessor_document == NULL && zathura->predecessor_pages == NULL)) {
     return false;
   }
 
   if (zathura->predecessor_pages != NULL) {
-	  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->predecessor_document); i++) {
-		g_object_unref(zathura->predecessor_pages[i]);
-	  }
-	  free(zathura->predecessor_pages);
-	  zathura->predecessor_pages = NULL;
-	  girara_debug("freed predecessor pages");
+    for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->predecessor_document); i++) {
+      g_object_unref(zathura->predecessor_pages[i]);
+    }
+    free(zathura->predecessor_pages);
+    zathura->predecessor_pages = NULL;
+    girara_debug("freed predecessor pages");
   }
   if (zathura->predecessor_document != NULL) {
-	  /* remove document */
-	  zathura_document_free(zathura->predecessor_document);
-	  zathura->predecessor_document = NULL;
-	  girara_debug("freed predecessor document");
+    /* remove document */
+    zathura_document_free(zathura->predecessor_document);
+    zathura->predecessor_document = NULL;
+    girara_debug("freed predecessor document");
   }
 
   return true;
 }
 
-bool
-document_close(zathura_t* zathura, bool keep_monitor)
-{
+bool document_close(zathura_t* zathura, bool keep_monitor) {
   if (zathura == NULL || zathura->document == NULL) {
     return false;
   }
@@ -1538,9 +1522,6 @@ document_close(zathura_t* zathura, bool keep_monitor)
     girara_setting_set(zathura->ui.session, "window-icon", window_icon);
     g_free(window_icon);
   }
-
-  bool smooth_reload = true;
-  girara_setting_get(zathura->ui.session, "smooth-reload", &smooth_reload);
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
@@ -1578,19 +1559,19 @@ document_close(zathura_t* zathura, bool keep_monitor)
   g_clear_object(&zathura->sync.render_thread);
 
   /* keep the current state to prevent flicker? */
-  bool override_predecessor = keep_monitor && smooth_reload;
+  bool override_predecessor = keep_monitor;
 
   if (override_predecessor) {
-	  /* do not override predecessor buffer with empty pages */
-	  unsigned int cur_page_num = zathura_document_get_current_page_number(zathura->document);
-	  ZathuraPage* cur_page = ZATHURA_PAGE(zathura->pages[cur_page_num]);
-	  if (!zathura_page_widget_have_surface(cur_page)) {
-		  override_predecessor = false;
-	  }
+    /* do not override predecessor buffer with empty pages */
+    unsigned int cur_page_num = zathura_document_get_current_page_number(zathura->document);
+    ZathuraPage* cur_page     = ZATHURA_PAGE(zathura->pages[cur_page_num]);
+    if (!zathura_page_widget_have_surface(cur_page)) {
+      override_predecessor = false;
+    }
   }
 
   /* free predecessor buffer if we want to overwrite it or if we destroy the document for good */
-  if (override_predecessor || !keep_monitor || !smooth_reload) {
+  if (override_predecessor || !keep_monitor) {
     document_predecessor_free(zathura);
   }
 
@@ -1598,21 +1579,21 @@ document_close(zathura_t* zathura, bool keep_monitor)
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
 
   if (!override_predecessor) {
-	  for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
-		g_object_unref(zathura->pages[i]);
-	  }
-	  free(zathura->pages);
-	  zathura->pages = NULL;
+    for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
+      g_object_unref(zathura->pages[i]);
+    }
+    free(zathura->pages);
+    zathura->pages = NULL;
 
-	  /* remove document */
-	  zathura_document_free(zathura->document);
-	  zathura->document = NULL;
+    /* remove document */
+    zathura_document_free(zathura->document);
+    zathura->document = NULL;
   } else {
-	  girara_debug("preserving pages and document as predecessor");
-	  zathura->predecessor_pages = zathura->pages;
-	  zathura->pages = NULL;
-	  zathura->predecessor_document = zathura->document;
-	  zathura->document = NULL;
+    girara_debug("preserving pages and document as predecessor");
+    zathura->predecessor_pages    = zathura->pages;
+    zathura->pages                = NULL;
+    zathura->predecessor_document = zathura->document;
+    zathura->document             = NULL;
   }
 
   /* remove index */

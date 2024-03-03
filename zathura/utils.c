@@ -60,7 +60,7 @@ file_valid_extension(zathura_t* zathura, const char* path)
   zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
   g_free(content_type);
 
-  return plugin == NULL;
+  return plugin != NULL;
 }
 
 static void
@@ -282,15 +282,13 @@ parse_color(GdkRGBA* color, const char* str)
   return true;
 }
 
-bool
-running_under_wsl(void)
-{
-  bool result = false;
+bool running_under_wsl(void) {
+  bool result   = false;
   char* content = girara_file_read("/proc/version");
   if (content != NULL && g_strstr_len(content, -1, "Microsoft")) {
     result = true;
   }
-  free(content);
+  g_free(content);
   return result;
 }
 

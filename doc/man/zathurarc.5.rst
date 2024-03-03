@@ -605,8 +605,13 @@ zathura
 
 *database*
   Defines the database backend to use for bookmarks and input history. Possible
-  values are "plain", "sqlite" (if built with sqlite support) and "null". If
-  "null" is used, bookmarks and input history will not be stored.
+  values are "plain", "sqlite" and "null". If "null" is used, bookmarks and
+  input history will not be stored.
+
+  Note that the "plain" backend is deprecated. If selected, the "sqlite" backend
+  will import old history from the "plain" database and operation will continue
+  with the "sqlite" backend. After the first import, the setting can safely be
+  changed to "sqlite". The default will change after a release of Debian trixie.
 
   * Value type: String
   * Default value: plain
@@ -659,27 +664,21 @@ zathura
   (e.g: current search result)
 
   * Value type: String
-  * Default value: #00BC00
+  * Default value: rgba(0,188,0,0.5)
 
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
   show search results)
 
   * Value type: String
-  * Default value: #9FBC00
+  * Default value: rgba(159,251,0,0.5)
 
 *highlight-fg*
   Defines the color that is used for text when highlighting parts of the
   document (e.g.: number for links).
 
   * Value type: String
-  * Default value: #9FBC00
-
-*highlight-transparency*
-  Defines the opacity of a highlighted element
-
-  * Value type: Float
-  * Default value: 0.5
+  * Default value: rgba(0,0,0,0.5)
 
 *highlighter-modifier*
   Defines the modifier that needs to be pressed together with the left mouse button
@@ -826,7 +825,7 @@ zathura
   is a read only sandbox that is intended for viewing documents only.
 
   * Value type: String
-  * Default value: normal
+  * Default value: none
 
   Some features are disabled when using strict sandbox mode:
 
@@ -943,13 +942,6 @@ zathura
 
   * value type: Boolean
   * Default value false
-
-*smooth-reload*
-  Defines if flickering will be removed when a file is reloaded on change. This
-  option might increase memory usage.
-
-  * Value type: Boolean
-  * Default value: true
 
 *statusbar-basename*
   Use basename of the file in the statusbar.
