@@ -363,8 +363,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  /* default to no sandbox when running in WSL */
-  const char* string_value = running_under_wsl() ? "none" : "normal";
+  /* default to no sandbox */
+  const char* string_value = "none";
   girara_setting_add(gsession, "sandbox",                string_value, STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,

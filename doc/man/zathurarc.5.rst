@@ -825,7 +825,7 @@ zathura
   is a read only sandbox that is intended for viewing documents only.
 
   * Value type: String
-  * Default value: normal
+  * Default value: none
 
   Some features are disabled when using strict sandbox mode:
 
