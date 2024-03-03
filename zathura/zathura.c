@@ -398,8 +398,7 @@ static void init_database(zathura_t* zathura) {
   g_free(database);
 }
 
-init_jumplist(zathura_t* zathura)
-{
+static void init_jumplist(zathura_t* zathura) {
   int jumplist_size = 20;
   girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
 
