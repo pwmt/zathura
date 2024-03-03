@@ -119,7 +119,6 @@ sources = files(
   'zathura/config.c',
   'zathura/content-type.c',
   'zathura/database.c',
-  'zathura/database-plain.c',
   'zathura/database-sqlite.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',

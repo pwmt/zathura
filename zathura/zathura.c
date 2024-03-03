@@ -29,7 +29,6 @@
 #include "config.h"
 #include "commands.h"
 #include "database-sqlite.h"
-#include "database-plain.h"
 #include "document.h"
 #include "shortcuts.h"
 #include "zathura.h"
@@ -379,7 +378,9 @@ static void init_database(zathura_t* zathura) {
 
   if (g_strcmp0(database, "plain") == 0) {
     girara_debug("Using plain database backend.");
-    zathura->database = zathura_plaindatabase_new(zathura->config.data_dir);
+    char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
+    zathura->database = zathura_sqldatabase_new_from_plain(tmp, zathura->config.data_dir);
+    g_free(tmp);
   } else if (g_strcmp0(database, "sqlite") == 0) {
     girara_debug("Using sqlite database backend.");
     char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);

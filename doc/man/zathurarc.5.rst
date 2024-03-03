@@ -605,8 +605,13 @@ zathura
 
 *database*
   Defines the database backend to use for bookmarks and input history. Possible
-  values are "plain", "sqlite" (if built with sqlite support) and "null". If
-  "null" is used, bookmarks and input history will not be stored.
+  values are "plain", "sqlite" and "null". If "null" is used, bookmarks and
+  input history will not be stored.
+
+  Note that the "plain" backend is deprecated. If selected, the "sqlite" backend
+  will import old history from the "plain" database and operation will continue
+  with the "sqlite" backend. After the first import, the setting can safely be
+  changed to "sqlite". The default will change after a release of Debian trixie.
 
   * Value type: String
   * Default value: plain
