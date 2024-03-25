@@ -19,6 +19,7 @@
 #include "print.h"
 #include "page-widget.h"
 #include "adjustment.h"
+#include "database.h"
 #include <math.h>
 
 /* Helper function for highlighting the links */
@@ -480,13 +481,16 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
     return false;
   }
 
+  /* Get file info (zoom, current page, etc.) */
+  zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
+
   /* close current document */
   document_close(zathura, true);
 
-  /* reopen document */
+  /* reopen document with old file info */
   document_open(
     zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor),
-    NULL, zathura->file_monitor.password, ZATHURA_PAGE_NUMBER_UNSPECIFIED);
+    NULL, zathura->file_monitor.password, file_info.current_page, &file_info );
 
   return false;
 }
