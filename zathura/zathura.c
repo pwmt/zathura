@@ -93,7 +93,7 @@ zathura_create(void)
   zathura->global.search_direction = FORWARD;
   zathura->global.synctex_edit_modmask = GDK_CONTROL_MASK;
   zathura->global.highlighter_modmask = GDK_SHIFT_MASK;
-  zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
+  zathura->global.sandbox = ZATHURA_SANDBOX_NONE;
   zathura->global.double_click_follow = true;
 
   /* plugins */
@@ -445,13 +445,6 @@ zathura_init(zathura_t* zathura)
   switch (zathura->global.sandbox) {
     case ZATHURA_SANDBOX_NONE:
       girara_debug("Sandbox deactivated.");
-      break;
-    case ZATHURA_SANDBOX_NORMAL:
-      girara_debug("Basic sandbox allowing normal operation.");
-      if (seccomp_enable_basic_filter() != 0) {
-        girara_error("Failed to initialize basic seccomp filter.");
-        goto error_free;
-      }
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");

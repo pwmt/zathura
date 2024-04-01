@@ -159,8 +159,6 @@ cb_sandbox_changed(girara_session_t* session, const char* name,
   const char* sandbox = value;
   if (g_strcmp0(sandbox, "none") == 0) {
     zathura->global.sandbox = ZATHURA_SANDBOX_NONE;
-  } else if (g_strcmp0(sandbox, "normal") == 0)  {
-    zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
   } else if (g_strcmp0(sandbox, "strict") == 0) {
     zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
   } else {
