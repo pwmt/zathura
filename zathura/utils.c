@@ -70,7 +70,9 @@ index_element_free(void* data, GObject* UNUSED(object))
   zathura_index_element_free(element);
 }
 
-void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree) {
+void document_index_build(girara_session_t* session, GtkTreeModel* model,
+                          GtkTreeIter* parent, girara_tree_node_t* tree)
+{
   girara_list_t* list = girara_node_get_children(tree);
 
   for (size_t idx = 0; idx != girara_list_size(list); ++idx) {
@@ -80,8 +82,20 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
     zathura_link_target_t target           = zathura_link_get_target(index_element->link);
 
     gchar* description = NULL;
+    gchar* description2 = NULL;
+
     if (type == ZATHURA_LINK_GOTO_DEST) {
-      description = g_strdup_printf("Page %d", target.page_number + 1);
+      zathura_t *zathura = session->global.data;
+      zathura_page_t *page = zathura_document_get_page(zathura->document, target.page_number);
+      char *label = zathura_page_get_label(page, NULL);
+
+      if (label != NULL) {
+        description = g_strdup_printf("Page %s", label);
+        description2 = g_strdup_printf("(%d)", target.page_number + 1);
+        g_free(label);
+      } else {
+        description = g_strdup_printf("Page %d", target.page_number + 1);
+      }
     } else {
       description = g_strdup(target.value);
     }
@@ -89,13 +103,15 @@ void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_
     GtkTreeIter tree_iter;
     gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
     gchar* markup = g_markup_escape_text(index_element->title, -1);
-    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, index_element, -1);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup,
+                       1, description, 2, description2, 3, index_element, -1);
     g_free(markup);
-    g_object_weak_ref(G_OBJECT(model), index_element_free, index_element);
     g_free(description);
+    g_free(description2);
+    g_object_weak_ref(G_OBJECT(model), index_element_free, index_element);
 
     if (girara_node_get_num_children(node) > 0) {
-      document_index_build(model, &tree_iter, node);
+      document_index_build(session, model, &tree_iter, node);
     }
   }
 }

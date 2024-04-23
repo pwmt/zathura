@@ -31,11 +31,12 @@ bool file_valid_extension(zathura_t* zathura, const char* path);
  * Generates the document index based upon the list retrieved from the document
  * object.
  *
+ * @param session The session
  * @param model The tree model
  * @param parent The tree iterator parent
  * @param tree The Tree iterator
  */
-void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
+void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
 /**
  * Rotate a rectangle by 0, 90, 180 or 270 degree
