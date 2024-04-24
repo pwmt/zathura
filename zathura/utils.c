@@ -244,6 +244,52 @@ get_selection(zathura_t* zathura)
   return selection;
 }
 
+char*
+write_first_page_column_list(unsigned int* first_page_columns, unsigned int size)
+{
+  if (first_page_columns == NULL)
+    return NULL;
+
+  char** tokens = g_malloc_n(size+1, sizeof(char*));
+  tokens[size] = NULL;
+
+  for (unsigned int i=0; i<size; i++) {
+    tokens[i] = g_strdup_printf("%d", first_page_columns[i]);
+  }
+
+  char* first_page_column_list = g_strjoinv(":", tokens);
+  g_strfreev(tokens);
+
+  return first_page_column_list;
+}
+
+unsigned int*
+parse_first_page_column_list(const char* first_page_column_list, unsigned int* size)
+{
+  if (first_page_column_list == NULL || size == NULL)
+    return NULL;
+
+  char** tokens = g_strsplit(first_page_column_list, ":", 0);
+  unsigned int length = g_strv_length(tokens);
+
+  unsigned int* settings = g_malloc_n(length, sizeof(unsigned int));
+
+  for (unsigned int i=0; i<length; i++) {
+    unsigned long column = 1;
+
+    if (g_ascii_string_to_unsigned(tokens[i], 10, 1, i+1, &column, NULL)) {
+      settings[i] = (unsigned int)column;
+    } else {
+      settings[i] = 1;
+    }
+  }
+
+  g_strfreev(tokens);
+
+  *size = length;
+  return settings;
+}
+
 unsigned int
 find_first_page_column(const char* first_page_column_list,
                        const unsigned int pages_per_row)
@@ -251,23 +297,18 @@ find_first_page_column(const char* first_page_column_list,
   /* sanity checks */
   unsigned int first_page_column = 1;
   g_return_val_if_fail(first_page_column_list != NULL,  first_page_column);
-  g_return_val_if_fail(*first_page_column_list != '\0', first_page_column);
   g_return_val_if_fail(pages_per_row > 0,               first_page_column);
 
-  /* split settings list */
-  char** settings = g_strsplit(first_page_column_list, ":", pages_per_row + 1);
-  const size_t settings_size = g_strv_length(settings);
+  unsigned int size = 0;
+  unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
 
-  /* read setting value corresponding to the specified pages per row */
-  unsigned int index = pages_per_row - 1;
-  if (index < settings_size && *settings[index] != '\0') {
-    first_page_column = atoi(settings[index]);
-  } else if (*settings[settings_size - 1] != '\0') {
-    first_page_column = atoi(settings[settings_size - 1]);
+  if (pages_per_row <= size) {
+    first_page_column = settings[pages_per_row - 1];
+  } else if (size > 0) {
+    first_page_column = settings[size - 1];
   }
 
-  /* free buffers */
-  g_strfreev(settings);
+  g_free(settings);
 
   return first_page_column;
 }
