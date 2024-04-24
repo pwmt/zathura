@@ -443,6 +443,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n, NULL, girara_sc_toggle_statusbar, (mode), 0, NULL);       \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_m, NULL, girara_sc_toggle_inputbar, (mode), 0, NULL);        \
   girara_shortcut_add(gsession, 0, GDK_KEY_d, NULL, sc_toggle_page_mode, (mode), 0, NULL);                             \
+  girara_shortcut_add(gsession, 0, GDK_KEY_D, NULL, sc_cycle_first_column, (mode), 0, NULL);                           \
                                                                                                                        \
   girara_shortcut_add(gsession, 0, GDK_KEY_q, NULL, sc_quit, (mode), 0, NULL);                                         \
                                                                                                                        \
@@ -596,6 +597,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "adjust_window",       sc_adjust_window);
   girara_shortcut_mapping_add(gsession, "bisect",              sc_bisect);
   girara_shortcut_mapping_add(gsession, "change_mode",         sc_change_mode);
+  girara_shortcut_mapping_add(gsession, "cycle_first_column",  sc_cycle_first_column);
   girara_shortcut_mapping_add(gsession, "display_link",        sc_display_link);
   girara_shortcut_mapping_add(gsession, "copy_link",           sc_copy_link);
   girara_shortcut_mapping_add(gsession, "copy_filepath",       sc_copy_filepath);

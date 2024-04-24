@@ -313,6 +313,54 @@ find_first_page_column(const char* first_page_column_list,
   return first_page_column;
 }
 
+char*
+increment_first_page_column(const char* first_page_column_list,
+                            const unsigned int pages_per_row, int incr)
+{
+  /* sanity checks */
+  if (first_page_column_list == NULL)
+    first_page_column_list = "";
+  /* This function is a no-op for 1 column layout */
+  if (pages_per_row <= 1)
+    return g_strdup(first_page_column_list);
+
+  unsigned int size = 0;
+  unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
+
+  /* Lookup current setting. Signed value to avoid negative overflow when modifying it later. */
+  int column = 1;
+  if (pages_per_row <= size) {
+    column = settings[pages_per_row - 1];
+  } else if (size > 0) {
+    column = settings[size - 1];
+  }
+
+  /* increment and normalise to [1,pages_per_row]. */
+  column += incr;
+  column %= pages_per_row;    /* range [-pages_per_row+1, pages_per_row-1] */
+  if (column <= 0)
+    column += pages_per_row;  /* range [1, pages_per_row] */
+
+  /* Write back, creating the new cell if necessary. */
+  if (pages_per_row <= size) {
+    settings[pages_per_row - 1] = column;
+  } else {
+    /* extend settings array */
+    settings = g_realloc_n(settings, pages_per_row, sizeof(*settings));
+    for (unsigned int i=size; i<pages_per_row-1; i++) {
+      /* The value of the last set cell is normally used for all largers pages_per_row,
+       * so duplicate it to the newly created cells. */
+      settings[i] = settings[size - 1];
+    }
+    settings[pages_per_row-1] = column;
+    size = pages_per_row;
+  }
+
+  char* new_column_list = write_first_page_column_list(settings, size);
+  g_free(settings);
+  return new_column_list;
+}
+
 bool
 parse_color(GdkRGBA* color, const char* str)
 {

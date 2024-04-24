@@ -151,6 +151,34 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument,
 }
 
 bool
+sc_cycle_first_column(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                      girara_event_t* UNUSED(event), unsigned int t)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
+
+  int pages_per_row = 1;
+  girara_setting_get(session, "pages-per-row", &pages_per_row);
+  char* first_page_column_list = NULL;
+  girara_setting_get(session, "first-page-column", &first_page_column_list);
+
+  if (t == 0) t = 1;
+  char* new_column_list = increment_first_page_column(first_page_column_list, pages_per_row, t);
+  g_free(first_page_column_list);
+
+  girara_setting_set(session, "first-page-column", new_column_list);
+  g_free(new_column_list);
+
+  return true;
+}
+
+bool
 sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argument),
                 girara_event_t* UNUSED(event), unsigned int UNUSED(t))
 {

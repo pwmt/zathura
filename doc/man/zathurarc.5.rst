@@ -225,6 +225,10 @@ They can also be combined with modifiers:
 
     Change current mode. Pass the desired mode as argument.
 
+  * ``cycle_first_page``
+
+    In multiple page layout, cycle the column in which the first page is displayed.
+
   * ``display_link``:
 
     Display link target.

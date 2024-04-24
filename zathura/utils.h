@@ -144,6 +144,18 @@ unsigned int find_first_page_column(const char* first_page_column_list,
                                     const unsigned int pages_per_row);
 
 /**
+ * Cycle the column the first page should be rendered in.
+ *
+ * @param[in] first_page_column_list The settings list
+ * @param[in] pages_per_row The current pages per row
+ * @param[in] incr The value added to the current first page column setting
+ *
+ * @return The new modified settings list
+ */
+char* increment_first_page_column(const char* first_page_column_list,
+                                  const unsigned int pages_per_row, int incr);
+
+/**
  * Parse color string and print warning if color cannot be parsed.
  *
  * @param[out] color The color

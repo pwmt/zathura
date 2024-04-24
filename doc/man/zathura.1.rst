@@ -127,6 +127,8 @@ General
     Show index and switch to **Index mode**
   d
     Toggle dual page view
+  D
+    Cycle opening column in dual page view
   F5
     Switch to presentation mode
   F11
