@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include <girara/log.h>
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/datastructures.h>
@@ -1063,9 +1064,19 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
   GtkTreePath *path;
+  GtkTreePath *start_path;
+  GtkTreePath *end_path;
 
   gtk_tree_view_get_cursor(tree_view, &path, NULL);
   if (path == NULL) {
+    return false;
+  }
+
+  if (gtk_tree_view_get_visible_range(tree_view, &start_path, &end_path) != TRUE)
+  {
+    girara_error("Cannot get visible range for index");
+    gtk_tree_path_free(start_path);
+    gtk_tree_path_free(end_path);
     return false;
   }
 
@@ -1074,6 +1085,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   GtkTreeIter   child_iter;
 
   gboolean is_valid_path = TRUE;
+  gboolean need_to_scroll = FALSE;
 
   switch(argument->n) {
     case TOP:
@@ -1129,6 +1141,18 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
                 && gtk_tree_path_up(path));
       }
       break;
+    case HALF_UP:
+      gtk_tree_path_free(path);
+      gtk_tree_path_free(end_path);
+      path = start_path;
+      need_to_scroll = TRUE;
+      break;
+    case HALF_DOWN:
+      gtk_tree_path_free(path);
+      gtk_tree_path_free(start_path);
+      path = end_path;
+      need_to_scroll = TRUE;
+      break;
     case EXPAND:
       if (gtk_tree_view_expand_row(tree_view, path, FALSE)) {
         gtk_tree_path_down(path);
@@ -1161,6 +1185,9 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   if (is_valid_path == TRUE) {
     gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+    if (need_to_scroll == TRUE) {
+      gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
+    }
   }
 
   gtk_tree_path_free(path);
