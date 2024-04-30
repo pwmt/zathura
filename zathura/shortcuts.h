@@ -39,6 +39,17 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, gi
 bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Cycle the column the first page is displayed in
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Display a link
  *
  * @param session The used girara session

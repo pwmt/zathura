@@ -244,6 +244,52 @@ get_selection(zathura_t* zathura)
   return selection;
 }
 
+char*
+write_first_page_column_list(unsigned int* first_page_columns, unsigned int size)
+{
+  if (first_page_columns == NULL)
+    return NULL;
+
+  char** tokens = g_malloc_n(size+1, sizeof(char*));
+  tokens[size] = NULL;
+
+  for (unsigned int i=0; i<size; i++) {
+    tokens[i] = g_strdup_printf("%d", first_page_columns[i]);
+  }
+
+  char* first_page_column_list = g_strjoinv(":", tokens);
+  g_strfreev(tokens);
+
+  return first_page_column_list;
+}
+
+unsigned int*
+parse_first_page_column_list(const char* first_page_column_list, unsigned int* size)
+{
+  if (first_page_column_list == NULL || size == NULL)
+    return NULL;
+
+  char** tokens = g_strsplit(first_page_column_list, ":", 0);
+  unsigned int length = g_strv_length(tokens);
+
+  unsigned int* settings = g_malloc_n(length, sizeof(unsigned int));
+
+  for (unsigned int i=0; i<length; i++) {
+    unsigned long column = 1;
+
+    if (g_ascii_string_to_unsigned(tokens[i], 10, 1, i+1, &column, NULL)) {
+      settings[i] = (unsigned int)column;
+    } else {
+      settings[i] = 1;
+    }
+  }
+
+  g_strfreev(tokens);
+
+  *size = length;
+  return settings;
+}
+
 unsigned int
 find_first_page_column(const char* first_page_column_list,
                        const unsigned int pages_per_row)
@@ -251,25 +297,68 @@ find_first_page_column(const char* first_page_column_list,
   /* sanity checks */
   unsigned int first_page_column = 1;
   g_return_val_if_fail(first_page_column_list != NULL,  first_page_column);
-  g_return_val_if_fail(*first_page_column_list != '\0', first_page_column);
   g_return_val_if_fail(pages_per_row > 0,               first_page_column);
 
-  /* split settings list */
-  char** settings = g_strsplit(first_page_column_list, ":", pages_per_row + 1);
-  const size_t settings_size = g_strv_length(settings);
+  unsigned int size = 0;
+  unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
 
-  /* read setting value corresponding to the specified pages per row */
-  unsigned int index = pages_per_row - 1;
-  if (index < settings_size && *settings[index] != '\0') {
-    first_page_column = atoi(settings[index]);
-  } else if (*settings[settings_size - 1] != '\0') {
-    first_page_column = atoi(settings[settings_size - 1]);
+  if (pages_per_row <= size) {
+    first_page_column = settings[pages_per_row - 1];
+  } else if (size > 0) {
+    first_page_column = settings[size - 1];
   }
 
-  /* free buffers */
-  g_strfreev(settings);
+  g_free(settings);
 
   return first_page_column;
+}
+
+char*
+increment_first_page_column(const char* first_page_column_list,
+                            const unsigned int pages_per_row, int incr)
+{
+  /* sanity checks */
+  if (first_page_column_list == NULL)
+    first_page_column_list = "";
+  /* This function is a no-op for 1 column layout */
+  if (pages_per_row <= 1)
+    return g_strdup(first_page_column_list);
+
+  unsigned int size = 0;
+  unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
+
+  /* Lookup current setting. Signed value to avoid negative overflow when modifying it later. */
+  int column = 1;
+  if (pages_per_row <= size) {
+    column = settings[pages_per_row - 1];
+  } else if (size > 0) {
+    column = settings[size - 1];
+  }
+
+  /* increment and normalise to [1,pages_per_row]. */
+  column += incr;
+  column %= pages_per_row;    /* range [-pages_per_row+1, pages_per_row-1] */
+  if (column <= 0)
+    column += pages_per_row;  /* range [1, pages_per_row] */
+
+  /* Write back, creating the new cell if necessary. */
+  if (pages_per_row <= size) {
+    settings[pages_per_row - 1] = column;
+  } else {
+    /* extend settings array */
+    settings = g_realloc_n(settings, pages_per_row, sizeof(*settings));
+    for (unsigned int i=size; i<pages_per_row-1; i++) {
+      /* The value of the last set cell is normally used for all largers pages_per_row,
+       * so duplicate it to the newly created cells. */
+      settings[i] = settings[size - 1];
+    }
+    settings[pages_per_row-1] = column;
+    size = pages_per_row;
+  }
+
+  char* new_column_list = write_first_page_column_list(settings, size);
+  g_free(settings);
+  return new_column_list;
 }
 
 bool
