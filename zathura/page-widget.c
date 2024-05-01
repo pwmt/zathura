@@ -613,7 +613,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
           /* draw text */
           const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
-          cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color.alpha);
+          cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color_fg.alpha);
           cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
           char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
           cairo_show_text(cairo, link_number);
@@ -674,7 +674,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
         /* draw text */
         const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
-        cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color.alpha);
+        cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color_fg.alpha);
         cairo_text_extents_t extents;
         cairo_text_extents(cairo, text, &extents);
 

@@ -200,7 +200,7 @@ link_remote(zathura_t* zathura, const char* file)
 
   const char* path = zathura_document_get_path(zathura->document);
   char* dir        = g_path_get_dirname(path);
-  char* uri        = g_build_filename(dir, file, NULL);
+  char* uri        = g_build_filename(file, NULL);
 
   char* argv[] = {
     *(zathura->global.arguments),
@@ -209,7 +209,7 @@ link_remote(zathura_t* zathura, const char* file)
   };
 
   GError* error = NULL;
-  if (g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
+  if (g_spawn_async(dir, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
     girara_error("Failed to execute command: %s", error->message);
     g_error_free(error);
   }

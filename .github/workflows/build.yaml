@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  VERBOSE: 1
+
+jobs:
+  build-test-debian-trixie:
+    name: Test on Debian trixie
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pwmt/github-actions-debian:trixie
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          mkdir build
+          cd build
+          meson ..
+          ninja --verbose
+          ninja test --verbose
+
+  build-test-debian-bookworm:
+    name: Test on Debian bookworm
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pwmt/github-actions-debian:bookworm
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          mkdir build
+          cd build
+          meson ..
+          ninja --verbose
+          ninja test --verbose
+
+  build-test-ubuntu-noble:
+    name: Test on Ubuntu noble
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pwmt/github-actions-ubuntu:noble
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          mkdir build
+          cd build
+          meson ..
+          ninja --verbose
+          ninja test --verbose
+
+  build-test-ubuntu-jammy:
+    name: Test on Ubuntu jammy
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pwmt/github-actions-ubuntu:jammy
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          mkdir build
+          cd build
+          meson ..
+          ninja --verbose
+          ninja test --verbose
+
+  build-test-archlinux:
+    name: Test on Archlinux
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pwmt/github-actions-archlinux:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          mkdir build
+          cd build
+          meson ..
+          ninja --verbose
+          ninja test --verbose

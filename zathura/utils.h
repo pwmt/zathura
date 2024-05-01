@@ -31,11 +31,12 @@ bool file_valid_extension(zathura_t* zathura, const char* path);
  * Generates the document index based upon the list retrieved from the document
  * object.
  *
+ * @param session The session
  * @param model The tree model
  * @param parent The tree iterator parent
  * @param tree The Tree iterator
  */
-void document_index_build(GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
+void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
 /**
  * Rotate a rectangle by 0, 90, 180 or 270 degree
@@ -108,6 +109,30 @@ double zathura_correct_zoom_value(girara_session_t* session, const double
     zoom);
 
 /**
+ * Write a list of 'pages per row to first column' values as a colon separated string.
+ *
+ * For valid settings list, this is the inverse of parse_first_page_column_list.
+ *
+ * @param[in] first_page_columns The settings vector
+ * @param[in] size The size of the settings vector
+ *
+ * @return The new settings string
+ */
+char* write_first_page_column(unsigned int* first_page_columns, unsigned int size);
+
+/**
+ * Parse a 'pages per row to first column' settings list.
+ *
+ * For valid settings list, this is the inverse of write_first_page_column_list.
+ *
+ * @param[in] first_page_column_list The settings list
+ * @param[in] size A cell to return the size of the result, mandatory
+ *
+ * @return The values from the settings list as a new vector
+ */
+unsigned int* parse_first_page_column(const char* first_page_column_list, unsigned int* size);
+
+/**
  * Extracts the column the first page should be rendered in from the specified
  * list of settings corresponding to the specified pages per row
  *
@@ -118,6 +143,18 @@ double zathura_correct_zoom_value(girara_session_t* session, const double
  */
 unsigned int find_first_page_column(const char* first_page_column_list,
                                     const unsigned int pages_per_row);
+
+/**
+ * Cycle the column the first page should be rendered in.
+ *
+ * @param[in] first_page_column_list The settings list
+ * @param[in] pages_per_row The current pages per row
+ * @param[in] incr The value added to the current first page column setting
+ *
+ * @return The new modified settings list
+ */
+char* increment_first_page_column(const char* first_page_column_list,
+                                  const unsigned int pages_per_row, int incr);
 
 /**
  * Parse color string and print warning if color cannot be parsed.

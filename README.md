@@ -10,7 +10,7 @@ Requirements
 The following dependencies are required:
 
 * `gtk3` (>= 3.24)
-* `glib` (>= 2.74)
+* `glib` (>= 2.72)
 * `girara` (>= 0.4.3)
 * `libmagic` from file(1): for mime-type detection
 * `json-glib`
@@ -62,4 +62,4 @@ refer to the meson documentation for platform specific dependencies.
 Bugs
 ----
 
-Please report bugs at http://git.pwmt.org/pwmt/zathura.
+Please report bugs at https://github.com/pwmt/zathura.

@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include <girara/log.h>
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/datastructures.h>
@@ -19,6 +20,7 @@
 #include "print.h"
 #include "page-widget.h"
 #include "adjustment.h"
+#include "database.h"
 #include <math.h>
 
 /* Helper function for highlighting the links */
@@ -147,6 +149,34 @@ sc_change_mode(girara_session_t* session, girara_argument_t* argument,
   girara_mode_set(session, argument->n);
 
   return false;
+}
+
+bool
+sc_cycle_first_column(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                      girara_event_t* UNUSED(event), unsigned int t)
+{
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
+
+  int pages_per_row = 1;
+  girara_setting_get(session, "pages-per-row", &pages_per_row);
+  char* first_page_column_list = NULL;
+  girara_setting_get(session, "first-page-column", &first_page_column_list);
+
+  if (t == 0) t = 1;
+  char* new_column_list = increment_first_page_column(first_page_column_list, pages_per_row, t);
+  g_free(first_page_column_list);
+
+  girara_setting_set(session, "first-page-column", new_column_list);
+  g_free(new_column_list);
+
+  return true;
 }
 
 bool
@@ -480,13 +510,16 @@ sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument),
     return false;
   }
 
+  /* Get file info (zoom, current page, etc.) */
+  zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
+
   /* close current document */
   document_close(zathura, true);
 
-  /* reopen document */
+  /* reopen document with old file info */
   document_open(
     zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor),
-    NULL, zathura->file_monitor.password, ZATHURA_PAGE_NUMBER_UNSPECIFIED);
+    NULL, zathura->file_monitor.password, file_info.current_page, &file_info );
 
   return false;
 }
@@ -1031,9 +1064,19 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
   GtkTreePath *path;
+  GtkTreePath *start_path;
+  GtkTreePath *end_path;
 
   gtk_tree_view_get_cursor(tree_view, &path, NULL);
   if (path == NULL) {
+    return false;
+  }
+
+  if (gtk_tree_view_get_visible_range(tree_view, &start_path, &end_path) != TRUE)
+  {
+    girara_error("Cannot get visible range for index");
+    gtk_tree_path_free(start_path);
+    gtk_tree_path_free(end_path);
     return false;
   }
 
@@ -1042,6 +1085,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   GtkTreeIter   child_iter;
 
   gboolean is_valid_path = TRUE;
+  gboolean need_to_scroll = FALSE;
 
   switch(argument->n) {
     case TOP:
@@ -1097,6 +1141,18 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
                 && gtk_tree_path_up(path));
       }
       break;
+    case HALF_UP:
+      gtk_tree_path_free(path);
+      gtk_tree_path_free(end_path);
+      path = start_path;
+      need_to_scroll = TRUE;
+      break;
+    case HALF_DOWN:
+      gtk_tree_path_free(path);
+      gtk_tree_path_free(start_path);
+      path = end_path;
+      need_to_scroll = TRUE;
+      break;
     case EXPAND:
       if (gtk_tree_view_expand_row(tree_view, path, FALSE)) {
         gtk_tree_path_down(path);
@@ -1129,6 +1185,9 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
 
   if (is_valid_path == TRUE) {
     gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+    if (need_to_scroll == TRUE) {
+      gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
+    }
   }
 
   gtk_tree_path_free(path);
@@ -1171,7 +1230,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
       goto error_free;
     }
 
-    model = GTK_TREE_MODEL(gtk_tree_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER));
+    model = GTK_TREE_MODEL(gtk_tree_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER));
     if (model == NULL) {
       goto error_free;
     }
@@ -1196,12 +1255,13 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
       goto error_free;
     }
 
-    document_index_build(model, NULL, document_index);
+    document_index_build(session, model, NULL, document_index);
     girara_node_free(document_index);
 
     /* setup widget */
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 0, "Title", renderer, "markup", 0, NULL);
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 1, "Target", renderer2, "text", 1, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW (treeview), 2, "(alt)", renderer2, "text", 2, NULL);
 
     gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
     g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);

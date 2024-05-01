@@ -93,7 +93,7 @@ zathura_create(void)
   zathura->global.search_direction = FORWARD;
   zathura->global.synctex_edit_modmask = GDK_CONTROL_MASK;
   zathura->global.highlighter_modmask = GDK_SHIFT_MASK;
-  zathura->global.sandbox = ZATHURA_SANDBOX_NORMAL;
+  zathura->global.sandbox = ZATHURA_SANDBOX_NONE;
   zathura->global.double_click_follow = true;
 
   /* plugins */
@@ -445,13 +445,6 @@ zathura_init(zathura_t* zathura)
   switch (zathura->global.sandbox) {
     case ZATHURA_SANDBOX_NONE:
       girara_debug("Sandbox deactivated.");
-      break;
-    case ZATHURA_SANDBOX_NORMAL:
-      girara_debug("Basic sandbox allowing normal operation.");
-      if (seccomp_enable_basic_filter() != 0) {
-        girara_error("Failed to initialize basic seccomp filter.");
-        goto error_free;
-      }
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");
@@ -870,7 +863,7 @@ document_info_open(gpointer data)
                               document_info->password, document_info->synctex);
       } else {
         document_open(document_info->zathura, file, uri, document_info->password,
-                      document_info->page_number);
+                      document_info->page_number, NULL);
       }
       g_free(file);
       g_free(uri);
@@ -1015,7 +1008,7 @@ static void document_open_page_most_frequent_size(zathura_document_t* document, 
 
 bool
 document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
-              int page_number)
+              int page_number, zathura_fileinfo_t* file_info_p)
 {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
     goto error_out;
@@ -1075,8 +1068,13 @@ document_open(zathura_t* zathura, const char* path, const char* uri, const char*
     .position_x = 0,
     .position_y = 0
   };
+
   bool known_file = false;
-  if (zathura->database != NULL) {
+  if( file_info_p ) {
+    file_info =  *file_info_p;
+    known_file = true;
+  }
+  else if (zathura->database != NULL) {
     const uint8_t* file_hash = zathura_document_get_hash(document);
     known_file = zathura_db_get_fileinfo(zathura->database, file_path, file_hash, &file_info);
   }
@@ -1358,7 +1356,7 @@ document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
                       const char* password, const char* synctex)
 {
   bool ret = document_open(zathura, path, password, uri,
-                           ZATHURA_PAGE_NUMBER_UNSPECIFIED);
+                           ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL);
   if (ret == false) {
     return false;
   }
@@ -1454,11 +1452,10 @@ remove_page_from_table(GtkWidget* page, gpointer UNUSED(permanent))
   gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(page)), page);
 }
 
-static void
-save_fileinfo_to_db(zathura_t* zathura)
+zathura_fileinfo_t
+zathura_get_fileinfo(zathura_t* zathura)
 {
-  const char* path = zathura_document_get_path(zathura->document);
-  const uint8_t* file_hash = zathura_document_get_hash(zathura->document);
+  /* Caller needs to g_free(file_info.first_page_column_list) */
 
   zathura_fileinfo_t file_info = {
     .current_page = zathura_document_get_current_page_number(zathura->document),
@@ -1478,6 +1475,17 @@ save_fileinfo_to_db(zathura_t* zathura)
                      &(file_info.first_page_column_list));
   girara_setting_get(zathura->ui.session, "page-right-to-left",
                      &(file_info.page_right_to_left));
+
+  return file_info;
+}
+
+static void
+save_fileinfo_to_db(zathura_t* zathura)
+{
+  const char* path = zathura_document_get_path(zathura->document);
+  const uint8_t* file_hash = zathura_document_get_hash(zathura->document);
+
+  zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
 
   /* save file info */
   zathura_db_set_fileinfo(zathura->database, path, file_hash, &file_info);

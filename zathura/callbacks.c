@@ -363,7 +363,7 @@ cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
 
   if(gtk_tree_model_get_iter(model, &iter, path)) {
     zathura_index_element_t* index_element;
-    gtk_tree_model_get(model, &iter, 2, &index_element, -1);
+    gtk_tree_model_get(model, &iter, 3, &index_element, -1);
 
     if (index_element == NULL) {
       return;
@@ -539,7 +539,7 @@ cb_password_dialog(GtkEntry* entry, void* data)
 
   /* try to open document again */
   if (document_open(dialog->zathura, dialog->path, dialog->uri, input,
-                    ZATHURA_PAGE_NUMBER_UNSPECIFIED) == false) {
+                    ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL) == false) {
     gdk_threads_add_idle(password_dialog, dialog);
   } else {
     g_free(dialog->path);

@@ -84,12 +84,12 @@ enum {
 
 typedef enum {
   ZATHURA_SANDBOX_NONE,
-  ZATHURA_SANDBOX_NORMAL,
   ZATHURA_SANDBOX_STRICT
 } zathura_sandbox_t;
 
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
+typedef struct zathura_fileinfo_s zathura_fileinfo_t;
 /* forward declaration for types from content-type.h */
 typedef struct zathura_content_type_context_s zathura_content_type_context_t;
 
@@ -328,11 +328,12 @@ void zathura_update_view_ppi(zathura_t* zathura);
  * @param path The path to the file
  * @param password The password of the file
  * @param page_number Open given page number
+ * @param file_info Open given page number
  *
  * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
-                   int page_number);
+                   int page_number, zathura_fileinfo_t* file_info);
 
 /**
  * Opens a file
@@ -372,6 +373,15 @@ void document_open_idle(zathura_t* zathura, const char* path,
  * @return If no error occurred true, otherwise false, is returned.
  */
 bool document_save(zathura_t* zathura, const char* path, bool overwrite);
+
+/**
+ * Get fileinfo (zoom, current page, etc).
+ *
+ * @param zathura The zathura session
+ *
+ * @return file_info (caller needs to g_free(file_info.first_page_column_list))
+ */
+zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura);
 
 /**
  * Frees the "predecessor" buffers used for smooth-reload
