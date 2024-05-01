@@ -8,7 +8,6 @@ zathura/commands.c
 zathura/completion.c
 zathura/config.c
 zathura/content-type.c
-zathura/database-plain.c
 zathura/database-sqlite.c
 zathura/database.c
 zathura/dbus-interface.c
