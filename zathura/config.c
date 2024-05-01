@@ -386,7 +386,9 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0, GDK_KEY_f, NULL, sc_follow, (mode), 0, NULL);                                       \
                                                                                                                        \
   girara_shortcut_add(gsession, 0, 0, "gg", sc_goto, (mode), TOP, NULL);                                               \
+  girara_shortcut_add(gsession, 0, GDK_KEY_Home, NULL, sc_goto, (mode), TOP, NULL);                                    \
   girara_shortcut_add(gsession, 0, 0, "G", sc_goto, (mode), BOTTOM, NULL);                                             \
+  girara_shortcut_add(gsession, 0, GDK_KEY_End, NULL, sc_goto, (mode), BOTTOM, NULL);                                  \
                                                                                                                        \
   girara_shortcut_add(gsession, 0, GDK_KEY_m, NULL, sc_mark_add, (mode), 0, NULL);                                     \
   girara_shortcut_add(gsession, 0, GDK_KEY_apostrophe, NULL, sc_mark_evaluate, (mode), 0, NULL);                       \
