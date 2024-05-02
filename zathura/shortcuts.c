@@ -571,10 +571,14 @@ sc_scroll(girara_session_t* session, girara_argument_t* argument,
 
   /* if TOP or BOTTOM, go there and we are done */
   if (argument->n == TOP) {
+    zathura_jumplist_add(zathura);
     position_set(zathura, -1, 0);
+    zathura_jumplist_add(zathura);
     return false;
   } else if (argument->n == BOTTOM) {
+    zathura_jumplist_add(zathura);
     position_set(zathura, -1, 1.0);
+    zathura_jumplist_add(zathura);
     return false;
   }
 
