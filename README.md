@@ -39,12 +39,11 @@ Note that `Sphinx` is needed to build the manpages. If it is not installed, the
 man pages won't be built. For building the HTML documentation, `doxygen`,
 `breathe` and `sphinx_rtd_theme` are needed in addition to `Sphinx`.
 
-The use of `libseccomp` to create a sandboxed environment is optional and can
-be disabled by configure the build system with `-Dseccomp=disabled`. The
-sandbox will by default be set to "normal" mode, which should not interfere
-with the normal operation of zathura. For strict sandbox mode set `sandbox
-strict` in zathurarc. Strict sandbox mode will reduce the available
-functionality of zathura and provide a read only document viewer.
+The use of `libseccomp` to create a sandboxed environment is optional and can be
+disabled by configure the build system with `-Dseccomp=disabled`. The sandbox
+will by default be disabled if even support during build was enabled. For strict
+sandbox mode set `sandbox strict` in zathurarc. Strict sandbox mode will reduce
+the available functionality of zathura and provide a read only document viewer.
 
 Installation
 ------------
