@@ -38,6 +38,7 @@ bool file_valid_extension(zathura_t* zathura, const char* path);
  */
 void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
 
+void index_scroll_to_current_page(girara_session_t* session);
 /**
  * Rotate a rectangle by 0, 90, 180 or 270 degree
  *

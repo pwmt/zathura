@@ -1094,7 +1094,7 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       path = gtk_tree_path_new_first();
       break;
     case BOTTOM:
-      /* go to the last visiible node */
+      /* go to the last visible node */
       gtk_tree_path_free(path);
       path = gtk_tree_path_new_from_indices(gtk_tree_model_iter_n_children(model, NULL) - 1, -1);
       gtk_tree_model_get_iter(model, &iter, path);
@@ -1294,6 +1294,7 @@ sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argument),
     }
 
     girara_set_view(session, zathura->ui.index);
+    index_scroll_to_current_page(session);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.index);
   }
