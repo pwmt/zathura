@@ -116,6 +116,36 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model,
   }
 }
 
+gboolean _for_each_func(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter *iter, gpointer data)
+{
+  zathura_t *zathura = (zathura_t* )data;
+  zathura_index_element_t* index_element;
+  gtk_tree_model_get(model, iter, 3, &index_element, -1);
+  zathura_link_target_t target  = zathura_link_get_target(index_element->link);
+  unsigned int current_page_nb = zathura_document_get_current_page_number(zathura->document);
+  if (current_page_nb < target.page_number)
+  {
+    GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+    if (gtk_tree_path_prev(path) != FALSE)
+    {
+      gtk_tree_view_expand_to_path(tree_view, path);
+      gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+      gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
+    }
+
+    return TRUE;
+  }
+  return FALSE;
+}
+
+void index_scroll_to_current_page(girara_session_t* session)
+{
+  zathura_t *zathura = session->global.data;
+  GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+  gtk_tree_model_foreach(model, _for_each_func, (gpointer)zathura);
+}
+
 zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width) {
   zathura_rectangle_t tmp;
   switch (degree) {
