@@ -1164,12 +1164,13 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       break;
     case EXPAND_ALL:
       gtk_tree_view_expand_all(tree_view);
+      need_to_scroll = TRUE;
       break;
     case COLLAPSE_ALL:
       gtk_tree_view_collapse_all(tree_view);
-      gtk_tree_path_free(path);
-      path = gtk_tree_path_new_first();
-      gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+      while (gtk_tree_path_get_depth(path) > 1) {
+        gtk_tree_path_up(path);
+      }
       break;
     case TOGGLE:
       gtk_tree_model_get_iter(model, &iter, path);
