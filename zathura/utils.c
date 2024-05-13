@@ -237,7 +237,11 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup) {
     }
   }
 
+#if GLIB_CHECK_VERSION(2, 76, 0)
+  return g_string_free_and_steal(string);
+#else
   return g_string_free(string, FALSE);
+#endif
 }
 
 GdkAtom* get_selection(zathura_t* zathura) {
@@ -277,15 +281,20 @@ char* write_first_page_column_list(unsigned int* first_page_columns, unsigned in
     return NULL;
   }
 
-  char** tokens = g_malloc0_n(size + 1, sizeof(char*));
+  GString* buffer = g_string_new(NULL);
   for (unsigned int i = 0; i < size; i++) {
-    tokens[i] = g_strdup_printf("%d", first_page_columns[i]);
+    if (i != 0) {
+      g_string_append_printf(buffer, ":%u", first_page_columns[i]);
+    } else {
+      g_string_append_printf(buffer, "%u", first_page_columns[i]);
+    }
   }
 
-  char* first_page_column_list = g_strjoinv(":", tokens);
-  g_strfreev(tokens);
-
-  return first_page_column_list;
+#if GLIB_CHECK_VERSION(2, 76, 0)
+  return g_string_free_and_steal(buffer);
+#else
+  return g_string_free(buffer, FALSE);
+#endif
 }
 
 unsigned int* parse_first_page_column_list(const char* first_page_column_list, unsigned int* size) {
