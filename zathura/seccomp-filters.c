@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <girara/utils.h>
 #include <linux/sched.h> /* for clone filter */
+#include <unistd.h> /* for fstat */
 
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
@@ -74,7 +75,9 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(fadvise64); */
   ALLOW_RULE(fallocate);
   ALLOW_RULE(fcntl);  /* TODO: build detailed filter */
+#ifdef __NR_fstat
   ALLOW_RULE(fstat); /* used by older libc, stat (below), lstat(below), fstatat, newfstatat(below) */
+#endif
   ALLOW_RULE(fstatfs); /* statfs (below) */
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
