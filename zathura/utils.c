@@ -20,9 +20,7 @@
 #include "plugin.h"
 #include "content-type.h"
 
-double
-zathura_correct_zoom_value(girara_session_t* session, const double zoom)
-{
+double zathura_correct_zoom_value(girara_session_t* session, const double zoom) {
   if (session == NULL) {
     return zoom;
   }
@@ -45,9 +43,7 @@ zathura_correct_zoom_value(girara_session_t* session, const double zoom)
   }
 }
 
-bool
-file_valid_extension(zathura_t* zathura, const char* path)
-{
+bool file_valid_extension(zathura_t* zathura, const char* path) {
   if (zathura == NULL || path == NULL || zathura->plugins.manager == NULL) {
     return false;
   }
@@ -63,16 +59,13 @@ file_valid_extension(zathura_t* zathura, const char* path)
   return plugin != NULL;
 }
 
-static void
-index_element_free(void* data, GObject* UNUSED(object))
-{
+static void index_element_free(void* data, GObject* UNUSED(object)) {
   zathura_index_element_t* element = data;
   zathura_index_element_free(element);
 }
 
-void document_index_build(girara_session_t* session, GtkTreeModel* model,
-                          GtkTreeIter* parent, girara_tree_node_t* tree)
-{
+void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent,
+                          girara_tree_node_t* tree) {
   girara_list_t* list = girara_node_get_children(tree);
 
   for (size_t idx = 0; idx != girara_list_size(list); ++idx) {
@@ -81,16 +74,16 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model,
     zathura_link_type_t type               = zathura_link_get_type(index_element->link);
     zathura_link_target_t target           = zathura_link_get_target(index_element->link);
 
-    gchar* description = NULL;
+    gchar* description  = NULL;
     gchar* description2 = NULL;
 
     if (type == ZATHURA_LINK_GOTO_DEST) {
-      zathura_t *zathura = session->global.data;
-      zathura_page_t *page = zathura_document_get_page(zathura->document, target.page_number);
-      char *label = zathura_page_get_label(page, NULL);
+      zathura_t* zathura   = session->global.data;
+      zathura_page_t* page = zathura_document_get_page(zathura->document, target.page_number);
+      char* label          = zathura_page_get_label(page, NULL);
 
       if (label != NULL) {
-        description = g_strdup_printf("Page %s", label);
+        description  = g_strdup_printf("Page %s", label);
         description2 = g_strdup_printf("(%d)", target.page_number + 1);
         g_free(label);
       } else {
@@ -103,8 +96,8 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model,
     GtkTreeIter tree_iter;
     gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
     gchar* markup = g_markup_escape_text(index_element->title, -1);
-    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup,
-                       1, description, 2, description2, 3, index_element, -1);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, description2, 3, index_element,
+                       -1);
     g_free(markup);
     g_free(description);
     g_free(description2);
@@ -116,18 +109,15 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model,
   }
 }
 
-gboolean _for_each_func(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter *iter, gpointer data)
-{
-  zathura_t *zathura = (zathura_t* )data;
+gboolean _for_each_func(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, gpointer data) {
+  zathura_t* zathura = (zathura_t*)data;
   zathura_index_element_t* index_element;
   gtk_tree_model_get(model, iter, 3, &index_element, -1);
-  zathura_link_target_t target  = zathura_link_get_target(index_element->link);
+  zathura_link_target_t target = zathura_link_get_target(index_element->link);
   unsigned int current_page_nb = zathura_document_get_current_page_number(zathura->document);
-  if (current_page_nb < target.page_number)
-  {
-    GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-    if (gtk_tree_path_prev(path) != FALSE)
-    {
+  if (current_page_nb < target.page_number) {
+    GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+    if (gtk_tree_path_prev(path) != FALSE) {
       gtk_tree_view_expand_to_path(tree_view, path);
       gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
       gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
@@ -138,11 +128,10 @@ gboolean _for_each_func(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter *ite
   return FALSE;
 }
 
-void index_scroll_to_current_page(girara_session_t* session)
-{
-  zathura_t *zathura = session->global.data;
-  GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-  GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+void index_scroll_to_current_page(girara_session_t* session) {
+  zathura_t* zathura     = session->global.data;
+  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  GtkTreeModel* model    = gtk_tree_view_get_model(tree_view);
   gtk_tree_model_foreach(model, _for_each_func, (gpointer)zathura);
 }
 
@@ -174,9 +163,7 @@ zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int
   return tmp;
 }
 
-zathura_rectangle_t
-recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
-{
+zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle) {
   if (page == NULL) {
     goto error_ret;
   }
@@ -190,7 +177,8 @@ recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle)
   double page_width  = zathura_page_get_width(page);
   double scale       = zathura_document_get_scale(document);
 
-  zathura_rectangle_t tmp = rotate_rectangle(rectangle, zathura_document_get_rotation(document), page_height, page_width);
+  zathura_rectangle_t tmp =
+      rotate_rectangle(rectangle, zathura_document_get_rotation(document), page_height, page_width);
   tmp.x1 *= scale;
   tmp.x2 *= scale;
   tmp.y1 *= scale;
@@ -202,9 +190,7 @@ error_ret:
   return rectangle;
 }
 
-GtkWidget*
-zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
-{
+GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page) {
   if (zathura == NULL || page == NULL || zathura->pages == NULL) {
     return NULL;
   }
@@ -214,9 +200,7 @@ zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page)
   return zathura->pages[page_number];
 }
 
-void
-document_draw_search_results(zathura_t* zathura, bool value)
-{
+void document_draw_search_results(zathura_t* zathura, bool value) {
   if (zathura == NULL || zathura->document == NULL || zathura->pages == NULL) {
     return;
   }
@@ -256,9 +240,7 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup) {
   return g_string_free(string, FALSE);
 }
 
-GdkAtom*
-get_selection(zathura_t* zathura)
-{
+GdkAtom* get_selection(zathura_t* zathura) {
   g_return_val_if_fail(zathura != NULL, NULL);
 
   char* value = NULL;
@@ -290,16 +272,13 @@ get_selection(zathura_t* zathura)
   return selection;
 }
 
-char*
-write_first_page_column_list(unsigned int* first_page_columns, unsigned int size)
-{
-  if (first_page_columns == NULL)
+char* write_first_page_column_list(unsigned int* first_page_columns, unsigned int size) {
+  if (first_page_columns == NULL) {
     return NULL;
+  }
 
-  char** tokens = g_malloc_n(size+1, sizeof(char*));
-  tokens[size] = NULL;
-
-  for (unsigned int i=0; i<size; i++) {
+  char** tokens = g_malloc0_n(size + 1, sizeof(char*));
+  for (unsigned int i = 0; i < size; i++) {
     tokens[i] = g_strdup_printf("%d", first_page_columns[i]);
   }
 
@@ -309,21 +288,19 @@ write_first_page_column_list(unsigned int* first_page_columns, unsigned int size
   return first_page_column_list;
 }
 
-unsigned int*
-parse_first_page_column_list(const char* first_page_column_list, unsigned int* size)
-{
-  if (first_page_column_list == NULL || size == NULL)
+unsigned int* parse_first_page_column_list(const char* first_page_column_list, unsigned int* size) {
+  if (first_page_column_list == NULL || size == NULL) {
     return NULL;
+  }
 
-  char** tokens = g_strsplit(first_page_column_list, ":", 0);
+  char** tokens       = g_strsplit(first_page_column_list, ":", 0);
   unsigned int length = g_strv_length(tokens);
 
   unsigned int* settings = g_malloc_n(length, sizeof(unsigned int));
-
-  for (unsigned int i=0; i<length; i++) {
+  for (unsigned int i = 0; i < length; i++) {
     guint64 column = 1;
 
-    if (g_ascii_string_to_unsigned(tokens[i], 10, 1, i+1, &column, NULL)) {
+    if (g_ascii_string_to_unsigned(tokens[i], 10, 1, i + 1, &column, NULL) == TRUE && column <= UINT_MAX) {
       settings[i] = (unsigned int)column;
     } else {
       settings[i] = 1;
@@ -336,16 +313,13 @@ parse_first_page_column_list(const char* first_page_column_list, unsigned int* s
   return settings;
 }
 
-unsigned int
-find_first_page_column(const char* first_page_column_list,
-                       const unsigned int pages_per_row)
-{
+unsigned int find_first_page_column(const char* first_page_column_list, const unsigned int pages_per_row) {
   /* sanity checks */
   unsigned int first_page_column = 1;
-  g_return_val_if_fail(first_page_column_list != NULL,  first_page_column);
-  g_return_val_if_fail(pages_per_row > 0,               first_page_column);
+  g_return_val_if_fail(first_page_column_list != NULL, first_page_column);
+  g_return_val_if_fail(pages_per_row > 0, first_page_column);
 
-  unsigned int size = 0;
+  unsigned int size      = 0;
   unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
 
   if (pages_per_row <= size) {
@@ -359,10 +333,7 @@ find_first_page_column(const char* first_page_column_list,
   return first_page_column;
 }
 
-char*
-increment_first_page_column(const char* first_page_column_list,
-                            const unsigned int pages_per_row, int incr)
-{
+char* increment_first_page_column(const char* first_page_column_list, const unsigned int pages_per_row, int incr) {
   /* sanity checks */
   if (first_page_column_list == NULL)
     first_page_column_list = "";
@@ -370,7 +341,7 @@ increment_first_page_column(const char* first_page_column_list,
   if (pages_per_row <= 1)
     return g_strdup(first_page_column_list);
 
-  unsigned int size = 0;
+  unsigned int size      = 0;
   unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
 
   /* Lookup current setting. Signed value to avoid negative overflow when modifying it later. */
@@ -383,9 +354,9 @@ increment_first_page_column(const char* first_page_column_list,
 
   /* increment and normalise to [1,pages_per_row]. */
   column += incr;
-  column %= pages_per_row;    /* range [-pages_per_row+1, pages_per_row-1] */
+  column %= pages_per_row; /* range [-pages_per_row+1, pages_per_row-1] */
   if (column <= 0)
-    column += pages_per_row;  /* range [1, pages_per_row] */
+    column += pages_per_row; /* range [1, pages_per_row] */
 
   /* Write back, creating the new cell if necessary. */
   if (pages_per_row <= size) {
@@ -393,13 +364,13 @@ increment_first_page_column(const char* first_page_column_list,
   } else {
     /* extend settings array */
     settings = g_realloc_n(settings, pages_per_row, sizeof(*settings));
-    for (unsigned int i=size; i<pages_per_row-1; i++) {
+    for (unsigned int i = size; i < pages_per_row - 1; i++) {
       /* The value of the last set cell is normally used for all largers pages_per_row,
        * so duplicate it to the newly created cells. */
       settings[i] = settings[size - 1];
     }
-    settings[pages_per_row-1] = column;
-    size = pages_per_row;
+    settings[pages_per_row - 1] = column;
+    size                        = pages_per_row;
   }
 
   char* new_column_list = write_first_page_column_list(settings, size);
@@ -407,9 +378,7 @@ increment_first_page_column(const char* first_page_column_list,
   return new_column_list;
 }
 
-bool
-parse_color(GdkRGBA* color, const char* str)
-{
+bool parse_color(GdkRGBA* color, const char* str) {
   if (gdk_rgba_parse(color, str) == FALSE) {
     girara_warning("Failed to parse color string '%s'.", str);
     return false;
