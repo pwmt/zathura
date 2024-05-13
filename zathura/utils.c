@@ -321,7 +321,7 @@ parse_first_page_column_list(const char* first_page_column_list, unsigned int* s
   unsigned int* settings = g_malloc_n(length, sizeof(unsigned int));
 
   for (unsigned int i=0; i<length; i++) {
-    unsigned long column = 1;
+    guint64 column = 1;
 
     if (g_ascii_string_to_unsigned(tokens[i], 10, 1, i+1, &column, NULL)) {
       settings[i] = (unsigned int)column;
