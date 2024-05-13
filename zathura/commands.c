@@ -215,9 +215,11 @@ cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list))
   return false;
 }
 
-bool
-cmd_help(girara_session_t* UNUSED(session), girara_list_t* UNUSED(argument_list))
-{
+bool cmd_help(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  g_return_val_if_fail(session != NULL, false);
+  girara_notify(session, GIRARA_INFO,
+                _("Please check the man pages zathura(1) and zathurarc(5) for more information."));
+
   return true;
 }
 
