@@ -91,6 +91,34 @@ bool cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list
   return true;
 }
 
+bool cmd_bookmark_list(girara_session_t* session, girara_list_t* argument_list) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  GString* string = g_string_new(NULL);
+  for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
+    zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
+    g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
+  }
+
+  if (strlen(string->str) > 0) {
+    g_string_erase(string, strlen(string->str) - 1, 1);
+    girara_notify(session, GIRARA_INFO, "%s", string->str);
+  } else {
+    girara_notify(session, GIRARA_INFO, _("No bookmarks available."));
+  }
+
+  g_string_free(string, TRUE);
+  return false;
+
+  return true;
+}
+
 bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -102,20 +130,7 @@ bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list) 
 
   const unsigned int argc = girara_list_size(argument_list);
   if (argc != 1) {
-    GString* string = g_string_new(NULL);
-    for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
-      zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
-      g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
-    }
-
-    if (strlen(string->str) > 0) {
-      g_string_erase(string, strlen(string->str) - 1, 1);
-      girara_notify(session, GIRARA_INFO, "%s", string->str);
-    } else {
-      girara_notify(session, GIRARA_INFO, _("No bookmarks available."));
-    }
-
-    g_string_free(string, TRUE);
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
     return false;
   }
 

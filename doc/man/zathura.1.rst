@@ -225,7 +225,10 @@ bdelete
   Delete a bookmark.
 
 blist
-  List bookmarks. Adding a bookmark name opens it.
+  List bookmarks.
+
+bjump
+  Jump to given bookmark.
 
 close
   Close document

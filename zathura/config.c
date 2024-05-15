@@ -572,7 +572,8 @@ void config_load_default(zathura_t* zathura) {
   /* define default inputbar commands */
   girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
   girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
-  girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_open,   cc_bookmarks, _("List all bookmarks"));
+  girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_list,   NULL,         _("List all bookmarks"));
+  girara_inputbar_command_add(gsession, "bjump",      NULL,   cmd_bookmark_open,   cc_bookmarks, _("Jump to bookmark"));
   girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,           NULL,         _("Close current file"));
   girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,            NULL,         _("Show file information"));
   girara_inputbar_command_add(gsession, "exec",       NULL,   cmd_exec,            NULL,         _("Execute a command"));
