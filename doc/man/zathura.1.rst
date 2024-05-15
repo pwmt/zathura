@@ -219,13 +219,13 @@ Commands
 ---------
 
 bmark
-  Save a bookmark
+  Save a bookmark.
 
 bdelete
-  Delete a bookmark
+  Delete a bookmark.
 
 blist
-  List bookmarks
+  List bookmarks. Adding a bookmark name opens it.
 
 close
   Close document
@@ -233,25 +233,25 @@ close
 exec
   Execute an external command. ``$FILE`` expands to the current document path,
   ``$PAGE`` to the current page number, and ``$DBUS`` to the bus name of the
-  D-Bus interface
+  D-Bus interface.
 
 info
-  Show document information
+  Show document information.
 
 open
-  Open a document
+  Open a document.
 
 offset
-  Set page offset
+  Set page offset.
 
 print
-  Print document
+  Print document.
 
 write(!)
-  Save document (and force overwriting)
+  Save document (and force overwriting).
 
 export
-  Export attachments
+  Export attachments.
 
 dump
   Write values, descriptions, etc. of all current settings to a file.
