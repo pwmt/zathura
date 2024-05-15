@@ -91,7 +91,7 @@ bool cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list
   return true;
 }
 
-bool cmd_bookmark_list(girara_session_t* session, girara_list_t* argument_list) {
+bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(argument_list)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
