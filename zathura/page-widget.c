@@ -688,13 +688,12 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
     /* draw search results */
     if (priv->search.list != NULL && priv->search.draw == true) {
-      int idx = 0;
-      for (size_t inner_idx = 0; inner_idx != girara_list_size(priv->search.list); ++inner_idx) {
-        zathura_rectangle_t* rect     = girara_list_nth(priv->search.list, inner_idx);
+      for (size_t idx = 0; idx != girara_list_size(priv->search.list); ++idx) {
+        zathura_rectangle_t* rect     = girara_list_nth(priv->search.list, idx);
         zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
 
         /* draw position */
-        if (idx == priv->search.current) {
+        if ((int)idx == priv->search.current) {
           const GdkRGBA color = zathura->ui.colors.highlight_color_active;
           cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
         } else {
@@ -704,17 +703,17 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1, (rectangle.x2 - rectangle.x1),
                         (rectangle.y2 - rectangle.y1));
         cairo_fill(cairo);
-        ++idx;
       }
     }
     if (priv->selection.list != NULL && priv->selection.draw == true) {
       const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
       cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
-      GIRARA_LIST_FOREACH_BODY(
-          priv->selection.list, zathura_rectangle_t*, rect,
-          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
-          cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
-          cairo_fill(cairo););
+      for (size_t idx = 0; idx != girara_list_size(priv->selection.list); ++idx) {
+        zathura_rectangle_t* rect     = girara_list_nth(priv->selection.list, idx);
+        zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+        cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
+        cairo_fill(cairo);
+      }
     }
     if (priv->highlighter.bounds.x1 != -1 && priv->highlighter.bounds.y1 != -1 && priv->highlighter.draw == true) {
       const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
@@ -726,15 +725,16 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
   } else {
     girara_debug("rendering loading screen, flicker might be happening");
 
-    /* set background color */
+    GdkRGBA color_fg, color_bg;
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
-      GdkRGBA color;
-      zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color, NULL);
-      cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
+      zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color_bg, &color_fg);
     } else {
-      const GdkRGBA color = priv->zathura->ui.colors.render_loading_bg;
-      cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
+      color_fg = priv->zathura->ui.colors.render_loading_fg;
+      color_bg = priv->zathura->ui.colors.render_loading_bg;
     }
+
+    /* set background color and draw */
+    cairo_set_source_rgba(cairo, color_bg.red, color_bg.green, color_bg.blue, color_bg.alpha);
     cairo_rectangle(cairo, 0, 0, page_width, page_height);
     cairo_fill(cairo);
 
@@ -743,14 +743,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
     /* write text */
     if (render_loading == true) {
-      if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
-        GdkRGBA color;
-        zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, NULL, &color);
-        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
-      } else {
-        const GdkRGBA color = priv->zathura->ui.colors.render_loading_fg;
-        cairo_set_source_rgb(cairo, color.red, color.green, color.blue);
-      }
+      cairo_set_source_rgb(cairo, color_fg.red, color_fg.green, color_fg.blue);
 
       const char* text = _("Loading...");
       cairo_select_font_face(cairo, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
