@@ -2,6 +2,8 @@
 
 #include <math.h>
 #include <string.h>
+#include <stdatomic.h>
+
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
@@ -15,24 +17,12 @@
 
 /* private data for ZathuraRenderer */
 typedef struct private_s {
-  GThreadPool* pool;            /**< Pool of threads */
-  GMutex mutex;                 /**< Render lock */
-  volatile bool about_to_close; /**< Render thread is to be freed */
+  GThreadPool* pool;       /**< Pool of threads */
+  girara_list_t* requests; /**< Render requests */
+  GMutex mutex;            /**< Render lock */
 
   /**
-   * recolor information
-   */
-  struct {
-    bool enabled;
-    bool hue;
-    bool reverse_video;
-
-    GdkRGBA light;
-    GdkRGBA dark;
-  } recolor;
-
-  /*
-   * page cache
+   * Page cache
    */
   struct {
     int* cache;
@@ -40,8 +30,18 @@ typedef struct private_s {
     size_t num_cached_pages;
   } page_cache;
 
-  /* render requests */
-  girara_list_t* requests;
+  /**
+   * Recolor information
+   */
+  struct {
+    GdkRGBA light;
+    GdkRGBA dark;
+    bool enabled;
+    bool hue;
+    bool reverse_video;
+  } recolor;
+
+  atomic_bool about_to_close; /**< Render thread is to be freed */
 } ZathuraRendererPrivate;
 
 /* private data for ZathuraRenderRequest */
@@ -74,7 +74,7 @@ static bool page_cache_is_full(ZathuraRenderer* renderer, bool* result);
 /* job descritption for render thread */
 typedef struct render_job_s {
   ZathuraRenderRequest* request;
-  volatile bool aborted;
+  atomic_bool aborted;
 } render_job_t;
 
 /* init, new and free for ZathuraRenderer */
