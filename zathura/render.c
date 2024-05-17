@@ -452,6 +452,17 @@ static gboolean emit_completed_signal(void* data) {
   return FALSE;
 }
 
+static bool pixel_inside_rectangles(girara_list_t* rectangles, unsigned int x, unsigned int y) {
+  for (size_t idx = 0; idx != girara_list_size(rectangles); ++idx) {
+    zathura_rectangle_t* rect_it = girara_list_nth(rectangles, idx);
+    if (rect_it->x1 <= x && rect_it->x2 >= x && rect_it->y1 <= y && rect_it->y2 >= y) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 /* Returns the maximum possible saturation for given h and l.
    Assumes that l is in the interval l1, l2 and corrects the value to
    force u=0 on l1 and l2 */
@@ -567,14 +578,7 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
     for (unsigned int x = 0; x < page_width; x++, data += 4) {
       /* Check if the pixel belongs to an image when in reverse video mode*/
       if (priv->recolor.reverse_video == true && found_images == true) {
-        bool inside_image = false;
-        for (size_t idx = 0; idx != girara_list_size(rectangles); ++idx) {
-          zathura_rectangle_t* rect_it = girara_list_nth(rectangles, idx);
-          if (rect_it->x1 <= x && rect_it->x2 >= x && rect_it->y1 <= y && rect_it->y2 >= y) {
-            inside_image = true;
-            break;
-          }
-        }
+        const bool inside_image = pixel_inside_rectangles(rectangles, x, y);
         /* If it's inside and image don't recolor */
         if (inside_image == true) {
           /* It is not guaranteed that the pixel is already opaque. */
