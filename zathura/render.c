@@ -491,30 +491,11 @@ static double colorumax(const double h[3], double l, double l1, double l2) {
   return fmin(u, v);
 }
 
-static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_width,
-                    unsigned int page_height, cairo_surface_t* surface) {
-  /* uses a representation of a rgb color as follows:
-     - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
-     - a hue vector, which indicates a radian direction from the grey axis,
-       inside the equal lightness plane.
-     - a saturation scalar between 0,1. It is 0 when grey, 1 when the color is
-       in the boundary of the rgb cube.
-  */
+/* RGB weights for computing lightness. Must sum to one */
+static const double weights[] = {0.30, 0.59, 0.11};
 
-  /* TODO: split handling of image handling off
-   * Ideally we would create a mask surface for the location of the images and
-   * we would blit the recolored and unmodified surfaces together to get the
-   * same effect.
-   */
-
-  cairo_surface_flush(surface);
-
-  const int rowstride  = cairo_image_surface_get_stride(surface);
-  unsigned char* image = cairo_image_surface_get_data(surface);
-
-  /* RGB weights for computing lightness. Must sum to one */
-  static const double weights[] = {0.30, 0.59, 0.11};
-
+static void recolor_slow(ZathuraRendererPrivate* priv, unsigned int page_width, unsigned int page_height,
+                         cairo_surface_t* surface, girara_list_t* rectangles, bool found_images) {
   const GdkRGBA rgb1 = priv->recolor.dark;
   const GdkRGBA rgb2 = priv->recolor.light;
 
@@ -537,40 +518,8 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
       rgb2.blue * rgb2.alpha - l2,
   };
 
-  /* Decide if we can use the older, faster formulas */
-  const bool fast_formula =
-      (!priv->recolor.hue || (fabs(rgb1.red - rgb1.blue) < DBL_EPSILON && fabs(rgb1.red - rgb1.green) < DBL_EPSILON &&
-                              fabs(rgb2.red - rgb2.blue) < DBL_EPSILON && fabs(rgb2.red - rgb2.green) < DBL_EPSILON)) &&
-      (rgb1.alpha >= 1. - DBL_EPSILON && rgb2.alpha >= 1. - DBL_EPSILON);
-
-  girara_list_t* images     = NULL;
-  girara_list_t* rectangles = NULL;
-  bool found_images         = false;
-
-  /* If in reverse video mode retrieve images */
-  if (priv->recolor.reverse_video == true) {
-    images       = zathura_page_images_get(page, NULL);
-    found_images = (images != NULL);
-
-    rectangles = girara_list_new();
-    if (rectangles == NULL) {
-      found_images = false;
-      girara_warning("Failed to retrieve images.");
-    }
-
-    if (found_images == true) {
-      /* Get images bounding boxes */
-      for (size_t idx = 0; idx != girara_list_size(images); ++idx) {
-        zathura_image_t* image_it = girara_list_nth(images, idx);
-        zathura_rectangle_t* rect = g_try_malloc(sizeof(zathura_rectangle_t));
-        if (rect == NULL) {
-          break;
-        }
-        *rect = recalc_rectangle(page, image_it->position);
-        girara_list_append(rectangles, rect);
-      }
-    }
-  }
+  const int rowstride  = cairo_image_surface_get_stride(surface);
+  unsigned char* image = cairo_image_surface_get_data(surface);
 
   for (unsigned int y = 0; y < page_height; y++) {
     unsigned char* data = image + y * rowstride;
@@ -609,44 +558,162 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
 
         const double su = s * colorumax(h, l, l1, l2);
 
-        if (fast_formula) {
-          data[3] = 255;
-          data[2] = (unsigned char)round(255. * (l + su * h[0]));
-          data[1] = (unsigned char)round(255. * (l + su * h[1]));
-          data[0] = (unsigned char)round(255. * (l + su * h[2]));
-        } else {
-          /* Mix lightcolor, darkcolor and the original color, according to the
-           * minimal and maximal channel of the original color */
-          const double tr1 = (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2]));
-          const double tr2 = fmin(fmin(rgb[0], rgb[1]), rgb[2]);
-          data[3]          = (unsigned char)round(255. * (1. - tr1 * negalph1 - tr2 * negalph2));
-          data[2]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[0] + tr2 * h2[0] + (l + su * h[0]))));
-          data[1]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[1] + tr2 * h2[1] + (l + su * h[1]))));
-          data[0]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[2] + tr2 * h2[2] + (l + su * h[2]))));
-        }
+        /* Mix lightcolor, darkcolor and the original color, according to the
+         * minimal and maximal channel of the original color */
+        const double tr1 = (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2]));
+        const double tr2 = fmin(fmin(rgb[0], rgb[1]), rgb[2]);
+        data[3]          = (unsigned char)round(255. * (1. - tr1 * negalph1 - tr2 * negalph2));
+        data[2]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[0] + tr2 * h2[0] + (l + su * h[0]))));
+        data[1]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[1] + tr2 * h2[1] + (l + su * h[1]))));
+        data[0]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[2] + tr2 * h2[2] + (l + su * h[2]))));
       } else {
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
-        if (fast_formula) {
-          data[3] = 255;
-          data[2] = (unsigned char)round(255. * (l * rgb_diff[0] + rgb1.red));
-          data[1] = (unsigned char)round(255. * (l * rgb_diff[1] + rgb1.green));
-          data[0] = (unsigned char)round(255. * (l * rgb_diff[2] + rgb1.blue));
-        } else {
-          const double f1 = 1. - (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2])) * negalph1;
-          const double f2 = fmin(fmin(rgb[0], rgb[1]), rgb[2]) * negalph2;
-          data[3]         = (unsigned char)round(255. * (f1 - f2));
-          data[2]         = (unsigned char)round(255. * (l * rgb_diff[0] - f2 * rgb2.red + f1 * rgb1.red));
-          data[1]         = (unsigned char)round(255. * (l * rgb_diff[1] - f2 * rgb2.green + f1 * rgb1.green));
-          data[0]         = (unsigned char)round(255. * (l * rgb_diff[2] - f2 * rgb2.blue + f1 * rgb1.blue));
-        }
+
+        const double f1 = 1. - (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2])) * negalph1;
+        const double f2 = fmin(fmin(rgb[0], rgb[1]), rgb[2]) * negalph2;
+        data[3]         = (unsigned char)round(255. * (f1 - f2));
+        data[2]         = (unsigned char)round(255. * (l * rgb_diff[0] - f2 * rgb2.red + f1 * rgb1.red));
+        data[1]         = (unsigned char)round(255. * (l * rgb_diff[1] - f2 * rgb2.green + f1 * rgb1.green));
+        data[0]         = (unsigned char)round(255. * (l * rgb_diff[2] - f2 * rgb2.blue + f1 * rgb1.blue));
       }
     }
   }
+}
 
-  if (images != NULL) {
-    girara_list_free(images);
+static void recolor_fast(ZathuraRendererPrivate* priv, unsigned int page_width, unsigned int page_height,
+                         cairo_surface_t* surface, girara_list_t* rectangles, bool found_images) {
+  const GdkRGBA rgb1 = priv->recolor.dark;
+  const GdkRGBA rgb2 = priv->recolor.light;
+
+  const double l1 = weights[0] * rgb1.red + weights[1] * rgb1.green + weights[2] * rgb1.blue;
+  const double l2 = weights[0] * rgb2.red + weights[1] * rgb2.green + weights[2] * rgb2.blue;
+
+  const double rgb_diff[] = {rgb2.red - rgb1.red, rgb2.green - rgb1.green, rgb2.blue - rgb1.blue};
+
+  const int rowstride  = cairo_image_surface_get_stride(surface);
+  unsigned char* image = cairo_image_surface_get_data(surface);
+
+  for (unsigned int y = 0; y < page_height; y++) {
+    unsigned char* data = image + y * rowstride;
+
+    for (unsigned int x = 0; x < page_width; x++, data += 4) {
+      /* Check if the pixel belongs to an image when in reverse video mode*/
+      if (priv->recolor.reverse_video == true && found_images == true) {
+        const bool inside_image = pixel_inside_rectangles(rectangles, x, y);
+        /* If it's inside and image don't recolor */
+        if (inside_image == true) {
+          /* It is not guaranteed that the pixel is already opaque. */
+          data[3] = 255;
+          continue;
+        }
+      }
+
+      /* Careful. data color components blue, green, red. */
+      const double rgb[3] = {data[2] / 255., data[1] / 255., data[0] / 255.};
+
+      /* compute h, s, l data   */
+      double l = weights[0] * rgb[0] + weights[1] * rgb[1] + weights[2] * rgb[2];
+
+      if (priv->recolor.hue == true) {
+        /* adjusting lightness keeping hue of current color. white and black
+         * go to grays of same ligtness as light and dark colors. */
+        const double h[3] = {rgb[0] - l, rgb[1] - l, rgb[2] - l};
+
+        /* u is the maximum possible saturation for given h and l. s is a
+         * rescaled saturation between 0 and 1 */
+        const double u = colorumax(h, l, 0, 1);
+        const double s = fabs(u) > DBL_EPSILON ? 1.0 / u : 0.0;
+
+        /* Interpolates lightness between light and dark colors. white goes to
+         * light, and black goes to dark. */
+        l = l * (l2 - l1) + l1;
+
+        const double su = s * colorumax(h, l, l1, l2);
+
+        /* Mix lightcolor, darkcolor and the original color, according to the
+         * minimal and maximal channel of the original color */
+        data[3] = 255;
+        data[2] = (unsigned char)round(255. * (l + su * h[0]));
+        data[1] = (unsigned char)round(255. * (l + su * h[1]));
+        data[0] = (unsigned char)round(255. * (l + su * h[2]));
+      } else {
+        /* linear interpolation between dark and light with color ligtness as
+         * a parameter */
+        data[3] = 255;
+        data[2] = (unsigned char)round(255. * (l * rgb_diff[0] + rgb1.red));
+        data[1] = (unsigned char)round(255. * (l * rgb_diff[1] + rgb1.green));
+        data[0] = (unsigned char)round(255. * (l * rgb_diff[2] + rgb1.blue));
+      }
+    }
   }
+}
+
+static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_width,
+                    unsigned int page_height, cairo_surface_t* surface) {
+  /* uses a representation of a rgb color as follows:
+     - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
+     - a hue vector, which indicates a radian direction from the grey axis,
+       inside the equal lightness plane.
+     - a saturation scalar between 0,1. It is 0 when grey, 1 when the color is
+       in the boundary of the rgb cube.
+  */
+
+  /* TODO: split handling of image handling off
+   * Ideally we would create a mask surface for the location of the images and
+   * we would blit the recolored and unmodified surfaces together to get the
+   * same effect.
+   */
+
+  cairo_surface_flush(surface);
+
+  const GdkRGBA rgb1 = priv->recolor.dark;
+  const GdkRGBA rgb2 = priv->recolor.light;
+
+  /* Decide if we can use the older, faster formulas */
+  const bool fast_formula =
+      (!priv->recolor.hue || (fabs(rgb1.red - rgb1.blue) < DBL_EPSILON && fabs(rgb1.red - rgb1.green) < DBL_EPSILON &&
+                              fabs(rgb2.red - rgb2.blue) < DBL_EPSILON && fabs(rgb2.red - rgb2.green) < DBL_EPSILON)) &&
+      (rgb1.alpha >= 1. - DBL_EPSILON && rgb2.alpha >= 1. - DBL_EPSILON);
+
+  girara_list_t* rectangles = NULL;
+  bool found_images         = false;
+
+  /* If in reverse video mode retrieve images */
+  if (priv->recolor.reverse_video == true) {
+    girara_list_t* images = zathura_page_images_get(page, NULL);
+    found_images          = (images != NULL);
+
+    rectangles = girara_list_new();
+    if (rectangles == NULL) {
+      found_images = false;
+      girara_warning("Failed to retrieve images.");
+    }
+
+    if (found_images == true) {
+      /* Get images bounding boxes */
+      for (size_t idx = 0; idx != girara_list_size(images); ++idx) {
+        zathura_image_t* image_it = girara_list_nth(images, idx);
+        zathura_rectangle_t* rect = g_try_malloc(sizeof(zathura_rectangle_t));
+        if (rect == NULL) {
+          break;
+        }
+        *rect = recalc_rectangle(page, image_it->position);
+        girara_list_append(rectangles, rect);
+      }
+    }
+
+    if (images != NULL) {
+      girara_list_free(images);
+    }
+  }
+
+  if (fast_formula == true) {
+    recolor_fast(priv, page_width, page_height, surface, rectangles, found_images);
+  } else {
+    recolor_slow(priv, page_width, page_height, surface, rectangles, found_images);
+  }
+
   if (rectangles != NULL) {
     girara_list_free(rectangles);
   }
