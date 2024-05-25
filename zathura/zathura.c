@@ -46,6 +46,9 @@
 #ifdef WITH_SECCOMP
 #include "seccomp-filters.h"
 #endif
+#ifdef WITH_LANDLOCK
+#include "landlock.h"
+#endif
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -440,7 +443,6 @@ zathura_init(zathura_t* zathura)
   config_load_default(zathura);
   config_load_files(zathura);
 
-#ifdef WITH_SECCOMP
   /* initialize seccomp filters */
   switch (zathura->global.sandbox) {
     case ZATHURA_SANDBOX_NONE:
@@ -448,15 +450,19 @@ zathura_init(zathura_t* zathura)
       break;
     case ZATHURA_SANDBOX_STRICT:
       girara_debug("Strict sandbox preventing write and network access.");
+#ifdef WITH_LANDLOCK
+      landlock_drop_write ();
+#endif
+#ifdef WITH_SECCOMP
       if (seccomp_enable_strict_filter(zathura) != 0) {
         girara_error("Failed to initialize strict seccomp filter.");
         goto error_free;
       }
+#endif
       /* unset the input method to avoid communication with external services */
       unsetenv("GTK_IM_MODULE");
       break;
   }
-#endif
 
   /* UI */
   if (init_ui(zathura) == false) {
