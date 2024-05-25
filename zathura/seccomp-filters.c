@@ -73,6 +73,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(exit_group);
   /* ALLOW_RULE(epoll_create); outdated, to be removed */
   /* ALLOW_RULE(fadvise64); */
+  ALLOW_RULE(faccessat); /* AArch64 requirement */
   ALLOW_RULE(fallocate);
   ALLOW_RULE(fcntl);  /* TODO: build detailed filter */
 #ifdef __NR_fstat
@@ -114,11 +115,13 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(pipe); unused? */
   ALLOW_RULE(pipe2); /* used by dbus only - remove this after dbus isolation is fixed */
   ALLOW_RULE(poll);
+  ALLOW_RULE(ppoll); /* AArch64 requirement */
   /* ALLOW_RULE (prctl); specified below  */
   ALLOW_RULE(pread64); /* equals pread */
   /* ALLOW_RULE(pwrite64); equals pwrite */
   ALLOW_RULE(read);
   ALLOW_RULE(readlink); /* readlinkat */
+  ALLOW_RULE(readlinkat); /* AArch64 requirement */
   /* ALLOW_RULE(recvfrom); X11 only */
   ALLOW_RULE(recvmsg);
   ALLOW_RULE(restart_syscall); /* required for wakeup from suspense */
@@ -239,7 +242,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   */
 
   ERRNO_RULE(openat2);
-  ERRNO_RULE(faccessat2);
+  /* ERRNO_RULE(faccessat2); permitted above for AArch64 */
   ERRNO_RULE(pwritev2);
 #if defined(__NR_readfile) && defined(__SNR_readfile)
   ERRNO_RULE(readfile);
