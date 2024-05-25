@@ -8,6 +8,11 @@ option('seccomp',
   value: 'auto',
   description: 'seccomp-based sandbox'
 )
+option('landlock',
+  type: 'feature',
+  value: 'auto',
+  description: 'landlock-based sandbox'
+)
 option('manpages',
   type: 'feature',
   value: 'auto',
