@@ -3,11 +3,9 @@
 #include <sys/prctl.h>
 #include <sys/syscall.h>
 #include <stdio.h>
-#include <fcntl.h> // for open
-#include <unistd.h> // for close
+#include <fcntl.h> 
+#include <unistd.h> 
 #include <girara/utils.h>
-
-//#include <stdlib.h>
 
 #include "landlock.h"
 
@@ -39,26 +37,6 @@ landlock_restrict_self(const int ruleset_fd, const __u32 flags)
 	return syscall(__NR_landlock_restrict_self, ruleset_fd, flags);
 }
 #endif
-
-/*
-struct landlock_ruleset_attr ruleset_attr = {
-    .handled_access_fs =
-        LANDLOCK_ACCESS_FS_EXECUTE |
-        LANDLOCK_ACCESS_FS_WRITE_FILE |
-        LANDLOCK_ACCESS_FS_READ_FILE |
-        LANDLOCK_ACCESS_FS_READ_DIR |
-        LANDLOCK_ACCESS_FS_REMOVE_DIR |
-        LANDLOCK_ACCESS_FS_REMOVE_FILE |
-        LANDLOCK_ACCESS_FS_MAKE_CHAR |
-        LANDLOCK_ACCESS_FS_MAKE_DIR |
-        LANDLOCK_ACCESS_FS_MAKE_REG |
-        LANDLOCK_ACCESS_FS_MAKE_SOCK |
-        LANDLOCK_ACCESS_FS_MAKE_FIFO |
-        LANDLOCK_ACCESS_FS_MAKE_BLOCK |
-        LANDLOCK_ACCESS_FS_MAKE_SYM |
-        LANDLOCK_ACCESS_FS_REFER,
-};
-*/
 
 static void
 landlock_drop (__u64 fs_access)
@@ -108,8 +86,6 @@ landlock_drop_all (void)
     LANDLOCK_ACCESS_FS_EXECUTE);
 }
 
-
-
 void
 landlock_write_fd (const int dir_fd)
 {
@@ -143,8 +119,6 @@ landlock_write_fd (const int dir_fd)
     close (path_beneath.parent_fd);
   close(ruleset_fd);
 }
-
-
 
 void
 landlock_restrict_write(void)
