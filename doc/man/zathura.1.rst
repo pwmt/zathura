@@ -230,19 +230,28 @@ blist
 bjump
   Jump to given bookmark.
 
+mark
+  Set a quickmark.
+
+delmarks
+  Delete a quickmark. Abbreviation: ``delm``.
+
 close
-  Close document
+  Close document.
+
+quit
+  Quit zathura. Abbreviation: ``q``.
 
 exec
   Execute an external command. ``$FILE`` expands to the current document path,
   ``$PAGE`` to the current page number, and ``$DBUS`` to the bus name of the
-  D-Bus interface.
+  D-Bus interface. Alias: ``!`` (space is still needed after).
 
 info
   Show document information.
 
 open
-  Open a document.
+  Open a document. Abbreviation: ``o``.
 
 offset
   Set page offset.
@@ -251,13 +260,28 @@ print
   Print document.
 
 write(!)
-  Save document (and force overwriting).
+  Save document (and force overwriting). Alias: ``save(!)``.
 
 export
-  Export attachments.
+  Export attachments. First argument specifies the attachment identifier
+  (use completion with ``Tab``),  second argument gives the target filename
+  (relative to current working directory).
 
 dump
   Write values, descriptions, etc. of all current settings to a file.
+
+source
+  Source a configuration file. It is possible to change the config directory
+  by passing an argument.
+
+hlsearch
+  Highlight current search results.
+
+nohlsearch
+  Remove highlights of current search results. Abbreviation: ``nohl``.
+
+version
+  Show version information.
 
 Configuration
 -------------
