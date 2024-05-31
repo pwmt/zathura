@@ -721,6 +721,12 @@ zathura
   * Value type: String
   * Default value: #DDDDDD
 
+*jumplist-size*
+  Maximum number of positions to remember in the jumplist.
+
+  * Value type: Integer
+  * Default value: 2000
+
 *link-hadjust*
   En/Disables aligning to the left internal link targets, for example from the
   index.
@@ -733,6 +739,19 @@ zathura
 
   * Value type: Boolean
   * Default value: true
+
+*nohlsearch*
+  Dis/Enables the highlighting of search results.
+
+  * Value type: Boolean
+  * Default value: false
+
+*open-first-page*
+  Always open documents on the first page. If disabled, zathura will jump to the
+  last remembered position.
+
+  * Value type: Boolean
+  * Default value: false
 
 *page-cache-size*
   Defines the maximum number of pages that could be kept in the page cache. When

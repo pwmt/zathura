@@ -326,7 +326,7 @@ void config_load_default(zathura_t* zathura) {
   bool_value = false;
   girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
   bool_value = false;
-  girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Highlight search results"), cb_nohlsearch_changed, NULL);
+  girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Disable highlighting of search results"), cb_nohlsearch_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "double-click-follow",    &bool_value,  BOOLEAN, false, _("Double click to follow links"), cb_doubleclick_changed, NULL);
 #define INCREMENTAL_SEARCH false
