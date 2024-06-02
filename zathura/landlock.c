@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: Zlib */
+
 #if WITH_LANDLOCK
 #define _GNU_SOURCE
 #include <linux/landlock.h>
