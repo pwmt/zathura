@@ -2,9 +2,8 @@
 
 #include "seccomp-filters.h"
 
-#ifdef WITH_SECCOMP
 #include <girara/log.h>
-#include <seccomp.h> /* libseccomp */
+#include <seccomp.h>   /* libseccomp */
 #include <sys/prctl.h> /* prctl */
 #include <sys/socket.h>
 #include <fcntl.h>
@@ -12,31 +11,27 @@
 #include <errno.h>
 #include <girara/utils.h>
 #include <linux/sched.h> /* for clone filter */
-#include <unistd.h> /* for fstat */
+#include <unistd.h>      /* for fstat */
 
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
 #endif
 
-
-#define ADD_RULE(str_action, action, call, ...)                                \
-  do {                                                                         \
-    girara_debug("adding rule " str_action " to " G_STRINGIFY(call));          \
-    const int err =                                                            \
-      seccomp_rule_add(ctx, action, SCMP_SYS(call), __VA_ARGS__);              \
-    if (err < 0) {                                                             \
-      girara_error("failed: %s", g_strerror(-err));                            \
-      goto out;                                                                \
-    }                                                                          \
+#define ADD_RULE(str_action, action, call, ...)                                                                        \
+  do {                                                                                                                 \
+    girara_debug("adding rule " str_action " to " G_STRINGIFY(call));                                                  \
+    const int err = seccomp_rule_add(ctx, action, SCMP_SYS(call), __VA_ARGS__);                                        \
+    if (err < 0) {                                                                                                     \
+      girara_error("failed: %s", g_strerror(-err));                                                                    \
+      goto out;                                                                                                        \
+    }                                                                                                                  \
   } while (0)
 
 #define DENY_RULE(call) ADD_RULE("kill", SCMP_ACT_KILL, call, 0)
 #define ALLOW_RULE(call) ADD_RULE("allow", SCMP_ACT_ALLOW, call, 0)
 #define ERRNO_RULE(call) ADD_RULE("errno", SCMP_ACT_ERRNO(ENOSYS), call, 0)
 
-int
-seccomp_enable_strict_filter(zathura_t* zathura)
-{
+int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
   if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
     girara_error("prctl SET_NO_NEW_PRIVS");
@@ -50,8 +45,8 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   }
 
   /* initialize the filter */
-  /* ENOSYS tells the calling process that the syscall is not implemented, 
-   * allowing for a potential fallback function to execute 
+  /* ENOSYS tells the calling process that the syscall is not implemented,
+   * allowing for a potential fallback function to execute
    * scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ERRNO(ENOSYS));*/
   scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_KILL_PROCESS);
   if (ctx == NULL) {
@@ -75,7 +70,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(fadvise64); */
   ALLOW_RULE(faccessat); /* AArch64 requirement */
   ALLOW_RULE(fallocate);
-  ALLOW_RULE(fcntl);  /* TODO: build detailed filter */
+  ALLOW_RULE(fcntl); /* TODO: build detailed filter */
 #ifdef __NR_fstat
   ALLOW_RULE(fstat); /* used by older libc, stat (below), lstat(below), fstatat, newfstatat(below) */
 #endif
@@ -98,8 +93,8 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(getrlimit); unused? */
   /* ALLOW_RULE(getpeername); not required if database is initializes properly */
   ALLOW_RULE(inotify_add_watch); /* required by filemonitor feature */
-  ALLOW_RULE(inotify_init1); /* used by filemonitor, inotify_init (glib<2.9) */
-  ALLOW_RULE(inotify_rm_watch); /* used by filemonitor */
+  ALLOW_RULE(inotify_init1);     /* used by filemonitor, inotify_init (glib<2.9) */
+  ALLOW_RULE(inotify_rm_watch);  /* used by filemonitor */
   /* ALLOW_RULE (ioctl); specified below  */
   ALLOW_RULE(lseek);
   /* ALLOW_RULE(lstat); unused? */
@@ -120,7 +115,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(pread64); /* equals pread */
   /* ALLOW_RULE(pwrite64); equals pwrite */
   ALLOW_RULE(read);
-  ALLOW_RULE(readlink); /* readlinkat */
+  ALLOW_RULE(readlink);   /* readlinkat */
   ALLOW_RULE(readlinkat); /* AArch64 requirement */
   /* ALLOW_RULE(recvfrom); X11 only */
   ALLOW_RULE(recvmsg);
@@ -135,7 +130,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* ALLOW_RULE(sendto); ipc, investigate */
   /* ALLOW_RULE(select); pselect (equals pselect6) */
   ALLOW_RULE(set_robust_list);
-  /*  ALLOW_RULE(shmat); X11 only */ 
+  /*  ALLOW_RULE(shmat); X11 only */
   /*  ALLOW_RULE(shmctl); X11 only */
   /*  ALLOW_RULE(shmdt); X11 only */
   /*  ALLOW_RULE(shmget); X11 only */
@@ -145,7 +140,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ALLOW_RULE(statfs); /* used by filemonitor, fstatfs above */
   /* ALLOW_RULE(sysinfo); !!! */
   /* ALLOW_RULE(tgkill); investigate - used when zathura is quickly restarted and dbus socket is closed */
-  /* ALLOW_RULE(umask); X11 only */ 
+  /* ALLOW_RULE(umask); X11 only */
   /* ALLOW_RULE(uname); X11 only */
   /* ALLOW_RULE(unlink); unused?, unlinkat */
   ALLOW_RULE(write); /* investigate further */
@@ -190,16 +185,10 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   ERRNO_RULE(getpeername);
 
   /* filter clone arguments */
-  ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
-              CLONE_VM | \
-              CLONE_FS | \
-              CLONE_FILES | \
-              CLONE_SIGHAND | \
-              CLONE_THREAD | \
-              CLONE_SYSVSEM | \
-              CLONE_SETTLS | \
-              CLONE_PARENT_SETTID | \
-              CLONE_CHILD_CLEARTID));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1,
+           SCMP_CMP(0, SCMP_CMP_EQ,
+                    CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM | CLONE_SETTLS |
+                        CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID));
   /* trigger fallback to clone */
   ERRNO_RULE(clone3);
 
@@ -225,18 +214,17 @@ seccomp_enable_strict_filter(zathura_t* zathura)
   /* open syscall to be removed? openat is used instead */
   /* special restrictions for open, prevent opening files for writing */
   /*  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
-  * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
-  * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
-  */
+   * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
+   * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
+   */
 
   /* special restrictions for openat, prevent opening files for writing */
-  ADD_RULE("allow", SCMP_ACT_ALLOW,         openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("allow", SCMP_ACT_ALLOW, openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
 
-
-  /* Gracefully fail syscalls that may be used by dependencies in the future 
-     These rules will still block the syscalls but since there usually is fallback code 
+  /* Gracefully fail syscalls that may be used by dependencies in the future
+     These rules will still block the syscalls but since there usually is fallback code
      for new syscalls, it will not shut down zathura and give us more time to
      analyse the newly required syscall before potentionally allowing it.
   */
@@ -253,7 +241,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
 
   /* Sandbox Status Notes:
    *
-   * write: no actual files on the filesystem are opened with write permissions 
+   * write: no actual files on the filesystem are opened with write permissions
    *    exception is /run/user/UID/dconf/user (file descriptor not available during runtime)
    *
    *
@@ -261,7 +249,7 @@ seccomp_enable_strict_filter(zathura_t* zathura)
    * wait4: required to attempt opening links (which is then blocked)
    *
    *
-   * TODO: prevent dbus socket connection before sandbox init - by checking the sandbox settings in zathurarc 
+   * TODO: prevent dbus socket connection before sandbox init - by checking the sandbox settings in zathurarc
    *    - requires changes of zathura startup to read config earlier
    *
    * TODO: check requirement of pipe/pipe2 syscalls when dbus is disabled
@@ -270,7 +258,8 @@ seccomp_enable_strict_filter(zathura_t* zathura)
    * Note about clone3():
    * Since the seccomp mechanism is unable to examine system-call arguments that are passed in separate structures
    * it will be unable to make decisions based on the flags given to clone3().
-   * Code meant to be sandboxed with seccomp should not use clone3() at all until it is possible to inspect its arguments.
+   * Code meant to be sandboxed with seccomp should not use clone3() at all until it is possible to inspect its
+   * arguments.
    *
    *
    */
@@ -290,5 +279,3 @@ out:
   seccomp_release(ctx);
   return -1;
 }
-
-#endif /* WITH_SECCOMP */
