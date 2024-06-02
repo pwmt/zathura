@@ -1,4 +1,7 @@
- #if WITH_LANDLOCK
+/* SPDX-License-Identifier: Zlib */
+
+#ifndef ZATHURA_LANDLOCK_H
+#define ZATHURA_LANDLOCK_H
 
 /*
 ** remove write and execute permissions
