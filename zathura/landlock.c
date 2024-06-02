@@ -1,7 +1,9 @@
+#if WITH_LANDLOCK
 #define _GNU_SOURCE
 #include <linux/landlock.h>
 #include <sys/prctl.h>
 #include <sys/syscall.h>
+#endif
 #include <stdio.h>
 #include <fcntl.h> 
 #include <unistd.h> 
@@ -71,18 +73,20 @@ landlock_drop (__u64 fs_access)
   LANDLOCK_ACCESS_FS_READ_FILE | \
   LANDLOCK_ACCESS_FS_READ_DIR)
 
+#if WITH_LANDLOCK
 void
 landlock_drop_write (void)
 {
-  landlock_drop(_LANDLOCK_ACCESS_FS_WRITE | \
+  landlock_drop(_LANDLOCK_ACCESS_FS_WRITE |
     LANDLOCK_ACCESS_FS_EXECUTE);
 }
+#endif
 
 void
 landlock_drop_all (void)
 {
-  landlock_drop(_LANDLOCK_ACCESS_FS_READ | \
-    _LANDLOCK_ACCESS_FS_WRITE | \
+  landlock_drop(_LANDLOCK_ACCESS_FS_READ |
+    _LANDLOCK_ACCESS_FS_WRITE |
     LANDLOCK_ACCESS_FS_EXECUTE);
 }
 

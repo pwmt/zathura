@@ -79,7 +79,7 @@ flags = cc.get_supported_arguments(flags)
 additional_sources = []
 synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
-#landlock = dependency('linux', version: '>=5.13', required: get_option('landlock'))
+landlock = cc.check_header('linux/landlock.h', required: get_option('landlock'))
 
 if synctex.found()
   build_dependencies += synctex
@@ -95,7 +95,7 @@ if seccomp.found()
   additional_sources += files('zathura/seccomp-filters.c')
 endif
 
-if get_option('landlock').auto()
+if landlock
   defines += '-DWITH_LANDLOCK'
   additional_sources += files('zathura/landlock.c')
 endif
