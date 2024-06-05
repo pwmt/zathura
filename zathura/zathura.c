@@ -238,6 +238,7 @@ static bool init_ui(zathura_t* zathura) {
     zathura->signals.monitors_handler =
         g_signal_connect(monitors, "items-changed", G_CALLBACK(cb_monitors_changed), zathura);
   }
+  g_signal_connect(zathura->ui.session->gtk.inputbar, "hide", G_CALLBACK(cb_hide_inputbar), zathura);
 
   /* page view */
   zathura->ui.view = gtk_scrolled_window_new();

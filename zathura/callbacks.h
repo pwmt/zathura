@@ -258,6 +258,11 @@ void cb_gesture_zoom_scale_changed(GtkGestureZoom* self, gdouble scale, void* da
 gboolean cb_drop_file(GtkDropTarget* self, const GValue* value, double x, double y, void* data);
 
 /**
+ * Clean up after the inputbar has been hidden.
+ */
+void cb_hide_inputbar(GtkWidget* widget, gpointer data);
+
+/**
  * Clears all highlighted links when the inputbar gets closed
  *
  * @param GtkWidget* Inputbar widget

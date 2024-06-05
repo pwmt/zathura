@@ -769,6 +769,14 @@ gboolean cb_drop_file(GtkDropTarget* UNUSED(self), const GValue* value, double U
   return TRUE;
 }
 
+void cb_hide_inputbar(GtkWidget* widget, gpointer data) {
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(data != NULL);
+
+  zathura_t* zathura = data;
+  zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_NONE);
+}
+
 void cb_hide_links(GtkWidget* widget, gpointer data) {
   g_return_if_fail(widget != NULL);
   g_return_if_fail(data != NULL);
