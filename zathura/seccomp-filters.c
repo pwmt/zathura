@@ -102,7 +102,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
   ALLOW_RULE(mprotect);
-  /* ALLOW_RULE(mremap); */
+  ALLOW_RULE(mremap); /* mupdf requirement */
   ALLOW_RULE(munmap);
   ALLOW_RULE(newfstatat);
   /* ALLOW_RULE (open); specified below */
@@ -138,7 +138,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(stat); /* used by older libc - Debian 11 */
   ALLOW_RULE(statx);
   ALLOW_RULE(statfs); /* used by filemonitor, fstatfs above */
-  /* ALLOW_RULE(sysinfo); !!! */
+  ALLOW_RULE(sysinfo);
   /* ALLOW_RULE(tgkill); investigate - used when zathura is quickly restarted and dbus socket is closed */
   /* ALLOW_RULE(umask); X11 only */
   /* ALLOW_RULE(uname); X11 only */
