@@ -336,13 +336,15 @@ ZATHURA_PLUGINS_PATH
 Sandbox
 -------
 
-The *zathura-sandbox* runs *zathura* with a seccomp and/or landlock based sandbox enabled.
-Some features are disabled when using sandbox mode:
+The **zathura-sandbox** binary runs *zathura* with a seccomp and/or landlock
+based sandbox enabled. Some features are disabled when using sandbox mode:
 
 * saving/writing files
 * use of input methods like ibus
 * printing
 * bookmarks and history
+* dbus integration
+* synctex support
 
 The sandbox mode is still experimental with some libc implementations. The
 current supported and tested libc implementations is glibc.

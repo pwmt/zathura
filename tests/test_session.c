@@ -10,10 +10,10 @@ START_TEST(test_create) {
   ck_assert_ptr_nonnull(zathura);
   ck_assert(zathura_init(zathura));
   zathura_free(zathura);
-} END_TEST
+}
+END_TEST
 
-static Suite* suite_session(void)
-{
+static Suite* suite_session(void) {
   TCase* tcase = NULL;
   Suite* suite = suite_create("Session");
 
@@ -26,7 +26,6 @@ static Suite* suite_session(void)
   return suite;
 }
 
-int main()
-{
+int main() {
   return run_suite(suite_session());
 }

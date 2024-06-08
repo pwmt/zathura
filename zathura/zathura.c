@@ -432,7 +432,7 @@ bool zathura_init(zathura_t* zathura) {
   /* Start D-Bus service */
   bool dbus = true;
   girara_setting_get(zathura->ui.session, "dbus-service", &dbus);
-  if (dbus == true) {
+  if (dbus == true && zathura->global.sandbox != ZATHURA_SANDBOX_STRICT) {
     zathura->dbus = zathura_dbus_new(zathura);
   }
 
