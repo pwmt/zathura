@@ -18,8 +18,8 @@
 
 #include "zathura.h"
 #include "utils.h"
-#include "dbus-interface.h"
 #ifdef WITH_SYNCTEX
+#include "dbus-interface.h"
 #include "synctex.h"
 #endif
 
