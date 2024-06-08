@@ -344,11 +344,13 @@ unsigned int find_first_page_column(const char* first_page_column_list, const un
 
 char* increment_first_page_column(const char* first_page_column_list, const unsigned int pages_per_row, int incr) {
   /* sanity checks */
-  if (first_page_column_list == NULL)
+  if (first_page_column_list == NULL) {
     first_page_column_list = "";
+  }
   /* This function is a no-op for 1 column layout */
-  if (pages_per_row <= 1)
+  if (pages_per_row <= 1) {
     return g_strdup(first_page_column_list);
+  }
 
   unsigned int size      = 0;
   unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
