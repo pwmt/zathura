@@ -822,11 +822,9 @@ cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void*
   }
 
   const double next_zoom = zathura->gesture.initial_zoom * scale;
-  const double corrected_zoom = zathura_correct_zoom_value(zathura->ui.session, next_zoom);
-  zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
-  zathura_document_set_zoom(zathura->document, corrected_zoom);
-  render_all(zathura);
-  refresh_view(zathura);
+  girara_argument_t argument = { .n = ZOOM_SPECIFIC };
+
+  sc_zoom(zathura->ui.session, &argument, NULL, next_zoom * 100);
 }
 
 void cb_hide_links(GtkWidget* widget, gpointer data) {
