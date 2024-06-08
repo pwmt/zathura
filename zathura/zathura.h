@@ -303,6 +303,14 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
 void zathura_set_argv(zathura_t* zathura, char** argv);
 
 /**
+ * Sets the sandbox mode
+ *
+ * @param zathura The zathura session
+ * @param sandbox Sandbox mode
+ */
+void zathura_set_sandbox(zathura_t* zathura, zathura_sandbox_t sandbox);
+
+/**
  * Calculate and store the monitor PPI for the view widget
  *
  * @param zathura The zathura session

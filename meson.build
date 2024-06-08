@@ -89,17 +89,6 @@ if synctex.found()
   endif
 endif
 
-if seccomp.found()
-  build_dependencies += seccomp
-  defines += '-DWITH_SECCOMP'
-  additional_sources += files('zathura/seccomp-filters.c')
-endif
-
-if landlock
-  defines += '-DWITH_LANDLOCK'
-  additional_sources += files('zathura/landlock.c')
-endif
-
 # generate version header file
 version_header = configure_file(
   input: 'zathura/version.h.in',
@@ -167,6 +156,33 @@ libzathura = static_library('zathura',
   include_directories: include_directories,
   c_args: defines + flags
 )
+
+# zathura-sandbox executable
+if seccomp.found() or landlock
+  sandbox_sources = files()
+  sandbox_defines = defines
+  sandbox_dependencies = []
+  if seccomp.found()
+    sandbox_defines += '-DWITH_SECCOMP'
+    sandbox_dependencies += seccomp
+    sandbox_sources += files('zathura/seccomp-filters.c')
+  endif
+  if landlock
+    sandbox_defines += '-DWITH_LANDLOCK'
+    sandbox_sources += files('zathura/landlock.c')
+  endif
+
+  zathura_sandbox = executable(
+    'zathura-sandbox',
+    files('zathura/main-sandbox.c') + sandbox_sources,
+    dependencies: build_dependencies + [declare_dependency(link_with: libzathura)] + sandbox_dependencies,
+    install: true,
+    include_directories: include_directories,
+    c_args: sandbox_defines + flags,
+    export_dynamic: true,
+    win_subsystem: 'windows'
+  )
+endif
 
 # zathura executable
 zathura = executable(

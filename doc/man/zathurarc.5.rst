@@ -840,31 +840,6 @@ zathura
   * Value type: String
   * Default value: #000000
 
-*sandbox*
-  Defines the sandbox mode to use for the seccomp syscall filter. Possible
-  values are "none", "normal" and "strict". If "none" is used, the sandbox
-  will be disabled. The use of "normal" will provide minimal protection and
-  allow normal use of zathura with support for all features. The "strict" mode
-  is a read only sandbox that is intended for viewing documents only.
-
-  * Value type: String
-  * Default value: none
-
-  Some features are disabled when using strict sandbox mode:
-
-  * saving/writing files
-  * use of input methods like ibus
-  * printing
-  * bookmarks and history
-
-  The strict sandbox mode is still experimental with some libc implementations.
-  Currently supported and tested libc implementations: glibc
-
-  No feature regressions are expected when using normal sandbox mode.
-
-  When running under WSL, the default is "none" since seccomp is not supported in
-  that environment.
-
 *scroll-full-overlap*
   Defines the proportion of the current viewing area that should be
   visible after scrolling a full page.

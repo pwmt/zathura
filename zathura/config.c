@@ -136,25 +136,6 @@ static void cb_incsearch_changed(girara_session_t* session, const char* UNUSED(n
   girara_special_command_add(session, '?', cmd_search, inc_search, BACKWARD, NULL);
 }
 
-static void
-cb_sandbox_changed(girara_session_t* session, const char* name,
-                   girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data))
-{
-  g_return_if_fail(value != NULL);
-  g_return_if_fail(session != NULL);
-  g_return_if_fail(session->global.data != NULL);
-  zathura_t* zathura = session->global.data;
-
-  const char* sandbox = value;
-  if (g_strcmp0(sandbox, "none") == 0) {
-    zathura->global.sandbox = ZATHURA_SANDBOX_NONE;
-  } else if (g_strcmp0(sandbox, "strict") == 0) {
-    zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
-  } else {
-    girara_error("Invalid %s option: '%s'", name, sandbox);
-  }
-}
-
 static void cb_window_statbusbar_changed(girara_session_t* session, const char* name,
                                          girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data)) {
   g_return_if_fail(value != NULL);
@@ -344,9 +325,6 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  /* default to no sandbox */
-  const char* string_value = "none";
-  girara_setting_add(gsession, "sandbox",                string_value, STRING, true,   _("Sandbox level"), cb_sandbox_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,
                      _("Disable additional information for signatures embedded in the document."),

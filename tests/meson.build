@@ -55,11 +55,11 @@ if check.found()
       timeout: 60*60
     )
 
-    if seccomp.found()
-      sandbox = executable('test_sandbox', ['test_sandbox.c', 'tests.c'],
-        dependencies: build_dependencies + test_dependencies,
+    if seccomp.found() or landlock
+      sandbox = executable('test_sandbox', ['test_sandbox.c', 'tests.c'] + sandbox_sources,
+        dependencies: build_dependencies + test_dependencies + sandbox_dependencies,
         include_directories: include_directories,
-        c_args: defines + flags
+        c_args: defines + sandbox_defines + flags
       )
       test('sandbox', xvfb,
         args: xvfb_args + [sandbox],

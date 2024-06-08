@@ -4,20 +4,31 @@
 
 #include "tests.h"
 #include "zathura.h"
+#ifdef WITH_SECCOMP
+#include "seccomp-filters.h"
+#endif
+#ifdef WITH_LANDLOCK
+#include "landlock.h"
+#endif
 
-START_TEST(test_create)
-{
-  zathura_t* zathura      = zathura_create();
-  zathura->global.sandbox = ZATHURA_SANDBOX_STRICT;
+START_TEST(test_create) {
+  zathura_t* zathura = zathura_create();
   ck_assert_ptr_nonnull(zathura);
+
+#ifdef WITH_LANDLOCK
+  landlock_drop_write();
+#endif
+#ifdef WITH_SECCOMP
+  ck_assert_int_eq(seccomp_enable_strict_filter(zathura), 0);
+#endif
+
+  zathura_set_sandbox(zathura, ZATHURA_SANDBOX_STRICT);
   ck_assert(zathura_init(zathura));
   zathura_free(zathura);
 }
 END_TEST
 
-static void
-sandbox_setup(void)
-{
+static void sandbox_setup(void) {
   setup();
 
 #ifdef GDK_WINDOWING_X11
@@ -27,9 +38,7 @@ sandbox_setup(void)
 #endif
 }
 
-static Suite*
-suite_sandbox(void)
-{
+static Suite* suite_sandbox(void) {
   TCase* tcase = NULL;
   Suite* suite = suite_create("Sandbox");
 
@@ -42,8 +51,6 @@ suite_sandbox(void)
   return suite;
 }
 
-int
-main()
-{
+int main() {
   return run_suite(suite_sandbox());
 }

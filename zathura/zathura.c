@@ -43,12 +43,6 @@
 #include "resources.h"
 #include "synctex.h"
 #include "content-type.h"
-#ifdef WITH_SECCOMP
-#include "seccomp-filters.h"
-#endif
-#ifdef WITH_LANDLOCK
-#include "landlock.h"
-#endif
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -407,27 +401,6 @@ bool zathura_init(zathura_t* zathura) {
   config_load_default(zathura);
   config_load_files(zathura);
 
-  /* initialize seccomp filters */
-  switch (zathura->global.sandbox) {
-    case ZATHURA_SANDBOX_NONE:
-      girara_debug("Sandbox deactivated.");
-      break;
-    case ZATHURA_SANDBOX_STRICT:
-      girara_debug("Strict sandbox preventing write and network access.");
-#ifdef WITH_LANDLOCK
-      landlock_drop_write ();
-#endif
-#ifdef WITH_SECCOMP
-      if (seccomp_enable_strict_filter(zathura) != 0) {
-        girara_error("Failed to initialize strict seccomp filter.");
-        goto error_free;
-      }
-#endif
-      /* unset the input method to avoid communication with external services */
-      unsetenv("GTK_IM_MODULE");
-      break;
-  }
-
   /* UI */
   if (init_ui(zathura) == false) {
     girara_error("Failed to initialize UI.");
@@ -613,6 +586,12 @@ void zathura_set_argv(zathura_t* zathura, char** argv) {
   g_return_if_fail(zathura != NULL);
 
   zathura->global.arguments = argv;
+}
+
+void zathura_set_sandbox(zathura_t* zathura, zathura_sandbox_t sandbox) {
+  g_return_if_fail(zathura != NULL);
+
+  zathura->global.sandbox = sandbox;
 }
 
 static bool setup_renderer(zathura_t* zathura, zathura_document_t* document) {

@@ -21,4 +21,10 @@ if sphinx.found()
       join_paths(get_option('mandir'), 'man5')
     ]
   )
+  if seccomp.found() or landlock
+    install_symlink('zathura-sandbox.1',
+      install_dir: join_paths(get_option('mandir'), 'man1'),
+      pointing_to: 'zathura.1'
+    )
+  endif
 endif
