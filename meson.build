@@ -43,8 +43,8 @@ gmodule = dependency('gmodule-no-export-2.0', version: '>=2.72')
 gtk3 = dependency('gtk+-3.0', version: '>=3.24')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
-magic = dependency('libmagic', required: true)
-sqlite = dependency('sqlite3', version: '>=3.6.23', required: true)
+magic = dependency('libmagic')
+sqlite = dependency('sqlite3', version: '>=3.6.23')
 
 build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib, sqlite]
 
@@ -154,6 +154,7 @@ libzathura = static_library('zathura',
   include_directories: include_directories,
   c_args: defines + flags
 )
+libzathura_dep = declare_dependency(link_with: libzathura)
 
 # zathura-sandbox executable
 if seccomp.found() or landlock
@@ -173,7 +174,7 @@ if seccomp.found() or landlock
   zathura_sandbox = executable(
     'zathura-sandbox',
     files('zathura/main-sandbox.c') + sandbox_sources,
-    dependencies: build_dependencies + [declare_dependency(link_with: libzathura)] + sandbox_dependencies,
+    dependencies: build_dependencies + [libzathura_dep] + sandbox_dependencies,
     install: true,
     include_directories: include_directories,
     c_args: sandbox_defines + flags,
@@ -186,7 +187,7 @@ endif
 zathura = executable(
   'zathura',
   files('zathura/main.c'),
-  dependencies: build_dependencies + [declare_dependency(link_with: libzathura)],
+  dependencies: build_dependencies + [libzathura_dep],
   install: true,
   include_directories: include_directories,
   c_args: defines + flags,
