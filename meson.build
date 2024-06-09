@@ -76,7 +76,6 @@ flags = [
 flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
-additional_sources = []
 synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
 landlock = cc.check_header('linux/landlock.h', required: get_option('landlock'))
@@ -136,7 +135,6 @@ sources = files(
   'zathura/zathura.c',
 )
 sources += zathura_resources
-sources += additional_sources
 
 # header files to install
 headers = files(
