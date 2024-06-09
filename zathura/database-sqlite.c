@@ -1076,7 +1076,7 @@ zathura_database_t* zathura_sqldatabase_new_from_plain(const char* sqlite_path, 
 
   girara_info("Opening plain database via sqlite backend.");
   if (g_file_test(sqlite_path, G_FILE_TEST_EXISTS) == true) {
-    girara_warning("sqlite database already exists. Set your database backend to sqlite");
+    girara_warning("sqlite database already exists. Set your database backend to sqlite. See zathurarc(5) for details.");
     return zathura_sqldatabase_new(sqlite_path);
   }
 
