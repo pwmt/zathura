@@ -188,6 +188,10 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     }
   }
 
+  girara_debug("Running zathura-sandbox, disable IPC services");
+  /* Prevent default gtk dbus connection */
+  g_setenv("DBUS_SESSION_BUS_ADDRESS", "disabled:", TRUE);
+
   /* Initialize GTK+ */
   gtk_init(&argc, &argv);
 
