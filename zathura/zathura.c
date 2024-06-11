@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <locale.h>
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>

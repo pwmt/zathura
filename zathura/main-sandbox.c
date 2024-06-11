@@ -7,7 +7,6 @@
 #include <glib/gstdio.h>
 #include <errno.h>
 #include <limits.h>
-#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
