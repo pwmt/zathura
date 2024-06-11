@@ -1770,7 +1770,6 @@ void zathura_show_signature_information(zathura_t* zathura, bool show) {
   g_value_unset(&show_sig_info_value);
 }
 
-/* Init locale */
 void zathura_init_locale(void) {
   setlocale(LC_ALL, "");
   bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
@@ -1778,11 +1777,8 @@ void zathura_init_locale(void) {
   textdomain(GETTEXT_PACKAGE);
 }
 
-/* Set log level */
 void zathura_set_log_level(const char* loglevel) {
-  if (loglevel == NULL) {
-    return;
-  } else if (g_strcmp0(loglevel, "info") == 0) {
+  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
     girara_set_log_level(GIRARA_INFO);
   } else if (g_strcmp0(loglevel, "warning") == 0) {
     girara_set_log_level(GIRARA_WARNING);

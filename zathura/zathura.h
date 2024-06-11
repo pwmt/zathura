@@ -317,10 +317,15 @@ void zathura_set_sandbox(zathura_t* zathura, zathura_sandbox_t sandbox);
  */
 void zathura_update_view_ppi(zathura_t* zathura);
 
-/* Init locale */
+/**
+ * Init locale
+ */
 void zathura_init_locale(void);
 
-/** Set log level
+/**
+ * Set log level
+ *
+ * If no loglevel is given, an argument of "info" is assumed.
  *
  * @param Log level
  */
