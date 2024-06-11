@@ -324,4 +324,17 @@ ZATHURA_PLUGIN_API zathura_signature_info_t* zathura_signature_info_new(void);
  */
 ZATHURA_PLUGIN_API void zathura_signature_info_free(zathura_signature_info_t* signature);
 
+/**
+ * Quickmark list entry
+ */
+struct zathura_mark_s {
+  int key;           /**> Marks key */
+  double position_x; /**> Horizontal adjustment */
+  double position_y; /**> Vertical adjustment */
+  unsigned int page; /**> Page number */
+  double zoom;       /**> Zoom level */
+};
+
+typedef struct zathura_mark_s zathura_mark_t;
+
 #endif // TYPES_H

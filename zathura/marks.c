@@ -7,21 +7,14 @@
 #include <girara/datastructures.h>
 
 #include "callbacks.h"
-#include "marks.h"
+#include "database.h"
 #include "document.h"
+#include "marks.h"
 #include "render.h"
 #include "utils.h"
 
 static void mark_add(zathura_t* zathura, int key);
 static void mark_evaluate(zathura_t* zathura, int key);
-
-struct zathura_mark_s {
-  int key;           /**> Marks key */
-  double position_x; /**> Horizontal adjustment */
-  double position_y; /**> Vertical adjustment */
-  unsigned int page; /**> Page number */
-  double zoom;       /**> Zoom level */
-};
 
 static gboolean cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer user_data) {
   g_return_val_if_fail(user_data != NULL, FALSE);
@@ -223,11 +216,21 @@ static void mark_evaluate(zathura_t* zathura, int key) {
   }
 }
 
-void mark_free(void* data) {
-  if (data == NULL) {
-    return;
+bool zathura_quickmarks_load(zathura_t* zathura, const gchar* file) {
+  g_return_val_if_fail(zathura, false);
+  g_return_val_if_fail(file, false);
+
+  if (zathura->database == NULL) {
+    return false;
   }
 
-  zathura_mark_t* mark = data;
-  g_free(mark);
+  girara_list_t* marks = zathura_db_load_quickmarks(zathura->database, file);
+  if (marks == NULL) {
+    return false;
+  }
+
+  girara_list_free(zathura->global.marks);
+  zathura->global.marks = marks;
+
+  return true;
 }

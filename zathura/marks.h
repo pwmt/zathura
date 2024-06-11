@@ -7,8 +7,6 @@
 
 #include "zathura.h"
 
-typedef struct zathura_mark_s zathura_mark_t;
-
 /**
  * Saves a mark
  *
@@ -18,8 +16,7 @@ typedef struct zathura_mark_s zathura_mark_t;
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool sc_mark_add(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* event, unsigned int t);
+bool sc_mark_add(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Evaluates a mark
@@ -30,8 +27,7 @@ bool sc_mark_add(girara_session_t* session, girara_argument_t* argument,
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* argument,
-    girara_event_t* event, unsigned int t);
+bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Mark current location within the web page
@@ -52,10 +48,12 @@ bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list);
 bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list);
 
 /**
- * Free function vor marks
+ * Load and set quickmarks from database
  *
- * @param data
+ * @param zathura The zathura instance
+ * @param file Open file
+ * @return true if no error occurred otherwise false
  */
-void mark_free(void* data);
+bool zathura_quickmarks_load(zathura_t* zathura, const gchar* file);
 
 #endif // MARKS_H

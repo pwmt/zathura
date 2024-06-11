@@ -53,6 +53,10 @@ struct _ZathuraDatabaseInterface {
                        zathura_fileinfo_t* file_info);
 
   girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max, const char* basepath);
+
+  girara_list_t* (*load_quickmarks)(ZathuraDatabase* db, const char* file);
+
+  bool (*save_quickmarks)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
 };
 
 GType zathura_database_get_type(void) G_GNUC_CONST;
@@ -102,10 +106,28 @@ girara_list_t* zathura_db_load_jumplist(ZathuraDatabase* db, const char* file);
  * @param db The database instance.
  * @param file The file to which the jumplist belongs.
  * @param jumplist The jumplist to be saved
- *
- * return true on success, false otherwise.
+ * @return true on success, false otherwise.
  */
 bool zathura_db_save_jumplist(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
+
+/**
+ * Load the quickmarks belonging to the specified file from the database.
+ *
+ * @param db The database instance.
+ * @param file The file to which the quick marks belongs.
+ * @return A list constituting the quickmarks of the specified file.
+ */
+girara_list_t* zathura_db_load_quickmarks(ZathuraDatabase* db, const char* file);
+
+/**
+ * Save the quickmarks belonging to the specified file to the database.
+ *
+ * @param db The database instance.
+ * @param file The file to which the quickmarks belongs.
+ * @param quickmarks The quickmarks to be saved
+ * @return return true on success, false otherwise.
+ */
+bool zathura_db_save_quickmarks(ZathuraDatabase* db, const char* file, girara_list_t* quickmarks);
 
 /**
  * Set file info (last site, ...) in the database.

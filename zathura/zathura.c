@@ -1081,12 +1081,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     }
   }
 
-  /* create marks list */
-  zathura->global.marks = girara_list_new2((girara_free_function_t)mark_free);
-  if (zathura->global.marks == NULL) {
-    goto error_free;
-  }
-
   /* threads */
   if (!setup_renderer(zathura, document)) {
     goto error_free;
@@ -1197,6 +1191,19 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     if (zathura_jumplist_load(zathura, file_path) == false) {
       zathura->jumplist.list = girara_list_new2(g_free);
     }
+
+    /* quickmarks */
+    if (zathura_quickmarks_load(zathura, file_path) == false) {
+      zathura->global.marks = girara_list_new2(g_free);
+    }
+  } else {
+    /* create fallback lists */
+    zathura->jumplist.list = girara_list_new2(g_free);
+    zathura->global.marks  = girara_list_new2(g_free);
+  }
+
+  if (zathura->jumplist.list == NULL || zathura->global.marks == NULL) {
+    goto error_free;
   }
 
   /* update title */
@@ -1373,6 +1380,8 @@ static void save_fileinfo_to_db(zathura_t* zathura) {
   zathura_db_set_fileinfo(zathura->database, path, file_hash, &file_info);
   /* save jumplist */
   zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
+  /* save quickmarks */
+  zathura_db_save_quickmarks(zathura->database, path, zathura->global.marks);
 
   g_free(file_info.first_page_column_list);
 }
@@ -1427,15 +1436,15 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     }
   }
 
+  /* store file information */
+  if (zathura->database != NULL) {
+    save_fileinfo_to_db(zathura);
+  }
+
   /* remove marks */
   if (zathura->global.marks != NULL) {
     girara_list_free(zathura->global.marks);
     zathura->global.marks = NULL;
-  }
-
-  /* store file information */
-  if (zathura->database != NULL) {
-    save_fileinfo_to_db(zathura);
   }
 
   /* remove jump list */
