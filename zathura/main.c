@@ -23,25 +23,6 @@
 #include "synctex.h"
 #endif
 
-/* Init locale */
-static void init_locale(void) {
-  setlocale(LC_ALL, "");
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain(GETTEXT_PACKAGE);
-}
-
-/* Set log level */
-static void set_log_level(const char* loglevel) {
-  if (loglevel == NULL || g_strcmp0(loglevel, "info") == 0) {
-    girara_set_log_level(GIRARA_INFO);
-  } else if (g_strcmp0(loglevel, "warning") == 0) {
-    girara_set_log_level(GIRARA_WARNING);
-  } else if (g_strcmp0(loglevel, "error") == 0) {
-    girara_set_log_level(GIRARA_ERROR);
-  }
-}
-
 /* Handle synctex forward synchronization */
 #ifdef WITH_SYNCTEX
 static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
@@ -110,8 +91,7 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
 
 /* main function */
 GIRARA_VISIBLE int main(int argc, char* argv[]) {
-
-  init_locale();
+  zathura_init_locale();
 
   /* parse command line arguments */
   gchar* config_dir     = NULL;
@@ -169,7 +149,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   g_option_context_free(context);
 
   int ret = 0;
-  set_log_level(loglevel);
+  zathura_set_log_level(loglevel);
 
 #ifdef WITH_SYNCTEX
   /* handle synctex forward synchronization */

@@ -317,6 +317,14 @@ void zathura_set_sandbox(zathura_t* zathura, zathura_sandbox_t sandbox);
  */
 void zathura_update_view_ppi(zathura_t* zathura);
 
+/* Init locale */
+void zathura_init_locale(void);
+
+/** Set log level
+ *
+ * @param Log level
+ */
+void zathura_set_log_level(const char* loglevel);
 /**
  * Opens a file
  *
