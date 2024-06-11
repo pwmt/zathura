@@ -156,7 +156,6 @@ struct zathura_s {
   } modes;
 
   struct {
-    gchar* file;              /**< bookmarks file */
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 
