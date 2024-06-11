@@ -11,21 +11,15 @@ static void zathura_jumplist_reset_current(zathura_t* zathura);
 static void zathura_jumplist_append_jump(zathura_t* zathura);
 static void zathura_jumplist_save(zathura_t* zathura);
 
-bool
-zathura_jumplist_has_previous(zathura_t* zathura)
-{
+bool zathura_jumplist_has_previous(zathura_t* zathura) {
   return girara_list_iterator_has_previous(zathura->jumplist.cur);
 }
 
-bool
-zathura_jumplist_has_next(zathura_t* zathura)
-{
+bool zathura_jumplist_has_next(zathura_t* zathura) {
   return girara_list_iterator_has_next(zathura->jumplist.cur);
 }
 
-zathura_jump_t*
-zathura_jumplist_current(zathura_t* zathura)
-{
+zathura_jump_t* zathura_jumplist_current(zathura_t* zathura) {
   if (zathura->jumplist.cur != NULL) {
     return girara_list_iterator_data(zathura->jumplist.cur);
   } else {
@@ -33,25 +27,19 @@ zathura_jumplist_current(zathura_t* zathura)
   }
 }
 
-void
-zathura_jumplist_forward(zathura_t* zathura)
-{
+void zathura_jumplist_forward(zathura_t* zathura) {
   if (girara_list_iterator_has_next(zathura->jumplist.cur)) {
     girara_list_iterator_next(zathura->jumplist.cur);
   }
 }
 
-void
-zathura_jumplist_backward(zathura_t* zathura)
-{
+void zathura_jumplist_backward(zathura_t* zathura) {
   if (girara_list_iterator_has_previous(zathura->jumplist.cur)) {
     girara_list_iterator_previous(zathura->jumplist.cur);
   }
 }
 
-static void
-zathura_jumplist_reset_current(zathura_t* zathura)
-{
+static void zathura_jumplist_reset_current(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->jumplist.cur != NULL);
 
   while (girara_list_iterator_has_next(zathura->jumplist.cur) == true) {
@@ -59,9 +47,7 @@ zathura_jumplist_reset_current(zathura_t* zathura)
   }
 }
 
-static void
-zathura_jumplist_append_jump(zathura_t* zathura)
-{
+static void zathura_jumplist_append_jump(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL);
 
   zathura_jump_t* jump = g_try_malloc0(sizeof(zathura_jump_t));
@@ -82,9 +68,7 @@ zathura_jumplist_append_jump(zathura_t* zathura)
   zathura_jumplist_trim(zathura);
 }
 
-void
-zathura_jumplist_trim(zathura_t* zathura)
-{
+void zathura_jumplist_trim(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->jumplist.list != NULL && zathura->jumplist.size != 0);
 
   girara_list_iterator_t* cur = girara_list_iterator(zathura->jumplist.list);
@@ -106,14 +90,12 @@ zathura_jumplist_trim(zathura_t* zathura)
   }
 }
 
-void
-zathura_jumplist_add(zathura_t* zathura)
-{
+void zathura_jumplist_add(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->document != NULL && zathura->jumplist.list != NULL);
 
   unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
-  double x = zathura_document_get_position_x(zathura->document);
-  double y = zathura_document_get_position_y(zathura->document);
+  double x             = zathura_document_get_position_x(zathura->document);
+  double y             = zathura_document_get_position_y(zathura->document);
 
   if (zathura->jumplist.size != 0) {
     zathura_jumplist_reset_current(zathura);
@@ -132,9 +114,7 @@ zathura_jumplist_add(zathura_t* zathura)
   zathura_jumplist_save(zathura);
 }
 
-bool
-zathura_jumplist_load(zathura_t* zathura, const char* file)
-{
+bool zathura_jumplist_load(zathura_t* zathura, const char* file) {
   g_return_val_if_fail(zathura != NULL && file != NULL, false);
 
   if (zathura->database == NULL) {
@@ -163,18 +143,13 @@ zathura_jumplist_load(zathura_t* zathura, const char* file)
   return true;
 }
 
-static void
-zathura_jumplist_save(zathura_t* zathura)
-{
+static void zathura_jumplist_save(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->document != NULL);
 
   zathura_jump_t* cur = zathura_jumplist_current(zathura);
-
-  unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
-
   if (cur != NULL) {
-    cur->page = pagenum;
-    cur->x = zathura_document_get_position_x(zathura->document);
-    cur->y = zathura_document_get_position_y(zathura->document);
+    cur->page = zathura_document_get_current_page_number(zathura->document);
+    cur->x    = zathura_document_get_position_x(zathura->document);
+    cur->y    = zathura_document_get_position_y(zathura->document);
   }
 }
