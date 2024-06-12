@@ -1089,7 +1089,6 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
   GtkTreeIter   child_iter;
   GtkTreeIter   parent_iter;
 
-  gboolean is_valid_path = TRUE;
   gboolean need_to_scroll = FALSE;
 
   switch(argument->n) {
@@ -1202,11 +1201,9 @@ sc_navigate_index(girara_session_t* session, girara_argument_t* argument,
       return false;
   }
 
-  if (is_valid_path == TRUE) {
-    gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
-    if (need_to_scroll == TRUE) {
-      gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
-    }
+  gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+  if (need_to_scroll == TRUE) {
+    gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
   }
 
   gtk_tree_path_free(path);
