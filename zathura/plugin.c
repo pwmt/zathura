@@ -15,10 +15,10 @@
  * Document plugin structure
  */
 struct zathura_plugin_s {
-  girara_list_t* content_types; /**< List of supported content types */
+  girara_list_t* content_types;         /**< List of supported content types */
   zathura_plugin_functions_t functions; /**< Document functions */
-  GModule* handle; /**< DLL handle */
-  char* path; /**< Path to the plugin */
+  GModule* handle;                      /**< DLL handle */
+  char* path;                           /**< Path to the plugin */
   const zathura_plugin_definition_t* definition;
 };
 
@@ -26,7 +26,7 @@ struct zathura_plugin_s {
  * Plugin mapping
  */
 typedef struct zathura_type_plugin_mapping_s {
-  const gchar* type; /**< Plugin type */
+  const gchar* type;        /**< Plugin type */
   zathura_plugin_t* plugin; /**< Mapped plugin */
 } zathura_type_plugin_mapping_t;
 
@@ -34,10 +34,10 @@ typedef struct zathura_type_plugin_mapping_s {
  * Plugin manager
  */
 struct zathura_plugin_manager_s {
-  girara_list_t* plugins; /**< List of plugins */
-  girara_list_t* path; /**< List of plugin paths */
+  girara_list_t* plugins;             /**< List of plugins */
+  girara_list_t* path;                /**< List of plugin paths */
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
-  girara_list_t* content_types; /**< List of all registered content types */
+  girara_list_t* content_types;       /**< List of all registered content types */
 };
 
 static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
@@ -46,23 +46,19 @@ static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const g
 static void zathura_plugin_free(zathura_plugin_t* plugin);
 static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping);
 
-zathura_plugin_manager_t*
-zathura_plugin_manager_new(void)
-{
+zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
   zathura_plugin_manager_t* plugin_manager = g_try_malloc0(sizeof(zathura_plugin_manager_t));
   if (plugin_manager == NULL) {
     return NULL;
   }
 
-  plugin_manager->plugins = girara_list_new2((girara_free_function_t) zathura_plugin_free);
-  plugin_manager->path    = girara_list_new2(g_free);
+  plugin_manager->plugins             = girara_list_new2((girara_free_function_t)zathura_plugin_free);
+  plugin_manager->path                = girara_list_new2(g_free);
   plugin_manager->type_plugin_mapping = girara_list_new2((girara_free_function_t)zathura_type_plugin_mapping_free);
-  plugin_manager->content_types = girara_list_new2(g_free);
+  plugin_manager->content_types       = girara_list_new2(g_free);
 
-  if (plugin_manager->plugins == NULL
-      || plugin_manager->path == NULL
-      || plugin_manager->type_plugin_mapping == NULL
-      || plugin_manager->content_types == NULL) {
+  if (plugin_manager->plugins == NULL || plugin_manager->path == NULL || plugin_manager->type_plugin_mapping == NULL ||
+      plugin_manager->content_types == NULL) {
     zathura_plugin_manager_free(plugin_manager);
     return NULL;
   }
@@ -70,9 +66,7 @@ zathura_plugin_manager_new(void)
   return plugin_manager;
 }
 
-void
-zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir)
-{
+void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
   if (plugin_manager == NULL || plugin_manager->path == NULL) {
     return;
   }
@@ -80,9 +74,7 @@ zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const c
   girara_list_append(plugin_manager->path, g_strdup(dir));
 }
 
-static bool
-check_suffix(const char* path)
-{
+static bool check_suffix(const char* path) {
 #ifdef __APPLE__
   if (g_str_has_suffix(path, ".dylib") == TRUE) {
     return true;
@@ -96,9 +88,7 @@ check_suffix(const char* path)
   return false;
 }
 
-static void
-load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, const char* name)
-{
+static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, const char* name) {
   char* path = g_build_filename(plugindir, name, NULL);
   if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
     girara_debug("'%s' is not a regular file. Skipping.", path);
@@ -122,9 +112,10 @@ load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, con
 
   /* resolve symbols and check API and ABI version*/
   const zathura_plugin_definition_t* plugin_definition = NULL;
-  if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**) &plugin_definition) == FALSE ||
+  if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**)&plugin_definition) == FALSE ||
       plugin_definition == NULL) {
-    girara_error("Could not find '%s' in plugin %s - is not a plugin or needs to be rebuilt.", G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), path);
+    girara_error("Could not find '%s' in plugin %s - is not a plugin or needs to be rebuilt.",
+                 G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), path);
     g_free(path);
     g_module_close(handle);
     return;
@@ -163,11 +154,11 @@ load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, con
     return;
   }
 
-  plugin->definition = plugin_definition;
-  plugin->functions = plugin_definition->functions;
+  plugin->definition    = plugin_definition;
+  plugin->functions     = plugin_definition->functions;
   plugin->content_types = girara_list_new2(g_free);
-  plugin->handle = handle;
-  plugin->path = path;
+  plugin->handle        = handle;
+  plugin->path          = path;
 
   // register mime types
   for (size_t s = 0; s != plugin_definition->mime_types_size; ++s) {
@@ -180,15 +171,12 @@ load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, con
     zathura_plugin_free(plugin);
   } else {
     girara_debug("Successfully loaded plugin from '%s'.", path);
-    girara_debug("plugin %s: version %u.%u.%u", plugin_definition->name,
-                 plugin_definition->version.major, plugin_definition->version.minor,
-                 plugin_definition->version.rev);
+    girara_debug("plugin %s: version %u.%u.%u", plugin_definition->name, plugin_definition->version.major,
+                 plugin_definition->version.minor, plugin_definition->version.rev);
   }
 }
 
-static void
-load_dir(void* data, void* userdata)
-{
+static void load_dir(void* data, void* userdata) {
   const char* plugindir                    = data;
   zathura_plugin_manager_t* plugin_manager = userdata;
 
@@ -204,9 +192,7 @@ load_dir(void* data, void* userdata)
   }
 }
 
-bool
-zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager)
-{
+bool zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager) {
   if (plugin_manager == NULL || plugin_manager->path == NULL) {
     return false;
   }
@@ -231,9 +217,7 @@ zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* pl
   return NULL;
 }
 
-girara_list_t*
-zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager)
-{
+girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager) {
   if (plugin_manager == NULL || plugin_manager->plugins == NULL) {
     return NULL;
   }
@@ -241,9 +225,7 @@ zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager)
   return plugin_manager->plugins;
 }
 
-girara_list_t*
-zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager)
-{
+girara_list_t* zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager) {
   if (plugin_manager == NULL) {
     return NULL;
   }
@@ -251,9 +233,7 @@ zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manage
   return plugin_manager->content_types;
 }
 
-void
-zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager)
-{
+void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager) {
   if (plugin_manager == NULL) {
     return;
   }
@@ -315,9 +295,7 @@ static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const g
   return true;
 }
 
-static void
-zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping)
-{
+static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping) {
   if (mapping == NULL) {
     return;
   }
@@ -326,13 +304,11 @@ zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping)
   g_free(mapping);
 }
 
-static void
-zathura_plugin_free(zathura_plugin_t* plugin)
-{
+static void zathura_plugin_free(zathura_plugin_t* plugin) {
   if (plugin == NULL) {
     return;
   }
- 
+
   if (plugin->path != NULL) {
     g_free(plugin->path);
   }
@@ -343,9 +319,7 @@ zathura_plugin_free(zathura_plugin_t* plugin)
   g_free(plugin);
 }
 
-static void
-plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
-{
+static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type) {
   if (plugin == NULL || mime_type == NULL) {
     return;
   }
@@ -358,9 +332,7 @@ plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
   }
 }
 
-const zathura_plugin_functions_t*
-zathura_plugin_get_functions(zathura_plugin_t* plugin)
-{
+const zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t* plugin) {
   if (plugin != NULL) {
     return &plugin->functions;
   } else {
@@ -368,9 +340,7 @@ zathura_plugin_get_functions(zathura_plugin_t* plugin)
   }
 }
 
-const char*
-zathura_plugin_get_name(zathura_plugin_t* plugin)
-{
+const char* zathura_plugin_get_name(zathura_plugin_t* plugin) {
   if (plugin != NULL && plugin->definition != NULL) {
     return plugin->definition->name;
   } else {
@@ -378,9 +348,7 @@ zathura_plugin_get_name(zathura_plugin_t* plugin)
   }
 }
 
-char*
-zathura_plugin_get_path(zathura_plugin_t* plugin)
-{
+char* zathura_plugin_get_path(zathura_plugin_t* plugin) {
   if (plugin != NULL) {
     return plugin->path;
   } else {
@@ -388,13 +356,11 @@ zathura_plugin_get_path(zathura_plugin_t* plugin)
   }
 }
 
-zathura_plugin_version_t
-zathura_plugin_get_version(zathura_plugin_t* plugin)
-{
+zathura_plugin_version_t zathura_plugin_get_version(zathura_plugin_t* plugin) {
   if (plugin != NULL && plugin->definition != NULL) {
     return plugin->definition->version;
   }
 
-  zathura_plugin_version_t version = { 0, 0, 0 };
+  zathura_plugin_version_t version = {0, 0, 0};
   return version;
 }

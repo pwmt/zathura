@@ -26,27 +26,32 @@ typedef zathura_error_t (*zathura_plugin_document_free_t)(zathura_document_t* do
 /**
  * Generates the document index
  */
-typedef girara_tree_node_t* (*zathura_plugin_document_index_generate_t)(zathura_document_t* document, void* data, zathura_error_t* error);
+typedef girara_tree_node_t* (*zathura_plugin_document_index_generate_t)(zathura_document_t* document, void* data,
+                                                                        zathura_error_t* error);
 
 /**
  * Save the document
  */
-typedef zathura_error_t (*zathura_plugin_document_save_as_t)(zathura_document_t* document, void* data, const char* path);
+typedef zathura_error_t (*zathura_plugin_document_save_as_t)(zathura_document_t* document, void* data,
+                                                             const char* path);
 
 /**
  * Get list of attachments
  */
-typedef girara_list_t* (*zathura_plugin_document_attachments_get_t)(zathura_document_t* document, void* data, zathura_error_t* error);
+typedef girara_list_t* (*zathura_plugin_document_attachments_get_t)(zathura_document_t* document, void* data,
+                                                                    zathura_error_t* error);
 
 /**
  * Save attachment to a file
  */
-typedef zathura_error_t (*zathura_plugin_document_attachment_save_t)(zathura_document_t* document, void* data, const char* attachment, const char* file);
+typedef zathura_error_t (*zathura_plugin_document_attachment_save_t)(zathura_document_t* document, void* data,
+                                                                     const char* attachment, const char* file);
 
 /**
  * Get document information
  */
-typedef girara_list_t* (*zathura_plugin_document_get_information_t)(zathura_document_t* document, void* data, zathura_error_t* error);
+typedef girara_list_t* (*zathura_plugin_document_get_information_t)(zathura_document_t* document, void* data,
+                                                                    zathura_error_t* error);
 
 /**
  * Gets the page object
@@ -61,7 +66,8 @@ typedef zathura_error_t (*zathura_plugin_page_clear_t)(zathura_page_t* page, voi
 /**
  * Search text
  */
-typedef girara_list_t* (*zathura_plugin_page_search_text_t)(zathura_page_t* page, void* data, const char* text, zathura_error_t* error);
+typedef girara_list_t* (*zathura_plugin_page_search_text_t)(zathura_page_t* page, void* data, const char* text,
+                                                            zathura_error_t* error);
 
 /**
  * Get links on a page
@@ -71,7 +77,8 @@ typedef girara_list_t* (*zathura_plugin_page_links_get_t)(zathura_page_t* page, 
 /**
  * Get form fields
  */
-typedef girara_list_t* (*zathura_plugin_page_form_fields_get_t)(zathura_page_t* page, void* data, zathura_error_t* error);
+typedef girara_list_t* (*zathura_plugin_page_form_fields_get_t)(zathura_page_t* page, void* data,
+                                                                zathura_error_t* error);
 
 /**
  * Get list of images
@@ -81,27 +88,32 @@ typedef girara_list_t* (*zathura_plugin_page_images_get_t)(zathura_page_t* page,
 /**
  * Get the image
  */
-typedef cairo_surface_t* (*zathura_plugin_page_image_get_cairo_t)(zathura_page_t* page, void* data, zathura_image_t* image, zathura_error_t* error);
+typedef cairo_surface_t* (*zathura_plugin_page_image_get_cairo_t)(zathura_page_t* page, void* data,
+                                                                  zathura_image_t* image, zathura_error_t* error);
 
 /**
  * Get text for selection
  */
-typedef char* (*zathura_plugin_page_get_text_t)(zathura_page_t* page, void* data, zathura_rectangle_t rectangle, zathura_error_t* error);
+typedef char* (*zathura_plugin_page_get_text_t)(zathura_page_t* page, void* data, zathura_rectangle_t rectangle,
+                                                zathura_error_t* error);
 
 /**
  * Get rectangles from selection
  */
-typedef girara_list_t* (*zathura_plugin_page_get_selection_t)(zathura_page_t* page, void* data, zathura_rectangle_t rectangle, zathura_error_t* error);
+typedef girara_list_t* (*zathura_plugin_page_get_selection_t)(zathura_page_t* page, void* data,
+                                                              zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
  * Renders the page
  */
-typedef zathura_image_buffer_t* (*zathura_plugin_page_render_t)(zathura_page_t* page, void* data, zathura_error_t* error);
+typedef zathura_image_buffer_t* (*zathura_plugin_page_render_t)(zathura_page_t* page, void* data,
+                                                                zathura_error_t* error);
 
 /**
  * Renders the page to a cairo surface.
  */
-typedef zathura_error_t (*zathura_plugin_page_render_cairo_t)(zathura_page_t* page, void* data, cairo_t* cairo, bool printing);
+typedef zathura_error_t (*zathura_plugin_page_render_cairo_t)(zathura_page_t* page, void* data, cairo_t* cairo,
+                                                              bool printing);
 
 /**
  * Get page label.
@@ -113,8 +125,7 @@ typedef zathura_error_t (*zathura_plugin_page_get_label_t)(zathura_page_t* page,
  */
 typedef girara_list_t* (*zathura_plugin_page_get_signatures)(zathura_page_t* page, void* data, zathura_error_t* error);
 
-struct zathura_plugin_functions_s
-{
+struct zathura_plugin_functions_s {
   /**
    * Opens a document
    */
@@ -231,10 +242,9 @@ typedef struct zathura_plugin_definition_s {
 } zathura_plugin_definition_t;
 
 #define JOIN(x, y) JOIN2(x, y)
-#define JOIN2(x, y) x ## _ ## y
+#define JOIN2(x, y) x##_##y
 
-#define ZATHURA_PLUGIN_DEFINITION_SYMBOL \
-  JOIN(zathura_plugin, JOIN(ZATHURA_API_VERSION, ZATHURA_ABI_VERSION))
+#define ZATHURA_PLUGIN_DEFINITION_SYMBOL JOIN(zathura_plugin, JOIN(ZATHURA_API_VERSION, ZATHURA_ABI_VERSION))
 
 /**
  * Register a plugin.
@@ -246,17 +256,16 @@ typedef struct zathura_plugin_definition_s {
  * @param plugin_functions function to register the plugin's document functions
  * @param mimetypes a char array of mime types supported by the plugin
  */
-#define ZATHURA_PLUGIN_REGISTER_WITH_FUNCTIONS(plugin_name, major, minor, rev, plugin_functions, mimetypes) \
-  static const char* zathura_plugin_mime_types[] = mimetypes; \
-  \
-  ZATHURA_PLUGIN_API const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = { \
-    .name = plugin_name, \
-    .version = { major, minor, rev }, \
-    .functions = plugin_functions, \
-    .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]), \
-    .mime_types = zathura_plugin_mime_types \
-  }; \
-
+#define ZATHURA_PLUGIN_REGISTER_WITH_FUNCTIONS(plugin_name, major, minor, rev, plugin_functions, mimetypes)            \
+  static const char* zathura_plugin_mime_types[] = mimetypes;                                                          \
+                                                                                                                       \
+  ZATHURA_PLUGIN_API const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = {                            \
+      .name            = plugin_name,                                                                                  \
+      .version         = {major, minor, rev},                                                                          \
+      .functions       = plugin_functions,                                                                             \
+      .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]),                     \
+      .mime_types      = zathura_plugin_mime_types,                                                                    \
+  };
 
 #define ZATHURA_PLUGIN_MIMETYPES(...) __VA_ARGS__
 #define ZATHURA_PLUGIN_FUNCTIONS(...) __VA_ARGS__

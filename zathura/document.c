@@ -57,16 +57,13 @@ struct zathura_document_s {
   zathura_plugin_t* plugin;
 };
 
-static void
-check_set_error(zathura_error_t* error, zathura_error_t code) {
+static void check_set_error(zathura_error_t* error, zathura_error_t code) {
   if (error != NULL) {
     *error = code;
   }
 }
 
-static bool
-hash_file_sha256(uint8_t* dst, const char* path)
-{
+static bool hash_file_sha256(uint8_t* dst, const char* path) {
   FILE* f = fopen(path, "rb");
   if (f == NULL) {
     return false;
@@ -97,18 +94,16 @@ hash_file_sha256(uint8_t* dst, const char* path)
   return true;
 }
 
-zathura_document_t*
-zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
-                      const char* password, zathura_error_t* error)
-{
+zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
+                                          zathura_error_t* error) {
   if (zathura == NULL || path == NULL) {
     return NULL;
   }
 
-  GFile* file = g_file_new_for_path(path);
-  char* real_path = NULL;
-  char* content_type = NULL;
-  zathura_plugin_t* plugin = NULL;
+  GFile* file                  = g_file_new_for_path(path);
+  char* real_path              = NULL;
+  char* content_type           = NULL;
+  zathura_plugin_t* plugin     = NULL;
   zathura_document_t* document = NULL;
 
   if (file == NULL) {
@@ -124,7 +119,8 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
     goto error_free;
   }
 
-  content_type = zathura_content_type_guess(zathura->content_type_context, real_path, zathura_plugin_manager_get_content_types(zathura->plugins.manager));
+  content_type = zathura_content_type_guess(zathura->content_type_context, real_path,
+                                            zathura_plugin_manager_get_content_types(zathura->plugins.manager));
   if (content_type == NULL) {
     girara_error("Could not determine file type.");
     check_set_error(error, ZATHURA_ERROR_UNKNOWN);
@@ -151,29 +147,29 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
     goto error_free;
   }
 
-  document->file_path   = real_path;
-  document->uri         = g_strdup(uri);
+  document->file_path = real_path;
+  document->uri       = g_strdup(uri);
   if (document->uri == NULL) {
-    document->basename    = g_file_get_basename(file);
+    document->basename = g_file_get_basename(file);
   } else {
-    GFile*gf = g_file_new_for_uri(document->uri);
+    GFile* gf          = g_file_new_for_uri(document->uri);
     document->basename = g_file_get_basename(gf);
     g_object_unref(gf);
   }
   hash_file_sha256(document->hash_sha256, document->file_path);
-  document->password    = password;
-  document->zoom        = 1.0;
-  document->plugin      = plugin;
-  document->adjust_mode = ZATHURA_ADJUST_NONE;
-  document->cell_width  = 0.0;
-  document->cell_height = 0.0;
-  document->view_height = 0;
-  document->view_width  = 0;
-  document->view_ppi    = 0.0;
+  document->password         = password;
+  document->zoom             = 1.0;
+  document->plugin           = plugin;
+  document->adjust_mode      = ZATHURA_ADJUST_NONE;
+  document->cell_width       = 0.0;
+  document->cell_height      = 0.0;
+  document->view_height      = 0;
+  document->view_width       = 0;
+  document->view_ppi         = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
-  document->position_x  = 0.0;
-  document->position_y  = 0.0;
+  document->position_x       = 0.0;
+  document->position_y       = 0.0;
 
   real_path = NULL;
   g_object_unref(file);
@@ -235,9 +231,7 @@ error_free:
   return NULL;
 }
 
-zathura_error_t
-zathura_document_free(zathura_document_t* document)
-{
+zathura_error_t zathura_document_free(zathura_document_t* document) {
   if (document == NULL || document->plugin == NULL) {
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
@@ -264,9 +258,7 @@ zathura_document_free(zathura_document_t* document)
   return error;
 }
 
-const char*
-zathura_document_get_path(zathura_document_t* document)
-{
+const char* zathura_document_get_path(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
@@ -274,9 +266,7 @@ zathura_document_get_path(zathura_document_t* document)
   return document->file_path;
 }
 
-const uint8_t*
-zathura_document_get_hash(zathura_document_t* document)
-{
+const uint8_t* zathura_document_get_hash(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
@@ -284,9 +274,7 @@ zathura_document_get_hash(zathura_document_t* document)
   return document->hash_sha256;
 }
 
-const char*
-zathura_document_get_uri(zathura_document_t* document)
-{
+const char* zathura_document_get_uri(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
@@ -294,9 +282,7 @@ zathura_document_get_uri(zathura_document_t* document)
   return document->uri;
 }
 
-const char*
-zathura_document_get_basename(zathura_document_t* document)
-{
+const char* zathura_document_get_basename(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
@@ -304,9 +290,7 @@ zathura_document_get_basename(zathura_document_t* document)
   return document->basename;
 }
 
-const char*
-zathura_document_get_password(zathura_document_t* document)
-{
+const char* zathura_document_get_password(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
@@ -314,9 +298,7 @@ zathura_document_get_password(zathura_document_t* document)
   return document->password;
 }
 
-zathura_page_t*
-zathura_document_get_page(zathura_document_t* document, unsigned int index)
-{
+zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned int index) {
   if (document == NULL || document->pages == NULL || (document->number_of_pages <= index)) {
     return NULL;
   }
@@ -324,9 +306,7 @@ zathura_document_get_page(zathura_document_t* document, unsigned int index)
   return document->pages[index];
 }
 
-void*
-zathura_document_get_data(zathura_document_t* document)
-{
+void* zathura_document_get_data(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
@@ -334,9 +314,7 @@ zathura_document_get_data(zathura_document_t* document)
   return document->data;
 }
 
-void
-zathura_document_set_data(zathura_document_t* document, void* data)
-{
+void zathura_document_set_data(zathura_document_t* document, void* data) {
   if (document == NULL) {
     return;
   }
@@ -344,9 +322,7 @@ zathura_document_set_data(zathura_document_t* document, void* data)
   document->data = data;
 }
 
-unsigned int
-zathura_document_get_number_of_pages(zathura_document_t* document)
-{
+unsigned int zathura_document_get_number_of_pages(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -354,9 +330,7 @@ zathura_document_get_number_of_pages(zathura_document_t* document)
   return document->number_of_pages;
 }
 
-void
-zathura_document_set_number_of_pages(zathura_document_t* document, unsigned int number_of_pages)
-{
+void zathura_document_set_number_of_pages(zathura_document_t* document, unsigned int number_of_pages) {
   if (document == NULL) {
     return;
   }
@@ -364,9 +338,7 @@ zathura_document_set_number_of_pages(zathura_document_t* document, unsigned int 
   document->number_of_pages = number_of_pages;
 }
 
-unsigned int
-zathura_document_get_current_page_number(zathura_document_t* document)
-{
+unsigned int zathura_document_get_current_page_number(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -374,10 +346,7 @@ zathura_document_get_current_page_number(zathura_document_t* document)
   return document->current_page_number;
 }
 
-void
-zathura_document_set_current_page_number(zathura_document_t* document, unsigned int
-    current_page)
-{
+void zathura_document_set_current_page_number(zathura_document_t* document, unsigned int current_page) {
   if (document == NULL) {
     return;
   }
@@ -385,9 +354,7 @@ zathura_document_set_current_page_number(zathura_document_t* document, unsigned 
   document->current_page_number = current_page;
 }
 
-double
-zathura_document_get_position_x(zathura_document_t* document)
-{
+double zathura_document_get_position_x(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -395,9 +362,7 @@ zathura_document_get_position_x(zathura_document_t* document)
   return document->position_x;
 }
 
-double
-zathura_document_get_position_y(zathura_document_t* document)
-{
+double zathura_document_get_position_y(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -405,9 +370,7 @@ zathura_document_get_position_y(zathura_document_t* document)
   return document->position_y;
 }
 
-void
-zathura_document_set_position_x(zathura_document_t* document, double position_x)
-{
+void zathura_document_set_position_x(zathura_document_t* document, double position_x) {
   if (document == NULL) {
     return;
   }
@@ -415,9 +378,7 @@ zathura_document_set_position_x(zathura_document_t* document, double position_x)
   document->position_x = position_x;
 }
 
-void
-zathura_document_set_position_y(zathura_document_t* document, double position_y)
-{
+void zathura_document_set_position_y(zathura_document_t* document, double position_y) {
   if (document == NULL) {
     return;
   }
@@ -425,9 +386,7 @@ zathura_document_set_position_y(zathura_document_t* document, double position_y)
   document->position_y = position_y;
 }
 
-double
-zathura_document_get_zoom(zathura_document_t* document)
-{
+double zathura_document_get_zoom(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -435,9 +394,7 @@ zathura_document_get_zoom(zathura_document_t* document)
   return document->zoom;
 }
 
-void
-zathura_document_set_zoom(zathura_document_t* document, double zoom)
-{
+void zathura_document_set_zoom(zathura_document_t* document, double zoom) {
   if (document == NULL) {
     return;
   }
@@ -445,9 +402,7 @@ zathura_document_set_zoom(zathura_document_t* document, double zoom)
   document->zoom = zoom;
 }
 
-double
-zathura_document_get_scale(zathura_document_t* document)
-{
+double zathura_document_get_scale(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -462,9 +417,7 @@ zathura_document_get_scale(zathura_document_t* document)
   return document->zoom * ppi / 72.0;
 }
 
-unsigned int
-zathura_document_get_rotation(zathura_document_t* document)
-{
+unsigned int zathura_document_get_rotation(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -472,9 +425,7 @@ zathura_document_get_rotation(zathura_document_t* document)
   return document->rotate;
 }
 
-void
-zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation)
-{
+void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation) {
   if (document == NULL) {
     return;
   }
@@ -491,9 +442,7 @@ zathura_document_set_rotation(zathura_document_t* document, unsigned int rotatio
   }
 }
 
-zathura_adjust_mode_t
-zathura_document_get_adjust_mode(zathura_document_t* document)
-{
+zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document) {
   if (document == NULL) {
     return ZATHURA_ADJUST_NONE;
   }
@@ -501,9 +450,7 @@ zathura_document_get_adjust_mode(zathura_document_t* document)
   return document->adjust_mode;
 }
 
-void
-zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode)
-{
+void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode) {
   if (document == NULL) {
     return;
   }
@@ -511,9 +458,7 @@ zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mo
   document->adjust_mode = mode;
 }
 
-int
-zathura_document_get_page_offset(zathura_document_t* document)
-{
+int zathura_document_get_page_offset(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
@@ -521,9 +466,7 @@ zathura_document_get_page_offset(zathura_document_t* document)
   return document->page_offset;
 }
 
-void
-zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset)
-{
+void zathura_document_set_page_offset(zathura_document_t* document, unsigned int page_offset) {
   if (document == NULL) {
     return;
   }
@@ -531,61 +474,46 @@ zathura_document_set_page_offset(zathura_document_t* document, unsigned int page
   document->page_offset = page_offset;
 }
 
-void
-zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width)
-{
+void zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width) {
   if (document == NULL) {
     return;
   }
   document->view_width = width;
 }
 
-void
-zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height)
-{
+void zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height) {
   if (document == NULL) {
     return;
   }
   document->view_height = height;
 }
 
-void
-zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi)
-{
+void zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi) {
   if (document == NULL) {
     return;
   }
   document->view_ppi = ppi;
 }
 
-void
-zathura_document_get_viewport_size(zathura_document_t* document,
-                                   unsigned int *height, unsigned int* width)
-{
+void zathura_document_get_viewport_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
   *height = document->view_height;
-  *width = document->view_width;
+  *width  = document->view_width;
 }
 
-double
-zathura_document_get_viewport_ppi(zathura_document_t* document)
-{
+double zathura_document_get_viewport_ppi(zathura_document_t* document) {
   if (document == NULL) {
     return 0.0;
   }
   return document->view_ppi;
 }
 
-void
-zathura_document_set_device_factors(zathura_document_t* document,
-                                    double x_factor, double y_factor)
-{
+void zathura_document_set_device_factors(zathura_document_t* document, double x_factor, double y_factor) {
   if (document == NULL) {
     return;
   }
   if (fabs(x_factor) < DBL_EPSILON || fabs(y_factor) < DBL_EPSILON) {
-    girara_debug("Ignoring new device factors %0.2f and %0.2f: too small",
-        x_factor, y_factor);
+    girara_debug("Ignoring new device factors %0.2f and %0.2f: too small", x_factor, y_factor);
     return;
   }
 
@@ -593,9 +521,7 @@ zathura_document_set_device_factors(zathura_document_t* document,
   document->device_factors.y = y_factor;
 }
 
-zathura_device_factors_t
-zathura_document_get_device_factors(zathura_document_t* document)
-{
+zathura_device_factors_t zathura_document_get_device_factors(zathura_document_t* document) {
   if (document == NULL) {
     /* The function is guaranteed to not return zero values */
     return (zathura_device_factors_t){1.0, 1.0};
@@ -604,20 +530,13 @@ zathura_document_get_device_factors(zathura_document_t* document)
   return document->device_factors;
 }
 
-void
-zathura_document_get_cell_size(zathura_document_t* document,
-                               unsigned int* height, unsigned int* width)
-{
+void zathura_document_get_cell_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-  page_calc_height_width(document, document->cell_height, document->cell_width,
-                         height, width, true);
+  page_calc_height_width(document, document->cell_height, document->cell_width, height, width, true);
 }
 
-void
-zathura_document_get_document_size(zathura_document_t* document,
-                                   unsigned int* height, unsigned int* width)
-{
+void zathura_document_get_document_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
   const unsigned int npag = zathura_document_get_number_of_pages(document);
@@ -627,9 +546,9 @@ zathura_document_get_document_size(zathura_document_t* document,
     return;
   }
 
-  const unsigned int c0    = zathura_document_get_first_page_column(document);
-  const unsigned int nrow  = (npag + c0 - 1 + ncol - 1) / ncol;  /* number of rows */
-  const unsigned int pad   = zathura_document_get_page_padding(document);
+  const unsigned int c0   = zathura_document_get_first_page_column(document);
+  const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol; /* number of rows */
+  const unsigned int pad  = zathura_document_get_page_padding(document);
 
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
@@ -639,21 +558,16 @@ zathura_document_get_document_size(zathura_document_t* document,
   *height = nrow * cell_height + (nrow - 1) * pad;
 }
 
-void
-zathura_document_set_cell_size(zathura_document_t* document, unsigned int cell_height,
-                               unsigned int cell_width)
-{
-  document->cell_width = cell_width;
+void zathura_document_set_cell_size(zathura_document_t* document, unsigned int cell_height, unsigned int cell_width) {
+  document->cell_width  = cell_width;
   document->cell_height = cell_height;
 }
 
-void
-zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
-                                 unsigned int pages_per_row, unsigned int first_page_column)
-{
+void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
+                                      unsigned int pages_per_row, unsigned int first_page_column) {
   g_return_if_fail(document != NULL);
 
-  document->page_padding = page_padding;
+  document->page_padding  = page_padding;
   document->pages_per_row = pages_per_row;
 
   if (first_page_column < 1) {
@@ -665,36 +579,28 @@ zathura_document_set_page_layout(zathura_document_t* document, unsigned int page
   document->first_page_column = first_page_column;
 }
 
-unsigned int
-zathura_document_get_page_padding(zathura_document_t* document)
-{
+unsigned int zathura_document_get_page_padding(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
   return document->page_padding;
 }
 
-unsigned int
-zathura_document_get_pages_per_row(zathura_document_t* document)
-{
+unsigned int zathura_document_get_pages_per_row(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
   return document->pages_per_row;
 }
 
-unsigned int
-zathura_document_get_first_page_column(zathura_document_t* document)
-{
+unsigned int zathura_document_get_first_page_column(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
   }
   return document->first_page_column;
 }
 
-zathura_error_t
-zathura_document_save_as(zathura_document_t* document, const char* path)
-{
+zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path) {
   if (document == NULL || document->plugin == NULL || path == NULL) {
     return ZATHURA_ERROR_UNKNOWN;
   }
@@ -707,9 +613,7 @@ zathura_document_save_as(zathura_document_t* document, const char* path)
   return functions->document_save_as(document, document->data, path);
 }
 
-girara_tree_node_t*
-zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error)
-{
+girara_tree_node_t* zathura_document_index_generate(zathura_document_t* document, zathura_error_t* error) {
   if (document == NULL || document->plugin == NULL) {
     check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
     return NULL;
@@ -724,9 +628,7 @@ zathura_document_index_generate(zathura_document_t* document, zathura_error_t* e
   return functions->document_index_generate(document, document->data, error);
 }
 
-girara_list_t*
-zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error)
-{
+girara_list_t* zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* error) {
   if (document == NULL || document->plugin == NULL) {
     check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
     return NULL;
@@ -741,9 +643,8 @@ zathura_document_attachments_get(zathura_document_t* document, zathura_error_t* 
   return functions->document_attachments_get(document, document->data, error);
 }
 
-zathura_error_t
-zathura_document_attachment_save(zathura_document_t* document, const char* attachment, const char* file)
-{
+zathura_error_t zathura_document_attachment_save(zathura_document_t* document, const char* attachment,
+                                                 const char* file) {
   if (document == NULL || document->plugin == NULL) {
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
@@ -756,9 +657,7 @@ zathura_document_attachment_save(zathura_document_t* document, const char* attac
   return functions->document_attachment_save(document, document->data, attachment, file);
 }
 
-girara_list_t*
-zathura_document_get_information(zathura_document_t* document, zathura_error_t* error)
-{
+girara_list_t* zathura_document_get_information(zathura_document_t* document, zathura_error_t* error) {
   if (document == NULL || document->plugin == NULL) {
     check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
     return NULL;
@@ -772,15 +671,13 @@ zathura_document_get_information(zathura_document_t* document, zathura_error_t* 
 
   girara_list_t* result = functions->document_get_information(document, document->data, error);
   if (result != NULL) {
-    girara_list_set_free_function(result, (girara_free_function_t) zathura_document_information_entry_free);
+    girara_list_set_free_function(result, (girara_free_function_t)zathura_document_information_entry_free);
   }
 
   return result;
 }
 
-zathura_plugin_t*
-zathura_document_get_plugin(zathura_document_t* document)
-{
+zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document) {
   if (document == NULL) {
     return NULL;
   }
