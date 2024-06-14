@@ -1210,11 +1210,32 @@ static void import_input_history(GiraraInputHistoryIO* ih, const char* plain_dir
   g_free(input_history_path);
 }
 
+static bool plaindatabase_is_available(const char* plain_dir) {
+  gchar* bookmark_path      = g_build_filename(plain_dir, BOOKMARKS, NULL);
+  gchar* history_path       = g_build_filename(plain_dir, HISTORY, NULL);
+  gchar* input_history_path = g_build_filename(plain_dir, INPUT_HISTORY, NULL);
+
+  const bool check = g_file_test(bookmark_path, G_FILE_TEST_EXISTS) == true ||
+                     g_file_test(history_path, G_FILE_TEST_EXISTS) == true ||
+                     g_file_test(input_history_path, G_FILE_TEST_EXISTS) == true;
+
+  g_free(input_history_path);
+  g_free(history_path);
+  g_free(bookmark_path);
+
+  return check;
+}
+
 zathura_database_t* zathura_sqldatabase_new_from_plain(const char* sqlite_path, const char* plain_dir) {
   g_return_val_if_fail(sqlite_path != NULL && strlen(sqlite_path) != 0, NULL);
   g_return_val_if_fail(plain_dir != NULL && strlen(plain_dir) != 0, NULL);
 
   girara_info("Opening plain database via sqlite backend.");
+  if (plaindatabase_is_available(plain_dir) == false) {
+    girara_info("No plain database available. Continuing with sqlite database.");
+    return zathura_sqldatabase_new(sqlite_path);
+  }
+
   if (g_file_test(sqlite_path, G_FILE_TEST_EXISTS) == true) {
     girara_warning(
         "sqlite database already exists. Set your database backend to sqlite. See zathurarc(5) for details.");
