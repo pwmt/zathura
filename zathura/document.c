@@ -181,10 +181,6 @@ zathura_document_open(zathura_t* zathura, const char* path, const char* uri,
 
   /* open document */
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
-  if (functions->document_open == NULL) {
-    girara_error("plugin has no open function\n");
-    goto error_free;
-  }
 
   zathura_error_t int_error = functions->document_open(document);
   if (int_error != ZATHURA_ERROR_OK) {
@@ -256,18 +252,13 @@ zathura_document_free(zathura_document_t* document)
   }
 
   /* free document */
-  zathura_error_t error = ZATHURA_ERROR_OK;
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(document->plugin);
-  if (functions->document_free == NULL) {
-    error = ZATHURA_ERROR_NOT_IMPLEMENTED;
-  } else {
-    error = functions->document_free(document, document->data);
-  }
+
+  zathura_error_t error = functions->document_free(document, document->data);
 
   g_free(document->file_path);
   g_free(document->uri);
   g_free(document->basename);
-
   g_free(document);
 
   return error;

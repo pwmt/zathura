@@ -146,6 +146,15 @@ load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, con
     return;
   }
 
+  if (plugin_definition->functions.document_open == NULL || plugin_definition->functions.document_free == NULL ||
+      plugin_definition->functions.page_init == NULL || plugin_definition->functions.page_clear == NULL ||
+      plugin_definition->functions.page_render_cairo == NULL) {
+    girara_error("Plugin is missing required functions.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
   zathura_plugin_t* plugin = g_try_malloc0(sizeof(zathura_plugin_t));
   if (plugin == NULL) {
     girara_error("Failed to allocate memory for plugin.");
