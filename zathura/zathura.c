@@ -1550,8 +1550,8 @@ void statusbar_page_number_update(zathura_t* zathura) {
   unsigned int page_number_percent = number_of_pages ? 100 * (current_page_number + 1) / number_of_pages : 0;
 
   if (zathura->document != NULL) {
-    zathura_page_t* page = zathura_document_get_page(zathura->document, current_page_number);
-    char* page_label     = zathura_page_get_label(page, NULL);
+    zathura_page_t* page   = zathura_document_get_page(zathura->document, current_page_number);
+    const char* page_label = zathura_page_get_label(page, NULL);
 
     bool show_percent = false;
     girara_setting_get(zathura->ui.session, "statusbar-page-percent", &show_percent);
@@ -1564,7 +1564,6 @@ void statusbar_page_number_update(zathura_t* zathura) {
       } else {
         page_number_text = g_strdup_printf("[%s (%d/%d)]", page_label, current_page_number + 1, number_of_pages);
       }
-      g_free(page_label);
     } else {
       if (show_percent) {
         page_number_text =

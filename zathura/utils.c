@@ -80,12 +80,11 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
     if (type == ZATHURA_LINK_GOTO_DEST) {
       zathura_t* zathura   = session->global.data;
       zathura_page_t* page = zathura_document_get_page(zathura->document, target.page_number);
-      char* label          = zathura_page_get_label(page, NULL);
+      const char* label    = zathura_page_get_label(page, NULL);
 
       if (label != NULL) {
         description  = g_strdup_printf("Page %s", label);
         description2 = g_strdup_printf("(%d)", target.page_number + 1);
-        g_free(label);
       } else {
         description = g_strdup_printf("Page %d", target.page_number + 1);
       }
