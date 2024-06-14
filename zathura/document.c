@@ -186,7 +186,7 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   }
 
   /* read all pages */
-  document->pages = calloc(document->number_of_pages, sizeof(zathura_page_t*));
+  document->pages = g_try_malloc0_n(document->number_of_pages, sizeof(zathura_page_t*));
   if (document->pages == NULL) {
     check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);
     goto error_free;
@@ -242,7 +242,7 @@ zathura_error_t zathura_document_free(zathura_document_t* document) {
       zathura_page_free(document->pages[page_id]);
       document->pages[page_id] = NULL;
     }
-    free(document->pages);
+    g_free(document->pages);
   }
 
   /* free document */
