@@ -104,12 +104,6 @@ typedef girara_list_t* (*zathura_plugin_page_get_selection_t)(zathura_page_t* pa
                                                               zathura_rectangle_t rectangle, zathura_error_t* error);
 
 /**
- * Renders the page
- */
-typedef zathura_image_buffer_t* (*zathura_plugin_page_render_t)(zathura_page_t* page, void* data,
-                                                                zathura_error_t* error);
-
-/**
  * Renders the page to a cairo surface.
  */
 typedef zathura_error_t (*zathura_plugin_page_render_cairo_t)(zathura_page_t* page, void* data, cairo_t* cairo,
@@ -205,11 +199,6 @@ struct zathura_plugin_functions_s {
    * Get text for selection
    */
   zathura_plugin_page_get_selection_t page_get_selection;
-
-  /**
-   * Renders the page
-   */
-  zathura_plugin_page_render_t page_render;
 
   /**
    * Renders the page to a cairo surface.
