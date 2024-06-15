@@ -202,7 +202,8 @@ bool zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager) {
   return girara_list_size(plugin_manager->plugins) > 0;
 }
 
-zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, const char* type) {
+const zathura_plugin_t* zathura_plugin_manager_get_plugin(const zathura_plugin_manager_t* plugin_manager,
+                                                          const char* type) {
   if (plugin_manager == NULL || plugin_manager->type_plugin_mapping == NULL || type == NULL) {
     return NULL;
   }
@@ -332,7 +333,7 @@ static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type)
   }
 }
 
-const zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t* plugin) {
+const zathura_plugin_functions_t* zathura_plugin_get_functions(const zathura_plugin_t* plugin) {
   if (plugin != NULL) {
     return &plugin->functions;
   } else {
@@ -340,7 +341,7 @@ const zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t*
   }
 }
 
-const char* zathura_plugin_get_name(zathura_plugin_t* plugin) {
+const char* zathura_plugin_get_name(const zathura_plugin_t* plugin) {
   if (plugin != NULL && plugin->definition != NULL) {
     return plugin->definition->name;
   } else {
@@ -348,7 +349,7 @@ const char* zathura_plugin_get_name(zathura_plugin_t* plugin) {
   }
 }
 
-char* zathura_plugin_get_path(zathura_plugin_t* plugin) {
+const char* zathura_plugin_get_path(const zathura_plugin_t* plugin) {
   if (plugin != NULL) {
     return plugin->path;
   } else {
@@ -356,7 +357,7 @@ char* zathura_plugin_get_path(zathura_plugin_t* plugin) {
   }
 }
 
-zathura_plugin_version_t zathura_plugin_get_version(zathura_plugin_t* plugin) {
+zathura_plugin_version_t zathura_plugin_get_version(const zathura_plugin_t* plugin) {
   if (plugin != NULL && plugin->definition != NULL) {
     return plugin->definition->version;
   }

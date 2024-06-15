@@ -54,7 +54,7 @@ struct zathura_document_s {
   /**
    * Used plugin
    */
-  zathura_plugin_t* plugin;
+  const zathura_plugin_t* plugin;
 };
 
 static void check_set_error(zathura_error_t* error, zathura_error_t code) {
@@ -100,11 +100,11 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     return NULL;
   }
 
-  GFile* file                  = g_file_new_for_path(path);
-  char* real_path              = NULL;
-  char* content_type           = NULL;
-  zathura_plugin_t* plugin     = NULL;
-  zathura_document_t* document = NULL;
+  GFile* file                    = g_file_new_for_path(path);
+  char* real_path                = NULL;
+  char* content_type             = NULL;
+  const zathura_plugin_t* plugin = NULL;
+  zathura_document_t* document   = NULL;
 
   if (file == NULL) {
     girara_error("Error while handling path '%s'.", path);
@@ -679,7 +679,7 @@ girara_list_t* zathura_document_get_information(zathura_document_t* document, za
   return result;
 }
 
-zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document) {
+const zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document) {
   g_return_val_if_fail(document != NULL, NULL);
 
   return document->plugin;
