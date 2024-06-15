@@ -678,9 +678,7 @@ girara_list_t* zathura_document_get_information(zathura_document_t* document, za
 }
 
 zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document) {
-  if (document == NULL) {
-    return NULL;
-  }
+  g_return_val_if_fail(document != NULL, NULL);
 
   return document->plugin;
 }
