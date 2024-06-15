@@ -817,9 +817,12 @@ static gboolean document_info_open(gpointer data) {
 
 char* get_formatted_filename(zathura_t* zathura, bool statusbar) {
   bool basename_only    = false;
-  const char* file_path = zathura_document_get_uri(zathura->document);
-  if (file_path == NULL) {
-    file_path = zathura_document_get_path(zathura->document);
+  const char* file_path = NULL;
+  if (zathura->document != NULL) {
+    file_path = zathura_document_get_uri(zathura->document);
+    if (file_path == NULL) {
+      file_path = zathura_document_get_path(zathura->document);
+    }
   }
   if (statusbar == true) {
     girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
