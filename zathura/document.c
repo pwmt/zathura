@@ -203,12 +203,14 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
 
     /* cell_width and cell_height is the maximum of all the pages width and height */
     const double width = zathura_page_get_width(page);
-    if (document->cell_width < width)
+    if (document->cell_width < width) {
       document->cell_width = width;
+    }
 
     const double height = zathura_page_get_height(page);
-    if (document->cell_height < height)
+    if (document->cell_height < height) {
       document->cell_height = height;
+    }
   }
 
   return document;
