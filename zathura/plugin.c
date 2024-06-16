@@ -107,6 +107,7 @@ void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, co
     set_plugin_dir(plugin_manager, dir);
   }
 }
+
 static bool check_suffix(const char* path) {
 #ifdef __APPLE__
   if (g_str_has_suffix(path, ".dylib") == TRUE) {
@@ -268,16 +269,14 @@ girara_list_t* zathura_plugin_manager_get_content_types(const zathura_plugin_man
 }
 
 void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager) {
-  if (plugin_manager == NULL) {
-    return;
+  if (plugin_manager != NULL) {
+    girara_list_free(plugin_manager->content_types);
+    girara_list_free(plugin_manager->type_plugin_mapping);
+    girara_list_free(plugin_manager->path);
+    girara_list_free(plugin_manager->plugins);
+
+    g_free(plugin_manager);
   }
-
-  girara_list_free(plugin_manager->content_types);
-  girara_list_free(plugin_manager->type_plugin_mapping);
-  girara_list_free(plugin_manager->path);
-  girara_list_free(plugin_manager->plugins);
-
-  g_free(plugin_manager);
 }
 
 static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin) {
@@ -337,18 +336,14 @@ static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapp
 }
 
 static void zathura_plugin_free(zathura_plugin_t* plugin) {
-  if (plugin == NULL) {
-    return;
-  }
-
-  if (plugin->path != NULL) {
+  if (plugin != NULL) {
     g_free(plugin->path);
+
+    g_module_close(plugin->handle);
+    girara_list_free(plugin->content_types);
+
+    g_free(plugin);
   }
-
-  g_module_close(plugin->handle);
-  girara_list_free(plugin->content_types);
-
-  g_free(plugin);
 }
 
 static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type) {
