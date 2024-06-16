@@ -603,7 +603,7 @@ bool cmd_version(girara_session_t* session, girara_list_t* UNUSED(argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  char* string = zathura_get_version_string(zathura, true);
+  char* string = zathura_get_version_string(zathura->plugins.manager, true);
   if (string == NULL) {
     return false;
   }

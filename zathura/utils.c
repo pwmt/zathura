@@ -210,8 +210,8 @@ void document_draw_search_results(zathura_t* zathura, bool value) {
   }
 }
 
-char* zathura_get_version_string(zathura_t* zathura, bool markup) {
-  if (zathura == NULL) {
+char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager, bool markup) {
+  if (plugin_manager == NULL) {
     return NULL;
   }
 
@@ -225,7 +225,7 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup) {
       (markup == true) ? "\n<i>(plugin)</i> %s (%d.%d.%d) <i>(%s)</i>" : "\n(plugin) %s (%d.%d.%d) (%s)";
 
   /* plugin information */
-  girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
+  girara_list_t* plugins = zathura_plugin_manager_get_plugins(plugin_manager);
   if (plugins != NULL) {
     for (size_t idx = 0; idx != girara_list_size(plugins); ++idx) {
       const zathura_plugin_t* plugin   = girara_list_nth(plugins, idx);

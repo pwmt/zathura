@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include "zathura.h"
+#include "plugin.h"
 #include "utils.h"
 #ifdef WITH_SYNCTEX
 #include "dbus-interface.h"
@@ -236,6 +237,22 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     }
   }
 
+  /* Print version */
+  if (print_version == true) {
+    zathura_plugin_manager_t* plugin_manager = zathura_plugin_manager_new();
+    zathura_plugin_manager_set_dir(plugin_manager, plugin_path);
+    zathura_plugin_manager_load(plugin_manager);
+
+    char* string = zathura_get_version_string(plugin_manager, false);
+    if (string != NULL) {
+      fprintf(stdout, "%s\n", string);
+      g_free(string);
+    }
+    zathura_plugin_manager_free(plugin_manager);
+
+    goto free_and_ret;
+  }
+
   /* Initialize GTK+ */
   gtk_init(&argc, &argv);
 
@@ -244,18 +261,6 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     ret = -1;
-    goto free_and_ret;
-  }
-
-  /* Print version */
-  if (print_version == true) {
-    char* string = zathura_get_version_string(zathura, false);
-    if (string != NULL) {
-      fprintf(stdout, "%s\n", string);
-      g_free(string);
-    }
-    zathura_free(zathura);
-
     goto free_and_ret;
   }
 

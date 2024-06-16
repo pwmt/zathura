@@ -81,11 +81,11 @@ void document_draw_search_results(zathura_t* zathura, bool value);
 /**
  * Create zathura version string
  *
- * @param zathura The zathura instance
+ * @param plugin_manager The plugin manager
  * @param markup Enable markup
  * @return Version string
  */
-char* zathura_get_version_string(zathura_t* zathura, bool markup);
+char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager, bool markup);
 
 /**
  * Get a pointer to the GdkAtom of the current clipboard.
