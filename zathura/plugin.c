@@ -64,7 +64,7 @@ static void add_dir(void* data, void* userdata) {
   const char* path                         = data;
   zathura_plugin_manager_t* plugin_manager = userdata;
 
-  zathura_plugin_manager_add_dir(plugin_manager, path);
+  girara_list_append(plugin_manager->path, g_strdup(path));
 }
 
 static void set_plugin_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
@@ -103,14 +103,6 @@ zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
 
   set_default_dirs(plugin_manager);
   return plugin_manager;
-}
-
-void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
-  if (plugin_manager == NULL || plugin_manager->path == NULL) {
-    return;
-  }
-
-  girara_list_append(plugin_manager->path, g_strdup(dir));
 }
 
 void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
