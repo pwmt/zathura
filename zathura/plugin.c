@@ -40,6 +40,7 @@ struct zathura_plugin_manager_s {
   girara_list_t* content_types;       /**< List of all registered content types */
 };
 
+static void set_default_dirs(zathura_plugin_manager_t* plugin_manager);
 static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
 static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin);
 static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin);
@@ -63,6 +64,7 @@ zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
     return NULL;
   }
 
+  set_default_dirs(plugin_manager);
   return plugin_manager;
 }
 
@@ -74,6 +76,37 @@ void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, co
   girara_list_append(plugin_manager->path, g_strdup(dir));
 }
 
+static void add_dir(void* data, void* userdata) {
+  const char* path                         = data;
+  zathura_plugin_manager_t* plugin_manager = userdata;
+
+  zathura_plugin_manager_add_dir(plugin_manager, path);
+}
+
+static void set_plugin_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
+  girara_list_t* paths = girara_split_path_array(dir);
+  girara_list_foreach(paths, add_dir, plugin_manager);
+  girara_list_free(paths);
+}
+
+static void set_default_dirs(zathura_plugin_manager_t* plugin_manager) {
+#ifdef ZATHURA_PLUGINDIR
+  set_plugin_dir(plugin_manager, ZATHURA_PLUGINDIR);
+#endif
+
+  const char* env_paths = g_getenv("ZATHURA_PLUGINS_PATH");
+  if (env_paths != NULL) {
+    set_plugin_dir(plugin_manager, env_paths);
+  }
+}
+
+void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
+  g_return_if_fail(plugin_manager != NULL);
+
+  if (dir != NULL) {
+    set_plugin_dir(plugin_manager, dir);
+  }
+}
 static bool check_suffix(const char* path) {
 #ifdef __APPLE__
   if (g_str_has_suffix(path, ".dylib") == TRUE) {

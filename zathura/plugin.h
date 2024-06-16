@@ -34,6 +34,14 @@ void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager);
 void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir);
 
 /**
+ * Add colon-seperated list of directories to the plugin manager's plugin search path
+ *
+ * @param plugin_manager  The plain manager
+ * @param dir Colon-seperated list of directories
+ */
+void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, const char* dir);
+
+/**
  * Loads all plugins available in the previously given directories
  *
  * @param plugin_manager The plugin manager
