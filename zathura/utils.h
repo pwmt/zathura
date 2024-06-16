@@ -9,10 +9,9 @@
 
 #include "document.h"
 
-#define LENGTH(x) (sizeof(x)/sizeof((x)[0]))
+#define LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 
-typedef struct page_offset_s
-{
+typedef struct page_offset_s {
   int x;
   int y;
 } page_offset_t;
@@ -36,7 +35,8 @@ bool file_valid_extension(zathura_t* zathura, const char* path);
  * @param parent The tree iterator parent
  * @param tree The Tree iterator
  */
-void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree);
+void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent,
+                          girara_tree_node_t* tree);
 
 void index_scroll_to_current_page(girara_session_t* session);
 /**
@@ -106,8 +106,7 @@ GdkAtom* get_selection(zathura_t* zathura);
  *
  * @return The corrected zoom value
  */
-double zathura_correct_zoom_value(girara_session_t* session, const double
-    zoom);
+double zathura_correct_zoom_value(girara_session_t* session, const double zoom);
 
 /**
  * Write a list of 'pages per row to first column' values as a colon separated string.
@@ -142,8 +141,7 @@ unsigned int* parse_first_page_column(const char* first_page_column_list, unsign
  *
  * @return The column the first page should be rendered in
  */
-unsigned int find_first_page_column(const char* first_page_column_list,
-                                    const unsigned int pages_per_row);
+unsigned int find_first_page_column(const char* first_page_column_list, const unsigned int pages_per_row);
 
 /**
  * Cycle the column the first page should be rendered in.
@@ -154,8 +152,7 @@ unsigned int find_first_page_column(const char* first_page_column_list,
  *
  * @return The new modified settings list
  */
-char* increment_first_page_column(const char* first_page_column_list,
-                                  const unsigned int pages_per_row, int incr);
+char* increment_first_page_column(const char* first_page_column_list, const unsigned int pages_per_row, int incr);
 
 /**
  * Parse color string and print warning if color cannot be parsed.
@@ -166,13 +163,6 @@ char* increment_first_page_column(const char* first_page_column_list,
  * @return True if color string can be parsed, false otherwise.
  */
 bool parse_color(GdkRGBA* color, const char* str);
-
-/**
- * Check if zathura is running under the Linux subsystem on Windows.
- *
- * @return true if running under WSL, false otherwise
- */
-bool running_under_wsl(void);
 
 /**
  * Flatten list of overlapping rectangles.

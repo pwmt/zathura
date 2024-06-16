@@ -396,16 +396,6 @@ bool parse_color(GdkRGBA* color, const char* str) {
   return true;
 }
 
-bool running_under_wsl(void) {
-  bool result   = false;
-  char* content = girara_file_read("/proc/version");
-  if (content != NULL && g_strstr_len(content, -1, "Microsoft")) {
-    result = true;
-  }
-  g_free(content);
-  return result;
-}
-
 typedef struct zathura_point_s {
   uintptr_t x;
   uintptr_t y;
