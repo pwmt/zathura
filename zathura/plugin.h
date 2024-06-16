@@ -57,7 +57,7 @@ const zathura_plugin_t* zathura_plugin_manager_get_plugin(const zathura_plugin_m
  * @param plugin_manager The plugin manager
  * @return List of plugins or NULL
  */
-girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager);
+girara_list_t* zathura_plugin_manager_get_plugins(const zathura_plugin_manager_t* plugin_manager);
 
 /**
  * Return a list of supported content types
@@ -65,7 +65,7 @@ girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plug
  * @param plugin_manager The plugin manager
  * @return List of plugins or NULL
  */
-girara_list_t* zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager);
+girara_list_t* zathura_plugin_manager_get_content_types(const zathura_plugin_manager_t* plugin_manager);
 
 /**
  * Returns the plugin functions

@@ -228,7 +228,7 @@ char* zathura_get_version_string(zathura_t* zathura, bool markup) {
   girara_list_t* plugins = zathura_plugin_manager_get_plugins(zathura->plugins.manager);
   if (plugins != NULL) {
     for (size_t idx = 0; idx != girara_list_size(plugins); ++idx) {
-      zathura_plugin_t* plugin         = girara_list_nth(plugins, idx);
+      const zathura_plugin_t* plugin   = girara_list_nth(plugins, idx);
       const char* name                 = zathura_plugin_get_name(plugin);
       zathura_plugin_version_t version = zathura_plugin_get_version(plugin);
       g_string_append_printf(string, format, (name == NULL) ? "-" : name, version.major, version.minor, version.rev,

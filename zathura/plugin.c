@@ -26,7 +26,7 @@ struct zathura_plugin_s {
  * Plugin mapping
  */
 typedef struct zathura_type_plugin_mapping_s {
-  const gchar* type;        /**< Plugin type */
+  char* type;               /**< Plugin type */
   zathura_plugin_t* plugin; /**< Mapped plugin */
 } zathura_type_plugin_mapping_t;
 
@@ -218,15 +218,15 @@ const zathura_plugin_t* zathura_plugin_manager_get_plugin(const zathura_plugin_m
   return NULL;
 }
 
-girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager) {
-  if (plugin_manager == NULL || plugin_manager->plugins == NULL) {
+girara_list_t* zathura_plugin_manager_get_plugins(const zathura_plugin_manager_t* plugin_manager) {
+  if (plugin_manager == NULL) {
     return NULL;
   }
 
   return plugin_manager->plugins;
 }
 
-girara_list_t* zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager) {
+girara_list_t* zathura_plugin_manager_get_content_types(const zathura_plugin_manager_t* plugin_manager) {
   if (plugin_manager == NULL) {
     return NULL;
   }
@@ -297,12 +297,10 @@ static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const g
 }
 
 static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping) {
-  if (mapping == NULL) {
-    return;
+  if (mapping != NULL) {
+    g_free(mapping->type);
+    g_free(mapping);
   }
-
-  g_free((void*)mapping->type);
-  g_free(mapping);
 }
 
 static void zathura_plugin_free(zathura_plugin_t* plugin) {
