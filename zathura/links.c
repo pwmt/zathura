@@ -236,37 +236,38 @@ link_launch(zathura_t* zathura, const zathura_link_t* link)
   g_free(dir);
 }
 
-void
-zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link)
-{
+void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
   if (zathura == NULL || zathura->document == NULL || link == NULL) {
     return;
   }
 
-  if (link->type != ZATHURA_LINK_GOTO_DEST && zathura->global.sandbox == ZATHURA_SANDBOX_STRICT) {
-    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Opening external applications in strict sandbox mode is not permitted"));
+#if WITH_SANDBOX
+  if (link->type != ZATHURA_LINK_GOTO_DEST) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR,
+                  _("Opening external applications in strict sandbox mode is not permitted"));
     return;
   }
+#endif
 
   switch (link->type) {
-    case ZATHURA_LINK_GOTO_DEST:
-      girara_debug("Going to link destination: page: %d", link->target.page_number);
-      link_goto_dest(zathura, link);
-      break;
-    case ZATHURA_LINK_GOTO_REMOTE:
-      girara_debug("Going to remote destination: %s", link->target.value);
-      link_remote(zathura, link->target.value);
-      break;
-    case ZATHURA_LINK_URI:
-      girara_debug("Opening URI: %s", link->target.value);
-      link_launch(zathura, link);
-      break;
-    case ZATHURA_LINK_LAUNCH:
-      girara_debug("Launching link: %s", link->target.value);
-      link_launch(zathura, link);
-      break;
-    default:
-      break;
+  case ZATHURA_LINK_GOTO_DEST:
+    girara_debug("Going to link destination: page: %d", link->target.page_number);
+    link_goto_dest(zathura, link);
+    break;
+  case ZATHURA_LINK_GOTO_REMOTE:
+    girara_debug("Going to remote destination: %s", link->target.value);
+    link_remote(zathura, link->target.value);
+    break;
+  case ZATHURA_LINK_URI:
+    girara_debug("Opening URI: %s", link->target.value);
+    link_launch(zathura, link);
+    break;
+  case ZATHURA_LINK_LAUNCH:
+    girara_debug("Launching link: %s", link->target.value);
+    link_launch(zathura, link);
+    break;
+  default:
+    break;
   }
 }
 

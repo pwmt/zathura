@@ -35,7 +35,6 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
   zathura_set_cache_dir(zathura, cache_dir);
   zathura_set_plugin_dir(zathura, plugin_path);
   zathura_set_argv(zathura, argv);
-  zathura_set_sandbox(zathura, ZATHURA_SANDBOX_STRICT);
 
   /* Init zathura */
   if (zathura_init(zathura) == false) {

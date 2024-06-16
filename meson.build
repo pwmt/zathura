@@ -159,7 +159,7 @@ libzathura_dep = declare_dependency(link_with: libzathura)
 # zathura-sandbox executable
 if seccomp.found() or landlock
   sandbox_sources = files()
-  sandbox_defines = defines
+  sandbox_defines = ['-DWITH_SANDBOX']
   sandbox_dependencies = []
   if seccomp.found()
     sandbox_defines += '-DWITH_SECCOMP'
@@ -171,13 +171,22 @@ if seccomp.found() or landlock
     sandbox_sources += files('zathura/landlock.c')
   endif
 
+  # zathura helper library
+  libzathura_sandbox = static_library('zathura-sandbox',
+    sources + sandbox_sources,
+    dependencies: build_dependencies + sandbox_dependencies,
+    include_directories: include_directories,
+    c_args: defines + flags + sandbox_defines
+  )
+  libzathura_sandbox_dep = declare_dependency(link_with: libzathura_sandbox)
+
   zathura_sandbox = executable(
     'zathura-sandbox',
     files('zathura/main-sandbox.c') + sandbox_sources,
-    dependencies: build_dependencies + [libzathura_dep] + sandbox_dependencies,
+    dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
     install: true,
     include_directories: include_directories,
-    c_args: sandbox_defines + flags,
+    c_args: defines + sandbox_defines + flags,
     export_dynamic: true,
     win_subsystem: 'windows'
   )

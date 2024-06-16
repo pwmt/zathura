@@ -56,8 +56,8 @@ if check.found()
     )
 
     if seccomp.found() or landlock
-      sandbox = executable('test_sandbox', ['test_sandbox.c', 'tests.c'] + sandbox_sources,
-        dependencies: build_dependencies + test_dependencies + sandbox_dependencies,
+      sandbox = executable('test_sandbox', ['test_sandbox.c', 'tests.c'],
+        dependencies: build_dependencies + [libzathura_sandbox_dep, check] + sandbox_dependencies,
         include_directories: include_directories,
         c_args: defines + sandbox_defines + flags
       )

@@ -87,7 +87,6 @@ zathura_t* zathura_create(void) {
   zathura->global.search_direction     = FORWARD;
   zathura->global.synctex_edit_modmask = GDK_CONTROL_MASK;
   zathura->global.highlighter_modmask  = GDK_SHIFT_MASK;
-  zathura->global.sandbox              = ZATHURA_SANDBOX_NONE;
   zathura->global.double_click_follow  = true;
 
   /* plugins */
@@ -124,6 +123,7 @@ error_out:
   return NULL;
 }
 
+#ifndef WITH_SANDBOX
 static void create_directories(zathura_t* zathura) {
   static const unsigned int mode = 0700;
 
@@ -131,6 +131,7 @@ static void create_directories(zathura_t* zathura) {
     girara_error("Could not create '%s': %s", zathura->config.data_dir, strerror(errno));
   }
 }
+#endif
 
 void zathura_update_view_ppi(zathura_t* zathura) {
   if (zathura == NULL) {
@@ -333,6 +334,7 @@ static bool init_css(zathura_t* zathura) {
   return true;
 }
 
+#ifndef WITH_SANDBOX
 static void init_database(zathura_t* zathura) {
   char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
@@ -363,6 +365,7 @@ static void init_database(zathura_t* zathura) {
   }
   g_free(database);
 }
+#endif
 
 static void init_jumplist(zathura_t* zathura) {
   int jumplist_size = 20;
@@ -408,11 +411,11 @@ bool zathura_init(zathura_t* zathura) {
     goto error_free;
   }
 
-  /* disable unsupported features in strict sandbox mode */
-  if (zathura->global.sandbox != ZATHURA_SANDBOX_STRICT) {
-    /* database */
-    init_database(zathura);
-  }
+/* disable unsupported features in strict sandbox mode */
+#ifndef WITH_SANDBOX
+  /* database */
+  init_database(zathura);
+#endif
 
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_sorted_list_new2((girara_compare_function_t)zathura_bookmarks_compare,
@@ -430,12 +433,14 @@ bool zathura_init(zathura_t* zathura) {
   /* Shortcut helpers */
   init_shortcut_helpers(zathura);
 
-  /* Start D-Bus service */
+/* Start D-Bus service */
+#ifndef WITH_SANDBOX
   bool dbus = true;
   girara_setting_get(zathura->ui.session, "dbus-service", &dbus);
-  if (dbus == true && zathura->global.sandbox != ZATHURA_SANDBOX_STRICT) {
+  if (dbus == true) {
     zathura->dbus = zathura_dbus_new(zathura);
   }
+#endif
 
   return true;
 
@@ -568,12 +573,6 @@ void zathura_set_argv(zathura_t* zathura, char** argv) {
   g_return_if_fail(zathura != NULL);
 
   zathura->global.arguments = argv;
-}
-
-void zathura_set_sandbox(zathura_t* zathura, zathura_sandbox_t sandbox) {
-  g_return_if_fail(zathura != NULL);
-
-  zathura->global.sandbox = sandbox;
 }
 
 static bool setup_renderer(zathura_t* zathura, zathura_document_t* document) {

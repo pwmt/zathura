@@ -22,7 +22,6 @@ START_TEST(test_create) {
   ck_assert_int_eq(seccomp_enable_strict_filter(zathura), 0);
 #endif
 
-  zathura_set_sandbox(zathura, ZATHURA_SANDBOX_STRICT);
   ck_assert(zathura_init(zathura));
   zathura_free(zathura);
 }

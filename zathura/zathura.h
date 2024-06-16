@@ -82,11 +82,6 @@ enum {
   ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4 * 1024 * 1024
 };
 
-typedef enum {
-  ZATHURA_SANDBOX_NONE,
-  ZATHURA_SANDBOX_STRICT,
-} zathura_sandbox_t;
-
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
 typedef struct zathura_fileinfo_s zathura_fileinfo_t;
@@ -143,7 +138,6 @@ struct zathura_s {
     int search_direction;                 /**< Current search direction (FORWARD or BACKWARD) */
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
-    zathura_sandbox_t sandbox;            /**< Sandbox mode */
     bool double_click_follow;             /**< Double/Single click to follow link */
   } global;
 
@@ -300,14 +294,6 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir);
  * @param argv List of arguments
  */
 void zathura_set_argv(zathura_t* zathura, char** argv);
-
-/**
- * Sets the sandbox mode
- *
- * @param zathura The zathura session
- * @param sandbox Sandbox mode
- */
-void zathura_set_sandbox(zathura_t* zathura, zathura_sandbox_t sandbox);
 
 /**
  * Calculate and store the monitor PPI for the view widget
