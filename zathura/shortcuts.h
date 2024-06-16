@@ -47,7 +47,8 @@ bool sc_change_mode(girara_session_t* session, girara_argument_t* argument, gira
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                           unsigned int t);
 
 /**
  * Display a link
@@ -70,7 +71,6 @@ bool sc_display_link(girara_session_t* session, girara_argument_t* argument, gir
  * @return true if no error occurred otherwise false
  */
 bool sc_copy_link(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
-
 
 /**
  * Copy opened file path
@@ -280,7 +280,8 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* argument,
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                          unsigned int t);
 
 /**
  * Toggle presentation mode
@@ -291,7 +292,8 @@ bool sc_toggle_fullscreen(girara_session_t* session, girara_argument_t* argument
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                            unsigned int t);
 
 /**
  * Quit zathura
@@ -346,6 +348,6 @@ bool sc_nohlsearch(girara_session_t* session, girara_argument_t* argument, girar
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool sc_snap_to_page(girara_session_t *session, girara_argument_t *argument, girara_event_t *event, unsigned int t);
+bool sc_snap_to_page(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 #endif // SHORTCUTS_H

@@ -9,9 +9,7 @@
 #include "internal.h"
 #include "checked-integer-arithmetic.h"
 
-zathura_index_element_t*
-zathura_index_element_new(const char* title)
-{
+zathura_index_element_t* zathura_index_element_new(const char* title) {
   if (title == NULL) {
     return NULL;
   }
@@ -26,9 +24,7 @@ zathura_index_element_new(const char* title)
   return res;
 }
 
-void
-zathura_index_element_free(zathura_index_element_t* index)
-{
+void zathura_index_element_free(zathura_index_element_t* index) {
   if (index == NULL) {
     return;
   }
@@ -38,9 +34,7 @@ zathura_index_element_free(zathura_index_element_t* index)
   g_free(index);
 }
 
-zathura_image_buffer_t*
-zathura_image_buffer_create(unsigned int width, unsigned int height)
-{
+zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned int height) {
   g_return_val_if_fail(width != 0, NULL);
   g_return_val_if_fail(height != 0, NULL);
 
@@ -68,9 +62,7 @@ zathura_image_buffer_create(unsigned int width, unsigned int height)
   return image_buffer;
 }
 
-void
-zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
-{
+void zathura_image_buffer_free(zathura_image_buffer_t* image_buffer) {
   if (image_buffer == NULL) {
     return;
   }
@@ -79,22 +71,17 @@ zathura_image_buffer_free(zathura_image_buffer_t* image_buffer)
   free(image_buffer);
 }
 
-static void
-document_information_entry_free(void* data)
-{
+static void document_information_entry_free(void* data) {
   zathura_document_information_entry_t* entry = data;
   zathura_document_information_entry_free(entry);
 }
 
-girara_list_t*
-zathura_document_information_entry_list_new(void)
-{
+girara_list_t* zathura_document_information_entry_list_new(void) {
   return girara_list_new2(document_information_entry_free);
 }
 
-zathura_document_information_entry_t*
-zathura_document_information_entry_new(zathura_document_information_type_t type, const char* value)
-{
+zathura_document_information_entry_t* zathura_document_information_entry_new(zathura_document_information_type_t type,
+                                                                             const char* value) {
   if (value == NULL) {
     return NULL;
   }
@@ -110,9 +97,7 @@ zathura_document_information_entry_new(zathura_document_information_type_t type,
   return entry;
 }
 
-void
-zathura_document_information_entry_free(zathura_document_information_entry_t* entry)
-{
+void zathura_document_information_entry_free(zathura_document_information_entry_t* entry) {
   if (entry == NULL) {
     return;
   }

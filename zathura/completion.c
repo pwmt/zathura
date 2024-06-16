@@ -20,21 +20,17 @@
 #include <girara/utils.h>
 #include <girara/datastructures.h>
 
-static int
-compare_case_insensitive(const char* str1, const char* str2)
-{
+static int compare_case_insensitive(const char* str1, const char* str2) {
   char* ustr1 = g_utf8_casefold(str1, -1);
   char* ustr2 = g_utf8_casefold(str2, -1);
-  int res = g_utf8_collate(ustr1, ustr2);
+  int res     = g_utf8_collate(ustr1, ustr2);
   g_free(ustr1);
   g_free(ustr2);
   return res;
 }
 
-static girara_list_t*
-list_files(zathura_t* zathura, const char* current_path, const char* current_file,
-           size_t current_file_length, bool is_dir, bool check_file_ext)
-{
+static girara_list_t* list_files(zathura_t* zathura, const char* current_path, const char* current_file,
+                                 size_t current_file_length, bool is_dir, bool check_file_ext) {
   if (zathura == NULL || zathura->ui.session == NULL || current_path == NULL) {
     return NULL;
   }
@@ -47,8 +43,8 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
     return NULL;
   }
 
-  girara_list_t* res = girara_sorted_list_new2((girara_compare_function_t)compare_case_insensitive,
-                       (girara_free_function_t)g_free);
+  girara_list_t* res =
+      girara_sorted_list_new2((girara_compare_function_t)compare_case_insensitive, (girara_free_function_t)g_free);
 
   bool show_hidden = false;
   girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
@@ -58,7 +54,7 @@ list_files(zathura_t* zathura, const char* current_path, const char* current_fil
   /* read files */
   const char* name = NULL;
   while ((name = g_dir_read_name(dir)) != NULL) {
-    char* e_name   = g_filename_display_name(name);
+    char* e_name = g_filename_display_name(name);
     if (e_name == NULL) {
       goto error_free;
     }
@@ -120,20 +116,17 @@ error_free:
   return NULL;
 }
 
-static void
-group_add_element(void* data, void* userdata)
-{
+static void group_add_element(void* data, void* userdata) {
   const char* element              = data;
   girara_completion_group_t* group = userdata;
 
   girara_completion_group_add_element(group, element, NULL);
 }
 
-static girara_completion_t*
-list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, int show_recent)
-{
-  girara_completion_t* completion  = girara_completion_init();
-  girara_completion_group_t* group = girara_completion_group_create(zathura->ui.session, "files");
+static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext,
+                                              int show_recent) {
+  girara_completion_t* completion          = girara_completion_init();
+  girara_completion_group_t* group         = girara_completion_group_create(zathura->ui.session, "files");
   girara_completion_group_t* history_group = NULL;
 
   gchar* path         = NULL;
@@ -175,7 +168,7 @@ list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext, in
   if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && is_dir == false) {
     char* tmp_path = g_strdup_printf("%s/", path);
     g_free(path);
-    path = tmp_path;
+    path   = tmp_path;
     is_dir = true;
   }
 
@@ -240,9 +233,7 @@ error_free:
   return NULL;
 }
 
-girara_completion_t*
-cc_open(girara_session_t* session, const char* input)
-{
+girara_completion_t* cc_open(girara_session_t* session, const char* input) {
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
@@ -253,9 +244,7 @@ cc_open(girara_session_t* session, const char* input)
   return list_files_for_cc(zathura, input, true, show_recent);
 }
 
-girara_completion_t*
-cc_write(girara_session_t* session, const char* input)
-{
+girara_completion_t* cc_write(girara_session_t* session, const char* input) {
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;

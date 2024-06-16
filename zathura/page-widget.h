@@ -15,27 +15,20 @@
  * Before the properties contain the correct values, 'draw-links' has to be set
  * to TRUE at least one time.
  * */
-struct zathura_page_widget_s
-{
+struct zathura_page_widget_s {
   GtkDrawingArea parent;
 };
 
-struct zathura_page_widget_class_s
-{
+struct zathura_page_widget_class_s {
   GtkDrawingAreaClass parent_class;
 };
 
 #define ZATHURA_TYPE_PAGE (zathura_page_widget_get_type())
-#define ZATHURA_PAGE(obj)                                                      \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_PAGE, ZathuraPage))
-#define ZATHURA_PAGE_CLASS(obj)                                                \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
-#define ZATHURA_IS_PAGE(obj)                                                   \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_PAGE))
-#define ZATHURA_IS_PAGE_CLASS(obj)                                             \
-  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_PAGE))
-#define ZATHURA_PAGE_GET_CLASS(obj)                                            \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
+#define ZATHURA_PAGE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_PAGE, ZathuraPage))
+#define ZATHURA_PAGE_CLASS(obj) (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
+#define ZATHURA_IS_PAGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_PAGE))
+#define ZATHURA_IS_PAGE_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_PAGE))
+#define ZATHURA_PAGE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
 
 /**
  * Returns the type of the page view widget.

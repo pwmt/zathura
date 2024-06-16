@@ -4,10 +4,9 @@
 #include <girara/datastructures.h>
 #include "types.h"
 
-typedef struct zathura_jumplist_s
-{
+typedef struct zathura_jumplist_s {
   girara_list_t* list;
-  girara_list_iterator_t *cur;
+  girara_list_iterator_t* cur;
   unsigned int size;
   unsigned int max_size;
 } zathura_jumplist_t;
@@ -73,6 +72,5 @@ void zathura_jumplist_trim(zathura_t* zathura);
  * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
-
 
 #endif
