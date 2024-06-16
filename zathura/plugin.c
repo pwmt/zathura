@@ -40,40 +40,24 @@ struct zathura_plugin_manager_s {
   girara_list_t* content_types;       /**< List of all registered content types */
 };
 
-static void set_default_dirs(zathura_plugin_manager_t* plugin_manager);
-static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type);
-static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin);
-static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin);
-static void zathura_plugin_free(zathura_plugin_t* plugin);
-static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping);
+static void zathura_type_plugin_mapping_free(void* data) {
+  if (data != NULL) {
+    zathura_type_plugin_mapping_t* mapping = data;
 
-zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
-  zathura_plugin_manager_t* plugin_manager = g_try_malloc0(sizeof(zathura_plugin_manager_t));
-  if (plugin_manager == NULL) {
-    return NULL;
+    g_free(mapping->type);
+    g_free(mapping);
   }
-
-  plugin_manager->plugins             = girara_list_new2((girara_free_function_t)zathura_plugin_free);
-  plugin_manager->path                = girara_list_new2(g_free);
-  plugin_manager->type_plugin_mapping = girara_list_new2((girara_free_function_t)zathura_type_plugin_mapping_free);
-  plugin_manager->content_types       = girara_list_new2(g_free);
-
-  if (plugin_manager->plugins == NULL || plugin_manager->path == NULL || plugin_manager->type_plugin_mapping == NULL ||
-      plugin_manager->content_types == NULL) {
-    zathura_plugin_manager_free(plugin_manager);
-    return NULL;
-  }
-
-  set_default_dirs(plugin_manager);
-  return plugin_manager;
 }
 
-void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
-  if (plugin_manager == NULL || plugin_manager->path == NULL) {
-    return;
-  }
+static void zathura_plugin_free(void* data) {
+  if (data != NULL) {
+    zathura_plugin_t* plugin = data;
 
-  girara_list_append(plugin_manager->path, g_strdup(dir));
+    g_free(plugin->path);
+    g_module_close(plugin->handle);
+    girara_list_free(plugin->content_types);
+    g_free(plugin);
+  }
 }
 
 static void add_dir(void* data, void* userdata) {
@@ -100,6 +84,35 @@ static void set_default_dirs(zathura_plugin_manager_t* plugin_manager) {
   }
 }
 
+zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
+  zathura_plugin_manager_t* plugin_manager = g_try_malloc0(sizeof(zathura_plugin_manager_t));
+  if (plugin_manager == NULL) {
+    return NULL;
+  }
+
+  plugin_manager->plugins             = girara_list_new2(zathura_plugin_free);
+  plugin_manager->path                = girara_list_new2(g_free);
+  plugin_manager->type_plugin_mapping = girara_list_new2(zathura_type_plugin_mapping_free);
+  plugin_manager->content_types       = girara_list_new2(g_free);
+
+  if (plugin_manager->plugins == NULL || plugin_manager->path == NULL || plugin_manager->type_plugin_mapping == NULL ||
+      plugin_manager->content_types == NULL) {
+    zathura_plugin_manager_free(plugin_manager);
+    return NULL;
+  }
+
+  set_default_dirs(plugin_manager);
+  return plugin_manager;
+}
+
+void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
+  if (plugin_manager == NULL || plugin_manager->path == NULL) {
+    return;
+  }
+
+  girara_list_append(plugin_manager->path, g_strdup(dir));
+}
+
 void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
   g_return_if_fail(plugin_manager != NULL);
 
@@ -120,6 +133,68 @@ static bool check_suffix(const char* path) {
 #endif
 
   return false;
+}
+
+static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type) {
+  if (plugin == NULL || mime_type == NULL) {
+    return;
+  }
+
+  char* content_type = g_content_type_from_mime_type(mime_type);
+  if (content_type == NULL) {
+    girara_warning("plugin: unable to convert mime type: %s", mime_type);
+  } else {
+    girara_list_append(plugin->content_types, content_type);
+  }
+}
+
+static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin) {
+  g_return_val_if_fail(plugin_manager != NULL, false);
+  g_return_val_if_fail(type != NULL, false);
+  g_return_val_if_fail(plugin != NULL, false);
+
+  for (size_t idx = 0; idx != girara_list_size(plugin_manager->type_plugin_mapping); ++idx) {
+    zathura_type_plugin_mapping_t* mapping = girara_list_nth(plugin_manager->type_plugin_mapping, idx);
+    if (g_content_type_equals(type, mapping->type)) {
+      return false;
+    }
+  }
+
+  zathura_type_plugin_mapping_t* mapping = g_try_malloc0(sizeof(zathura_type_plugin_mapping_t));
+  if (mapping == NULL) {
+    return false;
+  }
+
+  mapping->type   = g_strdup(type);
+  mapping->plugin = plugin;
+  girara_list_append(plugin_manager->type_plugin_mapping, mapping);
+  girara_list_append(plugin_manager->content_types, g_strdup(type));
+
+  return true;
+}
+
+static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin) {
+  if (plugin == NULL || plugin->content_types == NULL || plugin_manager == NULL || plugin_manager->plugins == NULL) {
+    girara_error("plugin: could not register");
+    return false;
+  }
+
+  bool at_least_one = false;
+  for (size_t idx = 0; idx != girara_list_size(plugin->content_types); ++idx) {
+    gchar* type = girara_list_nth(plugin->content_types, idx);
+    if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
+      girara_error("plugin: filetype already registered: %s", type);
+    } else {
+      girara_debug("plugin: filetype mapping added: %s", type);
+      at_least_one = true;
+    }
+  }
+
+  if (at_least_one == true) {
+    girara_list_append(plugin_manager->plugins, plugin);
+  }
+
+  return at_least_one;
 }
 
 static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, const char* name) {
@@ -276,86 +351,6 @@ void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager) {
     girara_list_free(plugin_manager->plugins);
 
     g_free(plugin_manager);
-  }
-}
-
-static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin) {
-  if (plugin == NULL || plugin->content_types == NULL || plugin_manager == NULL || plugin_manager->plugins == NULL) {
-    girara_error("plugin: could not register");
-    return false;
-  }
-
-  bool at_least_one = false;
-  for (size_t idx = 0; idx != girara_list_size(plugin->content_types); ++idx) {
-    gchar* type = girara_list_nth(plugin->content_types, idx);
-    if (plugin_mapping_new(plugin_manager, type, plugin) == false) {
-      girara_error("plugin: filetype already registered: %s", type);
-    } else {
-      girara_debug("plugin: filetype mapping added: %s", type);
-      at_least_one = true;
-    }
-  }
-
-  if (at_least_one == true) {
-    girara_list_append(plugin_manager->plugins, plugin);
-  }
-
-  return at_least_one;
-}
-
-static bool plugin_mapping_new(zathura_plugin_manager_t* plugin_manager, const gchar* type, zathura_plugin_t* plugin) {
-  g_return_val_if_fail(plugin_manager != NULL, false);
-  g_return_val_if_fail(type != NULL, false);
-  g_return_val_if_fail(plugin != NULL, false);
-
-  for (size_t idx = 0; idx != girara_list_size(plugin_manager->type_plugin_mapping); ++idx) {
-    zathura_type_plugin_mapping_t* mapping = girara_list_nth(plugin_manager->type_plugin_mapping, idx);
-    if (g_content_type_equals(type, mapping->type)) {
-      return false;
-    }
-  }
-
-  zathura_type_plugin_mapping_t* mapping = g_try_malloc0(sizeof(zathura_type_plugin_mapping_t));
-  if (mapping == NULL) {
-    return false;
-  }
-
-  mapping->type   = g_strdup(type);
-  mapping->plugin = plugin;
-  girara_list_append(plugin_manager->type_plugin_mapping, mapping);
-  girara_list_append(plugin_manager->content_types, g_strdup(type));
-
-  return true;
-}
-
-static void zathura_type_plugin_mapping_free(zathura_type_plugin_mapping_t* mapping) {
-  if (mapping != NULL) {
-    g_free(mapping->type);
-    g_free(mapping);
-  }
-}
-
-static void zathura_plugin_free(zathura_plugin_t* plugin) {
-  if (plugin != NULL) {
-    g_free(plugin->path);
-
-    g_module_close(plugin->handle);
-    girara_list_free(plugin->content_types);
-
-    g_free(plugin);
-  }
-}
-
-static void plugin_add_mimetype(zathura_plugin_t* plugin, const char* mime_type) {
-  if (plugin == NULL || mime_type == NULL) {
-    return;
-  }
-
-  char* content_type = g_content_type_from_mime_type(mime_type);
-  if (content_type == NULL) {
-    girara_warning("plugin: unable to convert mime type: %s", mime_type);
-  } else {
-    girara_list_append(plugin->content_types, content_type);
   }
 }
 
