@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir build-nofeatures
           cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled ..
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose
 
@@ -54,7 +54,7 @@ jobs:
         run: |
           mkdir build-nofeatures
           cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled ..
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose
 
@@ -79,7 +79,7 @@ jobs:
         run: |
           mkdir build-nofeatures
           cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled ..
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose
 
@@ -104,7 +104,7 @@ jobs:
         run: |
           mkdir build-nofeatures
           cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled ..
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose
 
@@ -129,6 +129,6 @@ jobs:
         run: |
           mkdir build-nofeatures
           cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled ..
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose
