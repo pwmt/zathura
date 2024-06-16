@@ -114,8 +114,6 @@ bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(a
   }
 
   g_string_free(string, TRUE);
-  return false;
-
   return true;
 }
 
@@ -533,7 +531,6 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exec is not permitted in strict sandbox mode"));
   return false;
 #else
-
   if (zathura->dbus != NULL) {
     const char* bus_name = zathura_dbus_get_name(zathura);
     for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
