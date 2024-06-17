@@ -1,31 +1,22 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <check.h>
-
 #include "zathura.h"
-#include "tests.h"
 
-START_TEST(test_create) {
+static void fixture_setup(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUSED(user_data)) {
+  g_assert_true(gtk_init_check(NULL, NULL));
+}
+
+static void test_create(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUSED(user_data)) {
   zathura_t* zathura = zathura_create();
-  ck_assert_ptr_nonnull(zathura);
-  ck_assert(zathura_init(zathura));
+  g_assert_nonnull(zathura);
+  g_assert_nonnull(g_getenv("G_TEST_SRCDIR"));
+  zathura_set_config_dir(zathura, g_getenv("G_TEST_SRCDIR"));
+  g_assert_true(zathura_init(zathura));
   zathura_free(zathura);
 }
-END_TEST
 
-static Suite* suite_session(void) {
-  TCase* tcase = NULL;
-  Suite* suite = suite_create("Session");
-
-  /* basic */
-  tcase = tcase_create("basic");
-  tcase_add_checked_fixture(tcase, setup, NULL);
-  tcase_add_test(tcase, test_create);
-  suite_add_tcase(suite, tcase);
-
-  return suite;
-}
-
-int main() {
-  return run_suite(suite_session());
+int main(int argc, char* argv[]) {
+  g_test_init(&argc, &argv, NULL);
+  g_test_add("/session/create", void*, NULL, fixture_setup, test_create, NULL);
+  return g_test_run();
 }
