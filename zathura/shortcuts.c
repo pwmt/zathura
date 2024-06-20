@@ -1051,7 +1051,7 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
   case UP:
     for (int n = (t == 0 ? 1 : t); n > 0; n--) {
       if (gtk_tree_path_prev(path)) {
-        if (gtk_tree_view_row_expanded(tree_view, path)) {
+        while (gtk_tree_view_row_expanded(tree_view, path)) {
           gtk_tree_model_get_iter(model, &iter, path);
           /* select last child */
           gtk_tree_model_iter_nth_child(model, &child_iter, &iter, gtk_tree_model_iter_n_children(model, &iter) - 1);
@@ -1082,20 +1082,22 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
         continue;
       }
       gtk_tree_model_get_iter(model, &iter, path);
-      if (gtk_tree_model_iter_parent(model, &parent_iter, &iter) && !gtk_tree_model_iter_next(model, &iter)) {
-        if (!gtk_tree_model_iter_next(model, &parent_iter)) {
-          break;
-        }
-        gtk_tree_path_free(path);
-        path = gtk_tree_model_get_path(model, &parent_iter);
-      } else {
-        gtk_tree_model_get_iter(model, &iter, path);
-        if (!gtk_tree_model_iter_next(model, &iter)) {
-          break;
-        }
+      if (gtk_tree_model_iter_next(model, &iter)) {
         gtk_tree_path_free(path);
         path = gtk_tree_model_get_path(model, &iter);
+        continue;
       }
+      gtk_tree_model_get_iter(model, &iter, path);
+      while (gtk_tree_model_iter_parent(model, &parent_iter, &iter)) {
+        iter = parent_iter;
+        if (gtk_tree_model_iter_next(model, &parent_iter)) {
+          iter = parent_iter;
+          break;
+        }
+        parent_iter = iter;
+      }
+      gtk_tree_path_free(path);
+      path = gtk_tree_model_get_path(model, &iter);
     }
     break;
   case HALF_UP:
