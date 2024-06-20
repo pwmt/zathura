@@ -1,6 +1,5 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <check.h>
 #include <limits.h>
 
 #include "types.h"
