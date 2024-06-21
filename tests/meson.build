@@ -84,7 +84,7 @@ if get_option('tests').allowed()
         c_args: defines + sandbox_defines + flags
       )
       test('sandbox', xvfb,
-        args: xvkfb_args + [sandbox],
+        args: xvfb_args + [sandbox],
         timeout: 60*60,
         protocol: 'tap',
         env: [
