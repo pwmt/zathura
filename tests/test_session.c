@@ -2,11 +2,11 @@
 
 #include "zathura.h"
 
-static void fixture_setup(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUSED(user_data)) {
-  g_assert_true(gtk_init_check(NULL, NULL));
-}
+#include "tests.h"
 
-static void test_create(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUSED(user_data)) {
+static void test_create(void) {
+  setup_logger();
+
   zathura_t* zathura = zathura_create();
   g_assert_nonnull(zathura);
   g_assert_nonnull(g_getenv("G_TEST_SRCDIR"));
@@ -16,7 +16,10 @@ static void test_create(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUS
 }
 
 int main(int argc, char* argv[]) {
+  setup_logger();
+
+  gtk_init(NULL, NULL);
   g_test_init(&argc, &argv, NULL);
-  g_test_add("/session/create", void*, NULL, fixture_setup, test_create, NULL);
+  g_test_add_func("/session/create", test_create);
   return g_test_run();
 }

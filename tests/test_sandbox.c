@@ -8,7 +8,11 @@
 #include "landlock.h"
 #endif
 
-static void test_create(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUSED(user_data)) {
+#include "tests.h"
+
+static void test_create(void) {
+  setup_logger();
+
 #ifdef GDK_WINDOWING_X11
   GdkDisplay* display = gdk_display_get_default();
 
@@ -33,12 +37,11 @@ static void test_create(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUS
   zathura_free(zathura);
 }
 
-static void fixture_setup(void** GIRARA_UNUSED(fixture), gconstpointer GIRARA_UNUSED(user_data)) {
-  g_assert_true(gtk_init_check(NULL, NULL));
-}
-
 int main(int argc, char* argv[]) {
+  setup_logger();
+
+  gtk_init(NULL, NULL);
   g_test_init(&argc, &argv, NULL);
-  g_test_add("/sandbox/session_create", void*, NULL, fixture_setup, test_create, NULL);
+  g_test_add_func("/sandbox/session_create", test_create);
   return g_test_run();
 }
