@@ -1,11 +1,14 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include <girara/log.h>
+
 #include "zathura.h"
 
 #include "tests.h"
 
 static void test_create(void) {
   setup_logger();
+  girara_set_log_level(GIRARA_ERROR);
 
   zathura_t* zathura = zathura_create();
   g_assert_nonnull(zathura);

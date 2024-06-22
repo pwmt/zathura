@@ -398,7 +398,7 @@ bool zathura_init(zathura_t* zathura) {
 
   /* load plugins */
   if (zathura_plugin_manager_load(zathura->plugins.manager) == false) {
-    girara_error("Found no plugins. Please install at least one plugin.");
+    girara_warning("Found no plugins. Please install at least one plugin.");
   }
 
   /* configuration */
