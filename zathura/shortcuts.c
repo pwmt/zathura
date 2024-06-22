@@ -873,6 +873,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
   const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
   GtkWidget* cur_page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
+  bool new_search            = argument->data != NULL;
   bool nohlsearch            = false;
   bool first_time_after_abort = false;
 
@@ -911,7 +912,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
       continue;
     }
 
-    if (first_time_after_abort == true || (tmp + num_pages) % num_pages != cur_page) {
+    if (new_search == true || first_time_after_abort == true || (tmp + num_pages) % num_pages != cur_page) {
       target_page = page;
       target_idx  = diff == 1 ? 0 : num_search_results - 1;
       break;
