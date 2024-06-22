@@ -18,6 +18,7 @@ static void test_create(void) {
 
   if (GDK_IS_X11_DISPLAY(display)) {
     g_test_skip("not running under X11");
+    return;
   }
 #endif
 
