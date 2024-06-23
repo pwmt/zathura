@@ -1172,11 +1172,13 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
     /* jumplist */
     if (zathura_jumplist_load(zathura, file_path) == false) {
+      girara_debug("Failed to load jumplist.");
       zathura->jumplist.list = girara_list_new2(g_free);
     }
 
     /* quickmarks */
     if (zathura_quickmarks_load(zathura, file_path) == false) {
+      girara_debug("Failed to load quickmarks.");
       zathura->global.marks = girara_list_new2(g_free);
     }
   } else {
@@ -1215,11 +1217,13 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   /* Set page */
-  page_set(zathura, zathura_document_get_current_page_number(document));
+  const unsigned int page = zathura_document_get_current_page_number(document);
+  girara_debug("Setting page: %u", page);
+  page_set(zathura, page);
 
   /* Set position (only if restoring from history file) */
-  if (file_info.current_page == zathura_document_get_current_page_number(document) &&
-      (file_info.position_x != 0 || file_info.position_y != 0)) {
+  if (file_info.current_page == page && (file_info.position_x != 0 || file_info.position_y != 0)) {
+    girara_debug("Setting position.");
     position_set(zathura, file_info.position_x, file_info.position_y);
   }
 
