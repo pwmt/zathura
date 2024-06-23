@@ -1,1 +1,3 @@
-set database none
+# do not use database for tests
+set database null
+
