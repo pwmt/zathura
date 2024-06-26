@@ -49,11 +49,11 @@ typedef struct zathura_document_info_s {
   zathura_t* zathura;
   char* path;
   char* password;
-  int page_number;
   char* mode;
   char* synctex;
   char* bookmark_name;
   char* search_string;
+  int page_number;
 } zathura_document_info_t;
 
 static gboolean document_info_open(gpointer data);
@@ -63,17 +63,15 @@ static gboolean zathura_signal_sigterm(gpointer data);
 #endif
 
 static void free_document_info(zathura_document_info_t* document_info) {
-  if (document_info == NULL) {
-    return;
+  if (document_info != NULL) {
+    g_free(document_info->path);
+    g_free(document_info->password);
+    g_free(document_info->mode);
+    g_free(document_info->synctex);
+    g_free(document_info->bookmark_name);
+    g_free(document_info->search_string);
+    g_free(document_info);
   }
-
-  g_free(document_info->path);
-  g_free(document_info->password);
-  g_free(document_info->mode);
-  g_free(document_info->synctex);
-  g_free(document_info->bookmark_name);
-  g_free(document_info->search_string);
-  g_free(document_info);
 }
 
 /* function implementation */
@@ -300,7 +298,12 @@ static bool init_ui(zathura_t* zathura) {
 static bool init_css(zathura_t* zathura) {
   GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
 
-  static const char index_settings[][16] = {"index-fg", "index-bg", "index-active-fg", "index-active-bg"};
+  static const char index_settings[][16] = {
+      "index-fg",
+      "index-bg",
+      "index-active-fg",
+      "index-active-bg",
+  };
 
   for (size_t s = 0; s < LENGTH(index_settings); ++s) {
     girara_template_add_variable(csstemplate, index_settings[s]);
