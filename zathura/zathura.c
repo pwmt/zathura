@@ -87,6 +87,19 @@ zathura_t* zathura_create(void) {
   zathura->global.highlighter_modmask  = GDK_SHIFT_MASK;
   zathura->global.double_click_follow  = true;
 
+  /* initialize with default paths */
+  gchar* path                = girara_get_xdg_path(XDG_CONFIG);
+  zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
+  g_free(path);
+
+  path                     = girara_get_xdg_path(XDG_DATA);
+  zathura->config.data_dir = g_build_filename(path, "zathura", NULL);
+  g_free(path);
+
+  path                      = girara_get_xdg_path(XDG_CACHE);
+  zathura->config.cache_dir = g_build_filename(path, "zathura", NULL);
+  g_free(path);
+
   /* plugins */
   zathura->plugins.manager = zathura_plugin_manager_new();
   if (zathura->plugins.manager == NULL) {
@@ -531,11 +544,8 @@ void zathura_set_config_dir(zathura_t* zathura, const char* dir) {
   g_return_if_fail(zathura != NULL);
 
   if (dir != NULL) {
+    g_free(zathura->config.config_dir);
     zathura->config.config_dir = g_strdup(dir);
-  } else {
-    gchar* path                = girara_get_xdg_path(XDG_CONFIG);
-    zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
-    g_free(path);
   }
 }
 
@@ -543,11 +553,8 @@ void zathura_set_data_dir(zathura_t* zathura, const char* dir) {
   g_return_if_fail(zathura != NULL);
 
   if (dir != NULL) {
+    g_free(zathura->config.data_dir);
     zathura->config.data_dir = g_strdup(dir);
-  } else {
-    gchar* path              = girara_get_xdg_path(XDG_DATA);
-    zathura->config.data_dir = g_build_filename(path, "zathura", NULL);
-    g_free(path);
   }
 }
 
@@ -555,11 +562,8 @@ void zathura_set_cache_dir(zathura_t* zathura, const char* dir) {
   g_return_if_fail(zathura != NULL);
 
   if (dir != NULL) {
+    g_free(zathura->config.cache_dir);
     zathura->config.cache_dir = g_strdup(dir);
-  } else {
-    gchar* path               = girara_get_xdg_path(XDG_CACHE);
-    zathura->config.cache_dir = g_build_filename(path, "zathura", NULL);
-    g_free(path);
   }
 }
 
