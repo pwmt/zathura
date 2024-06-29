@@ -56,6 +56,22 @@ ZATHURA_PLUGIN_API const char* zathura_document_get_uri(zathura_document_t* docu
 ZATHURA_PLUGIN_API const char* zathura_document_get_basename(zathura_document_t* document);
 
 /**
+ * Returns the current search string
+ *
+ * @param document The document
+ * @return Current search string
+ */
+ZATHURA_PLUGIN_API const char* zathura_document_get_search_string(zathura_document_t* document);
+
+/**
+ * Sets the new search string
+ *
+ * @param document The document
+ * @return The new search string
+ */
+ZATHURA_PLUGIN_API void zathura_document_set_search_string(zathura_document_t* document, const char* search_string);
+
+/**
  * Returns the SHA256 hash of the document
  *
  * @param document The document

@@ -26,6 +26,7 @@ struct zathura_document_s {
   char* file_path;                   /**< File path of the document */
   char* uri;                         /**< URI of the document */
   char* basename;                    /**< Basename of the document */
+  char* search_string;               /**< Current search string */
   uint8_t hash_sha256[32];           /**< SHA256 hash of the document */
   const char* password;              /**< Password of the document */
   unsigned int current_page_number;  /**< Current page number */
@@ -255,6 +256,9 @@ zathura_error_t zathura_document_free(zathura_document_t* document) {
   g_free(document->file_path);
   g_free(document->uri);
   g_free(document->basename);
+  if (document->search_string != NULL) {
+    g_free(document->search_string);
+  }
   g_free(document);
 
   return error;
@@ -290,6 +294,25 @@ const char* zathura_document_get_basename(zathura_document_t* document) {
   }
 
   return document->basename;
+}
+
+const char* zathura_document_get_search_string(zathura_document_t* document) {
+  if (document == NULL) {
+    return NULL;
+  }
+
+  return document->search_string;
+}
+
+void zathura_document_set_search_string(zathura_document_t* document, const char* search_string) {
+  if (document == NULL) {
+    return;
+  }
+
+  if (document->search_string != NULL) {
+    g_free(document->search_string);
+  }
+  document->search_string = g_strdup(search_string);
 }
 
 const char* zathura_document_get_password(zathura_document_t* document) {
