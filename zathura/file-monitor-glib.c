@@ -15,7 +15,9 @@ struct zathura_glibfilemonitor_s {
 G_DEFINE_TYPE(ZathuraGLibFileMonitor, zathura_glibfilemonitor, ZATHURA_TYPE_FILEMONITOR)
 
 static void file_changed(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUSED(other_file), GFileMonitorEvent event,
-                         ZathuraGLibFileMonitor* file_monitor) {
+                         gpointer user_data) {
+  ZathuraGLibFileMonitor* file_monitor = user_data;
+
   switch (event) {
   case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
   case G_FILE_MONITOR_EVENT_CREATED: {
