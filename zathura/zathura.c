@@ -986,10 +986,12 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   /* check current page number */
   /* if it wasn't specified on the command-line, get it from file_info */
-  if (page_number == ZATHURA_PAGE_NUMBER_UNSPECIFIED)
+  if (page_number == ZATHURA_PAGE_NUMBER_UNSPECIFIED) {
     page_number = file_info.current_page;
-  if (page_number < 0)
+  }
+  if (page_number < 0) {
     page_number += number_of_pages;
+  }
   if ((unsigned)page_number > number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", file_path);
     zathura_document_set_current_page_number(document, 0);
