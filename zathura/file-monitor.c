@@ -16,7 +16,10 @@ typedef struct {
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraFileMonitor, zathura_filemonitor, G_TYPE_OBJECT, G_ADD_PRIVATE(ZathuraFileMonitor))
 
-enum { PROP_0, PROP_FILE_PATH };
+enum {
+  PROP_0,
+  PROP_FILE_PATH,
+};
 
 static void finalize(GObject* object) {
   ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);

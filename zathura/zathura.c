@@ -1016,7 +1016,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   /* apply open adjustment */
   char* adjust_open = "best-fit";
-  if (known_file == false && girara_setting_get(zathura->ui.session, "adjust-open", &(adjust_open)) == true) {
+  if (known_file == false && girara_setting_get(zathura->ui.session, "adjust-open", &adjust_open) == true) {
     if (g_strcmp0(adjust_open, "best-fit") == 0) {
       zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_BESTFIT);
     } else if (g_strcmp0(adjust_open, "width") == 0) {
