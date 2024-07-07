@@ -21,7 +21,7 @@ struct zathura_link_s {
 };
 
 zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position, zathura_link_target_t target) {
-  zathura_link_t* link = g_slice_new(zathura_link_t);
+  zathura_link_t* link = g_try_malloc0(sizeof(zathura_link_t));
   if (link == NULL) {
     return NULL;
   }
@@ -44,14 +44,14 @@ zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t p
   case ZATHURA_LINK_NAMED:
     /* target.value is required for these cases */
     if (target.value == NULL) {
-      g_slice_free(zathura_link_t, link);
+      g_free(link);
       return NULL;
     }
 
     link->target.value = g_strdup(target.value);
     break;
   default:
-    g_slice_free(zathura_link_t, link);
+    g_free(link);
     return NULL;
   }
 
@@ -78,7 +78,7 @@ void zathura_link_free(zathura_link_t* link) {
     break;
   }
 
-  g_slice_free(zathura_link_t, link);
+  g_free(link);
 }
 
 zathura_link_type_t zathura_link_get_type(zathura_link_t* link) {
