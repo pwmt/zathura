@@ -861,49 +861,6 @@ typedef struct {
   double w;
   int freq;
 } sample_t;
-
-static int document_page_size_comp(const void* a, const void* b) {
-  const sample_t* lhs = a;
-  const sample_t* rhs = b;
-  return rhs->freq - lhs->freq;
-}
-
-static void document_open_page_most_frequent_size(zathura_document_t* document, unsigned int* width,
-                                                  unsigned int* height) {
-  girara_list_t* samples             = girara_list_new2(g_free);
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-
-  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-    zathura_page_t* page = zathura_document_get_page(document, page_id);
-    const double w       = zathura_page_get_width(page);
-    const double h       = zathura_page_get_height(page);
-
-    bool found = false;
-    for (size_t idx = 0; idx != girara_list_size(samples) && !found; ++idx) {
-      sample_t* sample = girara_list_nth(samples, idx);
-      if (fabs(sample->h - h) <= DBL_EPSILON && fabs(sample->w - w) <= DBL_EPSILON) {
-        sample->freq++;
-      }
-    }
-
-    if (found == false) {
-      sample_t* sample = g_try_malloc0(sizeof(sample_t));
-      sample->w        = w;
-      sample->h        = h;
-      sample->freq     = 1;
-      girara_list_append(samples, sample);
-    }
-  }
-
-  girara_list_sort(samples, document_page_size_comp);
-
-  sample_t* max_sample = girara_list_nth(samples, 0);
-  *width               = max_sample->w;
-  *height              = max_sample->h;
-
-  girara_list_free(samples);
-}
-
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info_p) {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
@@ -1100,20 +1057,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     goto error_free;
   }
 
-  unsigned int most_freq_width, most_freq_height;
-  document_open_page_most_frequent_size(document, &most_freq_width, &most_freq_height);
-
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       goto error_free;
     }
-
-    unsigned int cell_height = 0, cell_width = 0;
-    zathura_document_get_cell_size(document, &cell_height, &cell_width);
-    zathura_document_set_cell_size(document, most_freq_height, most_freq_width);
-    zathura_page_set_width(page, most_freq_width);
-    zathura_page_set_height(page, most_freq_height);
 
     GtkWidget* page_widget = zathura_page_widget_new(zathura, page);
     if (page_widget == NULL) {
