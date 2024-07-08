@@ -205,13 +205,13 @@ Mouse bindings
     Scroll up or down
   ^Scroll
     Zoom in or out
-  Hold Button2
+  Drag Button2
     Pan the document
   Button1
     Follow link
-  Hold Button1
+  Drag Button1
     Select text
-  Hold ^Button1
+  Drag S-Button1
     Highlight region
 
 
