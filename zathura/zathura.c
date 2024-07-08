@@ -1644,7 +1644,7 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
     /* yalign = 0.5: center vertically */
     page_number_to_position(zathura->document, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
   } else {
-    /* yalign = 0.0: align page an viewport edges at the top               */
+    /* yalign = 0.0: align page and viewport edges at the top               */
     page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
   }
 
