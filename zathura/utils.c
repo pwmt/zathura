@@ -116,11 +116,23 @@ gboolean _for_each_func(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* ite
   unsigned int current_page_nb = zathura_document_get_current_page_number(zathura->document);
   if (current_page_nb < target.page_number) {
     GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-    if (gtk_tree_path_prev(path) != FALSE) {
-      gtk_tree_view_expand_to_path(tree_view, path);
-      gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
-      gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
+    GtkTreeIter child_iter, parent_iter;
+    if (gtk_tree_path_prev(path)) { // try to select the VERY last child of previous entry
+      gtk_tree_view_expand_row(tree_view, path, FALSE);
+      while (gtk_tree_view_row_expanded(tree_view, path)) {
+        gtk_tree_model_get_iter(model, iter, path);
+        gtk_tree_model_iter_nth_child(model, &child_iter, iter, gtk_tree_model_iter_n_children(model, iter) - 1);
+        gtk_tree_path_free(path);
+        path = gtk_tree_model_get_path(model, &child_iter);
+        gtk_tree_view_expand_row(tree_view, path, FALSE);
+      }
+    } else if (gtk_tree_model_iter_parent(model, &parent_iter, iter)) { // try to select the parent
+      gtk_tree_path_free(path);
+      path = gtk_tree_model_get_path(model, &parent_iter);
     }
+    gtk_tree_view_expand_to_path(tree_view, path);
+    gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
+    gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
 
     return TRUE;
   }
