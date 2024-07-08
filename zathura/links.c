@@ -174,6 +174,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   zathura_jumplist_add(zathura);
 }
 
+#if WITH_SANDBOX
 static void link_remote(zathura_t* zathura, const char* file) {
   if (zathura == NULL || file == NULL || zathura->document == NULL) {
     return;
@@ -183,7 +184,7 @@ static void link_remote(zathura_t* zathura, const char* file) {
   char* dir        = g_path_get_dirname(path);
   char* uri        = g_build_filename(file, NULL);
 
-  char* argv[] = {*(zathura->global.arguments), uri, NULL};
+  char* argv[] = {*zathura->global.arguments, uri, NULL};
 
   GError* error = NULL;
   if (g_spawn_async(dir, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
@@ -210,6 +211,7 @@ static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
 
   g_free(dir);
 }
+#endif
 
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
   if (zathura == NULL || zathura->document == NULL || link == NULL) {
@@ -225,10 +227,12 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
 #endif
 
   switch (link->type) {
+
   case ZATHURA_LINK_GOTO_DEST:
     girara_debug("Going to link destination: page: %d", link->target.page_number);
     link_goto_dest(zathura, link);
     break;
+#if WITH_SANDBOX
   case ZATHURA_LINK_GOTO_REMOTE:
     girara_debug("Going to remote destination: %s", link->target.value);
     link_remote(zathura, link->target.value);
@@ -241,7 +245,9 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
     girara_debug("Launching link: %s", link->target.value);
     link_launch(zathura, link);
     break;
+#endif
   default:
+    girara_error("Unhandled link type: %d", link->type);
     break;
   }
 }
