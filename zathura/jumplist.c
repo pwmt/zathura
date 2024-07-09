@@ -93,9 +93,8 @@ void zathura_jumplist_trim(zathura_t* zathura) {
 void zathura_jumplist_add(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->document != NULL && zathura->jumplist.list != NULL);
 
-  unsigned int pagenum = zathura_document_get_current_page_number(zathura->document);
-  double x             = zathura_document_get_position_x(zathura->document);
-  double y             = zathura_document_get_position_y(zathura->document);
+  double x = zathura_document_get_position_x(zathura->document);
+  double y = zathura_document_get_position_y(zathura->document);
 
   if (zathura->jumplist.size != 0) {
     zathura_jumplist_reset_current(zathura);
@@ -103,7 +102,7 @@ void zathura_jumplist_add(zathura_t* zathura) {
     zathura_jump_t* cur = zathura_jumplist_current(zathura);
 
     if (cur != NULL) {
-      if (cur->page == pagenum && fabs(cur->x - x) <= DBL_EPSILON && fabs(cur->y - y) <= DBL_EPSILON) {
+      if (fabs(cur->x - x) <= DBL_EPSILON && fabs(cur->y - y) <= DBL_EPSILON) {
         return;
       }
     }
