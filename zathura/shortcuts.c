@@ -691,7 +691,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 }
 
 bool sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
-                 unsigned int UNUSED(t)) {
+                 unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -703,48 +703,24 @@ bool sc_jumplist(girara_session_t* session, girara_argument_t* argument, girara_
     return true;
   }
 
-  double x = zathura_document_get_position_x(zathura->document);
-  double y = zathura_document_get_position_y(zathura->document);
-
-  zathura_jump_t* jump      = NULL;
-  zathura_jump_t* prev_jump = zathura_jumplist_current(zathura);
-  bool go_to_current        = false;
-
-  if (zathura_jumplist_has_next(zathura) == false || zathura_jumplist_has_previous(zathura) == false) {
-    if (x == prev_jump->x && y == prev_jump->y) {
-      go_to_current = false;
-    } else {
-      go_to_current = true;
-    }
-  }
+  zathura_jump_t* jump         = NULL;
+  zathura_jump_t* current_jump = zathura_jumplist_current(zathura);
 
   switch (argument->n) {
   case FORWARD:
-    if (go_to_current == true && zathura_jumplist_has_previous(zathura) == false) {
-      jump = zathura_jumplist_current(zathura);
-    } else {
+    for (int n = (t == 0 ? 1 : t); n > 0; n--) {
       zathura_jumplist_forward(zathura);
-      jump = zathura_jumplist_current(zathura);
     }
     break;
   case BACKWARD:
-    if (go_to_current == true && zathura_jumplist_has_next(zathura) == false) {
-      jump = zathura_jumplist_current(zathura);
-    } else {
+    for (int n = (t == 0 ? 1 : t); n > 0; n--) {
       zathura_jumplist_backward(zathura);
-      jump = zathura_jumplist_current(zathura);
     }
     break;
   }
+  jump = zathura_jumplist_current(zathura);
 
-  if (jump == prev_jump) {
-    if ((zathura_jumplist_has_previous(zathura) == false && argument->n == BACKWARD) ||
-        (zathura_jumplist_has_next(zathura) == false && argument->n == FORWARD)) {
-      jump = NULL;
-    }
-  }
-
-  if (jump != NULL) {
+  if (jump != current_jump) {
     page_set(zathura, jump->page);
     position_set(zathura, jump->x, jump->y);
   }
