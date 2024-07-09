@@ -51,23 +51,15 @@ GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page);
  */
 void zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface, bool keep_thumbnail);
 /**
+ * Clear highlight of the selection/highlighter.
+ * @param widget the widget
+ */
+void zathura_page_widget_clear_selection(ZathuraPage* widget);
+/**
  * Draw a rectangle to mark links or search results
  * @param widget the widget
  * @param rectangle the rectangle
  * @param linkid the link id if it's a link, -1 otherwise
- */
-void zathura_page_widget_draw_rectangle(ZathuraPage* widget, zathura_rectangle_t* rectangle, int linkid);
-/**
- * Clear all rectangles.
- * @param widget the widget
- */
-void zathura_page_widget_clear_rectangles(ZathuraPage* widget);
-/**
- * Returns the zathura link object at the given index
- *
- * @param widget the widget
- * @param index Index of the link
- * @return Link object or NULL if an error occurred
  */
 zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index);
 /**
