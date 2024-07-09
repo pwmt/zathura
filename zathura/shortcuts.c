@@ -95,6 +95,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
 
       GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
       GObject* obj_page_widget = G_OBJECT(page_widget);
+      zathura_page_widget_clear_selection(ZATHURA_PAGE(page_widget));
       g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
       if (clear_search == true) {
         g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);

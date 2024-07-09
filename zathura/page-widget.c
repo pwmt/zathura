@@ -990,6 +990,17 @@ static void rotate_point(zathura_document_t* document, double orig_x, double ori
   }
 }
 
+void zathura_page_widget_clear_selection(ZathuraPage* widget) {
+  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(widget);
+  if (priv->selection.list != NULL) {
+    girara_list_free(priv->selection.list);
+    priv->selection.list = NULL;
+  }
+  priv->selection.draw   = false;
+  priv->highlighter.draw = false;
+  zathura_page_widget_redraw_canvas(widget);
+}
+
 static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, GdkEventButton* button) {
   g_return_val_if_fail(widget != NULL, false);
   g_return_val_if_fail(button != NULL, false);
@@ -1002,11 +1013,7 @@ static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, Gdk
     return true;
   }
 
-  if (priv->selection.list != NULL || priv->highlighter.draw == true) {
-    priv->selection.draw   = false;
-    priv->highlighter.draw = false;
-    zathura_page_widget_redraw_canvas(page);
-  }
+  zathura_page_widget_clear_selection(page);
 
   if (button->button == GDK_BUTTON_PRIMARY) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
@@ -1072,7 +1079,7 @@ static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, G
     if (priv->zathura->global.double_click_follow) {
       evaluate_link_at_mouse_position(page, oldx, oldy);
     }
-  } else {
+  } else if (priv->selection.list != NULL) {
     zathura_rectangle_t tmp = priv->mouse.selection;
 
     tmp.x1 /= scale;
@@ -1132,6 +1139,7 @@ static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEvent
   const double scale           = zathura_document_get_scale(document);
 
   if (event->state & GDK_BUTTON1_MASK) { /* holding left mouse button */
+    zathura_page_widget_clear_selection(page);
     if (event->state & priv->zathura->global.highlighter_modmask) {
       double x, y;
       rotate_point(document, event->x, event->y, &x, &y);
@@ -1152,10 +1160,6 @@ static gboolean cb_zathura_page_widget_motion_notify(GtkWidget* widget, GdkEvent
       selection.y1 /= scale;
       selection.x2 /= scale;
       selection.y2 /= scale;
-
-      if (priv->selection.list != NULL) {
-        girara_list_free(priv->selection.list);
-      }
 
       priv->selection.list = zathura_page_get_selection(priv->page, selection, NULL);
       if (priv->selection.list != NULL && girara_list_size(priv->selection.list) != 0) {
@@ -1200,10 +1204,7 @@ static gboolean cb_zathura_page_widget_leave_notify(GtkWidget* widget, GdkEventC
 
   ZathuraPage* page        = ZATHURA_PAGE(widget);
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
-  if (priv->selection.list != NULL) {
-    priv->selection.draw = false;
-    zathura_page_widget_redraw_canvas(page);
-  }
+  zathura_page_widget_clear_selection(page);
   if (priv->mouse.over_link == true) {
     g_signal_emit(page, signals[LEAVE_LINK], 0);
     priv->mouse.over_link = false;
