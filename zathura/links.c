@@ -118,6 +118,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
 
   if (link->target.zoom >= DBL_EPSILON && link_zoom == true) {
     zathura_document_set_zoom(zathura->document, zathura_correct_zoom_value(zathura->ui.session, link->target.zoom));
+    adjust_view(zathura);
     render_all(zathura);
   }
 
