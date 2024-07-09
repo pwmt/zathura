@@ -230,6 +230,11 @@ blist
 bjump
   Jump to given bookmark.
 
+jumplist
+  Show recent jumps in jumplist (by default last 5). Optional argument
+  specifies number of entries to show. Negative value "-N" shows all
+  except the first "N" entries.
+
 mark
   Set a quickmark.
 
@@ -264,7 +269,7 @@ write(!)
 
 export
   Export attachments. First argument specifies the attachment identifier
-  (use completion with ``Tab``),  second argument gives the target filename
+  (use completion with ``Tab``), second argument gives the target filename
   (relative to current working directory).
 
 dump

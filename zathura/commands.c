@@ -149,6 +149,56 @@ bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list) 
   return true;
 }
 
+bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  int num_entries = 5;
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc == 1) {
+    int value = g_ascii_strtoll(girara_list_nth(argument_list, 0), NULL, 10);
+    if (value == 0) {
+      girara_notify(session, GIRARA_WARNING, _("Argument must be a nonzero number."));
+      return false;
+    } else if (value > 0) {
+      num_entries = value;
+    } else {
+      num_entries = (int)zathura->jumplist.size + value;
+    }
+  } else if (argc != 0) {
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
+    return false;
+  }
+
+  if (num_entries <= 0) {
+    return true;
+  }
+
+  zathura_jump_t* current_jump = zathura_jumplist_current(zathura);
+  GString* string              = g_string_new(NULL);
+  for (int i = zathura->jumplist.size - 1; i >= 0 && num_entries > 0; --i, --num_entries) {
+    zathura_jump_t* j = girara_list_nth(zathura->jumplist.list, i);
+    g_string_append_printf(string, "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n", i, j->page, j->x, j->y,
+                           j == current_jump ? "(current)" : "");
+  }
+
+  if (strlen(string->str) > 0) {
+    g_string_erase(string, strlen(string->str) - 1, 1);
+    girara_notify(session, GIRARA_INFO, "%s", string->str);
+  } else {
+    girara_notify(session, GIRARA_INFO, _("No jumplist available."));
+  }
+
+  g_string_free(string, TRUE);
+  return true;
+}
+
 bool cmd_close(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
