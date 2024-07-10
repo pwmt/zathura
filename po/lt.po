@@ -141,9 +141,8 @@ msgid "No such bookmark: %s"
 msgstr "Nėra tokios žymės: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Parametras turi būti skaičius."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -154,9 +153,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Nėra informacijos."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -470,9 +468,8 @@ msgid "Always open on first page"
 msgstr "Visada atverti pirmą puslapį"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Pažymėti paieškos rezultatus"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -568,9 +565,8 @@ msgid "List all bookmarks"
 msgstr "Žymių sąrašas"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Pridėti žymę"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"
@@ -630,9 +626,8 @@ msgid "Delete the specified marks"
 msgstr "Ištrinti šias žymes"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Nežymėti dabartinės paieškos rezultatų"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

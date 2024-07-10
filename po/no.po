@@ -137,9 +137,8 @@ msgid "No such bookmark: %s"
 msgstr "Bokmerke eksisterer ikke: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Argumentet må være et tall."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -150,9 +149,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Ingen informasjon tilgjengelig."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -466,9 +464,8 @@ msgid "Always open on first page"
 msgstr "Alltid åpne på første side"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Uthev søkeresultater"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -564,9 +561,8 @@ msgid "List all bookmarks"
 msgstr "List alle bokmerker"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Legg til bokmerke"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"
@@ -626,9 +622,8 @@ msgid "Delete the specified marks"
 msgstr "Slett spesifiserte merker"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Ikke uthev gjeldende søkeresultater"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

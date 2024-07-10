@@ -141,9 +141,8 @@ msgid "No such bookmark: %s"
 msgstr "Inget sådant bokmärke: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Argument måste vara ett nummer."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -154,9 +153,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Inga bokmärken tillgängliga."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -470,9 +468,8 @@ msgid "Always open on first page"
 msgstr "Öppna alltid på första sidan"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Färgmarkera sökresultat"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -568,14 +565,12 @@ msgid "List all bookmarks"
 msgstr "Lista alla bokmärken"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Lägg till ett bokmärke"
+msgstr ""
 
 #: zathura/config.c:539
-#, fuzzy
 msgid "Show recent jumps in jumplist"
-msgstr "Visa senaste filer"
+msgstr ""
 
 #: zathura/config.c:540
 msgid "Close current file"
@@ -631,9 +626,8 @@ msgid "Delete the specified marks"
 msgstr "Ta bort angivna märken"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Färgmarkera inte sökresultat"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

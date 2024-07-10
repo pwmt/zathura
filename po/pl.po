@@ -139,9 +139,8 @@ msgid "No such bookmark: %s"
 msgstr "Nie znaleziono zakładki: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Parametr polecenia musi być liczbą"
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -152,9 +151,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Brak informacji o pliku"
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -468,9 +466,8 @@ msgid "Always open on first page"
 msgstr "Zawsze otwieraj na pierwszej stronie"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Podświetl wyniki wyszukiwania"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -566,9 +563,8 @@ msgid "List all bookmarks"
 msgstr "Wyświetl zakładki"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Dodaj zakładkę"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"
@@ -628,9 +624,8 @@ msgid "Delete the specified marks"
 msgstr "Skasuj określone zakładki"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Nie podświetlaj aktualnych wyników wyszukiwania "
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

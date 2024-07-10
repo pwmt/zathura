@@ -147,9 +147,8 @@ msgid "No such bookmark: %s"
 msgstr "Такої закладки немає: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Аргумент повинен бути числом."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -160,9 +159,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Закладки не доступні."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -478,9 +476,8 @@ msgid "Always open on first page"
 msgstr "Завжди відкривати на першій сторінці"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Виділяти результати пошуку"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -576,14 +573,12 @@ msgid "List all bookmarks"
 msgstr "Список усіх закладок"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Додати закладку"
+msgstr ""
 
 #: zathura/config.c:539
-#, fuzzy
 msgid "Show recent jumps in jumplist"
-msgstr "Показати нещодавні файли"
+msgstr ""
 
 #: zathura/config.c:540
 msgid "Close current file"
@@ -639,9 +634,8 @@ msgid "Delete the specified marks"
 msgstr "Вилучити зазначені позначки"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Не виділяти поточні результати пошуку"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

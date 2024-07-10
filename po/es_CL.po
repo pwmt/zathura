@@ -138,9 +138,8 @@ msgid "No such bookmark: %s"
 msgstr "No existe marcador: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "El argumento debe ser un número."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -151,9 +150,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "No hay información disponible."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -564,9 +562,8 @@ msgid "List all bookmarks"
 msgstr "Listar todos los marcadores"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Agregar un marcador"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"

@@ -137,9 +137,8 @@ msgid "No such bookmark: %s"
 msgstr "Neniu paĝosigno: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Argumento devas esti nombro."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -150,9 +149,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Neniu informacio disponebla."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -563,9 +561,8 @@ msgid "List all bookmarks"
 msgstr "Listigu ĉiujn paĝosignojn"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Aldonu paĝosignon"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"

@@ -145,9 +145,8 @@ msgid "No such bookmark: %s"
 msgstr "Não há favoritos: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "O argumento deve ser um número."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -158,9 +157,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Nenhuma informação disponível."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -475,9 +473,8 @@ msgid "Always open on first page"
 msgstr "Sempre abrir na primeira página"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Destaque resultados de busca"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -575,9 +572,8 @@ msgid "List all bookmarks"
 msgstr "Listar todos favoritos"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Adicionar um favorito"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"
@@ -637,9 +633,8 @@ msgid "Delete the specified marks"
 msgstr "Apagar as marcas especificadas"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Não destacar resultados de busca atual"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

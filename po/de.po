@@ -143,9 +143,8 @@ msgid "No such bookmark: %s"
 msgstr "Lesezeichen existiert nicht: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Das Argument ist keine Zahl."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -156,9 +155,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Keine Lesezeichen verfügbar."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -478,9 +476,8 @@ msgid "Always open on first page"
 msgstr "Öffne Dokument immer auf der ersten Seite"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Hebe Suchergebnisse hervor"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -576,14 +573,12 @@ msgid "List all bookmarks"
 msgstr "Liste all Lesezeichen auf"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Füge Lesezeichen hinzu"
+msgstr ""
 
 #: zathura/config.c:539
-#, fuzzy
 msgid "Show recent jumps in jumplist"
-msgstr "Zeige zuletzt geöffnete Dateien an"
+msgstr ""
 
 #: zathura/config.c:540
 msgid "Close current file"
@@ -639,9 +634,8 @@ msgid "Delete the specified marks"
 msgstr "Lösche angegebene Markierung"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Hebe aktuelle Suchergebnisse nicht hervor"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

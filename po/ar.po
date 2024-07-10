@@ -140,9 +140,8 @@ msgid "No such bookmark: %s"
 msgstr "لا يوجد إشارة مرجعية: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "يجب أن يكون الوسيط رقمًا."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -153,9 +152,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "لا توجد إشارات مرجعية متاحة."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -470,9 +468,8 @@ msgid "Always open on first page"
 msgstr "فتح دائما على الصفحة الأولى"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "تمييز نتائج البحث"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -568,14 +565,12 @@ msgid "List all bookmarks"
 msgstr "قائمة جميع الإشارات المرجعية"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "أضف إشارة مرجعية"
+msgstr ""
 
 #: zathura/config.c:539
-#, fuzzy
 msgid "Show recent jumps in jumplist"
-msgstr "عرض الملفات الحديثة"
+msgstr ""
 
 #: zathura/config.c:540
 msgid "Close current file"
@@ -631,9 +626,8 @@ msgid "Delete the specified marks"
 msgstr "احذف العلامات المحددة"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "لا تبرز نتائج البحث الحالية"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

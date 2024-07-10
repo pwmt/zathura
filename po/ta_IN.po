@@ -137,9 +137,8 @@ msgid "No such bookmark: %s"
 msgstr "அந்தப் பெயரில் எந்த bookmark-ம் இல்லை: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Argument ஒரு எண்ணாக இருக்க வேண்டும்"
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -150,9 +149,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "எந்தத் தகவலும் இல்லை"
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -563,9 +561,8 @@ msgid "List all bookmarks"
 msgstr "அனைத்து bookmark-களையும் பட்டியலிடு"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "புதிய bookmark உருவாக்கு"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"

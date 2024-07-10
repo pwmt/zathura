@@ -143,9 +143,8 @@ msgid "No such bookmark: %s"
 msgstr "Záložka neexistuje: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Argumentem musí být číslo."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -156,9 +155,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Nejsou dostupné žádné záložky."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -472,9 +470,8 @@ msgid "Always open on first page"
 msgstr "Vždy otevírat na první straně"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Zvýrazňovat výsledky hledání"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -572,14 +569,12 @@ msgid "List all bookmarks"
 msgstr "Vypsat všechny záložky"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Přidat záložku"
+msgstr ""
 
 #: zathura/config.c:539
-#, fuzzy
 msgid "Show recent jumps in jumplist"
-msgstr "Ukázat nedávné soubory"
+msgstr ""
 
 #: zathura/config.c:540
 msgid "Close current file"
@@ -635,9 +630,8 @@ msgid "Delete the specified marks"
 msgstr "Smazat vybrané značky"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Nezvýrazňovat výsledky tohoto hledání"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"

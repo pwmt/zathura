@@ -561,9 +561,8 @@ msgid "List all bookmarks"
 msgstr "Näita kõiki järjehoidjaid"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Lisa järjehoidja"
+msgstr ""
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"

@@ -148,9 +148,8 @@ msgid "No such bookmark: %s"
 msgstr "Böyle bir yer imi yok: %s"
 
 #: zathura/commands.c:167
-#, fuzzy
 msgid "Argument must be a nonzero number."
-msgstr "Argüman bir sayı olmalı."
+msgstr ""
 
 #: zathura/commands.c:187
 msgid "page"
@@ -161,9 +160,8 @@ msgid "(current)"
 msgstr ""
 
 #: zathura/commands.c:195
-#, fuzzy
 msgid "No jumplist available."
-msgstr "Yer imleri bulunamadı."
+msgstr ""
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -477,9 +475,8 @@ msgid "Always open on first page"
 msgstr "Her zaman ilk sayfayı aç"
 
 #: zathura/config.c:293
-#, fuzzy
 msgid "Disable highlighting of search results"
-msgstr "Arama sonuçlarını vurgula"
+msgstr ""
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -575,14 +572,12 @@ msgid "List all bookmarks"
 msgstr "Yer imlerini listele"
 
 #: zathura/config.c:538
-#, fuzzy
 msgid "Jump to bookmark"
-msgstr "Yer imi ekle"
+msgstr ""
 
 #: zathura/config.c:539
-#, fuzzy
 msgid "Show recent jumps in jumplist"
-msgstr "Son dosyaları göster"
+msgstr ""
 
 #: zathura/config.c:540
 msgid "Close current file"
@@ -638,9 +633,8 @@ msgid "Delete the specified marks"
 msgstr "Seçilen işaretlemeleri sil"
 
 #: zathura/config.c:556
-#, fuzzy
 msgid "Remove highlights of current search results"
-msgstr "Şuanki arama sonuçlarını vurgulama"
+msgstr ""
 
 #: zathura/config.c:557
 msgid "Highlight current search results"
