@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-10 00:29+0200\n"
-"PO-Revision-Date: 2024-06-09 23:50+0200\n"
+"PO-Revision-Date: 2024-07-10 09:29+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://app.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -144,19 +144,19 @@ msgstr "Lesezeichen existiert nicht: %s"
 
 #: zathura/commands.c:167
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "Argument muss eine Zahl ungleich 0 sein."
 
 #: zathura/commands.c:187
 msgid "page"
-msgstr ""
+msgstr "Seite"
 
 #: zathura/commands.c:188
 msgid "(current)"
-msgstr ""
+msgstr "(aktuell)"
 
 #: zathura/commands.c:195
 msgid "No jumplist available."
-msgstr ""
+msgstr "Keine Liste zu behaltender Positionen vorhanden."
 
 #: zathura/commands.c:230
 msgid "Title"
@@ -477,7 +477,7 @@ msgstr "Öffne Dokument immer auf der ersten Seite"
 
 #: zathura/config.c:293
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Deaktiviere Hervorheben von Suchergebnissen"
 
 #: zathura/config.c:295
 msgid "Double click to follow links"
@@ -533,7 +533,7 @@ msgstr "Tastenmodifikator für Synctex Edit"
 
 #: zathura/config.c:319
 msgid "Highlighter modifier"
-msgstr ""
+msgstr "Tastenmodifikator für Hervorhebungen"
 
 #: zathura/config.c:321
 msgid "Enable D-Bus service"
@@ -574,11 +574,11 @@ msgstr "Liste all Lesezeichen auf"
 
 #: zathura/config.c:538
 msgid "Jump to bookmark"
-msgstr ""
+msgstr "Springe zu Lesezeichen"
 
 #: zathura/config.c:539
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "Zeige letzte Positionen der Liste zu behaltender Positionen an"
 
 #: zathura/config.c:540
 msgid "Close current file"
