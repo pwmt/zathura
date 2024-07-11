@@ -175,7 +175,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   zathura_jumplist_add(zathura);
 }
 
-#if WITH_SANDBOX
+#ifndef WITH_SANDBOX
 static void link_remote(zathura_t* zathura, const char* file) {
   if (zathura == NULL || file == NULL || zathura->document == NULL) {
     return;
@@ -233,7 +233,7 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
     girara_debug("Going to link destination: page: %d", link->target.page_number);
     link_goto_dest(zathura, link);
     break;
-#if WITH_SANDBOX
+#ifndef WITH_SANDBOX
   case ZATHURA_LINK_GOTO_REMOTE:
     girara_debug("Going to remote destination: %s", link->target.value);
     link_remote(zathura, link->target.value);
