@@ -1248,7 +1248,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     }
 
     girara_set_view(session, zathura->ui.index);
-    index_scroll_to_current_page(session);
+    index_scroll_to_current_page(zathura);
     gtk_widget_show(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.index);
   }
