@@ -205,14 +205,17 @@ Mouse bindings
     Scroll up or down
   ^Scroll
     Zoom in or out
-  Drag Button2
+  Drag Button2 (middle button drag)
     Pan the document
-  Button1
+  Button1 (left click)
     Follow link
   Drag Button1
     Select text
   Drag S-Button1
     Highlight region
+  Button3 (right click)
+    Open popup menu to copy/save image
+    (activates for images recognized by ``export`` command)
 
 
 Commands
