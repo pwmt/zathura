@@ -188,9 +188,9 @@ the *zathurarc* file to make those changes permanent:
 
     Identifier Description
 
-    Button1    Mouse button 1
-    Button2    Mouse button 2
-    Button3    Mouse button 3
+    Button1    Mouse button 1 (left)
+    Button2    Mouse button 2 (right)
+    Button3    Mouse button 3 (middle)
     Button4    Mouse button 4
     Button5    Mouse button 5
 
