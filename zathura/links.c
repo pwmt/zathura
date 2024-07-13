@@ -219,7 +219,7 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
     return;
   }
 
-#if WITH_SANDBOX
+#ifdef WITH_SANDBOX
   if (link->type != ZATHURA_LINK_GOTO_DEST) {
     girara_notify(zathura->ui.session, GIRARA_ERROR,
                   _("Opening external applications in strict sandbox mode is not permitted"));
@@ -228,7 +228,6 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
 #endif
 
   switch (link->type) {
-
   case ZATHURA_LINK_GOTO_DEST:
     girara_debug("Going to link destination: page: %d", link->target.page_number);
     link_goto_dest(zathura, link);

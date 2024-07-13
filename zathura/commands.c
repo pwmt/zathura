@@ -328,7 +328,7 @@ bool cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list)) 
     return false;
   }
 
-#if WITH_SANDBOX
+#ifdef WITH_SANDBOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
   return false;
 #else
@@ -349,7 +349,7 @@ bool cmd_save(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-#if WITH_SANDBOX
+#ifdef WITH_SANDBOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Saving is not permitted in strict sandbox mode"));
   return false;
 #else
@@ -374,7 +374,7 @@ bool cmd_savef(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-#if WITH_SANDBOX
+#ifdef WITH_SANDBOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Saving is not permitted in strict sandbox mode"));
   return false;
 #else
@@ -472,7 +472,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-#if WITH_SANDBOX
+#ifdef WITH_SANDBOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exporting attachments is not permitted in strict sandbox mode"));
   return false;
 #else
@@ -577,7 +577,7 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-#if WITH_SANBDOX
+#ifdef WITH_SANBDOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exec is not permitted in strict sandbox mode"));
   return false;
 #else
