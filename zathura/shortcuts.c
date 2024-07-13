@@ -1022,15 +1022,11 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
 
   if (gtk_tree_view_get_visible_range(tree_view, &start_path, &end_path) != TRUE) {
     girara_error("Cannot get visible range for index");
-    gtk_tree_path_free(start_path);
-    gtk_tree_path_free(end_path);
-    return false;
+    goto free_and_return;
   }
 
   GtkTreeModel* model = gtk_tree_view_get_model(tree_view);
-  GtkTreeIter iter;
-  GtkTreeIter child_iter;
-  GtkTreeIter parent_iter;
+  GtkTreeIter iter, child_iter, parent_iter;
 
   gboolean need_to_scroll = FALSE;
 
@@ -1103,14 +1099,12 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     break;
   case HALF_UP:
     gtk_tree_path_free(path);
-    gtk_tree_path_free(end_path);
-    path           = start_path;
+    path           = gtk_tree_path_copy(start_path);
     need_to_scroll = TRUE;
     break;
   case HALF_DOWN:
     gtk_tree_path_free(path);
-    gtk_tree_path_free(start_path);
-    path           = end_path;
+    path           = gtk_tree_path_copy(end_path);
     need_to_scroll = TRUE;
     break;
   case EXPAND:
@@ -1140,8 +1134,7 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     break;
   case SELECT:
     cb_index_row_activated(tree_view, path, NULL, zathura);
-    gtk_tree_path_free(path);
-    return false;
+    goto free_and_return;
   }
 
   gtk_tree_view_set_cursor(tree_view, path, NULL, FALSE);
@@ -1149,7 +1142,10 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     gtk_tree_view_scroll_to_cell(tree_view, path, NULL, TRUE, 0.5, 0.0);
   }
 
+free_and_return:
   gtk_tree_path_free(path);
+  gtk_tree_path_free(start_path);
+  gtk_tree_path_free(end_path);
 
   return false;
 }
