@@ -238,6 +238,12 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 #if defined(__NR_fchmodat2) && defined(__SNR_fchmodat2)
   ERRNO_RULE(fchmodat2);
 #endif
+#if defined(__NR_map_shadow_stack) && defined(__SNR_map_shadow_stack)
+  ERRNO_RULE(map_shadow_stack);
+#endif
+#if defined(__NR_mseal) && defined(__SNR_mseal)
+  ERRNO_RULE(mseal);
+#endif
 
   /* Sandbox Status Notes:
    *
@@ -248,9 +254,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * mkdir: needed for first run only to create /run/user/UID/dconf (before seccomp init)
    * wait4: required to attempt opening links (which is then blocked)
    *
-   *
-   * TODO: prevent dbus socket connection before sandbox init - by checking the sandbox settings in zathurarc
-   *    - requires changes of zathura startup to read config earlier
    *
    * TODO: check requirement of pipe/pipe2 syscalls when dbus is disabled
    *
