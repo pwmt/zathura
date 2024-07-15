@@ -380,6 +380,12 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0, GDK_KEY_L, NULL, sc_scroll, (mode), PAGE_BOTTOM, NULL);                             \
   girara_shortcut_add(gsession, 0, GDK_KEY_Right, NULL, sc_scroll, (mode), RIGHT, NULL);                               \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_t, NULL, sc_scroll, (mode), HALF_LEFT, NULL);                \
+                                                                                                                       \
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_k, NULL, sc_scroll, (mode), PARTIAL_UP, NULL);                  \
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_j, NULL, sc_scroll, (mode), PARTIAL_DOWN, NULL);                \
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Up, NULL, sc_scroll, (mode), PARTIAL_UP, NULL);                 \
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Down, NULL, sc_scroll, (mode), PARTIAL_DOWN, NULL);             \
+                                                                                                                       \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d, NULL, sc_scroll, (mode), HALF_DOWN, NULL);                \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_u, NULL, sc_scroll, (mode), HALF_UP, NULL);                  \
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_y, NULL, sc_scroll, (mode), HALF_RIGHT, NULL);               \
@@ -609,6 +615,8 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "full-up",      FULL_UP);
   girara_argument_mapping_add(gsession, "half-down",    HALF_DOWN);
   girara_argument_mapping_add(gsession, "half-up",      HALF_UP);
+  girara_argument_mapping_add(gsession, "partial-down", PARTIAL_DOWN);
+  girara_argument_mapping_add(gsession, "partial-up",   PARTIAL_UP);
   girara_argument_mapping_add(gsession, "full-right",   FULL_RIGHT);
   girara_argument_mapping_add(gsession, "full-left",    FULL_LEFT);
   girara_argument_mapping_add(gsession, "half-right",   HALF_RIGHT);
