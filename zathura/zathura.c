@@ -1344,19 +1344,19 @@ static void remove_page_from_table(GtkWidget* page, gpointer UNUSED(permanent)) 
   gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(page)), page);
 }
 
-zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
+static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zathura_document_t* document) {
   /* Caller needs to g_free(file_info.first_page_column_list) */
 
   zathura_fileinfo_t file_info = {
-      .current_page           = zathura_document_get_current_page_number(zathura->document),
-      .page_offset            = zathura_document_get_page_offset(zathura->document),
-      .zoom                   = zathura_document_get_zoom(zathura->document),
-      .rotation               = zathura_document_get_rotation(zathura->document),
+      .current_page           = zathura_document_get_current_page_number(document),
+      .page_offset            = zathura_document_get_page_offset(document),
+      .zoom                   = zathura_document_get_zoom(document),
+      .rotation               = zathura_document_get_rotation(document),
       .pages_per_row          = 1,
       .first_page_column_list = "1:2",
       .page_right_to_left     = false,
-      .position_x             = zathura_document_get_position_x(zathura->document),
-      .position_y             = zathura_document_get_position_y(zathura->document),
+      .position_x             = zathura_document_get_position_x(document),
+      .position_y             = zathura_document_get_position_y(document),
   };
 
   girara_setting_get(zathura->ui.session, "pages-per-row", &(file_info.pages_per_row));
@@ -1364,6 +1364,14 @@ zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
   girara_setting_get(zathura->ui.session, "page-right-to-left", &(file_info.page_right_to_left));
 
   return file_info;
+}
+
+zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
+  return zathura_get_document_fileinfo(zathura, zathura->document);
+}
+
+zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura) {
+  return zathura_get_document_fileinfo(zathura, zathura->predecessor_document);
 }
 
 static void save_fileinfo_to_db(zathura_t* zathura) {
