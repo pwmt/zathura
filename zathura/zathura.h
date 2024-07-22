@@ -376,6 +376,15 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite);
 zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura);
 
 /**
+ * Get fileinfo of the predecessor document (zoom, current page, etc).
+ *
+ * @param zathura The zathura session
+ *
+ * @return file_info (caller needs to g_free(file_info.first_page_column_list))
+ */
+zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura);
+
+/**
  * Frees the "predecessor" buffers used for smooth-reload
  *
  * @param zathura The zathura session

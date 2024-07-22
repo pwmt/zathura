@@ -475,7 +475,13 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
   }
 
   /* Get file info (zoom, current page, etc.) */
-  zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
+  zathura_fileinfo_t file_info;
+  if (zathura->document == NULL && zathura->predecessor_document != NULL) {
+    /* Try to get the info from the predecessor document if the current does not exist */
+    file_info = zathura_get_prefileinfo(zathura);
+  } else {
+    file_info = zathura_get_fileinfo(zathura);
+  }
 
   /* close current document */
   document_close(zathura, true);
