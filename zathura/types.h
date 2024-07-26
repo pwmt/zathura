@@ -213,9 +213,9 @@ typedef struct zathura_form_s {
  * Jump
  */
 typedef struct zathura_jump_s {
-  unsigned int page;
   double x;
   double y;
+  unsigned int page;
 } zathura_jump_t;
 
 /**

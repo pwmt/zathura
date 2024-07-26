@@ -567,7 +567,7 @@ static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* f
   g_return_val_if_fail(db != NULL && file != NULL, NULL);
 
   static const char SQL_GET_JUMPLIST[] =
-      "SELECT page, hadj_ratio, vadj_ratio FROM jumplist WHERE file = ? ORDER BY id ASC;";
+      "SELECT hadj_ratio, vadj_ratio, page FROM jumplist WHERE file = ? ORDER BY id ASC;";
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
@@ -597,9 +597,9 @@ static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* f
       continue;
     }
 
-    jump->page = sqlite3_column_int(stmt, 0);
-    jump->x    = sqlite3_column_double(stmt, 1);
-    jump->y    = sqlite3_column_double(stmt, 2);
+    jump->x    = sqlite3_column_double(stmt, 0);
+    jump->y    = sqlite3_column_double(stmt, 1);
+    jump->page = sqlite3_column_int(stmt, 2);
     girara_list_append(jumplist, jump);
   }
 
