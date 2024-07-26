@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-10 00:29+0200\n"
+"POT-Creation-Date: 2024-07-27 00:27+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -91,8 +91,8 @@ msgstr "Kopiera markerad bild till markering %s"
 #: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:220
 #: zathura/commands.c:327 zathura/commands.c:357 zathura/commands.c:382
 #: zathura/commands.c:480 zathura/commands.c:624 zathura/shortcuts.c:150
-#: zathura/shortcuts.c:446 zathura/shortcuts.c:1282 zathura/shortcuts.c:1315
-#: zathura/shortcuts.c:1340
+#: zathura/shortcuts.c:446 zathura/shortcuts.c:1283 zathura/shortcuts.c:1316
+#: zathura/shortcuts.c:1341
 msgid "No document opened."
 msgstr "Inget dokument öppnat."
 
@@ -145,7 +145,8 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #: zathura/commands.c:187
-msgid "page"
+#, c-format
+msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 #: zathura/commands.c:188
@@ -552,100 +553,100 @@ msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:535
+#: zathura/config.c:534
 msgid "Add a bookmark"
 msgstr "Lägg till ett bokmärke"
 
-#: zathura/config.c:536
+#: zathura/config.c:535
 msgid "Delete a bookmark"
 msgstr "Ta bort ett bokmärke"
 
-#: zathura/config.c:537
+#: zathura/config.c:536
 msgid "List all bookmarks"
 msgstr "Lista alla bokmärken"
 
-#: zathura/config.c:538
+#: zathura/config.c:537
 msgid "Jump to bookmark"
 msgstr ""
 
-#: zathura/config.c:539
+#: zathura/config.c:538
 msgid "Show recent jumps in jumplist"
 msgstr ""
 
-#: zathura/config.c:540
+#: zathura/config.c:539
 msgid "Close current file"
 msgstr "Stäng aktuell fil"
 
-#: zathura/config.c:541
+#: zathura/config.c:540
 msgid "Show file information"
 msgstr "Visa filinformation"
 
-#: zathura/config.c:542 zathura/config.c:543
+#: zathura/config.c:541 zathura/config.c:542
 msgid "Execute a command"
 msgstr "Exekvera ett kommando"
 
 #. like vim
-#: zathura/config.c:544
+#: zathura/config.c:543
 msgid "Show help"
 msgstr "Visa hjälp"
 
-#: zathura/config.c:545
+#: zathura/config.c:544
 msgid "Open document"
 msgstr "Öppna dokument"
 
-#: zathura/config.c:546
+#: zathura/config.c:545
 msgid "Close zathura"
 msgstr "Stäng zathura"
 
-#: zathura/config.c:547
+#: zathura/config.c:546
 msgid "Print document"
 msgstr "Skriv ut dokument"
 
-#: zathura/config.c:548 zathura/config.c:550
+#: zathura/config.c:547 zathura/config.c:549
 msgid "Save document"
 msgstr "Spara dokument"
 
-#: zathura/config.c:549 zathura/config.c:551
+#: zathura/config.c:548 zathura/config.c:550
 msgid "Save document (and force overwriting)"
 msgstr "Spara dokument (och tvinga överskrivning)"
 
-#: zathura/config.c:552
+#: zathura/config.c:551
 msgid "Save attachments"
 msgstr "Spara bilagor"
 
-#: zathura/config.c:553
+#: zathura/config.c:552
 msgid "Set page offset"
 msgstr "Sätt sidposition"
 
-#: zathura/config.c:554
+#: zathura/config.c:553
 msgid "Mark current location within the document"
 msgstr "Markera aktuell position inom dokumentet"
 
-#: zathura/config.c:555
+#: zathura/config.c:554
 msgid "Delete the specified marks"
 msgstr "Ta bort angivna märken"
 
-#: zathura/config.c:556
+#: zathura/config.c:555
 msgid "Remove highlights of current search results"
 msgstr ""
 
-#: zathura/config.c:557
+#: zathura/config.c:556
 msgid "Highlight current search results"
 msgstr "Färgmarkera aktuella sökresultat"
 
-#: zathura/config.c:558
+#: zathura/config.c:557
 msgid "Show version information"
 msgstr "Visa versionsinformation"
 
-#: zathura/config.c:559
+#: zathura/config.c:558
 msgid "Source config file"
 msgstr ""
 
-#: zathura/links.c:209
+#: zathura/links.c:210
 msgid "Failed to run xdg-open."
 msgstr "Misslyckades med att köra xdg-open."
 
-#: zathura/links.c:224
+#: zathura/links.c:225
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Att öppna externa program i strikt sandlådeläge tillåts inte"
 
@@ -794,16 +795,16 @@ msgstr "Utskrift misslyckades: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Ogiltigt justeringsläge: %d"
 
-#: zathura/shortcuts.c:993
+#: zathura/shortcuts.c:999
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Mönster hittades inte: %s"
 
-#: zathura/shortcuts.c:1185
+#: zathura/shortcuts.c:1187
 msgid "This document does not contain any index"
 msgstr "Detta dokument innehåller inget index"
 
-#: zathura/zathura.c:303 zathura/zathura.c:1505
+#: zathura/zathura.c:303 zathura/zathura.c:1513
 msgid "[No name]"
 msgstr "[Namnlös]"
 
