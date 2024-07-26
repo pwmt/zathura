@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: Zlib */
+
 #include "jumplist.h"
 
 #include "zathura.h"

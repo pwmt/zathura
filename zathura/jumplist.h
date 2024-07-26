@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: Zlib */
+
 #ifndef ZATHURA_JUMPLIST_H
 #define ZATHURA_JUMPLIST_H
 
