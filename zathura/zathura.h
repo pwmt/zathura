@@ -486,11 +486,10 @@ void zathura_show_signature_information(zathura_t* zathura, bool show);
 void zathura_modify_current_search_result(zathura_t* zathura, int diff);
 
 /**
- * Modify and normalize the current search result count
- * so that it always inferior or equal to the total count
+ * Set the current search result count to the last one before the current page
  *
  * @param zathura The zathura session
- * @param diff The amount to modify
+ * @param current_page_number The current page number
  */
 void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number);
 #endif // ZATHURA_H
