@@ -36,6 +36,7 @@ typedef struct zathura_page_widget_private_s {
     girara_list_t* list; /**< A list if there are search results that should be drawn */
     int current;         /**< The index of the current search result */
     gboolean draw;       /**< Draw search results */
+    gboolean skip;       /**< Whether a search has been conducted on this page */
   } search;
 
   struct {
@@ -101,6 +102,7 @@ enum properties_e {
   PROP_SEARCH_RESULTS,
   PROP_SEARCH_RESULTS_LENGTH,
   PROP_SEARCH_RESULTS_CURRENT,
+  PROP_SEARCH_SKIP,
   PROP_DRAW_SEARCH_RESULTS,
   PROP_LAST_VIEW,
   PROP_DRAW_SIGNATURES,
@@ -161,6 +163,9 @@ static void zathura_page_widget_class_init(ZathuraPageClass* class) {
                                   g_param_spec_int("search-current", "search-current", "The current search result", -1,
                                                    INT_MAX, 0,
                                                    G_PARAM_WRITABLE | G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property(object_class, PROP_SEARCH_SKIP,
+                                  g_param_spec_boolean("search-skip", "search-skip", "The current search result", FALSE,
+                                                       G_PARAM_WRITABLE | G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property(object_class, PROP_SEARCH_RESULTS_LENGTH,
                                   g_param_spec_int("search-length", "search-length", "The number of search results", -1,
                                                    INT_MAX, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
@@ -208,6 +213,7 @@ static void zathura_page_widget_init(ZathuraPage* widget) {
   priv->search.list    = NULL;
   priv->search.current = INT_MAX;
   priv->search.draw    = false;
+  priv->search.skip    = false;
 
   priv->selection.list = NULL;
   priv->selection.draw = false;
@@ -438,6 +444,9 @@ static void zathura_page_widget_set_property(GObject* object, guint prop_id, con
     }
     break;
   }
+  case PROP_SEARCH_SKIP:
+    priv->search.skip = g_value_get_boolean(value);
+    break;
   case PROP_DRAW_SEARCH_RESULTS:
     priv->search.draw = g_value_get_boolean(value);
 
@@ -493,6 +502,9 @@ static void zathura_page_widget_get_property(GObject* object, guint prop_id, GVa
     break;
   case PROP_SEARCH_RESULTS:
     g_value_set_pointer(value, priv->search.list);
+    break;
+  case PROP_SEARCH_SKIP:
+    g_value_set_boolean(value, priv->search.skip);
     break;
   case PROP_DRAW_SEARCH_RESULTS:
     g_value_set_boolean(value, priv->search.draw);
