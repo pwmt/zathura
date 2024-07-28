@@ -23,6 +23,7 @@
 #include "adjustment.h"
 #include "database.h"
 #include <math.h>
+#include <unistd.h>
 
 /* Helper function for highlighting the links */
 static bool draw_links(zathura_t* zathura) {
@@ -102,7 +103,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
         g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
       }
     }
-    girara_statusbar_item_set_text(session, zathura->ui.statusbar.search_count, "");
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, _(""));
   }
 
   /* Setting the mode back here has not worked for ages. We need another way to
@@ -882,9 +883,6 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
   zathura_page_t* target_page = NULL;
   int target_idx              = 0;
 
-  if (new_search == true || first_time_after_abort == true) {
-    zathura_set_current_search_result_previous_pages(zathura, cur_page);
-  }
   for (unsigned int page_id = 0; page_id < num_pages; ++page_id) {
     int tmp              = cur_page + diff * page_id;
     zathura_page_t* page = zathura_document_get_page(zathura->document, (tmp + num_pages) % num_pages);
@@ -902,13 +900,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
 
     if (new_search == true || first_time_after_abort == true || (tmp + num_pages) % num_pages != cur_page) {
       target_page = page;
-      if (diff == 1) {
-        target_idx = 0;
-        zathura_modify_current_search_result(zathura, 1);
-      } else {
-        target_idx = num_search_results - 1;
-        zathura_modify_current_search_result(zathura, -1);
-      }
+      target_idx  = diff == 1 ? 0 : num_search_results - 1;
       break;
     }
 
@@ -916,11 +908,9 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
       /* the next result is on the same page */
       target_page = page;
       target_idx  = current + 1;
-      zathura_modify_current_search_result(zathura, 1);
     } else if (diff == -1 && current > 0) {
       target_page = page;
       target_idx  = current - 1;
-      zathura_modify_current_search_result(zathura, -1);
     } else {
       /* the next result is on a different page */
       g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
@@ -932,13 +922,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
         g_object_get(G_OBJECT(npage_page_widget), "search-length", &num_search_results, NULL);
         if (num_search_results != 0) {
           target_page = npage;
-          if (diff == 1) {
-            target_idx = 0;
-            zathura_modify_current_search_result(zathura, 1);
-          } else {
-            target_idx = num_search_results - 1;
-            zathura_modify_current_search_result(zathura, -1);
-          }
+          target_idx  = diff == 1 ? 0 : num_search_results - 1;
           break;
         }
       }
@@ -990,13 +974,17 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
+    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+    zathura_set_current_search_result_previous_pages(zathura, current_page_number);
+    zathura_modify_current_search_result(zathura, target_idx + 1);
     char* tmp =
         g_strdup_printf("Search: [%d/%d]", zathura->global.current_search_result, zathura->global.total_search_results);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL) {
     const char* input  = argument->data;
     char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, _(""));
     g_free(escaped_text);
   }
 
