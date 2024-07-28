@@ -93,9 +93,10 @@ struct zathura_s {
     girara_session_t* session; /**< girara interface session */
 
     struct {
-      girara_statusbar_item_t* buffer;      /**< buffer statusbar entry */
-      girara_statusbar_item_t* file;        /**< file statusbar entry */
-      girara_statusbar_item_t* page_number; /**< page number statusbar entry */
+      girara_statusbar_item_t* buffer;       /**< buffer statusbar entry */
+      girara_statusbar_item_t* file;         /**< file statusbar entry */
+      girara_statusbar_item_t* page_number;  /**< page number statusbar entry */
+      girara_statusbar_item_t* search_count; /**< search count statusbar entry */
     } statusbar;
 
     struct {
@@ -140,6 +141,8 @@ struct zathura_s {
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
     gchar *current_index_path;
+    int current_search_result;
+    int total_search_results;
   } global;
 
   struct {
@@ -473,4 +476,21 @@ char* get_formatted_filename(zathura_t* zathura, bool statusbar);
  */
 void zathura_show_signature_information(zathura_t* zathura, bool show);
 
+/**
+ * Modify and normalize the current search result count
+ * so that it always inferior or equal to the total count
+ *
+ * @param zathura The zathura session
+ * @param diff The amount to modify
+ */
+void zathura_modify_current_search_result(zathura_t* zathura, int diff);
+
+/**
+ * Modify and normalize the current search result count
+ * so that it always inferior or equal to the total count
+ *
+ * @param zathura The zathura session
+ * @param diff The amount to modify
+ */
+void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number);
 #endif // ZATHURA_H

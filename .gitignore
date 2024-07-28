@@ -30,6 +30,7 @@ subprojects/girara
 # development files
 .clang_complete
 .lvimrc
+*.vim
 .ropeproject
 .frama-c
 compile_commands.json

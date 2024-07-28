@@ -284,19 +284,25 @@ static bool init_ui(zathura_t* zathura) {
   /* statusbar */
   zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
   if (zathura->ui.statusbar.file == NULL) {
-    girara_error("Failed to create status bar item.");
+    girara_error("Failed to create status bar file item.");
     return false;
   }
 
   zathura->ui.statusbar.buffer = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.buffer == NULL) {
-    girara_error("Failed to create status bar item.");
+    girara_error("Failed to create status bar buffer item.");
     return false;
   }
 
   zathura->ui.statusbar.page_number = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.page_number == NULL) {
-    girara_error("Failed to create status bar item.");
+    girara_error("Failed to create status bar page_number item.");
+    return false;
+  }
+
+  zathura->ui.statusbar.search_count = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  if (zathura->ui.statusbar.search_count == NULL) {
+    girara_error("Failed to create status bar search_count item.");
     return false;
   }
 
@@ -1810,5 +1816,41 @@ void zathura_set_log_level(const char* loglevel) {
     girara_set_log_level(GIRARA_ERROR);
   } else if (g_strcmp0(loglevel, "debug") == 0) {
     girara_set_log_level(GIRARA_DEBUG);
+  }
+}
+
+void zathura_modify_current_search_result(zathura_t* zathura, int diff) {
+  if (zathura->global.total_search_results == 0)
+    return;
+  if (diff == 0)
+    return;
+
+  int current = zathura->global.current_search_result;
+  int total   = zathura->global.total_search_results;
+  current += diff;
+  if (current >= total) {
+    current = current % total;
+  } else if (current < 0) {
+    current = total + (current % total);
+  }
+
+  if (current == 0) {
+    current = total;
+  }
+
+  zathura->global.current_search_result = current;
+}
+
+void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number) {
+  zathura->global.current_search_result = 0;
+  for (unsigned int page_id = 0; page_id < current_page_number; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+    int num_search_results = 0;
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    g_object_get(G_OBJECT(page_widget), "search-length", &num_search_results, NULL);
+    zathura->global.current_search_result += num_search_results;
   }
 }
