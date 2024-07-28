@@ -140,8 +140,9 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
-    int current_search_result;
-    int total_search_results;
+    int current_search_result;            /**< The current search counter */
+    int total_search_results;             /**< The total search results count */
+
   } global;
 
   struct {
@@ -485,11 +486,10 @@ void zathura_show_signature_information(zathura_t* zathura, bool show);
 void zathura_modify_current_search_result(zathura_t* zathura, int diff);
 
 /**
- * Modify and normalize the current search result count
- * so that it always inferior or equal to the total count
+ * Set the current search result count to the last one before the current page
  *
  * @param zathura The zathura session
- * @param diff The amount to modify
+ * @param current_page_number The current page number
  */
 void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number);
 #endif // ZATHURA_H
