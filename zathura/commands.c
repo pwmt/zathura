@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include <girara/log.h>
 #include <glib/gi18n.h>
 #include <stdlib.h>
 #include <string.h>
@@ -410,8 +411,10 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
   /* set search direction */
   zathura->global.search_direction = argument->n;
 
-  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+  unsigned int number_of_pages          = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int current_page_number      = zathura_document_get_current_page_number(zathura->document);
+  zathura->global.total_search_results  = 0;
+  zathura->global.current_search_result = 0;
 
   /* reset search highlighting */
   bool nohlsearch = false;
@@ -452,6 +455,8 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     } else {
       g_object_set(obj_page_widget, "search-current", 0, NULL);
     }
+
+    zathura->global.total_search_results += girara_list_size(result);
   }
 
   girara_argument_t* arg = g_try_malloc0(sizeof(girara_argument_t));
@@ -585,7 +590,7 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
     const char* bus_name = zathura_dbus_get_name(zathura);
     for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
       char* value = girara_list_nth(argument_list, idx);
-      char* s     = girara_replace_substring(value, "$DBUS", bus_name);
+      char* s = girara_replace_substring(value, "$DBUS", bus_name);
       if (s != NULL) {
         girara_list_set_nth(argument_list, idx, s);
       }
@@ -593,14 +598,14 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   }
 
   if (zathura->document != NULL) {
-    const char* path  = zathura_document_get_path(zathura->document);
+    const char* path = zathura_document_get_path(zathura->document);
     unsigned int page = zathura_document_get_current_page_number(zathura->document);
     char page_buf[G_ASCII_DTOSTR_BUF_SIZE];
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page + 1);
 
     for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
       char* value = girara_list_nth(argument_list, idx);
-      char* r     = girara_replace_substring(value, "$PAGE", page_buf);
+      char* r = girara_replace_substring(value, "$PAGE", page_buf);
       if (r != NULL) {
         char* s = girara_replace_substring(r, "$FILE", path);
         g_free(r);
