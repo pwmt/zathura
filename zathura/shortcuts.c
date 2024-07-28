@@ -978,7 +978,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
     zathura_set_current_search_result_previous_pages(zathura, current_page_number);
     zathura_modify_current_search_result(zathura, target_idx + 1);
     char* tmp =
-        g_strdup_printf("Search: [%d/%d]", zathura->global.current_search_result, zathura->global.total_search_results);
+        g_strdup_printf("  Search: [%d/%d]", zathura->global.current_search_result, zathura->global.total_search_results);
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL) {
     const char* input  = argument->data;
