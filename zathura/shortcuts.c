@@ -647,7 +647,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   const double new_x = scroll_wrap ? 1.0 - end_x : end_x;
   const double new_y = scroll_wrap ? 1.0 - end_y : end_y;
 
-  if (pos_x < end_x) {
+  if (pos_x < end_x + DBL_EPSILON) {
     pos_x = new_x;
   } else if (pos_x > 1.0 - end_x) {
     pos_x = 1 - new_x;
