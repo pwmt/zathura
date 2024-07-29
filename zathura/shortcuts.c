@@ -894,7 +894,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
     g_object_get(obj_page_widget, "search-skip", &skip, NULL);
 
     /* search the page, if it has not been searched before */
-    if (!skip) {
+    if (skip == FALSE) {
       const char* search_string = zathura_document_get_search_string(zathura->document);
       zathura_renderer_lock(zathura->sync.render_thread);
       girara_list_t* result = zathura_page_search_text(page, search_string, &error);
@@ -912,7 +912,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
 
       g_object_set(obj_page_widget, "search-results", result, NULL);
 
-      if (argument->n == BACKWARD) {
+      if (zathura->global.search_direction == BACKWARD) {
         /* start at bottom hit in page */
         g_object_set(obj_page_widget, "search-current", girara_list_size(result) - 1, NULL);
       } else {
@@ -927,7 +927,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
       continue;
     }
 
-    if (new_search == true || first_time_after_abort == true || index != cur_page) {
+    if (new_search == true || first_time_after_abort == true || index != cur_page || skip == FALSE) {
       target_page = page;
       target_idx  = diff == 1 ? 0 : num_search_results - 1;
       break;
@@ -937,27 +937,14 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
       /* the next result is on the same page */
       target_page = page;
       target_idx  = current + 1;
+      break;
     } else if (diff == -1 && current > 0) {
       target_page = page;
       target_idx  = current - 1;
+      break;
     } else {
-      /* the next result is on a different page */
-      g_object_set(obj_page_widget, "search-current", -1, NULL);
-
-      for (unsigned int npage_id = 1; npage_id < num_pages; ++npage_id) {
-        int ntmp                     = cur_page + diff * (page_id + npage_id);
-        zathura_page_t* npage        = zathura_document_get_page(zathura->document, (ntmp + 2 * num_pages) % num_pages);
-        GtkWidget* npage_page_widget = zathura_page_get_widget(zathura, npage);
-        g_object_get(G_OBJECT(npage_page_widget), "search-length", &num_search_results, NULL);
-        if (num_search_results != 0) {
-          target_page = npage;
-          target_idx  = diff == 1 ? 0 : num_search_results - 1;
-          break;
-        }
-      }
+      continue;
     }
-
-    break;
   }
 
   if (target_page != NULL) {

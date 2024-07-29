@@ -403,6 +403,8 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
   g_return_val_if_fail(zathura->document != NULL, false);
   g_return_val_if_fail(strlen(input) != 0, false);
 
+  zathura->global.search_direction = argument->n;
+
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
 
   /* reset pages */

@@ -76,7 +76,8 @@ void update_visible_pages(zathura_t* zathura) {
       GObject* obj_page_widget = G_OBJECT(page_widget);
       g_object_get(obj_page_widget, "search-results", &results, NULL);
       if (results != NULL) {
-        g_object_set(obj_page_widget, "search-current", 0, NULL);
+        g_object_set(obj_page_widget, "search-current",
+                     zathura->global.search_direction == FORWARD ? 0 : girara_list_size(results) - 1, NULL);
       }
     }
   }
