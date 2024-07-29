@@ -852,17 +852,20 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
+  zathura_error_t error = ZATHURA_ERROR_OK;
+
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
   const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
-  GtkWidget* cur_page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
-  bool new_search            = argument->data != NULL;
-  bool nohlsearch            = false;
+  GObject* obj_cur_page_widget =
+      G_OBJECT(zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page)));
+  bool new_search             = argument->data != NULL;
+  bool nohlsearch             = false;
   bool first_time_after_abort = false;
 
   girara_setting_get(session, "nohlsearch", &nohlsearch);
   if (nohlsearch == false) {
     gboolean draw = FALSE;
-    g_object_get(G_OBJECT(cur_page_widget), "draw-search-results", &draw, NULL);
+    g_object_get(obj_cur_page_widget, "draw-search-results", &draw, NULL);
 
     if (draw == false) {
       first_time_after_abort = true;
@@ -880,21 +883,51 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
   int target_idx              = 0;
 
   for (unsigned int page_id = 0; page_id < num_pages; ++page_id) {
-    int tmp              = cur_page + diff * page_id;
-    zathura_page_t* page = zathura_document_get_page(zathura->document, (tmp + num_pages) % num_pages);
+    unsigned int index   = (cur_page + diff * page_id + num_pages) % num_pages;
+    zathura_page_t* page = zathura_document_get_page(zathura->document, index);
     if (page == NULL) {
       continue;
     }
+    GObject* obj_page_widget = G_OBJECT(zathura_page_get_widget(zathura, page));
 
-    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    gboolean skip = FALSE;
+    g_object_get(obj_page_widget, "search-skip", &skip, NULL);
+
+    /* search the page, if it has not been searched before */
+    if (!skip) {
+      const char* search_string = zathura_document_get_search_string(zathura->document);
+      zathura_renderer_lock(zathura->sync.render_thread);
+      girara_list_t* result = zathura_page_search_text(page, search_string, &error);
+      zathura_renderer_unlock(zathura->sync.render_thread);
+      if (result == NULL || girara_list_size(result) == 0) {
+        girara_list_free(result);
+        g_object_set(obj_page_widget, "search-results", NULL, NULL);
+
+        if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
+          break;
+        } else {
+          continue;
+        }
+      }
+
+      g_object_set(obj_page_widget, "search-results", result, NULL);
+
+      if (argument->n == BACKWARD) {
+        /* start at bottom hit in page */
+        g_object_set(obj_page_widget, "search-current", girara_list_size(result) - 1, NULL);
+      } else {
+        g_object_set(obj_page_widget, "search-current", 0, NULL);
+      }
+      g_object_set(obj_page_widget, "search-skip", TRUE, NULL);
+    }
 
     int num_search_results = 0, current = -1;
-    g_object_get(G_OBJECT(page_widget), "search-current", &current, "search-length", &num_search_results, NULL);
+    g_object_get(obj_page_widget, "search-current", &current, "search-length", &num_search_results, NULL);
     if (num_search_results == 0 || current == -1) {
       continue;
     }
 
-    if (new_search == true || first_time_after_abort == true || (tmp + num_pages) % num_pages != cur_page) {
+    if (new_search == true || first_time_after_abort == true || index != cur_page) {
       target_page = page;
       target_idx  = diff == 1 ? 0 : num_search_results - 1;
       break;
@@ -909,7 +942,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
       target_idx  = current - 1;
     } else {
       /* the next result is on a different page */
-      g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
+      g_object_set(obj_page_widget, "search-current", -1, NULL);
 
       for (unsigned int npage_id = 1; npage_id < num_pages; ++npage_id) {
         int ntmp                     = cur_page + diff * (page_id + npage_id);
