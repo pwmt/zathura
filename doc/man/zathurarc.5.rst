@@ -225,7 +225,7 @@ They can also be combined with modifiers:
 
     Change current mode. Pass the desired mode as argument.
 
-  * ``cycle_first_page``
+  * ``cycle_first_column``
 
     In multiple page layout, cycle the column in which the first page is displayed.
 
