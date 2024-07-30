@@ -422,6 +422,10 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
   /* set search direction */
   zathura->global.search_direction = argument->n;
 
+  // set search string
+  g_free(zathura->global.search_string);
+  zathura->global.search_string = g_strdup(input);
+
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
   unsigned int current_page_number = zathura_document_get_current_page_number(document);
 

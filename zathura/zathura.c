@@ -86,10 +86,12 @@ zathura_t* zathura_create(void) {
   }
 
   /* global settings */
-  zathura->global.search_direction     = FORWARD;
-  zathura->global.synctex_edit_modmask = GDK_CONTROL_MASK;
-  zathura->global.highlighter_modmask  = GDK_SHIFT_MASK;
-  zathura->global.double_click_follow  = true;
+  zathura->global.search_direction               = FORWARD;
+  zathura->global.search_string                  = NULL;
+  zathura->global.are_search_results_highlighted = false;
+  zathura->global.synctex_edit_modmask           = GDK_CONTROL_MASK;
+  zathura->global.highlighter_modmask            = GDK_SHIFT_MASK;
+  zathura->global.double_click_follow            = true;
 
   /* initialize with default paths */
   {
@@ -514,6 +516,9 @@ void zathura_free(zathura_t* zathura) {
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
   g_free(zathura->config.cache_dir);
+
+  // free search string
+  g_free(zathura->global.search_string);
 
   /* free jumplist */
   zathura_jumplist_free(zathura);
@@ -1457,6 +1462,10 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
       g_free(zathura->file_monitor.password);
       zathura->file_monitor.password = NULL;
     }
+
+    // also free old search string in this case
+    g_free(zathura->global.search_string);
+    zathura->global.search_string = NULL;
   }
 
   /* store file information */
