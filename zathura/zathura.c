@@ -1577,8 +1577,9 @@ void statusbar_page_number_update(zathura_t* zathura) {
         page_number_text = g_strdup_printf("[%s (%d/%d) (%d%%)]", page_label, current_page_number + 1, number_of_pages,
                                            page_number_percent);
       } else {
-        char page_number_string[5];
-        sprintf(page_number_string, "%d", current_page_number + 1);
+        char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
+        g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, current_page_number + 1);
+
         if (strcmp(page_label, page_number_string))
           page_number_text = g_strdup_printf("[%s (%d/%d)]", page_label, current_page_number + 1, number_of_pages);
         else
