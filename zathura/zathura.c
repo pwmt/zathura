@@ -1112,8 +1112,18 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
       goto error_free;
     }
 
-    zathura_page_set_width(page, most_freq_width);
-    zathura_page_set_height(page, most_freq_height);
+    // FIXME: this should happen somewhere without chaning the size of the page
+    // itself. The widget could just scale about to the cell size. As a
+    // workaround this should be good enough for now.
+    const double width  = zathura_page_get_width(page);
+    const double height = zathura_page_get_height(page);
+
+    const double width_relation  = most_freq_width / width;
+    const double height_relation = most_freq_height / height;
+    const double scale           = MIN(width_relation, height_relation);
+
+    zathura_page_set_width(page, width * scale);
+    zathura_page_set_height(page, height * scale);
 
     GtkWidget* page_widget = zathura_page_widget_new(zathura, page);
     if (page_widget == NULL) {
