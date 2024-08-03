@@ -1104,6 +1104,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   unsigned int most_freq_width, most_freq_height;
   document_open_page_most_frequent_size(document, &most_freq_width, &most_freq_height);
+  zathura_document_set_cell_size(document, most_freq_height, most_freq_width);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
@@ -1111,9 +1112,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
       goto error_free;
     }
 
-    unsigned int cell_height = 0, cell_width = 0;
-    zathura_document_get_cell_size(document, &cell_height, &cell_width);
-    zathura_document_set_cell_size(document, most_freq_height, most_freq_width);
     zathura_page_set_width(page, most_freq_width);
     zathura_page_set_height(page, most_freq_height);
 
