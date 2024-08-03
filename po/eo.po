@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-27 00:27+0200\n"
+"POT-Creation-Date: 2024-08-03 23:27+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: norbux <manelsales@ono.com>, 2012\n"
 "Language-Team: Esperanto (http://app.transifex.com/pwmt/zathura/language/"
@@ -87,8 +87,8 @@ msgstr ""
 #: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:220
 #: zathura/commands.c:327 zathura/commands.c:357 zathura/commands.c:382
 #: zathura/commands.c:480 zathura/commands.c:624 zathura/shortcuts.c:150
-#: zathura/shortcuts.c:446 zathura/shortcuts.c:1283 zathura/shortcuts.c:1316
-#: zathura/shortcuts.c:1341
+#: zathura/shortcuts.c:446 zathura/shortcuts.c:1259 zathura/shortcuts.c:1292
+#: zathura/shortcuts.c:1317
 msgid "No document opened."
 msgstr "Neniu dokumento malfermita."
 
@@ -791,16 +791,16 @@ msgstr ""
 msgid "Invalid adjust mode: %d"
 msgstr ""
 
-#: zathura/shortcuts.c:999
+#: zathura/shortcuts.c:975
 #, c-format
 msgid "Pattern not found: %s"
 msgstr ""
 
-#: zathura/shortcuts.c:1187
+#: zathura/shortcuts.c:1163
 msgid "This document does not contain any index"
 msgstr "Ĉi-tiu dokumento enhavas neniam indekson."
 
-#: zathura/zathura.c:303 zathura/zathura.c:1513
+#: zathura/zathura.c:303 zathura/zathura.c:1521
 msgid "[No name]"
 msgstr "[Neniu nomo]"
 
@@ -824,15 +824,15 @@ msgstr ""
 msgid "Document does not contain any pages"
 msgstr ""
 
-#: zathura/zathura.c:1325
+#: zathura/zathura.c:1333
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr ""
 
-#: zathura/zathura.c:1335
+#: zathura/zathura.c:1343
 msgid "Failed to save document."
 msgstr "Neeble konservi dokumenton."
 
-#: zathura/zathura.c:1339
+#: zathura/zathura.c:1347
 msgid "Document saved."
 msgstr "Dokumento konservita."

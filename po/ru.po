@@ -100,8 +100,8 @@ msgstr "Скопировано выбранное изображение в вы
 #: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:220
 #: zathura/commands.c:327 zathura/commands.c:357 zathura/commands.c:382
 #: zathura/commands.c:480 zathura/commands.c:624 zathura/shortcuts.c:150
-#: zathura/shortcuts.c:446 zathura/shortcuts.c:1283 zathura/shortcuts.c:1316
-#: zathura/shortcuts.c:1341
+#: zathura/shortcuts.c:446 zathura/shortcuts.c:1259 zathura/shortcuts.c:1292
+#: zathura/shortcuts.c:1317
 msgid "No document opened."
 msgstr "Нет открытых документов."
 
@@ -804,16 +804,16 @@ msgstr "Не удалось напечатать %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Неверный режим настройки: %d"
 
-#: zathura/shortcuts.c:999
+#: zathura/shortcuts.c:975
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Шаблон не найден: %s"
 
-#: zathura/shortcuts.c:1187
+#: zathura/shortcuts.c:1163
 msgid "This document does not contain any index"
 msgstr "В документе нет индекса"
 
-#: zathura/zathura.c:303 zathura/zathura.c:1513
+#: zathura/zathura.c:303 zathura/zathura.c:1521
 msgid "[No name]"
 msgstr "[Без названия]"
 
@@ -840,15 +840,15 @@ msgstr "Тип файла не поддерживается. Установит�
 msgid "Document does not contain any pages"
 msgstr "В документе нет страниц"
 
-#: zathura/zathura.c:1325
+#: zathura/zathura.c:1333
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr ""
 
-#: zathura/zathura.c:1335
+#: zathura/zathura.c:1343
 msgid "Failed to save document."
 msgstr "Не удалось сохранить документ."
 
-#: zathura/zathura.c:1339
+#: zathura/zathura.c:1347
 msgid "Document saved."
 msgstr "Документ сохранён."
