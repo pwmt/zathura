@@ -25,6 +25,13 @@ jobs:
           meson ..
           ninja --verbose
           ninja test --verbose
+      - name: Build and test (features disabled)
+        run: |
+          mkdir build-nofeatures
+          cd build-nofeatures
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
+          ninja --verbose
+          ninja test --verbose
 
   build-test-debian-bookworm:
     name: Test on Debian bookworm
@@ -41,6 +48,13 @@ jobs:
           mkdir build
           cd build
           meson ..
+          ninja --verbose
+          ninja test --verbose
+      - name: Build and test (features disabled)
+        run: |
+          mkdir build-nofeatures
+          cd build-nofeatures
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose
 
@@ -61,6 +75,13 @@ jobs:
           meson ..
           ninja --verbose
           ninja test --verbose
+      - name: Build and test (features disabled)
+        run: |
+          mkdir build-nofeatures
+          cd build-nofeatures
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
+          ninja --verbose
+          ninja test --verbose
 
   build-test-ubuntu-jammy:
     name: Test on Ubuntu jammy
@@ -79,6 +100,13 @@ jobs:
           meson ..
           ninja --verbose
           ninja test --verbose
+      - name: Build and test (features disabled)
+        run: |
+          mkdir build-nofeatures
+          cd build-nofeatures
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
+          ninja --verbose
+          ninja test --verbose
 
   build-test-archlinux:
     name: Test on Archlinux
@@ -95,5 +123,12 @@ jobs:
           mkdir build
           cd build
           meson ..
+          ninja --verbose
+          ninja test --verbose
+      - name: Build and test (features disabled)
+        run: |
+          mkdir build-nofeatures
+          cd build-nofeatures
+          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
           ninja --verbose
           ninja test --verbose

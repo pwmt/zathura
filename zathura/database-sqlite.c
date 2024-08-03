@@ -11,12 +11,10 @@
 #include "utils.h"
 
 /* version of the database layout */
-#define DATABASE_VERSION 2
+#define DATABASE_VERSION 3
 
-static char*
-sqlite3_column_text_dup(sqlite3_stmt* stmt, int col)
-{
-  return g_strdup((const char*) sqlite3_column_text(stmt, col));
+static char* sqlite3_column_text_dup(sqlite3_stmt* stmt, int col) {
+  return g_strdup((const char*)sqlite3_column_text(stmt, col));
 }
 
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface);
@@ -28,20 +26,18 @@ typedef struct zathura_sqldatabase_private_s {
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraSQLDatabase, zathura_sqldatabase, G_TYPE_OBJECT,
                         G_IMPLEMENT_INTERFACE(ZATHURA_TYPE_DATABASE, zathura_database_interface_init)
-                        G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init)
-                        G_ADD_PRIVATE(ZathuraSQLDatabase))
+                            G_IMPLEMENT_INTERFACE(GIRARA_TYPE_INPUT_HISTORY_IO, io_interface_init)
+                                G_ADD_PRIVATE(ZathuraSQLDatabase))
 
 enum {
   PROP_0,
-  PROP_PATH
+  PROP_PATH,
 };
 
-zathura_database_t*
-zathura_sqldatabase_new(const char* path)
-{
+zathura_database_t* zathura_sqldatabase_new(const char* path) {
   g_return_val_if_fail(path != NULL && strlen(path) != 0, NULL);
 
-  zathura_database_t* db = g_object_new(ZATHURA_TYPE_SQLDATABASE, "path", path, NULL);
+  zathura_database_t* db          = g_object_new(ZATHURA_TYPE_SQLDATABASE, "path", path, NULL);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(ZATHURA_SQLDATABASE(db));
   if (priv->session == NULL) {
     g_object_unref(G_OBJECT(db));
@@ -51,10 +47,8 @@ zathura_sqldatabase_new(const char* path)
   return db;
 }
 
-static void
-sqlite_finalize(GObject* object)
-{
-  ZathuraSQLDatabase* db = ZATHURA_SQLDATABASE(object);
+static void sqlite_finalize(GObject* object) {
+  ZathuraSQLDatabase* db          = ZATHURA_SQLDATABASE(object);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
   if (priv->session) {
     sqlite3_exec(priv->session, "VACUUM;", NULL, 0, NULL);
@@ -64,9 +58,7 @@ sqlite_finalize(GObject* object)
   G_OBJECT_CLASS(zathura_sqldatabase_parent_class)->finalize(object);
 }
 
-static sqlite3_stmt*
-prepare_statement(sqlite3* session, const char* statement)
-{
+static sqlite3_stmt* prepare_statement(sqlite3* session, const char* statement) {
   if (session == NULL || statement == NULL) {
     return NULL;
   }
@@ -87,9 +79,7 @@ prepare_statement(sqlite3* session, const char* statement)
   return pp_stmt;
 }
 
-static int
-sqlite_get_user_version(sqlite3* session)
-{
+static int sqlite_get_user_version(sqlite3* session) {
   sqlite3_stmt* stmt = prepare_statement(session, "PRAGMA user_version;");
   if (stmt == NULL) {
     return -1;
@@ -103,9 +93,7 @@ sqlite_get_user_version(sqlite3* session)
   return version;
 }
 
-static bool
-check_column(sqlite3* session, const char* table, const char* col, bool* res)
-{
+static bool check_column(sqlite3* session, const char* table, const char* col, bool* res) {
   /* we can't actually bind the argument with sqlite3_bind_text because
    * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
   char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
@@ -121,7 +109,7 @@ check_column(sqlite3* session, const char* table, const char* col, bool* res)
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0) {
+    if (strcmp((const char*)sqlite3_column_text(stmt, 1), col) == 0) {
       *res = true;
       break;
     }
@@ -137,9 +125,7 @@ check_column(sqlite3* session, const char* table, const char* col, bool* res)
   return true;
 }
 
-static bool
-check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* res)
-{
+static bool check_column_type(sqlite3* session, const char* table, const char* col, const char* type, bool* res) {
   /* we can't actually bind the argument with sqlite3_bind_text because
    * sqlite3_prepare_v2 fails with "PRAGMA table_info(?);" */
   char* query = sqlite3_mprintf("PRAGMA table_info(%Q);", table);
@@ -155,8 +141,8 @@ check_column_type(sqlite3* session, const char* table, const char* col, const ch
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*) sqlite3_column_text(stmt, 1), col) == 0 &&
-        strcmp((const char*) sqlite3_column_text(stmt, 2), type) == 0) {
+    if (strcmp((const char*)sqlite3_column_text(stmt, 1), col) == 0 &&
+        strcmp((const char*)sqlite3_column_text(stmt, 2), type) == 0) {
       *res = true;
       break;
     }
@@ -172,90 +158,78 @@ check_column_type(sqlite3* session, const char* table, const char* col, const ch
   return true;
 }
 
-static void
-sqlite_db_check_layout(sqlite3* session, const int database_version, const bool new_db)
-{
+static void sqlite_db_check_layout(sqlite3* session, const int database_version, const bool new_db) {
   /* create bookmarks table */
-  static const char SQL_BOOKMARK_INIT[] =
-    "CREATE TABLE IF NOT EXISTS bookmarks ("
-    "file TEXT,"
-    "id TEXT,"
-    "page INTEGER,"
-    "hadj_ratio FLOAT,"
-    "vadj_ratio FLOAT,"
-    "PRIMARY KEY(file, id));";
+  static const char SQL_BOOKMARK_INIT[] = "CREATE TABLE IF NOT EXISTS bookmarks ("
+                                          "file TEXT,"
+                                          "id TEXT,"
+                                          "page INTEGER,"
+                                          "hadj_ratio FLOAT,"
+                                          "vadj_ratio FLOAT,"
+                                          "PRIMARY KEY(file, id));";
 
   /* create jumplist table */
-  static const char SQL_JUMPLIST_INIT[] =
-    "CREATE TABLE IF NOT EXISTS jumplist ("
-    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    "file TEXT,"
-    "page INTEGER,"
-    "hadj_ratio FLOAT,"
-    "vadj_ratio FLOAT"
-    ");";
+  static const char SQL_JUMPLIST_INIT[] = "CREATE TABLE IF NOT EXISTS jumplist ("
+                                          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                          "file TEXT,"
+                                          "page INTEGER,"
+                                          "hadj_ratio FLOAT,"
+                                          "vadj_ratio FLOAT"
+                                          ");";
 
   /* create fileinfo table */
-  static const char SQL_FILEINFO_INIT[] =
-    "CREATE TABLE IF NOT EXISTS fileinfo ("
-    "file TEXT PRIMARY KEY,"
-    "page INTEGER,"
-    "offset INTEGER,"
-    "zoom FLOAT,"
-    "rotation INTEGER,"
-    "pages_per_row INTEGER,"
-    "first_page_column TEXT,"
-    "position_x FLOAT,"
-    "position_y FLOAT,"
-    "time TIMESTAMP,"
-    "page_right_to_left INTEGER,"
-    "sha256 BLOB"
-    ");";
+  static const char SQL_FILEINFO_INIT[] = "CREATE TABLE IF NOT EXISTS fileinfo ("
+                                          "file TEXT PRIMARY KEY,"
+                                          "page INTEGER,"
+                                          "offset INTEGER,"
+                                          "zoom FLOAT,"
+                                          "rotation INTEGER,"
+                                          "pages_per_row INTEGER,"
+                                          "first_page_column TEXT,"
+                                          "position_x FLOAT,"
+                                          "position_y FLOAT,"
+                                          "time TIMESTAMP,"
+                                          "page_right_to_left INTEGER,"
+                                          "sha256 BLOB,"
+                                          "adjust_mode INTEGER"
+                                          ");";
 
   /* create history table */
-  static const char SQL_HISTORY_INIT[] =
-    "CREATE TABLE IF NOT EXISTS history ("
-    "time TIMESTAMP,"
-    "line TEXT,"
-    "PRIMARY KEY(line));";
+  static const char SQL_HISTORY_INIT[] = "CREATE TABLE IF NOT EXISTS history ("
+                                         "time TIMESTAMP,"
+                                         "line TEXT,"
+                                         "PRIMARY KEY(line));";
 
-  static const char* ALL_INIT[] = {
-    SQL_BOOKMARK_INIT,
-    SQL_JUMPLIST_INIT,
-    SQL_FILEINFO_INIT,
-    SQL_HISTORY_INIT
-  };
+  /* crate quickmarks table */
+  static const char QUICKMARKS_INIT[] = "CREATE TABLE IF NOT EXISTS quickmarks (file TEXT, key INTEGER, x FLOAT, y "
+                                        "FLOAT, page INTEGER, zoom FLOAT, PRIMARY KEY(file, key));";
+
+  static const char* ALL_INIT[] = {SQL_BOOKMARK_INIT, SQL_JUMPLIST_INIT, SQL_FILEINFO_INIT, SQL_HISTORY_INIT,
+                                   QUICKMARKS_INIT};
 
   /* update fileinfo table (part 1) */
-  static const char SQL_FILEINFO_ALTER[] =
-    "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
-    "ALTER TABLE fileinfo ADD COLUMN position_x FLOAT;"
-    "ALTER TABLE fileinfo ADD COLUMN position_y FLOAT;";
+  static const char SQL_FILEINFO_ALTER[] = "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
+                                           "ALTER TABLE fileinfo ADD COLUMN position_x FLOAT;"
+                                           "ALTER TABLE fileinfo ADD COLUMN position_y FLOAT;";
 
   /* update fileinfo table (part 2) */
-  static const char SQL_FILEINFO_ALTER2[] =
-    "ALTER TABLE fileinfo ADD COLUMN first_page_column TEXT;";
+  static const char SQL_FILEINFO_ALTER2[] = "ALTER TABLE fileinfo ADD COLUMN first_page_column TEXT;";
 
   /* update fileinfo table (part 3) */
-  static const char SQL_FILEINFO_ALTER3[] =
-    "ALTER TABLE fileinfo ADD COLUMN time TIMESTAMP;";
+  static const char SQL_FILEINFO_ALTER3[] = "ALTER TABLE fileinfo ADD COLUMN time TIMESTAMP;";
 
   /* update fileinfo table (part 4) */
-  static const char SQL_FILEINFO_ALTER4[] =
-    "ALTER TABLE fileinfo ADD COLUMN zoom FLOAT;";
+  static const char SQL_FILEINFO_ALTER4[] = "ALTER TABLE fileinfo ADD COLUMN zoom FLOAT;";
 
   /* update fileinfo table (part 5) */
-  static const char SQL_FILEINFO_ALTER5[] =
-    "ALTER TABLE fileinfo ADD COLUMN page_right_to_left INTEGER;";
+  static const char SQL_FILEINFO_ALTER5[] = "ALTER TABLE fileinfo ADD COLUMN page_right_to_left INTEGER;";
 
   /* update fileinfo table (part 6) */
-  static const char SQL_FILEINFO_ALTER6[] =
-    "ALTER TABLE fileinfo ADD COLUMN sha256 BLOB;";
+  static const char SQL_FILEINFO_ALTER6[] = "ALTER TABLE fileinfo ADD COLUMN sha256 BLOB;";
 
   /* update bookmark table */
-  static const char SQL_BOOKMARK_ALTER[] =
-    "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
-    "ALTER TABLE bookmarks ADD COLUMN vadj_ratio FLOAT;";
+  static const char SQL_BOOKMARK_ALTER[] = "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
+                                           "ALTER TABLE bookmarks ADD COLUMN vadj_ratio FLOAT;";
 
   /* create tables if they don't exist */
   for (size_t s = 0; s < LENGTH(ALL_INIT); ++s) {
@@ -279,8 +253,7 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
 #endif
 
   bool all_updates_ok = true;
-  if (database_version < 1)
-  {
+  if (database_version < 1) {
     /* check existing tables for missing columns */
     bool res1, ret1;
     ret1 = check_column(session, "fileinfo", "pages_per_row", &res1);
@@ -342,16 +315,14 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
 
     if (ret1 == true && res1 == false) {
       /* prepare transaction */
-      static const char tx_begin[] =
-        "BEGIN TRANSACTION;"
-        "ALTER TABLE fileinfo RENAME TO tmp;";
-      static const char tx_end[] =
-        "INSERT INTO fileinfo SELECT * FROM tmp;"
-        "DROP TABLE tmp;"
-        "COMMIT;";
+      static const char tx_begin[] = "BEGIN TRANSACTION;"
+                                     "ALTER TABLE fileinfo RENAME TO tmp;";
+      static const char tx_end[]   = "INSERT INTO fileinfo SELECT * FROM tmp;"
+                                     "DROP TABLE tmp;"
+                                     "COMMIT;";
 
       /* assemble transaction */
-      char transaction[sizeof(tx_begin) + sizeof(SQL_FILEINFO_INIT) + sizeof(tx_end) - 2] = { '\0' };
+      char transaction[sizeof(tx_begin) + sizeof(SQL_FILEINFO_INIT) + sizeof(tx_end) - 2] = {'\0'};
       g_strlcat(transaction, tx_begin, sizeof(transaction));
       g_strlcat(transaction, SQL_FILEINFO_INIT, sizeof(transaction));
       g_strlcat(transaction, tx_end, sizeof(transaction));
@@ -375,13 +346,11 @@ sqlite_db_check_layout(sqlite3* session, const int database_version, const bool 
   }
 }
 
-static void
-sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
-{
+static void sqlite_db_init(ZathuraSQLDatabase* db, const char* path) {
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
 
   const bool db_exists = g_file_test(path, G_FILE_TEST_EXISTS);
-  sqlite3* session = NULL;
+  sqlite3* session     = NULL;
   if (sqlite3_open(path, &session) != SQLITE_OK) {
     girara_error("Could not open database: %s\n", path);
     return;
@@ -406,31 +375,26 @@ sqlite_db_init(ZathuraSQLDatabase* db, const char* path)
   priv->session = session;
 }
 
-static void
-sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
-{
+static void sqlite_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec) {
   ZathuraSQLDatabase* db          = ZATHURA_SQLDATABASE(object);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(db);
 
   switch (prop_id) {
-    case PROP_PATH:
-      g_return_if_fail(priv->session == NULL);
-      sqlite_db_init(db, g_value_get_string(value));
-      break;
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+  case PROP_PATH:
+    g_return_if_fail(priv->session == NULL);
+    sqlite_db_init(db, g_value_get_string(value));
+    break;
+  default:
+    G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
 }
 
-static bool
-sqlite_add_bookmark(zathura_database_t* db, const char* file,
-                    zathura_bookmark_t* bookmark)
-{
+static bool sqlite_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_BOOKMARK_ADD[] =
-    "REPLACE INTO bookmarks (file, id, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?, ?);";
+      "REPLACE INTO bookmarks (file, id, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
   if (stmt == NULL) {
@@ -453,15 +417,11 @@ sqlite_add_bookmark(zathura_database_t* db, const char* file,
   return (res == SQLITE_DONE) ? true : false;
 }
 
-static bool
-sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char*
-                       id)
-{
-  ZathuraSQLDatabase* sqldb      = ZATHURA_SQLDATABASE(db);
+static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char* id) {
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  static const char SQL_BOOKMARK_ADD[] =
-    "DELETE FROM bookmarks WHERE file = ? AND id = ?;";
+  static const char SQL_BOOKMARK_ADD[] = "DELETE FROM bookmarks WHERE file = ? AND id = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
   if (stmt == NULL) {
@@ -481,14 +441,11 @@ sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char*
   return (res == SQLITE_DONE) ? true : false;
 }
 
-static girara_list_t*
-sqlite_load_bookmarks(zathura_database_t* db, const char* file)
-{
+static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* file) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  static const char SQL_BOOKMARK_SELECT[] =
-    "SELECT id, page, hadj_ratio, vadj_ratio FROM bookmarks WHERE file = ?;";
+  static const char SQL_BOOKMARK_SELECT[] = "SELECT id, page, hadj_ratio, vadj_ratio FROM bookmarks WHERE file = ?;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_SELECT);
   if (stmt == NULL) {
@@ -528,12 +485,11 @@ sqlite_load_bookmarks(zathura_database_t* db, const char* file)
   return result;
 }
 
-static bool
-sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist)
-{
+static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist) {
   g_return_val_if_fail(db != NULL && file != NULL && jumplist != NULL, false);
 
-  static const char SQL_INSERT_JUMP[]     = "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
+  static const char SQL_INSERT_JUMP[] =
+      "INSERT INTO jumplist (file, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?);";
   static const char SQL_REMOVE_JUMPLIST[] = "DELETE FROM jumplist WHERE file = ?;";
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
@@ -607,12 +563,11 @@ sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* ju
   }
 }
 
-static girara_list_t*
-sqlite_load_jumplist(zathura_database_t* db, const char* file)
-{
+static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* file) {
   g_return_val_if_fail(db != NULL && file != NULL, NULL);
 
-  static const char SQL_GET_JUMPLIST[] = "SELECT page, hadj_ratio, vadj_ratio FROM jumplist WHERE file = ? ORDER BY id ASC;";
+  static const char SQL_GET_JUMPLIST[] =
+      "SELECT hadj_ratio, vadj_ratio, page FROM jumplist WHERE file = ? ORDER BY id ASC;";
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
@@ -642,9 +597,9 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
       continue;
     }
 
-    jump->page = sqlite3_column_int(stmt, 0);
-    jump->x    = sqlite3_column_double(stmt, 1);
-    jump->y    = sqlite3_column_double(stmt, 2);
+    jump->x    = sqlite3_column_double(stmt, 0);
+    jump->y    = sqlite3_column_double(stmt, 1);
+    jump->page = sqlite3_column_int(stmt, 2);
     girara_list_append(jumplist, jump);
   }
 
@@ -659,10 +614,140 @@ sqlite_load_jumplist(zathura_database_t* db, const char* file)
   return jumplist;
 }
 
-static bool
-sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
-                    zathura_fileinfo_t* file_info)
-{
+static bool sqlite_save_quickmarks(zathura_database_t* db, const char* file, girara_list_t* quickmarks) {
+  g_return_val_if_fail(db != NULL && file != NULL && quickmarks != NULL, false);
+
+  static const char SQL_INSERT_MARK[] =
+      "INSERT INTO quickmarks (file, key, x, y, page, zoom) VALUES (?, ?, ?, ?, ?, ?);";
+  static const char SQL_REMOVE_QUICKMARKS[] = "DELETE FROM quickmarks WHERE file = ?;";
+
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
+  sqlite3_stmt* stmt = NULL;
+  int res            = 0;
+
+  if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
+    return false;
+  }
+
+  stmt = prepare_statement(priv->session, SQL_REMOVE_QUICKMARKS);
+
+  if (stmt == NULL) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    girara_error("Failed to bind arguments.");
+    return false;
+  }
+
+  res = sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
+
+  if (res != SQLITE_DONE) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  if (girara_list_size(quickmarks) == 0) {
+    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
+    return true;
+  }
+
+  bool status = true;
+  for (size_t idx = 0; idx != girara_list_size(quickmarks) && status; ++idx) {
+    zathura_mark_t* mark = girara_list_nth(quickmarks, idx);
+    stmt                 = prepare_statement(priv->session, SQL_INSERT_MARK);
+    if (stmt == NULL) {
+      status = false;
+      break;
+    }
+
+    if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK || sqlite3_bind_int(stmt, 2, mark->key) != SQLITE_OK ||
+        sqlite3_bind_double(stmt, 3, mark->position_x) != SQLITE_OK ||
+        sqlite3_bind_double(stmt, 4, mark->position_y) != SQLITE_OK ||
+        sqlite3_bind_int(stmt, 5, mark->page) != SQLITE_OK || sqlite3_bind_double(stmt, 6, mark->zoom) != SQLITE_OK) {
+      sqlite3_finalize(stmt);
+      girara_error("Failed to bind arguments.");
+      status = false;
+      break;
+    }
+
+    res = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    if (res != SQLITE_DONE) {
+      status = false;
+    }
+  }
+
+  if (status == false) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+  } else {
+    sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
+  }
+  return status;
+}
+
+static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char* file) {
+  g_return_val_if_fail(db != NULL && file != NULL, NULL);
+
+  static const char SQL_GET_QUICKMARKS[] =
+      "SELECT key, x, y, page, zoom FROM quickmarks WHERE file = ? ORDER BY key ASC;";
+
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
+  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_QUICKMARKS);
+  if (stmt == NULL) {
+    return NULL;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
+    sqlite3_finalize(stmt);
+    girara_error("Failed to bind arguments.");
+
+    return NULL;
+  }
+
+  girara_list_t* quickmarks = girara_list_new2(g_free);
+  if (quickmarks == NULL) {
+    sqlite3_finalize(stmt);
+    return NULL;
+  }
+
+  int res = 0;
+  while ((res = sqlite3_step(stmt)) == SQLITE_ROW) {
+    zathura_mark_t* mark = g_try_malloc0(sizeof(zathura_mark_t));
+    if (mark == NULL) {
+      continue;
+    }
+
+    mark->key        = sqlite3_column_int(stmt, 0);
+    mark->position_x = sqlite3_column_double(stmt, 1);
+    mark->position_y = sqlite3_column_double(stmt, 2);
+    mark->page       = sqlite3_column_int(stmt, 3);
+    mark->zoom       = sqlite3_column_double(stmt, 4);
+    girara_list_append(quickmarks, mark);
+  }
+
+  sqlite3_finalize(stmt);
+
+  if (res != SQLITE_DONE) {
+    girara_list_free(quickmarks);
+
+    return NULL;
+  }
+
+  return quickmarks;
+}
+
+static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+                                zathura_fileinfo_t* file_info) {
   if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
     return false;
   }
@@ -671,25 +756,25 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* has
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_SET[] =
-    "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, time, page_right_to_left, sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'), ?, ?);";
+      "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, "
+      "position_y, time, page_right_to_left, sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'), ?, ?);";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
     return false;
   }
 
-  if (sqlite3_bind_text(stmt,    1, file, -1, SQLITE_STATIC)       != SQLITE_OK ||
-      sqlite3_bind_int(stmt,     2, file_info->current_page)       != SQLITE_OK ||
-      sqlite3_bind_int(stmt,     3, file_info->page_offset)        != SQLITE_OK ||
-      sqlite3_bind_double(stmt,  4, file_info->zoom)               != SQLITE_OK ||
-      sqlite3_bind_int(stmt,     5, file_info->rotation)           != SQLITE_OK ||
-      sqlite3_bind_int(stmt,     6, file_info->pages_per_row)      != SQLITE_OK ||
-      sqlite3_bind_text(stmt,    7, file_info->first_page_column_list, -1, SQLITE_STATIC)
-                                                                   != SQLITE_OK ||
-      sqlite3_bind_double(stmt,  8, file_info->position_x)         != SQLITE_OK ||
-      sqlite3_bind_double(stmt,  9, file_info->position_y)         != SQLITE_OK ||
-      sqlite3_bind_int(stmt,    10, file_info->page_right_to_left) != SQLITE_OK ||
-      sqlite3_bind_blob(stmt,   11, hash_sha256, 32, SQLITE_STATIC) != SQLITE_OK) {
+  if (sqlite3_bind_text(stmt, 1, file, -1, SQLITE_STATIC) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 2, file_info->current_page) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 3, file_info->page_offset) != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 4, file_info->zoom) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 5, file_info->rotation) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 6, file_info->pages_per_row) != SQLITE_OK ||
+      sqlite3_bind_text(stmt, 7, file_info->first_page_column_list, -1, SQLITE_STATIC) != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 8, file_info->position_x) != SQLITE_OK ||
+      sqlite3_bind_double(stmt, 9, file_info->position_y) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 10, file_info->page_right_to_left) != SQLITE_OK ||
+      sqlite3_bind_blob(stmt, 11, hash_sha256, 32, SQLITE_STATIC) != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
@@ -701,10 +786,8 @@ sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* has
   return (res == SQLITE_DONE) ? true : false;
 }
 
-static bool
-sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
-                    zathura_fileinfo_t* file_info)
-{
+static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+                                zathura_fileinfo_t* file_info) {
   if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
     return false;
   }
@@ -713,7 +796,8 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* has
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_GET[] =
-    "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, page_right_to_left FROM fileinfo WHERE file = ? OR sha256 = ? ORDER BY time DESC LIMIT 1;";
+      "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, "
+      "page_right_to_left FROM fileinfo WHERE file = ? OR sha256 = ? ORDER BY time DESC LIMIT 1;";
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
@@ -748,11 +832,8 @@ sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* has
   return true;
 }
 
-static void
-sqlite_io_append(GiraraInputHistoryIO* db, const char* input)
-{
-  static const char SQL_HISTORY_SET[] =
-    "REPLACE INTO history (line, time) VALUES (?, DATETIME('now'));";
+static void sqlite_io_append(GiraraInputHistoryIO* db, const char* input) {
+  static const char SQL_HISTORY_SET[] = "REPLACE INTO history (line, time) VALUES (?, DATETIME('now'));";
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
@@ -772,11 +853,8 @@ sqlite_io_append(GiraraInputHistoryIO* db, const char* input)
   sqlite3_finalize(stmt);
 }
 
-static girara_list_t*
-sqlite_io_read(GiraraInputHistoryIO* db)
-{
-  static const char SQL_HISTORY_GET[] =
-    "SELECT line FROM history ORDER BY time";
+static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db) {
+  static const char SQL_HISTORY_GET[] = "SELECT line FROM history ORDER BY time";
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
@@ -800,18 +878,16 @@ sqlite_io_read(GiraraInputHistoryIO* db)
   return list;
 }
 
-static girara_list_t*
-sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
-{
-  static const char SQL_HISTORY_GET[] =
-    "SELECT file FROM fileinfo ORDER BY time DESC LIMIT ?";
+static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath) {
+  static const char SQL_HISTORY_GET[] = "SELECT file FROM fileinfo ORDER BY time DESC LIMIT ?";
   static const char SQL_HISTORY_GET_WITH_BASEPATH[] =
-    "SELECT file FROM fileinfo WHERE file LIKE ? || '%' ORDER BY time DESC LIMIT ?";
+      "SELECT file FROM fileinfo WHERE file LIKE ? || '%' ORDER BY time DESC LIMIT ?";
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, basepath == NULL ? SQL_HISTORY_GET : SQL_HISTORY_GET_WITH_BASEPATH);
+  sqlite3_stmt* stmt =
+      prepare_statement(priv->session, basepath == NULL ? SQL_HISTORY_GET : SQL_HISTORY_GET_WITH_BASEPATH);
   if (stmt == NULL) {
     return NULL;
   }
@@ -823,7 +899,7 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
   bool failed = false;
   if (basepath != NULL) {
     failed = sqlite3_bind_int(stmt, 2, max) != SQLITE_OK || sqlite3_bind_text(stmt, 1, basepath, -1, NULL) != SQLITE_OK;
-  } else  {
+  } else {
     failed = sqlite3_bind_int(stmt, 1, max) != SQLITE_OK;
   }
 
@@ -847,9 +923,7 @@ sqlite_get_recent_files(zathura_database_t* db, int max, const char* basepath)
   return list;
 }
 
-static void
-zathura_database_interface_init(ZathuraDatabaseInterface* iface)
-{
+static void zathura_database_interface_init(ZathuraDatabaseInterface* iface) {
   /* initialize interface */
   iface->add_bookmark     = sqlite_add_bookmark;
   iface->remove_bookmark  = sqlite_remove_bookmark;
@@ -859,27 +933,26 @@ zathura_database_interface_init(ZathuraDatabaseInterface* iface)
   iface->set_fileinfo     = sqlite_set_fileinfo;
   iface->get_fileinfo     = sqlite_get_fileinfo;
   iface->get_recent_files = sqlite_get_recent_files;
+  iface->load_quickmarks  = sqlite_load_quickmarks;
+  iface->save_quickmarks  = sqlite_save_quickmarks;
 }
 
-static void
-io_interface_init(GiraraInputHistoryIOInterface* iface)
-{
+static void io_interface_init(GiraraInputHistoryIOInterface* iface) {
   /* initialize interface */
   iface->append = sqlite_io_append;
-  iface->read = sqlite_io_read;
+  iface->read   = sqlite_io_read;
 }
 
-static void
-zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class)
-{
+static void zathura_sqldatabase_class_init(ZathuraSQLDatabaseClass* class) {
   /* override methods */
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->finalize     = sqlite_finalize;
   object_class->set_property = sqlite_set_property;
 
-  g_object_class_install_property(object_class, PROP_PATH,
-    g_param_spec_string("path", "path", "path to the database", NULL,
-      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property(
+      object_class, PROP_PATH,
+      g_param_spec_string("path", "path", "path to the database", NULL,
+                          G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void zathura_sqldatabase_init(ZathuraSQLDatabase* db) {
@@ -1137,13 +1210,35 @@ static void import_input_history(GiraraInputHistoryIO* ih, const char* plain_dir
   g_free(input_history_path);
 }
 
+static bool plaindatabase_is_available(const char* plain_dir) {
+  gchar* bookmark_path      = g_build_filename(plain_dir, BOOKMARKS, NULL);
+  gchar* history_path       = g_build_filename(plain_dir, HISTORY, NULL);
+  gchar* input_history_path = g_build_filename(plain_dir, INPUT_HISTORY, NULL);
+
+  const bool check = g_file_test(bookmark_path, G_FILE_TEST_EXISTS) == true ||
+                     g_file_test(history_path, G_FILE_TEST_EXISTS) == true ||
+                     g_file_test(input_history_path, G_FILE_TEST_EXISTS) == true;
+
+  g_free(input_history_path);
+  g_free(history_path);
+  g_free(bookmark_path);
+
+  return check;
+}
+
 zathura_database_t* zathura_sqldatabase_new_from_plain(const char* sqlite_path, const char* plain_dir) {
   g_return_val_if_fail(sqlite_path != NULL && strlen(sqlite_path) != 0, NULL);
   g_return_val_if_fail(plain_dir != NULL && strlen(plain_dir) != 0, NULL);
 
   girara_info("Opening plain database via sqlite backend.");
+  if (plaindatabase_is_available(plain_dir) == false) {
+    girara_info("No plain database available. Continuing with sqlite database.");
+    return zathura_sqldatabase_new(sqlite_path);
+  }
+
   if (g_file_test(sqlite_path, G_FILE_TEST_EXISTS) == true) {
-    girara_warning("sqlite database already exists. Set your database backend to sqlite");
+    girara_warning(
+        "sqlite database already exists. Set your database backend to sqlite. See zathurarc(5) for details.");
     return zathura_sqldatabase_new(sqlite_path);
   }
 

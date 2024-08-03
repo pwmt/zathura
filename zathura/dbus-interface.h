@@ -11,31 +11,20 @@
 
 typedef struct zathura_dbus_class_s ZathuraDbusClass;
 
-struct zathura_dbus_s
-{
+struct zathura_dbus_s {
   GObject parent;
 };
 
-struct zathura_dbus_class_s
-{
+struct zathura_dbus_class_s {
   GObjectClass parent_class;
 };
 
-#define ZATHURA_TYPE_DBUS \
-  (zathura_dbus_get_type())
-#define ZATHURA_DBUS(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DBUS, \
-                              ZathuraDbus))
-#define ZATHURA_DBUS_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DBUS, \
-                           ZathuraDbus))
-#define ZATHURA_IS_DBUS(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DBUS))
-#define ZATHURA_IS_DBUS_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DBUS))
-#define ZATHURA_DBUS_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DBUS, \
-                             ZathuraDbusClass))
+#define ZATHURA_TYPE_DBUS (zathura_dbus_get_type())
+#define ZATHURA_DBUS(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DBUS, ZathuraDbus))
+#define ZATHURA_DBUS_CLASS(obj) (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DBUS, ZathuraDbus))
+#define ZATHURA_IS_DBUS(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DBUS))
+#define ZATHURA_IS_DBUS_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DBUS))
+#define ZATHURA_DBUS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DBUS, ZathuraDbusClass))
 
 GType zathura_dbus_get_type(void) G_GNUC_CONST;
 
@@ -63,7 +52,6 @@ void zathura_dbus_edit(ZathuraDbus* dbus, unsigned int page, unsigned int x, uns
  * @param column column index (starts at 0)
  * @param hint zathura process ID that has filename open
  */
-int zathura_dbus_synctex_position(const char* filename, const char* input_file,
-    int line, int column, pid_t hint);
+int zathura_dbus_synctex_position(const char* filename, const char* input_file, int line, int column, pid_t hint);
 
 #endif

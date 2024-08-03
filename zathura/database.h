@@ -14,29 +14,25 @@
 typedef struct zathura_fileinfo_s {
   unsigned int current_page;
   unsigned int page_offset;
-  double zoom;
   unsigned int rotation;
   unsigned int pages_per_row;
-  bool page_right_to_left;
   char* first_page_column_list;
+  double zoom;
   double position_x;
   double position_y;
+  bool page_right_to_left;
 } zathura_fileinfo_t;
 
-#define ZATHURA_TYPE_DATABASE \
-  (zathura_database_get_type())
-#define ZATHURA_DATABASE(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabase))
-#define ZATHURA_IS_DATABASE(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ZATHURA_TYPE_DATABASE))
-#define ZATHURA_DATABASE_GET_INTERFACE(obj) \
-  (G_TYPE_INSTANCE_GET_INTERFACE ((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabaseInterface))
+#define ZATHURA_TYPE_DATABASE (zathura_database_get_type())
+#define ZATHURA_DATABASE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabase))
+#define ZATHURA_IS_DATABASE(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DATABASE))
+#define ZATHURA_DATABASE_GET_INTERFACE(obj)                                                                            \
+  (G_TYPE_INSTANCE_GET_INTERFACE((obj), ZATHURA_TYPE_DATABASE, ZathuraDatabaseInterface))
 
-typedef struct _ZathuraDatabase          ZathuraDatabase;
+typedef struct _ZathuraDatabase ZathuraDatabase;
 typedef struct _ZathuraDatabaseInterface ZathuraDatabaseInterface;
 
-struct _ZathuraDatabaseInterface
-{
+struct _ZathuraDatabaseInterface {
   GTypeInterface parent_iface;
 
   /* interface methods */
@@ -50,11 +46,17 @@ struct _ZathuraDatabaseInterface
 
   bool (*save_jumplist)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
 
-  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256, zathura_fileinfo_t* file_info);
+  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256,
+                       zathura_fileinfo_t* file_info);
 
-  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256, zathura_fileinfo_t* file_info);
+  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256,
+                       zathura_fileinfo_t* file_info);
 
   girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max, const char* basepath);
+
+  girara_list_t* (*load_quickmarks)(ZathuraDatabase* db, const char* file);
+
+  bool (*save_quickmarks)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
 };
 
 GType zathura_database_get_type(void) G_GNUC_CONST;
@@ -67,8 +69,7 @@ GType zathura_database_get_type(void) G_GNUC_CONST;
  * @param bookmark The bookmark instance.
  * @return true on success, false otherwise
  */
-bool zathura_db_add_bookmark(zathura_database_t* db, const char* file,
-    zathura_bookmark_t* bookmark);
+bool zathura_db_add_bookmark(zathura_database_t* db, const char* file, zathura_bookmark_t* bookmark);
 
 /**
  * Remove a bookmark from the database.
@@ -78,8 +79,7 @@ bool zathura_db_add_bookmark(zathura_database_t* db, const char* file,
  * @param id The id of the bookmark
  * @return true on success, false otherwise
  */
-bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const
-    char* id);
+bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const char* id);
 
 /**
  * Loads all bookmarks from the database belonging to a specific file.
@@ -88,8 +88,7 @@ bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const
  * @param file The file for which the bookmarks should be loaded.
  * @return List of zathura_bookmark_t* or NULL on failure.
  */
-girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char*
-    file);
+girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char* file);
 
 /**
  * Load the jumplist belonging to the specified file from the database.
@@ -107,10 +106,28 @@ girara_list_t* zathura_db_load_jumplist(ZathuraDatabase* db, const char* file);
  * @param db The database instance.
  * @param file The file to which the jumplist belongs.
  * @param jumplist The jumplist to be saved
- *
- * return true on success, false otherwise.
+ * @return true on success, false otherwise.
  */
 bool zathura_db_save_jumplist(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
+
+/**
+ * Load the quickmarks belonging to the specified file from the database.
+ *
+ * @param db The database instance.
+ * @param file The file to which the quick marks belongs.
+ * @return A list constituting the quickmarks of the specified file.
+ */
+girara_list_t* zathura_db_load_quickmarks(ZathuraDatabase* db, const char* file);
+
+/**
+ * Save the quickmarks belonging to the specified file to the database.
+ *
+ * @param db The database instance.
+ * @param file The file to which the quickmarks belongs.
+ * @param quickmarks The quickmarks to be saved
+ * @return return true on success, false otherwise.
+ */
+bool zathura_db_save_quickmarks(ZathuraDatabase* db, const char* file, girara_list_t* quickmarks);
 
 /**
  * Set file info (last site, ...) in the database.
@@ -122,7 +139,7 @@ bool zathura_db_save_jumplist(ZathuraDatabase* db, const char* file, girara_list
  * @return true on success, false otherwise.
  */
 bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
-    zathura_fileinfo_t* file_info);
+                             zathura_fileinfo_t* file_info);
 
 /* Get file info (last site, ...) from the database. The info is first looked up by file and then by
  * its hash.
@@ -134,7 +151,7 @@ bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uin
  * @return true on success, false otherwise.
  */
 bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
-    zathura_fileinfo_t* file_info);
+                             zathura_fileinfo_t* file_info);
 
 /* Get a list of recent files from the database. The most recent file is listed
  * first.
@@ -151,6 +168,5 @@ girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max, cons
  * @return empty list of bookmarks
  */
 girara_list_t* bookmarks_list_new(void);
-
 
 #endif // DATABASE_H

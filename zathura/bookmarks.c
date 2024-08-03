@@ -10,29 +10,25 @@
 #include <girara/utils.h>
 #include <girara/session.h>
 
-static int
-bookmark_compare_find(const void* item, const void* data)
-{
+static int bookmark_compare_find(const void* item, const void* data) {
   const zathura_bookmark_t* bookmark = item;
-  const char* id = data;
+  const char* id                     = data;
 
   return g_strcmp0(bookmark->id, id);
 }
 
-zathura_bookmark_t*
-zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
-{
+zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page) {
   g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
-  double position_x = zathura_document_get_position_x(zathura->document);
-  double position_y = zathura_document_get_position_y(zathura->document);
+  double position_x       = zathura_document_get_position_x(zathura->document);
+  double position_y       = zathura_document_get_position_y(zathura->document);
   zathura_bookmark_t* old = zathura_bookmark_get(zathura, id);
 
   if (old != NULL) {
     old->page = page;
-    old->x = position_x;
-    old->y = position_y;
+    old->x    = position_x;
+    old->y    = position_y;
 
     if (zathura->database != NULL) {
       const char* path = zathura_document_get_path(zathura->document);
@@ -53,10 +49,10 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
     return NULL;
   }
 
-  bookmark->id = g_strdup(id);
+  bookmark->id   = g_strdup(id);
   bookmark->page = page;
-  bookmark->x = position_x;
-  bookmark->y = position_y;
+  bookmark->x    = position_x;
+  bookmark->y    = position_y;
   girara_list_append(zathura->bookmarks.bookmarks, bookmark);
 
   if (zathura->database != NULL) {
@@ -69,9 +65,7 @@ zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page)
   return bookmark;
 }
 
-bool
-zathura_bookmark_remove(zathura_t* zathura, const gchar* id)
-{
+bool zathura_bookmark_remove(zathura_t* zathura, const gchar* id) {
   g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, false);
   g_return_val_if_fail(id, false);
 
@@ -92,29 +86,21 @@ zathura_bookmark_remove(zathura_t* zathura, const gchar* id)
   return true;
 }
 
-zathura_bookmark_t*
-zathura_bookmark_get(zathura_t* zathura, const gchar* id)
-{
+zathura_bookmark_t* zathura_bookmark_get(zathura_t* zathura, const gchar* id) {
   g_return_val_if_fail(zathura && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
   return girara_list_find(zathura->bookmarks.bookmarks, bookmark_compare_find, id);
 }
 
-void
-zathura_bookmark_free(zathura_bookmark_t* bookmark)
-{
-  if (bookmark == NULL) {
-    return;
+void zathura_bookmark_free(zathura_bookmark_t* bookmark) {
+  if (bookmark != NULL) {
+    g_free(bookmark->id);
+    g_free(bookmark);
   }
-
-  g_free(bookmark->id);
-  g_free(bookmark);
 }
 
-bool
-zathura_bookmarks_load(zathura_t* zathura, const gchar* file)
-{
+bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
   g_return_val_if_fail(zathura, false);
   g_return_val_if_fail(file, false);
 
@@ -133,9 +119,7 @@ zathura_bookmarks_load(zathura_t* zathura, const gchar* file)
   return true;
 }
 
-int
-zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs)
-{
+int zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs) {
   if (lhs == NULL && rhs == NULL) {
     return 0;
   }

@@ -7,116 +7,92 @@
 #include <girara/datastructures.h>
 
 #include "callbacks.h"
-#include "marks.h"
+#include "database.h"
 #include "document.h"
+#include "marks.h"
 #include "render.h"
 #include "utils.h"
 
 static void mark_add(zathura_t* zathura, int key);
 static void mark_evaluate(zathura_t* zathura, int key);
-static bool cb_marks_view_key_press_event_add(GtkWidget* widget, GdkEventKey*
-    event, girara_session_t* session);
-static bool cb_marks_view_key_press_event_evaluate(GtkWidget* widget,
-    GdkEventKey* event, girara_session_t* session);
 
-struct zathura_mark_s {
-  int key; /**> Marks key */
-  double position_x; /**> Horizontal adjustment */
-  double position_y; /**> Vertical adjustment */
-  unsigned int page; /**> Page number */
-  double zoom; /**> Zoom level */
-};
-
-bool
-sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument),
-            girara_event_t* UNUSED(event), unsigned int UNUSED(t))
-{
-  g_return_val_if_fail(session != NULL,           FALSE);
+static gboolean cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer user_data) {
+  g_return_val_if_fail(user_data != NULL, FALSE);
+  girara_session_t* session = user_data;
   g_return_val_if_fail(session->gtk.view != NULL, FALSE);
-
-  /* redirect signal handler */
-  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                      G_CALLBACK(cb_marks_view_key_press_event_add), session);
-
-  return true;
-}
-
-bool
-sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argument),
-                 girara_event_t* UNUSED(event), unsigned int UNUSED(t))
-{
-  g_return_val_if_fail(session != NULL,           FALSE);
-  g_return_val_if_fail(session->gtk.view != NULL, FALSE);
-
-  /* redirect signal handler */
-  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                      G_CALLBACK(cb_marks_view_key_press_event_evaluate), session);
-
-  return true;
-}
-
-static bool
-cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event,
-                                  girara_session_t* session)
-{
-  g_return_val_if_fail(session != NULL,              FALSE);
-  g_return_val_if_fail(session->gtk.view != NULL,    FALSE);
   g_return_val_if_fail(session->global.data != NULL, FALSE);
-  zathura_t* zathura = (zathura_t*) session->global.data;
+  zathura_t* zathura = session->global.data;
 
   /* reset signal handler */
   g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
   session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                      G_CALLBACK(girara_callback_view_key_press_event), session);
+                                                       G_CALLBACK(girara_callback_view_key_press_event), session);
 
   /* evaluate key */
-  if (((event->keyval >= '0' && event->keyval <= '9') ||
-       (event->keyval >= 'a' && event->keyval <= 'z') ||
-       (event->keyval >= 'A' && event->keyval <= 'Z')
-       ) == false) {
-    return false;
+  if (((event->keyval >= '0' && event->keyval <= '9') || (event->keyval >= 'a' && event->keyval <= 'z') ||
+       (event->keyval >= 'A' && event->keyval <= 'Z')) == false) {
+    return FALSE;
   }
 
   mark_add(zathura, event->keyval);
 
-  return true;
+  return TRUE;
 }
 
-static bool
-cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey*
-                                       event, girara_session_t* session)
-{
-  g_return_val_if_fail(session != NULL,              FALSE);
-  g_return_val_if_fail(session->gtk.view != NULL,    FALSE);
+static gboolean cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey* event,
+                                                       gpointer user_data) {
+  g_return_val_if_fail(user_data != NULL, FALSE);
+  girara_session_t* session = user_data;
+  g_return_val_if_fail(session->gtk.view != NULL, FALSE);
   g_return_val_if_fail(session->global.data != NULL, FALSE);
-  zathura_t* zathura = (zathura_t*) session->global.data;
+  zathura_t* zathura = session->global.data;
 
   /* reset signal handler */
   g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
   session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                      G_CALLBACK(girara_callback_view_key_press_event), session);
+                                                       G_CALLBACK(girara_callback_view_key_press_event), session);
 
   /* evaluate key */
-  if (((event->keyval >= '0' && event->keyval <= '9') ||
-       (event->keyval >= 'a' && event->keyval <= 'z') ||
-       (event->keyval >= 'A' && event->keyval <= 'Z')
-       ) == false) {
-    return true;
+  if (((event->keyval >= '0' && event->keyval <= '9') || (event->keyval >= 'a' && event->keyval <= 'z') ||
+       (event->keyval >= 'A' && event->keyval <= 'Z')) == false) {
+    return TRUE;
   }
 
   mark_evaluate(zathura, event->keyval);
 
+  return TRUE;
+}
+
+bool sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                 unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->gtk.view != NULL, false);
+
+  /* redirect signal handler */
+  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
+  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
+                                                       G_CALLBACK(cb_marks_view_key_press_event_add), session);
+
   return true;
 }
 
-bool
-cmd_marks_add(girara_session_t* session, girara_list_t* argument_list)
-{
+bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                      unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->gtk.view != NULL, false);
+
+  /* redirect signal handler */
+  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
+  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
+                                                       G_CALLBACK(cb_marks_view_key_press_event_evaluate), session);
+
+  return true;
+}
+
+bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = (zathura_t*) session->global.data;
+  zathura_t* zathura = (zathura_t*)session->global.data;
 
   if (girara_list_size(argument_list) < 1) {
     return false;
@@ -129,8 +105,7 @@ cmd_marks_add(girara_session_t* session, girara_list_t* argument_list)
   }
 
   const char key = key_string[0];
-  if (((key >= 0x41 && key <= 0x5A) ||
-       (key >= 0x61 && key <= 0x7A)) == false) {
+  if (((key >= 0x41 && key <= 0x5A) || (key >= 0x61 && key <= 0x7A)) == false) {
     return false;
   }
 
@@ -241,14 +216,21 @@ static void mark_evaluate(zathura_t* zathura, int key) {
   }
 }
 
-void
-mark_free(void* data)
-{
-  if (data == NULL) {
-    return;
+bool zathura_quickmarks_load(zathura_t* zathura, const gchar* file) {
+  g_return_val_if_fail(zathura, false);
+  g_return_val_if_fail(file, false);
+
+  if (zathura->database == NULL) {
+    return false;
   }
 
-  zathura_mark_t* mark = (zathura_mark_t*) data;
+  girara_list_t* marks = zathura_db_load_quickmarks(zathura->database, file);
+  if (marks == NULL) {
+    return false;
+  }
 
-  g_free(mark);
+  girara_list_free(zathura->global.marks);
+  zathura->global.marks = marks;
+
+  return true;
 }

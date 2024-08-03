@@ -34,7 +34,7 @@ void cb_buffer_changed(girara_session_t* session);
  * @param adjustment The hadjustment of the page view
  * @param data NULL
  */
-void cb_view_hadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
+void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data);
 
 /**
  * This function gets called when the value of the vertical scrollbars
@@ -43,7 +43,7 @@ void cb_view_hadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  * @param adjustment The vadjustment of the page view
  * @param data NULL
  */
-void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
+void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data);
 
 /**
  * This function gets called when the bounds or the page_size of the horizontal
@@ -54,7 +54,7 @@ void cb_view_vadjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
  * @param adjustment The horizontal adjustment of a gtkScrolledWindow
  * @param data The zathura instance
  */
-void cb_view_hadjustment_changed(GtkAdjustment *adjustment, gpointer data);
+void cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data);
 
 /**
  * This function gets called when the bounds or the page_size of the vertical
@@ -66,7 +66,7 @@ void cb_view_hadjustment_changed(GtkAdjustment *adjustment, gpointer data);
  * @param adjustment The vertical adjustment of a gtkScrolledWindow
  * @param data The zathura instance
  */
-void cb_view_vadjustment_changed(GtkAdjustment *adjustment, gpointer data);
+void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data);
 
 /**
  * This function gets called when the program need to refresh the document view.
@@ -142,8 +142,8 @@ void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
  * @param value The value
  * @param data Custom data
  */
-void cb_page_layout_value_changed(girara_session_t* session, const char* name,
-    girara_setting_type_t type, const void* value, void* data);
+void cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t type,
+                                  const void* value, void* data);
 
 /**
  * Called when an index element is activated (e.g.: double click)
@@ -153,8 +153,7 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name,
  * @param column Column
  * @param zathura Zathura session
  */
-void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path,
-    GtkTreeViewColumn* column, void* zathura);
+void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* column, void* zathura);
 
 /**
  * Called when input has been passed to the sc_follow dialog
@@ -219,8 +218,8 @@ gboolean cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t
  * @param value New value
  * @param data Custom data
  */
-void cb_setting_recolor_change(girara_session_t* session, const char* name,
-    girara_setting_type_t type, const void* value, void* data);
+void cb_setting_recolor_change(girara_session_t* session, const char* name, girara_setting_type_t type,
+                               const void* value, void* data);
 
 /**
  * Emitted when the 'recolor-keephue' setting is changed
@@ -231,8 +230,8 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name,
  * @param value New value
  * @param data Custom data
  */
-void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name,
-    girara_setting_type_t type, const void* value, void* data);
+void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* name, girara_setting_type_t type,
+                                        const void* value, void* data);
 
 /**
  * Emitted when the 'recolor-reverse-video' setting is changed
@@ -243,8 +242,8 @@ void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* n
  * @param value New value
  * @param data Custom data
  */
-void cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, 
-    const char* name, girara_setting_type_t type, const void* value, void* data);
+void cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, const char* name,
+                                                  girara_setting_type_t type, const void* value, void* data);
 
 /**
  * Unknown command handler which is used to handle the strict numeric goto
@@ -263,14 +262,11 @@ bool cb_unknown_command(girara_session_t* session, const char* input);
  * @param text selected text
  * @param data user data
  */
-void cb_page_widget_text_selected(ZathuraPage* page, const char* text,
-    void* data);
+void cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data);
 
-void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf,
-    void* data);
+void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data);
 
-void cb_page_widget_scaled_button_release(ZathuraPage* page,
-    GdkEventButton* event, void* data);
+void cb_page_widget_scaled_button_release(ZathuraPage* page, GdkEventButton* event, void* data);
 
 void cb_page_widget_link(ZathuraPage* page, void* data);
 

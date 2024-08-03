@@ -12,28 +12,20 @@
 
 typedef struct zathura_renderer_class_s ZathuraRendererClass;
 
-struct zathura_renderer_s
-{
+struct zathura_renderer_s {
   GObject parent;
 };
 
-struct zathura_renderer_class_s
-{
+struct zathura_renderer_class_s {
   GObjectClass parent_class;
 };
 
-#define ZATHURA_TYPE_RENDERER \
-  (zathura_renderer_get_type())
-#define ZATHURA_RENDERER(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_RENDERER, ZathuraRenderer))
-#define ZATHURA_RENDERER_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_RENDERER, ZathuraRendererClass))
-#define ZATHURA_IS_RENDERER(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_RENDERER))
-#define ZATHURA_IS_RENDERER_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_RENDERER))
-#define ZATHURA_RENDERER_GET_CLASS \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_RENDERER, ZathuraRendererClass))
+#define ZATHURA_TYPE_RENDERER (zathura_renderer_get_type())
+#define ZATHURA_RENDERER(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_RENDERER, ZathuraRenderer))
+#define ZATHURA_RENDERER_CLASS(obj) (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_RENDERER, ZathuraRendererClass))
+#define ZATHURA_IS_RENDERER(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_RENDERER))
+#define ZATHURA_IS_RENDERER_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_RENDERER))
+#define ZATHURA_RENDERER_GET_CLASS (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_RENDERER, ZathuraRendererClass))
 
 /**
  * Returns the type of the renderer.
@@ -69,8 +61,7 @@ bool zathura_renderer_recolor_hue_enabled(ZathuraRenderer* renderer);
  * @param renderer a renderer object
  * @param enable whether to enable or disable hue preservation
  */
-void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer,
-    bool enable);
+void zathura_renderer_enable_recolor_hue(ZathuraRenderer* renderer, bool enable);
 /**
  * Return whether images should be recolored while recoloring.
  * @param renderer a renderer object
@@ -82,32 +73,28 @@ bool zathura_renderer_recolor_reverse_video_enabled(ZathuraRenderer* renderer);
  * @param renderer a renderer object
  * @param enable or disable images recoloring
  */
-void zathura_renderer_enable_recolor_reverse_video(ZathuraRenderer* renderer,
-    bool enable);
+void zathura_renderer_enable_recolor_reverse_video(ZathuraRenderer* renderer, bool enable);
 /**
  * Set light and dark colors for recoloring.
  * @param renderer a renderer object
  * @param light light color
  * @param dark dark color
  */
-void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer,
-    const GdkRGBA* light, const GdkRGBA* dark);
+void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer, const GdkRGBA* light, const GdkRGBA* dark);
 /**
  * Set light and dark colors for recoloring.
  * @param renderer a renderer object
  * @param light light color
  * @param dark dark color
  */
-void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer,
-    const char* light, const char* dark);
+void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer, const char* light, const char* dark);
 /**
  * Get light and dark colors for recoloring.
  * @param renderer a renderer object
  * @param light light color
  * @param dark dark color
  */
-void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer,
-    GdkRGBA* light, GdkRGBA* dark);
+void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer, GdkRGBA* light, GdkRGBA* dark);
 /**
  * Stop rendering.
  * @param renderer a render object
@@ -135,37 +122,27 @@ void zathura_renderer_unlock(ZathuraRenderer* renderer);
  * @param renderer renderer object.
  * @param page_index The index of the page to be cached.
  */
-void zathura_renderer_page_cache_add(ZathuraRenderer* renderer,
-    unsigned int page_index);
-
+void zathura_renderer_page_cache_add(ZathuraRenderer* renderer, unsigned int page_index);
 
 typedef struct zathura_render_request_class_s ZathuraRenderRequestClass;
 
-struct zathura_render_request_s
-{
+struct zathura_render_request_s {
   GObject parent;
 };
 
-struct zathura_render_request_class_s
-{
+struct zathura_render_request_class_s {
   GObjectClass parent_class;
 };
 
-#define ZATHURA_TYPE_RENDER_REQUEST \
-  (zathura_render_request_get_type())
-#define ZATHURA_RENDER_REQUEST(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_RENDER_REQUEST, \
-                              ZathuraRenderRequest))
-#define ZATHURA_RENDER_REQUEST_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_RENDER_REQUEST, \
-                           ZathuraRenderRequestClass))
-#define ZATHURA_IS_RENDER_REQUEST(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_RENDER_REQUEST))
-#define ZATHURA_IS_RENDER_REQUEST_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_RENDER_REQUEST))
-#define ZATHURA_RENDER_REQUEST_GET_CLASS \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_RENDER_REQUEST, \
-                             ZathuraRenderRequestClass))
+#define ZATHURA_TYPE_RENDER_REQUEST (zathura_render_request_get_type())
+#define ZATHURA_RENDER_REQUEST(obj)                                                                                    \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_RENDER_REQUEST, ZathuraRenderRequest))
+#define ZATHURA_RENDER_REQUEST_CLASS(obj)                                                                              \
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_RENDER_REQUEST, ZathuraRenderRequestClass))
+#define ZATHURA_IS_RENDER_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_RENDER_REQUEST))
+#define ZATHURA_IS_RENDER_REQUEST_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_RENDER_REQUEST))
+#define ZATHURA_RENDER_REQUEST_GET_CLASS                                                                               \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_RENDER_REQUEST, ZathuraRenderRequestClass))
 
 /**
  * Returns the type of the render request.
@@ -178,8 +155,7 @@ GType zathura_page_render_info_get_type(void) G_GNUC_CONST;
  * @param page the page to be displayed
  * @returns render request object
  */
-ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer,
-    zathura_page_t* page);
+ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer, zathura_page_t* page);
 
 /**
  * Add a page to the render thread list that should be rendered.
@@ -187,8 +163,7 @@ ZathuraRenderRequest* zathura_render_request_new(ZathuraRenderer* renderer,
  * @param request request object of the page that should be renderer
  * @param last_view_time last view time of the page
  */
-void zathura_render_request(ZathuraRenderRequest* request,
-    gint64 last_view_time);
+void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time);
 
 /**
  * Abort an existing render request.
@@ -210,8 +185,7 @@ void zathura_render_request_update_view_time(ZathuraRenderRequest* request);
  * @param request request that should be updated
  * @param render_plain "plain" rendering setting
  */
-void zathura_render_request_set_render_plain(ZathuraRenderRequest* request,
-    bool render_plain);
+void zathura_render_request_set_render_plain(ZathuraRenderRequest* request, bool render_plain);
 
 /**
  * Get "plain" rendering mode, i.e. disabling scaling, recoloring, etc.

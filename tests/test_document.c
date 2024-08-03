@@ -1,31 +1,16 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <check.h>
-
 #include "document.h"
-#include "tests.h"
 
-START_TEST(test_open) {
-  ck_assert_ptr_null(zathura_document_open(NULL, NULL, NULL, NULL, NULL));
-  ck_assert_ptr_null(zathura_document_open(NULL, "fl", NULL, NULL, NULL));
-  ck_assert_ptr_null(zathura_document_open(NULL, "fl", "ur", NULL, NULL));
-  ck_assert_ptr_null(zathura_document_open(NULL, "fl", NULL, "pw", NULL));
-} END_TEST
-
-static Suite* suite_document(void)
-{
-  TCase* tcase = NULL;
-  Suite* suite = suite_create("Document");
-
-  /* basic */
-  tcase = tcase_create("basic");
-  tcase_add_test(tcase, test_open);
-  suite_add_tcase(suite, tcase);
-
-  return suite;
+static void test_open(void) {
+  g_assert_null(zathura_document_open(NULL, NULL, NULL, NULL, NULL));
+  g_assert_null(zathura_document_open(NULL, "fl", NULL, NULL, NULL));
+  g_assert_null(zathura_document_open(NULL, "fl", "ur", NULL, NULL));
+  g_assert_null(zathura_document_open(NULL, "fl", NULL, "pw", NULL));
 }
 
-int main()
-{
-  return run_suite(suite_document());
+int main(int argc, char* argv[]) {
+  g_test_init(&argc, &argv, NULL);
+  g_test_add_func("/document/open", test_open);
+  return g_test_run();
 }

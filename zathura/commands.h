@@ -25,6 +25,15 @@ bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list
 bool cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list);
 
 /**
+ * List bookmarks
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_bookmark_list(girara_session_t* session, girara_list_t* argument_list);
+
+/**
  * Open a bookmark
  *
  * @param session The used girara session
@@ -32,6 +41,15 @@ bool cmd_bookmark_delete(girara_session_t* session, girara_list_t* argument_list
  * @return true if no error occurred
  */
 bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list);
+
+/**
+ * Show recent jumps in jumplist
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Close zathura

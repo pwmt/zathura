@@ -18,14 +18,12 @@ G_DEFINE_TYPE_WITH_CODE(ZathuraFileMonitor, zathura_filemonitor, G_TYPE_OBJECT, 
 
 enum {
   PROP_0,
-  PROP_FILE_PATH
+  PROP_FILE_PATH,
 };
 
-static void
-finalize(GObject* object)
-{
-  ZathuraFileMonitor*        file_monitor = ZATHURA_FILEMONITOR(object);
-  ZathuraFileMonitorPrivate* priv         = zathura_filemonitor_get_instance_private(file_monitor);
+static void finalize(GObject* object) {
+  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
+  ZathuraFileMonitorPrivate* priv  = zathura_filemonitor_get_instance_private(file_monitor);
 
   if (priv->file_path != NULL) {
     g_free(priv->file_path);
@@ -34,42 +32,36 @@ finalize(GObject* object)
   G_OBJECT_CLASS(zathura_filemonitor_parent_class)->finalize(object);
 }
 
-static void
-set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
-{
-  ZathuraFileMonitor*        file_monitor = ZATHURA_FILEMONITOR(object);
-  ZathuraFileMonitorPrivate* priv         = zathura_filemonitor_get_instance_private(file_monitor);
+static void set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec) {
+  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
+  ZathuraFileMonitorPrivate* priv  = zathura_filemonitor_get_instance_private(file_monitor);
 
   switch (prop_id) {
-    case PROP_FILE_PATH:
-      if (priv->file_path != NULL) {
-        g_free(priv->file_path);
-      }
-      priv->file_path = g_value_dup_string(value);
-      break;
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+  case PROP_FILE_PATH:
+    if (priv->file_path != NULL) {
+      g_free(priv->file_path);
+    }
+    priv->file_path = g_value_dup_string(value);
+    break;
+  default:
+    G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
 }
 
-static void
-get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
-{
-  ZathuraFileMonitor*        file_monitor = ZATHURA_FILEMONITOR(object);
-  ZathuraFileMonitorPrivate* priv         = zathura_filemonitor_get_instance_private(file_monitor);
+static void get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec) {
+  ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
+  ZathuraFileMonitorPrivate* priv  = zathura_filemonitor_get_instance_private(file_monitor);
 
   switch (prop_id) {
-    case PROP_FILE_PATH:
-      g_value_set_string(value, priv->file_path);
-      break;
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+  case PROP_FILE_PATH:
+    g_value_set_string(value, priv->file_path);
+    break;
+  default:
+    G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
   }
 }
 
-static void
-zathura_filemonitor_class_init(ZathuraFileMonitorClass* class)
-{
+static void zathura_filemonitor_class_init(ZathuraFileMonitorClass* class) {
   /* set up methods */
   class->start = NULL;
   class->stop  = NULL;
@@ -81,67 +73,55 @@ zathura_filemonitor_class_init(ZathuraFileMonitorClass* class)
 
   /* add properties */
   g_object_class_install_property(
-    object_class, PROP_FILE_PATH,
-    g_param_spec_string("file-path", "file-path", "file path to monitor", NULL,
-                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
-                          G_PARAM_STATIC_STRINGS));
+      object_class, PROP_FILE_PATH,
+      g_param_spec_string("file-path", "file-path", "file path to monitor", NULL,
+                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
   /* add signals */
   g_signal_new("reload-file", ZATHURA_TYPE_FILEMONITOR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_generic,
                G_TYPE_NONE, 0);
 }
 
-static void
-zathura_filemonitor_init(ZathuraFileMonitor* file_monitor)
-{
+static void zathura_filemonitor_init(ZathuraFileMonitor* file_monitor) {
   ZathuraFileMonitorPrivate* priv = zathura_filemonitor_get_instance_private(file_monitor);
   priv->file_path                 = NULL;
 }
 
-const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor)
-{
+const char* zathura_filemonitor_get_filepath(ZathuraFileMonitor* file_monitor) {
   ZathuraFileMonitorPrivate* priv = zathura_filemonitor_get_instance_private(file_monitor);
   return priv->file_path;
 }
 
-void zathura_filemonitor_start(ZathuraFileMonitor* file_monitor)
-{
+void zathura_filemonitor_start(ZathuraFileMonitor* file_monitor) {
   ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->start(file_monitor);
 }
 
-void zathura_filemonitor_stop(ZathuraFileMonitor* file_monitor)
-{
+void zathura_filemonitor_stop(ZathuraFileMonitor* file_monitor) {
   ZATHURA_FILEMONITOR_GET_CLASS(file_monitor)->stop(file_monitor);
 }
 
-ZathuraFileMonitor*
-zathura_filemonitor_new(const char*                file_path,
-                        zathura_filemonitor_type_t filemonitor_type)
-{
+ZathuraFileMonitor* zathura_filemonitor_new(const char* file_path, zathura_filemonitor_type_t filemonitor_type) {
   g_return_val_if_fail(file_path != NULL, NULL);
 
   GObject* ret = NULL;
   switch (filemonitor_type) {
-    case ZATHURA_FILEMONITOR_GLIB:
-      girara_debug("using glib file monitor");
-      ret = g_object_new(ZATHURA_TYPE_GLIBFILEMONITOR, "file-path", file_path,
-                         NULL);
-      break;
+  case ZATHURA_FILEMONITOR_GLIB:
+    girara_debug("using glib file monitor");
+    ret = g_object_new(ZATHURA_TYPE_GLIBFILEMONITOR, "file-path", file_path, NULL);
+    break;
 #ifdef G_OS_UNIX
-    case ZATHURA_FILEMONITOR_SIGNAL:
-      girara_debug("using SIGHUP file monitor");
-      ret = g_object_new(ZATHURA_TYPE_SIGNALFILEMONITOR, "file-path", file_path,
-                         NULL);
-      break;
+  case ZATHURA_FILEMONITOR_SIGNAL:
+    girara_debug("using SIGHUP file monitor");
+    ret = g_object_new(ZATHURA_TYPE_SIGNALFILEMONITOR, "file-path", file_path, NULL);
+    break;
 #endif
-    case ZATHURA_FILEMONITOR_NOOP:
-      girara_debug("using noop file monitor");
-      ret = g_object_new(ZATHURA_TYPE_NOOPFILEMONITOR, "file-path", file_path,
-                         NULL);
-      break;
-    default:
-      girara_debug("invalid filemonitor type: %d", filemonitor_type);
-      g_return_val_if_fail(false, NULL);
+  case ZATHURA_FILEMONITOR_NOOP:
+    girara_debug("using noop file monitor");
+    ret = g_object_new(ZATHURA_TYPE_NOOPFILEMONITOR, "file-path", file_path, NULL);
+    break;
+  default:
+    girara_debug("invalid filemonitor type: %d", filemonitor_type);
+    g_return_val_if_fail(false, NULL);
   }
 
   if (ret == NULL) {
@@ -150,4 +130,3 @@ zathura_filemonitor_new(const char*                file_path,
 
   return ZATHURA_FILEMONITOR(ret);
 }
-

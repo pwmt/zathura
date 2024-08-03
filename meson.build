@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.5.6',
+  version: '0.5.7',
   meson_version: '>=0.61',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
@@ -43,8 +43,8 @@ gmodule = dependency('gmodule-no-export-2.0', version: '>=2.72')
 gtk3 = dependency('gtk+-3.0', version: '>=3.24')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
-magic = cc.find_library('magic', required: true)
-sqlite = dependency('sqlite3', version: '>=3.6.23', required: true)
+magic = dependency('libmagic')
+sqlite = dependency('sqlite3', version: '>=3.6.23')
 
 build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib, sqlite]
 
@@ -76,9 +76,9 @@ flags = [
 flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
-additional_sources = []
 synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
+landlock = cc.check_header('linux/landlock.h', required: get_option('landlock'))
 
 if synctex.found()
   build_dependencies += synctex
@@ -86,12 +86,6 @@ if synctex.found()
   if synctex.version() < '2.0.0' and synctex.version() >= '1.19.0'
     warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
   endif
-endif
-
-if seccomp.found()
-  build_dependencies += seccomp
-  defines += '-DWITH_SECCOMP'
-  additional_sources += files('zathura/seccomp-filters.c')
 endif
 
 # generate version header file
@@ -141,7 +135,6 @@ sources = files(
   'zathura/zathura.c',
 )
 sources += zathura_resources
-sources += additional_sources
 
 # header files to install
 headers = files(
@@ -161,12 +154,49 @@ libzathura = static_library('zathura',
   include_directories: include_directories,
   c_args: defines + flags
 )
+libzathura_dep = declare_dependency(link_with: libzathura)
+
+# zathura-sandbox executable
+if seccomp.found() or landlock
+  sandbox_sources = files()
+  sandbox_defines = ['-DWITH_SANDBOX']
+  sandbox_dependencies = []
+  if seccomp.found()
+    sandbox_defines += '-DWITH_SECCOMP'
+    sandbox_dependencies += seccomp
+    sandbox_sources += files('zathura/seccomp-filters.c')
+  endif
+  if landlock
+    sandbox_defines += '-DWITH_LANDLOCK'
+    sandbox_sources += files('zathura/landlock.c')
+  endif
+
+  # zathura helper library
+  libzathura_sandbox = static_library('zathura-sandbox',
+    sources + sandbox_sources,
+    dependencies: build_dependencies + sandbox_dependencies,
+    include_directories: include_directories,
+    c_args: defines + flags + sandbox_defines
+  )
+  libzathura_sandbox_dep = declare_dependency(link_with: libzathura_sandbox)
+
+  zathura_sandbox = executable(
+    'zathura-sandbox',
+    files('zathura/main-sandbox.c') + sandbox_sources,
+    dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
+    install: true,
+    include_directories: include_directories,
+    c_args: defines + sandbox_defines + flags,
+    export_dynamic: true,
+    win_subsystem: 'windows'
+  )
+endif
 
 # zathura executable
 zathura = executable(
   'zathura',
   files('zathura/main.c'),
-  dependencies: build_dependencies + [declare_dependency(link_with: libzathura)],
+  dependencies: build_dependencies + [libzathura_dep],
   install: true,
   include_directories: include_directories,
   c_args: defines + flags,

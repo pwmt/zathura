@@ -15,9 +15,8 @@
  * @param target Target
  * @return New zathura link
  */
-ZATHURA_PLUGIN_API zathura_link_t*
-zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
-    zathura_link_target_t target);
+ZATHURA_PLUGIN_API zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position,
+                                                    zathura_link_target_t target);
 
 /**
  * Free link

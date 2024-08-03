@@ -1,36 +1,22 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <check.h>
 #include <limits.h>
 
 #include "types.h"
-#include "tests.h"
 
-START_TEST(test_image_buffer_fail) {
-  ck_assert_ptr_null(zathura_image_buffer_create(UINT_MAX, UINT_MAX));
-} END_TEST
-
-START_TEST(test_image_buffer) {
-  zathura_image_buffer_t* buffer = zathura_image_buffer_create(1, 1);
-  ck_assert_ptr_nonnull(buffer);
-  zathura_image_buffer_free(buffer);
-} END_TEST
-
-static Suite* suite_types(void)
-{
-  TCase* tcase = NULL;
-  Suite* suite = suite_create("Types");
-
-  /* file valid extension */
-  tcase = tcase_create("Image buffer");
-  tcase_add_test(tcase, test_image_buffer_fail);
-  tcase_add_test(tcase, test_image_buffer);
-  suite_add_tcase(suite, tcase);
-
-  return suite;
+static void test_image_buffer_fail(void) {
+  g_assert_null(zathura_image_buffer_create(UINT_MAX, UINT_MAX));
 }
 
-int main()
-{
-  return run_suite(suite_types());
+static void test_image_buffer(void) {
+  zathura_image_buffer_t* buffer = zathura_image_buffer_create(1, 1);
+  g_assert_nonnull(buffer);
+  zathura_image_buffer_free(buffer);
+}
+
+int main(int argc, char* argv[]) {
+  g_test_init(&argc, &argv, NULL);
+  g_test_add_func("/types/image_buffer_fail", test_image_buffer_fail);
+  g_test_add_func("/types/image_buffer", test_image_buffer);
+  return g_test_run();
 }

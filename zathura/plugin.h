@@ -26,12 +26,12 @@ zathura_plugin_manager_t* zathura_plugin_manager_new(void);
 void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager);
 
 /**
- * Adds a plugin directory to the plugin manager
+ * Add colon-seperated list of directories to the plugin manager's plugin search path
  *
- * @param plugin_manager The plugin manager
- * @param dir Path to a directory with plugins
+ * @param plugin_manager  The plain manager
+ * @param dir Colon-seperated list of directories
  */
-void zathura_plugin_manager_add_dir(zathura_plugin_manager_t* plugin_manager, const char* dir);
+void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, const char* dir);
 
 /**
  * Loads all plugins available in the previously given directories
@@ -48,7 +48,8 @@ bool zathura_plugin_manager_load(zathura_plugin_manager_t* plugin_manager);
  * @param type The document type
  * @return The plugin or NULL if no matching plugin is available
  */
-zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* plugin_manager, const char* type);
+const zathura_plugin_t* zathura_plugin_manager_get_plugin(const zathura_plugin_manager_t* plugin_manager,
+                                                          const char* type);
 
 /**
  * Returns a list with the plugin objects
@@ -56,7 +57,7 @@ zathura_plugin_t* zathura_plugin_manager_get_plugin(zathura_plugin_manager_t* pl
  * @param plugin_manager The plugin manager
  * @return List of plugins or NULL
  */
-girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plugin_manager);
+girara_list_t* zathura_plugin_manager_get_plugins(const zathura_plugin_manager_t* plugin_manager);
 
 /**
  * Return a list of supported content types
@@ -64,7 +65,7 @@ girara_list_t* zathura_plugin_manager_get_plugins(zathura_plugin_manager_t* plug
  * @param plugin_manager The plugin manager
  * @return List of plugins or NULL
  */
-girara_list_t* zathura_plugin_manager_get_content_types(zathura_plugin_manager_t* plugin_manager);
+girara_list_t* zathura_plugin_manager_get_content_types(const zathura_plugin_manager_t* plugin_manager);
 
 /**
  * Returns the plugin functions
@@ -72,7 +73,7 @@ girara_list_t* zathura_plugin_manager_get_content_types(zathura_plugin_manager_t
  * @param plugin The plugin
  * @return The plugin functions
  */
-const zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t* plugin);
+const zathura_plugin_functions_t* zathura_plugin_get_functions(const zathura_plugin_t* plugin);
 
 /**
  * Returns the name of the plugin
@@ -80,7 +81,7 @@ const zathura_plugin_functions_t* zathura_plugin_get_functions(zathura_plugin_t*
  * @param plugin The plugin
  * @return The name of the plugin or NULL
  */
-const char* zathura_plugin_get_name(zathura_plugin_t* plugin);
+const char* zathura_plugin_get_name(const zathura_plugin_t* plugin);
 
 /**
  * Returns the path to the plugin
@@ -88,7 +89,7 @@ const char* zathura_plugin_get_name(zathura_plugin_t* plugin);
  * @param plugin The plugin
  * @return The path of the plugin or NULL
  */
-char* zathura_plugin_get_path(zathura_plugin_t* plugin);
+const char* zathura_plugin_get_path(const zathura_plugin_t* plugin);
 
 /**
  * Returns the version information of the plugin
@@ -96,6 +97,6 @@ char* zathura_plugin_get_path(zathura_plugin_t* plugin);
  * @param plugin The plugin
  * @return The version information of the plugin
  */
-zathura_plugin_version_t zathura_plugin_get_version(zathura_plugin_t* plugin);
+zathura_plugin_version_t zathura_plugin_get_version(const zathura_plugin_t* plugin);
 
 #endif // PLUGIN_H

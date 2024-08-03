@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-01 23:34+0200\n"
+"POT-Creation-Date: 2024-08-03 23:27+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: abouzakaria kov <zakariakov@gmail.com>, 2019\n"
 "Language-Team: Arabic (http://app.transifex.com/pwmt/zathura/language/ar/)\n"
@@ -61,652 +61,680 @@ msgstr "إعادة تحميل المستندات تلقائيًا."
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr ""
 
-#: zathura/callbacks.c:319
+#: zathura/callbacks.c:288
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' يجب ألا يكون 0. حدد 1."
 
-#: zathura/callbacks.c:405
+#: zathura/callbacks.c:367
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "إدخال غير صالح '%s'."
 
-#: zathura/callbacks.c:427
+#: zathura/callbacks.c:389
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "الفهرس غير صالح '%s'."
 
-#: zathura/callbacks.c:694
+#: zathura/callbacks.c:627
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "نسخ النص المحدد للاختيار %s: %s"
 
-#: zathura/callbacks.c:726
+#: zathura/callbacks.c:656
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "نسخ الصورة المحددة للاختيار %s"
 
-#: zathura/commands.c:37 zathura/commands.c:78 zathura/commands.c:105
-#: zathura/commands.c:167 zathura/commands.c:280 zathura/commands.c:315
-#: zathura/commands.c:342 zathura/commands.c:445 zathura/commands.c:590
-#: zathura/shortcuts.c:163 zathura/shortcuts.c:478 zathura/shortcuts.c:1328
-#: zathura/shortcuts.c:1363 zathura/shortcuts.c:1390
+#: zathura/commands.c:35 zathura/commands.c:74 zathura/commands.c:99
+#: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:220
+#: zathura/commands.c:327 zathura/commands.c:357 zathura/commands.c:382
+#: zathura/commands.c:480 zathura/commands.c:624 zathura/shortcuts.c:150
+#: zathura/shortcuts.c:446 zathura/shortcuts.c:1259 zathura/shortcuts.c:1292
+#: zathura/shortcuts.c:1317
 msgid "No document opened."
 msgstr "لا يوجد وثيقة مفتوحة."
 
-#: zathura/commands.c:43 zathura/commands.c:84 zathura/commands.c:450
+#: zathura/commands.c:41 zathura/commands.c:80 zathura/commands.c:131
+#: zathura/commands.c:175 zathura/commands.c:485
 msgid "Invalid number of arguments given."
 msgstr "عدد الوسائط غير صالح ."
 
-#: zathura/commands.c:55
+#: zathura/commands.c:53
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "تعذر تحديث الإشارة المرجعية: %s"
 
-#: zathura/commands.c:57
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "لا يمكن إنشاء إشارة مرجعية: %s"
 
-#: zathura/commands.c:62
+#: zathura/commands.c:60
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "تم تحديث الإشارة المرجعية بنجاح: %s"
 
-#: zathura/commands.c:64
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "إشارة مرجعية تم إنشاؤها بنجاح: %s"
 
-#: zathura/commands.c:90
+#: zathura/commands.c:86
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "العلامة المرجعية تمت إزالتها: %s"
 
-#: zathura/commands.c:92
+#: zathura/commands.c:88
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "أخفق حذف الإشارة المرجعية: %s"
 
-#: zathura/commands.c:121
+#: zathura/commands.c:113
 msgid "No bookmarks available."
 msgstr "لا توجد إشارات مرجعية متاحة."
 
-#: zathura/commands.c:131
+#: zathura/commands.c:138
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "لا يوجد إشارة مرجعية: %s"
 
-#: zathura/commands.c:176
+#: zathura/commands.c:167
+msgid "Argument must be a nonzero number."
+msgstr ""
+
+#: zathura/commands.c:187
+#, c-format
+msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgstr ""
+
+#: zathura/commands.c:188
+msgid "(current)"
+msgstr ""
+
+#: zathura/commands.c:195
+msgid "No jumplist available."
+msgstr ""
+
+#: zathura/commands.c:230
 msgid "Title"
 msgstr "العنوان"
 
-#: zathura/commands.c:177
+#: zathura/commands.c:231
 msgid "Subject"
 msgstr "الموضوع"
 
-#: zathura/commands.c:178
+#: zathura/commands.c:232
 msgid "Keywords"
 msgstr "الكلمات الدالة"
 
-#: zathura/commands.c:179
+#: zathura/commands.c:233
 msgid "Author"
 msgstr "المؤلف"
 
-#: zathura/commands.c:180
+#: zathura/commands.c:234
 msgid "Creator"
 msgstr "المنشئ"
 
-#: zathura/commands.c:181
+#: zathura/commands.c:235
 msgid "Producer"
 msgstr "المنتج"
 
-#: zathura/commands.c:182
+#: zathura/commands.c:236
 msgid "Creation date"
 msgstr "تاريخ الإنشاء"
 
-#: zathura/commands.c:183
+#: zathura/commands.c:237
 msgid "Modification date"
 msgstr "تاريخ التعديل"
 
-#: zathura/commands.c:184
+#: zathura/commands.c:238
 msgid "Format"
 msgstr ""
 
-#: zathura/commands.c:185
+#: zathura/commands.c:239
 msgid "Other"
 msgstr ""
 
-#: zathura/commands.c:189 zathura/commands.c:210
+#: zathura/commands.c:244 zathura/commands.c:263
 msgid "No information available."
 msgstr "لا توجد معلومات متاحة."
 
-#: zathura/commands.c:246 zathura/commands.c:643
+#: zathura/commands.c:274
+msgid ""
+"Please check the man pages zathura(1) and zathurarc(5) for more information."
+msgstr ""
+
+#: zathura/commands.c:297 zathura/commands.c:673
 msgid "Too many arguments."
 msgstr "العديد من الوسائط."
 
-#: zathura/commands.c:257
+#: zathura/commands.c:308
 msgid "No arguments given."
 msgstr "لا معلمات مقدمة."
 
-#: zathura/commands.c:285
+#: zathura/commands.c:332
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "لا يُسمح بالطباعة في وضع الحماية الصارم"
 
-#: zathura/commands.c:310 zathura/commands.c:337
+#: zathura/commands.c:353 zathura/commands.c:378
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:322 zathura/commands.c:349
+#: zathura/commands.c:364 zathura/commands.c:389
 msgid "Invalid number of arguments."
 msgstr "عدد الوسائط غير صالح ."
 
-#: zathura/commands.c:440
+#: zathura/commands.c:476
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:470
+#: zathura/commands.c:505
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "تعذر كتابة المرفق '%s' إلى '%s' ."
 
-#: zathura/commands.c:472
+#: zathura/commands.c:507
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "كتب المرفق '%s' إلى '%s'."
 
-#: zathura/commands.c:516
+#: zathura/commands.c:551
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "كتبت الصورة '%s' إلى '%s' ."
 
-#: zathura/commands.c:518
+#: zathura/commands.c:553
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "تعذر كتابة الصورة '%s' إلى '%s'."
 
-#: zathura/commands.c:525
+#: zathura/commands.c:560
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "صورة غير معروفة '%s'."
 
-#: zathura/commands.c:529
+#: zathura/commands.c:564
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "مرفق أو صورة غير معروف '%s'."
 
-#: zathura/commands.c:545
+#: zathura/commands.c:581
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "التنفيذ غير مسموح به في وضع الحماية الصارم"
 
-#: zathura/commands.c:603
+#: zathura/commands.c:637
 msgid "Argument must be a number."
 msgstr "يجب أن يكون الوسيط رقمًا."
 
-#: zathura/completion.c:286
+#: zathura/completion.c:275
 #, c-format
 msgid "Page %d"
 msgstr "الصفحة %d"
 
-#: zathura/completion.c:327
+#: zathura/completion.c:316
 msgid "Attachments"
 msgstr "مرفقات"
 
 #. add images
-#: zathura/completion.c:359
+#: zathura/completion.c:348
 msgid "Images"
 msgstr "الصور"
 
 #. clang-format off
 #. zathura settings
-#: zathura/config.c:239
+#: zathura/config.c:203
 msgid "Database backend"
 msgstr "خلفية قاعدة البيانات"
 
-#: zathura/config.c:240
+#: zathura/config.c:204
 msgid "File monitor backend"
 msgstr "ملف شاشة الخلفية"
 
-#: zathura/config.c:242
+#: zathura/config.c:206
 msgid "Zoom step"
 msgstr "خطوة التكبير"
 
-#: zathura/config.c:244
+#: zathura/config.c:208
 msgid "Padding between pages"
 msgstr "الحشو بين الصفحات"
 
-#: zathura/config.c:246
+#: zathura/config.c:210
 msgid "Number of pages per row"
 msgstr "عدد الصفحات لكل صف"
 
-#: zathura/config.c:248
+#: zathura/config.c:212
 msgid "Column of the first page"
 msgstr "عمود الصفحة الأولى"
 
-#: zathura/config.c:250
+#: zathura/config.c:214
 msgid "Render pages from right to left"
 msgstr "تقديم الصفحات من اليمين إلى اليسار"
 
-#: zathura/config.c:252
+#: zathura/config.c:216
 msgid "Scroll step"
 msgstr "خطوة التمرير"
 
-#: zathura/config.c:254
+#: zathura/config.c:218
 msgid "Horizontal scroll step"
 msgstr "خطوة التمرير الأفقي"
 
-#: zathura/config.c:256
+#: zathura/config.c:220
 msgid "Full page scroll overlap"
 msgstr "تداخل تمرير الصفحة كاملة "
 
-#: zathura/config.c:258
+#: zathura/config.c:222
 msgid "Zoom minimum"
 msgstr "تكبير الحد الأدنى"
 
-#: zathura/config.c:260
+#: zathura/config.c:224
 msgid "Zoom maximum"
 msgstr "تكبير الحد الأقصى"
 
-#: zathura/config.c:262
+#: zathura/config.c:226
 msgid "Maximum number of pages to keep in the cache"
 msgstr "الحد الأقصى لعدد الصفحات للاحتفاظ بها في ذاكرة التخزين المؤقت"
 
-#: zathura/config.c:264
+#: zathura/config.c:228
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
 "الحجم الأقصى بالبكسل من الصور المصغرة للاحتفاظ بها في ذاكرة التخزين المؤقت"
 
-#: zathura/config.c:266
+#: zathura/config.c:230
 msgid "Number of positions to remember in the jumplist"
 msgstr "عدد المواضع التي يجب تذكرها في قائمة التنقل"
 
-#: zathura/config.c:268
+#: zathura/config.c:232
 msgid "Recoloring (dark color)"
 msgstr "إعادة تلوين (اللون الداكن)"
 
-#: zathura/config.c:269
+#: zathura/config.c:233
 msgid "Recoloring (light color)"
 msgstr "إعادة تلوين (لون فاتح)"
 
-#: zathura/config.c:270
+#: zathura/config.c:234
 msgid "Color for highlighting"
 msgstr "لون التحويم"
 
-#: zathura/config.c:272
+#: zathura/config.c:236
 msgid "Foreground color for highlighting"
 msgstr ""
 
-#: zathura/config.c:274
+#: zathura/config.c:238
 msgid "Color for highlighting (active)"
 msgstr "لون التحويم (نشط)"
 
-#: zathura/config.c:276
+#: zathura/config.c:240
 msgid "'Loading ...' background color"
 msgstr "'جارٍ التحميل...' لون خلفية "
 
-#: zathura/config.c:278
+#: zathura/config.c:242
 msgid "'Loading ...' foreground color"
 msgstr "'جارٍ التحميل' ... لون النص"
 
-#: zathura/config.c:281
+#: zathura/config.c:245
 msgid "Index mode foreground color"
 msgstr "لون النص لوضع الفهرسة "
 
-#: zathura/config.c:282
+#: zathura/config.c:246
 msgid "Index mode background color"
 msgstr "لون الخلفية لوضع الفهرسة "
 
-#: zathura/config.c:283
+#: zathura/config.c:247
 msgid "Index mode foreground color (active element)"
 msgstr "لون النص لوضع الفهرسة  (العنصر النشط)"
 
-#: zathura/config.c:284
+#: zathura/config.c:248
 msgid "Index mode background color (active element)"
 msgstr "لون الخلفية لوضع الفهرسة (العنصر النشط)"
 
-#: zathura/config.c:286
+#: zathura/config.c:250
 msgid "Color used to highlight valid signatures"
 msgstr ""
 
-#: zathura/config.c:289
+#: zathura/config.c:253
 msgid "Color used to highlight signatures with warnings"
 msgstr ""
 
-#: zathura/config.c:292
+#: zathura/config.c:256
 msgid "Color used to highlight invalid signatures"
 msgstr ""
 
-#: zathura/config.c:296
+#: zathura/config.c:260
 msgid "Recolor pages"
 msgstr "إعادة تلوين الصفحات "
 
-#: zathura/config.c:298
+#: zathura/config.c:262
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "عندما يحافظ  التلوين على اللون الأصلي ويضبط الخفة فقط"
 
-#: zathura/config.c:300
+#: zathura/config.c:264
 msgid "When recoloring keep original image colors"
 msgstr "عندما يحافظ على إعادة تلوين وبحتفظ على الصورة الأصلية"
 
-#: zathura/config.c:302
+#: zathura/config.c:266
 msgid "Wrap scrolling"
 msgstr "التفاف التمرير"
 
-#: zathura/config.c:304
+#: zathura/config.c:268
 msgid "Page aware scrolling"
 msgstr ""
 
-#: zathura/config.c:306
+#: zathura/config.c:270
 msgid "Advance number of pages per row"
 msgstr "عدد الصفحات لكل صف"
 
-#: zathura/config.c:308
+#: zathura/config.c:272
 msgid "Horizontally centered zoom"
 msgstr "نكبير افقي من الوسط"
 
-#: zathura/config.c:310
+#: zathura/config.c:274
 msgid "Vertically center pages"
 msgstr "تكبير عمودي من الوسط"
 
-#: zathura/config.c:312
+#: zathura/config.c:276
 msgid "Align link target to the left"
 msgstr "محاذاة رابط الهدف إلى اليسار"
 
-#: zathura/config.c:314
+#: zathura/config.c:278
 msgid "Let zoom be changed when following links"
 msgstr "السماح بتغيير التكبير عند الروابط التالية"
 
-#: zathura/config.c:316
+#: zathura/config.c:280
 msgid "Center result horizontally"
 msgstr "توسيط النتيجة أفقيا"
 
-#: zathura/config.c:318
+#: zathura/config.c:282
 msgid "Render 'Loading ...'"
 msgstr "التقدم \"جارٍ التحميل ...\""
 
-#: zathura/config.c:319
+#: zathura/config.c:283
 msgid "Adjust to when opening file"
 msgstr "اضبطه عند فتح الملف"
 
-#: zathura/config.c:321
+#: zathura/config.c:285
 msgid "Show hidden files and directories"
 msgstr "إظهار الملفات والدلائل المخفية"
 
-#: zathura/config.c:323
+#: zathura/config.c:287
 msgid "Show directories"
 msgstr "عرض الدلائل"
 
-#: zathura/config.c:325
+#: zathura/config.c:289
 msgid "Show recent files"
 msgstr "عرض الملفات الحديثة"
 
-#: zathura/config.c:327
+#: zathura/config.c:291
 msgid "Always open on first page"
 msgstr "فتح دائما على الصفحة الأولى"
 
-#: zathura/config.c:329
-msgid "Highlight search results"
-msgstr "تمييز نتائج البحث"
+#: zathura/config.c:293
+msgid "Disable highlighting of search results"
+msgstr ""
 
-#: zathura/config.c:331
+#: zathura/config.c:295
 msgid "Double click to follow links"
 msgstr ""
 
-#: zathura/config.c:334
+#: zathura/config.c:298
 msgid "Enable incremental search"
 msgstr "تمكين البحث المتزايد"
 
-#: zathura/config.c:336
+#: zathura/config.c:300
 msgid "Clear search results on abort"
 msgstr "مسح نتائج البحث عن الالغاء"
 
-#: zathura/config.c:338
+#: zathura/config.c:302
 msgid "Use basename of the file in the window title"
 msgstr "استخدم اسم الملف الرئيسي في عنوان النافذة"
 
-#: zathura/config.c:340
+#: zathura/config.c:304
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr "استخدم ~ بدلاً من $HOME في اسم الملف في عنوان النافذة"
 
-#: zathura/config.c:342
+#: zathura/config.c:306
 msgid "Display the page number in the window title"
 msgstr "عرض رقم الصفحة في عنوان النافذة"
 
-#: zathura/config.c:344
+#: zathura/config.c:308
 msgid "Use first page of a document as window icon"
 msgstr "استخدم الصفحة الأولى من الوثيقة كرمز النافذة"
 
-#: zathura/config.c:346
+#: zathura/config.c:310
 msgid "Use basename of the file in the statusbar"
 msgstr "استخدم الاسم الأساسي للملف في شريط الحالة"
 
-#: zathura/config.c:348
+#: zathura/config.c:312
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "استخدم ~ بدلاً من $HOME في اسم الملف في شريط الحالة"
 
-#: zathura/config.c:350
+#: zathura/config.c:314
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
-#: zathura/config.c:352
+#: zathura/config.c:316
 msgid "Enable synctex support"
 msgstr "تمكين دعم synctex"
 
-#: zathura/config.c:353
+#: zathura/config.c:317
 msgid "Synctex editor command"
 msgstr " محرر أمر Synctex"
 
-#: zathura/config.c:354
+#: zathura/config.c:318
 msgid "Synctex edit modifier"
 msgstr ""
 
-#: zathura/config.c:355
+#: zathura/config.c:319
 msgid "Highlighter modifier"
 msgstr ""
 
-#: zathura/config.c:357
+#: zathura/config.c:321
 msgid "Enable D-Bus service"
 msgstr "تمكين خدمة D-Bus"
 
-#: zathura/config.c:358
+#: zathura/config.c:322
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:360
+#: zathura/config.c:324
 msgid "Save history at each page change"
 msgstr "حفظ التاريخ عند كل تغيير الصفحة"
 
-#: zathura/config.c:361
+#: zathura/config.c:325
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "الحافظة التي سيتم كتابة البيانات المحددة الماوس"
 
-#: zathura/config.c:363
+#: zathura/config.c:327
 msgid "Enable notification after selecting text"
 msgstr "تمكين الإخطار بعد اختيار النص"
 
-#: zathura/config.c:366
-msgid "Sandbox level"
-msgstr "مستوى الحماية"
-
-#: zathura/config.c:369
+#: zathura/config.c:330
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:571
+#: zathura/config.c:534
 msgid "Add a bookmark"
 msgstr "أضف إشارة مرجعية"
 
-#: zathura/config.c:572
+#: zathura/config.c:535
 msgid "Delete a bookmark"
 msgstr "حذف إشارة مرجعية"
 
-#: zathura/config.c:573
+#: zathura/config.c:536
 msgid "List all bookmarks"
 msgstr "قائمة جميع الإشارات المرجعية"
 
-#: zathura/config.c:574
+#: zathura/config.c:537
+msgid "Jump to bookmark"
+msgstr ""
+
+#: zathura/config.c:538
+msgid "Show recent jumps in jumplist"
+msgstr ""
+
+#: zathura/config.c:539
 msgid "Close current file"
 msgstr "إغلاق الملف الحالي"
 
-#: zathura/config.c:575
+#: zathura/config.c:540
 msgid "Show file information"
 msgstr "عرض معلومات الملف"
 
-#: zathura/config.c:576 zathura/config.c:577
+#: zathura/config.c:541 zathura/config.c:542
 msgid "Execute a command"
 msgstr "تنفيذ أمر"
 
 #. like vim
-#: zathura/config.c:578
+#: zathura/config.c:543
 msgid "Show help"
 msgstr "عرض المساعدة"
 
-#: zathura/config.c:579
+#: zathura/config.c:544
 msgid "Open document"
 msgstr "فتح وثيقة"
 
-#: zathura/config.c:580
+#: zathura/config.c:545
 msgid "Close zathura"
 msgstr "أغلق zathura"
 
-#: zathura/config.c:581
+#: zathura/config.c:546
 msgid "Print document"
 msgstr "طباعة المستند"
 
-#: zathura/config.c:582 zathura/config.c:584
+#: zathura/config.c:547 zathura/config.c:549
 msgid "Save document"
 msgstr "احفظ المستند"
 
-#: zathura/config.c:583 zathura/config.c:585
+#: zathura/config.c:548 zathura/config.c:550
 msgid "Save document (and force overwriting)"
 msgstr "حفظ المستند (وفرض الكتابة فوق)"
 
-#: zathura/config.c:586
+#: zathura/config.c:551
 msgid "Save attachments"
 msgstr "احفظ المرفقات"
 
-#: zathura/config.c:587
+#: zathura/config.c:552
 msgid "Set page offset"
 msgstr "تعيين إزاحة الصفحة"
 
-#: zathura/config.c:588
+#: zathura/config.c:553
 msgid "Mark current location within the document"
 msgstr "اجعل الموقع الحالي داخل المستند"
 
-#: zathura/config.c:589
+#: zathura/config.c:554
 msgid "Delete the specified marks"
 msgstr "احذف العلامات المحددة"
 
-#: zathura/config.c:590
-msgid "Don't highlight current search results"
-msgstr "لا تبرز نتائج البحث الحالية"
+#: zathura/config.c:555
+msgid "Remove highlights of current search results"
+msgstr ""
 
-#: zathura/config.c:591
+#: zathura/config.c:556
 msgid "Highlight current search results"
 msgstr "تمييز نتائج البحث الحالية"
 
-#: zathura/config.c:592
+#: zathura/config.c:557
 msgid "Show version information"
 msgstr "عرض معلومات الإصدار"
 
-#: zathura/config.c:593
+#: zathura/config.c:558
 msgid "Source config file"
 msgstr ""
 
-#: zathura/links.c:233
+#: zathura/links.c:210
 msgid "Failed to run xdg-open."
 msgstr "فشل تشغيل xdg-open."
 
-#: zathura/links.c:247
+#: zathura/links.c:225
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "لا يُسمح بفتح التطبيقات الخارجية في وضع الحماية الصارم"
 
-#: zathura/links.c:280
+#: zathura/links.c:260
 #, c-format
 msgid "Link: page %d"
 msgstr "الرابط: الصفحة %d"
 
-#: zathura/links.c:287
+#: zathura/links.c:266
 #, c-format
 msgid "Link: %s"
 msgstr "الرابط: : %s"
 
-#: zathura/links.c:291 zathura/links.c:318
+#: zathura/links.c:269 zathura/links.c:292
 msgid "Link: Invalid"
 msgstr "الرابط: غير صالح"
 
-#: zathura/links.c:305
+#: zathura/links.c:281
 #, c-format
 msgid "Copied page number: %d"
 msgstr ""
 
-#: zathura/links.c:314
+#: zathura/links.c:289
 #, c-format
 msgid "Copied link: %s"
 msgstr ""
 
-#: zathura/main.c:151
+#: zathura/main.c:115
 msgid "Reparents to window specified by xid (X11)"
 msgstr ""
 
-#: zathura/main.c:152
+#: zathura/main.c:116
 msgid "Path to the config directory"
 msgstr "المسار إلى دليل التكوين"
 
-#: zathura/main.c:153
+#: zathura/main.c:117
 msgid "Path to the data directory"
 msgstr "المسار إلى دليل البيانات"
 
-#: zathura/main.c:154
+#: zathura/main.c:118
 msgid "Path to the cache directory"
 msgstr "المسار إلى دليل ذاكرة التخزين المؤقت"
 
-#: zathura/main.c:155
+#: zathura/main.c:119
 msgid "Path to the directories containing plugins"
 msgstr "الطريق إلى الأدلة التي تحتوي على الإضافات"
 
-#: zathura/main.c:156
+#: zathura/main.c:121
 msgid "Fork into the background"
 msgstr ""
 
-#: zathura/main.c:157
+#: zathura/main.c:122
 msgid "Document password"
 msgstr "كلمة مرور المستند"
 
-#: zathura/main.c:158
+#: zathura/main.c:123
 msgid "Page number to go to"
 msgstr "الذهاب إلى رقم الصفحة "
 
-#: zathura/main.c:159
+#: zathura/main.c:124
 msgid "Log level (debug, info, warning, error)"
 msgstr "مستوى السجل (تصحيح ، معلومات ، تحذير ، خطأ)"
 
-#: zathura/main.c:160
+#: zathura/main.c:125
 msgid "Print version information"
 msgstr "طباعة معلومات إلاصدار "
 
-#: zathura/main.c:161
+#: zathura/main.c:127
 msgid "Synctex editor (forwarded to the synctex command)"
 msgstr "محرر Synctex (تم إعادة توجيهه إلى أمر synctex)"
 
-#: zathura/main.c:162
+#: zathura/main.c:128
 msgid "Move to given synctex position"
 msgstr "الانتقال إلى موضع synctex المحدد"
 
-#: zathura/main.c:163
+#: zathura/main.c:129
 msgid "Highlight given position in the given process"
 msgstr "تمييز على موضع معين في عملية معينة"
 
-#: zathura/main.c:164
+#: zathura/main.c:131
 msgid "Start in a non-default mode"
 msgstr "البدء في وضع غير افتراضي"
 
-#: zathura/main.c:165
+#: zathura/main.c:132
 msgid "Bookmark to go to"
 msgstr ""
 
-#: zathura/main.c:166
+#: zathura/main.c:133
 msgid "Search for the given phrase and display results"
 msgstr ""
 
@@ -739,76 +767,76 @@ msgstr ""
 msgid "Signature is invalid."
 msgstr ""
 
-#: zathura/page-widget.c:755
+#: zathura/page-widget.c:748
 msgid "Loading..."
 msgstr "جارٍ التحميل ..."
 
-#: zathura/page-widget.c:1265
+#: zathura/page-widget.c:1258
 msgid "Copy image"
 msgstr "انسخ الصورة"
 
-#: zathura/page-widget.c:1266
+#: zathura/page-widget.c:1259
 msgid "Save image as"
 msgstr "حفظ الصورة باسم"
 
 #. Update statusbar.
-#: zathura/print.c:106
+#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "طباعة الصفحة %d ... "
 
-#: zathura/print.c:188
+#: zathura/print.c:168
 #, c-format
 msgid "Printing failed: %s"
 msgstr "فشل الطباعة: %s"
 
-#: zathura/shortcuts.c:132
+#: zathura/shortcuts.c:123
 #, c-format
 msgid "Invalid adjust mode: %d"
 msgstr "وضع الضبط غير صالح: %d"
 
-#: zathura/shortcuts.c:1043
+#: zathura/shortcuts.c:975
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "النمط غير موجود: %s"
 
-#: zathura/shortcuts.c:1229
+#: zathura/shortcuts.c:1163
 msgid "This document does not contain any index"
 msgstr "لا يحتوي هذا المستند على أي فهرس"
 
-#: zathura/zathura.c:315 zathura/zathura.c:1618
+#: zathura/zathura.c:303 zathura/zathura.c:1521
 msgid "[No name]"
 msgstr "[لا اسم]"
 
-#: zathura/zathura.c:833
+#: zathura/zathura.c:739
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "لا يمكن قراءة الملف من المصدر وكتابته إلى ملف مؤقت."
 
-#: zathura/zathura.c:852
+#: zathura/zathura.c:758
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "تعذرت قراءة الملف من GIO ونسخه إلى ملف مؤقت."
 
-#: zathura/zathura.c:956
+#: zathura/zathura.c:854
 msgid "Enter password:"
 msgstr "أدخل كلمة المرور:"
 
-#: zathura/zathura.c:1043
+#: zathura/zathura.c:941
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "نوع ملف غير مدعوم. الرجاء تثبيت المكون الإضافي اللازم."
 
-#: zathura/zathura.c:1053
+#: zathura/zathura.c:950
 msgid "Document does not contain any pages"
 msgstr "لا يحتوي المستند على أي صفحات"
 
-#: zathura/zathura.c:1432
+#: zathura/zathura.c:1333
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr ""
 
-#: zathura/zathura.c:1441
+#: zathura/zathura.c:1343
 msgid "Failed to save document."
 msgstr "فشل في حفظ المستند."
 
-#: zathura/zathura.c:1445
+#: zathura/zathura.c:1347
 msgid "Document saved."
 msgstr "تم حفظ المستند."

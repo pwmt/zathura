@@ -205,56 +205,91 @@ Mouse bindings
     Scroll up or down
   ^Scroll
     Zoom in or out
-  Hold Button2
+  Drag Button2 (middle button drag)
     Pan the document
-  Button1
+  Button1 (left click)
     Follow link
-  Hold Button1
+  Drag Button1
     Select text
-  Hold ^Button1
+  Drag S-Button1
     Highlight region
+  Button3 (right click)
+    Open popup menu to copy/save image
+    (activates for images recognized by ``export`` command)
 
 
 Commands
 ---------
 
 bmark
-  Save a bookmark
+  Save a bookmark.
 
 bdelete
-  Delete a bookmark
+  Delete a bookmark.
 
 blist
-  List bookmarks
+  List bookmarks.
+
+bjump
+  Jump to given bookmark.
+
+jumplist
+  Show recent jumps in jumplist (by default last 5). Optional argument
+  specifies number of entries to show. Negative value "-N" shows all
+  except the first "N" entries.
+
+mark
+  Set a quickmark.
+
+delmarks
+  Delete a quickmark. Abbreviation: ``delm``.
 
 close
-  Close document
+  Close document.
+
+quit
+  Quit zathura. Abbreviation: ``q``.
 
 exec
   Execute an external command. ``$FILE`` expands to the current document path,
   ``$PAGE`` to the current page number, and ``$DBUS`` to the bus name of the
-  D-Bus interface
+  D-Bus interface. Alias: ``!`` (space is still needed after).
 
 info
-  Show document information
+  Show document information.
 
 open
-  Open a document
+  Open a document. Abbreviation: ``o``.
 
 offset
-  Set page offset
+  Set page offset.
 
 print
-  Print document
+  Print document.
 
 write(!)
-  Save document (and force overwriting)
+  Save document (and force overwriting). Alias: ``save(!)``.
 
 export
-  Export attachments
+  Export attachments. First argument specifies the attachment identifier
+  (use completion with ``Tab``), second argument gives the target filename
+  (relative to current working directory).
 
 dump
   Write values, descriptions, etc. of all current settings to a file.
+
+source
+  Source a configuration file. It is possible to change the config directory
+  by passing an argument.
+
+hlsearch
+  Highlight current search results.
+
+nohlsearch
+  Remove highlights of current search results. Abbreviation: ``nohl``.
+
+version
+  Show version information.
 
 Configuration
 -------------
@@ -305,6 +340,22 @@ Environment variables
 ZATHURA_PLUGINS_PATH
   Path to the directory containing plugins. This directory is only considered if
   no other directory was specified using --plugins-dir.
+
+Sandbox
+-------
+
+The **zathura-sandbox** binary runs *zathura* with a seccomp and/or landlock
+based sandbox enabled. Some features are disabled when using sandbox mode:
+
+* saving/writing files
+* use of input methods like ibus
+* printing
+* bookmarks and history
+* dbus integration
+* synctex support
+
+The sandbox mode is still experimental with some libc implementations. The
+current supported and tested libc implementations is glibc.
 
 Known bugs
 ----------

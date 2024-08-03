@@ -16,8 +16,8 @@
  * @param error Optional error
  * @return Page object or NULL if an error occurred
  */
-ZATHURA_PLUGIN_API zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int
-    index, zathura_error_t* error);
+ZATHURA_PLUGIN_API zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int index,
+                                                    zathura_error_t* error);
 
 /**
  * Frees the page object
@@ -121,7 +121,8 @@ ZATHURA_PLUGIN_API void zathura_page_set_data(zathura_page_t* page, void* data);
  *   error occurred
  * @return List of results
  */
-ZATHURA_PLUGIN_API girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_search_text(zathura_page_t* page, const char* text,
+                                                           zathura_error_t* error);
 
 /**
  * Get page links
@@ -180,7 +181,8 @@ ZATHURA_PLUGIN_API girara_list_t* zathura_page_images_get(zathura_page_t* page, 
  *   error occurred
  * @return The cairo image surface or NULL if an error occurred
  */
-ZATHURA_PLUGIN_API cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image, zathura_error_t* error);
+ZATHURA_PLUGIN_API cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t* page, zathura_image_t* image,
+                                                                 zathura_error_t* error);
 
 /**
  * Get text for selection
@@ -190,7 +192,8 @@ ZATHURA_PLUGIN_API cairo_surface_t* zathura_page_image_get_cairo(zathura_page_t*
  * occurred
  * @return The selected text (needs to be deallocated with g_free)
  */
-ZATHURA_PLUGIN_API char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
+ZATHURA_PLUGIN_API char* zathura_page_get_text(zathura_page_t* page, zathura_rectangle_t rectangle,
+                                               zathura_error_t* error);
 
 /**
  * Get rectangles from selection
@@ -200,7 +203,8 @@ ZATHURA_PLUGIN_API char* zathura_page_get_text(zathura_page_t* page, zathura_rec
  * occurred
  * @return List of rectangles or NULL if an error occurred
  */
-ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_selection(zathura_page_t* page, zathura_rectangle_t rectangle, zathura_error_t* error);
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_selection(zathura_page_t* page, zathura_rectangle_t rectangle,
+                                                             zathura_error_t* error);
 
 /**
  * Render page
@@ -222,7 +226,7 @@ ZATHURA_PLUGIN_API zathura_error_t zathura_page_render(zathura_page_t* page, cai
  *    occurred.
  * @return Page label
  */
-ZATHURA_PLUGIN_API char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error);
+ZATHURA_PLUGIN_API const char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error);
 
 /**
  * Get signatures of a page

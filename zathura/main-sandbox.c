@@ -1,9 +1,5 @@
 /* SPDX-License-Identifier: Zlib */
 
-#ifdef GTKOSXAPPLICATION
-#include <gtkosxapplication.h>
-#endif
-
 #include <girara/settings.h>
 #include <girara/log.h>
 
@@ -18,51 +14,15 @@
 #include "zathura.h"
 #include "plugin.h"
 #include "utils.h"
-#ifdef WITH_SYNCTEX
-#include "dbus-interface.h"
-#include "synctex.h"
+#ifdef WITH_SECCOMP
+#include "seccomp-filters.h"
 #endif
-
-/* Handle synctex forward synchronization */
-#ifdef WITH_SYNCTEX
-static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
-  GFile* file = g_file_new_for_commandline_arg(filename);
-  if (file == NULL) {
-    girara_error("Unable to handle argument '%s'.", filename);
-    return -1;
-  }
-
-  char* real_path = g_file_get_path(file);
-  g_object_unref(file);
-  if (real_path == NULL) {
-    girara_error("Failed to determine path for '%s'", filename);
-    return -1;
-  }
-
-  int line         = 0;
-  int column       = 0;
-  char* input_file = NULL;
-  if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
-    girara_error("Failed to parse argument to --synctex-forward.");
-    g_free(real_path);
-    return -1;
-  }
-
-  const int ret = zathura_dbus_synctex_position(real_path, input_file, line, column, synctex_pid);
-  g_free(input_file);
-  g_free(real_path);
-
-  if (ret == -1) {
-    /* D-Bus or SyncTeX failed */
-    girara_error("Got no usable data from SyncTeX or D-Bus failed in some way.");
-  }
-
-  return ret;
-}
+#ifdef WITH_LANDLOCK
+#include "landlock.h"
 #endif
 
 static zathura_t* init_zathura(const char* config_dir, const char* data_dir, const char* cache_dir,
-                               const char* plugin_path, char** argv, const char* synctex_editor, Window embed) {
+                               const char* plugin_path, char** argv, Window embed) {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
   if (zathura == NULL) {
@@ -82,9 +42,19 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
     return NULL;
   }
 
-  if (synctex_editor != NULL) {
-    girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
+  girara_debug("Strict sandbox preventing write and network access.");
+#ifdef WITH_LANDLOCK
+  landlock_drop_write();
+#endif
+#ifdef WITH_SECCOMP
+  if (seccomp_enable_strict_filter(zathura) != 0) {
+    girara_error("Failed to initialize strict seccomp filter.");
+    zathura_free(zathura);
+    return NULL;
   }
+#endif
+  /* unset the input method to avoid communication with external services */
+  unsetenv("GTK_IM_MODULE");
 
   return zathura;
 }
@@ -94,22 +64,19 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   zathura_init_locale();
 
   /* parse command line arguments */
-  gchar* config_dir     = NULL;
-  gchar* data_dir       = NULL;
-  gchar* cache_dir      = NULL;
-  gchar* plugin_path    = NULL;
-  gchar* loglevel       = NULL;
-  gchar* password       = NULL;
-  gchar* synctex_editor = NULL;
-  gchar* synctex_fwd    = NULL;
-  gchar* mode           = NULL;
-  gchar* bookmark_name  = NULL;
-  gchar* search_string  = NULL;
-  bool forkback         = false;
-  bool print_version    = false;
-  int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  int synctex_pid       = -1;
-  Window embed          = 0;
+  gchar* config_dir    = NULL;
+  gchar* data_dir      = NULL;
+  gchar* cache_dir     = NULL;
+  gchar* plugin_path   = NULL;
+  gchar* loglevel      = NULL;
+  gchar* password      = NULL;
+  gchar* mode          = NULL;
+  gchar* bookmark_name = NULL;
+  gchar* search_string = NULL;
+  bool forkback        = false;
+  bool print_version   = false;
+  int page_number      = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  Window embed         = 0;
 
   GOptionEntry entries[] = {
       {"reparent", 'e', 0, G_OPTION_ARG_INT, &embed, _("Reparents to window specified by xid (X11)"), "xid"},
@@ -123,11 +90,6 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       {"page", 'P', 0, G_OPTION_ARG_INT, &page_number, _("Page number to go to"), "number"},
       {"log-level", 'l', 0, G_OPTION_ARG_STRING, &loglevel, _("Log level (debug, info, warning, error)"), "level"},
       {"version", 'v', 0, G_OPTION_ARG_NONE, &print_version, _("Print version information"), NULL},
-      {"synctex-editor-command", 'x', 0, G_OPTION_ARG_STRING, &synctex_editor,
-       _("Synctex editor (forwarded to the synctex command)"), "cmd"},
-      {"synctex-forward", '\0', 0, G_OPTION_ARG_STRING, &synctex_fwd, _("Move to given synctex position"), "position"},
-      {"synctex-pid", '\0', 0, G_OPTION_ARG_INT, &synctex_pid, _("Highlight given position in the given process"),
-       "pid"},
       {"mode", '\0', 0, G_OPTION_ARG_STRING, &mode, _("Start in a non-default mode"), "mode"},
       {"bookmark", 'b', 0, G_OPTION_ARG_STRING, &bookmark_name, _("Bookmark to go to"), "bookmark"},
       {"find", 'f', 0, G_OPTION_ARG_STRING, &search_string, _("Search for the given phrase and display results"),
@@ -150,37 +112,6 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
   int ret = 0;
   zathura_set_log_level(loglevel);
-
-#ifdef WITH_SYNCTEX
-  /* handle synctex forward synchronization */
-  if (synctex_fwd != NULL) {
-    if (argc != 2) {
-      girara_error("Too many arguments or missing filename while running with "
-                   "--synctex-forward");
-      ret = -1;
-      goto free_and_ret;
-    }
-
-    ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
-    if (ret > 0) {
-      /* Instance found. */
-      ret = 0;
-      goto free_and_ret;
-    } else if (ret < 0) {
-      /* Error occurred. */
-      ret = -1;
-      goto free_and_ret;
-    }
-
-    girara_debug("No instance found. Starting new one.");
-  }
-#else
-  if (synctex_fwd != NULL || synctex_editor != NULL || synctex_pid != -1) {
-    girara_error("Built without synctex support, but synctex specific option was specified.");
-    ret = -1;
-    goto free_and_ret;
-  }
-#endif
 
   /* check mode */
   if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
@@ -253,11 +184,15 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     goto free_and_ret;
   }
 
+  girara_debug("Running zathura-sandbox, disable IPC services");
+  /* Prevent default gtk dbus connection */
+  g_setenv("DBUS_SESSION_BUS_ADDRESS", "disabled:", TRUE);
+
   /* Initialize GTK+ */
   gtk_init(&argc, &argv);
 
   /* Create zathura session */
-  zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, synctex_editor, embed);
+  zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     ret = -1;
@@ -269,7 +204,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     if (page_number > 0) {
       --page_number;
     }
-    document_open_idle(zathura, argv[file_idx], password, page_number, mode, synctex_fwd, bookmark_name, search_string);
+    document_open_idle(zathura, argv[file_idx], password, page_number, mode, NULL, bookmark_name, search_string);
   } else if (bookmark_name != NULL) {
     girara_error("Can not use bookmark argument when no file is given");
     ret = -1;
@@ -282,17 +217,6 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     goto free_and_ret;
   }
 
-#ifdef GTKOSXAPPLICATION
-  GtkosxApplication* zathuraApp = g_object_new(GTKOSX_TYPE_APPLICATION, NULL);
-  gtkosx_application_set_use_quartz_accelerators(zathuraApp, FALSE);
-  gtkosx_application_ready(zathuraApp);
-  {
-    const gchar* id = gtkosx_application_get_bundle_id();
-    if (id != NULL) {
-      girara_warn("TestIntegration Error! Bundle has ID %s", id);
-    }
-  }
-#endif // GTKOSXAPPLICATION
   /* run zathura */
   gtk_main();
 
@@ -306,8 +230,6 @@ free_and_ret:
   g_free(plugin_path);
   g_free(loglevel);
   g_free(password);
-  g_free(synctex_editor);
-  g_free(synctex_fwd);
   g_free(mode);
   g_free(bookmark_name);
   g_free(search_string);

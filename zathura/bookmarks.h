@@ -6,8 +6,7 @@
 #include <stdbool.h>
 #include "zathura.h"
 
-struct zathura_bookmark_s
-{
+struct zathura_bookmark_s {
   gchar* id;
   unsigned int page;
   double x;

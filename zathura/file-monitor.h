@@ -8,21 +8,15 @@
 #include <glib-object.h>
 
 #define ZATHURA_TYPE_FILEMONITOR (zathura_filemonitor_get_type())
-#define ZATHURA_FILEMONITOR(obj)                                               \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_FILEMONITOR,                 \
-                              ZathuraFileMonitor))
-#define ZATHURA_FILEMONITOR_CLASS(obj)                                         \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_FILEMONITOR,                    \
-                           ZathuraFileMonitorClass))
-#define ZATHURA_IS_FILEMONITOR(obj)                                            \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_FILEMONITOR))
-#define ZATHURA_IS_FILEMONITOR_CLASS(obj)                                      \
-  (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_FILEMONITOR))
-#define ZATHURA_FILEMONITOR_GET_CLASS(obj)                                     \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_FILEMONITOR,                  \
-                             ZathuraFileMonitorClass))
+#define ZATHURA_FILEMONITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_FILEMONITOR, ZathuraFileMonitor))
+#define ZATHURA_FILEMONITOR_CLASS(obj)                                                                                 \
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_FILEMONITOR, ZathuraFileMonitorClass))
+#define ZATHURA_IS_FILEMONITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_FILEMONITOR))
+#define ZATHURA_IS_FILEMONITOR_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_FILEMONITOR))
+#define ZATHURA_FILEMONITOR_GET_CLASS(obj)                                                                             \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_FILEMONITOR, ZathuraFileMonitorClass))
 
-typedef struct zathura_filemonitor_s       ZathuraFileMonitor;
+typedef struct zathura_filemonitor_s ZathuraFileMonitor;
 typedef struct zathura_filemonitor_class_s ZathuraFileMonitorClass;
 
 /**
@@ -30,13 +24,11 @@ typedef struct zathura_filemonitor_class_s ZathuraFileMonitorClass;
  *
  * The signal 'reload-file' is emitted if the monitored file changed.
  */
-struct zathura_filemonitor_s
-{
+struct zathura_filemonitor_s {
   GObject parent;
 };
 
-struct zathura_filemonitor_class_s
-{
+struct zathura_filemonitor_class_s {
   GObjectClass parent_class;
 
   void (*start)(ZathuraFileMonitor*);
@@ -54,9 +46,9 @@ GType zathura_filemonitor_get_type(void) G_GNUC_CONST;
  * Type of file monitor.
  */
 typedef enum zathura_filemonitor_type_e {
-  ZATHURA_FILEMONITOR_GLIB, /**< Use filemonitor from GLib */
+  ZATHURA_FILEMONITOR_GLIB,   /**< Use filemonitor from GLib */
   ZATHURA_FILEMONITOR_SIGNAL, /**< Reload when receiving SIGHUP */
-  ZATHURA_FILEMONITOR_NOOP /**< Monitor that does nothing */
+  ZATHURA_FILEMONITOR_NOOP    /**< Monitor that does nothing */
 } zathura_filemonitor_type_t;
 
 /**
@@ -66,9 +58,7 @@ typedef enum zathura_filemonitor_type_e {
  * @param filemonitor_type type of file monitor
  * @return new file monitor instance
  */
-ZathuraFileMonitor*
-zathura_filemonitor_new(const char*                file_path,
-                        zathura_filemonitor_type_t filemonitor_type);
+ZathuraFileMonitor* zathura_filemonitor_new(const char* file_path, zathura_filemonitor_type_t filemonitor_type);
 
 /**
  * Get path of the monitored file.

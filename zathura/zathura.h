@@ -67,25 +67,20 @@ enum {
   PAGE_BOTTOM,
   PAGE_TOP,
   BIDIRECTIONAL,
-  ZOOM_SMOOTH
+  ZOOM_SMOOTH,
 };
 
 /* unspecified page number */
 enum {
-  ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN
+  ZATHURA_PAGE_NUMBER_UNSPECIFIED = INT_MIN,
 };
 
 /* cache constants */
 enum {
-  ZATHURA_PAGE_CACHE_DEFAULT_SIZE = 15,
-  ZATHURA_PAGE_CACHE_MAX_SIZE = 1024,
-  ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4*1024*1024
+  ZATHURA_PAGE_CACHE_DEFAULT_SIZE     = 15,
+  ZATHURA_PAGE_CACHE_MAX_SIZE         = 1024,
+  ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4 * 1024 * 1024
 };
-
-typedef enum {
-  ZATHURA_SANDBOX_NONE,
-  ZATHURA_SANDBOX_STRICT
-} zathura_sandbox_t;
 
 /* forward declaration for types from database.h */
 typedef struct _ZathuraDatabase zathura_database_t;
@@ -93,16 +88,13 @@ typedef struct zathura_fileinfo_s zathura_fileinfo_t;
 /* forward declaration for types from content-type.h */
 typedef struct zathura_content_type_context_s zathura_content_type_context_t;
 
-struct zathura_s
-{
-  struct
-  {
+struct zathura_s {
+  struct {
     girara_session_t* session; /**< girara interface session */
 
-    struct
-    {
-      girara_statusbar_item_t* buffer; /**< buffer statusbar entry */
-      girara_statusbar_item_t* file; /**< file statusbar entry */
+    struct {
+      girara_statusbar_item_t* buffer;      /**< buffer statusbar entry */
+      girara_statusbar_item_t* file;        /**< file statusbar entry */
       girara_statusbar_item_t* page_number; /**< page number statusbar entry */
     } statusbar;
 
@@ -117,63 +109,53 @@ struct zathura_s
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget *page_widget; /**< Widget that contains all rendered pages */
-    GtkWidget *index; /**< Widget to show the index of the document */
+    GtkWidget* page_widget; /**< Widget that contains all rendered pages */
+    GtkWidget* index;       /**< Widget to show the index of the document */
   } ui;
 
-  struct
-  {
+  struct {
     ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
   } sync;
 
-  struct
-  {
+  struct {
     void* manager; /**< Plugin manager */
   } plugins;
 
-  struct
-  {
+  struct {
     gchar* config_dir; /**< Path to the configuration directory */
-    gchar* data_dir; /**< Path to the data directory */
-    gchar* cache_dir; /**< Path to the cache directory */
+    gchar* data_dir;   /**< Path to the data directory */
+    gchar* cache_dir;  /**< Path to the cache directory */
   } config;
 
-  struct
-  {
+  struct {
     GtkPrintSettings* settings; /**< Print settings */
-    GtkPageSetup* page_setup; /**< Saved page setup */
+    GtkPageSetup* page_setup;   /**< Saved page setup */
   } print;
 
-  struct
-  {
-    girara_list_t* marks; /**< Marker */
-    char** arguments; /**> Arguments that were passed at startup */
-    int search_direction; /**< Current search direction (FORWARD or BACKWARD) */
+  struct {
+    girara_list_t* marks;                 /**< Marker */
+    char** arguments;                     /**> Arguments that were passed at startup */
+    int search_direction;                 /**< Current search direction (FORWARD or BACKWARD) */
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
-    GdkModifierType highlighter_modmask; /**< Modifier to draw with a highlighter */
-    zathura_sandbox_t sandbox; /**< Sandbox mode */
-    bool double_click_follow; /**< Double/Single click to follow link */
+    GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
+    bool double_click_follow;             /**< Double/Single click to follow link */
   } global;
 
-  struct
-  {
-    girara_mode_t normal; /**< Normal mode */
-    girara_mode_t fullscreen; /**< Fullscreen mode */
-    girara_mode_t index; /**< Index mode */
-    girara_mode_t insert; /**< Insert mode */
+  struct {
+    girara_mode_t normal;       /**< Normal mode */
+    girara_mode_t fullscreen;   /**< Fullscreen mode */
+    girara_mode_t index;        /**< Index mode */
+    girara_mode_t insert;       /**< Insert mode */
     girara_mode_t presentation; /**< Presentation mode */
   } modes;
 
-  struct
-  {
-    gchar* file; /**< bookmarks file */
+  struct {
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 
   zathura_jumplist_t jumplist;
 
-  struct
-  {
+  struct {
     guint refresh_view;
 #ifdef G_OS_UNIX
     guint sigterm;
@@ -182,17 +164,16 @@ struct zathura_s
     gulong monitors_changed_handler; /**< Signal handler for monitors-changed */
   } signals;
 
-  struct
-  {
+  struct {
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document; /**< The current document */
-  zathura_document_t* predecessor_document; /**< The document from before a reload */
-  GtkWidget** pages; /**< The page widgets */
-  GtkWidget** predecessor_pages; /**< The page widgets from before a reload */
-  zathura_database_t* database; /**< The database */
-  ZathuraDbus* dbus; /**< D-Bus service */
+  zathura_document_t* document;                     /**< The current document */
+  zathura_document_t* predecessor_document;         /**< The document from before a reload */
+  GtkWidget** pages;                                /**< The page widgets */
+  GtkWidget** predecessor_pages;                    /**< The page widgets from before a reload */
+  zathura_database_t* database;                     /**< The database */
+  ZathuraDbus* dbus;                                /**< D-Bus service */
   ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
 
   /**
@@ -200,7 +181,7 @@ struct zathura_s
    */
   struct {
     ZathuraFileMonitor* monitor; /**< File monitor */
-    gchar* password; /**< Save password */
+    gchar* password;             /**< Save password */
   } file_monitor;
 
   /**
@@ -208,8 +189,8 @@ struct zathura_s
    */
   struct {
     unsigned int last_jump; /**< Page jumped to by bisect */
-    unsigned int start; /**< Bisection range - start */
-    unsigned int end; /**< Bisection range - end */
+    unsigned int start;     /**< Bisection range - start */
+    unsigned int end;       /**< Bisection range - end */
   } bisect;
 
   /**
@@ -322,6 +303,19 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
 void zathura_update_view_ppi(zathura_t* zathura);
 
 /**
+ * Init locale
+ */
+void zathura_init_locale(void);
+
+/**
+ * Set log level
+ *
+ * If no loglevel is given, an argument of "info" is assumed.
+ *
+ * @param Log level
+ */
+void zathura_set_log_level(const char* loglevel);
+/**
  * Opens a file
  *
  * @param zathura The zathura session
@@ -332,8 +326,8 @@ void zathura_update_view_ppi(zathura_t* zathura);
  *
  * @return If no error occurred true, otherwise false, is returned.
  */
-bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
-                   int page_number, zathura_fileinfo_t* file_info);
+bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
+                   zathura_fileinfo_t* file_info);
 
 /**
  * Opens a file
@@ -345,8 +339,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
  *
  * @return If no error occurred true, otherwise false, is returned.
  */
-bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri,
-                           const char* password, const char* synctex);
+bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri, const char* password,
+                           const char* synctex);
 
 /**
  * Opens a file (idle)
@@ -358,10 +352,8 @@ bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri
  * @param mode Open in given page mode
  * @param synctex SyncTeX string
  */
-void document_open_idle(zathura_t* zathura, const char* path,
-                        const char* password, int page_number,
-                        const char* mode, const char* synctex,
-                        const char* bookmark_name, const char *search_string);
+void document_open_idle(zathura_t* zathura, const char* path, const char* password, int page_number, const char* mode,
+                        const char* synctex, const char* bookmark_name, const char* search_string);
 
 /**
  * Save a open file
@@ -382,6 +374,15 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite);
  * @return file_info (caller needs to g_free(file_info.first_page_column_list))
  */
 zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura);
+
+/**
+ * Get fileinfo of the predecessor document (zoom, current page, etc).
+ *
+ * @param zathura The zathura session
+ *
+ * @return file_info (caller needs to g_free(file_info.first_page_column_list))
+ */
+zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura);
 
 /**
  * Frees the "predecessor" buffers used for smooth-reload
@@ -442,9 +443,8 @@ bool adjust_view(zathura_t* zathura);
  * @param first_page_column Column on which first page start
  * @param page_right_to_left Render pages right to left
  */
-void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding,
-                          unsigned int pages_per_row, unsigned int first_page_column,
-                          bool page_right_to_left);
+void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
+                          unsigned int first_page_column, bool page_right_to_left);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the
