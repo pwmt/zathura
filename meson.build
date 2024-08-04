@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.5.7',
+  version: '0.5.8',
   meson_version: '>=0.61',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
@@ -12,8 +12,8 @@ version_array = version.split('.')
 #   signature changes, bump both ABI and API.
 # * zathura_plugin_definition_t: If the struct changes in an ABI-incompatible
 #   way, bump the ABI.
-plugin_api_version = '5'
-plugin_abi_version = '6'
+plugin_api_version = '6'
+plugin_abi_version = '7'
 
 conf_data = configuration_data()
 conf_data.set('ZVMAJOR', version_array[0])
