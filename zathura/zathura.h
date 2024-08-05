@@ -142,7 +142,6 @@ struct zathura_s {
     bool double_click_follow;             /**< Double/Single click to follow link */
     int current_search_result;            /**< The current search counter */
     int total_search_results;             /**< The total search results count */
-
   } global;
 
   struct {
@@ -492,4 +491,5 @@ void zathura_modify_current_search_result(zathura_t* zathura, int diff);
  * @param current_page_number The current page number
  */
 void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number);
+
 #endif // ZATHURA_H
