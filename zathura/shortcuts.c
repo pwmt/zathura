@@ -23,7 +23,6 @@
 #include "adjustment.h"
 #include "database.h"
 #include <math.h>
-#include <unistd.h>
 
 /* Helper function for highlighting the links */
 static bool draw_links(zathura_t* zathura) {
@@ -980,6 +979,7 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
     char* tmp =
         g_strdup_printf("  Search: [%d/%d]", zathura->global.current_search_result, zathura->global.total_search_results);
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
+    g_free(tmp);
   } else if (argument->data != NULL) {
     const char* input  = argument->data;
     char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);

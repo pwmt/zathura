@@ -1820,10 +1820,9 @@ void zathura_set_log_level(const char* loglevel) {
 }
 
 void zathura_modify_current_search_result(zathura_t* zathura, int diff) {
-  if (zathura->global.total_search_results == 0)
-    return;
-  if (diff == 0)
-    return;
+  if (zathura->global.total_search_results == 0) return;
+
+  if (diff == 0) return;
 
   int current = zathura->global.current_search_result;
   int total   = zathura->global.total_search_results;
