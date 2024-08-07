@@ -38,12 +38,12 @@ static void landlock_drop(__u64 fs_access) {
 
   int ruleset_fd = landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
   if (ruleset_fd < 0) {
-    perror("Failed to create a landlock ruleset");
+    girara_error("Failed to create a landlock ruleset");
     return;
   }
   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
   if (landlock_restrict_self(ruleset_fd, 0)) {
-    perror("landlock_restrict_self");
+    girara_error("landlock_restrict_self");
   }
   close(ruleset_fd);
 }
@@ -64,7 +64,6 @@ void landlock_check_kernel(void) {
      * Kernel too old, not compiled with Landlock,
      * or Landlock was not enabled at boot time.
      */
-    perror("Unable to use Landlock");
     girara_warning("Unable to use Landlock: Kernel too old, not compiled with Landlock,\
             or Landlock was not enabled at boot time. Sandbox partly disabled.");
     return;  /* Graceful fallback: Do nothing. */
@@ -101,10 +100,10 @@ void landlock_write_fd(const int dir_fd) {
   if (!landlock_add_rule(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH, &path_beneath, 0)) {
     prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
     if (landlock_restrict_self(ruleset_fd, 0)) {
-      perror("landlock_restrict_self");
+      girara_error("landlock_restrict_self");
     }
   } else {
-    perror("landlock_add_rule");
+    girara_error("landlock_add_rule");
   }
 
   if (dir_fd == -1) {
