@@ -130,6 +130,7 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   GtkTreeModel* model    = gtk_tree_view_get_model(tree_view);
 
   SearchData search_data;
+  gtk_tree_model_get_iter_first(model, &search_data.current_iter);
   search_data.current_page = zathura_document_get_current_page_number(zathura->document);
   gtk_tree_model_foreach(model, search_current_index, &search_data);
 
