@@ -56,7 +56,7 @@ static void landlock_drop(__u64 fs_access) {
 
 #define _LANDLOCK_ACCESS_FS_READ (LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR)
 
-void landlock_check_kernel(void) {
+static void landlock_check_kernel(void) {
   int abi = landlock_create_ruleset(NULL, 0,
                                   LANDLOCK_CREATE_RULESET_VERSION);
   if (abi == -1) {
