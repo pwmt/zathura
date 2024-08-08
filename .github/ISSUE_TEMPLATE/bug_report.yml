@@ -1,0 +1,43 @@
+name: Bug Report
+description: Report a problem in Zathura
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: textarea
+    attributes:
+      label: "Problem"
+      description: "Describe the current behavior. May include logs, images, or videos."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Steps to reproduce"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Expected behavior"
+      description: "Describe the behavior you expect."
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: "Zathura version (zathura --version)"
+      placeholder: "0.5.6 commit ffe311d"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: "Zathura backend"
+      placeholder: "mupdf"
+    validations:
+      required: true

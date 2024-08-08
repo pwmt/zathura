@@ -1,0 +1,24 @@
+name: Feature request
+description: Request an enhancement for Zathura
+labels: [enhancement]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting: search [existing feature requests](https://github.com/pwmt/zathura/labels/enhancement)
+
+  - type: textarea
+    attributes:
+      label: "Problem"
+      description: "Describe the problem to be solved. Include references to other projects if relevant."
+      placeholder: "Option is not implemented. Option is useful because ..."
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: "Expected behavior"
+      description: "Describe what the new feature or behavior would look like. How does it solve the problem? Is it worth the cost?"
+    validations:
+      required: true
