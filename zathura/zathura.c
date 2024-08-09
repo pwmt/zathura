@@ -1513,6 +1513,9 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     zathura->ui.index = NULL;
   }
 
+  /* free current index path */
+  g_free(zathura->global.current_index_path);
+
   gtk_widget_hide(zathura->ui.page_widget);
 
   statusbar_page_number_update(zathura);
