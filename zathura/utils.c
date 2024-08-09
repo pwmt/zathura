@@ -141,6 +141,7 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   gtk_tree_model_foreach(model, search_current_index, &search_data);
 
   GtkTreePath* current_path = gtk_tree_model_get_path(model, &search_data.current_iter);
+  g_free(zathura->global.current_index_path);
   zathura->global.current_index_path = gtk_tree_path_to_string(current_path);
   gtk_tree_view_expand_to_path(tree_view, current_path);
 
