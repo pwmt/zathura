@@ -289,7 +289,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   {
     const gchar* id = gtkosx_application_get_bundle_id();
     if (id != NULL) {
-      girara_warn("TestIntegration Error! Bundle has ID %s", id);
+      girara_warning("TestIntegration Error! Bundle has ID %s", id);
     }
   }
 #endif // GTKOSXAPPLICATION
