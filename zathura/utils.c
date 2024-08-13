@@ -151,7 +151,8 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   gtk_tree_path_free(current_path);
 }
 
-zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width) {
+static zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height,
+                                            double width) {
   zathura_rectangle_t tmp;
   switch (degree) {
   case 90:
