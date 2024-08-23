@@ -229,6 +229,14 @@ ZATHURA_PLUGIN_API zathura_error_t zathura_page_render(zathura_page_t* page, cai
 ZATHURA_PLUGIN_API const char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error);
 
 /**
+ * Get whether the page label equals the page number
+ *
+ * @param page Page
+ * @return Boolean indicating whether the page label equals the page number
+ */
+ZATHURA_PLUGIN_API bool zathura_page_label_is_number(zathura_page_t* page);
+
+/**
  * Get signatures of a page
  *
  * @param page Page
