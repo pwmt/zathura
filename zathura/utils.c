@@ -71,8 +71,8 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
   for (size_t idx = 0; idx != girara_list_size(list); ++idx) {
     girara_tree_node_t* node               = girara_list_nth(list, idx);
     zathura_index_element_t* index_element = girara_node_get_data(node);
-    zathura_link_type_t type               = zathura_link_get_type(index_element->link);
-    zathura_link_target_t target           = zathura_link_get_target(index_element->link);
+    const zathura_link_type_t type         = zathura_link_get_type(index_element->link);
+    const zathura_link_target_t target     = zathura_link_get_target(index_element->link);
 
     gchar* description  = NULL;
     gchar* description2 = NULL;
@@ -98,8 +98,8 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
     gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, description2, 3, index_element,
                        -1);
     g_free(markup);
-    g_free(description);
     g_free(description2);
+    g_free(description);
     g_object_weak_ref(G_OBJECT(model), index_element_free, index_element);
 
     if (girara_node_get_num_children(node) > 0) {
@@ -125,9 +125,8 @@ static gboolean search_current_index(GtkTreeModel* model, GtkTreePath* UNUSED(pa
   return FALSE;
 }
 
-static void tree_view_scroll_to_cell(zathura_t* zathura)
-{
-  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+static void tree_view_scroll_to_cell(zathura_t* zathura) {
+  GtkTreeView* tree_view    = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
   GtkTreePath* current_path = gtk_tree_path_new_from_string(zathura->global.current_index_path);
   gtk_tree_view_scroll_to_cell(tree_view, current_path, NULL, TRUE, 0.5, 0.0);
 }
