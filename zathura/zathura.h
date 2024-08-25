@@ -209,6 +209,8 @@ struct zathura_s {
       int pages;
       char* first_page_column_list;
       double zoom;
+      bool is_status_bar_visible;
+      bool is_input_bar_visible;
     } toggle_presentation_mode;
   } shortcut;
 

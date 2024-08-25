@@ -1327,8 +1327,11 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
                          zathura->shortcut.toggle_presentation_mode.first_page_column_list);
     }
 
-    /* show status bar */
-    gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
+    if (zathura->shortcut.toggle_presentation_mode.is_status_bar_visible)
+      gtk_widget_show(GTK_WIDGET(session->gtk.statusbar));
+
+    if (zathura->shortcut.toggle_presentation_mode.is_input_bar_visible)
+      gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
 
     /* set full screen */
     gtk_window_unfullscreen(GTK_WINDOW(session->gtk.window));
@@ -1361,6 +1364,9 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
     /* adjust window */
     girara_argument_t argument = {.n = ZATHURA_ADJUST_BESTFIT, .data = NULL};
     sc_adjust_window(session, &argument, NULL, 0);
+
+    zathura->shortcut.toggle_presentation_mode.is_status_bar_visible = gtk_widget_get_visible(GTK_WIDGET(session->gtk.statusbar));
+    zathura->shortcut.toggle_presentation_mode.is_input_bar_visible = gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar));
 
     /* hide status and inputbar */
     gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
