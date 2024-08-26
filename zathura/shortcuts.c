@@ -6,6 +6,7 @@
 #include <girara/datastructures.h>
 #include <girara/shortcuts.h>
 #include <girara/utils.h>
+#include <girara/statusbar.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
@@ -101,6 +102,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
         g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
       }
     }
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, _(""));
   }
 
   /* Setting the mode back here has not worked for ages. We need another way to
@@ -973,10 +975,18 @@ bool sc_search(girara_session_t* session, girara_argument_t* argument, girara_ev
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
+    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+    zathura_set_current_search_result_previous_pages(zathura, current_page_number);
+    zathura_modify_current_search_result(zathura, target_idx + 1);
+    char* tmp =
+        g_strdup_printf("  Search: [%d/%d]", zathura->global.current_search_result, zathura->global.total_search_results);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
+    g_free(tmp);
   } else if (argument->data != NULL) {
     const char* input  = argument->data;
     char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, _(""));
     g_free(escaped_text);
   }
 
