@@ -856,11 +856,72 @@ static gboolean document_open_password_dialog(gpointer data) {
   return FALSE;
 }
 
+#if 0
 typedef struct {
   double h;
   double w;
   int freq;
 } sample_t;
+
+static int document_page_size_comp(const void* a, const void* b) {
+  const sample_t* lhs = a;
+  const sample_t* rhs = b;
+  return rhs->freq - lhs->freq;
+}
+
+static void document_open_page_most_frequent_size(zathura_document_t* document, unsigned int* width,
+                                                  unsigned int* height) {
+  girara_list_t* samples             = girara_list_new2(g_free);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    const double w       = zathura_page_get_width(page);
+    const double h       = zathura_page_get_height(page);
+
+    bool found = false;
+    for (size_t idx = 0; idx != girara_list_size(samples) && !found; ++idx) {
+      sample_t* sample = girara_list_nth(samples, idx);
+      if (fabs(sample->h - h) <= DBL_EPSILON && fabs(sample->w - w) <= DBL_EPSILON) {
+        sample->freq++;
+      }
+    }
+
+    if (found == false) {
+      sample_t* sample = g_try_malloc0(sizeof(sample_t));
+      sample->w        = w;
+      sample->h        = h;
+      sample->freq     = 1;
+      girara_list_append(samples, sample);
+    }
+  }
+
+  girara_list_sort(samples, document_page_size_comp);
+
+  sample_t* max_sample = girara_list_nth(samples, 0);
+  *width               = max_sample->w;
+  *height              = max_sample->h;
+
+  girara_list_free(samples);
+}
+#endif
+
+static void document_open_page_max_size(zathura_document_t* document, unsigned int* width, unsigned int* height) {
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+
+  *width  = 0;
+  *height = 0;
+
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    const double w       = zathura_page_get_width(page);
+    const double h       = zathura_page_get_height(page);
+
+    *width  = MAX(*width, w);
+    *height = MAX(*height, h);
+  }
+}
+
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info_p) {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {
@@ -1058,6 +1119,10 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (zathura->pages == NULL) {
     goto error_free;
   }
+
+  unsigned int max_width, max_height;
+  document_open_page_max_size(document, &max_width, &max_height);
+  zathura_document_set_cell_size(document, max_height, max_width);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
