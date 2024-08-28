@@ -39,9 +39,10 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
     goto error_ret;
   }
 
-  page->index    = index;
-  page->visible  = false;
-  page->document = document;
+  page->index           = index;
+  page->visible         = false;
+  page->document        = document;
+  page->label_is_number = false;
 
   /* init plugin */
   const zathura_plugin_t* plugin              = zathura_document_get_plugin(document);
@@ -65,13 +66,10 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
       goto error_free;
     }
 
-    char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
-    g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, index + 1);
     if (page->label != NULL) {
+      char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
+      g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, index + 1);
       page->label_is_number = strcmp(page->label, page_number_string) == 0;
-    }
-    else {
-      page->label_is_number = false;
     }
   }
 
