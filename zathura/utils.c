@@ -126,9 +126,8 @@ static gboolean search_current_index(GtkTreeModel* model, GtkTreePath* UNUSED(pa
 }
 
 static void tree_view_scroll_to_cell(zathura_t* zathura) {
-  GtkTreeView* tree_view    = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-  GtkTreePath* current_path = gtk_tree_path_new_from_string(zathura->global.current_index_path);
-  gtk_tree_view_scroll_to_cell(tree_view, current_path, NULL, TRUE, 0.5, 0.0);
+  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  gtk_tree_view_scroll_to_cell(tree_view, zathura->global.current_index_path, NULL, TRUE, 0.5, 0.0);
 }
 
 void index_scroll_to_current_page(zathura_t* zathura) {
@@ -141,8 +140,10 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   gtk_tree_model_foreach(model, search_current_index, &search_data);
 
   GtkTreePath* current_path = gtk_tree_model_get_path(model, &search_data.current_iter);
-  g_free(zathura->global.current_index_path);
-  zathura->global.current_index_path = gtk_tree_path_to_string(current_path);
+  if (zathura->global.current_index_path != NULL) {
+    gtk_tree_path_free(zathura->global.current_index_path);
+  }
+  zathura->global.current_index_path = gtk_tree_path_copy(current_path);
   gtk_tree_view_expand_to_path(tree_view, current_path);
 
   g_idle_add(G_SOURCE_FUNC(tree_view_scroll_to_cell), zathura);

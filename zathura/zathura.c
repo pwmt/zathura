@@ -1519,7 +1519,10 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   }
 
   /* free current index path */
-  g_free(zathura->global.current_index_path);
+  if (zathura->global.current_index_path != NULL) {
+    gtk_tree_path_free(zathura->global.current_index_path);
+    zathura->global.current_index_path = NULL;
+  }
 
   gtk_widget_hide(zathura->ui.page_widget);
 
