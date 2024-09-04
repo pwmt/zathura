@@ -139,7 +139,7 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
-    gchar *current_index_path;
+    GtkTreePath* current_index_path;      /**< Current index path */
   } global;
 
   struct {
