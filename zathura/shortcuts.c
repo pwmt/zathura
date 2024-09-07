@@ -1203,6 +1203,8 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
     g_object_set(G_OBJECT(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)), "expand", TRUE, NULL);
     gtk_tree_view_column_set_alignment(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 1), 1.0f);
+    gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), search_equal_func_index, treeview, NULL);
+    gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
     g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), zathura);
 
     gtk_container_add(GTK_CONTAINER(zathura->ui.index), treeview);
@@ -1227,6 +1229,8 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     }
 
     girara_set_view(session, zathura->ui.index);
+    GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+    gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     index_scroll_to_current_page(zathura);
     girara_mode_set(zathura->ui.session, zathura->modes.index);
   }
