@@ -39,6 +39,18 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
                           girara_tree_node_t* tree);
 
 /**
+ * A custom search equal function for the index tree view, so that
+ * when interactively searching, the string will be recursively compared
+ * to all the children of visible entries
+ *
+ * @param model The tree model
+ * @param column The column of the entry
+ * @param key The keyword to be compared
+ * @param iter The tree iterator
+ * @param search_data User data pointer
+ */
+gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter, gpointer search_data);
+/**
  * Scrolls the document index to the current page
  *
  * @param zathura The zathura instance

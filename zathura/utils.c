@@ -11,6 +11,9 @@
 #include <girara/settings.h>
 #include <girara/utils.h>
 
+#include "glib-object.h"
+#include "glib.h"
+#include "glibconfig.h"
 #include "links.h"
 #include "utils.h"
 #include "zathura.h"
@@ -123,6 +126,82 @@ static gboolean search_current_index(GtkTreeModel* model, GtkTreePath* UNUSED(pa
   }
   search_data->current_iter = *iter;
   return FALSE;
+}
+
+static bool find_substring(const char* source_str, const char* search_str) {
+  gchar *normalized_source_str, *normalized_search_str;
+  gchar *case_normalized_source_str = NULL;
+  gchar *case_normalized_search_str = NULL;
+
+  normalized_source_str = g_utf8_normalize(source_str, -1, G_NORMALIZE_ALL);
+  normalized_search_str = g_utf8_normalize(search_str, -1, G_NORMALIZE_ALL);
+
+  if (normalized_search_str && normalized_source_str) {
+    case_normalized_source_str = g_utf8_casefold(normalized_source_str, -1);
+    case_normalized_search_str = g_utf8_casefold(normalized_search_str, -1);
+    return (strstr(case_normalized_source_str, case_normalized_search_str) != NULL);
+  }
+  return false;
+}
+
+static gboolean search_equal_iter(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter) {
+
+  const gchar *source_string;
+  GValue value = G_VALUE_INIT;
+  GValue transformed = G_VALUE_INIT;
+
+  gtk_tree_model_get_value(model, iter, column, &value);
+
+  g_value_init(&transformed, G_TYPE_STRING);
+
+  if (!g_value_transform(&value, &transformed)) {
+    g_value_unset(&value);
+    return TRUE;
+  }
+
+  g_value_unset(&value);
+  source_string = g_value_get_string (&transformed);
+  if (!source_string)
+    {
+      g_value_unset (&transformed);
+      return TRUE;
+    }
+  if (find_substring(source_string, key)) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
+gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter, gpointer search_data) {
+
+  GtkTreeView *tree_view = GTK_TREE_VIEW(search_data);
+  GtkTreePath *current_path = gtk_tree_model_get_path(model, iter);
+  if (!(search_equal_iter(model, column, key, iter))) {
+    return FALSE;
+  }
+  if (!(gtk_tree_model_iter_has_child(model, iter)) || gtk_tree_view_row_expanded(tree_view, current_path)) {
+    gtk_tree_path_free(current_path);
+    return TRUE;
+  }
+
+  gtk_tree_view_expand_row(tree_view, current_path, FALSE);
+
+  GtkTreeIter child_iter;
+  gtk_tree_model_iter_children(model, &child_iter, iter);
+
+  do {
+    if (!search_equal_func_index(model, column, key, &child_iter, tree_view)) {
+      GtkTreePath *child_path = gtk_tree_model_get_path(model, &child_iter);
+      gtk_tree_view_scroll_to_cell(tree_view, child_path, NULL, TRUE, 0.5, 0.0);
+      gtk_tree_path_free(current_path);
+      gtk_tree_path_free(child_path);
+      return TRUE;
+    }
+  } while (gtk_tree_model_iter_next(model, &child_iter));
+  gtk_tree_view_collapse_row(tree_view, current_path);
+  gtk_tree_path_free(current_path);
+
+  return TRUE;
 }
 
 static void tree_view_scroll_to_cell(zathura_t* zathura) {
