@@ -130,8 +130,8 @@ static gboolean search_current_index(GtkTreeModel* model, GtkTreePath* UNUSED(pa
 
 static bool find_substring(const char* source_str, const char* search_str) {
   gchar *normalized_source_str, *normalized_search_str;
-  gchar *case_normalized_source_str = NULL;
-  gchar *case_normalized_search_str = NULL;
+  gchar* case_normalized_source_str = NULL;
+  gchar* case_normalized_search_str = NULL;
 
   normalized_source_str = g_utf8_normalize(source_str, -1, G_NORMALIZE_ALL);
   normalized_search_str = g_utf8_normalize(search_str, -1, G_NORMALIZE_ALL);
@@ -146,8 +146,8 @@ static bool find_substring(const char* source_str, const char* search_str) {
 
 static gboolean search_equal_iter(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter) {
 
-  const gchar *source_string;
-  GValue value = G_VALUE_INIT;
+  const gchar* source_string;
+  GValue value       = G_VALUE_INIT;
   GValue transformed = G_VALUE_INIT;
 
   gtk_tree_model_get_value(model, iter, column, &value);
@@ -160,22 +160,22 @@ static gboolean search_equal_iter(GtkTreeModel* model, gint column, const gchar*
   }
 
   g_value_unset(&value);
-  source_string = g_value_get_string (&transformed);
-  if (!source_string)
-    {
-      g_value_unset (&transformed);
-      return TRUE;
-    }
+  source_string = g_value_get_string(&transformed);
+  if (!source_string) {
+    g_value_unset(&transformed);
+    return TRUE;
+  }
   if (find_substring(source_string, key)) {
     return FALSE;
   }
   return TRUE;
 }
 
-gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter, gpointer search_data) {
+gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,
+                                 gpointer search_data) {
 
-  GtkTreeView *tree_view = GTK_TREE_VIEW(search_data);
-  GtkTreePath *current_path = gtk_tree_model_get_path(model, iter);
+  GtkTreeView* tree_view    = GTK_TREE_VIEW(search_data);
+  GtkTreePath* current_path = gtk_tree_model_get_path(model, iter);
   if (!(search_equal_iter(model, column, key, iter))) {
     return FALSE;
   }
@@ -191,7 +191,7 @@ gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* 
 
   do {
     if (!search_equal_func_index(model, column, key, &child_iter, tree_view)) {
-      GtkTreePath *child_path = gtk_tree_model_get_path(model, &child_iter);
+      GtkTreePath* child_path = gtk_tree_model_get_path(model, &child_iter);
       gtk_tree_view_scroll_to_cell(tree_view, child_path, NULL, TRUE, 0.5, 0.0);
       gtk_tree_path_free(current_path);
       gtk_tree_path_free(child_path);
