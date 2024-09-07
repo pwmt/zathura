@@ -49,7 +49,8 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
  * @param iter The tree iterator
  * @param search_data User data pointer
  */
-gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter, gpointer search_data);
+gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,
+                                 gpointer search_data);
 /**
  * Scrolls the document index to the current page
  *
