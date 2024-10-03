@@ -282,6 +282,11 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   unsigned int cell_width  = 0;
   zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
 
+  /* Checks if the cell of text is vertical. If so, adjust the height to remove the extra character at the top.*/
+  if(cell_height > cell_width){
+      cell_height = cell_height - 1;
+  }
+  
   unsigned int doc_height = 0;
   unsigned int doc_width  = 0;
   zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);

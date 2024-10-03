@@ -313,6 +313,11 @@ static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDB
       return;
     }
 
+    /* Adjust the boundaries of temp_rect, shifting the horizontal to the left by 0.2 and removing 1 character off the y.*/
+    temp_rect.x1 = temp_rect.x1 + 0.2;
+    temp_rect.x2 = temp_rect.x2 - 0.2;
+    temp_rect.y1 = temp_rect.y1 - 1;
+
     *rect = temp_rect;
     girara_list_append(rectangles[page], rect);
   }

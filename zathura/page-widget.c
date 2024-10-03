@@ -719,7 +719,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
       const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
       cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
       zathura_rectangle_t rectangle = recalc_rectangle(priv->page, priv->highlighter.bounds);
-      cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
+      cairo_rectangle(cairo, rectangle.x1 + 0.2, rectangle.y1 - 1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1); /*Adjusted bounds*/
       cairo_fill(cairo);
     }
   } else {
