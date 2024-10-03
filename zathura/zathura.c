@@ -1767,10 +1767,12 @@ bool adjust_view(zathura_t* zathura) {
   } else {
     /* otherwise set the old zoom and leave */
     zathura_document_set_zoom(zathura->document, zoom);
+    render_all(zathura);
+    refresh_view(zathura);
   }
 
-error_ret:
-  return false;
+  error_ret:
+    return false;
 }
 
 #ifdef G_OS_UNIX
