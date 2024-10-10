@@ -5,6 +5,7 @@
 #include <girara/settings.h>
 
 #ifdef WITH_SYNCTEX
+#include <sys/stat.h>
 #include <synctex/synctex_parser.h>
 #endif
 
@@ -16,22 +17,74 @@
 #include "adjustment.h"
 
 #ifdef WITH_SYNCTEX
+synctex_scanner_p scanner = NULL; // the last scanner object
+time_t last_modification_time = 0; // the last modification time of the synctex file
+char* last_pdf_file_name = NULL; // the last output file name
+
+// Get the modification time of the synctex file of the current scanner.
+time_t get_synctex_file_modification_time() {
+  struct stat attr;
+  if (stat(synctex_scanner_get_synctex(scanner), &attr) < 0) {
+    return 0;
+  }
+  return attr.st_mtime;
+}
+
+bool synctex_need_new_scanner(const char* filename) {
+  if (scanner == NULL || last_pdf_file_name == NULL) {
+    return true;
+  }
+
+  if (g_strcmp0(last_pdf_file_name, filename) != 0) {
+    return true;
+  }
+
+  if (get_synctex_file_modification_time() != last_modification_time) {
+    return true;
+  }
+
+  return false;
+}
+
+// Create scanner global variable from given PDF file name.
+bool synctex_make_scanner(const char* filename) {
+  if (synctex_need_new_scanner(filename)) {
+    last_modification_time = 0;
+    g_free(last_pdf_file_name);
+    last_pdf_file_name = NULL;
+    if (scanner) {
+      synctex_scanner_free(scanner);
+      scanner = NULL;
+    }
+
+    scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
+    if (scanner == NULL) {
+      girara_debug("Failed to create synctex scanner.");
+      return false;
+    }
+
+    synctex_scanner_p temp = synctex_scanner_parse(scanner);
+    if (temp == NULL) {
+      girara_debug("Failed to parse synctex file.");
+      synctex_scanner_free(scanner);
+      scanner = NULL;
+      return false;
+    }
+
+    last_pdf_file_name = g_strdup(filename);
+    last_modification_time = get_synctex_file_modification_time();
+  }
+
+  return true;
+}
+
 bool synctex_get_input_line_column(const char* filename, unsigned int page, int x, int y, char** input_file,
                                    unsigned int* line, unsigned int* column) {
   if (filename == NULL) {
     return false;
   }
 
-  synctex_scanner_p scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
-  if (scanner == NULL) {
-    girara_debug("Failed to create synctex scanner.");
-    return false;
-  }
-
-  synctex_scanner_p temp = synctex_scanner_parse(scanner);
-  if (temp == NULL) {
-    girara_debug("Failed to parse synctex file.");
-    synctex_scanner_free(scanner);
+  if (!synctex_make_scanner(filename)) {
     return false;
   }
 
@@ -54,8 +107,6 @@ bool synctex_get_input_line_column(const char* filename, unsigned int page, int 
       ret = true;
     }
   }
-
-  synctex_scanner_free(scanner);
 
   return ret;
 }
@@ -134,17 +185,8 @@ girara_list_t* synctex_rectangles_from_position(const char* filename, const char
   ++line;
   ++column;
 
-  synctex_scanner_p scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
-  if (scanner == NULL) {
-    girara_debug("Failed to create synctex scanner.");
-    return NULL;
-  }
-
-  synctex_scanner_p temp = synctex_scanner_parse(scanner);
-  if (temp == NULL) {
-    girara_debug("Failed to parse synctex file.");
-    synctex_scanner_free(scanner);
-    return NULL;
+  if (!synctex_make_scanner(filename)) {
+    return false;
   }
 
   girara_list_t* hitlist     = girara_list_new2(g_free);
@@ -188,8 +230,6 @@ girara_list_t* synctex_rectangles_from_position(const char* filename, const char
       }
     }
   }
-
-  synctex_scanner_free(scanner);
 
   if (secondary_rects != NULL) {
     *secondary_rects = other_rects;
