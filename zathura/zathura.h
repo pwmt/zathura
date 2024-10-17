@@ -7,6 +7,10 @@
 #include <girara/types.h>
 #include <girara/session.h>
 #include <gtk/gtk.h>
+#ifdef WITH_SYNCTEX
+#include <sys/stat.h>
+#include <synctex/synctex_parser.h>
+#endif
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
 #endif
@@ -223,6 +227,15 @@ struct zathura_s {
    * Context for MIME type detection
    */
   zathura_content_type_context_t* content_type_context;
+
+  /**
+   * SyncTeX context. The scanner object is cached for better performance.
+   */
+  struct {
+    synctex_scanner_p scanner;
+    time_t last_modification_time; // the last modification time of the synctex file
+    char* last_pdf_file_name; // the last output file name
+  } synctex;
 };
 
 /**
