@@ -228,6 +228,7 @@ struct zathura_s {
    */
   zathura_content_type_context_t* content_type_context;
 
+#ifdef WITH_SYNCTEX
   /**
    * SyncTeX context. The scanner object is cached for better performance.
    */
@@ -236,6 +237,7 @@ struct zathura_s {
     time_t last_modification_time; // the last modification time of the synctex file
     char* last_pdf_file_name; // the last output file name
   } synctex;
+#endif
 };
 
 /**

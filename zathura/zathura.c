@@ -531,6 +531,16 @@ void zathura_free(zathura_t* zathura) {
     girara_list_free(zathura->jumplist.list);
   }
 
+#ifdef WITH_SYNCTEX
+  /* synctex cached scanner */
+  if (zathura->synctex.scanner != NULL) {
+    synctex_scanner_free(zathura->synctex.scanner);
+  }
+  if (zathura->synctex.last_pdf_file_name != NULL) {
+    g_free(zathura->synctex.last_pdf_file_name);
+  }
+#endif
+
   g_free(zathura);
 }
 
