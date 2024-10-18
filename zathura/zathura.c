@@ -536,9 +536,7 @@ void zathura_free(zathura_t* zathura) {
   if (zathura->synctex.scanner != NULL) {
     synctex_scanner_free(zathura->synctex.scanner);
   }
-  if (zathura->synctex.last_pdf_filename != NULL) {
-    g_free(zathura->synctex.last_pdf_filename);
-  }
+  g_free(zathura->synctex.last_pdf_filename);
 #endif
 
   g_free(zathura);
