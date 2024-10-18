@@ -28,11 +28,11 @@ time_t get_synctex_file_modification_time(zathura_t *zathura) {
 }
 
 bool synctex_need_new_scanner(zathura_t *zathura, const char* pdf_filename) {
-  if (zathura->synctex.scanner == NULL || zathura->synctex.last_pdf_file_name == NULL) {
+  if (zathura->synctex.scanner == NULL || zathura->synctex.last_pdf_filename == NULL) {
     return true;
   }
 
-  if (g_strcmp0(zathura->synctex.last_pdf_file_name, pdf_filename) != 0) {
+  if (g_strcmp0(zathura->synctex.last_pdf_filename, pdf_filename) != 0) {
     return true;
   }
 
@@ -44,35 +44,37 @@ bool synctex_need_new_scanner(zathura_t *zathura, const char* pdf_filename) {
 }
 
 // Create scanner from given PDF file name.
-bool synctex_make_scanner(zathura_t *zathura, const char* filename) {
-  if (synctex_need_new_scanner(zathura, filename)) {
-    zathura->synctex.last_modification_time = 0;
-    g_free(zathura->synctex.last_pdf_file_name);
-    zathura->synctex.last_pdf_file_name = NULL;
-    if (zathura->synctex.scanner) {
-      synctex_scanner_free(zathura->synctex.scanner);
-      zathura->synctex.scanner = NULL;
-    }
-
-    zathura->synctex.scanner = synctex_scanner_new_with_output_file(filename, NULL, 1);
-    if (zathura->synctex.scanner == NULL) {
-      girara_debug("Failed to create synctex scanner.");
-      return false;
-    }
-
-    synctex_scanner_p temp = synctex_scanner_parse(zathura->synctex.scanner);
-    if (temp == NULL) {
-      girara_debug("Failed to parse synctex file.");
-      synctex_scanner_free(zathura->synctex.scanner);
-      zathura->synctex.scanner = NULL;
-      return false;
-    }
-
-    zathura->synctex.last_pdf_file_name = g_strdup(filename);
-    zathura->synctex.last_modification_time = get_synctex_file_modification_time(zathura);
+// Returns zathura->synctex.scanner. (May be NULL on error.)
+synctex_scanner_p synctex_make_scanner(zathura_t *zathura, const char* pdf_filename) {
+  if (!synctex_need_new_scanner(zathura, pdf_filename)) {
+    return zathura->synctex.scanner;
   }
 
-  return true;
+  zathura->synctex.last_modification_time = 0;
+  g_free(zathura->synctex.last_pdf_filename);
+  zathura->synctex.last_pdf_filename = NULL;
+  if (zathura->synctex.scanner) {
+    synctex_scanner_free(zathura->synctex.scanner);
+    zathura->synctex.scanner = NULL;
+  }
+
+  synctex_scanner_p scanner = synctex_scanner_new_with_output_file(pdf_filename, NULL, 1);
+  if (scanner == NULL) {
+    girara_debug("Failed to create synctex scanner.");
+    return NULL;
+  }
+
+  synctex_scanner_p temp = synctex_scanner_parse(scanner);
+  if (temp == NULL) {
+    girara_debug("Failed to parse synctex file.");
+    synctex_scanner_free(scanner);
+    return NULL;
+  }
+
+  zathura->synctex.scanner = scanner;
+  zathura->synctex.last_pdf_filename = g_strdup(pdf_filename);
+  zathura->synctex.last_modification_time = get_synctex_file_modification_time(zathura);
+  return scanner;
 }
 
 bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, unsigned int page, int x, int y, char** input_file,
@@ -81,18 +83,19 @@ bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, uns
     return false;
   }
 
-  if (!synctex_make_scanner(zathura, filename)) {
+  synctex_scanner_p scanner = synctex_make_scanner(zathura, filename);
+  if (!scanner) {
     return false;
   }
 
   bool ret = false;
 
-  if (synctex_edit_query(zathura->synctex.scanner, page + 1u, x, y) > 0) {
+  if (synctex_edit_query(scanner, page + 1u, x, y) > 0) {
     /* Assume that a backward search returns at most one result. */
-    synctex_node_p node = synctex_scanner_next_result(zathura->synctex.scanner);
+    synctex_node_p node = synctex_scanner_next_result(scanner);
     if (node != NULL) {
       if (input_file != NULL) {
-        *input_file = g_strdup(synctex_scanner_get_name(zathura->synctex.scanner, synctex_node_tag(node)));
+        *input_file = g_strdup(synctex_scanner_get_name(scanner, synctex_node_tag(node)));
       }
       if (line != NULL) {
         *line = synctex_node_line(node);
@@ -182,18 +185,19 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
   ++line;
   ++column;
 
-  if (!synctex_make_scanner(zathura, filename)) {
+  synctex_scanner_p scanner = synctex_make_scanner(zathura, filename);
+  if (!scanner) {
     return false;
   }
 
   girara_list_t* hitlist     = girara_list_new2(g_free);
   girara_list_t* other_rects = girara_list_new2(g_free);
 
-  if (synctex_display_query(zathura->synctex.scanner, input_file, line, column, -1) > 0) {
+  if (synctex_display_query(scanner, input_file, line, column, -1) > 0) {
     synctex_node_p node = NULL;
     bool got_page       = false;
 
-    while ((node = synctex_scanner_next_result(zathura->synctex.scanner)) != NULL) {
+    while ((node = synctex_scanner_next_result(scanner)) != NULL) {
       const unsigned int current_page = synctex_node_page(node) - 1;
       if (got_page == false) {
         got_page = true;

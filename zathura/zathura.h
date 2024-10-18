@@ -234,8 +234,8 @@ struct zathura_s {
    */
   struct {
     synctex_scanner_p scanner;
-    time_t last_modification_time; // the last modification time of the synctex file
-    char* last_pdf_file_name; // the last output file name
+    time_t last_modification_time; // of the synctex file
+    char* last_pdf_filename;
   } synctex;
 #endif
 };
