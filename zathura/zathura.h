@@ -8,7 +8,6 @@
 #include <girara/session.h>
 #include <gtk/gtk.h>
 #ifdef WITH_SYNCTEX
-#include <sys/stat.h>
 #include <synctex/synctex_parser.h>
 #endif
 #ifdef GDK_WINDOWING_X11
