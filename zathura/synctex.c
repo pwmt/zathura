@@ -250,7 +250,7 @@ bool synctex_get_input_line_column(zathura_t* UNUSED(zathura), const char* UNUSE
   return false;
 }
 
-void synctex_edit(const char* UNUSED(editor), zathura_page_t* UNUSED(page), int UNUSED(x), int UNUSED(y)) {}
+void synctex_edit(zathura_t* UNUSED(zathura), const char* UNUSED(editor), zathura_page_t* UNUSED(page), int UNUSED(x), int UNUSED(y)) {}
 
 girara_list_t* synctex_rectangles_from_position(zathura_t* UNUSED(zathura), const char* UNUSED(filename), const char* UNUSED(input_file),
                                                 int UNUSED(line), int UNUSED(column), unsigned int* UNUSED(page),
