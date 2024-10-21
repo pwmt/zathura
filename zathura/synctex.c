@@ -5,7 +5,6 @@
 #include <girara/settings.h>
 
 #ifdef WITH_SYNCTEX
-#include <sys/stat.h>
 #include <synctex/synctex_parser.h>
 #endif
 
@@ -18,44 +17,11 @@
 
 #ifdef WITH_SYNCTEX
 
-// Get the modification time of the synctex file of the current scanner.
-time_t get_synctex_file_modification_time(zathura_t *zathura) {
-  struct stat attr;
-  if (stat(synctex_scanner_get_synctex(zathura->synctex.scanner), &attr) < 0) {
-    return 0;
-  }
-  return attr.st_mtime;
-}
-
-bool synctex_need_new_scanner(zathura_t *zathura, const char* pdf_filename) {
-  if (zathura->synctex.scanner == NULL || zathura->synctex.last_pdf_filename == NULL) {
-    return true;
-  }
-
-  if (g_strcmp0(zathura->synctex.last_pdf_filename, pdf_filename) != 0) {
-    return true;
-  }
-
-  if (get_synctex_file_modification_time(zathura) != zathura->synctex.last_modification_time) {
-    return true;
-  }
-
-  return false;
-}
-
 // Create scanner from given PDF file name.
 // Returns zathura->synctex.scanner. (May be NULL on error.)
 synctex_scanner_p synctex_make_scanner(zathura_t *zathura, const char* pdf_filename) {
-  if (!synctex_need_new_scanner(zathura, pdf_filename)) {
-    return zathura->synctex.scanner;
-  }
-
-  zathura->synctex.last_modification_time = 0;
-  g_free(zathura->synctex.last_pdf_filename);
-  zathura->synctex.last_pdf_filename = NULL;
   if (zathura->synctex.scanner) {
-    synctex_scanner_free(zathura->synctex.scanner);
-    zathura->synctex.scanner = NULL;
+    return zathura->synctex.scanner;
   }
 
   synctex_scanner_p scanner = synctex_scanner_new_with_output_file(pdf_filename, NULL, 1);
@@ -72,8 +38,6 @@ synctex_scanner_p synctex_make_scanner(zathura_t *zathura, const char* pdf_filen
   }
 
   zathura->synctex.scanner = scanner;
-  zathura->synctex.last_pdf_filename = g_strdup(pdf_filename);
-  zathura->synctex.last_modification_time = get_synctex_file_modification_time(zathura);
   return scanner;
 }
 

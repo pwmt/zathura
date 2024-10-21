@@ -531,14 +531,6 @@ void zathura_free(zathura_t* zathura) {
     girara_list_free(zathura->jumplist.list);
   }
 
-#ifdef WITH_SYNCTEX
-  /* synctex cached scanner */
-  if (zathura->synctex.scanner != NULL) {
-    synctex_scanner_free(zathura->synctex.scanner);
-  }
-  g_free(zathura->synctex.last_pdf_filename);
-#endif
-
   g_free(zathura);
 }
 
@@ -1542,6 +1534,14 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   /* update title */
   girara_set_window_title(zathura->ui.session, "zathura");
+
+#ifdef WITH_SYNCTEX
+  /* invalidate synctex scanner */
+  if (zathura->synctex.scanner) {
+    synctex_scanner_free(zathura->synctex.scanner);
+    zathura->synctex.scanner = NULL;
+  }
+#endif
 
   return true;
 }
