@@ -143,34 +143,53 @@ the *zathurarc* file to make those changes permanent:
 
   ::
 
-    Identifier Description
+    Identifier    Description
 
-    BackSpace  Back space
-    CapsLock   Caps lock
-    Esc        Escape
-    Down       Arrow down
-    Up         Arrow up
-    Left       Arrow left
-    Right      Arrow right
-    F1         F1
-    F2         F2
-    F3         F3
-    F4         F4
-    F5         F5
-    F6         F6
-    F7         F7
-    F8         F8
-    F9         F9
-    F10        F10
-    F11        F11
-    F12        F12
-    PageDown   Page Down
-    PageUp     Page Up
-    Return     Return
-    Space      Space
-    Super      Windows key
-    Tab        Tab
-    Print      Print key
+    BackSpace     Back space
+    CapsLock      Caps lock
+    NumLock       Num Lock
+    ScrollLock    Scroll Lock
+    Esc           Escape
+    Down          Arrow down
+    Up            Arrow up
+    Left          Arrow left
+    Right         Arrow right
+    F1            F1
+    F2            F2
+    F3            F3
+    F4            F4
+    F5            F5
+    F6            F6
+    F7            F7
+    F8            F8
+    F9            F9
+    F10           F10
+    F11           F11
+    F12           F12
+    PageDown      Page Down
+    PageUp        Page Up
+    Return        Return
+    Space         Space
+    Super         Windows key
+    Tab           Tab
+    Print         Print key
+    KPUp          Numpad Up (where the number 8 is)
+    KPDown        Numpad Down (where the number 2 is)
+    KPLeft        Numpad Left (where the number 4 is)
+    KPRight       Numpad Right (where the number 6 is)
+    KPBegin       Numpad Center button (where the number 5 is)
+    KPPrior       Numpad PageUp (where the number 9 is)
+    KPPageUp      Numpad PageUp (where the number 9 is)
+    KPNext        Numpad PageDown (where the number 3 is)
+    KPPageDown    Numpad PageDown (where the number 3 is)
+    KPHome        Numpad Home (where the number 7 is)
+    KPEnd         Numpad End (where the number 1 is)
+    KPInsert      Numpad Insert (where the number 0 is)
+    KPDelete      Numpad Delete (where the numpad period is)
+    KPMultiply    Numpad Asterisk
+    KPAdd         Numpad Plus sign
+    KPSubtract    Numpad Minus sign
+    KPDivide      Numpad Slash sign
 
   Of course it is possible to combine those special keys with a modifier. The
   usage of those keys should be explained by the following examples:
