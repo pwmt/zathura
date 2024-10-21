@@ -16,7 +16,6 @@
 #include "adjustment.h"
 
 #ifdef WITH_SYNCTEX
-
 // Create scanner from given PDF file name.
 // Returns zathura->synctex.scanner. (May be NULL on error.)
 synctex_scanner_p synctex_make_scanner(zathura_t *zathura, const char* pdf_filename) {

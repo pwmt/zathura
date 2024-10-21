@@ -233,8 +233,6 @@ struct zathura_s {
    */
   struct {
     synctex_scanner_p scanner;
-    time_t last_modification_time; // of the synctex file
-    char* last_pdf_filename;
   } synctex;
 #endif
 };
