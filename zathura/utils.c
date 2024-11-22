@@ -222,6 +222,9 @@ void document_draw_search_results(zathura_t* zathura, bool value) {
     return;
   }
 
+  /* set state of search results highlight */
+  zathura->global.are_search_results_highlighted = true;
+
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);

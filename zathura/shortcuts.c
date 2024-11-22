@@ -76,6 +76,61 @@ static bool link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate
   return false;
 }
 
+/* Helper function to redo the search and stay in place */
+bool redo_search(zathura_t* zathura){
+    if (zathura->document == NULL || strlen(zathura->global.search_string) == 0) {
+        return false;
+    }
+
+    zathura_error_t error = ZATHURA_ERROR_OK;
+
+    unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
+    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+
+    /* search pages */
+    for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+        unsigned int index   = (page_id + current_page_number) % number_of_pages;
+        zathura_page_t* page = zathura_document_get_page(zathura->document, index);
+        if (page == NULL) {
+          continue;
+        }
+
+        GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
+        GObject* obj_page_widget = G_OBJECT(page_widget);
+        g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
+
+        zathura_renderer_lock(zathura->sync.render_thread);
+        girara_list_t* result = zathura_page_search_text(page, zathura->global.search_string, &error);
+        zathura_renderer_unlock(zathura->sync.render_thread);
+
+        if (result == NULL || girara_list_size(result) == 0) {
+            girara_list_free(result);
+            g_object_set(obj_page_widget, "search-results", NULL, NULL);
+
+            if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
+                break;
+            } else {
+                continue;
+            }
+        }
+
+        g_object_set(obj_page_widget, "search-results", result, NULL);
+
+        if (zathura->global.search_direction == BACKWARD) {
+            /* start at bottom hit in page */
+            g_object_set(obj_page_widget, "search-current", girara_list_size(result) - 1, NULL);
+        } else {
+            g_object_set(obj_page_widget, "search-current", 0, NULL);
+        }
+    }
+    if (zathura->global.are_search_results_highlighted == true) {
+        /* highlight search results */
+        document_draw_search_results(zathura, true);
+    }
+    return true;
+}
+
+
 bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
               unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
@@ -99,6 +154,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
       g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
       if (clear_search == true) {
         g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
+        zathura->global.are_search_results_highlighted = false;
       }
     }
   }
@@ -491,7 +547,12 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
   document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
                 zathura->file_monitor.password, file_info.current_page, &file_info);
 
-  return false;
+  /* redo search to preserve the previous search state */
+  if(zathura->global.search_string != NULL){
+        return redo_search(zathura);
+  }
+
+  return true;
 }
 
 bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int t) {
