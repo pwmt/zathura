@@ -167,7 +167,8 @@ const char* zathura_dbus_get_name(zathura_t* zathura) {
   return priv->bus_name;
 }
 
-void zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, unsigned int y) {
+void zathura_dbus_edit(zathura_t* zathura, unsigned int page, unsigned int x, unsigned int y) {
+  ZathuraDbus* edit = zathura->dbus;
   ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(edit);
 
   const char* filename = zathura_document_get_path(priv->zathura->document);
@@ -176,7 +177,7 @@ void zathura_dbus_edit(ZathuraDbus* edit, unsigned int page, unsigned int x, uns
   unsigned int line   = 0;
   unsigned int column = 0;
 
-  if (synctex_get_input_line_column(filename, page, x, y, &input_file, &line, &column) == false) {
+  if (synctex_get_input_line_column(zathura, filename, page, x, y, &input_file, &line, &column) == false) {
     return;
   }
 

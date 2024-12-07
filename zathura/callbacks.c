@@ -695,7 +695,7 @@ void cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButt
     }
 
     if (zathura->dbus != NULL) {
-      zathura_dbus_edit(zathura->dbus, zathura_page_get_index(page), event->x, event->y);
+      zathura_dbus_edit(zathura, zathura_page_get_index(page), event->x, event->y);
     }
 
     char* editor = NULL;
@@ -706,7 +706,7 @@ void cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButt
       return;
     }
 
-    synctex_edit(editor, page, event->x, event->y);
+    synctex_edit(zathura, editor, page, event->x, event->y);
     g_free(editor);
   }
 }

@@ -34,12 +34,12 @@ const char* zathura_dbus_get_name(zathura_t* zathura);
 /**
  * Emit the 'Edit' signal on the D-Bus connection.
  *
- * @param dbus ZathuraDbus instance
+ * @param zathura Zathura session
  * @param page page
  * @param x x coordinate
  * @param y y coordinate
  */
-void zathura_dbus_edit(ZathuraDbus* dbus, unsigned int page, unsigned int x, unsigned int y);
+void zathura_dbus_edit(zathura_t* zathura, unsigned int page, unsigned int x, unsigned int y);
 
 /**
  * Highlight rectangles in a zathura instance that has filename open.
