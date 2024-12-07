@@ -11,9 +11,6 @@
 #include <girara/settings.h>
 #include <girara/utils.h>
 
-#include "glib-object.h"
-#include "glib.h"
-#include "glibconfig.h"
 #include "links.h"
 #include "utils.h"
 #include "zathura.h"
