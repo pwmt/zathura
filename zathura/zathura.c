@@ -1491,6 +1491,14 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     document_predecessor_free(zathura);
   }
 
+#ifdef WITH_SYNCTEX
+  /* invalidate synctex scanner */
+  if (zathura->synctex.scanner != NULL) {
+    synctex_scanner_free(zathura->synctex.scanner);
+    zathura->synctex.scanner = NULL;
+  }
+#endif
+
   /* remove widgets */
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
 
@@ -1534,14 +1542,6 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   /* update title */
   girara_set_window_title(zathura->ui.session, "zathura");
-
-#ifdef WITH_SYNCTEX
-  /* invalidate synctex scanner */
-  if (zathura->synctex.scanner) {
-    synctex_scanner_free(zathura->synctex.scanner);
-    zathura->synctex.scanner = NULL;
-  }
-#endif
 
   return true;
 }

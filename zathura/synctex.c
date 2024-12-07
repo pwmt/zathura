@@ -18,7 +18,7 @@
 #ifdef WITH_SYNCTEX
 // Create scanner from given PDF file name.
 // Returns zathura->synctex.scanner. (May be NULL on error.)
-synctex_scanner_p synctex_make_scanner(zathura_t *zathura, const char* pdf_filename) {
+synctex_scanner_p synctex_make_scanner(zathura_t* zathura, const char* pdf_filename) {
   if (zathura->synctex.scanner) {
     return zathura->synctex.scanner;
   }
@@ -40,8 +40,8 @@ synctex_scanner_p synctex_make_scanner(zathura_t *zathura, const char* pdf_filen
   return scanner;
 }
 
-bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, unsigned int page, int x, int y, char** input_file,
-                                   unsigned int* line, unsigned int* column) {
+bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, unsigned int page, int x, int y,
+                                   char** input_file, unsigned int* line, unsigned int* column) {
   if (filename == NULL) {
     return false;
   }
@@ -52,7 +52,6 @@ bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, uns
   }
 
   bool ret = false;
-
   if (synctex_edit_query(scanner, page + 1u, x, y) > 0) {
     /* Assume that a backward search returns at most one result. */
     synctex_node_p node = synctex_scanner_next_result(scanner);
@@ -93,8 +92,8 @@ void synctex_edit(zathura_t* zathura, const char* editor, zathura_page_t* page, 
   unsigned int column = 0;
   char* input_file    = NULL;
 
-  if (synctex_get_input_line_column(zathura, filename, zathura_page_get_index(page), x, y, &input_file, &line, &column) ==
-          true &&
+  if (synctex_get_input_line_column(zathura, filename, zathura_page_get_index(page), x, y, &input_file, &line,
+                                    &column) == true &&
       input_file != NULL) {
     char* linestr   = g_strdup_printf("%d", line);
     char* columnstr = g_strdup_printf("%d", column);
@@ -138,8 +137,9 @@ void synctex_edit(zathura_t* zathura, const char* editor, zathura_page_t* page, 
   }
 }
 
-girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* filename, const char* input_file, int line, int column,
-                                                unsigned int* page, girara_list_t** secondary_rects) {
+girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* filename, const char* input_file,
+                                                int line, int column, unsigned int* page,
+                                                girara_list_t** secondary_rects) {
   if (filename == NULL || input_file == NULL || page == NULL) {
     return NULL;
   }
@@ -207,17 +207,18 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
   return hitlist_flat;
 }
 #else
-bool synctex_get_input_line_column(zathura_t* UNUSED(zathura), const char* UNUSED(filename), unsigned int UNUSED(page), int UNUSED(x),
-                                   int UNUSED(y), char** UNUSED(input_file), unsigned int* UNUSED(line),
+bool synctex_get_input_line_column(zathura_t* UNUSED(zathura), const char* UNUSED(filename), unsigned int UNUSED(page),
+                                   int UNUSED(x), int UNUSED(y), char** UNUSED(input_file), unsigned int* UNUSED(line),
                                    unsigned int* UNUSED(column)) {
   return false;
 }
 
-void synctex_edit(zathura_t* UNUSED(zathura), const char* UNUSED(editor), zathura_page_t* UNUSED(page), int UNUSED(x), int UNUSED(y)) {}
+void synctex_edit(zathura_t* UNUSED(zathura), const char* UNUSED(editor), zathura_page_t* UNUSED(page), int UNUSED(x),
+                  int UNUSED(y)) {}
 
-girara_list_t* synctex_rectangles_from_position(zathura_t* UNUSED(zathura), const char* UNUSED(filename), const char* UNUSED(input_file),
-                                                int UNUSED(line), int UNUSED(column), unsigned int* UNUSED(page),
-                                                girara_list_t** UNUSED(secondary_rects)) {
+girara_list_t* synctex_rectangles_from_position(zathura_t* UNUSED(zathura), const char* UNUSED(filename),
+                                                const char* UNUSED(input_file), int UNUSED(line), int UNUSED(column),
+                                                unsigned int* UNUSED(page), girara_list_t** UNUSED(secondary_rects)) {
   return NULL;
 }
 #endif
@@ -338,8 +339,8 @@ bool synctex_view(zathura_t* zathura, const char* input_file, unsigned int line,
 
   unsigned int page              = 0;
   girara_list_t* secondary_rects = NULL;
-  girara_list_t* rectangles = synctex_rectangles_from_position(zathura, zathura_document_get_path(zathura->document), input_file,
-                                                               line, column, &page, &secondary_rects);
+  girara_list_t* rectangles = synctex_rectangles_from_position(zathura, zathura_document_get_path(zathura->document),
+                                                               input_file, line, column, &page, &secondary_rects);
 
   if (rectangles == NULL) {
     return false;
