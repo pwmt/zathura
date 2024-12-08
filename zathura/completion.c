@@ -298,9 +298,10 @@ error_free:
 girara_completion_t* cc_export(girara_session_t* session, const char* input) {
   g_return_val_if_fail(session != NULL, NULL);
   g_return_val_if_fail(session->global.data != NULL, NULL);
-  zathura_t* zathura = session->global.data;
+  zathura_t* zathura           = session->global.data;
+  zathura_document_t* document = zathura_get_document(zathura);
 
-  if (input == NULL || zathura->document == NULL) {
+  if (input == NULL || document == NULL) {
     goto error_ret;
   }
 
@@ -320,7 +321,7 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
 
   /* add attachments */
   const size_t input_length  = strlen(input);
-  girara_list_t* attachments = zathura_document_attachments_get(zathura->document, NULL);
+  girara_list_t* attachments = zathura_document_attachments_get(document, NULL);
   if (attachments != NULL) {
     bool added = false;
 
@@ -352,9 +353,9 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
 
   bool added = false;
 
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       continue;
     }
