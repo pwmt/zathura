@@ -18,12 +18,13 @@ static int bookmark_compare_find(const void* item, const void* data) {
 }
 
 zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, unsigned int page) {
-  g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, NULL);
+  g_return_val_if_fail(zathura_has_document(zathura) == true && zathura->bookmarks.bookmarks, NULL);
   g_return_val_if_fail(id, NULL);
 
-  double position_x       = zathura_document_get_position_x(zathura->document);
-  double position_y       = zathura_document_get_position_y(zathura->document);
-  zathura_bookmark_t* old = zathura_bookmark_get(zathura, id);
+  zathura_document_t* document = zathura_get_document(zathura);
+  double position_x            = zathura_document_get_position_x(document);
+  double position_y            = zathura_document_get_position_y(document);
+  zathura_bookmark_t* old      = zathura_bookmark_get(zathura, id);
 
   if (old != NULL) {
     old->page = page;
@@ -31,7 +32,7 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
     old->y    = position_y;
 
     if (zathura->database != NULL) {
-      const char* path = zathura_document_get_path(zathura->document);
+      const char* path = zathura_document_get_path(document);
       if (zathura_db_remove_bookmark(zathura->database, path, old->id) == false) {
         girara_warning("Failed to remove old bookmark from database.");
       }
@@ -56,7 +57,7 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
   girara_list_append(zathura->bookmarks.bookmarks, bookmark);
 
   if (zathura->database != NULL) {
-    const char* path = zathura_document_get_path(zathura->document);
+    const char* path = zathura_document_get_path(document);
     if (zathura_db_add_bookmark(zathura->database, path, bookmark) == false) {
       girara_warning("Failed to add bookmark to database.");
     }
@@ -66,7 +67,7 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
 }
 
 bool zathura_bookmark_remove(zathura_t* zathura, const gchar* id) {
-  g_return_val_if_fail(zathura && zathura->document && zathura->bookmarks.bookmarks, false);
+  g_return_val_if_fail(zathura_has_document(zathura) == true && zathura->bookmarks.bookmarks, false);
   g_return_val_if_fail(id, false);
 
   zathura_bookmark_t* bookmark = zathura_bookmark_get(zathura, id);
@@ -75,7 +76,7 @@ bool zathura_bookmark_remove(zathura_t* zathura, const gchar* id) {
   }
 
   if (zathura->database != NULL) {
-    const char* path = zathura_document_get_path(zathura->document);
+    const char* path = zathura_document_get_path(zathura_get_document(zathura));
     if (zathura_db_remove_bookmark(zathura->database, path, bookmark->id) == false) {
       girara_warning("Failed to remove bookmark from database.");
     }
