@@ -12,7 +12,7 @@
 
 static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                          zathura_t* zathura) {
-  if (zathura == NULL || zathura->ui.session == NULL || zathura->document == NULL) {
+  if (zathura_has_document(zathura) == false || zathura->ui.session == NULL) {
     return;
   }
 
@@ -85,7 +85,7 @@ static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t*
 
 static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintContext* context, gint page_number,
                                zathura_t* zathura) {
-  if (context == NULL || zathura == NULL || zathura->document == NULL || zathura->ui.session == NULL ||
+  if (context == NULL || zathura_has_document(zathura) == false || zathura->ui.session == NULL ||
       zathura->ui.statusbar.file == NULL) {
     gtk_print_operation_cancel(print_operation);
     return;
@@ -97,7 +97,7 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
   g_free(tmp);
 
   /* Get the page and cairo handle.  */
-  zathura_page_t* page = zathura_document_get_page(zathura->document, page_number);
+  zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
   cairo_t* cairo       = gtk_print_context_get_cairo_context(context);
   if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS || page == NULL) {
     gtk_print_operation_cancel(print_operation);
@@ -117,11 +117,11 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
 
 static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                                         gint page_number, GtkPageSetup* setup, zathura_t* zathura) {
-  if (zathura == NULL || zathura->document == NULL) {
+  if (zathura_has_document(zathura) == false) {
     return;
   }
 
-  zathura_page_t* page = zathura_document_get_page(zathura->document, page_number);
+  zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
   double width         = zathura_page_get_width(page);
   double height        = zathura_page_get_height(page);
 
@@ -133,16 +133,16 @@ static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operatio
 }
 
 void print(zathura_t* zathura) {
-  g_return_if_fail(zathura != NULL);
-  g_return_if_fail(zathura->document != NULL);
+  g_return_if_fail(zathura_has_document(zathura) == true);
 
+  zathura_document_t* document       = zathura_get_document(zathura);
   GtkPrintOperation* print_operation = gtk_print_operation_new();
 
   /* print operation settings */
-  gtk_print_operation_set_job_name(print_operation, zathura_document_get_path(zathura->document));
+  gtk_print_operation_set_job_name(print_operation, zathura_document_get_path(document));
   gtk_print_operation_set_allow_async(print_operation, TRUE);
-  gtk_print_operation_set_n_pages(print_operation, zathura_document_get_number_of_pages(zathura->document));
-  gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(zathura->document));
+  gtk_print_operation_set_n_pages(print_operation, zathura_document_get_number_of_pages(document));
+  gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(document));
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
 
   if (zathura->print.settings != NULL) {
