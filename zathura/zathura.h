@@ -487,4 +487,20 @@ char* get_formatted_filename(zathura_t* zathura, bool statusbar);
  */
 void zathura_show_signature_information(zathura_t* zathura, bool show);
 
+/**
+ * Check wether a document is opened
+ *
+ * @param zathura The zathura session
+ * @return bool indicating whether a document is open
+ */
+bool zathura_has_document(zathura_t* zathura);
+
+/**
+ * Obtain the currently opened document
+ *
+ * @param zathura The zathura session
+ * @return the currently opened document
+ */
+zathura_document_t* zathura_get_document(zathura_t* zathura);
+
 #endif // ZATHURA_H

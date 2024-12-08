@@ -1828,3 +1828,13 @@ void zathura_set_log_level(const char* loglevel) {
     girara_set_log_level(GIRARA_DEBUG);
   }
 }
+
+bool zathura_has_document(zathura_t* zathura) {
+  return zathura != NULL && zathura->document != NULL;
+}
+
+zathura_document_t* zathura_get_document(zathura_t* zathura) {
+  g_return_val_if_fail(zathura != NULL, NULL);
+
+  return zathura->document;
+}
