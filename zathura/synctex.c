@@ -253,7 +253,8 @@ bool synctex_parse_input(const char* synctex, char** input_file, int* line, int*
 }
 
 void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_t** rectangles) {
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  zathura_document_t* document       = zathura_get_document(zathura);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   for (unsigned int p = 0; p != number_of_pages; ++p) {
     GObject* widget = G_OBJECT(zathura->pages[p]);
@@ -279,20 +280,20 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   /* compute the position of the center of the page */
   double pos_x = 0;
   double pos_y = 0;
-  page_number_to_position(zathura->document, page, 0.5, 0.5, &pos_x, &pos_y);
+  page_number_to_position(document, page, 0.5, 0.5, &pos_x, &pos_y);
 
   /* correction to center the current result                          */
   /* NOTE: rectangle is in viewport units, already scaled and rotated */
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
-  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+  zathura_document_get_cell_size(document, &cell_height, &cell_width);
 
   unsigned int doc_height = 0;
   unsigned int doc_width  = 0;
-  zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+  zathura_document_get_document_size(document, &doc_height, &doc_width);
 
   /* Need to adjust rectangle to page scale and orientation */
-  zathura_page_t* doc_page  = zathura_document_get_page(zathura->document, page);
+  zathura_page_t* doc_page  = zathura_document_get_page(document, page);
   zathura_rectangle_t* rect = girara_list_nth(rect_list, 0);
   if (rect == NULL) {
     girara_debug("List of rectangles is broken. Jumping to page %u.", page);
@@ -335,12 +336,13 @@ bool synctex_view(zathura_t* zathura, const char* input_file, unsigned int line,
     return false;
   }
 
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  zathura_document_t* document       = zathura_get_document(zathura);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   unsigned int page              = 0;
   girara_list_t* secondary_rects = NULL;
-  girara_list_t* rectangles = synctex_rectangles_from_position(zathura, zathura_document_get_path(zathura->document),
-                                                               input_file, line, column, &page, &secondary_rects);
+  girara_list_t* rectangles = synctex_rectangles_from_position(zathura, zathura_document_get_path(document), input_file,
+                                                               line, column, &page, &secondary_rects);
 
   if (rectangles == NULL) {
     return false;
