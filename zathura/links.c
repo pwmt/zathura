@@ -116,14 +116,15 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   bool link_zoom = true;
   girara_setting_get(zathura->ui.session, "link-zoom", &link_zoom);
 
+  zathura_document_t* document = zathura_get_document(zathura);
   if (link->target.zoom >= DBL_EPSILON && link_zoom == true) {
-    zathura_document_set_zoom(zathura->document, zathura_correct_zoom_value(zathura->ui.session, link->target.zoom));
+    zathura_document_set_zoom(document, zathura_correct_zoom_value(zathura->ui.session, link->target.zoom));
     adjust_view(zathura);
     render_all(zathura);
   }
 
   /* get page */
-  zathura_page_t* page = zathura_document_get_page(zathura->document, link->target.page_number);
+  zathura_page_t* page = zathura_document_get_page(document, link->target.page_number);
   if (page == NULL) {
     girara_warning("link to non-existing page %u", link->target.page_number);
     return;
@@ -133,26 +134,26 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
      of the viewport */
   double pos_x = 0;
   double pos_y = 0;
-  page_number_to_position(zathura->document, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
+  page_number_to_position(document, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
 
   /* correct to place the target position at the top of the viewport     */
   /* NOTE: link->target is in page units, needs to be scaled and rotated */
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
-  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+  zathura_document_get_cell_size(document, &cell_height, &cell_width);
 
   unsigned int doc_height = 0;
   unsigned int doc_width  = 0;
-  zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+  zathura_document_get_document_size(document, &doc_height, &doc_width);
 
   bool link_hadjust = true;
   girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
   /* scale and rotate */
-  const double scale = zathura_document_get_scale(zathura->document);
+  const double scale = zathura_document_get_scale(document);
   double shiftx      = link->target.left * scale / cell_width;
   double shifty      = link->target.top * scale / cell_height;
-  page_calc_position(zathura->document, shiftx, shifty, &shiftx, &shifty);
+  page_calc_position(document, shiftx, shifty, &shiftx, &shifty);
 
   /* shift the position or set to auto */
   if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && link->target.left != -1 &&
@@ -170,18 +171,18 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
 
   /* move to position */
   zathura_jumplist_add(zathura);
-  zathura_document_set_current_page_number(zathura->document, link->target.page_number);
+  zathura_document_set_current_page_number(document, link->target.page_number);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);
 }
 
 #ifndef WITH_SANDBOX
 static void link_remote(zathura_t* zathura, const char* file) {
-  if (zathura == NULL || file == NULL || zathura->document == NULL) {
+  if (zathura_has_document(zathura) == false || file == NULL) {
     return;
   }
 
-  const char* path = zathura_document_get_path(zathura->document);
+  const char* path = zathura_document_get_path(zathura_get_document(zathura));
   char* dir        = g_path_get_dirname(path);
   char* uri        = g_build_filename(file, NULL);
 
@@ -203,7 +204,7 @@ static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
     return;
   }
 
-  const char* document = zathura_document_get_path(zathura->document);
+  const char* document = zathura_document_get_path(zathura_get_document(zathura));
   char* dir            = g_path_get_dirname(document);
 
   if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
@@ -215,7 +216,7 @@ static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
 #endif
 
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
-  if (zathura == NULL || zathura->document == NULL || link == NULL) {
+  if (zathura_has_document(zathura) == false || link == NULL) {
     return;
   }
 
