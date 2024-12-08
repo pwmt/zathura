@@ -160,7 +160,7 @@ static void cb_show_signature_info(girara_session_t* session, const char* UNUSED
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  if (zathura->document == NULL) {
+  if (zathura_has_document(zathura) == false) {
     return;
   }
 
