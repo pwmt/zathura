@@ -197,10 +197,11 @@ void zathura_update_view_ppi(zathura_t* zathura) {
   }
 #endif
 
-  const double current_ppi = zathura_document_get_viewport_ppi(zathura->document);
+  zathura_document_t* document = zathura_get_document(zathura);
+  const double current_ppi     = zathura_document_get_viewport_ppi(document);
   if (fabs(ppi - current_ppi) > DBL_EPSILON) {
     girara_debug("monitor width: %d mm, pixels: %d, ppi: %0.2f", width_mm, monitor_geom.width, ppi);
-    zathura_document_set_viewport_ppi(zathura->document, ppi);
+    zathura_document_set_viewport_ppi(document, ppi);
     adjust_view(zathura);
     render_all(zathura);
     refresh_view(zathura);
@@ -803,12 +804,13 @@ static gboolean document_info_open(gpointer data) {
 }
 
 char* get_formatted_filename(zathura_t* zathura, bool statusbar) {
-  bool basename_only    = false;
-  const char* file_path = NULL;
-  if (zathura->document != NULL) {
-    file_path = zathura_document_get_uri(zathura->document);
+  bool basename_only           = false;
+  const char* file_path        = NULL;
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document != NULL) {
+    file_path = zathura_document_get_uri(document);
     if (file_path == NULL) {
-      file_path = zathura_document_get_path(zathura->document);
+      file_path = zathura_document_get_path(document);
     }
   }
   if (statusbar == true) {
@@ -843,7 +845,7 @@ char* get_formatted_filename(zathura_t* zathura, bool statusbar) {
       return g_strdup(file_path);
     }
   } else {
-    const char* basename = zathura_document_get_basename(zathura->document);
+    const char* basename = zathura_document_get_basename(document);
     return g_strdup(basename);
   }
 }
@@ -1101,9 +1103,9 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
   const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
-  zathura_document_set_viewport_width(zathura->document, view_width);
+  zathura_document_set_viewport_width(document, view_width);
   const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
-  zathura_document_set_viewport_height(zathura->document, view_height);
+  zathura_document_set_viewport_height(document, view_height);
 
   zathura_update_view_ppi(zathura);
 
@@ -1112,7 +1114,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   /* get initial device scale */
   const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
-  zathura_document_set_device_factors(zathura->document, device_factor, device_factor);
+  zathura_document_set_device_factors(document, device_factor, device_factor);
 
   /* create blank pages */
   zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
@@ -1182,7 +1184,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   page_right_to_left = file_info.page_right_to_left;
 
   page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
-  zathura_document_set_page_layout(zathura->document, page_padding, pages_per_row, first_page_column);
+  zathura_document_set_page_layout(document, page_padding, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.page_widget);
 
@@ -1320,14 +1322,14 @@ void document_open_idle(zathura_t* zathura, const char* path, const char* passwo
 }
 
 bool document_save(zathura_t* zathura, const char* path, bool overwrite) {
-  g_return_val_if_fail(zathura, false);
-  g_return_val_if_fail(zathura->document, false);
+  zathura_document_t* document = zathura_get_document(zathura);
+  g_return_val_if_fail(document, false);
   g_return_val_if_fail(path, false);
 
   gchar* file_path = girara_fix_path(path);
   /* use current basename if path points to a directory  */
   if (g_file_test(file_path, G_FILE_TEST_IS_DIR) == TRUE) {
-    char* basename = g_path_get_basename(zathura_document_get_path(zathura->document));
+    char* basename = g_path_get_basename(zathura_document_get_path(document));
     char* tmp      = file_path;
     file_path      = g_build_filename(file_path, basename, NULL);
     g_free(tmp);
@@ -1341,7 +1343,7 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite) {
     return false;
   }
 
-  const zathura_error_t error = zathura_document_save_as(zathura->document, file_path);
+  const zathura_error_t error = zathura_document_save_as(document, file_path);
   g_free(file_path);
 
   if (error != ZATHURA_ERROR_OK) {
@@ -1380,7 +1382,7 @@ static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zath
 }
 
 zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
-  return zathura_get_document_fileinfo(zathura, zathura->document);
+  return zathura_get_document_fileinfo(zathura, zathura_get_document(zathura));
 }
 
 zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura) {
@@ -1388,8 +1390,9 @@ zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura) {
 }
 
 static void save_fileinfo_to_db(zathura_t* zathura) {
-  const char* path         = zathura_document_get_path(zathura->document);
-  const uint8_t* file_hash = zathura_document_get_hash(zathura->document);
+  zathura_document_t* document = zathura_get_document(zathura);
+  const char* path             = zathura_document_get_path(document);
+  const uint8_t* file_hash     = zathura_document_get_hash(document);
 
   zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
 
@@ -1427,7 +1430,7 @@ bool document_predecessor_free(zathura_t* zathura) {
 }
 
 bool document_close(zathura_t* zathura, bool keep_monitor) {
-  if (zathura == NULL || zathura->document == NULL) {
+  if (zathura_has_document(zathura)) {
     return false;
   }
 
@@ -1475,11 +1478,12 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   g_clear_object(&zathura->sync.render_thread);
 
   /* keep the current state to prevent flicker? */
-  bool override_predecessor = keep_monitor;
+  bool override_predecessor    = keep_monitor;
+  zathura_document_t* document = zathura_get_document(zathura);
 
   if (override_predecessor) {
     /* do not override predecessor buffer with empty pages */
-    unsigned int cur_page_num = zathura_document_get_current_page_number(zathura->document);
+    unsigned int cur_page_num = zathura_document_get_current_page_number(document);
     ZathuraPage* cur_page     = ZATHURA_PAGE(zathura->pages[cur_page_num]);
     if (!zathura_page_widget_have_surface(cur_page)) {
       override_predecessor = false;
@@ -1503,7 +1507,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
 
   if (!override_predecessor) {
-    for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->document); i++) {
+    for (unsigned int i = 0; i < zathura_document_get_number_of_pages(document); i++) {
       g_object_unref(zathura->pages[i]);
     }
     free(zathura->pages);
@@ -1547,16 +1551,17 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 }
 
 bool page_set(zathura_t* zathura, unsigned int page_id) {
-  if (zathura == NULL || zathura->document == NULL) {
+  if (zathura_has_document(zathura) == false) {
     goto error_out;
   }
 
-  zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+  zathura_document_t* document = zathura_get_document(zathura);
+  zathura_page_t* page         = zathura_document_get_page(document, page_id);
   if (page == NULL) {
     goto error_out;
   }
 
-  zathura_document_set_current_page_number(zathura->document, page_id);
+  zathura_document_set_current_page_number(document, page_id);
 
   bool continuous_hist_save = false;
   girara_setting_get(zathura->ui.session, "continuous-hist-save", &continuous_hist_save);
@@ -1576,12 +1581,13 @@ void statusbar_page_number_update(zathura_t* zathura) {
     return;
   }
 
-  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
-  unsigned int page_number_percent = number_of_pages ? 100 * (current_page_number + 1) / number_of_pages : 0;
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document != NULL) {
+    unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
+    unsigned int current_page_number = zathura_document_get_current_page_number(document);
+    unsigned int page_number_percent = number_of_pages ? 100 * (current_page_number + 1) / number_of_pages : 0;
 
-  if (zathura->document != NULL) {
-    zathura_page_t* page   = zathura_document_get_page(zathura->document, current_page_number);
+    zathura_page_t* page   = zathura_document_get_page(document, current_page_number);
     const char* page_label = zathura_page_get_label(page, NULL);
 
     bool show_percent = false;
@@ -1624,6 +1630,11 @@ void statusbar_page_number_update(zathura_t* zathura) {
 
 void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
                           unsigned int first_page_column, bool page_right_to_left) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL) {
+    return;
+  }
+
   /* show at least one page */
   if (pages_per_row == 0) {
     pages_per_row = 1;
@@ -1637,13 +1648,9 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigne
     first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
   }
 
-  if (zathura->document == NULL) {
-    return;
-  }
-
   gtk_container_foreach(GTK_CONTAINER(zathura->ui.page_widget), remove_page_from_table, NULL);
 
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   gtk_grid_set_row_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
   gtk_grid_set_column_spacing(GTK_GRID(zathura->ui.page_widget), page_padding);
@@ -1664,12 +1671,13 @@ void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigne
 }
 
 bool position_set(zathura_t* zathura, double position_x, double position_y) {
-  if (zathura == NULL || zathura->document == NULL) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL) {
     return false;
   }
 
   double comppos_x, comppos_y;
-  const unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
+  const unsigned int page_id = zathura_document_get_current_page_number(document);
 
   bool vertical_center = false;
   girara_setting_get(zathura->ui.session, "vertical-center", &vertical_center);
@@ -1677,14 +1685,14 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
   /* xalign = 0.5: center horizontally (with the page, not the document) */
   if (vertical_center == true) {
     /* yalign = 0.5: center vertically */
-    page_number_to_position(zathura->document, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
+    page_number_to_position(document, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
   } else {
     /* yalign = 0.0: align page and viewport edges at the top               */
-    page_number_to_position(zathura->document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
+    page_number_to_position(document, page_id, 0.5, 0.0, &comppos_x, &comppos_y);
   }
 
   /* automatic horizontal adjustment */
-  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(document);
 
   /* negative position_x mean: use the computed value */
   if (position_x < 0) {
@@ -1703,8 +1711,8 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
   }
 
   /* set the position */
-  zathura_document_set_position_x(zathura->document, position_x);
-  zathura_document_set_position_y(zathura->document, position_y);
+  zathura_document_set_position_x(document, position_x);
+  zathura_document_set_position_y(document, position_y);
 
   /* trigger a 'change' event for both adjustments */
   refresh_view(zathura);
@@ -1721,12 +1729,12 @@ void refresh_view(zathura_t* zathura) {
 
 bool adjust_view(zathura_t* zathura) {
   g_return_val_if_fail(zathura != NULL, false);
-
-  if (zathura->ui.page_widget == NULL || zathura->document == NULL) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (zathura->ui.page_widget == NULL || document == NULL) {
     goto error_ret;
   }
 
-  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(document);
   if (adjust_mode == ZATHURA_ADJUST_NONE) {
     /* there is nothing todo */
     goto error_ret;
@@ -1736,9 +1744,9 @@ bool adjust_view(zathura_t* zathura) {
   unsigned int document_height = 0, document_width = 0;
   unsigned int view_height = 0, view_width = 0;
 
-  zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
-  zathura_document_get_document_size(zathura->document, &document_height, &document_width);
-  zathura_document_get_viewport_size(zathura->document, &view_height, &view_width);
+  zathura_document_get_cell_size(document, &cell_height, &cell_width);
+  zathura_document_get_document_size(document, &document_height, &document_width);
+  zathura_document_get_viewport_size(document, &view_height, &view_width);
 
   if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0 || document_width == 0) {
     goto error_ret;
@@ -1746,7 +1754,7 @@ bool adjust_view(zathura_t* zathura) {
 
   double page_ratio = (double)cell_height / (double)document_width;
   double view_ratio = (double)view_height / (double)view_width;
-  double zoom       = zathura_document_get_zoom(zathura->document);
+  double zoom       = zathura_document_get_zoom(document);
   double newzoom    = zoom;
 
   if (adjust_mode == ZATHURA_ADJUST_WIDTH || (adjust_mode == ZATHURA_ADJUST_BESTFIT && page_ratio < view_ratio)) {
@@ -1758,9 +1766,9 @@ bool adjust_view(zathura_t* zathura) {
   }
 
   /* save new zoom and recompute cell size */
-  zathura_document_set_zoom(zathura->document, newzoom);
+  zathura_document_set_zoom(document, newzoom);
   unsigned int new_cell_height = 0, new_cell_width = 0;
-  zathura_document_get_cell_size(zathura->document, &new_cell_height, &new_cell_width);
+  zathura_document_get_cell_size(document, &new_cell_height, &new_cell_width);
 
   /*
    * XXX requiring a larger difference apparently circumvents #94 for some users; this is not a
@@ -1774,7 +1782,7 @@ bool adjust_view(zathura_t* zathura) {
     refresh_view(zathura);
   } else {
     /* otherwise set the old zoom and leave */
-    zathura_document_set_zoom(zathura->document, zoom);
+    zathura_document_set_zoom(document, zoom);
   }
 
 error_ret:
@@ -1793,7 +1801,8 @@ static gboolean zathura_signal_sigterm(gpointer data) {
 #endif
 
 void zathura_show_signature_information(zathura_t* zathura, bool show) {
-  if (zathura->document == NULL) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL) {
     return;
   }
 
@@ -1801,7 +1810,7 @@ void zathura_show_signature_information(zathura_t* zathura, bool show) {
   g_value_init(&show_sig_info_value, G_TYPE_BOOLEAN);
   g_value_set_boolean(&show_sig_info_value, show);
 
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page = 0; page != number_of_pages; ++page) {
     // draw signature info
     g_object_set_property(G_OBJECT(zathura->pages[page]), "draw-signatures", &show_sig_info_value);
