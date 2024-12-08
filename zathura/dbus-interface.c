@@ -168,10 +168,10 @@ const char* zathura_dbus_get_name(zathura_t* zathura) {
 }
 
 void zathura_dbus_edit(zathura_t* zathura, unsigned int page, unsigned int x, unsigned int y) {
-  ZathuraDbus* edit = zathura->dbus;
+  ZathuraDbus* edit        = zathura->dbus;
   ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(edit);
 
-  const char* filename = zathura_document_get_path(priv->zathura->document);
+  const char* filename = zathura_document_get_path(zathura_get_document(priv->zathura));
 
   char* input_file    = NULL;
   unsigned int line   = 0;
@@ -218,7 +218,7 @@ static void handle_close_document(zathura_t* zathura, GVariant* UNUSED(parameter
 }
 
 static void handle_goto_page(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
 
   guint page = 0;
   g_variant_get(parameters, "(u)", &page);
@@ -265,7 +265,7 @@ static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rec
 }
 
 static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
 
   guint page                   = 0;
   GVariantIter* iter           = NULL;
@@ -457,7 +457,7 @@ static void handle_method_call(GDBusConnection* UNUSED(connection), const gchar*
       continue;
     }
 
-    if (handlers[idx].needs_document == true && priv->zathura->document == NULL) {
+    if (handlers[idx].needs_document == true && zathura_has_document(priv->zathura) == false) {
       g_dbus_method_invocation_return_dbus_error(invocation, "org.pwmt.zathura.NoOpenDocument",
                                                  "No document has been opened.");
       return;
@@ -508,16 +508,18 @@ static void json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t
 }
 
 static GVariant* json_document_info(zathura_t* zathura) {
+  zathura_document_t* document = zathura_get_document(zathura);
+
   JsonBuilder* builder = json_builder_new();
   json_builder_begin_object(builder);
   json_builder_set_member_name(builder, "filename");
-  json_builder_add_string_value(builder, zathura_document_get_path(zathura->document));
+  json_builder_add_string_value(builder, zathura_document_get_path(document));
   json_builder_set_member_name(builder, "number-of-pages");
-  json_builder_add_int_value(builder, zathura_document_get_current_page_number(zathura->document));
+  json_builder_add_int_value(builder, zathura_document_get_current_page_number(document));
 
   json_builder_set_member_name(builder, "index");
   json_builder_begin_array(builder);
-  girara_tree_node_t* index = zathura_document_index_generate(zathura->document, NULL);
+  girara_tree_node_t* index = zathura_document_index_generate(document, NULL);
   if (index != NULL) {
     json_document_info_add_node(builder, index);
     girara_node_free(index);
@@ -537,20 +539,21 @@ static GVariant* json_document_info(zathura_t* zathura) {
 static GVariant* handle_get_property(GDBusConnection* UNUSED(connection), const gchar* UNUSED(sender),
                                      const gchar* UNUSED(object_path), const gchar* UNUSED(interface_name),
                                      const gchar* property_name, GError** error, void* data) {
-  ZathuraDbus* dbus        = data;
-  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
+  ZathuraDbus* dbus            = data;
+  ZathuraDbusPrivate* priv     = zathura_dbus_get_instance_private(dbus);
+  zathura_document_t* document = zathura_get_document(priv->zathura);
 
-  if (priv->zathura->document == NULL) {
+  if (document == NULL) {
     g_set_error(error, G_IO_ERROR, G_IO_ERROR_FAILED, "No document open.");
     return NULL;
   }
 
   if (g_strcmp0(property_name, "filename") == 0) {
-    return g_variant_new_string(zathura_document_get_path(priv->zathura->document));
+    return g_variant_new_string(zathura_document_get_path(document));
   } else if (g_strcmp0(property_name, "pagenumber") == 0) {
-    return g_variant_new_uint32(zathura_document_get_current_page_number(priv->zathura->document));
+    return g_variant_new_uint32(zathura_document_get_current_page_number(document));
   } else if (g_strcmp0(property_name, "numberofpages") == 0) {
-    return g_variant_new_uint32(zathura_document_get_number_of_pages(priv->zathura->document));
+    return g_variant_new_uint32(zathura_document_get_number_of_pages(document));
   } else if (g_strcmp0(property_name, "documentinfo") == 0) {
     return json_document_info(priv->zathura);
   }
