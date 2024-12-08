@@ -28,9 +28,10 @@ static bool draw_links(zathura_t* zathura) {
   /* set pages to draw links */
   bool show_links                    = false;
   unsigned int page_offset           = 0;
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  zathura_document_t* document       = zathura_get_document(zathura);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       continue;
     }
@@ -57,7 +58,8 @@ static bool draw_links(zathura_t* zathura) {
 
 /* Common code for sc_follow, sc_display_link and sc_copy_link */
 static bool link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate_t callback, const char* text) {
-  if (zathura->document == NULL || zathura->ui.session == NULL) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL || zathura->ui.session == NULL) {
     return false;
   }
 
@@ -69,7 +71,7 @@ static bool link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate
     gulong handler_id   = g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_links), zathura);
     g_object_set_data(G_OBJECT(inputbar), "handler_id", GUINT_TO_POINTER(handler_id));
 
-    zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_INPUTBAR);
+    zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_INPUTBAR);
     girara_dialog(zathura->ui.session, text, FALSE, NULL, callback, zathura->ui.session);
   }
 
@@ -80,15 +82,16 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
               unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
+  zathura_t* zathura           = session->global.data;
+  zathura_document_t* document = zathura_get_document(zathura);
 
   bool clear_search = true;
   girara_setting_get(session, "abort-clear-search", &clear_search);
 
-  if (zathura->document != NULL) {
-    const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  if (document != NULL) {
+    const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
     for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-      zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+      zathura_page_t* page = zathura_document_get_page(document, page_id);
       if (page == NULL) {
         continue;
       }
@@ -125,7 +128,7 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, gi
   } else {
     girara_debug("Setting adjust mode to: %d", argument->n);
 
-    zathura_document_set_adjust_mode(zathura->document, argument->n);
+    zathura_document_set_adjust_mode(zathura_get_document(zathura), argument->n);
     adjust_view(zathura);
   }
 
@@ -145,9 +148,10 @@ bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* UNUSED(
                            girara_event_t* UNUSED(event), unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = session->global.data;
+  zathura_t* zathura           = session->global.data;
+  zathura_document_t* document = zathura_get_document(zathura);
 
-  if (zathura->document == NULL) {
+  if (document == NULL) {
     girara_notify(session, GIRARA_WARNING, _("No document opened."));
     return false;
   }
