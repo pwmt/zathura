@@ -79,7 +79,7 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
 
     if (type == ZATHURA_LINK_GOTO_DEST) {
       zathura_t* zathura   = session->global.data;
-      zathura_page_t* page = zathura_document_get_page(zathura->document, target.page_number);
+      zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), target.page_number);
       const char* label    = zathura_page_get_label(page, NULL);
 
       if (label != NULL) {
@@ -212,7 +212,7 @@ void index_scroll_to_current_page(zathura_t* zathura) {
 
   SearchData search_data;
   gtk_tree_model_get_iter_first(model, &search_data.current_iter);
-  search_data.current_page = zathura_document_get_current_page_number(zathura->document);
+  search_data.current_page = zathura_document_get_current_page_number(zathura_get_document(zathura));
   gtk_tree_model_foreach(model, search_current_index, &search_data);
 
   GtkTreePath* current_path = gtk_tree_model_get_path(model, &search_data.current_iter);
@@ -294,11 +294,11 @@ GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page) {
 }
 
 void document_draw_search_results(zathura_t* zathura, bool value) {
-  if (zathura == NULL || zathura->document == NULL || zathura->pages == NULL) {
+  if (zathura_has_document(zathura) == false || zathura->pages == NULL) {
     return;
   }
 
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
   }
