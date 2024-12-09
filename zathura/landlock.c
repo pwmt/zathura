@@ -38,11 +38,12 @@ static void landlock_drop(__u64 fs_access) {
 
   int ruleset_fd = landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
   if (ruleset_fd < 0) {
+    girara_error("Failed to create a landlock ruleset");
     return;
   }
   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
   if (landlock_restrict_self(ruleset_fd, 0)) {
-    perror("landlock_restrict_self");
+    girara_error("landlock_restrict_self");
   }
   close(ruleset_fd);
 }
@@ -55,7 +56,22 @@ static void landlock_drop(__u64 fs_access) {
 
 #define _LANDLOCK_ACCESS_FS_READ (LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR)
 
+static void landlock_check_kernel(void) {
+  int abi = landlock_create_ruleset(NULL, 0,
+                                  LANDLOCK_CREATE_RULESET_VERSION);
+  if (abi == -1) {
+    /*
+     * Kernel too old, not compiled with Landlock,
+     * or Landlock was not enabled at boot time.
+     */
+    girara_warning("Unable to use Landlock: Kernel too old, not compiled with Landlock,\
+            or Landlock was not enabled at boot time. Sandbox partly disabled.");
+    return;  /* Graceful fallback: Do nothing. */
+  }
+}
+
 void landlock_drop_write(void) {
+  landlock_check_kernel();
   landlock_drop(_LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE);
 }
 
@@ -84,10 +100,10 @@ void landlock_write_fd(const int dir_fd) {
   if (!landlock_add_rule(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH, &path_beneath, 0)) {
     prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
     if (landlock_restrict_self(ruleset_fd, 0)) {
-      perror("landlock_restrict_self");
+      girara_error("landlock_restrict_self");
     }
   } else {
-    perror("landlock_add_rule");
+    girara_error("landlock_add_rule");
   }
 
   if (dir_fd == -1) {
@@ -97,6 +113,7 @@ void landlock_write_fd(const int dir_fd) {
 }
 
 void landlock_restrict_write(void) {
+  landlock_check_kernel();
   char* data_path = girara_get_xdg_path(XDG_DATA);
   int fd          = open(data_path, O_PATH | O_CLOEXEC | O_DIRECTORY);
   g_free(data_path);

@@ -157,15 +157,16 @@ bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list) {
 }
 
 static void mark_add(zathura_t* zathura, int key) {
-  if (zathura == NULL || zathura->document == NULL || zathura->global.marks == NULL) {
+  if (zathura_has_document(zathura) == false || zathura->global.marks == NULL) {
     return;
   }
 
-  unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
-  double position_x    = zathura_document_get_position_x(zathura->document);
-  double position_y    = zathura_document_get_position_y(zathura->document);
+  zathura_document_t* document = zathura_get_document(zathura);
+  unsigned int page_id         = zathura_document_get_current_page_number(document);
+  double position_x            = zathura_document_get_position_x(document);
+  double position_y            = zathura_document_get_position_y(document);
 
-  double zoom = zathura_document_get_zoom(zathura->document);
+  double zoom = zathura_document_get_zoom(document);
 
   /* search for existing mark */
   for (size_t idx = 0; idx != girara_list_size(zathura->global.marks); ++idx) {
@@ -203,7 +204,8 @@ static void mark_evaluate(zathura_t* zathura, int key) {
   for (size_t idx = 0; idx != girara_list_size(zathura->global.marks); ++idx) {
     zathura_mark_t* mark = girara_list_nth(zathura->global.marks, idx);
     if (mark != NULL && mark->key == key) {
-      zathura_document_set_zoom(zathura->document, zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
+      zathura_document_set_zoom(zathura_get_document(zathura),
+                                zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
       render_all(zathura);
 
       zathura_jumplist_add(zathura);

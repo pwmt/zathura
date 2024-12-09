@@ -36,13 +36,14 @@ static void zathura_jumplist_append_jump(zathura_t* zathura) {
 }
 
 static void zathura_jumplist_save(zathura_t* zathura) {
-  g_return_if_fail(zathura != NULL && zathura->document != NULL);
+  g_return_if_fail(zathura_has_document(zathura) == true);
 
   zathura_jump_t* cur = zathura_jumplist_current(zathura);
   if (cur != NULL) {
-    cur->x    = zathura_document_get_position_x(zathura->document);
-    cur->y    = zathura_document_get_position_y(zathura->document);
-    cur->page = zathura_document_get_current_page_number(zathura->document);
+    zathura_document_t* document = zathura_get_document(zathura);
+    cur->x                       = zathura_document_get_position_x(document);
+    cur->y                       = zathura_document_get_position_y(document);
+    cur->page                    = zathura_document_get_current_page_number(document);
   }
 }
 
@@ -97,10 +98,11 @@ void zathura_jumplist_trim(zathura_t* zathura) {
 }
 
 void zathura_jumplist_add(zathura_t* zathura) {
-  g_return_if_fail(zathura != NULL && zathura->document != NULL && zathura->jumplist.list != NULL);
+  g_return_if_fail(zathura_has_document(zathura) == true && zathura->jumplist.list != NULL);
 
-  double x = zathura_document_get_position_x(zathura->document);
-  double y = zathura_document_get_position_y(zathura->document);
+  zathura_document_t* document = zathura_get_document(zathura);
+  double x                     = zathura_document_get_position_x(document);
+  double y                     = zathura_document_get_position_y(document);
 
   if (zathura->jumplist.size != 0) {
     zathura_jumplist_reset_current(zathura);
@@ -147,4 +149,3 @@ bool zathura_jumplist_load(zathura_t* zathura, const char* file) {
 
   return true;
 }
-

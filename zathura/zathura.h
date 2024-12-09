@@ -7,6 +7,9 @@
 #include <girara/types.h>
 #include <girara/session.h>
 #include <gtk/gtk.h>
+#ifdef WITH_SYNCTEX
+#include <synctex/synctex_parser.h>
+#endif
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
 #endif
@@ -139,6 +142,7 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
+    GtkTreePath* current_index_path;      /**< Current index path */
   } global;
 
   struct {
@@ -208,6 +212,8 @@ struct zathura_s {
       int pages;
       char* first_page_column_list;
       double zoom;
+      bool is_status_bar_visible;
+      bool is_input_bar_visible;
     } toggle_presentation_mode;
   } shortcut;
 
@@ -222,6 +228,15 @@ struct zathura_s {
    * Context for MIME type detection
    */
   zathura_content_type_context_t* content_type_context;
+
+#ifdef WITH_SYNCTEX
+  /**
+   * SyncTeX context. The scanner object is cached for better performance.
+   */
+  struct {
+    synctex_scanner_p scanner;
+  } synctex;
+#endif
 };
 
 /**
@@ -471,5 +486,21 @@ char* get_formatted_filename(zathura_t* zathura, bool statusbar);
  * @param show Whether to show the signature information
  */
 void zathura_show_signature_information(zathura_t* zathura, bool show);
+
+/**
+ * Check wether a document is opened
+ *
+ * @param zathura The zathura session
+ * @return bool indicating whether a document is open
+ */
+bool zathura_has_document(zathura_t* zathura);
+
+/**
+ * Obtain the currently opened document
+ *
+ * @param zathura The zathura session
+ * @return the currently opened document
+ */
+zathura_document_t* zathura_get_document(zathura_t* zathura);
 
 #endif // ZATHURA_H

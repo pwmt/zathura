@@ -858,18 +858,19 @@ static void render_job(void* data, void* user_data) {
 }
 
 void render_all(zathura_t* zathura) {
-  if (zathura == NULL || zathura->document == NULL) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL) {
     return;
   }
 
   /* unmark all pages */
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-    zathura_page_t* page     = zathura_document_get_page(zathura->document, page_id);
+    zathura_page_t* page     = zathura_document_get_page(document, page_id);
     unsigned int page_height = 0, page_width = 0;
     const double height = zathura_page_get_height(page);
     const double width  = zathura_page_get_width(page);
-    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
+    page_calc_height_width(document, height, width, &page_height, &page_width, true);
 
     girara_debug("Queuing resize for page %u to %u x %u (%0.2f x %0.2f).", page_id, page_width, page_height, width,
                  height);

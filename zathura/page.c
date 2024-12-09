@@ -19,6 +19,7 @@ struct zathura_page_s {
   double width;                 /**< Page width */
   unsigned int index;           /**< Page number */
   bool visible;                 /**< Page is visible */
+  bool label_is_number;         /**< Page label is the same as the page number */
 };
 
 zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error_t* error) {
@@ -38,9 +39,10 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
     goto error_ret;
   }
 
-  page->index    = index;
-  page->visible  = false;
-  page->document = document;
+  page->index           = index;
+  page->visible         = false;
+  page->document        = document;
+  page->label_is_number = false;
 
   /* init plugin */
   const zathura_plugin_t* plugin              = zathura_document_get_plugin(document);
@@ -62,6 +64,12 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
         *error = ret;
       }
       goto error_free;
+    }
+
+    if (page->label != NULL) {
+      char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
+      g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, index + 1);
+      page->label_is_number = strcmp(page->label, page_number_string) == 0;
     }
   }
 
@@ -347,6 +355,14 @@ const char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error)
   }
 
   return page->label;
+}
+
+bool zathura_page_label_is_number(zathura_page_t* page) {
+  if (page == NULL) {
+    return false;
+  }
+
+  return page->label_is_number;
 }
 
 girara_list_t* zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error) {
