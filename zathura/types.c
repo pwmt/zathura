@@ -43,15 +43,15 @@ zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned
     return NULL;
   }
 
-  zathura_image_buffer_t* image_buffer = malloc(sizeof(zathura_image_buffer_t));
+  zathura_image_buffer_t* image_buffer = g_try_malloc(sizeof(zathura_image_buffer_t));
   if (image_buffer == NULL) {
     return NULL;
   }
 
-  image_buffer->data = calloc(size, sizeof(unsigned char));
+  image_buffer->data = g_try_malloc0_n(size, sizeof(unsigned char));
 
   if (image_buffer->data == NULL) {
-    free(image_buffer);
+    g_free(image_buffer);
     return NULL;
   }
 
@@ -67,8 +67,8 @@ void zathura_image_buffer_free(zathura_image_buffer_t* image_buffer) {
     return;
   }
 
-  free(image_buffer->data);
-  free(image_buffer);
+  g_free(image_buffer->data);
+  g_free(image_buffer);
 }
 
 static void document_information_entry_free(void* data) {
