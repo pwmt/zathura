@@ -464,13 +464,7 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
   }
 
   zathura_password_dialog_info_t* dialog = data;
-
-  if (dialog->path == NULL) {
-    g_free(dialog);
-    goto error_ret;
-  }
-
-  if (dialog->zathura == NULL) {
+  if (dialog->path == NULL || dialog->zathura == NULL) {
     goto error_free;
   }
 
@@ -478,10 +472,7 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
 
   /* no or empty password: ask again */
   if (input == NULL || strlen(input) == 0) {
-    if (input != NULL) {
-      g_free(input);
-    }
-
+    g_free(input);
     gdk_threads_add_idle(password_dialog, dialog);
     return false;
   }
@@ -495,18 +486,15 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
     g_free(dialog->uri);
     g_free(dialog);
   }
-
   g_free(input);
 
   return true;
 
 error_free:
-
   g_free(dialog->path);
   g_free(dialog);
 
 error_ret:
-
   return false;
 }
 
@@ -737,8 +725,7 @@ void cb_gesture_zoom_begin(GtkGesture* UNUSED(self), GdkEventSequence* UNUSED(se
   if (zathura_has_document(zathura) == false) {
     return;
   }
-  const double current_zoom     = zathura_document_get_zoom(zathura_get_document(zathura));
-  zathura->gesture.initial_zoom = current_zoom;
+  zathura->gesture.initial_zoom = zathura_document_get_zoom(zathura_get_document(zathura));
 }
 
 void cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, void* data) {
