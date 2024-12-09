@@ -466,7 +466,7 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
   zathura_password_dialog_info_t* dialog = data;
 
   if (dialog->path == NULL) {
-    free(dialog);
+    g_free(dialog);
     goto error_ret;
   }
 
@@ -493,7 +493,7 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
   } else {
     g_free(dialog->path);
     g_free(dialog->uri);
-    free(dialog);
+    g_free(dialog);
   }
 
   g_free(input);
@@ -503,7 +503,7 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
 error_free:
 
   g_free(dialog->path);
-  free(dialog);
+  g_free(dialog);
 
 error_ret:
 

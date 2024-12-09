@@ -941,7 +941,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
       girara_debug("Invalid or no password.");
-      zathura_password_dialog_info_t* password_dialog_info = malloc(sizeof(zathura_password_dialog_info_t));
+      zathura_password_dialog_info_t* password_dialog_info = g_try_malloc(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info != NULL) {
         password_dialog_info->zathura = zathura;
         password_dialog_info->path    = g_strdup(path);
@@ -951,7 +951,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
           gdk_threads_add_idle(document_open_password_dialog, password_dialog_info);
           goto error_out;
         } else {
-          free(password_dialog_info);
+          g_free(password_dialog_info);
         }
       }
       goto error_out;
@@ -1117,7 +1117,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura_document_set_device_factors(document, device_factor, device_factor);
 
   /* create blank pages */
-  zathura->pages = calloc(number_of_pages, sizeof(GtkWidget*));
+  zathura->pages = g_try_malloc0_n(number_of_pages, sizeof(GtkWidget*));
   if (zathura->pages == NULL) {
     goto error_free;
   }
@@ -1415,7 +1415,7 @@ bool document_predecessor_free(zathura_t* zathura) {
     for (unsigned int i = 0; i < zathura_document_get_number_of_pages(zathura->predecessor_document); i++) {
       g_object_unref(zathura->predecessor_pages[i]);
     }
-    free(zathura->predecessor_pages);
+    g_free(zathura->predecessor_pages);
     zathura->predecessor_pages = NULL;
     girara_debug("freed predecessor pages");
   }
@@ -1510,7 +1510,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     for (unsigned int i = 0; i < zathura_document_get_number_of_pages(document); i++) {
       g_object_unref(zathura->pages[i]);
     }
-    free(zathura->pages);
+    g_free(zathura->pages);
     zathura->pages = NULL;
 
     /* remove document */
