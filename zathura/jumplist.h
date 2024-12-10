@@ -75,4 +75,19 @@ void zathura_jumplist_trim(zathura_t* zathura);
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
 
+/**
+ * Init jumplist with a maximum size
+ *
+ * @param zathura The zathura session
+ * @param max_size maximum jumplist size (or 0 for unbounded lists)
+ */
+void zathura_jumplist_init(zathura_t* zathura, size_t max_size);
+
+/**
+ * Clear jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_clear(zathura_t* zathura);
+
 #endif

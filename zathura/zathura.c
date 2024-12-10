@@ -384,16 +384,6 @@ static void init_database(zathura_t* zathura) {
 }
 #endif
 
-static void init_jumplist(zathura_t* zathura) {
-  int jumplist_size = 20;
-  girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
-
-  zathura->jumplist.max_size = jumplist_size < 0 ? 0 : jumplist_size;
-  zathura->jumplist.list     = NULL;
-  zathura->jumplist.size     = 0;
-  zathura->jumplist.cur      = NULL;
-}
-
 static void init_shortcut_helpers(zathura_t* zathura) {
   zathura->shortcut.mouse.x = 0;
   zathura->shortcut.mouse.y = 0;
@@ -439,7 +429,9 @@ bool zathura_init(zathura_t* zathura) {
                                                          (girara_free_function_t)zathura_bookmark_free);
 
   /* jumplist */
-  init_jumplist(zathura);
+  int jumplist_size = 20;
+  girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
+  zathura_jumplist_init(zathura, MAX(jumplist_size, 0));
 
   /* CSS for index mode */
   if (init_css(zathura) == false) {
@@ -524,13 +516,7 @@ void zathura_free(zathura_t* zathura) {
   g_free(zathura->config.cache_dir);
 
   /* free jumplist */
-  if (zathura->jumplist.cur != NULL) {
-    girara_list_iterator_free(zathura->jumplist.cur);
-  }
-
-  if (zathura->jumplist.list != NULL) {
-    girara_list_free(zathura->jumplist.list);
-  }
+  zathura_jumplist_clear(zathura);
 
   g_free(zathura);
 }
@@ -1192,7 +1178,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     /* jumplist */
     if (zathura_jumplist_load(zathura, file_path) == false) {
       girara_debug("Failed to load jumplist.");
-      zathura->jumplist.list = girara_list_new2(g_free);
     }
 
     /* quickmarks */
@@ -1202,8 +1187,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     }
   } else {
     /* create fallback lists */
-    zathura->jumplist.list = girara_list_new2(g_free);
-    zathura->global.marks  = girara_list_new2(g_free);
+    zathura->global.marks = girara_list_new2(g_free);
   }
 
   if (zathura->jumplist.list == NULL || zathura->global.marks == NULL) {
@@ -1466,12 +1450,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     zathura->global.marks = NULL;
   }
 
-  /* remove jump list */
-  girara_list_iterator_free(zathura->jumplist.cur);
-  zathura->jumplist.cur = NULL;
-  girara_list_free(zathura->jumplist.list);
-  zathura->jumplist.list = NULL;
-  zathura->jumplist.size = 0;
+  zathura_jumplist_clear(zathura);
 
   /* release render thread */
   g_clear_object(&zathura->sync.render_thread);
