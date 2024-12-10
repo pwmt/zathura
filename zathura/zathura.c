@@ -1107,11 +1107,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_set_viewport_height(document, view_height);
 
-  zathura_update_view_ppi(zathura);
-
-  /* call screen-changed callback to connect monitors-changed signal on initial screen */
-  cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
-
   /* get initial device scale */
   const int device_factor = gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
   zathura_document_set_device_factors(document, device_factor, device_factor);
@@ -1255,6 +1250,10 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   girara_setting_get(zathura->ui.session, "show-signature-information", &show_signature_information);
   zathura_show_signature_information(zathura, show_signature_information);
   update_visible_pages(zathura);
+
+  /* this needs to run at the end since it will refresh the view via zathura_view_update_ppi */
+  /* call screen-changed callback to connect monitors-changed signal on initial screen */
+  cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
 
   return true;
 
