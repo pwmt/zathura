@@ -1190,7 +1190,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     zathura->global.marks = girara_list_new2(g_free);
   }
 
-  if (zathura->jumplist.list == NULL || zathura->global.marks == NULL) {
+  if (zathura_jumplist_is_initalized(zathura) == false || zathura->global.marks == NULL) {
     goto error_free;
   }
 

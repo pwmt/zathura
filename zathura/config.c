@@ -28,12 +28,8 @@ static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(nam
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  const int* ivalue          = value;
-  zathura->jumplist.max_size = MAX(0, *ivalue);
-
-  if (zathura->jumplist.list != NULL && zathura->jumplist.size != 0) {
-    zathura_jumplist_trim(zathura);
-  }
+  const int* ivalue = value;
+  zathura_jumplist_set_max_size(zathura, MAX(0, *ivalue));
 }
 
 static void cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),
