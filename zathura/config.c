@@ -18,7 +18,6 @@
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
-#define GLOBAL_RC "/etc/zathurarc"
 #define ZATHURA_RC "zathurarc"
 
 static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
@@ -28,12 +27,8 @@ static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(nam
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  const int* ivalue          = value;
-  zathura->jumplist.max_size = MAX(0, *ivalue);
-
-  if (zathura->jumplist.list != NULL && zathura->jumplist.size != 0) {
-    zathura_jumplist_trim(zathura);
-  }
+  const int* ivalue = value;
+  zathura_jumplist_set_max_size(zathura, MAX(0, *ivalue));
 }
 
 static void cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),
@@ -649,7 +644,7 @@ void config_load_files(zathura_t* zathura) {
   girara_list_free(config_dirs);
   g_free(config_path);
 
-  girara_config_parse(zathura->ui.session, GLOBAL_RC);
+  girara_config_parse(zathura->ui.session, SYSCONFDIR "/" ZATHURA_RC);
 
   /* load local configuration files */
   char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);

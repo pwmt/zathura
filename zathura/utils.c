@@ -141,31 +141,29 @@ static bool find_substring(const char* source_str, const char* search_str) {
   return false;
 }
 
-static gboolean search_equal_iter(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter) {
-
-  const gchar* source_string;
-  GValue value       = G_VALUE_INIT;
-  GValue transformed = G_VALUE_INIT;
-
+static bool search_equal_iter(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter) {
+  GValue value = G_VALUE_INIT;
   gtk_tree_model_get_value(model, iter, column, &value);
 
+  GValue transformed = G_VALUE_INIT;
   g_value_init(&transformed, G_TYPE_STRING);
 
-  if (!g_value_transform(&value, &transformed)) {
-    g_value_unset(&value);
-    return TRUE;
+  const gboolean ret = g_value_transform(&value, &transformed);
+  g_value_unset(&value);
+  if (!ret) {
+    return true;
   }
 
-  g_value_unset(&value);
-  source_string = g_value_get_string(&transformed);
+  const gchar* source_string = g_value_get_string(&transformed);
   if (!source_string) {
     g_value_unset(&transformed);
-    return TRUE;
+    return true;
   }
-  if (find_substring(source_string, key)) {
-    return FALSE;
-  }
-  return TRUE;
+
+  const bool ret2 = find_substring(source_string, key);
+  g_value_unset(&transformed);
+
+  return !ret2;
 }
 
 gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,

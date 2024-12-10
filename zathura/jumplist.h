@@ -19,7 +19,7 @@ typedef struct zathura_jumplist_s {
  * @param zathura The zathura session
  * @return true if current jump has a previous jump
  */
-bool zathura_jumplist_has_previous(zathura_t* jumplzathura);
+bool zathura_jumplist_has_previous(zathura_t* zathura);
 
 /**
  * Checks whether current jump has a next jump
@@ -66,6 +66,14 @@ void zathura_jumplist_add(zathura_t* zathura);
 void zathura_jumplist_trim(zathura_t* zathura);
 
 /**
+ * Set maximum jump list size (and trim if necessary)
+ *
+ * @param zathura The zathura session
+ * @param max_size New maximum size
+ */
+void zathura_jumplist_set_max_size(zathura_t* zathura, size_t max_size);
+
+/**
  * Load the jumplist of the specified file
  *
  * @param zathura The zathura session
@@ -74,5 +82,27 @@ void zathura_jumplist_trim(zathura_t* zathura);
  * return A linked list of zathura_jump_t structures constituting the jumplist of the specified file, or NULL.
  */
 bool zathura_jumplist_load(zathura_t* zathura, const char* file);
+
+/**
+ * Init jumplist with a maximum size
+ *
+ * @param zathura The zathura session
+ * @param max_size maximum jumplist size (or 0 for unbounded lists)
+ */
+void zathura_jumplist_init(zathura_t* zathura, size_t max_size);
+
+/**
+ * Check if the jumplist is initalized
+ *
+ * @param zathura The zathura session
+ */
+bool zathura_jumplist_is_initalized(zathura_t* zathura);
+
+/**
+ * Clear jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_clear(zathura_t* zathura);
 
 #endif
