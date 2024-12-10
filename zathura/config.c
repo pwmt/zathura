@@ -18,7 +18,6 @@
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
-#define GLOBAL_RC "/etc/zathurarc"
 #define ZATHURA_RC "zathurarc"
 
 static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
@@ -645,7 +644,7 @@ void config_load_files(zathura_t* zathura) {
   girara_list_free(config_dirs);
   g_free(config_path);
 
-  girara_config_parse(zathura->ui.session, GLOBAL_RC);
+  girara_config_parse(zathura->ui.session, SYSCONFDIR "/" ZATHURA_RC);
 
   /* load local configuration files */
   char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);

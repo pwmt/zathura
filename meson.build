@@ -32,6 +32,10 @@ metainfodir = join_paths(datadir, 'metainfo')
 desktopdir = join_paths(datadir, 'applications')
 dbusinterfacesdir = join_paths(datadir, 'dbus-1', 'interfaces')
 plugindir = join_paths(get_option('libdir'), 'zathura')
+sysconfdir = get_option('sysconfdir')
+if not sysconfdir.startswith('/')
+  sysconfdir = join_paths(prefix, sysconfdir)
+endif
 
 # required dependencies
 libm = cc.find_library('m', required: false)
@@ -59,6 +63,7 @@ defines = [
   '-DGETTEXT_PACKAGE="zathura"',
   '-DLOCALEDIR="@0@"'.format(join_paths(prefix, localedir)),
   '-DZATHURA_PLUGINDIR="@0@"'.format(join_paths(prefix, plugindir)),
+  '-DSYSCONFDIR="@0@"'.format(sysconfdir),
   '-D_DEFAULT_SOURCE',
 ]
 
