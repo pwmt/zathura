@@ -598,7 +598,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   /* compute the direction of scrolling */
   double direction = 1.0;
   if ((argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) || (argument->n == UP) ||
-      (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
+      (argument->n == FULL_UP) || (argument->n == HALF_UP) || (argument->n == PARTIAL_UP)) {
     direction = -1.0;
   }
 
@@ -621,6 +621,11 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   case HALF_UP:
   case HALF_DOWN:
     pos_y += direction * 0.5 * vstep;
+    break;
+
+  case PARTIAL_UP:
+  case PARTIAL_DOWN:
+    pos_y += direction * t * (scroll_step * 0.2) / (double)doc_height;
     break;
 
   case HALF_LEFT:
@@ -683,11 +688,13 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
     case FULL_UP:
     case HALF_UP:
+    case PARTIAL_UP:
       page_number_to_position(zathura->document, new_page_id, 0.0, 1.0, &dummy, &pos_y);
       break;
 
     case FULL_DOWN:
     case HALF_DOWN:
+    case PARTIAL_DOWN:
       page_number_to_position(zathura->document, new_page_id, 0.0, 0.0, &dummy, &pos_y);
       break;
     }
@@ -1087,11 +1094,13 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     }
     break;
   case HALF_UP:
+  case PARTIAL_UP:
     gtk_tree_path_free(path);
     path           = gtk_tree_path_copy(start_path);
     need_to_scroll = TRUE;
     break;
   case HALF_DOWN:
+  case PARTIAL_DOWN:
     gtk_tree_path_free(path);
     path           = gtk_tree_path_copy(end_path);
     need_to_scroll = TRUE;
