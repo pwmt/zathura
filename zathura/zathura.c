@@ -1413,7 +1413,7 @@ bool document_predecessor_free(zathura_t* zathura) {
 }
 
 bool document_close(zathura_t* zathura, bool keep_monitor) {
-  if (zathura_has_document(zathura)) {
+  if (zathura_has_document(zathura) == false) {
     return false;
   }
 
