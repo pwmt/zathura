@@ -108,7 +108,6 @@ void zathura_jumplist_add(zathura_t* zathura) {
     zathura_jumplist_reset_current(zathura);
 
     zathura_jump_t* cur = zathura_jumplist_current(zathura);
-
     if (cur != NULL) {
       if (fabs(cur->x - x) <= DBL_EPSILON && fabs(cur->y - y) <= DBL_EPSILON) {
         return;
