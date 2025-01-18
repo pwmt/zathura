@@ -258,6 +258,11 @@ They can also be combined with modifiers:
     ``$PAGE`` to the current page number, and ``$DBUS`` to the bus name of the
     D-Bus interface.
 
+  * ``file_chooser``:
+
+    Open a File Chooser Dialog. Uses the native file chooser on Windows and MacOS,
+    desktop portals when available and otherwise GtkFileChooser.
+
   * ``focus_inputbar``
 
     Focus inputbar.

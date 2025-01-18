@@ -418,7 +418,9 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0, 0, "zO", sc_zoom, (mode), ZOOM_OUT, NULL);                                          \
   girara_shortcut_add(gsession, 0, 0, "z0", sc_zoom, (mode), ZOOM_ORIGINAL, NULL);                                     \
   girara_shortcut_add(gsession, 0, 0, "zz", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                                     \
-  girara_shortcut_add(gsession, 0, 0, "zZ", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zZ", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                                     \
+                                                                                                                       \
+  girara_shortcut_add(gsession, 0, GDK_KEY_F, NULL, sc_file_chooser, (mode), 0, NULL);                                    
 
 #define DEFAULT_MOUSE_EVENTS(mode)                                                                                     \
   girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_UP, UP, NULL);                   \
@@ -571,6 +573,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "exec",                sc_exec);
   girara_shortcut_mapping_add(gsession, "focus_inputbar",      sc_focus_inputbar);
   girara_shortcut_mapping_add(gsession, "follow",              sc_follow);
+  girara_shortcut_mapping_add(gsession, "file_chooser",        sc_file_chooser);
   girara_shortcut_mapping_add(gsession, "goto",                sc_goto);
   girara_shortcut_mapping_add(gsession, "jumplist",            sc_jumplist);
   girara_shortcut_mapping_add(gsession, "mark_add",            sc_mark_add);

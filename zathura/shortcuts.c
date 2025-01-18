@@ -13,6 +13,7 @@
 #include "shortcuts.h"
 #include "dbus-interface.h"
 #include "document.h"
+#include "glib.h"
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
@@ -1536,4 +1537,41 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* UNUSED(argume
 
   int page = zathura_document_get_current_page_number(document);
   return page_set(zathura, page);
+}
+
+bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                     unsigned int UNUSED(t)) {
+  GtkFileChooserNative *native;
+  GtkFileChooser *chooser;
+  gint res;
+
+  native = gtk_file_chooser_native_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
+  chooser = GTK_FILE_CHOOSER( native );
+
+  res = gtk_native_dialog_run (GTK_NATIVE_DIALOG(native));
+  if (res == GTK_RESPONSE_ACCEPT) {
+    char *filename;
+    zathura_t* zathura = session->global.data;
+
+    filename = gtk_file_chooser_get_filename(chooser);
+    if (!document_close(zathura, false)) {
+      g_free(filename);
+      goto error;
+    }
+
+    if (!document_open(zathura, filename, NULL, NULL, 0, NULL)) {
+      g_free(filename);
+      goto error;
+    }
+
+    g_free(filename);
+  }
+
+  g_object_unref(native);
+  return true; 
+
+error:
+
+  g_object_unref(native);
+  return false;
 }
