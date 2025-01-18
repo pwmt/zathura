@@ -106,6 +106,12 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   const zathura_plugin_t* plugin = NULL;
   zathura_document_t* document   = NULL;
 
+  if (!g_file_query_exists(file, NULL)) {
+    girara_error("File '%s' does not exist", path);
+    check_set_error(error, ZATHURA_ERROR_FILE_NOT_FOUND);
+	exit(1);
+  }
+
   if (file == NULL) {
     girara_error("Error while handling path '%s'.", path);
     check_set_error(error, ZATHURA_ERROR_UNKNOWN);

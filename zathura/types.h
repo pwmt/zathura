@@ -55,7 +55,8 @@ typedef enum zathura_plugin_error_e {
   ZATHURA_ERROR_OUT_OF_MEMORY,     /**< Out of memory */
   ZATHURA_ERROR_NOT_IMPLEMENTED,   /**< The called function has not been implemented */
   ZATHURA_ERROR_INVALID_ARGUMENTS, /**< Invalid arguments have been passed */
-  ZATHURA_ERROR_INVALID_PASSWORD   /**< The provided password is invalid */
+  ZATHURA_ERROR_INVALID_PASSWORD,  /**< The provided password is invalid */
+  ZATHURA_ERROR_FILE_NOT_FOUND     /**< The provided file path does not exist */
 } zathura_error_t;
 
 /**
