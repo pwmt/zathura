@@ -121,6 +121,7 @@ sources = files(
   'zathura/database-sqlite.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',
+  'zathura/document-widget.c',
   'zathura/file-monitor.c',
   'zathura/file-monitor-glib.c',
   'zathura/file-monitor-noop.c',

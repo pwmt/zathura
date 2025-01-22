@@ -112,7 +112,7 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* page_widget; /**< Widget that contains all rendered pages */
+    GtkWidget* document_widget; /**< Widget that contains all rendered pages */
     GtkWidget* index;       /**< Widget to show the index of the document */
   } ui;
 
