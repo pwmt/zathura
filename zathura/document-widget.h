@@ -7,11 +7,17 @@
 #include "types.h"
 
 /**
- * The document view widget. 
+ * The document view widget. Places a subset of the pages of 
+ * the document into a grid. The widget handles updating the 
+ * grid to contain the pages in view, and as many pages around
+ * the view as the cairo surface will allow.
  *
- * Draw pages of the document to a canvas.
- * Place the canvas inside a scrolled window to allow scrolling.
- * Zoom by resizing the canvas'.
+ * zathura_document_widget_[get_ratio|set_value|set_value_from_ratio]
+ * functions replace the equivalent ones previously contained in 
+ * adjustment.c. They wrap these functions and perform the necessary 
+ * transformations to move between a ratio of [0,1] in the whole document, 
+ * to a ratio in the subset of the pages contained in the document widgets'
+ * grid.
  *
  * */
 struct zathura_document_widget_s {
@@ -31,23 +37,67 @@ struct zathura_document_widget_class_s {
 
 /**
  * Returns the type of the document view widget.
+ *
  * @return the type
  */
 GType zathura_document_widget_get_type(void) G_GNUC_CONST;
+
 /**
  * Create a document view widget.
+ * 
  * @param zathura the zathura instance
  * @return a document view widget
  */
-GtkWidget* zathura_document_widget_new(zathura_t *zathura);
+GtkWidget* zathura_document_widget_new(void);
+
+/**
+ * Builds the box structure to show the rendered pages
+ *
+ * @param zathura The zathura session
+ * @param page_padding padding in pixels between pages
+ * @param pages_per_row Number of shown pages per row
+ * @param first_page_column Column on which first page start
+ * @param page_right_to_left Render pages right to left
+ */
+void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
+                                      unsigned int first_page_column, bool page_right_to_left);
+
 /**
  * Update the pages in the document view
+ *
  * @param widget the document view widget
  */
-void zathura_document_widget_update_pages(GtkWidget *widget);
+void zathura_document_widget_render(zathura_t *zathura);
+
 /**
  * Clear pages from the document view
+ *
  * @param widget the document view widget
  */
 void zathura_document_widget_clear_pages(GtkWidget *widget);
+
+/**
+ * Compute the adjustment ratio
+ *
+ * That is, the ratio between the length from the lower bound to the middle of
+ * the slider, and the total length of the scrollbar.
+ *
+ * @param adjustment Scrollbar adjustment
+ * @param width Is the adjustment for width?
+ * @return Adjustment ratio
+ */
+gdouble zathura_document_widget_get_ratio(zathura_t *zathura, GtkAdjustment *adjustment, bool width);
+
+/**
+ * Set the adjustment value from ratio
+ *
+ * The ratio is usually obtained from a previous call to
+ * zathura_document_widget_get_ratio().
+ *
+ * @param adjustment Adjustment instance
+ * @param ratio Ratio from which the adjustment value will be set
+ * @param width Is the adjustment for width?
+ */
+void zathura_document_widget_set_value_from_ratio(zathura_t *zathura, GtkAdjustment *adjustment, double ratio, bool width);
+
 #endif // DOCUMENT_WIDGET_H

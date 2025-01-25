@@ -253,7 +253,7 @@ static bool init_ui(zathura_t* zathura) {
   zathura->signals.monitors_changed_handler = 0;
 
   /* page view */
-  zathura->ui.document_widget = zathura_document_widget_new(zathura);
+  zathura->ui.document_widget = zathura_document_widget_new();
   if (zathura->ui.document_widget == NULL) {
     girara_error("Failed to create document widget.");
     return false;
@@ -1158,7 +1158,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   page_right_to_left = file_info.page_right_to_left;
 
-  page_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
+  zathura_document_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
   zathura_document_set_page_layout(document, page_padding, pages_per_row, first_page_column);
 
   girara_set_view(zathura->ui.session, zathura->ui.document_widget);
@@ -1594,37 +1594,6 @@ void statusbar_page_number_update(zathura_t* zathura) {
   } else {
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, "");
   }
-}
-
-void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
-                          unsigned int first_page_column, bool page_right_to_left) {
-  zathura_document_t* document = zathura_get_document(zathura);
-  if (document == NULL) {
-    return;
-  }
-
-  /* show at least one page */
-  if (pages_per_row == 0) {
-    pages_per_row = 1;
-  }
-
-  /* ensure: 0 < first_page_column <= pages_per_row */
-  if (first_page_column < 1) {
-    first_page_column = 1;
-  }
-  if (first_page_column > pages_per_row) {
-    first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
-  }
-
-  g_object_set(G_OBJECT(zathura->ui.document_widget), 
-               "first-page-column", first_page_column, 
-               "spacing", page_padding, 
-               "page-right-to-left", page_right_to_left, 
-               "pages-per-row", pages_per_row,
-               NULL);
-
-  zathura_document_widget_update_pages(zathura->ui.document_widget);
-  gtk_widget_show_all(zathura->ui.document_widget);
 }
 
 bool position_set(zathura_t* zathura, double position_x, double position_y) {
