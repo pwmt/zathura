@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include <girara/log.h>
+#include <stdbool.h>
 
 #include "glib.h"
 #include "glibconfig.h"
@@ -72,6 +73,23 @@ void zathura_document_widget_clear_pages(GtkWidget *widget) {
   gtk_container_foreach(GTK_CONTAINER(widget), remove_page_from_table, NULL);
 }
 
+static void zathura_document_widget_view_range(zathura_t *zathura, unsigned int *start, unsigned int *end) {
+  zathura_document_t *document = zathura_get_document(zathura);
+  unsigned int page_count = zathura_document_get_number_of_pages(document);
+
+  *start = page_count;
+  *end = 0;
+
+  for (unsigned int i = 0; i < page_count; i++) {
+    if (!page_is_visible(document, i)) {
+      continue;
+    }
+
+    *start = MIN(*start, i);
+    *end = MAX(*end, i);
+  }
+}
+
 static void zathura_document_widget_get_render_range(zathura_t *zathura, unsigned int *start_index, unsigned int *page_count) {
   g_return_if_fail(zathura != NULL && zathura->document != NULL);
 
@@ -86,7 +104,7 @@ static void zathura_document_widget_get_render_range(zathura_t *zathura, unsigne
 
   int64_t max_pages = MIN(number_of_pages, cairo_max_size * priv->pages_per_row / page_height);
   *start_index = MAX(0, current_page - max_pages);
-  *page_count = MIN(number_of_pages, current_page + max_pages);
+  *page_count = MIN(number_of_pages - *start_index, current_page + max_pages);
 }
 
 static void zathura_document_update_grid(zathura_t *zathura) {
@@ -128,26 +146,19 @@ void zathura_document_widget_render(zathura_t *zathura) {
 
   ZathuraDocument *widget = ZATHURA_DOCUMENT(zathura->ui.document_widget);
   ZathuraDocumentPrivate *priv = zathura_document_widget_get_instance_private(widget);
-  static unsigned int prev_start_index = -1;
 
   if (priv->do_render) {
     zathura_document_update_grid(zathura);
-    prev_start_index = priv->start_index;
-
     return;
   }
 
-  unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
-  if (priv->start_index < current_page && current_page < priv->start_index + priv->page_count - 1) {
-    return;
-  }
-
-  if (priv->start_index == current_page && priv->start_index == prev_start_index) {
+  unsigned int start, end;
+  zathura_document_widget_view_range(zathura, &start, &end);
+  if (priv->start_index <= start && end < priv->start_index + priv->page_count) {
     return;
   }
 
   zathura_document_update_grid(zathura);
-  prev_start_index = priv->start_index;
 }
 
 void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
