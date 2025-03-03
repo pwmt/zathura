@@ -1540,19 +1540,30 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* UNUSED(argume
 
 bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
                      unsigned int UNUSED(t)) {
-  GtkFileChooserNative *native;
-  GtkFileChooser *chooser;
-  gint res;
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
 
-  native = gtk_file_chooser_native_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
-  chooser = GTK_FILE_CHOOSER( native );
+  GtkFileChooserNative* native =
+      gtk_file_chooser_native_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
+  GtkFileChooser* chooser = GTK_FILE_CHOOSER(native);
 
-  res = gtk_native_dialog_run (GTK_NATIVE_DIALOG(native));
+  GtkFileFilter* filter     = gtk_file_filter_new();
+  girara_list_t* mime_types = zathura_plugin_manager_get_content_types(zathura->plugins.manager);
+  if (mime_types) {
+    for (size_t idx = 0; idx != girara_list_size(mime_types); ++idx) {
+      const char* mime_type = girara_list_nth(mime_types, idx);
+      girara_debug("adding mime type to %s to filter", mime_type);
+      gtk_file_filter_add_mime_type(filter, mime_type);
+    }
+    gtk_file_chooser_add_filter(chooser, filter);
+  } else {
+    g_object_unref(filter);
+  }
+
+  const gint res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(native));
   if (res == GTK_RESPONSE_ACCEPT) {
-    char *filename;
-    zathura_t* zathura = session->global.data;
-
-    filename = gtk_file_chooser_get_filename(chooser);
+    char* filename = gtk_file_chooser_get_filename(chooser);
     if (!document_close(zathura, false)) {
       g_free(filename);
       goto error;
@@ -1567,7 +1578,7 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   }
 
   g_object_unref(native);
-  return true; 
+  return true;
 
 error:
 
