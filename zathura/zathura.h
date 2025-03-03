@@ -112,7 +112,7 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* page_widget; /**< Widget that contains all rendered pages */
+    GtkWidget* document_widget; /**< Widget that contains all rendered pages */
     GtkWidget* index;       /**< Widget to show the index of the document */
   } ui;
 
@@ -448,18 +448,6 @@ void refresh_view(zathura_t* zathura);
  * @param zathura Zathura session
  */
 bool adjust_view(zathura_t* zathura);
-
-/**
- * Builds the box structure to show the rendered pages
- *
- * @param zathura The zathura session
- * @param page_padding padding in pixels between pages
- * @param pages_per_row Number of shown pages per row
- * @param first_page_column Column on which first page start
- * @param page_right_to_left Render pages right to left
- */
-void page_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
-                          unsigned int first_page_column, bool page_right_to_left);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the
