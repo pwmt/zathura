@@ -3,13 +3,10 @@
 #include <girara/log.h>
 #include <stdbool.h>
 
-#include "glib.h"
-#include "glibconfig.h"
-#include "gtk/gtk.h"
-#include "glib-object.h"
+#include "document-widget.h"
+
 #include "adjustment.h"
 #include "document.h"
-#include "document-widget.h"
 #include "page.h"
 #include "types.h"
 #include "zathura.h"
