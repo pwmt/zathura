@@ -13,7 +13,6 @@
 #include "shortcuts.h"
 #include "dbus-interface.h"
 #include "document.h"
-#include "glib.h"
 #include "zathura.h"
 #include "render.h"
 #include "utils.h"
