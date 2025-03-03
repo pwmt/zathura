@@ -11,7 +11,7 @@
 #include "types.h"
 #include "zathura.h"
 
-int64_t cairo_max_size = INT16_MAX;
+static const unsigned int cairo_max_size = INT16_MAX;
 
 typedef struct zathura_document_widget_private_s {
   unsigned int spacing;
@@ -26,11 +26,7 @@ typedef struct zathura_document_widget_private_s {
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraDocument, zathura_document_widget, GTK_TYPE_GRID, G_ADD_PRIVATE(ZathuraDocument))
 
-static void zathura_document_widget_class_init(ZathuraDocumentClass* class) {
-  /* overwrite methods */
-  GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
-  GObjectClass* object_class   = G_OBJECT_CLASS(class);
-}
+static void zathura_document_widget_class_init(ZathuraDocumentClass* GIRARA_UNUSED(class)) {}
 
 static void zathura_document_widget_init(ZathuraDocument* widget) {
   ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(widget);
@@ -100,9 +96,13 @@ static void zathura_document_widget_get_render_range(zathura_t* zathura, unsigne
   zathura_page_t* page         = zathura_document_get_page(document, current_page);
   double page_height           = zathura_page_get_height(page);
 
-  int64_t max_pages = MIN(number_of_pages, cairo_max_size * priv->pages_per_row / page_height);
-  *start_index      = MAX(0, current_page - max_pages);
-  *page_count       = MIN(number_of_pages - *start_index, current_page + max_pages);
+  unsigned int max_pages = MIN(number_of_pages, cairo_max_size * priv->pages_per_row / page_height);
+  if (max_pages < current_page) {
+    *start_index = current_page - max_pages;
+  } else {
+    *start_index = 0;
+  }
+  *page_count = MIN(number_of_pages - *start_index, current_page + max_pages);
 }
 
 static void zathura_document_update_grid(zathura_t* zathura) {
@@ -122,9 +122,9 @@ static void zathura_document_update_grid(zathura_t* zathura) {
   zathura_document_widget_get_render_range(zathura, &priv->start_index, &priv->page_count);
   girara_debug("updating grid: start %u current %d page count %u", priv->start_index, current_page, priv->page_count);
 
-  for (int64_t i = 0; i < priv->page_count; i++) {
-    int x = (i + priv->first_page_column - 1) % priv->pages_per_row;
-    int y = (i + priv->first_page_column - 1) / priv->pages_per_row;
+  for (unsigned int i = 0; i < priv->page_count; i++) {
+    unsigned int x = (i + priv->first_page_column - 1) % priv->pages_per_row;
+    unsigned int y = (i + priv->first_page_column - 1) / priv->pages_per_row;
 
     GtkWidget* page_widget = zathura->pages[priv->start_index + i];
     if (priv->page_right_to_left) {
