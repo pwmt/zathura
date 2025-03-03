@@ -11,6 +11,7 @@ zathura/content-type.c
 zathura/database-sqlite.c
 zathura/database.c
 zathura/dbus-interface.c
+zathura/document-widget.c
 zathura/document.c
 zathura/file-monitor-glib.c
 zathura/file-monitor-signal.c
