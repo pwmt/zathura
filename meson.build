@@ -163,7 +163,7 @@ libzathura = static_library('zathura',
 libzathura_dep = declare_dependency(link_with: libzathura)
 
 # zathura-sandbox executable
-if seccomp.found() or landlock
+if seccomp.found() or landlock or target_machine.system() == 'openbsd'
   sandbox_sources = files()
   sandbox_defines = ['-DWITH_SANDBOX']
   sandbox_dependencies = []
