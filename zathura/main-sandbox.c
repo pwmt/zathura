@@ -53,6 +53,13 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
     return NULL;
   }
 #endif
+#ifdef __OpenBSD__
+  if (pledge("stdio rpath", "") != 0) {
+    girara_error("Failed to pledge: %s", strerror(errno));
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
   /* unset the input method to avoid communication with external services */
   unsetenv("GTK_IM_MODULE");
 
