@@ -17,10 +17,9 @@ typedef struct zathura_document_widget_private_s {
   unsigned int spacing;
   unsigned int pages_per_row;
   unsigned int first_page_column;
-  bool page_right_to_left;
-
   unsigned int page_count;
   unsigned int start_index;
+  bool page_right_to_left;
   bool do_render;
 } ZathuraDocumentPrivate;
 
@@ -31,9 +30,13 @@ static void zathura_document_widget_class_init(ZathuraDocumentClass* GIRARA_UNUS
 static void zathura_document_widget_init(ZathuraDocument* widget) {
   ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
-  priv->page_count  = 0;
-  priv->start_index = 0;
-  priv->do_render   = true;
+  priv->spacing            = 0;
+  priv->pages_per_row      = 1;
+  priv->first_page_column  = 0;
+  priv->page_count         = 0;
+  priv->start_index        = 0;
+  priv->page_right_to_left = false;
+  priv->do_render          = true;
 }
 
 GtkWidget* zathura_document_widget_new(void) {
