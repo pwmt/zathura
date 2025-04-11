@@ -28,12 +28,15 @@ struct zathura_document_widget_class_s {
   GtkGridClass parent_class;
 };
 
-#define ZATHURA_TYPE_DOCUMENT (zathura_document_widget_get_type())
-#define ZATHURA_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocument))
-#define ZATHURA_DOCUMENT_CLASS(obj) (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentClass))
-#define ZATHURA_IS_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
-#define ZATHURA_IS_DOCUMENT_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
-#define ZATHURA_DOCUMENT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentClass))
+#define ZATHURA_TYPE_DOCUMENT_WIDGET (zathura_document_widget_get_type())
+#define ZATHURA_DOCUMENT_WIDGET(obj)                                                                                   \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidget))
+#define ZATHURA_DOCUMENT_WIDGET_CLASS(obj)                                                                             \
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
+#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
+#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
+#define ZATHURA_DOCUMENT_WIDGET_GET_CLASS(obj)                                                                         \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
 
 /**
  * Returns the type of the document view widget.
