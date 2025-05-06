@@ -1272,6 +1272,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   zathura_document_widget_start_page_widget_preload(zathura->ui.document_widget);
 
+  /* emit DocumentOpen signal */
+#ifndef WITH_SANDBOX
+  zathura_dbus_document_open(zathura, file_path);
+#endif
+
   return true;
 
 error_free:
@@ -1511,6 +1516,12 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   if (override_predecessor && document_widget_preserve_as_predecessor(zathura) == false) {
     override_predecessor = false;
   }
+
+  /* emit DocumentClose signal */
+#ifndef WITH_SANDBOX
+  const char* file_path = zathura_document_get_path(document);
+  zathura_dbus_document_close(zathura, file_path);
+#endif
 
   if (!override_predecessor) {
     /* release the page widgets before their document and page objects */
