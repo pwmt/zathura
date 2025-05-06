@@ -1233,6 +1233,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* call screen-changed callback to connect monitors-changed signal on initial screen */
   cb_widget_screen_changed(zathura->ui.session->gtk.view, NULL, zathura);
 
+  /* emit DocumentOpen signal */
+#ifndef WITH_SANDBOX
+  zathura_dbus_document_open(zathura, file_path);
+#endif
+
   return true;
 
 error_free:
@@ -1473,6 +1478,12 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   /* remove widgets */
   zathura_document_widget_clear_pages(zathura->ui.document_widget);
+
+  /* emit DocumentClose signal */
+#ifndef WITH_SANDBOX
+  const char* file_path = zathura_document_get_path(document);
+  zathura_dbus_document_close(zathura, file_path);
+#endif
 
   if (!override_predecessor) {
     for (unsigned int i = 0; i < zathura_document_get_number_of_pages(document); i++) {
