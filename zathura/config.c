@@ -4,11 +4,13 @@
 #include "commands.h"
 #include "completion.h"
 #include "callbacks.h"
+#include "gdk/gdkkeysyms.h"
 #include "shortcuts.h"
 #include "zathura.h"
 #include "render.h"
 #include "marks.h"
 #include "utils.h"
+#include "file-explorer.h"
 
 #include <girara/settings.h>
 #include <girara/session.h>
@@ -538,6 +540,7 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,      sc_abort, 0, NULL);
 
   /* define default inputbar commands */
+  girara_inputbar_command_add(gsession, "file-explorer", "fe", cmd_explorer, NULL, _("Toggle the file explorer"));
   girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
   girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
   girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_list,   NULL,         _("List all bookmarks"));

@@ -139,6 +139,7 @@ sources = files(
   'zathura/types.c',
   'zathura/utils.c',
   'zathura/zathura.c',
+  'zathura/file-explorer.c'
 )
 sources += zathura_resources
 
