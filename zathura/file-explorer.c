@@ -79,7 +79,7 @@ write_typst_file(const char **files, const int num_files){
   fprintf(fptr, "= File Explorer\n");
 
   for(int i = 0; i < num_files; i++){
-    fprintf(fptr, "#link(\"%s\")[- %s\n]", files[i], files[i]);
+    fprintf(fptr, "#link(\"%s\")[- %i %s\n]", files[i], (i+1), files[i]);
   }
 
   fclose(fptr);
