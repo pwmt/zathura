@@ -45,12 +45,15 @@ get_valid_files(const char **files, const int num_files, const char ***res){
       continue;
     }
     const char *dot = strchr(files[i], '.');
-
     if(dot == NULL){
       // it is a directory -- valid
-      valid_files[*size] = files[i];
-      (*size)++;
+      // valid_files[*size] = files[i];
+      // (*size)++;
+      continue;
     }else{
+      if(strcmp(files[i], "fe.pdf") == 0){
+        continue;
+      }
       if(strcmp(dot, ".pdf") == 0){
         valid_files[*size] = files[i];
         (*size)++;
@@ -73,8 +76,10 @@ write_typst_file(const char **files, const int num_files){
     return NULL;
   }
 
+  fprintf(fptr, "= File Explorer\n");
+
   for(int i = 0; i < num_files; i++){
-    fprintf(fptr, "%s\n", files[i]);
+    fprintf(fptr, "#link(\"%s\")[- %s\n]", files[i], files[i]);
   }
 
   fclose(fptr);

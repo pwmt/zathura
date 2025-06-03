@@ -725,11 +725,6 @@ bool cmd_explorer(girara_session_t* session, girara_list_t* UNUSED(argument_list
   const int *size = get_valid_files(files, num_files, res);
   const char **valid_files = *res;
   free(res);
-
-  printf("Valid: \n");
-  for(int i = 0; i < *size; i++){
-    printf("%s\n", valid_files[i]);
-  }  
   free(files);
   /* Create the file picker */
   const char *file_name = write_typst_file(valid_files, *size);
