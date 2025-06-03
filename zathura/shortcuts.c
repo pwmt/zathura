@@ -1074,23 +1074,23 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
         gtk_tree_path_down(path);
         continue;
       }
+
       gtk_tree_model_get_iter(model, &iter, path);
       if (gtk_tree_model_iter_next(model, &iter)) {
         gtk_tree_path_free(path);
         path = gtk_tree_model_get_path(model, &iter);
         continue;
       }
+
       gtk_tree_model_get_iter(model, &iter, path);
       while (gtk_tree_model_iter_parent(model, &parent_iter, &iter)) {
         iter = parent_iter;
         if (gtk_tree_model_iter_next(model, &parent_iter)) {
-          iter = parent_iter;
+          gtk_tree_path_free(path);
+          path = gtk_tree_model_get_path(model, &parent_iter);
           break;
         }
-        parent_iter = iter;
       }
-      gtk_tree_path_free(path);
-      path = gtk_tree_model_get_path(model, &iter);
     }
     break;
   case HALF_UP:
