@@ -39,7 +39,6 @@ const int*
 get_valid_files(const char **files, const int num_files, const char ***res){
   const char **valid_files = malloc(num_files * sizeof(char*));
   int *size = malloc(sizeof(int));
-  printf("GETTING VALID FILES -- size %i\n", num_files);
   for(int i = 0; i < num_files; i++){
     if(files[i] == NULL){
       continue;

@@ -688,7 +688,6 @@ bool cmd_source(girara_session_t* session, girara_list_t* argument_list) {
 }
 
 bool cmd_explorer(girara_session_t* session, girara_list_t* UNUSED(argument_list)){
-  printf("Opening file explorer...\n");
   zathura_t* zathura = session->global.data;
   /* Get CWD*/
   const char* file_path = zathura_document_get_path(zathura->document);
