@@ -33,61 +33,11 @@ jobs:
           ninja --verbose
           ninja test --verbose
 
-  build-test-debian-bookworm:
-    name: Test on Debian bookworm
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/pwmt/github-actions-debian:bookworm
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build and test
-        run: |
-          mkdir build
-          cd build
-          meson ..
-          ninja --verbose
-          ninja test --verbose
-      - name: Build and test (features disabled)
-        run: |
-          mkdir build-nofeatures
-          cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
-          ninja --verbose
-          ninja test --verbose
-
   build-test-ubuntu-noble:
     name: Test on Ubuntu noble
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pwmt/github-actions-ubuntu:noble
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build and test
-        run: |
-          mkdir build
-          cd build
-          meson ..
-          ninja --verbose
-          ninja test --verbose
-      - name: Build and test (features disabled)
-        run: |
-          mkdir build-nofeatures
-          cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
-          ninja --verbose
-          ninja test --verbose
-
-  build-test-ubuntu-jammy:
-    name: Test on Ubuntu jammy
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/pwmt/github-actions-ubuntu:jammy
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
