@@ -426,7 +426,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0, 0, "zz", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                                     \
   girara_shortcut_add(gsession, 0, 0, "zZ", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                                     \
                                                                                                                        \
-  girara_shortcut_add(gsession, 0, GDK_KEY_F, NULL, sc_file_chooser, (mode), 0, NULL);                                    
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_o, NULL, sc_file_chooser, (mode), 0, NULL);
 
 #define DEFAULT_MOUSE_EVENTS(mode)                                                                                     \
   girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_UP, UP, NULL);                   \
