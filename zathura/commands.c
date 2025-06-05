@@ -1,8 +1,11 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include <assert.h>
 #include <glib/gi18n.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 
 #include "adjustment.h"
 #include "bookmarks.h"
@@ -20,6 +23,7 @@
 #include "shortcuts.h"
 #include "utils.h"
 #include "zathura.h"
+#include "file-explorer.h"
 
 #include <girara/commands.h>
 #include <girara/datastructures.h>
@@ -681,4 +685,62 @@ bool cmd_source(girara_session_t* session, girara_list_t* argument_list) {
   config_load_files(zathura);
 
   return true;
+}
+
+bool cmd_explorer(girara_session_t* session, girara_list_t* UNUSED(argument_list)){
+  zathura_t* zathura = session->global.data;
+  /* Get CWD*/
+  const char* file_path = zathura_document_get_path(zathura->document);
+
+  if(file_path == NULL){
+    return false;
+  }
+  char *path = get_path(file_path);
+  /* Get files in CWD */
+  DIR *dir;
+  struct dirent *dp;
+
+  dir = opendir(path);
+  if(dir == NULL){
+    girara_error("Failed to get CWD");
+    return false;
+  }
+  int num_files = 0;
+  while((dp = readdir(dir))){
+    num_files++;
+  }
+
+  closedir(dir);
+  dir = opendir(path);
+
+  const char **files = malloc(num_files * sizeof(char*));
+  int file_idx = 0;
+  while((dp = readdir(dir))){
+    files[file_idx] = dp->d_name;
+    file_idx++;
+  }
+
+  const char ***res = malloc(num_files * sizeof(char*));
+  const int *size = get_valid_files(files, num_files, res);
+  const char **valid_files = *res;
+  free(res);
+  free(files);
+  /* Create the file picker */
+  const char *file_name = write_typst_file(valid_files, *size);
+  if(file_name == NULL){
+    printf("Error writing file");
+    return false;
+  }
+  
+  char command[50];
+  sprintf(command, "typst compile %s", file_name);
+  int status = system(command);
+  if(status == -1){
+    perror("error opening file explorer");
+    return false;
+  }
+
+  document_open_idle(zathura, "fe.pdf", NULL, ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL,
+  NULL, NULL, NULL);
+  return false;
 }
