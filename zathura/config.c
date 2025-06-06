@@ -163,6 +163,24 @@ static void cb_show_signature_info(girara_session_t* session, const char* UNUSED
   update_visible_pages(zathura);
 }
 
+void cb_setting_recolor_adjust_lightness_change(girara_session_t* session, const char* name,
+                                                girara_setting_type_t UNUSED(type), const void* value,
+                                                void* UNUSED(data)) {
+  g_return_if_fail(value != NULL);
+  g_return_if_fail(session != NULL);
+  g_return_if_fail(session->global.data != NULL);
+  g_return_if_fail(name != NULL);
+  zathura_t* zathura = session->global.data;
+
+  const bool bool_value = *((const bool*)value);
+
+  if (zathura->sync.render_thread != NULL &&
+      zathura_renderer_recolor_adjust_lightness_enabled(zathura->sync.render_thread) != bool_value) {
+    zathura_renderer_enable_recolor_adjust_lightness(zathura->sync.render_thread, bool_value);
+    render_all(zathura);
+  }
+}
+
 void config_load_default(zathura_t* zathura) {
   if (zathura == NULL || zathura->ui.session == NULL) {
     return;
@@ -257,6 +275,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "recolor-keephue",        &bool_value,  BOOLEAN, false, _("When recoloring keep original hue and adjust lightness only"), cb_setting_recolor_keep_hue_change, NULL);
   bool_value = false;
   girara_setting_add(gsession, "recolor-reverse-video",  &bool_value,  BOOLEAN, false, _("When recoloring keep original image colors"), cb_setting_recolor_keep_reverse_video_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "recolor-adjust-lightness", &bool_value, BOOLEAN, false, _("When recoloring adjust lightness"), cb_setting_recolor_adjust_lightness_change, NULL);
   bool_value = false;
   girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
   bool_value = false;

@@ -594,6 +594,8 @@ static bool setup_renderer(zathura_t* zathura, zathura_document_t* document) {
   zathura_renderer_enable_recolor_hue(renderer, recolor);
   girara_setting_get(zathura->ui.session, "recolor-reverse-video", &recolor);
   zathura_renderer_enable_recolor_reverse_video(renderer, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-adjust-lightness", &recolor);
+  zathura_renderer_enable_recolor_adjust_lightness(renderer, recolor);
 
   zathura->sync.render_thread = renderer;
 

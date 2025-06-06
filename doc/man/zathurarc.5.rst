@@ -822,6 +822,12 @@ zathura
   * Value type: Boolean
   * Default value: false
 
+*recolor-adjust-lightness*
+  En/Disables adjusting lightness when recoloring.
+
+  * Value type: Boolean
+  * Default value: false
+
 *recolor-darkcolor*
   Defines the color value that is used to represent dark colors in recoloring mode
 
