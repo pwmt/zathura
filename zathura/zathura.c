@@ -1158,8 +1158,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   page_right_to_left = file_info.page_right_to_left;
 
-  zathura_document_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
   zathura_document_set_page_layout(document, page_padding, pages_per_row, first_page_column);
+  zathura_document_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
 
   girara_set_view(zathura->ui.session, zathura->ui.document_widget);
 
