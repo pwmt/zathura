@@ -107,13 +107,16 @@ static void zathura_document_widget_get_render_range(zathura_t* zathura, unsigne
   zathura_page_t* page         = zathura_document_get_page(document, current_page);
   double page_height           = zathura_page_get_height(page);
 
-  unsigned int max_pages = MIN(number_of_pages, cairo_max_size * priv->pages_per_row / page_height);
-  if (max_pages < current_page) {
-    *start_index = current_page - max_pages;
-  } else {
+  *page_count = MIN(number_of_pages, cairo_max_size * priv->pages_per_row / page_height);
+  if (number_of_pages < current_page + *page_count / 2) {
+    // current_page is near the end of the document
+    *start_index = number_of_pages - *page_count;
+  } else if (current_page < *page_count / 2) {
+    // current_page is near the start of the document
     *start_index = 0;
+  } else {
+    *start_index = current_page - *page_count / 2;
   }
-  *page_count = MIN(number_of_pages - *start_index, current_page + max_pages);
 }
 
 static void zathura_document_update_grid(zathura_t* zathura) {
