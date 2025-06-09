@@ -156,6 +156,16 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
 void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* column, void* zathura);
 
 /**
+ * Called when an explorer element is activated (e.g.: double click)
+ *
+ * @param tree_view Tree view
+ * @param path Path
+ * @param column Column
+ * @param zathura Zathura session
+ */
+void cb_explorer_row_activated(girara_session_t* session, GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* column, void* zathura);
+
+/**
  * Called when input has been passed to the sc_follow dialog
  *
  * @param entry The dialog inputbar

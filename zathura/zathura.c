@@ -1296,6 +1296,8 @@ void document_open_idle(zathura_t* zathura, const char* path, const char* passwo
   }
 
   gdk_threads_add_idle(document_info_open, document_info);
+
+  girara_mode_set(zathura->ui.session, zathura->modes.normal);
 }
 
 bool document_save(zathura_t* zathura, const char* path, bool overwrite) {

@@ -11,6 +11,7 @@
 #include "database.h"
 #include "dbus-interface.h"
 #include "document.h"
+#include "girara/log.h"
 #include "internal.h"
 #include "page-widget.h"
 #include "page.h"
@@ -20,6 +21,7 @@
 #include "shortcuts.h"
 #include "utils.h"
 #include "zathura.h"
+#include "callbacks.h"
 
 #include <girara/commands.h>
 #include <girara/datastructures.h>
@@ -679,6 +681,112 @@ bool cmd_source(girara_session_t* session, girara_list_t* argument_list) {
     zathura_set_config_dir(zathura, girara_list_nth(argument_list, 0));
   }
   config_load_files(zathura);
+
+  return true;
+}
+
+bool cmd_toggle_explorer(girara_session_t* session, girara_list_t* UNUSED(argument_list)){  
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session-> global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  girara_tree_node_t* explorer = NULL;
+  GtkWidget* treeview = NULL;
+  GtkTreeModel* model = NULL;
+  GtkCellRenderer* renderer = NULL;
+  GtkCellRenderer* renderer2 = NULL;
+
+
+  if (zathura->ui.file_explorer == NULL){
+    /* create new file explorer widget */
+    zathura->ui.file_explorer = gtk_scrolled_window_new(NULL, NULL);
+
+    if (zathura->ui.file_explorer == NULL){
+      return false;
+    }
+
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.file_explorer), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+    /* create file explorer */
+    explorer = zathura_explorer_generate(session, NULL);
+    if(explorer == NULL){
+      girara_notify(session, GIRARA_WARNING, _("Unable to retrieve the file explorer"));
+      goto error_free;
+    }
+
+    model = GTK_TREE_MODEL(gtk_tree_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER));
+    if (model == NULL) {
+      goto error_free;
+    }
+
+    treeview = gtk_tree_view_new_with_model(model);
+    if(treeview == NULL){
+      goto error_free;
+    }
+
+    gtk_style_context_add_class(gtk_widget_get_style_context(treeview), "indexmode");
+
+    g_object_unref(model);
+
+    renderer = gtk_cell_renderer_text_new();
+    if(renderer == NULL){
+      goto error_free;
+    }
+
+    renderer2 = gtk_cell_renderer_text_new();
+    if(renderer2 == NULL){
+      goto error_free;
+    }
+
+    file_explorer_build(session, model, NULL, explorer);
+    girara_node_free(explorer);
+
+    /* setup widget */
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 0, "Title", renderer, "markup", 0, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 2, "(alt)", renderer2, "text", 2, NULL);
+
+    gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
+    g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+    g_object_set(G_OBJECT(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)), "expand", TRUE, NULL);
+    gtk_tree_view_column_set_alignment(gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 1), 1.0f);
+    gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), search_equal_func_index, treeview, NULL);
+    gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
+    g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), zathura);
+
+    gtk_container_add(GTK_CONTAINER(zathura->ui.file_explorer), treeview);
+  }
+
+  if (zathura->ui.file_explorer && gtk_widget_get_visible(GTK_WIDGET(zathura->ui.file_explorer))){
+    /* toggle off */
+  } else{
+    /* save document position in jumplist */
+    zathura_jumplist_add(zathura);
+
+    const zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(zathura->document);
+
+    if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
+      zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+    }
+
+    /* set the view */
+    girara_set_view(session, zathura->ui.file_explorer);
+    GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.file_explorer))->data;
+    gtk_widget_grab_focus(GTK_WIDGET(tree_view));
+    girara_mode_set(zathura->ui.session, zathura->modes.index);
+  }
+
+  return true;
+
+  error_free:
+
+    if(zathura->ui.file_explorer != NULL){
+      g_object_ref_sink(zathura->ui.file_explorer);
+      zathura->ui.file_explorer = NULL;
+    }
+
+    if(explorer != NULL){
+      girara_node_free(explorer);
+    }
 
   return true;
 }

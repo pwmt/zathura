@@ -198,6 +198,22 @@ typedef struct zathura_index_element_s {
   zathura_link_t* link;
 } zathura_index_element_t;
 
+typedef enum zathura_explorer_type_e{
+ ZATHURA_EXPLORER_TYPE_FILE_VALID,
+ ZATHURA_EXPLORER_TYPE_FILE_INVALID,
+ ZATHURA_EXPLORER_TYPE_DIR,
+} zathura_explorer_type_e;
+
+/**
+ * Index element
+ */
+typedef struct zathura_explorer_element_s{
+  char* title; /**< Title of the element */
+  zathura_explorer_type_e type;
+  zathura_link_t* link;
+} zathura_explorer_element_s;
+
+
 /**
  * Form type
  */
@@ -237,6 +253,13 @@ ZATHURA_PLUGIN_API zathura_index_element_t* zathura_index_element_new(const char
  * @param index The index element
  */
 ZATHURA_PLUGIN_API void zathura_index_element_free(zathura_index_element_t* index);
+
+/**
+ * Free index element
+ *
+ * @param index The index element
+ */
+ZATHURA_PLUGIN_API void zathura_explorer_element_free(zathura_explorer_element_s* index);
 
 /**
  * Creates a list that should be used to store \ref

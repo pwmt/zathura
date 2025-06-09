@@ -23,6 +23,8 @@
 #include "adjustment.h"
 #include "synctex.h"
 #include "dbus-interface.h"
+#include "zathura/commands.h"
+#include "zathura/types.h"
 
 gboolean cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura) {
   if (zathura_has_document(zathura) == true) {
@@ -334,19 +336,44 @@ void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeVi
   GtkTreeIter iter;
 
   g_object_get(G_OBJECT(tree_view), "model", &model, NULL);
-
   if (gtk_tree_model_get_iter(model, &iter, path)) {
     zathura_index_element_t* index_element;
     gtk_tree_model_get(model, &iter, 3, &index_element, -1);
-
     if (index_element == NULL) {
       return;
     }
 
-    sc_toggle_index(zathura->ui.session, NULL, NULL, 0);
     zathura_link_evaluate(zathura, index_element->link);
   }
+  g_object_unref(model);
+}
 
+void cb_explorer_row_activated(girara_session_t* session, GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* UNUSED(column), void* data){
+  zathura_t* zathura = data;
+  if (tree_view == NULL || zathura == NULL || zathura->ui.session == NULL){
+    return;
+  }
+  
+  GtkTreeModel* model;
+  GtkTreeIter iter;
+
+  g_object_get(G_OBJECT(tree_view), "model", &model, NULL);
+  if (gtk_tree_model_get_iter(model, &iter, path)){
+    zathura_explorer_element_s* explorer_element;
+    gtk_tree_model_get(model, &iter, 3, &explorer_element, -1);
+    if(explorer_element == NULL){
+      return;
+    }
+    if(explorer_element->type == ZATHURA_EXPLORER_TYPE_DIR || explorer_element->type == ZATHURA_EXPLORER_TYPE_FILE_INVALID){
+      return;
+    }
+    zathura_link_target_t target = zathura_link_get_target(explorer_element->link);
+    document_open_idle(session->global.data, target.value, NULL, 0, NULL, NULL, NULL, NULL);
+  }
+
+
+  zathura->ui.file_explorer = NULL;
+  zathura->ui.index = NULL;
   g_object_unref(model);
 }
 

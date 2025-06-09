@@ -10,6 +10,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/utils.h>
+#include <limits.h>
 
 #include "links.h"
 #include "utils.h"
@@ -19,6 +20,7 @@
 #include "page.h"
 #include "plugin.h"
 #include "content-type.h"
+#include "zathura/types.h"
 
 double zathura_correct_zoom_value(girara_session_t* session, const double zoom) {
   if (session == NULL) {
@@ -104,6 +106,49 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
 
     if (girara_node_get_num_children(node) > 0) {
       document_index_build(session, model, &tree_iter, node);
+    }
+  }
+}
+
+static void explorer_element_free(void* data, GObject* UNUSED(object)) {
+  zathura_explorer_element_s* element = data;
+  zathura_explorer_element_free(element);
+}
+
+
+void file_explorer_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent, girara_tree_node_t* tree){
+  girara_list_t* list = girara_node_get_children(tree);
+
+  for(size_t idx = 0; idx != girara_list_size(list); ++idx){
+    girara_tree_node_t* node = girara_list_nth(list, idx);
+    zathura_explorer_element_s* fe_element = girara_node_get_data(node);
+
+    if(strcmp(fe_element->title, "") == 0 || strcmp(fe_element->title, "`") == 0){
+      continue;
+    }
+
+    gchar* description = NULL;
+    gchar* description2 = NULL;
+
+    if(fe_element->type == ZATHURA_EXPLORER_TYPE_FILE_VALID){
+      description = g_strdup_printf("%s", fe_element->title);
+      description2 = g_strdup_printf("FILE");
+    } else {
+      description = g_strdup_printf("%s", fe_element->title);
+      description2 = g_strdup_printf("DIRECTORY");
+    }
+
+    GtkTreeIter tree_iter;
+    gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
+    gchar* markup = g_markup_escape_text(fe_element->title, -1);
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, description2, 3, fe_element, -1);
+    g_free(markup);
+    g_free(description2);
+    g_free(description);
+    g_object_weak_ref(G_OBJECT(model), explorer_element_free, fe_element);
+
+    if(girara_node_get_num_children(node) > 0){
+      file_explorer_build(session, model, &tree_iter, node);
     }
   }
 }
@@ -619,4 +664,149 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
   }
   girara_list_free(points);
   return new_rectangles;
+}
+
+char*
+get_path(const char *fp){
+  if(fp == NULL){
+    return NULL;
+  }
+
+  const char *last_slash = strrchr(fp, '/');
+
+  if(last_slash == NULL){
+    char *path = malloc(1);
+    if(path != NULL){
+      path[0] = '\0';
+    }
+    return path;
+  }
+
+  size_t path_len = last_slash - fp;
+
+  char *path = (char*)malloc(path_len + 1);
+  if(path == NULL){
+    return NULL;
+  }
+
+  strncpy(path, fp, path_len);
+  path[path_len] = '\0';
+
+  return path;
+}
+
+zathura_explorer_type_e get_type(const char *path){
+  if (path == NULL){
+    return -1;
+  }
+
+  const char *dot = strchr(path, '.');
+  if(dot == NULL){
+    // dir or otherwise invalid
+    return ZATHURA_EXPLORER_TYPE_DIR;
+  }else{
+    if (strcmp(dot, ".pdf") == 0){
+      // pdf file
+      return ZATHURA_EXPLORER_TYPE_FILE_VALID;
+    }else{
+      // not a pdf file
+      return ZATHURA_EXPLORER_TYPE_FILE_INVALID;
+    }
+  }
+}
+
+girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura_error_t* error){
+  zathura_t* zathura = session->global.data;
+  /* Get CWD data */
+  const char* file_path = zathura_document_get_path(zathura->document);
+  if (file_path == NULL){
+    return NULL;
+  }
+
+  char *path = get_path(file_path);
+
+  zathura_explorer_element_s *cwd_data = malloc(sizeof(zathura_explorer_element_s));
+  cwd_data->title = path;
+  cwd_data->type = ZATHURA_EXPLORER_TYPE_DIR;
+  zathura_rectangle_t *r = malloc(sizeof(zathura_rectangle_t));
+  zathura_link_target_t *t = malloc(sizeof(zathura_link_target_t));
+  cwd_data->link = zathura_link_new(ZATHURA_LINK_NONE, *r, *t);
+  girara_tree_node_t* root = girara_node_new(cwd_data);
+  zathura_explorer_generate_r(error, root, path, 0);
+  if (error != NULL){
+    girara_error("Error generating explorer");
+    return NULL;
+  }
+
+  return root;
+}
+
+// takes a dir and gets its children and adds it to the parent
+bool zathura_explorer_generate_r(zathura_error_t* error, girara_tree_node_t* root, char *path, int trace){
+  /* Only 3 recursive calls to prevent it from getting too big */
+  if (trace > 5){
+    return false;
+  }
+  if (root == NULL || path == NULL){
+    return false;
+  }
+
+  DIR *dir;
+  struct dirent *dp;
+
+
+  dir = opendir(path);
+  if (dir == NULL){
+    // girara_error("Failed to open directory ");
+    return false;
+  }
+
+  while((dp = readdir(dir))){
+    char *fp = dp->d_name;
+    if((strcmp(fp, "..") == 0) || (strcmp(fp, ".") == 0)){
+      continue;
+    }
+    char full_path[PATH_MAX];
+    snprintf(full_path, sizeof(full_path), "%s/%s", path, dp->d_name);
+
+    unsigned char type = dp->d_type;
+
+    zathura_explorer_type_e zathura_type = get_type(fp);
+    if(zathura_type == ZATHURA_EXPLORER_TYPE_FILE_VALID){
+
+      zathura_explorer_element_s *valid_file = malloc(sizeof(zathura_explorer_element_s));
+      valid_file->title = strdup(fp);
+      valid_file->type = ZATHURA_EXPLORER_TYPE_FILE_VALID;      
+
+      zathura_rectangle_t rect = {0,0,0,0};
+      zathura_link_target_t target = { .value = strdup(full_path), .destination_type = ZATHURA_LINK_DESTINATION_XYZ};
+      zathura_link_t* link = zathura_link_new(ZATHURA_LINK_GOTO_DEST, rect, target);
+      valid_file->link = link;
+      girara_tree_node_t *file_node = girara_node_new(valid_file);
+      girara_node_append(root, file_node);
+    }else if (zathura_type == ZATHURA_EXPLORER_TYPE_FILE_INVALID || type != DT_DIR){
+      continue;
+    }else{
+      /* DIRECTORY */
+      zathura_explorer_element_s *valid_dir = malloc(sizeof(zathura_explorer_element_s));
+      valid_dir->title = fp;
+      valid_dir->type = ZATHURA_EXPLORER_TYPE_DIR;
+      zathura_rectangle_t *r = malloc(sizeof(zathura_rectangle_t));
+      zathura_link_target_t *t = malloc(sizeof(zathura_link_target_t));
+      valid_dir->link = zathura_link_new(ZATHURA_LINK_NONE, *r, *t);
+      girara_tree_node_t *dir_node = girara_node_new(valid_dir);
+
+      char path_ext[PATH_MAX];
+      sprintf(path_ext, "%s/%s", path, fp);
+      bool ok = zathura_explorer_generate_r(error, dir_node, path_ext, trace + 1);
+      if (ok){
+        girara_node_append(root, dir_node);
+      }
+      else{
+        continue;
+      }
+    }
+  }
+  closedir(dir);
+  return true;
 }
