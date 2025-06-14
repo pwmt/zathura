@@ -688,12 +688,12 @@ girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura
 
   char *path = g_path_get_dirname(file_path);
 
-  zathura_explorer_element_s *cwd_data = malloc(sizeof(zathura_explorer_element_s));
+  zathura_explorer_element_s *cwd_data = g_try_malloc(sizeof(zathura_explorer_element_s));
   cwd_data->title = path;
   cwd_data->type = ZATHURA_EXPLORER_TYPE_DIR;
-  zathura_rectangle_t *r = malloc(sizeof(zathura_rectangle_t));
-  zathura_link_target_t *t = malloc(sizeof(zathura_link_target_t));
-  cwd_data->link = zathura_link_new(ZATHURA_LINK_NONE, *r, *t);
+  zathura_rectangle_t r = {0};
+  zathura_link_target_t t = {0};
+  cwd_data->link = zathura_link_new(ZATHURA_LINK_NONE, r, t);
   girara_tree_node_t* root = girara_node_new(cwd_data);
   zathura_explorer_generate_r(zathura, error, root, path, 0);
   if (error != NULL){
@@ -737,7 +737,7 @@ bool zathura_explorer_generate_r(zathura_t* zathura, zathura_error_t* error, gir
     zathura_explorer_type_e zathura_type = get_type(zathura, fp);
     if(zathura_type == ZATHURA_EXPLORER_TYPE_FILE_VALID){
 
-      zathura_explorer_element_s *valid_file = malloc(sizeof(zathura_explorer_element_s));
+      zathura_explorer_element_s *valid_file = g_try_malloc(sizeof(zathura_explorer_element_s));
       valid_file->title = strdup(fp);
       valid_file->type = ZATHURA_EXPLORER_TYPE_FILE_VALID;      
 
@@ -751,12 +751,12 @@ bool zathura_explorer_generate_r(zathura_t* zathura, zathura_error_t* error, gir
       continue;
     }else{
       /* DIRECTORY */
-      zathura_explorer_element_s *valid_dir = malloc(sizeof(zathura_explorer_element_s));
+      zathura_explorer_element_s *valid_dir = g_try_malloc(sizeof(zathura_explorer_element_s));
       valid_dir->title = fp;
       valid_dir->type = ZATHURA_EXPLORER_TYPE_DIR;
-      zathura_rectangle_t *r = malloc(sizeof(zathura_rectangle_t));
-      zathura_link_target_t *t = malloc(sizeof(zathura_link_target_t));
-      valid_dir->link = zathura_link_new(ZATHURA_LINK_NONE, *r, *t);
+      zathura_rectangle_t r = {0};
+      zathura_link_target_t t = {0};
+      valid_dir->link = zathura_link_new(ZATHURA_LINK_NONE, r, t);
       girara_tree_node_t *dir_node = girara_node_new(valid_dir);
 
       char path_ext[PATH_MAX];
