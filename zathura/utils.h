@@ -8,6 +8,7 @@
 #include <girara/types.h>
 
 #include "document.h"
+#include "zathura/types.h"
 
 #define LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -194,6 +195,6 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles);
 
 girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura_error_t* error);
 
-bool zathura_explorer_generate_r(zathura_error_t* error, girara_tree_node_t* root, char *path, int trace);
+bool zathura_explorer_generate_r(zathura_t* zathura, zathura_error_t* error, girara_tree_node_t* root, char *path, int trace);
 
 #endif // UTILS_H
