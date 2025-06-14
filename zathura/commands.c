@@ -11,7 +11,6 @@
 #include "database.h"
 #include "dbus-interface.h"
 #include "document.h"
-#include "girara/log.h"
 #include "internal.h"
 #include "page-widget.h"
 #include "page.h"
@@ -28,6 +27,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/utils.h>
+#include <girara/log.h>
 
 bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
