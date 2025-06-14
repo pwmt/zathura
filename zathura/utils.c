@@ -131,11 +131,11 @@ void file_explorer_build(girara_session_t* session, GtkTreeModel* model, GtkTree
     gchar* description2 = NULL;
 
     if(fe_element->type == ZATHURA_EXPLORER_TYPE_FILE_VALID){
-      description = g_strdup_printf("%s", fe_element->title);
-      description2 = g_strdup_printf("FILE");
+      description = fe_element->title;
+      description2 = "FILE";
     } else {
-      description = g_strdup_printf("%s", fe_element->title);
-      description2 = g_strdup_printf("DIRECTORY");
+      description = fe_element->title;
+      description2 = "DIRECTORY";
     }
 
     GtkTreeIter tree_iter;
@@ -143,8 +143,6 @@ void file_explorer_build(girara_session_t* session, GtkTreeModel* model, GtkTree
     gchar* markup = g_markup_escape_text(fe_element->title, -1);
     gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, description2, 3, fe_element, -1);
     g_free(markup);
-    g_free(description2);
-    g_free(description);
     g_object_weak_ref(G_OBJECT(model), explorer_element_free, fe_element);
 
     if(girara_node_get_num_children(node) > 0){
