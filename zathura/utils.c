@@ -664,35 +664,6 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
   return new_rectangles;
 }
 
-char*
-get_path(const char *fp){
-  if(fp == NULL){
-    return NULL;
-  }
-
-  const char *last_slash = strrchr(fp, '/');
-
-  if(last_slash == NULL){
-    char *path = malloc(1);
-    if(path != NULL){
-      path[0] = '\0';
-    }
-    return path;
-  }
-
-  size_t path_len = last_slash - fp;
-
-  char *path = (char*)malloc(path_len + 1);
-  if(path == NULL){
-    return NULL;
-  }
-
-  strncpy(path, fp, path_len);
-  path[path_len] = '\0';
-
-  return path;
-}
-
 zathura_explorer_type_e get_type(const char *path){
   if (path == NULL){
     return -1;
@@ -721,7 +692,7 @@ girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura
     return NULL;
   }
 
-  char *path = get_path(file_path);
+  char *path = g_path_get_dirname(file_path);
 
   zathura_explorer_element_s *cwd_data = malloc(sizeof(zathura_explorer_element_s));
   cwd_data->title = path;
