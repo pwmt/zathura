@@ -664,17 +664,23 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
   return new_rectangles;
 }
 
-zathura_explorer_type_e get_type(zathura_t* zathura, const char *path){
+zathura_explorer_type_e get_type(const char *path){
   if (path == NULL){
-    return ZATHURA_EXPLORER_TYPE_FILE_INVALID;
+    return -1;
   }
 
-  if (g_file_test(path, G_FILE_TEST_IS_DIR) == true){
+  const char *dot = strchr(path, '.');
+  if(dot == NULL){
+    // dir or otherwise invalid
     return ZATHURA_EXPLORER_TYPE_DIR;
-  }else if(file_valid_extension(zathura, path) == true){
-    return ZATHURA_EXPLORER_TYPE_FILE_VALID;
   }else{
-    return ZATHURA_EXPLORER_TYPE_FILE_INVALID;
+    if (strcmp(dot, ".pdf") == 0){
+      // pdf file
+      return ZATHURA_EXPLORER_TYPE_FILE_VALID;
+    }else{
+      // not a pdf file
+      return ZATHURA_EXPLORER_TYPE_FILE_INVALID;
+    }
   }
 }
 
@@ -695,7 +701,7 @@ girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura
   zathura_link_target_t t = {0};
   cwd_data->link = zathura_link_new(ZATHURA_LINK_NONE, r, t);
   girara_tree_node_t* root = girara_node_new(cwd_data);
-  zathura_explorer_generate_r(zathura, error, root, path, 0);
+  zathura_explorer_generate_r(error, root, path, 0);
   if (error != NULL){
     girara_error("Error generating explorer");
     return NULL;
@@ -705,7 +711,7 @@ girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura
 }
 
 // takes a dir and gets its children and adds it to the parent
-bool zathura_explorer_generate_r(zathura_t* zathura, zathura_error_t* error, girara_tree_node_t* root, char *path, int trace){
+bool zathura_explorer_generate_r(zathura_error_t* error, girara_tree_node_t* root, char *path, int trace){
   /* Only 3 recursive calls to prevent it from getting too big */
   if (trace > 5){
     return false;
@@ -734,7 +740,7 @@ bool zathura_explorer_generate_r(zathura_t* zathura, zathura_error_t* error, gir
 
     unsigned char type = dp->d_type;
 
-    zathura_explorer_type_e zathura_type = get_type(zathura, fp);
+    zathura_explorer_type_e zathura_type = get_type(fp);
     if(zathura_type == ZATHURA_EXPLORER_TYPE_FILE_VALID){
 
       zathura_explorer_element_s *valid_file = g_try_malloc(sizeof(zathura_explorer_element_s));
@@ -761,7 +767,7 @@ bool zathura_explorer_generate_r(zathura_t* zathura, zathura_error_t* error, gir
 
       char path_ext[PATH_MAX];
       sprintf(path_ext, "%s/%s", path, fp);
-      bool ok = zathura_explorer_generate_r(zathura, error, dir_node, path_ext, trace + 1);
+      bool ok = zathura_explorer_generate_r(error, dir_node, path_ext, trace + 1);
       if (ok){
         girara_node_append(root, dir_node);
       }
