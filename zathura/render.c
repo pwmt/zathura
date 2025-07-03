@@ -575,8 +575,8 @@ static void recolor_slow(ZathuraRendererPrivate* priv, unsigned int page_width, 
          * by half saturation. */
         if (adjust_lightness) {
           /* l = l * s/2 + l^4 * (1 - s/2) */
-          double adj = l*l*l*l;
-          l = (l - adj) * (s*0.5) + adj;
+          double adj = l * l * l * l;
+          l          = (l - adj) * (s * 0.5) + adj;
         }
 
         /* Interpolates lightness between light and dark colors. white goes to
@@ -661,8 +661,8 @@ static void recolor_fast(ZathuraRendererPrivate* priv, unsigned int page_width, 
          * by half saturation. */
         if (adjust_lightness) {
           /* l = l * s/2 + l^4 * (1 - s/2) */
-          double adj = l*l*l*l;
-          l = (l - adj) * (s*0.5) + adj;
+          double adj = l * l * l * l;
+          l          = (l - adj) * (s * 0.5) + adj;
         }
 
         /* Interpolates lightness between light and dark colors. white goes to
