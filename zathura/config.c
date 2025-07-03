@@ -163,9 +163,9 @@ static void cb_show_signature_info(girara_session_t* session, const char* UNUSED
   update_visible_pages(zathura);
 }
 
-void cb_setting_recolor_adjust_lightness_change(girara_session_t* session, const char* name,
-                                                girara_setting_type_t UNUSED(type), const void* value,
-                                                void* UNUSED(data)) {
+static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session, const char* name,
+                                                       girara_setting_type_t UNUSED(type), const void* value,
+                                                       void* UNUSED(data)) {
   g_return_if_fail(value != NULL);
   g_return_if_fail(session != NULL);
   g_return_if_fail(session->global.data != NULL);
