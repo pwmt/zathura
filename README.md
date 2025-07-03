@@ -17,7 +17,7 @@ The following dependencies are required:
 * `sqlite3` (>= 3.6.23): sqlite3 database backend
 
 The following dependencies are optional:
-* `libsynctex` from TeXLive (>= 1.19): SyncTeX support
+* `libsynctex` from TeXLive (>= 2): SyncTeX support
 * `libseccomp`: sandbox support
 
 For building zathura, the following dependencies are also required:

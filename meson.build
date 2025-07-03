@@ -81,16 +81,13 @@ flags = [
 flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
-synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
+synctex = dependency('synctex', version: '>=2', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
 landlock = cc.check_header('linux/landlock.h', required: get_option('landlock'))
 
 if synctex.found()
   build_dependencies += synctex
   defines += '-DWITH_SYNCTEX'
-  if synctex.version() < '2.0.0' and synctex.version() >= '1.19.0'
-    warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
-  endif
 endif
 
 # generate version header file
