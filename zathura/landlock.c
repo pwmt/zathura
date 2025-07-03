@@ -57,8 +57,7 @@ static void landlock_drop(__u64 fs_access) {
 #define _LANDLOCK_ACCESS_FS_READ (LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR)
 
 static void landlock_check_kernel(void) {
-  int abi = landlock_create_ruleset(NULL, 0,
-                                  LANDLOCK_CREATE_RULESET_VERSION);
+  int abi = landlock_create_ruleset(NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
   if (abi == -1) {
     /*
      * Kernel too old, not compiled with Landlock,
@@ -66,7 +65,7 @@ static void landlock_check_kernel(void) {
      */
     girara_warning("Unable to use Landlock: Kernel too old, not compiled with Landlock,\
             or Landlock was not enabled at boot time. Sandbox partly disabled.");
-    return;  /* Graceful fallback: Do nothing. */
+    return; /* Graceful fallback: Do nothing. */
   }
 }
 

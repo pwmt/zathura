@@ -328,11 +328,7 @@ char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager,
     }
   }
 
-#if GLIB_CHECK_VERSION(2, 76, 0)
   return g_string_free_and_steal(string);
-#else
-  return g_string_free(string, FALSE);
-#endif
 }
 
 GdkAtom* get_selection(zathura_t* zathura) {
@@ -381,11 +377,7 @@ char* write_first_page_column_list(unsigned int* first_page_columns, unsigned in
     }
   }
 
-#if GLIB_CHECK_VERSION(2, 76, 0)
   return g_string_free_and_steal(buffer);
-#else
-  return g_string_free(buffer, FALSE);
-#endif
 }
 
 unsigned int* parse_first_page_column_list(const char* first_page_column_list, unsigned int* size) {

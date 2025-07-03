@@ -598,7 +598,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   /* compute the direction of scrolling */
   double direction = 1.0;
   if ((argument->n == LEFT) || (argument->n == FULL_LEFT) || (argument->n == HALF_LEFT) || (argument->n == UP) ||
-      (argument->n == FULL_UP) || (argument->n == HALF_UP)) {
+      (argument->n == FULL_UP) || (argument->n == HALF_UP) || (argument->n == PARTIAL_UP)) {
     direction = -1.0;
   }
 
@@ -621,6 +621,11 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   case HALF_UP:
   case HALF_DOWN:
     pos_y += direction * 0.5 * vstep;
+    break;
+
+  case PARTIAL_UP:
+  case PARTIAL_DOWN:
+    pos_y += direction * t * (scroll_step * 0.2) / (double)doc_height;
     break;
 
   case HALF_LEFT:
@@ -683,11 +688,13 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
     case FULL_UP:
     case HALF_UP:
+    case PARTIAL_UP:
       page_number_to_position(zathura->document, new_page_id, 0.0, 1.0, &dummy, &pos_y);
       break;
 
     case FULL_DOWN:
     case HALF_DOWN:
+    case PARTIAL_DOWN:
       page_number_to_position(zathura->document, new_page_id, 0.0, 0.0, &dummy, &pos_y);
       break;
     }
@@ -1067,31 +1074,33 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
         gtk_tree_path_down(path);
         continue;
       }
+
       gtk_tree_model_get_iter(model, &iter, path);
       if (gtk_tree_model_iter_next(model, &iter)) {
         gtk_tree_path_free(path);
         path = gtk_tree_model_get_path(model, &iter);
         continue;
       }
+
       gtk_tree_model_get_iter(model, &iter, path);
       while (gtk_tree_model_iter_parent(model, &parent_iter, &iter)) {
         iter = parent_iter;
         if (gtk_tree_model_iter_next(model, &parent_iter)) {
-          iter = parent_iter;
+          gtk_tree_path_free(path);
+          path = gtk_tree_model_get_path(model, &parent_iter);
           break;
         }
-        parent_iter = iter;
       }
-      gtk_tree_path_free(path);
-      path = gtk_tree_model_get_path(model, &iter);
     }
     break;
   case HALF_UP:
+  case PARTIAL_UP:
     gtk_tree_path_free(path);
     path           = gtk_tree_path_copy(start_path);
     need_to_scroll = TRUE;
     break;
   case HALF_DOWN:
+  case PARTIAL_DOWN:
     gtk_tree_path_free(path);
     path           = gtk_tree_path_copy(end_path);
     need_to_scroll = TRUE;
@@ -1215,7 +1224,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
   }
 
   if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
-    girara_set_view(session, zathura->ui.page_widget);
+    girara_set_view(session, zathura->ui.document_widget);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
 
@@ -1536,4 +1545,52 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* UNUSED(argume
 
   int page = zathura_document_get_current_page_number(document);
   return page_set(zathura, page);
+}
+
+bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                     unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  GtkFileChooserNative* native =
+      gtk_file_chooser_native_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
+  GtkFileChooser* chooser = GTK_FILE_CHOOSER(native);
+
+  GtkFileFilter* filter     = gtk_file_filter_new();
+  girara_list_t* mime_types = zathura_plugin_manager_get_content_types(zathura->plugins.manager);
+  if (mime_types) {
+    for (size_t idx = 0; idx != girara_list_size(mime_types); ++idx) {
+      const char* mime_type = girara_list_nth(mime_types, idx);
+      girara_debug("adding mime type to %s to filter", mime_type);
+      gtk_file_filter_add_mime_type(filter, mime_type);
+    }
+    gtk_file_chooser_add_filter(chooser, filter);
+  } else {
+    g_object_unref(filter);
+  }
+
+  const gint res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(native));
+  if (res == GTK_RESPONSE_ACCEPT) {
+    char* filename = gtk_file_chooser_get_filename(chooser);
+    if (!document_close(zathura, false)) {
+      g_free(filename);
+      goto error;
+    }
+
+    if (!document_open(zathura, filename, NULL, NULL, 0, NULL)) {
+      g_free(filename);
+      goto error;
+    }
+
+    g_free(filename);
+  }
+
+  g_object_unref(native);
+  return true;
+
+error:
+
+  g_object_unref(native);
+  return false;
 }

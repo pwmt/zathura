@@ -41,10 +41,569 @@
       <image>https://pwmt.org/static/img/zathura-bookmarks.png</image>
     </screenshot>
   </screenshots>
-  <update_contact>zathura@lists.pwmt.org</update_contact>
   <translation type="gettext">zathura</translation>
   <provides>
     <binary>zathura</binary>
   </provides>
   <content_rating type="oars-1.0" />
+  <releases>
+    <release version="0.5.12" date="2025-07-03">
+      <description>
+        <p>A shortcut to open files via file chooser dialog</p>
+        <p>Refactor rendering of pages</p>
+        <p>Add lightness adjustment for recolering</p>
+        <p>Initial support for OpenBSD sandbox</p>
+      </description>
+    </release>
+    <release version="0.5.11" date="2024-12-18">
+      <description>
+        <p>Fix closing of documents</p>
+      </description>
+    </release>
+    <release version="0.5.10" date="2024-12-10">
+      <description>
+        <p>Fix crash when opening documents</p>
+      </description>
+    </release>
+    <release version="0.5.9" date="2024-12-09">
+      <description>
+        <p>Fix build on macOS</p>
+        <p>Hide page label if the same as page number</p>
+        <p>Cache synctex parser for faster operation</p>
+        <p>Revert changes for documents with multiple page sizes</p>
+        <p>Various fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.5.8" date="2024-08-04">
+      <description>
+        <p>Bump plugin ABI</p>
+      </description>
+    </release>
+    <release version="0.5.7" date="2024-08-03">
+      <description>
+        <p>Split sandbox functionality into separate zathura-sandbox binary</p>
+        <p>Split off new command bjump from blist</p>
+        <p>Add initial landlock support to sandbox</p>
+        <p>Fix repeated search</p>
+        <p>Implement jumplist command</p>
+        <p>Fix issues with document with multiple page sizes</p>
+        <p>Various fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.5.6" date="2024-05-01">
+      <description>
+        <p>Move to Github</p>
+        <p>Reduce minimum glib version</p>
+        <p>Remove normal sandbox mode</p>
+        <p>Various fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.5.5" date="2024-03-03">
+      <description>
+        <p>Compatibility with girara 0.4.3</p>
+        <p>Remove highlight-transparency setting. Set the alpha component of highlight-color, highlight-active-color and highlight-fg instead.</p>
+        <p>Remove smooth-reload setting. Smooth reloading is now always enabled.</p>
+        <p>Remove plain database backend. The sqlite database backend imports the data from the plain database the first time. sqlite is now a hard dependency.</p>
+        <p>Fix a segfault if dbus is not enabled.</p>
+      </description>
+    </release>
+    <release version="0.5.4" date="2023-12-09">
+      <description>
+        <p>Various fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.5.3" date="2023-12-08">
+      <description>
+        <p>Add support to display signatures</p>
+        <p>Fix clearing of highlighted links</p>
+        <p>Make some key modifiers configurable</p>
+        <p>Fix text selection on rotated pages</p>
+        <p>Fix gap between pages</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.5.2" date="2022-11-27">
+      <description>
+        <p>Improve text selection</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.5.1" date="2022-09-09">
+      <description>
+        <p>seccomp: Make glibc fallback to clone instead of using clone3</p>
+      </description>
+    </release>
+    <release version="0.5.0" date="2022-09-08">
+      <description>
+        <p>magic is now a required dependency</p>
+        <p>Various fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.4.9" date="2022-02-13">
+      <description>
+        <p>Add '$f' and '$p' expansions to 'exec' shortcut function</p>
+        <p>Fix build with meson 0.60</p>
+        <p>Add :source command</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.8" date="2021-07-14">
+      <description>
+        <p>Account for page padding in full scroll</p>
+        <p>Add forefground color for links</p>
+        <p>Add :save and :save! aliases for :write and :write!</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.7" date="2020-09-03">
+      <description>
+        <p>Fix invalid zoom when opening document with 'adjust-open width' option</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.6" date="2020-07-27">
+      <description>
+        <p>Add --find option to the CLI</p>
+        <p>Support recolor with transparency</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.5" date="2020-01-06">
+      <description>
+        <p>Fix step size for mouse wheel scrolling</p>
+        <p>Lookup fileinfo from database by hash as fallback</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.4" date="2019-09-08">
+      <description>
+        <p>Fix expansion of ~ and ~user when opening files</p>
+        <p>Add fish completion</p>
+        <p>Various fixes and improvements</p>
+        <p>Drop support for old libsyntex</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.3" date="2018-12-22">
+      <description>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.1" date="2018-09-20">
+      <description>
+        <p>Add bash and zsh completions</p>
+        <p>Add RTL layout of pages</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.4.0" date="2018-05-20">
+      <description>
+        <p>Port to newer libsynctex</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.3.9" date="2018-03-16">
+      <description>
+        <p>Improved HiDPI support</p>
+        <p>Display page labels</p>
+        <p>Add experimental seccomp filters</p>
+        <p>Replace build system with meson</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.3.8" date="2017-12-20">
+      <description>
+        <p>Fix memory leaks</p>
+        <p>Rework plugin initialization</p>
+        <p>Various fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.3.7" date="2017-01-11">
+      <description>
+        <p>Improved logging</p>
+        <p>Improve page mode toggling</p>
+        <p>Several fixes and improvements</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.3.6" date="2016-04-18">
+      <description>
+        <p>Parallel build of manpages</p>
+        <p>Several fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.3.5" date="2016-02-14">
+      <description>
+        <p>Build even without SyncTex</p>
+        <p>Children should not fork</p>
+        <p>Several fixes and improvements</p>
+      </description>
+    </release>
+    <release version="0.3.4" date="2015-12-21">
+      <description>
+        <p>Recent files support</p>
+        <p>Substitute home with tilde</p>
+        <p>Open URLs</p>
+        <p>Several fixes and improvements</p>
+        <p>Update translations</p>
+        <p>Update build system</p>
+      </description>
+    </release>
+    <release version="0.3.3" date="2015-04-13">
+      <description>
+        <p>Store tmp files in only one location</p>
+        <p>Print target selection</p>
+        <p>Allow .dylib plugins on Mac OS X</p>
+        <p>Fix dual page render breakage of adjust_window</p>
+        <p>Update translations</p>
+        <p>Update buld system</p>
+      </description>
+    </release>
+    <release version="0.3.2" date="2014-11-09">
+      <description>
+        <p>Resolve memory leak while reloading file</p>
+        <p>Prevent segmentation fault when smooth zooming with mouse</p>
+        <p>Cache thumbnails to support smooth zooming</p>
+        <p>Check scale value correctness</p>
+        <p>Update build system</p>
+        <p>Update translations</p>
+      </description>
+    </release>
+    <release version="0.3.1" date="2014-10-22">
+      <description>
+        <p>Fix segmentation fault caused by bidirectional scrolling</p>
+        <p>Add SyntaxView</p>
+      </description>
+    </release>
+    <release version="0.3.0" date="2014-10-16">
+      <description>
+        <p>Print debug information to D-Bus</p>
+        <p>Fix scroll down/up in dual-page mode</p>
+        <p>Option to hide notification after selection</p>
+        <p>Introduce cache directory</p>
+        <p>Introduce smooth-scroll and smooth-zoom</p>
+        <p>Add vim style exec</p>
+        <p>Option to ignore images while recoloring</p>
+        <p>Take advantage of shared or system SyncTex parser library</p>
+        <p>Update translations</p>
+        <p>Several fixes</p>
+      </description>
+    </release>
+    <release version="0.2.9" date="2014-06-25">
+      <description>
+        <p>Updated dependency version of girara</p>
+      </description>
+    </release>
+    <release version="0.2.8" date="2014-06-24">
+      <description>
+        <p>Better SyncTex support</p>
+        <p>Change cursor if mouse is over link</p>
+        <p>Colored build output</p>
+        <p>Minor bug fixes</p>
+        <p>Sphinx documentation</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.7" date="2014-02-17">
+      <description>
+        <p>Full SyncTex support</p>
+        <p>D-Bus interface</p>
+        <p>Simple vim plugin for SyncTex support</p>
+        <p>Add shortcuts for ^C and Esc in all modes</p>
+        <p>Use the actual mode in mode toggle calls</p>
+        <p>Only copy selected text in normal and fullscreen mode</p>
+        <p>Translate error messages</p>
+        <p>Correctly safe print setting state</p>
+        <p>Add --mode option</p>
+        <p>Expose more properties via D-Bus</p>
+        <p>Center pages</p>
+        <p>Replace glib memory functions with try version</p>
+        <p>Align highlighted rectangles correctly</p>
+        <p>Implement G and gg for index mode</p>
+        <p>Implement TOGGLE for sc_navigate_index</p>
+        <p>Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM</p>
+        <p>Implement shortcuts for scrolling to page top/bottom</p>
+        <p>Set position on document load only if no page was specified</p>
+        <p>Bail out early if we get TOP or BOTTOM</p>
+        <p>Replace fullscreen mode with presentation mode</p>
+        <p>Remove GTK+2 support</p>
+        <p>Update documentation</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.6" date="2013-11-24">
+      <description>
+        <p>Update documentation</p>
+        <p>Resolve layout problems</p>
+      </description>
+    </release>
+    <release version="0.2.5" date="2013-11-08">
+      <description>
+        <p>Use GTK+3 by default</p>
+        <p>Rewritten render logic</p>
+        <p>Fixed page refresh in certain situations</p>
+        <p>Make the X clipboard buffer</p>
+        <p>Allow number in quickmarks</p>
+        <p>Workaround for print quality issues</p>
+        <p>Update documentation</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.4" date="2013-08-15">
+      <description>
+        <p>Resolve memory leak</p>
+        <p>Report missing plugin or unsupported file types</p>
+        <p>More vim-like search behaviour</p>
+        <p>Introduced show-{h,v}-scrollbar settings</p>
+        <p>Enhancement of the jumplist mechanism</p>
+        <p>Use jumplists with marks</p>
+        <p>More vim-like jump behaviour</p>
+        <p>Improved bisect</p>
+        <p>Update page number on mouse scroll</p>
+        <p>Introduced window-title-page option</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.3" date="2013-05-12">
+      <description>
+        <p>LRU caching algorithm</p>
+        <p>Bisect functionality</p>
+        <p>Allow negative offsets</p>
+        <p>Option --page to open at the specified page</p>
+        <p>Scale vertical/horizontal scrolling in respect to the buffer</p>
+        <p>Add statusbar-basename option</p>
+        <p>Implement colors for 'Loading...'-text</p>
+        <p>Don't render same page multiple times</p>
+        <p>Use libmagic if available</p>
+        <p>Some other bug fixes and updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.2" date="2013-01-20">
+      <description>
+        <p>Implemented jumplist (^o, ^i)</p>
+        <p>Update current page when following links</p>
+        <p>Scroll horizontally with shift and mouse wheel</p>
+        <p>Page aware scrolling</p>
+        <p>Synctex forward synchronisation</p>
+        <p>Update shortcuts</p>
+        <p>Some other bug fixes and updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.1" date="2012-08-30">
+      <description>
+        <p>Syntex backwards synchronisation</p>
+        <p>Fix request-page-setup</p>
+        <p>Fix window adustment</p>
+        <p>Better GTK3 integration</p>
+        <p>Added first-page-colum setting</p>
+        <p>Added recolor-keephue setting</p>
+        <p>Updated translations</p>
+      </description>
+    </release>
+    <release version="0.2.0" date="2012-06-09">
+      <description>
+        <p>New languages</p>
+        <p>Better print support</p>
+        <p>Improve document links</p>
+        <p>Render last-viewed pages with a higher priority</p>
+        <p>Export images and attachments</p>
+        <p>Open multiple documents</p>
+        <p>Plugin manager</p>
+        <p>Several memory leaks and small bugs</p>
+      </description>
+    </release>
+    <release version="0.1.2" date="2012-03-24">
+      <description>
+        <p>Add 'open-first-page' setting</p>
+        <p>Free invisible pages after specific time</p>
+        <p>Set log level via command line</p>
+        <p>Update GTK3 support</p>
+        <p>Completion for :write command</p>
+        <p>Simplified plugin loading</p>
+        <p>Allow counter-clockwise rotation</p>
+        <p>Changeable page-padding</p>
+        <p>Introduced girara version check</p>
+        <p>Detect sqlite automatically</p>
+        <p>Update window title</p>
+      </description>
+    </release>
+    <release version="0.1.1" date="2012-03-09">
+      <description>
+        <p>Macro to register plugins</p>
+        <p>Fix issues with the display of the current page number</p>
+        <p>Ability to scroll to the full left or full right border</p>
+        <p>Reimplement the render thread with GThreadPool</p>
+        <p>Use the correct color to highlight results</p>
+        <p>Support to use both database backends</p>
+        <p>Additional notifications on errors</p>
+        <p>Option to hide hidden directories</p>
+        <p>Do not overwrite existing files with :write</p>
+        <p>Fix flicker in text selection</p>
+        <p>Resolved several memory leaks</p>
+        <p>Updated Makefile</p>
+      </description>
+    </release>
+    <release version="0.1.0" date="2012-02-21">
+      <description>
+        <p>Complete rewrite of zathura</p>
+        <p>Uses the girara interface library</p>
+        <p>Plugin system for different document types</p>
+        <p>Better configuration</p>
+        <p>Quickmarks</p>
+      </description>
+    </release>
+    <release version="0.0.8.5" date="2011-11-09">
+      <description>
+        <p>Ignoring MOD5 which is used on some keyboards</p>
+        <p>Fix scroll_wrap (#52)</p>
+        <p>Don't invert y coordinates (#42)</p>
+        <p>Certain memory leaks and other small issues</p>
+      </description>
+    </release>
+    <release version="0.0.8.4" date="2011-07-12">
+      <description>
+        <p>Fixed bookmark handling</p>
+        <p>Support :digits</p>
+        <p>Save zoom level per file</p>
+        <p>Fix backwards searching</p>
+        <p>Fix blinking while switching pages</p>
+        <p>Fix input issues in fullscreen mode</p>
+        <p>Fixed several memory leaks</p>
+      </description>
+    </release>
+    <release version="0.0.8.3" date="2011-03-24">
+      <description>
+        <p>Updated text searching</p>
+        <p>Support for poppler >= 0.15</p>
+        <p>Fixed print command with multiple arguments</p>
+        <p>Fixed GOptionEntries</p>
+        <p>Updated Makefile</p>
+        <p>Fixed several memory leaks</p>
+        <p>Fixed segmentation faults</p>
+      </description>
+    </release>
+    <release version="0.0.8.2" date="2010-11-21">
+      <description>
+        <p>Wrap around scrolling</p>
+        <p>Display scroll percentage in statusbar</p>
+        <p>More familiar zoom key bindings</p>
+        <p>Support reading files from stdin</p>
+        <p>Open command with appended current file path</p>
+        <p>Following XDG specification</p>
+        <p>Colored window and view port</p>
+        <p>File reloading fix</p>
+        <p>Fixed several memory leaks</p>
+        <p>Updated man page</p>
+        <p>Updated Makefile</p>
+      </description>
+    </release>
+    <release version="0.0.8.1" date="2010-07-29">
+      <description>
+        <p>Fixed critical usability bug</p>
+      </description>
+    </release>
+    <release version="0.0.8" date="2010-07-28">
+      <description>
+        <p>Improved and fixed completion</p>
+        <p>Optional parameters for the print command</p>
+        <p>Escape filenames</p>
+        <p>Resolved some memory leaks</p>
+        <p>Global configuration file</p>
+        <p>Specify configuration directory</p>
+        <p>Configureable modes</p>
+        <p>Smooth scrolling</p>
+        <p>Extended statusbar string manipulation</p>
+        <p>function</p>
+        <p>Strip executable</p>
+        <p>Updated manpage</p>
+      </description>
+    </release>
+    <release version="0.0.7" date="2010-06-21">
+      <description>
+        <p>Change window title to filename</p>
+        <p>Fixation of the URI command</p>
+        <p>Updated the behaviour of sc_scroll</p>
+        <p>Half/Full-page scrolling</p>
+        <p>Check document health in sc_reload</p>
+        <p>tabbed support</p>
+        <p>Define look with the set function</p>
+        <p>Implemented map function</p>
+        <p>zathurarc file</p>
+        <p>Prevent buffer overflow in realpath</p>
+        <p>Strip executeable</p>
+        <p>Key evaluation when buffer is not empty</p>
+        <p>Manpage update</p>
+      </description>
+    </release>
+    <release version="0.0.6" date="2010-06-06">
+      <description>
+        <p>Use GFileMonitor instead of inotify</p>
+        <p>Added document reload shortcut</p>
+        <p>Fixed toggle index</p>
+        <p>Fixed print command</p>
+        <p>Manpage update</p>
+      </description>
+    </release>
+    <release version="0.0.5" date="2010-05-25">
+      <description>
+        <p>Fullscreen mode</p>
+        <p>Correct search result highlighting</p>
+        <p>Document password dialog</p>
+        <p>Several fixes</p>
+      </description>
+    </release>
+    <release version="0.0.4" date="2010-05-18">
+      <description>
+        <p>Mouse support (Scroll, Mark and copy text to clipboard)</p>
+        <p>Keyboard navigation in the index view</p>
+        <p>Different goto modes</p>
+        <p>Auto adjustment when opening a document</p>
+        <p>Escape filenames</p>
+        <p>Several fixes</p>
+      </description>
+    </release>
+    <release version="0.0.3" date="2010-04-11">
+      <description>
+        <p>Reload modified document automatically</p>
+        <p>Recolor the page instead of inverting the colors</p>
+        <p>Working search function</p>
+        <p>Show and hide document information</p>
+        <p>Follow internal links or open URI in a predefined browser</p>
+        <p>Save the document</p>
+        <p>Several fixes</p>
+      </description>
+    </release>
+    <release version="0.0.2" date="2010-02-15">
+      <description>
+        <p>Complete new, re-written interface</p>
+        <p>Multiple printer support</p>
+        <p>Command history</p>
+        <p>Show document index</p>
+        <p>Centered view</p>
+        <p>Add, save and open bookmarks</p>
+        <p>Marker support</p>
+        <p>Highlight search results</p>
+        <p>Buffered commands</p>
+        <p>set Function</p>
+        <p>Revert video function</p>
+        <p>Command completion</p>
+      </description>
+    </release>
+    <release version="0.0.1" date="2009-09-18">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
 </component>

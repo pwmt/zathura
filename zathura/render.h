@@ -75,6 +75,18 @@ bool zathura_renderer_recolor_reverse_video_enabled(ZathuraRenderer* renderer);
  */
 void zathura_renderer_enable_recolor_reverse_video(ZathuraRenderer* renderer, bool enable);
 /**
+ * Return whether lightness should be adjusted while recoloring.
+ * @param renderer a renderer object
+ * @returns true if lightness should be adjusted, false otherwise
+ */
+bool zathura_renderer_recolor_adjust_lightness_enabled(ZathuraRenderer* renderer);
+/**
+ * Enable/disable adjusting lightness while recoloring.
+ * @param renderer a renderer object
+ * @param enable or disable adjusting lightness
+ */
+void zathura_renderer_enable_recolor_adjust_lightness(ZathuraRenderer* renderer, bool enable);
+/**
  * Set light and dark colors for recoloring.
  * @param renderer a renderer object
  * @param light light color

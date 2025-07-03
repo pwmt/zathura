@@ -1,6 +1,6 @@
 project('zathura', 'c',
-  version: '0.5.11',
-  meson_version: '>=0.61',
+  version: '0.5.12',
+  meson_version: '>=1',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
 
@@ -40,7 +40,7 @@ endif
 # required dependencies
 libm = cc.find_library('m', required: false)
 girara = dependency('girara-gtk3', version: '>=0.4.5', fallback: ['girara', 'girara_dependency'])
-glib = dependency('glib-2.0', version: '>=2.72')
+glib = dependency('glib-2.0', version: '>=2.76')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.72')
@@ -81,16 +81,13 @@ flags = [
 flags = cc.get_supported_arguments(flags)
 
 # optional dependencies
-synctex = dependency('synctex', version: '>=1.19', required: get_option('synctex'))
+synctex = dependency('synctex', version: '>=2', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
 landlock = cc.check_header('linux/landlock.h', required: get_option('landlock'))
 
 if synctex.found()
   build_dependencies += synctex
   defines += '-DWITH_SYNCTEX'
-  if synctex.version() < '2.0.0' and synctex.version() >= '1.19.0'
-    warning('You are using a synctex version pre-SONAME bump, but post-ABI-break. Please make sure to always run zathura using the correct synctex version.')
-  endif
 endif
 
 # generate version header file
@@ -121,6 +118,7 @@ sources = files(
   'zathura/database-sqlite.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',
+  'zathura/document-widget.c',
   'zathura/file-monitor.c',
   'zathura/file-monitor-glib.c',
   'zathura/file-monitor-noop.c',
@@ -162,7 +160,7 @@ libzathura = static_library('zathura',
 libzathura_dep = declare_dependency(link_with: libzathura)
 
 # zathura-sandbox executable
-if seccomp.found() or landlock
+if seccomp.found() or landlock or target_machine.system() == 'openbsd'
   sandbox_sources = files()
   sandbox_defines = ['-DWITH_SANDBOX']
   sandbox_dependencies = []

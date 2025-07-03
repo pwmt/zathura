@@ -10,19 +10,19 @@ Requirements
 The following dependencies are required:
 
 * `gtk3` (>= 3.24)
-* `glib` (>= 2.72)
+* `glib` (>= 2.76)
 * `girara` (>= 0.4.3)
 * `libmagic` from file(1): for mime-type detection
 * `json-glib`
 * `sqlite3` (>= 3.6.23): sqlite3 database backend
 
 The following dependencies are optional:
-* `libsynctex` from TeXLive (>= 1.19): SyncTeX support
+* `libsynctex` from TeXLive (>= 2): SyncTeX support
 * `libseccomp`: sandbox support
 
 For building zathura, the following dependencies are also required:
 
-* `meson` (>= 0.61)
+* `meson` (>= 1)
 * `gettext`
 * `pkgconf`
 

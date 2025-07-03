@@ -39,6 +39,7 @@ typedef struct private_s {
     bool enabled;
     bool hue;
     bool reverse_video;
+    bool adjust_lightness;
   } recolor;
 
   atomic_bool about_to_close; /**< Render thread is to be freed */
@@ -93,9 +94,10 @@ static void zathura_renderer_init(ZathuraRenderer* renderer) {
   g_mutex_init(&priv->mutex);
 
   /* recolor */
-  priv->recolor.enabled       = false;
-  priv->recolor.hue           = true;
-  priv->recolor.reverse_video = false;
+  priv->recolor.enabled          = false;
+  priv->recolor.hue              = true;
+  priv->recolor.reverse_video    = false;
+  priv->recolor.adjust_lightness = false;
 
   /* page cache */
   priv->page_cache.size             = 0;
@@ -291,6 +293,21 @@ void zathura_renderer_enable_recolor_reverse_video(ZathuraRenderer* renderer, bo
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
   priv->recolor.reverse_video  = enable;
 }
+
+bool zathura_renderer_recolor_adjust_lightness_enabled(ZathuraRenderer* renderer) {
+  g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer), false);
+
+  ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
+  return priv->recolor.adjust_lightness;
+}
+
+void zathura_renderer_enable_recolor_adjust_lightness(ZathuraRenderer* renderer, bool enable) {
+  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
+
+  ZathuraRendererPrivate* priv   = zathura_renderer_get_instance_private(renderer);
+  priv->recolor.adjust_lightness = enable;
+}
+
 void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer, const GdkRGBA* light, const GdkRGBA* dark) {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
 
@@ -518,6 +535,8 @@ static void recolor_slow(ZathuraRendererPrivate* priv, unsigned int page_width, 
       rgb2.blue * rgb2.alpha - l2,
   };
 
+  bool adjust_lightness = priv->recolor.adjust_lightness;
+
   const int rowstride  = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
 
@@ -552,6 +571,14 @@ static void recolor_slow(ZathuraRendererPrivate* priv, unsigned int page_width, 
         const double u = colorumax(h, l, 0, 1);
         const double s = fabs(u) > DBL_EPSILON ? 1.0 / u : 0.0;
 
+        /* adjust according to quartic curve, then average with original weighed
+         * by half saturation. */
+        if (adjust_lightness) {
+          /* l = l * s/2 + l^4 * (1 - s/2) */
+          double adj = l * l * l * l;
+          l          = (l - adj) * (s * 0.5) + adj;
+        }
+
         /* Interpolates lightness between light and dark colors. white goes to
          * light, and black goes to dark. */
         l = l * (l2 - l1) + l1;
@@ -567,9 +594,12 @@ static void recolor_slow(ZathuraRendererPrivate* priv, unsigned int page_width, 
         data[1]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[1] + tr2 * h2[1] + (l + su * h[1]))));
         data[0]          = (unsigned char)round(255. * fmin(1, fmax(0, tr1 * h1[2] + tr2 * h2[2] + (l + su * h[2]))));
       } else {
+        if (adjust_lightness) {
+          l = l * l;
+        }
+
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
-
         const double f1 = 1. - (1. - fmax(fmax(rgb[0], rgb[1]), rgb[2])) * negalph1;
         const double f2 = fmin(fmin(rgb[0], rgb[1]), rgb[2]) * negalph2;
         data[3]         = (unsigned char)round(255. * (f1 - f2));
@@ -591,6 +621,8 @@ static void recolor_fast(ZathuraRendererPrivate* priv, unsigned int page_width, 
 
   const double rgb_diff[] = {rgb2.red - rgb1.red, rgb2.green - rgb1.green, rgb2.blue - rgb1.blue};
 
+  bool adjust_lightness = priv->recolor.adjust_lightness;
+
   const int rowstride  = cairo_image_surface_get_stride(surface);
   unsigned char* image = cairo_image_surface_get_data(surface);
 
@@ -625,6 +657,14 @@ static void recolor_fast(ZathuraRendererPrivate* priv, unsigned int page_width, 
         const double u = colorumax(h, l, 0, 1);
         const double s = fabs(u) > DBL_EPSILON ? 1.0 / u : 0.0;
 
+        /* adjust according to quartic curve, then average with original weighed
+         * by half saturation. */
+        if (adjust_lightness) {
+          /* l = l * s/2 + l^4 * (1 - s/2) */
+          double adj = l * l * l * l;
+          l          = (l - adj) * (s * 0.5) + adj;
+        }
+
         /* Interpolates lightness between light and dark colors. white goes to
          * light, and black goes to dark. */
         l = l * (l2 - l1) + l1;
@@ -638,6 +678,10 @@ static void recolor_fast(ZathuraRendererPrivate* priv, unsigned int page_width, 
         data[1] = (unsigned char)round(255. * (l + su * h[1]));
         data[0] = (unsigned char)round(255. * (l + su * h[2]));
       } else {
+        if (adjust_lightness) {
+          l = l * l;
+        }
+
         /* linear interpolation between dark and light with color ligtness as
          * a parameter */
         data[3] = 255;
