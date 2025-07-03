@@ -84,7 +84,6 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura           = session->global.data;
   zathura_document_t* document = zathura_get_document(zathura);
-
   bool clear_search = true;
   girara_setting_get(session, "abort-clear-search", &clear_search);
 
@@ -1002,11 +1001,18 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
-  if (zathura->ui.index == NULL) {
+  if (zathura->ui.index == NULL && zathura->ui.file_explorer == NULL) {
     return false;
   }
 
-  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  GtkTreeView* tree_view = NULL;
+  if (zathura->ui.index && gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))){
+    tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  }else if (zathura->ui.file_explorer && gtk_widget_get_visible(GTK_WIDGET(zathura->ui.file_explorer))){
+    tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.file_explorer))->data;
+  }else{
+    return false;
+  }
   GtkTreePath* path;
   GtkTreePath* start_path;
   GtkTreePath* end_path;
@@ -1131,7 +1137,11 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     }
     break;
   case SELECT:
-    cb_index_row_activated(tree_view, path, NULL, zathura);
+    if(gtk_widget_get_visible(zathura->ui.file_explorer)){
+      cb_explorer_row_activated(session, tree_view, path, NULL, zathura);
+    }else{
+      cb_index_row_activated(tree_view, path, NULL, zathura);
+    }
     goto free_and_return;
   }
 
@@ -1155,6 +1165,17 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
   zathura_t* zathura = session->global.data;
   if (zathura->document == NULL) {
     return false;
+  }
+
+  if (zathura->ui.file_explorer && gtk_widget_get_visible(GTK_WIDGET(zathura->ui.file_explorer))){
+
+    girara_set_view(session, zathura->ui.document_widget);
+    gtk_widget_hide(GTK_WIDGET(zathura->ui.file_explorer));
+    girara_mode_set(zathura->ui.session, zathura->modes.normal);
+
+    /* refresh view */
+    refresh_view(zathura);
+    return true;
   }
 
   girara_tree_node_t* document_index = NULL;
@@ -1223,7 +1244,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     gtk_container_add(GTK_CONTAINER(zathura->ui.index), treeview);
   }
 
-  if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
+  if (zathura->ui.index && gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
     girara_set_view(session, zathura->ui.document_widget);
     gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
     girara_mode_set(zathura->ui.session, zathura->modes.normal);

@@ -34,6 +34,16 @@ void zathura_index_element_free(zathura_index_element_t* index) {
   g_free(index);
 }
 
+void zathura_explorer_element_free(zathura_explorer_element_s* index) {
+  if (index == NULL) {
+    return;
+  }
+
+  g_free(index->title);
+  zathura_link_free(index->link);
+  g_free(index);
+}
+
 zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned int height) {
   g_return_val_if_fail(width != 0, NULL);
   g_return_val_if_fail(height != 0, NULL);

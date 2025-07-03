@@ -260,6 +260,8 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
  */
 bool sc_toggle_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
+bool sc_toggle_file_explorer(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
 /**
  * Toggle multi page mode
  *
