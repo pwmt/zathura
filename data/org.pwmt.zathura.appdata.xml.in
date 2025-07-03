@@ -49,7 +49,7 @@
   <releases>
     <release version="0.5.12" date="2025-07-03">
       <description>
-        <p>A shortcut to open files via file chooser dialog</p>
+        <p>Add shortcut to open files via file chooser dialog</p>
         <p>Refactor rendering of pages</p>
         <p>Add lightness adjustment for recolering</p>
         <p>Initial support for OpenBSD sandbox</p>
