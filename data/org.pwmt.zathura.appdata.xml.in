@@ -47,6 +47,14 @@
   </provides>
   <content_rating type="oars-1.0" />
   <releases>
+    <release version="0.5.12" date="2025-07-03">
+      <description>
+        <p>A shortcut to open files via file chooser dialog</p>
+        <p>Refactor rendering of pages</p>
+        <p>Add lightness adjustment for recolering</p>
+        <p>Initial support for OpenBSD sandbox</p>
+      </description>
+    </release>
     <release version="0.5.11" date="2024-12-18">
       <description>
         <p>Fix closing of documents</p>
