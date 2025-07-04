@@ -218,7 +218,9 @@ void config_load_default(zathura_t* zathura) {
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);
   int_value = 1;
-  girara_setting_add(gsession, "page-padding",          &int_value,   INT,    false, _("Padding between pages"),    cb_page_layout_value_changed, NULL);
+  girara_setting_add(gsession, "page-h-padding",        &int_value,   INT,    false, _("Horizontal padding between pages"), cb_page_layout_value_changed, NULL);
+  int_value = 1;
+  girara_setting_add(gsession, "page-v-padding",        &int_value,   INT,    false, _("Vertical padding between pages"), cb_page_layout_value_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
