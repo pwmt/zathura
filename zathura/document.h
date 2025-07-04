@@ -410,6 +410,15 @@ ZATHURA_PLUGIN_API zathura_error_t zathura_document_attachment_save(zathura_docu
                                                                     const char* attachment, const char* file);
 
 /**
+ * Returns the available document meta data
+ *
+ * @param document the zathura document
+ * @fields_count the amount of fields present in the meta data
+ * @return The available document meta data or NULL if information could not be retrieved
+ */
+struct meta_field_s* zathura_document_get_meta_fields(zathura_document_t* document, size_t* fields_count);
+
+/**
  * Returns a string of the requested information
  *
  * @param document The zathura document
