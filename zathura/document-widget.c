@@ -14,7 +14,8 @@
 static const unsigned int cairo_max_size = INT16_MAX;
 
 typedef struct zathura_document_widget_private_s {
-  unsigned int spacing;
+  unsigned int v_spacing;
+  unsigned int h_spacing;
   unsigned int pages_per_row;
   unsigned int first_page_column;
   unsigned int page_count;
@@ -31,7 +32,8 @@ static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* GIRAR
 static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
-  priv->spacing            = 0;
+  priv->v_spacing          = 0;
+  priv->h_spacing          = 0;
   priv->pages_per_row      = 1;
   priv->first_page_column  = 0;
   priv->page_count         = 0;
@@ -126,8 +128,8 @@ static void zathura_document_update_grid(zathura_t* zathura) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
   zathura_document_t* document       = zathura_get_document(zathura);
 
-  gtk_grid_set_row_spacing(GTK_GRID(widget), priv->spacing);
-  gtk_grid_set_column_spacing(GTK_GRID(widget), priv->spacing);
+  gtk_grid_set_row_spacing(GTK_GRID(widget), priv->v_spacing);
+  gtk_grid_set_column_spacing(GTK_GRID(widget), priv->h_spacing);
 
   zathura_document_widget_clear_pages(GTK_WIDGET(widget));
 
@@ -173,8 +175,8 @@ void zathura_document_widget_render(zathura_t* zathura) {
   zathura_document_update_grid(zathura);
 }
 
-void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_padding, unsigned int pages_per_row,
-                                      unsigned int first_page_column, bool page_right_to_left) {
+void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_padding, unsigned int page_h_padding, 
+                                      unsigned int pages_per_row, unsigned int first_page_column, bool page_right_to_left) {
   if (zathura == NULL || zathura->document == NULL) {
     return;
   }
@@ -182,7 +184,8 @@ void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_padd
   ZathuraDocumentWidget* widget      = ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
-  priv->spacing            = page_padding;
+  priv->v_spacing          = page_v_padding;
+  priv->h_spacing          = page_h_padding;
   priv->page_right_to_left = page_right_to_left;
   priv->do_render          = true;
 

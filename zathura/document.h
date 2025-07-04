@@ -334,12 +334,14 @@ ZATHURA_PLUGIN_API void zathura_document_set_cell_size(zathura_document_t* docum
  * Sets the layout of the pages in the document
  *
  * @param[in]  document          The document instance
- * @param[in]  page_padding      pixels of padding between pages
+ * @param[in]  page_v_padding      pixels of vertical padding between pages
+ * @param[in]  page_h_padding      pixels of horizontal padding between pages
  * @param[in]  pages_per_row     number of pages per row
  * @param[in]  first_page_column column of the first page (first column is 1)
  */
-ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_padding,
-                                                         unsigned int pages_per_row, unsigned int first_page_column);
+ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding, 
+                                                        unsigned int page_h_padding, unsigned int pages_per_row, 
+                                                        unsigned int first_page_column);
 
 /**
  * Returns the padding in pixels between pages
