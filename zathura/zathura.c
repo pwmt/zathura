@@ -1131,10 +1131,12 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* view mode */
   unsigned int pages_per_row   = 1;
   char* first_page_column_list = NULL;
-  unsigned int page_padding    = 1;
+  unsigned int page_v_padding    = 1;
+  unsigned int page_h_padding    = 1;
   bool page_right_to_left      = false;
 
-  girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
+  girara_setting_get(zathura->ui.session, "page-v-padding", &page_v_padding);
+  girara_setting_get(zathura->ui.session, "page-h-padding", &page_h_padding);
 
   if (file_info.pages_per_row > 0) {
     pages_per_row = file_info.pages_per_row;
@@ -1160,8 +1162,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   page_right_to_left = file_info.page_right_to_left;
 
-  zathura_document_set_page_layout(document, page_padding, pages_per_row, first_page_column);
-  zathura_document_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
+  zathura_document_set_page_layout(document, page_v_padding, page_h_padding, pages_per_row, first_page_column);
+  zathura_document_widget_set_mode(zathura, page_v_padding, page_h_padding, pages_per_row, first_page_column, page_right_to_left);
 
   girara_set_view(zathura->ui.session, zathura->ui.document_widget);
 
