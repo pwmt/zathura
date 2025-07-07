@@ -49,7 +49,7 @@ if appstreamcli.found()
   test(
     'validate-appdata',
     appstreamcli,
-    args: ['validate', '--nonet', appdata.full_path()],
+    args: ['validate', '--no-net', appdata.full_path()],
   )
 endif
 
