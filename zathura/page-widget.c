@@ -624,6 +624,8 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
     /* draw signatures */
     if (priv->signatures.draw == true && priv->signatures.list != NULL) {
+      PangoLayout *layout = pango_cairo_create_layout(cairo);
+
       for (size_t idx = 0; idx != girara_list_size(priv->signatures.list); ++idx) {
         zathura_signature_info_t* signature = girara_list_nth(priv->signatures.list, idx);
         if (signature == NULL) {
@@ -675,15 +677,15 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
         /* draw text */
         const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
         cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color_fg.alpha);
-        cairo_text_extents_t extents;
-        cairo_text_extents(cairo, text, &extents);
-
-        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 + extents.height + 1);
-        cairo_show_text(cairo, text);
+        pango_layout_set_text(layout, text, strlen(text));
+        cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y1 + 1);
+        pango_cairo_show_layout(cairo, layout);
         if (free_text == true) {
           g_free(text);
         }
       }
+
+      g_object_unref(layout);
     }
 
     /* draw search results */
