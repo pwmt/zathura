@@ -222,6 +222,9 @@ static bool init_ui(zathura_t* zathura) {
     return false;
   }
 
+  /* default index fontsize */
+  zathura->ui.index_fontsize = 10;
+
   /* girara events */
   zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
   zathura->ui.session->events.unknown_command = cb_unknown_command;

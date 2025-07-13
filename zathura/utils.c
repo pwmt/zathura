@@ -97,6 +97,10 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
     gchar* markup = g_markup_escape_text(index_element->title, -1);
     gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, description2, 3, index_element,
                        -1);
+
+    zathura_t* zathura = session->global.data;
+    gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 4, zathura->ui.index_fontsize, -1);
+
     g_free(markup);
     g_free(description2);
     g_free(description);
@@ -106,6 +110,13 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
       document_index_build(session, model, &tree_iter, node);
     }
   }
+}
+
+gboolean document_index_update_zoom(GtkTreeModel* model, GtkTreePath* UNUSED(path), GtkTreeIter* iter, gpointer data) {
+  gdouble *fontsize = data;
+  gtk_tree_store_set(GTK_TREE_STORE(model), iter, 4, *fontsize, -1);
+
+  return FALSE;
 }
 
 typedef struct {

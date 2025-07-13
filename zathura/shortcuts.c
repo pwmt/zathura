@@ -1180,7 +1180,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
       goto error_free;
     }
 
-    model = GTK_TREE_MODEL(gtk_tree_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER));
+    model = GTK_TREE_MODEL(gtk_tree_store_new(5, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_DOUBLE));
     if (model == NULL) {
       goto error_free;
     }
@@ -1208,9 +1208,9 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     girara_node_free(document_index);
 
     /* setup widget */
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 0, "Title", renderer, "markup", 0, NULL);
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 1, "Target", renderer2, "text", 1, NULL);
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 2, "(alt)", renderer2, "text", 2, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 0, "Title", renderer, "markup", 0, "size-points", 4, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 1, "Target", renderer2, "text", 1, "size-points", 4, NULL);
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 2, "(alt)", renderer2, "text", 2, "size-points", 4, NULL);
 
     gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
     g_object_set(G_OBJECT(renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
@@ -1264,6 +1264,34 @@ error_free:
 error_ret:
 
   return false;
+}
+
+bool sc_zoom_index(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->ui.index != NULL, false);
+
+  /* specify new zoom value */
+  if (argument->n == ZOOM_IN) {
+    zathura->ui.index_fontsize++;
+    girara_debug("Increasing index fontsize by 1pt (%f)", zathura->ui.index_fontsize);
+  } else if (argument->n == ZOOM_OUT) {
+    zathura->ui.index_fontsize--;
+    girara_debug("Decreasing index fontsize by 1pt (%f)", zathura->ui.index_fontsize);
+  } else {
+    girara_debug("Setting index fontsize to 10pt.");
+    zathura->ui.index_fontsize = 10.0;
+  }
+
+  GtkTreeView *tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  g_return_val_if_fail(tree_view != NULL, false);
+  GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+  g_return_val_if_fail(model != NULL, false);
+
+  gtk_tree_model_foreach(model, document_index_update_zoom, &zathura->ui.index_fontsize);
+  return true;
 }
 
 bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),

@@ -39,6 +39,16 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
                           girara_tree_node_t* tree);
 
 /**
+ * Update the font size of a row of the document index.
+ *
+ * @param model The tree model
+ * @param path The path of the row
+ * @param iter The tree iterator
+ * @param data Font size pointer 
+ */
+gboolean document_index_update_zoom(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, gpointer data);
+
+/**
  * A custom search equal function for the index tree view, so that
  * when interactively searching, the string will be recursively compared
  * to all the children of visible entries

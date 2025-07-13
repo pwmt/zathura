@@ -520,6 +520,14 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_toggle_index,        INDEX,        0,            NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_toggle_index,        INDEX,        0,            NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_toggle_index,        INDEX,        0,            NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_plus,        NULL, sc_zoom_index,          INDEX,        ZOOM_IN,      NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_KP_Add,      NULL, sc_zoom_index,          INDEX,        ZOOM_IN,      NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_minus,       NULL, sc_zoom_index,          INDEX,        ZOOM_OUT,     NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_KP_Subtract, NULL, sc_zoom_index,          INDEX,        ZOOM_OUT,      NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "zi", sc_zoom_index,          INDEX,        ZOOM_IN,      NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "zI", sc_zoom_index,          INDEX,        ZOOM_IN,      NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "zo", sc_zoom_index,          INDEX,        ZOOM_OUT,      NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "zO", sc_zoom_index,          INDEX,        ZOOM_OUT,      NULL);
 
   /* Presentation mode */
   girara_shortcut_add(gsession, 0,              GDK_KEY_J,         NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
