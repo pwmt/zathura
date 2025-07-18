@@ -380,10 +380,12 @@ They can also be combined with modifiers:
   * bottom
   * backward
   * collapse
+  * collapse-recursive
   * collapse-all
   * default
   * down
   * expand
+  * expand-recursive
   * expand-all
   * forward
   * full-down

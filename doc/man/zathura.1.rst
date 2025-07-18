@@ -191,13 +191,17 @@ Index mode
     Move to upper or lower entry
   ^u, ^d
     Scroll and move up or down by half a screen
-  l, Right
+  l, Right, zo
     Expand entry
-  L
+  zO
+    Expand entry recursively
+  L, zR
     Expand all entries
-  h, Left
+  h, Left, zc
     Collapse entry
-  H
+  zC
+    Collapse entry recursively
+  H, zM
     Collapse all entries
   space, Return, ^j
     Select and open entry
