@@ -16,10 +16,8 @@ static const unsigned int cairo_max_size = INT16_MAX;
 typedef struct zathura_document_widget_private_s {
   unsigned int v_spacing;
   unsigned int h_spacing;
-  unsigned int pages_per_row;
-  unsigned int first_page_column;
-  unsigned int page_count;
-  unsigned int start_index;
+  unsigned int row_count;
+  unsigned int start_row;
   bool page_right_to_left;
   bool do_render;
 } ZathuraDocumentWidgetPrivate;
@@ -34,10 +32,8 @@ static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
 
   priv->v_spacing          = 0;
   priv->h_spacing          = 0;
-  priv->pages_per_row      = 1;
-  priv->first_page_column  = 0;
-  priv->page_count         = 0;
-  priv->start_index        = 0;
+  priv->row_count          = 0;
+  priv->start_row          = 0;
   priv->page_right_to_left = false;
   priv->do_render          = true;
 }
@@ -73,52 +69,77 @@ void zathura_document_widget_clear_pages(GtkWidget* widget) {
   gtk_container_foreach(GTK_CONTAINER(widget), remove_page_from_table, NULL);
 }
 
-static void zathura_document_widget_view_range(zathura_t* zathura, unsigned int* start, unsigned int* end) {
+static void zathura_document_widget_view_range(zathura_t* zathura, unsigned int* start_row, unsigned int* end_row) {
   zathura_document_t* document  = zathura_get_document(zathura);
-  const unsigned int page_count = zathura_document_get_number_of_pages(document);
 
-  unsigned int internal_start = page_count;
-  unsigned int internal_end   = 0;
+  const unsigned int c0   = zathura_document_get_first_page_column(document);
+  const unsigned int ncol = zathura_document_get_pages_per_row(document);
+  const unsigned int npag = zathura_document_get_number_of_pages(document);
+  const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol; /* number of rows */
 
-  for (unsigned int i = 0; i < page_count; i++) {
-    if (!page_is_visible(document, i)) {
+  unsigned int start = nrow;
+  unsigned int end   = 0;
+
+  for (unsigned int i = 0; i < nrow; i++) {
+    if (!page_is_visible(document, i * ncol)) {
       continue;
     }
 
-    internal_start = MIN(internal_start, i);
-    internal_end   = MAX(internal_end, i);
+    start = MIN(start, i);
+    end   = MAX(end, i);
   }
 
-  *start = internal_start;
-  *end   = internal_end;
+  *start_row = start;
+  *end_row   = end;
 }
 
-static void zathura_document_widget_get_render_range(zathura_t* zathura, unsigned int* start_index,
-                                                     unsigned int* page_count) {
+static void zathura_document_render_range(zathura_t* zathura, unsigned int* start_row, unsigned int* row_count) {
   g_return_if_fail(zathura != NULL && zathura->document != NULL);
+  zathura_document_t* document       = zathura_get_document(zathura);
+
+  const double pos_x = zathura_document_get_position_x(document);
+  const double pos_y = zathura_document_get_position_y(document);
+
+  const unsigned int npag = zathura_document_get_number_of_pages(document);
+  const unsigned int ncol = zathura_document_get_pages_per_row(document);
+
+  if (npag == 0 || ncol == 0) {
+    return;
+  }
+
+  const unsigned int c0   = zathura_document_get_first_page_column(document);
+  const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol; /* number of rows */
+
+  unsigned int current_page    = position_to_page_number(document, pos_x, pos_y);
+  zathura_page_t* page         = zathura_document_get_page(document, current_page);
+  double page_height           = zathura_page_get_height(page);
+
+  unsigned int current_row = (current_page + c0 - 1 + ncol - 1) / ncol;
+  *row_count = MIN(nrow, cairo_max_size / page_height);
+
+  if (nrow < current_row + *row_count / 2) {
+    // current_page is near the end of the document
+    *start_row = nrow - *row_count;
+  } else if (current_row < *row_count / 2) {
+    // current_page is near the start of the document
+    *start_row = 0;
+  } else {
+    *start_row = current_row - *row_count / 2;
+  }
+}
+
+static unsigned int zathura_document_widget_row_first_index(zathura_t* zathura, unsigned int row) {
+  g_return_val_if_fail(zathura != NULL && zathura->document != NULL, 0);
 
   ZathuraDocumentWidget* widget      = ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
   zathura_document_t* document       = zathura_get_document(zathura);
 
-  double pos_x = zathura_document_get_position_x(document);
-  double pos_y = zathura_document_get_position_y(document);
+  const unsigned int ncol = zathura_document_get_pages_per_row(document);
+  const unsigned int c0   = zathura_document_get_first_page_column(document);
 
-  unsigned int current_page    = position_to_page_number(document, pos_x, pos_y);
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  zathura_page_t* page         = zathura_document_get_page(document, current_page);
-  double page_height           = zathura_page_get_height(page);
-
-  *page_count = MIN(number_of_pages, cairo_max_size * priv->pages_per_row / page_height);
-  if (number_of_pages < current_page + *page_count / 2) {
-    // current_page is near the end of the document
-    *start_index = number_of_pages - *page_count;
-  } else if (current_page < *page_count / 2) {
-    // current_page is near the start of the document
-    *start_index = 0;
-  } else {
-    *start_index = current_page - *page_count / 2;
-  }
+  unsigned int page_index = row == 0 ? 0 : priv->start_row * ncol - (c0 - 1);
+  return page_index;
 }
 
 static void zathura_document_update_grid(zathura_t* zathura) {
@@ -133,21 +154,33 @@ static void zathura_document_update_grid(zathura_t* zathura) {
 
   zathura_document_widget_clear_pages(GTK_WIDGET(widget));
 
-  unsigned int current_page = zathura_document_get_current_page_number(document);
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  const unsigned int current_page = zathura_document_get_current_page_number(document);
+  const unsigned int c0   = zathura_document_get_first_page_column(document);
+  const unsigned int ncol = zathura_document_get_pages_per_row(document);
 
-  zathura_document_widget_get_render_range(zathura, &priv->start_index, &priv->page_count);
-  girara_debug("updating grid: start %u current %d page count %u", priv->start_index, current_page, priv->page_count);
+  zathura_document_render_range(zathura, &priv->start_row, &priv->row_count);
+  girara_debug("updating grid: start %u current %d row count %u", priv->start_row, current_page, priv->row_count);
 
-  for (unsigned int i = 0; i < priv->page_count; i++) {
-    unsigned int x = (i + priv->first_page_column - 1) % priv->pages_per_row;
-    unsigned int y = (i + priv->first_page_column - 1) / priv->pages_per_row;
+  unsigned int page_index = zathura_document_widget_row_first_index(zathura, priv->start_row);
+  girara_debug("start page index: %u", page_index);
 
-    GtkWidget* page_widget = zathura->pages[priv->start_index + i];
-    if (priv->page_right_to_left) {
-      x = priv->pages_per_row - 1 - x;
+  for (unsigned int i = 0; i < priv->row_count; i++) {
+    unsigned int row = priv->start_row + i;
+    unsigned int start_col = row == 0 ? c0 - 1 : 0;
+
+    for (unsigned int col = start_col; col < ncol && page_index < number_of_pages; col++) {
+      unsigned int x = col;
+      unsigned int y = row;
+
+      GtkWidget* page_widget = zathura->pages[page_index];
+      if (priv->page_right_to_left) {
+        x = ncol - 1 - x;
+      }
+
+      gtk_grid_attach(GTK_GRID(widget), page_widget, x, y, 1, 1);
+      page_index++;
     }
-
-    gtk_grid_attach(GTK_GRID(widget), page_widget, x, y, 1, 1);
   }
 
   priv->do_render = false;
@@ -166,9 +199,9 @@ void zathura_document_widget_render(zathura_t* zathura) {
     return;
   }
 
-  unsigned int start, end;
-  zathura_document_widget_view_range(zathura, &start, &end);
-  if (priv->start_index <= start && end < priv->start_index + priv->page_count) {
+  unsigned int start_row, end_row;
+  zathura_document_widget_view_range(zathura, &start_row, &end_row);
+  if (priv->start_row <= start_row && end_row < priv->start_row + priv->row_count) {
     return;
   }
 
@@ -176,7 +209,7 @@ void zathura_document_widget_render(zathura_t* zathura) {
 }
 
 void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_padding, unsigned int page_h_padding, 
-                                      unsigned int pages_per_row, unsigned int first_page_column, bool page_right_to_left) {
+                                      bool page_right_to_left) {
   if (zathura == NULL || zathura->document == NULL) {
     return;
   }
@@ -188,23 +221,6 @@ void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_pa
   priv->h_spacing          = page_h_padding;
   priv->page_right_to_left = page_right_to_left;
   priv->do_render          = true;
-
-  /* show at least one page */
-  if (pages_per_row == 0) {
-    pages_per_row = 1;
-  }
-
-  priv->pages_per_row = pages_per_row;
-
-  /* ensure: 0 < first_page_column <= pages_per_row */
-  if (first_page_column < 1) {
-    first_page_column = 1;
-  }
-  if (first_page_column > pages_per_row) {
-    first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
-  }
-
-  priv->first_page_column = first_page_column;
 
   zathura_document_widget_render(zathura);
   gtk_widget_show_all(zathura->ui.document_widget);
@@ -219,16 +235,13 @@ static void zathura_document_widget_get_size(zathura_t* zathura, unsigned int* h
 
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-  const unsigned int npag = priv->page_count;
+  const unsigned int nrow = priv->row_count;
   const unsigned int ncol = zathura_document_get_pages_per_row(document);
+  const unsigned int pad  = zathura_document_get_page_padding(document);
 
-  if (npag == 0 || ncol == 0) {
+  if (nrow == 0 || ncol == 0) {
     return;
   }
-
-  const unsigned int c0   = zathura_document_get_first_page_column(document);
-  const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol; /* number of rows */
-  const unsigned int pad  = zathura_document_get_page_padding(document);
 
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
@@ -248,8 +261,10 @@ static void zathura_document_widget_get_offset(zathura_t* zathura, double* pos_x
   double zero_x, zero_y;
   page_number_to_position(document, 0, 0.0, 0.0, &zero_x, &zero_y);
 
+  unsigned int start_index = zathura_document_widget_row_first_index(zathura, priv->start_row);
+
   double start_x, start_y;
-  page_number_to_position(document, priv->start_index, 0.0, 0.0, &start_x, &start_y);
+  page_number_to_position(document, start_index, 0.0, 0.0, &start_x, &start_y);
 
   *pos_x = start_x - zero_x;
   *pos_y = start_y - zero_y;
