@@ -21,6 +21,7 @@
 #include "page-widget.h"
 #include "adjustment.h"
 #include "database.h"
+#include "document-widget.h"
 #include <math.h>
 
 /* Helper function for highlighting the links */
@@ -352,6 +353,8 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
 
     zathura_adjustment_set_value(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - zathura->shortcut.mouse.x));
     zathura_adjustment_set_value(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - zathura->shortcut.mouse.y));
+
+    zathura_document_widget_render(zathura);
     break;
 
     /* unhandled events */
