@@ -324,7 +324,7 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   girara_setting_get(zathura->ui.session, "page-right-to-left", &page_right_to_left);
 
   zathura_document_set_page_layout(zathura_get_document(zathura), page_v_padding, page_h_padding, pages_per_row, first_page_column);
-  zathura_document_widget_set_mode(zathura, page_v_padding, page_h_padding, pages_per_row, first_page_column, page_right_to_left);
+  zathura_document_widget_set_mode(zathura, page_v_padding, page_h_padding, page_right_to_left);
 }
 
 void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* UNUSED(column), void* data) {
