@@ -102,5 +102,4 @@ gdouble zathura_document_widget_get_ratio(zathura_t* zathura, GtkAdjustment* adj
  */
 void zathura_document_widget_set_value_from_ratio(zathura_t* zathura, GtkAdjustment* adjustment, double ratio,
                                                   bool width);
-
 #endif // DOCUMENT_WIDGET_H

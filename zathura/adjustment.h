@@ -74,12 +74,4 @@ void page_number_to_position(zathura_document_t* document, unsigned int page_num
  */
 bool page_is_visible(zathura_document_t* document, unsigned int page_number);
 
-/**
- * Set the adjustment value while enforcing its limits
- *
- * @param adjustment Adjustment instance
- * @param value Adjustment value
- */
-void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value);
-
 #endif /* ZATHURA_ADJUSTMENT_H */
