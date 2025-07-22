@@ -351,10 +351,17 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
       return false;
     }
 
-    zathura_adjustment_set_value(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - zathura->shortcut.mouse.x));
-    zathura_adjustment_set_value(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - zathura->shortcut.mouse.y));
+    unsigned int doc_height, doc_width;
+    zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
 
-    zathura_document_widget_render(zathura);
+    const double pos_x = zathura_document_widget_get_ratio(zathura, x_adj, true);
+    const double pos_y = zathura_document_widget_get_ratio(zathura, y_adj, false);
+
+    const double ratio_x = pos_x - (event->x - zathura->shortcut.mouse.x) / doc_width;
+    const double ratio_y = pos_y - (event->y - zathura->shortcut.mouse.y) / doc_height;
+
+    zathura_document_widget_set_value_from_ratio(zathura, x_adj, ratio_x, true);
+    zathura_document_widget_set_value_from_ratio(zathura, y_adj, ratio_y, false);
     break;
 
     /* unhandled events */
