@@ -91,8 +91,6 @@ static unsigned int zathura_document_row_first_page_index(zathura_document_t* do
  * row respectively.
  */
 static void zathura_document_view_range(zathura_document_t* document, unsigned int* start_row, unsigned int* end_row) {
-  g_return_if_fail(document != NULL);
-
   /* position at the center of the viewport */
   double pos_x = zathura_document_get_position_x(document);
   double pos_y = zathura_document_get_position_y(document);
@@ -230,7 +228,7 @@ void zathura_document_widget_render(zathura_t* zathura) {
   if (priv->start_row <= start_row && end_row < priv->start_row + priv->row_count) {
     return;
   }
-  
+
   zathura_document_update_grid(zathura);
 }
 
