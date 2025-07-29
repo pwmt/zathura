@@ -1252,8 +1252,8 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     }
 
     girara_set_view(session, zathura->ui.index);
-    GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-    gtk_widget_grab_focus(GTK_WIDGET(tree_view));
+    // GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+    // gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     index_scroll_to_current_page(zathura);
     girara_mode_set(zathura->ui.session, zathura->modes.index);
   }
