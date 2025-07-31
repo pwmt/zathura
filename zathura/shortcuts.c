@@ -1594,7 +1594,7 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   const gint res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(native));
   if (res == GTK_RESPONSE_ACCEPT) {
     char* filename = gtk_file_chooser_get_filename(chooser);
-    if (!document_close(zathura, false)) {
+    if (zathura_has_document(zathura) && !document_close(zathura, false)) {
       g_free(filename);
       goto error;
     }
