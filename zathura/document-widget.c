@@ -133,7 +133,6 @@ static void zathura_document_calculate_render_range(zathura_t* zathura) {
   unsigned int current_page    = position_to_page_number(document, pos_x, pos_y);
   unsigned int npag            = zathura_document_get_number_of_pages(document);
   unsigned int ncol            = zathura_document_get_pages_per_row(document);
-
   zathura_page_t* page         = zathura_document_get_page(document, current_page);
   double page_height           = zathura_page_get_height(page);
 
@@ -143,7 +142,14 @@ static void zathura_document_calculate_render_range(zathura_t* zathura) {
 
   priv->row_count = MIN(nrow_doc, nrow);
 
-  if (nrow_doc < current_row + priv->row_count / 2) {
+  /*
+   * When the contents of a GTK Grid is changed,
+   * the attributes of the grid are calculated in 
+   * the next main loop iteration. To ensure correct 
+   * positioning, the number of rows added to 
+   * the grid should always be priv->row_count.
+   */
+  if (nrow_doc <= current_row + priv->row_count / 2) {
     // current_page is near the end of the document
     priv->start_row = nrow_doc - priv->row_count;
   } else if (current_row < priv->row_count / 2) {
@@ -179,6 +185,7 @@ static void zathura_document_update_grid(zathura_t* zathura) {
                priv->start_row, priv->row_count, page_index, current_page);
 
   // first row to handle first_page_column
+  unsigned int grid_rows = 0;
   for (unsigned int col = start_col; col < ncol && page_index < npag; col++) {
     unsigned int x = col;
     GtkWidget* page_widget = zathura->pages[page_index];
@@ -188,6 +195,7 @@ static void zathura_document_update_grid(zathura_t* zathura) {
 
     gtk_grid_attach(GTK_GRID(widget), page_widget, x, 0, 1, 1);
     page_index++;
+    grid_rows = 1;
   } 
 
   // remaining rows
@@ -202,11 +210,16 @@ static void zathura_document_update_grid(zathura_t* zathura) {
       }
 
       gtk_grid_attach(GTK_GRID(widget), page_widget, x, y, 1, 1);
+      grid_rows = y + 1;
       page_index++;
     }
   }
 
   priv->do_render = false;
+  
+  if (priv->row_count != grid_rows) {
+    girara_warning("grid contains incorrect number of rows, expected %d got %d", priv->row_count, grid_rows);
+  }
 }
 
 void zathura_document_widget_render(zathura_t* zathura) {
