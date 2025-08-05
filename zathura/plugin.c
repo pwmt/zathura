@@ -38,6 +38,7 @@ struct zathura_plugin_manager_s {
   girara_list_t* path;                /**< List of plugin paths */
   girara_list_t* type_plugin_mapping; /**< List of type -> plugin mappings */
   girara_list_t* content_types;       /**< List of all registered content types */
+  girara_list_t* utility_plugins;    /**< List of utility plugins */
 };
 
 static void zathura_type_plugin_mapping_free(void* data) {
@@ -56,6 +57,15 @@ static void zathura_plugin_free(void* data) {
     g_free(plugin->path);
     g_module_close(plugin->handle);
     girara_list_free(plugin->content_types);
+    g_free(plugin);
+  }
+}
+
+static void zathura_utility_plugin_free(void* data) {
+  if (data != NULL) {
+    zathura_plugin_t* plugin = data;
+    g_free(plugin->path);
+    g_module_close(plugin->handle);
     g_free(plugin);
   }
 }
@@ -94,9 +104,10 @@ zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
   plugin_manager->path                = girara_list_new2(g_free);
   plugin_manager->type_plugin_mapping = girara_list_new2(zathura_type_plugin_mapping_free);
   plugin_manager->content_types       = girara_list_new2(g_free);
+  plugin_manager->utility_plugins     = girara_list_new2(zathura_utility_plugin_free);
 
   if (plugin_manager->plugins == NULL || plugin_manager->path == NULL || plugin_manager->type_plugin_mapping == NULL ||
-      plugin_manager->content_types == NULL) {
+      plugin_manager->content_types == NULL || plugin_manager->utility_plugins == NULL) {
     zathura_plugin_manager_free(plugin_manager);
     return NULL;
   }
@@ -187,6 +198,88 @@ static bool register_plugin(zathura_plugin_manager_t* plugin_manager, zathura_pl
   }
 
   return at_least_one;
+}
+
+static bool register_utility_plugin(zathura_plugin_manager_t* plugin_manager, zathura_plugin_t* plugin) {
+  if (plugin == NULL || plugin_manager == NULL || plugin_manager->utility_plugins == NULL) {
+    girara_error("utility plugin: could not register");
+    return false;
+  }
+
+  girara_list_append(plugin_manager->utility_plugins, plugin);
+  girara_debug("utility plugin: registered %s", plugin->definition ? plugin->definition->name : "unknown");
+  return true;
+}
+
+static void load_utility_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, const char* name) {
+  char* path = g_build_filename(plugindir, name, NULL);
+  if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == 0) {
+    g_free(path);
+    return;
+  }
+
+  if (check_suffix(path) == false) {
+    g_free(path);
+    return;
+  }
+
+  /* load plugin */
+  GModule* handle = g_module_open(path, G_MODULE_BIND_LOCAL);
+  if (handle == NULL) {
+    g_free(path);
+    return;
+  }
+
+  /* check for utility plugin symbol */
+  const zathura_utility_plugin_definition_t* utility_plugin_definition = NULL;
+  if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_UTILITY_PLUGIN_DEFINITION_SYMBOL), (void**)&utility_plugin_definition) == FALSE ||
+      utility_plugin_definition == NULL) {
+    /* Not a utility plugin, continue with regular plugin loading */
+    g_module_close(handle);
+    g_free(path);
+    return;
+  }
+
+  /* check name */
+  if (utility_plugin_definition->name == NULL) {
+    girara_error("Utility plugin has no name.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  /* check init function */
+  if (utility_plugin_definition->init_function == NULL) {
+    girara_error("Utility plugin is missing init function.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  zathura_plugin_t* plugin = g_try_malloc0(sizeof(zathura_plugin_t));
+  if (plugin == NULL) {
+    girara_error("Failed to allocate memory for utility plugin.");
+    g_free(path);
+    g_module_close(handle);
+    return;
+  }
+
+  plugin->definition    = (const zathura_plugin_definition_t*)utility_plugin_definition;
+  plugin->content_types = NULL; /* Utility plugins don't handle content types */
+  plugin->handle        = handle;
+  plugin->path          = path;
+
+  bool ret = register_utility_plugin(plugin_manager, plugin);
+  if (ret == false) {
+    girara_error("Could not register utility plugin '%s'.", path);
+    zathura_utility_plugin_free(plugin);
+  } else {
+    girara_debug("Successfully loaded utility plugin from '%s'.", path);
+    girara_debug("utility plugin %s: version %u.%u.%u", utility_plugin_definition->name, 
+                 utility_plugin_definition->version.major,
+                 utility_plugin_definition->version.minor, 
+                 utility_plugin_definition->version.rev);
+  }
 }
 
 static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* plugindir, const char* name) {
@@ -287,6 +380,9 @@ static void load_dir(void* data, void* userdata) {
   } else {
     const char* name = NULL;
     while ((name = g_dir_read_name(dir)) != NULL) {
+      /* First try to load as utility plugin */
+      load_utility_plugin(plugin_manager, plugindir, name);
+      /* Then try to load as regular document plugin */
       load_plugin(plugin_manager, plugindir, name);
     }
     g_dir_close(dir);
@@ -341,6 +437,7 @@ void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager) {
     girara_list_free(plugin_manager->type_plugin_mapping);
     girara_list_free(plugin_manager->path);
     girara_list_free(plugin_manager->plugins);
+    girara_list_free(plugin_manager->utility_plugins);
 
     g_free(plugin_manager);
   }
@@ -377,4 +474,20 @@ zathura_plugin_version_t zathura_plugin_get_version(const zathura_plugin_t* plug
 
   zathura_plugin_version_t version = {0, 0, 0};
   return version;
+}
+
+void zathura_plugin_manager_init_utility_plugins(const zathura_plugin_manager_t* plugin_manager, zathura_t* zathura) {
+  if (plugin_manager == NULL || plugin_manager->utility_plugins == NULL || zathura == NULL) {
+    return;
+  }
+
+  for (size_t idx = 0; idx != girara_list_size(plugin_manager->utility_plugins); ++idx) {
+    zathura_plugin_t* plugin = girara_list_nth(plugin_manager->utility_plugins, idx);
+    const zathura_utility_plugin_definition_t* def = (const zathura_utility_plugin_definition_t*)plugin->definition;
+    
+    if (def->init_function != NULL) {
+      girara_debug("Initializing utility plugin: %s", def->name);
+      def->init_function(zathura);
+    }
+  }
 }

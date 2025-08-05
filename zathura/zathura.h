@@ -493,6 +493,14 @@ bool zathura_has_document(zathura_t* zathura);
  * @param zathura The zathura session
  * @return the currently opened document
  */
-zathura_document_t* zathura_get_document(zathura_t* zathura);
+ZATHURA_PLUGIN_API zathura_document_t* zathura_get_document(zathura_t* zathura);
+
+/**
+ * Get the girara session from zathura instance
+ *
+ * @param zathura The zathura session
+ * @return the girara session
+ */
+ZATHURA_PLUGIN_API girara_session_t* zathura_get_session(zathura_t* zathura);
 
 #endif // ZATHURA_H

@@ -402,6 +402,9 @@ bool zathura_init(zathura_t* zathura) {
     girara_warning("Found no plugins. Please install at least one plugin.");
   }
 
+  /* initialize utility plugins */
+  zathura_plugin_manager_init_utility_plugins(zathura->plugins.manager, zathura);
+
   /* configuration */
   config_load_default(zathura);
   config_load_files(zathura);
@@ -1776,4 +1779,10 @@ zathura_document_t* zathura_get_document(zathura_t* zathura) {
   g_return_val_if_fail(zathura != NULL, NULL);
 
   return zathura->document;
+}
+
+girara_session_t* zathura_get_session(zathura_t* zathura) {
+  g_return_val_if_fail(zathura != NULL, NULL);
+
+  return zathura->ui.session;
 }

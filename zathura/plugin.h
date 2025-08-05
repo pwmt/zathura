@@ -52,6 +52,14 @@ const zathura_plugin_t* zathura_plugin_manager_get_plugin(const zathura_plugin_m
                                                           const char* type);
 
 /**
+ * Initialize utility plugins
+ *
+ * @param plugin_manager The plugin manager
+ * @param zathura The zathura instance
+ */
+void zathura_plugin_manager_init_utility_plugins(const zathura_plugin_manager_t* plugin_manager, zathura_t* zathura);
+
+/**
  * Returns a list with the plugin objects
  *
  * @param plugin_manager The plugin manager

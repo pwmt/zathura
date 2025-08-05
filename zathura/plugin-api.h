@@ -4,12 +4,14 @@
 #define PLUGIN_API_H
 
 #include <cairo.h>
+#include <glib.h>
 
 #include "types.h"
 #include "page.h"
 #include "document.h"
 #include "links.h"
 #include "zathura-version.h"
+#include "macros.h"
 
 typedef struct zathura_plugin_functions_s zathura_plugin_functions_t;
 
@@ -230,10 +232,30 @@ typedef struct zathura_plugin_definition_s {
   const char** mime_types;
 } zathura_plugin_definition_t;
 
+/**
+ * Utility plugin initialization function type
+ */
+typedef bool (*zathura_utility_plugin_init_t)(zathura_t* zathura);
+
+/**
+ * Utility plugin definition structure
+ */
+typedef struct zathura_utility_plugin_definition_s {
+  const char* name;
+  const zathura_plugin_version_t version;
+  zathura_utility_plugin_init_t init_function;
+} zathura_utility_plugin_definition_t;
+
 #define JOIN(x, y) JOIN2(x, y)
 #define JOIN2(x, y) x##_##y
 
 #define ZATHURA_PLUGIN_DEFINITION_SYMBOL JOIN(zathura_plugin, JOIN(ZATHURA_API_VERSION, ZATHURA_ABI_VERSION))
+
+/**
+ * Symbol name for utility plugins
+ */
+#define ZATHURA_UTILITY_PLUGIN_DEFINITION_SYMBOL \
+ JOIN(zathura_utility_plugin, JOIN(ZATHURA_API_VERSION, ZATHURA_ABI_VERSION))
 
 /**
  * Register a plugin.
@@ -254,6 +276,22 @@ typedef struct zathura_plugin_definition_s {
       .functions       = plugin_functions,                                                                             \
       .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]),                     \
       .mime_types      = zathura_plugin_mime_types,                                                                    \
+  };
+
+/**
+ * Register a utility plugin.
+ *
+ * @param plugin_name the name of the plugin
+ * @param major the plugin's major version
+ * @param minor the plugin's minor version
+ * @param rev the plugin's revision
+ * @param init_func the plugin's initialization function
+ */
+#define ZATHURA_UTILITY_PLUGIN_REGISTER(plugin_name, major, minor, rev, init_func) \
+  ZATHURA_PLUGIN_API const zathura_utility_plugin_definition_t ZATHURA_UTILITY_PLUGIN_DEFINITION_SYMBOL = { \
+    .name = plugin_name, \
+    .version = { major, minor, rev }, \
+    .init_function = init_func \
   };
 
 #define ZATHURA_PLUGIN_MIMETYPES(...) __VA_ARGS__

@@ -40,7 +40,7 @@ endif
 # required dependencies
 libm = cc.find_library('m', required: false)
 girara = dependency('girara-gtk3', version: '>=0.4.5', fallback: ['girara', 'girara_dependency'])
-glib = dependency('glib-2.0', version: '>=2.76')
+glib = dependency('glib-2.0', version: '>=2.74')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.72')
@@ -147,6 +147,7 @@ headers = files(
   'zathura/page.h',
   'zathura/plugin-api.h',
   'zathura/types.h',
+  'zathura/zathura.h',
 )
 headers += version_header
 

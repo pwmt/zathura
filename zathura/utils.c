@@ -337,7 +337,7 @@ char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager,
     }
   }
 
-  return g_string_free_and_steal(string);
+  return g_string_free(string, FALSE);
 }
 
 GdkAtom* get_selection(zathura_t* zathura) {
@@ -386,7 +386,7 @@ char* write_first_page_column_list(unsigned int* first_page_columns, unsigned in
     }
   }
 
-  return g_string_free_and_steal(buffer);
+  return g_string_free(buffer, FALSE);
 }
 
 unsigned int* parse_first_page_column_list(const char* first_page_column_list, unsigned int* size) {
