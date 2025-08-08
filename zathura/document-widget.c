@@ -133,10 +133,11 @@ static void zathura_document_calculate_render_range(zathura_t* zathura) {
   unsigned int current_page    = position_to_page_number(document, pos_x, pos_y);
   unsigned int npag            = zathura_document_get_number_of_pages(document);
   unsigned int ncol            = zathura_document_get_pages_per_row(document);
-  zathura_page_t* page         = zathura_document_get_page(document, current_page);
-  double page_height           = zathura_page_get_height(page);
 
-  unsigned int nrow           = cairo_max_size / (page_height + 2 * priv->v_spacing);
+  unsigned int cell_width, cell_height;
+  zathura_document_get_cell_size(document, &cell_height, &cell_width);
+
+  unsigned int nrow           = cairo_max_size / (cell_height + 2 * priv->v_spacing);
   unsigned int nrow_doc       = zathura_document_page_index_to_row(document, npag + ncol - 1);
   unsigned int current_row    = zathura_document_page_index_to_row(document, current_page); 
 
