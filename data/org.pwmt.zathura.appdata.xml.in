@@ -4,8 +4,11 @@
   <id>org.pwmt.zathura</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>Zlib</project_license>
+  <developer id="org.pwmt">
+    <name>pwmt</name>
+  </developer>
   <name>Zathura</name>
-  <summary>A minimalistic document viewer</summary>
+  <summary>Minimalistic document viewer</summary>
   <description>
     <p>
       Zathura is a highly customizable and functional document viewer. It
@@ -27,25 +30,39 @@
   <launchable type="desktop-id">org.pwmt.zathura.desktop</launchable>
   <url type="homepage">https://pwmt.org/projects/zathura</url>
   <url type="bugtracker">https://github.com/pwmt/zathura/issues</url>
+  <url type="donation">https://pwmt.org/help/donate</url>
+  <url type="contact">https://pwmt.org/contact</url>
+  <url type="translate">https://github.com/pwmt/zathura/tree/develop/po</url>
+  <url type="vcs-browser">https://github.com/pwmt/zathura</url>
+  <url type="help">https://pwmt.org/projects/zathura/documentation/</url>
   <screenshots>
     <screenshot type="default">
       <image>https://pwmt.org/static/img/zathura-cover.png</image>
+      <caption>Reading a PDF file</caption>
     </screenshot>
     <screenshot>
       <image>https://pwmt.org/static/img/zathura-completion.png</image>
+      <caption>Opening a file with the `open` command</caption>
     </screenshot>
     <screenshot>
       <image>https://pwmt.org/static/img/zathura-follow.png</image>
+      <caption>Following links</caption>
     </screenshot>
     <screenshot>
       <image>https://pwmt.org/static/img/zathura-bookmarks.png</image>
+      <caption>Listing and selecting bookmakrs</caption>
     </screenshot>
   </screenshots>
   <translation type="gettext">zathura</translation>
   <provides>
     <binary>zathura</binary>
   </provides>
-  <content_rating type="oars-1.0" />
+  <content_rating type="oars-1.1" />
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
   <releases>
     <release version="0.5.12" date="2025-07-03">
       <description>
@@ -131,12 +148,12 @@
     </release>
     <release version="0.5.1" date="2022-09-09">
       <description>
-        <p>seccomp: Make glibc fallback to clone instead of using clone3</p>
+        <p>`seccomp`: Make glibc fallback to clone instead of using clone3</p>
       </description>
     </release>
     <release version="0.5.0" date="2022-09-08">
       <description>
-        <p>magic is now a required dependency</p>
+        <p>`magic` is now a required dependency</p>
         <p>Various fixes and improvements</p>
       </description>
     </release>
@@ -524,7 +541,7 @@
         <p>Configureable modes</p>
         <p>Smooth scrolling</p>
         <p>Extended statusbar string manipulation</p>
-        <p>function</p>
+        <p>`function`</p>
         <p>Strip executable</p>
         <p>Updated manpage</p>
       </description>
@@ -536,10 +553,10 @@
         <p>Updated the behaviour of sc_scroll</p>
         <p>Half/Full-page scrolling</p>
         <p>Check document health in sc_reload</p>
-        <p>tabbed support</p>
+        <p>`tabbed` support</p>
         <p>Define look with the set function</p>
         <p>Implemented map function</p>
-        <p>zathurarc file</p>
+        <p>`zathurarc` file</p>
         <p>Prevent buffer overflow in realpath</p>
         <p>Strip executeable</p>
         <p>Key evaluation when buffer is not empty</p>
@@ -595,7 +612,7 @@
         <p>Marker support</p>
         <p>Highlight search results</p>
         <p>Buffered commands</p>
-        <p>set Function</p>
+        <p>`set` Function</p>
         <p>Revert video function</p>
         <p>Command completion</p>
       </description>
