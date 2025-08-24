@@ -12,6 +12,7 @@
 #include <girara/utils.h>
 #include <linux/sched.h> /* for clone filter */
 #include <unistd.h>      /* for fstat */
+#include <sys/mman.h>    /* for mmap/mprotect arguments */
 
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
@@ -101,14 +102,14 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
-  ALLOW_RULE(mprotect);
+  /* ALLOW_RULE(mprotect); specified below */
   ALLOW_RULE(mremap); /* mupdf requirement */
   ALLOW_RULE(munmap);
   ALLOW_RULE(newfstatat);
   /* ALLOW_RULE (open); specified below */
   /* ALLOW_RULE (openat); specified below */
   /* ALLOW_RULE(pipe); unused? */
-  ALLOW_RULE(pipe2); /* used by dbus only - remove this after dbus isolation is fixed */
+  /* ALLOW_RULE(pipe2); used by dbus feature - disabled in sandbox*/
   ALLOW_RULE(poll);
   ALLOW_RULE(ppoll); /* AArch64 requirement */
   /* ALLOW_RULE (prctl); specified below  */
@@ -130,10 +131,10 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* ALLOW_RULE(sendto); ipc, investigate */
   /* ALLOW_RULE(select); pselect (equals pselect6) */
   ALLOW_RULE(set_robust_list);
-  /*  ALLOW_RULE(shmat); X11 only */
-  /*  ALLOW_RULE(shmctl); X11 only */
-  /*  ALLOW_RULE(shmdt); X11 only */
-  /*  ALLOW_RULE(shmget); X11 only */
+  /* ALLOW_RULE(shmat); X11 only */
+  /* ALLOW_RULE(shmctl); X11 only */
+  /* ALLOW_RULE(shmdt); X11 only */
+  /* ALLOW_RULE(shmget); X11 only */
   /* ALLOW_RULE(shutdown); */
   ALLOW_RULE(stat); /* used by older libc - Debian 11 */
   ALLOW_RULE(statx);
@@ -211,6 +212,15 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_NAME));
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
+  /* This wont work yet, because PROT_EXEC is used after seccomp is called - fix by second filter? */
+  /* Prevent the creation of executeable memory */
+  /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | 
+              PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE)); */
+
+  /* Prevent the creation of executeable memory */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | 
+              PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
+  
   /* open syscall to be removed? openat is used instead */
   /* special restrictions for open, prevent opening files for writing */
   /*  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
@@ -255,15 +265,25 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * wait4: required to attempt opening links (which is then blocked)
    *
    *
-   * TODO: check requirement of pipe/pipe2 syscalls when dbus is disabled
-   *
-   *
    * Note about clone3():
    * Since the seccomp mechanism is unable to examine system-call arguments that are passed in separate structures
    * it will be unable to make decisions based on the flags given to clone3().
    * Code meant to be sandboxed with seccomp should not use clone3() at all until it is possible to inspect its
    * arguments.
    *
+   *
+   * Ideas for additional restrictions:
+   * Apply second filter after the file has been opened but before it is parsed
+   * This may allow the removal of additional syscalls
+   * Additional restrictions of commands such as open may be required since it won't allow opening new files
+   * Note: during rendering zathura still openes fonts, which makes this infeasible
+   * - a second landlock filter would be an alternative solution to restrict read access to /usr/share/fonts only.
+   *
+   * Alternative sandbox approach:
+   * Currently the entire sandbox is provided in a separate binary and prevents the use of 
+   * some features, including usability services.
+   * An alternative approach would be the use of sandboxed-api in poppler and mupdf
+   * This would allow the creation of a separate rendering process that can be restricted without removing features
    *
    */
 
