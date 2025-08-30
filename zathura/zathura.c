@@ -260,6 +260,7 @@ static bool init_ui(zathura_t* zathura) {
   }
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
+  g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
 
