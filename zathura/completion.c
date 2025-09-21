@@ -307,13 +307,11 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
   }
 
   const zathura_plugin_t* plugin = zathura_document_get_plugin(document);
-  if (plugin != NULL) {
-    const char* plugin_name = zathura_plugin_get_name(plugin);
-    const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
-    if (functions->document_attachments_get == NULL) {
-      girara_notify(session, GIRARA_WARNING, "Your current plugin (%s) does not support exporting attachments.", plugin_name);
-      goto error_ret;
-    }
+  const char* plugin_name = zathura_plugin_get_name(plugin);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->document_attachments_get == NULL) {
+    girara_notify(session, GIRARA_WARNING, "Your current plugin (%s) does not support exporting attachments.", plugin_name);
+    goto error_ret;
   }
 
   girara_completion_t* completion             = NULL;
