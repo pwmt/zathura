@@ -76,8 +76,14 @@ if get_option('tests').allowed()
       ]
     )
 
+    test_env = environment()
+    x11_session = false
+    if run_command('sh', '-c', 'test -n "$DISPLAY"', check: false).returncode() == 0
+      x11_session = true
+    endif
+
     # need the equivalent of xvfb for wayland
-    if seccomp.found() or landlock
+    if (seccomp.found() or landlock) and x11_session
       sandbox = executable('test_sandbox', files('test_sandbox.c'),
         dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
         include_directories: include_directories,
