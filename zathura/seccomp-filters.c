@@ -165,7 +165,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
     ADD_RULE("allow", SCMP_ACT_ALLOW, socket, 1, SCMP_CMP(0, SCMP_CMP_EQ, AF_UNIX));
 
     ALLOW_RULE(mkdir); /* mkdirat */
-    ALLOW_RULE(mprotect);
     ALLOW_RULE(setsockopt);
     ALLOW_RULE(getsockopt);
     ALLOW_RULE(getsockname);

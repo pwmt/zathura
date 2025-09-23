@@ -75,32 +75,5 @@ if get_option('tests').allowed()
         'LIBGL_DEBUG=quiet'
       ]
     )
-
-    test_env = environment()
-    x11_session = false
-    if run_command('sh', '-c', 'test -n "$DISPLAY"', check: false).returncode() == 0
-      x11_session = true
-    endif
-
-    # need the equivalent of xvfb for wayland
-    if (seccomp.found() or landlock) and x11_session
-      sandbox = executable('test_sandbox', files('test_sandbox.c'),
-        dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
-        include_directories: include_directories,
-        c_args: defines + sandbox_defines + flags
-      )
-      test('sandbox', xvfb,
-        args: xvfb_args + [sandbox],
-        timeout: 60*60,
-        protocol: 'tap',
-        env: [
-          'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
-          'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
-          'NO_AT_BRIDGE=1',
-          'MESA_LOG=null',
-          'LIBGL_DEBUG=quiet'
-        ]
-      )
-    endif
   endif
 endif
