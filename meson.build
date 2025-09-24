@@ -60,7 +60,7 @@ endif
 
 # defines
 defines = [
-  '-DGETTEXT_PACKAGE="zathura"',
+  '-DGETTEXT_PACKAGE="org.pwmt.zathura"',
   '-DLOCALEDIR="@0@"'.format(join_paths(prefix, localedir)),
   '-DZATHURA_PLUGINDIR="@0@"'.format(join_paths(prefix, plugindir)),
   '-DSYSCONFDIR="@0@"'.format(sysconfdir),
