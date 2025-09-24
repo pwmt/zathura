@@ -64,6 +64,14 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="0.5.13" date="2025-09-23">
+      <description>
+        <p>Validate appstream files with appstreamcli</p>
+        <p>Split page-padding into page-h-padding and page-v-padding</p>
+        <p>Fix memory leak and callback type error (#767)</p>
+        <p>Warn if plugins do not support exporting images or attachments (#334)</p>
+      </description>
+    </release>
     <release version="0.5.12" date="2025-07-03">
       <description>
         <p>Add shortcut to open files via file chooser dialog</p>
