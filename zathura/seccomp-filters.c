@@ -214,13 +214,13 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 
   /* This wont work yet, because PROT_EXEC is used after seccomp is called - fix by second filter? */
   /* Prevent the creation of executeable memory */
-  /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | 
+  /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE |
               PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE)); */
 
   /* Prevent the creation of executeable memory */
-  ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | 
-              PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
-  
+  ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
+           SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
+
   /* open syscall to be removed? openat is used instead */
   /* special restrictions for open, prevent opening files for writing */
   /*  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
@@ -280,7 +280,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * - a second landlock filter would be an alternative solution to restrict read access to /usr/share/fonts only.
    *
    * Alternative sandbox approach:
-   * Currently the entire sandbox is provided in a separate binary and prevents the use of 
+   * Currently the entire sandbox is provided in a separate binary and prevents the use of
    * some features, including usability services.
    * An alternative approach would be the use of sandboxed-api in poppler and mupdf
    * This would allow the creation of a separate rendering process that can be restricted without removing features

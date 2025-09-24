@@ -86,8 +86,8 @@ static unsigned int zathura_document_row_first_page_index(zathura_document_t* do
 }
 
 /*
- * Compute the current document viewport, returning 
- * start_row and end_row as the first and last visible 
+ * Compute the current document viewport, returning
+ * start_row and end_row as the first and last visible
  * row respectively.
  */
 static void zathura_document_view_range(zathura_document_t* document, unsigned int* start_row, unsigned int* end_row) {
@@ -105,8 +105,8 @@ static void zathura_document_view_range(zathura_document_t* document, unsigned i
   zathura_document_get_viewport_size(document, &view_height, &view_width);
 
   /* position at the top and bottom of the viewport */
-  double top_y     = CLAMP(pos_y - 0.5 * (double)(view_height + cell_height) / (double)doc_height, 0, 1);
-  double bottom_y  = CLAMP(pos_y + 0.5 * (double)(view_height + cell_height) / (double)doc_height, 0, 1);
+  double top_y    = CLAMP(pos_y - 0.5 * (double)(view_height + cell_height) / (double)doc_height, 0, 1);
+  double bottom_y = CLAMP(pos_y + 0.5 * (double)(view_height + cell_height) / (double)doc_height, 0, 1);
 
   unsigned int start_index = position_to_page_number(document, pos_x, top_y);
   unsigned int end_index   = position_to_page_number(document, pos_x, bottom_y);
@@ -116,8 +116,8 @@ static void zathura_document_view_range(zathura_document_t* document, unsigned i
 }
 
 /*
- * Calculates the number of rows for the document widget and 
- * the starting page index. The starting page is chosen so 
+ * Calculates the number of rows for the document widget and
+ * the starting page index. The starting page is chosen so
  * that the current page is on the middle of the document widget.
  */
 static void zathura_document_calculate_render_range(zathura_t* zathura) {
@@ -130,24 +130,24 @@ static void zathura_document_calculate_render_range(zathura_t* zathura) {
   double pos_x = zathura_document_get_position_x(document);
   double pos_y = zathura_document_get_position_y(document);
 
-  unsigned int current_page    = position_to_page_number(document, pos_x, pos_y);
-  unsigned int npag            = zathura_document_get_number_of_pages(document);
-  unsigned int ncol            = zathura_document_get_pages_per_row(document);
+  unsigned int current_page = position_to_page_number(document, pos_x, pos_y);
+  unsigned int npag         = zathura_document_get_number_of_pages(document);
+  unsigned int ncol         = zathura_document_get_pages_per_row(document);
 
   unsigned int cell_width, cell_height;
   zathura_document_get_cell_size(document, &cell_height, &cell_width);
 
-  unsigned int nrow           = cairo_max_size / (cell_height + 2 * priv->v_spacing);
-  unsigned int nrow_doc       = zathura_document_page_index_to_row(document, npag + ncol - 1);
-  unsigned int current_row    = zathura_document_page_index_to_row(document, current_page); 
+  unsigned int nrow        = cairo_max_size / (cell_height + 2 * priv->v_spacing);
+  unsigned int nrow_doc    = zathura_document_page_index_to_row(document, npag + ncol - 1);
+  unsigned int current_row = zathura_document_page_index_to_row(document, current_page);
 
   priv->row_count = MIN(nrow_doc, nrow);
 
   /*
    * When the contents of a GTK Grid is changed,
-   * the attributes of the grid are calculated in 
-   * the next main loop iteration. To ensure correct 
-   * positioning, the number of rows added to 
+   * the attributes of the grid are calculated in
+   * the next main loop iteration. To ensure correct
+   * positioning, the number of rows added to
    * the grid should always be priv->row_count.
    */
   if (nrow_doc <= current_row + priv->row_count / 2) {
@@ -180,15 +180,15 @@ static void zathura_document_update_grid(zathura_t* zathura) {
 
   zathura_document_calculate_render_range(zathura);
   unsigned int page_index = zathura_document_row_first_page_index(document, priv->start_row);
-  unsigned int start_col = (priv->start_row == 0) ? c0 - 1 : 0;
+  unsigned int start_col  = (priv->start_row == 0) ? c0 - 1 : 0;
 
-  girara_debug("start row %u, row count %u, start index %u, current page %d", 
-               priv->start_row, priv->row_count, page_index, current_page);
+  girara_debug("start row %u, row count %u, start index %u, current page %d", priv->start_row, priv->row_count,
+               page_index, current_page);
 
   // first row to handle first_page_column
   unsigned int grid_rows = 0;
   for (unsigned int col = start_col; col < ncol && page_index < npag; col++) {
-    unsigned int x = col;
+    unsigned int x         = col;
     GtkWidget* page_widget = zathura->pages[page_index];
     if (priv->page_right_to_left) {
       x = ncol - 1 - x;
@@ -197,7 +197,7 @@ static void zathura_document_update_grid(zathura_t* zathura) {
     gtk_grid_attach(GTK_GRID(widget), page_widget, x, 0, 1, 1);
     page_index++;
     grid_rows = 1;
-  } 
+  }
 
   // remaining rows
   for (unsigned int row = 1; row < priv->row_count; row++) {
@@ -217,7 +217,7 @@ static void zathura_document_update_grid(zathura_t* zathura) {
   }
 
   priv->do_render = false;
-  
+
   if (priv->row_count != grid_rows) {
     girara_warning("grid contains incorrect number of rows, expected %d got %d", priv->row_count, grid_rows);
   }
@@ -246,7 +246,7 @@ void zathura_document_widget_render(zathura_t* zathura) {
   zathura_document_update_grid(zathura);
 }
 
-void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_padding, unsigned int page_h_padding, 
+void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_padding, unsigned int page_h_padding,
                                       bool page_right_to_left) {
   if (zathura == NULL || zathura->document == NULL) {
     return;

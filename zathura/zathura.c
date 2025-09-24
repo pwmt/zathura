@@ -1132,8 +1132,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* view mode */
   unsigned int pages_per_row   = 1;
   char* first_page_column_list = NULL;
-  unsigned int page_v_padding    = 1;
-  unsigned int page_h_padding    = 1;
+  unsigned int page_v_padding  = 1;
+  unsigned int page_h_padding  = 1;
   bool page_right_to_left      = false;
 
   girara_setting_get(zathura->ui.session, "page-v-padding", &page_v_padding);

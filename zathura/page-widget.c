@@ -624,7 +624,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
 
     /* draw signatures */
     if (priv->signatures.draw == true && priv->signatures.list != NULL) {
-      PangoLayout *layout = pango_cairo_create_layout(cairo);
+      PangoLayout* layout = pango_cairo_create_layout(cairo);
 
       for (size_t idx = 0; idx != girara_list_size(priv->signatures.list); ++idx) {
         zathura_signature_info_t* signature = girara_list_nth(priv->signatures.list, idx);

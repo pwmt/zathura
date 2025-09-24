@@ -42,8 +42,8 @@ struct zathura_document_s {
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   unsigned int pages_per_row;              /**< number of pages in a row */
   unsigned int first_page_column;          /**< column of the first page */
-  unsigned int page_v_padding;               /**< padding between pages */
-  unsigned int page_h_padding;               /**< padding between pages */
+  unsigned int page_v_padding;             /**< padding between pages */
+  unsigned int page_h_padding;             /**< padding between pages */
   double position_x;                       /**< X adjustment */
   double position_y;                       /**< Y adjustment */
 
@@ -566,14 +566,14 @@ void zathura_document_set_cell_size(zathura_document_t* document, unsigned int c
   document->cell_height = cell_height;
 }
 
-void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding, 
-                                      unsigned int page_h_padding, unsigned int pages_per_row, 
+void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding,
+                                      unsigned int page_h_padding, unsigned int pages_per_row,
                                       unsigned int first_page_column) {
   g_return_if_fail(document != NULL);
 
   document->page_v_padding = page_v_padding;
   document->page_h_padding = page_h_padding;
-  document->pages_per_row = pages_per_row;
+  document->pages_per_row  = pages_per_row;
 
   if (first_page_column < 1) {
     first_page_column = 1;
