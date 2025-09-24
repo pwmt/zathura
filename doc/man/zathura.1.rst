@@ -137,6 +137,8 @@ General
     Toggle inputbar
   ^n
     Toggle statusbar
+  Escape
+    Hide notification bar
   +, -, =
     Zoom in, out or to the original size
   zI, zO, z0
