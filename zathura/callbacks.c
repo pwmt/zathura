@@ -314,14 +314,18 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
   g_free(first_page_column_list);
 
-  unsigned int page_padding = 1;
-  girara_setting_get(zathura->ui.session, "page-padding", &page_padding);
+  unsigned int page_v_padding = 1;
+  girara_setting_get(zathura->ui.session, "page-v-padding", &page_v_padding);
+
+  unsigned int page_h_padding = 1;
+  girara_setting_get(zathura->ui.session, "page-h-padding", &page_h_padding);
 
   bool page_right_to_left = false;
   girara_setting_get(zathura->ui.session, "page-right-to-left", &page_right_to_left);
 
-  zathura_document_set_page_layout(zathura_get_document(zathura), page_padding, pages_per_row, first_page_column);
-  zathura_document_widget_set_mode(zathura, page_padding, pages_per_row, first_page_column, page_right_to_left);
+  zathura_document_set_page_layout(zathura_get_document(zathura), page_v_padding, page_h_padding, pages_per_row,
+                                   first_page_column);
+  zathura_document_widget_set_mode(zathura, page_v_padding, page_h_padding, page_right_to_left);
 }
 
 void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* UNUSED(column), void* data) {

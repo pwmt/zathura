@@ -94,22 +94,22 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   zathura_init_locale();
 
   /* parse command line arguments */
-  gchar* config_dir     = NULL;
-  gchar* data_dir       = NULL;
-  gchar* cache_dir      = NULL;
-  gchar* plugin_path    = NULL;
-  gchar* loglevel       = NULL;
-  gchar* password       = NULL;
-  gchar* synctex_editor = NULL;
-  gchar* synctex_fwd    = NULL;
-  gchar* mode           = NULL;
-  gchar* bookmark_name  = NULL;
-  gchar* search_string  = NULL;
-  bool forkback         = false;
-  bool print_version    = false;
-  int page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  int synctex_pid       = -1;
-  Window embed          = 0;
+  gchar* config_dir      = NULL;
+  gchar* data_dir        = NULL;
+  gchar* cache_dir       = NULL;
+  gchar* plugin_path     = NULL;
+  gchar* loglevel        = NULL;
+  gchar* password        = NULL;
+  gchar* synctex_editor  = NULL;
+  gchar* synctex_fwd     = NULL;
+  gchar* mode            = NULL;
+  gchar* bookmark_name   = NULL;
+  gchar* search_string   = NULL;
+  gboolean forkback      = false;
+  gboolean print_version = false;
+  gint page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  gint synctex_pid       = -1;
+  Window embed           = 0;
 
   GOptionEntry entries[] = {
       {"reparent", 'e', 0, G_OPTION_ARG_INT, &embed, _("Reparents to window specified by xid (X11)"), "xid"},

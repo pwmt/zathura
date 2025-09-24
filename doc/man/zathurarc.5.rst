@@ -380,10 +380,12 @@ They can also be combined with modifiers:
   * bottom
   * backward
   * collapse
+  * collapse-recursive
   * collapse-all
   * default
   * down
   * expand
+  * expand-recursive
   * expand-all
   * forward
   * full-down
@@ -787,8 +789,14 @@ zathura
   * Value type: Integer
   * Default value: 15
 
-*page-padding*
-  The page padding defines the gap in pixels between each rendered page.
+*page-v-padding*
+  Vertical page padding defines the vertical gap in pixels between each rendered page.
+
+  * Value type: Integer
+  * Default value: 1
+
+*page-h-padding*
+  Horizontal page padding defines the horizontal gap in pixels between each rendered page.
 
   * Value type: Integer
   * Default value: 1

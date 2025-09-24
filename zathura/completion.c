@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "page.h"
 #include "database.h"
+#include "internal.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -320,8 +321,9 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
   }
 
   /* add attachments */
-  const size_t input_length  = strlen(input);
-  girara_list_t* attachments = zathura_document_attachments_get(document, NULL);
+  const size_t input_length = strlen(input);
+  zathura_error_t attachment_error;
+  girara_list_t* attachments = zathura_document_attachments_get(document, &attachment_error);
   if (attachments != NULL) {
     bool added = false;
 
@@ -351,16 +353,16 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
     goto error_free;
   }
 
-  bool added = false;
-
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  bool added                         = false;
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  zathura_error_t image_error;
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
       continue;
     }
 
-    girara_list_t* images = zathura_page_images_get(page, NULL);
+    girara_list_t* images = zathura_page_images_get(page, &image_error);
     if (images != NULL) {
       unsigned int image_number = 1;
       for (size_t idx = 0; idx != girara_list_size(images); ++idx) {
@@ -372,7 +374,14 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
         image_number++;
       }
       girara_list_free(images);
+    } else if (image_error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
+      break;
     }
+  }
+
+  if (attachment_error == ZATHURA_ERROR_NOT_IMPLEMENTED && image_error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
+    girara_notify(session, GIRARA_WARNING, "Plugin does not support exporting attachments and images.");
+    goto error_free;
   }
 
   if (added == true) {

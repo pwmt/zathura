@@ -206,6 +206,8 @@ static void mark_evaluate(zathura_t* zathura, int key) {
     if (mark != NULL && mark->key == key) {
       zathura_document_set_zoom(zathura_get_document(zathura),
                                 zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
+
+      adjust_view(zathura);
       render_all(zathura);
 
       zathura_jumplist_add(zathura);

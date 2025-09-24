@@ -199,13 +199,22 @@ gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* 
   return TRUE;
 }
 
-static void tree_view_scroll_to_cell(zathura_t* zathura) {
-  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+static GtkTreeView* get_tree_view(zathura_t* zathura) {
+  GList* index_children  = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
+  GtkTreeView* tree_view = index_children->data;
+  g_list_free(index_children);
+  return tree_view;
+}
+
+static gboolean tree_view_scroll_to_cell(void* data) {
+  zathura_t* zathura     = data;
+  GtkTreeView* tree_view = get_tree_view(zathura);
   gtk_tree_view_scroll_to_cell(tree_view, zathura->global.current_index_path, NULL, TRUE, 0.5, 0.0);
+  return G_SOURCE_REMOVE;
 }
 
 void index_scroll_to_current_page(zathura_t* zathura) {
-  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+  GtkTreeView* tree_view = get_tree_view(zathura);
   GtkTreeModel* model    = gtk_tree_view_get_model(tree_view);
 
   SearchData search_data;
@@ -220,7 +229,7 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   zathura->global.current_index_path = gtk_tree_path_copy(current_path);
   gtk_tree_view_expand_to_path(tree_view, current_path);
 
-  g_idle_add(G_SOURCE_FUNC(tree_view_scroll_to_cell), zathura);
+  g_idle_add(tree_view_scroll_to_cell, zathura);
   gtk_tree_view_set_cursor(tree_view, current_path, NULL, FALSE);
   gtk_tree_path_free(current_path);
 }

@@ -187,16 +187,28 @@ Index mode
 
   k, j
     Move to upper or lower entry
-  l
+  Up, Down
+    Move to upper or lower entry
+  ^u, ^d
+    Scroll and move up or down by half a screen
+  l, Right, zo
     Expand entry
-  L
+  zO
+    Expand entry recursively
+  L, zR
     Expand all entries
-  h
+  h, Left, zc
     Collapse entry
-  H
+  zC
+    Collapse entry recursively
+  H, zM
     Collapse all entries
-  space, Return
+  space, Return, ^j
     Select and open entry
+  gg, G
+    Goto to the first or last entry
+  Tab, Escape, ^[, ^c
+    Hide index and switch to normal mode
 
 
 Mouse bindings

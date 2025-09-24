@@ -21,6 +21,7 @@
 #include "page-widget.h"
 #include "adjustment.h"
 #include "database.h"
+#include "document-widget.h"
 #include <math.h>
 
 /* Helper function for highlighting the links */
@@ -350,8 +351,17 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
       return false;
     }
 
-    zathura_adjustment_set_value(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - zathura->shortcut.mouse.x));
-    zathura_adjustment_set_value(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - zathura->shortcut.mouse.y));
+    unsigned int doc_height, doc_width;
+    zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+
+    const double pos_x = zathura_document_widget_get_ratio(zathura, x_adj, true);
+    const double pos_y = zathura_document_widget_get_ratio(zathura, y_adj, false);
+
+    const double ratio_x = pos_x - (event->x - zathura->shortcut.mouse.x) / doc_width;
+    const double ratio_y = pos_y - (event->y - zathura->shortcut.mouse.y) / doc_height;
+
+    zathura_document_widget_set_value_from_ratio(zathura, x_adj, ratio_x, true);
+    zathura_document_widget_set_value_from_ratio(zathura, y_adj, ratio_y, false);
     break;
 
     /* unhandled events */
@@ -1062,12 +1072,6 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
       }
     }
     break;
-  case COLLAPSE:
-    if (gtk_tree_view_collapse_row(tree_view, path) == FALSE && gtk_tree_path_get_depth(path) > 1) {
-      gtk_tree_path_up(path);
-      gtk_tree_view_collapse_row(tree_view, path);
-    }
-    break;
   case DOWN:
     for (int n = (t == 0 ? 1 : t); n > 0; n--) {
       if (gtk_tree_view_row_expanded(tree_view, path)) {
@@ -1110,9 +1114,26 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
       gtk_tree_path_down(path);
     }
     break;
+  case EXPAND_RECURSIVE:
+    if (gtk_tree_view_expand_row(tree_view, path, TRUE)) {
+      gtk_tree_path_down(path);
+    }
+    break;
   case EXPAND_ALL:
     gtk_tree_view_expand_all(tree_view);
     need_to_scroll = TRUE;
+    break;
+  case COLLAPSE:
+    if (gtk_tree_view_collapse_row(tree_view, path) == FALSE && gtk_tree_path_get_depth(path) > 1) {
+      gtk_tree_path_up(path);
+      gtk_tree_view_collapse_row(tree_view, path);
+    }
+    break;
+  case COLLAPSE_RECURSIVE:
+    while (gtk_tree_path_get_depth(path) > 1) {
+      gtk_tree_path_up(path);
+    }
+    gtk_tree_view_collapse_row(tree_view, path);
     break;
   case COLLAPSE_ALL:
     gtk_tree_view_collapse_all(tree_view);
@@ -1242,8 +1263,8 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     }
 
     girara_set_view(session, zathura->ui.index);
-    GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-    gtk_widget_grab_focus(GTK_WIDGET(tree_view));
+    // GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
+    // gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     index_scroll_to_current_page(zathura);
     girara_mode_set(zathura->ui.session, zathura->modes.index);
   }
@@ -1573,7 +1594,7 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   const gint res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(native));
   if (res == GTK_RESPONSE_ACCEPT) {
     char* filename = gtk_file_chooser_get_filename(chooser);
-    if (!document_close(zathura, false)) {
+    if (zathura_has_document(zathura) && !document_close(zathura, false)) {
       g_free(filename);
       goto error;
     }
