@@ -351,26 +351,23 @@ static void init_database(zathura_t* zathura) {
   char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
 
+  const bool is_null_database = g_strcmp0(database, "null") == 0;
+
   /* create zathura data directory if database enabled */
-  if (g_strcmp0(database, "null") != 0) {
+  if (is_null_database == false) {
     create_directories(zathura);
   }
 
-  if (g_strcmp0(database, "plain") == 0) {
-    girara_debug("Using plain database backend.");
-    char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
-    zathura->database = zathura_sqldatabase_new_from_plain(tmp, zathura->config.data_dir);
-    g_free(tmp);
-  } else if (g_strcmp0(database, "sqlite") == 0) {
+  if (g_strcmp0(database, "sqlite") == 0) {
     girara_debug("Using sqlite database backend.");
     char* tmp         = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database = zathura_sqldatabase_new(tmp);
     g_free(tmp);
-  } else if (g_strcmp0(database, "null") != 0) {
+  } else if (is_null_database == false) {
     girara_error("Database backend '%s' is not supported.", database);
   }
 
-  if (zathura->database == NULL && g_strcmp0(database, "null") != 0) {
+  if (zathura->database == NULL && is_null_database == false) {
     girara_error("Unable to initialize database. Bookmarks won't be available.");
   } else {
     g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);

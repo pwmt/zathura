@@ -35,13 +35,4 @@ GType zathura_sqldatabase_get_type(void) G_GNUC_CONST;
  */
 zathura_database_t* zathura_sqldatabase_new(const char* path);
 
-/**
- * Initialize database system from an old plain database.
- *
- * @param sqlite_path Path to the sqlite database.
- * @param plain_dir Path to the old plain database.
- * @return A valid zathura_database_t instance or NULL on failure
- */
-zathura_database_t* zathura_sqldatabase_new_from_plain(const char* sqlite_path, const char* plain_dir);
-
 #endif
