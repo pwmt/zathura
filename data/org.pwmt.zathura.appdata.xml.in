@@ -32,7 +32,7 @@
   <url type="bugtracker">https://github.com/pwmt/zathura/issues</url>
   <url type="donation">https://pwmt.org/help/donate</url>
   <url type="contact">https://pwmt.org/contact</url>
-  <url type="translate">https://github.com/pwmt/zathura/tree/develop/po</url>
+  <url type="translate">https://pwmt.org/help/localization/</url>
   <url type="vcs-browser">https://github.com/pwmt/zathura</url>
   <url type="help">https://pwmt.org/projects/zathura/documentation/</url>
   <screenshots>
