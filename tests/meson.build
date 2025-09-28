@@ -48,6 +48,15 @@ if get_option('tests').allowed()
   )
 
   xvfb = find_program('xvfb-run', required: get_option('tests'))
+  weston = find_program('weston', required: get_option('tests'))
+  if xvfb.found() or xvfb.found()
+    session = executable('test_session', files('test_session.c'),
+      dependencies: build_dependencies + test_dependencies,
+      include_directories: include_directories,
+      c_args: defines + flags
+    )
+  endif
+
   if xvfb.found()
     xvfb_args = ['-s', '-screen 0 1400x900x24 -ac +extension GLX +render -noreset']
     xvfb_h_output = run_command(xvfb, '-h', capture: true, check: false)
@@ -58,12 +67,7 @@ if get_option('tests').allowed()
       xvfb_args += ['-a']
     endif
 
-    session = executable('test_session', files('test_session.c'),
-      dependencies: build_dependencies + test_dependencies,
-      include_directories: include_directories,
-      c_args: defines + flags
-    )
-    test('session', xvfb,
+    test('xvfb_session', xvfb,
       args: xvfb_args + [session],
       timeout: 60*60,
       protocol: 'tap',
@@ -75,5 +79,22 @@ if get_option('tests').allowed()
         'LIBGL_DEBUG=quiet'
       ]
     )
+  endif
+
+  # Weston-headless test for Wayland environments
+  if weston.found()
+    weston_session = find_program(meson.current_source_dir() / 'weston_session.sh')
+
+    test('weston_session', weston_session,
+      args: [session],
+      timeout: 60*60,
+      protocol: 'tap',
+      env: [
+        'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
+        'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
+        'NO_AT_BRIDGE=1',
+        'WAYLAND_DISPLAY=zathura-test-weston'
+    ]
+  )
   endif
 endif
