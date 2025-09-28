@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-28 21:41+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2025-09-28 22:04+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://app.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:8
 msgid "pwmt"
-msgstr ""
+msgstr "pwmt"
 
 #: data/org.pwmt.zathura.appdata.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
@@ -28,7 +28,7 @@ msgstr "Zathura"
 
 #: data/org.pwmt.zathura.appdata.xml.in:11
 msgid "Minimalistic document viewer"
-msgstr ""
+msgstr "Minimalistischer Dokumenten-Betrachter"
 
 #: data/org.pwmt.zathura.appdata.xml.in:13
 msgid ""
@@ -48,7 +48,7 @@ msgid ""
 "Other features include:"
 msgstr ""
 "Zathura kann durch Plug-ins um die Unterstützung von verschiedenen "
-"Dokumentformaten erwetert werden. Weitere Funktionen umfassen:"
+"Dokumentformaten erweitert werden. Weitere Funktionen umfassen:"
 
 #: data/org.pwmt.zathura.appdata.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
@@ -64,7 +64,7 @@ msgstr "Automatisches Neuladen von Dokumenten."
 
 #: data/org.pwmt.zathura.appdata.xml.in:41
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "Betrachten einer PDF Datei"
 
 #: data/org.pwmt.zathura.appdata.xml.in:45
 msgid "Opening a file with the `open` command"
@@ -1251,7 +1251,7 @@ msgstr "Ein minimalistischer Dokumenten-Betrachter"
 #. localize the semicolons. The list must also end with a semicolon.
 #: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr "PDF;Ps;PostScript;DjVU;Dokumente;Presentation;Betrachter;"
+msgstr "PDF;PS;PostScript;DjVU;Dokumente;Präsentation;Betrachter;"
 
 #: zathura/callbacks.c:296
 #, c-format
@@ -1396,7 +1396,7 @@ msgstr "Keine Information verfügbar."
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
-"Mehr Infromationen sind in den Manpages zathura(1) und zathurarc(5) "
+"Mehr Information sind in den Manpages zathura(1) und zathurarc(5) "
 "verfügbar."
 
 #: zathura/commands.c:297 zathura/commands.c:676
@@ -1452,7 +1452,7 @@ msgstr "Unbekanntes Bild '%s'."
 #: zathura/commands.c:565
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Unbekannter Anhanng oder Bild '%s'."
+msgstr "Unbekannter Anhang oder Bild '%s'."
 
 #: zathura/commands.c:582
 msgid "Exec is not permitted in strict sandbox mode"
@@ -1703,7 +1703,7 @@ msgstr "Verwende ~ statt $HOME im Dateinamen im Fenstertitel"
 
 #: zathura/config.c:323
 msgid "Display the page number in the window title"
-msgstr "Verwende die Seitenzal im Fenstertitel"
+msgstr "Verwende die Seitenzahl im Fenstertitel"
 
 #: zathura/config.c:325
 msgid "Use first page of a document as window icon"
@@ -1829,7 +1829,7 @@ msgstr "Setze den Seitenabstand"
 
 #: zathura/config.c:587
 msgid "Mark current location within the document"
-msgstr "Markiere aktuelle Position im Doukument"
+msgstr "Markiere aktuelle Position im Dokument"
 
 #: zathura/config.c:588
 msgid "Delete the specified marks"
@@ -2036,7 +2036,7 @@ msgstr "Passwort:"
 
 #: zathura/zathura.c:941
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr "Dateityp ist nicht unterstützt. Installiere das benötigete Plugin."
+msgstr "Dateityp ist nicht unterstützt. Installiere das benötigte Plugin."
 
 #: zathura/zathura.c:950
 msgid "Document does not contain any pages"
