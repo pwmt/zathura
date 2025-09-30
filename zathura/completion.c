@@ -13,7 +13,6 @@
 #include "utils.h"
 #include "page.h"
 #include "database.h"
-#include "internal.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
