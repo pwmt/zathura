@@ -257,10 +257,10 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
-  girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, true, _("Index mode foreground color"), NULL, NULL);
-  girara_setting_add(gsession, "index-bg",        "#232323", STRING, true, _("Index mode background color"), NULL, NULL);
-  girara_setting_add(gsession, "index-active-fg", "#232323", STRING, true, _("Index mode foreground color (active element)"), NULL, NULL);
-  girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, true, _("Index mode background color (active element)"), NULL, NULL);
+  girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, false, _("Index mode foreground color"), NULL, NULL);
+  girara_setting_add(gsession, "index-bg",        "#232323", STRING, false, _("Index mode background color"), NULL, NULL);
+  girara_setting_add(gsession, "index-active-fg", "#232323", STRING, false, _("Index mode foreground color (active element)"), NULL, NULL);
+  girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, false, _("Index mode background color (active element)"), NULL, NULL);
   girara_setting_add(gsession, "signature-success-color", NULL, STRING, false,
                      _("Color used to highlight valid signatures"), cb_color_change, NULL);
   girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
