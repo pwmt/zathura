@@ -15,6 +15,7 @@
 #include <girara/shortcuts.h>
 #include <girara/config.h>
 #include <girara/commands.h>
+#include <girara/template.h>
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
@@ -30,6 +31,22 @@ static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(nam
   const int* ivalue = value;
   zathura_jumplist_set_max_size(zathura, MAX(0, *ivalue));
 }
+
+static void cb_color(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type), const void* value,
+                     void* UNUSED(data)) {
+  g_return_if_fail(session != NULL && value != NULL);
+  GiraraTemplate* csstemplate = girara_session_get_template(session);
+
+  const char* str_value = value;
+
+  GdkRGBA color = {0, 0, 0, 0};
+  gdk_rgba_parse(&color, str_value);
+
+  char* colorstr = gdk_rgba_to_string(&color);
+  girara_template_set_variable_value(csstemplate, name, colorstr);
+  g_free(colorstr);
+}
+
 
 static void cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),
                             const void* value, void* UNUSED(data)) {
@@ -257,10 +274,10 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
   girara_setting_set(gsession, "render-loading-fg",      "#000000");
 
-  girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, false, _("Index mode foreground color"), NULL, NULL);
-  girara_setting_add(gsession, "index-bg",        "#232323", STRING, false, _("Index mode background color"), NULL, NULL);
-  girara_setting_add(gsession, "index-active-fg", "#232323", STRING, false, _("Index mode foreground color (active element)"), NULL, NULL);
-  girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, false, _("Index mode background color (active element)"), NULL, NULL);
+  girara_setting_add(gsession, "index-fg",        "#DDDDDD", STRING, false, _("Index mode foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "index-bg",        "#232323", STRING, false, _("Index mode background color"), cb_color, NULL);
+  girara_setting_add(gsession, "index-active-fg", "#232323", STRING, false, _("Index mode foreground color (active element)"), cb_color, NULL);
+  girara_setting_add(gsession, "index-active-bg", "#9FBC00", STRING, false, _("Index mode background color (active element)"), cb_color, NULL);
   girara_setting_add(gsession, "signature-success-color", NULL, STRING, false,
                      _("Color used to highlight valid signatures"), cb_color_change, NULL);
   girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
