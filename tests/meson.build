@@ -49,7 +49,7 @@ if get_option('tests').allowed()
 
   xvfb = find_program('xvfb-run', required: get_option('tests'))
   weston = find_program('weston', required: get_option('tests'))
-  if xvfb.found() or xvfb.found()
+  if xvfb.found() or weston.found()
     session = executable('test_session', files('test_session.c'),
       dependencies: build_dependencies + test_dependencies,
       include_directories: include_directories,
