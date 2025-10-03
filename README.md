@@ -55,7 +55,7 @@ To build and install zathura using meson's ninja backend:
     ninja
     ninja install
 
-Note that the default backend for meson might vary based on the platform. Please
+> **Note:** The default backend for meson might vary based on the platform. Please
 refer to the meson documentation for platform specific dependencies.
 
 Bugs
