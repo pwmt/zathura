@@ -147,6 +147,7 @@ General
     Zoom to size n
   mX
     Set a quickmark to a letter or number X
+    (may conflict with default action of X, e.g. 'O' or 'P')
   'X
     Goto quickmark saved at letter or number X
   q
