@@ -206,6 +206,10 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     goto free_and_ret;
   }
 
+  if (mode == NULL) {
+    girara_setting_get(zathura->ui.session, "mode", &mode);
+  }
+
   /* open document if passed */
   if (file_idx != 0) {
     if (page_number > 0) {

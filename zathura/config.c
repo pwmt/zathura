@@ -346,6 +346,7 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,
                      _("Disable additional information for signatures embedded in the document."),
                      cb_show_signature_info, NULL);
+  girara_setting_add(gsession, "mode",                   NULL,         STRING,  true,  _("Default mode"),             NULL, NULL);
 
 #define DEFAULT_SHORTCUTS(mode)                                                                                        \
   girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, (mode), ZATHURA_ADJUST_BESTFIT, NULL);           \

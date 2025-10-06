@@ -524,6 +524,16 @@ girara
   * Value type: String
   * Default value: #9FBC00
 
+*mode*
+  Defines mode to open documents with.
+
+  Possible values are "fullscreen" and "presentation".
+
+  All other string combinations enable normal mode.
+
+  * Value type: String
+  * Default value:
+
 *notification-bg*
   Defines the background color for a notification
 

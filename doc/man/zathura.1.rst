@@ -61,7 +61,7 @@ Options
   correct file open or does not exist, no new instance will be spanned.
 
 --mode=mode
-  Start in a non-default mode
+  Start in a non-default mode. Overrides the mode setting.
 
 --fork
   Fork into background
