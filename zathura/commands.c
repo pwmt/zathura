@@ -502,7 +502,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
 
   /* attachment */
   if (strncmp(file_identifier, "attachment-", strlen("attachment-")) == 0) {
-    if (zathura_document_attachment_save(document, file_identifier + strlen("attachment-"), export_path) == false) {
+    if (zathura_document_attachment_save(document, file_identifier + strlen("attachment-"), export_path) != ZATHURA_ERROR_OK) {
       girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), file_identifier, file_name);
     } else {
       girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), file_identifier, export_path);
