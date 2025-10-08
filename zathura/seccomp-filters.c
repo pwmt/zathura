@@ -152,6 +152,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(timer_create);
   ALLOW_RULE(timer_delete);
 
+  /* pipe2 is sometimes required for commands and search - condition appears to be triggered externally */
+  ALLOW_RULE(pipe2);
+
 /* Permit X11 specific syscalls */
 #ifdef GDK_WINDOWING_X11
   GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.view);
