@@ -824,7 +824,7 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
     /* page size in user pixels based on document zoom: if PPI information is
      * correct, 100% zoom will result in 72 documents points per inch of screen
      * (i.e. document size on screen matching the physical paper size). */
-    real_scale = page_calc_height_width(document, height, width, &page_height, &page_width, false);
+    real_scale = page_calc_height_width(document, page, &page_height, &page_width, false);
 
     device_factors = zathura_document_get_device_factors(document);
     page_width *= device_factors.x;
@@ -914,7 +914,7 @@ void render_all(zathura_t* zathura) {
     unsigned int page_height = 0, page_width = 0;
     const double height = zathura_page_get_height(page);
     const double width  = zathura_page_get_width(page);
-    page_calc_height_width(document, height, width, &page_height, &page_width, true);
+    page_calc_height_width(document, page, &page_height, &page_width, true);
 
     girara_debug("Queuing resize for page %u to %u x %u (%0.2f x %0.2f).", page_id, page_width, page_height, width,
                  height);

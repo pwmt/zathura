@@ -536,7 +536,7 @@ zathura_device_factors_t zathura_document_get_device_factors(zathura_document_t*
 void zathura_document_get_cell_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
 
-  page_calc_height_width(document, document->cell_height, document->cell_width, height, width, true);
+  page_calc_height_width(document, document->pages[document->current_page_number], height, width, true);
 }
 
 void zathura_document_get_document_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {

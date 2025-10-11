@@ -1206,9 +1206,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     /* adjust_view calls render_all in some cases and render_all calls
      * gtk_widget_set_size_request. To be sure that it's really called, do it
      * here once again. */
-    const double height = zathura_page_get_height(page);
-    const double width  = zathura_page_get_width(page);
-    page_calc_height_width(zathura->document, height, width, &page_height, &page_width, true);
+    page_calc_height_width(zathura->document, page, &page_height, &page_width, true);
     gtk_widget_set_size_request(zathura->pages[page_id], page_width, page_height);
 
     /* show widget */
