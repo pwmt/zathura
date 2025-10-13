@@ -226,4 +226,6 @@ pkg.generate(
 zathura_dependency = declare_dependency(link_with: zathura, include_directories: include_directories)
 
 subdir('doc')
-subdir('tests')
+if get_option('tests').allowed()
+  subdir('tests')
+endif
