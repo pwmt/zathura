@@ -96,26 +96,24 @@ if get_option('tests').allowed()
         'WAYLAND_DISPLAY=zathura-test-weston'
     ]
   )
+  if seccomp.found() or landlock
+    sandbox = executable('test_sandbox', files('test_sandbox.c'),
+      dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
+      include_directories: include_directories,
+      c_args: defines + sandbox_defines + flags
+    )
+    
+    test('weston_sandbox', weston_session,
+      args: [sandbox],
+      timeout: 60*60,
+      protocol: 'tap',
+      env: [
+        'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
+        'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
+        'NO_AT_BRIDGE=1',
+        'WAYLAND_DISPLAY=zathura-test-weston'
       ]
     )
-    if seccomp.found() or landlock
-      sandbox = executable('test_sandbox', files('test_sandbox.c'),
-        dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
-        include_directories: include_directories,
-        c_args: defines + sandbox_defines + flags
-      )
-      
-      test('weston_sandbox', weston_session,
-        args: [sandbox],
-        timeout: 60*60,
-        protocol: 'tap',
-        env: [
-          'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
-          'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
-          'NO_AT_BRIDGE=1',
-          'WAYLAND_DISPLAY=zathura-test-weston'
-        ]
-      )
     endif
   endif
 endif

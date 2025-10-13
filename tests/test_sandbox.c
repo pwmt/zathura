@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "zathura.h"
+#include "document.h"
 #ifdef WITH_SECCOMP
 #include "seccomp-filters.h"
 #endif
@@ -26,6 +27,7 @@ static void test_create(void) {
   g_assert_nonnull(zathura);
   g_assert_nonnull(g_getenv("G_TEST_SRCDIR"));
   zathura_set_config_dir(zathura, g_getenv("G_TEST_SRCDIR"));
+  g_assert_true(zathura_init(zathura));
 
 #ifdef WITH_LANDLOCK
   landlock_drop_write();
@@ -34,7 +36,11 @@ static void test_create(void) {
   g_assert_cmpint(seccomp_enable_strict_filter(zathura), ==, 0);
 #endif
 
-  g_assert_true(zathura_init(zathura));
+  g_assert_null(zathura_document_open(zathura, NULL, NULL, NULL, NULL));
+  g_assert_null(zathura_document_open(zathura, "fl", NULL, NULL, NULL));
+  g_assert_null(zathura_document_open(zathura, "fl", "ur", NULL, NULL));
+  g_assert_null(zathura_document_open(zathura, "fl", NULL, "pw", NULL));
+
   zathura_free(zathura);
 }
 
