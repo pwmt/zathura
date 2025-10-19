@@ -515,7 +515,7 @@ static GVariant* json_document_info(zathura_t* zathura) {
   json_builder_set_member_name(builder, "filename");
   json_builder_add_string_value(builder, zathura_document_get_path(document));
   json_builder_set_member_name(builder, "number-of-pages");
-  json_builder_add_int_value(builder, zathura_document_get_current_page_number(document));
+  json_builder_add_int_value(builder, zathura_document_get_number_of_pages(document));
 
   json_builder_set_member_name(builder, "index");
   json_builder_begin_array(builder);
