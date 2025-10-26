@@ -672,11 +672,12 @@ static gchar* prepare_document_open_from_stdin(const char* path) {
 #endif
 
 static gchar* prepare_document_open_from_gfile(GFile* source) {
-  gchar* file             = NULL;
+  gchar* basename = g_file_get_basename(source);
+  gchar* template = g_strdup_printf("zathura.gio.XXXXXX.%s", basename);
+
   GFileIOStream* iostream = NULL;
   GError* error           = NULL;
-
-  GFile* tmpfile = g_file_new_tmp("zathura.gio.XXXXXX", &iostream, &error);
+  GFile* tmpfile          = g_file_new_tmp(template, &iostream, &error);
   if (tmpfile == NULL) {
     if (error != NULL) {
       girara_error("Can not create temporary file: %s", error->message);
@@ -684,6 +685,9 @@ static gchar* prepare_document_open_from_gfile(GFile* source) {
     }
     return NULL;
   }
+
+  g_free(template);
+  g_free(basename);
 
   gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
   if (rc == FALSE) {
@@ -696,7 +700,7 @@ static gchar* prepare_document_open_from_gfile(GFile* source) {
     return NULL;
   }
 
-  file = g_file_get_path(tmpfile);
+  gchar* file = g_file_get_path(tmpfile);
   g_object_unref(iostream);
   g_object_unref(tmpfile);
 
