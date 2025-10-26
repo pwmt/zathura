@@ -88,35 +88,18 @@ static char* guess_type_glib(const char* path) {
     girara_debug("g_content_type is uncertain, guess: %s", content_type);
   }
 
-  FILE* f = fopen(path, "rb");
+  g_free(content_type);
+  content_type = NULL;
+
+  GMappedFile* f = g_mapped_file_new(path, FALSE, NULL);
   if (f == NULL) {
     return NULL;
   }
 
-  guchar* content = NULL;
-  size_t length   = 0;
-  while (uncertain == TRUE && length < GT_MAX_READ) {
-    g_free(content_type);
-    content_type = NULL;
-
-    guchar* temp_content = g_try_realloc(content, length + BUFSIZ);
-    if (temp_content == NULL) {
-      break;
-    }
-    content = temp_content;
-
-    size_t bytes_read = fread(content + length, 1, BUFSIZ, f);
-    if (bytes_read == 0) {
-      break;
-    }
-
-    length += bytes_read;
-    content_type = g_content_type_guess(NULL, content, length, &uncertain);
-    girara_debug("new guess: %s uncertain: %d, read: %zu", content_type, uncertain, length);
-  }
-
-  fclose(f);
-  g_free(content);
+  content_type = g_content_type_guess(NULL, (const guchar*)g_mapped_file_get_contents(f),
+                                      MIN(g_mapped_file_get_length(f), GT_MAX_READ), &uncertain);
+  girara_debug("new guess: %s uncertain: %d", content_type, uncertain);
+  g_mapped_file_unref(f);
   if (uncertain == FALSE) {
     return content_type;
   }
