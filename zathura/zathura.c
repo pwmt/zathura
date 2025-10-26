@@ -689,6 +689,10 @@ static gchar* prepare_document_open_from_gfile(GFile* source) {
   g_free(template);
   g_free(basename);
 
+  gchar* tmpfile_path = g_file_get_path(tmpfile);
+  girara_debug("Copying to temporary file: %s", tmpfile_path);
+  g_free(tmpfile_path);
+
   gboolean rc = g_file_copy(source, tmpfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
   if (rc == FALSE) {
     if (error != NULL) {
