@@ -64,6 +64,17 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="0.5.14" date="2025-10-27">
+      <description>
+        <p>Switch default database to sqlite and drop plain database</p>
+        <p>Notify users if no attachments and images are available to export</p>
+        <p>Make index-* configurable after init (#799)</p>
+        <p>Support numberic keypad mappings</p>
+        <p>Provide correct number of pages (#814)</p>
+        <p>Undo size-allocate callback changes</p>
+        <p>Fix temporary file nams for better content-type detection</p>
+      </description>
+    </release>
     <release version="0.5.13" date="2025-09-23">
       <description>
         <p>Validate appstream files with appstreamcli</p>
