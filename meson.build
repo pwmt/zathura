@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '0.5.13',
+  version: '0.5.14',
   meson_version: '>=1',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
@@ -60,7 +60,7 @@ endif
 
 # defines
 defines = [
-  '-DGETTEXT_PACKAGE="zathura"',
+  '-DGETTEXT_PACKAGE="org.pwmt.zathura"',
   '-DLOCALEDIR="@0@"'.format(join_paths(prefix, localedir)),
   '-DZATHURA_PLUGINDIR="@0@"'.format(join_paths(prefix, plugindir)),
   '-DSYSCONFDIR="@0@"'.format(sysconfdir),
@@ -226,4 +226,6 @@ pkg.generate(
 zathura_dependency = declare_dependency(link_with: zathura, include_directories: include_directories)
 
 subdir('doc')
-subdir('tests')
+if get_option('tests').allowed()
+  subdir('tests')
+endif

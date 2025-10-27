@@ -13,7 +13,6 @@
 #include "utils.h"
 #include "page.h"
 #include "database.h"
-#include "internal.h"
 
 #include <girara/session.h>
 #include <girara/settings.h>
@@ -324,20 +323,19 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
   const size_t input_length = strlen(input);
   zathura_error_t attachment_error;
   girara_list_t* attachments = zathura_document_attachments_get(document, &attachment_error);
+  bool added_attachment = false;
   if (attachments != NULL) {
-    bool added = false;
-
     for (size_t idx = 0; idx != girara_list_size(attachments); ++idx) {
       const char* attachment = girara_list_nth(attachments, idx);
       if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
         char* attachment_string = g_strdup_printf("attachment-%s", attachment);
         girara_completion_group_add_element(attachment_group, attachment_string, NULL);
         g_free(attachment_string);
-        added = true;
+        added_attachment = true;
       }
     }
 
-    if (added == true) {
+    if (added_attachment == true) {
       girara_completion_add_group(completion, attachment_group);
     } else {
       girara_completion_group_free(attachment_group);
@@ -353,7 +351,7 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
     goto error_free;
   }
 
-  bool added                         = false;
+  bool added_image                   = false;
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   zathura_error_t image_error;
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
@@ -370,7 +368,7 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
         girara_completion_group_add_element(image_group, image_string, NULL);
         g_free(image_string);
 
-        added = true;
+        added_image = true;
         image_number++;
       }
       girara_list_free(images);
@@ -380,15 +378,19 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
   }
 
   if (attachment_error == ZATHURA_ERROR_NOT_IMPLEMENTED && image_error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
-    girara_notify(session, GIRARA_WARNING, "Plugin does not support exporting attachments and images.");
+    girara_notify(session, GIRARA_WARNING, _("Plugin does not support exporting attachments and images."));
     goto error_free;
   }
 
-  if (added == true) {
+  if (added_image == true) {
     girara_completion_add_group(completion, image_group);
   } else {
     girara_completion_group_free(image_group);
     image_group = NULL;
+  }
+
+  if (added_image == false && added_attachment == false) {
+    girara_notify(session, GIRARA_INFO, _("Document contains no images or attachments"));
   }
 
   return completion;

@@ -102,7 +102,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
-  /* ALLOW_RULE(mprotect); specified below */
+  ALLOW_RULE(mprotect);
   ALLOW_RULE(mremap); /* mupdf requirement */
   ALLOW_RULE(munmap);
   ALLOW_RULE(newfstatat);
@@ -151,6 +151,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* required for testing only */
   ALLOW_RULE(timer_create);
   ALLOW_RULE(timer_delete);
+
+  /* pipe2 is sometimes required for commands and search - condition appears to be triggered externally */
+  ALLOW_RULE(pipe2);
 
 /* Permit X11 specific syscalls */
 #ifdef GDK_WINDOWING_X11
@@ -217,9 +220,10 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE |
               PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE)); */
 
-  /* Prevent the creation of executeable memory */
-  ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
-           SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
+  /* Prevent the creation of executeable memory - required by some files */
+  /*ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
+  *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
+  */
 
   /* open syscall to be removed? openat is used instead */
   /* special restrictions for open, prevent opening files for writing */
