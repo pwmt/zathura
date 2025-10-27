@@ -106,8 +106,8 @@ bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(a
     g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
   }
 
-  if (strlen(string->str) > 0) {
-    g_string_erase(string, strlen(string->str) - 1, 1);
+  if (string->len > 0) {
+    g_string_set_size(string, string->len - 1);
     girara_notify(session, GIRARA_INFO, "%s", string->str);
   } else {
     girara_notify(session, GIRARA_INFO, _("No bookmarks available."));
@@ -188,8 +188,8 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
                            j == current_jump ? _("(current)") : "");
   }
 
-  if (strlen(string->str) > 0) {
-    g_string_erase(string, strlen(string->str) - 1, 1);
+  if (string->len > 0) {
+    g_string_set_size(string, string->len - 1);
     girara_notify(session, GIRARA_INFO, "%s", string->str);
   } else {
     girara_notify(session, GIRARA_INFO, _("No jumplist available."));
@@ -500,17 +500,20 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
+  static const size_t attachment_len = 11; // length of attachment-
+  static const size_t image_len = 7; // length of image-p
+
   /* attachment */
-  if (strncmp(file_identifier, "attachment-", strlen("attachment-")) == 0) {
-    if (zathura_document_attachment_save(document, file_identifier + strlen("attachment-"), export_path) != ZATHURA_ERROR_OK) {
+  if (strncmp(file_identifier, "attachment-", attachment_len) == 0) {
+    if (zathura_document_attachment_save(document, file_identifier + attachment_len, export_path) != ZATHURA_ERROR_OK) {
       girara_notify(session, GIRARA_ERROR, _("Couldn't write attachment '%s' to '%s'."), file_identifier, file_name);
     } else {
       girara_notify(session, GIRARA_INFO, _("Wrote attachment '%s' to '%s'."), file_identifier, export_path);
     }
     /* image */
-  } else if (strncmp(file_identifier, "image-p", strlen("image-p")) == 0 && strlen(file_identifier) >= 10) {
+  } else if (strncmp(file_identifier, "image-p", image_len) == 0 && strlen(file_identifier) >= 10) {
     /* parse page id */
-    const char* input = file_identifier + strlen("image-p");
+    const char* input = file_identifier + image_len;
     int page_id       = atoi(input);
     if (page_id == 0) {
       goto image_error;
