@@ -102,6 +102,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
+#ifdef __NR_mmap2
+  ALLOW_RULE(mmap2); /* Only required on 32-bit ARM systems */
+#endif
   ALLOW_RULE(mprotect);
   ALLOW_RULE(mremap); /* mupdf requirement */
   ALLOW_RULE(munmap);
