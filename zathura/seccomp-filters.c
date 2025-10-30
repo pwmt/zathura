@@ -78,6 +78,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(fstatfs); /* statfs (below) */
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
+#ifdef __NR_futex_time64
+  ALLOW_RULE(futex_time64);
+#endif
   /* ALLOW_RULE(getdents); 32 bit only */
   ALLOW_RULE(getdents64);
   ALLOW_RULE(getegid);
