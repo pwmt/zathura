@@ -61,6 +61,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* ALLOW_RULE(clock_getres); unused? */
   /* ALLOW_RULE(clone); specified below, clone3 see comment below */
   ALLOW_RULE(clock_gettime); /* used when vDSO function is unavailable */
+#ifdef __NR_clock_gettime64
+  ALLOW_RULE(clock_gettime64);
+#endif
   ALLOW_RULE(close);
   ALLOW_RULE(epoll_create1);
   ALLOW_RULE(epoll_ctl);
