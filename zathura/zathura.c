@@ -303,19 +303,23 @@ static bool init_ui(zathura_t* zathura) {
   return true;
 }
 
-static bool init_css(zathura_t* zathura) {
+static const char index_settings[][16] = {
+    "index-fg",
+    "index-bg",
+    "index-active-fg",
+    "index-active-bg",
+};
+
+static void init_css(zathura_t* zathura) {
   GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
-
-  static const char index_settings[][16] = {
-      "index-fg",
-      "index-bg",
-      "index-active-fg",
-      "index-active-bg",
-  };
-
   for (size_t s = 0; s < LENGTH(index_settings); ++s) {
     girara_template_add_variable(csstemplate, index_settings[s]);
+  }
+}
 
+static bool load_css(zathura_t* zathura) {
+  GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
+  for (size_t s = 0; s < LENGTH(index_settings); ++s) {
     char* tmp_value = NULL;
     GdkRGBA rgba    = {0, 0, 0, 0};
     girara_setting_get(zathura->ui.session, index_settings[s], &tmp_value);
@@ -394,6 +398,9 @@ bool zathura_init(zathura_t* zathura) {
   /* Set application ID */
   g_set_prgname("org.pwmt.zathura");
 
+  /* Add variables for CSS */
+  init_css(zathura);
+
   /* load plugins */
   if (zathura_plugin_manager_load(zathura->plugins.manager) == false) {
     girara_warning("Found no plugins. Please install at least one plugin.");
@@ -425,7 +432,7 @@ bool zathura_init(zathura_t* zathura) {
   zathura_jumplist_init(zathura, MAX(jumplist_size, 0));
 
   /* CSS for index mode */
-  if (init_css(zathura) == false) {
+  if (load_css(zathura) == false) {
     girara_error("Failed to initialize CSS.");
     goto error_free;
   }
