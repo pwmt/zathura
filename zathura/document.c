@@ -18,6 +18,8 @@
 #include "plugin.h"
 #include "content-type.h"
 
+#define DIGEST_SIZE 32
+
 /**
  * Document
  */
@@ -26,7 +28,7 @@ struct zathura_document_s {
   char* file_path;                   /**< File path of the document */
   char* uri;                         /**< URI of the document */
   char* basename;                    /**< Basename of the document */
-  uint8_t hash_sha256[32];           /**< SHA256 hash of the document */
+  uint8_t hash_sha256[DIGEST_SIZE];  /**< SHA256 hash of the document */
   const char* password;              /**< Password of the document */
   unsigned int current_page_number;  /**< Current page number */
   unsigned int number_of_pages;      /**< Number of pages */
@@ -89,7 +91,7 @@ static bool hash_file_sha256(uint8_t* dst, const char* path) {
   }
 
   fclose(f);
-  gsize dst_size = 32;
+  gsize dst_size = DIGEST_SIZE;
   g_checksum_get_digest(checksum, dst, &dst_size);
   g_checksum_free(checksum);
   return true;
