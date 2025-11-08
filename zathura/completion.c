@@ -320,10 +320,10 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
   }
 
   /* add attachments */
-  const size_t input_length = strlen(input);
-  zathura_error_t attachment_error;
-  girara_list_t* attachments = zathura_document_attachments_get(document, &attachment_error);
-  bool added_attachment = false;
+  const size_t input_length        = strlen(input);
+  zathura_error_t attachment_error = ZATHURA_ERROR_OK;
+  girara_list_t* attachments       = zathura_document_attachments_get(document, &attachment_error);
+  bool added_attachment            = false;
   if (attachments != NULL) {
     for (size_t idx = 0; idx != girara_list_size(attachments); ++idx) {
       const char* attachment = girara_list_nth(attachments, idx);
@@ -353,7 +353,7 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
 
   bool added_image                   = false;
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  zathura_error_t image_error;
+  zathura_error_t image_error        = ZATHURA_ERROR_OK;
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
     if (page == NULL) {
