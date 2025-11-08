@@ -67,30 +67,35 @@ static void check_set_error(zathura_error_t* error, zathura_error_t code) {
 }
 
 static bool hash_file_sha256(uint8_t* dst, const char* path) {
-  FILE* f = fopen(path, "rb");
+  GFile* f = g_file_new_for_path(path);
   if (f == NULL) {
+    return false;
+  }
+
+  GFileInputStream* stream = g_file_read(f, NULL, NULL);
+  g_object_unref(f);
+  if (stream == NULL) {
     return false;
   }
 
   GChecksum* checksum = g_checksum_new(G_CHECKSUM_SHA256);
   if (checksum == NULL) {
-    fclose(f);
+    g_object_unref(stream);
     return false;
   }
 
   uint8_t buf[MIN(BUFSIZ,4096)];
-  size_t read;
-  while ((read = fread(buf, 1, sizeof(buf), f)) != 0) {
+  gssize read;
+  while ((read = g_input_stream_read(G_INPUT_STREAM(stream), buf, sizeof(buf), NULL, NULL)) > 0) {
     g_checksum_update(checksum, buf, read);
   }
+  g_object_unref(stream);
 
-  if (ferror(f) != 0) {
+  if (read < 0) {
     g_checksum_free(checksum);
-    fclose(f);
     return false;
   }
 
-  fclose(f);
   gsize dst_size = DIGEST_SIZE;
   g_checksum_get_digest(checksum, dst, &dst_size);
   g_checksum_free(checksum);
