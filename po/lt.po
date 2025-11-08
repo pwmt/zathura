@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-28 21:41+0200\n"
+"POT-Creation-Date: 2025-11-08 12:24+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: gns_ank <anikevicius@gmail.com>, 2013\n"
 "Language-Team: Lithuanian (http://app.transifex.com/pwmt/zathura/language/"
@@ -77,1167 +77,1195 @@ msgid "Listing and selecting bookmakrs"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:69
-msgid "Validate appstream files with appstreamcli"
+msgid "Switch default database to sqlite and drop plain database"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:70
-msgid "Split page-padding into page-h-padding and page-v-padding"
+msgid "Notify users if no attachments and images are available to export"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:71
-msgid "Fix memory leak and callback type error (#767)"
+msgid "Make index-* configurable after init (#799)"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:72
-msgid "Warn if plugins do not support exporting images or attachments (#334)"
+msgid "Support numberic keypad mappings"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:77
-msgid "Add shortcut to open files via file chooser dialog"
+#: data/org.pwmt.zathura.appdata.xml.in:73
+msgid "Provide correct number of pages (#814)"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:78
-msgid "Refactor rendering of pages"
+#: data/org.pwmt.zathura.appdata.xml.in:74
+msgid "Undo size-allocate callback changes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:79
-msgid "Add lightness adjustment for recolering"
+#: data/org.pwmt.zathura.appdata.xml.in:75
+msgid "Fix temporary file nams for better content-type detection"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:80
-msgid "Initial support for OpenBSD sandbox"
+msgid "Validate appstream files with appstreamcli"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:85
-msgid "Fix closing of documents"
+#: data/org.pwmt.zathura.appdata.xml.in:81
+msgid "Split page-padding into page-h-padding and page-v-padding"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:82
+msgid "Fix memory leak and callback type error (#767)"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:83
+msgid "Warn if plugins do not support exporting images or attachments (#334)"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:88
+msgid "Add shortcut to open files via file chooser dialog"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:89
+msgid "Refactor rendering of pages"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:90
-msgid "Fix crash when opening documents"
+msgid "Add lightness adjustment for recolering"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:95
-msgid "Fix build on macOS"
+#: data/org.pwmt.zathura.appdata.xml.in:91
+msgid "Initial support for OpenBSD sandbox"
 msgstr ""
 
 #: data/org.pwmt.zathura.appdata.xml.in:96
+msgid "Fix closing of documents"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:101
+msgid "Fix crash when opening documents"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:106
+msgid "Fix build on macOS"
+msgstr ""
+
+#: data/org.pwmt.zathura.appdata.xml.in:107
 msgid "Hide page label if the same as page number"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:97
+#: data/org.pwmt.zathura.appdata.xml.in:108
 msgid "Cache synctex parser for faster operation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:98
+#: data/org.pwmt.zathura.appdata.xml.in:109
 msgid "Revert changes for documents with multiple page sizes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:99
-#: data/org.pwmt.zathura.appdata.xml.in:115
-#: data/org.pwmt.zathura.appdata.xml.in:123
-#: data/org.pwmt.zathura.appdata.xml.in:137
-#: data/org.pwmt.zathura.appdata.xml.in:153
-#: data/org.pwmt.zathura.appdata.xml.in:165
-#: data/org.pwmt.zathura.appdata.xml.in:173
-#: data/org.pwmt.zathura.appdata.xml.in:182
-#: data/org.pwmt.zathura.appdata.xml.in:189
-#: data/org.pwmt.zathura.appdata.xml.in:197
-#: data/org.pwmt.zathura.appdata.xml.in:205
-#: data/org.pwmt.zathura.appdata.xml.in:213
-#: data/org.pwmt.zathura.appdata.xml.in:220
-#: data/org.pwmt.zathura.appdata.xml.in:228
-#: data/org.pwmt.zathura.appdata.xml.in:235
-#: data/org.pwmt.zathura.appdata.xml.in:245
-#: data/org.pwmt.zathura.appdata.xml.in:253
+#: data/org.pwmt.zathura.appdata.xml.in:110
+#: data/org.pwmt.zathura.appdata.xml.in:126
+#: data/org.pwmt.zathura.appdata.xml.in:134
+#: data/org.pwmt.zathura.appdata.xml.in:148
+#: data/org.pwmt.zathura.appdata.xml.in:164
+#: data/org.pwmt.zathura.appdata.xml.in:176
+#: data/org.pwmt.zathura.appdata.xml.in:184
+#: data/org.pwmt.zathura.appdata.xml.in:193
+#: data/org.pwmt.zathura.appdata.xml.in:200
+#: data/org.pwmt.zathura.appdata.xml.in:208
+#: data/org.pwmt.zathura.appdata.xml.in:216
+#: data/org.pwmt.zathura.appdata.xml.in:224
+#: data/org.pwmt.zathura.appdata.xml.in:231
+#: data/org.pwmt.zathura.appdata.xml.in:239
+#: data/org.pwmt.zathura.appdata.xml.in:246
+#: data/org.pwmt.zathura.appdata.xml.in:256
+#: data/org.pwmt.zathura.appdata.xml.in:264
 msgid "Various fixes and improvements"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:104
+#: data/org.pwmt.zathura.appdata.xml.in:115
 msgid "Bump plugin ABI"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:109
+#: data/org.pwmt.zathura.appdata.xml.in:120
 msgid "Split sandbox functionality into separate zathura-sandbox binary"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:110
+#: data/org.pwmt.zathura.appdata.xml.in:121
 msgid "Split off new command bjump from blist"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:111
+#: data/org.pwmt.zathura.appdata.xml.in:122
 msgid "Add initial landlock support to sandbox"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:112
+#: data/org.pwmt.zathura.appdata.xml.in:123
 msgid "Fix repeated search"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:113
+#: data/org.pwmt.zathura.appdata.xml.in:124
 msgid "Implement jumplist command"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:114
+#: data/org.pwmt.zathura.appdata.xml.in:125
 msgid "Fix issues with document with multiple page sizes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:120
+#: data/org.pwmt.zathura.appdata.xml.in:131
 msgid "Move to Github"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:121
+#: data/org.pwmt.zathura.appdata.xml.in:132
 msgid "Reduce minimum glib version"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:122
+#: data/org.pwmt.zathura.appdata.xml.in:133
 msgid "Remove normal sandbox mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:128
+#: data/org.pwmt.zathura.appdata.xml.in:139
 msgid "Compatibility with girara 0.4.3"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:129
+#: data/org.pwmt.zathura.appdata.xml.in:140
 msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:130
+#: data/org.pwmt.zathura.appdata.xml.in:141
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:131
+#: data/org.pwmt.zathura.appdata.xml.in:142
 msgid ""
 "Remove plain database backend. The sqlite database backend imports the data "
 "from the plain database the first time. sqlite is now a hard dependency."
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:132
+#: data/org.pwmt.zathura.appdata.xml.in:143
 msgid "Fix a segfault if dbus is not enabled."
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:142
+#: data/org.pwmt.zathura.appdata.xml.in:153
 msgid "Add support to display signatures"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:143
+#: data/org.pwmt.zathura.appdata.xml.in:154
 msgid "Fix clearing of highlighted links"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:144
+#: data/org.pwmt.zathura.appdata.xml.in:155
 msgid "Make some key modifiers configurable"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:145
+#: data/org.pwmt.zathura.appdata.xml.in:156
 msgid "Fix text selection on rotated pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:146
+#: data/org.pwmt.zathura.appdata.xml.in:157
 msgid "Fix gap between pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:147
-#: data/org.pwmt.zathura.appdata.xml.in:154
-#: data/org.pwmt.zathura.appdata.xml.in:174
-#: data/org.pwmt.zathura.appdata.xml.in:183
-#: data/org.pwmt.zathura.appdata.xml.in:190
-#: data/org.pwmt.zathura.appdata.xml.in:198
-#: data/org.pwmt.zathura.appdata.xml.in:206
-#: data/org.pwmt.zathura.appdata.xml.in:215
-#: data/org.pwmt.zathura.appdata.xml.in:221
-#: data/org.pwmt.zathura.appdata.xml.in:229
-#: data/org.pwmt.zathura.appdata.xml.in:236
-#: data/org.pwmt.zathura.appdata.xml.in:246
-#: data/org.pwmt.zathura.appdata.xml.in:254
-#: data/org.pwmt.zathura.appdata.xml.in:262
-#: data/org.pwmt.zathura.appdata.xml.in:340
-#: data/org.pwmt.zathura.appdata.xml.in:367
-#: data/org.pwmt.zathura.appdata.xml.in:385
-#: data/org.pwmt.zathura.appdata.xml.in:400
-#: data/org.pwmt.zathura.appdata.xml.in:436
+#: data/org.pwmt.zathura.appdata.xml.in:158
+#: data/org.pwmt.zathura.appdata.xml.in:165
+#: data/org.pwmt.zathura.appdata.xml.in:185
+#: data/org.pwmt.zathura.appdata.xml.in:194
+#: data/org.pwmt.zathura.appdata.xml.in:201
+#: data/org.pwmt.zathura.appdata.xml.in:209
+#: data/org.pwmt.zathura.appdata.xml.in:217
+#: data/org.pwmt.zathura.appdata.xml.in:226
+#: data/org.pwmt.zathura.appdata.xml.in:232
+#: data/org.pwmt.zathura.appdata.xml.in:240
+#: data/org.pwmt.zathura.appdata.xml.in:247
+#: data/org.pwmt.zathura.appdata.xml.in:257
+#: data/org.pwmt.zathura.appdata.xml.in:265
+#: data/org.pwmt.zathura.appdata.xml.in:273
+#: data/org.pwmt.zathura.appdata.xml.in:351
+#: data/org.pwmt.zathura.appdata.xml.in:378
+#: data/org.pwmt.zathura.appdata.xml.in:396
+#: data/org.pwmt.zathura.appdata.xml.in:411
+#: data/org.pwmt.zathura.appdata.xml.in:447
 msgid "Updated translations"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:152
+#: data/org.pwmt.zathura.appdata.xml.in:163
 msgid "Improve text selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:159
+#: data/org.pwmt.zathura.appdata.xml.in:170
 msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:164
+#: data/org.pwmt.zathura.appdata.xml.in:175
 msgid "`magic` is now a required dependency"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:170
+#: data/org.pwmt.zathura.appdata.xml.in:181
 msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:171
+#: data/org.pwmt.zathura.appdata.xml.in:182
 msgid "Fix build with meson 0.60"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:172
+#: data/org.pwmt.zathura.appdata.xml.in:183
 msgid "Add :source command"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:179
+#: data/org.pwmt.zathura.appdata.xml.in:190
 msgid "Account for page padding in full scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:180
+#: data/org.pwmt.zathura.appdata.xml.in:191
 msgid "Add forefground color for links"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:181
+#: data/org.pwmt.zathura.appdata.xml.in:192
 msgid "Add :save and :save! aliases for :write and :write!"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:188
+#: data/org.pwmt.zathura.appdata.xml.in:199
 msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:195
+#: data/org.pwmt.zathura.appdata.xml.in:206
 msgid "Add --find option to the CLI"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:196
+#: data/org.pwmt.zathura.appdata.xml.in:207
 msgid "Support recolor with transparency"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:203
+#: data/org.pwmt.zathura.appdata.xml.in:214
 msgid "Fix step size for mouse wheel scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:204
+#: data/org.pwmt.zathura.appdata.xml.in:215
 msgid "Lookup fileinfo from database by hash as fallback"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:211
+#: data/org.pwmt.zathura.appdata.xml.in:222
 msgid "Fix expansion of ~ and ~user when opening files"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:212
+#: data/org.pwmt.zathura.appdata.xml.in:223
 msgid "Add fish completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:214
+#: data/org.pwmt.zathura.appdata.xml.in:225
 msgid "Drop support for old libsyntex"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:226
+#: data/org.pwmt.zathura.appdata.xml.in:237
 msgid "Add bash and zsh completions"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:227
+#: data/org.pwmt.zathura.appdata.xml.in:238
 msgid "Add RTL layout of pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:234
+#: data/org.pwmt.zathura.appdata.xml.in:245
 msgid "Port to newer libsynctex"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:241
+#: data/org.pwmt.zathura.appdata.xml.in:252
 msgid "Improved HiDPI support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:242
+#: data/org.pwmt.zathura.appdata.xml.in:253
 msgid "Display page labels"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:243
+#: data/org.pwmt.zathura.appdata.xml.in:254
 msgid "Add experimental seccomp filters"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:244
+#: data/org.pwmt.zathura.appdata.xml.in:255
 msgid "Replace build system with meson"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:251
+#: data/org.pwmt.zathura.appdata.xml.in:262
 msgid "Fix memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:252
+#: data/org.pwmt.zathura.appdata.xml.in:263
 msgid "Rework plugin initialization"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:259
+#: data/org.pwmt.zathura.appdata.xml.in:270
 msgid "Improved logging"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:260
+#: data/org.pwmt.zathura.appdata.xml.in:271
 msgid "Improve page mode toggling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:261
-#: data/org.pwmt.zathura.appdata.xml.in:268
-#: data/org.pwmt.zathura.appdata.xml.in:275
-#: data/org.pwmt.zathura.appdata.xml.in:283
+#: data/org.pwmt.zathura.appdata.xml.in:272
+#: data/org.pwmt.zathura.appdata.xml.in:279
+#: data/org.pwmt.zathura.appdata.xml.in:286
+#: data/org.pwmt.zathura.appdata.xml.in:294
 msgid "Several fixes and improvements"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:267
+#: data/org.pwmt.zathura.appdata.xml.in:278
 msgid "Parallel build of manpages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:273
+#: data/org.pwmt.zathura.appdata.xml.in:284
 msgid "Build even without SyncTex"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:274
+#: data/org.pwmt.zathura.appdata.xml.in:285
 msgid "Children should not fork"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:280
+#: data/org.pwmt.zathura.appdata.xml.in:291
 msgid "Recent files support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:281
+#: data/org.pwmt.zathura.appdata.xml.in:292
 msgid "Substitute home with tilde"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:282
+#: data/org.pwmt.zathura.appdata.xml.in:293
 msgid "Open URLs"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:284
-#: data/org.pwmt.zathura.appdata.xml.in:294
+#: data/org.pwmt.zathura.appdata.xml.in:295
 #: data/org.pwmt.zathura.appdata.xml.in:305
-#: data/org.pwmt.zathura.appdata.xml.in:324
+#: data/org.pwmt.zathura.appdata.xml.in:316
+#: data/org.pwmt.zathura.appdata.xml.in:335
 msgid "Update translations"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:285
-#: data/org.pwmt.zathura.appdata.xml.in:304
+#: data/org.pwmt.zathura.appdata.xml.in:296
+#: data/org.pwmt.zathura.appdata.xml.in:315
 msgid "Update build system"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:290
+#: data/org.pwmt.zathura.appdata.xml.in:301
 msgid "Store tmp files in only one location"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:291
+#: data/org.pwmt.zathura.appdata.xml.in:302
 msgid "Print target selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:292
+#: data/org.pwmt.zathura.appdata.xml.in:303
 msgid "Allow .dylib plugins on Mac OS X"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:293
+#: data/org.pwmt.zathura.appdata.xml.in:304
 msgid "Fix dual page render breakage of adjust_window"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:295
+#: data/org.pwmt.zathura.appdata.xml.in:306
 msgid "Update buld system"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:300
+#: data/org.pwmt.zathura.appdata.xml.in:311
 msgid "Resolve memory leak while reloading file"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:301
+#: data/org.pwmt.zathura.appdata.xml.in:312
 msgid "Prevent segmentation fault when smooth zooming with mouse"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:302
+#: data/org.pwmt.zathura.appdata.xml.in:313
 msgid "Cache thumbnails to support smooth zooming"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:303
+#: data/org.pwmt.zathura.appdata.xml.in:314
 msgid "Check scale value correctness"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:310
+#: data/org.pwmt.zathura.appdata.xml.in:321
 msgid "Fix segmentation fault caused by bidirectional scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:311
+#: data/org.pwmt.zathura.appdata.xml.in:322
 msgid "Add SyntaxView"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:316
+#: data/org.pwmt.zathura.appdata.xml.in:327
 msgid "Print debug information to D-Bus"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:317
+#: data/org.pwmt.zathura.appdata.xml.in:328
 msgid "Fix scroll down/up in dual-page mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:318
+#: data/org.pwmt.zathura.appdata.xml.in:329
 msgid "Option to hide notification after selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:319
+#: data/org.pwmt.zathura.appdata.xml.in:330
 msgid "Introduce cache directory"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:320
+#: data/org.pwmt.zathura.appdata.xml.in:331
 msgid "Introduce smooth-scroll and smooth-zoom"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:321
+#: data/org.pwmt.zathura.appdata.xml.in:332
 msgid "Add vim style exec"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:322
+#: data/org.pwmt.zathura.appdata.xml.in:333
 msgid "Option to ignore images while recoloring"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:323
+#: data/org.pwmt.zathura.appdata.xml.in:334
 msgid "Take advantage of shared or system SyncTex parser library"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:325
-#: data/org.pwmt.zathura.appdata.xml.in:588
-#: data/org.pwmt.zathura.appdata.xml.in:598
+#: data/org.pwmt.zathura.appdata.xml.in:336
+#: data/org.pwmt.zathura.appdata.xml.in:599
 #: data/org.pwmt.zathura.appdata.xml.in:609
+#: data/org.pwmt.zathura.appdata.xml.in:620
 msgid "Several fixes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:330
+#: data/org.pwmt.zathura.appdata.xml.in:341
 msgid "Updated dependency version of girara"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:335
+#: data/org.pwmt.zathura.appdata.xml.in:346
 msgid "Better SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:336
+#: data/org.pwmt.zathura.appdata.xml.in:347
 msgid "Change cursor if mouse is over link"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:337
+#: data/org.pwmt.zathura.appdata.xml.in:348
 msgid "Colored build output"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:338
+#: data/org.pwmt.zathura.appdata.xml.in:349
 msgid "Minor bug fixes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:339
+#: data/org.pwmt.zathura.appdata.xml.in:350
 msgid "Sphinx documentation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:345
+#: data/org.pwmt.zathura.appdata.xml.in:356
 msgid "Full SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:346
+#: data/org.pwmt.zathura.appdata.xml.in:357
 msgid "D-Bus interface"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:347
+#: data/org.pwmt.zathura.appdata.xml.in:358
 msgid "Simple vim plugin for SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:348
+#: data/org.pwmt.zathura.appdata.xml.in:359
 msgid "Add shortcuts for ^C and Esc in all modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:349
+#: data/org.pwmt.zathura.appdata.xml.in:360
 msgid "Use the actual mode in mode toggle calls"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:350
+#: data/org.pwmt.zathura.appdata.xml.in:361
 msgid "Only copy selected text in normal and fullscreen mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:351
+#: data/org.pwmt.zathura.appdata.xml.in:362
 msgid "Translate error messages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:352
+#: data/org.pwmt.zathura.appdata.xml.in:363
 msgid "Correctly safe print setting state"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:353
+#: data/org.pwmt.zathura.appdata.xml.in:364
 msgid "Add --mode option"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:354
+#: data/org.pwmt.zathura.appdata.xml.in:365
 msgid "Expose more properties via D-Bus"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:355
+#: data/org.pwmt.zathura.appdata.xml.in:366
 msgid "Center pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:356
+#: data/org.pwmt.zathura.appdata.xml.in:367
 msgid "Replace glib memory functions with try version"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:357
+#: data/org.pwmt.zathura.appdata.xml.in:368
 msgid "Align highlighted rectangles correctly"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:358
+#: data/org.pwmt.zathura.appdata.xml.in:369
 msgid "Implement G and gg for index mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:359
+#: data/org.pwmt.zathura.appdata.xml.in:370
 msgid "Implement TOGGLE for sc_navigate_index"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:360
+#: data/org.pwmt.zathura.appdata.xml.in:371
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:361
+#: data/org.pwmt.zathura.appdata.xml.in:372
 msgid "Implement shortcuts for scrolling to page top/bottom"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:362
+#: data/org.pwmt.zathura.appdata.xml.in:373
 msgid "Set position on document load only if no page was specified"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:363
+#: data/org.pwmt.zathura.appdata.xml.in:374
 msgid "Bail out early if we get TOP or BOTTOM"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:364
+#: data/org.pwmt.zathura.appdata.xml.in:375
 msgid "Replace fullscreen mode with presentation mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:365
+#: data/org.pwmt.zathura.appdata.xml.in:376
 msgid "Remove GTK+2 support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:366
-#: data/org.pwmt.zathura.appdata.xml.in:372
-#: data/org.pwmt.zathura.appdata.xml.in:384
+#: data/org.pwmt.zathura.appdata.xml.in:377
+#: data/org.pwmt.zathura.appdata.xml.in:383
+#: data/org.pwmt.zathura.appdata.xml.in:395
 msgid "Update documentation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:373
+#: data/org.pwmt.zathura.appdata.xml.in:384
 msgid "Resolve layout problems"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:378
+#: data/org.pwmt.zathura.appdata.xml.in:389
 msgid "Use GTK+3 by default"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:379
+#: data/org.pwmt.zathura.appdata.xml.in:390
 msgid "Rewritten render logic"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:380
+#: data/org.pwmt.zathura.appdata.xml.in:391
 msgid "Fixed page refresh in certain situations"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:381
+#: data/org.pwmt.zathura.appdata.xml.in:392
 msgid "Make the X clipboard buffer"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:382
+#: data/org.pwmt.zathura.appdata.xml.in:393
 msgid "Allow number in quickmarks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:383
+#: data/org.pwmt.zathura.appdata.xml.in:394
 msgid "Workaround for print quality issues"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:390
+#: data/org.pwmt.zathura.appdata.xml.in:401
 msgid "Resolve memory leak"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:391
+#: data/org.pwmt.zathura.appdata.xml.in:402
 msgid "Report missing plugin or unsupported file types"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:392
+#: data/org.pwmt.zathura.appdata.xml.in:403
 msgid "More vim-like search behaviour"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:393
+#: data/org.pwmt.zathura.appdata.xml.in:404
 msgid "Introduced show-{h,v}-scrollbar settings"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:394
+#: data/org.pwmt.zathura.appdata.xml.in:405
 msgid "Enhancement of the jumplist mechanism"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:395
+#: data/org.pwmt.zathura.appdata.xml.in:406
 msgid "Use jumplists with marks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:396
+#: data/org.pwmt.zathura.appdata.xml.in:407
 msgid "More vim-like jump behaviour"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:397
+#: data/org.pwmt.zathura.appdata.xml.in:408
 msgid "Improved bisect"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:398
+#: data/org.pwmt.zathura.appdata.xml.in:409
 msgid "Update page number on mouse scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:399
+#: data/org.pwmt.zathura.appdata.xml.in:410
 msgid "Introduced window-title-page option"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:405
+#: data/org.pwmt.zathura.appdata.xml.in:416
 msgid "LRU caching algorithm"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:406
+#: data/org.pwmt.zathura.appdata.xml.in:417
 msgid "Bisect functionality"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:407
+#: data/org.pwmt.zathura.appdata.xml.in:418
 msgid "Allow negative offsets"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:408
+#: data/org.pwmt.zathura.appdata.xml.in:419
 msgid "Option --page to open at the specified page"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:409
+#: data/org.pwmt.zathura.appdata.xml.in:420
 msgid "Scale vertical/horizontal scrolling in respect to the buffer"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:410
+#: data/org.pwmt.zathura.appdata.xml.in:421
 msgid "Add statusbar-basename option"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:411
+#: data/org.pwmt.zathura.appdata.xml.in:422
 msgid "Implement colors for 'Loading...'-text"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:412
+#: data/org.pwmt.zathura.appdata.xml.in:423
 msgid "Don't render same page multiple times"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:413
+#: data/org.pwmt.zathura.appdata.xml.in:424
 msgid "Use libmagic if available"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:414
 #: data/org.pwmt.zathura.appdata.xml.in:425
+#: data/org.pwmt.zathura.appdata.xml.in:436
 msgid "Some other bug fixes and updated translations"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:419
+#: data/org.pwmt.zathura.appdata.xml.in:430
 msgid "Implemented jumplist (^o, ^i)"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:420
+#: data/org.pwmt.zathura.appdata.xml.in:431
 msgid "Update current page when following links"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:421
+#: data/org.pwmt.zathura.appdata.xml.in:432
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:422 zathura/config.c:285
+#: data/org.pwmt.zathura.appdata.xml.in:433 zathura/config.c:302
 msgid "Page aware scrolling"
 msgstr "Puslapių ribas atpažįstanti slinktis"
 
-#: data/org.pwmt.zathura.appdata.xml.in:423
+#: data/org.pwmt.zathura.appdata.xml.in:434
 msgid "Synctex forward synchronisation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:424
+#: data/org.pwmt.zathura.appdata.xml.in:435
 msgid "Update shortcuts"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:430
+#: data/org.pwmt.zathura.appdata.xml.in:441
 msgid "Syntex backwards synchronisation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:431
+#: data/org.pwmt.zathura.appdata.xml.in:442
 msgid "Fix request-page-setup"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:432
+#: data/org.pwmt.zathura.appdata.xml.in:443
 msgid "Fix window adustment"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:433
+#: data/org.pwmt.zathura.appdata.xml.in:444
 msgid "Better GTK3 integration"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:434
+#: data/org.pwmt.zathura.appdata.xml.in:445
 msgid "Added first-page-colum setting"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:435
+#: data/org.pwmt.zathura.appdata.xml.in:446
 msgid "Added recolor-keephue setting"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:441
+#: data/org.pwmt.zathura.appdata.xml.in:452
 msgid "New languages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:442
+#: data/org.pwmt.zathura.appdata.xml.in:453
 msgid "Better print support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:443
+#: data/org.pwmt.zathura.appdata.xml.in:454
 msgid "Improve document links"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:444
+#: data/org.pwmt.zathura.appdata.xml.in:455
 msgid "Render last-viewed pages with a higher priority"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:445
+#: data/org.pwmt.zathura.appdata.xml.in:456
 msgid "Export images and attachments"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:446
+#: data/org.pwmt.zathura.appdata.xml.in:457
 msgid "Open multiple documents"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:447
+#: data/org.pwmt.zathura.appdata.xml.in:458
 msgid "Plugin manager"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:448
+#: data/org.pwmt.zathura.appdata.xml.in:459
 msgid "Several memory leaks and small bugs"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:453
+#: data/org.pwmt.zathura.appdata.xml.in:464
 msgid "Add 'open-first-page' setting"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:454
+#: data/org.pwmt.zathura.appdata.xml.in:465
 msgid "Free invisible pages after specific time"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:455
+#: data/org.pwmt.zathura.appdata.xml.in:466
 msgid "Set log level via command line"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:456
+#: data/org.pwmt.zathura.appdata.xml.in:467
 msgid "Update GTK3 support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:457
+#: data/org.pwmt.zathura.appdata.xml.in:468
 msgid "Completion for :write command"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:458
+#: data/org.pwmt.zathura.appdata.xml.in:469
 msgid "Simplified plugin loading"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:459
+#: data/org.pwmt.zathura.appdata.xml.in:470
 msgid "Allow counter-clockwise rotation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:460
+#: data/org.pwmt.zathura.appdata.xml.in:471
 msgid "Changeable page-padding"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:461
+#: data/org.pwmt.zathura.appdata.xml.in:472
 msgid "Introduced girara version check"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:462
+#: data/org.pwmt.zathura.appdata.xml.in:473
 msgid "Detect sqlite automatically"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:463
+#: data/org.pwmt.zathura.appdata.xml.in:474
 msgid "Update window title"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:468
+#: data/org.pwmt.zathura.appdata.xml.in:479
 msgid "Macro to register plugins"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:469
+#: data/org.pwmt.zathura.appdata.xml.in:480
 msgid "Fix issues with the display of the current page number"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:470
+#: data/org.pwmt.zathura.appdata.xml.in:481
 msgid "Ability to scroll to the full left or full right border"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:471
+#: data/org.pwmt.zathura.appdata.xml.in:482
 msgid "Reimplement the render thread with GThreadPool"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:472
+#: data/org.pwmt.zathura.appdata.xml.in:483
 msgid "Use the correct color to highlight results"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:473
+#: data/org.pwmt.zathura.appdata.xml.in:484
 msgid "Support to use both database backends"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:474
+#: data/org.pwmt.zathura.appdata.xml.in:485
 msgid "Additional notifications on errors"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:475
+#: data/org.pwmt.zathura.appdata.xml.in:486
 msgid "Option to hide hidden directories"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:476
+#: data/org.pwmt.zathura.appdata.xml.in:487
 msgid "Do not overwrite existing files with :write"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:477
+#: data/org.pwmt.zathura.appdata.xml.in:488
 msgid "Fix flicker in text selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:478
+#: data/org.pwmt.zathura.appdata.xml.in:489
 msgid "Resolved several memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:479
-#: data/org.pwmt.zathura.appdata.xml.in:516
-#: data/org.pwmt.zathura.appdata.xml.in:533
+#: data/org.pwmt.zathura.appdata.xml.in:490
+#: data/org.pwmt.zathura.appdata.xml.in:527
+#: data/org.pwmt.zathura.appdata.xml.in:544
 msgid "Updated Makefile"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:484
+#: data/org.pwmt.zathura.appdata.xml.in:495
 msgid "Complete rewrite of zathura"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:485
+#: data/org.pwmt.zathura.appdata.xml.in:496
 msgid "Uses the girara interface library"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:486
+#: data/org.pwmt.zathura.appdata.xml.in:497
 msgid "Plugin system for different document types"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:487
+#: data/org.pwmt.zathura.appdata.xml.in:498
 msgid "Better configuration"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:488
+#: data/org.pwmt.zathura.appdata.xml.in:499
 msgid "Quickmarks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:493
+#: data/org.pwmt.zathura.appdata.xml.in:504
 msgid "Ignoring MOD5 which is used on some keyboards"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:494
+#: data/org.pwmt.zathura.appdata.xml.in:505
 msgid "Fix scroll_wrap (#52)"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:495
+#: data/org.pwmt.zathura.appdata.xml.in:506
 msgid "Don't invert y coordinates (#42)"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:496
+#: data/org.pwmt.zathura.appdata.xml.in:507
 msgid "Certain memory leaks and other small issues"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:501
+#: data/org.pwmt.zathura.appdata.xml.in:512
 msgid "Fixed bookmark handling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:502
+#: data/org.pwmt.zathura.appdata.xml.in:513
 msgid "Support :digits"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:503
+#: data/org.pwmt.zathura.appdata.xml.in:514
 msgid "Save zoom level per file"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:504
+#: data/org.pwmt.zathura.appdata.xml.in:515
 msgid "Fix backwards searching"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:505
+#: data/org.pwmt.zathura.appdata.xml.in:516
 msgid "Fix blinking while switching pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:506
+#: data/org.pwmt.zathura.appdata.xml.in:517
 msgid "Fix input issues in fullscreen mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:507
-#: data/org.pwmt.zathura.appdata.xml.in:517
-#: data/org.pwmt.zathura.appdata.xml.in:531
+#: data/org.pwmt.zathura.appdata.xml.in:518
+#: data/org.pwmt.zathura.appdata.xml.in:528
+#: data/org.pwmt.zathura.appdata.xml.in:542
 msgid "Fixed several memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:512
+#: data/org.pwmt.zathura.appdata.xml.in:523
 msgid "Updated text searching"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:513
+#: data/org.pwmt.zathura.appdata.xml.in:524
 msgid "Support for poppler >= 0.15"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:514
+#: data/org.pwmt.zathura.appdata.xml.in:525
 msgid "Fixed print command with multiple arguments"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:515
+#: data/org.pwmt.zathura.appdata.xml.in:526
 msgid "Fixed GOptionEntries"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:518
+#: data/org.pwmt.zathura.appdata.xml.in:529
 msgid "Fixed segmentation faults"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:523
+#: data/org.pwmt.zathura.appdata.xml.in:534
 msgid "Wrap around scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:524
+#: data/org.pwmt.zathura.appdata.xml.in:535
 msgid "Display scroll percentage in statusbar"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:525
+#: data/org.pwmt.zathura.appdata.xml.in:536
 msgid "More familiar zoom key bindings"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:526
+#: data/org.pwmt.zathura.appdata.xml.in:537
 msgid "Support reading files from stdin"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:527
+#: data/org.pwmt.zathura.appdata.xml.in:538
 msgid "Open command with appended current file path"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:528
+#: data/org.pwmt.zathura.appdata.xml.in:539
 msgid "Following XDG specification"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:529
+#: data/org.pwmt.zathura.appdata.xml.in:540
 msgid "Colored window and view port"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:530
+#: data/org.pwmt.zathura.appdata.xml.in:541
 msgid "File reloading fix"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:532
+#: data/org.pwmt.zathura.appdata.xml.in:543
 msgid "Updated man page"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:538
+#: data/org.pwmt.zathura.appdata.xml.in:549
 msgid "Fixed critical usability bug"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:543
+#: data/org.pwmt.zathura.appdata.xml.in:554
 msgid "Improved and fixed completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:544
+#: data/org.pwmt.zathura.appdata.xml.in:555
 msgid "Optional parameters for the print command"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:545
-#: data/org.pwmt.zathura.appdata.xml.in:597
+#: data/org.pwmt.zathura.appdata.xml.in:556
+#: data/org.pwmt.zathura.appdata.xml.in:608
 msgid "Escape filenames"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:546
+#: data/org.pwmt.zathura.appdata.xml.in:557
 msgid "Resolved some memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:547
+#: data/org.pwmt.zathura.appdata.xml.in:558
 msgid "Global configuration file"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:548
+#: data/org.pwmt.zathura.appdata.xml.in:559
 msgid "Specify configuration directory"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:549
+#: data/org.pwmt.zathura.appdata.xml.in:560
 msgid "Configureable modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:550
+#: data/org.pwmt.zathura.appdata.xml.in:561
 msgid "Smooth scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:551
+#: data/org.pwmt.zathura.appdata.xml.in:562
 msgid "Extended statusbar string manipulation"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:552
+#: data/org.pwmt.zathura.appdata.xml.in:563
 msgid "`function`"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:553
+#: data/org.pwmt.zathura.appdata.xml.in:564
 msgid "Strip executable"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:554
+#: data/org.pwmt.zathura.appdata.xml.in:565
 msgid "Updated manpage"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:559
+#: data/org.pwmt.zathura.appdata.xml.in:570
 msgid "Change window title to filename"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:560
+#: data/org.pwmt.zathura.appdata.xml.in:571
 msgid "Fixation of the URI command"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:561
+#: data/org.pwmt.zathura.appdata.xml.in:572
 msgid "Updated the behaviour of sc_scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:562
+#: data/org.pwmt.zathura.appdata.xml.in:573
 msgid "Half/Full-page scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:563
+#: data/org.pwmt.zathura.appdata.xml.in:574
 msgid "Check document health in sc_reload"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:564
+#: data/org.pwmt.zathura.appdata.xml.in:575
 msgid "`tabbed` support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:565
+#: data/org.pwmt.zathura.appdata.xml.in:576
 msgid "Define look with the set function"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:566
+#: data/org.pwmt.zathura.appdata.xml.in:577
 msgid "Implemented map function"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:567
+#: data/org.pwmt.zathura.appdata.xml.in:578
 msgid "`zathurarc` file"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:568
+#: data/org.pwmt.zathura.appdata.xml.in:579
 msgid "Prevent buffer overflow in realpath"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:569
+#: data/org.pwmt.zathura.appdata.xml.in:580
 msgid "Strip executeable"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:570
+#: data/org.pwmt.zathura.appdata.xml.in:581
 msgid "Key evaluation when buffer is not empty"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:571
-#: data/org.pwmt.zathura.appdata.xml.in:580
+#: data/org.pwmt.zathura.appdata.xml.in:582
+#: data/org.pwmt.zathura.appdata.xml.in:591
 msgid "Manpage update"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:576
+#: data/org.pwmt.zathura.appdata.xml.in:587
 msgid "Use GFileMonitor instead of inotify"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:577
+#: data/org.pwmt.zathura.appdata.xml.in:588
 msgid "Added document reload shortcut"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:578
+#: data/org.pwmt.zathura.appdata.xml.in:589
 msgid "Fixed toggle index"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:579
+#: data/org.pwmt.zathura.appdata.xml.in:590
 msgid "Fixed print command"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:585
+#: data/org.pwmt.zathura.appdata.xml.in:596
 msgid "Fullscreen mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:586
+#: data/org.pwmt.zathura.appdata.xml.in:597
 msgid "Correct search result highlighting"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:587
+#: data/org.pwmt.zathura.appdata.xml.in:598
 msgid "Document password dialog"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:593
+#: data/org.pwmt.zathura.appdata.xml.in:604
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:594
+#: data/org.pwmt.zathura.appdata.xml.in:605
 msgid "Keyboard navigation in the index view"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:595
+#: data/org.pwmt.zathura.appdata.xml.in:606
 msgid "Different goto modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:596
+#: data/org.pwmt.zathura.appdata.xml.in:607
 msgid "Auto adjustment when opening a document"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:603
+#: data/org.pwmt.zathura.appdata.xml.in:614
 msgid "Reload modified document automatically"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:604
+#: data/org.pwmt.zathura.appdata.xml.in:615
 msgid "Recolor the page instead of inverting the colors"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:605
+#: data/org.pwmt.zathura.appdata.xml.in:616
 msgid "Working search function"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:606
+#: data/org.pwmt.zathura.appdata.xml.in:617
 msgid "Show and hide document information"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:607
+#: data/org.pwmt.zathura.appdata.xml.in:618
 msgid "Follow internal links or open URI in a predefined browser"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:608
+#: data/org.pwmt.zathura.appdata.xml.in:619
 msgid "Save the document"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:614
+#: data/org.pwmt.zathura.appdata.xml.in:625
 msgid "Complete new, re-written interface"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:615
+#: data/org.pwmt.zathura.appdata.xml.in:626
 msgid "Multiple printer support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:616
+#: data/org.pwmt.zathura.appdata.xml.in:627
 msgid "Command history"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:617
+#: data/org.pwmt.zathura.appdata.xml.in:628
 msgid "Show document index"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:618
+#: data/org.pwmt.zathura.appdata.xml.in:629
 msgid "Centered view"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:619
+#: data/org.pwmt.zathura.appdata.xml.in:630
 msgid "Add, save and open bookmarks"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:620
+#: data/org.pwmt.zathura.appdata.xml.in:631
 msgid "Marker support"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:621
+#: data/org.pwmt.zathura.appdata.xml.in:632
 msgid "Highlight search results"
 msgstr "Pažymėti paieškos rezultatus"
 
-#: data/org.pwmt.zathura.appdata.xml.in:622
+#: data/org.pwmt.zathura.appdata.xml.in:633
 msgid "Buffered commands"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:623
+#: data/org.pwmt.zathura.appdata.xml.in:634
 msgid "`set` Function"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:624
+#: data/org.pwmt.zathura.appdata.xml.in:635
 msgid "Revert video function"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:625
+#: data/org.pwmt.zathura.appdata.xml.in:636
 msgid "Command completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.appdata.xml.in:630
+#: data/org.pwmt.zathura.appdata.xml.in:641
 msgid "Initial release"
 msgstr ""
 
@@ -1279,7 +1307,7 @@ msgstr ""
 #: zathura/commands.c:36 zathura/commands.c:74 zathura/commands.c:99
 #: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:220
 #: zathura/commands.c:327 zathura/commands.c:357 zathura/commands.c:382
-#: zathura/commands.c:482 zathura/commands.c:627 zathura/shortcuts.c:156
+#: zathura/commands.c:482 zathura/commands.c:630 zathura/shortcuts.c:156
 #: zathura/shortcuts.c:461 zathura/shortcuts.c:1297 zathura/shortcuts.c:1330
 #: zathura/shortcuts.c:1355
 msgid "No document opened."
@@ -1395,7 +1423,7 @@ msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 
-#: zathura/commands.c:297 zathura/commands.c:676
+#: zathura/commands.c:297 zathura/commands.c:679
 msgid "Too many arguments."
 msgstr "Per daug parametrų."
 
@@ -1419,427 +1447,427 @@ msgstr "Neteisingas parametrų skaičius."
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:506
+#: zathura/commands.c:509
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Priedas „%s“ negalėjo būti įrašytas į „%s“."
 
-#: zathura/commands.c:508
+#: zathura/commands.c:511
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Priedas „%s“ įrašytas į „%s“."
 
-#: zathura/commands.c:552
+#: zathura/commands.c:555
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Atvaizdas „%s“ įrašytas į „%s“."
 
-#: zathura/commands.c:554
+#: zathura/commands.c:557
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Atvaizdas „%s“ negalėjo būti įrašytas į „%s“,"
 
-#: zathura/commands.c:561
+#: zathura/commands.c:564
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Nežinomas atvaizdas „%s“."
 
-#: zathura/commands.c:565
+#: zathura/commands.c:568
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Nežinomas priedas ar atvaizdas „%s“."
 
-#: zathura/commands.c:582
+#: zathura/commands.c:585
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:640
+#: zathura/commands.c:643
 msgid "Argument must be a number."
 msgstr "Parametras turi būti skaičius."
 
-#: zathura/completion.c:276
+#: zathura/completion.c:275
 #, c-format
 msgid "Page %d"
 msgstr "%d puslapis"
 
-#: zathura/completion.c:318
+#: zathura/completion.c:317
 msgid "Attachments"
 msgstr "Priedai"
 
 #. add images
-#: zathura/completion.c:350
+#: zathura/completion.c:349
 msgid "Images"
 msgstr "Atvaizdai"
 
-#: zathura/completion.c:382
+#: zathura/completion.c:381
 msgid "Plugin does not support exporting attachments and images."
 msgstr ""
 
-#: zathura/completion.c:394
+#: zathura/completion.c:393
 msgid "Document contains no images or attachments"
 msgstr ""
 
 #. clang-format off
 #. zathura settings
-#: zathura/config.c:216
+#: zathura/config.c:233
 msgid "Database backend"
 msgstr "Duomenų bazės posistemė"
 
-#: zathura/config.c:217
+#: zathura/config.c:234
 msgid "File monitor backend"
 msgstr ""
 
-#: zathura/config.c:219
+#: zathura/config.c:236
 msgid "Zoom step"
 msgstr "Priartinimo žingsnis"
 
-#: zathura/config.c:221
+#: zathura/config.c:238
 msgid "Horizontal padding between pages"
 msgstr ""
 
-#: zathura/config.c:223
+#: zathura/config.c:240
 msgid "Vertical padding between pages"
 msgstr ""
 
-#: zathura/config.c:225
+#: zathura/config.c:242
 msgid "Number of pages per row"
 msgstr "Puslapių skaičius eilutėje"
 
-#: zathura/config.c:227
+#: zathura/config.c:244
 msgid "Column of the first page"
 msgstr "Pirmo puslapio stulpelis"
 
-#: zathura/config.c:229
+#: zathura/config.c:246
 msgid "Render pages from right to left"
 msgstr ""
 
-#: zathura/config.c:231
+#: zathura/config.c:248
 msgid "Scroll step"
 msgstr "Slinkties žingsnis"
 
-#: zathura/config.c:233
+#: zathura/config.c:250
 msgid "Horizontal scroll step"
 msgstr "Horizontalios slinksties žingsnis"
 
-#: zathura/config.c:235
+#: zathura/config.c:252
 msgid "Full page scroll overlap"
 msgstr ""
 
-#: zathura/config.c:237
+#: zathura/config.c:254
 msgid "Zoom minimum"
 msgstr "Mažiausias priartinimas"
 
-#: zathura/config.c:239
+#: zathura/config.c:256
 msgid "Zoom maximum"
 msgstr "Didžiausias priartinimas"
 
-#: zathura/config.c:241
+#: zathura/config.c:258
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Puslapių limitas spartinančioje atmintinėje"
 
-#: zathura/config.c:243
+#: zathura/config.c:260
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
 
-#: zathura/config.c:245
+#: zathura/config.c:262
 msgid "Number of positions to remember in the jumplist"
 msgstr ""
 
-#: zathura/config.c:247
+#: zathura/config.c:264
 msgid "Recoloring (dark color)"
 msgstr "Spalvų keitimas (tamsi spalva)"
 
-#: zathura/config.c:248
+#: zathura/config.c:265
 msgid "Recoloring (light color)"
 msgstr "Spalvų keitimas (šviesi spalva)"
 
-#: zathura/config.c:249
+#: zathura/config.c:266
 msgid "Color for highlighting"
 msgstr "Žymos spalva"
 
-#: zathura/config.c:251
+#: zathura/config.c:268
 msgid "Foreground color for highlighting"
 msgstr ""
 
-#: zathura/config.c:253
+#: zathura/config.c:270
 msgid "Color for highlighting (active)"
 msgstr "Žymos spalva (aktyvi)"
 
-#: zathura/config.c:255
+#: zathura/config.c:272
 msgid "'Loading ...' background color"
 msgstr "„Kraunama ...“ fono spalva"
 
-#: zathura/config.c:257
+#: zathura/config.c:274
 msgid "'Loading ...' foreground color"
 msgstr "„Kraunama ...“ pagrindinė spalva"
 
-#: zathura/config.c:260
+#: zathura/config.c:277
 msgid "Index mode foreground color"
 msgstr ""
 
-#: zathura/config.c:261
+#: zathura/config.c:278
 msgid "Index mode background color"
 msgstr ""
 
-#: zathura/config.c:262
+#: zathura/config.c:279
 msgid "Index mode foreground color (active element)"
 msgstr ""
 
-#: zathura/config.c:263
+#: zathura/config.c:280
 msgid "Index mode background color (active element)"
 msgstr ""
 
-#: zathura/config.c:265
+#: zathura/config.c:282
 msgid "Color used to highlight valid signatures"
 msgstr ""
 
-#: zathura/config.c:268
+#: zathura/config.c:285
 msgid "Color used to highlight signatures with warnings"
 msgstr ""
 
-#: zathura/config.c:271
+#: zathura/config.c:288
 msgid "Color used to highlight invalid signatures"
 msgstr ""
 
-#: zathura/config.c:275
+#: zathura/config.c:292
 msgid "Recolor pages"
 msgstr "Pakeisti spalvas"
 
-#: zathura/config.c:277
+#: zathura/config.c:294
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 
-#: zathura/config.c:279
+#: zathura/config.c:296
 msgid "When recoloring keep original image colors"
 msgstr ""
 
-#: zathura/config.c:281
+#: zathura/config.c:298
 msgid "When recoloring adjust lightness"
 msgstr ""
 
-#: zathura/config.c:283
+#: zathura/config.c:300
 msgid "Wrap scrolling"
 msgstr ""
 
-#: zathura/config.c:287
+#: zathura/config.c:304
 msgid "Advance number of pages per row"
 msgstr "Padidinti puslapių skaičių eilutėje"
 
-#: zathura/config.c:289
+#: zathura/config.c:306
 msgid "Horizontally centered zoom"
 msgstr ""
 
-#: zathura/config.c:291
+#: zathura/config.c:308
 msgid "Vertically center pages"
 msgstr ""
 
-#: zathura/config.c:293
+#: zathura/config.c:310
 msgid "Align link target to the left"
 msgstr ""
 
-#: zathura/config.c:295
+#: zathura/config.c:312
 msgid "Let zoom be changed when following links"
 msgstr ""
 
-#: zathura/config.c:297
+#: zathura/config.c:314
 msgid "Center result horizontally"
 msgstr ""
 
-#: zathura/config.c:299
+#: zathura/config.c:316
 msgid "Render 'Loading ...'"
 msgstr "Atvaizduoti „Kraunama ...“"
 
-#: zathura/config.c:300
+#: zathura/config.c:317
 msgid "Adjust to when opening file"
 msgstr "Prisitaikyti atidarant bylą"
 
-#: zathura/config.c:302
+#: zathura/config.c:319
 msgid "Show hidden files and directories"
 msgstr "Rodyti paslėptus failus ir katalogus"
 
-#: zathura/config.c:304
+#: zathura/config.c:321
 msgid "Show directories"
 msgstr "Rodyti katalogų sąrašą"
 
-#: zathura/config.c:306
+#: zathura/config.c:323
 msgid "Show recent files"
 msgstr ""
 
-#: zathura/config.c:308
+#: zathura/config.c:325
 msgid "Always open on first page"
 msgstr "Visada atverti pirmą puslapį"
 
-#: zathura/config.c:310
+#: zathura/config.c:327
 msgid "Disable highlighting of search results"
 msgstr ""
 
-#: zathura/config.c:312
+#: zathura/config.c:329
 msgid "Double click to follow links"
 msgstr ""
 
-#: zathura/config.c:315
+#: zathura/config.c:332
 msgid "Enable incremental search"
 msgstr "Įjungti prieauginę paiešką"
 
-#: zathura/config.c:317
+#: zathura/config.c:334
 msgid "Clear search results on abort"
 msgstr "Išvalyti paieškos rezultatus nutraukiant"
 
-#: zathura/config.c:319
+#: zathura/config.c:336
 msgid "Use basename of the file in the window title"
 msgstr ""
 
-#: zathura/config.c:321
+#: zathura/config.c:338
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr ""
 
-#: zathura/config.c:323
+#: zathura/config.c:340
 msgid "Display the page number in the window title"
 msgstr "Rodyti puslapio skaičių lango pavadinime"
 
-#: zathura/config.c:325
+#: zathura/config.c:342
 msgid "Use first page of a document as window icon"
 msgstr ""
 
-#: zathura/config.c:327
+#: zathura/config.c:344
 msgid "Use basename of the file in the statusbar"
 msgstr "Naudoti bylos vardą būsenos juostoje"
 
-#: zathura/config.c:329
+#: zathura/config.c:346
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
-#: zathura/config.c:331
+#: zathura/config.c:348
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
-#: zathura/config.c:333
+#: zathura/config.c:350
 msgid "Enable synctex support"
 msgstr "Įjungti synctex palaikymą"
 
-#: zathura/config.c:334
+#: zathura/config.c:351
 msgid "Synctex editor command"
 msgstr ""
 
-#: zathura/config.c:335
+#: zathura/config.c:352
 msgid "Synctex edit modifier"
 msgstr ""
 
-#: zathura/config.c:336
+#: zathura/config.c:353
 msgid "Highlighter modifier"
 msgstr ""
 
-#: zathura/config.c:338
+#: zathura/config.c:355
 msgid "Enable D-Bus service"
 msgstr ""
 
-#: zathura/config.c:339
+#: zathura/config.c:356
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:341
+#: zathura/config.c:358
 msgid "Save history at each page change"
 msgstr ""
 
-#: zathura/config.c:342
+#: zathura/config.c:359
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 
-#: zathura/config.c:344
+#: zathura/config.c:361
 msgid "Enable notification after selecting text"
 msgstr ""
 
-#: zathura/config.c:347
+#: zathura/config.c:364
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:568
+#: zathura/config.c:607
 msgid "Add a bookmark"
 msgstr "Pridėti žymę"
 
-#: zathura/config.c:569
+#: zathura/config.c:608
 msgid "Delete a bookmark"
 msgstr "Ištrinti žymę"
 
-#: zathura/config.c:570
+#: zathura/config.c:609
 msgid "List all bookmarks"
 msgstr "Žymių sąrašas"
 
-#: zathura/config.c:571
+#: zathura/config.c:610
 msgid "Jump to bookmark"
 msgstr ""
 
-#: zathura/config.c:572
+#: zathura/config.c:611
 msgid "Show recent jumps in jumplist"
 msgstr ""
 
-#: zathura/config.c:573
+#: zathura/config.c:612
 msgid "Close current file"
 msgstr "Uždaryti dabartinę bylą"
 
-#: zathura/config.c:574
+#: zathura/config.c:613
 msgid "Show file information"
 msgstr "Rodyti bylos informaciją"
 
-#: zathura/config.c:575 zathura/config.c:576
+#: zathura/config.c:614 zathura/config.c:615
 msgid "Execute a command"
 msgstr ""
 
 #. like vim
-#: zathura/config.c:577
+#: zathura/config.c:616
 msgid "Show help"
 msgstr "Rodyti pagalbą"
 
-#: zathura/config.c:578
+#: zathura/config.c:617
 msgid "Open document"
 msgstr "Atidryti dokumentą"
 
-#: zathura/config.c:579
+#: zathura/config.c:618
 msgid "Close zathura"
 msgstr "Uždaryti zathura"
 
-#: zathura/config.c:580
+#: zathura/config.c:619
 msgid "Print document"
 msgstr "Atspausdinti dokumentą"
 
-#: zathura/config.c:581 zathura/config.c:583
+#: zathura/config.c:620 zathura/config.c:622
 msgid "Save document"
 msgstr "Išsaugoti dokumentą"
 
-#: zathura/config.c:582 zathura/config.c:584
+#: zathura/config.c:621 zathura/config.c:623
 msgid "Save document (and force overwriting)"
 msgstr "Išsaugoti dokumentą (ir priverstinai perašyti)"
 
-#: zathura/config.c:585
+#: zathura/config.c:624
 msgid "Save attachments"
 msgstr "Išsaugoti priedus"
 
-#: zathura/config.c:586
+#: zathura/config.c:625
 msgid "Set page offset"
 msgstr "Nustatyti puslapio poslinkį"
 
-#: zathura/config.c:587
+#: zathura/config.c:626
 msgid "Mark current location within the document"
 msgstr "Pažymėti dabartinę dokumento vietą"
 
-#: zathura/config.c:588
+#: zathura/config.c:627
 msgid "Delete the specified marks"
 msgstr "Ištrinti šias žymes"
 
-#: zathura/config.c:589
+#: zathura/config.c:628
 msgid "Remove highlights of current search results"
 msgstr ""
 
-#: zathura/config.c:590
+#: zathura/config.c:629
 msgid "Highlight current search results"
 msgstr "Pažymėti dabartinės paieškos rezultatus"
 
-#: zathura/config.c:591
+#: zathura/config.c:630
 msgid "Show version information"
 msgstr "Rodyti versijos informaciją"
 
-#: zathura/config.c:592
+#: zathura/config.c:631
 msgid "Source config file"
 msgstr ""
 
@@ -2005,39 +2033,39 @@ msgstr ""
 msgid "This document does not contain any index"
 msgstr "Šit dokumentas neturi turinio"
 
-#: zathura/zathura.c:299 zathura/zathura.c:1514
+#: zathura/zathura.c:298 zathura/zathura.c:1528
 msgid "[No name]"
 msgstr "[Bevardis]"
 
-#: zathura/zathura.c:720
+#: zathura/zathura.c:734
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:739
+#: zathura/zathura.c:753
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 
-#: zathura/zathura.c:836
+#: zathura/zathura.c:850
 msgid "Enter password:"
 msgstr ""
 
-#: zathura/zathura.c:941
+#: zathura/zathura.c:955
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Bylos tipas nepalaikomas. Įdiekite tam skirtus įskiepius."
 
-#: zathura/zathura.c:950
+#: zathura/zathura.c:964
 msgid "Document does not contain any pages"
 msgstr "Dokumente puslapių nėra"
 
-#: zathura/zathura.c:1319
+#: zathura/zathura.c:1333
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr ""
 
-#: zathura/zathura.c:1329
+#: zathura/zathura.c:1343
 msgid "Failed to save document."
 msgstr "Dokumento išsaugoti nepavyko."
 
-#: zathura/zathura.c:1333
+#: zathura/zathura.c:1347
 msgid "Document saved."
 msgstr "Dokumentas išsaugotas."
