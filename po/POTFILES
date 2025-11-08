@@ -1,4 +1,4 @@
-data/org.pwmt.zathura.appdata.xml.in
+data/org.pwmt.zathura.metainfo.xml.in
 data/org.pwmt.zathura.desktop.in
 zathura/adjustment.c
 zathura/bookmarks.c

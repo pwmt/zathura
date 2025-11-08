@@ -29,8 +29,8 @@ desktop = i18n.merge_file(
 )
 
 appdata = i18n.merge_file(
-  input: 'org.pwmt.zathura.appdata.xml.in',
-  output: 'org.pwmt.zathura.appdata.xml',
+  input: 'org.pwmt.zathura.metainfo.xml.in',
+  output: 'org.pwmt.zathura.metainfo.xml',
   install: true,
   install_dir: metainfodir,
   po_dir: podir,
