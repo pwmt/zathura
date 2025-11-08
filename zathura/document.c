@@ -78,7 +78,7 @@ static bool hash_file_sha256(uint8_t* dst, const char* path) {
     return false;
   }
 
-  uint8_t buf[BUFSIZ];
+  uint8_t buf[MIN(BUFSIZ,4096)];
   size_t read;
   while ((read = fread(buf, 1, sizeof(buf), f)) != 0) {
     g_checksum_update(checksum, buf, read);
