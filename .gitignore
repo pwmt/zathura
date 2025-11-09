@@ -22,7 +22,6 @@ zathura-*.tar.gz
 *.patch
 
 # build dirs
-.tx
 build/
 gcov/
 subprojects/girara
