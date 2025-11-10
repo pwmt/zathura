@@ -61,6 +61,10 @@ static void zathura_plugin_free(void* data) {
 }
 
 static void set_plugin_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
+  if (dir == NULL || dir[0] == '\0') {
+    return;
+  }
+
   char** paths = g_strsplit(dir, ":", 0);
   for (size_t i = 0; paths[i] != NULL; ++i) {
     girara_list_append(plugin_manager->path, g_strdup(paths[i]));

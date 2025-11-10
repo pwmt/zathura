@@ -712,16 +712,18 @@ void config_load_default(zathura_t* zathura) {
 void config_load_files(zathura_t* zathura) {
   /* load global configuration files */
   char* config_path          = girara_get_xdg_path(XDG_CONFIG_DIRS);
-  char** config_dirs         = g_strsplit(config_path, ":", 0);
-  ssize_t size               = g_strv_length(config_dirs) - 1;
-  for (; size >= 0; --size) {
-    const char* dir = config_dirs[size];
-    char* file      = g_build_filename(dir, ZATHURA_RC, NULL);
-    girara_config_parse(zathura->ui.session, file);
-    g_free(file);
+  if (config_path != NULL && config_path[0] != '\0') {
+    char** config_dirs = g_strsplit(config_path, ":", 0);
+    ssize_t size       = g_strv_length(config_dirs) - 1;
+    for (; size >= 0; --size) {
+      const char* dir = config_dirs[size];
+      char* file      = g_build_filename(dir, ZATHURA_RC, NULL);
+      girara_config_parse(zathura->ui.session, file);
+      g_free(file);
+    }
+    g_strfreev(config_dirs);
+    g_free(config_path);
   }
-  g_strfreev(config_dirs);
-  g_free(config_path);
 
   girara_config_parse(zathura->ui.session, SYSCONFDIR "/" ZATHURA_RC);
 
