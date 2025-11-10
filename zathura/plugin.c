@@ -60,17 +60,12 @@ static void zathura_plugin_free(void* data) {
   }
 }
 
-static void add_dir(void* data, void* userdata) {
-  const char* path                         = data;
-  zathura_plugin_manager_t* plugin_manager = userdata;
-
-  girara_list_append(plugin_manager->path, g_strdup(path));
-}
-
 static void set_plugin_dir(zathura_plugin_manager_t* plugin_manager, const char* dir) {
-  girara_list_t* paths = girara_split_path_array(dir);
-  girara_list_foreach(paths, add_dir, plugin_manager);
-  girara_list_free(paths);
+  char** paths = g_strsplit(dir, ":", 0);
+  for (size_t i = 0; paths[i] != NULL; ++i) {
+    girara_list_append(plugin_manager->path, g_strdup(paths[i]));
+  }
+  g_strfreev(paths);
 }
 
 static void set_default_dirs(zathura_plugin_manager_t* plugin_manager) {
