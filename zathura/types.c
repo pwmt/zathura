@@ -7,7 +7,6 @@
 #include "types.h"
 #include "links.h"
 #include "internal.h"
-#include "checked-integer-arithmetic.h"
 
 zathura_index_element_t* zathura_index_element_new(const char* title) {
   if (title == NULL) {

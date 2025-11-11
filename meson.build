@@ -57,6 +57,8 @@ if host_machine.system() == 'darwin'
   build_dependencies += gtk_mac_integration
 endif
 
+# required functions
+cc.has_function('__builtin_umul_overflow', required: true)
 
 # defines
 defines = [
@@ -109,7 +111,6 @@ sources = files(
   'zathura/adjustment.c',
   'zathura/bookmarks.c',
   'zathura/callbacks.c',
-  'zathura/checked-integer-arithmetic.c',
   'zathura/commands.c',
   'zathura/completion.c',
   'zathura/config.c',
