@@ -22,7 +22,7 @@ The following dependencies are optional:
 
 For building zathura, the following dependencies are also required:
 
-* `meson` (>= 1)
+* `meson` (>= 1.3)
 * `gettext`
 * `pkgconf`
 
