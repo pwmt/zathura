@@ -327,4 +327,10 @@ struct zathura_mark_s {
 
 typedef struct zathura_mark_s zathura_mark_t;
 
+struct meta_field_s {
+  const char* name;
+  zathura_document_information_type_t field;
+  const char* value;
+};
+
 #endif // TYPES_H

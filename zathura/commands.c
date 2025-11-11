@@ -221,39 +221,22 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
     return false;
   }
 
-  struct meta_field {
-    const char* name;
-    zathura_document_information_type_t field;
-  };
+  size_t meta_fields_count = 0;
+  struct meta_field_s* meta_fields = zathura_document_get_meta_fields(zathura_get_document(zathura), &meta_fields_count);
 
-  const struct meta_field meta_fields[] = {
-      {_("Title"), ZATHURA_DOCUMENT_INFORMATION_TITLE},
-      {_("Subject"), ZATHURA_DOCUMENT_INFORMATION_SUBJECT},
-      {_("Keywords"), ZATHURA_DOCUMENT_INFORMATION_KEYWORDS},
-      {_("Author"), ZATHURA_DOCUMENT_INFORMATION_AUTHOR},
-      {_("Creator"), ZATHURA_DOCUMENT_INFORMATION_CREATOR},
-      {_("Producer"), ZATHURA_DOCUMENT_INFORMATION_PRODUCER},
-      {_("Creation date"), ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE},
-      {_("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE},
-      {_("Format"), ZATHURA_DOCUMENT_INFORMATION_FORMAT},
-      {_("Other"), ZATHURA_DOCUMENT_INFORMATION_OTHER},
-  };
-
-  girara_list_t* information = zathura_document_get_information(zathura_get_document(zathura), NULL);
-  if (information == NULL) {
-    girara_notify(session, GIRARA_INFO, _("No information available."));
+  if(meta_fields == NULL){
+      girara_notify(session, GIRARA_ERROR, _("Error during information retrieval."));
     return false;
   }
 
   GString* string = g_string_new(NULL);
 
-  for (size_t i = 0; i < LENGTH(meta_fields); i++) {
-    for (size_t idx = 0; idx != girara_list_size(information); ++idx) {
-      zathura_document_information_entry_t* entry = girara_list_nth(information, idx);
-      if (entry != NULL && meta_fields[i].field == entry->type) {
-        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
-      }
+  meta_fields_count = 0;
+  for (size_t i = 0; i < meta_fields_count; i++) {
+    if(meta_fields[i].value == NULL){
+      continue;
     }
+      g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, meta_fields[i].value);
   }
 
   if (string->len > 0) {

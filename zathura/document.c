@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <glib.h>
 #include <gio/gio.h>
+#include <glib/gi18n.h>
 #include <math.h>
 
 #include <girara/datastructures.h>
@@ -17,6 +18,8 @@
 #include "page.h"
 #include "plugin.h"
 #include "content-type.h"
+#include "dbus-interface.h"
+#include "internal.h"
 
 #define DIGEST_SIZE 32
 
@@ -667,6 +670,42 @@ zathura_error_t zathura_document_attachment_save(zathura_document_t* document, c
   }
 
   return functions->document_attachment_save(document, document->data, attachment, file);
+}
+
+struct meta_field_s* zathura_document_get_meta_fields(zathura_document_t* document, size_t* fields_count){
+  if(document == NULL || fields_count == NULL){
+    return NULL;
+  }
+
+  *fields_count = 10;
+  struct meta_field_s* meta_fields = g_new(struct meta_field_s, *fields_count);
+
+  meta_fields[0] = (struct meta_field_s){_("Title"), ZATHURA_DOCUMENT_INFORMATION_TITLE, NULL};
+  meta_fields[1] = (struct meta_field_s){_("Subject"), ZATHURA_DOCUMENT_INFORMATION_SUBJECT, NULL};
+  meta_fields[2] = (struct meta_field_s){_("Keywords"), ZATHURA_DOCUMENT_INFORMATION_KEYWORDS, NULL};
+  meta_fields[3] = (struct meta_field_s){_("Author"), ZATHURA_DOCUMENT_INFORMATION_AUTHOR, NULL};
+  meta_fields[4] = (struct meta_field_s){_("Creator"), ZATHURA_DOCUMENT_INFORMATION_CREATOR, NULL};
+  meta_fields[5] = (struct meta_field_s){_("Producer"), ZATHURA_DOCUMENT_INFORMATION_PRODUCER, NULL};
+  meta_fields[6] = (struct meta_field_s){_("Creation date"), ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE, NULL};
+  meta_fields[7] = (struct meta_field_s){_("Modification date"), ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE, NULL};
+  meta_fields[8] = (struct meta_field_s){_("Format"), ZATHURA_DOCUMENT_INFORMATION_FORMAT, NULL};
+  meta_fields[9] = (struct meta_field_s){_("Other"), ZATHURA_DOCUMENT_INFORMATION_OTHER, NULL};
+
+  girara_list_t* information = zathura_document_get_information(document, NULL);
+  if (information == NULL) {
+    return NULL;
+  }
+
+  for (size_t i = 0; i < *fields_count; i++) {
+    for (size_t idx = 0; idx != girara_list_size(information); ++idx) {
+      zathura_document_information_entry_t* entry = girara_list_nth(information, idx);
+      if (entry != NULL && meta_fields[i].field == entry->type) {
+        meta_fields[i].value = entry->value;
+      }
+    }
+  }
+
+  return meta_fields;
 }
 
 girara_list_t* zathura_document_get_information(zathura_document_t* document, zathura_error_t* error) {
