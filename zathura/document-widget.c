@@ -297,7 +297,7 @@ static void zathura_document_widget_get_offset(zathura_t* zathura, double* pos_x
   unsigned int start_index = zathura_document_row_first_page_index(document, priv->start_row);
   page_number_to_position(document, start_index, 0.0, 0.0, &start_x, &start_y);
 
-  *pos_x = start_x - zero_x;
+  *pos_x = 0.0;
   *pos_y = start_y - zero_y;
 }
 
