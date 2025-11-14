@@ -129,16 +129,26 @@ static void zathura_document_calculate_render_range(zathura_t* zathura) {
   unsigned int current_page = position_to_page_number(document, pos_x, pos_y);
   unsigned int npag         = zathura_document_get_number_of_pages(document);
   unsigned int ncol         = zathura_document_get_pages_per_row(document);
+
+  unsigned int h_padding    = zathura_document_get_page_h_padding(document);
   unsigned int v_padding    = zathura_document_get_page_v_padding(document);
 
   unsigned int cell_width, cell_height;
   zathura_document_get_cell_size(document, &cell_height, &cell_width);
 
-  unsigned int nrow        = cairo_max_size / (cell_height + 2 * v_padding);
+  unsigned int max_nrow    = cairo_max_size / (cell_height + 2 * v_padding);
+  unsigned int max_ncol    = cairo_max_size / (cell_width + 2 * h_padding);
+
   unsigned int nrow_doc    = zathura_document_page_index_to_row(document, npag + ncol - 1);
   unsigned int current_row = zathura_document_page_index_to_row(document, current_page);
 
-  priv->row_count = MIN(nrow_doc, nrow);
+  priv->row_count = MIN(nrow_doc, max_nrow);
+
+  if (ncol > max_ncol) {
+    // column range rendering not implemented
+    // warn if there are too many columns
+    girara_warning("too many columns for document widget, may cause render issues");
+  }
 
   /*
    * When the contents of a GTK Grid is changed,
