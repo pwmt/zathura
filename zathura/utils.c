@@ -588,8 +588,8 @@ static void cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points
 }
 
 girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
-  girara_list_t* new_rectangles   = girara_list_new2(g_free);
-  g_autoptr(girara_list_t) points = girara_list_new2(g_free);
+  girara_list_t* new_rectangles   = girara_list_new_with_free(g_free);
+  g_autoptr(girara_list_t) points = girara_list_new_with_free(g_free);
   girara_list_foreach(rectangles, rectangle_to_points, points);
 
   for (size_t idx = 0; idx != girara_list_size(rectangles); ++idx) {

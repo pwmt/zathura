@@ -148,8 +148,8 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
     return false;
   }
 
-  g_autoptr(girara_list_t) hitlist     = girara_list_new2(g_free);
-  g_autoptr(girara_list_t) other_rects = girara_list_new2(g_free);
+  g_autoptr(girara_list_t) hitlist     = girara_list_new_with_free(g_free);
+  g_autoptr(girara_list_t) other_rects = girara_list_new_with_free(g_free);
 
   if (synctex_display_query(scanner, input_file, line, column, -1) > 0) {
     synctex_node_p node = NULL;
@@ -349,7 +349,7 @@ bool synctex_view(zathura_t* zathura, const char* input_file, unsigned int line,
     if (p == page) {
       all_rectangles[p] = rectangles;
     } else {
-      all_rectangles[p] = girara_list_new2(g_free);
+      all_rectangles[p] = girara_list_new_with_free(g_free);
     }
   }
 

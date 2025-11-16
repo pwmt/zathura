@@ -89,10 +89,10 @@ zathura_plugin_manager_t* zathura_plugin_manager_new(void) {
     return NULL;
   }
 
-  plugin_manager->plugins             = girara_list_new2(zathura_plugin_free);
-  plugin_manager->path                = girara_list_new2(g_free);
-  plugin_manager->type_plugin_mapping = girara_list_new2(zathura_type_plugin_mapping_free);
-  plugin_manager->content_types       = girara_list_new2(g_free);
+  plugin_manager->plugins             = girara_list_new_with_free(zathura_plugin_free);
+  plugin_manager->path                = girara_list_new_with_free(g_free);
+  plugin_manager->type_plugin_mapping = girara_list_new_with_free(zathura_type_plugin_mapping_free);
+  plugin_manager->content_types       = girara_list_new_with_free(g_free);
 
   if (plugin_manager->plugins == NULL || plugin_manager->path == NULL || plugin_manager->type_plugin_mapping == NULL ||
       plugin_manager->content_types == NULL) {
