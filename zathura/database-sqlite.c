@@ -584,7 +584,7 @@ static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* f
     return NULL;
   }
 
-  girara_list_t* jumplist = girara_list_new2(g_free);
+  girara_list_t* jumplist = girara_list_new_with_free(g_free);
   if (jumplist == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
@@ -714,7 +714,7 @@ static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char*
     return NULL;
   }
 
-  girara_list_t* quickmarks = girara_list_new2(g_free);
+  girara_list_t* quickmarks = girara_list_new_with_free(g_free);
   if (quickmarks == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
@@ -864,7 +864,7 @@ static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db) {
     return NULL;
   }
 
-  girara_list_t* list = girara_list_new2(g_free);
+  girara_list_t* list = girara_list_new_with_free(g_free);
   if (list == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
@@ -909,7 +909,7 @@ static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, c
     return false;
   }
 
-  girara_list_t* list = girara_list_new2(g_free);
+  girara_list_t* list = girara_list_new_with_free(g_free);
   if (list == NULL) {
     sqlite3_finalize(stmt);
     return NULL;
