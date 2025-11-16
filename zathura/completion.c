@@ -20,7 +20,10 @@
 #include <girara/utils.h>
 #include <girara/datastructures.h>
 
-static int compare_case_insensitive(const char* str1, const char* str2) {
+static int compare_case_insensitive(const void* data1, const void* data2) {
+  const char* str1 = data1;
+  const char* str2 = data2;
+
   char* ustr1 = g_utf8_casefold(str1, -1);
   char* ustr2 = g_utf8_casefold(str2, -1);
   int res     = g_utf8_collate(ustr1, ustr2);
@@ -43,8 +46,7 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     return NULL;
   }
 
-  girara_list_t* res =
-      girara_sorted_list_new2((girara_compare_function_t)compare_case_insensitive, (girara_free_function_t)g_free);
+  girara_list_t* res = girara_sorted_list_new2(compare_case_insensitive, g_free);
 
   bool show_hidden = false;
   girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
