@@ -100,7 +100,7 @@ bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(a
     return false;
   }
 
-  GString* string = g_string_new(NULL);
+  g_autoptr(GString) string = g_string_new(NULL);
   for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
     zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
     g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
@@ -113,7 +113,6 @@ bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(a
     girara_notify(session, GIRARA_INFO, _("No bookmarks available."));
   }
 
-  g_string_free(string, TRUE);
   return true;
 }
 
@@ -181,7 +180,7 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
   }
 
   zathura_jump_t* current_jump = zathura_jumplist_current(zathura);
-  GString* string              = g_string_new(NULL);
+  g_autoptr(GString) string    = g_string_new(NULL);
   for (int i = zathura->jumplist.size - 1; i >= 0 && num_entries > 0; --i, --num_entries) {
     const zathura_jump_t* j = girara_list_nth(zathura->jumplist.list, i);
     g_string_append_printf(string, _("[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"), i, j->page + 1, j->x, j->y,
@@ -195,7 +194,6 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
     girara_notify(session, GIRARA_INFO, _("No jumplist available."));
   }
 
-  g_string_free(string, TRUE);
   return true;
 }
 
@@ -245,8 +243,7 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
     return false;
   }
 
-  GString* string = g_string_new(NULL);
-
+  g_autoptr(GString) string = g_string_new(NULL);
   for (size_t i = 0; i < LENGTH(meta_fields); i++) {
     for (size_t idx = 0; idx != girara_list_size(information); ++idx) {
       zathura_document_information_entry_t* entry = girara_list_nth(information, idx);
@@ -262,8 +259,6 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   } else {
     girara_notify(session, GIRARA_INFO, _("No information available."));
   }
-
-  g_string_free(string, TRUE);
 
   return false;
 }
@@ -604,12 +599,10 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
     g_ascii_dtostr(page_buf, G_ASCII_DTOSTR_BUF_SIZE, page + 1);
 
     for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
-      char* value = girara_list_nth(argument_list, idx);
-      char* r     = girara_replace_substring(value, "$PAGE", page_buf);
+      char* value        = girara_list_nth(argument_list, idx);
+      g_autofree char* r = girara_replace_substring(value, "$PAGE", page_buf);
       if (r != NULL) {
         char* s = girara_replace_substring(r, "$FILE", path);
-        g_free(r);
-
         if (s != NULL) {
           girara_list_set_nth(argument_list, idx, s);
         }
@@ -656,16 +649,13 @@ bool cmd_version(girara_session_t* session, girara_list_t* UNUSED(argument_list)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  char* string = zathura_get_version_string(zathura->plugins.manager, true);
+  g_autofree char* string = zathura_get_version_string(zathura->plugins.manager, true);
   if (string == NULL) {
     return false;
   }
 
   /* display information */
   girara_notify(session, GIRARA_INFO, "%s", string);
-
-  g_free(string);
-
   return true;
 }
 

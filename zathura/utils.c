@@ -48,15 +48,12 @@ bool file_valid_extension(zathura_t* zathura, const char* path) {
     return false;
   }
 
-  char* content_type = zathura_content_type_guess(zathura->content_type_context, path, NULL);
+  g_autofree char* content_type = zathura_content_type_guess(zathura->content_type_context, path, NULL);
   if (content_type == NULL) {
     return false;
   }
 
-  const zathura_plugin_t* plugin = zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type);
-  g_free(content_type);
-
-  return plugin != NULL;
+  return zathura_plugin_manager_get_plugin(zathura->plugins.manager, content_type) != NULL;
 }
 
 static void index_element_free(void* data, GObject* UNUSED(object)) {
@@ -74,8 +71,8 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
     const zathura_link_type_t type         = zathura_link_get_type(index_element->link);
     const zathura_link_target_t target     = zathura_link_get_target(index_element->link);
 
-    gchar* description  = NULL;
-    gchar* description2 = NULL;
+    g_autofree gchar* description  = NULL;
+    g_autofree gchar* description2 = NULL;
 
     if (type == ZATHURA_LINK_GOTO_DEST) {
       zathura_t* zathura   = session->global.data;
@@ -94,12 +91,9 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
 
     GtkTreeIter tree_iter;
     gtk_tree_store_append(GTK_TREE_STORE(model), &tree_iter, parent);
-    gchar* markup = g_markup_escape_text(index_element->title, -1);
+    g_autofree gchar* markup = g_markup_escape_text(index_element->title, -1);
     gtk_tree_store_set(GTK_TREE_STORE(model), &tree_iter, 0, markup, 1, description, 2, description2, 3, index_element,
                        -1);
-    g_free(markup);
-    g_free(description2);
-    g_free(description);
     g_object_weak_ref(G_OBJECT(model), index_element_free, index_element);
 
     if (girara_node_get_num_children(node) > 0) {
@@ -169,13 +163,12 @@ static bool search_equal_iter(GtkTreeModel* model, gint column, const gchar* key
 gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,
                                  gpointer search_data) {
 
-  GtkTreeView* tree_view    = GTK_TREE_VIEW(search_data);
-  GtkTreePath* current_path = gtk_tree_model_get_path(model, iter);
+  GtkTreeView* tree_view              = GTK_TREE_VIEW(search_data);
+  g_autoptr(GtkTreePath) current_path = gtk_tree_model_get_path(model, iter);
   if (!(search_equal_iter(model, column, key, iter))) {
     return FALSE;
   }
   if (!(gtk_tree_model_iter_has_child(model, iter)) || gtk_tree_view_row_expanded(tree_view, current_path)) {
-    gtk_tree_path_free(current_path);
     return TRUE;
   }
 
@@ -186,23 +179,19 @@ gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* 
 
   do {
     if (!search_equal_func_index(model, column, key, &child_iter, tree_view)) {
-      GtkTreePath* child_path = gtk_tree_model_get_path(model, &child_iter);
+      g_autoptr(GtkTreePath) child_path = gtk_tree_model_get_path(model, &child_iter);
       gtk_tree_view_scroll_to_cell(tree_view, child_path, NULL, TRUE, 0.5, 0.0);
-      gtk_tree_path_free(current_path);
-      gtk_tree_path_free(child_path);
       return TRUE;
     }
   } while (gtk_tree_model_iter_next(model, &child_iter));
   gtk_tree_view_collapse_row(tree_view, current_path);
-  gtk_tree_path_free(current_path);
 
   return TRUE;
 }
 
 static GtkTreeView* get_tree_view(zathura_t* zathura) {
-  GList* index_children  = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
+  g_autoptr(GList) index_children  = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
   GtkTreeView* tree_view = index_children->data;
-  g_list_free(index_children);
   return tree_view;
 }
 
@@ -222,7 +211,7 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   search_data.current_page = zathura_document_get_current_page_number(zathura_get_document(zathura));
   gtk_tree_model_foreach(model, search_current_index, &search_data);
 
-  GtkTreePath* current_path = gtk_tree_model_get_path(model, &search_data.current_iter);
+  g_autoptr(GtkTreePath) current_path = gtk_tree_model_get_path(model, &search_data.current_iter);
   if (zathura->global.current_index_path != NULL) {
     gtk_tree_path_free(zathura->global.current_index_path);
   }
@@ -231,7 +220,6 @@ void index_scroll_to_current_page(zathura_t* zathura) {
 
   g_idle_add(tree_view_scroll_to_cell, zathura);
   gtk_tree_view_set_cursor(tree_view, current_path, NULL, FALSE);
-  gtk_tree_path_free(current_path);
 }
 
 static zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height,
@@ -343,7 +331,7 @@ char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager,
 GdkAtom* get_selection(zathura_t* zathura) {
   g_return_val_if_fail(zathura != NULL, NULL);
 
-  char* value = NULL;
+  g_autofree char* value = NULL;
   girara_setting_get(zathura->ui.session, "selection-clipboard", &value);
   if (value == NULL) {
     return NULL;
@@ -361,13 +349,10 @@ GdkAtom* get_selection(zathura_t* zathura) {
     *selection = GDK_SELECTION_CLIPBOARD;
   } else {
     girara_error("Invalid value for the selection-clipboard setting");
-    g_free(value);
     g_free(selection);
 
     return NULL;
   }
-
-  g_free(value);
 
   return selection;
 }
@@ -420,16 +405,14 @@ unsigned int find_first_page_column(const char* first_page_column_list, const un
   g_return_val_if_fail(first_page_column_list != NULL, first_page_column);
   g_return_val_if_fail(pages_per_row > 0, first_page_column);
 
-  unsigned int size      = 0;
-  unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
+  unsigned int size                 = 0;
+  g_autofree unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
 
   if (pages_per_row <= size) {
     first_page_column = settings[pages_per_row - 1];
   } else if (size > 0) {
     first_page_column = settings[size - 1];
   }
-
-  g_free(settings);
 
   return first_page_column;
 }
@@ -476,9 +459,7 @@ char* increment_first_page_column(const char* first_page_column_list, const unsi
     size                        = pages_per_row;
   }
 
-  char* new_column_list = write_first_page_column_list(settings, size);
-  g_free(settings);
-  return new_column_list;
+  return write_first_page_column_list(settings, size);
 }
 
 bool parse_color(GdkRGBA* color, const char* str) {
@@ -574,8 +555,8 @@ static void append_unique_uint(girara_list_t* list, const uintptr_t v) {
 // transform a rectangle into multiple new ones according a grid of points
 static void cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points, girara_list_t* rectangles) {
   // Lists of ordred relevant points
-  girara_list_t* xs = girara_sorted_list_new(cmp_uint);
-  girara_list_t* ys = girara_sorted_list_new(cmp_uint);
+  g_autoptr(girara_list_t) xs = girara_sorted_list_new(cmp_uint);
+  g_autoptr(girara_list_t) ys = girara_sorted_list_new(cmp_uint);
 
   append_unique_uint(xs, uceil(rect->x2));
   append_unique_uint(ys, uceil(rect->y2));
@@ -604,20 +585,16 @@ static void cut_rectangle(const zathura_rectangle_t* rect, girara_list_t* points
     }
     x = cx;
   }
-
-  girara_list_free(xs);
-  girara_list_free(ys);
 }
 
 girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
-  girara_list_t* new_rectangles = girara_list_new2(g_free);
-  girara_list_t* points         = girara_list_new2(g_free);
+  girara_list_t* new_rectangles   = girara_list_new2(g_free);
+  g_autoptr(girara_list_t) points = girara_list_new2(g_free);
   girara_list_foreach(rectangles, rectangle_to_points, points);
 
   for (size_t idx = 0; idx != girara_list_size(rectangles); ++idx) {
     const zathura_rectangle_t* r = girara_list_nth(rectangles, idx);
     cut_rectangle(r, points, new_rectangles);
   }
-  girara_list_free(points);
   return new_rectangles;
 }

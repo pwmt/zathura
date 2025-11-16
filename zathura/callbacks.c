@@ -307,12 +307,11 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   girara_setting_get(session, "pages-per-row", &pages_per_row);
 
   /* get list of first_page_column settings */
-  char* first_page_column_list = NULL;
+  g_autofree char* first_page_column_list = NULL;
   girara_setting_get(session, "first-page-column", &first_page_column_list);
 
   /* find value for first_page_column */
   unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
-  g_free(first_page_column_list);
 
   unsigned int page_v_padding = 1;
   girara_setting_get(zathura->ui.session, "page-v-padding", &page_v_padding);
@@ -367,7 +366,7 @@ static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_
   zathura_t* zathura = session->global.data;
   gboolean eval      = TRUE;
 
-  char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
   if (input == NULL || strlen(input) == 0) {
     eval = FALSE;
   }
@@ -409,19 +408,16 @@ static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_
       zathura_link_display(zathura, link);
       break;
     case ZATHURA_LINK_ACTION_COPY: {
-      GdkAtom* selection = get_selection(zathura);
+      g_autofree GdkAtom* selection = get_selection(zathura);
       if (selection == NULL) {
         break;
       }
 
       zathura_link_copy(zathura, link, selection);
-      g_free(selection);
       break;
     }
     }
   }
-
-  g_free(input);
 
   return eval;
 }
@@ -608,7 +604,7 @@ void cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* dat
     return;
   }
 
-  GdkAtom* selection = get_selection(zathura);
+  g_autofree GdkAtom* selection = get_selection(zathura);
   if (selection == NULL) {
     return;
   }
@@ -620,19 +616,15 @@ void cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* dat
   girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
   if (notification == true) {
-    char* target = NULL;
+    g_autofree char* target = NULL;
     girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
 
-    char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-    char* escaped_text  = g_markup_printf_escaped(_("Copied selected text to selection %s: %s"), target, stripped_text);
-    g_free(target);
-    g_free(stripped_text);
+    g_autofree char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+    g_autofree char* escaped_text =
+        g_markup_printf_escaped(_("Copied selected text to selection %s: %s"), target, stripped_text);
 
     girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-    g_free(escaped_text);
   }
-
-  g_free(selection);
 }
 
 void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data) {
@@ -641,7 +633,7 @@ void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* d
   g_return_if_fail(data != NULL);
 
   zathura_t* zathura = data;
-  GdkAtom* selection = get_selection(zathura);
+  g_autofree GdkAtom* selection = get_selection(zathura);
 
   if (selection != NULL) {
     gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
@@ -650,16 +642,13 @@ void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* d
     girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
     if (notification == true) {
-      char* target = NULL;
+      g_autofree char* target = NULL;
       girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
 
-      char* escaped_text = g_markup_printf_escaped(_("Copied selected image to selection %s"), target);
-      g_free(target);
+      g_autofree char* escaped_text = g_markup_printf_escaped(_("Copied selected image to selection %s"), target);
 
       girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
     }
-
-    g_free(selection);
   }
 }
 
@@ -698,16 +687,14 @@ void cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButt
       zathura_dbus_edit(zathura, zathura_page_get_index(page), event->x, event->y);
     }
 
-    char* editor = NULL;
+    g_autofree char* editor = NULL;
     girara_setting_get(zathura->ui.session, "synctex-editor-command", &editor);
     if (editor == NULL || *editor == '\0') {
       girara_debug("No SyncTeX editor specified.");
-      g_free(editor);
       return;
     }
 
     synctex_edit(zathura, editor, page, event->x, event->y);
-    g_free(editor);
   }
 }
 

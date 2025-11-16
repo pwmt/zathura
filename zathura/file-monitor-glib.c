@@ -21,9 +21,8 @@ static void file_changed(GFileMonitor* UNUSED(monitor), GFile* file, GFile* UNUS
   switch (event) {
   case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
   case G_FILE_MONITOR_EVENT_CREATED: {
-    char* uri = g_file_get_uri(file);
+    g_autofree char* uri = g_file_get_uri(file);
     girara_debug("received file-monitor event for %s", uri);
-    g_free(uri);
 
     g_signal_emit_by_name(file_monitor, "reload-file");
     break;

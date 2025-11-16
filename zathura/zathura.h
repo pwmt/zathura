@@ -265,6 +265,8 @@ bool zathura_init(zathura_t* zathura);
  */
 void zathura_free(zathura_t* zathura);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_t, zathura_free)
+
 /**
  * Set parent window id. This does not have an effect if the underlying Gtk
  * backend is not X11.

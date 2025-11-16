@@ -24,12 +24,9 @@ static int compare_case_insensitive(const void* data1, const void* data2) {
   const char* str1 = data1;
   const char* str2 = data2;
 
-  char* ustr1 = g_utf8_casefold(str1, -1);
-  char* ustr2 = g_utf8_casefold(str2, -1);
-  int res     = g_utf8_collate(ustr1, ustr2);
-  g_free(ustr1);
-  g_free(ustr2);
-  return res;
+  g_autofree char* ustr1 = g_utf8_casefold(str1, -1);
+  g_autofree char* ustr2 = g_utf8_casefold(str2, -1);
+  return g_utf8_collate(ustr1, ustr2);
 }
 
 static girara_list_t* list_files(zathura_t* zathura, const char* current_path, const char* current_file,
@@ -41,7 +38,7 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
   girara_debug("checking files in %s", current_path);
 
   /* read directory */
-  GDir* dir = g_dir_open(current_path, 0, NULL);
+  g_autoptr(GDir) dir = g_dir_open(current_path, 0, NULL);
   if (dir == NULL) {
     return NULL;
   }
@@ -56,7 +53,7 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
   /* read files */
   const char* name = NULL;
   while ((name = g_dir_read_name(dir)) != NULL) {
-    char* e_name = g_filename_display_name(name);
+    g_autofree char* e_name = g_filename_display_name(name);
     if (e_name == NULL) {
       goto error_free;
     }
@@ -64,12 +61,10 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     size_t e_length = strlen(e_name);
 
     if (show_hidden == false && e_name[0] == '.') {
-      g_free(e_name);
       continue;
     }
 
     if ((current_file_length > e_length) || strncmp(current_file, e_name, current_file_length)) {
-      g_free(e_name);
       continue;
     }
 
@@ -79,7 +74,6 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     }
 
     char* full_path = g_strdup_printf("%s%s%s", current_path, tmp, e_name);
-    g_free(e_name);
 
     if (g_file_test(full_path, G_FILE_TEST_IS_DIR) == true) {
       if (show_directories == false) {
@@ -98,8 +92,6 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     }
   }
 
-  g_dir_close(dir);
-
   if (girara_list_size(res) == 1) {
     char* path = girara_list_nth(res, 0);
     if (g_file_test(path, G_FILE_TEST_IS_DIR) == true) {
@@ -113,7 +105,6 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
   return res;
 
 error_free:
-  g_dir_close(dir);
   girara_list_free(res);
   return NULL;
 }

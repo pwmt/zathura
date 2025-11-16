@@ -182,20 +182,16 @@ static void link_remote(zathura_t* zathura, const char* file) {
     return;
   }
 
-  const char* path = zathura_document_get_path(zathura_get_document(zathura));
-  char* dir        = g_path_get_dirname(path);
-  char* uri        = g_build_filename(file, NULL);
+  const char* path     = zathura_document_get_path(zathura_get_document(zathura));
+  g_autofree char* dir = g_path_get_dirname(path);
+  g_autofree char* uri = g_build_filename(file, NULL);
 
   char* argv[] = {*zathura->global.arguments, uri, NULL};
 
-  GError* error = NULL;
+  g_autoptr(GError) error = NULL;
   if (g_spawn_async(dir, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
     girara_error("Failed to execute command: %s", error->message);
-    g_error_free(error);
   }
-
-  g_free(uri);
-  g_free(dir);
 }
 
 static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
@@ -205,13 +201,11 @@ static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
   }
 
   const char* document = zathura_document_get_path(zathura_get_document(zathura));
-  char* dir            = g_path_get_dirname(document);
+  g_autofree char* dir = g_path_get_dirname(document);
 
   if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
-
-  g_free(dir);
 }
 #endif
 
@@ -276,9 +270,8 @@ void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* select
   zathura_link_target_t target = zathura_link_get_target(link);
   switch (type) {
   case ZATHURA_LINK_GOTO_DEST: {
-    gchar* tmp = g_strdup_printf("%d", target.page_number);
+    g_autofree gchar* tmp = g_strdup_printf("%d", target.page_number);
     gtk_clipboard_set_text(gtk_clipboard_get(*selection), tmp, -1);
-    g_free(tmp);
     girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %d"), target.page_number);
     break;
   }
