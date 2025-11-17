@@ -145,7 +145,7 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
 
   synctex_scanner_p scanner = synctex_make_scanner(zathura, filename);
   if (!scanner) {
-    return false;
+    return NULL;
   }
 
   g_autoptr(girara_list_t) hitlist     = girara_list_new_with_free(g_free);
