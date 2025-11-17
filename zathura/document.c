@@ -17,6 +17,7 @@
 #include "page.h"
 #include "plugin.h"
 #include "content-type.h"
+#include "internal.h"
 
 #define DIGEST_SIZE 32
 

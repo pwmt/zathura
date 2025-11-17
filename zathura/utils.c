@@ -357,7 +357,7 @@ GdkAtom* get_selection(zathura_t* zathura) {
   return selection;
 }
 
-char* write_first_page_column_list(unsigned int* first_page_columns, unsigned int size) {
+static char* write_first_page_column_list(unsigned int* first_page_columns, unsigned int size) {
   if (first_page_columns == NULL) {
     return NULL;
   }
@@ -374,7 +374,7 @@ char* write_first_page_column_list(unsigned int* first_page_columns, unsigned in
   return g_string_free_and_steal(buffer);
 }
 
-unsigned int* parse_first_page_column_list(const char* first_page_column_list, unsigned int* size) {
+static unsigned int* parse_first_page_column_list(const char* first_page_column_list, unsigned int* size) {
   if (first_page_column_list == NULL || size == NULL) {
     return NULL;
   }
