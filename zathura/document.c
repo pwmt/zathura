@@ -82,7 +82,7 @@ static bool hash_file_sha256(uint8_t* dst, const char* path) {
     return false;
   }
 
-  uint8_t buf[MAX(BUFSIZ,4096)];
+  uint8_t buf[MAX(BUFSIZ, 4096)];
   gssize read;
   while ((read = g_input_stream_read(G_INPUT_STREAM(stream), buf, sizeof(buf), NULL, NULL)) > 0) {
     g_checksum_update(checksum, buf, read);

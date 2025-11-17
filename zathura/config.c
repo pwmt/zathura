@@ -46,7 +46,6 @@ static void cb_color(girara_session_t* session, const char* name, girara_setting
   girara_template_set_variable_value(csstemplate, name, colorstr);
 }
 
-
 static void cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),
                             const void* value, void* UNUSED(data)) {
   g_return_if_fail(value != NULL);
@@ -709,7 +708,7 @@ void config_load_default(zathura_t* zathura) {
 
 void config_load_files(zathura_t* zathura) {
   /* load global configuration files */
-  g_autofree char* config_path          = girara_get_xdg_path(XDG_CONFIG_DIRS);
+  g_autofree char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
   if (config_path != NULL && config_path[0] != '\0') {
     char** config_dirs = g_strsplit(config_path, ":", 0);
     ssize_t size       = g_strv_length(config_dirs) - 1;

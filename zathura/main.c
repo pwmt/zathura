@@ -38,8 +38,8 @@ static int run_synctex_forward(const char* synctex_fwd, const char* filename, in
     return -1;
   }
 
-  int line         = 0;
-  int column       = 0;
+  int line                    = 0;
+  int column                  = 0;
   g_autofree char* input_file = NULL;
   if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
     girara_error("Failed to parse argument to --synctex-forward.");
@@ -238,7 +238,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   gtk_init(&argc, &argv);
 
   /* Create zathura session */
-  g_autoptr(zathura_t) zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, synctex_editor, embed);
+  g_autoptr(zathura_t) zathura =
+      init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, synctex_editor, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     return -1;

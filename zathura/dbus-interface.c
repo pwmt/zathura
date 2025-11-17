@@ -105,8 +105,8 @@ static void bus_acquired(GDBusConnection* connection, const gchar* name, void* d
   ZathuraDbus* dbus        = data;
   ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
 
-  g_autoptr(GError) error         = NULL;
-  priv->registration_id = g_dbus_connection_register_object(
+  g_autoptr(GError) error = NULL;
+  priv->registration_id   = g_dbus_connection_register_object(
       connection, DBUS_OBJPATH, priv->introspection_data->interfaces[0], &interface_vtable, dbus, NULL, &error);
   if (priv->registration_id == 0) {
     girara_warning("Failed to register object on D-Bus connection: %s", error->message);
@@ -140,7 +140,7 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura) {
     return NULL;
   }
 
-  g_autoptr(GError) error            = NULL;
+  g_autoptr(GError) error  = NULL;
   priv->introspection_data = g_dbus_node_info_new_for_xml((const char*)g_bytes_get_data(xml_data, NULL), &error);
 
   if (priv->introspection_data == NULL) {
@@ -192,7 +192,7 @@ void zathura_dbus_edit(zathura_t* zathura, unsigned int page, unsigned int x, un
 static void handle_open_document(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
   g_autofree gchar* filename = NULL;
   g_autofree gchar* password = NULL;
-  gint page       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  gint page                  = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   g_variant_get(parameters, "(ssi)", &filename, &password, &page);
 
   document_close(zathura, false);
@@ -259,8 +259,8 @@ static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rec
 static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
 
-  guint page                              = 0;
-  g_autoptr(GVariantIter) iter            = NULL;
+  guint page                             = 0;
+  g_autoptr(GVariantIter) iter           = NULL;
   g_autoptr(GVariantIter) secondary_iter = NULL;
   g_variant_get(parameters, "(ua(dddd)a(udddd))", &page, &iter, &secondary_iter);
 
@@ -382,7 +382,7 @@ static void handle_execute_command(zathura_t* zathura, GVariant* parameters, GDB
   g_autofree gchar* input = NULL;
   g_variant_get(parameters, "(s)", &input);
 
-  const bool ret = girara_command_run(zathura->ui.session, input);
+  const bool ret   = girara_command_run(zathura->ui.session, input);
   GVariant* result = g_variant_new("(b)", ret);
   g_dbus_method_invocation_return_value(invocation, result);
 }

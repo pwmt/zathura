@@ -496,7 +496,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
   }
 
   static const size_t attachment_len = 11; // length of attachment-
-  static const size_t image_len = 7; // length of image-p
+  static const size_t image_len      = 7;  // length of image-p
 
   /* attachment */
   if (strncmp(file_identifier, "attachment-", attachment_len) == 0) {

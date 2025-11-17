@@ -192,7 +192,7 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
 
   if (secondary_rects != NULL) {
     *secondary_rects = other_rects;
-    other_rects = NULL;
+    other_rects      = NULL;
   }
 
   return flatten_rectangles(hitlist);

@@ -632,7 +632,7 @@ void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* d
   g_return_if_fail(pixbuf != NULL);
   g_return_if_fail(data != NULL);
 
-  zathura_t* zathura = data;
+  zathura_t* zathura            = data;
   g_autofree GdkAtom* selection = get_selection(zathura);
 
   if (selection != NULL) {

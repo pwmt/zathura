@@ -190,8 +190,8 @@ gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* 
 }
 
 static GtkTreeView* get_tree_view(zathura_t* zathura) {
-  g_autoptr(GList) index_children  = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
-  GtkTreeView* tree_view = index_children->data;
+  g_autoptr(GList) index_children = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
+  GtkTreeView* tree_view          = index_children->data;
   return tree_view;
 }
 
