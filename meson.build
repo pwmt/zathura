@@ -77,7 +77,6 @@ endif
 flags = [
   '-Werror=implicit-function-declaration',
   '-Werror=vla',
-  '-fvisibility=hidden',
   '-Werror=int-conversion'
 ]
 flags = cc.get_supported_arguments(flags)
@@ -156,7 +155,8 @@ libzathura = static_library('zathura',
   sources,
   dependencies: build_dependencies,
   include_directories: include_directories,
-  c_args: defines + flags
+  c_args: defines + flags,
+  gnu_symbol_visibility: 'hidden',
 )
 libzathura_dep = declare_dependency(link_with: libzathura)
 
@@ -180,7 +180,8 @@ if seccomp.found() or landlock or target_machine.system() == 'openbsd'
     sources + sandbox_sources,
     dependencies: build_dependencies + sandbox_dependencies,
     include_directories: include_directories,
-    c_args: defines + flags + sandbox_defines
+    c_args: defines + flags + sandbox_defines,
+    gnu_symbol_visibility: 'hidden',
   )
   libzathura_sandbox_dep = declare_dependency(link_with: libzathura_sandbox)
 
@@ -191,6 +192,7 @@ if seccomp.found() or landlock or target_machine.system() == 'openbsd'
     install: true,
     include_directories: include_directories,
     c_args: defines + sandbox_defines + flags,
+    gnu_symbol_visibility: 'hidden',
     export_dynamic: true,
     win_subsystem: 'windows'
   )
@@ -204,6 +206,7 @@ zathura = executable(
   install: true,
   include_directories: include_directories,
   c_args: defines + flags,
+  gnu_symbol_visibility: 'hidden',
   export_dynamic: true,
   win_subsystem: 'windows'
 )
