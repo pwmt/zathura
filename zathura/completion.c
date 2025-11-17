@@ -82,9 +82,11 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
       }
       girara_debug("adding %s (directory)", full_path);
       girara_list_append(res, full_path);
+      full_path = NULL;
     } else if (check_file_ext == false || file_valid_extension(zathura, full_path) == true) {
       girara_debug("adding %s (file)", full_path);
       girara_list_append(res, full_path);
+      full_path = NULL;
     } else {
       girara_debug("ignoring %s (file)", full_path);
     }
