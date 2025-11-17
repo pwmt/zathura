@@ -720,13 +720,13 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
                               fabs(rgb2.red - rgb2.blue) < DBL_EPSILON && fabs(rgb2.red - rgb2.green) < DBL_EPSILON)) &&
       (rgb1.alpha >= 1. - DBL_EPSILON && rgb2.alpha >= 1. - DBL_EPSILON);
 
-  girara_list_t* rectangles = NULL;
-  bool found_images         = false;
+  g_autoptr(girara_list_t) rectangles = NULL;
+  bool found_images                   = false;
 
   /* If in reverse video mode retrieve images */
   if (priv->recolor.reverse_video == true) {
-    girara_list_t* images = zathura_page_images_get(page, NULL);
-    found_images          = (images != NULL);
+    g_autoptr(girara_list_t) images = zathura_page_images_get(page, NULL);
+    found_images                    = (images != NULL);
 
     rectangles = girara_list_new();
     if (rectangles == NULL) {
@@ -746,20 +746,12 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
         girara_list_append(rectangles, rect);
       }
     }
-
-    if (images != NULL) {
-      girara_list_free(images);
-    }
   }
 
   if (fast_formula == true) {
     recolor_fast(priv, page_width, page_height, surface, rectangles, found_images);
   } else {
     recolor_slow(priv, page_width, page_height, surface, rectangles, found_images);
-  }
-
-  if (rectangles != NULL) {
-    girara_list_free(rectangles);
   }
 
   cairo_surface_mark_dirty(surface);

@@ -450,7 +450,7 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     }
   }
 
-  girara_argument_t* arg = g_try_malloc0(sizeof(girara_argument_t));
+  g_autofree girara_argument_t* arg = g_try_malloc0(sizeof(girara_argument_t));
   if (arg == NULL) {
     return false;
   }
@@ -458,7 +458,6 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
   arg->n    = FORWARD;
   arg->data = (void*)input;
   sc_search(session, arg, NULL, 0);
-  g_free(arg);
 
   return true;
 }
@@ -490,7 +489,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
-  char* export_path = girara_fix_path(file_name);
+  g_autofree char* export_path = girara_fix_path(file_name);
   if (export_path == NULL) {
     return false;
   }
@@ -552,20 +551,15 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
       girara_notify(session, GIRARA_ERROR, _("Couldn't write image '%s' to '%s'."), file_identifier, file_name);
     }
 
-    goto error_ret;
+    return true;
 
   image_error:
-
     girara_notify(session, GIRARA_ERROR, _("Unknown image '%s'."), file_identifier);
-    goto error_ret;
+    return true;
     /* unknown */
   } else {
     girara_notify(session, GIRARA_ERROR, _("Unknown attachment or image '%s'."), file_identifier);
   }
-
-error_ret:
-
-  g_free(export_path);
 
   return true;
 #endif

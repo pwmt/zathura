@@ -547,41 +547,32 @@ static const unsigned int TIMEOUT = 3000;
 
 static bool call_synctex_view(GDBusConnection* connection, const char* filename, const char* name,
                               const char* input_file, unsigned int line, unsigned int column) {
-  GError* error = NULL;
-  GVariant* vfilename =
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GVariant) vfilename =
       g_dbus_connection_call_sync(connection, name, DBUS_OBJPATH, "org.freedesktop.DBus.Properties", "Get",
                                   g_variant_new("(ss)", DBUS_INTERFACE, "filename"), G_VARIANT_TYPE("(v)"),
                                   G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
   if (vfilename == NULL) {
     girara_error("Failed to query 'filename' property from '%s': %s", name, error->message);
-    g_error_free(error);
     return false;
   }
 
-  GVariant* tmp = NULL;
+  g_autoptr(GVariant) tmp = NULL;
   g_variant_get(vfilename, "(v)", &tmp);
-  gchar* remote_filename = g_variant_dup_string(tmp, NULL);
+  g_autofree gchar* remote_filename = g_variant_dup_string(tmp, NULL);
   girara_debug("Filename from '%s': %s", name, remote_filename);
-  g_variant_unref(tmp);
-  g_variant_unref(vfilename);
 
   if (g_strcmp0(filename, remote_filename) != 0) {
-    g_free(remote_filename);
     return false;
   }
 
-  g_free(remote_filename);
-
-  GVariant* ret = g_dbus_connection_call_sync(connection, name, DBUS_OBJPATH, DBUS_INTERFACE, "SynctexView",
-                                              g_variant_new("(suu)", input_file, line, column), G_VARIANT_TYPE("(b)"),
-                                              G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
+  g_autoptr(GVariant) ret = g_dbus_connection_call_sync(
+      connection, name, DBUS_OBJPATH, DBUS_INTERFACE, "SynctexView", g_variant_new("(suu)", input_file, line, column),
+      G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
   if (ret == NULL) {
     girara_error("Failed to run SynctexView on '%s': %s", name, error->message);
-    g_error_free(error);
     return false;
   }
-
-  g_variant_unref(ret);
   return true;
 }
 
