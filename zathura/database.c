@@ -81,5 +81,5 @@ static void bookmarks_free(void* p) {
 }
 
 girara_list_t* bookmarks_list_new(void) {
-  return girara_sorted_list_new2(bookmarks_compare, bookmarks_free);
+  return girara_sorted_list_new_with_free(bookmarks_compare, bookmarks_free);
 }
