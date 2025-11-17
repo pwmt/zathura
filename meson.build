@@ -1,6 +1,6 @@
 project('zathura', 'c',
   version: '0.5.14',
-  meson_version: '>=1.3',
+  meson_version: '>=1.5',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
 
@@ -36,6 +36,11 @@ sysconfdir = get_option('sysconfdir')
 if not sysconfdir.startswith('/')
   sysconfdir = join_paths(prefix, sysconfdir)
 endif
+
+# required attributes
+cc.compiles('''#if !__has_attribute(cleanup)
+#error attribute cleanup not supported
+#endif''', name: '__attribute__(cleanup)', required: true)
 
 # required dependencies
 libm = cc.find_library('m', required: false)
