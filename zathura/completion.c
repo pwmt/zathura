@@ -43,7 +43,7 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     return NULL;
   }
 
-  girara_list_t* res = girara_sorted_list_new2(compare_case_insensitive, g_free);
+  girara_list_t* res = girara_sorted_list_new_with_free(compare_case_insensitive, g_free);
 
   bool show_hidden = false;
   girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
