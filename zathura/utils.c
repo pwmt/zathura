@@ -120,17 +120,13 @@ static gboolean search_current_index(GtkTreeModel* model, GtkTreePath* UNUSED(pa
 }
 
 static bool find_substring(const char* source_str, const char* search_str) {
-  gchar *normalized_source_str, *normalized_search_str;
-  gchar* case_normalized_source_str = NULL;
-  gchar* case_normalized_search_str = NULL;
-
-  normalized_source_str = g_utf8_normalize(source_str, -1, G_NORMALIZE_ALL);
-  normalized_search_str = g_utf8_normalize(search_str, -1, G_NORMALIZE_ALL);
-
+  g_autofree gchar* normalized_source_str = g_utf8_normalize(source_str, -1, G_NORMALIZE_ALL);
+  g_autofree gchar* normalized_search_str = g_utf8_normalize(search_str, -1, G_NORMALIZE_ALL);
   if (normalized_search_str && normalized_source_str) {
-    case_normalized_source_str = g_utf8_casefold(normalized_source_str, -1);
-    case_normalized_search_str = g_utf8_casefold(normalized_search_str, -1);
-    return (strstr(case_normalized_source_str, case_normalized_search_str) != NULL);
+    g_autofree gchar* case_normalized_source_str = g_utf8_casefold(normalized_source_str, -1);
+    g_autofree gchar* case_normalized_search_str = g_utf8_casefold(normalized_search_str, -1);
+
+    return strstr(case_normalized_source_str, case_normalized_search_str) != NULL;
   }
   return false;
 }
