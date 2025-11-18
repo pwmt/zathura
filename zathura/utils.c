@@ -136,28 +136,23 @@ static bool find_substring(const char* source_str, const char* search_str) {
 }
 
 static bool search_equal_iter(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter) {
-  GValue value = G_VALUE_INIT;
+  g_auto(GValue) value = G_VALUE_INIT;
   gtk_tree_model_get_value(model, iter, column, &value);
 
-  GValue transformed = G_VALUE_INIT;
+  g_auto(GValue) transformed = G_VALUE_INIT;
   g_value_init(&transformed, G_TYPE_STRING);
 
   const gboolean ret = g_value_transform(&value, &transformed);
-  g_value_unset(&value);
   if (!ret) {
     return true;
   }
 
   const gchar* source_string = g_value_get_string(&transformed);
   if (!source_string) {
-    g_value_unset(&transformed);
     return true;
   }
 
-  const bool ret2 = find_substring(source_string, key);
-  g_value_unset(&transformed);
-
-  return !ret2;
+  return !find_substring(source_string, key);
 }
 
 gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,

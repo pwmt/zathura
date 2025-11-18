@@ -1699,7 +1699,7 @@ void zathura_show_signature_information(zathura_t* zathura, bool show) {
     return;
   }
 
-  g_auto(GValue) show_sig_info_value = {0};
+  g_auto(GValue) show_sig_info_value = G_VALUE_INIT;
   g_value_init(&show_sig_info_value, G_TYPE_BOOLEAN);
   g_value_set_boolean(&show_sig_info_value, show);
 
