@@ -118,4 +118,5 @@ void landlock_restrict_write(void) {
   g_autofree char* data_path = girara_get_xdg_path(XDG_DATA);
   int fd          = open(data_path, O_PATH | O_CLOEXEC | O_DIRECTORY);
   landlock_write_fd(fd);
+  close(fd);
 }
