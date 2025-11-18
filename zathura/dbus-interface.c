@@ -242,6 +242,7 @@ static gboolean synctex_highlight_rects_impl(gpointer ptr) {
     girara_list_free(data->rectangles[i]);
   }
   g_free(data->rectangles);
+  g_free(data);
   return false;
 }
 
