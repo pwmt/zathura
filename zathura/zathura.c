@@ -899,19 +899,20 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
       girara_debug("Invalid or no password.");
       zathura_password_dialog_info_t* password_dialog_info = g_try_malloc(sizeof(zathura_password_dialog_info_t));
-      if (password_dialog_info != NULL) {
-        password_dialog_info->zathura = zathura;
-        password_dialog_info->path    = g_strdup(path);
-        password_dialog_info->uri     = g_strdup(uri);
-
-        if (password_dialog_info->path != NULL) {
-          gdk_threads_add_idle(document_open_password_dialog, password_dialog_info);
-          goto error_out;
-        } else {
-          g_free(password_dialog_info);
-        }
+      if (password_dialog_info == NULL) {
+        goto error_out;
       }
-      goto error_out;
+
+      password_dialog_info->zathura = zathura;
+      password_dialog_info->path    = g_strdup(path);
+      password_dialog_info->uri     = g_strdup(uri);
+      if (password_dialog_info->path != NULL) {
+        gdk_threads_add_idle(document_open_password_dialog, password_dialog_info);
+        goto error_out;
+      } else {
+        g_free(password_dialog_info->uri);
+        g_free(password_dialog_info);
+      }
     }
     if (error == ZATHURA_ERROR_OK) {
       girara_notify(zathura->ui.session, GIRARA_ERROR,
@@ -943,10 +944,9 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
       .position_y             = 0,
   };
 
-  bool known_file = false;
+  bool known_file = file_info_p != NULL;
   if (file_info_p) {
     file_info  = *file_info_p;
-    known_file = true;
   } else if (zathura->database != NULL) {
     const uint8_t* file_hash = zathura_document_get_hash(document);
     known_file               = zathura_db_get_fileinfo(zathura->database, file_path, file_hash, &file_info);

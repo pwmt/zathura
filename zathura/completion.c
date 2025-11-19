@@ -265,7 +265,6 @@ girara_completion_t* cc_bookmarks(girara_session_t* session, const char* input) 
   return completion;
 
 error_free:
-
   if (completion != NULL) {
     girara_completion_free(completion);
   }
