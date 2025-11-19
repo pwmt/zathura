@@ -506,9 +506,8 @@ static GVariant* json_document_info(zathura_t* zathura) {
 
   json_builder_end_object(builder);
 
-  JsonNode* root        = json_builder_get_root(builder);
+  g_autoptr(JsonNode) root        = json_builder_get_root(builder);
   char* serialized_root = json_to_string(root, true);
-  json_node_free(root);
 
   return g_variant_new_take_string(serialized_root);
 }
