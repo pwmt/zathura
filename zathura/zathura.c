@@ -946,7 +946,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   bool known_file = file_info_p != NULL;
   if (file_info_p) {
-    file_info  = *file_info_p;
+    file_info = *file_info_p;
   } else if (zathura->database != NULL) {
     const uint8_t* file_hash = zathura_document_get_hash(document);
     known_file               = zathura_db_get_fileinfo(zathura->database, file_path, file_hash, &file_info);
