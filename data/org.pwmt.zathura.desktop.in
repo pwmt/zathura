@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=Zathura
-Comment=A minimalistic document viewer
+Comment=Minimalistic document viewer
 Exec=zathura %U
 # Translators: Icon of the desktop entry.
 Icon=org.pwmt.zathura
