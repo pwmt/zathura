@@ -14,8 +14,6 @@
 static const unsigned int cairo_max_size = INT16_MAX;
 
 typedef struct zathura_document_widget_private_s {
-  unsigned int v_spacing;
-  unsigned int h_spacing;
   unsigned int row_count;
   unsigned int start_row;
   bool page_right_to_left;
@@ -30,8 +28,6 @@ static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* GIRAR
 static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
-  priv->v_spacing          = 0;
-  priv->h_spacing          = 0;
   priv->row_count          = 0;
   priv->start_row          = 0;
   priv->page_right_to_left = false;
@@ -133,11 +129,12 @@ static void zathura_document_calculate_render_range(zathura_t* zathura) {
   unsigned int current_page = position_to_page_number(document, pos_x, pos_y);
   unsigned int npag         = zathura_document_get_number_of_pages(document);
   unsigned int ncol         = zathura_document_get_pages_per_row(document);
+  unsigned int v_padding    = zathura_document_get_page_v_padding(document);
 
   unsigned int cell_width, cell_height;
   zathura_document_get_cell_size(document, &cell_height, &cell_width);
 
-  unsigned int nrow        = cairo_max_size / (cell_height + 2 * priv->v_spacing);
+  unsigned int nrow        = cairo_max_size / (cell_height + 2 * v_padding);
   unsigned int nrow_doc    = zathura_document_page_index_to_row(document, npag + ncol - 1);
   unsigned int current_row = zathura_document_page_index_to_row(document, current_page);
 
@@ -168,8 +165,11 @@ static void zathura_document_update_grid(zathura_t* zathura) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
   zathura_document_t* document       = zathura_get_document(zathura);
 
-  gtk_grid_set_row_spacing(GTK_GRID(widget), priv->v_spacing);
-  gtk_grid_set_column_spacing(GTK_GRID(widget), priv->h_spacing);
+  unsigned int v_padding = zathura_document_get_page_v_padding(document);
+  unsigned int h_padding = zathura_document_get_page_h_padding(document);
+
+  gtk_grid_set_row_spacing(GTK_GRID(widget), v_padding);
+  gtk_grid_set_column_spacing(GTK_GRID(widget), h_padding);
 
   zathura_document_widget_clear_pages(GTK_WIDGET(widget));
 
@@ -246,8 +246,7 @@ void zathura_document_widget_render(zathura_t* zathura) {
   zathura_document_update_grid(zathura);
 }
 
-void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_padding, unsigned int page_h_padding,
-                                      bool page_right_to_left) {
+void zathura_document_widget_set_mode(zathura_t* zathura, bool page_right_to_left) {
   if (zathura == NULL || zathura->document == NULL) {
     return;
   }
@@ -255,8 +254,6 @@ void zathura_document_widget_set_mode(zathura_t* zathura, unsigned int page_v_pa
   ZathuraDocumentWidget* widget      = ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
-  priv->v_spacing          = page_v_padding;
-  priv->h_spacing          = page_h_padding;
   priv->page_right_to_left = page_right_to_left;
   priv->do_render          = true;
 
@@ -275,14 +272,15 @@ static void zathura_document_widget_get_size(zathura_t* zathura, unsigned int* h
 
   const unsigned int nrow = priv->row_count;
   const unsigned int ncol = zathura_document_get_pages_per_row(document);
-  const unsigned int pad  = zathura_document_get_page_padding(document);
+  const unsigned int v_padding = zathura_document_get_page_v_padding(document);
+  const unsigned int h_padding = zathura_document_get_page_h_padding(document);
 
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
   zathura_document_get_cell_size(document, &cell_height, &cell_width);
 
-  *width  = ncol * cell_width + (ncol - 1) * pad;
-  *height = nrow * cell_height + (nrow - 1) * pad;
+  *width  = ncol * cell_width + (ncol - 1) * h_padding;
+  *height = nrow * cell_height + (nrow - 1) * v_padding;
 }
 
 static void zathura_document_widget_get_offset(zathura_t* zathura, double* pos_x, double* pos_y) {
