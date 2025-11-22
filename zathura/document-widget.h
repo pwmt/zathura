@@ -57,12 +57,9 @@ GtkWidget* zathura_document_widget_new(void);
  * Builds the box structure to show the rendered pages
  *
  * @param zathura The zathura session
- * @param page_v_padding vertical padding in pixels between pages
- * @param page_h_padding horizontal padding in pixels between pages
  * @param page_right_to_left Render pages right to left
  */
-void zathura_document_widget_set_mode(zathura_t* zathura, 
-    unsigned int page_v_padding, unsigned int page_h_padding, bool page_right_to_left);
+void zathura_document_widget_set_mode(zathura_t* zathura, bool page_right_to_left);
 
 /**
  * Update the pages in the document view

@@ -344,12 +344,20 @@ ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* doc
                                                         unsigned int first_page_column);
 
 /**
- * Returns the padding in pixels between pages
+ * Returns the vertical padding in pixels between pages
  *
  * @param document The document
  * @return The padding in pixels between pages
  */
-ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_padding(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_v_padding(zathura_document_t* document);
+
+/**
+ * Returns the horizontal padding in pixels between pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_h_padding(zathura_document_t* document);
 
 /**
  * Returns the number of pages per row

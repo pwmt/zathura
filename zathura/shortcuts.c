@@ -612,9 +612,11 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     direction = -1.0;
   }
 
-  unsigned int pad   = zathura_document_get_page_padding(zathura->document);
-  const double vstep = (double)(view_height + pad) / (double)doc_height;
-  const double hstep = (double)(view_width + pad) / (double)doc_width;
+  const unsigned int v_padding = zathura_document_get_page_v_padding(zathura->document);
+  const unsigned int h_padding = zathura_document_get_page_h_padding(zathura->document);
+
+  const double vstep = (double)(view_height + v_padding) / (double)doc_height;
+  const double hstep = (double)(view_width + h_padding) / (double)doc_width;
 
   /* compute new position */
   switch (argument->n) {
