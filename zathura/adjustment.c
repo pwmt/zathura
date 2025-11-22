@@ -85,9 +85,7 @@ void page_number_to_position(zathura_document_t* document, unsigned int page_num
   g_return_if_fail(document != NULL);
 
   unsigned int c0   = zathura_document_get_first_page_column(document);
-  unsigned int npag = zathura_document_get_number_of_pages(document);
   unsigned int ncol = zathura_document_get_pages_per_row(document);
-  unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol; /* number of rows */
 
   /* row and column for page_number indexed from 0 */
   unsigned int row = (page_number + c0 - 1) / ncol;
@@ -113,9 +111,12 @@ void page_number_to_position(zathura_document_t* document, unsigned int page_num
     shift_y = 0.5 + (yalign - 0.5) * ((double)cell_height - (double)view_height) / (double)cell_height;
   }
 
+  const unsigned int v_padding = zathura_document_get_page_v_padding(document);
+  const unsigned int h_padding = zathura_document_get_page_h_padding(document);
+
   /* compute the position */
-  *pos_x = ((double)col + shift_x) / (double)ncol;
-  *pos_y = ((double)row + shift_y) / (double)nrow;
+  *pos_x = ((double)col * (cell_width + h_padding) + shift_x * cell_width) / (double) doc_width;
+  *pos_y = ((double)row * (cell_height + v_padding) + shift_y * cell_height) / (double) doc_height;
 }
 
 bool page_is_visible(zathura_document_t* document, unsigned int page_number) {
