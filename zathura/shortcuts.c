@@ -641,6 +641,39 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
   return false;
 }
 
+bool page_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                 unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(zathura_has_document(zathura), false);
+
+  zathura_document_t* document   = zathura_get_document(zathura);
+  const unsigned int page_number = zathura_document_get_current_page_number(document);
+
+  unsigned int angle = 90;
+  if (argument && argument->n == ROTATE_CCW_PG) {
+    angle = 270;
+  }
+
+  /* update rotate value */
+  t                     = (t == 0) ? 1 : t;
+  zathura_page_t* page  = zathura_document_get_page(document, page_number);
+  unsigned int rotation = zathura_page_get_rotation(page);
+  zathura_page_set_rotation(page, (rotation + angle * t) % 360);
+
+  /* update scale */
+  girara_argument_t new_argument = {.n = zathura_document_get_adjust_mode(document), .data = NULL};
+  sc_adjust_window(zathura->ui.session, &new_argument, NULL, 0);
+
+  /* render all pages again */
+  zathura_document_widget_render_all(zathura->ui.document_widget);
+
+  page_set(zathura, page_number);
+
+  return false;
+}
+
 /* full page scrolling in single page mode steps the current page since the adjustment spans one page */
 static bool scroll_single_page_full(zathura_t* zathura, bool down) {
   GtkAdjustment* vadj    = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));

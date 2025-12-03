@@ -18,7 +18,7 @@ double page_calc_height_width(zathura_document_t* document, zathura_page_t* page
 
   double scale = zoom * zathura_document_get_scale(document);
 
-  if (rotate == true && zathura_document_get_rotation(document) % 180 != 0) {
+  if (rotate == true && (zathura_document_get_rotation(document) + zathura_page_get_rotation(page)) % 180 != 0) {
     *page_width  = round(height * scale);
     *page_height = round(width * scale);
     scale        = MAX(*page_width / height, *page_height / width);

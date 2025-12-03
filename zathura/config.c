@@ -332,6 +332,7 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, GDK_KEY_R, NULL, sc_reload, mode, 0, NULL);
 
   girara_shortcut_add(gsession, 0, GDK_KEY_r, NULL, sc_rotate, mode, ROTATE_CW, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_r, NULL, page_rotate, mode, ROTATE_CW_PG, NULL);
 
   girara_shortcut_add(gsession, 0, GDK_KEY_h, NULL, sc_scroll, mode, LEFT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_j, NULL, sc_scroll, mode, DOWN, NULL);
@@ -815,6 +816,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "recolor",                  sc_recolor);
   girara_shortcut_mapping_add(gsession, "reload",                   sc_reload);
   girara_shortcut_mapping_add(gsession, "rotate",                   sc_rotate);
+  girara_shortcut_mapping_add(gsession, "rotate_page",              page_rotate);
   girara_shortcut_mapping_add(gsession, "scroll",                   sc_scroll);
   girara_shortcut_mapping_add(gsession, "search",                   sc_search);
   girara_shortcut_mapping_add(gsession, "snap_to_page",             sc_snap_to_page);
@@ -865,6 +867,8 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "width",              ZATHURA_ADJUST_WIDTH);
   girara_argument_mapping_add(gsession, "rotate-cw",          ROTATE_CW);
   girara_argument_mapping_add(gsession, "rotate-ccw",         ROTATE_CCW);
+  girara_argument_mapping_add(gsession, "page-rotate-cw",     ROTATE_CW_PG);
+  girara_argument_mapping_add(gsession, "page-rotate-ccw",    ROTATE_CCW_PG);
   girara_argument_mapping_add(gsession, "equal_none",         ZATHURA_EQUAL_NONE);
   girara_argument_mapping_add(gsession, "equal_width",        ZATHURA_EQUAL_WIDTH);
   girara_argument_mapping_add(gsession, "equal_height",       ZATHURA_EQUAL_HEIGHT);

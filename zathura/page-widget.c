@@ -535,7 +535,8 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
   if (surface_exists) {
     cairo_save(cairo);
 
-    const unsigned int rotation = zathura_document_get_rotation(document);
+    const unsigned int rotation =
+        (zathura_document_get_rotation(document) + zathura_page_get_rotation(priv->page)) % 360;
     switch (rotation) {
     case 90:
       cairo_translate(cairo, page_width, 0);
