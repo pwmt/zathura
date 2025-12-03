@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include "document.h"
+#include "page.h"
 
 /**
  * Calculate the page size according to the current scaling and rotation if
@@ -21,6 +22,21 @@
  */
 double page_calc_height_width(zathura_document_t* document, double height, double width, unsigned int* page_height,
                               unsigned int* page_width, bool rotate);
+
+/**
+ * Calculate the page size of current page to the current scaling and rotation if
+ * desired.
+ *
+ * @param document the document
+ * @param page the page object
+ * @param page_height the scaled and rotated height
+ * @param page_width the scaled and rotated width
+ * @param rotate honor page's rotation
+ * @return real scale after rounding
+ */
+double individual_page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
+                              unsigned int* page_width, bool rotate);
+
 
 /**
  * Calculate a page relative position after a rotation. The positions x y are

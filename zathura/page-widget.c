@@ -545,7 +545,7 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
   if (surface_exists) {
     cairo_save(cairo);
 
-    const unsigned int rotation = zathura_document_get_rotation(document);
+    const unsigned int rotation = (zathura_document_get_rotation(document)+zathura_page_get_rotation(priv->page))%360;
     switch (rotation) {
     case 90:
       cairo_translate(cairo, page_width, 0);

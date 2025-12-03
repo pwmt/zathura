@@ -880,6 +880,8 @@ static void document_open_page_max_size(zathura_document_t* document, unsigned i
     *width  = MAX(*width, w);
     *height = MAX(*height, h);
   }
+    *width  = MAX(*width, *height);
+    *height = MAX(*height, *width);
 }
 
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,

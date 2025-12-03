@@ -538,6 +538,37 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
   return false;
 }
 
+bool page_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  const unsigned int page_number = zathura_document_get_current_page_number(zathura->document);
+
+  int angle = 90;
+  if (argument != NULL && argument->n == ROTATE_CCW) {
+    angle = 270;
+  }
+
+  /* update rotate value */
+  t = (t == 0) ? 1 : t;
+  zathura_page_t* current_page = zathura_document_get_page(zathura->document, page_number);
+  unsigned int rotation = zathura_page_get_rotation(current_page);
+  zathura_page_set_rotation(current_page, (rotation + angle * t) % 360);
+
+  /* update scale */
+  girara_argument_t new_argument = {.n = zathura_document_get_adjust_mode(zathura->document), .data = NULL};
+  sc_adjust_window(zathura->ui.session, &new_argument, NULL, 0);
+
+  /* render all pages again */
+  render_all(zathura);
+
+  page_set(zathura, page_number);
+
+  return false;
+}
+
 bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
