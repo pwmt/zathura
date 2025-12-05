@@ -253,21 +253,39 @@ static bool init_ui(zathura_t* zathura) {
   zathura->signals.monitors_changed_handler = 0;
 
   /* page view */
+  zathura->ui.view = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  /* load scrollbar settings */
+  g_autofree char* view_options = NULL;
+  girara_setting_get(zathura->ui.session, "view-options", &view_options);
+
+  const bool show_hscrollbar = view_options != NULL && strchr(view_options, 'h') != NULL;
+  const bool show_vscrollbar = view_options != NULL && strchr(view_options, 'v') != NULL;
+
+  GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+  GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
+
   zathura->ui.document_widget = zathura_document_widget_new();
   if (zathura->ui.document_widget == NULL) {
     girara_error("Failed to create document widget.");
     return false;
   }
 
+  gtk_container_add(GTK_CONTAINER(zathura->ui.view), zathura->ui.document_widget);
+  girara_set_view(zathura->ui.session, zathura->ui.view);
+
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
   /* Connect hadjustment signals */
   g_signal_connect(G_OBJECT(hadjustment), "value-changed", G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
   g_signal_connect(G_OBJECT(hadjustment), "changed", G_CALLBACK(cb_view_hadjustment_changed), zathura);
 
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
   /* Connect vadjustment signals */
   g_signal_connect(G_OBJECT(vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
@@ -303,32 +321,34 @@ static bool init_ui(zathura_t* zathura) {
   return true;
 }
 
-static const char index_settings[][16] = {
+static const char color_settings[][16] = {
     "index-fg",
     "index-bg",
     "index-active-fg",
     "index-active-bg",
+    "scrollbar-fg",
+    "scrollbar-bg",
 };
 
 static void init_css(zathura_t* zathura) {
   GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
-  for (size_t s = 0; s < LENGTH(index_settings); ++s) {
-    girara_template_add_variable(csstemplate, index_settings[s]);
+  for (size_t s = 0; s < LENGTH(color_settings); ++s) {
+    girara_template_add_variable(csstemplate, color_settings[s]);
   }
 }
 
 static bool load_css(zathura_t* zathura) {
   GiraraTemplate* csstemplate = girara_session_get_template(zathura->ui.session);
-  for (size_t s = 0; s < LENGTH(index_settings); ++s) {
+  for (size_t s = 0; s < LENGTH(color_settings); ++s) {
     g_autofree char* tmp_value = NULL;
     GdkRGBA rgba               = {0, 0, 0, 0};
-    girara_setting_get(zathura->ui.session, index_settings[s], &tmp_value);
+    girara_setting_get(zathura->ui.session, color_settings[s], &tmp_value);
     if (tmp_value != NULL) {
       parse_color(&rgba, tmp_value);
     }
 
     g_autofree char* color = gdk_rgba_to_string(&rgba);
-    girara_template_set_variable_value(csstemplate, index_settings[s], color);
+    girara_template_set_variable_value(csstemplate, color_settings[s], color);
   }
 
   GResource* css_resource = zathura_resources_get_resource();
@@ -1090,8 +1110,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   /* get view port size */
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
   const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
   zathura_document_set_viewport_width(document, view_width);
@@ -1174,7 +1194,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura_document_set_page_layout(document, page_v_padding, page_h_padding, pages_per_row, first_page_column);
   zathura_document_widget_set_mode(zathura, page_right_to_left);
 
-  girara_set_view(zathura->ui.session, zathura->ui.document_widget);
+  girara_set_view(zathura->ui.session, zathura->ui.view);
 
   /* update title */
   {

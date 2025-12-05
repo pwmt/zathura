@@ -344,8 +344,8 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
     zathura->shortcut.mouse.y = 0;
     break;
   case GIRARA_EVENT_MOTION_NOTIFY:
-    x_adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
-    y_adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(session->gtk.view));
+    x_adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+    y_adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
     if (x_adj == NULL || y_adj == NULL) {
       return false;
@@ -1243,12 +1243,12 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
     g_signal_connect(G_OBJECT(treeview), "row-activated", G_CALLBACK(cb_index_row_activated), zathura);
 
+    gtk_widget_set_visible(treeview, true);
     gtk_container_add(GTK_CONTAINER(zathura->ui.index), treeview);
   }
 
-  if (gtk_widget_get_visible(GTK_WIDGET(zathura->ui.index))) {
-    girara_set_view(session, zathura->ui.document_widget);
-    gtk_widget_hide(GTK_WIDGET(zathura->ui.index));
+  if (girara_mode_get(session) == zathura->modes.index) {
+    girara_set_view(session, zathura->ui.view);
     girara_mode_set(zathura->ui.session, zathura->modes.normal);
 
     /* refresh view */
