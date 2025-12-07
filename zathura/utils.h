@@ -39,6 +39,17 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
                           girara_tree_node_t* tree);
 
 /**
+ * Generates the file explorer based upon the list retrieved from the system call
+ *
+ * @param session The session
+ * @param model The tree model
+ * @param parent The tree iterator parent
+ * @param tree The Tree iterator
+ */
+void file_explorer_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent,
+                          girara_tree_node_t* tree);
+
+/**
  * A custom search equal function for the index tree view, so that
  * when interactively searching, the string will be recursively compared
  * to all the children of visible entries
@@ -180,5 +191,9 @@ bool parse_color(GdkRGBA* color, const char* str);
  * @return List of rectangles
  */
 girara_list_t* flatten_rectangles(girara_list_t* rectangles);
+
+girara_tree_node_t* zathura_explorer_generate(girara_session_t* session, zathura_error_t* error);
+
+bool zathura_explorer_generate_r(zathura_error_t* error, girara_tree_node_t* root, char *path, int trace);
 
 #endif // UTILS_H

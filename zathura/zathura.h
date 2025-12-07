@@ -118,6 +118,7 @@ struct zathura_s {
 
     GtkWidget* document_widget; /**< Widget that contains all rendered pages */
     GtkWidget* index;       /**< Widget to show the index of the document */
+    GtkWidget* file_explorer; /**< Widget to show the file explorer of the CWD */
   } ui;
 
   struct {

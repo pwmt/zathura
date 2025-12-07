@@ -626,6 +626,7 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
   girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,         NULL,         _("Show version information"));
   girara_inputbar_command_add(gsession, "source",     NULL,   cmd_source,          NULL,         _("Source config file"));
+  girara_inputbar_command_add(gsession, "explore",    "fe",   cmd_toggle_explorer, NULL,         _("Toggle the file explorer"));
 
   girara_special_command_add(gsession, '/', cmd_search, INCREMENTAL_SEARCH, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, INCREMENTAL_SEARCH, BACKWARD, NULL);
