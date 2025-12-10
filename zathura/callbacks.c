@@ -733,6 +733,14 @@ void cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, 
   sc_zoom(zathura->ui.session, &argument, NULL, next_zoom * 100);
 }
 
+void cb_hide_inputbar(GtkWidget* widget, gpointer data) {
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(data != NULL);
+
+  zathura_t* zathura = data;
+  zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+}
+
 void cb_hide_links(GtkWidget* widget, gpointer data) {
   g_return_if_fail(widget != NULL);
   g_return_if_fail(data != NULL);

@@ -258,6 +258,9 @@ static bool init_ui(zathura_t* zathura) {
     return false;
   }
 
+  g_signal_connect(GTK_WIDGET(zathura->ui.session->gtk.inputbar), "hide",
+                   G_CALLBACK(cb_hide_inputbar), zathura);
+
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "size-allocate", G_CALLBACK(cb_view_resized), zathura);
 
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.session->gtk.view));
