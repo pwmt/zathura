@@ -125,6 +125,10 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(pread64); /* equals pread */
   /* ALLOW_RULE(pwrite64); equals pwrite */
   ALLOW_RULE(read);
+  /* musl libc (and some other non-glibc libc implementations) may use readv; */
+#if !defined(__GLIBC__)
+  ALLOW_RULE(readv);
+#endif
   ALLOW_RULE(readlink);   /* readlinkat */
   ALLOW_RULE(readlinkat); /* AArch64 requirement */
   /* ALLOW_RULE(recvfrom); X11 only */
@@ -154,6 +158,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* ALLOW_RULE(uname); X11 only */
   /* ALLOW_RULE(unlink); unused?, unlinkat */
   ALLOW_RULE(write); /* investigate further */
+#if !defined(__GLIBC__)
+  ALLOW_RULE(writev);
+#endif
   /*  ALLOW_RULE(writev); X11 only */
   /*  ALLOW_RULE(wait4); unused? */
 
@@ -197,11 +204,21 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* block unsuccessful ipc attempt */
   ERRNO_RULE(getpeername);
 
+  /* MUSL libc still uses CLONE_DETACHED */
+#if !defined(__GLIBC__)
+  /* filter clone arguments */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1,
+           SCMP_CMP(0, SCMP_CMP_EQ,
+                    CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM | CLONE_SETTLS |
+                        CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID | CLONE_DETACHED));
+#else
   /* filter clone arguments */
   ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1,
            SCMP_CMP(0, SCMP_CMP_EQ,
                     CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM | CLONE_SETTLS |
                         CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID));
+#endif
+
   /* trigger fallback to clone */
   ERRNO_RULE(clone3);
 
