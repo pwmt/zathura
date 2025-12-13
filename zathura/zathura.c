@@ -1217,6 +1217,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
 error_free:
   zathura_document_free(document);
+  zathura->document = NULL;
 
 error_out:
   return false;
