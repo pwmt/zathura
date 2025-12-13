@@ -201,13 +201,13 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
 }
 
 static void cb_view_options(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
-                          const void* value, void* UNUSED(data)) {
+                            const void* value, void* UNUSED(data)) {
   g_return_if_fail(session != NULL && value != NULL);
   zathura_t* zathura = session->global.data;
 
   /* set default values */
-  bool show_hscrollbar  = false;
-  bool show_vscrollbar  = false;
+  bool show_hscrollbar = false;
+  bool show_vscrollbar = false;
 
   /* evaluate input */
   const char* input         = value;
