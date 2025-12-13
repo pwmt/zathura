@@ -33,7 +33,9 @@
 #include "config.h"
 #include "commands.h"
 #include "database-null.h"
+#ifndef WITH_SANDBOX
 #include "database-sqlite.h"
+#endif
 #include "document.h"
 #include "document-widget.h"
 #include "shortcuts.h"
@@ -93,16 +95,16 @@ zathura_t* zathura_create(void) {
   zathura->global.double_click_follow  = true;
 
   /* initialize with default paths */
-  g_autofree gchar* path     = girara_get_xdg_path(XDG_CONFIG);
-  zathura->config.config_dir = g_build_filename(path, "zathura", NULL);
-  g_free(path);
+  {
+    g_autofree gchar* config_path = girara_get_xdg_path(XDG_CONFIG);
+    zathura->config.config_dir    = g_build_filename(config_path, "zathura", NULL);
 
-  path                     = girara_get_xdg_path(XDG_DATA);
-  zathura->config.data_dir = g_build_filename(path, "zathura", NULL);
-  g_free(path);
+    g_autofree gchar* data_path = girara_get_xdg_path(XDG_DATA);
+    zathura->config.data_dir    = g_build_filename(data_path, "zathura", NULL);
 
-  path                      = girara_get_xdg_path(XDG_CACHE);
-  zathura->config.cache_dir = g_build_filename(path, "zathura", NULL);
+    g_autofree gchar* cache_path = girara_get_xdg_path(XDG_CACHE);
+    zathura->config.cache_dir    = g_build_filename(cache_path, "zathura", NULL);
+  }
 
   /* plugins */
   zathura->plugins.manager = zathura_plugin_manager_new();
@@ -132,7 +134,6 @@ zathura_t* zathura_create(void) {
   return zathura;
 
 error_out:
-
   zathura_free(zathura);
 
   return NULL;
@@ -163,8 +164,6 @@ void zathura_update_view_ppi(zathura_t* zathura) {
     return;
   }
 
-  double ppi = 0.0;
-
   GdkMonitor* monitor = gdk_display_get_monitor_at_window(display, window);
   if (monitor == NULL) {
     return;
@@ -177,6 +176,7 @@ void zathura_update_view_ppi(zathura_t* zathura) {
   GdkRectangle monitor_geom;
   gdk_monitor_get_geometry(monitor, &monitor_geom);
 
+  double ppi = 0.0;
   /* Due to a bug in Gtk, width is sometimes incorrectly reported to be 1mm
    * see https://gitlab.gnome.org/GNOME/gtk/issues/3115 for details */
   if (width_mm <= 1) {
@@ -440,11 +440,11 @@ bool zathura_init(zathura_t* zathura) {
   /* Shortcut helpers */
   init_shortcut_helpers(zathura);
 
-/* Start D-Bus service */
 #ifndef WITH_SANDBOX
   bool dbus = true;
   girara_setting_get(zathura->ui.session, "dbus-service", &dbus);
   if (dbus == true) {
+    /* Start D-Bus service */
     zathura->dbus = zathura_dbus_new(zathura);
   }
 #endif
@@ -452,7 +452,6 @@ bool zathura_init(zathura_t* zathura) {
   return true;
 
 error_free:
-
   if (zathura->ui.document_widget != NULL) {
     g_object_unref(zathura->ui.document_widget);
     zathura->ui.document_widget = NULL;
@@ -1329,9 +1328,9 @@ static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zath
       .position_y             = zathura_document_get_position_y(document),
   };
 
-  girara_setting_get(zathura->ui.session, "pages-per-row", &(file_info.pages_per_row));
-  girara_setting_get(zathura->ui.session, "first-page-column", &(file_info.first_page_column_list));
-  girara_setting_get(zathura->ui.session, "page-right-to-left", &(file_info.page_right_to_left));
+  girara_setting_get(zathura->ui.session, "pages-per-row", &file_info.pages_per_row);
+  girara_setting_get(zathura->ui.session, "first-page-column", &file_info.first_page_column_list);
+  girara_setting_get(zathura->ui.session, "page-right-to-left", &file_info.page_right_to_left);
 
   return file_info;
 }
@@ -1391,10 +1390,9 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   /* reset window icon */
   if (zathura->ui.session != NULL && zathura->window_icon_render_request != NULL) {
-    char* window_icon = NULL;
+    g_autofree char* window_icon = NULL;
     girara_setting_get(zathura->ui.session, "window-icon", &window_icon);
     girara_setting_set(zathura->ui.session, "window-icon", window_icon);
-    g_free(window_icon);
   }
 
   /* stop rendering */
