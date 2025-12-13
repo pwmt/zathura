@@ -441,6 +441,18 @@ static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file, con
   return (res == SQLITE_DONE) ? true : false;
 }
 
+static int bookmarks_compare(const void* l, const void* r) {
+  const zathura_bookmark_t* lhs = l;
+  const zathura_bookmark_t* rhs = r;
+
+  return zathura_bookmarks_compare(lhs, rhs);
+}
+
+static void bookmarks_free(void* p) {
+  zathura_bookmark_t* bookmark = p;
+  zathura_bookmark_free(bookmark);
+}
+
 static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* file) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
@@ -458,7 +470,7 @@ static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* 
     return NULL;
   }
 
-  girara_list_t* result = bookmarks_list_new();
+  girara_list_t* result = girara_sorted_list_new_with_free(bookmarks_compare, bookmarks_free);
   if (result == NULL) {
     sqlite3_finalize(stmt);
     return NULL;

@@ -163,10 +163,4 @@ bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uin
  */
 girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max, const char* basepath);
 
-/**
- * Create list of bookmarks.
- * @return empty list of bookmarks
- */
-girara_list_t* bookmarks_list_new(void);
-
 #endif // DATABASE_H
