@@ -181,7 +181,7 @@ static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* in
     girara_list_foreach(names, group_add_element, group);
   }
 
-  if (show_recent > 0 && zathura->database != NULL) {
+  if (show_recent > 0) {
     g_autoptr(girara_list_t) recent_files = zathura_db_get_recent_files(zathura->database, show_recent, path);
     if (recent_files == NULL) {
       goto error_free;

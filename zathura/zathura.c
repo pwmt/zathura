@@ -959,7 +959,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   bool known_file = file_info_p != NULL;
   if (file_info_p) {
     file_info = *file_info_p;
-  } else if (zathura->database != NULL) {
+  } else {
     const uint8_t* file_hash = zathura_document_get_hash(document);
     known_file               = zathura_db_get_fileinfo(zathura->database, file_path, file_hash, &file_info);
   }
@@ -1024,23 +1024,18 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura->bisect.end       = number_of_pages - 1;
 
   /* bookmarks */
-  if (zathura->database != NULL) {
-    if (zathura_bookmarks_load(zathura, file_path) == false) {
-      girara_debug("Failed to load bookmarks.");
-    }
+  if (zathura_bookmarks_load(zathura, file_path) == false) {
+    girara_debug("Failed to load bookmarks.");
+  }
 
-    /* jumplist */
-    if (zathura_jumplist_load(zathura, file_path) == false) {
-      girara_debug("Failed to load jumplist.");
-    }
+  /* jumplist */
+  if (zathura_jumplist_load(zathura, file_path) == false) {
+    girara_debug("Failed to load jumplist.");
+  }
 
-    /* quickmarks */
-    if (zathura_quickmarks_load(zathura, file_path) == false) {
-      girara_debug("Failed to load quickmarks.");
-      zathura->global.marks = girara_list_new_with_free(g_free);
-    }
-  } else {
-    /* create fallback lists */
+  /* quickmarks */
+  if (zathura_quickmarks_load(zathura, file_path) == false) {
+    girara_debug("Failed to load quickmarks.");
     zathura->global.marks = girara_list_new_with_free(g_free);
   }
 
@@ -1417,9 +1412,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   }
 
   /* store file information */
-  if (zathura->database != NULL) {
-    save_fileinfo_to_db(zathura);
-  }
+  save_fileinfo_to_db(zathura);
 
   /* remove marks */
   if (zathura->global.marks != NULL) {

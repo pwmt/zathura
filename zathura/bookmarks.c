@@ -31,15 +31,13 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
     old->x    = position_x;
     old->y    = position_y;
 
-    if (zathura->database != NULL) {
-      const char* path = zathura_document_get_path(document);
-      if (zathura_db_remove_bookmark(zathura->database, path, old->id) == false) {
-        girara_warning("Failed to remove old bookmark from database.");
-      }
+    const char* path = zathura_document_get_path(document);
+    if (zathura_db_remove_bookmark(zathura->database, path, old->id) == false) {
+      girara_warning("Failed to remove old bookmark from database.");
+    }
 
-      if (zathura_db_add_bookmark(zathura->database, path, old) == false) {
-        girara_warning("Failed to add new bookmark to database.");
-      }
+    if (zathura_db_add_bookmark(zathura->database, path, old) == false) {
+      girara_warning("Failed to add new bookmark to database.");
     }
 
     return old;
@@ -56,11 +54,9 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
   bookmark->y    = position_y;
   girara_list_append(zathura->bookmarks.bookmarks, bookmark);
 
-  if (zathura->database != NULL) {
-    const char* path = zathura_document_get_path(document);
-    if (zathura_db_add_bookmark(zathura->database, path, bookmark) == false) {
-      girara_warning("Failed to add bookmark to database.");
-    }
+  const char* path = zathura_document_get_path(document);
+  if (zathura_db_add_bookmark(zathura->database, path, bookmark) == false) {
+    girara_warning("Failed to add bookmark to database.");
   }
 
   return bookmark;
@@ -75,11 +71,9 @@ bool zathura_bookmark_remove(zathura_t* zathura, const gchar* id) {
     return false;
   }
 
-  if (zathura->database != NULL) {
-    const char* path = zathura_document_get_path(zathura_get_document(zathura));
-    if (zathura_db_remove_bookmark(zathura->database, path, bookmark->id) == false) {
-      girara_warning("Failed to remove bookmark from database.");
-    }
+  const char* path = zathura_document_get_path(zathura_get_document(zathura));
+  if (zathura_db_remove_bookmark(zathura->database, path, bookmark->id) == false) {
+    girara_warning("Failed to remove bookmark from database.");
   }
 
   girara_list_remove(zathura->bookmarks.bookmarks, bookmark);
