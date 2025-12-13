@@ -276,10 +276,11 @@ const char* zathura_document_get_password(zathura_document_t* document) {
 }
 
 zathura_page_t* zathura_document_get_page(zathura_document_t* document, unsigned int index) {
-  if (document == NULL || document->pages == NULL || (document->number_of_pages <= index)) {
+  if (document == NULL || document->pages == NULL) {
     return NULL;
   }
 
+  g_return_val_if_fail(index < document->number_of_pages, NULL);
   return document->pages[index];
 }
 

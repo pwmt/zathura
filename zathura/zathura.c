@@ -888,6 +888,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     return false;
   }
 
+  g_return_val_if_fail(zathura->document == NULL, false);
+
   /* FIXME: since there are many call chains leading here, check again if we need to expand ~ or
    * ~user. We should fix all call sites instead */
   g_autofree char* tmp_path = *path == '~' ? girara_fix_path(path) : NULL;
