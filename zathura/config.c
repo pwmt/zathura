@@ -20,6 +20,11 @@
 #include <glib/gi18n.h>
 
 #define ZATHURA_RC "zathurarc"
+#ifndef WITH_SANDBOX
+#define DEFAULT_DB "sqlite"
+#else
+#define DEFAULT_DB "null"
+#endif
 
 static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
                                const void* value, void* UNUSED(data)) {
@@ -227,7 +232,7 @@ void config_load_default(zathura_t* zathura) {
 
   /* clang-format off */
   /* zathura settings */
-  girara_setting_add(gsession, "database",              "sqlite",     STRING, true,  _("Database backend"),         NULL, NULL);
+  girara_setting_add(gsession, "database",              DEFAULT_DB,   STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);

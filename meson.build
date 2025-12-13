@@ -55,7 +55,7 @@ cairo = dependency('cairo')
 magic = dependency('libmagic')
 sqlite = dependency('sqlite3', version: '>=3.6.23')
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib, sqlite]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
 
 if host_machine.system() == 'darwin'
   gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
@@ -121,7 +121,7 @@ sources = files(
   'zathura/config.c',
   'zathura/content-type.c',
   'zathura/database.c',
-  'zathura/database-sqlite.c',
+  'zathura/database-null.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',
   'zathura/document-widget.c',
@@ -158,8 +158,8 @@ headers += version_header
 
 # zathura helper library
 libzathura = static_library('zathura',
-  sources,
-  dependencies: build_dependencies,
+  sources + ['zathura/database-sqlite.c'],
+  dependencies: build_dependencies + [sqlite],
   include_directories: include_directories,
   c_args: defines + flags,
   gnu_symbol_visibility: 'hidden',

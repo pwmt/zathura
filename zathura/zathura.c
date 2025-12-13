@@ -32,6 +32,7 @@
 #include "callbacks.h"
 #include "config.h"
 #include "commands.h"
+#include "database-null.h"
 #include "database-sqlite.h"
 #include "document.h"
 #include "document-widget.h"
@@ -344,8 +345,8 @@ static bool load_css(zathura_t* zathura) {
   return true;
 }
 
+static bool init_database(zathura_t* zathura) {
 #ifndef WITH_SANDBOX
-static void init_database(zathura_t* zathura) {
   g_autofree char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
 
@@ -360,17 +361,23 @@ static void init_database(zathura_t* zathura) {
     girara_debug("Using sqlite database backend.");
     g_autofree char* tmp = g_build_filename(zathura->config.data_dir, "bookmarks.sqlite", NULL);
     zathura->database    = zathura_sqldatabase_new(tmp);
-  } else if (is_null_database == false) {
-    girara_error("Database backend '%s' is not supported.", database);
+  } else if (is_null_database == true) {
+    zathura->database = zathura_nulldatabase_new();
+  } else {
+    zathura->database = zathura_nulldatabase_new();
+    girara_error("Database backend '%s' is not supported. Using 'null' database.", database);
+  }
+#else
+  zathura->database = zathura_nulldatabase_new();
+#endif
+
+  if (zathura->database == NULL) {
+    return false;
   }
 
-  if (zathura->database == NULL && is_null_database == false) {
-    girara_error("Unable to initialize database. Bookmarks won't be available.");
-  } else {
-    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
-  }
+  g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
+  return true;
 }
-#endif
 
 static void init_shortcut_helpers(zathura_t* zathura) {
   zathura->shortcut.mouse.x = 0;
@@ -409,11 +416,11 @@ bool zathura_init(zathura_t* zathura) {
     goto error_free;
   }
 
-/* disable unsupported features in strict sandbox mode */
-#ifndef WITH_SANDBOX
   /* database */
-  init_database(zathura);
-#endif
+  if (init_database(zathura) == false) {
+    girara_error("Failed to initialize database.");
+    goto error_free;
+  }
 
   /* bookmarks */
   zathura->bookmarks.bookmarks = girara_sorted_list_new_with_free((girara_compare_function_t)zathura_bookmarks_compare,
@@ -895,7 +902,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   g_autofree char* tmp_path = *path == '~' ? girara_fix_path(path) : NULL;
   girara_debug("opening document: %s", tmp_path != NULL ? tmp_path : path);
 
-  zathura_error_t error     = ZATHURA_ERROR_OK;
+  zathura_error_t error = ZATHURA_ERROR_OK;
   zathura_document_t* document =
       zathura_document_open(zathura, tmp_path != NULL ? tmp_path : path, uri, password, &error);
 
