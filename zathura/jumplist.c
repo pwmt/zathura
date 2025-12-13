@@ -175,7 +175,16 @@ void zathura_jumplist_clear(zathura_t* zathura) {
   /* remove jump list */
   girara_list_iterator_free(zathura->jumplist.cur);
   zathura->jumplist.cur = NULL;
-  girara_list_free(zathura->jumplist.list);
-  zathura->jumplist.list = NULL;
+  girara_list_clear(zathura->jumplist.list);
   zathura->jumplist.size = 0;
+}
+
+void zathura_jumplist_free(zathura_t* zathura) {
+  if (zathura == NULL) {
+    return;
+  }
+
+  /* remove jump list */
+  zathura_jumplist_clear(zathura);
+  zathura->jumplist.list = NULL;
 }

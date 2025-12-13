@@ -101,8 +101,17 @@ bool zathura_jumplist_is_initalized(zathura_t* zathura);
 /**
  * Clear jumplist
  *
+ * After this operation, the jumplist is empty but initialized.
+ *
  * @param zathura The zathura session
  */
 void zathura_jumplist_clear(zathura_t* zathura);
+
+/**
+ * Free jumplist
+ *
+ * @param zathura The zathura session
+ */
+void zathura_jumplist_free(zathura_t* zathura);
 
 #endif

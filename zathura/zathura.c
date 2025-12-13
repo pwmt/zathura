@@ -508,7 +508,7 @@ void zathura_free(zathura_t* zathura) {
   g_free(zathura->config.cache_dir);
 
   /* free jumplist */
-  zathura_jumplist_clear(zathura);
+  zathura_jumplist_free(zathura);
 
   g_free(zathura);
 }
