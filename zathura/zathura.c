@@ -1011,6 +1011,32 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura->bisect.last_jump = zathura_document_get_current_page_number(document);
   zathura->bisect.end       = number_of_pages - 1;
 
+  /* bookmarks */
+  if (zathura->database != NULL) {
+    if (zathura_bookmarks_load(zathura, file_path) == false) {
+      girara_debug("Failed to load bookmarks.");
+    }
+
+    /* jumplist */
+    if (zathura_jumplist_load(zathura, file_path) == false) {
+      girara_debug("Failed to load jumplist.");
+    }
+
+    /* quickmarks */
+    if (zathura_quickmarks_load(zathura, file_path) == false) {
+      girara_debug("Failed to load quickmarks.");
+      zathura->global.marks = girara_list_new_with_free(g_free);
+    }
+  } else {
+    /* create fallback lists */
+    zathura->global.marks = girara_list_new_with_free(g_free);
+  }
+
+  if (zathura_jumplist_is_initalized(zathura) == false || zathura->global.marks == NULL) {
+    girara_debug("No jumplist or no marks");
+    goto error_free;
+  }
+
   /* update statusbar */
   {
     g_autofree char* filename = get_formatted_filename(zathura, true);
@@ -1141,31 +1167,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura_document_widget_set_mode(zathura, page_right_to_left);
 
   girara_set_view(zathura->ui.session, zathura->ui.document_widget);
-
-  /* bookmarks */
-  if (zathura->database != NULL) {
-    if (zathura_bookmarks_load(zathura, file_path) == false) {
-      girara_debug("Failed to load bookmarks.");
-    }
-
-    /* jumplist */
-    if (zathura_jumplist_load(zathura, file_path) == false) {
-      girara_debug("Failed to load jumplist.");
-    }
-
-    /* quickmarks */
-    if (zathura_quickmarks_load(zathura, file_path) == false) {
-      girara_debug("Failed to load quickmarks.");
-      zathura->global.marks = girara_list_new_with_free(g_free);
-    }
-  } else {
-    /* create fallback lists */
-    zathura->global.marks = girara_list_new_with_free(g_free);
-  }
-
-  if (zathura_jumplist_is_initalized(zathura) == false || zathura->global.marks == NULL) {
-    goto error_free;
-  }
 
   /* update title */
   {
