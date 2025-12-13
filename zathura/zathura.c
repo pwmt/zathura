@@ -893,6 +893,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* FIXME: since there are many call chains leading here, check again if we need to expand ~ or
    * ~user. We should fix all call sites instead */
   g_autofree char* tmp_path = *path == '~' ? girara_fix_path(path) : NULL;
+  girara_debug("opening document: %s", tmp_path != NULL ? tmp_path : path);
+
   zathura_error_t error     = ZATHURA_ERROR_OK;
   zathura_document_t* document =
       zathura_document_open(zathura, tmp_path != NULL ? tmp_path : path, uri, password, &error);
@@ -934,6 +936,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura->document = document;
 
   /* read history file */
+  girara_debug("checking for exsiting file info");
   zathura_fileinfo_t file_info = {
       .current_page           = 0,
       .page_offset            = 0,
@@ -1035,7 +1038,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   if (zathura_jumplist_is_initalized(zathura) == false || zathura->global.marks == NULL) {
-    girara_debug("No jumplist or no marks");
+    girara_error("No jumplist or no marks");
     goto error_free;
   }
 
@@ -1049,6 +1052,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (zathura->file_monitor.monitor == NULL) {
     g_autofree char* filemonitor_backend = NULL;
     girara_setting_get(zathura->ui.session, "filemonitor", &filemonitor_backend);
+    girara_debug("creating file monitor with backend: %s", filemonitor_backend);
+
     zathura_filemonitor_type_t type = ZATHURA_FILEMONITOR_GLIB;
     if (g_strcmp0(filemonitor_backend, "noop") == 0) {
       type = ZATHURA_FILEMONITOR_NOOP;
