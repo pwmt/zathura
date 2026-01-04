@@ -211,6 +211,38 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
   statusbar_page_number_update(zathura);
 }
 
+gboolean cb_macro_assert(girara_session_t* session, char* name, char* val_str) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+
+  zathura_t* zathura = session->global.data;
+  GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+
+  int value = (int)atof(val_str);
+
+  if (!g_strcmp0(name, "x-value")) {
+
+    return (value == (int)gtk_adjustment_get_value(hadj));
+
+  } else if (!g_strcmp0(name, "x-upper")) {
+
+    return (value == (int)gtk_adjustment_get_upper(hadj));
+
+  } else if (!g_strcmp0(name, "y-value")) {
+
+    return (value == (int)gtk_adjustment_get_value(vadj));
+
+  } else if (!g_strcmp0(name, "y-upper")) {
+
+    return (value == (int)gtk_adjustment_get_upper(vadj));
+
+  } else {
+    girara_warning("assert: unknown name '%s'", name);
+    return false;
+  }
+}
+
 void cb_monitors_changed(GdkScreen* screen, gpointer data) {
   girara_debug("signal received");
 

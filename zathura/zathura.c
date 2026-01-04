@@ -2,7 +2,6 @@
 
 #include "glib-object.h"
 #include "glib.h"
-#include "zathura/document-widget.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <math.h>
@@ -317,6 +316,9 @@ static bool init_ui(zathura_t* zathura) {
 
   /* signals */
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
+
+  /* record callbacks */
+  zathura->ui.session->record.assert_cb = cb_macro_assert;
 
   return true;
 }

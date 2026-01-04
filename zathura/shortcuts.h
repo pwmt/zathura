@@ -173,6 +173,17 @@ bool sc_print(girara_session_t* session, girara_argument_t* argument, girara_eve
 bool sc_recolor(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Add assertions to a macro recording for document position.
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_macro_assert(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Reload the current document
  *
  * @param session The used girara session
