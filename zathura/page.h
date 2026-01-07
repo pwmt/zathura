@@ -80,6 +80,23 @@ ZATHURA_PLUGIN_API double zathura_page_get_height(zathura_page_t* page);
 ZATHURA_PLUGIN_API void zathura_page_set_height(zathura_page_t* page, double height);
 
 /**
+ * Returns the zoom of the page
+ *
+ * @param page The page object
+ * @return Zoom of the page
+ * @return -1 If an error occurred
+ */
+ZATHURA_PLUGIN_API double zathura_page_get_zoom(zathura_page_t* page);
+
+/**
+ * Sets the new zoom of the page
+ *
+ * @param page The page object
+ * @param zoom The new zoom of the page
+ */
+ZATHURA_PLUGIN_API void zathura_page_set_zoom(zathura_page_t* page, double zoom);
+
+/**
  * Returns the visibility of the page
  *
  * @param page The page object
