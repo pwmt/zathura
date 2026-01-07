@@ -257,11 +257,8 @@ static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) 
     unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
     unsigned int y = row;
 
-    unsigned int width  = zathura_page_get_width(page);
-    unsigned int height = zathura_page_get_height(page);
-
     unsigned int page_width, page_height;
-    page_calc_height_width(z_document, height, width, &page_height, &page_width, true);
+    page_calc_height_width(z_document, page, &page_height, &page_width, true);
 
     priv->row_heights[y].size = MAX(page_height, priv->row_heights[y].size);
     priv->col_widths[x].size  = MAX(page_width, priv->col_widths[x].size);

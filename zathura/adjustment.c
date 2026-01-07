@@ -2,15 +2,20 @@
 
 #include "adjustment.h"
 #include "document-widget.h"
+#include "page.h"
 #include "zathura.h"
 
 #include <math.h>
 
-double page_calc_height_width(zathura_document_t* document, double height, double width, unsigned int* page_height,
+double page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
                               unsigned int* page_width, bool rotate) {
   g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
 
-  double scale = zathura_document_get_scale(document);
+  const double zoom   = zathura_page_get_zoom(page);
+  const double height = zathura_page_get_height(page);
+  const double width  = zathura_page_get_width(page);
+
+  double scale = zoom * zathura_document_get_scale(document);
 
   if (rotate == true && zathura_document_get_rotation(document) % 180 != 0) {
     *page_width  = round(height * scale);

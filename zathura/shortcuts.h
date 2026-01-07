@@ -330,6 +330,17 @@ bool sc_quit(girara_session_t* session, girara_argument_t* argument, girara_even
 bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Change the zoom level for the current page
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Run external command.
  *
  * @param session The used girara session

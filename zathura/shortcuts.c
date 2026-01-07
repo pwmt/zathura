@@ -1456,6 +1456,68 @@ bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_even
   return ret;
 }
 
+bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+
+  /* retrieve zoom step value */
+  int value = 1;
+  girara_setting_get(zathura->ui.session, "zoom-step", &value);
+
+  unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
+  zathura_page_t* page = zathura_document_get_page(zathura->document, current_page);
+  
+  const int nt           = (t == 0) ? 1 : t;
+  const double zoom_step = 1.0 + value / 100.0 * nt;
+  const double old_zoom  = zathura_page_get_zoom(page);
+
+  /* specify new zoom value */
+  if (argument->n == ZOOM_IN) {
+    girara_debug("Increasing page %d zoom by %0.2f.", current_page, zoom_step - 1.0);
+    zathura_page_set_zoom(page, old_zoom * zoom_step);
+  } else if (argument->n == ZOOM_OUT) {
+    girara_debug("Decreasing page %d zoom by %0.2f.", current_page, zoom_step - 1.0);
+    zathura_page_set_zoom(page, old_zoom / zoom_step);
+  } else if (argument->n == ZOOM_SPECIFIC) {
+    if (t == 0) {
+      girara_debug("Setting page %d zoom to 1.", current_page);
+      zathura_page_set_zoom(page, 1.0);
+    } else {
+      girara_debug("Setting page %d zoom to %0.2f.", current_page, t / 100.0);
+      zathura_page_set_zoom(page, t / 100.0);
+    }
+  } else if (argument->n == ZOOM_SMOOTH) {
+    const double dy = (event != NULL) ? event->y : 1.0;
+    const double z  = pow(zoom_step, -dy);
+    girara_debug("Increasing page %d zoom by %0.2f.", current_page, z - 1.0);
+    zathura_page_set_zoom(page, old_zoom * z);
+  } else {
+    girara_debug("Setting page %d zoom to 1.", current_page);
+    zathura_page_set_zoom(page, 1.0);
+  }
+
+  /* zoom limitations */
+  const double zoom = zathura_page_get_zoom(page);
+  zathura_page_set_zoom(page, zathura_correct_zoom_value(session, zoom));
+
+  const double new_zoom = zathura_page_get_zoom(page);
+  if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
+    girara_debug("New and old page %d zoom level are too close: %0.2f vs. %0.2f", current_page, new_zoom, old_zoom);
+    return false;
+  }
+
+  girara_debug("Re-rendering with page %d new zoom level %0.2f.", current_page, new_zoom);
+  render_all(zathura);
+  refresh_view(zathura);
+
+  return false;
+}
+
 bool sc_nohlsearch(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
                    unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);

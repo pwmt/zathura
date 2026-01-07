@@ -17,6 +17,7 @@ struct zathura_page_s {
   char* label;                  /**< Page label */
   double height;                /**< Page height */
   double width;                 /**< Page width */
+  double zoom;                  /**< Page zoom */
   unsigned int index;           /**< Page number */
   bool visible;                 /**< Page is visible */
   bool label_is_number;         /**< Page label is the same as the page number */
@@ -43,6 +44,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
   page->visible         = false;
   page->document        = document;
   page->label_is_number = false;
+  page->zoom            = 1.0;
 
   /* init plugin */
   const zathura_plugin_t* plugin              = zathura_document_get_plugin(document);
@@ -150,6 +152,22 @@ void zathura_page_set_height(zathura_page_t* page, double height) {
   }
 
   page->height = height;
+}
+
+double zathura_page_get_zoom(zathura_page_t* page) {
+  if (page == NULL) {
+    return -1;
+  }
+
+  return page->zoom;
+}
+
+void zathura_page_set_zoom(zathura_page_t* page, double zoom) {
+  if (page == NULL) {
+    return;
+  }
+
+  page->zoom = zoom;
 }
 
 bool zathura_page_get_visibility(zathura_page_t* page) {
