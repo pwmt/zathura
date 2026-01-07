@@ -217,6 +217,60 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
   return true;
 }
 
+bool sc_equal_page_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                        unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  if (argument->n >= ZATHURA_EQUAL_MODE_NUMBER) {
+    girara_error("equal mode: unknown mode %d", argument->n);
+    return false;
+  }
+
+  const unsigned int npag         = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
+
+  zathura_page_t* c_page = zathura_document_get_page(zathura->document, current_page);
+  zathura_page_set_zoom(c_page, 1.0);
+
+  girara_debug("Setting page equal mode to: %d", argument->n);
+
+  if (argument->n == ZATHURA_EQUAL_NONE) {
+    /* reset page zooms */
+    for (unsigned int i = 0; i < npag; i++) {
+      zathura_page_t* p = zathura_document_get_page(zathura->document, i);
+      zathura_page_set_zoom(p, 1.0);
+    }
+
+    render_all(zathura);
+    refresh_view(zathura);
+    return true;
+  }
+
+  for (unsigned int i = 0; i != npag; i++) {
+    zathura_page_t* page_i = zathura_document_get_page(zathura->document, i);
+
+    zathura_page_set_zoom(page_i, 1.0);
+
+    switch (argument->n) {
+    case ZATHURA_EQUAL_WIDTH:
+      zathura_page_set_zoom(page_i, zathura_page_get_width(c_page) / zathura_page_get_width(page_i));
+      break;
+    case ZATHURA_EQUAL_HEIGHT:
+      zathura_page_set_zoom(page_i, zathura_page_get_height(c_page) / zathura_page_get_height(page_i));
+      break;
+    }
+  }
+
+  render_all(zathura);
+  refresh_view(zathura);
+
+  return true;
+}
+
 bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                        unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
