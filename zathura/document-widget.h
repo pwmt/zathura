@@ -6,6 +6,12 @@
 #include <gtk/gtk.h>
 #include "types.h"
 
+typedef enum document_widget_mode_e {
+  DOCUMENT_WIDGET_GRID,
+  DOCUMENT_WIDGET_SINGLE,
+  DOCUMENT_WIDGET_MODE_COUNT,
+} document_widget_mode_t;
+
 /**
  * The document view widget.
  */

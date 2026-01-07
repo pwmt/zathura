@@ -1294,6 +1294,30 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
   return false;
 }
 
+bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                                unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
+
+  document_widget_mode_t old_mode;
+  g_object_get(zathura->ui.document_widget, "layout-mode", &old_mode, NULL);
+  if (old_mode == DOCUMENT_WIDGET_SINGLE) {
+    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_GRID, NULL);
+  } else {
+    const int pages_per_row = 1;
+    girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
+    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
+  }
+
+  return true;
+}
+
 bool sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
              unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);

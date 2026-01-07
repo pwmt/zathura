@@ -820,6 +820,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "toggle_index",        sc_toggle_index);
   girara_shortcut_mapping_add(gsession, "toggle_page_mode",    sc_toggle_page_mode);
   girara_shortcut_mapping_add(gsession, "toggle_presentation", sc_toggle_presentation);
+  girara_shortcut_mapping_add(gsession, "toggle_single_page_mode", sc_toggle_single_page_mode);
   girara_shortcut_mapping_add(gsession, "zoom",                sc_zoom);
 
   /* add argument mappings */
