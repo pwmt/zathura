@@ -797,6 +797,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "display_link",        sc_display_link);
   girara_shortcut_mapping_add(gsession, "copy_link",           sc_copy_link);
   girara_shortcut_mapping_add(gsession, "copy_filepath",       sc_copy_filepath);
+  girara_shortcut_mapping_add(gsession, "page_mode",           sc_equal_page_mode);
   girara_shortcut_mapping_add(gsession, "exec",                sc_exec);
   girara_shortcut_mapping_add(gsession, "focus_inputbar",      sc_focus_inputbar);
   girara_shortcut_mapping_add(gsession, "follow",              sc_follow);
@@ -863,6 +864,9 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "width",              ZATHURA_ADJUST_WIDTH);
   girara_argument_mapping_add(gsession, "rotate-cw",          ROTATE_CW);
   girara_argument_mapping_add(gsession, "rotate-ccw",         ROTATE_CCW);
+  girara_argument_mapping_add(gsession, "equal_none",         ZATHURA_EQUAL_NONE);
+  girara_argument_mapping_add(gsession, "equal_width",        ZATHURA_EQUAL_WIDTH);
+  girara_argument_mapping_add(gsession, "equal_height",       ZATHURA_EQUAL_HEIGHT);
   /* clang-format on */
 }
 
