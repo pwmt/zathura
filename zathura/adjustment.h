@@ -38,12 +38,12 @@ void page_calc_position(zathura_document_t* document, double x, double y, double
 /**
  * Converts a relative position within the document to a page number.
  *
- * @param document The document
+ * @param zathura The zathura instance
  * @param pos_x the x position relative to the document
  * @param pos_y the y position relative to the document
  * @return page sitting in that position
  */
-unsigned int position_to_page_number(zathura_document_t* document, double pos_x, double pos_y);
+unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double pos_y);
 
 /**
  * Converts a page number to a position in units relative to the document
@@ -55,23 +55,27 @@ unsigned int position_to_page_number(zathura_document_t* document, double pos_x,
  * The return value is the position in in units relative to the document (0=top
  * 1=bottom) of the point thet will lie at the center of the viewport.
  *
- * @param document The document
+ * @param zathura The zathura instance 
  * @param page_number the given page number
  * @param xalign where to align the viewport and the page
  * @param yalign where to align the viewport and the page
  * @param pos_x position that will lie at the center of the viewport.
  * @param pos_y position that will lie at the center of the viewport.
  */
-void page_number_to_position(zathura_document_t* document, unsigned int page_number, double xalign, double yalign,
+void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign,
                              double* pos_x, double* pos_y);
 
 /**
  * Checks whether a given page falls within the viewport
  *
- * @param document The document
+ * @param zathura The zathura instance
  * @param page_number the page number
  * @return true if the page intersects the viewport
  */
-bool page_is_visible(zathura_document_t* document, unsigned int page_number);
+bool page_is_visible(zathura_t* zathura, unsigned int page_number);
+
+gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment);
+void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value);
+void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio);
 
 #endif /* ZATHURA_ADJUSTMENT_H */
