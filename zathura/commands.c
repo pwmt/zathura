@@ -455,9 +455,12 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     return false;
   }
 
+  bool inc_search = false;
+  girara_setting_get(session, "incremental-search", &inc_search);
+
   arg->n    = FORWARD;
   arg->data = (void*)input;
-  sc_search(session, arg, NULL, 0);
+  search_document(zathura, arg, inc_search);
 
   return true;
 }

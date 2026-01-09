@@ -6,11 +6,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #include <girara/datastructures.h>
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/utils.h>
 
+#include "adjustment.h"
 #include "links.h"
 #include "utils.h"
 #include "zathura.h"
@@ -588,4 +590,138 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
     cut_rectangle(r, points, new_rectangles);
   }
   return new_rectangles;
+}
+
+bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disable_notify) {
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  girara_session_t* session = zathura->ui.session;
+
+  const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int cur_page  = zathura_document_get_current_page_number(zathura->document);
+  GtkWidget* cur_page_widget = zathura_page_get_widget(zathura, zathura_document_get_page(zathura->document, cur_page));
+  bool new_search            = argument->data != NULL;
+  bool nohlsearch            = false;
+  bool first_time_after_abort = false;
+
+  girara_setting_get(session, "nohlsearch", &nohlsearch);
+  if (nohlsearch == false) {
+    gboolean draw = FALSE;
+    g_object_get(G_OBJECT(cur_page_widget), "draw-search-results", &draw, NULL);
+
+    if (draw == false) {
+      first_time_after_abort = true;
+    }
+
+    document_draw_search_results(zathura, true);
+  }
+
+  int diff = argument->n == FORWARD ? 1 : -1;
+  if (zathura->global.search_direction == BACKWARD) {
+    diff = -diff;
+  }
+
+  zathura_page_t* target_page = NULL;
+  int target_idx              = 0;
+
+  for (unsigned int page_id = 0; page_id < num_pages; ++page_id) {
+    int tmp              = cur_page + diff * page_id;
+    zathura_page_t* page = zathura_document_get_page(zathura->document, (tmp + num_pages) % num_pages);
+    if (page == NULL) {
+      continue;
+    }
+
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+
+    int num_search_results = 0, current = -1;
+    g_object_get(G_OBJECT(page_widget), "search-current", &current, "search-length", &num_search_results, NULL);
+    if (num_search_results == 0 || current == -1) {
+      continue;
+    }
+
+    if (new_search == true || first_time_after_abort == true || (tmp + num_pages) % num_pages != cur_page) {
+      target_page = page;
+      target_idx  = diff == 1 ? 0 : num_search_results - 1;
+      break;
+    }
+
+    if (diff == 1 && current < num_search_results - 1) {
+      /* the next result is on the same page */
+      target_page = page;
+      target_idx  = current + 1;
+    } else if (diff == -1 && current > 0) {
+      target_page = page;
+      target_idx  = current - 1;
+    } else {
+      /* the next result is on a different page */
+      g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
+
+      for (unsigned int npage_id = 1; npage_id < num_pages; ++npage_id) {
+        int ntmp                     = cur_page + diff * (page_id + npage_id);
+        zathura_page_t* npage        = zathura_document_get_page(zathura->document, (ntmp + 2 * num_pages) % num_pages);
+        GtkWidget* npage_page_widget = zathura_page_get_widget(zathura, npage);
+        g_object_get(G_OBJECT(npage_page_widget), "search-length", &num_search_results, NULL);
+        if (num_search_results != 0) {
+          target_page = npage;
+          target_idx  = diff == 1 ? 0 : num_search_results - 1;
+          break;
+        }
+      }
+    }
+
+    break;
+  }
+
+  if (target_page != NULL) {
+    girara_list_t* results   = NULL;
+    GtkWidget* page_widget   = zathura_page_get_widget(zathura, target_page);
+    GObject* obj_page_widget = G_OBJECT(page_widget);
+    g_object_set(obj_page_widget, "search-current", target_idx, NULL);
+    g_object_get(obj_page_widget, "search-results", &results, NULL);
+
+    /* Need to adjust rectangle to page scale and orientation */
+    zathura_rectangle_t* rect     = girara_list_nth(results, target_idx);
+    zathura_rectangle_t rectangle = recalc_rectangle(target_page, *rect);
+
+    bool search_hadjust = true;
+    girara_setting_get(session, "search-hadjust", &search_hadjust);
+
+    /* compute the position of the center of the page */
+    double pos_x = 0;
+    double pos_y = 0;
+    page_number_to_position(zathura->document, zathura_page_get_index(target_page), 0.5, 0.5, &pos_x, &pos_y);
+
+    /* correction to center the current result                          */
+    /* NOTE: rectangle is in viewport units, already scaled and rotated */
+    unsigned int cell_height = 0;
+    unsigned int cell_width  = 0;
+    zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+
+    unsigned int doc_height = 0;
+    unsigned int doc_width  = 0;
+    zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+
+    /* compute the center of the rectangle, which will be aligned to the center
+       of the viewport */
+    const double center_y = (rectangle.y1 + rectangle.y2) / 2;
+    pos_y += (center_y - (double)cell_height / 2) / (double)doc_height;
+
+    if (search_hadjust == true) {
+      const double center_x = (rectangle.x1 + rectangle.x2) / 2;
+      pos_x += (center_x - (double)cell_width / 2) / (double)doc_width;
+    }
+
+    /* move to position */
+    zathura_jumplist_add(zathura);
+    position_set(zathura, pos_x, pos_y);
+    zathura_jumplist_add(zathura);
+  } else if (argument->data != NULL && !disable_notify) {
+    const char* input  = argument->data;
+    char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
+    girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
+    g_free(escaped_text);
+  }
+
+  return false;
 }
