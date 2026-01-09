@@ -911,7 +911,7 @@ void render_all(zathura_t* zathura) {
     unsigned int page_height = 0, page_width = 0;
     const double height = zathura_page_get_height(page);
     const double width  = zathura_page_get_width(page);
-    page_calc_height_width(document, height, width, &page_height, &page_width, true);
+    individual_page_calc_height_width(document, page, &page_height, &page_width, true);
 
     girara_debug("Queuing resize for page %u to %u x %u (%0.2f x %0.2f).", page_id, page_width, page_height, width,
                  height);

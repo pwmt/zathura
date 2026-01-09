@@ -26,6 +26,29 @@ double page_calc_height_width(zathura_document_t* document, double height, doubl
   return scale;
 }
 
+double individual_page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
+                              unsigned int* page_width, bool rotate) {
+  g_return_val_if_fail(document != NULL && page_height != NULL && page_width != NULL, 0.0);
+
+  double scale = zathura_document_get_scale(document);
+
+  // TODO this just set all pages to the maximum.
+  // needs to adjust cell size based on the page size itself.
+  double height = zathura_page_get_height(page);
+  double width  = zathura_page_get_width(page);
+  if (rotate == true && (zathura_page_get_rotation(page) + zathura_document_get_rotation(document)) % 180 != 0) {
+    *page_width  = round(height * scale);
+    *page_height = round(width * scale);
+    scale        = MAX(*page_width / height, *page_height / width);
+  } else {
+    *page_width  = round(width * scale);
+    *page_height = round(height * scale);
+    scale        = MAX(*page_width / width, *page_height / height);
+  }
+
+  return scale;
+}
+
 void page_calc_position(zathura_document_t* document, double x, double y, double* xn, double* yn) {
   g_return_if_fail(document != NULL && xn != NULL && yn != NULL);
 

@@ -46,6 +46,23 @@ ZATHURA_PLUGIN_API zathura_document_t* zathura_page_get_document(zathura_page_t*
 ZATHURA_PLUGIN_API unsigned int zathura_page_get_index(zathura_page_t* page);
 
 /**
+ * Returns the rotation of the page
+ *
+ * @param page The page object
+ * @return Rotation of the page
+ * @return -1 If an error occurred
+ */
+ZATHURA_PLUGIN_API unsigned int zathura_page_get_rotation(zathura_page_t* page);
+
+/**
+ * Sets the new rotation of the page
+ *
+ * @param page The page object
+ * @param rotate The new rotation of the page
+ */
+ZATHURA_PLUGIN_API void zathura_page_set_rotation(zathura_page_t* page, unsigned int rotate);
+
+/**
  * Returns the width of the page
  *
  * @param page The page object
