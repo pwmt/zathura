@@ -11,6 +11,7 @@
 #include "adjustment.h"
 #include "zathura.h"
 #include "document.h"
+#include "document-widget.h"
 #include "page.h"
 #include "page-widget.h"
 #include "utils.h"
@@ -903,6 +904,8 @@ void render_all(zathura_t* zathura) {
   if (document == NULL) {
     return;
   }
+
+  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT(zathura->ui.document_widget));
 
   /* unmark all pages */
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);

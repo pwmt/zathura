@@ -10,6 +10,7 @@
 #include "links.h"
 #include "zathura.h"
 #include "document.h"
+#include "document-widget.h"
 #include "utils.h"
 #include "page.h"
 #include "render.h"
@@ -134,17 +135,18 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
      of the viewport */
   double pos_x = 0;
   double pos_y = 0;
-  page_number_to_position(document, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
+  page_number_to_position(zathura, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
 
   /* correct to place the target position at the top of the viewport     */
   /* NOTE: link->target is in page units, needs to be scaled and rotated */
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
-  zathura_document_get_cell_size(document, &cell_height, &cell_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), link->target.page_number, 
+                                        &cell_height, &cell_width);
 
   unsigned int doc_height = 0;
   unsigned int doc_width  = 0;
-  zathura_document_get_document_size(document, &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
 
   bool link_hadjust = true;
   girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);

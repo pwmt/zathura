@@ -200,16 +200,6 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session);
 gboolean cb_password_dialog(GtkEntry* entry, void* dialog);
 
 /**
- * Emitted when the view has been resized
- *
- * @param widget View
- * @param allocation Allocation
- * @param zathura Zathura session
- * @return true if signal has been handled successfully
- */
-gboolean cb_view_resized(GtkWidget* widget, GtkAllocation* allocation, zathura_t* zathura);
-
-/**
  * Emitted when the 'recolor' setting is changed
  *
  * @param session Girara session

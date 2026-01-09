@@ -57,7 +57,7 @@ void update_visible_pages(zathura_t* zathura) {
     GtkWidget* page_widget           = zathura_page_get_widget(zathura, page);
     ZathuraPage* zathura_page_widget = ZATHURA_PAGE(page_widget);
 
-    if (page_is_visible(document, page_id) == true) {
+    if (page_is_visible(zathura, page_id) == true) {
       /* make page visible */
       if (zathura_page_get_visibility(page) == false) {
         zathura_page_set_visibility(page, true);
@@ -98,9 +98,9 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   update_visible_pages(zathura);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  const double position_x      = zathura_document_widget_get_ratio(zathura, adjustment, true);
+  const double position_x      = zathura_adjustment_get_ratio(adjustment);
   const double position_y      = zathura_document_get_position_y(document);
-  unsigned int page_id         = position_to_page_number(document, position_x, position_y);
+  unsigned int page_id         = position_to_page_number(zathura, position_x, position_y);
 
   zathura_document_set_position_x(document, position_x);
   zathura_document_set_position_y(document, position_y);
@@ -124,8 +124,8 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
 
   zathura_document_t* document = zathura_get_document(zathura);
   const double position_x      = zathura_document_get_position_x(document);
-  const double position_y      = zathura_document_widget_get_ratio(zathura, adjustment, false);
-  const unsigned int page_id   = position_to_page_number(document, position_x, position_y);
+  const double position_y      = zathura_adjustment_get_ratio(adjustment);
+  const unsigned int page_id   = position_to_page_number(zathura, position_x, position_y);
 
   zathura_document_set_position_x(document, position_x);
   zathura_document_set_position_y(document, position_y);
@@ -160,7 +160,7 @@ static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zat
   const double ratio =
       width == true ? zathura_document_get_position_x(document) : zathura_document_get_position_y(document);
 
-  zathura_document_widget_set_value_from_ratio(zathura, adjustment, ratio, width);
+  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
 }
 
 void cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data) {
@@ -205,8 +205,8 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
   const double position_x = zathura_document_get_position_x(document);
   const double position_y = zathura_document_get_position_y(document);
 
-  zathura_document_widget_set_value_from_ratio(zathura, vadj, position_y, false);
-  zathura_document_widget_set_value_from_ratio(zathura, hadj, position_x, true);
+  zathura_adjustment_set_value_from_ratio(vadj, position_y);
+  zathura_adjustment_set_value_from_ratio(hadj, position_x);
 
   statusbar_page_number_update(zathura);
 }
@@ -324,7 +324,13 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
 
   zathura_document_set_page_layout(zathura_get_document(zathura), page_v_padding, page_h_padding, pages_per_row,
                                    first_page_column);
-  zathura_document_widget_set_mode(zathura, page_right_to_left);
+
+  g_auto(GValue) page_right_to_left_value = G_VALUE_INIT;
+  g_value_init(&page_right_to_left_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean(&page_right_to_left_value, page_right_to_left);
+  g_object_set_property(G_OBJECT(zathura->ui.document_widget), "pages-right-to-left", &page_right_to_left_value);
+
+  zathura_document_widget_refresh_layout(ZATHURA_DOCUMENT(zathura->ui.document_widget));
 }
 
 void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* UNUSED(column), void* data) {
@@ -497,22 +503,6 @@ error_free:
   g_free(dialog);
 
 error_ret:
-  return false;
-}
-
-gboolean cb_view_resized(GtkWidget* UNUSED(widget), GtkAllocation* UNUSED(allocation), zathura_t* zathura) {
-  if (zathura_has_document(zathura) == false) {
-    return false;
-  }
-
-  /* adjust the scale according to settings. If nothing needs to be resized,
-     it does not trigger the resize event.
-
-     The right viewport size is already in the document object, due to a
-     previous call to adjustment_changed. We don't want to use the allocation in
-     here, because we would have to subtract scrollbars, etc. */
-  adjust_view(zathura);
-
   return false;
 }
 

@@ -15,8 +15,8 @@ typedef struct zathura_document_s zathura_document_t;
 /**
  * Document widget
  */
-typedef struct zathura_document_widget_s ZathuraDocumentWidget;
-typedef struct zathura_document_widget_class_s ZathuraDocumentWidgetClass;
+typedef struct zathura_document_widget_s ZathuraDocument;
+typedef struct zathura_document_widget_class_s ZathuraDocumentClass;
 /**
  * Page
  */

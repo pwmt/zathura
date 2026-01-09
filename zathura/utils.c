@@ -18,6 +18,7 @@
 #include "zathura.h"
 #include "internal.h"
 #include "document.h"
+#include "document-widget.h"
 #include "page.h"
 #include "plugin.h"
 #include "content-type.h"
@@ -690,17 +691,18 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     /* compute the position of the center of the page */
     double pos_x = 0;
     double pos_y = 0;
-    page_number_to_position(zathura->document, zathura_page_get_index(target_page), 0.5, 0.5, &pos_x, &pos_y);
+    page_number_to_position(zathura, zathura_page_get_index(target_page), 0.5, 0.5, &pos_x, &pos_y);
 
     /* correction to center the current result                          */
     /* NOTE: rectangle is in viewport units, already scaled and rotated */
     unsigned int cell_height = 0;
     unsigned int cell_width  = 0;
-    zathura_document_get_cell_size(zathura->document, &cell_height, &cell_width);
+    zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget),
+                                          zathura_page_get_index(target_page), &cell_height, &cell_width);
 
     unsigned int doc_height = 0;
     unsigned int doc_width  = 0;
-    zathura_document_get_document_size(zathura->document, &doc_height, &doc_width);
+    zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
 
     /* compute the center of the rectangle, which will be aligned to the center
        of the viewport */
