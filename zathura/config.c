@@ -693,6 +693,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "quit",                sc_quit);
   girara_shortcut_mapping_add(gsession, "recolor",             sc_recolor);
   girara_shortcut_mapping_add(gsession, "reload",              sc_reload);
+  girara_shortcut_mapping_add(gsession, "macro_assert",        sc_macro_assert);
   girara_shortcut_mapping_add(gsession, "rotate",              sc_rotate);
   girara_shortcut_mapping_add(gsession, "scroll",              sc_scroll);
   girara_shortcut_mapping_add(gsession, "search",              sc_search);

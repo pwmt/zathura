@@ -5,6 +5,7 @@
 #include <girara/settings.h>
 #include <girara/datastructures.h>
 #include <girara/shortcuts.h>
+#include <girara/record.h>
 #include <girara/utils.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -475,6 +476,28 @@ bool sc_recolor(girara_session_t* session, girara_argument_t* UNUSED(argument), 
   girara_setting_get(session, "recolor", &value);
   value = !value;
   girara_setting_set(session, "recolor", &value);
+
+  return false;
+}
+
+bool sc_macro_assert(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                      unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+
+  g_autofree char* x_value = g_strdup_printf("%f", gtk_adjustment_get_value(hadj));
+  g_autofree char* x_upper = g_strdup_printf("%f", gtk_adjustment_get_upper(hadj));
+  g_autofree char* y_value = g_strdup_printf("%f", gtk_adjustment_get_value(vadj));
+  g_autofree char* y_upper = g_strdup_printf("%f", gtk_adjustment_get_upper(vadj));
+
+  girara_record_assert(session, "x-value", x_value);
+  girara_record_assert(session, "x-upper", x_upper);
+  girara_record_assert(session, "y-value", y_value);
+  girara_record_assert(session, "y-upper", y_upper);
 
   return false;
 }

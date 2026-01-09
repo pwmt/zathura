@@ -80,6 +80,17 @@ void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
+ * Callback for girara to check an assertion during 
+ * macro execution.
+ *
+ * @param session The girara session
+ * @param name    Name of the attribute
+ * @param value   Value of the attribute
+ * @return true if the assertion holds
+ */
+gboolean cb_macro_assert(girara_session_t* session, char* name, char* value);
+
+/**
  * This function gets called when the monitors associated with the GdkScreen
  * change.
  *

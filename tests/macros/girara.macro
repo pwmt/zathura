@@ -1,0 +1,58 @@
+[1] # Girara Recording File
+
+keypress 0 111 # o
+keypress 0 116 # t
+keypress 0 101 # e
+keypress 0 115 # s
+keypress 0 116 # t
+keypress 0 115 # s
+keypress 0 47 # /
+keypress 0 109 # m
+keypress 0 97 # a
+keypress 0 99 # c
+keypress 0 114 # r
+keypress 0 111 # o
+keypress 0 115 # s
+keypress 0 47 # /
+keypress 0 114 # r
+keypress 0 101 # e
+keypress 0 111 # o
+keypress 0 111 # o
+keypress 0 114 # r
+keypress 0 65288 # BackSpace
+keypress 0 65288 # BackSpace
+keypress 0 65288 # BackSpace
+keypress 0 99 # c
+keypress 0 111 # o
+keypress 0 114 # r
+keypress 0 100 # d
+keypress 0 46 # .
+keypress 0 112 # p
+keypress 0 100 # d
+keypress 0 102 # f
+keypress 0 65293 # Return
+breakpoint
+keypress 0 65476 # F7
+keypress 0 65477 # F8
+keypress 0 65478 # F9
+keypress 0 65479 # F10
+keypress 0 103 # g
+keypress 0 103 # g
+keypress 0 65476 # F7
+keypress 0 65477 # F8
+keypress 0 65478 # F9
+keypress 0 65479 # F10
+keypress 0 103 # g
+keypress 0 103 # g
+keypress 0 65505 # 
+keypress 1 74 # <S-J>
+assert 'x-value' '144.000000'
+assert 'x-upper' '1219.000000'
+assert 'y-value' '1579.000000'
+assert 'y-upper' '4736.000000'
+keypress 0 65505 # 
+keypress 1 74 # <S-J>
+assert 'x-value' '144.000000'
+assert 'x-upper' '1219.000000'
+assert 'y-value' '3158.000000'
+assert 'y-upper' '4736.000000'
