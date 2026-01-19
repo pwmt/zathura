@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 
 #include "zathura.h"
 #include "plugin.h"
@@ -131,9 +132,12 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   const int file_idx_base    = has_double_dash ? 2 : 1;
 
   int file_idx = argc > file_idx_base ? file_idx_base : 0;
-  /* Fork instances for other files. */
+  /* If more than one file, fork an instance for each. */
   if (print_version == false && argc > file_idx_base + 1) {
-    for (int idx = file_idx_base + 1; idx < argc; ++idx) {
+    int file_count         = argc - file_idx_base;
+    const pid_t parent_pid = getpid();
+
+    for (int idx = file_idx_base; idx < argc; ++idx) {
       const pid_t pid = fork();
       if (pid == 0) { /* child */
         file_idx = idx;
@@ -146,6 +150,17 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
         girara_error("Could not fork: %s", strerror(errno));
         return -1;
       }
+    }
+
+    if (parent_pid == getpid()) {
+      if (forkback == true) {
+        return 0;
+      }
+      while (file_count != 0) { /* wait for all children */
+        wait(NULL);
+        file_count--;
+      }
+      return 0;
     }
   }
 
