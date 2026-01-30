@@ -55,15 +55,15 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
  * The return value is the position in in units relative to the document (0=top
  * 1=bottom) of the point thet will lie at the center of the viewport.
  *
- * @param zathura The zathura instance 
+ * @param zathura The zathura instance
  * @param page_number the given page number
  * @param xalign where to align the viewport and the page
  * @param yalign where to align the viewport and the page
  * @param pos_x position that will lie at the center of the viewport.
  * @param pos_y position that will lie at the center of the viewport.
  */
-void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign,
-                             double* pos_x, double* pos_y);
+void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign, double* pos_x,
+                             double* pos_y);
 
 /**
  * Checks whether a given page falls within the viewport

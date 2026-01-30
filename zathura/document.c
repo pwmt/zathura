@@ -23,21 +23,21 @@
  * Document
  */
 struct zathura_document_s {
-  void* data;                        /**< Custom data */
-  char* file_path;                   /**< File path of the document */
-  char* uri;                         /**< URI of the document */
-  char* basename;                    /**< Basename of the document */
-  uint8_t hash_sha256[DIGEST_SIZE];  /**< SHA256 hash of the document */
-  const char* password;              /**< Password of the document */
-  unsigned int current_page_number;  /**< Current page number */
-  unsigned int number_of_pages;      /**< Number of pages */
-  double zoom;                       /**< Zoom value */
-  unsigned int rotate;               /**< Rotation */
-  zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
-  int page_offset;                   /**< Page offset */
-  unsigned int view_width;  /**< width of current viewport */
-  unsigned int view_height; /**< height of current viewport */
-  double view_ppi;          /**< PPI of the current viewport */
+  void* data;                              /**< Custom data */
+  char* file_path;                         /**< File path of the document */
+  char* uri;                               /**< URI of the document */
+  char* basename;                          /**< Basename of the document */
+  uint8_t hash_sha256[DIGEST_SIZE];        /**< SHA256 hash of the document */
+  const char* password;                    /**< Password of the document */
+  unsigned int current_page_number;        /**< Current page number */
+  unsigned int number_of_pages;            /**< Number of pages */
+  double zoom;                             /**< Zoom value */
+  unsigned int rotate;                     /**< Rotation */
+  zathura_adjust_mode_t adjust_mode;       /**< Adjust mode (best-fit, width) */
+  int page_offset;                         /**< Page offset */
+  unsigned int view_width;                 /**< width of current viewport */
+  unsigned int view_height;                /**< height of current viewport */
+  double view_ppi;                         /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   unsigned int pages_per_row;              /**< number of pages in a row */
   unsigned int first_page_column;          /**< column of the first page */

@@ -51,20 +51,20 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   g_return_val_if_fail(document != NULL, 0);
 
   ZathuraDocumentWidget* doc_widget = ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget);
- 
+
   unsigned int doc_width, doc_height;
   zathura_document_widget_get_document_size(doc_widget, &doc_height, &doc_width);
- 
-  unsigned int c0        = zathura_document_get_first_page_column(document);
-  unsigned int npag      = zathura_document_get_number_of_pages(document);
-  unsigned int ncol      = zathura_document_get_pages_per_row(document);
-  unsigned int nrow      = (npag + c0 - 1 + ncol - 1) / ncol;
+
+  unsigned int c0   = zathura_document_get_first_page_column(document);
+  unsigned int npag = zathura_document_get_number_of_pages(document);
+  unsigned int ncol = zathura_document_get_pages_per_row(document);
+  unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
   // This could be done using binary search if linear is too slow
   unsigned int row = 0;
   for (unsigned int i = 0; i < nrow; i++) {
     unsigned int row_pos, row_height;
-    zathura_document_widget_get_row(doc_widget, i, &row_pos, &row_height); 
+    zathura_document_widget_get_row(doc_widget, i, &row_pos, &row_height);
 
     if (pos_y * doc_height <= row_pos + row_height) {
       row = i;
@@ -75,7 +75,7 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   unsigned int col = 0;
   for (unsigned int i = 0; i < ncol; i++) {
     unsigned int col_pos, col_width;
-    zathura_document_widget_get_col(doc_widget, i, &col_pos, &col_width); 
+    zathura_document_widget_get_col(doc_widget, i, &col_pos, &col_width);
 
     if (pos_x * doc_width <= col_pos + col_width) {
       col = i;
@@ -91,13 +91,12 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   }
 }
 
-void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign,
-                             double* pos_x, double* pos_y) {
+void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign, double* pos_x,
+                             double* pos_y) {
   g_return_if_fail(zathura != NULL);
 
   zathura_document_t* document = zathura_get_document(zathura);
   g_return_if_fail(document != NULL);
-
 
   /* sizes of page cell, viewport and document */
   unsigned int cell_height = 0, cell_width = 0;
@@ -126,8 +125,8 @@ void page_number_to_position(zathura_t* zathura, unsigned int page_number, doubl
   }
 
   /* compute the position */
-  *pos_x = ((double)cell_pos_x + shift_x * cell_width) / (double) doc_width;
-  *pos_y = ((double)cell_pos_y + shift_y * cell_height) / (double) doc_height;
+  *pos_x = ((double)cell_pos_x + shift_x * cell_width) / (double)doc_width;
+  *pos_y = ((double)cell_pos_y + shift_y * cell_height) / (double)doc_height;
 }
 
 bool page_is_visible(zathura_t* zathura, unsigned int page_number) {

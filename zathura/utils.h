@@ -185,7 +185,7 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles);
  * Search through the document for the latest search item
  *
  * @param zathura The zathura instance
- * @param argument The used argument 
+ * @param argument The used argument
  * @param disable_notify If true, don't notify no match found
  *
  * @return true if no error occurred otherwise false

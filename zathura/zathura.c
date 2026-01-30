@@ -319,12 +319,7 @@ static bool init_ui(zathura_t* zathura) {
 }
 
 static const char color_settings[][16] = {
-    "index-fg",
-    "index-bg",
-    "index-active-fg",
-    "index-active-bg",
-    "scrollbar-fg",
-    "scrollbar-bg",
+    "index-fg", "index-bg", "index-active-fg", "index-active-bg", "scrollbar-fg", "scrollbar-bg",
 };
 
 static void init_css(zathura_t* zathura) {
