@@ -17,4 +17,6 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+#define checked_umul(lhs, rhs, res) __builtin_umul_overflow((lhs), (rhs), (res))
+
 #endif

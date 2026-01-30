@@ -105,12 +105,11 @@ static void bus_acquired(GDBusConnection* connection, const gchar* name, void* d
   ZathuraDbus* dbus        = data;
   ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
 
-  GError* error         = NULL;
-  priv->registration_id = g_dbus_connection_register_object(
+  g_autoptr(GError) error = NULL;
+  priv->registration_id   = g_dbus_connection_register_object(
       connection, DBUS_OBJPATH, priv->introspection_data->interfaces[0], &interface_vtable, dbus, NULL, &error);
   if (priv->registration_id == 0) {
     girara_warning("Failed to register object on D-Bus connection: %s", error->message);
-    g_error_free(error);
     return;
   }
 
@@ -126,7 +125,7 @@ static void name_lost(GDBusConnection* UNUSED(connection), const gchar* name, vo
 }
 
 ZathuraDbus* zathura_dbus_new(zathura_t* zathura) {
-  GObject* obj = g_object_new(ZATHURA_TYPE_DBUS, NULL);
+  g_autoptr(GObject) obj = g_object_new(ZATHURA_TYPE_DBUS, NULL);
   if (obj == NULL) {
     return NULL;
   }
@@ -135,21 +134,17 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura) {
   ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(dbus);
   priv->zathura            = zathura;
 
-  GBytes* xml_data = load_xml_data();
+  g_autoptr(GBytes) xml_data = load_xml_data();
   if (xml_data == NULL) {
     girara_warning("Failed to load introspection data.");
-    g_object_unref(obj);
     return NULL;
   }
 
-  GError* error            = NULL;
+  g_autoptr(GError) error  = NULL;
   priv->introspection_data = g_dbus_node_info_new_for_xml((const char*)g_bytes_get_data(xml_data, NULL), &error);
-  g_bytes_unref(xml_data);
 
   if (priv->introspection_data == NULL) {
     girara_warning("Failed to parse introspection data: %s", error->message);
-    g_error_free(error);
-    g_object_unref(obj);
     return NULL;
   }
 
@@ -158,6 +153,8 @@ ZathuraDbus* zathura_dbus_new(zathura_t* zathura) {
   priv->owner_id        = g_bus_own_name(G_BUS_TYPE_SESSION, well_known_name, G_BUS_NAME_OWNER_FLAGS_NONE, bus_acquired,
                                          name_acquired, name_lost, dbus, NULL);
 
+  // dbus takes ownership of obj
+  obj = NULL;
   return dbus;
 }
 
@@ -173,38 +170,33 @@ void zathura_dbus_edit(zathura_t* zathura, unsigned int page, unsigned int x, un
 
   const char* filename = zathura_document_get_path(zathura_get_document(priv->zathura));
 
-  char* input_file    = NULL;
-  unsigned int line   = 0;
-  unsigned int column = 0;
+  g_autofree char* input_file = NULL;
+  unsigned int line           = 0;
+  unsigned int column         = 0;
 
   if (synctex_get_input_line_column(zathura, filename, page, x, y, &input_file, &line, &column) == false) {
     return;
   }
 
-  GError* error = NULL;
+  g_autoptr(GError) error = NULL;
   g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH, DBUS_INTERFACE, "Edit",
                                 g_variant_new("(suu)", input_file, line, column), &error);
 
-  g_free(input_file);
-
   if (error != NULL) {
     girara_debug("Failed to emit 'Edit' signal: %s", error->message);
-    g_error_free(error);
   }
 }
 
 /* D-Bus handler */
 
 static void handle_open_document(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
-  gchar* filename = NULL;
-  gchar* password = NULL;
-  gint page       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  g_autofree gchar* filename = NULL;
+  g_autofree gchar* password = NULL;
+  gint page                  = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   g_variant_get(parameters, "(ssi)", &filename, &password, &page);
 
   document_close(zathura, false);
   document_open_idle(zathura, filename, strlen(password) > 0 ? password : NULL, page, NULL, NULL, NULL, NULL);
-  g_free(filename);
-  g_free(password);
 
   GVariant* result = g_variant_new("(b)", true);
   g_dbus_method_invocation_return_value(invocation, result);
@@ -250,6 +242,7 @@ static gboolean synctex_highlight_rects_impl(gpointer ptr) {
     girara_list_free(data->rectangles[i]);
   }
   g_free(data->rectangles);
+  g_free(data);
   return false;
 }
 
@@ -267,16 +260,14 @@ static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rec
 static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
 
-  guint page                   = 0;
-  GVariantIter* iter           = NULL;
-  GVariantIter* secondary_iter = NULL;
+  guint page                             = 0;
+  g_autoptr(GVariantIter) iter           = NULL;
+  g_autoptr(GVariantIter) secondary_iter = NULL;
   g_variant_get(parameters, "(ua(dddd)a(udddd))", &page, &iter, &secondary_iter);
 
   if (page >= number_of_pages) {
     girara_debug("Got invalid page number.");
     GVariant* result = g_variant_new("(b)", false);
-    g_variant_iter_free(iter);
-    g_variant_iter_free(secondary_iter);
     g_dbus_method_invocation_return_value(invocation, result);
     return;
   }
@@ -284,18 +275,14 @@ static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDB
   /* get rectangles */
   girara_list_t** rectangles = g_try_malloc0(number_of_pages * sizeof(girara_list_t*));
   if (rectangles == NULL) {
-    g_variant_iter_free(iter);
-    g_variant_iter_free(secondary_iter);
     g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_NO_MEMORY,
                                           "Failed to allocate memory.");
     return;
   }
 
-  rectangles[page] = girara_list_new2(g_free);
+  rectangles[page] = girara_list_new_with_free(g_free);
   if (rectangles[page] == NULL) {
     g_free(rectangles);
-    g_variant_iter_free(iter);
-    g_variant_iter_free(secondary_iter);
     g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_NO_MEMORY,
                                           "Failed to allocate memory.");
     return;
@@ -305,8 +292,6 @@ static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDB
   while (g_variant_iter_loop(iter, "(dddd)", &temp_rect.x1, &temp_rect.x2, &temp_rect.y1, &temp_rect.y2)) {
     zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
     if (rect == NULL) {
-      g_variant_iter_free(iter);
-      g_variant_iter_free(secondary_iter);
       girara_list_free(rectangles[page]);
       g_free(rectangles);
       g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_NO_MEMORY,
@@ -317,7 +302,6 @@ static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDB
     *rect = temp_rect;
     girara_list_append(rectangles[page], rect);
   }
-  g_variant_iter_free(iter);
 
   /* get secondary rectangles */
   guint temp_page = 0;
@@ -330,12 +314,11 @@ static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDB
     }
 
     if (rectangles[temp_page] == NULL) {
-      rectangles[temp_page] = girara_list_new2(g_free);
+      rectangles[temp_page] = girara_list_new_with_free(g_free);
     }
 
     zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
     if (rect == NULL || rectangles[temp_page] == NULL) {
-      g_variant_iter_free(secondary_iter);
       for (unsigned int p = 0; p != number_of_pages; ++p) {
         girara_list_free(rectangles[p]);
       }
@@ -349,7 +332,6 @@ static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDB
     *rect = temp_rect;
     girara_list_append(rectangles[temp_page], rect);
   }
-  g_variant_iter_free(secondary_iter);
 
   /* run synctex_highlight_rects in main thread when idle */
   synctex_highlight_rects_idle(zathura, rectangles, page, number_of_pages);
@@ -398,12 +380,10 @@ static void handle_synctex_view(zathura_t* zathura, GVariant* parameters, GDBusM
 }
 
 static void handle_execute_command(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
-  gchar* input = NULL;
+  g_autofree gchar* input = NULL;
   g_variant_get(parameters, "(s)", &input);
 
-  const bool ret = girara_command_run(zathura->ui.session, input);
-  g_free(input);
-
+  const bool ret   = girara_command_run(zathura->ui.session, input);
   GVariant* result = g_variant_new("(b)", ret);
   g_dbus_method_invocation_return_value(invocation, result);
 }
@@ -417,11 +397,10 @@ static void handle_source_config(zathura_t* zathura, GVariant* GIRARA_UNUSED(par
 }
 
 static void handle_source_config_from_dir(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
-  gchar* input = NULL;
+  g_autofree gchar* input = NULL;
   g_variant_get(parameters, "(s)", &input);
 
   zathura_set_config_dir(zathura, input);
-  g_free(input);
   config_load_files(zathura);
 
   GVariant* result = g_variant_new("(b)", true);
@@ -510,7 +489,7 @@ static void json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t
 static GVariant* json_document_info(zathura_t* zathura) {
   zathura_document_t* document = zathura_get_document(zathura);
 
-  JsonBuilder* builder = json_builder_new();
+  g_autoptr(JsonBuilder) builder = json_builder_new();
   json_builder_begin_object(builder);
   json_builder_set_member_name(builder, "filename");
   json_builder_add_string_value(builder, zathura_document_get_path(document));
@@ -519,19 +498,16 @@ static GVariant* json_document_info(zathura_t* zathura) {
 
   json_builder_set_member_name(builder, "index");
   json_builder_begin_array(builder);
-  girara_tree_node_t* index = zathura_document_index_generate(document, NULL);
+  g_autoptr(girara_tree_node_t) index = zathura_document_index_generate(document, NULL);
   if (index != NULL) {
     json_document_info_add_node(builder, index);
-    girara_node_free(index);
   }
   json_builder_end_array(builder);
 
   json_builder_end_object(builder);
 
-  JsonNode* root        = json_builder_get_root(builder);
-  char* serialized_root = json_to_string(root, true);
-  json_node_free(root);
-  g_object_unref(builder);
+  g_autoptr(JsonNode) root = json_builder_get_root(builder);
+  char* serialized_root    = json_to_string(root, true);
 
   return g_variant_new_take_string(serialized_root);
 }
@@ -571,41 +547,32 @@ static const unsigned int TIMEOUT = 3000;
 
 static bool call_synctex_view(GDBusConnection* connection, const char* filename, const char* name,
                               const char* input_file, unsigned int line, unsigned int column) {
-  GError* error = NULL;
-  GVariant* vfilename =
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GVariant) vfilename =
       g_dbus_connection_call_sync(connection, name, DBUS_OBJPATH, "org.freedesktop.DBus.Properties", "Get",
                                   g_variant_new("(ss)", DBUS_INTERFACE, "filename"), G_VARIANT_TYPE("(v)"),
                                   G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
   if (vfilename == NULL) {
     girara_error("Failed to query 'filename' property from '%s': %s", name, error->message);
-    g_error_free(error);
     return false;
   }
 
-  GVariant* tmp = NULL;
+  g_autoptr(GVariant) tmp = NULL;
   g_variant_get(vfilename, "(v)", &tmp);
-  gchar* remote_filename = g_variant_dup_string(tmp, NULL);
+  g_autofree gchar* remote_filename = g_variant_dup_string(tmp, NULL);
   girara_debug("Filename from '%s': %s", name, remote_filename);
-  g_variant_unref(tmp);
-  g_variant_unref(vfilename);
 
   if (g_strcmp0(filename, remote_filename) != 0) {
-    g_free(remote_filename);
     return false;
   }
 
-  g_free(remote_filename);
-
-  GVariant* ret = g_dbus_connection_call_sync(connection, name, DBUS_OBJPATH, DBUS_INTERFACE, "SynctexView",
-                                              g_variant_new("(suu)", input_file, line, column), G_VARIANT_TYPE("(b)"),
-                                              G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
+  g_autoptr(GVariant) ret = g_dbus_connection_call_sync(
+      connection, name, DBUS_OBJPATH, DBUS_INTERFACE, "SynctexView", g_variant_new("(suu)", input_file, line, column),
+      G_VARIANT_TYPE("(b)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
   if (ret == NULL) {
     girara_error("Failed to run SynctexView on '%s': %s", name, error->message);
-    g_error_free(error);
     return false;
   }
-
-  g_variant_unref(ret);
   return true;
 }
 
@@ -615,32 +582,28 @@ static int iterate_instances_call_synctex_view(const char* filename, const char*
     return -1;
   }
 
-  GError* error               = NULL;
-  GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
+  g_autoptr(GError) error               = NULL;
+  g_autoptr(GDBusConnection) connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
   if (connection == NULL) {
     girara_error("Could not connect to session bus: %s", error->message);
-    g_error_free(error);
     return -1;
   }
 
   if (hint != -1) {
-    char* well_known_name = g_strdup_printf(DBUS_NAME_TEMPLATE, hint);
-    const bool ret        = call_synctex_view(connection, filename, well_known_name, input_file, line, column);
-    g_free(well_known_name);
+    g_autofree char* well_known_name = g_strdup_printf(DBUS_NAME_TEMPLATE, hint);
+    const bool ret = call_synctex_view(connection, filename, well_known_name, input_file, line, column);
     return ret ? 1 : -1;
   }
 
-  GVariant* vnames = g_dbus_connection_call_sync(connection, "org.freedesktop.DBus", "/org/freedesktop/DBus",
-                                                 "org.freedesktop.DBus", "ListNames", NULL, G_VARIANT_TYPE("(as)"),
-                                                 G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
+  g_autoptr(GVariant) vnames = g_dbus_connection_call_sync(
+      connection, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames", NULL,
+      G_VARIANT_TYPE("(as)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
   if (vnames == NULL) {
     girara_error("Could not list available names: %s", error->message);
-    g_error_free(error);
-    g_object_unref(connection);
     return -1;
   }
 
-  GVariantIter* iter = NULL;
+  g_autoptr(GVariantIter) iter = NULL;
   g_variant_get(vnames, "(as)", &iter);
 
   gchar* name    = NULL;
@@ -653,9 +616,6 @@ static int iterate_instances_call_synctex_view(const char* filename, const char*
 
     found_one = call_synctex_view(connection, filename, name, input_file, line, column);
   }
-  g_variant_iter_free(iter);
-  g_variant_unref(vnames);
-  g_object_unref(connection);
 
   return found_one ? 1 : 0;
 }

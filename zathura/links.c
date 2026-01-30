@@ -10,6 +10,7 @@
 #include "links.h"
 #include "zathura.h"
 #include "document.h"
+#include "document-widget.h"
 #include "utils.h"
 #include "page.h"
 #include "render.h"
@@ -134,17 +135,19 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
      of the viewport */
   double pos_x = 0;
   double pos_y = 0;
-  page_number_to_position(document, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
+  page_number_to_position(zathura, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
 
   /* correct to place the target position at the top of the viewport     */
   /* NOTE: link->target is in page units, needs to be scaled and rotated */
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
-  zathura_document_get_cell_size(document, &cell_height, &cell_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), link->target.page_number,
+                                        &cell_height, &cell_width);
 
   unsigned int doc_height = 0;
   unsigned int doc_width  = 0;
-  zathura_document_get_document_size(document, &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
+                                            &doc_width);
 
   bool link_hadjust = true;
   girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
@@ -182,20 +185,16 @@ static void link_remote(zathura_t* zathura, const char* file) {
     return;
   }
 
-  const char* path = zathura_document_get_path(zathura_get_document(zathura));
-  char* dir        = g_path_get_dirname(path);
-  char* uri        = g_build_filename(file, NULL);
+  const char* path     = zathura_document_get_path(zathura_get_document(zathura));
+  g_autofree char* dir = g_path_get_dirname(path);
+  g_autofree char* uri = g_build_filename(file, NULL);
 
   char* argv[] = {*zathura->global.arguments, uri, NULL};
 
-  GError* error = NULL;
+  g_autoptr(GError) error = NULL;
   if (g_spawn_async(dir, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error) == FALSE) {
     girara_error("Failed to execute command: %s", error->message);
-    g_error_free(error);
   }
-
-  g_free(uri);
-  g_free(dir);
 }
 
 static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
@@ -205,13 +204,11 @@ static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
   }
 
   const char* document = zathura_document_get_path(zathura_get_document(zathura));
-  char* dir            = g_path_get_dirname(document);
+  g_autofree char* dir = g_path_get_dirname(document);
 
   if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
-
-  g_free(dir);
 }
 #endif
 
@@ -276,9 +273,8 @@ void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* select
   zathura_link_target_t target = zathura_link_get_target(link);
   switch (type) {
   case ZATHURA_LINK_GOTO_DEST: {
-    gchar* tmp = g_strdup_printf("%d", target.page_number);
+    g_autofree gchar* tmp = g_strdup_printf("%d", target.page_number);
     gtk_clipboard_set_text(gtk_clipboard_get(*selection), tmp, -1);
-    g_free(tmp);
     girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %d"), target.page_number);
     break;
   }

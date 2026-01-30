@@ -26,32 +26,27 @@
 /* Handle synctex forward synchronization */
 #ifdef WITH_SYNCTEX
 static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
-  GFile* file = g_file_new_for_commandline_arg(filename);
+  g_autoptr(GFile) file = g_file_new_for_commandline_arg(filename);
   if (file == NULL) {
     girara_error("Unable to handle argument '%s'.", filename);
     return -1;
   }
 
-  char* real_path = g_file_get_path(file);
-  g_object_unref(file);
+  g_autofree char* real_path = g_file_get_path(file);
   if (real_path == NULL) {
     girara_error("Failed to determine path for '%s'", filename);
     return -1;
   }
 
-  int line         = 0;
-  int column       = 0;
-  char* input_file = NULL;
+  int line                    = 0;
+  int column                  = 0;
+  g_autofree char* input_file = NULL;
   if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
     girara_error("Failed to parse argument to --synctex-forward.");
-    g_free(real_path);
     return -1;
   }
 
   const int ret = zathura_dbus_synctex_position(real_path, input_file, line, column, synctex_pid);
-  g_free(input_file);
-  g_free(real_path);
-
   if (ret == -1) {
     /* D-Bus or SyncTeX failed */
     girara_error("Got no usable data from SyncTeX or D-Bus failed in some way.");
@@ -94,22 +89,22 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   zathura_init_locale();
 
   /* parse command line arguments */
-  gchar* config_dir      = NULL;
-  gchar* data_dir        = NULL;
-  gchar* cache_dir       = NULL;
-  gchar* plugin_path     = NULL;
-  gchar* loglevel        = NULL;
-  gchar* password        = NULL;
-  gchar* synctex_editor  = NULL;
-  gchar* synctex_fwd     = NULL;
-  gchar* mode            = NULL;
-  gchar* bookmark_name   = NULL;
-  gchar* search_string   = NULL;
-  gboolean forkback      = false;
-  gboolean print_version = false;
-  gint page_number       = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  gint synctex_pid       = -1;
-  Window embed           = 0;
+  g_autofree gchar* config_dir     = NULL;
+  g_autofree gchar* data_dir       = NULL;
+  g_autofree gchar* cache_dir      = NULL;
+  g_autofree gchar* plugin_path    = NULL;
+  g_autofree gchar* loglevel       = NULL;
+  g_autofree gchar* password       = NULL;
+  g_autofree gchar* synctex_editor = NULL;
+  g_autofree gchar* synctex_fwd    = NULL;
+  g_autofree gchar* mode           = NULL;
+  g_autofree gchar* bookmark_name  = NULL;
+  g_autofree gchar* search_string  = NULL;
+  gboolean forkback                = false;
+  gboolean print_version           = false;
+  gint page_number                 = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  gint synctex_pid                 = -1;
+  Window embed                     = 0;
 
   GOptionEntry entries[] = {
       {"reparent", 'e', 0, G_OPTION_ARG_INT, &embed, _("Reparents to window specified by xid (X11)"), "xid"},
@@ -138,17 +133,15 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   GOptionContext* context = g_option_context_new(" [file1] [file2] [...]");
   g_option_context_add_main_entries(context, entries, NULL);
 
-  GError* error = NULL;
+  g_autoptr(GError) error = NULL;
   if (g_option_context_parse(context, &argc, &argv, &error) == false) {
     girara_error("Error parsing command line arguments: %s\n", error->message);
     g_option_context_free(context);
-    g_error_free(error);
 
     return -1;
   }
   g_option_context_free(context);
 
-  int ret = 0;
   zathura_set_log_level(loglevel);
 
 #ifdef WITH_SYNCTEX
@@ -157,19 +150,16 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     if (argc != 2) {
       girara_error("Too many arguments or missing filename while running with "
                    "--synctex-forward");
-      ret = -1;
-      goto free_and_ret;
+      return -1;
     }
 
-    ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
+    int ret = run_synctex_forward(synctex_fwd, argv[1], synctex_pid);
     if (ret > 0) {
       /* Instance found. */
-      ret = 0;
-      goto free_and_ret;
+      return 0;
     } else if (ret < 0) {
       /* Error occurred. */
-      ret = -1;
-      goto free_and_ret;
+      return -1;
     }
 
     girara_debug("No instance found. Starting new one.");
@@ -177,16 +167,14 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 #else
   if (synctex_fwd != NULL || synctex_editor != NULL || synctex_pid != -1) {
     girara_error("Built without synctex support, but synctex specific option was specified.");
-    ret = -1;
-    goto free_and_ret;
+    return -1;
   }
 #endif
 
   /* check mode */
   if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
     girara_error("Invalid argument for --mode: %s", mode);
-    ret = -1;
-    goto free_and_ret;
+    return -1;
   }
 
   /* g_option_context_parse has some funny (documented) behavior:
@@ -207,14 +195,12 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
         file_idx = idx;
         if (setsid() == -1) {
           girara_error("Could not start new process group: %s", strerror(errno));
-          ret = -1;
-          goto free_and_ret;
+          return -1;
         }
         break;
       } else if (pid < 0) { /* error */
         girara_error("Could not fork: %s", strerror(errno));
-        ret = -1;
-        goto free_and_ret;
+        return -1;
       }
     }
   }
@@ -223,45 +209,40 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
-      goto free_and_ret;
+      return 0;
     } else if (pid < 0) { /* error */
       girara_error("Could not fork: %s", strerror(errno));
-      ret = -1;
-      goto free_and_ret;
+      return -1;
     }
 
     if (setsid() == -1) {
       girara_error("Could not start new process group: %s", strerror(errno));
-      ret = -1;
-      goto free_and_ret;
+      return -1;
     }
   }
 
   /* Print version */
   if (print_version == true) {
-    zathura_plugin_manager_t* plugin_manager = zathura_plugin_manager_new();
+    g_autoptr(zathura_plugin_manager_t) plugin_manager = zathura_plugin_manager_new();
     zathura_plugin_manager_set_dir(plugin_manager, plugin_path);
     zathura_plugin_manager_load(plugin_manager);
 
-    char* string = zathura_get_version_string(plugin_manager, false);
+    g_autofree char* string = zathura_get_version_string(plugin_manager, false);
     if (string != NULL) {
       fprintf(stdout, "%s\n", string);
-      g_free(string);
     }
-    zathura_plugin_manager_free(plugin_manager);
-
-    goto free_and_ret;
+    return 0;
   }
 
   /* Initialize GTK+ */
   gtk_init(&argc, &argv);
 
   /* Create zathura session */
-  zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, synctex_editor, embed);
+  g_autoptr(zathura_t) zathura =
+      init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, synctex_editor, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
-    ret = -1;
-    goto free_and_ret;
+    return -1;
   }
 
   /* open document if passed */
@@ -272,14 +253,10 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     document_open_idle(zathura, argv[file_idx], password, page_number, mode, synctex_fwd, bookmark_name, search_string);
   } else if (bookmark_name != NULL) {
     girara_error("Can not use bookmark argument when no file is given");
-    ret = -1;
-    zathura_free(zathura);
-    goto free_and_ret;
+    return -1;
   } else if (search_string != NULL) {
     girara_error("Can not use find argument when no file is given");
-    ret = -1;
-    zathura_free(zathura);
-    goto free_and_ret;
+    return -1;
   }
 
 #ifdef GTKOSXAPPLICATION
@@ -293,24 +270,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     }
   }
 #endif // GTKOSXAPPLICATION
+
   /* run zathura */
   gtk_main();
-
-  /* free zathura */
-  zathura_free(zathura);
-
-free_and_ret:
-  g_free(config_dir);
-  g_free(data_dir);
-  g_free(cache_dir);
-  g_free(plugin_path);
-  g_free(loglevel);
-  g_free(password);
-  g_free(synctex_editor);
-  g_free(synctex_fwd);
-  g_free(mode);
-  g_free(bookmark_name);
-  g_free(search_string);
-
-  return ret;
+  return 0;
 }

@@ -20,6 +20,11 @@
 #include <glib/gi18n.h>
 
 #define ZATHURA_RC "zathurarc"
+#ifndef WITH_SANDBOX
+#define DEFAULT_DB "sqlite"
+#else
+#define DEFAULT_DB "null"
+#endif
 
 static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
                                const void* value, void* UNUSED(data)) {
@@ -42,11 +47,9 @@ static void cb_color(girara_session_t* session, const char* name, girara_setting
   GdkRGBA color = {0, 0, 0, 0};
   gdk_rgba_parse(&color, str_value);
 
-  char* colorstr = gdk_rgba_to_string(&color);
+  g_autofree char* colorstr = gdk_rgba_to_string(&color);
   girara_template_set_variable_value(csstemplate, name, colorstr);
-  g_free(colorstr);
 }
-
 
 static void cb_color_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),
                             const void* value, void* UNUSED(data)) {
@@ -157,9 +160,8 @@ static void cb_window_statbusbar_changed(girara_session_t* session, const char* 
 
   const bool is_window_setting = g_str_has_prefix(name, "window-");
   if (is_window_setting) {
-    char* formatted_filename = get_formatted_filename(zathura, !is_window_setting);
+    g_autofree char* formatted_filename = get_formatted_filename(zathura, !is_window_setting);
     girara_set_window_title(zathura->ui.session, formatted_filename);
-    g_free(formatted_filename);
   } else {
     statusbar_page_number_update(zathura);
   }
@@ -198,6 +200,37 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
   }
 }
 
+static void cb_view_options(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
+                            const void* value, void* UNUSED(data)) {
+  g_return_if_fail(session != NULL && value != NULL);
+  zathura_t* zathura = session->global.data;
+
+  /* set default values */
+  bool show_hscrollbar = false;
+  bool show_vscrollbar = false;
+
+  /* evaluate input */
+  const char* input         = value;
+  const size_t input_length = strlen(input);
+
+  for (size_t i = 0; i < input_length; i++) {
+    switch (input[i]) {
+    case 'h':
+      show_hscrollbar = true;
+      break;
+    case 'v':
+      show_vscrollbar = true;
+      break;
+    }
+  }
+
+  /* apply settings */
+  GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+  GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
+}
+
 void config_load_default(zathura_t* zathura) {
   if (zathura == NULL || zathura->ui.session == NULL) {
     return;
@@ -230,7 +263,7 @@ void config_load_default(zathura_t* zathura) {
 
   /* clang-format off */
   /* zathura settings */
-  girara_setting_add(gsession, "database",              "sqlite",     STRING, true,  _("Database backend"),         NULL, NULL);
+  girara_setting_add(gsession, "database",              DEFAULT_DB,   STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
   int_value = 10;
   girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);
@@ -363,6 +396,9 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,
                      _("Disable additional information for signatures embedded in the document."),
                      cb_show_signature_info, NULL);
+  girara_setting_add(gsession, "scrollbar-fg", "#DDDDDD", STRING, FALSE, _("Scrollbar foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "scrollbar-bg", "#000000", STRING, FALSE, _("Scrollbar background color"), cb_color, NULL);
+  girara_setting_add(gsession, "view-options", "", STRING, FALSE, _("Show or hide view UI elements"), cb_view_options, NULL);
 
 #define DEFAULT_SHORTCUTS(mode)                                                                                        \
   girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, (mode), ZATHURA_ADJUST_BESTFIT, NULL);           \
@@ -711,22 +747,21 @@ void config_load_default(zathura_t* zathura) {
 
 void config_load_files(zathura_t* zathura) {
   /* load global configuration files */
-  char* config_path          = girara_get_xdg_path(XDG_CONFIG_DIRS);
-  girara_list_t* config_dirs = girara_split_path_array(config_path);
-  ssize_t size               = girara_list_size(config_dirs) - 1;
-  for (; size >= 0; --size) {
-    const char* dir = girara_list_nth(config_dirs, size);
-    char* file      = g_build_filename(dir, ZATHURA_RC, NULL);
-    girara_config_parse(zathura->ui.session, file);
-    g_free(file);
+  g_autofree char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
+  if (config_path != NULL && config_path[0] != '\0') {
+    char** config_dirs = g_strsplit(config_path, ":", 0);
+    ssize_t size       = g_strv_length(config_dirs) - 1;
+    for (; size >= 0; --size) {
+      const char* dir       = config_dirs[size];
+      g_autofree char* file = g_build_filename(dir, ZATHURA_RC, NULL);
+      girara_config_parse(zathura->ui.session, file);
+    }
+    g_strfreev(config_dirs);
   }
-  girara_list_free(config_dirs);
-  g_free(config_path);
 
   girara_config_parse(zathura->ui.session, SYSCONFDIR "/" ZATHURA_RC);
 
   /* load local configuration files */
-  char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
+  g_autofree char* configuration_file = g_build_filename(zathura->config.config_dir, ZATHURA_RC, NULL);
   girara_config_parse(zathura->ui.session, configuration_file);
-  g_free(configuration_file);
 }

@@ -290,6 +290,11 @@ typedef enum zathura_signature_state_e {
   ZATHURA_SIGNATURE_ERROR,
 } zathura_signature_state_t;
 
+static inline void zathura_check_set_error(zathura_error_t* error, zathura_error_t code) {
+  if (error != NULL) {
+    *error = code;
+  }
+}
 /**
  * Signature information
  */

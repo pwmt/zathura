@@ -61,6 +61,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* ALLOW_RULE(clock_getres); unused? */
   /* ALLOW_RULE(clone); specified below, clone3 see comment below */
   ALLOW_RULE(clock_gettime); /* used when vDSO function is unavailable */
+#ifdef __NR_clock_gettime64
+  ALLOW_RULE(clock_gettime64);
+#endif
   ALLOW_RULE(close);
   ALLOW_RULE(epoll_create1);
   ALLOW_RULE(epoll_ctl);
@@ -78,6 +81,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(fstatfs); /* statfs (below) */
   ALLOW_RULE(ftruncate);
   ALLOW_RULE(futex);
+#ifdef __NR_futex_time64
+  ALLOW_RULE(futex_time64);
+#endif
   /* ALLOW_RULE(getdents); 32 bit only */
   ALLOW_RULE(getdents64);
   ALLOW_RULE(getegid);
@@ -102,6 +108,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
   ALLOW_RULE(mmap);
+#ifdef __NR_mmap2
+  ALLOW_RULE(mmap2); /* Only required on 32-bit ARM systems */
+#endif
   ALLOW_RULE(mprotect);
   ALLOW_RULE(mremap); /* mupdf requirement */
   ALLOW_RULE(munmap);
@@ -116,6 +125,10 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(pread64); /* equals pread */
   /* ALLOW_RULE(pwrite64); equals pwrite */
   ALLOW_RULE(read);
+  /* musl libc (and some other non-glibc libc implementations) may use readv; */
+#if !defined(__GLIBC__)
+  ALLOW_RULE(readv);
+#endif
   ALLOW_RULE(readlink);   /* readlinkat */
   ALLOW_RULE(readlinkat); /* AArch64 requirement */
   /* ALLOW_RULE(recvfrom); X11 only */
@@ -145,6 +158,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* ALLOW_RULE(uname); X11 only */
   /* ALLOW_RULE(unlink); unused?, unlinkat */
   ALLOW_RULE(write); /* investigate further */
+#if !defined(__GLIBC__)
+  ALLOW_RULE(writev);
+#endif
   /*  ALLOW_RULE(writev); X11 only */
   /*  ALLOW_RULE(wait4); unused? */
 
@@ -188,11 +204,21 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* block unsuccessful ipc attempt */
   ERRNO_RULE(getpeername);
 
+  /* MUSL libc still uses CLONE_DETACHED */
+#if !defined(__GLIBC__)
+  /* filter clone arguments */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1,
+           SCMP_CMP(0, SCMP_CMP_EQ,
+                    CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM | CLONE_SETTLS |
+                        CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID | CLONE_DETACHED));
+#else
   /* filter clone arguments */
   ADD_RULE("allow", SCMP_ACT_ALLOW, clone, 1,
            SCMP_CMP(0, SCMP_CMP_EQ,
                     CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM | CLONE_SETTLS |
                         CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID));
+#endif
+
   /* trigger fallback to clone */
   ERRNO_RULE(clone3);
 
@@ -222,8 +248,8 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 
   /* Prevent the creation of executeable memory - required by some files */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
-  *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
-  */
+   *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
+   */
 
   /* open syscall to be removed? openat is used instead */
   /* special restrictions for open, prevent opening files for writing */

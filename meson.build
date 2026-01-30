@@ -1,6 +1,6 @@
 project('zathura', 'c',
-  version: '0.5.14',
-  meson_version: '>=1',
+  version: '2026.01.30',
+  meson_version: '>=1.5',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
 
@@ -37,9 +37,14 @@ if not sysconfdir.startswith('/')
   sysconfdir = join_paths(prefix, sysconfdir)
 endif
 
+# required attributes
+cc.compiles('''#if !__has_attribute(cleanup)
+#error attribute cleanup not supported
+#endif''', name: '__attribute__(cleanup)', required: true)
+
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.4.5', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara-gtk3', version: '>=2026.01.30', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.76')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
@@ -50,13 +55,15 @@ cairo = dependency('cairo')
 magic = dependency('libmagic')
 sqlite = dependency('sqlite3', version: '>=3.6.23')
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib, sqlite]
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
 
 if host_machine.system() == 'darwin'
   gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
   build_dependencies += gtk_mac_integration
 endif
 
+# required functions
+cc.has_function('__builtin_umul_overflow', required: true)
 
 # defines
 defines = [
@@ -75,8 +82,8 @@ endif
 flags = [
   '-Werror=implicit-function-declaration',
   '-Werror=vla',
-  '-fvisibility=hidden',
-  '-Werror=int-conversion'
+  '-Werror=int-conversion',
+  '-Werror=maybe-uninitialized'
 ]
 flags = cc.get_supported_arguments(flags)
 
@@ -109,13 +116,12 @@ sources = files(
   'zathura/adjustment.c',
   'zathura/bookmarks.c',
   'zathura/callbacks.c',
-  'zathura/checked-integer-arithmetic.c',
   'zathura/commands.c',
   'zathura/completion.c',
   'zathura/config.c',
   'zathura/content-type.c',
   'zathura/database.c',
-  'zathura/database-sqlite.c',
+  'zathura/database-null.c',
   'zathura/dbus-interface.c',
   'zathura/document.c',
   'zathura/document-widget.c',
@@ -152,10 +158,11 @@ headers += version_header
 
 # zathura helper library
 libzathura = static_library('zathura',
-  sources,
-  dependencies: build_dependencies,
+  sources + ['zathura/database-sqlite.c'],
+  dependencies: build_dependencies + [sqlite],
   include_directories: include_directories,
-  c_args: defines + flags
+  c_args: defines + flags,
+  gnu_symbol_visibility: 'hidden',
 )
 libzathura_dep = declare_dependency(link_with: libzathura)
 
@@ -179,7 +186,8 @@ if seccomp.found() or landlock or target_machine.system() == 'openbsd'
     sources + sandbox_sources,
     dependencies: build_dependencies + sandbox_dependencies,
     include_directories: include_directories,
-    c_args: defines + flags + sandbox_defines
+    c_args: defines + flags + sandbox_defines,
+    gnu_symbol_visibility: 'hidden',
   )
   libzathura_sandbox_dep = declare_dependency(link_with: libzathura_sandbox)
 
@@ -190,6 +198,7 @@ if seccomp.found() or landlock or target_machine.system() == 'openbsd'
     install: true,
     include_directories: include_directories,
     c_args: defines + sandbox_defines + flags,
+    gnu_symbol_visibility: 'hidden',
     export_dynamic: true,
     win_subsystem: 'windows'
   )
@@ -203,6 +212,7 @@ zathura = executable(
   install: true,
   include_directories: include_directories,
   c_args: defines + flags,
+  gnu_symbol_visibility: 'hidden',
   export_dynamic: true,
   win_subsystem: 'windows'
 )

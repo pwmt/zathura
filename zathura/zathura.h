@@ -84,7 +84,7 @@ enum {
 
 /* cache constants */
 enum {
-  ZATHURA_PAGE_CACHE_DEFAULT_SIZE     = 15,
+  ZATHURA_PAGE_CACHE_DEFAULT_SIZE     = 16,
   ZATHURA_PAGE_CACHE_MAX_SIZE         = 1024,
   ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE = 4 * 1024 * 1024
 };
@@ -116,8 +116,9 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
+    GtkWidget* view;            /**< Scrolled Window */
     GtkWidget* document_widget; /**< Widget that contains all rendered pages */
-    GtkWidget* index;       /**< Widget to show the index of the document */
+    GtkWidget* index;           /**< Widget to show the index of the document */
   } ui;
 
   struct {
@@ -264,6 +265,8 @@ bool zathura_init(zathura_t* zathura);
  * @param zathura The zathura session
  */
 void zathura_free(zathura_t* zathura);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_t, zathura_free)
 
 /**
  * Set parent window id. This does not have an effect if the underlying Gtk

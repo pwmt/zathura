@@ -64,6 +64,32 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="2026-01-30" date="2026-01-30">
+      <description>
+        <p>Switch to date-based version numbers</p>
+        <p>Fix warnings from CSS generation (#824)</p>
+        <p>Apply correect shacling when recoloring (#836)</p>
+        <p>Make sure jumplist stays valid after close (#835)</p>
+        <p>Disable message in incremental search (#227, #847)</p>
+        <p>Fix seccomp rules with musl (#843)</p>
+        <p>Implement custom drawing for document widget (#580, #657, #736, #785, #795, #797, #826)
+      </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/227">#227</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/580">#580</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/657">#657</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/736">#736</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/785">#785</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/795">#795</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/797">#797</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/824">#824</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/826">#826</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/836">#836</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/843">#843</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/845">#845</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/847">#847</issue>
+      </issues>
+    </release>
     <release version="0.5.14" date="2025-10-27">
       <description>
         <p>Switch default database to sqlite and drop plain database</p>
@@ -74,6 +100,10 @@
         <p>Undo size-allocate callback changes</p>
         <p>Fix temporary file nams for better content-type detection</p>
       </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/799">#799</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/814">#814</issue>
+      </issues>
     </release>
     <release version="0.5.13" date="2025-09-23">
       <description>
@@ -82,6 +112,10 @@
         <p>Fix memory leak and callback type error (#767)</p>
         <p>Warn if plugins do not support exporting images or attachments (#334)</p>
       </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/334">#334</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/767">#767</issue>
+      </issues>
     </release>
     <release version="0.5.12" date="2025-07-03">
       <description>

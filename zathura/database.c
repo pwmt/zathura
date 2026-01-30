@@ -67,19 +67,3 @@ bool zathura_db_save_quickmarks(ZathuraDatabase* db, const char* file, girara_li
 
   return ZATHURA_DATABASE_GET_INTERFACE(db)->save_quickmarks(db, file, quickmarks);
 }
-
-static int bookmarks_compare(const void* l, const void* r) {
-  const zathura_bookmark_t* lhs = l;
-  const zathura_bookmark_t* rhs = r;
-
-  return zathura_bookmarks_compare(lhs, rhs);
-}
-
-static void bookmarks_free(void* p) {
-  zathura_bookmark_t* bookmark = p;
-  zathura_bookmark_free(bookmark);
-}
-
-girara_list_t* bookmarks_list_new(void) {
-  return girara_sorted_list_new2(bookmarks_compare, bookmarks_free);
-}

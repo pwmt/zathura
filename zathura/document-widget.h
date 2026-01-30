@@ -7,36 +7,24 @@
 #include "types.h"
 
 /**
- * The document view widget. Places a subset of the pages of
- * the document into a grid. The widget handles updating the
- * grid to contain the pages in view, and as many pages around
- * the view as the cairo surface will allow.
- *
- * zathura_document_widget_[get_ratio|set_value|set_value_from_ratio]
- * functions replace the equivalent ones previously contained in
- * adjustment.c. They wrap these functions and perform the necessary
- * transformations to move between a ratio of [0,1] in the whole document,
- * to a ratio in the subset of the pages contained in the document widgets'
- * grid.
- *
- * */
+ * The document view widget.
+ */
 struct zathura_document_widget_s {
-  GtkGrid parent;
+  GtkContainer parent;
 };
 
 struct zathura_document_widget_class_s {
-  GtkGridClass parent_class;
+  GtkContainerClass parent_class;
 };
 
-#define ZATHURA_TYPE_DOCUMENT_WIDGET (zathura_document_widget_get_type())
-#define ZATHURA_DOCUMENT_WIDGET(obj)                                                                                   \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidget))
+#define ZATHURA_TYPE_DOCUMENT (zathura_document_widget_get_type())
+#define ZATHURA_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidget))
 #define ZATHURA_DOCUMENT_WIDGET_CLASS(obj)                                                                             \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
-#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
-#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidgetClass))
+#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
+#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
 #define ZATHURA_DOCUMENT_WIDGET_GET_CLASS(obj)                                                                         \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidgetClass))
 
 /**
  * Returns the type of the document view widget.
@@ -51,55 +39,91 @@ GType zathura_document_widget_get_type(void) G_GNUC_CONST;
  * @param zathura the zathura instance
  * @return a document view widget
  */
-GtkWidget* zathura_document_widget_new(void);
+GtkWidget* zathura_document_widget_new(zathura_t* zathura);
 
 /**
- * Builds the box structure to show the rendered pages
+ * Update internal layout structures when pages-per-row,
+ * first page column or document changes.
  *
- * @param zathura The zathura session
- * @param page_v_padding vertical padding in pixels between pages
- * @param page_h_padding horizontal padding in pixels between pages
- * @param page_right_to_left Render pages right to left
+ * @param document ZathuraDocumentWidget
  */
-void zathura_document_widget_set_mode(zathura_t* zathura, 
-    unsigned int page_v_padding, unsigned int page_h_padding, bool page_right_to_left);
+void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document);
 
 /**
- * Update the pages in the document view
+ * Calculate the position of each grid cell.
+ * Required when any page size is changed.
  *
- * @param widget the document view widget
+ * @param document ZathuraDocumentWidget
  */
-void zathura_document_widget_render(zathura_t* zathura);
+void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document);
 
 /**
- * Clear pages from the document view
+ * Return the position of a cell from the document's layout table in pixels.
+ * It takes the current scale into account.
+ * Valid after a call to zathura_document_widget_compute_layout.
  *
- * @param widget the document view widget
+ * @param document   ZathuraDocumentWidget
+ * @param page_index index of the page
+ * @return pos_x     pixel offset in the x direction
+ * @return pos_y     pixel offset in the y direction
  */
-void zathura_document_widget_clear_pages(GtkWidget* widget);
+void zathura_document_widget_get_cell_pos(ZathuraDocumentWidget* document, unsigned int page_index, unsigned int* pos_x,
+                                          unsigned int* pos_y);
 
 /**
- * Compute the adjustment ratio
+ * Return the size of a cell from the document's layout table in pixels.
+ * It takes the current scale into account.
+ * Valid after a call to zathura_document_widget_compute_layout.
  *
- * That is, the ratio between the length from the lower bound to the middle of
- * the slider, and the total length of the scrollbar.
- *
- * @param adjustment Scrollbar adjustment
- * @param width Is the adjustment for width?
- * @return Adjustment ratio
+ * @param document   ZathuraDocumentWidget
+ * @param page_index index of the page
+ * @return height    cell height
+ * @return width     cell width
  */
-gdouble zathura_document_widget_get_ratio(zathura_t* zathura, GtkAdjustment* adjustment, bool width);
+void zathura_document_widget_get_cell_size(ZathuraDocumentWidget* document, unsigned int page_index,
+                                           unsigned int* height, unsigned int* width);
 
 /**
- * Set the adjustment value from ratio
+ * The position and size of a row in the document widget.
+ * Valid after a call to zathura_document_widget_compute_layout.
  *
- * The ratio is usually obtained from a previous call to
- * zathura_document_widget_get_ratio().
- *
- * @param adjustment Adjustment instance
- * @param ratio Ratio from which the adjustment value will be set
- * @param width Is the adjustment for width?
+ * @param document   ZathuraDocumentWidget
+ * @param row        row number, indexed from 0.
+ * @return pos       pixel offset
+ * @return size      row size
  */
-void zathura_document_widget_set_value_from_ratio(zathura_t* zathura, GtkAdjustment* adjustment, double ratio,
-                                                  bool width);
+void zathura_document_widget_get_row(ZathuraDocumentWidget* document, unsigned int row, unsigned int* pos,
+                                     unsigned int* size);
+
+/**
+ * The position and size of a column in the document widget.
+ * Valid after a call to zathura_document_widget_compute_layout.
+ *
+ * @param document   ZathuraDocumentWidget
+ * @param col        column number, indexed from 0.
+ * @return pos       pixel offset
+ * @return size      col size
+ */
+void zathura_document_widget_get_col(ZathuraDocumentWidget* document, unsigned int col, unsigned int* pos,
+                                     unsigned int* size);
+
+/**
+ * Get the size of the entire document to be displayed in pixels.
+ * Takes into account the scale, layout of the pages, and padding
+ * between them. Valid after a call to zathura_document_widget_compute_layout.
+ *
+ * @param document ZathuraDocumentWidget
+ * @return height  document height in pixels
+ * @return width   document width in pixels
+ */
+void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, unsigned int* height,
+                                               unsigned int* width);
+
+/**
+ * Remove page widgets from document.
+ *
+ * @param document ZathuraDocumentWidget
+ */
+void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document);
+
 #endif // DOCUMENT_WIDGET_H

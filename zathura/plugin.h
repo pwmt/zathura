@@ -25,6 +25,8 @@ zathura_plugin_manager_t* zathura_plugin_manager_new(void);
  */
 void zathura_plugin_manager_free(zathura_plugin_manager_t* plugin_manager);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_plugin_manager_t, zathura_plugin_manager_free)
+
 /**
  * Add colon-seperated list of directories to the plugin manager's plugin search path
  *

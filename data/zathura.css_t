@@ -9,3 +9,13 @@
   color: @index-active-fg@;
   background-color: @index-active-bg@;
 }
+
+/* Scrollbar */
+#@session@ scrolledwindow scrollbar {
+  background-color: @scrollbar-bg@;
+}
+
+#@session@ scrolledwindow scrollbar > slider {
+  background-color: @scrollbar-fg@;
+}
+

@@ -11,7 +11,7 @@ The following dependencies are required:
 
 * `gtk3` (>= 3.24)
 * `glib` (>= 2.76)
-* `girara` (>= 0.4.3)
+* `girara` (>= 2026.01.30)
 * `libmagic` from file(1): for mime-type detection
 * `json-glib`
 * `sqlite3` (>= 3.6.23): sqlite3 database backend
@@ -22,7 +22,7 @@ The following dependencies are optional:
 
 For building zathura, the following dependencies are also required:
 
-* `meson` (>= 1)
+* `meson` (>= 1.5)
 * `gettext`
 * `pkgconf`
 
@@ -55,7 +55,7 @@ To build and install zathura using meson's ninja backend:
     ninja
     ninja install
 
-Note that the default backend for meson might vary based on the platform. Please
+> **Note:** The default backend for meson might vary based on the platform. Please
 refer to the meson documentation for platform specific dependencies.
 
 Bugs

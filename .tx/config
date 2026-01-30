@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[o:pwmt:p:zathura:r:zathura]
+file_filter            = po/<lang>.po
+source_file            = po/org.pwmt.zathura.pot
+source_lang            = en
+replace_edited_strings = false
+keep_translations      = false
+

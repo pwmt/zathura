@@ -27,7 +27,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
     if (error != NULL) {
       *error = ZATHURA_ERROR_INVALID_ARGUMENTS;
     }
-    goto error_ret;
+    return NULL;
   }
 
   /* init page */
@@ -36,7 +36,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
     if (error != NULL) {
       *error = ZATHURA_ERROR_OUT_OF_MEMORY;
     }
-    goto error_ret;
+    return NULL;
   }
 
   page->index           = index;
@@ -76,12 +76,9 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
   return page;
 
 error_free:
-
   if (page != NULL) {
     zathura_page_free(page);
   }
-
-error_ret:
 
   return NULL;
 }

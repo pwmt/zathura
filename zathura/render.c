@@ -11,6 +11,7 @@
 #include "adjustment.h"
 #include "zathura.h"
 #include "document.h"
+#include "document-widget.h"
 #include "page.h"
 #include "page-widget.h"
 #include "utils.h"
@@ -694,7 +695,7 @@ static void recolor_fast(ZathuraRendererPrivate* priv, unsigned int page_width, 
 }
 
 static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned int page_width,
-                    unsigned int page_height, cairo_surface_t* surface) {
+                    unsigned int page_height, cairo_surface_t* surface, zathura_device_factors_t device_factors) {
   /* uses a representation of a rgb color as follows:
      - a lightness scalar (between 0,1), which is a weighted average of r, g, b,
      - a hue vector, which indicates a radian direction from the grey axis,
@@ -720,13 +721,13 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
                               fabs(rgb2.red - rgb2.blue) < DBL_EPSILON && fabs(rgb2.red - rgb2.green) < DBL_EPSILON)) &&
       (rgb1.alpha >= 1. - DBL_EPSILON && rgb2.alpha >= 1. - DBL_EPSILON);
 
-  girara_list_t* rectangles = NULL;
-  bool found_images         = false;
+  g_autoptr(girara_list_t) rectangles = NULL;
+  bool found_images                   = false;
 
   /* If in reverse video mode retrieve images */
   if (priv->recolor.reverse_video == true) {
-    girara_list_t* images = zathura_page_images_get(page, NULL);
-    found_images          = (images != NULL);
+    g_autoptr(girara_list_t) images = zathura_page_images_get(page, NULL);
+    found_images                    = (images != NULL);
 
     rectangles = girara_list_new();
     if (rectangles == NULL) {
@@ -743,12 +744,13 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
           break;
         }
         *rect = recalc_rectangle(page, image_it->position);
+        /* Scale rectangle coordinates by device factors to match surface pixel coordinates */
+        rect->x1 *= device_factors.x;
+        rect->x2 *= device_factors.x;
+        rect->y1 *= device_factors.y;
+        rect->y2 *= device_factors.y;
         girara_list_append(rectangles, rect);
       }
-    }
-
-    if (images != NULL) {
-      girara_list_free(images);
     }
   }
 
@@ -756,10 +758,6 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
     recolor_fast(priv, page_width, page_height, surface, rectangles, found_images);
   } else {
     recolor_slow(priv, page_width, page_height, surface, rectangles, found_images);
-  }
-
-  if (rectangles != NULL) {
-    girara_list_free(rectangles);
   }
 
   cairo_surface_mark_dirty(surface);
@@ -866,7 +864,7 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
 
   /* recolor */
   if (request_priv->render_plain == false && priv->recolor.enabled == true) {
-    recolor(priv, page, page_width, page_height, surface);
+    recolor(priv, page, page_width, page_height, surface, device_factors);
   }
 
   if (!invoke_completed_signal(job, surface)) {
@@ -906,6 +904,8 @@ void render_all(zathura_t* zathura) {
   if (document == NULL) {
     return;
   }
+
+  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
 
   /* unmark all pages */
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);

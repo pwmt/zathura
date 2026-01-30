@@ -7,7 +7,6 @@
 #include "types.h"
 #include "links.h"
 #include "internal.h"
-#include "checked-integer-arithmetic.h"
 
 zathura_index_element_t* zathura_index_element_new(const char* title) {
   if (title == NULL) {
@@ -77,7 +76,7 @@ static void document_information_entry_free(void* data) {
 }
 
 girara_list_t* zathura_document_information_entry_list_new(void) {
-  return girara_list_new2(document_information_entry_free);
+  return girara_list_new_with_free(document_information_entry_free);
 }
 
 zathura_document_information_entry_t* zathura_document_information_entry_new(zathura_document_information_type_t type,

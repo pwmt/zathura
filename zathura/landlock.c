@@ -74,11 +74,13 @@ void landlock_drop_write(void) {
   landlock_drop(_LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE);
 }
 
-void landlock_drop_all(void) {
+#if 0
+static void landlock_drop_all(void) {
   landlock_drop(_LANDLOCK_ACCESS_FS_READ | _LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE);
 }
+#endif
 
-void landlock_write_fd(const int dir_fd) {
+static void landlock_write_fd(const int dir_fd) {
   const struct landlock_ruleset_attr ruleset_attr = {
       .handled_access_fs = _LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE,
   };
@@ -113,8 +115,8 @@ void landlock_write_fd(const int dir_fd) {
 
 void landlock_restrict_write(void) {
   landlock_check_kernel();
-  char* data_path = girara_get_xdg_path(XDG_DATA);
-  int fd          = open(data_path, O_PATH | O_CLOEXEC | O_DIRECTORY);
-  g_free(data_path);
+  g_autofree char* data_path = girara_get_xdg_path(XDG_DATA);
+  int fd                     = open(data_path, O_PATH | O_CLOEXEC | O_DIRECTORY);
   landlock_write_fd(fd);
+  close(fd);
 }

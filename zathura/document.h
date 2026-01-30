@@ -299,38 +299,6 @@ void ZATHURA_PLUGIN_API zathura_document_set_device_factors(zathura_document_t* 
 ZATHURA_PLUGIN_API zathura_device_factors_t zathura_document_get_device_factors(zathura_document_t* document);
 
 /**
- * Return the size of a cell from the document's layout table in pixels. Assumes
- * that the table is homogeneous (i.e. every cell has the same dimensions). It
- * takes the current scale into account.
- *
- * @param[in]  document     The document instance
- * @param[out] height,width The computed height and width of the cell
- */
-ZATHURA_PLUGIN_API void zathura_document_get_cell_size(zathura_document_t* document, unsigned int* height,
-                                                       unsigned int* width);
-
-/**
- * Compute the size of the entire document to be displayed in pixels. Takes into
- * account the scale, the layout of the pages, and the padding between them. It
- * should be equal to the allocation of zathura->ui.page_widget once it's shown.
- *
- * @param[in]  document               The document
- * @param[out] height,width           The height and width of the document
- */
-ZATHURA_PLUGIN_API void zathura_document_get_document_size(zathura_document_t* document, unsigned int* height,
-                                                           unsigned int* width);
-
-/**
- * Sets the cell height and width of the document
- *
- * @param[in]  document          The document instance
- * @param[in]  cell_height       The desired cell height
- * @param[in]  cell_width        The desired cell width
- */
-ZATHURA_PLUGIN_API void zathura_document_set_cell_size(zathura_document_t* document, unsigned int cell_height,
-                                                       unsigned int cell_width);
-
-/**
  * Sets the layout of the pages in the document
  *
  * @param[in]  document          The document instance
@@ -339,17 +307,25 @@ ZATHURA_PLUGIN_API void zathura_document_set_cell_size(zathura_document_t* docum
  * @param[in]  pages_per_row     number of pages per row
  * @param[in]  first_page_column column of the first page (first column is 1)
  */
-ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding, 
-                                                        unsigned int page_h_padding, unsigned int pages_per_row, 
-                                                        unsigned int first_page_column);
+ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding,
+                                                         unsigned int page_h_padding, unsigned int pages_per_row,
+                                                         unsigned int first_page_column);
 
 /**
- * Returns the padding in pixels between pages
+ * Returns the vertical padding in pixels between pages
  *
  * @param document The document
  * @return The padding in pixels between pages
  */
-ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_padding(zathura_document_t* document);
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_v_padding(zathura_document_t* document);
+
+/**
+ * Returns the horizontal padding in pixels between pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+ZATHURA_PLUGIN_API unsigned int zathura_document_get_page_h_padding(zathura_document_t* document);
 
 /**
  * Returns the number of pages per row

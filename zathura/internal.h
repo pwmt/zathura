@@ -26,6 +26,6 @@ struct zathura_document_information_entry_s {
  * @param document The document
  * @return The plugin or NULL
  */
-zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document);
+const zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document);
 
 #endif // INTERNAL_H

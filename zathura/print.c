@@ -16,9 +16,8 @@ static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintCon
     return;
   }
 
-  char* file_path = get_formatted_filename(zathura, true);
+  g_autofree char* file_path = get_formatted_filename(zathura, true);
   girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
-  g_free(file_path);
 }
 
 static bool draw_page_cairo(cairo_t* cairo, zathura_t* zathura, zathura_page_t* page) {
@@ -92,9 +91,8 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
   }
 
   /* Update statusbar. */
-  char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number);
+  g_autofree char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number);
   girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
-  g_free(tmp);
 
   /* Get the page and cairo handle.  */
   zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
@@ -135,8 +133,8 @@ static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operatio
 void print(zathura_t* zathura) {
   g_return_if_fail(zathura_has_document(zathura) == true);
 
-  zathura_document_t* document       = zathura_get_document(zathura);
-  GtkPrintOperation* print_operation = gtk_print_operation_new();
+  zathura_document_t* document                 = zathura_get_document(zathura);
+  g_autoptr(GtkPrintOperation) print_operation = gtk_print_operation_new();
 
   /* print operation settings */
   gtk_print_operation_set_job_name(print_operation, zathura_document_get_path(document));
@@ -160,13 +158,12 @@ void print(zathura_t* zathura) {
   g_signal_connect(print_operation, "request-page-setup", G_CALLBACK(cb_print_request_page_setup), zathura);
 
   /* print */
-  GError* error                  = NULL;
+  g_autoptr(GError) error        = NULL;
   GtkPrintOperationResult result = gtk_print_operation_run(print_operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
                                                            GTK_WINDOW(zathura->ui.session->gtk.window), &error);
 
   if (result == GTK_PRINT_OPERATION_RESULT_ERROR) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing failed: %s"), error->message);
-    g_error_free(error);
   } else if (result == GTK_PRINT_OPERATION_RESULT_APPLY) {
     g_clear_object(&zathura->print.settings);
     g_clear_object(&zathura->print.page_setup);
@@ -175,6 +172,4 @@ void print(zathura_t* zathura) {
     zathura->print.settings   = g_object_ref(gtk_print_operation_get_print_settings(print_operation));
     zathura->print.page_setup = g_object_ref(gtk_print_operation_get_default_page_setup(print_operation));
   }
-
-  g_object_unref(print_operation);
 }

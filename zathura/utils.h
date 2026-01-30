@@ -181,4 +181,15 @@ bool parse_color(GdkRGBA* color, const char* str);
  */
 girara_list_t* flatten_rectangles(girara_list_t* rectangles);
 
+/**
+ * Search through the document for the latest search item
+ *
+ * @param zathura The zathura instance
+ * @param argument The used argument
+ * @param disable_notify If true, don't notify no match found
+ *
+ * @return true if no error occurred otherwise false
+ */
+bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disable_notify);
+
 #endif // UTILS_H

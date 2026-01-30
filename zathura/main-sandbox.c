@@ -71,19 +71,19 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   zathura_init_locale();
 
   /* parse command line arguments */
-  gchar* config_dir    = NULL;
-  gchar* data_dir      = NULL;
-  gchar* cache_dir     = NULL;
-  gchar* plugin_path   = NULL;
-  gchar* loglevel      = NULL;
-  gchar* password      = NULL;
-  gchar* mode          = NULL;
-  gchar* bookmark_name = NULL;
-  gchar* search_string = NULL;
-  bool forkback        = false;
-  bool print_version   = false;
-  int page_number      = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  Window embed         = 0;
+  g_autofree gchar* config_dir    = NULL;
+  g_autofree gchar* data_dir      = NULL;
+  g_autofree gchar* cache_dir     = NULL;
+  g_autofree gchar* plugin_path   = NULL;
+  g_autofree gchar* loglevel      = NULL;
+  g_autofree gchar* password      = NULL;
+  g_autofree gchar* mode          = NULL;
+  g_autofree gchar* bookmark_name = NULL;
+  g_autofree gchar* search_string = NULL;
+  bool forkback                   = false;
+  bool print_version              = false;
+  int page_number                 = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
+  Window embed                    = 0;
 
   GOptionEntry entries[] = {
       {"reparent", 'e', 0, G_OPTION_ARG_INT, &embed, _("Reparents to window specified by xid (X11)"), "xid"},
@@ -104,27 +104,21 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       {NULL, '\0', 0, 0, NULL, NULL, NULL},
   };
 
-  GOptionContext* context = g_option_context_new(" [file1] [file2] [...]");
+  g_autoptr(GOptionContext) context = g_option_context_new(" [file1] [file2] [...]");
   g_option_context_add_main_entries(context, entries, NULL);
 
-  GError* error = NULL;
+  g_autoptr(GError) error = NULL;
   if (g_option_context_parse(context, &argc, &argv, &error) == false) {
     girara_error("Error parsing command line arguments: %s\n", error->message);
-    g_option_context_free(context);
-    g_error_free(error);
-
     return -1;
   }
-  g_option_context_free(context);
 
-  int ret = 0;
   zathura_set_log_level(loglevel);
 
   /* check mode */
   if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
     girara_error("Invalid argument for --mode: %s", mode);
-    ret = -1;
-    goto free_and_ret;
+    return -1;
   }
 
   /* g_option_context_parse has some funny (documented) behavior:
@@ -145,14 +139,12 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
         file_idx = idx;
         if (setsid() == -1) {
           girara_error("Could not start new process group: %s", strerror(errno));
-          ret = -1;
-          goto free_and_ret;
+          return -1;
         }
         break;
       } else if (pid < 0) { /* error */
         girara_error("Could not fork: %s", strerror(errno));
-        ret = -1;
-        goto free_and_ret;
+        return -1;
       }
     }
   }
@@ -161,17 +153,15 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
-      goto free_and_ret;
+      return 0;
     } else if (pid < 0) { /* error */
       girara_error("Could not fork: %s", strerror(errno));
-      ret = -1;
-      goto free_and_ret;
+      return -1;
     }
 
     if (setsid() == -1) {
       girara_error("Could not start new process group: %s", strerror(errno));
-      ret = -1;
-      goto free_and_ret;
+      return -1;
     }
   }
 
@@ -188,7 +178,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     }
     zathura_plugin_manager_free(plugin_manager);
 
-    goto free_and_ret;
+    return 0;
   }
 
   girara_debug("Running zathura-sandbox, disable IPC services");
@@ -202,11 +192,10 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   gtk_init(&argc, &argv);
 
   /* Create zathura session */
-  zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, embed);
+  g_autoptr(zathura_t) zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
-    ret = -1;
-    goto free_and_ret;
+    return -1;
   }
 
   /* open document if passed */
@@ -217,32 +206,13 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     document_open_idle(zathura, argv[file_idx], password, page_number, mode, NULL, bookmark_name, search_string);
   } else if (bookmark_name != NULL) {
     girara_error("Can not use bookmark argument when no file is given");
-    ret = -1;
-    zathura_free(zathura);
-    goto free_and_ret;
+    return -1;
   } else if (search_string != NULL) {
     girara_error("Can not use find argument when no file is given");
-    ret = -1;
-    zathura_free(zathura);
-    goto free_and_ret;
+    return -1;
   }
 
   /* run zathura */
   gtk_main();
-
-  /* free zathura */
-  zathura_free(zathura);
-
-free_and_ret:
-  g_free(config_dir);
-  g_free(data_dir);
-  g_free(cache_dir);
-  g_free(plugin_path);
-  g_free(loglevel);
-  g_free(password);
-  g_free(mode);
-  g_free(bookmark_name);
-  g_free(search_string);
-
-  return ret;
+  return 0;
 }
