@@ -66,6 +66,7 @@
   <releases>
     <release version="2026-01-30" date="2026-01-30">
       <description>
+        <p>Switch to date-based version numbers</p>
         <p>Fix warnings from CSS generation (#824)</p>
         <p>Apply correect shacling when recoloring (#836)</p>
         <p>Make sure jumplist stays valid after close (#835)</p>
