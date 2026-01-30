@@ -44,7 +44,7 @@ cc.compiles('''#if !__has_attribute(cleanup)
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=0.4.5', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara-gtk3', version: '>=2026.01.30', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.76')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
