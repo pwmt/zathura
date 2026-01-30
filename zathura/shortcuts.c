@@ -579,7 +579,8 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
   unsigned int doc_width  = 0;
   unsigned int doc_height = 0;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
+                                            &doc_width);
 
   float scroll_step = 40;
   girara_setting_get(session, "scroll-step", &scroll_step);

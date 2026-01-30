@@ -278,11 +278,13 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   /* NOTE: rectangle is in viewport units, already scaled and rotated */
   unsigned int cell_height = 0;
   unsigned int cell_width  = 0;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), page, &cell_height, &cell_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page, &cell_height,
+                                        &cell_width);
 
   unsigned int doc_height = 0;
   unsigned int doc_width  = 0;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
+                                            &doc_width);
 
   /* Need to adjust rectangle to page scale and orientation */
   zathura_page_t* doc_page  = zathura_document_get_page(document, page);

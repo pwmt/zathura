@@ -28,17 +28,19 @@ typedef struct zathura_document_widget_private_s {
   GtkAdjustment* vadjustment;
   guint hscroll_policy : 1;
   guint vscroll_policy : 1;
-} ZathuraDocumentPrivate;
+} ZathuraDocumentWidgetPrivate;
 
-G_DEFINE_TYPE_WITH_CODE(ZathuraDocument, zathura_document_widget, GTK_TYPE_CONTAINER,
-                        G_ADD_PRIVATE(ZathuraDocument) G_IMPLEMENT_INTERFACE(GTK_TYPE_SCROLLABLE, NULL))
+G_DEFINE_TYPE_WITH_CODE(ZathuraDocumentWidget, zathura_document_widget, GTK_TYPE_CONTAINER,
+                        G_ADD_PRIVATE(ZathuraDocumentWidget) G_IMPLEMENT_INTERFACE(GTK_TYPE_SCROLLABLE, NULL))
 
-static void zathura_document_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void zathura_document_widget_set_property(GObject* object, guint prop_id, const GValue* value,
+                                                 GParamSpec* pspec);
 static void zathura_document_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
 static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocation* allocation);
 static void zathura_document_widget_container_add(GtkContainer* container, GtkWidget* widget);
 static void zathura_document_widget_container_remove(GtkContainer* container, GtkWidget* widget);
-static void zathura_document_widget_container_forall(GtkContainer* container, gboolean include_internals, GtkCallback callback, gpointer user_data);
+static void zathura_document_widget_container_forall(GtkContainer* container, gboolean include_internals,
+                                                     GtkCallback callback, gpointer user_data);
 static void zathura_document_widget_dispose(GObject* object);
 
 enum properties_e {
@@ -51,7 +53,7 @@ enum properties_e {
   PROP_VSCROLL_POLICY,
 };
 
-static void zathura_document_widget_class_init(ZathuraDocumentClass* class) {
+static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* class) {
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS (class);
   widget_class->size_allocate = zathura_document_widget_size_allocate;
 
@@ -81,10 +83,10 @@ static void zathura_document_widget_class_init(ZathuraDocumentClass* class) {
   g_object_class_override_property (object_class, PROP_VSCROLL_POLICY, "vscroll-policy");
 }
 
-static void zathura_document_widget_init(ZathuraDocument* widget) {
+static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
   gtk_widget_set_has_window(GTK_WIDGET(widget), false);
 
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(widget);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
   priv->zathura = NULL;
 
@@ -100,16 +102,15 @@ GtkWidget* zathura_document_widget_new(zathura_t* zathura) {
     return NULL;
   }
 
-  ZathuraDocument* widget = ZATHURA_DOCUMENT(ret);
-  GtkWidget* gtk_widget   = GTK_WIDGET(widget);
+  ZathuraDocumentWidget* widget = ZATHURA_DOCUMENT_WIDGET(ret);
+  GtkWidget* gtk_widget         = GTK_WIDGET(widget);
 
   return gtk_widget;
 }
 
-static void zathura_document_widget_set_scroll_adjustment (ZathuraDocument* widget, 
-                                                           GtkOrientation orientation, 
-                                                           GtkAdjustment *adjustment) {
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(widget);
+static void zathura_document_widget_set_scroll_adjustment(ZathuraDocumentWidget* widget, GtkOrientation orientation,
+                                                          GtkAdjustment* adjustment) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
   GtkAdjustment **to_set;
   const gchar *prop_name;
 
@@ -141,9 +142,10 @@ static void zathura_document_widget_set_scroll_adjustment (ZathuraDocument* widg
   g_object_notify(G_OBJECT(widget), prop_name);
 }
 
-static void zathura_document_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec) {
-  ZathuraDocument* document = ZATHURA_DOCUMENT(object);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+static void zathura_document_widget_set_property(GObject* object, guint prop_id, const GValue* value,
+                                                 GParamSpec* pspec) {
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(object);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   switch (prop_id) {
   case PROP_ZATHURA:
@@ -172,8 +174,8 @@ static void zathura_document_widget_set_property(GObject* object, guint prop_id,
 }
 
 static void zathura_document_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec) {
-  ZathuraDocument* document = ZATHURA_DOCUMENT(object);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(object);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   switch (prop_id) {
   case PROP_HADJUSTMENT:
@@ -197,10 +199,10 @@ static void zathura_document_widget_get_property(GObject* object, guint prop_id,
 }
 
 /* drawing */
-static void zathura_document_widget_get_page_position(ZathuraDocument* document, unsigned int page_index, 
+static void zathura_document_widget_get_page_position(ZathuraDocumentWidget* document, unsigned int page_index,
                                                       unsigned int* row, unsigned int* col) {
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document = zathura_get_document(priv->zathura);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
   const unsigned int c0   = zathura_document_get_first_page_column(z_document);
   const unsigned int ncol = zathura_document_get_pages_per_row(z_document);
@@ -216,9 +218,9 @@ static void zathura_document_widget_line_prefix_sum(document_widget_line_s *arra
   }
 }
 
-static void zathura_document_widget_arrange_grid(ZathuraDocument* widget) {
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(widget);
-  zathura_document_t* z_document = zathura_get_document(priv->zathura);
+static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
   const unsigned int c0   = zathura_document_get_first_page_column(z_document);
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
@@ -255,9 +257,9 @@ static void zathura_document_widget_arrange_grid(ZathuraDocument* widget) {
   zathura_document_widget_line_prefix_sum(priv->row_heights, nrow, page_v_padding);
 }
 
-static void zathura_document_widget_get_adjustment(ZathuraDocument* document, int height, int width, 
-                                                   int* adj_v, int* adj_h) {
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+static void zathura_document_widget_get_adjustment(ZathuraDocumentWidget* document, int height, int width, int* adj_v,
+                                                   int* adj_h) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   const unsigned int value_v = gtk_adjustment_get_value(priv->vadjustment);
   const unsigned int value_h = gtk_adjustment_get_value(priv->hadjustment);
@@ -274,9 +276,9 @@ static void zathura_document_widget_get_adjustment(ZathuraDocument* document, in
 }
 
 static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocation* allocation) {
-  ZathuraDocument* document = ZATHURA_DOCUMENT(widget);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document = zathura_get_document(priv->zathura);
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(widget);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
   if (z_document == NULL || priv->zathura == NULL) {
     return;
@@ -351,10 +353,10 @@ static void zathura_document_widget_container_remove(GtkContainer* UNUSED(contai
   gtk_widget_unparent(widget);
 }
 
-static void zathura_document_widget_container_forall(GtkContainer* container, gboolean UNUSED(include_internals), 
+static void zathura_document_widget_container_forall(GtkContainer* container, gboolean UNUSED(include_internals),
                                                      GtkCallback callback, gpointer user_data) {
-  ZathuraDocument* document = ZATHURA_DOCUMENT(container);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(container);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   zathura_document_t* z_document = zathura_get_document(priv->zathura);
   unsigned int npag = zathura_document_get_number_of_pages(z_document);
@@ -368,8 +370,8 @@ static void zathura_document_widget_container_forall(GtkContainer* container, gb
 }
 
 static void zathura_document_widget_dispose(GObject* object) {
-  ZathuraDocument* document = ZATHURA_DOCUMENT(object);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(object);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   g_free(priv->col_widths);
   g_free(priv->row_heights);
@@ -380,10 +382,10 @@ static void zathura_document_widget_dispose(GObject* object) {
   G_OBJECT_CLASS(zathura_document_widget_parent_class)->dispose(object);
 }
 
-void zathura_document_widget_refresh_layout(ZathuraDocument* document) {
+void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document = zathura_get_document(priv->zathura);
 
   const unsigned int c0   = zathura_document_get_first_page_column(z_document);
@@ -415,10 +417,10 @@ void zathura_document_widget_refresh_layout(ZathuraDocument* document) {
   gtk_widget_queue_resize(GTK_WIDGET(document));
 }
 
-void zathura_document_widget_compute_layout(ZathuraDocument* document) {
+void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_widget_arrange_grid(document);
 
   /* update allocation values */
@@ -429,11 +431,11 @@ void zathura_document_widget_compute_layout(ZathuraDocument* document) {
   gtk_adjustment_set_upper(priv->vadjustment, doc_height);
 }
 
-void zathura_document_widget_get_cell_pos(ZathuraDocument* document, unsigned int page_index, 
-                                          unsigned int* pos_x, unsigned int* pos_y) {
+void zathura_document_widget_get_cell_pos(ZathuraDocumentWidget* document, unsigned int page_index, unsigned int* pos_x,
+                                          unsigned int* pos_y) {
   g_return_if_fail(document != NULL && pos_x != NULL && pos_y != NULL);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document = zathura_get_document(priv->zathura);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
   if (priv->col_widths == NULL || priv->row_heights == NULL) {
     return;
@@ -452,11 +454,11 @@ void zathura_document_widget_get_cell_pos(ZathuraDocument* document, unsigned in
   *pos_y = priv->row_heights[row].pos;
 }
 
-void zathura_document_widget_get_cell_size(ZathuraDocument* document, unsigned int page_index, 
+void zathura_document_widget_get_cell_size(ZathuraDocumentWidget* document, unsigned int page_index,
                                            unsigned int* height, unsigned int* width) {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document = zathura_get_document(priv->zathura);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
   if (priv->col_widths == NULL || priv->row_heights == NULL) {
     return;
@@ -475,10 +477,10 @@ void zathura_document_widget_get_cell_size(ZathuraDocument* document, unsigned i
   *width = priv->col_widths[col].size;
 }
 
-void zathura_document_widget_get_row(ZathuraDocument* document, unsigned int row, 
-                                     unsigned int* pos, unsigned int* size) {
+void zathura_document_widget_get_row(ZathuraDocumentWidget* document, unsigned int row, unsigned int* pos,
+                                     unsigned int* size) {
   g_return_if_fail(document != NULL && pos != NULL && size != NULL);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   if (priv->col_widths == NULL || priv->row_heights == NULL) {
     return;
@@ -493,10 +495,10 @@ void zathura_document_widget_get_row(ZathuraDocument* document, unsigned int row
   *size = priv->row_heights[row].size;
 }
 
-void zathura_document_widget_get_col(ZathuraDocument* document, unsigned int col, 
-                                     unsigned int* pos, unsigned int* size) {
+void zathura_document_widget_get_col(ZathuraDocumentWidget* document, unsigned int col, unsigned int* pos,
+                                     unsigned int* size) {
   g_return_if_fail(document != NULL && pos != NULL && size != NULL);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   if (priv->col_widths == NULL || priv->row_heights == NULL) {
     return;
@@ -511,9 +513,10 @@ void zathura_document_widget_get_col(ZathuraDocument* document, unsigned int col
   *size = priv->col_widths[col].size;
 }
 
-void zathura_document_widget_get_document_size(ZathuraDocument* document, unsigned int* height, unsigned int* width) {
+void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, unsigned int* height,
+                                               unsigned int* width) {
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   if (priv->col_widths == NULL || priv->row_heights == NULL) {
     return;
@@ -526,10 +529,10 @@ void zathura_document_widget_get_document_size(ZathuraDocument* document, unsign
   *width = last_col.pos + last_col.size;
 }
 
-void zathura_document_widget_clear_pages(ZathuraDocument* document) {
+void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
-  ZathuraDocumentPrivate* priv = zathura_document_widget_get_instance_private(document);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document = zathura_get_document(priv->zathura);
 
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);

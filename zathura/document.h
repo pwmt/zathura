@@ -307,9 +307,9 @@ ZATHURA_PLUGIN_API zathura_device_factors_t zathura_document_get_device_factors(
  * @param[in]  pages_per_row     number of pages per row
  * @param[in]  first_page_column column of the first page (first column is 1)
  */
-ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding, 
-                                                        unsigned int page_h_padding, unsigned int pages_per_row, 
-                                                        unsigned int first_page_column);
+ZATHURA_PLUGIN_API void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding,
+                                                         unsigned int page_h_padding, unsigned int pages_per_row,
+                                                         unsigned int first_page_column);
 
 /**
  * Returns the vertical padding in pixels between pages

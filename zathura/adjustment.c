@@ -50,7 +50,7 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   zathura_document_t* document = zathura_get_document(zathura);
   g_return_val_if_fail(document != NULL, 0);
 
-  ZathuraDocument* doc_widget = ZATHURA_DOCUMENT(zathura->ui.document_widget);
+  ZathuraDocumentWidget* doc_widget = ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget);
  
   unsigned int doc_width, doc_height;
   zathura_document_widget_get_document_size(doc_widget, &doc_height, &doc_width);
@@ -101,18 +101,19 @@ void page_number_to_position(zathura_t* zathura, unsigned int page_number, doubl
 
   /* sizes of page cell, viewport and document */
   unsigned int cell_height = 0, cell_width = 0;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), page_number, 
-                                        &cell_height, &cell_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page_number, &cell_height,
+                                        &cell_width);
 
   unsigned int cell_pos_x = 0, cell_pos_y = 0;
-  zathura_document_widget_get_cell_pos(ZATHURA_DOCUMENT(zathura->ui.document_widget), page_number, 
-                                       &cell_pos_x, &cell_pos_y);
+  zathura_document_widget_get_cell_pos(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page_number, &cell_pos_x,
+                                       &cell_pos_y);
 
   unsigned int view_height = 0, view_width = 0;
   zathura_document_get_viewport_size(document, &view_height, &view_width);
 
   unsigned int doc_height = 0, doc_width = 0;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
+                                            &doc_width);
 
   /* compute the shift to align to the viewport. If the page fits to viewport, just center it. */
   double shift_x = 0.5, shift_y = 0.5;
@@ -144,11 +145,12 @@ bool page_is_visible(zathura_t* zathura, unsigned int page_number) {
   page_number_to_position(zathura, page_number, 0.5, 0.5, &page_x, &page_y);
 
   unsigned int cell_width, cell_height;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), page_number, 
-                                        &cell_height, &cell_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page_number, &cell_height,
+                                        &cell_width);
 
   unsigned int doc_width, doc_height;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
+                                            &doc_width);
 
   unsigned int view_width, view_height;
   zathura_document_get_viewport_size(document, &view_height, &view_width);

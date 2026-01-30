@@ -697,12 +697,13 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     /* NOTE: rectangle is in viewport units, already scaled and rotated */
     unsigned int cell_height = 0;
     unsigned int cell_width  = 0;
-    zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget),
+    zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget),
                                           zathura_page_get_index(target_page), &cell_height, &cell_width);
 
     unsigned int doc_height = 0;
     unsigned int doc_width  = 0;
-    zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), &doc_height, &doc_width);
+    zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
+                                              &doc_width);
 
     /* compute the center of the rectangle, which will be aligned to the center
        of the viewport */

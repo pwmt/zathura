@@ -974,7 +974,7 @@ static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, d
   }
 
   unsigned int height, width;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), page, &height, &width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page, &height, &width);
   switch (rotation) {
   case 90:
     *x = orig_y;

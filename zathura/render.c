@@ -905,7 +905,7 @@ void render_all(zathura_t* zathura) {
     return;
   }
 
-  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT(zathura->ui.document_widget));
+  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
 
   /* unmark all pages */
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);

@@ -1177,7 +1177,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     g_object_set_property(G_OBJECT(zathura->ui.document_widget), "pages-right-to-left", &page_right_to_left_value);
   }
 
-  zathura_document_widget_refresh_layout(ZATHURA_DOCUMENT(zathura->ui.document_widget));
+  zathura_document_widget_refresh_layout(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
   /* update title */
@@ -1454,7 +1454,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 #endif
 
   /* remove widgets */
-  zathura_document_widget_clear_pages(ZATHURA_DOCUMENT(zathura->ui.document_widget));
+  zathura_document_widget_clear_pages(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
 
   if (!override_predecessor) {
     for (unsigned int i = 0; i < zathura_document_get_number_of_pages(document); i++) {
@@ -1650,10 +1650,10 @@ bool adjust_view(zathura_t* zathura) {
 
   const unsigned int current_page = zathura_document_get_current_page_number(document);
 
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), 
-                                        current_page, &cell_height, &cell_width);
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), 
-                                            &document_height, &document_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), current_page,
+                                        &cell_height, &cell_width);
+  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &document_height,
+                                            &document_width);
   zathura_document_get_viewport_size(document, &view_height, &view_width);
 
   if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0 || document_width == 0) {
@@ -1675,11 +1675,11 @@ bool adjust_view(zathura_t* zathura) {
 
   /* save new zoom and recompute cell size */
   zathura_document_set_zoom(document, newzoom);
-  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT(zathura->ui.document_widget));
+  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
 
   unsigned int new_cell_height = 0, new_cell_width = 0;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT(zathura->ui.document_widget), 
-                                        current_page, &new_cell_height, &new_cell_width);
+  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), current_page,
+                                        &new_cell_height, &new_cell_width);
 
   /*
    * XXX requiring a larger difference apparently circumvents #94 for some users; this is not a
@@ -1694,7 +1694,7 @@ bool adjust_view(zathura_t* zathura) {
   } else {
     /* otherwise set the old zoom and leave */
     zathura_document_set_zoom(document, zoom);
-    zathura_document_widget_compute_layout(ZATHURA_DOCUMENT(zathura->ui.document_widget));
+    zathura_document_widget_compute_layout(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
   }
 
 error_ret:
