@@ -72,7 +72,7 @@
         <p>Make sure jumplist stays valid after close (#835)</p>
         <p>Disable message in incremental search (#227, #847)</p>
         <p>Fix seccomp rules with musl (#843)</p>
-        <p>Implement custom drawing for document widget (#580, #657, #736, #785, #795, #797, #826)
+        <p>Implement custom drawing for document widget (#580, #657, #736, #785, #795, #797, #826)</p>
       </description>
       <issues>
         <issue url="https://github.com/pwmt/zathura/issues/227">#227</issue>
