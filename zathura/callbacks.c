@@ -3,6 +3,7 @@
 #include <girara/statusbar.h>
 #include <girara/session.h>
 #include <girara/settings.h>
+#include <girara/log.h>
 #include <girara/utils.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>

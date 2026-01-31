@@ -8,6 +8,7 @@
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <girara/session.h>
 
 static int bookmark_compare_find(const void* item, const void* data) {

@@ -8,6 +8,7 @@
 #include <math.h>
 
 #include <girara/datastructures.h>
+#include <girara/log.h>
 #include <girara/utils.h>
 
 #include "document.h"

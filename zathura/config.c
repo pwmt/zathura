@@ -17,6 +17,7 @@
 #include <girara/commands.h>
 #include <girara/template.h>
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <glib/gi18n.h>
 
 #define ZATHURA_RC "zathurarc"

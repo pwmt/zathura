@@ -16,6 +16,7 @@
 #include <girara/session.h>
 #include <girara/settings.h>
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <json-glib/json-glib.h>
 #include <string.h>
 #include <sys/types.h>

@@ -4,6 +4,7 @@
 #include "macros.h"
 
 #include <gio/gio.h>
+#include <girara/log.h>
 #include <girara/utils.h>
 #include <glib.h>
 #include <magic.h>

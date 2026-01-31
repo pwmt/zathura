@@ -7,6 +7,7 @@
 #include "database.h"
 
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <math.h>
 
 static void zathura_jumplist_reset_current(zathura_t* zathura) {

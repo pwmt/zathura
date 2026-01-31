@@ -4,6 +4,7 @@
 #include "macros.h"
 
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <gio/gio.h>
 
 struct zathura_glibfilemonitor_s {
