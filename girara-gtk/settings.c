@@ -261,7 +261,7 @@ bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* argument_l
     return false;
   }
 
-  JsonBuilder* builder = json_builder_new();
+  g_autoptr(JsonBuilder) builder = json_builder_new();
   json_builder_begin_object(builder);
   for (size_t idx = 0; idx != girara_list_size(session->private_data->settings); ++idx) {
     girara_setting_t* setting = girara_list_nth(session->private_data->settings, idx);
@@ -269,9 +269,9 @@ bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* argument_l
   }
   json_builder_end_object(builder);
 
-  JsonGenerator* gen = json_generator_new();
+  g_autoptr(JsonGenerator) gen = json_generator_new();
   json_generator_set_pretty(gen, true);
-  JsonNode* root = json_builder_get_root(builder);
+  g_autoptr(JsonNode) root = json_builder_get_root(builder);
   json_generator_set_root(gen, root);
 
   bool ret                = true;
@@ -281,10 +281,6 @@ bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* argument_l
     girara_notify(session, GIRARA_ERROR, _("Failed to write JSON: %s"), error->message);
     ret = false;
   }
-
-  json_node_free(root);
-  g_object_unref(gen);
-  g_object_unref(builder);
 
   return ret;
 }
