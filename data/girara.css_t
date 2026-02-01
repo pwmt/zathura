@@ -1,0 +1,91 @@
+#@session@ {
+  color: @default-fg@;
+  background-color: @default-bg@;
+  background-image: none;
+  font-family: @font-family@;
+  font-size: @font-size@;
+  font-weight: @font-weight@;
+  font-style: @font-style@;
+}
+
+/* Inputbar */
+#@session@ entry.inputbar {
+  background-color: @inputbar-bg@;
+}
+
+#@session@ .inputbar {
+  color: @inputbar-fg@;
+  background-color: @inputbar-bg@;
+  box-shadow: none; /* maybe use some user-definable color here */
+}
+
+/* Completion entries and groups */
+#@session@ .completion, .completion-box {
+  color: @completion-fg@;
+  background-color: @completion-bg@;
+}
+
+#@session@ .completion {
+  padding: 1px;
+}
+
+#@session@ .completion:selected {
+  color: @completion-highlight-fg@;
+  background-color: @completion-highlight-bg@;
+}
+
+#@session@ .completion-group {
+  color: @completion-group-fg@;
+  background-color: @completion-group-bg@;
+  padding: 2px 4px;
+}
+
+/* Statusbar */
+#@session@ .statusbar {
+  color: @statusbar-fg@;
+  background-color: @statusbar-bg@;
+}
+
+/* Notification area */
+
+#@session@ .notification {
+  color: @notification-fg@;
+  background-color: @notification-bg@;
+}
+
+#@session@ .notification-error {
+  color: @notification-error-fg@;
+  background-color: @notification-error-bg@;
+}
+
+#@session@ .notification-warning {
+  color: @notification-warning-fg@;
+  background-color: @notification-warning-bg@;
+}
+
+/* Padding of the bottom box */
+#@session@ .bottom_box {
+  border-style: none;
+  margin: 0px;
+  padding: @bottombox-padding1@px @bottombox-padding2@px @bottombox-padding3@px
+    @bottombox-padding4@px;
+}
+
+#@session@ scrolledwindow undershoot.top,
+#@session@ scrolledwindow undershoot.top:backdrop,
+#@session@ scrolledwindow undershoot.bottom,
+#@session@ scrolledwindow undershoot.bottom:backdrop,
+#@session@ scrolledwindow undershoot.left,
+#@session@ scrolledwindow undershoot.left:backdrop,
+#@session@ scrolledwindow undershoot.right,
+#@session@ scrolledwindow undershoot.right:backdrop
+#@session@ scrolledwindow overshoot.top,
+#@session@ scrolledwindow overshoot.top:backdrop,
+#@session@ scrolledwindow overshoot.bottom,
+#@session@ scrolledwindow overshoot.bottom:backdrop,
+#@session@ scrolledwindow overshoot.left,
+#@session@ scrolledwindow overshoot.left:backdrop,
+#@session@ scrolledwindow overshoot.right,
+#@session@ scrolledwindow overshoot.right:backdrop {
+  background-image: none;
+}

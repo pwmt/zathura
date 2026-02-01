@@ -14,12 +14,12 @@
 #include "page.h"
 #include "database.h"
 
-#include <girara/session.h>
-#include <girara/settings.h>
-#include <girara/completion.h>
-#include <girara/utils.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
+#include <girara-gtk/completion.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
+#include <girara/utils.h>
 
 static int compare_case_insensitive(const void* data1, const void* data2) {
   const char* str1 = data1;

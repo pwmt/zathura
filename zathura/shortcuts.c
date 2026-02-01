@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include <girara/log.h>
-#include <girara/session.h>
-#include <girara/settings.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
 #include <girara/datastructures.h>
-#include <girara/shortcuts.h>
+#include <girara-gtk/shortcuts.h>
 #include <girara/utils.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>

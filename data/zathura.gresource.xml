@@ -6,4 +6,7 @@
   <gresource prefix="/org/pwmt/zathura/DBus">
     <file compressed="true">org.pwmt.zathura.xml</file>
   </gresource>
+  <gresource prefix="/org/pwmt/girara/CSS">
+    <file compressed="true">girara.css_t</file>
+  </gresource>
 </gresources>

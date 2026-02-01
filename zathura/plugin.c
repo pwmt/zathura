@@ -7,9 +7,9 @@
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
-#include <girara/statusbar.h>
-#include <girara/session.h>
-#include <girara/settings.h>
+#include <girara-gtk/statusbar.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
 
 /**
  * Document plugin structure

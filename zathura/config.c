@@ -10,11 +10,11 @@
 #include "marks.h"
 #include "utils.h"
 
-#include <girara/settings.h>
-#include <girara/session.h>
-#include <girara/shortcuts.h>
-#include <girara/config.h>
-#include <girara/commands.h>
+#include <girara-gtk/settings.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/shortcuts.h>
+#include <girara-gtk/config.h>
+#include <girara-gtk/commands.h>
 #include <girara/template.h>
 #include <girara/utils.h>
 #include <girara/log.h>

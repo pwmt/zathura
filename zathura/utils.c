@@ -8,8 +8,8 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <girara/datastructures.h>
-#include <girara/session.h>
-#include <girara/settings.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
 #include <girara/utils.h>
 
 #include "adjustment.h"

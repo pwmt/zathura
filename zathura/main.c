@@ -4,7 +4,7 @@
 #include <gtkosxapplication.h>
 #endif
 
-#include <girara/settings.h>
+#include <girara-gtk/settings.h>
 #include <girara/log.h>
 
 #include <glib/gi18n.h>

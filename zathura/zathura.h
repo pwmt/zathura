@@ -4,8 +4,8 @@
 #define ZATHURA_H
 
 #include <stdbool.h>
-#include <girara/types.h>
-#include <girara/session.h>
+#include <girara-gtk/types.h>
+#include <girara-gtk/session.h>
 #include <gtk/gtk.h>
 #ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>

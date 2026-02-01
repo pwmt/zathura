@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <girara/settings.h>
+#include <girara-gtk/settings.h>
 #include <girara/log.h>
 
 #include <glib/gi18n.h>

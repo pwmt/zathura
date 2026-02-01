@@ -9,7 +9,7 @@
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include <girara/log.h>
-#include <girara/session.h>
+#include <girara-gtk/session.h>
 
 static int bookmark_compare_find(const void* item, const void* data) {
   const zathura_bookmark_t* bookmark = item;

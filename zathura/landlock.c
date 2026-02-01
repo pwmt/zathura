@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <girara/log.h>
 #include <girara/utils.h>
 
 #include "landlock.h"

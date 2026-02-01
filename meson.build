@@ -44,7 +44,7 @@ cc.compiles('''#if !__has_attribute(cleanup)
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara-gtk3', version: '>=2026.01.30', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara', version: '>=2026.01.30', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.76')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
@@ -113,6 +113,18 @@ subdir('po')
 
 # source files
 sources = files(
+  'girara-gtk/callbacks.c',
+  'girara-gtk/commands.c',
+  'girara-gtk/completion.c',
+  'girara-gtk/config.c',
+  'girara-gtk/entry.c',
+  'girara-gtk/input-history-io.c',
+  'girara-gtk/input-history.c',
+  'girara-gtk/session.c',
+  'girara-gtk/settings.c',
+  'girara-gtk/shortcuts.c',
+  'girara-gtk/statusbar.c',
+  'girara-gtk/utils.c',
   'zathura/adjustment.c',
   'zathura/bookmarks.c',
   'zathura/callbacks.c',
@@ -225,7 +237,7 @@ pkg.generate(
   description: 'document viewer - plugin API',
   url: 'https://pwmt.org/projects/zathura',
   version: version,
-  requires: ['girara-gtk3', 'cairo'],
+  requires: ['girara', 'gtk+-3.0', 'cairo'],
   variables: [
     'apiversion=@0@'.format(plugin_api_version),
     'abiversion=@0@'.format(plugin_abi_version),

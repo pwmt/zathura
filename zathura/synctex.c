@@ -2,7 +2,7 @@
 
 #include <glib.h>
 #include <girara/utils.h>
-#include <girara/settings.h>
+#include <girara-gtk/settings.h>
 
 #ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>

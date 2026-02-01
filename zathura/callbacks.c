@@ -1,8 +1,8 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <girara/statusbar.h>
-#include <girara/session.h>
-#include <girara/settings.h>
+#include <girara-gtk/statusbar.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
 #include <girara/log.h>
 #include <girara/utils.h>
 #include <stdlib.h>

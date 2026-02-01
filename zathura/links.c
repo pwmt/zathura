@@ -3,8 +3,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <girara/utils.h>
-#include <girara/session.h>
-#include <girara/settings.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
 
 #include "adjustment.h"
 #include "links.h"
