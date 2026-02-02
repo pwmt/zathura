@@ -405,7 +405,10 @@ static bool simulate_key_press(girara_session_t* session, int state, int key) {
 
   gdk_event_put(event);
 
-  gtk_main_iteration_do(FALSE);
+  // process events until there are no pending events left
+  do {
+    g_main_context_iteration(NULL, FALSE);
+  } while (g_main_context_pending(NULL));
 
   return true;
 }
