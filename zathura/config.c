@@ -201,37 +201,6 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
   }
 }
 
-static void cb_view_options(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
-                            const void* value, void* UNUSED(data)) {
-  g_return_if_fail(session != NULL && value != NULL);
-  zathura_t* zathura = session->global.data;
-
-  /* set default values */
-  bool show_hscrollbar = false;
-  bool show_vscrollbar = false;
-
-  /* evaluate input */
-  const char* input         = value;
-  const size_t input_length = strlen(input);
-
-  for (size_t i = 0; i < input_length; i++) {
-    switch (input[i]) {
-    case 'h':
-      show_hscrollbar = true;
-      break;
-    case 'v':
-      show_vscrollbar = true;
-      break;
-    }
-  }
-
-  /* apply settings */
-  GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
-  GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
-
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
-}
-
 static void cb_window_icon(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
                            const void* value, void* UNUSED(data)) {
   g_return_if_fail(session != NULL && value != NULL);
@@ -253,10 +222,13 @@ static void cb_font(girara_session_t* session, const char* UNUSED(name), girara_
 static void cb_guioptions(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
                           const void* value, void* UNUSED(data)) {
   g_return_if_fail(session != NULL && value != NULL);
+  zathura_t* zathura = session->global.data;
 
   /* set default values */
   bool show_commandline = false;
   bool show_statusbar   = false;
+  bool show_hscrollbar  = false;
+  bool show_vscrollbar  = false;
 
   /* evaluate input */
   const char* input         = value;
@@ -272,8 +244,20 @@ static void cb_guioptions(girara_session_t* session, const char* UNUSED(name), g
     case 's':
       show_statusbar = true;
       break;
+    case 'h':
+      show_hscrollbar = true;
+      break;
+    case 'v':
+      show_vscrollbar = true;
+      break;
     }
   }
+
+  /* apply settings */
+  GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+  GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
 
   /* apply settings */
   if (show_commandline == true) {
@@ -655,7 +639,6 @@ void config_load_default(zathura_t* zathura) {
                      cb_show_signature_info, NULL);
   girara_setting_add(gsession, "scrollbar-fg", "#DDDDDD", STRING, FALSE, _("Scrollbar foreground color"), cb_color, NULL);
   girara_setting_add(gsession, "scrollbar-bg", "#000000", STRING, FALSE, _("Scrollbar background color"), cb_color, NULL);
-  girara_setting_add(gsession, "view-options", "", STRING, FALSE, _("Show or hide view UI elements"), cb_view_options, NULL);
 
   /* Define mode-less shortcuts
    * girara adds them only for normal mode, so passing 0 as mode is currently
