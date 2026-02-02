@@ -6,10 +6,9 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <girara-gtk/types.h>
+#include <girara-gtk/internal.h>
 
 #include "document.h"
-
-#define LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 
 typedef struct page_offset_s {
   int x;
