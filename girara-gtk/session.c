@@ -27,15 +27,6 @@ static int cb_sort_settings(const void* data1, const void* data2) {
   return g_strcmp0(girara_setting_get_name(lhs), girara_setting_get_name(rhs));
 }
 
-static void ensure_gettext_initialized(void) {
-  static gsize initialized = 0;
-  if (g_once_init_enter(&initialized) == TRUE) {
-    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-    g_once_init_leave(&initialized, 1);
-  }
-}
-
 static void init_template_engine(GiraraTemplate* csstemplate) {
   static const char variable_names[][24] = {
       "session",
@@ -218,8 +209,6 @@ static void mode_string_free(void* data) {
 }
 
 girara_session_t* girara_session_create(void) {
-  ensure_gettext_initialized();
-
   girara_session_t* session = g_malloc0(sizeof(girara_session_t));
   session->private_data     = g_malloc0(sizeof(girara_session_private_t));
 
