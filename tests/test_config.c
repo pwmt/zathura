@@ -30,7 +30,7 @@ static void test_config_parse(void) {
                           -1, NULL) == FALSE) {
     g_assert_not_reached();
   }
-  girara_config_parse(session, filename);
+  g_assert_true(girara_config_parse(session, filename));
 
   char* ptr = NULL;
   g_assert_true(girara_setting_get(session, "test1", &ptr));

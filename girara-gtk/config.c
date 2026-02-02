@@ -162,7 +162,7 @@ static bool config_parse(girara_session_t* session, const char* path) {
   return true;
 }
 
-void girara_config_parse(girara_session_t* session, const char* path) {
+bool girara_config_parse(girara_session_t* session, const char* path) {
   girara_debug("reading configuration file '%s'", path);
-  config_parse(session, path);
+  return config_parse(session, path);
 }

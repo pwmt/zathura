@@ -10,8 +10,9 @@
  *
  * @param session The used girara session
  * @param path Path to the configuration file
+ * @return true if evaluation of the configuration file was successful, otherwise false
  */
-void girara_config_parse(girara_session_t* session, const char* path);
+bool girara_config_parse(girara_session_t* session, const char* path);
 
 /**
  * Adds an additional config handler
