@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-02 20:56+0100\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-02-02 22:08+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://app.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -1532,11 +1532,11 @@ msgstr "Bilder"
 
 #: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "Das Plugin untersützt das Exportieren von Anhängen und Bildern nicht."
 
 #: zathura/completion.c:371
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "Das Dokument enthält keine Bilder oder Anhänge"
 
 #. clang-format off
 #. settings
@@ -1955,11 +1955,11 @@ msgstr "Zeige zusätzliche Informationen für Dokumentsignaturen an."
 
 #: zathura/config.c:635
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Vordergrundfarbe der Bildlaufleiste"
 
 #: zathura/config.c:636
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Hintergrundfarbe der Bildlaufleiste"
 
 #. define default inputbar commands
 #: zathura/config.c:766
