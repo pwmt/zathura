@@ -3,7 +3,7 @@
 #include <sqlite3.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
-#include <girara-gtk/input-history.h>
+#include <girara/input-history.h>
 #include <string.h>
 #include <strings.h>
 

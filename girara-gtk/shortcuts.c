@@ -2,15 +2,15 @@
 
 #include "shortcuts.h"
 
-#include "input-history.h"
 #include "internal.h"
 #include "session.h"
 #include "settings.h"
 
+#include <girara/datastructures.h>
+#include <girara/input-history.h>
+#include <girara/log.h>
 #include <gtk/gtk.h>
 #include <string.h>
-#include <girara/datastructures.h>
-#include <girara/log.h>
 
 bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, const char* buffer,
                          girara_shortcut_function_t function, girara_mode_t mode, int argument_n, void* argument_data) {

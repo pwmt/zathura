@@ -3,11 +3,11 @@
 #include "callbacks.h"
 
 #include "commands.h"
-#include "input-history.h"
 #include "internal.h"
 #include "session.h"
 #include "shortcuts.h"
 
+#include <girara/input-history.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
 #include <girara/utils.h>

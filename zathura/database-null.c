@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include <girara/datastructures.h>
-#include <girara-gtk/input-history.h>
+#include <girara/input-history.h>
 
 #include "database-null.h"
 #include "utils.h"

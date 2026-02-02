@@ -7,12 +7,12 @@
 #include "config.h"
 #include "resources.h"
 #include "entry.h"
-#include "input-history.h"
 #include "internal.h"
 #include "settings.h"
 #include "shortcuts.h"
 
 #include <girara/datastructures.h>
+#include <girara/input-history.h>
 #include <girara/template.h>
 #include <girara/utils.h>
 
