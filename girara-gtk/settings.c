@@ -72,7 +72,7 @@ bool girara_setting_add(girara_session_t* session, const char* name, const void*
   girara_setting_t* setting = g_malloc0(sizeof(girara_setting_t));
 
   setting->name        = g_strdup(name);
-  setting->description = description ? g_strdup(description) : NULL;
+  setting->description = g_strdup(description);
   setting->callback    = callback;
   setting->data        = data;
   setting->init_only   = init_only;

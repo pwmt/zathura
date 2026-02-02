@@ -654,10 +654,10 @@ bool girara_inputbar_command_add(girara_session_t* session, const char* command,
       g_free(commands_it->abbr);
       g_free(commands_it->description);
 
-      commands_it->abbr        = abbreviation ? g_strdup(abbreviation) : NULL;
+      commands_it->abbr        = g_strdup(abbreviation);
       commands_it->function    = function;
       commands_it->completion  = completion;
-      commands_it->description = description ? g_strdup(description) : NULL;
+      commands_it->description = g_strdup(description);
 
       return true;
     }
@@ -667,10 +667,10 @@ bool girara_inputbar_command_add(girara_session_t* session, const char* command,
   girara_command_t* new_command = g_malloc0(sizeof(girara_command_t));
 
   new_command->command     = g_strdup(command);
-  new_command->abbr        = abbreviation ? g_strdup(abbreviation) : NULL;
+  new_command->abbr        = g_strdup(abbreviation);
   new_command->function    = function;
   new_command->completion  = completion;
-  new_command->description = description ? g_strdup(description) : NULL;
+  new_command->description = g_strdup(description);
   girara_list_append(session->bindings.commands, new_command);
 
   return true;

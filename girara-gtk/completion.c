@@ -67,7 +67,7 @@ girara_completion_t* girara_completion_init(void) {
 girara_completion_group_t* girara_completion_group_create(girara_session_t* UNUSED(session), const char* name) {
   girara_completion_group_t* group = g_malloc(sizeof(girara_completion_group_t));
 
-  group->value    = name ? g_strdup(name) : NULL;
+  group->value    = g_strdup(name);
   group->elements = girara_list_new_with_free(completion_element_free);
 
   if (group->elements == NULL) {
@@ -107,7 +107,7 @@ void girara_completion_group_add_element(girara_completion_group_t* group, const
   girara_completion_element_t* new_element = g_malloc(sizeof(girara_completion_element_t));
 
   new_element->value       = g_strdup(name);
-  new_element->description = description ? g_strdup(description) : NULL;
+  new_element->description = g_strdup(description);
 
   girara_list_append(group->elements, new_element);
 }

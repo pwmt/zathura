@@ -18,7 +18,7 @@ bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, c
   g_return_val_if_fail(buffer || key || modifier, false);
   g_return_val_if_fail(function != NULL, false);
 
-  girara_argument_t argument = {.n = argument_n, .data = (argument_data != NULL) ? g_strdup(argument_data) : NULL};
+  girara_argument_t argument = {.n = argument_n, .data = g_strdup(argument_data)};
 
   /* search for existing binding */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.shortcuts); ++idx) {
@@ -41,7 +41,7 @@ bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, c
 
   shortcut->mask             = modifier;
   shortcut->key              = key;
-  shortcut->buffered_command = buffer != NULL ? g_strdup(buffer) : NULL;
+  shortcut->buffered_command = g_strdup(buffer);
   shortcut->function         = function;
   shortcut->mode             = mode;
   shortcut->argument         = argument;
