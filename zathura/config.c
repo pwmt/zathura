@@ -483,7 +483,6 @@ void config_load_default(zathura_t* zathura) {
 
   /* commands */
   girara_inputbar_command_add(gsession, "map",   "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
-  girara_inputbar_command_add(gsession, "quit",  "q",  girara_cmd_quit,        NULL,          _("Quit the program"));
   girara_inputbar_command_add(gsession, "set",   "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
   girara_inputbar_command_add(gsession, "unmap", NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
   girara_inputbar_command_add(gsession, "dump",  NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));

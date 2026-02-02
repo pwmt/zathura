@@ -300,18 +300,6 @@ bool girara_sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argume
   return false;
 }
 
-bool girara_sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
-                    unsigned int UNUSED(t)) {
-  g_return_val_if_fail(session != NULL, false);
-
-  girara_argument_t arg = {.n = GIRARA_HIDE, .data = NULL};
-  girara_isc_completion(session, &arg, NULL, 0);
-
-  gtk_main_quit();
-
-  return false;
-}
-
 static void girara_toggle_widget_visibility(GtkWidget* widget) {
   if (widget == NULL) {
     return;

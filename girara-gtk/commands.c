@@ -537,15 +537,6 @@ bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_list) {
   return girara_cmd_map_unmap(session, argument_list, true);
 }
 
-bool girara_cmd_quit(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
-  girara_argument_t arg = {.n = GIRARA_HIDE, .data = NULL};
-  girara_isc_completion(session, &arg, NULL, 0);
-
-  gtk_main_quit();
-
-  return true;
-}
-
 bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
   const size_t number_of_arguments = girara_list_size(argument_list);
 

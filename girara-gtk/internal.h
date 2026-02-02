@@ -65,16 +65,6 @@ bool girara_cmd_map(girara_session_t* session, girara_list_t* argument_list);
 bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_list);
 
 /**
- * Default command to quit the application
- *
- * @param session The used girara session
- * @param argument_list List of passed arguments
- * @return TRUE No error occurred
- * @return FALSE An error occurred
- */
-bool girara_cmd_quit(girara_session_t* session, girara_list_t* argument_list);
-
-/**
  * Default command to set the value of settings
  *
  * @param session The used girara session

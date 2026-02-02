@@ -91,18 +91,6 @@ bool girara_sc_focus_inputbar(girara_session_t* session, girara_argument_t* argu
 bool girara_sc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
- * Default shortcut function to quit the application
- *
- * @param session The used girara session
- * @param argument The argument
- * @param event Girara event
- * @param t Number of executions
- * @return true No error occurred
- * @return false An error occurred (abort execution)
- */
-bool girara_sc_quit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
-
-/**
  * Toggles the visibility of the inputbar
  *
  * @param session The used girara session
