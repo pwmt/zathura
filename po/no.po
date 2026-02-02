@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-02 20:54+0100\n"
+"POT-Creation-Date: 2026-02-02 20:56+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Jonas <jonas.enge@gmail.com>, 2014\n"
 "Language-Team: Norwegian (http://app.transifex.com/pwmt/zathura/language/"
@@ -1536,94 +1536,76 @@ msgid "Font"
 msgstr ""
 
 #: zathura/config.c:456
-#, fuzzy
 msgid "Default foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:457
-#, fuzzy
 msgid "Default background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:458
-#, fuzzy
 msgid "Inputbar foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:459
-#, fuzzy
 msgid "Inputbar background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:460
-#, fuzzy
 msgid "Statusbar foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:461
-#, fuzzy
 msgid "Statsubar background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:462
-#, fuzzy
 msgid "Completion foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:463
-#, fuzzy
 msgid "Completion background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:464
-#, fuzzy
 msgid "Completion group foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:465
-#, fuzzy
 msgid "Completion group background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:466
-#, fuzzy
 msgid "Completion highlight foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:467
-#, fuzzy
 msgid "Completion highlight background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:468
-#, fuzzy
 msgid "Error notification foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:469
-#, fuzzy
 msgid "Error notification background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:470
-#, fuzzy
 msgid "Warning notification foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:471
-#, fuzzy
 msgid "Warning notifaction background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:472
-#, fuzzy
 msgid "Notification foreground color"
-msgstr "'Laster ...' forgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:473
-#, fuzzy
 msgid "Notification background color"
-msgstr "'Laster ...' bakgrunnsfarge"
+msgstr ""
 
 #: zathura/config.c:475
 msgid "Initial window width"
@@ -2249,9 +2231,9 @@ msgid "Document saved."
 msgstr "Dokumentet er lagret."
 
 #: girara-gtk/commands.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr "Ugyldig nummer av argumenter gitt."
+msgstr ""
 
 #: girara-gtk/commands.c:297
 #, c-format
@@ -2259,9 +2241,8 @@ msgid "Unregistered mode specified: %s"
 msgstr ""
 
 #: girara-gtk/commands.c:305
-#, fuzzy
 msgid "Invalid number of arguments passed"
-msgstr "Ugyldig nummer av argumenter."
+msgstr ""
 
 #: girara-gtk/commands.c:337
 #, c-format
@@ -2284,14 +2265,13 @@ msgid "Not a valid shortcut function: %s"
 msgstr ""
 
 #: girara-gtk/commands.c:554
-#, fuzzy
 msgid "Not enough arguments."
-msgstr "For mange argumenter."
+msgstr ""
 
 #: girara-gtk/commands.c:572
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown option: %s"
-msgstr "Ukjent bilde '%s'."
+msgstr ""
 
 #: girara-gtk/commands.c:585
 msgid "true"
@@ -2318,16 +2298,16 @@ msgid "Not a valid command: %s"
 msgstr ""
 
 #: girara-gtk/settings.c:259
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr "Ugyldig nummer av argumenter gitt."
+msgstr ""
 
 #: girara-gtk/settings.c:281
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write JSON: %s"
-msgstr "Kunne ikke fjerne bokmerke: %s"
+msgstr ""
 
 #: girara-gtk/utils.c:47
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to execute command: %s"
-msgstr "Kunne ikke fjerne bokmerke: %s"
+msgstr ""

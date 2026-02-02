@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-02 20:54+0100\n"
+"POT-Creation-Date: 2026-02-02 20:56+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: wmlhwl <7q0dkmw6@anonaddy.me>, 2024\n"
 "Language-Team: Polish (http://app.transifex.com/pwmt/zathura/language/pl/)\n"
@@ -98,9 +98,8 @@ msgid "Make sure jumplist stays valid after close (#835)"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:73
-#, fuzzy
 msgid "Disable message in incremental search (#227, #847)"
-msgstr "Włącz wyszukiwanie przyrostowe"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix seccomp rules with musl (#843)"

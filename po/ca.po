@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-02 20:54+0100\n"
+"POT-Creation-Date: 2026-02-02 20:56+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: mvdan <mvdan@mvdan.cc>, 2012\n"
 "Language-Team: Catalan (http://app.transifex.com/pwmt/zathura/language/ca/)\n"
@@ -89,9 +89,8 @@ msgid "Make sure jumplist stays valid after close (#835)"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:73
-#, fuzzy
 msgid "Disable message in incremental search (#227, #847)"
-msgstr "Habilita la cerca incremental"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix seccomp rules with musl (#843)"
@@ -2232,9 +2231,9 @@ msgid "Document saved."
 msgstr "Document desat."
 
 #: girara-gtk/commands.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr "Nombre d'arguments invàlids."
+msgstr ""
 
 #: girara-gtk/commands.c:297
 #, c-format
@@ -2242,9 +2241,8 @@ msgid "Unregistered mode specified: %s"
 msgstr ""
 
 #: girara-gtk/commands.c:305
-#, fuzzy
 msgid "Invalid number of arguments passed"
-msgstr "Nombre d'arguments invàlids."
+msgstr ""
 
 #: girara-gtk/commands.c:337
 #, c-format
@@ -2267,14 +2265,13 @@ msgid "Not a valid shortcut function: %s"
 msgstr ""
 
 #: girara-gtk/commands.c:554
-#, fuzzy
 msgid "Not enough arguments."
-msgstr "Massa arguments."
+msgstr ""
 
 #: girara-gtk/commands.c:572
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown option: %s"
-msgstr "Imatge desconeguda '%s'."
+msgstr ""
 
 #: girara-gtk/commands.c:585
 msgid "true"
@@ -2301,16 +2298,16 @@ msgid "Not a valid command: %s"
 msgstr ""
 
 #: girara-gtk/settings.c:259
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr "Nombre d'arguments invàlids."
+msgstr ""
 
 #: girara-gtk/settings.c:281
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write JSON: %s"
-msgstr "No s'ha pogut esborrar el marcador: %s"
+msgstr ""
 
 #: girara-gtk/utils.c:47
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to execute command: %s"
-msgstr "No s'ha pogut esborrar el marcador: %s"
+msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-02 20:54+0100\n"
+"POT-Creation-Date: 2026-02-02 20:56+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: watsh1ken <wat.sh1ken@gmail.com>, 2012\n"
 "Language-Team: Spanish (Chile) (http://app.transifex.com/pwmt/zathura/"
@@ -2232,9 +2232,9 @@ msgid "Document saved."
 msgstr "Documento guardado."
 
 #: girara-gtk/commands.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr "Número de argumentos inválido."
+msgstr ""
 
 #: girara-gtk/commands.c:297
 #, c-format
@@ -2242,9 +2242,8 @@ msgid "Unregistered mode specified: %s"
 msgstr ""
 
 #: girara-gtk/commands.c:305
-#, fuzzy
 msgid "Invalid number of arguments passed"
-msgstr "Número de argumentos inválido."
+msgstr ""
 
 #: girara-gtk/commands.c:337
 #, c-format
@@ -2267,9 +2266,8 @@ msgid "Not a valid shortcut function: %s"
 msgstr ""
 
 #: girara-gtk/commands.c:554
-#, fuzzy
 msgid "Not enough arguments."
-msgstr "Demasiados argumentos."
+msgstr ""
 
 #: girara-gtk/commands.c:572
 #, c-format
@@ -2301,16 +2299,16 @@ msgid "Not a valid command: %s"
 msgstr ""
 
 #: girara-gtk/settings.c:259
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr "Número de argumentos inválido."
+msgstr ""
 
 #: girara-gtk/settings.c:281
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write JSON: %s"
-msgstr "Error al eliminar marcador: %s"
+msgstr ""
 
 #: girara-gtk/utils.c:47
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to execute command: %s"
-msgstr "Error al eliminar marcador: %s"
+msgstr ""
