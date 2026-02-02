@@ -6,6 +6,7 @@
 #include <girara/types.h>
 #include <girara/macros.h>
 #include <stdbool.h>
+#include <glib-object.h>
 
 typedef struct girara_setting_s girara_setting_t;
 typedef struct girara_session_s girara_session_t;
@@ -96,11 +97,11 @@ typedef bool (*girara_shortcut_function_t)(girara_session_t*, girara_argument_t*
  * This structure defines the possible types that a setting value can have
  */
 typedef enum girara_setting_type_e {
-  BOOLEAN,         /**< Boolean type */
-  FLOAT,           /**< Floating number */
-  INT,             /**< Integer */
-  STRING,          /**< String */
-  UNKNOWN = 0xFFFF /**< Unknown type */
+  BOOLEAN = G_TYPE_BOOLEAN, /**< Boolean type */
+  FLOAT   = G_TYPE_FLOAT,   /**< Floating number */
+  INT     = G_TYPE_INT,     /**< Integer */
+  STRING  = G_TYPE_STRING,  /**< String */
+  UNKNOWN = 0xFFFF          /**< Unknown type */
 } girara_setting_type_t;
 
 /**
