@@ -105,9 +105,6 @@ void girara_config_load_default(girara_session_t* session) {
   const int n_completion_items  = 15;
   girara_mode_t normal_mode     = session->modes.normal;
 
-  /* other values */
-  session->global.autohide_inputbar = true;
-
   /* clang-format off */
   /* settings */
   girara_setting_add(session, "font",                     "monospace normal 9", STRING,  FALSE, _("Font"), cb_font, NULL);

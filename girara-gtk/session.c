@@ -272,6 +272,9 @@ girara_session_t* girara_session_create(void) {
   /* command history */
   session->command_history = girara_input_history_new(NULL);
 
+  /* other values */
+  session->global.autohide_inputbar = true;
+
   /* load default values */
   girara_config_load_default(session);
 
