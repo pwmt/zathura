@@ -356,6 +356,7 @@ girara_list_t* argument_to_argument_list(girara_argument_t* argument) {
       char* arg = g_strdup(argv[i]);
       girara_list_append(argument_list, arg);
     }
+    g_strfreev(argv);
 
     return argument_list;
   }
