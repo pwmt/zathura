@@ -58,12 +58,6 @@ if xvfb.found() or weston.found()
     c_args: defines + flags
   )
 
-  girara_session = executable('test_girara_session', files('test_girara_session.c'),
-    dependencies: build_dependencies + test_dependencies,
-    include_directories: include_directories,
-    c_args: defines + flags
-  )
-
   setting = executable('test_setting', files('test_setting.c'),
     dependencies: build_dependencies + test_dependencies,
     include_directories: include_directories,
@@ -102,17 +96,6 @@ if xvfb.found()
       'LIBGL_DEBUG=quiet'
     ]
   )
-  test('xvfb_girara_session', xvfb,
-    args: xvfb_args + [girara_session],
-    timeout: 60*60,
-    is_parallel: false,
-    protocol: 'tap',
-    env: [
-      'NO_AT_BRIDGE=1',
-      'MESA_LOG=null',
-      'LIBGL_DEBUG=quiet'
-    ]
-  )
   test('xvfb_setting', xvfb,
     args: xvfb_args + [setting],
     timeout: 60*60,
@@ -141,15 +124,6 @@ if weston.found()
   )
   test('weston_config', weston_session,
     args: [config],
-    timeout: 60*60,
-    protocol: 'tap',
-    env: env + [
-      'NO_AT_BRIDGE=1',
-      'WAYLAND_DISPLAY=zathura-test-weston'
-    ]
-  )
-  test('weston_girara_session', weston_session,
-    args: [girara_session],
     timeout: 60*60,
     protocol: 'tap',
     env: env + [
