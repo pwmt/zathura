@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-01 22:41+0100\n"
+"POT-Creation-Date: 2026-02-02 20:54+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Fernando Henrique <liquuid@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/pwmt/zathura/"
@@ -24,11 +24,11 @@ msgstr ""
 msgid "pwmt"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:5
+#: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
 msgstr "Zathura"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:6
+#: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:5
 msgid "Minimalistic document viewer"
 msgstr "Visualizador de documentos minimalista"
 
@@ -794,7 +794,7 @@ msgstr ""
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:467 zathura/config.c:472
+#: data/org.pwmt.zathura.metainfo.xml.in:467 zathura/config.c:571
 msgid "Page aware scrolling"
 msgstr "Rolagem de página consciente"
 
@@ -1027,7 +1027,7 @@ msgid "Updated text searching"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:558
-msgid "Support for poppler &gt;= 0.15"
+msgid "Support for poppler >= 0.15"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:559
@@ -1306,7 +1306,7 @@ msgstr ""
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
-#: data/org.pwmt.zathura.desktop.in:14
+#: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr ""
 
@@ -1539,382 +1539,509 @@ msgid "Document contains no images or attachments"
 msgstr ""
 
 #. clang-format off
+#. settings
+#: zathura/config.c:455
+msgid "Font"
+msgstr "Fonte"
+
+#: zathura/config.c:456
+msgid "Default foreground color"
+msgstr "Cor de primeiro plano padrão"
+
+#: zathura/config.c:457
+msgid "Default background color"
+msgstr "Cor de fundo padrão"
+
+#: zathura/config.c:458
+msgid "Inputbar foreground color"
+msgstr "Cor da barra de entrada"
+
+#: zathura/config.c:459
+msgid "Inputbar background color"
+msgstr "Cor de fundo da barra de entrada"
+
+#: zathura/config.c:460
+msgid "Statusbar foreground color"
+msgstr "Cor da barra de status"
+
+#: zathura/config.c:461
+msgid "Statsubar background color"
+msgstr "Cor de fundo da barra de status"
+
+#: zathura/config.c:462
+msgid "Completion foreground color"
+msgstr "Acabamento de cor"
+
+#: zathura/config.c:463
+msgid "Completion background color"
+msgstr "Cor de fundo de acabamento"
+
+#: zathura/config.c:464
+msgid "Completion group foreground color"
+msgstr "Cor dos grupos de acabamento"
+
+#: zathura/config.c:465
+msgid "Completion group background color"
+msgstr "Cor de fundo dos grupos de acabamento"
+
+#: zathura/config.c:466
+msgid "Completion highlight foreground color"
+msgstr "Acabamento de entrada destacada"
+
+#: zathura/config.c:467
+msgid "Completion highlight background color"
+msgstr "Acabamento cor de fundo destacada"
+
+#: zathura/config.c:468
+msgid "Error notification foreground color"
+msgstr "Cor das notificações de erro"
+
+#: zathura/config.c:469
+msgid "Error notification background color"
+msgstr "Cor de fundo das notificações de erro"
+
+#: zathura/config.c:470
+msgid "Warning notification foreground color"
+msgstr "Cor dos avisos"
+
+#: zathura/config.c:471
+msgid "Warning notifaction background color"
+msgstr "Cor de fundo dos avisos"
+
+#: zathura/config.c:472
+msgid "Notification foreground color"
+msgstr "Cor das notificações"
+
+#: zathura/config.c:473
+msgid "Notification background color"
+msgstr "Cor de fundo das notificação"
+
+#: zathura/config.c:475
+msgid "Initial window width"
+msgstr "Largura de janela inicial"
+
+#: zathura/config.c:476
+msgid "Initial window height"
+msgstr "Altura de janela inicial"
+
+#: zathura/config.c:477
+msgid "Horizontal padding for the status, input, and notification bars"
+msgstr ""
+"Preenchimento horizontal para a entrada de status e barras de notificações"
+
+#: zathura/config.c:478
+msgid "Vertical padding for the status, input, and notification bars"
+msgstr ""
+"Preenchimento vertical para a entrada de status e barras de notificações"
+
+#: zathura/config.c:479
+msgid "Number of completion items"
+msgstr "Número de itens de acabamento"
+
+#: zathura/config.c:480
+msgid "Window icon"
+msgstr "Ícone de janela"
+
+#: zathura/config.c:481
+msgid "Command to execute in :exec"
+msgstr "Comando para executar em :exec"
+
+#: zathura/config.c:482
+msgid "Show or hide certain GUI elements"
+msgstr "Mostrar ou ocultar certos elementos da GUI"
+
+#. commands
+#: zathura/config.c:485 zathura/config.c:773 zathura/config.c:774
+msgid "Execute a command"
+msgstr "Executar um comando"
+
+#: zathura/config.c:486
+msgid "Map a key sequence"
+msgstr "Mapear uma sequencia de teclas"
+
+#: zathura/config.c:487
+msgid "Quit the program"
+msgstr "Sair do programa"
+
+#: zathura/config.c:488
+msgid "Set an option"
+msgstr "Definir uma opção"
+
+#: zathura/config.c:489
+msgid "Unmap a key sequence"
+msgstr "Desmapear uma sequencia de teclas"
+
+#: zathura/config.c:490
+msgid "Dump settings to a file"
+msgstr ""
+
 #. zathura settings
-#: zathura/config.c:403
+#: zathura/config.c:502
 msgid "Database backend"
 msgstr "Fim da base de dados"
 
-#: zathura/config.c:404
+#: zathura/config.c:503
 msgid "File monitor backend"
 msgstr ""
 
-#: zathura/config.c:406
+#: zathura/config.c:505
 msgid "Zoom step"
 msgstr "Grau de Zoom"
 
-#: zathura/config.c:408
+#: zathura/config.c:507
 msgid "Horizontal padding between pages"
 msgstr ""
 
-#: zathura/config.c:410
+#: zathura/config.c:509
 msgid "Vertical padding between pages"
 msgstr ""
 
-#: zathura/config.c:412
+#: zathura/config.c:511
 msgid "Number of pages per row"
 msgstr "Número de paginas por linha"
 
-#: zathura/config.c:414
+#: zathura/config.c:513
 msgid "Column of the first page"
 msgstr "Coluna da primeira página"
 
-#: zathura/config.c:416
+#: zathura/config.c:515
 msgid "Render pages from right to left"
 msgstr ""
 
-#: zathura/config.c:418
+#: zathura/config.c:517
 msgid "Scroll step"
 msgstr "Fase de Rolagem"
 
-#: zathura/config.c:420
+#: zathura/config.c:519
 msgid "Horizontal scroll step"
 msgstr "Etapa de rolagem horizontal"
 
-#: zathura/config.c:422
+#: zathura/config.c:521
 msgid "Full page scroll overlap"
 msgstr "Sobreposição de rolagem de página inteira"
 
-#: zathura/config.c:424
+#: zathura/config.c:523
 msgid "Zoom minimum"
 msgstr "Zoom minimo"
 
-#: zathura/config.c:426
+#: zathura/config.c:525
 msgid "Zoom maximum"
 msgstr "Zoom máximo"
 
-#: zathura/config.c:428
+#: zathura/config.c:527
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Número máximo de páginas para manter no cache"
 
-#: zathura/config.c:430
+#: zathura/config.c:529
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr "Tamanho máximo em pixels de miniaturas para manter no cache"
 
-#: zathura/config.c:432
+#: zathura/config.c:531
 msgid "Number of positions to remember in the jumplist"
 msgstr "Numero de posições para lembrar na lista de salto"
 
-#: zathura/config.c:434
+#: zathura/config.c:533
 msgid "Recoloring (dark color)"
 msgstr "Recolorindo (cor escura)"
 
-#: zathura/config.c:435
+#: zathura/config.c:534
 msgid "Recoloring (light color)"
 msgstr "Recolorindo (cor clara)"
 
-#: zathura/config.c:436
+#: zathura/config.c:535
 msgid "Color for highlighting"
 msgstr "Cor para destacar"
 
-#: zathura/config.c:438
+#: zathura/config.c:537
 msgid "Foreground color for highlighting"
 msgstr ""
 
-#: zathura/config.c:440
+#: zathura/config.c:539
 msgid "Color for highlighting (active)"
 msgstr "Cor para destacar (ativo)"
 
-#: zathura/config.c:442
+#: zathura/config.c:541
 msgid "'Loading ...' background color"
 msgstr "'Carregando ...' cor de fundo"
 
-#: zathura/config.c:444
+#: zathura/config.c:543
 msgid "'Loading ...' foreground color"
 msgstr "'Carregando ...' cor de primeiro plano"
 
-#: zathura/config.c:447
+#: zathura/config.c:546
 msgid "Index mode foreground color"
 msgstr "Cor modo de índice no primeiro plano"
 
-#: zathura/config.c:448
+#: zathura/config.c:547
 msgid "Index mode background color"
 msgstr "Cor modo de índice, fundo"
 
-#: zathura/config.c:449
+#: zathura/config.c:548
 msgid "Index mode foreground color (active element)"
 msgstr "Cor modo de índice no primeiro plano (elemento ativo)"
 
-#: zathura/config.c:450
+#: zathura/config.c:549
 msgid "Index mode background color (active element)"
 msgstr "Cor modo de índice, fundo (elemento ativo)"
 
-#: zathura/config.c:452
+#: zathura/config.c:551
 msgid "Color used to highlight valid signatures"
 msgstr ""
 
-#: zathura/config.c:455
+#: zathura/config.c:554
 msgid "Color used to highlight signatures with warnings"
 msgstr ""
 
-#: zathura/config.c:458
+#: zathura/config.c:557
 msgid "Color used to highlight invalid signatures"
 msgstr ""
 
-#: zathura/config.c:462
+#: zathura/config.c:561
 msgid "Recolor pages"
 msgstr "Recolorir páginas"
 
-#: zathura/config.c:464
+#: zathura/config.c:563
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 "Quando recolorir, manter tonalidade original e ajustar somente a luminosidade"
 
-#: zathura/config.c:466
+#: zathura/config.c:565
 msgid "When recoloring keep original image colors"
 msgstr "Quando recolorir, manter cores de imagens originais"
 
-#: zathura/config.c:468
+#: zathura/config.c:567
 msgid "When recoloring adjust lightness"
 msgstr ""
 
-#: zathura/config.c:470
+#: zathura/config.c:569
 msgid "Wrap scrolling"
 msgstr "Rolagem envoltório"
 
-#: zathura/config.c:474
+#: zathura/config.c:573
 msgid "Advance number of pages per row"
 msgstr "Numero de avanço de paginas por linha"
 
-#: zathura/config.c:476
+#: zathura/config.c:575
 msgid "Horizontally centered zoom"
 msgstr "Zoom centrado horizontalmente"
 
-#: zathura/config.c:478
+#: zathura/config.c:577
 msgid "Vertically center pages"
 msgstr ""
 
-#: zathura/config.c:480
+#: zathura/config.c:579
 msgid "Align link target to the left"
 msgstr "Alinhe destino do link à esquerda"
 
-#: zathura/config.c:482
+#: zathura/config.c:581
 msgid "Let zoom be changed when following links"
 msgstr "Zoom será mudado quando seguir os links"
 
-#: zathura/config.c:484
+#: zathura/config.c:583
 msgid "Center result horizontally"
 msgstr "Resultado centrado horizontalmente"
 
-#: zathura/config.c:486
+#: zathura/config.c:585
 msgid "Render 'Loading ...'"
 msgstr "Renderizando 'Carregando...'"
 
-#: zathura/config.c:487
+#: zathura/config.c:586
 msgid "Adjust to when opening file"
 msgstr "Ajuste para quando abrir o arquivo"
 
-#: zathura/config.c:489
+#: zathura/config.c:588
 msgid "Show hidden files and directories"
 msgstr "Mostrar arquivos ocultos e diretórios"
 
-#: zathura/config.c:491
+#: zathura/config.c:590
 msgid "Show directories"
 msgstr "Mostrar diretórios"
 
-#: zathura/config.c:493
+#: zathura/config.c:592
 msgid "Show recent files"
 msgstr ""
 
-#: zathura/config.c:495
+#: zathura/config.c:594
 msgid "Always open on first page"
 msgstr "Sempre abrir na primeira página"
 
-#: zathura/config.c:497
+#: zathura/config.c:596
 msgid "Disable highlighting of search results"
 msgstr ""
 
-#: zathura/config.c:499
+#: zathura/config.c:598
 msgid "Double click to follow links"
 msgstr ""
 
-#: zathura/config.c:502
+#: zathura/config.c:601
 msgid "Enable incremental search"
 msgstr "Ativar pesquisa incremental"
 
-#: zathura/config.c:504
+#: zathura/config.c:603
 msgid "Clear search results on abort"
 msgstr "Limpar resultados de busca ou abortar"
 
-#: zathura/config.c:506
+#: zathura/config.c:605
 msgid "Use basename of the file in the window title"
 msgstr "Usar nome do arquivo na barra de titulo"
 
-#: zathura/config.c:508
+#: zathura/config.c:607
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr ""
 
-#: zathura/config.c:510
+#: zathura/config.c:609
 msgid "Display the page number in the window title"
 msgstr "Exibir o número da página no título da janela."
 
-#: zathura/config.c:512
+#: zathura/config.c:611
 msgid "Use first page of a document as window icon"
 msgstr ""
 
-#: zathura/config.c:514
+#: zathura/config.c:613
 msgid "Use basename of the file in the statusbar"
 msgstr "Use o nome do arquivo na barra de status"
 
-#: zathura/config.c:516
+#: zathura/config.c:615
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 
-#: zathura/config.c:518
+#: zathura/config.c:617
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
-#: zathura/config.c:520
+#: zathura/config.c:619
 msgid "Enable synctex support"
 msgstr "Ativar suporte synctex"
 
-#: zathura/config.c:521
+#: zathura/config.c:620
 msgid "Synctex editor command"
 msgstr "Comando editor Synctex"
 
-#: zathura/config.c:522
+#: zathura/config.c:621
 msgid "Synctex edit modifier"
 msgstr ""
 
-#: zathura/config.c:523
+#: zathura/config.c:622
 msgid "Highlighter modifier"
 msgstr ""
 
-#: zathura/config.c:525
+#: zathura/config.c:624
 msgid "Enable D-Bus service"
 msgstr "Habilitar serviço D-Bus"
 
-#: zathura/config.c:526
+#: zathura/config.c:625
 msgid "Raise window on certain D-Bus commands"
 msgstr ""
 
-#: zathura/config.c:528
+#: zathura/config.c:627
 msgid "Save history at each page change"
 msgstr ""
 
-#: zathura/config.c:529
+#: zathura/config.c:628
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
 "A área de transferência em que o dados selecionados com o mouse vão ser "
 "escritos"
 
-#: zathura/config.c:531
+#: zathura/config.c:630
 msgid "Enable notification after selecting text"
 msgstr "Habilitar notificação após a seleção de texto"
 
-#: zathura/config.c:534
+#: zathura/config.c:633
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 
-#: zathura/config.c:536
+#: zathura/config.c:635
 msgid "Scrollbar foreground color"
 msgstr ""
 
-#: zathura/config.c:537
+#: zathura/config.c:636
 msgid "Scrollbar background color"
 msgstr ""
 
-#: zathura/config.c:538
-msgid "Show or hide view UI elements"
-msgstr ""
-
 #. define default inputbar commands
-#: zathura/config.c:644
+#: zathura/config.c:766
 msgid "Add a bookmark"
 msgstr "Adicionar um favorito"
 
-#: zathura/config.c:645
+#: zathura/config.c:767
 msgid "Delete a bookmark"
 msgstr "Deletar um favorito"
 
-#: zathura/config.c:646
+#: zathura/config.c:768
 msgid "List all bookmarks"
 msgstr "Listar todos favoritos"
 
-#: zathura/config.c:647
+#: zathura/config.c:769
 msgid "Jump to bookmark"
 msgstr ""
 
-#: zathura/config.c:648
+#: zathura/config.c:770
 msgid "Show recent jumps in jumplist"
 msgstr ""
 
-#: zathura/config.c:649
+#: zathura/config.c:771
 msgid "Close current file"
 msgstr "Fechar arquivo atual"
 
-#: zathura/config.c:650
+#: zathura/config.c:772
 msgid "Show file information"
 msgstr "Mostrar informações do arquivo"
 
-#. commands
-#: zathura/config.c:651 zathura/config.c:652 girara-gtk/config.c:176
-msgid "Execute a command"
-msgstr "Executar um comando"
-
 #. like vim
-#: zathura/config.c:653
+#: zathura/config.c:775
 msgid "Show help"
 msgstr "Mostrar ajuda"
 
-#: zathura/config.c:654
+#: zathura/config.c:776
 msgid "Open document"
 msgstr "Abrir documento"
 
-#: zathura/config.c:655
+#: zathura/config.c:777
 msgid "Close zathura"
 msgstr "Fechar zathura"
 
-#: zathura/config.c:656
+#: zathura/config.c:778
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: zathura/config.c:657 zathura/config.c:659
+#: zathura/config.c:779 zathura/config.c:781
 msgid "Save document"
 msgstr "Salvar documento"
 
-#: zathura/config.c:658 zathura/config.c:660
+#: zathura/config.c:780 zathura/config.c:782
 msgid "Save document (and force overwriting)"
 msgstr "Salvar documento (e forçar sobrescrever)"
 
-#: zathura/config.c:661
+#: zathura/config.c:783
 msgid "Save attachments"
 msgstr "Salvar anexos"
 
-#: zathura/config.c:662
+#: zathura/config.c:784
 msgid "Set page offset"
 msgstr "Definir deslocamento da página"
 
-#: zathura/config.c:663
+#: zathura/config.c:785
 msgid "Mark current location within the document"
 msgstr "Marcar localização atual no documento"
 
-#: zathura/config.c:664
+#: zathura/config.c:786
 msgid "Delete the specified marks"
 msgstr "Apagar as marcas especificadas"
 
-#: zathura/config.c:665
+#: zathura/config.c:787
 msgid "Remove highlights of current search results"
 msgstr ""
 
-#: zathura/config.c:666
+#: zathura/config.c:788
 msgid "Highlight current search results"
 msgstr "Destacar resultado de busca atual"
 
-#: zathura/config.c:667
+#: zathura/config.c:789
 msgid "Show version information"
 msgstr "Mostrar informações sobre a versão"
 
-#: zathura/config.c:668
+#: zathura/config.c:790
 msgid "Source config file"
 msgstr ""
 
@@ -2187,144 +2314,12 @@ msgstr "Valor desconhecido para opção: %s"
 msgid "Not a valid command: %s"
 msgstr "Nenhum comando válido: %s"
 
-#. clang-format off
-#. settings
-#: girara-gtk/config.c:113
-msgid "Font"
-msgstr "Fonte"
-
-#: girara-gtk/config.c:114
-msgid "Default foreground color"
-msgstr "Cor de primeiro plano padrão"
-
-#: girara-gtk/config.c:115
-msgid "Default background color"
-msgstr "Cor de fundo padrão"
-
-#: girara-gtk/config.c:116
-msgid "Inputbar foreground color"
-msgstr "Cor da barra de entrada"
-
-#: girara-gtk/config.c:117
-msgid "Inputbar background color"
-msgstr "Cor de fundo da barra de entrada"
-
-#: girara-gtk/config.c:118
-msgid "Statusbar foreground color"
-msgstr "Cor da barra de status"
-
-#: girara-gtk/config.c:119
-msgid "Statsubar background color"
-msgstr "Cor de fundo da barra de status"
-
-#: girara-gtk/config.c:120
-msgid "Completion foreground color"
-msgstr "Acabamento de cor"
-
-#: girara-gtk/config.c:121
-msgid "Completion background color"
-msgstr "Cor de fundo de acabamento"
-
-#: girara-gtk/config.c:122
-msgid "Completion group foreground color"
-msgstr "Cor dos grupos de acabamento"
-
-#: girara-gtk/config.c:123
-msgid "Completion group background color"
-msgstr "Cor de fundo dos grupos de acabamento"
-
-#: girara-gtk/config.c:124
-msgid "Completion highlight foreground color"
-msgstr "Acabamento de entrada destacada"
-
-#: girara-gtk/config.c:125
-msgid "Completion highlight background color"
-msgstr "Acabamento cor de fundo destacada"
-
-#: girara-gtk/config.c:126
-msgid "Error notification foreground color"
-msgstr "Cor das notificações de erro"
-
-#: girara-gtk/config.c:127
-msgid "Error notification background color"
-msgstr "Cor de fundo das notificações de erro"
-
-#: girara-gtk/config.c:128
-msgid "Warning notification foreground color"
-msgstr "Cor dos avisos"
-
-#: girara-gtk/config.c:129
-msgid "Warning notifaction background color"
-msgstr "Cor de fundo dos avisos"
-
-#: girara-gtk/config.c:130
-msgid "Notification foreground color"
-msgstr "Cor das notificações"
-
-#: girara-gtk/config.c:131
-msgid "Notification background color"
-msgstr "Cor de fundo das notificação"
-
-#: girara-gtk/config.c:133
-msgid "Initial window width"
-msgstr "Largura de janela inicial"
-
-#: girara-gtk/config.c:134
-msgid "Initial window height"
-msgstr "Altura de janela inicial"
-
-#: girara-gtk/config.c:135
-msgid "Horizontal padding for the status, input, and notification bars"
-msgstr ""
-"Preenchimento horizontal para a entrada de status e barras de notificações"
-
-#: girara-gtk/config.c:136
-msgid "Vertical padding for the status, input, and notification bars"
-msgstr ""
-"Preenchimento vertical para a entrada de status e barras de notificações"
-
-#: girara-gtk/config.c:137
-msgid "Number of completion items"
-msgstr "Número de itens de acabamento"
-
-#: girara-gtk/config.c:138
-msgid "Window icon"
-msgstr "Ícone de janela"
-
-#: girara-gtk/config.c:139
-msgid "Command to execute in :exec"
-msgstr "Comando para executar em :exec"
-
-#: girara-gtk/config.c:140
-msgid "Show or hide certain GUI elements"
-msgstr "Mostrar ou ocultar certos elementos da GUI"
-
-#: girara-gtk/config.c:177
-msgid "Map a key sequence"
-msgstr "Mapear uma sequencia de teclas"
-
-#: girara-gtk/config.c:178
-msgid "Quit the program"
-msgstr "Sair do programa"
-
-#: girara-gtk/config.c:179
-msgid "Set an option"
-msgstr "Definir uma opção"
-
-#: girara-gtk/config.c:180
-msgid "Unmap a key sequence"
-msgstr "Desmapear uma sequencia de teclas"
-
-#: girara-gtk/config.c:182
-msgid "Dump settings to a file"
-msgstr ""
-
-#: girara-gtk/settings.c:262
+#: girara-gtk/settings.c:259
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
 
-#: girara-gtk/settings.c:284
+#: girara-gtk/settings.c:281
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr ""

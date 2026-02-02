@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-01 22:41+0100\n"
+"POT-Creation-Date: 2026-02-02 20:54+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "pwmt"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:5
+#: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
 msgstr "Zathura"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:6
+#: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:5
 msgid "Minimalistic document viewer"
 msgstr "Minimalistisk dokumentvisare"
 
@@ -790,7 +790,7 @@ msgstr ""
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:467 zathura/config.c:472
+#: data/org.pwmt.zathura.metainfo.xml.in:467 zathura/config.c:571
 msgid "Page aware scrolling"
 msgstr "Sidmedveten rullning"
 
@@ -1023,7 +1023,7 @@ msgid "Updated text searching"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:558
-msgid "Support for poppler &gt;= 0.15"
+msgid "Support for poppler >= 0.15"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:559
@@ -1302,7 +1302,7 @@ msgstr ""
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
-#: data/org.pwmt.zathura.desktop.in:14
+#: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;dokument;presentation;visare;"
 
@@ -1535,379 +1535,522 @@ msgid "Document contains no images or attachments"
 msgstr ""
 
 #. clang-format off
-#. zathura settings
-#: zathura/config.c:403
-msgid "Database backend"
-msgstr "Databasbakände"
-
-#: zathura/config.c:404
-msgid "File monitor backend"
-msgstr "Filövervakningsbakände"
-
-#: zathura/config.c:406
-msgid "Zoom step"
-msgstr "Zoomsteg"
-
-#: zathura/config.c:408
-msgid "Horizontal padding between pages"
+#. settings
+#: zathura/config.c:455
+msgid "Font"
 msgstr ""
 
-#: zathura/config.c:410
-msgid "Vertical padding between pages"
-msgstr ""
-
-#: zathura/config.c:412
-msgid "Number of pages per row"
-msgstr "Antal sidor per rad"
-
-#: zathura/config.c:414
-msgid "Column of the first page"
-msgstr "Kolumn för den första sidan"
-
-#: zathura/config.c:416
-msgid "Render pages from right to left"
-msgstr "Rendera sidor från höger till vänster"
-
-#: zathura/config.c:418
-msgid "Scroll step"
-msgstr "Rullningssteg"
-
-#: zathura/config.c:420
-msgid "Horizontal scroll step"
-msgstr "Horisontellt rullningssteg"
-
-#: zathura/config.c:422
-msgid "Full page scroll overlap"
-msgstr "Överlappning vid helsiddesrullning"
-
-#: zathura/config.c:424
-msgid "Zoom minimum"
-msgstr "Minsta zoom"
-
-#: zathura/config.c:426
-msgid "Zoom maximum"
-msgstr "Största zoom"
-
-#: zathura/config.c:428
-msgid "Maximum number of pages to keep in the cache"
-msgstr "Maximalt antal sidor att hålla i cachen"
-
-#: zathura/config.c:430
-msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr "Maximal storlek i pixla för miniatyrbilder att hålla i cachen"
-
-#: zathura/config.c:432
-msgid "Number of positions to remember in the jumplist"
-msgstr "Antal position att komma ihåg i hopplistan"
-
-#: zathura/config.c:434
-msgid "Recoloring (dark color)"
-msgstr "Omfärgning (mörk färg)"
-
-#: zathura/config.c:435
-msgid "Recoloring (light color)"
-msgstr "Omfärgning (ljus färg)"
-
-#: zathura/config.c:436
-msgid "Color for highlighting"
-msgstr "Färg för färgmarkering"
-
-#: zathura/config.c:438
-msgid "Foreground color for highlighting"
-msgstr ""
-
-#: zathura/config.c:440
-msgid "Color for highlighting (active)"
-msgstr "Färg för färgmarkering (aktiv)"
-
-#: zathura/config.c:442
-msgid "'Loading ...' background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: zathura/config.c:444
-msgid "'Loading ...' foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: zathura/config.c:447
-msgid "Index mode foreground color"
+#: zathura/config.c:456
+#, fuzzy
+msgid "Default foreground color"
 msgstr "Förgrundsfärg för indexläge"
 
-#: zathura/config.c:448
-msgid "Index mode background color"
+#: zathura/config.c:457
+#, fuzzy
+msgid "Default background color"
 msgstr "Bakgrundsfärg för indexläge"
 
-#: zathura/config.c:449
-msgid "Index mode foreground color (active element)"
-msgstr "Förgrundsfärg för indexläge (aktivt element)"
-
-#: zathura/config.c:450
-msgid "Index mode background color (active element)"
-msgstr "Bakgrundsfärg för indexläge (aktivt element)"
-
-#: zathura/config.c:452
-msgid "Color used to highlight valid signatures"
-msgstr ""
-
-#: zathura/config.c:455
-msgid "Color used to highlight signatures with warnings"
-msgstr ""
-
 #: zathura/config.c:458
-msgid "Color used to highlight invalid signatures"
-msgstr ""
+#, fuzzy
+msgid "Inputbar foreground color"
+msgstr "Förgrundsfärg för indexläge"
+
+#: zathura/config.c:459
+#, fuzzy
+msgid "Inputbar background color"
+msgstr "Bakgrundsfärg för indexläge"
+
+#: zathura/config.c:460
+#, fuzzy
+msgid "Statusbar foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:461
+#, fuzzy
+msgid "Statsubar background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
 
 #: zathura/config.c:462
-msgid "Recolor pages"
-msgstr "Omfärga sidor"
+#, fuzzy
+msgid "Completion foreground color"
+msgstr "Förgrundsfärg för indexläge"
+
+#: zathura/config.c:463
+#, fuzzy
+msgid "Completion background color"
+msgstr "Bakgrundsfärg för indexläge"
 
 #: zathura/config.c:464
-msgid "When recoloring keep original hue and adjust lightness only"
-msgstr "Vid omfärgning behåll originalnyans och justera endast ljushet"
+#, fuzzy
+msgid "Completion group foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:465
+#, fuzzy
+msgid "Completion group background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
 
 #: zathura/config.c:466
-msgid "When recoloring keep original image colors"
-msgstr "Vid omfärgning behåll originalfärger för bilder"
+#, fuzzy
+msgid "Completion highlight foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:467
+#, fuzzy
+msgid "Completion highlight background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
 
 #: zathura/config.c:468
-msgid "When recoloring adjust lightness"
-msgstr ""
+#, fuzzy
+msgid "Error notification foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:469
+#, fuzzy
+msgid "Error notification background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
 
 #: zathura/config.c:470
-msgid "Wrap scrolling"
-msgstr "Omslagsrullning"
+#, fuzzy
+msgid "Warning notification foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
 
-#: zathura/config.c:474
-msgid "Advance number of pages per row"
-msgstr "Antal sidor per rad att avancera"
+#: zathura/config.c:471
+#, fuzzy
+msgid "Warning notifaction background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:472
+#, fuzzy
+msgid "Notification foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:473
+#, fuzzy
+msgid "Notification background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:475
+msgid "Initial window width"
+msgstr ""
 
 #: zathura/config.c:476
-msgid "Horizontally centered zoom"
-msgstr "Horisontellt centrerad zoom"
+msgid "Initial window height"
+msgstr ""
+
+#: zathura/config.c:477
+msgid "Horizontal padding for the status, input, and notification bars"
+msgstr ""
 
 #: zathura/config.c:478
-msgid "Vertically center pages"
-msgstr "Centrera sidor vertikalt"
+msgid "Vertical padding for the status, input, and notification bars"
+msgstr ""
+
+#: zathura/config.c:479
+msgid "Number of completion items"
+msgstr ""
 
 #: zathura/config.c:480
-msgid "Align link target to the left"
-msgstr "Justera länkmål till vänster"
+msgid "Window icon"
+msgstr ""
+
+#: zathura/config.c:481
+msgid "Command to execute in :exec"
+msgstr ""
 
 #: zathura/config.c:482
-msgid "Let zoom be changed when following links"
-msgstr "Låt zoom ändras när länkar följs"
-
-#: zathura/config.c:484
-msgid "Center result horizontally"
-msgstr "Centrerar resultat horisontellt"
-
-#: zathura/config.c:486
-msgid "Render 'Loading ...'"
-msgstr "Rendera ”Läser in …”"
-
-#: zathura/config.c:487
-msgid "Adjust to when opening file"
-msgstr "Justera till vid öppning av fil"
-
-#: zathura/config.c:489
-msgid "Show hidden files and directories"
-msgstr "Visa gömda filer och kataloger"
-
-#: zathura/config.c:491
-msgid "Show directories"
-msgstr "Visa kataloger"
-
-#: zathura/config.c:493
-msgid "Show recent files"
-msgstr "Visa senaste filer"
-
-#: zathura/config.c:495
-msgid "Always open on first page"
-msgstr "Öppna alltid på första sidan"
-
-#: zathura/config.c:497
-msgid "Disable highlighting of search results"
+msgid "Show or hide certain GUI elements"
 msgstr ""
-
-#: zathura/config.c:499
-msgid "Double click to follow links"
-msgstr ""
-
-#: zathura/config.c:502
-msgid "Enable incremental search"
-msgstr "Aktivera inkrementell sökning"
-
-#: zathura/config.c:504
-msgid "Clear search results on abort"
-msgstr "Rensa sökresultat vid avbrott"
-
-#: zathura/config.c:506
-msgid "Use basename of the file in the window title"
-msgstr "Använd basnman för filen i fönstertiteln"
-
-#: zathura/config.c:508
-msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr "Använd ~ istället för $HOME i filnamnet i fönstertiteln"
-
-#: zathura/config.c:510
-msgid "Display the page number in the window title"
-msgstr "Visa sidnummer i fönstertiteln"
-
-#: zathura/config.c:512
-msgid "Use first page of a document as window icon"
-msgstr "Använd den första sidan från ett dokument som fönsterikon"
-
-#: zathura/config.c:514
-msgid "Use basename of the file in the statusbar"
-msgstr "Använd basnamnet för filen in statusraden"
-
-#: zathura/config.c:516
-msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr "Använd ~ istället för $HOME i filnamnet i statsraden"
-
-#: zathura/config.c:518
-msgid "Display (current page / total pages) as a percent in the statusbar"
-msgstr ""
-
-#: zathura/config.c:520
-msgid "Enable synctex support"
-msgstr "Aktivera synctex-stöd"
-
-#: zathura/config.c:521
-msgid "Synctex editor command"
-msgstr "Synctex-redigerarkommando"
-
-#: zathura/config.c:522
-msgid "Synctex edit modifier"
-msgstr ""
-
-#: zathura/config.c:523
-msgid "Highlighter modifier"
-msgstr ""
-
-#: zathura/config.c:525
-msgid "Enable D-Bus service"
-msgstr "Aktivera D-Bus-tjänst"
-
-#: zathura/config.c:526
-msgid "Raise window on certain D-Bus commands"
-msgstr ""
-
-#: zathura/config.c:528
-msgid "Save history at each page change"
-msgstr "Spara historik vid varje sidbyte"
-
-#: zathura/config.c:529
-msgid "The clipboard into which mouse-selected data will be written"
-msgstr "Urklipp till vilket musmarkerad data kommer att skrivas"
-
-#: zathura/config.c:531
-msgid "Enable notification after selecting text"
-msgstr "Aktivera avisering efter att ha markerat text"
-
-#: zathura/config.c:534
-msgid "Disable additional information for signatures embedded in the document."
-msgstr ""
-
-#: zathura/config.c:536
-msgid "Scrollbar foreground color"
-msgstr ""
-
-#: zathura/config.c:537
-msgid "Scrollbar background color"
-msgstr ""
-
-#: zathura/config.c:538
-msgid "Show or hide view UI elements"
-msgstr ""
-
-#. define default inputbar commands
-#: zathura/config.c:644
-msgid "Add a bookmark"
-msgstr "Lägg till ett bokmärke"
-
-#: zathura/config.c:645
-msgid "Delete a bookmark"
-msgstr "Ta bort ett bokmärke"
-
-#: zathura/config.c:646
-msgid "List all bookmarks"
-msgstr "Lista alla bokmärken"
-
-#: zathura/config.c:647
-msgid "Jump to bookmark"
-msgstr ""
-
-#: zathura/config.c:648
-msgid "Show recent jumps in jumplist"
-msgstr ""
-
-#: zathura/config.c:649
-msgid "Close current file"
-msgstr "Stäng aktuell fil"
-
-#: zathura/config.c:650
-msgid "Show file information"
-msgstr "Visa filinformation"
 
 #. commands
-#: zathura/config.c:651 zathura/config.c:652 girara-gtk/config.c:176
+#: zathura/config.c:485 zathura/config.c:773 zathura/config.c:774
 msgid "Execute a command"
 msgstr "Exekvera ett kommando"
 
+#: zathura/config.c:486
+msgid "Map a key sequence"
+msgstr ""
+
+#: zathura/config.c:487
+msgid "Quit the program"
+msgstr ""
+
+#: zathura/config.c:488
+msgid "Set an option"
+msgstr ""
+
+#: zathura/config.c:489
+msgid "Unmap a key sequence"
+msgstr ""
+
+#: zathura/config.c:490
+msgid "Dump settings to a file"
+msgstr ""
+
+#. zathura settings
+#: zathura/config.c:502
+msgid "Database backend"
+msgstr "Databasbakände"
+
+#: zathura/config.c:503
+msgid "File monitor backend"
+msgstr "Filövervakningsbakände"
+
+#: zathura/config.c:505
+msgid "Zoom step"
+msgstr "Zoomsteg"
+
+#: zathura/config.c:507
+msgid "Horizontal padding between pages"
+msgstr ""
+
+#: zathura/config.c:509
+msgid "Vertical padding between pages"
+msgstr ""
+
+#: zathura/config.c:511
+msgid "Number of pages per row"
+msgstr "Antal sidor per rad"
+
+#: zathura/config.c:513
+msgid "Column of the first page"
+msgstr "Kolumn för den första sidan"
+
+#: zathura/config.c:515
+msgid "Render pages from right to left"
+msgstr "Rendera sidor från höger till vänster"
+
+#: zathura/config.c:517
+msgid "Scroll step"
+msgstr "Rullningssteg"
+
+#: zathura/config.c:519
+msgid "Horizontal scroll step"
+msgstr "Horisontellt rullningssteg"
+
+#: zathura/config.c:521
+msgid "Full page scroll overlap"
+msgstr "Överlappning vid helsiddesrullning"
+
+#: zathura/config.c:523
+msgid "Zoom minimum"
+msgstr "Minsta zoom"
+
+#: zathura/config.c:525
+msgid "Zoom maximum"
+msgstr "Största zoom"
+
+#: zathura/config.c:527
+msgid "Maximum number of pages to keep in the cache"
+msgstr "Maximalt antal sidor att hålla i cachen"
+
+#: zathura/config.c:529
+msgid "Maximum size in pixels of thumbnails to keep in the cache"
+msgstr "Maximal storlek i pixla för miniatyrbilder att hålla i cachen"
+
+#: zathura/config.c:531
+msgid "Number of positions to remember in the jumplist"
+msgstr "Antal position att komma ihåg i hopplistan"
+
+#: zathura/config.c:533
+msgid "Recoloring (dark color)"
+msgstr "Omfärgning (mörk färg)"
+
+#: zathura/config.c:534
+msgid "Recoloring (light color)"
+msgstr "Omfärgning (ljus färg)"
+
+#: zathura/config.c:535
+msgid "Color for highlighting"
+msgstr "Färg för färgmarkering"
+
+#: zathura/config.c:537
+msgid "Foreground color for highlighting"
+msgstr ""
+
+#: zathura/config.c:539
+msgid "Color for highlighting (active)"
+msgstr "Färg för färgmarkering (aktiv)"
+
+#: zathura/config.c:541
+msgid "'Loading ...' background color"
+msgstr "Bakgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:543
+msgid "'Loading ...' foreground color"
+msgstr "Förgrundsfärg för ”Läser in…”"
+
+#: zathura/config.c:546
+msgid "Index mode foreground color"
+msgstr "Förgrundsfärg för indexläge"
+
+#: zathura/config.c:547
+msgid "Index mode background color"
+msgstr "Bakgrundsfärg för indexläge"
+
+#: zathura/config.c:548
+msgid "Index mode foreground color (active element)"
+msgstr "Förgrundsfärg för indexläge (aktivt element)"
+
+#: zathura/config.c:549
+msgid "Index mode background color (active element)"
+msgstr "Bakgrundsfärg för indexläge (aktivt element)"
+
+#: zathura/config.c:551
+msgid "Color used to highlight valid signatures"
+msgstr ""
+
+#: zathura/config.c:554
+msgid "Color used to highlight signatures with warnings"
+msgstr ""
+
+#: zathura/config.c:557
+msgid "Color used to highlight invalid signatures"
+msgstr ""
+
+#: zathura/config.c:561
+msgid "Recolor pages"
+msgstr "Omfärga sidor"
+
+#: zathura/config.c:563
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr "Vid omfärgning behåll originalnyans och justera endast ljushet"
+
+#: zathura/config.c:565
+msgid "When recoloring keep original image colors"
+msgstr "Vid omfärgning behåll originalfärger för bilder"
+
+#: zathura/config.c:567
+msgid "When recoloring adjust lightness"
+msgstr ""
+
+#: zathura/config.c:569
+msgid "Wrap scrolling"
+msgstr "Omslagsrullning"
+
+#: zathura/config.c:573
+msgid "Advance number of pages per row"
+msgstr "Antal sidor per rad att avancera"
+
+#: zathura/config.c:575
+msgid "Horizontally centered zoom"
+msgstr "Horisontellt centrerad zoom"
+
+#: zathura/config.c:577
+msgid "Vertically center pages"
+msgstr "Centrera sidor vertikalt"
+
+#: zathura/config.c:579
+msgid "Align link target to the left"
+msgstr "Justera länkmål till vänster"
+
+#: zathura/config.c:581
+msgid "Let zoom be changed when following links"
+msgstr "Låt zoom ändras när länkar följs"
+
+#: zathura/config.c:583
+msgid "Center result horizontally"
+msgstr "Centrerar resultat horisontellt"
+
+#: zathura/config.c:585
+msgid "Render 'Loading ...'"
+msgstr "Rendera ”Läser in …”"
+
+#: zathura/config.c:586
+msgid "Adjust to when opening file"
+msgstr "Justera till vid öppning av fil"
+
+#: zathura/config.c:588
+msgid "Show hidden files and directories"
+msgstr "Visa gömda filer och kataloger"
+
+#: zathura/config.c:590
+msgid "Show directories"
+msgstr "Visa kataloger"
+
+#: zathura/config.c:592
+msgid "Show recent files"
+msgstr "Visa senaste filer"
+
+#: zathura/config.c:594
+msgid "Always open on first page"
+msgstr "Öppna alltid på första sidan"
+
+#: zathura/config.c:596
+msgid "Disable highlighting of search results"
+msgstr ""
+
+#: zathura/config.c:598
+msgid "Double click to follow links"
+msgstr ""
+
+#: zathura/config.c:601
+msgid "Enable incremental search"
+msgstr "Aktivera inkrementell sökning"
+
+#: zathura/config.c:603
+msgid "Clear search results on abort"
+msgstr "Rensa sökresultat vid avbrott"
+
+#: zathura/config.c:605
+msgid "Use basename of the file in the window title"
+msgstr "Använd basnman för filen i fönstertiteln"
+
+#: zathura/config.c:607
+msgid "Use ~ instead of $HOME in the filename in the window title"
+msgstr "Använd ~ istället för $HOME i filnamnet i fönstertiteln"
+
+#: zathura/config.c:609
+msgid "Display the page number in the window title"
+msgstr "Visa sidnummer i fönstertiteln"
+
+#: zathura/config.c:611
+msgid "Use first page of a document as window icon"
+msgstr "Använd den första sidan från ett dokument som fönsterikon"
+
+#: zathura/config.c:613
+msgid "Use basename of the file in the statusbar"
+msgstr "Använd basnamnet för filen in statusraden"
+
+#: zathura/config.c:615
+msgid "Use ~ instead of $HOME in the filename in the statusbar"
+msgstr "Använd ~ istället för $HOME i filnamnet i statsraden"
+
+#: zathura/config.c:617
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+
+#: zathura/config.c:619
+msgid "Enable synctex support"
+msgstr "Aktivera synctex-stöd"
+
+#: zathura/config.c:620
+msgid "Synctex editor command"
+msgstr "Synctex-redigerarkommando"
+
+#: zathura/config.c:621
+msgid "Synctex edit modifier"
+msgstr ""
+
+#: zathura/config.c:622
+msgid "Highlighter modifier"
+msgstr ""
+
+#: zathura/config.c:624
+msgid "Enable D-Bus service"
+msgstr "Aktivera D-Bus-tjänst"
+
+#: zathura/config.c:625
+msgid "Raise window on certain D-Bus commands"
+msgstr ""
+
+#: zathura/config.c:627
+msgid "Save history at each page change"
+msgstr "Spara historik vid varje sidbyte"
+
+#: zathura/config.c:628
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr "Urklipp till vilket musmarkerad data kommer att skrivas"
+
+#: zathura/config.c:630
+msgid "Enable notification after selecting text"
+msgstr "Aktivera avisering efter att ha markerat text"
+
+#: zathura/config.c:633
+msgid "Disable additional information for signatures embedded in the document."
+msgstr ""
+
+#: zathura/config.c:635
+msgid "Scrollbar foreground color"
+msgstr ""
+
+#: zathura/config.c:636
+msgid "Scrollbar background color"
+msgstr ""
+
+#. define default inputbar commands
+#: zathura/config.c:766
+msgid "Add a bookmark"
+msgstr "Lägg till ett bokmärke"
+
+#: zathura/config.c:767
+msgid "Delete a bookmark"
+msgstr "Ta bort ett bokmärke"
+
+#: zathura/config.c:768
+msgid "List all bookmarks"
+msgstr "Lista alla bokmärken"
+
+#: zathura/config.c:769
+msgid "Jump to bookmark"
+msgstr ""
+
+#: zathura/config.c:770
+msgid "Show recent jumps in jumplist"
+msgstr ""
+
+#: zathura/config.c:771
+msgid "Close current file"
+msgstr "Stäng aktuell fil"
+
+#: zathura/config.c:772
+msgid "Show file information"
+msgstr "Visa filinformation"
+
 #. like vim
-#: zathura/config.c:653
+#: zathura/config.c:775
 msgid "Show help"
 msgstr "Visa hjälp"
 
-#: zathura/config.c:654
+#: zathura/config.c:776
 msgid "Open document"
 msgstr "Öppna dokument"
 
-#: zathura/config.c:655
+#: zathura/config.c:777
 msgid "Close zathura"
 msgstr "Stäng zathura"
 
-#: zathura/config.c:656
+#: zathura/config.c:778
 msgid "Print document"
 msgstr "Skriv ut dokument"
 
-#: zathura/config.c:657 zathura/config.c:659
+#: zathura/config.c:779 zathura/config.c:781
 msgid "Save document"
 msgstr "Spara dokument"
 
-#: zathura/config.c:658 zathura/config.c:660
+#: zathura/config.c:780 zathura/config.c:782
 msgid "Save document (and force overwriting)"
 msgstr "Spara dokument (och tvinga överskrivning)"
 
-#: zathura/config.c:661
+#: zathura/config.c:783
 msgid "Save attachments"
 msgstr "Spara bilagor"
 
-#: zathura/config.c:662
+#: zathura/config.c:784
 msgid "Set page offset"
 msgstr "Sätt sidposition"
 
-#: zathura/config.c:663
+#: zathura/config.c:785
 msgid "Mark current location within the document"
 msgstr "Markera aktuell position inom dokumentet"
 
-#: zathura/config.c:664
+#: zathura/config.c:786
 msgid "Delete the specified marks"
 msgstr "Ta bort angivna märken"
 
-#: zathura/config.c:665
+#: zathura/config.c:787
 msgid "Remove highlights of current search results"
 msgstr ""
 
-#: zathura/config.c:666
+#: zathura/config.c:788
 msgid "Highlight current search results"
 msgstr "Färgmarkera aktuella sökresultat"
 
-#: zathura/config.c:667
+#: zathura/config.c:789
 msgid "Show version information"
 msgstr "Visa versionsinformation"
 
-#: zathura/config.c:668
+#: zathura/config.c:790
 msgid "Source config file"
 msgstr ""
 
@@ -2179,160 +2322,12 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr ""
 
-#. clang-format off
-#. settings
-#: girara-gtk/config.c:113
-msgid "Font"
-msgstr ""
-
-#: girara-gtk/config.c:114
-#, fuzzy
-msgid "Default foreground color"
-msgstr "Förgrundsfärg för indexläge"
-
-#: girara-gtk/config.c:115
-#, fuzzy
-msgid "Default background color"
-msgstr "Bakgrundsfärg för indexläge"
-
-#: girara-gtk/config.c:116
-#, fuzzy
-msgid "Inputbar foreground color"
-msgstr "Förgrundsfärg för indexläge"
-
-#: girara-gtk/config.c:117
-#, fuzzy
-msgid "Inputbar background color"
-msgstr "Bakgrundsfärg för indexläge"
-
-#: girara-gtk/config.c:118
-#, fuzzy
-msgid "Statusbar foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:119
-#, fuzzy
-msgid "Statsubar background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:120
-#, fuzzy
-msgid "Completion foreground color"
-msgstr "Förgrundsfärg för indexläge"
-
-#: girara-gtk/config.c:121
-#, fuzzy
-msgid "Completion background color"
-msgstr "Bakgrundsfärg för indexläge"
-
-#: girara-gtk/config.c:122
-#, fuzzy
-msgid "Completion group foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:123
-#, fuzzy
-msgid "Completion group background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:124
-#, fuzzy
-msgid "Completion highlight foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:125
-#, fuzzy
-msgid "Completion highlight background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:126
-#, fuzzy
-msgid "Error notification foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:127
-#, fuzzy
-msgid "Error notification background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:128
-#, fuzzy
-msgid "Warning notification foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:129
-#, fuzzy
-msgid "Warning notifaction background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:130
-#, fuzzy
-msgid "Notification foreground color"
-msgstr "Förgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:131
-#, fuzzy
-msgid "Notification background color"
-msgstr "Bakgrundsfärg för ”Läser in…”"
-
-#: girara-gtk/config.c:133
-msgid "Initial window width"
-msgstr ""
-
-#: girara-gtk/config.c:134
-msgid "Initial window height"
-msgstr ""
-
-#: girara-gtk/config.c:135
-msgid "Horizontal padding for the status, input, and notification bars"
-msgstr ""
-
-#: girara-gtk/config.c:136
-msgid "Vertical padding for the status, input, and notification bars"
-msgstr ""
-
-#: girara-gtk/config.c:137
-msgid "Number of completion items"
-msgstr ""
-
-#: girara-gtk/config.c:138
-msgid "Window icon"
-msgstr ""
-
-#: girara-gtk/config.c:139
-msgid "Command to execute in :exec"
-msgstr ""
-
-#: girara-gtk/config.c:140
-msgid "Show or hide certain GUI elements"
-msgstr ""
-
-#: girara-gtk/config.c:177
-msgid "Map a key sequence"
-msgstr ""
-
-#: girara-gtk/config.c:178
-msgid "Quit the program"
-msgstr ""
-
-#: girara-gtk/config.c:179
-msgid "Set an option"
-msgstr ""
-
-#: girara-gtk/config.c:180
-msgid "Unmap a key sequence"
-msgstr ""
-
-#: girara-gtk/config.c:182
-msgid "Dump settings to a file"
-msgstr ""
-
-#: girara-gtk/settings.c:262
+#: girara-gtk/settings.c:259
 #, fuzzy, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ogiltigt antal argument angivna."
 
-#: girara-gtk/settings.c:284
+#: girara-gtk/settings.c:281
 #, fuzzy, c-format
 msgid "Failed to write JSON: %s"
 msgstr "Misslyckades med att ta bort bokmärke: %s"
