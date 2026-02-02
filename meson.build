@@ -117,7 +117,6 @@ sources = files(
   'girara-gtk/commands.c',
   'girara-gtk/completion.c',
   'girara-gtk/config.c',
-  'girara-gtk/entry.c',
   'girara-gtk/session.c',
   'girara-gtk/settings.c',
   'girara-gtk/shortcuts.c',
