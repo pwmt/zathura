@@ -11,7 +11,7 @@
  * @param session The used girara session
  * @param path Path to the configuration file
  */
-void girara_config_parse(girara_session_t* session, const char* path) ;
+void girara_config_parse(girara_session_t* session, const char* path);
 
 /**
  * Adds an additional config handler
@@ -21,7 +21,6 @@ void girara_config_parse(girara_session_t* session, const char* path) ;
  * @param handle Handle
  * @return true if no error occurred, otherwise false
  */
-bool girara_config_handle_add(girara_session_t* session, const char* identifier,
-                              girara_command_function_t handle) ;
+bool girara_config_handle_add(girara_session_t* session, const char* identifier, girara_command_function_t handle);
 
 #endif

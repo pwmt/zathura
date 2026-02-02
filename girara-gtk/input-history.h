@@ -41,11 +41,11 @@ struct girara_input_history_io_interface_s {
 #define GIRARA_INPUT_HISTORY_IO_GET_INTERFACE(obj)                                                                     \
   (G_TYPE_INSTANCE_GET_INTERFACE((obj), GIRARA_TYPE_INPUT_HISTORY_IO, GiraraInputHistoryIOInterface))
 
-GType girara_input_history_io_get_type(void) G_GNUC_CONST ;
+GType girara_input_history_io_get_type(void) G_GNUC_CONST;
 
-void girara_input_history_io_append(GiraraInputHistoryIO* io, const char* input) ;
+void girara_input_history_io_append(GiraraInputHistoryIO* io, const char* input);
 
-girara_list_t* girara_input_history_io_read(GiraraInputHistoryIO* io) ;
+girara_list_t* girara_input_history_io_read(GiraraInputHistoryIO* io);
 
 struct girara_input_history_s {
   GObject parent;
@@ -121,7 +121,7 @@ struct girara_input_history_class_s {
  *
  * @return the type
  */
-GType girara_input_history_get_type(void) G_GNUC_CONST ;
+GType girara_input_history_get_type(void) G_GNUC_CONST;
 
 /**
  * Create new input history object.
@@ -129,7 +129,7 @@ GType girara_input_history_get_type(void) G_GNUC_CONST ;
  * @param io a GiraraInputHistoryIO instance, may be NULL
  * @returns an input history object
  */
-GiraraInputHistory* girara_input_history_new(GiraraInputHistoryIO* io) ;
+GiraraInputHistory* girara_input_history_new(GiraraInputHistoryIO* io);
 
 /**
  * Append a new line of input.
@@ -137,7 +137,7 @@ GiraraInputHistory* girara_input_history_new(GiraraInputHistoryIO* io) ;
  * @param history an input history instance
  * @param input the input
  */
-void girara_input_history_append(GiraraInputHistory* history, const char* input) ;
+void girara_input_history_append(GiraraInputHistory* history, const char* input);
 
 /**
  * Get the "next" input from the history
@@ -146,7 +146,7 @@ void girara_input_history_append(GiraraInputHistory* history, const char* input)
  * @param current_input input used to find the "next" input
  * @returns "next" input
  */
-const char* girara_input_history_next(GiraraInputHistory* history, const char* current_input) ;
+const char* girara_input_history_next(GiraraInputHistory* history, const char* current_input);
 
 /**
  * Get the "previous" input from the history
@@ -155,14 +155,14 @@ const char* girara_input_history_next(GiraraInputHistory* history, const char* c
  * @param current_input input used to find the "next" input
  * @returns "previous" input
  */
-const char* girara_input_history_previous(GiraraInputHistory* history, const char* current_input) ;
+const char* girara_input_history_previous(GiraraInputHistory* history, const char* current_input);
 
 /**
  * Reset state of the input history
  *
  * @param history an input history instance
  */
-void girara_input_history_reset(GiraraInputHistory* history) ;
+void girara_input_history_reset(GiraraInputHistory* history);
 
 /**
  * Get a list of all the inputs stored.
@@ -170,6 +170,6 @@ void girara_input_history_reset(GiraraInputHistory* history) ;
  * @param history an input history instance
  * @returns a list containing all inputs
  */
-girara_list_t* girara_input_history_list(GiraraInputHistory* history) ;
+girara_list_t* girara_input_history_list(GiraraInputHistory* history);
 
 #endif

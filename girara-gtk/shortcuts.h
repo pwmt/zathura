@@ -23,8 +23,7 @@
  * @return false An error occurred
  */
 bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, const char* buffer,
-                         girara_shortcut_function_t function, girara_mode_t mode, int argument_n,
-                         void* argument_data) ;
+                         girara_shortcut_function_t function, girara_mode_t mode, int argument_n, void* argument_data);
 
 /**
  * Removes a shortcut
@@ -38,7 +37,7 @@ bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, c
  * @return false An error occurred
  */
 bool girara_shortcut_remove(girara_session_t* session, guint modifier, guint key, const char* buffer,
-                            girara_mode_t mode) ;
+                            girara_mode_t mode);
 
 /**
  * Adds an inputbar shortcut
@@ -53,8 +52,7 @@ bool girara_shortcut_remove(girara_session_t* session, guint modifier, guint key
  * @return false An error occurred
  */
 bool girara_inputbar_shortcut_add(girara_session_t* session, guint modifier, guint key,
-                                  girara_shortcut_function_t function, int argument_n,
-                                  void* argument_data) ;
+                                  girara_shortcut_function_t function, int argument_n, void* argument_data);
 
 /**
  * Removes an inputbar shortcut
@@ -65,7 +63,7 @@ bool girara_inputbar_shortcut_add(girara_session_t* session, guint modifier, gui
  * @return true No error occurred
  * @return false An error occurred
  */
-bool girara_inputbar_shortcut_remove(girara_session_t* session, guint modifier, guint key) ;
+bool girara_inputbar_shortcut_remove(girara_session_t* session, guint modifier, guint key);
 
 /**
  * Default shortcut function to focus the inputbar
@@ -78,7 +76,7 @@ bool girara_inputbar_shortcut_remove(girara_session_t* session, guint modifier, 
  * @return false An error occurred (abort execution)
  */
 bool girara_sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                              unsigned int t) ;
+                              unsigned int t);
 
 /**
  * Default shortcut function to abort
@@ -90,8 +88,7 @@ bool girara_sc_focus_inputbar(girara_session_t* session, girara_argument_t* argu
  * @return true No error occurred
  * @return false An error occurred (abort execution)
  */
-bool girara_sc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                     unsigned int t) ;
+bool girara_sc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Default shortcut function to quit the application
@@ -103,8 +100,7 @@ bool girara_sc_abort(girara_session_t* session, girara_argument_t* argument, gir
  * @return true No error occurred
  * @return false An error occurred (abort execution)
  */
-bool girara_sc_quit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                    unsigned int t) ;
+bool girara_sc_quit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Toggles the visibility of the inputbar
@@ -117,7 +113,7 @@ bool girara_sc_quit(girara_session_t* session, girara_argument_t* argument, gira
  * @return false An error occurred (abort execution)
  */
 bool girara_sc_toggle_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                               unsigned int t) ;
+                               unsigned int t);
 
 /**
  * Toggles the visibility of the statusbar
@@ -130,7 +126,7 @@ bool girara_sc_toggle_inputbar(girara_session_t* session, girara_argument_t* arg
  * @return false An error occurred (abort execution)
  */
 bool girara_sc_toggle_statusbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                                unsigned int t) ;
+                                unsigned int t);
 
 /**
  * Passes the argument to the set command
@@ -142,8 +138,7 @@ bool girara_sc_toggle_statusbar(girara_session_t* session, girara_argument_t* ar
  * @return true No error occurred
  * @return false An error occurred (abort execution)
  */
-bool girara_sc_set(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                   unsigned int t) ;
+bool girara_sc_set(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Executes a command.
@@ -155,8 +150,7 @@ bool girara_sc_set(girara_session_t* session, girara_argument_t* argument, girar
  * @return true No error occurred
  * @return false An error occurred (abort execution)
  */
-bool girara_sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                    unsigned int t) ;
+bool girara_sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Default shortcut function to activate
@@ -168,8 +162,7 @@ bool girara_sc_exec(girara_session_t* session, girara_argument_t* argument, gira
  * @return true No error occurred
  * @return false An error occurred (abort execution)
  */
-bool girara_isc_activate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                         unsigned int t) ;
+bool girara_isc_activate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Default inputbar shortcut to abort
@@ -181,8 +174,7 @@ bool girara_isc_activate(girara_session_t* session, girara_argument_t* argument,
  * @return true No error occurred
  * @return false An error occurred (abort execution)
  */
-bool girara_isc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                      unsigned int t) ;
+bool girara_isc_abort(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Default inputbar shortcut that completes the given input
@@ -196,7 +188,7 @@ bool girara_isc_abort(girara_session_t* session, girara_argument_t* argument, gi
  * @return false An error occurred (abort execution)
  */
 bool girara_isc_completion(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                           unsigned int t) ;
+                           unsigned int t);
 
 /**
  * Default inputbar shortcut to manipulate the inputbar string
@@ -209,7 +201,7 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
  * @return false An error occurred (abort execution)
  */
 bool girara_isc_string_manipulation(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                                    unsigned int t) ;
+                                    unsigned int t);
 
 /**
  * Default inputbar shortcut to navigate through the command history
@@ -222,7 +214,7 @@ bool girara_isc_string_manipulation(girara_session_t* session, girara_argument_t
  * @return false An error occurred (abort execution)
  */
 bool girara_isc_command_history(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                                unsigned int t) ;
+                                unsigned int t);
 
 /**
  * Creates a mapping between a shortcut function and an identifier and is used
@@ -234,7 +226,7 @@ bool girara_isc_command_history(girara_session_t* session, girara_argument_t* ar
  * @return true if no error occurred
  */
 bool girara_shortcut_mapping_add(girara_session_t* session, const char* identifier,
-                                 girara_shortcut_function_t function) ;
+                                 girara_shortcut_function_t function);
 
 /**
  * Creates a mapping between a shortcut argument and an identifier and is used
@@ -245,7 +237,7 @@ bool girara_shortcut_mapping_add(girara_session_t* session, const char* identifi
  * @param value The value that should be represented
  * @return true if no error occurred
  */
-bool girara_argument_mapping_add(girara_session_t* session, const char* identifier, int value) ;
+bool girara_argument_mapping_add(girara_session_t* session, const char* identifier, int value);
 
 /**
  * Adds a mouse event
@@ -262,8 +254,7 @@ bool girara_argument_mapping_add(girara_session_t* session, const char* identifi
  * @return false An error occurred
  */
 bool girara_mouse_event_add(girara_session_t* session, guint mask, guint button, girara_shortcut_function_t function,
-                            girara_mode_t mode, girara_event_type_t event_type, int argument_n,
-                            void* argument_data) ;
+                            girara_mode_t mode, girara_event_type_t event_type, int argument_n, void* argument_data);
 
 /**
  * Removes a mouse event
@@ -275,6 +266,6 @@ bool girara_mouse_event_add(girara_session_t* session, guint mask, guint button,
  * @return true No error occurred
  * @return false An error occurred
  */
-bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint button, girara_mode_t mode) ;
+bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint button, girara_mode_t mode);
 
 #endif

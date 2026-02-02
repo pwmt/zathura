@@ -12,7 +12,6 @@
 #define FORMAT_DESCRIPTION "<i>%s</i>"
 
 #define UNUSED(x) GIRARA_UNUSED(x)
-#define HIDDEN GIRARA_HIDDEN
 
 #define LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -21,23 +20,23 @@
  *
  * @param setting The setting to free.
  */
-HIDDEN void girara_setting_free(girara_setting_t* setting);
+void girara_setting_free(girara_setting_t* setting);
 
-HIDDEN void girara_config_handle_free(girara_config_handle_t* handle);
+void girara_config_handle_free(girara_config_handle_t* handle);
 
-HIDDEN void girara_shortcut_mapping_free(girara_shortcut_mapping_t* mapping);
+void girara_shortcut_mapping_free(girara_shortcut_mapping_t* mapping);
 
-HIDDEN void girara_shortcut_free(girara_shortcut_t* shortcut);
+void girara_shortcut_free(girara_shortcut_t* shortcut);
 
-HIDDEN void girara_argument_mapping_free(girara_argument_mapping_t* argument_mapping);
+void girara_argument_mapping_free(girara_argument_mapping_t* argument_mapping);
 
-HIDDEN void girara_command_free(girara_command_t* command);
+void girara_command_free(girara_command_t* command);
 
-HIDDEN void girara_config_load_default(girara_session_t* session);
+void girara_config_load_default(girara_session_t* session);
 
-HIDDEN void widget_add_class(GtkWidget* widget, const char* styleclass);
+void widget_add_class(GtkWidget* widget, const char* styleclass);
 
-HIDDEN void widget_remove_class(GtkWidget* widget, const char* styleclass);
+void widget_remove_class(GtkWidget* widget, const char* styleclass);
 
 /**
  * Default complection function for the settings
@@ -45,7 +44,7 @@ HIDDEN void widget_remove_class(GtkWidget* widget, const char* styleclass);
  * @param session The used girara session
  * @param input The current input
  */
-HIDDEN girara_completion_t* girara_cc_set(girara_session_t* session, const char* input);
+girara_completion_t* girara_cc_set(girara_session_t* session, const char* input);
 
 /**
  * Default command to map sortcuts
@@ -55,7 +54,7 @@ HIDDEN girara_completion_t* girara_cc_set(girara_session_t* session, const char*
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-HIDDEN bool girara_cmd_map(girara_session_t* session, girara_list_t* argument_list);
+bool girara_cmd_map(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Default command to unmap sortcuts
@@ -65,7 +64,7 @@ HIDDEN bool girara_cmd_map(girara_session_t* session, girara_list_t* argument_li
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-HIDDEN bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_list);
+bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Default command to quit the application
@@ -75,7 +74,7 @@ HIDDEN bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-HIDDEN bool girara_cmd_quit(girara_session_t* session, girara_list_t* argument_list);
+bool girara_cmd_quit(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Default command to set the value of settings
@@ -85,7 +84,7 @@ HIDDEN bool girara_cmd_quit(girara_session_t* session, girara_list_t* argument_l
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-HIDDEN bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list);
+bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Execute an external command
@@ -95,7 +94,7 @@ HIDDEN bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_li
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-HIDDEN bool girara_cmd_exec(girara_session_t* session, girara_list_t* argument_list);
+bool girara_cmd_exec(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Dump current settings to a JSON file
@@ -105,7 +104,7 @@ HIDDEN bool girara_cmd_exec(girara_session_t* session, girara_list_t* argument_l
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-HIDDEN bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* argument_list);
+bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Process argument as a sequence of keys that were typed by the user
@@ -117,10 +116,9 @@ HIDDEN bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* arg
  * @return true No error occurred
  * @return false An error occurred
  */
-HIDDEN bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
-                               unsigned int t);
+bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
-HIDDEN void css_template_fill_font(GiraraTemplate* csstemplate, const char* font);
+void css_template_fill_font(GiraraTemplate* csstemplate, const char* font);
 
 /**
  * Structure of a command

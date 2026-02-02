@@ -8,7 +8,10 @@ G_DEFINE_TYPE(GiraraEntry, girara_entry, GTK_TYPE_ENTRY)
 
 static void girara_entry_paste_primary(GiraraEntry* self);
 
-enum { PASTE_PRIMARY, LAST_SIGNAL, };
+enum {
+  PASTE_PRIMARY,
+  LAST_SIGNAL,
+};
 
 static guint signals[LAST_SIGNAL] = {0};
 

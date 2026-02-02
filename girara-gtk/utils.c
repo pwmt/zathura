@@ -50,7 +50,6 @@ bool girara_exec_with_argument_list(girara_session_t* session, girara_list_t* ar
   return ret;
 }
 
-
 void widget_add_class(GtkWidget* widget, const char* styleclass) {
   if (widget == NULL || styleclass == NULL) {
     return;

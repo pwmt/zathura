@@ -29,7 +29,7 @@ typedef bool (*girara_statusbar_event_t)(GtkWidget* widget, GdkEvent* event, gir
  * @return NULL An error occurred
  */
 girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool fill, bool left,
-                                                   girara_statusbar_event_t callback) ;
+                                                   girara_statusbar_event_t callback);
 
 /**
  * Sets the shown text of an statusbar item
@@ -40,7 +40,6 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-bool girara_statusbar_item_set_text(girara_session_t* session, girara_statusbar_item_t* item,
-                                    const char* text) ;
+bool girara_statusbar_item_set_text(girara_session_t* session, girara_statusbar_item_t* item, const char* text);
 
 #endif
