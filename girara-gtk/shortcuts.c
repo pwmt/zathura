@@ -342,7 +342,7 @@ bool girara_sc_toggle_statusbar(girara_session_t* session, girara_argument_t* UN
   return true;
 }
 
-static girara_list_t* argument_to_argument_list(girara_argument_t* argument) {
+girara_list_t* argument_to_argument_list(girara_argument_t* argument) {
   girara_list_t* argument_list = girara_list_new_with_free(g_free);
   if (argument_list == NULL) {
     return NULL;
@@ -380,26 +380,6 @@ bool girara_sc_set(girara_session_t* session, girara_argument_t* argument, girar
 
   /* call set */
   girara_cmd_set(session, argument_list);
-
-  return false;
-}
-
-bool girara_sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
-                    unsigned int UNUSED(t)) {
-  g_return_val_if_fail(session != NULL, false);
-
-  if (argument == NULL || argument->data == NULL) {
-    return false;
-  }
-
-  /* create argument list */
-  g_autoptr(girara_list_t) argument_list = argument_to_argument_list(argument);
-  if (argument_list == NULL) {
-    return false;
-  }
-
-  /* call exec */
-  girara_cmd_exec(session, argument_list);
 
   return false;
 }

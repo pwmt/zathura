@@ -85,16 +85,6 @@ bool girara_cmd_quit(girara_session_t* session, girara_list_t* argument_list);
 bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list);
 
 /**
- * Execute an external command
- *
- * @param session The used girara session
- * @param argument_list List of passed arguments
- * @return TRUE No error occurred
- * @return FALSE An error occurred
- */
-bool girara_cmd_exec(girara_session_t* session, girara_list_t* argument_list);
-
-/**
  * Dump current settings to a JSON file
  *
  * @param session The used girara session
@@ -117,6 +107,8 @@ bool girara_cmd_dump_config(girara_session_t* session, girara_list_t* argument_l
 bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 void css_template_fill_font(GiraraTemplate* csstemplate, const char* font);
+
+girara_list_t* argument_to_argument_list(girara_argument_t* argument);
 
 /**
  * Structure of a command

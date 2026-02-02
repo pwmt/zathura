@@ -1366,7 +1366,24 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   return false;
 }
 
-bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t) {
+static bool sc_exec_internal(girara_session_t* session, girara_argument_t* argument) {
+  if (argument == NULL || argument->data == NULL) {
+    return false;
+  }
+
+  /* create argument list */
+  g_autoptr(girara_list_t) argument_list = argument_to_argument_list(argument);
+  if (argument_list == NULL) {
+    return false;
+  }
+
+  /* call exec */
+  cmd_exec(session, argument_list);
+
+  return false;
+}
+
+bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -1406,7 +1423,7 @@ bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_even
     new_argument.data = s;
   }
 
-  const bool ret = girara_sc_exec(session, &new_argument, event, t);
+  const bool ret = sc_exec_internal(session, &new_argument);
   g_free(new_argument.data);
   return ret;
 }

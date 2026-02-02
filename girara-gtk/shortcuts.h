@@ -141,18 +141,6 @@ bool girara_sc_toggle_statusbar(girara_session_t* session, girara_argument_t* ar
 bool girara_sc_set(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
- * Executes a command.
- *
- * @param session The used girara session
- * @param argument The argument
- * @param event Girara event
- * @param t Number ofexecutions
- * @return true No error occurred
- * @return false An error occurred (abort execution)
- */
-bool girara_sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
-
-/**
  * Default shortcut function to activate
  *
  * @param session The used girara session

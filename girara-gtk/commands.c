@@ -725,14 +725,6 @@ void girara_command_free(girara_command_t* command) {
   }
 }
 
-bool girara_cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
-  if (session == NULL || argument_list == NULL) {
-    return true;
-  }
-
-  return girara_exec_with_argument_list(session, argument_list);
-}
-
 bool girara_command_run(girara_session_t* session, const char* input) {
   /* parse input */
   gchar** argv = NULL;
