@@ -32,8 +32,6 @@ void girara_argument_mapping_free(girara_argument_mapping_t* argument_mapping);
 
 void girara_command_free(girara_command_t* command);
 
-void girara_config_load_default(girara_session_t* session);
-
 void widget_add_class(GtkWidget* widget, const char* styleclass);
 
 void widget_remove_class(GtkWidget* widget, const char* styleclass);

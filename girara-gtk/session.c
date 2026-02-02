@@ -275,9 +275,6 @@ girara_session_t* girara_session_create(void) {
   /* other values */
   session->global.autohide_inputbar = true;
 
-  /* load default values */
-  girara_config_load_default(session);
-
   /* create widgets */
   session->gtk.box                = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
   session_private->gtk.overlay    = gtk_overlay_new();
