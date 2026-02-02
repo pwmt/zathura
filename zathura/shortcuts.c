@@ -1,28 +1,31 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <girara/log.h>
+#include "shortcuts.h"
+
+#include <girara-gtk/internal.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
-#include <girara/datastructures.h>
 #include <girara-gtk/shortcuts.h>
+#include <girara/datastructures.h>
+#include <girara/log.h>
 #include <girara/utils.h>
-#include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <math.h>
 
+#include "adjustment.h"
 #include "callbacks.h"
-#include "shortcuts.h"
+#include "commands.h"
+#include "database.h"
 #include "dbus-interface.h"
+#include "document-widget.h"
 #include "document.h"
-#include "zathura.h"
-#include "render.h"
-#include "utils.h"
+#include "page-widget.h"
 #include "page.h"
 #include "print.h"
-#include "page-widget.h"
-#include "adjustment.h"
-#include "database.h"
-#include "document-widget.h"
-#include <math.h>
+#include "render.h"
+#include "utils.h"
+#include "zathura.h"
 
 /* Helper function for highlighting the links */
 static bool draw_links(zathura_t* zathura) {
@@ -1383,7 +1386,8 @@ static bool sc_exec_internal(girara_session_t* session, girara_argument_t* argum
   return false;
 }
 
-bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+             unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
