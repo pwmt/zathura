@@ -266,8 +266,8 @@ girara_session_t* girara_session_create(void) {
   session_private->config.argument_mappings =
       girara_list_new_with_free((girara_free_function_t)girara_argument_mapping_free);
 
-  girara_config_handle_add(session, "map",   girara_cmd_map);
-  girara_config_handle_add(session, "set",   girara_cmd_set);
+  girara_config_handle_add(session, "map", girara_cmd_map);
+  girara_config_handle_add(session, "set", girara_cmd_set);
   girara_config_handle_add(session, "unmap", girara_cmd_unmap);
 
   /* completion state */
