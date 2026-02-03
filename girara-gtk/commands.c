@@ -316,10 +316,10 @@ static bool girara_cmd_map_unmap(girara_session_t* session, girara_list_t* argum
   /* Check for multi key shortcut */
   if (tmp_length >= 3 && tmp[0] == '<' && tmp[tmp_size - 1] == '>') {
     g_autofree char* tmp_inner = g_strndup(tmp + 1, tmp_size - 2);
-    size_t tmp_inner_length    = g_utf8_strlen(tmp, -1);
+    size_t tmp_inner_length    = g_utf8_strlen(tmp_inner, -1);
 
     /* Multi key shortcut */
-    if (strchr(tmp_inner, '-') != NULL && g_utf8_get_char(g_utf8_offset_to_pointer(tmp, 1)) == '-' &&
+    if (strchr(tmp_inner, '-') != NULL && g_utf8_get_char(g_utf8_offset_to_pointer(tmp_inner, 1)) == '-' &&
         tmp_inner_length > 2) {
       switch (g_utf8_get_char(tmp_inner)) {
       case 'S':
