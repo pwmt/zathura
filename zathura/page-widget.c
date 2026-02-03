@@ -1,9 +1,9 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include <girara/utils.h>
-#include <girara/settings.h>
+#include <girara-gtk/settings.h>
 #include <girara/datastructures.h>
-#include <girara/session.h>
+#include <girara-gtk/session.h>
 #include <string.h>
 #include <glib/gi18n.h>
 #include <math.h>

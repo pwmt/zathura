@@ -12,10 +12,11 @@
 #include "zathura.h"
 
 #include <gio/gio.h>
-#include <girara/commands.h>
-#include <girara/session.h>
-#include <girara/settings.h>
+#include <girara-gtk/commands.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <json-glib/json-glib.h>
 #include <string.h>
 #include <sys/types.h>

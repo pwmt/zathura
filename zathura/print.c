@@ -6,8 +6,8 @@
 #include "page.h"
 
 #include <girara/utils.h>
-#include <girara/statusbar.h>
-#include <girara/session.h>
+#include <girara-gtk/statusbar.h>
+#include <girara-gtk/session.h>
 #include <glib/gi18n.h>
 
 static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),

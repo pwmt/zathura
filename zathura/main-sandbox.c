@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <girara/settings.h>
+#include <girara-gtk/settings.h>
 #include <girara/log.h>
 
 #include <glib/gi18n.h>
@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 
 #include "zathura.h"
 #include "plugin.h"
@@ -131,21 +132,44 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   const int file_idx_base    = has_double_dash ? 2 : 1;
 
   int file_idx = argc > file_idx_base ? file_idx_base : 0;
-  /* Fork instances for other files. */
+  /* If more than one file, fork an instance for each. */
   if (print_version == false && argc > file_idx_base + 1) {
-    for (int idx = file_idx_base + 1; idx < argc; ++idx) {
+    const pid_t parent_pid              = getpid();
+    g_autoptr(girara_list_t) child_pids = girara_list_new();
+
+    for (int idx = file_idx_base; idx < argc; ++idx) {
       const pid_t pid = fork();
-      if (pid == 0) { /* child */
+      if (pid == 0) {
+        // child process
         file_idx = idx;
-        if (setsid() == -1) {
+        if (forkback == true && setsid() == -1) {
+          // start new process group if forkback was requested
           girara_error("Could not start new process group: %s", strerror(errno));
           return -1;
         }
         break;
-      } else if (pid < 0) { /* error */
+      } else if (pid < 0) {
+        // error
         girara_error("Could not fork: %s", strerror(errno));
         return -1;
+      } else {
+        // parent process
+        girara_list_append(child_pids, (void*)(intptr_t)pid);
       }
+    }
+
+    if (parent_pid == getpid()) {
+      // parent
+      if (forkback == true) {
+        // forkback was requested, so no need to wait
+        return 0;
+      }
+      // wait for all children
+      for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
+        const pid_t pid = (pid_t)(intptr_t)girara_list_nth(child_pids, idx);
+        waitpid(pid, NULL, 0);
+      }
+      return 0;
     }
   }
 

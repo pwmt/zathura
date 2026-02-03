@@ -10,10 +10,10 @@
 
 #include <girara/datastructures.h>
 #include <girara/utils.h>
-#include <girara/session.h>
-#include <girara/statusbar.h>
-#include <girara/settings.h>
-#include <girara/shortcuts.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/statusbar.h>
+#include <girara-gtk/settings.h>
+#include <girara-gtk/shortcuts.h>
 #include <girara/template.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
@@ -257,7 +257,7 @@ static bool init_ui(zathura_t* zathura) {
 
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
-  girara_setting_get(zathura->ui.session, "view-options", &view_options);
+  girara_setting_get(zathura->ui.session, "gui-options", &view_options);
 
   const bool show_hscrollbar = view_options != NULL && strchr(view_options, 'h') != NULL;
   const bool show_vscrollbar = view_options != NULL && strchr(view_options, 'v') != NULL;

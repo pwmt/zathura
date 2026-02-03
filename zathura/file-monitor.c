@@ -8,6 +8,7 @@
 #include "file-monitor-noop.h"
 #include "macros.h"
 
+#include <girara/log.h>
 #include <girara/utils.h>
 
 typedef struct {

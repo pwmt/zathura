@@ -30,3 +30,12 @@ zathura/synctex.c
 zathura/types.c
 zathura/utils.c
 zathura/zathura.c
+girara-gtk/callbacks.c
+girara-gtk/commands.c
+girara-gtk/completion.c
+girara-gtk/config.c
+girara-gtk/session.c
+girara-gtk/settings.c
+girara-gtk/shortcuts.c
+girara-gtk/statusbar.c
+girara-gtk/utils.c

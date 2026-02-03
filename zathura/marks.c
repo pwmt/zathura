@@ -2,8 +2,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <girara/session.h>
-#include <girara/callbacks.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/callbacks.h>
 #include <girara/datastructures.h>
 
 #include "callbacks.h"

@@ -10,13 +10,14 @@
 #include "marks.h"
 #include "utils.h"
 
-#include <girara/settings.h>
-#include <girara/session.h>
-#include <girara/shortcuts.h>
-#include <girara/config.h>
-#include <girara/commands.h>
+#include <girara-gtk/settings.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/shortcuts.h>
+#include <girara-gtk/config.h>
+#include <girara-gtk/commands.h>
 #include <girara/template.h>
 #include <girara/utils.h>
+#include <girara/log.h>
 #include <glib/gi18n.h>
 
 #define ZATHURA_RC "zathurarc"
@@ -200,14 +201,34 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
   }
 }
 
-static void cb_view_options(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
-                            const void* value, void* UNUSED(data)) {
+static void cb_window_icon(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
+                           const void* value, void* UNUSED(data)) {
+  g_return_if_fail(session != NULL && value != NULL);
+
+  if (session->gtk.window == NULL) {
+    return;
+  }
+
+  girara_set_window_icon(session, value);
+}
+
+static void cb_font(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
+                    const void* value, void* UNUSED(data)) {
+  g_return_if_fail(session != NULL && value != NULL);
+
+  css_template_fill_font(session->private_data->csstemplate, value);
+}
+
+static void cb_guioptions(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
+                          const void* value, void* UNUSED(data)) {
   g_return_if_fail(session != NULL && value != NULL);
   zathura_t* zathura = session->global.data;
 
   /* set default values */
-  bool show_hscrollbar = false;
-  bool show_vscrollbar = false;
+  bool show_commandline = false;
+  bool show_statusbar   = false;
+  bool show_hscrollbar  = false;
+  bool show_vscrollbar  = false;
 
   /* evaluate input */
   const char* input         = value;
@@ -215,6 +236,14 @@ static void cb_view_options(girara_session_t* session, const char* UNUSED(name),
 
   for (size_t i = 0; i < input_length; i++) {
     switch (input[i]) {
+    /* command line */
+    case 'c':
+      show_commandline = true;
+      break;
+    /* statusbar */
+    case 's':
+      show_statusbar = true;
+      break;
     case 'h':
       show_hscrollbar = true;
       break;
@@ -229,6 +258,159 @@ static void cb_view_options(girara_session_t* session, const char* UNUSED(name),
   GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
 
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
+
+  /* apply settings */
+  if (show_commandline == true) {
+    session->global.autohide_inputbar = false;
+    gtk_widget_show(session->gtk.inputbar);
+  } else {
+    session->global.autohide_inputbar = true;
+    gtk_widget_hide(session->gtk.inputbar);
+  }
+
+  if (show_statusbar == true) {
+    session->global.hide_statusbar = false;
+    gtk_widget_show(session->gtk.statusbar);
+  } else {
+    session->global.hide_statusbar = true;
+    gtk_widget_hide(session->gtk.statusbar);
+  }
+}
+
+static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
+  girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_BESTFIT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_s, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_WIDTH, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_F, NULL, sc_display_link, mode, 0, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_c, NULL, sc_copy_link, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_slash, NULL, sc_focus_inputbar, mode, 0, "/");
+  girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_slash, NULL, sc_focus_inputbar, mode, 0, "/");
+  girara_shortcut_add(gsession, 0, GDK_KEY_question, NULL, sc_focus_inputbar, mode, 0, "?");
+  girara_shortcut_add(gsession, 0, GDK_KEY_colon, NULL, sc_focus_inputbar, mode, 0, ":");
+  girara_shortcut_add(gsession, 0, GDK_KEY_o, NULL, sc_focus_inputbar, mode, 0, &(":open "));
+  girara_shortcut_add(gsession, 0, GDK_KEY_O, NULL, sc_focus_inputbar, mode, APPEND_FILEPATH, ":open ");
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_f, NULL, sc_follow, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, 0, "gg", sc_goto, mode, TOP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Home, NULL, sc_goto, mode, TOP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Home, NULL, sc_goto, mode, TOP, NULL);
+  girara_shortcut_add(gsession, 0, 0, "G", sc_goto, mode, BOTTOM, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_End, NULL, sc_goto, mode, BOTTOM, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_End, NULL, sc_goto, mode, BOTTOM, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_m, NULL, sc_mark_add, mode, 0, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_apostrophe, NULL, sc_mark_evaluate, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_J, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_K, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Right, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Right, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Left, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Left, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Page_Down, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Page_Down, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Page_Up, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Page_Up, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Forward, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Back, NULL, sc_navigate, mode, PREVIOUS, NULL);
+
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_p, NULL, sc_print, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_r, NULL, sc_recolor, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_R, NULL, sc_reload, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_r, NULL, sc_rotate, mode, ROTATE_CW, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_h, NULL, sc_scroll, mode, LEFT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_j, NULL, sc_scroll, mode, DOWN, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_k, NULL, sc_scroll, mode, UP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_l, NULL, sc_scroll, mode, RIGHT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Left, NULL, sc_scroll, mode, LEFT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Left, NULL, sc_scroll, mode, LEFT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Up, NULL, sc_scroll, mode, UP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Up, NULL, sc_scroll, mode, UP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Down, NULL, sc_scroll, mode, DOWN, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Down, NULL, sc_scroll, mode, DOWN, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_H, NULL, sc_scroll, mode, PAGE_TOP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_L, NULL, sc_scroll, mode, PAGE_BOTTOM, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Right, NULL, sc_scroll, mode, RIGHT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Right, NULL, sc_scroll, mode, RIGHT, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_t, NULL, sc_scroll, mode, HALF_LEFT, NULL);
+
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_k, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_j, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Up, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Up, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Down, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Down, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
+
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d, NULL, sc_scroll, mode, HALF_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_u, NULL, sc_scroll, mode, HALF_UP, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_y, NULL, sc_scroll, mode, HALF_RIGHT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_t, NULL, sc_scroll, mode, FULL_LEFT, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_f, NULL, sc_scroll, mode, FULL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_b, NULL, sc_scroll, mode, FULL_UP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_y, NULL, sc_scroll, mode, FULL_RIGHT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_space, NULL, sc_scroll, mode, FULL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_space, NULL, sc_scroll, mode, FULL_UP, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_Y, NULL, sc_copy_filepath, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_o, NULL, sc_jumplist, mode, BACKWARD, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i, NULL, sc_jumplist, mode, FORWARD, NULL);
+
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_j, NULL, sc_bisect, mode, FORWARD, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_k, NULL, sc_bisect, mode, BACKWARD, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_n, NULL, sc_search, mode, FORWARD, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_N, NULL, sc_search, mode, BACKWARD, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_P, NULL, sc_snap_to_page, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_Tab, NULL, sc_toggle_index, mode, 0, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n, NULL, girara_sc_toggle_statusbar, mode, 0, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_m, NULL, girara_sc_toggle_inputbar, mode, 0, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_d, NULL, sc_toggle_page_mode, mode, 0, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_D, NULL, sc_cycle_first_column, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_q, NULL, sc_quit, mode, 0, NULL);
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_plus, NULL, sc_zoom, mode, ZOOM_IN, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Add, NULL, sc_zoom, mode, ZOOM_IN, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_minus, NULL, sc_zoom, mode, ZOOM_OUT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Subtract, NULL, sc_zoom, mode, ZOOM_OUT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_equal, NULL, sc_zoom, mode, ZOOM_SPECIFIC, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zi", sc_zoom, mode, ZOOM_IN, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zI", sc_zoom, mode, ZOOM_IN, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zo", sc_zoom, mode, ZOOM_OUT, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zO", sc_zoom, mode, ZOOM_OUT, NULL);
+  girara_shortcut_add(gsession, 0, 0, "z0", sc_zoom, mode, ZOOM_ORIGINAL, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zz", sc_zoom, mode, ZOOM_SPECIFIC, NULL);
+  girara_shortcut_add(gsession, 0, 0, "zZ", sc_zoom, mode, ZOOM_SPECIFIC, NULL);
+
+  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_o, NULL, sc_file_chooser, mode, 0, NULL);
+}
+
+static void add_default_mouse_events(girara_session_t* gsession, girara_mode_t mode) {
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_UP, UP, NULL);
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_DOWN, DOWN, NULL);
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_LEFT, LEFT, NULL);
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_RIGHT, RIGHT, NULL);
+  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_BIDIRECTIONAL, BIDIRECTIONAL, NULL);
+
+  girara_mouse_event_add(gsession, GDK_SHIFT_MASK, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_UP, LEFT, NULL);
+  girara_mouse_event_add(gsession, GDK_SHIFT_MASK, 0, sc_mouse_scroll, mode, GIRARA_EVENT_SCROLL_DOWN, RIGHT, NULL);
+
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0, sc_mouse_zoom, mode, GIRARA_EVENT_SCROLL_UP, UP, NULL);
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0, sc_mouse_zoom, mode, GIRARA_EVENT_SCROLL_DOWN, DOWN, NULL);
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0, sc_mouse_zoom, mode, GIRARA_EVENT_SCROLL_BIDIRECTIONAL,
+                         BIDIRECTIONAL, NULL);
+  girara_mouse_event_add(gsession, 0, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, mode, GIRARA_EVENT_BUTTON_PRESS, 0, NULL);
+  girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, mode,
+                         GIRARA_EVENT_BUTTON_RELEASE, 0, NULL);
+  girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0, sc_mouse_scroll, mode, GIRARA_EVENT_MOTION_NOTIFY, 0, NULL);
 }
 
 void config_load_default(zathura_t* zathura) {
@@ -261,7 +443,57 @@ void config_load_default(zathura_t* zathura) {
   /* Set default mode */
   girara_mode_set(gsession, zathura->modes.normal);
 
+  /* values */
+  const int statusbar_h_padding = 8;
+  const int statusbar_v_padding = 2;
+  const int window_width        = 800;
+  const int window_height       = 600;
+  const int n_completion_items  = 15;
+
   /* clang-format off */
+  /* settings */
+  girara_setting_add(gsession, "font",                     "monospace normal 9", STRING,  FALSE, _("Font"), cb_font, NULL);
+  girara_setting_add(gsession, "default-fg",               "#DDDDDD",            STRING,  FALSE,  _("Default foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "default-bg",               "#000000",            STRING,  FALSE,  _("Default background color"), cb_color, NULL);
+  girara_setting_add(gsession, "inputbar-fg",              "#9FBC00",            STRING,  FALSE,  _("Inputbar foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "inputbar-bg",              "#131313",            STRING,  FALSE,  _("Inputbar background color"), cb_color, NULL);
+  girara_setting_add(gsession, "statusbar-fg",             "#FFFFFF",            STRING,  FALSE,  _("Statusbar foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "statusbar-bg",             "#000000",            STRING,  FALSE,  _("Statsubar background color"), cb_color, NULL);
+  girara_setting_add(gsession, "completion-fg",            "#DDDDDD",            STRING,  FALSE,  _("Completion foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "completion-bg",            "#232323",            STRING,  FALSE,  _("Completion background color"), cb_color, NULL);
+  girara_setting_add(gsession, "completion-group-fg",      "#DEDEDE",            STRING,  FALSE,  _("Completion group foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "completion-group-bg",      "#000000",            STRING,  FALSE,  _("Completion group background color"), cb_color, NULL);
+  girara_setting_add(gsession, "completion-highlight-fg",  "#232323",            STRING,  FALSE,  _("Completion highlight foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "completion-highlight-bg",  "#9FBC00",            STRING,  FALSE,  _("Completion highlight background color"), cb_color, NULL);
+  girara_setting_add(gsession, "notification-error-fg",    "#FFFFFF",            STRING,  FALSE,  _("Error notification foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "notification-error-bg",    "#FF1212",            STRING,  FALSE,  _("Error notification background color"), cb_color, NULL);
+  girara_setting_add(gsession, "notification-warning-fg",  "#000000",            STRING,  FALSE,  _("Warning notification foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "notification-warning-bg",  "#F3F000",            STRING,  FALSE,  _("Warning notifaction background color"), cb_color, NULL);
+  girara_setting_add(gsession, "notification-fg",          "#000000",            STRING,  FALSE,  _("Notification foreground color"), cb_color, NULL);
+  girara_setting_add(gsession, "notification-bg",          "#FFFFFF",            STRING,  FALSE,  _("Notification background color"), cb_color, NULL);
+  girara_setting_add(gsession, "word-separator",           " /.-=&#?",           STRING,  TRUE,  NULL, NULL, NULL);
+  girara_setting_add(gsession, "window-width",             &window_width,        INT,     TRUE,  _("Initial window width"), NULL, NULL);
+  girara_setting_add(gsession, "window-height",            &window_height,       INT,     TRUE,  _("Initial window height"), NULL, NULL);
+  girara_setting_add(gsession, "statusbar-h-padding",      &statusbar_h_padding, INT,     TRUE,  _("Horizontal padding for the status, input, and notification bars"), NULL, NULL);
+  girara_setting_add(gsession, "statusbar-v-padding",      &statusbar_v_padding, INT,     TRUE,  _("Vertical padding for the status, input, and notification bars"), NULL, NULL);
+  girara_setting_add(gsession, "n-completion-items",       &n_completion_items,  INT,     TRUE,  _("Number of completion items"), NULL, NULL);
+  girara_setting_add(gsession, "window-icon",              "",                   STRING,  FALSE, _("Window icon"), cb_window_icon, NULL);
+  girara_setting_add(gsession, "exec-command",             "",                   STRING,  FALSE, _("Command to execute in :exec"), NULL, NULL);
+  girara_setting_add(gsession, "guioptions",               "s",                  STRING,  FALSE, _("Show or hide certain GUI elements"), cb_guioptions, NULL);
+
+  /* commands */
+  girara_inputbar_command_add(gsession, "map",   "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
+  girara_inputbar_command_add(gsession, "set",   "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
+  girara_inputbar_command_add(gsession, "unmap", NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
+  girara_inputbar_command_add(gsession, "dump",  NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));
+
+  /* shortcut mappings */
+  girara_shortcut_mapping_add(gsession, "feedkeys",         girara_sc_feedkeys);
+  girara_shortcut_mapping_add(gsession, "focus_inputbar",   girara_sc_focus_inputbar);
+  girara_shortcut_mapping_add(gsession, "set",              girara_sc_set);
+  girara_shortcut_mapping_add(gsession, "toggle_inputbar",  girara_sc_toggle_inputbar);
+  girara_shortcut_mapping_add(gsession, "toggle_statusbar", girara_sc_toggle_statusbar);
+
   /* zathura settings */
   girara_setting_add(gsession, "database",              DEFAULT_DB,   STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
@@ -398,168 +630,33 @@ void config_load_default(zathura_t* zathura) {
                      cb_show_signature_info, NULL);
   girara_setting_add(gsession, "scrollbar-fg", "#DDDDDD", STRING, FALSE, _("Scrollbar foreground color"), cb_color, NULL);
   girara_setting_add(gsession, "scrollbar-bg", "#000000", STRING, FALSE, _("Scrollbar background color"), cb_color, NULL);
-  girara_setting_add(gsession, "view-options", "", STRING, FALSE, _("Show or hide view UI elements"), cb_view_options, NULL);
-
-#define DEFAULT_SHORTCUTS(mode)                                                                                        \
-  girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, (mode), ZATHURA_ADJUST_BESTFIT, NULL);           \
-  girara_shortcut_add(gsession, 0, GDK_KEY_s, NULL, sc_adjust_window, (mode), ZATHURA_ADJUST_WIDTH, NULL);             \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_F, NULL, sc_display_link, (mode), 0, NULL);                                 \
-  girara_shortcut_add(gsession, 0, GDK_KEY_c, NULL, sc_copy_link, (mode), 0, NULL);                                    \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_slash, NULL, sc_focus_inputbar, (mode), 0, &("/"));                         \
-  girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_slash, NULL, sc_focus_inputbar, (mode), 0, &("/"));            \
-  girara_shortcut_add(gsession, 0, GDK_KEY_question, NULL, sc_focus_inputbar, (mode), 0, &("?"));                      \
-  girara_shortcut_add(gsession, 0, GDK_KEY_colon, NULL, sc_focus_inputbar, (mode), 0, &(":"));                         \
-  girara_shortcut_add(gsession, 0, GDK_KEY_o, NULL, sc_focus_inputbar, (mode), 0, &(":open "));                        \
-  girara_shortcut_add(gsession, 0, GDK_KEY_O, NULL, sc_focus_inputbar, (mode), APPEND_FILEPATH, &(":open "));          \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_f, NULL, sc_follow, (mode), 0, NULL);                                       \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, 0, "gg", sc_goto, (mode), TOP, NULL);                                               \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Home, NULL, sc_goto, (mode), TOP, NULL);                                    \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Home, NULL, sc_goto, (mode), TOP, NULL);                                 \
-  girara_shortcut_add(gsession, 0, 0, "G", sc_goto, (mode), BOTTOM, NULL);                                             \
-  girara_shortcut_add(gsession, 0, GDK_KEY_End, NULL, sc_goto, (mode), BOTTOM, NULL);                                  \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_End, NULL, sc_goto, (mode), BOTTOM, NULL);                               \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_m, NULL, sc_mark_add, (mode), 0, NULL);                                     \
-  girara_shortcut_add(gsession, 0, GDK_KEY_apostrophe, NULL, sc_mark_evaluate, (mode), 0, NULL);                       \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_J, NULL, sc_navigate, (mode), NEXT, NULL);                                  \
-  girara_shortcut_add(gsession, 0, GDK_KEY_K, NULL, sc_navigate, (mode), PREVIOUS, NULL);                              \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Right, NULL, sc_navigate, (mode), NEXT, NULL);                  \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Right, NULL, sc_navigate, (mode), NEXT, NULL);               \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Left, NULL, sc_navigate, (mode), PREVIOUS, NULL);               \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Left, NULL, sc_navigate, (mode), PREVIOUS, NULL);            \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Page_Down, NULL, sc_navigate, (mode), NEXT, NULL);                          \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Page_Down, NULL, sc_navigate, (mode), NEXT, NULL);                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Page_Up, NULL, sc_navigate, (mode), PREVIOUS, NULL);                        \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Page_Up, NULL, sc_navigate, (mode), PREVIOUS, NULL);                     \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Forward, NULL, sc_navigate, (mode), NEXT, NULL);                            \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Back, NULL, sc_navigate, (mode), PREVIOUS, NULL);                           \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_p, NULL, sc_print, (mode), 0, NULL);                         \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_r, NULL, sc_recolor, (mode), 0, NULL);                       \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_R, NULL, sc_reload, (mode), 0, NULL);                                       \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_r, NULL, sc_rotate, (mode), ROTATE_CW, NULL);                               \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_h, NULL, sc_scroll, (mode), LEFT, NULL);                                    \
-  girara_shortcut_add(gsession, 0, GDK_KEY_j, NULL, sc_scroll, (mode), DOWN, NULL);                                    \
-  girara_shortcut_add(gsession, 0, GDK_KEY_k, NULL, sc_scroll, (mode), UP, NULL);                                      \
-  girara_shortcut_add(gsession, 0, GDK_KEY_l, NULL, sc_scroll, (mode), RIGHT, NULL);                                   \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Left, NULL, sc_scroll, (mode), LEFT, NULL);                                 \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Left, NULL, sc_scroll, (mode), LEFT, NULL);                              \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Up, NULL, sc_scroll, (mode), UP, NULL);                                     \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Up, NULL, sc_scroll, (mode), UP, NULL);                                  \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Down, NULL, sc_scroll, (mode), DOWN, NULL);                                 \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Down, NULL, sc_scroll, (mode), DOWN, NULL);                              \
-  girara_shortcut_add(gsession, 0, GDK_KEY_H, NULL, sc_scroll, (mode), PAGE_TOP, NULL);                                \
-  girara_shortcut_add(gsession, 0, GDK_KEY_L, NULL, sc_scroll, (mode), PAGE_BOTTOM, NULL);                             \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Right, NULL, sc_scroll, (mode), RIGHT, NULL);                               \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Right, NULL, sc_scroll, (mode), RIGHT, NULL);                            \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_t, NULL, sc_scroll, (mode), HALF_LEFT, NULL);                \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_k, NULL, sc_scroll, (mode), PARTIAL_UP, NULL);                  \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_j, NULL, sc_scroll, (mode), PARTIAL_DOWN, NULL);                \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Up, NULL, sc_scroll, (mode), PARTIAL_UP, NULL);                 \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Up, NULL, sc_scroll, (mode), PARTIAL_UP, NULL);              \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Down, NULL, sc_scroll, (mode), PARTIAL_DOWN, NULL);             \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Down, NULL, sc_scroll, (mode), PARTIAL_DOWN, NULL);          \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d, NULL, sc_scroll, (mode), HALF_DOWN, NULL);                \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_u, NULL, sc_scroll, (mode), HALF_UP, NULL);                  \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_y, NULL, sc_scroll, (mode), HALF_RIGHT, NULL);               \
-  girara_shortcut_add(gsession, 0, GDK_KEY_t, NULL, sc_scroll, (mode), FULL_LEFT, NULL);                               \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_f, NULL, sc_scroll, (mode), FULL_DOWN, NULL);                \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_b, NULL, sc_scroll, (mode), FULL_UP, NULL);                  \
-  girara_shortcut_add(gsession, 0, GDK_KEY_y, NULL, sc_scroll, (mode), FULL_RIGHT, NULL);                              \
-  girara_shortcut_add(gsession, 0, GDK_KEY_space, NULL, sc_scroll, (mode), FULL_DOWN, NULL);                           \
-  girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_space, NULL, sc_scroll, (mode), FULL_UP, NULL);                \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Y, NULL, sc_copy_filepath, (mode), 0, NULL);                                \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_o, NULL, sc_jumplist, (mode), BACKWARD, NULL);               \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_i, NULL, sc_jumplist, (mode), FORWARD, NULL);                \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_j, NULL, sc_bisect, (mode), FORWARD, NULL);                  \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_k, NULL, sc_bisect, (mode), BACKWARD, NULL);                 \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_n, NULL, sc_search, (mode), FORWARD, NULL);                                 \
-  girara_shortcut_add(gsession, 0, GDK_KEY_N, NULL, sc_search, (mode), BACKWARD, NULL);                                \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_P, NULL, sc_snap_to_page, (mode), 0, NULL);                                 \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_Tab, NULL, sc_toggle_index, (mode), 0, NULL);                               \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n, NULL, girara_sc_toggle_statusbar, (mode), 0, NULL);       \
-  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_m, NULL, girara_sc_toggle_inputbar, (mode), 0, NULL);        \
-  girara_shortcut_add(gsession, 0, GDK_KEY_d, NULL, sc_toggle_page_mode, (mode), 0, NULL);                             \
-  girara_shortcut_add(gsession, 0, GDK_KEY_D, NULL, sc_cycle_first_column, (mode), 0, NULL);                           \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_q, NULL, sc_quit, (mode), 0, NULL);                                         \
-                                                                                                                       \
-  girara_shortcut_add(gsession, 0, GDK_KEY_plus, NULL, sc_zoom, (mode), ZOOM_IN, NULL);                                \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Add, NULL, sc_zoom, (mode), ZOOM_IN, NULL);                              \
-  girara_shortcut_add(gsession, 0, GDK_KEY_minus, NULL, sc_zoom, (mode), ZOOM_OUT, NULL);                              \
-  girara_shortcut_add(gsession, 0, GDK_KEY_KP_Subtract, NULL, sc_zoom, (mode), ZOOM_OUT, NULL);                        \
-  girara_shortcut_add(gsession, 0, GDK_KEY_equal, NULL, sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                         \
-  girara_shortcut_add(gsession, 0, 0, "zi", sc_zoom, (mode), ZOOM_IN, NULL);                                           \
-  girara_shortcut_add(gsession, 0, 0, "zI", sc_zoom, (mode), ZOOM_IN, NULL);                                           \
-  girara_shortcut_add(gsession, 0, 0, "zo", sc_zoom, (mode), ZOOM_OUT, NULL);                                          \
-  girara_shortcut_add(gsession, 0, 0, "zO", sc_zoom, (mode), ZOOM_OUT, NULL);                                          \
-  girara_shortcut_add(gsession, 0, 0, "z0", sc_zoom, (mode), ZOOM_ORIGINAL, NULL);                                     \
-  girara_shortcut_add(gsession, 0, 0, "zz", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                                     \
-  girara_shortcut_add(gsession, 0, 0, "zZ", sc_zoom, (mode), ZOOM_SPECIFIC, NULL);                                     \
-                                                                                                                       \
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_o, NULL, sc_file_chooser, (mode), 0, NULL);
-
-#define DEFAULT_MOUSE_EVENTS(mode)                                                                                     \
-  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_UP, UP, NULL);                   \
-  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_DOWN, DOWN, NULL);               \
-  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_LEFT, LEFT, NULL);               \
-  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_RIGHT, RIGHT, NULL);             \
-  girara_mouse_event_add(gsession, 0, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_BIDIRECTIONAL, BIDIRECTIONAL,    \
-                         NULL);                                                                                        \
-                                                                                                                       \
-  girara_mouse_event_add(gsession, GDK_SHIFT_MASK, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_UP, LEFT, NULL);    \
-  girara_mouse_event_add(gsession, GDK_SHIFT_MASK, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_SCROLL_DOWN, RIGHT, NULL); \
-                                                                                                                       \
-  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0, sc_mouse_zoom, (mode), GIRARA_EVENT_SCROLL_UP, UP, NULL);      \
-  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0, sc_mouse_zoom, (mode), GIRARA_EVENT_SCROLL_DOWN, DOWN, NULL);  \
-  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0, sc_mouse_zoom, (mode), GIRARA_EVENT_SCROLL_BIDIRECTIONAL,      \
-                         BIDIRECTIONAL, NULL);                                                                         \
-  girara_mouse_event_add(gsession, 0, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, (mode), GIRARA_EVENT_BUTTON_PRESS, 0,     \
-                         NULL);                                                                                        \
-  girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, (mode),                    \
-                         GIRARA_EVENT_BUTTON_RELEASE, 0, NULL);                                                        \
-  girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0, sc_mouse_scroll, (mode), GIRARA_EVENT_MOTION_NOTIFY, 0, NULL);
 
   /* Define mode-less shortcuts
    * girara adds them only for normal mode, so passing 0 as mode is currently
    * not enough. We need to add/override for every mode. */
   for (size_t idx = 0; idx != LENGTH(all_modes); ++idx) {
-    girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,      NULL, sc_abort, all_modes[idx], 0, NULL);
-    girara_shortcut_add(gsession, 0,                GDK_KEY_Escape, NULL, sc_abort, all_modes[idx], 0, NULL);
+    girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_abort, all_modes[idx], 0, NULL);
+    girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_abort, all_modes[idx], 0, NULL);
+    girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_abort, all_modes[idx], 0, NULL);
   }
 
   /* Normal mode */
-  girara_shortcut_add(gsession, 0, GDK_KEY_F5,  NULL, sc_toggle_presentation, NORMAL, 0, NULL);
-  girara_shortcut_add(gsession, 0, GDK_KEY_F11, NULL, sc_toggle_fullscreen,   NORMAL, 0, NULL);
+  /* shortcuts */
+  girara_shortcut_add(gsession, 0,                GDK_KEY_F5,          NULL, sc_toggle_presentation,    NORMAL, 0, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_F11,         NULL, sc_toggle_fullscreen,      NORMAL, 0, NULL);
 
-  DEFAULT_SHORTCUTS(NORMAL)
+  add_default_shortcuts(gsession, NORMAL);
 
   /* Normal mode - Mouse events */
-  DEFAULT_MOUSE_EVENTS(NORMAL)
+  add_default_mouse_events(gsession, NORMAL);
 
   /* Fullscreen mode */
   girara_shortcut_add(gsession, 0, GDK_KEY_F11, NULL, sc_toggle_fullscreen, FULLSCREEN, 0, NULL);
 
-  DEFAULT_SHORTCUTS(FULLSCREEN)
+  add_default_shortcuts(gsession, FULLSCREEN);
 
   /* Fullscreen mode - Mouse events */
-  DEFAULT_MOUSE_EVENTS(FULLSCREEN)
+  add_default_mouse_events(gsession, FULLSCREEN);
 
   /* Index mode */
   girara_shortcut_add(gsession, 0,                GDK_KEY_Tab,         NULL, sc_toggle_index,        INDEX,        0,                  NULL);
@@ -636,8 +733,30 @@ void config_load_default(zathura_t* zathura) {
   girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   PRESENTATION, GIRARA_EVENT_SCROLL_DOWN,  DOWN,     NULL);
 
   /* inputbar shortcuts */
-  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Escape, sc_abort, 0, NULL);
-  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,      sc_abort, 0, NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Escape,       sc_abort,                       0,                           NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,            sc_abort,                       0,                           NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_j,            girara_isc_activate,            0,                           NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft,  girara_isc_abort,               0,                           NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Tab,          girara_isc_completion,          GIRARA_NEXT,                 NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_Tab,          girara_isc_completion,          GIRARA_NEXT_GROUP,           NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_ISO_Left_Tab, girara_isc_completion,          GIRARA_PREVIOUS,             NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_ISO_Left_Tab, girara_isc_completion,          GIRARA_PREVIOUS_GROUP,       NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_BackSpace,    girara_isc_string_manipulation, GIRARA_DELETE_LAST_CHAR,     NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_h,            girara_isc_string_manipulation, GIRARA_DELETE_LAST_CHAR,     NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_u,            girara_isc_string_manipulation, GIRARA_DELETE_TO_LINE_START, NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_k,            girara_isc_string_manipulation, GIRARA_DELETE_TO_LINE_END,   NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d,            girara_isc_string_manipulation, GIRARA_DELETE_CURR_CHAR,     NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_w,            girara_isc_string_manipulation, GIRARA_DELETE_LAST_WORD,     NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_f,            girara_isc_string_manipulation, GIRARA_NEXT_CHAR,            NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_b,            girara_isc_string_manipulation, GIRARA_PREVIOUS_CHAR,        NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Right,        girara_isc_string_manipulation, GIRARA_NEXT_CHAR,            NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Left,         girara_isc_string_manipulation, GIRARA_PREVIOUS_CHAR,        NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_a,            girara_isc_string_manipulation, GIRARA_GOTO_START,           NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_e,            girara_isc_string_manipulation, GIRARA_GOTO_END,             NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Up,           girara_isc_command_history,     GIRARA_PREVIOUS,             NULL);
+  girara_inputbar_shortcut_add(gsession, 0,                GDK_KEY_Down,         girara_isc_command_history,     GIRARA_NEXT,                 NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_p,            girara_isc_command_history,     GIRARA_PREVIOUS,             NULL);
+  girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n,            girara_isc_command_history,     GIRARA_NEXT,                 NULL);
 
   /* define default inputbar commands */
   girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));

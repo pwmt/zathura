@@ -8,6 +8,23 @@ env:
   VERBOSE: 1
 
 jobs:
+  clang-format:
+    name: Check clang-format output
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pwmt/github-actions-debian:forky
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and test
+        run: |
+          mkdir build
+          cd build
+          meson ..
+          ninja clang-format-check
+
   build-test-debian-trixie:
     name: Test on Debian trixie
     runs-on: ubuntu-latest
