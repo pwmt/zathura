@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '2026.01.30',
+  version: '2026.02.03',
   meson_version: '>=1.5',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
@@ -44,7 +44,7 @@ cc.compiles('''#if !__has_attribute(cleanup)
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara', version: '>=2026.01.30', fallback: ['girara', 'girara_dependency'])
+girara = dependency('girara', version: '>=2026.02.03', fallback: ['girara', 'girara_dependency'])
 glib = dependency('glib-2.0', version: '>=2.76')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
