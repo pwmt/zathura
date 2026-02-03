@@ -21,7 +21,6 @@ conf_data.set('ZVMINOR', version_array[1])
 conf_data.set('ZVREV', version_array[2])
 conf_data.set('ZVAPI', plugin_api_version)
 conf_data.set('ZVABI', plugin_abi_version)
-conf_data.set('version', version)
 
 cc = meson.get_compiler('c')
 
