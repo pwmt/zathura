@@ -1348,8 +1348,8 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
   return false;
 }
 
-bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
-                                unsigned int UNUSED(t)) {
+bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                                girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -1520,8 +1520,8 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
-  zathura_page_t* page = zathura_document_get_page(zathura->document, current_page);
-  
+  zathura_page_t* page      = zathura_document_get_page(zathura->document, current_page);
+
   const int nt           = (t == 0) ? 1 : t;
   const double zoom_step = 1.0 + value / 100.0 * nt;
   const double old_zoom  = zathura_page_get_zoom(page);

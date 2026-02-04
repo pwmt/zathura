@@ -12,7 +12,7 @@
  * desired.
  *
  * @param document the document
- * @param page the page 
+ * @param page the page
  * @param page_height the scaled and rotated height
  * @param page_width the scaled and rotated width
  * @param rotate honor page's rotation
