@@ -114,10 +114,10 @@ typedef enum zathura_adjust_mode_e {
 } zathura_adjust_mode_t;
 
 typedef enum zathura_equal_mode_e {
-  ZATHURA_EQUAL_NONE,         /**< No equalisation */
-  ZATHURA_EQUAL_WIDTH,        /**< Equal page widths */
-  ZATHURA_EQUAL_HEIGHT,       /**< Equal page heights */
-  ZATHURA_EQUAL_MODE_NUMBER,  /**< Number of equalisation modes */
+  ZATHURA_EQUAL_NONE,        /**< No equalisation */
+  ZATHURA_EQUAL_WIDTH,       /**< Equal page widths */
+  ZATHURA_EQUAL_HEIGHT,      /**< Equal page heights */
+  ZATHURA_EQUAL_MODE_NUMBER, /**< Number of equalisation modes */
 } zathura_equal_mode_t;
 
 /**
