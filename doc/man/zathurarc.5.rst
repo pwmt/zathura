@@ -911,11 +911,12 @@ zathura
   * Default value: true
 
 *selection-clipboard*
-  Defines the X clipboard into which mouse-selected data will be written.  When it
-  is "clipboard", selected data will be written to the CLIPBOARD clipboard, and
-  can be pasted using the Ctrl+v key combination.  When it is "primary", selected
-  data will be written to the PRIMARY clipboard, and can be pasted using the
-  middle mouse button, or the Shift-Insert key combination.
+  Defines the X clipboard into which mouse-selected data will be written.  When
+  it is "clipboard", selected data will be written to the CLIPBOARD clipboard,
+  and can be pasted using the Ctrl+v key combination.  When it is "primary",
+  selected data will be written to the PRIMARY clipboard, and can be pasted
+  using the middle mouse button, or the Shift-Insert key combination. The value
+  "false" can be used to disable copying to the clipboard.
 
   * Value type: String
   * Default value: primary
