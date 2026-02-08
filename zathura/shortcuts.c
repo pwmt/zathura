@@ -200,7 +200,7 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  GdkAtom* selection = get_selection(zathura);
+  g_autofree GdkAtom* selection = get_selection(zathura);
   if (selection == NULL) {
     return false;
   }
@@ -214,7 +214,6 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
   girara_debug("Copying file path to clipboard");
   gtk_clipboard_set_text(gtk_clipboard_get(*selection), file_path, -1);
 
-  g_free(selection);
   return true;
 }
 
@@ -258,10 +257,10 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
       g_free(tmp);
     }
 
-    GdkAtom* selection = get_selection(zathura);
+    g_autofree GdkAtom* selection = get_selection(zathura);
 
     /* we save the X clipboard that will be clear by "grab_focus" */
-    gchar* x_clipboard_text = NULL;
+    g_autofree gchar* x_clipboard_text = NULL;
 
     if (selection != NULL) {
       x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(*selection));
@@ -272,10 +271,7 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
     if (x_clipboard_text != NULL && selection != NULL) {
       /* we reset the X clipboard with saved text */
       gtk_clipboard_set_text(gtk_clipboard_get(*selection), x_clipboard_text, -1);
-      g_free(x_clipboard_text);
     }
-
-    g_free(selection);
   }
 
   return true;
