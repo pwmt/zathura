@@ -497,20 +497,6 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "exec-command",             "",                   STRING,  FALSE, _("Command to execute in :exec"), NULL, NULL);
   girara_setting_add(gsession, "guioptions",               "s",                  STRING,  FALSE, _("Show or hide certain GUI elements"), cb_guioptions, NULL);
 
-  /* commands */
-  girara_inputbar_command_add(gsession, "map",   "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
-  girara_inputbar_command_add(gsession, "set",   "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
-  girara_inputbar_command_add(gsession, "unmap", NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
-  girara_inputbar_command_add(gsession, "dump",  NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));
-
-  /* shortcut mappings */
-  girara_shortcut_mapping_add(gsession, "feedkeys",         girara_sc_feedkeys);
-  girara_shortcut_mapping_add(gsession, "focus_inputbar",   girara_sc_focus_inputbar);
-  girara_shortcut_mapping_add(gsession, "set",              girara_sc_set);
-  girara_shortcut_mapping_add(gsession, "toggle_inputbar",  girara_sc_toggle_inputbar);
-  girara_shortcut_mapping_add(gsession, "toggle_statusbar", girara_sc_toggle_statusbar);
-
-  /* zathura settings */
   girara_setting_add(gsession, "database",              DEFAULT_DB,   STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
   int_value = 10;
@@ -775,6 +761,11 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n,            girara_isc_command_history,     GIRARA_NEXT,                 NULL);
 
   /* define default inputbar commands */
+  girara_inputbar_command_add(gsession, "map",   "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
+  girara_inputbar_command_add(gsession, "set",   "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
+  girara_inputbar_command_add(gsession, "unmap", NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
+  girara_inputbar_command_add(gsession, "dump",  NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));
+
   girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
   girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
   girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_list,   NULL,         _("List all bookmarks"));
@@ -805,6 +796,11 @@ void config_load_default(zathura_t* zathura) {
   girara_special_command_add(gsession, '?', cmd_search, INCREMENTAL_SEARCH, BACKWARD, NULL);
 
   /* add shortcut mappings */
+  girara_shortcut_mapping_add(gsession, "feedkeys",            girara_sc_feedkeys);
+  girara_shortcut_mapping_add(gsession, "focus_inputbar",      girara_sc_focus_inputbar);
+  girara_shortcut_mapping_add(gsession, "set",                 girara_sc_set);
+  girara_shortcut_mapping_add(gsession, "toggle_inputbar",     girara_sc_toggle_inputbar);
+  girara_shortcut_mapping_add(gsession, "toggle_statusbar",    girara_sc_toggle_statusbar);
   girara_shortcut_mapping_add(gsession, "abort",               sc_abort);
   girara_shortcut_mapping_add(gsession, "adjust_window",       sc_adjust_window);
   girara_shortcut_mapping_add(gsession, "bisect",              sc_bisect);
