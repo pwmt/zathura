@@ -75,6 +75,8 @@ enum {
   PAGE_TOP,
   BIDIRECTIONAL,
   ZOOM_SMOOTH,
+  SMOOTH_UP,
+  SMOOTH_DOWN,
 };
 
 /* unspecified page number */

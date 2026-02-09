@@ -277,6 +277,22 @@ static void cb_guioptions(girara_session_t* session, const char* UNUSED(name), g
   }
 }
 
+static void cb_scroll_step_value_changed(girara_session_t* session, const char* UNUSED(name),
+                                         girara_setting_type_t UNUSED(type), const void* value, void* UNUSED(data)) {
+  g_return_if_fail(session != NULL && value != NULL);
+  zathura_t* zathura = session->global.data;
+  if (zathura->ui.view == NULL) {
+    return;
+  }
+
+  GtkAdjustment* v_adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  if (v_adj == NULL) {
+    return;
+  }
+
+  gtk_adjustment_set_step_increment(v_adj, *(float*)value);
+}
+
 static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
   girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_BESTFIT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_s, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_WIDTH, NULL);
@@ -510,7 +526,7 @@ void config_load_default(zathura_t* zathura) {
   bool_value = false;
   girara_setting_add(gsession, "page-right-to-left",    &bool_value,  BOOLEAN, false, _("Render pages from right to left"),  cb_page_layout_value_changed, NULL);
   float_value = 40;
-  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              NULL, NULL);
+  girara_setting_add(gsession, "scroll-step",           &float_value, FLOAT,  false, _("Scroll step"),              cb_scroll_step_value_changed, NULL);
   float_value = 40;
   girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),   NULL, NULL);
   float_value = 0.0;
@@ -867,6 +883,8 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "equal_none",         ZATHURA_EQUAL_NONE);
   girara_argument_mapping_add(gsession, "equal_width",        ZATHURA_EQUAL_WIDTH);
   girara_argument_mapping_add(gsession, "equal_height",       ZATHURA_EQUAL_HEIGHT);
+  girara_argument_mapping_add(gsession, "smooth-up",          SMOOTH_UP);
+  girara_argument_mapping_add(gsession, "smooth-down",        SMOOTH_DOWN);
   /* clang-format on */
 }
 

@@ -406,6 +406,8 @@ They can also be combined with modifiers:
   * full-up
   * half-down
   * half-up
+  * smooth-down
+  * smooth-up
   * in
   * left
   * next
