@@ -331,6 +331,8 @@ static void size_allocate_grid(ZathuraDocumentWidget* document, GtkAllocation* a
 
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
 
+  gtk_widget_show_all(GTK_WIDGET(document));
+
   int adj_v, adj_h;
   document_adjustment(document, allocation->height, allocation->width, &adj_v, &adj_h);
 
@@ -372,8 +374,7 @@ static void size_allocate_single_page(ZathuraDocumentWidget* document, GtkAlloca
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
 
-    zathura_page_set_visibility(page, i == page_id);
-    gtk_widget_set_visible(page_widget, i == page_id);
+    gtk_widget_set_visible(page_widget, page_id == i);
 
     if (i == page_id) {
       gtk_widget_size_allocate(page_widget, &page_alloc);
