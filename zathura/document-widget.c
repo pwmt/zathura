@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "document-widget.h"
+#include "girara-gtk/settings.h"
 #include "girara/log.h"
 
 #include "page.h"
@@ -414,6 +415,11 @@ void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
 
   gtk_adjustment_set_upper(priv->hadjustment, doc_width);
   gtk_adjustment_set_upper(priv->vadjustment, doc_height);
+
+  float scroll_step = 40;
+  girara_setting_get(priv->zathura->ui.session, "scroll-step", &scroll_step);
+
+  gtk_adjustment_set_step_increment(priv->vadjustment, scroll_step);
 }
 
 void zathura_document_widget_get_cell_pos(ZathuraDocumentWidget* document, unsigned int page_index, unsigned int* pos_x,

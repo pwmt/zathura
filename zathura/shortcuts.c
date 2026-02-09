@@ -572,6 +572,19 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     return false;
   }
 
+  /* If SMOOTH_(UP|DOWN) , use GtkScrolledWindow signal */
+  if (argument->n == SMOOTH_UP) {
+    gboolean handled = FALSE;
+    g_signal_emit_by_name(G_OBJECT(zathura->ui.view), "scroll-child", GTK_SCROLL_STEP_BACKWARD, FALSE, &handled);
+
+    return false;
+  } else if (argument->n == SMOOTH_DOWN) {
+    gboolean handled = FALSE;
+    g_signal_emit_by_name(G_OBJECT(zathura->ui.view), "scroll-child", GTK_SCROLL_STEP_FORWARD, FALSE, &handled);
+
+    return false;
+  }
+
   if (t == 0) {
     t = 1;
   }
