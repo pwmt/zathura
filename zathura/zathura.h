@@ -221,6 +221,7 @@ struct zathura_s {
       double zoom;
       bool is_status_bar_visible;
       bool is_input_bar_visible;
+      document_widget_mode_t layout_mode;
     } toggle_presentation_mode;
   } shortcut;
 

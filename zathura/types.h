@@ -339,4 +339,10 @@ struct zathura_mark_s {
 
 typedef struct zathura_mark_s zathura_mark_t;
 
+typedef enum document_widget_mode_e {
+  DOCUMENT_WIDGET_GRID,
+  DOCUMENT_WIDGET_SINGLE,
+  DOCUMENT_WIDGET_MODE_COUNT,
+} document_widget_mode_t;
+
 #endif // TYPES_H

@@ -1294,6 +1294,11 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
     /* reset pages per row */
     girara_setting_set(session, "pages-per-row", &zathura->shortcut.toggle_presentation_mode.pages);
 
+    // reset layout mode
+    if (zathura->shortcut.toggle_presentation_mode.layout_mode != DOCUMENT_WIDGET_SINGLE) {
+      g_object_set(zathura->ui.document_widget, "layout-mode", zathura->shortcut.toggle_presentation_mode.layout_mode, NULL);
+    }
+
     /* reset first page column */
     if (zathura->shortcut.toggle_presentation_mode.first_page_column_list != NULL) {
       girara_setting_set(session, "first-page-column",
@@ -1330,12 +1335,18 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
     girara_setting_get(session, "first-page-column",
                        &zathura->shortcut.toggle_presentation_mode.first_page_column_list);
 
+    /* back up zoom */
+    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
+
+    // backup layout mode
+    g_object_get(zathura->ui.document_widget, "layout-mode", &zathura->shortcut.toggle_presentation_mode.layout_mode, NULL);
+
     /* set single view */
     int int_value = 1;
     girara_setting_set(session, "pages-per-row", &int_value);
-
-    /* back up zoom */
-    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
+    if (zathura->shortcut.toggle_presentation_mode.layout_mode != DOCUMENT_WIDGET_SINGLE) {
+      g_object_set(zathura->ui.document_widget, "layout-mode",  DOCUMENT_WIDGET_SINGLE, NULL);
+    }
 
     /* adjust window */
     girara_argument_t argument = {.n = ZATHURA_ADJUST_BESTFIT, .data = NULL};
