@@ -304,7 +304,7 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_slash, NULL, sc_focus_inputbar, mode, 0, "/");
   girara_shortcut_add(gsession, 0, GDK_KEY_question, NULL, sc_focus_inputbar, mode, 0, "?");
   girara_shortcut_add(gsession, 0, GDK_KEY_colon, NULL, sc_focus_inputbar, mode, 0, ":");
-  girara_shortcut_add(gsession, 0, GDK_KEY_o, NULL, sc_focus_inputbar, mode, 0, &(":open "));
+  girara_shortcut_add(gsession, 0, GDK_KEY_o, NULL, sc_focus_inputbar, mode, 0, ":open ");
   girara_shortcut_add(gsession, 0, GDK_KEY_O, NULL, sc_focus_inputbar, mode, APPEND_FILEPATH, ":open ");
 
   girara_shortcut_add(gsession, 0, GDK_KEY_f, NULL, sc_follow, mode, 0, NULL);
@@ -535,29 +535,31 @@ void config_load_default(zathura_t* zathura) {
   int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),            cb_color_change, NULL);
-  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),           cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"),             cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-color",        "rgba(159,251,0,0.5)");
-  girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),  cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-fg",           "rgba(0,0,0,0.5)");
-  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"),    cb_color_change, NULL);
-  girara_setting_set(gsession, "highlight-active-color", "rgba(0,188,0,0.5)");
-  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"),     cb_color_change, NULL);
-  girara_setting_set(gsession, "render-loading-bg",      "#FFFFFF");
-  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"),     cb_color_change, NULL);
-  girara_setting_set(gsession, "render-loading-fg",      "#000000");
+  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
 
-  girara_setting_add(gsession, "signature-success-color", NULL, STRING, false,
-                     _("Color used to highlight valid signatures"), cb_color_change, NULL);
+  // colors for document signatures
+  girara_setting_add(gsession, "signature-success-color", NULL, STRING, false, _("Color used to highlight valid signatures"), cb_color_change, NULL);
+  girara_setting_add(gsession, "signature-warning-color", NULL, STRING, false, _("Color used to highlight signatures with warnings"), cb_color_change, NULL);
+  girara_setting_add(gsession, "signature-error-color",   NULL, STRING, false, _("Color used to highlight invalid signatures"), cb_color_change, NULL);
+  // clang-format on
+
+  // apply some color settings that need their callbacks to run
+  girara_setting_set(gsession, "highlight-color", "rgba(159,251,0,0.5)");
+  girara_setting_set(gsession, "highlight-fg", "rgba(0,0,0,0.5)");
+  girara_setting_set(gsession, "highlight-active-color", "rgba(0,188,0,0.5)");
+  girara_setting_set(gsession, "render-loading-bg", "#FFFFFF");
+  girara_setting_set(gsession, "render-loading-fg", "#000000");
   girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
-  girara_setting_add(gsession, "signature-warning-color", NULL, STRING, false,
-                     _("Color used to highlight signatures with warnings"), cb_color_change, NULL);
   girara_setting_set(gsession, "signature-warning-color", "rgba(100%,84%,0%,0.9)");
-  girara_setting_add(gsession, "signature-error-color", NULL, STRING, false,
-                     _("Color used to highlight invalid signatures"), cb_color_change, NULL);
   girara_setting_set(gsession, "signature-error-color", "rgba(92%,11%,14%,0.9)");
 
+  // clang-format off
   bool_value = false;
   girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
   bool_value = false;
