@@ -1111,10 +1111,10 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     return false;
   }
 
-  GtkWidget* treeview                = NULL;
-  GtkTreeModel* model                = NULL;
-  GtkCellRenderer* renderer          = NULL;
-  GtkCellRenderer* renderer2         = NULL;
+  GtkWidget* treeview        = NULL;
+  GtkTreeModel* model        = NULL;
+  GtkCellRenderer* renderer  = NULL;
+  GtkCellRenderer* renderer2 = NULL;
 
   if (zathura->ui.index == NULL) {
     /* create new index widget */
