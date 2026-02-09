@@ -1111,7 +1111,6 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     return false;
   }
 
-  girara_tree_node_t* document_index = NULL;
   GtkWidget* treeview                = NULL;
   GtkTreeModel* model                = NULL;
   GtkCellRenderer* renderer          = NULL;
@@ -1128,7 +1127,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.index), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
     /* create index */
-    document_index = zathura_document_index_generate(zathura->document, NULL);
+    g_autoptr(girara_tree_node_t) document_index = zathura_document_index_generate(zathura->document, NULL);
     if (document_index == NULL) {
       girara_notify(session, GIRARA_WARNING, _("This document does not contain any index"));
       goto error_free;
@@ -1159,7 +1158,6 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     }
 
     document_index_build(session, model, NULL, document_index);
-    girara_node_free(document_index);
 
     /* setup widget */
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 0, "Title", renderer, "markup", 0, NULL);
@@ -1209,10 +1207,6 @@ error_free:
   if (zathura->ui.index != NULL) {
     g_object_ref_sink(zathura->ui.index);
     zathura->ui.index = NULL;
-  }
-
-  if (document_index != NULL) {
-    girara_node_free(document_index);
   }
 
 error_ret:
