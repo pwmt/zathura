@@ -200,7 +200,7 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  GdkAtom* selection = get_selection(zathura);
+  g_autofree GdkAtom* selection = get_selection(zathura);
   if (selection == NULL) {
     return false;
   }
@@ -214,7 +214,60 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
   girara_debug("Copying file path to clipboard");
   gtk_clipboard_set_text(gtk_clipboard_get(*selection), file_path, -1);
 
-  g_free(selection);
+  return true;
+}
+
+bool sc_equal_page_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                        unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  if (argument->n >= ZATHURA_EQUAL_MODE_NUMBER) {
+    girara_error("equal mode: unknown mode %d", argument->n);
+    return false;
+  }
+
+  const unsigned int npag         = zathura_document_get_number_of_pages(zathura->document);
+  const unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
+
+  zathura_page_t* c_page = zathura_document_get_page(zathura->document, current_page);
+  zathura_page_set_zoom(c_page, 1.0);
+
+  girara_debug("Setting page equal mode to: %d", argument->n);
+
+  if (argument->n == ZATHURA_EQUAL_NONE) {
+    /* reset page zooms */
+    for (unsigned int i = 0; i < npag; i++) {
+      zathura_page_t* p = zathura_document_get_page(zathura->document, i);
+      zathura_page_set_zoom(p, 1.0);
+    }
+
+    render_all(zathura);
+    refresh_view(zathura);
+    return true;
+  }
+
+  for (unsigned int i = 0; i != npag; i++) {
+    zathura_page_t* page_i = zathura_document_get_page(zathura->document, i);
+
+    zathura_page_set_zoom(page_i, 1.0);
+
+    switch (argument->n) {
+    case ZATHURA_EQUAL_WIDTH:
+      zathura_page_set_zoom(page_i, zathura_page_get_width(c_page) / zathura_page_get_width(page_i));
+      break;
+    case ZATHURA_EQUAL_HEIGHT:
+      zathura_page_set_zoom(page_i, zathura_page_get_height(c_page) / zathura_page_get_height(page_i));
+      break;
+    }
+  }
+
+  render_all(zathura);
+  refresh_view(zathura);
+
   return true;
 }
 
@@ -258,10 +311,10 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
       g_free(tmp);
     }
 
-    GdkAtom* selection = get_selection(zathura);
+    g_autofree GdkAtom* selection = get_selection(zathura);
 
     /* we save the X clipboard that will be clear by "grab_focus" */
-    gchar* x_clipboard_text = NULL;
+    g_autofree gchar* x_clipboard_text = NULL;
 
     if (selection != NULL) {
       x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(*selection));
@@ -272,10 +325,7 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
     if (x_clipboard_text != NULL && selection != NULL) {
       /* we reset the X clipboard with saved text */
       gtk_clipboard_set_text(gtk_clipboard_get(*selection), x_clipboard_text, -1);
-      g_free(x_clipboard_text);
     }
-
-    g_free(selection);
   }
 
   return true;
@@ -569,6 +619,19 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     double dontcare = 0.5;
     page_number_to_position(zathura, page_id, dontcare, 1.0, &dontcare, &pos_y);
     position_set(zathura, pos_x, pos_y);
+    return false;
+  }
+
+  /* If SMOOTH_(UP|DOWN) , use GtkScrolledWindow signal */
+  if (argument->n == SMOOTH_UP) {
+    gboolean handled = FALSE;
+    g_signal_emit_by_name(G_OBJECT(zathura->ui.view), "scroll-child", GTK_SCROLL_STEP_BACKWARD, FALSE, &handled);
+
+    return false;
+  } else if (argument->n == SMOOTH_DOWN) {
+    gboolean handled = FALSE;
+    g_signal_emit_by_name(G_OBJECT(zathura->ui.view), "scroll-child", GTK_SCROLL_STEP_FORWARD, FALSE, &handled);
+
     return false;
   }
 
@@ -1048,7 +1111,6 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     return false;
   }
 
-  girara_tree_node_t* document_index = NULL;
   GtkWidget* treeview                = NULL;
   GtkTreeModel* model                = NULL;
   GtkCellRenderer* renderer          = NULL;
@@ -1065,7 +1127,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.index), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
     /* create index */
-    document_index = zathura_document_index_generate(zathura->document, NULL);
+    g_autoptr(girara_tree_node_t) document_index = zathura_document_index_generate(zathura->document, NULL);
     if (document_index == NULL) {
       girara_notify(session, GIRARA_WARNING, _("This document does not contain any index"));
       goto error_free;
@@ -1096,7 +1158,6 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     }
 
     document_index_build(session, model, NULL, document_index);
-    girara_node_free(document_index);
 
     /* setup widget */
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), 0, "Title", renderer, "markup", 0, NULL);
@@ -1146,10 +1207,6 @@ error_free:
   if (zathura->ui.index != NULL) {
     g_object_ref_sink(zathura->ui.index);
     zathura->ui.index = NULL;
-  }
-
-  if (document_index != NULL) {
-    girara_node_free(document_index);
   }
 
 error_ret:
@@ -1231,6 +1288,12 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
     /* reset pages per row */
     girara_setting_set(session, "pages-per-row", &zathura->shortcut.toggle_presentation_mode.pages);
 
+    // reset layout mode
+    if (zathura->shortcut.toggle_presentation_mode.layout_mode != DOCUMENT_WIDGET_SINGLE) {
+      g_object_set(zathura->ui.document_widget, "layout-mode", zathura->shortcut.toggle_presentation_mode.layout_mode,
+                   NULL);
+    }
+
     /* reset first page column */
     if (zathura->shortcut.toggle_presentation_mode.first_page_column_list != NULL) {
       girara_setting_set(session, "first-page-column",
@@ -1267,12 +1330,19 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
     girara_setting_get(session, "first-page-column",
                        &zathura->shortcut.toggle_presentation_mode.first_page_column_list);
 
+    /* back up zoom */
+    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
+
+    // backup layout mode
+    g_object_get(zathura->ui.document_widget, "layout-mode", &zathura->shortcut.toggle_presentation_mode.layout_mode,
+                 NULL);
+
     /* set single view */
     int int_value = 1;
     girara_setting_set(session, "pages-per-row", &int_value);
-
-    /* back up zoom */
-    zathura->shortcut.toggle_presentation_mode.zoom = zathura_document_get_zoom(zathura->document);
+    if (zathura->shortcut.toggle_presentation_mode.layout_mode != DOCUMENT_WIDGET_SINGLE) {
+      g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
+    }
 
     /* adjust window */
     girara_argument_t argument = {.n = ZATHURA_ADJUST_BESTFIT, .data = NULL};
@@ -1296,6 +1366,30 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
   }
 
   return false;
+}
+
+bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                                girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->document == NULL) {
+    girara_notify(session, GIRARA_WARNING, _("No document opened."));
+    return false;
+  }
+
+  document_widget_mode_t old_mode;
+  g_object_get(zathura->ui.document_widget, "layout-mode", &old_mode, NULL);
+  if (old_mode == DOCUMENT_WIDGET_SINGLE) {
+    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_GRID, NULL);
+  } else {
+    const int pages_per_row = 1;
+    girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
+    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
+  }
+
+  return true;
 }
 
 bool sc_quit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
@@ -1430,6 +1524,68 @@ bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_even
   const bool ret = sc_exec_internal(session, &new_argument);
   g_free(new_argument.data);
   return ret;
+}
+
+bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  g_return_val_if_fail(argument != NULL, false);
+  g_return_val_if_fail(zathura->document != NULL, false);
+
+  zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
+
+  /* retrieve zoom step value */
+  int value = 1;
+  girara_setting_get(zathura->ui.session, "zoom-step", &value);
+
+  unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
+  zathura_page_t* page      = zathura_document_get_page(zathura->document, current_page);
+
+  const int nt           = (t == 0) ? 1 : t;
+  const double zoom_step = 1.0 + value / 100.0 * nt;
+  const double old_zoom  = zathura_page_get_zoom(page);
+
+  /* specify new zoom value */
+  if (argument->n == ZOOM_IN) {
+    girara_debug("Increasing page %d zoom by %0.2f.", current_page, zoom_step - 1.0);
+    zathura_page_set_zoom(page, old_zoom * zoom_step);
+  } else if (argument->n == ZOOM_OUT) {
+    girara_debug("Decreasing page %d zoom by %0.2f.", current_page, zoom_step - 1.0);
+    zathura_page_set_zoom(page, old_zoom / zoom_step);
+  } else if (argument->n == ZOOM_SPECIFIC) {
+    if (t == 0) {
+      girara_debug("Setting page %d zoom to 1.", current_page);
+      zathura_page_set_zoom(page, 1.0);
+    } else {
+      girara_debug("Setting page %d zoom to %0.2f.", current_page, t / 100.0);
+      zathura_page_set_zoom(page, t / 100.0);
+    }
+  } else if (argument->n == ZOOM_SMOOTH) {
+    const double dy = (event != NULL) ? event->y : 1.0;
+    const double z  = pow(zoom_step, -dy);
+    girara_debug("Increasing page %d zoom by %0.2f.", current_page, z - 1.0);
+    zathura_page_set_zoom(page, old_zoom * z);
+  } else {
+    girara_debug("Setting page %d zoom to 1.", current_page);
+    zathura_page_set_zoom(page, 1.0);
+  }
+
+  /* zoom limitations */
+  const double zoom = zathura_page_get_zoom(page);
+  zathura_page_set_zoom(page, zathura_correct_zoom_value(session, zoom));
+
+  const double new_zoom = zathura_page_get_zoom(page);
+  if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
+    girara_debug("New and old page %d zoom level are too close: %0.2f vs. %0.2f", current_page, new_zoom, old_zoom);
+    return false;
+  }
+
+  girara_debug("Re-rendering with page %d new zoom level %0.2f.", current_page, new_zoom);
+  render_all(zathura);
+  refresh_view(zathura);
+
+  return false;
 }
 
 bool sc_nohlsearch(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),

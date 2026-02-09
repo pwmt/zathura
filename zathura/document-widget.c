@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "document-widget.h"
+#include "girara-gtk/settings.h"
 #include "girara/log.h"
 
 #include "page.h"
@@ -17,6 +18,7 @@ typedef struct zathura_document_widget_private_s {
   zathura_t* zathura;
 
   /* Layout */
+  document_widget_mode_t layout_mode;
   gboolean pages_right_to_left;
   unsigned int nrow;
   unsigned int ncol;
@@ -46,6 +48,7 @@ static void zathura_document_widget_dispose(GObject* object);
 enum properties_e {
   PROP_0,
   PROP_ZATHURA,
+  PROP_LAYOUT_MODE,
   PROP_PAGES_RIGHT_TO_LEFT,
   PROP_HADJUSTMENT,
   PROP_VADJUSTMENT,
@@ -72,6 +75,11 @@ static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* class
       g_param_spec_pointer("zathura", "zathura", "the zathura instance",
                            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property(object_class, PROP_LAYOUT_MODE,
+                                  g_param_spec_int("layout-mode", "layout-mode", "set the page layout mode", 0,
+                                                   DOCUMENT_WIDGET_MODE_COUNT, DOCUMENT_WIDGET_GRID,
+                                                   G_PARAM_WRITABLE | G_PARAM_READABLE));
+
   g_object_class_install_property(object_class, PROP_PAGES_RIGHT_TO_LEFT,
                                   g_param_spec_boolean("pages-right-to-left", "pages-right-to-left",
                                                        "layout pages left to right", false,
@@ -90,6 +98,7 @@ static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
 
   priv->zathura = NULL;
 
+  priv->layout_mode = DOCUMENT_WIDGET_GRID;
   priv->nrow        = 0;
   priv->ncol        = 0;
   priv->row_heights = NULL;
@@ -149,6 +158,10 @@ static void zathura_document_widget_set_property(GObject* object, guint prop_id,
   case PROP_ZATHURA:
     priv->zathura = g_value_get_pointer(value);
     break;
+  case PROP_LAYOUT_MODE:
+    priv->layout_mode = g_value_get_int(value);
+    gtk_widget_queue_allocate(GTK_WIDGET(document));
+    break;
   case PROP_PAGES_RIGHT_TO_LEFT:
     priv->pages_right_to_left = g_value_get_boolean(value);
     break;
@@ -178,6 +191,9 @@ static void zathura_document_widget_get_property(GObject* object, guint prop_id,
   switch (prop_id) {
   case PROP_HADJUSTMENT:
     g_value_set_object(value, priv->hadjustment);
+    break;
+  case PROP_LAYOUT_MODE:
+    g_value_set_int(value, priv->layout_mode);
     break;
   case PROP_PAGES_RIGHT_TO_LEFT:
     g_value_set_boolean(value, priv->pages_right_to_left);
@@ -241,11 +257,8 @@ static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) 
     unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
     unsigned int y = row;
 
-    unsigned int width  = zathura_page_get_width(page);
-    unsigned int height = zathura_page_get_height(page);
-
     unsigned int page_width, page_height;
-    page_calc_height_width(z_document, height, width, &page_height, &page_width, true);
+    page_calc_height_width(z_document, page, &page_height, &page_width, true);
 
     priv->row_heights[y].size = MAX(page_height, priv->row_heights[y].size);
     priv->col_widths[x].size  = MAX(page_width, priv->col_widths[x].size);
@@ -255,8 +268,7 @@ static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) 
   zathura_document_widget_line_prefix_sum(priv->row_heights, nrow, page_v_padding);
 }
 
-static void zathura_document_widget_get_adjustment(ZathuraDocumentWidget* document, int height, int width, int* adj_v,
-                                                   int* adj_h) {
+static void document_adjustment(ZathuraDocumentWidget* document, int height, int width, int* adj_v, int* adj_h) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
   const unsigned int value_v = gtk_adjustment_get_value(priv->vadjustment);
@@ -273,28 +285,56 @@ static void zathura_document_widget_get_adjustment(ZathuraDocumentWidget* docume
   *adj_h = ((int)doc_width < width) ? -center_h : (int)value_h;
 }
 
-static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocation* allocation) {
-  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(widget);
+/*
+ * Calculate allocation for a single page
+ *
+ * If height or width is smaller than the allocation,
+ * set the position to 0 and height/width to allocation
+ * so the page centers that dimension. Otherwise,
+ * use the document position, clamped to the page edges,
+ * to offset the page position.
+ *
+ * @param document ZathuraDocumentWidget
+ * @param page_id  index of the page in the document
+ * @param height   allocation height
+ * @param width    allocation width
+ * @return page_alloc the final allocation
+ */
+static void page_allocation(ZathuraDocumentWidget* document, int page_id, int height, int width,
+                            GtkAllocation* page_alloc) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+
+  unsigned int row, col;
+  zathura_document_widget_get_page_position(document, page_id, &row, &col);
+
+  int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
+  int y = row;
+
+  const int page_width  = priv->col_widths[x].size;
+  const int page_height = priv->row_heights[y].size;
+  const int value_h     = gtk_adjustment_get_value(priv->hadjustment) - priv->col_widths[x].pos;
+  const int value_v     = gtk_adjustment_get_value(priv->vadjustment) - priv->row_heights[y].pos;
+
+  /* clamp x and y offsets so we don't leave the page */
+  const int clamp_h = MAX(MIN(-value_h, 0), -(page_width - width));
+  const int clamp_v = MAX(MIN(-value_v, 0), -(page_height - height));
+
+  page_alloc->x      = ((int)page_width < width) ? 0 : clamp_h;
+  page_alloc->y      = ((int)page_height < height) ? 0 : clamp_v;
+  page_alloc->width  = MAX(page_width, width);
+  page_alloc->height = MAX(page_height, height);
+}
+
+static void size_allocate_grid(ZathuraDocumentWidget* document, GtkAllocation* allocation) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  if (z_document == NULL || priv->zathura == NULL) {
-    return;
-  }
-
-  gtk_adjustment_set_page_size(priv->hadjustment, allocation->width);
-  gtk_adjustment_set_page_size(priv->vadjustment, allocation->height);
-
-  zathura_document_set_viewport_height(z_document, allocation->height);
-  zathura_document_set_viewport_width(z_document, allocation->width);
-
-  adjust_view(priv->zathura);
-
-  /* allocate page sizes */
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
 
+  gtk_widget_show_all(GTK_WIDGET(document));
+
   int adj_v, adj_h;
-  zathura_document_widget_get_adjustment(document, allocation->height, allocation->width, &adj_v, &adj_h);
+  document_adjustment(document, allocation->height, allocation->width, &adj_v, &adj_h);
 
   unsigned int x, y, row, col;
 
@@ -316,20 +356,59 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocati
         .height = row_line.size,
     };
 
-    /*
-     * Check if 'page_alloc' and 'allocation' overlap,
-     * which occurs iff the x-range and y-range for the
-     * allocations overlap. For two intervals [a1, a2],
-     * [b1, b2], they overlap iff (a1 <= b2) && (b1 <= a2)
-     */
-    bool x_overlap =
-        (page_alloc.x <= allocation->x + allocation->width) && (allocation->x <= page_alloc.x + page_alloc.width);
-    bool y_overlap =
-        (page_alloc.y <= allocation->y + allocation->height) && (allocation->y <= page_alloc.y + page_alloc.height);
-
-    zathura_page_set_visibility(page, x_overlap && y_overlap);
-    gtk_widget_set_visible(page_widget, x_overlap && y_overlap);
     gtk_widget_size_allocate(page_widget, &page_alloc);
+  }
+}
+
+static void size_allocate_single_page(ZathuraDocumentWidget* document, GtkAllocation* allocation) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
+
+  const unsigned int npag    = zathura_document_get_number_of_pages(z_document);
+  const unsigned int page_id = zathura_document_get_current_page_number(z_document);
+
+  GtkAllocation page_alloc;
+  page_allocation(document, page_id, allocation->height, allocation->width, &page_alloc);
+
+  for (unsigned int i = 0; i < npag; i++) {
+    zathura_page_t* page   = zathura_document_get_page(z_document, i);
+    GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
+
+    gtk_widget_set_visible(page_widget, page_id == i);
+
+    if (i == page_id) {
+      gtk_widget_size_allocate(page_widget, &page_alloc);
+    }
+  }
+}
+
+static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocation* allocation) {
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(widget);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
+
+  if (z_document == NULL || priv->zathura == NULL) {
+    return;
+  }
+
+  gtk_adjustment_set_page_size(priv->hadjustment, allocation->width);
+  gtk_adjustment_set_page_size(priv->vadjustment, allocation->height);
+
+  zathura_document_set_viewport_height(z_document, allocation->height);
+  zathura_document_set_viewport_width(z_document, allocation->width);
+
+  adjust_view(priv->zathura);
+
+  /* allocate pages */
+  switch (priv->layout_mode) {
+  case DOCUMENT_WIDGET_GRID:
+    size_allocate_grid(document, allocation);
+    break;
+  case DOCUMENT_WIDGET_SINGLE:
+    size_allocate_single_page(document, allocation);
+    break;
+  default:
+    girara_error("unknown layout mode");
   }
 
   GTK_WIDGET_CLASS(zathura_document_widget_parent_class)->size_allocate(widget, allocation);
@@ -427,6 +506,11 @@ void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
 
   gtk_adjustment_set_upper(priv->hadjustment, doc_width);
   gtk_adjustment_set_upper(priv->vadjustment, doc_height);
+
+  float scroll_step = 40;
+  girara_setting_get(priv->zathura->ui.session, "scroll-step", &scroll_step);
+
+  gtk_adjustment_set_step_increment(priv->vadjustment, scroll_step);
 }
 
 void zathura_document_widget_get_cell_pos(ZathuraDocumentWidget* document, unsigned int page_index, unsigned int* pos_x,

@@ -113,6 +113,13 @@ typedef enum zathura_adjust_mode_e {
   ZATHURA_ADJUST_MODE_NUMBER /**< Number of adjust modes */
 } zathura_adjust_mode_t;
 
+typedef enum zathura_equal_mode_e {
+  ZATHURA_EQUAL_NONE,        /**< No equalisation */
+  ZATHURA_EQUAL_WIDTH,       /**< Equal page widths */
+  ZATHURA_EQUAL_HEIGHT,      /**< Equal page heights */
+  ZATHURA_EQUAL_MODE_NUMBER, /**< Number of equalisation modes */
+} zathura_equal_mode_t;
+
 /**
  * Creates an image buffer
  *
@@ -331,5 +338,11 @@ struct zathura_mark_s {
 };
 
 typedef struct zathura_mark_s zathura_mark_t;
+
+typedef enum document_widget_mode_e {
+  DOCUMENT_WIDGET_GRID,
+  DOCUMENT_WIDGET_SINGLE,
+  DOCUMENT_WIDGET_MODE_COUNT,
+} document_widget_mode_t;
 
 #endif // TYPES_H

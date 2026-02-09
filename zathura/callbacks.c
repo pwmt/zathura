@@ -625,21 +625,22 @@ void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* d
 
   zathura_t* zathura            = data;
   g_autofree GdkAtom* selection = get_selection(zathura);
+  if (selection == NULL) {
+    return;
+  }
 
-  if (selection != NULL) {
-    gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
+  gtk_clipboard_set_image(gtk_clipboard_get(*selection), pixbuf);
 
-    bool notification = true;
-    girara_setting_get(zathura->ui.session, "selection-notification", &notification);
+  bool notification = true;
+  girara_setting_get(zathura->ui.session, "selection-notification", &notification);
 
-    if (notification == true) {
-      g_autofree char* target = NULL;
-      girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+  if (notification == true) {
+    g_autofree char* target = NULL;
+    girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
 
-      g_autofree char* escaped_text = g_markup_printf_escaped(_("Copied selected image to selection %s"), target);
+    g_autofree char* escaped_text = g_markup_printf_escaped(_("Copied selected image to selection %s"), target);
 
-      girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-    }
+    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
   }
 }
 

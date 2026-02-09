@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '2026.02.03',
+  version: '2026.02.09',
   meson_version: '>=1.5',
   default_options: ['c_std=c17', 'warning_level=3'],
 )
@@ -21,7 +21,6 @@ conf_data.set('ZVMINOR', version_array[1])
 conf_data.set('ZVREV', version_array[2])
 conf_data.set('ZVAPI', plugin_api_version)
 conf_data.set('ZVABI', plugin_abi_version)
-conf_data.set('version', version)
 
 cc = meson.get_compiler('c')
 

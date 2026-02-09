@@ -292,6 +292,12 @@ They can also be combined with modifiers:
 
     Show the print dialog.
 
+  * ``page_mode``
+
+    Set the page sizing mode. Default is ``equal_none``, which doesn't resize 
+    individual pages. ``equal_width`` and ``equal_height`` resizes each page to 
+    have the same width and height respectively.
+
   * ``quit``
 
     Quit zathura.
@@ -342,6 +348,10 @@ They can also be combined with modifiers:
 
     Toggle between one and multiple pages per row.
 
+  * ``toggle_single_page_mode``
+
+    Toggle between displaying a page grid or a single page.
+
   * ``toggle_statusbar``
 
     Show or hide statusbar.
@@ -349,6 +359,10 @@ They can also be combined with modifiers:
   * ``zoom``
 
     Zoom in or out.
+
+  * ``zoom_page``
+
+    Zoom in or out of the current page.
 
   * ``mark_add``
 
@@ -392,6 +406,8 @@ They can also be combined with modifiers:
   * full-up
   * half-down
   * half-up
+  * smooth-down
+  * smooth-up
   * in
   * left
   * next
@@ -408,6 +424,9 @@ They can also be combined with modifiers:
   * top
   * up
   * width
+  * equal_none
+  * equal_width
+  * equal_height
 
 unmap - Removing a shortcut
 ---------------------------
@@ -911,11 +930,12 @@ zathura
   * Default value: true
 
 *selection-clipboard*
-  Defines the X clipboard into which mouse-selected data will be written.  When it
-  is "clipboard", selected data will be written to the CLIPBOARD clipboard, and
-  can be pasted using the Ctrl+v key combination.  When it is "primary", selected
-  data will be written to the PRIMARY clipboard, and can be pasted using the
-  middle mouse button, or the Shift-Insert key combination.
+  Defines the X clipboard into which mouse-selected data will be written.  When
+  it is "clipboard", selected data will be written to the CLIPBOARD clipboard,
+  and can be pasted using the Ctrl+v key combination.  When it is "primary",
+  selected data will be written to the PRIMARY clipboard, and can be pasted
+  using the middle mouse button, or the Shift-Insert key combination. The value
+  "false" can be used to disable copying to the clipboard.
 
   * Value type: String
   * Default value: primary

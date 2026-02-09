@@ -341,6 +341,10 @@ GdkAtom* get_selection(zathura_t* zathura) {
     *selection = GDK_SELECTION_PRIMARY;
   } else if (strcmp(value, "clipboard") == 0) {
     *selection = GDK_SELECTION_CLIPBOARD;
+  } else if (strcmp(value, "false") == 0) {
+    g_free(selection);
+
+    return NULL;
   } else {
     girara_error("Invalid value for the selection-clipboard setting");
     g_free(selection);
