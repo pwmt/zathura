@@ -53,7 +53,7 @@
       <caption>Listing and selecting bookmakrs</caption>
     </screenshot>
   </screenshots>
-  <translation type="gettext">zathura</translation>
+  <translation type="gettext">org.pwmt.zathura</translation>
   <provides>
     <binary>zathura</binary>
   </provides>
