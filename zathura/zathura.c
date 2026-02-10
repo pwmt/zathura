@@ -253,11 +253,10 @@ static bool init_ui(zathura_t* zathura) {
 
   /* page view */
   zathura->ui.view = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
-  girara_setting_get(zathura->ui.session, "gui-options", &view_options);
+  girara_setting_get(zathura->ui.session, "guioptions", &view_options);
 
   const bool show_hscrollbar = view_options != NULL && strchr(view_options, 'h') != NULL;
   const bool show_vscrollbar = view_options != NULL && strchr(view_options, 'v') != NULL;
