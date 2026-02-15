@@ -96,8 +96,7 @@ static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
-  priv->zathura = NULL;
-
+  priv->zathura     = NULL;
   priv->layout_mode = DOCUMENT_WIDGET_GRID;
   priv->nrow        = 0;
   priv->ncol        = 0;
@@ -131,16 +130,18 @@ static void zathura_document_widget_set_scroll_adjustment(ZathuraDocumentWidget*
     prop_name = "vadjustment";
   }
 
-  if (adjustment && adjustment == *to_set)
+  if (adjustment && adjustment == *to_set) {
     return;
+  }
 
   if (*to_set) {
     g_signal_handlers_disconnect_by_data(*to_set, widget);
     g_object_unref(*to_set);
   }
 
-  if (!adjustment)
+  if (!adjustment) {
     adjustment = gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+  }
 
   g_signal_connect_swapped(adjustment, "value-changed", G_CALLBACK(gtk_widget_queue_allocate), widget);
 
@@ -224,6 +225,7 @@ static void zathura_document_widget_get_page_position(ZathuraDocumentWidget* doc
   *row = (page_index + c0 - 1) / ncol;
   *col = (page_index + c0 - 1) % ncol;
 }
+
 static void zathura_document_widget_line_prefix_sum(document_widget_line_s* array, unsigned int n, unsigned int pad) {
   array[0].pos = 0;
 
@@ -336,15 +338,16 @@ static void size_allocate_grid(ZathuraDocumentWidget* document, GtkAllocation* a
   int adj_v, adj_h;
   document_adjustment(document, allocation->height, allocation->width, &adj_v, &adj_h);
 
-  unsigned int x, y, row, col;
-
   for (unsigned int i = 0; i < npag; i++) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
+
+    unsigned int row;
+    unsigned int col;
     zathura_document_widget_get_page_position(document, i, &row, &col);
 
-    x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
-    y = row;
+    unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
+    unsigned int y = row;
 
     document_widget_line_s col_line = priv->col_widths[x];
     document_widget_line_s row_line = priv->row_heights[y];
