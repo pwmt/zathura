@@ -254,6 +254,16 @@ static bool init_ui(zathura_t* zathura) {
   /* page view */
   zathura->ui.view = gtk_scrolled_window_new(NULL, NULL);
 
+  /* document widget */
+  zathura->ui.document_widget = zathura_document_widget_new(zathura);
+  if (zathura->ui.document_widget == NULL) {
+    girara_error("Failed to create document widget.");
+    return false;
+  }
+
+  gtk_container_add(GTK_CONTAINER(zathura->ui.view), zathura->ui.document_widget);
+  girara_set_view(zathura->ui.session, zathura->ui.view);
+
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
   girara_setting_get(zathura->ui.session, "guioptions", &view_options);
@@ -263,17 +273,7 @@ static bool init_ui(zathura_t* zathura) {
 
   GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
   GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
-
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
-
-  zathura->ui.document_widget = zathura_document_widget_new(zathura);
-  if (zathura->ui.document_widget == NULL) {
-    girara_error("Failed to create document widget.");
-    return false;
-  }
-
-  gtk_container_add(GTK_CONTAINER(zathura->ui.view), zathura->ui.document_widget);
-  girara_set_view(zathura->ui.session, zathura->ui.view);
 
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
