@@ -38,7 +38,7 @@ static bool get_fileinfo(zathura_database_t* GIRARA_UNUSED(db), const char* GIRA
 static void io_append(GiraraInputHistoryIO* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(input)) {}
 
 static girara_list_t* io_read(GiraraInputHistoryIO* GIRARA_UNUSED(db)) {
-  return girara_list_new();
+  return girara_list_new_with_free(g_free);
 }
 
 static girara_list_t* get_recent_files(zathura_database_t* GIRARA_UNUSED(db), int GIRARA_UNUSED(max),
