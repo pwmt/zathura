@@ -1616,7 +1616,7 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   zathura_t* zathura = session->global.data;
 
   g_autoptr(GtkFileChooserNative) native =
-      gtk_file_chooser_native_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
+      gtk_file_chooser_native_new(_("Open file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
   GtkFileChooser* chooser = GTK_FILE_CHOOSER(native);
 
   girara_list_t* mime_types = zathura_plugin_manager_get_content_types(zathura->plugins.manager);
