@@ -27,6 +27,7 @@ jobs:
           mkdir girara/build
           meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
+          rm -rf girara
       - name: Build and test
         run: |
           mkdir build
@@ -52,6 +53,7 @@ jobs:
           mkdir girara/build
           meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
+          rm -rf girara
       - name: Build and test
         run: |
           mkdir build
@@ -84,6 +86,7 @@ jobs:
           mkdir girara/build
           meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
+          rm -rf girara
       - name: Build and test
         run: |
           mkdir build
@@ -116,6 +119,7 @@ jobs:
           mkdir girara/build
           meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
+          rm -rf girara
       - name: Build and test
         run: |
           mkdir build
@@ -148,6 +152,7 @@ jobs:
           mkdir girara/build
           meson setup --prefix /usr girara/build girara
           ninja --verbose -C girara/build install
+          rm -rf girara
       - name: Build and test
         run: |
           mkdir build
