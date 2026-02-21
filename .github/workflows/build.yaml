@@ -42,22 +42,20 @@ jobs:
       - name: Install girara
         run: |
           mkdir girara/build
-          meson setup --prefix /usr girara/build girara
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
       - name: Build and test
         run: |
           mkdir build
-          cd build
-          meson ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu build .
+          ninja -C build --verbose
+          ninja -C build test --verbose
       - name: Build and test (features disabled)
         run: |
           mkdir build-nofeatures
-          cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled build-nofeatures .
+          ninja -C build-nofeatures --verbose
+          ninja -C build-nofeatures test --verbose
 
   build-test-debian-ofrky:
     name: Test on Debian forky
@@ -76,22 +74,20 @@ jobs:
       - name: Install girara
         run: |
           mkdir girara/build
-          meson setup --prefix /usr girara/build girara
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
       - name: Build and test
         run: |
           mkdir build
-          cd build
-          meson ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu build .
+          ninja -C build --verbose
+          ninja -C build test --verbose
       - name: Build and test (features disabled)
         run: |
           mkdir build-nofeatures
-          cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled build-nofeatures .
+          ninja -C build-nofeatures --verbose
+          ninja -C build-nofeatures test --verbose
 
   build-test-ubuntu-noble:
     name: Test on Ubuntu noble
@@ -110,22 +106,20 @@ jobs:
       - name: Install girara
         run: |
           mkdir girara/build
-          meson setup --prefix /usr girara/build girara
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
           ninja --verbose -C girara/build install
       - name: Build and test
         run: |
           mkdir build
-          cd build
-          meson ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu build .
+          ninja -C build --verbose
+          ninja -C build test --verbose
       - name: Build and test (features disabled)
         run: |
           mkdir build-nofeatures
-          cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled build-nofeatures .
+          ninja -C build-nofeatures --verbose
+          ninja -C build-nofeatures test --verbose
 
   build-test-archlinux:
     name: Test on Archlinux
@@ -149,14 +143,12 @@ jobs:
       - name: Build and test
         run: |
           mkdir build
-          cd build
-          meson ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr build .
+          ninja -C build --verbose
+          ninja -C build test --verbose
       - name: Build and test (features disabled)
         run: |
           mkdir build-nofeatures
-          cd build-nofeatures
-          meson -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled ..
-          ninja --verbose
-          ninja test --verbose
+          meson setup --prefix /usr -Dsynctex=disabled -Dseccomp=disabled -Dlandlock=disabled build-nofeatures .
+          ninja -C build-nofeatures --verbose
+          ninja -C build-nofeatures test --verbose
