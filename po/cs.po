@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 13:34+0100\n"
+"POT-Creation-Date: 2026-02-21 21:00+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: fri, 2016-2018,2022\n"
 "Language-Team: Czech (http://app.transifex.com/pwmt/zathura/language/cs/)\n"
@@ -831,7 +831,7 @@ msgstr ""
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:501 zathura/config.c:576
+#: data/org.pwmt.zathura.metainfo.xml.in:501 zathura/config.c:572
 msgid "Page aware scrolling"
 msgstr "Posunovat s ohledem na strany"
 
@@ -1372,9 +1372,9 @@ msgstr "Vybraný text zkopírován do výběru %s"
 #: zathura/commands.c:37 zathura/commands.c:75 zathura/commands.c:100
 #: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:219
 #: zathura/commands.c:323 zathura/commands.c:353 zathura/commands.c:378
-#: zathura/commands.c:480 zathura/commands.c:621 zathura/shortcuts.c:159
-#: zathura/shortcuts.c:505 zathura/shortcuts.c:1224 zathura/shortcuts.c:1257
-#: zathura/shortcuts.c:1282 zathura/shortcuts.c:1378
+#: zathura/commands.c:480 zathura/commands.c:649 zathura/shortcuts.c:159
+#: zathura/shortcuts.c:502 zathura/shortcuts.c:1221 zathura/shortcuts.c:1254
+#: zathura/shortcuts.c:1279 zathura/shortcuts.c:1375
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
@@ -1488,7 +1488,7 @@ msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 
-#: zathura/commands.c:293 zathura/commands.c:667 girara-gtk/commands.c:550
+#: zathura/commands.c:293 zathura/commands.c:695 girara-gtk/commands.c:550
 msgid "Too many arguments."
 msgstr "Příliš mnoho argumentů."
 
@@ -1542,11 +1542,16 @@ msgstr "Neznámý obrázek '%s'."
 msgid "Unknown attachment or image '%s'."
 msgstr "Neznámá příloha nebo obrázek '%s'."
 
-#: zathura/commands.c:578
+#: zathura/commands.c:593
+#, c-format
+msgid "Failed to execute command: %s"
+msgstr ""
+
+#: zathura/commands.c:606
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Spouštění není v režimu přísného pískoviště dovoleno"
 
-#: zathura/commands.c:634
+#: zathura/commands.c:662
 msgid "Argument must be a number."
 msgstr "Argumentem musí být číslo."
 
@@ -1574,501 +1579,501 @@ msgstr ""
 
 #. clang-format off
 #. settings
-#: zathura/config.c:471
+#: zathura/config.c:467
 msgid "Font"
 msgstr ""
 
 #. colors affecting the CSS
-#: zathura/config.c:474
+#: zathura/config.c:470
 msgid "Default foreground color"
 msgstr ""
 
-#: zathura/config.c:475
+#: zathura/config.c:471
 msgid "Default background color"
 msgstr ""
 
-#: zathura/config.c:476
+#: zathura/config.c:472
 msgid "Inputbar foreground color"
 msgstr ""
 
-#: zathura/config.c:477
+#: zathura/config.c:473
 msgid "Inputbar background color"
 msgstr ""
 
-#: zathura/config.c:478
+#: zathura/config.c:474
 msgid "Statusbar foreground color"
 msgstr ""
 
-#: zathura/config.c:479
+#: zathura/config.c:475
 msgid "Statsubar background color"
 msgstr ""
 
-#: zathura/config.c:480
+#: zathura/config.c:476
 msgid "Completion foreground color"
 msgstr ""
 
-#: zathura/config.c:481
+#: zathura/config.c:477
 msgid "Completion background color"
 msgstr ""
 
-#: zathura/config.c:482
+#: zathura/config.c:478
 msgid "Completion group foreground color"
 msgstr ""
 
-#: zathura/config.c:483
+#: zathura/config.c:479
 msgid "Completion group background color"
 msgstr ""
 
-#: zathura/config.c:484
+#: zathura/config.c:480
 msgid "Completion highlight foreground color"
 msgstr ""
 
-#: zathura/config.c:485
+#: zathura/config.c:481
 msgid "Completion highlight background color"
 msgstr ""
 
-#: zathura/config.c:486
+#: zathura/config.c:482
 msgid "Error notification foreground color"
 msgstr ""
 
-#: zathura/config.c:487
+#: zathura/config.c:483
 msgid "Error notification background color"
 msgstr ""
 
-#: zathura/config.c:488
+#: zathura/config.c:484
 msgid "Warning notification foreground color"
 msgstr ""
 
-#: zathura/config.c:489
+#: zathura/config.c:485
 msgid "Warning notifaction background color"
 msgstr ""
 
-#: zathura/config.c:490
+#: zathura/config.c:486
 msgid "Notification foreground color"
 msgstr ""
 
-#: zathura/config.c:491
+#: zathura/config.c:487
 msgid "Notification background color"
 msgstr ""
 
-#: zathura/config.c:492
+#: zathura/config.c:488
 msgid "Index mode foreground color"
 msgstr "Barva popředí režimu rejstříku"
 
-#: zathura/config.c:493
+#: zathura/config.c:489
 msgid "Index mode background color"
 msgstr "Barva pozadí režimu rejstříku"
 
-#: zathura/config.c:494
+#: zathura/config.c:490
 msgid "Index mode foreground color (active element)"
 msgstr "Barva popředí režimu rejstříku (činný prvek)"
 
-#: zathura/config.c:495
+#: zathura/config.c:491
 msgid "Index mode background color (active element)"
 msgstr "Barva pozadí režimu rejstříku (činný prvek)"
 
-#: zathura/config.c:496
+#: zathura/config.c:492
 msgid "Scrollbar foreground color"
 msgstr ""
 
-#: zathura/config.c:497
+#: zathura/config.c:493
 msgid "Scrollbar background color"
 msgstr ""
 
-#: zathura/config.c:500
+#: zathura/config.c:496
 msgid "Initial window width"
 msgstr ""
 
-#: zathura/config.c:501
+#: zathura/config.c:497
 msgid "Initial window height"
 msgstr ""
 
-#: zathura/config.c:502
+#: zathura/config.c:498
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
 
-#: zathura/config.c:503
+#: zathura/config.c:499
 msgid "Vertical padding for the status, input, and notification bars"
 msgstr ""
 
-#: zathura/config.c:504
+#: zathura/config.c:500
 msgid "Number of completion items"
 msgstr ""
 
-#: zathura/config.c:505
+#: zathura/config.c:501
 msgid "Window icon"
 msgstr ""
 
-#: zathura/config.c:506
+#: zathura/config.c:502
 msgid "Command to execute in :exec"
 msgstr ""
 
-#: zathura/config.c:507
+#: zathura/config.c:503
 msgid "Show or hide certain GUI elements"
 msgstr ""
 
-#: zathura/config.c:509
+#: zathura/config.c:505
 msgid "Database backend"
 msgstr "Databázová vrstva"
 
-#: zathura/config.c:510
+#: zathura/config.c:506
 msgid "File monitor backend"
 msgstr "Vrstva pro sledování souboru"
 
-#: zathura/config.c:512
+#: zathura/config.c:508
 msgid "Zoom step"
 msgstr "Velikost kroku zvětšení"
 
-#: zathura/config.c:514
+#: zathura/config.c:510
 msgid "Horizontal padding between pages"
 msgstr ""
 
-#: zathura/config.c:516
+#: zathura/config.c:512
 msgid "Vertical padding between pages"
 msgstr ""
 
-#: zathura/config.c:518
+#: zathura/config.c:514
 msgid "Number of pages per row"
 msgstr "Počet stran na řádek"
 
-#: zathura/config.c:520
+#: zathura/config.c:516
 msgid "Column of the first page"
 msgstr "Sloupec první strany"
 
-#: zathura/config.c:522
+#: zathura/config.c:518
 msgid "Render pages from right to left"
 msgstr "Vykreslování stránek zprava doleva"
 
-#: zathura/config.c:524
+#: zathura/config.c:520
 msgid "Scroll step"
 msgstr "Velikost kroku posunu"
 
-#: zathura/config.c:526
+#: zathura/config.c:522
 msgid "Horizontal scroll step"
 msgstr "Velikost kroku vodorovného posunu"
 
-#: zathura/config.c:528
+#: zathura/config.c:524
 msgid "Full page scroll overlap"
 msgstr "Překrývání při posunování celých stran"
 
-#: zathura/config.c:530
+#: zathura/config.c:526
 msgid "Zoom minimum"
 msgstr "Nejmenší stupeň zvětšení"
 
-#: zathura/config.c:532
+#: zathura/config.c:528
 msgid "Zoom maximum"
 msgstr "Největší stupeň zvětšení"
 
-#: zathura/config.c:534
+#: zathura/config.c:530
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Největší počet stran ve vyrovnávací paměti"
 
-#: zathura/config.c:536
+#: zathura/config.c:532
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr "Největší velikost náhledů v obrazových bodech ve vyrovnávací paměti"
 
-#: zathura/config.c:538
+#: zathura/config.c:534
 msgid "Number of positions to remember in the jumplist"
 msgstr "Počet poloh k uchování v seznamu"
 
-#: zathura/config.c:540
+#: zathura/config.c:536
 msgid "Recoloring (dark color)"
 msgstr "Přebarvuje se do tmava"
 
-#: zathura/config.c:541
+#: zathura/config.c:537
 msgid "Recoloring (light color)"
 msgstr "Přebarvuje se do světla"
 
-#: zathura/config.c:542
+#: zathura/config.c:538
 msgid "Color for highlighting"
 msgstr "Barva zvýrazňovače"
 
-#: zathura/config.c:543
+#: zathura/config.c:539
 msgid "Foreground color for highlighting"
 msgstr "Barva popředí pro zvýraznění"
 
-#: zathura/config.c:544
+#: zathura/config.c:540
 msgid "Color for highlighting (active)"
 msgstr "Barva zvýrazňovače (činná)"
 
-#: zathura/config.c:545
+#: zathura/config.c:541
 msgid "'Loading ...' background color"
 msgstr "Nahrává se barva pozadí..."
 
-#: zathura/config.c:546
+#: zathura/config.c:542
 msgid "'Loading ...' foreground color"
 msgstr "Nahrává se barva popředí..."
 
 #. colors for document signatures
-#: zathura/config.c:549
+#: zathura/config.c:545
 msgid "Color used to highlight valid signatures"
 msgstr ""
 
-#: zathura/config.c:550
+#: zathura/config.c:546
 msgid "Color used to highlight signatures with warnings"
 msgstr ""
 
-#: zathura/config.c:551
+#: zathura/config.c:547
 msgid "Color used to highlight invalid signatures"
 msgstr ""
 
-#: zathura/config.c:566
+#: zathura/config.c:562
 msgid "Recolor pages"
 msgstr "Přebarvit stránky"
 
-#: zathura/config.c:568
+#: zathura/config.c:564
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "Při přebarvování zachovat původní odstín a přizpůsobit pouze světlost"
 
-#: zathura/config.c:570
+#: zathura/config.c:566
 msgid "When recoloring keep original image colors"
 msgstr "Při přebarvování zachovat původní  barvy obrázku"
 
-#: zathura/config.c:572
+#: zathura/config.c:568
 msgid "When recoloring adjust lightness"
 msgstr ""
 
-#: zathura/config.c:574
+#: zathura/config.c:570
 msgid "Wrap scrolling"
 msgstr "Posunovat přes konce"
 
-#: zathura/config.c:578
+#: zathura/config.c:574
 msgid "Advance number of pages per row"
 msgstr "Pokračovat v počtu stran v jednom řádku"
 
-#: zathura/config.c:580
+#: zathura/config.c:576
 msgid "Horizontally centered zoom"
 msgstr "Vodorovně vystředěné přiblížení"
 
-#: zathura/config.c:582
+#: zathura/config.c:578
 msgid "Vertically center pages"
 msgstr "Vystředit strany svisle"
 
-#: zathura/config.c:584
+#: zathura/config.c:580
 msgid "Align link target to the left"
 msgstr "Zarovnat cíl odkazu nalevo"
 
-#: zathura/config.c:586
+#: zathura/config.c:582
 msgid "Let zoom be changed when following links"
 msgstr "Při následování odkazů se mění velikost přiblížení"
 
-#: zathura/config.c:588
+#: zathura/config.c:584
 msgid "Center result horizontally"
 msgstr "Vystředit výsledky vodorovně"
 
-#: zathura/config.c:590
+#: zathura/config.c:586
 msgid "Render 'Loading ...'"
 msgstr "Vypisovat Nahrává se..."
 
-#: zathura/config.c:591
+#: zathura/config.c:587
 msgid "Adjust to when opening file"
 msgstr "Přiblížení po otevření souboru"
 
-#: zathura/config.c:593
+#: zathura/config.c:589
 msgid "Show hidden files and directories"
 msgstr "Zobrazovat skryté soubory"
 
-#: zathura/config.c:595
+#: zathura/config.c:591
 msgid "Show directories"
 msgstr "Ukázat adresáře"
 
-#: zathura/config.c:597
+#: zathura/config.c:593
 msgid "Show recent files"
 msgstr "Ukázat nedávné soubory"
 
-#: zathura/config.c:599
+#: zathura/config.c:595
 msgid "Always open on first page"
 msgstr "Vždy otevírat na první straně"
 
-#: zathura/config.c:601
+#: zathura/config.c:597
 msgid "Disable highlighting of search results"
 msgstr ""
 
-#: zathura/config.c:603
+#: zathura/config.c:599
 msgid "Double click to follow links"
 msgstr ""
 
-#: zathura/config.c:606
+#: zathura/config.c:602
 msgid "Enable incremental search"
 msgstr "Povolit přírůstkové hledání"
 
-#: zathura/config.c:608
+#: zathura/config.c:604
 msgid "Clear search results on abort"
 msgstr "Při přerušení smazat výsledky hledání"
 
-#: zathura/config.c:610
+#: zathura/config.c:606
 msgid "Use basename of the file in the window title"
 msgstr "Použít základní název souboru v názvu okna"
 
-#: zathura/config.c:612
+#: zathura/config.c:608
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr "Použít ~ místo $HOME v souborovém názvu v názvu okna"
 
-#: zathura/config.c:614
+#: zathura/config.c:610
 msgid "Display the page number in the window title"
 msgstr "Zobrazit číslo strany v názvu okna"
 
-#: zathura/config.c:616
+#: zathura/config.c:612
 msgid "Use first page of a document as window icon"
 msgstr "Použít první stránku dokumentu jako ikonu okna"
 
-#: zathura/config.c:618
+#: zathura/config.c:614
 msgid "Use basename of the file in the statusbar"
 msgstr "Použít základní název souboru ve stavovém řádku"
 
-#: zathura/config.c:620
+#: zathura/config.c:616
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "Použít ~ místo $HOME v souborovém názvu ve stavovém řádku"
 
-#: zathura/config.c:622
+#: zathura/config.c:618
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 "Zobrazit (nynější stranu / celkový počet stran) v procentech ve stavovém "
 "řádku"
 
-#: zathura/config.c:624
+#: zathura/config.c:620
 msgid "Enable synctex support"
 msgstr "Povolit podporu pro synctex"
 
-#: zathura/config.c:625
+#: zathura/config.c:621
 msgid "Synctex editor command"
 msgstr "Příkaz pro editor Synctex"
 
-#: zathura/config.c:626
+#: zathura/config.c:622
 msgid "Synctex edit modifier"
 msgstr ""
 
-#: zathura/config.c:627
+#: zathura/config.c:623
 msgid "Highlighter modifier"
 msgstr ""
 
-#: zathura/config.c:629
+#: zathura/config.c:625
 msgid "Enable D-Bus service"
 msgstr "Povolit službu D-Bus"
 
-#: zathura/config.c:630
+#: zathura/config.c:626
 msgid "Raise window on certain D-Bus commands"
 msgstr "Zvednout okno při určitých příkazech D-Bus"
 
-#: zathura/config.c:632
+#: zathura/config.c:628
 msgid "Save history at each page change"
 msgstr "Uložit historii při každé změně strany"
 
-#: zathura/config.c:633
+#: zathura/config.c:629
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Schránka, do níž budou zapsána data vabraná pomocí myši"
 
-#: zathura/config.c:635
+#: zathura/config.c:631
 msgid "Enable notification after selecting text"
 msgstr "Povolit oznámení po vybrání textu"
 
-#: zathura/config.c:638
+#: zathura/config.c:634
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 
 #. define default inputbar commands
-#: zathura/config.c:769
+#: zathura/config.c:764
 msgid "Map a key sequence"
 msgstr ""
 
-#: zathura/config.c:770
+#: zathura/config.c:765
 msgid "Set an option"
 msgstr ""
 
-#: zathura/config.c:771
+#: zathura/config.c:766
 msgid "Unmap a key sequence"
 msgstr ""
 
-#: zathura/config.c:772
+#: zathura/config.c:767
 msgid "Dump settings to a file"
 msgstr ""
 
-#: zathura/config.c:774
+#: zathura/config.c:769
 msgid "Add a bookmark"
 msgstr "Přidat záložku"
 
-#: zathura/config.c:775
+#: zathura/config.c:770
 msgid "Delete a bookmark"
 msgstr "Smazat záložku"
 
-#: zathura/config.c:776
+#: zathura/config.c:771
 msgid "List all bookmarks"
 msgstr "Vypsat všechny záložky"
 
-#: zathura/config.c:777
+#: zathura/config.c:772
 msgid "Jump to bookmark"
 msgstr ""
 
-#: zathura/config.c:778
+#: zathura/config.c:773
 msgid "Show recent jumps in jumplist"
 msgstr ""
 
-#: zathura/config.c:779
+#: zathura/config.c:774
 msgid "Close current file"
 msgstr "Zavřít nynější soubor"
 
-#: zathura/config.c:780
+#: zathura/config.c:775
 msgid "Show file information"
 msgstr "Ukázat informace o souboru"
 
-#: zathura/config.c:781 zathura/config.c:782
+#: zathura/config.c:776 zathura/config.c:777
 msgid "Execute a command"
 msgstr "Spustit příkaz"
 
 #. like vim
-#: zathura/config.c:783
+#: zathura/config.c:778
 msgid "Show help"
 msgstr "Ukázat nápovědu"
 
-#: zathura/config.c:784
+#: zathura/config.c:779
 msgid "Open document"
 msgstr "Otevřít dokument"
 
-#: zathura/config.c:785
+#: zathura/config.c:780
 msgid "Close zathura"
 msgstr "Zavřít zathuru"
 
-#: zathura/config.c:786
+#: zathura/config.c:781
 msgid "Print document"
 msgstr "Vytisknout dokument"
 
-#: zathura/config.c:787 zathura/config.c:789
+#: zathura/config.c:782 zathura/config.c:784
 msgid "Save document"
 msgstr "Uložit dokument"
 
-#: zathura/config.c:788 zathura/config.c:790
+#: zathura/config.c:783 zathura/config.c:785
 msgid "Save document (and force overwriting)"
 msgstr "Uložit dokument a vynutit jeho přepsání"
 
-#: zathura/config.c:791
+#: zathura/config.c:786
 msgid "Save attachments"
 msgstr "Uložit přílohy"
 
-#: zathura/config.c:792
+#: zathura/config.c:787
 msgid "Set page offset"
 msgstr "Nastavit posun strany"
 
-#: zathura/config.c:793
+#: zathura/config.c:788
 msgid "Mark current location within the document"
 msgstr "Označit současnou polohu v dokumentu"
 
-#: zathura/config.c:794
+#: zathura/config.c:789
 msgid "Delete the specified marks"
 msgstr "Smazat vybrané značky"
 
-#: zathura/config.c:795
+#: zathura/config.c:790
 msgid "Remove highlights of current search results"
 msgstr ""
 
-#: zathura/config.c:796
+#: zathura/config.c:791
 msgid "Highlight current search results"
 msgstr "Zvýrazňovat výsledky tohoto hledání"
 
-#: zathura/config.c:797
+#: zathura/config.c:792
 msgid "Show version information"
 msgstr "Ukázat údaj o verzi"
 
-#: zathura/config.c:798
+#: zathura/config.c:793
 msgid "Source config file"
 msgstr "Zdrojový nastavovací soubor"
 
@@ -2225,9 +2230,13 @@ msgstr "Nepodařilo se vytisknout: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Neplatný režim úprav: %d"
 
-#: zathura/shortcuts.c:1132
+#: zathura/shortcuts.c:1129
 msgid "This document does not contain any index"
 msgstr "Tento dokument neobsahuje žádný rejstřík"
+
+#: zathura/shortcuts.c:1619
+msgid "Open file"
+msgstr ""
 
 #: zathura/utils.c:728
 #, c-format
@@ -2349,9 +2358,4 @@ msgstr ""
 #: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
-
-#: girara-gtk/utils.c:47
-#, c-format
-msgid "Failed to execute command: %s"
 msgstr ""
