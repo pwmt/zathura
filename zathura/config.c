@@ -121,9 +121,9 @@ static void cb_global_modifiers_changed(girara_session_t* session, const char* n
 
   GdkModifierType* p;
   if (g_strcmp0(name, "synctex-edit-modifier") == 0) {
-    p = &(zathura->global.synctex_edit_modmask);
+    p = &zathura->global.synctex_edit_modmask;
   } else if (g_strcmp0(name, "highlighter-modifier") == 0) {
-    p = &(zathura->global.highlighter_modmask);
+    p = &zathura->global.highlighter_modmask;
   } else {
     girara_error("unreachable");
     return;
