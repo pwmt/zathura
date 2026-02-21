@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-20 21:34+0100\n"
+"POT-Creation-Date: 2026-02-21 13:00+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: mvdan <mvdan@mvdan.cc>, 2012\n"
 "Language-Team: Catalan (http://app.transifex.com/pwmt/zathura/language/ca/)\n"
@@ -1484,6 +1484,7 @@ msgstr "Cap informació disponible."
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
+"Si us plau check man pàgines zathura(1) i zathurarc(5) per more informació."
 
 #: zathura/commands.c:293 zathura/commands.c:667 girara-gtk/commands.c:550
 msgid "Too many arguments."
@@ -1495,11 +1496,11 @@ msgstr "Cap argument subministrat."
 
 #: zathura/commands.c:328
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Imprimint és no permès en estricte aïllament mode"
 
 #: zathura/commands.c:349 zathura/commands.c:374
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Saving és no permès en estricte aïllament mode"
 
 #: zathura/commands.c:360 zathura/commands.c:385
 msgid "Invalid number of arguments."
@@ -1563,146 +1564,147 @@ msgstr "Imatges"
 
 #: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "Plugin no no compatibilitat exporting adjunts i imatges."
 
 #: zathura/completion.c:371
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "El document no conté imatges ni adjunts"
 
 #. clang-format off
 #. settings
 #: zathura/config.c:471
 msgid "Font"
-msgstr ""
+msgstr "Tipus de lletra"
 
 #. colors affecting the CSS
 #: zathura/config.c:474
 msgid "Default foreground color"
-msgstr ""
+msgstr "Color de primer pla per defecte"
 
 #: zathura/config.c:475
 msgid "Default background color"
-msgstr ""
+msgstr "Color de fons per defecte"
 
 #: zathura/config.c:476
 msgid "Inputbar foreground color"
-msgstr ""
+msgstr "Color de primer pla de la barra d'entrada"
 
 #: zathura/config.c:477
 msgid "Inputbar background color"
-msgstr ""
+msgstr "Color de fons de la barra d'entrada"
 
 #: zathura/config.c:478
 msgid "Statusbar foreground color"
-msgstr ""
+msgstr "Color de primer pla de la barra d'estat"
 
 #: zathura/config.c:479
 msgid "Statsubar background color"
-msgstr ""
+msgstr "Color de fons de la barra d'estat"
 
 #: zathura/config.c:480
 msgid "Completion foreground color"
-msgstr ""
+msgstr "Color de primer pla de la compleció"
 
 #: zathura/config.c:481
 msgid "Completion background color"
-msgstr ""
+msgstr "Color de fons de la compleció"
 
 #: zathura/config.c:482
 msgid "Completion group foreground color"
-msgstr ""
+msgstr "Color de primer pla del grup de compleció"
 
 #: zathura/config.c:483
 msgid "Completion group background color"
-msgstr ""
+msgstr "Color de fons del grup de compleció"
 
 #: zathura/config.c:484
 msgid "Completion highlight foreground color"
-msgstr ""
+msgstr "Color de primer pla del ressaltat de compleció"
 
 #: zathura/config.c:485
 msgid "Completion highlight background color"
-msgstr ""
+msgstr "Color de fons del ressaltat de compleció"
 
 #: zathura/config.c:486
 msgid "Error notification foreground color"
-msgstr ""
+msgstr "Color de primer pla de les notificacions d'error"
 
 #: zathura/config.c:487
 msgid "Error notification background color"
-msgstr ""
+msgstr "Color de fons de les notificacions d'error"
 
 #: zathura/config.c:488
 msgid "Warning notification foreground color"
-msgstr ""
+msgstr "Color de primer pla de les notificacions d'avís"
 
 #: zathura/config.c:489
 msgid "Warning notifaction background color"
-msgstr ""
+msgstr "Color de fons de les notificacions d'avís"
 
 #: zathura/config.c:490
 msgid "Notification foreground color"
-msgstr ""
+msgstr "Color de primer pla de les notificacions"
 
 #: zathura/config.c:491
 msgid "Notification background color"
-msgstr ""
+msgstr "Color de fons de les notificacions"
 
 #: zathura/config.c:492
 msgid "Index mode foreground color"
-msgstr ""
+msgstr "Color de primer pla del mode índex"
 
 #: zathura/config.c:493
 msgid "Index mode background color"
-msgstr ""
+msgstr "Color de fons del mode índex"
 
 #: zathura/config.c:494
 msgid "Index mode foreground color (active element)"
-msgstr ""
+msgstr "Color de primer pla del mode índex (element actiu)"
 
 #: zathura/config.c:495
 msgid "Index mode background color (active element)"
-msgstr ""
+msgstr "Color de fons del mode índex (element actiu)"
 
 #: zathura/config.c:496
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Color de primer pla de la barra de desplaçament"
 
 #: zathura/config.c:497
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Color de fons de la barra de desplaçament"
 
 #: zathura/config.c:500
 msgid "Initial window width"
-msgstr ""
+msgstr "Amplada inicial de la finestra"
 
 #: zathura/config.c:501
 msgid "Initial window height"
-msgstr ""
+msgstr "Alçada inicial de la finestra"
 
 #: zathura/config.c:502
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
+"Espaiat horitzontal per a les barres d'estat, d'entrada i de notificació"
 
 #: zathura/config.c:503
 msgid "Vertical padding for the status, input, and notification bars"
-msgstr ""
+msgstr "Espaiat vertical per a les barres d'estat, d'entrada i de notificació"
 
 #: zathura/config.c:504
 msgid "Number of completion items"
-msgstr ""
+msgstr "Nombre d'elements de compleció"
 
 #: zathura/config.c:505
 msgid "Window icon"
-msgstr ""
+msgstr "Icona de la finestra"
 
 #: zathura/config.c:506
 msgid "Command to execute in :exec"
-msgstr ""
+msgstr "Ordre a executar a :exec"
 
 #: zathura/config.c:507
 msgid "Show or hide certain GUI elements"
-msgstr ""
+msgstr "Mostra o amaga determinats elements de la interfície"
 
 #: zathura/config.c:509
 msgid "Database backend"
@@ -1718,11 +1720,11 @@ msgstr "Pas d'ampliació"
 
 #: zathura/config.c:514
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Espaiat horitzontal entre pàgines"
 
 #: zathura/config.c:516
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Espaiat vertical entre pàgines"
 
 #: zathura/config.c:518
 msgid "Number of pages per row"
@@ -1734,7 +1736,7 @@ msgstr "Columna de la primera pàgina"
 
 #: zathura/config.c:522
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Renderitza les pàgines de dreta a esquerra"
 
 #: zathura/config.c:524
 msgid "Scroll step"
@@ -1758,11 +1760,11 @@ msgstr "Zoom màxim"
 
 #: zathura/config.c:534
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Nombre màxim de pàgines a mantenir a la memòria cau"
 
 #: zathura/config.c:536
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr ""
+msgstr "Mida màxima en píxels de les miniatures a mantenir a la memòria cau"
 
 #: zathura/config.c:538
 msgid "Number of positions to remember in the jumplist"
@@ -1790,24 +1792,24 @@ msgstr "Color de realçament (activat)"
 
 #: zathura/config.c:545
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "Color de fons de «Carregant...»"
 
 #: zathura/config.c:546
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "Color de primer pla de «Carregant...»"
 
 #. colors for document signatures
 #: zathura/config.c:549
 msgid "Color used to highlight valid signatures"
-msgstr ""
+msgstr "Color utilitzat per ressaltar les signatures vàlides"
 
 #: zathura/config.c:550
 msgid "Color used to highlight signatures with warnings"
-msgstr ""
+msgstr "Color utilitzat per ressaltar signatures amb avisos"
 
 #: zathura/config.c:551
 msgid "Color used to highlight invalid signatures"
-msgstr ""
+msgstr "Color utilitzat per ressaltar les signatures no vàlides"
 
 #: zathura/config.c:566
 msgid "Recolor pages"
@@ -1819,11 +1821,11 @@ msgstr "Quan recoloregis manté el to original i ajusta només la lluminositat"
 
 #: zathura/config.c:570
 msgid "When recoloring keep original image colors"
-msgstr ""
+msgstr "En recolorar, mantén els colors originals de la imatge"
 
 #: zathura/config.c:572
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "En recolorar, ajusta la lluminositat"
 
 #: zathura/config.c:574
 msgid "Wrap scrolling"
@@ -1839,15 +1841,15 @@ msgstr "Zoom centrat horitzontalment"
 
 #: zathura/config.c:582
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Centra verticalment les pàgines"
 
 #: zathura/config.c:584
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Alinea el destí de l'enllaç a l'esquerra"
 
 #: zathura/config.c:586
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Permet canviar el zoom en seguir enllaços"
 
 #: zathura/config.c:588
 msgid "Center result horizontally"
@@ -1871,7 +1873,7 @@ msgstr "Mostra els directoris"
 
 #: zathura/config.c:597
 msgid "Show recent files"
-msgstr ""
+msgstr "Mostra fitxers recents"
 
 #: zathura/config.c:599
 msgid "Always open on first page"
@@ -1879,11 +1881,11 @@ msgstr "Obrir sempre la primera pàgina"
 
 #: zathura/config.c:601
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Desactiva el ressaltat dels resultats de cerca"
 
 #: zathura/config.c:603
 msgid "Double click to follow links"
-msgstr ""
+msgstr "Doble clic per seguir enllaços"
 
 #: zathura/config.c:606
 msgid "Enable incremental search"
@@ -1895,31 +1897,33 @@ msgstr "Esborra els resultats de recerca a l'interrompre"
 
 #: zathura/config.c:610
 msgid "Use basename of the file in the window title"
-msgstr "Utilitza el nom base del fitxer en el títol de la finestra"
+msgstr "Usa el nom base del fitxer al títol de la finestra"
 
 #: zathura/config.c:612
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr ""
+msgstr "Usa ~ en lloc de $HOME al nom del fitxer al títol de la finestra"
 
 #: zathura/config.c:614
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Mostra el número de pàgina al títol de la finestra"
 
 #: zathura/config.c:616
 msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Usa la primera pàgina d'un document com a icona de la finestra"
 
 #: zathura/config.c:618
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Usa el nom base del fitxer a la barra d'estat"
 
 #: zathura/config.c:620
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr ""
+msgstr "Usa ~ en lloc de $HOME al nom del fitxer a la barra d'estat"
 
 #: zathura/config.c:622
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
+"Mostra (pàgina actual / total de pàgines) com a percentatge a la barra "
+"d'estat"
 
 #: zathura/config.c:624
 msgid "Enable synctex support"
@@ -1927,7 +1931,7 @@ msgstr "Habilitar la compatibilitat amb synctex"
 
 #: zathura/config.c:625
 msgid "Synctex editor command"
-msgstr ""
+msgstr "Ordre de l'editor synctex"
 
 #: zathura/config.c:626
 msgid "Synctex edit modifier"
@@ -1943,36 +1947,37 @@ msgstr ""
 
 #: zathura/config.c:630
 msgid "Raise window on certain D-Bus commands"
-msgstr ""
+msgstr "Porta la finestra al davant amb determinades ordres D-Bus"
 
 #: zathura/config.c:632
 msgid "Save history at each page change"
-msgstr ""
+msgstr "Desa l'historial a cada canvi de pàgina"
 
 #: zathura/config.c:633
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "El porta-retalls on s'escriuran les dades seleccionades amb el ratolí"
 
 #: zathura/config.c:635
 msgid "Enable notification after selecting text"
-msgstr ""
+msgstr "Activa una notificació després de seleccionar text"
 
 #: zathura/config.c:638
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
+"Desactiva la informació addicional de les signatures incrustades al document."
 
 #. define default inputbar commands
 #: zathura/config.c:769
 msgid "Map a key sequence"
-msgstr ""
+msgstr "Assigna una seqüència de tecles"
 
 #: zathura/config.c:770
 msgid "Set an option"
-msgstr ""
+msgstr "Estableix una opció"
 
 #: zathura/config.c:771
 msgid "Unmap a key sequence"
-msgstr ""
+msgstr "Desassigna una seqüència de tecles"
 
 #: zathura/config.c:772
 msgid "Dump settings to a file"
@@ -2092,12 +2097,12 @@ msgstr "Enllaç: Invàlid"
 #: zathura/links.c:278
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "Copiat pàgina número: %d"
 
 #: zathura/links.c:286
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
+msgstr "Copiat enllaç: %s"
 
 #: zathura/main.c:111
 msgid "Reparents to window specified by xid (X11)"
@@ -2171,6 +2176,10 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
+"La signatura és vàlida.\n"
+"Aquest document està signat per\n"
+"  %s\n"
+"el %s."
 
 #: zathura/page-widget.c:654
 msgid "Signature certificate is expired."
@@ -2202,23 +2211,23 @@ msgstr "Copia la imatge"
 
 #: zathura/page-widget.c:1266
 msgid "Save image as"
-msgstr "Desa imatge com a"
+msgstr "Desa la imatge com a"
 
 #. Update statusbar.
 #: zathura/print.c:94
 #, c-format
 msgid "Printing page %d ..."
-msgstr ""
+msgstr "Imprimint pàgina %d ..."
 
 #: zathura/print.c:166
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Imprimint ha fallat: %s"
 
 #: zathura/shortcuts.c:131
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr ""
+msgstr "No vàlid adjust mode: %d"
 
 #: zathura/shortcuts.c:1132
 msgid "This document does not contain any index"
@@ -2227,7 +2236,7 @@ msgstr "Aquest document no conté cap índex"
 #: zathura/utils.c:728
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "No s'ha trobat el patró: %s"
 
 #: zathura/zathura.c:312 zathura/zathura.c:1486
 msgid "[No name]"
@@ -2236,27 +2245,30 @@ msgstr "[Sense nom]"
 #: zathura/zathura.c:722
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
+"No s'ha pogut llegir el fitxer des de stdin i escriure'l en un fitxer "
+"temporal."
 
 #: zathura/zathura.c:740
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
+"No s'ha pogut llegir el fitxer des de GIO i copiar-lo en un fitxer temporal."
 
 #: zathura/zathura.c:831
 msgid "Enter password:"
-msgstr ""
+msgstr "Introdueix la contrasenya:"
 
 #: zathura/zathura.c:924
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Tipus de fitxer no compatible. Instal·la el connector necessari."
 
 #: zathura/zathura.c:933
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "El document no conté cap pàgina"
 
 #: zathura/zathura.c:1297
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr ""
+msgstr "El fitxer ja existeix: %s. Usa :write! per sobreescriure'l."
 
 #: zathura/zathura.c:1304
 msgid "Failed to save document."
@@ -2269,7 +2281,7 @@ msgstr "Document desat."
 #: girara-gtk/commands.c:261
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr ""
+msgstr "No vàlid número de arguments passats: %zu en lloc de de a least %u"
 
 #: girara-gtk/commands.c:297
 #, c-format
@@ -2278,72 +2290,72 @@ msgstr ""
 
 #: girara-gtk/commands.c:305
 msgid "Invalid number of arguments passed"
-msgstr ""
+msgstr "Nombre d'arguments no vàlid"
 
 #: girara-gtk/commands.c:337
 #, c-format
 msgid "Invalid modifier in %s"
-msgstr ""
+msgstr "No vàlid modificador en %s"
 
 #: girara-gtk/commands.c:375
 #, c-format
 msgid "Invalid special key value for %s"
-msgstr ""
+msgstr "No vàlid special tecla valor per %s"
 
 #: girara-gtk/commands.c:410
 #, c-format
 msgid "Invalid special key value or mode %s"
-msgstr ""
+msgstr "No vàlid special tecla valor o mode %s"
 
 #: girara-gtk/commands.c:494
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr ""
+msgstr "Not vàlides shortcut function: %s"
 
 #: girara-gtk/commands.c:545
 msgid "Not enough arguments."
-msgstr ""
+msgstr "No hi ha prou arguments."
 
 #: girara-gtk/commands.c:563
 #, c-format
 msgid "Unknown option: %s"
-msgstr ""
+msgstr "Opció desconeguda: %s"
 
 #: girara-gtk/commands.c:576
 msgid "true"
-msgstr ""
+msgstr "cert"
 
 #: girara-gtk/commands.c:576
 msgid "false"
-msgstr ""
+msgstr "fals"
 
 #: girara-gtk/commands.c:604
 #, c-format
 msgid "No value defined for option: %s"
-msgstr ""
+msgstr "No s'ha definit cap valor per a l'opció: %s"
 
 #: girara-gtk/commands.c:619
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr ""
+msgstr "Valor desconegut per a l'opció: %s"
 
 #. unhandled command
 #: girara-gtk/commands.c:775
 #, c-format
 msgid "Not a valid command: %s"
-msgstr ""
+msgstr "No és una ordre vàlida: %s"
 
 #: girara-gtk/settings.c:255
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr ""
+msgstr "No vàlid número de arguments passats: %zu en lloc de de 1"
 
 #: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
+msgstr "No s'ha pogut per escriure JSON: %s"
 
 #: girara-gtk/utils.c:47
 #, c-format
 msgid "Failed to execute command: %s"
-msgstr ""
+msgstr "No s'ha pogut executar l'ordre: %s"

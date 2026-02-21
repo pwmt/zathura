@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-20 21:34+0100\n"
+"POT-Creation-Date: 2026-02-21 13:00+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>, 2012\n"
 "Language-Team: French (http://app.transifex.com/pwmt/zathura/language/fr/)\n"
@@ -1577,7 +1577,7 @@ msgstr ""
 
 #: zathura/completion.c:371
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "Le document ne contient ni images ni pièces jointes"
 
 #. clang-format off
 #. settings
@@ -1676,11 +1676,11 @@ msgstr "Couleur d'arrière plan du mode index (élément actif)"
 
 #: zathura/config.c:496
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Couleur de premier plan de la barre de défilement"
 
 #: zathura/config.c:497
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Couleur d'arrière-plan de la barre de défilement"
 
 #: zathura/config.c:500
 msgid "Initial window width"
@@ -1730,11 +1730,11 @@ msgstr "Incrément de zoom"
 
 #: zathura/config.c:514
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Espacement horizontal entre les pages"
 
 #: zathura/config.c:516
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Espacement vertical entre les pages"
 
 #: zathura/config.c:518
 msgid "Number of pages per row"
@@ -1794,7 +1794,7 @@ msgstr "Couleur de surbrillance"
 
 #: zathura/config.c:543
 msgid "Foreground color for highlighting"
-msgstr ""
+msgstr "Couleur de premier plan pour la surbrillance"
 
 #: zathura/config.c:544
 msgid "Color for highlighting (active)"
@@ -1811,15 +1811,16 @@ msgstr "Couleur de 'Chargement...'"
 #. colors for document signatures
 #: zathura/config.c:549
 msgid "Color used to highlight valid signatures"
-msgstr ""
+msgstr "Couleur utilisée pour mettre en évidence les signatures valides"
 
 #: zathura/config.c:550
 msgid "Color used to highlight signatures with warnings"
 msgstr ""
+"Couleur utilisée pour mettre en évidence les signatures avec avertissements"
 
 #: zathura/config.c:551
 msgid "Color used to highlight invalid signatures"
-msgstr ""
+msgstr "Couleur utilisée pour mettre en évidence les signatures invalides"
 
 #: zathura/config.c:566
 msgid "Recolor pages"
@@ -1837,7 +1838,7 @@ msgstr "Lors de la recoloration, garder les couleurs de l'image originale"
 
 #: zathura/config.c:572
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "Lors de la recoloration, ajuster la luminosité"
 
 #: zathura/config.c:574
 msgid "Wrap scrolling"
@@ -1893,11 +1894,11 @@ msgstr "Toujours ouvrir à la première page"
 
 #: zathura/config.c:601
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Désactiver la surbrillance des résultats de recherche"
 
 #: zathura/config.c:603
 msgid "Double click to follow links"
-msgstr ""
+msgstr "Double-cliquer pour suivre les liens"
 
 #: zathura/config.c:606
 msgid "Enable incremental search"
@@ -1937,6 +1938,8 @@ msgstr ""
 #: zathura/config.c:622
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
+"Afficher (page actuelle / nombre total de pages) en pourcentage dans la "
+"barre d'état"
 
 #: zathura/config.c:624
 msgid "Enable synctex support"
@@ -1948,11 +1951,11 @@ msgstr "Commande pour l'éditeur Synctex"
 
 #: zathura/config.c:626
 msgid "Synctex edit modifier"
-msgstr ""
+msgstr "Modificateur d'édition Synctex"
 
 #: zathura/config.c:627
 msgid "Highlighter modifier"
-msgstr ""
+msgstr "Modificateur du surligneur"
 
 #: zathura/config.c:629
 msgid "Enable D-Bus service"
@@ -1960,7 +1963,7 @@ msgstr "Activer le service D-Bus"
 
 #: zathura/config.c:630
 msgid "Raise window on certain D-Bus commands"
-msgstr ""
+msgstr "Mettre la fenêtre au premier plan pour certaines commandes D-Bus"
 
 #: zathura/config.c:632
 msgid "Save history at each page change"
@@ -1977,6 +1980,8 @@ msgstr "Activer une notification après avoir sélectionné du texte"
 #: zathura/config.c:638
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
+"Désactiver les informations supplémentaires pour les signatures intégrées au "
+"document"
 
 #. define default inputbar commands
 #: zathura/config.c:769
@@ -1993,7 +1998,7 @@ msgstr "Désassocier une séquence de touches"
 
 #: zathura/config.c:772
 msgid "Dump settings to a file"
-msgstr ""
+msgstr "Exporter les paramètres vers un fichier"
 
 #: zathura/config.c:774
 msgid "Add a bookmark"
@@ -2009,11 +2014,11 @@ msgstr "Lister tous les favoris"
 
 #: zathura/config.c:777
 msgid "Jump to bookmark"
-msgstr ""
+msgstr "Aller au favori"
 
 #: zathura/config.c:778
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "Afficher les sauts récents dans la liste des sauts"
 
 #: zathura/config.c:779
 msgid "Close current file"
@@ -2070,7 +2075,7 @@ msgstr "Supprimer les marques indiquées"
 
 #: zathura/config.c:795
 msgid "Remove highlights of current search results"
-msgstr ""
+msgstr "Supprimer la surbrillance des résultats de recherche actuels"
 
 #: zathura/config.c:796
 msgid "Highlight current search results"
@@ -2082,7 +2087,7 @@ msgstr "Afficher les informations de version"
 
 #: zathura/config.c:798
 msgid "Source config file"
-msgstr ""
+msgstr "Fichier de configuration source"
 
 #: zathura/links.c:210
 msgid "Failed to run xdg-open."
@@ -2111,12 +2116,12 @@ msgstr "Lien : Invalide"
 #: zathura/links.c:278
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "Numéro de page copié : %d"
 
 #: zathura/links.c:286
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
+msgstr "Lien copié : %s"
 
 #: zathura/main.c:111
 msgid "Reparents to window specified by xid (X11)"
@@ -2176,7 +2181,7 @@ msgstr "Démarrer dans un mode non-défaut"
 
 #: zathura/main.c:128
 msgid "Bookmark to go to"
-msgstr ""
+msgstr "Favori vers lequel aller"
 
 #: zathura/main.c:129
 msgid "Search for the given phrase and display results"
@@ -2190,26 +2195,30 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
+"La signature est valide.\n"
+"Ce document est signé par\n"
+"  %s\n"
+"le %s."
 
 #: zathura/page-widget.c:654
 msgid "Signature certificate is expired."
-msgstr ""
+msgstr "Le certificat de signature a expiré."
 
 #: zathura/page-widget.c:658
 msgid "Signature certificate is revoked."
-msgstr ""
+msgstr "Le certificat de signature a été révoqué."
 
 #: zathura/page-widget.c:662
 msgid "Signature certificate is not trusted."
-msgstr ""
+msgstr "Le certificat de signature n'est pas approuvé."
 
 #: zathura/page-widget.c:666
 msgid "Signature certificate is invalid."
-msgstr ""
+msgstr "Le certificat de signature est invalide."
 
 #: zathura/page-widget.c:670
 msgid "Signature is invalid."
-msgstr ""
+msgstr "La signature est invalide."
 
 #: zathura/page-widget.c:753
 msgid "Loading..."
@@ -2280,7 +2289,7 @@ msgstr "Ce document ne contient aucune page"
 #: zathura/zathura.c:1297
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr ""
+msgstr "Le fichier existe déjà : %s. Utilisez :write! pour l'écraser."
 
 #: zathura/zathura.c:1304
 msgid "Failed to save document."
@@ -2360,12 +2369,12 @@ msgstr "Pas une commande valide : %s"
 #: girara-gtk/settings.c:255
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr ""
+msgstr "Nombre d'arguments invalide : %zu au lieu de 1"
 
 #: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
+msgstr "Échec de l'écriture du JSON : %s"
 
 #: girara-gtk/utils.c:47
 #, c-format
