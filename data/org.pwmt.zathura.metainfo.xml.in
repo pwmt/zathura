@@ -66,7 +66,7 @@
   <releases>
     <release version="2026.02.09" date="2026-02-09">
       <description>
-        <p>Implement single page layout and equal height/widht modes (#706, #724, #447, #289)</p>
+        <p>Implement single page layout and equal height/width modes (#706, #724, #447, #289)</p>
         <p>Use single page layout for presentation mode (#686, #666)</p>
         <p>Fix blurry rendering and repeated loading messages (#864, #860)</p>
         <p>Allow to disable copying to clipboard (#835)</p>
@@ -102,7 +102,7 @@
       <description>
         <p>Switch to date-based version numbers</p>
         <p>Fix warnings from CSS generation (#824)</p>
-        <p>Apply correect shacling when recoloring (#836)</p>
+        <p>Apply correct scaling when recoloring (#836)</p>
         <p>Make sure jumplist stays valid after close (#835)</p>
         <p>Disable message in incremental search (#227, #847)</p>
         <p>Fix seccomp rules with musl (#843)</p>
@@ -129,10 +129,10 @@
         <p>Switch default database to sqlite and drop plain database</p>
         <p>Notify users if no attachments and images are available to export</p>
         <p>Make index-* configurable after init (#799)</p>
-        <p>Support numberic keypad mappings</p>
+        <p>Support numeric keypad mappings</p>
         <p>Provide correct number of pages (#814)</p>
         <p>Undo size-allocate callback changes</p>
-        <p>Fix temporary file nams for better content-type detection</p>
+        <p>Fix temporary file names for better content-type detection</p>
       </description>
       <issues>
         <issue url="https://github.com/pwmt/zathura/issues/799">#799</issue>
@@ -645,7 +645,7 @@
         <p>Implemented map function</p>
         <p>`zathurarc` file</p>
         <p>Prevent buffer overflow in realpath</p>
-        <p>Strip executeable</p>
+        <p>Strip executable</p>
         <p>Key evaluation when buffer is not empty</p>
         <p>Manpage update</p>
       </description>

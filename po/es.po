@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-20 21:34+0100\n"
+"POT-Creation-Date: 2026-02-21 13:34+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Pablo Saez, 2025\n"
 "Language-Team: Spanish (http://app.transifex.com/pwmt/zathura/language/es/)\n"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:69
 msgid ""
-"Implement single page layout and equal height/widht modes (#706, #724, #447, "
+"Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
 
@@ -126,7 +126,7 @@ msgid "Fix warnings from CSS generation (#824)"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:105
-msgid "Apply correect shacling when recoloring (#836)"
+msgid "Apply correct scaling when recoloring (#836)"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:106
@@ -160,7 +160,7 @@ msgid "Make index-* configurable after init (#799)"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:132
-msgid "Support numberic keypad mappings"
+msgid "Support numeric keypad mappings"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:133
@@ -172,7 +172,7 @@ msgid "Undo size-allocate callback changes"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:135
-msgid "Fix temporary file nams for better content-type detection"
+msgid "Fix temporary file names for better content-type detection"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:144
@@ -1160,6 +1160,7 @@ msgid "`function`"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:632
+#: data/org.pwmt.zathura.metainfo.xml.in:648
 msgid "Strip executable"
 msgstr ""
 
@@ -1205,10 +1206,6 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:647
 msgid "Prevent buffer overflow in realpath"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:648
-msgid "Strip executeable"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:649
