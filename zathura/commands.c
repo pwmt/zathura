@@ -569,6 +569,40 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
 #endif
 }
 
+#ifndef WITH_SANBDOX
+static bool exec_with_argument_list(girara_session_t* session, girara_list_t* argument_list) {
+  g_autofree char* cmd = NULL;
+  girara_setting_get(session, "exec-command", &cmd);
+  if (cmd == NULL || strlen(cmd) == 0) {
+    girara_debug("exec-command is empty, executing directly.");
+    g_free(cmd);
+    cmd = NULL;
+  }
+
+  bool dont_append_first_space = cmd == NULL;
+  g_autoptr(GString) command   = g_string_new(cmd ? cmd : "");
+
+  for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
+    if (dont_append_first_space == false) {
+      g_string_append_c(command, ' ');
+    }
+    dont_append_first_space = false;
+    g_autofree char* tmp    = g_shell_quote(girara_list_nth(argument_list, idx));
+    g_string_append(command, tmp);
+  };
+
+  g_autoptr(GError) error = NULL;
+  girara_info("executing: %s", command->str);
+  gboolean ret = g_spawn_command_line_async(command->str, &error);
+  if (error != NULL) {
+    girara_warning("Failed to execute command: %s", error->message);
+    girara_notify(session, GIRARA_ERROR, _("Failed to execute command: %s"), error->message);
+  }
+
+  return ret;
+}
+#endif
+
 bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL && argument_list != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -608,7 +642,7 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
     };
   }
 
-  return girara_exec_with_argument_list(session, argument_list);
+  return exec_with_argument_list(session, argument_list);
 #endif
 }
 
