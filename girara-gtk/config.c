@@ -57,7 +57,7 @@ bool girara_config_handle_add(girara_session_t* session, const char* identifier,
 
 void girara_config_handle_free(void* h) {
   girara_config_handle_t* handle = h;
-  if (!handle) {
+  if (handle) {
     g_free(handle->identifier);
     g_free(handle);
   }
