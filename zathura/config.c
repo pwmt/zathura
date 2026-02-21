@@ -288,11 +288,9 @@ static void cb_scroll_step_value_changed(girara_session_t* session, const char* 
   }
 
   GtkAdjustment* v_adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  if (v_adj == NULL) {
-    return;
+  if (v_adj) {
+    gtk_adjustment_set_step_increment(v_adj, *(float*)value);
   }
-
-  gtk_adjustment_set_step_increment(v_adj, *(float*)value);
 }
 
 static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
@@ -430,9 +428,7 @@ static void add_default_mouse_events(girara_session_t* gsession, girara_mode_t m
 }
 
 void config_load_default(zathura_t* zathura) {
-  if (zathura == NULL || zathura->ui.session == NULL) {
-    return;
-  }
+  g_return_if_fail(zathura != NULL && zathura->ui.session != NULL);
 
   int int_value              = 0;
   float float_value          = 0;
@@ -890,6 +886,8 @@ void config_load_default(zathura_t* zathura) {
 }
 
 void config_load_files(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+
   /* load global configuration files */
   g_autofree char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
   if (config_path != NULL && config_path[0] != '\0') {
