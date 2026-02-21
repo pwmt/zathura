@@ -76,39 +76,36 @@ static bool config_parse(girara_session_t* session, const char* path) {
   }
 
   /* read lines */
-  char* line               = NULL;
+  char* data               = NULL;
   gsize line_length        = 0;
   unsigned int line_number = 1;
-  while ((line = g_data_input_stream_read_line(datastream, &line_length, NULL, NULL)) != NULL) {
+  while ((data = g_data_input_stream_read_line(datastream, &line_length, NULL, NULL)) != NULL) {
+    g_autofree char* line = data;
+
     /* skip empty lines and comments */
     if (line_length == 0 || strchr(COMMENT_PREFIX, line[0]) != NULL) {
-      g_free(line);
       continue;
     }
 
     g_autoptr(girara_list_t) argument_list = girara_list_new_with_free(g_free);
     if (argument_list == NULL) {
-      g_free(line);
       return false;
     }
 
-    gchar** argv            = NULL;
+    g_auto(GStrv) argv      = NULL;
     gint argc               = 0;
     g_autoptr(GError) error = NULL;
 
     /* parse current line */
     if (g_shell_parse_argv(line, &argc, &argv, &error) != FALSE) {
       for (int i = 1; i < argc; i++) {
-        char* argument = g_strdup(argv[i]);
-        girara_list_append(argument_list, argument);
+        girara_list_append(argument_list, g_strdup(argv[i]));
       }
     } else {
       if (error->code != G_SHELL_ERROR_EMPTY_STRING) {
         girara_error("Could not parse line %d in '%s': %s", line_number, path, error->message);
-        g_free(line);
         return false;
       } else {
-        g_free(line);
         continue;
       }
     }
@@ -155,8 +152,6 @@ static bool config_parse(girara_session_t* session, const char* path) {
     }
 
     line_number++;
-    g_strfreev(argv);
-    g_free(line);
   }
 
   return true;
