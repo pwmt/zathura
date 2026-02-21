@@ -1632,14 +1632,12 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
 
   const gint res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(native));
   if (res == GTK_RESPONSE_ACCEPT) {
-    g_autofree char* filename = gtk_file_chooser_get_filename(chooser);
     if (zathura_has_document(zathura) && !document_close(zathura, false)) {
       return false;
     }
 
-    if (!document_open(zathura, filename, NULL, NULL, 0, NULL)) {
-      return false;
-    }
+    g_autofree char* filename = gtk_file_chooser_get_filename(chooser);
+    return document_open(zathura, filename, NULL, NULL, 0, NULL);
   }
 
   return true;
