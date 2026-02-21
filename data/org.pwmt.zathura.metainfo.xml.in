@@ -27,6 +27,9 @@
       <li>Automatic document reloading.</li>
     </ul>
   </description>
+  <categories>
+    <category>Office</category>
+  </categories>
   <launchable type="desktop-id">org.pwmt.zathura.desktop</launchable>
   <url type="homepage">https://pwmt.org/projects/zathura</url>
   <url type="bugtracker">https://github.com/pwmt/zathura/issues</url>
