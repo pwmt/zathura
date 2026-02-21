@@ -18,12 +18,20 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: pwmt/girara
+          path: girara
+      - name: Install girara
+        run: |
+          mkdir girara/build
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu girara/build girara
+          ninja --verbose -C girara/build install
       - name: Build and test
         run: |
           mkdir build
-          cd build
-          meson ..
-          ninja clang-format-check
+          meson setup --prefix /usr --libdir=lib/x86_64-linux-gnu build .
+          ninja -C build clang-format-check
 
   build-test-debian-trixie:
     name: Test on Debian trixie
