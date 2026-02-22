@@ -73,10 +73,6 @@ defines = [
   '-D_DEFAULT_SOURCE',
 ]
 
-if host_machine.system() == 'darwin'
-  defines += '-DGTKOSXAPPLICATION'
-endif
-
 # compile flags
 flags = [
   '-Werror=implicit-function-declaration',

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Zlib */
 
-#ifdef GTKOSXAPPLICATION
+#ifdef __APPLE__
 #include <gtkosxapplication.h>
 #endif
 
@@ -283,7 +283,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     return -1;
   }
 
-#ifdef GTKOSXAPPLICATION
+#ifdef __APPLE__
   GtkosxApplication* zathuraApp = g_object_new(GTKOSX_TYPE_APPLICATION, NULL);
   gtkosx_application_set_use_quartz_accelerators(zathuraApp, FALSE);
   gtkosx_application_ready(zathuraApp);
@@ -293,7 +293,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       girara_warning("TestIntegration Error! Bundle has ID %s", id);
     }
   }
-#endif // GTKOSXAPPLICATION
+#endif
 
   /* run zathura */
   gtk_main();
