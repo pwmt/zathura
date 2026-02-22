@@ -20,7 +20,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
-msgstr ""
+msgstr "pwmt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
@@ -64,173 +64,181 @@ msgstr "Automatické znovunahrání dokumentu."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:44
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "Čtení souboru PDF"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "Otevření souboru příkazem `open`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:52
 msgid "Following links"
-msgstr ""
+msgstr "Následování odkazů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:56
 msgid "Listing and selecting bookmakrs"
-msgstr ""
+msgstr "Výpis a výběr záložek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:72
 msgid ""
 "Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
+"Implementace single page layout and equal height/width modes (#706, #724, "
+"#447, #289)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:73
 msgid "Use single page layout for presentation mode (#686, #666)"
-msgstr ""
+msgstr "Použití rozvržení jedné stránky pro prezentační režim (#686, #666)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
 msgstr ""
+"Oprava rozmazaného vykreslování a opakovaných hlášení o načítání (#864, #860)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:75
 msgid "Allow to disable copying to clipboard (#835)"
-msgstr ""
+msgstr "Umožnění zakázat kopírování do schránky (#835)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:76
 msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
-msgstr ""
+msgstr "Oprava plynulého posouvání pomocí Ctrl a kurzorových kláves (#872)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:93
 msgid ""
 "Fork to background if opening with multiple files only if --fork is "
 "specified (#855)"
 msgstr ""
+"Přechod na pozadí při otevírání více souborů jen pokud je zadáno --fork "
+"(#855)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:94
 msgid "Fix handling of PageUp and PageDown (#861)"
-msgstr ""
+msgstr "Oprava zpracování PageUp a PageDown (#861)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:95
 msgid "Fix handling of mappings with special keys (#862)"
-msgstr ""
+msgstr "Oprava zpracování mapování se speciálními klávesami (#862)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:96
 msgid "Integrate Gtk+-specific parts of girara"
-msgstr ""
+msgstr "Integrace částí girary specifických pro Gtk+"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:106
 msgid "Switch to date-based version numbers"
-msgstr ""
+msgstr "Přechod na verzování podle data"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:107
 msgid "Fix warnings from CSS generation (#824)"
-msgstr ""
+msgstr "Oprava varování při generování CSS (#824)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:108
 msgid "Apply correct scaling when recoloring (#836)"
-msgstr ""
+msgstr "Použití správného škálování při přebarvování (#836)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:109
 msgid "Make sure jumplist stays valid after close (#835)"
-msgstr ""
+msgstr "Zajištění platnosti seznamu skoků po zavření (#835)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:110
 msgid "Disable message in incremental search (#227, #847)"
-msgstr ""
+msgstr "Zakázání zprávy při přírůstkovém hledání (#227, #847)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:111
 msgid "Fix seccomp rules with musl (#843)"
-msgstr ""
+msgstr "Oprava pravidel seccomp s musl (#843)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:112
 msgid ""
 "Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
 "#797, #826)"
 msgstr ""
+"Implementace custom drawing for document widget (#580, #657, #736, #785, "
+"#795, #797, #826)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:132
 msgid "Switch default database to sqlite and drop plain database"
-msgstr ""
+msgstr "Přepnutí výchozí databáze na sqlite a odstranění prosté databáze"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:133
 msgid "Notify users if no attachments and images are available to export"
 msgstr ""
+"Upozornění uživatelů, pokud nejsou dostupné přílohy ani obrázky k exportu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:134
 msgid "Make index-* configurable after init (#799)"
-msgstr ""
+msgstr "Umožnění konfigurace index-* po init (#799)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:135
 msgid "Support numeric keypad mappings"
-msgstr ""
+msgstr "Podpora mapování numerické klávesnice"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:136
 msgid "Provide correct number of pages (#814)"
-msgstr ""
+msgstr "Poskytnutí správného počtu stránek (#814)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:137
 msgid "Undo size-allocate callback changes"
-msgstr ""
+msgstr "Vrácení změn callbacku size-allocate"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:138
 msgid "Fix temporary file names for better content-type detection"
-msgstr ""
+msgstr "Oprava názvů dočasných souborů pro lepší detekci typu obsahu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:147
 msgid "Validate appstream files with appstreamcli"
-msgstr ""
+msgstr "Validace souborů appstream pomocí appstreamcli"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:148
 msgid "Split page-padding into page-h-padding and page-v-padding"
-msgstr ""
+msgstr "Rozdělení page-padding na page-h-padding a page-v-padding"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:149
 msgid "Fix memory leak and callback type error (#767)"
-msgstr ""
+msgstr "Oprava úniku paměti a chyby typu callbacku (#767)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:150
 msgid "Warn if plugins do not support exporting images or attachments (#334)"
-msgstr ""
+msgstr "Varování, pokud pluginy nepodporují export obrázků nebo příloh (#334)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:159
 msgid "Add shortcut to open files via file chooser dialog"
-msgstr ""
+msgstr "Přidání zkratky pro otevření souborů přes dialog výběru souboru"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:160
 msgid "Refactor rendering of pages"
-msgstr ""
+msgstr "Refaktorizace vykreslování stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:161
 msgid "Add lightness adjustment for recoloring"
-msgstr ""
+msgstr "Přidání úpravy jasu pro přebarvování"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:162
 msgid "Initial support for OpenBSD sandbox"
-msgstr ""
+msgstr "Počáteční podpora sandboxu OpenBSD"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:167
 msgid "Fix closing of documents"
-msgstr ""
+msgstr "Oprava zavírání dokumentů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:172
 msgid "Fix crash when opening documents"
-msgstr ""
+msgstr "Oprava pádu při otevírání dokumentů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:177
 msgid "Fix build on macOS"
-msgstr ""
+msgstr "Oprava sestavení na macOS"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:178
 msgid "Hide page label if the same as page number"
-msgstr ""
+msgstr "Skrytí štítku stránky, pokud je stejný jako číslo stránky"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:179
 msgid "Cache SyncTeX parser for faster operation"
-msgstr ""
+msgstr "Použití mezipaměti parseru SyncTeX pro rychlejší chod"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:180
 msgid "Revert changes for documents with multiple page sizes"
-msgstr ""
+msgstr "Vrácení změn pro dokumenty s více velikostmi stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:181
 #: data/org.pwmt.zathura.metainfo.xml.in:197
@@ -250,91 +258,97 @@ msgstr ""
 #: data/org.pwmt.zathura.metainfo.xml.in:327
 #: data/org.pwmt.zathura.metainfo.xml.in:335
 msgid "Various fixes and improvements"
-msgstr ""
+msgstr "Různé opravy a vylepšení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:186
 msgid "Bump plugin ABI"
-msgstr ""
+msgstr "Zvýšení ABI pluginů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:191
 msgid "Split sandbox functionality into separate zathura-sandbox binary"
-msgstr ""
+msgstr "Rozdělení funkcí sandboxu do samostatné binárky zathura-sandbox"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:192
 msgid "Split off new command bjump from blist"
-msgstr ""
+msgstr "Oddělení nového příkazu bjump od blist"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:193
 msgid "Add initial landlock support to sandbox"
-msgstr ""
+msgstr "Přidání počáteční podpory landlock do sandboxu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:194
 msgid "Fix repeated search"
-msgstr ""
+msgstr "Oprava opakovaného hledání"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:195
 msgid "Implement jumplist command"
-msgstr ""
+msgstr "Implementace příkazu jumplist"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:196
 msgid "Fix issues with document with multiple page sizes"
-msgstr ""
+msgstr "Oprava problémů s dokumentem s více velikostmi stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:202
 msgid "Move to Github"
-msgstr ""
+msgstr "Přesun na GitHub"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:203
 msgid "Reduce minimum glib version"
-msgstr ""
+msgstr "Snížení minimální verze glib"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:204
 msgid "Remove normal sandbox mode"
-msgstr ""
+msgstr "Odstranění normálního režimu sandboxu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:210
 msgid "Compatibility with girara 0.4.3"
-msgstr ""
+msgstr "Kompatibilita s girara 0.4.3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:211
 msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
+"Odstranění highlight-transparency setting. Nastavení the alpha component of "
+"highlight-color, highlight-active-color and highlight-fg instead."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:212
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
 msgstr ""
+"Odstranění nastavení smooth-reload. Plynulé znovunačtení je nyní vždy "
+"zapnuté."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:213
 msgid ""
 "Remove plain database backend. The sqlite database backend imports the data "
 "from the plain database the first time. sqlite is now a hard dependency."
 msgstr ""
+"Odstranění plain database backend. The sqlite database backend imports the "
+"data from the plain database the first time. sqlite is now a hard dependency."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:214
 msgid "Fix a segfault if dbus is not enabled."
-msgstr ""
+msgstr "Oprava segfaultu, pokud není povolen dbus."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:224
 msgid "Add support to display signatures"
-msgstr ""
+msgstr "Přidání podpory zobrazení podpisů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:225
 msgid "Fix clearing of highlighted links"
-msgstr ""
+msgstr "Oprava mazání zvýrazněných odkazů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:226
 msgid "Make some key modifiers configurable"
-msgstr ""
+msgstr "Umožnění konfigurace některých modifikátorů kláves"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:227
 msgid "Fix text selection on rotated pages"
-msgstr ""
+msgstr "Oprava výběru textu na otočených stránkách"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:228
 msgid "Fix gap between pages"
-msgstr ""
+msgstr "Oprava mezery mezi stránkami"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:229
 #: data/org.pwmt.zathura.metainfo.xml.in:236
@@ -360,151 +374,152 @@ msgstr ""
 #: data/org.pwmt.zathura.metainfo.xml.in:482
 #: data/org.pwmt.zathura.metainfo.xml.in:518
 msgid "Update translations"
-msgstr ""
+msgstr "Aktualizace překladů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:234
 msgid "Improve text selection"
-msgstr ""
+msgstr "Zlepšení výběru textu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:241
 msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
-msgstr ""
+msgstr "`seccomp`: Nastavení glibc na fallback na clone místo clone3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:246
 msgid "`magic` is now a required dependency"
-msgstr ""
+msgstr "`magic` je nyní povinná závislost"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:252
 msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
-msgstr ""
+msgstr "Přidání rozšíření '$f' a '$p' do zkratkové funkce 'exec'"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:253
 msgid "Fix build with meson 0.60"
-msgstr ""
+msgstr "Oprava sestavení s meson 0.60"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:254
 msgid "Add :source command"
-msgstr ""
+msgstr "Přidání příkazu :source"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:261
 msgid "Account for page padding in full scroll"
-msgstr ""
+msgstr "Zohlednění odsazení stránky při plném posunu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:262
-#, fuzzy
 msgid "Add foreground color for links"
-msgstr "Barva popředí pro zvýraznění"
+msgstr "Přidat barvu popředí odkazů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:263
 msgid "Add :save and :save! aliases for :write and :write!"
-msgstr ""
+msgstr "Přidání aliasů :save a :save! pro :write a :write!"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:270
 msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
 msgstr ""
+"Oprava neplatného přiblížení při otevření dokumentu s volbou 'adjust-open "
+"width'"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:277
 msgid "Add --find option to the CLI"
-msgstr ""
+msgstr "Přidání volby --find do CLI"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:278
 msgid "Support recolor with transparency"
-msgstr ""
+msgstr "Podpora přebarvení s průhledností"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:285
 msgid "Fix step size for mouse wheel scrolling"
-msgstr ""
+msgstr "Oprava velikosti kroku při posouvání kolečkem myši"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:286
 msgid "Lookup fileinfo from database by hash as fallback"
-msgstr ""
+msgstr "Vyhledání fileinfo v databázi podle hashe jako záloha"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:293
 msgid "Fix expansion of ~ and ~user when opening files"
-msgstr ""
+msgstr "Oprava expanze ~ a ~user při otevírání souborů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:294
 msgid "Add fish completion"
-msgstr ""
+msgstr "Přidání doplňování pro fish"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:296
 msgid "Drop support for old libsynctex"
-msgstr ""
+msgstr "Ukončení podpory staré libsynctex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:308
 msgid "Add bash and zsh completions"
-msgstr ""
+msgstr "Přidání doplňování pro bash a zsh"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:309
 msgid "Add RTL layout of pages"
-msgstr ""
+msgstr "Přidání RTL rozvržení stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:316
 msgid "Port to newer libsynctex"
-msgstr ""
+msgstr "Port na novější libsynctex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:323
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Vylepšená podpora HiDPI"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:324
 msgid "Display page labels"
-msgstr ""
+msgstr "Zobrazení štítků stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:325
 msgid "Add experimental seccomp filters"
-msgstr ""
+msgstr "Přidání experimentálních filtrů seccomp"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:326
 msgid "Replace build system with meson"
-msgstr ""
+msgstr "Nahrazení systému sestavení za meson"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:333
 msgid "Fix memory leaks"
-msgstr ""
+msgstr "Oprava úniků paměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:334
 msgid "Rework plugin initialization"
-msgstr ""
+msgstr "Přepracování inicializace pluginů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:341
 msgid "Improved logging"
-msgstr ""
+msgstr "Vylepšené logování"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:342
 msgid "Improve page mode toggling"
-msgstr ""
+msgstr "Zlepšení přepínání režimu stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:343
 #: data/org.pwmt.zathura.metainfo.xml.in:350
 #: data/org.pwmt.zathura.metainfo.xml.in:357
 #: data/org.pwmt.zathura.metainfo.xml.in:365
 msgid "Several fixes and improvements"
-msgstr ""
+msgstr "Několik oprav a vylepšení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:349
 msgid "Parallel build of manpages"
-msgstr ""
+msgstr "Paralelní sestavení manuálových stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:355
 msgid "Build even without SyncTex"
-msgstr ""
+msgstr "Sestavení i bez SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:356
 msgid "Children should not fork"
-msgstr ""
+msgstr "Potomci by neměli forkovat"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:362
 msgid "Recent files support"
-msgstr ""
+msgstr "Podpora nedávných souborů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:363
 msgid "Substitute home with tilde"
-msgstr ""
+msgstr "Nahrazení domovského adresáře vlnovkou"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:364
 msgid "Open URLs"
-msgstr ""
+msgstr "Otevírání URL"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:367
 #: data/org.pwmt.zathura.metainfo.xml.in:377
@@ -513,794 +528,793 @@ msgstr ""
 #: data/org.pwmt.zathura.metainfo.xml.in:598
 #: data/org.pwmt.zathura.metainfo.xml.in:615
 msgid "Update build system"
-msgstr ""
+msgstr "Aktualizace systému sestavení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:372
 msgid "Store tmp files in only one location"
-msgstr ""
+msgstr "Ukládání tmp souborů jen na jedno místo"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:373
 msgid "Print target selection"
-msgstr ""
+msgstr "Tisk výběru cíle"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:374
 msgid "Allow .dylib plugins on Mac OS X"
-msgstr ""
+msgstr "Povolení pluginů .dylib na Mac OS X"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:375
 msgid "Fix dual page render breakage of adjust_window"
-msgstr ""
+msgstr "Oprava rozbitého vykreslování dvojstrany u adjust_window"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:382
 msgid "Resolve memory leak while reloading file"
-msgstr ""
+msgstr "Odstranění úniku paměti při znovunačítání souboru"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:383
 msgid "Prevent segmentation fault when smooth zooming with mouse"
-msgstr ""
+msgstr "Zabránění segfaultu při plynulém přiblížení myší"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:384
 msgid "Cache thumbnails to support smooth zooming"
-msgstr ""
+msgstr "Ukládání náhledů do mezipaměti pro podporu plynulého přiblížení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:385
 msgid "Check scale value correctness"
-msgstr ""
+msgstr "Kontrola správnosti hodnoty měřítka"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:392
 msgid "Fix segmentation fault caused by bidirectional scrolling"
-msgstr ""
+msgstr "Oprava segfaultu způsobeného obousměrným posouváním"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:393
 msgid "Add SyntaxView"
-msgstr ""
+msgstr "Přidání SyntaxView"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:398
 msgid "Print debug information to D-Bus"
-msgstr ""
+msgstr "Výpis ladicích informací do D-Bus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:399
 msgid "Fix scroll down/up in dual-page mode"
-msgstr ""
+msgstr "Oprava posunu dolů/nahoru v režimu dvojstrany"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:400
 msgid "Option to hide notification after selection"
-msgstr ""
+msgstr "Možnost skrýt oznámení po výběru"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:401
 msgid "Introduce cache directory"
-msgstr ""
+msgstr "Zavedení adresáře mezipaměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:402
 msgid "Introduce smooth-scroll and smooth-zoom"
-msgstr ""
+msgstr "Zavedení smooth-scroll a smooth-zoom"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:403
 msgid "Add vim style exec"
-msgstr ""
+msgstr "Přidání exec ve stylu vim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:404
 msgid "Option to ignore images while recoloring"
-msgstr ""
+msgstr "Možnost ignorovat obrázky při přebarvování"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:405
 msgid "Take advantage of shared or system SyncTex parser library"
-msgstr ""
+msgstr "Využití sdílené nebo systémové knihovny parseru SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:407
 #: data/org.pwmt.zathura.metainfo.xml.in:670
 #: data/org.pwmt.zathura.metainfo.xml.in:680
 #: data/org.pwmt.zathura.metainfo.xml.in:691
 msgid "Several fixes"
-msgstr ""
+msgstr "Několik oprav"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:412
 msgid "Update dependency version of girara"
-msgstr ""
+msgstr "Aktualizace verze závislosti girara"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:417
 msgid "Better SyncTex support"
-msgstr ""
+msgstr "Lepší podpora SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:418
 msgid "Change cursor if mouse is over link"
-msgstr ""
+msgstr "Změna kurzoru, pokud je myš nad odkazem"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:419
 msgid "Colored build output"
-msgstr ""
+msgstr "Barevný výstup sestavení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:420
 msgid "Minor bug fixes"
-msgstr ""
+msgstr "Menší opravy chyb"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:421
 msgid "Sphinx documentation"
-msgstr ""
+msgstr "Dokumentace Sphinx"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:427
 msgid "Full SyncTex support"
-msgstr ""
+msgstr "Plná podpora SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:428
 msgid "D-Bus interface"
-msgstr ""
+msgstr "Rozhraní D-Bus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:429
 msgid "Simple vim plugin for SyncTex support"
-msgstr ""
+msgstr "Jednoduchý plugin pro vim s podporou SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:430
 msgid "Add shortcuts for ^C and Esc in all modes"
-msgstr ""
+msgstr "Přidání zkratek pro ^C a Esc ve všech režimech"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:431
 msgid "Use the actual mode in mode toggle calls"
-msgstr ""
+msgstr "Použití skutečného režimu při volání přepínání režimu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:432
 msgid "Only copy selected text in normal and fullscreen mode"
-msgstr ""
+msgstr "Kopírování pouze vybraného textu v normálním a celoobrazovkovém režimu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:433
 msgid "Translate error messages"
-msgstr ""
+msgstr "Překlad chybových hlášení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:434
 msgid "Correctly safe print setting state"
-msgstr ""
+msgstr "Správné bezpečné ukládání stavu nastavení tisku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:435
 msgid "Add --mode option"
-msgstr ""
+msgstr "Přidání volby --mode"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:436
 msgid "Expose more properties via D-Bus"
-msgstr ""
+msgstr "Zpřístupnění více vlastností přes D-Bus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:437
 msgid "Center pages"
-msgstr ""
+msgstr "Vycentrování stránek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:438
 msgid "Replace glib memory functions with try version"
-msgstr ""
+msgstr "Nahrazení paměťových funkcí glib verzemi try"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:439
 msgid "Align highlighted rectangles correctly"
-msgstr ""
+msgstr "Správné zarovnání zvýrazněných obdélníků"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:440
 msgid "Implement G and gg for index mode"
-msgstr ""
+msgstr "Implementace G a gg pro režim rejstříku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:441
 msgid "Implement TOGGLE for sc_navigate_index"
-msgstr ""
+msgstr "Implementace TOGGLE pro sc_navigate_index"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
-msgstr ""
+msgstr "Zachování vodorovné polohy při posunu na PAGE_TOP/BOTTOM"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:443
 msgid "Implement shortcuts for scrolling to page top/bottom"
-msgstr ""
+msgstr "Implementace zkratek pro posun na začátek/konec stránky"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:444
 msgid "Set position on document load only if no page was specified"
-msgstr ""
+msgstr "Nastavení pozice při načtení dokumentu jen pokud nebyla zadána stránka"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:445
 msgid "Bail out early if we get TOP or BOTTOM"
-msgstr ""
+msgstr "Předčasné ukončení při TOP nebo BOTTOM"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:446
 msgid "Replace fullscreen mode with presentation mode"
-msgstr ""
+msgstr "Nahrazení celoobrazovkového režimu prezentačním režimem"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:447
 msgid "Remove GTK+2 support"
-msgstr ""
+msgstr "Odstranění podpory GTK+2"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:448
 #: data/org.pwmt.zathura.metainfo.xml.in:454
 #: data/org.pwmt.zathura.metainfo.xml.in:466
 msgid "Update documentation"
-msgstr ""
+msgstr "Aktualizace documentation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:455
 msgid "Resolve layout problems"
-msgstr ""
+msgstr "Odstranění problémů s rozvržením"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:460
 msgid "Use GTK+3 by default"
-msgstr ""
+msgstr "Použití GTK+3 ve výchozím stavu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:461
 msgid "Rewritten render logic"
-msgstr ""
+msgstr "Přepsaná logika vykreslování"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:462
 msgid "Fixed page refresh in certain situations"
-msgstr ""
+msgstr "Oprava obnovení stránky v určitých situacích"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:463
 msgid "Make the X clipboard buffer"
-msgstr ""
+msgstr "Použití vyrovnávací paměti schránky X"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:464
 msgid "Allow number in quickmarks"
-msgstr ""
+msgstr "Povolit číslo v rychlých značkách"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:465
 msgid "Workaround for print quality issues"
-msgstr ""
+msgstr "Dočasné řešení problémů s kvalitou tisku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:472
 msgid "Resolve memory leak"
-msgstr ""
+msgstr "Oprava úniku paměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:473
 msgid "Report missing plugin or unsupported file types"
-msgstr ""
+msgstr "Hlášení chybějícího pluginu nebo nepodporovaných typů souborů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:474
 msgid "More vim-like search behaviour"
-msgstr ""
+msgstr "Chování hledání více podobné vim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:475
 msgid "Introduced show-{h,v}-scrollbar settings"
-msgstr ""
+msgstr "Zavedení nastavení show-{h,v}-scrollbar"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:476
 msgid "Enhancement of the jumplist mechanism"
-msgstr ""
+msgstr "Vylepšení mechanismu seznamu skoků"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:477
 msgid "Use jumplists with marks"
-msgstr ""
+msgstr "Použití seznamů skoků se značkami"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:478
 msgid "More vim-like jump behaviour"
-msgstr ""
+msgstr "Chování skoků více podobné vim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:479
 msgid "Improved bisect"
-msgstr ""
+msgstr "Vylepšená bisect"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:480
 msgid "Update page number on mouse scroll"
-msgstr ""
+msgstr "Aktualizace page number on mouse scroll"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:481
 msgid "Introduced window-title-page option"
-msgstr ""
+msgstr "Zavedení volby window-title-page"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:487
 msgid "LRU caching algorithm"
-msgstr ""
+msgstr "Algoritmus mezipaměti LRU"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:488
 msgid "Bisect functionality"
-msgstr ""
+msgstr "Funkce bisect"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:489
 msgid "Allow negative offsets"
-msgstr ""
+msgstr "Umožnění negative offsets"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:490
 msgid "Option --page to open at the specified page"
-msgstr ""
+msgstr "Volba --page pro otevření na zadané stránce"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:491
 msgid "Scale vertical/horizontal scrolling in respect to the buffer"
-msgstr ""
+msgstr "Škálování svislého/vodorovného posuvu vzhledem k vyrovnávací paměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:492
 msgid "Add statusbar-basename option"
-msgstr ""
+msgstr "Přidání volby statusbar-basename"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:493
 msgid "Implement colors for 'Loading...'-text"
-msgstr ""
+msgstr "Implementace barev pro text 'Loading...'"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:494
 msgid "Don't render same page multiple times"
-msgstr ""
+msgstr "Nevykreslovat stejnou stránku vícekrát"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:495
 msgid "Use libmagic if available"
-msgstr ""
+msgstr "Použití libmagic, pokud je k dispozici"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:496
 #: data/org.pwmt.zathura.metainfo.xml.in:507
 msgid "Some other bug fixes and updated translations"
-msgstr ""
+msgstr "Některé další opravy chyb a aktualizované překlady"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:501
 msgid "Implemented jumplist (^o, ^i)"
-msgstr ""
+msgstr "Implementován seznam skoků (^o, ^i)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:502
 msgid "Update current page when following links"
-msgstr ""
+msgstr "Aktualizace current page when following links"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:503
 msgid "Scroll horizontally with shift and mouse wheel"
-msgstr ""
+msgstr "Vodorovný posun pomocí shift a kolečka myši"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:504 zathura/config.c:572
 msgid "Page aware scrolling"
 msgstr "Posunovat s ohledem na strany"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:505
-#, fuzzy
 msgid "SyncTeX forward synchronisation"
-msgstr "Podpora pro dopředné a zpětné seřízení SyncTeX."
+msgstr "Dopředná synchronizace SyncTeX"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:506
 msgid "Update shortcuts"
-msgstr ""
+msgstr "Aktualizace shortcuts"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:512
-#, fuzzy
 msgid "SyncTeX backwards synchronisation"
-msgstr "Podpora pro dopředné a zpětné seřízení SyncTeX."
+msgstr "Zpětná synchronizace SyncTeX"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:513
 msgid "Fix request-page-setup"
-msgstr ""
+msgstr "Oprava request-page-setup"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:514
 msgid "Fix window adustment"
-msgstr ""
+msgstr "Oprava window adustment"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:515
 msgid "Better GTK3 integration"
-msgstr ""
+msgstr "Lepší integrace GTK3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:516
 msgid "Added first-page-colum setting"
-msgstr ""
+msgstr "Přidáno nastavení first-page-colum"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:517
 msgid "Added recolor-keephue setting"
-msgstr ""
+msgstr "Přidáno nastavení recolor-keephue"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:523
 msgid "New languages"
-msgstr ""
+msgstr "Nové jazyky"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:524
 msgid "Better print support"
-msgstr ""
+msgstr "Lepší podpora tisku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:525
 msgid "Improve document links"
-msgstr ""
+msgstr "Zlepšení document links"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:526
 msgid "Render last-viewed pages with a higher priority"
-msgstr ""
+msgstr "Vykreslení naposledy zobrazených stránek s vyšší prioritou"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:527
 msgid "Export images and attachments"
-msgstr ""
+msgstr "Export obrázků a příloh"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:528
 msgid "Open multiple documents"
-msgstr ""
+msgstr "Otevření více dokumentů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:529
 msgid "Plugin manager"
-msgstr ""
+msgstr "Správce pluginů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:530
 msgid "Several memory leaks and small bugs"
-msgstr ""
+msgstr "Několik úniků paměti a drobných chyb"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:535
 msgid "Add 'open-first-page' setting"
-msgstr ""
+msgstr "Přidání 'open-first-page' setting"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:536
 msgid "Free invisible pages after specific time"
-msgstr ""
+msgstr "Uvolnění neviditelných stránek po určité době"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:537
 msgid "Set log level via command line"
-msgstr ""
+msgstr "Nastavení úrovně logu přes příkazový řádek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:538
 msgid "Update GTK3 support"
-msgstr ""
+msgstr "Aktualizace podpory GTK3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:539
 msgid "Completion for :write command"
-msgstr ""
+msgstr "Doplňování pro příkaz :write"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Simplified plugin loading"
-msgstr ""
+msgstr "Zjednodušené načítání pluginů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:541
 msgid "Allow counter-clockwise rotation"
-msgstr ""
+msgstr "Umožnění counter-clockwise rotation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:542
 msgid "Changeable page-padding"
-msgstr ""
+msgstr "Upravitelné page-padding"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:543
 msgid "Introduced girara version check"
-msgstr ""
+msgstr "Zavedena kontrola verze girara"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:544
 msgid "Detect sqlite automatically"
-msgstr ""
+msgstr "Automatická detekce sqlite"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:545
 msgid "Update window title"
-msgstr ""
+msgstr "Aktualizace window title"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:550
 msgid "Macro to register plugins"
-msgstr ""
+msgstr "Makro pro registraci pluginů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:551
 msgid "Fix issues with the display of the current page number"
-msgstr ""
+msgstr "Oprava problémů se zobrazením aktuálního čísla stránky"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:552
 msgid "Ability to scroll to the full left or full right border"
-msgstr ""
+msgstr "Možnost posunu na úplně levý nebo pravý okraj"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:553
 msgid "Reimplement the render thread with GThreadPool"
-msgstr ""
+msgstr "Reimplementace vykreslovacího vlákna pomocí GThreadPool"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:554
 msgid "Use the correct color to highlight results"
-msgstr ""
+msgstr "Použití správné barvy pro zvýraznění výsledků"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:555
 msgid "Support to use both database backends"
-msgstr ""
+msgstr "Podpora použití obou databázových backendů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:556
 msgid "Additional notifications on errors"
-msgstr ""
+msgstr "Další oznámení při chybách"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:557
 msgid "Option to hide hidden directories"
-msgstr ""
+msgstr "Možnost skrýt skryté adresáře"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:558
 msgid "Do not overwrite existing files with :write"
-msgstr ""
+msgstr "Nepřepisovat existující soubory pomocí :write"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:559
 msgid "Fix flicker in text selection"
-msgstr ""
+msgstr "Oprava blikání při výběru textu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:560
 msgid "Resolved several memory leaks"
-msgstr ""
+msgstr "Odstraněno několik úniků paměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:566
 msgid "Complete rewrite of zathura"
-msgstr ""
+msgstr "Kompletní přepsání zathury"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:567
 msgid "Uses the girara interface library"
-msgstr ""
+msgstr "Používá knihovnu rozhraní girara"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:568
 msgid "Plugin system for different document types"
-msgstr ""
+msgstr "Pluginový systém pro různé typy dokumentů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:569
 msgid "Better configuration"
-msgstr ""
+msgstr "Lepší konfigurace"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:570
 msgid "Quickmarks"
-msgstr ""
+msgstr "Rychlé značky"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:575
 msgid "Ignoring MOD5 which is used on some keyboards"
-msgstr ""
+msgstr "Ignorování MOD5, který se používá na některých klávesnicích"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:576
 msgid "Fix scroll_wrap (#52)"
-msgstr ""
+msgstr "Oprava scroll_wrap (#52)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:577
 msgid "Don't invert y coordinates (#42)"
-msgstr ""
+msgstr "Neinvertovat souřadnice y (#42)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:578
 msgid "Certain memory leaks and other small issues"
-msgstr ""
+msgstr "Některé úniky paměti a další drobné problémy"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:583
 msgid "Fixed bookmark handling"
-msgstr ""
+msgstr "Opraveno zpracování záložek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:584
 msgid "Support :digits"
-msgstr ""
+msgstr "Podpora :digits"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:585
 msgid "Save zoom level per file"
-msgstr ""
+msgstr "Uložení úrovně přiblížení pro každý soubor"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:586
 msgid "Fix backwards searching"
-msgstr ""
+msgstr "Oprava backwards searching"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:587
 msgid "Fix blinking while switching pages"
-msgstr ""
+msgstr "Oprava blinking while switching pages"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:588
 msgid "Fix input issues in fullscreen mode"
-msgstr ""
+msgstr "Oprava problémů se vstupem v celoobrazovkovém režimu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:589
 #: data/org.pwmt.zathura.metainfo.xml.in:599
 #: data/org.pwmt.zathura.metainfo.xml.in:613
 msgid "Fixed several memory leaks"
-msgstr ""
+msgstr "Opraveno několik úniků paměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:594
 msgid "Update text searching"
-msgstr ""
+msgstr "Aktualizace text searching"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:595
 msgid "Support for poppler >= 0.15"
-msgstr ""
+msgstr "Podpora pro poppler >= 0.15"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:596
 msgid "Fixed print command with multiple arguments"
-msgstr ""
+msgstr "Opraven příkaz tisku s více argumenty"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:597
 msgid "Fixed GOptionEntries"
-msgstr ""
+msgstr "Opraveny GOptionEntries"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:600
 msgid "Fixed segmentation faults"
-msgstr ""
+msgstr "Opraveny segfaulty"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:605
 msgid "Wrap around scrolling"
-msgstr ""
+msgstr "Cyklické posouvání"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:606
 msgid "Display scroll percentage in statusbar"
-msgstr ""
+msgstr "Zobrazení procenta posunu ve stavovém řádku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:607
 msgid "More familiar zoom key bindings"
-msgstr ""
+msgstr "Známější klávesové zkratky pro přiblížení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:608
 msgid "Support reading files from stdin"
-msgstr ""
+msgstr "Podpora čtení souborů ze stdin"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:609
 msgid "Open command with appended current file path"
-msgstr ""
+msgstr "Otevření příkazu s připojenou cestou aktuálního souboru"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:610
 msgid "Following XDG specification"
-msgstr ""
+msgstr "Dodržení specifikace XDG"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:611
 msgid "Colored window and view port"
-msgstr ""
+msgstr "Barevné okno a viewport"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:612
 msgid "File reloading fix"
-msgstr ""
+msgstr "Oprava znovunačítání souboru"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:614
 #: data/org.pwmt.zathura.metainfo.xml.in:636
 #: data/org.pwmt.zathura.metainfo.xml.in:653
 #: data/org.pwmt.zathura.metainfo.xml.in:662
 msgid "Update manpage"
-msgstr ""
+msgstr "Aktualizace manpage"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:620
 msgid "Fixed critical usability bug"
-msgstr ""
+msgstr "Opravena kritická chyba použitelnosti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:625
 msgid "Improved and fixed completion"
-msgstr ""
+msgstr "Vylepšené a opravené doplňování"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:626
 msgid "Optional parameters for the print command"
-msgstr ""
+msgstr "Volitelné parametry pro příkaz tisku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:627
 #: data/org.pwmt.zathura.metainfo.xml.in:679
 msgid "Escape filenames"
-msgstr ""
+msgstr "Escapování názvů souborů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:628
 msgid "Resolved some memory leaks"
-msgstr ""
+msgstr "Odstraněny některé úniky paměti"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:629
 msgid "Global configuration file"
-msgstr ""
+msgstr "Globální konfigurační soubor"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:630
 msgid "Specify configuration directory"
-msgstr ""
+msgstr "Určení konfiguračního adresáře"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:631
 msgid "Configureable modes"
-msgstr ""
+msgstr "Konfigurovatelné režimy"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:632
 msgid "Smooth scrolling"
-msgstr ""
+msgstr "Plynulé posouvání"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:633
 msgid "Extended statusbar string manipulation"
-msgstr ""
+msgstr "Rozšířená manipulace s řetězcem stavového řádku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:634
 msgid "`function`"
-msgstr ""
+msgstr "`function`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:635
 #: data/org.pwmt.zathura.metainfo.xml.in:651
 msgid "Strip executable"
-msgstr ""
+msgstr "Odstranění symbolů z binárky"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:641
 msgid "Change window title to filename"
-msgstr ""
+msgstr "Změna názvu okna na název souboru"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:642
 msgid "Fixation of the URI command"
-msgstr ""
+msgstr "Oprava příkazu URI"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:643
 msgid "Update the behaviour of sc_scroll"
-msgstr ""
+msgstr "Aktualizace chování sc_scroll"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:644
 msgid "Half/Full-page scrolling"
-msgstr ""
+msgstr "Posouvání o půl/celou stránku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:645
 msgid "Check document health in sc_reload"
-msgstr ""
+msgstr "Kontrola stavu dokumentu v sc_reload"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:646
 msgid "`tabbed` support"
-msgstr ""
+msgstr "Podpora `tabbed`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:647
 msgid "Define look with the set function"
-msgstr ""
+msgstr "Nastavení vzhledu pomocí funkce set"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:648
 msgid "Implemented map function"
-msgstr ""
+msgstr "Implementována funkce map"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:649
 msgid "`zathurarc` file"
-msgstr ""
+msgstr "Soubor `zathurarc`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:650
 msgid "Prevent buffer overflow in realpath"
-msgstr ""
+msgstr "Zabránění přetečení vyrovnávací paměti v realpath"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:652
 msgid "Key evaluation when buffer is not empty"
-msgstr ""
+msgstr "Vyhodnocení klávesy, když buffer není prázdný"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:658
 msgid "Use GFileMonitor instead of inotify"
-msgstr ""
+msgstr "Použití GFileMonitor místo inotify"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:659
 msgid "Added document reload shortcut"
-msgstr ""
+msgstr "Přidána zkratka pro znovunačtení dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:660
 msgid "Fixed toggle index"
-msgstr ""
+msgstr "Opraveno přepínání rejstříku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:661
 msgid "Fixed print command"
-msgstr ""
+msgstr "Opraven příkaz tisku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:667
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "Celoobrazovkový režim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:668
 msgid "Correct search result highlighting"
-msgstr ""
+msgstr "Správné zvýraznění výsledků hledání"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:669
 msgid "Document password dialog"
-msgstr ""
+msgstr "Dialog pro heslo dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:675
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
-msgstr ""
+msgstr "Podpora myši (posun, označení a kopírování textu do schránky)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:676
 msgid "Keyboard navigation in the index view"
-msgstr ""
+msgstr "Navigace klávesnicí v pohledu rejstříku"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:677
 msgid "Different goto modes"
-msgstr ""
+msgstr "Různé režimy goto"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:678
 msgid "Auto adjustment when opening a document"
-msgstr ""
+msgstr "Automatické přizpůsobení při otevření dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:685
 msgid "Reload modified document automatically"
-msgstr ""
+msgstr "Automatické znovunačtení změněného dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:686
 msgid "Recolor the page instead of inverting the colors"
-msgstr ""
+msgstr "Přebarvení stránky místo invertování barev"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:687
 msgid "Working search function"
-msgstr ""
+msgstr "Fungující funkce hledání"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:688
 msgid "Show and hide document information"
-msgstr ""
+msgstr "Zobrazení a skrytí informací o dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:689
 msgid "Follow internal links or open URI in a predefined browser"
 msgstr ""
+"Následování vnitřních odkazů nebo otevření URI v předdefinovaném prohlížeči"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:690
 msgid "Save the document"
-msgstr ""
+msgstr "Uložení dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:696
 msgid "Complete new, re-written interface"
-msgstr ""
+msgstr "Kompletně nové, přepsané rozhraní"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:697
 msgid "Multiple printer support"
-msgstr ""
+msgstr "Podpora více tiskáren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:698
 msgid "Command history"
-msgstr ""
+msgstr "Historie příkazů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:699
 msgid "Show document index"
-msgstr ""
+msgstr "Zobrazení rejstříku dokumentu"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:700
 msgid "Centered view"
-msgstr ""
+msgstr "Vystředěné zobrazení"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:701
 msgid "Add, save and open bookmarks"
-msgstr ""
+msgstr "Přidání, uložení a otevření záložek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:702
 msgid "Marker support"
-msgstr ""
+msgstr "Podpora značek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:703
 msgid "Highlight search results"
@@ -1308,23 +1322,23 @@ msgstr "Zvýrazňovat výsledky hledání"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:704
 msgid "Buffered commands"
-msgstr ""
+msgstr "Příkazy s bufferem"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:705
 msgid "`set` Function"
-msgstr ""
+msgstr "Funkce `set`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:706
 msgid "Revert video function"
-msgstr ""
+msgstr "Vrácení funkce video"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:707
 msgid "Command completion"
-msgstr ""
+msgstr "Doplňování příkazů"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:712
 msgid "Initial release"
-msgstr ""
+msgstr "První vydání"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
@@ -1412,20 +1426,20 @@ msgstr "Záložka neexistuje: %s"
 
 #: zathura/commands.c:167
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "Argument musí být nenulové číslo."
 
 #: zathura/commands.c:187
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr ""
+msgstr "[%d]: stránka=<b>%2d</b>, x=%f, y=%f %s\n"
 
 #: zathura/commands.c:188
 msgid "(current)"
-msgstr ""
+msgstr "(aktuální)"
 
 #: zathura/commands.c:195
 msgid "No jumplist available."
-msgstr ""
+msgstr "Není dostupný žádný seznam skoků."
 
 #: zathura/commands.c:229
 msgid "Title"
@@ -1475,6 +1489,7 @@ msgstr "Nejsou dostupné žádné informace."
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
+"Další informace najdete v manuálových stránkách zathura(1) a zathurarc(5)."
 
 #: zathura/commands.c:293 zathura/commands.c:695 girara-gtk/commands.c:550
 msgid "Too many arguments."
@@ -1490,7 +1505,7 @@ msgstr "Tisk není v režimu přísného pískoviště dovolen"
 
 #: zathura/commands.c:349 zathura/commands.c:374
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Ukládání není ve striktním režimu sandboxu povoleno"
 
 #: zathura/commands.c:360 zathura/commands.c:385
 msgid "Invalid number of arguments."
@@ -1498,7 +1513,7 @@ msgstr "Špatný počet argumentů."
 
 #: zathura/commands.c:475
 msgid "Exporting attachments is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Export příloh není ve striktním režimu sandboxu povolen"
 
 #: zathura/commands.c:507
 #, c-format
@@ -1533,7 +1548,7 @@ msgstr "Neznámá příloha nebo obrázek '%s'."
 #: zathura/commands.c:593
 #, c-format
 msgid "Failed to execute command: %s"
-msgstr ""
+msgstr "Nepodařilo se spustit příkaz: %s"
 
 #: zathura/commands.c:606
 msgid "Exec is not permitted in strict sandbox mode"
@@ -1559,90 +1574,90 @@ msgstr "Obrázky"
 
 #: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "Plugin nepodporuje export příloh a obrázků."
 
 #: zathura/completion.c:371
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "Dokument neobsahuje žádné obrázky ani přílohy"
 
 #. clang-format off
 #. settings
 #: zathura/config.c:467
 msgid "Font"
-msgstr ""
+msgstr "Písmo"
 
 #. colors affecting the CSS
 #: zathura/config.c:470
 msgid "Default foreground color"
-msgstr ""
+msgstr "Výchozí barva popředí"
 
 #: zathura/config.c:471
 msgid "Default background color"
-msgstr ""
+msgstr "Výchozí barva pozadí"
 
 #: zathura/config.c:472
 msgid "Inputbar foreground color"
-msgstr ""
+msgstr "Barva popředí vstupního řádku"
 
 #: zathura/config.c:473
 msgid "Inputbar background color"
-msgstr ""
+msgstr "Barva pozadí vstupního řádku"
 
 #: zathura/config.c:474
 msgid "Statusbar foreground color"
-msgstr ""
+msgstr "Barva popředí stavového řádku"
 
 #: zathura/config.c:475
 msgid "Statsubar background color"
-msgstr ""
+msgstr "Barva pozadí stavového řádku"
 
 #: zathura/config.c:476
 msgid "Completion foreground color"
-msgstr ""
+msgstr "Barva popředí doplňování"
 
 #: zathura/config.c:477
 msgid "Completion background color"
-msgstr ""
+msgstr "Barva pozadí doplňování"
 
 #: zathura/config.c:478
 msgid "Completion group foreground color"
-msgstr ""
+msgstr "Barva popředí skupiny doplňování"
 
 #: zathura/config.c:479
 msgid "Completion group background color"
-msgstr ""
+msgstr "Barva pozadí skupiny doplňování"
 
 #: zathura/config.c:480
 msgid "Completion highlight foreground color"
-msgstr ""
+msgstr "Barva popředí zvýraznění doplňování"
 
 #: zathura/config.c:481
 msgid "Completion highlight background color"
-msgstr ""
+msgstr "Barva pozadí zvýraznění doplňování"
 
 #: zathura/config.c:482
 msgid "Error notification foreground color"
-msgstr ""
+msgstr "Barva popředí chybového oznámení"
 
 #: zathura/config.c:483
 msgid "Error notification background color"
-msgstr ""
+msgstr "Barva pozadí chybového oznámení"
 
 #: zathura/config.c:484
 msgid "Warning notification foreground color"
-msgstr ""
+msgstr "Barva popředí varovného oznámení"
 
 #: zathura/config.c:485
 msgid "Warning notifaction background color"
-msgstr ""
+msgstr "Barva pozadí varovného oznámení"
 
 #: zathura/config.c:486
 msgid "Notification foreground color"
-msgstr ""
+msgstr "Barva popředí oznámení"
 
 #: zathura/config.c:487
 msgid "Notification background color"
-msgstr ""
+msgstr "Barva pozadí oznámení"
 
 #: zathura/config.c:488
 msgid "Index mode foreground color"
@@ -1662,43 +1677,43 @@ msgstr "Barva pozadí režimu rejstříku (činný prvek)"
 
 #: zathura/config.c:492
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Barva popředí posuvníku"
 
 #: zathura/config.c:493
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Barva pozadí posuvníku"
 
 #: zathura/config.c:496
 msgid "Initial window width"
-msgstr ""
+msgstr "Počáteční šířka okna"
 
 #: zathura/config.c:497
 msgid "Initial window height"
-msgstr ""
+msgstr "Počáteční výška okna"
 
 #: zathura/config.c:498
 msgid "Horizontal padding for the status, input, and notification bars"
-msgstr ""
+msgstr "Vodorovné odsazení pro stavový, vstupní a oznamovací řádek"
 
 #: zathura/config.c:499
 msgid "Vertical padding for the status, input, and notification bars"
-msgstr ""
+msgstr "Svislé odsazení pro stavový, vstupní a oznamovací řádek"
 
 #: zathura/config.c:500
 msgid "Number of completion items"
-msgstr ""
+msgstr "Počet položek doplňování"
 
 #: zathura/config.c:501
 msgid "Window icon"
-msgstr ""
+msgstr "Ikona okna"
 
 #: zathura/config.c:502
 msgid "Command to execute in :exec"
-msgstr ""
+msgstr "Příkaz ke spuštění v :exec"
 
 #: zathura/config.c:503
 msgid "Show or hide certain GUI elements"
-msgstr ""
+msgstr "Zobrazit nebo skrýt určité prvky GUI"
 
 #: zathura/config.c:505
 msgid "Database backend"
@@ -1714,11 +1729,11 @@ msgstr "Velikost kroku zvětšení"
 
 #: zathura/config.c:510
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Vodorovné odsazení mezi stránkami"
 
 #: zathura/config.c:512
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Svislé odsazení mezi stránkami"
 
 #: zathura/config.c:514
 msgid "Number of pages per row"
@@ -1795,15 +1810,15 @@ msgstr "Nahrává se barva popředí..."
 #. colors for document signatures
 #: zathura/config.c:545
 msgid "Color used to highlight valid signatures"
-msgstr ""
+msgstr "Barva použitá pro zvýraznění platných podpisů"
 
 #: zathura/config.c:546
 msgid "Color used to highlight signatures with warnings"
-msgstr ""
+msgstr "Barva použitá pro zvýraznění podpisů s varováním"
 
 #: zathura/config.c:547
 msgid "Color used to highlight invalid signatures"
-msgstr ""
+msgstr "Barva použitá pro zvýraznění neplatných podpisů"
 
 #: zathura/config.c:562
 msgid "Recolor pages"
@@ -1819,7 +1834,7 @@ msgstr "Při přebarvování zachovat původní  barvy obrázku"
 
 #: zathura/config.c:568
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "Při přebarvování upravit jas"
 
 #: zathura/config.c:570
 msgid "Wrap scrolling"
@@ -1875,11 +1890,11 @@ msgstr "Vždy otevírat na první straně"
 
 #: zathura/config.c:597
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Zakázání zvýraznění výsledků hledání"
 
 #: zathura/config.c:599
 msgid "Double click to follow links"
-msgstr ""
+msgstr "Dvojklik pro následování odkazů"
 
 #: zathura/config.c:602
 msgid "Enable incremental search"
@@ -1929,11 +1944,11 @@ msgstr "Příkaz pro editor Synctex"
 
 #: zathura/config.c:622
 msgid "Synctex edit modifier"
-msgstr ""
+msgstr "Modifikátor úprav Synctex"
 
 #: zathura/config.c:623
 msgid "Highlighter modifier"
-msgstr ""
+msgstr "Modifikátor zvýraznění"
 
 #: zathura/config.c:625
 msgid "Enable D-Bus service"
@@ -1957,24 +1972,24 @@ msgstr "Povolit oznámení po vybrání textu"
 
 #: zathura/config.c:634
 msgid "Disable additional information for signatures embedded in the document."
-msgstr ""
+msgstr "Zakázání dodatečných informací pro podpisy vložené v dokumentu."
 
 #. define default inputbar commands
 #: zathura/config.c:764
 msgid "Map a key sequence"
-msgstr ""
+msgstr "Namapovat posloupnost kláves"
 
 #: zathura/config.c:765
 msgid "Set an option"
-msgstr ""
+msgstr "Nastavit volbu"
 
 #: zathura/config.c:766
 msgid "Unmap a key sequence"
-msgstr ""
+msgstr "Zrušit mapování posloupnosti kláves"
 
 #: zathura/config.c:767
 msgid "Dump settings to a file"
-msgstr ""
+msgstr "Vypsat nastavení do souboru"
 
 #: zathura/config.c:769
 msgid "Add a bookmark"
@@ -1990,11 +2005,11 @@ msgstr "Vypsat všechny záložky"
 
 #: zathura/config.c:772
 msgid "Jump to bookmark"
-msgstr ""
+msgstr "Skočit na záložku"
 
 #: zathura/config.c:773
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "Zobrazit nedávné skoky v seznamu skoků"
 
 #: zathura/config.c:774
 msgid "Close current file"
@@ -2051,7 +2066,7 @@ msgstr "Smazat vybrané značky"
 
 #: zathura/config.c:790
 msgid "Remove highlights of current search results"
-msgstr ""
+msgstr "Odstranění zvýraznění aktuálních výsledků hledání"
 
 #: zathura/config.c:791
 msgid "Highlight current search results"
@@ -2169,26 +2184,30 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
+"Podpis je platný.\n"
+"Tento dokument podepsal\n"
+"  %s\n"
+"dne %s."
 
 #: zathura/page-widget.c:654
 msgid "Signature certificate is expired."
-msgstr ""
+msgstr "Certifikát podpisu vypršel."
 
 #: zathura/page-widget.c:658
 msgid "Signature certificate is revoked."
-msgstr ""
+msgstr "Certifikát podpisu byl odvolán."
 
 #: zathura/page-widget.c:662
 msgid "Signature certificate is not trusted."
-msgstr ""
+msgstr "Certifikát podpisu není důvěryhodný."
 
 #: zathura/page-widget.c:666
 msgid "Signature certificate is invalid."
-msgstr ""
+msgstr "Certifikát podpisu je neplatný."
 
 #: zathura/page-widget.c:670
 msgid "Signature is invalid."
-msgstr ""
+msgstr "Podpis je neplatný."
 
 #: zathura/page-widget.c:753
 msgid "Loading..."
@@ -2224,7 +2243,7 @@ msgstr "Tento dokument neobsahuje žádný rejstřík"
 
 #: zathura/shortcuts.c:1619
 msgid "Open file"
-msgstr ""
+msgstr "Otevřít soubor"
 
 #: zathura/utils.c:728
 #, c-format
@@ -2274,45 +2293,45 @@ msgstr "Dokument uložen."
 #: girara-gtk/commands.c:261
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr ""
+msgstr "Předán neplatný počet argumentů: %zu místo alespoň %u"
 
 #: girara-gtk/commands.c:297
 #, c-format
 msgid "Unregistered mode specified: %s"
-msgstr ""
+msgstr "Zadán neregistrovaný režim: %s"
 
 #: girara-gtk/commands.c:305
 msgid "Invalid number of arguments passed"
-msgstr ""
+msgstr "Předán neplatný počet argumentů"
 
 #: girara-gtk/commands.c:337
 #, c-format
 msgid "Invalid modifier in %s"
-msgstr ""
+msgstr "Neplatný modifikátor v %s"
 
 #: girara-gtk/commands.c:375
 #, c-format
 msgid "Invalid special key value for %s"
-msgstr ""
+msgstr "Neplatná hodnota speciální klávesy pro %s"
 
 #: girara-gtk/commands.c:410
 #, c-format
 msgid "Invalid special key value or mode %s"
-msgstr ""
+msgstr "Neplatná hodnota speciální klávesy nebo režimu %s"
 
 #: girara-gtk/commands.c:494
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr ""
+msgstr "Není platná funkce zkratky: %s"
 
 #: girara-gtk/commands.c:545
 msgid "Not enough arguments."
-msgstr ""
+msgstr "Nedostatek argumentů."
 
 #: girara-gtk/commands.c:563
 #, c-format
 msgid "Unknown option: %s"
-msgstr ""
+msgstr "Neznámá volba: %s"
 
 #: girara-gtk/commands.c:576
 msgid "true"
@@ -2325,25 +2344,25 @@ msgstr ""
 #: girara-gtk/commands.c:604
 #, c-format
 msgid "No value defined for option: %s"
-msgstr ""
+msgstr "Pro volbu není definována žádná hodnota: %s"
 
 #: girara-gtk/commands.c:619
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr ""
+msgstr "Neznámá hodnota volby: %s"
 
 #. unhandled command
 #: girara-gtk/commands.c:775
 #, c-format
 msgid "Not a valid command: %s"
-msgstr ""
+msgstr "Není platný příkaz: %s"
 
 #: girara-gtk/settings.c:255
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr ""
+msgstr "Předán neplatný počet argumentů: %zu místo 1"
 
 #: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
+msgstr "Nepodařilo se zapsat JSON: %s"

@@ -20,7 +20,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
-msgstr ""
+msgstr "pwmt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
@@ -68,169 +68,183 @@ msgstr "Betrachten einer PDF Datei"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "Eine Datei mit dem Befehl `open` öffnen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:52
 msgid "Following links"
-msgstr ""
+msgstr "Links folgen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:56
 msgid "Listing and selecting bookmakrs"
-msgstr ""
+msgstr "Lesezeichen auflisten und auswählen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:72
 msgid ""
 "Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
+"Einzelseitenlayout und Modi für gleiche Höhe/Breite implementieren (#706, "
+"#724, #447, #289)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:73
 msgid "Use single page layout for presentation mode (#686, #666)"
-msgstr ""
+msgstr "Einzelseitenlayout für den Präsentationsmodus verwenden (#686, #666)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
 msgstr ""
+"Unscharfe Darstellung und wiederholte Lademeldungen beheben (#864, #860)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:75
 msgid "Allow to disable copying to clipboard (#835)"
-msgstr ""
+msgstr "Deaktivieren des Kopierens in die Zwischenablage ermöglichen (#835)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:76
 msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
-msgstr ""
+msgstr "Sanftes Scrollen mit Strg und Pfeiltasten beheben (#872)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:93
 msgid ""
 "Fork to background if opening with multiple files only if --fork is "
 "specified (#855)"
 msgstr ""
+"Nur dann in den Hintergrund forken, wenn beim Öffnen mehrerer Dateien --fork "
+"angegeben ist (#855)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:94
 msgid "Fix handling of PageUp and PageDown (#861)"
-msgstr ""
+msgstr "Verarbeitung von PageUp und PageDown beheben (#861)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:95
 msgid "Fix handling of mappings with special keys (#862)"
-msgstr ""
+msgstr "Verarbeitung von Zuordnungen mit Sondertasten beheben (#862)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:96
 msgid "Integrate Gtk+-specific parts of girara"
-msgstr ""
+msgstr "Gtk+-spezifische Teile von girara integrieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:106
 msgid "Switch to date-based version numbers"
-msgstr ""
+msgstr "Auf datumsbasierte Versionsnummern umstellen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:107
 msgid "Fix warnings from CSS generation (#824)"
-msgstr ""
+msgstr "Warnungen bei der CSS-Erzeugung beheben (#824)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:108
 msgid "Apply correct scaling when recoloring (#836)"
-msgstr ""
+msgstr "Korrekte Skalierung beim Umfärben anwenden (#836)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:109
 msgid "Make sure jumplist stays valid after close (#835)"
 msgstr ""
+"Sicherstellen, dass die Sprungliste nach dem Schließen gültig bleibt (#835)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:110
 msgid "Disable message in incremental search (#227, #847)"
-msgstr ""
+msgstr "Meldung bei inkrementeller Suche deaktivieren (#227, #847)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:111
 msgid "Fix seccomp rules with musl (#843)"
-msgstr ""
+msgstr "seccomp-Regeln mit musl beheben (#843)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:112
 msgid ""
 "Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
 "#797, #826)"
 msgstr ""
+"Benutzerdefiniertes Zeichnen für das Dokument-Widget implementieren (#580, "
+"#657, #736, #785, #795, #797, #826)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:132
 msgid "Switch default database to sqlite and drop plain database"
 msgstr ""
+"Standarddatenbank auf sqlite umstellen und einfache Datenbank entfernen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:133
 msgid "Notify users if no attachments and images are available to export"
 msgstr ""
+"Benutzer benachrichtigen, wenn keine Anhänge oder Bilder zum Export "
+"verfügbar sind"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:134
 msgid "Make index-* configurable after init (#799)"
-msgstr ""
+msgstr "index-* nach init konfigurierbar machen (#799)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:135
 msgid "Support numeric keypad mappings"
-msgstr ""
+msgstr "Zuordnungen für numerischen Tastenblock unterstützen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:136
 msgid "Provide correct number of pages (#814)"
-msgstr ""
+msgstr "Korrekte Seitenanzahl bereitstellen (#814)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:137
 msgid "Undo size-allocate callback changes"
-msgstr ""
+msgstr "Änderungen am size-allocate-Callback rückgängig machen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:138
 msgid "Fix temporary file names for better content-type detection"
-msgstr ""
+msgstr "Temporäre Dateinamen für bessere Inhalts-Typ-Erkennung beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:147
 msgid "Validate appstream files with appstreamcli"
-msgstr ""
+msgstr "appstream-Dateien mit appstreamcli validieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:148
 msgid "Split page-padding into page-h-padding and page-v-padding"
-msgstr ""
+msgstr "page-padding in page-h-padding und page-v-padding aufteilen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:149
 msgid "Fix memory leak and callback type error (#767)"
-msgstr ""
+msgstr "Speicherleck und Callback-Typfehler beheben (#767)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:150
 msgid "Warn if plugins do not support exporting images or attachments (#334)"
 msgstr ""
+"Warnen, wenn Plugins den Export von Bildern oder Anhängen nicht unterstützen "
+"(#334)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:159
 msgid "Add shortcut to open files via file chooser dialog"
 msgstr ""
+"Tastenkürzel zum Öffnen von Dateien über den Dateiauswahldialog hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:160
 msgid "Refactor rendering of pages"
-msgstr ""
+msgstr "Darstellung von Seiten refaktorisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:161
 msgid "Add lightness adjustment for recoloring"
-msgstr ""
+msgstr "Helligkeitsanpassung für das Umfärben hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:162
 msgid "Initial support for OpenBSD sandbox"
-msgstr ""
+msgstr "Erste Unterstützung für OpenBSD-Sandbox"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:167
 msgid "Fix closing of documents"
-msgstr ""
+msgstr "Schließen von Dokumenten beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:172
 msgid "Fix crash when opening documents"
-msgstr ""
+msgstr "Absturz beim Öffnen von Dokumenten beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:177
 msgid "Fix build on macOS"
-msgstr ""
+msgstr "Build auf macOS beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:178
 msgid "Hide page label if the same as page number"
-msgstr ""
+msgstr "Seitenbezeichnung ausblenden, wenn sie der Seitennummer entspricht"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:179
 msgid "Cache SyncTeX parser for faster operation"
-msgstr ""
+msgstr "SyncTeX-Parser für schnelleren Betrieb zwischenspeichern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:180
 msgid "Revert changes for documents with multiple page sizes"
-msgstr ""
+msgstr "Änderungen für Dokumente mit mehreren Seitengrößen zurücknehmen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:181
 #: data/org.pwmt.zathura.metainfo.xml.in:197
@@ -254,87 +268,96 @@ msgstr "Verschiedene Fehlerbehebungen und Verbesserungen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:186
 msgid "Bump plugin ABI"
-msgstr ""
+msgstr "Plugin-ABI erhöhen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:191
 msgid "Split sandbox functionality into separate zathura-sandbox binary"
 msgstr ""
+"Sandbox-Funktionalität in separate zathura-sandbox-Binärdatei aufteilen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:192
 msgid "Split off new command bjump from blist"
-msgstr ""
+msgstr "Neuen Befehl bjump von blist abspalten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:193
 msgid "Add initial landlock support to sandbox"
-msgstr ""
+msgstr "Erste Landlock-Unterstützung zur Sandbox hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:194
 msgid "Fix repeated search"
-msgstr ""
+msgstr "Wiederholte Suche beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:195
 msgid "Implement jumplist command"
-msgstr ""
+msgstr "Befehl jumplist implementieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:196
 msgid "Fix issues with document with multiple page sizes"
-msgstr ""
+msgstr "Probleme mit Dokumenten mit mehreren Seitengrößen beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:202
 msgid "Move to Github"
-msgstr ""
+msgstr "Zu GitHub wechseln"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:203
 msgid "Reduce minimum glib version"
-msgstr ""
+msgstr "Minimale glib-Version reduzieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:204
 msgid "Remove normal sandbox mode"
-msgstr ""
+msgstr "Normalen Sandbox-Modus entfernen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:210
 msgid "Compatibility with girara 0.4.3"
-msgstr ""
+msgstr "Kompatibilität mit girara 0.4.3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:211
 msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
+"Einstellung highlight-transparency entfernen. Stattdessen die Alpha-"
+"Komponente von highlight-color, highlight-active-color und highlight-fg "
+"setzen."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:212
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
 msgstr ""
+"Einstellung smooth-reload entfernen. Sanftes Neuladen ist jetzt immer "
+"aktiviert."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:213
 msgid ""
 "Remove plain database backend. The sqlite database backend imports the data "
 "from the plain database the first time. sqlite is now a hard dependency."
 msgstr ""
+"Einfaches Datenbank-Backend entfernen. Das sqlite-Datenbank-Backend "
+"importiert die Daten beim ersten Mal aus der einfachen Datenbank. sqlite ist "
+"jetzt eine feste Abhängigkeit."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:214
 msgid "Fix a segfault if dbus is not enabled."
-msgstr ""
+msgstr "Segfault beheben, wenn dbus nicht aktiviert ist."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:224
 msgid "Add support to display signatures"
-msgstr ""
+msgstr "Unterstützung für die Anzeige von Signaturen hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:225
 msgid "Fix clearing of highlighted links"
-msgstr ""
+msgstr "Löschen hervorgehobener Links beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:226
 msgid "Make some key modifiers configurable"
-msgstr ""
+msgstr "Einige Tastenmodifikatoren konfigurierbar machen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:227
 msgid "Fix text selection on rotated pages"
-msgstr ""
+msgstr "Textauswahl auf gedrehten Seiten beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:228
 msgid "Fix gap between pages"
-msgstr ""
+msgstr "Abstand zwischen Seiten beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:229
 #: data/org.pwmt.zathura.metainfo.xml.in:236
@@ -360,151 +383,150 @@ msgstr ""
 #: data/org.pwmt.zathura.metainfo.xml.in:482
 #: data/org.pwmt.zathura.metainfo.xml.in:518
 msgid "Update translations"
-msgstr ""
+msgstr "Übersetzungen aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:234
 msgid "Improve text selection"
-msgstr ""
+msgstr "Textauswahl verbessern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:241
 msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
-msgstr ""
+msgstr "`seccomp`: glibc auf Fallback zu clone statt clone3 umstellen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:246
 msgid "`magic` is now a required dependency"
-msgstr ""
+msgstr "`magic` ist jetzt eine notwendige Abhängigkeit"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:252
 msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
-msgstr ""
+msgstr "Erweiterungen '$f' und '$p' zur Kurzfunktion 'exec' hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:253
 msgid "Fix build with meson 0.60"
-msgstr ""
+msgstr "Build mit meson 0.60 beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:254
 msgid "Add :source command"
-msgstr ""
+msgstr "Befehl :source hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:261
 msgid "Account for page padding in full scroll"
-msgstr ""
+msgstr "Seitenabstand beim vollständigen Scrollen berücksichtigen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:262
-#, fuzzy
 msgid "Add foreground color for links"
-msgstr "Vordergrund für eine Markierung"
+msgstr "Vordergrundfarbe für Links hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:263
 msgid "Add :save and :save! aliases for :write and :write!"
-msgstr ""
+msgstr ":save- und :save!-Aliasse für :write und :write! hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:270
 msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
-msgstr ""
+msgstr "Ungültigen Zoom beim Öffnen mit Option 'adjust-open width' beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:277
 msgid "Add --find option to the CLI"
-msgstr ""
+msgstr "Option --find zur CLI hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:278
 msgid "Support recolor with transparency"
-msgstr ""
+msgstr "Umfärben mit Transparenz unterstützen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:285
 msgid "Fix step size for mouse wheel scrolling"
-msgstr ""
+msgstr "Schrittweite für Mausrad-Scrollen beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:286
 msgid "Lookup fileinfo from database by hash as fallback"
-msgstr ""
+msgstr "fileinfo als Fallback per Hash aus Datenbank nachschlagen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:293
 msgid "Fix expansion of ~ and ~user when opening files"
-msgstr ""
+msgstr "Erweiterung von ~ und ~user beim Öffnen von Dateien beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:294
 msgid "Add fish completion"
-msgstr ""
+msgstr "fish-Vervollständigung hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:296
 msgid "Drop support for old libsynctex"
-msgstr ""
+msgstr "Unterstützung für alte libsynctex entfernen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:308
 msgid "Add bash and zsh completions"
-msgstr ""
+msgstr "bash- und zsh-Vervollständigungen hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:309
 msgid "Add RTL layout of pages"
-msgstr ""
+msgstr "RTL-Seitenlayout hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:316
 msgid "Port to newer libsynctex"
-msgstr ""
+msgstr "Auf neuere libsynctex portieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:323
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Verbesserte HiDPI-Unterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:324
 msgid "Display page labels"
-msgstr ""
+msgstr "Seitenbezeichnungen anzeigen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:325
 msgid "Add experimental seccomp filters"
-msgstr ""
+msgstr "Experimentelle seccomp-Filter hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:326
 msgid "Replace build system with meson"
-msgstr ""
+msgstr "Build-System durch meson ersetzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:333
 msgid "Fix memory leaks"
-msgstr ""
+msgstr "Speicherlecks beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:334
 msgid "Rework plugin initialization"
-msgstr ""
+msgstr "Plugin-Initialisierung überarbeiten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:341
 msgid "Improved logging"
-msgstr ""
+msgstr "Verbessertes Logging"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:342
 msgid "Improve page mode toggling"
-msgstr ""
+msgstr "Umschalten des Seitenmodus verbessern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:343
 #: data/org.pwmt.zathura.metainfo.xml.in:350
 #: data/org.pwmt.zathura.metainfo.xml.in:357
 #: data/org.pwmt.zathura.metainfo.xml.in:365
 msgid "Several fixes and improvements"
-msgstr ""
+msgstr "Mehrere Fehlerbehebungen und Verbesserungen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:349
 msgid "Parallel build of manpages"
-msgstr ""
+msgstr "Paralleler Build von Manpages"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:355
 msgid "Build even without SyncTex"
-msgstr ""
+msgstr "Auch ohne SyncTex bauen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:356
 msgid "Children should not fork"
-msgstr ""
+msgstr "Kindprozesse sollten nicht forken"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:362
 msgid "Recent files support"
-msgstr ""
+msgstr "Unterstützung für zuletzt verwendete Dateien"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:363
 msgid "Substitute home with tilde"
-msgstr ""
+msgstr "Home durch Tilde ersetzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:364
 msgid "Open URLs"
-msgstr ""
+msgstr "URLs öffnen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:367
 #: data/org.pwmt.zathura.metainfo.xml.in:377
@@ -513,794 +535,793 @@ msgstr ""
 #: data/org.pwmt.zathura.metainfo.xml.in:598
 #: data/org.pwmt.zathura.metainfo.xml.in:615
 msgid "Update build system"
-msgstr ""
+msgstr "Build-System aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:372
 msgid "Store tmp files in only one location"
-msgstr ""
+msgstr "tmp-Dateien nur an einem Ort speichern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:373
 msgid "Print target selection"
-msgstr ""
+msgstr "Zielauswahl drucken"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:374
 msgid "Allow .dylib plugins on Mac OS X"
-msgstr ""
+msgstr ".dylib-Plugins unter Mac OS X erlauben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:375
 msgid "Fix dual page render breakage of adjust_window"
-msgstr ""
+msgstr "Fehler bei Doppelseiten-Darstellung von adjust_window beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:382
 msgid "Resolve memory leak while reloading file"
-msgstr ""
+msgstr "Speicherleck beim Neuladen von Dateien beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:383
 msgid "Prevent segmentation fault when smooth zooming with mouse"
-msgstr ""
+msgstr "Segmentation Fault beim sanften Zoomen mit Maus verhindern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:384
 msgid "Cache thumbnails to support smooth zooming"
-msgstr ""
+msgstr "Vorschaubilder für sanftes Zoomen zwischenspeichern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:385
 msgid "Check scale value correctness"
-msgstr ""
+msgstr "Korrektheit des Skalierungswerts prüfen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:392
 msgid "Fix segmentation fault caused by bidirectional scrolling"
-msgstr ""
+msgstr "Durch bidirektionales Scrollen verursachten Segmentation Fault beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:393
 msgid "Add SyntaxView"
-msgstr ""
+msgstr "SyntaxView hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:398
 msgid "Print debug information to D-Bus"
-msgstr ""
+msgstr "Debug-Informationen auf D-Bus ausgeben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:399
 msgid "Fix scroll down/up in dual-page mode"
-msgstr ""
+msgstr "Scrollen hoch/runter im Doppelseitenmodus beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:400
 msgid "Option to hide notification after selection"
-msgstr ""
+msgstr "Option zum Ausblenden von Benachrichtigungen nach Auswahl"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:401
 msgid "Introduce cache directory"
-msgstr ""
+msgstr "Cache-Verzeichnis einführen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:402
 msgid "Introduce smooth-scroll and smooth-zoom"
-msgstr ""
+msgstr "smooth-scroll und smooth-zoom einführen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:403
 msgid "Add vim style exec"
-msgstr ""
+msgstr "exec im vim-Stil hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:404
 msgid "Option to ignore images while recoloring"
-msgstr ""
+msgstr "Option zum Ignorieren von Bildern beim Umfärben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:405
 msgid "Take advantage of shared or system SyncTex parser library"
-msgstr ""
+msgstr "Gemeinsame oder systemweite SyncTex-Parserbibliothek nutzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:407
 #: data/org.pwmt.zathura.metainfo.xml.in:670
 #: data/org.pwmt.zathura.metainfo.xml.in:680
 #: data/org.pwmt.zathura.metainfo.xml.in:691
 msgid "Several fixes"
-msgstr ""
+msgstr "Mehrere Fehlerbehebungen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:412
 msgid "Update dependency version of girara"
-msgstr ""
+msgstr "Abhängigkeitsversion von girara aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:417
 msgid "Better SyncTex support"
-msgstr ""
+msgstr "Bessere SyncTex-Unterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:418
 msgid "Change cursor if mouse is over link"
-msgstr ""
+msgstr "Cursor ändern, wenn Maus über Link ist"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:419
 msgid "Colored build output"
-msgstr ""
+msgstr "Farbige Build-Ausgabe"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:420
 msgid "Minor bug fixes"
-msgstr ""
+msgstr "Kleinere Fehlerbehebungen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:421
 msgid "Sphinx documentation"
-msgstr ""
+msgstr "Sphinx-Dokumentation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:427
 msgid "Full SyncTex support"
-msgstr ""
+msgstr "Volle SyncTex-Unterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:428
 msgid "D-Bus interface"
-msgstr ""
+msgstr "D-Bus-Schnittstelle"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:429
 msgid "Simple vim plugin for SyncTex support"
-msgstr ""
+msgstr "Einfaches vim-Plugin für SyncTex-Unterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:430
 msgid "Add shortcuts for ^C and Esc in all modes"
-msgstr ""
+msgstr "Tastenkürzel für ^C und Esc in allen Modi hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:431
 msgid "Use the actual mode in mode toggle calls"
-msgstr ""
+msgstr "Aktuellen Modus bei Modus-Umschaltaufrufen verwenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:432
 msgid "Only copy selected text in normal and fullscreen mode"
-msgstr ""
+msgstr "Nur ausgewählten Text im Normal- und Vollbildmodus kopieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:433
 msgid "Translate error messages"
-msgstr ""
+msgstr "Fehlermeldungen übersetzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:434
 msgid "Correctly safe print setting state"
-msgstr ""
+msgstr "Status der Druckeinstellungen korrekt speichern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:435
 msgid "Add --mode option"
-msgstr ""
+msgstr "Option --mode hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:436
 msgid "Expose more properties via D-Bus"
-msgstr ""
+msgstr "Mehr Eigenschaften per D-Bus verfügbar machen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:437
 msgid "Center pages"
-msgstr ""
+msgstr "Seiten zentrieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:438
 msgid "Replace glib memory functions with try version"
-msgstr ""
+msgstr "glib-Speicherfunktionen durch try-Version ersetzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:439
 msgid "Align highlighted rectangles correctly"
-msgstr ""
+msgstr "Hervorgehobene Rechtecke korrekt ausrichten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:440
 msgid "Implement G and gg for index mode"
-msgstr ""
+msgstr "G und gg für Indexmodus implementieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:441
 msgid "Implement TOGGLE for sc_navigate_index"
-msgstr ""
+msgstr "TOGGLE für sc_navigate_index implementieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
-msgstr ""
+msgstr "Horizontale Position beim Scrollen zu PAGE_TOP/BOTTOM beibehalten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:443
 msgid "Implement shortcuts for scrolling to page top/bottom"
-msgstr ""
+msgstr "Tastenkürzel zum Scrollen zu Seitenanfang/-ende implementieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:444
 msgid "Set position on document load only if no page was specified"
-msgstr ""
+msgstr "Position beim Laden nur setzen, wenn keine Seite angegeben wurde"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:445
 msgid "Bail out early if we get TOP or BOTTOM"
-msgstr ""
+msgstr "Früh abbrechen, wenn TOP oder BOTTOM erreicht wird"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:446
 msgid "Replace fullscreen mode with presentation mode"
-msgstr ""
+msgstr "Vollbildmodus durch Präsentationsmodus ersetzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:447
 msgid "Remove GTK+2 support"
-msgstr ""
+msgstr "GTK+2-Unterstützung entfernen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:448
 #: data/org.pwmt.zathura.metainfo.xml.in:454
 #: data/org.pwmt.zathura.metainfo.xml.in:466
 msgid "Update documentation"
-msgstr ""
+msgstr "Dokumentation aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:455
 msgid "Resolve layout problems"
-msgstr ""
+msgstr "Layout-Probleme beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:460
 msgid "Use GTK+3 by default"
-msgstr ""
+msgstr "GTK+3 standardmäßig verwenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:461
 msgid "Rewritten render logic"
-msgstr ""
+msgstr "Neu geschriebene Render-Logik"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:462
 msgid "Fixed page refresh in certain situations"
-msgstr ""
+msgstr "Seitenaktualisierung in bestimmten Situationen behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:463
 msgid "Make the X clipboard buffer"
-msgstr ""
+msgstr "X-Zwischenablagepuffer verwenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:464
 msgid "Allow number in quickmarks"
-msgstr ""
+msgstr "Zahlen in Schnellmarken erlauben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:465
 msgid "Workaround for print quality issues"
-msgstr ""
+msgstr "Workaround für Probleme mit Druckqualität"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:472
 msgid "Resolve memory leak"
-msgstr ""
+msgstr "Speicherleck beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:473
 msgid "Report missing plugin or unsupported file types"
-msgstr ""
+msgstr "Fehlendes Plugin oder nicht unterstützte Dateitypen melden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:474
 msgid "More vim-like search behaviour"
-msgstr ""
+msgstr "Vim-ähnlicheres Suchverhalten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:475
 msgid "Introduced show-{h,v}-scrollbar settings"
-msgstr ""
+msgstr "Einstellungen show-{h,v}-scrollbar eingeführt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:476
 msgid "Enhancement of the jumplist mechanism"
-msgstr ""
+msgstr "Verbesserung des Sprunglisten-Mechanismus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:477
 msgid "Use jumplists with marks"
-msgstr ""
+msgstr "Sprunglisten mit Markierungen verwenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:478
 msgid "More vim-like jump behaviour"
-msgstr ""
+msgstr "Vim-ähnlicheres Sprungverhalten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:479
 msgid "Improved bisect"
-msgstr ""
+msgstr "Bisect verbessert"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:480
 msgid "Update page number on mouse scroll"
-msgstr ""
+msgstr "Seitennummer beim Scrollen mit der Maus aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:481
 msgid "Introduced window-title-page option"
-msgstr ""
+msgstr "Option window-title-page eingeführt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:487
 msgid "LRU caching algorithm"
-msgstr ""
+msgstr "LRU-Caching-Algorithmus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:488
 msgid "Bisect functionality"
-msgstr ""
+msgstr "Bisect-Funktionalität"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:489
 msgid "Allow negative offsets"
-msgstr ""
+msgstr "Negative Offsets erlauben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:490
 msgid "Option --page to open at the specified page"
-msgstr ""
+msgstr "Option --page zum Öffnen auf bestimmter Seite"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:491
 msgid "Scale vertical/horizontal scrolling in respect to the buffer"
-msgstr ""
+msgstr "Vertikales/horizontales Scrollen in Bezug auf den Puffer skalieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:492
 msgid "Add statusbar-basename option"
-msgstr ""
+msgstr "Option statusbar-basename hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:493
 msgid "Implement colors for 'Loading...'-text"
-msgstr ""
+msgstr "Farben für den Text 'Loading...' implementieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:494
 msgid "Don't render same page multiple times"
-msgstr ""
+msgstr "Dieselbe Seite nicht mehrfach rendern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:495
 msgid "Use libmagic if available"
-msgstr ""
+msgstr "libmagic verwenden, falls verfügbar"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:496
 #: data/org.pwmt.zathura.metainfo.xml.in:507
 msgid "Some other bug fixes and updated translations"
-msgstr ""
+msgstr "Einige weitere Fehlerbehebungen und aktualisierte Übersetzungen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:501
 msgid "Implemented jumplist (^o, ^i)"
-msgstr ""
+msgstr "Sprungliste implementiert (^o, ^i)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:502
 msgid "Update current page when following links"
-msgstr ""
+msgstr "Aktuelle Seite beim Folgen von Links aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:503
 msgid "Scroll horizontally with shift and mouse wheel"
-msgstr ""
+msgstr "Horizontal mit Umschalt und Mausrad scrollen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:504 zathura/config.c:572
 msgid "Page aware scrolling"
 msgstr "Seiten beim Scrollen beachten"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:505
-#, fuzzy
 msgid "SyncTeX forward synchronisation"
-msgstr "Unterstützung für SyncTeX-Synchronisation."
+msgstr "SyncTeX-Vorwärtssynchronisation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:506
 msgid "Update shortcuts"
-msgstr ""
+msgstr "Tastenkürzel aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:512
-#, fuzzy
 msgid "SyncTeX backwards synchronisation"
-msgstr "Unterstützung für SyncTeX-Synchronisation."
+msgstr "SyncTeX-Rückwärtssynchronisation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:513
 msgid "Fix request-page-setup"
-msgstr ""
+msgstr "request-page-setup beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:514
 msgid "Fix window adustment"
-msgstr ""
+msgstr "Fensteranpassung beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:515
 msgid "Better GTK3 integration"
-msgstr ""
+msgstr "Bessere GTK3-Integration"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:516
 msgid "Added first-page-colum setting"
-msgstr ""
+msgstr "Einstellung first-page-colum hinzugefügt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:517
 msgid "Added recolor-keephue setting"
-msgstr ""
+msgstr "Einstellung recolor-keephue hinzugefügt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:523
 msgid "New languages"
-msgstr ""
+msgstr "Neue Sprachen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:524
 msgid "Better print support"
-msgstr ""
+msgstr "Bessere Druckunterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:525
 msgid "Improve document links"
-msgstr ""
+msgstr "Dokumentlinks verbessern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:526
 msgid "Render last-viewed pages with a higher priority"
-msgstr ""
+msgstr "Zuletzt angesehene Seiten mit höherer Priorität rendern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:527
 msgid "Export images and attachments"
-msgstr ""
+msgstr "Bilder und Anhänge exportieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:528
 msgid "Open multiple documents"
-msgstr ""
+msgstr "Mehrere Dokumente öffnen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:529
 msgid "Plugin manager"
-msgstr ""
+msgstr "Plugin-Verwaltung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:530
 msgid "Several memory leaks and small bugs"
-msgstr ""
+msgstr "Mehrere Speicherlecks und kleine Fehler"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:535
 msgid "Add 'open-first-page' setting"
-msgstr ""
+msgstr "Einstellung 'open-first-page' hinzufügen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:536
 msgid "Free invisible pages after specific time"
-msgstr ""
+msgstr "Unsichtbare Seiten nach bestimmter Zeit freigeben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:537
 msgid "Set log level via command line"
-msgstr ""
+msgstr "Log-Level über Befehlszeile setzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:538
 msgid "Update GTK3 support"
-msgstr ""
+msgstr "GTK3-Unterstützung aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:539
 msgid "Completion for :write command"
-msgstr ""
+msgstr "Vervollständigung für Befehl :write"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Simplified plugin loading"
-msgstr ""
+msgstr "Vereinfachtes Laden von Plugins"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:541
 msgid "Allow counter-clockwise rotation"
-msgstr ""
+msgstr "Drehung gegen den Uhrzeigersinn erlauben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:542
 msgid "Changeable page-padding"
-msgstr ""
+msgstr "Änderbares page-padding"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:543
 msgid "Introduced girara version check"
-msgstr ""
+msgstr "girara-Versionsprüfung eingeführt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:544
 msgid "Detect sqlite automatically"
-msgstr ""
+msgstr "sqlite automatisch erkennen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:545
 msgid "Update window title"
-msgstr ""
+msgstr "Fenstertitel aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:550
 msgid "Macro to register plugins"
-msgstr ""
+msgstr "Makro zum Registrieren von Plugins"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:551
 msgid "Fix issues with the display of the current page number"
-msgstr ""
+msgstr "Probleme mit der Anzeige der aktuellen Seitennummer beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:552
 msgid "Ability to scroll to the full left or full right border"
-msgstr ""
+msgstr "Möglichkeit, vollständig zum linken oder rechten Rand zu scrollen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:553
 msgid "Reimplement the render thread with GThreadPool"
-msgstr ""
+msgstr "Render-Thread mit GThreadPool neu implementieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:554
 msgid "Use the correct color to highlight results"
-msgstr ""
+msgstr "Korrekte Farbe zum Hervorheben von Ergebnissen verwenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:555
 msgid "Support to use both database backends"
-msgstr ""
+msgstr "Unterstützung zur Nutzung beider Datenbank-Backends"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:556
 msgid "Additional notifications on errors"
-msgstr ""
+msgstr "Zusätzliche Benachrichtigungen bei Fehlern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:557
 msgid "Option to hide hidden directories"
-msgstr ""
+msgstr "Option zum Ausblenden versteckter Verzeichnisse"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:558
 msgid "Do not overwrite existing files with :write"
-msgstr ""
+msgstr "Bestehende Dateien mit :write nicht überschreiben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:559
 msgid "Fix flicker in text selection"
-msgstr ""
+msgstr "Flackern bei der Textauswahl beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:560
 msgid "Resolved several memory leaks"
-msgstr ""
+msgstr "Mehrere Speicherlecks behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:566
 msgid "Complete rewrite of zathura"
-msgstr ""
+msgstr "Vollständige Neuschreibung von zathura"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:567
 msgid "Uses the girara interface library"
-msgstr ""
+msgstr "Verwendet die girara-Schnittstellenbibliothek"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:568
 msgid "Plugin system for different document types"
-msgstr ""
+msgstr "Plugin-System für verschiedene Dokumenttypen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:569
 msgid "Better configuration"
-msgstr ""
+msgstr "Bessere Konfiguration"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:570
 msgid "Quickmarks"
-msgstr ""
+msgstr "Schnellmarken"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:575
 msgid "Ignoring MOD5 which is used on some keyboards"
-msgstr ""
+msgstr "MOD5 ignorieren, das auf einigen Tastaturen verwendet wird"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:576
 msgid "Fix scroll_wrap (#52)"
-msgstr ""
+msgstr "scroll_wrap beheben (#52)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:577
 msgid "Don't invert y coordinates (#42)"
-msgstr ""
+msgstr "y-Koordinaten nicht invertieren (#42)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:578
 msgid "Certain memory leaks and other small issues"
-msgstr ""
+msgstr "Einige Speicherlecks und andere kleine Probleme"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:583
 msgid "Fixed bookmark handling"
-msgstr ""
+msgstr "Lesezeichenbehandlung behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:584
 msgid "Support :digits"
-msgstr ""
+msgstr ":digits unterstützen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:585
 msgid "Save zoom level per file"
-msgstr ""
+msgstr "Zoomstufe pro Datei speichern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:586
 msgid "Fix backwards searching"
-msgstr ""
+msgstr "Rückwärtssuche beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:587
 msgid "Fix blinking while switching pages"
-msgstr ""
+msgstr "Flackern beim Seitenwechsel beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:588
 msgid "Fix input issues in fullscreen mode"
-msgstr ""
+msgstr "Eingabeprobleme im Vollbildmodus beheben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:589
 #: data/org.pwmt.zathura.metainfo.xml.in:599
 #: data/org.pwmt.zathura.metainfo.xml.in:613
 msgid "Fixed several memory leaks"
-msgstr ""
+msgstr "Mehrere Speicherlecks behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:594
 msgid "Update text searching"
-msgstr ""
+msgstr "Textsuche aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:595
 msgid "Support for poppler >= 0.15"
-msgstr ""
+msgstr "Unterstützung für poppler >= 0.15"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:596
 msgid "Fixed print command with multiple arguments"
-msgstr ""
+msgstr "Druckbefehl mit mehreren Argumenten behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:597
 msgid "Fixed GOptionEntries"
-msgstr ""
+msgstr "GOptionEntries behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:600
 msgid "Fixed segmentation faults"
-msgstr ""
+msgstr "Segmentation Faults behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:605
 msgid "Wrap around scrolling"
-msgstr ""
+msgstr "Umlaufendes Scrollen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:606
 msgid "Display scroll percentage in statusbar"
-msgstr ""
+msgstr "Scroll-Prozentsatz in Statusleiste anzeigen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:607
 msgid "More familiar zoom key bindings"
-msgstr ""
+msgstr "Vertrautere Tastenkürzel für Zoom"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:608
 msgid "Support reading files from stdin"
-msgstr ""
+msgstr "Lesen von Dateien aus stdin unterstützen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:609
 msgid "Open command with appended current file path"
-msgstr ""
+msgstr "Befehl open mit angehängtem aktuellen Dateipfad"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:610
 msgid "Following XDG specification"
-msgstr ""
+msgstr "XDG-Spezifikation folgen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:611
 msgid "Colored window and view port"
-msgstr ""
+msgstr "Farbiges Fenster und Ansichtsbereich"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:612
 msgid "File reloading fix"
-msgstr ""
+msgstr "Behebung des Neuladens von Dateien"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:614
 #: data/org.pwmt.zathura.metainfo.xml.in:636
 #: data/org.pwmt.zathura.metainfo.xml.in:653
 #: data/org.pwmt.zathura.metainfo.xml.in:662
 msgid "Update manpage"
-msgstr ""
+msgstr "Manpage aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:620
 msgid "Fixed critical usability bug"
-msgstr ""
+msgstr "Kritischen Bedienbarkeitsfehler behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:625
 msgid "Improved and fixed completion"
-msgstr ""
+msgstr "Vervollständigung verbessert und korrigiert"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:626
 msgid "Optional parameters for the print command"
-msgstr ""
+msgstr "Optionale Parameter für den Druckbefehl"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:627
 #: data/org.pwmt.zathura.metainfo.xml.in:679
 msgid "Escape filenames"
-msgstr ""
+msgstr "Dateinamen escapen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:628
 msgid "Resolved some memory leaks"
-msgstr ""
+msgstr "Einige Speicherlecks behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:629
 msgid "Global configuration file"
-msgstr ""
+msgstr "Globale Konfigurationsdatei"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:630
 msgid "Specify configuration directory"
-msgstr ""
+msgstr "Konfigurationsverzeichnis angeben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:631
 msgid "Configureable modes"
-msgstr ""
+msgstr "Konfigurierbare Modi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:632
 msgid "Smooth scrolling"
-msgstr ""
+msgstr "Sanftes Scrollen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:633
 msgid "Extended statusbar string manipulation"
-msgstr ""
+msgstr "Erweiterte Zeichenkettenmanipulation der Statusleiste"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:634
 msgid "`function`"
-msgstr ""
+msgstr "`function`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:635
 #: data/org.pwmt.zathura.metainfo.xml.in:651
 msgid "Strip executable"
-msgstr ""
+msgstr "Ausführbare Datei strippen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:641
 msgid "Change window title to filename"
-msgstr ""
+msgstr "Fenstertitel auf Dateinamen ändern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:642
 msgid "Fixation of the URI command"
-msgstr ""
+msgstr "Korrektur des URI-Befehls"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:643
 msgid "Update the behaviour of sc_scroll"
-msgstr ""
+msgstr "Verhalten von sc_scroll aktualisieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:644
 msgid "Half/Full-page scrolling"
-msgstr ""
+msgstr "Scrollen um halbe/ganze Seite"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:645
 msgid "Check document health in sc_reload"
-msgstr ""
+msgstr "Dokumentzustand in sc_reload prüfen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:646
 msgid "`tabbed` support"
-msgstr ""
+msgstr "`tabbed`-Unterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:647
 msgid "Define look with the set function"
-msgstr ""
+msgstr "Aussehen mit der Funktion set definieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:648
 msgid "Implemented map function"
-msgstr ""
+msgstr "map-Funktion implementiert"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:649
 msgid "`zathurarc` file"
-msgstr ""
+msgstr "`zathurarc`-Datei"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:650
 msgid "Prevent buffer overflow in realpath"
-msgstr ""
+msgstr "Pufferüberlauf in realpath verhindern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:652
 msgid "Key evaluation when buffer is not empty"
-msgstr ""
+msgstr "Tastenauswertung, wenn Puffer nicht leer ist"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:658
 msgid "Use GFileMonitor instead of inotify"
-msgstr ""
+msgstr "GFileMonitor statt inotify verwenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:659
 msgid "Added document reload shortcut"
-msgstr ""
+msgstr "Tastenkürzel zum Neuladen von Dokumenten hinzugefügt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:660
 msgid "Fixed toggle index"
-msgstr ""
+msgstr "Umschalten des Index behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:661
 msgid "Fixed print command"
-msgstr ""
+msgstr "Druckbefehl behoben"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:667
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "Vollbildmodus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:668
 msgid "Correct search result highlighting"
-msgstr ""
+msgstr "Korrekte Hervorhebung von Suchergebnissen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:669
 msgid "Document password dialog"
-msgstr ""
+msgstr "Passwortdialog für Dokumente"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:675
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
 msgstr ""
+"Mausunterstützung (Scrollen, Markieren und Text in Zwischenablage kopieren)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:676
 msgid "Keyboard navigation in the index view"
-msgstr ""
+msgstr "Tastaturnavigation in der Indexansicht"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:677
 msgid "Different goto modes"
-msgstr ""
+msgstr "Verschiedene goto-Modi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:678
 msgid "Auto adjustment when opening a document"
-msgstr ""
+msgstr "Automatische Anpassung beim Öffnen eines Dokuments"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:685
 msgid "Reload modified document automatically"
-msgstr ""
+msgstr "Geändertes Dokument automatisch neu laden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:686
 msgid "Recolor the page instead of inverting the colors"
-msgstr ""
+msgstr "Seite umfärben statt Farben zu invertieren"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:687
 msgid "Working search function"
-msgstr ""
+msgstr "Funktionierende Suchfunktion"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:688
 msgid "Show and hide document information"
-msgstr ""
+msgstr "Dokumentinformationen anzeigen und ausblenden"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:689
 msgid "Follow internal links or open URI in a predefined browser"
-msgstr ""
+msgstr "Internen Links folgen oder URI in vordefiniertem Browser öffnen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:690
 msgid "Save the document"
-msgstr ""
+msgstr "Dokument speichern"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:696
 msgid "Complete new, re-written interface"
-msgstr ""
+msgstr "Vollständig neue, neu geschriebene Oberfläche"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:697
 msgid "Multiple printer support"
-msgstr ""
+msgstr "Unterstützung für mehrere Drucker"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:698
 msgid "Command history"
-msgstr ""
+msgstr "Befehlsverlauf"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:699
 msgid "Show document index"
-msgstr ""
+msgstr "Dokumentenindex anzeigen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:700
 msgid "Centered view"
-msgstr ""
+msgstr "Zentrierte Ansicht"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:701
 msgid "Add, save and open bookmarks"
-msgstr ""
+msgstr "Lesezeichen hinzufügen, speichern und öffnen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:702
 msgid "Marker support"
-msgstr ""
+msgstr "Marker-Unterstützung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:703
 msgid "Highlight search results"
@@ -1308,23 +1329,23 @@ msgstr "Hebe Suchergebnisse hervor"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:704
 msgid "Buffered commands"
-msgstr ""
+msgstr "Gepufferte Befehle"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:705
 msgid "`set` Function"
-msgstr ""
+msgstr "Funktion `set`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:706
 msgid "Revert video function"
-msgstr ""
+msgstr "Videofunktion zurücksetzen"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:707
 msgid "Command completion"
-msgstr ""
+msgstr "Befehlsvervollständigung"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:712
 msgid "Initial release"
-msgstr ""
+msgstr "Erste Veröffentlichung"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
@@ -1665,11 +1686,11 @@ msgstr "Hintergrundfarbe des Indexmodus (aktives Element)"
 
 #: zathura/config.c:492
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Vordergrundfarbe der Bildlaufleiste"
 
 #: zathura/config.c:493
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Hintergrundfarbe der Bildlaufleiste"
 
 #: zathura/config.c:496
 msgid "Initial window width"
@@ -1721,11 +1742,11 @@ msgstr "Vergrößerungsstufe"
 
 #: zathura/config.c:510
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Horizontaler Abstand zwischen Seiten"
 
 #: zathura/config.c:512
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Vertikaler Abstand zwischen Seiten"
 
 #: zathura/config.c:514
 msgid "Number of pages per row"
@@ -1829,7 +1850,7 @@ msgstr ""
 
 #: zathura/config.c:568
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "Beim Umfärben Helligkeit anpassen"
 
 #: zathura/config.c:570
 msgid "Wrap scrolling"

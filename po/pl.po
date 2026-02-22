@@ -23,7 +23,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
-msgstr ""
+msgstr "pwmt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
