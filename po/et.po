@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-02 20:56+0100\n"
+"POT-Creation-Date: 2026-02-22 19:33+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2012\n"
 "Language-Team: Estonian (http://app.transifex.com/pwmt/zathura/language/"
@@ -20,15 +20,15 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
-msgstr ""
+msgstr "pwmt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
-msgstr ""
+msgstr "Zathura"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:5
 msgid "Minimalistic document viewer"
-msgstr ""
+msgstr "Minimalistlik dokumendivaataja"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:13
 msgid ""
@@ -37,1480 +37,1501 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura on väga kohandatav ja funktsionaalne dokumendivaataja. See pakub "
+"minimalistlikku ja ruumisäästlikku kasutajaliidest ning lihtsat kasutust, "
+"mis keskendub peamiselt klaviatuuriga töötamisele. Zathura võimaldab "
+"dokumente täielikult vaadata ja neis navigeerida ilma hiirt kasutamata."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:20
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
+"Zathurat saab laiendada, et toetada mitut dokumendivormingut pluginate abil. "
+"Muud võimalused hõlmavad:"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "SyncTeX edasi- ja tagasisünkroonimise tugi."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:26
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "Kiirmärgid ja järjehoidjad."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:27
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Dokumendi automaatne taaslaadimine."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:41
+#: data/org.pwmt.zathura.metainfo.xml.in:44
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "PDF-faili lugemine"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:45
+#: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "Faili avamine käsuga `open`"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:49
+#: data/org.pwmt.zathura.metainfo.xml.in:52
 msgid "Following links"
-msgstr ""
+msgstr "Linkide järgimine"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:53
+#: data/org.pwmt.zathura.metainfo.xml.in:56
 msgid "Listing and selecting bookmakrs"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:69
-msgid "Switch to date-based version numbers"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:70
-msgid "Fix warnings from CSS generation (#824)"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:71
-msgid "Apply correect shacling when recoloring (#836)"
-msgstr ""
+msgstr "Järjehoidjate loendamine ja valimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:72
-msgid "Make sure jumplist stays valid after close (#835)"
+msgid ""
+"Implement single page layout and equal height/width modes (#706, #724, #447, "
+"#289)"
 msgstr ""
+"Rakenda üheleheline paigutus ja võrdse kõrguse/laiuse režiimid (#706, #724, "
+"#447, #289)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:73
-msgid "Disable message in incremental search (#227, #847)"
-msgstr ""
+msgid "Use single page layout for presentation mode (#686, #666)"
+msgstr "Kasuta esitluse režiimis ühelehelist paigutust (#686, #666)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:74
-msgid "Fix seccomp rules with musl (#843)"
-msgstr ""
+msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
+msgstr "Paranda blurry rendering ja repeated loading messages (#864, #860)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:75
+msgid "Allow to disable copying to clipboard (#835)"
+msgstr "Luba et disable copying et clipboard (#835)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:76
+msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
+msgstr "Paranda smooth kerimine kasutades Ctrl ja arrow keys (#872)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:93
+msgid ""
+"Fork to background if opening with multiple files only if --fork is "
+"specified (#855)"
+msgstr ""
+"Fork et taust if opening koos multiple failid only if --fork is specified "
+"(#855)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:94
+msgid "Fix handling of PageUp and PageDown (#861)"
+msgstr "Paranda handling PageUp ja PageDown (#861)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:95
+msgid "Fix handling of mappings with special keys (#862)"
+msgstr "Paranda handling mappings koos special keys (#862)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:96
+msgid "Integrate Gtk+-specific parts of girara"
+msgstr "Integrate Gtk+-specific parts girara"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:106
+msgid "Switch to date-based version numbers"
+msgstr "Lülitu et date-based version numbers"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:107
+msgid "Fix warnings from CSS generation (#824)"
+msgstr "Paranda warnings from CSS generation (#824)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:108
+msgid "Apply correct scaling when recoloring (#836)"
+msgstr "Apply correct scaling kui recoloring (#836)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:109
+msgid "Make sure jumplist stays valid after close (#835)"
+msgstr "Veendu, et jumplist stays valid after close (#835)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:110
+msgid "Disable message in incremental search (#227, #847)"
+msgstr "Keela message in incremental otsing (#227, #847)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:111
+msgid "Fix seccomp rules with musl (#843)"
+msgstr "Paranda seccomp rules koos musl (#843)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:112
 msgid ""
 "Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
 "#797, #826)"
 msgstr ""
+"Rakenda custom drawing jaoks dokument widget (#580, #657, #736, #785, #795, "
+"#797, #826)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:95
+#: data/org.pwmt.zathura.metainfo.xml.in:132
 msgid "Switch default database to sqlite and drop plain database"
-msgstr ""
+msgstr "Lülitu default database et sqlite ja drop plain database"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:96
+#: data/org.pwmt.zathura.metainfo.xml.in:133
 msgid "Notify users if no attachments and images are available to export"
-msgstr ""
+msgstr "Notify users if no attachments ja images are available et export"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:97
+#: data/org.pwmt.zathura.metainfo.xml.in:134
 msgid "Make index-* configurable after init (#799)"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:98
-msgid "Support numberic keypad mappings"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:99
-msgid "Provide correct number of pages (#814)"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:100
-msgid "Undo size-allocate callback changes"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:101
-msgid "Fix temporary file nams for better content-type detection"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:110
-msgid "Validate appstream files with appstreamcli"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:111
-msgid "Split page-padding into page-h-padding and page-v-padding"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:112
-msgid "Fix memory leak and callback type error (#767)"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:113
-msgid "Warn if plugins do not support exporting images or attachments (#334)"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:122
-msgid "Add shortcut to open files via file chooser dialog"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:123
-msgid "Refactor rendering of pages"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:124
-msgid "Add lightness adjustment for recolering"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:125
-msgid "Initial support for OpenBSD sandbox"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:130
-msgid "Fix closing of documents"
-msgstr ""
+msgstr "Muuda index-* pärast init'i seadistatavaks (#799)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:135
-msgid "Fix crash when opening documents"
-msgstr ""
+msgid "Support numeric keypad mappings"
+msgstr "Tugi numeric keypad mappings"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:140
-msgid "Fix build on macOS"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:136
+msgid "Provide correct number of pages (#814)"
+msgstr "Provide correct number lehed (#814)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:141
-msgid "Hide page label if the same as page number"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:137
+msgid "Undo size-allocate callback changes"
+msgstr "Võta size-allocate callbacki muudatused tagasi"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:142
-msgid "Cache synctex parser for faster operation"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:138
+msgid "Fix temporary file names for better content-type detection"
+msgstr "Paranda temporary fail names jaoks better content-type detection"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:143
-msgid "Revert changes for documents with multiple page sizes"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:147
+msgid "Validate appstream files with appstreamcli"
+msgstr "Valideeri appstream failid koos appstreamcli"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:144
-#: data/org.pwmt.zathura.metainfo.xml.in:160
-#: data/org.pwmt.zathura.metainfo.xml.in:168
-#: data/org.pwmt.zathura.metainfo.xml.in:182
-#: data/org.pwmt.zathura.metainfo.xml.in:198
-#: data/org.pwmt.zathura.metainfo.xml.in:210
-#: data/org.pwmt.zathura.metainfo.xml.in:218
-#: data/org.pwmt.zathura.metainfo.xml.in:227
-#: data/org.pwmt.zathura.metainfo.xml.in:234
-#: data/org.pwmt.zathura.metainfo.xml.in:242
-#: data/org.pwmt.zathura.metainfo.xml.in:250
-#: data/org.pwmt.zathura.metainfo.xml.in:258
-#: data/org.pwmt.zathura.metainfo.xml.in:265
-#: data/org.pwmt.zathura.metainfo.xml.in:273
-#: data/org.pwmt.zathura.metainfo.xml.in:280
-#: data/org.pwmt.zathura.metainfo.xml.in:290
-#: data/org.pwmt.zathura.metainfo.xml.in:298
-msgid "Various fixes and improvements"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:148
+msgid "Split page-padding into page-h-padding and page-v-padding"
+msgstr "Jaga leht-padding into leht-h-padding ja leht-v-padding"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:149
-msgid "Bump plugin ABI"
-msgstr ""
+msgid "Fix memory leak and callback type error (#767)"
+msgstr "Paranda memory leak ja callback type error (#767)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:154
-msgid "Split sandbox functionality into separate zathura-sandbox binary"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:155
-msgid "Split off new command bjump from blist"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:156
-msgid "Add initial landlock support to sandbox"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:157
-msgid "Fix repeated search"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:158
-msgid "Implement jumplist command"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:150
+msgid "Warn if plugins do not support exporting images or attachments (#334)"
+msgstr "Hoiata, kui pluginad ei toeta piltide või manuste eksporti (#334)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:159
-msgid "Fix issues with document with multiple page sizes"
-msgstr ""
+msgid "Add shortcut to open files via file chooser dialog"
+msgstr "Lisa shortcut et open failid via fail chooser dialog"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:165
-msgid "Move to Github"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:160
+msgid "Refactor rendering of pages"
+msgstr "Refactor rendering lehed"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:166
-msgid "Reduce minimum glib version"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:161
+msgid "Add lightness adjustment for recoloring"
+msgstr "Lisa lightness adjustment jaoks recoloring"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:162
+msgid "Initial support for OpenBSD sandbox"
+msgstr "Initial tugi jaoks AvaBSD sandbox"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:167
+msgid "Fix closing of documents"
+msgstr "Paranda closing documents"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:172
+msgid "Fix crash when opening documents"
+msgstr "Paranda crash kui opening documents"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:177
+msgid "Fix build on macOS"
+msgstr "Paranda koostamine on macOS"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:178
+msgid "Hide page label if the same as page number"
+msgstr "Hide leht label kui same as leht number"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:179
+msgid "Cache SyncTeX parser for faster operation"
+msgstr "Vahemällu SyncTeX parser jaoks faster operation"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:180
+msgid "Revert changes for documents with multiple page sizes"
+msgstr "Pööra tagasi changes jaoks documents koos multiple leht sizes"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:181
+#: data/org.pwmt.zathura.metainfo.xml.in:197
+#: data/org.pwmt.zathura.metainfo.xml.in:205
+#: data/org.pwmt.zathura.metainfo.xml.in:219
+#: data/org.pwmt.zathura.metainfo.xml.in:235
+#: data/org.pwmt.zathura.metainfo.xml.in:247
+#: data/org.pwmt.zathura.metainfo.xml.in:255
+#: data/org.pwmt.zathura.metainfo.xml.in:264
+#: data/org.pwmt.zathura.metainfo.xml.in:271
+#: data/org.pwmt.zathura.metainfo.xml.in:279
+#: data/org.pwmt.zathura.metainfo.xml.in:287
+#: data/org.pwmt.zathura.metainfo.xml.in:295
+#: data/org.pwmt.zathura.metainfo.xml.in:302
+#: data/org.pwmt.zathura.metainfo.xml.in:310
+#: data/org.pwmt.zathura.metainfo.xml.in:317
+#: data/org.pwmt.zathura.metainfo.xml.in:327
+#: data/org.pwmt.zathura.metainfo.xml.in:335
+#: data/org.pwmt.zathura.metainfo.xml.in:343
+#: data/org.pwmt.zathura.metainfo.xml.in:350
+#: data/org.pwmt.zathura.metainfo.xml.in:357
+#: data/org.pwmt.zathura.metainfo.xml.in:365
+#: data/org.pwmt.zathura.metainfo.xml.in:404
+#: data/org.pwmt.zathura.metainfo.xml.in:417
+#: data/org.pwmt.zathura.metainfo.xml.in:527
+#: data/org.pwmt.zathura.metainfo.xml.in:664
+#: data/org.pwmt.zathura.metainfo.xml.in:674
+#: data/org.pwmt.zathura.metainfo.xml.in:685
+msgid "Various fixes and improvements"
+msgstr "Various fixes ja improvements"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:186
+msgid "Bump plugin ABI"
+msgstr "Tõsta plugina ABI versiooni"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:191
+msgid "Split sandbox functionality into separate zathura-sandbox binary"
+msgstr "Jaga sandbox functionality into separate zathura-sandbox binary"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:192
+msgid "Split off new command bjump from blist"
+msgstr "Jaga off new käsk bjump from blist"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:193
+msgid "Add initial landlock support to sandbox"
+msgstr "Lisa initial landlock tugi et sandbox"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:194
+msgid "Fix repeated search"
+msgstr "Paranda repeated otsing"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:195
+msgid "Implement jumplist command"
+msgstr "Rakenda jumplist käsk"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:196
+msgid "Fix issues with document with multiple page sizes"
+msgstr "Paranda probleemid koos dokument koos multiple leht sizes"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:202
+msgid "Move to Github"
+msgstr "Liigu et Github"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:203
+msgid "Reduce minimum glib version"
+msgstr "Vähenda glibi minimaalset versiooni"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:204
 msgid "Remove normal sandbox mode"
-msgstr ""
+msgstr "Eemalda normal sandbox režiim"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:173
+#: data/org.pwmt.zathura.metainfo.xml.in:210
 msgid "Compatibility with girara 0.4.3"
-msgstr ""
+msgstr "Compatibility koos girara 0.4.3"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:174
+#: data/org.pwmt.zathura.metainfo.xml.in:211
 msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
+"Eemalda esiletõst-transparency setting. Set alpha component esiletõst-värv, "
+"esiletõst-active-värv ja esiletõst-fg asemel."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:175
+#: data/org.pwmt.zathura.metainfo.xml.in:212
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
-msgstr ""
+msgstr "Eemalda smooth-reload setting. Smooth reloading is now always enabled."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:176
+#: data/org.pwmt.zathura.metainfo.xml.in:213
 msgid ""
 "Remove plain database backend. The sqlite database backend imports the data "
 "from the plain database the first time. sqlite is now a hard dependency."
 msgstr ""
+"Eemalda lihtne andmebaasi taustmoodul. sqlite'i taustmoodul impordib andmed "
+"esimesel käivitamisel lihtsast andmebaasist. sqlite on nüüd kohustuslik "
+"sõltuvus."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:177
+#: data/org.pwmt.zathura.metainfo.xml.in:214
 msgid "Fix a segfault if dbus is not enabled."
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:187
-msgid "Add support to display signatures"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:188
-msgid "Fix clearing of highlighted links"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:189
-msgid "Make some key modifiers configurable"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:190
-msgid "Fix text selection on rotated pages"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:191
-msgid "Fix gap between pages"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:192
-#: data/org.pwmt.zathura.metainfo.xml.in:199
-#: data/org.pwmt.zathura.metainfo.xml.in:219
-#: data/org.pwmt.zathura.metainfo.xml.in:228
-#: data/org.pwmt.zathura.metainfo.xml.in:235
-#: data/org.pwmt.zathura.metainfo.xml.in:243
-#: data/org.pwmt.zathura.metainfo.xml.in:251
-#: data/org.pwmt.zathura.metainfo.xml.in:260
-#: data/org.pwmt.zathura.metainfo.xml.in:266
-#: data/org.pwmt.zathura.metainfo.xml.in:274
-#: data/org.pwmt.zathura.metainfo.xml.in:281
-#: data/org.pwmt.zathura.metainfo.xml.in:291
-#: data/org.pwmt.zathura.metainfo.xml.in:299
-#: data/org.pwmt.zathura.metainfo.xml.in:307
-#: data/org.pwmt.zathura.metainfo.xml.in:385
-#: data/org.pwmt.zathura.metainfo.xml.in:412
-#: data/org.pwmt.zathura.metainfo.xml.in:430
-#: data/org.pwmt.zathura.metainfo.xml.in:445
-#: data/org.pwmt.zathura.metainfo.xml.in:481
-msgid "Updated translations"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:197
-msgid "Improve text selection"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:204
-msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:209
-msgid "`magic` is now a required dependency"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:215
-msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:216
-msgid "Fix build with meson 0.60"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:217
-msgid "Add :source command"
-msgstr ""
+msgstr "Paranda a segfault if dbus is not enabled."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:224
-msgid "Account for page padding in full scroll"
-msgstr ""
+msgid "Add support to display signatures"
+msgstr "Lisa allkirjade kuvamise tugi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:225
-msgid "Add forefground color for links"
-msgstr ""
+msgid "Fix clearing of highlighted links"
+msgstr "Paranda clearing highlighted lingid"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:226
-msgid "Add :save and :save! aliases for :write and :write!"
-msgstr ""
+msgid "Make some key modifiers configurable"
+msgstr "Muuda mõned klahvimodifikaatorid seadistatavaks"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:233
-msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:227
+msgid "Fix text selection on rotated pages"
+msgstr "Paranda text valik on rotated lehed"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:240
-msgid "Add --find option to the CLI"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:228
+msgid "Fix gap between pages"
+msgstr "Paranda gap between lehed"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:229
+#: data/org.pwmt.zathura.metainfo.xml.in:236
+#: data/org.pwmt.zathura.metainfo.xml.in:256
+#: data/org.pwmt.zathura.metainfo.xml.in:265
+#: data/org.pwmt.zathura.metainfo.xml.in:272
+#: data/org.pwmt.zathura.metainfo.xml.in:280
+#: data/org.pwmt.zathura.metainfo.xml.in:288
+#: data/org.pwmt.zathura.metainfo.xml.in:297
+#: data/org.pwmt.zathura.metainfo.xml.in:303
+#: data/org.pwmt.zathura.metainfo.xml.in:311
+#: data/org.pwmt.zathura.metainfo.xml.in:318
+#: data/org.pwmt.zathura.metainfo.xml.in:328
+#: data/org.pwmt.zathura.metainfo.xml.in:336
+#: data/org.pwmt.zathura.metainfo.xml.in:344
+#: data/org.pwmt.zathura.metainfo.xml.in:366
+#: data/org.pwmt.zathura.metainfo.xml.in:375
+#: data/org.pwmt.zathura.metainfo.xml.in:384
+#: data/org.pwmt.zathura.metainfo.xml.in:403
+#: data/org.pwmt.zathura.metainfo.xml.in:419
+#: data/org.pwmt.zathura.metainfo.xml.in:446
+#: data/org.pwmt.zathura.metainfo.xml.in:464
+#: data/org.pwmt.zathura.metainfo.xml.in:479
+#: data/org.pwmt.zathura.metainfo.xml.in:515
+msgid "Update translations"
+msgstr "Uuenda translations"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:234
+msgid "Improve text selection"
+msgstr "Paranda text valik"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:241
+msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
+msgstr "`seccomp`: pane glibc kasutama varuvariandina clone'i clone3 asemel"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:246
+msgid "`magic` is now a required dependency"
+msgstr "`magic` on nüüd kohustuslik sõltuvus"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:252
+msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
+msgstr "Lisa '$f' ja '$p' expansions et 'exec' shortcut function"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:253
+msgid "Fix build with meson 0.60"
+msgstr "Paranda koostamine koos meson 0.60"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:254
+msgid "Add :source command"
+msgstr "Lisa :source käsk"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:261
+msgid "Account for page padding in full scroll"
+msgstr "Account jaoks leht padding in full scroll"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:262
+msgid "Add foreground color for links"
+msgstr "Lisa esiplaan värv jaoks lingid"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:263
+msgid "Add :save and :save! aliases for :write and :write!"
+msgstr "Lisa :save ja :save! aliases jaoks :write ja :write!"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:270
+msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
+msgstr ""
+"Paranda invalid zoom kui opening dokument koos 'adjust-open width' valik"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:277
+msgid "Add --find option to the CLI"
+msgstr "Lisa --find valik et CLI"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:278
 msgid "Support recolor with transparency"
-msgstr ""
+msgstr "Tugi recolor koos transparency"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:248
+#: data/org.pwmt.zathura.metainfo.xml.in:285
 msgid "Fix step size for mouse wheel scrolling"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:249
-msgid "Lookup fileinfo from database by hash as fallback"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:256
-msgid "Fix expansion of ~ and ~user when opening files"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:257
-msgid "Add fish completion"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:259
-msgid "Drop support for old libsyntex"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:271
-msgid "Add bash and zsh completions"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:272
-msgid "Add RTL layout of pages"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:279
-msgid "Port to newer libsynctex"
-msgstr ""
+msgstr "Paranda step size jaoks mouse wheel kerimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:286
-msgid "Improved HiDPI support"
-msgstr ""
+msgid "Lookup fileinfo from database by hash as fallback"
+msgstr "Lookup fileinfo from database by hash as varuvariant"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:287
-msgid "Display page labels"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:293
+msgid "Fix expansion of ~ and ~user when opening files"
+msgstr "Paranda expansion ~ ja ~user kui opening failid"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:288
-msgid "Add experimental seccomp filters"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:289
-msgid "Replace build system with meson"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:294
+msgid "Add fish completion"
+msgstr "Lisa fish completion"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:296
-msgid "Fix memory leaks"
-msgstr ""
+msgid "Drop support for old libsynctex"
+msgstr "Drop tugi jaoks old libsynctex"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:297
-msgid "Rework plugin initialization"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:308
+msgid "Add bash and zsh completions"
+msgstr "Lisa bash ja zsh completions"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:304
-msgid "Improved logging"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:309
+msgid "Add RTL layout of pages"
+msgstr "Lisa RTL paigutus lehed"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:305
-msgid "Improve page mode toggling"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:316
+msgid "Port to newer libsynctex"
+msgstr "Port et newer libsynctex"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:306
-#: data/org.pwmt.zathura.metainfo.xml.in:313
-#: data/org.pwmt.zathura.metainfo.xml.in:320
-#: data/org.pwmt.zathura.metainfo.xml.in:328
-msgid "Several fixes and improvements"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:323
+msgid "Improved HiDPI support"
+msgstr "Parandad HiDPI tugi"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:312
-msgid "Parallel build of manpages"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:318
-msgid "Build even without SyncTex"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:319
-msgid "Children should not fork"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:324
+msgid "Display page labels"
+msgstr "Kuva leht labels"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:325
-msgid "Recent files support"
-msgstr ""
+msgid "Add experimental seccomp filters"
+msgstr "Lisa experimental seccomp filters"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:326
-msgid "Substitute home with tilde"
-msgstr ""
+msgid "Replace build system with meson"
+msgstr "Asenda koostamine system koos meson"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:327
-msgid "Open URLs"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:333
+msgid "Fix memory leaks"
+msgstr "Paranda memory leaks"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:329
-#: data/org.pwmt.zathura.metainfo.xml.in:339
-#: data/org.pwmt.zathura.metainfo.xml.in:350
-#: data/org.pwmt.zathura.metainfo.xml.in:369
-msgid "Update translations"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:334
+msgid "Rework plugin initialization"
+msgstr "Töötle plugina initsialiseerimine ümber"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:330
+#: data/org.pwmt.zathura.metainfo.xml.in:341
+msgid "Improved logging"
+msgstr "Parandatud logging"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:342
+msgid "Improve page mode toggling"
+msgstr "Paranda leht režiim toggling"
+
 #: data/org.pwmt.zathura.metainfo.xml.in:349
-msgid "Update build system"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:335
-msgid "Store tmp files in only one location"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:336
-msgid "Print target selection"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:337
-msgid "Allow .dylib plugins on Mac OS X"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:338
-msgid "Fix dual page render breakage of adjust_window"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:340
-msgid "Update buld system"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:345
-msgid "Resolve memory leak while reloading file"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:346
-msgid "Prevent segmentation fault when smooth zooming with mouse"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:347
-msgid "Cache thumbnails to support smooth zooming"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:348
-msgid "Check scale value correctness"
-msgstr ""
+msgid "Parallel build of manpages"
+msgstr "Parallel koostamine manpages"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:355
-msgid "Fix segmentation fault caused by bidirectional scrolling"
-msgstr ""
+msgid "Build even without SyncTex"
+msgstr "Koosta even without SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:356
-msgid "Add SyntaxView"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:361
-msgid "Print debug information to D-Bus"
-msgstr ""
+msgid "Children should not fork"
+msgstr "Lapsprotsessid ei tohiks forkida"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:362
-msgid "Fix scroll down/up in dual-page mode"
-msgstr ""
+msgid "Recent files support"
+msgstr "Recent failid tugi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:363
-msgid "Option to hide notification after selection"
-msgstr ""
+msgid "Substitute home with tilde"
+msgstr "Substitute home koos tilde"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:364
-msgid "Introduce cache directory"
-msgstr ""
+msgid "Open URLs"
+msgstr "Ava URLs"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:365
-msgid "Introduce smooth-scroll and smooth-zoom"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:371
+msgid "Store tmp files in only one location"
+msgstr "Store tmp failid in only one location"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:366
-msgid "Add vim style exec"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:372
+msgid "Print target selection"
+msgstr "Print target valik"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:367
-msgid "Option to ignore images while recoloring"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:373
+msgid "Allow .dylib plugins on Mac OS X"
+msgstr "Luba .dylib pluginad on Mac OS X"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:368
-msgid "Take advantage of shared or system SyncTex parser library"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:370
-#: data/org.pwmt.zathura.metainfo.xml.in:633
-#: data/org.pwmt.zathura.metainfo.xml.in:643
-#: data/org.pwmt.zathura.metainfo.xml.in:654
-msgid "Several fixes"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:375
-msgid "Updated dependency version of girara"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:374
+msgid "Fix dual page render breakage of adjust_window"
+msgstr "Paranda dual leht renderdus breakage adjust_window"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:380
-msgid "Better SyncTex support"
-msgstr ""
+msgid "Resolve memory leak while reloading file"
+msgstr "Resolve memory leak samal ajal kui reloading fail"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:381
-msgid "Change cursor if mouse is over link"
-msgstr ""
+msgid "Prevent segmentation fault when smooth zooming with mouse"
+msgstr "Prevent segmentation fault kui smooth zooming koos mouse"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:382
-msgid "Colored build output"
-msgstr ""
+msgid "Cache thumbnails to support smooth zooming"
+msgstr "Puhverda thumbnails et tugi smooth zooming"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:383
-msgid "Minor bug fixes"
-msgstr ""
+msgid "Check scale value correctness"
+msgstr "Kontrolli scale value correctness"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:384
-msgid "Sphinx documentation"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:389
+msgid "Fix segmentation fault caused by bidirectional scrolling"
+msgstr "Paranda segmentation fault caused by bidirectional kerimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:390
-msgid "Full SyncTex support"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:391
-msgid "D-Bus interface"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:392
-msgid "Simple vim plugin for SyncTex support"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:393
-msgid "Add shortcuts for ^C and Esc in all modes"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:394
-msgid "Use the actual mode in mode toggle calls"
-msgstr ""
+msgid "Add SyntaxView"
+msgstr "Lisa SyntaxView"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:395
-msgid "Only copy selected text in normal and fullscreen mode"
-msgstr ""
+msgid "Print debug information to D-Bus"
+msgstr "Print debug information et D-Bus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:396
-msgid "Translate error messages"
-msgstr ""
+msgid "Fix scroll down/up in dual-page mode"
+msgstr "Paranda scroll down/up in dual-leht režiim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:397
-msgid "Correctly safe print setting state"
-msgstr ""
+msgid "Option to hide notification after selection"
+msgstr "Option et hide notification after valik"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:398
-msgid "Add --mode option"
-msgstr ""
+msgid "Introduce cache directory"
+msgstr "Tutvusta cache directory"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:399
-msgid "Expose more properties via D-Bus"
-msgstr ""
+msgid "Introduce smooth-scroll and smooth-zoom"
+msgstr "Tutvusta smooth-scroll ja smooth-zoom"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:400
-msgid "Center pages"
-msgstr ""
+msgid "Add vim style exec"
+msgstr "Lisa vim style exec"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:401
-msgid "Replace glib memory functions with try version"
-msgstr ""
+msgid "Option to ignore images while recoloring"
+msgstr "Option et ignore images samal ajal kui recoloring"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:402
-msgid "Align highlighted rectangles correctly"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:403
-msgid "Implement G and gg for index mode"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:404
-msgid "Implement TOGGLE for sc_navigate_index"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:405
-msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:406
-msgid "Implement shortcuts for scrolling to page top/bottom"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:407
-msgid "Set position on document load only if no page was specified"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:408
-msgid "Bail out early if we get TOP or BOTTOM"
-msgstr ""
+msgid "Take advantage of shared or system SyncTex parser library"
+msgstr "Take advantage shared or system SyncTex parser library"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:409
-msgid "Replace fullscreen mode with presentation mode"
-msgstr ""
+msgid "Update dependency version of girara"
+msgstr "Uuenda dependency version girara"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:410
-msgid "Remove GTK+2 support"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:414
+msgid "Better SyncTex support"
+msgstr "Parem SyncTex tugi"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:411
-#: data/org.pwmt.zathura.metainfo.xml.in:417
-#: data/org.pwmt.zathura.metainfo.xml.in:429
-msgid "Update documentation"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:415
+msgid "Change cursor if mouse is over link"
+msgstr "Change cursor kui mouse is over link"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:416
+msgid "Colored build output"
+msgstr "Colored koostamine output"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:418
-msgid "Resolve layout problems"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:423
-msgid "Use GTK+3 by default"
-msgstr ""
+msgid "Sphinx documentation"
+msgstr "Sphinxi dokumentatsioon"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:424
-msgid "Rewritten render logic"
-msgstr ""
+msgid "Full SyncTex support"
+msgstr "Full SyncTex tugi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:425
-msgid "Fixed page refresh in certain situations"
-msgstr ""
+msgid "D-Bus interface"
+msgstr "D-Busi liides"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:426
-msgid "Make the X clipboard buffer"
-msgstr ""
+msgid "Simple vim plugin for SyncTex support"
+msgstr "Lihtne vim-plugin SyncTexi toe jaoks"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:427
-msgid "Allow number in quickmarks"
-msgstr ""
+msgid "Add shortcuts for ^C and Esc in all modes"
+msgstr "Lisa kiirklahvid jaoks ^C ja Esc all režiimid"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:428
-msgid "Workaround for print quality issues"
-msgstr ""
+msgid "Use the actual mode in mode toggle calls"
+msgstr "Kasuta actual režiim režiim toggle calls"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:429
+msgid "Only copy selected text in normal and fullscreen mode"
+msgstr "Only copy selected text in normal ja fullscreen režiim"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:430
+msgid "Translate error messages"
+msgstr "Tõlgi veateated"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:431
+msgid "Correctly safe print setting state"
+msgstr "Salvesta printimise seadistuse olek korrektselt"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:432
+msgid "Add --mode option"
+msgstr "Lisa --režiim valik"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:433
+msgid "Expose more properties via D-Bus"
+msgstr "Avalda rohkem omadusi D-Busi kaudu"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:434
+msgid "Center pages"
+msgstr "Center lehed"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:435
-msgid "Resolve memory leak"
-msgstr ""
+msgid "Replace glib memory functions with try version"
+msgstr "Asenda glib memory functions koos try version"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:436
-msgid "Report missing plugin or unsupported file types"
-msgstr ""
+msgid "Align highlighted rectangles correctly"
+msgstr "Joonda esiletõstetud ristkülikud korrektselt"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:437
-msgid "More vim-like search behaviour"
-msgstr ""
+msgid "Implement G and gg for index mode"
+msgstr "Rakenda G ja gg jaoks index režiim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:438
-msgid "Introduced show-{h,v}-scrollbar settings"
-msgstr ""
+msgid "Implement TOGGLE for sc_navigate_index"
+msgstr "Rakenda TOGGLE jaoks sc_navigate_index"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:439
-msgid "Enhancement of the jumplist mechanism"
-msgstr ""
+msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
+msgstr "Preserve horizontal position kui kerimine et PAGE_TOP/BOTTOM"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:440
-msgid "Use jumplists with marks"
-msgstr ""
+msgid "Implement shortcuts for scrolling to page top/bottom"
+msgstr "Rakenda kiirklahvid jaoks kerimine et leht top/bottom"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:441
-msgid "More vim-like jump behaviour"
-msgstr ""
+msgid "Set position on document load only if no page was specified"
+msgstr "Set position on dokument load only kui no leht was specified"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:442
-msgid "Improved bisect"
-msgstr ""
+msgid "Bail out early if we get TOP or BOTTOM"
+msgstr "Bail out early kui we get TOP or BOTTOM"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:443
-msgid "Update page number on mouse scroll"
-msgstr ""
+msgid "Replace fullscreen mode with presentation mode"
+msgstr "Asenda fullscreen režiim koos presentation režiim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:444
-msgid "Introduced window-title-page option"
-msgstr ""
+msgid "Remove GTK+2 support"
+msgstr "Eemalda GTK+2 tugi"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:450
-msgid "LRU caching algorithm"
-msgstr ""
-
+#: data/org.pwmt.zathura.metainfo.xml.in:445
 #: data/org.pwmt.zathura.metainfo.xml.in:451
-msgid "Bisect functionality"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:463
+msgid "Update documentation"
+msgstr "Uuenda documentation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:452
-msgid "Allow negative offsets"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:453
-msgid "Option --page to open at the specified page"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:454
-msgid "Scale vertical/horizontal scrolling in respect to the buffer"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:455
-msgid "Add statusbar-basename option"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:456
-msgid "Implement colors for 'Loading...'-text"
-msgstr ""
+msgid "Resolve layout problems"
+msgstr "Lahenda paigutus problems"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:457
-msgid "Don't render same page multiple times"
-msgstr ""
+msgid "Use GTK+3 by default"
+msgstr "Kasuta GTK+3 by default"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:458
-msgid "Use libmagic if available"
-msgstr ""
+msgid "Rewritten render logic"
+msgstr "Rewritten renderdus logic"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:459
-#: data/org.pwmt.zathura.metainfo.xml.in:470
-msgid "Some other bug fixes and updated translations"
-msgstr ""
+msgid "Fixed page refresh in certain situations"
+msgstr "Fixed leht refresh in certain situations"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:464
-msgid "Implemented jumplist (^o, ^i)"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:460
+msgid "Make the X clipboard buffer"
+msgstr "Make X clipboard buffer"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:465
-msgid "Update current page when following links"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:461
+msgid "Allow number in quickmarks"
+msgstr "Luba number in quickmarks"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:466
-msgid "Scroll horizontally with shift and mouse wheel"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:467 zathura/config.c:571
-msgid "Page aware scrolling"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:468
-msgid "Synctex forward synchronisation"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:462
+msgid "Workaround for print quality issues"
+msgstr "Workaround jaoks print quality probleemid"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:469
-msgid "Update shortcuts"
-msgstr ""
+msgid "Resolve memory leak"
+msgstr "Lahenda memory leak"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:470
+msgid "Report missing plugin or unsupported file types"
+msgstr "Teata puuduvast pluginast või toetamata failitüüpidest"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:471
+msgid "More vim-like search behaviour"
+msgstr "More vim-like otsing behaviour"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:472
+msgid "Introduced show-{h,v}-scrollbar settings"
+msgstr "Introduced show-{h,v}-scrollbar seaded"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:473
+msgid "Enhancement of the jumplist mechanism"
+msgstr "Enhancement jumplist mechanism"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:474
+msgid "Use jumplists with marks"
+msgstr "Use jumplists koos marks"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:475
-msgid "Syntex backwards synchronisation"
-msgstr ""
+msgid "More vim-like jump behaviour"
+msgstr "Vimilikum hüppamise käitumine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:476
-msgid "Fix request-page-setup"
-msgstr ""
+msgid "Improved bisect"
+msgstr "Parandatud bisect"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:477
-msgid "Fix window adustment"
-msgstr ""
+msgid "Update page number on mouse scroll"
+msgstr "Uuenda leht number on mouse scroll"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:478
-msgid "Better GTK3 integration"
-msgstr ""
+msgid "Introduced window-title-page option"
+msgstr "Introduced window-title-leht valik"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:479
-msgid "Added first-page-colum setting"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:484
+msgid "LRU caching algorithm"
+msgstr "LRU vahemälu algoritm"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:480
-msgid "Added recolor-keephue setting"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:485
+msgid "Bisect functionality"
+msgstr "Bisect funktsionaalsus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:486
-msgid "New languages"
-msgstr ""
+msgid "Allow negative offsets"
+msgstr "Luba negative offsets"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:487
-msgid "Better print support"
-msgstr ""
+msgid "Option --page to open at the specified page"
+msgstr "Valik --leht et open at specified leht"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:488
-msgid "Improve document links"
-msgstr ""
+msgid "Scale vertical/horizontal scrolling in respect to the buffer"
+msgstr "Scale vertical/horizontal kerimine respect et buffer"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:489
-msgid "Render last-viewed pages with a higher priority"
-msgstr ""
+msgid "Add statusbar-basename option"
+msgstr "Lisa statusbar-basename valik"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:490
-msgid "Export images and attachments"
-msgstr ""
+msgid "Implement colors for 'Loading...'-text"
+msgstr "Rakenda värvid jaoks 'Loading...'-text"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:491
-msgid "Open multiple documents"
-msgstr ""
+msgid "Don't render same page multiple times"
+msgstr "Don't renderdus same leht multiple times"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:492
-msgid "Plugin manager"
-msgstr ""
+msgid "Use libmagic if available"
+msgstr "Kasuta libmagic kui available"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:493
-msgid "Several memory leaks and small bugs"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:504
+msgid "Some other bug fixes and updated translations"
+msgstr "Some other bug fixes ja updated translations"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:498
-msgid "Add 'open-first-page' setting"
-msgstr ""
+msgid "Implemented jumplist (^o, ^i)"
+msgstr "Rakendaed jumplist (^o, ^i)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:499
-msgid "Free invisible pages after specific time"
-msgstr ""
+msgid "Update current page when following links"
+msgstr "Uuenda linkide järgimisel praegust lehte"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:500
-msgid "Set log level via command line"
-msgstr ""
+msgid "Scroll horizontally with shift and mouse wheel"
+msgstr "Scroll horizontally koos shift ja mouse wheel"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:501
-msgid "Update GTK3 support"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:501 zathura/config.c:572
+msgid "Page aware scrolling"
+msgstr "Page aware kerimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:502
-msgid "Completion for :write command"
-msgstr ""
+msgid "SyncTeX forward synchronisation"
+msgstr "SyncTeX edasi sünkroniseerimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:503
-msgid "Simplified plugin loading"
-msgstr ""
+msgid "Update shortcuts"
+msgstr "Uuenda kiirklahve"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:504
-msgid "Allow counter-clockwise rotation"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:509
+msgid "SyncTeX backwards synchronisation"
+msgstr "SyncTeX tagasi sünkroniseerimine"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:505
-msgid "Changeable page-padding"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:510
+msgid "Fix request-page-setup"
+msgstr "Paranda request-leht-setup"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:506
-msgid "Introduced girara version check"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:511
+msgid "Fix window adustment"
+msgstr "Paranda window adustment"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:507
-msgid "Detect sqlite automatically"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:508
-msgid "Update window title"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:512
+msgid "Better GTK3 integration"
+msgstr "Parem GTK3 integration"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:513
-msgid "Macro to register plugins"
-msgstr ""
+msgid "Added first-page-colum setting"
+msgstr "Added first-leht-colum setting"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:514
-msgid "Fix issues with the display of the current page number"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:515
-msgid "Ability to scroll to the full left or full right border"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:516
-msgid "Reimplement the render thread with GThreadPool"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:517
-msgid "Use the correct color to highlight results"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:518
-msgid "Support to use both database backends"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:519
-msgid "Additional notifications on errors"
-msgstr ""
+msgid "Added recolor-keephue setting"
+msgstr "Lisaed recolor-keephue setting"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:520
-msgid "Option to hide hidden directories"
-msgstr ""
+msgid "New languages"
+msgstr "Uued keeled"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:521
-msgid "Do not overwrite existing files with :write"
-msgstr ""
+msgid "Better print support"
+msgstr "Parem print tugi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:522
-msgid "Fix flicker in text selection"
-msgstr ""
+msgid "Improve document links"
+msgstr "Paranda dokument lingid"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:523
-msgid "Resolved several memory leaks"
-msgstr ""
+msgid "Render last-viewed pages with a higher priority"
+msgstr "Render last-viewed lehed koos a higher priority"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:524
-#: data/org.pwmt.zathura.metainfo.xml.in:561
-#: data/org.pwmt.zathura.metainfo.xml.in:578
-msgid "Updated Makefile"
-msgstr ""
+msgid "Export images and attachments"
+msgstr "Export images ja attachments"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:529
-msgid "Complete rewrite of zathura"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:525
+msgid "Open multiple documents"
+msgstr "Ava multiple documents"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:530
-msgid "Uses the girara interface library"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:531
-msgid "Plugin system for different document types"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:526
+msgid "Plugin manager"
+msgstr "Pluginate haldur"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:532
-msgid "Better configuration"
-msgstr ""
+msgid "Add 'open-first-page' setting"
+msgstr "Lisa 'open-first-leht' setting"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:533
-msgid "Quickmarks"
-msgstr ""
+msgid "Free invisible pages after specific time"
+msgstr "Free invisible lehed after specific time"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:534
+msgid "Set log level via command line"
+msgstr "Set log level via käsk line"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:535
+msgid "Update GTK3 support"
+msgstr "Uuenda GTK3 tugi"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:536
+msgid "Completion for :write command"
+msgstr "Completion jaoks :write käsk"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:537
+msgid "Simplified plugin loading"
+msgstr "Lihtsustatud pluginate laadimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:538
-msgid "Ignoring MOD5 which is used on some keyboards"
-msgstr ""
+msgid "Allow counter-clockwise rotation"
+msgstr "Luba counter-clockwise rotation"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:539
-msgid "Fix scroll_wrap (#52)"
-msgstr ""
+msgid "Changeable page-padding"
+msgstr "Changeable leht-padding"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:540
-msgid "Don't invert y coordinates (#42)"
-msgstr ""
+msgid "Introduced girara version check"
+msgstr "Tutvustad girara version check"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:541
-msgid "Certain memory leaks and other small issues"
-msgstr ""
+msgid "Detect sqlite automatically"
+msgstr "Tuvasta sqlite automaatselt"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:546
-msgid "Fixed bookmark handling"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:542
+msgid "Update window title"
+msgstr "Uuenda window title"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:547
-msgid "Support :digits"
-msgstr ""
+msgid "Macro to register plugins"
+msgstr "Macro et register pluginad"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:548
-msgid "Save zoom level per file"
-msgstr ""
+msgid "Fix issues with the display of the current page number"
+msgstr "Paranda probleemid koos display praegune leht number"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:549
-msgid "Fix backwards searching"
-msgstr ""
+msgid "Ability to scroll to the full left or full right border"
+msgstr "Ability et scroll et full left or full right border"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:550
-msgid "Fix blinking while switching pages"
-msgstr ""
+msgid "Reimplement the render thread with GThreadPool"
+msgstr "Reimplement renderdus thread koos GThreadPool"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:551
-msgid "Fix input issues in fullscreen mode"
-msgstr ""
+msgid "Use the correct color to highlight results"
+msgstr "Kasuta correct värv et esiletõst tulemused"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:552
-#: data/org.pwmt.zathura.metainfo.xml.in:562
-#: data/org.pwmt.zathura.metainfo.xml.in:576
-msgid "Fixed several memory leaks"
-msgstr ""
+msgid "Support to use both database backends"
+msgstr "Tugi et use both database backends"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:553
+msgid "Additional notifications on errors"
+msgstr "Lisaitional notifications on errors"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:554
+msgid "Option to hide hidden directories"
+msgstr "Option et hide hidden directories"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:555
+msgid "Do not overwrite existing files with :write"
+msgstr "Do not overwrite existing failid koos :write"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:556
+msgid "Fix flicker in text selection"
+msgstr "Paranda flicker in text valik"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:557
-msgid "Updated text searching"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:585
+#: data/org.pwmt.zathura.metainfo.xml.in:594
+#: data/org.pwmt.zathura.metainfo.xml.in:608
+msgid "Fixed several memory leaks"
+msgstr "Parandaed several memory leaks"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:558
-msgid "Support for poppler >= 0.15"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:559
-msgid "Fixed print command with multiple arguments"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:560
-msgid "Fixed GOptionEntries"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:562
+msgid "Complete rewrite of zathura"
+msgstr "Complete rewrite zathura"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:563
-msgid "Fixed segmentation faults"
-msgstr ""
+msgid "Uses the girara interface library"
+msgstr "Kasutas girara interface library"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:568
-msgid "Wrap around scrolling"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:564
+msgid "Plugin system for different document types"
+msgstr "Plugin system jaoks different dokument types"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:569
-msgid "Display scroll percentage in statusbar"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:565
+msgid "Better configuration"
+msgstr "Parem configuration"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:570
-msgid "More familiar zoom key bindings"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:566
+msgid "Quickmarks"
+msgstr "Kiirmärgid"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:571
-msgid "Support reading files from stdin"
-msgstr ""
+msgid "Ignoring MOD5 which is used on some keyboards"
+msgstr "Eira MOD5-t, mida kasutatakse mõnel klaviatuuril"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:572
-msgid "Open command with appended current file path"
-msgstr ""
+msgid "Fix scroll_wrap (#52)"
+msgstr "Paranda scroll_wrap (#52)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:573
-msgid "Following XDG specification"
-msgstr ""
+msgid "Don't invert y coordinates (#42)"
+msgstr "Ära pööra y-koordinaate ümber (#42)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:574
-msgid "Colored window and view port"
-msgstr ""
+msgid "Certain memory leaks and other small issues"
+msgstr "Certain memory leaks ja other small probleemid"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:575
-msgid "File reloading fix"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:579
+msgid "Fixed bookmark handling"
+msgstr "Parandaed bookmark handling"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:577
-msgid "Updated man page"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:580
+msgid "Support :digits"
+msgstr "Tugi :digits"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:581
+msgid "Save zoom level per file"
+msgstr "Save zoom level per fail"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:582
+msgid "Fix backwards searching"
+msgstr "Paranda backwards searching"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:583
-msgid "Fixed critical usability bug"
-msgstr ""
+msgid "Fix blinking while switching pages"
+msgstr "Paranda blinking samal ajal kui switching lehed"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:588
-msgid "Improved and fixed completion"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:589
-msgid "Optional parameters for the print command"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:584
+msgid "Fix input issues in fullscreen mode"
+msgstr "Paranda input probleemid fullscreen režiim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:590
-#: data/org.pwmt.zathura.metainfo.xml.in:642
-msgid "Escape filenames"
-msgstr ""
+msgid "Update text searching"
+msgstr "Uuenda text searching"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:591
-msgid "Resolved some memory leaks"
-msgstr ""
+msgid "Support for poppler >= 0.15"
+msgstr "Tugi jaoks poppler >= 0.15"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:592
-msgid "Global configuration file"
-msgstr ""
+msgid "Fixed print command with multiple arguments"
+msgstr "Fixed print käsk koos multiple arguments"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:593
-msgid "Specify configuration directory"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:594
-msgid "Configureable modes"
-msgstr ""
+msgid "Fixed GOptionEntries"
+msgstr "Parandaed GValikEntries"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:595
-msgid "Smooth scrolling"
-msgstr ""
+msgid "Fixed segmentation faults"
+msgstr "Parandaed segmentation faults"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:596
-msgid "Extended statusbar string manipulation"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:600
+msgid "Wrap around scrolling"
+msgstr "Wrap around kerimine"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:597
-msgid "`function`"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:601
+msgid "Display scroll percentage in statusbar"
+msgstr "Kuva scroll percentage in statusbar"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:598
-msgid "Strip executable"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:602
+msgid "More familiar zoom key bindings"
+msgstr "Tuttavamad suumi klahviseosed"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:599
-msgid "Updated manpage"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:603
+msgid "Support reading files from stdin"
+msgstr "Tugi reading failid from stdin"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:604
-msgid "Change window title to filename"
-msgstr ""
+msgid "Open command with appended current file path"
+msgstr "Ava käsk koos appended praegune fail path"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:605
-msgid "Fixation of the URI command"
-msgstr ""
+msgid "Following XDG specification"
+msgstr "XDG spetsifikatsiooni järgimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:606
-msgid "Updated the behaviour of sc_scroll"
-msgstr ""
+msgid "Colored window and view port"
+msgstr "Colored window ja view port"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:607
-msgid "Half/Full-page scrolling"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:608
-msgid "Check document health in sc_reload"
-msgstr ""
+msgid "File reloading fix"
+msgstr "Faili taaslaadimise parandus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:609
-msgid "`tabbed` support"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:610
-msgid "Define look with the set function"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:611
-msgid "Implemented map function"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:612
-msgid "`zathurarc` file"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:613
-msgid "Prevent buffer overflow in realpath"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:630
+#: data/org.pwmt.zathura.metainfo.xml.in:647
+#: data/org.pwmt.zathura.metainfo.xml.in:656
+msgid "Update manpage"
+msgstr "Uuenda manpage"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:614
-msgid "Strip executeable"
-msgstr ""
+msgid "Fixed critical usability bug"
+msgstr "Parandaed critical usability bug"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:615
-msgid "Key evaluation when buffer is not empty"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:619
+msgid "Improved and fixed completion"
+msgstr "Parandatud ja fixed completion"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:616
-#: data/org.pwmt.zathura.metainfo.xml.in:625
-msgid "Manpage update"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:620
+msgid "Optional parameters for the print command"
+msgstr "Valikal parameters jaoks print käsk"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:621
-msgid "Use GFileMonitor instead of inotify"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:673
+msgid "Escape filenames"
+msgstr "Failinimede ekraneerimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:622
-msgid "Added document reload shortcut"
-msgstr ""
+msgid "Resolved some memory leaks"
+msgstr "Lahendad some memory leaks"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:623
-msgid "Fixed toggle index"
-msgstr ""
+msgid "Global configuration file"
+msgstr "Global configuration fail"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:624
-msgid "Fixed print command"
-msgstr ""
+msgid "Specify configuration directory"
+msgstr "Määra seadistuste kataloog"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:630
-msgid "Fullscreen mode"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:625
+msgid "Configureable modes"
+msgstr "Configureable režiimid"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:631
-msgid "Correct search result highlighting"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:626
+msgid "Smooth scrolling"
+msgstr "Smooth kerimine"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:632
-msgid "Document password dialog"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:627
+msgid "Extended statusbar string manipulation"
+msgstr "Laiendatud olekuriba stringitöötlus"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:628
+msgid "`function`"
+msgstr "`function`"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:629
+#: data/org.pwmt.zathura.metainfo.xml.in:645
+msgid "Strip executable"
+msgstr "Eemalda käivitatavast failist sümbolid"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:635
+msgid "Change window title to filename"
+msgstr "Change window title et filename"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:636
+msgid "Fixation of the URI command"
+msgstr "Parandaation URI käsk"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:637
+msgid "Update the behaviour of sc_scroll"
+msgstr "Uuenda behaviour sc_scroll"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:638
-msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
-msgstr ""
+msgid "Half/Full-page scrolling"
+msgstr "Half/Full-leht kerimine"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:639
-msgid "Keyboard navigation in the index view"
-msgstr ""
+msgid "Check document health in sc_reload"
+msgstr "Kontrolli dokument health sc_reload"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:640
-msgid "Different goto modes"
-msgstr ""
+msgid "`tabbed` support"
+msgstr "`tabbed` tugi"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:641
-msgid "Auto adjustment when opening a document"
-msgstr ""
+msgid "Define look with the set function"
+msgstr "Define look koos set function"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:648
-msgid "Reload modified document automatically"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:642
+msgid "Implemented map function"
+msgstr "Rakendaed map function"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:649
-msgid "Recolor the page instead of inverting the colors"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:643
+msgid "`zathurarc` file"
+msgstr "`zathurarc` fail"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:650
-msgid "Working search function"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:644
+msgid "Prevent buffer overflow in realpath"
+msgstr "Prevent buffer overflow realpath"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:651
-msgid "Show and hide document information"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:646
+msgid "Key evaluation when buffer is not empty"
+msgstr "Key evaluation kui buffer is not empty"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:652
-msgid "Follow internal links or open URI in a predefined browser"
-msgstr ""
+msgid "Use GFileMonitor instead of inotify"
+msgstr "Use GFileMonitor asemel inotify"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:653
-msgid "Save the document"
-msgstr ""
+msgid "Added document reload shortcut"
+msgstr "Lisaed dokument reload shortcut"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:659
-msgid "Complete new, re-written interface"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:654
+msgid "Fixed toggle index"
+msgstr "Parandaed toggle index"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:660
-msgid "Multiple printer support"
-msgstr ""
+#: data/org.pwmt.zathura.metainfo.xml.in:655
+msgid "Fixed print command"
+msgstr "Fixed print käsk"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:661
-msgid "Command history"
-msgstr ""
+msgid "Fullscreen mode"
+msgstr "Fullscreen režiim"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:662
-msgid "Show document index"
-msgstr ""
+msgid "Correct search result highlighting"
+msgstr "Correct otsing result highlighting"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:663
-msgid "Centered view"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:664
-msgid "Add, save and open bookmarks"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:665
-msgid "Marker support"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:666
-msgid "Highlight search results"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:667
-msgid "Buffered commands"
-msgstr ""
-
-#: data/org.pwmt.zathura.metainfo.xml.in:668
-msgid "`set` Function"
-msgstr ""
+msgid "Document password dialog"
+msgstr "Dokumendi paroolidialoog"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:669
-msgid "Revert video function"
-msgstr ""
+msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
+msgstr "Mouse tugi (Scroll, Mark ja copy text et clipboard)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:670
-msgid "Command completion"
-msgstr ""
+msgid "Keyboard navigation in the index view"
+msgstr "Keyboard navigation index view"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:675
+#: data/org.pwmt.zathura.metainfo.xml.in:671
+msgid "Different goto modes"
+msgstr "Different goto režiimid"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:672
+msgid "Auto adjustment when opening a document"
+msgstr "Auto adjustment kui opening a dokument"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:679
+msgid "Reload modified document automatically"
+msgstr "Reload modified dokument automatically"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:680
+msgid "Recolor the page instead of inverting the colors"
+msgstr "Recolor leht asemel inverting värvid"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:681
+msgid "Working search function"
+msgstr "Working otsing function"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:682
+msgid "Show and hide document information"
+msgstr "Show ja hide dokument information"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:683
+msgid "Follow internal links or open URI in a predefined browser"
+msgstr "Follow internal lingid or open URI in a predefined browser"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:684
+msgid "Save the document"
+msgstr "Save dokument"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:690
+msgid "Complete new, re-written interface"
+msgstr "Täiesti uus, ümber kirjutatud liides"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:691
+msgid "Multiple printer support"
+msgstr "Multiple printer tugi"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:692
+msgid "Command history"
+msgstr "Käsuajalugu"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:693
+msgid "Show document index"
+msgstr "Show dokument index"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:694
+msgid "Centered view"
+msgstr "Keskjoondatud vaade"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:695
+msgid "Add, save and open bookmarks"
+msgstr "Add, save ja open bookmarks"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:696
+msgid "Marker support"
+msgstr "Marker tugi"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:697
+msgid "Highlight search results"
+msgstr "Highlight otsing tulemused"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:698
+msgid "Buffered commands"
+msgstr "Buffered käsud"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:699
+msgid "`set` Function"
+msgstr "`set` funktsioon"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:700
+msgid "Revert video function"
+msgstr "Pööra tagasi video function"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:701
+msgid "Command completion"
+msgstr "Käskude automaattäide"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:706
 msgid "Initial release"
-msgstr ""
+msgstr "Esmane väljalase"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 #: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr ""
+msgstr "PDF;PS;PostScript;DjVU;dokument;presentation;viewer;"
 
 #: zathura/callbacks.c:297
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr ""
+msgstr "'%s' must not be 0. Set et 1."
 
 #: zathura/callbacks.c:385
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr ""
+msgstr "Anti vigane sisend '%s'."
 
 #: zathura/callbacks.c:408
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr ""
+msgstr "Anti vigane indeks '%s'."
 
 #: zathura/callbacks.c:615
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr ""
+msgstr "Copied selected text et valik %s: %s"
 
-#: zathura/callbacks.c:639
+#: zathura/callbacks.c:641
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr ""
+msgstr "Copied selected image et valik %s"
 
 #: zathura/commands.c:37 zathura/commands.c:75 zathura/commands.c:100
 #: zathura/commands.c:125 zathura/commands.c:157 zathura/commands.c:219
 #: zathura/commands.c:323 zathura/commands.c:353 zathura/commands.c:378
-#: zathura/commands.c:480 zathura/commands.c:621 zathura/shortcuts.c:156
-#: zathura/shortcuts.c:452 zathura/shortcuts.c:1164 zathura/shortcuts.c:1197
-#: zathura/shortcuts.c:1222
+#: zathura/commands.c:480 zathura/commands.c:649 zathura/shortcuts.c:159
+#: zathura/shortcuts.c:502 zathura/shortcuts.c:1221 zathura/shortcuts.c:1254
+#: zathura/shortcuts.c:1279 zathura/shortcuts.c:1375
 msgid "No document opened."
-msgstr ""
+msgstr "No dokument opened."
 
 #: zathura/commands.c:43 zathura/commands.c:81 zathura/commands.c:131
 #: zathura/commands.c:175 zathura/commands.c:485
 msgid "Invalid number of arguments given."
-msgstr ""
+msgstr "Invalid number arguments given."
 
 #: zathura/commands.c:54
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr ""
+msgstr "Järjehoidjat ei saanud uuendada: %s"
 
 #: zathura/commands.c:56
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr ""
+msgstr "Järjehoidjat ei saanud luua: %s"
 
 #: zathura/commands.c:61
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr ""
+msgstr "Järjehoidja uuendati edukalt: %s"
 
 #: zathura/commands.c:63
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr ""
+msgstr "Järjehoidja loodi edukalt: %s"
 
 #: zathura/commands.c:87
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr ""
+msgstr "Eemaldad bookmark: %s"
 
 #: zathura/commands.c:89
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr ""
+msgstr "Failed et remove bookmark: %s"
 
 #: zathura/commands.c:114
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Järjehoidjaid pole saadaval."
 
 #: zathura/commands.c:138
 #, c-format
 msgid "No such bookmark: %s"
-msgstr ""
+msgstr "Sellist järjehoidjat pole: %s"
 
 #: zathura/commands.c:167
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "Argument peab olema nullist erinev arv."
 
 #: zathura/commands.c:187
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr ""
+msgstr "[%d]: leht=<b>%2d</b>, x=%f, y=%f %s\n"
 
 #: zathura/commands.c:188
 msgid "(current)"
-msgstr ""
+msgstr "(praegune)"
 
 #: zathura/commands.c:195
 msgid "No jumplist available."
-msgstr ""
+msgstr "Hüppeloend pole saadaval."
 
 #: zathura/commands.c:229
 msgid "Title"
-msgstr ""
+msgstr "Pealkiri"
 
 #: zathura/commands.c:230
 msgid "Subject"
-msgstr ""
+msgstr "Teema"
 
 #: zathura/commands.c:231
 msgid "Keywords"
-msgstr ""
+msgstr "Märksõnad"
 
 #: zathura/commands.c:232
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: zathura/commands.c:233
 msgid "Creator"
-msgstr ""
+msgstr "Looja"
 
 #: zathura/commands.c:234
 msgid "Producer"
-msgstr ""
+msgstr "Tootja"
 
 #: zathura/commands.c:235
 msgid "Creation date"
-msgstr ""
+msgstr "Loomise kuupäev"
 
 #: zathura/commands.c:236
 msgid "Modification date"
-msgstr ""
+msgstr "Muutmise kuupäev"
 
 #: zathura/commands.c:237
 msgid "Format"
-msgstr ""
+msgstr "Vorming"
 
 #: zathura/commands.c:238
 msgid "Other"
-msgstr ""
+msgstr "Muu"
 
 #: zathura/commands.c:243 zathura/commands.c:261
 msgid "No information available."
-msgstr ""
+msgstr "Teave puudub."
 
 #: zathura/commands.c:270
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
-msgstr ""
+msgstr "Lisateabe saamiseks vaata man-lehti zathura(1) ja zathurarc(5)."
 
-#: zathura/commands.c:293 zathura/commands.c:667 girara-gtk/commands.c:559
+#: zathura/commands.c:293 zathura/commands.c:695 girara-gtk/commands.c:550
 msgid "Too many arguments."
-msgstr ""
+msgstr "Liiga palju argumente."
 
 #: zathura/commands.c:304
 msgid "No arguments given."
-msgstr ""
+msgstr "Argumente ei antud."
 
 #: zathura/commands.c:328
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Printing is not permitted in strict sandbox režiim"
 
 #: zathura/commands.c:349 zathura/commands.c:374
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Salvestamine pole ranges liivakastirežiimis lubatud"
 
 #: zathura/commands.c:360 zathura/commands.c:385
 msgid "Invalid number of arguments."
-msgstr ""
+msgstr "Invalid number arguments."
 
 #: zathura/commands.c:475
 msgid "Exporting attachments is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Manuste eksport pole ranges liivakastirežiimis lubatud"
 
 #: zathura/commands.c:507
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr ""
+msgstr "Couldn't write attachment '%s' et '%s'."
 
 #: zathura/commands.c:509
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr ""
+msgstr "Wrote attachment '%s' et '%s'."
 
 #: zathura/commands.c:553
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr ""
+msgstr "Wrote image '%s' et '%s'."
 
 #: zathura/commands.c:555
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr ""
+msgstr "Couldn't write image '%s' et '%s'."
 
 #: zathura/commands.c:561
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "Tundmatu pilt '%s'."
 
 #: zathura/commands.c:565
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "Tundmatu manus või pilt '%s'."
 
-#: zathura/commands.c:578
+#: zathura/commands.c:593
+#, c-format
+msgid "Failed to execute command: %s"
+msgstr "Käsu täitmine ebaõnnestus: %s"
+
+#: zathura/commands.c:606
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Exec is not permitted in strict sandbox režiim"
 
-#: zathura/commands.c:634
+#: zathura/commands.c:662
 msgid "Argument must be a number."
-msgstr ""
+msgstr "Argument peab olema arv."
 
 #: zathura/completion.c:259
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "Leht %d"
 
 #: zathura/completion.c:300
 msgid "Attachments"
@@ -1519,585 +1540,582 @@ msgstr "Salvesta manused"
 #. add images
 #: zathura/completion.c:329
 msgid "Images"
-msgstr ""
+msgstr "Pildid"
 
 #: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "Plugin ei toeta manuste ega piltide eksporti."
 
 #: zathura/completion.c:371
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "Dokument ei sisalda pilte ega manuseid"
 
 #. clang-format off
 #. settings
-#: zathura/config.c:455
-msgid "Font"
-msgstr ""
-
-#: zathura/config.c:456
-msgid "Default foreground color"
-msgstr ""
-
-#: zathura/config.c:457
-msgid "Default background color"
-msgstr ""
-
-#: zathura/config.c:458
-msgid "Inputbar foreground color"
-msgstr ""
-
-#: zathura/config.c:459
-msgid "Inputbar background color"
-msgstr ""
-
-#: zathura/config.c:460
-msgid "Statusbar foreground color"
-msgstr ""
-
-#: zathura/config.c:461
-msgid "Statsubar background color"
-msgstr ""
-
-#: zathura/config.c:462
-msgid "Completion foreground color"
-msgstr ""
-
-#: zathura/config.c:463
-msgid "Completion background color"
-msgstr ""
-
-#: zathura/config.c:464
-msgid "Completion group foreground color"
-msgstr ""
-
-#: zathura/config.c:465
-msgid "Completion group background color"
-msgstr ""
-
-#: zathura/config.c:466
-msgid "Completion highlight foreground color"
-msgstr ""
-
 #: zathura/config.c:467
-msgid "Completion highlight background color"
-msgstr ""
+msgid "Font"
+msgstr "Font"
 
-#: zathura/config.c:468
-msgid "Error notification foreground color"
-msgstr ""
-
-#: zathura/config.c:469
-msgid "Error notification background color"
-msgstr ""
-
+#. colors affecting the CSS
 #: zathura/config.c:470
-msgid "Warning notification foreground color"
-msgstr ""
+msgid "Default foreground color"
+msgstr "Vaikimisi esiplaani värv"
 
 #: zathura/config.c:471
-msgid "Warning notifaction background color"
-msgstr ""
+msgid "Default background color"
+msgstr "Vaikimisi taustavärv"
 
 #: zathura/config.c:472
-msgid "Notification foreground color"
-msgstr ""
+msgid "Inputbar foreground color"
+msgstr "Sisendriba esiplaani värv"
 
 #: zathura/config.c:473
-msgid "Notification background color"
-msgstr ""
+msgid "Inputbar background color"
+msgstr "Sisendriba taustavärv"
+
+#: zathura/config.c:474
+msgid "Statusbar foreground color"
+msgstr "Olekuriba esiplaani värv"
 
 #: zathura/config.c:475
-msgid "Initial window width"
-msgstr ""
+msgid "Statsubar background color"
+msgstr "Olekuriba taustavärv"
 
 #: zathura/config.c:476
-msgid "Initial window height"
-msgstr ""
+msgid "Completion foreground color"
+msgstr "Completion esiplaan värv"
 
 #: zathura/config.c:477
-msgid "Horizontal padding for the status, input, and notification bars"
-msgstr ""
+msgid "Completion background color"
+msgstr "Completion taust värv"
 
 #: zathura/config.c:478
-msgid "Vertical padding for the status, input, and notification bars"
-msgstr ""
+msgid "Completion group foreground color"
+msgstr "Completion group esiplaan värv"
 
 #: zathura/config.c:479
-msgid "Number of completion items"
-msgstr ""
+msgid "Completion group background color"
+msgstr "Completion group taust värv"
 
 #: zathura/config.c:480
-msgid "Window icon"
-msgstr ""
+msgid "Completion highlight foreground color"
+msgstr "Completion esiletõst esiplaan värv"
 
 #: zathura/config.c:481
-msgid "Command to execute in :exec"
-msgstr ""
+msgid "Completion highlight background color"
+msgstr "Completion esiletõst taust värv"
 
 #: zathura/config.c:482
-msgid "Show or hide certain GUI elements"
-msgstr ""
+msgid "Error notification foreground color"
+msgstr "Error notification esiplaan värv"
 
-#. commands
-#: zathura/config.c:485 zathura/config.c:773 zathura/config.c:774
-msgid "Execute a command"
-msgstr ""
+#: zathura/config.c:483
+msgid "Error notification background color"
+msgstr "Error notification taust värv"
+
+#: zathura/config.c:484
+msgid "Warning notification foreground color"
+msgstr "Warning notification esiplaan värv"
+
+#: zathura/config.c:485
+msgid "Warning notifaction background color"
+msgstr "Warning notifaction taust värv"
 
 #: zathura/config.c:486
-msgid "Map a key sequence"
-msgstr ""
+msgid "Notification foreground color"
+msgstr "Notification esiplaan värv"
 
 #: zathura/config.c:487
-msgid "Quit the program"
-msgstr ""
+msgid "Notification background color"
+msgstr "Notification taust värv"
 
 #: zathura/config.c:488
-msgid "Set an option"
-msgstr ""
+msgid "Index mode foreground color"
+msgstr "Index režiim esiplaan värv"
 
 #: zathura/config.c:489
-msgid "Unmap a key sequence"
-msgstr ""
+msgid "Index mode background color"
+msgstr "Index režiim taust värv"
 
 #: zathura/config.c:490
-msgid "Dump settings to a file"
-msgstr ""
+msgid "Index mode foreground color (active element)"
+msgstr "Index režiim esiplaan värv (active element)"
 
-#. zathura settings
+#: zathura/config.c:491
+msgid "Index mode background color (active element)"
+msgstr "Index režiim taust värv (active element)"
+
+#: zathura/config.c:492
+msgid "Scrollbar foreground color"
+msgstr "Scrollbar esiplaan värv"
+
+#: zathura/config.c:493
+msgid "Scrollbar background color"
+msgstr "Scrollbar taust värv"
+
+#: zathura/config.c:496
+msgid "Initial window width"
+msgstr "Algne akna laius"
+
+#: zathura/config.c:497
+msgid "Initial window height"
+msgstr "Algne akna kõrgus"
+
+#: zathura/config.c:498
+msgid "Horizontal padding for the status, input, and notification bars"
+msgstr "Horizontal padding jaoks status, input, ja notification bars"
+
+#: zathura/config.c:499
+msgid "Vertical padding for the status, input, and notification bars"
+msgstr "Vertical padding jaoks status, input, ja notification bars"
+
+#: zathura/config.c:500
+msgid "Number of completion items"
+msgstr "Number completion items"
+
+#: zathura/config.c:501
+msgid "Window icon"
+msgstr "Akna ikoon"
+
 #: zathura/config.c:502
-msgid "Database backend"
-msgstr ""
+msgid "Command to execute in :exec"
+msgstr "Command et execute in :exec"
 
 #: zathura/config.c:503
-msgid "File monitor backend"
-msgstr ""
+msgid "Show or hide certain GUI elements"
+msgstr "Näita või peida teatud GUI elemente"
 
 #: zathura/config.c:505
+msgid "Database backend"
+msgstr "Andmebaasi taustmootor"
+
+#: zathura/config.c:506
+msgid "File monitor backend"
+msgstr "Failimonitori taustmootor"
+
+#: zathura/config.c:508
 msgid "Zoom step"
-msgstr ""
+msgstr "Suumisamm"
 
-#: zathura/config.c:507
+#: zathura/config.c:510
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Horizontal padding between lehed"
 
-#: zathura/config.c:509
+#: zathura/config.c:512
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Vertical padding between lehed"
 
-#: zathura/config.c:511
+#: zathura/config.c:514
 msgid "Number of pages per row"
-msgstr ""
+msgstr "Number lehed per row"
 
-#: zathura/config.c:513
+#: zathura/config.c:516
 msgid "Column of the first page"
-msgstr ""
+msgstr "Column first leht"
 
-#: zathura/config.c:515
+#: zathura/config.c:518
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Render lehed from right et left"
 
-#: zathura/config.c:517
+#: zathura/config.c:520
 msgid "Scroll step"
-msgstr ""
+msgstr "Kerimissamm"
 
-#: zathura/config.c:519
+#: zathura/config.c:522
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Horisontaalse kerimise samm"
 
-#: zathura/config.c:521
+#: zathura/config.c:524
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Full leht scroll overlap"
 
-#: zathura/config.c:523
+#: zathura/config.c:526
 msgid "Zoom minimum"
-msgstr ""
+msgstr "Minimaalne suum"
 
-#: zathura/config.c:525
+#: zathura/config.c:528
 msgid "Zoom maximum"
-msgstr ""
+msgstr "Maksimaalne suum"
 
-#: zathura/config.c:527
+#: zathura/config.c:530
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Maximum number lehed et keep cache"
 
-#: zathura/config.c:529
+#: zathura/config.c:532
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr ""
-
-#: zathura/config.c:531
-msgid "Number of positions to remember in the jumplist"
-msgstr ""
-
-#: zathura/config.c:533
-msgid "Recoloring (dark color)"
-msgstr ""
+msgstr "Maximum size pixels thumbnails et keep cache"
 
 #: zathura/config.c:534
-msgid "Recoloring (light color)"
-msgstr ""
+msgid "Number of positions to remember in the jumplist"
+msgstr "Number positions et remember jumplist"
 
-#: zathura/config.c:535
+#: zathura/config.c:536
+msgid "Recoloring (dark color)"
+msgstr "Recoloring (dark värv)"
+
+#: zathura/config.c:537
+msgid "Recoloring (light color)"
+msgstr "Recoloring (light värv)"
+
+#: zathura/config.c:538
 msgid "Color for highlighting"
 msgstr "Esiletõstmise värv"
 
-#: zathura/config.c:537
-msgid "Foreground color for highlighting"
-msgstr ""
-
 #: zathura/config.c:539
+msgid "Foreground color for highlighting"
+msgstr "Foreground värv jaoks highlighting"
+
+#: zathura/config.c:540
 msgid "Color for highlighting (active)"
 msgstr "Esiletõstmise värv (aktiivne)"
 
 #: zathura/config.c:541
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "'Loading ...' taust värv"
 
-#: zathura/config.c:543
+#: zathura/config.c:542
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "'Loading ...' esiplaan värv"
+
+#. colors for document signatures
+#: zathura/config.c:545
+msgid "Color used to highlight valid signatures"
+msgstr "Color used et esiletõst valid signatures"
 
 #: zathura/config.c:546
-msgid "Index mode foreground color"
-msgstr ""
+msgid "Color used to highlight signatures with warnings"
+msgstr "Color used et esiletõst signatures koos warnings"
 
 #: zathura/config.c:547
-msgid "Index mode background color"
-msgstr ""
-
-#: zathura/config.c:548
-msgid "Index mode foreground color (active element)"
-msgstr ""
-
-#: zathura/config.c:549
-msgid "Index mode background color (active element)"
-msgstr ""
-
-#: zathura/config.c:551
-msgid "Color used to highlight valid signatures"
-msgstr ""
-
-#: zathura/config.c:554
-msgid "Color used to highlight signatures with warnings"
-msgstr ""
-
-#: zathura/config.c:557
 msgid "Color used to highlight invalid signatures"
-msgstr ""
+msgstr "Color used et esiletõst invalid signatures"
 
-#: zathura/config.c:561
+#: zathura/config.c:562
 msgid "Recolor pages"
-msgstr ""
+msgstr "Recolor lehed"
 
-#: zathura/config.c:563
+#: zathura/config.c:564
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
+msgstr "When recoloring keep original hue ja adjust lightness only"
 
-#: zathura/config.c:565
+#: zathura/config.c:566
 msgid "When recoloring keep original image colors"
-msgstr ""
+msgstr "When recoloring keep original image värvid"
 
-#: zathura/config.c:567
+#: zathura/config.c:568
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "Ümbervärvimisel kohanda heledust"
 
-#: zathura/config.c:569
+#: zathura/config.c:570
 msgid "Wrap scrolling"
-msgstr ""
+msgstr "Wrap kerimine"
 
-#: zathura/config.c:573
+#: zathura/config.c:574
 msgid "Advance number of pages per row"
-msgstr ""
+msgstr "Advance number lehed per row"
 
-#: zathura/config.c:575
+#: zathura/config.c:576
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "Horisontaalselt keskendatud suum"
 
-#: zathura/config.c:577
+#: zathura/config.c:578
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Vertically center lehed"
 
-#: zathura/config.c:579
+#: zathura/config.c:580
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Align link target et left"
 
-#: zathura/config.c:581
+#: zathura/config.c:582
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Let zoom be changed kui following lingid"
 
-#: zathura/config.c:583
+#: zathura/config.c:584
 msgid "Center result horizontally"
-msgstr ""
-
-#: zathura/config.c:585
-msgid "Render 'Loading ...'"
-msgstr ""
+msgstr "Keskenda tulemus horisontaalselt"
 
 #: zathura/config.c:586
+msgid "Render 'Loading ...'"
+msgstr "Renderda 'Laadimine ...'"
+
+#: zathura/config.c:587
 msgid "Adjust to when opening file"
-msgstr ""
+msgstr "Adjust et kui opening fail"
 
-#: zathura/config.c:588
+#: zathura/config.c:589
 msgid "Show hidden files and directories"
-msgstr ""
+msgstr "Show hidden failid ja directories"
 
-#: zathura/config.c:590
+#: zathura/config.c:591
 msgid "Show directories"
 msgstr "Näita kaustasid"
 
-#: zathura/config.c:592
+#: zathura/config.c:593
 msgid "Show recent files"
-msgstr ""
+msgstr "Show recent failid"
 
-#: zathura/config.c:594
+#: zathura/config.c:595
 msgid "Always open on first page"
 msgstr "Ava alati esimene leht"
 
-#: zathura/config.c:596
+#: zathura/config.c:597
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Keela highlighting otsing tulemused"
 
-#: zathura/config.c:598
+#: zathura/config.c:599
 msgid "Double click to follow links"
-msgstr ""
+msgstr "Double click et follow lingid"
 
-#: zathura/config.c:601
+#: zathura/config.c:602
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Luba incremental otsing"
 
-#: zathura/config.c:603
+#: zathura/config.c:604
 msgid "Clear search results on abort"
-msgstr ""
+msgstr "Clear otsing tulemused on abort"
 
-#: zathura/config.c:605
+#: zathura/config.c:606
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Kasuta basename fail window title"
 
-#: zathura/config.c:607
+#: zathura/config.c:608
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr ""
+msgstr "Kasuta ~ asemel $HOME filename window title"
 
-#: zathura/config.c:609
+#: zathura/config.c:610
 msgid "Display the page number in the window title"
-msgstr ""
+msgstr "Kuva leht number window title"
 
-#: zathura/config.c:611
+#: zathura/config.c:612
 msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Kasuta first leht a dokument as window icon"
 
-#: zathura/config.c:613
+#: zathura/config.c:614
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Kasuta basename fail statusbar"
 
-#: zathura/config.c:615
+#: zathura/config.c:616
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr ""
+msgstr "Kasuta ~ asemel $HOME filename statusbar"
 
-#: zathura/config.c:617
+#: zathura/config.c:618
 msgid "Display (current page / total pages) as a percent in the statusbar"
-msgstr ""
-
-#: zathura/config.c:619
-msgid "Enable synctex support"
-msgstr ""
+msgstr "Kuva (praegune leht / lehti kokku) protsendina olekuribal"
 
 #: zathura/config.c:620
-msgid "Synctex editor command"
-msgstr ""
+msgid "Enable synctex support"
+msgstr "Luba synctex tugi"
 
 #: zathura/config.c:621
-msgid "Synctex edit modifier"
-msgstr ""
+msgid "Synctex editor command"
+msgstr "Synctex editor käsk"
 
 #: zathura/config.c:622
-msgid "Highlighter modifier"
-msgstr ""
+msgid "Synctex edit modifier"
+msgstr "Synctexi muutmisklahv"
 
-#: zathura/config.c:624
-msgid "Enable D-Bus service"
-msgstr ""
+#: zathura/config.c:623
+msgid "Highlighter modifier"
+msgstr "Esiletõstmise muutmisklahv"
 
 #: zathura/config.c:625
-msgid "Raise window on certain D-Bus commands"
-msgstr ""
+msgid "Enable D-Bus service"
+msgstr "Luba D-Bus service"
 
-#: zathura/config.c:627
-msgid "Save history at each page change"
-msgstr ""
+#: zathura/config.c:626
+msgid "Raise window on certain D-Bus commands"
+msgstr "Raise window on certain D-Bus käsud"
 
 #: zathura/config.c:628
+msgid "Save history at each page change"
+msgstr "Save history at each leht change"
+
+#: zathura/config.c:629
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "Lõikepuhver, kuhu hiirega valitud andmed kirjutatakse"
 
-#: zathura/config.c:630
+#: zathura/config.c:631
 msgid "Enable notification after selecting text"
-msgstr ""
+msgstr "Luba notification after selecting text"
 
-#: zathura/config.c:633
+#: zathura/config.c:634
 msgid "Disable additional information for signatures embedded in the document."
-msgstr ""
-
-#: zathura/config.c:635
-msgid "Scrollbar foreground color"
-msgstr ""
-
-#: zathura/config.c:636
-msgid "Scrollbar background color"
-msgstr ""
+msgstr "Keela dokumenti manustatud allkirjade lisainfo kuvamine."
 
 #. define default inputbar commands
+#: zathura/config.c:764
+msgid "Map a key sequence"
+msgstr "Seo klahvijada"
+
+#: zathura/config.c:765
+msgid "Set an option"
+msgstr "Määra valik"
+
 #: zathura/config.c:766
+msgid "Unmap a key sequence"
+msgstr "Eemalda klahvijada seos"
+
+#: zathura/config.c:767
+msgid "Dump settings to a file"
+msgstr "Väljasta seaded faili"
+
+#: zathura/config.c:769
 msgid "Add a bookmark"
 msgstr "Lisa järjehoidja"
 
-#: zathura/config.c:767
+#: zathura/config.c:770
 msgid "Delete a bookmark"
 msgstr "Kustuta järjehoidja"
 
-#: zathura/config.c:768
+#: zathura/config.c:771
 msgid "List all bookmarks"
 msgstr "Näita kõiki järjehoidjaid"
 
-#: zathura/config.c:769
+#: zathura/config.c:772
 msgid "Jump to bookmark"
-msgstr ""
+msgstr "Hüppa järjehoidjale"
 
-#: zathura/config.c:770
+#: zathura/config.c:773
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "Näita viimaseid hüppeid hüppeloendis"
 
-#: zathura/config.c:771
+#: zathura/config.c:774
 msgid "Close current file"
 msgstr "Sulge praegune fail"
 
-#: zathura/config.c:772
+#: zathura/config.c:775
 msgid "Show file information"
 msgstr "Näita faili infot"
 
+#: zathura/config.c:776 zathura/config.c:777
+msgid "Execute a command"
+msgstr "Execute a käsk"
+
 #. like vim
-#: zathura/config.c:775
+#: zathura/config.c:778
 msgid "Show help"
 msgstr "Näita abiinfot"
 
-#: zathura/config.c:776
+#: zathura/config.c:779
 msgid "Open document"
 msgstr "Ava dokument"
 
-#: zathura/config.c:777
+#: zathura/config.c:780
 msgid "Close zathura"
 msgstr "Sule zathura"
 
-#: zathura/config.c:778
+#: zathura/config.c:781
 msgid "Print document"
 msgstr "Prindi dokument"
 
-#: zathura/config.c:779 zathura/config.c:781
+#: zathura/config.c:782 zathura/config.c:784
 msgid "Save document"
 msgstr "Salvesta dokument"
 
-#: zathura/config.c:780 zathura/config.c:782
+#: zathura/config.c:783 zathura/config.c:785
 msgid "Save document (and force overwriting)"
-msgstr ""
+msgstr "Salvesta dokument (ja sunni ülekirjutamine)"
 
-#: zathura/config.c:783
+#: zathura/config.c:786
 msgid "Save attachments"
 msgstr "Salvesta manused"
 
-#: zathura/config.c:784
-msgid "Set page offset"
-msgstr ""
-
-#: zathura/config.c:785
-msgid "Mark current location within the document"
-msgstr ""
-
-#: zathura/config.c:786
-msgid "Delete the specified marks"
-msgstr ""
-
 #: zathura/config.c:787
-msgid "Remove highlights of current search results"
-msgstr ""
+msgid "Set page offset"
+msgstr "Set leht offset"
 
 #: zathura/config.c:788
-msgid "Highlight current search results"
-msgstr ""
+msgid "Mark current location within the document"
+msgstr "Mark praegune location within dokument"
 
 #: zathura/config.c:789
-msgid "Show version information"
-msgstr ""
+msgid "Delete the specified marks"
+msgstr "Delete specified marks"
 
 #: zathura/config.c:790
+msgid "Remove highlights of current search results"
+msgstr "Eemalda praeguste otsingutulemuste esiletõst"
+
+#: zathura/config.c:791
+msgid "Highlight current search results"
+msgstr "Highlight praegune otsing tulemused"
+
+#: zathura/config.c:792
+msgid "Show version information"
+msgstr "Kuva versiooniteave"
+
+#: zathura/config.c:793
 msgid "Source config file"
-msgstr ""
+msgstr "Laadi seadistusfail"
 
 #: zathura/links.c:210
 msgid "Failed to run xdg-open."
-msgstr ""
+msgstr "Failed et run xdg-open."
 
 #: zathura/links.c:223
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
+"Opening external applications in strict sandbox režiim is not permitted"
 
 #: zathura/links.c:258
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Link: leht %d"
 
 #: zathura/links.c:264
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Link: %s"
 
 #: zathura/links.c:267 zathura/links.c:289
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Link: Vigane"
 
 #: zathura/links.c:278
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "Kopeeritud leheküljenumber: %d"
 
 #: zathura/links.c:286
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
+msgstr "Kopeeritud link: %s"
 
 #: zathura/main.c:111
 msgid "Reparents to window specified by xid (X11)"
-msgstr ""
+msgstr "Reparents et window specified by xid (X11)"
 
 #: zathura/main.c:112
 msgid "Path to the config directory"
-msgstr ""
+msgstr "Path et config directory"
 
 #: zathura/main.c:113
 msgid "Path to the data directory"
-msgstr ""
+msgstr "Path et data directory"
 
 #: zathura/main.c:114
 msgid "Path to the cache directory"
-msgstr ""
+msgstr "Path et cache directory"
 
 #: zathura/main.c:115
 msgid "Path to the directories containing plugins"
-msgstr ""
+msgstr "Path et directories containing pluginad"
 
 #: zathura/main.c:117
 msgid "Fork into the background"
-msgstr ""
+msgstr "Fork into taust"
 
 #: zathura/main.c:118
 msgid "Document password"
-msgstr ""
+msgstr "Dokumendi parool"
 
 #: zathura/main.c:119
 msgid "Page number to go to"
-msgstr ""
+msgstr "Leheküljenumber, kuhu minna"
 
 #: zathura/main.c:120
 msgid "Log level (debug, info, warning, error)"
-msgstr ""
+msgstr "Logitase (debug, info, warning, error)"
 
 #: zathura/main.c:121
 msgid "Print version information"
@@ -2105,29 +2123,29 @@ msgstr "Näita faili infot"
 
 #: zathura/main.c:123
 msgid "Synctex editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "Synctex editor (forwarded et synctex käsk)"
 
 #: zathura/main.c:124
 msgid "Move to given synctex position"
-msgstr ""
+msgstr "Liigu et given synctex position"
 
 #: zathura/main.c:125
 msgid "Highlight given position in the given process"
-msgstr ""
+msgstr "Highlight given position given process"
 
 #: zathura/main.c:127
 msgid "Start in a non-default mode"
-msgstr ""
+msgstr "Start in a non-default režiim"
 
 #: zathura/main.c:128
 msgid "Bookmark to go to"
-msgstr ""
+msgstr "Järjehoidja, kuhu minna"
 
 #: zathura/main.c:129
 msgid "Search for the given phrase and display results"
-msgstr ""
+msgstr "Otsi antud fraasi ja kuva tulemused"
 
-#: zathura/page-widget.c:644
+#: zathura/page-widget.c:646
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2135,179 +2153,182 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
+"Signature is valid.\n"
+"This dokument is signed by\n"
+"  %s\n"
+"on %s."
 
-#: zathura/page-widget.c:652
+#: zathura/page-widget.c:654
 msgid "Signature certificate is expired."
-msgstr ""
+msgstr "Allkirjasertifikaat on aegunud."
 
-#: zathura/page-widget.c:656
+#: zathura/page-widget.c:658
 msgid "Signature certificate is revoked."
-msgstr ""
+msgstr "Allkirjasertifikaat on tühistatud."
 
-#: zathura/page-widget.c:660
+#: zathura/page-widget.c:662
 msgid "Signature certificate is not trusted."
-msgstr ""
+msgstr "Allkirjasertifikaat pole usaldatud."
 
-#: zathura/page-widget.c:664
+#: zathura/page-widget.c:666
 msgid "Signature certificate is invalid."
-msgstr ""
+msgstr "Allkirjasertifikaat on vigane."
 
-#: zathura/page-widget.c:668
+#: zathura/page-widget.c:670
 msgid "Signature is invalid."
-msgstr ""
+msgstr "Allkiri on vigane."
 
-#: zathura/page-widget.c:751
+#: zathura/page-widget.c:753
 msgid "Loading..."
-msgstr ""
+msgstr "Laadimine..."
 
-#: zathura/page-widget.c:1263
+#: zathura/page-widget.c:1265
 msgid "Copy image"
 msgstr "Kopeeri pilt"
 
-#: zathura/page-widget.c:1264
+#: zathura/page-widget.c:1266
 msgid "Save image as"
-msgstr ""
+msgstr "Salvesta pilt kui"
 
 #. Update statusbar.
 #: zathura/print.c:94
 #, c-format
 msgid "Printing page %d ..."
-msgstr ""
+msgstr "Printing leht %d ..."
 
 #: zathura/print.c:166
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Prindiing failed: %s"
 
-#: zathura/shortcuts.c:128
+#: zathura/shortcuts.c:131
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr ""
+msgstr "Invalid adjust režiim: %d"
 
-#: zathura/shortcuts.c:1067
+#: zathura/shortcuts.c:1129
 msgid "This document does not contain any index"
-msgstr ""
+msgstr "This dokument does not contain any index"
 
-#: zathura/utils.c:724
+#: zathura/shortcuts.c:1619
+msgid "Open file"
+msgstr "Ava fail"
+
+#: zathura/utils.c:728
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "Mustrit ei leitud: %s"
 
-#: zathura/zathura.c:313 zathura/zathura.c:1489
+#: zathura/zathura.c:312 zathura/zathura.c:1486
 msgid "[No name]"
 msgstr "[Nime pole]"
 
-#: zathura/zathura.c:723
+#: zathura/zathura.c:722
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
+msgstr "Could not read fail from stdin ja write it et a temporary fail."
 
-#: zathura/zathura.c:741
+#: zathura/zathura.c:740
 msgid "Could not read file from GIO and copy it to a temporary file."
-msgstr ""
+msgstr "Could not read fail from GIO ja copy it et a temporary fail."
 
-#: zathura/zathura.c:832
+#: zathura/zathura.c:831
 msgid "Enter password:"
-msgstr ""
+msgstr "Sisesta parool:"
 
-#: zathura/zathura.c:925
+#: zathura/zathura.c:924
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Toetamata failitüüp. Palun paigalda vajalik plugin."
 
-#: zathura/zathura.c:934
+#: zathura/zathura.c:933
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Document does not contain any lehed"
 
-#: zathura/zathura.c:1300
+#: zathura/zathura.c:1297
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr ""
+msgstr "File already exists: %s. Use :write! et overwrite it."
 
-#: zathura/zathura.c:1307
+#: zathura/zathura.c:1304
 msgid "Failed to save document."
-msgstr ""
+msgstr "Failed et save dokument."
 
-#: zathura/zathura.c:1311
+#: zathura/zathura.c:1308
 msgid "Document saved."
-msgstr ""
+msgstr "Dokument salvestatud."
 
 #: girara-gtk/commands.c:261
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr ""
+msgstr "Invalid number arguments passed: %zu asemel at least %u"
 
 #: girara-gtk/commands.c:297
 #, c-format
 msgid "Unregistered mode specified: %s"
-msgstr ""
+msgstr "Unregistered režiim specified: %s"
 
 #: girara-gtk/commands.c:305
 msgid "Invalid number of arguments passed"
-msgstr ""
+msgstr "Invalid number arguments passed"
 
 #: girara-gtk/commands.c:337
 #, c-format
 msgid "Invalid modifier in %s"
-msgstr ""
+msgstr "Invalid modifier %s"
 
 #: girara-gtk/commands.c:375
 #, c-format
 msgid "Invalid special key value for %s"
-msgstr ""
+msgstr "Invalid special key value jaoks %s"
 
 #: girara-gtk/commands.c:410
 #, c-format
 msgid "Invalid special key value or mode %s"
-msgstr ""
+msgstr "Invalid special key value or režiim %s"
 
 #: girara-gtk/commands.c:494
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr ""
+msgstr "Pole kehtiv kiirkäskluse funktsioon: %s"
 
-#: girara-gtk/commands.c:554
+#: girara-gtk/commands.c:545
 msgid "Not enough arguments."
-msgstr ""
+msgstr "Argumente pole piisavalt."
 
-#: girara-gtk/commands.c:572
+#: girara-gtk/commands.c:563
 #, c-format
 msgid "Unknown option: %s"
-msgstr ""
+msgstr "Tundmatu valik: %s"
 
-#: girara-gtk/commands.c:585
+#: girara-gtk/commands.c:576
 msgid "true"
-msgstr ""
+msgstr "true"
 
-#: girara-gtk/commands.c:585
+#: girara-gtk/commands.c:576
 msgid "false"
-msgstr ""
+msgstr "false"
 
-#: girara-gtk/commands.c:613
+#: girara-gtk/commands.c:604
 #, c-format
 msgid "No value defined for option: %s"
-msgstr ""
+msgstr "Valiku jaoks pole väärtust määratud: %s"
 
-#: girara-gtk/commands.c:628
+#: girara-gtk/commands.c:619
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr ""
+msgstr "Valiku tundmatu väärtus: %s"
 
 #. unhandled command
-#: girara-gtk/commands.c:792
+#: girara-gtk/commands.c:775
 #, c-format
 msgid "Not a valid command: %s"
-msgstr ""
+msgstr "Pole kehtiv käsk: %s"
 
-#: girara-gtk/settings.c:259
+#: girara-gtk/settings.c:255
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr ""
+msgstr "Invalid number arguments passed: %zu asemel 1"
 
-#: girara-gtk/settings.c:281
+#: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
-
-#: girara-gtk/utils.c:47
-#, c-format
-msgid "Failed to execute command: %s"
-msgstr ""
+msgstr "JSON-i kirjutamine ebaõnnestus: %s"

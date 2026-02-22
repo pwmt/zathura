@@ -22,7 +22,7 @@
  */
 void girara_setting_free(girara_setting_t* setting);
 
-void girara_config_handle_free(girara_config_handle_t* handle);
+void girara_config_handle_free(void* handle);
 
 void girara_shortcut_mapping_free(girara_shortcut_mapping_t* mapping);
 
@@ -174,14 +174,6 @@ struct girara_mouse_event_s {
   girara_mode_t mode;                  /**< Allowed modes */
   girara_event_type_t event_type;      /**< Event type */
   girara_argument_t argument;          /**< Given argument */
-};
-
-/**
- * Config handle
- */
-struct girara_config_handle_s {
-  char* identifier;
-  girara_command_function_t handle;
 };
 
 /**

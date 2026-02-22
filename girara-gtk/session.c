@@ -248,7 +248,7 @@ girara_session_t* girara_session_create(void) {
   session->modes.inputbar     = inputbar_mode;
 
   /* config handles */
-  session_private->config.handles = girara_list_new_with_free((girara_free_function_t)girara_config_handle_free);
+  session_private->config.handles = girara_list_new_with_free(girara_config_handle_free);
   session_private->config.shortcut_mappings =
       girara_list_new_with_free((girara_free_function_t)girara_shortcut_mapping_free);
   session_private->config.argument_mappings =

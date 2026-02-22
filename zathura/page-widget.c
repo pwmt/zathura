@@ -568,6 +568,8 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
       cairo_paint(cairo);
       cairo_restore(cairo);
     } else {
+      girara_debug("drawing thumbnail for page %d", zathura_page_get_index(priv->page));
+
       const unsigned int height = cairo_image_surface_get_height(priv->thumbnail);
       const unsigned int width  = cairo_image_surface_get_width(priv->thumbnail);
       unsigned int pheight      = (rotation % 180 ? page_width : page_height);

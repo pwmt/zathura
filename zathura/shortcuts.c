@@ -162,16 +162,15 @@ bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* UNUSED(
 
   int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
-  char* first_page_column_list = NULL;
+  g_autofree char* first_page_column_list = NULL;
   girara_setting_get(session, "first-page-column", &first_page_column_list);
 
-  if (t == 0)
+  if (t == 0) {
     t = 1;
-  char* new_column_list = increment_first_page_column(first_page_column_list, pages_per_row, t);
-  g_free(first_page_column_list);
+  }
 
+  g_autofree char* new_column_list = increment_first_page_column(first_page_column_list, pages_per_row, t);
   girara_setting_set(session, "first-page-column", new_column_list);
-  g_free(new_column_list);
 
   return true;
 }
@@ -301,14 +300,12 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
         return false;
       }
 
-      char* path    = g_path_get_dirname(file_path);
-      char* escaped = girara_escape_string(path);
-      char* tmp     = g_strdup_printf("%s%s/", (char*)argument->data, (g_strcmp0(path, "/") == 0) ? "" : escaped);
-      g_free(path);
-      g_free(escaped);
+      g_autofree char* path    = g_path_get_dirname(file_path);
+      g_autofree char* escaped = girara_escape_string(path);
+      g_autofree char* tmp =
+          g_strdup_printf("%s%s/", (char*)argument->data, (g_strcmp0(path, "/") == 0) ? "" : escaped);
 
       gtk_entry_set_text(session->gtk.inputbar_entry, tmp);
-      g_free(tmp);
     }
 
     g_autofree GdkAtom* selection = get_selection(zathura);
@@ -1111,10 +1108,10 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
     return false;
   }
 
-  GtkWidget* treeview                = NULL;
-  GtkTreeModel* model                = NULL;
-  GtkCellRenderer* renderer          = NULL;
-  GtkCellRenderer* renderer2         = NULL;
+  GtkWidget* treeview        = NULL;
+  GtkTreeModel* model        = NULL;
+  GtkCellRenderer* renderer  = NULL;
+  GtkCellRenderer* renderer2 = NULL;
 
   if (zathura->ui.index == NULL) {
     /* create new index widget */
@@ -1618,44 +1615,30 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  GtkFileChooserNative* native =
-      gtk_file_chooser_native_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
+  g_autoptr(GtkFileChooserNative) native =
+      gtk_file_chooser_native_new(_("Open file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
   GtkFileChooser* chooser = GTK_FILE_CHOOSER(native);
 
-  GtkFileFilter* filter     = gtk_file_filter_new();
   girara_list_t* mime_types = zathura_plugin_manager_get_content_types(zathura->plugins.manager);
   if (mime_types) {
+    GtkFileFilter* filter = gtk_file_filter_new();
     for (size_t idx = 0; idx != girara_list_size(mime_types); ++idx) {
       const char* mime_type = girara_list_nth(mime_types, idx);
       girara_debug("adding mime type to %s to filter", mime_type);
       gtk_file_filter_add_mime_type(filter, mime_type);
     }
     gtk_file_chooser_add_filter(chooser, filter);
-  } else {
-    g_object_unref(filter);
   }
 
   const gint res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(native));
   if (res == GTK_RESPONSE_ACCEPT) {
-    char* filename = gtk_file_chooser_get_filename(chooser);
     if (zathura_has_document(zathura) && !document_close(zathura, false)) {
-      g_free(filename);
-      goto error;
+      return false;
     }
 
-    if (!document_open(zathura, filename, NULL, NULL, 0, NULL)) {
-      g_free(filename);
-      goto error;
-    }
-
-    g_free(filename);
+    g_autofree char* filename = gtk_file_chooser_get_filename(chooser);
+    return document_open(zathura, filename, NULL, NULL, 0, NULL);
   }
 
-  g_object_unref(native);
   return true;
-
-error:
-
-  g_object_unref(native);
-  return false;
 }

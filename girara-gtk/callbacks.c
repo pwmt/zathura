@@ -324,6 +324,11 @@ gboolean girara_callback_view_scroll_event(GtkWidget* UNUSED(widget), GdkEventSc
     event.type = GIRARA_EVENT_SCROLL_BIDIRECTIONAL;
     /* We abuse x and y here. We really need more fields in girara_event_t. */
     gdk_event_get_scroll_deltas((GdkEvent*)scroll, &event.x, &event.y);
+#ifdef __APPLE__
+    /* Apple has much higher deltas */
+    event.x /= 50;
+    event.y /= 50;
+#endif
     break;
   default:
     return false;

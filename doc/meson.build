@@ -27,4 +27,18 @@ if sphinx.found()
       pointing_to: 'zathura.1'
     )
   endif
+
+  meson.add_dist_script('build-man.sh')
+else
+  fs = import('fs')
+  if fs.exists('zathura.1')
+    install_man(files('zathura.1', 'zathurarc.5'))
+
+    if seccomp.found() or landlock
+      install_symlink('zathura-sandbox.1',
+        install_dir: join_paths(get_option('mandir'), 'man1'),
+        pointing_to: 'zathura.1'
+      )
+    endif
+  endif
 endif

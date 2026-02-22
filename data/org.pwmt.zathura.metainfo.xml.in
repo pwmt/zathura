@@ -27,6 +27,9 @@
       <li>Automatic document reloading.</li>
     </ul>
   </description>
+  <categories>
+    <category>Office</category>
+  </categories>
   <launchable type="desktop-id">org.pwmt.zathura.desktop</launchable>
   <url type="homepage">https://pwmt.org/projects/zathura</url>
   <url type="bugtracker">https://github.com/pwmt/zathura/issues</url>
@@ -53,7 +56,7 @@
       <caption>Listing and selecting bookmakrs</caption>
     </screenshot>
   </screenshots>
-  <translation type="gettext">zathura</translation>
+  <translation type="gettext">org.pwmt.zathura</translation>
   <provides>
     <binary>zathura</binary>
   </provides>
@@ -64,9 +67,21 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="2026.02.22" date="2026-02-22">
+      <description>
+        <p>Fix warning when using 'null' database (#881)</p>
+        <p>Include manpages in tarballs (#674)</p>
+        <p>Various fixes and improvements</p>
+        <p>Update translations</p>
+      </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/674">#674</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/881">#881</issue>
+      </issues>
+    </release>
     <release version="2026.02.09" date="2026-02-09">
       <description>
-        <p>Implement single page layout and equal height/widht modes (#706, #724, #447, #289)</p>
+        <p>Implement single page layout and equal height/width modes (#706, #724, #447, #289)</p>
         <p>Use single page layout for presentation mode (#686, #666)</p>
         <p>Fix blurry rendering and repeated loading messages (#864, #860)</p>
         <p>Allow to disable copying to clipboard (#835)</p>
@@ -102,7 +117,7 @@
       <description>
         <p>Switch to date-based version numbers</p>
         <p>Fix warnings from CSS generation (#824)</p>
-        <p>Apply correect shacling when recoloring (#836)</p>
+        <p>Apply correct scaling when recoloring (#836)</p>
         <p>Make sure jumplist stays valid after close (#835)</p>
         <p>Disable message in incremental search (#227, #847)</p>
         <p>Fix seccomp rules with musl (#843)</p>
@@ -129,10 +144,10 @@
         <p>Switch default database to sqlite and drop plain database</p>
         <p>Notify users if no attachments and images are available to export</p>
         <p>Make index-* configurable after init (#799)</p>
-        <p>Support numberic keypad mappings</p>
+        <p>Support numeric keypad mappings</p>
         <p>Provide correct number of pages (#814)</p>
         <p>Undo size-allocate callback changes</p>
-        <p>Fix temporary file nams for better content-type detection</p>
+        <p>Fix temporary file names for better content-type detection</p>
       </description>
       <issues>
         <issue url="https://github.com/pwmt/zathura/issues/799">#799</issue>
@@ -155,7 +170,7 @@
       <description>
         <p>Add shortcut to open files via file chooser dialog</p>
         <p>Refactor rendering of pages</p>
-        <p>Add lightness adjustment for recolering</p>
+        <p>Add lightness adjustment for recoloring</p>
         <p>Initial support for OpenBSD sandbox</p>
       </description>
     </release>
@@ -173,7 +188,7 @@
       <description>
         <p>Fix build on macOS</p>
         <p>Hide page label if the same as page number</p>
-        <p>Cache synctex parser for faster operation</p>
+        <p>Cache SyncTeX parser for faster operation</p>
         <p>Revert changes for documents with multiple page sizes</p>
         <p>Various fixes and improvements</p>
       </description>
@@ -223,14 +238,14 @@
         <p>Make some key modifiers configurable</p>
         <p>Fix text selection on rotated pages</p>
         <p>Fix gap between pages</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.5.2" date="2022-11-27">
       <description>
         <p>Improve text selection</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.5.1" date="2022-09-09">
@@ -250,23 +265,23 @@
         <p>Fix build with meson 0.60</p>
         <p>Add :source command</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.8" date="2021-07-14">
       <description>
         <p>Account for page padding in full scroll</p>
-        <p>Add forefground color for links</p>
+        <p>Add foreground color for links</p>
         <p>Add :save and :save! aliases for :write and :write!</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.7" date="2020-09-03">
       <description>
         <p>Fix invalid zoom when opening document with 'adjust-open width' option</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.6" date="2020-07-27">
@@ -274,7 +289,7 @@
         <p>Add --find option to the CLI</p>
         <p>Support recolor with transparency</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.5" date="2020-01-06">
@@ -282,7 +297,7 @@
         <p>Fix step size for mouse wheel scrolling</p>
         <p>Lookup fileinfo from database by hash as fallback</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.4" date="2019-09-08">
@@ -290,14 +305,14 @@
         <p>Fix expansion of ~ and ~user when opening files</p>
         <p>Add fish completion</p>
         <p>Various fixes and improvements</p>
-        <p>Drop support for old libsyntex</p>
-        <p>Updated translations</p>
+        <p>Drop support for old libsynctex</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.3" date="2018-12-22">
       <description>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.1" date="2018-09-20">
@@ -305,14 +320,14 @@
         <p>Add bash and zsh completions</p>
         <p>Add RTL layout of pages</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.4.0" date="2018-05-20">
       <description>
         <p>Port to newer libsynctex</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.3.9" date="2018-03-16">
@@ -322,7 +337,7 @@
         <p>Add experimental seccomp filters</p>
         <p>Replace build system with meson</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.3.8" date="2017-12-20">
@@ -330,28 +345,28 @@
         <p>Fix memory leaks</p>
         <p>Rework plugin initialization</p>
         <p>Various fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.3.7" date="2017-01-11">
       <description>
         <p>Improved logging</p>
         <p>Improve page mode toggling</p>
-        <p>Several fixes and improvements</p>
-        <p>Updated translations</p>
+        <p>Various fixes and improvements</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.3.6" date="2016-04-18">
       <description>
         <p>Parallel build of manpages</p>
-        <p>Several fixes and improvements</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.3.5" date="2016-02-14">
       <description>
         <p>Build even without SyncTex</p>
         <p>Children should not fork</p>
-        <p>Several fixes and improvements</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.3.4" date="2015-12-21">
@@ -359,9 +374,8 @@
         <p>Recent files support</p>
         <p>Substitute home with tilde</p>
         <p>Open URLs</p>
-        <p>Several fixes and improvements</p>
+        <p>Various fixes and improvements</p>
         <p>Update translations</p>
-        <p>Update build system</p>
       </description>
     </release>
     <release version="0.3.3" date="2015-04-13">
@@ -371,7 +385,6 @@
         <p>Allow .dylib plugins on Mac OS X</p>
         <p>Fix dual page render breakage of adjust_window</p>
         <p>Update translations</p>
-        <p>Update buld system</p>
       </description>
     </release>
     <release version="0.3.2" date="2014-11-09">
@@ -380,7 +393,6 @@
         <p>Prevent segmentation fault when smooth zooming with mouse</p>
         <p>Cache thumbnails to support smooth zooming</p>
         <p>Check scale value correctness</p>
-        <p>Update build system</p>
         <p>Update translations</p>
       </description>
     </release>
@@ -401,12 +413,12 @@
         <p>Option to ignore images while recoloring</p>
         <p>Take advantage of shared or system SyncTex parser library</p>
         <p>Update translations</p>
-        <p>Several fixes</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.2.9" date="2014-06-25">
       <description>
-        <p>Updated dependency version of girara</p>
+        <p>Update dependency version of girara</p>
       </description>
     </release>
     <release version="0.2.8" date="2014-06-24">
@@ -414,9 +426,9 @@
         <p>Better SyncTex support</p>
         <p>Change cursor if mouse is over link</p>
         <p>Colored build output</p>
-        <p>Minor bug fixes</p>
+        <p>Various fixes and improvements</p>
         <p>Sphinx documentation</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.2.7" date="2014-02-17">
@@ -443,7 +455,7 @@
         <p>Replace fullscreen mode with presentation mode</p>
         <p>Remove GTK+2 support</p>
         <p>Update documentation</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.2.6" date="2013-11-24">
@@ -461,7 +473,7 @@
         <p>Allow number in quickmarks</p>
         <p>Workaround for print quality issues</p>
         <p>Update documentation</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.2.4" date="2013-08-15">
@@ -476,7 +488,7 @@
         <p>Improved bisect</p>
         <p>Update page number on mouse scroll</p>
         <p>Introduced window-title-page option</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.2.3" date="2013-05-12">
@@ -499,20 +511,20 @@
         <p>Update current page when following links</p>
         <p>Scroll horizontally with shift and mouse wheel</p>
         <p>Page aware scrolling</p>
-        <p>Synctex forward synchronisation</p>
+        <p>SyncTeX forward synchronisation</p>
         <p>Update shortcuts</p>
         <p>Some other bug fixes and updated translations</p>
       </description>
     </release>
     <release version="0.2.1" date="2012-08-30">
       <description>
-        <p>Syntex backwards synchronisation</p>
+        <p>SyncTeX backwards synchronisation</p>
         <p>Fix request-page-setup</p>
         <p>Fix window adustment</p>
         <p>Better GTK3 integration</p>
         <p>Added first-page-colum setting</p>
         <p>Added recolor-keephue setting</p>
-        <p>Updated translations</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.2.0" date="2012-06-09">
@@ -524,7 +536,7 @@
         <p>Export images and attachments</p>
         <p>Open multiple documents</p>
         <p>Plugin manager</p>
-        <p>Several memory leaks and small bugs</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.1.2" date="2012-03-24">
@@ -554,8 +566,7 @@
         <p>Option to hide hidden directories</p>
         <p>Do not overwrite existing files with :write</p>
         <p>Fix flicker in text selection</p>
-        <p>Resolved several memory leaks</p>
-        <p>Updated Makefile</p>
+        <p>Fixed several memory leaks</p>
       </description>
     </release>
     <release version="0.1.0" date="2012-02-21">
@@ -588,11 +599,10 @@
     </release>
     <release version="0.0.8.3" date="2011-03-24">
       <description>
-        <p>Updated text searching</p>
+        <p>Update text searching</p>
         <p>Support for poppler >= 0.15</p>
         <p>Fixed print command with multiple arguments</p>
         <p>Fixed GOptionEntries</p>
-        <p>Updated Makefile</p>
         <p>Fixed several memory leaks</p>
         <p>Fixed segmentation faults</p>
       </description>
@@ -608,8 +618,7 @@
         <p>Colored window and view port</p>
         <p>File reloading fix</p>
         <p>Fixed several memory leaks</p>
-        <p>Updated man page</p>
-        <p>Updated Makefile</p>
+        <p>Update manpage</p>
       </description>
     </release>
     <release version="0.0.8.1" date="2010-07-29">
@@ -630,14 +639,14 @@
         <p>Extended statusbar string manipulation</p>
         <p>`function`</p>
         <p>Strip executable</p>
-        <p>Updated manpage</p>
+        <p>Update manpage</p>
       </description>
     </release>
     <release version="0.0.7" date="2010-06-21">
       <description>
         <p>Change window title to filename</p>
         <p>Fixation of the URI command</p>
-        <p>Updated the behaviour of sc_scroll</p>
+        <p>Update the behaviour of sc_scroll</p>
         <p>Half/Full-page scrolling</p>
         <p>Check document health in sc_reload</p>
         <p>`tabbed` support</p>
@@ -645,9 +654,9 @@
         <p>Implemented map function</p>
         <p>`zathurarc` file</p>
         <p>Prevent buffer overflow in realpath</p>
-        <p>Strip executeable</p>
+        <p>Strip executable</p>
         <p>Key evaluation when buffer is not empty</p>
-        <p>Manpage update</p>
+        <p>Update manpage</p>
       </description>
     </release>
     <release version="0.0.6" date="2010-06-06">
@@ -656,7 +665,7 @@
         <p>Added document reload shortcut</p>
         <p>Fixed toggle index</p>
         <p>Fixed print command</p>
-        <p>Manpage update</p>
+        <p>Update manpage</p>
       </description>
     </release>
     <release version="0.0.5" date="2010-05-25">
@@ -664,7 +673,7 @@
         <p>Fullscreen mode</p>
         <p>Correct search result highlighting</p>
         <p>Document password dialog</p>
-        <p>Several fixes</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.0.4" date="2010-05-18">
@@ -674,7 +683,7 @@
         <p>Different goto modes</p>
         <p>Auto adjustment when opening a document</p>
         <p>Escape filenames</p>
-        <p>Several fixes</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.0.3" date="2010-04-11">
@@ -685,7 +694,7 @@
         <p>Show and hide document information</p>
         <p>Follow internal links or open URI in a predefined browser</p>
         <p>Save the document</p>
-        <p>Several fixes</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.0.2" date="2010-02-15">

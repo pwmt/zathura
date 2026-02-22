@@ -121,9 +121,9 @@ static void cb_global_modifiers_changed(girara_session_t* session, const char* n
 
   GdkModifierType* p;
   if (g_strcmp0(name, "synctex-edit-modifier") == 0) {
-    p = &(zathura->global.synctex_edit_modmask);
+    p = &zathura->global.synctex_edit_modmask;
   } else if (g_strcmp0(name, "highlighter-modifier") == 0) {
-    p = &(zathura->global.highlighter_modmask);
+    p = &zathura->global.highlighter_modmask;
   } else {
     girara_error("unreachable");
     return;
@@ -254,10 +254,12 @@ static void cb_guioptions(girara_session_t* session, const char* UNUSED(name), g
   }
 
   /* apply settings */
-  GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
-  GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+  if (zathura->ui.view) {
+    GtkPolicyType hpolicy = show_hscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
+    GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
 
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
+  }
 
   /* apply settings */
   if (show_commandline == true) {
@@ -286,11 +288,9 @@ static void cb_scroll_step_value_changed(girara_session_t* session, const char* 
   }
 
   GtkAdjustment* v_adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  if (v_adj == NULL) {
-    return;
+  if (v_adj) {
+    gtk_adjustment_set_step_increment(v_adj, *(float*)value);
   }
-
-  gtk_adjustment_set_step_increment(v_adj, *(float*)value);
 }
 
 static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
@@ -428,9 +428,7 @@ static void add_default_mouse_events(girara_session_t* gsession, girara_mode_t m
 }
 
 void config_load_default(zathura_t* zathura) {
-  if (zathura == NULL || zathura->ui.session == NULL) {
-    return;
-  }
+  g_return_if_fail(zathura != NULL && zathura->ui.session != NULL);
 
   int int_value              = 0;
   float float_value          = 0;
@@ -692,7 +690,6 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0,                GDK_KEY_space,       NULL, sc_navigate_index, INDEX, SELECT,             NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Return,      NULL, sc_navigate_index, INDEX, SELECT,             NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_j,           NULL, sc_navigate_index, INDEX, SELECT,             NULL);
-
   girara_shortcut_add(gsession, 0,                0,                   "gg", sc_navigate_index, INDEX, TOP,                NULL);
   girara_shortcut_add(gsession, 0,                0,                   "G",  sc_navigate_index, INDEX, BOTTOM,             NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_toggle_index,   INDEX, 0,                  NULL);
@@ -888,6 +885,8 @@ void config_load_default(zathura_t* zathura) {
 }
 
 void config_load_files(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+
   /* load global configuration files */
   g_autofree char* config_path = girara_get_xdg_path(XDG_CONFIG_DIRS);
   if (config_path != NULL && config_path[0] != '\0') {
