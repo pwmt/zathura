@@ -2272,8 +2272,7 @@ msgstr ""
 
 #: zathura/zathura.c:740
 msgid "Could not read file from GIO and copy it to a temporary file."
-msgstr ""
-"No se pudo leer el archivo desde GIO y copiarlo a un archivo temporal."
+msgstr "No se pudo leer el archivo desde GIO y copiarlo a un archivo temporal."
 
 #: zathura/zathura.c:831
 msgid "Enter password:"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 21:29+0100\n"
+"POT-Creation-Date: 2026-02-22 19:10+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Hebrew (http://app.transifex.com/pwmt/zathura/language/he/)\n"
@@ -36,50 +36,56 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura הוא מציג מסמכים פונקציונלי ובעל יכולת התאמה גבוהה. הוא מספק ממשק "
+"מינימליסטי וחוסך מקום, וכן שימוש פשוט שמתמקד בעיקר באינטראקציה עם המקלדת. "
+"Zathura מאפשר לצפות ולנווט במסמכים באופן מלא גם ללא שימוש בעכבר."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:20
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
+"ניתן להרחיב את Zathura לתמיכה במספר פורמטי מסמכים באמצעות תוספים. תכונות "
+"נוספות כוללות:"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "תמיכה בסנכרון SyncTeX קדימה ואחורה."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:26
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "סימונים מהירים וסימניות."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:27
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "טעינה מחדש אוטומטית של מסמך."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:44
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "קריאת קובץ PDF"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "פתיחת קובץ עם הפקודה `open`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:52
 msgid "Following links"
-msgstr ""
+msgstr "מעקב אחרי קישורים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:56
 msgid "Listing and selecting bookmakrs"
-msgstr ""
+msgstr "רישום ובחירה של סימניות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:72
 msgid ""
 "Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
+"ממש single עמוד פריסה וequal height/width מצבים (#706, #724, #447, #289)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:73
 msgid "Use single page layout for presentation mode (#686, #666)"
-msgstr ""
+msgstr "Use single עמוד פריסה עבור presentation מצב (#686, #666)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
@@ -87,11 +93,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:75
 msgid "Allow to disable copying to clipboard (#835)"
-msgstr ""
+msgstr "אפשר לdisable copying לclipboard (#835)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:76
 msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
-msgstr ""
+msgstr "תקן גלילה חלקה באמצעות Ctrl ומקשי החצים (#872)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:93
 msgid ""
@@ -163,7 +169,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:137
 msgid "Undo size-allocate callback changes"
-msgstr ""
+msgstr "בטל שינויים ב-callback של size-allocate"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:138
 msgid "Fix temporary file names for better content-type detection"
@@ -171,7 +177,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:147
 msgid "Validate appstream files with appstreamcli"
-msgstr ""
+msgstr "אמת appstream קבצים עם appstreamcli"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:148
 msgid "Split page-padding into page-h-padding and page-v-padding"
@@ -183,7 +189,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:150
 msgid "Warn if plugins do not support exporting images or attachments (#334)"
-msgstr ""
+msgstr "הזהר אם תוספים אינם תומכים בייצוא תמונות או קבצים מצורפים (#334)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:159
 msgid "Add shortcut to open files via file chooser dialog"
@@ -199,7 +205,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:162
 msgid "Initial support for OpenBSD sandbox"
-msgstr ""
+msgstr "תמיכה ראשונית ב-sandbox של OpenBSD"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:167
 msgid "Fix closing of documents"
@@ -211,7 +217,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:177
 msgid "Fix build on macOS"
-msgstr ""
+msgstr "תקן בנייה ב-macOS"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:178
 msgid "Hide page label if the same as page number"
@@ -247,7 +253,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:186
 msgid "Bump plugin ABI"
-msgstr ""
+msgstr "Bump תוסף ABI"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:191
 msgid "Split sandbox functionality into separate zathura-sandbox binary"
@@ -259,7 +265,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:193
 msgid "Add initial landlock support to sandbox"
-msgstr ""
+msgstr "הוסף תמיכה ראשונית ב-landlock ל-sandbox"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:194
 msgid "Fix repeated search"
@@ -267,7 +273,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:195
 msgid "Implement jumplist command"
-msgstr ""
+msgstr "ממש jumplist פקודה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:196
 msgid "Fix issues with document with multiple page sizes"
@@ -275,11 +281,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:202
 msgid "Move to Github"
-msgstr ""
+msgstr "העבר לGithub"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:203
 msgid "Reduce minimum glib version"
-msgstr ""
+msgstr "הפחת את גרסת המינימום של glib"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:204
 msgid "Remove normal sandbox mode"
@@ -294,6 +300,8 @@ msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
+"הסר את ההגדרה highlight-transparency. במקום זאת הגדר את רכיב האלפא של "
+"highlight-color, highlight-active-color ו-highlight-fg."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:212
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
@@ -311,7 +319,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:224
 msgid "Add support to display signatures"
-msgstr ""
+msgstr "הוסף תמיכה בהצגת חתימות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:225
 msgid "Fix clearing of highlighted links"
@@ -319,11 +327,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:226
 msgid "Make some key modifiers configurable"
-msgstr ""
+msgstr "אפשר להגדיר חלק ממסנני המקשים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:227
 msgid "Fix text selection on rotated pages"
-msgstr ""
+msgstr "תקן text בחירה on rotated עמודים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:228
 msgid "Fix gap between pages"
@@ -361,23 +369,23 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:241
 msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
-msgstr ""
+msgstr "`seccomp`: הגדר את glibc להשתמש ב-clone כחלופה במקום clone3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:246
 msgid "`magic` is now a required dependency"
-msgstr ""
+msgstr "`magic` הוא כעת תלות נדרשת"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:252
 msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
-msgstr ""
+msgstr "הוסף '$f' ו'$p' expansions ל'exec' shortcut function"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:253
 msgid "Fix build with meson 0.60"
-msgstr ""
+msgstr "תקן בנייה עם meson 0.60"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:254
 msgid "Add :source command"
-msgstr ""
+msgstr "הוסף :source פקודה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:261
 msgid "Account for page padding in full scroll"
@@ -385,11 +393,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:262
 msgid "Add foreground color for links"
-msgstr ""
+msgstr "הוסף קדמה צבע עבור קישורים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:263
 msgid "Add :save and :save! aliases for :write and :write!"
-msgstr ""
+msgstr "הוסף :save ו:save! aliases עבור :write ו:write!"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:270
 msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
@@ -397,7 +405,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:277
 msgid "Add --find option to the CLI"
-msgstr ""
+msgstr "הוסף --find אפשרות לthe CLI"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:278
 msgid "Support recolor with transparency"
@@ -421,7 +429,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:296
 msgid "Drop support for old libsynctex"
-msgstr ""
+msgstr "הסר תמיכה ב-libsynctex ישן"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:308
 msgid "Add bash and zsh completions"
@@ -429,7 +437,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:309
 msgid "Add RTL layout of pages"
-msgstr ""
+msgstr "הוסף RTL פריסה של עמודים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:316
 msgid "Port to newer libsynctex"
@@ -437,7 +445,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:323
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "תמיכה משופרת ב-HiDPI"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:324
 msgid "Display page labels"
@@ -449,7 +457,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:326
 msgid "Replace build system with meson"
-msgstr ""
+msgstr "החלף את מערכת הבנייה ב-meson"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:333
 msgid "Fix memory leaks"
@@ -476,7 +484,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:349
 msgid "Parallel build of manpages"
-msgstr ""
+msgstr "בנייה מקבילית של דפי man"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:355
 msgid "Build even without SyncTex"
@@ -484,11 +492,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:356
 msgid "Children should not fork"
-msgstr ""
+msgstr "תהליכי בן לא צריכים לבצע fork"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:362
 msgid "Recent files support"
-msgstr ""
+msgstr "תמיכה בקבצים אחרונים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:363
 msgid "Substitute home with tilde"
@@ -496,7 +504,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:364
 msgid "Open URLs"
-msgstr ""
+msgstr "פתח URLs"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:367
 #: data/org.pwmt.zathura.metainfo.xml.in:377
@@ -505,7 +513,7 @@ msgstr ""
 #: data/org.pwmt.zathura.metainfo.xml.in:598
 #: data/org.pwmt.zathura.metainfo.xml.in:615
 msgid "Update build system"
-msgstr ""
+msgstr "עדכן את מערכת הבנייה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:372
 msgid "Store tmp files in only one location"
@@ -517,7 +525,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:374
 msgid "Allow .dylib plugins on Mac OS X"
-msgstr ""
+msgstr "אפשר .dylib תוספים on Mac OS X"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:375
 msgid "Fix dual page render breakage of adjust_window"
@@ -545,7 +553,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:393
 msgid "Add SyntaxView"
-msgstr ""
+msgstr "הוסף SyntaxView"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:398
 msgid "Print debug information to D-Bus"
@@ -600,27 +608,27 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:419
 msgid "Colored build output"
-msgstr ""
+msgstr "פלט בנייה צבעוני"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:420
 msgid "Minor bug fixes"
-msgstr ""
+msgstr "תיקוני באגים קטנים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:421
 msgid "Sphinx documentation"
-msgstr ""
+msgstr "תיעוד Sphinx"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:427
 msgid "Full SyncTex support"
-msgstr ""
+msgstr "תמיכה מלאה ב-SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:428
 msgid "D-Bus interface"
-msgstr ""
+msgstr "ממשק D-Bus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:429
 msgid "Simple vim plugin for SyncTex support"
-msgstr ""
+msgstr "תוסף vim פשוט לתמיכה ב-SyncTex"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:430
 msgid "Add shortcuts for ^C and Esc in all modes"
@@ -636,23 +644,23 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:433
 msgid "Translate error messages"
-msgstr ""
+msgstr "תרגם הודעות שגיאה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:434
 msgid "Correctly safe print setting state"
-msgstr ""
+msgstr "שמור נכון את מצב הגדרות ההדפסה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:435
 msgid "Add --mode option"
-msgstr ""
+msgstr "הוסף --מצב אפשרות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:436
 msgid "Expose more properties via D-Bus"
-msgstr ""
+msgstr "חשוף מאפיינים נוספים דרך D-Bus"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:437
 msgid "Center pages"
-msgstr ""
+msgstr "Center עמודים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:438
 msgid "Replace glib memory functions with try version"
@@ -660,23 +668,23 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:439
 msgid "Align highlighted rectangles correctly"
-msgstr ""
+msgstr "יישר מלבנים מודגשים בצורה נכונה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:440
 msgid "Implement G and gg for index mode"
-msgstr ""
+msgstr "ממש G וgg עבור index מצב"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:441
 msgid "Implement TOGGLE for sc_navigate_index"
-msgstr ""
+msgstr "ממש TOGGLE עבור sc_navigate_index"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
-msgstr ""
+msgstr "Preserve horizontal position כאשר גלילה לPAGE_TOP/BOTTOM"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:443
 msgid "Implement shortcuts for scrolling to page top/bottom"
-msgstr ""
+msgstr "ממש קיצורי דרך עבור גלילה לעמוד top/bottom"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:444
 msgid "Set position on document load only if no page was specified"
@@ -688,11 +696,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:446
 msgid "Replace fullscreen mode with presentation mode"
-msgstr ""
+msgstr "החלף fullscreen מצב עם presentation מצב"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:447
 msgid "Remove GTK+2 support"
-msgstr ""
+msgstr "הסר תמיכה ב-GTK+2"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:448
 #: data/org.pwmt.zathura.metainfo.xml.in:454
@@ -706,7 +714,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:460
 msgid "Use GTK+3 by default"
-msgstr ""
+msgstr "השתמש ב-GTK+3 כברירת מחדל"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:461
 msgid "Rewritten render logic"
@@ -754,11 +762,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:478
 msgid "More vim-like jump behaviour"
-msgstr ""
+msgstr "התנהגות קפיצה דמוית vim יותר"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:479
 msgid "Improved bisect"
-msgstr ""
+msgstr "שופר bisect"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:480
 msgid "Update page number on mouse scroll"
@@ -770,11 +778,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:487
 msgid "LRU caching algorithm"
-msgstr ""
+msgstr "אלגוריתם מטמון LRU"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:488
 msgid "Bisect functionality"
-msgstr ""
+msgstr "פונקציונליות bisect"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:489
 msgid "Allow negative offsets"
@@ -790,11 +798,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:492
 msgid "Add statusbar-basename option"
-msgstr ""
+msgstr "הוסף statusbar-basename אפשרות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:493
 msgid "Implement colors for 'Loading...'-text"
-msgstr ""
+msgstr "ממש צבעים עבור 'Loading...'-text"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:494
 msgid "Don't render same page multiple times"
@@ -811,11 +819,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:501
 msgid "Implemented jumplist (^o, ^i)"
-msgstr ""
+msgstr "רשימת קפיצות יושמה (^o, ^i)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:502
 msgid "Update current page when following links"
-msgstr ""
+msgstr "עדכן נוכחי עמוד כאשר following קישורים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:503
 msgid "Scroll horizontally with shift and mouse wheel"
@@ -827,15 +835,15 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:505
 msgid "SyncTeX forward synchronisation"
-msgstr ""
+msgstr "סנכרון SyncTeX קדימה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:506
 msgid "Update shortcuts"
-msgstr ""
+msgstr "עדכן קיצורי דרך"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:512
 msgid "SyncTeX backwards synchronisation"
-msgstr ""
+msgstr "סנכרון SyncTeX אחורה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:513
 msgid "Fix request-page-setup"
@@ -855,7 +863,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:517
 msgid "Added recolor-keephue setting"
-msgstr ""
+msgstr "נוספה ההגדרה recolor-keephue"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:523
 msgid "New languages"
@@ -863,11 +871,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:524
 msgid "Better print support"
-msgstr ""
+msgstr "תמיכה טובה יותר בהדפסה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:525
 msgid "Improve document links"
-msgstr ""
+msgstr "שפר מסמך קישורים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:526
 msgid "Render last-viewed pages with a higher priority"
@@ -883,7 +891,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:529
 msgid "Plugin manager"
-msgstr ""
+msgstr "מנהל תוספים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:530
 msgid "Several memory leaks and small bugs"
@@ -903,11 +911,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:538
 msgid "Update GTK3 support"
-msgstr ""
+msgstr "עדכן תמיכה ב-GTK3"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:539
 msgid "Completion for :write command"
-msgstr ""
+msgstr "Completion עבור :write פקודה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Simplified plugin loading"
@@ -923,11 +931,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:543
 msgid "Introduced girara version check"
-msgstr ""
+msgstr "נוספה בדיקת גרסת girara"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:544
 msgid "Detect sqlite automatically"
-msgstr ""
+msgstr "זהה sqlite באופן אוטומטי"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:545
 msgid "Update window title"
@@ -959,7 +967,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:556
 msgid "Additional notifications on errors"
-msgstr ""
+msgstr "התראות נוספות על שגיאות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:557
 msgid "Option to hide hidden directories"
@@ -975,7 +983,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:560
 msgid "Resolved several memory leaks"
-msgstr ""
+msgstr "תוקנו מספר דליפות זיכרון"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:566
 msgid "Complete rewrite of zathura"
@@ -995,19 +1003,19 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:570
 msgid "Quickmarks"
-msgstr ""
+msgstr "סימונים מהירים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:575
 msgid "Ignoring MOD5 which is used on some keyboards"
-msgstr ""
+msgstr "התעלמות מ-MOD5 המשמש בחלק מהמקלדות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:576
 msgid "Fix scroll_wrap (#52)"
-msgstr ""
+msgstr "תקן scroll_wrap (#52)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:577
 msgid "Don't invert y coordinates (#42)"
-msgstr ""
+msgstr "אל תהפוך קואורדינטות y (#42)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:578
 msgid "Certain memory leaks and other small issues"
@@ -1015,15 +1023,15 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:583
 msgid "Fixed bookmark handling"
-msgstr ""
+msgstr "תוקן טיפול בסימניות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:584
 msgid "Support :digits"
-msgstr ""
+msgstr "תמיכה ב:digits"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:585
 msgid "Save zoom level per file"
-msgstr ""
+msgstr "Save זום level per קובץ"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:586
 msgid "Fix backwards searching"
@@ -1031,17 +1039,17 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:587
 msgid "Fix blinking while switching pages"
-msgstr ""
+msgstr "תקן blinking בזמן שswitching עמודים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:588
 msgid "Fix input issues in fullscreen mode"
-msgstr ""
+msgstr "תקן input בעיות in fullscreen מצב"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:589
 #: data/org.pwmt.zathura.metainfo.xml.in:599
 #: data/org.pwmt.zathura.metainfo.xml.in:613
 msgid "Fixed several memory leaks"
-msgstr ""
+msgstr "תוקנו מספר דליפות זיכרון"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:594
 msgid "Update text searching"
@@ -1049,7 +1057,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:595
 msgid "Support for poppler >= 0.15"
-msgstr ""
+msgstr "תמיכה בfor poppler >= 0.15"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:596
 msgid "Fixed print command with multiple arguments"
@@ -1057,7 +1065,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:597
 msgid "Fixed GOptionEntries"
-msgstr ""
+msgstr "תוקנו GOptionEntries"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:600
 msgid "Fixed segmentation faults"
@@ -1085,7 +1093,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:610
 msgid "Following XDG specification"
-msgstr ""
+msgstr "עמידה במפרט XDG"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:611
 msgid "Colored window and view port"
@@ -1093,18 +1101,18 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:612
 msgid "File reloading fix"
-msgstr ""
+msgstr "תיקון טעינה מחדש של קבצים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:614
 #: data/org.pwmt.zathura.metainfo.xml.in:636
 #: data/org.pwmt.zathura.metainfo.xml.in:653
 #: data/org.pwmt.zathura.metainfo.xml.in:662
 msgid "Update manpage"
-msgstr ""
+msgstr "עדכן manpage"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:620
 msgid "Fixed critical usability bug"
-msgstr ""
+msgstr "תוקן באג שימושיות קריטי"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:625
 msgid "Improved and fixed completion"
@@ -1121,7 +1129,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:628
 msgid "Resolved some memory leaks"
-msgstr ""
+msgstr "תוקנו חלק מדליפות הזיכרון"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:629
 msgid "Global configuration file"
@@ -1129,7 +1137,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:630
 msgid "Specify configuration directory"
-msgstr ""
+msgstr "ציין תיקיית תצורה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:631
 msgid "Configureable modes"
@@ -1141,11 +1149,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:633
 msgid "Extended statusbar string manipulation"
-msgstr ""
+msgstr "מניפולציית מחרוזות מורחבת לשורת המצב"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:634
 msgid "`function`"
-msgstr ""
+msgstr "`function`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:635
 #: data/org.pwmt.zathura.metainfo.xml.in:651
@@ -1174,7 +1182,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:646
 msgid "`tabbed` support"
-msgstr ""
+msgstr "תמיכה ב-`tabbed`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:647
 msgid "Define look with the set function"
@@ -1182,11 +1190,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:648
 msgid "Implemented map function"
-msgstr ""
+msgstr "פונקציית map יושמה"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:649
 msgid "`zathurarc` file"
-msgstr ""
+msgstr "`zathurarc` קובץ"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:650
 msgid "Prevent buffer overflow in realpath"
@@ -1206,7 +1214,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:660
 msgid "Fixed toggle index"
-msgstr ""
+msgstr "תוקן החלפת מצב אינדקס"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:661
 msgid "Fixed print command"
@@ -1222,11 +1230,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:669
 msgid "Document password dialog"
-msgstr ""
+msgstr "תיבת דו-שיח סיסמת מסמך"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:675
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
-msgstr ""
+msgstr "תמיכת עכבר (גלילה, סימון והעתקת טקסט ללוח הגזירים)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:676
 msgid "Keyboard navigation in the index view"
@@ -1266,23 +1274,23 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:696
 msgid "Complete new, re-written interface"
-msgstr ""
+msgstr "ממשק חדש ומעוצב מחדש לחלוטין"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:697
 msgid "Multiple printer support"
-msgstr ""
+msgstr "תמיכה במספר מדפסות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:698
 msgid "Command history"
-msgstr ""
+msgstr "היסטוריית פקודות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:699
 msgid "Show document index"
-msgstr ""
+msgstr "Show מסמך index"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:700
 msgid "Centered view"
-msgstr ""
+msgstr "תצוגה ממורכזת"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:701
 msgid "Add, save and open bookmarks"
@@ -1290,7 +1298,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:702
 msgid "Marker support"
-msgstr ""
+msgstr "תמיכה בסימונים"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:703
 msgid "Highlight search results"
@@ -1302,7 +1310,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:705
 msgid "`set` Function"
-msgstr ""
+msgstr "פונקציית `set`"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:706
 msgid "Revert video function"
@@ -1310,17 +1318,17 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:707
 msgid "Command completion"
-msgstr ""
+msgstr "השלמת פקודות"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:712
 msgid "Initial release"
-msgstr ""
+msgstr "מהדורה ראשונה"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 #: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr ""
+msgstr "PDF;PS;PostScript;DjVU;מסמך;presentation;viewer;"
 
 #: zathura/callbacks.c:297
 #, c-format
@@ -1330,12 +1338,12 @@ msgstr ""
 #: zathura/callbacks.c:385
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr ""
+msgstr "קלט לא תקין '%s' הוזן."
 
 #: zathura/callbacks.c:408
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr ""
+msgstr "אינדקס לא תקין '%s' הוזן."
 
 #: zathura/callbacks.c:615
 #, c-format
@@ -1364,27 +1372,27 @@ msgstr ""
 #: zathura/commands.c:54
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr ""
+msgstr "לא ניתן לעדכן סימניה: %s"
 
 #: zathura/commands.c:56
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr ""
+msgstr "לא ניתן ליצור סימניה: %s"
 
 #: zathura/commands.c:61
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr ""
+msgstr "הסימניה עודכנה בהצלחה: %s"
 
 #: zathura/commands.c:63
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr ""
+msgstr "הסימניה נוצרה בהצלחה: %s"
 
 #: zathura/commands.c:87
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr ""
+msgstr "הסימניה הוסרה: %s"
 
 #: zathura/commands.c:89
 #, c-format
@@ -1393,73 +1401,73 @@ msgstr ""
 
 #: zathura/commands.c:114
 msgid "No bookmarks available."
-msgstr ""
+msgstr "אין סימניות זמינות."
 
 #: zathura/commands.c:138
 #, c-format
 msgid "No such bookmark: %s"
-msgstr ""
+msgstr "אין סימניה כזו: %s"
 
 #: zathura/commands.c:167
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "הארגומנט חייב להיות מספר שאינו אפס."
 
 #: zathura/commands.c:187
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr ""
+msgstr "[%d]: עמוד=<b>%2d</b>, x=%f, y=%f %s\n"
 
 #: zathura/commands.c:188
 msgid "(current)"
-msgstr ""
+msgstr "(נוכחי)"
 
 #: zathura/commands.c:195
 msgid "No jumplist available."
-msgstr ""
+msgstr "אין רשימת קפיצות זמינה."
 
 #: zathura/commands.c:229
 msgid "Title"
-msgstr ""
+msgstr "כותרת"
 
 #: zathura/commands.c:230
 msgid "Subject"
-msgstr ""
+msgstr "נושא"
 
 #: zathura/commands.c:231
 msgid "Keywords"
-msgstr ""
+msgstr "מילות מפתח"
 
 #: zathura/commands.c:232
 msgid "Author"
-msgstr ""
+msgstr "מחבר"
 
 #: zathura/commands.c:233
 msgid "Creator"
-msgstr ""
+msgstr "יוצר"
 
 #: zathura/commands.c:234
 msgid "Producer"
-msgstr ""
+msgstr "מפיק"
 
 #: zathura/commands.c:235
 msgid "Creation date"
-msgstr ""
+msgstr "תאריך יצירה"
 
 #: zathura/commands.c:236
 msgid "Modification date"
-msgstr ""
+msgstr "תאריך שינוי"
 
 #: zathura/commands.c:237
 msgid "Format"
-msgstr ""
+msgstr "תבנית"
 
 #: zathura/commands.c:238
 msgid "Other"
-msgstr ""
+msgstr "אחר"
 
 #: zathura/commands.c:243 zathura/commands.c:261
 msgid "No information available."
-msgstr ""
+msgstr "אין מידע זמין."
 
 #: zathura/commands.c:270
 msgid ""
@@ -1468,11 +1476,11 @@ msgstr ""
 
 #: zathura/commands.c:293 zathura/commands.c:695 girara-gtk/commands.c:550
 msgid "Too many arguments."
-msgstr ""
+msgstr "יותר מדי ארגומנטים."
 
 #: zathura/commands.c:304
 msgid "No arguments given."
-msgstr ""
+msgstr "לא הועברו ארגומנטים."
 
 #: zathura/commands.c:328
 msgid "Printing is not permitted in strict sandbox mode"
@@ -1513,17 +1521,17 @@ msgstr ""
 #: zathura/commands.c:561
 #, c-format
 msgid "Unknown image '%s'."
-msgstr ""
+msgstr "תמונה לא מוכרת '%s'."
 
 #: zathura/commands.c:565
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr ""
+msgstr "קובץ מצורף או תמונה לא מוכרים '%s'."
 
 #: zathura/commands.c:593
 #, c-format
 msgid "Failed to execute command: %s"
-msgstr ""
+msgstr "הפעלת הפקודה נכשלה: %s"
 
 #: zathura/commands.c:606
 msgid "Exec is not permitted in strict sandbox mode"
@@ -1531,60 +1539,60 @@ msgstr ""
 
 #: zathura/commands.c:662
 msgid "Argument must be a number."
-msgstr ""
+msgstr "הארגומנט חייב להיות מספר."
 
 #: zathura/completion.c:259
 #, c-format
 msgid "Page %d"
-msgstr ""
+msgstr "עמוד %d"
 
 #: zathura/completion.c:300
 msgid "Attachments"
-msgstr ""
+msgstr "קבצים מצורפים"
 
 #. add images
 #: zathura/completion.c:329
 msgid "Images"
-msgstr ""
+msgstr "תמונות"
 
 #: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "התוסף אינו תומך בייצוא קבצים מצורפים ותמונות."
 
 #: zathura/completion.c:371
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "המסמך אינו מכיל תמונות או קבצים מצורפים"
 
 #. clang-format off
 #. settings
 #: zathura/config.c:467
 msgid "Font"
-msgstr ""
+msgstr "גופן"
 
 #. colors affecting the CSS
 #: zathura/config.c:470
 msgid "Default foreground color"
-msgstr ""
+msgstr "צבע קדמה ברירת מחדל"
 
 #: zathura/config.c:471
 msgid "Default background color"
-msgstr ""
+msgstr "צבע רקע ברירת מחדל"
 
 #: zathura/config.c:472
 msgid "Inputbar foreground color"
-msgstr ""
+msgstr "צבע קדמה של שורת קלט"
 
 #: zathura/config.c:473
 msgid "Inputbar background color"
-msgstr ""
+msgstr "צבע רקע של שורת קלט"
 
 #: zathura/config.c:474
 msgid "Statusbar foreground color"
-msgstr ""
+msgstr "צבע קדמה של שורת מצב"
 
 #: zathura/config.c:475
 msgid "Statsubar background color"
-msgstr ""
+msgstr "צבע רקע של שורת מצב"
 
 #: zathura/config.c:476
 msgid "Completion foreground color"
@@ -1660,11 +1668,11 @@ msgstr ""
 
 #: zathura/config.c:496
 msgid "Initial window width"
-msgstr ""
+msgstr "רוחב חלון התחלתי"
 
 #: zathura/config.c:497
 msgid "Initial window height"
-msgstr ""
+msgstr "גובה חלון התחלתי"
 
 #: zathura/config.c:498
 msgid "Horizontal padding for the status, input, and notification bars"
@@ -1680,7 +1688,7 @@ msgstr ""
 
 #: zathura/config.c:501
 msgid "Window icon"
-msgstr ""
+msgstr "סמל חלון"
 
 #: zathura/config.c:502
 msgid "Command to execute in :exec"
@@ -1688,19 +1696,19 @@ msgstr ""
 
 #: zathura/config.c:503
 msgid "Show or hide certain GUI elements"
-msgstr ""
+msgstr "הצג או הסתר רכיבי GUI מסוימים"
 
 #: zathura/config.c:505
 msgid "Database backend"
-msgstr ""
+msgstr "מנוע בסיס נתונים"
 
 #: zathura/config.c:506
 msgid "File monitor backend"
-msgstr ""
+msgstr "מנוע ניטור קבצים"
 
 #: zathura/config.c:508
 msgid "Zoom step"
-msgstr ""
+msgstr "צעד זום"
 
 #: zathura/config.c:510
 msgid "Horizontal padding between pages"
@@ -1724,11 +1732,11 @@ msgstr ""
 
 #: zathura/config.c:520
 msgid "Scroll step"
-msgstr ""
+msgstr "צעד גלילה"
 
 #: zathura/config.c:522
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "צעד גלילה אופקית"
 
 #: zathura/config.c:524
 msgid "Full page scroll overlap"
@@ -1736,11 +1744,11 @@ msgstr ""
 
 #: zathura/config.c:526
 msgid "Zoom minimum"
-msgstr ""
+msgstr "זום מינימלי"
 
 #: zathura/config.c:528
 msgid "Zoom maximum"
-msgstr ""
+msgstr "זום מקסימלי"
 
 #: zathura/config.c:530
 msgid "Maximum number of pages to keep in the cache"
@@ -1776,11 +1784,11 @@ msgstr ""
 
 #: zathura/config.c:541
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "'Loading ...' רקע צבע"
 
 #: zathura/config.c:542
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "'Loading ...' קדמה צבע"
 
 #. colors for document signatures
 #: zathura/config.c:545
@@ -1809,7 +1817,7 @@ msgstr ""
 
 #: zathura/config.c:568
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "בעת צביעה מחדש התאם בהירות"
 
 #: zathura/config.c:570
 msgid "Wrap scrolling"
@@ -1821,7 +1829,7 @@ msgstr ""
 
 #: zathura/config.c:576
 msgid "Horizontally centered zoom"
-msgstr ""
+msgstr "זום ממורכז אופקית"
 
 #: zathura/config.c:578
 msgid "Vertically center pages"
@@ -1837,11 +1845,11 @@ msgstr ""
 
 #: zathura/config.c:584
 msgid "Center result horizontally"
-msgstr ""
+msgstr "מרכז תוצאה אופקית"
 
 #: zathura/config.c:586
 msgid "Render 'Loading ...'"
-msgstr ""
+msgstr "בצע רינדור ל-'Loading ...'"
 
 #: zathura/config.c:587
 msgid "Adjust to when opening file"
@@ -1853,7 +1861,7 @@ msgstr ""
 
 #: zathura/config.c:591
 msgid "Show directories"
-msgstr ""
+msgstr "הצג תיקיות"
 
 #: zathura/config.c:593
 msgid "Show recent files"
@@ -1909,7 +1917,7 @@ msgstr ""
 
 #: zathura/config.c:620
 msgid "Enable synctex support"
-msgstr ""
+msgstr "אפשר תמיכה ב-synctex"
 
 #: zathura/config.c:621
 msgid "Synctex editor command"
@@ -1917,15 +1925,15 @@ msgstr ""
 
 #: zathura/config.c:622
 msgid "Synctex edit modifier"
-msgstr ""
+msgstr "מקש משנה לעריכת Synctex"
 
 #: zathura/config.c:623
 msgid "Highlighter modifier"
-msgstr ""
+msgstr "מקש משנה להדגשה"
 
 #: zathura/config.c:625
 msgid "Enable D-Bus service"
-msgstr ""
+msgstr "אפשר D-Bus service"
 
 #: zathura/config.c:626
 msgid "Raise window on certain D-Bus commands"
@@ -1937,11 +1945,11 @@ msgstr ""
 
 #: zathura/config.c:629
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "לוח הגזירים שאליו תיכתב בחירת העכבר"
 
 #: zathura/config.c:631
 msgid "Enable notification after selecting text"
-msgstr ""
+msgstr "אפשר notification after selecting text"
 
 #: zathura/config.c:634
 msgid "Disable additional information for signatures embedded in the document."
@@ -1950,31 +1958,31 @@ msgstr ""
 #. define default inputbar commands
 #: zathura/config.c:764
 msgid "Map a key sequence"
-msgstr ""
+msgstr "מפה רצף מקשים"
 
 #: zathura/config.c:765
 msgid "Set an option"
-msgstr ""
+msgstr "Set an אפשרות"
 
 #: zathura/config.c:766
 msgid "Unmap a key sequence"
-msgstr ""
+msgstr "בטל מיפוי רצף מקשים"
 
 #: zathura/config.c:767
 msgid "Dump settings to a file"
-msgstr ""
+msgstr "Dump הגדרות לa קובץ"
 
 #: zathura/config.c:769
 msgid "Add a bookmark"
-msgstr ""
+msgstr "הוסף a bookmark"
 
 #: zathura/config.c:770
 msgid "Delete a bookmark"
-msgstr ""
+msgstr "מחק סימניה"
 
 #: zathura/config.c:771
 msgid "List all bookmarks"
-msgstr ""
+msgstr "רשום את כל הסימניות"
 
 #: zathura/config.c:772
 msgid "Jump to bookmark"
@@ -1982,11 +1990,11 @@ msgstr ""
 
 #: zathura/config.c:773
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "הצג קפיצות אחרונות ברשימת הקפיצות"
 
 #: zathura/config.c:774
 msgid "Close current file"
-msgstr ""
+msgstr "Close נוכחי קובץ"
 
 #: zathura/config.c:775
 msgid "Show file information"
@@ -1999,15 +2007,15 @@ msgstr ""
 #. like vim
 #: zathura/config.c:778
 msgid "Show help"
-msgstr ""
+msgstr "הצג עזרה"
 
 #: zathura/config.c:779
 msgid "Open document"
-msgstr ""
+msgstr "פתח מסמך"
 
 #: zathura/config.c:780
 msgid "Close zathura"
-msgstr ""
+msgstr "סגור את zathura"
 
 #: zathura/config.c:781
 msgid "Print document"
@@ -2019,11 +2027,11 @@ msgstr ""
 
 #: zathura/config.c:783 zathura/config.c:785
 msgid "Save document (and force overwriting)"
-msgstr ""
+msgstr "שמור מסמך (ואכוף דריסה)"
 
 #: zathura/config.c:786
 msgid "Save attachments"
-msgstr ""
+msgstr "שמור קבצים מצורפים"
 
 #: zathura/config.c:787
 msgid "Set page offset"
@@ -2039,15 +2047,15 @@ msgstr ""
 
 #: zathura/config.c:790
 msgid "Remove highlights of current search results"
-msgstr ""
+msgstr "הסר הדגשות של נוכחי חיפוש תוצאות"
 
 #: zathura/config.c:791
 msgid "Highlight current search results"
-msgstr ""
+msgstr "Highlight נוכחי חיפוש תוצאות"
 
 #: zathura/config.c:792
 msgid "Show version information"
-msgstr ""
+msgstr "הצג מידע גרסה"
 
 #: zathura/config.c:793
 msgid "Source config file"
@@ -2064,26 +2072,26 @@ msgstr ""
 #: zathura/links.c:258
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Link: עמוד %d"
 
 #: zathura/links.c:264
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "קישור: %s"
 
 #: zathura/links.c:267 zathura/links.c:289
 msgid "Link: Invalid"
-msgstr ""
+msgstr "קישור: לא תקין"
 
 #: zathura/links.c:278
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "מספר עמוד שהועתק: %d"
 
 #: zathura/links.c:286
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
+msgstr "קישור שהועתק: %s"
 
 #: zathura/main.c:111
 msgid "Reparents to window specified by xid (X11)"
@@ -2111,19 +2119,19 @@ msgstr ""
 
 #: zathura/main.c:118
 msgid "Document password"
-msgstr ""
+msgstr "סיסמת מסמך"
 
 #: zathura/main.c:119
 msgid "Page number to go to"
-msgstr ""
+msgstr "מספר עמוד לקפיצה"
 
 #: zathura/main.c:120
 msgid "Log level (debug, info, warning, error)"
-msgstr ""
+msgstr "רמת לוג (debug, info, warning, error)"
 
 #: zathura/main.c:121
 msgid "Print version information"
-msgstr ""
+msgstr "הדפס מידע גרסה"
 
 #: zathura/main.c:123
 msgid "Synctex editor (forwarded to the synctex command)"
@@ -2143,7 +2151,7 @@ msgstr ""
 
 #: zathura/main.c:128
 msgid "Bookmark to go to"
-msgstr ""
+msgstr "סימניה לקפיצה"
 
 #: zathura/main.c:129
 msgid "Search for the given phrase and display results"
@@ -2160,35 +2168,35 @@ msgstr ""
 
 #: zathura/page-widget.c:654
 msgid "Signature certificate is expired."
-msgstr ""
+msgstr "תוקף אישור החתימה פג."
 
 #: zathura/page-widget.c:658
 msgid "Signature certificate is revoked."
-msgstr ""
+msgstr "אישור החתימה בוטל."
 
 #: zathura/page-widget.c:662
 msgid "Signature certificate is not trusted."
-msgstr ""
+msgstr "אישור החתימה אינו מהימן."
 
 #: zathura/page-widget.c:666
 msgid "Signature certificate is invalid."
-msgstr ""
+msgstr "אישור החתימה אינו תקין."
 
 #: zathura/page-widget.c:670
 msgid "Signature is invalid."
-msgstr ""
+msgstr "החתימה אינה תקינה."
 
 #: zathura/page-widget.c:753
 msgid "Loading..."
-msgstr ""
+msgstr "טוען..."
 
 #: zathura/page-widget.c:1265
 msgid "Copy image"
-msgstr ""
+msgstr "העתק תמונה"
 
 #: zathura/page-widget.c:1266
 msgid "Save image as"
-msgstr ""
+msgstr "שמור תמונה בשם"
 
 #. Update statusbar.
 #: zathura/print.c:94
@@ -2199,7 +2207,7 @@ msgstr ""
 #: zathura/print.c:166
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "ההדפסה נכשלה: %s"
 
 #: zathura/shortcuts.c:131
 #, c-format
@@ -2212,16 +2220,16 @@ msgstr ""
 
 #: zathura/shortcuts.c:1619
 msgid "Open file"
-msgstr ""
+msgstr "פתח קובץ"
 
 #: zathura/utils.c:728
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "התבנית לא נמצאה: %s"
 
 #: zathura/zathura.c:312 zathura/zathura.c:1486
 msgid "[No name]"
-msgstr ""
+msgstr "[ללא שם]"
 
 #: zathura/zathura.c:722
 msgid "Could not read file from stdin and write it to a temporary file."
@@ -2233,11 +2241,11 @@ msgstr ""
 
 #: zathura/zathura.c:831
 msgid "Enter password:"
-msgstr ""
+msgstr "הזן סיסמה:"
 
 #: zathura/zathura.c:924
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "סוג קובץ לא נתמך. נא להתקין את התוסף הנדרש."
 
 #: zathura/zathura.c:933
 msgid "Document does not contain any pages"
@@ -2254,7 +2262,7 @@ msgstr ""
 
 #: zathura/zathura.c:1308
 msgid "Document saved."
-msgstr ""
+msgstr "המסמך נשמר."
 
 #: girara-gtk/commands.c:261
 #, c-format
@@ -2288,16 +2296,16 @@ msgstr ""
 #: girara-gtk/commands.c:494
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr ""
+msgstr "פונקציית קיצור לא תקינה: %s"
 
 #: girara-gtk/commands.c:545
 msgid "Not enough arguments."
-msgstr ""
+msgstr "אין מספיק ארגומנטים."
 
 #: girara-gtk/commands.c:563
 #, c-format
 msgid "Unknown option: %s"
-msgstr ""
+msgstr "אפשרות לא ידועה: %s"
 
 #: girara-gtk/commands.c:576
 msgid "true"
@@ -2310,18 +2318,18 @@ msgstr ""
 #: girara-gtk/commands.c:604
 #, c-format
 msgid "No value defined for option: %s"
-msgstr ""
+msgstr "לא הוגדר ערך עבור האפשרות: %s"
 
 #: girara-gtk/commands.c:619
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr ""
+msgstr "ערך לא ידוע עבור האפשרות: %s"
 
 #. unhandled command
 #: girara-gtk/commands.c:775
 #, c-format
 msgid "Not a valid command: %s"
-msgstr ""
+msgstr "לא פקודה תקפה: %s"
 
 #: girara-gtk/settings.c:255
 #, c-format
@@ -2331,4 +2339,4 @@ msgstr ""
 #: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
+msgstr "כתיבת JSON נכשלה: %s"
