@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-22 19:10+0100\n"
+"POT-Creation-Date: 2026-02-22 19:33+0100\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
 "Language-Team: Ukrainian (http://app.transifex.com/pwmt/zathura/language/"
@@ -264,6 +264,16 @@ msgstr "Скасувати зміни для документів із кіль�
 #: data/org.pwmt.zathura.metainfo.xml.in:317
 #: data/org.pwmt.zathura.metainfo.xml.in:327
 #: data/org.pwmt.zathura.metainfo.xml.in:335
+#: data/org.pwmt.zathura.metainfo.xml.in:343
+#: data/org.pwmt.zathura.metainfo.xml.in:350
+#: data/org.pwmt.zathura.metainfo.xml.in:357
+#: data/org.pwmt.zathura.metainfo.xml.in:365
+#: data/org.pwmt.zathura.metainfo.xml.in:404
+#: data/org.pwmt.zathura.metainfo.xml.in:417
+#: data/org.pwmt.zathura.metainfo.xml.in:527
+#: data/org.pwmt.zathura.metainfo.xml.in:664
+#: data/org.pwmt.zathura.metainfo.xml.in:674
+#: data/org.pwmt.zathura.metainfo.xml.in:685
 msgid "Various fixes and improvements"
 msgstr "Різні виправлення та покращення"
 
@@ -373,14 +383,14 @@ msgstr "Виправити проміжок між сторінками"
 #: data/org.pwmt.zathura.metainfo.xml.in:336
 #: data/org.pwmt.zathura.metainfo.xml.in:344
 #: data/org.pwmt.zathura.metainfo.xml.in:366
-#: data/org.pwmt.zathura.metainfo.xml.in:376
-#: data/org.pwmt.zathura.metainfo.xml.in:387
-#: data/org.pwmt.zathura.metainfo.xml.in:406
-#: data/org.pwmt.zathura.metainfo.xml.in:422
-#: data/org.pwmt.zathura.metainfo.xml.in:449
-#: data/org.pwmt.zathura.metainfo.xml.in:467
-#: data/org.pwmt.zathura.metainfo.xml.in:482
-#: data/org.pwmt.zathura.metainfo.xml.in:518
+#: data/org.pwmt.zathura.metainfo.xml.in:375
+#: data/org.pwmt.zathura.metainfo.xml.in:384
+#: data/org.pwmt.zathura.metainfo.xml.in:403
+#: data/org.pwmt.zathura.metainfo.xml.in:419
+#: data/org.pwmt.zathura.metainfo.xml.in:446
+#: data/org.pwmt.zathura.metainfo.xml.in:464
+#: data/org.pwmt.zathura.metainfo.xml.in:479
+#: data/org.pwmt.zathura.metainfo.xml.in:515
 msgid "Update translations"
 msgstr "Оновити переклади"
 
@@ -499,13 +509,6 @@ msgstr "Покращене журналювання"
 msgid "Improve page mode toggling"
 msgstr "Покращити перемикання режимів сторінок"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:343
-#: data/org.pwmt.zathura.metainfo.xml.in:350
-#: data/org.pwmt.zathura.metainfo.xml.in:357
-#: data/org.pwmt.zathura.metainfo.xml.in:365
-msgid "Several fixes and improvements"
-msgstr "Кілька виправлень та покращень"
-
 #: data/org.pwmt.zathura.metainfo.xml.in:349
 msgid "Parallel build of manpages"
 msgstr "Паралельне збирання man-сторінок"
@@ -530,825 +533,798 @@ msgstr "Замінювати home тильдою"
 msgid "Open URLs"
 msgstr "Відкривати URL"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:367
-#: data/org.pwmt.zathura.metainfo.xml.in:377
-#: data/org.pwmt.zathura.metainfo.xml.in:386
-#: data/org.pwmt.zathura.metainfo.xml.in:561
-#: data/org.pwmt.zathura.metainfo.xml.in:598
-#: data/org.pwmt.zathura.metainfo.xml.in:615
-msgid "Update build system"
-msgstr "Оновити систему збирання"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:372
+#: data/org.pwmt.zathura.metainfo.xml.in:371
 msgid "Store tmp files in only one location"
 msgstr "Зберігати tmp-файли лише в одному місці"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:373
+#: data/org.pwmt.zathura.metainfo.xml.in:372
 msgid "Print target selection"
 msgstr "Друкувати вибір цілі"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:374
+#: data/org.pwmt.zathura.metainfo.xml.in:373
 msgid "Allow .dylib plugins on Mac OS X"
 msgstr "Дозволити .dylib-плагіни на Mac OS X"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:375
+#: data/org.pwmt.zathura.metainfo.xml.in:374
 msgid "Fix dual page render breakage of adjust_window"
 msgstr "Виправити поломку рендерингу двох сторінок у adjust_window"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:382
+#: data/org.pwmt.zathura.metainfo.xml.in:380
 msgid "Resolve memory leak while reloading file"
 msgstr "Усунути витік пам'яті під час перезавантаження файлу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:383
+#: data/org.pwmt.zathura.metainfo.xml.in:381
 msgid "Prevent segmentation fault when smooth zooming with mouse"
 msgstr "Запобігти segmentation fault під час плавного масштабування мишею"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:384
+#: data/org.pwmt.zathura.metainfo.xml.in:382
 msgid "Cache thumbnails to support smooth zooming"
 msgstr "Кешувати ескізи для підтримки плавного масштабування"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:385
+#: data/org.pwmt.zathura.metainfo.xml.in:383
 msgid "Check scale value correctness"
 msgstr "Перевіряти правильність значення масштабу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:392
+#: data/org.pwmt.zathura.metainfo.xml.in:389
 msgid "Fix segmentation fault caused by bidirectional scrolling"
 msgstr "Виправити segmentation fault, спричинений двонапрямною прокруткою"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:393
+#: data/org.pwmt.zathura.metainfo.xml.in:390
 msgid "Add SyntaxView"
 msgstr "Додати SyntaxView"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:398
+#: data/org.pwmt.zathura.metainfo.xml.in:395
 msgid "Print debug information to D-Bus"
 msgstr "Виводити налагоджувальну інформацію в D-Bus"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:399
+#: data/org.pwmt.zathura.metainfo.xml.in:396
 msgid "Fix scroll down/up in dual-page mode"
 msgstr "Виправити прокрутку вниз/вгору в режимі двох сторінок"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:400
+#: data/org.pwmt.zathura.metainfo.xml.in:397
 msgid "Option to hide notification after selection"
 msgstr "Опція ховати сповіщення після вибору"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:401
+#: data/org.pwmt.zathura.metainfo.xml.in:398
 msgid "Introduce cache directory"
 msgstr "Запровадити каталог кешу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:402
+#: data/org.pwmt.zathura.metainfo.xml.in:399
 msgid "Introduce smooth-scroll and smooth-zoom"
 msgstr "Запровадити smooth-scroll і smooth-zoom"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:403
+#: data/org.pwmt.zathura.metainfo.xml.in:400
 msgid "Add vim style exec"
 msgstr "Додати exec у стилі vim"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:404
+#: data/org.pwmt.zathura.metainfo.xml.in:401
 msgid "Option to ignore images while recoloring"
 msgstr "Опція ігнорувати зображення під час перефарбування"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:405
+#: data/org.pwmt.zathura.metainfo.xml.in:402
 msgid "Take advantage of shared or system SyncTex parser library"
 msgstr "Використовувати спільну або системну бібліотеку парсера SyncTex"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:407
-#: data/org.pwmt.zathura.metainfo.xml.in:670
-#: data/org.pwmt.zathura.metainfo.xml.in:680
-#: data/org.pwmt.zathura.metainfo.xml.in:691
-msgid "Several fixes"
-msgstr "Кілька виправлень"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:412
+#: data/org.pwmt.zathura.metainfo.xml.in:409
 msgid "Update dependency version of girara"
 msgstr "Оновити версію залежності girara"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:417
+#: data/org.pwmt.zathura.metainfo.xml.in:414
 msgid "Better SyncTex support"
 msgstr "Краща підтримка SyncTex"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:418
+#: data/org.pwmt.zathura.metainfo.xml.in:415
 msgid "Change cursor if mouse is over link"
 msgstr "Змінювати курсор, якщо миша над посиланням"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:419
+#: data/org.pwmt.zathura.metainfo.xml.in:416
 msgid "Colored build output"
 msgstr "Кольоровий вивід збирання"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:420
-msgid "Minor bug fixes"
-msgstr "Незначні виправлення помилок"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:421
+#: data/org.pwmt.zathura.metainfo.xml.in:418
 msgid "Sphinx documentation"
 msgstr "Документація Sphinx"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:427
+#: data/org.pwmt.zathura.metainfo.xml.in:424
 msgid "Full SyncTex support"
 msgstr "Повна підтримка SyncTex"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:428
+#: data/org.pwmt.zathura.metainfo.xml.in:425
 msgid "D-Bus interface"
 msgstr "Інтерфейс D-Bus"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:429
+#: data/org.pwmt.zathura.metainfo.xml.in:426
 msgid "Simple vim plugin for SyncTex support"
 msgstr "Простий vim-плагін для підтримки SyncTex"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:430
+#: data/org.pwmt.zathura.metainfo.xml.in:427
 msgid "Add shortcuts for ^C and Esc in all modes"
 msgstr "Додати скорочення для ^C і Esc у всіх режимах"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:431
+#: data/org.pwmt.zathura.metainfo.xml.in:428
 msgid "Use the actual mode in mode toggle calls"
 msgstr "Використовувати фактичний режим у викликах перемикання режиму"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:432
+#: data/org.pwmt.zathura.metainfo.xml.in:429
 msgid "Only copy selected text in normal and fullscreen mode"
 msgstr "Копіювати лише виділений текст у звичайному та повноекранному режимі"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:433
+#: data/org.pwmt.zathura.metainfo.xml.in:430
 msgid "Translate error messages"
 msgstr "Перекласти повідомлення про помилки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:434
+#: data/org.pwmt.zathura.metainfo.xml.in:431
 msgid "Correctly safe print setting state"
 msgstr "Коректно зберігати стан налаштувань друку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:435
+#: data/org.pwmt.zathura.metainfo.xml.in:432
 msgid "Add --mode option"
 msgstr "Додати параметр --mode"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:436
+#: data/org.pwmt.zathura.metainfo.xml.in:433
 msgid "Expose more properties via D-Bus"
 msgstr "Експортувати більше властивостей через D-Bus"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:437
+#: data/org.pwmt.zathura.metainfo.xml.in:434
 msgid "Center pages"
 msgstr "Центрувати сторінки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:438
+#: data/org.pwmt.zathura.metainfo.xml.in:435
 msgid "Replace glib memory functions with try version"
 msgstr "Замінити функції пам'яті glib на try-версії"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:439
+#: data/org.pwmt.zathura.metainfo.xml.in:436
 msgid "Align highlighted rectangles correctly"
 msgstr "Коректно вирівнювати підсвічені прямокутники"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:440
+#: data/org.pwmt.zathura.metainfo.xml.in:437
 msgid "Implement G and gg for index mode"
 msgstr "Реалізувати G і gg для режиму індексу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:441
+#: data/org.pwmt.zathura.metainfo.xml.in:438
 msgid "Implement TOGGLE for sc_navigate_index"
 msgstr "Реалізувати TOGGLE для sc_navigate_index"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:442
+#: data/org.pwmt.zathura.metainfo.xml.in:439
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
 msgstr "Зберігати горизонтальну позицію під час прокрутки до PAGE_TOP/BOTTOM"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:443
+#: data/org.pwmt.zathura.metainfo.xml.in:440
 msgid "Implement shortcuts for scrolling to page top/bottom"
 msgstr "Реалізувати скорочення для прокрутки до верху/низу сторінки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:444
+#: data/org.pwmt.zathura.metainfo.xml.in:441
 msgid "Set position on document load only if no page was specified"
 msgstr ""
 "Встановлювати позицію під час завантаження документа, лише якщо сторінку не "
 "задано"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:445
+#: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Bail out early if we get TOP or BOTTOM"
 msgstr "Завчасно виходити, якщо отримано TOP або BOTTOM"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:446
+#: data/org.pwmt.zathura.metainfo.xml.in:443
 msgid "Replace fullscreen mode with presentation mode"
 msgstr "Замінити повноекранний режим на режим презентації"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:447
+#: data/org.pwmt.zathura.metainfo.xml.in:444
 msgid "Remove GTK+2 support"
 msgstr "Вилучити підтримку GTK+2"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:448
-#: data/org.pwmt.zathura.metainfo.xml.in:454
-#: data/org.pwmt.zathura.metainfo.xml.in:466
+#: data/org.pwmt.zathura.metainfo.xml.in:445
+#: data/org.pwmt.zathura.metainfo.xml.in:451
+#: data/org.pwmt.zathura.metainfo.xml.in:463
 msgid "Update documentation"
 msgstr "Оновити документацію"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:455
+#: data/org.pwmt.zathura.metainfo.xml.in:452
 msgid "Resolve layout problems"
 msgstr "Усунути проблеми макета"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:460
+#: data/org.pwmt.zathura.metainfo.xml.in:457
 msgid "Use GTK+3 by default"
 msgstr "Використовувати GTK+3 типово"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:461
+#: data/org.pwmt.zathura.metainfo.xml.in:458
 msgid "Rewritten render logic"
 msgstr "Переписана логіка рендерингу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:462
+#: data/org.pwmt.zathura.metainfo.xml.in:459
 msgid "Fixed page refresh in certain situations"
 msgstr "Виправлено оновлення сторінки в певних ситуаціях"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:463
+#: data/org.pwmt.zathura.metainfo.xml.in:460
 msgid "Make the X clipboard buffer"
 msgstr "Використовувати буфер обміну X"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:464
+#: data/org.pwmt.zathura.metainfo.xml.in:461
 msgid "Allow number in quickmarks"
 msgstr "Дозволити числа в quickmarks"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:465
+#: data/org.pwmt.zathura.metainfo.xml.in:462
 msgid "Workaround for print quality issues"
 msgstr "Обхідне рішення для проблем якості друку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:472
+#: data/org.pwmt.zathura.metainfo.xml.in:469
 msgid "Resolve memory leak"
 msgstr "Усунути витік пам'яті"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:473
+#: data/org.pwmt.zathura.metainfo.xml.in:470
 msgid "Report missing plugin or unsupported file types"
 msgstr "Повідомляти про відсутній плагін або непідтримувані типи файлів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:474
+#: data/org.pwmt.zathura.metainfo.xml.in:471
 msgid "More vim-like search behaviour"
 msgstr "Поведінка пошуку, ближча до vim"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:475
+#: data/org.pwmt.zathura.metainfo.xml.in:472
 msgid "Introduced show-{h,v}-scrollbar settings"
 msgstr "Додано налаштування show-{h,v}-scrollbar"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:476
+#: data/org.pwmt.zathura.metainfo.xml.in:473
 msgid "Enhancement of the jumplist mechanism"
 msgstr "Покращення механізму списку переходів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:477
+#: data/org.pwmt.zathura.metainfo.xml.in:474
 msgid "Use jumplists with marks"
 msgstr "Використовувати списки переходів із позначками"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:478
+#: data/org.pwmt.zathura.metainfo.xml.in:475
 msgid "More vim-like jump behaviour"
 msgstr "Поведінка переходів, ближча до vim"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:479
+#: data/org.pwmt.zathura.metainfo.xml.in:476
 msgid "Improved bisect"
 msgstr "Покращений bisect"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:480
+#: data/org.pwmt.zathura.metainfo.xml.in:477
 msgid "Update page number on mouse scroll"
 msgstr "Оновлювати номер сторінки під час прокрутки мишею"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:481
+#: data/org.pwmt.zathura.metainfo.xml.in:478
 msgid "Introduced window-title-page option"
 msgstr "Додано опцію window-title-page"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:487
+#: data/org.pwmt.zathura.metainfo.xml.in:484
 msgid "LRU caching algorithm"
 msgstr "Алгоритм кешування LRU"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:488
+#: data/org.pwmt.zathura.metainfo.xml.in:485
 msgid "Bisect functionality"
 msgstr "Функціональність bisect"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:489
+#: data/org.pwmt.zathura.metainfo.xml.in:486
 msgid "Allow negative offsets"
 msgstr "Дозволити від'ємні зсуви"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:490
+#: data/org.pwmt.zathura.metainfo.xml.in:487
 msgid "Option --page to open at the specified page"
 msgstr "Опція --page для відкриття на вказаній сторінці"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:491
+#: data/org.pwmt.zathura.metainfo.xml.in:488
 msgid "Scale vertical/horizontal scrolling in respect to the buffer"
 msgstr "Масштабувати вертикальну/горизонтальну прокрутку відносно буфера"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:492
+#: data/org.pwmt.zathura.metainfo.xml.in:489
 msgid "Add statusbar-basename option"
 msgstr "Додати опцію statusbar-basename"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:493
+#: data/org.pwmt.zathura.metainfo.xml.in:490
 msgid "Implement colors for 'Loading...'-text"
 msgstr "Реалізувати кольори для тексту 'Loading...'"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:494
+#: data/org.pwmt.zathura.metainfo.xml.in:491
 msgid "Don't render same page multiple times"
 msgstr "Не рендерити ту саму сторінку кілька разів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:495
+#: data/org.pwmt.zathura.metainfo.xml.in:492
 msgid "Use libmagic if available"
 msgstr "Використовувати libmagic, якщо доступна"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:496
-#: data/org.pwmt.zathura.metainfo.xml.in:507
+#: data/org.pwmt.zathura.metainfo.xml.in:493
+#: data/org.pwmt.zathura.metainfo.xml.in:504
 msgid "Some other bug fixes and updated translations"
 msgstr "Інші виправлення помилок і оновлені переклади"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:501
+#: data/org.pwmt.zathura.metainfo.xml.in:498
 msgid "Implemented jumplist (^o, ^i)"
 msgstr "Реалізовано список переходів (^o, ^i)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:502
+#: data/org.pwmt.zathura.metainfo.xml.in:499
 msgid "Update current page when following links"
 msgstr "Оновлювати поточну сторінку при переході за посиланнями"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:503
+#: data/org.pwmt.zathura.metainfo.xml.in:500
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr "Прокручувати горизонтально за допомогою Shift і коліщатка миші"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:504 zathura/config.c:572
+#: data/org.pwmt.zathura.metainfo.xml.in:501 zathura/config.c:572
 msgid "Page aware scrolling"
 msgstr "Прокрутка по сторінкам"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:505
+#: data/org.pwmt.zathura.metainfo.xml.in:502
 msgid "SyncTeX forward synchronisation"
 msgstr "Пряма синхронізація SyncTeX"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:506
+#: data/org.pwmt.zathura.metainfo.xml.in:503
 msgid "Update shortcuts"
 msgstr "Оновити скорочення"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:512
+#: data/org.pwmt.zathura.metainfo.xml.in:509
 msgid "SyncTeX backwards synchronisation"
 msgstr "Зворотна синхронізація SyncTeX"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:513
+#: data/org.pwmt.zathura.metainfo.xml.in:510
 msgid "Fix request-page-setup"
 msgstr "Виправити request-page-setup"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:514
+#: data/org.pwmt.zathura.metainfo.xml.in:511
 msgid "Fix window adustment"
 msgstr "Виправити налаштування вікна"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:515
+#: data/org.pwmt.zathura.metainfo.xml.in:512
 msgid "Better GTK3 integration"
 msgstr "Краща інтеграція GTK3"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:516
+#: data/org.pwmt.zathura.metainfo.xml.in:513
 msgid "Added first-page-colum setting"
 msgstr "Додано параметр first-page-colum"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:517
+#: data/org.pwmt.zathura.metainfo.xml.in:514
 msgid "Added recolor-keephue setting"
 msgstr "Додано параметр recolor-keephue"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:523
+#: data/org.pwmt.zathura.metainfo.xml.in:520
 msgid "New languages"
 msgstr "Нові мови"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:524
+#: data/org.pwmt.zathura.metainfo.xml.in:521
 msgid "Better print support"
 msgstr "Краща підтримка друку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:525
+#: data/org.pwmt.zathura.metainfo.xml.in:522
 msgid "Improve document links"
 msgstr "Покращити посилання документа"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:526
+#: data/org.pwmt.zathura.metainfo.xml.in:523
 msgid "Render last-viewed pages with a higher priority"
 msgstr "Рендерити останні переглянуті сторінки з вищим пріоритетом"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:527
+#: data/org.pwmt.zathura.metainfo.xml.in:524
 msgid "Export images and attachments"
 msgstr "Експортувати зображення та вкладення"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:528
+#: data/org.pwmt.zathura.metainfo.xml.in:525
 msgid "Open multiple documents"
 msgstr "Відкрити кілька документів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:529
+#: data/org.pwmt.zathura.metainfo.xml.in:526
 msgid "Plugin manager"
 msgstr "Менеджер плагінів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:530
-msgid "Several memory leaks and small bugs"
-msgstr "Кілька витоків пам'яті та дрібних помилок"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:535
+#: data/org.pwmt.zathura.metainfo.xml.in:532
 msgid "Add 'open-first-page' setting"
 msgstr "Додати параметр 'open-first-page'"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:536
+#: data/org.pwmt.zathura.metainfo.xml.in:533
 msgid "Free invisible pages after specific time"
 msgstr "Вивільняти невидимі сторінки через певний час"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:537
+#: data/org.pwmt.zathura.metainfo.xml.in:534
 msgid "Set log level via command line"
 msgstr "Встановити рівень журналювання через командний рядок"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:538
+#: data/org.pwmt.zathura.metainfo.xml.in:535
 msgid "Update GTK3 support"
 msgstr "Оновити підтримку GTK3"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:539
+#: data/org.pwmt.zathura.metainfo.xml.in:536
 msgid "Completion for :write command"
 msgstr "Автодоповнення для команди :write"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:540
+#: data/org.pwmt.zathura.metainfo.xml.in:537
 msgid "Simplified plugin loading"
 msgstr "Спрощене завантаження плагінів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:541
+#: data/org.pwmt.zathura.metainfo.xml.in:538
 msgid "Allow counter-clockwise rotation"
 msgstr "Дозволити обертання проти годинникової стрілки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:542
+#: data/org.pwmt.zathura.metainfo.xml.in:539
 msgid "Changeable page-padding"
 msgstr "Змінний відступ сторінки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:543
+#: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Introduced girara version check"
 msgstr "Додано перевірку версії girara"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:544
+#: data/org.pwmt.zathura.metainfo.xml.in:541
 msgid "Detect sqlite automatically"
 msgstr "Автоматично визначати sqlite"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:545
+#: data/org.pwmt.zathura.metainfo.xml.in:542
 msgid "Update window title"
 msgstr "Оновити заголовок вікна"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:550
+#: data/org.pwmt.zathura.metainfo.xml.in:547
 msgid "Macro to register plugins"
 msgstr "Макрос для реєстрації плагінів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:551
+#: data/org.pwmt.zathura.metainfo.xml.in:548
 msgid "Fix issues with the display of the current page number"
 msgstr "Виправити проблеми з відображенням поточного номера сторінки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:552
+#: data/org.pwmt.zathura.metainfo.xml.in:549
 msgid "Ability to scroll to the full left or full right border"
 msgstr "Можливість прокручувати до крайньої лівої або правої межі"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:553
+#: data/org.pwmt.zathura.metainfo.xml.in:550
 msgid "Reimplement the render thread with GThreadPool"
 msgstr "Пере реалізувати потік рендерингу з GThreadPool"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:554
+#: data/org.pwmt.zathura.metainfo.xml.in:551
 msgid "Use the correct color to highlight results"
 msgstr "Використовувати правильний колір для підсвічування результатів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:555
+#: data/org.pwmt.zathura.metainfo.xml.in:552
 msgid "Support to use both database backends"
 msgstr "Підтримка використання обох бекендів бази даних"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:556
+#: data/org.pwmt.zathura.metainfo.xml.in:553
 msgid "Additional notifications on errors"
 msgstr "Додаткові сповіщення про помилки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:557
+#: data/org.pwmt.zathura.metainfo.xml.in:554
 msgid "Option to hide hidden directories"
 msgstr "Опція ховати приховані каталоги"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:558
+#: data/org.pwmt.zathura.metainfo.xml.in:555
 msgid "Do not overwrite existing files with :write"
 msgstr "Не перезаписувати наявні файли через :write"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:559
+#: data/org.pwmt.zathura.metainfo.xml.in:556
 msgid "Fix flicker in text selection"
 msgstr "Виправити мерехтіння під час виділення тексту"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:560
-msgid "Resolved several memory leaks"
-msgstr "Усунуто кілька витоків пам'яті"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:566
-msgid "Complete rewrite of zathura"
-msgstr "Повне переписування zathura"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:567
-msgid "Uses the girara interface library"
-msgstr "Використовує бібліотеку інтерфейсу girara"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:568
-msgid "Plugin system for different document types"
-msgstr "Система плагінів для різних типів документів"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:569
-msgid "Better configuration"
-msgstr "Краща конфігурація"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:570
-msgid "Quickmarks"
-msgstr "Швидкі позначки"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:575
-msgid "Ignoring MOD5 which is used on some keyboards"
-msgstr "Ігнорування MOD5, що використовується на деяких клавіатурах"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:576
-msgid "Fix scroll_wrap (#52)"
-msgstr "Виправити scroll_wrap (#52)"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:577
-msgid "Don't invert y coordinates (#42)"
-msgstr "Не інвертувати координати y (#42)"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:578
-msgid "Certain memory leaks and other small issues"
-msgstr "Певні витоки пам'яті та інші дрібні проблеми"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:583
-msgid "Fixed bookmark handling"
-msgstr "Виправлено обробку закладок"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:584
-msgid "Support :digits"
-msgstr "Підтримка :digits"
-
+#: data/org.pwmt.zathura.metainfo.xml.in:557
 #: data/org.pwmt.zathura.metainfo.xml.in:585
-msgid "Save zoom level per file"
-msgstr "Зберігати рівень масштабу для кожного файлу"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:586
-msgid "Fix backwards searching"
-msgstr "Виправити зворотний пошук"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:587
-msgid "Fix blinking while switching pages"
-msgstr "Виправити мерехтіння під час перемикання сторінок"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:588
-msgid "Fix input issues in fullscreen mode"
-msgstr "Виправити проблеми введення в повноекранному режимі"
-
-#: data/org.pwmt.zathura.metainfo.xml.in:589
-#: data/org.pwmt.zathura.metainfo.xml.in:599
-#: data/org.pwmt.zathura.metainfo.xml.in:613
+#: data/org.pwmt.zathura.metainfo.xml.in:594
+#: data/org.pwmt.zathura.metainfo.xml.in:608
 msgid "Fixed several memory leaks"
 msgstr "Виправлено кілька витоків пам'яті"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:594
+#: data/org.pwmt.zathura.metainfo.xml.in:562
+msgid "Complete rewrite of zathura"
+msgstr "Повне переписування zathura"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:563
+msgid "Uses the girara interface library"
+msgstr "Використовує бібліотеку інтерфейсу girara"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:564
+msgid "Plugin system for different document types"
+msgstr "Система плагінів для різних типів документів"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:565
+msgid "Better configuration"
+msgstr "Краща конфігурація"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:566
+msgid "Quickmarks"
+msgstr "Швидкі позначки"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:571
+msgid "Ignoring MOD5 which is used on some keyboards"
+msgstr "Ігнорування MOD5, що використовується на деяких клавіатурах"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:572
+msgid "Fix scroll_wrap (#52)"
+msgstr "Виправити scroll_wrap (#52)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:573
+msgid "Don't invert y coordinates (#42)"
+msgstr "Не інвертувати координати y (#42)"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:574
+msgid "Certain memory leaks and other small issues"
+msgstr "Певні витоки пам'яті та інші дрібні проблеми"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:579
+msgid "Fixed bookmark handling"
+msgstr "Виправлено обробку закладок"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:580
+msgid "Support :digits"
+msgstr "Підтримка :digits"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:581
+msgid "Save zoom level per file"
+msgstr "Зберігати рівень масштабу для кожного файлу"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:582
+msgid "Fix backwards searching"
+msgstr "Виправити зворотний пошук"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:583
+msgid "Fix blinking while switching pages"
+msgstr "Виправити мерехтіння під час перемикання сторінок"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:584
+msgid "Fix input issues in fullscreen mode"
+msgstr "Виправити проблеми введення в повноекранному режимі"
+
+#: data/org.pwmt.zathura.metainfo.xml.in:590
 msgid "Update text searching"
 msgstr "Оновити пошук тексту"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:595
+#: data/org.pwmt.zathura.metainfo.xml.in:591
 msgid "Support for poppler >= 0.15"
 msgstr "Підтримка poppler >= 0.15"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:596
+#: data/org.pwmt.zathura.metainfo.xml.in:592
 msgid "Fixed print command with multiple arguments"
 msgstr "Виправлено команду друку з кількома аргументами"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:597
+#: data/org.pwmt.zathura.metainfo.xml.in:593
 msgid "Fixed GOptionEntries"
 msgstr "Виправлено GOptionEntries"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:600
+#: data/org.pwmt.zathura.metainfo.xml.in:595
 msgid "Fixed segmentation faults"
 msgstr "Виправлено segmentation fault"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:605
+#: data/org.pwmt.zathura.metainfo.xml.in:600
 msgid "Wrap around scrolling"
 msgstr "Циклічна прокрутка"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:606
+#: data/org.pwmt.zathura.metainfo.xml.in:601
 msgid "Display scroll percentage in statusbar"
 msgstr "Показувати відсоток прокрутки в рядку стану"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:607
+#: data/org.pwmt.zathura.metainfo.xml.in:602
 msgid "More familiar zoom key bindings"
 msgstr "Звичніші клавіші масштабу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:608
+#: data/org.pwmt.zathura.metainfo.xml.in:603
 msgid "Support reading files from stdin"
 msgstr "Підтримка читання файлів зі stdin"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:609
+#: data/org.pwmt.zathura.metainfo.xml.in:604
 msgid "Open command with appended current file path"
 msgstr "Команда open з доданим поточним шляхом до файлу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:610
+#: data/org.pwmt.zathura.metainfo.xml.in:605
 msgid "Following XDG specification"
 msgstr "Дотримання специфікації XDG"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:611
+#: data/org.pwmt.zathura.metainfo.xml.in:606
 msgid "Colored window and view port"
 msgstr "Кольорове вікно та область перегляду"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:612
+#: data/org.pwmt.zathura.metainfo.xml.in:607
 msgid "File reloading fix"
 msgstr "Виправлення перезавантаження файлу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:614
-#: data/org.pwmt.zathura.metainfo.xml.in:636
-#: data/org.pwmt.zathura.metainfo.xml.in:653
-#: data/org.pwmt.zathura.metainfo.xml.in:662
+#: data/org.pwmt.zathura.metainfo.xml.in:609
+#: data/org.pwmt.zathura.metainfo.xml.in:630
+#: data/org.pwmt.zathura.metainfo.xml.in:647
+#: data/org.pwmt.zathura.metainfo.xml.in:656
 msgid "Update manpage"
 msgstr "Оновити man-сторінку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:620
+#: data/org.pwmt.zathura.metainfo.xml.in:614
 msgid "Fixed critical usability bug"
 msgstr "Виправлено критичну помилку зручності використання"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:625
+#: data/org.pwmt.zathura.metainfo.xml.in:619
 msgid "Improved and fixed completion"
 msgstr "Покращене та виправлене автодоповнення"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:626
+#: data/org.pwmt.zathura.metainfo.xml.in:620
 msgid "Optional parameters for the print command"
 msgstr "Необов'язкові параметри для команди друку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:627
-#: data/org.pwmt.zathura.metainfo.xml.in:679
+#: data/org.pwmt.zathura.metainfo.xml.in:621
+#: data/org.pwmt.zathura.metainfo.xml.in:673
 msgid "Escape filenames"
 msgstr "Екранувати імена файлів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:628
+#: data/org.pwmt.zathura.metainfo.xml.in:622
 msgid "Resolved some memory leaks"
 msgstr "Усунуто деякі витоки пам'яті"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:629
+#: data/org.pwmt.zathura.metainfo.xml.in:623
 msgid "Global configuration file"
 msgstr "Глобальний файл конфігурації"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:630
+#: data/org.pwmt.zathura.metainfo.xml.in:624
 msgid "Specify configuration directory"
 msgstr "Вказати каталог конфігурації"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:631
+#: data/org.pwmt.zathura.metainfo.xml.in:625
 msgid "Configureable modes"
 msgstr "Налаштовувані режими"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:632
+#: data/org.pwmt.zathura.metainfo.xml.in:626
 msgid "Smooth scrolling"
 msgstr "Плавна прокрутка"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:633
+#: data/org.pwmt.zathura.metainfo.xml.in:627
 msgid "Extended statusbar string manipulation"
 msgstr "Розширена обробка рядка стану"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:634
+#: data/org.pwmt.zathura.metainfo.xml.in:628
 msgid "`function`"
 msgstr "`function`"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:635
-#: data/org.pwmt.zathura.metainfo.xml.in:651
+#: data/org.pwmt.zathura.metainfo.xml.in:629
+#: data/org.pwmt.zathura.metainfo.xml.in:645
 msgid "Strip executable"
 msgstr "Очищати виконуваний файл"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:641
+#: data/org.pwmt.zathura.metainfo.xml.in:635
 msgid "Change window title to filename"
 msgstr "Змінювати заголовок вікна на ім'я файлу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:642
+#: data/org.pwmt.zathura.metainfo.xml.in:636
 msgid "Fixation of the URI command"
 msgstr "Виправлення команди URI"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:643
+#: data/org.pwmt.zathura.metainfo.xml.in:637
 msgid "Update the behaviour of sc_scroll"
 msgstr "Оновити поведінку sc_scroll"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:644
+#: data/org.pwmt.zathura.metainfo.xml.in:638
 msgid "Half/Full-page scrolling"
 msgstr "Прокрутка на пів/повну сторінку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:645
+#: data/org.pwmt.zathura.metainfo.xml.in:639
 msgid "Check document health in sc_reload"
 msgstr "Перевіряти стан документа в sc_reload"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:646
+#: data/org.pwmt.zathura.metainfo.xml.in:640
 msgid "`tabbed` support"
 msgstr "Підтримка `tabbed`"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:647
+#: data/org.pwmt.zathura.metainfo.xml.in:641
 msgid "Define look with the set function"
 msgstr "Визначати вигляд за допомогою функції set"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:648
+#: data/org.pwmt.zathura.metainfo.xml.in:642
 msgid "Implemented map function"
 msgstr "Реалізовано функцію map"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:649
+#: data/org.pwmt.zathura.metainfo.xml.in:643
 msgid "`zathurarc` file"
 msgstr "Файл `zathurarc`"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:650
+#: data/org.pwmt.zathura.metainfo.xml.in:644
 msgid "Prevent buffer overflow in realpath"
 msgstr "Запобігти переповненню буфера в realpath"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:652
+#: data/org.pwmt.zathura.metainfo.xml.in:646
 msgid "Key evaluation when buffer is not empty"
 msgstr "Обробка клавіш, коли буфер не порожній"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:658
+#: data/org.pwmt.zathura.metainfo.xml.in:652
 msgid "Use GFileMonitor instead of inotify"
 msgstr "Використовувати GFileMonitor замість inotify"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:659
+#: data/org.pwmt.zathura.metainfo.xml.in:653
 msgid "Added document reload shortcut"
 msgstr "Додано скорочення для перезавантаження документа"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:660
+#: data/org.pwmt.zathura.metainfo.xml.in:654
 msgid "Fixed toggle index"
 msgstr "Виправлено перемикання індексу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:661
+#: data/org.pwmt.zathura.metainfo.xml.in:655
 msgid "Fixed print command"
 msgstr "Виправлено команду друку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:667
+#: data/org.pwmt.zathura.metainfo.xml.in:661
 msgid "Fullscreen mode"
 msgstr "Повноекранний режим"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:668
+#: data/org.pwmt.zathura.metainfo.xml.in:662
 msgid "Correct search result highlighting"
 msgstr "Коректне підсвічування результатів пошуку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:669
+#: data/org.pwmt.zathura.metainfo.xml.in:663
 msgid "Document password dialog"
 msgstr "Діалог пароля документа"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:675
+#: data/org.pwmt.zathura.metainfo.xml.in:669
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
 msgstr "Підтримка миші (прокрутка, позначення та копіювання тексту в буфер)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:676
+#: data/org.pwmt.zathura.metainfo.xml.in:670
 msgid "Keyboard navigation in the index view"
 msgstr "Клавіатурна навігація у поданні індексу"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:677
+#: data/org.pwmt.zathura.metainfo.xml.in:671
 msgid "Different goto modes"
 msgstr "Різні режими goto"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:678
+#: data/org.pwmt.zathura.metainfo.xml.in:672
 msgid "Auto adjustment when opening a document"
 msgstr "Автоматичне налаштування під час відкриття документа"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:685
+#: data/org.pwmt.zathura.metainfo.xml.in:679
 msgid "Reload modified document automatically"
 msgstr "Автоматично перезавантажувати змінений документ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:686
+#: data/org.pwmt.zathura.metainfo.xml.in:680
 msgid "Recolor the page instead of inverting the colors"
 msgstr "Перефарбовувати сторінку замість інвертування кольорів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:687
+#: data/org.pwmt.zathura.metainfo.xml.in:681
 msgid "Working search function"
 msgstr "Працююча функція пошуку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:688
+#: data/org.pwmt.zathura.metainfo.xml.in:682
 msgid "Show and hide document information"
 msgstr "Показувати і ховати інформацію про документ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:689
+#: data/org.pwmt.zathura.metainfo.xml.in:683
 msgid "Follow internal links or open URI in a predefined browser"
 msgstr ""
 "Переходити за внутрішніми посиланнями або відкривати URI у визначеному "
 "браузері"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:690
+#: data/org.pwmt.zathura.metainfo.xml.in:684
 msgid "Save the document"
 msgstr "Зберегти документ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:696
+#: data/org.pwmt.zathura.metainfo.xml.in:690
 msgid "Complete new, re-written interface"
 msgstr "Повністю новий, переписаний інтерфейс"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:697
+#: data/org.pwmt.zathura.metainfo.xml.in:691
 msgid "Multiple printer support"
 msgstr "Підтримка кількох принтерів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:698
+#: data/org.pwmt.zathura.metainfo.xml.in:692
 msgid "Command history"
 msgstr "Історія команд"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:699
+#: data/org.pwmt.zathura.metainfo.xml.in:693
 msgid "Show document index"
 msgstr "Показати індекс документа"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:700
+#: data/org.pwmt.zathura.metainfo.xml.in:694
 msgid "Centered view"
 msgstr "Центроване подання"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:701
+#: data/org.pwmt.zathura.metainfo.xml.in:695
 msgid "Add, save and open bookmarks"
 msgstr "Додати, зберегти і відкрити закладки"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:702
+#: data/org.pwmt.zathura.metainfo.xml.in:696
 msgid "Marker support"
 msgstr "Підтримка маркерів"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:703
+#: data/org.pwmt.zathura.metainfo.xml.in:697
 msgid "Highlight search results"
 msgstr "Виділяти результати пошуку"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:704
+#: data/org.pwmt.zathura.metainfo.xml.in:698
 msgid "Buffered commands"
 msgstr "Буферизовані команди"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:705
+#: data/org.pwmt.zathura.metainfo.xml.in:699
 msgid "`set` Function"
 msgstr "Функція `set`"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:706
+#: data/org.pwmt.zathura.metainfo.xml.in:700
 msgid "Revert video function"
 msgstr "Повернути відеофункцію"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:707
+#: data/org.pwmt.zathura.metainfo.xml.in:701
 msgid "Command completion"
 msgstr "Автодоповнення команд"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:712
+#: data/org.pwmt.zathura.metainfo.xml.in:706
 msgid "Initial release"
 msgstr "Перший випуск"
 
@@ -2378,6 +2354,3 @@ msgstr "Неправильна кількість переданих аргум�
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr "Не вдалося записати JSON: %s"
-
-#~ msgid "Quit the program"
-#~ msgstr "Вийти з програму"
