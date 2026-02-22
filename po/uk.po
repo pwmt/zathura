@@ -56,7 +56,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
-msgstr "Підтримка Synctex синхронізації вперед та назад ."
+msgstr "Підтримка SyncTeX синхронізації вперед та назад ."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:26
 msgid "Quickmarks and bookmarks."
@@ -1926,16 +1926,16 @@ msgstr ""
 "рядку стану"
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "Увімкнути підтримку Synctex"
+msgid "Enable SyncTeX support"
+msgstr "Увімкнути підтримку SyncTeX"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
-msgstr "Команда редактора Synctex"
+msgid "SyncTeX editor command"
+msgstr "Команда редактора SyncTeX"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
-msgstr "Модифікатор редагування Synctex"
+msgid "SyncTeX edit modifier"
+msgstr "Модифікатор редагування SyncTeX"
 
 #: zathura/config.c:623
 msgid "Highlighter modifier"
@@ -2144,12 +2144,12 @@ msgid "Print version information"
 msgstr "Інформація про версію для друку"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Редактор Synctex (перенаправляється до команди Synctex)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "Редактор SyncTeX (перенаправляється до команди Synctex)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
-msgstr "Перейдіть до заданої позиції Synctex"
+msgid "Move to given SyncTeX position"
+msgstr "Перейдіть до заданої позиції SyncTeX"
 
 #: zathura/main.c:125
 msgid "Highlight given position in the given process"

@@ -1903,16 +1903,16 @@ msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr "Kuva (praegune leht / lehti kokku) protsendina olekuribal"
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "Luba synctex tugi"
+msgid "Enable SyncTeX support"
+msgstr "Luba SyncTeX tugi"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
-msgstr "Synctex editor käsk"
+msgid "SyncTeX editor command"
+msgstr "SyncTeX editor käsk"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
-msgstr "Synctexi muutmisklahv"
+msgid "SyncTeX edit modifier"
+msgstr "SyncTeXi muutmisklahv"
 
 #: zathura/config.c:623
 msgid "Highlighter modifier"
@@ -2122,12 +2122,12 @@ msgid "Print version information"
 msgstr "Näita faili infot"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Synctex editor (forwarded et synctex käsk)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "SyncTeX editor (forwarded et SyncTeX käsk)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
-msgstr "Liigu et given synctex position"
+msgid "Move to given SyncTeX position"
+msgstr "Liigu et given SyncTeX position"
 
 #: zathura/main.c:125
 msgid "Highlight given position in the given process"

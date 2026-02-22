@@ -1899,15 +1899,15 @@ msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "Synctex desteğini etkinleştir"
+msgid "Enable SyncTeX support"
+msgstr "SyncTeX desteğini etkinleştir"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
-msgstr "Synctex düzenleyici komutu"
+msgid "SyncTeX editor command"
+msgstr "SyncTeX düzenleyici komutu"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
+msgid "SyncTeX edit modifier"
 msgstr ""
 
 #: zathura/config.c:623
@@ -2117,12 +2117,12 @@ msgid "Print version information"
 msgstr "Dosya bilgisi göster"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Synctex editörü (synctext komutuna yönlendirildi)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "SyncTeX editörü (SyncTeXt komutuna yönlendirildi)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
-msgstr "Verilen synctext konumuna taşı"
+msgid "Move to given SyncTeX position"
+msgstr "Verilen SyncTeXt konumuna taşı"
 
 #: zathura/main.c:125
 msgid "Highlight given position in the given process"

@@ -1892,16 +1892,16 @@ msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr "عرض (الصفحة الحالية / إجمالي الصفحات) كنسبة مئوية في شريط الحالة"
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "تمكين دعم synctex"
+msgid "Enable SyncTeX support"
+msgstr "تمكين دعم SyncTeX"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
-msgstr " محرر أمر Synctex"
+msgid "SyncTeX editor command"
+msgstr " محرر أمر SyncTeX"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
-msgstr "مُعدِّل تحرير Synctex"
+msgid "SyncTeX edit modifier"
+msgstr "مُعدِّل تحرير SyncTeX"
 
 #: zathura/config.c:623
 msgid "Highlighter modifier"
@@ -2110,12 +2110,12 @@ msgid "Print version information"
 msgstr "طباعة معلومات إلاصدار "
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "محرر Synctex (تم إعادة توجيهه إلى أمر synctex)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "محرر SyncTeX (تم إعادة توجيهه إلى أمر SyncTeX)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
-msgstr "الانتقال إلى موضع synctex المحدد"
+msgid "Move to given SyncTeX position"
+msgstr "الانتقال إلى موضع SyncTeX المحدد"
 
 #: zathura/main.c:125
 msgid "Highlight given position in the given process"

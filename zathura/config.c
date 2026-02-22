@@ -617,9 +617,9 @@ void config_load_default(zathura_t* zathura) {
   bool_value = false;
   girara_setting_add(gsession, "statusbar-page-percent",  &bool_value, BOOLEAN, false, _("Display (current page / total pages) as a percent in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
-  girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
-  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
-  girara_setting_add(gsession, "synctex-edit-modifier",  "ctrl",       STRING,  false, _("Synctex edit modifier"), cb_global_modifiers_changed, NULL);
+  girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable SyncTeX support"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("SyncTeX editor command"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-edit-modifier",  "ctrl",       STRING,  false, _("SyncTeX edit modifier"), cb_global_modifiers_changed, NULL);
   girara_setting_add(gsession, "highlighter-modifier",   "shift",      STRING,  false, _("Highlighter modifier"), cb_global_modifiers_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
