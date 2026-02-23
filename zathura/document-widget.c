@@ -105,7 +105,7 @@ static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
 }
 
 GtkWidget* zathura_document_widget_new(zathura_t* zathura) {
-  GObject* ret = g_object_new(ZATHURA_TYPE_DOCUMENT, "zathura", zathura, NULL);
+  GObject* ret = g_object_new(ZATHURA_TYPE_DOCUMENT_WIDGET, "zathura", zathura, NULL);
   if (ret == NULL) {
     return NULL;
   }
