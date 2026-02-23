@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "callbacks.h"
+
 #include <girara-gtk/statusbar.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
@@ -11,7 +13,6 @@
 #include <glib/gi18n.h>
 #include <math.h>
 
-#include "callbacks.h"
 #include "links.h"
 #include "zathura.h"
 #include "render.h"
@@ -191,12 +192,11 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
     return;
   }
 
-  if (zathura->pages != NULL && zathura->pages[page_id] != NULL) {
-    ZathuraPage* page_widget = ZATHURA_PAGE(zathura->pages[page_id]);
-    if (page_widget != NULL) {
-      if (zathura_page_widget_have_surface(page_widget)) {
-        document_predecessor_free(zathura);
-      }
+  GtkWidget* widget = zathura_page_get_widget(zathura, page);
+  if (widget) {
+    ZathuraPage* page_widget = ZATHURA_PAGE(widget);
+    if (zathura_page_widget_have_surface(page_widget)) {
+      document_predecessor_free(zathura);
     }
   }
 

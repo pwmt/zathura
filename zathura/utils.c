@@ -282,6 +282,15 @@ GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page) {
   return zathura->pages[page_number];
 }
 
+GtkWidget* zathura_page_get_widget_by_number(zathura_t* zathura, unsigned int page_number) {
+  if (zathura == NULL || !zathura_has_document(zathura) || zathura->pages == NULL ||
+      page_number >= zathura_document_get_number_of_pages(zathura_get_document(zathura))) {
+    return NULL;
+  }
+
+  return zathura->pages[page_number];
+}
+
 void document_draw_search_results(zathura_t* zathura, bool value) {
   if (zathura_has_document(zathura) == false || zathura->pages == NULL) {
     return;
@@ -289,7 +298,8 @@ void document_draw_search_results(zathura_t* zathura, bool value) {
 
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
+    g_object_set(G_OBJECT(zathura_page_get_widget_by_number(zathura, page_id)), "draw-search-results",
+                 (value == true) ? TRUE : FALSE, NULL);
   }
 }
 

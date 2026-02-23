@@ -1187,15 +1187,16 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     zathura_page_t* page     = zathura_document_get_page(document, page_id);
     unsigned int page_height = 0;
     unsigned int page_width  = 0;
+    GtkWidget* widget        = zathura_page_get_widget(zathura, page);
 
     /* adjust_view calls render_all in some cases and render_all calls
      * gtk_widget_set_size_request. To be sure that it's really called, do it
      * here once again. */
     page_calc_height_width(zathura->document, page, &page_height, &page_width, true);
-    gtk_widget_set_size_request(zathura->pages[page_id], page_width, page_height);
+    gtk_widget_set_size_request(widget, page_width, page_height);
 
     /* show widget */
-    gtk_widget_show(zathura->pages[page_id]);
+    gtk_widget_show(widget);
   }
 
   /* Set page */
@@ -1426,7 +1427,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   if (override_predecessor) {
     /* do not override predecessor buffer with empty pages */
     unsigned int cur_page_num = zathura_document_get_current_page_number(document);
-    ZathuraPage* cur_page     = ZATHURA_PAGE(zathura->pages[cur_page_num]);
+    ZathuraPage* cur_page     = ZATHURA_PAGE(zathura_page_get_widget_by_number(zathura, cur_page_num));
     if (!zathura_page_widget_have_surface(cur_page)) {
       override_predecessor = false;
     }
@@ -1717,7 +1718,8 @@ void zathura_show_signature_information(zathura_t* zathura, bool show) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page = 0; page != number_of_pages; ++page) {
     // draw signature info
-    g_object_set_property(G_OBJECT(zathura->pages[page]), "draw-signatures", &show_sig_info_value);
+    GObject* page_widget = G_OBJECT(zathura_page_get_widget_by_number(zathura, page));
+    g_object_set_property(page_widget, "draw-signatures", &show_sig_info_value);
   }
 }
 
