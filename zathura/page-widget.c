@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "page-widget.h"
+
 #include <girara/utils.h>
 #include <girara-gtk/settings.h>
 #include <girara/datastructures.h>
@@ -9,7 +11,6 @@
 #include <math.h>
 
 #include "links.h"
-#include "page-widget.h"
 #include "page.h"
 #include "render.h"
 #include "utils.h"
@@ -367,8 +368,6 @@ static void zathura_page_widget_set_property(GObject* object, guint prop_id, con
   ZathuraPageWidget* pageview    = ZATHURA_PAGE_WIDGET(object);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(pageview);
 
-  cairo_text_extents_t text;
-
   switch (prop_id) {
   case PROP_PAGE:
     priv->page = g_value_get_pointer(value);
@@ -387,7 +386,7 @@ static void zathura_page_widget_set_property(GObject* object, guint prop_id, con
 
     if (priv->links.retrieved == TRUE && priv->links.list != NULL) {
       /* get size of text that should be large enough for every link hint */
-      text = get_text_extents("888", priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
+      const cairo_text_extents_t text = get_text_extents("888", priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
 
       for (size_t idx = 0; idx != girara_list_size(priv->links.list); ++idx) {
         zathura_link_t* link = girara_list_nth(priv->links.list, idx);
