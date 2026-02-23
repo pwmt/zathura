@@ -249,11 +249,12 @@ static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) 
   memset(priv->row_heights, 0, nrow * sizeof(document_widget_line_s));
   memset(priv->col_widths, 0, ncol * sizeof(document_widget_line_s));
 
-  unsigned int row, col;
-
   // calculate the max width and height required for each column and row
   for (unsigned int i = 0; i < npag; i++) {
     zathura_page_t* page = zathura_document_get_page(z_document, i);
+
+    unsigned int row = 0;
+    unsigned int col = 0;
     zathura_document_widget_get_page_position(widget, i, &row, &col);
 
     unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
