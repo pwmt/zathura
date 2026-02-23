@@ -252,13 +252,13 @@ bool cb_unknown_command(girara_session_t* session, const char* input);
  * @param text selected text
  * @param data user data
  */
-void cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data);
+void cb_page_widget_text_selected(ZathuraPageWidget* page, const char* text, void* data);
 
-void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data);
+void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkPixbuf* pixbuf, void* data);
 
-void cb_page_widget_scaled_button_release(ZathuraPage* page, GdkEventButton* event, void* data);
+void cb_page_widget_scaled_button_release(ZathuraPageWidget* page, GdkEventButton* event, void* data);
 
-void cb_page_widget_link(ZathuraPage* page, void* data);
+void cb_page_widget_link(ZathuraPageWidget* page, void* data);
 
 void update_visible_pages(zathura_t* zathura);
 

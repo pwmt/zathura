@@ -55,9 +55,9 @@ void update_visible_pages(zathura_t* zathura) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page             = zathura_document_get_page(document, page_id);
-    GtkWidget* page_widget           = zathura_page_get_widget(zathura, page);
-    ZathuraPage* zathura_page_widget = ZATHURA_PAGE(page_widget);
+    zathura_page_t* page                   = zathura_document_get_page(document, page_id);
+    GtkWidget* page_widget                 = zathura_page_get_widget(zathura, page);
+    ZathuraPageWidget* zathura_page_widget = ZATHURA_PAGE_WIDGET(page_widget);
 
     if (page_is_visible(zathura, page_id) == true) {
       /* make page visible */
@@ -194,7 +194,7 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
 
   GtkWidget* widget = zathura_page_get_widget(zathura, page);
   if (widget) {
-    ZathuraPage* page_widget = ZATHURA_PAGE(widget);
+    ZathuraPageWidget* page_widget = ZATHURA_PAGE_WIDGET(widget);
     if (zathura_page_widget_have_surface(page_widget)) {
       document_predecessor_free(zathura);
     }
@@ -398,7 +398,7 @@ static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_
       continue;
     }
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    link                   = zathura_page_widget_link_get(ZATHURA_PAGE(page_widget), index);
+    link                   = zathura_page_widget_link_get(ZATHURA_PAGE_WIDGET(page_widget), index);
     if (link != NULL) {
       break;
     }
@@ -584,7 +584,7 @@ bool cb_unknown_command(girara_session_t* session, const char* input) {
   return true;
 }
 
-void cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* data) {
+void cb_page_widget_text_selected(ZathuraPageWidget* page, const char* text, void* data) {
   g_return_if_fail(page != NULL);
   g_return_if_fail(text != NULL);
   g_return_if_fail(data != NULL);
@@ -618,7 +618,7 @@ void cb_page_widget_text_selected(ZathuraPage* page, const char* text, void* dat
   }
 }
 
-void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* data) {
+void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkPixbuf* pixbuf, void* data) {
   g_return_if_fail(page != NULL);
   g_return_if_fail(pixbuf != NULL);
   g_return_if_fail(data != NULL);
@@ -644,7 +644,7 @@ void cb_page_widget_image_selected(ZathuraPage* page, GdkPixbuf* pixbuf, void* d
   }
 }
 
-void cb_page_widget_link(ZathuraPage* page, void* data) {
+void cb_page_widget_link(ZathuraPageWidget* page, void* data) {
   g_return_if_fail(page != NULL);
 
   bool enter = (bool)data;
@@ -656,7 +656,7 @@ void cb_page_widget_link(ZathuraPage* page, void* data) {
   g_object_unref(cursor);
 }
 
-void cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* event, void* data) {
+void cb_page_widget_scaled_button_release(ZathuraPageWidget* page_widget, GdkEventButton* event, void* data) {
   zathura_t* zathura   = data;
   zathura_page_t* page = zathura_page_widget_get_page(page_widget);
 

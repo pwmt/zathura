@@ -1426,8 +1426,8 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   if (override_predecessor) {
     /* do not override predecessor buffer with empty pages */
-    unsigned int cur_page_num = zathura_document_get_current_page_number(document);
-    ZathuraPage* cur_page     = ZATHURA_PAGE(zathura_page_get_widget_by_number(zathura, cur_page_num));
+    unsigned int cur_page_num   = zathura_document_get_current_page_number(document);
+    ZathuraPageWidget* cur_page = ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, cur_page_num));
     if (!zathura_page_widget_have_surface(cur_page)) {
       override_predecessor = false;
     }

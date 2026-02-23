@@ -24,8 +24,8 @@ typedef struct zathura_page_s zathura_page_t;
 /**
  * Page widget
  */
-typedef struct zathura_page_widget_s ZathuraPage;
-typedef struct zathura_page_widget_class_s ZathuraPageClass;
+typedef struct zathura_page_widget_s ZathuraPageWidget;
+typedef struct zathura_page_widget_class_s ZathuraPageWidgetClass;
 /**
  * Zathura
  */

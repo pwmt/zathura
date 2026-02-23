@@ -23,12 +23,13 @@ struct zathura_page_widget_class_s {
   GtkDrawingAreaClass parent_class;
 };
 
-#define ZATHURA_TYPE_PAGE (zathura_page_widget_get_type())
-#define ZATHURA_PAGE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_PAGE, ZathuraPage))
-#define ZATHURA_PAGE_CLASS(obj) (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
-#define ZATHURA_IS_PAGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_PAGE))
-#define ZATHURA_IS_PAGE_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_PAGE))
-#define ZATHURA_PAGE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_PAGE, ZathuraPageClass))
+#define ZATHURA_TYPE_PAGE_WIDGET (zathura_page_widget_get_type())
+#define ZATHURA_PAGE_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_PAGE_WIDGET, ZathuraPageWidget))
+#define ZATHURA_PAGE_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_PAGE_WIDGET, ZathuraPageClass))
+#define ZATHURA_IS_PAGE_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_PAGE_WIDGET))
+#define ZATHURA_IS_PAGE_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_PAGE_WIDGET))
+#define ZATHURA_PAGE_WIDGET_GET_CLASS(obj)                                                                             \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_PAGE_WIDGET, ZathuraPageClass))
 
 /**
  * Returns the type of the page view widget.
@@ -49,44 +50,44 @@ GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page);
  * @param surface the new surface
  * @param keep_thumbnail don't destroy when surface is NULL
  */
-void zathura_page_widget_update_surface(ZathuraPage* widget, cairo_surface_t* surface, bool keep_thumbnail);
+void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface_t* surface, bool keep_thumbnail);
 /**
  * Clear highlight of the selection/highlighter.
  * @param widget the widget
  */
-void zathura_page_widget_clear_selection(ZathuraPage* widget);
+void zathura_page_widget_clear_selection(ZathuraPageWidget* widget);
 /**
  * Draw a rectangle to mark links or search results
  * @param widget the widget
  * @param rectangle the rectangle
  * @param linkid the link id if it's a link, -1 otherwise
  */
-zathura_link_t* zathura_page_widget_link_get(ZathuraPage* widget, unsigned int index);
+zathura_link_t* zathura_page_widget_link_get(ZathuraPageWidget* widget, unsigned int index);
 /**
  * Update the last view time of the page.
  *
  * @param widget the widget
  */
-void zathura_page_widget_update_view_time(ZathuraPage* widget);
+void zathura_page_widget_update_view_time(ZathuraPageWidget* widget);
 /**
  * Check if we have a surface.
  *
  * @param widget the widget
  * @returns true if the widget has a surface, false otherwise
  */
-bool zathura_page_widget_have_surface(ZathuraPage* widget);
+bool zathura_page_widget_have_surface(ZathuraPageWidget* widget);
 /**
  * Abort outstanding render requests
  *
  * @param widget the widget
  */
-void zathura_page_widget_abort_render_request(ZathuraPage* widget);
+void zathura_page_widget_abort_render_request(ZathuraPageWidget* widget);
 /**
  * Get underlying page
  *
  * @param widget the widget
  * @return underlying zathura_page_t instance
  */
-zathura_page_t* zathura_page_widget_get_page(ZathuraPage* widget);
+zathura_page_t* zathura_page_widget_get_page(ZathuraPageWidget* widget);
 
 #endif
