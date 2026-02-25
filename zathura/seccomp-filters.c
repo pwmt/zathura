@@ -72,7 +72,8 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(exit_group);
   /* ALLOW_RULE(epoll_create); outdated, to be removed */
   /* ALLOW_RULE(fadvise64); */
-  ALLOW_RULE(faccessat); /* AArch64 requirement */
+  ALLOW_RULE(faccessat);
+  ALLOW_RULE(faccessat2);
   ALLOW_RULE(fallocate);
   ALLOW_RULE(fcntl); /* TODO: build detailed filter */
 #ifdef __NR_fstat
@@ -251,12 +252,12 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
    */
 
-  /* open syscall to be removed? openat is used instead */
+  /* open syscall still used by musl sometimes */
   /* special restrictions for open, prevent opening files for writing */
-  /*  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
-   * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
-   * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
-   */
+  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
+
 
   /* special restrictions for openat, prevent opening files for writing */
   ADD_RULE("allow", SCMP_ACT_ALLOW, openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
@@ -270,7 +271,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   */
 
   ERRNO_RULE(openat2);
-  /* ERRNO_RULE(faccessat2); permitted above for AArch64 */
   ERRNO_RULE(pwritev2);
 #if defined(__NR_readfile) && defined(__SNR_readfile)
   ERRNO_RULE(readfile);
