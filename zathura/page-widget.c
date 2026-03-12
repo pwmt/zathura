@@ -75,7 +75,6 @@ static void zathura_page_widget_finalize(GObject* object);
 static void zathura_page_widget_dispose(GObject* object);
 static void zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
 static void zathura_page_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
-static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void redraw_rect(ZathuraPageWidget* widget, zathura_rectangle_t* rectangle);
 static void redraw_all_rects(ZathuraPageWidget* widget, girara_list_t* rectangles);
 static void evaluate_link_at_mouse_position(ZathuraPageWidget* widget, int oldx, int oldy);
@@ -123,7 +122,6 @@ static void zathura_page_widget_class_init(ZathuraPageWidgetClass* class) {
   /* overwrite methods */
   GtkWidgetClass* widget_class       = GTK_WIDGET_CLASS(class);
   widget_class->draw                 = zathura_page_widget_draw;
-  widget_class->size_allocate        = zathura_page_widget_size_allocate;
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
   widget_class->motion_notify_event  = cb_zathura_page_widget_motion_notify;
@@ -902,14 +900,6 @@ static void cb_cache_invalidated(ZathuraRenderRequest* UNUSED(request), void* da
   priv->cached = false;
 }
 
-static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation) {
-  GTK_WIDGET_CLASS(zathura_page_widget_parent_class)->size_allocate(widget, allocation);
-
-  ZathuraPageWidget* page = ZATHURA_PAGE_WIDGET(widget);
-  zathura_page_widget_abort_render_request(page);
-  zathura_page_widget_update_surface(page, NULL, true);
-}
-
 static void redraw_rect(ZathuraPageWidget* widget, zathura_rectangle_t* rectangle) {
   /* cause the rect to be drawn */
   GdkRectangle grect;
@@ -1368,4 +1358,12 @@ zathura_page_t* zathura_page_widget_get_page(ZathuraPageWidget* widget) {
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
 
   return priv->page;
+}
+
+void zathura_page_widget_set_size_request(ZathuraPageWidget* widget, int width, int height) {
+  g_return_if_fail(widget != NULL);
+  gtk_widget_set_size_request(GTK_WIDGET(widget), width, height);
+
+  zathura_page_widget_abort_render_request(widget);
+  zathura_page_widget_update_surface(widget, NULL, true);
 }

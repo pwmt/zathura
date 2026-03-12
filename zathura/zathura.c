@@ -1193,7 +1193,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
      * gtk_widget_set_size_request. To be sure that it's really called, do it
      * here once again. */
     page_calc_height_width(zathura->document, page, &page_height, &page_width, true);
-    gtk_widget_set_size_request(widget, page_width, page_height);
+    zathura_page_widget_set_size_request(ZATHURA_PAGE_WIDGET(widget), page_width, page_height);
 
     /* show widget */
     gtk_widget_show(widget);
