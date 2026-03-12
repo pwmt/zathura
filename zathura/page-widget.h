@@ -90,4 +90,13 @@ void zathura_page_widget_abort_render_request(ZathuraPageWidget* widget);
  */
 zathura_page_t* zathura_page_widget_get_page(ZathuraPageWidget* widget);
 
+/**
+ * Set size request for the page widget
+ *
+ * @param widget the widget
+ * @param width  page width
+ * @param height page height
+ */
+void zathura_page_widget_set_size_request(ZathuraPageWidget* widget, int width, int height);
+
 #endif
