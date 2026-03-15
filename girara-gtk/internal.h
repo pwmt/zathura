@@ -75,6 +75,16 @@ bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_list);
 bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list);
 
 /**
+ * Run a shortcut command
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return TRUE No error occurred
+ * @return FALSE An error occurred
+ */
+bool girara_cmd_shortcut(girara_session_t* session, girara_list_t* argument_list);
+
+/**
  * Dump current settings to a JSON file
  *
  * @param session The used girara session

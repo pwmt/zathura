@@ -761,10 +761,11 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n,            girara_isc_command_history,     GIRARA_NEXT,                 NULL);
 
   /* define default inputbar commands */
-  girara_inputbar_command_add(gsession, "map",   "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
-  girara_inputbar_command_add(gsession, "set",   "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
-  girara_inputbar_command_add(gsession, "unmap", NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
-  girara_inputbar_command_add(gsession, "dump",  NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));
+  girara_inputbar_command_add(gsession, "map",      "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
+  girara_inputbar_command_add(gsession, "set",      "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
+  girara_inputbar_command_add(gsession, "shortcut", "sc", girara_cmd_shortcut,    NULL,          _("Run a shortcut"));
+  girara_inputbar_command_add(gsession, "unmap",    NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
+  girara_inputbar_command_add(gsession, "dump",     NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));
 
   girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
   girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
