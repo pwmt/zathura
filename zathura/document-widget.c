@@ -277,7 +277,7 @@ static void document_adjustment(ZathuraDocumentWidget* document, int height, int
   const unsigned int value_v = gtk_adjustment_get_value(priv->vadjustment);
   const unsigned int value_h = gtk_adjustment_get_value(priv->hadjustment);
 
-  unsigned int doc_height, doc_width;
+  unsigned int doc_height = 0, doc_width = 0;
   zathura_document_widget_get_document_size(document, &doc_height, &doc_width);
 
   const int center_v = (height - doc_height) / 2;
@@ -505,7 +505,7 @@ void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
   zathura_document_widget_arrange_grid(document);
 
   /* update allocation values */
-  unsigned int doc_height, doc_width;
+  unsigned int doc_height = 0, doc_width = 0;
   zathura_document_widget_get_document_size(document, &doc_height, &doc_width);
 
   gtk_adjustment_set_upper(priv->hadjustment, doc_width);
