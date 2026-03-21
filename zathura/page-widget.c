@@ -850,15 +850,13 @@ void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface
     priv->surface = NULL;
   }
   if (surface != NULL) {
-    priv->surface = surface;
-    cairo_surface_reference(surface);
+    priv->surface = cairo_surface_reference(surface);
 
     if (surface_small_enough(surface, thumbnail_size, priv->thumbnail)) {
       if (priv->thumbnail != NULL) {
         cairo_surface_destroy(priv->thumbnail);
       }
-      priv->thumbnail = surface;
-      cairo_surface_reference(surface);
+      priv->thumbnail = cairo_surface_reference(surface);
     } else if (new_render) {
       priv->thumbnail = draw_thumbnail_image(surface, thumbnail_size);
     }
