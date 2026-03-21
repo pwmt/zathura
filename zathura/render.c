@@ -314,10 +314,10 @@ void zathura_renderer_set_recolor_colors(ZathuraRenderer* renderer, const GdkRGB
 
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
   if (light != NULL) {
-    memcpy(&priv->recolor.light, light, sizeof(GdkRGBA));
+    priv->recolor.light = *light;
   }
   if (dark != NULL) {
-    memcpy(&priv->recolor.dark, dark, sizeof(GdkRGBA));
+    priv->recolor.dark = *dark;
   }
 }
 

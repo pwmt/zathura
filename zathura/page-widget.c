@@ -268,21 +268,10 @@ static void zathura_page_widget_finalize(GObject* object) {
   ZathuraPageWidget* widget      = ZATHURA_PAGE_WIDGET(object);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
 
-  if (priv->surface != NULL) {
-    cairo_surface_destroy(priv->surface);
-  }
-
-  if (priv->thumbnail != NULL) {
-    cairo_surface_destroy(priv->thumbnail);
-  }
-
-  if (priv->search.list != NULL) {
-    girara_list_free(priv->search.list);
-  }
-
-  if (priv->links.list != NULL) {
-    girara_list_free(priv->links.list);
-  }
+  cairo_surface_destroy(priv->surface);
+  cairo_surface_destroy(priv->thumbnail);
+  girara_list_free(priv->search.list);
+  girara_list_free(priv->links.list);
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
@@ -727,12 +716,10 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
   } else {
     girara_debug("rendering loading screen, flicker might be happening");
 
-    GdkRGBA color_fg, color_bg;
+    GdkRGBA color_fg = priv->zathura->ui.colors.render_loading_fg;
+    GdkRGBA color_bg = priv->zathura->ui.colors.render_loading_bg;
     if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
       zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color_bg, &color_fg);
-    } else {
-      color_fg = priv->zathura->ui.colors.render_loading_fg;
-      color_bg = priv->zathura->ui.colors.render_loading_bg;
     }
 
     /* set background color and draw */
@@ -805,8 +792,8 @@ static cairo_surface_t* draw_thumbnail_image(cairo_surface_t* surface, size_t ma
   if (scale > THUMBNAIL_MAX_ZOOM) {
     scale = THUMBNAIL_MAX_ZOOM;
   }
-  width  = width * scale;
-  height = height * scale;
+  width *= scale;
+  height *= scale;
 
   /* note: this always returns 1 and 1 if Cairo too old for device scale API */
   zathura_device_factors_t device    = get_safe_device_factors(surface);
@@ -814,8 +801,8 @@ static cairo_surface_t* draw_thumbnail_image(cairo_surface_t* surface, size_t ma
   const unsigned int unscaled_height = height / device.y;
 
   /* create thumbnail surface, taking width and height as _unscaled_ device units */
-  cairo_surface_t* thumbnail;
-  thumbnail = cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, unscaled_width, unscaled_height);
+  cairo_surface_t* thumbnail =
+      cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR, unscaled_width, unscaled_height);
   if (cairo_surface_status(thumbnail) != CAIRO_STATUS_SUCCESS) {
     return NULL;
   }
@@ -900,12 +887,9 @@ static void cb_cache_invalidated(ZathuraRenderRequest* UNUSED(request), void* da
 
 static void redraw_rect(ZathuraPageWidget* widget, zathura_rectangle_t* rectangle) {
   /* cause the rect to be drawn */
-  GdkRectangle grect;
-  grect.x      = rectangle->x1;
-  grect.y      = rectangle->y1;
-  grect.width  = (rectangle->x2 + 1) - rectangle->x1;
-  grect.height = (rectangle->y2 + 1) - rectangle->y1;
-  gtk_widget_queue_draw_area(GTK_WIDGET(widget), grect.x, grect.y, grect.width, grect.height);
+  const int width  = (rectangle->x2 + 1) - rectangle->x1;
+  const int height = (rectangle->y2 + 1) - rectangle->y1;
+  gtk_widget_queue_draw_area(GTK_WIDGET(widget), rectangle->x1, rectangle->y1, width, height);
 }
 
 static void redraw_all_rects(ZathuraPageWidget* widget, girara_list_t* rectangles) {
