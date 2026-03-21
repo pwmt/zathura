@@ -521,6 +521,12 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name, gira
       zathura_renderer_recolor_enabled(zathura->sync.render_thread) != bool_value) {
     zathura_renderer_enable_recolor(zathura->sync.render_thread, bool_value);
     render_all(zathura);
+
+    // the old page thumbnails have been rendered with the old setting, so we need to drop all of them
+    // TODO: move this somewhere it makes sense
+    if (zathura->ui.document_widget) {
+      zathura_document_widget_clear_thumbnails(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
+    }
   }
 }
 

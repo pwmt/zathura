@@ -1349,3 +1349,11 @@ void zathura_page_widget_set_size_request(ZathuraPageWidget* widget, int width, 
   zathura_page_widget_abort_render_request(widget);
   zathura_page_widget_update_surface(widget, NULL, true);
 }
+
+void zathura_page_widget_clear_thumbnail(ZathuraPageWidget* widget) {
+  g_return_if_fail(widget != NULL);
+
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  cairo_surface_destroy(priv->thumbnail);
+  priv->thumbnail = NULL;
+}

@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "zathura.h"
 #include "adjustment.h"
+#include "page-widget.h"
 
 typedef struct {
   unsigned int pos;
@@ -628,5 +629,21 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
 
     gtk_widget_unparent(page_widget);
+  }
+}
+
+void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document) {
+  g_return_if_fail(document != NULL);
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
+
+  const unsigned int npag = zathura_document_get_number_of_pages(z_document);
+
+  for (unsigned int i = 0; i < npag; i++) {
+    zathura_page_t* page   = zathura_document_get_page(z_document, i);
+    GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
+
+    zathura_page_widget_clear_thumbnail(ZATHURA_PAGE_WIDGET(page_widget));
   }
 }

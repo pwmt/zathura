@@ -127,4 +127,11 @@ void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, 
  */
 void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document);
 
+/**
+ * Clear all thumbnails.
+ *
+ * @param document ZathuraDocumentWidget
+ */
+void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document);
+
 #endif // DOCUMENT_WIDGET_H

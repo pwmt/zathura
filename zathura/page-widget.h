@@ -99,4 +99,11 @@ zathura_page_t* zathura_page_widget_get_page(ZathuraPageWidget* widget);
  */
 void zathura_page_widget_set_size_request(ZathuraPageWidget* widget, int width, int height);
 
+/**
+ * Clear stored thumbnails
+ *
+ * @param widget the widget
+ */
+void zathura_page_widget_clear_thumbnail(ZathuraPageWidget* widget);
+
 #endif
