@@ -71,6 +71,7 @@ typedef struct zathura_page_widget_private_s {
 G_DEFINE_TYPE_WITH_CODE(ZathuraPageWidget, zathura_page_widget, GTK_TYPE_DRAWING_AREA, G_ADD_PRIVATE(ZathuraPageWidget))
 
 static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo);
+static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation);
 static void zathura_page_widget_finalize(GObject* object);
 static void zathura_page_widget_dispose(GObject* object);
 static void zathura_page_widget_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
@@ -122,6 +123,7 @@ static void zathura_page_widget_class_init(ZathuraPageWidgetClass* class) {
   /* overwrite methods */
   GtkWidgetClass* widget_class       = GTK_WIDGET_CLASS(class);
   widget_class->draw                 = zathura_page_widget_draw;
+  widget_class->size_allocate        = zathura_page_widget_size_allocate;
   widget_class->button_press_event   = cb_zathura_page_widget_button_press_event;
   widget_class->button_release_event = cb_zathura_page_widget_button_release_event;
   widget_class->motion_notify_event  = cb_zathura_page_widget_motion_notify;
@@ -883,6 +885,21 @@ static void cb_cache_invalidated(ZathuraRenderRequest* UNUSED(request), void* da
     zathura_page_widget_update_surface(widget, NULL, false);
   }
   priv->cached = false;
+}
+
+static void zathura_page_widget_size_allocate(GtkWidget* widget, GdkRectangle* allocation) {
+  GTK_WIDGET_CLASS(zathura_page_widget_parent_class)->size_allocate(widget, allocation);
+
+  ZathuraPageWidget* page        = ZATHURA_PAGE_WIDGET(widget);
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(page);
+
+  /* Trigger a render if the page has no surface. In the old GtkGrid+GtkViewport
+   * layout, all pages received draw calls which triggered renders. The new custom
+   * scrollable container only draws visible pages, so we trigger renders here
+   * during size_allocate which is called for all pages. */
+  if (priv->surface == NULL) {
+    zathura_render_request(priv->render_request, g_get_real_time());
+  }
 }
 
 static void redraw_rect(ZathuraPageWidget* widget, zathura_rectangle_t* rectangle) {
