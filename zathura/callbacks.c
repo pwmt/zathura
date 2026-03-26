@@ -277,7 +277,7 @@ void cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data) 
     zathura_document_set_device_factors(document, new_factor, new_factor);
     girara_debug("New device scale factor: %d", new_factor);
     zathura_update_view_ppi(zathura);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
   }
 }
 
@@ -520,7 +520,7 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name, gira
   if (zathura->sync.render_thread != NULL &&
       zathura_renderer_recolor_enabled(zathura->sync.render_thread) != bool_value) {
     zathura_renderer_enable_recolor(zathura->sync.render_thread, bool_value);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
 
     // the old page thumbnails have been rendered with the old setting, so we need to drop all of them
     // TODO: move this somewhere it makes sense
@@ -543,7 +543,7 @@ void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* n
   if (zathura->sync.render_thread != NULL &&
       zathura_renderer_recolor_hue_enabled(zathura->sync.render_thread) != bool_value) {
     zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, bool_value);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
   }
 }
 
@@ -561,7 +561,7 @@ void cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, con
   if (zathura->sync.render_thread != NULL &&
       zathura_renderer_recolor_reverse_video_enabled(zathura->sync.render_thread) != bool_value) {
     zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, bool_value);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
   }
 }
 

@@ -1,15 +1,17 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "commands.h"
+
 #include <glib/gi18n.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "adjustment.h"
 #include "bookmarks.h"
-#include "commands.h"
 #include "config.h"
 #include "database.h"
 #include "dbus-interface.h"
+#include "document-widget.h"
 #include "document.h"
 #include "internal.h"
 #include "page-widget.h"
@@ -278,7 +280,7 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list
   zathura_t* zathura = session->global.data;
 
   document_draw_search_results(zathura, true);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 
   return true;
 }

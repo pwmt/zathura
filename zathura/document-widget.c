@@ -645,3 +645,30 @@ void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document) {
     zathura_page_widget_clear_thumbnail(ZATHURA_PAGE_WIDGET(page_widget));
   }
 }
+
+void zathura_document_widget_render_all(ZathuraDocumentWidget* document) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
+
+  if (z_document == NULL) {
+    return;
+  }
+
+  zathura_document_widget_compute_layout(document);
+
+  /* unmark all pages */
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(z_document);
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(z_document, page_id);
+
+    unsigned int page_height = 0, page_width = 0;
+    page_calc_height_width(z_document, page, &page_height, &page_width, true);
+
+    girara_debug("Queuing resize for page %u to %u x %u.", page_id, page_width, page_height);
+    GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
+    if (page_widget != NULL) {
+      zathura_page_widget_set_size_request(ZATHURA_PAGE_WIDGET(page_widget), page_width, page_height);
+      gtk_widget_queue_resize(page_widget);
+    }
+  }
+}

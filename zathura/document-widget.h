@@ -134,4 +134,13 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document);
  */
 void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document);
 
+/**
+ * This function is used to unmark all pages as not rendered. This should
+ * be used if all pages should be rendered again (e.g.: the zoom level or the
+ * colors have changed)
+ *
+ * @param zathura Zathura object
+ */
+void zathura_document_widget_render_all(ZathuraDocumentWidget* document);
+
 #endif // DOCUMENT_WIDGET_H

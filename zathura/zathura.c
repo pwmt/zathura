@@ -206,7 +206,7 @@ void zathura_update_view_ppi(zathura_t* zathura) {
     girara_debug("monitor width: %d mm, pixels: %d, ppi: %0.2f", width_mm, monitor_geom.width, ppi);
     zathura_document_set_viewport_ppi(document, ppi);
     adjust_view(zathura);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
   }
 }
@@ -255,13 +255,14 @@ static bool init_ui(zathura_t* zathura) {
   zathura->ui.view = gtk_scrolled_window_new(NULL, NULL);
 
   /* document widget */
-  zathura->ui.document_widget = zathura_document_widget_new(zathura);
-  if (zathura->ui.document_widget == NULL) {
+  GtkWidget* widget = zathura_document_widget_new(zathura);
+  if (widget == NULL) {
     girara_error("Failed to create document widget.");
     return false;
   }
 
-  gtk_container_add(GTK_CONTAINER(zathura->ui.view), zathura->ui.document_widget);
+  zathura->ui.document_widget = ZATHURA_DOCUMENT_WIDGET(widget);
+  gtk_container_add(GTK_CONTAINER(zathura->ui.view), widget);
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
   /* load scrollbar settings */
@@ -288,7 +289,7 @@ static bool init_ui(zathura_t* zathura) {
   g_signal_connect(G_OBJECT(vadjustment), "changed", G_CALLBACK(cb_view_vadjustment_changed), zathura);
 
   /* page view alignment */
-  gtk_widget_show(zathura->ui.document_widget);
+  gtk_widget_show(widget);
 
   /* statusbar */
   zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
@@ -1479,7 +1480,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     zathura->global.current_index_path = NULL;
   }
 
-  gtk_widget_hide(zathura->ui.document_widget);
+  gtk_widget_hide(GTK_WIDGET(zathura->ui.document_widget));
 
   statusbar_page_number_update(zathura);
 
@@ -1682,7 +1683,7 @@ bool adjust_view(zathura_t* zathura) {
   /* if the change in zoom changes page cell dimensions, render */
   if (abs((int)new_cell_width - (int)cell_width) > min_change ||
       abs((int)new_cell_height - (int)cell_height) > min_change) {
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
   } else {
     /* otherwise set the old zoom and leave */

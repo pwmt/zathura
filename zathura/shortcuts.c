@@ -244,7 +244,7 @@ bool sc_equal_page_mode(girara_session_t* session, girara_argument_t* argument, 
       zathura_page_set_zoom(p, 1.0);
     }
 
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
     return true;
   }
@@ -264,7 +264,7 @@ bool sc_equal_page_mode(girara_session_t* session, girara_argument_t* argument, 
     }
   }
 
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
   refresh_view(zathura);
 
   return true;
@@ -572,7 +572,7 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
   sc_adjust_window(zathura->ui.session, &new_argument, NULL, 0);
 
   /* render all pages again */
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 
   page_set(zathura, page_number);
 
@@ -1238,7 +1238,7 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* UNUSED(ar
   adjust_view(zathura);
 
   page_set(zathura, page_id);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
   refresh_view(zathura);
 
   return true;
@@ -1311,7 +1311,7 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
 
     /* reset zoom */
     zathura_document_set_zoom(zathura->document, zathura->shortcut.toggle_presentation_mode.zoom);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
 
     /* set mode */
@@ -1454,7 +1454,7 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   }
 
   girara_debug("Re-rendering with new zoom level %0.2f.", new_zoom);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
   refresh_view(zathura);
 
   return false;
@@ -1579,7 +1579,7 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
   }
 
   girara_debug("Re-rendering with page %d new zoom level %0.2f.", current_page, new_zoom);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
   refresh_view(zathura);
 
   return false;
@@ -1592,7 +1592,7 @@ bool sc_nohlsearch(girara_session_t* session, girara_argument_t* UNUSED(argument
   zathura_t* zathura = session->global.data;
 
   document_draw_search_results(zathura, false);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 
   return false;
 }

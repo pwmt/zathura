@@ -118,9 +118,9 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* view;            /**< Scrolled Window */
-    GtkWidget* document_widget; /**< Widget that contains all rendered pages */
-    GtkWidget* index;           /**< Widget to show the index of the document */
+    GtkWidget* view;                        /**< Scrolled Window */
+    ZathuraDocumentWidget* document_widget; /**< Widget that contains all rendered pages */
+    GtkWidget* index;                       /**< Widget to show the index of the document */
   } ui;
 
   struct {
