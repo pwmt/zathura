@@ -308,11 +308,11 @@ static void page_allocation(ZathuraDocumentWidget* document, int page_id, int he
                             GtkAllocation* page_alloc) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
-  unsigned int row, col;
+  unsigned int row = 0, col = 0;
   zathura_document_widget_get_page_position(document, page_id, &row, &col);
 
-  int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
-  int y = row;
+  const unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
+  const unsigned int y = row;
 
   const int page_width  = priv->col_widths[x].size;
   const int page_height = priv->row_heights[y].size;
@@ -622,9 +622,8 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  const unsigned int npag = zathura_document_get_number_of_pages(z_document);
-
-  for (unsigned int i = 0; i < npag; i++) {
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(z_document);
+  for (unsigned int i = 0; i < number_of_pages; ++i) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
 
@@ -638,9 +637,8 @@ void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  const unsigned int npag = zathura_document_get_number_of_pages(z_document);
-
-  for (unsigned int i = 0; i < npag; i++) {
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(z_document);
+  for (unsigned int i = 0; i < number_of_pages; ++i) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
 
