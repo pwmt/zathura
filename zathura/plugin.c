@@ -226,7 +226,7 @@ static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* pl
 
   /* check mime type */
   if (plugin_definition->mime_types == NULL || plugin_definition->mime_types_size == 0) {
-    girara_error("Plugin does not handly any mime types.");
+    girara_error("Plugin does not handle any mime types.");
     g_module_close(handle);
     return;
   }
