@@ -647,9 +647,12 @@ void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document) {
 }
 
 void zathura_document_widget_render_all(ZathuraDocumentWidget* document) {
+  if (!document) {
+    return;
+  }
+
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
-
   if (z_document == NULL) {
     return;
   }
