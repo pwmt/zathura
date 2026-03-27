@@ -745,11 +745,10 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
                                            zathura->global.total_search_results);
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL && !disable_notify) {
-    const char* input  = argument->data;
-    char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
+    const char* input             = argument->data;
+    g_autofree char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
-    g_free(escaped_text);
   }
 
   return false;
