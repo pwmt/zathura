@@ -1,7 +1,7 @@
 project('zathura', 'c',
   version: '2026.02.22',
   meson_version: '>=1.5',
-  default_options: ['c_std=c17', 'warning_level=3'],
+  default_options: ['c_std=c23', 'warning_level=3'],
 )
 
 version = meson.project_version()
@@ -60,9 +60,6 @@ if host_machine.system() == 'darwin'
   gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
   build_dependencies += gtk_mac_integration
 endif
-
-# required functions
-cc.has_function('__builtin_umul_overflow', required: true)
 
 # defines
 defines = [
