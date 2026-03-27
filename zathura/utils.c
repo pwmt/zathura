@@ -449,8 +449,9 @@ char* increment_first_page_column(const char* first_page_column_list, const unsi
   /* increment and normalise to [1,pages_per_row]. */
   column += incr;
   column %= pages_per_row; /* range [-pages_per_row+1, pages_per_row-1] */
-  if (column <= 0)
+  if (column <= 0) {
     column += pages_per_row; /* range [1, pages_per_row] */
+  }
 
   /* Write back, creating the new cell if necessary. */
   if (pages_per_row <= size) {
