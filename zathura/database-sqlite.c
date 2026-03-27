@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "database-sqlite.h"
+
 #include <sqlite3.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
@@ -7,7 +9,6 @@
 #include <string.h>
 #include <strings.h>
 
-#include "database-sqlite.h"
 #include "utils.h"
 
 /* version of the database layout */
@@ -918,7 +919,7 @@ static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, c
   if (failed == true) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
-    return false;
+    return NULL;
   }
 
   girara_list_t* list = girara_list_new_with_free(g_free);
