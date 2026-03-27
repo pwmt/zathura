@@ -664,13 +664,13 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
       break;
     }
 
-    if (diff == 1 && current < num_search_results - 1) {
+    if (diff == 1 && (current < num_search_results - 1 || num_pages == 1)) {
       /* the next result is on the same page */
       target_page = page;
-      target_idx  = current + 1;
-    } else if (diff == -1 && current > 0) {
+      target_idx  = (current + 1) % num_search_results;
+    } else if (diff == -1 && (current > 0 || num_pages == 1)) {
       target_page = page;
-      target_idx  = current - 1;
+      target_idx  = (current - 1 + num_search_results) % num_search_results;
     } else {
       /* the next result is on a different page */
       g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
