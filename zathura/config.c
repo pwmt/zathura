@@ -1,14 +1,16 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "config.h"
+
+#include "callbacks.h"
 #include "commands.h"
 #include "completion.h"
-#include "callbacks.h"
-#include "shortcuts.h"
-#include "zathura.h"
-#include "render.h"
+#include "document-widget.h"
 #include "marks.h"
+#include "render.h"
+#include "shortcuts.h"
 #include "utils.h"
+#include "zathura.h"
 
 #include <girara-gtk/settings.h>
 #include <girara-gtk/session.h>
@@ -87,7 +89,7 @@ static void cb_color_change(girara_session_t* session, const char* name, girara_
     parse_color(&zathura->ui.colors.signature_error, string_value);
   }
 
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 }
 
 static void cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
@@ -99,7 +101,7 @@ static void cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(
 
   const bool* bvalue = value;
   document_draw_search_results(zathura, !*bvalue);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 }
 
 static void cb_doubleclick_changed(girara_session_t* session, const char* UNUSED(name),
@@ -197,7 +199,7 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
   if (zathura->sync.render_thread != NULL &&
       zathura_renderer_recolor_adjust_lightness_enabled(zathura->sync.render_thread) != bool_value) {
     zathura_renderer_enable_recolor_adjust_lightness(zathura->sync.render_thread, bool_value);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
   }
 }
 
@@ -617,9 +619,9 @@ void config_load_default(zathura_t* zathura) {
   bool_value = false;
   girara_setting_add(gsession, "statusbar-page-percent",  &bool_value, BOOLEAN, false, _("Display (current page / total pages) as a percent in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = true;
-  girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
-  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("Synctex editor command"), NULL, NULL);
-  girara_setting_add(gsession, "synctex-edit-modifier",  "ctrl",       STRING,  false, _("Synctex edit modifier"), cb_global_modifiers_changed, NULL);
+  girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable SyncTeX support"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("SyncTeX editor command"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-edit-modifier",  "ctrl",       STRING,  false, _("SyncTeX edit modifier"), cb_global_modifiers_changed, NULL);
   girara_setting_add(gsession, "highlighter-modifier",   "shift",      STRING,  false, _("Highlighter modifier"), cb_global_modifiers_changed, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);

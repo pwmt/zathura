@@ -1911,16 +1911,16 @@ msgstr ""
 "řádku"
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "Povolit podporu pro synctex"
+msgid "Enable SyncTeX support"
+msgstr "Povolit podporu pro SyncTeX"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
-msgstr "Příkaz pro editor Synctex"
+msgid "SyncTeX editor command"
+msgstr "Příkaz pro editor SyncTeX"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
-msgstr "Modifikátor úprav Synctex"
+msgid "SyncTeX edit modifier"
+msgstr "Modifikátor úprav SyncTeX"
 
 #: zathura/config.c:623
 msgid "Highlighter modifier"
@@ -2129,12 +2129,12 @@ msgid "Print version information"
 msgstr "Zobrazit údaje o verzi"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Editor Synctex (předáno příkazu synctex)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "Editor SyncTeX (předáno příkazu SyncTeX)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
-msgstr "Přesunout se na udanou polohu synctex"
+msgid "Move to given SyncTeX position"
+msgstr "Přesunout se na udanou polohu SyncTeX"
 
 #: zathura/main.c:125
 msgid "Highlight given position in the given process"

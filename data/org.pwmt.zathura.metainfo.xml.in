@@ -67,6 +67,22 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="2026.03.27" date="2026-03-27">
+      <description>
+        <p>Add search result counter (#450)</p>
+        <p>Fix search result cycling in documents with one page (#902)</p>
+        <p>Fix some page rendering regressions (#876, #877, #879, #886)</p>
+        <p>Various fixes and improvements</p>
+      </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/450">#450</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/876">#876</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/877">#877</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/879">#879</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/886">#886</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/902">#902</issue>
+      </issues>
+    </release>
     <release version="2026.02.22" date="2026-02-22">
       <description>
         <p>Fix warning when using 'null' database (#881)</p>
@@ -502,7 +518,8 @@
         <p>Implement colors for 'Loading...'-text</p>
         <p>Don't render same page multiple times</p>
         <p>Use libmagic if available</p>
-        <p>Some other bug fixes and updated translations</p>
+        <p>Update translations</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.2.2" date="2013-01-20">
@@ -513,7 +530,8 @@
         <p>Page aware scrolling</p>
         <p>SyncTeX forward synchronisation</p>
         <p>Update shortcuts</p>
-        <p>Some other bug fixes and updated translations</p>
+        <p>Update translations</p>
+        <p>Various fixes and improvements</p>
       </description>
     </release>
     <release version="0.2.1" date="2012-08-30">
@@ -521,7 +539,7 @@
         <p>SyncTeX backwards synchronisation</p>
         <p>Fix request-page-setup</p>
         <p>Fix window adustment</p>
-        <p>Better GTK3 integration</p>
+        <p>Update GTK3 support</p>
         <p>Added first-page-colum setting</p>
         <p>Added recolor-keephue setting</p>
         <p>Update translations</p>
@@ -529,7 +547,6 @@
     </release>
     <release version="0.2.0" date="2012-06-09">
       <description>
-        <p>New languages</p>
         <p>Better print support</p>
         <p>Improve document links</p>
         <p>Render last-viewed pages with a higher priority</p>
@@ -537,6 +554,7 @@
         <p>Open multiple documents</p>
         <p>Plugin manager</p>
         <p>Various fixes and improvements</p>
+        <p>Update translations</p>
       </description>
     </release>
     <release version="0.1.2" date="2012-03-24">

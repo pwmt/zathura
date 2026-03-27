@@ -1,15 +1,17 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "commands.h"
+
 #include <glib/gi18n.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "adjustment.h"
 #include "bookmarks.h"
-#include "commands.h"
 #include "config.h"
 #include "database.h"
 #include "dbus-interface.h"
+#include "document-widget.h"
 #include "document.h"
 #include "internal.h"
 #include "page-widget.h"
@@ -278,7 +280,7 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list
   zathura_t* zathura = session->global.data;
 
   document_draw_search_results(zathura, true);
-  render_all(zathura);
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 
   return true;
 }
@@ -410,6 +412,9 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
   unsigned int current_page_number = zathura_document_get_current_page_number(document);
 
+  zathura->global.total_search_results  = 0;
+  zathura->global.current_search_result = 0;
+
   /* reset search highlighting */
   bool nohlsearch = false;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
@@ -449,6 +454,8 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     } else {
       g_object_set(obj_page_widget, "search-current", 0, NULL);
     }
+
+    zathura->global.total_search_results += girara_list_size(result);
   }
 
   g_autofree girara_argument_t* arg = g_try_malloc0(sizeof(girara_argument_t));

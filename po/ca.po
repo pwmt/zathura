@@ -1890,15 +1890,15 @@ msgstr ""
 "d'estat"
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "Habilitar la compatibilitat amb synctex"
+msgid "Enable SyncTeX support"
+msgstr "Habilitar la compatibilitat amb SyncTeX"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
-msgstr "Ordre de l'editor synctex"
+msgid "SyncTeX editor command"
+msgstr "Ordre de l'editor SyncTeX"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
+msgid "SyncTeX edit modifier"
 msgstr ""
 
 #: zathura/config.c:623
@@ -2109,11 +2109,11 @@ msgid "Print version information"
 msgstr "Imprimeix informació sobre la versió"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Editor synctex (reenviat a l'ordre synctex)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "Editor SyncTeX (reenviat a l'ordre synctex)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
+msgid "Move to given SyncTeX position"
 msgstr ""
 
 #: zathura/main.c:125

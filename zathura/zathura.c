@@ -206,7 +206,7 @@ void zathura_update_view_ppi(zathura_t* zathura) {
     girara_debug("monitor width: %d mm, pixels: %d, ppi: %0.2f", width_mm, monitor_geom.width, ppi);
     zathura_document_set_viewport_ppi(document, ppi);
     adjust_view(zathura);
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
   }
 }
@@ -255,13 +255,14 @@ static bool init_ui(zathura_t* zathura) {
   zathura->ui.view = gtk_scrolled_window_new(NULL, NULL);
 
   /* document widget */
-  zathura->ui.document_widget = zathura_document_widget_new(zathura);
-  if (zathura->ui.document_widget == NULL) {
+  GtkWidget* widget = zathura_document_widget_new(zathura);
+  if (widget == NULL) {
     girara_error("Failed to create document widget.");
     return false;
   }
 
-  gtk_container_add(GTK_CONTAINER(zathura->ui.view), zathura->ui.document_widget);
+  zathura->ui.document_widget = ZATHURA_DOCUMENT_WIDGET(widget);
+  gtk_container_add(GTK_CONTAINER(zathura->ui.view), widget);
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
   /* load scrollbar settings */
@@ -288,24 +289,30 @@ static bool init_ui(zathura_t* zathura) {
   g_signal_connect(G_OBJECT(vadjustment), "changed", G_CALLBACK(cb_view_vadjustment_changed), zathura);
 
   /* page view alignment */
-  gtk_widget_show(zathura->ui.document_widget);
+  gtk_widget_show(widget);
 
   /* statusbar */
   zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
   if (zathura->ui.statusbar.file == NULL) {
-    girara_error("Failed to create status bar item.");
+    girara_error("Failed to create status bar file item.");
     return false;
   }
 
   zathura->ui.statusbar.buffer = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.buffer == NULL) {
-    girara_error("Failed to create status bar item.");
+    girara_error("Failed to create status bar buffer item.");
     return false;
   }
 
   zathura->ui.statusbar.page_number = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
   if (zathura->ui.statusbar.page_number == NULL) {
-    girara_error("Failed to create status bar item.");
+    girara_error("Failed to create status bar page_number item.");
+    return false;
+  }
+
+  zathura->ui.statusbar.search_count = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  if (zathura->ui.statusbar.search_count == NULL) {
+    girara_error("Failed to create status bar search_count item.");
     return false;
   }
 
@@ -1187,15 +1194,16 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     zathura_page_t* page     = zathura_document_get_page(document, page_id);
     unsigned int page_height = 0;
     unsigned int page_width  = 0;
+    GtkWidget* widget        = zathura_page_get_widget(zathura, page);
 
     /* adjust_view calls render_all in some cases and render_all calls
      * gtk_widget_set_size_request. To be sure that it's really called, do it
      * here once again. */
     page_calc_height_width(zathura->document, page, &page_height, &page_width, true);
-    gtk_widget_set_size_request(zathura->pages[page_id], page_width, page_height);
+    zathura_page_widget_set_size_request(ZATHURA_PAGE_WIDGET(widget), page_width, page_height);
 
     /* show widget */
-    gtk_widget_show(zathura->pages[page_id]);
+    gtk_widget_show(widget);
   }
 
   /* Set page */
@@ -1425,8 +1433,8 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   if (override_predecessor) {
     /* do not override predecessor buffer with empty pages */
-    unsigned int cur_page_num = zathura_document_get_current_page_number(document);
-    ZathuraPage* cur_page     = ZATHURA_PAGE(zathura->pages[cur_page_num]);
+    unsigned int cur_page_num   = zathura_document_get_current_page_number(document);
+    ZathuraPageWidget* cur_page = ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, cur_page_num));
     if (!zathura_page_widget_have_surface(cur_page)) {
       override_predecessor = false;
     }
@@ -1478,7 +1486,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     zathura->global.current_index_path = NULL;
   }
 
-  gtk_widget_hide(zathura->ui.document_widget);
+  gtk_widget_hide(GTK_WIDGET(zathura->ui.document_widget));
 
   statusbar_page_number_update(zathura);
 
@@ -1681,7 +1689,7 @@ bool adjust_view(zathura_t* zathura) {
   /* if the change in zoom changes page cell dimensions, render */
   if (abs((int)new_cell_width - (int)cell_width) > min_change ||
       abs((int)new_cell_height - (int)cell_height) > min_change) {
-    render_all(zathura);
+    zathura_document_widget_render_all(zathura->ui.document_widget);
     refresh_view(zathura);
   } else {
     /* otherwise set the old zoom and leave */
@@ -1717,7 +1725,8 @@ void zathura_show_signature_information(zathura_t* zathura, bool show) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   for (unsigned int page = 0; page != number_of_pages; ++page) {
     // draw signature info
-    g_object_set_property(G_OBJECT(zathura->pages[page]), "draw-signatures", &show_sig_info_value);
+    GObject* page_widget = G_OBJECT(zathura_page_get_widget_by_number(zathura, page));
+    g_object_set_property(page_widget, "draw-signatures", &show_sig_info_value);
   }
 }
 
@@ -1748,4 +1757,41 @@ zathura_document_t* zathura_get_document(zathura_t* zathura) {
   g_return_val_if_fail(zathura != NULL, NULL);
 
   return zathura->document;
+}
+
+void zathura_modify_current_search_result(zathura_t* zathura, int diff) {
+  if (zathura->global.total_search_results == 0)
+    return;
+
+  if (diff == 0)
+    return;
+
+  int current = zathura->global.current_search_result;
+  int total   = zathura->global.total_search_results;
+  current += diff;
+  if (current >= total) {
+    current = current % total;
+  } else if (current < 0) {
+    current = total + (current % total);
+  }
+
+  if (current == 0) {
+    current = total;
+  }
+
+  zathura->global.current_search_result = current;
+}
+
+void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number) {
+  zathura->global.current_search_result = 0;
+  for (unsigned int page_id = 0; page_id < current_page_number; ++page_id) {
+    zathura_page_t* page = zathura_document_get_page(zathura->document, page_id);
+    if (page == NULL) {
+      continue;
+    }
+    int num_search_results = 0;
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    g_object_get(G_OBJECT(page_widget), "search-length", &num_search_results, NULL);
+    zathura->global.current_search_result += num_search_results;
+  }
 }

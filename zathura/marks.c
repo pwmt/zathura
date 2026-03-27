@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "marks.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <girara-gtk/session.h>
@@ -9,7 +11,7 @@
 #include "callbacks.h"
 #include "database.h"
 #include "document.h"
-#include "marks.h"
+#include "document-widget.h"
 #include "render.h"
 #include "utils.h"
 
@@ -208,7 +210,7 @@ static void mark_evaluate(zathura_t* zathura, int key) {
                                 zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
 
       adjust_view(zathura);
-      render_all(zathura);
+      zathura_document_widget_render_all(zathura->ui.document_widget);
 
       zathura_jumplist_add(zathura);
       page_set(zathura, mark->page);

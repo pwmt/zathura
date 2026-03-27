@@ -1,10 +1,12 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "types.h"
+
 #include <stdlib.h>
+#include <stdckdint.h>
 #include <girara/datastructures.h>
 #include <glib.h>
 
-#include "types.h"
 #include "links.h"
 #include "internal.h"
 
@@ -38,7 +40,7 @@ zathura_image_buffer_t* zathura_image_buffer_create(unsigned int width, unsigned
   g_return_val_if_fail(height != 0, NULL);
 
   unsigned int size = 0;
-  if (checked_umul(width, height, &size) == true || checked_umul(size, 3, &size) == true) {
+  if (ckd_mul(&size, width, height) == true || ckd_mul(&size, size, 3) == true) {
     return NULL;
   }
 

@@ -102,9 +102,10 @@ struct zathura_s {
     girara_session_t* session; /**< girara interface session */
 
     struct {
-      girara_statusbar_item_t* buffer;      /**< buffer statusbar entry */
-      girara_statusbar_item_t* file;        /**< file statusbar entry */
-      girara_statusbar_item_t* page_number; /**< page number statusbar entry */
+      girara_statusbar_item_t* buffer;       /**< buffer statusbar entry */
+      girara_statusbar_item_t* file;         /**< file statusbar entry */
+      girara_statusbar_item_t* page_number;  /**< page number statusbar entry */
+      girara_statusbar_item_t* search_count; /**< search count statusbar entry */
     } statusbar;
 
     struct {
@@ -118,9 +119,9 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* view;            /**< Scrolled Window */
-    GtkWidget* document_widget; /**< Widget that contains all rendered pages */
-    GtkWidget* index;           /**< Widget to show the index of the document */
+    GtkWidget* view;                        /**< Scrolled Window */
+    ZathuraDocumentWidget* document_widget; /**< Widget that contains all rendered pages */
+    GtkWidget* index;                       /**< Widget to show the index of the document */
   } ui;
 
   struct {
@@ -150,6 +151,8 @@ struct zathura_s {
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
     GtkTreePath* current_index_path;      /**< Current index path */
+    int current_search_result;
+    int total_search_results;
   } global;
 
   struct {
@@ -500,5 +503,22 @@ bool zathura_has_document(zathura_t* zathura);
  * @return the currently opened document
  */
 zathura_document_t* zathura_get_document(zathura_t* zathura);
+
+/**
+ * Modify and normalize the current search result count
+ * so that it always inferior or equal to the total count
+ *
+ * @param zathura The zathura session
+ * @param diff The amount to modify
+ */
+void zathura_modify_current_search_result(zathura_t* zathura, int diff);
+
+/**
+ * Set the current search result count to the last one before the current page
+ *
+ * @param zathura The zathura session
+ * @param current_page_number The current page number
+ */
+void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number);
 
 #endif // ZATHURA_H

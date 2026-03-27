@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <girara/types.h>
 
+#include <girara-gtk/session.h>
+
 /**
  * Create a bookmark
  *

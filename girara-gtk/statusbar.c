@@ -1,8 +1,9 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "statusbar.h"
+
 #include <girara/datastructures.h>
 
-#include "statusbar.h"
 #include "session.h"
 #include "internal.h"
 #include "settings.h"
@@ -21,6 +22,7 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
 
   /* set style */
   widget_add_class(GTK_WIDGET(item->box), "statusbar");
+  widget_add_class(GTK_WIDGET(item->text), "bottom_box");
   widget_add_class(GTK_WIDGET(item->text), "statusbar");
 
   /* set properties */
@@ -32,9 +34,6 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
   if (left == true) {
     gtk_label_set_ellipsize(item->text, PANGO_ELLIPSIZE_END);
   }
-
-  /* add name so it uses a custom style */
-  gtk_widget_set_name(GTK_WIDGET(item->text), "bottom_box");
 
   if (callback != NULL) {
     g_signal_connect(G_OBJECT(item->box), "button-press-event", G_CALLBACK(callback), session);
@@ -54,7 +53,7 @@ bool girara_statusbar_item_set_text(girara_session_t* session, girara_statusbar_
   g_return_val_if_fail(item != NULL, false);
 
   g_autofree char* escaped_text = g_markup_escape_text(text, -1);
-  gtk_label_set_markup((GtkLabel*)item->text, escaped_text);
+  gtk_label_set_markup(item->text, escaped_text);
 
   return true;
 }

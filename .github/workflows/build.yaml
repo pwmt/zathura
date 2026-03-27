@@ -100,11 +100,11 @@ jobs:
           ninja -C build-nofeatures --verbose
           ninja -C build-nofeatures test --verbose
 
-  build-test-ubuntu-noble:
-    name: Test on Ubuntu noble
+  build-test-ubuntu-resolute:
+    name: Test on Ubuntu resolute
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/pwmt/github-actions-ubuntu:noble
+      image: ghcr.io/pwmt/github-actions-ubuntu:resolute
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}

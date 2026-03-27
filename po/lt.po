@@ -1890,15 +1890,15 @@ msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
-msgstr "Įjungti synctex palaikymą"
+msgid "Enable SyncTeX support"
+msgstr "Įjungti SyncTeX palaikymą"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
+msgid "SyncTeX editor command"
 msgstr ""
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
+msgid "SyncTeX edit modifier"
 msgstr ""
 
 #: zathura/config.c:623
@@ -2108,11 +2108,11 @@ msgid "Print version information"
 msgstr "Spausdinti versijos informaciją"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
-msgstr "Synctex redaktorius (naudojama synctex komandoje)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "SyncTeX redaktorius (naudojama SyncTeX komandoje)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
+msgid "Move to given SyncTeX position"
 msgstr ""
 
 #: zathura/main.c:125

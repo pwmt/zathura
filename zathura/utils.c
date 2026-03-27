@@ -10,6 +10,7 @@
 #include <girara/datastructures.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
+#include <girara-gtk/statusbar.h>
 #include <girara/utils.h>
 
 #include "adjustment.h"
@@ -282,6 +283,15 @@ GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page) {
   return zathura->pages[page_number];
 }
 
+GtkWidget* zathura_page_get_widget_by_number(zathura_t* zathura, unsigned int page_number) {
+  if (zathura == NULL || !zathura_has_document(zathura) || zathura->pages == NULL ||
+      page_number >= zathura_document_get_number_of_pages(zathura_get_document(zathura))) {
+    return NULL;
+  }
+
+  return zathura->pages[page_number];
+}
+
 void document_draw_search_results(zathura_t* zathura, bool value) {
   if (zathura_has_document(zathura) == false || zathura->pages == NULL) {
     return;
@@ -289,7 +299,8 @@ void document_draw_search_results(zathura_t* zathura, bool value) {
 
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    g_object_set(zathura->pages[page_id], "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
+    g_object_set(G_OBJECT(zathura_page_get_widget_by_number(zathura, page_id)), "draw-search-results",
+                 (value == true) ? TRUE : FALSE, NULL);
   }
 }
 
@@ -439,8 +450,9 @@ char* increment_first_page_column(const char* first_page_column_list, const unsi
   /* increment and normalise to [1,pages_per_row]. */
   column += incr;
   column %= pages_per_row; /* range [-pages_per_row+1, pages_per_row-1] */
-  if (column <= 0)
+  if (column <= 0) {
     column += pages_per_row; /* range [1, pages_per_row] */
+  }
 
   /* Write back, creating the new cell if necessary. */
   if (pages_per_row <= size) {
@@ -488,11 +500,11 @@ static int cmp_point(const void* va, const void* vb) {
   return a->x < b->x ? -1 : 1;
 }
 
-static uintptr_t ufloor(double f) {
+static inline uintptr_t ufloor(double f) {
   return floor(f);
 }
 
-static uintptr_t uceil(double f) {
+static inline uintptr_t uceil(double f) {
   return ceil(f);
 }
 
@@ -507,6 +519,7 @@ static int cmp_rectangle(const void* vr1, const void* vr2) {
   const zathura_rectangle_t* r1 = vr1;
   const zathura_rectangle_t* r2 = vr2;
 
+  // we only care about equlity here, no ordering
   return (ufloor(r1->x1) == ufloor(r2->x1) && uceil(r1->x2) == uceil(r2->x2) && ufloor(r1->y1) == ufloor(r2->y1) &&
           uceil(r1->y2) == uceil(r2->y2))
              ? 0
@@ -651,13 +664,13 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
       break;
     }
 
-    if (diff == 1 && current < num_search_results - 1) {
+    if (diff == 1 && (current < num_search_results - 1 || num_pages == 1)) {
       /* the next result is on the same page */
       target_page = page;
-      target_idx  = current + 1;
-    } else if (diff == -1 && current > 0) {
+      target_idx  = (current + 1) % num_search_results;
+    } else if (diff == -1 && (current > 0 || num_pages == 1)) {
       target_page = page;
-      target_idx  = current - 1;
+      target_idx  = (current - 1 + num_search_results) % num_search_results;
     } else {
       /* the next result is on a different page */
       g_object_set(G_OBJECT(page_widget), "search-current", -1, NULL);
@@ -723,11 +736,19 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
+
+    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+    zathura_set_current_search_result_previous_pages(zathura, current_page_number);
+    zathura_modify_current_search_result(zathura, target_idx + 1);
+
+    g_autofree char* tmp = g_strdup_printf(_("Search: [%d/%d]"), zathura->global.current_search_result,
+                                           zathura->global.total_search_results);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL && !disable_notify) {
-    const char* input  = argument->data;
-    char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
+    const char* input             = argument->data;
+    g_autofree char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
-    g_free(escaped_text);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
   }
 
   return false;

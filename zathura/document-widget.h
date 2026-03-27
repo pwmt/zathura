@@ -17,14 +17,15 @@ struct zathura_document_widget_class_s {
   GtkContainerClass parent_class;
 };
 
-#define ZATHURA_TYPE_DOCUMENT (zathura_document_widget_get_type())
-#define ZATHURA_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidget))
+#define ZATHURA_TYPE_DOCUMENT_WIDGET (zathura_document_widget_get_type())
+#define ZATHURA_DOCUMENT_WIDGET(obj)                                                                                   \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidget))
 #define ZATHURA_DOCUMENT_WIDGET_CLASS(obj)                                                                             \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidgetClass))
-#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
-#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
+#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
+#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
 #define ZATHURA_DOCUMENT_WIDGET_GET_CLASS(obj)                                                                         \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidgetClass))
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
 
 /**
  * Returns the type of the document view widget.
@@ -125,5 +126,21 @@ void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, 
  * @param document ZathuraDocumentWidget
  */
 void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document);
+
+/**
+ * Clear all thumbnails.
+ *
+ * @param document ZathuraDocumentWidget
+ */
+void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document);
+
+/**
+ * This function is used to unmark all pages as not rendered. This should
+ * be used if all pages should be rendered again (e.g.: the zoom level or the
+ * colors have changed)
+ *
+ * @param zathura Zathura object
+ */
+void zathura_document_widget_render_all(ZathuraDocumentWidget* document);
 
 #endif // DOCUMENT_WIDGET_H

@@ -1909,15 +1909,15 @@ msgstr ""
 "დისპლაი (კურრენტ გვერდი / ტოტალ გვერდები) ას ა პერკენტ ინ ტჰე სტატუსბარ"
 
 #: zathura/config.c:620
-msgid "Enable synctex support"
+msgid "Enable SyncTeX support"
 msgstr "ჩართვა სინკტექს სუპპორტ"
 
 #: zathura/config.c:621
-msgid "Synctex editor command"
+msgid "SyncTeX editor command"
 msgstr "სინკტექს ედიტორ კომმანდ"
 
 #: zathura/config.c:622
-msgid "Synctex edit modifier"
+msgid "SyncTeX edit modifier"
 msgstr "სინკტექს ედიტ მოდიფიერ"
 
 #: zathura/config.c:623
@@ -2129,11 +2129,11 @@ msgid "Print version information"
 msgstr "ბეჭდვა ვერსიონ ინფორმატიონ"
 
 #: zathura/main.c:123
-msgid "Synctex editor (forwarded to the synctex command)"
+msgid "SyncTeX editor (forwarded to the synctex command)"
 msgstr "სინკტექს ედიტორ (ფორვარდედ ტო ტჰე სინკტექს კომმანდ)"
 
 #: zathura/main.c:124
-msgid "Move to given synctex position"
+msgid "Move to given SyncTeX position"
 msgstr "მოვე ტო გივენ სინკტექს პოსიტიონ"
 
 #: zathura/main.c:125

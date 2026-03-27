@@ -249,7 +249,7 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
   for (unsigned int p = 0; p != number_of_pages; ++p) {
-    GObject* widget = G_OBJECT(zathura->pages[p]);
+    GObject* widget = G_OBJECT(zathura_page_get_widget_by_number(zathura, p));
 
     g_object_set(widget, "draw-links", FALSE, "search-results", rectangles[p], NULL);
     if (p == page) {
