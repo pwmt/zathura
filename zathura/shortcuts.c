@@ -6,6 +6,7 @@
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
 #include <girara-gtk/shortcuts.h>
+#include <girara-gtk/statusbar.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
 #include <girara/utils.h>
@@ -108,6 +109,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
         g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
       }
     }
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
   }
 
   /* Setting the mode back here has not worked for ages. We need another way to

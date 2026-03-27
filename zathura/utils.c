@@ -10,6 +10,7 @@
 #include <girara/datastructures.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
+#include <girara-gtk/statusbar.h>
 #include <girara/utils.h>
 
 #include "adjustment.h"
@@ -735,10 +736,19 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     zathura_jumplist_add(zathura);
     position_set(zathura, pos_x, pos_y);
     zathura_jumplist_add(zathura);
+
+    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+    zathura_set_current_search_result_previous_pages(zathura, current_page_number);
+    zathura_modify_current_search_result(zathura, target_idx + 1);
+
+    g_autofree char* tmp = g_strdup_printf(_("Search: [%d/%d]"), zathura->global.current_search_result,
+                                           zathura->global.total_search_results);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL && !disable_notify) {
     const char* input  = argument->data;
     char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
+    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
     g_free(escaped_text);
   }
 
