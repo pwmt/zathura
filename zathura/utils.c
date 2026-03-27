@@ -499,11 +499,11 @@ static int cmp_point(const void* va, const void* vb) {
   return a->x < b->x ? -1 : 1;
 }
 
-static uintptr_t ufloor(double f) {
+static inline uintptr_t ufloor(double f) {
   return floor(f);
 }
 
-static uintptr_t uceil(double f) {
+static inline uintptr_t uceil(double f) {
   return ceil(f);
 }
 
@@ -518,6 +518,7 @@ static int cmp_rectangle(const void* vr1, const void* vr2) {
   const zathura_rectangle_t* r1 = vr1;
   const zathura_rectangle_t* r2 = vr2;
 
+  // we only care about equlity here, no ordering
   return (ufloor(r1->x1) == ufloor(r2->x1) && uceil(r1->x2) == uceil(r2->x2) && ufloor(r1->y1) == ufloor(r2->y1) &&
           uceil(r1->y2) == uceil(r2->y2))
              ? 0
