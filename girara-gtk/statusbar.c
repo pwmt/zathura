@@ -1,8 +1,9 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "statusbar.h"
+
 #include <girara/datastructures.h>
 
-#include "statusbar.h"
 #include "session.h"
 #include "internal.h"
 #include "settings.h"
@@ -54,7 +55,7 @@ bool girara_statusbar_item_set_text(girara_session_t* session, girara_statusbar_
   g_return_val_if_fail(item != NULL, false);
 
   g_autofree char* escaped_text = g_markup_escape_text(text, -1);
-  gtk_label_set_markup((GtkLabel*)item->text, escaped_text);
+  gtk_label_set_markup(item->text, escaped_text);
 
   return true;
 }
