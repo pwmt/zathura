@@ -26,6 +26,10 @@ typedef struct zathura_document_widget_private_s {
   unsigned int ncol;
   document_widget_line_s* row_heights;
   document_widget_line_s* col_widths;
+  unsigned int pages_per_row;     /**< number of pages in a row */
+  unsigned int first_page_column; /**< column of the first page */
+  unsigned int page_v_padding;    /**< padding between pages */
+  unsigned int page_h_padding;    /**< padding between pages */
 
   /* Scrolling */
   GtkAdjustment* hadjustment;
@@ -221,10 +225,9 @@ static void zathura_document_widget_get_property(GObject* object, guint prop_id,
 static void zathura_document_widget_get_page_position(ZathuraDocumentWidget* document, unsigned int page_index,
                                                       unsigned int* row, unsigned int* col) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  const unsigned int c0   = zathura_document_get_first_page_column(z_document);
-  const unsigned int ncol = zathura_document_get_pages_per_row(z_document);
+  const unsigned int c0   = priv->first_page_column;
+  const unsigned int ncol = priv->pages_per_row;
 
   *row = (page_index + c0 - 1) / ncol;
   *col = (page_index + c0 - 1) % ncol;
@@ -242,13 +245,13 @@ static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  const unsigned int c0   = zathura_document_get_first_page_column(z_document);
+  const unsigned int c0   = priv->first_page_column;
+  const unsigned int ncol = priv->pages_per_row;
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
-  const unsigned int ncol = zathura_document_get_pages_per_row(z_document);
   const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
-  const unsigned int page_v_padding = zathura_document_get_page_v_padding(z_document);
-  const unsigned int page_h_padding = zathura_document_get_page_h_padding(z_document);
+  const unsigned int page_v_padding = priv->page_v_padding;
+  const unsigned int page_h_padding = priv->page_h_padding;
 
   memset(priv->row_heights, 0, nrow * sizeof(document_widget_line_s));
   memset(priv->col_widths, 0, ncol * sizeof(document_widget_line_s));
@@ -483,9 +486,9 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  const unsigned int c0   = zathura_document_get_first_page_column(z_document);
+  const unsigned int c0   = priv->first_page_column;
+  const unsigned int ncol = priv->pages_per_row;
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
-  const unsigned int ncol = zathura_document_get_pages_per_row(z_document);
   const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
   priv->col_widths  = g_try_realloc_n(priv->col_widths, ncol, sizeof(document_widget_line_s));
@@ -684,4 +687,60 @@ void zathura_document_widget_render_all(ZathuraDocumentWidget* document) {
       gtk_widget_queue_resize(page_widget);
     }
   }
+}
+
+void zathura_document_widget_set_page_layout(ZathuraDocumentWidget* document, unsigned int page_v_padding,
+                                             unsigned int page_h_padding, unsigned int pages_per_row,
+                                             unsigned int first_page_column) {
+  g_return_if_fail(document != NULL);
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+
+  priv->page_v_padding = page_v_padding;
+  priv->page_h_padding = page_h_padding;
+  priv->pages_per_row  = pages_per_row;
+
+  if (first_page_column < 1) {
+    first_page_column = 1;
+  } else if (first_page_column > pages_per_row) {
+    first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
+  }
+
+  priv->first_page_column = first_page_column;
+}
+
+unsigned int zathura_document_widget_get_page_v_padding(ZathuraDocumentWidget* document) {
+  if (document == NULL) {
+    return 0;
+  }
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->page_v_padding;
+}
+
+unsigned int zathura_document_widget_get_page_h_padding(ZathuraDocumentWidget* document) {
+  if (document == NULL) {
+    return 0;
+  }
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->page_h_padding;
+}
+
+unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* document) {
+  if (document == NULL) {
+    return 0;
+  }
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->pages_per_row;
+}
+
+unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget* document) {
+  if (document == NULL) {
+    return 0;
+  }
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->first_page_column;
 }

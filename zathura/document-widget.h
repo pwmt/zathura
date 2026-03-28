@@ -143,4 +143,49 @@ void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document);
  */
 void zathura_document_widget_render_all(ZathuraDocumentWidget* document);
 
+/**
+ * Sets the layout of the pages in the document
+ *
+ * @param[in]  document          The document instance
+ * @param[in]  page_v_padding      pixels of vertical padding between pages
+ * @param[in]  page_h_padding      pixels of horizontal padding between pages
+ * @param[in]  pages_per_row     number of pages per row
+ * @param[in]  first_page_column column of the first page (first column is 1)
+ */
+void zathura_document_widget_set_page_layout(ZathuraDocumentWidget* document, unsigned int page_v_padding,
+                                             unsigned int page_h_padding, unsigned int pages_per_row,
+                                             unsigned int first_page_column);
+
+/**
+ * Returns the vertical padding in pixels between pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+unsigned int zathura_document_widget_get_page_v_padding(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the horizontal padding in pixels between pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+unsigned int zathura_document_widget_get_page_h_padding(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the number of pages per row
+ *
+ * @param document The document
+ * @return The number of pages per row
+ */
+unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the column for the first page (first column = 1)
+ *
+ * @param document The document
+ * @return The column for the first page
+ */
+unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget* document);
+
 #endif // DOCUMENT_WIDGET_H

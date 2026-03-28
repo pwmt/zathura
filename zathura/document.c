@@ -41,10 +41,6 @@ struct zathura_document_s {
   unsigned int view_height;                /**< height of current viewport */
   double view_ppi;                         /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
-  unsigned int pages_per_row;              /**< number of pages in a row */
-  unsigned int first_page_column;          /**< column of the first page */
-  unsigned int page_v_padding;             /**< padding between pages */
-  unsigned int page_h_padding;             /**< padding between pages */
   double position_x;                       /**< X adjustment */
   double position_y;                       /**< Y adjustment */
 
@@ -488,52 +484,6 @@ zathura_device_factors_t zathura_document_get_device_factors(zathura_document_t*
   }
 
   return document->device_factors;
-}
-
-void zathura_document_set_page_layout(zathura_document_t* document, unsigned int page_v_padding,
-                                      unsigned int page_h_padding, unsigned int pages_per_row,
-                                      unsigned int first_page_column) {
-  g_return_if_fail(document != NULL);
-
-  document->page_v_padding = page_v_padding;
-  document->page_h_padding = page_h_padding;
-  document->pages_per_row  = pages_per_row;
-
-  if (first_page_column < 1) {
-    first_page_column = 1;
-  } else if (first_page_column > pages_per_row) {
-    first_page_column = ((first_page_column - 1) % pages_per_row) + 1;
-  }
-
-  document->first_page_column = first_page_column;
-}
-
-unsigned int zathura_document_get_page_v_padding(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-  return document->page_v_padding;
-}
-
-unsigned int zathura_document_get_page_h_padding(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-  return document->page_h_padding;
-}
-
-unsigned int zathura_document_get_pages_per_row(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-  return document->pages_per_row;
-}
-
-unsigned int zathura_document_get_first_page_column(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-  return document->first_page_column;
 }
 
 zathura_error_t zathura_document_save_as(zathura_document_t* document, const char* path) {
