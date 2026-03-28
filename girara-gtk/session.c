@@ -302,12 +302,12 @@ static void screen_changed(GtkWidget* widget, GdkScreen* GIRARA_UNUSED(old_scree
 }
 
 bool girara_session_init(girara_session_t* session, const char* sessionname) {
-  if (session == NULL) {
+  if (!session || !sessionname) {
     return false;
   }
 
   /* set session name */
-  session->private_data->session_name = g_strdup((sessionname == NULL) ? "girara" : sessionname);
+  session->private_data->session_name = g_strdup(sessionname);
 
   /* enable smooth scroll events */
   gtk_widget_add_events(session->gtk.view, GDK_SMOOTH_SCROLL_MASK);
