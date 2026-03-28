@@ -1,14 +1,15 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "document-widget.h"
-#include "girara-gtk/settings.h"
-#include "girara/log.h"
 
+#include <girara-gtk/settings.h>
+#include <girara/log.h>
+
+#include "adjustment.h"
+#include "page-widget.h"
 #include "page.h"
 #include "utils.h"
 #include "zathura.h"
-#include "adjustment.h"
-#include "page-widget.h"
 
 typedef struct {
   unsigned int pos;
@@ -29,8 +30,8 @@ typedef struct zathura_document_widget_private_s {
   /* Scrolling */
   GtkAdjustment* hadjustment;
   GtkAdjustment* vadjustment;
-  guint hscroll_policy : 1;
-  guint vscroll_policy : 1;
+  GtkScrollablePolicy hscroll_policy;
+  GtkScrollablePolicy vscroll_policy;
 } ZathuraDocumentWidgetPrivate;
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraDocumentWidget, zathura_document_widget, GTK_TYPE_CONTAINER,
@@ -487,11 +488,8 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   const unsigned int ncol = zathura_document_get_pages_per_row(z_document);
   const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
-  g_free(priv->col_widths);
-  g_free(priv->row_heights);
-
-  priv->col_widths  = g_try_malloc_n(ncol, sizeof(document_widget_line_s));
-  priv->row_heights = g_try_malloc_n(nrow, sizeof(document_widget_line_s));
+  priv->col_widths  = g_try_realloc_n(priv->col_widths, ncol, sizeof(document_widget_line_s));
+  priv->row_heights = g_try_realloc_n(priv->row_heights, nrow, sizeof(document_widget_line_s));
 
   priv->ncol = ncol;
   priv->nrow = nrow;

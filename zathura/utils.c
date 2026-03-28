@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "utils.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -15,7 +17,6 @@
 
 #include "adjustment.h"
 #include "links.h"
-#include "utils.h"
 #include "zathura.h"
 #include "internal.h"
 #include "document.h"
@@ -38,13 +39,7 @@ double zathura_correct_zoom_value(girara_session_t* session, const double zoom) 
   const double zoom_min = zoom_min_int * 0.01;
   const double zoom_max = zoom_max_int * 0.01;
 
-  if (zoom < zoom_min) {
-    return zoom_min;
-  } else if (zoom > zoom_max) {
-    return zoom_max;
-  } else {
-    return zoom;
-  }
+  return CLAMP(zoom, zoom_min, zoom_max);
 }
 
 bool file_valid_extension(zathura_t* zathura, const char* path) {
@@ -109,10 +104,10 @@ void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTre
 typedef struct {
   GtkTreeIter current_iter;
   unsigned int current_page;
-} SearchData;
+} search_data_t;
 
 static gboolean search_current_index(GtkTreeModel* model, GtkTreePath* UNUSED(path), GtkTreeIter* iter, gpointer data) {
-  SearchData* search_data = (SearchData*)data;
+  search_data_t* search_data = data;
   zathura_index_element_t* index_element;
   gtk_tree_model_get(model, iter, 3, &index_element, -1);
   zathura_link_target_t target = zathura_link_get_target(index_element->link);
@@ -201,7 +196,7 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   GtkTreeView* tree_view = get_tree_view(zathura);
   GtkTreeModel* model    = gtk_tree_view_get_model(tree_view);
 
-  SearchData search_data;
+  search_data_t search_data;
   gtk_tree_model_get_iter_first(model, &search_data.current_iter);
   search_data.current_page = zathura_document_get_current_page_number(zathura_get_document(zathura));
   gtk_tree_model_foreach(model, search_current_index, &search_data);
@@ -248,12 +243,12 @@ static zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsig
 
 zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t rectangle) {
   if (page == NULL) {
-    goto error_ret;
+    return rectangle;
   }
 
   zathura_document_t* document = zathura_page_get_document(page);
   if (document == NULL) {
-    goto error_ret;
+    return rectangle;
   }
 
   double page_height = zathura_page_get_height(page);
@@ -268,9 +263,6 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
   tmp.y2 *= scale;
 
   return tmp;
-
-error_ret:
-  return rectangle;
 }
 
 GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page) {
@@ -342,9 +334,8 @@ GdkAtom* get_selection(zathura_t* zathura) {
     return NULL;
   }
 
-  GdkAtom* selection = g_try_malloc(sizeof(GdkAtom));
+  g_autofree GdkAtom* selection = g_try_malloc(sizeof(GdkAtom));
   if (selection == NULL) {
-    g_free(selection);
     return NULL;
   }
 
@@ -353,17 +344,13 @@ GdkAtom* get_selection(zathura_t* zathura) {
   } else if (strcmp(value, "clipboard") == 0) {
     *selection = GDK_SELECTION_CLIPBOARD;
   } else if (strcmp(value, "false") == 0) {
-    g_free(selection);
-
     return NULL;
   } else {
     girara_error("Invalid value for the selection-clipboard setting");
-    g_free(selection);
-
     return NULL;
   }
 
-  return selection;
+  return g_steal_pointer(&selection);
 }
 
 static char* write_first_page_column_list(unsigned int* first_page_columns, unsigned int size) {

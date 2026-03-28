@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "document.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -11,7 +13,6 @@
 #include <girara/log.h>
 #include <girara/utils.h>
 
-#include "document.h"
 #include "zathura.h"
 #include "page.h"
 #include "plugin.h"
@@ -130,7 +131,7 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     return NULL;
   }
 
-  document->file_path = real_path;
+  document->file_path = g_steal_pointer(&real_path);
   document->uri       = g_strdup(uri);
   if (document->uri == NULL) {
     document->basename = g_file_get_basename(file);
@@ -150,9 +151,6 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   document->device_factors.y = 1.0;
   document->position_x       = 0.0;
   document->position_y       = 0.0;
-
-  // document took ownership of real_path
-  real_path = NULL;
 
   /* open document */
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);

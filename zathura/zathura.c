@@ -352,13 +352,13 @@ static bool load_css(zathura_t* zathura) {
   GResource* css_resource = zathura_resources_get_resource();
   g_autoptr(GBytes) css_data =
       g_resource_lookup_data(css_resource, "/org/pwmt/zathura/CSS/zathura.css_t", G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
-  if (css_data != NULL) {
-    g_autofree char* css =
-        g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate), (const char*)g_bytes_get_data(css_data, NULL));
-    girara_template_set_base(csstemplate, css);
-  } else {
+  if (!css_data) {
     return false;
   }
+
+  g_autofree char* css =
+      g_strdup_printf("%s\n%s", girara_template_get_base(csstemplate), (const char*)g_bytes_get_data(css_data, NULL));
+  girara_template_set_base(csstemplate, css);
 
   return true;
 }
