@@ -45,6 +45,7 @@ static void zathura_document_widget_container_remove(GtkContainer* container, Gt
 static void zathura_document_widget_container_forall(GtkContainer* container, gboolean include_internals,
                                                      GtkCallback callback, gpointer user_data);
 static void zathura_document_widget_dispose(GObject* object);
+static void zathura_document_widget_finalize(GObject* object);
 
 enum properties_e {
   PROP_0,
@@ -65,6 +66,7 @@ static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* class
   object_class->set_property = zathura_document_widget_set_property;
   object_class->get_property = zathura_document_widget_get_property;
   object_class->dispose      = zathura_document_widget_dispose;
+  object_class->finalize     = zathura_document_widget_finalize;
 
   GtkContainerClass* container_class = GTK_CONTAINER_CLASS(class);
   container_class->add               = zathura_document_widget_container_add;
@@ -455,13 +457,23 @@ static void zathura_document_widget_dispose(GObject* object) {
   ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(object);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
+  g_clear_object(&priv->hadjustment);
+  g_clear_object(&priv->vadjustment);
+
+  G_OBJECT_CLASS(zathura_document_widget_parent_class)->dispose(object);
+}
+
+static void zathura_document_widget_finalize(GObject* object) {
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(object);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+
   g_free(priv->col_widths);
   g_free(priv->row_heights);
 
   priv->col_widths  = NULL;
   priv->row_heights = NULL;
 
-  G_OBJECT_CLASS(zathura_document_widget_parent_class)->dispose(object);
+  G_OBJECT_CLASS(zathura_document_widget_parent_class)->finalize(object);
 }
 
 void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {

@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "adjustment.h"
+
+#include <math.h>
+
 #include "document-widget.h"
 #include "page.h"
 #include "zathura.h"
-
-#include <math.h>
 
 double page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
                               unsigned int* page_width, bool rotate) {
