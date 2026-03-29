@@ -268,8 +268,12 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
 
 bool cmd_help(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   g_return_val_if_fail(session != NULL, false);
+#if defined(WITH_MANPAGES) || defined(WITH_SANDBOX)
   girara_notify(session, GIRARA_INFO,
                 _("Please check the man pages zathura(1) and zathurarc(5) for more information."));
+#else
+  girara_xdg_open("https://manpages.debian.org/unstable/zathura/zathura.1.en.html");
+#endif
 
   return true;
 }

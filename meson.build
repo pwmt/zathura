@@ -69,6 +69,9 @@ defines = [
   '-DSYSCONFDIR="@0@"'.format(sysconfdir),
   '-D_DEFAULT_SOURCE',
 ]
+if get_option('manpages').allowed()
+  defines += '-DWITH_MANPAGES'
+endif
 
 # compile flags
 flags = [
@@ -236,7 +239,9 @@ pkg.generate(
 
 zathura_dependency = declare_dependency(link_with: zathura, include_directories: include_directories)
 
-subdir('doc')
+if get_option('manpages').allowed()
+  subdir('doc')
+endif
 if get_option('tests').allowed()
   subdir('tests')
 endif
