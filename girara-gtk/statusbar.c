@@ -36,7 +36,7 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
   }
 
   if (callback != NULL) {
-    g_signal_connect(G_OBJECT(item->box), "button-press-event", G_CALLBACK(callback), session);
+    g_signal_connect(G_OBJECT(item->text), "button-press-event", G_CALLBACK(callback), session);
   }
 
   /* add it to the list */
