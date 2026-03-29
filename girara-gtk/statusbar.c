@@ -10,7 +10,7 @@
 
 girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool fill, bool left,
                                                    girara_statusbar_event_t callback) {
-  g_return_val_if_fail(session != NULL, FALSE);
+  g_return_val_if_fail(session != NULL, NULL);
 
   girara_session_private_t* session_private = session->private_data;
   g_return_val_if_fail(session_private->elements.statusbar_items != NULL, FALSE);
