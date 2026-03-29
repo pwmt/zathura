@@ -44,7 +44,7 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
   gtk_box_pack_start(session->gtk.statusbar_entries, GTK_WIDGET(item->box), expand, fill, 0);
   gtk_widget_show_all(GTK_WIDGET(item->box));
 
-  girara_list_prepend(session_private->elements.statusbar_items, item);
+  girara_list_append(session_private->elements.statusbar_items, item);
   return item;
 }
 
