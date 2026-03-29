@@ -292,27 +292,27 @@ static bool init_ui(zathura_t* zathura) {
   gtk_widget_show(widget);
 
   /* statusbar */
-  zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE, NULL);
+  zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE);
   if (zathura->ui.statusbar.file == NULL) {
     girara_error("Failed to create status bar file item.");
     return false;
   }
 
-  zathura->ui.statusbar.buffer = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  zathura->ui.statusbar.buffer = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE);
   if (zathura->ui.statusbar.buffer == NULL) {
     girara_error("Failed to create status bar buffer item.");
     return false;
   }
 
-  zathura->ui.statusbar.page_number = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  zathura->ui.statusbar.page_number = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE);
   if (zathura->ui.statusbar.page_number == NULL) {
-    girara_error("Failed to create status bar page_number item.");
+    girara_error("Failed to create status bar page number item.");
     return false;
   }
 
-  zathura->ui.statusbar.search_count = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE, NULL);
+  zathura->ui.statusbar.search_count = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE);
   if (zathura->ui.statusbar.search_count == NULL) {
-    girara_error("Failed to create status bar search_count item.");
+    girara_error("Failed to create status bar search count item.");
     return false;
   }
 

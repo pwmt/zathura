@@ -8,8 +8,7 @@
 #include "internal.h"
 #include "settings.h"
 
-girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool fill, bool left,
-                                                   girara_statusbar_event_t callback) {
+girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool fill, bool left) {
   g_return_val_if_fail(session != NULL, NULL);
 
   girara_session_private_t* session_private = session->private_data;
@@ -17,11 +16,9 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
 
   girara_statusbar_item_t* item = g_malloc0(sizeof(girara_statusbar_item_t));
 
-  item->box  = gtk_event_box_new();
   item->text = GTK_LABEL(gtk_label_new(NULL));
 
   /* set style */
-  widget_add_class(GTK_WIDGET(item->box), "statusbar");
   widget_add_class(GTK_WIDGET(item->text), "statusbar-item");
   widget_add_class(GTK_WIDGET(item->text), "statusbar");
 
@@ -35,14 +32,9 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
     gtk_label_set_ellipsize(item->text, PANGO_ELLIPSIZE_END);
   }
 
-  if (callback != NULL) {
-    g_signal_connect(G_OBJECT(item->box), "button-press-event", G_CALLBACK(callback), session);
-  }
-
   /* add it to the list */
-  gtk_container_add(GTK_CONTAINER(item->box), GTK_WIDGET(item->text));
-  gtk_box_pack_start(session->gtk.statusbar_entries, GTK_WIDGET(item->box), expand, fill, 0);
-  gtk_widget_show_all(GTK_WIDGET(item->box));
+  gtk_box_pack_start(session->gtk.statusbar_entries, GTK_WIDGET(item->text), expand, fill, 0);
+  gtk_widget_show_all(GTK_WIDGET(item->text));
 
   girara_list_append(session_private->elements.statusbar_items, item);
   return item;

@@ -180,7 +180,6 @@ struct girara_mouse_event_s {
  * Structure of a statusbar item
  */
 struct girara_statusbar_item_s {
-  GtkWidget* box; /**< Event box */
   GtkLabel* text; /**< Text label */
 };
 
