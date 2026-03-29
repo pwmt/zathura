@@ -15,7 +15,7 @@
  * @return TRUE No error occurred
  * @return FALSE Error occurred (and forward event)
  */
-typedef bool (*girara_statusbar_event_t)(GtkWidget* widget, GdkEvent* event, girara_session_t* session);
+typedef gboolean (*girara_statusbar_event_t)(GtkWidget* widget, GdkEvent* event, girara_session_t* session);
 
 /**
  * Creates an statusbar item
