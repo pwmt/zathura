@@ -22,7 +22,7 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
 
   /* set style */
   widget_add_class(GTK_WIDGET(item->box), "statusbar");
-  widget_add_class(GTK_WIDGET(item->text), "bottom_box");
+  widget_add_class(GTK_WIDGET(item->text), "statusbar-item");
   widget_add_class(GTK_WIDGET(item->text), "statusbar");
 
   /* set properties */
