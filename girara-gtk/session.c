@@ -372,6 +372,8 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   gtk_container_add(GTK_CONTAINER(session->gtk.statusbar), GTK_WIDGET(session->gtk.statusbar_entries));
 
   /* notification area */
+  g_signal_connect(G_OBJECT(session->gtk.notification_area), "key-press-event",
+                   G_CALLBACK(girara_callback_view_key_press_event), session);
   gtk_container_add(GTK_CONTAINER(session->gtk.notification_area), session->gtk.notification_text);
   gtk_widget_set_halign(session->gtk.notification_text, GTK_ALIGN_START);
   gtk_widget_set_valign(session->gtk.notification_text, GTK_ALIGN_CENTER);
