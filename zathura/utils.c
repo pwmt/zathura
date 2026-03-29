@@ -741,7 +741,7 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     zathura_set_current_search_result_previous_pages(zathura, current_page_number);
     zathura_modify_current_search_result(zathura, target_idx + 1);
 
-    g_autofree char* tmp = g_strdup_printf(_("Search: [%d/%d]"), zathura->global.current_search_result,
+    g_autofree char* tmp = g_strdup_printf(_("[Search %d/%d]"), zathura->global.current_search_result,
                                            zathura->global.total_search_results);
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL && !disable_notify) {
