@@ -177,7 +177,7 @@ void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value) {
   const gdouble lower        = gtk_adjustment_get_lower(adjustment);
   const gdouble upper_m_size = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment);
 
-  gtk_adjustment_set_value(adjustment, MAX(lower, MIN(upper_m_size, value)));
+  gtk_adjustment_set_value(adjustment, CLAMP(value, lower, upper_m_size));
 }
 
 void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio) {
