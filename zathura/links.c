@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "links.h"
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <girara/utils.h>
@@ -7,7 +9,6 @@
 #include <girara-gtk/settings.h>
 
 #include "adjustment.h"
-#include "links.h"
 #include "zathura.h"
 #include "document.h"
 #include "document-widget.h"

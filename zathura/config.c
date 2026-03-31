@@ -2,16 +2,6 @@
 
 #include "config.h"
 
-#include "callbacks.h"
-#include "commands.h"
-#include "completion.h"
-#include "document-widget.h"
-#include "marks.h"
-#include "render.h"
-#include "shortcuts.h"
-#include "utils.h"
-#include "zathura.h"
-
 #include <girara-gtk/settings.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/shortcuts.h>
@@ -21,6 +11,16 @@
 #include <girara/utils.h>
 #include <girara/log.h>
 #include <glib/gi18n.h>
+
+#include "callbacks.h"
+#include "commands.h"
+#include "completion.h"
+#include "document-widget.h"
+#include "marks.h"
+#include "render.h"
+#include "shortcuts.h"
+#include "utils.h"
+#include "zathura.h"
 
 #define ZATHURA_RC "zathurarc"
 #ifndef WITH_SANDBOX

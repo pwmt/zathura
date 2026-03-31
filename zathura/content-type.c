@@ -1,14 +1,15 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "content-type.h"
-#include "macros.h"
 
 #include <gio/gio.h>
-#include <girara/log.h>
 #include <girara-gtk/utils.h>
+#include <girara/log.h>
 #include <glib.h>
 #include <magic.h>
 #include <stdio.h>
+
+#include "macros.h"
 
 struct zathura_content_type_context_s {
   magic_t magic;

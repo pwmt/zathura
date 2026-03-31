@@ -2,6 +2,12 @@
 
 #include "commands.h"
 
+#include <girara-gtk/commands.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
+#include <girara-gtk/utils.h>
+#include <girara/datastructures.h>
+#include <girara/log.h>
 #include <glib/gi18n.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,13 +28,6 @@
 #include "shortcuts.h"
 #include "utils.h"
 #include "zathura.h"
-
-#include <girara-gtk/commands.h>
-#include <girara/datastructures.h>
-#include <girara-gtk/session.h>
-#include <girara-gtk/settings.h>
-#include <girara/log.h>
-#include <girara-gtk/utils.h>
 
 bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);

@@ -1,9 +1,10 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "database-null.h"
+
 #include <girara/datastructures.h>
 #include <girara/input-history.h>
 
-#include "database-null.h"
 #include "utils.h"
 
 static bool add_bookmark(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),

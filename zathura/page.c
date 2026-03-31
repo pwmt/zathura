@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "page.h"
+
 #include <girara-gtk/session.h>
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
 #include "document.h"
-#include "page.h"
 #include "plugin.h"
 #include "utils.h"
 #include "internal.h"

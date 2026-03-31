@@ -1,14 +1,14 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "synctex.h"
+
 #include <glib.h>
 #include <girara/utils.h>
 #include <girara-gtk/settings.h>
-
 #ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>
 #endif
 
-#include "synctex.h"
 #include "zathura.h"
 #include "page.h"
 #include "document.h"

@@ -1,13 +1,14 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include "glib-object.h"
-#include "glib.h"
+#include "zathura.h"
+
+#include <glib-object.h>
+#include <glib.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <locale.h>
-
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include <girara-gtk/session.h>
@@ -17,11 +18,9 @@
 #include <girara/template.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
-
 #ifdef GDK_WINDOWING_WAYLAND
 #include <gdk/gdkwayland.h>
 #endif
-
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #include <gio/gunixinputstream.h>
@@ -38,7 +37,6 @@
 #include "document.h"
 #include "document-widget.h"
 #include "shortcuts.h"
-#include "zathura.h"
 #include "utils.h"
 #include "marks.h"
 #include "render.h"

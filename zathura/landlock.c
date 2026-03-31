@@ -1,6 +1,8 @@
 /* SPDX-License-Identifier: Zlib */
 
 #define _GNU_SOURCE
+#include "landlock.h"
+
 #include <linux/landlock.h>
 #include <sys/prctl.h>
 #include <sys/syscall.h>
@@ -9,8 +11,6 @@
 #include <unistd.h>
 #include <girara/log.h>
 #include <girara/utils.h>
-
-#include "landlock.h"
 
 #ifndef landlock_create_ruleset
 static inline int landlock_create_ruleset(const struct landlock_ruleset_attr* const attr, const size_t size,

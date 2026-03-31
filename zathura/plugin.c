@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 #include <glib/gi18n.h>
-
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include <girara-gtk/statusbar.h>

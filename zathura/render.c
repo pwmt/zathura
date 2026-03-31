@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "render.h"
+
 #include <math.h>
 #include <string.h>
 #include <stdatomic.h>
-
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
-#include "render.h"
 #include "adjustment.h"
 #include "zathura.h"
 #include "document.h"

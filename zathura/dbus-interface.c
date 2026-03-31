@@ -1,6 +1,18 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "dbus-interface.h"
+
+#include <gio/gio.h>
+#include <girara-gtk/commands.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
+#include <girara/log.h>
+#include <girara/utils.h>
+#include <json-glib/json-glib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "adjustment.h"
 #include "config.h"
 #include "document.h"
@@ -10,17 +22,6 @@
 #include "synctex.h"
 #include "utils.h"
 #include "zathura.h"
-
-#include <gio/gio.h>
-#include <girara-gtk/commands.h>
-#include <girara-gtk/session.h>
-#include <girara-gtk/settings.h>
-#include <girara/utils.h>
-#include <girara/log.h>
-#include <json-glib/json-glib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 static const char DBUS_XML_FILENAME[] = "/org/pwmt/zathura/DBus/org.pwmt.zathura.xml";
 

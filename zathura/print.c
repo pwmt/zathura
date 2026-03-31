@@ -1,14 +1,15 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "print.h"
-#include "document.h"
-#include "render.h"
-#include "page.h"
 
 #include <girara/utils.h>
 #include <girara-gtk/statusbar.h>
 #include <girara-gtk/session.h>
 #include <glib/gi18n.h>
+
+#include "document.h"
+#include "render.h"
+#include "page.h"
 
 static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                          zathura_t* zathura) {

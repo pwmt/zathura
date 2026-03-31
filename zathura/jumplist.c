@@ -2,13 +2,13 @@
 
 #include "jumplist.h"
 
-#include "zathura.h"
-#include "document.h"
-#include "database.h"
-
 #include <girara/utils.h>
 #include <girara/log.h>
 #include <math.h>
+
+#include "zathura.h"
+#include "document.h"
+#include "database.h"
 
 static void zathura_jumplist_reset_current(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->jumplist.cur != NULL);
