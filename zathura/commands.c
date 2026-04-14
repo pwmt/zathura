@@ -579,7 +579,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
 #endif
 }
 
-#ifndef WITH_SANBDOX
+#ifndef WITH_SANDBOX
 static bool exec_with_argument_list(girara_session_t* session, girara_list_t* argument_list) {
   g_autoptr(GStrvBuilder) builder = g_strv_builder_new();
 
@@ -612,7 +612,7 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-#ifdef WITH_SANBDOX
+#ifdef WITH_SANDBOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exec is not permitted in strict sandbox mode"));
   return false;
 #else
