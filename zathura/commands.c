@@ -105,7 +105,8 @@ bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(a
   g_autoptr(GString) string = g_string_new(NULL);
   for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
     zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
-    g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
+    g_autofree gchar* escaped_id = g_markup_escape_text(bookmark->id, -1);
+    g_string_append_printf(string, "<b>%s</b>: %u\n", escaped_id, bookmark->page);
   }
 
   if (string->len > 0) {
