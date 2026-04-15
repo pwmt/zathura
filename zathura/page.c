@@ -137,7 +137,7 @@ void zathura_page_set_width(zathura_page_t* page, double width) {
     return;
   }
 
-  if (!isfinite(width) || width <= 0.0 || width > 1e7) {
+  if (!isfinite(width) || width < DBL_EPSILON) {
     girara_warning("Invalid page width: %f, falling back to default", width);
     width = 1.0;
   }
@@ -158,7 +158,7 @@ void zathura_page_set_height(zathura_page_t* page, double height) {
     return;
   }
 
-  if (!isfinite(height) || height <= 0.0 || height > 1e7) {
+  if (!isfinite(height) || height < DBL_EPSILON) {
     girara_warning("Invalid page height: %f, falling back to default", height);
     height = 1.0;
   }
