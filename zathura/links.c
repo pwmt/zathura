@@ -261,9 +261,11 @@ void zathura_link_display(zathura_t* zathura, zathura_link_t* link) {
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:
   case ZATHURA_LINK_LAUNCH:
-  case ZATHURA_LINK_NAMED:
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: %s"), target.value);
+  case ZATHURA_LINK_NAMED: {
+    g_autofree gchar* escaped_value = g_markup_escape_text(target.value, -1);
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: %s"), escaped_value);
     break;
+  }
   default:
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Link: Invalid"));
   }
@@ -282,10 +284,12 @@ void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* select
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:
   case ZATHURA_LINK_LAUNCH:
-  case ZATHURA_LINK_NAMED:
+  case ZATHURA_LINK_NAMED: {
     gtk_clipboard_set_text(gtk_clipboard_get(*selection), target.value, -1);
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied link: %s"), target.value);
+    g_autofree gchar* escaped_value = g_markup_escape_text(target.value, -1);
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied link: %s"), escaped_value);
     break;
+  }
   default:
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Link: Invalid"));
   }

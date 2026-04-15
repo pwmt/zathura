@@ -2,6 +2,7 @@
 
 #include "page.h"
 
+#include <math.h>
 #include <girara-gtk/session.h>
 #include <girara/utils.h>
 #include <glib/gi18n.h>
@@ -136,6 +137,11 @@ void zathura_page_set_width(zathura_page_t* page, double width) {
     return;
   }
 
+  if (!isfinite(width) || width <= 0.0 || width > 1e7) {
+    girara_warning("Invalid page width: %f, falling back to default", width);
+    width = 1.0;
+  }
+
   page->width = width;
 }
 
@@ -150,6 +156,11 @@ double zathura_page_get_height(zathura_page_t* page) {
 void zathura_page_set_height(zathura_page_t* page, double height) {
   if (page == NULL) {
     return;
+  }
+
+  if (!isfinite(height) || height <= 0.0 || height > 1e7) {
+    girara_warning("Invalid page height: %f, falling back to default", height);
+    height = 1.0;
   }
 
   page->height = height;

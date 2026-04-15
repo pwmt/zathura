@@ -250,7 +250,8 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
     for (size_t idx = 0; idx != girara_list_size(information); ++idx) {
       zathura_document_information_entry_t* entry = girara_list_nth(information, idx);
       if (entry != NULL && meta_fields[i].field == entry->type) {
-        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+        g_autofree gchar* escaped_value = g_markup_escape_text(entry->value, -1);
+        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, escaped_value);
       }
     }
   }
