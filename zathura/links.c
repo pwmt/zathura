@@ -211,6 +211,95 @@ static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
 }
+
+/**
+ * Context passed to the external link confirmation dialog callback
+ */
+typedef struct {
+  zathura_t* zathura;
+  zathura_link_type_t type;
+  char* value; /**< Owned copy of the link target */
+} link_confirm_data_t;
+
+static void link_confirm_data_free(link_confirm_data_t* data) {
+  if (data != NULL) {
+    g_free(data->value);
+    g_free(data);
+  }
+}
+
+/**
+ * Callback for the external link confirmation dialog
+ * Opens the link only if the user pressed Enter with empty input or 'y'
+ */
+static gboolean cb_link_confirm(GtkEntry* entry, void* data) {
+  link_confirm_data_t* ctx = data;
+  if (entry == NULL || ctx == NULL) {
+    link_confirm_data_free(ctx);
+    return true;
+  }
+
+  char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+
+  /* Accept: empty string (bare Enter), "y", or "Y" */
+  const bool confirmed =
+      (input == NULL || input[0] == '\0' || (input[1] == '\0' && (input[0] == 'y' || input[0] == 'Y')));
+  g_free(input);
+
+  if (confirmed) {
+    switch (ctx->type) {
+    case ZATHURA_LINK_GOTO_REMOTE:
+      link_remote(ctx->zathura, ctx->value);
+      break;
+    case ZATHURA_LINK_URI:
+    case ZATHURA_LINK_LAUNCH: {
+      zathura_document_t* doc = zathura_get_document(ctx->zathura);
+      if (doc == NULL) {
+        girara_notify(ctx->zathura->ui.session, GIRARA_ERROR, _("Document has been closed."));
+        break;
+      }
+
+      const char* document_path = zathura_document_get_path(doc);
+      g_autofree char* dir      = g_path_get_dirname(document_path);
+
+      if (girara_xdg_open_with_working_directory(ctx->value, dir) == false) {
+        girara_notify(ctx->zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
+      }
+      break;
+    }
+    default:
+      break;
+    }
+  } else {
+    girara_notify(ctx->zathura->ui.session, GIRARA_INFO, _("Cancelled."));
+  }
+
+  link_confirm_data_free(ctx);
+  return true;
+}
+
+/**
+ * Prompt the user for confirmation before opening an external link
+ */
+static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const char* value) {
+  if (value == NULL) {
+    return;
+  }
+
+  link_confirm_data_t* ctx = g_try_malloc0(sizeof(link_confirm_data_t));
+  if (ctx == NULL) {
+    return;
+  }
+
+  ctx->zathura = zathura;
+  ctx->type    = type;
+  ctx->value   = g_strdup(value);
+
+  g_autofree gchar* escaped = g_markup_escape_text(value, -1);
+  g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b> ? [Y/n]"), escaped);
+
+  girara_dialog(zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
+}
 #endif
 
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
@@ -234,15 +323,15 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
 #ifndef WITH_SANDBOX
   case ZATHURA_LINK_GOTO_REMOTE:
     girara_debug("Going to remote destination: %s", link->target.value);
-    link_remote(zathura, link->target.value);
+    link_confirm(zathura, link->type, link->target.value);
     break;
   case ZATHURA_LINK_URI:
     girara_debug("Opening URI: %s", link->target.value);
-    link_launch(zathura, link);
+    link_confirm(zathura, link->type, link->target.value);
     break;
   case ZATHURA_LINK_LAUNCH:
     girara_debug("Launching link: %s", link->target.value);
-    link_launch(zathura, link);
+    link_confirm(zathura, link->type, link->target.value);
     break;
 #endif
   default:
