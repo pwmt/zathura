@@ -282,7 +282,7 @@ static void set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_fon
   }
 
   /* get user font description */
-  char* font = NULL;
+  g_autofree char* font = NULL;
   girara_setting_get(zathura->ui.session, "font", &font);
   if (font == NULL) {
     return;
@@ -314,7 +314,6 @@ static void set_font_from_property(cairo_t* cairo, zathura_t* zathura, cairo_fon
   cairo_set_font_size(cairo, size);
 
   pango_font_description_free(descr);
-  g_free(font);
 }
 
 static cairo_text_extents_t get_text_extents(const char* string, zathura_t* zathura, cairo_font_weight_t weight) {
@@ -604,9 +603,8 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
           const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
           cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color_fg.alpha);
           cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
-          char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
+          g_autofree char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
           cairo_show_text(cairo, link_number);
-          g_free(link_number);
         }
       }
     }
@@ -628,11 +626,10 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
         case ZATHURA_SIGNATURE_VALID: {
           color = zathura->ui.colors.signature_success;
 
-          char* sig_time = g_date_time_format(signature->time, "%F %T");
+          g_autofree char* sig_time = g_date_time_format(signature->time, "%F %T");
           text = g_strdup_printf(_("Signature is valid.\nThis document is signed by\n  %s\non %s."), signature->signer,
                                  sig_time);
           free_text = true;
-          g_free(sig_time);
           break;
         }
         case ZATHURA_SIGNATURE_CERTIFICATE_EXPIRED:
@@ -1063,14 +1060,13 @@ static gboolean cb_zathura_page_widget_button_release_event(GtkWidget* widget, G
     tmp.y1 /= scale;
     tmp.y2 /= scale;
 
-    char* text = zathura_page_get_text(priv->page, tmp, NULL);
+    g_autofree char* text = zathura_page_get_text(priv->page, tmp, NULL);
     if (text != NULL && *text != '\0') {
       /* emit text-selected signal */
       g_signal_emit(page, signals[TEXT_SELECTED], 0, text);
     } else if (priv->zathura->global.double_click_follow == false) {
       evaluate_link_at_mouse_position(page, oldx, oldy);
     }
-    g_free(text);
   }
 
   priv->mouse.selection.x1 = -1;
@@ -1297,10 +1293,9 @@ static void cb_menu_image_save(GtkMenuItem* item, ZathuraPageWidget* page) {
   }
 
   /* set command */
-  char* export_command       = g_strdup_printf(":export image-p%d-%d ", page_id, image_id);
-  girara_argument_t argument = {.n = 0, .data = export_command};
+  char* export_command                  = g_strdup_printf(":export image-p%d-%d ", page_id, image_id);
+  g_autofree girara_argument_t argument = {.n = 0, .data = export_command};
   sc_focus_inputbar(priv->zathura->ui.session, &argument, NULL, 0);
-  g_free(export_command);
 
   /* reset */
   priv->images.current = NULL;
