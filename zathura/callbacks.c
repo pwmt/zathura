@@ -579,13 +579,32 @@ bool cb_unknown_command(girara_session_t* session, const char* input) {
   /* check for number */
   const size_t size = strlen(input);
   for (size_t i = 0; i < size; i++) {
-    if (g_ascii_isdigit(input[i]) == FALSE) {
+    if (g_ascii_isdigit(input[i]) == FALSE && input[i] != '-' && input[i] != '+') {
       return false;
     }
   }
 
+  int jump_page = 0;
+  int a         = 0;
+  int sign      = 1;
+  for (size_t i = 0; i < size; i++) {
+    if (input[i] == '-') {
+      jump_page += sign * a;
+      a    = 0;
+      sign = -1;
+    } else if (input[i] == '+') {
+      jump_page += sign * a;
+      a    = 0;
+      sign = 1;
+    } else {
+      a = a * 10 + input[i] - '0';
+    }
+  }
+
+  jump_page += sign * a;
+
   zathura_jumplist_add(zathura);
-  page_set(zathura, atoi(input) - 1);
+  page_set(zathura, jump_page - 1);
   zathura_jumplist_add(zathura);
 
   return true;
