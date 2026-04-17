@@ -139,7 +139,7 @@ void zathura_page_set_width(zathura_page_t* page, double width) {
 
   if (!isfinite(width) || width < DBL_EPSILON) {
     girara_warning("Invalid page width: %f, falling back to default", width);
-    width = 1.0;
+    return;
   }
 
   page->width = width;
@@ -160,7 +160,7 @@ void zathura_page_set_height(zathura_page_t* page, double height) {
 
   if (!isfinite(height) || height < DBL_EPSILON) {
     girara_warning("Invalid page height: %f, falling back to default", height);
-    height = 1.0;
+    return;
   }
 
   page->height = height;
