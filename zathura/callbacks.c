@@ -63,8 +63,17 @@ void update_visible_pages(zathura_t* zathura) {
       /* make page visible */
       if (zathura_page_get_visibility(page) == false) {
         zathura_page_set_visibility(page, true);
-        zathura_page_widget_update_view_time(zathura_page_widget);
         zathura_renderer_page_cache_add(zathura->sync.render_thread, zathura_page_get_index(page));
+      }
+      zathura_page_widget_update_view_time(zathura_page_widget);
+      /* keep adjacent pages rendered so scrolling lands on ready content */
+      if (page_id > 0) {
+        zathura_page_widget_update_view_time(
+            ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id - 1)));
+      }
+      if (page_id + 1 < number_of_pages) {
+        zathura_page_widget_update_view_time(
+            ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id + 1)));
       }
 
     } else {

@@ -1308,6 +1308,9 @@ void zathura_page_widget_update_view_time(ZathuraPageWidget* widget) {
   if (zathura_page_get_visibility(priv->page) == true) {
     zathura_render_request_update_view_time(priv->render_request);
   }
+  if (priv->surface == NULL) {
+    zathura_render_request(priv->render_request, g_get_real_time());
+  }
 }
 
 bool zathura_page_widget_have_surface(ZathuraPageWidget* widget) {
