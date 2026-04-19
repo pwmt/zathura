@@ -198,16 +198,15 @@ static void link_remote(zathura_t* zathura, const char* file) {
   }
 }
 
-static void link_launch(zathura_t* zathura, const zathura_link_t* link) {
-  /* get file path */
-  if (link->target.value == NULL) {
+static void link_launch(zathura_t* zathura, const char* link) {
+  if (link == NULL) {
     return;
   }
 
   const char* document = zathura_document_get_path(zathura_get_document(zathura));
   g_autofree char* dir = g_path_get_dirname(document);
 
-  if (girara_xdg_open_with_working_directory(link->target.value, dir) == false) {
+  if (girara_xdg_open_with_working_directory(link, dir) == false) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
   }
 }
@@ -252,18 +251,7 @@ static gboolean cb_link_confirm(GtkEntry* entry, void* data) {
       break;
     case ZATHURA_LINK_URI:
     case ZATHURA_LINK_LAUNCH: {
-      zathura_document_t* doc = zathura_get_document(ctx->zathura);
-      if (doc == NULL) {
-        girara_notify(ctx->zathura->ui.session, GIRARA_ERROR, _("Document has been closed."));
-        break;
-      }
-
-      const char* document_path = zathura_document_get_path(doc);
-      g_autofree char* dir      = g_path_get_dirname(document_path);
-
-      if (girara_xdg_open_with_working_directory(ctx->value, dir) == false) {
-        girara_notify(ctx->zathura->ui.session, GIRARA_ERROR, _("Failed to run xdg-open."));
-      }
+      link_launch(ctx->zathura, ctx->value);
       break;
     }
     default:
