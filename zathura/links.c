@@ -268,6 +268,16 @@ static gboolean cb_link_confirm(GtkEntry* entry, void* data) {
 /**
  * Prompt the user for confirmation before opening an external link
  */
+static gboolean link_confirm_spawn(void* data) {
+  link_confirm_data_t* ctx = data;
+
+  g_autofree gchar* escaped = g_markup_escape_text(ctx->value, -1);
+  g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b>? [Y/n]"), escaped);
+
+  girara_dialog(ctx->zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
+  return FALSE;
+}
+
 static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const char* value) {
   if (value == NULL) {
     return;
@@ -282,10 +292,7 @@ static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const cha
   ctx->type    = type;
   ctx->value   = g_strdup(value);
 
-  g_autofree gchar* escaped = g_markup_escape_text(value, -1);
-  g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b> ? [Y/n]"), escaped);
-
-  girara_dialog(zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
+  gdk_threads_add_idle(link_confirm_spawn, ctx);
 }
 #endif
 
