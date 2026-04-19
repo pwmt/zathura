@@ -239,12 +239,11 @@ static gboolean cb_link_confirm(GtkEntry* entry, void* data) {
     return true;
   }
 
-  char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 
-  /* Accept: empty string (bare Enter), "y", or "Y" */
+  /* Accept: empty string (bare Enter), or confirmation string */
   const bool confirmed =
-      (input == NULL || input[0] == '\0' || (input[1] == '\0' && (input[0] == 'y' || input[0] == 'Y')));
-  g_free(input);
+      (input == NULL || input[0] == '\0' || g_strcmp0(input, _("y")) == 0 || g_strcmp0(input, _("Y")) == 0);
 
   if (confirmed) {
     switch (ctx->type) {
