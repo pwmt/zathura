@@ -53,6 +53,7 @@ void cb_buffer_changed(girara_session_t* session) {
 void update_visible_pages(zathura_t* zathura) {
   zathura_document_t* document       = zathura_get_document(zathura);
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  const unsigned int pages_per_row   = zathura_document_widget_get_pages_per_row(zathura->ui.document_widget);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
     zathura_page_t* page                   = zathura_document_get_page(document, page_id);
@@ -60,22 +61,26 @@ void update_visible_pages(zathura_t* zathura) {
     ZathuraPageWidget* zathura_page_widget = ZATHURA_PAGE_WIDGET(page_widget);
 
     if (page_is_visible(zathura, page_id) == true) {
-      /* make page visible */
+      // make page visible
       if (zathura_page_get_visibility(page) == false) {
         zathura_page_set_visibility(page, true);
         zathura_renderer_page_cache_add(zathura->sync.render_thread, zathura_page_get_index(page));
       }
-      zathura_page_widget_update_view_time(zathura_page_widget);
-      /* keep adjacent pages rendered so scrolling lands on ready content */
-      if (page_id > 0) {
-        zathura_page_widget_update_view_time(
-            ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id - 1)));
-      }
-      if (page_id + 1 < number_of_pages) {
-        zathura_page_widget_update_view_time(
-            ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id + 1)));
+
+      // keep adjacent pages rendered so scrolling lands on ready content
+      // consider pages_per_row pages before and after, with the more recents ones close to the page itself
+      for (unsigned int i = pages_per_row; i; --i) {
+        if (page_id >= i) {
+          zathura_page_widget_update_view_time(
+              ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id - i)));
+        }
+        if (page_id + i < number_of_pages) {
+          zathura_page_widget_update_view_time(
+              ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id + i)));
+        }
       }
 
+      zathura_page_widget_update_view_time(zathura_page_widget);
     } else {
       /* make page invisible */
       if (zathura_page_get_visibility(page) == true) {
