@@ -12,6 +12,10 @@ zathura [-e XID] [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
 Description
 -----------
 
+**zathura** is a highly customizable and functional document viewer. It provides
+a minimalistic and space saving interface as well as an easy usage that mainly
+focuses on keyboard interaction.
+
 **zathura** displays the given files. If a single hyphen-minus (-) is given as
 file name, the content will be read from the standard input. If no files are
 given, an empty **zathura** instance launches.
