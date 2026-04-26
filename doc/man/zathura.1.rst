@@ -48,7 +48,7 @@ Options
   Set log level (debug, info, warning, error)
 
 -x, --synctex-editor-command=command
-  Set the synctex editor command. Overrides the synctex-editor-command setting.
+  Set the SyncTeX editor command. Overrides the synctex-editor-command setting.
 
 --synctex-forward=input
   Jump to the given position. The switch expects the same format as specified
@@ -313,11 +313,11 @@ The default appearance and behaviour of zathura can be overwritten by modifying
 the *zathurarc* file (default path: ~/.config/zathura/zathurarc). For a detailed
 description please consult zathurarc(5).
 
-Synctex support
+SyncTeX support
 ---------------
 
-Both synctex forward and backwards synchronization are supported by zathura, To
-enable synctex forward synchronization, please look at the *--synctex-forward*
+Both SyncTeX forward and backwards synchronization are supported by zathura, To
+enable SyncTeX forward synchronization, please look at the *--synctex-forward*
 and *--synctex-editor* options. zathura will also emit a signal via the D-Bus
 interface. To support synctex backwards synchronization, zathura provides a
 D-Bus interface that can be called by the editor. For convince zathura also
@@ -359,15 +359,15 @@ ZATHURA_PLUGINS_PATH
 Sandbox
 -------
 
-The **zathura-sandbox** binary runs *zathura* with a seccomp and/or landlock
+The **zathura-sandbox** binary runs zathura with a seccomp and/or landlock
 based sandbox enabled. Some features are disabled when using sandbox mode:
 
 * saving/writing files
 * use of input methods like ibus
 * printing
 * bookmarks and history
-* dbus integration
-* synctex support
+* D-Bus integration
+* SyncTeX support
 
 The sandbox mode is still experimental with some libc implementations. The
 current supported and tested libc implementations is glibc.
