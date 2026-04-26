@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 19:21+0200\n"
+"POT-Creation-Date: 2026-04-26 21:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: fri, 2016-2018,2022\n"
 "Language-Team: Czech (http://app.transifex.com/pwmt/zathura/language/cs/)\n"
@@ -1338,71 +1338,71 @@ msgstr "První vydání"
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;dokument;představení;prohlížeč;"
 
-#: zathura/callbacks.c:297
+#: zathura/callbacks.c:311
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' nesmí být 0. Nastaveno na 1."
 
-#: zathura/callbacks.c:386
+#: zathura/callbacks.c:400
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Neplatný vstup: %s"
 
-#: zathura/callbacks.c:409
+#: zathura/callbacks.c:423
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Neplatný rejstřík: %s"
 
-#: zathura/callbacks.c:622
+#: zathura/callbacks.c:636
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "Vybraný text zkopírován do výběru %s: %s"
 
-#: zathura/callbacks.c:648
+#: zathura/callbacks.c:662
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "Vybraný text zkopírován do výběru %s"
 
-#: zathura/commands.c:39 zathura/commands.c:77 zathura/commands.c:102
+#: zathura/commands.c:38 zathura/commands.c:76 zathura/commands.c:101
 #: zathura/commands.c:127 zathura/commands.c:159 zathura/commands.c:221
-#: zathura/commands.c:329 zathura/commands.c:359 zathura/commands.c:384
-#: zathura/commands.c:491 zathura/commands.c:660 zathura/shortcuts.c:161
+#: zathura/commands.c:330 zathura/commands.c:360 zathura/commands.c:385
+#: zathura/commands.c:492 zathura/commands.c:661 zathura/shortcuts.c:161
 #: zathura/shortcuts.c:504 zathura/shortcuts.c:1225 zathura/shortcuts.c:1258
 #: zathura/shortcuts.c:1283 zathura/shortcuts.c:1379
 msgid "No document opened."
 msgstr "Není otevřený žádný dokument."
 
-#: zathura/commands.c:45 zathura/commands.c:83 zathura/commands.c:133
-#: zathura/commands.c:177 zathura/commands.c:496
+#: zathura/commands.c:44 zathura/commands.c:82 zathura/commands.c:133
+#: zathura/commands.c:177 zathura/commands.c:497
 msgid "Invalid number of arguments given."
 msgstr "Špatný počet argumentů."
 
-#: zathura/commands.c:56
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "Nepodařilo se vytvořit záložku: %s"
 
-#: zathura/commands.c:58
+#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Nepodařilo se vytvořit záložku: %s"
 
-#: zathura/commands.c:63
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Záložka úspěšně aktualizována: %s"
 
-#: zathura/commands.c:65
+#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Záložka úspěšně vytvořena: %s"
 
-#: zathura/commands.c:89
+#: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Záložka smazána: %s"
 
-#: zathura/commands.c:91
+#: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Nepodařilo se smazat záložku: %s"
@@ -1473,80 +1473,80 @@ msgstr "Formát"
 msgid "Other"
 msgstr "Jiné"
 
-#: zathura/commands.c:245 zathura/commands.c:263
+#: zathura/commands.c:245 zathura/commands.c:264
 msgid "No information available."
 msgstr "Nejsou dostupné žádné informace."
 
-#: zathura/commands.c:273
+#: zathura/commands.c:274
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 "Další informace najdete v manuálových stránkách zathura(1) a zathurarc(5)."
 
-#: zathura/commands.c:299 zathura/commands.c:706 girara-gtk/commands.c:550
+#: zathura/commands.c:300 zathura/commands.c:707 girara-gtk/commands.c:550
 msgid "Too many arguments."
 msgstr "Příliš mnoho argumentů."
 
-#: zathura/commands.c:310
+#: zathura/commands.c:311
 msgid "No arguments given."
 msgstr "Nezadali jste argumenty."
 
-#: zathura/commands.c:334
+#: zathura/commands.c:335
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "Tisk není v režimu přísného pískoviště dovolen"
 
-#: zathura/commands.c:355 zathura/commands.c:380
+#: zathura/commands.c:356 zathura/commands.c:381
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Ukládání není ve striktním režimu sandboxu povoleno"
 
-#: zathura/commands.c:366 zathura/commands.c:391
+#: zathura/commands.c:367 zathura/commands.c:392
 msgid "Invalid number of arguments."
 msgstr "Špatný počet argumentů."
 
-#: zathura/commands.c:486
+#: zathura/commands.c:487
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr "Export příloh není ve striktním režimu sandboxu povolen"
 
-#: zathura/commands.c:518
+#: zathura/commands.c:519
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Nepovedlo se zapsat přílohu '%s' do '%s'."
 
-#: zathura/commands.c:520
+#: zathura/commands.c:521
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Příloha '%s' zapsána do '%s'."
 
-#: zathura/commands.c:564
+#: zathura/commands.c:565
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Obrázek '%s' zapsán do '%s'."
 
-#: zathura/commands.c:566
+#: zathura/commands.c:567
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Nepovedlo se zapsat obrázek '%s' do '%s'."
 
-#: zathura/commands.c:572
+#: zathura/commands.c:573
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Neznámý obrázek '%s'."
 
-#: zathura/commands.c:576
+#: zathura/commands.c:577
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Neznámá příloha nebo obrázek '%s'."
 
-#: zathura/commands.c:604
+#: zathura/commands.c:605
 #, c-format
 msgid "Failed to execute command: %s"
 msgstr "Nepodařilo se spustit příkaz: %s"
 
-#: zathura/commands.c:617
+#: zathura/commands.c:618
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Spouštění není v režimu přísného pískoviště dovoleno"
 
-#: zathura/commands.c:673
+#: zathura/commands.c:674
 msgid "Argument must be a number."
 msgstr "Argumentem musí být číslo."
 
@@ -2076,30 +2076,47 @@ msgstr "Zdrojový nastavovací soubor"
 msgid "Failed to run xdg-open."
 msgstr "Nepodařilo se spustit xdg-open."
 
-#: zathura/links.c:223
+#: zathura/links.c:245
+msgid "y"
+msgstr ""
+
+#: zathura/links.c:245
+msgid "Y"
+msgstr ""
+
+#: zathura/links.c:261
+msgid "Cancelled."
+msgstr ""
+
+#: zathura/links.c:275
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr ""
+
+#: zathura/links.c:307
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Otevírání vnějších programů v režimu přísného pískoviště není dovoleno"
 
-#: zathura/links.c:258
+#: zathura/links.c:342
 #, c-format
 msgid "Link: page %d"
 msgstr "Odkaz: strana %d"
 
-#: zathura/links.c:264
+#: zathura/links.c:349
 #, c-format
 msgid "Link: %s"
 msgstr "Odkaz: %s"
 
-#: zathura/links.c:267 zathura/links.c:289
+#: zathura/links.c:353 zathura/links.c:377
 msgid "Link: Invalid"
 msgstr "Odkaz: Neplatný"
 
-#: zathura/links.c:278
+#: zathura/links.c:364
 #, c-format
 msgid "Copied page number: %d"
 msgstr "Číslo zkopírované strany: %d"
 
-#: zathura/links.c:286
+#: zathura/links.c:373
 #, c-format
 msgid "Copied link: %s"
 msgstr "Zkopírovaný odkaz: %s"
@@ -2168,7 +2185,7 @@ msgstr "Záložka pro přechod na"
 msgid "Search for the given phrase and display results"
 msgstr "Vyhledat zadaný výraz a zobrazit výsledky"
 
-#: zathura/page-widget.c:632
+#: zathura/page-widget.c:630
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2181,45 +2198,45 @@ msgstr ""
 "  %s\n"
 "dne %s."
 
-#: zathura/page-widget.c:640
+#: zathura/page-widget.c:637
 msgid "Signature certificate is expired."
 msgstr "Certifikát podpisu vypršel."
 
-#: zathura/page-widget.c:644
+#: zathura/page-widget.c:641
 msgid "Signature certificate is revoked."
 msgstr "Certifikát podpisu byl odvolán."
 
-#: zathura/page-widget.c:648
+#: zathura/page-widget.c:645
 msgid "Signature certificate is not trusted."
 msgstr "Certifikát podpisu není důvěryhodný."
 
-#: zathura/page-widget.c:652
+#: zathura/page-widget.c:649
 msgid "Signature certificate is invalid."
 msgstr "Certifikát podpisu je neplatný."
 
-#: zathura/page-widget.c:656
+#: zathura/page-widget.c:653
 msgid "Signature is invalid."
 msgstr "Podpis je neplatný."
 
-#: zathura/page-widget.c:737
+#: zathura/page-widget.c:734
 msgid "Loading..."
 msgstr "Nahrává se..."
 
-#: zathura/page-widget.c:1236
+#: zathura/page-widget.c:1232
 msgid "Copy image"
 msgstr "Kopírovat obrázek"
 
-#: zathura/page-widget.c:1237
+#: zathura/page-widget.c:1233
 msgid "Save image as"
 msgstr "Uložit obrázek jako"
 
 #. Update statusbar.
-#: zathura/print.c:94
+#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "Tiskne se strana %d ..."
 
-#: zathura/print.c:166
+#: zathura/print.c:167
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Nepodařilo se vytisknout: %s"
@@ -2247,43 +2264,43 @@ msgstr ""
 msgid "Pattern not found: %s"
 msgstr "Vzor nenalezen: %s"
 
-#: zathura/zathura.c:319 zathura/zathura.c:1495
+#: zathura/zathura.c:317 zathura/zathura.c:1493
 msgid "[No name]"
 msgstr "[Nepojmenovaný]"
 
-#: zathura/zathura.c:729
+#: zathura/zathura.c:727
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Nepodařilo se přečíst soubor z stdin a zapsat jej do dočasného souboru."
 
-#: zathura/zathura.c:747
+#: zathura/zathura.c:745
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Nepodařilo se přečíst soubor z GIO a zkopírovat jej do dočasného souboru."
 
-#: zathura/zathura.c:838
+#: zathura/zathura.c:836
 msgid "Enter password:"
 msgstr "Zadat heslo:"
 
-#: zathura/zathura.c:931
+#: zathura/zathura.c:929
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 "Nepodporovaný typ souboru. Nainstalujte, prosím, nezbytný přídavný modul."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:938
 msgid "Document does not contain any pages"
 msgstr "Dokument neobsahuje žádné strany"
 
-#: zathura/zathura.c:1306
+#: zathura/zathura.c:1304
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "Soubor již existuje: %s. K jeho přepsání použijte příkaz :write!."
 
-#: zathura/zathura.c:1313
+#: zathura/zathura.c:1311
 msgid "Failed to save document."
 msgstr "Nepovedlo se uložit dokument."
 
-#: zathura/zathura.c:1317
+#: zathura/zathura.c:1315
 msgid "Document saved."
 msgstr "Dokument uložen."
 
@@ -2363,12 +2380,3 @@ msgstr "Předán neplatný počet argumentů: %zu místo 1"
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr "Nepodařilo se zapsat JSON: %s"
-
-#~ msgid "Some other bug fixes and updated translations"
-#~ msgstr "Některé další opravy chyb a aktualizované překlady"
-
-#~ msgid "Better GTK3 integration"
-#~ msgstr "Lepší integrace GTK3"
-
-#~ msgid "New languages"
-#~ msgstr "Nové jazyky"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 19:21+0200\n"
+"POT-Creation-Date: 2026-04-26 21:33+0200\n"
 "PO-Revision-Date: 2026-02-21 13:30+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Georgian (http://app.transifex.com/pwmt/zathura/language/"
@@ -16,7 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 3.8\n"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
@@ -211,9 +210,8 @@ msgid "Fix warnings from CSS generation (#824)"
 msgstr "ფიქს ვარნინგს ფრომ კსს გენერატიონ (#824)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:136
-#, fuzzy
 msgid "Apply correct scaling when recoloring (#836)"
-msgstr "აპპლი კორრეეკტ სჰაკლინგ ვჰენ რეკოლორინგ (#836)"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:137
 msgid "Make sure jumplist stays valid after close (#835)"
@@ -248,9 +246,8 @@ msgid "Make index-* configurable after init (#799)"
 msgstr "მაკე index-* კონფიგურაბლე აფტერ ინიტ (#799)"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:163
-#, fuzzy
 msgid "Support numeric keypad mappings"
-msgstr "სუპპორტ ნუმბერიკ კეიპად მაპპინგს"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:164
 msgid "Provide correct number of pages (#814)"
@@ -261,9 +258,8 @@ msgid "Undo size-allocate callback changes"
 msgstr "უნდო size-allocate კალლბაკკ კჰანგეს"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:166
-#, fuzzy
 msgid "Fix temporary file names for better content-type detection"
-msgstr "ფიქს ტემპორარი ფაილი ნამს ფორ ბეტტერ კონტენტ-ტიპე დეტეკტიონ"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:175
 msgid "Validate appstream files with appstreamcli"
@@ -290,9 +286,8 @@ msgid "Refactor rendering of pages"
 msgstr "რეფაკტორ რენდერინგ ოფ გვერდები"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:189
-#, fuzzy
 msgid "Add lightness adjustment for recoloring"
-msgstr "ადდ ლიგჰტნესს ადჯუსტმენტ ფორ რეკოლერინგ"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:190
 msgid "Initial support for OpenBSD sandbox"
@@ -315,9 +310,8 @@ msgid "Hide page label if the same as page number"
 msgstr "დამალვა გვერდი ლაბელ იფ ტჰე სამე ას გვერდი ნუმბერ"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:207
-#, fuzzy
 msgid "Cache SyncTeX parser for faster operation"
-msgstr "კაკჰე სინკტექს პარსერ ფორ ფასტერ ოპერატიონ"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:208
 msgid "Revert changes for documents with multiple page sizes"
@@ -436,9 +430,8 @@ msgid "Account for page padding in full scroll"
 msgstr "აკკოუნტ ფორ გვერდი პადდინგ ინ ფულლ სკროლლ"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:290
-#, fuzzy
 msgid "Add foreground color for links"
-msgstr "ადდ ფორეფგროუნდ ფერი ფორ ლინკს"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:291
 msgid "Add :save and :save! aliases for :write and :write!"
@@ -618,9 +611,8 @@ msgid "Take advantage of shared or system SyncTex parser library"
 msgstr "ტაკე ადვანტაგე ოფ სჰარედ ორ სისტემ სინკტექს პარსერ ლიბრარი"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:437
-#, fuzzy
 msgid "Update dependency version of girara"
-msgstr "უპდატედ დეპენდენკი ვერსიონ ოფ გირარა"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Better SyncTex support"
@@ -849,18 +841,16 @@ msgid "Page aware scrolling"
 msgstr "გვერდი ავარე სკროლლინგ"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:531
-#, fuzzy
 msgid "SyncTeX forward synchronisation"
-msgstr "სინკტექს ფორვარდ სინკჰრონისატიონ"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:532
 msgid "Update shortcuts"
 msgstr "უპდატე სჰორტკუტს"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:539
-#, fuzzy
 msgid "SyncTeX backwards synchronisation"
-msgstr "სინტექს ბაკკვარდს სინკჰრონისატიონ"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Fix request-page-setup"
@@ -1055,9 +1045,8 @@ msgid "Fix input issues in fullscreen mode"
 msgstr "ფიქს ინპუტ ისსუეს ინ ფულლსკრეენ მოდე"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:620
-#, fuzzy
 msgid "Update text searching"
-msgstr "უპდატედ ტექსტ სეარკჰინგ"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:621
 msgid "Support for poppler >= 0.15"
@@ -1111,9 +1100,8 @@ msgstr "ფაილი რელოადინგ ფიქს"
 #: data/org.pwmt.zathura.metainfo.xml.in:660
 #: data/org.pwmt.zathura.metainfo.xml.in:677
 #: data/org.pwmt.zathura.metainfo.xml.in:686
-#, fuzzy
 msgid "Update manpage"
-msgstr "უპდატედ მანპაგე"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:644
 msgid "Fixed critical usability bug"
@@ -1174,9 +1162,8 @@ msgid "Fixation of the URI command"
 msgstr "ფიქსატიონ ოფ ტჰე ური კომმანდ"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:667
-#, fuzzy
 msgid "Update the behaviour of sc_scroll"
-msgstr "უპდატედ ტჰე ბეჰავიოურ ოფ sc_scroll"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:668
 msgid "Half/Full-page scrolling"
@@ -1336,71 +1323,71 @@ msgstr "ინიტიალ რელეასე"
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;დოკუმენტი;პრესენტატიონ;ვიევერ;"
 
-#: zathura/callbacks.c:297
+#: zathura/callbacks.c:311
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' მუსტ ნოტ ბე 0. სეტ ტო 1."
 
-#: zathura/callbacks.c:386
+#: zathura/callbacks.c:400
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "არასწორი ინპუტ '%s' გივენ."
 
-#: zathura/callbacks.c:409
+#: zathura/callbacks.c:423
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "არასწორი ინდექს '%s' გივენ."
 
-#: zathura/callbacks.c:622
+#: zathura/callbacks.c:636
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "კოპიედ სელეკტედ ტექსტ ტო სელეკტიონ %s: %s"
 
-#: zathura/callbacks.c:648
+#: zathura/callbacks.c:662
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "კოპიედ სელეკტედ იმაგე ტო სელეკტიონ %s"
 
-#: zathura/commands.c:39 zathura/commands.c:77 zathura/commands.c:102
+#: zathura/commands.c:38 zathura/commands.c:76 zathura/commands.c:101
 #: zathura/commands.c:127 zathura/commands.c:159 zathura/commands.c:221
-#: zathura/commands.c:329 zathura/commands.c:359 zathura/commands.c:384
-#: zathura/commands.c:491 zathura/commands.c:660 zathura/shortcuts.c:161
+#: zathura/commands.c:330 zathura/commands.c:360 zathura/commands.c:385
+#: zathura/commands.c:492 zathura/commands.c:661 zathura/shortcuts.c:161
 #: zathura/shortcuts.c:504 zathura/shortcuts.c:1225 zathura/shortcuts.c:1258
 #: zathura/shortcuts.c:1283 zathura/shortcuts.c:1379
 msgid "No document opened."
 msgstr "ნო დოკუმენტი ოპენედ."
 
-#: zathura/commands.c:45 zathura/commands.c:83 zathura/commands.c:133
-#: zathura/commands.c:177 zathura/commands.c:496
+#: zathura/commands.c:44 zathura/commands.c:82 zathura/commands.c:133
+#: zathura/commands.c:177 zathura/commands.c:497
 msgid "Invalid number of arguments given."
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს გივენ."
 
-#: zathura/commands.c:56
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "კოულდ ნოტ უპდატე ბოოკმარკ: %s"
 
-#: zathura/commands.c:58
+#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "კოულდ ნოტ კრეატე ბოოკმარკ: %s"
 
-#: zathura/commands.c:63
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "სანიშნე სუკკესსფულლი უპდატედ: %s"
 
-#: zathura/commands.c:65
+#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "სანიშნე სუკკესსფულლი კრეატედ: %s"
 
-#: zathura/commands.c:89
+#: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "რემოვედ ბოოკმარკ: %s"
 
-#: zathura/commands.c:91
+#: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "ფაილედ ტო რემოვე ბოოკმარკ: %s"
@@ -1471,81 +1458,81 @@ msgstr "ფორმატ"
 msgid "Other"
 msgstr "ოტჰერ"
 
-#: zathura/commands.c:245 zathura/commands.c:263
+#: zathura/commands.c:245 zathura/commands.c:264
 msgid "No information available."
 msgstr "ნო ინფორმატიონ ავაილაბლე."
 
-#: zathura/commands.c:273
+#: zathura/commands.c:274
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 "პლეასე კჰეკკ ტჰე მან გვერდები zathura(1) ანდ zathurarc(5) ფორ მორე "
 "ინფორმატიონ."
 
-#: zathura/commands.c:299 zathura/commands.c:706 girara-gtk/commands.c:550
+#: zathura/commands.c:300 zathura/commands.c:707 girara-gtk/commands.c:550
 msgid "Too many arguments."
 msgstr "ტოო მანი არგუმენტს."
 
-#: zathura/commands.c:310
+#: zathura/commands.c:311
 msgid "No arguments given."
 msgstr "ნო არგუმენტს გივენ."
 
-#: zathura/commands.c:334
+#: zathura/commands.c:335
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "პრინტინგ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:355 zathura/commands.c:380
+#: zathura/commands.c:356 zathura/commands.c:381
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "სავინგ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:366 zathura/commands.c:391
+#: zathura/commands.c:367 zathura/commands.c:392
 msgid "Invalid number of arguments."
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს."
 
-#: zathura/commands.c:486
+#: zathura/commands.c:487
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr "ექსპორტინგ ატტაკჰმენტს ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:518
+#: zathura/commands.c:519
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "კოულდნ'ტ ვრიტე ატტაკჰმენტ '%s' ტო '%s'."
 
-#: zathura/commands.c:520
+#: zathura/commands.c:521
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "ვროტე ატტაკჰმენტ '%s' ტო '%s'."
 
-#: zathura/commands.c:564
+#: zathura/commands.c:565
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "ვროტე იმაგე '%s' ტო '%s'."
 
-#: zathura/commands.c:566
+#: zathura/commands.c:567
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "კოულდნ'ტ ვრიტე იმაგე '%s' ტო '%s'."
 
-#: zathura/commands.c:572
+#: zathura/commands.c:573
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "უნკნოვნ იმაგე '%s'."
 
-#: zathura/commands.c:576
+#: zathura/commands.c:577
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "უნკნოვნ ატტაკჰმენტ ორ იმაგე '%s'."
 
-#: zathura/commands.c:604
+#: zathura/commands.c:605
 #, c-format
 msgid "Failed to execute command: %s"
 msgstr "ფაილედ ტო ექსეკუტე კომმანდ: %s"
 
-#: zathura/commands.c:617
+#: zathura/commands.c:618
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "ექსეკ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:673
+#: zathura/commands.c:674
 msgid "Argument must be a number."
 msgstr "არგუმენტ მუსტ ბე ა ნუმბერ."
 
@@ -2075,31 +2062,48 @@ msgstr "სოურკე კონფიგ ფაილი"
 msgid "Failed to run xdg-open."
 msgstr "ფაილედ ტო რუნ ქსდგ-ოპენ."
 
-#: zathura/links.c:223
+#: zathura/links.c:245
+msgid "y"
+msgstr ""
+
+#: zathura/links.c:245
+msgid "Y"
+msgstr ""
+
+#: zathura/links.c:261
+msgid "Cancelled."
+msgstr ""
+
+#: zathura/links.c:275
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr ""
+
+#: zathura/links.c:307
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 "ოპენინგ ექსტერნალ აპპლიკატიონს ინ სტრიკტ სანდბოქს მოდე ის ნოტ პერმიტტედ"
 
-#: zathura/links.c:258
+#: zathura/links.c:342
 #, c-format
 msgid "Link: page %d"
 msgstr "ბმული: გვერდი %d"
 
-#: zathura/links.c:264
+#: zathura/links.c:349
 #, c-format
 msgid "Link: %s"
 msgstr "ბმული: %s"
 
-#: zathura/links.c:267 zathura/links.c:289
+#: zathura/links.c:353 zathura/links.c:377
 msgid "Link: Invalid"
 msgstr "ბმული: არასწორი"
 
-#: zathura/links.c:278
+#: zathura/links.c:364
 #, c-format
 msgid "Copied page number: %d"
 msgstr "კოპიედ გვერდი ნუმბერ: %d"
 
-#: zathura/links.c:286
+#: zathura/links.c:373
 #, c-format
 msgid "Copied link: %s"
 msgstr "კოპიედ ლინკ: %s"
@@ -2168,7 +2172,7 @@ msgstr "სანიშნე ტო გო ტო"
 msgid "Search for the given phrase and display results"
 msgstr "ძიება ფორ ტჰე გივენ პჰრასე ანდ დისპლაი რესულტს"
 
-#: zathura/page-widget.c:632
+#: zathura/page-widget.c:630
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2177,45 +2181,45 @@ msgid ""
 "on %s."
 msgstr ""
 
-#: zathura/page-widget.c:640
+#: zathura/page-widget.c:637
 msgid "Signature certificate is expired."
 msgstr "ხელმოწერა კერტიფიკატე ის ექსპირედ."
 
-#: zathura/page-widget.c:644
+#: zathura/page-widget.c:641
 msgid "Signature certificate is revoked."
 msgstr "ხელმოწერა კერტიფიკატე ის რევოკედ."
 
-#: zathura/page-widget.c:648
+#: zathura/page-widget.c:645
 msgid "Signature certificate is not trusted."
 msgstr "ხელმოწერა კერტიფიკატე ის ნოტ ტრუსტედ."
 
-#: zathura/page-widget.c:652
+#: zathura/page-widget.c:649
 msgid "Signature certificate is invalid."
 msgstr "ხელმოწერა კერტიფიკატე ის ინვალიდ."
 
-#: zathura/page-widget.c:656
+#: zathura/page-widget.c:653
 msgid "Signature is invalid."
 msgstr "ხელმოწერა ის ინვალიდ."
 
-#: zathura/page-widget.c:737
+#: zathura/page-widget.c:734
 msgid "Loading..."
 msgstr "იტვირთება..."
 
-#: zathura/page-widget.c:1236
+#: zathura/page-widget.c:1232
 msgid "Copy image"
 msgstr "კოპირება იმაგე"
 
-#: zathura/page-widget.c:1237
+#: zathura/page-widget.c:1233
 msgid "Save image as"
 msgstr "შენახვა იმაგე ას"
 
 #. Update statusbar.
-#: zathura/print.c:94
+#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "პრინტინგ გვერდი %d ..."
 
-#: zathura/print.c:166
+#: zathura/print.c:167
 #, c-format
 msgid "Printing failed: %s"
 msgstr "პრინტინგ ფაილედ: %s"
@@ -2243,40 +2247,40 @@ msgstr ""
 msgid "Pattern not found: %s"
 msgstr "პატტერნ ნოტ ფოუნდ: %s"
 
-#: zathura/zathura.c:319 zathura/zathura.c:1495
+#: zathura/zathura.c:317 zathura/zathura.c:1493
 msgid "[No name]"
 msgstr "[ნო ნამე]"
 
-#: zathura/zathura.c:729
+#: zathura/zathura.c:727
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "კოულდ ნოტ რეად ფაილი ფრომ სტდინ ანდ ვრიტე იტ ტო ა ტემპორარი ფაილი."
 
-#: zathura/zathura.c:747
+#: zathura/zathura.c:745
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "კოულდ ნოტ რეად ფაილი ფრომ გიო ანდ კოპი იტ ტო ა ტემპორარი ფაილი."
 
-#: zathura/zathura.c:838
+#: zathura/zathura.c:836
 msgid "Enter password:"
 msgstr "ენტერ პასსვორდ:"
 
-#: zathura/zathura.c:931
+#: zathura/zathura.c:929
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "უნსუპპორტედ ფაილი ტიპე. პლეასე ინსტალლ ტჰე ნეკესსარი პლუგინ."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:938
 msgid "Document does not contain any pages"
 msgstr "დოკუმენტი დოეს ნოტ კონტაინ ანი გვერდები"
 
-#: zathura/zathura.c:1306
+#: zathura/zathura.c:1304
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "ფაილი ალრეადი ექსისტს: %s. უსე :ვრიტე! ტო ოვერვრიტე იტ."
 
-#: zathura/zathura.c:1313
+#: zathura/zathura.c:1311
 msgid "Failed to save document."
 msgstr "ფაილედ ტო სავე დოკუმენტი."
 
-#: zathura/zathura.c:1317
+#: zathura/zathura.c:1315
 msgid "Document saved."
 msgstr "დოკუმენტი სავედ."
 
@@ -2356,12 +2360,3 @@ msgstr "არასწორი ნუმბერ ოფ არგუმენ
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr "ფაილედ ტო ვრიტე JSON: %s"
-
-#~ msgid "Some other bug fixes and updated translations"
-#~ msgstr "სომე ოტჰერ ბუგ ფიქსეს ანდ უპდატედ ტრანსლატიონს"
-
-#~ msgid "Better GTK3 integration"
-#~ msgstr "ბეტტერ GTK3 ინტეგრატიონ"
-
-#~ msgid "New languages"
-#~ msgstr "ნევ ლანგუაგეს"

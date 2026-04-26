@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 19:21+0200\n"
+"POT-Creation-Date: 2026-04-26 21:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -1338,71 +1338,71 @@ msgstr "Första utgåvan"
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;dokument;presentation;visare;"
 
-#: zathura/callbacks.c:297
+#: zathura/callbacks.c:311
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "”%s” får inte vara 0. Satt till 1."
 
-#: zathura/callbacks.c:386
+#: zathura/callbacks.c:400
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Ogiltig indata ”%s” angiven."
 
-#: zathura/callbacks.c:409
+#: zathura/callbacks.c:423
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Ogiltigt index ”%s” angivet."
 
-#: zathura/callbacks.c:622
+#: zathura/callbacks.c:636
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "Kopiera markerad text till marking %s: %s"
 
-#: zathura/callbacks.c:648
+#: zathura/callbacks.c:662
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "Kopiera markerad bild till markering %s"
 
-#: zathura/commands.c:39 zathura/commands.c:77 zathura/commands.c:102
+#: zathura/commands.c:38 zathura/commands.c:76 zathura/commands.c:101
 #: zathura/commands.c:127 zathura/commands.c:159 zathura/commands.c:221
-#: zathura/commands.c:329 zathura/commands.c:359 zathura/commands.c:384
-#: zathura/commands.c:491 zathura/commands.c:660 zathura/shortcuts.c:161
+#: zathura/commands.c:330 zathura/commands.c:360 zathura/commands.c:385
+#: zathura/commands.c:492 zathura/commands.c:661 zathura/shortcuts.c:161
 #: zathura/shortcuts.c:504 zathura/shortcuts.c:1225 zathura/shortcuts.c:1258
 #: zathura/shortcuts.c:1283 zathura/shortcuts.c:1379
 msgid "No document opened."
 msgstr "Inget dokument öppnat."
 
-#: zathura/commands.c:45 zathura/commands.c:83 zathura/commands.c:133
-#: zathura/commands.c:177 zathura/commands.c:496
+#: zathura/commands.c:44 zathura/commands.c:82 zathura/commands.c:133
+#: zathura/commands.c:177 zathura/commands.c:497
 msgid "Invalid number of arguments given."
 msgstr "Ogiltigt antal argument angivna."
 
-#: zathura/commands.c:56
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "Kunde inte uppdatera bokmärke: %s"
 
-#: zathura/commands.c:58
+#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Kunde inte skapa bokmärke: %s"
 
-#: zathura/commands.c:63
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Bokmärke uppdateraderades framgångsrikt: %s"
 
-#: zathura/commands.c:65
+#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Bokmärke skapades framgångsrikt: %s"
 
-#: zathura/commands.c:89
+#: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Tog bort bokmärke: %s"
 
-#: zathura/commands.c:91
+#: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Misslyckades med att ta bort bokmärke: %s"
@@ -1473,79 +1473,79 @@ msgstr "Format"
 msgid "Other"
 msgstr "Annat"
 
-#: zathura/commands.c:245 zathura/commands.c:263
+#: zathura/commands.c:245 zathura/commands.c:264
 msgid "No information available."
 msgstr "Ingen information tillgänglig."
 
-#: zathura/commands.c:273
+#: zathura/commands.c:274
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr "Se manualsidorna zathura(1) och zathurarc(5) för mer information."
 
-#: zathura/commands.c:299 zathura/commands.c:706 girara-gtk/commands.c:550
+#: zathura/commands.c:300 zathura/commands.c:707 girara-gtk/commands.c:550
 msgid "Too many arguments."
 msgstr "Allt för många argument."
 
-#: zathura/commands.c:310
+#: zathura/commands.c:311
 msgid "No arguments given."
 msgstr "Inga argument angivna."
 
-#: zathura/commands.c:334
+#: zathura/commands.c:335
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "Utskrift stöds inte i strikt sandlådeläge"
 
-#: zathura/commands.c:355 zathura/commands.c:380
+#: zathura/commands.c:356 zathura/commands.c:381
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Sparning är inte tillåten i strikt sandlåde-läge"
 
-#: zathura/commands.c:366 zathura/commands.c:391
+#: zathura/commands.c:367 zathura/commands.c:392
 msgid "Invalid number of arguments."
 msgstr "Ogiltigt antal argument."
 
-#: zathura/commands.c:486
+#: zathura/commands.c:487
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr "Export av bilagor är inte tillåten i strikt sandlåde-läge"
 
-#: zathura/commands.c:518
+#: zathura/commands.c:519
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Kunde inte skriva bilaga ”%s” till ”%s”."
 
-#: zathura/commands.c:520
+#: zathura/commands.c:521
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Skrev bilaga ”%s” till ”%s”."
 
-#: zathura/commands.c:564
+#: zathura/commands.c:565
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Skrev bild ”%s” till ”%s”."
 
-#: zathura/commands.c:566
+#: zathura/commands.c:567
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Kunde inte skriva bild ”%s” till ”%s”."
 
-#: zathura/commands.c:572
+#: zathura/commands.c:573
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Okänd bild ”%s”."
 
-#: zathura/commands.c:576
+#: zathura/commands.c:577
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Okänd bilaga eller bild ”%s”."
 
-#: zathura/commands.c:604
+#: zathura/commands.c:605
 #, c-format
 msgid "Failed to execute command: %s"
 msgstr "Misslyckades med att köra kommando: %s"
 
-#: zathura/commands.c:617
+#: zathura/commands.c:618
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Exec tillåts inte i strikt sandlådeläge"
 
-#: zathura/commands.c:673
+#: zathura/commands.c:674
 msgid "Argument must be a number."
 msgstr "Argument måste vara ett nummer."
 
@@ -2073,30 +2073,47 @@ msgstr "Läs in konfigurationsfil"
 msgid "Failed to run xdg-open."
 msgstr "Misslyckades med att köra xdg-open."
 
-#: zathura/links.c:223
+#: zathura/links.c:245
+msgid "y"
+msgstr ""
+
+#: zathura/links.c:245
+msgid "Y"
+msgstr ""
+
+#: zathura/links.c:261
+msgid "Cancelled."
+msgstr ""
+
+#: zathura/links.c:275
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr ""
+
+#: zathura/links.c:307
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Att öppna externa program i strikt sandlådeläge tillåts inte"
 
-#: zathura/links.c:258
+#: zathura/links.c:342
 #, c-format
 msgid "Link: page %d"
 msgstr "Länk: sida %d"
 
-#: zathura/links.c:264
+#: zathura/links.c:349
 #, c-format
 msgid "Link: %s"
 msgstr "Länk: %s"
 
-#: zathura/links.c:267 zathura/links.c:289
+#: zathura/links.c:353 zathura/links.c:377
 msgid "Link: Invalid"
 msgstr "Länk: Ogiltig"
 
-#: zathura/links.c:278
+#: zathura/links.c:364
 #, c-format
 msgid "Copied page number: %d"
 msgstr "Kopierat sidnummer: %d"
 
-#: zathura/links.c:286
+#: zathura/links.c:373
 #, c-format
 msgid "Copied link: %s"
 msgstr "Kopierad länk: %s"
@@ -2165,7 +2182,7 @@ msgstr "Bokmärke att gå till"
 msgid "Search for the given phrase and display results"
 msgstr "Sök efter angiven fras och visa resultat"
 
-#: zathura/page-widget.c:632
+#: zathura/page-widget.c:630
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2178,45 +2195,45 @@ msgstr ""
 "  %s\n"
 "den %s."
 
-#: zathura/page-widget.c:640
+#: zathura/page-widget.c:637
 msgid "Signature certificate is expired."
 msgstr "Signaturcertifikatet har gått ut."
 
-#: zathura/page-widget.c:644
+#: zathura/page-widget.c:641
 msgid "Signature certificate is revoked."
 msgstr "Signaturcertifikatet är återkallat."
 
-#: zathura/page-widget.c:648
+#: zathura/page-widget.c:645
 msgid "Signature certificate is not trusted."
 msgstr "Signaturcertifikatet är inte betrott."
 
-#: zathura/page-widget.c:652
+#: zathura/page-widget.c:649
 msgid "Signature certificate is invalid."
 msgstr "Signaturcertifikatet är ogiltigt."
 
-#: zathura/page-widget.c:656
+#: zathura/page-widget.c:653
 msgid "Signature is invalid."
 msgstr "Signaturen är ogiltig."
 
-#: zathura/page-widget.c:737
+#: zathura/page-widget.c:734
 msgid "Loading..."
 msgstr "Läser in…"
 
-#: zathura/page-widget.c:1236
+#: zathura/page-widget.c:1232
 msgid "Copy image"
 msgstr "Kopiera bild"
 
-#: zathura/page-widget.c:1237
+#: zathura/page-widget.c:1233
 msgid "Save image as"
 msgstr "Spara bild som"
 
 #. Update statusbar.
-#: zathura/print.c:94
+#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "Skriver ut sida %d …"
 
-#: zathura/print.c:166
+#: zathura/print.c:167
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Utskrift misslyckades: %s"
@@ -2244,40 +2261,40 @@ msgstr ""
 msgid "Pattern not found: %s"
 msgstr "Mönster hittades inte: %s"
 
-#: zathura/zathura.c:319 zathura/zathura.c:1495
+#: zathura/zathura.c:317 zathura/zathura.c:1493
 msgid "[No name]"
 msgstr "[Namnlös]"
 
-#: zathura/zathura.c:729
+#: zathura/zathura.c:727
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunde inte läsa fil från stdin och skriva den till en temporärfil."
 
-#: zathura/zathura.c:747
+#: zathura/zathura.c:745
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "Kunde inte läsa fil från GIO och kopiera den till en temporärfil."
 
-#: zathura/zathura.c:838
+#: zathura/zathura.c:836
 msgid "Enter password:"
 msgstr "Ange lösenord:"
 
-#: zathura/zathura.c:931
+#: zathura/zathura.c:929
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Filtyp stöds ej. Installera det nödvändiga insticket."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:938
 msgid "Document does not contain any pages"
 msgstr "Dokument innehåller inga sidor"
 
-#: zathura/zathura.c:1306
+#: zathura/zathura.c:1304
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "Filen finns redan: %s. Använd :write! för att skriva över den."
 
-#: zathura/zathura.c:1313
+#: zathura/zathura.c:1311
 msgid "Failed to save document."
 msgstr "Misslyckades med att spara dokument."
 
-#: zathura/zathura.c:1317
+#: zathura/zathura.c:1315
 msgid "Document saved."
 msgstr "Dokument sparat."
 
@@ -2357,12 +2374,3 @@ msgstr "Ogiltigt antal argument skickades: %zu i stället för 1"
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr "Misslyckades med att skriva JSON: %s"
-
-#~ msgid "Some other bug fixes and updated translations"
-#~ msgstr "Några andra buggfixar och uppdaterade översättningar"
-
-#~ msgid "Better GTK3 integration"
-#~ msgstr "Bättre GTK3-integration"
-
-#~ msgid "New languages"
-#~ msgstr "Nya språk"

@@ -3,13 +3,15 @@
 #
 # Translators:
 # abouzakaria kov <zakariakov@gmail.com>, 2019
+# HiTuX <hemza.dz@gmail.com>, 2026
+# linxu user, 2026
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 19:21+0200\n"
+"POT-Creation-Date: 2026-04-26 21:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
-"Last-Translator: abouzakaria kov <zakariakov@gmail.com>, 2019\n"
+"Last-Translator: HiTuX <hemza.dz@gmail.com>, 2026\n"
 "Language-Team: Arabic (http://app.transifex.com/pwmt/zathura/language/ar/)\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -38,8 +40,9 @@ msgid ""
 "completely view and navigate through documents without using a mouse."
 msgstr ""
 "Zathura هو عارض وثائق قابل للتخصيص وعملي للغاية. فهو يوفر واجهة بسيطة وموفرة "
-"للمساحة بالإضافة إلى استخدام سهل يركز بشكل أساسي على تفاعل لوحة المفاتيح. "
-"يتيح Zathura إمكانية عرض المستندات والتنقل خلالها بدون استخدام الماوس."
+"للمساحة بالإضافة إلى سهولة إستخدام ترتكز بشكل أساسي على التفاعل عن طريق لوحة "
+"المفاتيح. Zathura يتيح إمكانية عرض المستندات والتنقل خلالها دون استخدام "
+"الفأرة."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:20
 msgid ""
@@ -49,11 +52,11 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
-msgstr "SyncTeX دعم المزامنة الأمامية والخلفية."
+msgstr "دعم المزامنة الأمامية والخلفية عن طريق SyncTeX."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:26
 msgid "Quickmarks and bookmarks."
-msgstr "سرعة العلامات والإشارات المرجعية."
+msgstr "علامات وصول سريع وإشارات مرجعية."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:27
 msgid "Automatic document reloading."
@@ -61,7 +64,7 @@ msgstr "إعادة تحميل المستندات تلقائيًا."
 
 #: data/org.pwmt.zathura.metainfo.xml.in:44
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "قراءة ملف pdf"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
@@ -426,9 +429,8 @@ msgid "Account for page padding in full scroll"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:290
-#, fuzzy
 msgid "Add foreground color for links"
-msgstr "لون المقدمة للتمييز"
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:291
 msgid "Add :save and :save! aliases for :write and :write!"
@@ -837,18 +839,16 @@ msgid "Page aware scrolling"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:531
-#, fuzzy
 msgid "SyncTeX forward synchronisation"
-msgstr "SyncTeX دعم المزامنة الأمامية والخلفية."
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:532
 msgid "Update shortcuts"
 msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:539
-#, fuzzy
 msgid "SyncTeX backwards synchronisation"
-msgstr "SyncTeX دعم المزامنة الأمامية والخلفية."
+msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Fix request-page-setup"
@@ -1293,7 +1293,7 @@ msgstr ""
 
 #: data/org.pwmt.zathura.metainfo.xml.in:727
 msgid "Highlight search results"
-msgstr "تمييز نتائج البحث"
+msgstr "إبراز نتائج البحث"
 
 #: data/org.pwmt.zathura.metainfo.xml.in:728
 msgid "Buffered commands"
@@ -1321,71 +1321,71 @@ msgstr ""
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr ""
 
-#: zathura/callbacks.c:297
+#: zathura/callbacks.c:311
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr "'%s' يجب ألا يكون 0. حدد 1."
+msgstr "'%s' يجب ألا يكون 0. مضبوط على 1."
 
-#: zathura/callbacks.c:386
+#: zathura/callbacks.c:400
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "إدخال غير صالح '%s'."
+msgstr "المدخل  '%s' غير صالح."
 
-#: zathura/callbacks.c:409
+#: zathura/callbacks.c:423
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "الفهرس غير صالح '%s'."
+msgstr "المؤشر  '%s' غير صالح."
 
-#: zathura/callbacks.c:622
+#: zathura/callbacks.c:636
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr "نسخ النص المحدد للاختيار %s: %s"
+msgstr "النص المحدد نُسخ إلى الخيار %s: %s"
 
-#: zathura/callbacks.c:648
+#: zathura/callbacks.c:662
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr "نسخ الصورة المحددة للاختيار %s"
+msgstr "الصورة المحددة نُسِخت إلى الخيار %s"
 
-#: zathura/commands.c:39 zathura/commands.c:77 zathura/commands.c:102
+#: zathura/commands.c:38 zathura/commands.c:76 zathura/commands.c:101
 #: zathura/commands.c:127 zathura/commands.c:159 zathura/commands.c:221
-#: zathura/commands.c:329 zathura/commands.c:359 zathura/commands.c:384
-#: zathura/commands.c:491 zathura/commands.c:660 zathura/shortcuts.c:161
+#: zathura/commands.c:330 zathura/commands.c:360 zathura/commands.c:385
+#: zathura/commands.c:492 zathura/commands.c:661 zathura/shortcuts.c:161
 #: zathura/shortcuts.c:504 zathura/shortcuts.c:1225 zathura/shortcuts.c:1258
 #: zathura/shortcuts.c:1283 zathura/shortcuts.c:1379
 msgid "No document opened."
-msgstr "لا يوجد وثيقة مفتوحة."
+msgstr "لم يفتح أي مستند."
 
-#: zathura/commands.c:45 zathura/commands.c:83 zathura/commands.c:133
-#: zathura/commands.c:177 zathura/commands.c:496
+#: zathura/commands.c:44 zathura/commands.c:82 zathura/commands.c:133
+#: zathura/commands.c:177 zathura/commands.c:497
 msgid "Invalid number of arguments given."
-msgstr "عدد الوسائط غير صالح ."
+msgstr "عدد الوسائط غير صحيح ."
 
-#: zathura/commands.c:56
+#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "تعذر تحديث الإشارة المرجعية: %s"
+msgstr "تعذّر تحديث الإشارة المرجعية: %s"
 
-#: zathura/commands.c:58
+#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "لا يمكن إنشاء إشارة مرجعية: %s"
+msgstr "تعذّر إنشاء إشارة مرجعية: %s"
 
-#: zathura/commands.c:63
+#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr "تم تحديث الإشارة المرجعية بنجاح: %s"
+msgstr "نجح تحديث الإشارة المرجعية: %s"
 
-#: zathura/commands.c:65
+#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr "إشارة مرجعية تم إنشاؤها بنجاح: %s"
+msgstr "نجح إنشاء الإشارة المرجعية: %s"
 
-#: zathura/commands.c:89
+#: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "العلامة المرجعية تمت إزالتها: %s"
 
-#: zathura/commands.c:91
+#: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "أخفق حذف الإشارة المرجعية: %s"
@@ -1397,7 +1397,7 @@ msgstr "لا توجد إشارات مرجعية متاحة."
 #: zathura/commands.c:140
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "لا يوجد إشارة مرجعية: %s"
+msgstr "هذه الإشارة المرجعية غير موجودة: %s"
 
 #: zathura/commands.c:169
 msgid "Argument must be a nonzero number."
@@ -1426,7 +1426,7 @@ msgstr "الموضوع"
 
 #: zathura/commands.c:233
 msgid "Keywords"
-msgstr "الكلمات الدالة"
+msgstr "الكلمات المفتاحية"
 
 #: zathura/commands.c:234
 msgid "Author"
@@ -1456,79 +1456,79 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: zathura/commands.c:245 zathura/commands.c:263
+#: zathura/commands.c:245 zathura/commands.c:264
 msgid "No information available."
 msgstr "لا توجد معلومات متاحة."
 
-#: zathura/commands.c:273
+#: zathura/commands.c:274
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 
-#: zathura/commands.c:299 zathura/commands.c:706 girara-gtk/commands.c:550
+#: zathura/commands.c:300 zathura/commands.c:707 girara-gtk/commands.c:550
 msgid "Too many arguments."
-msgstr "العديد من الوسائط."
+msgstr "عدد الوسائط كبير."
 
-#: zathura/commands.c:310
+#: zathura/commands.c:311
 msgid "No arguments given."
-msgstr "لا معلمات مقدمة."
+msgstr "لم تُعط وسائط."
 
-#: zathura/commands.c:334
+#: zathura/commands.c:335
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr "لا يُسمح بالطباعة في وضع الحماية الصارم"
+msgstr "الطباعة غير مسموح بها في وضع الحماية الصارم. "
 
-#: zathura/commands.c:355 zathura/commands.c:380
+#: zathura/commands.c:356 zathura/commands.c:381
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:366 zathura/commands.c:391
+#: zathura/commands.c:367 zathura/commands.c:392
 msgid "Invalid number of arguments."
-msgstr "عدد الوسائط غير صالح ."
+msgstr "عدد الوسائط غير صحيح ."
 
-#: zathura/commands.c:486
+#: zathura/commands.c:487
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:518
+#: zathura/commands.c:519
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "تعذر كتابة المرفق '%s' إلى '%s' ."
 
-#: zathura/commands.c:520
+#: zathura/commands.c:521
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "كتب المرفق '%s' إلى '%s'."
 
-#: zathura/commands.c:564
+#: zathura/commands.c:565
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "كتبت الصورة '%s' إلى '%s' ."
 
-#: zathura/commands.c:566
+#: zathura/commands.c:567
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "تعذر كتابة الصورة '%s' إلى '%s'."
 
-#: zathura/commands.c:572
+#: zathura/commands.c:573
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "صورة غير معروفة '%s'."
 
-#: zathura/commands.c:576
+#: zathura/commands.c:577
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "مرفق أو صورة غير معروف '%s'."
 
-#: zathura/commands.c:604
+#: zathura/commands.c:605
 #, c-format
 msgid "Failed to execute command: %s"
 msgstr ""
 
-#: zathura/commands.c:617
+#: zathura/commands.c:618
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "التنفيذ غير مسموح به في وضع الحماية الصارم"
 
-#: zathura/commands.c:673
+#: zathura/commands.c:674
 msgid "Argument must be a number."
 msgstr "يجب أن يكون الوسيط رقمًا."
 
@@ -2057,30 +2057,47 @@ msgstr "ملف إعدادات المصدر"
 msgid "Failed to run xdg-open."
 msgstr "فشل تشغيل xdg-open."
 
-#: zathura/links.c:223
+#: zathura/links.c:245
+msgid "y"
+msgstr ""
+
+#: zathura/links.c:245
+msgid "Y"
+msgstr ""
+
+#: zathura/links.c:261
+msgid "Cancelled."
+msgstr ""
+
+#: zathura/links.c:275
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr ""
+
+#: zathura/links.c:307
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "لا يُسمح بفتح التطبيقات الخارجية في وضع الحماية الصارم"
 
-#: zathura/links.c:258
+#: zathura/links.c:342
 #, c-format
 msgid "Link: page %d"
 msgstr "الرابط: الصفحة %d"
 
-#: zathura/links.c:264
+#: zathura/links.c:349
 #, c-format
 msgid "Link: %s"
 msgstr "الرابط: : %s"
 
-#: zathura/links.c:267 zathura/links.c:289
+#: zathura/links.c:353 zathura/links.c:377
 msgid "Link: Invalid"
 msgstr "الرابط: غير صالح"
 
-#: zathura/links.c:278
+#: zathura/links.c:364
 #, c-format
 msgid "Copied page number: %d"
 msgstr "تم نسخ رقم الصفحة: %d"
 
-#: zathura/links.c:286
+#: zathura/links.c:373
 #, c-format
 msgid "Copied link: %s"
 msgstr "تم نسخ الرابط: %s"
@@ -2149,7 +2166,7 @@ msgstr "الإشارة المرجعية للانتقال إليها"
 msgid "Search for the given phrase and display results"
 msgstr ""
 
-#: zathura/page-widget.c:632
+#: zathura/page-widget.c:630
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2158,45 +2175,45 @@ msgid ""
 "on %s."
 msgstr ""
 
-#: zathura/page-widget.c:640
+#: zathura/page-widget.c:637
 msgid "Signature certificate is expired."
 msgstr "انتهت صلاحية شهادة التوقيع."
 
-#: zathura/page-widget.c:644
+#: zathura/page-widget.c:641
 msgid "Signature certificate is revoked."
 msgstr "تم إلغاء شهادة التوقيع."
 
-#: zathura/page-widget.c:648
+#: zathura/page-widget.c:645
 msgid "Signature certificate is not trusted."
 msgstr "شهادة التوقيع غير موثوقة."
 
-#: zathura/page-widget.c:652
+#: zathura/page-widget.c:649
 msgid "Signature certificate is invalid."
 msgstr "شهادة التوقيع غير صالحة."
 
-#: zathura/page-widget.c:656
+#: zathura/page-widget.c:653
 msgid "Signature is invalid."
 msgstr "التوقيع غير صالح."
 
-#: zathura/page-widget.c:737
+#: zathura/page-widget.c:734
 msgid "Loading..."
 msgstr "جارٍ التحميل ..."
 
-#: zathura/page-widget.c:1236
+#: zathura/page-widget.c:1232
 msgid "Copy image"
 msgstr "انسخ الصورة"
 
-#: zathura/page-widget.c:1237
+#: zathura/page-widget.c:1233
 msgid "Save image as"
 msgstr "حفظ الصورة باسم"
 
 #. Update statusbar.
-#: zathura/print.c:94
+#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "طباعة الصفحة %d ... "
 
-#: zathura/print.c:166
+#: zathura/print.c:167
 #, c-format
 msgid "Printing failed: %s"
 msgstr "فشل الطباعة: %s"
@@ -2224,40 +2241,40 @@ msgstr ""
 msgid "Pattern not found: %s"
 msgstr "النمط غير موجود: %s"
 
-#: zathura/zathura.c:319 zathura/zathura.c:1495
+#: zathura/zathura.c:317 zathura/zathura.c:1493
 msgid "[No name]"
 msgstr "[لا اسم]"
 
-#: zathura/zathura.c:729
+#: zathura/zathura.c:727
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "لا يمكن قراءة الملف من المصدر وكتابته إلى ملف مؤقت."
 
-#: zathura/zathura.c:747
+#: zathura/zathura.c:745
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "تعذرت قراءة الملف من GIO ونسخه إلى ملف مؤقت."
 
-#: zathura/zathura.c:838
+#: zathura/zathura.c:836
 msgid "Enter password:"
 msgstr "أدخل كلمة المرور:"
 
-#: zathura/zathura.c:931
+#: zathura/zathura.c:929
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "نوع ملف غير مدعوم. الرجاء تثبيت المكون الإضافي اللازم."
 
-#: zathura/zathura.c:940
+#: zathura/zathura.c:938
 msgid "Document does not contain any pages"
 msgstr "لا يحتوي المستند على أي صفحات"
 
-#: zathura/zathura.c:1306
+#: zathura/zathura.c:1304
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "الملف موجود بالفعل: %s. استخدم ‎:write!‎ للكتابة فوقه."
 
-#: zathura/zathura.c:1313
+#: zathura/zathura.c:1311
 msgid "Failed to save document."
 msgstr "فشل في حفظ المستند."
 
-#: zathura/zathura.c:1317
+#: zathura/zathura.c:1315
 msgid "Document saved."
 msgstr "تم حفظ المستند."
 
