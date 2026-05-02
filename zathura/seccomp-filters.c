@@ -13,6 +13,8 @@
 #include <linux/sched.h> /* for clone filter */
 #include <unistd.h>      /* for fstat */
 #include <sys/mman.h>    /* for mmap/mprotect arguments */
+#include <sys/ioctl.h>   /* for TIOCSTI */
+#include <termios.h>
 
 #ifdef GDK_WINDOWING_X11
 #include <gtk/gtkx.h>
@@ -23,7 +25,7 @@
     girara_debug("adding rule " str_action " to " G_STRINGIFY(call));                                                  \
     const int err = seccomp_rule_add(ctx, action, SCMP_SYS(call), __VA_ARGS__);                                        \
     if (err < 0) {                                                                                                     \
-      girara_error("failed: %s", g_strerror(-err));                                                                    \
+      girara_error("seccomp_rule_add for " G_STRINGIFY(call) " failed: %s", g_strerror(-err));                         \
       goto out;                                                                                                        \
     }                                                                                                                  \
   } while (0)
@@ -35,13 +37,13 @@
 int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
   if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
-    girara_error("prctl SET_NO_NEW_PRIVS");
+    girara_error("prctl SET_NO_NEW_PRIVS: %s", g_strerror(errno));
     return -1;
   }
 
   /* prevent escape via ptrace */
   if (prctl(PR_SET_DUMPABLE, 0, 0, 0, 0)) {
-    girara_error("prctl PR_SET_DUMPABLE");
+    girara_error("prctl PR_SET_DUMPABLE: %s", g_strerror(errno));
     return -1;
   }
 
@@ -235,6 +237,8 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
               FD_CLOEXEC )); */
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
+  /* deny TIOCSTI to prevent keystroke injection into the controlling TTY */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), ioctl, 1, SCMP_CMP(1, SCMP_CMP_EQ, (scmp_datum_t)TIOCSTI));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 2));
 
@@ -320,11 +324,14 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* otherwise it will try to connect to X11 using inet socket protocol */
 
   /* applying filter... */
-  if (seccomp_load(ctx) >= 0) {
-    /* free ctx after the filter has been loaded into the kernel */
-    seccomp_release(ctx);
-    return 0;
+  const int load_err = seccomp_load(ctx);
+  if (load_err < 0) {
+    girara_error("seccomp_load failed: %s", g_strerror(-load_err));
+    goto out;
   }
+  /* free ctx after the filter has been loaded into the kernel */
+  seccomp_release(ctx);
+  return 0;
 
 out:
   /* something went wrong */
