@@ -986,10 +986,24 @@ static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, Gdk
     return true;
   }
 
-  zathura_page_widget_clear_selection(page);
-
   if (button->button == GDK_BUTTON_PRIMARY) { /* left click */
     if (button->type == GDK_BUTTON_PRESS) {
+      /* clear pages with a selection already */
+      if (priv->zathura != NULL && priv->zathura->pages != NULL) {
+        zathura_document_t* document = zathura_page_get_document(priv->page);
+        if (document != NULL) {
+          unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+          for (unsigned int i = 0; i < number_of_pages; i++) {
+            ZathuraPageWidget* other_page        = ZATHURA_PAGE_WIDGET(priv->zathura->pages[i]);
+            ZathuraPageWidgetPrivate* other_priv = zathura_page_widget_get_instance_private(other_page);
+
+            if (other_priv->selection.draw == true || other_priv->highlighter.draw == true) {
+              zathura_page_widget_clear_selection(other_page);
+            }
+          }
+        }
+      }
+
       /* start the selection */
       double x, y;
       rotate_point(priv->zathura, zathura_page_get_index(priv->page), button->x, button->y, &x, &y);
@@ -1177,7 +1191,14 @@ static gboolean cb_zathura_page_widget_leave_notify(GtkWidget* widget, GdkEventC
 
   ZathuraPageWidget* page        = ZATHURA_PAGE_WIDGET(widget);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(page);
-  zathura_page_widget_clear_selection(page);
+
+  bool keep_selection = false;
+  girara_setting_get(priv->zathura->ui.session, "selection-keep-highlight", &keep_selection);
+
+  if (keep_selection == false) {
+    zathura_page_widget_clear_selection(page);
+  }
+
   if (priv->mouse.over_link == true) {
     g_signal_emit(page, signals[LEAVE_LINK], 0);
     priv->mouse.over_link = false;

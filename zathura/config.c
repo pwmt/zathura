@@ -635,6 +635,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,
                      _("Disable additional information for signatures embedded in the document."),
                      cb_show_signature_info, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "selection-keep-highlight", &bool_value, BOOLEAN, false, _("Keep selection highlighted after mouse release"), NULL, NULL);
 
 
   /* Define mode-less shortcuts
