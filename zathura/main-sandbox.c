@@ -45,7 +45,11 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
 
   girara_debug("Strict sandbox preventing write and network access.");
 #ifdef WITH_LANDLOCK
-  landlock_drop_write();
+  if (landlock_drop_write() < 0) {
+    girara_error("Failed to apply landlock write restriction.");
+    zathura_free(zathura);
+    return NULL;
+  }
 #endif
 #ifdef WITH_SECCOMP
   if (seccomp_enable_strict_filter(zathura) != 0) {
