@@ -107,6 +107,10 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(inotify_rm_watch);  /* used by filemonitor */
   /* ALLOW_RULE (ioctl); specified below  */
   ALLOW_RULE(lseek);
+#if defined(__NR_lsm_get_self_attr) && defined(__SNR_lsm_get_self_attr)
+  ALLOW_RULE(lsm_get_self_attr);
+  ALLOW_RULE(lsm_list_modules);
+#endif
   /* ALLOW_RULE(lstat); unused? */
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
@@ -275,9 +279,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 
   ERRNO_RULE(openat2);
   ERRNO_RULE(pwritev2);
-#if defined(__NR_readfile) && defined(__SNR_readfile)
-  ERRNO_RULE(readfile);
-#endif
 #if defined(__NR_fchmodat2) && defined(__SNR_fchmodat2)
   ERRNO_RULE(fchmodat2);
 #endif
@@ -286,6 +287,33 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 #endif
 #if defined(__NR_mseal) && defined(__SNR_mseal)
   ERRNO_RULE(mseal);
+#endif
+  ERRNO_RULE(close_range);
+  ERRNO_RULE(epoll_pwait2);
+#if defined(__NR_futex_wait) && defined(__SNR_futex_wait)
+  ERRNO_RULE(futex_wait);
+  ERRNO_RULE(futex_wake);
+  ERRNO_RULE(futex_requeue);
+#endif
+#if defined(__NR_cachestat) && defined(__SNR_cachestat)
+  ERRNO_RULE(cachestat);
+#endif
+#if defined(__NR_statmount) && defined(__SNR_statmount)
+  ERRNO_RULE(statmount);
+  ERRNO_RULE(listmount);
+#endif
+#if defined(__NR_getxattrat) && defined(__SNR_getxattrat)
+  ERRNO_RULE(getxattrat);
+  ERRNO_RULE(setxattrat);
+  ERRNO_RULE(listxattrat);
+  ERRNO_RULE(removexattrat);
+#endif
+#if defined(__NR_file_getattr) && defined(__SNR_file_getattr)
+  ERRNO_RULE(file_getattr);
+  ERRNO_RULE(file_setattr);
+#endif
+#if defined(__NR_rseq_slice_yield) && defined(__SNR_rseq_slice_yield)
+  ERRNO_RULE(rseq_slice_yield);
 #endif
 
   /* Sandbox Status Notes:
