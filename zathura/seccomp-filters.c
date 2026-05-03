@@ -324,6 +324,14 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* otherwise it will try to connect to X11 using inet socket protocol */
 
   /* applying filter... */
+  /* synchronize the filter across all threads of the process; without this
+   * the filter would only apply to the calling thread, leaving worker
+   * threads created during zathura_init (e.g. the renderer pool) unsandboxed */
+  const int tsync_err = seccomp_attr_set(ctx, SCMP_FLTATR_CTL_TSYNC, 1);
+  if (tsync_err < 0) {
+    girara_error("seccomp_attr_set(TSYNC) failed: %s", g_strerror(-tsync_err));
+    goto out;
+  }
   const int load_err = seccomp_load(ctx);
   if (load_err < 0) {
     girara_error("seccomp_load failed: %s", g_strerror(-load_err));

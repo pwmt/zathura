@@ -33,7 +33,11 @@ static inline int landlock_restrict_self(const int ruleset_fd, const __u32 flags
 }
 #endif
 
-static int landlock_drop(__u64 fs_access) {
+#ifndef LANDLOCK_RESTRICT_SELF_TSYNC
+#define LANDLOCK_RESTRICT_SELF_TSYNC (1U << 3)
+#endif
+
+static int landlock_drop(__u64 fs_access, int abi) {
   const struct landlock_ruleset_attr ruleset_attr = {
       .handled_access_fs = fs_access,
   };
@@ -48,7 +52,12 @@ static int landlock_drop(__u64 fs_access) {
     close(ruleset_fd);
     return -1;
   }
-  if (landlock_restrict_self(ruleset_fd, 0)) {
+  /* TSYNC propagates the landlock domain to all threads of the process; without
+   * it, the domain only applies to the calling thread, leaving worker threads
+   * created during zathura_init (e.g. the renderer pool) outside the sandbox.
+   * Available since landlock ABI v8 (linux 7.0). */
+  const __u32 flags = (abi >= 8) ? LANDLOCK_RESTRICT_SELF_TSYNC : 0;
+  if (landlock_restrict_self(ruleset_fd, flags)) {
     girara_error("landlock_restrict_self failed: %s", g_strerror(errno));
     close(ruleset_fd);
     return -1;
@@ -65,11 +74,11 @@ static int landlock_drop(__u64 fs_access) {
 
 #define _LANDLOCK_ACCESS_FS_READ (LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR)
 
-/* returns 1 if landlock is supported, 0 if not, -1 on unexpected probe error */
+/* returns landlock ABI version (>=1) if supported, 0 if not, -1 on unexpected probe error */
 static int landlock_check_kernel(void) {
   int abi = landlock_create_ruleset(NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
   if (abi >= 1) {
-    return 1;
+    return abi;
   }
   if (abi == -1 && (errno == ENOSYS || errno == EOPNOTSUPP)) {
     /*
@@ -92,7 +101,7 @@ int landlock_drop_write(void) {
   if (kernel < 0) {
     return -1;
   }
-  return landlock_drop(_LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE);
+  return landlock_drop(_LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE, kernel);
 }
 
 #if 0
