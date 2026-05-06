@@ -445,7 +445,7 @@ bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, 
 
       /* possible special button */
       if ((input_length - i) >= 3 && input[i] == '<') {
-        char* end = strchr(input + i, '>');
+        const char* end = strchr(input + i, '>');
         if (end == NULL) {
           goto single_key;
         }
