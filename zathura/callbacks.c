@@ -471,16 +471,13 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session) {
   g_main_context_invoke(NULL, file_monitor_reload, session);
 }
 
-static void cb_password_dialog_hide(GtkWidget* UNUSED(w), void* data);
-
 static void password_dialog_info_free(zathura_password_dialog_info_t* dialog) {
   if (dialog == NULL) {
     return;
   }
-  if (dialog->zathura != NULL && dialog->zathura->ui.session != NULL &&
-      dialog->zathura->ui.session->gtk.inputbar_dialog != NULL) {
-    g_signal_handlers_disconnect_by_func(dialog->zathura->ui.session->gtk.inputbar_dialog, cb_password_dialog_hide,
-                                         dialog);
+  if (dialog->hide_handler != 0) {
+    g_signal_handler_disconnect(dialog->zathura->ui.session->gtk.inputbar_dialog, dialog->hide_handler);
+    dialog->hide_handler = 0;
   }
   g_free(dialog->path);
   g_free(dialog->uri);
@@ -497,8 +494,8 @@ void password_dialog_arm_hide(void* data) {
       dialog->zathura->ui.session->gtk.inputbar_dialog == NULL) {
     return;
   }
-  g_signal_connect(dialog->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_password_dialog_hide),
-                   dialog);
+  dialog->hide_handler = g_signal_connect(dialog->zathura->ui.session->gtk.inputbar_dialog, "hide",
+                                          G_CALLBACK(cb_password_dialog_hide), dialog);
 }
 
 static gboolean password_dialog(gpointer data) {
@@ -520,9 +517,10 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
     return false;
   }
 
-  /* Disconnect hide so a respawn doesn't trigger a free of dialog. */
-  g_signal_handlers_disconnect_by_func(dialog->zathura->ui.session->gtk.inputbar_dialog, cb_password_dialog_hide,
-                                       dialog);
+  if (dialog->hide_handler != 0) {
+    g_signal_handler_disconnect(dialog->zathura->ui.session->gtk.inputbar_dialog, dialog->hide_handler);
+    dialog->hide_handler = 0;
+  }
 
   g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 

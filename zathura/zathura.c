@@ -858,7 +858,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (document == NULL) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
       girara_debug("Invalid or no password.");
-      zathura_password_dialog_info_t* password_dialog_info = g_try_malloc(sizeof(zathura_password_dialog_info_t));
+      zathura_password_dialog_info_t* password_dialog_info = g_try_malloc0(sizeof(zathura_password_dialog_info_t));
       if (password_dialog_info == NULL) {
         goto error_out;
       }
