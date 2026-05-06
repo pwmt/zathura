@@ -251,11 +251,11 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
   /* This wont work yet, because PROT_EXEC is used after seccomp is called - fix by second filter? */
-  /* Prevent the creation of executeable memory */
+  /* Prevent the creation of executable memory */
   /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE |
               PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE)); */
 
-  /* Prevent the creation of executeable memory - required by some files */
+  /* Prevent the creation of executable memory - required by some files */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
    *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
    */
@@ -274,7 +274,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* Gracefully fail syscalls that may be used by dependencies in the future
      These rules will still block the syscalls but since there usually is fallback code
      for new syscalls, it will not shut down zathura and give us more time to
-     analyse the newly required syscall before potentionally allowing it.
+     analyse the newly required syscall before potentially allowing it.
   */
 
   ERRNO_RULE(openat2);
@@ -337,7 +337,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * Apply second filter after the file has been opened but before it is parsed
    * This may allow the removal of additional syscalls
    * Additional restrictions of commands such as open may be required since it won't allow opening new files
-   * Note: during rendering zathura still openes fonts, which makes this infeasible
+   * Note: during rendering zathura still opens fonts, which makes this infeasible
    * - a second landlock filter would be an alternative solution to restrict read access to /usr/share/fonts only.
    *
    * Alternative sandbox approach:

@@ -395,8 +395,8 @@ static void zathura_page_widget_set_property(GObject* object, guint prop_id, con
   case PROP_SEARCH_RESULTS:
     if (priv->search.list != NULL && priv->search.draw) {
       redraw_all_rects(pageview, priv->search.list);
-      girara_list_free(priv->search.list);
     }
+    girara_list_free(priv->search.list);
     priv->search.list = g_value_get_pointer(value);
     if (priv->search.list != NULL && priv->search.draw) {
       priv->links.draw = FALSE;
@@ -1266,8 +1266,10 @@ static void cb_menu_image_copy(GtkMenuItem* item, ZathuraPageWidget* page) {
   const int height = cairo_image_surface_get_height(surface);
 
   GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface(surface, 0, 0, width, height);
-  g_signal_emit(page, signals[IMAGE_SELECTED], 0, pixbuf);
-  g_object_unref(pixbuf);
+  if (pixbuf != NULL) {
+    g_signal_emit(page, signals[IMAGE_SELECTED], 0, pixbuf);
+    g_object_unref(pixbuf);
+  }
   cairo_surface_destroy(surface);
 
   /* reset */

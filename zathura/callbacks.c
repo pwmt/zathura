@@ -44,7 +44,7 @@ void cb_buffer_changed(girara_session_t* session) {
   char* buffer = girara_buffer_get(session);
   if (buffer != NULL) {
     girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, buffer);
-    free(buffer);
+    g_free(buffer);
   } else {
     girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, "");
   }
@@ -302,13 +302,13 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  /* pages-per-row must not be 0 */
+  /* pages-per-row is INT; reject non-positive to prevent uint reinterpret. */
   if (g_strcmp0(name, "pages-per-row") == 0) {
     unsigned int pages_per_row = *((const unsigned int*)value);
-    if (pages_per_row == 0) {
+    if ((int)pages_per_row <= 0) {
       pages_per_row = 1;
       girara_setting_set(session, name, &pages_per_row);
-      girara_notify(session, GIRARA_WARNING, _("'%s' must not be 0. Set to 1."), name);
+      girara_notify(session, GIRARA_WARNING, _("'%s' must be > 0. Set to 1."), name);
       return;
     }
   }
@@ -471,10 +471,41 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session) {
   g_main_context_invoke(NULL, file_monitor_reload, session);
 }
 
+static void cb_password_dialog_hide(GtkWidget* UNUSED(w), void* data);
+
+static void password_dialog_info_free(zathura_password_dialog_info_t* dialog) {
+  if (dialog == NULL) {
+    return;
+  }
+  if (dialog->zathura != NULL && dialog->zathura->ui.session != NULL &&
+      dialog->zathura->ui.session->gtk.inputbar_dialog != NULL) {
+    g_signal_handlers_disconnect_by_func(dialog->zathura->ui.session->gtk.inputbar_dialog, cb_password_dialog_hide,
+                                         dialog);
+  }
+  g_free(dialog->path);
+  g_free(dialog->uri);
+  g_free(dialog);
+}
+
+static void cb_password_dialog_hide(GtkWidget* UNUSED(w), void* data) {
+  password_dialog_info_free(data);
+}
+
+void password_dialog_arm_hide(void* data) {
+  zathura_password_dialog_info_t* dialog = data;
+  if (dialog == NULL || dialog->zathura == NULL || dialog->zathura->ui.session == NULL ||
+      dialog->zathura->ui.session->gtk.inputbar_dialog == NULL) {
+    return;
+  }
+  g_signal_connect(dialog->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_password_dialog_hide),
+                   dialog);
+}
+
 static gboolean password_dialog(gpointer data) {
   zathura_password_dialog_info_t* dialog = data;
 
   if (dialog != NULL) {
+    password_dialog_arm_hide(dialog);
     girara_dialog(dialog->zathura->ui.session, "Incorrect password. Enter password:", true, NULL, cb_password_dialog,
                   dialog);
   }
@@ -483,20 +514,20 @@ static gboolean password_dialog(gpointer data) {
 }
 
 gboolean cb_password_dialog(GtkEntry* entry, void* data) {
-  if (entry == NULL || data == NULL) {
-    goto error_ret;
-  }
-
   zathura_password_dialog_info_t* dialog = data;
-  if (dialog->path == NULL || dialog->zathura == NULL) {
-    goto error_free;
+  if (entry == NULL || dialog == NULL || dialog->path == NULL || dialog->zathura == NULL) {
+    password_dialog_info_free(dialog);
+    return false;
   }
 
-  char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+  /* Disconnect hide so a respawn doesn't trigger a free of dialog. */
+  g_signal_handlers_disconnect_by_func(dialog->zathura->ui.session->gtk.inputbar_dialog, cb_password_dialog_hide,
+                                       dialog);
+
+  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 
   /* no or empty password: ask again */
   if (input == NULL || strlen(input) == 0) {
-    g_free(input);
     gdk_threads_add_idle(password_dialog, dialog);
     return false;
   }
@@ -506,20 +537,10 @@ gboolean cb_password_dialog(GtkEntry* entry, void* data) {
       false) {
     gdk_threads_add_idle(password_dialog, dialog);
   } else {
-    g_free(dialog->path);
-    g_free(dialog->uri);
-    g_free(dialog);
+    password_dialog_info_free(dialog);
   }
-  g_free(input);
 
   return true;
-
-error_free:
-  g_free(dialog->path);
-  g_free(dialog);
-
-error_ret:
-  return false;
 }
 
 void cb_setting_recolor_change(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),

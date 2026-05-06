@@ -92,11 +92,11 @@ bool zathura_jumplist_load(zathura_t* zathura, const char* file);
 void zathura_jumplist_init(zathura_t* zathura, size_t max_size);
 
 /**
- * Check if the jumplist is initalized
+ * Check if the jumplist is initialized
  *
  * @param zathura The zathura session
  */
-bool zathura_jumplist_is_initalized(zathura_t* zathura);
+bool zathura_jumplist_is_initialized(zathura_t* zathura);
 
 /**
  * Clear jumplist

@@ -115,9 +115,6 @@ zathura_t* zathura_create(void) {
     goto error_out;
   }
 
-  /* set default icon */
-  girara_setting_set(zathura->ui.session, "window-icon", "org.pwmt.zathura");
-
 #ifdef G_OS_UNIX
   /* signal handler */
   zathura->signals.sigterm = g_unix_signal_add(SIGTERM, zathura_signal_sigterm, zathura);
@@ -424,6 +421,7 @@ bool zathura_init(zathura_t* zathura) {
 
   /* configuration */
   config_load_default(zathura);
+  girara_setting_set(zathura->ui.session, "window-icon", "org.pwmt.zathura");
   config_load_files(zathura);
 
   /* UI */
@@ -482,6 +480,7 @@ void zathura_free(zathura_t* zathura) {
   }
 
   document_close(zathura, false);
+  document_predecessor_free(zathura);
 
   /* MIME type detection */
   zathura_content_type_free(zathura->content_type_context);
@@ -639,7 +638,7 @@ static gchar* prepare_document_open_from_stdin(const char* path) {
     infileno = fileno(stdin);
   } else if (g_str_has_prefix(path, "/proc/self/fd/") == true) {
     char* begin = g_strrstr(path, "/") + 1;
-    gint64 temp = g_ascii_strtoll(begin, NULL, 0);
+    gint64 temp = g_ascii_strtoll(begin, NULL, 10);
     if (temp > INT_MAX || temp < 0) {
       return NULL;
     }
@@ -833,6 +832,7 @@ char* get_formatted_filename(zathura_t* zathura, bool statusbar) {
 static gboolean document_open_password_dialog(gpointer data) {
   zathura_password_dialog_info_t* password_dialog_info = data;
 
+  password_dialog_arm_hide(password_dialog_info);
   girara_dialog(password_dialog_info->zathura->ui.session, _("Enter password:"), true, NULL, cb_password_dialog,
                 password_dialog_info);
   return FALSE;
@@ -892,7 +892,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura->document = document;
 
   /* read history file */
-  girara_debug("checking for exsiting file info");
+  girara_debug("checking for existing file info");
   zathura_fileinfo_t file_info = {
       .current_page           = 0,
       .page_offset            = 0,
@@ -975,6 +975,9 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* bookmarks */
   if (zathura_bookmarks_load(zathura, file_path) == false) {
     girara_debug("Failed to load bookmarks.");
+    girara_list_free(zathura->bookmarks.bookmarks);
+    zathura->bookmarks.bookmarks = girara_sorted_list_new_with_free(
+        (girara_compare_function_t)zathura_bookmarks_compare, (girara_free_function_t)zathura_bookmark_free);
   }
 
   /* jumplist */
@@ -988,7 +991,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     zathura->global.marks = girara_list_new_with_free(g_free);
   }
 
-  if (zathura_jumplist_is_initalized(zathura) == false || zathura->global.marks == NULL) {
+  if (zathura_jumplist_is_initialized(zathura) == false || zathura->global.marks == NULL) {
     girara_error("No jumplist or no marks");
     goto error_free;
   }
@@ -1187,7 +1190,7 @@ error_out:
 
 bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri, const char* password,
                            const char* synctex) {
-  bool ret = document_open(zathura, path, password, uri, ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL);
+  bool ret = document_open(zathura, path, uri, password, ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL);
   if (ret == false) {
     return false;
   }

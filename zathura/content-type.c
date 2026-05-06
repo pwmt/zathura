@@ -21,7 +21,7 @@ zathura_content_type_context_t* zathura_content_type_new(void) {
     return NULL;
   }
 
-  /* creat magic cookie */
+  /* create magic cookie */
   static const int flags = MAGIC_ERROR | MAGIC_MIME_TYPE | MAGIC_SYMLINK | MAGIC_NO_CHECK_APPTYPE | MAGIC_NO_CHECK_CDF |
                            MAGIC_NO_CHECK_ELF | MAGIC_NO_CHECK_ENCODING;
   magic_t magic = magic_open(flags);

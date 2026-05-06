@@ -8,7 +8,7 @@ version = meson.project_version()
 version_array = version.split('.')
 
 # Rules for plugin API and ABI (non-exhaustive):
-# * zathura_plugin_function_t: If functions are addedd or removed or their
+# * zathura_plugin_function_t: If functions are added or removed or their
 #   signature changes, bump both ABI and API.
 # * zathura_plugin_definition_t: If the struct changes in an ABI-incompatible
 #   way, bump the ABI.

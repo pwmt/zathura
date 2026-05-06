@@ -164,7 +164,7 @@ void zathura_jumplist_init(zathura_t* zathura, size_t max_size) {
   zathura->jumplist.cur      = NULL;
 }
 
-bool zathura_jumplist_is_initalized(zathura_t* zathura) {
+bool zathura_jumplist_is_initialized(zathura_t* zathura) {
   return zathura->jumplist.list != NULL;
 }
 
