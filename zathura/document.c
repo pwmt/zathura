@@ -135,7 +135,9 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     g_autoptr(GFile) gf = g_file_new_for_uri(document->uri);
     document->basename  = g_file_get_basename(gf);
   }
-  hash_file_sha256(document->hash_sha256, document->file_path);
+  if (hash_file_sha256(document->hash_sha256, document->file_path) == false) {
+    girara_warning("Failed to hash file '%s'; fileinfo lookup may be unreliable.", document->file_path);
+  }
   document->password         = password;
   document->zoom             = 1.0;
   document->plugin           = plugin;

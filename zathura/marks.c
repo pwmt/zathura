@@ -113,7 +113,7 @@ bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list) {
 
   mark_add(zathura, key);
 
-  return false;
+  return true;
 }
 
 bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list) {

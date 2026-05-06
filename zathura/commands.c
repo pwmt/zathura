@@ -510,8 +510,8 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
-  static const size_t attachment_len = 11; // length of attachment-
-  static const size_t image_len      = 7;  // length of image-p
+  static const size_t attachment_len = sizeof("attachment-") - 1;
+  static const size_t image_len      = sizeof("image-p") - 1;
 
   /* attachment */
   if (strncmp(file_identifier, "attachment-", attachment_len) == 0) {
@@ -567,6 +567,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
       girara_notify(session, GIRARA_ERROR, _("Couldn't write image '%s' to '%s'."), file_identifier, file_name);
     }
 
+    cairo_surface_destroy(surface);
     return true;
 
   image_error:

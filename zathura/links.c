@@ -220,11 +220,19 @@ typedef struct {
   char* value; /**< Owned copy of the link target */
 } link_confirm_data_t;
 
+static void cb_link_confirm_hide(GtkWidget* UNUSED(w), void* data);
+
 static void link_confirm_data_free(link_confirm_data_t* data) {
-  if (data != NULL) {
-    g_free(data->value);
-    g_free(data);
+  if (data == NULL) {
+    return;
   }
+  g_signal_handlers_disconnect_by_func(data->zathura->ui.session->gtk.inputbar_dialog, cb_link_confirm_hide, data);
+  g_free(data->value);
+  g_free(data);
+}
+
+static void cb_link_confirm_hide(GtkWidget* UNUSED(w), void* data) {
+  link_confirm_data_free(data);
 }
 
 /**
@@ -274,6 +282,7 @@ static gboolean link_confirm_spawn(void* data) {
   g_autofree gchar* escaped = g_markup_escape_text(ctx->value, -1);
   g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b>? [Y/n]"), escaped);
 
+  g_signal_connect(ctx->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
   girara_dialog(ctx->zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
   return FALSE;
 }

@@ -104,6 +104,7 @@ static bool check_column(sqlite3* session, const char* table, const char* col, b
 
   sqlite3_stmt* stmt = prepare_statement(session, query);
   if (stmt == NULL) {
+    sqlite3_free(query);
     return false;
   }
 
@@ -136,6 +137,7 @@ static bool check_column_type(sqlite3* session, const char* table, const char* c
 
   sqlite3_stmt* stmt = prepare_statement(session, query);
   if (stmt == NULL) {
+    sqlite3_free(query);
     return false;
   }
 
@@ -306,7 +308,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: hadj_ration, vadj_ratio");
+        girara_warning("failed to update database table layout: hadj_ratio, vadj_ratio");
         all_updates_ok = false;
       }
     }
@@ -335,7 +337,9 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
     }
   }
   if (database_version < 2) {
-    if (sqlite3_exec(session, SQL_FILEINFO_ALTER6, NULL, 0, NULL) != SQLITE_OK) {
+    bool has_sha = false;
+    if (check_column(session, "fileinfo", "sha256", &has_sha) == false ||
+        (has_sha == false && sqlite3_exec(session, SQL_FILEINFO_ALTER6, NULL, 0, NULL) != SQLITE_OK)) {
       girara_warning("failed to update database table layout: sha256");
       all_updates_ok = false;
     }

@@ -450,7 +450,7 @@ char* increment_first_page_column(const char* first_page_column_list, const unsi
     for (unsigned int i = size; i < pages_per_row - 1; i++) {
       /* The value of the last set cell is normally used for all largers pages_per_row,
        * so duplicate it to the newly created cells. */
-      settings[i] = settings[size - 1];
+      settings[i] = size > 0 ? settings[size - 1] : 1;
     }
     settings[pages_per_row - 1] = column;
     size                        = pages_per_row;

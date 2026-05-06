@@ -251,6 +251,13 @@ static gboolean synctex_highlight_rects_impl(gpointer ptr) {
 static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rectangles, unsigned int page,
                                          unsigned number_of_pages) {
   highlights_rect_data_t* data = g_try_malloc0(sizeof(highlights_rect_data_t));
+  if (data == NULL) {
+    for (unsigned int i = 0; i != number_of_pages; ++i) {
+      girara_list_free(rectangles[i]);
+    }
+    g_free(rectangles);
+    return;
+  }
   data->zathura                = zathura;
   data->rectangles             = rectangles;
   data->page                   = page;
@@ -361,6 +368,10 @@ static gboolean synctex_view_impl(gpointer ptr) {
 
 static void synctex_view_idle(zathura_t* zathura, gchar* input_file, unsigned int line, unsigned int column) {
   view_data_t* data = g_try_malloc0(sizeof(view_data_t));
+  if (data == NULL) {
+    g_free(input_file);
+    return;
+  }
   data->zathura     = zathura;
   data->input_file  = input_file;
   data->line        = line;

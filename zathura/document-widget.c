@@ -491,8 +491,18 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
   const unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
-  priv->col_widths  = g_try_realloc_n(priv->col_widths, ncol, sizeof(document_widget_line_s));
-  priv->row_heights = g_try_realloc_n(priv->row_heights, nrow, sizeof(document_widget_line_s));
+  document_widget_line_s* tmp = g_try_realloc_n(priv->col_widths, ncol, sizeof(document_widget_line_s));
+  if (tmp == NULL) {
+    girara_error("Failed to allocate document grid (%u columns, %u rows)", ncol, nrow);
+    return;
+  }
+  priv->col_widths = tmp;
+  tmp              = g_try_realloc_n(priv->row_heights, nrow, sizeof(document_widget_line_s));
+  if (tmp == NULL) {
+    girara_error("Failed to allocate document grid (%u columns, %u rows)", ncol, nrow);
+    return;
+  }
+  priv->row_heights = tmp;
 
   priv->ncol = ncol;
   priv->nrow = nrow;

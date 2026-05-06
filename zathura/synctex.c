@@ -220,9 +220,9 @@ bool synctex_parse_input(const char* synctex, char** input_file, int* line, int*
     return false;
   }
 
-  char** split_fwd = g_strsplit(synctex, ":", 0);
-  if (split_fwd == NULL || split_fwd[0] == NULL || split_fwd[1] == NULL || split_fwd[2] == NULL ||
-      split_fwd[3] != NULL) {
+  /* "line:column:path"; path may contain colons (Windows drive letters). */
+  char** split_fwd = g_strsplit(synctex, ":", 3);
+  if (split_fwd == NULL || split_fwd[0] == NULL || split_fwd[1] == NULL || split_fwd[2] == NULL) {
     g_strfreev(split_fwd);
     return false;
   }

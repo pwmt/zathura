@@ -35,10 +35,8 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
 
     const char* path = zathura_document_get_path(document);
     if (zathura_db_remove_bookmark(zathura->database, path, old->id) == false) {
-      girara_warning("Failed to remove old bookmark from database.");
-    }
-
-    if (zathura_db_add_bookmark(zathura->database, path, old) == false) {
+      girara_warning("Failed to remove old bookmark; skipping re-add to avoid duplicate.");
+    } else if (zathura_db_add_bookmark(zathura->database, path, old) == false) {
       girara_warning("Failed to add new bookmark to database.");
     }
 

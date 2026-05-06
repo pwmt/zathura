@@ -36,14 +36,13 @@ static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t*
   const double width  = gtk_print_context_get_width(context);
   const double height = gtk_print_context_get_height(context);
 
-  const double scale_height = 5;
-  const double scale_width  = 5;
-
-  /* Render to a surface that is 5 times larger to workaround quality issues. */
-  const double page_height = zathura_page_get_height(page) * scale_height;
-  const double page_width  = zathura_page_get_width(page) * scale_width;
+  /* Render to a surface up to 5x larger; clamp to cairo's 32767 px limit. */
+  const double page_height = MIN(32767.0, zathura_page_get_height(page) * 5.0);
+  const double page_width  = MIN(32767.0, zathura_page_get_width(page) * 5.0);
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, page_width, page_height);
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    girara_warning("Failed to allocate %dx%d cairo surface for printing.", (int)page_width, (int)page_height);
+    cairo_surface_destroy(surface);
     return false;
   }
 
@@ -92,7 +91,7 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
   }
 
   /* Update statusbar. */
-  g_autofree char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number);
+  g_autofree char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number + 1);
   girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
 
   /* Get the page and cairo handle.  */

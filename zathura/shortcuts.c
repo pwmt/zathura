@@ -950,10 +950,12 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     return false;
   }
 
-  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-  GtkTreePath* path;
-  GtkTreePath* start_path;
-  GtkTreePath* end_path;
+  GList* tree_children   = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
+  GtkTreeView* tree_view = tree_children->data;
+  g_list_free(tree_children);
+  GtkTreePath* path       = NULL;
+  GtkTreePath* start_path = NULL;
+  GtkTreePath* end_path   = NULL;
 
   gtk_tree_view_get_cursor(tree_view, &path, NULL);
   if (path == NULL) {
@@ -1419,7 +1421,7 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   const int nt           = (t == 0) ? 1 : t;
-  const double zoom_step = 1.0 + value / 100.0 * nt;
+  const double zoom_step = MAX(DBL_EPSILON, 1.0 + value / 100.0 * nt);
   const double old_zoom  = zathura_document_get_zoom(zathura->document);
 
   /* specify new zoom value */
@@ -1544,7 +1546,7 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
   zathura_page_t* page      = zathura_document_get_page(zathura->document, current_page);
 
   const int nt           = (t == 0) ? 1 : t;
-  const double zoom_step = 1.0 + value / 100.0 * nt;
+  const double zoom_step = MAX(DBL_EPSILON, 1.0 + value / 100.0 * nt);
   const double old_zoom  = zathura_page_get_zoom(page);
 
   /* specify new zoom value */
