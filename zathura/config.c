@@ -458,11 +458,11 @@ void config_load_default(zathura_t* zathura) {
   girara_mode_set(gsession, zathura->modes.normal);
 
   /* values */
-  const int statusbar_h_padding = 8;
-  const int statusbar_v_padding = 2;
-  const int n_completion_items  = 15;
+  const int statusbar_h_padding         = 8;
+  const int statusbar_v_padding         = 2;
   const unsigned int window_width       = 800;
   const unsigned int window_height      = 600;
+  const unsigned int n_completion_items = 15;
 
   /* clang-format off */
   /* settings */
@@ -499,7 +499,7 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "window-height",            &window_height,       UINT,    TRUE,  _("Initial window height"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-h-padding",      &statusbar_h_padding, INT,     TRUE,  _("Horizontal padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-v-padding",      &statusbar_v_padding, INT,     TRUE,  _("Vertical padding for the status, input, and notification bars"), NULL, NULL);
-  girara_setting_add(gsession, "n-completion-items",       &n_completion_items,  INT,     TRUE,  _("Number of completion items"), NULL, NULL);
+  girara_setting_add(gsession, "n-completion-items",       &n_completion_items,  UINT,    TRUE,  _("Number of completion items"), NULL, NULL);
   girara_setting_add(gsession, "window-icon",              "",                   STRING,  FALSE, _("Window icon"), cb_window_icon, NULL);
   girara_setting_add(gsession, "exec-command",             "",                   STRING,  FALSE, _("Command to execute in :exec"), NULL, NULL);
   girara_setting_add(gsession, "guioptions",               "s",                  STRING,  FALSE, _("Show or hide certain GUI elements"), cb_guioptions, NULL);
