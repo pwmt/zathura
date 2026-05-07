@@ -301,13 +301,13 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   g_return_if_fail(session->global.data != NULL);
   zathura_t* zathura = session->global.data;
 
-  /* pages-per-row is INT; reject non-positive to prevent uint reinterpret. */
+  /* pages-per-row must not be 0 */
   if (g_strcmp0(name, "pages-per-row") == 0) {
     unsigned int pages_per_row = *((const unsigned int*)value);
-    if ((int)pages_per_row <= 0) {
+    if (pages_per_row == 0) {
       pages_per_row = 1;
       girara_setting_set(session, name, &pages_per_row);
-      girara_notify(session, GIRARA_WARNING, _("'%s' must be > 0. Set to 1."), name);
+      girara_notify(session, GIRARA_WARNING, _("'%s' must not be 0. Set to 1."), name);
       return;
     }
   }
@@ -487,14 +487,21 @@ static void cb_password_dialog_hide(GtkWidget* UNUSED(w), void* data) {
   password_dialog_info_free(data);
 }
 
-void password_dialog_arm_hide(void* data) {
-  zathura_password_dialog_info_t* dialog = data;
+static void password_dialog_arm_hide(zathura_password_dialog_info_t* dialog) {
   if (dialog == NULL || dialog->zathura == NULL || dialog->zathura->ui.session == NULL ||
       dialog->zathura->ui.session->gtk.inputbar_dialog == NULL) {
     return;
   }
   dialog->hide_handler = g_signal_connect(dialog->zathura->ui.session->gtk.inputbar_dialog, "hide",
                                           G_CALLBACK(cb_password_dialog_hide), dialog);
+}
+
+gboolean document_open_password_dialog(gpointer data) {
+  zathura_password_dialog_info_t* dialog = data;
+
+  password_dialog_arm_hide(dialog);
+  girara_dialog(dialog->zathura->ui.session, _("Enter password:"), true, NULL, cb_password_dialog, dialog);
+  return FALSE;
 }
 
 static gboolean password_dialog(gpointer data) {

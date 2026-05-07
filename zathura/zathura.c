@@ -837,15 +837,6 @@ char* get_formatted_filename(zathura_t* zathura, bool statusbar) {
   }
 }
 
-static gboolean document_open_password_dialog(gpointer data) {
-  zathura_password_dialog_info_t* password_dialog_info = data;
-
-  password_dialog_arm_hide(password_dialog_info);
-  girara_dialog(password_dialog_info->zathura->ui.session, _("Enter password:"), true, NULL, cb_password_dialog,
-                password_dialog_info);
-  return FALSE;
-}
-
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info_p) {
   if (zathura == NULL || zathura->plugins.manager == NULL || path == NULL) {

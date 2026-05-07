@@ -199,7 +199,7 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session);
  */
 gboolean cb_password_dialog(GtkEntry* entry, void* dialog);
 
-void password_dialog_arm_hide(void* dialog);
+gboolean document_open_password_dialog(gpointer data);
 
 /**
  * Emitted when the 'recolor' setting is changed
