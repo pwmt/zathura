@@ -272,6 +272,7 @@ static void zathura_page_widget_finalize(GObject* object) {
   cairo_surface_destroy(priv->thumbnail);
   girara_list_free(priv->search.list);
   girara_list_free(priv->links.list);
+  girara_list_free(priv->signatures.list);
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }

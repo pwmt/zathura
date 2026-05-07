@@ -238,11 +238,10 @@ typedef struct {
 static gboolean synctex_highlight_rects_impl(gpointer ptr) {
   highlights_rect_data_t* data = ptr;
 
+  /* synctex_highlight_rects transfers ownership of each rectangles[i] to the
+   * page widget via g_object_set "search-results"; only free the array. */
   synctex_highlight_rects(data->zathura, data->page, data->rectangles);
 
-  for (unsigned int i = 0; i != data->number_of_pages; ++i) {
-    girara_list_free(data->rectangles[i]);
-  }
   g_free(data->rectangles);
   g_free(data);
   return false;
@@ -258,10 +257,10 @@ static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rec
     g_free(rectangles);
     return;
   }
-  data->zathura                = zathura;
-  data->rectangles             = rectangles;
-  data->page                   = page;
-  data->number_of_pages        = number_of_pages;
+  data->zathura         = zathura;
+  data->rectangles      = rectangles;
+  data->page            = page;
+  data->number_of_pages = number_of_pages;
 
   gdk_threads_add_idle(synctex_highlight_rects_impl, data);
 }
@@ -372,10 +371,10 @@ static void synctex_view_idle(zathura_t* zathura, gchar* input_file, unsigned in
     g_free(input_file);
     return;
   }
-  data->zathura     = zathura;
-  data->input_file  = input_file;
-  data->line        = line;
-  data->column      = column;
+  data->zathura    = zathura;
+  data->input_file = input_file;
+  data->line       = line;
+  data->column     = column;
 
   gdk_threads_add_idle(synctex_view_impl, data);
 }

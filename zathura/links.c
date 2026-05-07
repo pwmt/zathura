@@ -283,8 +283,8 @@ static gboolean link_confirm_spawn(void* data) {
   g_autofree gchar* escaped = g_markup_escape_text(ctx->value, -1);
   g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b>? [Y/n]"), escaped);
 
-  ctx->hide_handler = g_signal_connect(ctx->zathura->ui.session->gtk.inputbar_dialog, "hide",
-                                       G_CALLBACK(cb_link_confirm_hide), ctx);
+  ctx->hide_handler =
+      g_signal_connect(ctx->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
   girara_dialog(ctx->zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
   return FALSE;
 }
