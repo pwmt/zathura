@@ -441,8 +441,8 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   widget_add_class(session->gtk.notification_text, "notification");
 
   /* set window size */
-  int window_width  = 0;
-  int window_height = 0;
+  unsigned int window_width  = 0;
+  unsigned int window_height = 0;
   girara_setting_get(session, "window-width", &window_width);
   girara_setting_get(session, "window-height", &window_height);
 

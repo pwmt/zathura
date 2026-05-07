@@ -460,9 +460,9 @@ void config_load_default(zathura_t* zathura) {
   /* values */
   const int statusbar_h_padding = 8;
   const int statusbar_v_padding = 2;
-  const int window_width        = 800;
-  const int window_height       = 600;
   const int n_completion_items  = 15;
+  const unsigned int window_width       = 800;
+  const unsigned int window_height      = 600;
 
   /* clang-format off */
   /* settings */
@@ -495,8 +495,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "scrollbar-bg",             "#000000", STRING, false, _("Scrollbar background color"), cb_color, NULL);
 
   girara_setting_add(gsession, "word-separator",           " /.-=&#?",           STRING,  TRUE,  NULL, NULL, NULL);
-  girara_setting_add(gsession, "window-width",             &window_width,        INT,     TRUE,  _("Initial window width"), NULL, NULL);
-  girara_setting_add(gsession, "window-height",            &window_height,       INT,     TRUE,  _("Initial window height"), NULL, NULL);
+  girara_setting_add(gsession, "window-width",             &window_width,        UINT,    TRUE,  _("Initial window width"), NULL, NULL);
+  girara_setting_add(gsession, "window-height",            &window_height,       UINT,    TRUE,  _("Initial window height"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-h-padding",      &statusbar_h_padding, INT,     TRUE,  _("Horizontal padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-v-padding",      &statusbar_v_padding, INT,     TRUE,  _("Vertical padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "n-completion-items",       &n_completion_items,  INT,     TRUE,  _("Number of completion items"), NULL, NULL);
