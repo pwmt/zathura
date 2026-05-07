@@ -529,8 +529,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
   int_value = 1000;
   girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
-  int_value = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
-  girara_setting_add(gsession, "page-cache-size",       &int_value,   INT,    true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
+  uint_value = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
+  girara_setting_add(gsession, "page-cache-size",       &uint_value,  UINT,   true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
   int_value = ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE;
   girara_setting_add(gsession, "page-thumbnail-size",   &int_value,   INT,    true,  _("Maximum size in pixels of thumbnails to keep in the cache"), NULL, NULL);
   int_value = 2000;

@@ -585,14 +585,14 @@ void zathura_set_argv(zathura_t* zathura, char** argv) {
 
 static bool setup_renderer(zathura_t* zathura, zathura_document_t* document) {
   /* page cache size */
-  int cache_size = 0;
+  unsigned int cache_size = 0;
   girara_setting_get(zathura->ui.session, "page-cache-size", &cache_size);
-  if (cache_size <= 0) {
-    girara_warning("page-cache-size is not positive, using %d instead", ZATHURA_PAGE_CACHE_DEFAULT_SIZE);
+  if (cache_size == 0) {
+    girara_warning("page-cache-size is not positive, using %u instead", ZATHURA_PAGE_CACHE_DEFAULT_SIZE);
     cache_size = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
   }
 
-  girara_debug("starting renderer with cache size %d", cache_size);
+  girara_debug("starting renderer with cache size %u", cache_size);
   ZathuraRenderer* renderer = zathura_renderer_new(cache_size);
   if (renderer == NULL) {
     return false;
