@@ -337,9 +337,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
     }
   }
   if (database_version < 2) {
-    bool has_sha = false;
-    if (check_column(session, "fileinfo", "sha256", &has_sha) == false ||
-        (has_sha == false && sqlite3_exec(session, SQL_FILEINFO_ALTER6, NULL, 0, NULL) != SQLITE_OK)) {
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER6, NULL, 0, NULL) != SQLITE_OK) {
       girara_warning("failed to update database table layout: sha256");
       all_updates_ok = false;
     }

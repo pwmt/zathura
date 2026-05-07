@@ -725,6 +725,10 @@ static gboolean document_info_open(gpointer data) {
         girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
                       _("Could not read file from stdin and write it to a temporary file."));
       } else {
+        if (document_info->zathura->stdin_support.file != NULL) {
+          g_unlink(document_info->zathura->stdin_support.file);
+          g_free(document_info->zathura->stdin_support.file);
+        }
         document_info->zathura->stdin_support.file = g_strdup(file);
       }
     } else {
@@ -743,6 +747,10 @@ static gboolean document_info_open(gpointer data) {
           girara_notify(document_info->zathura->ui.session, GIRARA_ERROR,
                         _("Could not read file from GIO and copy it to a temporary file."));
         } else {
+          if (document_info->zathura->stdin_support.file != NULL) {
+            g_unlink(document_info->zathura->stdin_support.file);
+            g_free(document_info->zathura->stdin_support.file);
+          }
           document_info->zathura->stdin_support.file = g_strdup(file);
         }
       }
