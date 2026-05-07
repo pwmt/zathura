@@ -433,6 +433,7 @@ void config_load_default(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL && zathura->ui.session != NULL);
 
   int int_value              = 0;
+  unsigned uint_value        = 0;
   float float_value          = 0;
   bool bool_value            = false;
   girara_session_t* gsession = zathura->ui.session;
@@ -512,8 +513,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "page-h-padding",        &int_value,   INT,    false, _("Horizontal padding between pages"), cb_page_layout_value_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "page-v-padding",        &int_value,   INT,    false, _("Vertical padding between pages"), cb_page_layout_value_changed, NULL);
-  int_value = 1;
-  girara_setting_add(gsession, "pages-per-row",         &int_value,   INT,    false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
+  uint_value = 1;
+  girara_setting_add(gsession, "pages-per-row",         &uint_value,  UINT,   false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "first-page-column",     "1:2",        STRING, false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
   bool_value = false;

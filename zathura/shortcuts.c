@@ -162,7 +162,7 @@ bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* UNUSED(
     return false;
   }
 
-  int pages_per_row = 1;
+  unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
   g_autofree char* first_page_column_list = NULL;
   girara_setting_get(session, "first-page-column", &first_page_column_list);
@@ -461,12 +461,12 @@ bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_
   bool columns_per_row_offset = false;
   girara_setting_get(session, "advance-pages-per-row", &columns_per_row_offset);
 
-  int offset = 1;
+  unsigned int offset = 1;
   if (columns_per_row_offset == true) {
     girara_setting_get(session, "pages-per-row", &offset);
   }
 
-  t = (t == 0) ? (unsigned int)offset : t;
+  t = (t == 0) ? offset : t;
   if (argument->n == NEXT) {
     if (scroll_wrap == false) {
       new_page = new_page + t;
@@ -1228,10 +1228,10 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* UNUSED(ar
 
   unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
 
-  int pages_per_row = 1;
+  unsigned int pages_per_row = 1;
   girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
 
-  int value = 1;
+  unsigned int value = 1;
   if (pages_per_row == 1) {
     value = zathura->shortcut.toggle_page_mode.pages;
   } else {
@@ -1339,8 +1339,6 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
                  NULL);
 
     /* set single view */
-    int int_value = 1;
-    girara_setting_set(session, "pages-per-row", &int_value);
     if (zathura->shortcut.toggle_presentation_mode.layout_mode != DOCUMENT_WIDGET_SINGLE) {
       g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
     }
@@ -1385,7 +1383,7 @@ bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UN
   if (old_mode == DOCUMENT_WIDGET_SINGLE) {
     g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_GRID, NULL);
   } else {
-    const int pages_per_row = 1;
+    const unsigned int pages_per_row = 1;
     girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
     g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
   }
