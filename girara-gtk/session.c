@@ -462,12 +462,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
     gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
   }
 
-  g_autofree char* window_icon = NULL;
-  girara_setting_get(session, "window-icon", &window_icon);
-  if (window_icon != NULL && strlen(window_icon) != 0) {
-    girara_set_window_icon(session, window_icon);
-  }
-
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
 
   return true;

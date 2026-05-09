@@ -1347,9 +1347,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
   /* reset window icon */
   if (zathura->ui.session != NULL && zathura->window_icon_render_request != NULL) {
-    g_autofree char* window_icon = NULL;
-    girara_setting_get(zathura->ui.session, "window-icon", &window_icon);
-    girara_setting_set(zathura->ui.session, "window-icon", window_icon);
+    girara_set_window_icon(zathura->ui.session, "org.pwmt.zathura");
   }
 
   /* stop rendering */
