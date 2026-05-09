@@ -203,17 +203,6 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
   }
 }
 
-static void cb_window_icon(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
-                           const void* value, void* UNUSED(data)) {
-  g_return_if_fail(session != NULL && value != NULL);
-
-  if (session->gtk.window == NULL) {
-    return;
-  }
-
-  girara_set_window_icon(session, value);
-}
-
 static void cb_font(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
                     const void* value, void* UNUSED(data)) {
   g_return_if_fail(session != NULL && value != NULL);
@@ -501,7 +490,6 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "statusbar-h-padding",      &statusbar_h_padding, INT,     TRUE,  _("Horizontal padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-v-padding",      &statusbar_v_padding, INT,     TRUE,  _("Vertical padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "n-completion-items",       &n_completion_items,  UINT,    TRUE,  _("Number of completion items"), NULL, NULL);
-  girara_setting_add(gsession, "window-icon",              "",                   STRING,  FALSE, _("Window icon"), cb_window_icon, NULL);
   girara_setting_add(gsession, "exec-command",             "",                   STRING,  FALSE, _("Command to execute in :exec"), NULL, NULL);
   girara_setting_add(gsession, "guioptions",               "s",                  STRING,  FALSE, _("Show or hide certain GUI elements"), cb_guioptions, NULL);
 

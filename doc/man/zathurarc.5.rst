@@ -603,12 +603,6 @@ girara
   * Value type: Integer
   * Default value: 2
 
-*window-icon*
-  Defines the path for a icon to be used as window icon.
-
-  * Value type: String
-  * Default value:
-
 *window-height*
   Defines the window height on startup
 

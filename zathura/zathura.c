@@ -216,12 +216,15 @@ static bool init_ui(zathura_t* zathura) {
     return false;
   }
 
+  /* intial window icon and title */
+  girara_set_window_title(zathura->ui.session, "zathura");
+  girara_set_window_icon(zathura->ui.session, "org.pwmt.zathura");
+
   /* girara events */
   zathura->ui.session->events.buffer_changed  = cb_buffer_changed;
   zathura->ui.session->events.unknown_command = cb_unknown_command;
 
   /* gestures */
-
   GtkGesture* zoom = gtk_gesture_zoom_new(GTK_WIDGET(zathura->ui.session->gtk.view));
   g_signal_connect(zoom, "scale-changed", G_CALLBACK(cb_gesture_zoom_scale_changed), zathura);
   g_signal_connect(zoom, "begin", G_CALLBACK(cb_gesture_zoom_begin), zathura);
@@ -421,7 +424,6 @@ bool zathura_init(zathura_t* zathura) {
 
   /* configuration */
   config_load_default(zathura);
-  girara_setting_set(zathura->ui.session, "window-icon", "org.pwmt.zathura");
   config_load_files(zathura);
 
   /* UI */
