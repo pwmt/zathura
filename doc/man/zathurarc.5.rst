@@ -443,11 +443,8 @@ section of this document
 OPTIONS
 =======
 
-This section describes settings concerning the behaviour of girara and
-zathura. The settings described here can be changed with ``set``.
-
-girara
-------
+This section describes settings concerning the behaviour of zathura.
+The settings described here can be changed with ``set``.
 
 *n-completion-items*
   Defines the maximum number of displayed completion entries.
@@ -614,11 +611,6 @@ girara
 
   * Value type: Integer
   * Default value: 800
-
-zathura
--------
-
-  This section describes settings concerning the behaviour of zathura.
 
 *abort-clear-search*
   Defines if the search results should be cleared on abort.
