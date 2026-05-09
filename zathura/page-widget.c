@@ -823,9 +823,9 @@ static cairo_surface_t* draw_thumbnail_image(cairo_surface_t* surface, size_t ma
 
 void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface_t* surface, bool keep_thumbnail) {
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
-  int thumbnail_size             = 0;
+  unsigned int thumbnail_size    = 0;
   girara_setting_get(priv->zathura->ui.session, "page-thumbnail-size", &thumbnail_size);
-  if (thumbnail_size <= 0) {
+  if (thumbnail_size == 0) {
     thumbnail_size = ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE;
   }
   bool new_render = (priv->surface == NULL && priv->thumbnail == NULL);

@@ -31,8 +31,8 @@ double zathura_correct_zoom_value(girara_session_t* session, const double zoom) 
   }
 
   /* zoom limitations */
-  int zoom_min_int = 10;
-  int zoom_max_int = 1000;
+  unsigned int zoom_min_int = 10;
+  unsigned int zoom_max_int = 1000;
   girara_setting_get(session, "zoom-min", &zoom_min_int);
   girara_setting_get(session, "zoom-max", &zoom_max_int);
 

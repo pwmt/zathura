@@ -1415,7 +1415,7 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
   /* retrieve zoom step value */
-  int value = 1;
+  unsigned int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   const int nt           = (t == 0) ? 1 : t;
@@ -1537,7 +1537,7 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
   /* retrieve zoom step value */
-  int value = 1;
+  unsigned int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   unsigned int current_page = zathura_document_get_current_page_number(zathura->document);

@@ -443,9 +443,9 @@ bool zathura_init(zathura_t* zathura) {
                                                                   (girara_free_function_t)zathura_bookmark_free);
 
   /* jumplist */
-  int jumplist_size = 20;
+  unsigned int jumplist_size = 20;
   girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
-  zathura_jumplist_init(zathura, MAX(jumplist_size, 0));
+  zathura_jumplist_init(zathura, jumplist_size);
 
   /* CSS for index mode */
   if (load_css(zathura) == false) {

@@ -495,15 +495,14 @@ void config_load_default(zathura_t* zathura) {
 
   girara_setting_add(gsession, "database",              DEFAULT_DB,   STRING, true,  _("Database backend"),         NULL, NULL);
   girara_setting_add(gsession, "filemonitor",           "glib",       STRING, true,  _("File monitor backend"),     NULL, NULL);
-  int_value = 10;
-  girara_setting_add(gsession, "zoom-step",             &int_value,   INT,    false, _("Zoom step"),                NULL, NULL);
+  uint_value = 10;
+  girara_setting_add(gsession, "zoom-step",             &uint_value,  UINT,   false, _("Zoom step"),                NULL, NULL);
   int_value = 1;
   girara_setting_add(gsession, "page-h-padding",        &int_value,   INT,    false, _("Horizontal padding between pages"), cb_page_layout_value_changed, NULL);
   int_value = 1;
   girara_setting_add(gsession, "page-v-padding",        &int_value,   INT,    false, _("Vertical padding between pages"), cb_page_layout_value_changed, NULL);
   uint_value = 1;
   girara_setting_add(gsession, "pages-per-row",         &uint_value,  UINT,   false, _("Number of pages per row"),  cb_page_layout_value_changed, NULL);
-  int_value = 1;
   girara_setting_add(gsession, "first-page-column",     "1:2",        STRING, false, _("Column of the first page"), cb_page_layout_value_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "page-right-to-left",    &bool_value,  BOOLEAN, false, _("Render pages from right to left"),  cb_page_layout_value_changed, NULL);
@@ -513,16 +512,16 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "scroll-hstep",          &float_value, FLOAT,  false, _("Horizontal scroll step"),   NULL, NULL);
   float_value = 0.0;
   girara_setting_add(gsession, "scroll-full-overlap",   &float_value, FLOAT,  false, _("Full page scroll overlap"), NULL, NULL);
-  int_value = 10;
-  girara_setting_add(gsession, "zoom-min",              &int_value,   INT,    false, _("Zoom minimum"), NULL, NULL);
-  int_value = 1000;
-  girara_setting_add(gsession, "zoom-max",              &int_value,   INT,    false, _("Zoom maximum"), NULL, NULL);
+  uint_value = 10;
+  girara_setting_add(gsession, "zoom-min",              &uint_value,  UINT,   false, _("Zoom minimum"), NULL, NULL);
+  uint_value = 1000;
+  girara_setting_add(gsession, "zoom-max",              &uint_value,  UINT,   false, _("Zoom maximum"), NULL, NULL);
   uint_value = ZATHURA_PAGE_CACHE_DEFAULT_SIZE;
   girara_setting_add(gsession, "page-cache-size",       &uint_value,  UINT,   true,  _("Maximum number of pages to keep in the cache"), NULL, NULL);
-  int_value = ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE;
-  girara_setting_add(gsession, "page-thumbnail-size",   &int_value,   INT,    true,  _("Maximum size in pixels of thumbnails to keep in the cache"), NULL, NULL);
-  int_value = 2000;
-  girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
+  uint_value = ZATHURA_PAGE_THUMBNAIL_DEFAULT_SIZE;
+  girara_setting_add(gsession, "page-thumbnail-size",   &uint_value,  UINT,   true,  _("Maximum size in pixels of thumbnails to keep in the cache"), NULL, NULL);
+  uint_value = 2000;
+  girara_setting_add(gsession, "jumplist-size",         &uint_value,  UINT,   false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"), cb_color_change, NULL);
   girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"), cb_color_change, NULL);
