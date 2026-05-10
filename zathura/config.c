@@ -29,6 +29,8 @@
 #define DEFAULT_DB "null"
 #endif
 
+#define INCREMENTAL_SEARCH false
+
 static void cb_jumplist_change(girara_session_t* session, const char* UNUSED(name), girara_setting_type_t UNUSED(type),
                                const void* value, void* UNUSED(data)) {
   g_return_if_fail(value != NULL);
@@ -522,21 +524,91 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "page-thumbnail-size",   &uint_value,  UINT,   true,  _("Maximum size in pixels of thumbnails to keep in the cache"), NULL, NULL);
   uint_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &uint_value,  UINT,   false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
+  girara_setting_add(gsession, "recolor-darkcolor",     "#FFFFFF",    STRING, false, _("Recoloring (dark color)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "recolor-lightcolor",    "#000000",    STRING, false, _("Recoloring (light color)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-color",       NULL,         STRING, false, _("Color for highlighting"), cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-fg",          NULL,         STRING, false, _("Foreground color for highlighting"),cb_color_change, NULL);
+  girara_setting_add(gsession, "highlight-active-color",NULL,         STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-bg",     NULL,         STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "render-loading-fg",     NULL,         STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
 
-  girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"), cb_color_change, NULL);
-  girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"), cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-color",        NULL,      STRING, false, _("Color for highlighting"), cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-fg",           NULL,      STRING, false, _("Foreground color for highlighting"),cb_color_change, NULL);
-  girara_setting_add(gsession, "highlight-active-color", NULL,      STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
-  girara_setting_add(gsession, "render-loading-bg",      NULL,      STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
-  girara_setting_add(gsession, "render-loading-fg",      NULL,      STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
+  girara_setting_add(gsession, "signature-success-color",    NULL,         STRING,  false, _("Color used to highlight valid signatures"), cb_color_change, NULL);
+  girara_setting_add(gsession, "signature-warning-color",    NULL,         STRING,  false, _("Color used to highlight signatures with warnings"), cb_color_change, NULL);
+  girara_setting_add(gsession, "signature-error-color",      NULL,         STRING,  false, _("Color used to highlight invalid signatures"), cb_color_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "recolor",                    &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "recolor-keephue",            &bool_value,  BOOLEAN, false, _("When recoloring keep original hue and adjust lightness only"), cb_setting_recolor_keep_hue_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "recolor-reverse-video",      &bool_value,  BOOLEAN, false, _("When recoloring keep original image colors"), cb_setting_recolor_keep_reverse_video_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "recolor-adjust-lightness",   &bool_value,  BOOLEAN, false, _("When recoloring adjust lightness"), cb_setting_recolor_adjust_lightness_change, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "scroll-wrap",                &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "scroll-page-aware",          &bool_value,  BOOLEAN, false, _("Page aware scrolling"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "advance-pages-per-row",      &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "zoom-center",                &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "vertical-center",            &bool_value,  BOOLEAN, false, _("Vertically center pages"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "link-hadjust",               &bool_value,  BOOLEAN, false, _("Align link target to the left"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "link-zoom",                  &bool_value,  BOOLEAN, false, _("Let zoom be changed when following links"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "search-hadjust",             &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "render-loading",             &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
+  girara_setting_add(gsession, "adjust-open",                "best-fit",   STRING,  false, _("Adjust to when opening file"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "show-hidden",                &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "show-directories",           &bool_value,  BOOLEAN, false, _("Show directories"), NULL, NULL);
+  int_value = 10;
+  girara_setting_add(gsession, "show-recent",                &int_value,   INT,     false, _("Show recent files"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "open-first-page",            &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "nohlsearch",                 &bool_value,  BOOLEAN, false, _("Disable highlighting of search results"), cb_nohlsearch_changed, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "double-click-follow",        &bool_value,  BOOLEAN, false, _("Double click to follow links"), cb_doubleclick_changed, NULL);
+  bool_value = INCREMENTAL_SEARCH;
+  girara_setting_add(gsession, "incremental-search",         &bool_value,  BOOLEAN, false, _("Enable incremental search"), cb_incsearch_changed, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "abort-clear-search",         &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "window-title-basename",      &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "window-title-home-tilde",    &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "window-title-page",          &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "window-icon-document",       &bool_value,  BOOLEAN, false, _("Use first page of a document as window icon"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-basename",         &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-home-tilde",       &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "statusbar-page-percent",     &bool_value,  BOOLEAN, false, _("Display (current page / total pages) as a percent in the statusbar"), cb_window_statbusbar_changed, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "synctex",                    &bool_value,  BOOLEAN, false, _("Enable SyncTeX support"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-editor-command",     "",           STRING,  false, _("SyncTeX editor command"), NULL, NULL);
+  girara_setting_add(gsession, "synctex-edit-modifier",      "ctrl",       STRING,  false, _("SyncTeX edit modifier"), cb_global_modifiers_changed, NULL);
+  girara_setting_add(gsession, "highlighter-modifier",       "shift",      STRING,  false, _("Highlighter modifier"), cb_global_modifiers_changed, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "dbus-service",               &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
+  girara_setting_add(gsession, "dbus-raise-window",          &bool_value,  BOOLEAN, false, _("Raise window on certain D-Bus commands"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "continuous-hist-save",       &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
+  girara_setting_add(gsession, "selection-clipboard",        "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "selection-notification",     &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
+  bool_value = false;
+  girara_setting_add(gsession, "show-signature-information", &bool_value,  BOOLEAN, false, _("Disable additional information for signatures embedded in the document."), cb_show_signature_info, NULL);
 
-  // colors for document signatures
-  girara_setting_add(gsession, "signature-success-color", NULL, STRING, false, _("Color used to highlight valid signatures"), cb_color_change, NULL);
-  girara_setting_add(gsession, "signature-warning-color", NULL, STRING, false, _("Color used to highlight signatures with warnings"), cb_color_change, NULL);
-  girara_setting_add(gsession, "signature-error-color",   NULL, STRING, false, _("Color used to highlight invalid signatures"), cb_color_change, NULL);
   // clang-format on
-
   // apply some color settings that need their callbacks to run
   girara_setting_set(gsession, "highlight-color", "rgba(159,251,0,0.5)");
   girara_setting_set(gsession, "highlight-fg", "rgba(0,0,0,0.5)");
@@ -546,84 +618,7 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
   girara_setting_set(gsession, "signature-warning-color", "rgba(100%,84%,0%,0.9)");
   girara_setting_set(gsession, "signature-error-color", "rgba(92%,11%,14%,0.9)");
-
   // clang-format off
-  bool_value = false;
-  girara_setting_add(gsession, "recolor",                &bool_value,  BOOLEAN, false, _("Recolor pages"), cb_setting_recolor_change, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "recolor-keephue",        &bool_value,  BOOLEAN, false, _("When recoloring keep original hue and adjust lightness only"), cb_setting_recolor_keep_hue_change, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "recolor-reverse-video",  &bool_value,  BOOLEAN, false, _("When recoloring keep original image colors"), cb_setting_recolor_keep_reverse_video_change, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "recolor-adjust-lightness", &bool_value, BOOLEAN, false, _("When recoloring adjust lightness"), cb_setting_recolor_adjust_lightness_change, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "scroll-wrap",            &bool_value,  BOOLEAN, false, _("Wrap scrolling"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "scroll-page-aware",      &bool_value,  BOOLEAN, false, _("Page aware scrolling"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "advance-pages-per-row",  &bool_value,  BOOLEAN, false, _("Advance number of pages per row"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "zoom-center",            &bool_value,  BOOLEAN, false, _("Horizontally centered zoom"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "vertical-center",        &bool_value,  BOOLEAN, false, _("Vertically center pages"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "link-hadjust",           &bool_value,  BOOLEAN, false, _("Align link target to the left"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "link-zoom",              &bool_value,  BOOLEAN, false, _("Let zoom be changed when following links"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "search-hadjust",         &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "render-loading",         &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
-  girara_setting_add(gsession, "adjust-open",            "best-fit",   STRING,  false, _("Adjust to when opening file"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "show-hidden",            &bool_value,  BOOLEAN, false, _("Show hidden files and directories"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "show-directories",       &bool_value,  BOOLEAN, false, _("Show directories"), NULL, NULL);
-  int_value = 10;
-  girara_setting_add(gsession, "show-recent",            &int_value,   INT,     false, _("Show recent files"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "open-first-page",        &bool_value,  BOOLEAN, false, _("Always open on first page"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "nohlsearch",             &bool_value,  BOOLEAN, false, _("Disable highlighting of search results"), cb_nohlsearch_changed, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "double-click-follow",    &bool_value,  BOOLEAN, false, _("Double click to follow links"), cb_doubleclick_changed, NULL);
-#define INCREMENTAL_SEARCH false
-  bool_value = INCREMENTAL_SEARCH;
-  girara_setting_add(gsession, "incremental-search",     &bool_value,  BOOLEAN, false, _("Enable incremental search"), cb_incsearch_changed, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "abort-clear-search",     &bool_value,  BOOLEAN, false, _("Clear search results on abort"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), cb_window_statbusbar_changed, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "window-title-home-tilde",  &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), cb_window_statbusbar_changed, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), cb_window_statbusbar_changed, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "window-icon-document",   &bool_value,  BOOLEAN, false, _("Use first page of a document as window icon"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "statusbar-home-tilde",  &bool_value,   BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the statusbar"), cb_window_statbusbar_changed, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "statusbar-page-percent",  &bool_value, BOOLEAN, false, _("Display (current page / total pages) as a percent in the statusbar"), cb_window_statbusbar_changed, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable SyncTeX support"), NULL, NULL);
-  girara_setting_add(gsession, "synctex-editor-command", "",           STRING,  false, _("SyncTeX editor command"), NULL, NULL);
-  girara_setting_add(gsession, "synctex-edit-modifier",  "ctrl",       STRING,  false, _("SyncTeX edit modifier"), cb_global_modifiers_changed, NULL);
-  girara_setting_add(gsession, "highlighter-modifier",   "shift",      STRING,  false, _("Highlighter modifier"), cb_global_modifiers_changed, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
-  girara_setting_add(gsession, "dbus-raise-window",      &bool_value,  BOOLEAN, false, _("Raise window on certain D-Bus commands"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "continuous-hist-save",   &bool_value,  BOOLEAN, false, _("Save history at each page change"), NULL, NULL);
-  girara_setting_add(gsession, "selection-clipboard",    "primary",    STRING,  false, _("The clipboard into which mouse-selected data will be written"), NULL, NULL);
-  bool_value = true;
-  girara_setting_add(gsession, "selection-notification", &bool_value,  BOOLEAN, false, _("Enable notification after selecting text"), NULL, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "show-signature-information", &bool_value, BOOLEAN, false,
-                     _("Disable additional information for signatures embedded in the document."),
-                     cb_show_signature_info, NULL);
-
 
   /* Define mode-less shortcuts
    * girara adds them only for normal mode, so passing 0 as mode is currently
@@ -687,40 +682,36 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_toggle_index,   INDEX, 0,                  NULL);
 
   /* Presentation mode */
-  girara_shortcut_add(gsession, 0,              GDK_KEY_J,            NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Down,         NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Down,      NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Right,        NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Right,     NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Page_Down,    NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Page_Down, NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Forward,      NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_space,        NULL, sc_navigate, PRESENTATION, NEXT,         NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_K,            NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Left,         NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Left,      NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Up,           NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Up,        NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Page_Up,      NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Page_Up,   NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_Back,         NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_space,        NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-  girara_shortcut_add(gsession, 0,              GDK_KEY_BackSpace,    NULL, sc_navigate, PRESENTATION, PREVIOUS,     NULL);
-
-  girara_shortcut_add(gsession, 0,              GDK_KEY_F5,        NULL, sc_toggle_presentation, PRESENTATION, 0,            NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_J,             NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Down,          NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Down,       NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Right,         NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Right,      NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Page_Down,     NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Page_Down,  NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Forward,       NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_space,         NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_K,             NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Left,          NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Left,       NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Up,            NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Up,         NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Page_Up,       NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_KP_Page_Up,    NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_Back,          NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, GDK_SHIFT_MASK, GDK_KEY_space,         NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_BackSpace,     NULL, sc_navigate,            PRESENTATION, PREVIOUS,     NULL);
+  girara_shortcut_add(gsession, 0,              GDK_KEY_F5,            NULL, sc_toggle_presentation, PRESENTATION, 0,            NULL);
 
   /* Presentation mode - Mouse events */
   girara_mouse_event_add(gsession, 0,                0,                    sc_mouse_scroll, PRESENTATION, GIRARA_EVENT_SCROLL_UP,    UP,       NULL);
   girara_mouse_event_add(gsession, 0,                0,                    sc_mouse_scroll, PRESENTATION, GIRARA_EVENT_SCROLL_DOWN,  DOWN,     NULL);
   girara_mouse_event_add(gsession, 0,                0,                    sc_mouse_scroll, PRESENTATION, GIRARA_EVENT_SCROLL_LEFT,  LEFT,     NULL);
   girara_mouse_event_add(gsession, 0,                0,                    sc_mouse_scroll, PRESENTATION, GIRARA_EVENT_SCROLL_RIGHT, RIGHT,    NULL);
-
   girara_mouse_event_add(gsession, 0,                GIRARA_MOUSE_BUTTON1, sc_navigate,     PRESENTATION, GIRARA_EVENT_BUTTON_PRESS, NEXT,     NULL);
   girara_mouse_event_add(gsession, 0,                GIRARA_MOUSE_BUTTON3, sc_navigate,     PRESENTATION, GIRARA_EVENT_BUTTON_PRESS, PREVIOUS, NULL);
-
   girara_mouse_event_add(gsession, GDK_SHIFT_MASK,   0,                    sc_mouse_scroll, PRESENTATION, GIRARA_EVENT_SCROLL_UP,    LEFT,     NULL);
   girara_mouse_event_add(gsession, GDK_SHIFT_MASK,   0,                    sc_mouse_scroll, PRESENTATION, GIRARA_EVENT_SCROLL_DOWN,  RIGHT,    NULL);
-
   girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   PRESENTATION, GIRARA_EVENT_SCROLL_UP,    UP,       NULL);
   girara_mouse_event_add(gsession, GDK_CONTROL_MASK, 0,                    sc_mouse_zoom,   PRESENTATION, GIRARA_EVENT_SCROLL_DOWN,  DOWN,     NULL);
 
@@ -751,37 +742,36 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_n,            girara_isc_command_history,     GIRARA_NEXT,                 NULL);
 
   /* define default inputbar commands */
-  girara_inputbar_command_add(gsession, "map",      "m",  girara_cmd_map,         NULL,          _("Map a key sequence"));
-  girara_inputbar_command_add(gsession, "set",      "s",  girara_cmd_set,         girara_cc_set, _("Set an option"));
-  girara_inputbar_command_add(gsession, "shortcut", "sc", girara_cmd_shortcut,    NULL,          _("Run a shortcut"));
-  girara_inputbar_command_add(gsession, "unmap",    NULL, girara_cmd_unmap,       NULL,          _("Unmap a key sequence"));
-  girara_inputbar_command_add(gsession, "dump",     NULL, girara_cmd_dump_config, NULL,          _("Dump settings to a file"));
-
-  girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create, NULL,         _("Add a bookmark"));
-  girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete, cc_bookmarks, _("Delete a bookmark"));
-  girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_list,   NULL,         _("List all bookmarks"));
-  girara_inputbar_command_add(gsession, "bjump",      NULL,   cmd_bookmark_open,   cc_bookmarks, _("Jump to bookmark"));
-  girara_inputbar_command_add(gsession, "jumplist",   NULL,   cmd_jumplist_list,   NULL,         _("Show recent jumps in jumplist"));
-  girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,           NULL,         _("Close current file"));
-  girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,            NULL,         _("Show file information"));
-  girara_inputbar_command_add(gsession, "exec",       NULL,   cmd_exec,            NULL,         _("Execute a command"));
-  girara_inputbar_command_add(gsession, "!",          NULL,   cmd_exec,            NULL,         _("Execute a command")); /* like vim */
-  girara_inputbar_command_add(gsession, "help",       NULL,   cmd_help,            NULL,         _("Show help"));
-  girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,            cc_open,      _("Open document"));
-  girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,            NULL,         _("Close zathura"));
-  girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,           NULL,         _("Print document"));
-  girara_inputbar_command_add(gsession, "save",       NULL,   cmd_save,            cc_write,     _("Save document"));
-  girara_inputbar_command_add(gsession, "save!",      NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
-  girara_inputbar_command_add(gsession, "write",      NULL,   cmd_save,            cc_write,     _("Save document"));
-  girara_inputbar_command_add(gsession, "write!",     NULL,   cmd_savef,           cc_write,     _("Save document (and force overwriting)"));
-  girara_inputbar_command_add(gsession, "export",     NULL,   cmd_export,          cc_export,    _("Save attachments"));
-  girara_inputbar_command_add(gsession, "offset",     NULL,   cmd_offset,          NULL,         _("Set page offset"));
-  girara_inputbar_command_add(gsession, "mark",       NULL,   cmd_marks_add,       NULL,         _("Mark current location within the document"));
-  girara_inputbar_command_add(gsession, "delmarks",   "delm", cmd_marks_delete,    NULL,         _("Delete the specified marks"));
-  girara_inputbar_command_add(gsession, "nohlsearch", "nohl", cmd_nohlsearch,      NULL,         _("Remove highlights of current search results"));
-  girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,        NULL,         _("Highlight current search results"));
-  girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,         NULL,         _("Show version information"));
-  girara_inputbar_command_add(gsession, "source",     NULL,   cmd_source,          NULL,         _("Source config file"));
+  girara_inputbar_command_add(gsession, "map",        "m",    girara_cmd_map,          NULL,          _("Map a key sequence"));
+  girara_inputbar_command_add(gsession, "set",        "s",    girara_cmd_set,          girara_cc_set, _("Set an option"));
+  girara_inputbar_command_add(gsession, "shortcut",   "sc",   girara_cmd_shortcut,     NULL,          _("Run a shortcut"));
+  girara_inputbar_command_add(gsession, "unmap",      NULL,   girara_cmd_unmap,        NULL,          _("Unmap a key sequence"));
+  girara_inputbar_command_add(gsession, "dump",       NULL,   girara_cmd_dump_config,  NULL,          _("Dump settings to a file"));
+  girara_inputbar_command_add(gsession, "bmark",      NULL,   cmd_bookmark_create,     NULL,          _("Add a bookmark"));
+  girara_inputbar_command_add(gsession, "bdelete",    NULL,   cmd_bookmark_delete,     cc_bookmarks,  _("Delete a bookmark"));
+  girara_inputbar_command_add(gsession, "blist",      NULL,   cmd_bookmark_list,       NULL,          _("List all bookmarks"));
+  girara_inputbar_command_add(gsession, "bjump",      NULL,   cmd_bookmark_open,       cc_bookmarks,  _("Jump to bookmark"));
+  girara_inputbar_command_add(gsession, "jumplist",   NULL,   cmd_jumplist_list,       NULL,          _("Show recent jumps in jumplist"));
+  girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,               NULL,          _("Close current file"));
+  girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,                NULL,          _("Show file information"));
+  girara_inputbar_command_add(gsession, "exec",       NULL,   cmd_exec,                NULL,          _("Execute a command"));
+  girara_inputbar_command_add(gsession, "!",          NULL,   cmd_exec,                NULL,          _("Execute a command")); /* like vim */
+  girara_inputbar_command_add(gsession, "help",       NULL,   cmd_help,                NULL,          _("Show help"));
+  girara_inputbar_command_add(gsession, "open",       "o",    cmd_open,                cc_open,       _("Open document"));
+  girara_inputbar_command_add(gsession, "quit",       "q",    cmd_quit,                NULL,          _("Close zathura"));
+  girara_inputbar_command_add(gsession, "print",      NULL,   cmd_print,               NULL,          _("Print document"));
+  girara_inputbar_command_add(gsession, "save",       NULL,   cmd_save,                cc_write,      _("Save document"));
+  girara_inputbar_command_add(gsession, "save!",      NULL,   cmd_savef,               cc_write,      _("Save document (and force overwriting)"));
+  girara_inputbar_command_add(gsession, "write",      NULL,   cmd_save,                cc_write,      _("Save document"));
+  girara_inputbar_command_add(gsession, "write!",     NULL,   cmd_savef,               cc_write,      _("Save document (and force overwriting)"));
+  girara_inputbar_command_add(gsession, "export",     NULL,   cmd_export,              cc_export,     _("Save attachments"));
+  girara_inputbar_command_add(gsession, "offset",     NULL,   cmd_offset,              NULL,          _("Set page offset"));
+  girara_inputbar_command_add(gsession, "mark",       NULL,   cmd_marks_add,           NULL,          _("Mark current location within the document"));
+  girara_inputbar_command_add(gsession, "delmarks",   "delm", cmd_marks_delete,        NULL,          _("Delete the specified marks"));
+  girara_inputbar_command_add(gsession, "nohlsearch", "nohl", cmd_nohlsearch,          NULL,          _("Remove highlights of current search results"));
+  girara_inputbar_command_add(gsession, "hlsearch",   NULL,   cmd_hlsearch,            NULL,          _("Highlight current search results"));
+  girara_inputbar_command_add(gsession, "version",    NULL,   cmd_version,             NULL,          _("Show version information"));
+  girara_inputbar_command_add(gsession, "source",     NULL,   cmd_source,              NULL,          _("Source config file"));
 
   girara_special_command_add(gsession, '/', cmd_search, INCREMENTAL_SEARCH, FORWARD,  NULL);
   girara_special_command_add(gsession, '?', cmd_search, INCREMENTAL_SEARCH, BACKWARD, NULL);
