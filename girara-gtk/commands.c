@@ -10,6 +10,7 @@
 
 #include <girara/datastructures.h>
 #include <glib/gi18n-lib.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -588,6 +589,12 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       girara_notify(session, GIRARA_INFO, "%s: %i", name, value);
       break;
     }
+    case UINT: {
+      unsigned int value = 0;
+      girara_setting_get_value(setting, &value);
+      girara_notify(session, GIRARA_INFO, "%s: %u", name, value);
+      break;
+    }
     case STRING: {
       g_autofree char* str = NULL;
       girara_setting_get_value(setting, &str);
@@ -625,8 +632,25 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       break;
     }
     case INT: {
-      int i = atoi(value);
-      girara_setting_set_value(session, setting, &i);
+      gint64 num;
+      if (g_ascii_string_to_signed(value, 10, INT_MIN, INT_MAX, &num, NULL)) {
+        int i = num;
+        girara_setting_set_value(session, setting, &i);
+      } else {
+        girara_warning("Invalid value for option: %s", name);
+        girara_notify(session, GIRARA_ERROR, _("Invalid value for option: %s"), name);
+      }
+      break;
+    }
+    case UINT: {
+      guint64 num;
+      if (g_ascii_string_to_unsigned(value, 10, 0, UINT_MAX, &num, NULL)) {
+        unsigned int i = num;
+        girara_setting_set_value(session, setting, &i);
+      } else {
+        girara_warning("Invalid value for option: %s", name);
+        girara_notify(session, GIRARA_ERROR, _("Invalid value for option: %s"), name);
+      }
       break;
     }
     case STRING:
