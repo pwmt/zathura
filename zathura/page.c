@@ -1,11 +1,13 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "page.h"
+
+#include <math.h>
 #include <girara-gtk/session.h>
 #include <girara/utils.h>
 #include <glib/gi18n.h>
 
 #include "document.h"
-#include "page.h"
 #include "plugin.h"
 #include "utils.h"
 #include "internal.h"
@@ -71,7 +73,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
     if (page->label != NULL) {
       char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
       g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, index + 1);
-      page->label_is_number = strcmp(page->label, page_number_string) == 0;
+      page->label_is_number = g_strcmp0(page->label, page_number_string) == 0;
     }
   }
 
@@ -135,6 +137,11 @@ void zathura_page_set_width(zathura_page_t* page, double width) {
     return;
   }
 
+  if (!isfinite(width) || width < DBL_EPSILON) {
+    girara_warning("Invalid page width: %f, falling back to default", width);
+    return;
+  }
+
   page->width = width;
 }
 
@@ -148,6 +155,11 @@ double zathura_page_get_height(zathura_page_t* page) {
 
 void zathura_page_set_height(zathura_page_t* page, double height) {
   if (page == NULL) {
+    return;
+  }
+
+  if (!isfinite(height) || height < DBL_EPSILON) {
+    girara_warning("Invalid page height: %f, falling back to default", height);
     return;
   }
 

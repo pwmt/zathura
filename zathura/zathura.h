@@ -216,7 +216,7 @@ struct zathura_s {
       int y;
     } mouse;
     struct {
-      int pages;
+      unsigned int pages;
     } toggle_page_mode;
     struct {
       int pages;

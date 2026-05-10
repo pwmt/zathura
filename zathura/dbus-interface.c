@@ -1,6 +1,18 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "dbus-interface.h"
+
+#include <gio/gio.h>
+#include <girara-gtk/commands.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
+#include <girara/log.h>
+#include <girara/utils.h>
+#include <json-glib/json-glib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "adjustment.h"
 #include "config.h"
 #include "document.h"
@@ -10,17 +22,6 @@
 #include "synctex.h"
 #include "utils.h"
 #include "zathura.h"
-
-#include <gio/gio.h>
-#include <girara-gtk/commands.h>
-#include <girara-gtk/session.h>
-#include <girara-gtk/settings.h>
-#include <girara/utils.h>
-#include <girara/log.h>
-#include <json-glib/json-glib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 static const char DBUS_XML_FILENAME[] = "/org/pwmt/zathura/DBus/org.pwmt.zathura.xml";
 
@@ -237,11 +238,10 @@ typedef struct {
 static gboolean synctex_highlight_rects_impl(gpointer ptr) {
   highlights_rect_data_t* data = ptr;
 
+  /* synctex_highlight_rects transfers ownership of each rectangles[i] to the
+   * page widget via g_object_set "search-results"; only free the array. */
   synctex_highlight_rects(data->zathura, data->page, data->rectangles);
 
-  for (unsigned int i = 0; i != data->number_of_pages; ++i) {
-    girara_list_free(data->rectangles[i]);
-  }
   g_free(data->rectangles);
   g_free(data);
   return false;
@@ -250,10 +250,17 @@ static gboolean synctex_highlight_rects_impl(gpointer ptr) {
 static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rectangles, unsigned int page,
                                          unsigned number_of_pages) {
   highlights_rect_data_t* data = g_try_malloc0(sizeof(highlights_rect_data_t));
-  data->zathura                = zathura;
-  data->rectangles             = rectangles;
-  data->page                   = page;
-  data->number_of_pages        = number_of_pages;
+  if (data == NULL) {
+    for (unsigned int i = 0; i != number_of_pages; ++i) {
+      girara_list_free(rectangles[i]);
+    }
+    g_free(rectangles);
+    return;
+  }
+  data->zathura         = zathura;
+  data->rectangles      = rectangles;
+  data->page            = page;
+  data->number_of_pages = number_of_pages;
 
   gdk_threads_add_idle(synctex_highlight_rects_impl, data);
 }
@@ -360,10 +367,14 @@ static gboolean synctex_view_impl(gpointer ptr) {
 
 static void synctex_view_idle(zathura_t* zathura, gchar* input_file, unsigned int line, unsigned int column) {
   view_data_t* data = g_try_malloc0(sizeof(view_data_t));
-  data->zathura     = zathura;
-  data->input_file  = input_file;
-  data->line        = line;
-  data->column      = column;
+  if (data == NULL) {
+    g_free(input_file);
+    return;
+  }
+  data->zathura    = zathura;
+  data->input_file = input_file;
+  data->line       = line;
+  data->column     = column;
 
   gdk_threads_add_idle(synctex_view_impl, data);
 }

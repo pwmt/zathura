@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "file-monitor-glib.h"
-#include "macros.h"
 
 #include <girara/utils.h>
 #include <girara/log.h>
 #include <gio/gio.h>
+
+#include "macros.h"
 
 struct zathura_glibfilemonitor_s {
   ZathuraFileMonitor parent;

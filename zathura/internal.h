@@ -10,9 +10,10 @@
  * Zathura password dialog
  */
 typedef struct zathura_password_dialog_info_s {
-  char* path;         /**< Path to the file */
-  char* uri;          /**< URI to the file */
-  zathura_t* zathura; /**< Zathura session */
+  char* path;          /**< Path to the file */
+  char* uri;           /**< URI to the file */
+  zathura_t* zathura;  /**< Zathura session */
+  gulong hide_handler; /**< id of inputbar "hide" handler, 0 if none */
 } zathura_password_dialog_info_t;
 
 struct zathura_document_information_entry_s {

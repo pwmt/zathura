@@ -302,12 +302,12 @@ static void screen_changed(GtkWidget* widget, GdkScreen* GIRARA_UNUSED(old_scree
 }
 
 bool girara_session_init(girara_session_t* session, const char* sessionname) {
-  if (session == NULL) {
+  if (!session || !sessionname) {
     return false;
   }
 
   /* set session name */
-  session->private_data->session_name = g_strdup((sessionname == NULL) ? "girara" : sessionname);
+  session->private_data->session_name = g_strdup(sessionname);
 
   /* enable smooth scroll events */
   gtk_widget_add_events(session->gtk.view, GDK_SMOOTH_SCROLL_MASK);
@@ -372,6 +372,8 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   gtk_container_add(GTK_CONTAINER(session->gtk.statusbar), GTK_WIDGET(session->gtk.statusbar_entries));
 
   /* notification area */
+  g_signal_connect(G_OBJECT(session->gtk.notification_area), "key-press-event",
+                   G_CALLBACK(girara_callback_view_key_press_event), session);
   gtk_container_add(GTK_CONTAINER(session->gtk.notification_area), session->gtk.notification_text);
   gtk_widget_set_halign(session->gtk.notification_text, GTK_ALIGN_START);
   gtk_widget_set_valign(session->gtk.notification_text, GTK_ALIGN_CENTER);
@@ -439,8 +441,8 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   widget_add_class(session->gtk.notification_text, "notification");
 
   /* set window size */
-  int window_width  = 0;
-  int window_height = 0;
+  unsigned int window_width  = 0;
+  unsigned int window_height = 0;
   girara_setting_get(session, "window-width", &window_width);
   girara_setting_get(session, "window-height", &window_height);
 
@@ -458,12 +460,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
 
   if (session->global.hide_statusbar == true) {
     gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
-  }
-
-  g_autofree char* window_icon = NULL;
-  girara_setting_get(session, "window-icon", &window_icon);
-  if (window_icon != NULL && strlen(window_icon) != 0) {
-    girara_set_window_icon(session, window_icon);
   }
 
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));

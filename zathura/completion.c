@@ -1,25 +1,25 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <libgen.h>
-#include <glib/gi18n.h>
-
-#include "bookmarks.h"
-#include "document.h"
 #include "completion.h"
-#include "utils.h"
-#include "page.h"
-#include "database.h"
 
+#include <girara-gtk/completion.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
-#include <girara-gtk/completion.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
 #include <girara/utils.h>
+#include <glib/gi18n.h>
+#include <libgen.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "bookmarks.h"
+#include "document.h"
+#include "utils.h"
+#include "page.h"
+#include "database.h"
 
 static int compare_case_insensitive(const void* data1, const void* data2) {
   const char* str1 = data1;

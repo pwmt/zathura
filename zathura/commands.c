@@ -2,6 +2,12 @@
 
 #include "commands.h"
 
+#include <girara-gtk/commands.h>
+#include <girara-gtk/session.h>
+#include <girara-gtk/settings.h>
+#include <girara-gtk/utils.h>
+#include <girara/datastructures.h>
+#include <girara/log.h>
 #include <glib/gi18n.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,13 +28,6 @@
 #include "shortcuts.h"
 #include "utils.h"
 #include "zathura.h"
-
-#include <girara-gtk/commands.h>
-#include <girara/datastructures.h>
-#include <girara-gtk/session.h>
-#include <girara-gtk/settings.h>
-#include <girara/log.h>
-#include <girara-gtk/utils.h>
 
 bool cmd_bookmark_create(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
@@ -106,7 +105,8 @@ bool cmd_bookmark_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(a
   g_autoptr(GString) string = g_string_new(NULL);
   for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
     zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
-    g_string_append_printf(string, "<b>%s</b>: %u\n", bookmark->id, bookmark->page);
+    g_autofree gchar* escaped_id = g_markup_escape_text(bookmark->id, -1);
+    g_string_append_printf(string, "<b>%s</b>: %u\n", escaped_id, bookmark->page);
   }
 
   if (string->len > 0) {
@@ -251,7 +251,8 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
     for (size_t idx = 0; idx != girara_list_size(information); ++idx) {
       zathura_document_information_entry_t* entry = girara_list_nth(information, idx);
       if (entry != NULL && meta_fields[i].field == entry->type) {
-        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, entry->value);
+        g_autofree gchar* escaped_value = g_markup_escape_text(entry->value, -1);
+        g_string_append_printf(string, "<b>%s:</b> %s\n", meta_fields[i].name, escaped_value);
       }
     }
   }
@@ -268,8 +269,12 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
 
 bool cmd_help(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   g_return_val_if_fail(session != NULL, false);
+#if defined(WITH_MANPAGES) || defined(WITH_SANDBOX)
   girara_notify(session, GIRARA_INFO,
                 _("Please check the man pages zathura(1) and zathurarc(5) for more information."));
+#else
+  girara_xdg_open("https://manpages.debian.org/unstable/zathura/zathura.1.en.html");
+#endif
 
   return true;
 }
@@ -505,8 +510,8 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
     return false;
   }
 
-  static const size_t attachment_len = 11; // length of attachment-
-  static const size_t image_len      = 7;  // length of image-p
+  static const size_t attachment_len = sizeof("attachment-") - 1;
+  static const size_t image_len      = sizeof("image-p") - 1;
 
   /* attachment */
   if (strncmp(file_identifier, "attachment-", attachment_len) == 0) {
@@ -562,6 +567,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
       girara_notify(session, GIRARA_ERROR, _("Couldn't write image '%s' to '%s'."), file_identifier, file_name);
     }
 
+    cairo_surface_destroy(surface);
     return true;
 
   image_error:
@@ -576,7 +582,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
 #endif
 }
 
-#ifndef WITH_SANBDOX
+#ifndef WITH_SANDBOX
 static bool exec_with_argument_list(girara_session_t* session, girara_list_t* argument_list) {
   g_autoptr(GStrvBuilder) builder = g_strv_builder_new();
 
@@ -609,7 +615,7 @@ bool cmd_exec(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-#ifdef WITH_SANBDOX
+#ifdef WITH_SANDBOX
   girara_notify(zathura->ui.session, GIRARA_ERROR, _("Exec is not permitted in strict sandbox mode"));
   return false;
 #else
@@ -665,7 +671,7 @@ bool cmd_offset(girara_session_t* session, girara_list_t* argument_list) {
     const char* value = girara_list_nth(argument_list, 0);
     if (value != NULL) {
       page_offset = atoi(value);
-      if (page_offset == 0 && strcmp(value, "0") != 0) {
+      if (page_offset == 0 && g_strcmp0(value, "0") != 0) {
         girara_notify(session, GIRARA_WARNING, _("Argument must be a number."));
         return false;
       }

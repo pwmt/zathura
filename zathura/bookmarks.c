@@ -1,15 +1,16 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <string.h>
 #include "bookmarks.h"
+
+#include <girara-gtk/session.h>
+#include <girara/datastructures.h>
+#include <girara/log.h>
+#include <girara/utils.h>
+#include <string.h>
+
 #include "database.h"
 #include "document.h"
 #include "adjustment.h"
-
-#include <girara/datastructures.h>
-#include <girara/utils.h>
-#include <girara/log.h>
-#include <girara-gtk/session.h>
 
 static int bookmark_compare_find(const void* item, const void* data) {
   const zathura_bookmark_t* bookmark = item;
@@ -89,44 +90,45 @@ zathura_bookmark_t* zathura_bookmark_get(zathura_t* zathura, const gchar* id) {
   return girara_list_find(zathura->bookmarks.bookmarks, bookmark_compare_find, id);
 }
 
-void zathura_bookmark_free(zathura_bookmark_t* bookmark) {
-  if (bookmark != NULL) {
+static int zathura_bookmarks_compare(const void* lhs, const void* rhs) {
+  if (lhs && rhs) {
+    const zathura_bookmark_t* l = lhs;
+    const zathura_bookmark_t* r = rhs;
+
+    return g_strcmp0(l->id, r->id);
+  }
+
+  return memcmp(&lhs, &rhs, sizeof(lhs));
+}
+
+static void zathura_bookmark_free(void* data) {
+  if (data != NULL) {
+    zathura_bookmark_t* bookmark = data;
     g_free(bookmark->id);
     g_free(bookmark);
   }
 }
 
-bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
-  g_return_val_if_fail(zathura, false);
-  g_return_val_if_fail(file, false);
-
-  if (zathura->database == NULL) {
+bool zathura_bookmarks_init(zathura_t* zathura) {
+  if (!zathura) {
     return false;
   }
 
-  girara_list_t* bookmarks = zathura_db_load_bookmarks(zathura->database, file);
-  if (bookmarks == NULL) {
-    return false;
-  }
+  zathura->bookmarks.bookmarks = girara_sorted_list_new_with_free(zathura_bookmarks_compare, zathura_bookmark_free);
 
-  girara_list_free(zathura->bookmarks.bookmarks);
-  zathura->bookmarks.bookmarks = bookmarks;
-
-  return true;
+  return zathura->bookmarks.bookmarks != NULL;
 }
 
-int zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs) {
-  if (lhs == NULL && rhs == NULL) {
-    return 0;
-  }
+bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
+  g_return_val_if_fail(zathura && zathura->database, false);
+  g_return_val_if_fail(file, false);
 
-  if (lhs == NULL) {
-    return -1;
-  }
+  girara_list_clear(zathura->bookmarks.bookmarks);
+  return zathura_db_load_bookmarks(zathura->database, file, zathura->bookmarks.bookmarks);
+}
 
-  if (rhs == NULL) {
-    return 1;
+void zathura_bookmarks_free(zathura_t* zathura) {
+  if (zathura) {
+    girara_list_free(zathura->bookmarks.bookmarks);
   }
-
-  return g_strcmp0(lhs->id, rhs->id);
 }

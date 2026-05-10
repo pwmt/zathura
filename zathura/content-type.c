@@ -1,14 +1,15 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "content-type.h"
-#include "macros.h"
 
 #include <gio/gio.h>
-#include <girara/log.h>
 #include <girara-gtk/utils.h>
+#include <girara/log.h>
 #include <glib.h>
 #include <magic.h>
 #include <stdio.h>
+
+#include "macros.h"
 
 struct zathura_content_type_context_s {
   magic_t magic;
@@ -20,7 +21,7 @@ zathura_content_type_context_t* zathura_content_type_new(void) {
     return NULL;
   }
 
-  /* creat magic cookie */
+  /* create magic cookie */
   static const int flags = MAGIC_ERROR | MAGIC_MIME_TYPE | MAGIC_SYMLINK | MAGIC_NO_CHECK_APPTYPE | MAGIC_NO_CHECK_CDF |
                            MAGIC_NO_CHECK_ELF | MAGIC_NO_CHECK_ENCODING;
   magic_t magic = magic_open(flags);

@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "render.h"
+
 #include <math.h>
 #include <string.h>
 #include <stdatomic.h>
-
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
-#include "render.h"
 #include "adjustment.h"
 #include "zathura.h"
 #include "document.h"
@@ -73,7 +73,7 @@ static ssize_t page_cache_lru_invalidate(ZathuraRenderer* renderer);
 static void page_cache_invalidate_all(ZathuraRenderer* renderer);
 static bool page_cache_is_full(ZathuraRenderer* renderer, bool* result);
 
-/* job descritption for render thread */
+/* job description for render thread */
 typedef struct render_job_s {
   ZathuraRenderRequest* request;
   atomic_bool aborted;
@@ -729,7 +729,7 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
     g_autoptr(girara_list_t) images = zathura_page_images_get(page, NULL);
     found_images                    = (images != NULL);
 
-    rectangles = girara_list_new();
+    rectangles = girara_list_new_with_free(g_free);
     if (rectangles == NULL) {
       found_images = false;
       girara_warning("Failed to retrieve images.");

@@ -1,15 +1,16 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "file-monitor.h"
+
+#include <girara/log.h>
+#include <girara/utils.h>
+
 #include "file-monitor-glib.h"
 #ifdef G_OS_UNIX
 #include "file-monitor-signal.h"
 #endif
 #include "file-monitor-noop.h"
 #include "macros.h"
-
-#include <girara/log.h>
-#include <girara/utils.h>
 
 typedef struct {
   char* file_path;

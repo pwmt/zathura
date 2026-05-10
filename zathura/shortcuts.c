@@ -162,7 +162,7 @@ bool sc_cycle_first_column(girara_session_t* session, girara_argument_t* UNUSED(
     return false;
   }
 
-  int pages_per_row = 1;
+  unsigned int pages_per_row = 1;
   girara_setting_get(session, "pages-per-row", &pages_per_row);
   g_autofree char* first_page_column_list = NULL;
   girara_setting_get(session, "first-page-column", &first_page_column_list);
@@ -461,12 +461,12 @@ bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_
   bool columns_per_row_offset = false;
   girara_setting_get(session, "advance-pages-per-row", &columns_per_row_offset);
 
-  int offset = 1;
+  unsigned int offset = 1;
   if (columns_per_row_offset == true) {
     girara_setting_get(session, "pages-per-row", &offset);
   }
 
-  t = (t == 0) ? (unsigned int)offset : t;
+  t = (t == 0) ? offset : t;
   if (argument->n == NEXT) {
     if (scroll_wrap == false) {
       new_page = new_page + t;
@@ -669,8 +669,10 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     direction = -1.0;
   }
 
-  const unsigned int v_padding = zathura_document_get_page_v_padding(zathura->document);
-  const unsigned int h_padding = zathura_document_get_page_h_padding(zathura->document);
+  const unsigned int v_padding =
+      zathura_document_widget_get_page_v_padding(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
+  const unsigned int h_padding =
+      zathura_document_widget_get_page_h_padding(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
 
   const double vstep = (double)(view_height + v_padding) / (double)doc_height;
   const double hstep = (double)(view_width + h_padding) / (double)doc_width;
@@ -948,10 +950,12 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
     return false;
   }
 
-  GtkTreeView* tree_view = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index))->data;
-  GtkTreePath* path;
-  GtkTreePath* start_path;
-  GtkTreePath* end_path;
+  GList* tree_children   = gtk_container_get_children(GTK_CONTAINER(zathura->ui.index));
+  GtkTreeView* tree_view = tree_children->data;
+  g_list_free(tree_children);
+  GtkTreePath* path       = NULL;
+  GtkTreePath* start_path = NULL;
+  GtkTreePath* end_path   = NULL;
 
   gtk_tree_view_get_cursor(tree_view, &path, NULL);
   if (path == NULL) {
@@ -1226,10 +1230,10 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* UNUSED(ar
 
   unsigned int page_id = zathura_document_get_current_page_number(zathura->document);
 
-  int pages_per_row = 1;
+  unsigned int pages_per_row = 1;
   girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
 
-  int value = 1;
+  unsigned int value = 1;
   if (pages_per_row == 1) {
     value = zathura->shortcut.toggle_page_mode.pages;
   } else {
@@ -1337,8 +1341,6 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
                  NULL);
 
     /* set single view */
-    int int_value = 1;
-    girara_setting_set(session, "pages-per-row", &int_value);
     if (zathura->shortcut.toggle_presentation_mode.layout_mode != DOCUMENT_WIDGET_SINGLE) {
       g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
     }
@@ -1383,7 +1385,7 @@ bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UN
   if (old_mode == DOCUMENT_WIDGET_SINGLE) {
     g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_GRID, NULL);
   } else {
-    const int pages_per_row = 1;
+    const unsigned int pages_per_row = 1;
     girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
     g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
   }
@@ -1413,11 +1415,11 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
   /* retrieve zoom step value */
-  int value = 1;
+  unsigned int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   const int nt           = (t == 0) ? 1 : t;
-  const double zoom_step = 1.0 + value / 100.0 * nt;
+  const double zoom_step = MAX(DBL_EPSILON, 1.0 + value / 100.0 * nt);
   const double old_zoom  = zathura_document_get_zoom(zathura->document);
 
   /* specify new zoom value */
@@ -1535,14 +1537,14 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
   /* retrieve zoom step value */
-  int value = 1;
+  unsigned int value = 1;
   girara_setting_get(zathura->ui.session, "zoom-step", &value);
 
   unsigned int current_page = zathura_document_get_current_page_number(zathura->document);
   zathura_page_t* page      = zathura_document_get_page(zathura->document, current_page);
 
   const int nt           = (t == 0) ? 1 : t;
-  const double zoom_step = 1.0 + value / 100.0 * nt;
+  const double zoom_step = MAX(DBL_EPSILON, 1.0 + value / 100.0 * nt);
   const double old_zoom  = zathura_page_get_zoom(page);
 
   /* specify new zoom value */

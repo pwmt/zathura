@@ -99,6 +99,7 @@ typedef enum girara_setting_type_e {
   BOOLEAN = G_TYPE_BOOLEAN, /**< Boolean type */
   FLOAT   = G_TYPE_FLOAT,   /**< Floating number */
   INT     = G_TYPE_INT,     /**< Integer */
+  UINT    = G_TYPE_UINT,    /** < Unsigned integer */
   STRING  = G_TYPE_STRING,  /**< String */
   UNKNOWN = 0xFFFF          /**< Unknown type */
 } girara_setting_type_t;

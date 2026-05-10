@@ -208,8 +208,8 @@ the *zathurarc* file to make those changes permanent:
     Identifier Description
 
     Button1    Mouse button 1 (left)
-    Button2    Mouse button 2 (right)
-    Button3    Mouse button 3 (middle)
+    Button2    Mouse button 2 (middle)
+    Button3    Mouse button 3 (right)
     Button4    Mouse button 4
     Button5    Mouse button 5
 
@@ -443,11 +443,8 @@ section of this document
 OPTIONS
 =======
 
-This section describes settings concerning the behaviour of girara and
-zathura. The settings described here can be changed with ``set``.
-
-girara
-------
+This section describes settings concerning the behaviour of zathura.
+The settings described here can be changed with ``set``.
 
 *n-completion-items*
   Defines the maximum number of displayed completion entries.
@@ -603,12 +600,6 @@ girara
   * Value type: Integer
   * Default value: 2
 
-*window-icon*
-  Defines the path for a icon to be used as window icon.
-
-  * Value type: String
-  * Default value:
-
 *window-height*
   Defines the window height on startup
 
@@ -620,11 +611,6 @@ girara
 
   * Value type: Integer
   * Default value: 800
-
-zathura
--------
-
-  This section describes settings concerning the behaviour of zathura.
 
 *abort-clear-search*
   Defines if the search results should be cleared on abort.

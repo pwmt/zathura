@@ -640,6 +640,70 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
   return true;
 }
 
+bool girara_cmd_shortcut(girara_session_t* session, girara_list_t* argument_list) {
+  const size_t number_of_arguments = girara_list_size(argument_list);
+
+  unsigned int limit = 1;
+  if (number_of_arguments < limit) {
+    girara_warning("Invalid number of arguments passed: %zu instead of at least %u", number_of_arguments, limit);
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments passed: %zu instead of at least %u"),
+                  number_of_arguments, limit);
+    return false;
+  }
+
+  int shortcut_argument_n                      = 0;
+  g_autofree char* shortcut_buffer_command     = NULL;
+  girara_shortcut_function_t shortcut_function = NULL;
+
+  size_t current_command = 0;
+  char* tmp              = girara_list_nth(argument_list, current_command);
+
+  girara_session_private_t* session_private = session->private_data;
+
+  /* Check for passed shortcut command */
+  bool found_mapping = false;
+  for (size_t idx = 0; idx != girara_list_size(session_private->config.shortcut_mappings); ++idx) {
+    girara_shortcut_mapping_t* mapping = girara_list_nth(session_private->config.shortcut_mappings, idx);
+    if (!g_strcmp0(tmp, mapping->identifier)) {
+      shortcut_function = mapping->function;
+      found_mapping     = true;
+      break;
+    }
+  }
+
+  if (found_mapping == false) {
+    girara_warning("Not a valid shortcut function: %s", tmp);
+    girara_notify(session, GIRARA_ERROR, _("Not a valid shortcut function: %s"), tmp);
+    return false;
+  }
+
+  /* Check for passed argument */
+  char* shortcut_argument_data = NULL;
+  if (++current_command < number_of_arguments) {
+    tmp = girara_list_nth(argument_list, current_command);
+
+    for (size_t idx = 0; idx != girara_list_size(session_private->config.argument_mappings); ++idx) {
+      girara_argument_mapping_t* mapping = girara_list_nth(session_private->config.argument_mappings, idx);
+      if (!g_strcmp0(tmp, mapping->identifier)) {
+        shortcut_argument_n = mapping->value;
+        break;
+      }
+    }
+
+    /* If no known argument is passed we save it in the data field */
+    if (shortcut_argument_n == 0) {
+      shortcut_argument_data = tmp;
+      /* If a known argument is passed and there are still more arguments,
+       * we save the next one in the data field */
+    } else if (++current_command < number_of_arguments) {
+      shortcut_argument_data = girara_list_nth(argument_list, current_command);
+    }
+  }
+
+  girara_argument_t arg = {.data = shortcut_argument_data, .n = shortcut_argument_n};
+  return shortcut_function(session, &arg, NULL, 1);
+}
+
 bool girara_inputbar_command_add(girara_session_t* session, const char* command, const char* abbreviation,
                                  girara_command_function_t function, girara_completion_function_t completion,
                                  const char* description) {

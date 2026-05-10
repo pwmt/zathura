@@ -20,7 +20,7 @@ static void test_girara_init(void) {
 
   girara_session_t* session = girara_session_create();
   g_assert_nonnull(session);
-  g_assert_true(girara_session_init(session, NULL));
+  g_assert_true(girara_session_init(session, "test"));
   girara_session_destroy(session);
 }
 

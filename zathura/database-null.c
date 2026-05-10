@@ -1,9 +1,10 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "database-null.h"
+
 #include <girara/datastructures.h>
 #include <girara/input-history.h>
 
-#include "database-null.h"
 #include "utils.h"
 
 static bool add_bookmark(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),
@@ -13,6 +14,11 @@ static bool add_bookmark(zathura_database_t* GIRARA_UNUSED(db), const char* GIRA
 
 static bool remove_bookmark(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),
                             const char* GIRARA_UNUSED(id)) {
+  return true;
+}
+
+static bool load_bookmarks(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),
+                           girara_list_t* GIRARA_UNUSED(target_list)) {
   return true;
 }
 
@@ -50,7 +56,7 @@ static void db_interface_init(ZathuraDatabaseInterface* iface) {
   /* initialize interface */
   iface->add_bookmark     = add_bookmark;
   iface->remove_bookmark  = remove_bookmark;
-  iface->load_bookmarks   = load_list;
+  iface->load_bookmarks   = load_bookmarks;
   iface->load_jumplist    = load_list;
   iface->save_jumplist    = save_list;
   iface->set_fileinfo     = set_fileinfo;

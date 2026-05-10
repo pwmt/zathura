@@ -18,10 +18,10 @@ bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const 
   return ZATHURA_DATABASE_GET_INTERFACE(db)->remove_bookmark(db, file, id);
 }
 
-girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char* file) {
-  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL, NULL);
+bool zathura_db_load_bookmarks(zathura_database_t* db, const char* file, girara_list_t* target_list) {
+  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file && target_list, false);
 
-  return ZATHURA_DATABASE_GET_INTERFACE(db)->load_bookmarks(db, file);
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->load_bookmarks(db, file, target_list);
 }
 
 girara_list_t* zathura_db_load_jumplist(zathura_database_t* db, const char* file) {

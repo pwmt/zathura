@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "adjustment.h"
+
+#include <math.h>
+
 #include "document-widget.h"
 #include "page.h"
 #include "zathura.h"
-
-#include <math.h>
 
 double page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
                               unsigned int* page_width, bool rotate) {
@@ -60,9 +61,9 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   unsigned int doc_width, doc_height;
   zathura_document_widget_get_document_size(doc_widget, &doc_height, &doc_width);
 
-  unsigned int c0   = zathura_document_get_first_page_column(document);
+  unsigned int c0   = zathura_document_widget_get_first_page_column(doc_widget);
   unsigned int npag = zathura_document_get_number_of_pages(document);
-  unsigned int ncol = zathura_document_get_pages_per_row(document);
+  unsigned int ncol = zathura_document_widget_get_pages_per_row(doc_widget);
   unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
   // This could be done using binary search if linear is too slow
@@ -176,7 +177,7 @@ void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value) {
   const gdouble lower        = gtk_adjustment_get_lower(adjustment);
   const gdouble upper_m_size = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment);
 
-  gtk_adjustment_set_value(adjustment, MAX(lower, MIN(upper_m_size, value)));
+  gtk_adjustment_set_value(adjustment, CLAMP(value, lower, upper_m_size));
 }
 
 void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio) {

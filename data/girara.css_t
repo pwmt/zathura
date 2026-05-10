@@ -46,6 +46,10 @@
   background-color: @statusbar-bg@;
 }
 
+#@session@ .statusbar-item {
+  padding: 0px 1pt;
+}
+
 /* Notification area */
 
 #@session@ .notification {

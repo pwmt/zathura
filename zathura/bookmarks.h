@@ -41,10 +41,10 @@ bool zathura_bookmark_remove(zathura_t* zathura, const gchar* id);
 zathura_bookmark_t* zathura_bookmark_get(zathura_t* zathura, const gchar* id);
 
 /**
- * Free a bookmark instance.
- * @param bookmark The bookmark instance.
+ * Initialize bookmark system
+ * @param zathura The zathura instance.
  */
-void zathura_bookmark_free(zathura_bookmark_t* bookmark);
+bool zathura_bookmarks_init(zathura_t* zathura);
 
 /**
  * Load bookmarks for a specific file.
@@ -55,11 +55,9 @@ void zathura_bookmark_free(zathura_bookmark_t* bookmark);
 bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file);
 
 /**
- * Compare two bookmarks.
- * @param lhs a bookmark
- * @param rhs a bookmark
- * @returns g_strcmp0(lhs->id, rhs->id)
+ * Free boomark system
+ * @param zathura The zathura instance.
  */
-int zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs);
+void zathura_bookmarks_free(zathura_t* zathura);
 
 #endif // BOOKMARKS_H

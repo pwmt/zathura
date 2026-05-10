@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '2026.03.27',
+  version: '2026.05.10',
   meson_version: '>=1.5',
   default_options: ['c_std=c23', 'warning_level=3'],
 )
@@ -8,7 +8,7 @@ version = meson.project_version()
 version_array = version.split('.')
 
 # Rules for plugin API and ABI (non-exhaustive):
-# * zathura_plugin_function_t: If functions are addedd or removed or their
+# * zathura_plugin_function_t: If functions are added or removed or their
 #   signature changes, bump both ABI and API.
 # * zathura_plugin_definition_t: If the struct changes in an ABI-incompatible
 #   way, bump the ABI.
@@ -69,6 +69,9 @@ defines = [
   '-DSYSCONFDIR="@0@"'.format(sysconfdir),
   '-D_DEFAULT_SOURCE',
 ]
+if get_option('manpages').allowed()
+  defines += '-DWITH_MANPAGES'
+endif
 
 # compile flags
 flags = [
@@ -236,7 +239,9 @@ pkg.generate(
 
 zathura_dependency = declare_dependency(link_with: zathura, include_directories: include_directories)
 
-subdir('doc')
+if get_option('manpages').allowed()
+  subdir('doc')
+endif
 if get_option('tests').allowed()
   subdir('tests')
 endif
