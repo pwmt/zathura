@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-26 21:33+0200\n"
+"POT-Creation-Date: 2026-05-10 11:38+0200\n"
 "PO-Revision-Date: 2026-02-21 13:30+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Georgian (http://app.transifex.com/pwmt/zathura/language/"
@@ -17,19 +17,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
 msgstr "pwmt"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
 msgstr "Zathura"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:5
 msgid "Minimalistic document viewer"
 msgstr "მინიმალისტიკ დოკუმენტი ვიევერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:13
 msgid ""
 "Zathura is a highly customizable and functional document viewer. It provides "
 "a minimalistic and space saving interface as well as an easy usage that "
@@ -41,7 +37,6 @@ msgstr ""
 "ტჰატ მაინლი ფოკუსეს ონ კეიბოარდ ინტერაკტიონ. ზატჰურა მაკეს იტ პოსსიბლე ტო "
 "კომპლეტელი ვიევ ანდ ნავიგატე ტჰროუგჰ დოკუმენტს ვიტჰოუტ უსინგ ა მოუსე."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:20
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
@@ -49,183 +44,97 @@ msgstr ""
 "ზატჰურა კან ბე ექსტენდედ ტო სუპპორტ მულტიპლე დოკუმენტი ფორმატს უსინგ "
 "პლუგინს. ოტჰერ ფეატურეს ინკლუდე:"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
 msgstr "სინკტექს ფორვარდ ანდ ბაკკვარდ სინკჰრონიზატიონ სუპპორტ."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:26
 msgid "Quickmarks and bookmarks."
 msgstr "ქუიკკმარკს ანდ ბოოკმარკს."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:27
 msgid "Automatic document reloading."
 msgstr "აუტომატიკ დოკუმენტი რელოადინგ."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:44
 msgid "Reading a PDF file"
 msgstr "რეადინგ ა PDF ფაილი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
 msgstr "ოპენინგ ა ფაილი ვიტჰ ტჰე `open` კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:52
 msgid "Following links"
 msgstr "ფოლლოვინგ ლინკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:56
 msgid "Listing and selecting bookmakrs"
 msgstr "ლისტინგ ანდ სელეკტინგ ბოოკმაკრს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:72
 msgid "Add search result counter (#450)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:73
 msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:75
-#: data/org.pwmt.zathura.metainfo.xml.in:90
-#: data/org.pwmt.zathura.metainfo.xml.in:209
-#: data/org.pwmt.zathura.metainfo.xml.in:225
-#: data/org.pwmt.zathura.metainfo.xml.in:233
-#: data/org.pwmt.zathura.metainfo.xml.in:247
-#: data/org.pwmt.zathura.metainfo.xml.in:263
-#: data/org.pwmt.zathura.metainfo.xml.in:275
-#: data/org.pwmt.zathura.metainfo.xml.in:283
-#: data/org.pwmt.zathura.metainfo.xml.in:292
-#: data/org.pwmt.zathura.metainfo.xml.in:299
-#: data/org.pwmt.zathura.metainfo.xml.in:307
-#: data/org.pwmt.zathura.metainfo.xml.in:315
-#: data/org.pwmt.zathura.metainfo.xml.in:323
-#: data/org.pwmt.zathura.metainfo.xml.in:330
-#: data/org.pwmt.zathura.metainfo.xml.in:338
-#: data/org.pwmt.zathura.metainfo.xml.in:345
-#: data/org.pwmt.zathura.metainfo.xml.in:355
-#: data/org.pwmt.zathura.metainfo.xml.in:363
-#: data/org.pwmt.zathura.metainfo.xml.in:371
-#: data/org.pwmt.zathura.metainfo.xml.in:378
-#: data/org.pwmt.zathura.metainfo.xml.in:385
-#: data/org.pwmt.zathura.metainfo.xml.in:393
-#: data/org.pwmt.zathura.metainfo.xml.in:432
-#: data/org.pwmt.zathura.metainfo.xml.in:445
-#: data/org.pwmt.zathura.metainfo.xml.in:522
-#: data/org.pwmt.zathura.metainfo.xml.in:534
-#: data/org.pwmt.zathura.metainfo.xml.in:556
-#: data/org.pwmt.zathura.metainfo.xml.in:694
-#: data/org.pwmt.zathura.metainfo.xml.in:704
-#: data/org.pwmt.zathura.metainfo.xml.in:715
 msgid "Various fixes and improvements"
 msgstr "ვარიოუს ფიქსეს ანდ იმპროვემენტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:88
 msgid "Fix warning when using 'null' database (#881)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:89
 msgid "Include manpages in tarballs (#674)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:91
-#: data/org.pwmt.zathura.metainfo.xml.in:257
-#: data/org.pwmt.zathura.metainfo.xml.in:264
-#: data/org.pwmt.zathura.metainfo.xml.in:284
-#: data/org.pwmt.zathura.metainfo.xml.in:293
-#: data/org.pwmt.zathura.metainfo.xml.in:300
-#: data/org.pwmt.zathura.metainfo.xml.in:308
-#: data/org.pwmt.zathura.metainfo.xml.in:316
-#: data/org.pwmt.zathura.metainfo.xml.in:325
-#: data/org.pwmt.zathura.metainfo.xml.in:331
-#: data/org.pwmt.zathura.metainfo.xml.in:339
-#: data/org.pwmt.zathura.metainfo.xml.in:346
-#: data/org.pwmt.zathura.metainfo.xml.in:356
-#: data/org.pwmt.zathura.metainfo.xml.in:364
-#: data/org.pwmt.zathura.metainfo.xml.in:372
-#: data/org.pwmt.zathura.metainfo.xml.in:394
-#: data/org.pwmt.zathura.metainfo.xml.in:403
-#: data/org.pwmt.zathura.metainfo.xml.in:412
-#: data/org.pwmt.zathura.metainfo.xml.in:431
-#: data/org.pwmt.zathura.metainfo.xml.in:447
-#: data/org.pwmt.zathura.metainfo.xml.in:474
-#: data/org.pwmt.zathura.metainfo.xml.in:492
-#: data/org.pwmt.zathura.metainfo.xml.in:507
-#: data/org.pwmt.zathura.metainfo.xml.in:521
-#: data/org.pwmt.zathura.metainfo.xml.in:533
-#: data/org.pwmt.zathura.metainfo.xml.in:545
-#: data/org.pwmt.zathura.metainfo.xml.in:557
 msgid "Update translations"
 msgstr "უპდატე ტრანსლატიონს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:100
 msgid ""
 "Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:101
 msgid "Use single page layout for presentation mode (#686, #666)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:102
 msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:103
 msgid "Allow to disable copying to clipboard (#835)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:104
 msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:121
 msgid ""
 "Fork to background if opening with multiple files only if --fork is "
 "specified (#855)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:122
 msgid "Fix handling of PageUp and PageDown (#861)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:123
 msgid "Fix handling of mappings with special keys (#862)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:124
 msgid "Integrate Gtk+-specific parts of girara"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:134
 msgid "Switch to date-based version numbers"
 msgstr "სვიტკჰ ტო დატე-ბასედ ვერსიონ ნუმბერს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:135
 msgid "Fix warnings from CSS generation (#824)"
 msgstr "ფიქს ვარნინგს ფრომ კსს გენერატიონ (#824)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:136
 msgid "Apply correct scaling when recoloring (#836)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:137
 msgid "Make sure jumplist stays valid after close (#835)"
 msgstr "მაკე სურე ჯუმპლისტ სტაის ვალიდ აფტერ კლოსე (#835)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:138
 msgid "Disable message in incremental search (#227, #847)"
 msgstr "გამორთვა მესსაგე ინ ინკრემენტალ სეარკჰ (#227, #847)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:139
 msgid "Fix seccomp rules with musl (#843)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:140
 msgid ""
 "Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
 "#797, #826)"
@@ -233,1946 +142,1462 @@ msgstr ""
 "იმპლემენტ კუსტომ დრავინგ ფორ დოკუმენტი ვიდგეტ (#580, #657, #736, #785, #795, "
 "#797, #826)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:160
 msgid "Switch default database to sqlite and drop plain database"
 msgstr "სვიტკჰ დეფაულტ დატაბასე ტო სქლიტე ანდ დროპ პლაინ დატაბასე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:161
 msgid "Notify users if no attachments and images are available to export"
 msgstr "ნოტიფი უსერს იფ ნო ატტაკჰმენტს ანდ იმაგეს არე ავაილაბლე ტო ექსპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:162
 msgid "Make index-* configurable after init (#799)"
 msgstr "მაკე index-* კონფიგურაბლე აფტერ ინიტ (#799)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:163
 msgid "Support numeric keypad mappings"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:164
 msgid "Provide correct number of pages (#814)"
 msgstr "პროვიდე კორრეკტ ნუმბერ ოფ გვერდები (#814)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:165
 msgid "Undo size-allocate callback changes"
 msgstr "უნდო size-allocate კალლბაკკ კჰანგეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:166
 msgid "Fix temporary file names for better content-type detection"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:175
 msgid "Validate appstream files with appstreamcli"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:176
 msgid "Split page-padding into page-h-padding and page-v-padding"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:177
 msgid "Fix memory leak and callback type error (#767)"
 msgstr "ფიქს მემორი ლეაკ ანდ კალლბაკკ ტიპე ერრორ (#767)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:178
 msgid "Warn if plugins do not support exporting images or attachments (#334)"
 msgstr "ვარნ იფ პლუგინს დო ნოტ სუპპორტ ექსპორტინგ იმაგეს ორ ატტაკჰმენტს (#334)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:187
 msgid "Add shortcut to open files via file chooser dialog"
 msgstr "ადდ სჰორტკუტ ტო ოპენ ფილეს ვია ფაილი კჰოოსერ დიალოგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:188
 msgid "Refactor rendering of pages"
 msgstr "რეფაკტორ რენდერინგ ოფ გვერდები"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:189
 msgid "Add lightness adjustment for recoloring"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:190
 msgid "Initial support for OpenBSD sandbox"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:195
 msgid "Fix closing of documents"
 msgstr "ფიქს კლოსინგ ოფ დოკუმენტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:200
 msgid "Fix crash when opening documents"
 msgstr "ფიქს კრასჰ ვჰენ ოპენინგ დოკუმენტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:205
 msgid "Fix build on macOS"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:206
 msgid "Hide page label if the same as page number"
 msgstr "დამალვა გვერდი ლაბელ იფ ტჰე სამე ას გვერდი ნუმბერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:207
 msgid "Cache SyncTeX parser for faster operation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:208
 msgid "Revert changes for documents with multiple page sizes"
 msgstr "რევერტ კჰანგეს ფორ დოკუმენტს ვიტჰ მულტიპლე გვერდი სიზეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:214
 msgid "Bump plugin ABI"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:219
 msgid "Split sandbox functionality into separate zathura-sandbox binary"
 msgstr "სპლიტ სანდბოქს ფუნკტიონალიტი ინტო სეპარატე ზატჰურა-სანდბოქს ბინარი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:220
 msgid "Split off new command bjump from blist"
 msgstr "სპლიტ ოფფ ნევ კომმანდ ბჯუმპ ფრომ ბლისტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:221
 msgid "Add initial landlock support to sandbox"
 msgstr "ადდ ინიტიალ ლანდლოკკ სუპპორტ ტო სანდბოქს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:222
 msgid "Fix repeated search"
 msgstr "ფიქს რეპეატედ სეარკჰ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:223
 msgid "Implement jumplist command"
 msgstr "იმპლემენტ ჯუმპლისტ კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:224
 msgid "Fix issues with document with multiple page sizes"
 msgstr "ფიქს ისსუეს ვიტჰ დოკუმენტი ვიტჰ მულტიპლე გვერდი სიზეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:230
 msgid "Move to Github"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:231
 msgid "Reduce minimum glib version"
 msgstr "რედუკე მინიმუმ გლიბ ვერსიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:232
 msgid "Remove normal sandbox mode"
 msgstr "რემოვე ნორმალ სანდბოქს მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:238
 msgid "Compatibility with girara 0.4.3"
 msgstr "კომპატიბილიტი ვიტჰ girara 0.4.3"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:239
 msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:240
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:241
 msgid ""
 "Remove plain database backend. The sqlite database backend imports the data "
 "from the plain database the first time. sqlite is now a hard dependency."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:242
 msgid "Fix a segfault if dbus is not enabled."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:252
 msgid "Add support to display signatures"
 msgstr "ადდ სუპპორტ ტო დისპლაი სიგნატურეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:253
 msgid "Fix clearing of highlighted links"
 msgstr "ფიქს კლეარინგ ოფ ჰიგჰლიგჰტედ ლინკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:254
 msgid "Make some key modifiers configurable"
 msgstr "მაკე სომე კეი მოდიფიერს კონფიგურაბლე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:255
 msgid "Fix text selection on rotated pages"
 msgstr "ფიქს ტექსტ სელეკტიონ ონ როტატედ გვერდები"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:256
 msgid "Fix gap between pages"
 msgstr "ფიქს გაპ ბეტვეენ გვერდები"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:262
 msgid "Improve text selection"
 msgstr "იმპროვე ტექსტ სელეკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:269
 msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
 msgstr "`seccomp`: მაკე გლიბკ ფალლბაკკ ტო კლონე ინსტეად ოფ უსინგ clone3"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:274
 msgid "`magic` is now a required dependency"
 msgstr "`magic` ის ნოვ ა რექუირედ დეპენდენკი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:280
 msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
 msgstr "ადდ '$f' ანდ '$p' ექსპანსიონს ტო 'exec' სჰორტკუტ ფუნკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:281
 msgid "Fix build with meson 0.60"
 msgstr "ფიქს ბუილდ ვიტჰ meson 0.60"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:282
 msgid "Add :source command"
 msgstr "ადდ :სოურკე კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:289
 msgid "Account for page padding in full scroll"
 msgstr "აკკოუნტ ფორ გვერდი პადდინგ ინ ფულლ სკროლლ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:290
 msgid "Add foreground color for links"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:291
 msgid "Add :save and :save! aliases for :write and :write!"
 msgstr "ადდ :save ანდ :save! ალიასეს ფორ :write ანდ :write!"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:298
 msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
 msgstr ""
 "ფიქს ინვალიდ ზოომ ვჰენ ოპენინგ დოკუმენტი ვიტჰ 'adjust-open width' ოპტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:305
 msgid "Add --find option to the CLI"
 msgstr "ადდ --find ოპტიონ ტო ტჰე კლი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:306
 msgid "Support recolor with transparency"
 msgstr "სუპპორტ რეკოლორ ვიტჰ ტრანსპარენკი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:313
 msgid "Fix step size for mouse wheel scrolling"
 msgstr "ფიქს სტეპ სიზე ფორ მოუსე ვჰეელ სკროლლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:314
 msgid "Lookup fileinfo from database by hash as fallback"
 msgstr "ლოოკუპ ფილეინფო ფრომ დატაბასე ბი ჰასჰ ას ფალლბაკკ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:321
 msgid "Fix expansion of ~ and ~user when opening files"
 msgstr "ფიქს ექსპანსიონ ოფ ~ ანდ ~user ვჰენ ოპენინგ ფილეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:322
 msgid "Add fish completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:324
 msgid "Drop support for old libsynctex"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:336
 msgid "Add bash and zsh completions"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:337
 msgid "Add RTL layout of pages"
 msgstr "ადდ რტლ ლაიოუტ ოფ გვერდები"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:344
 msgid "Port to newer libsynctex"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:351
 msgid "Improved HiDPI support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:352
 msgid "Display page labels"
 msgstr "დისპლაი გვერდი ლაბელს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:353
 msgid "Add experimental seccomp filters"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:354
 msgid "Replace build system with meson"
 msgstr "რეპლაკე ბუილდ სისტემ ვიტჰ მესონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:361
 msgid "Fix memory leaks"
 msgstr "ფიქს მემორი ლეაკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:362
 msgid "Rework plugin initialization"
 msgstr "რევორკ პლუგინ ინიტიალიზატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:369
 msgid "Improved logging"
 msgstr "იმპროვედ ლოგგინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:370
 msgid "Improve page mode toggling"
 msgstr "იმპროვე გვერდი მოდე ტოგგლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:377
 msgid "Parallel build of manpages"
 msgstr "პარალლელ ბუილდ ოფ მანპაგეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:383
 msgid "Build even without SyncTex"
 msgstr "ბუილდ ევენ ვიტჰოუტ სინკტექს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:384
 msgid "Children should not fork"
 msgstr "კჰილდრენ სჰოულდ ნოტ ფორკ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:390
 msgid "Recent files support"
 msgstr "რეკენტ ფილეს სუპპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:391
 msgid "Substitute home with tilde"
 msgstr "სუბსტიტუტე ჰომე ვიტჰ ტილდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:392
 msgid "Open URLs"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:399
 msgid "Store tmp files in only one location"
 msgstr "სტორე ტმპ ფილეს ინ ონლი ონე ლოკატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:400
 msgid "Print target selection"
 msgstr "ბეჭდვა ტარგეტ სელეკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:401
 msgid "Allow .dylib plugins on Mac OS X"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:402
 msgid "Fix dual page render breakage of adjust_window"
 msgstr "ფიქს დუალ გვერდი რენდერ ბრეაკაგე ოფ adjust_window"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:408
 msgid "Resolve memory leak while reloading file"
 msgstr "რესოლვე მემორი ლეაკ ვჰილე რელოადინგ ფაილი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:409
 msgid "Prevent segmentation fault when smooth zooming with mouse"
 msgstr "პრევენტ სეგმენტატიონ ფაულტ ვჰენ სმოოტჰ ზოომინგ ვიტჰ მოუსე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:410
 msgid "Cache thumbnails to support smooth zooming"
 msgstr "კაკჰე ტჰუმბნაილს ტო სუპპორტ სმოოტჰ ზოომინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:411
 msgid "Check scale value correctness"
 msgstr "კჰეკკ სკალე ვალუე კორრეკტნესს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:417
 msgid "Fix segmentation fault caused by bidirectional scrolling"
 msgstr "ფიქს სეგმენტატიონ ფაულტ კაუსედ ბი ბიდირეკტიონალ სკროლლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:418
 msgid "Add SyntaxView"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:423
 msgid "Print debug information to D-Bus"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:424
 msgid "Fix scroll down/up in dual-page mode"
 msgstr "ფიქს სკროლლ დოვნ/უპ ინ დუალ-გვერდი მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:425
 msgid "Option to hide notification after selection"
 msgstr "ოპტიონ ტო ჰიდე ნოტიფიკატიონ აფტერ სელეკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:426
 msgid "Introduce cache directory"
 msgstr "ინტროდუკე კაკჰე დირეკტორი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:427
 msgid "Introduce smooth-scroll and smooth-zoom"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:428
 msgid "Add vim style exec"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:429
 msgid "Option to ignore images while recoloring"
 msgstr "ოპტიონ ტო იგნორე იმაგეს ვჰილე რეკოლორინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:430
 msgid "Take advantage of shared or system SyncTex parser library"
 msgstr "ტაკე ადვანტაგე ოფ სჰარედ ორ სისტემ სინკტექს პარსერ ლიბრარი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:437
 msgid "Update dependency version of girara"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Better SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:443
 msgid "Change cursor if mouse is over link"
 msgstr "კჰანგე კურსორ იფ მოუსე ის ოვერ ლინკ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:444
 msgid "Colored build output"
 msgstr "კოლორედ ბუილდ ოუტპუტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:446
 msgid "Sphinx documentation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:452
 msgid "Full SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:453
 msgid "D-Bus interface"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:454
 msgid "Simple vim plugin for SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:455
 msgid "Add shortcuts for ^C and Esc in all modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:456
 msgid "Use the actual mode in mode toggle calls"
 msgstr "უსე ტჰე აკტუალ მოდე ინ მოდე ტოგგლე კალლს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:457
 msgid "Only copy selected text in normal and fullscreen mode"
 msgstr "ონლი კოპი სელეკტედ ტექსტ ინ ნორმალ ანდ ფულლსკრეენ მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:458
 msgid "Translate error messages"
 msgstr "ტრანსლატე ერრორ მესსაგეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:459
 msgid "Correctly safe print setting state"
 msgstr "კორრეკტლი საფე პრინტ სეტტინგ სტატე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:460
 msgid "Add --mode option"
 msgstr "ადდ --mode ოპტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:461
 msgid "Expose more properties via D-Bus"
 msgstr "ექსპოსე მორე პროპერტიეს ვია D-Bus"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:462
 msgid "Center pages"
 msgstr "კენტერ გვერდები"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:463
 msgid "Replace glib memory functions with try version"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:464
 msgid "Align highlighted rectangles correctly"
 msgstr "ალიგნ ჰიგჰლიგჰტედ რეკტანგლეს კორრეკტლი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:465
 msgid "Implement G and gg for index mode"
 msgstr "იმპლემენტ G ანდ gg ფორ ინდექს მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:466
 msgid "Implement TOGGLE for sc_navigate_index"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:467
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
 msgstr "პრესერვე ჰორიზონტალ პოსიტიონ ვჰენ სკროლლინგ ტო PAGE_TOP/BOTTOM"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:468
 msgid "Implement shortcuts for scrolling to page top/bottom"
 msgstr "იმპლემენტ სჰორტკუტს ფორ სკროლლინგ ტო გვერდი ტოპ/ბოტტომ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:469
 msgid "Set position on document load only if no page was specified"
 msgstr "სეტ პოსიტიონ ონ დოკუმენტი ლოად ონლი იფ ნო გვერდი ვას სპეკიფიედ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:470
 msgid "Bail out early if we get TOP or BOTTOM"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:471
 msgid "Replace fullscreen mode with presentation mode"
 msgstr "რეპლაკე ფულლსკრეენ მოდე ვიტჰ პრესენტატიონ მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:472
 msgid "Remove GTK+2 support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:473
-#: data/org.pwmt.zathura.metainfo.xml.in:479
-#: data/org.pwmt.zathura.metainfo.xml.in:491
 msgid "Update documentation"
 msgstr "უპდატე დოკუმენტატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:480
 msgid "Resolve layout problems"
 msgstr "რესოლვე ლაიოუტ პრობლემს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:485
 msgid "Use GTK+3 by default"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:486
 msgid "Rewritten render logic"
 msgstr "რევრიტტენ რენდერ ლოგიკ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:487
 msgid "Fixed page refresh in certain situations"
 msgstr "ფიქსედ გვერდი რეფრესჰ ინ კერტაინ სიტუატიონს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:488
 msgid "Make the X clipboard buffer"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:489
 msgid "Allow number in quickmarks"
 msgstr "ალლოვ ნუმბერ ინ ქუიკკმარკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:490
 msgid "Workaround for print quality issues"
 msgstr "ვორკაროუნდ ფორ პრინტ ქუალიტი ისსუეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:497
 msgid "Resolve memory leak"
 msgstr "რესოლვე მემორი ლეაკ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:498
 msgid "Report missing plugin or unsupported file types"
 msgstr "რეპორტ მისსინგ პლუგინ ორ უნსუპპორტედ ფაილი ტიპეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:499
 msgid "More vim-like search behaviour"
 msgstr "მორე ვიმ-ლიკე სეარკჰ ბეჰავიოურ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:500
 msgid "Introduced show-{h,v}-scrollbar settings"
 msgstr "ინტროდუკედ სჰოვ-{ჰ,ვ}-სკროლლბარ სეტტინგს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:501
 msgid "Enhancement of the jumplist mechanism"
 msgstr "ენჰანკემენტ ოფ ტჰე ჯუმპლისტ მეკჰანისმ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:502
 msgid "Use jumplists with marks"
 msgstr "უსე ჯუმპლისტს ვიტჰ მარკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:503
 msgid "More vim-like jump behaviour"
 msgstr "მორე ვიმ-ლიკე ჯუმპ ბეჰავიოურ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:504
 msgid "Improved bisect"
 msgstr "იმპროვედ ბისეკტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:505
 msgid "Update page number on mouse scroll"
 msgstr "უპდატე გვერდი ნუმბერ ონ მოუსე სკროლლ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:506
 msgid "Introduced window-title-page option"
 msgstr "ინტროდუკედ ვინდოვ-ტიტლე-გვერდი ოპტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:512
 msgid "LRU caching algorithm"
 msgstr "ლრუ კაკჰინგ ალგორიტჰმ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:513
 msgid "Bisect functionality"
 msgstr "ბისეკტ ფუნკტიონალიტი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:514
 msgid "Allow negative offsets"
 msgstr "ალლოვ ნეგატივე ოფფსეტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:515
 msgid "Option --page to open at the specified page"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:516
 msgid "Scale vertical/horizontal scrolling in respect to the buffer"
 msgstr "სკალე ვერტიკალ/ჰორიზონტალ სკროლლინგ ინ რესპეკტ ტო ტჰე ბუფფერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:517
 msgid "Add statusbar-basename option"
 msgstr "ადდ სტატუსბარ-ბასენამე ოპტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:518
 msgid "Implement colors for 'Loading...'-text"
 msgstr "იმპლემენტ კოლორს ფორ 'იტვირთება...'-ტექსტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:519
 msgid "Don't render same page multiple times"
 msgstr "დონ'ტ რენდერ სამე გვერდი მულტიპლე ტიმეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:520
 msgid "Use libmagic if available"
 msgstr "უსე ლიბმაგიკ იფ ავაილაბლე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:527
 msgid "Implemented jumplist (^o, ^i)"
 msgstr "იმპლემენტედ ჯუმპლისტ (^o, ^i)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:528
 msgid "Update current page when following links"
 msgstr "უპდატე კურრენტ გვერდი ვჰენ ფოლლოვინგ ლინკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:529
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr "გადახვევა ჰორიზონტალლი ვიტჰ სჰიფტ ანდ მოუსე ვჰეელ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:530 zathura/config.c:574
 msgid "Page aware scrolling"
 msgstr "გვერდი ავარე სკროლლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:531
 msgid "SyncTeX forward synchronisation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:532
 msgid "Update shortcuts"
 msgstr "უპდატე სჰორტკუტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:539
 msgid "SyncTeX backwards synchronisation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Fix request-page-setup"
 msgstr "ფიქს რექუესტ-გვერდი-სეტუპ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:541
 msgid "Fix window adustment"
 msgstr "ფიქს ვინდოვ ადუსტმენტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:542
-#: data/org.pwmt.zathura.metainfo.xml.in:565
 msgid "Update GTK3 support"
 msgstr "უპდატე GTK3 სუპპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:543
 msgid "Added first-page-colum setting"
 msgstr "ადდედ ფირსტ-გვერდი-კოლუმ სეტტინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:544
 msgid "Added recolor-keephue setting"
 msgstr "ადდედ რეკოლორ-კეეპჰუე სეტტინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:550
 msgid "Better print support"
 msgstr "ბეტტერ პრინტ სუპპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:551
 msgid "Improve document links"
 msgstr "იმპროვე დოკუმენტი ლინკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:552
 msgid "Render last-viewed pages with a higher priority"
 msgstr "რენდერ ლასტ-ვიევედ გვერდები ვიტჰ ა ჰიგჰერ პრიორიტი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:553
 msgid "Export images and attachments"
 msgstr "ექსპორტ იმაგეს ანდ ატტაკჰმენტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:554
 msgid "Open multiple documents"
 msgstr "გახსნა მულტიპლე დოკუმენტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:555
 msgid "Plugin manager"
 msgstr "პლუგინ მანაგერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:562
 msgid "Add 'open-first-page' setting"
 msgstr "ადდ 'ოპენ-ფირსტ-გვერდი' სეტტინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:563
 msgid "Free invisible pages after specific time"
 msgstr "ფრეე ინვისიბლე გვერდები აფტერ სპეკიფიკ ტიმე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:564
 msgid "Set log level via command line"
 msgstr "სეტ ლოგ ლეველ ვია კომმანდ ლინე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:566
 msgid "Completion for :write command"
 msgstr "კომპლეტიონ ფორ :ვრიტე კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:567
 msgid "Simplified plugin loading"
 msgstr "სიმპლიფიედ პლუგინ ლოადინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:568
 msgid "Allow counter-clockwise rotation"
 msgstr "ალლოვ კოუნტერ-კლოკკვისე როტატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:569
 msgid "Changeable page-padding"
 msgstr "კჰანგეაბლე გვერდი-პადდინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:570
 msgid "Introduced girara version check"
 msgstr "ინტროდუკედ გირარა ვერსიონ კჰეკკ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:571
 msgid "Detect sqlite automatically"
 msgstr "დეტეკტ სქლიტე აუტომატიკალლი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:572
 msgid "Update window title"
 msgstr "უპდატე ვინდოვ ტიტლე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:577
 msgid "Macro to register plugins"
 msgstr "მაკრო ტო რეგისტერ პლუგინს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:578
 msgid "Fix issues with the display of the current page number"
 msgstr "ფიქს ისსუეს ვიტჰ ტჰე დისპლაი ოფ ტჰე კურრენტ გვერდი ნუმბერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:579
 msgid "Ability to scroll to the full left or full right border"
 msgstr "აბილიტი ტო სკროლლ ტო ტჰე ფულლ ლეფტ ორ ფულლ რიგჰტ ბორდერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:580
 msgid "Reimplement the render thread with GThreadPool"
 msgstr "რეიმპლემენტ ტჰე რენდერ ტჰრეად ვიტჰ გტჰრეადპოოლ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:581
 msgid "Use the correct color to highlight results"
 msgstr "უსე ტჰე კორრეკტ ფერი ტო ჰიგჰლიგჰტ რესულტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:582
 msgid "Support to use both database backends"
 msgstr "სუპპორტ ტო უსე ბოტჰ დატაბასე ბაკკენდს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:583
 msgid "Additional notifications on errors"
 msgstr "ადდიტიონალ ნოტიფიკატიონს ონ ერრორს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:584
 msgid "Option to hide hidden directories"
 msgstr "ოპტიონ ტო ჰიდე ჰიდდენ დირეკტორიეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:585
 msgid "Do not overwrite existing files with :write"
 msgstr "დო ნოტ ოვერვრიტე ექსისტინგ ფილეს ვიტჰ :ვრიტე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:586
 msgid "Fix flicker in text selection"
 msgstr "ფიქს ფლიკკერ ინ ტექსტ სელეკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:587
-#: data/org.pwmt.zathura.metainfo.xml.in:615
-#: data/org.pwmt.zathura.metainfo.xml.in:624
-#: data/org.pwmt.zathura.metainfo.xml.in:638
 msgid "Fixed several memory leaks"
 msgstr "ფიქსედ სევერალ მემორი ლეაკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:592
 msgid "Complete rewrite of zathura"
 msgstr "კომპლეტე რევრიტე ოფ ზატჰურა"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:593
 msgid "Uses the girara interface library"
 msgstr "უსეს ტჰე გირარა ინტერფაკე ლიბრარი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:594
 msgid "Plugin system for different document types"
 msgstr "პლუგინ სისტემ ფორ დიფფერენტ დოკუმენტი ტიპეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:595
 msgid "Better configuration"
 msgstr "ბეტტერ კონფიგურატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:596
 msgid "Quickmarks"
 msgstr "ქუიკკმარკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:601
 msgid "Ignoring MOD5 which is used on some keyboards"
 msgstr "იგნორინგ MOD5 ვჰიკჰ ის უსედ ონ სომე კეიბოარდს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:602
 msgid "Fix scroll_wrap (#52)"
 msgstr "ფიქს scroll_wrap (#52)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:603
 msgid "Don't invert y coordinates (#42)"
 msgstr "დონ'ტ ინვერტ ი კოორდინატეს (#42)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:604
 msgid "Certain memory leaks and other small issues"
 msgstr "კერტაინ მემორი ლეაკს ანდ ოტჰერ სმალლ ისსუეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:609
 msgid "Fixed bookmark handling"
 msgstr "ფიქსედ ბოოკმარკ ჰანდლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:610
 msgid "Support :digits"
 msgstr "სუპპორტ :დიგიტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:611
 msgid "Save zoom level per file"
 msgstr "შენახვა ზოომ ლეველ პერ ფაილი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:612
 msgid "Fix backwards searching"
 msgstr "ფიქს ბაკკვარდს სეარკჰინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:613
 msgid "Fix blinking while switching pages"
 msgstr "ფიქს ბლინკინგ ვჰილე სვიტკჰინგ გვერდები"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:614
 msgid "Fix input issues in fullscreen mode"
 msgstr "ფიქს ინპუტ ისსუეს ინ ფულლსკრეენ მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:620
 msgid "Update text searching"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:621
 msgid "Support for poppler >= 0.15"
 msgstr "სუპპორტ ფორ პოპპლერ >= 0.15"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:622
 msgid "Fixed print command with multiple arguments"
 msgstr "ფიქსედ პრინტ კომმანდ ვიტჰ მულტიპლე არგუმენტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:623
 msgid "Fixed GOptionEntries"
 msgstr "ფიქსედ გოპტიონენტრიეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:625
 msgid "Fixed segmentation faults"
 msgstr "ფიქსედ სეგმენტატიონ ფაულტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:630
 msgid "Wrap around scrolling"
 msgstr "ვრაპ აროუნდ სკროლლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:631
 msgid "Display scroll percentage in statusbar"
 msgstr "დისპლაი სკროლლ პერკენტაგე ინ სტატუსბარ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:632
 msgid "More familiar zoom key bindings"
 msgstr "მორე ფამილიარ ზოომ კეი ბინდინგს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:633
 msgid "Support reading files from stdin"
 msgstr "სუპპორტ რეადინგ ფილეს ფრომ სტდინ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:634
 msgid "Open command with appended current file path"
 msgstr "გახსნა კომმანდ ვიტჰ აპპენდედ კურრენტ ფაილი პატჰ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:635
 msgid "Following XDG specification"
 msgstr "ფოლლოვინგ ქსდგ სპეკიფიკატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:636
 msgid "Colored window and view port"
 msgstr "კოლორედ ვინდოვ ანდ ვიევ პორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:637
 msgid "File reloading fix"
 msgstr "ფაილი რელოადინგ ფიქს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:639
-#: data/org.pwmt.zathura.metainfo.xml.in:660
-#: data/org.pwmt.zathura.metainfo.xml.in:677
-#: data/org.pwmt.zathura.metainfo.xml.in:686
 msgid "Update manpage"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:644
 msgid "Fixed critical usability bug"
 msgstr "ფიქსედ კრიტიკალ უსაბილიტი ბუგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:649
 msgid "Improved and fixed completion"
 msgstr "იმპროვედ ანდ ფიქსედ კომპლეტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:650
 msgid "Optional parameters for the print command"
 msgstr "ოპტიონალ პარამეტერს ფორ ტჰე პრინტ კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:651
-#: data/org.pwmt.zathura.metainfo.xml.in:703
 msgid "Escape filenames"
 msgstr "ესკაპე ფილენამეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:652
 msgid "Resolved some memory leaks"
 msgstr "რესოლვედ სომე მემორი ლეაკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:653
 msgid "Global configuration file"
 msgstr "გლობალ კონფიგურატიონ ფაილი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:654
 msgid "Specify configuration directory"
 msgstr "სპეკიფი კონფიგურატიონ დირეკტორი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:655
 msgid "Configureable modes"
 msgstr "კონფიგურეაბლე მოდეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:656
 msgid "Smooth scrolling"
 msgstr "სმოოტჰ სკროლლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:657
 msgid "Extended statusbar string manipulation"
 msgstr "ექსტენდედ სტატუსბარ სტრინგ მანიპულატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:658
 msgid "`function`"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:659
-#: data/org.pwmt.zathura.metainfo.xml.in:675
 msgid "Strip executable"
 msgstr "სტრიპ ექსეკუტაბლე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:665
 msgid "Change window title to filename"
 msgstr "კჰანგე ვინდოვ ტიტლე ტო ფილენამე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:666
 msgid "Fixation of the URI command"
 msgstr "ფიქსატიონ ოფ ტჰე ური კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:667
 msgid "Update the behaviour of sc_scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:668
 msgid "Half/Full-page scrolling"
 msgstr "ჰალფ/ფულლ-გვერდი სკროლლინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:669
 msgid "Check document health in sc_reload"
 msgstr "კჰეკკ დოკუმენტი ჰეალტჰ ინ sc_reload"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:670
 msgid "`tabbed` support"
 msgstr "`tabbed` სუპპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:671
 msgid "Define look with the set function"
 msgstr "დეფინე ლოოკ ვიტჰ ტჰე სეტ ფუნკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:672
 msgid "Implemented map function"
 msgstr "იმპლემენტედ მაპ ფუნკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:673
 msgid "`zathurarc` file"
 msgstr "`zathurarc` ფაილი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:674
 msgid "Prevent buffer overflow in realpath"
 msgstr "პრევენტ ბუფფერ ოვერფლოვ ინ რეალპატჰ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:676
 msgid "Key evaluation when buffer is not empty"
 msgstr "კეი ევალუატიონ ვჰენ ბუფფერ ის ნოტ ემპტი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:682
 msgid "Use GFileMonitor instead of inotify"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:683
 msgid "Added document reload shortcut"
 msgstr "ადდედ დოკუმენტი რელოად სჰორტკუტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:684
 msgid "Fixed toggle index"
 msgstr "ფიქსედ ტოგგლე ინდექს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:685
 msgid "Fixed print command"
 msgstr "ფიქსედ პრინტ კომმანდ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:691
 msgid "Fullscreen mode"
 msgstr "ფულლსკრეენ მოდე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:692
 msgid "Correct search result highlighting"
 msgstr "კორრეკტ სეარკჰ რესულტ ჰიგჰლიგჰტინგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:693
 msgid "Document password dialog"
 msgstr "დოკუმენტი პასსვორდ დიალოგ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:699
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
 msgstr "მოუსე სუპპორტ (გადახვევა, მარკ ანდ კოპი ტექსტ ტო კლიპბოარდ)"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:700
 msgid "Keyboard navigation in the index view"
 msgstr "კეიბოარდ ნავიგატიონ ინ ტჰე ინდექს ვიევ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:701
 msgid "Different goto modes"
 msgstr "დიფფერენტ გოტო მოდეს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:702
 msgid "Auto adjustment when opening a document"
 msgstr "აუტო ადჯუსტმენტ ვჰენ ოპენინგ ა დოკუმენტი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:709
 msgid "Reload modified document automatically"
 msgstr "რელოად მოდიფიედ დოკუმენტი აუტომატიკალლი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:710
 msgid "Recolor the page instead of inverting the colors"
 msgstr "რეკოლორ ტჰე გვერდი ინსტეად ოფ ინვერტინგ ტჰე კოლორს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:711
 msgid "Working search function"
 msgstr "ვორკინგ სეარკჰ ფუნკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:712
 msgid "Show and hide document information"
 msgstr "ჩვენება ანდ ჰიდე დოკუმენტი ინფორმატიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:713
 msgid "Follow internal links or open URI in a predefined browser"
 msgstr "ფოლლოვ ინტერნალ ლინკს ორ ოპენ ური ინ ა პრედეფინედ ბროვსერ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:714
 msgid "Save the document"
 msgstr "შენახვა ტჰე დოკუმენტი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:720
 msgid "Complete new, re-written interface"
 msgstr "კომპლეტე ნევ, რე-ვრიტტენ ინტერფაკე"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:721
 msgid "Multiple printer support"
 msgstr "მულტიპლე პრინტერ სუპპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:722
 msgid "Command history"
 msgstr "ბრძანება ჰისტორი"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:723
 msgid "Show document index"
 msgstr "ჩვენება დოკუმენტი ინდექს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:724
 msgid "Centered view"
 msgstr "კენტერედ ვიევ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:725
 msgid "Add, save and open bookmarks"
 msgstr "ადდ, სავე ანდ ოპენ ბოოკმარკს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:726
 msgid "Marker support"
 msgstr "მარკერ სუპპორტ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:727
 msgid "Highlight search results"
 msgstr "მონიშვნა სეარკჰ რესულტს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:728
 msgid "Buffered commands"
 msgstr "ბუფფერედ კომმანდს"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:729
 msgid "`set` Function"
 msgstr "`set` ფუნკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:730
 msgid "Revert video function"
 msgstr "რევერტ ვიდეო ფუნკტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:731
 msgid "Command completion"
 msgstr "ბრძანება კომპლეტიონ"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:736
 msgid "Initial release"
 msgstr "ინიტიალ რელეასე"
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
-#: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;დოკუმენტი;პრესენტატიონ;ვიევერ;"
 
-#: zathura/callbacks.c:311
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' მუსტ ნოტ ბე 0. სეტ ტო 1."
 
-#: zathura/callbacks.c:400
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "არასწორი ინპუტ '%s' გივენ."
 
-#: zathura/callbacks.c:423
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "არასწორი ინდექს '%s' გივენ."
 
-#: zathura/callbacks.c:636
+msgid "Enter password:"
+msgstr "ენტერ პასსვორდ:"
+
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "კოპიედ სელეკტედ ტექსტ ტო სელეკტიონ %s: %s"
 
-#: zathura/callbacks.c:662
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "კოპიედ სელეკტედ იმაგე ტო სელეკტიონ %s"
 
-#: zathura/commands.c:38 zathura/commands.c:76 zathura/commands.c:101
-#: zathura/commands.c:127 zathura/commands.c:159 zathura/commands.c:221
-#: zathura/commands.c:330 zathura/commands.c:360 zathura/commands.c:385
-#: zathura/commands.c:492 zathura/commands.c:661 zathura/shortcuts.c:161
-#: zathura/shortcuts.c:504 zathura/shortcuts.c:1225 zathura/shortcuts.c:1258
-#: zathura/shortcuts.c:1283 zathura/shortcuts.c:1379
 msgid "No document opened."
 msgstr "ნო დოკუმენტი ოპენედ."
 
-#: zathura/commands.c:44 zathura/commands.c:82 zathura/commands.c:133
-#: zathura/commands.c:177 zathura/commands.c:497
 msgid "Invalid number of arguments given."
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს გივენ."
 
-#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "კოულდ ნოტ უპდატე ბოოკმარკ: %s"
 
-#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "კოულდ ნოტ კრეატე ბოოკმარკ: %s"
 
-#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "სანიშნე სუკკესსფულლი უპდატედ: %s"
 
-#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "სანიშნე სუკკესსფულლი კრეატედ: %s"
 
-#: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "რემოვედ ბოოკმარკ: %s"
 
-#: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "ფაილედ ტო რემოვე ბოოკმარკ: %s"
 
-#: zathura/commands.c:116
 msgid "No bookmarks available."
 msgstr "ნო ბოოკმარკს ავაილაბლე."
 
-#: zathura/commands.c:140
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "ნო სუკჰ ბოოკმარკ: %s"
 
-#: zathura/commands.c:169
 msgid "Argument must be a nonzero number."
 msgstr "არგუმენტ მუსტ ბე ა ნონზერო ნუმბერ."
 
-#: zathura/commands.c:189
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
 msgstr "[%d]: გვერდი=<ბ>%2d</ბ>, ქს=%f, ი=%f %s\n"
 
-#: zathura/commands.c:190
 msgid "(current)"
 msgstr "(კურრენტ)"
 
-#: zathura/commands.c:197
 msgid "No jumplist available."
 msgstr "ნო ჯუმპლისტ ავაილაბლე."
 
-#: zathura/commands.c:231
 msgid "Title"
 msgstr "ტიტლე"
 
-#: zathura/commands.c:232
 msgid "Subject"
 msgstr "სუბჯეკტ"
 
-#: zathura/commands.c:233
 msgid "Keywords"
 msgstr "კეივორდს"
 
-#: zathura/commands.c:234
 msgid "Author"
 msgstr "აუტჰორ"
 
-#: zathura/commands.c:235
 msgid "Creator"
 msgstr "კრეატორ"
 
-#: zathura/commands.c:236
 msgid "Producer"
 msgstr "პროდუკერ"
 
-#: zathura/commands.c:237
 msgid "Creation date"
 msgstr "კრეატიონ დატე"
 
-#: zathura/commands.c:238
 msgid "Modification date"
 msgstr "მოდიფიკატიონ დატე"
 
-#: zathura/commands.c:239
 msgid "Format"
 msgstr "ფორმატ"
 
-#: zathura/commands.c:240
 msgid "Other"
 msgstr "ოტჰერ"
 
-#: zathura/commands.c:245 zathura/commands.c:264
 msgid "No information available."
 msgstr "ნო ინფორმატიონ ავაილაბლე."
 
-#: zathura/commands.c:274
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 "პლეასე კჰეკკ ტჰე მან გვერდები zathura(1) ანდ zathurarc(5) ფორ მორე "
 "ინფორმატიონ."
 
-#: zathura/commands.c:300 zathura/commands.c:707 girara-gtk/commands.c:550
 msgid "Too many arguments."
 msgstr "ტოო მანი არგუმენტს."
 
-#: zathura/commands.c:311
 msgid "No arguments given."
 msgstr "ნო არგუმენტს გივენ."
 
-#: zathura/commands.c:335
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "პრინტინგ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:356 zathura/commands.c:381
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "სავინგ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:367 zathura/commands.c:392
 msgid "Invalid number of arguments."
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს."
 
-#: zathura/commands.c:487
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr "ექსპორტინგ ატტაკჰმენტს ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:519
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "კოულდნ'ტ ვრიტე ატტაკჰმენტ '%s' ტო '%s'."
 
-#: zathura/commands.c:521
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "ვროტე ატტაკჰმენტ '%s' ტო '%s'."
 
-#: zathura/commands.c:565
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "ვროტე იმაგე '%s' ტო '%s'."
 
-#: zathura/commands.c:567
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "კოულდნ'ტ ვრიტე იმაგე '%s' ტო '%s'."
 
-#: zathura/commands.c:573
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "უნკნოვნ იმაგე '%s'."
 
-#: zathura/commands.c:577
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "უნკნოვნ ატტაკჰმენტ ორ იმაგე '%s'."
 
-#: zathura/commands.c:605
 #, c-format
 msgid "Failed to execute command: %s"
 msgstr "ფაილედ ტო ექსეკუტე კომმანდ: %s"
 
-#: zathura/commands.c:618
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "ექსეკ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
 
-#: zathura/commands.c:674
 msgid "Argument must be a number."
 msgstr "არგუმენტ მუსტ ბე ა ნუმბერ."
 
-#: zathura/completion.c:259
 #, c-format
 msgid "Page %d"
 msgstr "გვერდი %d"
 
-#: zathura/completion.c:300
 msgid "Attachments"
 msgstr "ატტაკჰმენტს"
 
 #. add images
-#: zathura/completion.c:329
 msgid "Images"
 msgstr "იმაგეს"
 
-#: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
 msgstr "პლუგინ დოეს ნოტ სუპპორტ ექსპორტინგ ატტაკჰმენტს ანდ იმაგეს."
 
-#: zathura/completion.c:371
 msgid "Document contains no images or attachments"
 msgstr "დოკუმენტი კონტაინს ნო იმაგეს ორ ატტაკჰმენტს"
 
 #. clang-format off
 #. settings
-#: zathura/config.c:469
 msgid "Font"
 msgstr "ფონტ"
 
 #. colors affecting the CSS
-#: zathura/config.c:472
 msgid "Default foreground color"
 msgstr "დეფაულტ წინა პლანი ფერი"
 
-#: zathura/config.c:473
 msgid "Default background color"
 msgstr "დეფაულტ ფონი ფერი"
 
-#: zathura/config.c:474
 msgid "Inputbar foreground color"
 msgstr "ინპუტბარ წინა პლანი ფერი"
 
-#: zathura/config.c:475
 msgid "Inputbar background color"
 msgstr "ინპუტბარ ფონი ფერი"
 
-#: zathura/config.c:476
 msgid "Statusbar foreground color"
 msgstr "სტატუსბარ წინა პლანი ფერი"
 
-#: zathura/config.c:477
 msgid "Statsubar background color"
 msgstr "სტატსუბარ ფონი ფერი"
 
-#: zathura/config.c:478
 msgid "Completion foreground color"
 msgstr "კომპლეტიონ წინა პლანი ფერი"
 
-#: zathura/config.c:479
 msgid "Completion background color"
 msgstr "კომპლეტიონ ფონი ფერი"
 
-#: zathura/config.c:480
 msgid "Completion group foreground color"
 msgstr "კომპლეტიონ გროუპ წინა პლანი ფერი"
 
-#: zathura/config.c:481
 msgid "Completion group background color"
 msgstr "კომპლეტიონ გროუპ ფონი ფერი"
 
-#: zathura/config.c:482
 msgid "Completion highlight foreground color"
 msgstr "კომპლეტიონ ჰიგჰლიგჰტ წინა პლანი ფერი"
 
-#: zathura/config.c:483
 msgid "Completion highlight background color"
 msgstr "კომპლეტიონ ჰიგჰლიგჰტ ფონი ფერი"
 
-#: zathura/config.c:484
 msgid "Error notification foreground color"
 msgstr "შეცდომა ნოტიფიკატიონ წინა პლანი ფერი"
 
-#: zathura/config.c:485
 msgid "Error notification background color"
 msgstr "შეცდომა ნოტიფიკატიონ ფონი ფერი"
 
-#: zathura/config.c:486
 msgid "Warning notification foreground color"
 msgstr "გაფრთხილება ნოტიფიკატიონ წინა პლანი ფერი"
 
-#: zathura/config.c:487
 msgid "Warning notifaction background color"
 msgstr "გაფრთხილება ნოტიფაკტიონ ფონი ფერი"
 
-#: zathura/config.c:488
 msgid "Notification foreground color"
 msgstr "ნოტიფიკატიონ წინა პლანი ფერი"
 
-#: zathura/config.c:489
 msgid "Notification background color"
 msgstr "ნოტიფიკატიონ ფონი ფერი"
 
-#: zathura/config.c:490
 msgid "Index mode foreground color"
 msgstr "ინდექს მოდე წინა პლანი ფერი"
 
-#: zathura/config.c:491
 msgid "Index mode background color"
 msgstr "ინდექს მოდე ფონი ფერი"
 
-#: zathura/config.c:492
 msgid "Index mode foreground color (active element)"
 msgstr "ინდექს მოდე წინა პლანი ფერი (აკტივე ელემენტ)"
 
-#: zathura/config.c:493
 msgid "Index mode background color (active element)"
 msgstr "ინდექს მოდე ფონი ფერი (აკტივე ელემენტ)"
 
-#: zathura/config.c:494
 msgid "Scrollbar foreground color"
 msgstr "სკროლლბარ წინა პლანი ფერი"
 
-#: zathura/config.c:495
 msgid "Scrollbar background color"
 msgstr "სკროლლბარ ფონი ფერი"
 
-#: zathura/config.c:498
 msgid "Initial window width"
 msgstr "ინიტიალ ვინდოვ ვიდტჰ"
 
-#: zathura/config.c:499
 msgid "Initial window height"
 msgstr "ინიტიალ ვინდოვ ჰეიგჰტ"
 
-#: zathura/config.c:500
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "ჰორიზონტალური პადდინგ ფორ ტჰე სტატუს, ინპუტ, ანდ ნოტიფიკატიონ ბარს"
 
-#: zathura/config.c:501
 msgid "Vertical padding for the status, input, and notification bars"
 msgstr "ვერტიკალური პადდინგ ფორ ტჰე სტატუს, ინპუტ, ანდ ნოტიფიკატიონ ბარს"
 
-#: zathura/config.c:502
 msgid "Number of completion items"
 msgstr "რიცხვი ოფ კომპლეტიონ იტემს"
 
-#: zathura/config.c:503
-msgid "Window icon"
-msgstr "ფანჯარა იკონ"
-
-#: zathura/config.c:504
 msgid "Command to execute in :exec"
 msgstr "ბრძანება ტო ექსეკუტე ინ :ექსეკ"
 
-#: zathura/config.c:505
 msgid "Show or hide certain GUI elements"
 msgstr "ჩვენება ორ ჰიდე კერტაინ გუი ელემენტს"
 
-#: zathura/config.c:507
 msgid "Database backend"
 msgstr "დატაბასე ბაკკენდ"
 
-#: zathura/config.c:508
 msgid "File monitor backend"
 msgstr "ფაილი მონიტორ ბაკკენდ"
 
-#: zathura/config.c:510
 msgid "Zoom step"
 msgstr "მასშტაბი სტეპ"
 
-#: zathura/config.c:512
 msgid "Horizontal padding between pages"
 msgstr "ჰორიზონტალური პადდინგ ბეტვეენ გვერდები"
 
-#: zathura/config.c:514
 msgid "Vertical padding between pages"
 msgstr "ვერტიკალური პადდინგ ბეტვეენ გვერდები"
 
-#: zathura/config.c:516
 msgid "Number of pages per row"
 msgstr "რიცხვი ოფ გვერდები პერ როვ"
 
-#: zathura/config.c:518
 msgid "Column of the first page"
 msgstr "კოლუმნ ოფ ტჰე ფირსტ გვერდი"
 
-#: zathura/config.c:520
 msgid "Render pages from right to left"
 msgstr "რენდერ გვერდები ფრომ რიგჰტ ტო ლეფტ"
 
-#: zathura/config.c:522
 msgid "Scroll step"
 msgstr "გადახვევა სტეპ"
 
-#: zathura/config.c:524
 msgid "Horizontal scroll step"
 msgstr "ჰორიზონტალური სკროლლ სტეპ"
 
-#: zathura/config.c:526
 msgid "Full page scroll overlap"
 msgstr "ფულლ გვერდი სკროლლ ოვერლაპ"
 
-#: zathura/config.c:528
 msgid "Zoom minimum"
 msgstr "მასშტაბი მინიმუმ"
 
-#: zathura/config.c:530
 msgid "Zoom maximum"
 msgstr "მასშტაბი მაქსიმუმ"
 
-#: zathura/config.c:532
 msgid "Maximum number of pages to keep in the cache"
 msgstr "მაქსიმუმი ნუმბერ ოფ გვერდები ტო კეეპ ინ ტჰე კაკჰე"
 
-#: zathura/config.c:534
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr "მაქსიმუმი სიზე ინ პიქსელს ოფ ტჰუმბნაილს ტო კეეპ ინ ტჰე კაკჰე"
 
-#: zathura/config.c:536
 msgid "Number of positions to remember in the jumplist"
 msgstr "რიცხვი ოფ პოსიტიონს ტო რემემბერ ინ ტჰე ჯუმპლისტ"
 
-#: zathura/config.c:538
 msgid "Recoloring (dark color)"
 msgstr "რეკოლორინგ (დარკ ფერი)"
 
-#: zathura/config.c:539
 msgid "Recoloring (light color)"
 msgstr "რეკოლორინგ (ლიგჰტ ფერი)"
 
-#: zathura/config.c:540
 msgid "Color for highlighting"
 msgstr "ფერი ფორ ჰიგჰლიგჰტინგ"
 
-#: zathura/config.c:541
 msgid "Foreground color for highlighting"
 msgstr "წინა პლანი ფერი ფორ ჰიგჰლიგჰტინგ"
 
-#: zathura/config.c:542
 msgid "Color for highlighting (active)"
 msgstr "ფერი ფორ ჰიგჰლიგჰტინგ (აკტივე)"
 
-#: zathura/config.c:543
 msgid "'Loading ...' background color"
 msgstr "'იტვირთება ...' ფონი ფერი"
 
-#: zathura/config.c:544
 msgid "'Loading ...' foreground color"
 msgstr "'იტვირთება ...' წინა პლანი ფერი"
 
-#. colors for document signatures
-#: zathura/config.c:547
 msgid "Color used to highlight valid signatures"
 msgstr "ფერი უსედ ტო ჰიგჰლიგჰტ ვალიდ სიგნატურეს"
 
-#: zathura/config.c:548
 msgid "Color used to highlight signatures with warnings"
 msgstr "ფერი უსედ ტო ჰიგჰლიგჰტ სიგნატურეს ვიტჰ ვარნინგს"
 
-#: zathura/config.c:549
 msgid "Color used to highlight invalid signatures"
 msgstr "ფერი უსედ ტო ჰიგჰლიგჰტ ინვალიდ სიგნატურეს"
 
-#: zathura/config.c:564
 msgid "Recolor pages"
 msgstr "რეკოლორ გვერდები"
 
-#: zathura/config.c:566
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr "ვჰენ რეკოლორინგ კეეპ ორიგინალ ჰუე ანდ ადჯუსტ ლიგჰტნესს ონლი"
 
-#: zathura/config.c:568
 msgid "When recoloring keep original image colors"
 msgstr "ვჰენ რეკოლორინგ კეეპ ორიგინალ იმაგე კოლორს"
 
-#: zathura/config.c:570
 msgid "When recoloring adjust lightness"
 msgstr "ვჰენ რეკოლორინგ ადჯუსტ ლიგჰტნესს"
 
-#: zathura/config.c:572
 msgid "Wrap scrolling"
 msgstr "ვრაპ სკროლლინგ"
 
-#: zathura/config.c:576
 msgid "Advance number of pages per row"
 msgstr "ადვანკე ნუმბერ ოფ გვერდები პერ როვ"
 
-#: zathura/config.c:578
 msgid "Horizontally centered zoom"
 msgstr "ჰორიზონტალლი კენტერედ ზოომ"
 
-#: zathura/config.c:580
 msgid "Vertically center pages"
 msgstr "ვერტიკალლი კენტერ გვერდები"
 
-#: zathura/config.c:582
 msgid "Align link target to the left"
 msgstr "ალიგნ ლინკ ტარგეტ ტო ტჰე ლეფტ"
 
-#: zathura/config.c:584
 msgid "Let zoom be changed when following links"
 msgstr "ლეტ ზოომ ბე კჰანგედ ვჰენ ფოლლოვინგ ლინკს"
 
-#: zathura/config.c:586
 msgid "Center result horizontally"
 msgstr "კენტერ რესულტ ჰორიზონტალლი"
 
-#: zathura/config.c:588
 msgid "Render 'Loading ...'"
 msgstr "რენდერ 'იტვირთება ...'"
 
-#: zathura/config.c:589
 msgid "Adjust to when opening file"
 msgstr "ადჯუსტ ტო ვჰენ ოპენინგ ფაილი"
 
-#: zathura/config.c:591
 msgid "Show hidden files and directories"
 msgstr "ჩვენება ჰიდდენ ფილეს ანდ დირეკტორიეს"
 
-#: zathura/config.c:593
 msgid "Show directories"
 msgstr "ჩვენება დირეკტორიეს"
 
-#: zathura/config.c:595
 msgid "Show recent files"
 msgstr "ჩვენება რეკენტ ფილეს"
 
-#: zathura/config.c:597
 msgid "Always open on first page"
 msgstr "ალვაის ოპენ ონ ფირსტ გვერდი"
 
-#: zathura/config.c:599
 msgid "Disable highlighting of search results"
 msgstr "გამორთვა ჰიგჰლიგჰტინგ ოფ სეარკჰ რესულტს"
 
-#: zathura/config.c:601
 msgid "Double click to follow links"
 msgstr "დოუბლე კლიკკ ტო ფოლლოვ ლინკს"
 
-#: zathura/config.c:604
 msgid "Enable incremental search"
 msgstr "ჩართვა ინკრემენტალ სეარკჰ"
 
-#: zathura/config.c:606
 msgid "Clear search results on abort"
 msgstr "კლეარ სეარკჰ რესულტს ონ აბორტ"
 
-#: zathura/config.c:608
 msgid "Use basename of the file in the window title"
 msgstr "უსე ბასენამე ოფ ტჰე ფაილი ინ ტჰე ვინდოვ ტიტლე"
 
-#: zathura/config.c:610
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr "უსე ~ ინსტეად ოფ $ჰომე ინ ტჰე ფილენამე ინ ტჰე ვინდოვ ტიტლე"
 
-#: zathura/config.c:612
 msgid "Display the page number in the window title"
 msgstr "დისპლაი ტჰე გვერდი ნუმბერ ინ ტჰე ვინდოვ ტიტლე"
 
-#: zathura/config.c:614
 msgid "Use first page of a document as window icon"
 msgstr "უსე ფირსტ გვერდი ოფ ა დოკუმენტი ას ვინდოვ იკონ"
 
-#: zathura/config.c:616
 msgid "Use basename of the file in the statusbar"
 msgstr "უსე ბასენამე ოფ ტჰე ფაილი ინ ტჰე სტატუსბარ"
 
-#: zathura/config.c:618
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr "უსე ~ ინსტეად ოფ $ჰომე ინ ტჰე ფილენამე ინ ტჰე სტატუსბარ"
 
-#: zathura/config.c:620
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 "დისპლაი (კურრენტ გვერდი / ტოტალ გვერდები) ას ა პერკენტ ინ ტჰე სტატუსბარ"
 
-#: zathura/config.c:622
 msgid "Enable SyncTeX support"
 msgstr "ჩართვა სინკტექს სუპპორტ"
 
-#: zathura/config.c:623
 msgid "SyncTeX editor command"
 msgstr "სინკტექს ედიტორ კომმანდ"
 
-#: zathura/config.c:624
 msgid "SyncTeX edit modifier"
 msgstr "სინკტექს ედიტ მოდიფიერ"
 
-#: zathura/config.c:625
 msgid "Highlighter modifier"
 msgstr "ჰიგჰლიგჰტერ მოდიფიერ"
 
-#: zathura/config.c:627
 msgid "Enable D-Bus service"
 msgstr "ჩართვა დ-ბუს სერვიკე"
 
-#: zathura/config.c:628
 msgid "Raise window on certain D-Bus commands"
 msgstr "რაისე ვინდოვ ონ კერტაინ დ-ბუს კომმანდს"
 
-#: zathura/config.c:630
 msgid "Save history at each page change"
 msgstr "შენახვა ჰისტორი ატ ეაკჰ გვერდი კჰანგე"
 
-#: zathura/config.c:631
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "ტჰე კლიპბოარდ ინტო ვჰიკჰ მოუსე-სელეკტედ დატა ვილლ ბე ვრიტტენ"
 
-#: zathura/config.c:633
 msgid "Enable notification after selecting text"
 msgstr "ჩართვა ნოტიფიკატიონ აფტერ სელეკტინგ ტექსტ"
 
-#: zathura/config.c:636
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 "გამორთვა ადდიტიონალ ინფორმატიონ ფორ სიგნატურეს ემბედდედ ინ ტჰე დოკუმენტი."
 
 #. define default inputbar commands
-#: zathura/config.c:766
 msgid "Map a key sequence"
 msgstr "მაპ ა კეი სექუენკე"
 
-#: zathura/config.c:767
 msgid "Set an option"
 msgstr "სეტ ან ოპტიონ"
 
-#: zathura/config.c:768
+#, fuzzy
+msgid "Run a shortcut"
+msgstr "უპდატე სჰორტკუტს"
+
 msgid "Unmap a key sequence"
 msgstr "უნმაპ ა კეი სექუენკე"
 
-#: zathura/config.c:769
 msgid "Dump settings to a file"
 msgstr "დუმპ სეტტინგს ტო ა ფაილი"
 
-#: zathura/config.c:771
 msgid "Add a bookmark"
 msgstr "ადდ ა ბოოკმარკ"
 
-#: zathura/config.c:772
 msgid "Delete a bookmark"
 msgstr "წაშლა ა ბოოკმარკ"
 
-#: zathura/config.c:773
 msgid "List all bookmarks"
 msgstr "ლისტ ალლ ბოოკმარკს"
 
-#: zathura/config.c:774
 msgid "Jump to bookmark"
 msgstr "ჯუმპ ტო ბოოკმარკ"
 
-#: zathura/config.c:775
 msgid "Show recent jumps in jumplist"
 msgstr "ჩვენება რეკენტ ჯუმპს ინ ჯუმპლისტ"
 
-#: zathura/config.c:776
 msgid "Close current file"
 msgstr "დახურვა კურრენტ ფაილი"
 
-#: zathura/config.c:777
 msgid "Show file information"
 msgstr "ჩვენება ფაილი ინფორმატიონ"
 
-#: zathura/config.c:778 zathura/config.c:779
 msgid "Execute a command"
 msgstr "ექსეკუტე ა კომმანდ"
 
 #. like vim
-#: zathura/config.c:780
 msgid "Show help"
 msgstr "ჩვენება ჰელპ"
 
-#: zathura/config.c:781
 msgid "Open document"
 msgstr "გახსნა დოკუმენტი"
 
-#: zathura/config.c:782
 msgid "Close zathura"
 msgstr "დახურვა ზატჰურა"
 
-#: zathura/config.c:783
 msgid "Print document"
 msgstr "ბეჭდვა დოკუმენტი"
 
-#: zathura/config.c:784 zathura/config.c:786
 msgid "Save document"
 msgstr "შენახვა დოკუმენტი"
 
-#: zathura/config.c:785 zathura/config.c:787
 msgid "Save document (and force overwriting)"
 msgstr "შენახვა დოკუმენტი (ანდ ფორკე ოვერვრიტინგ)"
 
-#: zathura/config.c:788
 msgid "Save attachments"
 msgstr "შენახვა ატტაკჰმენტს"
 
-#: zathura/config.c:789
 msgid "Set page offset"
 msgstr "სეტ გვერდი ოფფსეტ"
 
-#: zathura/config.c:790
 msgid "Mark current location within the document"
 msgstr "მარკ კურრენტ ლოკატიონ ვიტჰინ ტჰე დოკუმენტი"
 
-#: zathura/config.c:791
 msgid "Delete the specified marks"
 msgstr "წაშლა ტჰე სპეკიფიედ მარკს"
 
-#: zathura/config.c:792
 msgid "Remove highlights of current search results"
 msgstr "რემოვე ჰიგჰლიგჰტს ოფ კურრენტ სეარკჰ რესულტს"
 
-#: zathura/config.c:793
 msgid "Highlight current search results"
 msgstr "მონიშვნა კურრენტ სეარკჰ რესულტს"
 
-#: zathura/config.c:794
 msgid "Show version information"
 msgstr "ჩვენება ვერსიონ ინფორმატიონ"
 
-#: zathura/config.c:795
 msgid "Source config file"
 msgstr "სოურკე კონფიგ ფაილი"
 
-#: zathura/links.c:210
 msgid "Failed to run xdg-open."
 msgstr "ფაილედ ტო რუნ ქსდგ-ოპენ."
 
-#: zathura/links.c:245
 msgid "y"
 msgstr ""
 
-#: zathura/links.c:245
 msgid "Y"
 msgstr ""
 
-#: zathura/links.c:261
 msgid "Cancelled."
 msgstr ""
 
-#: zathura/links.c:275
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
 msgstr ""
 
-#: zathura/links.c:307
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 "ოპენინგ ექსტერნალ აპპლიკატიონს ინ სტრიკტ სანდბოქს მოდე ის ნოტ პერმიტტედ"
 
-#: zathura/links.c:342
 #, c-format
 msgid "Link: page %d"
 msgstr "ბმული: გვერდი %d"
 
-#: zathura/links.c:349
 #, c-format
 msgid "Link: %s"
 msgstr "ბმული: %s"
 
-#: zathura/links.c:353 zathura/links.c:377
 msgid "Link: Invalid"
 msgstr "ბმული: არასწორი"
 
-#: zathura/links.c:364
 #, c-format
 msgid "Copied page number: %d"
 msgstr "კოპიედ გვერდი ნუმბერ: %d"
 
-#: zathura/links.c:373
 #, c-format
 msgid "Copied link: %s"
 msgstr "კოპიედ ლინკ: %s"
 
-#: zathura/main.c:111
 msgid "Reparents to window specified by xid (X11)"
 msgstr "რეპარენტს ტო ვინდოვ სპეკიფიედ ბი xid (X11)"
 
-#: zathura/main.c:112
 msgid "Path to the config directory"
 msgstr "პატჰ ტო ტჰე კონფიგ დირეკტორი"
 
-#: zathura/main.c:113
 msgid "Path to the data directory"
 msgstr "პატჰ ტო ტჰე დატა დირეკტორი"
 
-#: zathura/main.c:114
 msgid "Path to the cache directory"
 msgstr "პატჰ ტო ტჰე კაკჰე დირეკტორი"
 
-#: zathura/main.c:115
 msgid "Path to the directories containing plugins"
 msgstr "პატჰ ტო ტჰე დირეკტორიეს კონტაინინგ პლუგინს"
 
-#: zathura/main.c:117
 msgid "Fork into the background"
 msgstr "ფორკ ინტო ტჰე ფონი"
 
-#: zathura/main.c:118
 msgid "Document password"
 msgstr "დოკუმენტი პასსვორდ"
 
-#: zathura/main.c:119
 msgid "Page number to go to"
 msgstr "გვერდი ნუმბერ ტო გო ტო"
 
-#: zathura/main.c:120
 msgid "Log level (debug, info, warning, error)"
 msgstr "ლოგ ლეველ (დებუგ, ინფო, ვარნინგ, ერრორ)"
 
-#: zathura/main.c:121
 msgid "Print version information"
 msgstr "ბეჭდვა ვერსიონ ინფორმატიონ"
 
-#: zathura/main.c:123
 msgid "SyncTeX editor (forwarded to the synctex command)"
 msgstr "სინკტექს ედიტორ (ფორვარდედ ტო ტჰე სინკტექს კომმანდ)"
 
-#: zathura/main.c:124
 msgid "Move to given SyncTeX position"
 msgstr "მოვე ტო გივენ სინკტექს პოსიტიონ"
 
-#: zathura/main.c:125
 msgid "Highlight given position in the given process"
 msgstr "მონიშვნა გივენ პოსიტიონ ინ ტჰე გივენ პროკესს"
 
-#: zathura/main.c:127
 msgid "Start in a non-default mode"
 msgstr "სტარტ ინ ა ნონ-დეფაულტ მოდე"
 
-#: zathura/main.c:128
 msgid "Bookmark to go to"
 msgstr "სანიშნე ტო გო ტო"
 
-#: zathura/main.c:129
 msgid "Search for the given phrase and display results"
 msgstr "ძიება ფორ ტჰე გივენ პჰრასე ანდ დისპლაი რესულტს"
 
-#: zathura/page-widget.c:630
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2181,182 +1606,139 @@ msgid ""
 "on %s."
 msgstr ""
 
-#: zathura/page-widget.c:637
 msgid "Signature certificate is expired."
 msgstr "ხელმოწერა კერტიფიკატე ის ექსპირედ."
 
-#: zathura/page-widget.c:641
 msgid "Signature certificate is revoked."
 msgstr "ხელმოწერა კერტიფიკატე ის რევოკედ."
 
-#: zathura/page-widget.c:645
 msgid "Signature certificate is not trusted."
 msgstr "ხელმოწერა კერტიფიკატე ის ნოტ ტრუსტედ."
 
-#: zathura/page-widget.c:649
 msgid "Signature certificate is invalid."
 msgstr "ხელმოწერა კერტიფიკატე ის ინვალიდ."
 
-#: zathura/page-widget.c:653
 msgid "Signature is invalid."
 msgstr "ხელმოწერა ის ინვალიდ."
 
-#: zathura/page-widget.c:734
 msgid "Loading..."
 msgstr "იტვირთება..."
 
-#: zathura/page-widget.c:1232
 msgid "Copy image"
 msgstr "კოპირება იმაგე"
 
-#: zathura/page-widget.c:1233
 msgid "Save image as"
 msgstr "შენახვა იმაგე ას"
 
 #. Update statusbar.
-#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "პრინტინგ გვერდი %d ..."
 
-#: zathura/print.c:167
 #, c-format
 msgid "Printing failed: %s"
 msgstr "პრინტინგ ფაილედ: %s"
 
-#: zathura/shortcuts.c:133
 #, c-format
 msgid "Invalid adjust mode: %d"
 msgstr "არასწორი ადჯუსტ მოდე: %d"
 
-#: zathura/shortcuts.c:1133
 msgid "This document does not contain any index"
 msgstr "ტჰის დოკუმენტი დოეს ნოტ კონტაინ ანი ინდექს"
 
-#: zathura/shortcuts.c:1623
 msgid "Open file"
 msgstr ""
 
-#: zathura/utils.c:731
 #, c-format
 msgid "[Search %d/%d]"
 msgstr ""
 
-#: zathura/utils.c:736
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "პატტერნ ნოტ ფოუნდ: %s"
 
-#: zathura/zathura.c:317 zathura/zathura.c:1493
 msgid "[No name]"
 msgstr "[ნო ნამე]"
 
-#: zathura/zathura.c:727
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "კოულდ ნოტ რეად ფაილი ფრომ სტდინ ანდ ვრიტე იტ ტო ა ტემპორარი ფაილი."
 
-#: zathura/zathura.c:745
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr "კოულდ ნოტ რეად ფაილი ფრომ გიო ანდ კოპი იტ ტო ა ტემპორარი ფაილი."
 
-#: zathura/zathura.c:836
-msgid "Enter password:"
-msgstr "ენტერ პასსვორდ:"
-
-#: zathura/zathura.c:929
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "უნსუპპორტედ ფაილი ტიპე. პლეასე ინსტალლ ტჰე ნეკესსარი პლუგინ."
 
-#: zathura/zathura.c:938
 msgid "Document does not contain any pages"
 msgstr "დოკუმენტი დოეს ნოტ კონტაინ ანი გვერდები"
 
-#: zathura/zathura.c:1304
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "ფაილი ალრეადი ექსისტს: %s. უსე :ვრიტე! ტო ოვერვრიტე იტ."
 
-#: zathura/zathura.c:1311
 msgid "Failed to save document."
 msgstr "ფაილედ ტო სავე დოკუმენტი."
 
-#: zathura/zathura.c:1315
 msgid "Document saved."
 msgstr "დოკუმენტი სავედ."
 
-#: girara-gtk/commands.c:261
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს პასსედ: %zu ინსტეად ოფ ატ ლეასტ %u"
 
-#: girara-gtk/commands.c:297
 #, c-format
 msgid "Unregistered mode specified: %s"
 msgstr "უნრეგისტერედ მოდე სპეკიფიედ: %s"
 
-#: girara-gtk/commands.c:305
 msgid "Invalid number of arguments passed"
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს პასსედ"
 
-#: girara-gtk/commands.c:337
 #, c-format
 msgid "Invalid modifier in %s"
 msgstr "არასწორი მოდიფიერ ინ %s"
 
-#: girara-gtk/commands.c:375
 #, c-format
 msgid "Invalid special key value for %s"
 msgstr "არასწორი სპეკიალ კეი ვალუე ფორ %s"
 
-#: girara-gtk/commands.c:410
 #, c-format
 msgid "Invalid special key value or mode %s"
 msgstr "არასწორი სპეკიალ კეი ვალუე ორ მოდე %s"
 
-#: girara-gtk/commands.c:494
 #, c-format
 msgid "Not a valid shortcut function: %s"
 msgstr "ნოტ ა ვალიდ სჰორტკუტ ფუნკტიონ: %s"
 
-#: girara-gtk/commands.c:545
 msgid "Not enough arguments."
 msgstr "ნოტ ენოუგჰ არგუმენტს."
 
-#: girara-gtk/commands.c:563
 #, c-format
 msgid "Unknown option: %s"
 msgstr "უნკნოვნ ოპტიონ: %s"
 
-#: girara-gtk/commands.c:576
 msgid "true"
 msgstr "ტრუე"
 
-#: girara-gtk/commands.c:576
 msgid "false"
 msgstr "ფალსე"
 
-#: girara-gtk/commands.c:604
 #, c-format
 msgid "No value defined for option: %s"
 msgstr "ნო ვალუე დეფინედ ფორ ოპტიონ: %s"
 
-#: girara-gtk/commands.c:619
 #, c-format
 msgid "Unknown value for option: %s"
 msgstr "უნკნოვნ ვალუე ფორ ოპტიონ: %s"
 
 #. unhandled command
-#: girara-gtk/commands.c:775
 #, c-format
 msgid "Not a valid command: %s"
 msgstr "ნოტ ა ვალიდ კომმანდ: %s"
 
-#: girara-gtk/settings.c:255
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "არასწორი ნუმბერ ოფ არგუმენტს პასსედ: %zu ინსტეად ოფ 1"
 
-#: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr "ფაილედ ტო ვრიტე JSON: %s"

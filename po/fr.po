@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-26 21:33+0200\n"
+"POT-Creation-Date: 2026-05-10 11:38+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>, 2012\n"
 "Language-Team: French (http://app.transifex.com/pwmt/zathura/language/fr/)\n"
@@ -22,19 +22,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
 "1000000 == 0 ? 1 : 2;\n"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:8
 msgid "pwmt"
 msgstr "pwmt"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:10 data/org.pwmt.zathura.desktop.in:4
 msgid "Zathura"
 msgstr "Zathura"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:11 data/org.pwmt.zathura.desktop.in:5
 msgid "Minimalistic document viewer"
 msgstr "Visionneur de document minimaliste"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:13
 msgid ""
 "Zathura is a highly customizable and functional document viewer. It provides "
 "a minimalistic and space saving interface as well as an easy usage that "
@@ -46,7 +42,6 @@ msgstr ""
 "utilisation centrée sur l'utilisation du clavier. Zathura permet de "
 "visionner et de parcourir des documents sans jamais utiliser la souris. "
 
-#: data/org.pwmt.zathura.metainfo.xml.in:20
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
@@ -54,2136 +49,1565 @@ msgstr ""
 "Zathura peut être étendu par des greffons afin de gérer de multiples formats "
 "de documents. Ses autres fonctionnalités incluent:"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:25
 msgid "SyncTeX forward and backward synchronization support."
 msgstr "Synchronisation bidirectionnelle avec SyncTeX."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:26
 msgid "Quickmarks and bookmarks."
 msgstr "Raccourcis et favoris."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:27
 msgid "Automatic document reloading."
 msgstr "Rafraîchissement automatique des documents."
 
-#: data/org.pwmt.zathura.metainfo.xml.in:44
 msgid "Reading a PDF file"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:48
 msgid "Opening a file with the `open` command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:52
 msgid "Following links"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:56
 msgid "Listing and selecting bookmakrs"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:72
 msgid "Add search result counter (#450)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:73
 msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:74
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:75
-#: data/org.pwmt.zathura.metainfo.xml.in:90
-#: data/org.pwmt.zathura.metainfo.xml.in:209
-#: data/org.pwmt.zathura.metainfo.xml.in:225
-#: data/org.pwmt.zathura.metainfo.xml.in:233
-#: data/org.pwmt.zathura.metainfo.xml.in:247
-#: data/org.pwmt.zathura.metainfo.xml.in:263
-#: data/org.pwmt.zathura.metainfo.xml.in:275
-#: data/org.pwmt.zathura.metainfo.xml.in:283
-#: data/org.pwmt.zathura.metainfo.xml.in:292
-#: data/org.pwmt.zathura.metainfo.xml.in:299
-#: data/org.pwmt.zathura.metainfo.xml.in:307
-#: data/org.pwmt.zathura.metainfo.xml.in:315
-#: data/org.pwmt.zathura.metainfo.xml.in:323
-#: data/org.pwmt.zathura.metainfo.xml.in:330
-#: data/org.pwmt.zathura.metainfo.xml.in:338
-#: data/org.pwmt.zathura.metainfo.xml.in:345
-#: data/org.pwmt.zathura.metainfo.xml.in:355
-#: data/org.pwmt.zathura.metainfo.xml.in:363
-#: data/org.pwmt.zathura.metainfo.xml.in:371
-#: data/org.pwmt.zathura.metainfo.xml.in:378
-#: data/org.pwmt.zathura.metainfo.xml.in:385
-#: data/org.pwmt.zathura.metainfo.xml.in:393
-#: data/org.pwmt.zathura.metainfo.xml.in:432
-#: data/org.pwmt.zathura.metainfo.xml.in:445
-#: data/org.pwmt.zathura.metainfo.xml.in:522
-#: data/org.pwmt.zathura.metainfo.xml.in:534
-#: data/org.pwmt.zathura.metainfo.xml.in:556
-#: data/org.pwmt.zathura.metainfo.xml.in:694
-#: data/org.pwmt.zathura.metainfo.xml.in:704
-#: data/org.pwmt.zathura.metainfo.xml.in:715
 msgid "Various fixes and improvements"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:88
 msgid "Fix warning when using 'null' database (#881)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:89
 msgid "Include manpages in tarballs (#674)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:91
-#: data/org.pwmt.zathura.metainfo.xml.in:257
-#: data/org.pwmt.zathura.metainfo.xml.in:264
-#: data/org.pwmt.zathura.metainfo.xml.in:284
-#: data/org.pwmt.zathura.metainfo.xml.in:293
-#: data/org.pwmt.zathura.metainfo.xml.in:300
-#: data/org.pwmt.zathura.metainfo.xml.in:308
-#: data/org.pwmt.zathura.metainfo.xml.in:316
-#: data/org.pwmt.zathura.metainfo.xml.in:325
-#: data/org.pwmt.zathura.metainfo.xml.in:331
-#: data/org.pwmt.zathura.metainfo.xml.in:339
-#: data/org.pwmt.zathura.metainfo.xml.in:346
-#: data/org.pwmt.zathura.metainfo.xml.in:356
-#: data/org.pwmt.zathura.metainfo.xml.in:364
-#: data/org.pwmt.zathura.metainfo.xml.in:372
-#: data/org.pwmt.zathura.metainfo.xml.in:394
-#: data/org.pwmt.zathura.metainfo.xml.in:403
-#: data/org.pwmt.zathura.metainfo.xml.in:412
-#: data/org.pwmt.zathura.metainfo.xml.in:431
-#: data/org.pwmt.zathura.metainfo.xml.in:447
-#: data/org.pwmt.zathura.metainfo.xml.in:474
-#: data/org.pwmt.zathura.metainfo.xml.in:492
-#: data/org.pwmt.zathura.metainfo.xml.in:507
-#: data/org.pwmt.zathura.metainfo.xml.in:521
-#: data/org.pwmt.zathura.metainfo.xml.in:533
-#: data/org.pwmt.zathura.metainfo.xml.in:545
-#: data/org.pwmt.zathura.metainfo.xml.in:557
 msgid "Update translations"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:100
 msgid ""
 "Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:101
 msgid "Use single page layout for presentation mode (#686, #666)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:102
 msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:103
 msgid "Allow to disable copying to clipboard (#835)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:104
 msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:121
 msgid ""
 "Fork to background if opening with multiple files only if --fork is "
 "specified (#855)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:122
 msgid "Fix handling of PageUp and PageDown (#861)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:123
 msgid "Fix handling of mappings with special keys (#862)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:124
 msgid "Integrate Gtk+-specific parts of girara"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:134
 msgid "Switch to date-based version numbers"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:135
 msgid "Fix warnings from CSS generation (#824)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:136
 msgid "Apply correct scaling when recoloring (#836)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:137
 msgid "Make sure jumplist stays valid after close (#835)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:138
 msgid "Disable message in incremental search (#227, #847)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:139
 msgid "Fix seccomp rules with musl (#843)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:140
 msgid ""
 "Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
 "#797, #826)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:160
 msgid "Switch default database to sqlite and drop plain database"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:161
 msgid "Notify users if no attachments and images are available to export"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:162
 msgid "Make index-* configurable after init (#799)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:163
 msgid "Support numeric keypad mappings"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:164
 msgid "Provide correct number of pages (#814)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:165
 msgid "Undo size-allocate callback changes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:166
 msgid "Fix temporary file names for better content-type detection"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:175
 msgid "Validate appstream files with appstreamcli"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:176
 msgid "Split page-padding into page-h-padding and page-v-padding"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:177
 msgid "Fix memory leak and callback type error (#767)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:178
 msgid "Warn if plugins do not support exporting images or attachments (#334)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:187
 msgid "Add shortcut to open files via file chooser dialog"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:188
 msgid "Refactor rendering of pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:189
 msgid "Add lightness adjustment for recoloring"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:190
 msgid "Initial support for OpenBSD sandbox"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:195
 msgid "Fix closing of documents"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:200
 msgid "Fix crash when opening documents"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:205
 msgid "Fix build on macOS"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:206
 msgid "Hide page label if the same as page number"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:207
 msgid "Cache SyncTeX parser for faster operation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:208
 msgid "Revert changes for documents with multiple page sizes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:214
 msgid "Bump plugin ABI"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:219
 msgid "Split sandbox functionality into separate zathura-sandbox binary"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:220
 msgid "Split off new command bjump from blist"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:221
 msgid "Add initial landlock support to sandbox"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:222
 msgid "Fix repeated search"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:223
 msgid "Implement jumplist command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:224
 msgid "Fix issues with document with multiple page sizes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:230
 msgid "Move to Github"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:231
 msgid "Reduce minimum glib version"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:232
 msgid "Remove normal sandbox mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:238
 msgid "Compatibility with girara 0.4.3"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:239
 msgid ""
 "Remove highlight-transparency setting. Set the alpha component of highlight-"
 "color, highlight-active-color and highlight-fg instead."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:240
 msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:241
 msgid ""
 "Remove plain database backend. The sqlite database backend imports the data "
 "from the plain database the first time. sqlite is now a hard dependency."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:242
 msgid "Fix a segfault if dbus is not enabled."
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:252
 msgid "Add support to display signatures"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:253
 msgid "Fix clearing of highlighted links"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:254
 msgid "Make some key modifiers configurable"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:255
 msgid "Fix text selection on rotated pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:256
 msgid "Fix gap between pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:262
 msgid "Improve text selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:269
 msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:274
 msgid "`magic` is now a required dependency"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:280
 msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:281
 msgid "Fix build with meson 0.60"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:282
 msgid "Add :source command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:289
 msgid "Account for page padding in full scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:290
 msgid "Add foreground color for links"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:291
 msgid "Add :save and :save! aliases for :write and :write!"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:298
 msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:305
 msgid "Add --find option to the CLI"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:306
 msgid "Support recolor with transparency"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:313
 msgid "Fix step size for mouse wheel scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:314
 msgid "Lookup fileinfo from database by hash as fallback"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:321
 msgid "Fix expansion of ~ and ~user when opening files"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:322
 msgid "Add fish completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:324
 msgid "Drop support for old libsynctex"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:336
 msgid "Add bash and zsh completions"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:337
 msgid "Add RTL layout of pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:344
 msgid "Port to newer libsynctex"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:351
 msgid "Improved HiDPI support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:352
 msgid "Display page labels"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:353
 msgid "Add experimental seccomp filters"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:354
 msgid "Replace build system with meson"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:361
 msgid "Fix memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:362
 msgid "Rework plugin initialization"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:369
 msgid "Improved logging"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:370
 msgid "Improve page mode toggling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:377
 msgid "Parallel build of manpages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:383
 msgid "Build even without SyncTex"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:384
 msgid "Children should not fork"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:390
 msgid "Recent files support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:391
 msgid "Substitute home with tilde"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:392
 msgid "Open URLs"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:399
 msgid "Store tmp files in only one location"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:400
 msgid "Print target selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:401
 msgid "Allow .dylib plugins on Mac OS X"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:402
 msgid "Fix dual page render breakage of adjust_window"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:408
 msgid "Resolve memory leak while reloading file"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:409
 msgid "Prevent segmentation fault when smooth zooming with mouse"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:410
 msgid "Cache thumbnails to support smooth zooming"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:411
 msgid "Check scale value correctness"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:417
 msgid "Fix segmentation fault caused by bidirectional scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:418
 msgid "Add SyntaxView"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:423
 msgid "Print debug information to D-Bus"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:424
 msgid "Fix scroll down/up in dual-page mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:425
 msgid "Option to hide notification after selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:426
 msgid "Introduce cache directory"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:427
 msgid "Introduce smooth-scroll and smooth-zoom"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:428
 msgid "Add vim style exec"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:429
 msgid "Option to ignore images while recoloring"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:430
 msgid "Take advantage of shared or system SyncTex parser library"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:437
 msgid "Update dependency version of girara"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:442
 msgid "Better SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:443
 msgid "Change cursor if mouse is over link"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:444
 msgid "Colored build output"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:446
 msgid "Sphinx documentation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:452
 msgid "Full SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:453
 msgid "D-Bus interface"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:454
 msgid "Simple vim plugin for SyncTex support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:455
 msgid "Add shortcuts for ^C and Esc in all modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:456
 msgid "Use the actual mode in mode toggle calls"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:457
 msgid "Only copy selected text in normal and fullscreen mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:458
 msgid "Translate error messages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:459
 msgid "Correctly safe print setting state"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:460
 msgid "Add --mode option"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:461
 msgid "Expose more properties via D-Bus"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:462
 msgid "Center pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:463
 msgid "Replace glib memory functions with try version"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:464
 msgid "Align highlighted rectangles correctly"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:465
 msgid "Implement G and gg for index mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:466
 msgid "Implement TOGGLE for sc_navigate_index"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:467
 msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:468
 msgid "Implement shortcuts for scrolling to page top/bottom"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:469
 msgid "Set position on document load only if no page was specified"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:470
 msgid "Bail out early if we get TOP or BOTTOM"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:471
 msgid "Replace fullscreen mode with presentation mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:472
 msgid "Remove GTK+2 support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:473
-#: data/org.pwmt.zathura.metainfo.xml.in:479
-#: data/org.pwmt.zathura.metainfo.xml.in:491
 msgid "Update documentation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:480
 msgid "Resolve layout problems"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:485
 msgid "Use GTK+3 by default"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:486
 msgid "Rewritten render logic"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:487
 msgid "Fixed page refresh in certain situations"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:488
 msgid "Make the X clipboard buffer"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:489
 msgid "Allow number in quickmarks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:490
 msgid "Workaround for print quality issues"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:497
 msgid "Resolve memory leak"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:498
 msgid "Report missing plugin or unsupported file types"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:499
 msgid "More vim-like search behaviour"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:500
 msgid "Introduced show-{h,v}-scrollbar settings"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:501
 msgid "Enhancement of the jumplist mechanism"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:502
 msgid "Use jumplists with marks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:503
 msgid "More vim-like jump behaviour"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:504
 msgid "Improved bisect"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:505
 msgid "Update page number on mouse scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:506
 msgid "Introduced window-title-page option"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:512
 msgid "LRU caching algorithm"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:513
 msgid "Bisect functionality"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:514
 msgid "Allow negative offsets"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:515
 msgid "Option --page to open at the specified page"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:516
 msgid "Scale vertical/horizontal scrolling in respect to the buffer"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:517
 msgid "Add statusbar-basename option"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:518
 msgid "Implement colors for 'Loading...'-text"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:519
 msgid "Don't render same page multiple times"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:520
 msgid "Use libmagic if available"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:527
 msgid "Implemented jumplist (^o, ^i)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:528
 msgid "Update current page when following links"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:529
 msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:530 zathura/config.c:574
 msgid "Page aware scrolling"
 msgstr "Défilement tenant compte des limites de page"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:531
 msgid "SyncTeX forward synchronisation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:532
 msgid "Update shortcuts"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:539
 msgid "SyncTeX backwards synchronisation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:540
 msgid "Fix request-page-setup"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:541
 msgid "Fix window adustment"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:542
-#: data/org.pwmt.zathura.metainfo.xml.in:565
 msgid "Update GTK3 support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:543
 msgid "Added first-page-colum setting"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:544
 msgid "Added recolor-keephue setting"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:550
 msgid "Better print support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:551
 msgid "Improve document links"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:552
 msgid "Render last-viewed pages with a higher priority"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:553
 msgid "Export images and attachments"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:554
 msgid "Open multiple documents"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:555
 msgid "Plugin manager"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:562
 msgid "Add 'open-first-page' setting"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:563
 msgid "Free invisible pages after specific time"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:564
 msgid "Set log level via command line"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:566
 msgid "Completion for :write command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:567
 msgid "Simplified plugin loading"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:568
 msgid "Allow counter-clockwise rotation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:569
 msgid "Changeable page-padding"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:570
 msgid "Introduced girara version check"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:571
 msgid "Detect sqlite automatically"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:572
 msgid "Update window title"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:577
 msgid "Macro to register plugins"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:578
 msgid "Fix issues with the display of the current page number"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:579
 msgid "Ability to scroll to the full left or full right border"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:580
 msgid "Reimplement the render thread with GThreadPool"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:581
 msgid "Use the correct color to highlight results"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:582
 msgid "Support to use both database backends"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:583
 msgid "Additional notifications on errors"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:584
 msgid "Option to hide hidden directories"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:585
 msgid "Do not overwrite existing files with :write"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:586
 msgid "Fix flicker in text selection"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:587
-#: data/org.pwmt.zathura.metainfo.xml.in:615
-#: data/org.pwmt.zathura.metainfo.xml.in:624
-#: data/org.pwmt.zathura.metainfo.xml.in:638
 msgid "Fixed several memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:592
 msgid "Complete rewrite of zathura"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:593
 msgid "Uses the girara interface library"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:594
 msgid "Plugin system for different document types"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:595
 msgid "Better configuration"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:596
 msgid "Quickmarks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:601
 msgid "Ignoring MOD5 which is used on some keyboards"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:602
 msgid "Fix scroll_wrap (#52)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:603
 msgid "Don't invert y coordinates (#42)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:604
 msgid "Certain memory leaks and other small issues"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:609
 msgid "Fixed bookmark handling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:610
 msgid "Support :digits"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:611
 msgid "Save zoom level per file"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:612
 msgid "Fix backwards searching"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:613
 msgid "Fix blinking while switching pages"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:614
 msgid "Fix input issues in fullscreen mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:620
 msgid "Update text searching"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:621
 msgid "Support for poppler >= 0.15"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:622
 msgid "Fixed print command with multiple arguments"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:623
 msgid "Fixed GOptionEntries"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:625
 msgid "Fixed segmentation faults"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:630
 msgid "Wrap around scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:631
 msgid "Display scroll percentage in statusbar"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:632
 msgid "More familiar zoom key bindings"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:633
 msgid "Support reading files from stdin"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:634
 msgid "Open command with appended current file path"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:635
 msgid "Following XDG specification"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:636
 msgid "Colored window and view port"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:637
 msgid "File reloading fix"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:639
-#: data/org.pwmt.zathura.metainfo.xml.in:660
-#: data/org.pwmt.zathura.metainfo.xml.in:677
-#: data/org.pwmt.zathura.metainfo.xml.in:686
 msgid "Update manpage"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:644
 msgid "Fixed critical usability bug"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:649
 msgid "Improved and fixed completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:650
 msgid "Optional parameters for the print command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:651
-#: data/org.pwmt.zathura.metainfo.xml.in:703
 msgid "Escape filenames"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:652
 msgid "Resolved some memory leaks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:653
 msgid "Global configuration file"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:654
 msgid "Specify configuration directory"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:655
 msgid "Configureable modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:656
 msgid "Smooth scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:657
 msgid "Extended statusbar string manipulation"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:658
 msgid "`function`"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:659
-#: data/org.pwmt.zathura.metainfo.xml.in:675
 msgid "Strip executable"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:665
 msgid "Change window title to filename"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:666
 msgid "Fixation of the URI command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:667
 msgid "Update the behaviour of sc_scroll"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:668
 msgid "Half/Full-page scrolling"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:669
 msgid "Check document health in sc_reload"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:670
 msgid "`tabbed` support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:671
 msgid "Define look with the set function"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:672
 msgid "Implemented map function"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:673
 msgid "`zathurarc` file"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:674
 msgid "Prevent buffer overflow in realpath"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:676
 msgid "Key evaluation when buffer is not empty"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:682
 msgid "Use GFileMonitor instead of inotify"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:683
 msgid "Added document reload shortcut"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:684
 msgid "Fixed toggle index"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:685
 msgid "Fixed print command"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:691
 msgid "Fullscreen mode"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:692
 msgid "Correct search result highlighting"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:693
 msgid "Document password dialog"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:699
 msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:700
 msgid "Keyboard navigation in the index view"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:701
 msgid "Different goto modes"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:702
 msgid "Auto adjustment when opening a document"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:709
 msgid "Reload modified document automatically"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:710
 msgid "Recolor the page instead of inverting the colors"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:711
 msgid "Working search function"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:712
 msgid "Show and hide document information"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:713
 msgid "Follow internal links or open URI in a predefined browser"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:714
 msgid "Save the document"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:720
 msgid "Complete new, re-written interface"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:721
 msgid "Multiple printer support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:722
 msgid "Command history"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:723
 msgid "Show document index"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:724
 msgid "Centered view"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:725
 msgid "Add, save and open bookmarks"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:726
 msgid "Marker support"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:727
 msgid "Highlight search results"
 msgstr "Surligner les résultats de la recherche"
 
-#: data/org.pwmt.zathura.metainfo.xml.in:728
 msgid "Buffered commands"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:729
 msgid "`set` Function"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:730
 msgid "Revert video function"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:731
 msgid "Command completion"
 msgstr ""
 
-#: data/org.pwmt.zathura.metainfo.xml.in:736
 msgid "Initial release"
 msgstr ""
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
-#: data/org.pwmt.zathura.desktop.in:13
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
 msgstr "PDF;PS;PostScript;DjVU;document;présentation;visionneur;"
 
-#: zathura/callbacks.c:311
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
 msgstr "'%s' ne peut valoir 0. Réglé sur 1."
 
-#: zathura/callbacks.c:400
 #, c-format
 msgid "Invalid input '%s' given."
 msgstr "Entrée invalide : '%s'"
 
-#: zathura/callbacks.c:423
 #, c-format
 msgid "Invalid index '%s' given."
 msgstr "Index invalide : '%s'"
 
-#: zathura/callbacks.c:636
+msgid "Enter password:"
+msgstr "Saisissez le mot de passe:"
+
 #, c-format
 msgid "Copied selected text to selection %s: %s"
 msgstr "Texte sélectionné copié dans la sélection %s:%s"
 
-#: zathura/callbacks.c:662
 #, c-format
 msgid "Copied selected image to selection %s"
 msgstr "Image sélectionnée copiée dans la sélection %s"
 
-#: zathura/commands.c:38 zathura/commands.c:76 zathura/commands.c:101
-#: zathura/commands.c:127 zathura/commands.c:159 zathura/commands.c:221
-#: zathura/commands.c:330 zathura/commands.c:360 zathura/commands.c:385
-#: zathura/commands.c:492 zathura/commands.c:661 zathura/shortcuts.c:161
-#: zathura/shortcuts.c:504 zathura/shortcuts.c:1225 zathura/shortcuts.c:1258
-#: zathura/shortcuts.c:1283 zathura/shortcuts.c:1379
 msgid "No document opened."
 msgstr "Aucun document ouvert."
 
-#: zathura/commands.c:44 zathura/commands.c:82 zathura/commands.c:133
-#: zathura/commands.c:177 zathura/commands.c:497
 msgid "Invalid number of arguments given."
 msgstr "Nombre d'arguments invalide."
 
-#: zathura/commands.c:55
 #, c-format
 msgid "Could not update bookmark: %s"
 msgstr "Impossible de mettre à jour le favori : %s"
 
-#: zathura/commands.c:57
 #, c-format
 msgid "Could not create bookmark: %s"
 msgstr "Impossible de créer le favori : %s"
 
-#: zathura/commands.c:62
 #, c-format
 msgid "Bookmark successfully updated: %s"
 msgstr "Favori mis à jour avec succès : %s"
 
-#: zathura/commands.c:64
 #, c-format
 msgid "Bookmark successfully created: %s"
 msgstr "Favori créé avec succès : %s"
 
-#: zathura/commands.c:88
 #, c-format
 msgid "Removed bookmark: %s"
 msgstr "Favori supprimé : %s"
 
-#: zathura/commands.c:90
 #, c-format
 msgid "Failed to remove bookmark: %s"
 msgstr "Échec lors de la suppression du favori : %s"
 
-#: zathura/commands.c:116
 msgid "No bookmarks available."
 msgstr "Aucun favori disponible."
 
-#: zathura/commands.c:140
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Aucun favori correspondant : %s"
 
-#: zathura/commands.c:169
 msgid "Argument must be a nonzero number."
 msgstr ""
 
-#: zathura/commands.c:189
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
 msgstr ""
 
-#: zathura/commands.c:190
 msgid "(current)"
 msgstr ""
 
-#: zathura/commands.c:197
 msgid "No jumplist available."
 msgstr ""
 
-#: zathura/commands.c:231
 msgid "Title"
 msgstr "Titre"
 
-#: zathura/commands.c:232
 msgid "Subject"
 msgstr "Sujet"
 
-#: zathura/commands.c:233
 msgid "Keywords"
 msgstr "Mots clé"
 
-#: zathura/commands.c:234
 msgid "Author"
 msgstr "Auteur"
 
-#: zathura/commands.c:235
 msgid "Creator"
 msgstr "Créateur"
 
-#: zathura/commands.c:236
 msgid "Producer"
 msgstr "Producteur"
 
-#: zathura/commands.c:237
 msgid "Creation date"
 msgstr "Date de création"
 
-#: zathura/commands.c:238
 msgid "Modification date"
 msgstr "Date de modification"
 
-#: zathura/commands.c:239
 msgid "Format"
 msgstr "Format"
 
-#: zathura/commands.c:240
 msgid "Other"
 msgstr "Autres"
 
-#: zathura/commands.c:245 zathura/commands.c:264
 msgid "No information available."
 msgstr "Aucune information disponible."
 
-#: zathura/commands.c:274
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
 
-#: zathura/commands.c:300 zathura/commands.c:707 girara-gtk/commands.c:550
 msgid "Too many arguments."
 msgstr "Trop d'arguments."
 
-#: zathura/commands.c:311
 msgid "No arguments given."
 msgstr "Aucun argument passé."
 
-#: zathura/commands.c:335
 msgid "Printing is not permitted in strict sandbox mode"
 msgstr "L'impression n'est pas autorisée en mode d'isolation stricte"
 
-#: zathura/commands.c:356 zathura/commands.c:381
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:367 zathura/commands.c:392
 msgid "Invalid number of arguments."
 msgstr "Nombre d'arguments invalide."
 
-#: zathura/commands.c:487
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
 
-#: zathura/commands.c:519
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
 msgstr "Impossible d'écrire la pièce jointe '%s' dans '%s'."
 
-#: zathura/commands.c:521
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
 msgstr "Pièce jointe '%s' écrite dans '%s'."
 
-#: zathura/commands.c:565
 #, c-format
 msgid "Wrote image '%s' to '%s'."
 msgstr "Image '%s' écrite dans '%s'."
 
-#: zathura/commands.c:567
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
 msgstr "Impossible d'écrire l'image '%s' dans '%s'."
 
-#: zathura/commands.c:573
 #, c-format
 msgid "Unknown image '%s'."
 msgstr "Image '%s' inconnue."
 
-#: zathura/commands.c:577
 #, c-format
 msgid "Unknown attachment or image '%s'."
 msgstr "Pièce jointe ou image '%s' inconnue."
 
-#: zathura/commands.c:605
 #, c-format
 msgid "Failed to execute command: %s"
 msgstr "Échec d'exécution de la commande : %s"
 
-#: zathura/commands.c:618
 msgid "Exec is not permitted in strict sandbox mode"
 msgstr "Exec n'est pas autorisé en mode d'isolation stricte"
 
-#: zathura/commands.c:674
 msgid "Argument must be a number."
 msgstr "L'argument doit être un nombre."
 
-#: zathura/completion.c:259
 #, c-format
 msgid "Page %d"
 msgstr "Page %d"
 
-#: zathura/completion.c:300
 msgid "Attachments"
 msgstr "Pièces jointes"
 
 #. add images
-#: zathura/completion.c:329
 msgid "Images"
 msgstr "Images"
 
-#: zathura/completion.c:359
 msgid "Plugin does not support exporting attachments and images."
 msgstr ""
 
-#: zathura/completion.c:371
 msgid "Document contains no images or attachments"
 msgstr "Le document ne contient ni images ni pièces jointes"
 
 #. clang-format off
 #. settings
-#: zathura/config.c:469
 msgid "Font"
 msgstr "Police"
 
 #. colors affecting the CSS
-#: zathura/config.c:472
 msgid "Default foreground color"
 msgstr "Couleur par défaut du texte"
 
-#: zathura/config.c:473
 msgid "Default background color"
 msgstr "Couleur par défaut du fond"
 
-#: zathura/config.c:474
 msgid "Inputbar foreground color"
 msgstr "Couleur du texte de la barre de saisie"
 
-#: zathura/config.c:475
 msgid "Inputbar background color"
 msgstr "Couleur de fond de la barre de saisie"
 
-#: zathura/config.c:476
 msgid "Statusbar foreground color"
 msgstr "Couleur du texte de la barre d'état"
 
-#: zathura/config.c:477
 msgid "Statsubar background color"
 msgstr "Couleur de fond de la barre d'état"
 
-#: zathura/config.c:478
 msgid "Completion foreground color"
 msgstr "Couleur du texte de la complétion"
 
-#: zathura/config.c:479
 msgid "Completion background color"
 msgstr "Couleur de fond de la complétion"
 
-#: zathura/config.c:480
 msgid "Completion group foreground color"
 msgstr "Couleur du texte du groupe de complétion"
 
-#: zathura/config.c:481
 msgid "Completion group background color"
 msgstr "Couleur de fond du groupe de complétion"
 
-#: zathura/config.c:482
 msgid "Completion highlight foreground color"
 msgstr "Couleur du texte du surlignage de complétion"
 
-#: zathura/config.c:483
 msgid "Completion highlight background color"
 msgstr "Couleur de fond du surlignage de complétion"
 
-#: zathura/config.c:484
 msgid "Error notification foreground color"
 msgstr "Couleur du texte des notifications d'erreur"
 
-#: zathura/config.c:485
 msgid "Error notification background color"
 msgstr "Couleur de fond des notifications d'erreur"
 
-#: zathura/config.c:486
 msgid "Warning notification foreground color"
 msgstr "Couleur du texte des notifications d'avertissement"
 
-#: zathura/config.c:487
 msgid "Warning notifaction background color"
 msgstr "Couleur de fond des notifications d'avertissement"
 
-#: zathura/config.c:488
 msgid "Notification foreground color"
 msgstr "Couleur du texte des notifications"
 
-#: zathura/config.c:489
 msgid "Notification background color"
 msgstr "Couleur de fond des notifications"
 
-#: zathura/config.c:490
 msgid "Index mode foreground color"
 msgstr "Couleur de premier plan du mode index"
 
-#: zathura/config.c:491
 msgid "Index mode background color"
 msgstr "Couleur d'arrière plan du mode index"
 
-#: zathura/config.c:492
 msgid "Index mode foreground color (active element)"
 msgstr "Couleur de premier plan du mode index (élément actif)"
 
-#: zathura/config.c:493
 msgid "Index mode background color (active element)"
 msgstr "Couleur d'arrière plan du mode index (élément actif)"
 
-#: zathura/config.c:494
 msgid "Scrollbar foreground color"
 msgstr "Couleur de premier plan de la barre de défilement"
 
-#: zathura/config.c:495
 msgid "Scrollbar background color"
 msgstr "Couleur d'arrière-plan de la barre de défilement"
 
-#: zathura/config.c:498
 msgid "Initial window width"
 msgstr "Largeur initiale de la fenêtre"
 
-#: zathura/config.c:499
 msgid "Initial window height"
 msgstr "Hauteur initiale de la fenêtre"
 
-#: zathura/config.c:500
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
 "Espacement horizontal pour le champ de statut et les barres de notification"
 
-#: zathura/config.c:501
 msgid "Vertical padding for the status, input, and notification bars"
 msgstr ""
 "Espacement vertical pour le champ de statut et les barres de notification"
 
-#: zathura/config.c:502
 msgid "Number of completion items"
 msgstr "Nombre d'éléments de complétion"
 
-#: zathura/config.c:503
-msgid "Window icon"
-msgstr "Icône de fenêtre"
-
-#: zathura/config.c:504
 msgid "Command to execute in :exec"
 msgstr "Commande à exécuter dans :exec"
 
-#: zathura/config.c:505
 msgid "Show or hide certain GUI elements"
 msgstr "Afficher ou cacher certains éléments de l'interface"
 
-#: zathura/config.c:507
 msgid "Database backend"
 msgstr "Gestionnaire de base de données"
 
-#: zathura/config.c:508
 msgid "File monitor backend"
 msgstr "Service de surveillance des fichiers"
 
-#: zathura/config.c:510
 msgid "Zoom step"
 msgstr "Incrément de zoom"
 
-#: zathura/config.c:512
 msgid "Horizontal padding between pages"
 msgstr "Espacement horizontal entre les pages"
 
-#: zathura/config.c:514
 msgid "Vertical padding between pages"
 msgstr "Espacement vertical entre les pages"
 
-#: zathura/config.c:516
 msgid "Number of pages per row"
 msgstr "Nombre de page par rangée"
 
-#: zathura/config.c:518
 msgid "Column of the first page"
 msgstr "Colonne de la première page"
 
-#: zathura/config.c:520
 msgid "Render pages from right to left"
 msgstr "Générer les pages de droite à gauche"
 
-#: zathura/config.c:522
 msgid "Scroll step"
 msgstr "Incrément de défilement"
 
-#: zathura/config.c:524
 msgid "Horizontal scroll step"
 msgstr "Incrément de défilement horizontal"
 
-#: zathura/config.c:526
 msgid "Full page scroll overlap"
 msgstr "Recouvrement lors du défilement par page entière"
 
-#: zathura/config.c:528
 msgid "Zoom minimum"
 msgstr "Zoom minimum"
 
-#: zathura/config.c:530
 msgid "Zoom maximum"
 msgstr "Zoom maximum"
 
-#: zathura/config.c:532
 msgid "Maximum number of pages to keep in the cache"
 msgstr "Nombre maximum de pages à garder en cache"
 
-#: zathura/config.c:534
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr "Taille maximale en pixels des miniatures à conserver en cache"
 
-#: zathura/config.c:536
 msgid "Number of positions to remember in the jumplist"
 msgstr "Nombre de positions à mémoriser dans la liste de sauts"
 
-#: zathura/config.c:538
 msgid "Recoloring (dark color)"
 msgstr "Recoloration (couleur sombre)"
 
-#: zathura/config.c:539
 msgid "Recoloring (light color)"
 msgstr "Recoloration (couleur claire)"
 
-#: zathura/config.c:540
 msgid "Color for highlighting"
 msgstr "Couleur de surbrillance"
 
-#: zathura/config.c:541
 msgid "Foreground color for highlighting"
 msgstr "Couleur de premier plan pour la surbrillance"
 
-#: zathura/config.c:542
 msgid "Color for highlighting (active)"
 msgstr "Couleur de surbrillance (active)"
 
-#: zathura/config.c:543
 msgid "'Loading ...' background color"
 msgstr "Couleur d'arrière-plan de 'Chargement...'"
 
-#: zathura/config.c:544
 msgid "'Loading ...' foreground color"
 msgstr "Couleur de 'Chargement...'"
 
-#. colors for document signatures
-#: zathura/config.c:547
 msgid "Color used to highlight valid signatures"
 msgstr "Couleur utilisée pour mettre en évidence les signatures valides"
 
-#: zathura/config.c:548
 msgid "Color used to highlight signatures with warnings"
 msgstr ""
 "Couleur utilisée pour mettre en évidence les signatures avec avertissements"
 
-#: zathura/config.c:549
 msgid "Color used to highlight invalid signatures"
 msgstr "Couleur utilisée pour mettre en évidence les signatures invalides"
 
-#: zathura/config.c:564
 msgid "Recolor pages"
 msgstr "Recoloriser les pages"
 
-#: zathura/config.c:566
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
 "Lors de la recoloration garder la teinte d'origine et ajuster seulement la "
 "luminosité"
 
-#: zathura/config.c:568
 msgid "When recoloring keep original image colors"
 msgstr "Lors de la recoloration, garder les couleurs de l'image originale"
 
-#: zathura/config.c:570
 msgid "When recoloring adjust lightness"
 msgstr "Lors de la recoloration, ajuster la luminosité"
 
-#: zathura/config.c:572
 msgid "Wrap scrolling"
 msgstr "Défiler en boucle"
 
-#: zathura/config.c:576
 msgid "Advance number of pages per row"
 msgstr "Augmenter le nombre de pages par rangée"
 
-#: zathura/config.c:578
 msgid "Horizontally centered zoom"
 msgstr "Zoom centré horizontalement"
 
-#: zathura/config.c:580
 msgid "Vertically center pages"
 msgstr "Centrer verticalement les pages"
 
-#: zathura/config.c:582
 msgid "Align link target to the left"
 msgstr "Aligner la cible du lien à gauche"
 
-#: zathura/config.c:584
 msgid "Let zoom be changed when following links"
 msgstr "Autoriser la modification du zoom quand on suit un lien"
 
-#: zathura/config.c:586
 msgid "Center result horizontally"
 msgstr "Centrer le résultat horizontalement"
 
-#: zathura/config.c:588
 msgid "Render 'Loading ...'"
 msgstr "Afficher 'Chargement...'"
 
-#: zathura/config.c:589
 msgid "Adjust to when opening file"
 msgstr "Ajuster à l'ouverture du fichier"
 
-#: zathura/config.c:591
 msgid "Show hidden files and directories"
 msgstr "Montrer les fichiers et dossiers cachés"
 
-#: zathura/config.c:593
 msgid "Show directories"
 msgstr "Montrer les dossiers"
 
-#: zathura/config.c:595
 msgid "Show recent files"
 msgstr "Afficher les fichiers récents"
 
-#: zathura/config.c:597
 msgid "Always open on first page"
 msgstr "Toujours ouvrir à la première page"
 
-#: zathura/config.c:599
 msgid "Disable highlighting of search results"
 msgstr "Désactiver la surbrillance des résultats de recherche"
 
-#: zathura/config.c:601
 msgid "Double click to follow links"
 msgstr "Double-cliquer pour suivre les liens"
 
-#: zathura/config.c:604
 msgid "Enable incremental search"
 msgstr "Activer la recherche incrémentale"
 
-#: zathura/config.c:606
 msgid "Clear search results on abort"
 msgstr "Effacer les résultats de recherche en cas d'annulation"
 
-#: zathura/config.c:608
 msgid "Use basename of the file in the window title"
 msgstr "Utiliser le nom de base du fichier dans le titre de la fenêtre"
 
-#: zathura/config.c:610
 msgid "Use ~ instead of $HOME in the filename in the window title"
 msgstr ""
 "Utiliser ~ au lieu de $HOME dans le nom du fichier dans le titre de la "
 "fenêtre"
 
-#: zathura/config.c:612
 msgid "Display the page number in the window title"
 msgstr "Afficher le numéro de page dans le titre de la fenêtre"
 
-#: zathura/config.c:614
 msgid "Use first page of a document as window icon"
 msgstr "Utiliser la première page d'un document comme icône pour la fenêtre"
 
-#: zathura/config.c:616
 msgid "Use basename of the file in the statusbar"
 msgstr "Utiliser le nom de base du fichier dans la barre d'état"
 
-#: zathura/config.c:618
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
 msgstr ""
 "Utiliser ~ au lieu de $HOME dans le nom du fichier dans la barre d'état"
 
-#: zathura/config.c:620
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
 "Afficher (page actuelle / nombre total de pages) en pourcentage dans la "
 "barre d'état"
 
-#: zathura/config.c:622
 msgid "Enable SyncTeX support"
 msgstr "Activer la prise en charge de SyncTeX"
 
-#: zathura/config.c:623
 msgid "SyncTeX editor command"
 msgstr "Commande pour l'éditeur SyncTeX"
 
-#: zathura/config.c:624
 msgid "SyncTeX edit modifier"
 msgstr "Modificateur d'édition SyncTeX"
 
-#: zathura/config.c:625
 msgid "Highlighter modifier"
 msgstr "Modificateur du surligneur"
 
-#: zathura/config.c:627
 msgid "Enable D-Bus service"
 msgstr "Activer le service D-Bus"
 
-#: zathura/config.c:628
 msgid "Raise window on certain D-Bus commands"
 msgstr "Mettre la fenêtre au premier plan pour certaines commandes D-Bus"
 
-#: zathura/config.c:630
 msgid "Save history at each page change"
 msgstr "Enregistrer l'historique à chaque changement de page"
 
-#: zathura/config.c:631
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr "Le presse-papiers qui recevra les données sélectionnées avec la souris"
 
-#: zathura/config.c:633
 msgid "Enable notification after selecting text"
 msgstr "Activer une notification après avoir sélectionné du texte"
 
-#: zathura/config.c:636
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 "Désactiver les informations supplémentaires pour les signatures intégrées au "
 "document"
 
 #. define default inputbar commands
-#: zathura/config.c:766
 msgid "Map a key sequence"
 msgstr "Associer une séquence de touches"
 
-#: zathura/config.c:767
 msgid "Set an option"
 msgstr "Placer une option"
 
-#: zathura/config.c:768
+msgid "Run a shortcut"
+msgstr ""
+
 msgid "Unmap a key sequence"
 msgstr "Désassocier une séquence de touches"
 
-#: zathura/config.c:769
 msgid "Dump settings to a file"
 msgstr "Exporter les paramètres vers un fichier"
 
-#: zathura/config.c:771
 msgid "Add a bookmark"
 msgstr "Ajouter un favori"
 
-#: zathura/config.c:772
 msgid "Delete a bookmark"
 msgstr "Supprimer un favori"
 
-#: zathura/config.c:773
 msgid "List all bookmarks"
 msgstr "Lister tous les favoris"
 
-#: zathura/config.c:774
 msgid "Jump to bookmark"
 msgstr "Aller au favori"
 
-#: zathura/config.c:775
 msgid "Show recent jumps in jumplist"
 msgstr "Afficher les sauts récents dans la liste des sauts"
 
-#: zathura/config.c:776
 msgid "Close current file"
 msgstr "Fermer le fichier actuel"
 
-#: zathura/config.c:777
 msgid "Show file information"
 msgstr "Montrer les informations sur le fichier"
 
-#: zathura/config.c:778 zathura/config.c:779
 msgid "Execute a command"
 msgstr "Exécuter une commande"
 
 #. like vim
-#: zathura/config.c:780
 msgid "Show help"
 msgstr "Afficher l'aide"
 
-#: zathura/config.c:781
 msgid "Open document"
 msgstr "Ouvrir un document"
 
-#: zathura/config.c:782
 msgid "Close zathura"
 msgstr "Quitter zathura"
 
-#: zathura/config.c:783
 msgid "Print document"
 msgstr "Imprimer le document"
 
-#: zathura/config.c:784 zathura/config.c:786
 msgid "Save document"
 msgstr "Sauver le document"
 
-#: zathura/config.c:785 zathura/config.c:787
 msgid "Save document (and force overwriting)"
 msgstr "Sauver le document (et forcer l'écrasement)"
 
-#: zathura/config.c:788
 msgid "Save attachments"
 msgstr "Enregistrer les pièces jointes"
 
-#: zathura/config.c:789
 msgid "Set page offset"
 msgstr "Définir le décalage de page"
 
-#: zathura/config.c:790
 msgid "Mark current location within the document"
 msgstr "Marquer l'emplacement actuel dans le document"
 
-#: zathura/config.c:791
 msgid "Delete the specified marks"
 msgstr "Supprimer les marques indiquées"
 
-#: zathura/config.c:792
 msgid "Remove highlights of current search results"
 msgstr "Supprimer la surbrillance des résultats de recherche actuels"
 
-#: zathura/config.c:793
 msgid "Highlight current search results"
 msgstr "Surligner les résultats de la recherche en cours"
 
-#: zathura/config.c:794
 msgid "Show version information"
 msgstr "Afficher les informations de version"
 
-#: zathura/config.c:795
 msgid "Source config file"
 msgstr "Fichier de configuration source"
 
-#: zathura/links.c:210
 msgid "Failed to run xdg-open."
 msgstr "Échec lors du lancement de xdg-open."
 
-#: zathura/links.c:245
 msgid "y"
 msgstr ""
 
-#: zathura/links.c:245
 msgid "Y"
 msgstr ""
 
-#: zathura/links.c:261
 msgid "Cancelled."
 msgstr ""
 
-#: zathura/links.c:275
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
 msgstr ""
 
-#: zathura/links.c:307
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 "Lancer des applications externes n'est pas autorisé en mode d'isolation "
 "stricte"
 
-#: zathura/links.c:342
 #, c-format
 msgid "Link: page %d"
 msgstr "Lien : page %d"
 
-#: zathura/links.c:349
 #, c-format
 msgid "Link: %s"
 msgstr "Lien : %s"
 
-#: zathura/links.c:353 zathura/links.c:377
 msgid "Link: Invalid"
 msgstr "Lien : Invalide"
 
-#: zathura/links.c:364
 #, c-format
 msgid "Copied page number: %d"
 msgstr "Numéro de page copié : %d"
 
-#: zathura/links.c:373
 #, c-format
 msgid "Copied link: %s"
 msgstr "Lien copié : %s"
 
-#: zathura/main.c:111
 msgid "Reparents to window specified by xid (X11)"
 msgstr "Rattacher à la fenêtre spécifiée par xid (X11)"
 
-#: zathura/main.c:112
 msgid "Path to the config directory"
 msgstr "Chemin vers le dossier de configuration"
 
-#: zathura/main.c:113
 msgid "Path to the data directory"
 msgstr "Chemin vers le dossier de données"
 
-#: zathura/main.c:114
 msgid "Path to the cache directory"
 msgstr "Chemin vers le dossier de cache"
 
-#: zathura/main.c:115
 msgid "Path to the directories containing plugins"
 msgstr "Chemin vers le dossier de plugins"
 
-#: zathura/main.c:117
 msgid "Fork into the background"
 msgstr "Détacher en arrière-plan"
 
-#: zathura/main.c:118
 msgid "Document password"
 msgstr "Mot de passe du document"
 
-#: zathura/main.c:119
 msgid "Page number to go to"
 msgstr "Numéro de page où aller"
 
-#: zathura/main.c:120
 msgid "Log level (debug, info, warning, error)"
 msgstr "Niveau de journalisation (debug, info, warning, error)"
 
-#: zathura/main.c:121
 msgid "Print version information"
 msgstr "Afficher les informations de version"
 
-#: zathura/main.c:123
 msgid "SyncTeX editor (forwarded to the synctex command)"
 msgstr "Éditeur SyncTeX (transféré à la commande synctex)"
 
-#: zathura/main.c:124
 msgid "Move to given SyncTeX position"
 msgstr "Se déplacer à la position SyncTeX donnée"
 
-#: zathura/main.c:125
 msgid "Highlight given position in the given process"
 msgstr "Mettre en surbrillance la position donnée dans le processus donné"
 
-#: zathura/main.c:127
 msgid "Start in a non-default mode"
 msgstr "Démarrer dans un mode non-défaut"
 
-#: zathura/main.c:128
 msgid "Bookmark to go to"
 msgstr "Favori vers lequel aller"
 
-#: zathura/main.c:129
 msgid "Search for the given phrase and display results"
 msgstr "Rechercher la phrase donnée et afficher les résultats"
 
-#: zathura/page-widget.c:630
 #, c-format
 msgid ""
 "Signature is valid.\n"
@@ -2196,187 +1620,144 @@ msgstr ""
 "  %s\n"
 "le %s."
 
-#: zathura/page-widget.c:637
 msgid "Signature certificate is expired."
 msgstr "Le certificat de signature a expiré."
 
-#: zathura/page-widget.c:641
 msgid "Signature certificate is revoked."
 msgstr "Le certificat de signature a été révoqué."
 
-#: zathura/page-widget.c:645
 msgid "Signature certificate is not trusted."
 msgstr "Le certificat de signature n'est pas approuvé."
 
-#: zathura/page-widget.c:649
 msgid "Signature certificate is invalid."
 msgstr "Le certificat de signature est invalide."
 
-#: zathura/page-widget.c:653
 msgid "Signature is invalid."
 msgstr "La signature est invalide."
 
-#: zathura/page-widget.c:734
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: zathura/page-widget.c:1232
 msgid "Copy image"
 msgstr "Copier l'image"
 
-#: zathura/page-widget.c:1233
 msgid "Save image as"
 msgstr "Enregistrer l'image sous"
 
 #. Update statusbar.
-#: zathura/print.c:95
 #, c-format
 msgid "Printing page %d ..."
 msgstr "Impression de la page %d ..."
 
-#: zathura/print.c:167
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Echec d'impression : %s"
 
-#: zathura/shortcuts.c:133
 #, c-format
 msgid "Invalid adjust mode: %d"
 msgstr "Mode d'ajustement invalide: %d"
 
-#: zathura/shortcuts.c:1133
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
-#: zathura/shortcuts.c:1623
 msgid "Open file"
 msgstr ""
 
-#: zathura/utils.c:731
 #, c-format
 msgid "[Search %d/%d]"
 msgstr ""
 
-#: zathura/utils.c:736
 #, c-format
 msgid "Pattern not found: %s"
 msgstr "Motif introuvable: %s"
 
-#: zathura/zathura.c:317 zathura/zathura.c:1493
 msgid "[No name]"
 msgstr "[Sans nom]"
 
-#: zathura/zathura.c:727
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
 "Impossible de lire le fichier depuis stdin et de le sauvegarder dans un "
 "fichier temporaire."
 
-#: zathura/zathura.c:745
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
 "Impossible de lire le fichier depuis GIO et de le copier dans un fichier "
 "temporaire."
 
-#: zathura/zathura.c:836
-msgid "Enter password:"
-msgstr "Saisissez le mot de passe:"
-
-#: zathura/zathura.c:929
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 "Type de fichier non supporté. Veuillez installer l'extension nécessaire."
 
-#: zathura/zathura.c:938
 msgid "Document does not contain any pages"
 msgstr "Ce document ne contient aucune page"
 
-#: zathura/zathura.c:1304
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr "Le fichier existe déjà : %s. Utilisez :write! pour l'écraser."
 
-#: zathura/zathura.c:1311
 msgid "Failed to save document."
 msgstr "Échec lors de l'enregistrement du document."
 
-#: zathura/zathura.c:1315
 msgid "Document saved."
 msgstr "Document enregistré."
 
-#: girara-gtk/commands.c:261
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
 msgstr "Nombre d'arguments invalide : %zu à la place d'au moins %u"
 
-#: girara-gtk/commands.c:297
 #, c-format
 msgid "Unregistered mode specified: %s"
 msgstr "Mode non enregistré spécifié : %s"
 
-#: girara-gtk/commands.c:305
 msgid "Invalid number of arguments passed"
 msgstr "Nombre d'arguments invalide"
 
-#: girara-gtk/commands.c:337
 #, c-format
 msgid "Invalid modifier in %s"
 msgstr "Modificateur invalide dans %s"
 
-#: girara-gtk/commands.c:375
 #, c-format
 msgid "Invalid special key value for %s"
 msgstr "Valeur de touche spéciale invalide pour %s"
 
-#: girara-gtk/commands.c:410
 #, c-format
 msgid "Invalid special key value or mode %s"
 msgstr "Valeur de touche spéciale ou mode %s invalide"
 
-#: girara-gtk/commands.c:494
 #, c-format
 msgid "Not a valid shortcut function: %s"
 msgstr "Pas une fonction raccourci valide : %s"
 
-#: girara-gtk/commands.c:545
 msgid "Not enough arguments."
 msgstr "Pas assez d'arguments."
 
-#: girara-gtk/commands.c:563
 #, c-format
 msgid "Unknown option: %s"
 msgstr "Option inconnue : %s"
 
-#: girara-gtk/commands.c:576
 msgid "true"
 msgstr "vrai"
 
-#: girara-gtk/commands.c:576
 msgid "false"
 msgstr "faux"
 
-#: girara-gtk/commands.c:604
 #, c-format
 msgid "No value defined for option: %s"
 msgstr "Aucune valeur définie pour l'option : %s"
 
-#: girara-gtk/commands.c:619
 #, c-format
 msgid "Unknown value for option: %s"
 msgstr "Valeur inconnue pour l'option : %s"
 
 #. unhandled command
-#: girara-gtk/commands.c:775
 #, c-format
 msgid "Not a valid command: %s"
 msgstr "Pas une commande valide : %s"
 
-#: girara-gtk/settings.c:255
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Nombre d'arguments invalide : %zu au lieu de 1"
 
-#: girara-gtk/settings.c:276
 #, c-format
 msgid "Failed to write JSON: %s"
 msgstr "Échec de l'écriture du JSON : %s"
