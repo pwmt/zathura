@@ -17,6 +17,11 @@ static bool remove_bookmark(zathura_database_t* GIRARA_UNUSED(db), const char* G
   return true;
 }
 
+static bool load_bookmarks(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),
+                           girara_list_t* GIRARA_UNUSED(target_list)) {
+  return true;
+}
+
 static girara_list_t* load_list(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file)) {
   return girara_list_new();
 }
@@ -51,7 +56,7 @@ static void db_interface_init(ZathuraDatabaseInterface* iface) {
   /* initialize interface */
   iface->add_bookmark     = add_bookmark;
   iface->remove_bookmark  = remove_bookmark;
-  iface->load_bookmarks   = load_list;
+  iface->load_bookmarks   = load_bookmarks;
   iface->load_jumplist    = load_list;
   iface->save_jumplist    = save_list;
   iface->set_fileinfo     = set_fileinfo;

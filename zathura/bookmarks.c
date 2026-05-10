@@ -90,33 +90,7 @@ zathura_bookmark_t* zathura_bookmark_get(zathura_t* zathura, const gchar* id) {
   return girara_list_find(zathura->bookmarks.bookmarks, bookmark_compare_find, id);
 }
 
-void zathura_bookmark_free(zathura_bookmark_t* bookmark) {
-  if (bookmark != NULL) {
-    g_free(bookmark->id);
-    g_free(bookmark);
-  }
-}
-
-bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
-  g_return_val_if_fail(zathura, false);
-  g_return_val_if_fail(file, false);
-
-  if (zathura->database == NULL) {
-    return false;
-  }
-
-  girara_list_t* bookmarks = zathura_db_load_bookmarks(zathura->database, file);
-  if (bookmarks == NULL) {
-    return false;
-  }
-
-  girara_list_free(zathura->bookmarks.bookmarks);
-  zathura->bookmarks.bookmarks = bookmarks;
-
-  return true;
-}
-
-int zathura_bookmarks_compare(const void* lhs, const void* rhs) {
+static int zathura_bookmarks_compare(const void* lhs, const void* rhs) {
   if (lhs && rhs) {
     const zathura_bookmark_t* l = lhs;
     const zathura_bookmark_t* r = rhs;
@@ -125,4 +99,36 @@ int zathura_bookmarks_compare(const void* lhs, const void* rhs) {
   }
 
   return memcmp(&lhs, &rhs, sizeof(lhs));
+}
+
+static void zathura_bookmark_free(void* data) {
+  if (data != NULL) {
+    zathura_bookmark_t* bookmark = data;
+    g_free(bookmark->id);
+    g_free(bookmark);
+  }
+}
+
+bool zathura_bookmarks_init(zathura_t* zathura) {
+  if (!zathura) {
+    return false;
+  }
+
+  zathura->bookmarks.bookmarks = girara_sorted_list_new_with_free(zathura_bookmarks_compare, zathura_bookmark_free);
+
+  return zathura->bookmarks.bookmarks != NULL;
+}
+
+bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
+  g_return_val_if_fail(zathura && zathura->database, false);
+  g_return_val_if_fail(file, false);
+
+  girara_list_clear(zathura->bookmarks.bookmarks);
+  return zathura_db_load_bookmarks(zathura->database, file, zathura->bookmarks.bookmarks);
+}
+
+void zathura_bookmarks_free(zathura_t* zathura) {
+  if (zathura) {
+    girara_list_free(zathura->bookmarks.bookmarks);
+  }
 }

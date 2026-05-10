@@ -444,12 +444,7 @@ static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file, con
   return (res == SQLITE_DONE) ? true : false;
 }
 
-static void bookmarks_free(void* p) {
-  zathura_bookmark_t* bookmark = p;
-  zathura_bookmark_free(bookmark);
-}
-
-static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* file) {
+static bool sqlite_load_bookmarks(zathura_database_t* db, const char* file, girara_list_t* target_list) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
@@ -457,19 +452,13 @@ static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* 
 
   sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_SELECT);
   if (stmt == NULL) {
-    return NULL;
+    return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
     sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
-    return NULL;
-  }
-
-  girara_list_t* result = girara_sorted_list_new_with_free(zathura_bookmarks_compare, bookmarks_free);
-  if (result == NULL) {
-    sqlite3_finalize(stmt);
-    return NULL;
+    return false;
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -485,12 +474,12 @@ static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* 
     bookmark->x    = MAX(DBL_MIN, bookmark->x);
     bookmark->y    = MAX(DBL_MIN, bookmark->y);
 
-    girara_list_append(result, bookmark);
+    girara_list_append(target_list, bookmark);
   }
 
   sqlite3_finalize(stmt);
 
-  return result;
+  return true;
 }
 
 static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist) {

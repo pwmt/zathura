@@ -439,8 +439,7 @@ bool zathura_init(zathura_t* zathura) {
   }
 
   /* bookmarks */
-  zathura->bookmarks.bookmarks =
-      girara_sorted_list_new_with_free(zathura_bookmarks_compare, (girara_free_function_t)zathura_bookmark_free);
+  zathura_bookmarks_init(zathura);
 
   /* jumplist */
   unsigned int jumplist_size = 20;
@@ -513,7 +512,7 @@ void zathura_free(zathura_t* zathura) {
   }
 
   /* bookmarks */
-  girara_list_free(zathura->bookmarks.bookmarks);
+  zathura_bookmarks_free(zathura);
 
   /* database */
   g_clear_object(&zathura->database);
@@ -976,7 +975,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* bookmarks */
   if (zathura_bookmarks_load(zathura, file_path) == false) {
     girara_debug("Failed to load bookmarks.");
-    girara_list_clear(zathura->bookmarks.bookmarks);
   }
 
   /* jumplist */

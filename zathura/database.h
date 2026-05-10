@@ -40,7 +40,7 @@ struct _ZathuraDatabaseInterface {
 
   bool (*remove_bookmark)(ZathuraDatabase* db, const char* file, const char* id);
 
-  girara_list_t* (*load_bookmarks)(ZathuraDatabase* db, const char* file);
+  bool (*load_bookmarks)(ZathuraDatabase* db, const char* file, girara_list_t* target_list);
 
   girara_list_t* (*load_jumplist)(ZathuraDatabase* db, const char* file);
 
@@ -86,9 +86,10 @@ bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const 
  *
  * @param db The database instance.
  * @param file The file for which the bookmarks should be loaded.
- * @return List of zathura_bookmark_t* or NULL on failure.
+ * @param target_list list to store bookmarks in
+ * @return true on success, false otherwise
  */
-girara_list_t* zathura_db_load_bookmarks(zathura_database_t* db, const char* file);
+bool zathura_db_load_bookmarks(zathura_database_t* db, const char* file, girara_list_t* target_list);
 
 /**
  * Load the jumplist belonging to the specified file from the database.
