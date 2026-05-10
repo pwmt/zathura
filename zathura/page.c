@@ -73,7 +73,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
     if (page->label != NULL) {
       char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
       g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, index + 1);
-      page->label_is_number = strcmp(page->label, page_number_string) == 0;
+      page->label_is_number = g_strcmp0(page->label, page_number_string) == 0;
     }
   }
 

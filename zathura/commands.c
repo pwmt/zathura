@@ -671,7 +671,7 @@ bool cmd_offset(girara_session_t* session, girara_list_t* argument_list) {
     const char* value = girara_list_nth(argument_list, 0);
     if (value != NULL) {
       page_offset = atoi(value);
-      if (page_offset == 0 && strcmp(value, "0") != 0) {
+      if (page_offset == 0 && g_strcmp0(value, "0") != 0) {
         girara_notify(session, GIRARA_WARNING, _("Argument must be a number."));
         return false;
       }

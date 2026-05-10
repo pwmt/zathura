@@ -111,7 +111,7 @@ static bool check_column(sqlite3* session, const char* table, const char* col, b
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*)sqlite3_column_text(stmt, 1), col) == 0) {
+    if (g_strcmp0((const char*)sqlite3_column_text(stmt, 1), col) == 0) {
       *res = true;
       break;
     }
@@ -144,8 +144,8 @@ static bool check_column_type(sqlite3* session, const char* table, const char* c
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*)sqlite3_column_text(stmt, 1), col) == 0 &&
-        strcmp((const char*)sqlite3_column_text(stmt, 2), type) == 0) {
+    if (g_strcmp0((const char*)sqlite3_column_text(stmt, 1), col) == 0 &&
+        g_strcmp0((const char*)sqlite3_column_text(stmt, 2), type) == 0) {
       *res = true;
       break;
     }
