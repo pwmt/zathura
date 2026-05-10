@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:38+0200\n"
+"POT-Creation-Date: 2026-05-10 11:44+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Mikhail Krutov <>, 2012\n"
 "Language-Team: Russian (http://app.transifex.com/pwmt/zathura/language/ru/)\n"
@@ -23,12 +23,6 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
-
-msgid "pwmt"
-msgstr "pwmt"
-
-msgid "Zathura"
-msgstr "Zathura"
 
 msgid "Minimalistic document viewer"
 msgstr "Минималистичный просмотрщик документов"
@@ -951,6 +945,9 @@ msgid "Command completion"
 msgstr ""
 
 msgid "Initial release"
+msgstr ""
+
+msgid "Zathura"
 msgstr ""
 
 #. Translators: Search terms to find this application. Do not translate or

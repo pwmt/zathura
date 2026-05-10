@@ -5,9 +5,9 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>Zlib</project_license>
   <developer id="org.pwmt">
-    <name>pwmt</name>
+    <name translate="no">pwmt</name>
   </developer>
-  <name>Zathura</name>
+  <name translate="no">Zathura</name>
   <summary>Minimalistic document viewer</summary>
   <description>
     <p>

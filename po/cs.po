@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:38+0200\n"
+"POT-Creation-Date: 2026-05-10 11:44+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: fri, 2016-2018,2022\n"
 "Language-Team: Czech (http://app.transifex.com/pwmt/zathura/language/cs/)\n"
@@ -17,12 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n "
 "<= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-
-msgid "pwmt"
-msgstr "pwmt"
-
-msgid "Zathura"
-msgstr "Zathura"
 
 msgid "Minimalistic document viewer"
 msgstr "Jednoduchý prohlížeč dokumentů"
@@ -962,6 +956,9 @@ msgstr "Doplňování příkazů"
 
 msgid "Initial release"
 msgstr "První vydání"
+
+msgid "Zathura"
+msgstr ""
 
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.

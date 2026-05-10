@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:38+0200\n"
+"POT-Creation-Date: 2026-05-10 11:44+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Fernando Henrique <liquuid@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/pwmt/zathura/"
@@ -19,12 +19,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
 "1000000 == 0 ? 1 : 2;\n"
-
-msgid "pwmt"
-msgstr "pwmt"
-
-msgid "Zathura"
-msgstr "Zathura"
 
 msgid "Minimalistic document viewer"
 msgstr "Visualizador de documentos minimalista"
@@ -946,6 +940,9 @@ msgid "Command completion"
 msgstr ""
 
 msgid "Initial release"
+msgstr ""
+
+msgid "Zathura"
 msgstr ""
 
 #. Translators: Search terms to find this application. Do not translate or
