@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014-2018 pwmt.org -->
+<!-- Copyright 2014-2026 pwmt.org -->
 <component type="desktop-application">
   <id>org.pwmt.zathura</id>
   <metadata_license>CC0-1.0</metadata_license>
@@ -67,6 +67,21 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="2026.05.10" date="2026-05-10">
+      <description>
+        <p>Handle key press events for notification area (#897)</p>
+        <p>Fix documentation of mouse buttons (#912)</p>
+        <p>Make shortcuts available as commands (#225)</p>
+        <p>Fix more cases of flickering when rendering pages (#864)</p>
+        <p>Various fixes and improvements</p>
+      </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/225">#225</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/864">#864</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/897">#897</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/912">#912</issue>
+      </issues>
+    </release>
     <release version="2026.03.27" date="2026-03-27">
       <description>
         <p>Add search result counter (#450)</p>
