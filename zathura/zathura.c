@@ -439,8 +439,8 @@ bool zathura_init(zathura_t* zathura) {
   }
 
   /* bookmarks */
-  zathura->bookmarks.bookmarks = girara_sorted_list_new_with_free((girara_compare_function_t)zathura_bookmarks_compare,
-                                                                  (girara_free_function_t)zathura_bookmark_free);
+  zathura->bookmarks.bookmarks =
+      girara_sorted_list_new_with_free(zathura_bookmarks_compare, (girara_free_function_t)zathura_bookmark_free);
 
   /* jumplist */
   unsigned int jumplist_size = 20;

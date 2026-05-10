@@ -60,6 +60,6 @@ bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file);
  * @param rhs a bookmark
  * @returns g_strcmp0(lhs->id, rhs->id)
  */
-int zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs);
+int zathura_bookmarks_compare(const void* lhs, const void* rhs);
 
 #endif // BOOKMARKS_H

@@ -116,18 +116,13 @@ bool zathura_bookmarks_load(zathura_t* zathura, const gchar* file) {
   return true;
 }
 
-int zathura_bookmarks_compare(const zathura_bookmark_t* lhs, const zathura_bookmark_t* rhs) {
-  if (lhs == NULL && rhs == NULL) {
-    return 0;
+int zathura_bookmarks_compare(const void* lhs, const void* rhs) {
+  if (lhs && rhs) {
+    const zathura_bookmark_t* l = lhs;
+    const zathura_bookmark_t* r = rhs;
+
+    return g_strcmp0(l->id, r->id);
   }
 
-  if (lhs == NULL) {
-    return -1;
-  }
-
-  if (rhs == NULL) {
-    return 1;
-  }
-
-  return g_strcmp0(lhs->id, rhs->id);
+  return memcmp(&lhs, &rhs, sizeof(lhs));
 }
