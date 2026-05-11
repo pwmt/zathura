@@ -385,40 +385,35 @@ static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_
   g_return_val_if_fail(session->global.data != NULL, FALSE);
 
   zathura_t* zathura = session->global.data;
-  gboolean eval      = TRUE;
 
   g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
   if (input == NULL || strlen(input) == 0) {
-    eval = FALSE;
+    return FALSE;
   }
 
-  int index = 0;
-  if (eval == TRUE) {
-    index = atoi(input);
-    if (index == 0 && g_strcmp0(input, "0") != 0) {
-      girara_notify(session, GIRARA_WARNING, _("Invalid input '%s' given."), input);
-      eval = FALSE;
-    }
-    index = index - 1;
+  unsigned int index = 0;
+  guint64 num;
+  if (g_ascii_string_to_unsigned(input, 10, 1, UINT_MAX, &num, NULL)) {
+    index = num - 1;
+  } else {
+    girara_notify(session, GIRARA_WARNING, _("Invalid input '%s' given."), input);
+    return FALSE;
   }
 
   zathura_document_t* document = zathura_get_document(zathura);
   /* find the link*/
   zathura_link_t* link         = NULL;
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+  for (unsigned int page_id = 0; page_id < number_of_pages && !link; page_id++) {
     zathura_page_t* page = zathura_document_get_page(document, page_id);
-    if (page == NULL || zathura_page_get_visibility(page) == false || eval == false) {
+    if (page == NULL || zathura_page_get_visibility(page) == false) {
       continue;
     }
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
     link                   = zathura_page_widget_link_get(ZATHURA_PAGE_WIDGET(page_widget), index);
-    if (link != NULL) {
-      break;
-    }
   }
 
-  if (eval == TRUE && link == NULL) {
+  if (link == NULL) {
     girara_notify(session, GIRARA_WARNING, _("Invalid index '%s' given."), input);
   } else {
     switch (action) {
@@ -440,7 +435,7 @@ static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_
     }
   }
 
-  return eval;
+  return TRUE;
 }
 
 gboolean cb_sc_follow(GtkEntry* entry, void* data) {
@@ -615,16 +610,16 @@ bool cb_unknown_command(girara_session_t* session, const char* input) {
     return false;
   }
 
-  /* check for number */
-  const size_t size = strlen(input);
-  for (size_t i = 0; i < size; i++) {
-    if (g_ascii_isdigit(input[i]) == FALSE) {
-      return false;
-    }
+  unsigned int index = 0;
+  guint64 num;
+  if (g_ascii_string_to_unsigned(input, 10, 1, UINT_MAX, &num, NULL)) {
+    index = num - 1;
+  } else {
+    return false;
   }
 
   zathura_jumplist_add(zathura);
-  page_set(zathura, atoi(input) - 1);
+  page_set(zathura, index);
   zathura_jumplist_add(zathura);
 
   return true;

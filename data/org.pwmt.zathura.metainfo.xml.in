@@ -67,6 +67,11 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="2026.05.11" date="2026-05-11">
+      <description>
+        <p>Handle unsigned integer values in set command</p>
+      </description>
+    </release>
     <release version="2026.05.10" date="2026-05-10">
       <description>
         <p>Handle key press events for notification area (#897)</p>

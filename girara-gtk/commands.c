@@ -10,6 +10,7 @@
 
 #include <girara/datastructures.h>
 #include <glib/gi18n-lib.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -80,11 +81,10 @@ static void girara_cmd_display_shortcut(girara_session_t* session, const char* k
     }
   }
 
-  GStrv array              = g_strv_builder_end(builder);
+  g_auto(GStrv) array      = g_strv_builder_end(builder);
   g_autofree char* msg     = g_strjoinv("", array);
   g_autofree char* esc_msg = g_markup_escape_text(msg, -1);
   girara_notify(session, GIRARA_INFO, "%s", esc_msg);
-  g_strfreev(array);
 }
 
 static void girara_cmd_display_mouse_event(girara_session_t* session, const char* button_str, const char* event_str,
@@ -159,11 +159,10 @@ static void girara_cmd_display_mouse_event(girara_session_t* session, const char
     }
   }
 
-  GStrv array              = g_strv_builder_end(builder);
+  g_auto(GStrv) array      = g_strv_builder_end(builder);
   g_autofree char* msg     = g_strjoinv("", array);
   g_autofree char* esc_msg = g_markup_escape_text(msg, -1);
   girara_notify(session, GIRARA_INFO, "%s", esc_msg);
-  g_strfreev(array);
 }
 
 const gdk_keyboard_button_t gdk_keyboard_buttons[48] = {
@@ -571,9 +570,9 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       /* for compatibility reasons: toogle the setting */
       bool value = false;
       girara_setting_get_value(setting, &value);
-      bool tmp = !value;
-      girara_setting_set_value(session, setting, &tmp);
-      girara_notify(session, GIRARA_INFO, "%s: %s", name, tmp ? _("true") : _("false"));
+      value = !value;
+      girara_setting_set_value(session, setting, &value);
+      girara_notify(session, GIRARA_INFO, "%s: %s", name, value ? _("true") : _("false"));
       break;
     }
     case FLOAT: {
@@ -586,6 +585,12 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       int value = 0;
       girara_setting_get_value(setting, &value);
       girara_notify(session, GIRARA_INFO, "%s: %i", name, value);
+      break;
+    }
+    case UINT: {
+      unsigned int value = 0;
+      girara_setting_get_value(setting, &value);
+      girara_notify(session, GIRARA_INFO, "%s: %u", name, value);
       break;
     }
     case STRING: {
@@ -625,8 +630,25 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       break;
     }
     case INT: {
-      int i = atoi(value);
-      girara_setting_set_value(session, setting, &i);
+      gint64 num;
+      if (g_ascii_string_to_signed(value, 10, INT_MIN, INT_MAX, &num, NULL)) {
+        int i = num;
+        girara_setting_set_value(session, setting, &i);
+      } else {
+        girara_warning("Invalid value for option: %s", name);
+        girara_notify(session, GIRARA_ERROR, _("Invalid value for option: %s"), name);
+      }
+      break;
+    }
+    case UINT: {
+      guint64 num;
+      if (g_ascii_string_to_unsigned(value, 10, 0, UINT_MAX, &num, NULL)) {
+        unsigned int i = num;
+        girara_setting_set_value(session, setting, &i);
+      } else {
+        girara_warning("Invalid value for option: %s", name);
+        girara_notify(session, GIRARA_ERROR, _("Invalid value for option: %s"), name);
+      }
       break;
     }
     case STRING:

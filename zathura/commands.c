@@ -523,20 +523,16 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
     /* image */
   } else if (strncmp(file_identifier, "image-p", image_len) == 0 && strlen(file_identifier) >= 10) {
     /* parse page id */
-    const char* input = file_identifier + image_len;
-    int page_id       = atoi(input);
-    if (page_id == 0) {
+    const char* input    = file_identifier + image_len;
+    char* input_image_id = NULL;
+    guint64 page_id      = g_ascii_strtoull(input, &input_image_id, 10);
+    if (page_id == 0 || page_id >= UINT_MAX || !input_image_id || input_image_id[0] != '-') {
       goto image_error;
     }
 
     /* parse image id */
-    input = strstr(input, "-");
-    if (input == NULL) {
-      goto image_error;
-    }
-
-    int image_id = atoi(input + 1);
-    if (image_id == 0) {
+    guint64 image_id = 0;
+    if (!g_ascii_string_to_unsigned(input_image_id + 1, 10, 1, UINT_MAX, &image_id, NULL)) {
       goto image_error;
     }
 
@@ -664,17 +660,18 @@ bool cmd_offset(girara_session_t* session, girara_list_t* argument_list) {
   }
 
   /* no argument: take current page as offset */
-  int page_offset = zathura_document_get_current_page_number(document);
+  unsigned int page_offset = zathura_document_get_current_page_number(document);
 
   /* retrieve offset from argument */
   if (girara_list_size(argument_list) == 1) {
     const char* value = girara_list_nth(argument_list, 0);
     if (value != NULL) {
-      page_offset = atoi(value);
-      if (page_offset == 0 && g_strcmp0(value, "0") != 0) {
+      guint64 offset;
+      if (!g_ascii_string_to_unsigned(value, 10, 0, zathura_document_get_number_of_pages(document), &offset, NULL)) {
         girara_notify(session, GIRARA_WARNING, _("Argument must be a number."));
         return false;
       }
+      page_offset = offset;
     }
   }
 
