@@ -572,9 +572,9 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       /* for compatibility reasons: toogle the setting */
       bool value = false;
       girara_setting_get_value(setting, &value);
-      bool tmp = !value;
-      girara_setting_set_value(session, setting, &tmp);
-      girara_notify(session, GIRARA_INFO, "%s: %s", name, tmp ? _("true") : _("false"));
+      value = !value;
+      girara_setting_set_value(session, setting, &value);
+      girara_notify(session, GIRARA_INFO, "%s: %s", name, value ? _("true") : _("false"));
       break;
     }
     case FLOAT: {
