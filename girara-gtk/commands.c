@@ -81,11 +81,10 @@ static void girara_cmd_display_shortcut(girara_session_t* session, const char* k
     }
   }
 
-  GStrv array              = g_strv_builder_end(builder);
+  g_auto(GStrv) array      = g_strv_builder_end(builder);
   g_autofree char* msg     = g_strjoinv("", array);
   g_autofree char* esc_msg = g_markup_escape_text(msg, -1);
   girara_notify(session, GIRARA_INFO, "%s", esc_msg);
-  g_strfreev(array);
 }
 
 static void girara_cmd_display_mouse_event(girara_session_t* session, const char* button_str, const char* event_str,
@@ -160,11 +159,10 @@ static void girara_cmd_display_mouse_event(girara_session_t* session, const char
     }
   }
 
-  GStrv array              = g_strv_builder_end(builder);
+  g_auto(GStrv) array      = g_strv_builder_end(builder);
   g_autofree char* msg     = g_strjoinv("", array);
   g_autofree char* esc_msg = g_markup_escape_text(msg, -1);
   girara_notify(session, GIRARA_INFO, "%s", esc_msg);
-  g_strfreev(array);
 }
 
 const gdk_keyboard_button_t gdk_keyboard_buttons[48] = {
