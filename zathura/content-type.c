@@ -3,7 +3,6 @@
 #include "content-type.h"
 
 #include <gio/gio.h>
-#include <girara-gtk/utils.h>
 #include <girara/log.h>
 #include <glib.h>
 #include <magic.h>
@@ -14,6 +13,10 @@
 struct zathura_content_type_context_s {
   magic_t magic;
 };
+
+static int list_cmpstr(const void* lhs, const void* rhs) {
+  return g_strcmp0(lhs, rhs);
+}
 
 zathura_content_type_context_t* zathura_content_type_new(void) {
   zathura_content_type_context_t* context = g_try_malloc0(sizeof(zathura_content_type_context_t));
@@ -116,7 +119,7 @@ char* zathura_content_type_guess(zathura_content_type_context_t* context, const 
   char* content_type = guess_type_magic(context, path);
   if (content_type != NULL) {
     if (supported_content_types == NULL ||
-        girara_list_find(supported_content_types, girara_list_cmpstr, content_type) != NULL) {
+        girara_list_find(supported_content_types, list_cmpstr, content_type) != NULL) {
       return content_type;
     }
     girara_debug("content type '%s' not supported, trying again", content_type);
@@ -126,7 +129,7 @@ char* zathura_content_type_guess(zathura_content_type_context_t* context, const 
   content_type = guess_type_glib(path);
   if (content_type != NULL) {
     if (supported_content_types == NULL ||
-        girara_list_find(supported_content_types, girara_list_cmpstr, content_type) != NULL) {
+        girara_list_find(supported_content_types, list_cmpstr, content_type) != NULL) {
       return content_type;
     }
     girara_debug("content type '%s' not supported", content_type);

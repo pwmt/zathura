@@ -6,7 +6,6 @@
 #include "session.h"
 #include "settings.h"
 #include "shortcuts.h"
-#include "utils.h"
 
 #include <girara/datastructures.h>
 #include <glib/gi18n-lib.h>

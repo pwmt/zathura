@@ -5,8 +5,8 @@
 #include <girara-gtk/commands.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
-#include <girara-gtk/utils.h>
 #include <girara/datastructures.h>
+#include <girara/utils.h>
 #include <girara/log.h>
 #include <glib/gi18n.h>
 #include <stdlib.h>

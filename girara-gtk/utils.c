@@ -1,7 +1,5 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include "utils.h"
-
 #include <girara/datastructures.h>
 #include <girara/log.h>
 #include <glib.h>
@@ -9,10 +7,6 @@
 
 #include "settings.h"
 #include "session.h"
-
-int girara_list_cmpstr(const void* lhs, const void* rhs) {
-  return g_strcmp0(lhs, rhs);
-}
 
 void widget_add_class(GtkWidget* widget, const char* styleclass) {
   if (widget == NULL || styleclass == NULL) {
