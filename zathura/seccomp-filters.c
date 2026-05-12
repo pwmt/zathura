@@ -184,8 +184,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 
   if (GDK_IS_X11_DISPLAY(display)) {
     girara_debug("On X11, supporting X11 syscalls");
-    girara_warning("Running strict sandbox mode on X11 provides only \
-        incomplete process isolation.");
+    girara_warning("Running strict sandbox mode on X11 provides only incomplete process isolation.");
 
     /* permit the socket syscall for local UNIX domain sockets (required by X11) */
     ADD_RULE("allow", SCMP_ACT_ALLOW, socket, 1, SCMP_CMP(0, SCMP_CMP_EQ, AF_UNIX));
@@ -195,6 +194,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
     ALLOW_RULE(getsockopt);
     ALLOW_RULE(getsockname);
     ALLOW_RULE(connect);
+    ALLOW_RULE(exit);
+    ALLOW_RULE(fchmod);
+    ALLOW_RULE(sendto);
     ALLOW_RULE(umask);
     ALLOW_RULE(uname);
     ALLOW_RULE(shmat);
