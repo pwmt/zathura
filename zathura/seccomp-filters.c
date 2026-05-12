@@ -194,7 +194,6 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
     ALLOW_RULE(getsockopt);
     ALLOW_RULE(getsockname);
     ALLOW_RULE(connect);
-    ALLOW_RULE(exit);
     ALLOW_RULE(fchmod);
     ALLOW_RULE(sendto);
     ALLOW_RULE(umask);
@@ -230,6 +229,13 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 
   /* trigger fallback to clone */
   ERRNO_RULE(clone3);
+
+  /* allowed for glycin runtime #928 */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), kill, 0);
+  ALLOW_RULE(timerfd_create);
+  ALLOW_RULE(timerfd_settime);
+  ALLOW_RULE(timerfd_gettime);
+  ALLOW_RULE(epoll_pwait);
 
   /* fcntl filter - not yet working */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
