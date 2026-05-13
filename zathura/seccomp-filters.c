@@ -231,7 +231,9 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ERRNO_RULE(clone3);
 
   /* allowed for glycin runtime #928 */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), clone, 1, SCMP_CMP(0, SCMP_CMP_MASKED_EQ, CLONE_THREAD, 0));
   ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), kill, 0);
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), tgkill, 0);
   ALLOW_RULE(timerfd_create);
   ALLOW_RULE(timerfd_settime);
   ALLOW_RULE(timerfd_gettime);
