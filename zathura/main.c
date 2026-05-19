@@ -2,6 +2,7 @@
 
 #ifdef __APPLE__
 #include <gtkosxapplication.h>
+#include "fork-macos.h"
 #endif
 
 #include <girara-gtk/settings.h>
@@ -134,6 +135,9 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   GOptionContext* context = g_option_context_new(" [file1] [file2] [...]");
   g_option_context_add_main_entries(context, entries, NULL);
 
+  const int orig_argc = argc;
+  g_auto(GStrv) orig_argv = g_strdupv(argv);
+
   g_autoptr(GError) error = NULL;
   if (g_option_context_parse(context, &argc, &argv, &error) == false) {
     girara_error("Error parsing command line arguments: %s\n", error->message);
@@ -198,12 +202,20 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       if (pid == 0) {
         // child process
         file_idx = idx;
+
+#ifdef __APPLE__
+        g_auto(GStrv) reexec_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
+        execv(reexec_argv[0], reexec_argv);
+
+        return -1;
+#else
         if (forkback == true && setsid() == -1) {
           // start new process group if forkback was requested
           girara_error("Could not start new process group: %s", strerror(errno));
           return -1;
         }
         break;
+#endif
       } else if (pid < 0) {
         // error
         girara_error("Could not fork: %s", strerror(errno));
@@ -239,10 +251,18 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       return -1;
     }
 
+#ifdef __APPLE__
+    g_auto(GStrv) reexec_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, file_idx != 0 ? argv[file_idx] : NULL);
+    execv(reexec_argv[0], reexec_argv);
+
+    girara_error("execv failed: %s", strerror(errno));
+    return -1;
+#else
     if (setsid() == -1) {
       girara_error("Could not start new process group: %s", strerror(errno));
       return -1;
     }
+#endif
   }
 
   /* Print version */

@@ -146,6 +146,7 @@ sources = files(
   'zathura/types.c',
   'zathura/utils.c',
   'zathura/zathura.c',
+  'zathura/fork-macos.c',
 )
 sources += zathura_resources
 
@@ -157,6 +158,7 @@ headers = files(
   'zathura/page.h',
   'zathura/plugin-api.h',
   'zathura/types.h',
+  'zathura/fork-macos.h',
 )
 headers += version_header
 
