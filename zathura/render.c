@@ -76,6 +76,7 @@ static bool page_cache_is_full(ZathuraRenderer* renderer, bool* result);
 /* job description for render thread */
 typedef struct render_job_s {
   ZathuraRenderRequest* request;
+  unsigned int page_index;
   atomic_bool aborted;
 } render_job_t;
 
@@ -142,10 +143,6 @@ static void renderer_finalize(GObject* object) {
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
 
   zathura_renderer_stop(renderer);
-  if (priv->pool != NULL) {
-    girara_debug("Waiting for thread pool to finish.");
-    g_thread_pool_free(priv->pool, TRUE, TRUE);
-  }
   g_mutex_clear(&(priv->mutex));
 
   g_free(priv->page_cache.cache);
@@ -367,8 +364,16 @@ void zathura_renderer_unlock(ZathuraRenderer* renderer) {
 void zathura_renderer_stop(ZathuraRenderer* renderer) {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
-  girara_debug("Setting about-to-close flag for renderer");
+  if (priv->about_to_close == false) {
+    girara_debug("Setting about-to-close flag for renderer");
+  }
   priv->about_to_close = true;
+
+  if (priv->pool != NULL) {
+    girara_debug("Waiting for thread pool to finish.");
+    g_thread_pool_free(priv->pool, FALSE, TRUE);
+    priv->pool = NULL;
+  }
 }
 
 /* ZathuraRenderRequest methods */
@@ -391,6 +396,17 @@ void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time
 
   /* only add a new job if there are no active ones left */
   if (unfinished_jobs == false) {
+    if (request_priv->renderer == NULL) {
+      g_mutex_unlock(&request_priv->jobs_mutex);
+      return;
+    }
+
+    ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(request_priv->renderer);
+    if (priv->about_to_close == true || priv->pool == NULL) {
+      g_mutex_unlock(&request_priv->jobs_mutex);
+      return;
+    }
+
     request_priv->last_view_time = last_view_time;
 
     render_job_t* job = g_try_malloc0(sizeof(render_job_t));
@@ -399,11 +415,11 @@ void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time
       return;
     }
 
-    job->request = g_object_ref(request);
-    job->aborted = false;
+    job->request    = g_object_ref(request);
+    job->page_index = zathura_page_get_index(request_priv->page);
+    job->aborted    = false;
     girara_list_append(request_priv->active_jobs, job);
 
-    ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(request_priv->renderer);
     g_thread_pool_push(priv->pool, job, NULL);
   }
 
@@ -455,10 +471,10 @@ static gboolean emit_completed_signal(void* data) {
 
   if (priv->about_to_close == false && job->aborted == false) {
     /* emit the signal */
-    girara_debug("Emitting signal for page %d", zathura_page_get_index(request_priv->page) + 1);
+    girara_debug("Emitting signal for page %d", job->page_index + 1);
     g_signal_emit(job->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
   } else {
-    girara_debug("Rendering of page %d aborted", zathura_page_get_index(request_priv->page) + 1);
+    girara_debug("Rendering of page %d aborted", job->page_index + 1);
   }
   /* mark the request as done */
   remove_job_and_free(job);
@@ -856,7 +872,7 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
 
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close == true || job->aborted == true) {
-    girara_debug("Rendering of page %d aborted", zathura_page_get_index(request_priv->page) + 1);
+    girara_debug("Rendering of page %d aborted", job->page_index + 1);
     remove_job_and_free(job);
     cairo_surface_destroy(surface);
     return true;
@@ -891,10 +907,9 @@ static void render_job(void* data, void* user_data) {
     return;
   }
 
-  ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
-  girara_debug("Rendering page %d ...", zathura_page_get_index(request_priv->page) + 1);
+  girara_debug("Rendering page %d ...", job->page_index + 1);
   if (render(job, request, renderer) != true) {
-    girara_error("Rendering failed (page %d)\n", zathura_page_get_index(request_priv->page) + 1);
+    girara_error("Rendering failed (page %d)\n", job->page_index + 1);
     remove_job_and_free(job);
   }
 }

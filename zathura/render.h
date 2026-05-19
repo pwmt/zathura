@@ -108,7 +108,8 @@ void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer, const ch
  */
 void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer, GdkRGBA* light, GdkRGBA* dark);
 /**
- * Stop rendering.
+ * Stop rendering. This is a terminal operation: after it returns, no more
+ * render jobs will be accepted or executed.
  * @param renderer a render object
  */
 void zathura_renderer_stop(ZathuraRenderer* renderer);
