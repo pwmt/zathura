@@ -8,7 +8,7 @@ char** build_reexec_argv(char** orig_argv, int orig_argc, char** post_parse_file
 
   GPtrArray* arr = g_ptr_array_new();
 
-  g_ptr_array_add(arr, orig_argv[0]);
+  g_ptr_array_add(arr, g_strdup(orig_argv[0]));
 
   for (int i = 1; i < orig_argc; i++) {
     if (g_strcmp0(orig_argv[i], "--fork") == 0) {
@@ -27,11 +27,11 @@ char** build_reexec_argv(char** orig_argv, int orig_argc, char** post_parse_file
       continue;
     }
 
-    g_ptr_array_add(arr, orig_argv[i]);
+    g_ptr_array_add(arr, g_strdup(orig_argv[i]));
   }
 
   if (specific_file != NULL) {
-    g_ptr_array_add(arr, (char*)specific_file);
+    g_ptr_array_add(arr, g_strdup(specific_file));
   }
 
   g_ptr_array_add(arr, NULL);

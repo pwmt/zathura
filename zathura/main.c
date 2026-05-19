@@ -2,6 +2,8 @@
 
 #ifdef __APPLE__
 #include <gtkosxapplication.h>
+#include <spawn.h>
+extern char** environ;
 #include "fork-macos.h"
 #endif
 
@@ -194,29 +196,39 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   int file_idx = argc > file_idx_base ? file_idx_base : 0;
   /* If more than one file, fork an instance for each. */
   if (print_version == false && argc > file_idx_base + 1) {
-    const pid_t parent_pid              = getpid();
     g_autoptr(girara_list_t) child_pids = girara_list_new();
 
+#ifdef __APPLE__
+    for (int idx = file_idx_base; idx < argc; ++idx) {
+      char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
+      pid_t pid;
+      const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
+      g_strfreev(spawn_argv);
+      if (err != 0) {
+        girara_error("posix_spawn failed: %s", strerror(err));
+        return -1;
+      }
+      girara_list_append(child_pids, (void*)(intptr_t)pid);
+    }
+    if (forkback == false) {
+      for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
+        waitpid((pid_t)(intptr_t)girara_list_nth(child_pids, idx), NULL, 0);
+      }
+    }
+    return 0;
+#else
+    const pid_t parent_pid = getpid();
     for (int idx = file_idx_base; idx < argc; ++idx) {
       const pid_t pid = fork();
       if (pid == 0) {
         // child process
         file_idx = idx;
-
-#ifdef __APPLE__
-        g_auto(GStrv) reexec_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
-        execv(reexec_argv[0], reexec_argv);
-
-        girara_error("execv failed: %s", strerror(errno));
-        return -1;
-#else
         if (forkback == true && setsid() == -1) {
           // start new process group if forkback was requested
           girara_error("Could not start new process group: %s", strerror(errno));
           return -1;
         }
         break;
-#endif
       } else if (pid < 0) {
         // error
         girara_error("Could not fork: %s", strerror(errno));
@@ -240,10 +252,22 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       }
       return 0;
     }
+#endif
   }
 
   /* Fork into the background if the user really wants to ... */
   if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
+#ifdef __APPLE__
+    char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, file_idx != 0 ? argv[file_idx] : NULL);
+    pid_t pid;
+    const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
+    g_strfreev(spawn_argv);
+    if (err != 0) {
+      girara_error("posix_spawn failed: %s", strerror(err));
+      return -1;
+    }
+    return 0;
+#else
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
       return 0;
@@ -251,14 +275,6 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       girara_error("Could not fork: %s", strerror(errno));
       return -1;
     }
-
-#ifdef __APPLE__
-    g_auto(GStrv) reexec_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, file_idx != 0 ? argv[file_idx] : NULL);
-    execv(reexec_argv[0], reexec_argv);
-
-    girara_error("execv failed: %s", strerror(errno));
-    return -1;
-#else
     if (setsid() == -1) {
       girara_error("Could not start new process group: %s", strerror(errno));
       return -1;
