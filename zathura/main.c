@@ -137,7 +137,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   GOptionContext* context = g_option_context_new(" [file1] [file2] [...]");
   g_option_context_add_main_entries(context, entries, NULL);
 
-  const int orig_argc = argc;
+  const int orig_argc     = argc;
   g_auto(GStrv) orig_argv = g_strdupv(argv);
 
   g_autoptr(GError) error = NULL;
@@ -200,7 +200,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
 #ifdef __APPLE__
     for (int idx = file_idx_base; idx < argc; ++idx) {
-      char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
+      char** spawn_argv =
+          build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
       pid_t pid;
       const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
       g_strfreev(spawn_argv);
@@ -258,7 +259,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   /* Fork into the background if the user really wants to ... */
   if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
 #ifdef __APPLE__
-    char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, file_idx != 0 ? argv[file_idx] : NULL);
+    char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base,
+                                          file_idx != 0 ? argv[file_idx] : NULL);
     pid_t pid;
     const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
     g_strfreev(spawn_argv);
