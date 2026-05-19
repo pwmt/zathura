@@ -244,6 +244,14 @@ They can also be combined with modifiers:
 
     Change current mode. Pass the desired mode as argument.
 
+  * ``copy_filepath``
+
+    Copy the full path of the currently opened document to the clipboard
+
+  * ``copy_link``
+
+    Copy a link target to the clipboard.
+
   * ``cycle_first_column``
 
     In multiple page layout, cycle the column in which the first page is displayed.
@@ -294,8 +302,8 @@ They can also be combined with modifiers:
 
   * ``page_mode``
 
-    Set the page sizing mode. Default is ``equal_none``, which doesn't resize 
-    individual pages. ``equal_width`` and ``equal_height`` resizes each page to 
+    Set the page sizing mode. Default is ``equal_none``, which doesn't resize
+    individual pages. ``equal_width`` and ``equal_height`` resizes each page to
     have the same width and height respectively.
 
   * ``quit``

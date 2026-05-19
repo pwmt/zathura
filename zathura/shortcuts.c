@@ -201,12 +201,18 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
   g_autofree GdkAtom* selection = get_selection(zathura);
   if (selection == NULL) {
     return false;
   }
 
-  const char* file_path = zathura_document_get_path(zathura->document);
+  const char* file_path = zathura_document_get_path(document);
   if (file_path == NULL) {
     girara_debug("Could not get file path for copying");
     return false;
@@ -214,6 +220,15 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
 
   girara_debug("Copying file path to clipboard");
   gtk_clipboard_set_text(gtk_clipboard_get(*selection), file_path, -1);
+
+  bool notification = true;
+  girara_setting_get(session, "selection-notification", &notification);
+  if (notification == true) {
+    g_autofree char* target = NULL;
+    girara_setting_get(session, "selection-clipboard", &target);
+    g_autofree char* escaped = g_markup_printf_escaped(_("Copied file path to selection %s: %s"), target, file_path);
+    girara_notify(session, GIRARA_INFO, "%s", escaped);
+  }
 
   return true;
 }
