@@ -2,6 +2,9 @@
 
 #ifdef __APPLE__
 #include <gtkosxapplication.h>
+#include <spawn.h>
+extern char** environ;
+#include "fork-macos.h"
 #endif
 
 #include <girara-gtk/settings.h>
@@ -134,6 +137,9 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   GOptionContext* context = g_option_context_new(" [file1] [file2] [...]");
   g_option_context_add_main_entries(context, entries, NULL);
 
+  const int orig_argc = argc;
+  g_auto(GStrv) orig_argv = g_strdupv(argv);
+
   g_autoptr(GError) error = NULL;
   if (g_option_context_parse(context, &argc, &argv, &error) == false) {
     girara_error("Error parsing command line arguments: %s\n", error->message);
@@ -190,9 +196,28 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   int file_idx = argc > file_idx_base ? file_idx_base : 0;
   /* If more than one file, fork an instance for each. */
   if (print_version == false && argc > file_idx_base + 1) {
-    const pid_t parent_pid              = getpid();
     g_autoptr(girara_list_t) child_pids = girara_list_new();
 
+#ifdef __APPLE__
+    for (int idx = file_idx_base; idx < argc; ++idx) {
+      char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
+      pid_t pid;
+      const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
+      g_strfreev(spawn_argv);
+      if (err != 0) {
+        girara_error("posix_spawn failed: %s", strerror(err));
+        return -1;
+      }
+      girara_list_append(child_pids, (void*)(intptr_t)pid);
+    }
+    if (forkback == false) {
+      for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
+        waitpid((pid_t)(intptr_t)girara_list_nth(child_pids, idx), NULL, 0);
+      }
+    }
+    return 0;
+#else
+    const pid_t parent_pid = getpid();
     for (int idx = file_idx_base; idx < argc; ++idx) {
       const pid_t pid = fork();
       if (pid == 0) {
@@ -227,10 +252,22 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       }
       return 0;
     }
+#endif
   }
 
   /* Fork into the background if the user really wants to ... */
   if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
+#ifdef __APPLE__
+    char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, file_idx != 0 ? argv[file_idx] : NULL);
+    pid_t pid;
+    const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
+    g_strfreev(spawn_argv);
+    if (err != 0) {
+      girara_error("posix_spawn failed: %s", strerror(err));
+      return -1;
+    }
+    return 0;
+#else
     const pid_t pid = fork();
     if (pid > 0) { /* parent */
       return 0;
@@ -238,11 +275,11 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       girara_error("Could not fork: %s", strerror(errno));
       return -1;
     }
-
     if (setsid() == -1) {
       girara_error("Could not start new process group: %s", strerror(errno));
       return -1;
     }
+#endif
   }
 
   /* Print version */
