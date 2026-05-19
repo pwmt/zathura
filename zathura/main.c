@@ -207,6 +207,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
         g_auto(GStrv) reexec_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
         execv(reexec_argv[0], reexec_argv);
 
+        girara_error("execv failed: %s", strerror(errno));
         return -1;
 #else
         if (forkback == true && setsid() == -1) {
