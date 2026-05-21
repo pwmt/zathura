@@ -4,7 +4,6 @@
 #include <gtkosxapplication.h>
 #include <spawn.h>
 extern char** environ;
-#include "fork-macos.h"
 #endif
 
 #include <girara-gtk/settings.h>
@@ -200,8 +199,26 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
 #ifdef __APPLE__
     for (int idx = file_idx_base; idx < argc; ++idx) {
-      char** spawn_argv =
-          build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base, argv[idx]);
+      GPtrArray* arr = g_ptr_array_new();
+      g_ptr_array_add(arr, g_strdup(orig_argv[0]));
+      for (int i = 1; i < orig_argc; i++) {
+        if (g_strcmp0(orig_argv[i], "--fork") == 0) {
+          continue;
+        }
+        bool is_file = false;
+        for (int j = 0; j < argc - file_idx_base; j++) {
+          if (g_strcmp0(orig_argv[i], argv[file_idx_base + j]) == 0) {
+            is_file = true;
+            break;
+          }
+        }
+        if (!is_file) {
+          g_ptr_array_add(arr, g_strdup(orig_argv[i]));
+        }
+      }
+      g_ptr_array_add(arr, g_strdup(argv[idx]));
+      g_ptr_array_add(arr, NULL);
+      char** spawn_argv = (char**)g_ptr_array_free(arr, FALSE);
       pid_t pid;
       const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
       g_strfreev(spawn_argv);
