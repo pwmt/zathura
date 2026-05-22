@@ -2,8 +2,6 @@
 
 #ifdef __APPLE__
 #include <gtkosxapplication.h>
-#include <spawn.h>
-extern char** environ;
 #endif
 
 #include <girara-gtk/settings.h>
@@ -197,7 +195,6 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   if (print_version == false && argc > file_idx_base + 1) {
     g_autoptr(girara_list_t) child_pids = girara_list_new();
 
-#ifdef __APPLE__
     for (int idx = file_idx_base; idx < argc; ++idx) {
       GPtrArray* arr = g_ptr_array_new();
       g_ptr_array_add(arr, g_strdup(orig_argv[0]));
@@ -219,86 +216,78 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       g_ptr_array_add(arr, g_strdup(argv[idx]));
       g_ptr_array_add(arr, NULL);
       char** spawn_argv = (char**)g_ptr_array_free(arr, FALSE);
-      pid_t pid;
-      const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
-      g_strfreev(spawn_argv);
-      if (err != 0) {
-        girara_error("posix_spawn failed: %s", strerror(err));
+
+      GPid pid;
+      GError* err = NULL;
+      if (!g_spawn_async_with_pipes_and_fds(
+            NULL, (const gchar* const*)spawn_argv, NULL,
+            G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
+            NULL, NULL,
+            -1, -1, -1,
+            NULL, NULL, 0,
+            &pid,
+            NULL, NULL, NULL,
+            &err)) {
+        girara_error(err->message);
+        g_error_free(err);
+        g_strfreev(spawn_argv);
         return -1;
       }
+      g_strfreev(spawn_argv);
       girara_list_append(child_pids, (void*)(intptr_t)pid);
     }
     if (forkback == false) {
       for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
-        waitpid((pid_t)(intptr_t)girara_list_nth(child_pids, idx), NULL, 0);
+        GPid p = (GPid)(intptr_t)girara_list_nth(child_pids, idx);
+        waitpid(p, NULL, 0);
+        g_spawn_close_pid(p);
       }
     }
     return 0;
-#else
-    const pid_t parent_pid = getpid();
-    for (int idx = file_idx_base; idx < argc; ++idx) {
-      const pid_t pid = fork();
-      if (pid == 0) {
-        // child process
-        file_idx = idx;
-        if (forkback == true && setsid() == -1) {
-          // start new process group if forkback was requested
-          girara_error("Could not start new process group: %s", strerror(errno));
-          return -1;
-        }
-        break;
-      } else if (pid < 0) {
-        // error
-        girara_error("Could not fork: %s", strerror(errno));
-        return -1;
-      } else {
-        // parent process
-        girara_list_append(child_pids, (void*)(intptr_t)pid);
-      }
-    }
-
-    if (parent_pid == getpid()) {
-      // parent
-      if (forkback == true) {
-        // forkback was requested, so no need to wait
-        return 0;
-      }
-      // wait for all children
-      for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
-        const pid_t pid = (pid_t)(intptr_t)girara_list_nth(child_pids, idx);
-        waitpid(pid, NULL, 0);
-      }
-      return 0;
-    }
-#endif
   }
 
   /* Fork into the background if the user really wants to ... */
   if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
-#ifdef __APPLE__
-    char** spawn_argv = build_reexec_argv(orig_argv, orig_argc, argv + file_idx_base, argc - file_idx_base,
-                                          file_idx != 0 ? argv[file_idx] : NULL);
-    pid_t pid;
-    const int err = posix_spawn(&pid, spawn_argv[0], NULL, NULL, spawn_argv, environ);
+    GPtrArray* arr = g_ptr_array_new();
+    g_ptr_array_add(arr, g_strdup(orig_argv[0]));
+    for (int i = 1; i < orig_argc; i++) {
+      if (g_strcmp0(orig_argv[i], "--fork") == 0) {
+        continue;
+      }
+      bool is_file = false;
+      for (int j = 0; j < argc - file_idx_base; j++) {
+        if (g_strcmp0(orig_argv[i], argv[file_idx_base + j]) == 0) {
+          is_file = true;
+          break;
+        }
+      }
+      if (!is_file) {
+        g_ptr_array_add(arr, g_strdup(orig_argv[i]));
+      }
+    }
+    if (file_idx != 0) {
+      g_ptr_array_add(arr, g_strdup(argv[file_idx]));
+    }
+    g_ptr_array_add(arr, NULL);
+    char** spawn_argv = (char**)g_ptr_array_free(arr, FALSE);
+
+    GError* err = NULL;
+    if (!g_spawn_async_with_pipes_and_fds(
+          NULL, (const gchar* const*)spawn_argv, NULL,
+          G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
+          NULL, NULL,
+          -1, -1, -1,
+          NULL, NULL, 0,
+          NULL,
+          NULL, NULL, NULL,
+          &err)) {
+      girara_error("Could not spawn: %s", err->message);
+      g_error_free(err);
+      g_strfreev(spawn_argv);
+      return -1;
+    }
     g_strfreev(spawn_argv);
-    if (err != 0) {
-      girara_error("posix_spawn failed: %s", strerror(err));
-      return -1;
-    }
     return 0;
-#else
-    const pid_t pid = fork();
-    if (pid > 0) { /* parent */
-      return 0;
-    } else if (pid < 0) { /* error */
-      girara_error("Could not fork: %s", strerror(errno));
-      return -1;
-    }
-    if (setsid() == -1) {
-      girara_error("Could not start new process group: %s", strerror(errno));
-      return -1;
-    }
-#endif
   }
 
   /* Print version */
