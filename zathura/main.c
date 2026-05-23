@@ -219,16 +219,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
       GPid pid;
       GError* err = NULL;
-      if (!g_spawn_async_with_pipes_and_fds(
-            NULL, (const gchar* const*)spawn_argv, NULL,
-            G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
-            NULL, NULL,
-            -1, -1, -1,
-            NULL, NULL, 0,
-            &pid,
-            NULL, NULL, NULL,
-            &err)) {
-        girara_error(err->message);
+      if (!g_spawn_async(NULL, spawn_argv, NULL, G_SPAWN_DEFAULT, NULL, NULL, &pid, &err)) {
+        girara_error("Could not spawn: %s", err->message);
         g_error_free(err);
         g_strfreev(spawn_argv);
         return -1;
@@ -238,9 +230,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     }
     if (forkback == false) {
       for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
-        GPid p = (GPid)(intptr_t)girara_list_nth(child_pids, idx);
-        waitpid(p, NULL, 0);
-        g_spawn_close_pid(p);
+        waitpid((GPid)(intptr_t)girara_list_nth(child_pids, idx), NULL, 0);
       }
     }
     return 0;
@@ -272,15 +262,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     char** spawn_argv = (char**)g_ptr_array_free(arr, FALSE);
 
     GError* err = NULL;
-    if (!g_spawn_async_with_pipes_and_fds(
-          NULL, (const gchar* const*)spawn_argv, NULL,
-          G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
-          NULL, NULL,
-          -1, -1, -1,
-          NULL, NULL, 0,
-          NULL,
-          NULL, NULL, NULL,
-          &err)) {
+    if (!g_spawn_async(NULL, spawn_argv, NULL, G_SPAWN_DEFAULT, NULL, NULL, NULL, &err)) {
       girara_error("Could not spawn: %s", err->message);
       g_error_free(err);
       g_strfreev(spawn_argv);
