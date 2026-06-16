@@ -169,7 +169,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(writev);
 #endif
   /*  ALLOW_RULE(writev); X11 only */
-  /*  ALLOW_RULE(wait4); unused? */
+  ALLOW_RULE(wait4); /* used by SIGSTOP signal */
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
