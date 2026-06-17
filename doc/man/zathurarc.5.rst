@@ -1032,13 +1032,6 @@ The settings described here can be changed with ``set``.
   * Value type: Boolean
   * Default value: false
 
-*window-icon-document*
-  Defines whether the window document should be updated based on the first page of
-  a dcument.
-
-  * Value type: Boolean
-  * Default value: false
-
 *window-title-basename*
   Use basename of the file in the window title.
 

@@ -13,9 +13,8 @@ void widget_add_class(GtkWidget* widget, const char* styleclass) {
     return;
   }
 
-  GtkStyleContext* context = gtk_widget_get_style_context(widget);
-  if (gtk_style_context_has_class(context, styleclass) == FALSE) {
-    gtk_style_context_add_class(context, styleclass);
+  if (gtk_widget_has_css_class(widget, styleclass) == FALSE) {
+    gtk_widget_add_css_class(widget, styleclass);
   }
 }
 
@@ -24,8 +23,7 @@ void widget_remove_class(GtkWidget* widget, const char* styleclass) {
     return;
   }
 
-  GtkStyleContext* context = gtk_widget_get_style_context(widget);
-  if (gtk_style_context_has_class(context, styleclass) == TRUE) {
-    gtk_style_context_remove_class(context, styleclass);
+  if (gtk_widget_has_css_class(widget, styleclass) == TRUE) {
+    gtk_widget_remove_css_class(widget, styleclass);
   }
 }

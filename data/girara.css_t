@@ -11,6 +11,14 @@
 /* Inputbar */
 #@session@ entry.inputbar {
   background-color: @inputbar-bg@;
+  box-shadow: none;
+  outline: none;
+}
+
+/* gtk4 draws a focus ring on the entry that the generic .inputbar rule cannot override */
+#@session@ entry.inputbar:focus-within {
+  box-shadow: none;
+  outline: none;
 }
 
 #@session@ .inputbar {

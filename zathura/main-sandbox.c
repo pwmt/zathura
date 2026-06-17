@@ -23,14 +23,13 @@
 #endif
 
 static zathura_t* init_zathura(const char* config_dir, const char* data_dir, const char* cache_dir,
-                               const char* plugin_path, char** argv, Window embed) {
+                               const char* plugin_path, char** argv) {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
   if (zathura == NULL) {
     return NULL;
   }
 
-  zathura_set_xid(zathura, embed);
   zathura_set_config_dir(zathura, config_dir);
   zathura_set_data_dir(zathura, data_dir);
   zathura_set_cache_dir(zathura, cache_dir);
@@ -65,10 +64,84 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
     return NULL;
   }
 #endif
-  /* unset the input method to avoid communication with external services */
-  unsetenv("GTK_IM_MODULE");
 
   return zathura;
+}
+
+/* state shared between the application lifecycle callbacks */
+typedef struct {
+  const char* config_dir;
+  const char* data_dir;
+  const char* cache_dir;
+  const char* plugin_path;
+  const char* password;
+  const char* mode;
+  const char* bookmark_name;
+  const char* search_string;
+  /* file argument exactly as given on the command line */
+  const char* raw_file;
+  int page_number;
+  char** argv;
+  zathura_t* zathura;
+} zathura_app_ctx_t;
+
+static void cb_app_startup(GApplication* app, gpointer data) {
+  zathura_app_ctx_t* ctx = data;
+
+  ctx->zathura = init_zathura(ctx->config_dir, ctx->data_dir, ctx->cache_dir, ctx->plugin_path, ctx->argv);
+  if (ctx->zathura == NULL) {
+    girara_error("Could not initialize zathura.");
+    g_application_quit(app);
+    return;
+  }
+
+  gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(ctx->zathura->ui.session->gtk.window));
+}
+
+static void cb_app_activate(GApplication* UNUSED(app), gpointer data) {
+  /* present the window when the app starts without a file */
+  zathura_app_ctx_t* ctx = data;
+  if (ctx->zathura != NULL && ctx->zathura->ui.session != NULL && ctx->zathura->ui.session->gtk.window != NULL) {
+    gtk_window_present(GTK_WINDOW(ctx->zathura->ui.session->gtk.window));
+  }
+}
+
+static void cb_app_open(GApplication* UNUSED(app), GFile** files, gint n_files, const gchar* UNUSED(hint),
+                        gpointer data) {
+  zathura_app_ctx_t* ctx = data;
+  if (ctx->zathura == NULL || n_files < 1) {
+    return;
+  }
+
+  /* gfile turns a plain dash into an absolute path which breaks stdin so keep the raw argument */
+  g_autofree char* gfile_path = NULL;
+  const char* path            = NULL;
+  if (g_strcmp0(ctx->raw_file, "-") == 0) {
+    path = "-";
+  } else {
+    gfile_path = g_file_get_path(files[0]);
+    /* g_file_get_path returns NULL for non-local URIs; fall back to the raw argument */
+    path = gfile_path != NULL ? gfile_path : ctx->raw_file;
+  }
+  if (path == NULL) {
+    girara_error("Failed to determine path for the given file.");
+    return;
+  }
+
+  int page_number = ctx->page_number;
+  if (page_number > 0) {
+    --page_number;
+  }
+  document_open_idle(ctx->zathura, path, ctx->password, page_number, ctx->mode, NULL, ctx->bookmark_name,
+                     ctx->search_string);
+}
+
+static void cb_app_shutdown(GApplication* UNUSED(app), gpointer data) {
+  zathura_app_ctx_t* ctx = data;
+  if (ctx->zathura != NULL) {
+    zathura_free(ctx->zathura);
+    ctx->zathura = NULL;
+  }
 }
 
 /* main function */
@@ -88,10 +161,8 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   bool forkback                   = false;
   bool print_version              = false;
   int page_number                 = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-  Window embed                    = 0;
 
-  const GOptionEntry entries[] = {
-      {"reparent", 'e', 0, G_OPTION_ARG_INT, &embed, _("Reparents to window specified by xid (X11)"), "xid"},
+  GOptionEntry entries[] = {
       {"config-dir", 'c', 0, G_OPTION_ARG_FILENAME, &config_dir, _("Path to the config directory"), "path"},
       {"data-dir", 'd', 0, G_OPTION_ARG_FILENAME, &data_dir, _("Path to the data directory"), "path"},
       {"cache-dir", '\0', 0, G_OPTION_ARG_FILENAME, &cache_dir, _("Path to the cache directory"), "path"},
@@ -199,9 +270,10 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     zathura_plugin_manager_set_dir(plugin_manager, plugin_path);
     zathura_plugin_manager_load(plugin_manager);
 
-    g_autofree char* string = zathura_get_version_string(plugin_manager, false);
+    char* string = zathura_get_version_string(plugin_manager, false);
     if (string != NULL) {
       fprintf(stdout, "%s\n", string);
+      g_free(string);
     }
     zathura_plugin_manager_free(plugin_manager);
 
@@ -215,31 +287,55 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   /* disable dconf writing - uses /var/empty as alternative to /dev/null to avoid ioctl call */
   g_setenv("DCONF_PROFILE", "/var/empty", TRUE);
 
-  /* Initialize GTK+ */
-  gtk_init(&argc, &argv);
+  /* use the software renderer to avoid the gpu stack attack surface (and high risk syscalls) */
+  g_setenv("GSK_RENDERER", "cairo", TRUE);
 
-  /* Create zathura session */
-  g_autoptr(zathura_t) zathura = init_zathura(config_dir, data_dir, cache_dir, plugin_path, argv, embed);
-  if (zathura == NULL) {
-    girara_error("Could not initialize zathura.");
-    return -1;
-  }
+  /* unset the input method to avoid communication with external services */
+  unsetenv("GTK_IM_MODULE");
 
-  /* open document if passed */
-  if (file_idx != 0) {
-    if (page_number > 0) {
-      --page_number;
+  /* fail early so these errors still exit with an error status */
+  if (file_idx == 0) {
+    if (bookmark_name != NULL) {
+      girara_error("Can not use bookmark argument when no file is given");
+      return -1;
     }
-    document_open_idle(zathura, argv[file_idx], password, page_number, mode, NULL, bookmark_name, search_string);
-  } else if (bookmark_name != NULL) {
-    girara_error("Can not use bookmark argument when no file is given");
-    return -1;
-  } else if (search_string != NULL) {
-    girara_error("Can not use find argument when no file is given");
-    return -1;
+    if (search_string != NULL) {
+      girara_error("Can not use find argument when no file is given");
+      return -1;
+    }
   }
 
-  /* run zathura */
-  gtk_main();
-  return 0;
+  /* run zathura as a GtkApplication */
+  zathura_app_ctx_t ctx = {
+      .config_dir    = config_dir,
+      .data_dir      = data_dir,
+      .cache_dir     = cache_dir,
+      .plugin_path   = plugin_path,
+      .password      = password,
+      .mode          = mode,
+      .bookmark_name = bookmark_name,
+      .search_string = search_string,
+      .raw_file      = NULL,
+      .page_number   = page_number,
+      .argv          = argv,
+      .zathura       = NULL,
+  };
+
+  /* a NULL application id keeps the process non-unique and skips D-Bus registration */
+  g_autoptr(GtkApplication) app = gtk_application_new(NULL, G_APPLICATION_NON_UNIQUE | G_APPLICATION_HANDLES_OPEN);
+  g_signal_connect(app, "startup", G_CALLBACK(cb_app_startup), &ctx);
+  g_signal_connect(app, "activate", G_CALLBACK(cb_app_activate), &ctx);
+  g_signal_connect(app, "open", G_CALLBACK(cb_app_open), &ctx);
+  g_signal_connect(app, "shutdown", G_CALLBACK(cb_app_shutdown), &ctx);
+
+  /* feed g_application_run a minimal argv so it routes via open or activate */
+  char* run_argv[3] = {argv[0], NULL, NULL};
+  int run_argc      = 1;
+  if (file_idx != 0) {
+    ctx.raw_file = argv[file_idx];
+    run_argv[1]  = argv[file_idx];
+    run_argc     = 2;
+  }
+
+  return g_application_run(G_APPLICATION(app), run_argc, run_argv);
 }

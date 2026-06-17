@@ -1,13 +1,25 @@
 /* Index mode colors */
 
 #@session@ .indexmode {
+  background-color: @index-bg@;
+}
+
+#@session@ .indexmode row {
   color: @index-fg@;
   background-color: @index-bg@;
 }
 
-#@session@ .indexmode:selected {
+#@session@ .indexmode row:selected {
   color: @index-active-fg@;
   background-color: @index-active-bg@;
+}
+
+/* gtk4 draws a focus ring on the focused/selected row, like the inputbar entry */
+#@session@ .indexmode row:focus,
+#@session@ .indexmode row:focus-visible,
+#@session@ .indexmode row:selected {
+  outline: none;
+  box-shadow: none;
 }
 
 /* Scrollbar */

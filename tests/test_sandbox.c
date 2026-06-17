@@ -11,6 +11,11 @@
 
 #include "tests.h"
 
+#include <gtk/gtk.h>
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+#endif
+
 static void test_create(void) {
   setup_logger();
 
@@ -47,7 +52,7 @@ static void test_create(void) {
 int main(int argc, char* argv[]) {
   setup_logger();
 
-  gtk_init(NULL, NULL);
+  gtk_init();
   g_test_init(&argc, &argv, NULL);
   g_test_add_func("/sandbox/session_create", test_create);
   return g_test_run();

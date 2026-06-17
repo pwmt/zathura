@@ -72,7 +72,7 @@ static void test_settings_callback(void) {
 int main(int argc, char* argv[]) {
   setup_logger();
 
-  gtk_init(NULL, NULL);
+  gtk_init();
   g_test_init(&argc, &argv, NULL);
   g_test_add_func("/settings/basic", test_settings_basic);
   g_test_add_func("/settings/callback", test_settings_callback);

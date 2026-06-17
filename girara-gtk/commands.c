@@ -325,7 +325,7 @@ static bool girara_cmd_map_unmap(girara_session_t* session, girara_list_t* argum
         break;
       case 'A':
       case 'M':
-        shortcut_mask = GDK_MOD1_MASK;
+        shortcut_mask = GDK_ALT_MASK;
         break;
       case 'C':
         shortcut_mask = GDK_CONTROL_MASK;
@@ -834,9 +834,9 @@ bool girara_command_run(girara_session_t* session, const char* input) {
       girara_isc_abort(session, NULL, NULL, 0);
 
       if (session->global.autohide_inputbar == true) {
-        gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+        gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
       }
-      gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar_dialog));
+      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
       return true;
     }
   }
@@ -848,9 +848,9 @@ bool girara_command_run(girara_session_t* session, const char* input) {
       girara_isc_abort(session, NULL, NULL, 0);
 
       if (session->global.autohide_inputbar == true) {
-        gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+        gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
       }
-      gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar_dialog));
+      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
 
       return true;
     }

@@ -16,11 +16,11 @@
  * to TRUE at least one time.
  * */
 struct zathura_page_widget_s {
-  GtkDrawingArea parent;
+  GtkWidget parent;
 };
 
 struct zathura_page_widget_class_s {
-  GtkDrawingAreaClass parent_class;
+  GtkWidgetClass parent_class;
 };
 
 #define ZATHURA_TYPE_PAGE_WIDGET (zathura_page_widget_get_type())
@@ -105,5 +105,13 @@ void zathura_page_widget_set_size_request(ZathuraPageWidget* widget, int width, 
  * @param widget the widget
  */
 void zathura_page_widget_clear_thumbnail(ZathuraPageWidget* widget);
+
+/* scaled-button-release signal payload */
+typedef struct scaled_button_release_event_s {
+  double x;              /**< x in page coordinates */
+  double y;              /**< y in page coordinates */
+  guint button;          /**< button number */
+  GdkModifierType state; /**< modifier state */
+} scaled_button_release_event_t;
 
 #endif

@@ -6,6 +6,7 @@
 #include <girara/log.h>
 
 #include "adjustment.h"
+#include "callbacks.h"
 #include "page-widget.h"
 #include "page.h"
 #include "utils.h"
@@ -30,6 +31,10 @@ typedef struct zathura_document_widget_private_s {
   unsigned int first_page_column; /**< column of the first page */
   unsigned int page_v_padding;    /**< padding between pages */
   unsigned int page_h_padding;    /**< padding between pages */
+  int alloc_width;
+  int alloc_height;
+
+  GtkWidget* grid;
 
   /* Scrolling */
   GtkAdjustment* hadjustment;
@@ -38,17 +43,15 @@ typedef struct zathura_document_widget_private_s {
   GtkScrollablePolicy vscroll_policy;
 } ZathuraDocumentWidgetPrivate;
 
-G_DEFINE_TYPE_WITH_CODE(ZathuraDocumentWidget, zathura_document_widget, GTK_TYPE_CONTAINER,
+G_DEFINE_TYPE_WITH_CODE(ZathuraDocumentWidget, zathura_document_widget, GTK_TYPE_WIDGET,
                         G_ADD_PRIVATE(ZathuraDocumentWidget) G_IMPLEMENT_INTERFACE(GTK_TYPE_SCROLLABLE, NULL))
 
 static void zathura_document_widget_set_property(GObject* object, guint prop_id, const GValue* value,
                                                  GParamSpec* pspec);
 static void zathura_document_widget_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
-static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocation* allocation);
-static void zathura_document_widget_container_add(GtkContainer* container, GtkWidget* widget);
-static void zathura_document_widget_container_remove(GtkContainer* container, GtkWidget* widget);
-static void zathura_document_widget_container_forall(GtkContainer* container, gboolean include_internals,
-                                                     GtkCallback callback, gpointer user_data);
+static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, int height, int baseline);
+static void zathura_document_widget_measure(GtkWidget* widget, GtkOrientation orientation, int for_size, int* minimum,
+                                            int* natural, int* minimum_baseline, int* natural_baseline);
 static void zathura_document_widget_dispose(GObject* object);
 static void zathura_document_widget_finalize(GObject* object);
 
@@ -66,17 +69,13 @@ enum properties_e {
 static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* class) {
   GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(class);
   widget_class->size_allocate  = zathura_document_widget_size_allocate;
+  widget_class->measure        = zathura_document_widget_measure;
 
   GObjectClass* object_class = G_OBJECT_CLASS(class);
   object_class->set_property = zathura_document_widget_set_property;
   object_class->get_property = zathura_document_widget_get_property;
   object_class->dispose      = zathura_document_widget_dispose;
   object_class->finalize     = zathura_document_widget_finalize;
-
-  GtkContainerClass* container_class = GTK_CONTAINER_CLASS(class);
-  container_class->add               = zathura_document_widget_container_add;
-  container_class->remove            = zathura_document_widget_container_remove;
-  container_class->forall            = zathura_document_widget_container_forall;
 
   g_object_class_install_property(
       object_class, PROP_ZATHURA,
@@ -100,8 +99,6 @@ static void zathura_document_widget_class_init(ZathuraDocumentWidgetClass* class
 }
 
 static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
-  gtk_widget_set_has_window(GTK_WIDGET(widget), false);
-
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(widget);
 
   priv->zathura     = NULL;
@@ -110,6 +107,16 @@ static void zathura_document_widget_init(ZathuraDocumentWidget* widget) {
   priv->ncol        = 0;
   priv->row_heights = NULL;
   priv->col_widths  = NULL;
+
+  /* clip the offset grid like GtkViewport does; gtk4 widgets do not clip children by default */
+  gtk_widget_set_overflow(GTK_WIDGET(widget), GTK_OVERFLOW_HIDDEN);
+
+  priv->grid = gtk_grid_new();
+  gtk_grid_set_row_homogeneous(GTK_GRID(priv->grid), FALSE);
+  gtk_grid_set_column_homogeneous(GTK_GRID(priv->grid), FALSE);
+  gtk_widget_set_halign(priv->grid, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(priv->grid, GTK_ALIGN_CENTER);
+  gtk_widget_set_parent(priv->grid, GTK_WIDGET(widget));
 }
 
 GtkWidget* zathura_document_widget_new(zathura_t* zathura) {
@@ -169,6 +176,7 @@ static void zathura_document_widget_set_property(GObject* object, guint prop_id,
     break;
   case PROP_LAYOUT_MODE:
     priv->layout_mode = g_value_get_int(value);
+    zathura_document_widget_update_mode(document);
     gtk_widget_queue_allocate(GTK_WIDGET(document));
     break;
   case PROP_PAGES_RIGHT_TO_LEFT:
@@ -278,188 +286,145 @@ static void zathura_document_widget_arrange_grid(ZathuraDocumentWidget* widget) 
   zathura_document_widget_line_prefix_sum(priv->row_heights, nrow, page_v_padding);
 }
 
-static void document_adjustment(ZathuraDocumentWidget* document, int height, int width, int* adj_v, int* adj_h) {
+void zathura_document_widget_update_mode(ZathuraDocumentWidget* document) {
+  g_return_if_fail(document != NULL);
+
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-
-  const unsigned int value_v = gtk_adjustment_get_value(priv->vadjustment);
-  const unsigned int value_h = gtk_adjustment_get_value(priv->hadjustment);
-
-  unsigned int doc_height = 0, doc_width = 0;
-  zathura_document_widget_get_document_size(document, &doc_height, &doc_width);
-
-  const int center_v = (height - doc_height) / 2;
-  const int center_h = (width - doc_width) / 2;
-
-  // if document is smaller than allocation, center the document
-  *adj_v = ((int)doc_height < height) ? -center_v : (int)value_v;
-  *adj_h = ((int)doc_width < width) ? -center_h : (int)value_h;
-}
-
-/*
- * Calculate allocation for a single page
- *
- * If height or width is smaller than the allocation,
- * set the position to 0 and height/width to allocation
- * so the page centers that dimension. Otherwise,
- * use the document position, clamped to the page edges,
- * to offset the page position.
- *
- * @param document ZathuraDocumentWidget
- * @param page_id  index of the page in the document
- * @param height   allocation height
- * @param width    allocation width
- * @return page_alloc the final allocation
- */
-static void page_allocation(ZathuraDocumentWidget* document, int page_id, int height, int width,
-                            GtkAllocation* page_alloc) {
-  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-
-  unsigned int row = 0, col = 0;
-  zathura_document_widget_get_page_position(document, page_id, &row, &col);
-
-  const unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
-  const unsigned int y = row;
-
-  const int page_width  = priv->col_widths[x].size;
-  const int page_height = priv->row_heights[y].size;
-  const int value_h     = gtk_adjustment_get_value(priv->hadjustment) - priv->col_widths[x].pos;
-  const int value_v     = gtk_adjustment_get_value(priv->vadjustment) - priv->row_heights[y].pos;
-
-  /* clamp x and y offsets so we don't leave the page */
-  const int clamp_h = MAX(MIN(-value_h, 0), -(page_width - width));
-  const int clamp_v = MAX(MIN(-value_v, 0), -(page_height - height));
-
-  page_alloc->x      = ((int)page_width < width) ? 0 : clamp_h;
-  page_alloc->y      = ((int)page_height < height) ? 0 : clamp_v;
-  page_alloc->width  = MAX(page_width, width);
-  page_alloc->height = MAX(page_height, height);
-}
-
-static void size_allocate_grid(ZathuraDocumentWidget* document, GtkAllocation* allocation) {
-  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
-
-  const unsigned int npag = zathura_document_get_number_of_pages(z_document);
-
-  gtk_widget_show_all(GTK_WIDGET(document));
-
-  int adj_v, adj_h;
-  document_adjustment(document, allocation->height, allocation->width, &adj_v, &adj_h);
-
-  for (unsigned int i = 0; i < npag; i++) {
-    zathura_page_t* page   = zathura_document_get_page(z_document, i);
-    GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
-
-    unsigned int row;
-    unsigned int col;
-    zathura_document_widget_get_page_position(document, i, &row, &col);
-
-    unsigned int x = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
-    unsigned int y = row;
-
-    document_widget_line_s col_line = priv->col_widths[x];
-    document_widget_line_s row_line = priv->row_heights[y];
-
-    GtkAllocation page_alloc = {
-        .x      = col_line.pos - adj_h,
-        .y      = row_line.pos - adj_v,
-        .width  = col_line.size,
-        .height = row_line.size,
-    };
-
-    gtk_widget_size_allocate(page_widget, &page_alloc);
+  zathura_document_t* z_document     = priv->zathura != NULL ? zathura_get_document(priv->zathura) : NULL;
+  if (z_document == NULL || priv->grid == NULL) {
+    return;
   }
-}
 
-static void size_allocate_single_page(ZathuraDocumentWidget* document, GtkAllocation* allocation) {
-  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  zathura_document_t* z_document     = zathura_get_document(priv->zathura);
-
+  const bool single          = priv->layout_mode == DOCUMENT_WIDGET_SINGLE;
   const unsigned int npag    = zathura_document_get_number_of_pages(z_document);
   const unsigned int page_id = zathura_document_get_current_page_number(z_document);
 
-  GtkAllocation page_alloc;
-  page_allocation(document, page_id, allocation->height, allocation->width, &page_alloc);
-
   for (unsigned int i = 0; i < npag; i++) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
-
-    gtk_widget_set_visible(page_widget, page_id == i);
-
-    if (i == page_id) {
-      gtk_widget_size_allocate(page_widget, &page_alloc);
+    if (page_widget != NULL) {
+      gtk_widget_set_visible(page_widget, single == false || i == page_id);
     }
   }
+
+  if (single == true) {
+    gtk_adjustment_set_value(priv->hadjustment, 0);
+    gtk_adjustment_set_value(priv->vadjustment, 0);
+  } else {
+    zathura_document_widget_compute_layout(document);
+  }
+
+  gtk_widget_queue_resize(GTK_WIDGET(document));
 }
 
-static void zathura_document_widget_size_allocate(GtkWidget* widget, GtkAllocation* allocation) {
-  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(widget);
+static void size_allocate_single(ZathuraDocumentWidget* document, int width, int height, int baseline) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
-  if (z_document == NULL || priv->zathura == NULL) {
+  zathura_page_t* page = zathura_document_get_page(z_document, zathura_document_get_current_page_number(z_document));
+  if (page == NULL) {
     return;
   }
 
-  gtk_adjustment_set_page_size(priv->hadjustment, allocation->width);
-  gtk_adjustment_set_page_size(priv->vadjustment, allocation->height);
+  unsigned int page_width = 0, page_height = 0;
+  page_calc_height_width(z_document, page, &page_height, &page_width, true);
 
-  zathura_document_set_viewport_height(z_document, allocation->height);
-  zathura_document_set_viewport_width(z_document, allocation->width);
-
-  adjust_view(priv->zathura);
-
-  /* allocate pages */
-  switch (priv->layout_mode) {
-  case DOCUMENT_WIDGET_GRID:
-    size_allocate_grid(document, allocation);
-    break;
-  case DOCUMENT_WIDGET_SINGLE:
-    size_allocate_single_page(document, allocation);
-    break;
-  default:
-    girara_error("unknown layout mode");
+  if ((int)gtk_adjustment_get_upper(priv->hadjustment) != (int)page_width) {
+    gtk_adjustment_set_upper(priv->hadjustment, page_width);
+  }
+  if ((int)gtk_adjustment_get_upper(priv->vadjustment) != (int)page_height) {
+    gtk_adjustment_set_upper(priv->vadjustment, page_height);
   }
 
-  GTK_WIDGET_CLASS(zathura_document_widget_parent_class)->size_allocate(widget, allocation);
+  const int value_h = gtk_adjustment_get_value(priv->hadjustment);
+  const int value_v = gtk_adjustment_get_value(priv->vadjustment);
+  const int clamp_h = MAX(MIN(-value_h, 0), -((int)page_width - width));
+  const int clamp_v = MAX(MIN(-value_v, 0), -((int)page_height - height));
+
+  const int x = ((int)page_width < width) ? (width - (int)page_width) / 2 : clamp_h;
+  const int y = ((int)page_height < height) ? (height - (int)page_height) / 2 : clamp_v;
+
+  gtk_widget_size_allocate(
+      priv->grid, &(GtkAllocation){.x = x, .y = y, .width = (int)page_width, .height = (int)page_height}, baseline);
 }
 
-/* container class funcs */
+static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, int height, int baseline) {
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(widget);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  zathura_document_t* z_document     = priv->zathura ? zathura_get_document(priv->zathura) : NULL;
 
-static void zathura_document_widget_container_add(GtkContainer* container, GtkWidget* widget) {
-  GtkWidget* parent = gtk_widget_get_parent(widget);
-  if (parent != NULL) {
-    girara_warning("page widget is already added to a document widget");
-    return;
+  bool size_changed = false;
+
+  if (z_document != NULL) {
+    size_changed       = width != priv->alloc_width || height != priv->alloc_height;
+    priv->alloc_width  = width;
+    priv->alloc_height = height;
   }
 
-  gtk_widget_set_parent(widget, GTK_WIDGET(container));
+  if (z_document != NULL) {
+    if (size_changed == true) {
+      zathura_document_set_viewport_height(z_document, height);
+      zathura_document_set_viewport_width(z_document, width);
+      adjust_view(priv->zathura);
+    }
+    update_visible_pages(priv->zathura);
+  }
+
+  /* set the page size after adjust_view so the changed handler stores the position against the
+   * final document height and the view stays at the top on first open */
+  if (priv->grid != NULL && size_changed == true) {
+    gtk_adjustment_set_page_size(priv->hadjustment, width);
+    gtk_adjustment_set_page_size(priv->vadjustment, height);
+    gtk_adjustment_set_page_increment(priv->hadjustment, width * 0.9);
+    gtk_adjustment_set_page_increment(priv->vadjustment, height * 0.9);
+  }
+
+  if (priv->grid != NULL) {
+    /* position the grid by the adjustment values so navigation moves the view */
+    /* read natural size from arrange_grid totals to avoid measuring during size_allocate */
+    unsigned int doc_w = 0, doc_h = 0;
+    if (priv->col_widths != NULL && priv->row_heights != NULL && priv->nrow > 0 && priv->ncol > 0) {
+      zathura_document_widget_get_document_size(document, &doc_h, &doc_w);
+    }
+
+    const int alloc_w = MAX(width, (int)doc_w);
+    const int alloc_h = MAX(height, (int)doc_h);
+
+    if (priv->layout_mode == DOCUMENT_WIDGET_SINGLE && z_document != NULL) {
+      size_allocate_single(document, width, height, baseline);
+      return;
+    }
+
+    const int x = -(int)gtk_adjustment_get_value(priv->hadjustment);
+    const int y = -(int)gtk_adjustment_get_value(priv->vadjustment);
+    gtk_widget_size_allocate(priv->grid, &(GtkAllocation){.x = x, .y = y, .width = alloc_w, .height = alloc_h},
+                             baseline);
+  }
 }
 
-static void zathura_document_widget_container_remove(GtkContainer* UNUSED(container), GtkWidget* widget) {
-  gtk_widget_unparent(widget);
-}
-
-static void zathura_document_widget_container_forall(GtkContainer* container, gboolean UNUSED(include_internals),
-                                                     GtkCallback callback, gpointer user_data) {
-  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(container);
+static void zathura_document_widget_measure(GtkWidget* widget, GtkOrientation orientation, int for_size, int* minimum,
+                                            int* natural, int* minimum_baseline, int* natural_baseline) {
+  ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(widget);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
-  zathura_document_t* z_document = zathura_get_document(priv->zathura);
-  unsigned int npag              = zathura_document_get_number_of_pages(z_document);
-
-  for (unsigned int i = 0; i < npag; i++) {
-    zathura_page_t* page   = zathura_document_get_page(z_document, i);
-    GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
-
-    callback(page_widget, user_data);
+  if (priv->grid != NULL) {
+    gtk_widget_measure(priv->grid, orientation, for_size, minimum, natural, minimum_baseline, natural_baseline);
+    return;
+  }
+  *minimum = *natural = 0;
+  if (minimum_baseline != NULL) {
+    *minimum_baseline = -1;
+  }
+  if (natural_baseline != NULL) {
+    *natural_baseline = -1;
   }
 }
 
 static void zathura_document_widget_dispose(GObject* object) {
   ZathuraDocumentWidget* document    = ZATHURA_DOCUMENT_WIDGET(object);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+
+  g_clear_pointer(&priv->grid, gtk_widget_unparent);
 
   g_clear_object(&priv->hadjustment);
   g_clear_object(&priv->vadjustment);
@@ -484,6 +449,8 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  priv->alloc_width                  = -1;
+  priv->alloc_height                 = -1;
   zathura_document_t* z_document     = zathura_get_document(priv->zathura);
 
   const unsigned int c0   = priv->first_page_column;
@@ -507,19 +474,37 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   priv->ncol = ncol;
   priv->nrow = nrow;
 
-  // parent all page widgets to the document widget
   for (unsigned int i = 0; i < npag; i++) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
+    if (page_widget == NULL) {
+      continue;
+    }
 
-    gtk_widget_unparent(page_widget);
-    gtk_container_add(GTK_CONTAINER(document), page_widget);
+    GtkWidget* parent = gtk_widget_get_parent(page_widget);
+    if (parent == priv->grid) {
+      gtk_grid_remove(GTK_GRID(priv->grid), page_widget);
+    } else if (parent != NULL) {
+      gtk_widget_unparent(page_widget);
+    }
+
+    unsigned int row = 0;
+    unsigned int col = 0;
+    zathura_document_widget_get_page_position(document, i, &row, &col);
+    unsigned int x  = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
+    GtkAlign halign = priv->ncol == 1 ? GTK_ALIGN_CENTER : (x == 0 ? GTK_ALIGN_END : GTK_ALIGN_START);
+    gtk_widget_set_halign(page_widget, halign);
+    gtk_grid_attach(GTK_GRID(priv->grid), page_widget, (int)x, (int)row, 1, 1);
   }
 
   zathura_document_widget_compute_layout(document);
 
   gtk_widget_set_visible(GTK_WIDGET(document), true);
+  zathura_document_widget_update_mode(document);
   gtk_widget_queue_resize(GTK_WIDGET(document));
+
+  /* the cached visibility flags are stale after pages move */
+  update_visible_pages(priv->zathura);
 }
 
 void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
@@ -680,6 +665,9 @@ void zathura_document_widget_render_all(ZathuraDocumentWidget* document) {
     return;
   }
 
+  priv->alloc_width  = -1;
+  priv->alloc_height = -1;
+
   zathura_document_widget_compute_layout(document);
 
   /* unmark all pages */
@@ -709,6 +697,13 @@ void zathura_document_widget_set_page_layout(ZathuraDocumentWidget* document, un
   priv->page_v_padding = page_v_padding;
   priv->page_h_padding = page_h_padding;
   priv->pages_per_row  = pages_per_row;
+
+  /* keep grid spacing in sync with the padding arrange_grid uses */
+  /* otherwise position_to_page_number reads stale positions and navigation jumps */
+  if (priv->grid != NULL) {
+    gtk_grid_set_row_spacing(GTK_GRID(priv->grid), page_v_padding);
+    gtk_grid_set_column_spacing(GTK_GRID(priv->grid), page_h_padding);
+  }
 
   if (first_page_column < 1) {
     first_page_column = 1;

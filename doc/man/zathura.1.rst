@@ -4,7 +4,7 @@ Manpage
 Synopsis
 --------
 
-zathura [-e XID] [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
+zathura [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
 [--fork] [-l LEVEL] [-s] [-x CMD] [--synctex-forward INPUT] [--synctex-pid PID]
 [-find STRING]
 <files>
@@ -22,9 +22,6 @@ given, an empty **zathura** instance launches.
 
 Options
 -------
-
--e, --reparent=xid
-  Reparents to window specified by xid
 
 -c, --config-dir=path
   Path to the config directory

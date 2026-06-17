@@ -262,7 +262,7 @@ static void synctex_highlight_rects_idle(zathura_t* zathura, girara_list_t** rec
   data->page            = page;
   data->number_of_pages = number_of_pages;
 
-  gdk_threads_add_idle(synctex_highlight_rects_impl, data);
+  g_idle_add(synctex_highlight_rects_impl, data);
 }
 
 static void handle_highlight_rects(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
@@ -376,7 +376,7 @@ static void synctex_view_idle(zathura_t* zathura, gchar* input_file, unsigned in
   data->line       = line;
   data->column     = column;
 
-  gdk_threads_add_idle(synctex_view_impl, data);
+  g_idle_add(synctex_view_impl, data);
 }
 
 static void handle_synctex_view(zathura_t* zathura, GVariant* parameters, GDBusMethodInvocation* invocation) {
@@ -456,7 +456,7 @@ static void handle_method_call(GDBusConnection* UNUSED(connection), const gchar*
 
     (*handlers[idx].handler)(priv->zathura, parameters, invocation);
 
-    if (handlers[idx].present_window == true && priv->zathura->ui.session->gtk.embed == 0) {
+    if (handlers[idx].present_window == true) {
       bool present_window = true;
       girara_setting_get(priv->zathura->ui.session, "dbus-raise-window", &present_window);
       if (present_window == true) {

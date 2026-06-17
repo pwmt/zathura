@@ -39,7 +39,7 @@ static void test_create(void) {
 int main(int argc, char* argv[]) {
   setup_logger();
 
-  gtk_init(NULL, NULL);
+  gtk_init();
   g_test_init(&argc, &argv, NULL);
   g_test_add_func("/girara/session/create", test_girara_create);
   g_test_add_func("/girara/session/init", test_girara_init);

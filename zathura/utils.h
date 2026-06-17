@@ -26,30 +26,27 @@ typedef struct page_offset_s {
 bool file_valid_extension(zathura_t* zathura, const char* path);
 
 /**
- * Generates the document index based upon the list retrieved from the document
- * object.
+ * build a tree of index elements from the document outline
  *
  * @param session The session
- * @param model The tree model
- * @param parent The tree iterator parent
- * @param tree The Tree iterator
+ * @param tree the document index tree
+ * @return root list model of ZathuraIndexElement objects
  */
-void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent,
-                          girara_tree_node_t* tree);
+/* GObject wrapping zathura_index_element_t so it can live in a GListModel */
+#define ZATHURA_TYPE_INDEX_ELEMENT_OBJECT (zathura_index_element_object_get_type())
+G_DECLARE_FINAL_TYPE(ZathuraIndexElementObject, zathura_index_element_object, ZATHURA, INDEX_ELEMENT_OBJECT, GObject)
 
-/**
- * A custom search equal function for the index tree view, so that
- * when interactively searching, the string will be recursively compared
- * to all the children of visible entries
- *
- * @param model The tree model
- * @param column The column of the entry
- * @param key The keyword to be compared
- * @param iter The tree iterator
- * @param search_data User data pointer
- */
-gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,
-                                 gpointer search_data);
+struct _ZathuraIndexElementObject {
+  GObject parent_instance;
+  char* title;                      /* escaped markup for column 1 */
+  char* page_label;                 /* primary page string for column 2 */
+  char* page_alt;                   /* alt page string for column 3 */
+  zathura_index_element_t* element; /* link target */
+  GListStore* children;             /* NULL for leaves */
+};
+
+GListModel* document_index_build_model(girara_session_t* session, girara_tree_node_t* tree);
+
 /**
  * Scrolls the document index to the current page
  *
@@ -97,14 +94,13 @@ void document_draw_search_results(zathura_t* zathura, bool value);
 char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager, bool markup);
 
 /**
- * Get a pointer to the GdkAtom of the current clipboard.
+ * Get a pointer to the GdkClipboard of the current clipboard.
  *
  * @param zathura The zathura instance
  *
- * @return A pointer to a GdkAtom object correspoinding to the current
- * clipboard, or NULL.
+ * @return the current GdkClipboard, or NULL
  */
-GdkAtom* get_selection(zathura_t* zathura);
+GdkClipboard* get_selection(zathura_t* zathura);
 
 /**
  * Returns the valid zoom value which needs to lie in the interval of zoom_min

@@ -10,11 +10,11 @@
  * The document view widget.
  */
 struct zathura_document_widget_s {
-  GtkContainer parent;
+  GtkWidget parent;
 };
 
 struct zathura_document_widget_class_s {
-  GtkContainerClass parent_class;
+  GtkWidgetClass parent_class;
 };
 
 #define ZATHURA_TYPE_DOCUMENT_WIDGET (zathura_document_widget_get_type())
@@ -49,6 +49,8 @@ GtkWidget* zathura_document_widget_new(zathura_t* zathura);
  * @param document ZathuraDocumentWidget
  */
 void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document);
+
+void zathura_document_widget_update_mode(ZathuraDocumentWidget* document);
 
 /**
  * Calculate the position of each grid cell.

@@ -139,7 +139,7 @@ static void cb_global_modifiers_changed(girara_session_t* session, const char* n
   } else if (g_strcmp0(modifier, "ctrl") == 0) {
     *p = GDK_CONTROL_MASK;
   } else if (g_strcmp0(modifier, "alt") == 0) {
-    *p = GDK_MOD1_MASK;
+    *p = GDK_ALT_MASK;
   } else {
     girara_error("Invalid %s option: '%s'", name, modifier);
   }
@@ -257,18 +257,18 @@ static void cb_guioptions(girara_session_t* session, const char* UNUSED(name), g
   /* apply settings */
   if (show_commandline == true) {
     session->global.autohide_inputbar = false;
-    gtk_widget_show(session->gtk.inputbar);
+    gtk_widget_set_visible(session->gtk.inputbar, TRUE);
   } else {
     session->global.autohide_inputbar = true;
-    gtk_widget_hide(session->gtk.inputbar);
+    gtk_widget_set_visible(session->gtk.inputbar, FALSE);
   }
 
   if (show_statusbar == true) {
     session->global.hide_statusbar = false;
-    gtk_widget_show(session->gtk.statusbar);
+    gtk_widget_set_visible(session->gtk.statusbar, TRUE);
   } else {
     session->global.hide_statusbar = true;
-    gtk_widget_hide(session->gtk.statusbar);
+    gtk_widget_set_visible(session->gtk.statusbar, FALSE);
   }
 }
 
@@ -314,10 +314,10 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
 
   girara_shortcut_add(gsession, 0, GDK_KEY_J, NULL, sc_navigate, mode, NEXT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_K, NULL, sc_navigate, mode, PREVIOUS, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Right, NULL, sc_navigate, mode, NEXT, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Right, NULL, sc_navigate, mode, NEXT, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Left, NULL, sc_navigate, mode, PREVIOUS, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Left, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_Right, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_KP_Right, NULL, sc_navigate, mode, NEXT, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_Left, NULL, sc_navigate, mode, PREVIOUS, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_KP_Left, NULL, sc_navigate, mode, PREVIOUS, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_Page_Down, NULL, sc_navigate, mode, NEXT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_KP_Page_Down, NULL, sc_navigate, mode, NEXT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_Page_Up, NULL, sc_navigate, mode, PREVIOUS, NULL);
@@ -349,12 +349,12 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, GDK_KEY_KP_Right, NULL, sc_scroll, mode, RIGHT, NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_t, NULL, sc_scroll, mode, HALF_LEFT, NULL);
 
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_k, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_j, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Up, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Up, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_Down, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_KP_Down, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_k, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_j, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_Up, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_KP_Up, NULL, sc_scroll, mode, PARTIAL_UP, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_Down, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_KP_Down, NULL, sc_scroll, mode, PARTIAL_DOWN, NULL);
 
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_d, NULL, sc_scroll, mode, HALF_DOWN, NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_u, NULL, sc_scroll, mode, HALF_UP, NULL);
@@ -397,7 +397,7 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, 0, "zz", sc_zoom, mode, ZOOM_SPECIFIC, NULL);
   girara_shortcut_add(gsession, 0, 0, "zZ", sc_zoom, mode, ZOOM_SPECIFIC, NULL);
 
-  girara_shortcut_add(gsession, GDK_MOD1_MASK, GDK_KEY_o, NULL, sc_file_chooser, mode, 0, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_o, NULL, sc_file_chooser, mode, 0, NULL);
 }
 
 static void add_default_mouse_events(girara_session_t* gsession, girara_mode_t mode) {
@@ -584,8 +584,6 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "window-title-home-tilde",    &bool_value,  BOOLEAN, false, _("Use ~ instead of $HOME in the filename in the window title"), cb_window_statbusbar_changed, NULL);
   bool_value = false;
   girara_setting_add(gsession, "window-title-page",          &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), cb_window_statbusbar_changed, NULL);
-  bool_value = false;
-  girara_setting_add(gsession, "window-icon-document",       &bool_value,  BOOLEAN, false, _("Use first page of a document as window icon"), NULL, NULL);
   bool_value = false;
   girara_setting_add(gsession, "statusbar-basename",         &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), cb_window_statbusbar_changed, NULL);
   bool_value = false;

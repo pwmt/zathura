@@ -9,12 +9,6 @@
 #include <girara/log.h>
 #include <gtk/gtk.h>
 
-#ifdef GDK_WINDOWING_X11
-#include <gtk/gtkx.h>
-#else
-typedef int Window;
-#endif
-
 struct girara_session_s {
   girara_session_private_t* private_data; /**< Private data of a girara session */
   GiraraInputHistory* command_history;    /**< Command history */
@@ -32,7 +26,6 @@ struct girara_session_s {
     GtkLabel* inputbar_dialog;    /**< Inputbar dialog */
     GtkEntry* inputbar_entry;     /**< Inputbar entry */
     GtkBox* results;              /**< Completion results */
-    Window embed;                 /**< Embedded window */
   } gtk;
 
   struct {
@@ -60,13 +53,7 @@ struct girara_session_s {
     girara_callback_inputbar_key_press_event_t inputbar_custom_key_press_event; /**< Custom handler */
     void* inputbar_custom_data;                                                 /**< Data for custom handler */
     int inputbar_activate;                                                      /**< Inputbar activation */
-    int inputbar_key_pressed;                                                   /**< Pressed key in inputbar */
     int inputbar_changed;                                                       /**< Inputbar text changed */
-    int view_key_pressed;                                                       /**< Pressed key in view */
-    int view_button_press_event;                                                /**< Pressed button */
-    int view_button_release_event;                                              /**< Released button */
-    int view_motion_notify_event;                                               /**< Cursor movement event */
-    int view_scroll_event;                                                      /**< Scroll event */
   } signals;
 
   struct {

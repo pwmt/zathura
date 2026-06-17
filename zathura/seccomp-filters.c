@@ -16,8 +16,9 @@
 #include <sys/ioctl.h>   /* for TIOCSTI */
 #include <termios.h>
 
+#include <gtk/gtk.h>
 #ifdef GDK_WINDOWING_X11
-#include <gtk/gtkx.h>
+#include <gdk/x11/gdkx.h>
 #endif
 
 #define ADD_RULE(str_action, action, call, ...)                                                                        \

@@ -10,6 +10,7 @@
 #include "internal.h"
 #include "document.h"
 #include "zathura.h"
+#include "page-widget.h"
 
 /**
  * Quits the current zathura session
@@ -80,47 +81,6 @@ void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
- * This function gets called when the monitors associated with the GdkScreen
- * change.
- *
- * It checks for a change of monitor PPI, storing the new value and triggering
- * a refresh if appropriate.
- *
- * @param screen The GDK screen
- * @param gpointer The zathura instance
- */
-void cb_monitors_changed(GdkScreen* screen, gpointer data);
-
-/**
- * This function gets called when the screen associated with the view widget
- * changes.
- *
- * It updates the connection on the monitors-changed signal and checks for a
- * change of monitor PPI, storing the new value and triggering a refresh if
- * appropriate.
- *
- * @param widget The view widget
- * @param previous_screen The widget's previous screen
- * @param gpointer The zathura instance
- */
-void cb_widget_screen_changed(GtkWidget* widget, GdkScreen* previous_screen, gpointer data);
-
-/**
- * This function gets called when the main window's size, position or stacking
- * changes.
- *
- * It checks for a change of monitor PPI (due to the window moving between
- * different monitors), storing the new value and triggering a refresh if
- * appropriate.
- *
- * @param widget The main window widget
- * @param event The configure event
- * @param gpointer The zathura instance
- * @return true if no error occurred and the event has been handled
- */
-gboolean cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data);
-
-/**
  * This function gets called when the view widget scale factor changes (e.g.
  * when moving from a regular to a HiDPI screen).
  *
@@ -131,6 +91,20 @@ gboolean cb_widget_configured(GtkWidget* widget, GdkEvent* event, gpointer data)
  * @param gpointer The zathura instance
  */
 void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
+
+/**
+ * This function gets called when the monitor configuration changes (e.g.
+ * a monitor is plugged in or unplugged).
+ *
+ * It re-evaluates the view PPI to keep rendering accurate.
+ *
+ * @param model The GListModel of monitors
+ * @param position The position of the first changed monitor
+ * @param removed The number of removed monitors
+ * @param added The number of added monitors
+ * @param data The zathura instance
+ */
+void cb_monitors_changed(GListModel* model, guint position, guint removed, guint added, gpointer data);
 
 /**
  * This function gets called when the value of the "pages-per-row"
@@ -148,12 +122,11 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
 /**
  * Called when an index element is activated (e.g.: double click)
  *
- * @param tree_view Tree view
- * @param path Path
- * @param column Column
- * @param zathura Zathura session
+ * @param view The index list view
+ * @param position Row position within the selection model
+ * @param data Zathura session
  */
-void cb_index_row_activated(GtkTreeView* tree_view, GtkTreePath* path, GtkTreeViewColumn* column, void* zathura);
+void cb_index_row_activated(GtkListView* view, guint position, void* data);
 
 /**
  * Called when input has been passed to the sc_follow dialog
@@ -256,18 +229,13 @@ bool cb_unknown_command(girara_session_t* session, const char* input);
  */
 void cb_page_widget_text_selected(ZathuraPageWidget* page, const char* text, void* data);
 
-void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkPixbuf* pixbuf, void* data);
+void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkTexture* texture, void* data);
 
-void cb_page_widget_scaled_button_release(ZathuraPageWidget* page, GdkEventButton* event, void* data);
+void cb_page_widget_scaled_button_release(ZathuraPageWidget* page, scaled_button_release_event_t* event, void* data);
 
 void cb_page_widget_link(ZathuraPageWidget* page, void* data);
 
 void update_visible_pages(zathura_t* zathura);
-
-/**
- * Update window icon from cairo surface.
- */
-void cb_window_update_icon(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 
 void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* data);
 

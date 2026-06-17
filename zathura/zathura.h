@@ -10,9 +10,6 @@
 #ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>
 #endif
-#ifdef GDK_WINDOWING_X11
-#include <gtk/gtkx.h>
-#endif
 #include "macros.h"
 #include "types.h"
 #include "jumplist.h"
@@ -150,7 +147,7 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
-    GtkTreePath* current_index_path;      /**< Current index path */
+    guint current_index_position;         /**< current row in index */
     int current_search_result;
     int total_search_results;
   } global;
@@ -174,21 +171,20 @@ struct zathura_s {
 #ifdef G_OS_UNIX
     guint sigterm;
 #endif
-
-    gulong monitors_changed_handler; /**< Signal handler for monitors-changed */
+    gulong monitors_handler; /**< Signal handler for monitors items-changed */
+    gulong destroy_handler;  /**< Signal handler for the window's destroy signal */
   } signals;
 
   struct {
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document;                     /**< The current document */
-  zathura_document_t* predecessor_document;         /**< The document from before a reload */
-  GtkWidget** pages;                                /**< The page widgets */
-  GtkWidget** predecessor_pages;                    /**< The page widgets from before a reload */
-  zathura_database_t* database;                     /**< The database */
-  ZathuraDbus* dbus;                                /**< D-Bus service */
-  ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
+  zathura_document_t* document;             /**< The current document */
+  zathura_document_t* predecessor_document; /**< The document from before a reload */
+  GtkWidget** pages;                        /**< The page widgets */
+  GtkWidget** predecessor_pages;            /**< The page widgets from before a reload */
+  zathura_database_t* database;             /**< The database */
+  ZathuraDbus* dbus;                        /**< D-Bus service */
 
   /**
    * File monitor
@@ -273,15 +269,6 @@ bool zathura_init(zathura_t* zathura);
 void zathura_free(zathura_t* zathura);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_t, zathura_free)
-
-/**
- * Set parent window id. This does not have an effect if the underlying Gtk
- * backend is not X11.
- *
- * @param zathura The zathura session
- * @param xid The window id
- */
-void zathura_set_xid(zathura_t* zathura, Window xid);
 
 /**
  * Set the path to the configuration directory

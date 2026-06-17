@@ -88,7 +88,7 @@ static void test_config_parse(void) {
 int main(int argc, char* argv[]) {
   setup_logger();
 
-  gtk_init(NULL, NULL);
+  gtk_init();
   g_test_init(&argc, &argv, NULL);
   g_test_add_func("/config/parse", test_config_parse);
   g_test_add_func("/config/parse_modifier_keys", test_config_parse_modifier_keys);

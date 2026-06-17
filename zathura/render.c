@@ -893,6 +893,41 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   return true;
 }
 
+/* render a page synchronously and return its surface */
+cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page) {
+  g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer) == TRUE, NULL);
+  g_return_val_if_fail(page != NULL, NULL);
+
+  ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
+  zathura_document_t* document = zathura_page_get_document(page);
+
+  unsigned int page_width = 0, page_height = 0;
+  const double real_scale = page_calc_height_width(document, page, &page_height, &page_width, false);
+
+  const zathura_device_factors_t device_factors = zathura_document_get_device_factors(document);
+  page_width *= device_factors.x;
+  page_height *= device_factors.y;
+
+  const cairo_format_t format = priv->recolor.enabled ? CAIRO_FORMAT_ARGB32 : CAIRO_FORMAT_RGB24;
+  cairo_surface_t* surface    = cairo_image_surface_create(format, page_width, page_height);
+  cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
+  if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+    cairo_surface_destroy(surface);
+    return NULL;
+  }
+
+  if (render_to_cairo_surface(surface, page, renderer, real_scale) != true) {
+    cairo_surface_destroy(surface);
+    return NULL;
+  }
+
+  if (priv->recolor.enabled == true) {
+    recolor(priv, page, page_width, page_height, surface, device_factors);
+  }
+
+  return surface;
+}
+
 static void render_job(void* data, void* user_data) {
   render_job_t* job             = data;
   ZathuraRenderRequest* request = job->request;

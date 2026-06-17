@@ -48,18 +48,13 @@ glib = dependency('glib-2.0', version: '>=2.76')
 gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
 gthread = dependency('gthread-2.0', version: '>=2.72')
 gmodule = dependency('gmodule-no-export-2.0', version: '>=2.72')
-gtk3 = dependency('gtk+-3.0', version: '>=3.24')
+gtk4 = dependency('gtk4', version: '>=4.12', include_type: 'system')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = dependency('libmagic')
 sqlite = dependency('sqlite3', version: '>=3.6.23')
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
-
-if host_machine.system() == 'darwin'
-  gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
-  build_dependencies += gtk_mac_integration
-endif
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk4, cairo, magic, json_glib]
 
 # defines
 defines = [
@@ -229,7 +224,7 @@ pkg.generate(
   description: 'document viewer - plugin API',
   url: 'https://pwmt.org/projects/zathura',
   version: version,
-  requires: ['girara', 'gtk+-3.0', 'cairo'],
+  requires: ['girara', 'gtk4', 'cairo'],
   variables: [
     'apiversion=@0@'.format(plugin_api_version),
     'abiversion=@0@'.format(plugin_abi_version),

@@ -8,7 +8,8 @@
 #include "internal.h"
 #include "settings.h"
 
-girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool fill, bool left) {
+girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool UNUSED(fill),
+                                                   bool left) {
   g_return_val_if_fail(session != NULL, NULL);
 
   girara_session_private_t* session_private = session->private_data;
@@ -33,8 +34,9 @@ girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bo
   }
 
   /* add it to the list */
-  gtk_box_pack_start(session->gtk.statusbar_entries, GTK_WIDGET(item->text), expand, fill, 0);
-  gtk_widget_show_all(GTK_WIDGET(item->text));
+  gtk_widget_set_hexpand(GTK_WIDGET(item->text), expand);
+  gtk_box_append(session->gtk.statusbar_entries, GTK_WIDGET(item->text));
+  gtk_widget_set_visible(GTK_WIDGET(item->text), TRUE);
 
   girara_list_append(session_private->elements.statusbar_items, item);
   return item;

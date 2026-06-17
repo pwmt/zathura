@@ -38,6 +38,10 @@ GType zathura_renderer_get_type(void) G_GNUC_CONST;
  */
 ZathuraRenderer* zathura_renderer_new(size_t cache_size);
 
+/* Render a page synchronously through the same locked path as the render thread.
+ * The caller owns the returned surface and must destroy it. */
+cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page);
+
 /**
  * Return whether recoloring is enabled.
  * @param renderer a renderer object

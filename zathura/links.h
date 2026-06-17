@@ -72,6 +72,6 @@ void zathura_link_display(zathura_t* zathura, zathura_link_t* link);
  * @param link The link
  * @param selection target clipboard
  */
-void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* selection);
+void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkClipboard* selection);
 
 #endif // LINK_H
