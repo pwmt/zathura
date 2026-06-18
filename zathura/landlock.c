@@ -12,6 +12,10 @@
 #include <errno.h>
 #include <girara/log.h>
 #include <girara/utils.h>
+#include <gtk/gtk.h>
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+#endif
 
 #ifndef landlock_create_ruleset
 static inline int landlock_create_ruleset(const struct landlock_ruleset_attr* const attr, const size_t size,
@@ -37,9 +41,11 @@ static inline int landlock_restrict_self(const int ruleset_fd, const __u32 flags
 #define LANDLOCK_RESTRICT_SELF_TSYNC (1U << 3)
 #endif
 
-static int landlock_drop(__u64 fs_access, int abi) {
+static int landlock_drop(__u64 fs_access, __u64 net_access, __u64 scoped, int abi) {
   const struct landlock_ruleset_attr ruleset_attr = {
-      .handled_access_fs = fs_access,
+      .handled_access_fs  = fs_access,
+      .handled_access_net = net_access,
+      .scoped             = scoped,
   };
 
   int ruleset_fd = landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
@@ -72,8 +78,6 @@ static int landlock_drop(__u64 fs_access, int abi) {
    LANDLOCK_ACCESS_FS_MAKE_SOCK | LANDLOCK_ACCESS_FS_MAKE_FIFO | LANDLOCK_ACCESS_FS_MAKE_BLOCK |                       \
    LANDLOCK_ACCESS_FS_MAKE_SYM)
 
-#define _LANDLOCK_ACCESS_FS_READ (LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR)
-
 /* returns landlock ABI version (>=1) if supported, 0 if not, -1 on unexpected probe error */
 static int landlock_check_kernel(void) {
   int abi = landlock_create_ruleset(NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
@@ -85,30 +89,36 @@ static int landlock_check_kernel(void) {
      * Kernel too old, not compiled with Landlock,
      * or Landlock was not enabled at boot time.
      */
-    girara_warning("Unable to use Landlock: Kernel too old, not compiled with Landlock,\
-            or Landlock was not enabled at boot time. Sandbox partly disabled.");
     return 0; /* Graceful fallback: Do nothing. */
   }
-  girara_warning("Landlock probe failed: %s", g_strerror(errno));
   return -1;
 }
 
-int landlock_drop_write(void) {
-  const int kernel = landlock_check_kernel();
-  if (kernel == 0) {
-    return 1; /* unsupported, graceful fallback */
-  }
-  if (kernel < 0) {
-    return -1;
-  }
-  return landlock_drop(_LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE, kernel);
+/* abstract unix sockets carry the X11 transport, so scope them only under Wayland */
+static bool session_is_wayland(void) {
+#ifdef GDK_WINDOWING_X11
+  return !GDK_IS_X11_DISPLAY(gdk_display_get_default());
+#else
+  return true;
+#endif
 }
 
-#if 0
-static int landlock_drop_all(void) {
-  return landlock_drop(_LANDLOCK_ACCESS_FS_READ | _LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE);
+int landlock_drop_write(void) {
+  const int abi = landlock_check_kernel();
+  if (abi < 6) {
+    girara_warning("Landlock is unavailable or older than ABI 6 (Linux 6.12); continuing without it.");
+    return 1; /* unsupported, graceful fallback */
+  }
+
+  const __u64 fs  = _LANDLOCK_ACCESS_FS_WRITE | LANDLOCK_ACCESS_FS_EXECUTE | LANDLOCK_ACCESS_FS_REFER |
+                    LANDLOCK_ACCESS_FS_TRUNCATE | LANDLOCK_ACCESS_FS_IOCTL_DEV;
+  const __u64 net = LANDLOCK_ACCESS_NET_BIND_TCP | LANDLOCK_ACCESS_NET_CONNECT_TCP;
+  __u64 scoped    = LANDLOCK_SCOPE_SIGNAL;
+  if (session_is_wayland()) {
+    scoped |= LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET;
+  }
+  return landlock_drop(fs, net, scoped, abi);
 }
-#endif
 
 static int landlock_write_fd(const int dir_fd) {
   const struct landlock_ruleset_attr ruleset_attr = {
