@@ -15,13 +15,19 @@
 #include "zathura.h"
 #include "plugin.h"
 #include "utils.h"
+#ifdef WITH_SECCOMP
+#include "seccomp-filters.h"
+#endif
+#ifdef WITH_LANDLOCK
+#include "landlock.h"
+#endif
 #ifdef WITH_SYNCTEX
 #include "dbus-interface.h"
 #include "synctex.h"
 #endif
 
-/* Handle synctex forward synchronization */
 #ifdef WITH_SYNCTEX
+/* Handle synctex forward synchronization */
 static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
   g_autoptr(GFile) file = g_file_new_for_commandline_arg(filename);
   if (file == NULL) {
@@ -77,6 +83,31 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
     girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
   }
 
+#ifdef WITH_SANDBOX
+  girara_debug("Strict sandbox preventing write and network access.");
+#ifdef WITH_LANDLOCK
+  if (landlock_drop_write() < 0) {
+    girara_error("Failed to apply landlock write restriction.");
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
+#ifdef WITH_SECCOMP
+  if (seccomp_enable_strict_filter(zathura) != 0) {
+    girara_error("Failed to initialize strict seccomp filter.");
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
+#ifdef __OpenBSD__
+  if (pledge("stdio rpath", "") != 0) {
+    girara_error("Failed to pledge: %s", strerror(errno));
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
+#endif
+
   return zathura;
 }
 
@@ -102,8 +133,8 @@ typedef struct {
 static void cb_app_startup(GApplication* app, gpointer data) {
   zathura_app_ctx_t* ctx = data;
 
-  ctx->zathura =
-      init_zathura(ctx->config_dir, ctx->data_dir, ctx->cache_dir, ctx->plugin_path, ctx->argv, ctx->synctex_editor);
+  ctx->zathura = init_zathura(ctx->config_dir, ctx->data_dir, ctx->cache_dir, ctx->plugin_path, ctx->argv,
+                              ctx->synctex_editor);
   if (ctx->zathura == NULL) {
     girara_error("Could not initialize zathura.");
     g_application_quit(app);
@@ -193,6 +224,21 @@ static void start_process_group(void* GIRARA_UNUSED(data)) {
 /* main function */
 GIRARA_VISIBLE int main(int argc, char* argv[]) {
   zathura_init_locale();
+
+#ifdef WITH_SANDBOX
+  girara_debug("Running zathura-sandbox, disable IPC services");
+  /* Prevent default gtk dbus connection */
+  g_setenv("DBUS_SESSION_BUS_ADDRESS", "disabled:", TRUE);
+
+  /* disable dconf writing - uses /var/empty as alternative to /dev/null to avoid ioctl call */
+  g_setenv("DCONF_PROFILE", "/var/empty", TRUE);
+
+  /* use the software renderer to avoid the gpu stack attack surface (and high risk syscalls) */
+  g_setenv("GSK_RENDERER", "cairo", TRUE);
+
+  /* unset the input method to avoid communication with external services */
+  unsetenv("GTK_IM_MODULE");
+#endif
 
   /* parse command line arguments */
   g_autofree gchar* config_dir     = NULL;
