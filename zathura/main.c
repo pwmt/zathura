@@ -133,8 +133,8 @@ typedef struct {
 static void cb_app_startup(GApplication* app, gpointer data) {
   zathura_app_ctx_t* ctx = data;
 
-  ctx->zathura = init_zathura(ctx->config_dir, ctx->data_dir, ctx->cache_dir, ctx->plugin_path, ctx->argv,
-                              ctx->synctex_editor);
+  ctx->zathura =
+      init_zathura(ctx->config_dir, ctx->data_dir, ctx->cache_dir, ctx->plugin_path, ctx->argv, ctx->synctex_editor);
   if (ctx->zathura == NULL) {
     girara_error("Could not initialize zathura.");
     g_application_quit(app);
