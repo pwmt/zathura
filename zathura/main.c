@@ -21,12 +21,13 @@
 #ifdef WITH_LANDLOCK
 #include "landlock.h"
 #endif
-#ifdef WITH_SYNCTEX
+/* SyncTeX needs D-Bus, which the sandbox disables, so it is unavailable there. */
+#if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
 #include "dbus-interface.h"
 #include "synctex.h"
 #endif
 
-#ifdef WITH_SYNCTEX
+#if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
 /* Handle synctex forward synchronization */
 static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
   g_autoptr(GFile) file = g_file_new_for_commandline_arg(filename);
@@ -294,7 +295,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
   zathura_set_log_level(loglevel);
 
-#ifdef WITH_SYNCTEX
+#if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
   /* handle synctex forward synchronization */
   if (synctex_fwd != NULL) {
     if (argc != 2) {
