@@ -1149,6 +1149,17 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura_show_signature_information(zathura, show_signature_information);
   update_visible_pages(zathura);
 
+  /* apply default page mode */
+  g_autofree char* page_mode = NULL;
+  girara_setting_get(zathura->ui.session, "page-mode", &page_mode);
+  if (page_mode != NULL) {
+    if (g_strcmp0(page_mode, "equal_width") == 0) {
+      apply_equal_page_mode(zathura, ZATHURA_EQUAL_WIDTH);
+    } else if (g_strcmp0(page_mode, "equal_height") == 0) {
+      apply_equal_page_mode(zathura, ZATHURA_EQUAL_HEIGHT);
+    }
+  }
+
   zathura_update_view_ppi(zathura);
 
   return true;

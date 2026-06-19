@@ -633,6 +633,15 @@ The settings described here can be changed with ``set``.
   * Value type: String
   * Default value: best-fit
 
+*page-mode*
+  Defines the default page sizing mode when opening a document. Possible options
+  are "none", "equal_width", and "equal_height". When set to "equal_width", all
+  pages are scaled to match the width of the current page. When set to
+  "equal_height", all pages are scaled to match the height of the current page.
+
+  * Value type: String
+  * Default value: none
+
 *advance-pages-per-row*
   Defines if the number of pages per row should be honored when advancing a page.
 

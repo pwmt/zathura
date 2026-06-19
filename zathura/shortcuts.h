@@ -5,6 +5,8 @@
 
 #include <girara-gtk/types.h>
 
+#include "types.h"
+
 /**
  * Abort the current action and return to normal mode
  *
@@ -394,5 +396,14 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* argument, gir
  * @return true if no error occurred otherwise false
  */
 bool sc_file_chooser(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Apply equal page mode to all pages
+ *
+ * @param zathura The zathura session
+ * @param mode The equal mode to apply
+ * @return true if no error occurred otherwise false
+ */
+bool apply_equal_page_mode(zathura_t* zathura, zathura_equal_mode_t mode);
 
 #endif // SHORTCUTS_H
