@@ -1275,14 +1275,12 @@ zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura) {
 static void save_fileinfo_to_db(zathura_t* zathura) {
   zathura_document_t* document = zathura_get_document(zathura);
   const char* path             = zathura_document_get_path(document);
+  const uint8_t* file_hash     = zathura_document_get_hash(document);
 
   zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
 
   /* save file info */
-  if (!ZATHURA_IS_NULLDATABASE(zathura->database)) {
-    const uint8_t* file_hash = zathura_document_get_hash(document);
-    zathura_db_set_fileinfo(zathura->database, path, file_hash, &file_info);
-  }
+  zathura_db_set_fileinfo(zathura->database, path, file_hash, &file_info);
   /* save jumplist */
   zathura_db_save_jumplist(zathura->database, path, zathura->jumplist.list);
   /* save quickmarks */
