@@ -19,6 +19,9 @@
 ZATHURA_PLUGIN_API zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int index,
                                                     zathura_error_t* error);
 
+/* parse the page on first use */
+bool zathura_page_load(zathura_page_t* page);
+
 /**
  * Frees the page object
  *

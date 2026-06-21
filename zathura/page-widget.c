@@ -13,6 +13,7 @@
 
 #include "links.h"
 #include "page.h"
+#include "adjustment.h"
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"
@@ -877,6 +878,21 @@ static void cb_update_surface(ZathuraRenderRequest* UNUSED(request), cairo_surfa
   ZathuraPageWidget* widget = data;
   g_return_if_fail(ZATHURA_IS_PAGE_WIDGET(widget));
   zathura_page_widget_update_surface(widget, surface, false);
+
+  if (surface == NULL) {
+    return;
+  }
+
+  /* the page is now parsed, correct its size if it differs from the placeholder */
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  unsigned int page_width = 0, page_height = 0;
+  page_calc_height_width(zathura_page_get_document(priv->page), priv->page, &page_height, &page_width, true);
+
+  int cur_width = 0, cur_height = 0;
+  gtk_widget_get_size_request(GTK_WIDGET(widget), &cur_width, &cur_height);
+  if ((int)page_width != cur_width || (int)page_height != cur_height) {
+    zathura_page_widget_set_size_request(widget, (int)page_width, (int)page_height);
+  }
 }
 
 static void cb_cache_added(ZathuraRenderRequest* UNUSED(request), void* data) {

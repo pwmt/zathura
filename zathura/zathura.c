@@ -930,6 +930,20 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     zathura_document_set_current_page_number(document, 0);
   }
 
+  /* parse the displayed page and size the others from it until they are parsed */
+  const unsigned int current_page_number = zathura_document_get_current_page_number(document);
+  zathura_page_t* current_page           = zathura_document_get_page(document, current_page_number);
+  if (current_page != NULL && zathura_page_load(current_page) == true) {
+    const double width  = zathura_page_get_width(current_page);
+    const double height = zathura_page_get_height(current_page);
+    for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+      zathura_page_t* page = zathura_document_get_page(document, page_id);
+      if (page != NULL && page != current_page) {
+        zathura_page_set_width(page, width);
+        zathura_page_set_height(page, height);
+      }
+    }
+  }
   /* apply open adjustment */
   if (known_file == false) {
     g_autofree char* adjust_open = NULL;

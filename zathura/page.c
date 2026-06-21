@@ -23,6 +23,7 @@ struct zathura_page_s {
   unsigned int index;           /**< Page number */
   bool visible;                 /**< Page is visible */
   bool label_is_number;         /**< Page label is the same as the page number */
+  bool loaded;                  /**< Page has been parsed by the plugin */
 };
 
 zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error_t* error) {
@@ -47,44 +48,46 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
   page->document        = document;
   page->label_is_number = false;
   page->zoom            = 1.0;
+  page->loaded          = false;
+
+  /* the page is parsed later when it is used, not here */
+  return page;
+}
+
+bool zathura_page_load(zathura_page_t* page) {
+  if (page == NULL || page->document == NULL) {
+    return false;
+  }
+
+  if (page->loaded == true) {
+    return true;
+  }
 
   /* init plugin */
-  const zathura_plugin_t* plugin              = zathura_document_get_plugin(document);
+  const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
 
   zathura_error_t ret = functions->page_init(page);
   if (ret != ZATHURA_ERROR_OK) {
-    if (error != NULL) {
-      *error = ret;
-    }
-    goto error_free;
+    return false;
   }
 
   /* get label if there is one */
   if (functions->page_get_label != NULL) {
     ret = functions->page_get_label(page, page->data, &page->label);
     if (ret != ZATHURA_ERROR_OK) {
-      if (error != NULL) {
-        *error = ret;
-      }
-      goto error_free;
+      return false;
     }
 
     if (page->label != NULL) {
       char page_number_string[G_ASCII_DTOSTR_BUF_SIZE];
-      g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, index + 1);
+      g_ascii_dtostr(page_number_string, G_ASCII_DTOSTR_BUF_SIZE, page->index + 1);
       page->label_is_number = g_strcmp0(page->label, page_number_string) == 0;
     }
   }
 
-  return page;
-
-error_free:
-  if (page != NULL) {
-    zathura_page_free(page);
-  }
-
-  return NULL;
+  page->loaded = true;
+  return true;
 }
 
 zathura_error_t zathura_page_free(zathura_page_t* page) {

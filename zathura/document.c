@@ -160,7 +160,7 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     goto error_free;
   }
 
-  /* read all pages */
+  /* allocate the pages without parsing them */
   document->pages = g_try_malloc0_n(document->number_of_pages, sizeof(zathura_page_t*));
   if (document->pages == NULL) {
     zathura_check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);

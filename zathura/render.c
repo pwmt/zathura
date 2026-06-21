@@ -823,6 +823,16 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
   zathura_page_t* page                      = request_priv->page;
 
+  /* parse the page on first render */
+  if (zathura_page_get_data(page) == NULL) {
+    zathura_renderer_lock(renderer);
+    const bool loaded = zathura_page_load(page);
+    zathura_renderer_unlock(renderer);
+    if (loaded == false) {
+      return false;
+    }
+  }
+
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
@@ -900,6 +910,16 @@ cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura
 
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
   zathura_document_t* document = zathura_page_get_document(page);
+
+  /* parse the page on first render */
+  if (zathura_page_get_data(page) == NULL) {
+    zathura_renderer_lock(renderer);
+    const bool loaded = zathura_page_load(page);
+    zathura_renderer_unlock(renderer);
+    if (loaded == false) {
+      return NULL;
+    }
+  }
 
   unsigned int page_width = 0, page_height = 0;
   const double real_scale = page_calc_height_width(document, page, &page_height, &page_width, false);
