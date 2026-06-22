@@ -28,6 +28,15 @@
 #include "dbus-interface.h"
 
 gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura) {
+  /* hide the window on quit while the cleanup runs */
+  if (widget == NULL && zathura != NULL && zathura->ui.session != NULL && zathura->ui.session->gtk.window != NULL) {
+    gtk_widget_set_visible(zathura->ui.session->gtk.window, FALSE);
+    GdkDisplay* display = gtk_widget_get_display(zathura->ui.session->gtk.window);
+    if (display != NULL) {
+      gdk_display_flush(display);
+    }
+  }
+
   /* genuine "destroy": the window and its child widgets are being finalized, so drop the borrowed pointers first */
   if (widget != NULL && zathura != NULL && zathura->ui.session != NULL) {
     zathura->ui.document_widget     = NULL;
