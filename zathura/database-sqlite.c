@@ -230,8 +230,9 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
   /* update fileinfo table (part 6) */
   static const char SQL_FILEINFO_ALTER6[] = "ALTER TABLE fileinfo ADD COLUMN sha256 BLOB;";
 
-  /* update fileinfo table (part 7): the column now holds a generic file hash */
-  static const char SQL_FILEINFO_ALTER7[] = "ALTER TABLE fileinfo RENAME COLUMN sha256 TO hash;";
+  /* update fileinfo table (part 7) */
+  static const char SQL_FILEINFO_ALTER7[] = "ALTER TABLE fileinfo DROP COLUMN sha256;"
+                                            "ALTER TABLE fileinfo ADD COLUMN hash BLOB;";
 
   /* update bookmark table */
   static const char SQL_BOOKMARK_ALTER[] = "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"

@@ -52,7 +52,7 @@ gtk4 = dependency('gtk4', version: '>=4.12', include_type: 'system')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = dependency('libmagic')
-sqlite = dependency('sqlite3', version: '>=3.25.0')
+sqlite = dependency('sqlite3', version: '>=3.35.0')
 xxhash = dependency('libxxhash')
 
 build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk4, cairo, magic, json_glib, xxhash]

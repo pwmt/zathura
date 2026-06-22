@@ -22,6 +22,8 @@
 
 #define DIGEST_SIZE 16
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(XXH3_state_t, XXH3_freeState)
+
 /**
  * Document
  */
@@ -68,7 +70,7 @@ static bool hash_file(uint8_t* dst, const char* path) {
     return false;
   }
 
-  XXH3_state_t* state = XXH3_createState();
+  g_autoptr(XXH3_state_t) state = XXH3_createState();
   if (state == NULL) {
     return false;
   }
@@ -80,16 +82,15 @@ static bool hash_file(uint8_t* dst, const char* path) {
     XXH3_128bits_update(state, buf, read);
   }
 
-  /* read == 0 marks a clean EOF; a negative value is a read error */
-  const bool success = read == 0;
-  if (success == true) {
-    XXH128_canonical_t canonical;
-    XXH128_canonicalFromHash(&canonical, XXH3_128bits_digest(state));
-    memcpy(dst, canonical.digest, DIGEST_SIZE);
+  /* read is zero on a clean end of stream and negative on an error */
+  if (read != 0) {
+    return false;
   }
 
-  XXH3_freeState(state);
-  return success;
+  XXH128_canonical_t canonical;
+  XXH128_canonicalFromHash(&canonical, XXH3_128bits_digest(state));
+  memcpy(dst, canonical.digest, DIGEST_SIZE);
+  return true;
 }
 
 zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, const char* uri, const char* password,
