@@ -1289,6 +1289,21 @@ static void save_fileinfo_to_db(zathura_t* zathura) {
   g_free(file_info.first_page_column_list);
 }
 
+void zathura_quit(zathura_t* zathura) {
+  if (zathura != NULL) {
+    /* persist the per document state that the kernel will not write for us */
+    if (zathura_has_document(zathura) == true) {
+      save_fileinfo_to_db(zathura);
+    }
+    /* delete the temporary file used for stdin input if there was one */
+    if (zathura->stdin_support.file != NULL) {
+      g_unlink(zathura->stdin_support.file);
+    }
+  }
+  /* the remaining teardown only returns memory the kernel reclaims on exit, so skip it */
+  exit(0);
+}
+
 bool document_predecessor_free(zathura_t* zathura) {
   if (zathura == NULL || (zathura->predecessor_document == NULL && zathura->predecessor_pages == NULL)) {
     return false;

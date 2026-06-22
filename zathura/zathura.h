@@ -417,6 +417,14 @@ bool document_predecessor_free(zathura_t* zathura);
 bool document_close(zathura_t* zathura, bool keep_monitor);
 
 /**
+ * Persists the document state and exits the process immediately, skipping the
+ * in memory teardown that the kernel reclaims on exit anyway. Used on quit.
+ *
+ * @param zathura The zathura session
+ */
+void zathura_quit(zathura_t* zathura);
+
+/**
  * Opens the page with the given number
  *
  * @param zathura The zathura session

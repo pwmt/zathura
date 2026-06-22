@@ -27,22 +27,9 @@
 #include "synctex.h"
 #include "dbus-interface.h"
 
-gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura) {
-  /* genuine "destroy": the window and its child widgets are being finalized, so drop the borrowed pointers first */
-  if (widget != NULL && zathura != NULL && zathura->ui.session != NULL) {
-    zathura->ui.document_widget     = NULL;
-    zathura->ui.session->gtk.window = NULL;
-  }
-
-  if (zathura_has_document(zathura) == true) {
-    document_close(zathura, false);
-  }
-
-  GApplication* app = g_application_get_default();
-  if (app != NULL) {
-    g_application_quit(app);
-  }
-
+gboolean cb_destroy(GtkWidget* UNUSED(widget), zathura_t* zathura) {
+  /* on quit the kernel reclaims everything on exit, so persist state and go */
+  zathura_quit(zathura);
   return TRUE;
 }
 
