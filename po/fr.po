@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:44+0200\n"
+"POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>, 2012\n"
 "Language-Team: French (http://app.transifex.com/pwmt/zathura/language/fr/)\n"
@@ -53,15 +53,60 @@ msgid "Automatic document reloading."
 msgstr "Rafraîchissement automatique des documents."
 
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "Lecture d'un fichier PDF"
 
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "Ouverture d'un fichier avec la commande `open`"
 
 msgid "Following links"
+msgstr "Suivi des liens"
+
+msgid "Listing and selecting bookmarks"
+msgstr "Liste et sélection des favoris"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported. Also, the setting 'window-icon-document' "
+"has been removed."
 msgstr ""
 
-msgid "Listing and selecting bookmakrs"
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Add search result counter (#450)"
@@ -71,9 +116,6 @@ msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Fix warning when using 'null' database (#881)"
@@ -969,7 +1011,7 @@ msgstr "Saisissez le mot de passe:"
 
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr "Texte sélectionné copié dans la sélection %s:%s"
+msgstr "Texte sélectionné copié dans la sélection %s : %s"
 
 #, c-format
 msgid "Copied selected image to selection %s"
@@ -1013,17 +1055,17 @@ msgid "No such bookmark: %s"
 msgstr "Aucun favori correspondant : %s"
 
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "L'argument doit être un nombre non nul."
 
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr ""
+msgstr "[%d] : page=<b>%2d</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
-msgstr ""
+msgstr "(actuel)"
 
 msgid "No jumplist available."
-msgstr ""
+msgstr "Aucune liste de sauts disponible."
 
 msgid "Title"
 msgstr "Titre"
@@ -1061,6 +1103,8 @@ msgstr "Aucune information disponible."
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
+"Veuillez consulter les pages de manuel zathura(1) et zathurarc(5) pour plus "
+"d'informations."
 
 msgid "Too many arguments."
 msgstr "Trop d'arguments."
@@ -1072,13 +1116,15 @@ msgid "Printing is not permitted in strict sandbox mode"
 msgstr "L'impression n'est pas autorisée en mode d'isolation stricte"
 
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "L'enregistrement n'est pas autorisé en mode d'isolation stricte"
 
 msgid "Invalid number of arguments."
 msgstr "Nombre d'arguments invalide."
 
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
+"L'exportation des pièces jointes n'est pas autorisée en mode d'isolation "
+"stricte"
 
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
@@ -1127,6 +1173,8 @@ msgstr "Images"
 
 msgid "Plugin does not support exporting attachments and images."
 msgstr ""
+"Le greffon ne prend pas en charge l'exportation des pièces jointes et des "
+"images."
 
 msgid "Document contains no images or attachments"
 msgstr "Le document ne contient ni images ni pièces jointes"
@@ -1387,9 +1435,6 @@ msgstr ""
 msgid "Display the page number in the window title"
 msgstr "Afficher le numéro de page dans le titre de la fenêtre"
 
-msgid "Use first page of a document as window icon"
-msgstr "Utiliser la première page d'un document comme icône pour la fenêtre"
-
 msgid "Use basename of the file in the statusbar"
 msgstr "Utiliser le nom de base du fichier dans la barre d'état"
 
@@ -1429,10 +1474,17 @@ msgstr "Le presse-papiers qui recevra les données sélectionnées avec la souri
 msgid "Enable notification after selecting text"
 msgstr "Activer une notification après avoir sélectionné du texte"
 
+msgid "Keep selection highlighted after mouse release"
+msgstr ""
+"Conserver la sélection en surbrillance après le relâchement de la souris"
+
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 "Désactiver les informations supplémentaires pour les signatures intégrées au "
 "document"
+
+msgid "Enable prompt to confirm when opening links"
+msgstr "Demander une confirmation lors de l'ouverture des liens"
 
 #. define default inputbar commands
 msgid "Map a key sequence"
@@ -1442,7 +1494,7 @@ msgid "Set an option"
 msgstr "Placer une option"
 
 msgid "Run a shortcut"
-msgstr ""
+msgstr "Exécuter un raccourci"
 
 msgid "Unmap a key sequence"
 msgstr "Désassocier une séquence de touches"
@@ -1521,17 +1573,17 @@ msgid "Failed to run xdg-open."
 msgstr "Échec lors du lancement de xdg-open."
 
 msgid "y"
-msgstr ""
+msgstr "o"
 
 msgid "Y"
-msgstr ""
+msgstr "O"
 
 msgid "Cancelled."
-msgstr ""
+msgstr "Annulé."
 
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
-msgstr ""
+msgstr "Ouvrir le lien externe <b>%s</b> ? [O/n]"
 
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
@@ -1556,9 +1608,6 @@ msgstr "Numéro de page copié : %d"
 #, c-format
 msgid "Copied link: %s"
 msgstr "Lien copié : %s"
-
-msgid "Reparents to window specified by xid (X11)"
-msgstr "Rattacher à la fenêtre spécifiée par xid (X11)"
 
 msgid "Path to the config directory"
 msgstr "Chemin vers le dossier de configuration"
@@ -1654,15 +1703,28 @@ msgstr "Echec d'impression : %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Mode d'ajustement invalide: %d"
 
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr "Chemin du fichier copié dans la sélection %s : %s"
+
 msgid "This document does not contain any index"
 msgstr "Ce document ne contient pas d'index"
 
+msgid "Could not get path from file."
+msgstr "Impossible d'obtenir le chemin depuis le fichier."
+
 msgid "Open file"
-msgstr ""
+msgstr "Ouvrir un fichier"
+
+msgid "Supported documents"
+msgstr "Documents pris en charge"
+
+msgid "All files"
+msgstr "Tous les fichiers"
 
 #, c-format
 msgid "[Search %d/%d]"
-msgstr ""
+msgstr "[Recherche %d/%d]"
 
 #, c-format
 msgid "Pattern not found: %s"
@@ -1745,6 +1807,10 @@ msgstr "Aucune valeur définie pour l'option : %s"
 #, c-format
 msgid "Unknown value for option: %s"
 msgstr "Valeur inconnue pour l'option : %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr "Valeur invalide pour l'option : %s"
 
 #. unhandled command
 #, c-format

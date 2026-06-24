@@ -32,12 +32,16 @@ static bool save_list(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_
 }
 
 static bool set_fileinfo(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),
-                         const uint8_t* GIRARA_UNUSED(hash_sha256), zathura_fileinfo_t* GIRARA_UNUSED(file_info)) {
+                         const uint8_t* GIRARA_UNUSED(hash), zathura_fileinfo_t* GIRARA_UNUSED(file_info)) {
   return true;
 }
 
 static bool get_fileinfo(zathura_database_t* GIRARA_UNUSED(db), const char* GIRARA_UNUSED(file),
-                         const uint8_t* GIRARA_UNUSED(hash_sha256), zathura_fileinfo_t* GIRARA_UNUSED(file_info)) {
+                         const uint8_t* GIRARA_UNUSED(hash), zathura_fileinfo_t* GIRARA_UNUSED(file_info)) {
+  return false;
+}
+
+static bool supports_hash_queries(zathura_database_t* GIRARA_UNUSED(db)) {
   return false;
 }
 
@@ -54,16 +58,17 @@ static girara_list_t* get_recent_files(zathura_database_t* GIRARA_UNUSED(db), in
 
 static void db_interface_init(ZathuraDatabaseInterface* iface) {
   /* initialize interface */
-  iface->add_bookmark     = add_bookmark;
-  iface->remove_bookmark  = remove_bookmark;
-  iface->load_bookmarks   = load_bookmarks;
-  iface->load_jumplist    = load_list;
-  iface->save_jumplist    = save_list;
-  iface->set_fileinfo     = set_fileinfo;
-  iface->get_fileinfo     = get_fileinfo;
-  iface->get_recent_files = get_recent_files;
-  iface->load_quickmarks  = load_list;
-  iface->save_quickmarks  = save_list;
+  iface->add_bookmark          = add_bookmark;
+  iface->remove_bookmark       = remove_bookmark;
+  iface->load_bookmarks        = load_bookmarks;
+  iface->load_jumplist         = load_list;
+  iface->save_jumplist         = save_list;
+  iface->set_fileinfo          = set_fileinfo;
+  iface->get_fileinfo          = get_fileinfo;
+  iface->get_recent_files      = get_recent_files;
+  iface->load_quickmarks       = load_list;
+  iface->save_quickmarks       = save_list;
+  iface->supports_hash_queries = supports_hash_queries;
 }
 
 static void io_interface_init(GiraraInputHistoryIOInterface* iface) {

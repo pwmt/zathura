@@ -1,29 +1,24 @@
-# zathura - language file (Italian)
+# zathura - language file (Chinese (China))
 # SPDX-License-Identifier: Zlib
 #
 # Translators:
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2015
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2012
-# Simone Dotto <simonedotto@protonmail.com>, 2019-2020,2022
-# Simone Guercio <s.guercio@gmail.com>, 2015
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2012,2015
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-19 15:33+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
-"Last-Translator: TheLemonMan <segnalazionidalweb@gmail.com>, 2012,2015\n"
-"Language-Team: Italian (http://app.transifex.com/pwmt/zathura/language/it/)\n"
-"Language: it\n"
+"PO-Revision-Date: 2026-03-31 19:24+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese (China) (http://app.transifex.com/pwmt/zathura/"
+"language/zh_CN/)\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
-"1 : 2;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "Minimalistic document viewer"
-msgstr "Visualizzatore di documenti minimalista"
+msgstr "极简文档查看器"
 
 msgid ""
 "Zathura is a highly customizable and functional document viewer. It provides "
@@ -31,39 +26,35 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
-"Zathura è un visualizzatore di documenti altamente personalizzabile e "
-"funzionale. Fornisce un'interfaccia minimalista e salvaspazio e un facile "
-"utilizzo che si concentra principalmente sull'interazione della tastiera. "
-"Zathura rende possibile visualizzare e navigare completamente tra i "
-"documenti senza usare il mouse."
+"Zathura 是一款高度可定制且功能丰富的文档查看器。它提供极简且节省空间的界面，"
+"并且易于使用，主要专注于键盘交互。Zathura 让用户无需使用鼠标也能完整查看和浏"
+"览文档。"
 
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
-msgstr ""
-"Zathura può usare le estensioni per allargare il supporto a vari formati di "
-"file. Tra le altre funzionalità ci sono:"
+msgstr "Zathura 可以通过插件扩展以支持多种文档格式。其他功能包括："
 
 msgid "SyncTeX forward and backward synchronization support."
-msgstr "Supporto SyncTeX per la sincronizzazione in avanti e all'indietro."
+msgstr "支持 SyncTeX 正向和反向同步。"
 
 msgid "Quickmarks and bookmarks."
-msgstr "Quickmark e bookmark."
+msgstr "快速标记和书签。"
 
 msgid "Automatic document reloading."
-msgstr "Ricarica automatica del documento."
+msgstr "自动重新加载文档。"
 
 msgid "Reading a PDF file"
-msgstr "Lettura di un file PDF"
+msgstr "阅读 PDF 文件"
 
 msgid "Opening a file with the `open` command"
-msgstr "Apertura di un file con il comando `open`"
+msgstr "使用 `open` 命令打开文件"
 
 msgid "Following links"
-msgstr "Seguire i link"
+msgstr "跟随链接"
 
 msgid "Listing and selecting bookmarks"
-msgstr "Elenco e selezione dei segnalibri"
+msgstr "列出并选择书签"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -634,7 +625,7 @@ msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
 msgid "Page aware scrolling"
-msgstr "Scorrimento pagina per pagina"
+msgstr "感知页面的滚动"
 
 msgid "SyncTeX forward synchronisation"
 msgstr ""
@@ -970,7 +961,7 @@ msgid "Marker support"
 msgstr ""
 
 msgid "Highlight search results"
-msgstr "Evidenzia i risultati della ricerca"
+msgstr ""
 
 msgid "Buffered commands"
 msgstr ""
@@ -993,656 +984,647 @@ msgstr ""
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr "PDF;PS;PostScript;DjVU;documenti;presentazioni;lettore;"
+msgstr "PDF;PS;PostScript;DjVU;文档;演示;查看器;"
 
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr "'%s' non può essere 0. Imposta ad 1."
+msgstr "'%s' 不能为 0。已设为 1。"
 
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Input inserito '%s' non valido."
+msgstr "给定了无效输入 '%s'。"
 
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Indice inserito '%s' non valido."
+msgstr "给定了无效索引 '%s'。"
 
 msgid "Enter password:"
-msgstr "Inserisci password"
+msgstr "输入密码："
 
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr "Copiato il testo selezionato alla selezione %s: %s"
+msgstr "已将选中的文本复制到选择区 %s：%s"
 
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr "Copiata l'immagine selezionata alla selezione %s"
+msgstr "已将选中的图像复制到选择区 %s"
 
 msgid "No document opened."
-msgstr "Nessun documento aperto."
+msgstr "未打开文档。"
 
 msgid "Invalid number of arguments given."
-msgstr "Numero di argomenti errato."
+msgstr "给定的参数数量无效。"
 
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "Impossibile creare il segnalibro: %s"
+msgstr "无法更新书签：%s"
 
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Impossibile creare il segnalibro: %s"
+msgstr "无法创建书签：%s"
 
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr "Segnalibro aggiornato con successo: %s"
+msgstr "书签已成功更新：%s"
 
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr "Segnalibro creato con successo: %s"
+msgstr "书签已成功创建：%s"
 
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Segnalibro rimosso: %s"
+msgstr "已删除书签：%s"
 
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Impossibile rimuovere il segnalibro: %s"
+msgstr "删除书签失败：%s"
 
 msgid "No bookmarks available."
-msgstr "Nessun bookmark disponibile."
+msgstr "没有可用书签。"
 
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Nessun segnalibro corrispondente: %s"
+msgstr "没有此书签：%s"
 
 msgid "Argument must be a nonzero number."
-msgstr "L'argomento deve essere un numero diverso da zero."
+msgstr "参数必须是非零数字。"
 
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: pagina=<b>%2d</b>, x=%f, y=%f %s\n"
+msgstr "[%d]：页面=<b>%2d</b>，x=%f，y=%f %s\n"
 
 msgid "(current)"
-msgstr "(corrente)"
+msgstr "（当前）"
 
 msgid "No jumplist available."
-msgstr "Nessuna jumplist disponibile."
+msgstr "没有可用跳转列表。"
 
 msgid "Title"
-msgstr "Titolo"
+msgstr "标题"
 
 msgid "Subject"
-msgstr "Argomento"
+msgstr "主题"
 
 msgid "Keywords"
-msgstr "Parole chiave"
+msgstr "关键词"
 
 msgid "Author"
-msgstr "Autore"
+msgstr "作者"
 
 msgid "Creator"
-msgstr "Creato da"
+msgstr "创建者"
 
 msgid "Producer"
-msgstr "Prodotto da"
+msgstr "生成器"
 
 msgid "Creation date"
-msgstr "Data di creazione"
+msgstr "创建日期"
 
 msgid "Modification date"
-msgstr "Data di modifica"
+msgstr "修改日期"
 
 msgid "Format"
-msgstr "Formato"
+msgstr "格式"
 
 msgid "Other"
-msgstr "Altro"
+msgstr "其他"
 
 msgid "No information available."
-msgstr "Nessun' informazione disponibile."
+msgstr "没有可用信息。"
 
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
-msgstr ""
-"Consultare le pagine di manuale zathura(1) e zathurarc(5) per maggiori "
-"informazioni."
+msgstr "请查看手册页 zathura(1) 和 zathurarc(5) 获取更多信息。"
 
 msgid "Too many arguments."
-msgstr "Numero di argomenti eccessivo."
+msgstr "参数过多。"
 
 msgid "No arguments given."
-msgstr "Nessun argomento specificato."
+msgstr "未给定参数。"
 
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr "La stampa non è consentita in modalità sandbox restrittiva"
+msgstr "严格沙盒模式下不允许打印"
 
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr "Il salvataggio non è consentito in modalità sandbox restrittiva"
+msgstr "严格沙盒模式下不允许保存"
 
 msgid "Invalid number of arguments."
-msgstr "Numero di argomenti non valido."
+msgstr "参数数量无效。"
 
 msgid "Exporting attachments is not permitted in strict sandbox mode"
-msgstr ""
-"L'esportazione degli allegati non è consentita in modalità sandbox "
-"restrittiva"
+msgstr "严格沙盒模式下不允许导出附件"
 
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Impossibile salvare l' allegato '%s' in '%s'"
+msgstr "无法将附件 '%s' 写入 '%s'。"
 
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Allegato '%s' salvato in '%s'"
+msgstr "已将附件 '%s' 写入 '%s'。"
 
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Immagine '%s' salvata come '%s'"
+msgstr "已将图像 '%s' 写入 '%s'。"
 
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Impossibile salvare l' immagine '%s' come '%s'"
+msgstr "无法将图像 '%s' 写入 '%s'。"
 
 #, c-format
 msgid "Unknown image '%s'."
-msgstr "Immagine sconosciuta '%s'"
+msgstr "未知图像 '%s'。"
 
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Immagine o allegato sconosciuti '%s"
+msgstr "未知附件或图像 '%s'。"
 
 #, c-format
 msgid "Failed to execute command: %s"
-msgstr "Impossibile eseguire il comando: %s"
+msgstr "执行命令失败：%s"
 
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr "L'esecuzione non è consentita in modalità sandbox restrittiva"
+msgstr "严格沙盒模式下不允许执行外部命令"
 
 msgid "Argument must be a number."
-msgstr "L' argomento dev' essere un numero."
+msgstr "参数必须是数字。"
 
 #, c-format
 msgid "Page %d"
-msgstr "Pagina %d"
+msgstr "第 %d 页"
 
 msgid "Attachments"
-msgstr "Allegati"
+msgstr "附件"
 
 #. add images
 msgid "Images"
-msgstr "Immagini"
+msgstr "图像"
 
 msgid "Plugin does not support exporting attachments and images."
-msgstr "Il plugin non supporta l'esportazione di allegati e immagini."
+msgstr "插件不支持导出附件和图像。"
 
 msgid "Document contains no images or attachments"
-msgstr "Il documento non contiene immagini né allegati"
+msgstr "文档不包含图像或附件"
 
 #. clang-format off
 #. settings
 msgid "Font"
-msgstr "Font"
+msgstr "字体"
 
 #. colors affecting the CSS
 msgid "Default foreground color"
-msgstr "Colore del testo di default"
+msgstr "默认前景色"
 
 msgid "Default background color"
-msgstr "Colore di sfondo di default"
+msgstr "默认背景色"
 
 msgid "Inputbar foreground color"
-msgstr "Colore del testo della barra dei comandi"
+msgstr "输入栏前景色"
 
 msgid "Inputbar background color"
-msgstr "Colore di sfondo della barra dei comandi"
+msgstr "输入栏背景色"
 
 msgid "Statusbar foreground color"
-msgstr "Colore del testo della barra di stato"
+msgstr "状态栏前景色"
 
 msgid "Statsubar background color"
-msgstr "Colore di sfondo della barra di stato"
+msgstr "状态栏背景色"
 
 msgid "Completion foreground color"
-msgstr "Colore del testo del completamento"
+msgstr "补全前景色"
 
 msgid "Completion background color"
-msgstr "Colore di sfondo del completamento"
+msgstr "补全背景色"
 
 msgid "Completion group foreground color"
-msgstr "Colore del testo del gruppo di completamento"
+msgstr "补全分组前景色"
 
 msgid "Completion group background color"
-msgstr "Colore di sfondo del gruppo di completamento"
+msgstr "补全分组背景色"
 
 msgid "Completion highlight foreground color"
-msgstr "Colore del testo del completamento evidenziato"
+msgstr "补全高亮前景色"
 
 msgid "Completion highlight background color"
-msgstr "Colore di sfondo del completamento evidenziato"
+msgstr "补全高亮背景色"
 
 msgid "Error notification foreground color"
-msgstr "Colore del testo della notifica di errore"
+msgstr "错误通知前景色"
 
 msgid "Error notification background color"
-msgstr "Colore di sfondo della notifica di errore"
+msgstr "错误通知背景色"
 
 msgid "Warning notification foreground color"
-msgstr "Colore del testo della notifica d' avvertimento"
+msgstr "警告通知前景色"
 
 msgid "Warning notifaction background color"
-msgstr "Colore di sfondo della notifica d' avvertimento"
+msgstr "警告通知背景色"
 
 msgid "Notification foreground color"
-msgstr "Colore del testo della notifica"
+msgstr "通知前景色"
 
 msgid "Notification background color"
-msgstr "Colore di sfondo della notifica"
+msgstr "通知背景色"
 
 msgid "Index mode foreground color"
-msgstr "Modalità indice colore primo piano"
+msgstr "索引模式前景色"
 
 msgid "Index mode background color"
-msgstr "Modalità indice colore di sfondo"
+msgstr "索引模式背景色"
 
 msgid "Index mode foreground color (active element)"
-msgstr "Modalità indice colore primo piano (elemento attivo)"
+msgstr "索引模式前景色（活动元素）"
 
 msgid "Index mode background color (active element)"
-msgstr "Modalità indice colore sfondo (elemento attivo)"
+msgstr "索引模式背景色（活动元素）"
 
 msgid "Scrollbar foreground color"
-msgstr "Colore di primo piano della barra di scorrimento"
+msgstr "滚动条前景色"
 
 msgid "Scrollbar background color"
-msgstr "Colore di sfondo della barra di scorrimento"
+msgstr "滚动条背景色"
 
 msgid "Initial window width"
-msgstr "Larghezza iniziale della finestra"
+msgstr "初始窗口宽度"
 
 msgid "Initial window height"
-msgstr "Altezza iniziale della finestra"
+msgstr "初始窗口高度"
 
 msgid "Horizontal padding for the status, input, and notification bars"
-msgstr "Bordo orizzontale per le barre di input e notifica"
+msgstr "状态栏、输入栏和通知栏的水平内边距"
 
 msgid "Vertical padding for the status, input, and notification bars"
-msgstr "Bordo verticale per le barre di input e notifica"
+msgstr "状态栏、输入栏和通知栏的垂直内边距"
 
 msgid "Number of completion items"
-msgstr "Numero di possibili completamenti"
+msgstr "补全项数量"
 
 msgid "Command to execute in :exec"
-msgstr "Comando da eseguire in :exec"
+msgstr ":exec 中要执行的命令"
 
 msgid "Show or hide certain GUI elements"
-msgstr "Mostra o nascondi gli elementi della GUI"
+msgstr "显示或隐藏某些 GUI 元素"
 
 msgid "Database backend"
-msgstr "Backend del database"
+msgstr "数据库后端"
 
 msgid "File monitor backend"
-msgstr "Backend di controllo file"
+msgstr "文件监视器后端"
 
 msgid "Zoom step"
-msgstr "Passo di zoom"
+msgstr "缩放步进"
 
 msgid "Horizontal padding between pages"
-msgstr "Spaziatura orizzontale tra le pagine"
+msgstr "页面之间的水平间距"
 
 msgid "Vertical padding between pages"
-msgstr "Spaziatura verticale tra le pagine"
+msgstr "页面之间的垂直间距"
 
 msgid "Number of pages per row"
-msgstr "Numero di pagine per riga"
+msgstr "每行页数"
 
 msgid "Column of the first page"
-msgstr "Colonna della prima pagina"
+msgstr "第一页所在列"
 
 msgid "Render pages from right to left"
-msgstr "Renderizza pagine da destra a sinistra"
+msgstr "从右向左渲染页面"
 
 msgid "Scroll step"
-msgstr "Passo di scorrimento"
+msgstr "滚动步进"
 
 msgid "Horizontal scroll step"
-msgstr "Passo di scorrimento orizzontale"
+msgstr "水平滚动步进"
 
 msgid "Full page scroll overlap"
-msgstr "Sovrapposizione di scorrimento pagina intera"
+msgstr "整页滚动重叠量"
 
 msgid "Zoom minimum"
-msgstr "Zoom minimo"
+msgstr "最小缩放比例"
 
 msgid "Zoom maximum"
-msgstr "Zoom massimo"
+msgstr "最大缩放比例"
 
 msgid "Maximum number of pages to keep in the cache"
-msgstr "Numero massimo di pagine da mantenere nella cache"
+msgstr "缓存中保留的最大页面数"
 
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr "Dimensione massima in pixel delle miniature da tenere in cache"
+msgstr "缓存中保留缩略图的最大像素尺寸"
 
 msgid "Number of positions to remember in the jumplist"
-msgstr "Numero di posizioni da mantenere nella jumplist"
+msgstr "跳转列表中记住的位置数量"
 
 msgid "Recoloring (dark color)"
-msgstr "Ricolorazione (colore scuro)"
+msgstr "重新着色（深色）"
 
 msgid "Recoloring (light color)"
-msgstr "Ricolorazione (colore chiaro)"
+msgstr "重新着色（浅色）"
 
 msgid "Color for highlighting"
-msgstr "Colore per evidenziare"
+msgstr "高亮颜色"
 
 msgid "Foreground color for highlighting"
-msgstr "Colore di primo piano per l'evidenziazione"
+msgstr "高亮前景色"
 
 msgid "Color for highlighting (active)"
-msgstr "Colore per evidenziare (attivo)"
+msgstr "高亮颜色（当前）"
 
 msgid "'Loading ...' background color"
-msgstr "'Caricamento ...' colore di sfondo "
+msgstr "'正在加载 ...' 背景色"
 
 msgid "'Loading ...' foreground color"
-msgstr "'Caricamento ...' colore primo piano"
+msgstr "'正在加载 ...' 前景色"
 
 msgid "Color used to highlight valid signatures"
-msgstr "Colore usato per evidenziare firme valide"
+msgstr "用于高亮有效签名的颜色"
 
 msgid "Color used to highlight signatures with warnings"
-msgstr "Colore usato per evidenziare firme con avvisi"
+msgstr "用于高亮有警告签名的颜色"
 
 msgid "Color used to highlight invalid signatures"
-msgstr "Colore usato per evidenziare firme non valide"
+msgstr "用于高亮无效签名的颜色"
 
 msgid "Recolor pages"
-msgstr "Ricolora le pagine"
+msgstr "重新着色页面"
 
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
-"Quando si ricolora mantenere la tonalità originale e regolare solo la "
-"luminosità"
+msgstr "重新着色时保留原始色相，仅调整亮度"
 
 msgid "When recoloring keep original image colors"
-msgstr "Quando si ricolora mantieni colori dell'immagine originale"
+msgstr "重新着色时保留原始图像颜色"
 
 msgid "When recoloring adjust lightness"
-msgstr "Quando si ricolora regolare la luminosità"
+msgstr "重新着色时调整亮度"
 
 msgid "Wrap scrolling"
-msgstr "Scrolling continuo"
+msgstr "循环滚动"
 
 msgid "Advance number of pages per row"
-msgstr "Avanza di un numero di pagine per riga"
+msgstr "按每行页数翻页"
 
 msgid "Horizontally centered zoom"
-msgstr "Zoom centrato orizzontalmente"
+msgstr "缩放时水平居中"
 
 msgid "Vertically center pages"
-msgstr "Zoom centrato verticalmente"
+msgstr "垂直居中页面"
 
 msgid "Align link target to the left"
-msgstr "Allinea link target a sinistra"
+msgstr "将链接目标左对齐"
 
 msgid "Let zoom be changed when following links"
-msgstr "Cambia lo zoom quando segui i link"
+msgstr "跟随链接时允许更改缩放"
 
 msgid "Center result horizontally"
-msgstr "Centra orizzontalmente i risultati"
+msgstr "水平居中结果"
 
 msgid "Render 'Loading ...'"
-msgstr "Renderizza 'Caricamento ...'"
+msgstr "渲染 '正在加载 ...'"
 
 msgid "Adjust to when opening file"
-msgstr "Adatta a mentre apri il file"
+msgstr "打开文件时的适配方式"
 
 msgid "Show hidden files and directories"
-msgstr "Mostra file e cartelle nascosti"
+msgstr "显示隐藏文件和目录"
 
 msgid "Show directories"
-msgstr "Mostra cartelle"
+msgstr "显示目录"
 
 msgid "Show recent files"
-msgstr "Mostra file recenti"
+msgstr "显示最近文件"
 
 msgid "Always open on first page"
-msgstr "Apri sempre alla prima pagina"
+msgstr "始终从第一页打开"
 
 msgid "Disable highlighting of search results"
-msgstr "Disabilita l'evidenziazione dei risultati della ricerca"
+msgstr "禁用搜索结果高亮"
 
 msgid "Double click to follow links"
-msgstr "Doppio clic per seguire i link"
+msgstr "双击跟随链接"
 
 msgid "Enable incremental search"
-msgstr "Abilita la ricerca incrementale"
+msgstr "启用增量搜索"
 
 msgid "Clear search results on abort"
-msgstr "Elimina risultati di ricerca alla chiusura"
+msgstr "中止时清除搜索结果"
 
 msgid "Use basename of the file in the window title"
-msgstr "Usa estensione del file nel titolo della finestra"
+msgstr "在窗口标题中使用文件的基名"
 
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr "Usa ~ al posto di $HOME nel nome del file nel titolo della finestra"
+msgstr "在窗口标题的文件名中用 ~ 代替 $HOME"
 
 msgid "Display the page number in the window title"
-msgstr "Mostra il numero di pagina nel titolo della finestra"
+msgstr "在窗口标题中显示页码"
 
 msgid "Use basename of the file in the statusbar"
-msgstr "Usa estensione del file nella barra di stato"
+msgstr "在状态栏中使用文件的基名"
 
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr "Usa ~ al posto di $HOME nel nome del file nella barra di stato"
+msgstr "在状态栏的文件名中用 ~ 代替 $HOME"
 
 msgid "Display (current page / total pages) as a percent in the statusbar"
-msgstr ""
-"Mostra (pagina attuale / pagine totali) in percentuale nella barra di stato"
+msgstr "在状态栏中以百分比显示（当前页 / 总页数）"
 
 msgid "Enable SyncTeX support"
-msgstr "Abilita il supporto per SyncTeX"
+msgstr "启用 SyncTeX 支持"
 
 msgid "SyncTeX editor command"
-msgstr "Comando dell'editor SyncTeX"
+msgstr "SyncTeX 编辑器命令"
 
 msgid "SyncTeX edit modifier"
-msgstr "Modificatore di modifica SyncTeX"
+msgstr "SyncTeX 编辑修饰键"
 
 msgid "Highlighter modifier"
-msgstr "Modificatore dell'evidenziatore"
+msgstr "高亮工具修饰键"
 
 msgid "Enable D-Bus service"
-msgstr "Abilita il servizio D-Bus"
+msgstr "启用 D-Bus 服务"
 
 msgid "Raise window on certain D-Bus commands"
-msgstr "Solleva la finestra in corrispondenza di certi comandi di D-Bus"
+msgstr "收到某些 D-Bus 命令时提升窗口"
 
 msgid "Save history at each page change"
-msgstr "Salva cronologia ad ogni cambiamento di pagina"
+msgstr "每次页面变化时保存历史记录"
 
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr "Gli appunti in cui verranno scritti i dati selezionati dal mouse"
+msgstr "鼠标选中数据要写入的剪贴板"
 
 msgid "Enable notification after selecting text"
-msgstr "Attiva la notifica dopo aver selezionato del testo"
+msgstr "选择文本后启用通知"
 
+#, fuzzy
 msgid "Keep selection highlighted after mouse release"
-msgstr "Mantieni la selezione evidenziata dopo il rilascio del mouse"
+msgstr "补全高亮前景色"
 
 msgid "Disable additional information for signatures embedded in the document."
-msgstr ""
-"Disabilita le informazioni aggiuntive per le firme incorporate nel documento."
+msgstr "禁用文档内嵌签名的附加信息。"
 
 msgid "Enable prompt to confirm when opening links"
-msgstr "Abilita la richiesta di conferma all'apertura dei link"
+msgstr ""
 
 #. define default inputbar commands
 msgid "Map a key sequence"
-msgstr "Mappa una sequenza di tasti"
+msgstr "映射按键序列"
 
 msgid "Set an option"
-msgstr "Imposta un opzione"
+msgstr "设置选项"
 
 msgid "Run a shortcut"
-msgstr "Esegui una scorciatoia"
+msgstr ""
 
 msgid "Unmap a key sequence"
-msgstr "Cancella mappatura di una sequenza di tasti"
+msgstr "取消映射按键序列"
 
 msgid "Dump settings to a file"
-msgstr "Scrivi le impostazioni in un file"
+msgstr "将设置导出到文件"
 
 msgid "Add a bookmark"
-msgstr "Aggiungi un segnalibro"
+msgstr "添加书签"
 
 msgid "Delete a bookmark"
-msgstr "Elimina un segnalibro"
+msgstr "删除书签"
 
 msgid "List all bookmarks"
-msgstr "Mostra i segnalibri"
+msgstr "列出所有书签"
 
 msgid "Jump to bookmark"
-msgstr "Vai al segnalibro"
+msgstr "跳转到书签"
 
 msgid "Show recent jumps in jumplist"
-msgstr "Mostra i salti recenti nella jumplist"
+msgstr "显示跳转列表中的最近跳转"
 
 msgid "Close current file"
-msgstr "Chiudi il file corrente"
+msgstr "关闭当前文件"
 
 msgid "Show file information"
-msgstr "Mostra le informazioni sul file"
+msgstr "显示文件信息"
 
 msgid "Execute a command"
-msgstr "Esegui un comando"
+msgstr "执行命令"
 
 #. like vim
 msgid "Show help"
-msgstr "Mostra l' aiuto"
+msgstr "显示帮助"
 
 msgid "Open document"
-msgstr "Apri un documento"
+msgstr "打开文档"
 
 msgid "Close zathura"
-msgstr "Chiudi zathura"
+msgstr "关闭 zathura"
 
 msgid "Print document"
-msgstr "Stampa il documento"
+msgstr "打印文档"
 
 msgid "Save document"
-msgstr "Salva il documento"
+msgstr "保存文档"
 
 msgid "Save document (and force overwriting)"
-msgstr "Salva il documento (e sovrascrivi)"
+msgstr "保存文档（并强制覆盖）"
 
 msgid "Save attachments"
-msgstr "Salva allegati"
+msgstr "保存附件"
 
 msgid "Set page offset"
-msgstr "Imposta l' offset della pagina"
+msgstr "设置页面偏移"
 
 msgid "Mark current location within the document"
-msgstr "Segna la posizione attuale all'interno del documento"
+msgstr "标记文档中的当前位置"
 
 msgid "Delete the specified marks"
-msgstr "Elimina i segni specificati"
+msgstr "删除指定标记"
 
 msgid "Remove highlights of current search results"
-msgstr "Rimuovi le evidenziazioni dei risultati della ricerca in corso"
+msgstr "移除当前搜索结果的高亮"
 
 msgid "Highlight current search results"
-msgstr "Evidenzia i risultati della ricerca in corso"
+msgstr "高亮当前搜索结果"
 
 msgid "Show version information"
-msgstr "Mostra informazioni sulla versione"
+msgstr "显示版本信息"
 
 msgid "Source config file"
-msgstr "File di configurazione sorgente"
+msgstr "载入配置文件"
 
 msgid "Failed to run xdg-open."
-msgstr "Impossibile eseguire xdg-open."
+msgstr "运行 xdg-open 失败。"
 
 msgid "y"
-msgstr "s"
+msgstr "y"
 
 msgid "Y"
-msgstr "S"
+msgstr "Y"
 
 msgid "Cancelled."
-msgstr "Annullato."
+msgstr "已取消。"
 
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
-msgstr "Aprire il link esterno <b>%s</b>? [S/n]"
+msgstr "打开外部链接 <b>%s</b>？[Y/n]"
 
 msgid "Opening external applications in strict sandbox mode is not permitted"
-msgstr ""
-"L'apertura di applicazioni esterne in modalità sandbox restrittiva non è "
-"consentito"
+msgstr "严格沙盒模式下不允许打开外部应用程序"
 
 #, c-format
 msgid "Link: page %d"
-msgstr "Link: pagina %d"
+msgstr "链接：第 %d 页"
 
 #, c-format
 msgid "Link: %s"
-msgstr "Link: %s"
+msgstr "链接：%s"
 
 msgid "Link: Invalid"
-msgstr "Link: non valido"
+msgstr "链接：无效"
 
 #, c-format
 msgid "Copied page number: %d"
-msgstr "Copiata pagina numero: %d"
+msgstr "已复制页码：%d"
 
 #, c-format
 msgid "Copied link: %s"
-msgstr "Copiato il link: %s"
+msgstr "已复制链接：%s"
 
 msgid "Path to the config directory"
-msgstr "Percorso della directory della configurazione"
+msgstr "配置目录路径"
 
 msgid "Path to the data directory"
-msgstr "Percorso della directory dei dati"
+msgstr "数据目录路径"
 
 msgid "Path to the cache directory"
-msgstr "Percorso della cartella di cache"
+msgstr "缓存目录路径"
 
 msgid "Path to the directories containing plugins"
-msgstr "Percorso della directory contenente i plugin"
+msgstr "包含插件的目录路径"
 
 msgid "Fork into the background"
-msgstr "Crea un processo separato"
+msgstr "派生到后台"
 
 msgid "Document password"
-msgstr "Password del documento"
+msgstr "文档密码"
 
 msgid "Page number to go to"
-msgstr "Numero di pagina da andare"
+msgstr "要跳转到的页码"
 
 msgid "Log level (debug, info, warning, error)"
-msgstr "Livello di log (debug, info, warning, error)"
+msgstr "日志级别（debug、info、warning、error）"
 
 msgid "Print version information"
-msgstr "Mostra le informazioni sul file"
+msgstr "打印版本信息"
 
 msgid "SyncTeX editor (forwarded to the synctex command)"
-msgstr "Editor SyncTeX (inoltrato al comando synctex)"
+msgstr "SyncTeX 编辑器（转发给 synctex 命令）"
 
 msgid "Move to given SyncTeX position"
-msgstr "Sposta alla posizione SyncTeX specificata"
+msgstr "移动到给定的 SyncTeX 位置"
 
 msgid "Highlight given position in the given process"
-msgstr "Evidenzia data posizione nel processo dato"
+msgstr "在给定进程中高亮给定位置"
 
 msgid "Start in a non-default mode"
-msgstr "Avvia in una modalità non standard"
+msgstr "以非默认模式启动"
 
 msgid "Bookmark to go to"
-msgstr "Segnalibro a cui andare"
+msgstr "要跳转到的书签"
 
 msgid "Search for the given phrase and display results"
-msgstr "Ricerca la chiave data e mostra i risultati"
+msgstr "搜索给定短语并显示结果"
 
 #, c-format
 msgid ""
@@ -1651,163 +1633,171 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
-"La firma è valida.\n"
-"Questo documento è firmato da\n"
+"签名有效。\n"
+"此文档签名者为\n"
 "  %s\n"
-"il %s."
+"签名时间：%s。"
 
 msgid "Signature certificate is expired."
-msgstr "Il certificato della firma è scaduto."
+msgstr "签名证书已过期。"
 
 msgid "Signature certificate is revoked."
-msgstr "Il certificato della firma è stato revocato."
+msgstr "签名证书已被吊销。"
 
 msgid "Signature certificate is not trusted."
-msgstr "Il certificato della firma non è attendibile."
+msgstr "签名证书不受信任。"
 
 msgid "Signature certificate is invalid."
-msgstr "Il certificato della firma non è valido."
+msgstr "签名证书无效。"
 
 msgid "Signature is invalid."
-msgstr "La firma non è valida."
+msgstr "签名无效。"
 
 msgid "Loading..."
-msgstr "Caricamento..."
+msgstr "正在加载..."
 
 msgid "Copy image"
-msgstr "Copia immagine"
+msgstr "复制图像"
 
 msgid "Save image as"
-msgstr "Salva immagine come"
+msgstr "图像另存为"
 
 #. Update statusbar.
 #, c-format
 msgid "Printing page %d ..."
-msgstr "Stampa pagina %d ..."
+msgstr "正在打印第 %d 页 ..."
 
 #, c-format
 msgid "Printing failed: %s"
-msgstr "Impossibile stampare: %s"
+msgstr "打印失败：%s"
 
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr "Modalità di regolazione non valida: %d"
+msgstr "无效的适配模式：%d"
 
-#, c-format
+#, fuzzy, c-format
 msgid "Copied file path to selection %s: %s"
-msgstr "Percorso del file copiato nella selezione %s: %s"
+msgstr "已将选中的文本复制到选择区 %s：%s"
 
 msgid "This document does not contain any index"
-msgstr "Questo documento non contiene l' indice"
+msgstr "此文档不包含任何索引"
 
 msgid "Could not get path from file."
-msgstr "Impossibile ottenere il percorso dal file."
+msgstr ""
 
 msgid "Open file"
-msgstr "Apri file"
+msgstr "打开文件"
 
+#, fuzzy
 msgid "Supported documents"
-msgstr "Documenti supportati"
+msgstr "打开文档"
 
 msgid "All files"
-msgstr "Tutti i file"
+msgstr ""
 
 #, c-format
 msgid "[Search %d/%d]"
-msgstr "[Ricerca %d/%d]"
+msgstr "[搜索 %d/%d]"
 
 #, c-format
 msgid "Pattern not found: %s"
-msgstr "Pattern non trovato: %s"
+msgstr "未找到模式：%s"
 
 msgid "[No name]"
-msgstr "[Nessun nome]"
+msgstr "[无名称]"
 
 msgid "Could not read file from stdin and write it to a temporary file."
-msgstr ""
-"Impossibile leggere il file dall' stdin e scriverlo in un file temporaneo."
+msgstr "无法从 stdin 读取文件并写入临时文件。"
 
 msgid "Could not read file from GIO and copy it to a temporary file."
-msgstr "Impossibile leggere file da GIO e copiarlo su un file temporaneo"
+msgstr "无法从 GIO 读取文件并复制到临时文件。"
 
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
-"Tipo di file non supportato. Per favore, installa il plugin necessario."
+msgstr "不支持的文件类型。请安装必要的插件。"
 
 msgid "Document does not contain any pages"
-msgstr "Il documento non contiene alcuna pagina"
+msgstr "文档不包含任何页面"
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr "Il file esiste già: %s. Usa :write! per sovrascriverlo."
+msgstr "文件已存在：%s。使用 :write! 覆盖它。"
 
 msgid "Failed to save document."
-msgstr "Impossibile salvare il documento."
+msgstr "保存文档失败。"
 
 msgid "Document saved."
-msgstr "Documento salvato."
+msgstr "文档已保存。"
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr "Numero degli argomenti non valido: %zu immessi, %u attesi"
+msgstr "传入的参数数量无效：%zu，至少应为 %u"
 
 #, c-format
 msgid "Unregistered mode specified: %s"
-msgstr "Modalità non registrata: %s"
+msgstr "指定了未注册的模式：%s"
 
 msgid "Invalid number of arguments passed"
-msgstr "Numero degli argomenti non valido"
+msgstr "传入的参数数量无效"
 
 #, c-format
 msgid "Invalid modifier in %s"
-msgstr "Modificatore invalido in %s"
+msgstr "%s 中有无效修饰键"
 
 #, c-format
 msgid "Invalid special key value for %s"
-msgstr "Valore della chiave speciale %s non valido"
+msgstr "%s 的特殊按键值无效"
 
 #, c-format
 msgid "Invalid special key value or mode %s"
-msgstr "Valore della chiave speciale o modalità %s non valida"
+msgstr "特殊按键值或模式 %s 无效"
 
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr "Scorciatoia invalida: %s"
+msgstr "不是有效的快捷键函数：%s"
 
 msgid "Not enough arguments."
-msgstr "Non abbastanza argomenti specificati."
+msgstr "参数不足。"
 
 #, c-format
 msgid "Unknown option: %s"
-msgstr "Opzione sconosciuta: %s"
+msgstr "未知选项：%s"
 
 msgid "true"
-msgstr "vero"
+msgstr "真"
 
 msgid "false"
-msgstr "falso"
+msgstr "假"
 
 #, c-format
 msgid "No value defined for option: %s"
-msgstr "Nessun valore definito per l' opzione: %s"
+msgstr "选项没有定义值：%s"
 
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr "Valore sconosciuto per l' opzione: %s"
+msgstr "选项的值未知：%s"
 
-#, c-format
+#, fuzzy, c-format
 msgid "Invalid value for option: %s"
-msgstr "Valore non valido per l'opzione: %s"
+msgstr "选项的值未知：%s"
 
 #. unhandled command
 #, c-format
 msgid "Not a valid command: %s"
-msgstr "Comando non valido: %s"
+msgstr "不是有效命令：%s"
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr "Numero degli argomenti non valido: %zu immessi, 1 attesi"
+msgstr "传入的参数数量无效：%zu，应为 1"
 
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr "Impossibile scrivere JSON: %s"
+msgstr "写入 JSON 失败：%s"
+
+#~ msgid "Window icon"
+#~ msgstr "窗口图标"
+
+#~ msgid "Use first page of a document as window icon"
+#~ msgstr "使用文档第一页作为窗口图标"
+
+#~ msgid "Reparents to window specified by xid (X11)"
+#~ msgstr "重新指定父窗口为 xid 指定的窗口（X11）"

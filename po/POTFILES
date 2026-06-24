@@ -15,6 +15,7 @@ zathura/document.c
 zathura/file-monitor-glib.c
 zathura/file-monitor-signal.c
 zathura/file-monitor.c
+zathura/index-element-object.c
 zathura/jumplist.c
 zathura/links.c
 zathura/main.c

@@ -10,6 +10,8 @@
 
 #include "types.h"
 
+#define DOCUMENT_DIGEST_SIZE 16
+
 /**
  * Open the document
  *

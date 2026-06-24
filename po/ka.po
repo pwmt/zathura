@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:44+0200\n"
+"POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2026-02-21 13:30+0100\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Georgian (http://app.transifex.com/pwmt/zathura/language/"
@@ -56,8 +56,53 @@ msgstr "ოპენინგ ა ფაილი ვიტჰ ტჰე `open` 
 msgid "Following links"
 msgstr "ფოლლოვინგ ლინკს"
 
-msgid "Listing and selecting bookmakrs"
+msgid "Listing and selecting bookmarks"
 msgstr "ლისტინგ ანდ სელეკტინგ ბოოკმაკრს"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported. Also, the setting 'window-icon-document' "
+"has been removed."
+msgstr ""
+
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "ვარიოუს ფიქსეს ანდ იმპროვემენტს"
 
 msgid "Add search result counter (#450)"
 msgstr ""
@@ -67,9 +112,6 @@ msgstr ""
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "ვარიოუს ფიქსეს ანდ იმპროვემენტს"
 
 msgid "Fix warning when using 'null' database (#881)"
 msgstr ""
@@ -1380,9 +1422,6 @@ msgstr "უსე ~ ინსტეად ოფ $ჰომე ინ ტჰე 
 msgid "Display the page number in the window title"
 msgstr "დისპლაი ტჰე გვერდი ნუმბერ ინ ტჰე ვინდოვ ტიტლე"
 
-msgid "Use first page of a document as window icon"
-msgstr "უსე ფირსტ გვერდი ოფ ა დოკუმენტი ას ვინდოვ იკონ"
-
 msgid "Use basename of the file in the statusbar"
 msgstr "უსე ბასენამე ოფ ტჰე ფაილი ინ ტჰე სტატუსბარ"
 
@@ -1420,9 +1459,15 @@ msgstr "ტჰე კლიპბოარდ ინტო ვჰიკჰ მ�
 msgid "Enable notification after selecting text"
 msgstr "ჩართვა ნოტიფიკატიონ აფტერ სელეკტინგ ტექსტ"
 
+msgid "Keep selection highlighted after mouse release"
+msgstr ""
+
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
 "გამორთვა ადდიტიონალ ინფორმატიონ ფორ სიგნატურეს ემბედდედ ინ ტჰე დოკუმენტი."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr ""
 
 #. define default inputbar commands
 msgid "Map a key sequence"
@@ -1431,9 +1476,8 @@ msgstr "მაპ ა კეი სექუენკე"
 msgid "Set an option"
 msgstr "სეტ ან ოპტიონ"
 
-#, fuzzy
 msgid "Run a shortcut"
-msgstr "უპდატე სჰორტკუტს"
+msgstr ""
 
 msgid "Unmap a key sequence"
 msgstr "უნმაპ ა კეი სექუენკე"
@@ -1547,9 +1591,6 @@ msgstr "კოპიედ გვერდი ნუმბერ: %d"
 msgid "Copied link: %s"
 msgstr "კოპიედ ლინკ: %s"
 
-msgid "Reparents to window specified by xid (X11)"
-msgstr "რეპარენტს ტო ვინდოვ სპეკიფიედ ბი xid (X11)"
-
 msgid "Path to the config directory"
 msgstr "პატჰ ტო ტჰე კონფიგ დირეკტორი"
 
@@ -1640,10 +1681,23 @@ msgstr "პრინტინგ ფაილედ: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "არასწორი ადჯუსტ მოდე: %d"
 
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr ""
+
 msgid "This document does not contain any index"
 msgstr "ტჰის დოკუმენტი დოეს ნოტ კონტაინ ანი ინდექს"
 
+msgid "Could not get path from file."
+msgstr ""
+
 msgid "Open file"
+msgstr ""
+
+msgid "Supported documents"
+msgstr ""
+
+msgid "All files"
 msgstr ""
 
 #, c-format
@@ -1726,6 +1780,10 @@ msgstr "ნო ვალუე დეფინედ ფორ ოპტიო�
 #, c-format
 msgid "Unknown value for option: %s"
 msgstr "უნკნოვნ ვალუე ფორ ოპტიონ: %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr ""
 
 #. unhandled command
 #, c-format

@@ -8,6 +8,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include <math.h>
+#include <xxhash.h>
 
 #include <girara/datastructures.h>
 #include <girara/log.h>
@@ -19,7 +20,7 @@
 #include "content-type.h"
 #include "internal.h"
 
-#define DIGEST_SIZE 32
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(XXH3_state_t, XXH3_freeState)
 
 /**
  * Document
@@ -29,7 +30,8 @@ struct zathura_document_s {
   char* file_path;                         /**< File path of the document */
   char* uri;                               /**< URI of the document */
   char* basename;                          /**< Basename of the document */
-  uint8_t hash_sha256[DIGEST_SIZE];        /**< SHA256 hash of the document */
+  uint8_t hash[DOCUMENT_DIGEST_SIZE];      /**< XXH3 hash of the document */
+  bool hash_computed;                      /**< Whether the hash has been computed yet */
   const char* password;                    /**< Password of the document */
   unsigned int current_page_number;        /**< Current page number */
   unsigned int number_of_pages;            /**< Number of pages */
@@ -55,7 +57,7 @@ struct zathura_document_s {
   const zathura_plugin_t* plugin;
 };
 
-static bool hash_file_sha256(uint8_t* dst, const char* path) {
+static bool hash_file(uint8_t* dst, const char* path) {
   g_autoptr(GFile) f = g_file_new_for_path(path);
   if (f == NULL) {
     return false;
@@ -66,23 +68,26 @@ static bool hash_file_sha256(uint8_t* dst, const char* path) {
     return false;
   }
 
-  g_autoptr(GChecksum) checksum = g_checksum_new(G_CHECKSUM_SHA256);
-  if (checksum == NULL) {
+  g_autoptr(XXH3_state_t) state = XXH3_createState();
+  if (state == NULL) {
     return false;
   }
+  XXH3_128bits_reset(state);
 
   uint8_t buf[MAX(BUFSIZ, 4096)];
   gssize read;
   while ((read = g_input_stream_read(G_INPUT_STREAM(stream), buf, sizeof(buf), NULL, NULL)) > 0) {
-    g_checksum_update(checksum, buf, read);
+    XXH3_128bits_update(state, buf, read);
   }
 
-  if (read < 0) {
+  /* read is zero on a clean end of stream and negative on an error */
+  if (read != 0) {
     return false;
   }
 
-  gsize dst_size = DIGEST_SIZE;
-  g_checksum_get_digest(checksum, dst, &dst_size);
+  XXH128_canonical_t canonical;
+  XXH128_canonicalFromHash(&canonical, XXH3_128bits_digest(state));
+  memcpy(dst, canonical.digest, DOCUMENT_DIGEST_SIZE);
   return true;
 }
 
@@ -134,9 +139,6 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   } else {
     g_autoptr(GFile) gf = g_file_new_for_uri(document->uri);
     document->basename  = g_file_get_basename(gf);
-  }
-  if (hash_file_sha256(document->hash_sha256, document->file_path) == false) {
-    girara_warning("Failed to hash file '%s'; fileinfo lookup may be unreliable.", document->file_path);
   }
   document->password         = password;
   document->zoom             = 1.0;
@@ -228,7 +230,14 @@ const uint8_t* zathura_document_get_hash(zathura_document_t* document) {
     return NULL;
   }
 
-  return document->hash_sha256;
+  if (document->hash_computed == false) {
+    document->hash_computed = true;
+    if (hash_file(document->hash, document->file_path) == false) {
+      girara_warning("Failed to hash file '%s'; fileinfo lookup may be unreliable.", document->file_path);
+    }
+  }
+
+  return document->hash;
 }
 
 const char* zathura_document_get_uri(zathura_document_t* document) {

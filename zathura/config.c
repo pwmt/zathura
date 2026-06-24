@@ -609,7 +609,7 @@ void config_load_default(zathura_t* zathura) {
   bool_value = false;
   girara_setting_add(gsession, "show-signature-information", &bool_value,  BOOLEAN, false, _("Disable additional information for signatures embedded in the document."), cb_show_signature_info, NULL);
   bool_value = true;
-  girara_setting_add(gsession, "open-link-confirm", &bool_value, BOOLEAN, false, _("Enable prompt to confirm when opening links"), NULL, NULL);
+  girara_setting_add(gsession, "open-link-confirm",          &bool_value,  BOOLEAN, false, _("Enable prompt to confirm when opening links"), NULL, NULL);
 
   // clang-format on
   // apply some color settings that need their callbacks to run

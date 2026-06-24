@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:44+0200\n"
+"POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Jonas <jonas.enge@gmail.com>, 2014\n"
 "Language-Team: Norwegian (http://app.transifex.com/pwmt/zathura/language/"
@@ -27,31 +27,82 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Zathura er en svært tilpassbar og funksjonell dokumentviser. Den har et "
+"minimalistisk og plassbesparende grensesnitt, samt enkel bruk som "
+"hovedsakelig fokuserer på tastaturinteraksjon. Zathura gjør det mulig å vise "
+"og navigere gjennom dokumenter uten å bruke mus."
 
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
+"Zathura kan utvides til å støtte flere dokumentformater med programtillegg. "
+"Andre funksjoner inkluderer:"
 
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "Støtte for forover- og bakoversynkronisering med SyncTeX."
 
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "Hurtigmerker og bokmerker."
 
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Automatisk gjeninnlasting av dokumenter."
 
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "Lese en PDF-fil"
 
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "Åpne en fil med kommandoen `open`"
 
 msgid "Following links"
+msgstr "Følge lenker"
+
+msgid "Listing and selecting bookmarks"
+msgstr "Liste opp og velge bokmerker"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported. Also, the setting 'window-icon-document' "
+"has been removed."
 msgstr ""
 
-msgid "Listing and selecting bookmakrs"
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Add search result counter (#450)"
@@ -61,9 +112,6 @@ msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Fix warning when using 'null' database (#881)"
@@ -940,11 +988,11 @@ msgstr ""
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr ""
+msgstr "PDF;PS;PostScript;DjVU;dokument;presentasjon;viser;"
 
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr ""
+msgstr "'%s' kan ikke være 0. Satt til 1."
 
 #, c-format
 msgid "Invalid input '%s' given."
@@ -955,15 +1003,15 @@ msgid "Invalid index '%s' given."
 msgstr "Ugyldig index '%s' gitt."
 
 msgid "Enter password:"
-msgstr ""
+msgstr "Skriv inn passord:"
 
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr ""
+msgstr "Kopierte valgt tekst til utvalg %s: %s"
 
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr ""
+msgstr "Kopierte valgt bilde til utvalg %s"
 
 msgid "No document opened."
 msgstr "Ingen dokumenter åpnet."
@@ -996,24 +1044,24 @@ msgid "Failed to remove bookmark: %s"
 msgstr "Kunne ikke fjerne bokmerke: %s"
 
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Ingen bokmerker tilgjengelig."
 
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Bokmerke eksisterer ikke: %s"
 
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "Argumentet må være et tall som ikke er null."
 
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr ""
+msgstr "[%d]: side=<b>%2d</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
-msgstr ""
+msgstr "(gjeldende)"
 
 msgid "No jumplist available."
-msgstr ""
+msgstr "Ingen hoppliste tilgjengelig."
 
 msgid "Title"
 msgstr "Tittel"
@@ -1040,17 +1088,17 @@ msgid "Modification date"
 msgstr "Modifisert dato"
 
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 msgid "Other"
-msgstr ""
+msgstr "Annet"
 
 msgid "No information available."
 msgstr "Ingen informasjon tilgjengelig."
 
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
-msgstr ""
+msgstr "Se manualsider zathura(1) og zathurarc(5) for mer informasjon."
 
 msgid "Too many arguments."
 msgstr "For mange argumenter."
@@ -1059,16 +1107,16 @@ msgid "No arguments given."
 msgstr "Ingen argumenter gitt."
 
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Utskrift er ikke tillatt i streng sandkassemodus"
 
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Lagring er ikke tillatt i streng sandkassemodus"
 
 msgid "Invalid number of arguments."
 msgstr "Ugyldig nummer av argumenter."
 
 msgid "Exporting attachments is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Eksport av vedlegg er ikke tillatt i streng sandkassemodus"
 
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
@@ -1096,10 +1144,10 @@ msgstr "Ukjent vedlegg eller bilde '%s'."
 
 #, c-format
 msgid "Failed to execute command: %s"
-msgstr ""
+msgstr "Klarte ikke å kjøre kommando: %s"
 
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Kjøring av kommandoer er ikke tillatt i streng sandkassemodus"
 
 msgid "Argument must be a number."
 msgstr "Argumentet må være et tall."
@@ -1116,142 +1164,142 @@ msgid "Images"
 msgstr "Bilder"
 
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "Programtillegget støtter ikke eksport av vedlegg og bilder."
 
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "Dokumentet inneholder ingen bilder eller vedlegg"
 
 #. clang-format off
 #. settings
 msgid "Font"
-msgstr ""
+msgstr "Skrifttype"
 
 #. colors affecting the CSS
 msgid "Default foreground color"
-msgstr ""
+msgstr "Standard forgrunnsfarge"
 
 msgid "Default background color"
-msgstr ""
+msgstr "Standard bakgrunnsfarge"
 
 msgid "Inputbar foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for inndatalinje"
 
 msgid "Inputbar background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for inndatalinje"
 
 msgid "Statusbar foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for statuslinje"
 
 msgid "Statsubar background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for statuslinje"
 
 msgid "Completion foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for fullføring"
 
 msgid "Completion background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for fullføring"
 
 msgid "Completion group foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for fullføringsgruppe"
 
 msgid "Completion group background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for fullføringsgruppe"
 
 msgid "Completion highlight foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for uthevet fullføring"
 
 msgid "Completion highlight background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for uthevet fullføring"
 
 msgid "Error notification foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for feilmelding"
 
 msgid "Error notification background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for feilmelding"
 
 msgid "Warning notification foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for advarselsmelding"
 
 msgid "Warning notifaction background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for advarselsmelding"
 
 msgid "Notification foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for melding"
 
 msgid "Notification background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for melding"
 
 msgid "Index mode foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for indeksmodus"
 
 msgid "Index mode background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for indeksmodus"
 
 msgid "Index mode foreground color (active element)"
-msgstr ""
+msgstr "Forgrunnsfarge for indeksmodus (aktivt element)"
 
 msgid "Index mode background color (active element)"
-msgstr ""
+msgstr "Bakgrunnsfarge for indeksmodus (aktivt element)"
 
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Forgrunnsfarge for rullefelt"
 
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Bakgrunnsfarge for rullefelt"
 
 msgid "Initial window width"
-msgstr ""
+msgstr "Opprinnelig vindusbredde"
 
 msgid "Initial window height"
-msgstr ""
+msgstr "Opprinnelig vindushøyde"
 
 msgid "Horizontal padding for the status, input, and notification bars"
-msgstr ""
+msgstr "Horisontal utfylling for status-, inndata- og meldingslinjer"
 
 msgid "Vertical padding for the status, input, and notification bars"
-msgstr ""
+msgstr "Vertikal utfylling for status-, inndata- og meldingslinjer"
 
 msgid "Number of completion items"
-msgstr ""
+msgstr "Antall fullføringselementer"
 
 msgid "Command to execute in :exec"
-msgstr ""
+msgstr "Kommando som skal kjøres i :exec"
 
 msgid "Show or hide certain GUI elements"
-msgstr ""
+msgstr "Vis eller skjul bestemte GUI-elementer"
 
 msgid "Database backend"
 msgstr "Database backend"
 
 msgid "File monitor backend"
-msgstr ""
+msgstr "Filovervåkings-backend"
 
 msgid "Zoom step"
 msgstr "Zoom nivå"
 
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Horisontal utfylling mellom sider"
 
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Vertikal utfylling mellom sider"
 
 msgid "Number of pages per row"
 msgstr "Nummer av sider per rad"
 
 msgid "Column of the first page"
-msgstr ""
+msgstr "Kolonne for første side"
 
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Gjengi sider fra høyre mot venstre"
 
 msgid "Scroll step"
 msgstr "Skrolle nivå"
 
 msgid "Horizontal scroll step"
-msgstr ""
+msgstr "Horisontalt rullesteg"
 
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Overlapping ved helsiderulling"
 
 msgid "Zoom minimum"
 msgstr "Zoom minimum"
@@ -1263,7 +1311,7 @@ msgid "Maximum number of pages to keep in the cache"
 msgstr "Maksimum antall sider å holde i mellomlagringen"
 
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr ""
+msgstr "Maksimumsstørrelse i piksler for miniatyrbilder i mellomlageret"
 
 msgid "Number of positions to remember in the jumplist"
 msgstr "Antall posisjoner å huske i hopp-til-listen"
@@ -1278,7 +1326,7 @@ msgid "Color for highlighting"
 msgstr "Farge for utheving"
 
 msgid "Foreground color for highlighting"
-msgstr ""
+msgstr "Forgrunnsfarge for utheving"
 
 msgid "Color for highlighting (active)"
 msgstr "Farge for utheving (aktiv)"
@@ -1290,40 +1338,40 @@ msgid "'Loading ...' foreground color"
 msgstr "'Laster ...' forgrunnsfarge"
 
 msgid "Color used to highlight valid signatures"
-msgstr ""
+msgstr "Farge som brukes til å utheve gyldige signaturer"
 
 msgid "Color used to highlight signatures with warnings"
-msgstr ""
+msgstr "Farge som brukes til å utheve signaturer med advarsler"
 
 msgid "Color used to highlight invalid signatures"
-msgstr ""
+msgstr "Farge som brukes til å utheve ugyldige signaturer"
 
 msgid "Recolor pages"
 msgstr "Om-farge sider"
 
 msgid "When recoloring keep original hue and adjust lightness only"
-msgstr ""
+msgstr "Behold opprinnelig nyanse ved omfarging, og juster bare lyshet"
 
 msgid "When recoloring keep original image colors"
-msgstr ""
+msgstr "Behold opprinnelige bildefarger ved omfarging"
 
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "Juster lyshet ved omfarging"
 
 msgid "Wrap scrolling"
-msgstr ""
+msgstr "Gå rundt ved rulling"
 
 msgid "Advance number of pages per row"
-msgstr ""
+msgstr "Gå fram med antall sider per rad"
 
 msgid "Horizontally centered zoom"
 msgstr "Horisontalsentrert zoom"
 
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Sentrer sider vertikalt"
 
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Juster lenkemål til venstre"
 
 msgid "Let zoom be changed when following links"
 msgstr "La zoom bli endret når følgende linker"
@@ -1344,89 +1392,92 @@ msgid "Show directories"
 msgstr "Vis mapper"
 
 msgid "Show recent files"
-msgstr ""
+msgstr "Vis nylige filer"
 
 msgid "Always open on first page"
 msgstr "Alltid åpne på første side"
 
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Deaktiver utheving av søkeresultater"
 
 msgid "Double click to follow links"
-msgstr ""
+msgstr "Dobbeltklikk for å følge lenker"
 
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Aktiver inkrementelt søk"
 
 msgid "Clear search results on abort"
 msgstr "Stryk ut søkeresulteter ved avbrytelse"
 
 msgid "Use basename of the file in the window title"
-msgstr ""
+msgstr "Bruk filens basisnavn i vindustittelen"
 
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr ""
+msgstr "Bruk ~ i stedet for $HOME i filnavnet i vindustittelen"
 
 msgid "Display the page number in the window title"
 msgstr "Vis nummer av sider i vinduestittelen"
 
-msgid "Use first page of a document as window icon"
-msgstr ""
-
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Bruk filens basisnavn i statuslinjen"
 
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr ""
+msgstr "Bruk ~ i stedet for $HOME i filnavnet i statuslinjen"
 
 msgid "Display (current page / total pages) as a percent in the statusbar"
-msgstr ""
+msgstr "Vis (gjeldende side / totalt antall sider) som prosent i statuslinjen"
 
 msgid "Enable SyncTeX support"
-msgstr ""
+msgstr "Aktiver SyncTeX-støtte"
 
 msgid "SyncTeX editor command"
-msgstr ""
+msgstr "SyncTeX-redigeringskommando"
 
 msgid "SyncTeX edit modifier"
-msgstr ""
+msgstr "SyncTeX-redigeringsmodifikator"
 
 msgid "Highlighter modifier"
-msgstr ""
+msgstr "Uthevingsmodifikator"
 
 msgid "Enable D-Bus service"
 msgstr "Aktiv D-Bus servicen"
 
 msgid "Raise window on certain D-Bus commands"
-msgstr ""
+msgstr "Hev vinduet ved bestemte D-Bus-kommandoer"
 
 msgid "Save history at each page change"
-msgstr ""
+msgstr "Lagre historikk ved hver sideendring"
 
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr ""
+msgstr "Utklippstavlen som data valgt med musen skrives til"
 
 msgid "Enable notification after selecting text"
-msgstr ""
+msgstr "Aktiver melding etter valg av tekst"
+
+msgid "Keep selection highlighted after mouse release"
+msgstr "Behold utvalget uthevet etter at museknappen slippes"
 
 msgid "Disable additional information for signatures embedded in the document."
-msgstr ""
+msgstr "Deaktiver tilleggsinformasjon for signaturer innebygd i dokumentet."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr "Aktiver bekreftelsesdialog ved åpning av lenker"
 
 #. define default inputbar commands
 msgid "Map a key sequence"
-msgstr ""
+msgstr "Tilordne en tastesekvens"
 
 msgid "Set an option"
-msgstr ""
+msgstr "Angi et valg"
 
 msgid "Run a shortcut"
-msgstr ""
+msgstr "Kjør en snarvei"
 
 msgid "Unmap a key sequence"
-msgstr ""
+msgstr "Opphev tilordning av en tastesekvens"
 
 msgid "Dump settings to a file"
-msgstr ""
+msgstr "Skriv innstillinger til en fil"
 
 msgid "Add a bookmark"
 msgstr "Legg til bokmerke"
@@ -1438,10 +1489,10 @@ msgid "List all bookmarks"
 msgstr "List alle bokmerker"
 
 msgid "Jump to bookmark"
-msgstr ""
+msgstr "Gå til bokmerke"
 
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "Vis nylige hopp i hopplisten"
 
 msgid "Close current file"
 msgstr "Lukk den gjeldende filen"
@@ -1475,7 +1526,7 @@ msgid "Save attachments"
 msgstr "Lagre vedlegg"
 
 msgid "Set page offset"
-msgstr ""
+msgstr "Angi sideforskyvning"
 
 msgid "Mark current location within the document"
 msgstr "Marker nåværende lokalasjon i dokumentet"
@@ -1484,7 +1535,7 @@ msgid "Delete the specified marks"
 msgstr "Slett spesifiserte merker"
 
 msgid "Remove highlights of current search results"
-msgstr ""
+msgstr "Fjern uthevinger for gjeldende søkeresultater"
 
 msgid "Highlight current search results"
 msgstr "Uthev følgende søkeresultater"
@@ -1493,26 +1544,26 @@ msgid "Show version information"
 msgstr "Vis versjonsinformasjon"
 
 msgid "Source config file"
-msgstr ""
+msgstr "Les inn konfigurasjonsfil"
 
 msgid "Failed to run xdg-open."
 msgstr "Klarte ikke å kjøre xdg-open."
 
 msgid "y"
-msgstr ""
+msgstr "j"
 
 msgid "Y"
-msgstr ""
+msgstr "J"
 
 msgid "Cancelled."
-msgstr ""
+msgstr "Avbrutt."
 
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
-msgstr ""
+msgstr "Åpne ekstern lenke <b>%s</b>? [J/n]"
 
 msgid "Opening external applications in strict sandbox mode is not permitted"
-msgstr ""
+msgstr "Åpning av eksterne programmer er ikke tillatt i streng sandkassemodus"
 
 #, c-format
 msgid "Link: page %d"
@@ -1520,21 +1571,18 @@ msgstr "Link: side %d"
 
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Lenke: %s"
 
 msgid "Link: Invalid"
 msgstr "Link: Ugyldig"
 
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "Kopierte sidenummer: %d"
 
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
-
-msgid "Reparents to window specified by xid (X11)"
-msgstr ""
+msgstr "Kopierte lenke: %s"
 
 msgid "Path to the config directory"
 msgstr "Sti til konfigureringsmappe"
@@ -1543,13 +1591,13 @@ msgid "Path to the data directory"
 msgstr "Sti til data-mappe"
 
 msgid "Path to the cache directory"
-msgstr ""
+msgstr "Sti til mellomlagringsmappe"
 
 msgid "Path to the directories containing plugins"
 msgstr "Sti til mapper som inneholder plugins"
 
 msgid "Fork into the background"
-msgstr ""
+msgstr "Start i bakgrunnen"
 
 msgid "Document password"
 msgstr "Dokument passord"
@@ -1564,22 +1612,22 @@ msgid "Print version information"
 msgstr "Skriv ut versjonsinformasjon"
 
 msgid "SyncTeX editor (forwarded to the synctex command)"
-msgstr ""
+msgstr "SyncTeX-redigering (videresendt til synctex-kommandoen)"
 
 msgid "Move to given SyncTeX position"
-msgstr ""
+msgstr "Flytt til angitt SyncTeX-posisjon"
 
 msgid "Highlight given position in the given process"
-msgstr ""
+msgstr "Uthev angitt posisjon i angitt prosess"
 
 msgid "Start in a non-default mode"
 msgstr "Start i ikke-standard modus"
 
 msgid "Bookmark to go to"
-msgstr ""
+msgstr "Bokmerke å gå til"
 
 msgid "Search for the given phrase and display results"
-msgstr ""
+msgstr "Søk etter angitt frase og vis resultater"
 
 #, c-format
 msgid ""
@@ -1588,21 +1636,25 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
+"Signaturen er gyldig.\n"
+"Dette dokumentet er signert av\n"
+"  %s\n"
+"den %s."
 
 msgid "Signature certificate is expired."
-msgstr ""
+msgstr "Signatursertifikatet er utløpt."
 
 msgid "Signature certificate is revoked."
-msgstr ""
+msgstr "Signatursertifikatet er tilbakekalt."
 
 msgid "Signature certificate is not trusted."
-msgstr ""
+msgstr "Signatursertifikatet er ikke betrodd."
 
 msgid "Signature certificate is invalid."
-msgstr ""
+msgstr "Signatursertifikatet er ugyldig."
 
 msgid "Signature is invalid."
-msgstr ""
+msgstr "Signaturen er ugyldig."
 
 msgid "Loading..."
 msgstr "Laster..."
@@ -1616,7 +1668,7 @@ msgstr "Lagre bilde som"
 #. Update statusbar.
 #, c-format
 msgid "Printing page %d ..."
-msgstr ""
+msgstr "Skriver ut side %d ..."
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1624,21 +1676,34 @@ msgstr "Utskrift feilet: %s"
 
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr ""
+msgstr "Ugyldig tilpasningsmodus: %d"
+
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr "Kopierte filsti til utvalg %s: %s"
 
 msgid "This document does not contain any index"
 msgstr "Dette dokumenetet inneholder ikke noen index"
 
+msgid "Could not get path from file."
+msgstr "Kunne ikke hente sti fra fil."
+
 msgid "Open file"
-msgstr ""
+msgstr "Åpne fil"
+
+msgid "Supported documents"
+msgstr "Støttede dokumenter"
+
+msgid "All files"
+msgstr "Alle filer"
 
 #, c-format
 msgid "[Search %d/%d]"
-msgstr ""
+msgstr "[Søk %d/%d]"
 
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "Mønster ikke funnet: %s"
 
 msgid "[No name]"
 msgstr "[Inget navn]"
@@ -1647,7 +1712,7 @@ msgid "Could not read file from stdin and write it to a temporary file."
 msgstr "Kunne ikke lese fil fra stdin og skrive til temporærfil."
 
 msgid "Could not read file from GIO and copy it to a temporary file."
-msgstr ""
+msgstr "Kunne ikke lese fil fra GIO og kopiere den til en midlertidig fil."
 
 msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "Usupportert filtype. Vennligst innstaller den nødvendige pluginen."
@@ -1657,7 +1722,7 @@ msgstr "Dokumentet inneholder ingen sider"
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr ""
+msgstr "Filen finnes allerede: %s. Bruk :write! for å overskrive den."
 
 msgid "Failed to save document."
 msgstr "Kunne ikke lagre dokumentet."
@@ -1667,61 +1732,65 @@ msgstr "Dokumentet er lagret."
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr ""
+msgstr "Ugyldig antall argumenter gitt: %zu i stedet for minst %u"
 
 #, c-format
 msgid "Unregistered mode specified: %s"
-msgstr ""
+msgstr "Uregistrert modus angitt: %s"
 
 msgid "Invalid number of arguments passed"
-msgstr ""
+msgstr "Ugyldig antall argumenter gitt"
 
 #, c-format
 msgid "Invalid modifier in %s"
-msgstr ""
+msgstr "Ugyldig modifikator i %s"
 
 #, c-format
 msgid "Invalid special key value for %s"
-msgstr ""
+msgstr "Ugyldig spesialtastverdi for %s"
 
 #, c-format
 msgid "Invalid special key value or mode %s"
-msgstr ""
+msgstr "Ugyldig spesialtastverdi eller modus %s"
 
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr ""
+msgstr "Ikke en gyldig snarveisfunksjon: %s"
 
 msgid "Not enough arguments."
-msgstr ""
+msgstr "Ikke nok argumenter."
 
 #, c-format
 msgid "Unknown option: %s"
-msgstr ""
+msgstr "Ukjent valg: %s"
 
 msgid "true"
-msgstr ""
+msgstr "sann"
 
 msgid "false"
-msgstr ""
+msgstr "usann"
 
 #, c-format
 msgid "No value defined for option: %s"
-msgstr ""
+msgstr "Ingen verdi definert for valg: %s"
 
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr ""
+msgstr "Ukjent verdi for valg: %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr "Ugyldig verdi for valg: %s"
 
 #. unhandled command
 #, c-format
 msgid "Not a valid command: %s"
-msgstr ""
+msgstr "Ikke en gyldig kommando: %s"
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr ""
+msgstr "Ugyldig antall argumenter gitt: %zu i stedet for 1"
 
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
+msgstr "Klarte ikke å skrive JSON: %s"

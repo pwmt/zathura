@@ -41,6 +41,18 @@ static inline int landlock_restrict_self(const int ruleset_fd, const __u32 flags
 #define LANDLOCK_RESTRICT_SELF_TSYNC (1U << 3)
 #endif
 
+#ifndef LANDLOCK_ACCESS_FS_IOCTL_DEV
+#define LANDLOCK_ACCESS_FS_IOCTL_DEV (1ULL << 15)
+#endif
+
+#ifndef LANDLOCK_SCOPE_SIGNAL
+#define LANDLOCK_SCOPE_SIGNAL (1ULL << 1)
+#endif
+
+#ifndef LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET
+#define LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET (1ULL << 0)
+#endif
+
 static int landlock_drop(__u64 fs_access, __u64 net_access, __u64 scoped, int abi) {
   const struct landlock_ruleset_attr ruleset_attr = {
       .handled_access_fs  = fs_access,

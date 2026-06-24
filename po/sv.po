@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:44+0200\n"
+"POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -57,8 +57,53 @@ msgstr "Öppna en fil med kommandot `open`"
 msgid "Following links"
 msgstr "Följa länkar"
 
-msgid "Listing and selecting bookmakrs"
+msgid "Listing and selecting bookmarks"
 msgstr "Lista och välja bokmärken"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported. Also, the setting 'window-icon-document' "
+"has been removed."
+msgstr ""
+
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Olika fixar och förbättringar"
 
 msgid "Add search result counter (#450)"
 msgstr ""
@@ -68,9 +113,6 @@ msgstr ""
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Olika fixar och förbättringar"
 
 msgid "Fix warning when using 'null' database (#881)"
 msgstr ""
@@ -1393,9 +1435,6 @@ msgstr "Använd ~ istället för $HOME i filnamnet i fönstertiteln"
 msgid "Display the page number in the window title"
 msgstr "Visa sidnummer i fönstertiteln"
 
-msgid "Use first page of a document as window icon"
-msgstr "Använd den första sidan från ett dokument som fönsterikon"
-
 msgid "Use basename of the file in the statusbar"
 msgstr "Använd basnamnet för filen in statusraden"
 
@@ -1432,8 +1471,15 @@ msgstr "Urklipp till vilket musmarkerad data kommer att skrivas"
 msgid "Enable notification after selecting text"
 msgstr "Aktivera avisering efter att ha markerat text"
 
+msgid "Keep selection highlighted after mouse release"
+msgstr "Behåll markering efter att musknappen släppts"
+
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
+"Inaktivera ytterligare information för signaturer inbäddade i dokumentet."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr "Aktivera bekräftelsefråga när länkar öppnas"
 
 #. define default inputbar commands
 msgid "Map a key sequence"
@@ -1442,9 +1488,8 @@ msgstr "Mappa en tangentsekvens"
 msgid "Set an option"
 msgstr "Ställ in ett alternativ"
 
-#, fuzzy
 msgid "Run a shortcut"
-msgstr "Uppdatera shortcuts"
+msgstr "Kör en genväg"
 
 msgid "Unmap a key sequence"
 msgstr "Avmappa en tangentsekvens"
@@ -1523,17 +1568,17 @@ msgid "Failed to run xdg-open."
 msgstr "Misslyckades med att köra xdg-open."
 
 msgid "y"
-msgstr ""
+msgstr "j"
 
 msgid "Y"
-msgstr ""
+msgstr "J"
 
 msgid "Cancelled."
-msgstr ""
+msgstr "Avbrutet."
 
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
-msgstr ""
+msgstr "Öppna extern länk <b>%s</b>? [J/n]"
 
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Att öppna externa program i strikt sandlådeläge tillåts inte"
@@ -1556,9 +1601,6 @@ msgstr "Kopierat sidnummer: %d"
 #, c-format
 msgid "Copied link: %s"
 msgstr "Kopierad länk: %s"
-
-msgid "Reparents to window specified by xid (X11)"
-msgstr "Ändrar förälder till förster angivet av xid (X11)"
 
 msgid "Path to the config directory"
 msgstr "Sökväg till konfigurationskatalogen"
@@ -1654,15 +1696,28 @@ msgstr "Utskrift misslyckades: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Ogiltigt justeringsläge: %d"
 
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr "Kopierade filsökväg till markering %s: %s"
+
 msgid "This document does not contain any index"
 msgstr "Detta dokument innehåller inget index"
+
+msgid "Could not get path from file."
+msgstr "Kunde inte hämta sökväg från fil."
 
 msgid "Open file"
 msgstr "Öppna fil"
 
+msgid "Supported documents"
+msgstr "Dokument som stöds"
+
+msgid "All files"
+msgstr "Alla filer"
+
 #, c-format
 msgid "[Search %d/%d]"
-msgstr ""
+msgstr "[Sökning %d/%d]"
 
 #, c-format
 msgid "Pattern not found: %s"
@@ -1728,10 +1783,10 @@ msgid "Unknown option: %s"
 msgstr "Okänt alternativ: %s"
 
 msgid "true"
-msgstr ""
+msgstr "sant"
 
 msgid "false"
-msgstr ""
+msgstr "falskt"
 
 #, c-format
 msgid "No value defined for option: %s"
@@ -1740,6 +1795,10 @@ msgstr "Inget värde definierat för alternativet: %s"
 #, c-format
 msgid "Unknown value for option: %s"
 msgstr "Okänt värde för alternativet: %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr "Ogiltigt värde för alternativet: %s"
 
 #. unhandled command
 #, c-format

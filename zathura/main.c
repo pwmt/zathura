@@ -15,13 +15,20 @@
 #include "zathura.h"
 #include "plugin.h"
 #include "utils.h"
-#ifdef WITH_SYNCTEX
+#ifdef WITH_SECCOMP
+#include "seccomp-filters.h"
+#endif
+#ifdef WITH_LANDLOCK
+#include "landlock.h"
+#endif
+/* SyncTeX needs D-Bus, which the sandbox disables, so it is unavailable there. */
+#if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
 #include "dbus-interface.h"
 #include "synctex.h"
 #endif
 
+#if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
 /* Handle synctex forward synchronization */
-#ifdef WITH_SYNCTEX
 static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
   g_autoptr(GFile) file = g_file_new_for_commandline_arg(filename);
   if (file == NULL) {
@@ -76,6 +83,31 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
   if (synctex_editor != NULL) {
     girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
   }
+
+#ifdef WITH_SANDBOX
+  girara_debug("Strict sandbox preventing write and network access.");
+#ifdef WITH_LANDLOCK
+  if (landlock_drop_write() < 0) {
+    girara_error("Failed to apply landlock write restriction.");
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
+#ifdef WITH_SECCOMP
+  if (seccomp_enable_strict_filter(zathura) != 0) {
+    girara_error("Failed to initialize strict seccomp filter.");
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
+#ifdef __OpenBSD__
+  if (pledge("stdio rpath", "") != 0) {
+    girara_error("Failed to pledge: %s", strerror(errno));
+    zathura_free(zathura);
+    return NULL;
+  }
+#endif
+#endif
 
   return zathura;
 }
@@ -194,6 +226,21 @@ static void start_process_group(void* GIRARA_UNUSED(data)) {
 GIRARA_VISIBLE int main(int argc, char* argv[]) {
   zathura_init_locale();
 
+#ifdef WITH_SANDBOX
+  girara_debug("Running zathura-sandbox, disable IPC services");
+  /* Prevent default gtk dbus connection */
+  g_setenv("DBUS_SESSION_BUS_ADDRESS", "disabled:", TRUE);
+
+  /* disable dconf writing - uses /var/empty as alternative to /dev/null to avoid ioctl call */
+  g_setenv("DCONF_PROFILE", "/var/empty", TRUE);
+
+  /* use the software renderer to avoid the gpu stack attack surface (and high risk syscalls) */
+  g_setenv("GSK_RENDERER", "cairo", TRUE);
+
+  /* unset the input method to avoid communication with external services */
+  unsetenv("GTK_IM_MODULE");
+#endif
+
   /* parse command line arguments */
   g_autofree gchar* config_dir     = NULL;
   g_autofree gchar* data_dir       = NULL;
@@ -211,7 +258,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   gint page_number                 = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   gint synctex_pid                 = -1;
 
-  GOptionEntry entries[] = {
+  const GOptionEntry entries[] = {
       {"config-dir", 'c', 0, G_OPTION_ARG_FILENAME, &config_dir, _("Path to the config directory"), "path"},
       {"data-dir", 'd', 0, G_OPTION_ARG_FILENAME, &data_dir, _("Path to the data directory"), "path"},
       {"cache-dir", '\0', 0, G_OPTION_ARG_FILENAME, &cache_dir, _("Path to the cache directory"), "path"},
@@ -248,7 +295,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
   zathura_set_log_level(loglevel);
 
-#ifdef WITH_SYNCTEX
+#if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
   /* handle synctex forward synchronization */
   if (synctex_fwd != NULL) {
     if (argc != 2) {

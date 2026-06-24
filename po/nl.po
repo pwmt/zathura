@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:44+0200\n"
+"POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch (http://app.transifex.com/pwmt/zathura/language/nl/)\n"
@@ -56,7 +56,52 @@ msgstr ""
 msgid "Following links"
 msgstr ""
 
-msgid "Listing and selecting bookmakrs"
+msgid "Listing and selecting bookmarks"
+msgstr ""
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported. Also, the setting 'window-icon-document' "
+"has been removed."
+msgstr ""
+
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Add search result counter (#450)"
@@ -66,9 +111,6 @@ msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Fix warning when using 'null' database (#881)"
@@ -1379,9 +1421,6 @@ msgstr "~ gebruiken i.p.v. $HOME in de bestandsnaam in de venstertitel"
 msgid "Display the page number in the window title"
 msgstr "Paginanummer tonen in de venstertitel"
 
-msgid "Use first page of a document as window icon"
-msgstr "Eerste documentpagina gebruiken als vensterpictogram"
-
 msgid "Use basename of the file in the statusbar"
 msgstr "Basisnaam van bestand gebruiken in de statusbalk"
 
@@ -1420,8 +1459,14 @@ msgstr ""
 msgid "Enable notification after selecting text"
 msgstr "Melding tonen na selecteren van tekst"
 
+msgid "Keep selection highlighted after mouse release"
+msgstr ""
+
 msgid "Disable additional information for signatures embedded in the document."
 msgstr "Toon geen aanvullende informatie bij ondertekeningen in documenten."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr ""
 
 #. define default inputbar commands
 msgid "Map a key sequence"
@@ -1546,9 +1591,6 @@ msgstr "Paginanummer gekopieerd: %d"
 msgid "Copied link: %s"
 msgstr "Link gekopieerd: %s"
 
-msgid "Reparents to window specified by xid (X11)"
-msgstr "Wordt bij bovenliggend, door xid (X11) opgegeven venster gevoegd"
-
 msgid "Path to the config directory"
 msgstr "Locatie van de configuratiemap"
 
@@ -1643,10 +1685,23 @@ msgstr "Het afdrukken is mislukt: %s"
 msgid "Invalid adjust mode: %d"
 msgstr "Ongeldige aanpassingsmodus: %d"
 
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr ""
+
 msgid "This document does not contain any index"
 msgstr "Dit document bevat geen index"
 
+msgid "Could not get path from file."
+msgstr ""
+
 msgid "Open file"
+msgstr ""
+
+msgid "Supported documents"
+msgstr ""
+
+msgid "All files"
 msgstr ""
 
 #, c-format
@@ -1733,6 +1788,10 @@ msgstr "Geen waarde opgegeven voor optie: %s"
 #, c-format
 msgid "Unknown value for option: %s"
 msgstr "Onbekende waarde voor optie: %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr ""
 
 #. unhandled command
 #, c-format

@@ -1,29 +1,25 @@
-# zathura - language file (Italian)
+# zathura - language file (Portuguese)
 # SPDX-License-Identifier: Zlib
 #
 # Translators:
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2015
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2012
-# Simone Dotto <simonedotto@protonmail.com>, 2019-2020,2022
-# Simone Guercio <s.guercio@gmail.com>, 2015
-# TheLemonMan <segnalazionidalweb@gmail.com>, 2012,2015
 msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
-"Last-Translator: TheLemonMan <segnalazionidalweb@gmail.com>, 2012,2015\n"
-"Language-Team: Italian (http://app.transifex.com/pwmt/zathura/language/it/)\n"
-"Language: it\n"
+"Last-Translator: Fernando Henrique <liquuid@gmail.com>, 2020\n"
+"Language-Team: Portuguese (http://app.transifex.com/pwmt/zathura/language/"
+"pt/)\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
-"1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
+"1000000 == 0 ? 1 : 2;\n"
 
 msgid "Minimalistic document viewer"
-msgstr "Visualizzatore di documenti minimalista"
+msgstr "Visualizador de documentos minimalista"
 
 msgid ""
 "Zathura is a highly customizable and functional document viewer. It provides "
@@ -31,39 +27,39 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
-"Zathura è un visualizzatore di documenti altamente personalizzabile e "
-"funzionale. Fornisce un'interfaccia minimalista e salvaspazio e un facile "
-"utilizzo che si concentra principalmente sull'interazione della tastiera. "
-"Zathura rende possibile visualizzare e navigare completamente tra i "
-"documenti senza usare il mouse."
+"O Zathura é um visualizador de documentos altamente personalizável e "
+"funcional. Disponibiliza uma interface minimalista e economizadora de "
+"espaço, bem como uma utilização simples focada sobretudo na interação pelo "
+"teclado. O Zathura permite visualizar e navegar por documentos sem usar o "
+"rato."
 
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
-"Zathura può usare le estensioni per allargare il supporto a vari formati di "
-"file. Tra le altre funzionalità ci sono:"
+"O Zathura pode ser expandido para suportar vários formatos de documentos "
+"através de plugins. Outras funcionalidades incluem:"
 
 msgid "SyncTeX forward and backward synchronization support."
-msgstr "Supporto SyncTeX per la sincronizzazione in avanti e all'indietro."
+msgstr "Suporte de sincronização direta e inversa do SyncTeX."
 
 msgid "Quickmarks and bookmarks."
-msgstr "Quickmark e bookmark."
+msgstr "Marcadores rápidos e marcadores."
 
 msgid "Automatic document reloading."
-msgstr "Ricarica automatica del documento."
+msgstr "Recarregamento automático de documentos."
 
 msgid "Reading a PDF file"
-msgstr "Lettura di un file PDF"
+msgstr "Leitura de um ficheiro PDF"
 
 msgid "Opening a file with the `open` command"
-msgstr "Apertura di un file con il comando `open`"
+msgstr "Abertura de um ficheiro com o comando `open`"
 
 msgid "Following links"
-msgstr "Seguire i link"
+msgstr "Seguir ligações"
 
 msgid "Listing and selecting bookmarks"
-msgstr "Elenco e selezione dei segnalibri"
+msgstr "Listar e selecionar marcadores"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -634,7 +630,7 @@ msgid "Scroll horizontally with shift and mouse wheel"
 msgstr ""
 
 msgid "Page aware scrolling"
-msgstr "Scorrimento pagina per pagina"
+msgstr ""
 
 msgid "SyncTeX forward synchronisation"
 msgstr ""
@@ -970,7 +966,7 @@ msgid "Marker support"
 msgstr ""
 
 msgid "Highlight search results"
-msgstr "Evidenzia i risultati della ricerca"
+msgstr ""
 
 msgid "Buffered commands"
 msgstr ""
@@ -993,574 +989,572 @@ msgstr ""
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr "PDF;PS;PostScript;DjVU;documenti;presentazioni;lettore;"
+msgstr "PDF;PS;PostScript;DjVU;documento;apresentação;visualizador;"
 
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr "'%s' non può essere 0. Imposta ad 1."
+msgstr "'%s' não pode ser 0. Definido como 1."
 
 #, c-format
 msgid "Invalid input '%s' given."
-msgstr "Input inserito '%s' non valido."
+msgstr "Foi indicada a entrada inválida '%s'."
 
 #, c-format
 msgid "Invalid index '%s' given."
-msgstr "Indice inserito '%s' non valido."
+msgstr "Foi indicado o índice inválido '%s'."
 
 msgid "Enter password:"
-msgstr "Inserisci password"
+msgstr "Introduza a palavra-passe:"
 
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr "Copiato il testo selezionato alla selezione %s: %s"
+msgstr "Texto selecionado copiado para a seleção %s: %s"
 
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr "Copiata l'immagine selezionata alla selezione %s"
+msgstr "Imagem selecionada copiada para a seleção %s"
 
 msgid "No document opened."
-msgstr "Nessun documento aperto."
+msgstr "Nenhum documento aberto."
 
 msgid "Invalid number of arguments given."
-msgstr "Numero di argomenti errato."
+msgstr "Número inválido de argumentos."
 
 #, c-format
 msgid "Could not update bookmark: %s"
-msgstr "Impossibile creare il segnalibro: %s"
+msgstr "Não foi possível atualizar o marcador: %s"
 
 #, c-format
 msgid "Could not create bookmark: %s"
-msgstr "Impossibile creare il segnalibro: %s"
+msgstr "Não foi possível criar o marcador: %s"
 
 #, c-format
 msgid "Bookmark successfully updated: %s"
-msgstr "Segnalibro aggiornato con successo: %s"
+msgstr "Marcador atualizado com sucesso: %s"
 
 #, c-format
 msgid "Bookmark successfully created: %s"
-msgstr "Segnalibro creato con successo: %s"
+msgstr "Marcador criado com sucesso: %s"
 
 #, c-format
 msgid "Removed bookmark: %s"
-msgstr "Segnalibro rimosso: %s"
+msgstr "Marcador removido: %s"
 
 #, c-format
 msgid "Failed to remove bookmark: %s"
-msgstr "Impossibile rimuovere il segnalibro: %s"
+msgstr "Falha ao remover o marcador: %s"
 
 msgid "No bookmarks available."
-msgstr "Nessun bookmark disponibile."
+msgstr "Nenhum marcador disponível."
 
 #, c-format
 msgid "No such bookmark: %s"
-msgstr "Nessun segnalibro corrispondente: %s"
+msgstr "Não existe esse marcador: %s"
 
 msgid "Argument must be a nonzero number."
-msgstr "L'argomento deve essere un numero diverso da zero."
+msgstr "O argumento deve ser um número diferente de zero."
 
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: pagina=<b>%2d</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: página=<b>%2d</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
-msgstr "(corrente)"
+msgstr "(atual)"
 
 msgid "No jumplist available."
-msgstr "Nessuna jumplist disponibile."
+msgstr "Nenhuma lista de saltos disponível."
 
 msgid "Title"
-msgstr "Titolo"
+msgstr "Título"
 
 msgid "Subject"
-msgstr "Argomento"
+msgstr "Assunto"
 
 msgid "Keywords"
-msgstr "Parole chiave"
+msgstr "Palavras-chave"
 
 msgid "Author"
-msgstr "Autore"
+msgstr "Autor"
 
 msgid "Creator"
-msgstr "Creato da"
+msgstr "Criador"
 
 msgid "Producer"
-msgstr "Prodotto da"
+msgstr "Produtor"
 
 msgid "Creation date"
-msgstr "Data di creazione"
+msgstr "Data de criação"
 
 msgid "Modification date"
-msgstr "Data di modifica"
+msgstr "Data de modificação"
 
 msgid "Format"
 msgstr "Formato"
 
 msgid "Other"
-msgstr "Altro"
+msgstr "Outro"
 
 msgid "No information available."
-msgstr "Nessun' informazione disponibile."
+msgstr "Nenhuma informação disponível."
 
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
-"Consultare le pagine di manuale zathura(1) e zathurarc(5) per maggiori "
-"informazioni."
+"Consulte as páginas de manual zathura(1) e zathurarc(5) para mais "
+"informações."
 
 msgid "Too many arguments."
-msgstr "Numero di argomenti eccessivo."
+msgstr "Demasiados argumentos."
 
 msgid "No arguments given."
-msgstr "Nessun argomento specificato."
+msgstr "Nenhum argumento indicado."
 
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr "La stampa non è consentita in modalità sandbox restrittiva"
+msgstr "A impressão não é permitida no modo de sandbox estrito"
 
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr "Il salvataggio non è consentito in modalità sandbox restrittiva"
+msgstr "Guardar não é permitido no modo de sandbox estrito"
 
 msgid "Invalid number of arguments."
-msgstr "Numero di argomenti non valido."
+msgstr "Número inválido de argumentos."
 
 msgid "Exporting attachments is not permitted in strict sandbox mode"
-msgstr ""
-"L'esportazione degli allegati non è consentita in modalità sandbox "
-"restrittiva"
+msgstr "A exportação de anexos não é permitida no modo de sandbox estrito"
 
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
-msgstr "Impossibile salvare l' allegato '%s' in '%s'"
+msgstr "Não foi possível escrever o anexo '%s' em '%s'."
 
 #, c-format
 msgid "Wrote attachment '%s' to '%s'."
-msgstr "Allegato '%s' salvato in '%s'"
+msgstr "Anexo '%s' escrito em '%s'."
 
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Immagine '%s' salvata come '%s'"
+msgstr "Imagem '%s' escrita em '%s'."
 
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Impossibile salvare l' immagine '%s' come '%s'"
+msgstr "Não foi possível escrever a imagem '%s' em '%s'."
 
 #, c-format
 msgid "Unknown image '%s'."
-msgstr "Immagine sconosciuta '%s'"
+msgstr "Imagem desconhecida '%s'."
 
 #, c-format
 msgid "Unknown attachment or image '%s'."
-msgstr "Immagine o allegato sconosciuti '%s"
+msgstr "Anexo ou imagem desconhecido: '%s'."
 
 #, c-format
 msgid "Failed to execute command: %s"
-msgstr "Impossibile eseguire il comando: %s"
+msgstr "Falha ao executar o comando: %s"
 
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr "L'esecuzione non è consentita in modalità sandbox restrittiva"
+msgstr "A execução de comandos não é permitida no modo de sandbox estrito"
 
 msgid "Argument must be a number."
-msgstr "L' argomento dev' essere un numero."
+msgstr "O argumento deve ser um número."
 
 #, c-format
 msgid "Page %d"
-msgstr "Pagina %d"
+msgstr "Página %d"
 
 msgid "Attachments"
-msgstr "Allegati"
+msgstr "Anexos"
 
 #. add images
 msgid "Images"
-msgstr "Immagini"
+msgstr "Imagens"
 
 msgid "Plugin does not support exporting attachments and images."
-msgstr "Il plugin non supporta l'esportazione di allegati e immagini."
+msgstr "O plugin não suporta a exportação de anexos e imagens."
 
 msgid "Document contains no images or attachments"
-msgstr "Il documento non contiene immagini né allegati"
+msgstr "O documento não contém imagens nem anexos"
 
 #. clang-format off
 #. settings
 msgid "Font"
-msgstr "Font"
+msgstr "Tipo de letra"
 
 #. colors affecting the CSS
 msgid "Default foreground color"
-msgstr "Colore del testo di default"
+msgstr "Cor de primeiro plano predefinida"
 
 msgid "Default background color"
-msgstr "Colore di sfondo di default"
+msgstr "Cor de fundo predefinida"
 
 msgid "Inputbar foreground color"
-msgstr "Colore del testo della barra dei comandi"
+msgstr "Cor de primeiro plano da barra de entrada"
 
 msgid "Inputbar background color"
-msgstr "Colore di sfondo della barra dei comandi"
+msgstr "Cor de fundo da barra de entrada"
 
 msgid "Statusbar foreground color"
-msgstr "Colore del testo della barra di stato"
+msgstr "Cor de primeiro plano da barra de estado"
 
 msgid "Statsubar background color"
-msgstr "Colore di sfondo della barra di stato"
+msgstr "Cor de fundo da barra de estado"
 
 msgid "Completion foreground color"
-msgstr "Colore del testo del completamento"
+msgstr "Cor de primeiro plano da completação"
 
 msgid "Completion background color"
-msgstr "Colore di sfondo del completamento"
+msgstr "Cor de fundo da completação"
 
 msgid "Completion group foreground color"
-msgstr "Colore del testo del gruppo di completamento"
+msgstr "Cor de primeiro plano do grupo de completação"
 
 msgid "Completion group background color"
-msgstr "Colore di sfondo del gruppo di completamento"
+msgstr "Cor de fundo do grupo de completação"
 
 msgid "Completion highlight foreground color"
-msgstr "Colore del testo del completamento evidenziato"
+msgstr "Cor de primeiro plano da completação realçada"
 
 msgid "Completion highlight background color"
-msgstr "Colore di sfondo del completamento evidenziato"
+msgstr "Cor de fundo da completação realçada"
 
 msgid "Error notification foreground color"
-msgstr "Colore del testo della notifica di errore"
+msgstr "Cor de primeiro plano da notificação de erro"
 
 msgid "Error notification background color"
-msgstr "Colore di sfondo della notifica di errore"
+msgstr "Cor de fundo das notificações de erro"
 
 msgid "Warning notification foreground color"
-msgstr "Colore del testo della notifica d' avvertimento"
+msgstr "Cor de primeiro plano da notificação de aviso"
 
 msgid "Warning notifaction background color"
-msgstr "Colore di sfondo della notifica d' avvertimento"
+msgstr "Cor de fundo da notificação de aviso"
 
 msgid "Notification foreground color"
-msgstr "Colore del testo della notifica"
+msgstr "Cor de primeiro plano da notificação"
 
 msgid "Notification background color"
-msgstr "Colore di sfondo della notifica"
+msgstr "Cor de fundo da notificação"
 
 msgid "Index mode foreground color"
-msgstr "Modalità indice colore primo piano"
+msgstr "Cor de primeiro plano do modo de índice"
 
 msgid "Index mode background color"
-msgstr "Modalità indice colore di sfondo"
+msgstr "Cor de fundo do modo de índice"
 
 msgid "Index mode foreground color (active element)"
-msgstr "Modalità indice colore primo piano (elemento attivo)"
+msgstr "Cor de primeiro plano do modo de índice (elemento ativo)"
 
 msgid "Index mode background color (active element)"
-msgstr "Modalità indice colore sfondo (elemento attivo)"
+msgstr "Cor de fundo do modo de índice (elemento ativo)"
 
 msgid "Scrollbar foreground color"
-msgstr "Colore di primo piano della barra di scorrimento"
+msgstr "Cor de primeiro plano da barra de deslocamento"
 
 msgid "Scrollbar background color"
-msgstr "Colore di sfondo della barra di scorrimento"
+msgstr "Cor de fundo da barra de deslocamento"
 
 msgid "Initial window width"
-msgstr "Larghezza iniziale della finestra"
+msgstr "Largura inicial da janela"
 
 msgid "Initial window height"
-msgstr "Altezza iniziale della finestra"
+msgstr "Altura inicial da janela"
 
 msgid "Horizontal padding for the status, input, and notification bars"
-msgstr "Bordo orizzontale per le barre di input e notifica"
+msgstr "Preenchimento horizontal das barras de estado, entrada e notificações"
 
 msgid "Vertical padding for the status, input, and notification bars"
-msgstr "Bordo verticale per le barre di input e notifica"
+msgstr "Preenchimento vertical das barras de estado, entrada e notificações"
 
 msgid "Number of completion items"
-msgstr "Numero di possibili completamenti"
+msgstr "Número de itens de completação"
 
 msgid "Command to execute in :exec"
-msgstr "Comando da eseguire in :exec"
+msgstr "Comando a executar em :exec"
 
 msgid "Show or hide certain GUI elements"
-msgstr "Mostra o nascondi gli elementi della GUI"
+msgstr "Mostrar ou ocultar certos elementos da interface gráfica"
 
 msgid "Database backend"
-msgstr "Backend del database"
+msgstr "Backend da base de dados"
 
 msgid "File monitor backend"
-msgstr "Backend di controllo file"
+msgstr "Backend de monitorização de ficheiros"
 
 msgid "Zoom step"
-msgstr "Passo di zoom"
+msgstr "Incremento de zoom"
 
 msgid "Horizontal padding between pages"
-msgstr "Spaziatura orizzontale tra le pagine"
+msgstr "Preenchimento horizontal entre páginas"
 
 msgid "Vertical padding between pages"
-msgstr "Spaziatura verticale tra le pagine"
+msgstr "Preenchimento vertical entre páginas"
 
 msgid "Number of pages per row"
-msgstr "Numero di pagine per riga"
+msgstr "Número de páginas por linha"
 
 msgid "Column of the first page"
-msgstr "Colonna della prima pagina"
+msgstr "Coluna da primeira página"
 
 msgid "Render pages from right to left"
-msgstr "Renderizza pagine da destra a sinistra"
+msgstr "Renderizar páginas da direita para a esquerda"
 
 msgid "Scroll step"
-msgstr "Passo di scorrimento"
+msgstr "Passo de deslocamento"
 
 msgid "Horizontal scroll step"
-msgstr "Passo di scorrimento orizzontale"
+msgstr "Passo de deslocamento horizontal"
 
 msgid "Full page scroll overlap"
-msgstr "Sovrapposizione di scorrimento pagina intera"
+msgstr "Sobreposição do deslocamento de página inteira"
 
 msgid "Zoom minimum"
-msgstr "Zoom minimo"
+msgstr "Zoom mínimo"
 
 msgid "Zoom maximum"
-msgstr "Zoom massimo"
+msgstr "Zoom máximo"
 
 msgid "Maximum number of pages to keep in the cache"
-msgstr "Numero massimo di pagine da mantenere nella cache"
+msgstr "Número máximo de páginas a manter na cache"
 
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
-msgstr "Dimensione massima in pixel delle miniature da tenere in cache"
+msgstr "Tamanho máximo, em píxeis, das miniaturas a manter na cache"
 
 msgid "Number of positions to remember in the jumplist"
-msgstr "Numero di posizioni da mantenere nella jumplist"
+msgstr "Número de posições a memorizar na lista de saltos"
 
 msgid "Recoloring (dark color)"
-msgstr "Ricolorazione (colore scuro)"
+msgstr "Recoloração (cor escura)"
 
 msgid "Recoloring (light color)"
-msgstr "Ricolorazione (colore chiaro)"
+msgstr "Recoloração (cor clara)"
 
 msgid "Color for highlighting"
-msgstr "Colore per evidenziare"
+msgstr "Cor de realce"
 
 msgid "Foreground color for highlighting"
-msgstr "Colore di primo piano per l'evidenziazione"
+msgstr "Cor de primeiro plano do realce"
 
 msgid "Color for highlighting (active)"
-msgstr "Colore per evidenziare (attivo)"
+msgstr "Cor de realce (ativo)"
 
 msgid "'Loading ...' background color"
-msgstr "'Caricamento ...' colore di sfondo "
+msgstr "Cor de fundo de 'A carregar ...'"
 
 msgid "'Loading ...' foreground color"
-msgstr "'Caricamento ...' colore primo piano"
+msgstr "Cor de primeiro plano de 'A carregar ...'"
 
 msgid "Color used to highlight valid signatures"
-msgstr "Colore usato per evidenziare firme valide"
+msgstr "Cor usada para realçar assinaturas válidas"
 
 msgid "Color used to highlight signatures with warnings"
-msgstr "Colore usato per evidenziare firme con avvisi"
+msgstr "Cor usada para realçar assinaturas com avisos"
 
 msgid "Color used to highlight invalid signatures"
-msgstr "Colore usato per evidenziare firme non valide"
+msgstr "Cor usada para realçar assinaturas inválidas"
 
 msgid "Recolor pages"
-msgstr "Ricolora le pagine"
+msgstr "Recolorir páginas"
 
 msgid "When recoloring keep original hue and adjust lightness only"
 msgstr ""
-"Quando si ricolora mantenere la tonalità originale e regolare solo la "
-"luminosità"
+"Ao recolorir, manter a tonalidade original e ajustar apenas a luminosidade"
 
 msgid "When recoloring keep original image colors"
-msgstr "Quando si ricolora mantieni colori dell'immagine originale"
+msgstr "Ao recolorir, manter as cores originais das imagens"
 
 msgid "When recoloring adjust lightness"
-msgstr "Quando si ricolora regolare la luminosità"
+msgstr "Ao recolorir, ajustar a luminosidade"
 
 msgid "Wrap scrolling"
-msgstr "Scrolling continuo"
+msgstr "Deslocamento circular"
 
 msgid "Advance number of pages per row"
-msgstr "Avanza di un numero di pagine per riga"
+msgstr "Avançar pelo número de páginas por linha"
 
 msgid "Horizontally centered zoom"
-msgstr "Zoom centrato orizzontalmente"
+msgstr "Zoom centrado horizontalmente"
 
 msgid "Vertically center pages"
-msgstr "Zoom centrato verticalmente"
+msgstr "Centrar páginas verticalmente"
 
 msgid "Align link target to the left"
-msgstr "Allinea link target a sinistra"
+msgstr "Alinhar o destino da ligação à esquerda"
 
 msgid "Let zoom be changed when following links"
-msgstr "Cambia lo zoom quando segui i link"
+msgstr "Permitir a alteração do zoom ao seguir ligações"
 
 msgid "Center result horizontally"
-msgstr "Centra orizzontalmente i risultati"
+msgstr "Centrar resultados horizontalmente"
 
 msgid "Render 'Loading ...'"
-msgstr "Renderizza 'Caricamento ...'"
+msgstr "Renderizar 'A carregar ...'"
 
 msgid "Adjust to when opening file"
-msgstr "Adatta a mentre apri il file"
+msgstr "Ajustar ao abrir o ficheiro"
 
 msgid "Show hidden files and directories"
-msgstr "Mostra file e cartelle nascosti"
+msgstr "Mostrar ficheiros e diretórios ocultos"
 
 msgid "Show directories"
-msgstr "Mostra cartelle"
+msgstr "Mostrar diretórios"
 
 msgid "Show recent files"
-msgstr "Mostra file recenti"
+msgstr "Mostrar ficheiros recentes"
 
 msgid "Always open on first page"
-msgstr "Apri sempre alla prima pagina"
+msgstr "Sempre abrir na primeira página"
 
 msgid "Disable highlighting of search results"
-msgstr "Disabilita l'evidenziazione dei risultati della ricerca"
+msgstr "Desativar o realce dos resultados da pesquisa"
 
 msgid "Double click to follow links"
-msgstr "Doppio clic per seguire i link"
+msgstr "Duplo clique para seguir ligações"
 
 msgid "Enable incremental search"
-msgstr "Abilita la ricerca incrementale"
+msgstr "Ativar pesquisa incremental"
 
 msgid "Clear search results on abort"
-msgstr "Elimina risultati di ricerca alla chiusura"
+msgstr "Limpar resultados da pesquisa ao cancelar"
 
 msgid "Use basename of the file in the window title"
-msgstr "Usa estensione del file nel titolo della finestra"
+msgstr "Usar o nome base do ficheiro no título da janela"
 
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr "Usa ~ al posto di $HOME nel nome del file nel titolo della finestra"
+msgstr "Usar ~ em vez de $HOME no nome do ficheiro no título da janela"
 
 msgid "Display the page number in the window title"
-msgstr "Mostra il numero di pagina nel titolo della finestra"
+msgstr "Mostrar o número da página no título da janela"
 
 msgid "Use basename of the file in the statusbar"
-msgstr "Usa estensione del file nella barra di stato"
+msgstr "Usar o nome base do ficheiro na barra de estado"
 
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr "Usa ~ al posto di $HOME nel nome del file nella barra di stato"
+msgstr "Usar ~ em vez de $HOME no nome do ficheiro na barra de estado"
 
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
-"Mostra (pagina attuale / pagine totali) in percentuale nella barra di stato"
+"Mostrar (página atual / total de páginas) como percentagem na barra de estado"
 
 msgid "Enable SyncTeX support"
-msgstr "Abilita il supporto per SyncTeX"
+msgstr "Ativar suporte do SyncTeX"
 
 msgid "SyncTeX editor command"
-msgstr "Comando dell'editor SyncTeX"
+msgstr "Comando do editor SyncTeX"
 
 msgid "SyncTeX edit modifier"
-msgstr "Modificatore di modifica SyncTeX"
+msgstr "Modificador de edição SyncTeX"
 
 msgid "Highlighter modifier"
-msgstr "Modificatore dell'evidenziatore"
+msgstr "Modificador do realçador"
 
 msgid "Enable D-Bus service"
-msgstr "Abilita il servizio D-Bus"
+msgstr "Ativar serviço D-Bus"
 
 msgid "Raise window on certain D-Bus commands"
-msgstr "Solleva la finestra in corrispondenza di certi comandi di D-Bus"
+msgstr "Elevar a janela em certos comandos D-Bus"
 
 msgid "Save history at each page change"
-msgstr "Salva cronologia ad ogni cambiamento di pagina"
+msgstr "Guardar histórico a cada mudança de página"
 
 msgid "The clipboard into which mouse-selected data will be written"
-msgstr "Gli appunti in cui verranno scritti i dati selezionati dal mouse"
+msgstr ""
+"A área de transferência onde serão escritos os dados selecionados com o rato"
 
 msgid "Enable notification after selecting text"
-msgstr "Attiva la notifica dopo aver selezionato del testo"
+msgstr "Ativar notificação após selecionar texto"
 
 msgid "Keep selection highlighted after mouse release"
-msgstr "Mantieni la selezione evidenziata dopo il rilascio del mouse"
+msgstr "Manter a seleção realçada após soltar o rato"
 
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
-"Disabilita le informazioni aggiuntive per le firme incorporate nel documento."
+"Desativar informações adicionais para assinaturas incorporadas no documento."
 
 msgid "Enable prompt to confirm when opening links"
-msgstr "Abilita la richiesta di conferma all'apertura dei link"
+msgstr "Ativar pedido de confirmação ao abrir ligações"
 
 #. define default inputbar commands
 msgid "Map a key sequence"
-msgstr "Mappa una sequenza di tasti"
+msgstr "Mapear uma sequência de teclas"
 
 msgid "Set an option"
-msgstr "Imposta un opzione"
+msgstr "Definir uma opção"
 
 msgid "Run a shortcut"
-msgstr "Esegui una scorciatoia"
+msgstr "Executar um atalho"
 
 msgid "Unmap a key sequence"
-msgstr "Cancella mappatura di una sequenza di tasti"
+msgstr "Desmapear uma sequência de teclas"
 
 msgid "Dump settings to a file"
-msgstr "Scrivi le impostazioni in un file"
+msgstr "Escrever as definições num ficheiro"
 
 msgid "Add a bookmark"
-msgstr "Aggiungi un segnalibro"
+msgstr "Adicionar um marcador"
 
 msgid "Delete a bookmark"
-msgstr "Elimina un segnalibro"
+msgstr "Eliminar um marcador"
 
 msgid "List all bookmarks"
-msgstr "Mostra i segnalibri"
+msgstr "Listar todos os marcadores"
 
 msgid "Jump to bookmark"
-msgstr "Vai al segnalibro"
+msgstr "Ir para o marcador"
 
 msgid "Show recent jumps in jumplist"
-msgstr "Mostra i salti recenti nella jumplist"
+msgstr "Mostrar saltos recentes na lista de saltos"
 
 msgid "Close current file"
-msgstr "Chiudi il file corrente"
+msgstr "Fechar ficheiro atual"
 
 msgid "Show file information"
-msgstr "Mostra le informazioni sul file"
+msgstr "Mostrar informações do ficheiro"
 
 msgid "Execute a command"
-msgstr "Esegui un comando"
+msgstr "Executar um comando"
 
 #. like vim
 msgid "Show help"
-msgstr "Mostra l' aiuto"
+msgstr "Mostrar ajuda"
 
 msgid "Open document"
-msgstr "Apri un documento"
+msgstr "Abrir documento"
 
 msgid "Close zathura"
-msgstr "Chiudi zathura"
+msgstr "Fechar zathura"
 
 msgid "Print document"
-msgstr "Stampa il documento"
+msgstr "Imprimir documento"
 
 msgid "Save document"
-msgstr "Salva il documento"
+msgstr "Guardar documento"
 
 msgid "Save document (and force overwriting)"
-msgstr "Salva il documento (e sovrascrivi)"
+msgstr "Guardar documento (e forçar substituição)"
 
 msgid "Save attachments"
-msgstr "Salva allegati"
+msgstr "Guardar anexos"
 
 msgid "Set page offset"
-msgstr "Imposta l' offset della pagina"
+msgstr "Definir compensação da página"
 
 msgid "Mark current location within the document"
-msgstr "Segna la posizione attuale all'interno del documento"
+msgstr "Marcar a localização atual no documento"
 
 msgid "Delete the specified marks"
-msgstr "Elimina i segni specificati"
+msgstr "Apagar as marcas especificadas"
 
 msgid "Remove highlights of current search results"
-msgstr "Rimuovi le evidenziazioni dei risultati della ricerca in corso"
+msgstr "Remover realces dos resultados da pesquisa atual"
 
 msgid "Highlight current search results"
-msgstr "Evidenzia i risultati della ricerca in corso"
+msgstr "Realçar resultados da pesquisa atual"
 
 msgid "Show version information"
-msgstr "Mostra informazioni sulla versione"
+msgstr "Mostrar informações sobre a versão"
 
 msgid "Source config file"
-msgstr "File di configurazione sorgente"
+msgstr "Carregar ficheiro de configuração"
 
 msgid "Failed to run xdg-open."
-msgstr "Impossibile eseguire xdg-open."
+msgstr "Falha ao executar xdg-open."
 
 msgid "y"
 msgstr "s"
@@ -1569,80 +1563,79 @@ msgid "Y"
 msgstr "S"
 
 msgid "Cancelled."
-msgstr "Annullato."
+msgstr "Cancelado."
 
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
-msgstr "Aprire il link esterno <b>%s</b>? [S/n]"
+msgstr "Abrir ligação externa <b>%s</b>? [S/n]"
 
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
-"L'apertura di applicazioni esterne in modalità sandbox restrittiva non è "
-"consentito"
+"A abertura de aplicações externas não é permitida no modo de sandbox estrito"
 
 #, c-format
 msgid "Link: page %d"
-msgstr "Link: pagina %d"
+msgstr "Ligação: página %d"
 
 #, c-format
 msgid "Link: %s"
-msgstr "Link: %s"
+msgstr "Ligação: %s"
 
 msgid "Link: Invalid"
-msgstr "Link: non valido"
+msgstr "Ligação: inválida"
 
 #, c-format
 msgid "Copied page number: %d"
-msgstr "Copiata pagina numero: %d"
+msgstr "Número da página copiado: %d"
 
 #, c-format
 msgid "Copied link: %s"
-msgstr "Copiato il link: %s"
+msgstr "Ligação copiada: %s"
 
 msgid "Path to the config directory"
-msgstr "Percorso della directory della configurazione"
+msgstr "Caminho para o diretório de configuração"
 
 msgid "Path to the data directory"
-msgstr "Percorso della directory dei dati"
+msgstr "Caminho para o diretório de dados"
 
 msgid "Path to the cache directory"
-msgstr "Percorso della cartella di cache"
+msgstr "Caminho para o diretório de cache"
 
 msgid "Path to the directories containing plugins"
-msgstr "Percorso della directory contenente i plugin"
+msgstr "Caminhos para os diretórios que contêm plugins"
 
 msgid "Fork into the background"
-msgstr "Crea un processo separato"
+msgstr "Bifurcar para segundo plano"
 
 msgid "Document password"
-msgstr "Password del documento"
+msgstr "Palavra-passe do documento"
 
 msgid "Page number to go to"
-msgstr "Numero di pagina da andare"
+msgstr "Número da página para onde ir"
 
 msgid "Log level (debug, info, warning, error)"
-msgstr "Livello di log (debug, info, warning, error)"
+msgstr "Nível de registo (debug, info, warning, error)"
 
 msgid "Print version information"
-msgstr "Mostra le informazioni sul file"
+msgstr "Imprimir informações sobre a versão"
 
 msgid "SyncTeX editor (forwarded to the synctex command)"
-msgstr "Editor SyncTeX (inoltrato al comando synctex)"
+msgstr "Editor SyncTeX (encaminhado para o comando synctex)"
 
 msgid "Move to given SyncTeX position"
-msgstr "Sposta alla posizione SyncTeX specificata"
+msgstr "Mover para a posição SyncTeX indicada"
 
 msgid "Highlight given position in the given process"
-msgstr "Evidenzia data posizione nel processo dato"
+msgstr "Realçar a posição indicada no processo indicado"
 
 msgid "Start in a non-default mode"
-msgstr "Avvia in una modalità non standard"
+msgstr "Iniciar num modo não predefinido"
 
 msgid "Bookmark to go to"
-msgstr "Segnalibro a cui andare"
+msgstr "Marcador para onde ir"
 
 msgid "Search for the given phrase and display results"
-msgstr "Ricerca la chiave data e mostra i risultati"
+msgstr "Procurar a frase indicada e mostrar resultados"
 
 #, c-format
 msgid ""
@@ -1651,163 +1644,165 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
-"La firma è valida.\n"
-"Questo documento è firmato da\n"
+"A assinatura é válida.\n"
+"Este documento foi assinado por\n"
 "  %s\n"
-"il %s."
+"em %s."
 
 msgid "Signature certificate is expired."
-msgstr "Il certificato della firma è scaduto."
+msgstr "O certificado da assinatura expirou."
 
 msgid "Signature certificate is revoked."
-msgstr "Il certificato della firma è stato revocato."
+msgstr "O certificado da assinatura foi revogado."
 
 msgid "Signature certificate is not trusted."
-msgstr "Il certificato della firma non è attendibile."
+msgstr "O certificado da assinatura não é de confiança."
 
 msgid "Signature certificate is invalid."
-msgstr "Il certificato della firma non è valido."
+msgstr "O certificado da assinatura é inválido."
 
 msgid "Signature is invalid."
-msgstr "La firma non è valida."
+msgstr "A assinatura é inválida."
 
 msgid "Loading..."
-msgstr "Caricamento..."
+msgstr "A carregar..."
 
 msgid "Copy image"
-msgstr "Copia immagine"
+msgstr "Copiar imagem"
 
 msgid "Save image as"
-msgstr "Salva immagine come"
+msgstr "Guardar imagem como"
 
 #. Update statusbar.
 #, c-format
 msgid "Printing page %d ..."
-msgstr "Stampa pagina %d ..."
+msgstr "A imprimir página %d ..."
 
 #, c-format
 msgid "Printing failed: %s"
-msgstr "Impossibile stampare: %s"
+msgstr "Falha ao imprimir: %s"
 
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr "Modalità di regolazione non valida: %d"
+msgstr "Modo de ajuste inválido: %d"
 
 #, c-format
 msgid "Copied file path to selection %s: %s"
-msgstr "Percorso del file copiato nella selezione %s: %s"
+msgstr "Caminho do ficheiro copiado para a seleção %s: %s"
 
 msgid "This document does not contain any index"
-msgstr "Questo documento non contiene l' indice"
+msgstr "Este documento não contém qualquer índice"
 
 msgid "Could not get path from file."
-msgstr "Impossibile ottenere il percorso dal file."
+msgstr "Não foi possível obter o caminho a partir do ficheiro."
 
 msgid "Open file"
-msgstr "Apri file"
+msgstr "Abrir ficheiro"
 
 msgid "Supported documents"
-msgstr "Documenti supportati"
+msgstr "Documentos suportados"
 
 msgid "All files"
-msgstr "Tutti i file"
+msgstr "Todos os ficheiros"
 
 #, c-format
 msgid "[Search %d/%d]"
-msgstr "[Ricerca %d/%d]"
+msgstr "[Pesquisa %d/%d]"
 
 #, c-format
 msgid "Pattern not found: %s"
-msgstr "Pattern non trovato: %s"
+msgstr "Padrão não encontrado: %s"
 
 msgid "[No name]"
-msgstr "[Nessun nome]"
+msgstr "[Sem nome]"
 
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
-"Impossibile leggere il file dall' stdin e scriverlo in un file temporaneo."
+"Não foi possível ler o ficheiro a partir de stdin e escrevê-lo num ficheiro "
+"temporário."
 
 msgid "Could not read file from GIO and copy it to a temporary file."
-msgstr "Impossibile leggere file da GIO e copiarlo su un file temporaneo"
+msgstr ""
+"Não foi possível ler o ficheiro a partir de GIO e copiá-lo para um ficheiro "
+"temporário."
 
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
-"Tipo di file non supportato. Per favore, installa il plugin necessario."
+msgstr "Tipo de ficheiro não suportado. Instale o plugin necessário."
 
 msgid "Document does not contain any pages"
-msgstr "Il documento non contiene alcuna pagina"
+msgstr "O documento não contém quaisquer páginas"
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
-msgstr "Il file esiste già: %s. Usa :write! per sovrascriverlo."
+msgstr "O ficheiro já existe: %s. Use :write! para o substituir."
 
 msgid "Failed to save document."
-msgstr "Impossibile salvare il documento."
+msgstr "Falha ao guardar o documento."
 
 msgid "Document saved."
-msgstr "Documento salvato."
+msgstr "Documento guardado."
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of at least %u"
-msgstr "Numero degli argomenti non valido: %zu immessi, %u attesi"
+msgstr "Número inválido de argumentos passados: %zu em vez de pelo menos %u"
 
 #, c-format
 msgid "Unregistered mode specified: %s"
-msgstr "Modalità non registrata: %s"
+msgstr "Modo não registado especificado: %s"
 
 msgid "Invalid number of arguments passed"
-msgstr "Numero degli argomenti non valido"
+msgstr "Número inválido de argumentos passados"
 
 #, c-format
 msgid "Invalid modifier in %s"
-msgstr "Modificatore invalido in %s"
+msgstr "Modificador inválido em %s"
 
 #, c-format
 msgid "Invalid special key value for %s"
-msgstr "Valore della chiave speciale %s non valido"
+msgstr "Valor de tecla especial inválido para %s"
 
 #, c-format
 msgid "Invalid special key value or mode %s"
-msgstr "Valore della chiave speciale o modalità %s non valida"
+msgstr "Valor de tecla especial inválido ou modo %s"
 
 #, c-format
 msgid "Not a valid shortcut function: %s"
-msgstr "Scorciatoia invalida: %s"
+msgstr "Não é uma função de atalho válida: %s"
 
 msgid "Not enough arguments."
-msgstr "Non abbastanza argomenti specificati."
+msgstr "Argumentos insuficientes."
 
 #, c-format
 msgid "Unknown option: %s"
-msgstr "Opzione sconosciuta: %s"
+msgstr "Opção desconhecida: %s"
 
 msgid "true"
-msgstr "vero"
+msgstr "verdadeiro"
 
 msgid "false"
 msgstr "falso"
 
 #, c-format
 msgid "No value defined for option: %s"
-msgstr "Nessun valore definito per l' opzione: %s"
+msgstr "Nenhum valor definido para a opção: %s"
 
 #, c-format
 msgid "Unknown value for option: %s"
-msgstr "Valore sconosciuto per l' opzione: %s"
+msgstr "Valor desconhecido para a opção: %s"
 
 #, c-format
 msgid "Invalid value for option: %s"
-msgstr "Valore non valido per l'opzione: %s"
+msgstr "Valor inválido para a opção: %s"
 
 #. unhandled command
 #, c-format
 msgid "Not a valid command: %s"
-msgstr "Comando non valido: %s"
+msgstr "Não é um comando válido: %s"
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr "Numero degli argomenti non valido: %zu immessi, 1 attesi"
+msgstr "Número inválido de argumentos passados: %zu em vez de 1"
 
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr "Impossibile scrivere JSON: %s"
+msgstr "Falha ao escrever JSON: %s"

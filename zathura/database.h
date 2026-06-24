@@ -46,17 +46,17 @@ struct _ZathuraDatabaseInterface {
 
   bool (*save_jumplist)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
 
-  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256,
-                       zathura_fileinfo_t* file_info);
+  bool (*set_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash, zathura_fileinfo_t* file_info);
 
-  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash_sha256,
-                       zathura_fileinfo_t* file_info);
+  bool (*get_fileinfo)(ZathuraDatabase* db, const char* file, const uint8_t* hash, zathura_fileinfo_t* file_info);
 
   girara_list_t* (*get_recent_files)(ZathuraDatabase* db, int max, const char* basepath);
 
   girara_list_t* (*load_quickmarks)(ZathuraDatabase* db, const char* file);
 
   bool (*save_quickmarks)(ZathuraDatabase* db, const char* file, girara_list_t* jumplist);
+
+  bool (*supports_hash_queries)(ZathuraDatabase* db);
 };
 
 GType zathura_database_get_type(void) G_GNUC_CONST;
@@ -135,26 +135,28 @@ bool zathura_db_save_quickmarks(ZathuraDatabase* db, const char* file, girara_li
  *
  * @param db The database instance
  * @param file The file to which the file info belongs.
- * @param hash_sha256 The file's hash
+ * @param hash The file's hash
  * @param file_info The file info
  * @return true on success, false otherwise.
  */
-bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash,
                              zathura_fileinfo_t* file_info);
 
-/* Get file info (last site, ...) from the database. The info is first looked up by file and then by
+/**
+ * Get file info (last site, ...) from the database. The info is first looked up by file and then by
  * its hash.
  *
  * @param db The database instance
  * @param file The file to which the file info belongs.
- * @param hash_sha256  The file's hash
+ * @param hash  The file's hash
  * @param file_info The file info
  * @return true on success, false otherwise.
  */
-bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash,
                              zathura_fileinfo_t* file_info);
 
-/* Get a list of recent files from the database. The most recent file is listed
+/**
+ * Get a list of recent files from the database. The most recent file is listed
  * first.
  *
  * @param db The database instance
@@ -163,5 +165,13 @@ bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uin
  * @return list of files
  */
 girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max, const char* basepath);
+
+/**
+ * Check if database support hash-based queries.
+ *
+ * @param db The database instance
+ * @return true if supported, false otherwise.
+ */
+bool zathura_db_supports_hash_queries(zathura_database_t* db);
 
 #endif // DATABASE_H

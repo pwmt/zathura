@@ -21,6 +21,7 @@
 #include "dbus-interface.h"
 #include "document-widget.h"
 #include "document.h"
+#include "index-element-object.h"
 #include "page-widget.h"
 #include "page.h"
 #include "plugin.h"
@@ -1731,7 +1732,7 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   zathura_t* zathura = session->global.data;
 
   g_autoptr(GtkFileDialog) dialog = gtk_file_dialog_new();
-  gtk_file_dialog_set_title(dialog, _("Open document"));
+  gtk_file_dialog_set_title(dialog, _("Open file"));
 
   /* build a filter for all mime types supported by loaded plugins */
   zathura_plugin_manager_t* manager = zathura->plugins.manager;

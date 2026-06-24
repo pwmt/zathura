@@ -36,18 +36,18 @@ bool zathura_db_save_jumplist(zathura_database_t* db, const char* file, girara_l
   return ZATHURA_DATABASE_GET_INTERFACE(db)->save_jumplist(db, file, jumplist);
 }
 
-bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+bool zathura_db_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash,
                              zathura_fileinfo_t* file_info) {
-  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && hash_sha256 != NULL && file_info != NULL, false);
+  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && hash != NULL && file_info != NULL, false);
 
-  return ZATHURA_DATABASE_GET_INTERFACE(db)->set_fileinfo(db, file, hash_sha256, file_info);
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->set_fileinfo(db, file, hash, file_info);
 }
 
-bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+bool zathura_db_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash,
                              zathura_fileinfo_t* file_info) {
-  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && hash_sha256 != NULL && file_info != NULL, false);
+  g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file != NULL && hash != NULL && file_info != NULL, false);
 
-  return ZATHURA_DATABASE_GET_INTERFACE(db)->get_fileinfo(db, file, hash_sha256, file_info);
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->get_fileinfo(db, file, hash, file_info);
 }
 
 girara_list_t* zathura_db_get_recent_files(zathura_database_t* db, int max, const char* basepath) {
@@ -66,4 +66,10 @@ bool zathura_db_save_quickmarks(ZathuraDatabase* db, const char* file, girara_li
   g_return_val_if_fail(ZATHURA_IS_DATABASE(db) && file && quickmarks, false);
 
   return ZATHURA_DATABASE_GET_INTERFACE(db)->save_quickmarks(db, file, quickmarks);
+}
+
+bool zathura_db_supports_hash_queries(zathura_database_t* db) {
+  g_return_val_if_fail(ZATHURA_IS_DATABASE(db), false);
+
+  return ZATHURA_DATABASE_GET_INTERFACE(db)->supports_hash_queries(db);
 }

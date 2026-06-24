@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 11:44+0200\n"
+"POT-Creation-Date: 2026-06-19 15:33+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: Nisok Kosin <nisok@in.gr>, 2012\n"
 "Language-Team: Greek (http://app.transifex.com/pwmt/zathura/language/el/)\n"
@@ -27,31 +27,83 @@ msgid ""
 "mainly focuses on keyboard interaction. Zathura makes it possible to "
 "completely view and navigate through documents without using a mouse."
 msgstr ""
+"Το Zathura είναι ένας εξαιρετικά παραμετροποιήσιμος και λειτουργικός "
+"προβολέας εγγράφων. Παρέχει μια μινιμαλιστική διεπαφή που εξοικονομεί χώρο, "
+"καθώς και εύκολη χρήση που εστιάζει κυρίως στην αλληλεπίδραση με το "
+"πληκτρολόγιο. Το Zathura επιτρέπει την πλήρη προβολή και πλοήγηση σε έγγραφα "
+"χωρίς τη χρήση ποντικιού."
 
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
 "Other features include:"
 msgstr ""
+"Το Zathura μπορεί να επεκταθεί ώστε να υποστηρίζει πολλαπλές μορφές εγγράφων "
+"με τη χρήση προσθέτων. Άλλες δυνατότητες περιλαμβάνουν:"
 
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "Υποστήριξη εμπρόσθιου και αντίστροφου συγχρονισμού SyncTeX."
 
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "Γρήγοροι δείκτες και σελιδοδείκτες."
 
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Αυτόματη επαναφόρτωση εγγράφων."
 
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "Ανάγνωση αρχείου PDF"
 
 msgid "Opening a file with the `open` command"
-msgstr ""
+msgstr "Άνοιγμα αρχείου με την εντολή `open`"
 
 msgid "Following links"
+msgstr "Ακολούθηση συνδέσμων"
+
+msgid "Listing and selecting bookmarks"
+msgstr "Εμφάνιση και επιλογή σελιδοδεικτών"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported. Also, the setting 'window-icon-document' "
+"has been removed."
 msgstr ""
 
-msgid "Listing and selecting bookmakrs"
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Add search result counter (#450)"
@@ -61,9 +113,6 @@ msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid "Fix warning when using 'null' database (#881)"
@@ -940,11 +989,11 @@ msgstr ""
 #. Translators: Search terms to find this application. Do not translate or
 #. localize the semicolons. The list must also end with a semicolon.
 msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
-msgstr ""
+msgstr "PDF;PS;PostScript;DjVU;έγγραφο;παρουσίαση;προβολέας;"
 
 #, c-format
 msgid "'%s' must not be 0. Set to 1."
-msgstr ""
+msgstr "Το '%s' δεν πρέπει να είναι 0. Ορίστηκε σε 1."
 
 #, c-format
 msgid "Invalid input '%s' given."
@@ -955,15 +1004,15 @@ msgid "Invalid index '%s' given."
 msgstr "Ο δείκτης '%s' είναι άκυρος."
 
 msgid "Enter password:"
-msgstr ""
+msgstr "Εισαγάγετε τον κωδικό πρόσβασης:"
 
 #, c-format
 msgid "Copied selected text to selection %s: %s"
-msgstr ""
+msgstr "Το επιλεγμένο κείμενο αντιγράφηκε στην επιλογή %s: %s"
 
 #, c-format
 msgid "Copied selected image to selection %s"
-msgstr ""
+msgstr "Η επιλεγμένη εικόνα αντιγράφηκε στην επιλογή %s"
 
 msgid "No document opened."
 msgstr "Δεν άνοιξε κανένα αρχείο. "
@@ -996,54 +1045,54 @@ msgid "Failed to remove bookmark: %s"
 msgstr "Η διαγραφή του σελιδοδείκτη: %s απέτυχε. "
 
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Δεν υπάρχουν διαθέσιμοι σελιδοδείκτες."
 
 #, c-format
 msgid "No such bookmark: %s"
 msgstr "Ο σελιδοδείκτης: %s δεν βρέθηκε. "
 
 msgid "Argument must be a nonzero number."
-msgstr ""
+msgstr "Η παράμετρος πρέπει να είναι μη μηδενικός αριθμός."
 
 #, c-format
 msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr ""
+msgstr "[%d]: σελίδα=<b>%2d</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
-msgstr ""
+msgstr "(τρέχον)"
 
 msgid "No jumplist available."
-msgstr ""
+msgstr "Δεν υπάρχει διαθέσιμη λίστα μεταβάσεων."
 
 msgid "Title"
-msgstr ""
+msgstr "Τίτλος"
 
 msgid "Subject"
-msgstr ""
+msgstr "Θέμα"
 
 msgid "Keywords"
-msgstr ""
+msgstr "Λέξεις-κλειδιά"
 
 msgid "Author"
-msgstr ""
+msgstr "Συγγραφέας"
 
 msgid "Creator"
-msgstr ""
+msgstr "Δημιουργός"
 
 msgid "Producer"
-msgstr ""
+msgstr "Παραγωγός"
 
 msgid "Creation date"
-msgstr ""
+msgstr "Ημερομηνία δημιουργίας"
 
 msgid "Modification date"
-msgstr ""
+msgstr "Ημερομηνία τροποποίησης"
 
 msgid "Format"
-msgstr ""
+msgstr "Μορφή"
 
 msgid "Other"
-msgstr ""
+msgstr "Άλλο"
 
 msgid "No information available."
 msgstr "Δεν υπάρχουν διαθέσιμες πληροφορίες."
@@ -1051,6 +1100,8 @@ msgstr "Δεν υπάρχουν διαθέσιμες πληροφορίες."
 msgid ""
 "Please check the man pages zathura(1) and zathurarc(5) for more information."
 msgstr ""
+"Ανατρέξτε στις σελίδες εγχειριδίου zathura(1) και zathurarc(5) για "
+"περισσότερες πληροφορίες."
 
 msgid "Too many arguments."
 msgstr "Εισήχθησαν πολλές παράμετροι. "
@@ -1059,16 +1110,17 @@ msgid "No arguments given."
 msgstr "Δεν εισήχθησαν παράμετροι. "
 
 msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Η εκτύπωση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
 msgid "Saving is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Η αποθήκευση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
 msgid "Invalid number of arguments."
 msgstr "Μη έγκυρος ο αριθμός των παραμέτρων. "
 
 msgid "Exporting attachments is not permitted in strict sandbox mode"
 msgstr ""
+"Η εξαγωγή προσαρτήσεων δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
 #, c-format
 msgid "Couldn't write attachment '%s' to '%s'."
@@ -1099,7 +1151,7 @@ msgid "Failed to execute command: %s"
 msgstr "Αποτυχία στην εκτέλεση της εντολής: %s"
 
 msgid "Exec is not permitted in strict sandbox mode"
-msgstr ""
+msgstr "Η εκτέλεση εντολών δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
 msgid "Argument must be a number."
 msgstr "Η παράμετρος πρέπει να είναι αριθμός."
@@ -1116,10 +1168,10 @@ msgid "Images"
 msgstr "Εικόνες"
 
 msgid "Plugin does not support exporting attachments and images."
-msgstr ""
+msgstr "Το πρόσθετο δεν υποστηρίζει την εξαγωγή προσαρτήσεων και εικόνων."
 
 msgid "Document contains no images or attachments"
-msgstr ""
+msgstr "Το έγγραφο δεν περιέχει εικόνες ή προσαρτήσεις"
 
 #. clang-format off
 #. settings
@@ -1182,22 +1234,22 @@ msgid "Notification background color"
 msgstr "Χρώμα φόντου ειδοποίησης"
 
 msgid "Index mode foreground color"
-msgstr ""
+msgstr "Χρώμα προσκηνίου λειτουργίας ευρετηρίου"
 
 msgid "Index mode background color"
-msgstr ""
+msgstr "Χρώμα φόντου λειτουργίας ευρετηρίου"
 
 msgid "Index mode foreground color (active element)"
-msgstr ""
+msgstr "Χρώμα προσκηνίου λειτουργίας ευρετηρίου (ενεργό στοιχείο)"
 
 msgid "Index mode background color (active element)"
-msgstr ""
+msgstr "Χρώμα φόντου λειτουργίας ευρετηρίου (ενεργό στοιχείο)"
 
 msgid "Scrollbar foreground color"
-msgstr ""
+msgstr "Χρώμα προσκηνίου γραμμής κύλισης"
 
 msgid "Scrollbar background color"
-msgstr ""
+msgstr "Χρώμα φόντου γραμμής κύλισης"
 
 msgid "Initial window width"
 msgstr "Αρχικό πλάτος παραθύρου"
@@ -1207,9 +1259,13 @@ msgstr "Αρχικό ύψος παραθύρου"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
+"Οριζόντιο εσωτερικό περιθώριο για τις μπάρες κατάστασης, εισαγωγής και "
+"ειδοποιήσεων"
 
 msgid "Vertical padding for the status, input, and notification bars"
 msgstr ""
+"Κάθετο εσωτερικό περιθώριο για τις μπάρες κατάστασης, εισαγωγής και "
+"ειδοποιήσεων"
 
 msgid "Number of completion items"
 msgstr "Αριθμός στοιχείων συμπλήρωσης"
@@ -1224,16 +1280,16 @@ msgid "Database backend"
 msgstr "Το βασικό εργαλείο της βάσης δεδομένων"
 
 msgid "File monitor backend"
-msgstr ""
+msgstr "Υποσύστημα παρακολούθησης αρχείων"
 
 msgid "Zoom step"
 msgstr "Βήμα μεγέθυνσης"
 
 msgid "Horizontal padding between pages"
-msgstr ""
+msgstr "Οριζόντιο περιθώριο μεταξύ σελίδων"
 
 msgid "Vertical padding between pages"
-msgstr ""
+msgstr "Κάθετο περιθώριο μεταξύ σελίδων"
 
 msgid "Number of pages per row"
 msgstr "Αριθμός σελίδων ανά γραμμή"
@@ -1242,7 +1298,7 @@ msgid "Column of the first page"
 msgstr "Στήλη της πρώτης σελίδας"
 
 msgid "Render pages from right to left"
-msgstr ""
+msgstr "Απόδοση σελίδων από δεξιά προς τα αριστερά"
 
 msgid "Scroll step"
 msgstr "Βήμα κύλισης"
@@ -1251,7 +1307,7 @@ msgid "Horizontal scroll step"
 msgstr "Βήμα οριζόντιας κύλησης"
 
 msgid "Full page scroll overlap"
-msgstr ""
+msgstr "Επικάλυψη κύλισης ολόκληρης σελίδας"
 
 msgid "Zoom minimum"
 msgstr "Ελάχιστη μεγέθυνση"
@@ -1260,13 +1316,14 @@ msgid "Zoom maximum"
 msgstr "Μέγιστη μεγέθυνση"
 
 msgid "Maximum number of pages to keep in the cache"
-msgstr ""
+msgstr "Μέγιστος αριθμός σελίδων που διατηρούνται στην κρυφή μνήμη"
 
 msgid "Maximum size in pixels of thumbnails to keep in the cache"
 msgstr ""
+"Μέγιστο μέγεθος σε pixel των μικρογραφιών που διατηρούνται στην κρυφή μνήμη"
 
 msgid "Number of positions to remember in the jumplist"
-msgstr ""
+msgstr "Αριθμός θέσεων που απομνημονεύονται στη λίστα μεταβάσεων"
 
 msgid "Recoloring (dark color)"
 msgstr "Επαναχρωματισμός (σκούρο χρώμα)"
@@ -1278,25 +1335,25 @@ msgid "Color for highlighting"
 msgstr "Χρώμα τονισμού"
 
 msgid "Foreground color for highlighting"
-msgstr ""
+msgstr "Χρώμα προσκηνίου για τονισμό"
 
 msgid "Color for highlighting (active)"
 msgstr "Χρώμα τονισμού (ενεργό)"
 
 msgid "'Loading ...' background color"
-msgstr ""
+msgstr "Χρώμα φόντου της ένδειξης 'Φορτώνει ...'"
 
 msgid "'Loading ...' foreground color"
-msgstr ""
+msgstr "Χρώμα προσκηνίου της ένδειξης 'Φορτώνει ...'"
 
 msgid "Color used to highlight valid signatures"
-msgstr ""
+msgstr "Χρώμα που χρησιμοποιείται για τονισμό έγκυρων υπογραφών"
 
 msgid "Color used to highlight signatures with warnings"
-msgstr ""
+msgstr "Χρώμα που χρησιμοποιείται για τονισμό υπογραφών με προειδοποιήσεις"
 
 msgid "Color used to highlight invalid signatures"
-msgstr ""
+msgstr "Χρώμα που χρησιμοποιείται για τονισμό μη έγκυρων υπογραφών"
 
 msgid "Recolor pages"
 msgstr "Επαναχρωματισμός σελίδων"
@@ -1307,10 +1364,10 @@ msgstr ""
 "αλλαγή μόνο της φωτεινότητας"
 
 msgid "When recoloring keep original image colors"
-msgstr ""
+msgstr "Κατά τον επαναχρωματισμό διατήρηση των αρχικών χρωμάτων των εικόνων"
 
 msgid "When recoloring adjust lightness"
-msgstr ""
+msgstr "Κατά τον επαναχρωματισμό προσαρμογή της φωτεινότητας"
 
 msgid "Wrap scrolling"
 msgstr "Κυκλική κύληση"
@@ -1322,13 +1379,13 @@ msgid "Horizontally centered zoom"
 msgstr "Μεγένθηση οριζοντίως κεντραρισμένη"
 
 msgid "Vertically center pages"
-msgstr ""
+msgstr "Κάθετο κεντράρισμα σελίδων"
 
 msgid "Align link target to the left"
-msgstr ""
+msgstr "Στοίχιση του προορισμού συνδέσμου στα αριστερά"
 
 msgid "Let zoom be changed when following links"
-msgstr ""
+msgstr "Να επιτρέπεται η αλλαγή μεγέθυνσης κατά την ακολούθηση συνδέσμων"
 
 msgid "Center result horizontally"
 msgstr "Οριζόντιο κεντράρισμα αποτελεσμάτων"
@@ -1346,19 +1403,19 @@ msgid "Show directories"
 msgstr "Εμφάνιση καταλόγων"
 
 msgid "Show recent files"
-msgstr ""
+msgstr "Εμφάνιση πρόσφατων αρχείων"
 
 msgid "Always open on first page"
 msgstr "Άνοιγμα πάντα στην πρώτη σελίδα"
 
 msgid "Disable highlighting of search results"
-msgstr ""
+msgstr "Απενεργοποίηση τονισμού αποτελεσμάτων αναζήτησης"
 
 msgid "Double click to follow links"
-msgstr ""
+msgstr "Διπλό κλικ για ακολούθηση συνδέσμων"
 
 msgid "Enable incremental search"
-msgstr ""
+msgstr "Ενεργοποίηση επαυξητικής αναζήτησης"
 
 msgid "Clear search results on abort"
 msgstr "Εκκαθάριση των απολεσμάτων αναζήτησης κατά την διακοπή"
@@ -1367,52 +1424,59 @@ msgid "Use basename of the file in the window title"
 msgstr "Χρήση του ονόματος του αρχείο στο τίτλο του παραθύρου"
 
 msgid "Use ~ instead of $HOME in the filename in the window title"
-msgstr ""
+msgstr "Χρήση του ~ αντί του $HOME στο όνομα αρχείου στον τίτλο του παραθύρου"
 
 msgid "Display the page number in the window title"
-msgstr ""
-
-msgid "Use first page of a document as window icon"
-msgstr ""
+msgstr "Εμφάνιση του αριθμού σελίδας στον τίτλο του παραθύρου"
 
 msgid "Use basename of the file in the statusbar"
-msgstr ""
+msgstr "Χρήση του βασικού ονόματος του αρχείου στη μπάρα κατάστασης"
 
 msgid "Use ~ instead of $HOME in the filename in the statusbar"
-msgstr ""
+msgstr "Χρήση του ~ αντί του $HOME στο όνομα αρχείου στη μπάρα κατάστασης"
 
 msgid "Display (current page / total pages) as a percent in the statusbar"
 msgstr ""
+"Εμφάνιση (τρέχουσα σελίδα / σύνολο σελίδων) ως ποσοστό στη μπάρα κατάστασης"
 
 msgid "Enable SyncTeX support"
 msgstr "Ενεργοποίηση υποστήριξης SyncTeX"
 
 msgid "SyncTeX editor command"
-msgstr ""
+msgstr "Εντολή επεξεργαστή SyncTeX"
 
 msgid "SyncTeX edit modifier"
-msgstr ""
+msgstr "Τροποποιητής επεξεργασίας SyncTeX"
 
 msgid "Highlighter modifier"
-msgstr ""
+msgstr "Τροποποιητής τονισμού"
 
 msgid "Enable D-Bus service"
-msgstr ""
+msgstr "Ενεργοποίηση υπηρεσίας D-Bus"
 
 msgid "Raise window on certain D-Bus commands"
-msgstr ""
+msgstr "Μεταφορά του παραθύρου στο προσκήνιο για ορισμένες εντολές D-Bus"
 
 msgid "Save history at each page change"
-msgstr ""
+msgstr "Αποθήκευση ιστορικού σε κάθε αλλαγή σελίδας"
 
 msgid "The clipboard into which mouse-selected data will be written"
 msgstr ""
+"Το πρόχειρο στο οποίο θα εγγράφονται τα δεδομένα που επιλέγονται με το "
+"ποντίκι"
 
 msgid "Enable notification after selecting text"
-msgstr ""
+msgstr "Ενεργοποίηση ειδοποίησης μετά την επιλογή κειμένου"
+
+msgid "Keep selection highlighted after mouse release"
+msgstr "Διατήρηση τονισμένης της επιλογής μετά την απελευθέρωση του ποντικιού"
 
 msgid "Disable additional information for signatures embedded in the document."
 msgstr ""
+"Απενεργοποίηση πρόσθετων πληροφοριών για υπογραφές ενσωματωμένες στο έγγραφο."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr "Ενεργοποίηση προτροπής επιβεβαίωσης κατά το άνοιγμα συνδέσμων"
 
 #. define default inputbar commands
 msgid "Map a key sequence"
@@ -1422,13 +1486,13 @@ msgid "Set an option"
 msgstr "Ρύθμιση επιλογής"
 
 msgid "Run a shortcut"
-msgstr ""
+msgstr "Εκτέλεση συντόμευσης"
 
 msgid "Unmap a key sequence"
 msgstr "Απόχαρτογράφηση / unmap αλληλουχίας πλήκτρων"
 
 msgid "Dump settings to a file"
-msgstr ""
+msgstr "Εξαγωγή ρυθμίσεων σε αρχείο"
 
 msgid "Add a bookmark"
 msgstr "Προσθήκη σελιδοδείκτη"
@@ -1440,10 +1504,10 @@ msgid "List all bookmarks"
 msgstr "Εμφάνιση όλων των σελιδοδεικτών"
 
 msgid "Jump to bookmark"
-msgstr ""
+msgstr "Μετάβαση σε σελιδοδείκτη"
 
 msgid "Show recent jumps in jumplist"
-msgstr ""
+msgstr "Εμφάνιση πρόσφατων μεταβάσεων στη λίστα μεταβάσεων"
 
 msgid "Close current file"
 msgstr "Κλείσιμο αρχείου"
@@ -1486,7 +1550,7 @@ msgid "Delete the specified marks"
 msgstr "Διαγραφή επιλεγμένων σημείων"
 
 msgid "Remove highlights of current search results"
-msgstr ""
+msgstr "Αφαίρεση τονισμών των τρεχόντων αποτελεσμάτων αναζήτησης"
 
 msgid "Highlight current search results"
 msgstr "Τονισμός στα τρέχοντα αποτελέσματα της αναζήτησης"
@@ -1495,48 +1559,47 @@ msgid "Show version information"
 msgstr "Εμφάνιση πληροφοριών έκδοσης"
 
 msgid "Source config file"
-msgstr ""
+msgstr "Φόρτωση αρχείου ρυθμίσεων"
 
 msgid "Failed to run xdg-open."
 msgstr "Απέτυχε η εκτέλεση του xdg-open. "
 
 msgid "y"
-msgstr ""
+msgstr "ν"
 
 msgid "Y"
-msgstr ""
+msgstr "Ν"
 
 msgid "Cancelled."
-msgstr ""
+msgstr "Ακυρώθηκε."
 
 #, c-format
 msgid "Open external link <b>%s</b>? [Y/n]"
-msgstr ""
+msgstr "Άνοιγμα εξωτερικού συνδέσμου <b>%s</b>; [Ν/ό]"
 
 msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
+"Το άνοιγμα εξωτερικών εφαρμογών δεν επιτρέπεται σε αυστηρή λειτουργία "
+"απομόνωσης"
 
 #, c-format
 msgid "Link: page %d"
-msgstr ""
+msgstr "Σύνδεσμος: σελίδα %d"
 
 #, c-format
 msgid "Link: %s"
-msgstr ""
+msgstr "Σύνδεσμος: %s"
 
 msgid "Link: Invalid"
-msgstr ""
+msgstr "Σύνδεσμος: μη έγκυρος"
 
 #, c-format
 msgid "Copied page number: %d"
-msgstr ""
+msgstr "Αντιγράφηκε ο αριθμός σελίδας: %d"
 
 #, c-format
 msgid "Copied link: %s"
-msgstr ""
-
-msgid "Reparents to window specified by xid (X11)"
-msgstr ""
+msgstr "Αντιγράφηκε ο σύνδεσμος: %s"
 
 msgid "Path to the config directory"
 msgstr "Διαδρομή του αρχείου ρυθμίσεων"
@@ -1545,7 +1608,7 @@ msgid "Path to the data directory"
 msgstr "Διαδρομή του φακέλου δεδομένων"
 
 msgid "Path to the cache directory"
-msgstr ""
+msgstr "Διαδρομή του φακέλου κρυφής μνήμης"
 
 msgid "Path to the directories containing plugins"
 msgstr "Διαδρομή φακέλου που περιέχει τα πρόσθετα"
@@ -1557,7 +1620,7 @@ msgid "Document password"
 msgstr "Κωδικός αρχείου"
 
 msgid "Page number to go to"
-msgstr ""
+msgstr "Αριθμός σελίδας για μετάβαση"
 
 msgid "Log level (debug, info, warning, error)"
 msgstr "Επίπεδο καταγραφής (debug, info, warning, error)"
@@ -1569,19 +1632,19 @@ msgid "SyncTeX editor (forwarded to the synctex command)"
 msgstr "SyncTeX editor (Προώθηση στην εντολή SyncTeX)"
 
 msgid "Move to given SyncTeX position"
-msgstr ""
+msgstr "Μετάβαση στη δοσμένη θέση SyncTeX"
 
 msgid "Highlight given position in the given process"
-msgstr ""
+msgstr "Τονισμός της δοσμένης θέσης στη δοσμένη διεργασία"
 
 msgid "Start in a non-default mode"
-msgstr ""
+msgstr "Έναρξη σε μη προεπιλεγμένη λειτουργία"
 
 msgid "Bookmark to go to"
-msgstr ""
+msgstr "Σελιδοδείκτης για μετάβαση"
 
 msgid "Search for the given phrase and display results"
-msgstr ""
+msgstr "Αναζήτηση της δοσμένης φράσης και εμφάνιση αποτελεσμάτων"
 
 #, c-format
 msgid ""
@@ -1590,21 +1653,25 @@ msgid ""
 "  %s\n"
 "on %s."
 msgstr ""
+"Η υπογραφή είναι έγκυρη.\n"
+"Το έγγραφο υπογράφτηκε από\n"
+"  %s\n"
+"στις %s."
 
 msgid "Signature certificate is expired."
-msgstr ""
+msgstr "Το πιστοποιητικό της υπογραφής έχει λήξει."
 
 msgid "Signature certificate is revoked."
-msgstr ""
+msgstr "Το πιστοποιητικό της υπογραφής έχει ανακληθεί."
 
 msgid "Signature certificate is not trusted."
-msgstr ""
+msgstr "Το πιστοποιητικό της υπογραφής δεν είναι έμπιστο."
 
 msgid "Signature certificate is invalid."
-msgstr ""
+msgstr "Το πιστοποιητικό της υπογραφής δεν είναι έγκυρο."
 
 msgid "Signature is invalid."
-msgstr ""
+msgstr "Η υπογραφή δεν είναι έγκυρη."
 
 msgid "Loading..."
 msgstr "Φορτώνει ..."
@@ -1618,48 +1685,66 @@ msgstr "Αποθήκευση εικόνας ως..."
 #. Update statusbar.
 #, c-format
 msgid "Printing page %d ..."
-msgstr ""
+msgstr "Εκτύπωση σελίδας %d ..."
 
 #, c-format
 msgid "Printing failed: %s"
-msgstr ""
+msgstr "Η εκτύπωση απέτυχε: %s"
 
 #, c-format
 msgid "Invalid adjust mode: %d"
-msgstr ""
+msgstr "Μη έγκυρη λειτουργία προσαρμογής: %d"
+
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr "Η διαδρομή αρχείου αντιγράφηκε στην επιλογή %s: %s"
 
 msgid "This document does not contain any index"
 msgstr "Το αρχείο δεν περιέχει κανένα δείκτη"
 
+msgid "Could not get path from file."
+msgstr "Δεν ήταν δυνατή η λήψη της διαδρομής από το αρχείο."
+
 msgid "Open file"
-msgstr ""
+msgstr "Άνοιγμα αρχείου"
+
+msgid "Supported documents"
+msgstr "Υποστηριζόμενα έγγραφα"
+
+msgid "All files"
+msgstr "Όλα τα αρχεία"
 
 #, c-format
 msgid "[Search %d/%d]"
-msgstr ""
+msgstr "[Αναζήτηση %d/%d]"
 
 #, c-format
 msgid "Pattern not found: %s"
-msgstr ""
+msgstr "Το μοτίβο δεν βρέθηκε: %s"
 
 msgid "[No name]"
 msgstr "[Χωρίς όνομα]"
 
 msgid "Could not read file from stdin and write it to a temporary file."
 msgstr ""
+"Δεν ήταν δυνατή η ανάγνωση αρχείου από το stdin και η εγγραφή του σε "
+"προσωρινό αρχείο."
 
 msgid "Could not read file from GIO and copy it to a temporary file."
 msgstr ""
+"Δεν ήταν δυνατή η ανάγνωση αρχείου από το GIO και η αντιγραφή του σε "
+"προσωρινό αρχείο."
 
 msgid "Unsupported file type. Please install the necessary plugin."
-msgstr ""
+msgstr "Μη υποστηριζόμενος τύπος αρχείου. Εγκαταστήστε το απαραίτητο πρόσθετο."
 
 msgid "Document does not contain any pages"
-msgstr ""
+msgstr "Το έγγραφο δεν περιέχει σελίδες"
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
 msgstr ""
+"Το αρχείο υπάρχει ήδη: %s. Χρησιμοποιήστε :write! για να το αντικαταστήσετε."
 
 msgid "Failed to save document."
 msgstr "Η αποθήκευση του αρχείου απέτυχε. "
@@ -1715,6 +1800,10 @@ msgstr "Καμία τιμή δεν έχει καθοριστεί για την �
 msgid "Unknown value for option: %s"
 msgstr "Άγνωστη τιμή για την επιλογή: %s"
 
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr "Μη έγκυρη τιμή για την επιλογή: %s"
+
 #. unhandled command
 #, c-format
 msgid "Not a valid command: %s"
@@ -1722,8 +1811,8 @@ msgstr "Μη έγγυρη εντολή: %s"
 
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
-msgstr ""
+msgstr "Περάστηκε μη έγκυρος αριθμός παραμέτρων: %zu αντί για 1"
 
 #, c-format
 msgid "Failed to write JSON: %s"
-msgstr ""
+msgstr "Η εγγραφή JSON απέτυχε: %s"
