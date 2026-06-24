@@ -243,6 +243,15 @@ static bool init_ui(zathura_t* zathura) {
   gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(zathura->ui.view), widget);
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
+  bool single_page_mode = false;
+  girara_setting_get(zathura->ui.session, "single-page-mode", &single_page_mode);
+  if (single_page_mode) {
+    // The same way as sc_toggle_single_page_mode does it:
+    const unsigned int pages_per_row = 1;
+    girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
+    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
+  }
+
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
   girara_setting_get(zathura->ui.session, "guioptions", &view_options);
