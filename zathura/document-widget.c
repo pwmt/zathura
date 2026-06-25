@@ -312,6 +312,10 @@ void zathura_document_widget_update_mode(ZathuraDocumentWidget* document) {
     gtk_adjustment_set_value(priv->vadjustment, 0);
   } else {
     zathura_document_widget_compute_layout(document);
+    unsigned int pos_x = 0, pos_y = 0;
+    zathura_document_widget_get_cell_pos(document, page_id, &pos_x, &pos_y);
+    gtk_adjustment_set_value(priv->hadjustment, pos_x);
+    gtk_adjustment_set_value(priv->vadjustment, pos_y);
   }
 
   gtk_widget_queue_resize(GTK_WIDGET(document));

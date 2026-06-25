@@ -243,6 +243,17 @@ static bool init_ui(zathura_t* zathura) {
   gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(zathura->ui.view), widget);
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
+  /* single page mode: apply the startup preference once; layout-mode persists on the widget */
+  bool single_page_mode = false;
+  girara_setting_get(zathura->ui.session, "single-page-mode", &single_page_mode);
+
+  {
+    g_auto(GValue) layout_mode_value = G_VALUE_INIT;
+    g_value_init(&layout_mode_value, G_TYPE_INT);
+    g_value_set_int(&layout_mode_value, single_page_mode ? DOCUMENT_WIDGET_SINGLE : DOCUMENT_WIDGET_GRID);
+    g_object_set_property(G_OBJECT(zathura->ui.document_widget), "layout-mode", &layout_mode_value);
+  }
+
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
   girara_setting_get(zathura->ui.session, "guioptions", &view_options);
