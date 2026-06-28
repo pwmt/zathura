@@ -587,6 +587,39 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
   return false;
 }
 
+/* full page scrolling in single page mode steps the current page since the adjustment spans one page */
+static bool scroll_single_page_full(zathura_t* zathura, bool down) {
+  GtkAdjustment* vadj    = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  const double page_size = gtk_adjustment_get_page_size(vadj);
+  const double lower     = gtk_adjustment_get_lower(vadj);
+  const double upper     = gtk_adjustment_get_upper(vadj);
+  const double value     = gtk_adjustment_get_value(vadj);
+  const double maxvalue  = upper - page_size;
+
+  float overlap = 0.0;
+  girara_setting_get(zathura->ui.session, "scroll-full-overlap", &overlap);
+  const double step = (1.0 - overlap) * page_size;
+
+  zathura_document_t* document = zathura_get_document(zathura);
+  const unsigned int page      = zathura_document_get_current_page_number(document);
+  const unsigned int npag      = zathura_document_get_number_of_pages(document);
+
+  if (down == true) {
+    if (value < maxvalue - 1.0) {
+      gtk_adjustment_set_value(vadj, MIN(value + step, maxvalue));
+    } else if (page + 1 < npag) {
+      page_set(zathura, page + 1);
+    }
+  } else {
+    if (value > lower + 1.0) {
+      gtk_adjustment_set_value(vadj, MAX(value - step, lower));
+    } else if (page > 0) {
+      page_set(zathura, page - 1);
+    }
+  }
+  return false;
+}
+
 bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -594,6 +627,15 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   g_return_val_if_fail(argument != NULL, false);
   if (zathura->document == NULL) {
     return false;
+  }
+
+  /* in single page mode the adjustment spans one page so route a full page scroll through the page */
+  if (argument->n == FULL_DOWN || argument->n == FULL_UP) {
+    int layout_mode = DOCUMENT_WIDGET_GRID;
+    g_object_get(zathura->ui.document_widget, "layout-mode", &layout_mode, NULL);
+    if (layout_mode == DOCUMENT_WIDGET_SINGLE) {
+      return scroll_single_page_full(zathura, argument->n == FULL_DOWN);
+    }
   }
 
   /* if TOP or BOTTOM, go there and we are done */
