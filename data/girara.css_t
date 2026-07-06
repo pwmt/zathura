@@ -90,7 +90,7 @@
 #@session@ scrolledwindow undershoot.left,
 #@session@ scrolledwindow undershoot.left:backdrop,
 #@session@ scrolledwindow undershoot.right,
-#@session@ scrolledwindow undershoot.right:backdrop
+#@session@ scrolledwindow undershoot.right:backdrop,
 #@session@ scrolledwindow overshoot.top,
 #@session@ scrolledwindow overshoot.top:backdrop,
 #@session@ scrolledwindow overshoot.bottom,

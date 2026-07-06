@@ -194,10 +194,11 @@ static void css_template_changed(GiraraTemplate* csstemplate, girara_session_t* 
     /* the load call has no error return so errors arrive on this signal */
     g_signal_connect(provider, "parsing-error", G_CALLBACK(cb_css_parsing_error), NULL);
 
-    /* add CSS style provider */
+    /* our CSS comes from the user's config, so it must beat gtk.css */
     GdkDisplay* display = gdk_display_get_default();
+    /* gtk loads ~/.config/gtk-4.0/gtk.css at USER priority, so go one above */
     gtk_style_context_add_provider_for_display(display, GTK_STYLE_PROVIDER(provider),
-                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+                                               GTK_STYLE_PROVIDER_PRIORITY_USER + 1);
   }
 
   gtk_css_provider_load_from_string(provider, css_data);
