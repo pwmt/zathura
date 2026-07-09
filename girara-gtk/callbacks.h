@@ -72,6 +72,9 @@ gboolean girara_callback_view_button_release_event(GtkGestureClick* gesture, gin
  */
 gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint clean);
 
+/* run a bound inputbar shortcut for the key */
+gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean);
+
 gboolean girara_callback_view_button_motion_notify_event(GtkEventControllerMotion* controller, gdouble x, gdouble y,
                                                          girara_session_t* session);
 

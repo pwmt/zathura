@@ -214,6 +214,24 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
   return FALSE;
 }
 
+gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean) {
+  g_return_val_if_fail(session != NULL, FALSE);
+
+  for (size_t idx = 0; idx != girara_list_size(session->bindings.inputbar_shortcuts); ++idx) {
+    girara_inputbar_shortcut_t* inputbar_shortcut = girara_list_nth(session->bindings.inputbar_shortcuts, idx);
+    if (inputbar_shortcut->key == keyval && inputbar_shortcut->mask == clean) {
+      girara_debug("found shortcut for key %u and mask %x", keyval, clean);
+      if (inputbar_shortcut->function != NULL) {
+        inputbar_shortcut->function(session, &(inputbar_shortcut->argument), NULL, 0);
+      }
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 gboolean girara_callback_view_button_press_event(GtkGestureClick* gesture, gint n_press, gdouble x, gdouble y,
                                                  girara_session_t* session) {
   g_return_val_if_fail(session != NULL, false);
@@ -500,18 +518,8 @@ gboolean girara_callback_inputbar_key_press_event(GtkEventControllerKey* control
   }
   girara_debug("Proccessing key %u with mask %x.", keyval, clean);
 
-  if (custom_ret == false) {
-    for (size_t idx = 0; idx != girara_list_size(session->bindings.inputbar_shortcuts); ++idx) {
-      girara_inputbar_shortcut_t* inputbar_shortcut = girara_list_nth(session->bindings.inputbar_shortcuts, idx);
-      if (inputbar_shortcut->key == keyval && inputbar_shortcut->mask == clean) {
-        girara_debug("found shortcut for key %u and mask %x", keyval, clean);
-        if (inputbar_shortcut->function != NULL) {
-          inputbar_shortcut->function(session, &(inputbar_shortcut->argument), NULL, 0);
-        }
-
-        return true;
-      }
-    }
+  if (custom_ret == false && girara_process_inputbar_key(session, keyval, clean) == TRUE) {
+    return true;
   }
 
   if ((session->gtk.results != NULL) && (gtk_widget_get_visible(GTK_WIDGET(session->gtk.results)) == TRUE) &&

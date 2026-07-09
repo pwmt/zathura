@@ -375,6 +375,28 @@ static int update_state_by_keyval(int state, int keyval) {
   return state;
 }
 
+/* type one synthetic key into the inputbar entry */
+static void feed_key_to_inputbar(girara_session_t* session, guint keyval, guint state) {
+  if (girara_process_inputbar_key(session, keyval, state) == TRUE) {
+    return;
+  }
+
+  GtkWidget* entry = GTK_WIDGET(session->gtk.inputbar_entry);
+  if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) {
+    g_signal_emit_by_name(entry, "activate");
+    return;
+  }
+
+  const gunichar codepoint = gdk_keyval_to_unicode(keyval);
+  if (codepoint != 0 && g_unichar_isprint(codepoint) == TRUE) {
+    char buffer[6];
+    const int length = g_unichar_to_utf8(codepoint, buffer);
+    int position     = gtk_editable_get_position(GTK_EDITABLE(entry));
+    gtk_editable_insert_text(GTK_EDITABLE(entry), buffer, length, &position);
+    gtk_editable_set_position(GTK_EDITABLE(entry), position);
+  }
+}
+
 bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                         unsigned int t) {
   if (session == NULL || argument == NULL) {
@@ -453,7 +475,15 @@ bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, 
 
     single_key:
       state = update_state_by_keyval(state, keyval);
-      girara_process_view_key(session, keyval, state);
+      /* send the key to the widget that would receive a real key press */
+      GtkWidget* entry = GTK_WIDGET(session->gtk.inputbar_entry);
+      GtkRoot* root    = gtk_widget_get_root(entry);
+      GtkWidget* focus = root != NULL ? gtk_root_get_focus(root) : NULL;
+      if (focus != NULL && (focus == entry || gtk_widget_is_ancestor(focus, entry))) {
+        feed_key_to_inputbar(session, keyval, state);
+      } else {
+        girara_process_view_key(session, keyval, state);
+      }
     }
   }
 
