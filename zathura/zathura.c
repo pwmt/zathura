@@ -834,6 +834,10 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
   g_return_val_if_fail(zathura->document == NULL, false);
 
+  /* declared before the first error path so that the cleanup always sees an initialized value */
+  g_autofree char* first_page_column_list = NULL;
+  g_autofree char* page_mode              = NULL;
+
   /* FIXME: since there are many call chains leading here, check again if we need to expand ~ or
    * ~user. We should fix all call sites instead */
   g_autofree char* tmp_path = *path == '~' ? girara_fix_path(path) : NULL;
@@ -1080,11 +1084,10 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   /* view mode */
-  unsigned int pages_per_row              = 1;
-  g_autofree char* first_page_column_list = NULL;
-  unsigned int page_v_padding             = 1;
-  unsigned int page_h_padding             = 1;
-  bool page_right_to_left                 = false;
+  unsigned int pages_per_row  = 1;
+  unsigned int page_v_padding = 1;
+  unsigned int page_h_padding = 1;
+  bool page_right_to_left     = false;
 
   girara_setting_get(zathura->ui.session, "page-v-padding", &page_v_padding);
   girara_setting_get(zathura->ui.session, "page-h-padding", &page_h_padding);
@@ -1165,7 +1168,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   update_visible_pages(zathura);
 
   /* apply default page mode */
-  g_autofree char* page_mode = NULL;
   girara_setting_get(zathura->ui.session, "page-mode", &page_mode);
   if (page_mode != NULL) {
     if (g_strcmp0(page_mode, "equal_width") == 0) {
