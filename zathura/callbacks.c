@@ -125,6 +125,18 @@ static bool in_single_page_mode(zathura_t* zathura) {
   return layout_mode == DOCUMENT_WIDGET_SINGLE;
 }
 
+/* the value is clamped at the ends of the document so there the ratio no longer marks the visible page */
+static double page_position_y(GtkAdjustment* vadjustment) {
+  const double value = gtk_adjustment_get_value(vadjustment);
+  if (value <= gtk_adjustment_get_lower(vadjustment)) {
+    return 0.0;
+  }
+  if (value >= gtk_adjustment_get_upper(vadjustment) - gtk_adjustment_get_page_size(vadjustment)) {
+    return 1.0;
+  }
+  return zathura_adjustment_get_ratio(vadjustment);
+}
+
 void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data) {
   zathura_t* zathura = data;
   if (zathura_has_document(zathura) == false) {
@@ -141,7 +153,8 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_t* document = zathura_get_document(zathura);
   const double position_x      = zathura_adjustment_get_ratio(adjustment);
   const double position_y      = zathura_document_get_position_y(document);
-  unsigned int page_id         = position_to_page_number(zathura, position_x, position_y);
+  GtkAdjustment* vadjustment   = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  unsigned int page_id         = position_to_page_number(zathura, position_x, page_position_y(vadjustment));
 
   zathura_document_set_position_x(document, position_x);
   zathura_document_set_position_y(document, position_y);
@@ -169,7 +182,7 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_t* document = zathura_get_document(zathura);
   const double position_x      = zathura_document_get_position_x(document);
   const double position_y      = zathura_adjustment_get_ratio(adjustment);
-  const unsigned int page_id   = position_to_page_number(zathura, position_x, position_y);
+  const unsigned int page_id   = position_to_page_number(zathura, position_x, page_position_y(adjustment));
 
   zathura_document_set_position_x(document, position_x);
   zathura_document_set_position_y(document, position_y);
