@@ -796,6 +796,12 @@ The settings described here can be changed with ``set``.
   * Value type: Boolean
   * Default value: false
 
+*open-link-confirm*
+  Show a confirmation dialog when opening external links.
+
+  * Value type: Boolean
+  * Default value: true
+
 *page-cache-size*
   Defines the maximum number of pages that could be kept in the page cache. When
   the cache is full and a new page that isn't cached becomes visible, the least
