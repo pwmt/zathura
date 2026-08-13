@@ -15,6 +15,7 @@
 #include "page.h"
 #include "page-widget.h"
 #include "utils.h"
+#include "internal.h"
 
 /* private data for ZathuraRenderer */
 typedef struct private_s {
@@ -823,6 +824,11 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
   zathura_page_t* page                      = request_priv->page;
 
+  /* parse the page on first render */
+  if (zathura_renderer_load_page(renderer, page) == false) {
+    return false;
+  }
+
   /* create cairo surface */
   unsigned int page_width  = 0;
   unsigned int page_height = 0;
@@ -893,6 +899,13 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   return true;
 }
 
+bool zathura_renderer_load_page(ZathuraRenderer* renderer, zathura_page_t* page) {
+  g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer) == TRUE, false);
+
+  /* zathura_page_load takes the document lock internally */
+  return zathura_page_load(page, NULL);
+}
+
 /* render a page synchronously and return its surface */
 cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page) {
   g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer), NULL);
@@ -900,6 +913,11 @@ cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura
 
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
   zathura_document_t* document = zathura_page_get_document(page);
+
+  /* parse the page on first render */
+  if (zathura_renderer_load_page(renderer, page) == false) {
+    return NULL;
+  }
 
   unsigned int page_width = 0, page_height = 0;
   const double real_scale = page_calc_height_width(document, page, &page_height, &page_width, false);

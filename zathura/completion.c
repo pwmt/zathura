@@ -20,6 +20,8 @@
 #include "utils.h"
 #include "page.h"
 #include "database.h"
+#include "render.h"
+#include "zathura.h"
 
 static int compare_case_insensitive(const void* data1, const void* data2) {
   const char* str1 = data1;

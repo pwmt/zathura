@@ -436,9 +436,7 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     GObject* obj_page_widget = G_OBJECT(page_widget);
     g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
 
-    zathura_renderer_lock(zathura->sync.render_thread);
     girara_list_t* result = zathura_page_search_text(page, input, &error);
-    zathura_renderer_unlock(zathura->sync.render_thread);
 
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);

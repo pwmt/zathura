@@ -13,6 +13,7 @@
 
 #include "links-internal.h"
 #include "page.h"
+#include "adjustment.h"
 #include "render.h"
 #include "utils.h"
 #include "shortcuts.h"
@@ -877,6 +878,33 @@ static void cb_update_surface(ZathuraRenderRequest* UNUSED(request), cairo_surfa
   ZathuraPageWidget* widget = data;
   g_return_if_fail(ZATHURA_IS_PAGE_WIDGET(widget));
   zathura_page_widget_update_surface(widget, surface, false);
+
+  if (surface == NULL) {
+    return;
+  }
+
+  /* the page is now parsed, correct its size if it differs from the placeholder */
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  zathura_document_t* document   = zathura_page_get_document(priv->page);
+  unsigned int page_width = 0, page_height = 0;
+  page_calc_height_width(document, priv->page, &page_height, &page_width, true);
+
+  int cur_width = 0, cur_height = 0;
+  gtk_widget_get_size_request(GTK_WIDGET(widget), &cur_width, &cur_height);
+  if ((int)page_width != cur_width || (int)page_height != cur_height) {
+    /* resize directly to keep the fresh surface, it was already rendered at the corrected size */
+    gtk_widget_set_size_request(GTK_WIDGET(widget), (int)page_width, (int)page_height);
+    if (priv->drawing_area != NULL) {
+      gtk_widget_set_size_request(priv->drawing_area, (int)page_width, (int)page_height);
+      gtk_widget_queue_draw(priv->drawing_area);
+    }
+  }
+
+  /* refresh the statusbar so the label of a freshly parsed current page shows up */
+  if (zathura_page_label_is_number(priv->page) == false && zathura_page_get_label(priv->page, NULL) != NULL &&
+      zathura_page_get_index(priv->page) == zathura_document_get_current_page_number(document)) {
+    statusbar_page_number_update(priv->zathura);
+  }
 }
 
 static void cb_cache_added(ZathuraRenderRequest* UNUSED(request), void* data) {

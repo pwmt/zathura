@@ -10,6 +10,7 @@
 #include "document.h"
 #include "render.h"
 #include "page.h"
+#include "internal.h"
 
 static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                          zathura_t* zathura) {
@@ -120,8 +121,12 @@ static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operatio
   }
 
   zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
-  double width         = zathura_page_get_width(page);
-  double height        = zathura_page_get_height(page);
+  if (page == NULL) {
+    return;
+  }
+
+  double width  = zathura_page_get_width(page);
+  double height = zathura_page_get_height(page);
 
   if (width > height) {
     gtk_page_setup_set_orientation(setup, GTK_PAGE_ORIENTATION_LANDSCAPE);

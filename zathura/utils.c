@@ -22,6 +22,7 @@
 #include "document.h"
 #include "document-widget.h"
 #include "page.h"
+#include "render.h"
 #include "plugin.h"
 #include "content-type.h"
 #include "index-element-object.h"

@@ -55,6 +55,11 @@ struct zathura_document_s {
    * Used plugin
    */
   const zathura_plugin_t* plugin;
+
+  /**
+   * Serializes lazy page parsing
+   */
+  GMutex lock;
 };
 
 static bool hash_file(uint8_t* dst, const char* path) {
@@ -132,6 +137,8 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     return NULL;
   }
 
+  g_mutex_init(&document->lock);
+
   document->file_path = g_steal_pointer(&real_path);
   document->uri       = g_strdup(uri);
   if (document->uri == NULL) {
@@ -162,7 +169,7 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
     return NULL;
   }
 
-  /* read all pages */
+  /* allocate the pages without parsing them */
   document->pages = g_try_malloc0_n(document->number_of_pages, sizeof(zathura_page_t*));
   if (document->pages == NULL) {
     zathura_check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);
@@ -205,6 +212,7 @@ zathura_error_t zathura_document_free(zathura_document_t* document) {
   g_free(document->file_path);
   g_free(document->uri);
   g_free(document->basename);
+  g_mutex_clear(&document->lock);
   g_free(document);
 
   return error;
@@ -571,4 +579,16 @@ const zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document
   g_return_val_if_fail(document != NULL, NULL);
 
   return document->plugin;
+}
+
+void zathura_document_lock(zathura_document_t* document) {
+  g_return_if_fail(document != NULL);
+
+  g_mutex_lock(&document->lock);
+}
+
+void zathura_document_unlock(zathura_document_t* document) {
+  g_return_if_fail(document != NULL);
+
+  g_mutex_unlock(&document->lock);
 }

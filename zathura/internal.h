@@ -29,4 +29,14 @@ struct zathura_document_information_entry_s {
  */
 const zathura_plugin_t* zathura_document_get_plugin(zathura_document_t* document);
 
+/* Locks/unlocks the document while a page is parsed on first use. */
+void zathura_document_lock(zathura_document_t* document);
+void zathura_document_unlock(zathura_document_t* document);
+
+/* Parses the page with its plugin on first use, taking the document lock internally. */
+bool zathura_page_load(zathura_page_t* page, zathura_error_t* error);
+
+/* Returns true once the page has been parsed by its plugin. */
+bool zathura_page_is_loaded(zathura_page_t* page);
+
 #endif // INTERNAL_H

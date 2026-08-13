@@ -44,6 +44,7 @@
 #include "resources.h"
 #include "synctex.h"
 #include "content-type.h"
+#include "internal.h"
 
 typedef struct zathura_document_info_s {
   zathura_t* zathura;
@@ -940,6 +941,25 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (always_first_page == true) {
     girara_debug("setting current page: 0 (always open first page)");
     zathura_document_set_current_page_number(document, 0);
+  }
+
+  /* parse the displayed page and size the others from it until they are parsed */
+  const unsigned int current_page_number = zathura_document_get_current_page_number(document);
+  zathura_page_t* current_page           = zathura_document_get_page(document, current_page_number);
+  /* no render lock is needed here, the render thread does not exist yet */
+  if (current_page == NULL || zathura_page_load(current_page, NULL) == false) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to parse the displayed page of the document"));
+    goto error_free;
+  }
+
+  const double width  = zathura_page_get_width(current_page);
+  const double height = zathura_page_get_height(current_page);
+  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+    if (page != NULL && page != current_page) {
+      zathura_page_set_width(page, width);
+      zathura_page_set_height(page, height);
+    }
   }
 
   /* apply open adjustment */
