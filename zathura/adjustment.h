@@ -78,4 +78,14 @@ gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment);
 void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value);
 void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio);
 
+/**
+ * Check whether the value belongs to the given ratio. A value that does not was
+ * set by someone else.
+ *
+ * @param adjustment the adjustment
+ * @param ratio the ratio
+ * @return true if the value belongs to the ratio
+ */
+bool zathura_adjustment_value_matches_ratio(GtkAdjustment* adjustment, gdouble ratio);
+
 #endif /* ZATHURA_ADJUSTMENT_H */

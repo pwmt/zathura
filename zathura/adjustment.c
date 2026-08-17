@@ -173,19 +173,34 @@ gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment) {
   return (value - lower + page_size / 2.0) / (upper - lower);
 }
 
-void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value) {
+/* keep the value inside the scrollable range */
+static gdouble clamp_to_range(GtkAdjustment* adjustment, gdouble value) {
   const gdouble lower        = gtk_adjustment_get_lower(adjustment);
   const gdouble upper_m_size = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment);
 
-  gtk_adjustment_set_value(adjustment, CLAMP(value, lower, upper_m_size));
+  return CLAMP(value, lower, upper_m_size);
+}
+
+/* the ratio marks the middle of the view */
+static gdouble value_for_ratio(GtkAdjustment* adjustment, gdouble ratio) {
+  const gdouble lower     = gtk_adjustment_get_lower(adjustment);
+  const gdouble upper     = gtk_adjustment_get_upper(adjustment);
+  const gdouble page_size = gtk_adjustment_get_page_size(adjustment);
+
+  return (upper - lower) * ratio + lower - page_size / 2.0;
+}
+
+void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value) {
+  gtk_adjustment_set_value(adjustment, clamp_to_range(adjustment, value));
 }
 
 void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio) {
-  gdouble lower     = gtk_adjustment_get_lower(adjustment);
-  gdouble upper     = gtk_adjustment_get_upper(adjustment);
-  gdouble page_size = gtk_adjustment_get_page_size(adjustment);
+  zathura_adjustment_set_value(adjustment, value_for_ratio(adjustment, ratio));
+}
 
-  gdouble value = (upper - lower) * ratio + lower - page_size / 2.0;
+bool zathura_adjustment_value_matches_ratio(GtkAdjustment* adjustment, gdouble ratio) {
+  const gdouble expected = clamp_to_range(adjustment, value_for_ratio(adjustment, ratio));
 
-  zathura_adjustment_set_value(adjustment, value);
+  /* the value is rounded, so compare within a pixel */
+  return fabs(gtk_adjustment_get_value(adjustment) - expected) < 1.0;
 }

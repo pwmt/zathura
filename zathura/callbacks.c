@@ -151,10 +151,18 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   update_visible_pages(zathura);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  const double position_x      = zathura_adjustment_get_ratio(adjustment);
-  const double position_y      = zathura_document_get_position_y(document);
-  GtkAdjustment* vadjustment   = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  unsigned int page_id         = position_to_page_number(zathura, position_x, page_position_y(vadjustment));
+  const double stored_position = zathura_document_get_position_x(document);
+
+  /* the value was set by someone else, so restore the stored position instead of reading it back */
+  if (zathura_adjustment_value_matches_ratio(adjustment, stored_position) == false) {
+    zathura_adjustment_set_value_from_ratio(adjustment, stored_position);
+    return;
+  }
+
+  const double position_x    = zathura_adjustment_get_ratio(adjustment);
+  const double position_y    = zathura_document_get_position_y(document);
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  unsigned int page_id       = position_to_page_number(zathura, position_x, page_position_y(vadjustment));
 
   zathura_document_set_position_x(document, position_x);
   zathura_document_set_position_y(document, position_y);
