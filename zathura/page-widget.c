@@ -516,7 +516,8 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
   if (zathura->predecessor_document != NULL && zathura->predecessor_pages != NULL && !surface_exists) {
     unsigned int page_index = zathura_page_get_index(priv->page);
 
-    if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document)) {
+    if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document) &&
+        priv->zathura->predecessor_pages[page_index] != NULL) {
       /* render real page */
       if (page_widget_on_screen(widget) == true) {
         zathura_render_request(priv->render_request, g_get_real_time());
@@ -580,7 +581,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
       /* All but the last jobs requested here are aborted during zooming.
        * Processing and aborting smaller jobs first improves responsiveness. */
       const gint64 penalty = (gint64)pwidth * (gint64)pheight;
-      if (page_widget_on_screen(widget) == true) {
+      if (page_widget_on_screen(widget) == true && priv->zathura->sync.initial_render_held == false) {
         zathura_render_request(priv->render_request, g_get_real_time() + penalty);
       }
       return;
@@ -717,7 +718,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
   } else {
     /* No cached surface yet, render the on-screen page synchronously. All other rendering is asynchronous
      * This makes the rendering of the first page much faster and avoids the "Loading..." message as well */
-    if (page_widget_on_screen(widget) == true) {
+    if (page_widget_on_screen(widget) == true && priv->zathura->sync.initial_render_held == false) {
       cairo_surface_t* rendered = zathura_renderer_render_page(zathura->sync.render_thread, priv->page);
       if (rendered != NULL) {
         zathura_page_widget_update_surface(page, rendered, false);
@@ -760,7 +761,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
     }
 
     /* request a render for every page that intersects the view */
-    if (page_widget_on_screen(widget) == true) {
+    if (page_widget_on_screen(widget) == true && priv->zathura->sync.initial_render_held == false) {
       zathura_render_request(priv->render_request, g_get_real_time());
     }
   }
@@ -995,6 +996,8 @@ static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, d
 }
 
 void zathura_page_widget_clear_selection(ZathuraPageWidget* widget) {
+  g_return_if_fail(widget != NULL);
+
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
   if (priv->selection.list != NULL) {
     girara_list_free(priv->selection.list);
@@ -1036,6 +1039,10 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
         if (document != NULL) {
           unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
           for (unsigned int i = 0; i < number_of_pages; i++) {
+            /* the widget exists only if the background fill already created it */
+            if (priv->zathura->pages[i] == NULL) {
+              continue;
+            }
             ZathuraPageWidget* other_page        = ZATHURA_PAGE_WIDGET(priv->zathura->pages[i]);
             ZathuraPageWidgetPrivate* other_priv = zathura_page_widget_get_instance_private(other_page);
 
@@ -1367,7 +1374,8 @@ void zathura_page_widget_update_view_time(ZathuraPageWidget* widget) {
   if (zathura_page_get_visibility(priv->page) == true) {
     zathura_render_request_update_view_time(priv->render_request);
   }
-  if (priv->surface == NULL) {
+  /* do not kick the initial render while it is held */
+  if (priv->surface == NULL && priv->zathura->sync.initial_render_held == false) {
     zathura_render_request(priv->render_request, g_get_real_time());
   }
 }

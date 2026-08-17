@@ -123,6 +123,16 @@ struct zathura_s {
 
   struct {
     ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
+    guint widget_preload_source;    /**< Idle source that builds the remaining page widgets in the background */
+    bool initial_render_held;       /**< holds the focused page first render until the view is painted */
+    bool scale_settled;       /**< set when the device scale settled so the viewport allocation renders the page */
+    bool view_painted;        /**< set after the first frame so a display that never changes scale renders next frame */
+    bool initial_render_done; /**< set once the first render has happened so later opens do not hold */
+    gulong initial_render_handler;    /**< handler id used to release the hold */
+    GObject* initial_render_instance; /**< instance the release handler is connected to */
+    bool widgets_loaded;              /**< set once the background fill has built every page widget */
+    char* pending_search_input;       /**< search query received before the widgets finished loading */
+    int pending_search_direction;     /**< direction for a search received before loading finished */
   } sync;
 
   struct {
@@ -330,6 +340,12 @@ void zathura_update_view_ppi(zathura_t* zathura);
  */
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info);
+
+/* create the page widget if missing then attach it to the grid */
+void create_page_widget(zathura_t* zathura, unsigned int page_id);
+
+/* render the focused page synchronously once the device scale has settled */
+void render_focused_page_now(zathura_t* zathura);
 
 /**
  * Opens a file

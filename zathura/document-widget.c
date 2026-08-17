@@ -366,6 +366,11 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
       zathura_document_set_viewport_height(z_document, height);
       zathura_document_set_viewport_width(z_document, width);
       adjust_view(priv->zathura);
+      /* the scale settled and the zoom is now fit so release the held render in this same frame */
+      if (priv->zathura->sync.initial_render_held == true && priv->zathura->sync.scale_settled == true) {
+        priv->zathura->sync.initial_render_held = false;
+        render_focused_page_now(priv->zathura);
+      }
     }
     update_visible_pages(priv->zathura);
   }
@@ -394,6 +399,9 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
       size_allocate_single(document, width, height, baseline);
       return;
     }
+
+    /* align tall documents to the top so the first page stays visible while the grid fills */
+    gtk_widget_set_valign(priv->grid, (int)doc_h > height ? GTK_ALIGN_START : GTK_ALIGN_CENTER);
 
     const int x                    = -(int)gtk_adjustment_get_value(priv->hadjustment);
     const int y                    = -(int)gtk_adjustment_get_value(priv->vadjustment);
@@ -505,6 +513,29 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
 
   /* the cached visibility flags are stale after pages move */
   update_visible_pages(priv->zathura);
+}
+
+void zathura_document_widget_attach_page(ZathuraDocumentWidget* document, unsigned int page_index) {
+  g_return_if_fail(document != NULL);
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  if (priv->grid == NULL || priv->ncol == 0) {
+    return;
+  }
+
+  zathura_page_t* page   = zathura_document_get_page(zathura_get_document(priv->zathura), page_index);
+  GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
+  if (page_widget == NULL || gtk_widget_get_parent(page_widget) == priv->grid) {
+    return;
+  }
+
+  unsigned int row = 0;
+  unsigned int col = 0;
+  zathura_document_widget_get_page_position(document, page_index, &row, &col);
+  const unsigned int x  = priv->pages_right_to_left ? priv->ncol - 1 - col : col;
+  const GtkAlign halign = priv->ncol == 1 ? GTK_ALIGN_CENTER : (x == 0 ? GTK_ALIGN_END : GTK_ALIGN_START);
+  gtk_widget_set_halign(page_widget, halign);
+  gtk_grid_attach(GTK_GRID(priv->grid), page_widget, (int)x, (int)row, 1, 1);
 }
 
 void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
@@ -635,7 +666,10 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
 
-    gtk_widget_unparent(page_widget);
+    /* the widget exists only if the background fill already created it */
+    if (page_widget != NULL) {
+      gtk_widget_unparent(page_widget);
+    }
   }
 }
 
@@ -650,7 +684,10 @@ void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document) {
     zathura_page_t* page   = zathura_document_get_page(z_document, i);
     GtkWidget* page_widget = zathura_page_get_widget(priv->zathura, page);
 
-    zathura_page_widget_clear_thumbnail(ZATHURA_PAGE_WIDGET(page_widget));
+    /* the widget exists only if the background fill already created it */
+    if (page_widget != NULL) {
+      zathura_page_widget_clear_thumbnail(ZATHURA_PAGE_WIDGET(page_widget));
+    }
   }
 }
 

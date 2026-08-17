@@ -75,8 +75,17 @@ void update_visible_pages(zathura_t* zathura) {
   const unsigned int pages_per_row   = zathura_document_widget_get_pages_per_row(zathura->ui.document_widget);
 
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page                   = zathura_document_get_page(document, page_id);
-    GtkWidget* page_widget                 = zathura_page_get_widget(zathura, page);
+    zathura_page_t* page = zathura_document_get_page(document, page_id);
+
+    /* create the widget for a page scrolled into view during the background fill */
+    if (page_is_visible(zathura, page_id) == true) {
+      create_page_widget(zathura, page_id);
+    }
+
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    if (page_widget == NULL) {
+      continue;
+    }
     ZathuraPageWidget* zathura_page_widget = ZATHURA_PAGE_WIDGET(page_widget);
 
     if (page_is_visible(zathura, page_id) == true) {
@@ -90,12 +99,16 @@ void update_visible_pages(zathura_t* zathura) {
       // consider pages_per_row pages before and after, with the more recents ones close to the page itself
       for (unsigned int i = pages_per_row; i; --i) {
         if (page_id >= i) {
-          zathura_page_widget_update_view_time(
-              ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id - i)));
+          GtkWidget* prev = zathura_page_get_widget_by_number(zathura, page_id - i);
+          if (prev != NULL) {
+            zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(prev));
+          }
         }
         if (page_id + i < number_of_pages) {
-          zathura_page_widget_update_view_time(
-              ZATHURA_PAGE_WIDGET(zathura_page_get_widget_by_number(zathura, page_id + i)));
+          GtkWidget* next = zathura_page_get_widget_by_number(zathura, page_id + i);
+          if (next != NULL) {
+            zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(next));
+          }
         }
       }
 
@@ -309,6 +322,11 @@ void cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data) 
     zathura_document_set_device_factors(document, new_factor, new_factor);
     girara_debug("New device scale factor: %d", new_factor);
     zathura_update_view_ppi(zathura);
+    /* the viewport is not yet resized for the new scale, the size allocation that follows renders it */
+    if (zathura->sync.initial_render_held == true) {
+      zathura->sync.scale_settled = true;
+      return;
+    }
     zathura_document_widget_render_all(zathura->ui.document_widget);
   }
 }
@@ -793,6 +811,9 @@ void cb_hide_links(GtkWidget* widget, gpointer data) {
     }
 
     GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    if (page_widget == NULL) {
+      continue;
+    }
     g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
   }
 }

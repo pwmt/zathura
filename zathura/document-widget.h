@@ -50,6 +50,9 @@ GtkWidget* zathura_document_widget_new(zathura_t* zathura);
  */
 void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document);
 
+/* attach a single page widget at its computed grid position without rearranging the grid */
+void zathura_document_widget_attach_page(ZathuraDocumentWidget* document, unsigned int page_index);
+
 void zathura_document_widget_update_mode(ZathuraDocumentWidget* document);
 
 /**
