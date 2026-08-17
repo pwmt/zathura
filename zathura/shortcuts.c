@@ -43,7 +43,11 @@ static bool draw_links(zathura_t* zathura) {
       continue;
     }
 
-    GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
+    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+    /* the widget exists only if the background fill already created it */
+    if (page_widget == NULL) {
+      continue;
+    }
     GObject* obj_page_widget = G_OBJECT(page_widget);
     g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
     if (zathura_page_get_visibility(page) == true) {
@@ -103,7 +107,11 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
         continue;
       }
 
-      GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
+      GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+      /* the widget exists only if the background fill already created it */
+      if (page_widget == NULL) {
+        continue;
+      }
       GObject* obj_page_widget = G_OBJECT(page_widget);
       zathura_page_widget_clear_selection(ZATHURA_PAGE_WIDGET(page_widget));
       g_object_set(obj_page_widget, "draw-links", FALSE, NULL);

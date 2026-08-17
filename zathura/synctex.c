@@ -251,6 +251,11 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   zathura_document_t* document       = zathura_get_document(zathura);
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
+  /* the highlight needs every page widget so do nothing until the preload is done */
+  if (zathura->sync.widgets_loaded == false) {
+    return;
+  }
+
   for (unsigned int p = 0; p != number_of_pages; ++p) {
     GObject* widget = G_OBJECT(zathura_page_get_widget_by_number(zathura, p));
 

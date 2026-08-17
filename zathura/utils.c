@@ -292,10 +292,15 @@ void document_draw_search_results(zathura_t* zathura, bool value) {
     return;
   }
 
+  /* nothing to highlight until the preload is done */
+  if (zathura->sync.widgets_loaded == false) {
+    return;
+  }
+
   unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
   for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    g_object_set(G_OBJECT(zathura_page_get_widget_by_number(zathura, page_id)), "draw-search-results",
-                 (value == true) ? TRUE : FALSE, NULL);
+    GObject* page_widget = G_OBJECT(zathura_page_get_widget_by_number(zathura, page_id));
+    g_object_set(page_widget, "draw-search-results", (value == true) ? TRUE : FALSE, NULL);
   }
 }
 
@@ -593,6 +598,11 @@ girara_list_t* flatten_rectangles(girara_list_t* rectangles) {
 bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disable_notify) {
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
+
+  /* navigating results needs every page widget so do nothing until the preload is done */
+  if (zathura->sync.widgets_loaded == false) {
+    return false;
+  }
 
   girara_session_t* session = zathura->ui.session;
 

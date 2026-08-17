@@ -409,6 +409,14 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     return false;
   }
 
+  /* the search needs every page widget so wait until the background preload is done */
+  if (zathura->sync.widgets_loaded == false) {
+    g_free(zathura->sync.pending_search_input);
+    zathura->sync.pending_search_input     = g_strdup(input);
+    zathura->sync.pending_search_direction = argument->n;
+    return true;
+  }
+
   zathura_error_t error = ZATHURA_ERROR_OK;
 
   /* set search direction */
