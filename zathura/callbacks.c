@@ -188,9 +188,17 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   update_visible_pages(zathura);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  const double position_x      = zathura_document_get_position_x(document);
-  const double position_y      = zathura_adjustment_get_ratio(adjustment);
-  const unsigned int page_id   = position_to_page_number(zathura, position_x, page_position_y(adjustment));
+  const double stored_position = zathura_document_get_position_y(document);
+
+  /* restore the stored position when the value came from elsewhere */
+  if (zathura_adjustment_value_matches_ratio(adjustment, stored_position) == false) {
+    zathura_adjustment_set_value_from_ratio(adjustment, stored_position);
+    return;
+  }
+
+  const double position_x    = zathura_document_get_position_x(document);
+  const double position_y    = zathura_adjustment_get_ratio(adjustment);
+  const unsigned int page_id = position_to_page_number(zathura, position_x, page_position_y(adjustment));
 
   zathura_document_set_position_x(document, position_x);
   zathura_document_set_position_y(document, position_y);

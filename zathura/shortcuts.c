@@ -358,6 +358,17 @@ bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_even
   return false;
 }
 
+/* turn a movement in pixels into the position it leads to */
+static double position_moved_by(GtkAdjustment* adjustment, double pixels) {
+  const double span = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_lower(adjustment);
+  if (span <= 0) {
+    return zathura_adjustment_get_ratio(adjustment);
+  }
+
+  /* keep the ratio within the valid range */
+  return CLAMP(zathura_adjustment_get_ratio(adjustment) + pixels / span, 0.0, 1.0);
+}
+
 bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
@@ -398,8 +409,8 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
       return false;
     }
 
-    zathura_adjustment_set_value(x_adj, gtk_adjustment_get_value(x_adj) - (event->x - zathura->shortcut.mouse.x));
-    zathura_adjustment_set_value(y_adj, gtk_adjustment_get_value(y_adj) - (event->y - zathura->shortcut.mouse.y));
+    position_set(zathura, position_moved_by(x_adj, zathura->shortcut.mouse.x - event->x),
+                 position_moved_by(y_adj, zathura->shortcut.mouse.y - event->y));
     /* save the current cursor position so the next motion event measures only the new movement */
     zathura->shortcut.mouse.x = event->x;
     zathura->shortcut.mouse.y = event->y;
@@ -600,13 +611,13 @@ static bool scroll_single_page_full(zathura_t* zathura, bool down) {
 
   if (down == true) {
     if (value < maxvalue - 1.0) {
-      gtk_adjustment_set_value(vadj, MIN(value + step, maxvalue));
+      position_set(zathura, zathura_document_get_position_x(document), position_moved_by(vadj, step));
     } else if (page + 1 < npag) {
       page_set(zathura, page + 1);
     }
   } else {
     if (value > lower + 1.0) {
-      gtk_adjustment_set_value(vadj, MAX(value - step, lower));
+      position_set(zathura, zathura_document_get_position_x(document), position_moved_by(vadj, -step));
     } else if (page > 0) {
       page_set(zathura, page - 1);
     }

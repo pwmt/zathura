@@ -308,6 +308,12 @@ void zathura_document_widget_update_mode(ZathuraDocumentWidget* document) {
   }
 
   if (single == true) {
+    /* store the position to match the reset */
+    zathura_document_t* z_document = zathura_get_document(priv->zathura);
+    if (z_document != NULL) {
+      zathura_document_set_position_x(z_document, 0.0);
+      zathura_document_set_position_y(z_document, 0.0);
+    }
     gtk_adjustment_set_value(priv->hadjustment, 0);
     gtk_adjustment_set_value(priv->vadjustment, 0);
   } else {
