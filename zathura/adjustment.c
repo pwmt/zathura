@@ -175,8 +175,10 @@ gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment) {
 
 /* keep the value inside the scrollable range */
 static gdouble clamp_to_range(GtkAdjustment* adjustment, gdouble value) {
-  const gdouble lower        = gtk_adjustment_get_lower(adjustment);
-  const gdouble upper_m_size = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment);
+  const gdouble lower = gtk_adjustment_get_lower(adjustment);
+  /* the page can be wider than the content, keep the upper bound at or above the lower one */
+  const gdouble upper_m_size =
+      MAX(lower, gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment));
 
   return CLAMP(value, lower, upper_m_size);
 }
