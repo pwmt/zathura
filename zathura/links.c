@@ -329,23 +329,9 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:
   case ZATHURA_LINK_LAUNCH:
-    bool confirm           = true;
-    const char* debug_text = "";
-    switch (link->type) {
-    case ZATHURA_LINK_GOTO_REMOTE:
-      debug_text = "Going to remote destination";
-      break;
-    case ZATHURA_LINK_URI:
-      debug_text = "Opening URI";
-      break;
-    case ZATHURA_LINK_LAUNCH:
-      debug_text = "Launching link";
-      break;
-    default:
-      break;
-    }
+    bool confirm = true;
     girara_setting_get(zathura->ui.session, "open-link-confirm", &confirm);
-    girara_debug("%s: %s", debug_text, link->target.value);
+    girara_debug("Opening link: %s (type = %u)", link->target.value, (unsigned int)link->target.destination_type);
     if (confirm) {
       link_confirm(zathura, link->type, link->target.value);
     } else if (link->type == ZATHURA_LINK_GOTO_REMOTE) {
