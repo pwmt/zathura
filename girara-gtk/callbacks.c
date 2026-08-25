@@ -382,7 +382,8 @@ gboolean girara_callback_view_scroll_event(GtkEventControllerScroll* controller,
 #endif
 
   /* only wheel units are discrete steps so touchpad deltas stay smooth */
-  if (gtk_event_controller_scroll_get_unit(controller) != GDK_SCROLL_UNIT_WHEEL) {
+  const bool discrete = gtk_event_controller_scroll_get_unit(controller) == GDK_SCROLL_UNIT_WHEEL;
+  if (discrete == false) {
     event.type = GIRARA_EVENT_SCROLL_BIDIRECTIONAL;
     event.x    = dx * surface_to_wheel;
     event.y    = dy * surface_to_wheel;
@@ -408,13 +409,16 @@ gboolean girara_callback_view_scroll_event(GtkEventControllerScroll* controller,
   const guint state    = mods & MOUSE_MASK;
   girara_session_private_t* session_private = session->private_data;
 
+  /* apply the count to the mouse wheel but not to the touchpad */
+  const unsigned int count = discrete ? session_private->buffer.n : 1;
+
   /* search registered mouse events */
   /* TODO: Filter correct event */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* mouse_event = girara_list_nth(session->bindings.mouse_events, idx);
     if (mouse_event->function != NULL && state == mouse_event->mask && mouse_event->event_type == event.type &&
         (session->modes.current_mode == mouse_event->mode || mouse_event->mode == 0)) {
-      mouse_event->function(session, &(mouse_event->argument), &event, session_private->buffer.n);
+      mouse_event->function(session, &(mouse_event->argument), &event, count);
       return true;
     }
   }
