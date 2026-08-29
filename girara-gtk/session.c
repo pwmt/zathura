@@ -540,6 +540,18 @@ char* girara_buffer_get(girara_session_t* session) {
   return (session->global.buffer) ? g_strdup(session->global.buffer->str) : NULL;
 }
 
+/* the view stack is not focusable, so grabbing focus on it leaves focus outside the
+   stack and the capture-phase key controller stops seeing keys */
+void girara_focus_view(girara_session_t* session) {
+  g_return_if_fail(session != NULL && session->gtk.view != NULL);
+
+  GtkWidget* child = gtk_stack_get_visible_child(GTK_STACK(session->gtk.view));
+  if (child != NULL && gtk_widget_grab_focus(child)) {
+    return;
+  }
+  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
+}
+
 void girara_notify(girara_session_t* session, int level, const char* format, ...) {
   if (session == NULL || session->gtk.notification_text == NULL || session->gtk.notification_area == NULL ||
       session->gtk.inputbar == NULL || session->gtk.view == NULL) {
@@ -573,7 +585,7 @@ void girara_notify(girara_session_t* session, int level, const char* format, ...
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), TRUE);
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
 
-  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
+  girara_focus_view(session);
 }
 
 void girara_dialog(girara_session_t* session, const char* dialog, bool invisible,
@@ -617,7 +629,7 @@ bool girara_set_view(girara_session_t* session, GtkWidget* widget) {
 
   gtk_widget_set_visible(widget, true);
   gtk_stack_set_visible_child(GTK_STACK(session->gtk.view), widget);
-  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
+  girara_focus_view(session);
 
   return true;
 }
