@@ -142,7 +142,7 @@ bool girara_isc_abort(girara_session_t* session, girara_argument_t* UNUSED(argum
   gtk_editable_delete_text(GTK_EDITABLE(session->gtk.inputbar_entry), 0, -1);
 
   /* grab view */
-  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
+  girara_focus_view(session);
 
   /* hide inputbar */
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
