@@ -81,16 +81,24 @@ void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
- * This function gets called when the view widget scale factor changes (e.g.
- * when moving from a regular to a HiDPI screen).
+ * This function gets called when the display scale changes.
  *
  * It records the new value and triggers a re-rendering of the document.
  *
- * @param object The view widget
- * @param pspec The GParamSpec for the scale-factor property
- * @param gpointer The zathura instance
+ * @param object Unused
+ * @param pspec Unused
+ * @param data The zathura instance
  */
 void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
+
+/**
+ * Called when the view is set up on screen. Makes the scale handler run when
+ * the display scale changes.
+ *
+ * @param widget The view widget
+ * @param data The zathura instance
+ */
+void cb_view_realized(GtkWidget* widget, gpointer data);
 
 /**
  * This function gets called when the monitor configuration changes (e.g.

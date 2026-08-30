@@ -307,15 +307,18 @@ void cb_monitors_changed(GListModel* UNUSED(model), guint UNUSED(position), guin
   zathura_update_view_ppi(zathura);
 }
 
-void cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data) {
+void cb_scale_factor(GObject* UNUSED(object), GParamSpec* UNUSED(pspec), gpointer data) {
   zathura_t* zathura = data;
   if (zathura_has_document(zathura) == false) {
     return;
   }
 
-  int new_factor = gtk_widget_get_scale_factor(GTK_WIDGET(object));
-  if (new_factor == 0) {
-    girara_debug("Ignoring new device scale factor = 0");
+  GtkWidget* view     = zathura->ui.session->gtk.view;
+  GtkNative* native   = gtk_widget_get_native(view);
+  GdkSurface* surface = native != NULL ? gtk_native_get_surface(native) : NULL;
+  /* read the exact display scale instead of the rounded whole number */
+  const double new_factor = surface != NULL ? gdk_surface_get_scale(surface) : gtk_widget_get_scale_factor(view);
+  if (new_factor <= 0.0) {
     return;
   }
 
@@ -323,10 +326,27 @@ void cb_scale_factor(GObject* object, GParamSpec* UNUSED(pspec), gpointer data) 
   zathura_device_factors_t current = zathura_document_get_device_factors(document);
   if (fabs(new_factor - current.x) >= DBL_EPSILON || fabs(new_factor - current.y) >= DBL_EPSILON) {
     zathura_document_set_device_factors(document, new_factor, new_factor);
-    girara_debug("New device scale factor: %d", new_factor);
+    girara_debug("New device scale factor: %0.2f", new_factor);
     zathura_update_view_ppi(zathura);
     zathura_document_widget_render_all(zathura->ui.document_widget);
   }
+}
+
+void cb_view_realized(GtkWidget* widget, gpointer data) {
+  zathura_t* zathura = data;
+
+  GtkNative* native = gtk_widget_get_native(widget);
+  if (native == NULL) {
+    return;
+  }
+  GdkSurface* surface = gtk_native_get_surface(native);
+  if (surface == NULL) {
+    return;
+  }
+
+  /* run the scale handler when the display scale changes */
+  g_signal_connect(G_OBJECT(surface), "notify::scale", G_CALLBACK(cb_scale_factor), zathura);
+  cb_scale_factor(NULL, NULL, zathura);
 }
 
 void cb_page_layout_value_changed(girara_session_t* session, const char* name, girara_setting_type_t UNUSED(type),
