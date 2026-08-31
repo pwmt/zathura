@@ -489,6 +489,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "word-separator",           " /.-=&#?",           STRING,  TRUE,  NULL, NULL, NULL);
   girara_setting_add(gsession, "window-width",             &window_width,        UINT,    TRUE,  _("Initial window width"), NULL, NULL);
   girara_setting_add(gsession, "window-height",            &window_height,       UINT,    TRUE,  _("Initial window height"), NULL, NULL);
+  bool_value = true;
+  girara_setting_add(gsession, "window-decoration",        &bool_value,          BOOLEAN, TRUE,  _("Show window decorations"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-h-padding",      &statusbar_h_padding, INT,     TRUE,  _("Horizontal padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "statusbar-v-padding",      &statusbar_v_padding, INT,     TRUE,  _("Vertical padding for the status, input, and notification bars"), NULL, NULL);
   girara_setting_add(gsession, "n-completion-items",       &n_completion_items,  UINT,    TRUE,  _("Number of completion items"), NULL, NULL);

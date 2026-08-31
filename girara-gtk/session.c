@@ -418,6 +418,11 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
     gtk_window_set_default_size(GTK_WINDOW(session->gtk.window), window_width, window_height);
   }
 
+  /* apply the window-decoration setting (read from the application's config) before showing the window */
+  bool window_decoration = true;
+  girara_setting_get(session, "window-decoration", &window_decoration);
+  gtk_window_set_decorated(GTK_WINDOW(session->gtk.window), window_decoration);
+
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.window), TRUE);
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), FALSE);
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
