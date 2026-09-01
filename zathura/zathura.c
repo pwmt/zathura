@@ -209,6 +209,11 @@ static bool init_ui(zathura_t* zathura) {
   gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(zoom), GTK_PHASE_BUBBLE);
   gtk_widget_add_controller(GTK_WIDGET(zathura->ui.session->gtk.view), GTK_EVENT_CONTROLLER(zoom));
 
+  /* allow dropping a file onto the window to open it */
+  GtkDropTarget* drop_target = gtk_drop_target_new(GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
+  g_signal_connect(drop_target, "drop", G_CALLBACK(cb_drop_file), zathura);
+  gtk_widget_add_controller(GTK_WIDGET(zathura->ui.session->gtk.view), GTK_EVENT_CONTROLLER(drop_target));
+
   /* zathura signals */
   zathura->signals.refresh_view = g_signal_new("refresh-view", GTK_TYPE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
                                                g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
