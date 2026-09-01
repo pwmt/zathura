@@ -811,6 +811,40 @@ void cb_gesture_zoom_scale_changed(GtkGestureZoom* UNUSED(self), gdouble scale, 
   sc_zoom(zathura->ui.session, &argument, NULL, next_zoom * 100);
 }
 
+gboolean cb_drop_file(GtkDropTarget* UNUSED(self), const GValue* value, double UNUSED(x), double UNUSED(y),
+                      void* data) {
+  zathura_t* zathura = data;
+  if (zathura == NULL || value == NULL) {
+    return FALSE;
+  }
+
+  /* the dropped value holds the list of file GFiles (matched GDK_TYPE_FILE_LIST) */
+  GSList* files = NULL;
+  if (G_VALUE_HOLDS(value, GDK_TYPE_FILE_LIST)) {
+    files = g_value_get_boxed(value);
+  }
+
+  const GSList* file = files;
+  while (file != NULL && g_file_is_native(G_FILE(file->data)) == FALSE) {
+    file = file->next;
+  }
+  if (file == NULL) {
+    return FALSE;
+  }
+
+  g_autofree char* path = g_file_get_path(G_FILE(file->data));
+  if (path == NULL) {
+    return FALSE;
+  }
+
+  if (zathura_has_document(zathura) == true) {
+    document_close(zathura, false);
+  }
+
+  document_open_idle(zathura, path, NULL, ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL, NULL, NULL, NULL);
+  return TRUE;
+}
+
 void cb_hide_links(GtkWidget* widget, gpointer data) {
   g_return_if_fail(widget != NULL);
   g_return_if_fail(data != NULL);

@@ -250,6 +250,15 @@ void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* d
 void cb_gesture_zoom_scale_changed(GtkGestureZoom* self, gdouble scale, void* data);
 
 /**
+ * Open the file dropped onto the view
+ *
+ * @param self The GtkDropTarget that received the drop
+ * @param value The dropped data
+ * @param data The zathura instance
+ */
+gboolean cb_drop_file(GtkDropTarget* self, const GValue* value, double x, double y, void* data);
+
+/**
  * Clears all highlighted links when the inputbar gets closed
  *
  * @param GtkWidget* Inputbar widget
