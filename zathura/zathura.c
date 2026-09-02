@@ -924,7 +924,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (page_number < 0) {
     page_number += number_of_pages;
   }
-  if ((unsigned)page_number > number_of_pages) {
+  if ((unsigned)page_number >= number_of_pages) {
     girara_warning("document info: '%s' has an invalid page number", file_path);
     zathura_document_set_current_page_number(document, 0);
   } else {
