@@ -148,6 +148,8 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
     return NULL;
   }
 
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
+
   g_autoptr(girara_list_t) hitlist     = girara_list_new_with_free(g_free);
   g_autoptr(girara_list_t) other_rects = girara_list_new_with_free(g_free);
 
@@ -157,6 +159,10 @@ girara_list_t* synctex_rectangles_from_position(zathura_t* zathura, const char* 
 
     while ((node = synctex_scanner_next_result(scanner)) != NULL) {
       const unsigned int current_page = synctex_node_page(node) - 1;
+      /* ignore hits on pages outside the document */
+      if (current_page >= number_of_pages) {
+        continue;
+      }
       if (got_page == false) {
         got_page = true;
         *page    = current_page;
