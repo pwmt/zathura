@@ -513,11 +513,12 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
 
   bool surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
 
-  if (zathura->predecessor_document != NULL && zathura->predecessor_pages != NULL && !surface_exists) {
-    unsigned int page_index = zathura_page_get_index(priv->page);
+  if (zathura->predecessor_document != NULL && zathura->predecessor_document_widget != NULL && !surface_exists) {
+    unsigned int page_index     = zathura_page_get_index(priv->page);
+    GtkWidget* predecessor_page = zathura_document_widget_get_page(zathura->predecessor_document_widget, page_index);
 
     if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document) &&
-        priv->zathura->predecessor_pages[page_index] != NULL) {
+        predecessor_page != NULL) {
       /* render real page */
       if (page_widget_on_screen(widget) == true) {
         zathura_render_request(priv->render_request, g_get_real_time());
@@ -525,7 +526,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
 
       girara_debug("using predecessor page for idx %d", page_index);
       document = priv->zathura->predecessor_document;
-      page     = ZATHURA_PAGE_WIDGET(priv->zathura->predecessor_pages[page_index]);
+      page     = ZATHURA_PAGE_WIDGET(predecessor_page);
       priv     = zathura_page_widget_get_instance_private(page);
     }
     surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
@@ -1034,16 +1035,17 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
 
     if (n_press == 1) {
       /* clear pages with a selection already */
-      if (priv->zathura != NULL && priv->zathura->pages != NULL) {
+      if (priv->zathura != NULL && priv->zathura->ui.document_widget != NULL) {
         zathura_document_t* document = zathura_page_get_document(priv->page);
         if (document != NULL) {
           unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
           for (unsigned int i = 0; i < number_of_pages; i++) {
             /* the widget exists only if the background fill already created it */
-            if (priv->zathura->pages[i] == NULL) {
+            GtkWidget* other_widget = zathura_document_widget_get_page(priv->zathura->ui.document_widget, i);
+            if (other_widget == NULL) {
               continue;
             }
-            ZathuraPageWidget* other_page        = ZATHURA_PAGE_WIDGET(priv->zathura->pages[i]);
+            ZathuraPageWidget* other_page        = ZATHURA_PAGE_WIDGET(other_widget);
             ZathuraPageWidgetPrivate* other_priv = zathura_page_widget_get_instance_private(other_page);
 
             if (other_priv->selection.draw == true || other_priv->highlighter.draw == true) {

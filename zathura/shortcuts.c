@@ -32,39 +32,7 @@
 
 /* Helper function for highlighting the links */
 static bool draw_links(zathura_t* zathura) {
-  /* set pages to draw links */
-  bool show_links                    = false;
-  unsigned int page_offset           = 0;
-  zathura_document_t* document       = zathura_get_document(zathura);
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    zathura_page_t* page = zathura_document_get_page(document, page_id);
-    if (page == NULL) {
-      continue;
-    }
-
-    GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
-    /* the widget exists only if the background fill already created it */
-    if (page_widget == NULL) {
-      continue;
-    }
-    GObject* obj_page_widget = G_OBJECT(page_widget);
-    g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
-    if (zathura_page_get_visibility(page) == true) {
-      g_object_set(obj_page_widget, "draw-links", TRUE, NULL);
-
-      int number_of_links = 0;
-      g_object_get(obj_page_widget, "number-of-links", &number_of_links, NULL);
-      if (number_of_links != 0) {
-        show_links = true;
-      }
-      g_object_set(obj_page_widget, "offset-links", page_offset, NULL);
-      page_offset += number_of_links;
-    } else {
-      g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
-    }
-  }
-  return show_links;
+  return zathura_document_widget_prepare_links(zathura->ui.document_widget);
 }
 
 /* Common code for sc_follow, sc_display_link and sc_copy_link */
@@ -100,6 +68,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
   girara_setting_get(session, "abort-clear-search", &clear_search);
 
   if (document != NULL) {
+    zathura_document_widget_hide_links(zathura->ui.document_widget);
     const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
     for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
       zathura_page_t* page = zathura_document_get_page(document, page_id);
@@ -114,7 +83,6 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
       }
       GObject* obj_page_widget = G_OBJECT(page_widget);
       zathura_page_widget_clear_selection(ZATHURA_PAGE_WIDGET(page_widget));
-      g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
       if (clear_search == true) {
         g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
       }

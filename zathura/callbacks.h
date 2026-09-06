@@ -243,8 +243,6 @@ void cb_page_widget_scaled_button_release(ZathuraPageWidget* page, scaled_button
 
 void cb_page_widget_link(ZathuraPageWidget* page, void* data);
 
-void update_visible_pages(zathura_t* zathura);
-
 void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* data);
 
 void cb_gesture_zoom_scale_changed(GtkGestureZoom* self, gdouble scale, void* data);

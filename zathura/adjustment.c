@@ -135,35 +135,6 @@ void page_number_to_position(zathura_t* zathura, unsigned int page_number, doubl
   *pos_y = ((double)cell_pos_y + shift_y * cell_height) / (double)doc_height;
 }
 
-bool page_is_visible(zathura_t* zathura, unsigned int page_number) {
-  g_return_val_if_fail(zathura != NULL, false);
-  zathura_document_t* document = zathura_get_document(zathura);
-
-  g_return_val_if_fail(document != NULL, false);
-
-  /* position at the center of the viewport */
-  double pos_x = zathura_document_get_position_x(document);
-  double pos_y = zathura_document_get_position_y(document);
-
-  /* get the center of page page_number */
-  double page_x, page_y;
-  page_number_to_position(zathura, page_number, 0.5, 0.5, &page_x, &page_y);
-
-  unsigned int cell_width, cell_height;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page_number, &cell_height,
-                                        &cell_width);
-
-  unsigned int doc_width, doc_height;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
-                                            &doc_width);
-
-  unsigned int view_width, view_height;
-  zathura_document_get_viewport_size(document, &view_height, &view_width);
-
-  return (fabs(pos_x - page_x) < 0.5 * (double)(view_width + cell_width) / (double)doc_width &&
-          fabs(pos_y - page_y) < 0.5 * (double)(view_height + cell_height) / (double)doc_height);
-}
-
 gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment) {
   gdouble lower     = gtk_adjustment_get_lower(adjustment);
   gdouble upper     = gtk_adjustment_get_upper(adjustment);

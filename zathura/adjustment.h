@@ -65,15 +65,6 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
 void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign, double* pos_x,
                              double* pos_y);
 
-/**
- * Checks whether a given page falls within the viewport
- *
- * @param zathura The zathura instance
- * @param page_number the page number
- * @return true if the page intersects the viewport
- */
-bool page_is_visible(zathura_t* zathura, unsigned int page_number);
-
 gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment);
 void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value);
 void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio);

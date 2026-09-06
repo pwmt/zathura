@@ -183,8 +183,8 @@ static void cb_show_signature_info(girara_session_t* session, const char* UNUSED
     return;
   }
 
-  zathura_show_signature_information(zathura, *(const bool*)value);
-  update_visible_pages(zathura);
+  zathura_document_widget_set_draw_signatures(zathura->ui.document_widget, *(const bool*)value);
+  zathura_document_widget_update_visible_pages(zathura->ui.document_widget);
 }
 
 static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session, const char* name,

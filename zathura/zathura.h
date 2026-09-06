@@ -116,21 +116,20 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* view;                        /**< Scrolled Window */
-    ZathuraDocumentWidget* document_widget; /**< Widget that contains all rendered pages */
-    GtkWidget* index;                       /**< Widget to show the index of the document */
+    GtkWidget* view;                             /**< Scrolled Window */
+    ZathuraDocumentWidget* document_widget;      /**< Widget that contains all rendered pages */
+    document_widget_mode_t document_widget_mode; /**< Layout mode to use for the next document widget */
+    GtkWidget* index;                            /**< Widget to show the index of the document */
   } ui;
 
   struct {
     ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
-    guint widget_preload_source;    /**< Idle source that builds the remaining page widgets in the background */
     bool initial_render_held;       /**< holds the focused page first render until the view is painted */
     bool scale_settled;       /**< set when the device scale settled so the viewport allocation renders the page */
     bool view_painted;        /**< set after the first frame so a display that never changes scale renders next frame */
     bool initial_render_done; /**< set once the first render has happened so later opens do not hold */
     gulong initial_render_handler;    /**< handler id used to release the hold */
     GObject* initial_render_instance; /**< instance the release handler is connected to */
-    bool widgets_loaded;              /**< set once the background fill has built every page widget */
     char* pending_search_input;       /**< search query received before the widgets finished loading */
     int pending_search_direction;     /**< direction for a search received before loading finished */
   } sync;
@@ -189,12 +188,11 @@ struct zathura_s {
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document;             /**< The current document */
-  zathura_document_t* predecessor_document; /**< The document from before a reload */
-  GtkWidget** pages;                        /**< The page widgets */
-  GtkWidget** predecessor_pages;            /**< The page widgets from before a reload */
-  zathura_database_t* database;             /**< The database */
-  ZathuraDbus* dbus;                        /**< D-Bus service */
+  zathura_document_t* document;                       /**< The current document */
+  zathura_document_t* predecessor_document;           /**< The document from before a reload */
+  ZathuraDocumentWidget* predecessor_document_widget; /**< The document widget from before a reload */
+  zathura_database_t* database;                       /**< The database */
+  ZathuraDbus* dbus;                                  /**< D-Bus service */
 
   /**
    * File monitor
@@ -341,9 +339,6 @@ void zathura_update_view_ppi(zathura_t* zathura);
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info);
 
-/* create the page widget if missing then attach it to the grid */
-void create_page_widget(zathura_t* zathura, unsigned int page_id);
-
 /* render the focused page synchronously once the device scale has settled */
 void render_focused_page_now(zathura_t* zathura);
 
@@ -469,14 +464,6 @@ void statusbar_page_number_update(zathura_t* zathura);
  * return Printable filename. Free with g_free.
  */
 char* get_formatted_filename(zathura_t* zathura, bool statusbar);
-
-/**
- * Show additional signature information
- *
- * @param zathura The zathura session
- * @param show Whether to show the signature information
- */
-void zathura_show_signature_information(zathura_t* zathura, bool show);
 
 /**
  * Check wether a document is opened
