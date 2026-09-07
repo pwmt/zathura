@@ -77,7 +77,6 @@ static bool page_cache_is_full(ZathuraRenderer* renderer, bool* result);
 /* job description for render thread */
 typedef struct render_job_s {
   ZathuraRenderRequest* request;
-  unsigned int page_index;
   atomic_bool aborted;
 } render_job_t;
 
@@ -417,7 +416,6 @@ void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time
     }
 
     job->request    = g_object_ref(request);
-    job->page_index = zathura_page_get_index(request_priv->page);
     job->aborted    = false;
     girara_list_append(request_priv->active_jobs, job);
 
@@ -472,10 +470,10 @@ static gboolean emit_completed_signal(void* data) {
 
   if (priv->about_to_close == false && job->aborted == false) {
     /* emit the signal */
-    girara_debug("Emitting signal for page %d", job->page_index + 1);
+    girara_debug("Emitting signal for page %u", zathura_page_get_index(request_priv->page) + 1);
     g_signal_emit(job->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
   } else {
-    girara_debug("Rendering of page %d aborted", job->page_index + 1);
+    girara_debug("Rendering of page %u aborted", zathura_page_get_index(request_priv->page) + 1);
   }
   /* mark the request as done */
   remove_job_and_free(job);
