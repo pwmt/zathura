@@ -879,7 +879,7 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
 
   /* before recoloring, check if we've been aborted */
   if (priv->about_to_close || render_job_is_stale(job)) {
-    girara_debug("Rendering of page %d aborted", job->page_index + 1);
+    girara_debug("Rendering of page %u aborted", zathura_page_get_index(request_priv->page) + 1);
     remove_job_and_free(job);
     cairo_surface_destroy(surface);
     return true;
@@ -959,9 +959,11 @@ static void render_job(void* data, void* user_data) {
     return;
   }
 
-  girara_debug("Rendering page %d ...", job->page_index + 1);
+  ZathuraRenderRequestPrivate* request_private = zathura_render_request_get_instance_private(request);
+  const unsigned int page_index                = zathura_page_get_index(request_private->page);
+  girara_debug("Rendering page %u ...", page_index + 1);
   if (render(job, request, renderer) != true) {
-    girara_error("Rendering failed (page %d)\n", job->page_index + 1);
+    girara_error("Rendering failed (page %u)\n", page_index + 1);
     remove_job_and_free(job);
   }
 }
