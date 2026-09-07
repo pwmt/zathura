@@ -879,13 +879,14 @@ void zathura_document_widget_set_draw_search_results(ZathuraDocumentWidget* docu
   g_return_if_fail(document != NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->document == NULL) {
+  if (!priv->document) {
     return;
   }
+
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
     GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
-    if (page_widget != NULL) {
+    if (page_widget) {
       g_object_set(G_OBJECT(page_widget), "draw-search-results", draw, NULL);
     }
   }
@@ -895,7 +896,7 @@ bool zathura_document_widget_prepare_links(ZathuraDocumentWidget* document) {
   g_return_val_if_fail(document != NULL, false);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->document == NULL) {
+  if (!priv->document) {
     return false;
   }
 
@@ -904,14 +905,15 @@ bool zathura_document_widget_prepare_links(ZathuraDocumentWidget* document) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
     zathura_page_t* page = zathura_document_get_page(priv->document, page_id);
-    if (page == NULL) {
+    if (!page) {
       continue;
     }
 
     GtkWidget* page_widget = zathura_document_widget_get_page(document, page_id);
-    if (page_widget == NULL) {
+    if (!page_widget) {
       continue;
     }
+
     GObject* object = G_OBJECT(page_widget);
     g_object_set(object, "draw-search-results", FALSE, NULL);
     const bool visible = zathura_page_get_visibility(page);
@@ -931,9 +933,10 @@ void zathura_document_widget_hide_links(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->document == NULL) {
+  if (!priv->document) {
     return;
   }
+
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
     GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
@@ -947,9 +950,10 @@ zathura_link_t* zathura_document_widget_get_visible_link(ZathuraDocumentWidget* 
   g_return_val_if_fail(document != NULL, NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->document == NULL) {
+  if (!priv->document) {
     return NULL;
   }
+
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
     zathura_page_t* zathura_page = zathura_document_get_page(priv->document, page);
@@ -965,16 +969,17 @@ zathura_link_t* zathura_document_widget_get_visible_link(ZathuraDocumentWidget* 
 }
 
 unsigned int zathura_document_widget_get_search_result_count(ZathuraDocumentWidget* document, unsigned int end_page) {
-  g_return_val_if_fail(document != NULL, 0);
+  g_return_val_if_fail(document, 0);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->document == NULL) {
+  if (!priv->document) {
     return 0;
   }
 
-  unsigned int count                 = 0;
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   end_page                           = MIN(end_page, number_of_pages);
+
+  unsigned int count = 0;
   for (unsigned int page = 0; page < end_page; ++page) {
     GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
     if (page_widget != NULL) {
@@ -985,6 +990,7 @@ unsigned int zathura_document_widget_get_search_result_count(ZathuraDocumentWidg
       }
     }
   }
+
   return count;
 }
 
@@ -1013,13 +1019,13 @@ void zathura_document_widget_get_cell_pos(ZathuraDocumentWidget* document, unsig
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = priv->document;
 
-  if (priv->col_widths == NULL || priv->row_heights == NULL) {
+  if (!priv->col_widths || !priv->row_heights) {
     return;
   }
 
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
   if (page_index >= npag) {
-    girara_warning("tried to get cell size for page %d, document has %d pages", page_index, npag);
+    girara_warning("tried to get cell size for page %u, document has %u pages", page_index, npag);
     return;
   }
 
@@ -1036,13 +1042,13 @@ void zathura_document_widget_get_cell_size(ZathuraDocumentWidget* document, unsi
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = priv->document;
 
-  if (priv->col_widths == NULL || priv->row_heights == NULL) {
+  if (!priv->col_widths || !priv->row_heights) {
     return;
   }
 
   const unsigned int npag = zathura_document_get_number_of_pages(z_document);
   if (page_index >= npag) {
-    girara_warning("tried to get cell size for page %d, document has %d pages", page_index, npag);
+    girara_warning("tried to get cell size for page %u, document has %u pages", page_index, npag);
     return;
   }
 
@@ -1058,12 +1064,12 @@ void zathura_document_widget_get_row(ZathuraDocumentWidget* document, unsigned i
   g_return_if_fail(document != NULL && pos != NULL && size != NULL);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
-  if (priv->col_widths == NULL || priv->row_heights == NULL) {
+  if (!priv->col_widths || !priv->row_heights) {
     return;
   }
 
   if (row >= priv->nrow) {
-    girara_warning("tried to get row %d size, document has %d rows", row, priv->nrow);
+    girara_warning("tried to get row %u size, document has %u rows", row, priv->nrow);
     return;
   }
 
@@ -1076,12 +1082,12 @@ void zathura_document_widget_get_col(ZathuraDocumentWidget* document, unsigned i
   g_return_if_fail(document != NULL && pos != NULL && size != NULL);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
-  if (priv->col_widths == NULL || priv->row_heights == NULL) {
+  if (!priv->col_widths || !priv->row_heights) {
     return;
   }
 
   if (col >= priv->ncol) {
-    girara_warning("tried to get col %d size, document has %d columns", col, priv->ncol);
+    girara_warning("tried to get col %u size, document has %u columns", col, priv->ncol);
     return;
   }
 
@@ -1094,7 +1100,7 @@ void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, 
   g_return_if_fail(document != NULL && height != NULL && width != NULL);
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
-  if (priv->col_widths == NULL || priv->row_heights == NULL) {
+  if (!priv->col_widths || !priv->row_heights) {
     return;
   }
 
@@ -1157,7 +1163,7 @@ void zathura_document_widget_render_all(ZathuraDocumentWidget* document) {
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = priv->document;
-  if (z_document == NULL) {
+  if (!z_document) {
     return;
   }
 
@@ -1211,7 +1217,7 @@ void zathura_document_widget_set_page_layout(ZathuraDocumentWidget* document, un
 }
 
 unsigned int zathura_document_widget_get_page_v_padding(ZathuraDocumentWidget* document) {
-  if (document == NULL) {
+  if (!document) {
     return 0;
   }
 
@@ -1220,7 +1226,7 @@ unsigned int zathura_document_widget_get_page_v_padding(ZathuraDocumentWidget* d
 }
 
 unsigned int zathura_document_widget_get_page_h_padding(ZathuraDocumentWidget* document) {
-  if (document == NULL) {
+  if (!document) {
     return 0;
   }
 
@@ -1229,7 +1235,7 @@ unsigned int zathura_document_widget_get_page_h_padding(ZathuraDocumentWidget* d
 }
 
 unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* document) {
-  if (document == NULL) {
+  if (!document) {
     return 0;
   }
 
@@ -1238,7 +1244,7 @@ unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* do
 }
 
 unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget* document) {
-  if (document == NULL) {
+  if (!document) {
     return 0;
   }
 
