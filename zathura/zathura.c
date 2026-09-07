@@ -241,11 +241,6 @@ static bool init_ui(zathura_t* zathura) {
   zathura->ui.view = gtk_scrolled_window_new();
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
-  /* apply the startup preference to the first document widget */
-  bool single_page_mode = false;
-  girara_setting_get(zathura->ui.session, "single-page-mode", &single_page_mode);
-  zathura->ui.document_widget_mode = single_page_mode ? DOCUMENT_WIDGET_SINGLE : DOCUMENT_WIDGET_GRID;
-
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
   girara_setting_get(zathura->ui.session, "guioptions", &view_options);
@@ -838,11 +833,16 @@ static bool document_widget_create(zathura_t* zathura, zathura_document_t* docum
     return false;
   }
 
+  /* apply the startup preference to the first document widget */
+  bool single_page_mode = false;
+  girara_setting_get(zathura->ui.session, "single-page-mode", &single_page_mode);
+  document_widget_mode_t mode = single_page_mode ? DOCUMENT_WIDGET_SINGLE : DOCUMENT_WIDGET_GRID;
+
   zathura_document_widget_set_page_layout(ZATHURA_DOCUMENT_WIDGET(widget), page_v_padding, page_h_padding,
                                           pages_per_row, first_page_column);
   g_object_set(widget, "pages-right-to-left", pages_right_to_left, NULL);
   zathura_document_widget_refresh_layout(ZATHURA_DOCUMENT_WIDGET(widget));
-  g_object_set(widget, "layout-mode", zathura->ui.document_widget_mode, NULL);
+  g_object_set(widget, "layout-mode", mode, NULL);
   g_signal_connect(widget, "page-widgets-loaded", G_CALLBACK(cb_document_widget_page_widgets_loaded), zathura);
 
   zathura->ui.document_widget = ZATHURA_DOCUMENT_WIDGET(widget);
@@ -857,7 +857,6 @@ static void document_widget_release(zathura_t* zathura) {
   }
 
   ZathuraDocumentWidget* document_widget = zathura->ui.document_widget;
-  g_object_get(document_widget, "layout-mode", &zathura->ui.document_widget_mode, NULL);
   g_object_ref(document_widget);
   zathura->ui.document_widget = NULL;
   gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(zathura->ui.view), NULL);
@@ -1426,12 +1425,10 @@ static bool document_widget_preserve_as_predecessor(zathura_t* zathura) {
     return false;
   }
 
-  ZathuraDocumentWidget* predecessor = zathura->ui.document_widget;
-  g_object_get(predecessor, "layout-mode", &zathura->ui.document_widget_mode, NULL);
-  g_object_ref(predecessor);
-  zathura->ui.document_widget = NULL;
+  ZathuraDocumentWidget* predecessor   = zathura->ui.document_widget;
+  zathura->ui.document_widget          = NULL;
+  zathura->predecessor_document_widget = g_object_ref(predecessor);
 
-  zathura->predecessor_document_widget = predecessor;
   return true;
 }
 
