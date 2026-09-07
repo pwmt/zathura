@@ -795,7 +795,7 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
     ZathuraPageWidget* zathura_page_widget = ZATHURA_PAGE_WIDGET(page_widget);
 
     if (visible) {
-      if (zathura_page_get_visibility(page) == false) {
+      if (!zathura_page_get_visibility(page)) {
         zathura_page_set_visibility(page, true);
         zathura_renderer_page_cache_add(priv->zathura->sync.render_thread, page_id);
       }
@@ -803,20 +803,20 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
       for (unsigned int i = priv->pages_per_row; i; --i) {
         if (page_id >= i) {
           GtkWidget* previous = zathura_document_widget_get_page(document, page_id - i);
-          if (previous != NULL) {
+          if (previous) {
             zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(previous));
           }
         }
         if (page_id + i < number_of_pages) {
           GtkWidget* next = zathura_document_widget_get_page(document, page_id + i);
-          if (next != NULL) {
+          if (next) {
             zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(next));
           }
         }
       }
       zathura_page_widget_update_view_time(zathura_page_widget);
     } else {
-      if (zathura_page_get_visibility(page) == true) {
+      if (zathura_page_get_visibility(page)) {
         zathura_page_set_visibility(page, false);
         zathura_page_widget_abort_render_request(zathura_page_widget);
       }
