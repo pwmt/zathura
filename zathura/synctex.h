@@ -5,11 +5,6 @@
 
 #include "types.h"
 
-typedef struct synctex_page_rect_s {
-  int page;
-  zathura_rectangle_t rect;
-} synctex_page_rect_t;
-
 bool synctex_get_input_line_column(zathura_t* zathura, const char* filename, unsigned int page, int x, int y,
                                    char** input_file, unsigned int* line, unsigned int* column);
 

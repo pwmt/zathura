@@ -27,12 +27,14 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(XXH3_state_t, XXH3_freeState)
  */
 struct zathura_document_s {
   void* data;                              /**< Custom data */
+  zathura_page_t** pages;                  /**< All pages of the document */
+  GMutex lock;                             /**< Document lock */
+  const zathura_plugin_t* plugin;          /**< Used plugin */
   char* file_path;                         /**< File path of the document */
   char* uri;                               /**< URI of the document */
   char* basename;                          /**< Basename of the document */
-  uint8_t hash[DOCUMENT_DIGEST_SIZE];      /**< XXH3 hash of the document */
-  bool hash_computed;                      /**< Whether the hash has been computed yet */
   const char* password;                    /**< Password of the document */
+  XXH128_canonical_t hash;                 /**< XXH3 hash of the document */
   unsigned int current_page_number;        /**< Current page number */
   unsigned int number_of_pages;            /**< Number of pages */
   double zoom;                             /**< Zoom value */
@@ -45,36 +47,22 @@ struct zathura_document_s {
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   double position_x;                       /**< X adjustment */
   double position_y;                       /**< Y adjustment */
-
-  /**
-   * Document pages
-   */
-  zathura_page_t** pages;
-
-  /**
-   * Used plugin
-   */
-  const zathura_plugin_t* plugin;
-
-  /**
-   * Serializes lazy page parsing
-   */
-  GMutex lock;
+  bool hash_computed;                      /**< Whether the hash has been computed yet */
 };
 
-static bool hash_file(uint8_t* dst, const char* path) {
+static bool hash_file(XXH128_canonical_t* dst, const char* path) {
   g_autoptr(GFile) f = g_file_new_for_path(path);
-  if (f == NULL) {
+  if (!f) {
     return false;
   }
 
   g_autoptr(GFileInputStream) stream = g_file_read(f, NULL, NULL);
-  if (stream == NULL) {
+  if (!stream) {
     return false;
   }
 
   g_autoptr(XXH3_state_t) state = XXH3_createState();
-  if (state == NULL) {
+  if (!state) {
     return false;
   }
   XXH3_128bits_reset(state);
@@ -86,13 +74,11 @@ static bool hash_file(uint8_t* dst, const char* path) {
   }
 
   /* read is zero on a clean end of stream and negative on an error */
-  if (read != 0) {
+  if (read < 0) {
     return false;
   }
 
-  XXH128_canonical_t canonical;
-  XXH128_canonicalFromHash(&canonical, XXH3_128bits_digest(state));
-  memcpy(dst, canonical.digest, DOCUMENT_DIGEST_SIZE);
+  XXH128_canonicalFromHash(dst, XXH3_128bits_digest(state));
   return true;
 }
 
@@ -190,12 +176,12 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
 }
 
 zathura_error_t zathura_document_free(zathura_document_t* document) {
-  if (document == NULL || document->plugin == NULL) {
+  if (!document || !document->plugin) {
     g_free(document);
     return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
-  if (document->pages != NULL) {
+  if (document->pages) {
     /* free pages */
     for (unsigned int page_id = 0; page_id < document->number_of_pages; page_id++) {
       zathura_page_free(document->pages[page_id]);
@@ -232,13 +218,13 @@ const uint8_t* zathura_document_get_hash(zathura_document_t* document) {
   }
 
   if (!document->hash_computed) {
-    if (!hash_file(document->hash, document->file_path)) {
+    if (!hash_file(&document->hash, document->file_path)) {
       girara_warning("Failed to hash file '%s'; fileinfo lookup may be unreliable.", document->file_path);
     }
     document->hash_computed = true;
   }
 
-  return document->hash;
+  return document->hash.digest;
 }
 
 const char* zathura_document_get_uri(zathura_document_t* document) {
@@ -371,7 +357,7 @@ void zathura_document_set_zoom(zathura_document_t* document, double zoom) {
 }
 
 double zathura_document_get_scale(zathura_document_t* document) {
-  if (document == NULL) {
+  if (!document) {
     return 0;
   }
 
@@ -394,7 +380,7 @@ unsigned int zathura_document_get_rotation(zathura_document_t* document) {
 }
 
 void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation) {
-  if (document == NULL) {
+  if (!document) {
     return;
   }
 
@@ -477,9 +463,10 @@ double zathura_document_get_viewport_ppi(zathura_document_t* document) {
 }
 
 void zathura_document_set_device_factors(zathura_document_t* document, double x_factor, double y_factor) {
-  if (document == NULL) {
+  if (!document) {
     return;
   }
+
   if (fabs(x_factor) < DBL_EPSILON || fabs(y_factor) < DBL_EPSILON) {
     girara_debug("Ignoring new device factors %0.2f and %0.2f: too small", x_factor, y_factor);
     return;

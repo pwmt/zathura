@@ -306,7 +306,7 @@ static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const cha
 #endif
 
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
-  if (zathura_has_document(zathura) == false || link == NULL) {
+  if (!zathura_has_document(zathura) || !link) {
     return;
   }
 
