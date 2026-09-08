@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:17+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch (http://app.transifex.com/pwmt/zathura/language/nl/)\n"
@@ -67,6 +67,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -77,9 +89,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1073,6 +1082,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Ongeldige opdracht: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ongeldig aantal argumenten: %zu i.p.v. 1"
@@ -1247,6 +1259,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "De te openen bladwijzer"
+
 #, c-format
 msgid "Page %d"
 msgstr "Pagina %d"
@@ -1347,6 +1363,10 @@ msgstr "Initiële vensterbreedte"
 
 msgid "Initial window height"
 msgstr "Initiële vensterhoogte"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Versie-informatie tonen"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horizontale opvulling voor de statusinvoer- en meldingbalken"
@@ -1655,6 +1675,7 @@ msgstr "Bron-configuratiebestand"
 msgid "Failed to run xdg-open."
 msgstr "xdg-open kan niet worden uitgevoerd."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1831,6 +1852,9 @@ msgstr "Niet-ondersteund bestandstype. Installeer de benodigde plug-in."
 
 msgid "Document does not contain any pages"
 msgstr "Dit document bevat geen pagina's"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

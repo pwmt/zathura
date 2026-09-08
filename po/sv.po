@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:16+0200\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
@@ -68,6 +68,18 @@ msgstr "Följa länkar"
 msgid "Listing and selecting bookmarks"
 msgstr "Lista och välja bokmärken"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Olika fixar och förbättringar"
+
 #, fuzzy
 msgid "Add page-mode setting"
 msgstr "Lade till inställningen first-page-colum"
@@ -80,9 +92,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Olika fixar och förbättringar"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1092,6 +1101,9 @@ msgstr "Ogiltigt värde för alternativet: %s"
 msgid "Not a valid command: %s"
 msgstr "Inte ett giltigt kommando: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ogiltigt antal argument skickades: %zu i stället för 1"
@@ -1265,6 +1277,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Snabbmärken"
+
 #, c-format
 msgid "Page %d"
 msgstr "Sida %d"
@@ -1365,6 +1381,10 @@ msgstr "Inledande fönsterbredd"
 
 msgid "Initial window height"
 msgstr "Inledande fönsterhöjd"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Visa versionsinformation"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horisontell utfyllnad för status-, inmatnings- och notisrader"
@@ -1669,6 +1689,7 @@ msgstr "Läs in konfigurationsfil"
 msgid "Failed to run xdg-open."
 msgstr "Misslyckades med att köra xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "j"
 
@@ -1839,6 +1860,9 @@ msgstr "Filtyp stöds ej. Installera det nödvändiga insticket."
 
 msgid "Document does not contain any pages"
 msgstr "Dokument innehåller inga sidor"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

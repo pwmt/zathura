@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 17:24+0200\n"
 "Last-Translator: Ibnu Daru Aji, 2013\n"
 "Language-Team: Indonesian (http://app.transifex.com/pwmt/zathura/language/"
@@ -63,6 +63,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -73,9 +85,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1069,6 +1078,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1242,6 +1254,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Tambahkan pada bookmark"
+
 #, c-format
 msgid "Page %d"
 msgstr "Halaman %d"
@@ -1342,6 +1358,10 @@ msgstr ""
 
 msgid "Initial window height"
 msgstr ""
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Tunjukan informasi versi"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1646,6 +1666,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Gagal menjalankan program xdg-open"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1813,6 +1834,9 @@ msgstr "Tipe berkas tidak didukung. Silakan memasang plugin yang dibutuhkan."
 
 msgid "Document does not contain any pages"
 msgstr "Dokumen tidak mempunyai laman apapun"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

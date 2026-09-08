@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:18+0200\n"
 "Last-Translator: Pablo Saez, 2025\n"
 "Language-Team: Spanish (http://app.transifex.com/pwmt/zathura/language/es/)\n"
@@ -67,6 +67,18 @@ msgstr "Seguir enlaces"
 msgid "Listing and selecting bookmarks"
 msgstr "Listar y seleccionar marcadores"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Varias correcciones y mejoras"
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -78,9 +90,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Varias correcciones y mejoras"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1098,6 +1107,9 @@ msgstr "Valor inválido para la opción: %s"
 msgid "Not a valid command: %s"
 msgstr "Función 'atajo' no valida: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Número de argumentos inválido: %zu en lugar de 1"
@@ -1272,6 +1284,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Marcadores rápidos"
+
 #, c-format
 msgid "Page %d"
 msgstr "Página %d"
@@ -1372,6 +1388,10 @@ msgstr "Anchura inicial de la ventana"
 
 msgid "Initial window height"
 msgstr "Altura inicial de la ventana"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Mostrar versión"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Relleno horizontal para las barras de estado, entrada y notificación"
@@ -1682,6 +1702,7 @@ msgstr "Archivo de configuración fuente"
 msgid "Failed to run xdg-open."
 msgstr "Error al tratar de ejecutar xdg-open"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "s"
 
@@ -1855,6 +1876,9 @@ msgstr "Tipo de archivo no soportado. Por favor, instale el plugin adecuado."
 
 msgid "Document does not contain any pages"
 msgstr "El documento no contiene páginas"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:15+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese (China) (http://app.transifex.com/pwmt/zathura/"
@@ -64,6 +64,18 @@ msgstr "跟随链接"
 msgid "Listing and selecting bookmarks"
 msgstr "列出并选择书签"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -74,9 +86,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1070,6 +1079,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "不是有效命令：%s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "传入的参数数量无效：%zu，应为 1"
@@ -1243,6 +1255,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "要跳转到的书签"
+
 #, c-format
 msgid "Page %d"
 msgstr "第 %d 页"
@@ -1343,6 +1359,10 @@ msgstr "初始窗口宽度"
 
 msgid "Initial window height"
 msgstr "初始窗口高度"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "显示版本信息"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "状态栏、输入栏和通知栏的水平内边距"
@@ -1646,6 +1666,7 @@ msgstr "载入配置文件"
 msgid "Failed to run xdg-open."
 msgstr "运行 xdg-open 失败。"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "y"
 
@@ -1816,6 +1837,9 @@ msgstr "不支持的文件类型。请安装必要的插件。"
 
 msgid "Document does not contain any pages"
 msgstr "文档不包含任何页面"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

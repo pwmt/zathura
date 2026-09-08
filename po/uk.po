@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:15+0200\n"
 "Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
 "Language-Team: Ukrainian (http://app.transifex.com/pwmt/zathura/language/"
@@ -72,6 +72,18 @@ msgstr "Перехід за посиланнями"
 msgid "Listing and selecting bookmarks"
 msgstr "Список і вибір закладок"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Різні виправлення та покращення"
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -83,9 +95,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Різні виправлення та покращення"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1103,6 +1112,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Неправильна команда: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Неправильна кількість переданих аргументів: %zu замість 1"
@@ -1278,6 +1290,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Швидкі позначки"
+
 #, c-format
 msgid "Page %d"
 msgstr "Сторінка  %d"
@@ -1378,6 +1394,10 @@ msgstr "Початкова ширина вікна"
 
 msgid "Initial window height"
 msgstr "Початкова висота вікна"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Показати інформацію про версію"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Горизонтальні проміжки для панелей стану, вводу та сповіщення"
@@ -1685,6 +1705,7 @@ msgstr "Підвантажити файл конфігурації"
 msgid "Failed to run xdg-open."
 msgstr "Не вдалося запустити xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1855,6 +1876,9 @@ msgstr "Непідтримуваний тип файлу. Установіть �
 
 msgid "Document does not contain any pages"
 msgstr "Документ не містить жодної сторінки"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

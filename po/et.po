@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:18+0200\n"
 "Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2012\n"
 "Language-Team: Estonian (http://app.transifex.com/pwmt/zathura/language/"
@@ -68,6 +68,18 @@ msgstr "Linkide järgimine"
 msgid "Listing and selecting bookmarks"
 msgstr "Järjehoidjate loendamine ja valimine"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Various fixes ja improvements"
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -79,9 +91,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Various fixes ja improvements"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1086,6 +1095,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Pole kehtiv käsk: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Invalid number arguments passed: %zu asemel 1"
@@ -1259,6 +1271,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Kiirmärgid"
+
 #, c-format
 msgid "Page %d"
 msgstr "Leht %d"
@@ -1359,6 +1375,10 @@ msgstr "Algne akna laius"
 
 msgid "Initial window height"
 msgstr "Algne akna kõrgus"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Kuva versiooniteave"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horizontal padding jaoks status, input, ja notification bars"
@@ -1662,6 +1682,7 @@ msgstr "Laadi seadistusfail"
 msgid "Failed to run xdg-open."
 msgstr "Failed et run xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1833,6 +1854,9 @@ msgstr "Toetamata failitüüp. Palun paigalda vajalik plugin."
 
 msgid "Document does not contain any pages"
 msgstr "Document does not contain any lehed"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

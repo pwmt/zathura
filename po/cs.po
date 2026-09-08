@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:19+0200\n"
 "Last-Translator: fri, 2016-2018,2022\n"
 "Language-Team: Czech (http://app.transifex.com/pwmt/zathura/language/cs/)\n"
@@ -68,6 +68,18 @@ msgstr "Následování odkazů"
 msgid "Listing and selecting bookmarks"
 msgstr "Výpis a výběr záložek"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Různé opravy a vylepšení"
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -79,9 +91,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Různé opravy a vylepšení"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1091,6 +1100,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Není platný příkaz: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Předán neplatný počet argumentů: %zu místo 1"
@@ -1265,6 +1277,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Rychlé značky"
+
 #, c-format
 msgid "Page %d"
 msgstr "Strana %d"
@@ -1365,6 +1381,10 @@ msgstr "Počáteční šířka okna"
 
 msgid "Initial window height"
 msgstr "Počáteční výška okna"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Ukázat údaj o verzi"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Vodorovné odsazení pro stavový, vstupní a oznamovací řádek"
@@ -1670,6 +1690,7 @@ msgstr "Zdrojový nastavovací soubor"
 msgid "Failed to run xdg-open."
 msgstr "Nepodařilo se spustit xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1843,6 +1864,9 @@ msgstr ""
 
 msgid "Document does not contain any pages"
 msgstr "Dokument neobsahuje žádné strany"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:17+0200\n"
 "Last-Translator: Jonas <jonas.enge@gmail.com>, 2014\n"
 "Language-Team: Norwegian (http://app.transifex.com/pwmt/zathura/language/"
@@ -68,6 +68,18 @@ msgstr "Følge lenker"
 msgid "Listing and selecting bookmarks"
 msgstr "Liste opp og velge bokmerker"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -78,9 +90,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1074,6 +1083,9 @@ msgstr "Ugyldig verdi for valg: %s"
 msgid "Not a valid command: %s"
 msgstr "Ikke en gyldig kommando: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ugyldig antall argumenter gitt: %zu i stedet for 1"
@@ -1247,6 +1259,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Bokmerke å gå til"
+
 #, c-format
 msgid "Page %d"
 msgstr "Side %d"
@@ -1347,6 +1363,10 @@ msgstr "Opprinnelig vindusbredde"
 
 msgid "Initial window height"
 msgstr "Opprinnelig vindushøyde"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Vis versjonsinformasjon"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horisontal utfylling for status-, inndata- og meldingslinjer"
@@ -1650,6 +1670,7 @@ msgstr "Les inn konfigurasjonsfil"
 msgid "Failed to run xdg-open."
 msgstr "Klarte ikke å kjøre xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "j"
 
@@ -1820,6 +1841,9 @@ msgstr "Usupportert filtype. Vennligst innstaller den nødvendige pluginen."
 
 msgid "Document does not contain any pages"
 msgstr "Dokumentet inneholder ingen sider"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

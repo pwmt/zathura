@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:16+0200\n"
 "Last-Translator: wmlhwl <7q0dkmw6@anonaddy.me>, 2024\n"
 "Language-Team: Polish (http://app.transifex.com/pwmt/zathura/language/pl/)\n"
@@ -71,6 +71,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -81,9 +93,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1077,6 +1086,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Nieprawidłowa funkcja skrótu: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1251,6 +1263,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Dodaj zakładkę"
+
 #, c-format
 msgid "Page %d"
 msgstr "Strona %d"
@@ -1351,6 +1367,10 @@ msgstr "Początkowa szerokość okna"
 
 msgid "Initial window height"
 msgstr "Początkowa wysokość okna"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Wyświetl informacje o wersji"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Wyrównanie poziome paska powiadomień"
@@ -1654,6 +1674,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Wystąpił problem z uruchomieniem xdg-open"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1822,6 +1843,9 @@ msgstr "Niewspierany rodzaj pliku. Zainstaluj wymagane wtyczki"
 
 msgid "Document does not contain any pages"
 msgstr "Dokument nie zawiera żadnej strony"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

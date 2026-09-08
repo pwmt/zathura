@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
-"PO-Revision-Date: 2026-09-08 19:19+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
+"PO-Revision-Date: 2026-09-08 19:26+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: German (http://app.transifex.com/pwmt/zathura/language/de/)\n"
 "Language: de\n"
@@ -68,6 +68,18 @@ msgstr "Links folgen"
 msgid "Listing and selecting bookmarks"
 msgstr "Lesezeichen auflisten und auswählen"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Verschiedene Fehlerbehebungen und Verbesserungen"
+
 msgid "Add page-mode setting"
 msgstr "Füge Einstellung page-mode hinzu"
 
@@ -79,9 +91,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Verschiedene Fehlerbehebungen und Verbesserungen"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1098,6 +1107,9 @@ msgstr "Ungültiger Wert für Option: %s"
 msgid "Not a valid command: %s"
 msgstr "Ungültige zugewiesene Funktion: %s"
 
+msgid "Settings"
+msgstr "Einstellungen"
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ungültige Anzahl an Argumente übergeben: %zu anstatt von 1"
@@ -1274,6 +1286,9 @@ msgstr "Dateien"
 msgid "Recent files"
 msgstr "Zuletzt geöffnete Dateien"
 
+msgid "Bookmarks"
+msgstr "Lesezeichen"
+
 #, c-format
 msgid "Page %d"
 msgstr "Seite %d"
@@ -1374,6 +1389,9 @@ msgstr "Ausgangsbreite des Fensters"
 
 msgid "Initial window height"
 msgstr "Ausgangshöhe des Fensters"
+
+msgid "Show window decorations"
+msgstr "Zeige Fensterdekorationen an"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1515,7 +1533,7 @@ msgid "Adjust to when opening file"
 msgstr "Seite einpassen"
 
 msgid "Default page mode (none, equal_width, equal_height)"
-msgstr ""
+msgstr "Standardeinstellung für Seitenmodus (none, equal_width, equal_height)"
 
 msgid "Show hidden files and directories"
 msgstr "Zeige versteckte Dateien und Ordner an"
@@ -1684,6 +1702,7 @@ msgstr "Lese Konfigurationsdatei"
 msgid "Failed to run xdg-open."
 msgstr "Konnte xdg-open nicht ausführen."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "j"
 
@@ -1855,6 +1874,9 @@ msgstr "Dateityp ist nicht unterstützt. Installiere das benötigte Plugin."
 
 msgid "Document does not contain any pages"
 msgstr "Dieses Dokument beinhaltet keine Seiten"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

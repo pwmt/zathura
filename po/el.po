@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:18+0200\n"
 "Last-Translator: Nisok Kosin <nisok@in.gr>, 2012\n"
 "Language-Team: Greek (http://app.transifex.com/pwmt/zathura/language/el/)\n"
@@ -69,6 +69,18 @@ msgstr "Ακολούθηση συνδέσμων"
 msgid "Listing and selecting bookmarks"
 msgstr "Εμφάνιση και επιλογή σελιδοδεικτών"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -79,9 +91,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1075,6 +1084,9 @@ msgstr "Μη έγκυρη τιμή για την επιλογή: %s"
 msgid "Not a valid command: %s"
 msgstr "Μη έγγυρη εντολή: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Περάστηκε μη έγκυρος αριθμός παραμέτρων: %zu αντί για 1"
@@ -1251,6 +1263,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Σελιδοδείκτης για μετάβαση"
+
 #, c-format
 msgid "Page %d"
 msgstr "Σελίδα %d"
@@ -1351,6 +1367,10 @@ msgstr "Αρχικό πλάτος παραθύρου"
 
 msgid "Initial window height"
 msgstr "Αρχικό ύψος παραθύρου"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Εμφάνιση πληροφοριών έκδοσης"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1665,6 +1685,7 @@ msgstr "Φόρτωση αρχείου ρυθμίσεων"
 msgid "Failed to run xdg-open."
 msgstr "Απέτυχε η εκτέλεση του xdg-open. "
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "ν"
 
@@ -1841,6 +1862,9 @@ msgstr "Μη υποστηριζόμενος τύπος αρχείου. Εγκα�
 
 msgid "Document does not contain any pages"
 msgstr "Το έγγραφο δεν περιέχει σελίδες"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

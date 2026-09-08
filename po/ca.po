@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"POT-Creation-Date: 2026-09-08 19:25+0200\n"
 "PO-Revision-Date: 2026-09-08 19:19+0200\n"
 "Last-Translator: mvdan <mvdan@mvdan.cc>, 2012\n"
 "Language-Team: Catalan (http://app.transifex.com/pwmt/zathura/language/ca/)\n"
@@ -62,6 +62,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -72,9 +84,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1068,6 +1077,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "No és una ordre vàlida: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "No vàlid número de arguments passats: %zu en lloc de de 1"
@@ -1242,6 +1254,10 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+#, fuzzy
+msgid "Bookmarks"
+msgstr "Afegir un marcador"
+
 #, c-format
 msgid "Page %d"
 msgstr "Pàgina %d"
@@ -1342,6 +1358,10 @@ msgstr "Amplada inicial de la finestra"
 
 msgid "Initial window height"
 msgstr "Alçada inicial de la finestra"
+
+#, fuzzy
+msgid "Show window decorations"
+msgstr "Mostra informació sobre la versió"
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1649,6 +1669,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "No s'ha pogut executar xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1822,6 +1843,9 @@ msgstr "Tipus de fitxer no compatible. Instal·la el connector necessari."
 
 msgid "Document does not contain any pages"
 msgstr "El document no conté cap pàgina"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."
