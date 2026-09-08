@@ -599,7 +599,7 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
   document_close(zathura, true);
 
   /* reopen document with old file info */
-  girara_debug("reopening document on page %d", file_info.current_page);
+  girara_debug("reopening document on page %u", file_info.current_page);
   document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
                 zathura->file_monitor.password, file_info.current_page, &file_info);
 
