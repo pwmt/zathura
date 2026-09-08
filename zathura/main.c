@@ -32,13 +32,13 @@
 /* Handle synctex forward synchronization */
 static int run_synctex_forward(const char* synctex_fwd, const char* filename, int synctex_pid) {
   g_autoptr(GFile) file = g_file_new_for_commandline_arg(filename);
-  if (file == NULL) {
+  if (!file) {
     girara_error("Unable to handle argument '%s'.", filename);
     return -1;
   }
 
   g_autofree char* real_path = g_file_get_path(file);
-  if (real_path == NULL) {
+  if (!real_path) {
     girara_error("Failed to determine path for '%s'", filename);
     return -1;
   }
@@ -46,7 +46,7 @@ static int run_synctex_forward(const char* synctex_fwd, const char* filename, in
   int line                    = 0;
   int column                  = 0;
   g_autofree char* input_file = NULL;
-  if (synctex_parse_input(synctex_fwd, &input_file, &line, &column) == false) {
+  if (!synctex_parse_input(synctex_fwd, &input_file, &line, &column)) {
     girara_error("Failed to parse argument to --synctex-forward.");
     return -1;
   }
@@ -72,7 +72,7 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
                                const char* plugin_path, char** argv, const char* synctex_editor) {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
-  if (zathura == NULL) {
+  if (!zathura) {
     return NULL;
   }
 
@@ -83,12 +83,12 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
   zathura_set_argv(zathura, argv);
 
   /* Init zathura */
-  if (zathura_init(zathura) == false) {
+  if (!zathura_init(zathura)) {
     zathura_free(zathura);
     return NULL;
   }
 
-  if (synctex_editor != NULL) {
+  if (synctex_editor) {
     girara_setting_set(zathura->ui.session, "synctex-editor-command", synctex_editor);
   }
 
@@ -102,14 +102,14 @@ static zathura_t* init_zathura(const char* config_dir, const char* data_dir, con
   }
 #endif
 #ifdef WITH_SECCOMP
-  if (seccomp_enable_strict_filter(zathura) != 0) {
+  if (seccomp_enable_strict_filter(zathura)) {
     girara_error("Failed to initialize strict seccomp filter.");
     zathura_free(zathura);
     return NULL;
   }
 #endif
 #ifdef __OpenBSD__
-  if (pledge("stdio rpath", "") != 0) {
+  if (pledge("stdio rpath", "")) {
     girara_error("Failed to pledge: %s", strerror(errno));
     zathura_free(zathura);
     return NULL;
@@ -144,7 +144,7 @@ static void cb_app_startup(GApplication* app, gpointer data) {
 
   ctx->zathura =
       init_zathura(ctx->config_dir, ctx->data_dir, ctx->cache_dir, ctx->plugin_path, ctx->argv, ctx->synctex_editor);
-  if (ctx->zathura == NULL) {
+  if (!ctx->zathura) {
     girara_error("Could not initialize zathura.");
     g_application_quit(app);
     return;
@@ -156,7 +156,7 @@ static void cb_app_startup(GApplication* app, gpointer data) {
 static void cb_app_activate(GApplication* UNUSED(app), gpointer data) {
   /* present the window when the app starts without a file */
   zathura_app_ctx_t* ctx = data;
-  if (ctx->zathura != NULL && ctx->zathura->ui.session != NULL && ctx->zathura->ui.session->gtk.window != NULL) {
+  if (ctx->zathura && ctx->zathura->ui.session && ctx->zathura->ui.session->gtk.window) {
     gtk_window_present(GTK_WINDOW(ctx->zathura->ui.session->gtk.window));
   }
 }
@@ -164,21 +164,21 @@ static void cb_app_activate(GApplication* UNUSED(app), gpointer data) {
 static void cb_app_open(GApplication* UNUSED(app), GFile** files, gint n_files, const gchar* UNUSED(hint),
                         gpointer data) {
   zathura_app_ctx_t* ctx = data;
-  if (ctx->zathura == NULL || n_files < 1) {
+  if (!ctx->zathura || n_files < 1) {
     return;
   }
 
   /* gfile turns a plain dash into an absolute path which breaks stdin so keep the raw argument */
   g_autofree char* gfile_path = NULL;
   const char* path            = NULL;
-  if (g_strcmp0(ctx->raw_file, "-") == 0) {
+  if (!g_strcmp0(ctx->raw_file, "-")) {
     path = "-";
   } else {
     gfile_path = g_file_get_path(files[0]);
     /* g_file_get_path returns NULL for non-local URIs; fall back to the raw argument */
-    path = gfile_path != NULL ? gfile_path : ctx->raw_file;
+    path = gfile_path ? gfile_path : ctx->raw_file;
   }
-  if (path == NULL) {
+  if (!path) {
     girara_error("Failed to determine path for the given file.");
     return;
   }
@@ -193,7 +193,7 @@ static void cb_app_open(GApplication* UNUSED(app), GFile** files, gint n_files, 
 
 static void cb_app_shutdown(GApplication* UNUSED(app), gpointer data) {
   zathura_app_ctx_t* ctx = data;
-  if (ctx->zathura != NULL) {
+  if (ctx->zathura) {
     zathura_free(ctx->zathura);
     ctx->zathura = NULL;
   }
@@ -203,12 +203,12 @@ static GStrv build_argv_for_child(int idx, char** argv, int argc, char** orig_ar
   GPtrArray* arr = g_ptr_array_new();
   g_ptr_array_add(arr, g_strdup(orig_argv[0]));
   for (int i = 1; i < orig_argc; i++) {
-    if (g_strcmp0(orig_argv[i], "--fork") == 0) {
+    if (!g_strcmp0(orig_argv[i], "--fork")) {
       continue;
     }
     bool is_file = false;
     for (int j = 0; j < argc - file_idx_base && !is_file; j++) {
-      if (g_strcmp0(orig_argv[i], argv[file_idx_base + j]) == 0) {
+      if (!g_strcmp0(orig_argv[i], argv[file_idx_base + j])) {
         is_file = true;
       }
     }
@@ -296,7 +296,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   g_auto(GStrv) orig_argv = g_strdupv(argv);
 
   g_autoptr(GError) error = NULL;
-  if (g_option_context_parse(context, &argc, &argv, &error) == false) {
+  if (!g_option_context_parse(context, &argc, &argv, &error)) {
     girara_error("Error parsing command line arguments: %s\n", error->message);
     return -1;
   }
@@ -305,7 +305,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
 
 #if defined(WITH_SYNCTEX) && !defined(WITH_SANDBOX)
   /* handle synctex forward synchronization */
-  if (synctex_fwd != NULL) {
+  if (synctex_fwd) {
     if (argc != 2) {
       girara_error("Too many arguments or missing filename while running with "
                    "--synctex-forward");
@@ -324,14 +324,14 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
     girara_debug("No instance found. Starting new one.");
   }
 #else
-  if (synctex_fwd != NULL || synctex_editor != NULL || synctex_pid != -1) {
+  if (synctex_fwd || synctex_editor || synctex_pid != -1) {
     girara_error("Built without synctex support, but synctex specific option was specified.");
     return -1;
   }
 #endif
 
   /* check mode */
-  if (mode != NULL && g_strcmp0(mode, "presentation") != 0 && g_strcmp0(mode, "fullscreen") != 0) {
+  if (mode && g_strcmp0(mode, "presentation") && g_strcmp0(mode, "fullscreen")) {
     girara_error("Invalid argument for --mode: %s", mode);
     return -1;
   }
@@ -342,12 +342,12 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
    * * for "-- -a" you get -- in argv
    *
    * So if there is one -- in argv, we need to ignore it. */
-  const bool has_double_dash = argc > 1 && g_strcmp0(argv[1], "--") == 0;
+  const bool has_double_dash = argc > 1 && !g_strcmp0(argv[1], "--");
   const int file_idx_base    = has_double_dash ? 2 : 1;
 
   int file_idx = argc > file_idx_base ? file_idx_base : 0;
   /* If more than one file, fork an instance for each. */
-  if (print_version == false && argc > file_idx_base + 1) {
+  if (!print_version && argc > file_idx_base + 1) {
     g_autoptr(girara_list_t) child_pids = girara_list_new();
 
     for (int idx = file_idx_base; idx < argc; ++idx) {
@@ -363,7 +363,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
       girara_list_append(child_pids, (void*)(intptr_t)pid);
     }
 
-    if (forkback == false) {
+    if (!forkback) {
       for (size_t idx = 0; idx != girara_list_size(child_pids); ++idx) {
         const pid_t pid = (pid_t)(intptr_t)girara_list_nth(child_pids, idx);
         waitpid(pid, NULL, 0);
@@ -373,7 +373,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   }
 
   /* Fork into the background if the user really wants to ... */
-  if (print_version == false && forkback == true && file_idx < file_idx_base + 1) {
+  if (!print_version && forkback && file_idx < file_idx_base + 1) {
     g_auto(GStrv) spawn_argv = build_argv_for_child(file_idx, argv, argc, orig_argv, orig_argc, file_idx_base);
     if (!g_spawn_async(NULL, spawn_argv, NULL, G_SPAWN_DEFAULT | G_SPAWN_SEARCH_PATH, start_process_group, NULL, NULL,
                        &error)) {
@@ -385,25 +385,25 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   }
 
   /* Print version */
-  if (print_version == true) {
+  if (print_version) {
     g_autoptr(zathura_plugin_manager_t) plugin_manager = zathura_plugin_manager_new();
     zathura_plugin_manager_set_dir(plugin_manager, plugin_path);
     zathura_plugin_manager_load(plugin_manager);
 
     g_autofree char* string = zathura_get_version_string(plugin_manager, false);
-    if (string != NULL) {
+    if (string) {
       fprintf(stdout, "%s\n", string);
     }
     return 0;
   }
 
   /* fail early so these errors still exit with an error status */
-  if (file_idx == 0) {
-    if (bookmark_name != NULL) {
+  if (!file_idx) {
+    if (bookmark_name) {
       girara_error("Can not use bookmark argument when no file is given");
       return -1;
     }
-    if (search_string != NULL) {
+    if (search_string) {
       girara_error("Can not use find argument when no file is given");
       return -1;
     }
@@ -437,7 +437,7 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   /* feed g_application_run a minimal argv so it routes via open or activate */
   char* run_argv[3] = {argv[0], NULL, NULL};
   int run_argc      = 1;
-  if (file_idx != 0) {
+  if (file_idx) {
     ctx.raw_file = argv[file_idx];
     run_argv[1]  = argv[file_idx];
     run_argc     = 2;

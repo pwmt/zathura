@@ -750,7 +750,7 @@ static gboolean document_info_open(gpointer data) {
         cmd_bookmark_open(zathura->ui.session, arg_list);
       }
 
-      if (document_info->search_string != NULL) {
+      if (document_info->search_string) {
         girara_argument_t search_arg;
         search_arg.n    = 1; // Forward search
         search_arg.data = NULL;

@@ -590,13 +590,13 @@ static bool call_synctex_view(GDBusConnection* connection, const char* filename,
 
 static int iterate_instances_call_synctex_view(const char* filename, const char* input_file, unsigned int line,
                                                unsigned int column, pid_t hint) {
-  if (filename == NULL) {
+  if (!filename) {
     return -1;
   }
 
   g_autoptr(GError) error               = NULL;
   g_autoptr(GDBusConnection) connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
-  if (connection == NULL) {
+  if (!connection) {
     girara_error("Could not connect to session bus: %s", error->message);
     return -1;
   }
@@ -610,7 +610,7 @@ static int iterate_instances_call_synctex_view(const char* filename, const char*
   g_autoptr(GVariant) vnames = g_dbus_connection_call_sync(
       connection, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames", NULL,
       G_VARIANT_TYPE("(as)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
-  if (vnames == NULL) {
+  if (!vnames) {
     girara_error("Could not list available names: %s", error->message);
     return -1;
   }
