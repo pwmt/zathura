@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-09-08 17:25+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"PO-Revision-Date: 2026-09-08 19:19+0200\n"
 "Last-Translator: fri, 2016-2018,2022\n"
 "Language-Team: Czech (http://app.transifex.com/pwmt/zathura/language/cs/)\n"
 "Language: cs\n"
@@ -1698,8 +1698,8 @@ msgid "Link: Invalid"
 msgstr "Odkaz: Neplatný"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Číslo zkopírované strany: %d"
+msgid "Copied page number: %u"
+msgstr "Číslo zkopírované strany: %u"
 
 #, c-format
 msgid "Copied link: %s"

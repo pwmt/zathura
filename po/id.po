@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
 "PO-Revision-Date: 2026-09-08 17:24+0200\n"
 "Last-Translator: Ibnu Daru Aji, 2013\n"
 "Language-Team: Indonesian (http://app.transifex.com/pwmt/zathura/language/"
@@ -1674,7 +1674,7 @@ msgid "Link: Invalid"
 msgstr "Link: Tidak valid"
 
 #, c-format
-msgid "Copied page number: %d"
+msgid "Copied page number: %u"
 msgstr ""
 
 #, c-format

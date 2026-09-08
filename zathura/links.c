@@ -372,7 +372,7 @@ void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkClipboard* s
   case ZATHURA_LINK_GOTO_DEST: {
     g_autofree gchar* tmp = g_strdup_printf("%d", target.page_number);
     gdk_clipboard_set_text(selection, tmp);
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %d"), target.page_number);
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %u"), target.page_number);
     break;
   }
   case ZATHURA_LINK_GOTO_REMOTE:

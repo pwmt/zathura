@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-09-08 17:25+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"PO-Revision-Date: 2026-09-08 19:19+0200\n"
 "Last-Translator: mvdan <mvdan@mvdan.cc>, 2012\n"
 "Language-Team: Catalan (http://app.transifex.com/pwmt/zathura/language/ca/)\n"
 "Language: ca\n"
@@ -1677,8 +1677,8 @@ msgid "Link: Invalid"
 msgstr "Enllaç: Invàlid"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Copiat pàgina número: %d"
+msgid "Copied page number: %u"
+msgstr "Copiat pàgina número: %u"
 
 #, c-format
 msgid "Copied link: %s"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-09-08 17:25+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"PO-Revision-Date: 2026-09-08 19:18+0200\n"
 "Last-Translator: Nisok Kosin <nisok@in.gr>, 2012\n"
 "Language-Team: Greek (http://app.transifex.com/pwmt/zathura/language/el/)\n"
 "Language: el\n"
@@ -1695,8 +1695,8 @@ msgid "Link: Invalid"
 msgstr "Σύνδεσμος: μη έγκυρος"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Αντιγράφηκε ο αριθμός σελίδας: %d"
+msgid "Copied page number: %u"
+msgstr "Αντιγράφηκε ο αριθμός σελίδας: %u"
 
 #, c-format
 msgid "Copied link: %s"

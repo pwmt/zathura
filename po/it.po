@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-09-08 17:24+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"PO-Revision-Date: 2026-09-08 19:17+0200\n"
 "Last-Translator: TheLemonMan <segnalazionidalweb@gmail.com>, 2012,2015\n"
 "Language-Team: Italian (http://app.transifex.com/pwmt/zathura/language/it/)\n"
 "Language: it\n"
@@ -1693,8 +1693,8 @@ msgid "Link: Invalid"
 msgstr "Link: non valido"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Copiata pagina numero: %d"
+msgid "Copied page number: %u"
+msgstr "Copiata pagina numero: %u"
 
 #, c-format
 msgid "Copied link: %s"

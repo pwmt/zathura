@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-09-08 17:21+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"PO-Revision-Date: 2026-09-08 19:15+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese (China) (http://app.transifex.com/pwmt/zathura/"
 "language/zh_CN/)\n"
@@ -1674,8 +1674,8 @@ msgid "Link: Invalid"
 msgstr "链接：无效"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "已复制页码：%d"
+msgid "Copied page number: %u"
+msgstr "已复制页码：%u"
 
 #, c-format
 msgid "Copied link: %s"

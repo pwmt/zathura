@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-09-08 17:22+0200\n"
+"POT-Creation-Date: 2026-09-08 19:13+0200\n"
+"PO-Revision-Date: 2026-09-08 19:16+0200\n"
 "Last-Translator: spero, 2019\n"
 "Language-Team: Turkish (http://app.transifex.com/pwmt/zathura/language/tr/)\n"
 "Language: tr\n"
@@ -1685,8 +1685,8 @@ msgid "Link: Invalid"
 msgstr "Bağlantı: Geçersiz"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Dosya numarası kopyalandı: %d"
+msgid "Copied page number: %u"
+msgstr "Dosya numarası kopyalandı: %u"
 
 #, c-format
 msgid "Copied link: %s"
