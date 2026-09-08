@@ -134,7 +134,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
   bool clear_search = true;
   girara_setting_get(session, "abort-clear-search", &clear_search);
 
-  if (document != NULL) {
+  if (document) {
     zathura_document_widget_hide_links(zathura->ui.document_widget);
     const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
     for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
@@ -145,16 +145,16 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
 
       GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
       /* the widget exists only if the background fill already created it */
-      if (page_widget == NULL) {
+      if (!page_widget) {
         continue;
       }
-      GObject* obj_page_widget = G_OBJECT(page_widget);
       zathura_page_widget_clear_selection(ZATHURA_PAGE_WIDGET(page_widget));
-      if (clear_search == true) {
-        g_object_set(obj_page_widget, "draw-search-results", FALSE, NULL);
-        zathura->global.are_search_results_highlighted = false;
-      }
     }
+
+    if (clear_search == true) {
+      document_draw_search_results(zathura, false);
+    }
+
     girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
   }
 
