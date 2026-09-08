@@ -231,11 +231,11 @@ const uint8_t* zathura_document_get_hash(zathura_document_t* document) {
     return NULL;
   }
 
-  if (document->hash_computed == false) {
-    document->hash_computed = true;
-    if (hash_file(document->hash, document->file_path) == false) {
+  if (!document->hash_computed) {
+    if (!hash_file(document->hash, document->file_path)) {
       girara_warning("Failed to hash file '%s'; fileinfo lookup may be unreliable.", document->file_path);
     }
+    document->hash_computed = true;
   }
 
   return document->hash;
