@@ -295,7 +295,7 @@ void document_draw_search_results(zathura_t* zathura, bool value) {
   }
 
   /* set state of search results highlight */
-  zathura->global.are_search_results_highlighted = true;
+  zathura->global.are_search_results_highlighted = value;
 
   /* nothing to highlight until the preload is done */
   if (zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget) == false) {

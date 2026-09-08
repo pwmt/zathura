@@ -58,68 +58,71 @@ static bool link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate
 }
 
 /* Helper function to redo the search and stay in place */
-bool redo_search(zathura_t* zathura){
-    if (zathura->document == NULL || zathura->global.search_string == NULL || strlen(zathura->global.search_string) == 0) {
-        return false;
+static gboolean redo_search(gpointer data) {
+  if (!data) {
+    return G_SOURCE_REMOVE;
+  }
+
+  zathura_t* zathura = data;
+  if (!zathura->document || !zathura->global.search_string || !strlen(zathura->global.search_string)) {
+    girara_debug("no search to redo, aborting");
+    return G_SOURCE_REMOVE;
+  }
+
+  girara_debug("redoing search");
+  // retry later when we have the document widget
+  if (!zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget)) {
+    return G_SOURCE_CONTINUE;
+  }
+
+  zathura_error_t error = ZATHURA_ERROR_OK;
+
+  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
+  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
+
+  /* reset search results */
+  zathura->global.total_search_results  = 0;
+  zathura->global.current_search_result = 0;
+
+  /* search pages */
+  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
+    unsigned int index   = (page_id + current_page_number) % number_of_pages;
+    zathura_page_t* page = zathura_document_get_page(zathura->document, index);
+    if (!page) {
+      continue;
     }
 
-    /* the search needs every page widget so wait until the background preload is done */
-    if (zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget) == false) {
-        return false;
+    GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
+    GObject* obj_page_widget = G_OBJECT(page_widget);
+
+    g_autoptr(girara_list_t) result = zathura_page_search_text(page, zathura->global.search_string, &error);
+    const size_t result_size        = result ? girara_list_size(result) : 0;
+
+    if (!result_size) {
+      g_object_set(obj_page_widget, "search-results", NULL, NULL);
+      if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
+        return G_SOURCE_REMOVE;
+      } else {
+        continue;
+      }
     }
 
-    zathura_error_t error = ZATHURA_ERROR_OK;
+    g_object_set(obj_page_widget, "search-results", g_steal_pointer(&result), NULL);
 
-    unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-    unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
-
-    /* reset search results */
-    zathura->global.total_search_results  = 0;
-    zathura->global.current_search_result = 0;
-
-    /* search pages */
-    for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-        unsigned int index   = (page_id + current_page_number) % number_of_pages;
-        zathura_page_t* page = zathura_document_get_page(zathura->document, index);
-        if (page == NULL) {
-          continue;
-        }
-
-        GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
-        GObject* obj_page_widget = G_OBJECT(page_widget);
-        
-        girara_list_t* result = zathura_page_search_text(page, zathura->global.search_string, &error);
-
-        if (result == NULL || girara_list_size(result) == 0) {
-            girara_list_free(result);
-            g_object_set(obj_page_widget, "search-results", NULL, NULL);
-
-            if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
-                break;
-            } else {
-                continue;
-            }
-        }
-
-        g_object_set(obj_page_widget, "search-results", result, NULL);
-
-        if (zathura->global.search_direction == BACKWARD) {
-            /* start at bottom hit in page */
-            g_object_set(obj_page_widget, "search-current", girara_list_size(result) - 1, NULL);
-        } else {
-            g_object_set(obj_page_widget, "search-current", 0, NULL);
-        }
-
-        zathura->global.total_search_results += girara_list_size(result);
+    if (zathura->global.search_direction == BACKWARD) {
+      /* start at bottom hit in page */
+      g_object_set(obj_page_widget, "search-current", result_size - 1, NULL);
+    } else {
+      g_object_set(obj_page_widget, "search-current", 0, NULL);
     }
-    
-    if (zathura->global.are_search_results_highlighted == true) {
-        /* highlight search results */
-        document_draw_search_results(zathura, true);
-    }
-    return true;
+
+    zathura->global.total_search_results += result_size;
+  }
+
+  /* highlight search results */
+  document_draw_search_results(zathura, true);
+  return G_SOURCE_REMOVE;
 }
-
 
 bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
               unsigned int UNUSED(t)) {
@@ -600,9 +603,9 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
   document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
                 zathura->file_monitor.password, file_info.current_page, &file_info);
 
-  /* redo search to preserve the previous search state */
-  if(zathura->global.search_string != NULL){
-        return redo_search(zathura);
+  // redo search to preserve the previous search state
+  if (zathura->global.search_string && zathura->global.are_search_results_highlighted) {
+    g_idle_add_full(G_PRIORITY_LOW + 10, redo_search, zathura, NULL);
   }
 
   return true;

@@ -1465,7 +1465,8 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
 
     // also free old search string in this case
     g_free(zathura->global.search_string);
-    zathura->global.search_string = NULL;
+    zathura->global.search_string                  = NULL;
+    zathura->global.are_search_results_highlighted = false;
   }
 
   /* store file information */
