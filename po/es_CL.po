@@ -1662,7 +1662,7 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
+msgid "Link: page %u"
 msgstr ""
 
 #, c-format
@@ -1759,7 +1759,7 @@ msgstr ""
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
 msgstr ""
 
 #, c-format

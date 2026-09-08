@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:26+0200\n"
 "Last-Translator: HiTuX <hemza.dz@gmail.com>, 2026\n"
 "Language-Team: Arabic (http://app.transifex.com/pwmt/zathura/language/ar/)\n"
 "Language: ar\n"
@@ -1668,8 +1668,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "لا يُسمح بفتح التطبيقات الخارجية في وضع الحماية الصارم"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "الرابط: الصفحة %d"
+msgid "Link: page %u"
+msgstr "الرابط: الصفحة %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1765,8 +1765,8 @@ msgstr "حفظ الصورة باسم"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "طباعة الصفحة %d ... "
+msgid "Printing page %u ..."
+msgstr "طباعة الصفحة %u ... "
 
 #, c-format
 msgid "Printing failed: %s"

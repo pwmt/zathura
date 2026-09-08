@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:22+0200\n"
 "Last-Translator: Mikhail Krutov <>, 2012\n"
 "Language-Team: Russian (http://app.transifex.com/pwmt/zathura/language/ru/)\n"
 "Language: ru\n"
@@ -1674,8 +1674,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Запрещено открывать внешние приложения в режиме строгой песочницы"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Ссылка: страница %d"
+msgid "Link: page %u"
+msgstr "Ссылка: страница %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1771,8 +1771,8 @@ msgstr "Сохранить изображение как"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Печать страницы %d ..."
+msgid "Printing page %u ..."
+msgstr "Печать страницы %u ..."
 
 #, c-format
 msgid "Printing failed: %s"

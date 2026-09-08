@@ -352,7 +352,7 @@ void zathura_link_display(zathura_t* zathura, zathura_link_t* link) {
   zathura_link_target_t target = zathura_link_get_target(link);
   switch (type) {
   case ZATHURA_LINK_GOTO_DEST:
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: page %d"), target.page_number);
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: page %u"), target.page_number);
     break;
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:

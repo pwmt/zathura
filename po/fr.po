@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:24+0200\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>, 2012\n"
 "Language-Team: French (http://app.transifex.com/pwmt/zathura/language/fr/)\n"
 "Language: fr\n"
@@ -42,7 +42,7 @@ msgstr ""
 "Zathura est un visionneur de documents très fonctionnel et personnalisable. "
 "Il fournit une interface minimaliste et peu encombrante ainsi qu'une "
 "utilisation centrée sur l'utilisation du clavier. Zathura permet de "
-"visionner et de parcourir des documents sans jamais utiliser la souris. "
+"visionner et de parcourir des documents sans jamais utiliser la souris."
 
 msgid ""
 "Zathura can be extended to support multiple document formats using plugins. "
@@ -1692,8 +1692,8 @@ msgstr ""
 "stricte"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Lien : page %d"
+msgid "Link: page %u"
+msgstr "Lien : page %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1793,8 +1793,8 @@ msgstr "Enregistrer l'image sous"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Impression de la page %d ..."
+msgid "Printing page %u ..."
+msgstr "Impression de la page %u ..."
 
 #, c-format
 msgid "Printing failed: %s"

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:23+0200\n"
 "Last-Translator: Fernando Henrique <liquuid@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/pwmt/zathura/"
 "language/pt_BR/)\n"
@@ -1674,8 +1674,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: página %d"
+msgid "Link: page %u"
+msgstr "Link: página %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1771,7 +1771,7 @@ msgstr "Salvar imagem para"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
 msgstr ""
 
 #, c-format

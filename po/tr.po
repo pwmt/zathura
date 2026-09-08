@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:22+0200\n"
 "Last-Translator: spero, 2019\n"
 "Language-Team: Turkish (http://app.transifex.com/pwmt/zathura/language/tr/)\n"
 "Language: tr\n"
@@ -1674,8 +1674,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Sıkı sanal-ortam kipi harici uygulamaların başlatılması yasaktır."
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Bağlantı: sayfa %d"
+msgid "Link: page %u"
+msgstr "Bağlantı: sayfa %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1771,8 +1771,8 @@ msgstr "Resmi farklı kaydet"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Yazdırılan sayfa %d..."
+msgid "Printing page %u ..."
+msgstr "Yazdırılan sayfa %u..."
 
 #, c-format
 msgid "Printing failed: %s"

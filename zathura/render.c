@@ -1076,7 +1076,7 @@ static ssize_t page_cache_lru_invalidate(ZathuraRenderer* renderer) {
 
   /* emit the signal */
   g_signal_emit(request, request_signals[REQUEST_CACHE_INVALIDATED], 0);
-  girara_debug("Invalidated page %d at cache index %zd", zathura_page_get_index(request_priv->page) + 1, lru_index);
+  girara_debug("Invalidated page %u at cache index %zd", zathura_page_get_index(request_priv->page) + 1, lru_index);
   priv->page_cache.cache[lru_index] = -1;
   --priv->page_cache.num_cached_pages;
 

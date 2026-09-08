@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:25+0200\n"
 "Last-Translator: fri, 2016-2018,2022\n"
 "Language-Team: Czech (http://app.transifex.com/pwmt/zathura/language/cs/)\n"
 "Language: cs\n"
@@ -1687,8 +1687,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Otevírání vnějších programů v režimu přísného pískoviště není dovoleno"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Odkaz: strana %d"
+msgid "Link: page %u"
+msgstr "Odkaz: strana %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1788,8 +1788,8 @@ msgstr "Uložit obrázek jako"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Tiskne se strana %d ..."
+msgid "Printing page %u ..."
+msgstr "Tiskne se strana %u ..."
 
 #, c-format
 msgid "Printing failed: %s"

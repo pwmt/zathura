@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:22+0200\n"
 "Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
 "Language-Team: Ukrainian (http://app.transifex.com/pwmt/zathura/language/"
 "uk/)\n"
@@ -1248,7 +1248,7 @@ msgstr "Записано вкладення %s у %s."
 
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Зображення записано '% s' до '% s'."
+msgstr "Зображення записано '%s' до '%s'."
 
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
@@ -1702,8 +1702,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Відкривати зовнішні програми в режимі суворої пісочниці не дозволено"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Посилання: сторінка %d"
+msgid "Link: page %u"
+msgstr "Посилання: сторінка %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1803,8 +1803,8 @@ msgstr "Зберегти зображення як"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Друк сторінки %d..."
+msgid "Printing page %u ..."
+msgstr "Друк сторінки %u..."
 
 #, c-format
 msgid "Printing failed: %s"

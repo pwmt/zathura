@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"PO-Revision-Date: 2026-09-08 17:24+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Hebrew (http://app.transifex.com/pwmt/zathura/language/he/)\n"
 "Language: he\n"
@@ -1668,8 +1668,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: עמוד %d"
+msgid "Link: page %u"
+msgstr "Link: עמוד %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1765,7 +1765,7 @@ msgstr "שמור תמונה בשם"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
 msgstr ""
 
 #, c-format

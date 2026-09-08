@@ -1727,26 +1727,26 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
 
   /* specify new zoom value */
   if (argument->n == ZOOM_IN) {
-    girara_debug("Increasing page %d zoom by %0.2f.", current_page, zoom_step - 1.0);
+    girara_debug("Increasing page %u zoom by %0.2f.", current_page, zoom_step - 1.0);
     zathura_page_set_zoom(page, old_zoom * zoom_step);
   } else if (argument->n == ZOOM_OUT) {
-    girara_debug("Decreasing page %d zoom by %0.2f.", current_page, zoom_step - 1.0);
+    girara_debug("Decreasing page %u zoom by %0.2f.", current_page, zoom_step - 1.0);
     zathura_page_set_zoom(page, old_zoom / zoom_step);
   } else if (argument->n == ZOOM_SPECIFIC) {
     if (t == 0) {
-      girara_debug("Setting page %d zoom to 1.", current_page);
+      girara_debug("Setting page %u zoom to 1.", current_page);
       zathura_page_set_zoom(page, 1.0);
     } else {
-      girara_debug("Setting page %d zoom to %0.2f.", current_page, t / 100.0);
+      girara_debug("Setting page %u zoom to %0.2f.", current_page, t / 100.0);
       zathura_page_set_zoom(page, t / 100.0);
     }
   } else if (argument->n == ZOOM_SMOOTH) {
     const double dy = (event != NULL) ? event->y : 1.0;
     const double z  = pow(zoom_step, -dy);
-    girara_debug("Increasing page %d zoom by %0.2f.", current_page, z - 1.0);
+    girara_debug("Increasing page %u zoom by %0.2f.", current_page, z - 1.0);
     zathura_page_set_zoom(page, old_zoom * z);
   } else {
-    girara_debug("Setting page %d zoom to 1.", current_page);
+    girara_debug("Setting page %u zoom to 1.", current_page);
     zathura_page_set_zoom(page, 1.0);
   }
 
@@ -1756,11 +1756,11 @@ bool sc_zoom_page(girara_session_t* session, girara_argument_t* argument, girara
 
   const double new_zoom = zathura_page_get_zoom(page);
   if (fabs(new_zoom - old_zoom) <= DBL_EPSILON) {
-    girara_debug("New and old page %d zoom level are too close: %0.2f vs. %0.2f", current_page, new_zoom, old_zoom);
+    girara_debug("New and old page %u zoom level are too close: %0.2f vs. %0.2f", current_page, new_zoom, old_zoom);
     return false;
   }
 
-  girara_debug("Re-rendering with page %d new zoom level %0.2f.", current_page, new_zoom);
+  girara_debug("Re-rendering with page %u new zoom level %0.2f.", current_page, new_zoom);
   zathura_document_widget_render_all(zathura->ui.document_widget);
   refresh_view(zathura);
 

@@ -557,7 +557,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
       cairo_paint(cairo);
       cairo_restore(cairo);
     } else {
-      girara_debug("drawing thumbnail for page %d", zathura_page_get_index(priv->page));
+      girara_debug("drawing thumbnail for page %u", zathura_page_get_index(priv->page));
 
       const unsigned int height = cairo_image_surface_get_height(priv->thumbnail);
       const unsigned int width  = cairo_image_surface_get_width(priv->thumbnail);

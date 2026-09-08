@@ -92,7 +92,7 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
   }
 
   /* Update statusbar. */
-  g_autofree char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number + 1);
+  g_autofree char* tmp = g_strdup_printf(_("Printing page %u ..."), page_number + 1);
   girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
 
   /* Get the page and cairo handle.  */
@@ -103,12 +103,12 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
     return;
   }
 
-  girara_debug("printing page %d ...", page_number);
+  girara_debug("printing page %u ...", page_number);
   if (draw_page_cairo(cairo, zathura, page) == true) {
     return;
   }
 
-  girara_debug("printing page %d (fallback) ...", page_number);
+  girara_debug("printing page %u (fallback) ...", page_number);
   if (draw_page_image(cairo, context, zathura, page) == false) {
     gtk_print_operation_cancel(print_operation);
   }

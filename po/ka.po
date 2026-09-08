@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-02-21 13:30+0100\n"
+"PO-Revision-Date: 2026-09-08 17:24+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Georgian (http://app.transifex.com/pwmt/zathura/language/"
 "ka/)\n"
@@ -1674,8 +1674,8 @@ msgstr ""
 "ოპენინგ ექსტერნალ აპპლიკატიონს ინ სტრიკტ სანდბოქს მოდე ის ნოტ პერმიტტედ"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "ბმული: გვერდი %d"
+msgid "Link: page %u"
+msgstr "ბმული: გვერდი %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1771,8 +1771,8 @@ msgstr "შენახვა იმაგე ას"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "პრინტინგ გვერდი %d ..."
+msgid "Printing page %u ..."
+msgstr "პრინტინგ გვერდი %u ..."
 
 #, c-format
 msgid "Printing failed: %s"

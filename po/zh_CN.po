@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2026-03-31 19:24+0200\n"
+"PO-Revision-Date: 2026-09-08 17:21+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese (China) (http://app.transifex.com/pwmt/zathura/"
 "language/zh_CN/)\n"
@@ -1663,8 +1663,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "严格沙盒模式下不允许打开外部应用程序"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "链接：第 %d 页"
+msgid "Link: page %u"
+msgstr "链接：第 %u 页"
 
 #, c-format
 msgid "Link: %s"
@@ -1764,8 +1764,8 @@ msgstr "图像另存为"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "正在打印第 %d 页 ..."
+msgid "Printing page %u ..."
+msgstr "正在打印第 %u 页 ..."
 
 #, c-format
 msgid "Printing failed: %s"
