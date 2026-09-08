@@ -1053,6 +1053,12 @@ The settings described here can be changed with ``set``.
   * Value type: Boolean
   * Default value: false
 
+*window-decoration*
+  Show window decorations.
+
+  * Value type: Boolean
+  * Default value: true
+
 *window-title-basename*
   Use basename of the file in the window title.
 
