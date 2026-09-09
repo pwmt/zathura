@@ -269,7 +269,7 @@ zathura_document_information_entry_new(zathura_document_information_type_t type,
  *
  * @param entry The entry that should be freed
  */
-ZATHURA_PLUGIN_API void zathura_document_information_entry_free(zathura_document_information_entry_t* entry);
+ZATHURA_PLUGIN_API void zathura_document_information_entry_free(void* entry);
 
 /**
  * Context for MIME type detection

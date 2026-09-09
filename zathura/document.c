@@ -556,7 +556,7 @@ girara_list_t* zathura_document_get_information(zathura_document_t* document, za
 
   girara_list_t* result = functions->document_get_information(document, document->data, error);
   if (result != NULL) {
-    girara_list_set_free_function(result, (girara_free_function_t)zathura_document_information_entry_free);
+    girara_list_set_free_function(result, zathura_document_information_entry_free);
   }
 
   return result;
