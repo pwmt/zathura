@@ -1545,6 +1545,31 @@ bool sc_toggle_presentation(girara_session_t* session, girara_argument_t* UNUSED
   return false;
 }
 
+static gboolean reanchor_after_single_page(void* data) {
+  zathura_t* zathura = data;
+  if (zathura->document == NULL) {
+    return G_SOURCE_REMOVE;
+  }
+
+  position_set(zathura, -1, -1);
+
+  const unsigned int page = zathura_document_get_current_page_number(zathura->document);
+  bool vertical_center    = false;
+  girara_setting_get(zathura->ui.session, "vertical-center", &vertical_center);
+  double target_x = 0.0, target_y = 0.0;
+  page_number_to_position(zathura, page, 0.5, vertical_center ? 0.5 : 0.0, &target_x, &target_y);
+
+  GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  const int tries     = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(zathura->ui.document_widget), "reanchor-tries")) + 1;
+
+  if (fabs(zathura_adjustment_get_ratio(vadj) - target_y) < 0.002 || tries >= 30) {
+    g_object_set_data(G_OBJECT(zathura->ui.document_widget), "reanchor-tries", NULL);
+    return G_SOURCE_REMOVE;
+  }
+  g_object_set_data(G_OBJECT(zathura->ui.document_widget), "reanchor-tries", GINT_TO_POINTER(tries));
+  return G_SOURCE_CONTINUE;
+}
+
 bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UNUSED(argument),
                                 girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
@@ -1560,6 +1585,7 @@ bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UN
   g_object_get(zathura->ui.document_widget, "layout-mode", &old_mode, NULL);
   if (old_mode == DOCUMENT_WIDGET_SINGLE) {
     g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_GRID, NULL);
+    g_idle_add(reanchor_after_single_page, zathura);
   } else {
     const unsigned int pages_per_row = 1;
     girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
