@@ -28,7 +28,19 @@
     <property type='s' name='filename' access='read' />
     <property type='u' name='pagenumber' access='read' />
     <property type='u' name='numberofpages' access='read' />
+    <!-- JSON containing filename, number-of-pages, index, and metadata.
+         Metadata keys: title, author, subject, keywords, creator, producer,
+         creation_date, modification_date, other, format. Unavailable fields
+         are omitted; documents without metadata have an empty metadata object. -->
     <property type='s' name='documentinfo' access='read' />
+    <!-- Emitted after a document opens successfully. Query documentinfo for metadata. -->
+    <signal name='DocumentOpen'>
+      <arg type='s' name='path' direction='out' />
+    </signal>
+    <!-- Emitted when the current document closes, including reloads. -->
+    <signal name='DocumentClose'>
+      <arg type='s' name='path' direction='out' />
+    </signal>
     <!-- Open editor with given input file at line and column. -->
     <signal name='Edit'>
       <arg type='s' name='input' direction='out' />

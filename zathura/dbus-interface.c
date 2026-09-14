@@ -16,6 +16,7 @@
 #include "adjustment.h"
 #include "config.h"
 #include "document.h"
+#include "internal.h"
 #include "links.h"
 #include "macros.h"
 #include "resources.h"
@@ -498,110 +499,67 @@ static void json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t
   }
 }
 
-static void emit_document_open_signal(zathura_t* zathura, const char* file_path, const char* metadata) {
-  ZathuraDbus* edit        = zathura->dbus;
-  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(edit);
-
-  GError* error = NULL;
-  g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH, DBUS_INTERFACE, "DocumentOpen",
-                                g_variant_new("(ss)", file_path, metadata), &error);
-
-  if (error != NULL) {
-    girara_debug("Failed to emit 'DocumentOpen' signal: %s", error->message);
-    g_error_free(error);
-  }
-}
-
-void zathura_dbus_document_open(zathura_t* zathura, const char* file_path){
-  size_t meta_fields_count = 0;
-  struct meta_field_s* meta_fields = zathura_document_get_meta_fields(zathura_get_document(zathura), &meta_fields_count);
-
-  if(meta_fields == NULL){
+static void emit_document_signal(zathura_t* zathura, const char* signal, const char* file_path) {
+  if (zathura->dbus == NULL) {
     return;
   }
 
-  JsonBuilder* builder = json_builder_new();
-  json_builder_begin_object(builder);
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(zathura->dbus);
+  if (priv->connection == NULL || g_dbus_connection_is_closed(priv->connection)) {
+    return;
+  }
 
-  for(size_t i_document_metadata = ZATHURA_DOCUMENT_INFORMATION_TITLE; i_document_metadata < ZATHURA_DOCUMENT_INFORMATION_FORMAT; i_document_metadata++) {
-    for (size_t j = 0; j < meta_fields_count; j++) {
-      if(meta_fields[j].field != i_document_metadata) {
+  g_autoptr(GError) error = NULL;
+  g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH, DBUS_INTERFACE, signal,
+                                g_variant_new("(s)", file_path), &error);
+  if (error != NULL) {
+    girara_debug("Failed to emit '%s' signal: %s", signal, error->message);
+  }
+}
+
+void zathura_dbus_document_open(zathura_t* zathura, const char* file_path) {
+  emit_document_signal(zathura, "DocumentOpen", file_path);
+}
+
+void zathura_dbus_document_close(zathura_t* zathura, const char* file_path) {
+  emit_document_signal(zathura, "DocumentClose", file_path);
+}
+
+static void json_document_metadata(JsonBuilder* builder, zathura_document_t* document) {
+  static const struct {
+    zathura_document_information_type_t type;
+    const char* name;
+  } fields[] = {
+      {ZATHURA_DOCUMENT_INFORMATION_TITLE, "title"},
+      {ZATHURA_DOCUMENT_INFORMATION_AUTHOR, "author"},
+      {ZATHURA_DOCUMENT_INFORMATION_SUBJECT, "subject"},
+      {ZATHURA_DOCUMENT_INFORMATION_KEYWORDS, "keywords"},
+      {ZATHURA_DOCUMENT_INFORMATION_CREATOR, "creator"},
+      {ZATHURA_DOCUMENT_INFORMATION_PRODUCER, "producer"},
+      {ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE, "creation_date"},
+      {ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE, "modification_date"},
+      {ZATHURA_DOCUMENT_INFORMATION_OTHER, "other"},
+      {ZATHURA_DOCUMENT_INFORMATION_FORMAT, "format"},
+  };
+
+  json_builder_begin_object(builder);
+  g_autoptr(girara_list_t) information = zathura_document_get_information(document, NULL);
+  if (information != NULL) {
+    for (size_t i = 0; i < girara_list_size(information); ++i) {
+      const zathura_document_information_entry_t* entry = girara_list_nth(information, i);
+      if (entry == NULL || entry->value == NULL) {
         continue;
       }
-      switch(i_document_metadata){
-        case ZATHURA_DOCUMENT_INFORMATION_TITLE:
-          json_builder_set_member_name(builder, "title");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_AUTHOR:
-          json_builder_set_member_name(builder, "author");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_SUBJECT:
-          json_builder_set_member_name(builder, "subject");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_KEYWORDS:
-          json_builder_set_member_name(builder, "keywords");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_CREATOR:
-          json_builder_set_member_name(builder, "creator");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_PRODUCER:
-          json_builder_set_member_name(builder, "producer");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE:
-          json_builder_set_member_name(builder, "creation_date");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE:
-          json_builder_set_member_name(builder, "modification_date");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_OTHER:
-          json_builder_set_member_name(builder, "other");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        case ZATHURA_DOCUMENT_INFORMATION_FORMAT:
-          json_builder_set_member_name(builder, "format");
-          json_builder_add_string_value(builder, meta_fields[j].value);
-          break;
-        default: {
-            char* formatted_document_metadata = g_strdup_printf("%zu", i_document_metadata);
-            girara_error("Received unexpected 'zathura_document_information_type_e' value: '%s'", formatted_document_metadata);
-            g_free(formatted_document_metadata);
+      for (size_t j = 0; j < LENGTH(fields); ++j) {
+        if (entry->type == fields[j].type) {
+          json_builder_set_member_name(builder, fields[j].name);
+          json_builder_add_string_value(builder, entry->value);
           break;
         }
       }
     }
   }
-
   json_builder_end_object(builder);
-
-  JsonNode* root        = json_builder_get_root(builder);
-  char* serialized_root = json_to_string(root, false);
-  json_node_free(root);
-  g_object_unref(builder);
-
-  emit_document_open_signal(zathura, file_path, serialized_root);
-  g_free(serialized_root);
-}
-
-void zathura_dbus_document_close(zathura_t* zathura, const char* file_path) {
-  ZathuraDbus* edit        = zathura->dbus;
-  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(edit);
-
-  GError* error = NULL;
-  g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH, DBUS_INTERFACE, "DocumentClose",
-                                g_variant_new("(s)", file_path), &error);
-
-  if (error != NULL) {
-    girara_debug("Failed to emit 'DocumentClose' signal: %s", error->message);
-    g_error_free(error);
-  }
 }
 
 static GVariant* json_document_info(zathura_t* zathura) {
@@ -613,6 +571,9 @@ static GVariant* json_document_info(zathura_t* zathura) {
   json_builder_add_string_value(builder, zathura_document_get_path(document));
   json_builder_set_member_name(builder, "number-of-pages");
   json_builder_add_int_value(builder, zathura_document_get_number_of_pages(document));
+
+  json_builder_set_member_name(builder, "metadata");
+  json_document_metadata(builder, document);
 
   json_builder_set_member_name(builder, "index");
   json_builder_begin_array(builder);

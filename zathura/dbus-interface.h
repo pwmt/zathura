@@ -35,17 +35,17 @@ const char* zathura_dbus_get_name(zathura_t* zathura);
  * Emit the 'DocumentOpen' signal on the D-Bus connection.
  *
  * @param zathura Zathura session
- * @param file_name file name
+ * @param file_path document path
  */
-void zathura_dbus_document_open(zathura_t* zathura, const char* file_name);
+void zathura_dbus_document_open(zathura_t* zathura, const char* file_path);
 
 /**
  * Emit the 'DocumentClose' signal on the D-Bus connection.
  *
  * @param zathura Zathura session
- * @param document_path document path
+ * @param file_path document path
  */
-void zathura_dbus_document_close(zathura_t* zathura, const char* document_path);
+void zathura_dbus_document_close(zathura_t* zathura, const char* file_path);
 
 /**
  * Emit the 'Edit' signal on the D-Bus connection.
