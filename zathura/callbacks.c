@@ -95,6 +95,10 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   if (zathura_has_document(zathura) == false || zathura->ui.document_widget == NULL) {
     return;
   }
+  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
+    girara_debug("Handling view adjustment change while processing page mode change.");
+    return;
+  }
 
   /* Do nothing in index mode */
   if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
@@ -106,7 +110,8 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_t* document = zathura_get_document(zathura);
   const double stored_position = zathura_document_get_position_x(document);
 
-  /* the value was set by someone else, so restore the stored position instead of reading it back */
+  // FIXME: this callback should really not set the adjustment
+  // the value was set by someone else, so restore the stored position instead of reading it back
   if (zathura_adjustment_value_matches_ratio(adjustment, stored_position) == false) {
     zathura_adjustment_set_value_from_ratio(adjustment, stored_position);
     return;
@@ -132,6 +137,10 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   if (zathura_has_document(zathura) == false || zathura->ui.document_widget == NULL) {
     return;
   }
+  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
+    girara_debug("Handling view adjustment change while processing page mode change.");
+    return;
+  }
 
   /* Do nothing in index mode */
   if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
@@ -143,7 +152,8 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_t* document = zathura_get_document(zathura);
   const double stored_position = zathura_document_get_position_y(document);
 
-  /* restore the stored position when the value came from elsewhere */
+  // FIXME: this callback should really not set the adjustment
+  // restore the stored position when the value came from elsewhere
   if (zathura_adjustment_value_matches_ratio(adjustment, stored_position) == false) {
     zathura_adjustment_set_value_from_ratio(adjustment, stored_position);
     return;
@@ -185,7 +195,14 @@ static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zat
     zathura_document_set_viewport_height(document, size);
   }
 
-  /* reset the adjustment, in case bounds have changed */
+  // bounds from the old layout must not replace the pending page anchor.
+  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
+    girara_debug("Handling view adjustment change while processing page mode change.");
+    return;
+  }
+
+  // FIXME: this callback should never change the adjustment value itself
+  // reset the adjustment, in case bounds have changed
   const double ratio =
       width == true ? zathura_document_get_position_x(document) : zathura_document_get_position_y(document);
 

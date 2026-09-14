@@ -1634,6 +1634,13 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
     return false;
   }
 
+  // FIXME: why do we end up here during mode changes?
+  // allocation will position the most recently selected page using the new layout.
+  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
+    girara_debug("Handling position change while processing page mode change.");
+    return true;
+  }
+
   double comppos_x, comppos_y;
   const unsigned int page_id = zathura_document_get_current_page_number(document);
 

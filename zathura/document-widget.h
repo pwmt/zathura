@@ -195,6 +195,9 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document);
 
 void zathura_document_widget_update_mode(ZathuraDocumentWidget* document);
 
+/** Whether a layout transition is waiting to restore the selected page during allocation. */
+bool zathura_document_widget_mode_change_pending(ZathuraDocumentWidget* document);
+
 /**
  * Calculate the position of each grid cell.
  * Required when any page size is changed.

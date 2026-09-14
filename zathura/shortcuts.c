@@ -1561,9 +1561,10 @@ bool sc_toggle_single_page_mode(girara_session_t* session, girara_argument_t* UN
   if (old_mode == DOCUMENT_WIDGET_SINGLE) {
     g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_GRID, NULL);
   } else {
+    /* Start the transition before changing columns so adjustment feedback cannot change the page. */
+    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
     const unsigned int pages_per_row = 1;
     girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
-    g_object_set(zathura->ui.document_widget, "layout-mode", DOCUMENT_WIDGET_SINGLE, NULL);
   }
 
   return true;

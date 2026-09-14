@@ -30,6 +30,7 @@ typedef struct zathura_document_widget_private_s {
 
   /* Layout */
   document_widget_mode_t layout_mode;
+  bool mode_change_pending; /**< Track pending layout mode changes; FIXME: remove this workaround */
   gboolean pages_right_to_left;
   unsigned int nrow;
   unsigned int ncol;
@@ -255,11 +256,18 @@ static void zathura_document_widget_set_property(GObject* object, guint prop_id,
   case PROP_ZATHURA:
     priv->zathura = g_value_get_pointer(value);
     break;
-  case PROP_LAYOUT_MODE:
-    priv->layout_mode = g_value_get_int(value);
+  case PROP_LAYOUT_MODE: {
+    const document_widget_mode_t new_mode = g_value_get_int(value);
+    if (priv->layout_mode == new_mode) {
+      break;
+    }
+    /* Keep the selected page authoritative until the new geometry is allocated. */
+    priv->mode_change_pending = priv->document != NULL;
+    priv->layout_mode         = g_value_get_int(value);
     zathura_document_widget_update_mode(document);
     gtk_widget_queue_allocate(GTK_WIDGET(document));
     break;
+  }
   case PROP_PAGES_RIGHT_TO_LEFT:
     priv->pages_right_to_left = g_value_get_boolean(value);
     break;
@@ -403,6 +411,47 @@ void zathura_document_widget_update_mode(ZathuraDocumentWidget* document) {
   gtk_widget_queue_resize(GTK_WIDGET(document));
 }
 
+bool zathura_document_widget_mode_change_pending(ZathuraDocumentWidget* document) {
+  g_return_val_if_fail(document != NULL, false);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->mode_change_pending;
+}
+
+/* Called after the bounds and viewport size have been updated, before placing the grid. */
+static void apply_pending_page_anchor(ZathuraDocumentWidget* document) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  if (priv->mode_change_pending == false || priv->document == NULL) {
+    return;
+  }
+
+  /* Navigation while allocation was pending may have selected a newer page. */
+  double x = 0.5, y = 0.5;
+  if (priv->layout_mode == DOCUMENT_WIDGET_GRID) {
+    bool vertical_center = false;
+    girara_setting_get(priv->zathura->ui.session, "vertical-center", &vertical_center);
+    page_number_to_position(priv->zathura, zathura_document_get_current_page_number(priv->document), 0.5,
+                            vertical_center ? 0.5 : 0.0, &x, &y);
+    bool zoom_center = false;
+    girara_setting_get(priv->zathura->ui.session, "zoom-center", &zoom_center);
+    const zathura_adjust_mode_t mode = zathura_document_get_adjust_mode(priv->document);
+    if (zoom_center || mode == ZATHURA_ADJUST_BESTFIT || mode == ZATHURA_ADJUST_WIDTH) {
+      x = 0.5;
+    }
+  } else {
+    /* Single-page adjustments use page-local coordinates; start at the top. */
+    y = 0.0;
+  }
+
+  zathura_document_set_position_x(priv->document, x);
+  zathura_document_set_position_y(priv->document, y);
+  zathura_adjustment_set_value_from_ratio(priv->hadjustment, x);
+  zathura_adjustment_set_value_from_ratio(priv->vadjustment, y);
+  zathura_document_set_position_x(priv->document, zathura_adjustment_get_ratio(priv->hadjustment));
+  zathura_document_set_position_y(priv->document, zathura_adjustment_get_ratio(priv->vadjustment));
+  priv->mode_change_pending = false;
+  statusbar_page_number_update(priv->zathura);
+}
+
 static void size_allocate_single(ZathuraDocumentWidget* document, int width, int height, int baseline) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   zathura_document_t* z_document     = priv->document;
@@ -421,6 +470,8 @@ static void size_allocate_single(ZathuraDocumentWidget* document, int width, int
   if ((int)gtk_adjustment_get_upper(priv->vadjustment) != (int)page_height) {
     gtk_adjustment_set_upper(priv->vadjustment, page_height);
   }
+
+  apply_pending_page_anchor(document);
 
   const int value_h = gtk_adjustment_get_value(priv->hadjustment);
   const int value_v = gtk_adjustment_get_value(priv->vadjustment);
@@ -485,6 +536,8 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
       size_allocate_single(document, width, height, baseline);
       return;
     }
+
+    apply_pending_page_anchor(document);
 
     /* align tall documents to the top so the first page stays visible while the grid fills */
     gtk_widget_set_valign(priv->grid, (int)doc_h > height ? GTK_ALIGN_START : GTK_ALIGN_CENTER);
@@ -1115,6 +1168,7 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  priv->mode_change_pending          = false;
   zathura_document_widget_stop_page_widget_preload(document);
   const unsigned int number_of_pages =
       priv->document != NULL && priv->pages != NULL ? zathura_document_get_number_of_pages(priv->document) : 0;
