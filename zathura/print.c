@@ -26,7 +26,7 @@ static bool draw_page_cairo(cairo_t* cairo, zathura_t* zathura, zathura_page_t* 
   /* Try to render the page without a temporary surface. This only works with
    * plugins that support rendering to any surface.  */
   zathura_renderer_lock(zathura->sync.render_thread);
-  const int err = zathura_page_render(page, cairo, true);
+  const zathura_error_t err = zathura_page_render(page, cairo, true);
   zathura_renderer_unlock(zathura->sync.render_thread);
 
   return err == ZATHURA_ERROR_OK;
@@ -62,7 +62,7 @@ static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t*
 
   /* Render the page to the temporary surface */
   zathura_renderer_lock(zathura->sync.render_thread);
-  const int err = zathura_page_render(page, temp_cairo, true);
+  const zathura_error_t err = zathura_page_render(page, temp_cairo, true);
   zathura_renderer_unlock(zathura->sync.render_thread);
   if (err != ZATHURA_ERROR_OK) {
     cairo_destroy(temp_cairo);
@@ -116,12 +116,12 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
 
 static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                                         gint page_number, GtkPageSetup* setup, zathura_t* zathura) {
-  if (zathura_has_document(zathura) == false) {
+  if (!zathura_has_document(zathura)) {
     return;
   }
 
   zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
-  if (page == NULL) {
+  if (!page) {
     return;
   }
 
@@ -148,11 +148,11 @@ void print(zathura_t* zathura) {
   gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(document));
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
 
-  if (zathura->print.settings != NULL) {
+  if (zathura->print.settings) {
     gtk_print_operation_set_print_settings(print_operation, zathura->print.settings);
   }
 
-  if (zathura->print.page_setup != NULL) {
+  if (zathura->print.page_setup) {
     gtk_print_operation_set_default_page_setup(print_operation, zathura->print.page_setup);
   }
   gtk_print_operation_set_embed_page_setup(print_operation, TRUE);
