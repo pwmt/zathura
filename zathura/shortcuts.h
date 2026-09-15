@@ -30,6 +30,29 @@ bool sc_abort(girara_session_t* session, girara_argument_t* argument, girara_eve
 bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Turn the current text selection into a persistent highlight
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_highlight_add(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Cycle the active highlight color forward through the palette
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_highlight_cycle_color(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                              unsigned int t);
+
+/**
  * Change the current mode
  *
  * @param session The used girara session

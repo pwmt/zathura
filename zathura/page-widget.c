@@ -12,6 +12,7 @@
 #include <math.h>
 
 #include "links-internal.h"
+#include "highlights.h"
 #include "page.h"
 #include "adjustment.h"
 #include "render.h"
@@ -46,6 +47,11 @@ typedef struct zathura_page_widget_private_s {
     girara_list_t* list; /**< List of selection rectangles that should be drawn */
     gboolean draw;       /** Draw selection */
   } selection;
+
+  struct {
+    girara_list_t* list; /**< Non-owning list of zathura_highlight_t* on this page */
+    gboolean retrieved;  /**< True if we already tried to retrieve the list of highlights */
+  } highlights;
 
   struct {
     girara_list_t* list;      /**< List of images on the page */
@@ -213,6 +219,9 @@ static void zathura_page_widget_init(ZathuraPageWidget* widget) {
   priv->selection.list = NULL;
   priv->selection.draw = false;
 
+  priv->highlights.list      = NULL;
+  priv->highlights.retrieved = false;
+
   priv->images.list      = NULL;
   priv->images.retrieved = false;
   priv->images.current   = NULL;
@@ -299,6 +308,7 @@ static void zathura_page_widget_finalize(GObject* object) {
   girara_list_free(priv->search.list);
   girara_list_free(priv->links.list);
   girara_list_free(priv->signatures.list);
+  girara_list_free(priv->highlights.list);
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
 }
@@ -501,6 +511,25 @@ static zathura_device_factors_t get_safe_device_factors(cairo_surface_t* surface
   return factors;
 }
 
+/* trace a rounded-rectangle path */
+static void highlight_rounded_rect_path(cairo_t* cairo, double x, double y, double width, double height) {
+  double radius = height * 0.35;
+  radius        = MIN(radius, height / 2.0);
+  radius        = MIN(radius, width / 2.0);
+
+  if (radius <= 0.0) {
+    cairo_rectangle(cairo, x, y, width, height);
+    return;
+  }
+
+  cairo_new_sub_path(cairo);
+  cairo_arc(cairo, x + width - radius, y + radius, radius, -G_PI_2, 0);
+  cairo_arc(cairo, x + width - radius, y + height - radius, radius, 0, G_PI_2);
+  cairo_arc(cairo, x + radius, y + height - radius, radius, G_PI_2, G_PI);
+  cairo_arc(cairo, x + radius, y + radius, radius, G_PI, 3 * G_PI_2);
+  cairo_close_path(cairo);
+}
+
 static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, int width, int height, gpointer data) {
   GtkWidget* widget              = GTK_WIDGET(data);
   ZathuraPageWidget* page        = ZATHURA_PAGE_WIDGET(widget);
@@ -678,6 +707,33 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
       }
 
       g_object_unref(layout);
+    }
+
+    /* draw persistent highlights */
+    if (priv->highlights.retrieved == false) {
+      priv->highlights.list      = zathura_highlight_get_for_page(zathura, zathura_page_get_index(priv->page));
+      priv->highlights.retrieved = true;
+    }
+
+    if (priv->highlights.list != NULL && girara_list_size(priv->highlights.list) != 0) {
+      cairo_save(cairo);
+      /* multiply blending keeps text legible */
+      cairo_set_operator(cairo, CAIRO_OPERATOR_MULTIPLY);
+
+      for (size_t idx = 0; idx != girara_list_size(priv->highlights.list); ++idx) {
+        zathura_highlight_t* highlight = girara_list_nth(priv->highlights.list, idx);
+        const GdkRGBA color            = highlight->color;
+        cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
+        for (size_t ridx = 0; ridx != girara_list_size(highlight->rectangles); ++ridx) {
+          zathura_rectangle_t* rect     = girara_list_nth(highlight->rectangles, ridx);
+          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, *rect);
+          highlight_rounded_rect_path(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1,
+                                      rectangle.y2 - rectangle.y1);
+          cairo_fill(cairo);
+        }
+      }
+
+      cairo_restore(cairo);
     }
 
     /* draw search results */
@@ -1006,6 +1062,111 @@ void zathura_page_widget_clear_selection(ZathuraPageWidget* widget) {
   }
   priv->selection.draw   = false;
   priv->highlighter.draw = false;
+  zathura_page_widget_redraw_canvas(widget);
+}
+
+bool zathura_page_widget_has_selection(ZathuraPageWidget* widget) {
+  g_return_val_if_fail(widget != NULL, false);
+
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  return priv->selection.list != NULL && priv->selection.draw == true && girara_list_size(priv->selection.list) != 0;
+}
+
+bool zathura_page_widget_commit_highlight(ZathuraPageWidget* widget, GdkRGBA color) {
+  g_return_val_if_fail(widget != NULL, false);
+
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  if (priv->selection.list == NULL || girara_list_size(priv->selection.list) == 0) {
+    return false;
+  }
+
+  /* the plugin returns one rectangle per run of glyphs -- often per word, or
+   * even per space -- not one per visual line. Merge everything that shares
+   * a line into a single continuous band, otherwise spaces between words
+   * are left unhighlighted and show up as jarring, disconnected slivers. */
+  girara_list_t* rows = girara_list_new_with_free(g_free);
+  if (rows == NULL) {
+    return false;
+  }
+
+  for (size_t idx = 0; idx != girara_list_size(priv->selection.list); ++idx) {
+    zathura_rectangle_t* rect = girara_list_nth(priv->selection.list, idx);
+
+    zathura_rectangle_t* row = NULL;
+    for (size_t ridx = 0; ridx != girara_list_size(rows); ++ridx) {
+      zathura_rectangle_t* candidate = girara_list_nth(rows, ridx);
+      const double overlap           = MIN(candidate->y2, rect->y2) - MAX(candidate->y1, rect->y1);
+      const double min_height        = MIN(candidate->y2 - candidate->y1, rect->y2 - rect->y1);
+      /* same line only if the two boxes vertically overlap by more than half
+       * of the shorter one -- distinct lines should not overlap this much */
+      if (min_height > 0.0 && overlap > min_height * 0.5) {
+        row = candidate;
+        break;
+      }
+    }
+
+    if (row == NULL) {
+      row = g_try_malloc0(sizeof(zathura_rectangle_t));
+      if (row == NULL) {
+        continue;
+      }
+      *row = *rect;
+      girara_list_append(rows, row);
+    } else {
+      row->x1 = MIN(row->x1, rect->x1);
+      row->y1 = MIN(row->y1, rect->y1);
+      row->x2 = MAX(row->x2, rect->x2);
+      row->y2 = MAX(row->y2, rect->y2);
+    }
+  }
+
+  if (girara_list_size(rows) == 0) {
+    girara_list_free(rows);
+    return false;
+  }
+
+  /* snap every row to the tallest one so ascenders/descenders or
+   * per-line differences do not make the bars uneven */
+  double max_height = 0.0;
+  for (size_t idx = 0; idx != girara_list_size(rows); ++idx) {
+    zathura_rectangle_t* row = girara_list_nth(rows, idx);
+    max_height               = MAX(max_height, row->y2 - row->y1);
+  }
+
+  zathura_rectangle_t bounds = {.x1 = DBL_MAX, .y1 = DBL_MAX, .x2 = -DBL_MAX, .y2 = -DBL_MAX};
+  for (size_t idx = 0; idx != girara_list_size(rows); ++idx) {
+    zathura_rectangle_t* row = girara_list_nth(rows, idx);
+    const double mid         = (row->y1 + row->y2) / 2.0;
+    row->y1                  = mid - max_height / 2.0;
+    row->y2                  = mid + max_height / 2.0;
+
+    bounds.x1 = MIN(bounds.x1, row->x1);
+    bounds.y1 = MIN(bounds.y1, row->y1);
+    bounds.x2 = MAX(bounds.x2, row->x2);
+    bounds.y2 = MAX(bounds.y2, row->y2);
+  }
+
+  g_autofree char* text         = zathura_page_get_text(priv->page, bounds, NULL);
+  const unsigned int page_index = zathura_page_get_index(priv->page);
+
+  if (zathura_highlight_add(priv->zathura, page_index, rows, color, text) == NULL) {
+    girara_list_free(rows);
+    return false;
+  }
+
+  zathura_page_widget_clear_selection(widget);
+  zathura_page_widget_invalidate_highlights(widget);
+
+  return true;
+}
+
+void zathura_page_widget_invalidate_highlights(ZathuraPageWidget* widget) {
+  g_return_if_fail(widget != NULL);
+
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  girara_list_free(priv->highlights.list);
+  priv->highlights.list      = NULL;
+  priv->highlights.retrieved = false;
   zathura_page_widget_redraw_canvas(widget);
 }
 

@@ -174,6 +174,13 @@ struct zathura_s {
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 
+  struct {
+    girara_list_t* highlights;   /**< persistent highlights */
+    GdkRGBA palette[4];          /**< 0-2: preset colors, 3: user-defined */
+    bool palette_has_custom;     /**< true once the 4th (user-defined) slot has been set */
+    unsigned int palette_active; /**< index of the currently active palette color */
+  } highlights;
+
   zathura_jumplist_t jumplist;
 
   struct {

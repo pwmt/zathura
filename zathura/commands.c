@@ -14,6 +14,7 @@
 
 #include "adjustment.h"
 #include "bookmarks.h"
+#include "highlights.h"
 #include "config.h"
 #include "database.h"
 #include "dbus-interface.h"
@@ -147,6 +148,115 @@ bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list) 
     position_set(zathura, bookmark->x, bookmark->y);
   }
   zathura_jumplist_add(zathura);
+
+  return true;
+}
+
+bool cmd_highlight_create(girara_session_t* session, girara_list_t* argument_list) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura           = session->global.data;
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (document == NULL) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc > 1) {
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
+    return false;
+  }
+
+  GdkRGBA color;
+  if (argc == 1) {
+    const char* color_string = girara_list_nth(argument_list, 0);
+    if (parse_color(&color, color_string) == false) {
+      girara_notify(session, GIRARA_ERROR, _("Invalid color: %s"), color_string);
+      return false;
+    }
+    /* an explicit color becomes the new user-defined palette slot */
+    zathura_highlight_set_custom_color(zathura, color);
+  } else {
+    color = zathura_highlight_get_active_color(zathura);
+  }
+
+  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
+  for (unsigned int idx = 0; idx != number_of_pages; ++idx) {
+    GtkWidget* page_widget = zathura_document_widget_get_page(zathura->ui.document_widget, idx);
+    if (page_widget == NULL) {
+      continue;
+    }
+
+    ZathuraPageWidget* zpage_widget = ZATHURA_PAGE_WIDGET(page_widget);
+    if (zathura_page_widget_has_selection(zpage_widget) == false) {
+      continue;
+    }
+
+    if (zathura_page_widget_commit_highlight(zpage_widget, color) == true) {
+      girara_notify(session, GIRARA_INFO, _("Highlight added."));
+      return true;
+    }
+  }
+
+  girara_notify(session, GIRARA_ERROR, _("No text selected."));
+  return false;
+}
+
+bool cmd_highlight_delete(girara_session_t* session, girara_list_t* argument_list) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura_has_document(zathura) == false) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc != 1) {
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
+    return false;
+  }
+
+  const char* id    = girara_list_nth(argument_list, 0);
+  unsigned int page = 0;
+  if (zathura_highlight_remove(zathura, id, &page) == false) {
+    girara_notify(session, GIRARA_ERROR, _("No such highlight: %s"), id);
+    return false;
+  }
+
+  GtkWidget* page_widget = zathura_document_widget_get_page(zathura->ui.document_widget, page);
+  if (page_widget != NULL) {
+    zathura_page_widget_invalidate_highlights(ZATHURA_PAGE_WIDGET(page_widget));
+  }
+
+  girara_notify(session, GIRARA_INFO, _("Removed highlight: %s"), id);
+
+  return true;
+}
+
+bool cmd_highlight_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(argument_list)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+  if (zathura_has_document(zathura) == false) {
+    girara_notify(session, GIRARA_ERROR, _("No document opened."));
+    return false;
+  }
+
+  g_autoptr(GString) string = g_string_new(NULL);
+  for (size_t idx = 0; idx != girara_list_size(zathura->highlights.highlights); ++idx) {
+    zathura_highlight_t* highlight = girara_list_nth(zathura->highlights.highlights, idx);
+    g_autofree gchar* escaped_text = highlight->text != NULL ? g_markup_escape_text(highlight->text, -1) : g_strdup("");
+    g_string_append_printf(string, "<b>%.8s</b> (page %u): %s\n", highlight->id, highlight->page + 1, escaped_text);
+  }
+
+  if (string->len > 0) {
+    g_string_set_size(string, string->len - 1);
+    girara_notify(session, GIRARA_INFO, "%s", string->str);
+  } else {
+    girara_notify(session, GIRARA_INFO, _("No highlights available."));
+  }
 
   return true;
 }

@@ -23,6 +23,7 @@
 #endif
 
 #include "bookmarks.h"
+#include "highlights.h"
 #include "callbacks.h"
 #include "config.h"
 #include "commands.h"
@@ -419,6 +420,9 @@ bool zathura_init(zathura_t* zathura) {
   /* bookmarks */
   zathura_bookmarks_init(zathura);
 
+  /* highlights */
+  zathura_highlights_init(zathura);
+
   /* jumplist */
   unsigned int jumplist_size = 20;
   girara_setting_get(zathura->ui.session, "jumplist-size", &jumplist_size);
@@ -501,6 +505,9 @@ void zathura_free(zathura_t* zathura) {
 
   /* bookmarks */
   zathura_bookmarks_free(zathura);
+
+  /* highlights */
+  zathura_highlights_free(zathura);
 
   /* database */
   g_clear_object(&zathura->database);
@@ -1103,6 +1110,11 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* bookmarks */
   if (zathura_bookmarks_load(zathura, file_path) == false) {
     girara_debug("Failed to load bookmarks.");
+  }
+
+  /* highlights */
+  if (zathura_highlights_load(zathura, file_path) == false) {
+    girara_debug("Failed to load highlights.");
   }
 
   /* jumplist */
