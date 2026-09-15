@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:15+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:42+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese (China) (http://app.transifex.com/pwmt/zathura/"
 "language/zh_CN/)\n"
@@ -1154,8 +1154,8 @@ msgid "Argument must be a nonzero number."
 msgstr "参数必须是非零数字。"
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]：页面=<b>%2d</b>，x=%f，y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]：页面=<b>%2u</b>，x=%f，y=%f %s\n"
 
 msgid "(current)"
 msgstr "（当前）"
@@ -1260,8 +1260,8 @@ msgid "Bookmarks"
 msgstr "要跳转到的书签"
 
 #, c-format
-msgid "Page %d"
-msgstr "第 %d 页"
+msgid "Page %u"
+msgstr "第 %u 页"
 
 msgid "Attachments"
 msgstr "附件"
@@ -1814,6 +1814,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "第 %s 页"
 
 #, c-format
 msgid "[Search %d/%d]"

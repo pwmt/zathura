@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:18+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:45+0200\n"
 "Last-Translator: Nisok Kosin <nisok@in.gr>, 2012\n"
 "Language-Team: Greek (http://app.transifex.com/pwmt/zathura/language/el/)\n"
 "Language: el\n"
@@ -1159,8 +1159,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Η παράμετρος πρέπει να είναι μη μηδενικός αριθμός."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: σελίδα=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: σελίδα=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(τρέχον)"
@@ -1268,8 +1268,8 @@ msgid "Bookmarks"
 msgstr "Σελιδοδείκτης για μετάβαση"
 
 #, c-format
-msgid "Page %d"
-msgstr "Σελίδα %d"
+msgid "Page %u"
+msgstr "Σελίδα %u"
 
 msgid "Attachments"
 msgstr "Προσαρτήσεις"
@@ -1835,6 +1835,10 @@ msgstr "Υποστηριζόμενα έγγραφα"
 
 msgid "All files"
 msgstr "Όλα τα αρχεία"
+
+#, c-format
+msgid "Page %s"
+msgstr "Σελίδα %s"
 
 #, c-format
 msgid "[Search %d/%d]"

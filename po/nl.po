@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:17+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:52+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch (http://app.transifex.com/pwmt/zathura/language/nl/)\n"
 "Language: nl\n"
@@ -1157,8 +1157,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Het argument moet een getal boven de nul zijn."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: pagina=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: pagina=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(huidig)"
@@ -1264,8 +1264,8 @@ msgid "Bookmarks"
 msgstr "De te openen bladwijzer"
 
 #, c-format
-msgid "Page %d"
-msgstr "Pagina %d"
+msgid "Page %u"
+msgstr "Pagina %u"
 
 msgid "Attachments"
 msgstr "Bijlagen"
@@ -1825,6 +1825,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Pagina %s"
 
 #, c-format
 msgid "[Search %d/%d]"

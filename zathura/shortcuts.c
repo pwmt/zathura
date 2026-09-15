@@ -1021,7 +1021,7 @@ bool sc_bisect(girara_session_t* session, girara_argument_t* argument, girara_ev
     return false;
   }
 
-  girara_debug("bisecting between %d and %d, jumping to %d", zathura->bisect.start, zathura->bisect.end, next_page);
+  girara_debug("bisecting between %u and %u, jumping to %u", zathura->bisect.start, zathura->bisect.end, next_page);
   zathura->bisect.last_jump = next_page;
   zathura->bisect.start     = next_start;
   zathura->bisect.end       = next_end;

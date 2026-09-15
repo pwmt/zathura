@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:17+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:50+0200\n"
 "Last-Translator: TheLemonMan <segnalazionidalweb@gmail.com>, 2012,2015\n"
 "Language-Team: Italian (http://app.transifex.com/pwmt/zathura/language/it/)\n"
 "Language: it\n"
@@ -1163,8 +1163,8 @@ msgid "Argument must be a nonzero number."
 msgstr "L'argomento deve essere un numero diverso da zero."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: pagina=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: pagina=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(corrente)"
@@ -1273,8 +1273,8 @@ msgid "Bookmarks"
 msgstr "Segnalibro a cui andare"
 
 #, c-format
-msgid "Page %d"
-msgstr "Pagina %d"
+msgid "Page %u"
+msgstr "Pagina %u"
 
 msgid "Attachments"
 msgstr "Allegati"
@@ -1833,6 +1833,10 @@ msgstr "Documenti supportati"
 
 msgid "All files"
 msgstr "Tutti i file"
+
+#, c-format
+msgid "Page %s"
+msgstr "Pagina %s"
 
 #, c-format
 msgid "[Search %d/%d]"

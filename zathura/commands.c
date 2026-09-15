@@ -186,7 +186,7 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
   g_autoptr(GString) string    = g_string_new(NULL);
   for (int i = zathura->jumplist.size - 1; i >= 0 && num_entries > 0; --i, --num_entries) {
     const zathura_jump_t* j = girara_list_nth(zathura->jumplist.list, i);
-    g_string_append_printf(string, _("[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"), i, j->page + 1, j->x, j->y,
+    g_string_append_printf(string, _("[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"), i, j->page + 1, j->x, j->y,
                            j == current_jump ? _("(current)") : "");
   }
 

@@ -233,7 +233,7 @@ girara_completion_t* cc_bookmarks(girara_session_t* session, const char* input) 
   for (size_t idx = 0; idx != girara_list_size(zathura->bookmarks.bookmarks); ++idx) {
     zathura_bookmark_t* bookmark = girara_list_nth(zathura->bookmarks.bookmarks, idx);
     if (input_length <= strlen(bookmark->id) && !strncmp(input, bookmark->id, input_length)) {
-      g_autofree gchar* paged = g_strdup_printf(_("Page %d"), bookmark->page);
+      g_autofree gchar* paged = g_strdup_printf(_("Page %u"), bookmark->page);
       girara_completion_group_add_element(group, bookmark->id, paged);
     }
   }
@@ -298,7 +298,7 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
     g_autoptr(girara_list_t) images = zathura_page_images_get(page, &image_error);
     if (images != NULL) {
       for (size_t idx = 0; idx != girara_list_size(images); ++idx) {
-        g_autofree char* image_string = g_strdup_printf("image-p%d-%zu", page_id + 1, idx + 1);
+        g_autofree char* image_string = g_strdup_printf("image-p%u-%zu", page_id + 1, idx + 1);
         girara_completion_group_add_element(image_group, image_string, NULL);
 
         added_image = true;

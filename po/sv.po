@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:16+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:55+0200\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
 "Language: sv\n"
@@ -1176,8 +1176,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Argument måste vara ett tal som inte är noll."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: sida=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: sida=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(nuvarande)"
@@ -1282,8 +1282,8 @@ msgid "Bookmarks"
 msgstr "Snabbmärken"
 
 #, c-format
-msgid "Page %d"
-msgstr "Sida %d"
+msgid "Page %u"
+msgstr "Sida %u"
 
 msgid "Attachments"
 msgstr "Bilagor"
@@ -1837,6 +1837,10 @@ msgstr "Dokument som stöds"
 
 msgid "All files"
 msgstr "Alla filer"
+
+#, c-format
+msgid "Page %s"
+msgstr "Sida %s"
 
 #, c-format
 msgid "[Search %d/%d]"

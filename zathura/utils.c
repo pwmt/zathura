@@ -77,10 +77,10 @@ static GListStore* index_element_build_children(girara_session_t* session, girar
       zathura_page_t* page = document != NULL ? zathura_document_get_page(document, target.page_number) : NULL;
       const char* label    = page != NULL ? zathura_page_get_label(page, NULL) : NULL;
       if (label != NULL) {
-        page_label = g_strdup_printf("Page %s", label);
-        page_alt   = g_strdup_printf("(%d)", target.page_number + 1);
+        page_label = g_strdup_printf(_("Page %s"), label);
+        page_alt   = g_strdup_printf("(%u)", target.page_number + 1);
       } else {
-        page_label = g_strdup_printf("Page %d", target.page_number + 1);
+        page_label = g_strdup_printf(_("Page %u"), target.page_number + 1);
       }
     } else {
       page_label = g_strdup(target.value);

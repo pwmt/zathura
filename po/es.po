@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:18+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:46+0200\n"
 "Last-Translator: Pablo Saez, 2025\n"
 "Language-Team: Spanish (http://app.transifex.com/pwmt/zathura/language/es/)\n"
 "Language: es\n"
@@ -1182,8 +1182,8 @@ msgid "Argument must be a nonzero number."
 msgstr "El argumento debe ser un número distinto de cero."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: página=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: página=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(actual)"
@@ -1289,8 +1289,8 @@ msgid "Bookmarks"
 msgstr "Marcadores rápidos"
 
 #, c-format
-msgid "Page %d"
-msgstr "Página %d"
+msgid "Page %u"
+msgstr "Página %u"
 
 msgid "Attachments"
 msgstr "Adjuntos"
@@ -1852,6 +1852,10 @@ msgstr "Documentos soportados"
 
 msgid "All files"
 msgstr "Todos los archivos"
+
+#, c-format
+msgid "Page %s"
+msgstr "Página %s"
 
 #, c-format
 msgid "[Search %d/%d]"

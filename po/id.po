@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 17:24+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:50+0200\n"
 "Last-Translator: Ibnu Daru Aji, 2013\n"
 "Language-Team: Indonesian (http://app.transifex.com/pwmt/zathura/language/"
 "id/)\n"
@@ -1153,7 +1153,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1259,8 +1259,8 @@ msgid "Bookmarks"
 msgstr "Tambahkan pada bookmark"
 
 #, c-format
-msgid "Page %d"
-msgstr "Halaman %d"
+msgid "Page %u"
+msgstr "Halaman %u"
 
 msgid "Attachments"
 msgstr "Lampiran"
@@ -1810,6 +1810,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Halaman %s"
 
 #, c-format
 msgid "[Search %d/%d]"

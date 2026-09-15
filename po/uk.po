@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:15+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:56+0200\n"
 "Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
 "Language-Team: Ukrainian (http://app.transifex.com/pwmt/zathura/language/"
 "uk/)\n"
@@ -1187,8 +1187,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Аргумент має бути ненульовим числом."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: сторінка=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: сторінка=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(поточний)"
@@ -1295,8 +1295,8 @@ msgid "Bookmarks"
 msgstr "Швидкі позначки"
 
 #, c-format
-msgid "Page %d"
-msgstr "Сторінка  %d"
+msgid "Page %u"
+msgstr "Сторінка  %u"
 
 msgid "Attachments"
 msgstr "Вкладення"
@@ -1853,6 +1853,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Сторінка  %s"
 
 #, c-format
 msgid "[Search %d/%d]"

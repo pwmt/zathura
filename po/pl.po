@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 19:25+0200\n"
-"PO-Revision-Date: 2026-09-08 19:16+0200\n"
+"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"PO-Revision-Date: 2026-09-15 09:53+0200\n"
 "Last-Translator: wmlhwl <7q0dkmw6@anonaddy.me>, 2024\n"
 "Language-Team: Polish (http://app.transifex.com/pwmt/zathura/language/pl/)\n"
 "Language: pl\n"
@@ -1161,7 +1161,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1268,8 +1268,8 @@ msgid "Bookmarks"
 msgstr "Dodaj zakładkę"
 
 #, c-format
-msgid "Page %d"
-msgstr "Strona %d"
+msgid "Page %u"
+msgstr "Strona %u"
 
 msgid "Attachments"
 msgstr "Załączniki"
@@ -1820,6 +1820,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Strona %s"
 
 #, c-format
 msgid "[Search %d/%d]"

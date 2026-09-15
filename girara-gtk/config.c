@@ -114,7 +114,7 @@ static bool config_parse(girara_session_t* session, const char* path) {
       }
     } else {
       if (error->code != G_SHELL_ERROR_EMPTY_STRING) {
-        girara_error("Could not parse line %d in '%s': %s", line_number, path, error->message);
+        girara_error("Could not parse line %u in '%s': %s", line_number, path, error->message);
         return false;
       } else {
         continue;
@@ -124,7 +124,7 @@ static bool config_parse(girara_session_t* session, const char* path) {
     /* include gets a special treatment */
     if (g_strcmp0(argv[0], "include") == 0) {
       if (argc != 2) {
-        girara_warning("Could not process line %d in '%s': usage: include path.", line_number, path);
+        girara_warning("Could not process line %u in '%s': usage: include path.", line_number, path);
       } else {
         g_autofree char* newpath = NULL;
         if (g_path_is_absolute(argv[1])) {
@@ -136,11 +136,11 @@ static bool config_parse(girara_session_t* session, const char* path) {
         }
 
         if (g_strcmp0(newpath, path) == 0) {
-          girara_warning("Could not process line %d in '%s': trying to include itself.", line_number, path);
+          girara_warning("Could not process line %u in '%s': trying to include itself.", line_number, path);
         } else {
           girara_debug("Loading config file '%s'.", newpath);
           if (config_parse(session, newpath) == false) {
-            girara_warning("Could not process line %d in '%s': failed to load '%s'.", line_number, path, newpath);
+            girara_warning("Could not process line %u in '%s': failed to load '%s'.", line_number, path, newpath);
           }
         }
       }
@@ -151,7 +151,7 @@ static bool config_parse(girara_session_t* session, const char* path) {
       if (handle) {
         handle->handle(session, argument_list);
       } else {
-        girara_warning("Could not process line %d in '%s': Unknown handle '%s'", line_number, path, argv[0]);
+        girara_warning("Could not process line %u in '%s': Unknown handle '%s'", line_number, path, argv[0]);
       }
     }
   }
