@@ -223,10 +223,6 @@ struct girara_session_private_s {
   } gtk;
 
   struct {
-    girara_list_t* statusbar_items; /**< List of statusbar items */
-  } elements;
-
-  struct {
     GString* command; /**< Command in buffer */
     int n;            /**< Numeric buffer */
   } buffer;

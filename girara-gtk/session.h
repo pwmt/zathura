@@ -18,7 +18,6 @@ struct girara_session_s {
     GtkBox* box;                  /**< A box that contains all widgets */
     GtkWidget* view;              /**< The view area of the applications widgets */
     GtkWidget* statusbar;         /**< The statusbar */
-    GtkBox* statusbar_entries;    /**< Statusbar entry box */
     GtkWidget* notification_area; /**< The notification area */
     GtkWidget* notification_text; /**< The notification entry */
     GtkBox* inputbar_box;         /**< Inputbar box */

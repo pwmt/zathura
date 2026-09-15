@@ -63,9 +63,9 @@ void cb_buffer_changed(girara_session_t* session) {
 
   g_autofree char* buffer = girara_buffer_get(session);
   if (buffer != NULL) {
-    girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, buffer);
+    girara_statusbar_item_set_text(zathura->ui.statusbar.buffer, buffer);
   } else {
-    girara_statusbar_item_set_text(session, zathura->ui.statusbar.buffer, "");
+    girara_statusbar_item_set_text(zathura->ui.statusbar.buffer, "");
   }
 }
 

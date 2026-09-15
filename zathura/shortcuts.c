@@ -153,7 +153,7 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
       document_draw_search_results(zathura, false);
     }
 
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
+    girara_statusbar_item_set_text(zathura->ui.statusbar.search_count, "");
   }
 
   /* Setting the mode back here has not worked for ages. We need another way to

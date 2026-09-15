@@ -6,27 +6,36 @@
 #include "types.h"
 #include <gtk/gtk.h>
 
+#define GIRARA_TYPE_STATUSBAR (girara_statusbar_get_type())
+G_DECLARE_FINAL_TYPE(GiraraStatusbar, girara_statusbar, GIRARA, STATUSBAR, GtkBox)
+
+/**
+ * Creates a statusbar widget.
+ *
+ * @return The created statusbar widget
+ */
+GtkWidget* girara_statusbar_new(void);
+
 /**
  * Creates an statusbar item
  *
- * @param session The used girara session
+ * @param statusbar The statusbar widget
  * @param expand Expand attribute
  * @param fill Fill attribute
  * @param left True if it should be aligned to the left
  * @return The created statusbar item
  * @return NULL An error occurred
  */
-girara_statusbar_item_t* girara_statusbar_item_add(girara_session_t* session, bool expand, bool fill, bool left);
+girara_statusbar_item_t* girara_statusbar_item_add(GiraraStatusbar* statusbar, bool expand, bool fill, bool left);
 
 /**
  * Sets the shown text of an statusbar item
  *
- * @param session The used girara session
  * @param item The statusbar item
  * @param text Text that should be displayed
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-bool girara_statusbar_item_set_text(girara_session_t* session, girara_statusbar_item_t* item, const char* text);
+bool girara_statusbar_item_set_text(girara_statusbar_item_t* item, const char* text);
 
 #endif

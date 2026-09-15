@@ -733,12 +733,12 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
 
     g_autofree char* tmp = g_strdup_printf(_("[Search %d/%d]"), zathura->global.current_search_result,
                                            zathura->global.total_search_results);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
+    girara_statusbar_item_set_text(zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL && !disable_notify) {
     const char* input             = argument->data;
     g_autofree char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
+    girara_statusbar_item_set_text(zathura->ui.statusbar.search_count, "");
   }
 
   return false;

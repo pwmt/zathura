@@ -17,6 +17,7 @@
 #include "internal.h"
 #include "settings.h"
 #include "shortcuts.h"
+#include "statusbar.h"
 
 static int cb_sort_settings(const void* data1, const void* data2) {
   const girara_setting_t* lhs = data1;
@@ -224,7 +225,6 @@ girara_session_t* girara_session_create(void) {
   session->bindings.special_commands        = girara_list_new_with_free(g_free);
   session->bindings.shortcuts               = girara_list_new_with_free((girara_free_function_t)girara_shortcut_free);
   session->bindings.inputbar_shortcuts      = girara_list_new_with_free(g_free);
-  session_private->elements.statusbar_items = girara_list_new_with_free(g_free);
 
   g_mutex_init(&session_private->feedkeys_mutex);
 
@@ -276,12 +276,11 @@ girara_session_t* girara_session_create(void) {
   session->gtk.box                = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
   session_private->gtk.overlay    = gtk_overlay_new();
   session_private->gtk.bottom_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
-  session->gtk.statusbar_entries  = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
   session->gtk.inputbar_box       = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
   gtk_box_set_homogeneous(session->gtk.inputbar_box, TRUE);
   session->gtk.view = gtk_stack_new();
   gtk_widget_set_can_focus(session->gtk.view, true);
-  session->gtk.statusbar         = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  session->gtk.statusbar         = girara_statusbar_new();
   session->gtk.notification_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   session->gtk.notification_text = gtk_label_new(NULL);
   session->gtk.inputbar_dialog   = GTK_LABEL(gtk_label_new(NULL));
@@ -337,9 +336,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   g_signal_connect(scroll, "scroll", G_CALLBACK(girara_callback_view_scroll_event), session);
   gtk_widget_add_controller(session->gtk.view, scroll);
 
-  /* statusbar */
-  gtk_box_append(GTK_BOX(session->gtk.statusbar), GTK_WIDGET(session->gtk.statusbar_entries));
-
   /* notification area */
   gtk_box_append(GTK_BOX(session->gtk.notification_area), session->gtk.notification_text);
   gtk_widget_set_halign(session->gtk.notification_text, GTK_ALIGN_START);
@@ -352,7 +348,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
 
   widget_add_class(GTK_WIDGET(session->gtk.inputbar_entry), "bottom_box");
   widget_add_class(session->gtk.notification_text, "bottom_box");
-  widget_add_class(GTK_WIDGET(session->gtk.statusbar_entries), "bottom_box");
 
   GtkEventController* ib_key = gtk_event_controller_key_new();
   g_signal_connect(ib_key, "key-pressed", G_CALLBACK(girara_callback_inputbar_key_press_event), session);
@@ -394,9 +389,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   gtk_box_append(session->gtk.box, GTK_WIDGET(session->private_data->gtk.bottom_box));
 
   gtk_window_set_child(GTK_WINDOW(session->gtk.window), GTK_WIDGET(session->private_data->gtk.overlay));
-
-  /* statusbar */
-  widget_add_class(GTK_WIDGET(session->gtk.statusbar), "statusbar");
 
   /* inputbar */
   widget_add_class(GTK_WIDGET(session->gtk.inputbar_box), "inputbar");
@@ -474,10 +466,6 @@ static void girara_session_private_free(girara_session_private_t* session) {
     g_string_free(session->buffer.command, TRUE);
   }
   session->buffer.command = NULL;
-
-  /* clean up statusbar items */
-  girara_list_free(session->elements.statusbar_items);
-  session->elements.statusbar_items = NULL;
 
   /* clean up CSS style provider */
   g_clear_object(&session->gtk.cssprovider);

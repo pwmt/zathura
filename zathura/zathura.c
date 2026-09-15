@@ -267,31 +267,32 @@ static bool init_ui(zathura_t* zathura) {
   g_signal_connect(G_OBJECT(vadjustment), "changed", G_CALLBACK(cb_view_vadjustment_changed), zathura);
 
   /* statusbar */
-  zathura->ui.statusbar.file = girara_statusbar_item_add(zathura->ui.session, TRUE, TRUE, TRUE);
+  GiraraStatusbar* statusbar = GIRARA_STATUSBAR(zathura->ui.session->gtk.statusbar);
+  zathura->ui.statusbar.file = girara_statusbar_item_add(statusbar, TRUE, TRUE, TRUE);
   if (zathura->ui.statusbar.file == NULL) {
     girara_error("Failed to create status bar file item.");
     return false;
   }
 
-  zathura->ui.statusbar.buffer = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE);
+  zathura->ui.statusbar.buffer = girara_statusbar_item_add(statusbar, FALSE, FALSE, FALSE);
   if (zathura->ui.statusbar.buffer == NULL) {
     girara_error("Failed to create status bar buffer item.");
     return false;
   }
 
-  zathura->ui.statusbar.page_number = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE);
+  zathura->ui.statusbar.page_number = girara_statusbar_item_add(statusbar, FALSE, FALSE, FALSE);
   if (zathura->ui.statusbar.page_number == NULL) {
     girara_error("Failed to create status bar page number item.");
     return false;
   }
 
-  zathura->ui.statusbar.search_count = girara_statusbar_item_add(zathura->ui.session, FALSE, FALSE, FALSE);
+  zathura->ui.statusbar.search_count = girara_statusbar_item_add(statusbar, FALSE, FALSE, FALSE);
   if (zathura->ui.statusbar.search_count == NULL) {
     girara_error("Failed to create status bar search count item.");
     return false;
   }
 
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, _("[No name]"));
+  girara_statusbar_item_set_text(zathura->ui.statusbar.file, _("[No name]"));
 
   /* signals */
   zathura->signals.destroy_handler =
@@ -1124,7 +1125,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* update statusbar */
   {
     g_autofree char* filename = get_formatted_filename(zathura, true);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, filename);
+    girara_statusbar_item_set_text(zathura->ui.statusbar.file, filename);
   }
 
   /* install file monitor */
@@ -1558,7 +1559,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   statusbar_page_number_update(zathura);
 
   if (zathura->ui.session != NULL && zathura->ui.statusbar.file != NULL) {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, _("[No name]"));
+    girara_statusbar_item_set_text(zathura->ui.statusbar.file, _("[No name]"));
   }
 
   /* update title */
@@ -1624,7 +1625,7 @@ void statusbar_page_number_update(zathura_t* zathura) {
         page_number_text = g_strdup_printf("[%d/%d]", current_page_number + 1, number_of_pages);
       }
     }
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, page_number_text);
+    girara_statusbar_item_set_text(zathura->ui.statusbar.page_number, page_number_text);
 
     bool page_number_in_window_title = false;
     girara_setting_get(zathura->ui.session, "window-title-page", &page_number_in_window_title);
@@ -1635,7 +1636,7 @@ void statusbar_page_number_update(zathura_t* zathura) {
       girara_set_window_title(zathura->ui.session, title);
     }
   } else {
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.page_number, "");
+    girara_statusbar_item_set_text(zathura->ui.statusbar.page_number, "");
   }
 }
 

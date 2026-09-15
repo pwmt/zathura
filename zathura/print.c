@@ -19,7 +19,7 @@ static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintCon
   }
 
   g_autofree char* file_path = get_formatted_filename(zathura, true);
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
+  girara_statusbar_item_set_text(zathura->ui.statusbar.file, file_path);
 }
 
 static bool draw_page_cairo(cairo_t* cairo, zathura_t* zathura, zathura_page_t* page) {
@@ -93,7 +93,7 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
 
   /* Update statusbar. */
   g_autofree char* tmp = g_strdup_printf(_("Printing page %u ..."), page_number + 1);
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
+  girara_statusbar_item_set_text(zathura->ui.statusbar.file, tmp);
 
   /* Get the page and cairo handle.  */
   zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
