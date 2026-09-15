@@ -493,8 +493,10 @@ static void girara_session_private_free(girara_session_private_t* session) {
   g_free(session);
 }
 
-bool girara_session_destroy(girara_session_t* session) {
-  g_return_val_if_fail(session != NULL, FALSE);
+void girara_session_destroy(girara_session_t* session) {
+  if (!session) {
+    return;
+  }
 
   /* clean up shortcuts */
   girara_list_free(session->bindings.shortcuts);
@@ -535,8 +537,6 @@ bool girara_session_destroy(girara_session_t* session) {
 
   /* clean up session */
   g_free(session);
-
-  return TRUE;
 }
 
 char* girara_buffer_get(girara_session_t* session) {

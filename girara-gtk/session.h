@@ -86,10 +86,8 @@ bool girara_session_init(girara_session_t* session, const char* appname);
  * Destroys an girara session
  *
  * @param session The used girara session
- * @return TRUE No error occurred
- * @return FALSE An error occurred
  */
-bool girara_session_destroy(girara_session_t* session);
+void girara_session_destroy(girara_session_t* session);
 
 /**
  * Sets the view widget of girara.
