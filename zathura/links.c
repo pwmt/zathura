@@ -284,7 +284,8 @@ static gboolean link_confirm_spawn(void* data) {
   ctx->hide_handler =
       g_signal_connect(ctx->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
   girara_dialog(ctx->zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
-  return FALSE;
+
+  return G_SOURCE_REMOVE;
 }
 
 static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const char* value) {
