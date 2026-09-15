@@ -23,10 +23,10 @@ GtkWidget* girara_statusbar_new(void);
  * @param expand Expand attribute
  * @param fill Fill attribute
  * @param left True if it should be aligned to the left
- * @return The created statusbar item
+ * @return The created label, owned by the statusbar
  * @return NULL An error occurred
  */
-girara_statusbar_item_t* girara_statusbar_item_add(GiraraStatusbar* statusbar, bool expand, bool fill, bool left);
+GtkLabel* girara_statusbar_item_add(GiraraStatusbar* statusbar, bool expand, bool fill, bool left);
 
 /**
  * Sets the shown text of an statusbar item
@@ -36,6 +36,6 @@ girara_statusbar_item_t* girara_statusbar_item_add(GiraraStatusbar* statusbar, b
  * @return TRUE No error occurred
  * @return FALSE An error occurred
  */
-bool girara_statusbar_item_set_text(girara_statusbar_item_t* item, const char* text);
+bool girara_statusbar_item_set_text(GtkLabel* item, const char* text);
 
 #endif

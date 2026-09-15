@@ -189,13 +189,6 @@ struct girara_mouse_event_s {
 };
 
 /**
- * Structure of a statusbar item
- */
-struct girara_statusbar_item_s {
-  GtkLabel* text; /**< Text label */
-};
-
-/**
  * Private data of the girara session
  */
 struct girara_session_private_s {

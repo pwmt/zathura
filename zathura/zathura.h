@@ -99,10 +99,10 @@ struct zathura_s {
     girara_session_t* session; /**< girara interface session */
 
     struct {
-      girara_statusbar_item_t* buffer;       /**< buffer statusbar entry */
-      girara_statusbar_item_t* file;         /**< file statusbar entry */
-      girara_statusbar_item_t* page_number;  /**< page number statusbar entry */
-      girara_statusbar_item_t* search_count; /**< search count statusbar entry */
+      GtkLabel* buffer;       /**< buffer statusbar entry */
+      GtkLabel* file;         /**< file statusbar entry */
+      GtkLabel* page_number;  /**< page number statusbar entry */
+      GtkLabel* search_count; /**< search count statusbar entry */
     } statusbar;
 
     struct {

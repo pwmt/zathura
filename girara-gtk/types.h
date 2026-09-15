@@ -15,7 +15,6 @@ typedef struct girara_command_s girara_command_t;
 typedef struct girara_mouse_event_s girara_mouse_event_t;
 typedef struct girara_mode_string_s girara_mode_string_t;
 typedef struct girara_tab_s girara_tab_t;
-typedef struct girara_statusbar_item_s girara_statusbar_item_t;
 typedef struct girara_argument_s girara_argument_t;
 typedef struct girara_shortcut_mapping_s girara_shortcut_mapping_t;
 typedef struct girara_argument_mapping_s girara_argument_mapping_t;
