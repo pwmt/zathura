@@ -314,6 +314,8 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
 
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_h, NULL, sc_highlight_add, mode, 0, NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_H, NULL, sc_highlight_cycle_color, mode, 0, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK | GDK_ALT_MASK, GDK_KEY_h, NULL, sc_toggle_highlight_mode, mode, 0,
+                      NULL);
 
   girara_shortcut_add(gsession, 0, GDK_KEY_J, NULL, sc_navigate, mode, NEXT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_K, NULL, sc_navigate, mode, PREVIOUS, NULL);
@@ -764,7 +766,7 @@ void config_load_default(zathura_t* zathura) {
   girara_inputbar_command_add(gsession, "bjump",      NULL,   cmd_bookmark_open,       cc_bookmarks,  _("Jump to bookmark"));
   girara_inputbar_command_add(gsession, "highlight",  NULL,   cmd_highlight_create,    NULL,          _("Turn the current selection into a highlight"));
   girara_inputbar_command_add(gsession, "hldelete",   NULL,   cmd_highlight_delete,    NULL,          _("Delete a highlight"));
-  girara_inputbar_command_add(gsession, "hllist",     NULL,   cmd_highlight_list,      NULL,          _("List all highlights"));
+  girara_inputbar_command_add(gsession, "hllist",     NULL,   cmd_highlight_list,      NULL,          _("List highlights on the current page (or 'all')"));
   girara_inputbar_command_add(gsession, "jumplist",   NULL,   cmd_jumplist_list,       NULL,          _("Show recent jumps in jumplist"));
   girara_inputbar_command_add(gsession, "close",      NULL,   cmd_close,               NULL,          _("Close current file"));
   girara_inputbar_command_add(gsession, "info",       NULL,   cmd_info,                NULL,          _("Show file information"));
@@ -815,6 +817,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "mark_evaluate",            sc_mark_evaluate);
   girara_shortcut_mapping_add(gsession, "highlight_add",            sc_highlight_add);
   girara_shortcut_mapping_add(gsession, "highlight_cycle_color",    sc_highlight_cycle_color);
+  girara_shortcut_mapping_add(gsession, "highlight_mode_toggle",    sc_toggle_highlight_mode);
   girara_shortcut_mapping_add(gsession, "navigate",                 sc_navigate);
   girara_shortcut_mapping_add(gsession, "navigate_index",           sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "nohlsearch",               sc_nohlsearch);

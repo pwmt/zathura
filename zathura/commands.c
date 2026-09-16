@@ -235,7 +235,11 @@ bool cmd_highlight_delete(girara_session_t* session, girara_list_t* argument_lis
   return true;
 }
 
-bool cmd_highlight_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(argument_list)) {
+/* girara_notify renders as a single label with no line cap or scrolling, so
+ * an unbounded highlight count can grow it to cover the whole window */
+#define HIGHLIGHT_LIST_MAX_ENTRIES 30
+
+bool cmd_highlight_list(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
@@ -244,16 +248,53 @@ bool cmd_highlight_list(girara_session_t* session, girara_list_t* GIRARA_UNUSED(
     return false;
   }
 
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc > 1) {
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments given."));
+    return false;
+  }
+
+  bool show_all = false;
+  if (argc == 1) {
+    const char* arg = girara_list_nth(argument_list, 0);
+    if (g_strcmp0(arg, "all") != 0) {
+      girara_notify(session, GIRARA_ERROR, _("Invalid argument: %s"), arg);
+      return false;
+    }
+    show_all = true;
+  }
+
+  zathura_document_t* document    = zathura_get_document(zathura);
+  const unsigned int current_page = zathura_document_get_current_page_number(document);
+
   g_autoptr(GString) string = g_string_new(NULL);
+  unsigned int total        = 0;
+  unsigned int shown        = 0;
   for (size_t idx = 0; idx != girara_list_size(zathura->highlights.highlights); ++idx) {
     zathura_highlight_t* highlight = girara_list_nth(zathura->highlights.highlights, idx);
+    if (show_all == false && highlight->page != current_page) {
+      continue;
+    }
+
+    ++total;
+    if (shown >= HIGHLIGHT_LIST_MAX_ENTRIES) {
+      continue;
+    }
+    ++shown;
+
     g_autofree gchar* escaped_text = highlight->text != NULL ? g_markup_escape_text(highlight->text, -1) : g_strdup("");
     g_string_append_printf(string, "<b>%.8s</b> (page %u): %s\n", highlight->id, highlight->page + 1, escaped_text);
+  }
+
+  if (total > shown) {
+    g_string_append_printf(string, _("... and %u more (:hllist all)\n"), total - shown);
   }
 
   if (string->len > 0) {
     g_string_set_size(string, string->len - 1);
     girara_notify(session, GIRARA_INFO, "%s", string->str);
+  } else if (show_all == false) {
+    girara_notify(session, GIRARA_INFO, _("No highlights on this page."));
   } else {
     girara_notify(session, GIRARA_INFO, _("No highlights available."));
   }

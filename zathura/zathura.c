@@ -93,6 +93,7 @@ zathura_t* zathura_create(void) {
   zathura->global.synctex_edit_modmask           = GDK_CONTROL_MASK;
   zathura->global.highlighter_modmask            = GDK_SHIFT_MASK;
   zathura->global.double_click_follow            = true;
+  zathura->global.highlight_mode                 = false;
 
   /* initialize with default paths */
   {
@@ -1115,6 +1116,21 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* highlights */
   if (zathura_highlights_load(zathura, file_path) == false) {
     girara_debug("Failed to load highlights.");
+  }
+
+  /* zathura_highlights_load() just freed every previously loaded highlight;
+   * a preserved predecessor document widget (kept alive to avoid flicker on
+   * reload) may still have page widgets caching pointers to that now-freed
+   * data, so drop those caches before anything can draw them again */
+  if (zathura->predecessor_document_widget != NULL && zathura->predecessor_document != NULL) {
+    const unsigned int predecessor_pages = zathura_document_get_number_of_pages(zathura->predecessor_document);
+    for (unsigned int predecessor_idx = 0; predecessor_idx != predecessor_pages; ++predecessor_idx) {
+      GtkWidget* predecessor_page_widget =
+          zathura_document_widget_get_page(zathura->predecessor_document_widget, predecessor_idx);
+      if (predecessor_page_widget != NULL) {
+        zathura_page_widget_invalidate_highlights(ZATHURA_PAGE_WIDGET(predecessor_page_widget));
+      }
+    }
   }
 
   /* jumplist */

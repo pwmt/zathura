@@ -189,6 +189,19 @@ bool sc_highlight_cycle_color(girara_session_t* session, girara_argument_t* UNUS
   return false;
 }
 
+bool sc_toggle_highlight_mode(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                              girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura->global.highlight_mode = !zathura->global.highlight_mode;
+  girara_notify(session, GIRARA_INFO,
+                zathura->global.highlight_mode ? _("Highlight mode: on") : _("Highlight mode: off"));
+
+  return false;
+}
+
 bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                       unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);

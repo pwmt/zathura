@@ -1133,20 +1133,28 @@ bool zathura_page_widget_commit_highlight(ZathuraPageWidget* widget, GdkRGBA col
     max_height               = MAX(max_height, row->y2 - row->y1);
   }
 
-  zathura_rectangle_t bounds = {.x1 = DBL_MAX, .y1 = DBL_MAX, .x2 = -DBL_MAX, .y2 = -DBL_MAX};
   for (size_t idx = 0; idx != girara_list_size(rows); ++idx) {
     zathura_rectangle_t* row = girara_list_nth(rows, idx);
     const double mid         = (row->y1 + row->y2) / 2.0;
     row->y1                  = mid - max_height / 2.0;
     row->y2                  = mid + max_height / 2.0;
-
-    bounds.x1 = MIN(bounds.x1, row->x1);
-    bounds.y1 = MIN(bounds.y1, row->y1);
-    bounds.x2 = MAX(bounds.x2, row->x2);
-    bounds.y2 = MAX(bounds.y2, row->y2);
   }
 
-  g_autofree char* text         = zathura_page_get_text(priv->page, bounds, NULL);
+  /* extract text per merged row instead of the rows' bounding box, so a
+   * selection spanning a multi-column layout does not pull in the gutter
+   * or the other column */
+  GString* text_builder = g_string_new(NULL);
+  for (size_t idx = 0; idx != girara_list_size(rows); ++idx) {
+    zathura_rectangle_t* row  = girara_list_nth(rows, idx);
+    g_autofree char* row_text = zathura_page_get_text(priv->page, *row, NULL);
+    if (row_text != NULL && *row_text != '\0') {
+      if (text_builder->len > 0) {
+        g_string_append_c(text_builder, ' ');
+      }
+      g_string_append(text_builder, row_text);
+    }
+  }
+  g_autofree char* text         = g_string_free(text_builder, FALSE);
   const unsigned int page_index = zathura_page_get_index(priv->page);
 
   if (zathura_highlight_add(priv->zathura, page_index, rows, color, text) == NULL) {
@@ -1277,6 +1285,10 @@ static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture
       g_signal_emit(page, signals[TEXT_SELECTED], 0, text);
     } else if (priv->zathura->global.double_click_follow == false) {
       evaluate_link_at_mouse_position(page, oldx, oldy);
+    }
+
+    if (priv->zathura->global.highlight_mode == true) {
+      zathura_page_widget_commit_highlight(page, zathura_highlight_get_active_color(priv->zathura));
     }
   }
 

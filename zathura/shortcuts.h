@@ -53,6 +53,20 @@ bool sc_highlight_cycle_color(girara_session_t* session, girara_argument_t* argu
                               unsigned int t);
 
 /**
+ * Toggle auto-highlight mode: while enabled, releasing a text selection
+ * highlights it immediately, without needing to press the highlight
+ * shortcut separately
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_toggle_highlight_mode(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                              unsigned int t);
+
+/**
  * Change the current mode
  *
  * @param session The used girara session

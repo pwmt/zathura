@@ -52,14 +52,19 @@ zathura_highlight_t* zathura_highlight_add(zathura_t* zathura, unsigned int page
 
 bool zathura_highlight_remove(zathura_t* zathura, const gchar* id, unsigned int* page) {
   g_return_val_if_fail(zathura && zathura->highlights.highlights, false);
-  g_return_val_if_fail(id, false);
+  g_return_val_if_fail(id != NULL && *id != '\0', false);
 
   zathura_highlight_t* highlight = NULL;
   for (size_t idx = 0; idx != girara_list_size(zathura->highlights.highlights); ++idx) {
     zathura_highlight_t* it = girara_list_nth(zathura->highlights.highlights, idx);
     if (g_str_has_prefix(it->id, id) == TRUE) {
+      if (highlight != NULL) {
+        /* more than one highlight matches this prefix; refuse instead of
+         * guessing which one the caller meant */
+        girara_warning("Ambiguous highlight id prefix: %s", id);
+        return false;
+      }
       highlight = it;
-      break;
     }
   }
 
@@ -116,9 +121,8 @@ bool zathura_highlights_init(zathura_t* zathura) {
       (GdkRGBA){.red = 93 / 255.0, .green = 226 / 255.0, .blue = 60 / 255.0, .alpha = 1.0}; /* green */
   zathura->highlights.palette[2] =
       (GdkRGBA){.red = 247 / 255.0, .green = 47 / 255.0, .blue = 53 / 255.0, .alpha = 1.0}; /* red */
-  zathura->highlights.palette[3]         = (GdkRGBA){0};
-  zathura->highlights.palette_has_custom = false;
-  zathura->highlights.palette_active     = 0;
+  zathura->highlights.palette[3]     = (GdkRGBA){.alpha = -1.0};                            /* unset */
+  zathura->highlights.palette_active = 0;
 
   return zathura->highlights.highlights != NULL;
 }
@@ -131,16 +135,16 @@ GdkRGBA zathura_highlight_get_active_color(zathura_t* zathura) {
 void zathura_highlight_cycle_color(zathura_t* zathura) {
   g_return_if_fail(zathura);
 
-  const unsigned int slots           = zathura->highlights.palette_has_custom ? 4 : HIGHLIGHT_PALETTE_PRESETS;
+  const bool has_custom              = zathura->highlights.palette[3].alpha >= 0.0;
+  const unsigned int slots           = has_custom ? 4 : HIGHLIGHT_PALETTE_PRESETS;
   zathura->highlights.palette_active = (zathura->highlights.palette_active + 1) % slots;
 }
 
 void zathura_highlight_set_custom_color(zathura_t* zathura, GdkRGBA color) {
   g_return_if_fail(zathura);
 
-  zathura->highlights.palette[3]         = color;
-  zathura->highlights.palette_has_custom = true;
-  zathura->highlights.palette_active     = 3;
+  zathura->highlights.palette[3]     = color;
+  zathura->highlights.palette_active = 3;
 }
 
 const char* zathura_highlight_get_active_color_name(zathura_t* zathura) {
