@@ -19,7 +19,6 @@ struct girara_session_s {
     GtkWidget* view;              /**< The view area of the applications widgets */
     GtkWidget* statusbar;         /**< The statusbar */
     GtkWidget* notification_area; /**< The notification area */
-    GtkWidget* notification_text; /**< The notification entry */
     GtkBox* inputbar_box;         /**< Inputbar box */
     GtkWidget* inputbar;          /**< Inputbar event box */
     GtkLabel* inputbar_dialog;    /**< Inputbar dialog */
@@ -117,7 +116,7 @@ char* girara_buffer_get(girara_session_t* session);
  * @param format String format
  * @param ...
  */
-void girara_notify(girara_session_t* session, int level, const char* format, ...) GIRARA_PRINTF(3, 4);
+void girara_notify(girara_session_t* session, girara_log_level_t level, const char* format, ...) GIRARA_PRINTF(3, 4);
 
 /**
  * Creates a girara dialog

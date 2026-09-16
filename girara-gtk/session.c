@@ -18,6 +18,7 @@
 #include "settings.h"
 #include "shortcuts.h"
 #include "statusbar.h"
+#include "notification-area.h"
 
 static int cb_sort_settings(const void* data1, const void* data2) {
   const girara_setting_t* lhs = data1;
@@ -146,7 +147,7 @@ static void fill_template_with_values(girara_session_t* session) {
     girara_template_set_variable_value(csstemplate, color_settings[i], colorstr);
   }
 
-  /* we want inputbar_entry the same height as notification_text and statusbar,
+  /* we want inputbar_entry the same height as the notification label and statusbar,
     so that when inputbar_entry is hidden, the size of the bottom_box remains
     the same. We need to get rid of the builtin padding in the GtkEntry
     widget. */
@@ -281,16 +282,10 @@ girara_session_t* girara_session_create(void) {
   session->gtk.view = gtk_stack_new();
   gtk_widget_set_can_focus(session->gtk.view, true);
   session->gtk.statusbar         = girara_statusbar_new();
-  session->gtk.notification_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-  session->gtk.notification_text = gtk_label_new(NULL);
+  session->gtk.notification_area = girara_notification_area_new();
   session->gtk.inputbar_dialog   = GTK_LABEL(gtk_label_new(NULL));
   session->gtk.inputbar_entry    = GTK_ENTRY(gtk_entry_new());
   session->gtk.inputbar          = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-
-  /* make notification text selectable */
-  gtk_label_set_selectable(GTK_LABEL(session->gtk.notification_text), TRUE);
-  /* ellipsize notification text */
-  gtk_label_set_ellipsize(GTK_LABEL(session->gtk.notification_text), PANGO_ELLIPSIZE_END);
 
   return session;
 }
@@ -336,18 +331,11 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   g_signal_connect(scroll, "scroll", G_CALLBACK(girara_callback_view_scroll_event), session);
   gtk_widget_add_controller(session->gtk.view, scroll);
 
-  /* notification area */
-  gtk_box_append(GTK_BOX(session->gtk.notification_area), session->gtk.notification_text);
-  gtk_widget_set_halign(session->gtk.notification_text, GTK_ALIGN_START);
-  gtk_widget_set_valign(session->gtk.notification_text, GTK_ALIGN_CENTER);
-  gtk_label_set_use_markup(GTK_LABEL(session->gtk.notification_text), TRUE);
-
   /* inputbar */
   gtk_entry_set_has_frame(session->gtk.inputbar_entry, FALSE);
   gtk_editable_set_editable(GTK_EDITABLE(session->gtk.inputbar_entry), TRUE);
 
   widget_add_class(GTK_WIDGET(session->gtk.inputbar_entry), "bottom_box");
-  widget_add_class(session->gtk.notification_text, "bottom_box");
 
   GtkEventController* ib_key = gtk_event_controller_key_new();
   g_signal_connect(ib_key, "key-pressed", G_CALLBACK(girara_callback_inputbar_key_press_event), session);
@@ -395,10 +383,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   widget_add_class(GTK_WIDGET(session->gtk.inputbar_entry), "inputbar");
   widget_add_class(GTK_WIDGET(session->gtk.inputbar), "inputbar");
   widget_add_class(GTK_WIDGET(session->gtk.inputbar_dialog), "inputbar");
-
-  /* notification area */
-  widget_add_class(session->gtk.notification_area, "notification");
-  widget_add_class(session->gtk.notification_text, "notification");
 
   /* set window size */
   unsigned int window_width  = 0;
@@ -545,25 +529,10 @@ void girara_focus_view(girara_session_t* session) {
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
 }
 
-void girara_notify(girara_session_t* session, int level, const char* format, ...) {
-  if (session == NULL || session->gtk.notification_text == NULL || session->gtk.notification_area == NULL ||
-      session->gtk.inputbar == NULL || session->gtk.view == NULL) {
+void girara_notify(girara_session_t* session, girara_log_level_t level, const char* format, ...) {
+  if (session == NULL || session->gtk.notification_area == NULL || session->gtk.inputbar == NULL ||
+      session->gtk.view == NULL) {
     return;
-  }
-
-  if (level == GIRARA_ERROR) {
-    widget_add_class(session->gtk.notification_area, "notification-error");
-    widget_add_class(session->gtk.notification_text, "notification-error");
-  } else {
-    widget_remove_class(session->gtk.notification_area, "notification-error");
-    widget_remove_class(session->gtk.notification_text, "notification-error");
-  }
-  if (level == GIRARA_WARNING) {
-    widget_add_class(session->gtk.notification_area, "notification-warning");
-    widget_add_class(session->gtk.notification_text, "notification-warning");
-  } else {
-    widget_remove_class(session->gtk.notification_area, "notification-warning");
-    widget_remove_class(session->gtk.notification_text, "notification-warning");
   }
 
   /* prepare message */
@@ -572,7 +541,7 @@ void girara_notify(girara_session_t* session, int level, const char* format, ...
   g_autofree char* message = g_strdup_vprintf(format, ap);
   va_end(ap);
 
-  gtk_label_set_markup(GTK_LABEL(session->gtk.notification_text), message);
+  girara_notification_area_set_message(GIRARA_NOTIFICATION_AREA(session->gtk.notification_area), level, message);
 
   /* update visibility */
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), TRUE);
