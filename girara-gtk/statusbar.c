@@ -23,7 +23,7 @@ GtkWidget* girara_statusbar_new(void) {
   return g_object_new(GIRARA_TYPE_STATUSBAR, NULL);
 }
 
-GtkLabel* girara_statusbar_item_add(GiraraStatusbar* statusbar, bool expand, bool GIRARA_UNUSED(fill), bool left) {
+GtkLabel* girara_statusbar_item_add(GiraraStatusbar* statusbar, bool expand, bool left) {
   g_return_val_if_fail(GIRARA_IS_STATUSBAR(statusbar), NULL);
 
   GtkWidget* item = gtk_label_new(NULL);
