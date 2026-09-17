@@ -196,7 +196,8 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
   girara_session_private_t* priv = session->private_data;
 
   /* get current text */
-  g_autofree gchar* input = gtk_editable_get_chars(GTK_EDITABLE(session->gtk.inputbar_entry), 0, -1);
+  g_autofree gchar* input =
+      gtk_editable_get_chars(GTK_EDITABLE(girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar))), 0, -1);
   if (input == NULL) {
     return false;
   }
@@ -527,8 +528,9 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
       temp = g_strconcat(":", priv->completion.previous_command, " ", escaped_value, NULL);
     }
 
-    gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), temp);
-    gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
+    GtkEntry* inputbar_entry = girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar));
+    gtk_editable_set_text(GTK_EDITABLE(inputbar_entry), temp);
+    gtk_editable_set_position(GTK_EDITABLE(inputbar_entry), -1);
 
     /* update previous */
     g_free(priv->completion.previous_parameter);

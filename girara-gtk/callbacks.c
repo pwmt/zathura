@@ -7,7 +7,6 @@
 #include "session.h"
 #include "shortcuts.h"
 
-#include <girara/input-history.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
 #include <girara/utils.h>
@@ -18,7 +17,7 @@ static const guint ALL_ACCELS_MASK = GDK_CONTROL_MASK | GDK_SHIFT_MASK | GDK_ALT
 static const guint MOUSE_MASK = GDK_CONTROL_MASK | GDK_SHIFT_MASK | GDK_ALT_MASK | GDK_BUTTON1_MASK | GDK_BUTTON2_MASK |
                                 GDK_BUTTON3_MASK | GDK_BUTTON4_MASK | GDK_BUTTON5_MASK;
 
-static bool clean_mask(GtkEventControllerKey* controller, GdkModifierType state, guint* clean, guint* keyval) {
+bool girara_clean_key_mask(GtkEventControllerKey* controller, GdkModifierType state, guint* clean, guint* keyval) {
   GdkModifierType consumed = 0;
   GdkEvent* event          = gtk_event_controller_get_current_event(GTK_EVENT_CONTROLLER(controller));
   if (event != NULL && gdk_event_get_event_type(event) == GDK_KEY_PRESS) {
@@ -74,7 +73,7 @@ gboolean girara_callback_view_key_press_event(GtkEventControllerKey* controller,
   guint clean  = 0;
   guint keyval = keyval_in;
 
-  if (clean_mask(controller, state, &clean, &keyval) == false) {
+  if (girara_clean_key_mask(controller, state, &clean, &keyval) == false) {
     return false;
   }
 
@@ -208,24 +207,6 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
       if (session->events.buffer_changed != NULL) {
         session->events.buffer_changed(session);
       }
-    }
-  }
-
-  return FALSE;
-}
-
-gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean) {
-  g_return_val_if_fail(session != NULL, FALSE);
-
-  for (size_t idx = 0; idx != girara_list_size(session->bindings.inputbar_shortcuts); ++idx) {
-    girara_inputbar_shortcut_t* inputbar_shortcut = girara_list_nth(session->bindings.inputbar_shortcuts, idx);
-    if (inputbar_shortcut->key == keyval && inputbar_shortcut->mask == clean) {
-      girara_debug("found shortcut for key %u and mask %x", keyval, clean);
-      if (inputbar_shortcut->function != NULL) {
-        inputbar_shortcut->function(session, &(inputbar_shortcut->argument), NULL, 0);
-      }
-
-      return TRUE;
     }
   }
 
@@ -419,136 +400,6 @@ gboolean girara_callback_view_scroll_event(GtkEventControllerScroll* controller,
     if (mouse_event->function != NULL && state == mouse_event->mask && mouse_event->event_type == event.type &&
         (session->modes.current_mode == mouse_event->mode || mouse_event->mode == 0)) {
       mouse_event->function(session, &(mouse_event->argument), &event, count);
-      return true;
-    }
-  }
-
-  return false;
-}
-
-gboolean girara_callback_inputbar_activate(GtkEntry* entry, girara_session_t* session) {
-  g_return_val_if_fail(session != NULL, FALSE);
-
-  /* a custom handler has been installed (e.g. by girara_dialog) */
-  if (session->signals.inputbar_custom_activate != NULL) {
-    gboolean return_value = session->signals.inputbar_custom_activate(entry, session->signals.inputbar_custom_data);
-
-    /* disconnect custom handler */
-    session->signals.inputbar_custom_activate        = NULL;
-    session->signals.inputbar_custom_key_press_event = NULL;
-    session->signals.inputbar_custom_data            = NULL;
-
-    if (session->gtk.inputbar_dialog != NULL && session->gtk.inputbar_entry != NULL) {
-      gtk_label_set_markup(session->gtk.inputbar_dialog, "");
-      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
-      if (session->global.autohide_inputbar == true) {
-        gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
-      }
-      gtk_entry_set_visibility(session->gtk.inputbar_entry, TRUE);
-      girara_isc_abort(session, NULL, NULL, 0);
-      return true;
-    }
-
-    return return_value;
-  }
-
-  g_autofree gchar* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
-  if (input == NULL) {
-    girara_isc_abort(session, NULL, NULL, 0);
-    return false;
-  }
-
-  if (strlen(input) == 0) {
-    girara_isc_abort(session, NULL, NULL, 0);
-    return false;
-  }
-
-  /* append to command history */
-  const char* command = gtk_editable_get_text(GTK_EDITABLE(entry));
-  girara_input_history_append(session->command_history, command);
-
-  /* special commands */
-  g_autofree char* identifier_s = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, 1);
-  if (identifier_s == NULL) {
-    return false;
-  }
-
-  const char identifier = identifier_s[0];
-  girara_debug("Processing special command with identifier '%c'.", identifier);
-  for (size_t idx = 0; idx != girara_list_size(session->bindings.special_commands); ++idx) {
-    girara_special_command_t* special_command = girara_list_nth(session->bindings.special_commands, idx);
-    if (special_command->identifier == identifier) {
-      girara_debug("Found special command.");
-      if (special_command->always != true) {
-        special_command->function(session, input, &(special_command->argument));
-      }
-
-      girara_isc_abort(session, NULL, NULL, 0);
-      return true;
-    }
-  }
-
-  return girara_command_run(session, input);
-}
-
-gboolean girara_callback_inputbar_key_press_event(GtkEventControllerKey* controller, guint keyval_in,
-                                                  guint UNUSED(keycode), GdkModifierType state,
-                                                  girara_session_t* session) {
-  g_return_val_if_fail(session != NULL, false);
-
-  GtkWidget* entry = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(controller));
-
-  /* a custom handler has been installed (e.g. by girara_dialog) */
-  gboolean custom_ret = false;
-  if (session->signals.inputbar_custom_key_press_event != NULL) {
-    girara_debug("Running custom key press event handler.");
-    GdkEvent* event = gtk_event_controller_get_current_event(GTK_EVENT_CONTROLLER(controller));
-    custom_ret = session->signals.inputbar_custom_key_press_event(entry, event, session->signals.inputbar_custom_data);
-    if (custom_ret == true) {
-      girara_isc_abort(session, NULL, NULL, 0);
-
-      if (session->global.autohide_inputbar == true) {
-        gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
-      }
-      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
-    }
-  }
-
-  guint keyval = keyval_in;
-  guint clean  = 0;
-  if (clean_mask(controller, state, &clean, &keyval) == false) {
-    girara_debug("clean_mask returned false.");
-    return false;
-  }
-  girara_debug("Proccessing key %u with mask %x.", keyval, clean);
-
-  if (custom_ret == false && girara_process_inputbar_key(session, keyval, clean)) {
-    return true;
-  }
-
-  if ((session->gtk.results != NULL) && (gtk_widget_get_visible(GTK_WIDGET(session->gtk.results))) &&
-      (keyval == GDK_KEY_space)) {
-    gtk_widget_set_visible(GTK_WIDGET(session->gtk.results), FALSE);
-  }
-
-  return custom_ret;
-}
-
-gboolean girara_callback_inputbar_changed_event(GtkEditable* entry, girara_session_t* session) {
-  g_return_val_if_fail(session != NULL, false);
-
-  /* special commands */
-  g_autofree char* identifier_s = gtk_editable_get_chars(entry, 0, 1);
-  if (identifier_s == NULL) {
-    return false;
-  }
-
-  char identifier = identifier_s[0];
-  for (size_t idx = 0; idx != girara_list_size(session->bindings.special_commands); ++idx) {
-    girara_special_command_t* special_command = girara_list_nth(session->bindings.special_commands, idx);
-    if ((special_command->identifier == identifier) && (special_command->always == true)) {
-      g_autofree gchar* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
-      special_command->function(session, input, &(special_command->argument));
       return true;
     }
   }

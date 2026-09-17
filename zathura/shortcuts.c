@@ -36,7 +36,7 @@ static bool draw_links(zathura_t* zathura) {
 }
 
 /* Common code for sc_follow, sc_display_link and sc_copy_link */
-static bool link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate_t callback, const char* text) {
+static bool link_shortcuts(zathura_t* zathura, GCallback callback, const char* text) {
   zathura_document_t* document = zathura_get_document(zathura);
   if (document == NULL || zathura->ui.session == NULL) {
     return false;
@@ -46,12 +46,11 @@ static bool link_shortcuts(zathura_t* zathura, girara_callback_inputbar_activate
 
   /* ask for input */
   if (show_links == true) {
-    GtkWidget* inputbar = zathura->ui.session->gtk.inputbar;
-    gulong handler_id   = g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_links), zathura);
-    g_object_set_data(G_OBJECT(inputbar), "handler_id", GUINT_TO_POINTER(handler_id));
+    GiraraDialog* inputbar = girara_dialog(zathura->ui.session, text, FALSE);
+    g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_links), zathura);
 
     zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_INPUTBAR);
-    girara_dialog(zathura->ui.session, text, FALSE, NULL, callback, zathura->ui.session);
+    g_signal_connect(inputbar, "activate", callback, zathura->ui.session);
   }
 
   return false;
@@ -226,7 +225,7 @@ bool sc_display_link(girara_session_t* session, girara_argument_t* UNUSED(argume
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  return link_shortcuts(zathura, cb_sc_display_link, "Display Link: ");
+  return link_shortcuts(zathura, G_CALLBACK(cb_sc_display_link), "Display Link: ");
 }
 
 bool sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
@@ -235,7 +234,7 @@ bool sc_copy_link(girara_session_t* session, girara_argument_t* UNUSED(argument)
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  return link_shortcuts(zathura, cb_sc_copy_link, "Copy Link: ");
+  return link_shortcuts(zathura, G_CALLBACK(cb_sc_copy_link), "Copy Link: ");
 }
 
 bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
@@ -325,7 +324,6 @@ bool sc_equal_page_mode(girara_session_t* session, girara_argument_t* argument, 
 bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                        unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
-  g_return_val_if_fail(session->gtk.inputbar_entry != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
@@ -340,10 +338,11 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
     gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), FALSE);
   }
 
-  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar_entry));
+  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar));
 
   if (argument->data) {
-    gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), (char*)argument->data);
+    GtkEntry* inputbar_entry = girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar));
+    gtk_editable_set_text(GTK_EDITABLE(inputbar_entry), (char*)argument->data);
 
     /* append filepath */
     if (argument->n == APPEND_FILEPATH && zathura_has_document(zathura)) {
@@ -357,10 +356,10 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
       g_autofree char* tmp =
           g_strdup_printf("%s%s/", (char*)argument->data, (g_strcmp0(path, "/") == 0) ? "" : escaped);
 
-      gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), tmp);
+      gtk_editable_set_text(GTK_EDITABLE(inputbar_entry), tmp);
     }
 
-    gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
+    gtk_editable_set_position(GTK_EDITABLE(inputbar_entry), -1);
   }
 
   return true;
@@ -372,7 +371,7 @@ bool sc_follow(girara_session_t* session, girara_argument_t* UNUSED(argument), g
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  return link_shortcuts(zathura, cb_sc_follow, "Follow Link: ");
+  return link_shortcuts(zathura, G_CALLBACK(cb_sc_follow), "Follow Link: ");
 }
 
 bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int t) {

@@ -410,13 +410,12 @@ typedef enum zathura_link_action_e {
   ZATHURA_LINK_ACTION_DISPLAY
 } zathura_link_action_t;
 
-static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_link_action_t action) {
+static gboolean handle_link(const char* input, girara_session_t* session, zathura_link_action_t action) {
   g_return_val_if_fail(session != NULL, FALSE);
   g_return_val_if_fail(session->global.data != NULL, FALSE);
 
   zathura_t* zathura = session->global.data;
 
-  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
   if (input == NULL || strlen(input) == 0) {
     return FALSE;
   }
@@ -457,19 +456,19 @@ static gboolean handle_link(GtkEntry* entry, girara_session_t* session, zathura_
   return TRUE;
 }
 
-gboolean cb_sc_follow(GtkEntry* entry, void* data) {
+gboolean cb_sc_follow(GiraraDialog* UNUSED(inputbar), const char* input, void* data) {
   girara_session_t* session = data;
-  return handle_link(entry, session, ZATHURA_LINK_ACTION_FOLLOW);
+  return handle_link(input, session, ZATHURA_LINK_ACTION_FOLLOW);
 }
 
-gboolean cb_sc_display_link(GtkEntry* entry, void* data) {
+gboolean cb_sc_display_link(GiraraDialog* UNUSED(inputbar), const char* input, void* data) {
   girara_session_t* session = data;
-  return handle_link(entry, session, ZATHURA_LINK_ACTION_DISPLAY);
+  return handle_link(input, session, ZATHURA_LINK_ACTION_DISPLAY);
 }
 
-gboolean cb_sc_copy_link(GtkEntry* entry, void* data) {
+gboolean cb_sc_copy_link(GiraraDialog* UNUSED(inputbar), const char* input, void* data) {
   girara_session_t* session = data;
-  return handle_link(entry, session, ZATHURA_LINK_ACTION_COPY);
+  return handle_link(input, session, ZATHURA_LINK_ACTION_COPY);
 }
 
 static gboolean file_monitor_reload(void* data) {
@@ -488,10 +487,6 @@ static void password_dialog_info_free(zathura_password_dialog_info_t* dialog) {
   if (dialog == NULL) {
     return;
   }
-  if (dialog->hide_handler != 0) {
-    g_signal_handler_disconnect(dialog->zathura->ui.session->gtk.inputbar_dialog, dialog->hide_handler);
-    dialog->hide_handler = 0;
-  }
   g_free(dialog->path);
   g_free(dialog->uri);
   g_free(dialog);
@@ -503,18 +498,18 @@ static void cb_password_dialog_hide(GtkWidget* UNUSED(w), void* data) {
 
 static void password_dialog_arm_hide(zathura_password_dialog_info_t* dialog) {
   if (dialog == NULL || dialog->zathura == NULL || dialog->zathura->ui.session == NULL ||
-      dialog->zathura->ui.session->gtk.inputbar_dialog == NULL) {
+      dialog->zathura->ui.session->gtk.dialog == NULL) {
     return;
   }
-  dialog->hide_handler = g_signal_connect(dialog->zathura->ui.session->gtk.inputbar_dialog, "hide",
-                                          G_CALLBACK(cb_password_dialog_hide), dialog);
+  g_signal_connect(dialog->zathura->ui.session->gtk.dialog, "hide", G_CALLBACK(cb_password_dialog_hide), dialog);
 }
 
 gboolean document_open_password_dialog(gpointer data) {
   zathura_password_dialog_info_t* dialog = data;
 
+  GiraraDialog* widget = girara_dialog(dialog->zathura->ui.session, _("Enter password:"), true);
   password_dialog_arm_hide(dialog);
-  girara_dialog(dialog->zathura->ui.session, _("Enter password:"), true, NULL, cb_password_dialog, dialog);
+  g_signal_connect(widget, "activate", G_CALLBACK(cb_password_dialog), dialog);
   return FALSE;
 }
 
@@ -522,27 +517,22 @@ static gboolean password_dialog(gpointer data) {
   zathura_password_dialog_info_t* dialog = data;
 
   if (dialog != NULL) {
+    GiraraDialog* widget = girara_dialog(dialog->zathura->ui.session, "Incorrect password. Enter password:", true);
     password_dialog_arm_hide(dialog);
-    girara_dialog(dialog->zathura->ui.session, "Incorrect password. Enter password:", true, NULL, cb_password_dialog,
-                  dialog);
+    g_signal_connect(widget, "activate", G_CALLBACK(cb_password_dialog), dialog);
   }
 
   return FALSE;
 }
 
-gboolean cb_password_dialog(GtkEntry* entry, void* data) {
+gboolean cb_password_dialog(GiraraDialog* inputbar, const char* input, void* data) {
+  g_signal_handlers_disconnect_matched(inputbar, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DATA,
+                                       g_signal_lookup("hide", GTK_TYPE_WIDGET), 0, NULL, NULL, data);
   zathura_password_dialog_info_t* dialog = data;
-  if (entry == NULL || dialog == NULL || dialog->path == NULL || dialog->zathura == NULL) {
+  if (input == NULL || dialog == NULL || dialog->path == NULL || dialog->zathura == NULL) {
     password_dialog_info_free(dialog);
     return false;
   }
-
-  if (dialog->hide_handler != 0) {
-    g_signal_handler_disconnect(dialog->zathura->ui.session->gtk.inputbar_dialog, dialog->hide_handler);
-    dialog->hide_handler = 0;
-  }
-
-  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 
   /* no or empty password: ask again */
   if (input == NULL || strlen(input) == 0) {
@@ -808,10 +798,6 @@ gboolean cb_drop_file(GtkDropTarget* UNUSED(self), const GValue* value, double U
 void cb_hide_links(GtkWidget* widget, gpointer data) {
   g_return_if_fail(widget != NULL);
   g_return_if_fail(data != NULL);
-
-  /* disconnect from signal */
-  gulong handler_id = GPOINTER_TO_UINT(g_object_steal_data(G_OBJECT(widget), "handler_id"));
-  g_signal_handler_disconnect(G_OBJECT(widget), handler_id);
 
   zathura_t* zathura = data;
   zathura_document_widget_hide_links(zathura->ui.document_widget);

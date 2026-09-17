@@ -18,6 +18,7 @@
 #include "settings.h"
 #include "shortcuts.h"
 #include "statusbar.h"
+#include "inputbar.h"
 #include "notification-area.h"
 
 static int cb_sort_settings(const void* data1, const void* data2) {
@@ -205,6 +206,11 @@ static void css_template_changed(GiraraTemplate* csstemplate, girara_session_t* 
   gtk_css_provider_load_from_string(provider, css_data);
 }
 
+static void inputbar_abort(GiraraInputbar* UNUSED(inputbar), girara_session_t* session) {
+  girara_debug("Aborting inputbar entry");
+  girara_isc_abort(session, NULL, NULL, 0);
+}
+
 static void mode_string_free(void* data) {
   if (data != NULL) {
     girara_mode_string_t* mode = data;
@@ -277,15 +283,11 @@ girara_session_t* girara_session_create(void) {
   session->gtk.box                = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
   session_private->gtk.overlay    = gtk_overlay_new();
   session_private->gtk.bottom_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
-  session->gtk.inputbar_box       = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
-  gtk_box_set_homogeneous(session->gtk.inputbar_box, TRUE);
-  session->gtk.view = gtk_stack_new();
+  session->gtk.view               = gtk_stack_new();
   gtk_widget_set_can_focus(session->gtk.view, true);
   session->gtk.statusbar         = girara_statusbar_new();
   session->gtk.notification_area = girara_notification_area_new();
-  session->gtk.inputbar_dialog   = GTK_LABEL(gtk_label_new(NULL));
-  session->gtk.inputbar_entry    = GTK_ENTRY(gtk_entry_new());
-  session->gtk.inputbar          = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  session->gtk.inputbar          = girara_inputbar_new(session);
 
   return session;
 }
@@ -331,30 +333,7 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   g_signal_connect(scroll, "scroll", G_CALLBACK(girara_callback_view_scroll_event), session);
   gtk_widget_add_controller(session->gtk.view, scroll);
 
-  /* inputbar */
-  gtk_entry_set_has_frame(session->gtk.inputbar_entry, FALSE);
-  gtk_editable_set_editable(GTK_EDITABLE(session->gtk.inputbar_entry), TRUE);
-
-  widget_add_class(GTK_WIDGET(session->gtk.inputbar_entry), "bottom_box");
-
-  GtkEventController* ib_key = gtk_event_controller_key_new();
-  g_signal_connect(ib_key, "key-pressed", G_CALLBACK(girara_callback_inputbar_key_press_event), session);
-  gtk_widget_add_controller(GTK_WIDGET(session->gtk.inputbar_entry), ib_key);
-
-  session->signals.inputbar_changed = g_signal_connect(G_OBJECT(session->gtk.inputbar_entry), "changed",
-                                                       G_CALLBACK(girara_callback_inputbar_changed_event), session);
-
-  session->signals.inputbar_activate = g_signal_connect(G_OBJECT(session->gtk.inputbar_entry), "activate",
-                                                        G_CALLBACK(girara_callback_inputbar_activate), session);
-
-  gtk_box_set_homogeneous(session->gtk.inputbar_box, FALSE);
-  gtk_box_set_spacing(session->gtk.inputbar_box, 5);
-
-  /* inputbar box */
-  gtk_box_append(GTK_BOX(session->gtk.inputbar_box), GTK_WIDGET(session->gtk.inputbar_dialog));
-  gtk_box_append(GTK_BOX(session->gtk.inputbar_box), GTK_WIDGET(session->gtk.inputbar_entry));
-  gtk_widget_set_hexpand(GTK_WIDGET(session->gtk.inputbar_entry), true);
-  gtk_box_append(GTK_BOX(session->gtk.inputbar), GTK_WIDGET(session->gtk.inputbar_box));
+  g_signal_connect(session->gtk.inputbar, "abort", G_CALLBACK(inputbar_abort), session);
 
   /* bottom box */
   gtk_box_set_spacing(session->private_data->gtk.bottom_box, 0);
@@ -378,12 +357,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
 
   gtk_window_set_child(GTK_WINDOW(session->gtk.window), GTK_WIDGET(session->private_data->gtk.overlay));
 
-  /* inputbar */
-  widget_add_class(GTK_WIDGET(session->gtk.inputbar_box), "inputbar");
-  widget_add_class(GTK_WIDGET(session->gtk.inputbar_entry), "inputbar");
-  widget_add_class(GTK_WIDGET(session->gtk.inputbar), "inputbar");
-  widget_add_class(GTK_WIDGET(session->gtk.inputbar_dialog), "inputbar");
-
   /* set window size */
   unsigned int window_width  = 0;
   unsigned int window_height = 0;
@@ -401,7 +374,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
 
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.window), TRUE);
   gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), FALSE);
-  gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
 
   if (session->global.autohide_inputbar == true) {
     gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
@@ -550,35 +522,45 @@ void girara_notify(girara_session_t* session, girara_log_level_t level, const ch
   girara_focus_view(session);
 }
 
-void girara_dialog(girara_session_t* session, const char* dialog, bool invisible,
-                   girara_callback_inputbar_key_press_event_t key_press_event,
-                   girara_callback_inputbar_activate_t activate_event, void* data) {
-  if (session == NULL || session->gtk.inputbar == NULL || session->gtk.inputbar_dialog == NULL ||
-      session->gtk.inputbar_entry == NULL) {
-    return;
+static void girara_session_dialog_hide(GtkWidget* widget, girara_session_t* session) {
+  g_return_if_fail(session != NULL);
+
+  girara_debug("Hidding active dialog.");
+
+  session->gtk.dialog = NULL;
+  if (!session->global.autohide_inputbar && !gtk_widget_get_visible(session->gtk.notification_area)) {
+    gtk_widget_set_visible(session->gtk.inputbar, TRUE);
   }
+  girara_focus_view(session);
 
-  gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), TRUE);
+  gtk_box_remove(session->private_data->gtk.bottom_box, widget);
+}
 
-  /* set dialog message */
-  if (dialog != NULL) {
-    gtk_label_set_markup(session->gtk.inputbar_dialog, dialog);
+GiraraDialog* girara_dialog(girara_session_t* session, const char* prompt, bool invisible) {
+  g_return_val_if_fail(session != NULL, NULL);
+  g_return_val_if_fail(session->gtk.dialog == NULL, NULL);
+
+  GiraraDialog* dialog = girara_dialog_new(session, prompt, invisible);
+  session->gtk.dialog  = GTK_WIDGET(dialog);
+  gtk_box_append(session->private_data->gtk.bottom_box, GTK_WIDGET(dialog));
+  g_signal_connect_after(dialog, "hide", G_CALLBACK(girara_session_dialog_hide), session);
+
+  if (session->gtk.results != NULL) {
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.results), FALSE);
   }
+  gtk_widget_set_visible(session->gtk.notification_area, FALSE);
+  gtk_widget_set_visible(session->gtk.inputbar, FALSE);
+  gtk_widget_set_visible(GTK_WIDGET(dialog), TRUE);
+  gtk_widget_grab_focus(GTK_WIDGET(dialog));
+  return dialog;
+}
 
-  /* set input visibility */
-  if (invisible == true) {
-    gtk_entry_set_visibility(session->gtk.inputbar_entry, FALSE);
-  } else {
-    gtk_entry_set_visibility(session->gtk.inputbar_entry, TRUE);
+GtkEntry* girara_get_active_entry(girara_session_t* session) {
+  g_return_val_if_fail(session != NULL, NULL);
+  if (session->gtk.dialog != NULL && gtk_widget_get_visible(session->gtk.dialog)) {
+    return girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.dialog));
   }
-
-  /* set handler */
-  session->signals.inputbar_custom_activate        = activate_event;
-  session->signals.inputbar_custom_key_press_event = key_press_event;
-  session->signals.inputbar_custom_data            = data;
-
-  /* focus inputbar */
-  girara_sc_focus_inputbar(session, NULL, NULL, 0);
+  return girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar));
 }
 
 bool girara_set_view(girara_session_t* session, GtkWidget* widget) {

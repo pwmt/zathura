@@ -4,6 +4,7 @@
 #define CALLBACKS_H
 
 #include <gtk/gtk.h>
+#include <girara-gtk/inputbar.h>
 #include <girara/types.h>
 #include <girara/macros.h>
 
@@ -143,7 +144,7 @@ void cb_index_row_activated(GtkListView* view, guint position, void* data);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-gboolean cb_sc_follow(GtkEntry* entry, void* session);
+gboolean cb_sc_follow(GiraraDialog* inputbar, const char* input, void* session);
 
 /**
  * Called when input has been passed to the sc_display_link dialog
@@ -152,7 +153,7 @@ gboolean cb_sc_follow(GtkEntry* entry, void* session);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-gboolean cb_sc_display_link(GtkEntry* entry, void* session);
+gboolean cb_sc_display_link(GiraraDialog* inputbar, const char* input, void* session);
 
 /**
  * Called when input has been passed to the sc_copy_link dialog
@@ -161,7 +162,7 @@ gboolean cb_sc_display_link(GtkEntry* entry, void* session);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-gboolean cb_sc_copy_link(GtkEntry* entry, void* session);
+gboolean cb_sc_copy_link(GiraraDialog* inputbar, const char* input, void* session);
 
 /**
  * Emitted when file has been changed
@@ -178,7 +179,7 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session);
  * @param dialog The dialog information
  * @return true if input has been handled
  */
-gboolean cb_password_dialog(GtkEntry* entry, void* dialog);
+gboolean cb_password_dialog(GiraraDialog* inputbar, const char* input, void* dialog);
 
 gboolean document_open_password_dialog(gpointer data);
 

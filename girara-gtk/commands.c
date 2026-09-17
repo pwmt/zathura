@@ -833,7 +833,9 @@ bool girara_command_run(girara_session_t* session, const char* input) {
       if (session->global.autohide_inputbar == true) {
         gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
       }
-      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
+      if (session->gtk.dialog != NULL) {
+        gtk_widget_set_visible(session->gtk.dialog, FALSE);
+      }
       return true;
     }
   }
@@ -846,7 +848,9 @@ bool girara_command_run(girara_session_t* session, const char* input) {
       if (session->global.autohide_inputbar == true) {
         gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
       }
-      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
+      if (session->gtk.dialog != NULL) {
+        gtk_widget_set_visible(session->gtk.dialog, FALSE);
+      }
 
       return true;
     }

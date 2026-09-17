@@ -216,16 +216,12 @@ static void link_launch(zathura_t* zathura, const char* link) {
 typedef struct {
   zathura_t* zathura;
   zathura_link_type_t type;
-  char* value;         /**< Owned copy of the link target */
-  gulong hide_handler; /**< id of inputbar "hide" handler, 0 if none */
+  char* value; /**< Owned copy of the link target */
 } link_confirm_data_t;
 
 static void link_confirm_data_free(link_confirm_data_t* data) {
   if (!data) {
     return;
-  }
-  if (data->hide_handler != 0) {
-    g_signal_handler_disconnect(data->zathura->ui.session->gtk.inputbar_dialog, data->hide_handler);
   }
   g_free(data->value);
   g_free(data);
@@ -239,14 +235,14 @@ static void cb_link_confirm_hide(GtkWidget* UNUSED(w), void* data) {
  * Callback for the external link confirmation dialog
  * Opens the link only if the user pressed Enter with empty input or 'y'
  */
-static gboolean cb_link_confirm(GtkEntry* entry, void* data) {
+static gboolean cb_link_confirm(GiraraDialog* inputbar, const char* input, void* data) {
+  g_signal_handlers_disconnect_matched(inputbar, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DATA,
+                                       g_signal_lookup("hide", GTK_TYPE_WIDGET), 0, NULL, NULL, data);
   link_confirm_data_t* ctx = data;
-  if (!entry || !ctx) {
+  if (!input || !ctx) {
     link_confirm_data_free(ctx);
     return true;
   }
-
-  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 
   /* Accept: empty string (bare Enter), or confirmation string */
   const bool confirmed = (!input || input[0] == '\0' || g_strcmp0(input, _("y")) == 0 || g_strcmp0(input, _("Y")) == 0);
@@ -281,9 +277,9 @@ static gboolean link_confirm_spawn(void* data) {
   g_autofree gchar* escaped = g_markup_escape_text(ctx->value, -1);
   g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b>? [Y/n]"), escaped);
 
-  ctx->hide_handler =
-      g_signal_connect(ctx->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
-  girara_dialog(ctx->zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
+  GiraraDialog* dialog = girara_dialog(ctx->zathura->ui.session, prompt, false);
+  g_signal_connect(dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
+  g_signal_connect(dialog, "activate", G_CALLBACK(cb_link_confirm), ctx);
 
   return G_SOURCE_REMOVE;
 }
