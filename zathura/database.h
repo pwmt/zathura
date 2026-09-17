@@ -10,6 +10,7 @@
 #include <glib-object.h>
 
 #include "bookmarks.h"
+#include "highlights.h"
 
 typedef struct zathura_fileinfo_s {
   unsigned int current_page;
@@ -41,6 +42,12 @@ struct _ZathuraDatabaseInterface {
   bool (*remove_bookmark)(ZathuraDatabase* db, const char* file, const char* id);
 
   bool (*load_bookmarks)(ZathuraDatabase* db, const char* file, girara_list_t* target_list);
+
+  bool (*add_highlight)(ZathuraDatabase* db, const char* file, zathura_highlight_t* highlight);
+
+  bool (*remove_highlight)(ZathuraDatabase* db, const char* file, const char* id);
+
+  bool (*load_highlights)(ZathuraDatabase* db, const char* file, girara_list_t* target_list);
 
   girara_list_t* (*load_jumplist)(ZathuraDatabase* db, const char* file);
 
@@ -90,6 +97,36 @@ bool zathura_db_remove_bookmark(zathura_database_t* db, const char* file, const 
  * @return true on success, false otherwise
  */
 bool zathura_db_load_bookmarks(zathura_database_t* db, const char* file, girara_list_t* target_list);
+
+/**
+ * Add or update a highlight in the database.
+ *
+ * @param db The database instance
+ * @param file The file to which the highlight belongs.
+ * @param highlight The highlight instance.
+ * @return true on success, false otherwise
+ */
+bool zathura_db_add_highlight(zathura_database_t* db, const char* file, zathura_highlight_t* highlight);
+
+/**
+ * Remove a highlight from the database.
+ *
+ * @param db The database instance
+ * @param file The file to which the highlight belongs.
+ * @param id The id of the highlight
+ * @return true on success, false otherwise
+ */
+bool zathura_db_remove_highlight(zathura_database_t* db, const char* file, const char* id);
+
+/**
+ * Loads all highlights from the database belonging to a specific file.
+ *
+ * @param db The database instance.
+ * @param file The file for which the highlights should be loaded.
+ * @param target_list list to store highlights in
+ * @return true on success, false otherwise
+ */
+bool zathura_db_load_highlights(zathura_database_t* db, const char* file, girara_list_t* target_list);
 
 /**
  * Load the jumplist belonging to the specified file from the database.
