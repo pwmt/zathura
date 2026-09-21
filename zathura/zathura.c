@@ -1653,6 +1653,9 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
     return true;
   }
 
+  gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), FALSE);
+  gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), TRUE);
+
   double comppos_x, comppos_y;
   const unsigned int page_id = zathura_document_get_current_page_number(document);
 

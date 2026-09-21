@@ -1592,6 +1592,9 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura_has_document(zathura), false);
 
+  gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), FALSE);
+  gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), TRUE);
+
   zathura_document_set_adjust_mode(zathura->document, ZATHURA_ADJUST_NONE);
 
   /* retrieve zoom step value */

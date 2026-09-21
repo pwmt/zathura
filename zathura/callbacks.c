@@ -110,13 +110,6 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_t* document = zathura_get_document(zathura);
   const double stored_position = zathura_document_get_position_x(document);
 
-  // FIXME: this callback should really not set the adjustment
-  // the value was set by someone else, so restore the stored position instead of reading it back
-  if (zathura_adjustment_value_matches_ratio(adjustment, stored_position) == false) {
-    zathura_adjustment_set_value_from_ratio(adjustment, stored_position);
-    return;
-  }
-
   const double position_x    = zathura_adjustment_get_ratio(adjustment);
   const double position_y    = zathura_document_get_position_y(document);
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
@@ -151,13 +144,6 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
 
   zathura_document_t* document = zathura_get_document(zathura);
   const double stored_position = zathura_document_get_position_y(document);
-
-  // FIXME: this callback should really not set the adjustment
-  // restore the stored position when the value came from elsewhere
-  if (zathura_adjustment_value_matches_ratio(adjustment, stored_position) == false) {
-    zathura_adjustment_set_value_from_ratio(adjustment, stored_position);
-    return;
-  }
 
   const double position_x    = zathura_document_get_position_x(document);
   const double position_y    = zathura_adjustment_get_ratio(adjustment);
@@ -200,13 +186,6 @@ static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zat
     girara_debug("Handling view adjustment change while processing page mode change.");
     return;
   }
-
-  // FIXME: this callback should never change the adjustment value itself
-  // reset the adjustment, in case bounds have changed
-  const double ratio =
-      width == true ? zathura_document_get_position_x(document) : zathura_document_get_position_y(document);
-
-  zathura_adjustment_set_value_from_ratio(adjustment, ratio);
 
   /* store the position that was actually applied so it stays valid after the view is sized */
   const double extent = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_lower(adjustment);
