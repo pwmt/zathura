@@ -1592,6 +1592,11 @@ bool sc_zoom(girara_session_t* session, girara_argument_t* argument, girara_even
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura_has_document(zathura), false);
 
+  // Cancel current kinetic scrolling.
+  // This makes sure that GtkScrolledWindow's internal scroll state is synced to
+  // adjustment values later set by zathura_document_set_position_ functions.
+  // When later GtkScrolledWindow happen to handle GDK_SCROLL events, it makes
+  // sure that the adjustment values are modified correctly.
   gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), FALSE);
   gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), TRUE);
 
