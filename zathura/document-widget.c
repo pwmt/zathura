@@ -1057,8 +1057,14 @@ void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document) {
   unsigned int doc_height = 0, doc_width = 0;
   zathura_document_widget_get_document_size(document, &doc_height, &doc_width);
 
-  gtk_adjustment_set_upper(priv->hadjustment, doc_width);
+  const double stored_x = zathura_document_get_position_x(priv->document);
+  const double stored_y = zathura_document_get_position_y(priv->document);
   gtk_adjustment_set_upper(priv->vadjustment, doc_height);
+  gtk_adjustment_set_upper(priv->hadjustment, doc_width);
+  // Better set vadjustment first because it's likely that hadjustment_value_changed
+  // callback to call excess zathura_document_set_current_page_number
+  zathura_adjustment_set_value_from_ratio(priv->vadjustment, stored_y);
+  zathura_adjustment_set_value_from_ratio(priv->hadjustment, stored_x);
 
   float scroll_step = 40;
   girara_setting_get(priv->zathura->ui.session, "scroll-step", &scroll_step);
