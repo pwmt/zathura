@@ -14,7 +14,7 @@
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(sqlite3_stmt, sqlite3_finalize)
 
 /* version of the database layout */
-#define DATABASE_VERSION 4
+#define DATABASE_VERSION 5
 
 static char* sqlite3_column_text_dup(sqlite3_stmt* stmt, int col) {
   return g_strdup((const char*)sqlite3_column_text(stmt, col));
@@ -204,8 +204,27 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
   static const char QUICKMARKS_INIT[] = "CREATE TABLE IF NOT EXISTS quickmarks (file TEXT, key INTEGER, x FLOAT, y "
                                         "FLOAT, page INTEGER, zoom FLOAT, PRIMARY KEY(file, key));";
 
-  static const char* ALL_INIT[] = {SQL_BOOKMARK_INIT, SQL_JUMPLIST_INIT, SQL_FILEINFO_INIT, SQL_HISTORY_INIT,
-                                   QUICKMARKS_INIT};
+  /* create highlights table */
+  static const char SQL_HIGHLIGHT_INIT[] = "CREATE TABLE IF NOT EXISTS highlights ("
+                                           "file TEXT,"
+                                           "id TEXT,"
+                                           "page INTEGER,"
+                                           "color TEXT,"
+                                           "text TEXT,"
+                                           "created TIMESTAMP,"
+                                           "PRIMARY KEY(file, id));";
+
+  /* create highlight_rects table */
+  static const char SQL_HIGHLIGHT_RECT_INIT[] = "CREATE TABLE IF NOT EXISTS highlight_rects ("
+                                                "file TEXT,"
+                                                "highlight_id TEXT,"
+                                                "x1 FLOAT,"
+                                                "y1 FLOAT,"
+                                                "x2 FLOAT,"
+                                                "y2 FLOAT);";
+
+  static const char* ALL_INIT[] = {SQL_BOOKMARK_INIT, SQL_JUMPLIST_INIT,  SQL_FILEINFO_INIT,      SQL_HISTORY_INIT,
+                                   QUICKMARKS_INIT,   SQL_HIGHLIGHT_INIT, SQL_HIGHLIGHT_RECT_INIT};
 
   /* update fileinfo table (part 1) */
   static const char SQL_FILEINFO_ALTER[] = "ALTER TABLE fileinfo ADD COLUMN pages_per_row INTEGER;"
@@ -350,6 +369,10 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
       all_updates_ok = false;
     }
   }
+  /* version 5 only added the new highlights/highlight_rects tables, created
+   * unconditionally above via ALL_INIT, so no versioned ALTER is needed here.
+   * A future schema change to those tables (e.g. adding a column) will need
+   * its own guarded `database_version < N` block like the ones above. */
 
   /* update database version if all updates were successful */
   if (all_updates_ok == true) {
@@ -477,6 +500,169 @@ static bool sqlite_load_bookmarks(zathura_database_t* db, const char* file, gira
   }
 
   return true;
+}
+
+static bool sqlite_add_highlight(zathura_database_t* db, const char* file, zathura_highlight_t* highlight) {
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
+  static const char SQL_HIGHLIGHT_ADD[] =
+      "REPLACE INTO highlights (file, id, page, color, text, created) VALUES (?, ?, ?, ?, ?, DATETIME('now'));";
+  static const char SQL_HIGHLIGHT_RECT_DELETE[] = "DELETE FROM highlight_rects WHERE file = ? AND highlight_id = ?;";
+  static const char SQL_HIGHLIGHT_RECT_ADD[] =
+      "INSERT INTO highlight_rects (file, highlight_id, x1, y1, x2, y2) VALUES (?, ?, ?, ?, ?, ?);";
+
+  if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
+    return false;
+  }
+
+  g_autofree char* color = gdk_rgba_to_string(&highlight->color);
+
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_HIGHLIGHT_ADD);
+  if (stmt == NULL || sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_text(stmt, 2, highlight->id, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_int(stmt, 3, highlight->page) != SQLITE_OK ||
+      sqlite3_bind_text(stmt, 4, color, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_text(stmt, 5, highlight->text, -1, NULL) != SQLITE_OK || sqlite3_step(stmt) != SQLITE_DONE) {
+    girara_error("Failed to add highlight.");
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  g_autoptr(sqlite3_stmt) del_stmt = prepare_statement(priv->session, SQL_HIGHLIGHT_RECT_DELETE);
+  if (del_stmt == NULL || sqlite3_bind_text(del_stmt, 1, file, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_text(del_stmt, 2, highlight->id, -1, NULL) != SQLITE_OK || sqlite3_step(del_stmt) != SQLITE_DONE) {
+    girara_error("Failed to clear old highlight rectangles.");
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  bool status = true;
+  for (size_t idx = 0; idx != girara_list_size(highlight->rectangles) && status; ++idx) {
+    zathura_rectangle_t* rect         = girara_list_nth(highlight->rectangles, idx);
+    g_autoptr(sqlite3_stmt) rect_stmt = prepare_statement(priv->session, SQL_HIGHLIGHT_RECT_ADD);
+    if (rect_stmt == NULL || sqlite3_bind_text(rect_stmt, 1, file, -1, NULL) != SQLITE_OK ||
+        sqlite3_bind_text(rect_stmt, 2, highlight->id, -1, NULL) != SQLITE_OK ||
+        sqlite3_bind_double(rect_stmt, 3, rect->x1) != SQLITE_OK ||
+        sqlite3_bind_double(rect_stmt, 4, rect->y1) != SQLITE_OK ||
+        sqlite3_bind_double(rect_stmt, 5, rect->x2) != SQLITE_OK ||
+        sqlite3_bind_double(rect_stmt, 6, rect->y2) != SQLITE_OK || sqlite3_step(rect_stmt) != SQLITE_DONE) {
+      girara_error("Failed to add highlight rectangle.");
+      status = false;
+    }
+  }
+
+  if (status == false) {
+    sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
+    return false;
+  }
+
+  sqlite3_exec(priv->session, "COMMIT;", NULL, 0, NULL);
+  return true;
+}
+
+static bool sqlite_remove_highlight(zathura_database_t* db, const char* file, const char* id) {
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
+  static const char SQL_HIGHLIGHT_DELETE[]      = "DELETE FROM highlights WHERE file = ? AND id = ?;";
+  static const char SQL_HIGHLIGHT_RECT_DELETE[] = "DELETE FROM highlight_rects WHERE file = ? AND highlight_id = ?;";
+
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_HIGHLIGHT_DELETE);
+  if (stmt == NULL || sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_text(stmt, 2, id, -1, NULL) != SQLITE_OK || sqlite3_step(stmt) != SQLITE_DONE) {
+    return false;
+  }
+
+  g_autoptr(sqlite3_stmt) rect_stmt = prepare_statement(priv->session, SQL_HIGHLIGHT_RECT_DELETE);
+  if (rect_stmt == NULL || sqlite3_bind_text(rect_stmt, 1, file, -1, NULL) != SQLITE_OK ||
+      sqlite3_bind_text(rect_stmt, 2, id, -1, NULL) != SQLITE_OK || sqlite3_step(rect_stmt) != SQLITE_DONE) {
+    return false;
+  }
+
+  return true;
+}
+
+static void sqlite_discard_highlight(zathura_highlight_t* highlight) {
+  girara_warning("Discarding highlight %s: no rectangles.", highlight->id);
+  g_free(highlight->id);
+  g_free(highlight->text);
+  girara_list_free(highlight->rectangles);
+  g_free(highlight);
+}
+
+static bool sqlite_load_highlights(zathura_database_t* db, const char* file, girara_list_t* target_list) {
+  ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
+  ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
+
+  /* single query (highlights left-joined with their rectangles, ordered so
+   * that one highlight's rectangles are contiguous) instead of one extra
+   * round trip per highlight */
+  static const char SQL_HIGHLIGHT_SELECT[] =
+      "SELECT h.id, h.page, h.color, h.text, r.x1, r.y1, r.x2, r.y2 FROM highlights h "
+      "LEFT JOIN highlight_rects r ON r.file = h.file AND r.highlight_id = h.id "
+      "WHERE h.file = ? ORDER BY h.id, r.rowid;";
+
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_HIGHLIGHT_SELECT);
+  if (stmt == NULL) {
+    return false;
+  }
+
+  if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
+    girara_error("Failed to bind arguments.");
+    return false;
+  }
+
+  zathura_highlight_t* highlight = NULL;
+  int res                        = SQLITE_DONE;
+  while ((res = sqlite3_step(stmt)) == SQLITE_ROW) {
+    const char* id = (const char*)sqlite3_column_text(stmt, 0);
+
+    if (highlight == NULL || g_strcmp0(highlight->id, id) != 0) {
+      if (highlight != NULL) {
+        if (girara_list_size(highlight->rectangles) == 0) {
+          sqlite_discard_highlight(highlight);
+        } else {
+          girara_list_append(target_list, highlight);
+        }
+      }
+
+      highlight = g_try_malloc0(sizeof(zathura_highlight_t));
+      if (highlight == NULL) {
+        continue;
+      }
+
+      highlight->id            = g_strdup(id);
+      highlight->page          = sqlite3_column_int(stmt, 1);
+      const char* color_string = (const char*)sqlite3_column_text(stmt, 2);
+      if (color_string == NULL || parse_color(&highlight->color, color_string) == false) {
+        girara_warning("Failed to parse color for highlight %s.", highlight->id);
+      }
+      highlight->text       = sqlite3_column_text_dup(stmt, 3);
+      highlight->rectangles = girara_list_new_with_free(g_free);
+    }
+
+    if (sqlite3_column_type(stmt, 4) != SQLITE_NULL) {
+      zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
+      if (rect != NULL) {
+        rect->x1 = sqlite3_column_double(stmt, 4);
+        rect->y1 = sqlite3_column_double(stmt, 5);
+        rect->x2 = sqlite3_column_double(stmt, 6);
+        rect->y2 = sqlite3_column_double(stmt, 7);
+        girara_list_append(highlight->rectangles, rect);
+      }
+    }
+  }
+
+  if (highlight != NULL) {
+    if (girara_list_size(highlight->rectangles) == 0) {
+      sqlite_discard_highlight(highlight);
+    } else {
+      girara_list_append(target_list, highlight);
+    }
+  }
+
+  return res == SQLITE_DONE;
 }
 
 static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist) {
@@ -880,6 +1066,9 @@ static void zathura_database_interface_init(ZathuraDatabaseInterface* iface) {
   iface->add_bookmark          = sqlite_add_bookmark;
   iface->remove_bookmark       = sqlite_remove_bookmark;
   iface->load_bookmarks        = sqlite_load_bookmarks;
+  iface->add_highlight         = sqlite_add_highlight;
+  iface->remove_highlight      = sqlite_remove_highlight;
+  iface->load_highlights       = sqlite_load_highlights;
   iface->load_jumplist         = sqlite_load_jumplist;
   iface->save_jumplist         = sqlite_save_jumplist;
   iface->set_fileinfo          = sqlite_set_fileinfo;

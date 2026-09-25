@@ -57,6 +57,27 @@ void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface
  */
 void zathura_page_widget_clear_selection(ZathuraPageWidget* widget);
 /**
+ * Check if the widget currently has an active (uncommitted) text selection.
+ * @param widget the widget
+ * @return true if there is a non-empty selection
+ */
+bool zathura_page_widget_has_selection(ZathuraPageWidget* widget);
+/**
+ * Turn the widget's current text selection into a persistent highlight and
+ * clear the selection.
+ * @param widget the widget
+ * @param color the highlight's color
+ * @return true if a highlight was created
+ */
+bool zathura_page_widget_commit_highlight(ZathuraPageWidget* widget, GdkRGBA color);
+/**
+ * Forget the cached list of persistent highlights so it gets re-fetched on
+ * the next draw. Call this after highlights have been added to or removed
+ * from this page.
+ * @param widget the widget
+ */
+void zathura_page_widget_invalidate_highlights(ZathuraPageWidget* widget);
+/**
  * Draw a rectangle to mark links or search results
  * @param widget the widget
  * @param rectangle the rectangle
