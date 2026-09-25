@@ -331,14 +331,9 @@ bool cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list)) 
     return false;
   }
 
-#ifdef WITH_SANDBOX
-  girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
-  return false;
-#else
   print(zathura);
 
   return true;
-#endif
 }
 
 bool cmd_nohlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
