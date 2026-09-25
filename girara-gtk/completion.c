@@ -204,9 +204,6 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
 
   const size_t input_length = strlen(input);
 
-  /* Even if the input bar has been emptied out (e.g. by repeatedly hitting
-   * backspace) a request to hide the completion list must still go through,
-   * otherwise the completion popup is left dangling on screen. */
   if ((input_length == 0 || input[0] != ':') && argument->n != GIRARA_HIDE) {
     return false;
   }
