@@ -138,6 +138,12 @@ static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operatio
 void print(zathura_t* zathura) {
   g_return_if_fail(zathura_has_document(zathura) == true);
 
+#ifdef WITH_SANDBOX
+  /* disable printing in sandbox mode */
+  girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
+  return;
+#endif
+
   zathura_document_t* document                 = zathura_get_document(zathura);
   g_autoptr(GtkPrintOperation) print_operation = gtk_print_operation_new();
 
