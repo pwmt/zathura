@@ -239,6 +239,9 @@ GIRARA_VISIBLE int main(int argc, char* argv[]) {
   /* Prevent default gtk dbus connection */
   g_setenv("DBUS_SESSION_BUS_ADDRESS", "disabled:", TRUE);
 
+  /* disable GTK4 accessibility bus connection */
+  g_setenv("GTK_A11Y", "none", TRUE);
+
   /* disable dconf writing - uses /var/empty as alternative to /dev/null to avoid ioctl call */
   g_setenv("DCONF_PROFILE", "/var/empty", TRUE);
 
