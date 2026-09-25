@@ -1833,6 +1833,12 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
+#ifdef WITH_SANDBOX
+  /* disable the file dialog in sandbox mode */
+  girara_notify(session, GIRARA_ERROR, _("The file chooser is not permitted in strict sandbox mode"));
+  return false;
+#endif
+
   g_autoptr(GtkFileDialog) dialog = gtk_file_dialog_new();
   gtk_file_dialog_set_title(dialog, _("Open file"));
 
