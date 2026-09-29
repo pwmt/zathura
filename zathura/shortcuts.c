@@ -743,7 +743,7 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
 
   unsigned int view_width  = 0;
   unsigned int view_height = 0;
-  zathura_document_get_viewport_size(document, &view_height, &view_width);
+  zathura_document_widget_get_viewport_size(zathura->ui.document_widget, &view_height, &view_width);
 
   unsigned int doc_width  = 0;
   unsigned int doc_height = 0;

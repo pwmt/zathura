@@ -336,4 +336,30 @@ unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* do
  */
 unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget* document);
 
+/**
+ * Sets the width of the viewport in pixels.
+ *
+ * @param[in] document_widget The document widget
+ * @param[in] width           The width of the viewport
+ */
+void zathura_document_widget_set_viewport_width(ZathuraDocumentWidget* document_widget, unsigned int width);
+
+/**
+ * Sets the height of the viewport in pixels.
+ *
+ * @param[in] document_widget The document widget
+ * @param[in] height          The height of the viewport
+ */
+void zathura_document_widget_set_viewport_height(ZathuraDocumentWidget* document_widget, unsigned int height);
+
+/**
+ * Return the size of the viewport in pixels.
+ *
+ * @param[in]  document_widget The document widget
+ * @param[out] height          The height of the viewport
+ * @param[out] width           The width of the viewport
+ */
+void zathura_document_widget_get_viewport_size(ZathuraDocumentWidget* document_widget, unsigned int* height,
+                                               unsigned int* width);
+
 #endif // DOCUMENT_WIDGET_H

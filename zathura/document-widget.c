@@ -40,6 +40,8 @@ typedef struct zathura_document_widget_private_s {
   unsigned int first_page_column; /**< column of the first page */
   unsigned int page_v_padding;    /**< padding between pages */
   unsigned int page_h_padding;    /**< padding between pages */
+  unsigned int view_width;        /**< width of current viewport */
+  unsigned int view_height;       /**< height of current viewport */
   int alloc_width;
   int alloc_height;
 
@@ -500,8 +502,8 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
 
   if (z_document != NULL) {
     if (size_changed == true) {
-      zathura_document_set_viewport_height(z_document, height);
-      zathura_document_set_viewport_width(z_document, width);
+      zathura_document_widget_set_viewport_height(document, height);
+      zathura_document_widget_set_viewport_width(document, width);
       adjust_view(priv->zathura);
       /* the scale settled and the zoom is now fit so release the held render in this same frame */
       if (priv->zathura->sync.initial_render_held == true && priv->zathura->sync.scale_settled == true) {
@@ -815,7 +817,7 @@ static bool zathura_document_widget_page_is_visible(ZathuraDocumentWidget* docum
 
   unsigned int view_height = 0;
   unsigned int view_width  = 0;
-  zathura_document_get_viewport_size(priv->document, &view_height, &view_width);
+  zathura_document_widget_get_viewport_size(document, &view_height, &view_width);
 
   return fabs(pos_x - page_x) < 0.5 * (double)(view_width + priv->col_widths[col].size) / (double)document_width &&
          fabs(pos_y - page_y) < 0.5 * (double)(view_height + priv->row_heights[row].size) / (double)document_height;
@@ -1193,6 +1195,8 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
   g_clear_pointer(&priv->col_widths, g_free);
   g_clear_pointer(&priv->row_heights, g_free);
 
+  priv->view_width   = 0;
+  priv->view_height  = 0;
   priv->document     = NULL;
   priv->nrow         = 0;
   priv->ncol         = 0;
@@ -1310,4 +1314,30 @@ unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   return priv->first_page_column;
+}
+
+void zathura_document_widget_set_viewport_width(ZathuraDocumentWidget* document_widget, unsigned int width) {
+  if (document_widget == NULL) {
+    return;
+  }
+  g_return_if_fail(ZATHURA_IS_DOCUMENT_WIDGET(document_widget));
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document_widget);
+  priv->view_width                   = width;
+}
+
+void zathura_document_widget_set_viewport_height(ZathuraDocumentWidget* document_widget, unsigned int height) {
+  if (document_widget == NULL) {
+    return;
+  }
+  g_return_if_fail(ZATHURA_IS_DOCUMENT_WIDGET(document_widget));
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document_widget);
+  priv->view_height                  = height;
+}
+
+void zathura_document_widget_get_viewport_size(ZathuraDocumentWidget* document_widget, unsigned int* height,
+                                               unsigned int* width) {
+  g_return_if_fail(ZATHURA_IS_DOCUMENT_WIDGET(document_widget) && height != NULL && width != NULL);
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document_widget);
+  *height                            = priv->view_height;
+  *width                             = priv->view_width;
 }

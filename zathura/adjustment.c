@@ -114,7 +114,7 @@ void page_number_to_position(zathura_t* zathura, unsigned int page_number, doubl
                                        &cell_pos_y);
 
   unsigned int view_height = 0, view_width = 0;
-  zathura_document_get_viewport_size(document, &view_height, &view_width);
+  zathura_document_widget_get_viewport_size(zathura->ui.document_widget, &view_height, &view_width);
 
   unsigned int doc_height = 0, doc_width = 0;
   zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,

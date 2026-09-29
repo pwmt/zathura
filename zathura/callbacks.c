@@ -176,9 +176,9 @@ static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zat
   /* Save the viewport size */
   const unsigned int size = floor(gtk_adjustment_get_page_size(adjustment));
   if (width == true) {
-    zathura_document_set_viewport_width(document, size);
+    zathura_document_widget_set_viewport_width(zathura->ui.document_widget, size);
   } else {
-    zathura_document_set_viewport_height(document, size);
+    zathura_document_widget_set_viewport_height(zathura->ui.document_widget, size);
   }
 
   // bounds from the old layout must not replace the pending page anchor.

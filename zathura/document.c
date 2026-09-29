@@ -41,8 +41,6 @@ struct zathura_document_s {
   unsigned int rotate;                     /**< Rotation */
   zathura_adjust_mode_t adjust_mode;       /**< Adjust mode (best-fit, width) */
   int page_offset;                         /**< Page offset */
-  unsigned int view_width;                 /**< width of current viewport */
-  unsigned int view_height;                /**< height of current viewport */
   double view_ppi;                         /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
   double position_x;                       /**< X adjustment */
@@ -137,8 +135,6 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   document->zoom             = 1.0;
   document->plugin           = plugin;
   document->adjust_mode      = ZATHURA_ADJUST_NONE;
-  document->view_height      = 0;
-  document->view_width       = 0;
   document->view_ppi         = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
@@ -428,31 +424,11 @@ void zathura_document_set_page_offset(zathura_document_t* document, unsigned int
   document->page_offset = page_offset;
 }
 
-void zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width) {
-  if (document == NULL) {
-    return;
-  }
-  document->view_width = width;
-}
-
-void zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height) {
-  if (document == NULL) {
-    return;
-  }
-  document->view_height = height;
-}
-
 void zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi) {
   if (document == NULL) {
     return;
   }
   document->view_ppi = ppi;
-}
-
-void zathura_document_get_viewport_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {
-  g_return_if_fail(document != NULL && height != NULL && width != NULL);
-  *height = document->view_height;
-  *width  = document->view_width;
 }
 
 double zathura_document_get_viewport_ppi(zathura_document_t* document) {

@@ -242,31 +242,6 @@ ZATHURA_PLUGIN_API void* zathura_document_get_data(zathura_document_t* document)
 ZATHURA_PLUGIN_API void zathura_document_set_data(zathura_document_t* document, void* data);
 
 /**
- * Sets the width of the viewport in pixels.
- *
- * @param[in] document     The document instance
- * @param[in] width        The width of the viewport
- */
-void ZATHURA_PLUGIN_API zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width);
-
-/**
- * Sets the height of the viewport in pixels.
- *
- * @param[in] document     The document instance
- * @param[in] height       The height of the viewport
- */
-void ZATHURA_PLUGIN_API zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
-
-/**
- * Return the size of the viewport in pixels.
- *
- * @param[in]  document     The document instance
- * @param[out] height,width The width and height of the viewport
- */
-void ZATHURA_PLUGIN_API zathura_document_get_viewport_size(zathura_document_t* document, unsigned int* height,
-                                                           unsigned int* width);
-
-/**
  Sets the viewport PPI (pixels per inch: the resolution of the monitor, after
  scaling with the device factor).
  *

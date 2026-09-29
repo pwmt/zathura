@@ -1177,9 +1177,9 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
   const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
-  zathura_document_set_viewport_width(document, view_width);
+  zathura_document_widget_set_viewport_width(zathura->ui.document_widget, view_width);
   const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
-  zathura_document_set_viewport_height(document, view_height);
+  zathura_document_widget_set_viewport_height(zathura->ui.document_widget, view_height);
 
   /* get initial device scale */
   GtkNative* native   = gtk_widget_get_native(zathura->ui.session->gtk.view);
@@ -1735,7 +1735,7 @@ bool adjust_view(zathura_t* zathura) {
                                         &cell_height, &cell_width);
   zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &document_height,
                                             &document_width);
-  zathura_document_get_viewport_size(document, &view_height, &view_width);
+  zathura_document_widget_get_viewport_size(zathura->ui.document_widget, &view_height, &view_width);
 
   if (view_height == 0 || view_width == 0 || cell_height == 0 || cell_width == 0 || document_width == 0) {
     return false;
