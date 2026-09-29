@@ -117,42 +117,6 @@ ZATHURA_PLUGIN_API void zathura_document_set_current_page_number(zathura_documen
                                                                  unsigned int current_page);
 
 /**
- * Returns the X position, as a value relative to the document width (0=left,
- * 1=right).
- *
- * @param document The document
- * @return X adjustment
- */
-ZATHURA_PLUGIN_API double zathura_document_get_position_x(zathura_document_t* document);
-
-/**
- * Returns the Y position as value relative to the document height (0=top,
- * 1=bottom)
- *
- * @param document The document
- * @return Y adjustment
- */
-ZATHURA_PLUGIN_API double zathura_document_get_position_y(zathura_document_t* document);
-
-/**
- * Sets the X position as a value relative to the document width (0=left,
- * 1=right)
- *
- * @param document The document
- * @param position_x the X adjustment
- */
-ZATHURA_PLUGIN_API void zathura_document_set_position_x(zathura_document_t* document, double position_x);
-
-/**
- * Sets the Y position as a value relative to the document height (0=top,
- * 1=bottom)
- *
- * @param document The document
- * @param position_y the Y adjustment
- */
-ZATHURA_PLUGIN_API void zathura_document_set_position_y(zathura_document_t* document, double position_y);
-
-/**
  * Returns the current zoom value of the document
  *
  * @param document The document
@@ -194,22 +158,6 @@ ZATHURA_PLUGIN_API unsigned int zathura_document_get_rotation(zathura_document_t
 ZATHURA_PLUGIN_API void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation);
 
 /**
- * Returns the adjust mode of the document
- *
- * @param document The document
- * @return The adjust mode
- */
-ZATHURA_PLUGIN_API zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
-
-/**
- * Sets the new adjust mode of the document
- *
- * @param document The document
- * @param mode The new adjust mode
- */
-ZATHURA_PLUGIN_API void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode);
-
-/**
  * Returns the page offset of the document
  *
  * @param document The document
@@ -240,31 +188,6 @@ ZATHURA_PLUGIN_API void* zathura_document_get_data(zathura_document_t* document)
  * @param data The new private data
  */
 ZATHURA_PLUGIN_API void zathura_document_set_data(zathura_document_t* document, void* data);
-
-/**
- * Sets the width of the viewport in pixels.
- *
- * @param[in] document     The document instance
- * @param[in] width        The width of the viewport
- */
-void ZATHURA_PLUGIN_API zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width);
-
-/**
- * Sets the height of the viewport in pixels.
- *
- * @param[in] document     The document instance
- * @param[in] height       The height of the viewport
- */
-void ZATHURA_PLUGIN_API zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height);
-
-/**
- * Return the size of the viewport in pixels.
- *
- * @param[in]  document     The document instance
- * @param[out] height,width The width and height of the viewport
- */
-void ZATHURA_PLUGIN_API zathura_document_get_viewport_size(zathura_document_t* document, unsigned int* height,
-                                                           unsigned int* width);
 
 /**
  Sets the viewport PPI (pixels per inch: the resolution of the monitor, after

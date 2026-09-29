@@ -8,6 +8,7 @@
 
 #include "zathura.h"
 #include "document.h"
+#include "document-widget.h"
 #include "database.h"
 
 static void zathura_jumplist_reset_current(zathura_t* zathura) {
@@ -42,8 +43,8 @@ static void zathura_jumplist_save(zathura_t* zathura) {
   zathura_jump_t* cur = zathura_jumplist_current(zathura);
   if (cur != NULL) {
     zathura_document_t* document = zathura_get_document(zathura);
-    cur->x                       = zathura_document_get_position_x(document);
-    cur->y                       = zathura_document_get_position_y(document);
+    cur->x                       = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+    cur->y                       = zathura_document_widget_get_position_y(zathura->ui.document_widget);
     cur->page                    = zathura_document_get_current_page_number(document);
   }
 }
@@ -101,10 +102,8 @@ void zathura_jumplist_trim(zathura_t* zathura) {
 void zathura_jumplist_add(zathura_t* zathura) {
   g_return_if_fail(zathura_has_document(zathura) == true && zathura->jumplist.list != NULL);
 
-  zathura_document_t* document = zathura_get_document(zathura);
-  double x                     = zathura_document_get_position_x(document);
-  double y                     = zathura_document_get_position_y(document);
-
+  double x = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double y = zathura_document_widget_get_position_y(zathura->ui.document_widget);
   if (zathura->jumplist.size != 0) {
     zathura_jumplist_reset_current(zathura);
 
