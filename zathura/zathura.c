@@ -1172,14 +1172,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
    * So we store the page number here and reset it below. */
   const unsigned int page = zathura_document_get_current_page_number(document);
 
-  /* get view port size */
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
-  const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
-  zathura_document_widget_set_viewport_width(zathura->ui.document_widget, view_width);
-  const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
-  zathura_document_widget_set_viewport_height(zathura->ui.document_widget, view_height);
 
   /* get initial device scale */
   GtkNative* native   = gtk_widget_get_native(zathura->ui.session->gtk.view);
@@ -1231,6 +1224,17 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* page widgets are created on demand, not all at once */
   zathura_document_widget_ensure_page(zathura->ui.document_widget, zathura_document_get_current_page_number(document));
   girara_set_view(zathura->ui.session, zathura->ui.view);
+
+  // here
+  /* get view port size */
+  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
+
+  const unsigned int view_width = floor(gtk_adjustment_get_page_size(hadjustment));
+  zathura_document_widget_set_viewport_width(zathura->ui.document_widget, view_width);
+  const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
+  zathura_document_widget_set_viewport_height(zathura->ui.document_widget, view_height);
+
 
   /* update title */
   {
