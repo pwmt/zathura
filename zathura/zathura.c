@@ -1234,7 +1234,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   const unsigned int view_height = floor(gtk_adjustment_get_page_size(vadjustment));
   zathura_document_widget_set_viewport_height(zathura->ui.document_widget, view_height);
 
-
   /* update title */
   {
     g_autofree char* formatted_filename = get_formatted_filename(zathura, false);
