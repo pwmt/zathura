@@ -43,8 +43,6 @@ struct zathura_document_s {
   int page_offset;                         /**< Page offset */
   double view_ppi;                         /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
-  double position_x;                       /**< X adjustment */
-  double position_y;                       /**< Y adjustment */
   bool hash_computed;                      /**< Whether the hash has been computed yet */
 };
 
@@ -138,8 +136,6 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   document->view_ppi         = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
-  document->position_x       = 0.0;
-  document->position_y       = 0.0;
 
   /* open document */
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
@@ -302,38 +298,6 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
   }
 
   document->current_page_number = current_page;
-}
-
-double zathura_document_get_position_x(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->position_x;
-}
-
-double zathura_document_get_position_y(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->position_y;
-}
-
-void zathura_document_set_position_x(zathura_document_t* document, double position_x) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->position_x = position_x;
-}
-
-void zathura_document_set_position_y(zathura_document_t* document, double position_y) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->position_y = position_y;
 }
 
 double zathura_document_get_zoom(zathura_document_t* document) {

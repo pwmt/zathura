@@ -108,15 +108,15 @@ void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_widget_update_visible_pages(zathura->ui.document_widget);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  const double stored_position = zathura_document_get_position_x(document);
+  const double stored_position = zathura_document_widget_get_position_x(zathura->ui.document_widget);
 
   const double position_x    = zathura_adjustment_get_ratio(adjustment);
-  const double position_y    = zathura_document_get_position_y(document);
+  const double position_y    = zathura_document_widget_get_position_y(zathura->ui.document_widget);
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
   unsigned int page_id       = position_to_page_number(zathura, position_x, page_position_y(vadjustment));
 
-  zathura_document_set_position_x(document, position_x);
-  zathura_document_set_position_y(document, position_y);
+  zathura_document_widget_set_position_x(zathura->ui.document_widget, position_x);
+  zathura_document_widget_set_position_y(zathura->ui.document_widget, position_y);
   /* In single-page mode the page is selected explicitly so scrolling must not change it */
   if (in_single_page_mode(zathura) == false) {
     zathura_document_set_current_page_number(document, page_id);
@@ -143,14 +143,14 @@ void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data)
   zathura_document_widget_update_visible_pages(zathura->ui.document_widget);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  const double stored_position = zathura_document_get_position_y(document);
+  const double stored_position = zathura_document_widget_get_position_y(zathura->ui.document_widget);
 
-  const double position_x    = zathura_document_get_position_x(document);
+  const double position_x    = zathura_document_widget_get_position_x(zathura->ui.document_widget);
   const double position_y    = zathura_adjustment_get_ratio(adjustment);
   const unsigned int page_id = position_to_page_number(zathura, position_x, page_position_y(adjustment));
 
-  zathura_document_set_position_x(document, position_x);
-  zathura_document_set_position_y(document, position_y);
+  zathura_document_widget_set_position_x(zathura->ui.document_widget, position_x);
+  zathura_document_widget_set_position_y(zathura->ui.document_widget, position_y);
   /* In single-page mode the page is selected explicitly so scrolling must not change it */
   if (in_single_page_mode(zathura) == false) {
     zathura_document_set_current_page_number(document, page_id);
@@ -192,9 +192,9 @@ static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zat
   if (extent > size) {
     const double applied = zathura_adjustment_get_ratio(adjustment);
     if (width == true) {
-      zathura_document_set_position_x(document, applied);
+      zathura_document_widget_set_position_x(zathura->ui.document_widget, applied);
     } else {
-      zathura_document_set_position_y(document, applied);
+      zathura_document_widget_set_position_y(zathura->ui.document_widget, applied);
     }
   }
 }
@@ -233,8 +233,8 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
   GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
-  const double position_x = zathura_document_get_position_x(document);
-  const double position_y = zathura_document_get_position_y(document);
+  const double position_x = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  const double position_y = zathura_document_widget_get_position_y(zathura->ui.document_widget);
 
   zathura_adjustment_set_value_from_ratio(vadj, position_y);
   zathura_adjustment_set_value_from_ratio(hadj, position_x);
@@ -358,8 +358,8 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   const unsigned int current_page = zathura_document_get_current_page_number(document);
   double anchor_x = 0.0, anchor_y = 0.0;
   page_number_to_position(zathura, current_page, 0.5, 0.5, &anchor_x, &anchor_y);
-  zathura_document_set_position_x(document, anchor_x);
-  zathura_document_set_position_y(document, anchor_y);
+  zathura_document_widget_set_position_x(zathura->ui.document_widget, anchor_x);
+  zathura_document_widget_set_position_y(zathura->ui.document_widget, anchor_y);
   refresh_view(zathura);
 }
 

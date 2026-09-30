@@ -1366,7 +1366,8 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite) {
   return true;
 }
 
-static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zathura_document_t* document) {
+static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zathura_document_t* document,
+                                                        ZathuraDocumentWidget* document_widget) {
   /* Caller needs to g_free(file_info.first_page_column_list) */
 
   zathura_fileinfo_t file_info = {
@@ -1377,8 +1378,8 @@ static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zath
       .pages_per_row          = 1,
       .first_page_column_list = "1:2",
       .page_right_to_left     = false,
-      .position_x             = zathura_document_get_position_x(document),
-      .position_y             = zathura_document_get_position_y(document),
+      .position_x             = zathura_document_widget_get_position_x(document_widget),
+      .position_y             = zathura_document_widget_get_position_y(document_widget),
   };
 
   girara_setting_get(zathura->ui.session, "pages-per-row", &file_info.pages_per_row);
@@ -1389,11 +1390,11 @@ static zathura_fileinfo_t zathura_get_document_fileinfo(zathura_t* zathura, zath
 }
 
 zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura) {
-  return zathura_get_document_fileinfo(zathura, zathura_get_document(zathura));
+  return zathura_get_document_fileinfo(zathura, zathura_get_document(zathura), zathura->ui.document_widget);
 }
 
 zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura) {
-  return zathura_get_document_fileinfo(zathura, zathura->predecessor_document);
+  return zathura_get_document_fileinfo(zathura, zathura->predecessor_document, zathura->predecessor_document_widget);
 }
 
 static void save_fileinfo_to_db(zathura_t* zathura) {
@@ -1698,8 +1699,8 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
   }
 
   /* set the position */
-  zathura_document_set_position_x(document, position_x);
-  zathura_document_set_position_y(document, position_y);
+  zathura_document_widget_set_position_x(zathura->ui.document_widget, position_x);
+  zathura_document_widget_set_position_y(zathura->ui.document_widget, position_y);
 
   /* trigger a 'change' event for both adjustments */
   refresh_view(zathura);

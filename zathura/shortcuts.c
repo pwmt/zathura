@@ -660,13 +660,13 @@ static bool scroll_single_page_full(zathura_t* zathura, bool down) {
 
   if (down) {
     if (value < maxvalue - 1.0) {
-      position_set(zathura, zathura_document_get_position_x(document), position_moved_by(vadj, step));
+      position_set(zathura, zathura_document_widget_get_position_x(zathura->ui.document_widget), position_moved_by(vadj, step));
     } else if (page + 1 < npag) {
       page_set(zathura, page + 1);
     }
   } else {
     if (value > lower + 1.0) {
-      position_set(zathura, zathura_document_get_position_x(document), position_moved_by(vadj, -step));
+      position_set(zathura, zathura_document_widget_get_position_x(zathura->ui.document_widget), position_moved_by(vadj, -step));
     } else if (page > 0) {
       page_set(zathura, page - 1);
     }
@@ -708,8 +708,8 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   /* Retrieve current page and position */
   zathura_document_t* document = zathura_get_document(zathura);
   const unsigned int page_id   = zathura_document_get_current_page_number(document);
-  double pos_x                 = zathura_document_get_position_x(document);
-  double pos_y                 = zathura_document_get_position_y(document);
+  double pos_x                 = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double pos_y                 = zathura_document_widget_get_position_y(zathura->ui.document_widget);
 
   /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
   if (argument->n == PAGE_TOP) {

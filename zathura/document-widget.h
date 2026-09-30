@@ -339,27 +339,63 @@ unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget
 /**
  * Sets the width of the viewport in pixels.
  *
- * @param[in] document_widget The document widget
- * @param[in] width           The width of the viewport
+ * @param[in] document The document widget
+ * @param[in] width    The width of the viewport
  */
-void zathura_document_widget_set_viewport_width(ZathuraDocumentWidget* document_widget, unsigned int width);
+void zathura_document_widget_set_viewport_width(ZathuraDocumentWidget* document, unsigned int width);
 
 /**
  * Sets the height of the viewport in pixels.
  *
- * @param[in] document_widget The document widget
- * @param[in] height          The height of the viewport
+ * @param[in] document The document widget
+ * @param[in] height   The height of the viewport
  */
-void zathura_document_widget_set_viewport_height(ZathuraDocumentWidget* document_widget, unsigned int height);
+void zathura_document_widget_set_viewport_height(ZathuraDocumentWidget* document, unsigned int height);
 
 /**
  * Return the size of the viewport in pixels.
  *
- * @param[in]  document_widget The document widget
- * @param[out] height          The height of the viewport
- * @param[out] width           The width of the viewport
+ * @param[in]  document The document widget
+ * @param[out] height   The height of the viewport
+ * @param[out] width    The width of the viewport
  */
-void zathura_document_widget_get_viewport_size(ZathuraDocumentWidget* document_widget, unsigned int* height,
+void zathura_document_widget_get_viewport_size(ZathuraDocumentWidget* document, unsigned int* height,
                                                unsigned int* width);
+
+/**
+ * Returns the X position, as a value relative to the document width (0=left,
+ * 1=right).
+ *
+ * @param document The document
+ * @return X adjustment
+ */
+double zathura_document_widget_get_position_x(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the Y position as value relative to the document height (0=top,
+ * 1=bottom)
+ *
+ * @param document The document
+ * @return Y adjustment
+ */
+double zathura_document_widget_get_position_y(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the X position as a value relative to the document width (0=left,
+ * 1=right)
+ *
+ * @param document The document
+ * @param position_x the X adjustment
+ */
+void zathura_document_widget_set_position_x(ZathuraDocumentWidget* document, double position_x);
+
+/**
+ * Sets the Y position as a value relative to the document height (0=top,
+ * 1=bottom)
+ *
+ * @param document The document
+ * @param position_y the Y adjustment
+ */
+void zathura_document_widget_set_position_y(ZathuraDocumentWidget* document, double position_y);
 
 #endif // DOCUMENT_WIDGET_H

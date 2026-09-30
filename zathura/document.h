@@ -117,42 +117,6 @@ ZATHURA_PLUGIN_API void zathura_document_set_current_page_number(zathura_documen
                                                                  unsigned int current_page);
 
 /**
- * Returns the X position, as a value relative to the document width (0=left,
- * 1=right).
- *
- * @param document The document
- * @return X adjustment
- */
-ZATHURA_PLUGIN_API double zathura_document_get_position_x(zathura_document_t* document);
-
-/**
- * Returns the Y position as value relative to the document height (0=top,
- * 1=bottom)
- *
- * @param document The document
- * @return Y adjustment
- */
-ZATHURA_PLUGIN_API double zathura_document_get_position_y(zathura_document_t* document);
-
-/**
- * Sets the X position as a value relative to the document width (0=left,
- * 1=right)
- *
- * @param document The document
- * @param position_x the X adjustment
- */
-ZATHURA_PLUGIN_API void zathura_document_set_position_x(zathura_document_t* document, double position_x);
-
-/**
- * Sets the Y position as a value relative to the document height (0=top,
- * 1=bottom)
- *
- * @param document The document
- * @param position_y the Y adjustment
- */
-ZATHURA_PLUGIN_API void zathura_document_set_position_y(zathura_document_t* document, double position_y);
-
-/**
  * Returns the current zoom value of the document
  *
  * @param document The document
