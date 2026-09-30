@@ -1225,7 +1225,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura_document_widget_ensure_page(zathura->ui.document_widget, zathura_document_get_current_page_number(document));
   girara_set_view(zathura->ui.session, zathura->ui.view);
 
-  // here
   /* get view port size */
   GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
   GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
