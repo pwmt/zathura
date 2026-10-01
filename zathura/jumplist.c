@@ -102,8 +102,8 @@ void zathura_jumplist_trim(zathura_t* zathura) {
 void zathura_jumplist_add(zathura_t* zathura) {
   g_return_if_fail(zathura_has_document(zathura) == true && zathura->jumplist.list != NULL);
 
-  double x                     = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  double y                     = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+  double x = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double y = zathura_document_widget_get_position_y(zathura->ui.document_widget);
   if (zathura->jumplist.size != 0) {
     zathura_jumplist_reset_current(zathura);
 
