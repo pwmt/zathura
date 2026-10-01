@@ -39,7 +39,6 @@ struct zathura_document_s {
   unsigned int number_of_pages;            /**< Number of pages */
   double zoom;                             /**< Zoom value */
   unsigned int rotate;                     /**< Rotation */
-  zathura_adjust_mode_t adjust_mode;       /**< Adjust mode (best-fit, width) */
   int page_offset;                         /**< Page offset */
   double view_ppi;                         /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
@@ -132,7 +131,6 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   document->password         = password;
   document->zoom             = 1.0;
   document->plugin           = plugin;
-  document->adjust_mode      = ZATHURA_ADJUST_NONE;
   document->view_ppi         = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
@@ -354,22 +352,6 @@ void zathura_document_set_rotation(zathura_document_t* document, unsigned int ro
   } else {
     document->rotate = 270;
   }
-}
-
-zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document) {
-  if (document == NULL) {
-    return ZATHURA_ADJUST_NONE;
-  }
-
-  return document->adjust_mode;
-}
-
-void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->adjust_mode = mode;
 }
 
 int zathura_document_get_page_offset(zathura_document_t* document) {

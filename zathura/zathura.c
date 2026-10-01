@@ -1081,21 +1081,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     }
   }
 
-  /* apply open adjustment */
-  if (known_file == false) {
-    g_autofree char* adjust_open = NULL;
-    girara_setting_get(zathura->ui.session, "adjust-open", &adjust_open);
-    if (g_strcmp0(adjust_open, "best-fit") == 0) {
-      zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_BESTFIT);
-    } else if (g_strcmp0(adjust_open, "width") == 0) {
-      zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_WIDTH);
-    } else {
-      zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
-    }
-  } else {
-    zathura_document_set_adjust_mode(document, ZATHURA_ADJUST_NONE);
-  }
-
   /* initialize bisect state */
   zathura->bisect.start     = 0;
   zathura->bisect.last_jump = zathura_document_get_current_page_number(document);
@@ -1219,6 +1204,21 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
                                 page_right_to_left)) {
       goto error_free;
     }
+  }
+
+  /* apply open adjustment */
+  if (known_file == false) {
+    g_autofree char* adjust_open = NULL;
+    girara_setting_get(zathura->ui.session, "adjust-open", &adjust_open);
+    if (g_strcmp0(adjust_open, "best-fit") == 0) {
+      zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_BESTFIT);
+    } else if (g_strcmp0(adjust_open, "width") == 0) {
+      zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_WIDTH);
+    } else {
+      zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_NONE);
+    }
+  } else {
+    zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_NONE);
   }
 
   /* page widgets are created on demand, not all at once */
@@ -1680,7 +1680,7 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
   }
 
   /* automatic horizontal adjustment */
-  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(document);
+  zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
 
   /* negative position_x mean: use the computed value */
   if (position_x < 0) {
@@ -1722,7 +1722,7 @@ bool adjust_view(zathura_t* zathura) {
     return false;
   }
 
-  zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(document);
+  zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
   if (adjust_mode == ZATHURA_ADJUST_NONE) {
     /* there is nothing todo */
     return true;

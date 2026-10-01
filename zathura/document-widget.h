@@ -398,4 +398,20 @@ void zathura_document_widget_set_position_x(ZathuraDocumentWidget* document, dou
  */
 void zathura_document_widget_set_position_y(ZathuraDocumentWidget* document, double position_y);
 
+/**
+ * Returns the adjust mode of the document
+ *
+ * @param document The document
+ * @return The adjust mode
+ */
+zathura_adjust_mode_t zathura_document_widget_get_adjust_mode(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the new adjust mode of the document
+ *
+ * @param document The document
+ * @param mode The new adjust mode
+ */
+void zathura_document_widget_set_adjust_mode(ZathuraDocumentWidget* document, zathura_adjust_mode_t mode);
+
 #endif // DOCUMENT_WIDGET_H

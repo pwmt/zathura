@@ -40,6 +40,7 @@ typedef struct zathura_document_widget_private_s {
   unsigned int first_page_column; /**< column of the first page */
   unsigned int page_v_padding;    /**< padding between pages */
   unsigned int page_h_padding;    /**< padding between pages */
+  zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
   unsigned int view_width;        /**< width of current viewport */
   unsigned int view_height;       /**< height of current viewport */
   double position_x;              /**< X adjustment */
@@ -434,7 +435,7 @@ static void apply_pending_page_anchor(ZathuraDocumentWidget* document) {
                             vertical_center ? 0.5 : 0.0, &x, &y);
     bool zoom_center = false;
     girara_setting_get(priv->zathura->ui.session, "zoom-center", &zoom_center);
-    const zathura_adjust_mode_t mode = zathura_document_get_adjust_mode(priv->document);
+    const zathura_adjust_mode_t mode = zathura_document_widget_get_adjust_mode(document);
     if (zoom_center || mode == ZATHURA_ADJUST_BESTFIT || mode == ZATHURA_ADJUST_WIDTH) {
       x = 0.5;
     }
@@ -1198,6 +1199,7 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
   priv->view_height  = 0;
   priv->position_x   = 0.0;
   priv->position_y   = 0.0;
+  priv->adjust_mode  = ZATHURA_ADJUST_NONE;
   priv->document     = NULL;
   priv->nrow         = 0;
   priv->ncol         = 0;
@@ -1373,4 +1375,22 @@ void zathura_document_widget_set_position_y(ZathuraDocumentWidget* document, dou
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
   priv->position_y                   = position_y;
+}
+
+zathura_adjust_mode_t zathura_document_widget_get_adjust_mode(ZathuraDocumentWidget* document) {
+  if (document == NULL) {
+    return ZATHURA_ADJUST_NONE;
+  }
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->adjust_mode;
+}
+
+void zathura_document_widget_set_adjust_mode(ZathuraDocumentWidget* document, zathura_adjust_mode_t mode) {
+  if (document == NULL) {
+    return;
+  }
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  priv->adjust_mode                  = mode;
 }

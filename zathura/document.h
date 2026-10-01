@@ -158,22 +158,6 @@ ZATHURA_PLUGIN_API unsigned int zathura_document_get_rotation(zathura_document_t
 ZATHURA_PLUGIN_API void zathura_document_set_rotation(zathura_document_t* document, unsigned int rotation);
 
 /**
- * Returns the adjust mode of the document
- *
- * @param document The document
- * @return The adjust mode
- */
-ZATHURA_PLUGIN_API zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document);
-
-/**
- * Sets the new adjust mode of the document
- *
- * @param document The document
- * @param mode The new adjust mode
- */
-ZATHURA_PLUGIN_API void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode);
-
-/**
  * Returns the page offset of the document
  *
  * @param document The document

@@ -165,8 +165,7 @@ static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zat
     return;
   }
 
-  zathura_document_t* document            = zathura_get_document(zathura);
-  const zathura_adjust_mode_t adjust_mode = zathura_document_get_adjust_mode(document);
+  const zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
 
   /* Don't scroll, we're focusing the inputbar. */
   if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
