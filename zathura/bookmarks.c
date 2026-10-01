@@ -10,6 +10,7 @@
 
 #include "database.h"
 #include "document.h"
+#include "document-widget.h"
 #include "adjustment.h"
 
 static int bookmark_compare_find(const void* item, const void* data) {
@@ -24,8 +25,8 @@ zathura_bookmark_t* zathura_bookmark_add(zathura_t* zathura, const gchar* id, un
   g_return_val_if_fail(id, NULL);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  double position_x            = zathura_document_get_position_x(document);
-  double position_y            = zathura_document_get_position_y(document);
+  double position_x            = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double position_y            = zathura_document_widget_get_position_y(zathura->ui.document_widget);
   zathura_bookmark_t* old      = zathura_bookmark_get(zathura, id);
 
   if (old != NULL) {

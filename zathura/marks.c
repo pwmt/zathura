@@ -145,8 +145,8 @@ static void mark_add(zathura_t* zathura, int key) {
 
   zathura_document_t* document = zathura_get_document(zathura);
   unsigned int page_id         = zathura_document_get_current_page_number(document);
-  double position_x            = zathura_document_get_position_x(document);
-  double position_y            = zathura_document_get_position_y(document);
+  double position_x            = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  double position_y            = zathura_document_widget_get_position_y(zathura->ui.document_widget);
 
   double zoom = zathura_document_get_zoom(document);
 
