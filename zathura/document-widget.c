@@ -515,10 +515,18 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
   /* set the page size after adjust_view so the changed handler stores the position against the
    * final document height and the view stays at the top on first open */
   if (priv->grid != NULL && size_changed == true) {
-    gtk_adjustment_set_page_size(priv->hadjustment, width);
+    const double stored_y = z_document != NULL ? zathura_document_get_position_y(z_document) : 0.0;
+    const double stored_x = z_document != NULL ? zathura_document_get_position_x(z_document) : 0.0;
+
     gtk_adjustment_set_page_size(priv->vadjustment, height);
-    gtk_adjustment_set_page_increment(priv->hadjustment, width * 0.9);
+    gtk_adjustment_set_page_size(priv->hadjustment, width);
     gtk_adjustment_set_page_increment(priv->vadjustment, height * 0.9);
+    gtk_adjustment_set_page_increment(priv->hadjustment, width * 0.9);
+
+    if (z_document != NULL) {
+      zathura_adjustment_set_value_from_ratio(priv->vadjustment, stored_y);
+      zathura_adjustment_set_value_from_ratio(priv->hadjustment, stored_x);
+    }
   }
 
   if (priv->grid != NULL) {
