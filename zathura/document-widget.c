@@ -36,15 +36,15 @@ typedef struct zathura_document_widget_private_s {
   unsigned int ncol;
   document_widget_line_s* row_heights;
   document_widget_line_s* col_widths;
-  unsigned int pages_per_row;     /**< number of pages in a row */
-  unsigned int first_page_column; /**< column of the first page */
-  unsigned int page_v_padding;    /**< padding between pages */
-  unsigned int page_h_padding;    /**< padding between pages */
+  unsigned int pages_per_row;        /**< number of pages in a row */
+  unsigned int first_page_column;    /**< column of the first page */
+  unsigned int page_v_padding;       /**< padding between pages */
+  unsigned int page_h_padding;       /**< padding between pages */
   zathura_adjust_mode_t adjust_mode; /**< Adjust mode (best-fit, width) */
-  unsigned int view_width;        /**< width of current viewport */
-  unsigned int view_height;       /**< height of current viewport */
-  double position_x;              /**< X adjustment */
-  double position_y;              /**< Y adjustment */
+  unsigned int view_width;           /**< width of current viewport */
+  unsigned int view_height;          /**< height of current viewport */
+  double position_x;                 /**< X adjustment */
+  double position_y;                 /**< Y adjustment */
   int alloc_width;
   int alloc_height;
 
