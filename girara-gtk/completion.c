@@ -204,7 +204,7 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
 
   const size_t input_length = strlen(input);
 
-  if (input_length == 0 || input[0] != ':') {
+  if ((input_length == 0 || input[0] != ':') && argument->n != GIRARA_HIDE) {
     return false;
   }
 
