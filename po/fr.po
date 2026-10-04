@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
 "PO-Revision-Date: 2026-09-15 09:48+0200\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>, 2012\n"
 "Language-Team: French (http://app.transifex.com/pwmt/zathura/language/fr/)\n"
@@ -1213,9 +1213,6 @@ msgstr ""
 msgid "No arguments given."
 msgstr "Aucun argument passé."
 
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "L'impression n'est pas autorisée en mode d'isolation stricte"
-
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "L'enregistrement n'est pas autorisé en mode d'isolation stricte"
 
@@ -1267,9 +1264,8 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
-#, fuzzy
 msgid "Bookmarks"
-msgstr "Favori vers lequel aller"
+msgstr ""
 
 #, c-format
 msgid "Page %u"
@@ -1374,9 +1370,8 @@ msgstr "Largeur initiale de la fenêtre"
 msgid "Initial window height"
 msgstr "Hauteur initiale de la fenêtre"
 
-#, fuzzy
 msgid "Show window decorations"
-msgstr "Afficher les informations de version"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1817,6 +1812,10 @@ msgstr "Enregistrer l'image sous"
 msgid "Printing page %u ..."
 msgstr "Impression de la page %u ..."
 
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "L'impression n'est pas autorisée en mode d'isolation stricte"
+
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Echec d'impression : %s"
@@ -1834,6 +1833,10 @@ msgstr "Ce document ne contient pas d'index"
 
 msgid "Could not get path from file."
 msgstr "Impossible d'obtenir le chemin depuis le fichier."
+
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
 
 msgid "Open file"
 msgstr "Ouvrir un fichier"

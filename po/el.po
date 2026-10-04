@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 09:40+0200\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
 "PO-Revision-Date: 2026-09-15 09:45+0200\n"
 "Last-Translator: Nisok Kosin <nisok@in.gr>, 2012\n"
 "Language-Team: Greek (http://app.transifex.com/pwmt/zathura/language/el/)\n"
@@ -1210,9 +1210,6 @@ msgstr ""
 msgid "No arguments given."
 msgstr "Δεν εισήχθησαν παράμετροι. "
 
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Η εκτύπωση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
-
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Η αποθήκευση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
@@ -1263,9 +1260,8 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
-#, fuzzy
 msgid "Bookmarks"
-msgstr "Σελιδοδείκτης για μετάβαση"
+msgstr ""
 
 #, c-format
 msgid "Page %u"
@@ -1368,9 +1364,8 @@ msgstr "Αρχικό πλάτος παραθύρου"
 msgid "Initial window height"
 msgstr "Αρχικό ύψος παραθύρου"
 
-#, fuzzy
 msgid "Show window decorations"
-msgstr "Εμφάνιση πληροφοριών έκδοσης"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1809,6 +1804,10 @@ msgstr "Αποθήκευση εικόνας ως..."
 msgid "Printing page %u ..."
 msgstr "Εκτύπωση σελίδας %u ..."
 
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Η εκτύπωση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
+
 #, c-format
 msgid "Printing failed: %s"
 msgstr "Η εκτύπωση απέτυχε: %s"
@@ -1826,6 +1825,10 @@ msgstr "Το αρχείο δεν περιέχει κανένα δείκτη"
 
 msgid "Could not get path from file."
 msgstr "Δεν ήταν δυνατή η λήψη της διαδρομής από το αρχείο."
+
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
 
 msgid "Open file"
 msgstr "Άνοιγμα αρχείου"
