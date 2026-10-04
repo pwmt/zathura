@@ -796,6 +796,12 @@ The settings described here can be changed with ``set``.
   * Value type: Boolean
   * Default value: false
 
+*open-link-confirm*
+  Show a confirmation dialog when opening external links.
+
+  * Value type: Boolean
+  * Default value: true
+
 *page-cache-size*
   Defines the maximum number of pages that could be kept in the page cache. When
   the cache is full and a new page that isn't cached becomes visible, the least
@@ -990,7 +996,7 @@ The settings described here can be changed with ``set``.
 
 *show-recent*
   Defines the number of recent files that should be displayed in completion.
-  If the value is negative, no upper bounds are applied. If the value is 0, no
+  If the value is negative, all recent files are shown. If the value is 0, no
   recent files are shown.
 
   * Value type: Integer
@@ -1046,6 +1052,12 @@ The settings described here can be changed with ``set``.
 
   * Value type: Boolean
   * Default value: false
+
+*window-decoration*
+  Show window decorations.
+
+  * Value type: Boolean
+  * Default value: true
 
 *window-title-basename*
   Use basename of the file in the window title.

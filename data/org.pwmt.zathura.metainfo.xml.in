@@ -67,11 +67,30 @@
     <control>touch</control>
   </recommends>
   <releases>
+    <release version="2026.10.4" date="2026-10-04">
+      <description>
+        <p>Fix German translation (#1000)</p>
+        <p>Add window-decoration setting (#1021)</p>
+        <p>Disable a11y connection running in sandbox mode (#1031)</p>
+        <p>Fix hidding of inputbar (#1035)</p>
+        <p>Fix navigation on Wayland (#1028)</p>
+        <p>Fix horizontal scrolling (#1010)</p>
+        <p>Add asynchronus document and widget loading</p>
+      </description>
+      <issues>
+        <issue url="https://github.com/pwmt/zathura/issues/1000">#1000</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/1010">#1010</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/1021">#1021</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/1028">#1028</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/1031">#1031</issue>
+        <issue url="https://github.com/pwmt/zathura/issues/1035">#1035</issue>
+      </issues>
+    </release>
     <release version="2026.07.18" date="2026-07-18">
       <description>
         <p>Fix crash on error (#992)</p>
         <p>Fix page number at top/bottom (#988)</p>
-        <p>Remove use of G_GNUC_CONST for *_get_type (985)</p>
+        <p>Remove use of G_GNUC_CONST for *_get_type (#985)</p>
         <p>Various fixes and improvements</p>
       </description>
       <issues>

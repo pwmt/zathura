@@ -24,7 +24,7 @@ struct zathura_link_s {
 
 zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position, zathura_link_target_t target) {
   zathura_link_t* link = g_try_malloc0(sizeof(zathura_link_t));
-  if (link == NULL) {
+  if (!link) {
     return NULL;
   }
 
@@ -61,7 +61,7 @@ zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t p
 }
 
 void zathura_link_free(zathura_link_t* link) {
-  if (link == NULL) {
+  if (!link) {
     return;
   }
 
@@ -84,7 +84,7 @@ void zathura_link_free(zathura_link_t* link) {
 }
 
 zathura_link_type_t zathura_link_get_type(zathura_link_t* link) {
-  if (link == NULL) {
+  if (!link) {
     return ZATHURA_LINK_INVALID;
   }
 
@@ -92,7 +92,7 @@ zathura_link_type_t zathura_link_get_type(zathura_link_t* link) {
 }
 
 zathura_rectangle_t zathura_link_get_position(zathura_link_t* link) {
-  if (link == NULL) {
+  if (!link) {
     const zathura_rectangle_t position = {0, 0, 0, 0};
     return position;
   }
@@ -101,7 +101,7 @@ zathura_rectangle_t zathura_link_get_position(zathura_link_t* link) {
 }
 
 zathura_link_target_t zathura_link_get_target(zathura_link_t* link) {
-  if (link == NULL) {
+  if (!link) {
     const zathura_link_target_t target = {0, NULL, 0, 0, 0, 0, 0, 0};
     return target;
   }
@@ -119,7 +119,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   girara_setting_get(zathura->ui.session, "link-zoom", &link_zoom);
 
   zathura_document_t* document = zathura_get_document(zathura);
-  if (link->target.zoom >= DBL_EPSILON && link_zoom == true) {
+  if (link->target.zoom >= DBL_EPSILON && link_zoom) {
     zathura_document_set_zoom(document, zathura_correct_zoom_value(zathura->ui.session, link->target.zoom));
     adjust_view(zathura);
     zathura_document_widget_render_all(zathura->ui.document_widget);
@@ -127,7 +127,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
 
   /* get page */
   zathura_page_t* page = zathura_document_get_page(document, link->target.page_number);
-  if (page == NULL) {
+  if (!page) {
     girara_warning("link to non-existing page %u", link->target.page_number);
     return;
   }
@@ -160,8 +160,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   page_calc_position(document, shiftx, shifty, &shiftx, &shifty);
 
   /* shift the position or set to auto */
-  if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && link->target.left != -1 &&
-      link_hadjust == true) {
+  if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && link->target.left != -1 && link_hadjust) {
     pos_x += shiftx * cell_width / doc_width;
   } else {
     pos_x = -1; /* -1 means automatic */
@@ -182,7 +181,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
 
 #ifndef WITH_SANDBOX
 static void link_remote(zathura_t* zathura, const char* file) {
-  if (zathura_has_document(zathura) == false || file == NULL) {
+  if (!zathura_has_document(zathura) || !file) {
     return;
   }
 
@@ -217,16 +216,12 @@ static void link_launch(zathura_t* zathura, const char* link) {
 typedef struct {
   zathura_t* zathura;
   zathura_link_type_t type;
-  char* value;         /**< Owned copy of the link target */
-  gulong hide_handler; /**< id of inputbar "hide" handler, 0 if none */
+  char* value; /**< Owned copy of the link target */
 } link_confirm_data_t;
 
 static void link_confirm_data_free(link_confirm_data_t* data) {
-  if (data == NULL) {
+  if (!data) {
     return;
-  }
-  if (data->hide_handler != 0) {
-    g_signal_handler_disconnect(data->zathura->ui.session->gtk.inputbar_dialog, data->hide_handler);
   }
   g_free(data->value);
   g_free(data);
@@ -240,18 +235,17 @@ static void cb_link_confirm_hide(GtkWidget* UNUSED(w), void* data) {
  * Callback for the external link confirmation dialog
  * Opens the link only if the user pressed Enter with empty input or 'y'
  */
-static gboolean cb_link_confirm(GtkEntry* entry, void* data) {
+static gboolean cb_link_confirm(GiraraDialog* inputbar, const char* input, void* data) {
+  g_signal_handlers_disconnect_matched(inputbar, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DATA,
+                                       g_signal_lookup("hide", GTK_TYPE_WIDGET), 0, NULL, NULL, data);
   link_confirm_data_t* ctx = data;
-  if (entry == NULL || ctx == NULL) {
+  if (!input || !ctx) {
     link_confirm_data_free(ctx);
     return true;
   }
 
-  g_autofree char* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-
   /* Accept: empty string (bare Enter), or confirmation string */
-  const bool confirmed =
-      (input == NULL || input[0] == '\0' || g_strcmp0(input, _("y")) == 0 || g_strcmp0(input, _("Y")) == 0);
+  const bool confirmed = (!input || input[0] == '\0' || g_strcmp0(input, _("y")) == 0 || g_strcmp0(input, _("Y")) == 0);
 
   if (confirmed) {
     switch (ctx->type) {
@@ -283,19 +277,20 @@ static gboolean link_confirm_spawn(void* data) {
   g_autofree gchar* escaped = g_markup_escape_text(ctx->value, -1);
   g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b>? [Y/n]"), escaped);
 
-  ctx->hide_handler =
-      g_signal_connect(ctx->zathura->ui.session->gtk.inputbar_dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
-  girara_dialog(ctx->zathura->ui.session, prompt, false, NULL, cb_link_confirm, ctx);
-  return FALSE;
+  GiraraDialog* dialog = girara_dialog(ctx->zathura->ui.session, prompt, false);
+  g_signal_connect(dialog, "hide", G_CALLBACK(cb_link_confirm_hide), ctx);
+  g_signal_connect(dialog, "activate", G_CALLBACK(cb_link_confirm), ctx);
+
+  return G_SOURCE_REMOVE;
 }
 
 static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const char* value) {
-  if (value == NULL) {
+  if (!value) {
     return;
   }
 
   link_confirm_data_t* ctx = g_try_malloc0(sizeof(link_confirm_data_t));
-  if (ctx == NULL) {
+  if (!ctx) {
     return;
   }
 
@@ -308,7 +303,7 @@ static void link_confirm(zathura_t* zathura, zathura_link_type_t type, const cha
 #endif
 
 void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
-  if (zathura_has_document(zathura) == false || link == NULL) {
+  if (!zathura_has_document(zathura) || !link) {
     return;
   }
 
@@ -322,32 +317,27 @@ void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link) {
 
   switch (link->type) {
   case ZATHURA_LINK_GOTO_DEST:
-    girara_debug("Going to link destination: page: %d", link->target.page_number);
+    girara_debug("Going to link destination: page: %u", link->target.page_number);
     link_goto_dest(zathura, link);
     break;
 #ifndef WITH_SANDBOX
   case ZATHURA_LINK_GOTO_REMOTE:
-    girara_debug("Going to remote destination: %s", link->target.value);
-    link_confirm(zathura, link->type, link->target.value);
-    break;
-  case ZATHURA_LINK_URI: {
+  case ZATHURA_LINK_URI:
+  case ZATHURA_LINK_LAUNCH:
     bool confirm = true;
     girara_setting_get(zathura->ui.session, "open-link-confirm", &confirm);
-    girara_debug("Opening URI: %s", link->target.value);
+    girara_debug("Opening link: %s (type = %u)", link->target.value, (unsigned int)link->target.destination_type);
     if (confirm) {
       link_confirm(zathura, link->type, link->target.value);
+    } else if (link->type == ZATHURA_LINK_GOTO_REMOTE) {
+      link_remote(zathura, link->target.value);
     } else {
       link_launch(zathura, link->target.value);
     }
     break;
-  }
-  case ZATHURA_LINK_LAUNCH:
-    girara_debug("Launching link: %s", link->target.value);
-    link_confirm(zathura, link->type, link->target.value);
-    break;
 #endif
   default:
-    girara_error("Unhandled link type: %d", link->type);
+    girara_error("Unhandled link type: %u", link->type);
     break;
   }
 }
@@ -357,7 +347,7 @@ void zathura_link_display(zathura_t* zathura, zathura_link_t* link) {
   zathura_link_target_t target = zathura_link_get_target(link);
   switch (type) {
   case ZATHURA_LINK_GOTO_DEST:
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: page %d"), target.page_number);
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Link: page %u"), target.page_number);
     break;
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:
@@ -377,9 +367,9 @@ void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkClipboard* s
   zathura_link_target_t target = zathura_link_get_target(link);
   switch (type) {
   case ZATHURA_LINK_GOTO_DEST: {
-    g_autofree gchar* tmp = g_strdup_printf("%d", target.page_number);
+    g_autofree gchar* tmp = g_strdup_printf("%u", target.page_number);
     gdk_clipboard_set_text(selection, tmp);
-    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %d"), target.page_number);
+    girara_notify(zathura->ui.session, GIRARA_INFO, _("Copied page number: %u"), target.page_number);
     break;
   }
   case ZATHURA_LINK_GOTO_REMOTE:

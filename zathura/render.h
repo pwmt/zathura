@@ -42,6 +42,9 @@ ZathuraRenderer* zathura_renderer_new(size_t cache_size);
  * The caller owns the returned surface and must destroy it. */
 cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page);
 
+/* Parses the page with its plugin if needed, taking the render lock internally. */
+bool zathura_renderer_load_page(ZathuraRenderer* renderer, zathura_page_t* page);
+
 /**
  * Return whether recoloring is enabled.
  * @param renderer a renderer object

@@ -99,10 +99,10 @@ struct zathura_s {
     girara_session_t* session; /**< girara interface session */
 
     struct {
-      girara_statusbar_item_t* buffer;       /**< buffer statusbar entry */
-      girara_statusbar_item_t* file;         /**< file statusbar entry */
-      girara_statusbar_item_t* page_number;  /**< page number statusbar entry */
-      girara_statusbar_item_t* search_count; /**< search count statusbar entry */
+      GtkLabel* buffer;       /**< buffer statusbar entry */
+      GtkLabel* file;         /**< file statusbar entry */
+      GtkLabel* page_number;  /**< page number statusbar entry */
+      GtkLabel* search_count; /**< search count statusbar entry */
     } statusbar;
 
     struct {
@@ -123,6 +123,14 @@ struct zathura_s {
 
   struct {
     ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
+    bool initial_render_held;       /**< holds the focused page first render until the view is painted */
+    bool scale_settled;       /**< set when the device scale settled so the viewport allocation renders the page */
+    bool view_painted;        /**< set after the first frame so a display that never changes scale renders next frame */
+    bool initial_render_done; /**< set once the first render has happened so later opens do not hold */
+    gulong initial_render_handler;    /**< handler id used to release the hold */
+    GObject* initial_render_instance; /**< instance the release handler is connected to */
+    char* pending_search_input;       /**< search query received before the widgets finished loading */
+    int pending_search_direction;     /**< direction for a search received before loading finished */
   } sync;
 
   struct {
@@ -143,7 +151,9 @@ struct zathura_s {
   struct {
     girara_list_t* marks;                 /**< Marker */
     char** arguments;                     /**> Arguments that were passed at startup */
+    char* search_string;                  /**< Current search string */
     int search_direction;                 /**< Current search direction (FORWARD or BACKWARD) */
+    bool are_search_results_highlighted;  /**< Current state of the highlight of the search results */
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
@@ -179,12 +189,11 @@ struct zathura_s {
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document;             /**< The current document */
-  zathura_document_t* predecessor_document; /**< The document from before a reload */
-  GtkWidget** pages;                        /**< The page widgets */
-  GtkWidget** predecessor_pages;            /**< The page widgets from before a reload */
-  zathura_database_t* database;             /**< The database */
-  ZathuraDbus* dbus;                        /**< D-Bus service */
+  zathura_document_t* document;                       /**< The current document */
+  zathura_document_t* predecessor_document;           /**< The document from before a reload */
+  ZathuraDocumentWidget* predecessor_document_widget; /**< The document widget from before a reload */
+  zathura_database_t* database;                       /**< The database */
+  ZathuraDbus* dbus;                                  /**< D-Bus service */
 
   /**
    * File monitor
@@ -331,6 +340,9 @@ void zathura_update_view_ppi(zathura_t* zathura);
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info);
 
+/* render the focused page synchronously once the device scale has settled */
+void render_focused_page_now(zathura_t* zathura);
+
 /**
  * Opens a file
  *
@@ -453,14 +465,6 @@ void statusbar_page_number_update(zathura_t* zathura);
  * return Printable filename. Free with g_free.
  */
 char* get_formatted_filename(zathura_t* zathura, bool statusbar);
-
-/**
- * Show additional signature information
- *
- * @param zathura The zathura session
- * @param show Whether to show the signature information
- */
-void zathura_show_signature_information(zathura_t* zathura, bool show);
 
 /**
  * Check wether a document is opened

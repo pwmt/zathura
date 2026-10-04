@@ -18,6 +18,11 @@ option('manpages',
   value: 'auto',
   description: 'manual pages'
 )
+option('shell-completions',
+  type: 'feature',
+  value: 'auto',
+  description: 'install bash/fish/zsh completion files'
+)
 option('tests-x11',
   type: 'feature',
   value: 'auto',

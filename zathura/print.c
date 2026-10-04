@@ -10,6 +10,7 @@
 #include "document.h"
 #include "render.h"
 #include "page.h"
+#include "internal.h"
 
 static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                          zathura_t* zathura) {
@@ -18,14 +19,14 @@ static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintCon
   }
 
   g_autofree char* file_path = get_formatted_filename(zathura, true);
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
+  girara_statusbar_item_set_text(zathura->ui.statusbar.file, file_path);
 }
 
 static bool draw_page_cairo(cairo_t* cairo, zathura_t* zathura, zathura_page_t* page) {
   /* Try to render the page without a temporary surface. This only works with
    * plugins that support rendering to any surface.  */
   zathura_renderer_lock(zathura->sync.render_thread);
-  const int err = zathura_page_render(page, cairo, true);
+  const zathura_error_t err = zathura_page_render(page, cairo, true);
   zathura_renderer_unlock(zathura->sync.render_thread);
 
   return err == ZATHURA_ERROR_OK;
@@ -61,7 +62,7 @@ static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t*
 
   /* Render the page to the temporary surface */
   zathura_renderer_lock(zathura->sync.render_thread);
-  const int err = zathura_page_render(page, temp_cairo, true);
+  const zathura_error_t err = zathura_page_render(page, temp_cairo, true);
   zathura_renderer_unlock(zathura->sync.render_thread);
   if (err != ZATHURA_ERROR_OK) {
     cairo_destroy(temp_cairo);
@@ -91,8 +92,8 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
   }
 
   /* Update statusbar. */
-  g_autofree char* tmp = g_strdup_printf(_("Printing page %d ..."), page_number + 1);
-  girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, tmp);
+  g_autofree char* tmp = g_strdup_printf(_("Printing page %u ..."), page_number + 1);
+  girara_statusbar_item_set_text(zathura->ui.statusbar.file, tmp);
 
   /* Get the page and cairo handle.  */
   zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
@@ -102,12 +103,12 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
     return;
   }
 
-  girara_debug("printing page %d ...", page_number);
+  girara_debug("printing page %u ...", page_number);
   if (draw_page_cairo(cairo, zathura, page) == true) {
     return;
   }
 
-  girara_debug("printing page %d (fallback) ...", page_number);
+  girara_debug("printing page %u (fallback) ...", page_number);
   if (draw_page_image(cairo, context, zathura, page) == false) {
     gtk_print_operation_cancel(print_operation);
   }
@@ -115,13 +116,17 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
 
 static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operation), GtkPrintContext* UNUSED(context),
                                         gint page_number, GtkPageSetup* setup, zathura_t* zathura) {
-  if (zathura_has_document(zathura) == false) {
+  if (!zathura_has_document(zathura)) {
     return;
   }
 
   zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_number);
-  double width         = zathura_page_get_width(page);
-  double height        = zathura_page_get_height(page);
+  if (!page) {
+    return;
+  }
+
+  double width  = zathura_page_get_width(page);
+  double height = zathura_page_get_height(page);
 
   if (width > height) {
     gtk_page_setup_set_orientation(setup, GTK_PAGE_ORIENTATION_LANDSCAPE);
@@ -133,6 +138,12 @@ static void cb_print_request_page_setup(GtkPrintOperation* UNUSED(print_operatio
 void print(zathura_t* zathura) {
   g_return_if_fail(zathura_has_document(zathura) == true);
 
+#ifdef WITH_SANDBOX
+  /* disable printing in sandbox mode */
+  girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
+  return;
+#endif
+
   zathura_document_t* document                 = zathura_get_document(zathura);
   g_autoptr(GtkPrintOperation) print_operation = gtk_print_operation_new();
 
@@ -143,11 +154,11 @@ void print(zathura_t* zathura) {
   gtk_print_operation_set_current_page(print_operation, zathura_document_get_current_page_number(document));
   gtk_print_operation_set_use_full_page(print_operation, TRUE);
 
-  if (zathura->print.settings != NULL) {
+  if (zathura->print.settings) {
     gtk_print_operation_set_print_settings(print_operation, zathura->print.settings);
   }
 
-  if (zathura->print.page_setup != NULL) {
+  if (zathura->print.page_setup) {
     gtk_print_operation_set_default_page_setup(print_operation, zathura->print.page_setup);
   }
   gtk_print_operation_set_embed_page_setup(print_operation, TRUE);

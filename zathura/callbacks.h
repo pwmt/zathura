@@ -4,6 +4,7 @@
 #define CALLBACKS_H
 
 #include <gtk/gtk.h>
+#include <girara-gtk/inputbar.h>
 #include <girara/types.h>
 #include <girara/macros.h>
 
@@ -81,16 +82,24 @@ void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data);
 void cb_refresh_view(GtkWidget* view, gpointer data);
 
 /**
- * This function gets called when the view widget scale factor changes (e.g.
- * when moving from a regular to a HiDPI screen).
+ * This function gets called when the display scale changes.
  *
  * It records the new value and triggers a re-rendering of the document.
  *
- * @param object The view widget
- * @param pspec The GParamSpec for the scale-factor property
- * @param gpointer The zathura instance
+ * @param object Unused
+ * @param pspec Unused
+ * @param data The zathura instance
  */
 void cb_scale_factor(GObject* object, GParamSpec* pspec, gpointer data);
+
+/**
+ * Called when the view is set up on screen. Makes the scale handler run when
+ * the display scale changes.
+ *
+ * @param widget The view widget
+ * @param data The zathura instance
+ */
+void cb_view_realized(GtkWidget* widget, gpointer data);
 
 /**
  * This function gets called when the monitor configuration changes (e.g.
@@ -135,7 +144,7 @@ void cb_index_row_activated(GtkListView* view, guint position, void* data);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-gboolean cb_sc_follow(GtkEntry* entry, void* session);
+gboolean cb_sc_follow(GiraraDialog* inputbar, const char* input, void* session);
 
 /**
  * Called when input has been passed to the sc_display_link dialog
@@ -144,7 +153,7 @@ gboolean cb_sc_follow(GtkEntry* entry, void* session);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-gboolean cb_sc_display_link(GtkEntry* entry, void* session);
+gboolean cb_sc_display_link(GiraraDialog* inputbar, const char* input, void* session);
 
 /**
  * Called when input has been passed to the sc_copy_link dialog
@@ -153,7 +162,7 @@ gboolean cb_sc_display_link(GtkEntry* entry, void* session);
  * @param session The girara session
  * @return true if no error occurred and the event has been handled
  */
-gboolean cb_sc_copy_link(GtkEntry* entry, void* session);
+gboolean cb_sc_copy_link(GiraraDialog* inputbar, const char* input, void* session);
 
 /**
  * Emitted when file has been changed
@@ -170,7 +179,7 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session);
  * @param dialog The dialog information
  * @return true if input has been handled
  */
-gboolean cb_password_dialog(GtkEntry* entry, void* dialog);
+gboolean cb_password_dialog(GiraraDialog* inputbar, const char* input, void* dialog);
 
 gboolean document_open_password_dialog(gpointer data);
 
@@ -235,11 +244,18 @@ void cb_page_widget_scaled_button_release(ZathuraPageWidget* page, scaled_button
 
 void cb_page_widget_link(ZathuraPageWidget* page, void* data);
 
-void update_visible_pages(zathura_t* zathura);
-
 void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* data);
 
 void cb_gesture_zoom_scale_changed(GtkGestureZoom* self, gdouble scale, void* data);
+
+/**
+ * Open the file dropped onto the view
+ *
+ * @param self The GtkDropTarget that received the drop
+ * @param value The dropped data
+ * @param data The zathura instance
+ */
+gboolean cb_drop_file(GtkDropTarget* self, const GValue* value, double x, double y, void* data);
 
 /**
  * Clears all highlighted links when the inputbar gets closed

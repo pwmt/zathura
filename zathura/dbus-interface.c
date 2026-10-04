@@ -16,6 +16,7 @@
 #include "adjustment.h"
 #include "config.h"
 #include "document.h"
+#include "internal.h"
 #include "links.h"
 #include "macros.h"
 #include "resources.h"
@@ -498,6 +499,69 @@ static void json_document_info_add_node(JsonBuilder* builder, girara_tree_node_t
   }
 }
 
+static void emit_document_signal(zathura_t* zathura, const char* signal, const char* file_path) {
+  if (zathura->dbus == NULL) {
+    return;
+  }
+
+  ZathuraDbusPrivate* priv = zathura_dbus_get_instance_private(zathura->dbus);
+  if (priv->connection == NULL || g_dbus_connection_is_closed(priv->connection)) {
+    return;
+  }
+
+  g_autoptr(GError) error = NULL;
+  g_dbus_connection_emit_signal(priv->connection, NULL, DBUS_OBJPATH, DBUS_INTERFACE, signal,
+                                g_variant_new("(s)", file_path), &error);
+  if (error != NULL) {
+    girara_debug("Failed to emit '%s' signal: %s", signal, error->message);
+  }
+}
+
+void zathura_dbus_document_open(zathura_t* zathura, const char* file_path) {
+  emit_document_signal(zathura, "DocumentOpen", file_path);
+}
+
+void zathura_dbus_document_close(zathura_t* zathura, const char* file_path) {
+  emit_document_signal(zathura, "DocumentClose", file_path);
+}
+
+static void json_document_metadata(JsonBuilder* builder, zathura_document_t* document) {
+  static const struct {
+    zathura_document_information_type_t type;
+    const char* name;
+  } fields[] = {
+      {ZATHURA_DOCUMENT_INFORMATION_TITLE, "title"},
+      {ZATHURA_DOCUMENT_INFORMATION_AUTHOR, "author"},
+      {ZATHURA_DOCUMENT_INFORMATION_SUBJECT, "subject"},
+      {ZATHURA_DOCUMENT_INFORMATION_KEYWORDS, "keywords"},
+      {ZATHURA_DOCUMENT_INFORMATION_CREATOR, "creator"},
+      {ZATHURA_DOCUMENT_INFORMATION_PRODUCER, "producer"},
+      {ZATHURA_DOCUMENT_INFORMATION_CREATION_DATE, "creation_date"},
+      {ZATHURA_DOCUMENT_INFORMATION_MODIFICATION_DATE, "modification_date"},
+      {ZATHURA_DOCUMENT_INFORMATION_OTHER, "other"},
+      {ZATHURA_DOCUMENT_INFORMATION_FORMAT, "format"},
+  };
+
+  json_builder_begin_object(builder);
+  g_autoptr(girara_list_t) information = zathura_document_get_information(document, NULL);
+  if (information != NULL) {
+    for (size_t i = 0; i < girara_list_size(information); ++i) {
+      const zathura_document_information_entry_t* entry = girara_list_nth(information, i);
+      if (entry == NULL || entry->value == NULL) {
+        continue;
+      }
+      for (size_t j = 0; j < LENGTH(fields); ++j) {
+        if (entry->type == fields[j].type) {
+          json_builder_set_member_name(builder, fields[j].name);
+          json_builder_add_string_value(builder, entry->value);
+          break;
+        }
+      }
+    }
+  }
+  json_builder_end_object(builder);
+}
+
 static GVariant* json_document_info(zathura_t* zathura) {
   zathura_document_t* document = zathura_get_document(zathura);
 
@@ -507,6 +571,9 @@ static GVariant* json_document_info(zathura_t* zathura) {
   json_builder_add_string_value(builder, zathura_document_get_path(document));
   json_builder_set_member_name(builder, "number-of-pages");
   json_builder_add_int_value(builder, zathura_document_get_number_of_pages(document));
+
+  json_builder_set_member_name(builder, "metadata");
+  json_document_metadata(builder, document);
 
   json_builder_set_member_name(builder, "index");
   json_builder_begin_array(builder);
@@ -590,13 +657,13 @@ static bool call_synctex_view(GDBusConnection* connection, const char* filename,
 
 static int iterate_instances_call_synctex_view(const char* filename, const char* input_file, unsigned int line,
                                                unsigned int column, pid_t hint) {
-  if (filename == NULL) {
+  if (!filename) {
     return -1;
   }
 
   g_autoptr(GError) error               = NULL;
   g_autoptr(GDBusConnection) connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
-  if (connection == NULL) {
+  if (!connection) {
     girara_error("Could not connect to session bus: %s", error->message);
     return -1;
   }
@@ -610,7 +677,7 @@ static int iterate_instances_call_synctex_view(const char* filename, const char*
   g_autoptr(GVariant) vnames = g_dbus_connection_call_sync(
       connection, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames", NULL,
       G_VARIANT_TYPE("(as)"), G_DBUS_CALL_FLAGS_NONE, TIMEOUT, NULL, &error);
-  if (vnames == NULL) {
+  if (!vnames) {
     girara_error("Could not list available names: %s", error->message);
     return -1;
   }

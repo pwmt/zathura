@@ -192,22 +192,27 @@ girara_completion_t* girara_cc_set(girara_session_t* session, const char* input)
   if (completion == NULL) {
     return NULL;
   }
-  g_autoptr(girara_completion_group_t) group = girara_completion_group_create(NULL);
+  g_autoptr(girara_completion_group_t) group = girara_completion_group_create(_("Settings"));
   if (group == NULL) {
     return NULL;
   }
-  girara_completion_add_group(completion, g_steal_pointer(&group));
 
-  unsigned int input_length = strlen(input);
-
+  const unsigned int input_length = strlen(input);
+  size_t added_settings           = 0;
   for (size_t idx = 0; idx != girara_list_size(session->private_data->settings); ++idx) {
     girara_setting_t* setting = girara_list_nth(session->private_data->settings, idx);
     if ((setting->init_only == false) && (input_length <= strlen(setting->name)) &&
         !strncmp(input, setting->name, input_length)) {
       girara_completion_group_add_element(group, setting->name, setting->description);
+      ++added_settings;
     }
   }
 
+  if (!added_settings) {
+    return NULL;
+  }
+
+  girara_completion_add_group(completion, g_steal_pointer(&group));
   return g_steal_pointer(&completion);
 }
 

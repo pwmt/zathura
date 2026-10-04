@@ -196,14 +196,15 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
   girara_session_private_t* priv = session->private_data;
 
   /* get current text */
-  g_autofree gchar* input = gtk_editable_get_chars(GTK_EDITABLE(session->gtk.inputbar_entry), 0, -1);
+  g_autofree gchar* input =
+      gtk_editable_get_chars(GTK_EDITABLE(girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar))), 0, -1);
   if (input == NULL) {
     return false;
   }
 
   const size_t input_length = strlen(input);
 
-  if (input_length == 0 || input[0] != ':') {
+  if ((input_length == 0 || input[0] != ':') && argument->n != GIRARA_HIDE) {
     return false;
   }
 
@@ -385,7 +386,8 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
          * XXX: the last argument should only be current_paramater ... but
          * therefore the completion functions would need to handle NULL correctly
          * (see cc_open in zathura). */
-        girara_completion_t* result = command->completion(session, current_parameter ? current_parameter : "");
+        g_autoptr(girara_completion_t) result =
+            command->completion(session, current_parameter ? current_parameter : "");
 
         if (result == NULL || result->groups == NULL) {
           return false;
@@ -401,8 +403,8 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
           if (group->value != NULL) {
             girara_internal_completion_entry_t* entry = g_malloc(sizeof(girara_internal_completion_entry_t));
             entry->group                              = TRUE;
-            entry->value                              = g_strdup(group->value);
-            entry->widget                             = girara_completion_row_create(group->value, NULL, TRUE);
+            entry->value                              = g_steal_pointer(&group->value);
+            entry->widget                             = girara_completion_row_create(entry->value, NULL, TRUE);
 
             priv->completion.entries = g_list_append(priv->completion.entries, entry);
 
@@ -414,15 +416,14 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
 
             girara_internal_completion_entry_t* entry = g_malloc(sizeof(girara_internal_completion_entry_t));
             entry->group                              = FALSE;
-            entry->value                              = g_strdup(element->value);
-            entry->widget = girara_completion_row_create(element->value, element->description, FALSE);
+            entry->value                              = g_steal_pointer(&element->value);
+            entry->widget = girara_completion_row_create(entry->value, element->description, FALSE);
 
             priv->completion.entries = g_list_append(priv->completion.entries, entry);
 
             gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
           }
         }
-        girara_completion_free(result);
 
         priv->completion.command_mode = false;
       }
@@ -527,8 +528,9 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
       temp = g_strconcat(":", priv->completion.previous_command, " ", escaped_value, NULL);
     }
 
-    gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), temp);
-    gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
+    GtkEntry* inputbar_entry = girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar));
+    gtk_editable_set_text(GTK_EDITABLE(inputbar_entry), temp);
+    gtk_editable_set_position(GTK_EDITABLE(inputbar_entry), -1);
 
     /* update previous */
     g_free(priv->completion.previous_parameter);

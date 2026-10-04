@@ -371,6 +371,7 @@ based sandbox enabled. Some features are disabled when using sandbox mode:
 * bookmarks and history
 * D-Bus integration
 * SyncTeX support
+* accessibility support
 
 The sandbox mode is still experimental with some libc implementations. The
 current supported and tested libc implementations is glibc.

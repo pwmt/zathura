@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:54+0200\n"
 "Last-Translator: Mikhail Krutov <>, 2012\n"
 "Language-Team: Russian (http://app.transifex.com/pwmt/zathura/language/ru/)\n"
 "Language: ru\n"
@@ -75,6 +75,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -85,9 +97,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1081,6 +1090,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Неправильная команда: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Передано неверное количество аргументов: %zu вместо как минимум 1"
@@ -1153,7 +1165,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1201,9 +1213,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "Отсутствуют аргументы."
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Печать не разрешена в строгом режиме песочницы"
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
@@ -1254,9 +1263,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Страница %d"
+msgid "Page %u"
+msgstr "Страница %u"
 
 msgid "Attachments"
 msgstr "Прикреплённые файлы"
@@ -1354,6 +1366,9 @@ msgstr "Начальная ширина окна"
 
 msgid "Initial window height"
 msgstr "Начальная высота окна"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Горизонтальные промежутки для статусной строки и строки уведомлений"
@@ -1657,6 +1672,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Не удалось запустить xdg-open"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1674,8 +1690,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Запрещено открывать внешние приложения в режиме строгой песочницы"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Ссылка: страница %d"
+msgid "Link: page %u"
+msgstr "Ссылка: страница %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1685,7 +1701,7 @@ msgid "Link: Invalid"
 msgstr "Ссылка: неправильная"
 
 #, c-format
-msgid "Copied page number: %d"
+msgid "Copied page number: %u"
 msgstr ""
 
 #, c-format
@@ -1771,8 +1787,12 @@ msgstr "Сохранить изображение как"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Печать страницы %d ..."
+msgid "Printing page %u ..."
+msgstr "Печать страницы %u ..."
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Печать не разрешена в строгом режиме песочницы"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1792,6 +1812,10 @@ msgstr "В документе нет индекса"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1800,6 +1824,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Страница %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1826,6 +1854,9 @@ msgstr "Тип файла не поддерживается. Установит�
 
 msgid "Document does not contain any pages"
 msgstr "В документе нет страниц"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

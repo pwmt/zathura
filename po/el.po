@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:45+0200\n"
 "Last-Translator: Nisok Kosin <nisok@in.gr>, 2012\n"
 "Language-Team: Greek (http://app.transifex.com/pwmt/zathura/language/el/)\n"
 "Language: el\n"
@@ -69,6 +69,18 @@ msgstr "Ακολούθηση συνδέσμων"
 msgid "Listing and selecting bookmarks"
 msgstr "Εμφάνιση και επιλογή σελιδοδεικτών"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -79,9 +91,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1075,6 +1084,9 @@ msgstr "Μη έγκυρη τιμή για την επιλογή: %s"
 msgid "Not a valid command: %s"
 msgstr "Μη έγγυρη εντολή: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Περάστηκε μη έγκυρος αριθμός παραμέτρων: %zu αντί για 1"
@@ -1147,8 +1159,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Η παράμετρος πρέπει να είναι μη μηδενικός αριθμός."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: σελίδα=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: σελίδα=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(τρέχον)"
@@ -1197,9 +1209,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "Δεν εισήχθησαν παράμετροι. "
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Η εκτύπωση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Η αποθήκευση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
@@ -1251,9 +1260,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Σελίδα %d"
+msgid "Page %u"
+msgstr "Σελίδα %u"
 
 msgid "Attachments"
 msgstr "Προσαρτήσεις"
@@ -1351,6 +1363,9 @@ msgstr "Αρχικό πλάτος παραθύρου"
 
 msgid "Initial window height"
 msgstr "Αρχικό ύψος παραθύρου"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1665,6 +1680,7 @@ msgstr "Φόρτωση αρχείου ρυθμίσεων"
 msgid "Failed to run xdg-open."
 msgstr "Απέτυχε η εκτέλεση του xdg-open. "
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "ν"
 
@@ -1684,8 +1700,8 @@ msgstr ""
 "απομόνωσης"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Σύνδεσμος: σελίδα %d"
+msgid "Link: page %u"
+msgstr "Σύνδεσμος: σελίδα %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1695,8 +1711,8 @@ msgid "Link: Invalid"
 msgstr "Σύνδεσμος: μη έγκυρος"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Αντιγράφηκε ο αριθμός σελίδας: %d"
+msgid "Copied page number: %u"
+msgstr "Αντιγράφηκε ο αριθμός σελίδας: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1785,8 +1801,12 @@ msgstr "Αποθήκευση εικόνας ως..."
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Εκτύπωση σελίδας %d ..."
+msgid "Printing page %u ..."
+msgstr "Εκτύπωση σελίδας %u ..."
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Η εκτύπωση δεν επιτρέπεται σε αυστηρή λειτουργία απομόνωσης"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1806,6 +1826,10 @@ msgstr "Το αρχείο δεν περιέχει κανένα δείκτη"
 msgid "Could not get path from file."
 msgstr "Δεν ήταν δυνατή η λήψη της διαδρομής από το αρχείο."
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr "Άνοιγμα αρχείου"
 
@@ -1814,6 +1838,10 @@ msgstr "Υποστηριζόμενα έγγραφα"
 
 msgid "All files"
 msgstr "Όλα τα αρχεία"
+
+#, c-format
+msgid "Page %s"
+msgstr "Σελίδα %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1841,6 +1869,9 @@ msgstr "Μη υποστηριζόμενος τύπος αρχείου. Εγκα�
 
 msgid "Document does not contain any pages"
 msgstr "Το έγγραφο δεν περιέχει σελίδες"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

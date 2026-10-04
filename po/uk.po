@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:56+0200\n"
 "Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
 "Language-Team: Ukrainian (http://app.transifex.com/pwmt/zathura/language/"
 "uk/)\n"
@@ -72,6 +72,18 @@ msgstr "Перехід за посиланнями"
 msgid "Listing and selecting bookmarks"
 msgstr "Список і вибір закладок"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Різні виправлення та покращення"
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -83,9 +95,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Різні виправлення та покращення"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1103,6 +1112,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Неправильна команда: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Неправильна кількість переданих аргументів: %zu замість 1"
@@ -1175,8 +1187,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Аргумент має бути ненульовим числом."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: сторінка=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: сторінка=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(поточний)"
@@ -1226,9 +1238,6 @@ msgstr ""
 msgid "No arguments given."
 msgstr "Жодного аргументу не наведено."
 
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Друк заборонено в режимі суворої пісочниці"
-
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Збереження не дозволене в суворому режимі sandbox"
 
@@ -1248,7 +1257,7 @@ msgstr "Записано вкладення %s у %s."
 
 #, c-format
 msgid "Wrote image '%s' to '%s'."
-msgstr "Зображення записано '% s' до '% s'."
+msgstr "Зображення записано '%s' до '%s'."
 
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
@@ -1278,9 +1287,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Сторінка  %d"
+msgid "Page %u"
+msgstr "Сторінка  %u"
 
 msgid "Attachments"
 msgstr "Вкладення"
@@ -1378,6 +1390,9 @@ msgstr "Початкова ширина вікна"
 
 msgid "Initial window height"
 msgstr "Початкова висота вікна"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Горизонтальні проміжки для панелей стану, вводу та сповіщення"
@@ -1685,6 +1700,7 @@ msgstr "Підвантажити файл конфігурації"
 msgid "Failed to run xdg-open."
 msgstr "Не вдалося запустити xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1702,8 +1718,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Відкривати зовнішні програми в режимі суворої пісочниці не дозволено"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Посилання: сторінка %d"
+msgid "Link: page %u"
+msgstr "Посилання: сторінка %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1713,8 +1729,8 @@ msgid "Link: Invalid"
 msgstr "Посилання: Недійсне"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Скопійований номер сторінки: %d"
+msgid "Copied page number: %u"
+msgstr "Скопійований номер сторінки: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1803,8 +1819,12 @@ msgstr "Зберегти зображення як"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Друк сторінки %d..."
+msgid "Printing page %u ..."
+msgstr "Друк сторінки %u..."
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Друк заборонено в режимі суворої пісочниці"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1824,6 +1844,10 @@ msgstr "Цей документ не містить покажчика"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr "Відкрити файл"
 
@@ -1832,6 +1856,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Сторінка  %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1855,6 +1883,9 @@ msgstr "Непідтримуваний тип файлу. Установіть �
 
 msgid "Document does not contain any pages"
 msgstr "Документ не містить жодної сторінки"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

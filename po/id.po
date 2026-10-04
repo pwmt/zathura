@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:50+0200\n"
 "Last-Translator: Ibnu Daru Aji, 2013\n"
 "Language-Team: Indonesian (http://app.transifex.com/pwmt/zathura/language/"
 "id/)\n"
@@ -63,6 +63,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -73,9 +85,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1069,6 +1078,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1141,7 +1153,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1189,9 +1201,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "Tidak ada argumen yang diberikan"
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
@@ -1242,9 +1251,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Halaman %d"
+msgid "Page %u"
+msgstr "Halaman %u"
 
 msgid "Attachments"
 msgstr "Lampiran"
@@ -1341,6 +1353,9 @@ msgid "Initial window width"
 msgstr ""
 
 msgid "Initial window height"
+msgstr ""
+
+msgid "Show window decorations"
 msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
@@ -1646,6 +1661,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Gagal menjalankan program xdg-open"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1663,8 +1679,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: halaman %d"
+msgid "Link: page %u"
+msgstr "Link: halaman %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1674,7 +1690,7 @@ msgid "Link: Invalid"
 msgstr "Link: Tidak valid"
 
 #, c-format
-msgid "Copied page number: %d"
+msgid "Copied page number: %u"
 msgstr ""
 
 #, c-format
@@ -1760,7 +1776,11 @@ msgstr "Simpan gambar sebagai"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
+msgstr ""
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
 msgstr ""
 
 #, c-format
@@ -1781,6 +1801,10 @@ msgstr "Dokumen ini tidak mempunyai indeks"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1789,6 +1813,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Halaman %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1813,6 +1841,9 @@ msgstr "Tipe berkas tidak didukung. Silakan memasang plugin yang dibutuhkan."
 
 msgid "Document does not contain any pages"
 msgstr "Dokumen tidak mempunyai laman apapun"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

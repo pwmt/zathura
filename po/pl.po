@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:53+0200\n"
 "Last-Translator: wmlhwl <7q0dkmw6@anonaddy.me>, 2024\n"
 "Language-Team: Polish (http://app.transifex.com/pwmt/zathura/language/pl/)\n"
 "Language: pl\n"
@@ -71,6 +71,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -81,9 +93,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1077,6 +1086,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Nieprawidłowa funkcja skrótu: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1149,7 +1161,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1197,9 +1209,6 @@ msgstr "Proszę zajrzeć do man zathura(1) i zathurarc(5) po więcej informacji.
 
 msgid "No arguments given."
 msgstr "Nie podano parametrów polecenia"
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Drukowanie nie jest dozwolone w ścisłym trybie piaskownicy"
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Zapisywanie nie jest dozwolone w ścisłym trybie piaskownicy"
@@ -1251,9 +1260,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Strona %d"
+msgid "Page %u"
+msgstr "Strona %u"
 
 msgid "Attachments"
 msgstr "Załączniki"
@@ -1351,6 +1363,9 @@ msgstr "Początkowa szerokość okna"
 
 msgid "Initial window height"
 msgstr "Początkowa wysokość okna"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Wyrównanie poziome paska powiadomień"
@@ -1654,6 +1669,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Wystąpił problem z uruchomieniem xdg-open"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1673,8 +1689,8 @@ msgstr ""
 "piaskownicy"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: strona %d"
+msgid "Link: page %u"
+msgstr "Link: strona %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1684,8 +1700,8 @@ msgid "Link: Invalid"
 msgstr "Nieprawidłowy link"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Skopiowano numer strony: %d"
+msgid "Copied page number: %u"
+msgstr "Skopiowano numer strony: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1770,8 +1786,12 @@ msgstr "Zapisz obrazek jako"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Drukowanie strony %d ..."
+msgid "Printing page %u ..."
+msgstr "Drukowanie strony %u ..."
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Drukowanie nie jest dozwolone w ścisłym trybie piaskownicy"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1791,6 +1811,10 @@ msgstr "Dokument nie zawiera indeksu"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1799,6 +1823,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Strona %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1822,6 +1850,9 @@ msgstr "Niewspierany rodzaj pliku. Zainstaluj wymagane wtyczki"
 
 msgid "Document does not contain any pages"
 msgstr "Dokument nie zawiera żadnej strony"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

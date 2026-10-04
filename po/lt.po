@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:51+0200\n"
 "Last-Translator: gns_ank <anikevicius@gmail.com>, 2013\n"
 "Language-Team: Lithuanian (http://app.transifex.com/pwmt/zathura/language/"
 "lt/)\n"
@@ -66,6 +66,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -76,9 +88,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1072,6 +1081,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1144,7 +1156,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1193,9 +1205,6 @@ msgstr ""
 msgid "No arguments given."
 msgstr "Parametrai neduoti."
 
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
-
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
 
@@ -1219,7 +1228,7 @@ msgstr "Atvaizdas „%s“ įrašytas į „%s“."
 
 #, c-format
 msgid "Couldn't write image '%s' to '%s'."
-msgstr "Atvaizdas „%s“ negalėjo būti įrašytas į „%s“,"
+msgstr "Atvaizdas „%s“ negalėjo būti įrašytas į „%s“."
 
 #, c-format
 msgid "Unknown image '%s'."
@@ -1245,9 +1254,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "%d puslapis"
+msgid "Page %u"
+msgstr "%u puslapis"
 
 msgid "Attachments"
 msgstr "Priedai"
@@ -1344,6 +1356,9 @@ msgid "Initial window width"
 msgstr ""
 
 msgid "Initial window height"
+msgstr ""
+
+msgid "Show window decorations"
 msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
@@ -1648,6 +1663,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Klaida xdg-open paleidime."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1665,8 +1681,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Nuoroda: %d puslapis"
+msgid "Link: page %u"
+msgstr "Nuoroda: %u puslapis"
 
 #, c-format
 msgid "Link: %s"
@@ -1676,7 +1692,7 @@ msgid "Link: Invalid"
 msgstr "Neteisinga nuoroda"
 
 #, c-format
-msgid "Copied page number: %d"
+msgid "Copied page number: %u"
 msgstr ""
 
 #, c-format
@@ -1762,7 +1778,11 @@ msgstr "Irašyti atvaizdą kaip"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
+msgstr ""
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
 msgstr ""
 
 #, c-format
@@ -1783,6 +1803,10 @@ msgstr "Šit dokumentas neturi turinio"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1791,6 +1815,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "%s puslapis"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1814,6 +1842,9 @@ msgstr "Bylos tipas nepalaikomas. Įdiekite tam skirtus įskiepius."
 
 msgid "Document does not contain any pages"
 msgstr "Dokumente puslapių nėra"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

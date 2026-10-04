@@ -53,38 +53,40 @@ if appstreamcli.found()
   )
 endif
 
-conf_data = configuration_data()
-conf_data.set('PLUGINDIR', join_paths(prefix, plugindir))
-bash_completion = configure_file(
-  input: 'bash-completion.in',
-  output: 'zathura',
-  configuration: conf_data
-)
-zsh_completion = configure_file(
-  input: 'zsh-completion.in',
-  output: '_zathura',
-  configuration: conf_data
-)
-fish_completion = configure_file(
-  input: 'fish-completion.in',
-  output: 'zathura.fish',
-  configuration: conf_data
-)
+if get_option('shell-completions').allowed()
+  conf_data = configuration_data()
+  conf_data.set('PLUGINDIR', join_paths(prefix, plugindir))
+  bash_completion = configure_file(
+    input: 'bash-completion.in',
+    output: 'zathura',
+    configuration: conf_data
+  )
+  zsh_completion = configure_file(
+    input: 'zsh-completion.in',
+    output: '_zathura',
+    configuration: conf_data
+  )
+  fish_completion = configure_file(
+    input: 'fish-completion.in',
+    output: 'zathura.fish',
+    configuration: conf_data
+  )
 
-bash_comp = dependency('bash-completion', required: false)
-if bash_comp.found()
-  bash_compdir = bash_comp.get_variable(pkgconfig: 'completionsdir')
-else
-  bash_compdir = join_paths(datadir, 'bash-completion', 'completions')
+  bash_comp = dependency('bash-completion', required: false)
+  if bash_comp.found()
+    bash_compdir = bash_comp.get_variable(pkgconfig: 'completionsdir')
+  else
+    bash_compdir = join_paths(datadir, 'bash-completion', 'completions')
+  endif
+
+  fish_comp = dependency('fish', required: false)
+  if fish_comp.found()
+    fish_compdir = fish_comp.get_variable(pkgconfig: 'completionsdir')
+  else
+    fish_compdir = join_paths(datadir, 'fish', 'vendor_completions.d')
+  endif
+
+  install_data(bash_completion, install_dir: bash_compdir)
+  install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'site-functions'))
+  install_data(fish_completion, install_dir: fish_compdir)
 endif
-
-fish_comp = dependency('fish', required: false)
-if fish_comp.found()
-  fish_compdir = fish_comp.get_variable(pkgconfig: 'completionsdir')
-else
-  fish_compdir = join_paths(datadir, 'fish', 'vendor_completions.d')
-endif
-
-install_data(bash_completion, install_dir: bash_compdir)
-install_data(zsh_completion, install_dir: join_paths(datadir, 'zsh', 'site-functions'))
-install_data(fish_completion, install_dir: fish_compdir)

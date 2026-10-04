@@ -5,6 +5,8 @@
 
 #include "types.h"
 #include "callbacks.h"
+#include "inputbar.h"
+#include "dialog.h"
 
 #include <girara/log.h>
 #include <gtk/gtk.h>
@@ -18,13 +20,9 @@ struct girara_session_s {
     GtkBox* box;                  /**< A box that contains all widgets */
     GtkWidget* view;              /**< The view area of the applications widgets */
     GtkWidget* statusbar;         /**< The statusbar */
-    GtkBox* statusbar_entries;    /**< Statusbar entry box */
     GtkWidget* notification_area; /**< The notification area */
-    GtkWidget* notification_text; /**< The notification entry */
-    GtkBox* inputbar_box;         /**< Inputbar box */
-    GtkWidget* inputbar;          /**< Inputbar event box */
-    GtkLabel* inputbar_dialog;    /**< Inputbar dialog */
-    GtkEntry* inputbar_entry;     /**< Inputbar entry */
+    GtkWidget* inputbar;          /**< The inputbar widget */
+    GtkWidget* dialog;            /**< Dialog widget */
     GtkBox* results;              /**< Completion results */
   } gtk;
 
@@ -47,14 +45,6 @@ struct girara_session_s {
     bool autohide_inputbar; /**< Auto-hide inputbar */
     bool hide_statusbar;    /**< Hide statusbar */
   } global;
-
-  struct {
-    girara_callback_inputbar_activate_t inputbar_custom_activate;               /**< Custom handler */
-    girara_callback_inputbar_key_press_event_t inputbar_custom_key_press_event; /**< Custom handler */
-    void* inputbar_custom_data;                                                 /**< Data for custom handler */
-    int inputbar_activate;                                                      /**< Inputbar activation */
-    int inputbar_changed;                                                       /**< Inputbar text changed */
-  } signals;
 
   struct {
     girara_list_t* identifiers; /**< List of modes with its string identifiers */
@@ -86,10 +76,8 @@ bool girara_session_init(girara_session_t* session, const char* appname);
  * Destroys an girara session
  *
  * @param session The used girara session
- * @return TRUE No error occurred
- * @return FALSE An error occurred
  */
-bool girara_session_destroy(girara_session_t* session);
+void girara_session_destroy(girara_session_t* session);
 
 /**
  * Sets the view widget of girara.
@@ -120,21 +108,7 @@ char* girara_buffer_get(girara_session_t* session);
  * @param format String format
  * @param ...
  */
-void girara_notify(girara_session_t* session, int level, const char* format, ...) GIRARA_PRINTF(3, 4);
-
-/**
- * Creates a girara dialog
- *
- * @param session The girara session
- * @param dialog The dialog message
- * @param invisible Sets the input visibility
- * @param key_press_event Callback function to a custom key press event handler
- * @param activate_event Callback function to a custom activate event handler
- * @param data Custom data that is passed to the callback functions
- */
-void girara_dialog(girara_session_t* session, const char* dialog, bool invisible,
-                   girara_callback_inputbar_key_press_event_t key_press_event,
-                   girara_callback_inputbar_activate_t activate_event, void* data);
+void girara_notify(girara_session_t* session, girara_log_level_t level, const char* format, ...) GIRARA_PRINTF(3, 4);
 
 /**
  * Adds a new mode by its string identifier
@@ -209,5 +183,25 @@ GiraraTemplate* girara_session_get_template(girara_session_t* session);
  *
  */
 void girara_session_set_template(girara_session_t* session, GiraraTemplate* template, bool init_variables);
+
+/**
+ * Creates and shows a dialog.
+ *
+ * @param session The girara session
+ * @param prompt The dialog prompt
+ * @param invisible Whether entered characters should be invisible
+ * @returns GiraraDialog object
+ */
+GiraraDialog* girara_dialog(girara_session_t* session, const char* prompt, bool invisible);
+
+/**
+ * Returns the current active entry.
+ *
+ * @param session The girara session
+ * @returns GtkEntry from the active inputbar
+ *
+ * FIXME: this should be removed
+ */
+GtkEntry* girara_get_active_entry(girara_session_t* session);
 
 #endif

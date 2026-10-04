@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:55+0200\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>, 2018-2020\n"
 "Language-Team: Swedish (http://app.transifex.com/pwmt/zathura/language/sv/)\n"
 "Language: sv\n"
@@ -68,9 +68,20 @@ msgstr "Följa länkar"
 msgid "Listing and selecting bookmarks"
 msgstr "Lista och välja bokmärken"
 
-#, fuzzy
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Olika fixar och förbättringar"
+
 msgid "Add page-mode setting"
-msgstr "Lade till inställningen first-page-colum"
+msgstr ""
 
 msgid "Fix reloading of files (#969)"
 msgstr ""
@@ -80,9 +91,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Olika fixar och förbättringar"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1092,6 +1100,9 @@ msgstr "Ogiltigt värde för alternativet: %s"
 msgid "Not a valid command: %s"
 msgstr "Inte ett giltigt kommando: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ogiltigt antal argument skickades: %zu i stället för 1"
@@ -1164,8 +1175,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Argument måste vara ett tal som inte är noll."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: sida=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: sida=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(nuvarande)"
@@ -1212,9 +1223,6 @@ msgstr "Se manualsidorna zathura(1) och zathurarc(5) för mer information."
 
 msgid "No arguments given."
 msgstr "Inga argument angivna."
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Utskrift stöds inte i strikt sandlådeläge"
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Sparning är inte tillåten i strikt sandlåde-läge"
@@ -1265,9 +1273,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Sida %d"
+msgid "Page %u"
+msgstr "Sida %u"
 
 msgid "Attachments"
 msgstr "Bilagor"
@@ -1365,6 +1376,9 @@ msgstr "Inledande fönsterbredd"
 
 msgid "Initial window height"
 msgstr "Inledande fönsterhöjd"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horisontell utfyllnad för status-, inmatnings- och notisrader"
@@ -1669,6 +1683,7 @@ msgstr "Läs in konfigurationsfil"
 msgid "Failed to run xdg-open."
 msgstr "Misslyckades med att köra xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr "j"
 
@@ -1686,8 +1701,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr "Att öppna externa program i strikt sandlådeläge tillåts inte"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Länk: sida %d"
+msgid "Link: page %u"
+msgstr "Länk: sida %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1697,8 +1712,8 @@ msgid "Link: Invalid"
 msgstr "Länk: Ogiltig"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Kopierat sidnummer: %d"
+msgid "Copied page number: %u"
+msgstr "Kopierat sidnummer: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1787,8 +1802,12 @@ msgstr "Spara bild som"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Skriver ut sida %d …"
+msgid "Printing page %u ..."
+msgstr "Skriver ut sida %u …"
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Utskrift stöds inte i strikt sandlådeläge"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1808,6 +1827,10 @@ msgstr "Detta dokument innehåller inget index"
 msgid "Could not get path from file."
 msgstr "Kunde inte hämta sökväg från fil."
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr "Öppna fil"
 
@@ -1816,6 +1839,10 @@ msgstr "Dokument som stöds"
 
 msgid "All files"
 msgstr "Alla filer"
+
+#, c-format
+msgid "Page %s"
+msgstr "Sida %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1839,6 +1866,9 @@ msgstr "Filtyp stöds ej. Installera det nödvändiga insticket."
 
 msgid "Document does not contain any pages"
 msgstr "Dokument innehåller inga sidor"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

@@ -22,6 +22,7 @@
 #include "document.h"
 #include "document-widget.h"
 #include "page.h"
+#include "render.h"
 #include "plugin.h"
 #include "content-type.h"
 #include "index-element-object.h"
@@ -76,10 +77,10 @@ static GListStore* index_element_build_children(girara_session_t* session, girar
       zathura_page_t* page = document != NULL ? zathura_document_get_page(document, target.page_number) : NULL;
       const char* label    = page != NULL ? zathura_page_get_label(page, NULL) : NULL;
       if (label != NULL) {
-        page_label = g_strdup_printf("Page %s", label);
-        page_alt   = g_strdup_printf("(%d)", target.page_number + 1);
+        page_label = g_strdup_printf(_("Page %s"), label);
+        page_alt   = g_strdup_printf("(%u)", target.page_number + 1);
       } else {
-        page_label = g_strdup_printf("Page %d", target.page_number + 1);
+        page_label = g_strdup_printf(_("Page %u"), target.page_number + 1);
       }
     } else {
       page_label = g_strdup(target.value);
@@ -268,34 +269,39 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
 }
 
 GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page) {
-  if (zathura == NULL || page == NULL || zathura->pages == NULL) {
+  if (zathura == NULL || page == NULL || zathura->ui.document_widget == NULL) {
+    return NULL;
+  }
+
+  if (zathura_page_get_document(page) != zathura_document_widget_get_document(zathura->ui.document_widget)) {
     return NULL;
   }
 
   unsigned int page_number = zathura_page_get_index(page);
-
-  return zathura->pages[page_number];
+  return zathura_document_widget_get_page(zathura->ui.document_widget, page_number);
 }
 
 GtkWidget* zathura_page_get_widget_by_number(zathura_t* zathura, unsigned int page_number) {
-  if (zathura == NULL || !zathura_has_document(zathura) || zathura->pages == NULL ||
-      page_number >= zathura_document_get_number_of_pages(zathura_get_document(zathura))) {
+  if (zathura == NULL || !zathura_has_document(zathura) || zathura->ui.document_widget == NULL) {
     return NULL;
   }
 
-  return zathura->pages[page_number];
+  return zathura_document_widget_get_page(zathura->ui.document_widget, page_number);
 }
 
 void document_draw_search_results(zathura_t* zathura, bool value) {
-  if (zathura_has_document(zathura) == false || zathura->pages == NULL) {
+  if (zathura_has_document(zathura) == false || zathura->ui.document_widget == NULL) {
     return;
   }
 
-  unsigned int number_of_pages = zathura_document_get_number_of_pages(zathura_get_document(zathura));
-  for (unsigned int page_id = 0; page_id < number_of_pages; page_id++) {
-    g_object_set(G_OBJECT(zathura_page_get_widget_by_number(zathura, page_id)), "draw-search-results",
-                 (value == true) ? TRUE : FALSE, NULL);
+  /* set state of search results highlight */
+  zathura->global.are_search_results_highlighted = value;
+
+  /* nothing to highlight until the preload is done */
+  if (zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget) == false) {
+    return;
   }
+  zathura_document_widget_set_draw_search_results(zathura->ui.document_widget, value);
 }
 
 char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager, bool markup) {
@@ -593,6 +599,11 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
   g_return_val_if_fail(argument != NULL, false);
   g_return_val_if_fail(zathura->document != NULL, false);
 
+  /* navigating results needs every page widget so do nothing until the preload is done */
+  if (zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget) == false) {
+    return false;
+  }
+
   girara_session_t* session = zathura->ui.session;
 
   const unsigned int num_pages = zathura_document_get_number_of_pages(zathura->document);
@@ -722,12 +733,12 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
 
     g_autofree char* tmp = g_strdup_printf(_("[Search %d/%d]"), zathura->global.current_search_result,
                                            zathura->global.total_search_results);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, tmp);
+    girara_statusbar_item_set_text(zathura->ui.statusbar.search_count, tmp);
   } else if (argument->data != NULL && !disable_notify) {
     const char* input             = argument->data;
     g_autofree char* escaped_text = g_markup_printf_escaped(_("Pattern not found: %s"), input);
     girara_notify(session, GIRARA_ERROR, "%s", escaped_text);
-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.search_count, "");
+    girara_statusbar_item_set_text(zathura->ui.statusbar.search_count, "");
   }
 
   return false;

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:52+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch (http://app.transifex.com/pwmt/zathura/language/nl/)\n"
 "Language: nl\n"
@@ -67,6 +67,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -77,9 +89,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1073,6 +1082,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Ongeldige opdracht: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Ongeldig aantal argumenten: %zu i.p.v. 1"
@@ -1145,8 +1157,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Het argument moet een getal boven de nul zijn."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: pagina=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: pagina=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(huidig)"
@@ -1194,9 +1206,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "Geen argumenten opgegeven."
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Afdrukken is niet toegestaan in de strenge sandboxmodus"
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Opslaan is niet toegestaan in de strenge sandboxmodus"
@@ -1247,9 +1256,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Pagina %d"
+msgid "Page %u"
+msgstr "Pagina %u"
 
 msgid "Attachments"
 msgstr "Bijlagen"
@@ -1347,6 +1359,9 @@ msgstr "Initiële vensterbreedte"
 
 msgid "Initial window height"
 msgstr "Initiële vensterhoogte"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horizontale opvulling voor de statusinvoer- en meldingbalken"
@@ -1655,6 +1670,7 @@ msgstr "Bron-configuratiebestand"
 msgid "Failed to run xdg-open."
 msgstr "xdg-open kan niet worden uitgevoerd."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1674,8 +1690,8 @@ msgstr ""
 "sandboxmodus"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: pagina %d"
+msgid "Link: page %u"
+msgstr "Link: pagina %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1685,8 +1701,8 @@ msgid "Link: Invalid"
 msgstr "Link: ongeldig"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Paginanummer gekopieerd: %d"
+msgid "Copied page number: %u"
+msgstr "Paginanummer gekopieerd: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1775,8 +1791,12 @@ msgstr "Afbeelding opslaan als"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Bezig met afdrukken van pagina %d…"
+msgid "Printing page %u ..."
+msgstr "Bezig met afdrukken van pagina %u …"
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Afdrukken is niet toegestaan in de strenge sandboxmodus"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1796,6 +1816,10 @@ msgstr "Dit document bevat geen index"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1804,6 +1828,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Pagina %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1831,6 +1859,9 @@ msgstr "Niet-ondersteund bestandstype. Installeer de benodigde plug-in."
 
 msgid "Document does not contain any pages"
 msgstr "Dit document bevat geen pagina's"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

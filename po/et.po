@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:47+0200\n"
 "Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2012\n"
 "Language-Team: Estonian (http://app.transifex.com/pwmt/zathura/language/"
 "et/)\n"
@@ -68,6 +68,18 @@ msgstr "Linkide järgimine"
 msgid "Listing and selecting bookmarks"
 msgstr "Järjehoidjate loendamine ja valimine"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Various fixes ja improvements"
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -79,9 +91,6 @@ msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
 msgstr ""
-
-msgid "Various fixes and improvements"
-msgstr "Various fixes ja improvements"
 
 msgid ""
 "Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
@@ -1086,6 +1095,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Pole kehtiv käsk: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr "Invalid number arguments passed: %zu asemel 1"
@@ -1158,8 +1170,8 @@ msgid "Argument must be a nonzero number."
 msgstr "Argument peab olema nullist erinev arv."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: leht=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: leht=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(praegune)"
@@ -1206,9 +1218,6 @@ msgstr "Lisateabe saamiseks vaata man-lehti zathura(1) ja zathurarc(5)."
 
 msgid "No arguments given."
 msgstr "Argumente ei antud."
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr "Printing is not permitted in strict sandbox režiim"
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr "Salvestamine pole ranges liivakastirežiimis lubatud"
@@ -1259,9 +1268,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Leht %d"
+msgid "Page %u"
+msgstr "Leht %u"
 
 msgid "Attachments"
 msgstr "Salvesta manused"
@@ -1359,6 +1371,9 @@ msgstr "Algne akna laius"
 
 msgid "Initial window height"
 msgstr "Algne akna kõrgus"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr "Horizontal padding jaoks status, input, ja notification bars"
@@ -1662,6 +1677,7 @@ msgstr "Laadi seadistusfail"
 msgid "Failed to run xdg-open."
 msgstr "Failed et run xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1680,8 +1696,8 @@ msgstr ""
 "Opening external applications in strict sandbox režiim is not permitted"
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: leht %d"
+msgid "Link: page %u"
+msgstr "Link: leht %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1691,8 +1707,8 @@ msgid "Link: Invalid"
 msgstr "Link: Vigane"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "Kopeeritud leheküljenumber: %d"
+msgid "Copied page number: %u"
+msgstr "Kopeeritud leheküljenumber: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1781,8 +1797,12 @@ msgstr "Salvesta pilt kui"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
-msgstr "Printing leht %d ..."
+msgid "Printing page %u ..."
+msgstr "Printing leht %u ..."
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Printing is not permitted in strict sandbox režiim"
 
 #, c-format
 msgid "Printing failed: %s"
@@ -1802,6 +1822,10 @@ msgstr "This dokument does not contain any index"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr "Ava fail"
 
@@ -1810,6 +1834,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Leht %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1833,6 +1861,9 @@ msgstr "Toetamata failitüüp. Palun paigalda vajalik plugin."
 
 msgid "Document does not contain any pages"
 msgstr "Document does not contain any lehed"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

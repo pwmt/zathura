@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:48+0200\n"
 "Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
 "Language-Team: Hebrew (http://app.transifex.com/pwmt/zathura/language/he/)\n"
 "Language: he\n"
@@ -66,6 +66,18 @@ msgstr "מעקב אחרי קישורים"
 msgid "Listing and selecting bookmarks"
 msgstr "רישום ובחירה של סימניות"
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -76,9 +88,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1075,6 +1084,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "לא פקודה תקפה: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1147,8 +1159,8 @@ msgid "Argument must be a nonzero number."
 msgstr "הארגומנט חייב להיות מספר שאינו אפס."
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
-msgstr "[%d]: עמוד=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: עמוד=<b>%2u</b>, x=%f, y=%f %s\n"
 
 msgid "(current)"
 msgstr "(נוכחי)"
@@ -1195,9 +1207,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "לא הועברו ארגומנטים."
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
@@ -1248,9 +1257,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "עמוד %d"
+msgid "Page %u"
+msgstr "עמוד %u"
 
 msgid "Attachments"
 msgstr "קבצים מצורפים"
@@ -1348,6 +1360,9 @@ msgstr "רוחב חלון התחלתי"
 
 msgid "Initial window height"
 msgstr "גובה חלון התחלתי"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1651,6 +1666,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr ""
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1668,8 +1684,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: עמוד %d"
+msgid "Link: page %u"
+msgstr "Link: עמוד %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1679,8 +1695,8 @@ msgid "Link: Invalid"
 msgstr "קישור: לא תקין"
 
 #, c-format
-msgid "Copied page number: %d"
-msgstr "מספר עמוד שהועתק: %d"
+msgid "Copied page number: %u"
+msgstr "מספר עמוד שהועתק: %u"
 
 #, c-format
 msgid "Copied link: %s"
@@ -1765,7 +1781,11 @@ msgstr "שמור תמונה בשם"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
+msgstr ""
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
 msgstr ""
 
 #, c-format
@@ -1786,6 +1806,10 @@ msgstr ""
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr "פתח קובץ"
 
@@ -1794,6 +1818,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "עמוד %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1816,6 +1844,9 @@ msgid "Unsupported file type. Please install the necessary plugin."
 msgstr "סוג קובץ לא נתמך. נא להתקין את התוסף הנדרש."
 
 msgid "Document does not contain any pages"
+msgstr ""
+
+msgid "Failed to parse the displayed page of the document"
 msgstr ""
 
 #, c-format

@@ -187,5 +187,6 @@ void zathura_jumplist_free(zathura_t* zathura) {
 
   /* remove jump list */
   zathura_jumplist_clear(zathura);
+  girara_list_free(zathura->jumplist.list);
   zathura->jumplist.list = NULL;
 }

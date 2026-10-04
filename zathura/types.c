@@ -98,11 +98,12 @@ zathura_document_information_entry_t* zathura_document_information_entry_new(zat
   return entry;
 }
 
-void zathura_document_information_entry_free(zathura_document_information_entry_t* entry) {
-  if (entry == NULL) {
+void zathura_document_information_entry_free(void* data) {
+  if (!data) {
     return;
   }
 
+  zathura_document_information_entry_t* entry = data;
   g_free(entry->value);
   g_free(entry);
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
 "PO-Revision-Date: 2012-03-26 16:47+0000\n"
 "Last-Translator: mankand007 <mankand007@gmail.com>, 2012\n"
 "Language-Team: Tamil (India) (http://app.transifex.com/pwmt/zathura/language/"
@@ -62,6 +62,18 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
+msgid "Fix crash on error (#992)"
+msgstr ""
+
+msgid "Fix page number at top/bottom (#988)"
+msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
 msgid "Add page-mode setting"
 msgstr ""
 
@@ -72,9 +84,6 @@ msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -1068,6 +1077,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1140,7 +1152,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1188,9 +1200,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "எந்த argument-ம் தரப்படவில்லை"
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
@@ -1241,8 +1250,11 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
+msgid "Page %u"
 msgstr ""
 
 msgid "Attachments"
@@ -1340,6 +1352,9 @@ msgid "Initial window width"
 msgstr ""
 
 msgid "Initial window height"
+msgstr ""
+
+msgid "Show window decorations"
 msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
@@ -1644,6 +1659,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "xdg-open-ஐ இயக்க முடியவில்லை"
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1661,7 +1677,7 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
+msgid "Link: page %u"
 msgstr ""
 
 #, c-format
@@ -1672,7 +1688,7 @@ msgid "Link: Invalid"
 msgstr ""
 
 #, c-format
-msgid "Copied page number: %d"
+msgid "Copied page number: %u"
 msgstr ""
 
 #, c-format
@@ -1758,7 +1774,11 @@ msgstr ""
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
+msgstr ""
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
 msgstr ""
 
 #, c-format
@@ -1779,6 +1799,10 @@ msgstr "இந்த ஆவணத்தில் எந்த index-ம் இ�
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1786,6 +1810,10 @@ msgid "Supported documents"
 msgstr ""
 
 msgid "All files"
+msgstr ""
+
+#, c-format
+msgid "Page %s"
 msgstr ""
 
 #, c-format
@@ -1809,6 +1837,9 @@ msgid "Unsupported file type. Please install the necessary plugin."
 msgstr ""
 
 msgid "Document does not contain any pages"
+msgstr ""
+
+msgid "Failed to parse the displayed page of the document"
 msgstr ""
 
 #, c-format

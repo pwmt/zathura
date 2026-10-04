@@ -13,6 +13,9 @@
 
 #define UNUSED(x) GIRARA_UNUSED(x)
 
+/* Normalize keyboard modifiers and keypad keys for view and inputbar handlers. */
+bool girara_clean_key_mask(GtkEventControllerKey* controller, GdkModifierType state, guint* clean, guint* keyval);
+
 #define LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 
 /**
@@ -31,6 +34,8 @@ void girara_shortcut_free(girara_shortcut_t* shortcut);
 void girara_argument_mapping_free(girara_argument_mapping_t* argument_mapping);
 
 void girara_command_free(girara_command_t* command);
+
+void girara_focus_view(girara_session_t* session);
 
 void widget_add_class(GtkWidget* widget, const char* styleclass);
 
@@ -187,13 +192,6 @@ struct girara_mouse_event_s {
 };
 
 /**
- * Structure of a statusbar item
- */
-struct girara_statusbar_item_s {
-  GtkLabel* text; /**< Text label */
-};
-
-/**
  * Private data of the girara session
  */
 struct girara_session_private_s {
@@ -219,10 +217,6 @@ struct girara_session_private_s {
     GtkBox* bottom_box; /**< Box grouping input, status and notification */
     GtkCssProvider* cssprovider;
   } gtk;
-
-  struct {
-    girara_list_t* statusbar_items; /**< List of statusbar items */
-  } elements;
 
   struct {
     GString* command; /**< Command in buffer */

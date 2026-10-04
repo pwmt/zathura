@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zathura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 19:40+0200\n"
-"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"POT-Creation-Date: 2026-10-04 20:58+0200\n"
+"PO-Revision-Date: 2026-09-15 09:54+0200\n"
 "Last-Translator: Fernando Henrique <liquuid@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/pwmt/zathura/"
 "language/pt_BR/)\n"
@@ -50,16 +50,16 @@ msgstr ""
 "usando plugins. Outros recursos incluem "
 
 msgid "SyncTeX forward and backward synchronization support."
-msgstr ""
+msgstr "Suporte para sincronização SyncTeX direta e reversa."
 
 msgid "Quickmarks and bookmarks."
-msgstr ""
+msgstr "Marcadores e marcadores rápidos."
 
 msgid "Automatic document reloading."
-msgstr ""
+msgstr "Atualização automática do documento."
 
 msgid "Reading a PDF file"
-msgstr ""
+msgstr "Leitura de um arquivo PDF"
 
 msgid "Opening a file with the `open` command"
 msgstr ""
@@ -70,19 +70,28 @@ msgstr ""
 msgid "Listing and selecting bookmarks"
 msgstr ""
 
-msgid "Add page-mode setting"
+msgid "Fix crash on error (#992)"
 msgstr ""
 
-msgid "Fix reloading of files (#969)"
+msgid "Fix page number at top/bottom (#988)"
 msgstr ""
+
+msgid "Remove use of G_GNUC_CONST for *_get_type (985)"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Várias correções e melhorias"
+
+msgid "Add page-mode setting"
+msgstr "Adicionar configuração de modo-página"
+
+msgid "Fix reloading of files (#969)"
+msgstr "Corrigir o carregamento de arquivos (#969)"
 
 msgid "Fix CSS handling (#970)"
 msgstr ""
 
 msgid "Replace test feature with test-x11 and test-wayland features"
-msgstr ""
-
-msgid "Various fixes and improvements"
 msgstr ""
 
 msgid ""
@@ -101,25 +110,27 @@ msgid "Support SIGSTOP in sandbox (#945)"
 msgstr ""
 
 msgid "Add setting to open documents in single-page mode"
-msgstr ""
+msgstr "Adicionar configuração para abrir documentos em modo de página única"
 
 msgid "Bind toggle-single-page to w (#966)"
-msgstr ""
+msgstr "Vincular alternância de página única à tecla w (#966)"
 
 msgid "Make link confirmation optional"
-msgstr ""
+msgstr "Tornar opcional a confirmação de link"
 
 msgid "Replace use of SHA256 with XXH3-128 for faster file hashing"
 msgstr ""
+"Substituir o uso de SHA256 por XXH3-128 para indexar documentos mais "
+"rapidamente"
 
 msgid "Fix sandbox on X11 (#928)"
-msgstr ""
+msgstr "Corrigir sandbox em X11 (#928)"
 
 msgid "Fix crashes on document reload (#164, #462, #729, #993)"
-msgstr ""
+msgstr "Corrigir falhas na atualização de documento (#164, #462, #729, #993)"
 
 msgid "Add option to keep selection highlights (#693)"
-msgstr ""
+msgstr "Adicionar opção para manter os destaques selecionados (#693)"
 
 msgid "Add user feedback to copy_filepath"
 msgstr ""
@@ -131,59 +142,66 @@ msgid "Handle key press events for notification area (#897)"
 msgstr ""
 
 msgid "Fix documentation of mouse buttons (#912)"
-msgstr ""
+msgstr "Corrigir documentação de botões de mouse (#912)"
 
 msgid "Make shortcuts available as commands (#225)"
-msgstr ""
+msgstr "Tornar atalhos disponíveis como comandos (#225)"
 
 msgid "Fix more cases of flickering when rendering pages (#864)"
-msgstr ""
+msgstr "Corrigir mais casos de oscilação ao renderizar páginas (#864)"
 
 msgid "Add search result counter (#450)"
-msgstr ""
+msgstr "Adicionar contador de resultado de buscas (#450)"
 
 msgid "Fix search result cycling in documents with one page (#902)"
 msgstr ""
+"Corrigir oscilação de resultado de busca em documentos de uma página (#902)"
 
 msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
-msgstr ""
+msgstr "Corrigir algumas regressões de renderização (#876, #877, #879, #886)"
 
 msgid "Fix warning when using 'null' database (#881)"
-msgstr ""
+msgstr "Corrir alerta ao usar database 'inválida' (#881)"
 
 msgid "Include manpages in tarballs (#674)"
-msgstr ""
+msgstr "Incluir manpages em tarballs (#674)"
 
 msgid "Update translations"
-msgstr ""
+msgstr "Atualizar traduções"
 
 msgid ""
 "Implement single page layout and equal height/width modes (#706, #724, #447, "
 "#289)"
 msgstr ""
+"Implementar modos de layout de página única e altura/largura iguais (#706, "
+"#724, #447, #289)"
 
 msgid "Use single page layout for presentation mode (#686, #666)"
-msgstr ""
+msgstr "Usar layout de página única em modo apresentação (#686, #666)"
 
 msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
 msgstr ""
+"Corrigir renderização borrada e mensagens de carregamento repetidas (#864, "
+"#860)"
 
 msgid "Allow to disable copying to clipboard (#835)"
-msgstr ""
+msgstr "Permitir para desabilitar cópia para área de transferência (#835)"
 
 msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
-msgstr ""
+msgstr "Corrigir rolagem suave usand teclas Ctrl e setas (#872)"
 
 msgid ""
 "Fork to background if opening with multiple files only if --fork is "
 "specified (#855)"
 msgstr ""
+"Bifurcar para segundo plano caso sejam abertos vários documentos somente se "
+"--fork seja especificado (#855)"
 
 msgid "Fix handling of PageUp and PageDown (#861)"
-msgstr ""
+msgstr "Corrigir manuseio de teclas PageUp e PageDown (#861)"
 
 msgid "Fix handling of mappings with special keys (#862)"
-msgstr ""
+msgstr "Corrigir manuseio de mapeamento com teclas especiais (#862)"
 
 msgid "Integrate Gtk+-specific parts of girara"
 msgstr ""
@@ -192,13 +210,14 @@ msgid "Switch to date-based version numbers"
 msgstr ""
 
 msgid "Fix warnings from CSS generation (#824)"
-msgstr ""
+msgstr "Corrigir alertas de geração de CSS (#824)"
 
 msgid "Apply correct scaling when recoloring (#836)"
-msgstr ""
+msgstr "Aplicar escala correta ao recolorir (#836)"
 
 msgid "Make sure jumplist stays valid after close (#835)"
 msgstr ""
+"Certificar que lista de links continue válida depois de ser fechada (#835)"
 
 msgid "Disable message in incremental search (#227, #847)"
 msgstr ""
@@ -1076,6 +1095,9 @@ msgstr ""
 msgid "Not a valid command: %s"
 msgstr "Nenhum comando válido: %s"
 
+msgid "Settings"
+msgstr ""
+
 #, c-format
 msgid "Invalid number of arguments passed: %zu instead of 1"
 msgstr ""
@@ -1148,7 +1170,7 @@ msgid "Argument must be a nonzero number."
 msgstr ""
 
 #, c-format
-msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgid "[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"
 msgstr ""
 
 msgid "(current)"
@@ -1196,9 +1218,6 @@ msgstr ""
 
 msgid "No arguments given."
 msgstr "Nenhum argumento dado."
-
-msgid "Printing is not permitted in strict sandbox mode"
-msgstr ""
 
 msgid "Saving is not permitted in strict sandbox mode"
 msgstr ""
@@ -1249,9 +1268,12 @@ msgstr ""
 msgid "Recent files"
 msgstr ""
 
+msgid "Bookmarks"
+msgstr ""
+
 #, c-format
-msgid "Page %d"
-msgstr "Página %d"
+msgid "Page %u"
+msgstr "Página %u"
 
 msgid "Attachments"
 msgstr "Anexos"
@@ -1349,6 +1371,9 @@ msgstr "Largura de janela inicial"
 
 msgid "Initial window height"
 msgstr "Altura de janela inicial"
+
+msgid "Show window decorations"
+msgstr ""
 
 msgid "Horizontal padding for the status, input, and notification bars"
 msgstr ""
@@ -1657,6 +1682,7 @@ msgstr ""
 msgid "Failed to run xdg-open."
 msgstr "Falha ao executar xdg-open."
 
+#. Accept: empty string (bare Enter), or confirmation string
 msgid "y"
 msgstr ""
 
@@ -1674,8 +1700,8 @@ msgid "Opening external applications in strict sandbox mode is not permitted"
 msgstr ""
 
 #, c-format
-msgid "Link: page %d"
-msgstr "Link: página %d"
+msgid "Link: page %u"
+msgstr "Link: página %u"
 
 #, c-format
 msgid "Link: %s"
@@ -1685,7 +1711,7 @@ msgid "Link: Invalid"
 msgstr "Link: Inválido"
 
 #, c-format
-msgid "Copied page number: %d"
+msgid "Copied page number: %u"
 msgstr ""
 
 #, c-format
@@ -1771,7 +1797,11 @@ msgstr "Salvar imagem para"
 
 #. Update statusbar.
 #, c-format
-msgid "Printing page %d ..."
+msgid "Printing page %u ..."
+msgstr ""
+
+#. disable printing in sandbox mode
+msgid "Printing is not permitted in strict sandbox mode"
 msgstr ""
 
 #, c-format
@@ -1792,6 +1822,10 @@ msgstr "Este documento não contem qualquer índice"
 msgid "Could not get path from file."
 msgstr ""
 
+#. disable the file dialog in sandbox mode
+msgid "The file chooser is not permitted in strict sandbox mode"
+msgstr ""
+
 msgid "Open file"
 msgstr ""
 
@@ -1800,6 +1834,10 @@ msgstr ""
 
 msgid "All files"
 msgstr ""
+
+#, c-format
+msgid "Page %s"
+msgstr "Página %s"
 
 #, c-format
 msgid "[Search %d/%d]"
@@ -1826,6 +1864,9 @@ msgstr ""
 
 msgid "Document does not contain any pages"
 msgstr "Documento não contém quaisquer páginas"
+
+msgid "Failed to parse the displayed page of the document"
+msgstr ""
 
 #, c-format
 msgid "File already exists: %s. Use :write! to overwrite it."

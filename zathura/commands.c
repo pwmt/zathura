@@ -186,7 +186,7 @@ bool cmd_jumplist_list(girara_session_t* session, girara_list_t* argument_list) 
   g_autoptr(GString) string    = g_string_new(NULL);
   for (int i = zathura->jumplist.size - 1; i >= 0 && num_entries > 0; --i, --num_entries) {
     const zathura_jump_t* j = girara_list_nth(zathura->jumplist.list, i);
-    g_string_append_printf(string, _("[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"), i, j->page + 1, j->x, j->y,
+    g_string_append_printf(string, _("[%d]: page=<b>%2u</b>, x=%f, y=%f %s\n"), i, j->page + 1, j->x, j->y,
                            j == current_jump ? _("(current)") : "");
   }
 
@@ -331,14 +331,9 @@ bool cmd_print(girara_session_t* session, girara_list_t* UNUSED(argument_list)) 
     return false;
   }
 
-#ifdef WITH_SANDBOX
-  girara_notify(zathura->ui.session, GIRARA_ERROR, _("Printing is not permitted in strict sandbox mode"));
-  return false;
-#else
   print(zathura);
 
   return true;
-#endif
 }
 
 bool cmd_nohlsearch(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
@@ -409,10 +404,22 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
     return false;
   }
 
+  /* the search needs every page widget so wait until the background preload is done */
+  if (zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget) == false) {
+    g_free(zathura->sync.pending_search_input);
+    zathura->sync.pending_search_input     = g_strdup(input);
+    zathura->sync.pending_search_direction = argument->n;
+    return true;
+  }
+
   zathura_error_t error = ZATHURA_ERROR_OK;
 
   /* set search direction */
   zathura->global.search_direction = argument->n;
+
+  // set search string
+  g_free(zathura->global.search_string);
+  zathura->global.search_string = g_strdup(input);
 
   unsigned int number_of_pages     = zathura_document_get_number_of_pages(document);
   unsigned int current_page_number = zathura_document_get_current_page_number(document);
@@ -423,6 +430,7 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
   /* reset search highlighting */
   bool nohlsearch = false;
   girara_setting_get(session, "nohlsearch", &nohlsearch);
+  zathura_document_widget_hide_links(zathura->ui.document_widget);
 
   /* search pages */
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
@@ -434,11 +442,7 @@ bool cmd_search(girara_session_t* session, const char* input, girara_argument_t*
 
     GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
     GObject* obj_page_widget = G_OBJECT(page_widget);
-    g_object_set(obj_page_widget, "draw-links", FALSE, NULL);
-
-    zathura_renderer_lock(zathura->sync.render_thread);
-    girara_list_t* result = zathura_page_search_text(page, input, &error);
-    zathura_renderer_unlock(zathura->sync.render_thread);
+    girara_list_t* result    = zathura_page_search_text(page, input, &error);
 
     if (result == NULL || girara_list_size(result) == 0) {
       girara_list_free(result);

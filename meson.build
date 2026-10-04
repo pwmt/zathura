@@ -1,5 +1,5 @@
 project('zathura', 'c',
-  version: '2026.07.18',
+  version: '2026.10.4',
   meson_version: '>=1.5',
   default_options: ['c_std=c23', 'warning_level=3'],
 )
@@ -112,6 +112,9 @@ sources = files(
   'girara-gtk/commands.c',
   'girara-gtk/completion.c',
   'girara-gtk/config.c',
+  'girara-gtk/dialog.c',
+  'girara-gtk/inputbar.c',
+  'girara-gtk/notification-area.c',
   'girara-gtk/session.c',
   'girara-gtk/settings.c',
   'girara-gtk/shortcuts.c',
