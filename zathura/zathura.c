@@ -59,6 +59,17 @@ typedef struct zathura_document_info_s {
 
 static gboolean document_info_open(gpointer data);
 static void cb_document_widget_page_widgets_loaded(ZathuraDocumentWidget* document_widget, zathura_t* zathura);
+static gboolean cb_window_close_request(GtkWindow* window, zathura_t* zathura);
+static gboolean cb_split_key_pressed(GtkEventControllerKey* controller, guint keyval, guint keycode,
+                                     GdkModifierType state, zathura_t* zathura);
+static void cb_split_view_pressed(GtkGestureClick* gesture, int n_press, double x, double y, zathura_t* zathura);
+
+static gboolean split_close_idle(gpointer data) {
+  zathura_t* zathura          = data;
+  zathura->split_close_source = 0;
+  zathura_split_close(zathura);
+  return G_SOURCE_REMOVE;
+}
 
 #ifdef G_OS_UNIX
 static gboolean zathura_signal_sigterm(gpointer data);
@@ -218,10 +229,20 @@ static bool init_ui(zathura_t* zathura) {
   gtk_widget_add_controller(GTK_WIDGET(zathura->ui.session->gtk.view), GTK_EVENT_CONTROLLER(drop_target));
 
   /* zathura signals */
-  zathura->signals.refresh_view = g_signal_new("refresh-view", GTK_TYPE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
-                                               g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
+  zathura->signals.refresh_view = g_signal_lookup("refresh-view", GTK_TYPE_WIDGET);
+  if (zathura->signals.refresh_view == 0) {
+    zathura->signals.refresh_view = g_signal_new("refresh-view", GTK_TYPE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                                 g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
+  }
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "refresh-view", G_CALLBACK(cb_refresh_view), zathura);
+
+  if (zathura->split_parent == NULL) {
+    GtkEventController* split_keys = gtk_event_controller_key_new();
+    gtk_event_controller_set_propagation_phase(split_keys, GTK_PHASE_CAPTURE);
+    g_signal_connect(split_keys, "key-pressed", G_CALLBACK(cb_split_key_pressed), zathura);
+    gtk_widget_add_controller(zathura->ui.session->gtk.window, split_keys);
+  }
 
   g_signal_connect(G_OBJECT(zathura->ui.session->gtk.view), "notify::scale-factor", G_CALLBACK(cb_scale_factor),
                    zathura);
@@ -242,6 +263,9 @@ static bool init_ui(zathura_t* zathura) {
   /* page view */
   zathura->ui.view = gtk_scrolled_window_new();
   girara_set_view(zathura->ui.session, zathura->ui.view);
+  GtkGesture* pane_focus = gtk_gesture_click_new();
+  g_signal_connect(pane_focus, "pressed", G_CALLBACK(cb_split_view_pressed), zathura);
+  gtk_widget_add_controller(zathura->ui.view, GTK_EVENT_CONTROLLER(pane_focus));
 
   /* load scrollbar settings */
   g_autofree char* view_options = NULL;
@@ -297,8 +321,97 @@ static bool init_ui(zathura_t* zathura) {
   /* signals */
   zathura->signals.destroy_handler =
       g_signal_connect(G_OBJECT(zathura->ui.session->gtk.window), "destroy", G_CALLBACK(cb_destroy), zathura);
+  if (zathura->split_parent == NULL) {
+    g_signal_connect(zathura->ui.session->gtk.window, "close-request", G_CALLBACK(cb_window_close_request), zathura);
+  }
 
   return true;
+}
+
+static gboolean cb_window_close_request(GtkWindow* UNUSED(window), zathura_t* zathura) {
+  if (zathura->split_view != NULL) {
+    zathura_split_close(zathura);
+  }
+  return false;
+}
+
+static bool focus_is_in_session_input(girara_session_t* session, GtkWidget* focus) {
+  if (focus == NULL) {
+    return false;
+  }
+  return gtk_widget_is_ancestor(focus, session->gtk.inputbar) ||
+         (session->gtk.dialog != NULL && gtk_widget_is_ancestor(focus, session->gtk.dialog));
+}
+
+static gboolean cb_split_key_pressed(GtkEventControllerKey* UNUSED(controller), guint keyval, guint UNUSED(keycode),
+                                     GdkModifierType state, zathura_t* zathura) {
+  if (zathura->split_view == NULL) {
+    return GDK_EVENT_PROPAGATE;
+  }
+
+  const GdkModifierType modifiers = state & gtk_accelerator_get_default_mod_mask();
+  const guint lower_keyval        = gdk_keyval_to_lower(keyval);
+  GtkWidget* focus                = gtk_window_get_focus(GTK_WINDOW(zathura->ui.session->gtk.window));
+  zathura_t* active               = zathura->split_active != NULL ? zathura->split_active : zathura;
+
+  if (keyval == GDK_KEY_colon) {
+    if (focus_is_in_session_input(zathura->ui.session, focus) ||
+        focus_is_in_session_input(zathura->split_view->ui.session, focus)) {
+      return GDK_EVENT_PROPAGATE;
+    }
+
+    if (zathura_has_document(active) == false) {
+      active = zathura;
+    }
+    girara_argument_t argument = {.n = 0, .data = ":"};
+    sc_focus_inputbar(active->ui.session, &argument, NULL, 0);
+    return GDK_EVENT_STOP;
+  }
+
+  if (modifiers == GDK_CONTROL_MASK && keyval == GDK_KEY_Tab) {
+    if (focus_is_in_session_input(zathura->ui.session, focus) ||
+        focus_is_in_session_input(zathura->split_view->ui.session, focus)) {
+      return GDK_EVENT_PROPAGATE;
+    }
+
+    zathura_split_focus(active == zathura ? zathura->split_view : zathura);
+    return GDK_EVENT_STOP;
+  }
+
+  if (modifiers == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) && lower_keyval == GDK_KEY_w) {
+    if (zathura->split_close_source == 0) {
+      zathura->split_close_source = g_idle_add(split_close_idle, zathura);
+    }
+    return GDK_EVENT_STOP;
+  }
+
+  return GDK_EVENT_PROPAGATE;
+}
+
+static void cb_split_view_pressed(GtkGestureClick* UNUSED(gesture), int UNUSED(n_press), double UNUSED(x),
+                                  double UNUSED(y), zathura_t* zathura) {
+  zathura_split_focus(zathura);
+}
+
+void zathura_split_focus(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+
+  zathura_t* primary = zathura->split_parent != NULL ? zathura->split_parent : zathura;
+  if (primary->split_view == NULL || (zathura != primary && zathura != primary->split_view)) {
+    return;
+  }
+
+  primary->split_active    = zathura;
+  GtkWidget* visible_child = gtk_stack_get_visible_child(GTK_STACK(zathura->ui.session->gtk.view));
+  if (visible_child != NULL && gtk_widget_grab_focus(visible_child) == false) {
+    gtk_widget_grab_focus(GTK_WIDGET(zathura->ui.session->gtk.view));
+  }
+
+  if (primary->split_view != NULL) {
+    gtk_widget_remove_css_class(primary->ui.view, "split-active-pane");
+    gtk_widget_remove_css_class(primary->split_view->ui.view, "split-active-pane");
+    gtk_widget_add_css_class(zathura->ui.view, "split-active-pane");
+  }
 }
 
 static const char color_settings[][16] = {
@@ -341,6 +454,12 @@ static bool load_css(zathura_t* zathura) {
 }
 
 static bool init_database(zathura_t* zathura) {
+  if (zathura->split_parent != NULL) {
+    zathura->database = g_object_ref(zathura->split_parent->database);
+    g_object_set(G_OBJECT(zathura->ui.session->command_history), "io", zathura->database, NULL);
+    return true;
+  }
+
 #ifndef WITH_SANDBOX
   g_autofree char* database = NULL;
   girara_setting_get(zathura->ui.session, "database", &database);
@@ -437,7 +556,7 @@ bool zathura_init(zathura_t* zathura) {
 #ifndef WITH_SANDBOX
   bool dbus = true;
   girara_setting_get(zathura->ui.session, "dbus-service", &dbus);
-  if (dbus == true) {
+  if (dbus == true && zathura->split_parent == NULL) {
     /* Start D-Bus service */
     zathura->dbus = zathura_dbus_new(zathura);
   }
@@ -452,6 +571,10 @@ error_free:
 void zathura_free(zathura_t* zathura) {
   if (zathura == NULL) {
     return;
+  }
+
+  if (zathura->split_view != NULL) {
+    zathura_split_close(zathura);
   }
 
   document_close(zathura, false);
@@ -517,6 +640,7 @@ void zathura_free(zathura_t* zathura) {
   g_free(zathura->config.config_dir);
   g_free(zathura->config.data_dir);
   g_free(zathura->config.cache_dir);
+  g_free(zathura->config.plugin_dir);
 
   // free search string
   g_free(zathura->global.search_string);
@@ -559,8 +683,158 @@ void zathura_set_plugin_dir(zathura_t* zathura, const char* dir) {
   g_return_if_fail(zathura->plugins.manager != NULL);
 
   if (dir != NULL) {
+    g_free(zathura->config.plugin_dir);
+    zathura->config.plugin_dir = g_strdup(dir);
     zathura_plugin_manager_set_dir(zathura->plugins.manager, dir);
   }
+}
+
+bool zathura_split_open(zathura_t* zathura, const char* path) {
+  g_return_val_if_fail(zathura != NULL, false);
+  if (zathura->split_parent != NULL || zathura->split_view != NULL) {
+    return false;
+  }
+
+  zathura_document_t* current_document = zathura_get_document(zathura);
+  if (path == NULL && current_document == NULL) {
+    return false;
+  }
+
+  g_autoptr(zathura_t) split = zathura_create();
+  if (split == NULL) {
+    return false;
+  }
+
+  split->split_parent = zathura;
+  zathura_set_config_dir(split, zathura->config.config_dir);
+  zathura_set_data_dir(split, zathura->config.data_dir);
+  zathura_set_cache_dir(split, zathura->config.cache_dir);
+  zathura_set_plugin_dir(split, zathura->config.plugin_dir);
+  zathura_set_argv(split, zathura->global.arguments);
+
+#ifdef G_OS_UNIX
+  if (split->signals.sigterm > 0) {
+    g_source_remove(split->signals.sigterm);
+    split->signals.sigterm = 0;
+  }
+#endif
+
+  if (zathura_init(split) == false) {
+    GtkWidget* window = split->ui.session != NULL ? split->ui.session->gtk.window : NULL;
+    if (window != NULL) {
+      g_object_ref(window);
+    }
+    zathura_free(g_steal_pointer(&split));
+    if (window != NULL) {
+      gtk_window_destroy(GTK_WINDOW(window));
+      g_object_unref(window);
+    }
+    return false;
+  }
+
+  GtkWidget* primary_box   = GTK_WIDGET(zathura->ui.session->gtk.box);
+  GtkWidget* split_box     = GTK_WIDGET(split->ui.session->gtk.box);
+  GtkWidget* primary_layer = gtk_widget_get_parent(primary_box);
+  GtkWidget* split_layer   = gtk_widget_get_parent(split_box);
+  if (!GTK_IS_OVERLAY(primary_layer) || !GTK_IS_OVERLAY(split_layer)) {
+    girara_error("Failed to locate session content containers for split view.");
+    GtkWidget* window = split->ui.session->gtk.window;
+    g_object_ref(window);
+    zathura_free(g_steal_pointer(&split));
+    gtk_window_destroy(GTK_WINDOW(window));
+    g_object_unref(window);
+    return false;
+  }
+
+  GtkWidget* primary_overlay = primary_layer;
+  GtkWidget* split_overlay   = split_layer;
+  GtkWidget* paned           = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+
+  g_object_ref(primary_box);
+  g_object_ref(split_box);
+  gtk_overlay_set_child(GTK_OVERLAY(primary_overlay), NULL);
+  gtk_overlay_set_child(GTK_OVERLAY(split_overlay), NULL);
+  gtk_paned_set_start_child(GTK_PANED(paned), primary_box);
+  gtk_paned_set_end_child(GTK_PANED(paned), split_box);
+  gtk_paned_set_resize_start_child(GTK_PANED(paned), true);
+  gtk_paned_set_resize_end_child(GTK_PANED(paned), true);
+  gtk_widget_set_hexpand(paned, true);
+  gtk_widget_set_vexpand(paned, true);
+  gtk_overlay_set_child(GTK_OVERLAY(primary_overlay), paned);
+  g_object_unref(primary_box);
+  g_object_unref(split_box);
+
+  zathura->split_view    = g_steal_pointer(&split);
+  zathura->split_active  = zathura;
+  zathura->split_paned   = paned;
+  zathura->split_overlay = primary_overlay;
+
+  gtk_widget_set_visible(zathura->split_view->ui.session->gtk.window, false);
+
+  if (path != NULL) {
+    document_open_idle(zathura->split_view, path, NULL, ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL, NULL, NULL, NULL);
+  } else {
+    const char* current_path = zathura_document_get_path(current_document);
+    const char* current_uri  = zathura_document_get_uri(current_document);
+    if (document_open(zathura->split_view, current_path, current_uri, zathura->file_monitor.password,
+                      ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL) == false) {
+      zathura_split_close(zathura);
+      return false;
+    }
+  }
+
+  zathura_split_focus(zathura->split_view);
+  return true;
+}
+
+bool zathura_split_close(zathura_t* zathura) {
+  g_return_val_if_fail(zathura != NULL, false);
+  if (zathura->split_parent != NULL) {
+    return zathura_split_close(zathura->split_parent);
+  }
+  if (zathura->split_view == NULL) {
+    return false;
+  }
+  if (zathura->split_close_source != 0) {
+    g_source_remove(zathura->split_close_source);
+    zathura->split_close_source = 0;
+  }
+
+  zathura_t* split           = zathura->split_view;
+  GtkWidget* primary_box     = GTK_WIDGET(zathura->ui.session->gtk.box);
+  GtkWidget* split_box       = GTK_WIDGET(split->ui.session->gtk.box);
+  GtkWidget* split_window    = split->ui.session->gtk.window;
+  GtkWidget* paned           = zathura->split_paned;
+  GtkWidget* primary_overlay = zathura->split_overlay;
+
+  g_object_ref(primary_box);
+  g_object_ref(split_box);
+  g_object_ref(split_window);
+  g_object_ref(paned);
+
+  gtk_overlay_set_child(GTK_OVERLAY(primary_overlay), NULL);
+  gtk_paned_set_start_child(GTK_PANED(paned), NULL);
+  gtk_paned_set_end_child(GTK_PANED(paned), NULL);
+  gtk_overlay_set_child(GTK_OVERLAY(primary_overlay), primary_box);
+
+  zathura->split_view    = NULL;
+  zathura->split_active  = NULL;
+  zathura->split_paned   = NULL;
+  zathura->split_overlay = NULL;
+  split->split_parent    = NULL;
+  gtk_widget_remove_css_class(primary_box, "split-active-pane");
+  gtk_widget_remove_css_class(split_box, "split-active-pane");
+
+  zathura_free(split);
+  gtk_window_destroy(GTK_WINDOW(split_window));
+
+  g_object_unref(paned);
+  g_object_unref(split_window);
+  g_object_unref(split_box);
+  g_object_unref(primary_box);
+
+  gtk_widget_grab_focus(GTK_WIDGET(zathura->ui.session->gtk.view));
+  return true;
 }
 
 void zathura_set_argv(zathura_t* zathura, char** argv) {

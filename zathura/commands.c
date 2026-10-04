@@ -315,6 +315,65 @@ bool cmd_open(girara_session_t* session, girara_list_t* argument_list) {
   return true;
 }
 
+bool cmd_split(girara_session_t* session, girara_list_t* argument_list) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  const unsigned int argc = girara_list_size(argument_list);
+  if (argc > 1) {
+    girara_notify(session, GIRARA_ERROR, _("Too many arguments."));
+    return false;
+  }
+
+  if (zathura->split_parent != NULL) {
+    girara_notify(session, GIRARA_ERROR, _("A split view is already active."));
+    return false;
+  }
+
+  const char* path = argc == 1 ? girara_list_nth(argument_list, 0) : NULL;
+  if (zathura_split_open(zathura, path) == false) {
+    if (path == NULL && zathura_has_document(zathura) == false) {
+      girara_notify(session, GIRARA_ERROR, _("Open a document first or provide a file to split."));
+    } else if (zathura->split_view != NULL) {
+      girara_notify(session, GIRARA_ERROR, _("A split view is already active."));
+    } else {
+      girara_notify(session, GIRARA_ERROR, _("Failed to create split view."));
+    }
+    return false;
+  }
+
+  return true;
+}
+
+static gboolean cmd_unsplit_idle(gpointer data) {
+  zathura_t* zathura          = data;
+  zathura->split_close_source = 0;
+  zathura_split_close(zathura);
+  return G_SOURCE_REMOVE;
+}
+
+bool cmd_unsplit(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+
+  zathura_t* zathura = session->global.data;
+  if (zathura->split_parent != NULL) {
+    zathura_t* parent = zathura->split_parent;
+    if (parent->split_close_source == 0) {
+      parent->split_close_source = g_idle_add(cmd_unsplit_idle, parent);
+    }
+    return true;
+  }
+
+  if (zathura_split_close(zathura) == false) {
+    girara_notify(session, GIRARA_ERROR, _("No split view is active."));
+    return false;
+  }
+
+  return true;
+}
+
 bool cmd_quit(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
   sc_quit(session, NULL, NULL, 0);
 
