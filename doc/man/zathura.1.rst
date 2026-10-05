@@ -128,6 +128,10 @@ General
     Show index and switch to **Index mode**
   d
     Toggle dual page view
+  Ctrl+Tab
+    Switch keyboard focus between the panes when split view is active
+  Ctrl+Shift+w
+    Close the split view as a keyboard fallback
   D
     Cycle opening column in dual page view
   F5
@@ -238,6 +242,16 @@ Mouse bindings
 
 Commands
 ---------
+
+split [file]
+  Open a second pane with an independent view of the current document, or open
+  the specified file in the second pane. Use ``:split`` to view the current PDF
+  twice with independent page positions, zoom, and search state. After running
+  ``:split``, press Escape once to return focus from the command line to the
+  document panes. Use Ctrl+Tab to switch the active pane.
+
+unsplit
+  Close the second pane and return to the single-document view.
 
 bmark
   Save a bookmark.

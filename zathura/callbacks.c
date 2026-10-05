@@ -28,6 +28,10 @@
 #include "dbus-interface.h"
 
 gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura) {
+  if (widget == NULL && zathura != NULL && zathura->split_view != NULL) {
+    zathura_split_close(zathura);
+  }
+
   /* hide the window on quit while the cleanup runs */
   if (widget == NULL && zathura != NULL && zathura->ui.session != NULL && zathura->ui.session->gtk.window != NULL) {
     gtk_widget_set_visible(zathura->ui.session->gtk.window, FALSE);
