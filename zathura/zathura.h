@@ -157,6 +157,7 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
+    bool highlight_mode;                  /**< Auto-highlight text selections on release */
     guint current_index_position;         /**< current row in index */
     int current_search_result;
     int total_search_results;
@@ -173,6 +174,12 @@ struct zathura_s {
   struct {
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
+
+  struct {
+    girara_list_t* highlights;   /**< persistent highlights */
+    GdkRGBA palette[4];          /**< 0-2: preset colors, 3: user-defined (alpha < 0 means unset) */
+    unsigned int palette_active; /**< index of the currently active palette color */
+  } highlights;
 
   zathura_jumplist_t jumplist;
 
