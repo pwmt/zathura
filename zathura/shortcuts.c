@@ -652,7 +652,7 @@ bool sc_page_rotate(girara_session_t* session, girara_argument_t* argument, gira
   const unsigned int page_number = zathura_document_get_current_page_number(document);
 
   unsigned int angle = 90;
-  if (argument && argument->n == ROTATE_CCW_PG) {
+  if (argument && argument->n == ROTATE_CCW) {
     angle = 270;
   }
 
