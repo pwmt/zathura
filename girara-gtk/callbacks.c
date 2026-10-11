@@ -362,12 +362,16 @@ gboolean girara_callback_view_scroll_event(GtkEventControllerScroll* controller,
   static const double surface_to_wheel = 0.1;
 #endif
 
-  /* only wheel units are discrete steps so touchpad deltas stay smooth */
-  const bool discrete = gtk_event_controller_scroll_get_unit(controller) == GDK_SCROLL_UNIT_WHEEL;
+  GdkEvent* scroll_event = gtk_event_controller_get_current_event(GTK_EVENT_CONTROLLER(controller));
+  const bool discrete    = scroll_event != NULL && gdk_scroll_event_get_direction(scroll_event) != GDK_SCROLL_SMOOTH;
   if (discrete == false) {
+    /* X11 smooth scrolling also uses wheel units. */
+    const double scale =
+        gtk_event_controller_scroll_get_unit(controller) == GDK_SCROLL_UNIT_SURFACE ? surface_to_wheel : 1.0;
+
     event.type = GIRARA_EVENT_SCROLL_BIDIRECTIONAL;
-    event.x    = dx * surface_to_wheel;
-    event.y    = dy * surface_to_wheel;
+    event.x    = dx * scale;
+    event.y    = dy * scale;
   } else if (dx == 0.0 && dy < 0.0) {
     event.type = GIRARA_EVENT_SCROLL_UP;
   } else if (dx == 0.0 && dy > 0.0) {
