@@ -164,6 +164,13 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
   return false;
 }
 
+static void realign_after_adjust(gpointer data) {
+  zathura_t* zathura = data;
+  if (zathura_has_document(zathura) == true) {
+    position_set(zathura, -1, -1);
+  }
+}
+
 bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                       unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
@@ -179,6 +186,12 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, gi
 
     zathura_document_set_adjust_mode(zathura_get_document(zathura), argument->n);
     adjust_view(zathura);
+
+    /* adjust_view only rescales; the scroll offset still belongs to the old zoom, which leaves a page break
+     * in the middle of the window. Once the new layout is allocated, align the current page to the viewport. */
+    if (argument->n == ZATHURA_ADJUST_BESTFIT) {
+      g_idle_add_once(realign_after_adjust, zathura);
+    }
   }
 
   return false;
