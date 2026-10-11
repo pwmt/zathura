@@ -120,6 +120,8 @@ General
     Enter command
   r
     Rotate by 90 degrees
+  Meta-r
+    Rotate page by 90 degrees
   ^r
     Recolor (grayscale and invert colors)
   R

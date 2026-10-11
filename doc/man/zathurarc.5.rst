@@ -320,6 +320,11 @@ They can also be combined with modifiers:
 
   * ``rotate``
 
+    Rotate the document. Pass ``rotate-ccw`` as argument for counterclockwise rotation
+    and ``rotate-cw`` for clockwise rotation.
+
+  * ``rotate_page``
+
     Rotate the page. Pass ``rotate-ccw`` as argument for counterclockwise rotation
     and ``rotate-cw`` for clockwise rotation.
 
