@@ -332,7 +332,7 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, GDK_KEY_R, NULL, sc_reload, mode, 0, NULL);
 
   girara_shortcut_add(gsession, 0, GDK_KEY_r, NULL, sc_rotate, mode, ROTATE_CW, NULL);
-  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_r, NULL, page_rotate, mode, ROTATE_CW_PG, NULL);
+  girara_shortcut_add(gsession, GDK_ALT_MASK, GDK_KEY_r, NULL, sc_page_rotate, mode, ROTATE_CW_PG, NULL);
 
   girara_shortcut_add(gsession, 0, GDK_KEY_h, NULL, sc_scroll, mode, LEFT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_j, NULL, sc_scroll, mode, DOWN, NULL);
@@ -816,7 +816,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "recolor",                  sc_recolor);
   girara_shortcut_mapping_add(gsession, "reload",                   sc_reload);
   girara_shortcut_mapping_add(gsession, "rotate",                   sc_rotate);
-  girara_shortcut_mapping_add(gsession, "rotate_page",              page_rotate);
+  girara_shortcut_mapping_add(gsession, "rotate_page",              sc_page_rotate);
   girara_shortcut_mapping_add(gsession, "scroll",                   sc_scroll);
   girara_shortcut_mapping_add(gsession, "search",                   sc_search);
   girara_shortcut_mapping_add(gsession, "snap_to_page",             sc_snap_to_page);

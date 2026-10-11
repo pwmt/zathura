@@ -641,8 +641,8 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
   return false;
 }
 
-bool page_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
-                 unsigned int t) {
+bool sc_page_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                    unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;

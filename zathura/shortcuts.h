@@ -216,7 +216,7 @@ bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_ev
  * @param t Number of executions
  * @return true if no error occurred otherwise false
  */
-bool page_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+bool sc_page_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
  * Scroll through the pages
