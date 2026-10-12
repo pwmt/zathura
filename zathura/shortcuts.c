@@ -1880,8 +1880,7 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   gtk_file_dialog_set_title(dialog, _("Open file"));
 
   /* build a filter for all mime types supported by loaded plugins */
-  zathura_plugin_manager_t* manager = zathura->plugins.manager;
-  girara_list_t* types              = zathura_plugin_manager_get_content_types(manager);
+  girara_list_t* types = zathura_plugin_manager_get_content_types(zathura->plugins.manager);
   if (types && girara_list_size(types) > 0) {
     g_autoptr(GListStore) filters      = g_list_store_new(GTK_TYPE_FILE_FILTER);
     g_autoptr(GtkFileFilter) supported = gtk_file_filter_new();
@@ -1901,7 +1900,6 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   }
 
   /* seed the dialog with the folder of the currently open document */
-
   if (zathura_has_document(zathura)) {
     zathura_document_t* document = zathura_get_document(zathura);
     const char* current_path     = zathura_document_get_path(document);
