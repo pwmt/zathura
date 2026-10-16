@@ -969,15 +969,19 @@ zathura_link_t* zathura_page_widget_link_get(ZathuraPageWidget* widget, unsigned
 
 static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, double orig_y, double* x, double* y) {
   zathura_document_t* document = zathura_get_document(zathura);
-  const unsigned int rotation  = zathura_document_get_rotation(document);
+  const unsigned int rotation =
+      (zathura_document_get_rotation(document) + zathura_page_get_rotation(zathura_document_get_page(document, page))) %
+      360;
   if (rotation == 0) {
     *x = orig_x;
     *y = orig_y;
     return;
   }
 
-  unsigned int height, width;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page, &height, &width);
+  /* the page's own size: its grid cell is wider or taller when the other pages are not rotated the same way */
+  GtkWidget* widget   = zathura_document_widget_get_page(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page);
+  const double width  = widget != NULL ? gtk_widget_get_width(widget) : 0;
+  const double height = widget != NULL ? gtk_widget_get_height(widget) : 0;
   switch (rotation) {
   case 90:
     *x = orig_y;
