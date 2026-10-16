@@ -141,6 +141,7 @@ struct zathura_s {
     gchar* config_dir; /**< Path to the configuration directory */
     gchar* data_dir;   /**< Path to the data directory */
     gchar* cache_dir;  /**< Path to the cache directory */
+    gchar* plugin_dir; /**< Path to the plugin directory */
   } config;
 
   struct {
@@ -192,6 +193,12 @@ struct zathura_s {
   zathura_document_t* document;                       /**< The current document */
   zathura_document_t* predecessor_document;           /**< The document from before a reload */
   ZathuraDocumentWidget* predecessor_document_widget; /**< The document widget from before a reload */
+  zathura_t* split_view;                              /**< The second pane, owned by the primary session */
+  zathura_t* split_parent;                            /**< The primary session when this is a split pane */
+  zathura_t* split_active;                            /**< The pane that receives keyboard navigation */
+  GtkWidget* split_paned;                             /**< The split view container */
+  GtkWidget* split_overlay;                           /**< The primary session's content overlay */
+  guint split_close_source;                           /**< Pending deferred close from the second pane */
   zathura_database_t* database;                       /**< The database */
   ZathuraDbus* dbus;                                  /**< D-Bus service */
 
@@ -276,6 +283,30 @@ bool zathura_init(zathura_t* zathura);
  * @param zathura The zathura session
  */
 void zathura_free(zathura_t* zathura);
+
+/**
+ * Open a second independent document view beside the current view.
+ *
+ * @param zathura The primary session
+ * @param path The file to open, or NULL to reopen the current document
+ * @return true if the split view was created
+ */
+bool zathura_split_open(zathura_t* zathura, const char* path);
+
+/**
+ * Close the second document view, if one exists.
+ *
+ * @param zathura The primary or secondary session
+ * @return true if a split view was closed
+ */
+bool zathura_split_close(zathura_t* zathura);
+
+/**
+ * Focus a pane and make it the target of keyboard navigation.
+ *
+ * @param zathura The pane to focus
+ */
+void zathura_split_focus(zathura_t* zathura);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_t, zathura_free)
 

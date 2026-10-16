@@ -27,7 +27,11 @@
   background-color: @scrollbar-bg@;
 }
 
+#@session@ scrolledwindow.split-active-pane {
+  outline: 2px solid @index-active-bg@;
+  outline-offset: -2px;
+}
+
 #@session@ scrolledwindow scrollbar > slider {
   background-color: @scrollbar-fg@;
 }
-
