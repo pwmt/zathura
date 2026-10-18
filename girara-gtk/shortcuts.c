@@ -15,19 +15,21 @@
 
 bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, const char* buffer,
                          girara_shortcut_function_t function, girara_mode_t mode, int argument_n, void* argument_data) {
-  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session, false);
+  // we handle a buffered or keyed shortcut, but not both
   g_return_val_if_fail(buffer || key || modifier, false);
-  g_return_val_if_fail(function != NULL, false);
+  g_return_val_if_fail(!buffer || !key || !modifier, false);
+  g_return_val_if_fail(function, false);
 
   girara_argument_t argument = {.n = argument_n, .data = g_strdup(argument_data)};
 
   /* search for existing binding */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.shortcuts); ++idx) {
     girara_shortcut_t* shortcuts_it = girara_list_nth(session->bindings.shortcuts, idx);
-    if (((shortcuts_it->mask == modifier && shortcuts_it->key == key && (modifier != 0 || key != 0)) ||
+    if (((shortcuts_it->mask == modifier && shortcuts_it->key == key && (modifier || key)) ||
          (buffer && shortcuts_it->buffered_command && !g_strcmp0(shortcuts_it->buffered_command, buffer))) &&
-        ((shortcuts_it->mode == mode) || (mode == 0))) {
-      if (shortcuts_it->argument.data != NULL) {
+        ((shortcuts_it->mode == mode) || !mode)) {
+      if (shortcuts_it->argument.data) {
         g_free(shortcuts_it->argument.data);
       }
 
