@@ -774,7 +774,11 @@ void cb_hide_inputbar(GtkWidget* widget, gpointer data) {
   g_return_if_fail(data != NULL);
 
   zathura_t* zathura = data;
-  zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_NONE);
+  zathura_inputbar_restore_adjust_mode(zathura);
+}
+
+void cb_inputbar_focus_leave(GtkEventControllerFocus* controller, gpointer data) {
+  cb_hide_inputbar(gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(controller)), data);
 }
 
 void cb_hide_links(GtkWidget* widget, gpointer data) {

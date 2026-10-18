@@ -47,9 +47,10 @@ static bool link_shortcuts(zathura_t* zathura, GCallback callback, const char* t
   /* ask for input */
   if (show_links == true) {
     GiraraDialog* inputbar = girara_dialog(zathura->ui.session, text, FALSE);
+    g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_inputbar), zathura);
     g_signal_connect(inputbar, "hide", G_CALLBACK(cb_hide_links), zathura);
 
-    zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_INPUTBAR);
+    zathura_inputbar_save_adjust_mode(zathura);
     g_signal_connect(inputbar, "activate", callback, zathura->ui.session);
   }
 
@@ -328,7 +329,7 @@ bool sc_focus_inputbar(girara_session_t* session, girara_argument_t* argument, g
   zathura_t* zathura = session->global.data;
   g_return_val_if_fail(argument != NULL, false);
 
-  zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_INPUTBAR);
+  zathura_inputbar_save_adjust_mode(zathura);
 
   if (!gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar))) {
     gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), TRUE);
@@ -1400,10 +1401,7 @@ bool sc_toggle_index(girara_session_t* session, girara_argument_t* UNUSED(argume
   } else {
     zathura_jumplist_add(zathura);
 
-    const zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
-    if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-      zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_NONE);
-    }
+    zathura_inputbar_restore_adjust_mode(zathura);
 
     girara_set_view(session, zathura->ui.index);
     index_scroll_to_current_page(zathura);

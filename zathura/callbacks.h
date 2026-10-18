@@ -262,6 +262,9 @@ gboolean cb_drop_file(GtkDropTarget* self, const GValue* value, double x, double
  */
 void cb_hide_inputbar(GtkWidget* widget, gpointer data);
 
+/** Restores the adjustment mode when leaving a permanently visible inputbar. */
+void cb_inputbar_focus_leave(GtkEventControllerFocus* controller, gpointer data);
+
 /**
  * Clears all highlighted links when the inputbar gets closed
  *

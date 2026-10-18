@@ -238,7 +238,12 @@ static bool init_ui(zathura_t* zathura) {
     zathura->signals.monitors_handler =
         g_signal_connect(monitors, "items-changed", G_CALLBACK(cb_monitors_changed), zathura);
   }
+
+  /* restore the adjustment mode even when the inputbar stays visible */
   g_signal_connect(zathura->ui.session->gtk.inputbar, "hide", G_CALLBACK(cb_hide_inputbar), zathura);
+  GtkEventController* inputbar_focus = gtk_event_controller_focus_new();
+  g_signal_connect(inputbar_focus, "leave", G_CALLBACK(cb_inputbar_focus_leave), zathura);
+  gtk_widget_add_controller(zathura->ui.session->gtk.inputbar, inputbar_focus);
 
   /* page view */
   zathura->ui.view = gtk_scrolled_window_new();
@@ -1450,6 +1455,8 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
     return false;
   }
 
+  zathura->ui.inputbar_adjust_mode = ZATHURA_ADJUST_NONE;
+
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
 
@@ -1705,6 +1712,27 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
   refresh_view(zathura);
 
   return true;
+}
+
+void zathura_inputbar_save_adjust_mode(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+  if (zathura->ui.document_widget == NULL) {
+    return;
+  }
+
+  const zathura_adjust_mode_t mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
+  if (mode != ZATHURA_ADJUST_INPUTBAR) {
+    zathura->ui.inputbar_adjust_mode = mode;
+    zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, ZATHURA_ADJUST_INPUTBAR);
+  }
+}
+
+void zathura_inputbar_restore_adjust_mode(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+  if (zathura_document_widget_get_adjust_mode(zathura->ui.document_widget) == ZATHURA_ADJUST_INPUTBAR) {
+    zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, zathura->ui.inputbar_adjust_mode);
+  }
+  zathura->ui.inputbar_adjust_mode = ZATHURA_ADJUST_NONE;
 }
 
 void refresh_view(zathura_t* zathura) {
