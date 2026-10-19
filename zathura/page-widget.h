@@ -57,6 +57,72 @@ void zathura_page_widget_update_surface(ZathuraPageWidget* widget, cairo_surface
  */
 void zathura_page_widget_clear_selection(ZathuraPageWidget* widget);
 /**
+ * Update the mouse selection of the page to end at a point.
+ * @param widget the widget
+ * @param x,y the end of the selection, relative to the widget
+ */
+void zathura_page_widget_update_mouse_selection(ZathuraPageWidget* widget, double x, double y);
+
+/**
+ * Convert a point relative to the widget to page coordinates.
+ * @param widget the widget
+ * @param x,y the point, relative to the widget
+ * @param page_x,page_y set to the point in unscaled and unrotated page coordinates
+ */
+void zathura_page_widget_point_to_page(ZathuraPageWidget* widget, double x, double y, double* page_x, double* page_y);
+
+/**
+ * Set the rectangles of text that was just copied, drawn briefly on top of
+ * the page.
+ * @param widget the widget
+ * @param flash list of rectangles in page coordinates, or NULL. The widget
+ *   takes ownership of the list.
+ */
+void zathura_page_widget_set_flash(ZathuraPageWidget* widget, girara_list_t* flash);
+
+/**
+ * Get the labels the widget draws.
+ * @param widget the widget
+ * @return list of zathura_page_widget_label_t owned by the widget, or NULL
+ */
+girara_list_t* zathura_page_widget_get_labels(ZathuraPageWidget* widget);
+
+/**
+ * Whether the widget draws the flash of copied text or a copied image.
+ * @param widget the widget
+ * @return true if a flash is drawn
+ */
+bool zathura_page_widget_has_flash(ZathuraPageWidget* widget);
+
+/**
+ * Label of a position that can be jumped to
+ */
+typedef struct zathura_page_widget_label_s {
+  zathura_rectangle_t position; /**< Where to draw the label, in page coordinates */
+  char text[4];                 /**< The label */
+  bool outline;                 /**< Outline bounds, e.g. for the label of an image */
+  zathura_rectangle_t bounds;   /**< What the label is for, outlined if outline is set */
+} zathura_page_widget_label_t;
+
+/**
+ * Set the labels to draw.
+ * @param widget the widget
+ * @param labels list of zathura_page_widget_label_t, or NULL. The widget takes
+ *   ownership of the list.
+ */
+void zathura_page_widget_set_labels(ZathuraPageWidget* widget, girara_list_t* labels);
+
+/**
+ * Set the keyboard selection and caret to draw.
+ * @param widget the widget
+ * @param selection list of rectangles in page coordinates, or NULL. The widget
+ *   takes ownership of the list.
+ * @param caret bounding box of the character under the caret, or NULL to not
+ *   draw a caret
+ */
+void zathura_page_widget_set_visual(ZathuraPageWidget* widget, girara_list_t* selection,
+                                    const zathura_rectangle_t* caret);
+/**
  * Draw a rectangle to mark links or search results
  * @param widget the widget
  * @param rectangle the rectangle

@@ -42,4 +42,5 @@ zathura/shortcuts.c
 zathura/synctex.c
 zathura/types.c
 zathura/utils.c
+zathura/visual.c
 zathura/zathura.c

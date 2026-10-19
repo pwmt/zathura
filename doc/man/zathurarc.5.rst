@@ -101,6 +101,7 @@ the *zathurarc* file to make those changes permanent:
   * fullscreen
   * presentation
   * index
+  * visual
 
   The brackets around the value are mandatory.
 
@@ -119,6 +120,10 @@ the *zathurarc* file to make those changes permanent:
       map 3 shortcut_function optional_argument
       map ! shortcut_function optional_argument
       map ? shortcut_function optional_argument
+
+  Numbers typed before a binding are a count. Like in vim, 0 after another
+  digit continues the count, so a binding for 0 does not stop counts such as
+  10j.
 
 *Using modifiers*
   It is also possible to use modifiers like the Control or Alt button on the
@@ -369,6 +374,61 @@ They can also be combined with modifiers:
 
     Show or hide statusbar.
 
+  * ``visual``
+
+    Enter visual mode to select text with the keyboard. Without argument it
+    shows a caret, ``char`` starts a characterwise and ``line`` a linewise
+    selection. In visual mode, passing the kind of the current selection goes
+    back to the caret.
+
+  * ``visual_exit``
+
+    Clear the selection and leave visual mode.
+
+  * ``visual_find``
+
+    Move the caret to a character on the line in visual mode. Pass
+    ``find-forward``, ``find-backward``, ``till-forward`` or ``till-backward``
+    as argument. The default bindings are f, F, t and T followed by the
+    character.
+
+  * ``visual_find_repeat``
+
+    Repeat the last ``visual_find``. Pass ``forward`` to search in the same
+    direction and ``backward`` to search in the opposite one.
+
+  * ``visual_jump``
+
+    Show labels on the visible words and images and move the caret to the
+    word, or select the image, whose label is typed.
+
+  * ``visual_move``
+
+    Move the caret in visual mode. Possible arguments are ``left``, ``right``,
+    ``up``, ``down``, ``word-forward``, ``word-backward``, ``word-end``,
+    ``bigword-forward``, ``bigword-backward``, ``bigword-end``, ``line-start``,
+    ``line-first-nonblank``, ``line-end``, ``top`` and ``bottom``.
+
+  * ``visual_reselect``
+
+    Enter visual mode with the last selection.
+
+  * ``visual_select``
+
+    Select the word under the caret. Pass ``word-inner`` or ``word-around``,
+    or ``bigword-inner`` or ``bigword-around`` for words separated by blanks
+    only. The ``-around`` variants include the blanks around the word.
+
+  * ``visual_swap``
+
+    Move the caret to the other end of the selection.
+
+  * ``visual_yank``
+
+    Copy the selected text or image to the clipboard set by
+    *selection-clipboard* and leave visual mode. Without a selection, pressing
+    the binding twice copies the line of the caret and stays in visual mode.
+
   * ``zoom``
 
     Zoom in or out.
@@ -404,8 +464,14 @@ They can also be combined with modifiers:
   Possible arguments are:
 
   * best-fit
+  * bigword-around
+  * bigword-backward
+  * bigword-end
+  * bigword-forward
+  * bigword-inner
   * bottom
   * backward
+  * char
   * collapse
   * collapse-recursive
   * collapse-all
@@ -414,6 +480,8 @@ They can also be combined with modifiers:
   * expand
   * expand-recursive
   * expand-all
+  * find-backward
+  * find-forward
   * forward
   * full-down
   * full-up
@@ -423,6 +491,10 @@ They can also be combined with modifiers:
   * smooth-up
   * in
   * left
+  * line
+  * line-end
+  * line-first-nonblank
+  * line-start
   * next
   * out
   * page-bottom
@@ -433,10 +505,17 @@ They can also be combined with modifiers:
   * rotate-cw
   * select
   * specific
+  * till-backward
+  * till-forward
   * toggle
   * top
   * up
   * width
+  * word-around
+  * word-backward
+  * word-end
+  * word-forward
+  * word-inner
   * equal_none
   * equal_width
   * equal_height
@@ -713,24 +792,55 @@ The settings described here can be changed with ``set``.
 
 *highlight-active-color*
   Defines the color that is used to show the current selected highlighted element
-  (e.g: current search result)
+  (e.g: current search result, labels in visual mode unless
+  *visual-label-color* is set)
 
   * Value type: String
   * Default value: rgba(0,188,0,0.5)
 
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
-  show search results)
+  show search results, selected text unless *selection-color* is set)
 
   * Value type: String
   * Default value: rgba(159,251,0,0.5)
 
 *highlight-fg*
   Defines the color that is used for text when highlighting parts of the
-  document (e.g.: number for links).
+  document (e.g.: number for links, labels in visual mode unless
+  *visual-label-fg* is set).
 
   * Value type: String
   * Default value: rgba(0,0,0,0.5)
+
+*visual-caret-color*
+  Defines the color of the caret in visual mode.
+
+  * Value type: String
+  * Default value: rgba(255,128,0,0.7)
+
+*visual-flash-duration*
+  Defines for how many milliseconds text or an image copied in visual mode
+  stays highlighted in the color of selected text (see *selection-color*). The
+  value 0 turns the highlight off.
+
+  * Value type: Integer
+  * Default value: 150
+
+*visual-label-color*
+  Defines the background color of the labels on words and images in visual
+  mode, and the color of the outline of labelled images. When it is not set,
+  *highlight-active-color* is used with an opacity of at least 90%.
+
+  * Value type: String
+  * Default value: not set
+
+*visual-label-fg*
+  Defines the text color of the labels on words and images in visual mode.
+  When it is not set, *highlight-fg* is used with an opacity of at least 90%.
+
+  * Value type: String
+  * Default value: not set
 
 *highlighter-modifier*
   Defines the modifier that needs to be pressed together with the left mouse button
@@ -948,15 +1058,24 @@ The settings described here can be changed with ``set``.
   * Default value: true
 
 *selection-clipboard*
-  Defines the X clipboard into which mouse-selected data will be written.  When
-  it is "clipboard", selected data will be written to the CLIPBOARD clipboard,
-  and can be pasted using the Ctrl+v key combination.  When it is "primary",
-  selected data will be written to the PRIMARY clipboard, and can be pasted
-  using the middle mouse button, or the Shift-Insert key combination. The value
-  "false" can be used to disable copying to the clipboard.
+  Defines the X clipboard into which mouse-selected data and anything copied
+  in visual mode are written.  When it is "clipboard", selected data will be
+  written to the CLIPBOARD clipboard, and can be pasted using the Ctrl+v key
+  combination.  When it is "primary", selected data will be written to the
+  PRIMARY clipboard, and can be pasted using the middle mouse button, or the
+  Shift-Insert key combination. The value "false" can be used to disable
+  copying to the clipboard.
 
   * Value type: String
   * Default value: primary
+
+*selection-color*
+  Defines the color of selected text, selected with the mouse or in visual
+  mode, and of an image selected in visual mode. When it is not set,
+  *highlight-color* is used.
+
+  * Value type: String
+  * Default value: not set
 
 *selection-notification*
   Defines if a notification should be displayed after selecting text.
