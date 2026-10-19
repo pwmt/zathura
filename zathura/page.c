@@ -14,17 +14,18 @@
 #include "types.h"
 
 struct zathura_page_s {
-  zathura_document_t* document; /**< Parent document */
-  void* data;                   /**< Custom data */
-  char* label;                  /**< Page label */
-  unsigned int rotate;          /**< Rotation */
-  double height;                /**< Page height */
-  double width;                 /**< Page width */
-  double zoom;                  /**< Page zoom */
-  unsigned int index;           /**< Page number */
-  bool visible;                 /**< Page is visible */
-  bool label_is_number;         /**< Page label is the same as the page number */
-  gint loaded;                  /**< Page has been parsed by the plugin, atomic */
+  zathura_document_t* document;       /**< Parent document */
+  void* data;                         /**< Custom data */
+  char* label;                        /**< Page label */
+  unsigned int rotate;                /**< Rotation */
+  double height;                      /**< Page height */
+  double width;                       /**< Page width */
+  double zoom;                        /**< Page zoom */
+  unsigned int index;                 /**< Page number */
+  bool visible;                       /**< Page is visible */
+  bool label_is_number;               /**< Page label is the same as the page number */
+  gint loaded;                        /**< Page has been parsed by the plugin, atomic */
+  zathura_text_layout_t* text_layout; /**< Cached text layout */
 };
 
 zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int index, zathura_error_t* error) {
@@ -127,6 +128,7 @@ zathura_error_t zathura_page_free(zathura_page_t* page) {
     error = functions->page_clear(page, page->data);
   }
 
+  zathura_text_layout_free(page->text_layout);
   g_free(page->label);
   g_free(page);
 
@@ -397,6 +399,53 @@ girara_list_t* zathura_page_get_selection(zathura_page_t* page, zathura_rectangl
   }
 
   return functions->page_get_selection(page, page->data, rectangle, error);
+}
+
+const zathura_text_layout_t* zathura_page_get_text_layout(zathura_page_t* page, zathura_error_t* error) {
+  if (page == NULL || page->document == NULL) {
+    zathura_check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
+    return NULL;
+  }
+
+  if (page->text_layout != NULL) {
+    return page->text_layout;
+  }
+
+  const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_get_text_layout == NULL) {
+    zathura_check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
+    return NULL;
+  }
+
+  if (zathura_page_load(page, error) == false) {
+    return NULL;
+  }
+
+  zathura_text_layout_t* layout = g_try_malloc0(sizeof(zathura_text_layout_t));
+  if (layout == NULL) {
+    zathura_check_set_error(error, ZATHURA_ERROR_OUT_OF_MEMORY);
+    return NULL;
+  }
+
+  const zathura_error_t ret = functions->page_get_text_layout(page, page->data, layout);
+  if (ret != ZATHURA_ERROR_OK) {
+    zathura_check_set_error(error, ret);
+    zathura_text_layout_free(layout);
+    return NULL;
+  }
+
+  /* reject layouts whose number of rects does not match the text */
+  if (layout->text == NULL || g_utf8_validate(layout->text, -1, NULL) == false ||
+      (size_t)g_utf8_strlen(layout->text, -1) != layout->n_rects || (layout->n_rects != 0 && layout->rects == NULL)) {
+    girara_error("Plugin returned an invalid text layout for page %u", page->index + 1);
+    zathura_check_set_error(error, ZATHURA_ERROR_UNKNOWN);
+    zathura_text_layout_free(layout);
+    return NULL;
+  }
+
+  page->text_layout = layout;
+  return layout;
 }
 
 zathura_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool printing) {

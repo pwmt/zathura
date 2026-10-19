@@ -149,6 +149,27 @@ typedef struct zathura_rectangle_s {
 } zathura_rectangle_t;
 
 /**
+ * Text layout of a page.
+ *
+ * The text is in reading order with '\n' between lines. rects holds one
+ * bounding box per Unicode character of text (including the newlines), in
+ * unscaled and unrotated page coordinates. text and rects are owned by the
+ * layout and must be allocated with g_malloc.
+ */
+typedef struct zathura_text_layout_s {
+  char* text;                 /**< UTF-8 page text */
+  zathura_rectangle_t* rects; /**< Bounding box of each character of text */
+  size_t n_rects;             /**< Number of characters and rects */
+} zathura_text_layout_t;
+
+/**
+ * Frees a text layout
+ *
+ * @param layout The text layout to be freed
+ */
+ZATHURA_PLUGIN_API void zathura_text_layout_free(zathura_text_layout_t* layout);
+
+/**
  * Image structure
  */
 typedef struct zathura_image_s {
