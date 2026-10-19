@@ -169,7 +169,9 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
 
     for (size_t idx = 0; idx != girara_list_size(session->bindings.shortcuts); ++idx) {
       girara_shortcut_t* shortcut = girara_list_nth(session->bindings.shortcuts, idx);
-      if (shortcut->buffered_command != NULL) {
+      /* only shortcuts of the current mode can complete the buffer */
+      if (shortcut->buffered_command != NULL &&
+          (session->modes.current_mode == shortcut->mode || shortcut->mode == 0)) {
         /* buffer could match a command */
         if (!strncmp(session_private->buffer.command->str, shortcut->buffered_command,
                      session_private->buffer.command->len)) {
