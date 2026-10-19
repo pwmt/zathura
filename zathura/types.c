@@ -72,6 +72,16 @@ void zathura_image_buffer_free(zathura_image_buffer_t* image_buffer) {
   g_free(image_buffer);
 }
 
+void zathura_text_layout_free(zathura_text_layout_t* layout) {
+  if (layout == NULL) {
+    return;
+  }
+
+  g_free(layout->text);
+  g_free(layout->rects);
+  g_free(layout);
+}
+
 static void document_information_entry_free(void* data) {
   zathura_document_information_entry_t* entry = data;
   zathura_document_information_entry_free(entry);
