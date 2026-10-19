@@ -619,27 +619,7 @@ void cb_page_widget_text_selected(ZathuraPageWidget* page, const char* text, voi
     return;
   }
 
-  GdkClipboard* selection = get_selection(zathura);
-  if (selection == NULL) {
-    return;
-  }
-
-  /* copy to clipboard */
-  gdk_clipboard_set_text(selection, text);
-
-  bool notification = true;
-  girara_setting_get(zathura->ui.session, "selection-notification", &notification);
-
-  if (notification == true) {
-    g_autofree char* target = NULL;
-    girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
-
-    g_autofree char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
-    g_autofree char* escaped_text =
-        g_markup_printf_escaped(_("Copied selected text to selection %s: %s"), target, stripped_text);
-
-    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-  }
+  copy_text_to_selection(zathura, text);
 }
 
 void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkTexture* texture, void* data) {
@@ -647,25 +627,8 @@ void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkTexture* texture,
   g_return_if_fail(texture != NULL);
   g_return_if_fail(data != NULL);
 
-  zathura_t* zathura      = data;
-  GdkClipboard* selection = get_selection(zathura);
-  if (selection == NULL) {
-    return;
-  }
-
-  gdk_clipboard_set(selection, GDK_TYPE_TEXTURE, texture);
-
-  bool notification = true;
-  girara_setting_get(zathura->ui.session, "selection-notification", &notification);
-
-  if (notification == true) {
-    g_autofree char* target = NULL;
-    girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
-
-    g_autofree char* escaped_text = g_markup_printf_escaped(_("Copied selected image to selection %s"), target);
-
-    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
-  }
+  zathura_t* zathura = data;
+  copy_image_to_selection(zathura, texture);
 }
 
 void cb_page_widget_link(ZathuraPageWidget* page, void* data) {

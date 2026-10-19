@@ -1305,41 +1305,8 @@ static void cb_menu_image_copy(GSimpleAction* UNUSED(action), GVariant* UNUSED(p
     return;
   }
 
-  /* build a GdkTexture from the cairo image surface */
   /* the image-selected signal carries a texture for the gtk4 clipboard */
-  cairo_surface_flush(surface);
-  if (cairo_image_surface_get_format(surface) != CAIRO_FORMAT_ARGB32) {
-    /* plugins commonly return RGB24; convert so the copy still works */
-    cairo_surface_t* converted = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, cairo_image_surface_get_width(surface),
-                                                            cairo_image_surface_get_height(surface));
-    if (cairo_surface_status(converted) != CAIRO_STATUS_SUCCESS) {
-      cairo_surface_destroy(converted);
-      cairo_surface_destroy(surface);
-      priv->images.current = NULL;
-      return;
-    }
-    cairo_t* cr = cairo_create(converted);
-    cairo_set_source_surface(cr, surface, 0, 0);
-    cairo_paint(cr);
-    cairo_destroy(cr);
-    cairo_surface_flush(converted);
-    cairo_surface_destroy(surface);
-    surface = converted;
-  }
-  const int width      = cairo_image_surface_get_width(surface);
-  const int height     = cairo_image_surface_get_height(surface);
-  const int stride     = cairo_image_surface_get_stride(surface);
-  const guchar* pixels = cairo_image_surface_get_data(surface);
-  /* cairo native-endian ARGB32 maps to b8g8r8a8 on little endian and a8r8g8b8 on big endian */
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
-  const GdkMemoryFormat format = GDK_MEMORY_B8G8R8A8_PREMULTIPLIED;
-#else
-  const GdkMemoryFormat format = GDK_MEMORY_A8R8G8B8_PREMULTIPLIED;
-#endif
-  GBytes* bytes       = g_bytes_new(pixels, (gsize)stride * (gsize)height);
-  GdkTexture* texture = gdk_memory_texture_new(width, height, format, bytes, (gsize)stride);
-  g_bytes_unref(bytes);
-
+  GdkTexture* texture = texture_from_surface(surface);
   if (texture != NULL) {
     g_signal_emit(page, signals[IMAGE_SELECTED], 0, texture);
     g_object_unref(texture);
