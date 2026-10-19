@@ -43,6 +43,17 @@ test('utils', utils,
   env: env
 )
 
+visual = executable('test_visual', files('test_visual.c'),
+  dependencies: build_dependencies + test_dependencies,
+  include_directories: include_directories,
+  c_args: defines + flags
+)
+test('visual', visual,
+  timeout: 60*60,
+  protocol: 'tap',
+  env: env
+)
+
 xvfb = find_program('xvfb-run', required: get_option('tests-x11'))
 weston = find_program('weston', required: get_option('tests-wayland'))
 if xvfb.found() or weston.found()
