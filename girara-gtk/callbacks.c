@@ -92,6 +92,11 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
       break;
     }
 
+    /* like in vim, 0 continues a count instead of triggering its shortcut */
+    if (keyval == GDK_KEY_0 && clean == 0 && session_private->buffer.n > 0) {
+      break;
+    }
+
     if (!shortcut->buffered_command && keyval == shortcut->key &&
         (clean == shortcut->mask || (shortcut->key >= 0x21 && shortcut->key <= 0x7E && clean == GDK_SHIFT_MASK)) &&
         (session->modes.current_mode == shortcut->mode || shortcut->mode == 0) && shortcut->function) {
