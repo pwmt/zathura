@@ -409,6 +409,117 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* argument, gir
 bool sc_file_chooser(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
+ * Enter visual mode, or switch between caret, characterwise and linewise selection in it
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Move the caret in visual mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_move(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Swap the caret and the other end of the selection in visual mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_swap(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Copy the text selected in visual mode and leave visual mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Leave visual mode
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_exit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Move the caret to a character on the line in visual mode, like f, F, t and T in vim
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_find(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Repeat the last character search in visual mode, like ; and , in vim
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_find_repeat(girara_session_t* session, girara_argument_t* argument, girara_event_t* event,
+                           unsigned int t);
+
+/**
+ * Select the word under the caret in visual mode, like iw and aw in vim
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_select(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Enter visual mode with the last selection, like gv in vim
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_reselect(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
+ * Show labels on the visible words and move the caret to the one typed
+ *
+ * @param session The used girara session
+ * @param argument The used argument
+ * @param event Girara event
+ * @param t Number of executions
+ * @return true if no error occurred otherwise false
+ */
+bool sc_visual_jump(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
+/**
  * Apply equal page mode to all pages
  *
  * @param zathura The zathura session

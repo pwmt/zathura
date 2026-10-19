@@ -151,6 +151,7 @@ sources = files(
   'zathura/synctex.c',
   'zathura/types.c',
   'zathura/utils.c',
+  'zathura/visual.c',
   'zathura/zathura.c',
 )
 sources += zathura_resources
