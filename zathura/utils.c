@@ -354,6 +354,99 @@ GdkClipboard* get_selection(zathura_t* zathura) {
   return NULL;
 }
 
+bool copy_text_to_selection(zathura_t* zathura, const char* text) {
+  g_return_val_if_fail(zathura != NULL && text != NULL, false);
+
+  GdkClipboard* selection = get_selection(zathura);
+  if (selection == NULL) {
+    return false;
+  }
+
+  /* copy to clipboard */
+  gdk_clipboard_set_text(selection, text);
+
+  bool notification = true;
+  girara_setting_get(zathura->ui.session, "selection-notification", &notification);
+
+  if (notification == true) {
+    g_autofree char* target = NULL;
+    girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+
+    g_autofree char* stripped_text = g_strdelimit(g_strdup(text), "\n\t\r\n", ' ');
+    g_autofree char* escaped_text =
+        g_markup_printf_escaped(_("Copied selected text to selection %s: %s"), target, stripped_text);
+
+    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+  }
+
+  return true;
+}
+
+bool copy_image_to_selection(zathura_t* zathura, GdkTexture* texture) {
+  g_return_val_if_fail(zathura != NULL && texture != NULL, false);
+
+  GdkClipboard* selection = get_selection(zathura);
+  if (selection == NULL) {
+    return false;
+  }
+
+  gdk_clipboard_set(selection, GDK_TYPE_TEXTURE, texture);
+
+  bool notification = true;
+  girara_setting_get(zathura->ui.session, "selection-notification", &notification);
+
+  if (notification == true) {
+    g_autofree char* target = NULL;
+    girara_setting_get(zathura->ui.session, "selection-clipboard", &target);
+
+    g_autofree char* escaped_text = g_markup_printf_escaped(_("Copied selected image to selection %s"), target);
+
+    girara_notify(zathura->ui.session, GIRARA_INFO, "%s", escaped_text);
+  }
+
+  return true;
+}
+
+GdkTexture* texture_from_surface(cairo_surface_t* surface) {
+  g_return_val_if_fail(surface != NULL, NULL);
+
+  /* build a GdkTexture from the cairo image surface */
+  cairo_surface_flush(surface);
+  cairo_surface_t* argb = cairo_surface_reference(surface);
+  if (cairo_image_surface_get_format(surface) != CAIRO_FORMAT_ARGB32) {
+    /* plugins commonly return RGB24; convert so the copy still works */
+    cairo_surface_destroy(argb);
+    argb = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, cairo_image_surface_get_width(surface),
+                                      cairo_image_surface_get_height(surface));
+    if (cairo_surface_status(argb) != CAIRO_STATUS_SUCCESS) {
+      cairo_surface_destroy(argb);
+      return NULL;
+    }
+    cairo_t* cr = cairo_create(argb);
+    cairo_set_source_surface(cr, surface, 0, 0);
+    cairo_paint(cr);
+    cairo_destroy(cr);
+    cairo_surface_flush(argb);
+  }
+
+  const int width      = cairo_image_surface_get_width(argb);
+  const int height     = cairo_image_surface_get_height(argb);
+  const int stride     = cairo_image_surface_get_stride(argb);
+  const guchar* pixels = cairo_image_surface_get_data(argb);
+  /* cairo native-endian ARGB32 maps to b8g8r8a8 on little endian and a8r8g8b8 on big endian */
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+  const GdkMemoryFormat format = GDK_MEMORY_B8G8R8A8_PREMULTIPLIED;
+#else
+  const GdkMemoryFormat format = GDK_MEMORY_A8R8G8B8_PREMULTIPLIED;
+#endif
+  GBytes* bytes       = g_bytes_new(pixels, (gsize)stride * (gsize)height);
+  GdkTexture* texture = gdk_memory_texture_new(width, height, format, bytes, (gsize)stride);
+  g_bytes_unref(bytes);
+  cairo_surface_destroy(argb);
+
+  return texture;
+}
+
 static char* write_first_page_column_list(unsigned int* first_page_columns, unsigned int size) {
   if (first_page_columns == NULL) {
     return NULL;

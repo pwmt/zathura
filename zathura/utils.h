@@ -90,6 +90,38 @@ char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager,
 GdkClipboard* get_selection(zathura_t* zathura);
 
 /**
+ * Copy text to the clipboard set in selection-clipboard and notify about it
+ * if selection-notification is enabled.
+ *
+ * @param zathura The zathura instance
+ * @param text The text to copy
+ *
+ * @return true if the text was copied
+ */
+bool copy_text_to_selection(zathura_t* zathura, const char* text);
+
+/**
+ * Copy an image to the clipboard set in selection-clipboard and notify about
+ * it if selection-notification is enabled.
+ *
+ * @param zathura The zathura instance
+ * @param texture The image to copy
+ *
+ * @return true if the image was copied
+ */
+bool copy_image_to_selection(zathura_t* zathura, GdkTexture* texture);
+
+/**
+ * Create a texture from a cairo image surface, e.g. to copy it to the
+ * clipboard.
+ *
+ * @param surface The image surface
+ *
+ * @return The texture, or NULL if it could not be created
+ */
+GdkTexture* texture_from_surface(cairo_surface_t* surface);
+
+/**
  * Returns the valid zoom value which needs to lie in the interval of zoom_min
  * and zoom_max specified in the girara session
  *
