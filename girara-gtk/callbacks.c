@@ -92,9 +92,14 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
       break;
     }
 
-    if (keyval == shortcut->key &&
+    /* like in vim, 0 continues a count instead of triggering its shortcut */
+    if (keyval == GDK_KEY_0 && clean == 0 && session_private->buffer.n > 0) {
+      break;
+    }
+
+    if (!shortcut->buffered_command && keyval == shortcut->key &&
         (clean == shortcut->mask || (shortcut->key >= 0x21 && shortcut->key <= 0x7E && clean == GDK_SHIFT_MASK)) &&
-        (session->modes.current_mode == shortcut->mode || shortcut->mode == 0) && shortcut->function != NULL) {
+        (session->modes.current_mode == shortcut->mode || shortcut->mode == 0) && shortcut->function) {
       const int t = (session_private->buffer.n > 0) ? session_private->buffer.n : 1;
       for (int i = 0; i < t; i++) {
         if (shortcut->function(session, &(shortcut->argument), NULL, session_private->buffer.n) == false) {
@@ -164,7 +169,9 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
 
     for (size_t idx = 0; idx != girara_list_size(session->bindings.shortcuts); ++idx) {
       girara_shortcut_t* shortcut = girara_list_nth(session->bindings.shortcuts, idx);
-      if (shortcut->buffered_command != NULL) {
+      /* only shortcuts of the current mode can complete the buffer */
+      if (shortcut->buffered_command != NULL &&
+          (session->modes.current_mode == shortcut->mode || shortcut->mode == 0)) {
         /* buffer could match a command */
         if (!strncmp(session_private->buffer.command->str, shortcut->buffered_command,
                      session_private->buffer.command->len)) {
@@ -362,12 +369,16 @@ gboolean girara_callback_view_scroll_event(GtkEventControllerScroll* controller,
   static const double surface_to_wheel = 0.1;
 #endif
 
-  /* only wheel units are discrete steps so touchpad deltas stay smooth */
-  const bool discrete = gtk_event_controller_scroll_get_unit(controller) == GDK_SCROLL_UNIT_WHEEL;
+  GdkEvent* scroll_event = gtk_event_controller_get_current_event(GTK_EVENT_CONTROLLER(controller));
+  const bool discrete    = scroll_event != NULL && gdk_scroll_event_get_direction(scroll_event) != GDK_SCROLL_SMOOTH;
   if (discrete == false) {
+    /* X11 smooth scrolling also uses wheel units. */
+    const double scale =
+        gtk_event_controller_scroll_get_unit(controller) == GDK_SCROLL_UNIT_SURFACE ? surface_to_wheel : 1.0;
+
     event.type = GIRARA_EVENT_SCROLL_BIDIRECTIONAL;
-    event.x    = dx * surface_to_wheel;
-    event.y    = dy * surface_to_wheel;
+    event.x    = dx * scale;
+    event.y    = dy * scale;
   } else if (dx == 0.0 && dy < 0.0) {
     event.type = GIRARA_EVENT_SCROLL_UP;
   } else if (dx == 0.0 && dy > 0.0) {

@@ -116,9 +116,10 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* view;                        /**< Scrolled Window */
-    ZathuraDocumentWidget* document_widget; /**< Widget that contains all rendered pages */
-    GtkWidget* index;                       /**< Widget to show the index of the document */
+    GtkWidget* view;                            /**< Scrolled Window */
+    ZathuraDocumentWidget* document_widget;     /**< Widget that contains all rendered pages */
+    GtkWidget* index;                           /**< Widget to show the index of the document */
+    zathura_adjust_mode_t inputbar_adjust_mode; /**< Adjustment mode before focusing the inputbar */
   } ui;
 
   struct {
@@ -342,6 +343,12 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 
 /* render the focused page synchronously once the device scale has settled */
 void render_focused_page_now(zathura_t* zathura);
+
+/** Saves the current adjustment mode and switches to inputbar adjustment. */
+void zathura_inputbar_save_adjust_mode(zathura_t* zathura);
+
+/** Restores the saved adjustment mode unless it has been changed explicitly. */
+void zathura_inputbar_restore_adjust_mode(zathura_t* zathura);
 
 /**
  * Opens a file

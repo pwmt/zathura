@@ -17,6 +17,7 @@ struct zathura_page_s {
   zathura_document_t* document; /**< Parent document */
   void* data;                   /**< Custom data */
   char* label;                  /**< Page label */
+  unsigned int rotate;          /**< Rotation */
   double height;                /**< Page height */
   double width;                 /**< Page width */
   double zoom;                  /**< Page zoom */
@@ -43,6 +44,7 @@ zathura_page_t* zathura_page_new(zathura_document_t* document, unsigned int inde
   page->visible         = false;
   page->document        = document;
   page->label_is_number = false;
+  page->rotate          = 0;
   page->zoom            = 1.0;
   page->loaded          = 0;
 
@@ -145,6 +147,22 @@ unsigned int zathura_page_get_index(zathura_page_t* page) {
   }
 
   return page->index;
+}
+
+unsigned int zathura_page_get_rotation(zathura_page_t* page) {
+  if (page == NULL) {
+    return 0;
+  }
+
+  return page->rotate;
+}
+
+void zathura_page_set_rotation(zathura_page_t* page, unsigned int rotate) {
+  if (page == NULL) {
+    return;
+  }
+
+  page->rotate = rotate;
 }
 
 double zathura_page_get_width(zathura_page_t* page) {

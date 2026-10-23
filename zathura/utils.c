@@ -259,7 +259,8 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
   double scale       = zathura_document_get_scale(document);
 
   zathura_rectangle_t tmp =
-      rotate_rectangle(rectangle, zathura_document_get_rotation(document), page_height, page_width);
+      rotate_rectangle(rectangle, (zathura_document_get_rotation(document) + zathura_page_get_rotation(page)) % 360,
+                       page_height, page_width);
   tmp.x1 *= scale;
   tmp.x2 *= scale;
   tmp.y1 *= scale;

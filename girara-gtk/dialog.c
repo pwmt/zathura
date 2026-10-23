@@ -8,7 +8,6 @@
 struct _GiraraDialog {
   GiraraInputbar parent_instance;
   GtkLabel* prompt;
-  girara_session_t* session;
 };
 
 G_DEFINE_TYPE(GiraraDialog, girara_dialog, GIRARA_TYPE_INPUTBAR)
@@ -25,12 +24,12 @@ static void dialog_activate(GtkEntry* entry, GiraraDialog* dialog) {
 }
 
 static gboolean dialog_key_press(GtkEventControllerKey* controller, guint keyval, guint UNUSED(keycode),
-                                 GdkModifierType state, GiraraDialog* dialog) {
+                                 GdkModifierType state, girara_session_t* session) {
   guint clean = 0;
   if (!girara_clean_key_mask(controller, state, &clean, &keyval)) {
     return FALSE;
   }
-  return girara_process_inputbar_key(dialog->session, keyval, clean);
+  return girara_process_inputbar_key(session, keyval, clean);
 }
 
 static void girara_dialog_class_init(GiraraDialogClass* klass) {
@@ -41,9 +40,6 @@ static void girara_dialog_class_init(GiraraDialogClass* klass) {
 static void girara_dialog_init(GiraraDialog* dialog) {
   GtkEntry* entry = girara_inputbar_get_entry(GIRARA_INPUTBAR(dialog));
   g_signal_connect(entry, "activate", G_CALLBACK(dialog_activate), dialog);
-  GtkEventController* key = gtk_event_controller_key_new();
-  g_signal_connect(key, "key-pressed", G_CALLBACK(dialog_key_press), dialog);
-  gtk_widget_add_controller(GTK_WIDGET(entry), key);
 
   dialog->prompt = GTK_LABEL(gtk_label_new(NULL));
   gtk_widget_add_css_class(GTK_WIDGET(dialog->prompt), "inputbar");
@@ -51,12 +47,16 @@ static void girara_dialog_init(GiraraDialog* dialog) {
 }
 
 GiraraDialog* girara_dialog_new(girara_session_t* session, const char* prompt, bool invisible) {
-  g_return_val_if_fail(session != NULL, NULL);
+  g_return_val_if_fail(session, NULL);
 
   GiraraDialog* dialog = g_object_new(GIRARA_TYPE_DIALOG, NULL);
-  dialog->session      = session;
   gtk_label_set_markup(dialog->prompt, prompt ? prompt : "");
-  gtk_entry_set_visibility(girara_inputbar_get_entry(GIRARA_INPUTBAR(dialog)), !invisible);
+
+  GtkEntry* entry         = girara_inputbar_get_entry(GIRARA_INPUTBAR(dialog));
+  GtkEventController* key = gtk_event_controller_key_new();
+  g_signal_connect(key, "key-pressed", G_CALLBACK(dialog_key_press), session);
+  gtk_widget_add_controller(GTK_WIDGET(entry), key);
+  gtk_entry_set_visibility(entry, !invisible);
 
   return dialog;
 }

@@ -39,14 +39,9 @@ struct zathura_document_s {
   unsigned int number_of_pages;            /**< Number of pages */
   double zoom;                             /**< Zoom value */
   unsigned int rotate;                     /**< Rotation */
-  zathura_adjust_mode_t adjust_mode;       /**< Adjust mode (best-fit, width) */
   int page_offset;                         /**< Page offset */
-  unsigned int view_width;                 /**< width of current viewport */
-  unsigned int view_height;                /**< height of current viewport */
   double view_ppi;                         /**< PPI of the current viewport */
   zathura_device_factors_t device_factors; /**< x and y device scale factors (for e.g. HiDPI) */
-  double position_x;                       /**< X adjustment */
-  double position_y;                       /**< Y adjustment */
   bool hash_computed;                      /**< Whether the hash has been computed yet */
 };
 
@@ -136,14 +131,9 @@ zathura_document_t* zathura_document_open(zathura_t* zathura, const char* path, 
   document->password         = password;
   document->zoom             = 1.0;
   document->plugin           = plugin;
-  document->adjust_mode      = ZATHURA_ADJUST_NONE;
-  document->view_height      = 0;
-  document->view_width       = 0;
   document->view_ppi         = 0.0;
   document->device_factors.x = 1.0;
   document->device_factors.y = 1.0;
-  document->position_x       = 0.0;
-  document->position_y       = 0.0;
 
   /* open document */
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
@@ -308,38 +298,6 @@ void zathura_document_set_current_page_number(zathura_document_t* document, unsi
   document->current_page_number = current_page;
 }
 
-double zathura_document_get_position_x(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->position_x;
-}
-
-double zathura_document_get_position_y(zathura_document_t* document) {
-  if (document == NULL) {
-    return 0;
-  }
-
-  return document->position_y;
-}
-
-void zathura_document_set_position_x(zathura_document_t* document, double position_x) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->position_x = position_x;
-}
-
-void zathura_document_set_position_y(zathura_document_t* document, double position_y) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->position_y = position_y;
-}
-
 double zathura_document_get_zoom(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
@@ -396,22 +354,6 @@ void zathura_document_set_rotation(zathura_document_t* document, unsigned int ro
   }
 }
 
-zathura_adjust_mode_t zathura_document_get_adjust_mode(zathura_document_t* document) {
-  if (document == NULL) {
-    return ZATHURA_ADJUST_NONE;
-  }
-
-  return document->adjust_mode;
-}
-
-void zathura_document_set_adjust_mode(zathura_document_t* document, zathura_adjust_mode_t mode) {
-  if (document == NULL) {
-    return;
-  }
-
-  document->adjust_mode = mode;
-}
-
 int zathura_document_get_page_offset(zathura_document_t* document) {
   if (document == NULL) {
     return 0;
@@ -428,31 +370,11 @@ void zathura_document_set_page_offset(zathura_document_t* document, unsigned int
   document->page_offset = page_offset;
 }
 
-void zathura_document_set_viewport_width(zathura_document_t* document, unsigned int width) {
-  if (document == NULL) {
-    return;
-  }
-  document->view_width = width;
-}
-
-void zathura_document_set_viewport_height(zathura_document_t* document, unsigned int height) {
-  if (document == NULL) {
-    return;
-  }
-  document->view_height = height;
-}
-
 void zathura_document_set_viewport_ppi(zathura_document_t* document, double ppi) {
   if (document == NULL) {
     return;
   }
   document->view_ppi = ppi;
-}
-
-void zathura_document_get_viewport_size(zathura_document_t* document, unsigned int* height, unsigned int* width) {
-  g_return_if_fail(document != NULL && height != NULL && width != NULL);
-  *height = document->view_height;
-  *width  = document->view_width;
 }
 
 double zathura_document_get_viewport_ppi(zathura_document_t* document) {
