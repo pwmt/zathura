@@ -436,8 +436,9 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
 
     /* drag */
   case GIRARA_EVENT_BUTTON_PRESS:
-    zathura->shortcut.mouse.x = event->x;
-    zathura->shortcut.mouse.y = event->y;
+    zathura->shortcut.mouse.x       = event->x;
+    zathura->shortcut.mouse.y       = event->y;
+    zathura->shortcut.mouse.dragged = false;
     break;
   case GIRARA_EVENT_BUTTON_RELEASE:
     zathura->shortcut.mouse.x = 0;
@@ -453,6 +454,7 @@ bool sc_mouse_scroll(girara_session_t* session, girara_argument_t* argument, gir
 
     position_set(zathura, position_moved_by(x_adj, zathura->shortcut.mouse.x - event->x),
                  position_moved_by(y_adj, zathura->shortcut.mouse.y - event->y));
+    zathura->shortcut.mouse.dragged = true;
     /* save the current cursor position so the next motion event measures only the new movement */
     zathura->shortcut.mouse.x = event->x;
     zathura->shortcut.mouse.y = event->y;

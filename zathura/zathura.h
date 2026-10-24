@@ -220,6 +220,7 @@ struct zathura_s {
     struct {
       int x;
       int y;
+      bool dragged;
     } mouse;
     struct {
       unsigned int pages;

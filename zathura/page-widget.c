@@ -1093,6 +1093,12 @@ static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture
   const guint gbutton   = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(gesture));
   GdkModifierType state = gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
 
+  /* the end of a pan drag (e.g. Ctrl + left button) is not a click: no link, no synctex, no selection */
+  if (priv->zathura != NULL && priv->zathura->ui.session != NULL && priv->zathura->shortcut.mouse.dragged == true &&
+      girara_has_mouse_event(priv->zathura->ui.session, GIRARA_EVENT_BUTTON_RELEASE, gbutton, state) == true) {
+    return;
+  }
+
   /* signal payload, gtk4 events cannot be constructed by hand */
   scaled_button_release_event_t srelease = {.x = bx / scale, .y = by / scale, .button = gbutton, .state = state};
   g_signal_emit(page, signals[BUTTON_RELEASE], 0, &srelease);
@@ -1164,6 +1170,11 @@ static void cb_zathura_page_widget_motion_notify(GtkEventControllerMotion* contr
   GdkModifierType evstate      = gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(controller));
 
   if (evstate & GDK_BUTTON1_MASK) { /* holding left mouse button */
+    /* a configured motion binding (Ctrl + left button pan) owns this drag, don't select text */
+    if (priv->zathura != NULL && priv->zathura->ui.session != NULL &&
+        girara_has_mouse_event(priv->zathura->ui.session, GIRARA_EVENT_MOTION_NOTIFY, 0, evstate) == true) {
+      return;
+    }
     zathura_page_widget_clear_selection(page);
     if (evstate & priv->zathura->global.highlighter_modmask) {
       double x, y;
