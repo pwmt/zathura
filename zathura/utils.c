@@ -215,8 +215,8 @@ void index_scroll_to_current_page(zathura_t* zathura) {
   zathura->global.current_index_position = pos;
   g_idle_add(scroll_index_to_cursor, zathura);
 }
-static zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height,
-                                            double width) {
+
+zathura_rectangle_t rotate_rectangle(zathura_rectangle_t rectangle, unsigned int degree, double height, double width) {
   zathura_rectangle_t tmp;
   switch (degree) {
   case 90:
