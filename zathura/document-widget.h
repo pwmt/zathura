@@ -207,6 +207,17 @@ bool zathura_document_widget_mode_change_pending(ZathuraDocumentWidget* document
 void zathura_document_widget_compute_layout(ZathuraDocumentWidget* document);
 
 /**
+ * Return the page's top-left corner in document pixel coordinates at the current
+ * scale. In single-page mode both coordinates are zero.
+ *
+ * @param document   ZathuraDocumentWidget
+ * @param page_index index of the page
+ * @param x          pixel offset in the x direction
+ * @param y          pixel offset in the y direction
+ */
+void zathura_document_widget_get_page_origin(ZathuraDocumentWidget* document, unsigned int page_index, double* x,
+                                             double* y);
+/**
  * Return the position of a cell from the document's layout table in pixels.
  * It takes the current scale into account.
  * Valid after a call to zathura_document_widget_compute_layout.
