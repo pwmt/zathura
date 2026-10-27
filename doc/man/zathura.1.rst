@@ -128,6 +128,12 @@ General
     Reload document
   Tab
     Show index and switch to **Index mode**
+  v
+    Show a caret on the current page and switch to **Visual mode**
+  V
+    Select the line under the caret and switch to **Visual mode**
+  gv
+    Switch to **Visual mode** with the last selection
   d
     Toggle dual page view
   D
@@ -218,6 +224,65 @@ Index mode
   Tab, Escape, ^[, ^c
     Hide index and switch to normal mode
 
+Visual mode
+
+  Visual mode selects text with the keyboard. It starts with a caret at the top
+  of the visible part of the current page, or at the current search result on
+  it. j, k, w, b, e and their big word variants continue on the next or
+  previous page, so selections can span pages. Motions take a count, e.g. 3w
+  or 10j. Text selection needs a plugin that provides the text layout of a
+  page.
+
+  Images can be selected too, through their labels (see s). A selected image
+  is highlighted instead of the caret; y copies it, and v, V or any motion goes
+  back to the text next to it.
+
+  h, l, Left, Right
+    Move the caret one character left or right on the line
+  j, k, Down, Up
+    Move the caret one line down or up
+  w, b, e
+    Move to the start of the next word, the start of the previous word or the
+    end of the word
+  W, B, E
+    Like w, b and e, but words are separated by blanks only
+  0, Home, ^, $, End
+    Move to the start of the line, its first non-blank character or its end
+  gg, G
+    Move to the first or the last line of the document
+  fX, FX
+    Move to the next or previous character X on the line
+  tX, TX
+    Move to just before the next or just after the previous character X on the
+    line
+  ;, ,
+    Repeat the last f, F, t or T in the same or the opposite direction
+  s
+    Show labels on the visible words and images and move the caret to the word,
+    or select the image, whose label is typed. An image is outlined and its
+    label sits in the top left corner of its visible part on the page; images
+    smaller than 16 points get none.
+  iw, aw, iW, aW
+    Select the word under the caret, with the blanks around it for aw and aW
+  v
+    Start or stop a characterwise selection
+  V
+    Start or stop a linewise selection
+  o
+    Move the caret to the other end of the selection
+  y
+    Copy the selection, or the selected image, to the clipboard set by
+    *selection-clipboard* and switch back. The copied text or image stays
+    highlighted for a moment, see *visual-flash-duration*.
+  yy
+    Without a selection, copy the line of the caret and stay in visual mode.
+    With a count, copy that many lines, e.g. 3yy. The copied lines are
+    highlighted for a moment.
+  \:
+    Open the command line
+  Escape, ^[, ^c
+    Clear the selection and switch back
+
 
 Mouse bindings
 
@@ -230,7 +295,9 @@ Mouse bindings
   Button1 (left click)
     Follow link
   Drag Button1
-    Select text
+    Select text, also across pages. Dragging near the top or bottom of the
+    window scrolls. A selection across pages needs the same plugin support as
+    visual mode and stays highlighted until the next click or Escape.
   Drag S-Button1
     Highlight region
   Button3 (right click)

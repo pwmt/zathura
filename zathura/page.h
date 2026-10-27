@@ -240,6 +240,17 @@ ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_selection(zathura_page_t* pag
                                                              zathura_error_t* error);
 
 /**
+ * Get the text layout of the page. The layout is cached and owned by the page.
+ *
+ * @param page Page
+ * @param error Set to an error value (see \ref zathura_error_t) if an error
+ * occurred
+ * @return The text layout or NULL if an error occurred
+ */
+ZATHURA_PLUGIN_API const zathura_text_layout_t* zathura_page_get_text_layout(zathura_page_t* page,
+                                                                             zathura_error_t* error);
+
+/**
  * Render page
  *
  * @param page The page object

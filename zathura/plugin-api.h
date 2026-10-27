@@ -115,6 +115,13 @@ typedef zathura_error_t (*zathura_plugin_page_render_cairo_t)(zathura_page_t* pa
 typedef zathura_error_t (*zathura_plugin_page_get_label_t)(zathura_page_t* page, void* data, char** label);
 
 /**
+ * Get the text layout of a page: the page text and the bounding box of each
+ * of its characters. Used for selecting text with the keyboard.
+ */
+typedef zathura_error_t (*zathura_plugin_page_get_text_layout_t)(zathura_page_t* page, void* data,
+                                                                 zathura_text_layout_t* layout);
+
+/**
  * Get signatures
  */
 typedef girara_list_t* (*zathura_plugin_page_get_signatures)(zathura_page_t* page, void* data, zathura_error_t* error);
@@ -214,6 +221,11 @@ struct zathura_plugin_functions_s {
    * Get signatures.
    */
   zathura_plugin_page_get_signatures page_get_signatures;
+
+  /**
+   * Get the text layout of a page
+   */
+  zathura_plugin_page_get_text_layout_t page_get_text_layout;
 };
 
 typedef struct zathura_plugin_definition_s {

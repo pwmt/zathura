@@ -28,6 +28,7 @@
 #include "print.h"
 #include "render.h"
 #include "utils.h"
+#include "visual.h"
 #include "zathura.h"
 
 /* Helper function for highlighting the links */
@@ -148,6 +149,8 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
       }
       zathura_page_widget_clear_selection(ZATHURA_PAGE_WIDGET(page_widget));
     }
+
+    zathura_visual_mouse_clear(zathura);
 
     if (clear_search == true) {
       document_draw_search_results(zathura, false);
@@ -1910,4 +1913,186 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   GtkWindow* parent = GTK_WINDOW(session->gtk.window);
   gtk_file_dialog_open(dialog, parent, NULL, cb_file_chooser_open, zathura);
   return true;
+}
+
+static zathura_visual_kind_t visual_kind_from_argument(const girara_argument_t* argument) {
+  if (argument != NULL && argument->n == CHARWISE) {
+    return ZATHURA_VISUAL_CHAR;
+  }
+  if (argument != NULL && argument->n == LINEWISE) {
+    return ZATHURA_VISUAL_LINE;
+  }
+  return ZATHURA_VISUAL_CARET;
+}
+
+bool sc_visual(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+               unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  const zathura_visual_kind_t kind = visual_kind_from_argument(argument);
+  if (zathura->visual != NULL) {
+    zathura_visual_toggle(zathura, kind);
+    return false;
+  }
+
+  zathura_visual_enter(zathura, kind);
+  return false;
+}
+
+bool sc_visual_move(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                    unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_motion_t motion;
+  switch (argument->n) {
+  case LEFT:
+    motion = ZATHURA_VISUAL_MOTION_LEFT;
+    break;
+  case RIGHT:
+    motion = ZATHURA_VISUAL_MOTION_RIGHT;
+    break;
+  case UP:
+    motion = ZATHURA_VISUAL_MOTION_UP;
+    break;
+  case DOWN:
+    motion = ZATHURA_VISUAL_MOTION_DOWN;
+    break;
+  case WORD_FORWARD:
+    motion = ZATHURA_VISUAL_MOTION_WORD_FORWARD;
+    break;
+  case WORD_BACKWARD:
+    motion = ZATHURA_VISUAL_MOTION_WORD_BACKWARD;
+    break;
+  case WORD_END:
+    motion = ZATHURA_VISUAL_MOTION_WORD_END;
+    break;
+  case BIGWORD_FORWARD:
+    motion = ZATHURA_VISUAL_MOTION_BIGWORD_FORWARD;
+    break;
+  case BIGWORD_BACKWARD:
+    motion = ZATHURA_VISUAL_MOTION_BIGWORD_BACKWARD;
+    break;
+  case BIGWORD_END:
+    motion = ZATHURA_VISUAL_MOTION_BIGWORD_END;
+    break;
+  case LINE_START:
+    motion = ZATHURA_VISUAL_MOTION_LINE_START;
+    break;
+  case LINE_FIRST_NONBLANK:
+    motion = ZATHURA_VISUAL_MOTION_LINE_FIRST_NONBLANK;
+    break;
+  case LINE_END:
+    motion = ZATHURA_VISUAL_MOTION_LINE_END;
+    break;
+  case TOP:
+    motion = ZATHURA_VISUAL_MOTION_TOP;
+    break;
+  case BOTTOM:
+    motion = ZATHURA_VISUAL_MOTION_BOTTOM;
+    break;
+  default:
+    girara_notify(session, GIRARA_ERROR, _("Invalid visual mode motion: %d"), argument->n);
+    return false;
+  }
+
+  zathura_visual_move(zathura, motion, t);
+  return false;
+}
+
+bool sc_visual_swap(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                    unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_swap(zathura);
+  return false;
+}
+
+bool sc_visual_yank(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                    unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_yank(zathura, t);
+  return false;
+}
+
+bool sc_visual_exit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                    unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_exit(zathura);
+  girara_sc_abort(session, NULL, NULL, 0);
+  return false;
+}
+
+bool sc_visual_find(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                    unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  const char* data = argument->data;
+  if (data == NULL || g_utf8_validate(data, -1, NULL) == FALSE || *data == '\0') {
+    return false;
+  }
+
+  const bool forward = argument->n == FIND_FORWARD || argument->n == TILL_FORWARD;
+  const bool till    = argument->n == TILL_FORWARD || argument->n == TILL_BACKWARD;
+  zathura_visual_find_char(zathura, g_utf8_get_char(data), forward, till, t);
+  return false;
+}
+
+bool sc_visual_find_repeat(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                           unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_find_char(zathura, 0, argument->n != BACKWARD, false, t);
+  return false;
+}
+
+bool sc_visual_select(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                      unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  const bool big    = argument->n == BIGWORD_INNER || argument->n == BIGWORD_AROUND;
+  const bool around = argument->n == WORD_AROUND || argument->n == BIGWORD_AROUND;
+  zathura_visual_select_word(zathura, big, around);
+  return false;
+}
+
+bool sc_visual_reselect(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                        unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_reselect(zathura);
+  return false;
+}
+
+bool sc_visual_jump(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                    unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_visual_jump(zathura);
+  return false;
 }

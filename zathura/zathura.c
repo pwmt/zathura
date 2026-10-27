@@ -34,6 +34,7 @@
 #include "document-widget.h"
 #include "shortcuts.h"
 #include "utils.h"
+#include "visual.h"
 #include "marks.h"
 #include "render.h"
 #include "page.h"
@@ -1456,6 +1457,12 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   }
 
   zathura->ui.inputbar_adjust_mode = ZATHURA_ADJUST_NONE;
+
+  /* the keyboard selection refers to pages of the document */
+  zathura_visual_exit(zathura);
+  zathura_visual_forget(zathura);
+  zathura_visual_mouse_clear(zathura);
+  zathura_visual_flash_clear(zathura);
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);

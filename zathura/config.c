@@ -71,6 +71,14 @@ static void cb_color_change(girara_session_t* session, const char* name, girara_
     parse_color(&zathura->ui.colors.highlight_color_fg, string_value);
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
+  } else if (g_strcmp0(name, "visual-caret-color") == 0) {
+    parse_color(&zathura->ui.colors.visual_caret_color, string_value);
+  } else if (g_strcmp0(name, "selection-color") == 0) {
+    zathura->ui.colors.has_selection_color = parse_color(&zathura->ui.colors.selection_color, string_value);
+  } else if (g_strcmp0(name, "visual-label-color") == 0) {
+    zathura->ui.colors.has_visual_label_color = parse_color(&zathura->ui.colors.visual_label_color, string_value);
+  } else if (g_strcmp0(name, "visual-label-fg") == 0) {
+    zathura->ui.colors.has_visual_label_fg = parse_color(&zathura->ui.colors.visual_label_fg, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
     if (zathura->sync.render_thread != NULL) {
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
@@ -286,6 +294,41 @@ static void cb_scroll_step_value_changed(girara_session_t* session, const char* 
   }
 }
 
+/* f, F, t and T followed by a character */
+static void add_visual_find_shortcut(girara_session_t* gsession, girara_mode_t mode, gunichar c) {
+  static const struct {
+    char prefix;
+    int argument;
+  } prefixes[] = {
+      {'f', FIND_FORWARD},
+      {'F', FIND_BACKWARD},
+      {'t', TILL_FORWARD},
+      {'T', TILL_BACKWARD},
+  };
+
+  char character[7] = {0};
+  g_unichar_to_utf8(c, character);
+  for (size_t idx = 0; idx < LENGTH(prefixes); ++idx) {
+    g_autofree char* buffer = g_strdup_printf("%c%s", prefixes[idx].prefix, character);
+    girara_shortcut_add(gsession, 0, 0, buffer, sc_visual_find, mode, prefixes[idx].argument, character);
+  }
+}
+
+/* every character that can be typed into the buffer: ASCII, Latin-1 and common typographic characters */
+static void add_visual_find_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
+  static const gunichar typographic[] = {0x2013, 0x2014, 0x2018, 0x2019, 0x201C, 0x201D, 0x2026};
+
+  for (gunichar c = 0x21; c <= 0x7E; ++c) {
+    add_visual_find_shortcut(gsession, mode, c);
+  }
+  for (gunichar c = 0xA1; c <= 0xFF; ++c) {
+    add_visual_find_shortcut(gsession, mode, c);
+  }
+  for (size_t idx = 0; idx < LENGTH(typographic); ++idx) {
+    add_visual_find_shortcut(gsession, mode, typographic[idx]);
+  }
+}
+
 static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
   girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_BESTFIT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_s, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_WIDTH, NULL);
@@ -298,6 +341,10 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, GDK_KEY_question, NULL, sc_focus_inputbar, mode, 0, "?");
   girara_shortcut_add(gsession, 0, GDK_KEY_colon, NULL, sc_focus_inputbar, mode, 0, ":");
   girara_shortcut_add(gsession, 0, GDK_KEY_o, NULL, sc_focus_inputbar, mode, 0, ":open ");
+
+  girara_shortcut_add(gsession, 0, GDK_KEY_v, NULL, sc_visual, mode, DEFAULT, NULL);
+  girara_shortcut_add(gsession, 0, GDK_KEY_V, NULL, sc_visual, mode, LINEWISE, NULL);
+  girara_shortcut_add(gsession, 0, 0, "gv", sc_visual_reselect, mode, 0, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_O, NULL, sc_focus_inputbar, mode, APPEND_FILEPATH, ":open ");
 
   girara_shortcut_add(gsession, 0, GDK_KEY_f, NULL, sc_follow, mode, 0, NULL);
@@ -436,15 +483,17 @@ void config_load_default(zathura_t* zathura) {
   zathura->modes.index        = girara_mode_add(gsession, "index");
   zathura->modes.insert       = girara_mode_add(gsession, "insert");
   zathura->modes.presentation = girara_mode_add(gsession, "presentation");
+  zathura->modes.visual       = girara_mode_add(gsession, "visual");
 
 #define NORMAL zathura->modes.normal
 #define INSERT zathura->modes.insert
 #define INDEX zathura->modes.index
 #define FULLSCREEN zathura->modes.fullscreen
 #define PRESENTATION zathura->modes.presentation
+#define VISUAL zathura->modes.visual
 
   const girara_mode_t all_modes[] = {
-      NORMAL, INSERT, INDEX, FULLSCREEN, PRESENTATION,
+      NORMAL, INSERT, INDEX, FULLSCREEN, PRESENTATION, VISUAL,
   };
 
   /* Set default mode */
@@ -532,6 +581,12 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "highlight-color",       NULL,         STRING, false, _("Color for highlighting"), cb_color_change, NULL);
   girara_setting_add(gsession, "highlight-fg",          NULL,         STRING, false, _("Foreground color for highlighting"),cb_color_change, NULL);
   girara_setting_add(gsession, "highlight-active-color",NULL,         STRING, false, _("Color for highlighting (active)"), cb_color_change, NULL);
+  girara_setting_add(gsession, "visual-caret-color",    NULL,         STRING, false, _("Color of the caret in visual mode"), cb_color_change, NULL);
+  int_value = 150;
+  girara_setting_add(gsession, "visual-flash-duration", &int_value,   INT,    false, _("Milliseconds to highlight text or an image copied in visual mode"), NULL, NULL);
+  girara_setting_add(gsession, "selection-color",       NULL,         STRING, false, _("Color of selected text and images"), cb_color_change, NULL);
+  girara_setting_add(gsession, "visual-label-color",    NULL,         STRING, false, _("Background color of labels and image outlines in visual mode"), cb_color_change, NULL);
+  girara_setting_add(gsession, "visual-label-fg",       NULL,         STRING, false, _("Text color of labels in visual mode"), cb_color_change, NULL);
   girara_setting_add(gsession, "render-loading-bg",     NULL,         STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
   girara_setting_add(gsession, "render-loading-fg",     NULL,         STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
 
@@ -621,6 +676,7 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_set(gsession, "highlight-color", "rgba(159,251,0,0.5)");
   girara_setting_set(gsession, "highlight-fg", "rgba(0,0,0,0.5)");
   girara_setting_set(gsession, "highlight-active-color", "rgba(0,188,0,0.5)");
+  girara_setting_set(gsession, "visual-caret-color", "rgba(255,128,0,0.7)");
   girara_setting_set(gsession, "render-loading-bg", "#FFFFFF");
   girara_setting_set(gsession, "render-loading-fg", "#000000");
   girara_setting_set(gsession, "signature-success-color", "rgba(18%,80%,33%,0.9)");
@@ -689,6 +745,48 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_toggle_index,   INDEX, 0,                  NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_toggle_index,   INDEX, 0,                  NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_toggle_index,   INDEX, 0,                  NULL);
+
+  /* Visual mode */
+  girara_shortcut_add(gsession, 0,                GDK_KEY_h,           NULL, sc_visual_move, VISUAL, LEFT,                NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Left,        NULL, sc_visual_move, VISUAL, LEFT,                NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_l,           NULL, sc_visual_move, VISUAL, RIGHT,               NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Right,       NULL, sc_visual_move, VISUAL, RIGHT,               NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_k,           NULL, sc_visual_move, VISUAL, UP,                  NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Up,          NULL, sc_visual_move, VISUAL, UP,                  NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_j,           NULL, sc_visual_move, VISUAL, DOWN,                NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Down,        NULL, sc_visual_move, VISUAL, DOWN,                NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_w,           NULL, sc_visual_move, VISUAL, WORD_FORWARD,        NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_b,           NULL, sc_visual_move, VISUAL, WORD_BACKWARD,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_e,           NULL, sc_visual_move, VISUAL, WORD_END,            NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_W,           NULL, sc_visual_move, VISUAL, BIGWORD_FORWARD,     NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_B,           NULL, sc_visual_move, VISUAL, BIGWORD_BACKWARD,    NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_E,           NULL, sc_visual_move, VISUAL, BIGWORD_END,         NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_0,           NULL, sc_visual_move, VISUAL, LINE_START,          NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Home,        NULL, sc_visual_move, VISUAL, LINE_START,          NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_asciicircum, NULL, sc_visual_move, VISUAL, LINE_FIRST_NONBLANK, NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_dollar,      NULL, sc_visual_move, VISUAL, LINE_END,            NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_End,         NULL, sc_visual_move, VISUAL, LINE_END,            NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "gg", sc_visual_move, VISUAL, TOP,                 NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "G",  sc_visual_move, VISUAL, BOTTOM,              NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_v,           NULL, sc_visual,      VISUAL, CHARWISE,            NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_V,           NULL, sc_visual,      VISUAL, LINEWISE,            NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_o,           NULL, sc_visual_swap, VISUAL, 0,                   NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_y,           NULL, sc_visual_yank, VISUAL, 0,                   NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_Escape,      NULL, sc_visual_exit, VISUAL, 0,                   NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_visual_exit, VISUAL, 0,                   NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_visual_exit, VISUAL, 0,                   NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_colon,       NULL, sc_focus_inputbar, VISUAL, 0,                ":");
+  girara_shortcut_add(gsession, 0,                GDK_KEY_semicolon,   NULL, sc_visual_find_repeat, VISUAL, FORWARD,      NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_comma,       NULL, sc_visual_find_repeat, VISUAL, BACKWARD,     NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "iw", sc_visual_select, VISUAL, WORD_INNER,        NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "aw", sc_visual_select, VISUAL, WORD_AROUND,       NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "iW", sc_visual_select, VISUAL, BIGWORD_INNER,     NULL);
+  girara_shortcut_add(gsession, 0,                0,                   "aW", sc_visual_select, VISUAL, BIGWORD_AROUND,    NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_s,           NULL, sc_visual_jump,   VISUAL, 0,                 NULL);
+  add_visual_find_shortcuts(gsession, VISUAL);
+
+  /* Visual mode - Mouse events */
+  add_default_mouse_events(gsession, VISUAL);
 
   /* Presentation mode */
   girara_shortcut_add(gsession, 0,              GDK_KEY_J,             NULL, sc_navigate,            PRESENTATION, NEXT,         NULL);
@@ -825,6 +923,16 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "toggle_page_mode",         sc_toggle_page_mode);
   girara_shortcut_mapping_add(gsession, "toggle_presentation",      sc_toggle_presentation);
   girara_shortcut_mapping_add(gsession, "toggle_single_page_mode",  sc_toggle_single_page_mode);
+  girara_shortcut_mapping_add(gsession, "visual",                   sc_visual);
+  girara_shortcut_mapping_add(gsession, "visual_exit",              sc_visual_exit);
+  girara_shortcut_mapping_add(gsession, "visual_find",              sc_visual_find);
+  girara_shortcut_mapping_add(gsession, "visual_find_repeat",       sc_visual_find_repeat);
+  girara_shortcut_mapping_add(gsession, "visual_jump",              sc_visual_jump);
+  girara_shortcut_mapping_add(gsession, "visual_reselect",          sc_visual_reselect);
+  girara_shortcut_mapping_add(gsession, "visual_select",            sc_visual_select);
+  girara_shortcut_mapping_add(gsession, "visual_move",              sc_visual_move);
+  girara_shortcut_mapping_add(gsession, "visual_swap",              sc_visual_swap);
+  girara_shortcut_mapping_add(gsession, "visual_yank",              sc_visual_yank);
   girara_shortcut_mapping_add(gsession, "zoom",                     sc_zoom);
   girara_shortcut_mapping_add(gsession, "zoom_page",                sc_zoom_page);
 
@@ -868,6 +976,25 @@ void config_load_default(zathura_t* zathura) {
   girara_argument_mapping_add(gsession, "rotate-cw",          ROTATE_CW);
   girara_argument_mapping_add(gsession, "rotate-ccw",         ROTATE_CCW);
   girara_argument_mapping_add(gsession, "equal_none",         ZATHURA_EQUAL_NONE);
+  girara_argument_mapping_add(gsession, "char",               CHARWISE);
+  girara_argument_mapping_add(gsession, "line",               LINEWISE);
+  girara_argument_mapping_add(gsession, "word-forward",       WORD_FORWARD);
+  girara_argument_mapping_add(gsession, "word-backward",      WORD_BACKWARD);
+  girara_argument_mapping_add(gsession, "word-end",           WORD_END);
+  girara_argument_mapping_add(gsession, "bigword-forward",    BIGWORD_FORWARD);
+  girara_argument_mapping_add(gsession, "bigword-backward",   BIGWORD_BACKWARD);
+  girara_argument_mapping_add(gsession, "bigword-end",        BIGWORD_END);
+  girara_argument_mapping_add(gsession, "line-start",         LINE_START);
+  girara_argument_mapping_add(gsession, "line-first-nonblank", LINE_FIRST_NONBLANK);
+  girara_argument_mapping_add(gsession, "line-end",           LINE_END);
+  girara_argument_mapping_add(gsession, "find-forward",       FIND_FORWARD);
+  girara_argument_mapping_add(gsession, "find-backward",      FIND_BACKWARD);
+  girara_argument_mapping_add(gsession, "till-forward",       TILL_FORWARD);
+  girara_argument_mapping_add(gsession, "till-backward",      TILL_BACKWARD);
+  girara_argument_mapping_add(gsession, "word-inner",         WORD_INNER);
+  girara_argument_mapping_add(gsession, "word-around",        WORD_AROUND);
+  girara_argument_mapping_add(gsession, "bigword-inner",      BIGWORD_INNER);
+  girara_argument_mapping_add(gsession, "bigword-around",     BIGWORD_AROUND);
   girara_argument_mapping_add(gsession, "equal_width",        ZATHURA_EQUAL_WIDTH);
   girara_argument_mapping_add(gsession, "equal_height",       ZATHURA_EQUAL_HEIGHT);
   girara_argument_mapping_add(gsession, "smooth-up",          SMOOTH_UP);

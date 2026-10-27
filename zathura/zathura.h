@@ -74,6 +74,25 @@ enum {
   ZOOM_SMOOTH,
   SMOOTH_UP,
   SMOOTH_DOWN,
+  WORD_FORWARD,
+  WORD_BACKWARD,
+  WORD_END,
+  BIGWORD_FORWARD,
+  BIGWORD_BACKWARD,
+  BIGWORD_END,
+  LINE_START,
+  LINE_FIRST_NONBLANK,
+  LINE_END,
+  CHARWISE,
+  LINEWISE,
+  FIND_FORWARD,
+  FIND_BACKWARD,
+  TILL_FORWARD,
+  TILL_BACKWARD,
+  WORD_INNER,
+  WORD_AROUND,
+  BIGWORD_INNER,
+  BIGWORD_AROUND,
 };
 
 /* unspecified page number */
@@ -114,6 +133,13 @@ struct zathura_s {
       GdkRGBA signature_success;      /**> Color for highlighing valid signatures */
       GdkRGBA signature_warning;      /**> Color for highlighing  signatures with warnings */
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
+      GdkRGBA visual_caret_color;     /**< Color of the caret in visual mode */
+      GdkRGBA selection_color;        /**< Color of selected text */
+      GdkRGBA visual_label_color;     /**< Background color of labels and image outlines in visual mode */
+      GdkRGBA visual_label_fg;        /**< Text color of labels in visual mode */
+      bool has_selection_color;       /**< selection-color is set, otherwise highlight-color is used */
+      bool has_visual_label_color;    /**< visual-label-color is set, otherwise highlight-active-color is used */
+      bool has_visual_label_fg;       /**< visual-label-fg is set, otherwise highlight-fg is used */
     } colors;
 
     GtkWidget* view;                            /**< Scrolled Window */
@@ -169,7 +195,13 @@ struct zathura_s {
     girara_mode_t index;        /**< Index mode */
     girara_mode_t insert;       /**< Insert mode */
     girara_mode_t presentation; /**< Presentation mode */
+    girara_mode_t visual;       /**< Visual mode */
   } modes;
+
+  struct zathura_visual_s* visual;             /**< Keyboard selection, NULL outside of visual mode */
+  struct zathura_visual_last_s* visual_last;   /**< Last keyboard selection, for gv */
+  struct zathura_visual_mouse_s* visual_mouse; /**< Mouse selection over several pages */
+  struct zathura_visual_flash_s* visual_flash; /**< Flash of text that was just copied */
 
   struct {
     girara_list_t* bookmarks; /**< bookmarks */
