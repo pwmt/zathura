@@ -24,7 +24,7 @@ struct zathura_link_s {
 };
 
 zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t position, zathura_link_target_t target) {
-  zathura_link_t* link = g_try_malloc0(sizeof(zathura_link_t));
+  g_autoptr(zathura_link_t) link = g_try_malloc0(sizeof(zathura_link_t));
   if (!link) {
     return NULL;
   }
@@ -37,28 +37,24 @@ zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t p
   switch (type) {
   case ZATHURA_LINK_NONE:
   case ZATHURA_LINK_GOTO_DEST:
-    if (target.value != NULL) {
-      link->target.value = g_strdup(target.value);
-    }
+    link->target.value = g_strdup(target.value);
     break;
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:
   case ZATHURA_LINK_LAUNCH:
   case ZATHURA_LINK_NAMED:
     /* target.value is required for these cases */
-    if (target.value == NULL) {
-      g_free(link);
+    if (!target.value) {
       return NULL;
     }
 
     link->target.value = g_strdup(target.value);
     break;
   default:
-    g_free(link);
     return NULL;
   }
 
-  return link;
+  return g_steal_pointer(&link);
 }
 
 void zathura_link_free(zathura_link_t* link) {
@@ -128,8 +124,10 @@ static bool calculate_link_destination_view(const zathura_link_target_t* target,
   }
 
   zathura_rectangle_t rectangle = {.x1 = 0, .y1 = 0, .x2 = width, .y2 = height};
-  bool fit_x = true, fit_y = true;
-  bool has_x = true, has_y = true;
+  bool fit_x                    = true;
+  bool fit_y                    = true;
+  bool has_x                    = true;
+  bool has_y                    = true;
   switch (target->destination_type) {
   case ZATHURA_LINK_DESTINATION_XYZ:
     fit_x = fit_y = false;
@@ -199,8 +197,9 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
     girara_warning("link to non-existing page %u", link->target.page_number);
     return;
   }
+
   zathura_page_t* page = zathura_document_get_page(document, link->target.page_number);
-  if (page == NULL) {
+  if (!page) {
     return;
   }
 
@@ -211,7 +210,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   unsigned int doc_width        = 0;
   zathura_document_widget_get_viewport_size(widget, &view_height, &view_width);
   zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
-  if (view_height == 0 || view_width == 0 || doc_height == 0 || doc_width == 0) {
+  if (!view_height || !view_width || !doc_height || !doc_width) {
     return;
   }
 
@@ -231,6 +230,9 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
     return;
   }
 
+  // with a valid target, store current position before jumping to the link target
+  zathura_jumplist_add(zathura);
+
   int mode = DOCUMENT_WIDGET_GRID;
   g_object_get(widget, "layout-mode", &mode, NULL);
 
@@ -249,40 +251,37 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   old_y = (zathura_document_widget_get_position_y(widget) * doc_height - view_height / 2.0 - old_y) / old_scale;
 
   double zoom = old_zoom * view.scale / scale;
-  if (link_zoom && link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && isfinite(link->target.zoom) &&
-      link->target.zoom > 0) {
-    zoom = link->target.zoom;
+  if (link_zoom) {
+    // use provided zoom for XYZ destinations
+    if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && isfinite(link->target.zoom) &&
+        link->target.zoom > 0) {
+      zoom = link->target.zoom;
+    }
+
+    // apply new zoom if we have one
+    if (link->target.destination_type != ZATHURA_LINK_DESTINATION_XYZ ||
+        (isfinite(link->target.zoom) && link->target.zoom > 0)) {
+      zoom = zathura_correct_zoom_value(zathura->ui.session, zoom);
+      zathura_document_widget_set_adjust_mode(widget, ZATHURA_ADJUST_NONE);
+      zathura_document_set_zoom(document, zoom);
+      zathura_document_widget_render_all(widget);
+    }
   }
 
-  zathura_jumplist_add(zathura);
-  const bool change_zoom = link_zoom && (link->target.destination_type != ZATHURA_LINK_DESTINATION_XYZ ||
-                                         (isfinite(link->target.zoom) && link->target.zoom > 0));
-  if (change_zoom) {
-    zoom = zathura_correct_zoom_value(zathura->ui.session, zoom);
-    zathura_document_widget_set_adjust_mode(widget, ZATHURA_ADJUST_NONE);
-    zathura_document_set_zoom(document, zoom);
-    zathura_document_widget_render_all(widget);
-  }
-
-  /* Recompute positions at the actual (possibly clamped) zoom. */
+  // recompute positions at the actual zoom
   scale = zathura_document_get_scale(document) * zathura_page_get_zoom(page);
   calculate_link_destination_view(&link->target, width, height, rotation, view_width, view_height, scale, false, &view);
-  zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
   if (mode == DOCUMENT_WIDGET_SINGLE) {
     page_calc_height_width(document, page, &doc_height, &doc_width, true);
-  }
-  if (doc_width == 0 || doc_height == 0) {
-    return;
+  } else {
+    zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
   }
 
   double origin_x = 0;
   double origin_y = 0;
   zathura_document_widget_get_page_origin(widget, link->target.page_number, &origin_x, &origin_y);
 
-  bool link_hadjust = true;
-  girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
-
-  /* Find the viewport centre in page pixels, retaining unspecified offsets. */
+  // find the viewport centre in page pixels
   double center_x = view.x * scale;
   double center_y = view.y * scale;
   if (isnan(view.x)) {
@@ -292,7 +291,10 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
     center_y = old_y * scale + view_height / 2.0;
   }
 
-  /* Convert to document ratios; -1 requests automatic horizontal positioning. */
+  // convert to document ratios
+  bool link_hadjust = true;
+  girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
+
   double pos_x = -1;
   if (link_hadjust) {
     pos_x = (origin_x + center_x) / doc_width;
@@ -300,6 +302,7 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
     pos_x = 0.5;
   }
   const double pos_y = (origin_y + center_y) / doc_height;
+
   zathura_document_set_current_page_number(document, link->target.page_number);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);

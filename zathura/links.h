@@ -23,6 +23,8 @@ ZATHURA_PLUGIN_API zathura_link_t* zathura_link_new(zathura_link_type_t type, za
  */
 ZATHURA_PLUGIN_API void zathura_link_free(zathura_link_t* link);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_link_t, zathura_link_free)
+
 /**
  * Returns the type of the link
  *
