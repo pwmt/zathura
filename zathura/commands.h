@@ -99,6 +99,24 @@ bool cmd_hlsearch(girara_session_t* session, girara_list_t* argument_list);
 bool cmd_open(girara_session_t* session, girara_list_t* argument_list);
 
 /**
+ * Open a document in a second pane, or duplicate the current document.
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_split(girara_session_t* session, girara_list_t* argument_list);
+
+/**
+ * Close the second document pane.
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return true if no error occurred
+ */
+bool cmd_unsplit(girara_session_t* session, girara_list_t* argument_list);
+
+/**
  * Print the current file
  *
  * @param session The used girara session
