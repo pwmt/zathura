@@ -783,7 +783,11 @@ The settings described here can be changed with ``set``.
   * Default value: true
 
 *link-zoom*
-  En/Disables the ability of changing zoom when following links.
+  En/Disables the ability of changing zoom when following links. Internal PDF
+  destinations can specify an explicit zoom or fit a page, its width, its height,
+  or a rectangle to the viewport. With this option disabled, destination positions
+  are still honored at the current zoom. Destinations that fit the page contents'
+  bounding box currently use the page bounds instead.
 
   * Value type: Boolean
   * Default value: true

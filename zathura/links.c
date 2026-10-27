@@ -2,6 +2,7 @@
 
 #include "links-internal.h"
 
+#include <math.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <girara/utils.h>
@@ -109,71 +110,196 @@ zathura_link_target_t zathura_link_get_target(zathura_link_t* link) {
   return link->target;
 }
 
+// NAN means retain the current page-local offset.
+typedef struct {
+  double scale;
+  double x;
+  double y;
+} zathura_link_destination_view_t;
+
+// Calculate fitting scale and viewport centre for a destination. Pass fit=false
+// to retain scale (e.g. after zoom clamping or when link-zoom is disabled).
+// Explicit XYZ zoom is applied by the caller before the final calculation.
+static bool calculate_link_destination_view(const zathura_link_target_t* target, double width, double height,
+                                            unsigned int rotation, double view_width, double view_height, double scale,
+                                            bool fit, zathura_link_destination_view_t* view) {
+  if (width <= 0 || height <= 0 || scale <= 0 || view_width <= 0 || view_height <= 0) {
+    return false;
+  }
+
+  zathura_rectangle_t rectangle = {.x1 = 0, .y1 = 0, .x2 = width, .y2 = height};
+  bool fit_x = true, fit_y = true;
+  bool has_x = true, has_y = true;
+  switch (target->destination_type) {
+  case ZATHURA_LINK_DESTINATION_XYZ:
+    fit_x = fit_y = false;
+    has_x         = target->left != -1 && isfinite(target->left);
+    has_y         = target->top != -1 && isfinite(target->top);
+    rectangle.x1 = rectangle.x2 = has_x ? target->left : 0;
+    rectangle.y1 = rectangle.y2 = has_y ? target->top : 0;
+    break;
+  case ZATHURA_LINK_DESTINATION_FITH:
+  case ZATHURA_LINK_DESTINATION_FITBH:
+    fit_y        = false;
+    has_y        = target->top != -1 && isfinite(target->top);
+    rectangle.y1 = rectangle.y2 = has_y ? target->top : 0;
+    break;
+  case ZATHURA_LINK_DESTINATION_FITV:
+  case ZATHURA_LINK_DESTINATION_FITBV:
+    fit_x        = false;
+    has_x        = target->left != -1 && isfinite(target->left);
+    rectangle.x1 = rectangle.x2 = has_x ? target->left : 0;
+    break;
+  case ZATHURA_LINK_DESTINATION_FITR:
+    rectangle.x1 = target->left;
+    rectangle.x2 = target->right;
+    rectangle.y1 = target->top;
+    rectangle.y2 = target->bottom;
+    if (!isfinite(rectangle.x1) || !isfinite(rectangle.x2) || !isfinite(rectangle.y1) || !isfinite(rectangle.y2) ||
+        rectangle.x2 <= rectangle.x1 || rectangle.y2 <= rectangle.y1) {
+      return false;
+    }
+    break;
+  case ZATHURA_LINK_DESTINATION_FIT:
+  case ZATHURA_LINK_DESTINATION_FITB:
+    // The plugin API does not expose content bounds. Use page bounds for FITB*.
+    break;
+  default:
+    return false;
+  }
+
+  // Rotate the target point, line or rectangle in page units.
+  rectangle = rotate_rectangle(rectangle, rotation % 360, height, width);
+  if (rotation % 180 != 0) {
+    bool tmp = fit_x;
+    fit_x    = fit_y;
+    fit_y    = tmp;
+    tmp      = has_x;
+    has_x    = has_y;
+    has_y    = tmp;
+  }
+
+  if (fit && (fit_x || fit_y)) {
+    scale = MIN(fit_x ? view_width / (rectangle.x2 - rectangle.x1) : INFINITY,
+                fit_y ? view_height / (rectangle.y2 - rectangle.y1) : INFINITY);
+    if (!isfinite(scale) || scale < FLT_EPSILON) {
+      return false;
+    }
+  }
+
+  view->scale = scale;
+  view->x     = has_x ? (fit_x ? (rectangle.x1 + rectangle.x2) / 2 : rectangle.x1 + view_width / (2 * scale)) : NAN;
+  view->y     = has_y ? (fit_y ? (rectangle.y1 + rectangle.y2) / 2 : rectangle.y1 + view_height / (2 * scale)) : NAN;
+  return true;
+}
+
 static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
-  if (link->target.destination_type == ZATHURA_LINK_DESTINATION_UNKNOWN) {
-    girara_warning("link destination type unknown");
+  zathura_document_t* document = zathura_get_document(zathura);
+  if (link->target.page_number >= zathura_document_get_number_of_pages(document)) {
+    girara_warning("link to non-existing page %u", link->target.page_number);
     return;
   }
+  zathura_page_t* page = zathura_document_get_page(document, link->target.page_number);
+  if (page == NULL) {
+    return;
+  }
+
+  ZathuraDocumentWidget* widget = zathura->ui.document_widget;
+  unsigned int view_height      = 0;
+  unsigned int view_width       = 0;
+  unsigned int doc_height       = 0;
+  unsigned int doc_width        = 0;
+  zathura_document_widget_get_viewport_size(widget, &view_height, &view_width);
+  zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
+  if (view_height == 0 || view_width == 0 || doc_height == 0 || doc_width == 0) {
+    return;
+  }
+
+  const double old_zoom       = zathura_document_get_zoom(document);
+  double scale                = zathura_document_get_scale(document) * zathura_page_get_zoom(page);
+  const double width          = zathura_page_get_width(page);
+  const double height         = zathura_page_get_height(page);
+  const unsigned int rotation = (zathura_document_get_rotation(document) + zathura_page_get_rotation(page)) % 360;
 
   bool link_zoom = true;
   girara_setting_get(zathura->ui.session, "link-zoom", &link_zoom);
 
-  zathura_document_t* document = zathura_get_document(zathura);
-  if (link->target.zoom >= DBL_EPSILON && link_zoom) {
-    zathura_document_set_zoom(document, zathura_correct_zoom_value(zathura->ui.session, link->target.zoom));
-    adjust_view(zathura);
-    zathura_document_widget_render_all(zathura->ui.document_widget);
-  }
-
-  /* get page */
-  zathura_page_t* page = zathura_document_get_page(document, link->target.page_number);
-  if (!page) {
-    girara_warning("link to non-existing page %u", link->target.page_number);
+  zathura_link_destination_view_t view;
+  if (!calculate_link_destination_view(&link->target, width, height, rotation, view_width, view_height, scale,
+                                       link_zoom, &view)) {
+    girara_warning("invalid link destination");
     return;
   }
 
-  /* compute the position with the page aligned to the top and left
-     of the viewport */
-  double pos_x = 0;
-  double pos_y = 0;
-  page_number_to_position(zathura, link->target.page_number, 0.0, 0.0, &pos_x, &pos_y);
+  int mode = DOCUMENT_WIDGET_GRID;
+  g_object_get(widget, "layout-mode", &mode, NULL);
 
-  /* correct to place the target position at the top of the viewport     */
-  /* NOTE: link->target is in page units, needs to be scaled and rotated */
-  unsigned int cell_height = 0;
-  unsigned int cell_width  = 0;
-  zathura_document_widget_get_cell_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), link->target.page_number,
-                                        &cell_height, &cell_width);
+  /* Preserve page-local viewport offsets for unspecified coordinates. */
+  zathura_page_t* current = zathura_document_get_page(document, zathura_document_get_current_page_number(document));
+  if (mode == DOCUMENT_WIDGET_SINGLE) {
+    page_calc_height_width(document, current, &doc_height, &doc_width, true);
+  }
 
-  unsigned int doc_height = 0;
-  unsigned int doc_width  = 0;
-  zathura_document_widget_get_document_size(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), &doc_height,
-                                            &doc_width);
+  double old_x = 0;
+  double old_y = 0;
+  zathura_document_widget_get_page_origin(widget, zathura_page_get_index(current), &old_x, &old_y);
+
+  const double old_scale = zathura_document_get_scale(document) * zathura_page_get_zoom(current);
+  old_x = (zathura_document_widget_get_position_x(widget) * doc_width - view_width / 2.0 - old_x) / old_scale;
+  old_y = (zathura_document_widget_get_position_y(widget) * doc_height - view_height / 2.0 - old_y) / old_scale;
+
+  double zoom = old_zoom * view.scale / scale;
+  if (link_zoom && link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && isfinite(link->target.zoom) &&
+      link->target.zoom > 0) {
+    zoom = link->target.zoom;
+  }
+
+  zathura_jumplist_add(zathura);
+  const bool change_zoom = link_zoom && (link->target.destination_type != ZATHURA_LINK_DESTINATION_XYZ ||
+                                         (isfinite(link->target.zoom) && link->target.zoom > 0));
+  if (change_zoom) {
+    zoom = zathura_correct_zoom_value(zathura->ui.session, zoom);
+    zathura_document_widget_set_adjust_mode(widget, ZATHURA_ADJUST_NONE);
+    zathura_document_set_zoom(document, zoom);
+    zathura_document_widget_render_all(widget);
+  }
+
+  /* Recompute positions at the actual (possibly clamped) zoom. */
+  scale = zathura_document_get_scale(document) * zathura_page_get_zoom(page);
+  calculate_link_destination_view(&link->target, width, height, rotation, view_width, view_height, scale, false, &view);
+  zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
+  if (mode == DOCUMENT_WIDGET_SINGLE) {
+    page_calc_height_width(document, page, &doc_height, &doc_width, true);
+  }
+  if (doc_width == 0 || doc_height == 0) {
+    return;
+  }
+
+  double origin_x = 0;
+  double origin_y = 0;
+  zathura_document_widget_get_page_origin(widget, link->target.page_number, &origin_x, &origin_y);
 
   bool link_hadjust = true;
   girara_setting_get(zathura->ui.session, "link-hadjust", &link_hadjust);
 
-  /* scale and rotate */
-  const double scale = zathura_document_get_scale(document);
-  double shiftx      = link->target.left * scale / cell_width;
-  double shifty      = link->target.top * scale / cell_height;
-  page_calc_position(document, shiftx, shifty, &shiftx, &shifty);
-
-  /* shift the position or set to auto */
-  if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && link->target.left != -1 && link_hadjust) {
-    pos_x += shiftx * cell_width / doc_width;
-  } else {
-    pos_x = -1; /* -1 means automatic */
+  /* Find the viewport centre in page pixels, retaining unspecified offsets. */
+  double center_x = view.x * scale;
+  double center_y = view.y * scale;
+  if (isnan(view.x)) {
+    center_x = old_x * scale + view_width / 2.0;
+  }
+  if (isnan(view.y)) {
+    center_y = old_y * scale + view_height / 2.0;
   }
 
-  if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && link->target.top != -1) {
-    pos_y += shifty * cell_height / doc_height;
-  } else {
-    pos_y = -1; /* -1 means automatic */
+  /* Convert to document ratios; -1 requests automatic horizontal positioning. */
+  double pos_x = -1;
+  if (link_hadjust) {
+    pos_x = (origin_x + center_x) / doc_width;
+  } else if (mode == DOCUMENT_WIDGET_SINGLE) {
+    pos_x = 0.5;
   }
-
-  /* move to position */
-  zathura_jumplist_add(zathura);
+  const double pos_y = (origin_y + center_y) / doc_height;
   zathura_document_set_current_page_number(document, link->target.page_number);
   position_set(zathura, pos_x, pos_y);
   zathura_jumplist_add(zathura);
