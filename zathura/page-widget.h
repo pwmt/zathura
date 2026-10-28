@@ -95,13 +95,18 @@ girara_list_t* zathura_page_widget_get_labels(ZathuraPageWidget* widget);
 bool zathura_page_widget_has_flash(ZathuraPageWidget* widget);
 
 /**
+ * Maximal number of letters of a label: two letters give 26 * 26 labels
+ */
+#define ZATHURA_PAGE_WIDGET_LABEL_LENGTH 2
+
+/**
  * Label of a position that can be jumped to
  */
 typedef struct zathura_page_widget_label_s {
-  zathura_rectangle_t position; /**< Where to draw the label, in page coordinates */
-  char text[4];                 /**< The label */
-  bool outline;                 /**< Outline bounds, e.g. for the label of an image */
-  zathura_rectangle_t bounds;   /**< What the label is for, outlined if outline is set */
+  zathura_rectangle_t position;                    /**< Where to draw the label, in page coordinates */
+  char text[ZATHURA_PAGE_WIDGET_LABEL_LENGTH + 1]; /**< The label */
+  bool outline;                                    /**< Outline bounds, e.g. for the label of an image */
+  zathura_rectangle_t bounds;                      /**< What the label is for, outlined if outline is set */
 } zathura_page_widget_label_t;
 
 /**

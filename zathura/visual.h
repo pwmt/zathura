@@ -200,13 +200,6 @@ void zathura_visual_swap(zathura_t* zathura);
 void zathura_visual_yank(zathura_t* zathura, unsigned int count);
 
 /**
- * Clear the flash of copied text or a copied image, e.g. when the document is closed
- *
- * @param zathura The zathura session
- */
-void zathura_visual_flash_clear(zathura_t* zathura);
-
-/**
  * Move the caret to a character on the line, or repeat the last search
  *
  * @param zathura The zathura session
@@ -233,13 +226,6 @@ void zathura_visual_select_word(zathura_t* zathura, bool big, bool around);
  * @return true if there was a selection to restore
  */
 bool zathura_visual_reselect(zathura_t* zathura);
-
-/**
- * Forget the last selection, e.g. when the document is closed
- *
- * @param zathura The zathura session
- */
-void zathura_visual_forget(zathura_t* zathura);
 
 /**
  * Show labels on the visible words and move the caret to the word whose label
@@ -292,5 +278,14 @@ void zathura_visual_mouse_cancel(zathura_t* zathura);
  * @param zathura The zathura session
  */
 void zathura_visual_mouse_clear(zathura_t* zathura);
+
+/**
+ * Leave visual mode and drop everything that refers to the pages of the
+ * document: the selection, the last selection for gv, the mouse selection and
+ * the flash. Called when the document is closed.
+ *
+ * @param zathura The zathura session
+ */
+void zathura_visual_reset(zathura_t* zathura);
 
 #endif // ZATHURA_VISUAL_H
