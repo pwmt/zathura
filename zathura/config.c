@@ -73,12 +73,6 @@ static void cb_color_change(girara_session_t* session, const char* name, girara_
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "visual-caret-color") == 0) {
     parse_color(&zathura->ui.colors.visual_caret_color, string_value);
-  } else if (g_strcmp0(name, "selection-color") == 0) {
-    zathura->ui.colors.has_selection_color = parse_color(&zathura->ui.colors.selection_color, string_value);
-  } else if (g_strcmp0(name, "visual-label-color") == 0) {
-    zathura->ui.colors.has_visual_label_color = parse_color(&zathura->ui.colors.visual_label_color, string_value);
-  } else if (g_strcmp0(name, "visual-label-fg") == 0) {
-    zathura->ui.colors.has_visual_label_fg = parse_color(&zathura->ui.colors.visual_label_fg, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
     if (zathura->sync.render_thread != NULL) {
       zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
@@ -584,9 +578,6 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "visual-caret-color",    NULL,         STRING, false, _("Color of the caret in visual mode"), cb_color_change, NULL);
   int_value = 150;
   girara_setting_add(gsession, "visual-flash-duration", &int_value,   INT,    false, _("Milliseconds to highlight text or an image copied in visual mode"), NULL, NULL);
-  girara_setting_add(gsession, "selection-color",       NULL,         STRING, false, _("Color of selected text and images"), cb_color_change, NULL);
-  girara_setting_add(gsession, "visual-label-color",    NULL,         STRING, false, _("Background color of labels and image outlines in visual mode"), cb_color_change, NULL);
-  girara_setting_add(gsession, "visual-label-fg",       NULL,         STRING, false, _("Text color of labels in visual mode"), cb_color_change, NULL);
   girara_setting_add(gsession, "render-loading-bg",     NULL,         STRING, false, _("'Loading ...' background color"), cb_color_change, NULL);
   girara_setting_add(gsession, "render-loading-fg",     NULL,         STRING, false, _("'Loading ...' foreground color"), cb_color_change, NULL);
 

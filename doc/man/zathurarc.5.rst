@@ -792,23 +792,21 @@ The settings described here can be changed with ``set``.
 
 *highlight-active-color*
   Defines the color that is used to show the current selected highlighted element
-  (e.g: current search result, labels in visual mode unless
-  *visual-label-color* is set)
+  (e.g: current search result, labels in visual mode)
 
   * Value type: String
   * Default value: rgba(0,188,0,0.5)
 
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
-  show search results, selected text unless *selection-color* is set)
+  show search results, selected text)
 
   * Value type: String
   * Default value: rgba(159,251,0,0.5)
 
 *highlight-fg*
   Defines the color that is used for text when highlighting parts of the
-  document (e.g.: number for links, labels in visual mode unless
-  *visual-label-fg* is set).
+  document (e.g.: number for links, labels in visual mode).
 
   * Value type: String
   * Default value: rgba(0,0,0,0.5)
@@ -821,26 +819,11 @@ The settings described here can be changed with ``set``.
 
 *visual-flash-duration*
   Defines for how many milliseconds text or an image copied in visual mode
-  stays highlighted in the color of selected text (see *selection-color*). The
+  stays highlighted in the color of selected text (see *highlight-color*). The
   value 0 turns the highlight off.
 
   * Value type: Integer
   * Default value: 150
-
-*visual-label-color*
-  Defines the background color of the labels on words and images in visual
-  mode, and the color of the outline of labelled images. When it is not set,
-  *highlight-active-color* is used with an opacity of at least 90%.
-
-  * Value type: String
-  * Default value: not set
-
-*visual-label-fg*
-  Defines the text color of the labels on words and images in visual mode.
-  When it is not set, *highlight-fg* is used with an opacity of at least 90%.
-
-  * Value type: String
-  * Default value: not set
 
 *highlighter-modifier*
   Defines the modifier that needs to be pressed together with the left mouse button
@@ -1068,14 +1051,6 @@ The settings described here can be changed with ``set``.
 
   * Value type: String
   * Default value: primary
-
-*selection-color*
-  Defines the color of selected text, selected with the mouse or in visual
-  mode, and of an image selected in visual mode. When it is not set,
-  *highlight-color* is used.
-
-  * Value type: String
-  * Default value: not set
 
 *selection-notification*
   Defines if a notification should be displayed after selecting text.

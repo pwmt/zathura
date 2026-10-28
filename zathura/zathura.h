@@ -134,12 +134,6 @@ struct zathura_s {
       GdkRGBA signature_warning;      /**> Color for highlighing  signatures with warnings */
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
       GdkRGBA visual_caret_color;     /**< Color of the caret in visual mode */
-      GdkRGBA selection_color;        /**< Color of selected text */
-      GdkRGBA visual_label_color;     /**< Background color of labels and image outlines in visual mode */
-      GdkRGBA visual_label_fg;        /**< Text color of labels in visual mode */
-      bool has_selection_color;       /**< selection-color is set, otherwise highlight-color is used */
-      bool has_visual_label_color;    /**< visual-label-color is set, otherwise highlight-active-color is used */
-      bool has_visual_label_fg;       /**< visual-label-fg is set, otherwise highlight-fg is used */
     } colors;
 
     GtkWidget* view;                            /**< Scrolled Window */
