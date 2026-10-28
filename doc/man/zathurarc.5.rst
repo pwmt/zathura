@@ -389,8 +389,8 @@ They can also be combined with modifiers:
 
     Move the caret to a character on the line in visual mode. Pass
     ``find-forward``, ``find-backward``, ``till-forward`` or ``till-backward``
-    as argument. The default bindings are f, F, t and T followed by the
-    character.
+    as argument. The character is the next key that is pressed, Escape cancels.
+    The default bindings are f, F, t and T.
 
   * ``visual_find_repeat``
 
