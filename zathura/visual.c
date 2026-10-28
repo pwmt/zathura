@@ -44,12 +44,12 @@ typedef struct visual_drawn_s {
 
 /* a word that can be jumped to by typing its label */
 typedef struct visual_label_s {
-  visual_position_t position; /**< Start of the word, or the page of the image */
-  bool image;                 /**< The label is for an image instead of a word */
-  size_t image_index;         /**< Index of the image in zathura_page_images_get() */
-  zathura_rectangle_t bounds; /**< Part of the image on the page */
-  zathura_rectangle_t anchor; /**< Where the label of the image goes */
-  char text[3];               /**< Label */
+  visual_position_t position;                      /**< Start of the word, or the page of the image */
+  bool image;                                      /**< The label is for an image instead of a word */
+  size_t image_index;                              /**< Index of the image in zathura_page_images_get() */
+  zathura_rectangle_t bounds;                      /**< Part of the image on the page */
+  zathura_rectangle_t anchor;                      /**< Where the label of the image goes */
+  char text[ZATHURA_PAGE_WIDGET_LABEL_LENGTH + 1]; /**< Label */
 } visual_label_t;
 
 struct zathura_visual_s {
@@ -1103,7 +1103,7 @@ void zathura_visual_exit(zathura_t* zathura) {
   }
 }
 
-void zathura_visual_forget(zathura_t* zathura) {
+static void visual_forget(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL);
 
   g_free(zathura->visual_last);
@@ -1326,7 +1326,7 @@ static void visual_copy(zathura_t* zathura, visual_position_t first, visual_posi
   }
 }
 
-void zathura_visual_flash_clear(zathura_t* zathura) {
+static void visual_flash_clear(zathura_t* zathura) {
   g_return_if_fail(zathura != NULL);
 
   zathura_visual_flash_t* flash = zathura->visual_flash;
@@ -1353,14 +1353,14 @@ void zathura_visual_flash_clear(zathura_t* zathura) {
 static gboolean visual_flash_timeout(gpointer data) {
   zathura_t* zathura            = data;
   zathura->visual_flash->source = 0;
-  zathura_visual_flash_clear(zathura);
+  visual_flash_clear(zathura);
   return G_SOURCE_REMOVE;
 }
 
 /* briefly highlight copied text, like the yank highlight of LazyVim */
 /* replace the flash with a new one, or return NULL when the flash is turned off */
 static zathura_visual_flash_t* visual_flash_new(zathura_t* zathura, int* duration) {
-  zathura_visual_flash_clear(zathura);
+  visual_flash_clear(zathura);
 
   *duration = 150;
   girara_setting_get(zathura->ui.session, "visual-flash-duration", duration);
@@ -1765,7 +1765,8 @@ static girara_list_t* visual_label_candidates(zathura_t* zathura) {
     girara_list_t* anchors   = girara_list_new_with_free(g_free);
     for (size_t idx = 0; images != NULL && anchors != NULL && idx != girara_list_size(images); ++idx) {
       const zathura_image_t* image = girara_list_nth(images, idx);
-      const zathura_rectangle_t r  = {
+
+      const zathura_rectangle_t r = {
           .x1 = fmax(image->position.x1, 0),
           .y1 = fmax(image->position.y1, 0),
           .x2 = fmin(image->position.x2, page_width),
@@ -2175,4 +2176,13 @@ void zathura_visual_mouse_clear(zathura_t* zathura) {
   visual_texts_clear(&mouse->texts);
   g_free(mouse);
   zathura->visual_mouse = NULL;
+}
+
+void zathura_visual_reset(zathura_t* zathura) {
+  g_return_if_fail(zathura != NULL);
+
+  zathura_visual_exit(zathura);
+  visual_forget(zathura);
+  zathura_visual_mouse_clear(zathura);
+  visual_flash_clear(zathura);
 }

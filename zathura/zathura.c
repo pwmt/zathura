@@ -1685,11 +1685,7 @@ static void document_stop(zathura_t* zathura) {
   }
   zathura->ui.inputbar_adjust_mode = ZATHURA_ADJUST_NONE;
 
-  /* the keyboard selection refers to pages of the document */
-  zathura_visual_exit(zathura);
-  zathura_visual_forget(zathura);
-  zathura_visual_mouse_clear(zathura);
-  zathura_visual_flash_clear(zathura);
+  zathura_visual_reset(zathura);
 
   if (zathura->ui.document_widget != NULL) {
     zathura_document_widget_stop(zathura->ui.document_widget);
