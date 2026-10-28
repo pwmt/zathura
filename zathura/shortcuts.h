@@ -464,7 +464,8 @@ bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, gira
 bool sc_visual_exit(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
- * Move the caret to a character on the line in visual mode, like f, F, t and T in vim
+ * Move the caret to a character on the line in visual mode, like f, F, t and T in vim. The character is the
+ * next key that is pressed, unless the argument passes it.
  *
  * @param session The used girara session
  * @param argument The used argument

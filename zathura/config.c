@@ -288,41 +288,6 @@ static void cb_scroll_step_value_changed(girara_session_t* session, const char* 
   }
 }
 
-/* f, F, t and T followed by a character */
-static void add_visual_find_shortcut(girara_session_t* gsession, girara_mode_t mode, gunichar c) {
-  static const struct {
-    char prefix;
-    int argument;
-  } prefixes[] = {
-      {'f', FIND_FORWARD},
-      {'F', FIND_BACKWARD},
-      {'t', TILL_FORWARD},
-      {'T', TILL_BACKWARD},
-  };
-
-  char character[7] = {0};
-  g_unichar_to_utf8(c, character);
-  for (size_t idx = 0; idx < LENGTH(prefixes); ++idx) {
-    g_autofree char* buffer = g_strdup_printf("%c%s", prefixes[idx].prefix, character);
-    girara_shortcut_add(gsession, 0, 0, buffer, sc_visual_find, mode, prefixes[idx].argument, character);
-  }
-}
-
-/* every character that can be typed into the buffer: ASCII, Latin-1 and common typographic characters */
-static void add_visual_find_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
-  static const gunichar typographic[] = {0x2013, 0x2014, 0x2018, 0x2019, 0x201C, 0x201D, 0x2026};
-
-  for (gunichar c = 0x21; c <= 0x7E; ++c) {
-    add_visual_find_shortcut(gsession, mode, c);
-  }
-  for (gunichar c = 0xA1; c <= 0xFF; ++c) {
-    add_visual_find_shortcut(gsession, mode, c);
-  }
-  for (size_t idx = 0; idx < LENGTH(typographic); ++idx) {
-    add_visual_find_shortcut(gsession, mode, typographic[idx]);
-  }
-}
-
 static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode) {
   girara_shortcut_add(gsession, 0, GDK_KEY_a, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_BESTFIT, NULL);
   girara_shortcut_add(gsession, 0, GDK_KEY_s, NULL, sc_adjust_window, mode, ZATHURA_ADJUST_WIDTH, NULL);
@@ -773,6 +738,10 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_bracketleft, NULL, sc_visual_exit, VISUAL, 0,                   NULL);
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_c,           NULL, sc_visual_exit, VISUAL, 0,                   NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_colon,       NULL, sc_focus_inputbar, VISUAL, 0,                ":");
+  girara_shortcut_add(gsession, 0,                GDK_KEY_f,           NULL, sc_visual_find, VISUAL, FIND_FORWARD,        NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_F,           NULL, sc_visual_find, VISUAL, FIND_BACKWARD,       NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_t,           NULL, sc_visual_find, VISUAL, TILL_FORWARD,        NULL);
+  girara_shortcut_add(gsession, 0,                GDK_KEY_T,           NULL, sc_visual_find, VISUAL, TILL_BACKWARD,       NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_semicolon,   NULL, sc_visual_find_repeat, VISUAL, FORWARD,      NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_comma,       NULL, sc_visual_find_repeat, VISUAL, BACKWARD,     NULL);
   girara_shortcut_add(gsession, 0,                0,                   "iw", sc_visual_select, VISUAL, WORD_INNER,        NULL);
@@ -780,7 +749,6 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_add(gsession, 0,                0,                   "iW", sc_visual_select, VISUAL, BIGWORD_INNER,     NULL);
   girara_shortcut_add(gsession, 0,                0,                   "aW", sc_visual_select, VISUAL, BIGWORD_AROUND,    NULL);
   girara_shortcut_add(gsession, 0,                GDK_KEY_s,           NULL, sc_visual_jump,   VISUAL, 0,                 NULL);
-  add_visual_find_shortcuts(gsession, VISUAL);
 
   /* Visual mode - Mouse events */
   add_default_mouse_events(gsession, VISUAL);

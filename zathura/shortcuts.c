@@ -1948,21 +1948,64 @@ bool sc_visual_exit(girara_session_t* session, girara_argument_t* UNUSED(argumen
   return false;
 }
 
+/* the character to find after f, F, t or T is the next key, whatever it is */
+static gboolean cb_visual_find_one_shot(GtkEventControllerKey* controller, guint keyval, guint UNUSED(keycode),
+                                        GdkModifierType state, gpointer user_data) {
+  girara_session_t* session = user_data;
+  g_return_val_if_fail(session != NULL && session->global.data != NULL, FALSE);
+  zathura_t* zathura = session->global.data;
+
+  GtkEventController* ctrl = GTK_EVENT_CONTROLLER(controller);
+  GdkEvent* event          = gtk_event_controller_get_current_event(ctrl);
+  if (event != NULL && gdk_key_event_is_modifier(event) == TRUE) {
+    /* wait for the key that Shift or AltGr modifies */
+    return FALSE;
+  }
+
+  const int argument   = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(ctrl), "argument"));
+  const unsigned int t = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(ctrl), "count"));
+
+  /* remove the controller from its own callback so it only fires once */
+  gtk_widget_remove_controller(gtk_event_controller_get_widget(ctrl), ctrl);
+
+  if (girara_mode_get(session) != zathura->modes.visual || (state & (GDK_CONTROL_MASK | GDK_ALT_MASK)) != 0) {
+    /* left visual mode in the meantime, or a binding like Ctrl-c: handle the key as usual */
+    return FALSE;
+  }
+
+  /* Escape, and keys without a character, cancel the search */
+  const gunichar c = gdk_keyval_to_unicode(keyval);
+  if (c != 0 && g_unichar_isprint(c) == TRUE) {
+    const bool forward = argument == FIND_FORWARD || argument == TILL_FORWARD;
+    const bool till    = argument == TILL_FORWARD || argument == TILL_BACKWARD;
+    zathura_visual_find_char(zathura, c, forward, till, t);
+  }
+  return TRUE;
+}
+
 bool sc_visual_find(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                     unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(session->gtk.window != NULL, false);
   g_return_val_if_fail(argument != NULL, false);
   zathura_t* zathura = session->global.data;
 
+  /* a mapping can pass the character, otherwise it is the next key */
   const char* data = argument->data;
-  if (data == NULL || g_utf8_validate(data, -1, NULL) == FALSE || *data == '\0') {
+  if (data != NULL && g_utf8_validate(data, -1, NULL) == TRUE && *data != '\0') {
+    const bool forward = argument->n == FIND_FORWARD || argument->n == TILL_FORWARD;
+    const bool till    = argument->n == TILL_FORWARD || argument->n == TILL_BACKWARD;
+    zathura_visual_find_char(zathura, g_utf8_get_char(data), forward, till, t);
     return false;
   }
 
-  const bool forward = argument->n == FIND_FORWARD || argument->n == TILL_FORWARD;
-  const bool till    = argument->n == TILL_FORWARD || argument->n == TILL_BACKWARD;
-  zathura_visual_find_char(zathura, g_utf8_get_char(data), forward, till, t);
+  GtkEventController* ctrl = gtk_event_controller_key_new();
+  gtk_event_controller_set_propagation_phase(ctrl, GTK_PHASE_CAPTURE);
+  g_object_set_data(G_OBJECT(ctrl), "argument", GINT_TO_POINTER(argument->n));
+  g_object_set_data(G_OBJECT(ctrl), "count", GUINT_TO_POINTER(t));
+  g_signal_connect(ctrl, "key-pressed", G_CALLBACK(cb_visual_find_one_shot), session);
+  gtk_widget_add_controller(session->gtk.window, ctrl);
   return false;
 }
 
