@@ -532,21 +532,6 @@ static zathura_device_factors_t get_safe_device_factors(cairo_surface_t* surface
   return factors;
 }
 
-/* selected text uses selection-color, or highlight-color if it is not set */
-static GdkRGBA selection_color(zathura_t* zathura) {
-  return zathura->ui.colors.has_selection_color == true ? zathura->ui.colors.selection_color
-                                                        : zathura->ui.colors.highlight_color;
-}
-
-/* labels use their own color if it is set, otherwise the highlight color made opaque enough to read */
-static GdkRGBA label_color(bool has_color, GdkRGBA color, GdkRGBA fallback) {
-  if (has_color == true) {
-    return color;
-  }
-  fallback.alpha = fmax(fallback.alpha, 0.9);
-  return fallback;
-}
-
 static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, int width, int height, gpointer data) {
   GtkWidget* widget              = GTK_WIDGET(data);
   ZathuraPageWidget* page        = ZATHURA_PAGE_WIDGET(widget);
@@ -728,7 +713,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
       }
     }
     if (priv->selection.list != NULL && priv->selection.draw == true) {
-      const GdkRGBA color = selection_color(priv->zathura);
+      const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
       cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
       for (size_t idx = 0; idx != girara_list_size(priv->selection.list); ++idx) {
         zathura_rectangle_t* rect     = girara_list_nth(priv->selection.list, idx);
@@ -743,7 +728,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
       if (visual_layers[layer] == NULL) {
         continue;
       }
-      const GdkRGBA color = selection_color(priv->zathura);
+      const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
       cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
       for (size_t idx = 0; idx != girara_list_size(visual_layers[layer]); ++idx) {
         zathura_rectangle_t* rect     = girara_list_nth(visual_layers[layer], idx);
@@ -773,9 +758,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
         cairo_text_extents(cairo, label->text, &text_extents);
 
         /* a box with the label over the start of the word, or the top left corner of an outlined image */
-        const GdkRGBA color =
-            label_color(zathura->ui.colors.has_visual_label_color, zathura->ui.colors.visual_label_color,
-                        zathura->ui.colors.highlight_color_active);
+        const GdkRGBA color = zathura->ui.colors.highlight_color_active;
         cairo_set_source_rgba(cairo, color.red, color.green, color.blue, color.alpha);
         if (label->outline == true) {
           const zathura_rectangle_t bounds = recalc_rectangle(priv->page, label->bounds);
@@ -786,8 +769,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
         cairo_rectangle(cairo, rectangle.x1, rectangle.y1, text_extents.x_advance + 4, font_extents.height + 2);
         cairo_fill(cairo);
 
-        const GdkRGBA color_fg = label_color(zathura->ui.colors.has_visual_label_fg, zathura->ui.colors.visual_label_fg,
-                                             zathura->ui.colors.highlight_color_fg);
+        const GdkRGBA color_fg = zathura->ui.colors.highlight_color_fg;
         cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, color_fg.alpha);
         cairo_move_to(cairo, rectangle.x1 + 2, rectangle.y1 + 1 + font_extents.ascent);
         cairo_show_text(cairo, label->text);
