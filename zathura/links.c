@@ -128,10 +128,28 @@ static bool calculate_link_destination_view(const zathura_link_target_t* target,
   }
 
   zathura_rectangle_t rectangle = {.x1 = 0, .y1 = 0, .x2 = width, .y2 = height};
-  bool fit_x                    = true;
-  bool fit_y                    = true;
-  bool has_x                    = true;
-  bool has_y                    = true;
+  switch (target->destination_type) {
+  case ZATHURA_LINK_DESTINATION_FITB:
+  case ZATHURA_LINK_DESTINATION_FITBH:
+  case ZATHURA_LINK_DESTINATION_FITBV:
+  case ZATHURA_LINK_DESTINATION_FITR:
+    rectangle.x1 = target->left;
+    rectangle.y1 = target->top;
+    rectangle.x2 = target->right;
+    rectangle.y2 = target->bottom;
+    if (rectangle.x1 == -1 || rectangle.x2 == -1 || rectangle.y1 == -1 || rectangle.y2 == -1 ||
+        rectangle.x2 <= rectangle.x1 || rectangle.y2 <= rectangle.y1) {
+      return false;
+    }
+    break;
+  default:
+    break;
+  }
+
+  bool fit_x = true;
+  bool fit_y = true;
+  bool has_x = true;
+  bool has_y = true;
   switch (target->destination_type) {
   case ZATHURA_LINK_DESTINATION_XYZ:
     fit_x        = false;
@@ -154,18 +172,8 @@ static bool calculate_link_destination_view(const zathura_link_target_t* target,
     rectangle.x1 = rectangle.x2 = has_x ? target->left : 0;
     break;
   case ZATHURA_LINK_DESTINATION_FITR:
-    rectangle.x1 = target->left;
-    rectangle.x2 = target->right;
-    rectangle.y1 = target->top;
-    rectangle.y2 = target->bottom;
-    if (rectangle.x1 == -1 || rectangle.x2 == -1 || rectangle.y1 == -1 || rectangle.y2 == -1 ||
-        rectangle.x2 <= rectangle.x1 || rectangle.y2 <= rectangle.y1) {
-      return false;
-    }
-    break;
   case ZATHURA_LINK_DESTINATION_FIT:
   case ZATHURA_LINK_DESTINATION_FITB:
-    // TODO: implement these.
     break;
   default:
     return false;
