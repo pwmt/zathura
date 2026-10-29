@@ -181,6 +181,11 @@ typedef enum zathura_link_destination_type_e {
   ZATHURA_LINK_DESTINATION_FITBV
 } zathura_link_destination_type_t;
 
+/**
+ * Link target
+ *
+ * Coordinates and zoom need to be finite values. If unused, they are set to -1.
+ */
 typedef struct zathura_link_target_s {
   zathura_link_destination_type_t destination_type;
   char* value;              /**< Value */

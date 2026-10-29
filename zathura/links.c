@@ -33,17 +33,21 @@ zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t p
   link->target   = target;
   link->type     = type;
 
-  /* duplicate target.value if necessary */
+  // duplicate target.value if necessary and check target constraints
   switch (type) {
   case ZATHURA_LINK_NONE:
   case ZATHURA_LINK_GOTO_DEST:
     link->target.value = g_strdup(target.value);
+    if (!isfinite(target.bottom) || !isfinite(target.left) || !isfinite(target.right) || isfinite(target.top) ||
+        !isfinite(target.zoom)) {
+      return NULL;
+    }
     break;
   case ZATHURA_LINK_GOTO_REMOTE:
   case ZATHURA_LINK_URI:
   case ZATHURA_LINK_LAUNCH:
   case ZATHURA_LINK_NAMED:
-    /* target.value is required for these cases */
+    // target.value is required for these cases
     if (!target.value) {
       return NULL;
     }
@@ -99,7 +103,7 @@ zathura_rectangle_t zathura_link_get_position(zathura_link_t* link) {
 
 zathura_link_target_t zathura_link_get_target(zathura_link_t* link) {
   if (!link) {
-    const zathura_link_target_t target = {0, NULL, 0, 0, 0, 0, 0, 0};
+    const zathura_link_target_t target = {ZATHURA_LINK_DESTINATION_UNKNOWN, NULL, 0, -1, -1, -1, -1, -1};
     return target;
   }
 
@@ -130,22 +134,23 @@ static bool calculate_link_destination_view(const zathura_link_target_t* target,
   bool has_y                    = true;
   switch (target->destination_type) {
   case ZATHURA_LINK_DESTINATION_XYZ:
-    fit_x = fit_y = false;
-    has_x         = target->left != -1 && isfinite(target->left);
-    has_y         = target->top != -1 && isfinite(target->top);
+    fit_x        = false;
+    fit_y        = false;
+    has_x        = target->left != -1;
+    has_y        = target->top != -1;
     rectangle.x1 = rectangle.x2 = has_x ? target->left : 0;
     rectangle.y1 = rectangle.y2 = has_y ? target->top : 0;
     break;
   case ZATHURA_LINK_DESTINATION_FITH:
   case ZATHURA_LINK_DESTINATION_FITBH:
     fit_y        = false;
-    has_y        = target->top != -1 && isfinite(target->top);
+    has_y        = target->top != -1;
     rectangle.y1 = rectangle.y2 = has_y ? target->top : 0;
     break;
   case ZATHURA_LINK_DESTINATION_FITV:
   case ZATHURA_LINK_DESTINATION_FITBV:
     fit_x        = false;
-    has_x        = target->left != -1 && isfinite(target->left);
+    has_x        = target->left != -1;
     rectangle.x1 = rectangle.x2 = has_x ? target->left : 0;
     break;
   case ZATHURA_LINK_DESTINATION_FITR:
@@ -153,14 +158,14 @@ static bool calculate_link_destination_view(const zathura_link_target_t* target,
     rectangle.x2 = target->right;
     rectangle.y1 = target->top;
     rectangle.y2 = target->bottom;
-    if (!isfinite(rectangle.x1) || !isfinite(rectangle.x2) || !isfinite(rectangle.y1) || !isfinite(rectangle.y2) ||
+    if (rectangle.x1 == -1 || rectangle.x2 == -1 || rectangle.y1 == -1 || rectangle.y2 == -1 ||
         rectangle.x2 <= rectangle.x1 || rectangle.y2 <= rectangle.y1) {
       return false;
     }
     break;
   case ZATHURA_LINK_DESTINATION_FIT:
   case ZATHURA_LINK_DESTINATION_FITB:
-    // The plugin API does not expose content bounds. Use page bounds for FITB*.
+    // TODO: implement these.
     break;
   default:
     return false;
@@ -253,14 +258,12 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   double zoom = old_zoom * view.scale / scale;
   if (link_zoom) {
     // use provided zoom for XYZ destinations
-    if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && isfinite(link->target.zoom) &&
-        link->target.zoom > 0) {
+    if (link->target.destination_type == ZATHURA_LINK_DESTINATION_XYZ && link->target.zoom > 0) {
       zoom = link->target.zoom;
     }
 
     // apply new zoom if we have one
-    if (link->target.destination_type != ZATHURA_LINK_DESTINATION_XYZ ||
-        (isfinite(link->target.zoom) && link->target.zoom > 0)) {
+    if (link->target.destination_type != ZATHURA_LINK_DESTINATION_XYZ || link->target.zoom > 0) {
       zoom = zathura_correct_zoom_value(zathura->ui.session, zoom);
       zathura_document_widget_set_adjust_mode(widget, ZATHURA_ADJUST_NONE);
       zathura_document_set_zoom(document, zoom);
