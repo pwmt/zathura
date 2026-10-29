@@ -117,9 +117,7 @@ typedef struct {
   double y;
 } zathura_link_destination_view_t;
 
-// Calculate fitting scale and viewport centre for a destination. Pass fit=false
-// to retain scale (e.g. after zoom clamping or when link-zoom is disabled).
-// Explicit XYZ zoom is applied by the caller before the final calculation.
+// Calculate fitting scale and viewport centre for a destination
 static bool calculate_link_destination_view(const zathura_link_target_t* target, double width, double height,
                                             unsigned int rotation, double view_width, double view_height, double scale,
                                             bool fit, zathura_link_destination_view_t* view) {
@@ -250,16 +248,17 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   g_object_get(widget, "layout-mode", &mode, NULL);
 
   /* Preserve page-local viewport offsets for unspecified coordinates. */
-  zathura_page_t* current = zathura_document_get_page(document, zathura_document_get_current_page_number(document));
+  zathura_page_t* current_page =
+      zathura_document_get_page(document, zathura_document_get_current_page_number(document));
   if (mode == DOCUMENT_WIDGET_SINGLE) {
-    page_calc_height_width(document, current, &doc_height, &doc_width, true);
+    page_calc_height_width(document, current_page, &doc_height, &doc_width, true);
   }
 
   double old_x = 0;
   double old_y = 0;
-  zathura_document_widget_get_page_origin(widget, zathura_page_get_index(current), &old_x, &old_y);
+  zathura_document_widget_get_page_origin(widget, zathura_page_get_index(current_page), &old_x, &old_y);
 
-  const double old_scale = zathura_document_get_scale(document) * zathura_page_get_zoom(current);
+  const double old_scale = zathura_document_get_scale(document) * zathura_page_get_zoom(current_page);
   old_x = (zathura_document_widget_get_position_x(widget) * doc_width - view_width / 2.0 - old_x) / old_scale;
   old_y = (zathura_document_widget_get_position_y(widget) * doc_height - view_height / 2.0 - old_y) / old_scale;
 
@@ -293,13 +292,17 @@ static void link_goto_dest(zathura_t* zathura, const zathura_link_t* link) {
   zathura_document_widget_get_page_origin(widget, link->target.page_number, &origin_x, &origin_y);
 
   // find the viewport centre in page pixels
-  double center_x = view.x * scale;
-  double center_y = view.y * scale;
+  double center_x;
+  double center_y;
   if (isnan(view.x)) {
     center_x = old_x * scale + view_width / 2.0;
+  } else {
+    center_x = view.x * scale;
   }
   if (isnan(view.y)) {
     center_y = old_y * scale + view_height / 2.0;
+  } else {
+    center_y = view.y * scale;
   }
 
   // convert to document ratios
