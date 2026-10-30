@@ -1,30 +1,34 @@
 # Complete custom suffix based on libraries installed
 function __fish_complete_zathura
-    for plugin in @PLUGINDIR@/*.so
-        switch (basename $plugin)
-            case libpdf-poppler.so
-                __fish_complete_suffix .pdf
-            case libpdf-mupdf.so
-                __fish_complete_suffix .pdf
-                __fish_complete_suffix .epub
-                __fish_complete_suffix .oxps
-            case libps.so
-                __fish_complete_suffix .ps
-                __fish_complete_suffix .eps
-                __fish_complete_suffix .epsi
-                __fish_complete_suffix .epsf
-            case libdjvu.so
-                __fish_complete_suffix .djvu
-                __fish_complete_suffix .djv
-            case libcb.so
-                __fish_complete_suffix .cb7
-                __fish_complete_suffix .cbr
-                __fish_complete_suffix .cbz
-                __fish_complete_suffix .cbt
-                __fish_complete_suffix .rar
-                __fish_complete_suffix .zip
-                __fish_complete_suffix .7z
-                __fish_complete_suffix .tar
+    set -l plugin_dirs (string split : -- $ZATHURA_PLUGINS_PATH) '@PLUGINDIR@'
+    for plugin_dir in $plugin_dirs
+        test -n "$plugin_dir"; or continue
+        for plugin in "$plugin_dir"/*.so
+            switch (basename $plugin)
+                case libpdf-poppler.so
+                    __fish_complete_suffix .pdf
+                case libpdf-mupdf.so
+                    __fish_complete_suffix .pdf
+                    __fish_complete_suffix .epub
+                    __fish_complete_suffix .oxps
+                case libps.so
+                    __fish_complete_suffix .ps
+                    __fish_complete_suffix .eps
+                    __fish_complete_suffix .epsi
+                    __fish_complete_suffix .epsf
+                case libdjvu.so
+                    __fish_complete_suffix .djvu
+                    __fish_complete_suffix .djv
+                case libcb.so
+                    __fish_complete_suffix .cb7
+                    __fish_complete_suffix .cbr
+                    __fish_complete_suffix .cbz
+                    __fish_complete_suffix .cbt
+                    __fish_complete_suffix .rar
+                    __fish_complete_suffix .zip
+                    __fish_complete_suffix .7z
+                    __fish_complete_suffix .tar
+            end
         end
     end
 end

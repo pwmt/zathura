@@ -1,25 +1,30 @@
 _zathura() {
   _init_completion 2>/dev/null || true
 
-  local EXTS=""
-  for PLUGIN in @PLUGINDIR@/lib*.so; do
-    case ${PLUGIN##*/} in
-      libpdf-poppler.so)
-        EXTS="$EXTS|pdf|PDF"
-        ;;
-      libpdf-mupdf.so)
-        EXTS="$EXTS|pdf|PDF|epub|oxps|xhtml"
-        ;;
-      libps.so)
-        EXTS="$EXTS|ps|eps|epsi|epsf"
-        ;;
-      libdjvu.so)
-        EXTS="$EXTS|djvu|djv"
-        ;;
-      libcb.so)
-        EXTS="$EXTS|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
-        ;;
-    esac
+  local EXTS="" PLUGIN_DIR PLUGIN
+  local -a PLUGIN_DIRS
+  IFS=: read -r -a PLUGIN_DIRS <<< "${ZATHURA_PLUGINS_PATH:-}"
+  for PLUGIN_DIR in "${PLUGIN_DIRS[@]}" '@PLUGINDIR@'; do
+    [[ -n "$PLUGIN_DIR" ]] || continue
+    for PLUGIN in "$PLUGIN_DIR"/lib*.so; do
+      case ${PLUGIN##*/} in
+        libpdf-poppler.so)
+          EXTS="$EXTS|pdf|PDF"
+          ;;
+        libpdf-mupdf.so)
+          EXTS="$EXTS|pdf|PDF|epub|oxps|xhtml"
+          ;;
+        libps.so)
+          EXTS="$EXTS|ps|eps|epsi|epsf"
+          ;;
+        libdjvu.so)
+          EXTS="$EXTS|djvu|djv"
+          ;;
+        libcb.so)
+          EXTS="$EXTS|cb7|cbr|cbz|cbt|rar|zip|7z|tar"
+          ;;
+      esac
+    done
   done
 
   _filedir "${EXTS#|}" 2>/dev/null || COMPREPLY=($(shopt -s extglob; compgen -f -X "!*.@($EXTS)"))

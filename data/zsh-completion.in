@@ -24,26 +24,30 @@ local curcontext="$curcontext" state state_descr line ret=1
 typeset -A opt_args
 _arguments -C -s -S "$all_opts[@]" && ret=0
 
-local PLUGIN
-local -a exts
-for PLUGIN in @PLUGINDIR@/lib*.so; do
-  case ${PLUGIN##*/} in
-    libpdf-poppler.so)
-      exts+=( pdf PDF )
-      ;;
-    libpdf-mupdf.so)
-      exts+=( pdf PDF epub oxps )
-      ;;
-    libps.so)
-      exts+=( ps eps epsi epsf )
-      ;;
-    libdjvu.so)
-      exts+=( djvu djv )
-      ;;
-    libcb.so)
-      exts+=( cb7 cbr cbz cbt rar zip 7z tar )
-      ;;
-  esac
+local PLUGIN_DIR PLUGIN
+local -a exts plugin_dirs
+plugin_dirs=( "${(@s.:.)ZATHURA_PLUGINS_PATH}" '@PLUGINDIR@' )
+for PLUGIN_DIR in "${plugin_dirs[@]}"; do
+  [[ -n "$PLUGIN_DIR" ]] || continue
+  for PLUGIN in "$PLUGIN_DIR"/lib*.so(N); do
+    case ${PLUGIN##*/} in
+      libpdf-poppler.so)
+        exts+=( pdf PDF )
+        ;;
+      libpdf-mupdf.so)
+        exts+=( pdf PDF epub oxps )
+        ;;
+      libps.so)
+        exts+=( ps eps epsi epsf )
+        ;;
+      libdjvu.so)
+        exts+=( djvu djv )
+        ;;
+      libcb.so)
+        exts+=( cb7 cbr cbz cbt rar zip 7z tar )
+        ;;
+    esac
+  done
 done
 
 case $state in
