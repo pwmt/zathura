@@ -1184,19 +1184,23 @@ bool sc_navigate_index(girara_session_t* session, girara_argument_t* argument, g
   case HALF_UP:
   case PARTIAL_UP:
   case HALF_DOWN:
-  case PARTIAL_DOWN: {
+  case PARTIAL_DOWN:
+  case FULL_UP:
+  case FULL_DOWN: {
+    const double fraction = (argument->n == HALF_UP || argument->n == HALF_DOWN) ? 0.5 : 1.0;
+
     /* compute number of rows currently in viewport from the vertical adjustment */
     GtkAdjustment* vadj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(view));
     double page_size    = vadj != NULL ? gtk_adjustment_get_page_size(vadj) : 0.0;
     double upper        = vadj != NULL ? gtk_adjustment_get_upper(vadj) : 0.0;
-    guint step          = (upper > 0.0) ? (guint)((page_size / upper) * (double)n_items) : 1;
+    guint step          = (upper > 0.0) ? (guint)(fraction * (page_size / upper) * n_items) : 1;
     if (step == 0) {
       step = 1;
     }
-    if (argument->n == HALF_UP || argument->n == PARTIAL_UP) {
+    if (argument->n == HALF_UP || argument->n == PARTIAL_UP || argument->n == FULL_UP) {
       pos = pos > step ? pos - step : 0;
     } else {
-      pos = pos + step < n_items ? pos + step : n_items - 1;
+      pos += MIN(step, n_items - 1 - pos);
     }
     break;
   }

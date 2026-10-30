@@ -199,6 +199,8 @@ Index mode
     Move to upper or lower entry
   ^u, ^d
     Scroll and move up or down by half a screen
+  ^b, ^f, PageUp, PageDown
+    Scroll and move up or down by a full screen
   l, Right, zo
     Expand entry
   zO
