@@ -21,6 +21,7 @@
 #include "dbus-interface.h"
 #include "document-widget.h"
 #include "document.h"
+#include "highlights.h"
 #include "index-element-object.h"
 #include "page-widget.h"
 #include "page.h"
@@ -161,6 +162,42 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
    */
   /* girara_mode_set(session, session->modes.normal); */
   girara_sc_abort(session, NULL, NULL, 0);
+
+  return false;
+}
+
+bool sc_highlight_add(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                      unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+
+  girara_list_t* empty_arguments = girara_list_new();
+  cmd_highlight_create(session, empty_arguments);
+  girara_list_free(empty_arguments);
+
+  return false;
+}
+
+bool sc_highlight_cycle_color(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                              girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura_highlight_cycle_color(zathura);
+  girara_notify(session, GIRARA_INFO, _("Highlight color: %s"), zathura_highlight_get_active_color_name(zathura));
+
+  return false;
+}
+
+bool sc_toggle_highlight_mode(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                              girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  zathura->global.highlight_mode = !zathura->global.highlight_mode;
+  girara_notify(session, GIRARA_INFO,
+                zathura->global.highlight_mode ? _("Highlight mode: on") : _("Highlight mode: off"));
 
   return false;
 }
