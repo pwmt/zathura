@@ -371,6 +371,12 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
         return false;
       }
 
+      // Replace current_command with canonincal command name
+      if (g_strcmp0(current_command, command->command) != 0) {
+        g_free(current_command);
+        current_command = g_strdup(command->command);
+      }
+
       if (command->completion == NULL) {
         girara_internal_completion_entry_t* entry = g_malloc(sizeof(girara_internal_completion_entry_t));
         entry->group                              = FALSE;
