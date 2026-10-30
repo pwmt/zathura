@@ -298,13 +298,13 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
   /* create new list iff
    *  there is no current list
    */
-  if (session->gtk.results == NULL) {
+  if (!session->gtk.results) {
     session->gtk.results = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
-    widget_add_class(GTK_WIDGET(session->gtk.results), "completion-box");
-
-    if (session->gtk.results == NULL) {
+    if (!session->gtk.results) {
       return false;
     }
+
+    widget_add_class(GTK_WIDGET(session->gtk.results), "completion-box");
 
     if (n_parameter <= 1) {
       /* based on commands */
