@@ -31,7 +31,6 @@ GtkLabel* girara_statusbar_item_add(GiraraStatusbar* statusbar, bool expand, boo
 
   /* set style */
   gtk_widget_add_css_class(item, "statusbar-item");
-  gtk_widget_add_css_class(item, "statusbar");
 
   /* set properties */
   gtk_widget_set_halign(item, left ? GTK_ALIGN_START : GTK_ALIGN_END);
