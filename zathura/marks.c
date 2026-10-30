@@ -74,20 +74,19 @@ bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argum
 bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
-  zathura_t* zathura = (zathura_t*)session->global.data;
+  zathura_t* zathura = session->global.data;
 
   if (girara_list_size(argument_list) < 1) {
     return false;
   }
 
   const char* key_string = girara_list_nth(argument_list, 0);
-
-  if (key_string == NULL || strlen(key_string) != 1) {
+  if (!key_string || strlen(key_string) != 1) {
     return false;
   }
 
   const char key = key_string[0];
-  if (((key >= 0x41 && key <= 0x5A) || (key >= 0x61 && key <= 0x7A)) == false) {
+  if (!((key >= 0x41 && key <= 0x5A) || (key >= 0x61 && key <= 0x7A))) {
     return false;
   }
 
@@ -110,26 +109,27 @@ bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list) {
   }
 
   for (size_t idx = 0; idx != girara_list_size(argument_list); ++idx) {
-    char* key_string = girara_list_nth(argument_list, idx);
-    if (key_string == NULL) {
+    const char* key_string = girara_list_nth(argument_list, idx);
+    if (!key_string) {
       continue;
     }
 
     for (unsigned int i = 0; i < strlen(key_string); i++) {
       char key = key_string[i];
-      if (((key >= 0x41 && key <= 0x5A) || (key >= 0x61 && key <= 0x7A)) == false) {
+      if (!((key >= 0x41 && key <= 0x5A) || (key >= 0x61 && key <= 0x7A))) {
         continue;
       }
 
       /* search for existing mark */
-      for (size_t inner_idx = girara_list_size(zathura->global.marks); inner_idx; --inner_idx) {
-        zathura_mark_t* mark = girara_list_nth(zathura->global.marks, inner_idx - 1);
-        if (mark == NULL) {
+      for (size_t inner_idx = 0; inner_idx != girara_list_size(zathura->global.marks); ++inner_idx) {
+        zathura_mark_t* mark = girara_list_nth(zathura->global.marks, inner_idx);
+        if (!mark) {
           continue;
         }
 
         if (mark->key == key) {
           girara_list_remove(zathura->global.marks, mark);
+          break;
         }
       }
     }
@@ -164,7 +164,7 @@ static void mark_add(zathura_t* zathura, int key) {
 
   /* add new mark */
   zathura_mark_t* mark = g_try_malloc0(sizeof(zathura_mark_t));
-  if (mark == NULL) {
+  if (!mark) {
     return;
   }
 
@@ -178,21 +178,21 @@ static void mark_add(zathura_t* zathura, int key) {
 }
 
 static void mark_evaluate(zathura_t* zathura, int key) {
-  if (zathura == NULL || zathura->global.marks == NULL) {
+  if (!zathura || !zathura->global.marks) {
     return;
   }
 
   /* search for existing mark */
   for (size_t idx = 0; idx != girara_list_size(zathura->global.marks); ++idx) {
-    zathura_mark_t* mark = girara_list_nth(zathura->global.marks, idx);
-    if (mark != NULL && mark->key == key) {
+    const zathura_mark_t* mark = girara_list_nth(zathura->global.marks, idx);
+    if (mark && mark->key == key) {
+      zathura_jumplist_add(zathura);
       zathura_document_set_zoom(zathura_get_document(zathura),
                                 zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
 
       adjust_view(zathura);
       zathura_document_widget_render_all(zathura->ui.document_widget);
 
-      zathura_jumplist_add(zathura);
       page_set(zathura, mark->page);
       position_set(zathura, mark->position_x, mark->position_y);
       zathura_jumplist_add(zathura);
