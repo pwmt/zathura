@@ -30,7 +30,6 @@ static int cb_sort_settings(const void* data1, const void* data2) {
 
 static void init_template_engine(GiraraTemplate* csstemplate) {
   static const char variable_names[][24] = {
-      "session",
       "default-fg",
       "default-bg",
       "inputbar-fg",
@@ -99,8 +98,6 @@ void css_template_fill_font(GiraraTemplate* csstemplate, const char* font) {
 
 static void fill_template_with_values(girara_session_t* session) {
   GiraraTemplate* csstemplate = session->private_data->csstemplate;
-
-  girara_template_set_variable_value(csstemplate, "session", session->private_data->session_name);
 
   g_autofree char* font = NULL;
   girara_setting_get(session, "font", &font);
@@ -297,16 +294,13 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
     return false;
   }
 
-  /* set session name */
-  session->private_data->session_name = g_strdup(sessionname);
-
   /* load CSS style */
   fill_template_with_values(session);
   g_signal_connect(G_OBJECT(session->private_data->csstemplate), "changed", G_CALLBACK(css_template_changed), session);
 
   /* window */
   session->gtk.window = gtk_window_new();
-  gtk_widget_set_name(session->gtk.window, session->private_data->session_name);
+  gtk_widget_set_name(session->gtk.window, sessionname);
 
   /* apply CSS style */
   css_template_changed(session->private_data->csstemplate, session);
@@ -390,9 +384,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
 
 static void girara_session_private_free(girara_session_private_t* session) {
   g_return_if_fail(session != NULL);
-
-  g_free(session->session_name);
-  session->session_name = NULL;
 
   // clean up completation state
   g_list_free(session->completion.entries);

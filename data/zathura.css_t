@@ -1,33 +1,33 @@
 /* Index mode colors */
 
-#@session@ .indexmode {
+#zathura .indexmode {
   background-color: @index-bg@;
 }
 
-#@session@ .indexmode row {
+#zathura .indexmode row {
   color: @index-fg@;
   background-color: @index-bg@;
 }
 
-#@session@ .indexmode row:selected {
+#zathura .indexmode row:selected {
   color: @index-active-fg@;
   background-color: @index-active-bg@;
 }
 
 /* gtk4 draws a focus ring on the focused/selected row, like the inputbar entry */
-#@session@ .indexmode row:focus,
-#@session@ .indexmode row:focus-visible,
-#@session@ .indexmode row:selected {
+#zathura .indexmode row:focus,
+#zathura .indexmode row:focus-visible,
+#zathura .indexmode row:selected {
   outline: none;
   box-shadow: none;
 }
 
 /* Scrollbar */
-#@session@ scrolledwindow scrollbar {
+#zathura scrolledwindow scrollbar {
   background-color: @scrollbar-bg@;
 }
 
-#@session@ scrolledwindow scrollbar > slider {
+#zathura scrolledwindow scrollbar > slider {
   background-color: @scrollbar-fg@;
 }
 

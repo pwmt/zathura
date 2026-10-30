@@ -1,4 +1,4 @@
-#@session@ > overlay {
+#zathura > overlay {
   color: @default-fg@;
   background-color: @default-bg@;
   background-image: none;
@@ -9,100 +9,100 @@
 }
 
 /* Inputbar */
-#@session@ entry.inputbar {
+#zathura entry.inputbar {
   background-color: @inputbar-bg@;
   box-shadow: none;
   outline: none;
 }
 
 /* gtk4 draws a focus ring on the entry that the generic .inputbar rule cannot override */
-#@session@ entry.inputbar:focus-within {
+#zathura entry.inputbar:focus-within {
   box-shadow: none;
   outline: none;
 }
 
-#@session@ .inputbar {
+#zathura .inputbar {
   color: @inputbar-fg@;
   background-color: @inputbar-bg@;
   box-shadow: none; /* maybe use some user-definable color here */
 }
 
-#@session@ entry.inputbar text {
+#zathura entry.inputbar text {
   caret-color: @inputbar-fg@;
   -gtk-secondary-caret-color: @inputbar-fg@;
 }
 
 /* Completion entries and groups */
-#@session@ .completion, .completion-box {
+#zathura .completion, .completion-box {
   color: @completion-fg@;
   background-color: @completion-bg@;
 }
 
-#@session@ .completion {
+#zathura .completion {
   padding: 1px;
 }
 
-#@session@ .completion:selected {
+#zathura .completion:selected {
   color: @completion-highlight-fg@;
   background-color: @completion-highlight-bg@;
 }
 
-#@session@ .completion-group {
+#zathura .completion-group {
   color: @completion-group-fg@;
   background-color: @completion-group-bg@;
   padding: 2px 4px;
 }
 
 /* Statusbar */
-#@session@ .statusbar {
+#zathura .statusbar {
   color: @statusbar-fg@;
   background-color: @statusbar-bg@;
 }
 
-#@session@ .statusbar-item {
+#zathura .statusbar-item {
   padding: 0px 1pt;
 }
 
 /* Notification area */
 
-#@session@ .notification {
+#zathura .notification {
   color: @notification-fg@;
   background-color: @notification-bg@;
 }
 
-#@session@ .notification-error {
+#zathura .notification-error {
   color: @notification-error-fg@;
   background-color: @notification-error-bg@;
 }
 
-#@session@ .notification-warning {
+#zathura .notification-warning {
   color: @notification-warning-fg@;
   background-color: @notification-warning-bg@;
 }
 
 /* Padding of the bottom box */
-#@session@ .bottom_box {
+#zathura .bottom_box {
   border-style: none;
   margin: 0px;
   padding: @bottombox-padding1@px @bottombox-padding2@px @bottombox-padding3@px
     @bottombox-padding4@px;
 }
 
-#@session@ scrolledwindow undershoot.top,
-#@session@ scrolledwindow undershoot.top:backdrop,
-#@session@ scrolledwindow undershoot.bottom,
-#@session@ scrolledwindow undershoot.bottom:backdrop,
-#@session@ scrolledwindow undershoot.left,
-#@session@ scrolledwindow undershoot.left:backdrop,
-#@session@ scrolledwindow undershoot.right,
-#@session@ scrolledwindow undershoot.right:backdrop,
-#@session@ scrolledwindow overshoot.top,
-#@session@ scrolledwindow overshoot.top:backdrop,
-#@session@ scrolledwindow overshoot.bottom,
-#@session@ scrolledwindow overshoot.bottom:backdrop,
-#@session@ scrolledwindow overshoot.left,
-#@session@ scrolledwindow overshoot.left:backdrop,
-#@session@ scrolledwindow overshoot.right,
-#@session@ scrolledwindow overshoot.right:backdrop {
+#zathura scrolledwindow undershoot.top,
+#zathura scrolledwindow undershoot.top:backdrop,
+#zathura scrolledwindow undershoot.bottom,
+#zathura scrolledwindow undershoot.bottom:backdrop,
+#zathura scrolledwindow undershoot.left,
+#zathura scrolledwindow undershoot.left:backdrop,
+#zathura scrolledwindow undershoot.right,
+#zathura scrolledwindow undershoot.right:backdrop,
+#zathura scrolledwindow overshoot.top,
+#zathura scrolledwindow overshoot.top:backdrop,
+#zathura scrolledwindow overshoot.bottom,
+#zathura scrolledwindow overshoot.bottom:backdrop,
+#zathura scrolledwindow overshoot.left,
+#zathura scrolledwindow overshoot.left:backdrop,
+#zathura scrolledwindow overshoot.right,
+#zathura scrolledwindow overshoot.right:backdrop {
   background-image: none;
 }

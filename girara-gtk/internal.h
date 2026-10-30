@@ -198,11 +198,6 @@ struct girara_session_private_s {
   GMutex feedkeys_mutex;
 
   /**
-   * Used in session-specific paths
-   */
-  char* session_name;
-
-  /**
    * List of all settings
    */
   girara_list_t* settings;
