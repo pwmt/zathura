@@ -336,7 +336,7 @@ static void completion_view_create(girara_session_t* session) {
 static void completion_build(girara_session_t* session, const char* current_command, const char* parameter,
                              bool complete_parameter) {
   girara_session_private_t* priv = session->private_data;
-  priv->completion.model         = g_list_store_new(girara_completion_item_get_type());
+  priv->completion.model         = g_list_store_new(GIRARA_COMPLETION_ITEM_TYPE);
 
   girara_command_t* matching_command = NULL;
   for (size_t i = 0; i < girara_list_size(session->bindings.commands); ++i) {
