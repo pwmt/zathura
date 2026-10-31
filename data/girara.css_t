@@ -33,16 +33,26 @@
 }
 
 /* Completion entries and groups */
-#zathura .completion, .completion-box {
+#zathura .completion,
+#zathura .completion-box {
   color: @completion-fg@;
   background-color: @completion-bg@;
+}
+
+#zathura .completion-box > row {
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  background: none;
+  box-shadow: none;
 }
 
 #zathura .completion {
   padding: 1px;
 }
 
-#zathura .completion:selected {
+#zathura .completion-box > row:selected .completion {
   color: @completion-highlight-fg@;
   background-color: @completion-highlight-bg@;
 }

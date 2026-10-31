@@ -2,9 +2,7 @@
 
 #include "completion.h"
 
-#include <math.h>
 #include <string.h>
-#include <stdlib.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
@@ -13,12 +11,40 @@
 #include "settings.h"
 #include "shortcuts.h"
 
-/* completion */
-struct girara_internal_completion_entry_s {
-  GtkWidget* widget; /**< Row widget (GtkBox) */
-  char* value;       /**< Name of the entry */
-  bool group;        /**< The entry is a group */
-};
+// Model items for completion list view
+typedef struct {
+  GObject parent_instance;
+
+  char* value;
+  char* description;
+  bool group;
+} GiraraCompletionItem;
+
+typedef GObjectClass GiraraCompletionItemClass;
+
+G_DEFINE_TYPE(GiraraCompletionItem, girara_completion_item, G_TYPE_OBJECT)
+
+#define GIRARA_COMPLETION_ITEM_TYPE (girara_completion_item_get_type())
+#define GIRARA_COMPLETION_ITEM(obj)                                                                                    \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), GIRARA_COMPLETION_ITEM_TYPE, GiraraCompletionItem))
+
+static void girara_completion_item_finalize(GObject* object) {
+  GiraraCompletionItem* item = GIRARA_COMPLETION_ITEM(object);
+  g_free(item->description);
+  g_free(item->value);
+
+  G_OBJECT_CLASS(girara_completion_item_parent_class)->finalize(object);
+}
+
+static void girara_completion_item_class_init(GiraraCompletionItemClass* klass) {
+  G_OBJECT_CLASS(klass)->finalize = girara_completion_item_finalize;
+}
+
+static void girara_completion_item_init(GiraraCompletionItem* item) {
+  item->value       = NULL;
+  item->description = NULL;
+  item->group       = false;
+}
 
 /**
  * Structure of a completion element
@@ -42,8 +68,6 @@ struct girara_completion_group_s {
 struct girara_completion_s {
   girara_list_t* groups; /**> Containing completion groups */
 };
-
-typedef struct girara_internal_completion_entry_s girara_internal_completion_entry_t;
 
 static void completion_element_free(void* data) {
   if (data) {
@@ -119,455 +143,331 @@ void girara_completion_group_add_element(girara_completion_group_t* group, const
   girara_list_append(group->elements, new_element);
 }
 
-static unsigned int find_completion_group_index(GList* current_entry, unsigned int current_index) {
-  for (; current_entry; current_entry = current_entry->prev, --current_index) {
-    girara_internal_completion_entry_t* tmp = current_entry->data;
-    if (tmp->group) {
-      return current_index;
-    }
+static void completion_append(GListStore* model, const char* value, const char* description, bool group) {
+  g_autoptr(GObject) object = g_object_new(GIRARA_COMPLETION_ITEM_TYPE, NULL);
+
+  GiraraCompletionItem* item = GIRARA_COMPLETION_ITEM(object);
+  item->value                = g_strdup(value);
+  item->description          = g_strdup(description);
+  item->group                = group;
+
+  g_list_store_append(model, object);
+}
+
+static void completion_row_setup(GtkSignalListItemFactory* UNUSED(factory), GtkListItem* item, gpointer UNUSED(data)) {
+  GtkWidget* row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  for (unsigned int i = 0; i < 2; ++i) {
+    GtkWidget* label = gtk_label_new(NULL);
+    gtk_label_set_ellipsize(GTK_LABEL(label), PANGO_ELLIPSIZE_END);
+    gtk_label_set_xalign(GTK_LABEL(label), i == 0 ? 0 : 1);
+    gtk_widget_set_valign(label, GTK_ALIGN_START);
+    gtk_widget_set_hexpand(label, TRUE);
+    gtk_box_append(GTK_BOX(row), label);
   }
 
-  return UINT_MAX;
+  gtk_list_item_set_focusable(item, FALSE);
+  gtk_list_item_set_activatable(item, FALSE);
+  gtk_list_item_set_child(item, row);
 }
 
-static GtkWidget* girara_completion_row_create(const char* command, const char* description, bool group) {
-  GtkBox* col = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+static void completion_row_bind(GtkSignalListItemFactory* UNUSED(factory), GtkListItem* list_item,
+                                gpointer UNUSED(data)) {
+  GiraraCompletionItem* item = gtk_list_item_get_item(list_item);
+  GtkWidget* row             = gtk_list_item_get_child(list_item);
+  GtkWidget* command         = gtk_widget_get_first_child(row);
+  GtkWidget* description     = gtk_widget_get_next_sibling(command);
 
-  GtkWidget* row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  g_autofree char* cmd  = g_markup_printf_escaped(FORMAT_COMMAND, item->value);
+  g_autofree char* desc = item->description ? g_markup_printf_escaped(FORMAT_DESCRIPTION, item->description) : NULL;
+  gtk_label_set_markup(GTK_LABEL(command), cmd);
+  gtk_label_set_markup(GTK_LABEL(description), desc ? desc : "");
 
-  GtkLabel* show_command     = GTK_LABEL(gtk_label_new(NULL));
-  GtkLabel* show_description = GTK_LABEL(gtk_label_new(NULL));
+  // Row reuse requires update of widget classes.
+  const char* style     = item->group ? "completion-group" : "completion";
+  const char* old_style = item->group ? "completion" : "completion-group";
 
-  gtk_widget_set_halign(GTK_WIDGET(show_command), GTK_ALIGN_START);
-  gtk_widget_set_valign(GTK_WIDGET(show_command), GTK_ALIGN_START);
-  gtk_widget_set_halign(GTK_WIDGET(show_description), GTK_ALIGN_END);
-  gtk_widget_set_valign(GTK_WIDGET(show_description), GTK_ALIGN_START);
-
-  gtk_label_set_use_markup(show_command, TRUE);
-  gtk_label_set_use_markup(show_description, TRUE);
-
-  gtk_label_set_ellipsize(show_command, PANGO_ELLIPSIZE_END);
-  gtk_label_set_ellipsize(show_description, PANGO_ELLIPSIZE_END);
-
-  g_autofree gchar* c = command ? g_markup_printf_escaped(FORMAT_COMMAND, command) : NULL;
-  g_autofree gchar* d = description ? g_markup_printf_escaped(FORMAT_DESCRIPTION, description) : NULL;
-  gtk_label_set_markup(show_command, command ? c : "");
-  gtk_label_set_markup(show_description, description ? d : "");
-
-  const char* class = group ? "completion-group" : "completion";
-  widget_add_class(GTK_WIDGET(show_command), class);
-  widget_add_class(GTK_WIDGET(show_description), class);
-  widget_add_class(GTK_WIDGET(row), class);
-  widget_add_class(GTK_WIDGET(col), class);
-
-  gtk_widget_set_hexpand(GTK_WIDGET(show_command), TRUE);
-  gtk_widget_set_hexpand(GTK_WIDGET(show_description), TRUE);
-  gtk_box_append(GTK_BOX(col), GTK_WIDGET(show_command));
-  gtk_box_append(GTK_BOX(col), GTK_WIDGET(show_description));
-
-  gtk_box_append(GTK_BOX(row), GTK_WIDGET(col));
-
-  return row;
+  GtkWidget* widgets[] = {row, command, description};
+  for (size_t i = 0; i < G_N_ELEMENTS(widgets); ++i) {
+    gtk_widget_remove_css_class(widgets[i], old_style);
+    gtk_widget_add_css_class(widgets[i], style);
+  }
+  gtk_list_item_set_selectable(list_item, !item->group);
 }
 
-static void girara_completion_row_set_color(GtkWidget* row, int mode) {
-  g_return_if_fail(row != NULL);
+void girara_completion_clear(girara_session_t* session) {
+  girara_session_private_t* priv = session->private_data;
+  if (priv->completion.selection) {
+    g_signal_handlers_disconnect_by_data(priv->completion.selection, session);
+  }
+  if (priv->completion.view_selection) {
+    g_signal_handlers_disconnect_by_data(priv->completion.view_selection, session);
+  }
 
-  GtkWidget* col  = gtk_widget_get_first_child(row);
-  GtkWidget* cmd  = col ? gtk_widget_get_first_child(col) : NULL;
-  GtkWidget* desc = cmd ? gtk_widget_get_next_sibling(cmd) : NULL;
-  if (!cmd || !desc) {
+  if (session->gtk.results) {
+    g_signal_handlers_disconnect_by_data(session->gtk.results, session);
+    gtk_list_view_set_factory(session->gtk.results, NULL);
+    gtk_list_view_set_model(session->gtk.results, NULL);
+  }
+
+  if (priv->completion.scroll) {
+    GtkWidget* parent = gtk_widget_get_parent(GTK_WIDGET(priv->completion.scroll));
+    if (parent) {
+      gtk_box_remove(GTK_BOX(parent), GTK_WIDGET(priv->completion.scroll));
+    }
+
+    gtk_scrolled_window_set_child(priv->completion.scroll, NULL);
+    g_clear_object(&priv->completion.scroll);
+  }
+
+  session->gtk.results = NULL;
+  g_clear_object(&priv->completion.view_selection);
+  g_clear_object(&priv->completion.visible_model);
+  g_clear_object(&priv->completion.selection);
+  g_clear_object(&priv->completion.model);
+  g_clear_pointer(&priv->completion.previous_command, g_free);
+  g_clear_pointer(&priv->completion.previous_input, g_free);
+  priv->completion.command_mode = true;
+}
+
+static void completion_view_selected(GObject* UNUSED(object), GParamSpec* UNUSED(pspec), girara_session_t* session) {
+  girara_session_private_t* priv = session->private_data;
+
+  const unsigned int selected = gtk_single_selection_get_selected(priv->completion.view_selection);
+  if (selected == GTK_INVALID_LIST_POSITION) {
     return;
   }
 
-  if (mode == GIRARA_HIGHLIGHT) {
-    gtk_widget_set_state_flags(cmd, GTK_STATE_FLAG_SELECTED, false);
-    gtk_widget_set_state_flags(desc, GTK_STATE_FLAG_SELECTED, false);
-    gtk_widget_set_state_flags(row, GTK_STATE_FLAG_SELECTED, false);
+  GiraraCompletionItem* item = gtk_single_selection_get_selected_item(priv->completion.view_selection);
+  if (!item->group) {
+    const unsigned int offset = gtk_slice_list_model_get_offset(priv->completion.visible_model);
+    gtk_single_selection_set_selected(priv->completion.selection, offset + selected);
+  }
+}
+
+static void completion_update_view(girara_session_t* session) {
+  girara_session_private_t* priv = session->private_data;
+  const unsigned int position    = gtk_single_selection_get_selected(priv->completion.selection);
+  const unsigned int total       = g_list_model_get_n_items(G_LIST_MODEL(priv->completion.model));
+
+  unsigned int max_items = 15;
+  girara_setting_get(session, "n-completion-items", &max_items);
+
+  const unsigned int size   = MIN(total, max_items);
+  const unsigned int offset = size ? MIN(position > size / 2 ? position - size / 2 : 0, total - size) : 0;
+
+  /* Moving the slice changes its local selection; only the final selection should
+   * be mapped back to the complete model. */
+  g_signal_handlers_block_matched(priv->completion.view_selection, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, session);
+  gtk_slice_list_model_set_size(priv->completion.visible_model, size);
+  gtk_slice_list_model_set_offset(priv->completion.visible_model, offset);
+  gtk_single_selection_set_selected(priv->completion.view_selection,
+                                    size ? position - offset : GTK_INVALID_LIST_POSITION);
+  g_signal_handlers_unblock_matched(priv->completion.view_selection, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, session);
+
+  gtk_widget_set_visible(GTK_WIDGET(priv->completion.scroll), total > 1 && size > 0);
+  if (size) {
+    gtk_list_view_scroll_to(session->gtk.results, position - offset, GTK_LIST_SCROLL_NONE, NULL);
+  }
+}
+
+static void completion_selected(GObject* UNUSED(object), GParamSpec* UNUSED(pspec), girara_session_t* session) {
+  girara_session_private_t* priv = session->private_data;
+  GiraraCompletionItem* item     = gtk_single_selection_get_selected_item(priv->completion.selection);
+  if (!item || item->group) {
+    return;
+  }
+
+  g_autofree char* escaped = girara_escape_string(item->value);
+  g_autofree char* input   = NULL;
+  if (priv->completion.command_mode) {
+    const char* space = g_list_model_get_n_items(G_LIST_MODEL(priv->completion.model)) == 1 ? " " : "";
+    input             = g_strconcat(":", escaped, space, NULL);
+
+    g_free(priv->completion.previous_command);
+    priv->completion.previous_command = g_strdup(item->value);
   } else {
-    gtk_widget_unset_state_flags(cmd, GTK_STATE_FLAG_SELECTED);
-    gtk_widget_unset_state_flags(desc, GTK_STATE_FLAG_SELECTED);
-    gtk_widget_unset_state_flags(row, GTK_STATE_FLAG_SELECTED);
+    input = g_strconcat(":", priv->completion.previous_command, " ", escaped, NULL);
+  }
+
+  g_free(priv->completion.previous_input);
+  priv->completion.previous_input = g_strdup(input);
+
+  GtkEditable* entry = GTK_EDITABLE(girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar)));
+  gtk_editable_set_text(entry, input);
+  gtk_editable_set_position(entry, -1);
+  completion_update_view(session);
+}
+
+static void completion_view_create(girara_session_t* session) {
+  girara_session_private_t* priv = session->private_data;
+
+  priv->completion.selection = gtk_single_selection_new(G_LIST_MODEL(g_object_ref(priv->completion.model)));
+  gtk_single_selection_set_autoselect(priv->completion.selection, FALSE);
+  gtk_single_selection_set_can_unselect(priv->completion.selection, TRUE);
+  gtk_single_selection_set_selected(priv->completion.selection, GTK_INVALID_LIST_POSITION);
+
+  priv->completion.visible_model = gtk_slice_list_model_new(G_LIST_MODEL(g_object_ref(priv->completion.model)), 0, 0);
+  priv->completion.view_selection =
+      gtk_single_selection_new(G_LIST_MODEL(g_object_ref(priv->completion.visible_model)));
+  gtk_single_selection_set_autoselect(priv->completion.view_selection, FALSE);
+  gtk_single_selection_set_can_unselect(priv->completion.view_selection, TRUE);
+
+  priv->completion.scroll = GTK_SCROLLED_WINDOW(g_object_ref_sink(gtk_scrolled_window_new()));
+  gtk_scrolled_window_set_policy(priv->completion.scroll, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+  gtk_scrolled_window_set_propagate_natural_height(priv->completion.scroll, TRUE);
+  // TODO: 300 is an arbitrary value
+  gtk_scrolled_window_set_max_content_height(priv->completion.scroll, 300);
+
+  GtkListItemFactory* factory = gtk_signal_list_item_factory_new();
+  g_signal_connect(factory, "setup", G_CALLBACK(completion_row_setup), NULL);
+  g_signal_connect(factory, "bind", G_CALLBACK(completion_row_bind), NULL);
+
+  session->gtk.results =
+      GTK_LIST_VIEW(gtk_list_view_new(GTK_SELECTION_MODEL(g_object_ref(priv->completion.view_selection)), factory));
+  gtk_widget_add_css_class(GTK_WIDGET(session->gtk.results), "completion-box");
+  gtk_widget_set_focusable(GTK_WIDGET(session->gtk.results), FALSE);
+
+  gtk_scrolled_window_set_child(priv->completion.scroll, GTK_WIDGET(session->gtk.results));
+  gtk_box_append(priv->gtk.bottom_box, GTK_WIDGET(priv->completion.scroll));
+  g_signal_connect(priv->completion.selection, "notify::selected", G_CALLBACK(completion_selected), session);
+  g_signal_connect(priv->completion.view_selection, "notify::selected", G_CALLBACK(completion_view_selected), session);
+}
+
+static void completion_build(girara_session_t* session, const char* current_command, const char* parameter,
+                             bool complete_parameter) {
+  girara_session_private_t* priv = session->private_data;
+  priv->completion.model         = g_list_store_new(girara_completion_item_get_type());
+
+  girara_command_t* matching_command = NULL;
+  for (size_t i = 0; i < girara_list_size(session->bindings.commands); ++i) {
+    girara_command_t* command = girara_list_nth(session->bindings.commands, i);
+    if (!current_command || g_str_has_prefix(command->command, current_command) ||
+        (command->abbr && g_str_has_prefix(command->abbr, current_command))) {
+      if (!complete_parameter) {
+        completion_append(priv->completion.model, command->command, command->description, false);
+      }
+
+      if (!matching_command) {
+        matching_command = command;
+      }
+    }
+  }
+
+  if (complete_parameter || g_list_model_get_n_items(G_LIST_MODEL(priv->completion.model)) == 1) {
+    g_list_store_remove_all(priv->completion.model);
+    if (!matching_command) {
+      return;
+    }
+
+    if (!matching_command->completion) {
+      completion_append(priv->completion.model, matching_command->command, matching_command->description, false);
+    } else {
+      priv->completion.command_mode     = false;
+      priv->completion.previous_command = g_strdup(matching_command->command);
+
+      g_autoptr(girara_completion_t) result = matching_command->completion(session, parameter ? parameter : "");
+      if (!result) {
+        return;
+      }
+
+      for (size_t i = 0; i < girara_list_size(result->groups); ++i) {
+        girara_completion_group_t* group = girara_list_nth(result->groups, i);
+        if (!girara_list_size(group->elements)) {
+          continue;
+        }
+        if (group->value) {
+          completion_append(priv->completion.model, group->value, NULL, true);
+        }
+
+        for (size_t j = 0; j < girara_list_size(group->elements); ++j) {
+          girara_completion_element_t* element = girara_list_nth(group->elements, j);
+          completion_append(priv->completion.model, element->value, element->description, false);
+        }
+      }
+    }
+  }
+}
+
+static void completion_cycle(girara_session_t* session, int direction) {
+  girara_session_private_t* priv = session->private_data;
+  GListModel* model              = G_LIST_MODEL(priv->completion.model);
+  const unsigned int count       = g_list_model_get_n_items(model);
+  const bool forward             = direction == GIRARA_NEXT || direction == GIRARA_NEXT_GROUP;
+
+  unsigned int position = gtk_single_selection_get_selected(priv->completion.selection);
+  bool skip_group =
+      position != GTK_INVALID_LIST_POSITION && (direction == GIRARA_NEXT_GROUP || direction == GIRARA_PREVIOUS_GROUP);
+  if (skip_group) {
+    /* Group shortcuts also work for completions without headings. */
+    skip_group = false;
+    for (unsigned int i = 0; i < count; ++i) {
+      g_autoptr(GObject) item_object = g_list_model_get_item(model, i);
+      GiraraCompletionItem* item     = GIRARA_COMPLETION_ITEM(item_object);
+      if (item->group) {
+        skip_group = true;
+        break;
+      }
+    }
+  }
+
+  if (position == GTK_INVALID_LIST_POSITION) {
+    position = forward ? count - 1 : 0;
+  }
+
+  for (unsigned int i = 0; i < count; ++i) {
+    position = forward ? (position + 1) % count : (position + count - 1) % count;
+
+    g_autoptr(GObject) item_object = g_list_model_get_item(model, position);
+    GiraraCompletionItem* item     = GIRARA_COMPLETION_ITEM(item_object);
+    if (item->group) {
+      skip_group = false;
+    } else if (!skip_group) {
+      gtk_single_selection_set_selected(priv->completion.selection, position);
+      return;
+    }
   }
 }
 
 bool girara_isc_completion(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                            unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+
+  if (argument->n == GIRARA_HIDE) {
+    girara_completion_clear(session);
+    return false;
+  }
+
   girara_session_private_t* priv = session->private_data;
-
-  /* get current text */
-  g_autofree gchar* input =
-      gtk_editable_get_chars(GTK_EDITABLE(girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar))), 0, -1);
-  if (!input) {
+  GtkEditable* entry             = GTK_EDITABLE(girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar)));
+  g_autofree char* input         = g_strdup(gtk_editable_get_text(entry));
+  if (input[0] != ':') {
     return false;
   }
 
-  const size_t input_length = strlen(input);
+  if (!priv->completion.model || g_strcmp0(input, priv->completion.previous_input) != 0 ||
+      g_list_model_get_n_items(G_LIST_MODEL(priv->completion.model)) == 1) {
+    girara_completion_clear(session);
 
-  if ((input_length == 0 || input[0] != ':') && argument->n != GIRARA_HIDE) {
-    return false;
-  }
-
-  g_auto(GStrv) elements = NULL;
-  gint n_parameter       = 0;
-  if (input_length > 1) {
-    if (!g_shell_parse_argv(input + 1, &n_parameter, &elements, NULL)) {
-      return false;
-    }
-  } else {
-    elements = g_try_malloc0(2 * sizeof(char*));
-    if (!elements) {
-      return false;
-    }
-    elements[0] = g_strdup("");
-  }
-
-  if (n_parameter == 1 && input[input_length - 1] == ' ') {
-    n_parameter += 1;
-  }
-
-  /* get current values */
-  g_autofree gchar* current_command   = (elements[0] && elements[0][0] != '\0') ? g_strdup(elements[0]) : NULL;
-  g_autofree gchar* current_parameter = (elements[0] && elements[1]) ? g_strdup(elements[1]) : NULL;
-
-  size_t current_command_length = current_command ? strlen(current_command) : 0;
-
-  const bool is_single_entry = 1 == g_list_length(priv->completion.entries);
-
-  /* delete old list iff
-   *   the completion should be hidden
-   *   the current command differs from the previous one
-   *   the current parameter differs from the previous one
-   *   no current command is given
-   *   there is only one completion entry
-   */
-  if ((argument->n == GIRARA_HIDE) ||
-      (current_parameter && priv->completion.previous_parameter &&
-       g_strcmp0(current_parameter, priv->completion.previous_parameter)) ||
-      (current_command && priv->completion.previous_command &&
-       g_strcmp0(current_command, priv->completion.previous_command)) ||
-      (input_length != priv->completion.previous_length) || is_single_entry) {
-    if (session->gtk.results) {
-      /* destroy elements */
-      for (GList* element = priv->completion.entries; element; element = g_list_next(element)) {
-        girara_internal_completion_entry_t* entry = (girara_internal_completion_entry_t*)element->data;
-
-        if (entry) {
-          if (entry->widget) {
-            gtk_box_remove(GTK_BOX(session->gtk.results), entry->widget);
-            entry->widget = NULL;
-          }
-          g_free(entry->value);
-          g_free(entry);
-        }
-      }
-
-      g_list_free(priv->completion.entries);
-      priv->completion.entries         = NULL;
-      priv->completion.entries_current = NULL;
-
-      /* a scrolled window wraps plain children in a viewport */
-      GtkWidget* results = GTK_WIDGET(session->gtk.results);
-      GtkWidget* scroll  = gtk_widget_get_ancestor(results, GTK_TYPE_SCROLLED_WINDOW);
-      if (scroll) {
-        gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), NULL);
-        gtk_box_remove(GTK_BOX(priv->gtk.bottom_box), scroll);
-      } else if (gtk_widget_get_parent(results)) {
-        gtk_widget_unparent(results);
-      } else {
-        /* sink and drop a results box that never got a parent */
-        g_object_ref_sink(results);
-        g_object_unref(results);
-      }
-      session->gtk.results = NULL;
-    }
-
-    priv->completion.command_mode = true;
-
-    if (argument->n == GIRARA_HIDE) {
-      g_free(priv->completion.previous_command);
-      priv->completion.previous_command = NULL;
-
-      g_free(priv->completion.previous_parameter);
-      priv->completion.previous_parameter = NULL;
-
-      return false;
-    }
-  }
-
-  /* create new list iff
-   *  there is no current list
-   */
-  if (!session->gtk.results) {
-    session->gtk.results = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
-    if (!session->gtk.results) {
+    g_auto(GStrv) elements = NULL;
+    int n_parameters       = 0;
+    if (input[1] && !g_shell_parse_argv(input + 1, &n_parameters, &elements, NULL)) {
       return false;
     }
 
-    widget_add_class(GTK_WIDGET(session->gtk.results), "completion-box");
+    const char* command           = n_parameters ? elements[0] : NULL;
+    const char* parameter         = n_parameters > 1 ? elements[1] : NULL;
+    const bool complete_parameter = n_parameters > 1 || (n_parameters == 1 && g_str_has_suffix(input, " "));
+    completion_build(session, command, parameter, complete_parameter);
 
-    if (n_parameter <= 1) {
-      /* based on commands */
-      priv->completion.command_mode = true;
-
-      /* create command rows */
-      for (size_t idx = 0; idx != girara_list_size(session->bindings.commands); ++idx) {
-        girara_command_t* command = girara_list_nth(session->bindings.commands, idx);
-        if (!current_command ||
-            (command->command && !strncmp(current_command, command->command, current_command_length)) ||
-            (command->abbr && !strncmp(current_command, command->abbr, current_command_length))) {
-          /* create entry */
-          girara_internal_completion_entry_t* entry = g_try_malloc0(sizeof(girara_internal_completion_entry_t));
-          if (!entry) {
-            return false;
-          }
-
-          entry->group  = false;
-          entry->value  = g_strdup(command->command);
-          entry->widget = girara_completion_row_create(command->command, command->description, false);
-
-          priv->completion.entries = g_list_append(priv->completion.entries, entry);
-
-          /* show entry row */
-          gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
-        }
-      }
+    if (!g_list_model_get_n_items(G_LIST_MODEL(priv->completion.model))) {
+      girara_completion_clear(session);
+      return false;
     }
 
-    /* based on parameters */
-    if (n_parameter > 1 || g_list_length(priv->completion.entries) == 1) {
-      /* if only one command exists try to run parameter completion */
-      if (g_list_length(priv->completion.entries) == 1) {
-        girara_internal_completion_entry_t* entry = g_list_first(priv->completion.entries)->data;
-
-        g_free(current_command);
-        /* unset command mode */
-        priv->completion.command_mode = false;
-        current_command               = entry->value;
-        current_command_length        = strlen(current_command);
-
-        /* clear list */
-        if (entry->widget) {
-          gtk_box_remove(GTK_BOX(session->gtk.results), entry->widget);
-          entry->widget = NULL;
-        }
-
-        priv->completion.entries = g_list_remove(priv->completion.entries, entry);
-        g_free(entry);
-      }
-
-      /* search matching command */
-      girara_command_t* command = NULL;
-      for (size_t idx = 0; idx != girara_list_size(session->bindings.commands); ++idx) {
-        girara_command_t* command_it = girara_list_nth(session->bindings.commands, idx);
-        if ((current_command && command_it->command &&
-             !strncmp(current_command, command_it->command, current_command_length)) ||
-            (current_command && command_it->abbr &&
-             !strncmp(current_command, command_it->abbr, current_command_length))) {
-          g_free(priv->completion.previous_command);
-          priv->completion.previous_command = g_strdup(command_it->command);
-          command                           = command_it;
-          break;
-        }
-      }
-
-      if (!command) {
-        return false;
-      }
-
-      // Replace current_command with canonincal command name
-      if (g_strcmp0(current_command, command->command) != 0) {
-        g_free(current_command);
-        current_command = g_strdup(command->command);
-      }
-
-      if (command->completion) {
-        girara_internal_completion_entry_t* entry = g_try_malloc0(sizeof(girara_internal_completion_entry_t));
-        if (!entry) {
-          return false;
-        }
-
-        entry->group  = false;
-        entry->value  = g_strdup(command->command);
-        entry->widget = girara_completion_row_create(command->command, command->description, false);
-
-        priv->completion.entries = g_list_append(priv->completion.entries, entry);
-
-        gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
-        priv->completion.command_mode = true;
-      } else {
-        /* generate completion result
-         * XXX: the last argument should only be current_paramater ... but
-         * therefore the completion functions would need to handle NULL correctly
-         * (see cc_open in zathura). */
-        g_autoptr(girara_completion_t) result =
-            command->completion(session, current_parameter ? current_parameter : "");
-
-        if (!result || !result->groups) {
-          return false;
-        }
-
-        for (size_t idx = 0; idx != girara_list_size(result->groups); ++idx) {
-          girara_completion_group_t* group = girara_list_nth(result->groups, idx);
-          if (!group->elements || !girara_list_size(group->elements)) {
-            continue;
-          }
-
-          /* create group entry */
-          if (group->value) {
-            girara_internal_completion_entry_t* entry = g_try_malloc0(sizeof(girara_internal_completion_entry_t));
-            if (!entry) {
-              return false;
-            }
-
-            entry->group  = true;
-            entry->value  = g_steal_pointer(&group->value);
-            entry->widget = girara_completion_row_create(entry->value, NULL, true);
-
-            priv->completion.entries = g_list_append(priv->completion.entries, entry);
-
-            gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
-          }
-
-          for (size_t inner_idx = 0; inner_idx != girara_list_size(group->elements); ++inner_idx) {
-            girara_completion_element_t* element = girara_list_nth(group->elements, inner_idx);
-
-            girara_internal_completion_entry_t* entry = g_try_malloc0(sizeof(girara_internal_completion_entry_t));
-            if (!element) {
-              return false;
-            }
-
-            entry->group  = false;
-            entry->value  = g_steal_pointer(&element->value);
-            entry->widget = girara_completion_row_create(entry->value, element->description, false);
-
-            priv->completion.entries = g_list_append(priv->completion.entries, entry);
-
-            gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
-          }
-        }
-
-        priv->completion.command_mode = false;
-      }
-    }
-
-    if (priv->completion.entries) {
-      priv->completion.entries_current =
-          (argument->n == GIRARA_NEXT) ? g_list_last(priv->completion.entries) : priv->completion.entries;
-      GtkWidget* scroll = gtk_scrolled_window_new();
-      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-      gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scroll), TRUE);
-      gtk_scrolled_window_set_max_content_height(GTK_SCROLLED_WINDOW(scroll), 300);
-      gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), GTK_WIDGET(session->gtk.results));
-      gtk_box_append(GTK_BOX(priv->gtk.bottom_box), scroll);
-      gtk_widget_set_visible(GTK_WIDGET(session->gtk.results), TRUE);
-    }
+    completion_view_create(session);
   }
 
-  /* update entries */
-  unsigned int n_elements = g_list_length(priv->completion.entries);
-  if (priv->completion.entries && n_elements > 0) {
-    if (n_elements > 1) {
-      girara_completion_row_set_color(
-          ((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->widget, GIRARA_NORMAL);
-
-      bool next_group = false;
-
-      for (unsigned int i = 0; i < n_elements; i++) {
-        if (argument->n == GIRARA_NEXT || argument->n == GIRARA_NEXT_GROUP) {
-          GList* entry = g_list_next(priv->completion.entries_current);
-          if (!entry) {
-            entry = g_list_first(priv->completion.entries);
-          }
-
-          priv->completion.entries_current = entry;
-        } else if (argument->n == GIRARA_PREVIOUS || argument->n == GIRARA_PREVIOUS_GROUP) {
-          GList* entry = g_list_previous(priv->completion.entries_current);
-          if (!entry) {
-            entry = g_list_last(priv->completion.entries);
-          }
-
-          priv->completion.entries_current = entry;
-        }
-
-        if (((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->group) {
-          if (priv->completion.command_mode == false &&
-              (argument->n == GIRARA_NEXT_GROUP || argument->n == GIRARA_PREVIOUS_GROUP)) {
-            next_group = true;
-          }
-          continue;
-        } else {
-          if (priv->completion.command_mode == false && (next_group == 0) &&
-              (argument->n == GIRARA_NEXT_GROUP || argument->n == GIRARA_PREVIOUS_GROUP)) {
-            continue;
-          }
-          break;
-        }
-      }
-
-      girara_completion_row_set_color(
-          ((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->widget, GIRARA_HIGHLIGHT);
-
-      /* hide other items */
-      unsigned int n_completion_items = 15;
-      girara_setting_get(session, "n-completion-items", &n_completion_items);
-      const unsigned int uh = ceil(n_completion_items / 2.0);
-      const unsigned int lh = floor(n_completion_items / 2.0);
-
-      const unsigned int current_item  = g_list_position(priv->completion.entries, priv->completion.entries_current);
-      const unsigned int current_group = find_completion_group_index(priv->completion.entries_current, current_item);
-
-      GList* tmpentry = priv->completion.entries;
-      for (unsigned int i = 0; i < n_elements; i++) {
-        girara_internal_completion_entry_t* tmp = tmpentry->data;
-        /* If there is less than n-completion-items that need to be shown, show everything.
-         * Else, show n-completion-items items
-         * Additionally, the current group name is always shown */
-        if ((n_elements <= n_completion_items) || (i >= (current_item - lh) && (i <= current_item + uh)) ||
-            (i < n_completion_items && current_item < lh) ||
-            (i >= (n_elements - n_completion_items) && (current_item >= (n_elements - uh))) || (i == current_group)) {
-          gtk_widget_set_visible(tmp->widget, TRUE);
-        } else {
-          gtk_widget_set_visible(tmp->widget, FALSE);
-        }
-
-        tmpentry = g_list_next(tmpentry);
-      }
-    } else {
-      gtk_widget_set_visible(
-          ((girara_internal_completion_entry_t*)(g_list_nth(priv->completion.entries, 0))->data)->widget, FALSE);
-    }
-
-    /* update text */
-    g_autofree char* temp = NULL;
-    g_autofree char* escaped_value =
-        girara_escape_string(((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value);
-    if (priv->completion.command_mode) {
-      char* space = (n_elements == 1) ? " " : "";
-      temp        = g_strconcat(":", escaped_value, space, NULL);
-    } else {
-      temp = g_strconcat(":", priv->completion.previous_command, " ", escaped_value, NULL);
-    }
-
-    GtkEntry* inputbar_entry = girara_inputbar_get_entry(GIRARA_INPUTBAR(session->gtk.inputbar));
-    gtk_editable_set_text(GTK_EDITABLE(inputbar_entry), temp);
-    gtk_editable_set_position(GTK_EDITABLE(inputbar_entry), -1);
-
-    /* update previous */
-    g_free(priv->completion.previous_parameter);
-    g_free(priv->completion.previous_command);
-
-    priv->completion.previous_command =
-        priv->completion.command_mode
-            ? g_strdup(((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value)
-            : g_steal_pointer(&current_command);
-    priv->completion.previous_parameter =
-        priv->completion.command_mode
-            ? g_steal_pointer(&current_parameter)
-            : g_strdup(((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value);
-    priv->completion.previous_length = strlen(temp);
-  }
-
+  completion_cycle(session, argument->n);
   return false;
 }

@@ -37,6 +37,8 @@ void girara_command_free(girara_command_t* command);
 
 void girara_focus_view(girara_session_t* session);
 
+void girara_completion_clear(girara_session_t* session);
+
 void widget_add_class(GtkWidget* widget, const char* styleclass);
 
 void widget_remove_class(GtkWidget* widget, const char* styleclass);
@@ -225,11 +227,13 @@ struct girara_session_private_s {
   } config;
 
   struct {
-    GList* entries;
-    GList* entries_current;
+    GListStore* model;
+    GtkSingleSelection* selection;
+    GtkSliceListModel* visible_model;
+    GtkSingleSelection* view_selection;
+    GtkScrolledWindow* scroll;
     char* previous_command;
-    char* previous_parameter;
-    size_t previous_length;
+    char* previous_input;
     bool command_mode;
   } completion;
 };

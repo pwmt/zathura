@@ -385,17 +385,6 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
 static void girara_session_private_free(girara_session_private_t* session) {
   g_return_if_fail(session != NULL);
 
-  // clean up completation state
-  g_list_free(session->completion.entries);
-  session->completion.entries         = NULL;
-  session->completion.entries_current = NULL;
-
-  g_free(session->completion.previous_command);
-  session->completion.previous_command = NULL;
-
-  g_free(session->completion.previous_parameter);
-  session->completion.previous_parameter = NULL;
-
   /* clean up config handles */
   girara_list_free(session->config.handles);
   session->config.handles = NULL;
@@ -432,6 +421,8 @@ void girara_session_destroy(girara_session_t* session) {
   if (!session) {
     return;
   }
+
+  girara_completion_clear(session);
 
   /* clean up shortcuts */
   girara_list_free(session->bindings.shortcuts);

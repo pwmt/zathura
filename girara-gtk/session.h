@@ -23,7 +23,7 @@ struct girara_session_s {
     GtkWidget* notification_area; /**< The notification area */
     GtkWidget* inputbar;          /**< The inputbar widget */
     GtkWidget* dialog;            /**< Dialog widget */
-    GtkBox* results;              /**< Completion results */
+    GtkListView* results;         /**< Completion results */
   } gtk;
 
   struct {
