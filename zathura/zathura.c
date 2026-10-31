@@ -1670,13 +1670,13 @@ bool position_set(zathura_t* zathura, double position_x, double position_y) {
   gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), FALSE);
   gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(zathura->ui.view), TRUE);
 
-  double comppos_x, comppos_y;
   const unsigned int page_id = zathura_document_get_current_page_number(document);
 
   bool vertical_center = false;
   girara_setting_get(zathura->ui.session, "vertical-center", &vertical_center);
 
   /* xalign = 0.5: center horizontally (with the page, not the document) */
+  double comppos_x, comppos_y;
   if (vertical_center == true) {
     /* yalign = 0.5: center vertically */
     page_number_to_position(zathura, page_id, 0.5, 0.5, &comppos_x, &comppos_y);
