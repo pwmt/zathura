@@ -314,7 +314,7 @@ static void completion_view_create(girara_session_t* session) {
   gtk_widget_add_css_class(GTK_WIDGET(session->gtk.results), "completion-box");
   gtk_widget_set_focusable(GTK_WIDGET(session->gtk.results), FALSE);
 
-  gtk_box_append(priv->gtk.bottom_box, GTK_WIDGET(session->gtk.results));
+  gtk_box_prepend(priv->gtk.bottom_box, GTK_WIDGET(session->gtk.results));
   g_signal_connect(priv->completion.selection, "notify::selected", G_CALLBACK(completion_selected), session);
   g_signal_connect(priv->completion.view_selection, "notify::selected", G_CALLBACK(completion_view_selected), session);
 }
