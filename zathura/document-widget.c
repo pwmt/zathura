@@ -1461,6 +1461,42 @@ double zathura_document_widget_get_position_y(ZathuraDocumentWidget* document) {
   return priv->position_y;
 }
 
+bool zathura_document_widget_get_page_relative_position(ZathuraDocumentWidget* document, double* position_x,
+                                                        double* position_y) {
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  g_return_val_if_fail(priv->document, false);
+
+  const unsigned int page_id = zathura_document_get_current_page_number(priv->document);
+  zathura_page_t* page       = zathura_document_get_page(priv->document, page_id);
+  if (!page) {
+    return false;
+  }
+
+  unsigned int page_width = 0, page_height = 0;
+  page_calc_height_width(priv->document, page, &page_height, &page_width, true);
+  if (!page_width || !page_height) {
+    return false;
+  }
+
+  unsigned int doc_width  = page_width;
+  unsigned int doc_height = page_height;
+  double origin_x         = 0;
+  double origin_y         = 0;
+  if (priv->layout_mode == DOCUMENT_WIDGET_GRID) {
+    zathura_document_widget_get_document_size(document, &doc_height, &doc_width);
+    zathura_document_widget_get_page_origin(document, page_id, &origin_x, &origin_y);
+  }
+
+  if (position_x) {
+    *position_x = (zathura_document_widget_get_position_x(document) * doc_width - origin_x) / page_width;
+  }
+  if (position_y) {
+    *position_y = (zathura_document_widget_get_position_y(document) * doc_height - origin_y) / page_height;
+  }
+
+  return true;
+}
+
 void zathura_document_widget_set_position_x(ZathuraDocumentWidget* document, double position_x) {
   g_return_if_fail(document != NULL);
 

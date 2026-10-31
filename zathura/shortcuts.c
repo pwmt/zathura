@@ -397,8 +397,16 @@ bool sc_goto(girara_session_t* session, girara_argument_t* argument, girara_even
     return false;
   }
 
+  zathura_page_t* target_page = zathura_document_get_page(document, page_id);
+  if (target_page == NULL) {
+    return false;
+  }
+
+  double position_x = -1;
+  zathura_document_widget_get_page_relative_position(zathura->ui.document_widget, &position_x, NULL);
+
   zathura_jumplist_add(zathura);
-  page_set(zathura, page_id, -1, -1, true);
+  page_set(zathura, page_id, position_x, -1, true);
   zathura_jumplist_add(zathura);
 
   return false;

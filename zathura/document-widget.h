@@ -393,6 +393,17 @@ double zathura_document_widget_get_position_x(ZathuraDocumentWidget* document);
 double zathura_document_widget_get_position_y(ZathuraDocumentWidget* document);
 
 /**
+ * Return the stored document position relative to the current page.
+ *
+ * @param document The document widget
+ * @param position_x Optional output for the horizontal position
+ * @param position_y Optional output for the vertical position
+ * @return true if page and layout dimensions are available; otherwise outputs are unchanged
+ */
+bool zathura_document_widget_get_page_relative_position(ZathuraDocumentWidget* document, double* position_x,
+                                                        double* position_y);
+
+/**
  * Sets the X position as a value relative to the document width (0=left,
  * 1=right)
  *
