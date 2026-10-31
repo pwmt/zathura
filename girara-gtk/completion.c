@@ -207,19 +207,14 @@ void girara_completion_clear(girara_session_t* session) {
     g_signal_handlers_disconnect_by_data(session->gtk.results, session);
     gtk_list_view_set_factory(session->gtk.results, NULL);
     gtk_list_view_set_model(session->gtk.results, NULL);
-  }
 
-  if (priv->completion.scroll) {
-    GtkWidget* parent = gtk_widget_get_parent(GTK_WIDGET(priv->completion.scroll));
+    GtkWidget* parent = gtk_widget_get_parent(GTK_WIDGET(session->gtk.results));
     if (parent) {
-      gtk_box_remove(GTK_BOX(parent), GTK_WIDGET(priv->completion.scroll));
+      gtk_box_remove(GTK_BOX(parent), GTK_WIDGET(session->gtk.results));
     }
-
-    gtk_scrolled_window_set_child(priv->completion.scroll, NULL);
-    g_clear_object(&priv->completion.scroll);
+    g_clear_object(&session->gtk.results);
   }
 
-  session->gtk.results = NULL;
   g_clear_object(&priv->completion.view_selection);
   g_clear_object(&priv->completion.visible_model);
   g_clear_object(&priv->completion.selection);
@@ -264,10 +259,7 @@ static void completion_update_view(girara_session_t* session) {
                                     size ? position - offset : GTK_INVALID_LIST_POSITION);
   g_signal_handlers_unblock_matched(priv->completion.view_selection, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, session);
 
-  gtk_widget_set_visible(GTK_WIDGET(priv->completion.scroll), total > 1 && size > 0);
-  if (size) {
-    gtk_list_view_scroll_to(session->gtk.results, position - offset, GTK_LIST_SCROLL_NONE, NULL);
-  }
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.results), total > 1 && size > 0);
 }
 
 static void completion_selected(GObject* UNUSED(object), GParamSpec* UNUSED(pspec), girara_session_t* session) {
@@ -312,23 +304,17 @@ static void completion_view_create(girara_session_t* session) {
   gtk_single_selection_set_autoselect(priv->completion.view_selection, FALSE);
   gtk_single_selection_set_can_unselect(priv->completion.view_selection, TRUE);
 
-  priv->completion.scroll = GTK_SCROLLED_WINDOW(g_object_ref_sink(gtk_scrolled_window_new()));
-  gtk_scrolled_window_set_policy(priv->completion.scroll, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-  gtk_scrolled_window_set_propagate_natural_height(priv->completion.scroll, TRUE);
-  // TODO: 300 is an arbitrary value
-  gtk_scrolled_window_set_max_content_height(priv->completion.scroll, 300);
-
   GtkListItemFactory* factory = gtk_signal_list_item_factory_new();
   g_signal_connect(factory, "setup", G_CALLBACK(completion_row_setup), NULL);
   g_signal_connect(factory, "bind", G_CALLBACK(completion_row_bind), NULL);
 
   session->gtk.results =
       GTK_LIST_VIEW(gtk_list_view_new(GTK_SELECTION_MODEL(g_object_ref(priv->completion.view_selection)), factory));
+  g_object_ref_sink(session->gtk.results);
   gtk_widget_add_css_class(GTK_WIDGET(session->gtk.results), "completion-box");
   gtk_widget_set_focusable(GTK_WIDGET(session->gtk.results), FALSE);
 
-  gtk_scrolled_window_set_child(priv->completion.scroll, GTK_WIDGET(session->gtk.results));
-  gtk_box_append(priv->gtk.bottom_box, GTK_WIDGET(priv->completion.scroll));
+  gtk_box_append(priv->gtk.bottom_box, GTK_WIDGET(session->gtk.results));
   g_signal_connect(priv->completion.selection, "notify::selected", G_CALLBACK(completion_selected), session);
   g_signal_connect(priv->completion.view_selection, "notify::selected", G_CALLBACK(completion_view_selected), session);
 }

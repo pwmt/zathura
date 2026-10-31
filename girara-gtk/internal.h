@@ -231,7 +231,6 @@ struct girara_session_private_s {
     GtkSingleSelection* selection;
     GtkSliceListModel* visible_model;
     GtkSingleSelection* view_selection;
-    GtkScrolledWindow* scroll;
     char* previous_command;
     char* previous_input;
     bool command_mode;
