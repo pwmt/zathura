@@ -30,8 +30,8 @@ typedef struct zathura_page_widget_private_s {
 
   struct {
     girara_list_t* list; /**< List of links on the page */
-    gboolean retrieved;  /**< True if we already tried to retrieve the list of links */
-    gboolean draw;       /**< True if links should be drawn */
+    bool retrieved;      /**< True if we already tried to retrieve the list of links */
+    bool draw;           /**< True if links should be drawn */
     unsigned int offset; /**< Offset to the links */
     unsigned int n;      /**< Number */
   } links;
@@ -39,34 +39,34 @@ typedef struct zathura_page_widget_private_s {
   struct {
     girara_list_t* list; /**< A list if there are search results that should be drawn */
     int current;         /**< The index of the current search result */
-    gboolean draw;       /**< Draw search results */
+    bool draw;           /**< Draw search results */
   } search;
 
   struct {
     girara_list_t* list; /**< List of selection rectangles that should be drawn */
-    gboolean draw;       /** Draw selection */
+    bool draw;           /** Draw selection */
   } selection;
 
   struct {
     girara_list_t* list;      /**< List of images on the page */
-    gboolean retrieved;       /**< True if we already tried to retrieve the list of images */
+    bool retrieved;           /**< True if we already tried to retrieve the list of images */
     zathura_image_t* current; /**< Image data of selected image */
   } images;
 
   struct {
     zathura_rectangle_t selection; /**< x1 y1: click point, x2 y2: current position */
-    gboolean over_link;
+    bool over_link;
   } mouse;
 
   struct {
     zathura_rectangle_t bounds; /**< Highlight bounds */
-    gboolean draw;              /**< Draw highlighted region */
+    bool draw;                  /**< Draw highlighted region */
   } highlighter;
 
   struct {
     girara_list_t* list; /**< List of signatures on the page */
-    gboolean retrieved;  /**< True if we already tried to retrieve the list of signatures */
-    gboolean draw;       /**< True if links should be drawn */
+    bool retrieved;      /**< True if we already tried to retrieve the list of signatures */
+    bool draw;           /**< True if links should be drawn */
   } signatures;
 
   GtkWidget* drawing_area;           /**< child layer that draws the page */

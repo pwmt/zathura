@@ -42,7 +42,7 @@ void girara_callback_view_button_press_event(GtkGestureClick* gesture, gint n_pr
 void girara_callback_view_button_release_event(GtkGestureClick* gesture, gint n_press, gdouble x, gdouble y,
                                                girara_session_t* session);
 
-gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint clean);
+bool girara_process_view_key(girara_session_t* session, guint keyval, guint clean);
 
 /**
  * Default callback when the pointer moves over the widget

@@ -29,6 +29,6 @@ GtkWidget* girara_inputbar_new(girara_session_t* session);
 GtkEntry* girara_inputbar_get_entry(GiraraInputbar* inputbar);
 
 /* run a bound inputbar shortcut for the key */
-gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean);
+bool girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean);
 
 #endif

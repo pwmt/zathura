@@ -80,8 +80,8 @@ gboolean girara_callback_view_key_press_event(GtkEventControllerKey* controller,
   return girara_process_view_key(session, keyval, clean);
 }
 
-gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint clean) {
-  g_return_val_if_fail(session != NULL, FALSE);
+bool girara_process_view_key(girara_session_t* session, guint keyval, guint clean) {
+  g_return_val_if_fail(session != NULL, false);
 
   girara_session_private_t* session_private = session->private_data;
 
@@ -118,7 +118,7 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
         session->events.buffer_changed(session);
       }
 
-      return TRUE;
+      return true;
     }
   }
 
@@ -195,7 +195,7 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
             }
 
             session_private->buffer.n = 0;
-            return TRUE;
+            return true;
           }
 
           matching_command = true;
@@ -217,7 +217,7 @@ gboolean girara_process_view_key(girara_session_t* session, guint keyval, guint 
     }
   }
 
-  return FALSE;
+  return false;
 }
 
 void girara_callback_view_button_press_event(GtkGestureClick* gesture, gint n_press, gdouble x, gdouble y,
@@ -276,7 +276,7 @@ void girara_callback_view_button_release_event(GtkGestureClick* gesture, gint UN
   }
 }
 
-static gboolean dispatch_mouse_motion(girara_session_t* session, double x, double y, GdkModifierType mods) {
+static bool dispatch_mouse_motion(girara_session_t* session, double x, double y, GdkModifierType mods) {
   g_return_val_if_fail(session != NULL, false);
 
   girara_event_t event = {.type = GIRARA_EVENT_MOTION_NOTIFY, .x = x, .y = y};

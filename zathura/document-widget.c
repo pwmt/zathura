@@ -31,7 +31,7 @@ typedef struct zathura_document_widget_private_s {
   /* Layout */
   document_widget_mode_t layout_mode;
   bool mode_change_pending; /**< Track pending layout mode changes; FIXME: remove this workaround */
-  gboolean pages_right_to_left;
+  bool pages_right_to_left;
   unsigned int nrow;
   unsigned int ncol;
   document_widget_line_s* row_heights;

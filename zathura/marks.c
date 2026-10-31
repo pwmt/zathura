@@ -25,7 +25,7 @@ static gboolean cb_marks_one_shot(GtkEventControllerKey* controller, guint keyva
   zathura_t* zathura = session->global.data;
 
   GtkEventController* ctrl = GTK_EVENT_CONTROLLER(controller);
-  gboolean evaluate        = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(ctrl), "evaluate"));
+  bool evaluate            = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(ctrl), "evaluate")) != 0;
   GtkWidget* win           = gtk_event_controller_get_widget(ctrl);
 
   /* remove the controller from its own callback so it only fires once */
@@ -45,7 +45,7 @@ static gboolean cb_marks_one_shot(GtkEventControllerKey* controller, guint keyva
 }
 
 /* set up a one-shot controller, evaluate selects between add and evaluate */
-static void marks_install_one_shot(girara_session_t* session, gboolean evaluate) {
+static void marks_install_one_shot(girara_session_t* session, bool evaluate) {
   GtkEventController* ctrl = gtk_event_controller_key_new();
   gtk_event_controller_set_propagation_phase(ctrl, GTK_PHASE_CAPTURE);
   g_object_set_data(G_OBJECT(ctrl), "evaluate", GINT_TO_POINTER(evaluate));
@@ -58,7 +58,7 @@ bool sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->gtk.view != NULL, false);
 
-  marks_install_one_shot(session, FALSE);
+  marks_install_one_shot(session, false);
   return true;
 }
 
@@ -67,7 +67,7 @@ bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argum
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->gtk.view != NULL, false);
 
-  marks_install_one_shot(session, TRUE);
+  marks_install_one_shot(session, true);
   return true;
 }
 

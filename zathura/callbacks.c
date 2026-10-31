@@ -382,14 +382,14 @@ typedef enum zathura_link_action_e {
   ZATHURA_LINK_ACTION_DISPLAY
 } zathura_link_action_t;
 
-static gboolean handle_link(const char* input, girara_session_t* session, zathura_link_action_t action) {
-  g_return_val_if_fail(session != NULL, FALSE);
-  g_return_val_if_fail(session->global.data != NULL, FALSE);
+static bool handle_link(const char* input, girara_session_t* session, zathura_link_action_t action) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
 
   zathura_t* zathura = session->global.data;
 
   if (input == NULL || strlen(input) == 0) {
-    return FALSE;
+    return false;
   }
 
   unsigned int index = 0;
@@ -398,7 +398,7 @@ static gboolean handle_link(const char* input, girara_session_t* session, zathur
     index = num - 1;
   } else {
     girara_notify(session, GIRARA_WARNING, _("Invalid input '%s' given."), input);
-    return FALSE;
+    return false;
   }
 
   zathura_link_t* link = zathura_document_widget_get_visible_link(zathura->ui.document_widget, index);
@@ -425,7 +425,7 @@ static gboolean handle_link(const char* input, girara_session_t* session, zathur
     }
   }
 
-  return TRUE;
+  return true;
 }
 
 gboolean cb_sc_follow(GiraraDialog* UNUSED(inputbar), const char* input, void* data) {

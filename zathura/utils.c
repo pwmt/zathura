@@ -135,10 +135,8 @@ static void index_path_copy(index_path_t* dst, const index_path_t* src) {
   }
 }
 
-/* returns TRUE to signal early termination (matches gtk_tree_model_foreach semantics
-   where the callback returning TRUE stops the entire walk) */
-static gboolean find_deepest_path(GListModel* level, unsigned int current_page, index_path_t* current,
-                                  index_path_t* best) {
+/* Return true to stop the walk once entries pass the current page. */
+static bool find_deepest_path(GListModel* level, unsigned int current_page, index_path_t* current, index_path_t* best) {
   guint n = g_list_model_get_n_items(level);
   for (guint i = 0; i < n; i++) {
     g_autoptr(ZathuraIndexElementObject) item = g_list_model_get_item(level, i);
@@ -147,19 +145,19 @@ static gboolean find_deepest_path(GListModel* level, unsigned int current_page, 
     }
     zathura_link_target_t target = zathura_link_get_target(item->element->link);
     if (target.page_number > current_page) {
-      return TRUE;
+      return true;
     }
     index_path_append(current, item);
     index_path_copy(best, current);
     if (item->children != NULL) {
       if (find_deepest_path(G_LIST_MODEL(item->children), current_page, current, best)) {
         current->depth--;
-        return TRUE;
+        return true;
       }
     }
     current->depth--;
   }
-  return FALSE;
+  return false;
 }
 
 /* walk the flat tree-list model expanding ancestors along the captured path;

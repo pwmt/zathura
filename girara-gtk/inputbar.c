@@ -66,8 +66,8 @@ GtkEntry* girara_inputbar_get_entry(GiraraInputbar* inputbar) {
   return priv->entry;
 }
 
-gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean) {
-  g_return_val_if_fail(session != NULL, FALSE);
+bool girara_process_inputbar_key(girara_session_t* session, guint keyval, guint clean) {
+  g_return_val_if_fail(session != NULL, false);
 
   for (size_t idx = 0; idx != girara_list_size(session->bindings.inputbar_shortcuts); ++idx) {
     girara_inputbar_shortcut_t* inputbar_shortcut = girara_list_nth(session->bindings.inputbar_shortcuts, idx);
@@ -77,11 +77,11 @@ gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, gu
         inputbar_shortcut->function(session, &(inputbar_shortcut->argument), NULL, 0);
       }
 
-      return TRUE;
+      return true;
     }
   }
 
-  return FALSE;
+  return false;
 }
 
 static void inputbar_activate(GtkEntry* entry, girara_session_t* session) {
