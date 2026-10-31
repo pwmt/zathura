@@ -27,7 +27,7 @@
 #include "synctex.h"
 #include "dbus-interface.h"
 
-gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura) {
+void cb_destroy(GtkWidget* widget, zathura_t* zathura) {
   /* hide the window on quit while the cleanup runs */
   if (widget == NULL && zathura != NULL && zathura->ui.session != NULL && zathura->ui.session->gtk.window != NULL) {
     gtk_widget_set_visible(zathura->ui.session->gtk.window, FALSE);
@@ -51,8 +51,6 @@ gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura) {
   if (app != NULL) {
     g_application_quit(app);
   }
-
-  return TRUE;
 }
 
 void cb_buffer_changed(girara_session_t* session) {

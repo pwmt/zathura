@@ -18,9 +18,8 @@
  *
  * @param widget The gtk window of zathura
  * @param zathura Correspondending zathura session
- * @return true if no error occurred and the event has been handled
  */
-gboolean cb_destroy(GtkWidget* widget, zathura_t* zathura);
+void cb_destroy(GtkWidget* widget, zathura_t* zathura);
 
 /**
  * This function gets called when the buffer of girara changes

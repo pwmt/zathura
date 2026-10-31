@@ -84,15 +84,15 @@ gboolean girara_process_inputbar_key(girara_session_t* session, guint keyval, gu
   return FALSE;
 }
 
-static gboolean inputbar_activate(GtkEntry* entry, girara_session_t* session) {
-  g_return_val_if_fail(session != NULL, FALSE);
+static void inputbar_activate(GtkEntry* entry, girara_session_t* session) {
+  g_return_if_fail(session != NULL);
 
   girara_debug("activating inputbar");
 
   g_autofree gchar* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
   if (!input || !strlen(input)) {
     g_signal_emit(session->gtk.inputbar, abort_signal, 0);
-    return FALSE;
+    return;
   }
 
   /* append to command history */
@@ -102,7 +102,7 @@ static gboolean inputbar_activate(GtkEntry* entry, girara_session_t* session) {
   /* special commands */
   g_autofree char* identifier_s = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, 1);
   if (identifier_s == NULL) {
-    return FALSE;
+    return;
   }
 
   const char identifier = identifier_s[0];
@@ -116,11 +116,11 @@ static gboolean inputbar_activate(GtkEntry* entry, girara_session_t* session) {
       }
 
       g_signal_emit(session->gtk.inputbar, abort_signal, 0);
-      return TRUE;
+      return;
     }
   }
 
-  return girara_command_run(session, input);
+  girara_command_run(session, input);
 }
 
 static gboolean inputbar_key_press_event(GtkEventControllerKey* controller, guint keyval_in, guint UNUSED(keycode),
@@ -146,13 +146,13 @@ static gboolean inputbar_key_press_event(GtkEventControllerKey* controller, guin
   return FALSE;
 }
 
-static gboolean inputbar_changed_event(GtkEditable* entry, girara_session_t* session) {
-  g_return_val_if_fail(session != NULL, FALSE);
+static void inputbar_changed_event(GtkEditable* entry, girara_session_t* session) {
+  g_return_if_fail(session != NULL);
 
   /* special commands */
   g_autofree char* identifier_s = gtk_editable_get_chars(entry, 0, 1);
   if (!identifier_s) {
-    return FALSE;
+    return;
   }
 
   char identifier = identifier_s[0];
@@ -161,11 +161,9 @@ static gboolean inputbar_changed_event(GtkEditable* entry, girara_session_t* ses
     if ((special_command->identifier == identifier) && (special_command->always == true)) {
       g_autofree gchar* input = gtk_editable_get_chars(GTK_EDITABLE(entry), 1, -1);
       special_command->function(session, input, &(special_command->argument));
-      return TRUE;
+      return;
     }
   }
-
-  return FALSE;
 }
 
 GtkWidget* girara_inputbar_new(girara_session_t* session) {
