@@ -671,11 +671,7 @@ void cb_page_widget_link(ZathuraPageWidget* page, void* data) {
 
   bool enter = (bool)data;
 
-  GdkCursor* cursor = gdk_cursor_new_from_name(enter == true ? "pointer" : "default", NULL);
-  gtk_widget_set_cursor(GTK_WIDGET(page), cursor);
-  if (cursor != NULL) {
-    g_object_unref(cursor);
-  }
+  gtk_widget_set_cursor_from_name(GTK_WIDGET(page), enter ? "pointer" : "default");
 }
 
 void cb_page_widget_scaled_button_release(ZathuraPageWidget* page_widget, scaled_button_release_event_t* event,
