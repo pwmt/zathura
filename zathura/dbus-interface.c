@@ -222,7 +222,7 @@ static void handle_goto_page(zathura_t* zathura, GVariant* parameters, GDBusMeth
   if (page >= number_of_pages) {
     ret = false;
   } else {
-    page_set(zathura, page);
+    page_set(zathura, page, -1, -1, false);
   }
 
   GVariant* result = g_variant_new("(b)", ret);

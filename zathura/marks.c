@@ -193,8 +193,7 @@ static void mark_evaluate(zathura_t* zathura, int key) {
       adjust_view(zathura);
       zathura_document_widget_render_all(zathura->ui.document_widget);
 
-      page_set(zathura, mark->page);
-      position_set(zathura, mark->position_x, mark->position_y);
+      page_set(zathura, mark->page, mark->position_x, mark->position_y, false);
       zathura_jumplist_add(zathura);
 
       return;

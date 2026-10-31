@@ -274,7 +274,7 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   girara_list_t* rect_list = rectangles[page];
   if (!rect_list || !girara_list_size(rect_list)) {
     girara_debug("No rectangles for the given page. Jumping to page %u.", page);
-    page_set(zathura, page);
+    page_set(zathura, page, -1, -1, false);
     return;
   }
 
@@ -303,7 +303,7 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   zathura_rectangle_t* rect = girara_list_nth(rect_list, 0);
   if (!rect) {
     girara_debug("List of rectangles is broken. Jumping to page %u.", page);
-    page_set(zathura, page);
+    page_set(zathura, page, -1, -1, false);
     return;
   }
 

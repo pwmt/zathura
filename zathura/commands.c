@@ -142,10 +142,8 @@ bool cmd_bookmark_open(girara_session_t* session, girara_list_t* argument_list) 
   }
 
   zathura_jumplist_add(zathura);
-  page_set(zathura, bookmark->page - 1);
-  if (bookmark->x != DBL_MIN && bookmark->y != DBL_MIN) {
-    position_set(zathura, bookmark->x, bookmark->y);
-  }
+  const bool has_position = bookmark->x != DBL_MIN && bookmark->y != DBL_MIN;
+  page_set(zathura, bookmark->page - 1, has_position ? bookmark->x : -1, has_position ? bookmark->y : -1, false);
   zathura_jumplist_add(zathura);
 
   return true;

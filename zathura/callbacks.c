@@ -600,7 +600,7 @@ bool cb_unknown_command(girara_session_t* session, const char* input) {
   }
 
   zathura_jumplist_add(zathura);
-  page_set(zathura, index);
+  page_set(zathura, index, -1, -1, false);
   zathura_jumplist_add(zathura);
 
   return true;

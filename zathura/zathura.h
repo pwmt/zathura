@@ -423,13 +423,16 @@ bool document_predecessor_free(zathura_t* zathura);
 bool document_close(zathura_t* zathura, bool keep_monitor);
 
 /**
- * Opens the page with the given number
+ * Opens the page with the given number and adjust position if set
  *
  * @param zathura The zathura session
  * @param page_id The id of the page that should be set
+ * @param position_x Horizontal position passed to position_set; negative means automatic
+ * @param position_y Vertical position passed to position_set; negative means automatic
+ * @param page_relative Whether positions are relative to the rendered page or the document.
  * @return If no error occurred true, otherwise false, is returned.
  */
-bool page_set(zathura_t* zathura, unsigned int page_id);
+bool page_set(zathura_t* zathura, unsigned int page_id, double position_x, double position_y, bool page_relative);
 
 /**
  * Moves to the given position

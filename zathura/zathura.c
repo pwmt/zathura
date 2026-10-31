@@ -1247,15 +1247,17 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* adjust_view */
   adjust_view(zathura);
 
-  /* Set page */
-  girara_debug("Setting page: %u", page);
-  page_set(zathura, page);
-
-  /* Set position (only if restoring from history file) */
+  // Restore the (document-relative) position when opening the page saved in history.
+  double position_x = -1;
+  double position_y = -1;
   if (file_info.current_page == page && (file_info.position_x != 0 || file_info.position_y != 0)) {
     girara_debug("Setting position.");
-    position_set(zathura, file_info.position_x, file_info.position_y);
+    position_x = file_info.position_x;
+    position_y = file_info.position_y;
   }
+
+  girara_debug("Setting page: %u", page);
+  page_set(zathura, page, position_x, position_y, false);
 
   bool show_signature_information = false;
   girara_setting_get(zathura->ui.session, "show-signature-information", &show_signature_information);
@@ -1577,7 +1579,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   return true;
 }
 
-bool page_set(zathura_t* zathura, unsigned int page_id) {
+bool page_set(zathura_t* zathura, unsigned int page_id, double position_x, double position_y, bool page_relative) {
   if (zathura_has_document(zathura) == false) {
     return false;
   }
@@ -1597,8 +1599,33 @@ bool page_set(zathura_t* zathura, unsigned int page_id) {
     save_fileinfo_to_db(zathura);
   }
 
-  /* negative position means auto */
-  return position_set(zathura, -1, -1);
+  // convert page-relative positions to document-relative positions
+  ZathuraDocumentWidget* widget = zathura->ui.document_widget;
+  if (page_relative && (position_x >= 0 || position_y >= 0)) {
+    unsigned int page_width = 0, page_height = 0, doc_width = 0, doc_height = 0;
+    page_calc_height_width(document, page, &page_height, &page_width, true);
+
+    document_widget_mode_t layout_mode;
+    g_object_get(widget, "layout-mode", &layout_mode, NULL);
+
+    double origin_x = 0, origin_y = 0;
+    if (layout_mode == DOCUMENT_WIDGET_SINGLE) {
+      doc_width  = page_width;
+      doc_height = page_height;
+    } else {
+      zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
+      zathura_document_widget_get_page_origin(widget, page_id, &origin_x, &origin_y);
+    }
+
+    if (position_x >= 0) {
+      position_x = doc_width > 0 ? CLAMP((origin_x + position_x * page_width) / doc_width, 0.0, 1.0) : -1;
+    }
+    if (position_y >= 0) {
+      position_y = doc_height > 0 ? CLAMP((origin_y + position_y * page_height) / doc_height, 0.0, 1.0) : -1;
+    }
+  }
+
+  return position_set(zathura, position_x, position_y);
 }
 
 void statusbar_page_number_update(zathura_t* zathura) {
