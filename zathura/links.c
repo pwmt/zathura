@@ -38,7 +38,7 @@ zathura_link_t* zathura_link_new(zathura_link_type_t type, zathura_rectangle_t p
   case ZATHURA_LINK_NONE:
   case ZATHURA_LINK_GOTO_DEST:
     link->target.value = g_strdup(target.value);
-    if (!isfinite(target.bottom) || !isfinite(target.left) || !isfinite(target.right) || isfinite(target.top) ||
+    if (!isfinite(target.bottom) || !isfinite(target.left) || !isfinite(target.right) || !isfinite(target.top) ||
         !isfinite(target.zoom)) {
       return NULL;
     }
