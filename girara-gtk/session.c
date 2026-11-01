@@ -281,7 +281,7 @@ girara_session_t* girara_session_create(void) {
   session_private->gtk.overlay    = gtk_overlay_new();
   session_private->gtk.bottom_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
   session->gtk.view               = gtk_stack_new();
-  gtk_widget_set_can_focus(session->gtk.view, true);
+  gtk_widget_set_focusable(session->gtk.view, TRUE);
   session->gtk.statusbar         = girara_statusbar_new();
   session->gtk.notification_area = girara_notification_area_new();
   session->gtk.inputbar          = girara_inputbar_new(session);
@@ -377,7 +377,7 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
     gtk_widget_set_visible(GTK_WIDGET(session->gtk.statusbar), FALSE);
   }
 
-  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
+  girara_focus_view(session);
 
   return true;
 }
@@ -471,8 +471,8 @@ char* girara_buffer_get(girara_session_t* session) {
   return (session->global.buffer) ? g_strdup(session->global.buffer->str) : NULL;
 }
 
-/* the view stack is not focusable, so grabbing focus on it leaves focus outside the
-   stack and the capture-phase key controller stops seeing keys */
+/* Prefer the active view's focus target. The stack itself is a fallback so its
+ * capture-phase key controller still receives keys without a focusable child. */
 void girara_focus_view(girara_session_t* session) {
   g_return_if_fail(session != NULL && session->gtk.view != NULL);
 
@@ -480,7 +480,7 @@ void girara_focus_view(girara_session_t* session) {
   if (child != NULL && gtk_widget_grab_focus(child)) {
     return;
   }
-  gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
+  gtk_widget_grab_focus(session->gtk.view);
 }
 
 void girara_notify(girara_session_t* session, girara_log_level_t level, const char* format, ...) {
