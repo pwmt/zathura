@@ -1927,13 +1927,17 @@ bool sc_visual_swap(girara_session_t* session, girara_argument_t* UNUSED(argumen
   return false;
 }
 
-bool sc_visual_yank(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                     unsigned int t) {
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
 
-  zathura_visual_yank(zathura, t);
+  if (argument != NULL && argument->n == LINE_END) {
+    zathura_visual_yank_line_end(zathura, t);
+  } else {
+    zathura_visual_yank(zathura, t);
+  }
   return false;
 }
 
@@ -1942,6 +1946,11 @@ bool sc_visual_exit(girara_session_t* session, girara_argument_t* UNUSED(argumen
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->global.data != NULL, false);
   zathura_t* zathura = session->global.data;
+
+  /* after y, Escape only cancels the y, as in vim */
+  if (zathura_visual_cancel(zathura) == true) {
+    return false;
+  }
 
   zathura_visual_exit(zathura);
   girara_sc_abort(session, NULL, NULL, 0);
@@ -1979,6 +1988,9 @@ static gboolean cb_visual_find_one_shot(GtkEventControllerKey* controller, guint
     const bool forward = argument == FIND_FORWARD || argument == TILL_FORWARD;
     const bool till    = argument == TILL_FORWARD || argument == TILL_BACKWARD;
     zathura_visual_find_char(zathura, c, forward, till, t);
+  } else {
+    /* yf followed by Escape cancels the y too */
+    zathura_visual_cancel(zathura);
   }
   return TRUE;
 }

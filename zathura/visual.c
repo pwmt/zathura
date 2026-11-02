@@ -424,6 +424,40 @@ void zathura_visual_word_object(const zathura_visual_text_t* text, size_t pos, b
   *last  = hi;
 }
 
+/* the last character an exclusive motion takes when it ends on pos: the one before it, or the end of the line before
+ * when pos starts a line */
+static size_t exclusive_end(const zathura_visual_text_t* text, size_t pos) {
+  if (line_start(text, pos) == pos) {
+    return line_last(text, line_start(text, pos - 1));
+  }
+  return pos - 1;
+}
+
+bool zathura_visual_operator_range(const zathura_visual_text_t* text, size_t origin, size_t target,
+                                   zathura_visual_operator_range_t range, size_t* first, size_t* last) {
+  *first = MIN(origin, target);
+  *last  = MAX(origin, target);
+  if (text == NULL || text->n == 0 || *last >= text->n) {
+    return false;
+  }
+
+  switch (range) {
+  case ZATHURA_VISUAL_OPERATOR_LINEWISE:
+    *first = line_start(text, *first);
+    *last  = line_last(text, *last);
+    return true;
+  case ZATHURA_VISUAL_OPERATOR_INCLUSIVE:
+    return true;
+  case ZATHURA_VISUAL_OPERATOR_EXCLUSIVE:
+    if (*first == *last) {
+      return false;
+    }
+    *last = exclusive_end(text, *last);
+    return *last >= *first;
+  }
+  return false;
+}
+
 size_t zathura_visual_page_entry(const zathura_visual_text_t* text, zathura_visual_motion_t motion, double curswant) {
   if (text == NULL || text->n == 0) {
     return text != NULL ? text->n : 0;
@@ -1232,6 +1266,26 @@ static bool visual_document_edge(zathura_t* zathura, bool top) {
   return false;
 }
 
+static void visual_apply_motion(zathura_t* zathura, zathura_visual_motion_t motion, unsigned int count) {
+  zathura_visual_t* visual = zathura->visual;
+
+  for (unsigned int idx = 0; idx < MAX(count, 1); ++idx) {
+    const zathura_visual_text_t* text = visual_current_text(zathura);
+    if (text == NULL) {
+      break;
+    }
+
+    const size_t pos = zathura_visual_motion(text, visual->cursor.index, motion, &visual->curswant);
+    if (pos != visual->cursor.index) {
+      visual->cursor.index = pos;
+    } else if (visual_cross_page(zathura, motion) == false) {
+      break;
+    }
+  }
+}
+
+static void visual_yank_motion(zathura_t* zathura, visual_position_t origin, zathura_visual_motion_t motion);
+
 void zathura_visual_move(zathura_t* zathura, zathura_visual_motion_t motion, unsigned int count) {
   g_return_if_fail(zathura != NULL);
 
@@ -1239,25 +1293,29 @@ void zathura_visual_move(zathura_t* zathura, zathura_visual_motion_t motion, uns
   if (visual == NULL) {
     return;
   }
+
+  /* after y, the motion tells what to copy; counts multiply, like 2y3w */
+  const bool yank                = visual->yank_pending;
+  const visual_position_t origin = visual->cursor;
+  if (yank == true) {
+    count = MAX(visual->yank_count, 1) * MAX(count, 1);
+  }
   visual->yank_pending = false;
   visual_leave_image(zathura);
 
   if (motion == ZATHURA_VISUAL_MOTION_TOP || motion == ZATHURA_VISUAL_MOTION_BOTTOM) {
     visual_document_edge(zathura, motion == ZATHURA_VISUAL_MOTION_TOP);
   } else {
-    for (unsigned int idx = 0; idx < MAX(count, 1); ++idx) {
-      const zathura_visual_text_t* text = visual_current_text(zathura);
-      if (text == NULL) {
-        break;
-      }
-
-      const size_t pos = zathura_visual_motion(text, visual->cursor.index, motion, &visual->curswant);
-      if (pos != visual->cursor.index) {
-        visual->cursor.index = pos;
-      } else if (visual_cross_page(zathura, motion) == false) {
-        break;
-      }
+    /* 3$ goes to the end of the third line */
+    if (motion == ZATHURA_VISUAL_MOTION_LINE_END && count > 1) {
+      visual_apply_motion(zathura, ZATHURA_VISUAL_MOTION_DOWN, count - 1);
+      count = 1;
     }
+    visual_apply_motion(zathura, motion, count);
+  }
+
+  if (yank == true) {
+    visual_yank_motion(zathura, origin, motion);
   }
 
   if (visual->kind == ZATHURA_VISUAL_CARET) {
@@ -1438,14 +1496,144 @@ static void visual_copy_image(zathura_t* zathura) {
   visual_flash_start(zathura, flash, visual->image.page, visual->image.page, duration);
 }
 
-void zathura_visual_yank(zathura_t* zathura, unsigned int count) {
-  g_return_if_fail(zathura != NULL);
-
+/* the text y takes from the caret having moved from origin; false if there is none */
+static bool visual_operator_range(zathura_t* zathura, visual_position_t origin, zathura_visual_operator_range_t range,
+                                  visual_position_t* first, visual_position_t* last) {
   zathura_visual_t* visual = zathura->visual;
-  if (visual == NULL) {
+  const bool forward       = position_compare(&origin, &visual->cursor) <= 0;
+  *first                   = forward ? origin : visual->cursor;
+  *last                    = forward ? visual->cursor : origin;
+
+  const zathura_visual_text_t* first_text = visual_text(zathura, &visual->texts, first->page);
+  const zathura_visual_text_t* last_text  = visual_text(zathura, &visual->texts, last->page);
+  if (first_text == NULL || last_text == NULL || first_text->n == 0 || last_text->n == 0) {
+    return false;
+  }
+  if (first->page == last->page) {
+    return zathura_visual_operator_range(first_text, first->index, last->index, range, &first->index, &last->index);
+  }
+
+  switch (range) {
+  case ZATHURA_VISUAL_OPERATOR_LINEWISE:
+    first->index = line_start(first_text, first->index);
+    last->index  = line_last(last_text, last->index);
+    return true;
+  case ZATHURA_VISUAL_OPERATOR_INCLUSIVE:
+    return true;
+  case ZATHURA_VISUAL_OPERATOR_EXCLUSIVE:
+    if (last->index != 0) {
+      last->index = exclusive_end(last_text, last->index);
+      return true;
+    }
+    break;
+  }
+
+  /* an exclusive motion that ends at the start of a page takes the text before up to its end */
+  for (unsigned int page = last->page; page-- > first->page;) {
+    const zathura_visual_text_t* text = visual_text(zathura, &visual->texts, page);
+    if (text == NULL) {
+      return false;
+    }
+    if (text->n == 0) {
+      continue;
+    }
+    last->page  = page;
+    last->index = text_last(text);
+    return page != first->page || last->index >= first->index;
+  }
+  return false;
+}
+
+/* copy the text, highlight it for a moment and put the caret at its start, like y in vim */
+static void visual_yank_range(zathura_t* zathura, visual_position_t origin, zathura_visual_operator_range_t range) {
+  zathura_visual_t* visual = zathura->visual;
+  visual_position_t first  = origin;
+  visual_position_t last   = origin;
+  if (visual_operator_range(zathura, origin, range, &first, &last) == false) {
+    visual->cursor = origin;
     return;
   }
 
+  visual_copy(zathura, first, last);
+  visual_flash(zathura, &visual->texts, first, last);
+
+  /* the caret goes to where the text starts; after yk that is where k went, so the column is kept */
+  if (position_compare(&origin, &visual->cursor) < 0) {
+    visual->cursor = origin;
+  }
+  if (range != ZATHURA_VISUAL_OPERATOR_LINEWISE) {
+    visual->curswant = -1;
+  }
+  visual->anchor = visual->cursor;
+}
+
+/* yw and yW stop at the end of the line as in vim, without the blanks before the word on the next line, and take
+ * the last word of the page, after which w stops on the last character instead of the start of a word */
+static zathura_visual_operator_range_t visual_word_range(zathura_t* zathura, visual_position_t origin, bool big) {
+  zathura_visual_t* visual          = zathura->visual;
+  const zathura_visual_text_t* text = visual_current_text(zathura);
+  const size_t pos                  = visual->cursor.index;
+  if (text == NULL || text->n == 0 || position_compare(&origin, &visual->cursor) >= 0) {
+    return ZATHURA_VISUAL_OPERATOR_EXCLUSIVE;
+  }
+
+  const int cls         = char_class(text, pos, big);
+  const bool word_start = cls != 0 && (pos == 0 || char_class(text, pos - 1, big) != cls);
+  if (pos == text_last(text) && word_start == false) {
+    return ZATHURA_VISUAL_OPERATOR_INCLUSIVE;
+  }
+
+  const size_t start = line_start(text, pos);
+  if (start != pos && line_first_nonblank(text, pos) == pos &&
+      (origin.page != visual->cursor.page || start > origin.index)) {
+    visual->cursor.index = start;
+  }
+  return ZATHURA_VISUAL_OPERATOR_EXCLUSIVE;
+}
+
+static void visual_yank_motion(zathura_t* zathura, visual_position_t origin, zathura_visual_motion_t motion) {
+  zathura_visual_t* visual = zathura->visual;
+  const bool moved         = position_compare(&origin, &visual->cursor) != 0;
+
+  zathura_visual_operator_range_t range = ZATHURA_VISUAL_OPERATOR_EXCLUSIVE;
+  switch (motion) {
+  case ZATHURA_VISUAL_MOTION_UP:
+  case ZATHURA_VISUAL_MOTION_DOWN:
+    if (moved == false) {
+      /* yj on the last line copies nothing, as in vim */
+      return;
+    }
+    range = ZATHURA_VISUAL_OPERATOR_LINEWISE;
+    break;
+  case ZATHURA_VISUAL_MOTION_TOP:
+  case ZATHURA_VISUAL_MOTION_BOTTOM:
+    range = ZATHURA_VISUAL_OPERATOR_LINEWISE;
+    break;
+  case ZATHURA_VISUAL_MOTION_WORD_END:
+  case ZATHURA_VISUAL_MOTION_BIGWORD_END:
+  case ZATHURA_VISUAL_MOTION_LINE_END:
+    range = ZATHURA_VISUAL_OPERATOR_INCLUSIVE;
+    break;
+  case ZATHURA_VISUAL_MOTION_WORD_FORWARD:
+  case ZATHURA_VISUAL_MOTION_BIGWORD_FORWARD:
+    /* at the end of the text, yw still takes the character under the caret */
+    range = moved == true ? visual_word_range(zathura, origin, motion == ZATHURA_VISUAL_MOTION_BIGWORD_FORWARD)
+                          : ZATHURA_VISUAL_OPERATOR_INCLUSIVE;
+    break;
+  case ZATHURA_VISUAL_MOTION_RIGHT:
+    /* yl at the end of the line takes its last character */
+    range = moved == true ? ZATHURA_VISUAL_OPERATOR_EXCLUSIVE : ZATHURA_VISUAL_OPERATOR_INCLUSIVE;
+    break;
+  default:
+    break;
+  }
+
+  visual_yank_range(zathura, origin, range);
+}
+
+/* copy the selection, or its whole lines, and leave visual mode */
+static void visual_yank_selection(zathura_t* zathura, bool lines) {
+  zathura_visual_t* visual = zathura->visual;
   if (visual->kind == ZATHURA_VISUAL_IMAGE) {
     visual_copy_image(zathura);
     zathura_visual_exit(zathura);
@@ -1454,31 +1642,84 @@ void zathura_visual_yank(zathura_t* zathura, unsigned int count) {
 
   visual_position_t first = visual->cursor;
   visual_position_t last  = visual->cursor;
-
-  /* without a selection, yy copies whole lines and keeps the caret */
-  if (visual->kind == ZATHURA_VISUAL_CARET) {
-    if (visual->yank_pending == false) {
-      visual->yank_pending = true;
-      visual->yank_count   = count;
-      return;
+  visual_selection(zathura, &first, &last);
+  if (lines == true) {
+    const zathura_visual_text_t* first_text = visual_text(zathura, &visual->texts, first.page);
+    const zathura_visual_text_t* last_text  = visual_text(zathura, &visual->texts, last.page);
+    if (first_text != NULL && first_text->n != 0) {
+      first.index = line_start(first_text, first.index);
     }
-
-    visual->yank_pending              = false;
-    const zathura_visual_text_t* text = visual_current_text(zathura);
-    if (text != NULL) {
-      zathura_visual_lines(text, visual->cursor.index, MAX(visual->yank_count, 1) * MAX(count, 1), &first.index,
-                           &last.index);
-      visual_copy(zathura, first, last);
-      visual_flash(zathura, &visual->texts, first, last);
+    if (last_text != NULL && last_text->n != 0) {
+      last.index = line_last(last_text, last.index);
     }
-    return;
   }
 
-  visual_selection(zathura, &first, &last);
   visual_copy(zathura, first, last);
   /* the flash keeps the selection visible for a moment after visual mode ends */
   visual_flash(zathura, &visual->texts, first, last);
   zathura_visual_exit(zathura);
+}
+
+void zathura_visual_yank(zathura_t* zathura, unsigned int count) {
+  g_return_if_fail(zathura != NULL);
+
+  zathura_visual_t* visual = zathura->visual;
+  if (visual == NULL) {
+    return;
+  }
+
+  if (visual->kind != ZATHURA_VISUAL_CARET) {
+    visual_yank_selection(zathura, false);
+    return;
+  }
+
+  /* without a selection, y waits for a motion or text object, and yy copies whole lines and keeps the caret */
+  if (visual->yank_pending == false) {
+    visual->yank_pending = true;
+    visual->yank_count   = count;
+    return;
+  }
+
+  visual->yank_pending              = false;
+  const zathura_visual_text_t* text = visual_current_text(zathura);
+  if (text != NULL) {
+    visual_position_t first = visual->cursor;
+    visual_position_t last  = visual->cursor;
+    zathura_visual_lines(text, visual->cursor.index, MAX(visual->yank_count, 1) * MAX(count, 1), &first.index,
+                         &last.index);
+    visual_copy(zathura, first, last);
+    visual_flash(zathura, &visual->texts, first, last);
+  }
+}
+
+void zathura_visual_yank_line_end(zathura_t* zathura, unsigned int count) {
+  g_return_if_fail(zathura != NULL);
+
+  zathura_visual_t* visual = zathura->visual;
+  if (visual == NULL) {
+    return;
+  }
+
+  if (visual->kind != ZATHURA_VISUAL_CARET) {
+    visual_yank_selection(zathura, true);
+    return;
+  }
+
+  /* Y is y$ */
+  visual->yank_pending = true;
+  visual->yank_count   = count;
+  zathura_visual_move(zathura, ZATHURA_VISUAL_MOTION_LINE_END, 1);
+}
+
+bool zathura_visual_cancel(zathura_t* zathura) {
+  g_return_val_if_fail(zathura != NULL, false);
+
+  zathura_visual_t* visual = zathura->visual;
+  if (visual == NULL || visual->yank_pending == false) {
+    return false;
+  }
+  visual->yank_pending = false;
+  return true;
 }
 
 void zathura_visual_find_char(zathura_t* zathura, gunichar c, bool forward, bool till, unsigned int count) {
@@ -1487,6 +1728,11 @@ void zathura_visual_find_char(zathura_t* zathura, gunichar c, bool forward, bool
   zathura_visual_t* visual = zathura->visual;
   if (visual == NULL) {
     return;
+  }
+  const bool yank                = visual->yank_pending;
+  const visual_position_t origin = visual->cursor;
+  if (yank == true) {
+    count = MAX(visual->yank_count, 1) * MAX(count, 1);
   }
   visual->yank_pending = false;
   visual_leave_image(zathura);
@@ -1512,6 +1758,11 @@ void zathura_visual_find_char(zathura_t* zathura, gunichar c, bool forward, bool
 
   visual->cursor.index = zathura_visual_find(text, visual->cursor.index, c, forward, till, repeat, count);
   visual->curswant     = -1;
+  /* yf and yt take the character they end on, yF and yT do not; nothing is copied if the character is not found */
+  if (yank == true && visual->cursor.index != origin.index) {
+    visual_yank_range(zathura, origin,
+                      forward == true ? ZATHURA_VISUAL_OPERATOR_INCLUSIVE : ZATHURA_VISUAL_OPERATOR_EXCLUSIVE);
+  }
   if (visual->kind == ZATHURA_VISUAL_CARET) {
     visual->anchor = visual->cursor;
   }
@@ -1525,6 +1776,7 @@ void zathura_visual_select_word(zathura_t* zathura, bool big, bool around) {
   if (visual == NULL) {
     return;
   }
+  const bool yank      = visual->yank_pending;
   visual->yank_pending = false;
   visual_leave_image(zathura);
 
@@ -1536,6 +1788,15 @@ void zathura_visual_select_word(zathura_t* zathura, bool big, bool around) {
   size_t first = 0;
   size_t last  = 0;
   zathura_visual_word_object(text, visual->cursor.index, big, around, &first, &last);
+
+  /* yiw copies the word instead of selecting it */
+  if (yank == true) {
+    const visual_position_t start = {visual->cursor.page, first};
+    visual->cursor.index          = last;
+    visual_yank_range(zathura, start, ZATHURA_VISUAL_OPERATOR_INCLUSIVE);
+    visual_redraw(zathura);
+    return;
+  }
 
   const bool notify    = visual->kind != ZATHURA_VISUAL_CHAR;
   visual->kind         = ZATHURA_VISUAL_CHAR;
@@ -1606,6 +1867,8 @@ static void visual_labels_close(zathura_t* zathura) {
 static void cb_visual_labels_hide(GtkWidget* UNUSED(dialog), zathura_t* zathura) {
   if (zathura->visual != NULL) {
     zathura->visual->labels.dialog = NULL;
+    /* closing the labels without choosing one cancels ys */
+    zathura->visual->yank_pending = false;
   }
   visual_labels_clear(zathura);
 }
@@ -1650,12 +1913,19 @@ static void cb_visual_labels_changed(GtkEditable* entry, zathura_t* zathura) {
   for (size_t idx = 0; idx != girara_list_size(visual->labels.list); ++idx) {
     const visual_label_t* label = girara_list_nth(visual->labels.list, idx);
     if (g_strcmp0(label->text, input) == 0) {
+      const bool yank      = visual->yank_pending;
+      visual->yank_pending = false;
       if (label->image == true) {
         visual_select_image(zathura, label);
       } else {
         visual_leave_image(zathura);
-        visual->cursor   = label->position;
-        visual->curswant = -1;
+        const visual_position_t origin = visual->cursor;
+        visual->cursor                 = label->position;
+        visual->curswant               = -1;
+        /* ys copies up to the word, like y with a search in vim */
+        if (yank == true && position_compare(&origin, &visual->cursor) != 0) {
+          visual_yank_range(zathura, origin, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE);
+        }
         if (visual->kind == ZATHURA_VISUAL_CARET) {
           visual->anchor = visual->cursor;
         }
@@ -1867,6 +2137,8 @@ void zathura_visual_jump(zathura_t* zathura) {
   if (visual == NULL || visual->labels.dialog != NULL) {
     return;
   }
+  /* after y, the label tells up to where to copy */
+  const bool yank      = visual->yank_pending;
   visual->yank_pending = false;
 
   girara_list_t* candidates = visual_label_candidates(zathura);
@@ -1929,6 +2201,7 @@ void zathura_visual_jump(zathura_t* zathura) {
     return;
   }
   visual->labels.dialog = dialog;
+  visual->yank_pending  = yank;
   /* like the link hints: showing the prompt must not zoom and re-render the pages to fit the smaller view */
   zathura_inputbar_save_adjust_mode(zathura);
   g_signal_connect(dialog, "hide", G_CALLBACK(cb_hide_inputbar), zathura);
