@@ -141,7 +141,7 @@ static void create_directories(zathura_t* zathura) {
 #endif
 
 void zathura_update_view_ppi(zathura_t* zathura) {
-  if (zathura == NULL || zathura_has_document(zathura) == false || zathura->ui.document_widget == NULL) {
+  if (zathura == NULL || zathura_has_document(zathura) == false) {
     return;
   }
 
@@ -185,9 +185,11 @@ void zathura_update_view_ppi(zathura_t* zathura) {
   if (fabs(ppi - current_ppi) > DBL_EPSILON) {
     girara_debug("monitor width: %d mm, pixels: %d, ppi: %0.2f", width_mm, monitor_geom.width, ppi);
     zathura_document_set_viewport_ppi(document, ppi);
-    adjust_view(zathura);
-    zathura_document_widget_render_all(zathura->ui.document_widget);
-    refresh_view(zathura);
+    if (zathura->ui.document_widget != NULL) {
+      adjust_view(zathura);
+      zathura_document_widget_render_all(zathura->ui.document_widget);
+      refresh_view(zathura);
+    }
   }
 }
 
@@ -1154,6 +1156,14 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     }
   }
 
+  /* Initialize scale before creating page layouts or submitting render requests. */
+  GtkNative* native   = gtk_widget_get_native(zathura->ui.session->gtk.view);
+  GdkSurface* surface = native != NULL ? gtk_native_get_surface(native) : NULL;
+  const double device_factor =
+      surface != NULL ? gdk_surface_get_scale(surface) : gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
+  zathura_document_set_device_factors(document, device_factor, device_factor);
+  zathura_update_view_ppi(zathura);
+
   /* threads */
   if (!setup_renderer(zathura, document)) {
     goto error_free;
@@ -1162,13 +1172,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   /* The blocks below change the current page number due to a range of callbacks that are being executed.
    * So we store the page number here and reset it below. */
   const unsigned int page = zathura_document_get_current_page_number(document);
-
-  /* get initial device scale */
-  GtkNative* native   = gtk_widget_get_native(zathura->ui.session->gtk.view);
-  GdkSurface* surface = native != NULL ? gtk_native_get_surface(native) : NULL;
-  const double device_factor =
-      surface != NULL ? gdk_surface_get_scale(surface) : gtk_widget_get_scale_factor(zathura->ui.session->gtk.view);
-  zathura_document_set_device_factors(document, device_factor, device_factor);
 
   {
     /* view mode */
@@ -1276,8 +1279,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
       }
     }
   }
-
-  zathura_update_view_ppi(zathura);
 
   zathura_document_widget_start_page_widget_preload(zathura->ui.document_widget);
 
