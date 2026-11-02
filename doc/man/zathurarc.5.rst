@@ -383,7 +383,8 @@ They can also be combined with modifiers:
 
   * ``visual_exit``
 
-    Clear the selection and leave visual mode.
+    Clear the selection and leave visual mode. After ``visual_yank`` without a
+    selection, only cancel it.
 
   * ``visual_find``
 
@@ -426,8 +427,10 @@ They can also be combined with modifiers:
   * ``visual_yank``
 
     Copy the selected text or image to the clipboard set by
-    *selection-clipboard* and leave visual mode. Without a selection, pressing
-    the binding twice copies the line of the caret and stays in visual mode.
+    *selection-clipboard* and leave visual mode. Without a selection, the next
+    motion or text object tells what to copy, and pressing the binding twice
+    copies the line of the caret; both stay in visual mode. Pass ``line-end``
+    to copy to the end of the line, or the whole lines of a selection, like Y.
 
   * ``zoom``
 

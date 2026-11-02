@@ -201,6 +201,41 @@ static void test_word_object(void) {
   word_object("foo\nbar", 1, false, true, 0, 2);
 }
 
+static void operator_range(const char* str, size_t origin, size_t target, zathura_visual_operator_range_t range,
+                           size_t first, size_t last) {
+  grid_text_t* grid = grid_text_new(str);
+  size_t f          = 0;
+  size_t l          = 0;
+  g_assert_true(zathura_visual_operator_range(&grid->text, origin, target, range, &f, &l));
+  g_assert_cmpuint(f, ==, first);
+  g_assert_cmpuint(l, ==, last);
+  grid_text_free(grid);
+}
+
+static void test_operator_range(void) {
+  /* yw takes the blanks up to the next word, ye and y$ take the character they end on */
+  operator_range("foo bar", 0, 4, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, 0, 3);
+  operator_range("foo bar", 0, 2, ZATHURA_VISUAL_OPERATOR_INCLUSIVE, 0, 2);
+  /* yb, backwards */
+  operator_range("foo bar", 6, 4, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, 4, 5);
+  /* an exclusive motion to the start of a line stops at the end of the line before, without the newline */
+  operator_range("foo\nbar", 0, 4, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, 0, 2);
+  operator_range("foo\nbar", 4, 0, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, 0, 2);
+  /* or at the empty line before */
+  operator_range("foo\n\nbar", 0, 5, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, 0, 4);
+  /* yj and yk take whole lines */
+  operator_range("abc\ndef\nghi", 5, 9, ZATHURA_VISUAL_OPERATOR_LINEWISE, 4, 10);
+  operator_range("abc\ndef\nghi", 5, 1, ZATHURA_VISUAL_OPERATOR_LINEWISE, 0, 6);
+
+  /* an exclusive motion that did not move takes nothing */
+  grid_text_t* grid = grid_text_new("foo");
+  size_t f          = 0;
+  size_t l          = 0;
+  g_assert_false(zathura_visual_operator_range(&grid->text, 1, 1, ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, &f, &l));
+  g_assert_true(zathura_visual_operator_range(&grid->text, 1, 1, ZATHURA_VISUAL_OPERATOR_INCLUSIVE, &f, &l));
+  grid_text_free(grid);
+}
+
 static void test_page_entry(void) {
   grid_text_t* grid = grid_text_new("  abc def\nghi jkl  \n");
 
@@ -276,6 +311,7 @@ int main(int argc, char* argv[]) {
   g_test_add_func("/visual/lines_count", test_lines_count);
   g_test_add_func("/visual/find", test_find);
   g_test_add_func("/visual/word_object", test_word_object);
+  g_test_add_func("/visual/operator_range", test_operator_range);
   g_test_add_func("/visual/page_entry", test_page_entry);
   g_test_add_func("/visual/caret_rectangle", test_caret_rectangle);
   g_test_add_func("/visual/index_at", test_index_at);

@@ -42,6 +42,15 @@ typedef enum zathura_visual_motion_e {
 } zathura_visual_motion_t;
 
 /**
+ * How y takes the text a motion moved over, as in vim
+ */
+typedef enum zathura_visual_operator_range_e {
+  ZATHURA_VISUAL_OPERATOR_EXCLUSIVE, /**< Without the character the motion ends on: h, l, w, b, 0, ^, F, T */
+  ZATHURA_VISUAL_OPERATOR_INCLUSIVE, /**< With the character the motion ends on: e, $, f, t */
+  ZATHURA_VISUAL_OPERATOR_LINEWISE,  /**< Whole lines: j, k, gg, G */
+} zathura_visual_operator_range_t;
+
+/**
  * Text of a page prepared for caret motions
  */
 typedef struct zathura_visual_text_s {
@@ -118,6 +127,23 @@ void zathura_visual_word_object(const zathura_visual_text_t* text, size_t pos, b
                                 size_t* last);
 
 /**
+ * Get the text that y followed by a motion takes, as in vim. An exclusive
+ * motion that ends at the start of a line takes the line before it up to its
+ * end, without the newline.
+ *
+ * @param text The text
+ * @param origin The caret position before the motion
+ * @param target The caret position after the motion
+ * @param range How the motion takes the text
+ * @param first Set to the first character to take
+ * @param last Set to the last character to take
+ * @return false if the motion takes no text, like an exclusive motion that did
+ *   not move
+ */
+bool zathura_visual_operator_range(const zathura_visual_text_t* text, size_t origin, size_t target,
+                                   zathura_visual_operator_range_t range, size_t* first, size_t* last);
+
+/**
  * Get the caret position when a motion continues on another page.
  *
  * @param text The text of the new page
@@ -191,13 +217,32 @@ void zathura_visual_swap(zathura_t* zathura);
 
 /**
  * Copy the selected text to the selection clipboard and leave visual mode.
- * Without a selection, the first call waits for a second one, which copies
- * the line of the caret and the lines after it, like yy in vim.
+ * Without a selection, the first call waits for what to copy, like the y
+ * operator in vim: the next motion, f, F, t, T, ;, ",", text object or label
+ * copies the text it covers, and a second call copies the line of the caret
+ * and the lines after it, like yy.
  *
  * @param zathura The zathura session
- * @param count Number of lines to copy without a selection
+ * @param count How often to apply the motion, or the number of lines for yy
  */
 void zathura_visual_yank(zathura_t* zathura, unsigned int count);
+
+/**
+ * Copy to the end of the line and stay in visual mode, like Y in vim. With a
+ * selection, copy its whole lines and leave visual mode.
+ *
+ * @param zathura The zathura session
+ * @param count Copy to the end of the count-th line
+ */
+void zathura_visual_yank_line_end(zathura_t* zathura, unsigned int count);
+
+/**
+ * Cancel a y that waits for what to copy
+ *
+ * @param zathura The zathura session
+ * @return true if a y was cancelled
+ */
+bool zathura_visual_cancel(zathura_t* zathura);
 
 /**
  * Move the caret to a character on the line, or repeat the last search

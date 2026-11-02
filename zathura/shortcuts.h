@@ -442,7 +442,10 @@ bool sc_visual_move(girara_session_t* session, girara_argument_t* argument, gira
 bool sc_visual_swap(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
- * Copy the text selected in visual mode and leave visual mode
+ * Copy the text selected in visual mode and leave visual mode. Without a
+ * selection, copy what the next motion or text object covers, or the line
+ * when pressed twice. With line-end as argument, copy to the end of the line,
+ * or the whole lines of a selection, like Y in vim.
  *
  * @param session The used girara session
  * @param argument The used argument
@@ -453,7 +456,7 @@ bool sc_visual_swap(girara_session_t* session, girara_argument_t* argument, gira
 bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
 /**
- * Leave visual mode
+ * Leave visual mode, or cancel a y that waits for a motion
  *
  * @param session The used girara session
  * @param argument The used argument

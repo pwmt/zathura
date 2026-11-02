@@ -276,14 +276,25 @@ Visual mode
     Copy the selection, or the selected image, to the clipboard set by
     *selection-clipboard* and switch back. The copied text or image stays
     highlighted for a moment, see *visual-flash-duration*.
+  y{motion}
+    Without a selection, copy the text that a motion, fX, FX, tX, TX, ;, "," or
+    a label of s moves over and stay in visual mode, e.g. yw, y$, 2yj or yfX.
+    As in vim, e, E, $, f and t copy the character they end on, j, k, gg and G
+    copy whole lines, and the other motions leave out the character they end
+    on. The caret moves to the start of the copied text, which is highlighted
+    for a moment.
+  yiw, yaw, yiW, yaW
+    Without a selection, copy the word under the caret
   yy
     Without a selection, copy the line of the caret and stay in visual mode.
-    With a count, copy that many lines, e.g. 3yy. The copied lines are
-    highlighted for a moment.
+    With a count, copy that many lines, e.g. 3yy.
+  Y
+    Without a selection, copy to the end of the line, like y$. With a
+    selection, copy its whole lines and switch back.
   \:
     Open the command line
   Escape, ^[, ^c
-    Clear the selection and switch back
+    Clear the selection and switch back. After y, only cancel the y.
 
 
 Mouse bindings
