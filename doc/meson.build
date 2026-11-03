@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 sphinx = find_program('sphinx-build', required: get_option('manpages'))
 if sphinx.found()
   custom_target('man pages',

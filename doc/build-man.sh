@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-License-Identifier: Zlib
+
 set -ex
 
 cd "$MESON_DIST_ROOT"

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 gnome = import('gnome')
 zathura_resources = gnome.compile_resources(
   'resources',

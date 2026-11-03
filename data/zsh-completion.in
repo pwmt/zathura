@@ -1,4 +1,5 @@
 #compdef zathura
+# SPDX-License-Identifier: Zlib
 
 local -a all_opts
 all_opts=(

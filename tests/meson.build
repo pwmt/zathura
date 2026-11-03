@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Zlib
 
 env = [
   'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),

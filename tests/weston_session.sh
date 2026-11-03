@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: Zlib
 
 export XDG_RUNTIME_DIR=$(mktemp -d)
 mkdir -p "$XDG_RUNTIME_DIR"

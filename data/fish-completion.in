@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 # Complete custom suffix based on libraries installed
 function __fish_complete_zathura
     set -l plugin_dirs (string split : -- $ZATHURA_PLUGINS_PATH) '@PLUGINDIR@'

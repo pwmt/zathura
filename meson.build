@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 project('zathura', 'c',
   version: '2026.10.23',
   meson_version: '>=1.5',

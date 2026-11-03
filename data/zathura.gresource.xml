@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Zlib -->
+
 <gresources>
   <gresource prefix="/org/pwmt/zathura/CSS">
     <file compressed="true">zathura.css_t</file>

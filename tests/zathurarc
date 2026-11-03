@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 # do not use database for tests
 set database null
 

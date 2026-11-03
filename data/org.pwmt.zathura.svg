@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Zlib -->
+
 <svg width="128pt" height="128pt" version="1.0" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
  <circle cx="64.293" cy="64.282" r="55.486" fill="#fff" stroke-linejoin="round" stroke-miterlimit="4.6" stroke-width="1.7136"/>
  <g transform="matrix(.1 0 0 -.1 0 128)">

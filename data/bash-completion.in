@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 _zathura() {
   _init_completion 2>/dev/null || true
 

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Zlib
+
 custom_target('org.pwmt.zathura_16.png',
   input: '../org.pwmt.zathura.svg',
   output: 'org.pwmt.zathura.png',
