@@ -21,7 +21,6 @@
 typedef struct private_s {
   GThreadPool* pool;       /**< Pool of threads */
   girara_list_t* requests; /**< Render requests */
-  GMutex mutex;            /**< Render lock */
 
   /**
    * Page cache
@@ -94,7 +93,6 @@ static void zathura_renderer_init(ZathuraRenderer* renderer) {
   priv->pool                   = g_thread_pool_new(render_job, renderer, 1, TRUE, NULL);
   priv->about_to_close         = false;
   g_thread_pool_set_sort_function(priv->pool, render_thread_sort, NULL);
-  g_mutex_init(&priv->mutex);
 
   /* recolor */
   priv->recolor.enabled          = false;
@@ -144,7 +142,6 @@ static void renderer_finalize(GObject* object) {
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
 
   zathura_renderer_stop(renderer);
-  g_mutex_clear(&(priv->mutex));
 
   g_free(priv->page_cache.cache);
   girara_list_free(priv->requests);
@@ -168,6 +165,7 @@ static void renderer_register_request(ZathuraRenderer* renderer, ZathuraRenderRe
 
 enum {
   REQUEST_COMPLETED,
+  REQUEST_FAILED,
   REQUEST_CACHE_ADDED,
   REQUEST_CACHE_INVALIDATED,
   REQUEST_LAST_SIGNAL,
@@ -184,6 +182,9 @@ static void zathura_render_request_class_init(ZathuraRenderRequestClass* class) 
   request_signals[REQUEST_COMPLETED] =
       g_signal_new("completed", ZATHURA_TYPE_RENDER_REQUEST, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
                    g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+  request_signals[REQUEST_FAILED] = g_signal_new("failed", ZATHURA_TYPE_RENDER_REQUEST, G_SIGNAL_RUN_LAST, 0, NULL,
+                                                 NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 0);
 
   request_signals[REQUEST_CACHE_ADDED] = g_signal_new("cache-added", ZATHURA_TYPE_RENDER_REQUEST, G_SIGNAL_RUN_LAST, 0,
                                                       NULL, NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 0);
@@ -349,20 +350,6 @@ void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer, GdkRGBA* lig
   }
 }
 
-void zathura_renderer_lock(ZathuraRenderer* renderer) {
-  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
-
-  ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
-  g_mutex_lock(&priv->mutex);
-}
-
-void zathura_renderer_unlock(ZathuraRenderer* renderer) {
-  g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
-
-  ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
-  g_mutex_unlock(&priv->mutex);
-}
-
 void zathura_renderer_stop(ZathuraRenderer* renderer) {
   g_return_if_fail(ZATHURA_IS_RENDERER(renderer));
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
@@ -380,24 +367,33 @@ void zathura_renderer_stop(ZathuraRenderer* renderer) {
 
 /* ZathuraRenderRequest methods */
 
+static bool request_has_pending_jobs(ZathuraRenderRequestPrivate* request_priv) {
+  for (size_t idx = 0; idx != girara_list_size(request_priv->active_jobs); ++idx) {
+    render_job_t* job = girara_list_nth(request_priv->active_jobs, idx);
+    if (job->generation == request_priv->generation) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool render_request_is_pending(ZathuraRenderRequest* request) {
+  g_return_val_if_fail(ZATHURA_IS_RENDER_REQUEST(request), false);
+  ZathuraRenderRequestPrivate* priv = zathura_render_request_get_instance_private(request);
+  g_mutex_lock(&priv->jobs_mutex);
+  const bool pending = request_has_pending_jobs(priv);
+  g_mutex_unlock(&priv->jobs_mutex);
+  return pending;
+}
+
 void zathura_render_request(ZathuraRenderRequest* request, gint64 last_view_time) {
   g_return_if_fail(ZATHURA_IS_RENDER_REQUEST(request));
 
   ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
   g_mutex_lock(&request_priv->jobs_mutex);
 
-  bool unfinished_jobs = false;
-  /* check if there are any active jobs left */
-  for (size_t idx = 0; idx != girara_list_size(request_priv->active_jobs); ++idx) {
-    render_job_t* job = girara_list_nth(request_priv->active_jobs, idx);
-    if (job->generation == request_priv->generation) {
-      unfinished_jobs = true;
-      break;
-    }
-  }
-
   /* only add a new job if there are no active ones left */
-  if (!unfinished_jobs) {
+  if (!request_has_pending_jobs(request_priv)) {
     if (!request_priv->renderer) {
       g_mutex_unlock(&request_priv->jobs_mutex);
       return;
@@ -472,17 +468,24 @@ static gboolean emit_completed_signal(void* data) {
   ZathuraRendererPrivate* priv              = zathura_renderer_get_instance_private(request_priv->renderer);
 
   if (!priv->about_to_close && !render_job_is_stale(job)) {
-    /* emit the signal */
+    // Emit the signal
     girara_debug("Emitting signal for page %u", zathura_page_get_index(request_priv->page) + 1);
-    g_signal_emit(job->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
-  } else {
+    if (ecs->surface != NULL) {
+      g_signal_emit(job->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
+    } else {
+      g_signal_emit(job->request, request_signals[REQUEST_FAILED], 0);
+    }
+  } else if (!priv->about_to_close) {
     girara_debug("Rendering of page %u aborted", zathura_page_get_index(request_priv->page) + 1);
   }
-  /* mark the request as done */
+
+  // Mark the request as done.
   remove_job_and_free(job);
 
-  /* clean up the data */
-  cairo_surface_destroy(ecs->surface);
+  // Clean up
+  if (ecs->surface != NULL) {
+    cairo_surface_destroy(ecs->surface);
+  }
   g_free(ecs);
 
   return FALSE;
@@ -788,15 +791,14 @@ static bool invoke_completed_signal(render_job_t* job, cairo_surface_t* surface)
   }
 
   ecs->job     = job;
-  ecs->surface = cairo_surface_reference(surface);
+  ecs->surface = surface != NULL ? cairo_surface_reference(surface) : NULL;
 
-  /* emit signal from the main context, i.e. the main thread */
-  g_main_context_invoke(NULL, emit_completed_signal, ecs);
+  // Emit signal from main thread.
+  g_idle_add_full(G_PRIORITY_DEFAULT, emit_completed_signal, ecs, NULL);
   return true;
 }
 
-static bool render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* page, ZathuraRenderer* renderer,
-                                    double real_scale) {
+static bool render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* page, double real_scale) {
   cairo_t* cairo = cairo_create(surface);
   if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS) {
     return false;
@@ -812,9 +814,8 @@ static bool render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* pa
     cairo_scale(cairo, real_scale, real_scale);
   }
 
-  zathura_renderer_lock(renderer);
+  /* zathura_page_render serializes backend access with the document lock. */
   const int err = zathura_page_render(page, cairo, false);
-  zathura_renderer_unlock(renderer);
   cairo_destroy(cairo);
 
   return err == ZATHURA_ERROR_OK;
@@ -872,7 +873,7 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   }
 
   /* actually render to the surface */
-  if (!render_to_cairo_surface(surface, page, renderer, real_scale)) {
+  if (!render_to_cairo_surface(surface, page, real_scale)) {
     cairo_surface_destroy(surface);
     return false;
   }
@@ -913,6 +914,17 @@ cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura
   g_return_val_if_fail(page != NULL, NULL);
 
   ZathuraRendererPrivate* priv = zathura_renderer_get_instance_private(renderer);
+  if (priv->about_to_close) {
+    return NULL;
+  }
+  /* Leave queued pages to the background renderer. */
+  for (size_t i = 0; i < girara_list_size(priv->requests); ++i) {
+    ZathuraRenderRequest* request             = girara_list_nth(priv->requests, i);
+    ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
+    if (request_priv->page == page && render_request_is_pending(request)) {
+      return NULL;
+    }
+  }
   zathura_document_t* document = zathura_page_get_document(page);
 
   /* parse the page on first render */
@@ -935,7 +947,7 @@ cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura
     return NULL;
   }
 
-  if (render_to_cairo_surface(surface, page, renderer, real_scale) != true) {
+  if (render_to_cairo_surface(surface, page, real_scale) != true) {
     cairo_surface_destroy(surface);
     return NULL;
   }
@@ -964,7 +976,9 @@ static void render_job(void* data, void* user_data) {
   girara_debug("Rendering page %u ...", page_index + 1);
   if (render(job, request, renderer) != true) {
     girara_error("Rendering failed (page %u)\n", page_index + 1);
-    remove_job_and_free(job);
+    if (!invoke_completed_signal(job, NULL)) {
+      remove_job_and_free(job);
+    }
   }
 }
 

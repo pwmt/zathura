@@ -242,6 +242,8 @@ ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_selection(zathura_page_t* pag
 /**
  * Render page
  *
+ * Backend rendering is serialized with the document lock. Callers must not hold that lock.
+ *
  * @param page The page object
  * @param cairo Cairo object
  * @param printing render for printing

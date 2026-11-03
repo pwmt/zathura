@@ -284,7 +284,7 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   /* compute the position of the center of the page */
   double pos_x = 0;
   double pos_y = 0;
-  page_number_to_position(zathura, page, 0.5, 0.5, &pos_x, &pos_y);
+  page_number_to_position(zathura->ui.document_widget, page, 0.5, 0.5, &pos_x, &pos_y);
 
   /* correction to center the current result                          */
   /* NOTE: rectangle is in viewport units, already scaled and rotated */

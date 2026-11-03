@@ -40,9 +40,11 @@ GType zathura_page_widget_get_type(void);
  * Create a page view widget.
  * @param zathura the zathura instance
  * @param page the page to be displayed
+ * @param renderer the renderer associated with the page's document
  * @return a page view widget
  */
-GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page);
+GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page, ZathuraRenderer* renderer);
+
 /**
  * Update the widget's surface. This should only be called from the render
  * thread.
@@ -65,6 +67,7 @@ void zathura_page_widget_clear_selection(ZathuraPageWidget* widget);
 zathura_link_t* zathura_page_widget_link_get(ZathuraPageWidget* widget, unsigned int index);
 /**
  * Update the last view time of the page.
+ * Queue a background render if its surface is missing and rendering is not held.
  *
  * @param widget the widget
  */

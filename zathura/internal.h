@@ -15,6 +15,10 @@ typedef struct zathura_password_dialog_info_s {
   zathura_t* zathura; /**< Zathura session */
 } zathura_password_dialog_info_t;
 
+void zathura_password_dialog_info_free(zathura_password_dialog_info_t* dialog);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_password_dialog_info_t, zathura_password_dialog_info_free)
+
 struct zathura_document_information_entry_s {
   zathura_document_information_type_t type; /**< Type of the information */
   char* value;                              /**< Value */

@@ -17,7 +17,6 @@
 #include "completion.h"
 #include "document-widget.h"
 #include "marks.h"
-#include "render.h"
 #include "shortcuts.h"
 #include "utils.h"
 #include "zathura.h"
@@ -64,7 +63,7 @@ static void cb_color_change(girara_session_t* session, const char* name, girara_
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const char* string_value = (const char*)value;
+  const char* string_value = value;
   if (g_strcmp0(name, "highlight-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color, string_value);
   } else if (g_strcmp0(name, "highlight-fg") == 0) {
@@ -72,13 +71,15 @@ static void cb_color_change(girara_session_t* session, const char* name, girara_
   } else if (g_strcmp0(name, "highlight-active-color") == 0) {
     parse_color(&zathura->ui.colors.highlight_color_active, string_value);
   } else if (g_strcmp0(name, "recolor-darkcolor") == 0) {
-    if (zathura->sync.render_thread != NULL) {
-      zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, NULL, string_value);
+    if (zathura->ui.document_widget != NULL) {
+      zathura_document_widget_set_recolor_colors(zathura->ui.document_widget, NULL, string_value);
     }
+    return;
   } else if (g_strcmp0(name, "recolor-lightcolor") == 0) {
-    if (zathura->sync.render_thread != NULL) {
-      zathura_renderer_set_recolor_colors_str(zathura->sync.render_thread, string_value, NULL);
+    if (zathura->ui.document_widget != NULL) {
+      zathura_document_widget_set_recolor_colors(zathura->ui.document_widget, string_value, NULL);
     }
+    return;
   } else if (g_strcmp0(name, "render-loading-bg") == 0) {
     parse_color(&zathura->ui.colors.render_loading_bg, string_value);
   } else if (g_strcmp0(name, "render-loading-fg") == 0) {
@@ -91,7 +92,10 @@ static void cb_color_change(girara_session_t* session, const char* name, girara_
     parse_color(&zathura->ui.colors.signature_error, string_value);
   }
 
-  zathura_document_widget_render_all(zathura->ui.document_widget);
+  // TODO: Switch to a helper that only redraws without recomputing the layout.
+  if (zathura->ui.document_widget != NULL) {
+    zathura_document_widget_render_all(zathura->ui.document_widget);
+  }
 }
 
 static void cb_nohlsearch_changed(girara_session_t* session, const char* UNUSED(name),
@@ -196,12 +200,8 @@ static void cb_setting_recolor_adjust_lightness_change(girara_session_t* session
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((const bool*)value);
-
-  if (zathura->sync.render_thread != NULL &&
-      zathura_renderer_recolor_adjust_lightness_enabled(zathura->sync.render_thread) != bool_value) {
-    zathura_renderer_enable_recolor_adjust_lightness(zathura->sync.render_thread, bool_value);
-    zathura_document_widget_render_all(zathura->ui.document_widget);
+  if (zathura->ui.document_widget != NULL) {
+    zathura_document_widget_set_recolor_adjust_lightness(zathura->ui.document_widget, *(const bool*)value);
   }
 }
 

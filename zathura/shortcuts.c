@@ -57,71 +57,6 @@ static bool link_shortcuts(zathura_t* zathura, GCallback callback, const char* t
   return false;
 }
 
-/* Helper function to redo the search and stay in place */
-static gboolean redo_search(gpointer data) {
-  g_return_val_if_fail(data, G_SOURCE_REMOVE);
-
-  zathura_t* zathura = data;
-  if (!zathura_has_document(zathura) || !zathura->global.search_string || !strlen(zathura->global.search_string)) {
-    girara_debug("no search to redo, aborting");
-    return G_SOURCE_REMOVE;
-  }
-
-  girara_debug("redoing search");
-  // retry later when we have the document widget
-  if (!zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget)) {
-    return G_SOURCE_CONTINUE;
-  }
-
-  zathura_error_t error = ZATHURA_ERROR_OK;
-
-  unsigned int number_of_pages     = zathura_document_get_number_of_pages(zathura->document);
-  unsigned int current_page_number = zathura_document_get_current_page_number(zathura->document);
-
-  /* reset search results */
-  zathura->global.total_search_results  = 0;
-  zathura->global.current_search_result = 0;
-
-  /* search pages */
-  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-    unsigned int index   = (page_id + current_page_number) % number_of_pages;
-    zathura_page_t* page = zathura_document_get_page(zathura->document, index);
-    if (!page) {
-      continue;
-    }
-
-    GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
-    GObject* obj_page_widget = G_OBJECT(page_widget);
-
-    g_autoptr(girara_list_t) result = zathura_page_search_text(page, zathura->global.search_string, &error);
-    const size_t result_size        = result ? girara_list_size(result) : 0;
-
-    if (!result_size) {
-      g_object_set(obj_page_widget, "search-results", NULL, NULL);
-      if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
-        return G_SOURCE_REMOVE;
-      } else {
-        continue;
-      }
-    }
-
-    g_object_set(obj_page_widget, "search-results", g_steal_pointer(&result), NULL);
-
-    if (zathura->global.search_direction == BACKWARD) {
-      /* start at bottom hit in page */
-      g_object_set(obj_page_widget, "search-current", result_size - 1, NULL);
-    } else {
-      g_object_set(obj_page_widget, "search-current", 0, NULL);
-    }
-
-    zathura->global.total_search_results += result_size;
-  }
-
-  /* highlight search results */
-  document_draw_search_results(zathura, true);
-  return G_SOURCE_REMOVE;
-}
-
 bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
               unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
@@ -179,7 +114,7 @@ bool sc_adjust_window(girara_session_t* session, girara_argument_t* argument, gi
     girara_debug("Setting adjust mode to: %d", argument->n);
 
     zathura_document_widget_set_adjust_mode(zathura->ui.document_widget, argument->n);
-    adjust_view(zathura);
+    zathura_document_widget_adjust_view(zathura->ui.document_widget);
   }
 
   return false;
@@ -277,33 +212,10 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
 }
 
 bool apply_equal_page_mode(zathura_t* zathura, zathura_equal_mode_t mode) {
-  g_return_val_if_fail(zathura != NULL, false);
   g_return_val_if_fail(zathura_has_document(zathura), false);
 
-  zathura_document_t* document    = zathura_get_document(zathura);
-  const unsigned int npag         = zathura_document_get_number_of_pages(document);
-  const unsigned int current_page = zathura_document_get_current_page_number(document);
-  zathura_page_t* c_page          = zathura_document_get_page(document, current_page);
-
-  girara_debug("Setting page equal mode to: %d", mode);
-  for (unsigned int i = 0; i != npag; i++) {
-    zathura_page_t* page_i = zathura_document_get_page(document, i);
-
-    switch (mode) {
-    case ZATHURA_EQUAL_WIDTH:
-      zathura_page_set_zoom(page_i, zathura_page_get_width(c_page) / zathura_page_get_width(page_i));
-      break;
-    case ZATHURA_EQUAL_HEIGHT:
-      zathura_page_set_zoom(page_i, zathura_page_get_height(c_page) / zathura_page_get_height(page_i));
-      break;
-    default:
-      zathura_page_set_zoom(page_i, 1.0);
-    }
-  }
-
-  zathura_document_widget_render_all(zathura->ui.document_widget);
+  zathura_document_widget_set_equal_mode(zathura->ui.document_widget, mode);
   refresh_view(zathura);
-
   return true;
 }
 
@@ -597,30 +509,16 @@ bool sc_reload(girara_session_t* session, girara_argument_t* UNUSED(argument), g
     return false;
   }
 
-  /* Get file info (zoom, current page, etc.) */
-  zathura_fileinfo_t file_info;
-  if (zathura->document == NULL && zathura->predecessor_document != NULL) {
-    /* Try to get the info from the predecessor document if the current does not exist */
-    file_info = zathura_get_prefileinfo(zathura);
-  } else {
-    file_info = zathura_get_fileinfo(zathura);
+  if (!zathura_has_document(zathura)) {
+    return false;
   }
 
-  /* close current document */
-  girara_debug("closing document");
-  document_close(zathura, true);
+  zathura_fileinfo_t file_info = zathura_get_fileinfo(zathura);
+  const bool opened = document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
+                                    zathura->file_monitor.password, file_info.current_page, &file_info);
+  g_free(file_info.first_page_column_list);
 
-  /* reopen document with old file info */
-  girara_debug("reopening document on page %u", file_info.current_page);
-  document_open(zathura, zathura_filemonitor_get_filepath(zathura->file_monitor.monitor), NULL,
-                zathura->file_monitor.password, file_info.current_page, &file_info);
-
-  // redo search to preserve the previous search state
-  if (zathura->global.search_string && zathura->global.are_search_results_highlighted) {
-    g_idle_add_full(G_PRIORITY_LOW + 10, redo_search, zathura, NULL);
-  }
-
-  return true;
+  return opened;
 }
 
 bool sc_rotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event), unsigned int t) {
@@ -764,12 +662,12 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
   /* If PAGE_TOP or PAGE_BOTTOM, go there and we are done */
   if (argument->n == PAGE_TOP) {
     double dontcare = 0.5;
-    page_number_to_position(zathura, page_id, dontcare, 0.0, &dontcare, &pos_y);
+    page_number_to_position(zathura->ui.document_widget, page_id, dontcare, 0.0, &dontcare, &pos_y);
     position_set(zathura, pos_x, pos_y);
     return false;
   } else if (argument->n == PAGE_BOTTOM) {
     double dontcare = 0.5;
-    page_number_to_position(zathura, page_id, dontcare, 1.0, &dontcare, &pos_y);
+    page_number_to_position(zathura->ui.document_widget, page_id, dontcare, 1.0, &dontcare, &pos_y);
     position_set(zathura, pos_x, pos_y);
     return false;
   }
@@ -902,24 +800,24 @@ bool sc_scroll(girara_session_t* session, girara_argument_t* argument, girara_ev
     switch (argument->n) {
     case FULL_LEFT:
     case HALF_LEFT:
-      page_number_to_position(zathura, new_page_id, 1.0, 0.0, &pos_x, &dummy);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 1.0, 0.0, &pos_x, &dummy);
       break;
 
     case FULL_RIGHT:
     case HALF_RIGHT:
-      page_number_to_position(zathura, new_page_id, 0.0, 0.0, &pos_x, &dummy);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 0.0, &pos_x, &dummy);
       break;
 
     case FULL_UP:
     case HALF_UP:
     case PARTIAL_UP:
-      page_number_to_position(zathura, new_page_id, 0.0, 1.0, &dummy, &pos_y);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 1.0, &dummy, &pos_y);
       break;
 
     case FULL_DOWN:
     case HALF_DOWN:
     case PARTIAL_DOWN:
-      page_number_to_position(zathura, new_page_id, 0.0, 0.0, &dummy, &pos_y);
+      page_number_to_position(zathura->ui.document_widget, new_page_id, 0.0, 0.0, &dummy, &pos_y);
       break;
     }
   }
@@ -1464,7 +1362,7 @@ bool sc_toggle_page_mode(girara_session_t* session, girara_argument_t* UNUSED(ar
   }
 
   girara_setting_set(zathura->ui.session, "pages-per-row", &value);
-  adjust_view(zathura);
+  zathura_document_widget_adjust_view(zathura->ui.document_widget);
 
   page_set(zathura, page_id, -1, -1, false);
   zathura_document_widget_render_all(zathura->ui.document_widget);

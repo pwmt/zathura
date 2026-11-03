@@ -39,18 +39,19 @@ GType zathura_document_widget_get_type(void);
  * Create a document view widget.
  *
  * @param zathura the zathura instance
- * @param zathura_document the associated document, or NULL for an empty widget
+ * @param document the associated document
  * @return a document view widget
  */
 GtkWidget* zathura_document_widget_new(zathura_t* zathura, zathura_document_t* document);
 
 /**
  * Associate a document with the widget and initialize its page storage.
- * Existing page widgets are released first.
+ * Existing rendering is stopped and page widgets are released first.
+ * A renderer is created and configured for the new document.
  *
- * @param document the document widget
- * @param zathura_document the document, or NULL to clear the widget
- * @return true on success
+ * @param document_widget A non-NULL document widget
+ * @param document The document to associate, or NULL to clear the widget
+ * @return true on success, false if page storage or renderer creation fails
  */
 bool zathura_document_widget_set_document(ZathuraDocumentWidget* document_widget, zathura_document_t* document);
 
@@ -61,6 +62,74 @@ bool zathura_document_widget_set_document(ZathuraDocumentWidget* document_widget
  * @return the associated document
  */
 zathura_document_t* zathura_document_widget_get_document(ZathuraDocumentWidget* document);
+
+/**
+ * Enable or disable document recoloring.
+ *
+ * A changed value invalidates rendered page surfaces and cached thumbnails.
+ *
+ * @param document A non-NULL document widget
+ * @param enable true to enable recoloring, false to disable it
+ * @return true if the value changed; false if unchanged or the widget has no document
+ */
+bool zathura_document_widget_set_recolor(ZathuraDocumentWidget* document, bool enable);
+
+/**
+ * Enable or disable hue preservation during recoloring.
+ *
+ * A changed value invalidates rendered page surfaces and cached thumbnails.
+ *
+ * @param document A non-NULL document widget
+ * @param enable true to preserve hues, false to disable hue preservation
+ * @return true if the value changed; false if unchanged or the widget has no document
+ */
+bool zathura_document_widget_set_recolor_hue(ZathuraDocumentWidget* document, bool enable);
+
+/**
+ * Enable or disable image preservation in reverse-video recoloring.
+ *
+ * A changed value invalidates rendered page surfaces and cached thumbnails.
+ *
+ * @param document A non-NULL document widget
+ * @param enable true to preserve images, false to recolor them
+ * @return true if the value changed; false if unchanged or the widget has no document
+ */
+bool zathura_document_widget_set_recolor_reverse_video(ZathuraDocumentWidget* document, bool enable);
+
+/**
+ * Enable or disable lightness adjustment during recoloring.
+ *
+ * A changed value invalidates rendered page surfaces and cached thumbnails.
+ *
+ * @param document A non-NULL document widget
+ * @param enable true to adjust lightness, false to disable the adjustment
+ * @return true if the value changed; false if unchanged or the widget has no document
+ */
+bool zathura_document_widget_set_recolor_adjust_lightness(ZathuraDocumentWidget* document, bool enable);
+
+/**
+ * Set recolor colors using color strings.
+ *
+ * Parse and compare the supplied colors before updating the renderer. Changed colors
+ * invalidate rendered page surfaces and cached thumbnails. Invalid colors are ignored.
+ *
+ * @param document A non-NULL document widget
+ * @param light Light color string, or NULL to leave it unchanged
+ * @param dark Dark color string, or NULL to leave it unchanged
+ * @return true if colors changed; false if unchanged or the widget has no document
+ */
+bool zathura_document_widget_set_recolor_colors(ZathuraDocumentWidget* document, const char* light, const char* dark);
+
+/**
+ * Stop page-widget preloading and rendering for the current document.
+ *
+ * Wait for rendering workers to finish. Existing page widgets and cached surfaces
+ * remain available, but the stopped renderer cannot accept new jobs. Attaching a
+ * document with zathura_document_widget_set_document() creates a new renderer.
+ *
+ * @param document A non-NULL document widget
+ */
+void zathura_document_widget_stop(ZathuraDocumentWidget* document);
 
 /**
  * Return a page widget by page number.
@@ -281,7 +350,7 @@ void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, 
                                                unsigned int* width);
 
 /**
- * Release all page widgets and clear the associated document and layout.
+ * Stop and release the renderer and all page widgets, then clear the associated document and layout.
  *
  * @param document ZathuraDocumentWidget
  */
@@ -404,6 +473,19 @@ bool zathura_document_widget_get_page_relative_position(ZathuraDocumentWidget* d
                                                         double* position_y);
 
 /**
+ * Set the position.
+ *
+ * Coordinates are relative to the whole document in grid mode and to the
+ * current page in single-page mode. If negative coordinates are specified, the
+ * configured page alignment is used to compute the position.
+ *
+ * @param widget A non-NULL document widget with an associated document and computed layout
+ * @param position_x Horizontal viewport center (0=left, 1=right), or a negative value for page alignment
+ * @param position_y Vertical viewport center (0=top, 1=bottom), or a negative value for page alignment
+ */
+void zathura_document_widget_set_position(ZathuraDocumentWidget* widget, double position_x, double position_y);
+
+/**
  * Sets the X position as a value relative to the document width (0=left,
  * 1=right)
  *
@@ -436,5 +518,45 @@ zathura_adjust_mode_t zathura_document_widget_get_adjust_mode(ZathuraDocumentWid
  * @param mode The new adjust mode
  */
 void zathura_document_widget_set_adjust_mode(ZathuraDocumentWidget* document, zathura_adjust_mode_t mode);
+
+/**
+ * Scale individual pages to match the current page's width or height.
+ *
+ * Recompute layout and invalidate rendered pages after applying the page zoom factors.
+ * ZATHURA_EQUAL_NONE resets individual page zoom factors to 1.0.
+ *
+ * @param widget A non-NULL document widget with an associated document
+ * @param mode ZATHURA_EQUAL_WIDTH, ZATHURA_EQUAL_HEIGHT, or ZATHURA_EQUAL_NONE
+ */
+void zathura_document_widget_set_equal_mode(ZathuraDocumentWidget* widget, zathura_equal_mode_t mode);
+
+/**
+ * Adjust the document zoom to the widget's viewport and adjustment mode.
+ *
+ * Uses the widget's associated document and layout, including for detached widgets.
+ * A zoom change that materially changes page dimensions invalidates rendered pages.
+ *
+ * @param widget A non-NULL document widget
+ * @return true if no adjustment is needed or the adjustment was processed;
+ *         false if no document is associated or required geometry is unavailable
+ */
+bool zathura_document_widget_adjust_view(ZathuraDocumentWidget* widget);
+
+/**
+ * Prepare layout and queue background renders for pages intersecting the viewport.
+ *
+ * Parse visible pages until layout dimensions settle, clamp the viewport center,
+ * and submit their existing page-widget render requests. The widget may be detached;
+ * its layout and nonzero viewport dimensions must be configured beforehand.
+ * Rendering completes on the renderer thread; surfaces are installed on the main thread.
+ *
+ * @param document A non-NULL document widget with an associated document
+ * @param position_x Saved horizontal viewport center, or a negative value to retain the current position or page anchor
+ * @param position_y Saved vertical viewport center, or a negative value to retain the current position or page anchor
+ * @return true if visible pages were queued; false if required document or viewport
+ *         state is unavailable, or parsing or layout stabilization fails
+ */
+bool zathura_document_widget_prepare_visible_pages(ZathuraDocumentWidget* document, double position_x,
+                                                   double position_y);
 
 #endif // DOCUMENT_WIDGET_H

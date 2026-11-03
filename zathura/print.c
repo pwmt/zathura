@@ -8,7 +8,6 @@
 #include <glib/gi18n.h>
 
 #include "document.h"
-#include "render.h"
 #include "page.h"
 #include "internal.h"
 
@@ -22,17 +21,15 @@ static void cb_print_end(GtkPrintOperation* UNUSED(print_operation), GtkPrintCon
   girara_statusbar_item_set_text(zathura->ui.statusbar.file, file_path);
 }
 
-static bool draw_page_cairo(cairo_t* cairo, zathura_t* zathura, zathura_page_t* page) {
+static bool draw_page_cairo(cairo_t* cairo, zathura_page_t* page) {
   /* Try to render the page without a temporary surface. This only works with
    * plugins that support rendering to any surface.  */
-  zathura_renderer_lock(zathura->sync.render_thread);
   const zathura_error_t err = zathura_page_render(page, cairo, true);
-  zathura_renderer_unlock(zathura->sync.render_thread);
 
   return err == ZATHURA_ERROR_OK;
 }
 
-static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t* zathura, zathura_page_t* page) {
+static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_page_t* page) {
   /* Try to render the page on a temporary image surface. */
   const double width  = gtk_print_context_get_width(context);
   const double height = gtk_print_context_get_height(context);
@@ -61,9 +58,7 @@ static bool draw_page_image(cairo_t* cairo, GtkPrintContext* context, zathura_t*
   cairo_restore(temp_cairo);
 
   /* Render the page to the temporary surface */
-  zathura_renderer_lock(zathura->sync.render_thread);
   const zathura_error_t err = zathura_page_render(page, temp_cairo, true);
-  zathura_renderer_unlock(zathura->sync.render_thread);
   if (err != ZATHURA_ERROR_OK) {
     cairo_destroy(temp_cairo);
     cairo_surface_destroy(surface);
@@ -104,12 +99,12 @@ static void cb_print_draw_page(GtkPrintOperation* print_operation, GtkPrintConte
   }
 
   girara_debug("printing page %u ...", page_number);
-  if (draw_page_cairo(cairo, zathura, page) == true) {
+  if (draw_page_cairo(cairo, page) == true) {
     return;
   }
 
   girara_debug("printing page %u (fallback) ...", page_number);
-  if (draw_page_image(cairo, context, zathura, page) == false) {
+  if (draw_page_image(cairo, context, page) == false) {
     gtk_print_operation_cancel(print_operation);
   }
 }

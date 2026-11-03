@@ -21,10 +21,11 @@
 #include "document-widget.h"
 
 typedef struct zathura_page_widget_private_s {
-  zathura_page_t* page;                 /**< Page object */
-  zathura_t* zathura;                   /**< Zathura object */
-  cairo_surface_t* surface;             /**< Cairo surface */
-  cairo_surface_t* thumbnail;           /**< Cairo surface */
+  zathura_page_t* page;       /**< Page object */
+  zathura_t* zathura;         /**< Zathura object */
+  cairo_surface_t* surface;   /**< Cairo surface */
+  cairo_surface_t* thumbnail; /**< Cairo surface */
+  ZathuraRenderer* renderer;
   ZathuraRenderRequest* render_request; /* Request object */
   bool cached;                          /**< Cached state */
 
@@ -93,6 +94,7 @@ static void cb_zathura_page_widget_motion_notify(GtkEventControllerMotion* contr
                                                  gpointer data);
 static void cb_zathura_page_widget_leave_notify(GtkEventControllerMotion* controller, gpointer data);
 static void cb_update_surface(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
+static void cb_render_failed(ZathuraRenderRequest* request, ZathuraPageWidget* widget);
 static void cb_cache_added(ZathuraRenderRequest* request, void* data);
 static void cb_cache_invalidated(ZathuraRenderRequest* request, void* data);
 static bool surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t* old);
@@ -119,6 +121,8 @@ enum {
   BUTTON_RELEASE,
   ENTER_LINK,
   LEAVE_LINK,
+  RENDERED,
+  RENDER_FAILED,
   LAST_SIGNAL,
 };
 
@@ -189,6 +193,12 @@ static void zathura_page_widget_class_init(ZathuraPageWidgetClass* class) {
 
   signals[BUTTON_RELEASE] = g_signal_new("scaled-button-release", ZATHURA_TYPE_PAGE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL,
                                          NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+  signals[RENDERED] = g_signal_new("rendered", ZATHURA_TYPE_PAGE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                   g_cclosure_marshal_generic, G_TYPE_NONE, 0);
+
+  signals[RENDER_FAILED] = g_signal_new("render-failed", ZATHURA_TYPE_PAGE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                        g_cclosure_marshal_generic, G_TYPE_NONE, 0);
 }
 
 static void zathura_page_widget_init(ZathuraPageWidget* widget) {
@@ -260,8 +270,9 @@ static void zathura_page_widget_init(ZathuraPageWidget* widget) {
   gtk_widget_insert_action_group(GTK_WIDGET(widget), "image", G_ACTION_GROUP(priv->image_actions));
 }
 
-GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page) {
+GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page, ZathuraRenderer* renderer) {
   g_return_val_if_fail(page != NULL, NULL);
+  g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer), NULL);
 
   GObject* ret = g_object_new(ZATHURA_TYPE_PAGE_WIDGET, "page", page, "zathura", zathura, NULL);
   if (ret == NULL) {
@@ -270,8 +281,10 @@ GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page) {
 
   ZathuraPageWidget* widget      = ZATHURA_PAGE_WIDGET(ret);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
-  priv->render_request           = zathura_render_request_new(zathura->sync.render_thread, page);
+  priv->renderer                 = g_object_ref(renderer);
+  priv->render_request           = zathura_render_request_new(renderer, page);
   g_signal_connect_object(priv->render_request, "completed", G_CALLBACK(cb_update_surface), widget, 0);
+  g_signal_connect_object(priv->render_request, "failed", G_CALLBACK(cb_render_failed), widget, 0);
   g_signal_connect_object(priv->render_request, "cache-added", G_CALLBACK(cb_cache_added), widget, 0);
   g_signal_connect_object(priv->render_request, "cache-invalidated", G_CALLBACK(cb_cache_invalidated), widget, 0);
 
@@ -283,6 +296,7 @@ static void zathura_page_widget_dispose(GObject* object) {
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
 
   g_clear_object(&priv->render_request);
+  g_clear_object(&priv->renderer);
   g_clear_pointer(&priv->image_popover, gtk_widget_unparent);
   g_clear_object(&priv->image_actions);
   g_clear_pointer(&priv->drawing_area, gtk_widget_unparent);
@@ -513,25 +527,6 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
 
   bool surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
 
-  if (zathura->predecessor_document != NULL && zathura->predecessor_document_widget != NULL && !surface_exists) {
-    unsigned int page_index     = zathura_page_get_index(priv->page);
-    GtkWidget* predecessor_page = zathura_document_widget_get_page(zathura->predecessor_document_widget, page_index);
-
-    if (page_index < zathura_document_get_number_of_pages(priv->zathura->predecessor_document) &&
-        predecessor_page != NULL) {
-      /* render real page */
-      if (page_widget_on_screen(widget) == true) {
-        zathura_render_request(priv->render_request, g_get_real_time());
-      }
-
-      girara_debug("using predecessor page for idx %d", page_index);
-      document = priv->zathura->predecessor_document;
-      page     = ZATHURA_PAGE_WIDGET(predecessor_page);
-      priv     = zathura_page_widget_get_instance_private(page);
-    }
-    surface_exists = priv->surface != NULL || priv->thumbnail != NULL;
-  }
-
   if (surface_exists) {
     cairo_save(cairo);
 
@@ -721,7 +716,7 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
     /* No cached surface yet, render the on-screen page synchronously. All other rendering is asynchronous
      * This makes the rendering of the first page much faster and avoids the "Loading..." message as well */
     if (page_widget_on_screen(widget) == true && priv->zathura->sync.initial_render_held == false) {
-      cairo_surface_t* rendered = zathura_renderer_render_page(zathura->sync.render_thread, priv->page);
+      cairo_surface_t* rendered = zathura_renderer_render_page(priv->renderer, priv->page);
       if (rendered != NULL) {
         zathura_page_widget_update_surface(page, rendered, false);
         cairo_set_source_surface(cairo, rendered, 0, 0);
@@ -735,8 +730,8 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
 
     GdkRGBA color_fg = priv->zathura->ui.colors.render_loading_fg;
     GdkRGBA color_bg = priv->zathura->ui.colors.render_loading_bg;
-    if (zathura_renderer_recolor_enabled(priv->zathura->sync.render_thread) == true) {
-      zathura_renderer_get_recolor_colors(priv->zathura->sync.render_thread, &color_bg, &color_fg);
+    if (zathura_renderer_recolor_enabled(priv->renderer) == true) {
+      zathura_renderer_get_recolor_colors(priv->renderer, &color_bg, &color_fg);
     }
 
     /* set background color and draw */
@@ -908,6 +903,12 @@ static void cb_update_surface(ZathuraRenderRequest* UNUSED(request), cairo_surfa
       zathura_page_get_index(priv->page) == zathura_document_get_current_page_number(document)) {
     statusbar_page_number_update(priv->zathura);
   }
+
+  g_signal_emit(widget, signals[RENDERED], 0);
+}
+
+static void cb_render_failed(ZathuraRenderRequest* UNUSED(request), ZathuraPageWidget* widget) {
+  g_signal_emit(widget, signals[RENDER_FAILED], 0);
 }
 
 static void cb_cache_added(ZathuraRenderRequest* UNUSED(request), void* data) {
@@ -1381,8 +1382,10 @@ void zathura_page_widget_update_view_time(ZathuraPageWidget* widget) {
   if (zathura_page_get_visibility(priv->page) == true) {
     zathura_render_request_update_view_time(priv->render_request);
   }
-  /* do not kick the initial render while it is held */
-  if (priv->surface == NULL && priv->zathura->sync.initial_render_held == false) {
+  /* The initial-render hold applies to the active document, not a detached replacement. */
+  const bool render_held = priv->zathura->sync.initial_render_held &&
+                           zathura_page_get_document(priv->page) == zathura_get_document(priv->zathura);
+  if (priv->surface == NULL && !render_held) {
     zathura_render_request(priv->render_request, g_get_real_time());
   }
 }

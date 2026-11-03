@@ -412,7 +412,11 @@ zathura_error_t zathura_page_render(zathura_page_t* page, cairo_t* cairo, bool p
   const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
   const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
 
-  return functions->page_render_cairo(page, page->data, cairo, printing);
+  /* Loading takes the same lock, so serialize backend rendering only after it has completed. */
+  zathura_document_lock(page->document);
+  error = functions->page_render_cairo(page, page->data, cairo, printing);
+  zathura_document_unlock(page->document);
+  return error;
 }
 
 const char* zathura_page_get_label(zathura_page_t* page, zathura_error_t* error) {

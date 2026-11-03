@@ -123,8 +123,9 @@ struct zathura_s {
   } ui;
 
   struct {
-    ZathuraRenderer* render_thread; /**< The thread responsible for rendering the pages */
-    bool initial_render_held;       /**< holds the focused page first render until the view is painted */
+    struct document_replacement_s* replacement; /**< Detached view waiting for its focused page */
+    guint reload_search_source;                 /**< Search refresh queued after installing a replacement */
+    bool initial_render_held;                   /**< holds the focused page first render until the view is painted */
     bool scale_settled;       /**< set when the device scale settled so the viewport allocation renders the page */
     bool view_painted;        /**< set after the first frame so a display that never changes scale renders next frame */
     bool initial_render_done; /**< set once the first render has happened so later opens do not hold */
@@ -190,11 +191,9 @@ struct zathura_s {
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document;                       /**< The current document */
-  zathura_document_t* predecessor_document;           /**< The document from before a reload */
-  ZathuraDocumentWidget* predecessor_document_widget; /**< The document widget from before a reload */
-  zathura_database_t* database;                       /**< The database */
-  ZathuraDbus* dbus;                                  /**< D-Bus service */
+  zathura_document_t* document; /**< The current document */
+  zathura_database_t* database; /**< The database */
+  ZathuraDbus* dbus;            /**< D-Bus service */
 
   /**
    * File monitor
@@ -334,9 +333,9 @@ void zathura_update_view_ppi(zathura_t* zathura);
  * @param path The path to the file
  * @param password The password of the file
  * @param page_number Open given page number
- * @param file_info Open given page number
+ * @param file_info Borrowed saved state, or NULL. When provided, an active document can be replaced.
  *
- * @return If no error occurred true, otherwise false, is returned.
+ * @return true if opened or a background replacement was accepted; false on immediate failure.
  */
 bool document_open(zathura_t* zathura, const char* path, const char* uri, const char* password, int page_number,
                    zathura_fileinfo_t* file_info);
@@ -397,23 +396,6 @@ bool document_save(zathura_t* zathura, const char* path, bool overwrite);
 zathura_fileinfo_t zathura_get_fileinfo(zathura_t* zathura);
 
 /**
- * Get fileinfo of the predecessor document (zoom, current page, etc).
- *
- * @param zathura The zathura session
- *
- * @return file_info (caller needs to g_free(file_info.first_page_column_list))
- */
-zathura_fileinfo_t zathura_get_prefileinfo(zathura_t* zathura);
-
-/**
- * Frees the "predecessor" buffers used for smooth-reload
- *
- * @param zathura The zathura session
- * @return If no error occurred true, otherwise false, is returned.
- */
-bool document_predecessor_free(zathura_t* zathura);
-
-/**
  * Closes the current opened document
  *
  * @param zathura The zathura session
@@ -450,13 +432,6 @@ bool position_set(zathura_t* zathura, double position_x, double position_y);
  * @param zathura Zathura session
  */
 void refresh_view(zathura_t* zathura);
-
-/**
- * Recompute the scale according to settings
- *
- * @param zathura Zathura session
- */
-bool adjust_view(zathura_t* zathura);
 
 /**
  * Updates the page number in the statusbar. Note that 1 will be added to the

@@ -190,7 +190,7 @@ static void mark_evaluate(zathura_t* zathura, int key) {
       zathura_document_set_zoom(zathura_get_document(zathura),
                                 zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
 
-      adjust_view(zathura);
+      zathura_document_widget_adjust_view(zathura->ui.document_widget);
       zathura_document_widget_render_all(zathura->ui.document_widget);
 
       page_set(zathura, mark->page, mark->position_x, mark->position_y, false);

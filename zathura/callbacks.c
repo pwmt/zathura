@@ -15,8 +15,8 @@
 
 #include "links-internal.h"
 #include "zathura.h"
-#include "render.h"
 #include "document.h"
+#include "database.h"
 #include "document-widget.h"
 #include "index-element-object.h"
 #include "utils.h"
@@ -219,10 +219,6 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
     return;
   }
 
-  if (zathura_document_widget_page_has_surface(zathura->ui.document_widget, page_id)) {
-    document_predecessor_free(zathura);
-  }
-
   GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
   GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
 
@@ -350,7 +346,7 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   zathura_document_t* document    = zathura_get_document(zathura);
   const unsigned int current_page = zathura_document_get_current_page_number(document);
   double anchor_x = 0.0, anchor_y = 0.0;
-  page_number_to_position(zathura, current_page, 0.5, 0.5, &anchor_x, &anchor_y);
+  page_number_to_position(zathura->ui.document_widget, current_page, 0.5, 0.5, &anchor_x, &anchor_y);
   zathura_document_widget_set_position_x(zathura->ui.document_widget, anchor_x);
   zathura_document_widget_set_position_y(zathura->ui.document_widget, anchor_y);
   refresh_view(zathura);
@@ -455,17 +451,16 @@ void cb_file_monitor(ZathuraFileMonitor* monitor, girara_session_t* session) {
   g_main_context_invoke(NULL, file_monitor_reload, session);
 }
 
-static void password_dialog_info_free(zathura_password_dialog_info_t* dialog) {
-  if (dialog == NULL) {
-    return;
+void zathura_password_dialog_info_free(zathura_password_dialog_info_t* dialog) {
+  if (dialog) {
+    g_free(dialog->path);
+    g_free(dialog->uri);
+    g_free(dialog);
   }
-  g_free(dialog->path);
-  g_free(dialog->uri);
-  g_free(dialog);
 }
 
 static void cb_password_dialog_hide(GtkWidget* UNUSED(w), void* data) {
-  password_dialog_info_free(data);
+  zathura_password_dialog_info_free(data);
 }
 
 static void password_dialog_arm_hide(zathura_password_dialog_info_t* dialog) {
@@ -500,24 +495,33 @@ static gboolean password_dialog(gpointer data) {
 gboolean cb_password_dialog(GiraraDialog* inputbar, const char* input, void* data) {
   g_signal_handlers_disconnect_matched(inputbar, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DATA,
                                        g_signal_lookup("hide", GTK_TYPE_WIDGET), 0, NULL, NULL, data);
-  zathura_password_dialog_info_t* dialog = data;
+  g_autoptr(zathura_password_dialog_info_t) dialog = data;
   if (input == NULL || dialog == NULL || dialog->path == NULL || dialog->zathura == NULL) {
-    password_dialog_info_free(dialog);
     return false;
   }
 
-  /* no or empty password: ask again */
+  // No or empty password: ask again
   if (input == NULL || strlen(input) == 0) {
-    g_idle_add(password_dialog, dialog);
+    g_idle_add(password_dialog, g_steal_pointer(&dialog));
     return false;
+  }
+
+  // Passwort prompt from a reload leaves the password dialg open until the retry succeeds.
+  const bool reloading         = zathura_has_document(dialog->zathura);
+  zathura_fileinfo_t file_info = {0};
+  if (reloading) {
+    if (g_strcmp0(zathura_document_get_path(zathura_get_document(dialog->zathura)), dialog->path) != 0) {
+      return false;
+    }
+    file_info = zathura_get_fileinfo(dialog->zathura);
   }
 
   /* try to open document again */
-  if (document_open(dialog->zathura, dialog->path, dialog->uri, input, ZATHURA_PAGE_NUMBER_UNSPECIFIED, NULL) ==
-      false) {
-    g_idle_add(password_dialog, dialog);
-  } else {
-    password_dialog_info_free(dialog);
+  const bool opened = document_open(dialog->zathura, dialog->path, dialog->uri, input, ZATHURA_PAGE_NUMBER_UNSPECIFIED,
+                                    reloading ? &file_info : NULL);
+  g_free(file_info.first_page_column_list);
+  if (!opened) {
+    g_idle_add(password_dialog, g_steal_pointer(&dialog));
   }
 
   return true;
@@ -531,18 +535,8 @@ void cb_setting_recolor_change(girara_session_t* session, const char* name, gira
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((const bool*)value);
-
-  if (zathura->sync.render_thread != NULL &&
-      zathura_renderer_recolor_enabled(zathura->sync.render_thread) != bool_value) {
-    zathura_renderer_enable_recolor(zathura->sync.render_thread, bool_value);
-    zathura_document_widget_render_all(zathura->ui.document_widget);
-
-    // the old page thumbnails have been rendered with the old setting, so we need to drop all of them
-    // TODO: move this somewhere it makes sense
-    if (zathura->ui.document_widget) {
-      zathura_document_widget_clear_thumbnails(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
-    }
+  if (zathura->ui.document_widget) {
+    zathura_document_widget_set_recolor(zathura->ui.document_widget, *(const bool*)value);
   }
 }
 
@@ -554,12 +548,8 @@ void cb_setting_recolor_keep_hue_change(girara_session_t* session, const char* n
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((const bool*)value);
-
-  if (zathura->sync.render_thread != NULL &&
-      zathura_renderer_recolor_hue_enabled(zathura->sync.render_thread) != bool_value) {
-    zathura_renderer_enable_recolor_hue(zathura->sync.render_thread, bool_value);
-    zathura_document_widget_render_all(zathura->ui.document_widget);
+  if (zathura->ui.document_widget) {
+    zathura_document_widget_set_recolor_hue(zathura->ui.document_widget, *(const bool*)value);
   }
 }
 
@@ -572,12 +562,8 @@ void cb_setting_recolor_keep_reverse_video_change(girara_session_t* session, con
   g_return_if_fail(name != NULL);
   zathura_t* zathura = session->global.data;
 
-  const bool bool_value = *((const bool*)value);
-
-  if (zathura->sync.render_thread != NULL &&
-      zathura_renderer_recolor_reverse_video_enabled(zathura->sync.render_thread) != bool_value) {
-    zathura_renderer_enable_recolor_reverse_video(zathura->sync.render_thread, bool_value);
-    zathura_document_widget_render_all(zathura->ui.document_widget);
+  if (zathura->ui.document_widget) {
+    zathura_document_widget_set_recolor_reverse_video(zathura->ui.document_widget, *(const bool*)value);
   }
 }
 

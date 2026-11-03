@@ -697,7 +697,7 @@ bool search_document(zathura_t* zathura, girara_argument_t* argument, bool disab
     /* compute the position of the center of the page */
     double pos_x = 0;
     double pos_y = 0;
-    page_number_to_position(zathura, zathura_page_get_index(target_page), 0.5, 0.5, &pos_x, &pos_y);
+    page_number_to_position(zathura->ui.document_widget, zathura_page_get_index(target_page), 0.5, 0.5, &pos_x, &pos_y);
 
     /* correction to center the current result                          */
     /* NOTE: rectangle is in viewport units, already scaled and rotated */

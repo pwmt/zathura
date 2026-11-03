@@ -122,21 +122,6 @@ void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer, GdkRGBA* lig
 void zathura_renderer_stop(ZathuraRenderer* renderer);
 
 /**
- * Lock the render thread. This is useful if you want to render on your own (e.g
- * for printing).
- *
- * @param renderer renderer object
- */
-void zathura_renderer_lock(ZathuraRenderer* renderer);
-
-/**
- * Unlock the render thread.
- *
- * @param renderer renderer object.
- */
-void zathura_renderer_unlock(ZathuraRenderer* renderer);
-
-/**
  * Add a page to the page cache.
  *
  * @param renderer renderer object.

@@ -97,26 +97,38 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   }
 }
 
-void page_number_to_position(zathura_t* zathura, unsigned int page_number, double xalign, double yalign, double* pos_x,
-                             double* pos_y) {
-  g_return_if_fail(zathura != NULL);
-  g_return_if_fail(zathura_has_document(zathura));
+void page_number_to_position(ZathuraDocumentWidget* widget, unsigned int page_number, double xalign, double yalign,
+                             double* pos_x, double* pos_y) {
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(zathura_document_widget_get_document(widget) != NULL);
 
   /* sizes of page cell, viewport and document */
   unsigned int cell_height = 0, cell_width = 0;
-  zathura_document_widget_get_cell_size(zathura->ui.document_widget, page_number, &cell_height, &cell_width);
+  zathura_document_widget_get_cell_size(widget, page_number, &cell_height, &cell_width);
 
   unsigned int cell_pos_x = 0, cell_pos_y = 0;
-  zathura_document_widget_get_cell_pos(zathura->ui.document_widget, page_number, &cell_pos_x, &cell_pos_y);
+  zathura_document_widget_get_cell_pos(widget, page_number, &cell_pos_x, &cell_pos_y);
 
   unsigned int view_height = 0, view_width = 0;
-  zathura_document_widget_get_viewport_size(zathura->ui.document_widget, &view_height, &view_width);
+  zathura_document_widget_get_viewport_size(widget, &view_height, &view_width);
 
   unsigned int doc_height = 0, doc_width = 0;
-  zathura_document_widget_get_document_size(zathura->ui.document_widget, &doc_height, &doc_width);
+  zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
+
+  int mode = DOCUMENT_WIDGET_GRID;
+  g_object_get(widget, "layout-mode", &mode, NULL);
+  if (mode == DOCUMENT_WIDGET_SINGLE) {
+    zathura_document_t* document = zathura_document_widget_get_document(widget);
+    page_calc_height_width(document, zathura_document_get_page(document, page_number), &doc_height, &doc_width, true);
+    cell_height = doc_height;
+    cell_width  = doc_width;
+    cell_pos_x  = 0;
+    cell_pos_y  = 0;
+  }
 
   /* compute the shift to align to the viewport. If the page fits to viewport, just center it. */
-  double shift_x = 0.5, shift_y = 0.5;
+  double shift_x = 0.5;
+  double shift_y = 0.5;
   if (cell_width > view_width) {
     shift_x = 0.5 + (xalign - 0.5) * ((double)cell_width - (double)view_width) / (double)cell_width;
   }
