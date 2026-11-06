@@ -419,6 +419,14 @@ static void add_default_mouse_events(girara_session_t* gsession, girara_mode_t m
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, GIRARA_MOUSE_BUTTON2, sc_mouse_scroll, mode,
                          GIRARA_EVENT_BUTTON_RELEASE, 0, NULL);
   girara_mouse_event_add(gsession, GDK_BUTTON2_MASK, 0, sc_mouse_scroll, mode, GIRARA_EVENT_MOTION_NOTIFY, 0, NULL);
+
+  /* Ctrl + left button drag pans as well */
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK, GIRARA_MOUSE_BUTTON1, sc_mouse_scroll, mode,
+                         GIRARA_EVENT_BUTTON_PRESS, 0, NULL);
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK | GDK_BUTTON1_MASK, GIRARA_MOUSE_BUTTON1, sc_mouse_scroll, mode,
+                         GIRARA_EVENT_BUTTON_RELEASE, 0, NULL);
+  girara_mouse_event_add(gsession, GDK_CONTROL_MASK | GDK_BUTTON1_MASK, 0, sc_mouse_scroll, mode,
+                         GIRARA_EVENT_MOTION_NOTIFY, 0, NULL);
 }
 
 void config_load_default(zathura_t* zathura) {
