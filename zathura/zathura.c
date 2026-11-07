@@ -78,6 +78,8 @@ static void document_view_clear(document_view_t* view) {
   g_clear_pointer(&view->document, zathura_document_free);
 }
 
+G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC(document_view_t, document_view_clear)
+
 static void save_fileinfo_to_db(zathura_t* zathura);
 static void document_stop(zathura_t* zathura);
 static void document_index_clear(zathura_t* zathura);
@@ -1035,7 +1037,7 @@ static gboolean reload_search(gpointer data) {
 }
 
 static void document_view_install(zathura_t* zathura, document_view_t* pending, ZathuraFileMonitor* monitor,
-                                  char** monitor_password, bool replacing) {
+                                  char* monitor_password, bool replacing) {
   zathura_document_t* document  = pending->document;
   ZathuraDocumentWidget* widget = pending->widget;
 
@@ -1065,11 +1067,10 @@ static void document_view_install(zathura_t* zathura, document_view_t* pending, 
   g_signal_handlers_block_matched(hadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
   g_signal_handlers_block_matched(vadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
 
-  zathura->document           = pending->document;
-  zathura->ui.document_widget = pending->widget;
-  *pending                    = (document_view_t){0};
+  zathura->document           = g_steal_pointer(&pending->document);
+  zathura->ui.document_widget = g_steal_pointer(&pending->widget);
 
-  if (monitor != NULL) {
+  if (monitor) {
     zathura->file_monitor.monitor = monitor;
     zathura_filemonitor_start(monitor);
     monitor = NULL;
@@ -1088,9 +1089,9 @@ static void document_view_install(zathura_t* zathura, document_view_t* pending, 
   g_signal_handlers_unblock_matched(hadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
 
   document_view_clear(&previous);
-  if (*monitor_password != NULL) {
+  if (monitor_password) {
     g_free(zathura->file_monitor.password);
-    zathura->file_monitor.password = g_steal_pointer(monitor_password);
+    zathura->file_monitor.password = monitor_password;
   }
   document_index_clear(zathura);
   girara_set_view(zathura->ui.session, zathura->ui.view);
@@ -1152,10 +1153,92 @@ static void document_replacement_ready(ZathuraDocumentWidget* widget, zathura_t*
   document_replacement_t* replacement = g_steal_pointer(&zathura->sync.replacement);
   document_replacement_disconnect(widget, zathura);
 
-  document_view_install(zathura, &replacement->view, g_steal_pointer(&replacement->monitor), &replacement->password,
-                        true);
+  // Capture live navigation immediately before replacing the active view.
+  const unsigned int page                 = zathura_document_get_current_page_number(zathura->document);
+  const double position_x                 = zathura_document_widget_get_position_x(zathura->ui.document_widget);
+  const double position_y                 = zathura_document_widget_get_position_y(zathura->ui.document_widget);
+  const double zoom                       = zathura_document_get_zoom(zathura->document);
+  const unsigned int rotation             = zathura_document_get_rotation(zathura->document);
+  const zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
 
+  document_widget_mode_t layout_mode;
+  g_object_get(zathura->ui.document_widget, "layout-mode", &layout_mode, NULL);
+
+  document_view_install(zathura, &replacement->view, g_steal_pointer(&replacement->monitor),
+                        g_steal_pointer(&replacement->password), true);
   document_replacement_free(replacement, zathura);
+
+  // Apply changes made while the replacement was rendering to the installed view.
+  bool zoom_or_rotation_changed = false;
+  if (zathura_document_get_zoom(zathura->document) != zoom) {
+    zathura_document_set_zoom(zathura->document, zoom);
+    zoom_or_rotation_changed = true;
+  }
+  if (zathura_document_get_rotation(zathura->document) != rotation) {
+    zathura_document_set_rotation(zathura->document, rotation);
+    zoom_or_rotation_changed = true;
+  }
+  if (zoom_or_rotation_changed) {
+    zathura_document_widget_render_all(widget);
+  }
+
+  if (zathura_document_widget_get_adjust_mode(widget) != adjust_mode) {
+    zathura_document_widget_set_adjust_mode(widget, adjust_mode);
+  }
+  g_object_set(widget, "layout-mode", layout_mode, NULL);
+
+  unsigned int pages_per_row = 1;
+  girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
+  g_autofree char* first_page_column_list = NULL;
+  girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column_list);
+  const unsigned int first_page_column = find_first_page_column(first_page_column_list, pages_per_row);
+
+  bool page_right_to_left = false;
+  girara_setting_get(zathura->ui.session, "page-right-to-left", &page_right_to_left);
+  gboolean widget_right_to_left = FALSE;
+  g_object_get(widget, "pages-right-to-left", &widget_right_to_left, NULL);
+
+  if (zathura_document_widget_get_pages_per_row(widget) != pages_per_row ||
+      zathura_document_widget_get_first_page_column(widget) != first_page_column ||
+      widget_right_to_left != page_right_to_left) {
+    zathura_document_widget_set_page_layout(widget, zathura_document_widget_get_page_v_padding(widget),
+                                            zathura_document_widget_get_page_h_padding(widget), pages_per_row,
+                                            first_page_column);
+    g_object_set(widget, "pages-right-to-left", page_right_to_left, NULL);
+    zathura_document_widget_refresh_layout(widget);
+  }
+
+  // The following internally check if a change triggers any effects.
+  bool recolor = false;
+  girara_setting_get(zathura->ui.session, "recolor", &recolor);
+  zathura_document_widget_set_recolor(widget, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
+  zathura_document_widget_set_recolor_hue(widget, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-reverse-video", &recolor);
+  zathura_document_widget_set_recolor_reverse_video(widget, recolor);
+  girara_setting_get(zathura->ui.session, "recolor-adjust-lightness", &recolor);
+  zathura_document_widget_set_recolor_adjust_lightness(widget, recolor);
+
+  g_autofree char* recolor_light = NULL;
+  g_autofree char* recolor_dark  = NULL;
+  girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
+  girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
+  zathura_document_widget_set_recolor_colors(widget, recolor_light, recolor_dark);
+
+  // Only apply old position if open-first-page is not set.
+  bool always_first_page = false;
+  girara_setting_get(zathura->ui.session, "open-first-page", &always_first_page);
+  if (!always_first_page) {
+    const unsigned int count = zathura_document_get_number_of_pages(zathura->document);
+    const double target_y    = page < count ? position_y : -1;
+    page_set(zathura, MIN(page, count - 1), position_x, target_y, false);
+    if (zathura_document_widget_mode_change_pending(widget)) {
+      // Complete the mode transition before restoring its page-local scroll position.
+      zathura_document_widget_set_position(widget, position_x, target_y);
+      refresh_view(zathura);
+    }
+  }
+  zathura_document_widget_update_visible_pages(widget);
 }
 
 static void document_replacement_failed(ZathuraDocumentWidget* UNUSED(widget), zathura_t* zathura) {
@@ -1172,8 +1255,6 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   g_return_val_if_fail(!replacing || file_info_p != NULL, false);
   document_replacement_cancel(zathura);
 
-  document_view_t pending                 = {NULL};
-  ZathuraFileMonitor* monitor             = NULL;
   g_autofree char* first_page_column_list = NULL;
   g_autofree char* monitor_password       = g_strdup(password);
 
@@ -1186,12 +1267,12 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   zathura_document_t* document =
       zathura_document_open(zathura, tmp_path != NULL ? tmp_path : path, uri, monitor_password, &error);
 
-  if (document == NULL) {
+  if (!document) {
     if (error == ZATHURA_ERROR_INVALID_PASSWORD) {
       girara_debug("Invalid or no password.");
       g_autoptr(zathura_password_dialog_info_t) password_dialog_info =
           g_try_malloc0(sizeof(zathura_password_dialog_info_t));
-      if (password_dialog_info == NULL) {
+      if (!password_dialog_info) {
         return false;
       }
 
@@ -1210,14 +1291,14 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     return false;
   }
 
-  pending.document = document;
+  g_auto(document_view_t) pending = {.document = document};
 
   const char* file_path        = zathura_document_get_path(document);
   unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
-  if (number_of_pages == 0) {
+  if (!number_of_pages) {
     girara_notify(zathura->ui.session, GIRARA_WARNING, _("Document does not contain any pages"));
-    goto error_free;
+    return false;
   }
 
   // Read file info from database
@@ -1290,9 +1371,9 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   // Parse the displayed page and size the others from it until they are parsed
   const unsigned int current_page_number = zathura_document_get_current_page_number(document);
   zathura_page_t* current_page           = zathura_document_get_page(document, current_page_number);
-  if (current_page == NULL || zathura_page_load(current_page, NULL) == false) {
+  if (!current_page || !zathura_page_load(current_page, NULL)) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to parse the displayed page of the document"));
-    goto error_free;
+    return false;
   }
 
   const double width  = zathura_page_get_width(current_page);
@@ -1321,12 +1402,12 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   unsigned int page_v_padding = 1, page_h_padding = 1;
   girara_setting_get(zathura->ui.session, "page-v-padding", &page_v_padding);
   girara_setting_get(zathura->ui.session, "page-h-padding", &page_h_padding);
-  if (pages_per_row == 0) {
+  if (!pages_per_row) {
     girara_setting_get(zathura->ui.session, "pages-per-row", &pages_per_row);
   }
 
   // Read first_page_column list
-  if (first_page_column_list == NULL || *first_page_column_list == '\0') {
+  if (!first_page_column_list || *first_page_column_list == '\0') {
     g_clear_pointer(&first_page_column_list, g_free);
     girara_setting_get(zathura->ui.session, "first-page-column", &first_page_column_list);
   }
@@ -1336,8 +1417,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   // Create and fully configure the view only once there is a document to display
   pending.widget = document_widget_create(zathura, document, page_v_padding, page_h_padding, pages_per_row,
                                           first_page_column, file_info.page_right_to_left);
-  if (pending.widget == NULL) {
-    goto error_free;
+  if (!pending.widget) {
+    return false;
   }
 
   ZathuraDocumentWidget* widget = pending.widget;
@@ -1356,8 +1437,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   // Page widgets are created on demand, not all at once
-  if (zathura_document_widget_ensure_page(widget, page) == NULL) {
-    goto error_free;
+  if (!zathura_document_widget_ensure_page(widget, page)) {
+    return false;
   }
 
   // Get viewport size
@@ -1395,6 +1476,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   // Install file monitor
+  g_autoptr(ZathuraFileMonitor) monitor = NULL;
   if (!zathura->file_monitor.monitor) {
     g_autofree char* filemonitor_backend = NULL;
     girara_setting_get(zathura->ui.session, "filemonitor", &filemonitor_backend);
@@ -1411,51 +1493,53 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
 #endif
 
     monitor = zathura_filemonitor_new(file_path, type);
-    if (monitor == NULL) {
-      goto error_free;
+    if (!monitor) {
+      return false;
     }
+
     g_signal_connect(monitor, "reload-file", G_CALLBACK(cb_file_monitor), zathura->ui.session);
   }
 
   // Reloads retain the live bookmarks, jumplist and marks. An initial open loads history.
   if (!replacing) {
     // Bookmarks
-    if (zathura_bookmarks_load(zathura, file_path) == false) {
+    if (!zathura_bookmarks_load(zathura, file_path)) {
       girara_debug("Failed to load bookmarks.");
     }
 
     // Jumplist
-    if (zathura_jumplist_load(zathura, file_path) == false) {
+    if (!zathura_jumplist_load(zathura, file_path)) {
       girara_debug("Failed to load jumplist.");
     }
 
     // Quickmarks
-    if (zathura_quickmarks_load(zathura, file_path) == false) {
+    if (!zathura_quickmarks_load(zathura, file_path)) {
       girara_debug("Failed to load quickmarks.");
       zathura->global.marks = girara_list_new_with_free(g_free);
     }
 
-    if (zathura_jumplist_is_initialized(zathura) == false || zathura->global.marks == NULL) {
+    if (!zathura_jumplist_is_initialized(zathura) || !zathura->global.marks) {
       girara_error("No jumplist or no marks");
-      goto error_free;
+      return false;
     }
   }
 
-  /* Process layout preferences before rendering without applying them to the active view. */
-  zathura_document_t* active_document = zathura->document;
-  zathura->document                   = NULL;
+  // Process layout preferences before rendering without applying them to the active view.
+  // FIXME: this is a hack
+  zathura_document_t* active_document = g_steal_pointer(&zathura->document);
   girara_setting_set(zathura->ui.session, "pages-per-row", &pages_per_row);
   girara_setting_set(zathura->ui.session, "first-page-column", first_page_column_list);
-  zathura->document = active_document;
+  zathura->document = g_steal_pointer(&active_document);
 
   document_view_prepare(widget, view_width, view_height);
 
   if (replacing) {
     document_replacement_t* replacement = g_new0(document_replacement_t, 1);
 
-    replacement->view     = pending;
-    replacement->monitor  = monitor;
-    replacement->password = g_steal_pointer(&monitor_password);
+    replacement->view.document = g_steal_pointer(&pending.document);
+    replacement->view.widget   = g_steal_pointer(&pending.widget);
+    replacement->monitor       = g_steal_pointer(&monitor);
+    replacement->password      = g_steal_pointer(&monitor_password);
 
     zathura->sync.replacement = replacement;
 
@@ -1470,15 +1554,9 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   }
 
   initial_render_hold(zathura);
-  document_view_install(zathura, &pending, g_steal_pointer(&monitor), &monitor_password, false);
+  document_view_install(zathura, &pending, g_steal_pointer(&monitor), g_steal_pointer(&monitor_password), false);
 
   return true;
-
-error_free:
-  g_clear_object(&monitor);
-  document_view_clear(&pending);
-
-  return false;
 }
 
 bool document_open_synctex(zathura_t* zathura, const char* path, const char* uri, const char* password,
