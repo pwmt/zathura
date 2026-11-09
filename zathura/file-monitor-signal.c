@@ -3,7 +3,6 @@
 #include "file-monitor-signal.h"
 
 #include <girara/log.h>
-#include <girara/utils.h>
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #endif
@@ -40,10 +39,7 @@ static void stop(ZathuraFileMonitor* file_monitor) {
 #ifdef G_OS_UNIX
   ZathuraSignalFileMonitor* signal_file_monitor = ZATHURA_SIGNALFILEMONITOR(file_monitor);
 
-  if (signal_file_monitor->handle > 0) {
-    g_source_remove(signal_file_monitor->handle);
-    signal_file_monitor->handle = 0;
-  }
+  g_clear_handle_id(&signal_file_monitor->handle, g_source_remove);
 #endif
 }
 

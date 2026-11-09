@@ -2,7 +2,6 @@
 
 #include "file-monitor-glib.h"
 
-#include <girara/utils.h>
 #include <girara/log.h>
 #include <gio/gio.h>
 

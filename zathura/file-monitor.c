@@ -3,14 +3,12 @@
 #include "file-monitor.h"
 
 #include <girara/log.h>
-#include <girara/utils.h>
 
 #include "file-monitor-glib.h"
 #ifdef G_OS_UNIX
 #include "file-monitor-signal.h"
 #endif
 #include "file-monitor-noop.h"
-#include "macros.h"
 
 typedef struct {
   char* file_path;
@@ -27,9 +25,7 @@ static void finalize(GObject* object) {
   ZathuraFileMonitor* file_monitor = ZATHURA_FILEMONITOR(object);
   ZathuraFileMonitorPrivate* priv  = zathura_filemonitor_get_instance_private(file_monitor);
 
-  if (priv->file_path != NULL) {
-    g_free(priv->file_path);
-  }
+  g_clear_pointer(&priv->file_path, g_free);
 
   G_OBJECT_CLASS(zathura_filemonitor_parent_class)->finalize(object);
 }
@@ -40,9 +36,7 @@ static void set_property(GObject* object, guint prop_id, const GValue* value, GP
 
   switch (prop_id) {
   case PROP_FILE_PATH:
-    if (priv->file_path != NULL) {
-      g_free(priv->file_path);
-    }
+    g_clear_pointer(&priv->file_path, g_free);
     priv->file_path = g_value_dup_string(value);
     break;
   default:
