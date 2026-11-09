@@ -534,9 +534,7 @@ void zathura_free(zathura_t* zathura) {
   }
 
   /* shortcut */
-  if (zathura->shortcut.toggle_presentation_mode.first_page_column_list != NULL) {
-    g_free(zathura->shortcut.toggle_presentation_mode.first_page_column_list);
-  }
+  g_free(zathura->shortcut.toggle_presentation_mode.first_page_column_list);
 
   /* stdin support */
   if (zathura->stdin_support.file != NULL) {
