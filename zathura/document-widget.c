@@ -755,15 +755,12 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
   zathura_document_t* z_document     = priv->document;
 
   bool size_changed = false;
-
-  if (z_document != NULL) {
+  if (z_document) {
     size_changed       = width != priv->alloc_width || height != priv->alloc_height;
     priv->alloc_width  = width;
     priv->alloc_height = height;
-  }
 
-  if (z_document != NULL) {
-    if (size_changed == true) {
+    if (size_changed) {
       zathura_document_widget_set_viewport_height(document, height);
       zathura_document_widget_set_viewport_width(document, width);
       zathura_document_widget_adjust_view(document);
@@ -778,7 +775,7 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
 
   /* set the page size after adjust_view so the changed handler stores the position against the
    * final document height and the view stays at the top on first open */
-  if (priv->grid != NULL && size_changed == true) {
+  if (priv->grid && size_changed) {
     const double stored_y = z_document != NULL ? zathura_document_widget_get_position_y(document) : 0.0;
     const double stored_x = z_document != NULL ? zathura_document_widget_get_position_x(document) : 0.0;
 
@@ -787,13 +784,13 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
     gtk_adjustment_set_page_increment(priv->vadjustment, height * 0.9);
     gtk_adjustment_set_page_increment(priv->hadjustment, width * 0.9);
 
-    if (z_document != NULL) {
+    if (z_document) {
       zathura_adjustment_set_value_from_ratio(priv->vadjustment, stored_y);
       zathura_adjustment_set_value_from_ratio(priv->hadjustment, stored_x);
     }
   }
 
-  if (priv->grid != NULL) {
+  if (priv->grid) {
     /* position the grid by the adjustment values so navigation moves the view */
     /* read natural size from arrange_grid totals to avoid measuring during size_allocate */
     unsigned int doc_w = 0, doc_h = 0;
@@ -804,7 +801,7 @@ static void zathura_document_widget_size_allocate(GtkWidget* widget, int width, 
     const int alloc_w = MAX(width, (int)doc_w);
     const int alloc_h = MAX(height, (int)doc_h);
 
-    if (priv->layout_mode == DOCUMENT_WIDGET_SINGLE && z_document != NULL) {
+    if (priv->layout_mode == DOCUMENT_WIDGET_SINGLE && z_document) {
       size_allocate_single(document, width, height, baseline);
       return;
     }
@@ -866,11 +863,12 @@ void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document) {
   g_return_if_fail(document != NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  priv->alloc_width                  = -1;
-  priv->alloc_height                 = -1;
   zathura_document_t* z_document     = priv->document;
 
-  if (z_document == NULL) {
+  priv->alloc_width  = -1;
+  priv->alloc_height = -1;
+
+  if (!z_document) {
     return;
   }
 
@@ -1047,10 +1045,8 @@ void zathura_document_widget_stop_page_widget_preload(ZathuraDocumentWidget* doc
   g_return_if_fail(document != NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->page_widget_preload_source != 0) {
-    g_source_remove(priv->page_widget_preload_source);
-    priv->page_widget_preload_source = 0;
-  }
+
+  g_clear_handle_id(&priv->page_widget_preload_source, g_source_remove);
   priv->page_widget_preload_next = 0;
   priv->page_widgets_loaded      = false;
 }

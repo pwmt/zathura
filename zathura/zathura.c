@@ -508,10 +508,7 @@ void zathura_free(zathura_t* zathura) {
   zathura_content_type_free(zathura->content_type_context);
 
 #ifdef G_OS_UNIX
-  if (zathura->signals.sigterm > 0) {
-    g_source_remove(zathura->signals.sigterm);
-    zathura->signals.sigterm = 0;
-  }
+  g_clear_handle_id(&zathura->signals.sigterm, g_source_remove);
 #endif
 
   if (zathura->signals.monitors_handler > 0 && zathura->ui.session != NULL && zathura->ui.session->gtk.window != NULL) {
@@ -1679,10 +1676,7 @@ static void save_fileinfo_to_db(zathura_t* zathura) {
 
 // Stop active rendering and preloading and cancel pending initial-render and search work.
 static void document_stop(zathura_t* zathura) {
-  if (zathura->sync.reload_search_source != 0) {
-    g_source_remove(zathura->sync.reload_search_source);
-    zathura->sync.reload_search_source = 0;
-  }
+  g_clear_handle_id(&zathura->sync.reload_search_source, g_source_remove);
   zathura->ui.inputbar_adjust_mode = ZATHURA_ADJUST_NONE;
 
   zathura_visual_reset(zathura);

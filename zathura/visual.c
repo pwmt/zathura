@@ -1392,9 +1392,7 @@ static void visual_flash_clear(zathura_t* zathura) {
     return;
   }
 
-  if (flash->source != 0) {
-    g_source_remove(flash->source);
-  }
+  g_clear_handle_id(&flash->source, g_source_remove);
   if (flash->drawn.drawn == true) {
     for (unsigned int page = flash->drawn.first; page <= flash->drawn.last; ++page) {
       ZathuraPageWidget* widget = visual_page_widget(zathura, page);
@@ -2309,10 +2307,7 @@ static void mouse_update(zathura_t* zathura) {
 }
 
 static void mouse_stop_scrolling(zathura_visual_mouse_t* mouse) {
-  if (mouse->scroll_source != 0) {
-    g_source_remove(mouse->scroll_source);
-    mouse->scroll_source = 0;
-  }
+  g_clear_handle_id(&mouse->scroll_source, g_source_remove);
 }
 
 /* scroll while the pointer is near the top or bottom of the view, so that dragging reaches pages off screen */
