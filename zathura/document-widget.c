@@ -1234,7 +1234,7 @@ bool zathura_document_widget_prepare_visible_pages(ZathuraDocumentWidget* docume
       zathura_page_t* page = zathura_document_get_page(priv->document, i);
       const double width   = zathura_page_get_width(page);
       const double height  = zathura_page_get_height(page);
-      if (!zathura_renderer_load_page(priv->renderer, page)) {
+      if (!zathura_page_load(page, NULL)) {
         return false;
       }
 

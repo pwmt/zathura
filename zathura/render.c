@@ -470,7 +470,7 @@ static gboolean emit_completed_signal(void* data) {
   if (!priv->about_to_close && !render_job_is_stale(job)) {
     // Emit the signal
     girara_debug("Emitting signal for page %u", zathura_page_get_index(request_priv->page) + 1);
-    if (ecs->surface != NULL) {
+    if (ecs->surface) {
       g_signal_emit(job->request, request_signals[REQUEST_COMPLETED], 0, ecs->surface);
     } else {
       g_signal_emit(job->request, request_signals[REQUEST_FAILED], 0);
@@ -483,12 +483,10 @@ static gboolean emit_completed_signal(void* data) {
   remove_job_and_free(job);
 
   // Clean up
-  if (ecs->surface != NULL) {
-    cairo_surface_destroy(ecs->surface);
-  }
+  cairo_surface_destroy(ecs->surface);
   g_free(ecs);
 
-  return FALSE;
+  return G_SOURCE_REMOVE;
 }
 
 static bool pixel_inside_rectangles(girara_list_t* rectangles, unsigned int x, unsigned int y) {
@@ -786,7 +784,7 @@ static void recolor(ZathuraRendererPrivate* priv, zathura_page_t* page, unsigned
 
 static bool invoke_completed_signal(render_job_t* job, cairo_surface_t* surface) {
   emit_completed_signal_t* ecs = g_try_malloc0(sizeof(emit_completed_signal_t));
-  if (ecs == NULL) {
+  if (!ecs) {
     return false;
   }
 
@@ -821,13 +819,15 @@ static bool render_to_cairo_surface(cairo_surface_t* surface, zathura_page_t* pa
   return err == ZATHURA_ERROR_OK;
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(cairo_surface_t, cairo_surface_destroy)
+
 static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRenderer* renderer) {
   ZathuraRendererPrivate* priv              = zathura_renderer_get_instance_private(renderer);
   ZathuraRenderRequestPrivate* request_priv = zathura_render_request_get_instance_private(request);
   zathura_page_t* page                      = request_priv->page;
 
   /* parse the page on first render */
-  if (zathura_renderer_load_page(renderer, page) == false) {
+  if (zathura_page_load(page, NULL) == false) {
     return false;
   }
 
@@ -862,19 +862,18 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   } else {
     format = CAIRO_FORMAT_RGB24;
   }
-  cairo_surface_t* surface = cairo_image_surface_create(format, page_width, page_height);
+
+  g_autoptr(cairo_surface_t) surface = cairo_image_surface_create(format, page_width, page_height);
   if (request_priv->render_plain == false) {
     cairo_surface_set_device_scale(surface, device_factors.x, device_factors.y);
   }
 
   if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
-    cairo_surface_destroy(surface);
     return false;
   }
 
   /* actually render to the surface */
   if (!render_to_cairo_surface(surface, page, real_scale)) {
-    cairo_surface_destroy(surface);
     return false;
   }
 
@@ -882,7 +881,6 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
   if (priv->about_to_close || render_job_is_stale(job)) {
     girara_debug("Rendering of page %u aborted", zathura_page_get_index(request_priv->page) + 1);
     remove_job_and_free(job);
-    cairo_surface_destroy(surface);
     return true;
   }
 
@@ -891,21 +889,7 @@ static bool render(render_job_t* job, ZathuraRenderRequest* request, ZathuraRend
     recolor(priv, page, page_width, page_height, surface, device_factors);
   }
 
-  if (!invoke_completed_signal(job, surface)) {
-    cairo_surface_destroy(surface);
-    return false;
-  }
-
-  cairo_surface_destroy(surface);
-
-  return true;
-}
-
-bool zathura_renderer_load_page(ZathuraRenderer* renderer, zathura_page_t* page) {
-  g_return_val_if_fail(ZATHURA_IS_RENDERER(renderer) == TRUE, false);
-
-  /* zathura_page_load takes the document lock internally */
-  return zathura_page_load(page, NULL);
+  return invoke_completed_signal(job, surface);
 }
 
 /* render a page synchronously and return its surface */
@@ -928,7 +912,7 @@ cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura
   zathura_document_t* document = zathura_page_get_document(page);
 
   /* parse the page on first render */
-  if (zathura_renderer_load_page(renderer, page) == false) {
+  if (zathura_page_load(page, NULL) == false) {
     return NULL;
   }
 
