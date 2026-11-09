@@ -14,6 +14,7 @@ G_DECLARE_FINAL_TYPE(ZathuraIndexElementObject, zathura_index_element_object, ZA
 
 struct _ZathuraIndexElementObject {
   GObject parent_instance;
+
   char* title;                      /* escaped markup for column 1 */
   char* page_label;                 /* primary page string for column 2 */
   char* page_alt;                   /* alt page string for column 3 */
