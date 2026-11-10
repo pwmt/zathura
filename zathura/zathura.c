@@ -920,17 +920,7 @@ static void initial_render_cancel_hold(zathura_t* zathura) {
 static void document_view_prepare(ZathuraDocumentWidget* widget, unsigned int width, unsigned int height) {
   zathura_document_widget_compute_layout(widget);
 
-  g_autoptr(GtkAdjustment) hadjustment = NULL;
-  g_autoptr(GtkAdjustment) vadjustment = NULL;
-  g_object_get(widget, "hadjustment", &hadjustment, "vadjustment", &vadjustment, NULL);
-
-  gtk_adjustment_set_page_size(hadjustment, width);
-  gtk_adjustment_set_page_size(vadjustment, height);
-  gtk_adjustment_set_page_increment(hadjustment, width * 0.9);
-  gtk_adjustment_set_page_increment(vadjustment, height * 0.9);
-
-  zathura_adjustment_set_value_from_ratio(hadjustment, zathura_document_widget_get_position_x(widget));
-  zathura_adjustment_set_value_from_ratio(vadjustment, zathura_document_widget_get_position_y(widget));
+  zathura_document_widget_configure_viewport(widget, width, height);
 
   zathura_document_widget_start_page_widget_preload(widget);
 }
@@ -1204,22 +1194,7 @@ static void document_replacement_ready(ZathuraDocumentWidget* widget, zathura_t*
     zathura_document_widget_refresh_layout(widget);
   }
 
-  // The following internally check if a change triggers any effects.
-  bool recolor = false;
-  girara_setting_get(zathura->ui.session, "recolor", &recolor);
-  zathura_document_widget_set_recolor(widget, recolor);
-  girara_setting_get(zathura->ui.session, "recolor-keephue", &recolor);
-  zathura_document_widget_set_recolor_hue(widget, recolor);
-  girara_setting_get(zathura->ui.session, "recolor-reverse-video", &recolor);
-  zathura_document_widget_set_recolor_reverse_video(widget, recolor);
-  girara_setting_get(zathura->ui.session, "recolor-adjust-lightness", &recolor);
-  zathura_document_widget_set_recolor_adjust_lightness(widget, recolor);
-
-  g_autofree char* recolor_light = NULL;
-  g_autofree char* recolor_dark  = NULL;
-  girara_setting_get(zathura->ui.session, "recolor-lightcolor", &recolor_light);
-  girara_setting_get(zathura->ui.session, "recolor-darkcolor", &recolor_dark);
-  zathura_document_widget_set_recolor_colors(widget, recolor_light, recolor_dark);
+  zathura_document_widget_apply_recolor_settings(widget);
 
   // Only apply old position if open-first-page is not set.
   bool always_first_page = false;
@@ -1445,8 +1420,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   if (replacing) {
     zathura_document_widget_get_viewport_size(zathura->ui.document_widget, &view_height, &view_width);
   }
-  zathura_document_widget_set_viewport_width(widget, view_width);
-  zathura_document_widget_set_viewport_height(widget, view_height);
+  zathura_document_widget_configure_viewport(widget, view_width, view_height);
   zathura_document_widget_adjust_view(widget);
 
   // Restore the (document-relative) position when opening the page saved in history.
@@ -1789,27 +1763,7 @@ bool page_set(zathura_t* zathura, unsigned int page_id, double position_x, doubl
   // convert page-relative positions to document-relative positions
   ZathuraDocumentWidget* widget = zathura->ui.document_widget;
   if (page_relative && (position_x >= 0 || position_y >= 0)) {
-    unsigned int page_width = 0, page_height = 0, doc_width = 0, doc_height = 0;
-    page_calc_height_width(document, page, &page_height, &page_width, true);
-
-    document_widget_mode_t layout_mode;
-    g_object_get(widget, "layout-mode", &layout_mode, NULL);
-
-    double origin_x = 0, origin_y = 0;
-    if (layout_mode == DOCUMENT_WIDGET_SINGLE) {
-      doc_width  = page_width;
-      doc_height = page_height;
-    } else {
-      zathura_document_widget_get_document_size(widget, &doc_height, &doc_width);
-      zathura_document_widget_get_page_origin(widget, page_id, &origin_x, &origin_y);
-    }
-
-    if (position_x >= 0) {
-      position_x = doc_width > 0 ? CLAMP((origin_x + position_x * page_width) / doc_width, 0.0, 1.0) : -1;
-    }
-    if (position_y >= 0) {
-      position_y = doc_height > 0 ? CLAMP((origin_y + position_y * page_height) / doc_height, 0.0, 1.0) : -1;
-    }
+    zathura_document_widget_page_position_to_document(widget, page_id, &position_x, &position_y);
   }
 
   return position_set(zathura, position_x, position_y);

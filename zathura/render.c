@@ -972,23 +972,7 @@ void render_all(zathura_t* zathura) {
     return;
   }
 
-  zathura_document_widget_compute_layout(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget));
-
-  /* unmark all pages */
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-    zathura_page_t* page     = zathura_document_get_page(document, page_id);
-    unsigned int page_height = 0, page_width = 0;
-
-    page_calc_height_width(document, page, &page_height, &page_width, true);
-
-    girara_debug("Queuing resize for page %u to %u x %u.", page_id, page_width, page_height);
-    GtkWidget* widget = zathura_page_get_widget(zathura, page);
-    if (widget != NULL) {
-      zathura_page_widget_set_size_request(ZATHURA_PAGE_WIDGET(widget), page_width, page_height);
-      gtk_widget_queue_resize(widget);
-    }
-  }
+  zathura_document_widget_render_all(zathura->ui.document_widget);
 }
 
 static gint render_thread_sort(gconstpointer a, gconstpointer b, gpointer UNUSED(data)) {

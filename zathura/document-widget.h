@@ -120,6 +120,25 @@ bool zathura_document_widget_set_recolor_adjust_lightness(ZathuraDocumentWidget*
  */
 bool zathura_document_widget_set_recolor_colors(ZathuraDocumentWidget* document, const char* light, const char* dark);
 
+/** Apply current recolor settings
+ *
+ * Invalidates cached surfaces once if any recolor setting changed.
+ *
+ * @param document the document widget
+ */
+void zathura_document_widget_apply_recolor_settings(ZathuraDocumentWidget* document);
+
+/**
+ * Check whether a page's layout cell intersects the viewport.
+ *
+ * In single-page mode only the selected page is visible.
+ *
+ * @param document the document widget
+ * @param page_number the page number
+ * @return true the page is visible, false otherwise
+ */
+bool zathura_document_widget_page_is_visible(ZathuraDocumentWidget* document, unsigned int page_number);
+
 /**
  * Stop page-widget preloading and rendering for the current document.
  *
@@ -412,26 +431,22 @@ unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* do
 /**
  * Returns the column for the first page (first column = 1)
  *
- * @param document The document
+ * @param document The document widget
  * @return The column for the first page
  */
 unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget* document);
 
 /**
- * Sets the width of the viewport in pixels.
+ * Set viewport dimensions, configure scroll increments, and restore the stored position.
  *
- * @param[in] document The document widget
- * @param[in] width    The width of the viewport
- */
-void zathura_document_widget_set_viewport_width(ZathuraDocumentWidget* document, unsigned int width);
-
-/**
- * Sets the height of the viewport in pixels.
+ * Used to prepare detached views; allocation configures attached views after fitting zoom.
  *
- * @param[in] document The document widget
- * @param[in] height   The height of the viewport
+ * @param document The document widget
+ * @param height   The height of the viewport
+ * @param width    The width of the viewport
  */
-void zathura_document_widget_set_viewport_height(ZathuraDocumentWidget* document, unsigned int height);
+void zathura_document_widget_configure_viewport(ZathuraDocumentWidget* document, unsigned int width,
+                                                unsigned int height);
 
 /**
  * Return the size of the viewport in pixels.
@@ -471,6 +486,17 @@ double zathura_document_widget_get_position_y(ZathuraDocumentWidget* document);
  */
 bool zathura_document_widget_get_page_relative_position(ZathuraDocumentWidget* document, double* position_x,
                                                         double* position_y);
+
+/**
+ * Convert page-relative coordinates to document coordinates, clamped to [0, 1].
+ *
+ * @param document The document widget
+ * @param page_id The page number
+ * @param position_x X coordinate to convert
+ * @param position_y Y coordinate to convert
+ */
+void zathura_document_widget_page_position_to_document(ZathuraDocumentWidget* document, unsigned int page_id,
+                                                       double* position_x, double* position_y);
 
 /**
  * Set the position.

@@ -165,13 +165,20 @@ void zathura_page_widget_abort_render_request(ZathuraPageWidget* widget);
 zathura_page_t* zathura_page_widget_get_page(ZathuraPageWidget* widget);
 
 /**
- * Set size request for the page widget
+ * Render the page synchronously
  *
  * @param widget the widget
- * @param width  page width
- * @param height page height
+ * @return true on success, false otherwise
  */
-void zathura_page_widget_set_size_request(ZathuraPageWidget* widget, int width, int height);
+bool zathura_page_widget_render(ZathuraPageWidget* widget);
+
+/**
+ * Synchronize the widget and drawing area sizes with the page's current geometry.
+ *
+ * @param widget the widget
+ * @param keep_surface keep the current surface/render request unless the size changed
+ */
+void zathura_page_widget_sync_size(ZathuraPageWidget* widget, bool keep_surface);
 
 /**
  * Clear stored thumbnails
