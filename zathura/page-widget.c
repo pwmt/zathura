@@ -595,6 +595,8 @@ static void cb_page_draw(GtkDrawingArea* GIRARA_UNUSED(area), cairo_t* cairo, in
 
     if (priv->surface != NULL) {
       cairo_set_source_surface(cairo, priv->surface, 0, 0);
+      /* improve performance at fractional scales */
+      cairo_pattern_set_filter(cairo_get_source(cairo), CAIRO_FILTER_FAST);
       cairo_paint(cairo);
       cairo_restore(cairo);
     } else {
