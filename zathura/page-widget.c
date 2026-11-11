@@ -1081,11 +1081,10 @@ zathura_link_t* zathura_page_widget_link_get(ZathuraPageWidget* widget, unsigned
   }
 }
 
-static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, double orig_y, double* x, double* y) {
-  zathura_document_t* document = zathura_get_document(zathura);
-  const unsigned int rotation =
-      (zathura_document_get_rotation(document) + zathura_page_get_rotation(zathura_document_get_page(document, page))) %
-      360;
+static void rotate_point(ZathuraPageWidget* widget, double orig_x, double orig_y, double* x, double* y) {
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+  zathura_document_t* document   = zathura_page_get_document(priv->page);
+  const unsigned int rotation = (zathura_document_get_rotation(document) + zathura_page_get_rotation(priv->page)) % 360;
   if (rotation == 0) {
     *x = orig_x;
     *y = orig_y;
@@ -1093,10 +1092,8 @@ static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, d
   }
 
   /* the page's own size: its grid cell is wider or taller when the other pages are not rotated the same way */
-  GtkWidget* widget =
-      GTK_WIDGET(zathura_document_widget_get_page(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page));
-  const double width  = widget != NULL ? gtk_widget_get_width(widget) : 0;
-  const double height = widget != NULL ? gtk_widget_get_height(widget) : 0;
+  const double width  = gtk_widget_get_width(GTK_WIDGET(widget));
+  const double height = gtk_widget_get_height(GTK_WIDGET(widget));
   switch (rotation) {
   case 90:
     *x = orig_y;
@@ -1177,7 +1174,7 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
 
       /* start the selection */
       double x, y;
-      rotate_point(priv->zathura, zathura_page_get_index(priv->page), bx, by, &x, &y);
+      rotate_point(page, bx, by, &x, &y);
       priv->mouse.selection.x1 = x;
       priv->mouse.selection.y1 = y;
       priv->mouse.selection.x2 = x;
@@ -1315,8 +1312,7 @@ void zathura_page_widget_update_mouse_selection(ZathuraPageWidget* widget, doubl
 
   /* calculate next selection */
   const double scale = zathura_document_get_scale(zathura_page_get_document(priv->page));
-  rotate_point(priv->zathura, zathura_page_get_index(priv->page), x, y, &priv->mouse.selection.x2,
-               &priv->mouse.selection.y2);
+  rotate_point(widget, x, y, &priv->mouse.selection.x2, &priv->mouse.selection.y2);
 
   zathura_rectangle_t selection = priv->mouse.selection;
   selection.x1 /= scale;
@@ -1336,7 +1332,7 @@ void zathura_page_widget_point_to_page(ZathuraPageWidget* widget, double x, doub
 
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
   const double scale             = zathura_document_get_scale(zathura_page_get_document(priv->page));
-  rotate_point(priv->zathura, zathura_page_get_index(priv->page), x, y, page_x, page_y);
+  rotate_point(widget, x, y, page_x, page_y);
   *page_x /= scale;
   *page_y /= scale;
 }
@@ -1378,7 +1374,7 @@ static void cb_zathura_page_widget_motion_notify(GtkEventControllerMotion* contr
     if (evstate & priv->zathura->global.highlighter_modmask) {
       zathura_page_widget_clear_selection(page);
       double x, y;
-      rotate_point(priv->zathura, zathura_page_get_index(priv->page), ex, ey, &x, &y);
+      rotate_point(page, ex, ey, &x, &y);
       priv->highlighter.bounds = next_selection_rectangle(priv->mouse.selection.x1, priv->mouse.selection.y1, x, y);
       priv->highlighter.bounds.x1 /= scale;
       priv->highlighter.bounds.y1 /= scale;
