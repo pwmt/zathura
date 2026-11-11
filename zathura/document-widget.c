@@ -24,10 +24,6 @@ typedef struct zathura_document_widget_private_s {
   zathura_t* zathura;
   zathura_document_t* document;
   ZathuraRenderer* renderer;
-  GtkWidget** pages;
-  guint page_widget_preload_source;
-  unsigned int page_widget_preload_next;
-  bool page_widgets_loaded;
   bool draw_signatures;
 
   /* Layout */
@@ -50,7 +46,14 @@ typedef struct zathura_document_widget_private_s {
   int alloc_width;
   int alloc_height;
 
+  // widgets
   GtkWidget* grid;
+  ZathuraPageWidget** pages;
+
+  // state for page widget loading
+  guint page_widget_preload_source;
+  unsigned int page_widget_preload_next;
+  bool page_widgets_loaded;
 
   /* Scrolling */
   unsigned int adjustment_update_depth; /**< Suppress synchronization while preparing layout bounds. */
@@ -222,8 +225,8 @@ bool zathura_document_widget_set_document(ZathuraDocumentWidget* document_widget
     return true;
   }
 
-  const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
-  g_autofree GtkWidget** pages       = g_try_malloc0_n(number_of_pages, sizeof(GtkWidget*));
+  const unsigned int number_of_pages   = zathura_document_get_number_of_pages(document);
+  g_autofree ZathuraPageWidget** pages = g_try_malloc0_n(number_of_pages, sizeof(*pages));
   if (!pages) {
     return false;
   }
@@ -414,17 +417,16 @@ void zathura_document_widget_stop(ZathuraDocumentWidget* document) {
   }
 }
 
-GtkWidget* zathura_document_widget_get_page(ZathuraDocumentWidget* document, unsigned int page_number) {
+ZathuraPageWidget* zathura_document_widget_get_page(ZathuraDocumentWidget* document, unsigned int page_number) {
   g_return_val_if_fail(document != NULL, NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->document == NULL) {
+  if (!priv->document || !priv->pages) {
     return NULL;
   }
 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
-
-  if (priv->pages == NULL || page_number >= number_of_pages) {
+  if (page_number >= number_of_pages) {
     return NULL;
   }
 
@@ -687,7 +689,7 @@ static void zathura_page_grid_size_allocate(GtkWidget* widget, int width, int UN
   const bool rtl                     = gtk_widget_get_direction(widget) == GTK_TEXT_DIR_RTL;
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int i = 0; i < number_of_pages; i++) {
-    GtkWidget* page_widget = priv->pages[i];
+    GtkWidget* page_widget = GTK_WIDGET(priv->pages[i]);
     if (page_widget == NULL || gtk_widget_get_parent(page_widget) != widget ||
         gtk_widget_should_layout(page_widget) == false) {
       continue;
@@ -773,9 +775,9 @@ void zathura_document_widget_update_mode(ZathuraDocumentWidget* document) {
   const unsigned int page_id = zathura_document_get_current_page_number(z_document);
 
   for (unsigned int i = 0; i < npag; i++) {
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, i);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, i);
     if (page_widget != NULL) {
-      gtk_widget_set_visible(page_widget, single == false || i == page_id);
+      gtk_widget_set_visible(GTK_WIDGET(page_widget), single == false || i == page_id);
     }
   }
 
@@ -1060,12 +1062,12 @@ static void zathura_document_widget_attach_page(ZathuraDocumentWidget* document,
     return;
   }
 
-  GtkWidget* page_widget = zathura_document_widget_get_page(document, page_index);
-  if (page_widget == NULL || gtk_widget_get_parent(page_widget) == priv->grid) {
+  ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page_index);
+  if (page_widget == NULL || gtk_widget_get_parent(GTK_WIDGET(page_widget)) == priv->grid) {
     return;
   }
 
-  gtk_widget_set_parent(page_widget, priv->grid);
+  gtk_widget_set_parent(GTK_WIDGET(page_widget), priv->grid);
 }
 
 static void disconnect_page_render_callbacks(ZathuraDocumentWidget* document) {
@@ -1099,34 +1101,34 @@ static void cb_page_render_failed(ZathuraPageWidget* page_widget, ZathuraDocumen
   }
 }
 
-GtkWidget* zathura_document_widget_ensure_page(ZathuraDocumentWidget* document, unsigned int page_index) {
+ZathuraPageWidget* zathura_document_widget_ensure_page(ZathuraDocumentWidget* document, unsigned int page_index) {
   g_return_val_if_fail(document != NULL, NULL);
 
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
-  if (priv->pages == NULL || priv->document == NULL ||
-      page_index >= zathura_document_get_number_of_pages(priv->document)) {
+  if (!priv->pages || !priv->document || page_index >= zathura_document_get_number_of_pages(priv->document)) {
     return NULL;
   }
 
-  GtkWidget* page_widget = priv->pages[page_index];
-  if (page_widget == NULL) {
+  ZathuraPageWidget* page_widget = priv->pages[page_index];
+  if (!page_widget) {
     zathura_page_t* page = zathura_document_get_page(priv->document, page_index);
-    if (page == NULL) {
+    if (!page) {
       return NULL;
     }
 
-    page_widget = zathura_page_widget_new(priv->zathura, page, priv->renderer);
-    if (page_widget == NULL) {
+    GtkWidget* widget = zathura_page_widget_new(priv->zathura, page, priv->renderer);
+    if (!widget) {
       return NULL;
     }
 
+    page_widget             = ZATHURA_PAGE_WIDGET(widget);
     priv->pages[page_index] = g_object_ref_sink(page_widget);
 
     const bool show = priv->layout_mode != DOCUMENT_WIDGET_SINGLE ||
                       page_index == zathura_document_get_current_page_number(priv->document);
-    gtk_widget_set_visible(page_widget, show);
+    gtk_widget_set_visible(widget, show);
 
-    zathura_page_widget_sync_size(ZATHURA_PAGE_WIDGET(page_widget), false);
+    zathura_page_widget_sync_size(page_widget, false);
 
     g_signal_connect(G_OBJECT(page_widget), "text-selected", G_CALLBACK(cb_page_widget_text_selected), priv->zathura);
     g_signal_connect(G_OBJECT(page_widget), "image-selected", G_CALLBACK(cb_page_widget_image_selected), priv->zathura);
@@ -1269,26 +1271,25 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
       zathura_document_widget_ensure_page(document, page_id);
     }
 
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page_id);
-    if (page_widget == NULL) {
+    ZathuraPageWidget* zathura_page_widget = zathura_document_widget_get_page(document, page_id);
+    if (zathura_page_widget == NULL) {
       continue;
     }
-    ZathuraPageWidget* zathura_page_widget = ZATHURA_PAGE_WIDGET(page_widget);
 
     if (visible) {
       activate_page(document, page_id);
 
       for (unsigned int i = priv->pages_per_row; i; --i) {
         if (page_id >= i) {
-          GtkWidget* previous = zathura_document_widget_get_page(document, page_id - i);
+          ZathuraPageWidget* previous = zathura_document_widget_get_page(document, page_id - i);
           if (previous) {
-            zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(previous));
+            zathura_page_widget_update_view_time(previous);
           }
         }
         if (page_id + i < number_of_pages) {
-          GtkWidget* next = zathura_document_widget_get_page(document, page_id + i);
+          ZathuraPageWidget* next = zathura_document_widget_get_page(document, page_id + i);
           if (next) {
-            zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(next));
+            zathura_page_widget_update_view_time(next);
           }
         }
       }
@@ -1300,9 +1301,9 @@ void zathura_document_widget_update_visible_pages(ZathuraDocumentWidget* documen
       }
 
       girara_list_t* results = NULL;
-      g_object_get(G_OBJECT(page_widget), "search-results", &results, NULL);
+      g_object_get(G_OBJECT(zathura_page_widget), "search-results", &results, NULL);
       if (results != NULL) {
-        g_object_set(G_OBJECT(page_widget), "search-current", 0, NULL);
+        g_object_set(G_OBJECT(zathura_page_widget), "search-current", 0, NULL);
       }
     }
   }
@@ -1316,10 +1317,10 @@ void zathura_document_widget_render_current_page(ZathuraDocumentWidget* document
     return;
   }
 
-  const unsigned int current = zathura_document_get_current_page_number(priv->document);
-  GtkWidget* page_widget     = zathura_document_widget_get_page(document, current);
+  const unsigned int current     = zathura_document_get_current_page_number(priv->document);
+  ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, current);
   if (page_widget != NULL) {
-    zathura_page_widget_render(ZATHURA_PAGE_WIDGET(page_widget));
+    zathura_page_widget_render(page_widget);
   }
 }
 
@@ -1401,25 +1402,25 @@ bool zathura_document_widget_prepare_visible_pages(ZathuraDocumentWidget* docume
       continue;
     }
 
-    GtkWidget* widget = zathura_document_widget_ensure_page(document, i);
+    ZathuraPageWidget* widget = zathura_document_widget_ensure_page(document, i);
     if (!widget) {
       return false;
     }
 
-    zathura_page_widget_sync_size(ZATHURA_PAGE_WIDGET(widget), false);
+    zathura_page_widget_sync_size(widget, false);
     activate_page(document, i);
 
     g_signal_connect_object(widget, "rendered", G_CALLBACK(cb_page_render_completed), document, 0);
     g_signal_connect_object(widget, "render-failed", G_CALLBACK(cb_page_render_failed), document, 0);
-    zathura_page_widget_update_view_time(ZATHURA_PAGE_WIDGET(widget));
+    zathura_page_widget_update_view_time(widget);
   }
 
   return true;
 }
 
 bool zathura_document_widget_page_has_surface(ZathuraDocumentWidget* document, unsigned int page_number) {
-  GtkWidget* page_widget = zathura_document_widget_get_page(document, page_number);
-  return page_widget != NULL && zathura_page_widget_have_surface(ZATHURA_PAGE_WIDGET(page_widget));
+  ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page_number);
+  return page_widget != NULL && zathura_page_widget_have_surface(page_widget);
 }
 
 void zathura_document_widget_set_draw_signatures(ZathuraDocumentWidget* document, bool draw) {
@@ -1433,7 +1434,7 @@ void zathura_document_widget_set_draw_signatures(ZathuraDocumentWidget* document
 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page);
     if (page_widget != NULL) {
       g_object_set(G_OBJECT(page_widget), "draw-signatures", draw, NULL);
     }
@@ -1450,7 +1451,7 @@ void zathura_document_widget_set_draw_search_results(ZathuraDocumentWidget* docu
 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page);
     if (page_widget) {
       g_object_set(G_OBJECT(page_widget), "draw-search-results", draw, NULL);
     }
@@ -1474,7 +1475,7 @@ bool zathura_document_widget_prepare_links(ZathuraDocumentWidget* document) {
       continue;
     }
 
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page_id);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page_id);
     if (!page_widget) {
       continue;
     }
@@ -1504,7 +1505,7 @@ void zathura_document_widget_hide_links(ZathuraDocumentWidget* document) {
 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page);
     if (page_widget != NULL) {
       g_object_set(G_OBJECT(page_widget), "draw-links", FALSE, NULL);
     }
@@ -1521,8 +1522,8 @@ zathura_link_t* zathura_document_widget_get_visible_link(ZathuraDocumentWidget* 
 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
   for (unsigned int page = 0; page < number_of_pages; ++page) {
-    zathura_page_t* zathura_page = zathura_document_get_page(priv->document, page);
-    GtkWidget* page_widget       = zathura_document_widget_get_page(document, page);
+    zathura_page_t* zathura_page   = zathura_document_get_page(priv->document, page);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page);
     if (zathura_page != NULL && zathura_page_get_visibility(zathura_page) && page_widget != NULL) {
       zathura_link_t* link = zathura_page_widget_link_get(ZATHURA_PAGE_WIDGET(page_widget), index);
       if (link != NULL) {
@@ -1546,7 +1547,7 @@ unsigned int zathura_document_widget_get_search_result_count(ZathuraDocumentWidg
 
   unsigned int count = 0;
   for (unsigned int page = 0; page < end_page; ++page) {
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page);
     if (page_widget != NULL) {
       int page_count = 0;
       g_object_get(G_OBJECT(page_widget), "search-length", &page_count, NULL);
@@ -1727,7 +1728,7 @@ void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document) {
       priv->document != NULL && priv->pages != NULL ? zathura_document_get_number_of_pages(priv->document) : 0;
 
   for (unsigned int i = 0; i < number_of_pages; ++i) {
-    GtkWidget* page_widget = priv->pages[i];
+    GtkWidget* page_widget = GTK_WIDGET(priv->pages[i]);
     if (page_widget != NULL) {
       if (gtk_widget_get_parent(page_widget) != NULL) {
         gtk_widget_unparent(page_widget);
@@ -1760,11 +1761,11 @@ void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document) {
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(priv->document);
 
   for (unsigned int i = 0; i < number_of_pages; ++i) {
-    GtkWidget* page_widget = priv->pages[i];
+    ZathuraPageWidget* page_widget = priv->pages[i];
 
     /* the widget exists only if the background fill already created it */
     if (page_widget != NULL) {
-      zathura_page_widget_clear_thumbnail(ZATHURA_PAGE_WIDGET(page_widget));
+      zathura_page_widget_clear_thumbnail(page_widget);
     }
   }
 }
@@ -1788,10 +1789,10 @@ void zathura_document_widget_render_all(ZathuraDocumentWidget* document) {
   /* unmark all pages */
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(z_document);
   for (unsigned int page_id = 0; page_id < number_of_pages; ++page_id) {
-    GtkWidget* page_widget = zathura_document_widget_get_page(document, page_id);
+    ZathuraPageWidget* page_widget = zathura_document_widget_get_page(document, page_id);
     if (page_widget != NULL) {
-      zathura_page_widget_sync_size(ZATHURA_PAGE_WIDGET(page_widget), false);
-      gtk_widget_queue_resize(page_widget);
+      zathura_page_widget_sync_size(page_widget, false);
+      gtk_widget_queue_resize(GTK_WIDGET(page_widget));
     }
   }
 }

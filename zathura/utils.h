@@ -70,9 +70,9 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
  * @return The page widget of the page
  * @return NULL if an error occurred
  */
-GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
+ZathuraPageWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
 
-GtkWidget* zathura_page_get_widget_by_number(zathura_t* zathura, unsigned int page_number);
+ZathuraPageWidget* zathura_page_get_widget_by_number(zathura_t* zathura, unsigned int page_number);
 
 /**
  * Set if the search results should be drawn or not

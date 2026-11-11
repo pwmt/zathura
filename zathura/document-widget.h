@@ -157,7 +157,7 @@ void zathura_document_widget_stop(ZathuraDocumentWidget* document);
  * @param page_number the page number
  * @return the page widget, or NULL if it has not been created
  */
-GtkWidget* zathura_document_widget_get_page(ZathuraDocumentWidget* document, unsigned int page_number);
+ZathuraPageWidget* zathura_document_widget_get_page(ZathuraDocumentWidget* document, unsigned int page_number);
 
 /**
  * Create a page widget if necessary and attach it to the document grid.
@@ -166,7 +166,7 @@ GtkWidget* zathura_document_widget_get_page(ZathuraDocumentWidget* document, uns
  * @param page_number the page number
  * @return the page widget, or NULL on error
  */
-GtkWidget* zathura_document_widget_ensure_page(ZathuraDocumentWidget* document, unsigned int page_number);
+ZathuraPageWidget* zathura_document_widget_ensure_page(ZathuraDocumentWidget* document, unsigned int page_number);
 
 /**
  * Schedule creation of all missing page widgets at low idle priority.

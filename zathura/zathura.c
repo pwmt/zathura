@@ -969,8 +969,8 @@ static gboolean reload_search(gpointer data) {
       continue;
     }
 
-    GtkWidget* page_widget   = zathura_page_get_widget(zathura, page);
-    GObject* obj_page_widget = G_OBJECT(page_widget);
+    ZathuraPageWidget* page_widget = zathura_page_get_widget(zathura, page);
+    GObject* obj_page_widget       = G_OBJECT(page_widget);
 
     g_autoptr(girara_list_t) result = zathura_page_search_text(page, zathura->global.search_string, &error);
     const size_t result_size        = result ? girara_list_size(result) : 0;

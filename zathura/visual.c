@@ -710,12 +710,6 @@ static int position_compare(const visual_position_t* a, const visual_position_t*
   return 0;
 }
 
-static ZathuraPageWidget* visual_page_widget(zathura_t* zathura, unsigned int page_index) {
-  zathura_page_t* page = zathura_document_get_page(zathura_get_document(zathura), page_index);
-  GtkWidget* widget    = page != NULL ? zathura_page_get_widget(zathura, page) : NULL;
-  return widget != NULL ? ZATHURA_PAGE_WIDGET(widget) : NULL;
-}
-
 /* position of the center of a rectangle of a page in the document, in the units of the document position */
 static void visual_point_to_position(zathura_t* zathura, unsigned int page_index, zathura_rectangle_t rect,
                                      double* pos_x, double* pos_y) {
@@ -857,7 +851,7 @@ static void visual_clear_drawn(zathura_t* zathura, visual_drawn_t* drawn) {
   }
 
   for (unsigned int page = drawn->first; page <= drawn->last; ++page) {
-    ZathuraPageWidget* widget = visual_page_widget(zathura, page);
+    ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, page);
     if (widget != NULL) {
       zathura_page_widget_set_visual(widget, NULL, NULL);
     }
@@ -875,7 +869,7 @@ static void visual_draw(zathura_t* zathura, visual_texts_t* texts, visual_drawn_
   /* pages that are no longer part of the selection */
   if (drawn->drawn == true) {
     for (unsigned int page = drawn->first; page <= drawn->last; ++page) {
-      ZathuraPageWidget* widget = visual_page_widget(zathura, page);
+      ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, page);
       if (widget != NULL && (page < first.page || page > last.page)) {
         zathura_page_widget_set_visual(widget, NULL, NULL);
       }
@@ -883,7 +877,7 @@ static void visual_draw(zathura_t* zathura, visual_texts_t* texts, visual_drawn_
   }
 
   for (unsigned int page = first.page; page <= last.page; ++page) {
-    ZathuraPageWidget* widget         = visual_page_widget(zathura, page);
+    ZathuraPageWidget* widget         = zathura_page_get_widget_by_number(zathura, page);
     const zathura_visual_text_t* text = visual_text(zathura, texts, page);
     if (widget == NULL) {
       continue;
@@ -918,7 +912,7 @@ static void visual_draw_image(zathura_t* zathura) {
   zathura_visual_t* visual = zathura->visual;
   visual_clear_drawn(zathura, &visual->drawn);
 
-  ZathuraPageWidget* widget = visual_page_widget(zathura, visual->image.page);
+  ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, visual->image.page);
   girara_list_t* list       = girara_list_new_with_free(g_free);
   zathura_rectangle_t* rect = g_try_malloc0(sizeof(zathura_rectangle_t));
   if (widget == NULL || list == NULL || rect == NULL) {
@@ -988,7 +982,7 @@ static void visual_leave_image(zathura_t* zathura) {
 
 /* first character below the top of the viewport, or of the current search result if there is one on the page */
 static size_t visual_start_position(zathura_t* zathura, unsigned int page_index, const zathura_visual_text_t* text) {
-  ZathuraPageWidget* widget = visual_page_widget(zathura, page_index);
+  ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, page_index);
   if (widget != NULL) {
     int current            = -1;
     girara_list_t* results = NULL;
@@ -1395,7 +1389,7 @@ static void visual_flash_clear(zathura_t* zathura) {
   g_clear_handle_id(&flash->source, g_source_remove);
   if (flash->drawn.drawn == true) {
     for (unsigned int page = flash->drawn.first; page <= flash->drawn.last; ++page) {
-      ZathuraPageWidget* widget = visual_page_widget(zathura, page);
+      ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, page);
       if (widget != NULL) {
         zathura_page_widget_set_flash(widget, NULL);
       }
@@ -1443,7 +1437,7 @@ static void visual_flash(zathura_t* zathura, visual_texts_t* texts, visual_posit
   }
 
   for (unsigned int page = first.page; page <= last.page; ++page) {
-    ZathuraPageWidget* widget         = visual_page_widget(zathura, page);
+    ZathuraPageWidget* widget         = zathura_page_get_widget_by_number(zathura, page);
     const zathura_visual_text_t* text = visual_text(zathura, texts, page);
     if (widget == NULL || text == NULL || text->n == 0) {
       continue;
@@ -1478,7 +1472,7 @@ static void visual_copy_image(zathura_t* zathura) {
 
   int duration                  = 0;
   zathura_visual_flash_t* flash = visual_flash_new(zathura, &duration);
-  ZathuraPageWidget* widget     = visual_page_widget(zathura, visual->image.page);
+  ZathuraPageWidget* widget     = zathura_page_get_widget_by_number(zathura, visual->image.page);
   girara_list_t* rects          = girara_list_new_with_free(g_free);
   zathura_rectangle_t* rect     = g_try_malloc0(sizeof(zathura_rectangle_t));
   if (flash == NULL || widget == NULL || rects == NULL || rect == NULL) {
@@ -1837,7 +1831,7 @@ static void visual_labels_clear(zathura_t* zathura) {
   }
 
   for (unsigned int page = visual->labels.first_page; page <= visual->labels.last_page; ++page) {
-    ZathuraPageWidget* widget = visual_page_widget(zathura, page);
+    ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, page);
     if (widget != NULL) {
       zathura_page_widget_set_labels(widget, NULL);
     }
@@ -2093,7 +2087,7 @@ static girara_list_t* visual_label_candidates(zathura_t* zathura) {
 /* hand the labels on a page to its widget */
 static void visual_labels_draw(zathura_t* zathura, unsigned int page) {
   zathura_visual_t* visual          = zathura->visual;
-  ZathuraPageWidget* widget         = visual_page_widget(zathura, page);
+  ZathuraPageWidget* widget         = zathura_page_get_widget_by_number(zathura, page);
   const zathura_visual_text_t* text = visual_text(zathura, &visual->texts, page);
   if (widget == NULL || text == NULL) {
     return;
@@ -2226,9 +2220,9 @@ static ZathuraPageWidget* mouse_page_at(zathura_t* zathura, double view_x, doubl
     if (page == NULL || (zathura_page_get_visibility(page) == false && idx != zathura->visual_mouse->start_page)) {
       continue;
     }
-    GtkWidget* widget = zathura_page_get_widget(zathura, page);
+    ZathuraPageWidget* widget = zathura_page_get_widget(zathura, page);
     graphene_rect_t bounds;
-    if (widget == NULL || gtk_widget_compute_bounds(widget, zathura->ui.view, &bounds) == false) {
+    if (widget == NULL || gtk_widget_compute_bounds(GTK_WIDGET(widget), zathura->ui.view, &bounds) == false) {
       continue;
     }
 
@@ -2240,7 +2234,7 @@ static ZathuraPageWidget* mouse_page_at(zathura_t* zathura, double view_x, doubl
     const double dy     = view_y < top ? top - view_y : (view_y > bottom ? view_y - bottom : 0);
     const double dist   = dx * dx + dy * dy;
     if (dist < best_dist) {
-      best        = ZATHURA_PAGE_WIDGET(widget);
+      best        = widget;
       best_dist   = dist;
       *page_index = idx;
       *x          = CLAMP(view_x, left, right) - left;
@@ -2287,7 +2281,7 @@ static void mouse_update(zathura_t* zathura) {
     mouse->anchor.index               = zathura_visual_index_at(text, mouse->start_x, mouse->start_y);
     mouse->multi                      = true;
 
-    ZathuraPageWidget* start_widget = visual_page_widget(zathura, mouse->start_page);
+    ZathuraPageWidget* start_widget = zathura_page_get_widget_by_number(zathura, mouse->start_page);
     if (start_widget != NULL) {
       zathura_page_widget_clear_selection(start_widget);
     }

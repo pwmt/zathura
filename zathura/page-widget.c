@@ -1093,7 +1093,8 @@ static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, d
   }
 
   /* the page's own size: its grid cell is wider or taller when the other pages are not rotated the same way */
-  GtkWidget* widget   = zathura_document_widget_get_page(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page);
+  GtkWidget* widget =
+      GTK_WIDGET(zathura_document_widget_get_page(ZATHURA_DOCUMENT_WIDGET(zathura->ui.document_widget), page));
   const double width  = widget != NULL ? gtk_widget_get_width(widget) : 0;
   const double height = widget != NULL ? gtk_widget_get_height(widget) : 0;
   switch (rotation) {
@@ -1161,11 +1162,10 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
           unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
           for (unsigned int i = 0; i < number_of_pages; i++) {
             /* the widget exists only if the background fill already created it */
-            GtkWidget* other_widget = zathura_document_widget_get_page(priv->zathura->ui.document_widget, i);
-            if (other_widget == NULL) {
+            ZathuraPageWidget* other_page = zathura_document_widget_get_page(priv->zathura->ui.document_widget, i);
+            if (other_page == NULL) {
               continue;
             }
-            ZathuraPageWidget* other_page        = ZATHURA_PAGE_WIDGET(other_widget);
             ZathuraPageWidgetPrivate* other_priv = zathura_page_widget_get_instance_private(other_page);
 
             if (other_priv->selection.draw == true || other_priv->highlighter.draw == true) {

@@ -77,12 +77,12 @@ bool sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argument), gi
         continue;
       }
 
-      GtkWidget* page_widget = zathura_page_get_widget(zathura, page);
+      ZathuraPageWidget* page_widget = zathura_page_get_widget(zathura, page);
       /* the widget exists only if the background fill already created it */
       if (!page_widget) {
         continue;
       }
-      zathura_page_widget_clear_selection(ZATHURA_PAGE_WIDGET(page_widget));
+      zathura_page_widget_clear_selection(page_widget);
     }
 
     zathura_visual_mouse_clear(zathura);
