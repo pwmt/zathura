@@ -243,8 +243,8 @@ struct zathura_s {
    */
   struct {
     struct {
-      int x;
-      int y;
+      double x;
+      double y;
     } mouse;
     struct {
       unsigned int pages;
