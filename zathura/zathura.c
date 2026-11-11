@@ -302,18 +302,6 @@ static bool init_ui(zathura_t* zathura) {
   GtkPolicyType vpolicy = show_vscrollbar ? GTK_POLICY_AUTOMATIC : GTK_POLICY_EXTERNAL;
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(zathura->ui.view), hpolicy, vpolicy);
 
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-
-  /* Connect hadjustment signals */
-  g_signal_connect(G_OBJECT(hadjustment), "value-changed", G_CALLBACK(cb_view_hadjustment_value_changed), zathura);
-  g_signal_connect(G_OBJECT(hadjustment), "changed", G_CALLBACK(cb_view_hadjustment_changed), zathura);
-
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-
-  /* Connect vadjustment signals */
-  g_signal_connect(G_OBJECT(vadjustment), "value-changed", G_CALLBACK(cb_view_vadjustment_value_changed), zathura);
-  g_signal_connect(G_OBJECT(vadjustment), "changed", G_CALLBACK(cb_view_vadjustment_changed), zathura);
-
   /* statusbar */
   GiraraStatusbar* statusbar = GIRARA_STATUSBAR(zathura->ui.session->gtk.statusbar);
   zathura->ui.statusbar.file = girara_statusbar_item_add(statusbar, true, true);
@@ -853,6 +841,7 @@ static ZathuraDocumentWidget* document_widget_create(zathura_t* zathura, zathura
   g_object_set(view, "pages-right-to-left", pages_right_to_left, NULL);
   zathura_document_widget_refresh_layout(view);
   g_object_set(view, "layout-mode", mode, NULL);
+  g_signal_connect(view, "position-changed", G_CALLBACK(cb_document_widget_position_changed), zathura);
   g_signal_connect(view, "page-widgets-loaded", G_CALLBACK(cb_document_widget_page_widgets_loaded), zathura);
   gtk_widget_set_visible(widget, TRUE);
 
@@ -945,16 +934,6 @@ static void initial_render_hold(zathura_t* zathura) {
   }
 }
 
-static void copy_adjustment(GtkAdjustment* target, GtkAdjustment* prepared) {
-  /* A page smaller than the viewport has page_size > upper, which configure() rejects. */
-  gtk_adjustment_set_lower(target, gtk_adjustment_get_lower(prepared));
-  gtk_adjustment_set_upper(target, gtk_adjustment_get_upper(prepared));
-  gtk_adjustment_set_step_increment(target, gtk_adjustment_get_step_increment(prepared));
-  gtk_adjustment_set_page_increment(target, gtk_adjustment_get_page_increment(prepared));
-  gtk_adjustment_set_page_size(target, gtk_adjustment_get_page_size(prepared));
-  gtk_adjustment_set_value(target, gtk_adjustment_get_value(prepared));
-}
-
 /* Helper function to redo the search and stay in place */
 static gboolean reload_search(gpointer data) {
   g_return_val_if_fail(data, G_SOURCE_REMOVE);
@@ -1030,14 +1009,7 @@ static void document_view_install(zathura_t* zathura, document_view_t* pending, 
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
   const unsigned int page            = zathura_document_get_current_page_number(document);
 
-  g_autoptr(GtkAdjustment) prepared_hadjustment = NULL;
-  g_autoptr(GtkAdjustment) prepared_vadjustment = NULL;
-  g_object_get(widget, "hadjustment", &prepared_hadjustment, "vadjustment", &prepared_vadjustment, NULL);
-
-  GtkAdjustment* hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  GtkAdjustment* vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-
-  // Commit changes. Block adjustment callbacks while installing bounds.
+  // Commit the prepared view.
   document_view_t previous = {zathura->document, zathura->ui.document_widget};
   if (replacing) {
     /* store file information */
@@ -1049,9 +1021,6 @@ static void document_view_install(zathura_t* zathura, document_view_t* pending, 
     zathura_dbus_document_close(zathura, zathura_document_get_path(previous.document));
 #endif
   }
-
-  g_signal_handlers_block_matched(hadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
-  g_signal_handlers_block_matched(vadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
 
   zathura->document           = g_steal_pointer(&pending->document);
   zathura->ui.document_widget = g_steal_pointer(&pending->widget);
@@ -1066,13 +1035,8 @@ static void document_view_install(zathura_t* zathura, document_view_t* pending, 
     zathura->sync.initial_render_done = true;
   }
 
-  /* GTK replaces the detached widget's adjustments; transfer its prepared bounds and position. */
+  /* The widget transfers its prepared bounds and position when GTK replaces its adjustments. */
   gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(zathura->ui.view), GTK_WIDGET(widget));
-  copy_adjustment(hadjustment, prepared_hadjustment);
-  copy_adjustment(vadjustment, prepared_vadjustment);
-
-  g_signal_handlers_unblock_matched(vadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
-  g_signal_handlers_unblock_matched(hadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, zathura);
 
   document_view_clear(&previous);
   if (monitor_password) {

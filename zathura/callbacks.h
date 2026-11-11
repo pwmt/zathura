@@ -28,46 +28,8 @@ void cb_destroy(GtkWidget* widget, zathura_t* zathura);
  */
 void cb_buffer_changed(girara_session_t* session);
 
-/**
- * This function gets called when the value of the horizontal scrollbars
- * changes (e.g.: by scrolling, moving to another page)
- *
- * @param adjustment The hadjustment of the page view
- * @param data NULL
- */
-void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data);
-
-/**
- * This function gets called when the value of the vertical scrollbars
- * changes (e.g.: by scrolling, moving to another page)
- *
- * @param adjustment The vadjustment of the page view
- * @param data NULL
- */
-void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data);
-
-/**
- * This function gets called when the bounds or the page_size of the horizontal
- * scrollbar change (e.g. when the zoom level is changed).
- *
- * It adjusts the value of the horizontal scrollbar
- *
- * @param adjustment The horizontal adjustment of a gtkScrolledWindow
- * @param data The zathura instance
- */
-void cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data);
-
-/**
- * This function gets called when the bounds or the page_size of the vertical
- * scrollbar change (e.g. when the zoom level is changed).
- *
- * It adjusts the value of the vertical scrollbar based on its previous
- * adjustment, stored in the tracking adjustment zathura->ui.hadjustment.
- *
- * @param adjustment The vertical adjustment of a gtkScrolledWindow
- * @param data The zathura instance
- */
-void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data);
+/** Update application page selection and the statusbar after document scrolling. */
+void cb_document_widget_position_changed(ZathuraDocumentWidget* widget, zathura_t* zathura);
 
 /**
  * This function gets called when the program need to refresh the document view.

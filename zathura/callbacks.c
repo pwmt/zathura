@@ -88,116 +88,20 @@ static double page_position_y(GtkAdjustment* vadjustment) {
   return zathura_adjustment_get_ratio(vadjustment);
 }
 
-void cb_view_hadjustment_value_changed(GtkAdjustment* adjustment, gpointer data) {
-  zathura_t* zathura = data;
-  if (zathura_has_document(zathura) == false || zathura->ui.document_widget == NULL) {
-    return;
-  }
-  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
-    girara_debug("Handling view adjustment change while processing page mode change.");
+void cb_document_widget_position_changed(ZathuraDocumentWidget* widget, zathura_t* zathura) {
+  if (widget != zathura->ui.document_widget || !zathura_has_document(zathura) ||
+      girara_mode_get(zathura->ui.session) == zathura->modes.index) {
     return;
   }
 
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
+  /* In single-page mode the page is selected explicitly; scrolling must preserve it. */
+  if (!in_single_page_mode(zathura)) {
+    GtkAdjustment* vertical = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(widget));
+    const unsigned int page =
+        position_to_page_number(zathura, zathura_document_widget_get_position_x(widget), page_position_y(vertical));
+    zathura_document_set_current_page_number(zathura_get_document(zathura), page);
   }
-
-  zathura_document_widget_update_visible_pages(zathura->ui.document_widget);
-
-  zathura_document_t* document = zathura_get_document(zathura);
-  const double position_x      = zathura_adjustment_get_ratio(adjustment);
-  const double position_y      = zathura_document_widget_get_position_y(zathura->ui.document_widget);
-  GtkAdjustment* vadjustment   = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  unsigned int page_id         = position_to_page_number(zathura, position_x, page_position_y(vadjustment));
-
-  zathura_document_widget_set_position_x(zathura->ui.document_widget, position_x);
-  zathura_document_widget_set_position_y(zathura->ui.document_widget, position_y);
-  /* In single-page mode the page is selected explicitly so scrolling must not change it */
-  if (in_single_page_mode(zathura) == false) {
-    zathura_document_set_current_page_number(document, page_id);
-  }
-
   statusbar_page_number_update(zathura);
-}
-
-void cb_view_vadjustment_value_changed(GtkAdjustment* adjustment, gpointer data) {
-  zathura_t* zathura = data;
-  if (zathura_has_document(zathura) == false || zathura->ui.document_widget == NULL) {
-    return;
-  }
-  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
-    girara_debug("Handling view adjustment change while processing page mode change.");
-    return;
-  }
-
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
-  }
-
-  zathura_document_widget_update_visible_pages(zathura->ui.document_widget);
-
-  zathura_document_t* document = zathura_get_document(zathura);
-  const double position_x      = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  const double position_y      = zathura_adjustment_get_ratio(adjustment);
-  const unsigned int page_id   = position_to_page_number(zathura, position_x, page_position_y(adjustment));
-
-  zathura_document_widget_set_position_x(zathura->ui.document_widget, position_x);
-  zathura_document_widget_set_position_y(zathura->ui.document_widget, position_y);
-  /* In single-page mode the page is selected explicitly so scrolling must not change it */
-  if (in_single_page_mode(zathura) == false) {
-    zathura_document_set_current_page_number(document, page_id);
-  }
-
-  statusbar_page_number_update(zathura);
-}
-
-static void cb_view_adjustment_changed(GtkAdjustment* adjustment, zathura_t* zathura, bool width) {
-  /* Do nothing in index mode */
-  if (girara_mode_get(zathura->ui.session) == zathura->modes.index) {
-    return;
-  }
-
-  const zathura_adjust_mode_t adjust_mode = zathura_document_widget_get_adjust_mode(zathura->ui.document_widget);
-
-  /* Don't scroll, we're focusing the inputbar. */
-  if (adjust_mode == ZATHURA_ADJUST_INPUTBAR) {
-    return;
-  }
-
-  const unsigned int size = floor(gtk_adjustment_get_page_size(adjustment));
-
-  // bounds from the old layout must not replace the pending page anchor.
-  if (zathura_document_widget_mode_change_pending(zathura->ui.document_widget)) {
-    girara_debug("Handling view adjustment change while processing page mode change.");
-    return;
-  }
-
-  /* store the position that was actually applied so it stays valid after the view is sized */
-  const double extent = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_lower(adjustment);
-  if (extent > size) {
-    const double applied = zathura_adjustment_get_ratio(adjustment);
-    if (width == true) {
-      zathura_document_widget_set_position_x(zathura->ui.document_widget, applied);
-    } else {
-      zathura_document_widget_set_position_y(zathura->ui.document_widget, applied);
-    }
-  }
-}
-
-void cb_view_hadjustment_changed(GtkAdjustment* adjustment, gpointer data) {
-  zathura_t* zathura = data;
-  g_return_if_fail(zathura != NULL);
-
-  cb_view_adjustment_changed(adjustment, zathura, true);
-}
-
-void cb_view_vadjustment_changed(GtkAdjustment* adjustment, gpointer data) {
-  zathura_t* zathura = data;
-  g_return_if_fail(zathura != NULL);
-
-  cb_view_adjustment_changed(adjustment, zathura, false);
 }
 
 void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
@@ -213,14 +117,7 @@ void cb_refresh_view(GtkWidget* GIRARA_UNUSED(view), gpointer data) {
     return;
   }
 
-  GtkAdjustment* vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-  GtkAdjustment* hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(zathura->ui.view));
-
-  const double position_x = zathura_document_widget_get_position_x(zathura->ui.document_widget);
-  const double position_y = zathura_document_widget_get_position_y(zathura->ui.document_widget);
-
-  zathura_adjustment_set_value_from_ratio(vadj, position_y);
-  zathura_adjustment_set_value_from_ratio(hadj, position_x);
+  zathura_document_widget_apply_position(zathura->ui.document_widget);
 
   statusbar_page_number_update(zathura);
 }
@@ -341,8 +238,7 @@ void cb_page_layout_value_changed(girara_session_t* session, const char* name, g
   const unsigned int current_page = zathura_document_get_current_page_number(document);
   double anchor_x = 0.0, anchor_y = 0.0;
   page_number_to_position(zathura->ui.document_widget, current_page, 0.5, 0.5, &anchor_x, &anchor_y);
-  zathura_document_widget_set_position_x(zathura->ui.document_widget, anchor_x);
-  zathura_document_widget_set_position_y(zathura->ui.document_widget, anchor_y);
+  zathura_document_widget_set_position(document_widget, anchor_x, anchor_y);
   refresh_view(zathura);
 }
 

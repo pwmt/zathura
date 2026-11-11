@@ -505,29 +505,18 @@ void zathura_document_widget_page_position_to_document(ZathuraDocumentWidget* do
  * current page in single-page mode. If negative coordinates are specified, the
  * configured page alignment is used to compute the position.
  *
- * @param widget A non-NULL document widget with an associated document and computed layout
+ * @param widget The document widget
  * @param position_x Horizontal viewport center (0=left, 1=right), or a negative value for page alignment
  * @param position_y Vertical viewport center (0=top, 1=bottom), or a negative value for page alignment
  */
 void zathura_document_widget_set_position(ZathuraDocumentWidget* widget, double position_x, double position_y);
 
 /**
- * Sets the X position as a value relative to the document width (0=left,
- * 1=right)
+ * Apply the stored viewport center to this widget's scroll adjustments.
  *
- * @param document The document
- * @param position_x the X adjustment
+ * @param widget The document widget
  */
-void zathura_document_widget_set_position_x(ZathuraDocumentWidget* document, double position_x);
-
-/**
- * Sets the Y position as a value relative to the document height (0=top,
- * 1=bottom)
- *
- * @param document The document
- * @param position_y the Y adjustment
- */
-void zathura_document_widget_set_position_y(ZathuraDocumentWidget* document, double position_y);
+void zathura_document_widget_apply_position(ZathuraDocumentWidget* document);
 
 /**
  * Returns the adjust mode of the document
