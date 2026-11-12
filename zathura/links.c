@@ -417,6 +417,12 @@ static gboolean cb_link_confirm(GiraraDialog* inputbar, const char* input, void*
 static gboolean link_confirm_spawn(void* data) {
   link_confirm_data_t* ctx = data;
 
+  /* a dialog is still open, there can only be one */
+  if (ctx->zathura->ui.session->gtk.dialog != NULL) {
+    link_confirm_data_free(ctx);
+    return G_SOURCE_REMOVE;
+  }
+
   g_autofree gchar* escaped = g_markup_escape_text(ctx->value, -1);
   g_autofree gchar* prompt  = g_strdup_printf(_("Open external link <b>%s</b>? [Y/n]"), escaped);
 
