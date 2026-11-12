@@ -474,6 +474,37 @@ bool sc_navigate(girara_session_t* session, girara_argument_t* argument, girara_
   return false;
 }
 
+bool sc_navigate_side(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* event,
+                      unsigned int t) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (event == NULL || event->type != GIRARA_EVENT_BUTTON_RELEASE || !zathura_has_document(zathura)) {
+    return false;
+  }
+
+  /* a drag is not a tap */
+  if (gtk_drag_check_threshold(session->gtk.view, event->press_x, event->press_y, event->x, event->y) == true) {
+    return false;
+  }
+
+  /* links are handled by the page */
+  GtkWidget* target = gtk_widget_pick(session->gtk.view, event->x, event->y, GTK_PICK_DEFAULT);
+  GtkWidget* page   = target != NULL ? gtk_widget_get_ancestor(target, ZATHURA_TYPE_PAGE_WIDGET) : NULL;
+  graphene_point_t point;
+  if (page != NULL &&
+      gtk_widget_compute_point(session->gtk.view, page, &GRAPHENE_POINT_INIT(event->x, event->y), &point) == true &&
+      zathura_page_widget_has_link_at(ZATHURA_PAGE_WIDGET(page), point.x, point.y) == true) {
+    return false;
+  }
+
+  const bool left       = event->x < gtk_widget_get_width(session->gtk.view) / 2.0;
+  girara_argument_t dir = {.n = left ? PREVIOUS : NEXT};
+
+  return sc_navigate(session, &dir, event, t);
+}
+
 bool sc_print(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
               unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);

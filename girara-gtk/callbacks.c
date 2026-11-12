@@ -224,6 +224,10 @@ void girara_callback_view_button_press_event(GtkGestureClick* gesture, gint n_pr
                                              girara_session_t* session) {
   g_return_if_fail(session != NULL);
 
+  girara_session_private_t* session_private = session->private_data;
+  session_private->press.x                  = x;
+  session_private->press.y                  = y;
+
   girara_event_t event = {.x = x, .y = y};
 
   if (n_press == 2) {
@@ -239,7 +243,6 @@ void girara_callback_view_button_press_event(GtkGestureClick* gesture, gint n_pr
   const guint gbutton  = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(gesture));
   GdkModifierType mods = gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
   const guint state    = mods & MOUSE_MASK;
-  girara_session_private_t* session_private = session->private_data;
 
   /* search registered mouse events */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
@@ -257,12 +260,16 @@ void girara_callback_view_button_release_event(GtkGestureClick* gesture, gint UN
                                                girara_session_t* session) {
   g_return_if_fail(session != NULL);
 
-  girara_event_t event = {.type = GIRARA_EVENT_BUTTON_RELEASE, .x = x, .y = y};
+  girara_session_private_t* session_private = session->private_data;
+  girara_event_t event                      = {.type    = GIRARA_EVENT_BUTTON_RELEASE,
+                                               .x       = x,
+                                               .y       = y,
+                                               .press_x = session_private->press.x,
+                                               .press_y = session_private->press.y};
 
   const guint gbutton  = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(gesture));
   GdkModifierType mods = gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
   const guint state    = girara_mouse_event_normalize_mask(GIRARA_EVENT_BUTTON_RELEASE, gbutton, mods & MOUSE_MASK);
-  girara_session_private_t* session_private = session->private_data;
 
   /* search registered mouse events */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {

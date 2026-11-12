@@ -1068,6 +1068,11 @@ static void evaluate_link_at_mouse_position(ZathuraPageWidget* page, int oldx, i
   }
 }
 
+bool zathura_page_widget_has_link_at(ZathuraPageWidget* widget, double x, double y) {
+  g_return_val_if_fail(ZATHURA_IS_PAGE_WIDGET(widget), false);
+  return link_at_point(widget, x, y) != NULL;
+}
+
 zathura_link_t* zathura_page_widget_link_get(ZathuraPageWidget* widget, unsigned int index) {
   g_return_val_if_fail(widget != NULL, NULL);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
