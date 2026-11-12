@@ -17,11 +17,6 @@ static const guint ALL_ACCELS_MASK = GDK_CONTROL_MASK | GDK_SHIFT_MASK | GDK_ALT
 static const guint MOUSE_MASK = GDK_CONTROL_MASK | GDK_SHIFT_MASK | GDK_ALT_MASK | GDK_BUTTON1_MASK | GDK_BUTTON2_MASK |
                                 GDK_BUTTON3_MASK | GDK_BUTTON4_MASK | GDK_BUTTON5_MASK;
 
-/* the state of a release still contains the released button, a mapping may leave it out */
-static guint released_button_mask(guint button) {
-  return (button >= 1 && button <= 5) ? GDK_BUTTON1_MASK << (button - 1) : 0;
-}
-
 bool girara_clean_key_mask(GtkEventControllerKey* controller, GdkModifierType state, guint* clean, guint* keyval) {
   GdkModifierType consumed = 0;
   GdkEvent* event          = gtk_event_controller_get_current_event(GTK_EVENT_CONTROLLER(controller));
@@ -249,7 +244,7 @@ void girara_callback_view_button_press_event(GtkGestureClick* gesture, gint n_pr
   /* search registered mouse events */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* mouse_event = girara_list_nth(session->bindings.mouse_events, idx);
-    if (mouse_event->function != NULL && gbutton == mouse_event->button && state == mouse_event->mask &&
+    if (mouse_event->function && gbutton == mouse_event->button && state == mouse_event->mask &&
         mouse_event->event_type == event.type &&
         (session->modes.current_mode == mouse_event->mode || mouse_event->mode == 0)) {
       mouse_event->function(session, &mouse_event->argument, &event, session_private->buffer.n);
@@ -266,14 +261,14 @@ void girara_callback_view_button_release_event(GtkGestureClick* gesture, gint UN
 
   const guint gbutton  = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(gesture));
   GdkModifierType mods = gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
-  const guint own      = released_button_mask(gbutton);
-  const guint state    = mods & MOUSE_MASK & ~own;
+  const guint state    = girara_mouse_event_normalize_mask(GIRARA_EVENT_BUTTON_RELEASE, gbutton, mods & MOUSE_MASK);
   girara_session_private_t* session_private = session->private_data;
 
   /* search registered mouse events */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* mouse_event = girara_list_nth(session->bindings.mouse_events, idx);
-    if (mouse_event->function != NULL && gbutton == mouse_event->button && state == (mouse_event->mask & ~own) &&
+    if (mouse_event->function && gbutton == mouse_event->button &&
+        state == girara_mouse_event_normalize_mask(mouse_event->event_type, gbutton, mouse_event->mask) &&
         mouse_event->event_type == GIRARA_EVENT_BUTTON_RELEASE &&
         (session->modes.current_mode == mouse_event->mode || mouse_event->mode == 0)) {
       mouse_event->function(session, &(mouse_event->argument), &event, session_private->buffer.n);
@@ -293,7 +288,7 @@ static bool dispatch_mouse_motion(girara_session_t* session, double x, double y,
   /* search registered mouse events */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* mouse_event = girara_list_nth(session->bindings.mouse_events, idx);
-    if (mouse_event->function != NULL && state == mouse_event->mask && mouse_event->event_type == event.type &&
+    if (mouse_event->function && state == mouse_event->mask && mouse_event->event_type == event.type &&
         (session->modes.current_mode == mouse_event->mode || mouse_event->mode == 0)) {
       mouse_event->function(session, &(mouse_event->argument), &event, session_private->buffer.n);
       return true;
@@ -312,11 +307,11 @@ void girara_callback_view_button_motion_notify_event(GtkEventControllerMotion* c
 bool girara_has_mouse_event(girara_session_t* session, girara_event_type_t type, guint button, GdkModifierType state) {
   g_return_val_if_fail(session != NULL, false);
 
-  const guint own    = type == GIRARA_EVENT_BUTTON_RELEASE ? released_button_mask(button) : 0;
-  const guint masked = state & MOUSE_MASK & ~own;
+  const guint masked = girara_mouse_event_normalize_mask(type, button, state & MOUSE_MASK);
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* mouse_event = girara_list_nth(session->bindings.mouse_events, idx);
-    if (mouse_event->function != NULL && mouse_event->button == button && masked == (mouse_event->mask & ~own) &&
+    if (mouse_event->function && mouse_event->button == button &&
+        masked == girara_mouse_event_normalize_mask(type, button, mouse_event->mask) &&
         mouse_event->event_type == type &&
         (session->modes.current_mode == mouse_event->mode || mouse_event->mode == 0)) {
       return true;

@@ -13,6 +13,14 @@
 
 #define UNUSED(x) GIRARA_UNUSED(x)
 
+/* A released button is implicit in the binding, even when present in the event state. */
+static inline guint girara_mouse_event_normalize_mask(girara_event_type_t type, guint button, guint mask) {
+  if (type == GIRARA_EVENT_BUTTON_RELEASE && button >= GIRARA_MOUSE_BUTTON1 && button <= GIRARA_MOUSE_BUTTON5) {
+    mask &= ~(GDK_BUTTON1_MASK << (button - GIRARA_MOUSE_BUTTON1));
+  }
+  return mask;
+}
+
 /* Normalize keyboard modifiers and keypad keys for view and inputbar handlers. */
 bool girara_clean_key_mask(GtkEventControllerKey* controller, GdkModifierType state, guint* clean, guint* keyval);
 

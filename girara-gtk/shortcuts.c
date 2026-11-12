@@ -566,6 +566,7 @@ bool girara_mouse_event_add(girara_session_t* session, guint mask, guint button,
   g_return_val_if_fail(function != NULL, false);
 
   girara_argument_t argument = {.n = argument_n, .data = argument_data};
+  mask                       = girara_mouse_event_normalize_mask(event_type, button, mask);
 
   /* search for existing binding */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
@@ -597,7 +598,8 @@ bool girara_mouse_event_remove(girara_session_t* session, guint mask, guint butt
   /* search for existing binding */
   for (size_t idx = 0; idx != girara_list_size(session->bindings.mouse_events); ++idx) {
     girara_mouse_event_t* me_it = girara_list_nth(session->bindings.mouse_events, idx);
-    if (me_it->mask == mask && me_it->button == button && me_it->mode == mode) {
+    if (me_it->mask == girara_mouse_event_normalize_mask(me_it->event_type, button, mask) && me_it->button == button &&
+        me_it->mode == mode) {
       girara_list_remove(session->bindings.mouse_events, me_it);
       return true;
     }
