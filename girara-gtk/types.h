@@ -168,6 +168,8 @@ struct girara_event_s {
   double y; /**< Y coordinates where the event occurred */
 
   girara_event_type_t type; /**< The event type */
+  double press_x;           /**< X coordinate of the press, for a release */
+  double press_y;           /**< Y coordinate of the press, for a release */
 };
 
 #endif

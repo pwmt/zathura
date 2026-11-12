@@ -136,6 +136,16 @@ void zathura_page_widget_set_visual(ZathuraPageWidget* widget, girara_list_t* se
  * @param linkid the link id if it's a link, -1 otherwise
  */
 zathura_link_t* zathura_page_widget_link_get(ZathuraPageWidget* widget, unsigned int index);
+
+/**
+ * Check if there is a link at a position of the page widget
+ *
+ * @param widget the widget
+ * @param x x coordinate in the widget
+ * @param y y coordinate in the widget
+ * @return true if there is a link at the position
+ */
+bool zathura_page_widget_has_link_at(ZathuraPageWidget* widget, double x, double y);
 /**
  * Update the last view time of the page.
  * Queue a background render if its surface is missing and rendering is not held.
