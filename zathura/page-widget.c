@@ -65,7 +65,7 @@ typedef struct zathura_page_widget_private_s {
 
   struct {
     zathura_rectangle_t selection; /**< x1 y1: click point, x2 y2: current position */
-    bool over_link;
+    zathura_link_t* link;          /**< Link under the pointer */
   } mouse;
 
   struct {
@@ -102,6 +102,7 @@ static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture
 static void cb_zathura_page_widget_motion_notify(GtkEventControllerMotion* controller, gdouble x, gdouble y,
                                                  gpointer data);
 static void cb_zathura_page_widget_leave_notify(GtkEventControllerMotion* controller, gpointer data);
+static void set_hovered_link(ZathuraPageWidget* page, zathura_link_t* link);
 static void cb_update_surface(ZathuraRenderRequest* request, cairo_surface_t* surface, void* data);
 static void cb_render_failed(ZathuraRenderRequest* request, ZathuraPageWidget* widget);
 static void cb_cache_added(ZathuraRenderRequest* request, void* data);
@@ -195,7 +196,7 @@ static void zathura_page_widget_class_init(ZathuraPageWidgetClass* class) {
                                          g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
   signals[ENTER_LINK] = g_signal_new("enter-link", ZATHURA_TYPE_PAGE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
-                                     g_cclosure_marshal_generic, G_TYPE_NONE, 0);
+                                     g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_POINTER);
 
   signals[LEAVE_LINK] = g_signal_new("leave-link", ZATHURA_TYPE_PAGE_WIDGET, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
                                      g_cclosure_marshal_generic, G_TYPE_NONE, 0);
@@ -245,7 +246,7 @@ static void zathura_page_widget_init(ZathuraPageWidget* widget) {
   priv->mouse.selection.y1 = -1;
   priv->mouse.selection.x2 = -1;
   priv->mouse.selection.y2 = -1;
-  priv->mouse.over_link    = false;
+  priv->mouse.link         = NULL;
 
   priv->highlighter.bounds.x1 = -1;
   priv->highlighter.bounds.y1 = -1;
@@ -308,6 +309,9 @@ GtkWidget* zathura_page_widget_new(zathura_t* zathura, zathura_page_t* page, Zat
 static void zathura_page_widget_dispose(GObject* object) {
   ZathuraPageWidget* widget      = ZATHURA_PAGE_WIDGET(object);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(widget);
+
+  /* listeners must not keep a link of this page */
+  set_hovered_link(widget, NULL);
 
   g_clear_object(&priv->render_request);
   g_clear_object(&priv->renderer);
@@ -1360,6 +1364,23 @@ static zathura_rectangle_t next_selection_rectangle(double basepoint_x, double b
   return rect;
 }
 
+/* track the link under the pointer and tell listeners when it changes */
+static void set_hovered_link(ZathuraPageWidget* page, zathura_link_t* link) {
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(page);
+  if (priv->mouse.link == link) {
+    return;
+  }
+
+  if (priv->mouse.link != NULL) {
+    priv->mouse.link = NULL;
+    g_signal_emit(page, signals[LEAVE_LINK], 0);
+  }
+  if (link != NULL) {
+    priv->mouse.link = link;
+    g_signal_emit(page, signals[ENTER_LINK], 0, link);
+  }
+}
+
 static void cb_zathura_page_widget_motion_notify(GtkEventControllerMotion* controller, gdouble ex, gdouble ey,
                                                  gpointer data) {
   GtkWidget* widget              = GTK_WIDGET(data);
@@ -1387,11 +1408,7 @@ static void cb_zathura_page_widget_motion_notify(GtkEventControllerMotion* contr
       zathura_page_widget_update_mouse_selection(page, ex, ey);
     }
   } else {
-    const bool over_link = link_at_point(page, ex, ey) != NULL;
-    if (priv->mouse.over_link != over_link) {
-      g_signal_emit(page, over_link ? signals[ENTER_LINK] : signals[LEAVE_LINK], 0);
-      priv->mouse.over_link = over_link;
-    }
+    set_hovered_link(page, link_at_point(page, ex, ey));
   }
 }
 
@@ -1406,10 +1423,7 @@ static void cb_zathura_page_widget_leave_notify(GtkEventControllerMotion* UNUSED
     zathura_page_widget_clear_selection(page);
   }
 
-  if (priv->mouse.over_link == true) {
-    g_signal_emit(page, signals[LEAVE_LINK], 0);
-    priv->mouse.over_link = false;
-  }
+  set_hovered_link(page, NULL);
 }
 
 /* show context menu for the image under the click position */

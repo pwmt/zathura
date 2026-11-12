@@ -64,6 +64,14 @@ bool zathura_document_widget_set_document(ZathuraDocumentWidget* document_widget
 zathura_document_t* zathura_document_widget_get_document(ZathuraDocumentWidget* document);
 
 /**
+ * Return the renderer of the associated document.
+ *
+ * @param document the document widget
+ * @return the renderer, or NULL if no document is associated
+ */
+ZathuraRenderer* zathura_document_widget_get_renderer(ZathuraDocumentWidget* document);
+
+/**
  * Enable or disable document recoloring.
  *
  * A changed value invalidates rendered page surfaces and cached thumbnails.

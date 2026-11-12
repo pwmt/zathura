@@ -203,7 +203,48 @@ void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkTexture* texture,
 
 void cb_page_widget_scaled_button_release(ZathuraPageWidget* page, scaled_button_release_event_t* event, void* data);
 
-void cb_page_widget_link(ZathuraPageWidget* page, void* data);
+/**
+ * Called when the pointer enters a link. Shows the pointer cursor and prepares
+ * the tooltip that previews the link's target.
+ *
+ * @param page page view widget
+ * @param link link under the pointer
+ * @param data The zathura instance
+ */
+void cb_page_widget_enter_link(ZathuraPageWidget* page, zathura_link_t* link, void* data);
+
+/**
+ * Called when the pointer leaves a link. Restores the cursor and drops the
+ * link's tooltip.
+ *
+ * @param page page view widget
+ * @param data The zathura instance
+ */
+void cb_page_widget_leave_link(ZathuraPageWidget* page, void* data);
+
+/**
+ * Called when a page widget received a new rendering. Renders the preview of
+ * the hovered link again, since zoom or recolor changes outdate it, or once its
+ * target page has been rendered if it was busy before.
+ *
+ * @param page page view widget
+ * @param data The zathura instance
+ */
+void cb_page_widget_rendered(ZathuraPageWidget* page, void* data);
+
+/**
+ * Shows the tooltip of the link under the pointer, if one is ready.
+ *
+ * @param widget page view widget
+ * @param x x coordinate of the pointer in widget coordinates
+ * @param y y coordinate of the pointer in widget coordinates
+ * @param keyboard_mode true if the tooltip was triggered with the keyboard
+ * @param tooltip the tooltip to fill
+ * @param data The zathura instance
+ * @return true if the tooltip should be shown
+ */
+gboolean cb_page_widget_query_tooltip(GtkWidget* widget, int x, int y, gboolean keyboard_mode, GtkTooltip* tooltip,
+                                      void* data);
 
 void cb_gesture_zoom_begin(GtkGesture* self, GdkEventSequence* sequence, void* data);
 

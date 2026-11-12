@@ -23,6 +23,7 @@
 #include "shortcuts.h"
 #include "page-widget.h"
 #include "page.h"
+#include "render.h"
 #include "adjustment.h"
 #include "synctex.h"
 #include "dbus-interface.h"
@@ -505,12 +506,194 @@ void cb_page_widget_image_selected(ZathuraPageWidget* page, GdkTexture* texture,
   copy_image_to_selection(zathura, texture);
 }
 
-void cb_page_widget_link(ZathuraPageWidget* page, void* data) {
+/* time in ms the pointer has to stop on a link before its target is rendered */
+#define LINK_PREVIEW_DELAY 150
+
+static void cb_link_preview_draw(GtkDrawingArea* UNUSED(area), cairo_t* cairo, int UNUSED(width), int UNUSED(height),
+                                 gpointer data) {
+  cairo_set_source_surface(cairo, data, 0, 0);
+  cairo_paint(cairo);
+}
+
+/* copy a strip of the link's target page at the current zoom, starting just above the target position */
+static GtkWidget* link_preview_new(zathura_t* zathura, zathura_link_t* link) {
+  const zathura_link_target_t target = zathura_link_get_target(link);
+  zathura_document_t* document       = zathura_get_document(zathura);
+  ZathuraRenderer* renderer          = zathura_document_widget_get_renderer(zathura->ui.document_widget);
+  if (document == NULL || renderer == NULL || target.destination_type == ZATHURA_LINK_DESTINATION_UNKNOWN ||
+      target.page_number >= zathura_document_get_number_of_pages(document)) {
+    return NULL;
+  }
+
+  zathura_page_t* page     = zathura_document_get_page(document, target.page_number);
+  unsigned int page_width  = 0;
+  unsigned int page_height = 0;
+  const double scale       = page_calc_height_width(document, page, &page_height, &page_width, false);
+  if (page_width == 0) {
+    return NULL;
+  }
+
+  /* the preview is at most 80% of the window wide and half of it high */
+  GtkWidget* window    = zathura->ui.session->gtk.window;
+  const int max_width  = gtk_widget_get_width(window) * 0.8;
+  const int max_height = gtk_widget_get_height(window) / 2;
+
+  /* show the whole page width, rendered smaller than the current zoom if it does not fit the window */
+  const double fit          = MIN(1.0, (double)max_width / page_width);
+  cairo_surface_t* rendered = zathura_renderer_render_page_scaled(renderer, page, fit);
+  if (rendered == NULL) {
+    return NULL;
+  }
+
+  /* crop only vertically, in device pixels of the rendered page so that the copy is 1:1 */
+  double scale_x = 1;
+  double scale_y = 1;
+  cairo_surface_get_device_scale(rendered, &scale_x, &scale_y);
+  const int surface_width  = cairo_image_surface_get_width(rendered);
+  const int surface_height = cairo_image_surface_get_height(rendered);
+  const int strip_height   = MIN(surface_height, round(max_height * scale_y));
+  const double target_top  = target.top * scale * fit * scale_y;
+  const int top = target.top >= 0 ? round(CLAMP(target_top - strip_height / 10, 0, surface_height - strip_height)) : 0;
+
+  cairo_surface_t* strip = NULL;
+  if (surface_width > 0 && strip_height > 0) {
+    strip = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, surface_width, strip_height);
+    cairo_surface_set_device_scale(strip, scale_x, scale_y);
+    cairo_t* cairo = cairo_create(strip);
+    cairo_set_source_surface(cairo, rendered, 0, -top / scale_y);
+    cairo_paint(cairo);
+    cairo_destroy(cairo);
+  }
+  cairo_surface_destroy(rendered);
+
+  if (strip == NULL || cairo_surface_status(strip) != CAIRO_STATUS_SUCCESS) {
+    cairo_surface_destroy(strip);
+    return NULL;
+  }
+
+  GtkWidget* area = gtk_drawing_area_new();
+  gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(area), ceil(surface_width / scale_x));
+  gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(area), ceil(strip_height / scale_y));
+  gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(area), cb_link_preview_draw, strip,
+                                 (GDestroyNotify)cairo_surface_destroy);
+  return g_object_ref_sink(area);
+}
+
+static bool link_preview_enabled(zathura_t* zathura) {
+  bool link_preview = true;
+  girara_setting_get(zathura->ui.session, "link-preview", &link_preview);
+  return link_preview;
+}
+
+static gboolean cb_link_preview_timeout(gpointer data) {
+  zathura_t* zathura               = data;
+  zathura->link_preview.timeout_id = 0;
+  if (link_preview_enabled(zathura) == false) {
+    return G_SOURCE_REMOVE;
+  }
+
+  zathura->link_preview.widget = link_preview_new(zathura, zathura->link_preview.link);
+  if (zathura->link_preview.widget != NULL) {
+    gtk_widget_trigger_tooltip_query(GTK_WIDGET(zathura->link_preview.page));
+  }
+
+  return G_SOURCE_REMOVE;
+}
+
+/* (re)start rendering the preview once the pointer has rested on the link */
+static void link_preview_schedule(zathura_t* zathura) {
+  g_clear_object(&zathura->link_preview.widget);
+  g_clear_handle_id(&zathura->link_preview.timeout_id, g_source_remove);
+  if (zathura_link_get_type(zathura->link_preview.link) == ZATHURA_LINK_GOTO_DEST) {
+    zathura->link_preview.timeout_id = g_timeout_add(LINK_PREVIEW_DELAY, cb_link_preview_timeout, zathura);
+  }
+}
+
+void cb_page_widget_enter_link(ZathuraPageWidget* page, zathura_link_t* link, void* data) {
   g_return_if_fail(page != NULL);
+  g_return_if_fail(link != NULL);
+  g_return_if_fail(data != NULL);
 
-  bool enter = (bool)data;
+  zathura_t* zathura = data;
+  gtk_widget_set_cursor_from_name(GTK_WIDGET(page), "pointer");
 
-  gtk_widget_set_cursor_from_name(GTK_WIDGET(page), enter ? "pointer" : "default");
+  if (link_preview_enabled(zathura) == false) {
+    return;
+  }
+
+  zathura->link_preview.page = page;
+  zathura->link_preview.link = link;
+  link_preview_schedule(zathura);
+}
+
+void cb_page_widget_rendered(ZathuraPageWidget* page, void* data) {
+  zathura_t* zathura = data;
+
+  zathura_link_t* link = zathura->link_preview.link;
+  if (link == NULL) {
+    return;
+  }
+
+  /* zoom, recolor or rotation changes re-render the page, so the preview is outdated as well. GTK hides the
+   * tooltip on the key press that caused it, so show the new preview without waiting for the pointer to move. */
+  const bool hovered_page = zathura->link_preview.page == page;
+  /* the target cannot be rendered while it is queued in the background renderer, so retry once it is done. The
+   * page still counts as queued while "rendered" is emitted, so the retry has to go through the delay. */
+  const bool target_page =
+      zathura->link_preview.widget == NULL && zathura->link_preview.timeout_id == 0 &&
+      zathura_link_get_type(link) == ZATHURA_LINK_GOTO_DEST &&
+      zathura_page_get_index(zathura_page_widget_get_page(page)) == zathura_link_get_target(link).page_number;
+  if (hovered_page == true || target_page == true) {
+    link_preview_schedule(zathura);
+  }
+}
+
+void cb_page_widget_leave_link(ZathuraPageWidget* page, void* data) {
+  g_return_if_fail(page != NULL);
+  g_return_if_fail(data != NULL);
+
+  zathura_t* zathura = data;
+  gtk_widget_set_cursor_from_name(GTK_WIDGET(page), "default");
+
+  if (zathura->link_preview.page == page) {
+    zathura->link_preview.page = NULL;
+    zathura->link_preview.link = NULL;
+    g_clear_object(&zathura->link_preview.widget);
+    g_clear_handle_id(&zathura->link_preview.timeout_id, g_source_remove);
+  }
+}
+
+gboolean cb_page_widget_query_tooltip(GtkWidget* widget, int x, int y, gboolean UNUSED(keyboard_mode),
+                                      GtkTooltip* tooltip, void* data) {
+  zathura_t* zathura   = data;
+  zathura_link_t* link = zathura->link_preview.link;
+  if (link == NULL || GTK_WIDGET(zathura->link_preview.page) != widget || link_preview_enabled(zathura) == false) {
+    return FALSE;
+  }
+
+  zathura_page_t* page           = zathura_page_widget_get_page(zathura->link_preview.page);
+  const zathura_rectangle_t rect = recalc_rectangle(page, zathura_link_get_position(link));
+  if (x < rect.x1 || x > rect.x2 || y < rect.y1 || y > rect.y2) {
+    /* a zoom moved the link away from the pointer */
+    return FALSE;
+  }
+  const GdkRectangle area = {rect.x1, rect.y1, rect.x2 - rect.x1, rect.y2 - rect.y1};
+  gtk_tooltip_set_tip_area(tooltip, &area);
+
+  switch (zathura_link_get_type(link)) {
+  case ZATHURA_LINK_GOTO_DEST:
+    if (zathura->link_preview.widget == NULL) {
+      return FALSE;
+    }
+    gtk_tooltip_set_custom(tooltip, zathura->link_preview.widget);
+    return TRUE;
+  case ZATHURA_LINK_GOTO_REMOTE:
+  case ZATHURA_LINK_URI:
+    gtk_tooltip_set_text(tooltip, zathura_link_get_target(link).value);
+    return TRUE;
+  default:
+    return FALSE;
+  }
 }
 
 void cb_page_widget_scaled_button_release(ZathuraPageWidget* page_widget, scaled_button_release_event_t* event,

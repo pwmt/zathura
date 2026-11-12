@@ -880,6 +880,13 @@ The settings described here can be changed with ``set``.
   * Value type: Boolean
   * Default value: true
 
+*link-preview*
+  En/Disables showing link targets when the mouse hovers over a link. Internal
+  links show a preview of the target page region, external links show their URI.
+
+  * Value type: Boolean
+  * Default value: true
+
 *link-zoom*
   En/Disables the ability of changing zoom when following links. Internal PDF
   destinations can specify an explicit zoom or fit a page, its width, its height,
