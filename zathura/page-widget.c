@@ -1232,15 +1232,18 @@ static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture
     if (priv->zathura->global.double_click_follow) {
       evaluate_link_at_mouse_position(page, oldx, oldy);
     }
-  } else if (priv->selection.list != NULL) {
-    zathura_rectangle_t tmp = priv->mouse.selection;
+  } else {
+    g_autofree char* text = NULL;
+    if (priv->selection.list != NULL) {
+      zathura_rectangle_t tmp = priv->mouse.selection;
 
-    tmp.x1 /= scale;
-    tmp.x2 /= scale;
-    tmp.y1 /= scale;
-    tmp.y2 /= scale;
+      tmp.x1 /= scale;
+      tmp.x2 /= scale;
+      tmp.y1 /= scale;
+      tmp.y2 /= scale;
 
-    g_autofree char* text = zathura_page_get_text(priv->page, tmp, NULL);
+      text = zathura_page_get_text(priv->page, tmp, NULL);
+    }
     if (text != NULL && *text != '\0') {
       /* emit text-selected signal */
       g_signal_emit(page, signals[TEXT_SELECTED], 0, text);
