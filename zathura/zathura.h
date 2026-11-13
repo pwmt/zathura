@@ -10,6 +10,7 @@
 #ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>
 #endif
+
 #include "macros.h"
 #include "types.h"
 #include "jumplist.h"

@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
+
 #include "types.h"
 
 /**

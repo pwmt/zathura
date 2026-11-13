@@ -8,8 +8,6 @@
 #include <magic.h>
 #include <stdio.h>
 
-#include "macros.h"
-
 struct zathura_content_type_context_s {
   magic_t magic;
 };

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <glib-object.h>
 #include <gdk/gdk.h>
-#include <girara/types.h>
+
 #include "types.h"
 
 typedef struct zathura_renderer_class_s ZathuraRendererClass;

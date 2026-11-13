@@ -5,7 +5,6 @@
 #include <girara-gtk/session.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
-#include <girara/utils.h>
 #include <string.h>
 
 #include "database.h"

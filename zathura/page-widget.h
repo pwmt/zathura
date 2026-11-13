@@ -4,6 +4,7 @@
 #define PAGE_WIDGET_H
 
 #include <gtk/gtk.h>
+
 #include "types.h"
 #include "document.h"
 

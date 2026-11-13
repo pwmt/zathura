@@ -9,7 +9,6 @@
 
 #include <girara/datastructures.h>
 #include <girara/log.h>
-#include <girara/utils.h>
 #include <glib/gi18n-lib.h>
 #include <string.h>
 

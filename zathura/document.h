@@ -3,10 +3,9 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include <girara/types.h>
 #include <stdbool.h>
 #include <stdint.h>
-
-#include <girara/types.h>
 
 #include "types.h"
 

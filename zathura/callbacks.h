@@ -5,8 +5,6 @@
 
 #include <gtk/gtk.h>
 #include <girara-gtk/inputbar.h>
-#include <girara/types.h>
-#include <girara/macros.h>
 
 #include "internal.h"
 #include "document.h"

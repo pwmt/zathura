@@ -2,6 +2,8 @@
 
 #include "statusbar.h"
 
+#include <girara/macros.h>
+
 struct _GiraraStatusbar {
   GtkBox parent_instance;
   GtkBox* entries;

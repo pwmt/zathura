@@ -2,7 +2,6 @@
 
 #include "inputbar.h"
 
-#include <girara/macros.h>
 #include <girara/input-history.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>

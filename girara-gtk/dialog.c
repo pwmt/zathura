@@ -2,6 +2,8 @@
 
 #include "dialog.h"
 
+#include <girara/macros.h>
+
 #include "internal.h"
 #include "shortcuts.h"
 

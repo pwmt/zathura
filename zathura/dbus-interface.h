@@ -4,9 +4,9 @@
 #define DBUS_INTERFACE_H
 
 #include <stdbool.h>
-#include <girara/types.h>
 #include <glib-object.h>
 #include <sys/types.h>
+
 #include "types.h"
 
 typedef struct zathura_dbus_class_s ZathuraDbusClass;

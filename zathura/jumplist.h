@@ -4,6 +4,7 @@
 #define ZATHURA_JUMPLIST_H
 
 #include <girara/datastructures.h>
+
 #include "types.h"
 
 typedef struct zathura_jumplist_s {

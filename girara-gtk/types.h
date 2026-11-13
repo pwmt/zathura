@@ -4,8 +4,6 @@
 #define GIRARA_GTK_TYPES_H
 
 #include <girara/types.h>
-#include <girara/macros.h>
-#include <stdbool.h>
 #include <glib-object.h>
 
 typedef struct girara_setting_s girara_setting_t;
