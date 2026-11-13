@@ -572,6 +572,8 @@ void config_load_default(zathura_t* zathura) {
   bool_value = true;
   girara_setting_add(gsession, "link-zoom",                  &bool_value,  BOOLEAN, false, _("Let zoom be changed when following links"), NULL, NULL);
   bool_value = true;
+  girara_setting_add(gsession, "link-preview",               &bool_value,  BOOLEAN, false, _("Show link targets when hovering over links"), NULL, NULL);
+  bool_value = true;
   girara_setting_add(gsession, "search-hadjust",             &bool_value,  BOOLEAN, false, _("Center result horizontally"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "render-loading",             &bool_value,  BOOLEAN, false, _("Render 'Loading ...'"), NULL, NULL);
