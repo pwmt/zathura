@@ -332,7 +332,8 @@ static void link_remote(zathura_t* zathura, const char* file) {
   g_autofree char* dir = g_path_get_dirname(path);
   g_autofree char* uri = g_build_filename(file, NULL);
 
-  char* argv[] = {*zathura->global.arguments, uri, NULL};
+  /* the document controls uri, it must not be parsed as an option */
+  char* argv[] = {*zathura->global.arguments, "--", uri, NULL};
 
   g_autoptr(GError) error = NULL;
   if (!g_spawn_async(dir, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error)) {
