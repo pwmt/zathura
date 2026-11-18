@@ -303,6 +303,13 @@ They can also be combined with modifiers:
 
     Navigate through the index.
 
+  * ``navigate_side``
+
+    Navigate to the previous page on a tap in the left half of the window and
+    to the next page on a tap in the right half. Taps on links open the link
+    as usual. Map it to the release of a button, for example
+    ``map <Button1> [button-released] navigate_side``.
+
   * ``print``
 
     Show the print dialog.

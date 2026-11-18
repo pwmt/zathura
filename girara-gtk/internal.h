@@ -229,6 +229,11 @@ struct girara_session_private_s {
   } buffer;
 
   struct {
+    double x;
+    double y;
+  } press; /**< Position of the last button press in the view */
+
+  struct {
     girara_list_t* handles;
     girara_list_t* shortcut_mappings;
     girara_list_t* argument_mappings;
