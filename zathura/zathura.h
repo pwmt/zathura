@@ -200,6 +200,13 @@ struct zathura_s {
   struct zathura_visual_flash_s* visual_flash; /**< Flash of text that was just copied */
 
   struct {
+    ZathuraPageWidget* page; /**< Page widget of the hovered link */
+    zathura_link_t* link;    /**< Hovered link, NULL if none */
+    GtkWidget* widget;       /**< Preview of the link's target, once rendered */
+    guint timeout_id;        /**< Pending render of the preview */
+  } link_preview;
+
+  struct {
     girara_list_t* bookmarks; /**< bookmarks */
   } bookmarks;
 

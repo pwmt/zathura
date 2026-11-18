@@ -42,6 +42,9 @@ ZathuraRenderer* zathura_renderer_new(size_t cache_size);
  * The caller owns the returned surface and must destroy it. */
 cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page);
 
+/* Like zathura_renderer_render_page(), but at factor times the current zoom. */
+cairo_surface_t* zathura_renderer_render_page_scaled(ZathuraRenderer* renderer, zathura_page_t* page, double factor);
+
 /**
  * Return whether recoloring is enabled.
  * @param renderer a renderer object

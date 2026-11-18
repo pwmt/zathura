@@ -253,6 +253,13 @@ zathura_document_t* zathura_document_widget_get_document(ZathuraDocumentWidget* 
   return priv->document;
 }
 
+ZathuraRenderer* zathura_document_widget_get_renderer(ZathuraDocumentWidget* document) {
+  g_return_val_if_fail(document != NULL, NULL);
+
+  ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
+  return priv->renderer;
+}
+
 static void invalidate_recolor(ZathuraDocumentWidget* document) {
   ZathuraDocumentWidgetPrivate* priv = zathura_document_widget_get_instance_private(document);
 
@@ -1132,8 +1139,11 @@ ZathuraPageWidget* zathura_document_widget_ensure_page(ZathuraDocumentWidget* do
 
     g_signal_connect(G_OBJECT(page_widget), "text-selected", G_CALLBACK(cb_page_widget_text_selected), priv->zathura);
     g_signal_connect(G_OBJECT(page_widget), "image-selected", G_CALLBACK(cb_page_widget_image_selected), priv->zathura);
-    g_signal_connect(G_OBJECT(page_widget), "enter-link", G_CALLBACK(cb_page_widget_link), (gpointer) true);
-    g_signal_connect(G_OBJECT(page_widget), "leave-link", G_CALLBACK(cb_page_widget_link), (gpointer) false);
+    g_signal_connect(G_OBJECT(page_widget), "enter-link", G_CALLBACK(cb_page_widget_enter_link), priv->zathura);
+    g_signal_connect(G_OBJECT(page_widget), "leave-link", G_CALLBACK(cb_page_widget_leave_link), priv->zathura);
+    g_signal_connect(G_OBJECT(page_widget), "rendered", G_CALLBACK(cb_page_widget_rendered), priv->zathura);
+    gtk_widget_set_has_tooltip(widget, TRUE);
+    g_signal_connect(G_OBJECT(page_widget), "query-tooltip", G_CALLBACK(cb_page_widget_query_tooltip), priv->zathura);
     g_signal_connect(G_OBJECT(page_widget), "scaled-button-release", G_CALLBACK(cb_page_widget_scaled_button_release),
                      priv->zathura);
     g_object_set(G_OBJECT(page_widget), "draw-signatures", priv->draw_signatures, NULL);
