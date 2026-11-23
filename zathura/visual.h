@@ -333,4 +333,49 @@ void zathura_visual_mouse_clear(zathura_t* zathura);
  */
 void zathura_visual_reset(zathura_t* zathura);
 
+/**
+ * Annotate the selected text of visual mode and leave visual mode.
+ *
+ * @param zathura The zathura session
+ * @param type Text markup type (highlight, underline, squiggly, strikeout), or
+ *   ZATHURA_ANNOTATION_TEXT to attach a note to the start of the selection
+ * @param color RGB color with components in [0, 1], or NULL for the default of the type
+ * @param contents Text of the annotation, or NULL
+ * @return Number of annotations added, 0 if the selection was invalid or on error
+ */
+unsigned int zathura_visual_annotate(zathura_t* zathura, zathura_annotation_type_t type, const double* color,
+                                     const char* contents);
+
+/**
+ * Annotate the text selected with the mouse, on one page or over several, and
+ * clear the selection.
+ *
+ * @param zathura The zathura session
+ * @param type Annotation type, see zathura_visual_annotate
+ * @param color RGB color with components in [0, 1], or NULL for the default of the type
+ * @param contents Text of the annotation, or NULL
+ * @return Number of annotations added
+ */
+unsigned int zathura_visual_annotate_mouse(zathura_t* zathura, zathura_annotation_type_t type, const double* color,
+                                           const char* contents);
+
+/**
+ * Delete the annotations overlapping the selection or the caret of visual mode
+ * and leave visual mode.
+ *
+ * @param zathura The zathura session
+ * @return Number of deleted annotations
+ */
+unsigned int zathura_visual_annotation_delete(zathura_t* zathura);
+
+/**
+ * Set the contents of the annotations overlapping the selection or the caret
+ * of visual mode and leave visual mode.
+ *
+ * @param zathura The zathura session
+ * @param contents New text
+ * @return Number of changed annotations
+ */
+unsigned int zathura_visual_annotation_comment(zathura_t* zathura, const char* contents);
+
 #endif // ZATHURA_VISUAL_H

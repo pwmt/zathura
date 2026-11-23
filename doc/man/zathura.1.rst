@@ -372,6 +372,35 @@ print
 write(!)
   Save document (and force overwriting). Alias: ``save(!)``.
 
+annotate
+  Annotate the text selected in visual mode (``v``, ``V``); needs a plugin with
+  annotation support, such as zathura-pdf-mupdf. The change is kept in memory
+  until the document is saved with ``write`` (no argument saves to the opened file).
+
+  In visual mode, ``H`` highlights, ``U`` underlines, ``S`` adds a squiggly underline and ``X``
+  strikes out the selection with the default color of the type. ``D`` deletes the annotations
+  at the selection or caret and ``C`` opens the command line to comment on them and ``N`` to add a sticky
+  note. ``A`` opens it with ``annotate highlight `` so a color can be typed; change
+  the type for underline, squiggly or strikeout.
+
+  After selecting text with the mouse, ``gh``, ``gu``, ``gs`` and ``gx``
+  highlight, underline, squiggly-underline and strike out the selection, and
+  ``:annotate highlight|underline|squiggly|strikeout|note`` annotate it too when
+  visual mode is not active.
+
+  ``annotate highlight|underline|squiggly|strikeout [color]``
+    Mark the selected text. The optional color is anything GDK can parse, e.g.
+    ``#ff8800`` or ``orange``.
+
+  ``annotate note <text>``
+    Attach a sticky note with the given text to the start of the selection.
+
+  ``annotate comment <text>``
+    Set the text of the annotations at the selection or caret.
+
+  ``annotate delete``
+    Delete the annotations at the selection or caret.
+
 export
   Export attachments. First argument specifies the attachment identifier
   (use completion with ``Tab``), second argument gives the target filename

@@ -163,6 +163,43 @@ typedef struct zathura_text_layout_s {
 } zathura_text_layout_t;
 
 /**
+ * Type of an annotation.
+ */
+typedef enum zathura_annotation_type_e {
+  ZATHURA_ANNOTATION_TEXT,      /**< Sticky note placed at a point */
+  ZATHURA_ANNOTATION_HIGHLIGHT, /**< Highlighted text */
+  ZATHURA_ANNOTATION_UNDERLINE, /**< Underlined text */
+  ZATHURA_ANNOTATION_SQUIGGLY,  /**< Text with a squiggly underline */
+  ZATHURA_ANNOTATION_STRIKEOUT, /**< Struck-out text */
+  ZATHURA_ANNOTATION_OTHER      /**< Any other annotation (read-only for zathura) */
+} zathura_annotation_type_t;
+
+/**
+ * Annotation of a page.
+ *
+ * Coordinates are in unscaled and unrotated page coordinates, like those of
+ * the text layout.
+ */
+typedef struct zathura_annotation_s {
+  zathura_annotation_type_t type; /**< Type of the annotation */
+  unsigned int index;             /**< Plugin specific index, only valid until the annotations of the page change */
+  zathura_rectangle_t rect;       /**< Bounding box of the annotation */
+  zathura_rectangle_t* quads;     /**< Marked regions of text markup annotations, one per line */
+  size_t n_quads;                 /**< Number of rectangles in quads */
+  bool has_color;                 /**< Whether color is set */
+  double color[3];                /**< RGB color with components in [0, 1] */
+  char* contents;                 /**< Text of the annotation or NULL */
+  char* author;                   /**< Author of the annotation or NULL */
+} zathura_annotation_t;
+
+/**
+ * Frees an annotation
+ *
+ * @param annotation The annotation to be freed
+ */
+ZATHURA_PLUGIN_API void zathura_annotation_free(zathura_annotation_t* annotation);
+
+/**
  * Frees a text layout
  *
  * @param layout The text layout to be freed

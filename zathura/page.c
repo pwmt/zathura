@@ -251,6 +251,83 @@ zathura_error_t zathura_page_links_free(girara_list_t* UNUSED(list)) {
   return false;
 }
 
+girara_list_t* zathura_page_annotations_get(zathura_page_t* page, zathura_error_t* error) {
+  if (page == NULL || page->document == NULL) {
+    zathura_check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);
+    return NULL;
+  }
+
+  const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_annotations_get == NULL) {
+    zathura_check_set_error(error, ZATHURA_ERROR_NOT_IMPLEMENTED);
+    return NULL;
+  }
+
+  if (zathura_page_load(page, error) == false) {
+    return NULL;
+  }
+
+  return functions->page_annotations_get(page, page->data, error);
+}
+
+zathura_error_t zathura_page_annotation_add(zathura_page_t* page, const zathura_annotation_t* annotation) {
+  if (page == NULL || page->document == NULL || annotation == NULL) {
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
+  }
+
+  const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_annotation_add == NULL) {
+    return ZATHURA_ERROR_NOT_IMPLEMENTED;
+  }
+
+  zathura_error_t error = ZATHURA_ERROR_OK;
+  if (zathura_page_load(page, &error) == false) {
+    return error;
+  }
+
+  return functions->page_annotation_add(page, page->data, annotation);
+}
+
+zathura_error_t zathura_page_annotation_delete(zathura_page_t* page, unsigned int index) {
+  if (page == NULL || page->document == NULL) {
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
+  }
+
+  const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_annotation_delete == NULL) {
+    return ZATHURA_ERROR_NOT_IMPLEMENTED;
+  }
+
+  zathura_error_t error = ZATHURA_ERROR_OK;
+  if (zathura_page_load(page, &error) == false) {
+    return error;
+  }
+
+  return functions->page_annotation_delete(page, page->data, index);
+}
+
+zathura_error_t zathura_page_annotation_set_contents(zathura_page_t* page, unsigned int index, const char* contents) {
+  if (page == NULL || page->document == NULL || contents == NULL) {
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
+  }
+
+  const zathura_plugin_t* plugin              = zathura_document_get_plugin(page->document);
+  const zathura_plugin_functions_t* functions = zathura_plugin_get_functions(plugin);
+  if (functions->page_annotation_set_contents == NULL) {
+    return ZATHURA_ERROR_NOT_IMPLEMENTED;
+  }
+
+  zathura_error_t error = ZATHURA_ERROR_OK;
+  if (zathura_page_load(page, &error) == false) {
+    return error;
+  }
+
+  return functions->page_annotation_set_contents(page, page->data, index, contents);
+}
+
 girara_list_t* zathura_page_form_fields_get(zathura_page_t* page, zathura_error_t* error) {
   if (page == NULL || page->document == NULL) {
     zathura_check_set_error(error, ZATHURA_ERROR_INVALID_ARGUMENTS);

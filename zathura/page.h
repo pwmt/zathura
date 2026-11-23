@@ -201,6 +201,47 @@ ZATHURA_PLUGIN_API const zathura_text_layout_t* zathura_page_get_text_layout(zat
                                                                              zathura_error_t* error);
 
 /**
+ * Get the annotations of a page
+ *
+ * @param page The page object
+ * @param error Set to an error value (see \ref zathura_error_t) if an error occurred
+ * @return List of zathura_annotation_t (free with girara_list_free) or NULL if
+ *   an error occurred or the plugin does not support annotations
+ */
+ZATHURA_PLUGIN_API girara_list_t* zathura_page_annotations_get(zathura_page_t* page, zathura_error_t* error);
+
+/**
+ * Add an annotation to a page. The change is only kept in memory until the
+ * document is saved.
+ *
+ * @param page The page object
+ * @param annotation Template with type, quads (rect for text annotations), color and contents
+ * @return ZATHURA_ERROR_OK if no error occurred
+ */
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_annotation_add(zathura_page_t* page,
+                                                               const zathura_annotation_t* annotation);
+
+/**
+ * Delete an annotation of a page
+ *
+ * @param page The page object
+ * @param index Index from zathura_annotation_t
+ * @return ZATHURA_ERROR_OK if no error occurred
+ */
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_annotation_delete(zathura_page_t* page, unsigned int index);
+
+/**
+ * Set the contents of an annotation of a page
+ *
+ * @param page The page object
+ * @param index Index from zathura_annotation_t
+ * @param contents New text
+ * @return ZATHURA_ERROR_OK if no error occurred
+ */
+ZATHURA_PLUGIN_API zathura_error_t zathura_page_annotation_set_contents(zathura_page_t* page, unsigned int index,
+                                                                        const char* contents);
+
+/**
  * Render page
  *
  * Backend rendering is serialized with the document lock. Callers must not hold that lock.

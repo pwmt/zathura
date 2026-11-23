@@ -1939,6 +1939,55 @@ bool sc_visual_yank(girara_session_t* session, girara_argument_t* argument, gira
   return false;
 }
 
+bool sc_visual_annotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                        unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->visual == NULL) {
+    return false;
+  }
+  if (zathura_visual_annotate(zathura, argument->n, NULL, NULL) == 0) {
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Annotation added. Use :write to save."));
+  return true;
+}
+
+bool sc_mouse_annotate(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
+                       unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  g_return_val_if_fail(argument != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura_visual_annotate_mouse(zathura, argument->n, NULL, NULL) == 0) {
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Annotation added. Use :write to save."));
+  return true;
+}
+
+bool sc_visual_annotation_delete(girara_session_t* session, girara_argument_t* UNUSED(argument),
+                                 girara_event_t* UNUSED(event), unsigned int UNUSED(t)) {
+  g_return_val_if_fail(session != NULL, false);
+  g_return_val_if_fail(session->global.data != NULL, false);
+  zathura_t* zathura = session->global.data;
+
+  if (zathura->visual == NULL) {
+    return false;
+  }
+  const unsigned int deleted = zathura_visual_annotation_delete(zathura);
+  if (deleted == 0) {
+    girara_notify(session, GIRARA_WARNING, _("No annotation at the selection."));
+    return false;
+  }
+  girara_notify(session, GIRARA_INFO, _("Deleted %u annotation(s). Use :write to save."), deleted);
+  return true;
+}
+
 bool sc_visual_exit(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
                     unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);

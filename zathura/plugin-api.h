@@ -126,6 +126,32 @@ typedef zathura_error_t (*zathura_plugin_page_get_text_layout_t)(zathura_page_t*
  */
 typedef girara_list_t* (*zathura_plugin_page_get_signatures)(zathura_page_t* page, void* data, zathura_error_t* error);
 
+/**
+ * Get the annotations of a page. The list holds zathura_annotation_t and is
+ * freed with zathura_annotation_free.
+ */
+typedef girara_list_t* (*zathura_plugin_page_annotations_get_t)(zathura_page_t* page, void* data,
+                                                                zathura_error_t* error);
+
+/**
+ * Add an annotation to a page. Uses the type, quads (or rect for
+ * ZATHURA_ANNOTATION_TEXT), color and contents of the template.
+ */
+typedef zathura_error_t (*zathura_plugin_page_annotation_add_t)(zathura_page_t* page, void* data,
+                                                                const zathura_annotation_t* annotation);
+
+/**
+ * Delete the annotation with the index of zathura_annotation_t.
+ */
+typedef zathura_error_t (*zathura_plugin_page_annotation_delete_t)(zathura_page_t* page, void* data,
+                                                                   unsigned int index);
+
+/**
+ * Set the contents of the annotation with the index of zathura_annotation_t.
+ */
+typedef zathura_error_t (*zathura_plugin_page_annotation_set_contents_t)(zathura_page_t* page, void* data,
+                                                                         unsigned int index, const char* contents);
+
 struct zathura_plugin_functions_s {
   /**
    * Opens a document
@@ -226,6 +252,26 @@ struct zathura_plugin_functions_s {
    * Get the text layout of a page
    */
   zathura_plugin_page_get_text_layout_t page_get_text_layout;
+
+  /**
+   * Get the annotations of a page
+   */
+  zathura_plugin_page_annotations_get_t page_annotations_get;
+
+  /**
+   * Add an annotation to a page
+   */
+  zathura_plugin_page_annotation_add_t page_annotation_add;
+
+  /**
+   * Delete an annotation of a page
+   */
+  zathura_plugin_page_annotation_delete_t page_annotation_delete;
+
+  /**
+   * Set the contents of an annotation of a page
+   */
+  zathura_plugin_page_annotation_set_contents_t page_annotation_set_contents;
 };
 
 typedef struct zathura_plugin_definition_s {

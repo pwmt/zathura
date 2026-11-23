@@ -2451,3 +2451,379 @@ void zathura_visual_reset(zathura_t* zathura) {
   zathura_visual_mouse_clear(zathura);
   visual_flash_clear(zathura);
 }
+
+/* Annotations */
+
+/* default colors of the annotation types */
+static const double annotation_color_highlight[3] = {1.0, 0.92, 0.0};
+static const double annotation_color_underline[3] = {0.0, 0.6, 0.0};
+static const double annotation_color_squiggly[3]  = {0.9, 0.1, 0.1};
+static const double annotation_color_strikeout[3] = {0.9, 0.1, 0.1};
+static const double annotation_color_text[3]      = {1.0, 0.92, 0.0};
+
+static const double* annotation_default_color(zathura_annotation_type_t type) {
+  switch (type) {
+  case ZATHURA_ANNOTATION_HIGHLIGHT:
+    return annotation_color_highlight;
+  case ZATHURA_ANNOTATION_UNDERLINE:
+    return annotation_color_underline;
+  case ZATHURA_ANNOTATION_SQUIGGLY:
+    return annotation_color_squiggly;
+  case ZATHURA_ANNOTATION_STRIKEOUT:
+    return annotation_color_strikeout;
+  default:
+    return annotation_color_text;
+  }
+}
+
+static bool rect_is_empty(const zathura_rectangle_t* rect) {
+  return rect->x2 <= rect->x1 || rect->y2 <= rect->y1;
+}
+
+static zathura_rectangle_t rect_normalize(zathura_rectangle_t rect) {
+  return (zathura_rectangle_t){
+      .x1 = MIN(rect.x1, rect.x2),
+      .y1 = MIN(rect.y1, rect.y2),
+      .x2 = MAX(rect.x1, rect.x2),
+      .y2 = MAX(rect.y1, rect.y2),
+  };
+}
+
+static bool rects_intersect(const zathura_rectangle_t* a, const zathura_rectangle_t* b) {
+  return a->x1 < b->x2 && b->x1 < a->x2 && a->y1 < b->y2 && b->y1 < a->y2;
+}
+
+/* join rectangles of characters that follow each other on a line to one rectangle per line */
+static GArray* visual_merge_lines(const zathura_rectangle_t* rects, size_t n) {
+  GArray* merged = g_array_new(FALSE, FALSE, sizeof(zathura_rectangle_t));
+
+  bool have                = false;
+  zathura_rectangle_t line = {0};
+  for (size_t i = 0; i < n; ++i) {
+    const zathura_rectangle_t rect = rect_normalize(rects[i]);
+    if (rect_is_empty(&rect) == true) {
+      continue;
+    }
+
+    const double center = (rect.y1 + rect.y2) / 2;
+    if (have == true && center > line.y1 && center < line.y2 && rect.x1 - line.x2 < (line.y2 - line.y1)) {
+      line.x1 = MIN(line.x1, rect.x1);
+      line.y1 = MIN(line.y1, rect.y1);
+      line.x2 = MAX(line.x2, rect.x2);
+      line.y2 = MAX(line.y2, rect.y2);
+    } else {
+      if (have == true) {
+        g_array_append_val(merged, line);
+      }
+      line = rect;
+      have = true;
+    }
+  }
+  if (have == true) {
+    g_array_append_val(merged, line);
+  }
+  return merged;
+}
+
+/* The rectangles of the characters from to to on the layout, with the characters of a line joined to one rectangle.
+ * With lines false, the rectangles are those of the single characters instead. Newlines and characters without area
+ * are skipped. */
+static GArray* visual_selection_rects(const zathura_text_layout_t* layout, size_t from, size_t to, bool lines) {
+  GArray* rects = g_array_new(FALSE, FALSE, sizeof(zathura_rectangle_t));
+  if (layout == NULL || from > to || to >= layout->n_rects) {
+    return rects;
+  }
+
+  const char* text = g_utf8_offset_to_pointer(layout->text, from);
+  for (size_t i = from; i <= to; ++i, text = g_utf8_next_char(text)) {
+    const gunichar c = g_utf8_get_char(text);
+    if (g_unichar_isspace(c) == TRUE && c != ' ') {
+      continue;
+    }
+    const zathura_rectangle_t rect = rect_normalize(layout->rects[i]);
+    if (rect_is_empty(&rect) == false) {
+      g_array_append_val(rects, rect);
+    }
+  }
+
+  if (lines == true) {
+    GArray* merged = visual_merge_lines((const zathura_rectangle_t*)(void*)rects->data, rects->len);
+    g_array_free(rects, TRUE);
+    return merged;
+  }
+  return rects;
+}
+
+/* the selected characters of a page; false if the page has no text in the selection */
+static bool visual_page_range(const zathura_text_layout_t* layout, unsigned int page_index, visual_position_t first,
+                              visual_position_t last, size_t* from, size_t* to) {
+  if (layout == NULL || layout->n_rects == 0 || page_index < first.page || page_index > last.page) {
+    return false;
+  }
+
+  *from = page_index == first.page ? first.index : 0;
+  *to   = page_index == last.page ? last.index : layout->n_rects - 1;
+  return *from <= *to && *to < layout->n_rects;
+}
+
+static void visual_annotations_changed(zathura_t* zathura) {
+  if (zathura->ui.document_widget != NULL) {
+    zathura_document_widget_render_all(zathura->ui.document_widget);
+  }
+}
+
+/* add an annotation covering the rectangles to a page; the rectangles are lines of text, or the first one is where a
+ * note goes */
+static bool visual_add_annotation(zathura_page_t* page, GArray* rects, zathura_annotation_type_t type,
+                                  const double* color, const char* contents) {
+  if (rects->len == 0) {
+    return false;
+  }
+
+  const double* use_color         = color != NULL ? color : annotation_default_color(type);
+  zathura_rectangle_t* data       = (zathura_rectangle_t*)(void*)rects->data;
+  zathura_annotation_t annotation = {
+      .type      = type,
+      .has_color = true,
+      .color     = {use_color[0], use_color[1], use_color[2]},
+      .contents  = (char*)contents,
+  };
+
+  if (type == ZATHURA_ANNOTATION_TEXT) {
+    /* the note sits at the top left of the first rectangle */
+    annotation.rect = (zathura_rectangle_t){data[0].x1, data[0].y1, data[0].x1 + 20, data[0].y1 + 20};
+  } else {
+    annotation.quads   = data;
+    annotation.n_quads = rects->len;
+    annotation.rect    = data[0];
+    for (guint i = 1; i < rects->len; ++i) {
+      annotation.rect.x1 = MIN(annotation.rect.x1, data[i].x1);
+      annotation.rect.y1 = MIN(annotation.rect.y1, data[i].y1);
+      annotation.rect.x2 = MAX(annotation.rect.x2, data[i].x2);
+      annotation.rect.y2 = MAX(annotation.rect.y2, data[i].y2);
+    }
+  }
+
+  return zathura_page_annotation_add(page, &annotation) == ZATHURA_ERROR_OK;
+}
+
+static void visual_annotation_result(zathura_t* zathura, unsigned int added, bool failed) {
+  if (failed == true || added == 0) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to add the annotation."));
+  }
+  if (added != 0) {
+    visual_annotations_changed(zathura);
+  }
+}
+
+/* annotate the text from first to last; returns the number of annotations added */
+static unsigned int visual_annotate_range(zathura_t* zathura, visual_position_t first, visual_position_t last,
+                                          zathura_annotation_type_t type, const double* color, const char* contents) {
+  zathura_document_t* document = zathura_get_document(zathura);
+  unsigned int added           = 0;
+  bool failed                  = false;
+
+  for (unsigned int page_index = first.page; page_index <= last.page; ++page_index) {
+    zathura_page_t* page                = zathura_document_get_page(document, page_index);
+    const zathura_text_layout_t* layout = page != NULL ? zathura_page_get_text_layout(page, NULL) : NULL;
+    size_t from                         = 0;
+    size_t to                           = 0;
+    if (visual_page_range(layout, page_index, first, last, &from, &to) == false) {
+      continue;
+    }
+
+    g_autoptr(GArray) rects = visual_selection_rects(layout, from, to, type != ZATHURA_ANNOTATION_TEXT);
+    if (rects->len == 0) {
+      continue;
+    }
+
+    if (visual_add_annotation(page, rects, type, color, contents) == true) {
+      ++added;
+    } else {
+      failed = true;
+    }
+
+    if (type == ZATHURA_ANNOTATION_TEXT) {
+      break;
+    }
+  }
+
+  visual_annotation_result(zathura, added, failed);
+  return added;
+}
+
+unsigned int zathura_visual_annotate(zathura_t* zathura, zathura_annotation_type_t type, const double* color,
+                                     const char* contents) {
+  g_return_val_if_fail(zathura != NULL, 0);
+
+  zathura_visual_t* visual = zathura->visual;
+  if (visual == NULL) {
+    return 0;
+  }
+  if (type == ZATHURA_ANNOTATION_OTHER) {
+    return 0;
+  }
+  if (visual->kind == ZATHURA_VISUAL_IMAGE || (visual->kind == ZATHURA_VISUAL_CARET && type != ZATHURA_ANNOTATION_TEXT)) {
+    girara_notify(zathura->ui.session, GIRARA_WARNING, _("Select text to annotate first."));
+    return 0;
+  }
+
+  visual_position_t first = visual->cursor;
+  visual_position_t last  = visual->cursor;
+  visual_selection(zathura, &first, &last);
+
+  const unsigned int added = visual_annotate_range(zathura, first, last, type, color, contents);
+  zathura_visual_exit(zathura);
+  return added;
+}
+
+unsigned int zathura_visual_annotate_mouse(zathura_t* zathura, zathura_annotation_type_t type, const double* color,
+                                           const char* contents) {
+  g_return_val_if_fail(zathura != NULL, 0);
+  if (type == ZATHURA_ANNOTATION_OTHER) {
+    return 0;
+  }
+
+  /* a selection over several pages */
+  zathura_visual_mouse_t* mouse = zathura->visual_mouse;
+  if (mouse != NULL && mouse->dragging == false && mouse->drawn.drawn == true) {
+    visual_position_t first;
+    visual_position_t last;
+    mouse_order(mouse, &first, &last);
+    const unsigned int added = visual_annotate_range(zathura, first, last, type, color, contents);
+    zathura_visual_mouse_clear(zathura);
+    return added;
+  }
+
+  /* a selection on one page */
+  zathura_document_t* document = zathura_get_document(zathura);
+  const unsigned int n_pages   = zathura_document_get_number_of_pages(document);
+  for (unsigned int page_index = 0; page_index < n_pages; ++page_index) {
+    ZathuraPageWidget* widget = zathura_page_get_widget_by_number(zathura, page_index);
+    girara_list_t* selection  = widget != NULL ? zathura_page_widget_get_selection(widget) : NULL;
+    if (selection == NULL || girara_list_size(selection) == 0) {
+      continue;
+    }
+
+    GArray* raw = g_array_new(FALSE, FALSE, sizeof(zathura_rectangle_t));
+    for (size_t i = 0; i < girara_list_size(selection); ++i) {
+      g_array_append_val(raw, *(zathura_rectangle_t*)girara_list_nth(selection, i));
+    }
+    g_autoptr(GArray) rects = type == ZATHURA_ANNOTATION_TEXT
+                                  ? raw
+                                  : visual_merge_lines((const zathura_rectangle_t*)(void*)raw->data, raw->len);
+    if (rects != raw) {
+      g_array_free(raw, TRUE);
+    }
+
+    const bool ok = visual_add_annotation(zathura_document_get_page(document, page_index), rects, type, color, contents);
+    visual_annotation_result(zathura, ok == true ? 1 : 0, ok == false);
+    zathura_page_widget_clear_selection(widget);
+    return ok == true ? 1 : 0;
+  }
+
+  girara_notify(zathura->ui.session, GIRARA_WARNING, _("Select text with the mouse to annotate first."));
+  return 0;
+}
+
+typedef enum visual_annotation_action_e {
+  VISUAL_ANNOTATION_DELETE,
+  VISUAL_ANNOTATION_COMMENT,
+} visual_annotation_action_t;
+
+static int compare_uint_descending(const void* a, const void* b) {
+  const unsigned int x = *(const unsigned int*)a;
+  const unsigned int y = *(const unsigned int*)b;
+  return (x < y) - (x > y);
+}
+
+/* apply the action to the annotations overlapping the selection or the caret */
+static unsigned int visual_annotation_apply(zathura_t* zathura, visual_annotation_action_t action,
+                                            const char* contents) {
+  zathura_visual_t* visual = zathura->visual;
+  if (visual == NULL) {
+    return 0;
+  }
+  if (visual->kind == ZATHURA_VISUAL_IMAGE) {
+    return 0;
+  }
+
+  visual_position_t first = visual->cursor;
+  visual_position_t last  = visual->cursor;
+  visual_selection(zathura, &first, &last);
+
+  zathura_document_t* document = zathura_get_document(zathura);
+  unsigned int changed         = 0;
+
+  for (unsigned int page_index = first.page; page_index <= last.page; ++page_index) {
+    zathura_page_t* page                = zathura_document_get_page(document, page_index);
+    const zathura_text_layout_t* layout = page != NULL ? zathura_page_get_text_layout(page, NULL) : NULL;
+    size_t from                         = 0;
+    size_t to                           = 0;
+    if (visual_page_range(layout, page_index, first, last, &from, &to) == false) {
+      continue;
+    }
+
+    g_autoptr(GArray) selected = visual_selection_rects(layout, from, to, false);
+    g_autoptr(girara_list_t) annotations = zathura_page_annotations_get(page, NULL);
+    if (annotations == NULL || selected->len == 0) {
+      continue;
+    }
+
+    g_autoptr(GArray) hits = g_array_new(FALSE, FALSE, sizeof(unsigned int));
+    for (size_t n = 0; n < girara_list_size(annotations); ++n) {
+      const zathura_annotation_t* annotation = girara_list_nth(annotations, n);
+      bool hit                               = false;
+      for (guint i = 0; i < selected->len && hit == false; ++i) {
+        const zathura_rectangle_t* rect = &g_array_index(selected, zathura_rectangle_t, i);
+        if (annotation->n_quads == 0) {
+          hit = rects_intersect(rect, &annotation->rect);
+        }
+        for (size_t q = 0; q < annotation->n_quads && hit == false; ++q) {
+          hit = rects_intersect(rect, &annotation->quads[q]);
+        }
+      }
+      if (hit == true) {
+        g_array_append_val(hits, annotation->index);
+      }
+    }
+
+    if (action == VISUAL_ANNOTATION_DELETE) {
+      /* later annotations shift down when one is deleted, so go from the back */
+      g_array_sort(hits, compare_uint_descending);
+    }
+    for (guint i = 0; i < hits->len; ++i) {
+      const unsigned int index = g_array_index(hits, unsigned int, i);
+      const zathura_error_t error = action == VISUAL_ANNOTATION_DELETE
+                                        ? zathura_page_annotation_delete(page, index)
+                                        : zathura_page_annotation_set_contents(page, index, contents);
+      if (error == ZATHURA_ERROR_OK) {
+        ++changed;
+      }
+    }
+  }
+
+  return changed;
+}
+
+unsigned int zathura_visual_annotation_delete(zathura_t* zathura) {
+  g_return_val_if_fail(zathura != NULL, 0);
+
+  const unsigned int deleted = visual_annotation_apply(zathura, VISUAL_ANNOTATION_DELETE, NULL);
+  if (deleted != 0) {
+    visual_annotations_changed(zathura);
+  }
+  zathura_visual_exit(zathura);
+  return deleted;
+}
+
+unsigned int zathura_visual_annotation_comment(zathura_t* zathura, const char* contents) {
+  g_return_val_if_fail(zathura != NULL && contents != NULL, 0);
+
+  const unsigned int changed = visual_annotation_apply(zathura, VISUAL_ANNOTATION_COMMENT, contents);
+  if (changed != 0) {
+    visual_annotations_changed(zathura);
+  }
+  zathura_visual_exit(zathura);
+  return changed;
+}
