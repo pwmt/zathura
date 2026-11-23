@@ -2574,10 +2574,10 @@ static void visual_annotations_changed(zathura_t* zathura) {
 
 /* add an annotation covering the rectangles to a page; the rectangles are lines of text, or the first one is where a
  * note goes */
-static bool visual_add_annotation(zathura_page_t* page, GArray* rects, zathura_annotation_type_t type,
-                                  const double* color, const char* contents) {
+static zathura_error_t visual_add_annotation(zathura_page_t* page, GArray* rects, zathura_annotation_type_t type,
+                                             const double* color, const char* contents) {
   if (rects->len == 0) {
-    return false;
+    return ZATHURA_ERROR_INVALID_ARGUMENTS;
   }
 
   const double* use_color         = color != NULL ? color : annotation_default_color(type);
@@ -2604,11 +2604,14 @@ static bool visual_add_annotation(zathura_page_t* page, GArray* rects, zathura_a
     }
   }
 
-  return zathura_page_annotation_add(page, &annotation) == ZATHURA_ERROR_OK;
+  return zathura_page_annotation_add(page, &annotation);
 }
 
-static void visual_annotation_result(zathura_t* zathura, unsigned int added, bool failed) {
-  if (failed == true || added == 0) {
+/* error is the first error of adding, or ZATHURA_ERROR_OK */
+static void visual_annotation_result(zathura_t* zathura, unsigned int added, zathura_error_t error) {
+  if (error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
+    girara_notify(zathura->ui.session, GIRARA_ERROR, _("This document format does not support annotations."));
+  } else if (error != ZATHURA_ERROR_OK || added == 0) {
     girara_notify(zathura->ui.session, GIRARA_ERROR, _("Failed to add the annotation."));
   }
   if (added != 0) {
@@ -2621,7 +2624,7 @@ static unsigned int visual_annotate_range(zathura_t* zathura, visual_position_t 
                                           zathura_annotation_type_t type, const double* color, const char* contents) {
   zathura_document_t* document = zathura_get_document(zathura);
   unsigned int added           = 0;
-  bool failed                  = false;
+  zathura_error_t error        = ZATHURA_ERROR_OK;
 
   for (unsigned int page_index = first.page; page_index <= last.page; ++page_index) {
     zathura_page_t* page                = zathura_document_get_page(document, page_index);
@@ -2637,10 +2640,11 @@ static unsigned int visual_annotate_range(zathura_t* zathura, visual_position_t 
       continue;
     }
 
-    if (visual_add_annotation(page, rects, type, color, contents) == true) {
+    const zathura_error_t result = visual_add_annotation(page, rects, type, color, contents);
+    if (result == ZATHURA_ERROR_OK) {
       ++added;
-    } else {
-      failed = true;
+    } else if (error == ZATHURA_ERROR_OK) {
+      error = result;
     }
 
     if (type == ZATHURA_ANNOTATION_TEXT) {
@@ -2648,7 +2652,7 @@ static unsigned int visual_annotate_range(zathura_t* zathura, visual_position_t 
     }
   }
 
-  visual_annotation_result(zathura, added, failed);
+  visual_annotation_result(zathura, added, error);
   return added;
 }
 
@@ -2717,11 +2721,11 @@ unsigned int zathura_visual_annotate_mouse(zathura_t* zathura, zathura_annotatio
       g_array_free(raw, TRUE);
     }
 
-    const bool ok =
+    const zathura_error_t error =
         visual_add_annotation(zathura_document_get_page(document, page_index), rects, type, color, contents);
-    visual_annotation_result(zathura, ok == true ? 1 : 0, ok == false);
+    visual_annotation_result(zathura, error == ZATHURA_ERROR_OK ? 1 : 0, error);
     zathura_page_widget_clear_selection(widget);
-    return ok == true ? 1 : 0;
+    return error == ZATHURA_ERROR_OK ? 1 : 0;
   }
 
   girara_notify(zathura->ui.session, GIRARA_WARNING, _("Select text with the mouse to annotate first."));

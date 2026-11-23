@@ -125,7 +125,8 @@ static void test_add_and_get(fixture_t* fixture, gconstpointer UNUSED(data)) {
 
 static void test_failed_changes_do_not_modify(fixture_t* fixture, gconstpointer UNUSED(data)) {
   zathura_annotation_t other = {.type = ZATHURA_ANNOTATION_OTHER};
-  g_assert_cmpint(zathura_page_annotation_add(fixture->page, &other), !=, ZATHURA_ERROR_OK);
+  /* plugins report documents that cannot be annotated with this error, which is what the user is told about */
+  g_assert_cmpint(zathura_page_annotation_add(fixture->page, &other), ==, ZATHURA_ERROR_NOT_IMPLEMENTED);
 
   zathura_annotation_t no_quads = {.type = ZATHURA_ANNOTATION_UNDERLINE};
   g_assert_cmpint(zathura_page_annotation_add(fixture->page, &no_quads), !=, ZATHURA_ERROR_OK);
