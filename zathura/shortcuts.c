@@ -204,7 +204,7 @@ bool sc_copy_filepath(girara_session_t* session, girara_argument_t* UNUSED(argum
 
   bool notification = true;
   girara_setting_get(session, "selection-notification", &notification);
-  if (!notification) {
+  if (notification) {
     g_autofree char* target = NULL;
     girara_setting_get(session, "selection-clipboard", &target);
     g_autofree char* escaped = g_markup_printf_escaped(_("Copied file path to selection %s: %s"), target, file_path);

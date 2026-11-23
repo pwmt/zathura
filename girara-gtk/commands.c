@@ -245,7 +245,7 @@ typedef struct mouse_event_s {
 static const mouse_event_t mouse_events[] = {
     {"button-pressed", GIRARA_EVENT_BUTTON_PRESS},
     {"2-button-pressed", GIRARA_EVENT_2BUTTON_PRESS},
-    {"3-button-pressed", GIRARA_EVENT_2BUTTON_PRESS},
+    {"3-button-pressed", GIRARA_EVENT_3BUTTON_PRESS},
     {"button-released", GIRARA_EVENT_BUTTON_RELEASE},
 };
 

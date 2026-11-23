@@ -255,15 +255,18 @@ void synctex_highlight_rects(zathura_t* zathura, unsigned int page, girara_list_
   zathura_document_t* document       = zathura_get_document(zathura);
   const unsigned int number_of_pages = zathura_document_get_number_of_pages(document);
 
-  /* the highlight needs every page widget so do nothing until the preload is done */
-  if (!zathura_document_widget_page_widgets_loaded(zathura->ui.document_widget)) {
-    return;
-  }
-
   zathura_document_widget_hide_links(zathura->ui.document_widget);
   for (unsigned int p = 0; p != number_of_pages; ++p) {
-    GObject* widget = G_OBJECT(zathura_page_get_widget_by_number(zathura, p));
+    /* the background preload may not have created the widget of a page with results yet */
+    ZathuraPageWidget* page_widget = rectangles[p] != NULL && girara_list_size(rectangles[p]) != 0
+                                         ? zathura_document_widget_ensure_page(zathura->ui.document_widget, p)
+                                         : zathura_page_get_widget_by_number(zathura, p);
+    if (page_widget == NULL) {
+      g_clear_pointer(&rectangles[p], girara_list_free);
+      continue;
+    }
 
+    GObject* widget = G_OBJECT(page_widget);
     g_object_set(widget, "search-results", rectangles[p], NULL);
     if (p == page) {
       g_object_set(widget, "search-current", 0, NULL);
