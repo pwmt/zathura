@@ -35,3 +35,6 @@ compile_commands.json
 *.log
 .ycm_extra_conf.py
 _*/
+
+# transifex
+.tx/
