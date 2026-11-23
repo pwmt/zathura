@@ -239,7 +239,7 @@ bool cmd_info(girara_session_t* session, girara_list_t* UNUSED(argument_list)) {
       {_("Other"), ZATHURA_DOCUMENT_INFORMATION_OTHER},
   };
 
-  girara_list_t* information = zathura_document_get_information(zathura_get_document(zathura), NULL);
+  g_autoptr(girara_list_t) information = zathura_document_get_information(zathura_get_document(zathura), NULL);
   if (information == NULL) {
     girara_notify(session, GIRARA_INFO, _("No information available."));
     return false;
@@ -519,6 +519,8 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
     }
     /* image */
   } else if (strncmp(file_identifier, "image-p", image_len) == 0 && strlen(file_identifier) >= 10) {
+    g_autoptr(girara_list_t) images = NULL;
+
     /* parse page id */
     const char* input    = file_identifier + image_len;
     char* input_image_id = NULL;
@@ -539,7 +541,7 @@ bool cmd_export(girara_session_t* session, girara_list_t* argument_list) {
       goto image_error;
     }
 
-    girara_list_t* images = zathura_page_images_get(page, NULL);
+    images = zathura_page_images_get(page, NULL);
     if (images == NULL) {
       goto image_error;
     }

@@ -239,7 +239,6 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
   for (size_t s = 0; s < LENGTH(ALL_INIT); ++s) {
     if (sqlite3_exec(session, ALL_INIT[s], NULL, 0, NULL) != SQLITE_OK) {
       girara_error("Failed to initialize database");
-      sqlite3_close(session);
       return;
     }
   }

@@ -488,8 +488,8 @@ char* increment_first_page_column(const char* first_page_column_list, const unsi
     return g_strdup(first_page_column_list);
   }
 
-  unsigned int size      = 0;
-  unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
+  unsigned int size                 = 0;
+  g_autofree unsigned int* settings = parse_first_page_column_list(first_page_column_list, &size);
 
   /* Lookup current setting. Signed value to avoid negative overflow when modifying it later. */
   int column = 1;

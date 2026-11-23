@@ -39,13 +39,14 @@ static void test_config_mouse_release_override(void) {
                                          GIRARA_EVENT_BUTTON_RELEASE, 0, NULL));
 
     // replace the previous event
-    g_autofree char* config = g_strdup_printf("map <Button%u> [button-released] testfunc replacement\n", button);
+    g_autofree char* config = g_strdup_printf("map <Button%u> [button-released] testfunc replacement data\n", button);
     g_assert_true(g_file_set_contents(filename, config, -1, NULL));
     g_assert_true(girara_config_parse(session, filename));
 
     g_assert_cmpuint(girara_list_size(session->bindings.mouse_events), ==, 1);
     girara_mouse_event_t* binding = girara_list_nth(session->bindings.mouse_events, 0);
     g_assert_cmpint(binding->argument.n, ==, first_argument);
+    g_assert_cmpstr(binding->argument.data, ==, "data");
     g_assert_true(girara_has_mouse_event(session, GIRARA_EVENT_BUTTON_RELEASE, button, own));
     g_assert_true(girara_has_mouse_event(session, GIRARA_EVENT_BUTTON_RELEASE, button, 0));
     g_assert_false(girara_has_mouse_event(session, GIRARA_EVENT_BUTTON_RELEASE, button, own | GDK_CONTROL_MASK));

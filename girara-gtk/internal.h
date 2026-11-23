@@ -39,6 +39,8 @@ void girara_shortcut_mapping_free(girara_shortcut_mapping_t* mapping);
 
 void girara_shortcut_free(girara_shortcut_t* shortcut);
 
+void girara_mouse_event_free(girara_mouse_event_t* mouse_event);
+
 void girara_argument_mapping_free(girara_argument_mapping_t* argument_mapping);
 
 void girara_command_free(girara_command_t* command);

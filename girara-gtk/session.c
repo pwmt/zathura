@@ -224,7 +224,7 @@ girara_session_t* girara_session_create(void) {
   girara_session_private_t* session_private = session->private_data;
 
   /* init values */
-  session->bindings.mouse_events       = girara_list_new_with_free(g_free);
+  session->bindings.mouse_events       = girara_list_new_with_free((girara_free_function_t)girara_mouse_event_free);
   session->bindings.commands           = girara_list_new_with_free((girara_free_function_t)girara_command_free);
   session->bindings.special_commands   = girara_list_new_with_free(g_free);
   session->bindings.shortcuts          = girara_list_new_with_free((girara_free_function_t)girara_shortcut_free);

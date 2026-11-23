@@ -1629,8 +1629,8 @@ bool sc_exec(girara_session_t* session, girara_argument_t* argument, girara_even
   }
 
   girara_argument_t new_argument = *argument;
-  const char* bus_name           = zathura_dbus_get_name(zathura);
-  char* s                        = girara_replace_substring(new_argument.data, "$DBUS", bus_name);
+  char* s = zathura->dbus != NULL ? girara_replace_substring(new_argument.data, "$DBUS", zathura_dbus_get_name(zathura))
+                                  : g_strdup(new_argument.data);
   if (s == NULL) {
     return false;
   }
