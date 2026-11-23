@@ -199,6 +199,12 @@ static void handle_open_document(zathura_t* zathura, GVariant* parameters, GDBus
   gint page                  = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
   g_variant_get(parameters, "(ssi)", &filename, &password, &page);
 
+  /* a caller cannot discard unsaved annotations, so the request fails */
+  if (zathura_unsaved_changes_warn(zathura) == true) {
+    g_dbus_method_invocation_return_value(invocation, g_variant_new("(b)", false));
+    return;
+  }
+
   document_close(zathura, false);
   document_open_idle(zathura, filename, strlen(password) > 0 ? password : NULL, page, NULL, NULL, NULL, NULL);
 
@@ -207,7 +213,7 @@ static void handle_open_document(zathura_t* zathura, GVariant* parameters, GDBus
 }
 
 static void handle_close_document(zathura_t* zathura, GVariant* UNUSED(parameters), GDBusMethodInvocation* invocation) {
-  const bool ret = document_close(zathura, false);
+  const bool ret = zathura_unsaved_changes_warn(zathura) == false && document_close(zathura, false);
 
   GVariant* result = g_variant_new("(b)", ret);
   g_dbus_method_invocation_return_value(invocation, result);
